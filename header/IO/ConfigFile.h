@@ -8,7 +8,7 @@ namespace IO
 	class ConfigFile
 	{
 	private:
-		Data::FastStringMap<Data::FastStringMap<Text::String *>*> *cfgVals;
+		Data::FastStringMap<Data::FastStringMap<Text::String *>*> cfgVals;
 
 	public:
 		ConfigFile();

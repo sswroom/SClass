@@ -3,7 +3,6 @@
 
 IO::ConfigFile::ConfigFile()
 {
-	NEW_CLASS(this->cfgVals, Data::FastStringMap<Data::FastStringMap<Text::String *>*>());
 }
 
 IO::ConfigFile::~ConfigFile()
@@ -12,10 +11,10 @@ IO::ConfigFile::~ConfigFile()
 	Text::String *s;
 	UOSInt i;
 	UOSInt j;
-	i = this->cfgVals->GetCount();
+	i = this->cfgVals.GetCount();
 	while (i-- > 0)
 	{
-		cate = this->cfgVals->GetItem(i);
+		cate = this->cfgVals.GetItem(i);
 		j = cate->GetCount();
 		while (j-- > 0)
 		{
@@ -24,7 +23,6 @@ IO::ConfigFile::~ConfigFile()
 		}
 		DEL_CLASS(cate);
 	}
-	DEL_CLASS(this->cfgVals);
 }
 
 Text::String *IO::ConfigFile::GetValue(Text::String *name)
@@ -39,7 +37,7 @@ Text::String *IO::ConfigFile::GetValue(Text::CString name)
 
 Text::String *IO::ConfigFile::GetValue(Text::String *category, Text::String *name)
 {
-	Data::FastStringMap<Text::String *> *cate = this->cfgVals->Get(Text::String::OrEmpty(category));
+	Data::FastStringMap<Text::String *> *cate = this->cfgVals.Get(Text::String::OrEmpty(category));
 	if (cate == 0)
 	{
 		return 0;
@@ -53,7 +51,7 @@ Text::String *IO::ConfigFile::GetValue(Text::CString category, Text::CString nam
 	{
 		category = CSTR("");
 	}
-	Data::FastStringMap<Text::String *> *cate = this->cfgVals->GetC(category);
+	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 	{
 		return 0;
@@ -72,11 +70,11 @@ Bool IO::ConfigFile::SetValue(Text::String *category, Text::String *name, Text::
 	{
 		category = Text::String::NewEmpty();
 	}
-	cate = this->cfgVals->Get(category);
+	cate = this->cfgVals.Get(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals->Put(category, cate);
+		this->cfgVals.Put(category, cate);
 	}
 	s = cate->Get(name);
 	SDEL_STRING(s);
@@ -95,11 +93,11 @@ Bool IO::ConfigFile::SetValue(Text::CString category, Text::CString name, Text::
 	{
 		category = CSTR("");
 	}
-	cate = this->cfgVals->GetC(category);
+	cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals->PutC(category, cate);
+		this->cfgVals.PutC(category, cate);
 	}
 	s = cate->GetC(name);
 	SDEL_STRING(s);
@@ -119,11 +117,11 @@ Bool IO::ConfigFile::RemoveValue(Text::CString category, Text::CString name)
 	{
 		category = CSTR("");
 	}
-	cate = this->cfgVals->GetC(category);
+	cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals->PutC(category, cate);
+		this->cfgVals.PutC(category, cate);
 	}
 	s = cate->RemoveC(name);
 	SDEL_STRING(s);
@@ -132,18 +130,18 @@ Bool IO::ConfigFile::RemoveValue(Text::CString category, Text::CString name)
 
 UOSInt IO::ConfigFile::GetCateCount()
 {
-	return this->cfgVals->GetCount();
+	return this->cfgVals.GetCount();
 }
 
 UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList, Bool withEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
-	UOSInt j = this->cfgVals->GetCount();
+	UOSInt j = this->cfgVals.GetCount();
 	cateList->EnsureCapacity(j);
 	while (i < j)
 	{
-		Text::String *key = this->cfgVals->GetKey(i);
+		Text::String *key = this->cfgVals.GetKey(i);
 		if (key->leng > 0 || withEmpty)
 		{
 			cateList->Add(key);
@@ -157,7 +155,7 @@ UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList, Bo
 UOSInt IO::ConfigFile::GetKeys(Text::String *category, Data::ArrayList<Text::String *> *keyList)
 {
 	Data::FastStringMap<Text::String *> *cate;
-	cate = this->cfgVals->Get(Text::String::OrEmpty(category));
+	cate = this->cfgVals.Get(Text::String::OrEmpty(category));
 	if (cate == 0)
 		return 0;
 	UOSInt i = 0;
@@ -178,7 +176,7 @@ UOSInt IO::ConfigFile::GetKeys(Text::CString category, Data::ArrayList<Text::Str
 	{
 		category = CSTR("");
 	}
-	cate = this->cfgVals->GetC(category);
+	cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 		return 0;
 	UOSInt i = 0;
@@ -198,12 +196,12 @@ Bool IO::ConfigFile::HasCategory(Text::CString category)
 	{
 		category = CSTR("");
 	}
-	return this->cfgVals->GetC(category) != 0;
+	return this->cfgVals.GetC(category) != 0;
 }
 
 IO::ConfigFile *IO::ConfigFile::CloneCate(Text::CString category)
 {
-	Data::FastStringMap<Text::String*> *cate = this->cfgVals->GetC(category);
+	Data::FastStringMap<Text::String*> *cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 	{
 		return 0;

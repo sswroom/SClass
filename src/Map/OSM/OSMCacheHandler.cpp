@@ -24,7 +24,6 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	sptr = Text::StrInt32(sptr, yTile);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 
-	IO::FileStream *fs;
 	Data::DateTime dt;
 	Data::DateTime currTime;
 
@@ -32,92 +31,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	{
 		mutUsage->ReplaceMutex(this->ioMut);
 	}
+
+	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
-	{
-		DEL_CLASS(fs);
-		fs = 0;
-		mutUsage->EndUse();
-
-		Text::String *thisUrl;
-		Sync::MutexUsage urlMutUsage(this->urlMut);
-		thisUrl = this->urls->GetItem(this->urlNext);
-		this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
-		urlMutUsage.EndUse();
-		Text::StringBuilderUTF8 urlSb;
-		urlSb.Append(thisUrl);
-		urlSb.AppendI32(lev);
-		urlSb.AppendC(UTF8STRC("/"));
-		urlSb.AppendI32(xTile);
-		urlSb.AppendC(UTF8STRC("/"));
-		urlSb.AppendI32(yTile);
-		urlSb.AppendC(UTF8STRC(".png"));
-
-		Net::HTTPClient *cli;
-		cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
-		cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
-
-		if (cli->GetRespStatus() == 304)
-		{
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			dt.SetCurrTimeUTC();
-			fs->SetFileTimes(&dt, 0, 0);
-			DEL_CLASS(fs);
-			fs = 0;
-		}
-		else
-		{
-			UInt64 contLeng = cli->GetContentLength();
-			UOSInt currPos = 0;
-			UOSInt readSize;
-			UInt8 *imgBuff;
-			if (contLeng > 0 && contLeng <= 10485760)
-			{
-				imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
-				while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
-				{
-					currPos += readSize;
-					if (currPos >= contLeng)
-					{
-						break;
-					}
-				}
-				if (currPos >= contLeng)
-				{
-					if (this->ioMut)
-					{
-						mutUsage->ReplaceMutex(this->ioMut);
-					}
-					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
-					fs->Write(imgBuff, (UOSInt)contLeng);
-					if (cli->GetLastModified(&dt))
-					{
-						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, &dt);
-					}
-					else
-					{
-						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, 0);
-					}
-					fs->SeekFromBeginning(0);
-					Sync::Interlocked::Increment(&this->status.remoteSuccCnt);
-				}
-				else
-				{
-					Sync::Interlocked::Increment(&this->status.remoteErrCnt);
-				}
-				MemFree(imgBuff);
-			}
-			else
-			{
-				Sync::Interlocked::Increment(&this->status.remoteErrCnt);
-			}
-		}
-		DEL_CLASS(cli);
-		return fs;
-	}
-	else
+	if (!fs->IsError())
 	{
 		Sync::Interlocked::Increment(&this->status.localCnt);
 		fs->GetFileTimes(&dt, 0, 0);
@@ -131,13 +48,90 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 
 		return fs;
 	}
+	DEL_CLASS(fs);
+	fs = 0;
+	mutUsage->EndUse();
+
+	Text::String *thisUrl;
+	Sync::MutexUsage urlMutUsage(&this->urlMut);
+	thisUrl = this->urls.GetItem(this->urlNext);
+	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
+	urlMutUsage.EndUse();
+	Text::StringBuilderUTF8 urlSb;
+	urlSb.Append(thisUrl);
+	urlSb.AppendI32(lev);
+	urlSb.AppendC(UTF8STRC("/"));
+	urlSb.AppendI32(xTile);
+	urlSb.AppendC(UTF8STRC("/"));
+	urlSb.AppendI32(yTile);
+	urlSb.AppendC(UTF8STRC(".png"));
+
+	Net::HTTPClient *cli;
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+
+	if (cli->GetRespStatus() == 304)
+	{
+		IO::FileStream imgFS(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		dt.SetCurrTimeUTC();
+		imgFS.SetFileTimes(&dt, 0, 0);
+	}
+	else
+	{
+		UInt64 contLeng = cli->GetContentLength();
+		UOSInt currPos = 0;
+		UOSInt readSize;
+		UInt8 *imgBuff;
+		if (contLeng > 0 && contLeng <= 10485760)
+		{
+			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
+			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
+			{
+				currPos += readSize;
+				if (currPos >= contLeng)
+				{
+					break;
+				}
+			}
+			if (currPos >= contLeng)
+			{
+				if (this->ioMut)
+				{
+					mutUsage->ReplaceMutex(this->ioMut);
+				}
+				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
+				fs->Write(imgBuff, (UOSInt)contLeng);
+				if (cli->GetLastModified(&dt))
+				{
+					currTime.SetCurrTimeUTC();
+					fs->SetFileTimes(&currTime, 0, &dt);
+				}
+				else
+				{
+					currTime.SetCurrTimeUTC();
+					fs->SetFileTimes(&currTime, 0, 0);
+				}
+				fs->SeekFromBeginning(0);
+				Sync::Interlocked::Increment(&this->status.remoteSuccCnt);
+			}
+			else
+			{
+				Sync::Interlocked::Increment(&this->status.remoteErrCnt);
+			}
+			MemFree(imgBuff);
+		}
+		else
+		{
+			Sync::Interlocked::Increment(&this->status.remoteErrCnt);
+		}
+	}
+	DEL_CLASS(cli);
+	return fs;
 }
 
 Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	NEW_CLASS(this->urls, Data::ArrayListString());
-	this->urls->Add(Text::String::New(url));
-	NEW_CLASS(this->urlMut, Sync::Mutex());
+	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
 	this->ioMut = 0;
 	this->cacheDir = Text::String::New(cacheDir);
@@ -149,15 +143,13 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cach
 
 Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 {
-	LIST_FREE_STRING(this->urls);
-	DEL_CLASS(this->urls);
-	DEL_CLASS(this->urlMut);
+	LIST_FREE_STRING(&this->urls);
 	SDEL_STRING(this->cacheDir);
 }
 
 void Map::OSM::OSMCacheHandler::AddAlternateURL(const UTF8Char *url, UOSInt len)
 {
-	this->urls->Add(Text::String::New(url, len));
+	this->urls.Add(Text::String::New(url, len));
 }
 
 void Map::OSM::OSMCacheHandler::GetStatus(CacheStatus *status)

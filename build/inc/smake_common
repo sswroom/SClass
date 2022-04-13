@@ -3509,6 +3509,8 @@ SSWR/AVIRead/AVIRSSDPClientForm.h: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
 @AVIRSSDPClientForm.o
 SSWR/AVIRead/AVIRSSLCertKeyForm.h: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
 @AVIRSSLCertKeyForm.o
+SSWR/AVIRead/AVIRSSLInfoForm.h: ../../src/SSWR/AVIRead/AVIRSSLInfoForm.cpp
+@AVIRSSLInfoForm.o
 SSWR/AVIRead/AVIRStreamConvForm.h: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
 @AVIRStreamConvForm.o
 SSWR/AVIRead/AVIRStreamEchoForm.h: ../../src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
@@ -5136,6 +5138,7 @@ AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
 AVIRSSDPClientForm.o: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
 AVIRSSLCertKeyForm.o: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
+AVIRSSLInfoForm.o: ../../src/SSWR/AVIRead/AVIRSSLInfoForm.cpp
 AVIRStreamConvForm.o: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
 AVIRStreamEchoForm.o: ../../src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
 AVIRStreamLatencyForm.o: ../../src/SSWR/AVIRead/AVIRStreamLatencyForm.cpp

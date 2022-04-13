@@ -9,10 +9,10 @@ namespace Map
 	class MapLayerCollection : public Map::IMapDrawLayer
 	{
 	private:
-		Sync::RWMutex *mut;
-		Data::ArrayList<Map::IMapDrawLayer *> *layerList;
-		Data::ArrayList<Map::IMapDrawLayer::UpdatedHandler> *updHdlrs;
-		Data::ArrayList<void *> *updObjs;
+		Sync::RWMutex mut;
+		Data::ArrayList<Map::IMapDrawLayer *> layerList;
+		Data::ArrayList<Map::IMapDrawLayer::UpdatedHandler> updHdlrs;
+		Data::ArrayList<void *> updObjs;
 
 		static void __stdcall InnerUpdated(void *userObj);
 	public:
@@ -23,7 +23,7 @@ namespace Map
 		virtual UOSInt Add(Map::IMapDrawLayer * val);
 		virtual Map::IMapDrawLayer *RemoveAt(UOSInt index);
 		virtual void Clear();
-		virtual UOSInt GetCount();
+		virtual UOSInt GetCount() const;
 		virtual Map::IMapDrawLayer *GetItem(UOSInt Index);
 		virtual void SetItem(UOSInt Index, Map::IMapDrawLayer *Val);
 

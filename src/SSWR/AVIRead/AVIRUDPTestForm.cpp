@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 		return;
 	}
 	me->txtDestHost->GetText(&sb);
-	if (!me->sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
+	if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("UDP Test"), me);
 		return;

@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 		return;
 	}
 	me->txtHost->GetText(&sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 		return;

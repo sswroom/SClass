@@ -54,9 +54,6 @@ void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, B
 
 UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
-
 	this->clsData = MemAlloc(ClassData, 1);
 	GUITextBox_InitTextBox(this->clsData, initText, false, this);
 	this->hwnd = (ControlHandle*)this->clsData->widget;
@@ -66,9 +63,6 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 
 UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
-
 	this->clsData = MemAlloc(ClassData, 1);
 	GUITextBox_InitTextBox(this->clsData, initText, isMultiline, this);
 	if (isMultiline)
@@ -89,17 +83,15 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 UI::GUITextBox::~GUITextBox()
 {
 	MemFree(this->clsData);
-	DEL_CLASS(this->txtChgObjs);
-	DEL_CLASS(this->txtChgHdlrs);
 //	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
 void UI::GUITextBox::EventTextChange()
 {
-	UOSInt i = this->txtChgHdlrs->GetCount();
+	UOSInt i = this->txtChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->txtChgHdlrs->GetItem(i)(this->txtChgObjs->GetItem(i));
+		this->txtChgHdlrs.GetItem(i)(this->txtChgObjs.GetItem(i));
 	}
 }
 
@@ -200,8 +192,8 @@ OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
 {
-	this->txtChgHdlrs->Add(hdlr);
-	this->txtChgObjs->Add(userObj);
+	this->txtChgHdlrs.Add(hdlr);
+	this->txtChgObjs.Add(userObj);
 }
 
 void UI::GUITextBox::SelectAll()

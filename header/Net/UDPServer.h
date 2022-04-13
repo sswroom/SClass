@@ -41,7 +41,7 @@ namespace Net
 		IO::LogTool *msgLog;
 		Text::String *msgPrefix;
 
-		Sync::Mutex *logFileMut;
+		Sync::Mutex logFileMut;
 		IO::FileStream *logFileR;
 		IO::FileStream *logFileS;
 		Data::DateTime *logDateR;

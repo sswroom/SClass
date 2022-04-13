@@ -17,9 +17,9 @@ namespace DB
 		} DBInfo;
 
 	private:
-		Data::ArrayList<DBInfo *> *dbList;
-		Sync::Mutex *dbMut;
-		Sync::Event *dbEvt;
+		Data::ArrayList<DBInfo *> dbList;
+		Sync::Mutex dbMut;
+		Sync::Event dbEvt;
 		UOSInt nextIndex;
 
 	public:

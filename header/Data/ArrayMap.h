@@ -9,7 +9,7 @@ namespace Data
 	{
 	protected:
 		Data::SortableArrayListNative<T> *keys;
-		Data::ArrayList<V> *vals;
+		Data::ArrayList<V> vals;
 
 	public:
 		ArrayMap();
@@ -35,12 +35,10 @@ namespace Data
 
 	template <class T, class V> ArrayMap<T, V>::ArrayMap() : IMap<T, V>()
 	{
-		NEW_CLASS(vals, Data::ArrayList<V>());
 	}
 
 	template <class T, class V> ArrayMap<T, V>::~ArrayMap()
 	{
-		DEL_CLASS(vals);
 	}
 
 	template <class T, class V> V ArrayMap<T, V>::Put(T key, V val)
@@ -49,14 +47,14 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			V oldVal = this->vals->GetItem((UOSInt)i);
-            this->vals->SetItem((UOSInt)i, val);
+			V oldVal = this->vals.GetItem((UOSInt)i);
+            this->vals.SetItem((UOSInt)i, val);
 			return oldVal;
 		}
 		else
 		{
 			this->keys->Insert((UOSInt)~i, key);
-			this->vals->Insert((UOSInt)~i, val);
+			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
@@ -67,7 +65,7 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem((UOSInt)i);
+			return this->vals.GetItem((UOSInt)i);
 		}
 		else
 		{
@@ -82,7 +80,7 @@ namespace Data
 		if (i >= 0)
 		{
 			this->keys->RemoveAt((UOSInt)i);
-			return this->vals->RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
 		{
@@ -124,12 +122,12 @@ namespace Data
 	{
 		UOSInt newSize = this->keys->GetCount() + cnt;
 		this->keys->EnsureCapacity(newSize);
-		this->vals->EnsureCapacity(newSize);
+		this->vals.EnsureCapacity(newSize);
 	}
 
 	template <class T, class V> Data::ArrayList<V> *ArrayMap<T, V>::GetValues()
 	{
-		return this->vals;
+		return &this->vals;
 	}
 
 	template <class T, class V> Data::SortableArrayListNative<T> *ArrayMap<T, V>::GetKeys()
@@ -139,18 +137,18 @@ namespace Data
 
 	template <class T, class V> UOSInt ArrayMap<T, V>::GetCount()
 	{
-		return this->vals->GetCount();
+		return this->vals.GetCount();
 	}
 
 	template <class T, class V> Bool ArrayMap<T, V>::IsEmpty()
 	{
-		return this->vals->GetCount() == 0;
+		return this->vals.GetCount() == 0;
 	}
 
 	template <class T, class V> V *ArrayMap<T, V>::ToArray(UOSInt *objCnt)
 	{
 		UOSInt cnt;
-		V *arr = this->vals->GetArray(&cnt);
+		V *arr = this->vals.GetArray(&cnt);
 		V *outArr = MemAlloc(V, cnt);
 		MemCopyNO(outArr, arr, sizeof(V) * cnt);
 		*objCnt = cnt;
@@ -160,7 +158,7 @@ namespace Data
 	template <class T, class V> void ArrayMap<T, V>::Clear()
 	{
 		this->keys->Clear();
-		this->vals->Clear();
+		this->vals.Clear();
 	}
 }
 

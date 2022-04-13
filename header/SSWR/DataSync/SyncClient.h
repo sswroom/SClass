@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCCLIENT
 #define _SM_SSWR_DATASYNC_SYNCCLIENT
 #include "Data/DateTime.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtoHdlr/ProtoSyncHandler.h"
 #include "Net/TCPClient.h"
 #include "SSWR/DataSync/SyncClientDataMgr.h"
 #include "Sync/Event.h"
@@ -15,22 +15,22 @@ namespace SSWR
 		{
 		private:
 			Net::SocketFactory *sockf;
-			IO::IProtocolHandler *protoHdlr;
+			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
 			Int32 serverId;
 			Text::String *serverName;
-			Sync::Mutex *cliMut;
+			Sync::Mutex cliMut;
 			Net::TCPClient *cli;
 			Text::String *cliHost;
 			UInt16 cliPort;
-			Data::DateTime *cliKATime;
+			Data::DateTime cliKATime;
 
-			Sync::Event *recvEvt;
-			Sync::Event *kaEvt;
+			Sync::Event recvEvt;
+			Sync::Event kaEvt;
 			Bool recvRunning;
 			Bool kaRunning;
 			Bool toStop;
 
-			SSWR::DataSync::SyncClientDataMgr *dataMgr;
+			SSWR::DataSync::SyncClientDataMgr dataMgr;
 
 			static UInt32 __stdcall RecvThread(void *userObj);
 			static UInt32 __stdcall KAThread(void *userObj);

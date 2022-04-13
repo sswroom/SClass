@@ -10,12 +10,12 @@ namespace IO
 	class StreamReader : public IO::Reader
 	{
 	private:
-		Text::Encoding *enc;
+		Text::Encoding enc;
 		IO::Stream *stm;
 
-		WChar *wcbuff;
-		UOSInt wcSize;
-		UOSInt wcPos;
+		UTF8Char *cbuff;
+		UOSInt cSize;
+		UOSInt cPos;
 		UInt8 *buff;
 		UOSInt buffSize;
 		UOSInt lineBreak;
@@ -29,17 +29,10 @@ namespace IO
 		StreamReader(IO::Stream *stm, UInt32 codePage);
 		virtual ~StreamReader();
 		virtual void Close();
-		Int32 Peek();
-		WChar Read();
-		WChar *Read(WChar *buff, UOSInt charCnt);
-		WChar *ReadLine(WChar *buff);
 		virtual UTF8Char *ReadLine(UTF8Char *buff, UOSInt maxCharCnt);
-		WChar *ReadLine(WChar *buff, UOSInt maxCharCnt);
 		virtual Bool ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt);
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
 		virtual Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
-		WChar *GetLastLineBreak(WChar *buff);
-		WChar *ReadToEnd(WChar *buff);
 		virtual Bool ReadToEnd(Text::StringBuilderUTF8 *sb);
 	};
 }

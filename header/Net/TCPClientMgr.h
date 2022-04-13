@@ -24,13 +24,14 @@ namespace Net
 			TCP_EVENT_SHUTDOWN
 		} TCPEventType;
 
-		typedef struct
+		class TCPClientStatus
 		{
+		public:
 			UTF8Char debug[6];
 			TCPClient *cli;
 			void *cliData;
-			Data::DateTime *lastDataTime;
-			Sync::Mutex *readMut;
+			Int64 lastDataTimeTicks;
+			Sync::Mutex readMut;
 			Bool reading;
 			Bool processing;
 			Bool timeAlerted;
@@ -39,7 +40,7 @@ namespace Net
 			UInt8 buff[TCP_BUFF_SIZE];
 			UOSInt buffSize;
 			void *readReq;
-		} TCPClientStatus;
+		};
 
 		typedef struct
 		{
@@ -66,13 +67,13 @@ namespace Net
 		Bool toStop;
 		Bool clientThreadRunning;
 
-		Data::ArrayListUInt64 *cliIdArr;
-		Data::ArrayList<TCPClientStatus*> *cliArr;
-		Sync::Mutex *cliMut;
+		Data::ArrayListUInt64 cliIdArr;
+		Data::ArrayList<TCPClientStatus*> cliArr;
+		Sync::Mutex cliMut;
 
 		WorkerStatus *workers;
 		UOSInt workerCnt;
-		Data::SyncCircularBuff<TCPClientStatus*> *workerTasks;
+		Data::SyncCircularBuff<TCPClientStatus*> workerTasks;
 
 		static UInt32 __stdcall ClientThread(void *o);
 		static UInt32 __stdcall WorkerThread(void *o);

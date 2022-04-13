@@ -9,108 +9,105 @@ DB::SQLBuilder::SQLBuilder(DB::DBUtil::ServerType svrType, Int32 tzQhr)
 {
 	this->svrType = svrType;
 	this->tzQhr = tzQhr;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
 }
 
 DB::SQLBuilder::SQLBuilder(DB::ReadingDBTool *db)
 {
 	this->svrType = db->GetSvrType();
 	this->tzQhr = db->GetTzQhr();
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
 }
 
 DB::SQLBuilder::~SQLBuilder()
 {
-	DEL_CLASS(sb);
 }
 
 void DB::SQLBuilder::AppendCmdSlow(const UTF8Char *val)
 {
-	sb->AppendSlow(val);
+	this->sb.AppendSlow(val);
 }
 
 void DB::SQLBuilder::AppendCmdC(Text::CString val)
 {
-	sb->Append(val);
+	this->sb.Append(val);
 }
 
 void DB::SQLBuilder::AppendInt32(Int32 val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBInt32Leng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBInt32(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBInt32Leng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBInt32(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendInt64(Int64 val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBInt64Leng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBInt64(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBInt64Leng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBInt64(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendUInt32(UInt32 val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBUInt32Leng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBUInt32(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBUInt32Leng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBUInt32(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendUInt64(UInt64 val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBUInt64Leng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBUInt64(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBUInt64Leng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBUInt64(this->sb.GetEndPtr(), val, this->svrType));
 }
 void DB::SQLBuilder::AppendStr(Text::String *val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(STR_PTR(val), this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), STR_PTR(val), this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(STR_PTR(val), this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), STR_PTR(val), this->svrType));
 }
 
 void DB::SQLBuilder::AppendStrC(Text::CString val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val.v, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), val.v, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val.v, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val.v, this->svrType));
 }
 
 void DB::SQLBuilder::AppendStrUTF8(const UTF8Char *val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendStrW(const WChar *val)
 {
 	const UTF8Char *v = Text::StrToUTF8New(val);
-	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(v, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), v, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(v, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), v, this->svrType));
 	Text::StrDelNew(v);
 }
 
 void DB::SQLBuilder::AppendDate(Data::DateTime *val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBDateLeng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBDate(sb->GetEndPtr(), val, this->svrType, (Int8)this->tzQhr));
+	this->sb.AllocLeng(DB::DBUtil::SDBDateLeng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBDate(this->sb.GetEndPtr(), val, this->svrType, (Int8)this->tzQhr));
 }
 
 void DB::SQLBuilder::AppendDbl(Double val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBDblLeng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBDbl(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBDblLeng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBDbl(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendBool(Bool val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBBoolLeng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBBool(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBBoolLeng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBBool(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendVector(Math::Vector2D *vec)
 {
-	sb->AllocLeng(DB::DBUtil::SDBVectorLeng(vec, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBVector(sb->GetEndPtr(), vec, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBVectorLeng(vec, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBVector(this->sb.GetEndPtr(), vec, this->svrType));
 }
 
 void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
 {
-	sb->AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBBin(sb->GetEndPtr(), buff, buffSize, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBBin(this->sb.GetEndPtr(), buff, buffSize, this->svrType));
 }
 
 void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
@@ -119,7 +116,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 	if ((name = table->GetDatabaseName()) != 0)
 	{
 		this->AppendCol(name->v);
-		sb->AppendUTF8Char('.');
+		this->sb.AppendUTF8Char('.');
 	}
 	name = table->GetTableName();
 	UOSInt i = name->IndexOf('.');
@@ -127,7 +124,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 	{
 		const UTF8Char *catalog = Text::StrCopyNewC(name->v, i);
 		this->AppendCol(catalog);
-		sb->AppendUTF8Char('.');
+		this->sb.AppendUTF8Char('.');
 		Text::StrDelNew(catalog);
 		this->AppendCol(name->v + i + 1);
 	}
@@ -139,45 +136,45 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 
 void DB::SQLBuilder::AppendCol(const UTF8Char *val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBColUTF8Leng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBColUTF8(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBColUTF8Leng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBColUTF8(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::AppendCol(const WChar *val)
 {
 	const UTF8Char *v = Text::StrToUTF8New(val);
-	sb->AllocLeng(DB::DBUtil::SDBColUTF8Leng(v, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBColUTF8(sb->GetEndPtr(), v, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBColUTF8Leng(v, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBColUTF8(this->sb.GetEndPtr(), v, this->svrType));
 	Text::StrDelNew(v);
 }
 
 void DB::SQLBuilder::AppendTrim(Text::CString val)
 {
-	sb->AllocLeng(DB::DBUtil::SDBTrimLeng(val, this->svrType));
-	sb->SetEndPtr(DB::DBUtil::SDBTrim(sb->GetEndPtr(), val, this->svrType));
+	this->sb.AllocLeng(DB::DBUtil::SDBTrimLeng(val, this->svrType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBTrim(this->sb.GetEndPtr(), val, this->svrType));
 }
 
 void DB::SQLBuilder::Clear()
 {
-	sb->ClearStr();
+	this->sb.ClearStr();
 }
 
 const UTF8Char *DB::SQLBuilder::ToString()
 {
-	return sb->ToString();
+	return this->sb.ToString();
 }
 
 UOSInt DB::SQLBuilder::GetLength()
 {
-	return sb->GetLength();
+	return this->sb.GetLength();
 }
 
 Text::CString DB::SQLBuilder::ToCString()
 {
-	return sb->ToCString();
+	return this->sb.ToCString();
 }
 
 Text::String *DB::SQLBuilder::ToNewString()
 {
-	return Text::String::New(sb->ToString(), sb->GetLength());
+	return Text::String::New(this->sb.ToString(), this->sb.GetLength());
 }

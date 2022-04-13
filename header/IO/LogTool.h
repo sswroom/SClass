@@ -53,10 +53,10 @@ namespace IO
 	class LogTool : public ILogger
 	{
 	private:
-		Data::ArrayList<IO::ILogHandler*> *fileLogArr;
-		Data::ArrayList<IO::ILogHandler*> *hdlrArr;
-		Data::ArrayListInt32 *levArr;
-		Sync::Mutex *hdlrMut;
+		Data::ArrayList<IO::ILogHandler*> fileLogArr;
+		Data::ArrayList<IO::ILogHandler*> hdlrArr;
+		Data::ArrayListInt32 levArr;
+		Sync::Mutex hdlrMut;
 		Bool closed;
 		
 	public:

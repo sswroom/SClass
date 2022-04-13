@@ -24,6 +24,7 @@ namespace Crypto
 			virtual X509Cert *NewCert(UOSInt index);
 
 			virtual ASN1Data *Clone();
+			virtual X509Cert *CreateX509Cert();
 			virtual void ToString(Text::StringBuilderUTF8 *sb);
 
 			Bool GetIssueNames(CertNames *names);

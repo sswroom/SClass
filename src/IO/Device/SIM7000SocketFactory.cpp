@@ -543,7 +543,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(Socket *socket, UInt32 
 
 Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr)
 {
-	return this->modem->NetDNSResolveIP((const UTF8Char*)host, addr);
+	return this->modem->NetDNSResolveIP(Text::CString::FromPtr((const UTF8Char*)host), addr);
 }
 
 Bool IO::Device::SIM7000SocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
@@ -590,13 +590,9 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 		ent.name = 0;
 		ent.description = 0;
 		ent.dnsSuffix = 0;
-		NEW_CLASS(ent.ipaddr, Data::ArrayListUInt32());
-		ent.ipaddr->Add(Net::SocketUtil::GetIPAddr(sbuff, (UOSInt)(sptr - sbuff)));
-		NEW_CLASS(ent.dnsaddr, Data::ArrayListUInt32());
+		ent.ipaddr.Add(Net::SocketUtil::GetIPAddr(CSTRP(sbuff, sptr)));
 		ent.defGW = 0;
 		ent.dhcpSvr = 0;
-		ent.dhcpLeaseTime = 0;
-		ent.dhcpLeaseExpire = 0;
 		ent.physicalAddr = 0;
 		ent.physicalAddrLeng = 0;
 		ent.mtu = 256;
@@ -605,8 +601,6 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 		ent.connStatus = Net::ConnectionInfo::CS_UP;
 		///////////////////////////////////////
 		NEW_CLASS(connInfo, Net::ConnectionInfo(&ent));
-		DEL_CLASS(ent.ipaddr);
-		DEL_CLASS(ent.dnsaddr);
 		connInfoList->Add(connInfo);
 		return 1;
 	}

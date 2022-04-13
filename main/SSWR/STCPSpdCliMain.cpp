@@ -185,7 +185,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UInt16 port;
 		Net::TCPClient *c;
 
-		if (!sockf->DNSResolveIP(argv[1], Text::StrCharCnt(argv[1]), &addr))
+		if (!sockf->DNSResolveIP(Text::CString::FromPtr(argv[1]), &addr))
 		{
 			console->WriteLineC(UTF8STRC("Host is not valid"));
 			valid = false;

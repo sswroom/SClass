@@ -44,7 +44,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			while (true)
 			{
 				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
-				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng);
+				ip = Net::SocketUtil::GetIPAddr(sarr[0].ToCString());
 				if (ip)
 				{
 					dnsList.Add(ip);

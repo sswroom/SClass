@@ -54,16 +54,13 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	Text::PString *tmpArr2;
 	UOSInt colCnt;
 	UOSInt currCol;
-	Data::ArrayListStrUTF8 *colNames;
 
 	if (!fd->GetFullFileName()->EndsWithICase(UTF8STRC(".CSV")))
 		return 0;
 
 	UOSInt i;
-	IO::StreamDataStream *stm;
-	IO::StreamReader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
+	IO::StreamDataStream stm(fd);
+	IO::StreamReader reader(&stm, this->codePage);
 
 	UOSInt dateCol = INVALID_INDEX;
 	UOSInt timeCol = INVALID_INDEX;
@@ -78,13 +75,13 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt headingCol = INVALID_INDEX;
 	UOSInt nSateCol = INVALID_INDEX;
 
-	NEW_CLASS(colNames, Data::ArrayListStrUTF8());
-	reader->ReadLine(sbuff, 1024);
+	Data::ArrayListStrUTF8 colNames;
+	reader.ReadLine(sbuff, 1024);
 	colCnt = Text::StrCSVSplitP(tmpArr, 2, sbuff);
 	currCol = 0;
 	while (true)
 	{
-		colNames->Add(tmpArr[0].v);
+		colNames.Add(tmpArr[0].v);
 		
 		if (tmpArr[0].EqualsICase(UTF8STRC("UTC DATE")))
 		{
@@ -177,7 +174,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		track->SetTrackName(fd->GetShortName());
 		
 		tmpArr2 = MemAlloc(Text::PString, currCol + 1);
-		while (reader->ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024))
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplitP(tmpArr2, currCol + 1, sbuff))
 			{
@@ -224,10 +221,10 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (altCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOfChar(tmpArr2[altCol].v, ' ');
+					i = tmpArr2[altCol].IndexOf(' ');
 					if (i != INVALID_INDEX)
 					{
-						tmpArr2[altCol].v[i] = 0;
+						tmpArr2[altCol].TrimToLength(i);
 					}
 					rec.altitude = Text::StrToDouble(tmpArr2[altCol].v);
 				}
@@ -237,10 +234,10 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (speedCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOfChar(tmpArr2[speedCol].v, ' ');
+					i = tmpArr2[speedCol].IndexOf(' ');
 					if (i != INVALID_INDEX)
 					{
-						tmpArr2[speedCol].v[i] = 0;
+						tmpArr2[speedCol].TrimToLength(i);
 					}
 					rec.speed = Text::StrToDouble(tmpArr2[speedCol].v) / 1.852;
 				}
@@ -258,7 +255,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (nSateCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOfChar(tmpArr2[nSateCol].v, '/');
+					i = tmpArr2[nSateCol].IndexOf('/');
 					if (i != INVALID_INDEX)
 					{
 						tmpArr2[nSateCol].v[i] = 0;
@@ -290,9 +287,6 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		}		
 
 		MemFree(tmpArr2);
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
-		DEL_CLASS(colNames);
 		return track;
 	}
 	else if (latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
@@ -306,7 +300,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		i = currCol;
 		while (i-- > 0)
 		{
-			tmpcArr2[i] = colNames->GetItem(i);
+			tmpcArr2[i] = colNames.GetItem(i);
 			if (Text::StrEndsWithICase(tmpcArr2[i], (const UTF8Char*)"NAME") == 0)
 			{
 				nameCol = i;
@@ -316,7 +310,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), nameCol, 0));
 		
 		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;
-		while (reader->ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024))
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
@@ -326,27 +320,18 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		}		
 
 		MemFree(tmpcArr2);
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
-		DEL_CLASS(colNames);
 		return lyr;
 	}
 	else
 	{
-		if (colNames->GetCount() > 1 && fd->IsFullFile())
-		{
-			DEL_CLASS(reader);
-			DEL_CLASS(stm);
-			DEL_CLASS(colNames);
+		if (colNames.GetCount() > 1 && fd->IsFullFile())
+		{			
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(fd->GetFullFileName(), this->codePage));
 			return csv;
 		}
 		else
 		{
-			DEL_CLASS(reader);
-			DEL_CLASS(stm);
-			DEL_CLASS(colNames);
 			return 0;
 		}
 	}

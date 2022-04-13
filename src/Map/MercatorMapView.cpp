@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "SIMD.h"
 #include "Map/MercatorMapView.h"
 #include "Math/Math.h"
 
-Map::MercatorMapView::MercatorMapView(UOSInt scnWidth, UOSInt scnHeight, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize) : Map::MapView(scnWidth, scnHeight)
+Map::MercatorMapView::MercatorMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize) : Map::MapView(scnWidth, scnHeight)
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
@@ -11,7 +12,7 @@ Map::MercatorMapView::MercatorMapView(UOSInt scnWidth, UOSInt scnHeight, Double 
 	this->centMapX = centLon;
 	this->maxLevel = maxLevel;
 	this->level = maxLevel >> 1;
-	this->tileSize = tileSize;
+	this->dtileSize = UOSInt2Double(tileSize);
 	this->UpdateXY();
 }
 
@@ -19,7 +20,7 @@ Map::MercatorMapView::~MercatorMapView()
 {
 }
 
-void Map::MercatorMapView::ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double centX, Double centY, Double scale)
+void Map::MercatorMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale)
 {
 	this->scnWidth = scnWidth;
 	this->scnHeight = scnHeight;
@@ -37,7 +38,7 @@ void Map::MercatorMapView::SetCenterXY(Double mapX, Double mapY)
 
 void Map::MercatorMapView::SetMapScale(Double scale)
 {
-	OSInt level = (OSInt)(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileSize)) / Math_Log10(2));
+	OSInt level = (OSInt)(Math_Log10(204094080000.0 / scale / this->dtileSize) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
 	else if (level >= (OSInt)this->maxLevel)
@@ -46,7 +47,7 @@ void Map::MercatorMapView::SetMapScale(Double scale)
 	this->UpdateXY();
 }
 
-void Map::MercatorMapView::UpdateSize(UOSInt width, UOSInt height)
+void Map::MercatorMapView::UpdateSize(Double width, Double height)
 {
 	this->scnWidth = width;
 	this->scnHeight = height;
@@ -63,38 +64,38 @@ void Map::MercatorMapView::SetDPI(Double hdpi, Double ddpi)
 
 void Map::MercatorMapView::UpdateXY()
 {
-	this->centPixelX = Lon2PixelX(this->centMapX);
-	this->centPixelY = Lat2PixelY(this->centMapY);
+	this->centPixel[0] = Lon2PixelX(this->centMapX);
+	this->centPixel[1] = Lat2PixelY(this->centMapY);
 }
 
 Double Map::MercatorMapView::GetLeftX()
 {
-	return PixelX2Lon(this->centPixelX - UOSInt2Double(this->scnWidth) * 0.5 * this->ddpi / this->hdpi);
+	return PixelX2Lon(this->centPixel[0] - this->scnWidth * 0.5 * this->ddpi / this->hdpi);
 }
 
 Double Map::MercatorMapView::GetTopY()
 {
-	return PixelY2Lat(this->centPixelY + UOSInt2Double(this->scnHeight) * 0.5 * this->ddpi / this->hdpi);
+	return PixelY2Lat(this->centPixel[1] + this->scnHeight * 0.5 * this->ddpi / this->hdpi);
 }
 
 Double Map::MercatorMapView::GetRightX()
 {
-	return PixelX2Lon(this->centPixelX + UOSInt2Double(this->scnWidth) * 0.5 * this->ddpi / this->hdpi);
+	return PixelX2Lon(this->centPixel[0] + this->scnWidth * 0.5 * this->ddpi / this->hdpi);
 }
 
 Double Map::MercatorMapView::GetBottomY()
 {
-	return PixelY2Lat(this->centPixelY - UOSInt2Double(this->scnHeight) * 0.5 * this->ddpi / this->hdpi);
+	return PixelY2Lat(this->centPixel[1] - this->scnHeight * 0.5 * this->ddpi / this->hdpi);
 }
 
 Double Map::MercatorMapView::GetMapScale()
 {
-	return 204094080000.0 / UOSInt2Double(this->tileSize) / (1 << this->level);
+	return 204094080000.0 / this->dtileSize / (1 << this->level);
 }
 
 Double Map::MercatorMapView::GetViewScale()
 {
-	return 204094080000.0 / UOSInt2Double(this->tileSize) / (1 << this->level) * this->ddpi / 96.0;
+	return 204094080000.0 / this->dtileSize / (1 << this->level) * this->ddpi / 96.0;
 }
 
 Double Map::MercatorMapView::GetCenterX()
@@ -121,9 +122,9 @@ Bool Map::MercatorMapView::InViewXY(Double mapX, Double mapY)
 {
 	Double dscale;
 	dscale = this->hdpi / this->ddpi;
-	Double x = (Lon2PixelX(mapX) - this->centPixelX) * dscale + UOSInt2Double(this->scnWidth) * 0.5;
-	Double y = (Lat2PixelY(mapY) - this->centPixelY) * dscale + UOSInt2Double(this->scnHeight) * 0.5;
-	return x >= 0 && x < UOSInt2Double(this->scnWidth) && y >= 0 && y < UOSInt2Double(this->scnHeight);
+	Double x = (Lon2PixelX(mapX) - this->centPixel[0]) * dscale + this->scnWidth * 0.5;
+	Double y = (Lat2PixelY(mapY) - this->centPixel[1]) * dscale + this->scnHeight * 0.5;
+	return x >= 0 && x < this->scnWidth && y >= 0 && y < this->scnHeight;
 }
 
 Bool Map::MercatorMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
@@ -142,8 +143,8 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UO
 	rate = this->hdpi / this->ddpi;
 	while (nPoints-- > 0)
 	{
-		thisX = Double2Int32((Lon2PixelX(*srcArr++) - this->centPixelX) * rate + UOSInt2Double(this->scnWidth) * 0.5);
-		thisY = Double2Int32((Lat2PixelY(*srcArr++) - this->centPixelY) * rate + UOSInt2Double(this->scnHeight) * 0.5);
+		thisX = Double2Int32((Lon2PixelX(*srcArr++) - this->centPixel[0]) * rate + this->scnWidth * 0.5);
+		thisY = Double2Int32((Lat2PixelY(*srcArr++) - this->centPixel[1]) * rate + this->scnHeight * 0.5);
 		*destArr++ = thisX + ofstX;
 		*destArr++ = thisY + ofstY;
 		if (iminX == 0 && imaxX == 0)
@@ -172,38 +173,63 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, U
 	{
 		return false;
 	}
-	Double iminX = 0;
+	
+/*	Double iminX = 0;
 	Double iminY = 0;
 	Double imaxX = 0;
 	Double imaxY = 0;
 	Double thisX;
 	Double thisY;
 	Double rate;
+	Double dScnWidth = UOSInt2Double(this->scnWidth) * 0.5;
+	Double dScnHeight = UOSInt2Double(this->scnHeight) * 0.5;
 	rate = this->hdpi / this->ddpi;
+
+	iminX = imaxX = ((Lon2PixelX(*srcArr++) - this->centPixelX) * rate + dScnWidth);
+	iminY = imaxY = ((Lat2PixelY(*srcArr++) - this->centPixelY) * rate + dScnHeight);
+	*destArr++ = iminX + ofstX;
+	*destArr++ = iminY + ofstY;
+	nPoints--;
 	while (nPoints-- > 0)
 	{
-		thisX = ((Lon2PixelX(*srcArr++) - this->centPixelX) * rate + UOSInt2Double(this->scnWidth) * 0.5);
-		thisY = ((Lat2PixelY(*srcArr++) - this->centPixelY) * rate + UOSInt2Double(this->scnHeight) * 0.5);
+		thisX = ((Lon2PixelX(*srcArr++) - this->centPixelX) * rate + dScnWidth);
+		thisY = ((Lat2PixelY(*srcArr++) - this->centPixelY) * rate + dScnHeight);
 		*destArr++ = thisX + ofstX;
 		*destArr++ = thisY + ofstY;
-		if (iminX == 0 && imaxX == 0)
-		{
-			iminX = imaxX = thisX;
-			iminY = imaxY = thisY;
-		}
-		else
-		{
-			if (thisX < iminX)
-				iminX = thisX;
-			if (thisX > imaxX)
-				imaxX = thisX;
-			if (thisY < iminY)
-				iminY = thisY;
-			if (thisY > imaxY)
-				imaxY = thisY;
-		}
+		if (thisX < iminX)
+			iminX = thisX;
+		if (thisX > imaxX)
+			imaxX = thisX;
+		if (thisY < iminY)
+			iminY = thisY;
+		if (thisY > imaxY)
+			imaxY = thisY;
 	}
-	return (imaxX >= 0) && (iminX < UOSInt2Double(scnWidth)) && (imaxY >= 0) && (iminY < UOSInt2Double(scnHeight));
+	return (imaxX >= 0) && (iminX < UOSInt2Double(scnWidth)) && (imaxY >= 0) && (iminY < UOSInt2Double(scnHeight));*/
+	Doublex2 imin;
+	Doublex2 imax;
+	Doublex2 thisVal;
+	Doublex2 rate = PDoublex2SetA(this->hdpi / this->ddpi);
+	Doublex2 hScnSize = PDoublex2Set(this->scnWidth * 0.5, this->scnHeight * 0.5);
+	Doublex2 centPixel = PLoadDoublex2(this->centPixel);
+	Doublex2 ofst = PDoublex2Set(ofstX, ofstY);
+	thisVal = PDoublex2Set(Lon2PixelX(srcArr[0]), Lat2PixelY(srcArr[1]));
+	imin = imax = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
+	PStoreDoublex2(destArr, PADDPD(imin, ofst));
+	srcArr += 2;
+	destArr += 2;
+	nPoints--;
+	while (nPoints-- > 0)
+	{
+		thisVal = PDoublex2Set(Lon2PixelX(srcArr[0]), Lat2PixelY(srcArr[1]));
+		thisVal = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
+		PStoreDoublex2(destArr, PADDPD(thisVal, ofst));
+		srcArr += 2;
+		destArr += 2;
+		imin = PMINPD(imin, thisVal);
+		imax = PMAXPD(imax, thisVal);
+	}
+	return (Doublex2GetLo(imax) >= 0) && (Doublex2GetLo(imin) < this->scnWidth) && (Doublex2GetHi(imax) >= 0) && (Doublex2GetHi(imin) < this->scnHeight);
 }
 
 Bool Map::MercatorMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
@@ -221,66 +247,63 @@ Bool Map::MercatorMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, In
 	Int32 thisY;
 	Double rate;
 	rate = this->hdpi / this->ddpi;
+	Double dScnWidth = this->scnWidth * 0.5;
+	Double dScnHeight = this->scnHeight * 0.5;
+	*destArr++ = iminX = imaxX = Double2Int32((Lon2PixelX(*srcArr++ * rRate) - this->centPixel[0]) * rate + dScnWidth);
+	*destArr++ = iminY = imaxY = Double2Int32((Lat2PixelY(*srcArr++ * rRate) - this->centPixel[1]) * rate + dScnHeight);
+	nPoints--;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Double2Int32((Lon2PixelX(*srcArr++ * rRate) - this->centPixelX) * rate + UOSInt2Double(this->scnWidth) * 0.5);
-		*destArr++ = thisY = Double2Int32((Lat2PixelY(*srcArr++ * rRate) - this->centPixelY) * rate + UOSInt2Double(this->scnHeight) * 0.5);
-		if (iminX == 0 && imaxX == 0)
-		{
-			iminX = imaxX = thisX;
-			iminY = imaxY = thisY;
-		}
-		else
-		{
-			if (thisX < iminX)
-				iminX = thisX;
-			if (thisX > imaxX)
-				imaxX = thisX;
-			if (thisY < iminY)
-				iminY = thisY;
-			if (thisY > imaxY)
-				imaxY = thisY;
-		}
+		*destArr++ = thisX = Double2Int32((Lon2PixelX(*srcArr++ * rRate) - this->centPixel[0]) * rate + dScnWidth);
+		*destArr++ = thisY = Double2Int32((Lat2PixelY(*srcArr++ * rRate) - this->centPixel[1]) * rate + dScnHeight);
+		if (thisX < iminX)
+			iminX = thisX;
+		if (thisX > imaxX)
+			imaxX = thisX;
+		if (thisY < iminY)
+			iminY = thisY;
+		if (thisY > imaxY)
+			imaxY = thisY;
 	}
 	return (imaxX >= 0) && (iminX < (OSInt)scnWidth) && (imaxY >= 0) && (iminY < (OSInt)scnHeight);
 }
 
 void Map::MercatorMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
 {
-	*scnX = (Lon2PixelX(mapX) - this->centPixelX) * this->hdpi / this->ddpi + UOSInt2Double(this->scnWidth) * 0.5;
-	*scnY = (Lat2PixelY(mapY) - this->centPixelY) * this->hdpi / this->ddpi + UOSInt2Double(this->scnHeight) * 0.5;
+	*scnX = (Lon2PixelX(mapX) - this->centPixel[0]) * this->hdpi / this->ddpi + this->scnWidth * 0.5;
+	*scnY = (Lat2PixelY(mapY) - this->centPixel[1]) * this->hdpi / this->ddpi + this->scnHeight * 0.5;
 }
 
 void Map::MercatorMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
 {
-	*mapX = PixelX2Lon((scnX - UOSInt2Double(this->scnWidth) * 0.5) * this->ddpi / this->hdpi + this->centPixelX);
-	*mapY = PixelY2Lat((scnY - UOSInt2Double(this->scnHeight) * 0.5) * this->ddpi / this->hdpi + this->centPixelY);
+	*mapX = PixelX2Lon((scnX - this->scnWidth * 0.5) * this->ddpi / this->hdpi + this->centPixel[0]);
+	*mapY = PixelY2Lat((scnY - this->scnHeight * 0.5) * this->ddpi / this->hdpi + this->centPixel[1]);
 }
 
 Map::MapView *Map::MercatorMapView::Clone()
 {
 	Map::MercatorMapView *view;
-	NEW_CLASS(view, Map::MercatorMapView(this->scnWidth, this->scnHeight, this->centMapY, this->centMapX, this->maxLevel, this->tileSize));
+	NEW_CLASS(view, Map::MercatorMapView(this->scnWidth, this->scnHeight, this->centMapY, this->centMapX, this->maxLevel, (UOSInt)this->dtileSize));
 	return view;
 }
 
 Double Map::MercatorMapView::Lon2PixelX(Double lon)
 {
-	return ((lon + 180.0) / 360.0 * (1 << this->level)) * UOSInt2Double(this->tileSize);
+	return ((lon + 180.0) / 360.0 * (1 << this->level)) * this->dtileSize;
 }
 
 Double Map::MercatorMapView::Lat2PixelY(Double lat)
 {
-	return ((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << this->level)) * UOSInt2Double(this->tileSize);
+	return ((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << this->level)) * this->dtileSize;
 }
 
 Double Map::MercatorMapView::PixelX2Lon(Double x)
 {
-	return x / UOSInt2Double(this->tileSize) * 360.0 / (1 << this->level) - 180;
+	return x / this->dtileSize * 360.0 / (1 << this->level) - 180;
 }
 
 Double Map::MercatorMapView::PixelY2Lat(Double y)
 {
-	Double n = Math::PI - 2.0 * Math::PI * y / UOSInt2Double(this->tileSize) / (1 << level);
+	Double n = Math::PI - 2.0 * Math::PI * y / this->dtileSize / (1 << level);
 	return 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 }

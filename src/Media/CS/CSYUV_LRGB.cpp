@@ -128,10 +128,8 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGB::CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess)
+Media::CS::CSYUV_LRGB::CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
 {
-	NEW_CLASS(this->srcColor, Media::ColorProfile(srcColor));
-	NEW_CLASS(this->rgbParam, Media::IColorHandler::RGBPARAM2());
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAlloc(UInt8, 65536 * 2);
 	this->yuv2rgb = MemAlloc(Int64, 768);
@@ -140,24 +138,24 @@ Media::CS::CSYUV_LRGB::CSYUV_LRGB(const Media::ColorProfile *srcColor, Media::Co
 	this->yuvUpdated = true;
 
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
-	this->rgbParam->Set(colorSess->GetRGBParam());
+	this->rgbParam.Set(colorSess->GetRGBParam());
 
 	Media::ColorProfile *tranColor;
-	if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		tranColor = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		tranColor = this->colorSess->GetDefPProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		tranColor = this->rgbParam->monProfile;
+		tranColor = &this->rgbParam.monProfile;
 	}
 	else
 	{
-		tranColor = this->srcColor;
+		tranColor = &this->srcColor;
 	}
 	this->irFunc = Media::CS::TransferFunc::CreateFunc(tranColor->GetRTranParam());
 	this->igFunc = Media::CS::TransferFunc::CreateFunc(tranColor->GetGTranParam());
@@ -168,8 +166,6 @@ Media::CS::CSYUV_LRGB::~CSYUV_LRGB()
 {
 	MemFree(this->rgbGammaCorr);
 	MemFree(this->yuv2rgb);
-	DEL_CLASS(this->srcColor);
-	DEL_CLASS(this->rgbParam);
 	DEL_CLASS(this->irFunc);
 	DEL_CLASS(this->igFunc);
 	DEL_CLASS(this->ibFunc);
@@ -198,25 +194,25 @@ void Media::CS::CSYUV_LRGB::YUVParamChanged(const Media::IColorHandler::YUVPARAM
 void Media::CS::CSYUV_LRGB::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
 {
 	Media::ColorProfile *srcColor;
-	if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefPProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
 	{
 		srcColor = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
 		srcColor = this->colorSess->GetDefPProfile();
  	}
 	else
 	{
-		srcColor = this->srcColor;
+		srcColor = &this->srcColor;
 	}
 
 	DEL_CLASS(this->irFunc);
@@ -226,7 +222,7 @@ void Media::CS::CSYUV_LRGB::RGBParamChanged(const Media::IColorHandler::RGBPARAM
 	this->igFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetGTranParam());
 	this->ibFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetBTranParam());
 	this->rgbUpdated = true;
-	this->rgbParam->Set(rgb);
+	this->rgbParam.Set(rgb);
 }
 
 UOSInt Media::CS::CSYUV_LRGB::GetDestFrameSize(UOSInt width, UOSInt height)

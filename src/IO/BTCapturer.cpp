@@ -4,29 +4,28 @@
 #include "IO/Path.h"
 #include "Sync/Thread.h"
 
+//#include <stdio.h>
+
 UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
 {
 	IO::BTCapturer *me = (IO::BTCapturer*)userObj;
-	Data::DateTime *dt;
+	Int64 currTime;
 	Int64 lastTime;
 	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
-	dt->SetCurrTimeUTC();
-	lastTime = dt->ToTicks();
+	lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	while (!me->threadToStop)
 	{
-		dt->SetCurrTimeUTC();
-		if ((dt->ToTicks() - lastTime) >= 300000)
+		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+		if ((currTime - lastTime) >= 300000)
 		{
-			lastTime = dt->ToTicks();
+			lastTime = currTime;
 			if (me->autoStore)
 			{
 				me->StoreStatus();
 			}
 		}
-		me->threadEvt->Wait(10000);
+		me->threadEvt.Wait(10000);
 	}
-	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return 0;
 }
@@ -42,7 +41,6 @@ IO::BTCapturer::BTCapturer(Bool autoStore)
 	}
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 }
 
 IO::BTCapturer::~BTCapturer()
@@ -51,7 +49,6 @@ IO::BTCapturer::~BTCapturer()
 	if (this->bt)
 	{
 		this->bt->Close();
-		DEL_CLASS(this->threadEvt);
 		DEL_CLASS(this->bt);
 	}
 	SDEL_TEXT(this->lastFileName);
@@ -81,16 +78,19 @@ Bool IO::BTCapturer::Start()
 
 void IO::BTCapturer::Stop()
 {
+	//printf("BTCapturer: Stopping\r\n");
 	if (this->threadRunning)
 	{
 		this->threadToStop = true;
-		this->threadEvt->Set();
+		this->threadEvt.Set();
 		while (this->threadRunning)
 		{
 			Sync::Thread::Sleep(10);
 		}
+		//printf("BTCapturer: Stopping 2\r\n");
 		this->bt->ScanOff();
 	}
+	//printf("BTCapturer: Stopping 3\r\n");
 }
 
 void IO::BTCapturer::StoreStatus()

@@ -15,7 +15,7 @@ namespace Text
 		} ObjectType;
 	private:
 		Text::StringBuilderUTF8 *sb;
-		Data::ArrayList<ObjectType> *objTypes;
+		Data::ArrayList<ObjectType> objTypes;
 		ObjectType currType;
 		Bool isFirst;
 

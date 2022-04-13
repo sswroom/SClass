@@ -821,9 +821,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
 	}
 	else if (this->colorCorr == CCT_PHOTO)
 	{
@@ -840,9 +840,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
 	}
 	else
 	{
@@ -859,9 +859,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 		rMul = 1.0;
 		gMul = 1.0;
 		bMul = 1.0;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
 	}
 	Math::Matrix3 mat1;
 	Math::Matrix3 mat2;
@@ -869,10 +869,10 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	Math::Matrix3 mat4;
 	Math::Matrix3 mat5;
 	this->colorProfile->GetPrimaries()->GetConvMatrix(&mat1);
-	rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
+	rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(&mat5);
 	mat5.Inverse();
 
-	rgbv2.Set(rgbParam->monProfile->GetPrimaries()->wx, rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+	rgbv2.Set(rgbParam->monProfile.GetPrimariesRead()->wx, rgbParam->monProfile.GetPrimariesRead()->wy, 1.0);
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
 	mat3.Set(&mat2);
 	mat4.SetIdentity();
@@ -1022,9 +1022,9 @@ void UtilUI::ColorDialog::GenSubImage()
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetGTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetBTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
 	else if (this->colorCorr == CCT_PHOTO)
 	{
@@ -1041,9 +1041,9 @@ void UtilUI::ColorDialog::GenSubImage()
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetGTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetBTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
 	else
 	{
@@ -1060,9 +1060,9 @@ void UtilUI::ColorDialog::GenSubImage()
 		rMul = 1.0;
 		gMul = 1.0;
 		bMul = 1.0;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetGTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetBTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
 	Math::Matrix3 mat1;
 	Math::Matrix3 mat2;
@@ -1070,10 +1070,10 @@ void UtilUI::ColorDialog::GenSubImage()
 	Math::Matrix3 mat4;
 	Math::Matrix3 mat5;
 	this->colorProfile->GetPrimaries()->GetConvMatrix(&mat1);
-	rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
+	rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(&mat5);
 	mat5.Inverse();
 
-	rgbv2.Set(rgbParam->monProfile->GetPrimaries()->wx, rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+	rgbv2.Set(rgbParam->monProfile.GetPrimariesRead()->wx, rgbParam->monProfile.GetPrimariesRead()->wy, 1.0);
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
 	mat3.Set(&mat2);
 	mat4.SetIdentity();
@@ -1208,9 +1208,9 @@ void UtilUI::ColorDialog::UpdateColor()
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetGTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetBTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
 	else if (this->colorCorr == CCT_PHOTO)
 	{
@@ -1227,9 +1227,9 @@ void UtilUI::ColorDialog::UpdateColor()
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetGTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetBTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
 	else
 	{
@@ -1246,9 +1246,9 @@ void UtilUI::ColorDialog::UpdateColor()
 		rMul = 1.0;
 		gMul = 1.0;
 		bMul = 1.0;
-		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetRTranParam());
-		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetGTranParam());
-		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile->GetBTranParam());
+		dispRTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
+		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
+		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
 	Math::Matrix3 mat1;
 	Math::Matrix3 mat2;
@@ -1256,10 +1256,10 @@ void UtilUI::ColorDialog::UpdateColor()
 	Math::Matrix3 mat4;
 	Math::Matrix3 mat5;
 	this->colorProfile->GetPrimaries()->GetConvMatrix(&mat1);
-	rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
+	rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(&mat5);
 	mat5.Inverse();
 
-	rgbv2.Set(rgbParam->monProfile->GetPrimaries()->wx, rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+	rgbv2.Set(rgbParam->monProfile.GetPrimariesRead()->wx, rgbParam->monProfile.GetPrimariesRead()->wy, 1.0);
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
 	mat3.Set(&mat2);
 	mat4.SetIdentity();

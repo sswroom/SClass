@@ -53,19 +53,19 @@ namespace UI
 		Bool showMarker;
 		Math::Vector2D *selVec;
 
-		Data::ArrayList<ScaleChangedHandler> *scaleChgHdlrs;
-		Data::ArrayList<void *> *scaleChgObjs;
-		Data::ArrayList<MouseMoveHandler> *mouseMoveHdlrs;
-		Data::ArrayList<void *> *mouseMoveObjs;
-		Data::ArrayList<MapUpdatedHandler> *mapUpdHdlrs;
-		Data::ArrayList<void *> *mapUpdObjs;
+		Data::ArrayList<ScaleChangedHandler> scaleChgHdlrs;
+		Data::ArrayList<void *> scaleChgObjs;
+		Data::ArrayList<MouseMoveHandler> mouseMoveHdlrs;
+		Data::ArrayList<void *> mouseMoveObjs;
+		Data::ArrayList<MapUpdatedHandler> mapUpdHdlrs;
+		Data::ArrayList<void *> mapUpdObjs;
 		MouseEventHandler mouseDownHdlr;
 		void *mouseDownObj;
 		MouseEventHandler mouseUpHdlr;
 		void *mouseUpObj;
 		DrawHandler drawHdlr;
 		void *drawHdlrObj;
-		Sync::Mutex *drawMut;
+		Sync::Mutex drawMut;
 		Int64 imgTimeoutTick;
 
 	private:

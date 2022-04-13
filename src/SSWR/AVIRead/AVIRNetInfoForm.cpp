@@ -90,28 +90,28 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 
 		if (connInfo->IsDhcpEnabled())
 		{
-			Data::DateTime *dt;
+			Data::Timestamp ts;
 			me->txtAdaptorDHCPEnable->SetText(CSTR("Yes"));
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, connInfo->GetDhcpServer());
 			me->txtAdaptorDHCPServer->SetText(CSTRP(sbuff, sptr));
-			dt = connInfo->GetDhcpLeaseTime();
-			if (dt == 0)
+			ts = connInfo->GetDhcpLeaseTime();
+			if (ts.ToTicks() == 0)
 			{
 				me->txtAdaptorDHCPLeaseTime->SetText(CSTR(""));
 			}
 			else 
 			{
-				sptr = dt->ToString(sbuff);
+				sptr = ts.ToString(sbuff);
 				me->txtAdaptorDHCPLeaseTime->SetText(CSTRP(sbuff, sptr));
 			}
-			dt = connInfo->GetDhcpLeaseExpire();
-			if (dt == 0)
+			ts = connInfo->GetDhcpLeaseExpire();
+			if (ts.ToTicks() == 0)
 			{
 				me->txtAdaptorDHCPLeaseExpire->SetText(CSTR(""));
 			}
 			else
 			{
-				sptr = dt->ToString(sbuff);
+				sptr = ts.ToString(sbuff);
 				me->txtAdaptorDHCPLeaseExpire->SetText(CSTRP(sbuff, sptr));
 			}
 		}

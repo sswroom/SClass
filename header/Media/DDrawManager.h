@@ -29,7 +29,7 @@ namespace Media
 
 		Double GetMonitorDPI(MonitorHandle *hMonitor);
 		Bool Is10BitColor(MonitorHandle *hMonitor);
-		Media::ColorProfile *GetMonProfile(MonitorHandle *hMonitor);
+		const Media::ColorProfile *GetMonProfile(MonitorHandle *hMonitor);
 
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);
 		virtual void WaitForVBlank(MonitorHandle *hMon);

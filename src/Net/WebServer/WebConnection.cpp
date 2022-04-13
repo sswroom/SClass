@@ -39,7 +39,6 @@ Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSL
 	this->loggerObj = 0;
 	this->sseHdlr = 0;
 	this->sseHdlrObj = 0;
-	NEW_CLASS(this->respHeaders, Text::StringBuilderUTF8());
 }
 
 Net::WebServer::WebConnection::~WebConnection()
@@ -61,7 +60,6 @@ Net::WebServer::WebConnection::~WebConnection()
 	DEL_CLASS(this->cli);
 	MemFree(this->dataBuff);
 	SDEL_CLASS(this->currReq);
-	DEL_CLASS(this->respHeaders);
 }
 
 void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
@@ -151,7 +149,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto = Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0;
 							Bool secureConn = false;
-							this->respHeaders->ClearStr();
+							this->respHeaders.ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
 							Net::SocketUtil::AddressInfo cliAddr;
@@ -176,7 +174,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->respTranEnc = 0;
 								this->respStatus = Net::WebStatus::SC_METHOD_NOT_ALLOWED;
 								this->respDataEnd = false;
-								this->respHeaders->ClearStr();
+								this->respHeaders.ClearStr();
 
 								this->Close();
 
@@ -205,14 +203,14 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->respTranEnc = 0;
 								this->respStatus = Net::WebStatus::SC_VERSION_NOT_SUPPORTED;
 								this->respDataEnd = false;
-								this->respHeaders->ClearStr();
+								this->respHeaders.ClearStr();
 
 								this->Close();
 
 								this->cli->Close();
 								return;
 							}
-							this->respHeaders->ClearStr();
+							this->respHeaders.ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
 							Net::SocketUtil::AddressInfo cliAddr;
@@ -236,7 +234,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->respHeaderSent = false;
 								this->respStatus = Net::WebStatus::SC_METHOD_NOT_ALLOWED;
 								this->respDataEnd = false;
-								this->respHeaders->ClearStr();
+								this->respHeaders.ClearStr();
 
 								this->Close();
 
@@ -249,7 +247,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						this->respHeaderSent = false;
 						this->respStatus = Net::WebStatus::SC_BAD_REQUEST;
 						this->respDataEnd = false;
-						this->respHeaders->ClearStr();
+						this->respHeaders.ClearStr();
 
 						this->Close();
 
@@ -371,7 +369,7 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 {
 	UInt8 *buff;
 	UTF8Char *sptr;
-	buff = MemAlloc(UInt8, 256 + (this->respHeaders->GetLength() * 3));
+	buff = MemAlloc(UInt8, 256 + (this->respHeaders.GetLength() * 3));
 	sptr = (UTF8Char*)buff;
 	if (protocol == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
 	{
@@ -391,7 +389,7 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	sptr = Text::StrConcatNE(sptr, codeName.v, codeName.leng);
 	sptr = Text::StrConcatNE(sptr, UTF8STRC("\r\n"));
 
-	sptr = Text::StrConcatNE(sptr, this->respHeaders->ToString(), this->respHeaders->GetLength());
+	sptr = Text::StrConcatNE(sptr, this->respHeaders.ToString(), this->respHeaders.GetLength());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
 	if (this->cstm)
@@ -416,7 +414,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respLeng = 0;
 	this->respStatus = Net::WebStatus::SC_OK;
 	this->respDataEnd = false;
-	this->respHeaders->ClearStr();
+	this->respHeaders.ClearStr();
 
 	Text::String *reqURI = this->currReq->GetRequestURI();
 	Net::WebUtil::RequestMethod reqMeth = this->currReq->GetReqMethod();
@@ -725,8 +723,8 @@ Bool Net::WebServer::WebConnection::AddHeader(Text::CString name, Text::CString 
 {
 	if (this->respHeaderSent)
 		return false;
-	this->respHeaders->AppendNE2(name.v, name.leng, UTF8STRC(": "));
-	this->respHeaders->AppendC2(value.v, value.leng, UTF8STRC("\r\n"));
+	this->respHeaders.AppendNE2(name.v, name.leng, UTF8STRC(": "));
+	this->respHeaders.AppendC2(value.v, value.leng, UTF8STRC("\r\n"));
 
 	if (value.Equals(UTF8STRC("chunked")) && name.EqualsICase(UTF8STRC("Transfer-Encoding")))
 	{
@@ -821,7 +819,7 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 
 Text::CString Net::WebServer::WebConnection::GetRespHeaders()
 {
-	return this->respHeaders->ToCString();
+	return this->respHeaders.ToCString();
 }
 
 Bool Net::WebServer::WebConnection::IsDown()

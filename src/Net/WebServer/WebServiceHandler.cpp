@@ -6,29 +6,28 @@
 Net::WebServer::WebServiceHandler::~WebServiceHandler()
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	UOSInt i = this->services->GetCount();
+	UOSInt i = this->services.GetCount();
 	while (i-- > 0)
 	{
-		service = this->services->GetItem(i);
+		service = this->services.GetItem(i);
 		DEL_CLASS(service->funcs);
 		service->svcPath->Release();
 		MemFree(service);
 	}
-	DEL_CLASS(this->services);
 }
 
 Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	service = this->services->GetC(subReq);
+	service = this->services.GetC(subReq);
 	if (service == 0 && (subReq.Equals(UTF8STRC("/")) || (subReq.leng == 0)))
 	{
-		if (service == 0) service = this->services->GetC(CSTR("/Default.htm"));
-		if (service == 0) service = this->services->GetC(CSTR("/Default.asp"));
-		if (service == 0) service = this->services->GetC(CSTR("/index.htm"));
-		if (service == 0) service = this->services->GetC(CSTR("/index.html"));
-		if (service == 0) service = this->services->GetC(CSTR("/iisstart.htm"));
-		if (service == 0) service = this->services->GetC(CSTR("/default.aspx"));
+		if (service == 0) service = this->services.GetC(CSTR("/Default.htm"));
+		if (service == 0) service = this->services.GetC(CSTR("/Default.asp"));
+		if (service == 0) service = this->services.GetC(CSTR("/index.htm"));
+		if (service == 0) service = this->services.GetC(CSTR("/index.html"));
+		if (service == 0) service = this->services.GetC(CSTR("/iisstart.htm"));
+		if (service == 0) service = this->services.GetC(CSTR("/default.aspx"));
 	}
 	if (service != 0)
 	{
@@ -64,7 +63,6 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 
 Net::WebServer::WebServiceHandler::WebServiceHandler()
 {
-	NEW_CLASS(this->services, Data::FastStringMap<Net::WebServer::WebServiceHandler::ServiceInfo*>());
 }
 
 void Net::WebServer::WebServiceHandler::AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
@@ -72,13 +70,13 @@ void Net::WebServer::WebServiceHandler::AddService(Text::CString svcPath, Net::W
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	if (svcPath.leng == 0 || svcPath.v[0] != '/')
 		return;
-	service = this->services->GetC(svcPath);
+	service = this->services.GetC(svcPath);
 	if (service == 0)
 	{
 		service = MemAlloc(Net::WebServer::WebServiceHandler::ServiceInfo, 1);
 		service->svcPath = Text::String::New(svcPath);
 		NEW_CLASS(service->funcs, Data::Int32Map<ServiceFunc>());
-		this->services->Put(service->svcPath, service);
+		this->services.Put(service->svcPath, service);
 	}
 	service->funcs->Put((Int32)reqMeth, func);
 }

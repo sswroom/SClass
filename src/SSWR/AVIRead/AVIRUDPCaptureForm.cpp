@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 			return;
 		}
-		me->svr->AddMulticastIP(Net::SocketUtil::GetIPAddr(UTF8STRC("239.255.255.250")));
+		me->svr->AddMulticastIP(Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250")));
 		me->txtPort->SetReadOnly(true);
 		me->lbMulticastCurr->ClearItems();
 	}
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(void *userO
 	{
 		Text::StringBuilderUTF8 sb;
 		me->txtMulticastCurr->GetText(&sb);
-		UInt32 ip = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+		UInt32 ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 		if (ip != 0)
 		{
 			me->svr->AddMulticastIP(ip);

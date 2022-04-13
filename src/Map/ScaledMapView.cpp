@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "SIMD.h"
 #include "Map/ScaledMapView.h"
 #include "Math/Math.h"
 
@@ -8,7 +9,7 @@ extern "C"
 	Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, UOSInt scnWidth, UOSInt scnHeight);
 }
 
-Map::ScaledMapView::ScaledMapView(UOSInt scnWidth, UOSInt scnHeight, Double centLat, Double centLon, Double scale) : Map::MapView(scnWidth, scnHeight)
+Map::ScaledMapView::ScaledMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, Double scale) : Map::MapView(scnWidth, scnHeight)
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
@@ -19,7 +20,7 @@ Map::ScaledMapView::~ScaledMapView()
 {
 }
 
-void Map::ScaledMapView::ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double centX, Double centY, Double scale)
+void Map::ScaledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale)
 {
 	this->centX = centX;
 	this->centY = centY;
@@ -29,8 +30,8 @@ void Map::ScaledMapView::ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double 
 		scale = 100000000;
 	this->scale = scale;
 
-	Double diffx = UOSInt2Double(scnWidth) * 0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0;
-	Double diffy = UOSInt2Double(scnHeight) * 0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0;
+	Double diffx = scnWidth * 0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0;
+	Double diffy = scnHeight * 0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0;
 
 	this->rightX = centX + diffx;
 	this->leftX = centX - diffx;
@@ -51,7 +52,7 @@ void Map::ScaledMapView::SetMapScale(Double scale)
 	ChangeViewXY(scnWidth, scnHeight, this->centX, this->centY, scale);
 }
 
-void Map::ScaledMapView::UpdateSize(UOSInt width, UOSInt height)
+void Map::ScaledMapView::UpdateSize(Double width, Double height)
 {
 	ChangeViewXY(width, height, this->centX, this->centY, scale);
 }
@@ -128,8 +129,8 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSI
 		return false;
 	}
 
-	Double xmul = UOSInt2Double(this->scnWidth) / (rightX - leftX);
-	Double ymul = UOSInt2Double(this->scnHeight) / (bottomY - topY);
+	Double xmul = this->scnWidth / (rightX - leftX);
+	Double ymul = this->scnHeight / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 #ifdef HAS_ASM32
@@ -230,8 +231,8 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOS
 		return false;
 	}
 
-	Double xmul = UOSInt2Double(this->scnWidth) / (rightX - leftX);
-	Double ymul = UOSInt2Double(this->scnHeight) / (bottomY - topY);
+/*	Double xmul = this->scnWidth / (rightX - leftX);
+	Double ymul = this->scnHeight / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double iminX = 0;
@@ -261,7 +262,32 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOS
 				imaxY = thisY;
 		}
 	}
-	return (imaxX >= 0) && (iminX < UOSInt2Double(scnWidth)) && (imaxY >= 0) && (iminY < UOSInt2Double(scnHeight));
+	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);*/
+
+	Double dleft = leftX;
+	Double dbottom = bottomY;
+	Doublex2 ptMul = PDoublex2Set(this->scnWidth / (rightX - leftX), this->scnHeight / (bottomY - topY));
+	Doublex2 ptOfst = PDoublex2Set(ofstX, ofstY);
+	Doublex2 thisVal;
+	Doublex2 minVal;
+	Doublex2 maxVal;
+	thisVal = PDoublex2Set((srcArr[0]  - dleft), (dbottom - srcArr[1]));
+	minVal = maxVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
+	PStoreDoublex2(destArr, minVal);
+	srcArr += 2;
+	destArr += 2;
+	nPoints--;
+	while (nPoints-- > 0)
+	{
+		thisVal = PDoublex2Set((srcArr[0]  - dleft), (dbottom - srcArr[1]));
+		thisVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
+		PStoreDoublex2(destArr, thisVal);
+		srcArr += 2;
+		destArr += 2;
+		minVal = PMINPD(minVal, thisVal);
+		maxVal = PMAXPD(maxVal, thisVal);
+	}
+	return (Doublex2GetLo(maxVal) >= 0) && (Doublex2GetLo(minVal) < scnWidth) && (Doublex2GetHi(maxVal) >= 0) && (Doublex2GetHi(minVal) < scnHeight);
 }
 
 Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
@@ -270,25 +296,25 @@ Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int3
 	{
 		return false;
 	}
-	Double xmul = UOSInt2Double(this->scnWidth) / (this->rightX - this->leftX);
-	Double ymul = UOSInt2Double(this->scnHeight) / (this->bottomY - this->topY);
+	Double xmul = this->scnWidth / (this->rightX - this->leftX);
+	Double ymul = this->scnHeight / (this->bottomY - this->topY);
 	Double dleft = this->leftX;
 	Double dbottom = this->bottomY;
 	Double rRate = 1 / mapRate;
 
-	return ScaledMapView_IMapXYToScnXY(srcArr, destArr, nPoints, rRate, dleft, dbottom, xmul, ymul, ofstX, ofstY, this->scnWidth, this->scnHeight);
+	return ScaledMapView_IMapXYToScnXY(srcArr, destArr, nPoints, rRate, dleft, dbottom, xmul, ymul, ofstX, ofstY, (UOSInt)this->scnWidth, (UOSInt)this->scnHeight);
 }
 
 void Map::ScaledMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
 {
-	*scnX = (mapX - this->leftX) * UOSInt2Double(scnWidth) / (this->rightX - this->leftX);
-	*scnY = (this->bottomY - mapY) * UOSInt2Double(scnHeight) / (this->bottomY - this->topY);
+	*scnX = (mapX - this->leftX) * scnWidth / (this->rightX - this->leftX);
+	*scnY = (this->bottomY - mapY) * scnHeight / (this->bottomY - this->topY);
 }
 
 void Map::ScaledMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
 {
-	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / UOSInt2Double(scnWidth)));
-	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / UOSInt2Double(scnHeight)));
+	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / scnWidth));
+	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / scnHeight));
 }
 
 Map::MapView *Map::ScaledMapView::Clone()

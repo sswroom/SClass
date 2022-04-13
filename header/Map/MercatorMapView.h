@@ -10,22 +10,21 @@ namespace Map
 	private:
 		Double centMapX;
 		Double centMapY;
-		Double centPixelX;
-		Double centPixelY;
+		Double centPixel[2];
 		Double hdpi;
 		Double ddpi;
 		UOSInt level;
 		UOSInt maxLevel;
-		UOSInt tileSize;
+		Double dtileSize;
 
 	public:
-		MercatorMapView(UOSInt scnWidth, UOSInt scnHeight, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize);
+		MercatorMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize);
 		virtual ~MercatorMapView();
 
-		virtual void ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double centX, Double centY, Double scale);
+		virtual void ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale);
 		virtual void SetCenterXY(Double x, Double y);
 		virtual void SetMapScale(Double scale);
-		virtual void UpdateSize(UOSInt width, UOSInt height);
+		virtual void UpdateSize(Double width, Double height);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 		void UpdateXY();
 

@@ -325,6 +325,8 @@ Text::CString Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
 		return CSTR("Bool");
 	case Data::VariItem::ItemType::Str:
 		return CSTR("Text::String*");
+	case Data::VariItem::ItemType::CStr:
+		return CSTR("Text::CString");
 	case Data::VariItem::ItemType::Date:
 		return CSTR("Data::DateTime*");
 	case Data::VariItem::ItemType::ByteArr:

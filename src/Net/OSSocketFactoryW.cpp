@@ -860,7 +860,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), &addr))
 				{
 					while (true)
 					{

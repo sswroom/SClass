@@ -22,8 +22,8 @@ namespace Map
 		UOSInt strCnt;
 		UOSInt *maxStrLen;
 		UOSInt *thisStrLen;
-		Data::ArrayList<Math::Vector2D*> *vectorList;
-		Data::ArrayList<const UTF8Char **> *strList;
+		Data::ArrayList<Math::Vector2D*> vectorList;
+		Data::ArrayList<const UTF8Char **> strList;
 		Double minX;
 		Double minY;
 		Double maxX;

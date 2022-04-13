@@ -7,9 +7,9 @@ namespace Media
 	class ImageAlphaBlend
 	{
 	protected:
-		Media::ColorProfile *sProfile;
-		Media::ColorProfile *dProfile;
-		Media::ColorProfile *oProfile;
+		Media::ColorProfile sProfile;
+		Media::ColorProfile dProfile;
+		Media::ColorProfile oProfile;
 		Bool changed;
 
 		ImageAlphaBlend();

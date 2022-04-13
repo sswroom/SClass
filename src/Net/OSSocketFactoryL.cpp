@@ -922,22 +922,19 @@ Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::Ad
 
 Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 {
-	Text::UTF8Reader *reader;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	Bool ret = false;
 	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(&fs);
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 1024))
+		if (!reader.ReadLine(&sb, 1024))
 		{
 			break;
 		}
@@ -951,7 +948,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 			{
 				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng, addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].ToCString(), addr))
 					{
 						ret = true;
 						break;
@@ -960,9 +957,6 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 			}
 		}
 	}
-
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return ret;
 }
 
@@ -998,7 +992,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 			{
 				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng, &addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].ToCString(), &addr))
 					{
 						if (addr.addrType == Net::AddrType::IPv4)
 						{
@@ -1018,20 +1012,17 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 
 Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 {
-	Text::UTF8Reader *reader;
-	IO::FileStream *fs;
 	Net::SocketUtil::AddressInfo addr;
 	UOSInt i;
 	Text::PString sarr[2];
-	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/hosts"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTR("/etc/hosts"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(&fs);
 	Text::StringBuilderUTF8 sb;
-	while (reader->ReadLine(&sb, 512))
+	while (reader.ReadLine(&sb, 512))
 	{
 		sb.Trim();
 		if (sb.ToString()[0] == '#')
@@ -1042,7 +1033,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), &addr))
 				{
 					while (true)
 					{
@@ -1057,8 +1048,6 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 
 		sb.ClearStr();
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return true;
 }
 
@@ -1101,21 +1090,19 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	close(sock);
 
 	UTF8Char sbuff[128];
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	UInt32 gw;
 	UOSInt i;
 	UTF8Char *sarr[4];
-	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		if (reader->ReadLine(&sb, 512))
+		Text::UTF8Reader reader(&fs);
+		if (reader.ReadLine(&sb, 512))
 		{
 			sb.ClearStr();
-			while (reader->ReadLine(&sb, 512))
+			while (reader.ReadLine(&sb, 512))
 			{
 				i = Text::StrSplitWS(sarr, 4, sb.ToString());
 				if (i == 4)
@@ -1140,9 +1127,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 				sb.ClearStr();
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);	
 	return ret;
 }
 

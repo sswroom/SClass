@@ -152,15 +152,15 @@ Bool Media::DDrawManager::Is10BitColor(MonitorHandle *hMonitor)
 	return false;
 }
 
-Media::ColorProfile *Media::DDrawManager::GetMonProfile(MonitorHandle *hMonitor)
+const Media::ColorProfile *Media::DDrawManager::GetMonProfile(MonitorHandle *hMonitor)
 {
 	if (this->clsData->colorMgr)
 	{
-		return this->clsData->colorMgr->GetMonColorManager(hMonitor)->GetRGBParam()->monProfile;
+		return &this->clsData->colorMgr->GetMonColorManager(hMonitor)->GetRGBParam()->monProfile;
 	}
 	else if (this->clsData->colorSess)
 	{
-		return this->clsData->colorSess->GetRGBParam()->monProfile;
+		return &this->clsData->colorSess->GetRGBParam()->monProfile;
 	}
 	return 0;
 }

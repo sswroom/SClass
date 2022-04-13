@@ -14,7 +14,7 @@ namespace Media
 
 		Bool UpdateToScreen();
 	public:
-		FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi, Media::RotateType rotateType);
+		FBSurface(MonitorHandle *hMon, const Media::ColorProfile *color, Double dpi, Media::RotateType rotateType);
 		virtual ~FBSurface();
 
 		Bool IsError();

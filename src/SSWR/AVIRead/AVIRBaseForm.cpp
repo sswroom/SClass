@@ -165,6 +165,7 @@
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "SSWR/AVIRead/AVIRSNSManagerForm.h"
 #include "SSWR/AVIRead/AVIRSSDPClientForm.h"
+#include "SSWR/AVIRead/AVIRSSLInfoForm.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
 #include "SSWR/AVIRead/AVIRStreamEchoForm.h"
 #include "SSWR/AVIRead/AVIRStreamLatencyForm.h"
@@ -412,7 +413,8 @@ typedef enum
 	MNU_SSDP_CLIENT,
 	MNU_MYSQL_CONN,
 	MNU_ASN1_PARSE,
-	MNU_SERVICE
+	MNU_SERVICE,
+	MNU_SSLINFO
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -420,7 +422,6 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
 	IO::StmData::FileData *fd;
-	IO::StmData::BufferedStreamData *buffFd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
@@ -476,14 +477,13 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 		else if (pt == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
-			NEW_CLASS(buffFd, IO::StmData::BufferedStreamData(fd));
-			if (!me->core->LoadData(buffFd, 0))
+			IO::StmData::BufferedStreamData buffFd(fd);
+			if (!me->core->LoadData(&buffFd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
 				found = true;
 			}
-			DEL_CLASS(buffFd);
 		}
 		i++;
 	}
@@ -621,6 +621,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 //	mnu2->AddItem(CSTR("Proxy Server"), MNU_PROXYSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RESTful Server"), MNU_RESTFUL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Load Balance"), MNU_HTTP_LOAD_BALANCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("SSL"));
+	mnu2->AddItem(CSTR("SSL Info"), MNU_SSLINFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("NTP"));
 	mnu2->AddItem(CSTR("NTP Server"), MNU_NTPSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("NTP Client"), MNU_NTPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2431,6 +2433,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRServiceForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRServiceForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SSLINFO:
+		{
+			SSWR::AVIRead::AVIRSSLInfoForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSSLInfoForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

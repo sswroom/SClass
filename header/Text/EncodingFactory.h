@@ -17,7 +17,7 @@ namespace Text
 		} EncodingInfo;
 
 	private:
-		Data::FastStringMap<EncodingInfo*> *encMap;
+		Data::FastStringMap<EncodingInfo*> encMap;
 		static EncodingInfo encInfo[];
 	public:
 		EncodingFactory();

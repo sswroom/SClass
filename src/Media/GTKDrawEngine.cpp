@@ -18,14 +18,12 @@
 #endif
 #include <stdio.h>
 
-Media::GTKDrawEngine::GTKDrawEngine()
+Media::GTKDrawEngine::GTKDrawEngine() : iab(0, true)
 {
-	NEW_CLASS(this->iab, Media::ABlend::AlphaBlend8_C8(0, true));
 }
 
 Media::GTKDrawEngine::~GTKDrawEngine()
 {
-	DEL_CLASS(this->iab);
 }
 
 Media::DrawImage *Media::GTKDrawEngine::CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype)
@@ -111,7 +109,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab->PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispWidth, simg->info.dispHeight);
+				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispWidth, simg->info.dispHeight);
 			}
 			else
 			{
@@ -132,7 +130,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab->PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispWidth, simg->info.dispHeight);
+				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispWidth, simg->info.dispHeight);
 			}
 			else
 			{
@@ -873,10 +871,10 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 		}
 		else
 		{
-			this->eng->iab->SetSourceProfile(gimg->info.color);
-			this->eng->iab->SetDestProfile(this->info.color);
-			this->eng->iab->SetOutputProfile(this->info.color);
-			this->eng->iab->Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+			this->eng->iab.SetSourceProfile(gimg->info.color);
+			this->eng->iab.SetDestProfile(this->info.color);
+			this->eng->iab.SetOutputProfile(this->info.color);
+			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
 		}
@@ -937,10 +935,10 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Doub
 	}
 	else //////////////////////////////////////////
 	{
-		this->eng->iab->SetSourceProfile(img->info.color);
-		this->eng->iab->SetDestProfile(this->info.color);
-		this->eng->iab->SetOutputProfile(this->info.color);
-		this->eng->iab->Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
+		this->eng->iab.SetSourceProfile(img->info.color);
+		this->eng->iab.SetDestProfile(this->info.color);
+		this->eng->iab.SetOutputProfile(this->info.color);
+		this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}

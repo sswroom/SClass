@@ -10,7 +10,7 @@ namespace UI
 		class TreeItem
 		{
 		private:
-			Data::ArrayList<TreeItem *> *children;
+			Data::ArrayList<TreeItem *> children;
 			void *hTreeItem;
 			void *itemObj;
 			Text::String *txt;
@@ -36,11 +36,11 @@ namespace UI
 		struct ClassData;
 
 	private:
-		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
-		Data::ArrayList<void *> *selChgObjs;
-		Data::ArrayList<UI::UIEvent> *rightClkHdlrs;
-		Data::ArrayList<void *> *rightClkObjs;
-		Data::ArrayList<TreeItem*> *treeItems;
+		Data::ArrayList<UI::UIEvent> selChgHdlrs;
+		Data::ArrayList<void *> selChgObjs;
+		Data::ArrayList<UI::UIEvent> rightClkHdlrs;
+		Data::ArrayList<void *> rightClkObjs;
+		Data::ArrayList<TreeItem*> treeItems;
 		Bool autoFocus;
 		Bool editing;
 		void *oriWndProc;

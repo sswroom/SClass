@@ -3959,17 +3959,13 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 	UTF8Char *baseDir = layerName;
 	Text::PString strs[10];
 	UTF8Char *sptr;
-	IO::FileStream *fstm;
-	IO::StreamReader *rdr;
 	UOSInt i;
 	UOSInt j;
 	MapLineStyle *currLine;
 	MapFontStyle *currFont;
 	MapLayerStyle *currLayer;
 	MapLayerStyle *currLayer2;
-	Data::ArrayList<MapLayerStyle*> *poiArr;
-	NEW_CLASS(poiArr, Data::ArrayList<MapLayerStyle*>());
-	NEW_CLASS(this->areaList, Data::ArrayList<Map::MapConfig2::MapArea*>());
+	Data::ArrayList<MapLayerStyle*> poiArr;
 
 	this->drawEng = eng;
 	this->inited = false;
@@ -3977,8 +3973,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 	this->fonts = 0;
 	this->drawList = 0;
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fstm->IsError())
+	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fstm.IsError())
 	{
 		this->bgColor = 0;
 		this->nLine = 0;
@@ -3990,12 +3986,12 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 	}
 	else
 	{
-		NEW_CLASS(rdr, IO::StreamReader(fstm));
+		IO::StreamReader rdr(&fstm);
 		if (forceBase.leng > 0)
 		{
 			baseDir = forceBase.ConcatTo(layerName);
 		}
-		while ((sptr = rdr->ReadLine(lineBuff, 1023)) != 0)
+		while ((sptr = rdr.ReadLine(lineBuff, 1023)) != 0)
 		{
 			UOSInt strCnt;
 			Int32 lyrType;
@@ -4245,7 +4241,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 							currLayer->img = newImg;
 						}*/
 						this->drawList->Add(currLayer);
-						poiArr->Add(currLayer);
+						poiArr.Add(currLayer);
 					}
 				}
 				break;
@@ -4264,7 +4260,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					{
 						area->data = 0;
 					}
-					this->areaList->Add(area);
+					this->areaList.Add(area);
 				}
 				break;
 			default:
@@ -4277,13 +4273,13 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 			i = this->drawList->GetCount();
 			while (i-- > 0)
 			{
-				currLayer = (MapLayerStyle*)this->drawList->GetItem(i);
+				currLayer = this->drawList->GetItem(i);
 				if (currLayer->drawType == 9)
 				{
-					j = poiArr->GetCount();
+					j = poiArr.GetCount();
 					while (j-- > 0)
 					{
-						currLayer2 = (MapLayerStyle*)poiArr->GetItem(j);
+						currLayer2 = poiArr.GetItem(j);
 						if (currLayer2->lyr == currLayer->lyr)
 						{
 							currLayer->img = currLayer2->img;
@@ -4293,10 +4289,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				}
 			}
 		}
-		DEL_CLASS(rdr);
 	}
-	DEL_CLASS(fstm);
-	DEL_CLASS(poiArr);
 }
 
 Map::MapConfig2::~MapConfig2()
@@ -4358,7 +4351,7 @@ Map::MapConfig2::~MapConfig2()
 		UOSInt i = this->drawList->GetCount();
 		while (i-- > 0)
 		{
-			currLyr = (Map::MapLayerStyle*)this->drawList->GetItem(i);
+			currLyr = this->drawList->GetItem(i);
 			if (currLyr->img && currLyr->drawType == 10)
 			{
 				this->drawEng->DeleteImage(currLyr->img);
@@ -4367,19 +4360,15 @@ Map::MapConfig2::~MapConfig2()
 		}
 		DEL_CLASS(this->drawList);
 	}
-	if (this->areaList)
+	i = this->areaList.GetCount();
+	while (i-- > 0)
 	{
-		UOSInt i = this->areaList->GetCount();
-		while (i-- > 0)
+		Map::MapConfig2::MapArea *area = this->areaList.GetItem(i);
+		if (area->data)
 		{
-			Map::MapConfig2::MapArea *area = (Map::MapConfig2::MapArea*)this->areaList->GetItem(i);
-			if (area->data)
-			{
-				DEL_CLASS(area->data);
-			}
-			MemFree(area);
+			DEL_CLASS(area->data);
 		}
-		DEL_CLASS(this->areaList);
+		MemFree(area);
 	}
 }
 
@@ -4844,10 +4833,10 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 {
 	if (mcc == 0)
 		return true;
-	UOSInt i = this->areaList->GetCount();
+	UOSInt i = this->areaList.GetCount();
 	while (i-- > 0)
 	{
-		if (((Map::MapConfig2::MapArea*)this->areaList->GetItem(i))->mcc == mcc)
+		if (this->areaList.GetItem(i)->mcc == mcc)
 			return true;
 	}
 	return false;
@@ -4855,12 +4844,12 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 
 Int32 Map::MapConfig2::GetLocMCCXY(Double x, Double y)
 {
-	UOSInt i = this->areaList->GetCount();
+	UOSInt i = this->areaList.GetCount();
 	UTF8Char buff[256];
 	while (i-- > 0)
 	{
 		Map::MapConfig2::MapArea *area;
-		area = (Map::MapConfig2::MapArea *)this->areaList->GetItem(i);
+		area = this->areaList.GetItem(i);
 		if (area->data)
 		{
 			if (area->data->GetPGLabelD(buff, x, y))

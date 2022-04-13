@@ -124,7 +124,14 @@ namespace Text
 	FORCEINLINE OSInt StrCompareICase(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompareICase(str1, str2); }
 	OSInt StrCompareFastC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 
-	FORCEINLINE UOSInt StrCharCnt(const UTF8Char *str) { return MyString_StrCharCnt(str); }
+	FORCEINLINE UOSInt StrCharCnt(const UTF8Char *str)
+	{
+#if 0 //defined(__GNUC__)
+		return (UOSInt)strlen((const Char*)str);
+#else
+		return MyString_StrCharCnt(str);
+#endif
+	}
 	UOSInt StrCharCntS(const UTF8Char *str, UOSInt maxLen);
 
 	Bool StrHasUpperCase(const UTF8Char *str);
@@ -268,7 +275,7 @@ namespace Text
 	FORCEINLINE Bool StrEqualsICaseC(const Char *str1, UOSInt str1Len, const Char *str2, UOSInt str2Len) { return StrEqualsICaseC((const UTF8Char*)str1, str1Len, (const UTF8Char*)str2, str2Len); }
 	FORCEINLINE OSInt StrCompare(const Char *str1, const Char *str2) { return MyString_StrCompare((const UTF8Char*)str1, (const UTF8Char*)str2); }
 	FORCEINLINE OSInt StrCompareICase(const Char *str1, const Char *str2) { return MyString_StrCompareICase((const UTF8Char*)str1, (const UTF8Char*)str2); }
-	FORCEINLINE UOSInt StrCharCnt(const Char *str) { return MyString_StrCharCnt((const UTF8Char*)str); }
+	FORCEINLINE UOSInt StrCharCnt(const Char *str) { return StrCharCnt((const UTF8Char*)str); }
 	FORCEINLINE UOSInt StrCharCntS(const Char *str, UOSInt maxLen) { return StrCharCntS((const UTF8Char*)str, maxLen); }
 	FORCEINLINE Bool StrHasUpperCase(const Char *str) { return StrHasUpperCase((const UTF8Char*)str); }
 

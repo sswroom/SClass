@@ -9,7 +9,7 @@
 Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 {
 	this->imgStatus = status;
-	Sync::MutexUsage mutUsage(this->imgStatus->mut);
+	Sync::MutexUsage mutUsage(&this->imgStatus->mut);
 	this->imgStatus->useCnt++;
 	mutUsage.EndUse();
 }
@@ -17,14 +17,13 @@ Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 {
 	UOSInt imgCnt = imgList->GetCount();
-	this->imgStatus = MemAlloc(Media::SharedImage::ImageStatus, 1);
+	NEW_CLASS(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
 	this->imgStatus->prevList = 0;
 	this->imgStatus->useCnt = 1;
 	this->imgStatus->imgIndex = 0;
 	this->imgStatus->imgDelay = 0;
 	this->imgStatus->lastTimeTick = 0;
-	NEW_CLASS(this->imgStatus->mut, Sync::Mutex());
 	UOSInt i = imgCnt;
 	while (i-- > 0)
 	{
@@ -61,7 +60,7 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 Media::SharedImage::~SharedImage()
 {
 	Bool toDelete = false;
-	Sync::MutexUsage mutUsage(this->imgStatus->mut);
+	Sync::MutexUsage mutUsage(&this->imgStatus->mut);
 	if (--this->imgStatus->useCnt <= 0)
 	{
 		toDelete = true;
@@ -69,7 +68,6 @@ Media::SharedImage::~SharedImage()
 	mutUsage.EndUse();
 	if (toDelete)
 	{
-		DEL_CLASS(this->imgStatus->mut);
 		DEL_CLASS(this->imgStatus->imgList);
 		if (this->imgStatus->prevList)
 		{
@@ -83,7 +81,7 @@ Media::SharedImage::~SharedImage()
 			}
 			DEL_CLASS(this->imgStatus->prevList);
 		}
-		MemFree(this->imgStatus);
+		DEL_CLASS(this->imgStatus);
 	}
 }
 

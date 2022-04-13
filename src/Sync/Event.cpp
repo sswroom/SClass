@@ -267,6 +267,7 @@ Bool Sync::Event::Wait(UOSInt timeout)
 			}
 			else if (ret == 0)
 			{
+				this->isSet = false;
 			}
 			else
 			{

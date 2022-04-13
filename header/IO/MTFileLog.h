@@ -15,10 +15,10 @@ namespace IO
 	class MTFileLog : public ILogHandler
 	{
 	private:
-		Sync::Mutex *mut;
-		Data::ArrayListInt64 *dateList;
-		Data::ArrayListString *msgList;
-		Sync::Event *evt;
+		Sync::Mutex mut;
+		Data::ArrayListInt64 dateList;
+		Data::ArrayListString msgList;
+		Sync::Event evt;
 
 		IO::ILogHandler::LogType logStyle;
 		IO::ILogHandler::LogGroup groupStyle;
@@ -26,7 +26,7 @@ namespace IO
 		Text::UTF8Writer *log;
 		IO::BufferedOutputStream *cstm;
 		IO::FileStream *fileStm;
-		const Char *dateFormat;
+		const UTF8Char *dateFormat;
 		Text::String *fileName;
 		Text::String *extName;
 		Bool closed;

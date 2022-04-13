@@ -25,7 +25,7 @@
 void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(void *userObj, UI::GUIForm *frm)
 {
 	SSWR::AVIRead::AVIRCore *me = (SSWR::AVIRead::AVIRCore *)userObj;
-	me->frms->RemoveAt(me->frms->IndexOf(frm));
+	me->frms.RemoveAt(me->frms.IndexOf(frm));
 	if (me->gisForm == frm)
 	{
 		me->gisForm = 0;
@@ -35,10 +35,10 @@ void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(void *userObj, UI::GUIForm *f
 void SSWR::AVIRead::AVIRCore::InitForm(UI::GUIForm *frm)
 {
 	frm->HandleFormClosed(FormClosed, this);
-	this->frms->Add(frm);
+	this->frms.Add(frm);
 }
 
-SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
+SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui) : vioPinMgr(4)
 {
 	WChar wbuff[512];
 	WChar wbuff2[32];
@@ -51,17 +51,9 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CacheDir"));
 	NEW_CLASS(this->parsers, Parser::FullParserList());
-	NEW_CLASS(this->mapMgr, Map::MapManager());
-	NEW_CLASS(this->colorMgr, Media::ColorManager());
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
-	NEW_CLASS(this->encFact, Text::EncodingFactory());
-	NEW_CLASS(this->exporters, Exporter::ExporterList());
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, CSTRP(sbuff, sptr)));
-	NEW_CLASS(this->frms, Data::ArrayList<UI::GUIForm*>());
-	NEW_CLASS(this->log, IO::LogTool());
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
-	NEW_CLASS(this->vioPinMgr, IO::VirtualIOPinMgr(4));
 	NEW_CLASS(this->gpioCtrl, IO::GPIOControl());
 	if (this->gpioCtrl->IsError())
 	{
@@ -74,20 +66,17 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 		DEL_CLASS(this->siLabDriver);
 		this->siLabDriver = 0;
 	}
-	this->parsers->SetEncFactory(this->encFact);
-	this->parsers->SetMapManager(this->mapMgr);
+	this->parsers->SetEncFactory(&this->encFact);
+	this->parsers->SetMapManager(&this->mapMgr);
 	this->parsers->SetWebBrowser(this->browser);
 	this->parsers->SetSocketFactory(this->sockf);
 	this->parsers->SetSSLEngine(this->ssl);
 	this->batchLyrs = 0;
 	this->batchLoad = false;
-	NEW_CLASS(this->audDevList, Data::ArrayList<const UTF8Char *>());
-	this->audDevice = 0;
 	this->gisForm = 0;
-	this->ui->SetMonitorMgr(this->monMgr);
+	this->ui->SetMonitorMgr(&this->monMgr);
 
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
-	NEW_CLASS(this->audDevice, Media::AudioDevice());
 	if (reg)
 	{
 		OSInt i = 0;
@@ -96,9 +85,9 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 			Text::StrOSInt(Text::StrConcatC(wbuff2, L"AudioDevice", 11), i);
 			if (reg->GetValueStr(wbuff2, wbuff) != 0)
 			{
-				const UTF8Char *devName = Text::StrToUTF8New(wbuff);
-				this->audDevice->AddDevice(devName);
-				this->audDevList->Add(devName);
+				Text::String *devName = Text::String::NewNotNull(wbuff);
+				this->audDevice.AddDevice(devName->ToCString());
+				this->audDevList.Add(devName);
 			}
 			else
 			{
@@ -114,29 +103,19 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 {
 	UOSInt i;
 	this->CloseAllForm();
-	DEL_CLASS(this->frms);
-	DEL_CLASS(this->log);
-	DEL_CLASS(this->exporters);
 	DEL_CLASS(this->parsers);
 	DEL_CLASS(this->browser);
-	DEL_CLASS(this->encFact);
-	DEL_CLASS(this->mapMgr);
-	DEL_CLASS(this->colorMgr);
 	SDEL_CLASS(this->ssl);
 	DEL_CLASS(this->sockf);
 	DEL_CLASS(this->eng);
 	this->ui->SetMonitorMgr(0);
-	DEL_CLASS(this->monMgr);
-	DEL_CLASS(this->vioPinMgr);
 	SDEL_CLASS(this->gpioCtrl);
 	SDEL_CLASS(this->siLabDriver);
-	SDEL_CLASS(this->audDevice);
-	i = this->audDevList->GetCount();
+	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->audDevList->GetItem(i));
+		this->audDevList.GetItem(i)->Release();
 	}
-	SDEL_CLASS(this->audDevList);
 }
 
 void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
@@ -155,21 +134,19 @@ void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
 	IO::Stream *retStm = 0;
-	SSWR::AVIRead::AVIRSelStreamForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this, allowReadOnly));
+	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this, allowReadOnly);
 	if (defBaudRate != 0)
 	{
-		frm->SetInitBaudRate(defBaudRate);
+		frm.SetInitBaudRate(defBaudRate);
 	}
-	if (frm->ShowDialog(ownerFrm) == UI::GUIForm::DR_OK)
+	if (frm.ShowDialog(ownerFrm) == UI::GUIForm::DR_OK)
 	{
-		retStm = frm->stm;
+		retStm = frm.stm;
 		if (st)
 		{
-			*st = frm->stmType;
+			*st = frm.stmType;
 		}
 	}
-	DEL_CLASS(frm);
 	return retStm;
 }
 
@@ -243,12 +220,12 @@ Parser::ParserList *SSWR::AVIRead::AVIRCore::GetParserList()
 
 Map::MapManager *SSWR::AVIRead::AVIRCore::GetMapManager()
 {
-	return this->mapMgr;
+	return &this->mapMgr;
 }
 
 Media::ColorManager *SSWR::AVIRead::AVIRCore::GetColorMgr()
 {
-	return this->colorMgr;
+	return &this->colorMgr;
 }
 
 Net::SocketFactory *SSWR::AVIRead::AVIRCore::GetSocketFactory()
@@ -263,7 +240,7 @@ Media::DrawEngine *SSWR::AVIRead::AVIRCore::GetDrawEngine()
 
 Text::EncodingFactory *SSWR::AVIRead::AVIRCore::GetEncFactory()
 {
-	return this->encFact;
+	return &this->encFact;
 }
 
 IO::SiLabDriver *SSWR::AVIRead::AVIRCore::GetSiLabDriver()
@@ -278,7 +255,7 @@ Net::WebBrowser *SSWR::AVIRead::AVIRCore::GetWebBrowser()
 
 IO::VirtualIOPinMgr *SSWR::AVIRead::AVIRCore::GetVirtualIOPinMgr()
 {
-	return this->vioPinMgr;
+	return &this->vioPinMgr;
 }
 
 IO::GPIOControl *SSWR::AVIRead::AVIRCore::GetGPIOControl()
@@ -288,7 +265,7 @@ IO::GPIOControl *SSWR::AVIRead::AVIRCore::GetGPIOControl()
 
 Media::AudioDevice *SSWR::AVIRead::AVIRCore::GetAudioDevice()
 {
-	return this->audDevice;
+	return &this->audDevice;
 }
 
 UInt32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()
@@ -302,12 +279,12 @@ void SSWR::AVIRead::AVIRCore::SetCodePage(UInt32 codePage)
 {
 	this->currCodePage = codePage;
 	this->parsers->SetCodePage(codePage);
-	this->exporters->SetCodePage(codePage);
+	this->exporters.SetCodePage(codePage);
 }
 
 IO::LogTool *SSWR::AVIRead::AVIRCore::GetLog()
 {
-	return this->log;
+	return &this->log;
 }
 
 Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)
@@ -318,7 +295,7 @@ Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)
 	}
 	else
 	{
-		return this->monMgr->GetMonitorHDPI(hMonitor);
+		return this->monMgr.GetMonitorHDPI(hMonitor);
 	}
 }
 
@@ -326,7 +303,7 @@ void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(MonitorHandle *hMonitor, Double mon
 {
 	if (!this->forwardedUI)
 	{
-		this->monMgr->SetMonitorHDPI(hMonitor, monitorHDPI);
+		this->monMgr.SetMonitorHDPI(hMonitor, monitorHDPI);
 	}
 }
 
@@ -338,7 +315,7 @@ Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(MonitorHandle *hMonitor)
 	}
 	else
 	{
-		return this->monMgr->GetMonitorDDPI(hMonitor);
+		return this->monMgr.GetMonitorDDPI(hMonitor);
 	}
 }
 
@@ -346,27 +323,27 @@ void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(MonitorHandle *hMonitor, Double mon
 {
 	if (!this->forwardedUI)
 	{
-		this->monMgr->SetMonitorDDPI(hMonitor, monitorDDPI);
+		this->monMgr.SetMonitorDDPI(hMonitor, monitorDDPI);
 	}
 }
 
 Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 {
-	return this->monMgr;
+	return &this->monMgr;
 }
 
-void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char *> *devList)
+void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<Text::String *> *devList)
 {
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	WChar wbuff[32];
 	UOSInt i;
 	UOSInt j;
-	i = this->audDevList->GetCount();
+	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->audDevList->GetItem(i));
+		this->audDevList.GetItem(i)->Release();
 	}
-	this->audDevList->Clear();
+	this->audDevList.Clear();
 	if (reg)
 	{
 		if (devList == 0)
@@ -380,7 +357,7 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char 
 			while (i < j)
 			{
 				Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
-				const WChar *wptr = Text::StrToWCharNew(devList->GetItem(i));
+				const WChar *wptr = Text::StrToWCharNew(devList->GetItem(i)->v);
 				reg->SetValue(wbuff, wptr);
 				Text::StrDelNew(wptr);
 				i++;
@@ -390,24 +367,23 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char 
 		}
 		IO::Registry::CloseRegistry(reg);
 	}
-	SDEL_CLASS(this->audDevice);
-	NEW_CLASS(this->audDevice, Media::AudioDevice());
+	this->audDevice.ClearDevices();
 	if (devList)
 	{
 		i = 0;
 		j = devList->GetCount();
 		while (i < j)
 		{
-			this->audDevice->AddDevice(devList->GetItem(i));
-			this->audDevList->Add(Text::StrCopyNew(devList->GetItem(i)));
+			this->audDevice.AddDevice(devList->GetItem(i)->ToCString());
+			this->audDevList.Add(devList->GetItem(i)->Clone());
 			i++;
 		}
 	}
 }
 
-Data::ArrayList<const UTF8Char *> *SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
+Data::ArrayList<Text::String *> *SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
 {
-	return this->audDevList;
+	return &this->audDevList;
 }
 
 Int32 SSWR::AVIRead::AVIRCore::GetAudioAPIType()
@@ -417,9 +393,7 @@ Int32 SSWR::AVIRead::AVIRCore::GetAudioAPIType()
 
 Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *audSrc)
 {
-	if (this->audDevice == 0)
-		return 0;
-	return this->audDevice->BindAudio(audSrc);
+	return this->audDevice.BindAudio(audSrc);
 }
 
 Bool SSWR::AVIRead::AVIRCore::GenLinePreview(Media::DrawImage *img, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
@@ -569,10 +543,10 @@ void SSWR::AVIRead::AVIRCore::ShowForm(UI::GUIForm *frm)
 
 void SSWR::AVIRead::AVIRCore::CloseAllForm()
 {
-	UOSInt i = this->frms->GetCount();
+	UOSInt i = this->frms.GetCount();
 	while (i-- > 0)
 	{
-		this->frms->GetItem(i)->Close();
+		this->frms.GetItem(i)->Close();
 	}
 }
 

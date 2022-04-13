@@ -19,20 +19,16 @@ IO::ConfigFile *IO::UnixConfigFile::ParseAppProp()
 IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)
 {
 	IO::ConfigFile *cfg;
-	IO::FileStream *fstm;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	if (fstm->IsError())
+	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+	if (fstm.IsError())
 	{
 		cfg = 0;
 	}
 	else
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fstm));
-		cfg = ParseReader(reader);
-		DEL_CLASS(reader);
+		Text::UTF8Reader reader(&fstm);
+		cfg = ParseReader(&reader);
 	}
-	DEL_CLASS(fstm);
 	return cfg;
 }
 

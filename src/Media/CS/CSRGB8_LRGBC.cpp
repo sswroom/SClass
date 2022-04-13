@@ -30,21 +30,21 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	Double dV;
 	UInt16 v[4];
 	Media::ColorProfile *srcProfile;
-	if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess)
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess)
 	{
 		srcProfile = this->colorSess->GetDefPProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		srcProfile = this->rgbParam->monProfile;
+		srcProfile = &this->rgbParam.monProfile;
 	}
 	else
 	{
-		srcProfile = this->srcProfile;
+		srcProfile = &this->srcProfile;
 	}
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
 	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
@@ -58,22 +58,22 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	Math::Vector3 vec2;
 	Math::Vector3 vec3;
 	srcProfile->GetPrimaries()->GetConvMatrix(&mat1);
-	if (this->destProfile->GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
+	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		this->rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->rgbParam->monProfile->GetPrimaries()->wx, this->rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+		this->rgbParam.monProfile.GetPrimaries()->GetConvMatrix(&mat5);
+		vec2.Set(this->rgbParam.monProfile.GetPrimaries()->wx, this->rgbParam.monProfile.GetPrimaries()->wy, 1.0);
 	}
 	else
 	{
-		this->destProfile->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->destProfile->GetPrimaries()->wx, this->destProfile->GetPrimaries()->wy, 1.0);
+		this->destProfile.GetPrimaries()->GetConvMatrix(&mat5);
+		vec2.Set(this->destProfile.GetPrimaries()->wx, this->destProfile.GetPrimaries()->wy, 1.0);
 	}
 	mat5.Inverse();
 
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
 	mat3.Set(&mat2);
 	mat4.SetIdentity();
-	vec1.Set(this->srcProfile->GetPrimaries()->wx, this->srcProfile->GetPrimaries()->wy, 1.0);
+	vec1.Set(this->srcProfile.GetPrimaries()->wx, this->srcProfile.GetPrimaries()->wy, 1.0);
 	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec2, &vec3);
 	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec1, &vec2);
 	mat2.Multiply(&vec2, &vec1);
@@ -131,24 +131,21 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	}
 }
 
-Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess)
+Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
-	NEW_CLASS(this->rgbParam, Media::IColorHandler::RGBPARAM2());
-	NEW_CLASS(this->srcProfile, Media::ColorProfile(srcProfile));
-	NEW_CLASS(this->destProfile, Media::ColorProfile(destProfile));
 	this->invert = invert;
 	this->srcPal = 0;
 	this->destPal = 0;
 
 	if (colorSess)
 	{
-		this->rgbParam->Set(colorSess->GetRGBParam());
+		this->rgbParam.Set(colorSess->GetRGBParam());
 	}
 	else
 	{
-		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
+		Media::MonitorColorManager::SetDefaultRGB(&this->rgbParam);
 	}
 	if (this->srcPF == Media::PF_PAL_1 || this->srcPF == Media::PF_PAL_2 || this->srcPF == Media::PF_PAL_4 || this->srcPF == Media::PF_PAL_8 || this->srcPF == Media::PF_PAL_W1 || this->srcPF == Media::PF_PAL_W2 || this->srcPF == Media::PF_PAL_W4 || this->srcPF == Media::PF_PAL_W8)
 	{
@@ -183,9 +180,6 @@ Media::CS::CSRGB8_LRGBC::~CSRGB8_LRGBC()
 		MemFree(this->destPal);
 		this->destPal = 0;
 	}
-	DEL_CLASS(this->srcProfile);
-	DEL_CLASS(this->destProfile);
-	DEL_CLASS(this->rgbParam);
 }
 
 void Media::CS::CSRGB8_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
@@ -280,7 +274,7 @@ void Media::CS::CSRGB8_LRGBC::YUVParamChanged(const YUVPARAM *yuv)
 
 void Media::CS::CSRGB8_LRGBC::RGBParamChanged(const RGBPARAM2 *rgb)
 {
-	this->rgbParam->Set(rgb);
+	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;
 }
 

@@ -7,15 +7,11 @@
 IO::StringLogger::StringLogger()
 {
 	this->modified = false;
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->strList, Data::ArrayListString());
 }
 
 IO::StringLogger::~StringLogger()
 {
-	LIST_FREE_STRING(this->strList);
-	DEL_CLASS(this->strList);
-	DEL_CLASS(this->mut);
+	LIST_FREE_STRING(&this->strList);
 }
 
 Bool IO::StringLogger::IsModified()
@@ -36,25 +32,25 @@ void IO::StringLogger::ReadLogs(IO::Reader *reader)
 
 void IO::StringLogger::LogStr(const UTF8Char *s, UOSInt len)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->strList->SortedIndexOfPtr(s, len);
+	Sync::MutexUsage mutUsage(&this->mut);
+	OSInt i = this->strList.SortedIndexOfPtr(s, len);
 	if (i < 0)
 	{
-		this->strList->Insert((UOSInt)~i, Text::String::New(s, len));
+		this->strList.Insert((UOSInt)~i, Text::String::New(s, len));
 		this->modified = true;
 	}
 }
 
 void IO::StringLogger::WriteLogs(IO::Writer *writer)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	Text::String *s;
 	UOSInt i = 0;
-	UOSInt j = this->strList->GetCount();	
+	UOSInt j = this->strList.GetCount();	
 	this->modified = false;
 	while (i < j)
 	{
-		s = this->strList->GetItem(i);
+		s = this->strList.GetItem(i);
 		writer->WriteLineC(s->v, s->leng);
 		i++;
 	}

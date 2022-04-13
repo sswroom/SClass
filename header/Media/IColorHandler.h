@@ -65,18 +65,16 @@ namespace Media
 			Double MonGBrightness;
 			Double MonBBrightness;
 
-			Media::ColorProfile *monProfile;
+			Media::ColorProfile monProfile;
 			Media::ColorProfile::CommonProfileType monProfileType;
 			Double monLuminance;
 
 			RGBPARAM2()
 			{
-				NEW_CLASS(this->monProfile, Media::ColorProfile());
 			}
 
 			~RGBPARAM2()
 			{
-				DEL_CLASS(this->monProfile);
 			}
 
 			void SetDefault()
@@ -100,7 +98,7 @@ namespace Media
 				this->MonBBrightness = 1;
 
 				this->monProfileType = Media::ColorProfile::CPT_SRGB;
-				this->monProfile->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+				this->monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 				this->monLuminance = 250.0;
 			}
 
@@ -120,7 +118,7 @@ namespace Media
 				this->MonRBrightness = param->MonRBrightness;
 				this->MonGBrightness = param->MonGBrightness;
 				this->MonBBrightness = param->MonBBrightness;
-				this->monProfile->Set(param->monProfile);
+				this->monProfile.Set(&param->monProfile);
 				this->monProfileType = param->monProfileType;
 				this->monLuminance = param->monLuminance;
 			}

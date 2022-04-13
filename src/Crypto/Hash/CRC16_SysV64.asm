@@ -196,7 +196,7 @@ crc16calclop3:
 	shl ax,8
 	xor cl,byte [rdi]
 	xor ax,word [rdx+rcx*2]
-	lea rdi,[rdi+1]
+	inc rdi
 	dec rsi
 	jnz crc16calclop3
 

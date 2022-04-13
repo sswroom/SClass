@@ -35,9 +35,6 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net:
 		this->gooPrivKey = 0;
 		this->gooKey = SCOPY_STRING(gooKey);
 	}
-	NEW_CLASS(this->lastSrchDate, Data::DateTime());
-	NEW_CLASS(this->mut, Sync::Mutex());
-	this->lastSrchDate->SetCurrTimeUTC();
 }
 
 Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
@@ -59,9 +56,6 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net:
 		this->gooPrivKey = 0;
 		this->gooKey = Text::String::NewOrNull(gooKey);
 	}
-	NEW_CLASS(this->lastSrchDate, Data::DateTime());
-	NEW_CLASS(this->mut, Sync::Mutex());
-	this->lastSrchDate->SetCurrTimeUTC();
 }
 
 Map::GoogleMap::GoogleStaticMap::~GoogleStaticMap()
@@ -73,8 +67,6 @@ Map::GoogleMap::GoogleStaticMap::~GoogleStaticMap()
 		this->gooPrivKey = 0;
 	}
 	SDEL_STRING(this->gooKey);
-	SDEL_CLASS(this->lastSrchDate);
-	SDEL_CLASS(this->mut);
 }
 
 UInt32 Map::GoogleMap::GoogleStaticMap::Level2Scale(UInt32 level)

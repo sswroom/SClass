@@ -8,17 +8,18 @@ namespace Media
 	class SharedImage
 	{
 	private:
-		typedef struct
+		class ImageStatus
 		{
+		public:
 			Media::ImageList *imgList;
 			Data::ArrayList<Media::StaticImage*> *prevList;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Int32 useCnt;
 
 			UInt32 imgDelay;
 			UOSInt imgIndex;
 			Int64 lastTimeTick;
-		} ImageStatus;
+		};
 	private:
 		ImageStatus *imgStatus;
 

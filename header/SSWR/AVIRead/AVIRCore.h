@@ -48,27 +48,27 @@ namespace SSWR
 
 		protected:
 			Parser::ParserList *parsers;
-			Map::MapManager *mapMgr;
-			Media::ColorManager *colorMgr;
+			Map::MapManager mapMgr;
+			Media::ColorManager colorMgr;
 			IO::SiLabDriver *siLabDriver;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Net::WebBrowser *browser;
-			Text::EncodingFactory *encFact;
+			Text::EncodingFactory encFact;
 			Media::DrawEngine *eng;
 			UI::GUICore *ui;
-			Exporter::ExporterList *exporters;
+			Exporter::ExporterList exporters;
 			UInt32 currCodePage;
-			IO::LogTool *log;
-			Data::ArrayList<const UTF8Char *> *audDevList;
-			Media::AudioDevice *audDevice;
+			IO::LogTool log;
+			Data::ArrayList<Text::String *> audDevList;
+			Media::AudioDevice audDevice;
 			Int32 audAPIType;
-			Media::MonitorMgr *monMgr;
-			IO::VirtualIOPinMgr *vioPinMgr;
+			Media::MonitorMgr monMgr;
+			IO::VirtualIOPinMgr vioPinMgr;
 			IO::GPIOControl *gpioCtrl;
 			Bool forwardedUI;
 
-			Data::ArrayList<UI::GUIForm *> *frms;
+			Data::ArrayList<UI::GUIForm *> frms;
 			SSWR::AVIRead::AVIRGISForm *gisForm;
 
 			Bool batchLoad;
@@ -115,8 +115,8 @@ namespace SSWR
 			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 			Media::MonitorMgr *GetMonitorMgr();
 			
-			void SetAudioDeviceList(Data::ArrayList<const UTF8Char *> *audDevList);
-			Data::ArrayList<const UTF8Char *> *GetAudioDeviceList();
+			void SetAudioDeviceList(Data::ArrayList<Text::String *> *audDevList);
+			Data::ArrayList<Text::String *> *GetAudioDeviceList();
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 

@@ -13,7 +13,7 @@ namespace Data
 	class SyncLinkedList
 	{
 	protected:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		LinkedListItem *firstItem;
 		LinkedListItem *lastItem;
 

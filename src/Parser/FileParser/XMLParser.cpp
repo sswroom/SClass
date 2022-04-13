@@ -130,34 +130,30 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 
-	IO::StreamDataStream *stm;
 	IO::ParsedObject *pobj;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	pobj = ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
-	DEL_CLASS(stm);
+	IO::StreamDataStream stm(fd);
+	pobj = ParseStream(this->encFact, &stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
 	return pobj;
 }
 
 IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
-	Text::XMLReader *reader;
 	Text::String *nodeText;
 	Text::XMLNode::NodeType nodeType;
-	NEW_CLASS(reader, Text::XMLReader(encFact, stm, Text::XMLReader::PM_XML));
+	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 
 	while (true)
 	{
-		if (!reader->ReadNext())
+		if (!reader.ReadNext())
 		{
-			DEL_CLASS(reader);
 			return 0;
 		}
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
 			break;
 		}
 	}
-	nodeText = reader->GetNodeText();
+	nodeText = reader.GetNodeText();
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{
 		Data::ICaseStringMap<KMLStyle*> styles;
@@ -186,7 +182,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}
 			}
 		}*/
-		Map::IMapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
+		Map::IMapDrawLayer *lyr = ParseKMLContainer(&reader, &styles, fileName, parsers, browser, pkgFile);
 
 		Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 		KMLStyle *style;
@@ -232,7 +228,6 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		}*/
 		if (lyr)
 		{
-			DEL_CLASS(reader);
 			return lyr;
 		}
 	}
@@ -251,63 +246,62 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			}
 		}
 		shortName = &fileName.v[i + 1];
-		while (reader->ReadNext())
+		while (reader.ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 			{
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 			{
-				if (reader->GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
+				if (reader.GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 				{
 					Map::GPSTrack *track;
 					NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, CSTR_NULL));
 					track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (reader->GetNodeText()->Equals(UTF8STRC("trkseg")))
+							if (reader.GetNodeText()->Equals(UTF8STRC("trkseg")))
 							{
 								track->NewTrack();
-								while (reader->ReadNext())
+								while (reader.ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 									{
-										if (reader->GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
+										if (reader.GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
 										{
 											Map::GPSTrack::GPSRecord2 rec;
-											if (ParseGPXPoint(reader, &rec))
+											if (ParseGPXPoint(&reader, &rec))
 											{
 												track->AddRecord(&rec);
 											}
 										}
 										else
 										{
-											reader->SkipElement();
+											reader.SkipElement();
 										}
 									}
 								}
 							}
 							else
 							{
-								if (!reader->SkipElement())
+								if (!reader.SkipElement())
 								{
 									break;
 								}
 							}
 						}
 					}
-					DEL_CLASS(reader);
 					return track;
 				}
 /*				else if (reader->GetNodeText()->Equals(UTF8STRC("rte")) // /gpx/rte
@@ -368,71 +362,67 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}*/
 //				else
 				{
-					if (!reader->SkipElement())
+					if (!reader.SkipElement())
 					{
-						DEL_CLASS(reader);
 						return 0;
 					}
 				}
 			}
 		}
-		DEL_CLASS(reader);
 		return 0;
 	}
 	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
-		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
+		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(&reader, fileName);
 		if (lyr == 0)
 		{
-			DEL_CLASS(reader);
 			return 0;
 		}
-		while (reader->ReadNext())
+		while (reader.ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 			{
 				DEL_CLASS(lyr)
 				lyr = 0;
 				break;
 			}
 		}
-		if (!reader->IsComplete())
+		if (!reader.IsComplete())
 		{
 			SDEL_CLASS(lyr);
 		}
-		DEL_CLASS(reader);
 		return lyr;
 	}
 	else if (nodeText->Equals(UTF8STRC("OruxTracker")))
 	{
 		Map::OruxDBLayer *lyr = 0;
-		while (reader->ReadNext())
+		while (reader.ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 			{
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("MapCalibration")))
+			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
 			{
-				while (reader->ReadNext())
+				while (reader.ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (reader->GetNodeText()->Equals(UTF8STRC("OruxTracker")))
+						if (reader.GetNodeText()->Equals(UTF8STRC("OruxTracker")))
 						{
 							if (lyr)
 							{
-								while (reader->ReadNext())
+								while (reader.ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("MapCalibration")))
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
 									{
 										UInt32 layerId = (UInt32)-1;
 										UInt32 maxX = 0;
@@ -445,10 +435,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										Double mapYMax;
 										UOSInt i;
 										Text::XMLAttrib *attr;
-										i = reader->GetAttribCount();
+										i = reader.GetAttribCount();
 										while (i-- > 0)
 										{
-											attr = reader->GetAttrib(i);
+											attr = reader.GetAttrib(i);
 											if (attr->name->Equals(UTF8STRC("layerLevel")))
 											{
 												if (attr->value->ToUInt32(&layerId))
@@ -459,20 +449,20 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											}
 										}
 
-										while (reader->ReadNext())
+										while (reader.ReadNext())
 										{
-											if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+											if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 											{
 												break;
 											}
-											else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+											else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 											{
-												if (reader->GetNodeText()->Equals(UTF8STRC("MapChunks")))
+												if (reader.GetNodeText()->Equals(UTF8STRC("MapChunks")))
 												{
-													i = reader->GetAttribCount();
+													i = reader.GetAttribCount();
 													while (i-- > 0)
 													{
-														attr = reader->GetAttrib(i);
+														attr = reader.GetAttrib(i);
 														if (attr->name->Equals(UTF8STRC("xMax")))
 														{
 															if (attr->value->ToUInt32(&maxX))
@@ -489,14 +479,14 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																flags |= 8;
 														}
 													}
-													reader->SkipElement();
+													reader.SkipElement();
 												}
-												else if (reader->GetNodeText()->Equals(UTF8STRC("MapBounds")))
+												else if (reader.GetNodeText()->Equals(UTF8STRC("MapBounds")))
 												{
-													i = reader->GetAttribCount();
+													i = reader.GetAttribCount();
 													while (i-- > 0)
 													{
-														attr = reader->GetAttrib(i);
+														attr = reader.GetAttrib(i);
 														if (attr->name->Equals(UTF8STRC("minLat")))
 														{
 															if (attr->value->ToDouble(&mapYMin))
@@ -518,11 +508,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																flags |= 128;
 														}
 													}
-													reader->SkipElement();
+													reader.SkipElement();
 												}
 												else
 												{
-													reader->SkipElement();
+													reader.SkipElement();
 												}
 											}
 										}
@@ -532,23 +522,23 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											lyr->AddLayer(layerId, mapXMin, mapYMin, mapXMax, mapYMax, maxX, maxY, tileSize);
 										}
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 									{
-										reader->SkipElement();
+										reader.SkipElement();
 									}
 								}
 							}
 							else
 							{
-								reader->SkipElement();
+								reader.SkipElement();
 							}
 						}
-						else if (reader->GetNodeText()->Equals(UTF8STRC("MapName")))
+						else if (reader.GetNodeText()->Equals(UTF8STRC("MapName")))
 						{
 							if (lyr == 0)
 							{
 								Text::StringBuilderUTF8 sb;
-								reader->ReadNodeText(&sb);
+								reader.ReadNodeText(&sb);
 								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), parsers));
 								if (lyr->IsError())
 								{
@@ -558,24 +548,23 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							}
 							else
 							{
-								reader->SkipElement();
+								reader.SkipElement();
 							}
 						}
 						else
 						{
-							reader->SkipElement();
+							reader.SkipElement();
 						}
 					}
 				}
 
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 			{
-				reader->SkipElement();
+				reader.SkipElement();
 			}
 		}
-		DEL_CLASS(reader);
 		return lyr;
 	}
 	else if (nodeText->Equals(UTF8STRC("VisualStudioProject")))
@@ -585,10 +574,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Text::VSProject::VisualStudioVersion ver = Text::VSProject::VSV_UNKNOWN;
 		Text::String *projName = 0;
 		UOSInt i;
-		i = reader->GetAttribCount();
+		i = reader.GetAttribCount();
 		while (i-- > 0)
 		{
-			attr = reader->GetAttrib(i);
+			attr = reader.GetAttrib(i);
 			if (attr->name->Equals(UTF8STRC("Version")))
 			{
 				if (attr->value->Equals(UTF8STRC("7.10")))
@@ -614,31 +603,31 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			NEW_CLASS(proj, Text::VSProject(fileName, ver));
 			proj->SetProjectName(projName);
 			i = 0;
-			while (reader->ReadNext())
+			while (reader.ReadNext())
 			{
-				if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+				if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 				{
 					break;
 				}
-				else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+				else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 				{
-					if (reader->GetNodeText()->Equals(UTF8STRC("Configurations")))
+					if (reader.GetNodeText()->Equals(UTF8STRC("Configurations")))
 					{
-						if (!ParseVSConfFile(reader, proj))
+						if (!ParseVSConfFile(&reader, proj))
 						{
 							break;
 						}
 					}
-					else if (reader->GetNodeText()->Equals(UTF8STRC("Files")))
+					else if (reader.GetNodeText()->Equals(UTF8STRC("Files")))
 					{
-						if (!ParseVSProjFile(reader, proj))
+						if (!ParseVSProjFile(&reader, proj))
 						{
 							break;
 						}
 					}
 					else
 					{
-						if (!reader->SkipElement())
+						if (!reader.SkipElement())
 						{
 							break;
 						}
@@ -646,7 +635,6 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}
 			}
 		}
-		DEL_CLASS(reader);
 		return proj;
 	}
 	else if (nodeText->EndsWith(UTF8STRC(":FeatureCollection")))
@@ -665,40 +653,40 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Text::XMLAttrib *attr;
 		UTF8Char *sarr[4];
 		UTF8Char *sarr2[3];
-		while (reader->ReadNext())
+		while (reader.ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 			{
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 			{
-				if (reader->GetNodeText()->Equals(UTF8STRC("gml:featureMember")))
+				if (reader.GetNodeText()->Equals(UTF8STRC("gml:featureMember")))
 				{
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						nodeType = reader->GetNodeType();
+						nodeType = reader.GetNodeType();
 						if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
 						else if (nodeType == Text::XMLNode::NT_ELEMENT)
 						{
-							while (reader->ReadNext())
+							while (reader.ReadNext())
 							{
-								nodeType = reader->GetNodeType();
+								nodeType = reader.GetNodeType();
 								if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 								{
 									break;
 								}
 								else if (nodeType == Text::XMLNode::NT_ELEMENT)
 								{
-									nodeText = reader->GetNodeText();
+									nodeText = reader.GetNodeText();
 									if (nodeText->StartsWith(UTF8STRC("fme:")))
 									{
-										nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + 4));
+										nameList.Add(Text::StrCopyNew(reader.GetNodeText()->v + 4));
 										sb.ClearStr();
-										reader->ReadNodeText(&sb);
+										reader.ReadNodeText(&sb);
 										if (sb.GetLength() > 0)
 										{
 											valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -713,22 +701,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D)
 										{
 											layerType = Map::DRAW_LAYER_POINT3D;
-											while (reader->ReadNext())
+											while (reader.ReadNext())
 											{
-												if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 												{
 													break;
 												}
-												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 												{
-													if (reader->GetNodeText()->Equals(UTF8STRC("gml:Point")))
+													if (reader.GetNodeText()->Equals(UTF8STRC("gml:Point")))
 													{
 														if (csys == 0)
 														{
-															i = reader->GetAttribCount();
+															i = reader.GetAttribCount();
 															while (i-- > 0)
 															{
-																attr = reader->GetAttrib(i);
+																attr = reader.GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
 																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
@@ -753,18 +741,18 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl zPts;
 															Math::Point3D *pt;
 															scols = valList.GetArray(&i);
-															while (reader->ReadNext())
+															while (reader.ReadNext())
 															{
-																if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																{
 																	break;
 																}
-																else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																{
-																	if (reader->GetNodeText()->Equals(UTF8STRC("gml:pos")))
+																	if (reader.GetNodeText()->Equals(UTF8STRC("gml:pos")))
 																	{
 																		sb.ClearStr();
-																		reader->ReadNodeText(&sb);
+																		reader.ReadNodeText(&sb);
 																		sarr[3] = sb.ToString();
 																		while (true)
 																		{
@@ -788,26 +776,26 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																	}
 																	else
 																	{
-																		reader->SkipElement();
+																		reader.SkipElement();
 																	}
 																}
 															}
 														}
 														else
 														{
-															reader->SkipElement();
+															reader.SkipElement();
 														}
 													}
 													else
 													{
-														reader->SkipElement();
+														reader.SkipElement();
 													}
 												}
 											}
 										}
 										else
 										{
-											reader->SkipElement();
+											reader.SkipElement();
 										}
 									}
 									else if (nodeText->Equals(UTF8STRC("gml:surfaceProperty")))
@@ -815,22 +803,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
 										{
 											layerType = Map::DRAW_LAYER_POLYGON;
-											while (reader->ReadNext())
+											while (reader.ReadNext())
 											{
-												if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 												{
 													break;
 												}
-												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 												{
-													if (reader->GetNodeText()->Equals(UTF8STRC("gml:Surface")))
+													if (reader.GetNodeText()->Equals(UTF8STRC("gml:Surface")))
 													{
 														if (csys == 0)
 														{
-															i = reader->GetAttribCount();
+															i = reader.GetAttribCount();
 															while (i-- > 0)
 															{
-																attr = reader->GetAttrib(i);
+																attr = reader.GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
 																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
@@ -856,48 +844,48 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Math::Polygon *pg;
 															Double *ptList;
 															scols = valList.GetArray(&i);
-															while (reader->ReadNext())
+															while (reader.ReadNext())
 															{
-																if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																{
 																	break;
 																}
-																else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:patches")))
+																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:patches")))
 																{
-																	while (reader->ReadNext())
+																	while (reader.ReadNext())
 																	{
-																		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																		if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																		{
 																			break;
 																		}
-																		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
+																		else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
 																		{
-																			while (reader->ReadNext())
+																			while (reader.ReadNext())
 																			{
-																				if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																				if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																				{
 																					break;
 																				}
-																				else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:exterior")))
+																				else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:exterior")))
 																				{
-																					while (reader->ReadNext())
+																					while (reader.ReadNext())
 																					{
-																						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																						{
 																							break;
 																						}
-																						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
 																						{
-																							while (reader->ReadNext())
+																							while (reader.ReadNext())
 																							{
-																								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																								if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																								{
 																									break;
 																								}
-																								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:posList")))
+																								else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
 																								{
 																									sb.ClearStr();
-																									reader->ReadNodeText(&sb);
+																									reader.ReadNodeText(&sb);
 																									sarr[3] = sb.ToString();
 																									while (true)
 																									{
@@ -925,44 +913,44 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																										lyr->AddVector(pg, scols);
 																									}
 																								}
-																								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																								else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																								{
-																									reader->SkipElement();
+																									reader.SkipElement();
 																								}
 																							}
 																						}
-																						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																						{
-																							reader->SkipElement();
+																							reader.SkipElement();
 																						}
 																					}
 																				}
-																				else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																				else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																				{
-																					reader->SkipElement();
+																					reader.SkipElement();
 																				}
 																			}
 																		}
-																		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																		else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																		{
-																			reader->SkipElement();
+																			reader.SkipElement();
 																		}
 																	}
 																}
-																else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																{
-																	reader->SkipElement();
+																	reader.SkipElement();
 																}
 															}
 														}
 														else
 														{
-															reader->SkipElement();
+															reader.SkipElement();
 														}
 													}
 													else
 													{
-														reader->SkipElement();
+														reader.SkipElement();
 													}
 												}
 											}
@@ -973,22 +961,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D)
 										{
 											layerType = Map::DRAW_LAYER_POLYLINE3D;
-											while (reader->ReadNext())
+											while (reader.ReadNext())
 											{
-												if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 												{
 													break;
 												}
-												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 												{
-													if (reader->GetNodeText()->Equals(UTF8STRC("gml:LineString")))
+													if (reader.GetNodeText()->Equals(UTF8STRC("gml:LineString")))
 													{
 														if (csys == 0)
 														{
-															i = reader->GetAttribCount();
+															i = reader.GetAttribCount();
 															while (i-- > 0)
 															{
-																attr = reader->GetAttrib(i);
+																attr = reader.GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
 																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
@@ -1015,18 +1003,18 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Double *ptList;
 															Double *hList;
 															scols = valList.GetArray(&i);
-															while (reader->ReadNext())
+															while (reader.ReadNext())
 															{
-																if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 																{
 																	break;
 																}
-																else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 																{
-																	if (reader->GetNodeText()->Equals(UTF8STRC("gml:posList")))
+																	if (reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
 																	{
 																		sb.ClearStr();
-																		reader->ReadNodeText(&sb);
+																		reader.ReadNodeText(&sb);
 																		sarr[3] = sb.ToString();
 																		while (true)
 																		{
@@ -1058,19 +1046,19 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																	}
 																	else
 																	{
-																		reader->SkipElement();
+																		reader.SkipElement();
 																	}
 																}
 															}
 														}
 														else
 														{
-															reader->SkipElement();
+															reader.SkipElement();
 														}
 													}
 													else
 													{
-														reader->SkipElement();
+														reader.SkipElement();
 													}
 												}
 											}
@@ -1081,22 +1069,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
 										{
 											layerType = Map::DRAW_LAYER_POLYGON;
-											while (reader->ReadNext())
+											while (reader.ReadNext())
 											{
-												if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 												{
 													break;
 												}
-												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 												{
-													if (reader->GetNodeText()->Equals(UTF8STRC("gml:MultiPolygon")))
+													if (reader.GetNodeText()->Equals(UTF8STRC("gml:MultiPolygon")))
 													{
 														if (csys == 0)
 														{
-															i = reader->GetAttribCount();
+															i = reader.GetAttribCount();
 															while (i-- > 0)
 															{
-																attr = reader->GetAttrib(i);
+																attr = reader.GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
 																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
@@ -1122,53 +1110,53 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Math::Polygon *pg;
 															Double *ptList;
 															scols = valList.GetArray(&i);
-															while (reader->ReadNext())
+															while (reader.ReadNext())
 															{
-																nodeType = reader->GetNodeType();
+																nodeType = reader.GetNodeType();
 																if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 																{
 																	break;
 																}
-																else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
+																else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
 																{
-																	while (reader->ReadNext())
+																	while (reader.ReadNext())
 																	{
-																		nodeType = reader->GetNodeType();
+																		nodeType = reader.GetNodeType();
 																		if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 																		{
 																			break;
 																		}
-																		else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
+																		else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
 																		{
-																			while (reader->ReadNext())
+																			while (reader.ReadNext())
 																			{
-																				nodeType = reader->GetNodeType();
+																				nodeType = reader.GetNodeType();
 																				if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 																				{
 																					break;
 																				}
-																				else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
+																				else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
 																				{
-																					while (reader->ReadNext())
+																					while (reader.ReadNext())
 																					{
-																						nodeType = reader->GetNodeType();
+																						nodeType = reader.GetNodeType();
 																						if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 																						{
 																							break;
 																						}
-																						else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																						else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
 																						{
-																							while (reader->ReadNext())
+																							while (reader.ReadNext())
 																							{
-																								nodeType = reader->GetNodeType();
+																								nodeType = reader.GetNodeType();
 																								if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 																								{
 																									break;
 																								}
-																								else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
+																								else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
 																								{
 																									sb.ClearStr();
-																									reader->ReadNodeText(&sb);
+																									reader.ReadNodeText(&sb);
 																									sarr[1] = sb.ToString();
 																									while (true)
 																									{
@@ -1196,42 +1184,42 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																								}
 																								else if (nodeType == Text::XMLNode::NT_ELEMENT)
 																								{
-																									reader->SkipElement();
+																									reader.SkipElement();
 																								}
 																							}
 																						}
 																						else if (nodeType == Text::XMLNode::NT_ELEMENT)
 																						{
-																							reader->SkipElement();
+																							reader.SkipElement();
 																						}
 																					}
 																				}
 																				else if (nodeType == Text::XMLNode::NT_ELEMENT)
 																				{
-																					reader->SkipElement();
+																					reader.SkipElement();
 																				}
 																			}
 																		}
 																		else if (nodeType == Text::XMLNode::NT_ELEMENT)
 																		{
-																			reader->SkipElement();
+																			reader.SkipElement();
 																		}
 																	}
 																}
 																else if (nodeType == Text::XMLNode::NT_ELEMENT)
 																{
-																	reader->SkipElement();
+																	reader.SkipElement();
 																}
 															}
 														}
 														else
 														{
-															reader->SkipElement();
+															reader.SkipElement();
 														}
 													}
 													else
 													{
-														reader->SkipElement();
+														reader.SkipElement();
 													}
 												}
 											}
@@ -1239,7 +1227,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									}
 									else
 									{
-										reader->SkipElement();
+										reader.SkipElement();
 									}
 								}
 							}
@@ -1263,11 +1251,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}
 				else
 				{
-					reader->SkipElement();
+					reader.SkipElement();
 				}
 			}
 		}
-		DEL_CLASS(reader);
 		return lyr;
 	}
 	else if (nodeText->Equals(UTF8STRC("fme:xml-tables")))
@@ -1296,15 +1283,15 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			sbTableName.AppendSlow(shortName);
 		}
 
-		while (reader->ReadNext())
+		while (reader.ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 			{
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 			{
-				if (reader->GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrStartsWith(reader->GetNodeText()->v + 4, sbTableName.ToString()) && Text::StrEquals(reader->GetNodeText()->v + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
+				if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrStartsWith(reader.GetNodeText()->v + 4, sbTableName.ToString()) && Text::StrEquals(reader.GetNodeText()->v + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
 				{
 					UOSInt i;
 					UOSInt j;
@@ -1314,20 +1301,20 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 					Data::ArrayList<const UTF8Char *> nameList;
 					Data::ArrayList<const UTF8Char *> valList;
 					Bool succ = false;
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 						{
 							succ = true;
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (reader->GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrEquals(reader->GetNodeText()->v + 4, sbTableName.ToString()))
+							if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrEquals(reader.GetNodeText()->v + 4, sbTableName.ToString()))
 							{
-								while (reader->ReadNext())
+								while (reader.ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 									{
 										if (nameList.GetCount() > 0)
 										{
@@ -1380,26 +1367,26 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										}
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 									{
-										if (reader->GetNodeText()->StartsWith(UTF8STRC("fme:")))
+										if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")))
 										{
-											Text::String *txt = reader->GetNodeText();
+											Text::String *txt = reader.GetNodeText();
 											nameList.Add(Text::StrCopyNewC(txt->v + 4, txt->leng - 4));
 											sb.ClearStr();
-											reader->ReadNodeText(&sb);
+											reader.ReadNodeText(&sb);
 											valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 										}
 										else
 										{
-											reader->SkipElement();
+											reader.SkipElement();
 										}
 									}
 								}
 							}
 							else
 							{
-								reader->SkipElement();
+								reader.SkipElement();
 							}
 						}
 					}
@@ -1422,12 +1409,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 					{
 						SDEL_CLASS(db);
 					}
-					DEL_CLASS(reader);
 					return db;
 				}
 				else
 				{
-					reader->SkipElement();
+					reader.SkipElement();
 				}
 			}
 		}
@@ -1437,60 +1423,60 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfoLog *sysInfo;
 		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
-		while (reader->ReadNext())
+		while (reader.ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 			{
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 			{
-				if (reader->GetNodeText()->Equals(UTF8STRC("SYSTEM")))
+				if (reader.GetNodeText()->Equals(UTF8STRC("SYSTEM")))
 				{
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (reader->GetNodeText()->Equals(UTF8STRC("OSNAME")))
+							if (reader.GetNodeText()->Equals(UTF8STRC("OSNAME")))
 							{
 								sb.ClearStr();
-								if (reader->ReadNodeText(&sb))
+								if (reader.ReadNodeText(&sb))
 								{
 									sysInfo->SetOSName(sb.ToCString());
 								}
 							}
-							else if (reader->GetNodeText()->Equals(UTF8STRC("OSVER")))
+							else if (reader.GetNodeText()->Equals(UTF8STRC("OSVER")))
 							{
 								sb.ClearStr();
-								if (reader->ReadNodeText(&sb))
+								if (reader.ReadNodeText(&sb))
 								{
 									sysInfo->SetOSVer(sb.ToCString());
 								}
 							}
-							else if (reader->GetNodeText()->Equals(UTF8STRC("OSLANGUAGE")))
+							else if (reader.GetNodeText()->Equals(UTF8STRC("OSLANGUAGE")))
 							{
 								sb.ClearStr();
-								if (reader->ReadNodeText(&sb))
+								if (reader.ReadNodeText(&sb))
 								{
 									sysInfo->SetOSLocale(Text::StrToUInt32(sb.ToString()));
 								}
 							}
-							else if (reader->GetNodeText()->Equals(UTF8STRC("ARCHITECTURE")))
+							else if (reader.GetNodeText()->Equals(UTF8STRC("ARCHITECTURE")))
 							{
 								sb.ClearStr();
-								if (reader->ReadNodeText(&sb))
+								if (reader.ReadNodeText(&sb))
 								{
 									sysInfo->SetArchitecture(Text::StrToUInt32(sb.ToString()));
 								}
 							}
-							else if (reader->GetNodeText()->Equals(UTF8STRC("PRODUCTTYPE")))
+							else if (reader.GetNodeText()->Equals(UTF8STRC("PRODUCTTYPE")))
 							{
 								sb.ClearStr();
-								if (reader->ReadNodeText(&sb))
+								if (reader.ReadNodeText(&sb))
 								{
 									sysInfo->SetProductType(Text::StrToUInt32(sb.ToString()));
 								}
@@ -1498,49 +1484,49 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 						}
 					}
 				}
-				else if (reader->GetNodeText()->Equals(UTF8STRC("SERVERROLES")))
+				else if (reader.GetNodeText()->Equals(UTF8STRC("SERVERROLES")))
 				{
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (reader->GetNodeText()->Equals(UTF8STRC("REG_VALUE")))
+							if (reader.GetNodeText()->Equals(UTF8STRC("REG_VALUE")))
 							{
 								const UTF8Char *roleName = 0;
 								const UTF8Char *roleData = 0;
-								while (reader->ReadNext())
+								while (reader.ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 									{
-										if (reader->GetNodeText()->Equals(UTF8STRC("NAME")))
+										if (reader.GetNodeText()->Equals(UTF8STRC("NAME")))
 										{
 											SDEL_TEXT(roleName);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("DATA")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("DATA")))
 										{
 											SDEL_TEXT(roleData);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else
 										{
-											reader->SkipElement();
+											reader.SkipElement();
 										}
 									}
 								}
@@ -1553,74 +1539,74 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							}
 							else
 							{
-								reader->SkipElement();
+								reader.SkipElement();
 							}
 						}
 					}
 				}
-				else if (reader->GetNodeText()->Equals(UTF8STRC("DEVICES")))
+				else if (reader.GetNodeText()->Equals(UTF8STRC("DEVICES")))
 				{
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (reader->GetNodeText()->Equals(UTF8STRC("DEVICE")))
+							if (reader.GetNodeText()->Equals(UTF8STRC("DEVICE")))
 							{
 								const UTF8Char *desc = 0;
 								const UTF8Char *hwId = 0;
 								const UTF8Char *service = 0;
 								const UTF8Char *driver = 0;
-								while (reader->ReadNext())
+								while (reader.ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 									{
-										if (reader->GetNodeText()->Equals(UTF8STRC("DESCRIPTION")))
+										if (reader.GetNodeText()->Equals(UTF8STRC("DESCRIPTION")))
 										{
 											SDEL_TEXT(desc);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("HARDWAREID")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("HARDWAREID")))
 										{
 											SDEL_TEXT(hwId);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("SERVICE")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("SERVICE")))
 										{
 											SDEL_TEXT(service);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												service = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("DRIVER")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("DRIVER")))
 										{
 											SDEL_TEXT(driver);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else
 										{
-											reader->SkipElement();
+											reader.SkipElement();
 										}
 									}
 								}
@@ -1635,22 +1621,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							}
 							else
 							{
-								reader->SkipElement();
+								reader.SkipElement();
 							}
 						}
 					}
 				}
-				else if (reader->GetNodeText()->Equals(UTF8STRC("DRIVERS")))
+				else if (reader.GetNodeText()->Equals(UTF8STRC("DRIVERS")))
 				{
-					while (reader->ReadNext())
+					while (reader.ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (reader->GetNodeText()->Equals(UTF8STRC("DRIVER")))
+							if (reader.GetNodeText()->Equals(UTF8STRC("DRIVER")))
 							{
 								const UTF8Char *fileName = 0;
 								UInt64 fileSize = 0;
@@ -1660,87 +1646,87 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								const UTF8Char *productName = 0;
 								const UTF8Char *group = 0;
 								UInt32 altitude = 0;
-								while (reader->ReadNext())
+								while (reader.ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
 									{
-										if (reader->GetNodeText()->Equals(UTF8STRC("FILENAME")))
+										if (reader.GetNodeText()->Equals(UTF8STRC("FILENAME")))
 										{
 											SDEL_TEXT(fileName);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("FILESIZE")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("FILESIZE")))
 										{
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												fileSize = Text::StrToUInt64(sb.ToString());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("CREATIONDATE")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("CREATIONDATE")))
 										{
 											SDEL_TEXT(createDate);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("VERSION")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("VERSION")))
 										{
 											SDEL_TEXT(version);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												version = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("MANUFACTURER")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("MANUFACTURER")))
 										{
 											SDEL_TEXT(manufacturer);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("PRODUCTNAME")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("PRODUCTNAME")))
 										{
 											SDEL_TEXT(productName);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("GROUP")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("GROUP")))
 										{
 											SDEL_TEXT(group);
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												group = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
-										else if (reader->GetNodeText()->Equals(UTF8STRC("ALTITUDE")))
+										else if (reader.GetNodeText()->Equals(UTF8STRC("ALTITUDE")))
 										{
 											sb.ClearStr();
-											if (reader->ReadNodeText(&sb))
+											if (reader.ReadNodeText(&sb))
 											{
 												altitude = Text::StrToUInt32(sb.ToString());
 											}
 										}
 										else
 										{
-											reader->SkipElement();
+											reader.SkipElement();
 										}
 									}
 								}
@@ -1757,21 +1743,19 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							}
 							else
 							{
-								reader->SkipElement();
+								reader.SkipElement();
 							}
 						}
 					}
 				}
 				else
 				{
-					reader->SkipElement();
+					reader.SkipElement();
 				}
 			}
 		}
-		DEL_CLASS(reader);
 		return sysInfo;
 	}
-	DEL_CLASS(reader);
 	return 0;
 }
 
@@ -3127,8 +3111,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
 					{
-						Data::ArrayListDbl *coord;
-						Data::ArrayListDbl *altList;
+						Data::ArrayListDbl coord;
+						Data::ArrayListDbl altList;
 						UTF8Char c;
 						UTF8Char *sptr;
 						UTF8Char *sptr2;
@@ -3138,9 +3122,6 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 						sb.ClearStr();
 						reader->ReadNodeText(&sb);
-
-						NEW_CLASS(coord, Data::ArrayListDbl());
-						NEW_CLASS(altList, Data::ArrayListDbl());
 						sptr = sb.ToString();
 						while (true)
 						{
@@ -3172,18 +3153,18 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							i = Text::StrSplit(sarr, 4, sbuff, ',');
 							if (i == 3)
 							{
-								coord->Add(Text::StrToDouble(sarr[0]));
-								coord->Add(Text::StrToDouble(sarr[1]));
-								altList->Add(Text::StrToDouble(sarr[2]));
+								coord.Add(Text::StrToDouble(sarr[0]));
+								coord.Add(Text::StrToDouble(sarr[1]));
+								altList.Add(Text::StrToDouble(sarr[2]));
 							}
 							else if (i == 2)
 							{
-								coord->Add(Text::StrToDouble(sarr[0]));
-								coord->Add(Text::StrToDouble(sarr[1]));
-								altList->Add(0);
+								coord.Add(Text::StrToDouble(sarr[0]));
+								coord.Add(Text::StrToDouble(sarr[1]));
+								altList.Add(0);
 							}
 						}
-						if (coord->GetCount() > 0)
+						if (coord.GetCount() > 0)
 						{
 							Math::Polyline3D *pl;
 							UOSInt nPoints;
@@ -3191,17 +3172,15 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							Double *altArr;
 							UOSInt j;
 
-							NEW_CLASS(pl, Math::Polyline3D(4326, 1, altList->GetCount()));
+							NEW_CLASS(pl, Math::Polyline3D(4326, 1, altList.GetCount()));
 							pl->GetPtOfstList(&nPoints)[0] = 0;
 							altArr = pl->GetAltitudeList(&nPoints);
 							ptArr = pl->GetPointList(&nPoints);
-							i = altList->GetCount();
-							MemCopyNO(ptArr, coord->GetArray(&j), sizeof(Double) * 2 * i);
-							MemCopyNO(altArr, altList->GetArray(&j), sizeof(Double) * i);
+							i = altList.GetCount();
+							MemCopyNO(ptArr, coord.GetArray(&j), sizeof(Double) * 2 * i);
+							MemCopyNO(altArr, altList.GetArray(&j), sizeof(Double) * i);
 							lyr->AddVector(pl, &lyrNameSb);
 						}
-						DEL_CLASS(coord);
-						DEL_CLASS(altList);
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
@@ -3330,12 +3309,10 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
-				Data::ArrayListDbl *coord;
-				Data::ArrayListDbl *altList;
+				Data::ArrayListDbl coord;
+				Data::ArrayListDbl altList;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
 
-				NEW_CLASS(coord, Data::ArrayListDbl());
-				NEW_CLASS(altList, Data::ArrayListDbl());
 				while (reader->ReadNext())
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -3346,11 +3323,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					{
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("OUTERBOUNDARYIS")))
 						{
-							ParseCoordinates(reader, coord, 0);
+							ParseCoordinates(reader, &coord, 0);
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("INNERBOUNDARYIS")))
 						{
-							ParseCoordinates(reader, altList, 0);
+							ParseCoordinates(reader, &altList, 0);
 						}
 						else
 						{
@@ -3358,7 +3335,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						}
 					}
 				}
-				if (coord->GetCount() > 0)
+				if (coord.GetCount() > 0)
 				{
 					Math::Polygon *pg;
 					UOSInt nPoints;
@@ -3366,29 +3343,27 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					UInt32 *ptList;
 					UOSInt i;
 
-					if (altList->GetCount() > 0)
+					if (altList.GetCount() > 0)
 					{
-						NEW_CLASS(pg, Math::Polygon(4326, 2, (coord->GetCount() + altList->GetCount()) >> 1));
+						NEW_CLASS(pg, Math::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1));
 						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
-						ptList[1] = (UInt32)(coord->GetCount() >> 1);
+						ptList[1] = (UInt32)(coord.GetCount() >> 1);
 						ptArr = pg->GetPointList(&nPoints);
-						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
-						MemCopyNO(&ptArr[coord->GetCount()], altList->GetArray(&i), sizeof(Double) * altList->GetCount());
+						MemCopyNO(ptArr, coord.GetArray(&i), sizeof(Double) * coord.GetCount());
+						MemCopyNO(&ptArr[coord.GetCount()], altList.GetArray(&i), sizeof(Double) * altList.GetCount());
 						lyr->AddVector(pg, &lyrNameSb);
 					}
 					else
 					{
-						NEW_CLASS(pg, Math::Polygon(4326, 1, coord->GetCount() >> 1));
+						NEW_CLASS(pg, Math::Polygon(4326, 1, coord.GetCount() >> 1));
 						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
 						ptArr = pg->GetPointList(&nPoints);
-						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
+						MemCopyNO(ptArr, coord.GetArray(&i), sizeof(Double) * coord.GetCount());
 						lyr->AddVector(pg, &lyrNameSb);
 					}
 				}
-				DEL_CLASS(coord);
-				DEL_CLASS(altList);
 
 				if (style)
 				{

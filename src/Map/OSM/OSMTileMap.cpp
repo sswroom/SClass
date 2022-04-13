@@ -2,6 +2,7 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
+#include "IO/StmData/BufferedStreamData.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -11,17 +12,15 @@
 
 Text::String *Map::OSM::OSMTileMap::GetNextURL()
 {
-	Sync::MutexUsage mutUsage(this->urlMut);
-	Text::String *thisUrl = this->urls->GetItem(this->urlNext);
-	this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
+	Sync::MutexUsage mutUsage(&this->urlMut);
+	Text::String *thisUrl = this->urls.GetItem(this->urlNext);
+	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
 	return thisUrl;
 }
 
 Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	NEW_CLASS(this->urls, Data::ArrayListString());
-	this->urls->Add(Text::String::New(url.v, url.leng));
-	NEW_CLASS(this->urlMut, Sync::Mutex());
+	this->urls.Add(Text::String::New(url.v, url.leng));
 	this->urlNext = 0;
 	this->cacheDir = Text::String::New(cacheDir.v, cacheDir.leng);
 	this->spkg = 0;
@@ -34,9 +33,7 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, Text::CString cacheDir, UOSI
 
 Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	NEW_CLASS(this->urls, Data::ArrayListString());
-	this->urls->Add(Text::String::New(url.v, url.leng));
-	NEW_CLASS(this->urlMut, Sync::Mutex());
+	this->urls.Add(Text::String::New(url.v, url.leng));
 	this->urlNext = 0;
 	this->cacheDir = 0;
 	this->spkg = spkg;
@@ -50,25 +47,23 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSI
 Map::OSM::OSMTileMap::~OSMTileMap()
 {
 	UOSInt i;
-	i = this->urls->GetCount();
+	i = this->urls.GetCount();
 	while (i-- > 0)
 	{
-		this->urls->GetItem(i)->Release();
+		this->urls.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->urls);
-	DEL_CLASS(this->urlMut);
 	SDEL_STRING(this->cacheDir);
 	SDEL_CLASS(this->spkg);
 }
 
 void Map::OSM::OSMTileMap::AddAlternateURL(Text::CString url)
 {
-	this->urls->Add(Text::String::New(url.v, url.leng));
+	this->urls.Add(Text::String::New(url.v, url.leng));
 }
 
 Text::String *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
 {
-	return this->urls->GetItem(index);
+	return this->urls.GetItem(index);
 }
 
 Bool Map::OSM::OSMTileMap::HasSPackageFile()
@@ -138,7 +133,7 @@ UOSInt Map::OSM::OSMTileMap::GetNearestLevel(Double scale)
 
 UOSInt Map::OSM::OSMTileMap::GetConcurrentCount()
 {
-	return 2 * this->urls->GetCount();
+	return 2 * this->urls.GetCount();
 }
 
 Bool Map::OSM::OSMTileMap::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
@@ -233,7 +228,6 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	Net::HTTPClient *cli;
-	IO::FileStream *fs;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj;
 	if (level > this->maxLevel)
@@ -273,12 +267,12 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			if (dt.CompareTo(&currTime) > 0)
 			{
 				IO::ParserType pt;
-				pobj = parsers->ParseFile(fd, &pt);
+				IO::StmData::BufferedStreamData bsd(fd);
+				pobj = parsers->ParseFile(&bsd, &pt);
 				if (pobj)
 				{
 					if (pt == IO::ParserType::ImageList)
 					{
-						DEL_CLASS(fd);
 						return (Media::ImageList*)pobj;
 					}
 					DEL_CLASS(pobj);
@@ -287,9 +281,13 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			else
 			{
 				hasTime = true;
+				DEL_CLASS(fd);
 			}
 		}
-		DEL_CLASS(fd);
+		else
+		{
+			DEL_CLASS(fd);
+		}
 	}
 	else if (this->spkg)
 	{
@@ -303,17 +301,16 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		if (fd)
 		{
 			IO::ParserType pt;
-			pobj = parsers->ParseFile(fd, &pt);
+			IO::StmData::BufferedStreamData bsd(fd);
+			pobj = parsers->ParseFile(&bsd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
 				{
-					DEL_CLASS(fd);
 					return (Media::ImageList*)pobj;
 				}
 				DEL_CLASS(pobj);
 			}
-			DEL_CLASS(fd);
 //			printf("Get SPKG Img error parsing: %s\r\n", filePathU);
 		}
 		else
@@ -346,10 +343,9 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
-		fs->SetFileTimes(&dt, 0, 0);
-		DEL_CLASS(fs);
+		fs.SetFileTimes(&dt, 0, 0);
 //		printf("Reply 304\r\n");
 	}
 	else if (!cli->IsError())
@@ -373,19 +369,18 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-					fs->Write(imgBuff, (UOSInt)contLeng);
+					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					fs.Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
 						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, &dt);
+						fs.SetFileTimes(&currTime, 0, &dt);
 					}
 					else
 					{
 						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, 0);
+						fs.SetFileTimes(&currTime, 0, 0);
 					}
-					DEL_CLASS(fs);
 				}
 				else if (this->spkg)
 				{
@@ -413,18 +408,21 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		if (fd->GetDataSize() > 0)
 		{
 			IO::ParserType pt;
-			pobj = parsers->ParseFile(fd, &pt);
+			IO::StmData::BufferedStreamData bsd(fd);
+			pobj = parsers->ParseFile(&bsd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
 				{
-					DEL_CLASS(fd);
 					return (Media::ImageList*)pobj;
 				}
 				DEL_CLASS(pobj);
 			}
 		}
-		DEL_CLASS(fd);
+		else
+		{
+			DEL_CLASS(fd);
+		}
 	}
 	return 0;
 }
@@ -457,7 +455,6 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	Net::HTTPClient *cli;
-	IO::FileStream *fs;
 	IO::IStreamData *fd;
 	if (level > this->maxLevel)
 		return 0;
@@ -554,10 +551,9 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
-		fs->SetFileTimes(&dt, 0, 0);
-		DEL_CLASS(fs);
+		fs.SetFileTimes(&dt, 0, 0);
 	}
 	else
 	{
@@ -579,19 +575,18 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-					fs->Write(imgBuff, (UOSInt)contLeng);
+					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					fs.Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
 						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, &dt);
+						fs.SetFileTimes(&currTime, 0, &dt);
 					}
 					else
 					{
 						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, 0);
+						fs.SetFileTimes(&currTime, 0, 0);
 					}
-					DEL_CLASS(fs);
 				}
 				else if (this->spkg)
 				{

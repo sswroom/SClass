@@ -18,47 +18,51 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 	Media::ImageList *imgList;
 	CachedImage *cimg;
 	ThreadStat *stat = (ThreadStat*)userObj;
-	stat->running = true;
-	stat->isIdle = false;
-	while (!stat->toStop)
 	{
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->running = true;
+		stat->isIdle = false;
 		while (!stat->toStop)
 		{
-			Sync::MutexUsage mutUsage(&stat->me->taskMut);
-			cimg = (CachedImage*)stat->me->taskQueued.Get();
-			mutUsage.EndUse();
-			if (cimg == 0)
-				break;
+			while (!stat->toStop)
+			{
+				Sync::MutexUsage mutUsage(&stat->me->taskMut);
+				cimg = (CachedImage*)stat->me->taskQueued.Get();
+				mutUsage.EndUse();
+				if (cimg == 0)
+					break;
 
-			if (cimg->isCancel)
-			{
-				cimg->isFinish = true;
-			}
-			else
-			{
-				imgList = stat->me->tileMap->LoadTileImage(cimg->level, cimg->imgId, stat->me->parsers, bounds, false);
-				if (imgList)
+				if (cimg->isCancel)
 				{
-					NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
 					cimg->isFinish = true;
-					
-					Sync::MutexUsage mutUsage(&stat->me->updMut);
-					UOSInt i = stat->me->updHdlrs.GetCount();
-					while (i-- > 0)
-					{
-						stat->me->updHdlrs.GetItem(i)(stat->me->updObjs.GetItem(i));
-					}
-					mutUsage.EndUse();
 				}
 				else
 				{
-					cimg->isFinish = true;
+					imgList = stat->me->tileMap->LoadTileImage(cimg->level, cimg->imgId, stat->me->parsers, bounds, false);
+					if (imgList)
+					{
+						NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
+						cimg->isFinish = true;
+						
+						Sync::MutexUsage mutUsage(&stat->me->updMut);
+						UOSInt i = stat->me->updHdlrs.GetCount();
+						while (i-- > 0)
+						{
+							stat->me->updHdlrs.GetItem(i)(stat->me->updObjs.GetItem(i));
+						}
+						mutUsage.EndUse();
+					}
+					else
+					{
+						cimg->isFinish = true;
+					}
 				}
 			}
+			stat->isIdle = true;
+			stat->evt->Wait(1000);
+			stat->isIdle = false;
 		}
-		stat->isIdle = true;
-		stat->evt->Wait(1000);
-		stat->isIdle = false;
 	}
 	stat->running = false;
 	return 0;
@@ -161,7 +165,6 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 		this->threads[i].toStop = false;
 		this->threads[i].me = this;
 		this->threads[i].isIdle = false;
-		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
 		Sync::Thread::Create(TaskThread, &this->threads[i]);
 	}
 	Bool running = false;
@@ -216,12 +219,6 @@ Map::TileMapLayer::~TileMapLayer()
 		if (!running)
 			break;
 		Sync::Thread::Sleep(1);
-	}
-
-	i = this->threadCnt;
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->threads[i].evt);
 	}
 	MemFree(this->threads);
 
@@ -285,7 +282,7 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	}
 }
 
-Map::MapView *Map::TileMapLayer::CreateMapView(UOSInt width, UOSInt height)
+Map::MapView *Map::TileMapLayer::CreateMapView(Double width, Double height)
 {
 	Map::MapView *view;
 	if (this->tileMap->GetProjectionType() == Map::TileMap::PT_MERCATOR)

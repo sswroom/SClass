@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	me->StopThreads();
 	Text::StringBuilderUTF8 sb;
 	me->txtIP->GetText(&sb);
-	me->svrIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+	me->svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (me->svrIP == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid IP"), CSTR("Start"), me);

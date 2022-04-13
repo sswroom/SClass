@@ -14,7 +14,6 @@
 
 Net::SocketFactory::SocketFactory(Bool noV6DNS)
 {
-	NEW_CLASS(this->dnsMut, Sync::Mutex());
 	this->dnsHdlr = 0;
 	this->noV6DNS = noV6DNS;
 }
@@ -22,7 +21,6 @@ Net::SocketFactory::SocketFactory(Bool noV6DNS)
 Net::SocketFactory::~SocketFactory()
 {
 	SDEL_CLASS(this->dnsHdlr);
-	DEL_CLASS(this->dnsMut);
 }
 
 Bool Net::SocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
@@ -37,20 +35,20 @@ Bool Net::SocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 
 Bool Net::SocketFactory::ReloadDNS()
 {
-	Sync::MutexUsage mutUsage(this->dnsMut);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
 	SDEL_CLASS(this->dnsHdlr);
 	return true;
 }
 
-Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net::SocketUtil::AddressInfo *addr)
+Bool Net::SocketFactory::DNSResolveIP(Text::CString host, Net::SocketUtil::AddressInfo *addr)
 {
 	UTF8Char sbuff[256];
 
-	if (Net::SocketUtil::GetIPAddr(host, hostLen, addr))
+	if (Net::SocketUtil::GetIPAddr(host, addr))
 		return true;
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, Text::CString(host, hostLen));
-	Sync::MutexUsage mutUsage(this->dnsMut);
+	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -61,10 +59,10 @@ Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net:
 	mutUsage.EndUse();
 	if (!this->noV6DNS)
 	{
-		if (this->dnsHdlr->GetByDomainNamev6(addr, sbuff, (UOSInt)(sptr - sbuff)))
+		if (this->dnsHdlr->GetByDomainNamev6(addr, CSTRP(sbuff, sptr)))
 			return true;
 	}
-	Bool succ = this->dnsHdlr->GetByDomainNamev4(addr, sbuff, (UOSInt)(sptr - sbuff));
+	Bool succ = this->dnsHdlr->GetByDomainNamev4(addr, CSTRP(sbuff, sptr));
 	if (!succ)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -74,18 +72,18 @@ Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net:
 	return succ;
 }
 
-UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host, UOSInt hostLen)
+UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CString host)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[256];
 
-	if (Net::SocketUtil::GetIPAddr(host, hostLen, &addr))
+	if (Net::SocketUtil::GetIPAddr(host, &addr))
 	{
 		return *(UInt32*)addr.addr;
 	}
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, Text::CString(host, hostLen));
-	Sync::MutexUsage mutUsage(this->dnsMut);
+	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -94,7 +92,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host, UOSInt hostLen)
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();
-	if (this->dnsHdlr->GetByDomainNamev4(&addr, sbuff, (UOSInt)(sptr - sbuff)))
+	if (this->dnsHdlr->GetByDomainNamev4(&addr, CSTRP(sbuff, sptr)))
 	{
 		return *(UInt32*)addr.addr;
 	}

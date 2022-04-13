@@ -443,7 +443,7 @@ IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateContro
 	Bool found = false;
 	if (sockf->GetConnInfoList(&connInfoList) == 0)
 		return 0;
-	UInt32 ip = Net::SocketUtil::GetIPAddr(UTF8STRC("192.168.0.10"));
+	UInt32 ip = Net::SocketUtil::GetIPAddr(CSTR("192.168.0.10"));
 	UOSInt i = connInfoList.GetCount();
 	while (i-- > 0)
 	{

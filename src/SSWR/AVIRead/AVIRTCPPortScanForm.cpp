@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
 		}
 		sb.ClearStr();
 		me->txtIP->GetText(&sb);
-		if (me->sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
+		if (me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 		{
 			NEW_CLASS(me->scanner, Net::TCPPortScanner(me->sockf, threadCnt, OnPortUpdated, me));
 			me->scanner->Start(&addr, maxPort);

@@ -11,7 +11,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName())
+DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName()), enc(codePage)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -25,7 +25,6 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 	this->cols = 0;
 	this->colCnt = 0;
 	this->stmData->GetRealData(0, 32, buff);
-	NEW_CLASS(this->enc, Text::Encoding(codePage));
 	refPos = ReadUInt16(&buff[8]);
 	rowSize = ReadUInt32(&buff[10]);
 	colCnt = (UOSInt)(ReadUInt16(&buff[8]) >> 5) - 1;
@@ -39,8 +38,8 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 	{
 		this->stmData->GetRealData(currOfst, 32, buff);
 		currOfst += 32;
-		cols[i].name = Text::String::New(enc->CountUTF8Chars(buff, 11));
-		*enc->UTF8FromBytes(cols[i].name->v, buff, 11, 0) = 0;
+		cols[i].name = Text::String::New(enc.CountUTF8Chars(buff, 11));
+		*enc.UTF8FromBytes(cols[i].name->v, buff, 11, 0) = 0;
 		cols[i].name->RTrim();
 		cols[i].type = *(Int32*)&buff[11];
 		cols[i].colSize = buff[16];
@@ -74,11 +73,6 @@ DB::DBFFile::~DBFFile()
 		MemFree(cols);
 		this->cols = 0;
 	}
-	if (enc)
-	{
-		DEL_CLASS(enc);
-		enc = 0;
-	}
 	SDEL_STRING(this->name);
 	if (this->stmData)
 	{
@@ -105,7 +99,7 @@ DB::DBReader *DB::DBFFile::QueryTableData(Text::CString tableName, Data::ArrayLi
 	if (cols)
 	{
 		DB::DBFReader *r;
-		NEW_CLASS(r, DB::DBFReader(this, this->colCnt, this->cols, this->rowSize, this->enc));
+		NEW_CLASS(r, DB::DBFReader(this, this->colCnt, this->cols, this->rowSize, &this->enc));
 		return r;
 	}
 	else
@@ -135,7 +129,7 @@ Bool DB::DBFFile::IsError()
 
 UInt32 DB::DBFFile::GetCodePage()
 {
-	return this->enc->GetEncCodePage();
+	return this->enc.GetEncCodePage();
 }
 
 UOSInt DB::DBFFile::GetColSize(UOSInt colIndex)
@@ -163,7 +157,7 @@ WChar *DB::DBFFile::GetRecord(WChar *buff, UOSInt row, UOSInt col)
 
 	UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
 	this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, cbuff);
-	WChar *ret = this->enc->WFromBytes(buff, cbuff, this->cols[col].colSize, 0);
+	WChar *ret = this->enc.WFromBytes(buff, cbuff, this->cols[col].colSize, 0);
 	MemFree(cbuff);
 	return ret;
 }
@@ -175,7 +169,7 @@ UTF8Char *DB::DBFFile::GetRecord(UTF8Char *buff, UOSInt row, UOSInt col)
 
 	UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
 	this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, cbuff);
-	UTF8Char *ret = this->enc->UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
+	UTF8Char *ret = this->enc.UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
 	MemFree(cbuff);
 	return ret;
 }

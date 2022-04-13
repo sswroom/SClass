@@ -38,7 +38,7 @@ namespace Map
 
 		void SetCurrLayer(UInt32 level);
 		virtual void SetCurrScale(Double scale);
-		virtual Map::MapView *CreateMapView(UOSInt width, UOSInt height);
+		virtual Map::MapView *CreateMapView(Double width, Double height);
 
 		virtual DrawLayerType GetLayerType();
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);

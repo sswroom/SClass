@@ -10,8 +10,8 @@ namespace SSWR
 		class SyncClientDataMgr
 		{
 		private:
-			Sync::Mutex *mut;
-			Data::ArrayList<UInt8*> *dataList;
+			Sync::Mutex mut;
+			Data::ArrayList<UInt8*> dataList;
 
 		public:
 			SyncClientDataMgr();

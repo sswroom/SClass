@@ -453,7 +453,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSetClicked(void *userObj)
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtDNSServer2->GetText(&sb);
-	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (svrIP == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing server ip"), CSTR("Error"), me);
@@ -471,7 +471,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(void *userObj)
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtDNSServer2->GetText(&sb);
-	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (svrIP == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing server ip"), CSTR("Error"), me);
@@ -494,7 +494,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	me->txtSearchIPRange->GetText(&sb);
-	ip = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+	ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (ip == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter IP Range"), CSTR("Search"), me);
@@ -514,7 +514,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 			mask = BSWAPU32(mask);
 		}
 	}
-	else if ((mask = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) != 0)
+	else if ((mask = Net::SocketUtil::GetIPAddr(sb.ToCString())) != 0)
 	{
 	}
 	else
@@ -681,7 +681,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 	if (sb.GetLength() > 0)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength(), &addr))
+		if (Net::SocketUtil::GetIPAddr(sb.ToCString(), &addr))
 		{
 			me->proxy->SetWebProxyAutoDiscovery(&addr);
 		}

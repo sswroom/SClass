@@ -3,60 +3,53 @@
 #include "Net/WhoisHandler.h"
 #include "Sync/MutexUsage.h"
 
-Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf)
+Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf) : client(sockf)
 {
-	NEW_CLASS(this->client, Net::WhoisGlobalClient(sockf));
-	NEW_CLASS(this->recordList, Data::ArrayList<WhoisRecord*>());
-	NEW_CLASS(this->recordMut, Sync::Mutex());
-
 	WhoisRecord *rec;
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("10.0.0.1"))));
+	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("10.0.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 10.0.0.0 - 10.255.255.225"));
 	rec->AddItem(UTF8STRC("netname: LAN A"));
 	rec->AddItem(UTF8STRC("country: UN"));
-	this->recordList->Add(rec);
+	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1"))));
+	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 127.0.0.0 - 127.255.255.225"));
 	rec->AddItem(UTF8STRC("netname: localhost"));
 	rec->AddItem(UTF8STRC("country: UN"));
-	this->recordList->Add(rec);
+	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("172.16.0.1"))));
+	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("172.16.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 172.16.0.0 - 172.31.255.225"));
 	rec->AddItem(UTF8STRC("netname: LAN B"));
 	rec->AddItem(UTF8STRC("country: UN"));
-	this->recordList->Add(rec);
+	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("192.168.0.1"))));
+	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("192.168.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 192.168.0.0 - 192.168.255.225"));
 	rec->AddItem(UTF8STRC("netname: LAN C"));
 	rec->AddItem(UTF8STRC("country: UN"));
-	this->recordList->Add(rec);
+	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("224.0.0.1"))));
+	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("224.0.0.1"))));
 	rec->AddItem(UTF8STRC("NetRange: 224.0.0.0 - 239.255.255.255"));
 	rec->AddItem(UTF8STRC("CIDR: 224.0.0.0/4"));
 	rec->AddItem(UTF8STRC("NetName: MCAST-NET"));
 	rec->AddItem(UTF8STRC("NetHandle: NET-224-0-0-0-1"));
 	rec->AddItem(UTF8STRC("NetType: IANA Special Use"));
 	rec->AddItem(UTF8STRC("Country: US"));
-	this->recordList->Add(rec);
+	this->recordList.Add(rec);
 }
 
 Net::WhoisHandler::~WhoisHandler()
 {
-	DEL_CLASS(this->client);
-	UOSInt i = this->recordList->GetCount();
+	UOSInt i = this->recordList.GetCount();
 	WhoisRecord *rec;
 	while (i-- > 0)
 	{
-		rec = this->recordList->GetItem(i);
+		rec = this->recordList.GetItem(i);
 		DEL_CLASS(rec);
 	}
-	DEL_CLASS(this->recordList);
-	DEL_CLASS(this->recordMut);
 }
 
 Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
@@ -69,13 +62,13 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	OSInt k;
 	WhoisRecord *rec;
 	
-	Sync::MutexUsage mutUsage(this->recordMut);
+	Sync::MutexUsage mutUsage(&this->recordMut);
 	i = 0;
-	j = (OSInt)this->recordList->GetCount() - 1;
+	j = (OSInt)this->recordList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		rec = this->recordList->GetItem((UOSInt)k);
+		rec = this->recordList.GetItem((UOSInt)k);
 		sortableIP1 = Net::SocketUtil::IPv4ToSortable(rec->GetStartIP());
 		sortableIP2 = Net::SocketUtil::IPv4ToSortable(rec->GetEndIP());
 		if (sortableIP >= sortableIP1 && sortableIP <= sortableIP2)
@@ -91,7 +84,7 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 			i = k + 1;
 		}
 	}
-	rec = this->client->RequestIP(ip);
-	this->recordList->Insert((UOSInt)i, rec);
+	rec = this->client.RequestIP(ip);
+	this->recordList.Insert((UOSInt)i, rec);
 	return rec;
 }

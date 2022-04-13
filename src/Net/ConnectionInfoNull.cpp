@@ -41,65 +41,61 @@ UTF8Char *Net::ConnectionInfo::GetDNSSuffix(UTF8Char *buff)
 	return 0;
 }
 
-UInt32 Net::ConnectionInfo::GetIPAddress(OSInt index)
+UInt32 Net::ConnectionInfo::GetIPAddress(UOSInt index)
 {
 	return 0;
 }
 
-UInt32 Net::ConnectionInfo::GetDNSAddress(OSInt index)
+UInt32 Net::ConnectionInfo::GetDNSAddress(UOSInt index)
 {
 	return 0;
 }
 
 UInt32 Net::ConnectionInfo::GetDefaultGW()
 {
-	return this->defGW;
+	return this->ent.defGW;
 }
 
-OSInt Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, OSInt buffSize)
+UOSInt Net::ConnectionInfo::GetPhysicalAddress(UInt8 *buff, UOSInt buffSize)
 {
 	return 0;
 }
 
 UInt32 Net::ConnectionInfo::GetMTU()
 {
-	return this->mtu;
+	return this->ent.mtu;
 }
 
 Bool Net::ConnectionInfo::IsDhcpEnabled()
 {
-	return this->dhcpEnabled;
+	return this->ent.dhcpEnabled;
 }
 
 UInt32 Net::ConnectionInfo::GetDhcpServer()
 {
-	return this->dhcpSvr;
+	return this->ent.dhcpSvr;
 }
 
-Data::DateTime *Net::ConnectionInfo::GetDhcpLeaseTime()
+Data::Timestamp Net::ConnectionInfo::GetDhcpLeaseTime()
 {
-	return this->dhcpLeaseTime;
+	return this->ent.dhcpLeaseTime;
 }
 
-Data::DateTime *Net::ConnectionInfo::GetDhcpLeaseExpire()
+Data::Timestamp Net::ConnectionInfo::GetDhcpLeaseExpire()
 {
-	return this->dhcpLeaseExpire;
+	return this->ent.dhcpLeaseExpire;
 }
 
 Net::ConnectionInfo::ConnectionType Net::ConnectionInfo::GetConnectionType()
 {
-	return this->connType;
+	return this->ent.connType;
 }
 
 Net::ConnectionInfo::ConnectionStatus Net::ConnectionInfo::GetConnectionStatus()
 {
-	return this->connStatus;
+	return this->ent.connStatus;
 }
 
-OSInt Net::ConnectionInfo::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo*> *connInfoList)
-{
-	return 0;
-}
 /*
 Bool Net::ConnectionInfo::GetIPInfo(IPInfo *info)
 {

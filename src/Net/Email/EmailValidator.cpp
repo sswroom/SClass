@@ -15,19 +15,19 @@ Net::Email::EmailValidator::~EmailValidator()
 	DEL_CLASS(this->dnsClient);
 }
 
-Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UTF8Char *emailAddr)
+Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CString emailAddr)
 {
 	Net::SocketUtil::AddressInfo addr;
 	Net::Email::SMTPConn *conn;
-	const UTF8Char *emailDomain;
-	UOSInt i = Text::StrIndexOfChar(emailAddr, '@');
+	Text::CString emailDomain;
+	UOSInt i = emailAddr.IndexOf('@');
 	UOSInt j;
 	if (i == INVALID_INDEX || i == 0)
 	{
 		return S_INVALID_FORMAT;
 	}
-	emailDomain = &emailAddr[i + 1];
-	i = Text::StrIndexOfChar(emailDomain, '@');
+	emailDomain = emailAddr.Substring(i + 1);
+	i = emailDomain.IndexOf('@');
 	if (i != INVALID_INDEX)
 	{
 		return S_INVALID_FORMAT;
@@ -36,7 +36,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 	Text::String *emailSvr = 0;
 	Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 	Net::DNSClient::RequestAnswer *ans;
-	this->dnsClient->GetByEmailDomainName(&ansList, emailDomain, Text::StrCharCnt(emailDomain));
+	this->dnsClient->GetByEmailDomainName(&ansList, emailDomain);
 	i = 0;
 	j = ansList.GetCount();
 	while (i < j)
@@ -55,7 +55,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		return S_DOMAIN_NOT_RESOLVED;
 	}
 
-	if (!this->sockf->DNSResolveIP(emailSvr->v, emailSvr->leng, &addr))
+	if (!this->sockf->DNSResolveIP(emailSvr->ToCString(), &addr))
 	{
 		emailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;

@@ -14,7 +14,7 @@ namespace DB
 	class SQLBuilder
 	{
 	private:
-		Text::StringBuilderUTF8 *sb;
+		Text::StringBuilderUTF8 sb;
 		DB::DBUtil::ServerType svrType;
 		Int32 tzQhr;
 

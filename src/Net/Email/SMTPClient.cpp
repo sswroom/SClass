@@ -70,12 +70,12 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 		DEL_CLASS(conn);
 		return false;
 	}
-	Data::ArrayList<const UTF8Char *> *recpList = message->GetRecpList();
+	Data::ArrayList<Text::String *> *recpList = message->GetRecpList();
 	UOSInt i = 0;
 	UOSInt j = recpList->GetCount();
 	while (i < j)
 	{
-		if (!conn->SendRcptTo(recpList->GetItem(i)))
+		if (!conn->SendRcptTo(recpList->GetItem(i)->ToCString()))
 		{
 			DEL_CLASS(conn);
 			return false;

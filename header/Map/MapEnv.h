@@ -114,14 +114,14 @@ namespace Map
 		} FontStyle;
 		
 	private:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		UInt32 bgColor;
-		Data::ArrayList<MapItem*> *mapLayers;
-		Data::ArrayList<LineStyle*> *lineStyles;
-		Data::ArrayList<FontStyle*> *fontStyles;
-		Data::StringMap<ImageInfo*> *images;
-		Data::ArrayList<ImageInfo*> *imgList;
-		Data::RandomOS *random;
+		Data::ArrayList<MapItem*> mapLayers;
+		Data::ArrayList<LineStyle*> lineStyles;
+		Data::ArrayList<FontStyle*> fontStyles;
+		Data::StringMap<ImageInfo*> images;
+		Data::ArrayList<ImageInfo*> imgList;
+		Data::RandomOS random;
 		UOSInt nStr;
 		UOSInt defLineStyle;
 		UOSInt defFontStyle;
@@ -203,7 +203,7 @@ namespace Map
 		Map::IMapDrawLayer *GetFirstLayer(GroupItem *group);
 		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::IMapDrawLayer *> *layers);
 		Bool GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Double *minY, Double *maxX, Double *maxY);
-		Map::MapView *CreateMapView(UOSInt width, UOSInt height);
+		Map::MapView *CreateMapView(Double width, Double height);
 		Math::CoordinateSystem *GetCoordinateSystem();
 		UInt32 GetSRID();
 

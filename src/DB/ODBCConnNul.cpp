@@ -137,7 +137,7 @@ DB::ODBCConn::~ODBCConn()
 		OSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->tableNames->GetItem(i));
+			this->tableNames->GetItem(i)->Release();
 		}
 		DEL_CLASS(this->tableNames);
 		this->tableNames = 0;
@@ -193,7 +193,7 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt DB::ODBCConn::ExecuteNonQuery(Text::CString sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
@@ -205,7 +205,7 @@ OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 	return -2;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReaderSlow(const UTF8Char *sql)
+DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CString sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
@@ -282,7 +282,7 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString name, Data::ArrayList<T
 	return 0;
 }
 
-void DB::ODBCConn::ShowSQLError(const UInt16 *state, const UInt16 *errMsg)
+void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));

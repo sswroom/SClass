@@ -8,9 +8,9 @@ namespace Net
 	class WhoisHandler
 	{
 	private:
-		Data::ArrayList<WhoisRecord*> *recordList;
-		Sync::Mutex *recordMut;
-		Net::WhoisClient *client;
+		Data::ArrayList<WhoisRecord*> recordList;
+		Sync::Mutex recordMut;
+		Net::WhoisGlobalClient client;
 
 	public:
 		WhoisHandler(Net::SocketFactory *sockf);

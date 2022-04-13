@@ -16,9 +16,10 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 	}
 	else
 	{
-		Data::ArrayList<const UTF8Char *> audDevList;
-		audDevList.Add(sbuff);
+		Data::ArrayList<Text::String *> audDevList;
+		audDevList.Add(Text::String::NewP(sbuff, sptr));
 		me->core->SetAudioDeviceList(&audDevList);
+		audDevList.RemoveAt(0)->Release();
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -53,8 +54,8 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayList<const UTF8Char *> *audDevList = this->core->GetAudioDeviceList();
-	const UTF8Char *devName = audDevList->GetItem(0);
+	Data::ArrayList<Text::String *> *audDevList = this->core->GetAudioDeviceList();
+	Text::String *devName = audDevList->GetItem(0);
 	Bool found = false;
 	UOSInt i;
 	UOSInt j;
@@ -70,7 +71,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 		if ((sptr = Media::AudioDevice::GetDeviceName(sbuff, i)) != 0)
 		{
 			k = this->lbDevice->AddItem(CSTRP(sbuff, sptr), 0);
-			if (devName && Text::StrStartsWith(sbuff, devName))
+			if (devName && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), devName->v, devName->leng))
 			{
 				this->lbDevice->SetSelectedIndex(k);
 				found = true;

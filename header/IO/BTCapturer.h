@@ -13,7 +13,7 @@ namespace IO
 		const UTF8Char *lastFileName;
 		Bool threadRunning;
 		Bool threadToStop;
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 		Bool autoStore;
 
 		static UInt32 __stdcall CheckThread(void *userObj);

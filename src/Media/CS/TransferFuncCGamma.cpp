@@ -3,8 +3,8 @@
 #include "Math/Math.h"
 #include "Media/CS/TransferFuncCGamma.h"
 
-#define csGammaC1 (this->param->GetGamma())
-#define csGammaC2 (1 / this->param->GetGamma())
+#define csGammaC1 (this->param.GetGamma())
+#define csGammaC2 (1 / this->param.GetGamma())
 
 Media::CS::TransferFuncCGamma::TransferFuncCGamma(Double rgbGamma) : Media::CS::TransferFunc(Media::CS::TRANT_GAMMA, rgbGamma)
 {

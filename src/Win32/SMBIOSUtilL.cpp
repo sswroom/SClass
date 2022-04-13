@@ -14,85 +14,76 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	UOSInt buffSize = 0;
 	UInt8 buffTmp[1024];
 
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/smbios_entry_point"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		buffSize = fs->Read(buffTmp, 128);
-		DEL_CLASS(fs);
-		if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM_")))
+		IO::FileStream entryPointFS(CSTR("/sys/firmware/dmi/tables/smbios_entry_point"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!entryPointFS.IsError())
 		{
-			if (buffSize >= 30 && Text::StrStartsWithC(&buffTmp[16], buffSize - 16, UTF8STRC("_DMI_")))
-			{
-				UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x18]);
-				buffSize = ReadUInt16(&buffTmp[0x16]);
-//				UInt32 cnt = ReadUInt16(&buffTmp[0x1c]);
+			buffSize = entryPointFS.Read(buffTmp, 128);
+			entryPointFS.Close();
 
-				NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				if (!fs->IsError())
+			if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM_")))
+			{
+				if (buffSize >= 30 && Text::StrStartsWithC(&buffTmp[16], buffSize - 16, UTF8STRC("_DMI_")))
 				{
-					dataBuff = MemAlloc(UInt8, buffSize);
-					fs->SeekFromBeginning(ofst);
-					if (buffSize != fs->Read(dataBuff, buffSize))
+					UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x18]);
+					buffSize = ReadUInt16(&buffTmp[0x16]);
+	//				UInt32 cnt = ReadUInt16(&buffTmp[0x1c]);
+
+					IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (!fs.IsError())
 					{
-						MemFree(dataBuff);
-						dataBuff = 0;
+						dataBuff = MemAlloc(UInt8, buffSize);
+						fs.SeekFromBeginning(ofst);
+						if (buffSize != fs.Read(dataBuff, buffSize))
+						{
+							MemFree(dataBuff);
+							dataBuff = 0;
+						}
 					}
 				}
-				DEL_CLASS(fs);
 			}
-		}
-		else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM3_")))
-		{
-			if (buffSize >= 24)
+			else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM3_")))
 			{
-				UInt64 ofst = 0;//ReadInt64(&buffTmp[0x10]);
-				buffSize = ReadUInt32(&buffTmp[0x0c]);
-
-				NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				if (!fs->IsError())
+				if (buffSize >= 24)
 				{
-					dataBuff = MemAlloc(UInt8, buffSize);
-					fs->SeekFromBeginning(ofst);
-					if (buffSize != fs->Read(dataBuff, buffSize))
+					UInt64 ofst = 0;//ReadInt64(&buffTmp[0x10]);
+					buffSize = ReadUInt32(&buffTmp[0x0c]);
+
+					IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (!fs.IsError())
 					{
-						MemFree(dataBuff);
-						dataBuff = 0;
+						dataBuff = MemAlloc(UInt8, buffSize);
+						fs.SeekFromBeginning(ofst);
+						if (buffSize != fs.Read(dataBuff, buffSize))
+						{
+							MemFree(dataBuff);
+							dataBuff = 0;
+						}
 					}
 				}
-				DEL_CLASS(fs);
 			}
-		}
-		else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_DMI_")))
-		{
-			if (buffSize >= 16)
+			else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_DMI_")))
 			{
-				UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x08]);
-				buffSize = ReadUInt16(&buffTmp[0x06]);
-//				UInt32 cnt = ReadUInt16(&buffTmp[0x0c]);
-
-				NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				if (!fs->IsError())
+				if (buffSize >= 16)
 				{
-					dataBuff = MemAlloc(UInt8, buffSize);
-					fs->SeekFromBeginning(ofst);
-					if (buffSize != fs->Read(dataBuff, buffSize))
+					UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x08]);
+					buffSize = ReadUInt16(&buffTmp[0x06]);
+	//				UInt32 cnt = ReadUInt16(&buffTmp[0x0c]);
+
+					IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (!fs.IsError())
 					{
-						MemFree(dataBuff);
-						dataBuff = 0;
+						dataBuff = MemAlloc(UInt8, buffSize);
+						fs.SeekFromBeginning(ofst);
+						if (buffSize != fs.Read(dataBuff, buffSize))
+						{
+							MemFree(dataBuff);
+							dataBuff = 0;
+						}
 					}
 				}
-				DEL_CLASS(fs);
 			}
 		}
-	}
-	else
-	{
-		DEL_CLASS(fs);
-	}
-
-	if (dataBuff == 0)
-	{
 	}
 
 	if (dataBuff == 0)
@@ -102,8 +93,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 		UTF8Char sbuff[512];
 		IO::Path::FindFileSession *sess;
 		UOSInt readSize;
-		IO::MemoryStream *mstm;
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Win32.SMBIOS.GetSMBIOS.mstm")));
+		IO::MemoryStream mstm(UTF8STRC("Win32.SMBIOS.GetSMBIOS.mstm"));
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/firmware/dmi/entries/"));
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC("*"));
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -114,31 +104,26 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				if (sptr[0] != '.')
 				{
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/raw"));
-					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!fs->IsError())
+					IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (!fs.IsError())
 					{
-						readSize = fs->Read(buffTmp, 1024);
+						readSize = fs.Read(buffTmp, 1024);
 						if (readSize > 0)
 						{
-							mstm->Write(buffTmp, readSize);
+							mstm.Write(buffTmp, readSize);
 						}
 					}
-					else
-					{
-					}
-					DEL_CLASS(fs);
 				}
 			}
 			IO::Path::FindFileClose(sess);
 		}
-		UInt8 *mstmBuff = mstm->GetBuff(&readSize);
+		UInt8 *mstmBuff = mstm.GetBuff(&readSize);
 		if (readSize > 0)
 		{
 			dataBuff = MemAlloc(UInt8, readSize);
 			buffSize = (UInt32)readSize;
 			MemCopyNO(dataBuff, mstmBuff, readSize);
 		}
-		DEL_CLASS(mstm);
 	}
 	if (dataBuff)
 	{

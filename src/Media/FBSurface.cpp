@@ -35,7 +35,7 @@ Bool Media::FBSurface::UpdateToScreen()
 	return write(this->clsData->ttyfd, " \r", 2) == 2;
 }
 
-Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi, Media::RotateType rotateType)
+Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *color, Double dpi, Media::RotateType rotateType)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->hMon = hMon;

@@ -44,93 +44,97 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	return 0;
 }
 
-Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(const UTF8Char *devName)
+Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
 {
 Media::IAudioRenderer *renderer = 0;
 #ifndef _WIN32_WCE
-	if (Text::StrStartsWith(devName, (const UTF8Char*)"KS: "))
+	if (devName.StartsWith(UTF8STRC("KS: ")))
 	{
-		NEW_CLASS(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName + 4)));
+		NEW_CLASS(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName.v + 4)));
 	}
 #endif
-	if (Text::StrStartsWith(devName, (const UTF8Char*)"ASIO: "))
+	if (devName.StartsWith(UTF8STRC("ASIO: ")))
 	{
-		NEW_CLASS(renderer, Media::ASIOOutRenderer(devName + 6));
+		NEW_CLASS(renderer, Media::ASIOOutRenderer(devName.v + 6));
 	}
-	else if (Text::StrStartsWith(devName, (const UTF8Char*)"WO: "))
+	else if (devName.StartsWith(UTF8STRC("WO: ")))
 	{
-		NEW_CLASS(renderer, Media::WaveOutRenderer(devName + 4));
+		NEW_CLASS(renderer, Media::WaveOutRenderer(devName.v + 4));
 	}
 	return renderer;
 }
 
 Media::AudioDevice::AudioDevice()
 {
-	NEW_CLASS(this->rendererList, Data::ArrayList<Media::IAudioRenderer*>());
 	this->currRenderer = 0;
 }
 
 Media::AudioDevice::~AudioDevice()
 {
-	UOSInt i;
-	Media::IAudioRenderer *renderer;
-
-	BindAudio(0);
-	i = this->rendererList->GetCount();
-	while (i-- > 0)
-	{
-		renderer = this->rendererList->GetItem(i);
-		DEL_CLASS(renderer);
-	}
-	DEL_CLASS(this->rendererList);
+	this->ClearDevices();
 }
 
-Bool Media::AudioDevice::AddDevice(const UTF8Char *devName)
+Bool Media::AudioDevice::AddDevice(Text::CString devName)
 {
 	Media::IAudioRenderer *renderer;
 	Bool ret = false;
 #ifndef _WIN32_WCE
-	if (Text::StrStartsWith(devName, (const UTF8Char*)"KS: "))
+	if (devName.StartsWith(UTF8STRC("KS: ")))
 	{
-		NEW_CLASS(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName + 4)));
+		NEW_CLASS(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName.v + 4)));
 		if (renderer->IsError())
 		{
 			DEL_CLASS(renderer);
 		}
 		else
 		{
-			this->rendererList->Add(renderer);
+			this->rendererList.Add(renderer);
 			ret = true;
 		}
 	}
 #endif
-	if (Text::StrStartsWith(devName, (const UTF8Char*)"ASIO: "))
+	if (devName.StartsWith(UTF8STRC("ASIO: ")))
 	{
-		NEW_CLASS(renderer, Media::ASIOOutRenderer(devName + 6));
+		NEW_CLASS(renderer, Media::ASIOOutRenderer(devName.v + 6));
 		if (renderer->IsError())
 		{
 			DEL_CLASS(renderer);
 		}
 		else
 		{
-			this->rendererList->Add(renderer);
+			this->rendererList.Add(renderer);
 			ret = true;
 		}
 	}
-	else if (Text::StrStartsWith(devName, (const UTF8Char*)"WO: "))
+	else if (devName.StartsWith(UTF8STRC("WO: ")))
 	{
-		NEW_CLASS(renderer, Media::WaveOutRenderer(devName + 4));
+		NEW_CLASS(renderer, Media::WaveOutRenderer(devName.v + 4));
 		if (renderer->IsError())
 		{
 			DEL_CLASS(renderer);
 		}
 		else
 		{
-			this->rendererList->Add(renderer);
+			this->rendererList.Add(renderer);
 			ret = true;
 		}
 	}
 	return ret;
+}
+
+void Media::AudioDevice::ClearDevices()
+{
+	UOSInt i;
+	Media::IAudioRenderer *renderer;
+
+	BindAudio(0);
+	i = this->rendererList.GetCount();
+	while (i-- > 0)
+	{
+		renderer = this->rendererList.GetItem(i);
+		DEL_CLASS(renderer);
+	}
+	this->rendererList.Clear();
 }
 
 Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc)
@@ -138,7 +142,7 @@ Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc
 	UOSInt i;
 	UOSInt j;
 	Media::IAudioRenderer *renderer;
-	if (this->rendererList->GetCount() == 0)
+	if (this->rendererList.GetCount() == 0)
 	{
 		NEW_CLASS(renderer, Media::WaveOutRenderer(0));
 		if (renderer->IsError())
@@ -147,7 +151,7 @@ Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc
 		}
 		else
 		{
-			this->rendererList->Add(renderer);
+			this->rendererList.Add(renderer);
 		}
 		renderer = 0;
 	}
@@ -159,10 +163,10 @@ Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc
 	if (audsrc == 0)
 		return 0;
 	i = 0;
-	j = this->rendererList->GetCount();
+	j = this->rendererList.GetCount();
 	while (i < j)
 	{
-		renderer = this->rendererList->GetItem(i);
+		renderer = this->rendererList.GetItem(i);
 		if (renderer->BindAudio(audsrc))
 		{
 			if (renderer->IsError())

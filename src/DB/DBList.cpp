@@ -4,35 +4,29 @@
 
 DB::DBList::DBList()
 {
-	NEW_CLASS(this->dbList, Data::ArrayList<DBInfo *>());
-	NEW_CLASS(this->dbMut, Sync::Mutex());
-	NEW_CLASS(this->dbEvt, Sync::Event(true));
 	this->nextIndex = 0;
 }
 
 DB::DBList::~DBList()
 {
 	DBInfo *db;
-	UOSInt i = this->dbList->GetCount();
+	UOSInt i = this->dbList.GetCount();
 	while (i-- > 0)
 	{
-		db = this->dbList->GetItem(i);
+		db = this->dbList.GetItem(i);
 		DEL_CLASS(db->db);
 		MemFree(db);
 	}
-	DEL_CLASS(this->dbList);
-	DEL_CLASS(this->dbMut);
-	DEL_CLASS(this->dbEvt);
 }
 
 void DB::DBList::AddDB(DB::DBTool *db)
 {
 	DBInfo *dbInfo;
-	Sync::MutexUsage mutUsage(this->dbMut);
+	Sync::MutexUsage mutUsage(&this->dbMut);
 	dbInfo = MemAlloc(DBInfo, 1);
 	dbInfo->db = db;
 	dbInfo->isUsing = false;
-	this->dbList->Add(dbInfo);
+	this->dbList.Add(dbInfo);
 	mutUsage.EndUse();
 }
 
@@ -42,18 +36,18 @@ DB::DBTool *DB::DBList::UseDB()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	if (this->dbList->GetCount() <= 0)
+	if (this->dbList.GetCount() <= 0)
 		return 0;
 
 	while (true)
 	{
-		Sync::MutexUsage mutUsage(this->dbMut);
-		j = this->dbList->GetCount();
+		Sync::MutexUsage mutUsage(&this->dbMut);
+		j = this->dbList.GetCount();
 		i = j;
 		k = this->nextIndex;
 		while (i-- > 0)
 		{
-			dbInfo = this->dbList->GetItem(k);
+			dbInfo = this->dbList.GetItem(k);
 			k++;
 			if (k >= j)
 			{
@@ -70,7 +64,7 @@ DB::DBTool *DB::DBList::UseDB()
 		}
 		mutUsage.EndUse();
 
-		this->dbEvt->Wait(1000);
+		this->dbEvt.Wait(1000);
 	}
 }
 
@@ -78,15 +72,15 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 {
 	UOSInt i;
 	DBInfo *dbInfo;
-	Sync::MutexUsage mutUsage(this->dbMut);
-	i = this->dbList->GetCount();
+	Sync::MutexUsage mutUsage(&this->dbMut);
+	i = this->dbList.GetCount();
 	while (i-- > 0)
 	{
-		dbInfo = this->dbList->GetItem(i);
+		dbInfo = this->dbList.GetItem(i);
 		if (dbInfo->db == db)
 		{
 			dbInfo->isUsing = false;
-			this->dbEvt->Set();
+			this->dbEvt.Set();
 			break;
 		}
 	}
@@ -95,5 +89,5 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 
 UOSInt DB::DBList::GetCount()
 {
-	return this->dbList->GetCount();
+	return this->dbList.GetCount();
 }

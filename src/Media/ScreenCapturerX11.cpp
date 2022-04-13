@@ -86,7 +86,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 		info.hdpi = this->monMgr->GetMonitorHDPI(hMon);;
 		info.vdpi = info.hdpi;
 		const Media::IColorHandler::RGBPARAM2 *params = monColor->GetRGBParam();
-		info.color->Set(params->monProfile);
+		info.color->Set(&params->monProfile);
 		info.rotateType = Media::RotateType::None;
 		
 		if (valid)

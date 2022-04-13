@@ -19,9 +19,9 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
-		Data::StringUTF8Map<DomainStatus*> *statusMap;
-		Sync::Mutex *statusMut;
-		Sync::Event *statusEvt;
+		Data::StringUTF8Map<DomainStatus*> statusMap;
+		Sync::Mutex statusMut;
+		Sync::Event statusEvt;
 
 	public:
 		HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl);
@@ -29,6 +29,7 @@ namespace Net
 
 		Net::HTTPClient *MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown);
 		void EndRequest(Net::HTTPClient *cli);
+		void Clear();
 	};
 }
 #endif

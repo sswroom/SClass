@@ -4,12 +4,6 @@
 #include "Data/ByteTool.h"
 #include "Text/MyString.h"
 
-extern "C"
-{
-	void CRC16_InitTable(UInt16 *tab, UInt16 polynomial);
-	UInt16 CRC16_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal);
-}
-
 void Crypto::Hash::CRC16::BuildTable(UInt16 polynomial)
 {
 	this->currVal = 0;

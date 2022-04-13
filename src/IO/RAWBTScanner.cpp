@@ -48,9 +48,6 @@ void IO::RAWBTScanner::FreeRec(IO::BTScanLog::ScanRecord3* rec)
 
 IO::RAWBTScanner::RAWBTScanner(Bool noCtrl)
 {
-	NEW_CLASS(this->pubRecMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
-	NEW_CLASS(this->randRecMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
-	NEW_CLASS(this->recMut, Sync::Mutex());
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->noCtrl = noCtrl;
 	this->clsData->btMon = 0;
@@ -77,14 +74,11 @@ IO::RAWBTScanner::~RAWBTScanner()
 	this->Close();
 	SDEL_CLASS(this->clsData->btCtrl);
 	MemFree(this->clsData);
-	DEL_CLASS(this->recMut);
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList;
-	recList = this->pubRecMap->GetValues();
+	recList = this->pubRecMap.GetValues();
 	LIST_FREE_FUNC(recList, this->FreeRec);
-	recList = this->randRecMap->GetValues();
+	recList = this->randRecMap.GetValues();
 	LIST_FREE_FUNC(recList, this->FreeRec);
-	DEL_CLASS(this->pubRecMap);
-	DEL_CLASS(this->randRecMap);
 }
 
 Bool IO::RAWBTScanner::IsError()
@@ -131,19 +125,19 @@ void IO::RAWBTScanner::ScanOff()
 	if (this->clsData->threadRunning)
 	{
 		this->clsData->threadToStop = true;
-//		printf("RAWBT scan off\r\n");
+		//printf("RAWBT scan off\r\n");
 		this->clsData->btMon->Close();
-//		printf("RAWBT btMon closed\r\n");
+		//printf("RAWBT btMon closed\r\n");
 		if (this->clsData->btCtrl)
 			this->clsData->btCtrl->ScanOff();
-//		printf("RAWBT ctrl off\r\n");
+		//printf("RAWBT ctrl off\r\n");
 		while (this->clsData->threadRunning)
 		{
 			Sync::Thread::Sleep(1);
 		}
-//		printf("RAWBT thread stopped\r\n");
+		//printf("RAWBT thread stopped\r\n");
 		DEL_CLASS(this->clsData->btMon);
-//		printf("RAWBT released\r\n");
+		//printf("RAWBT released\r\n");
 		this->clsData->btMon = 0;
 	}
 }
@@ -168,14 +162,14 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 
 Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->recMut);
-	return this->pubRecMap;	
+	mutUsage->ReplaceMutex(&this->recMut);
+	return &this->pubRecMap;	
 }
 
 Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->recMut);
-	return this->randRecMap;	
+	mutUsage->ReplaceMutex(&this->recMut);
+	return &this->randRecMap;	
 }
 
 void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt packetSize)
@@ -184,14 +178,14 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 	if (IO::BTScanLog::ParseBTRAWPacket(&rec, timeTicks, packet, packetSize))
 	{
 		IO::BTScanLog::ScanRecord3 *dev;
-		Sync::MutexUsage mutUsage(this->recMut);
+		Sync::MutexUsage mutUsage(&this->recMut);
 		if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 		{
-			dev = this->randRecMap->Get(rec.macInt);
+			dev = this->randRecMap.Get(rec.macInt);
 		}
 		else
 		{
-			dev = this->pubRecMap->Get(rec.macInt);
+			dev = this->pubRecMap.Get(rec.macInt);
 		}
 		if (dev == 0)
 		{
@@ -200,11 +194,11 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 			dev->name = SCOPY_STRING(rec.name);
 			if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 			{
-				this->randRecMap->Put(dev->macInt, dev);
+				this->randRecMap.Put(dev->macInt, dev);
 			}
 			else
 			{
-				this->pubRecMap->Put(dev->macInt, dev);
+				this->pubRecMap.Put(dev->macInt, dev);
 			}
 		}
 		dev->lastSeenTime = rec.lastSeenTime;

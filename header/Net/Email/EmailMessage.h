@@ -14,8 +14,8 @@ namespace Net
 		{
 		private:
 			Text::String *fromAddr;
-			Data::ArrayList<const UTF8Char*> *recpList;
-			Data::ArrayList<Text::String*> *headerList;
+			Data::ArrayList<Text::String*> recpList;
+			Data::ArrayList<Text::String*> headerList;
 			UInt8 *content;
 			UOSInt contentLen;
 
@@ -38,7 +38,7 @@ namespace Net
 
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();
-			Data::ArrayList<const UTF8Char*> *GetRecpList();
+			Data::ArrayList<Text::String*> *GetRecpList();
 			Bool WriteToStream(IO::Stream *stm);
 
 			static Bool GenerateMessageID(Text::StringBuilderUTF8 *sb, Text::CString fromAddr);

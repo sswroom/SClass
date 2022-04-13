@@ -154,16 +154,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/debian_version")) == IO::Path::PathType::File)
 	{
 		UTF8Char *ret = 0;
-		Text::UTF8Reader *reader;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/debian_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(CSTR("/etc/debian_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			NEW_CLASS(reader, Text::UTF8Reader(fs));
-			ret = reader->ReadLine(sbuff, 128);
-			DEL_CLASS(reader);
+			Text::UTF8Reader reader(&fs);
+			ret = reader.ReadLine(sbuff, 128);
 		}
-		DEL_CLASS(fs);
 		return ret;
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/os-release")) == IO::Path::PathType::File)
@@ -189,16 +185,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/openwrt_version")) == IO::Path::PathType::File)
 	{
 		UTF8Char *ret = 0;
-		Text::UTF8Reader *reader;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/openwrt_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(CSTR("/etc/openwrt_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			NEW_CLASS(reader, Text::UTF8Reader(fs));
-			ret = reader->ReadLine(sbuff, 128);
-			DEL_CLASS(reader);
+			Text::UTF8Reader reader(&fs);
+			ret = reader.ReadLine(sbuff, 128);
 		}
-		DEL_CLASS(fs);
 		return ret;
 	}
 	if (IO::Path::GetPathType(CSTR("/sbin/getcfg")) == IO::Path::PathType::File)
@@ -237,16 +229,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/release")) == IO::Path::PathType::File) //Eurotech
 	{
 		UTF8Char line[512];
-		Text::UTF8Reader *reader;
 		UOSInt i;
 		UOSInt j;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		IO::FileStream fs(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
 		line[0] = 0;
-		reader->ReadLine(line, 512);
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
+		reader.ReadLine(line, 512);
 		i = INVALID_INDEX;
 		while (true)
 		{
@@ -272,14 +260,10 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/version.txt")) == IO::Path::PathType::File) //Bovine
 	{
-		Text::UTF8Reader *reader;
 		UTF8Char *sptr;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/version.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sptr = reader->ReadLine(sbuff, 512);
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
+		IO::FileStream fs(CSTR("/etc/version.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
+		sptr = reader.ReadLine(sbuff, 512);
 
 		if (sptr && sptr != sbuff)
 		{
@@ -288,14 +272,10 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/mlinux-version")) == IO::Path::PathType::File) //mLinux
 	{
-		Text::UTF8Reader *reader;
 		UTF8Char *sptr;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/mlinux-version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sptr = reader->ReadLine(sbuff, 512);
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
+		IO::FileStream fs(CSTR("/etc/mlinux-version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
+		sptr = reader.ReadLine(sbuff, 512);
 
 		if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("mLinux ")))
 		{

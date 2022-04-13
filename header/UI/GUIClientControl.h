@@ -7,7 +7,7 @@ namespace UI
 	class GUIClientControl : public UI::GUIControl
 	{
 	protected:
-		Data::ArrayList<UI::GUIControl*> *children;
+		Data::ArrayList<UI::GUIControl*> children;
 		Double undockLeft;
 		Double undockTop;
 		Double undockRight;

@@ -7,7 +7,6 @@
 
 UI::GUIClientControl::GUIClientControl(GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->children, Data::ArrayList<GUIControl*>());
 	this->hasFillCtrl = false;
 	this->undockLeft = 0;
 	this->undockRight = 0;
@@ -17,14 +16,12 @@ UI::GUIClientControl::GUIClientControl(GUICore *ui, UI::GUIClientControl *parent
 
 UI::GUIClientControl::GUIClientControl(Bool forVirtualUse) : UI::GUIControl(0, 0)
 {
-	NEW_CLASS(this->children, Data::ArrayList<GUIControl*>());
 	this->parent = 0;
 }
 
 UI::GUIClientControl::~GUIClientControl()
 {
 	this->ClearChildren();
-	DEL_CLASS(this->children);
 }
 
 void UI::GUIClientControl::UpdateFont()
@@ -37,20 +34,20 @@ void UI::GUIClientControl::UpdateFont()
 		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)font, TRUE);
 	}
 	i = 0;
-	j = this->children->GetCount();
+	j = this->children.GetCount();
 	while (i < j)
 	{
-		this->children->GetItem(i)->UpdateFont();
+		this->children.GetItem(i)->UpdateFont();
 		i++;
 	}
 }
 
 void UI::GUIClientControl::ClearChildren()
 {
-	UOSInt i = this->children->GetCount();
+	UOSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		GUIControl *ctrl = this->children->RemoveAt(i);
+		GUIControl *ctrl = this->children.RemoveAt(i);
 		ctrl->DestroyObject();
 		DEL_CLASS(ctrl);
 	}
@@ -96,17 +93,17 @@ void UI::GUIClientControl::GetClientSize(Double *w, Double *h)
 
 void UI::GUIClientControl::AddChild(GUIControl *child)
 {
-	this->children->Add(child);
+	this->children.Add(child);
 }
 
 UOSInt UI::GUIClientControl::GetChildCount()
 {
-	return this->children->GetCount();
+	return this->children.GetCount();
 }
 
 UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
 {
-	return this->children->GetItem(index);
+	return this->children.GetItem(index);
 }
 
 void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
@@ -125,10 +122,10 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 
 	GetClientSize(&right, &bottom);
 	i = 0;
-	j = this->children->GetCount();
+	j = this->children.GetCount();
 	while (i < j)
 	{
-		ctrl = this->children->GetItem(i);
+		ctrl = this->children.GetItem(i);
 		dt = ctrl->GetDockType();
 		if (dt == UI::GUIControl::DOCK_NONE)
 		{
@@ -216,10 +213,10 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	UOSInt i = this->children->GetCount();
+	UOSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		this->children->GetItem(i)->SetDPI(hdpi, ddpi);
+		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }

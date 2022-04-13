@@ -7,15 +7,11 @@ Net::WebServer::MemoryWebSession::MemoryWebSession(Int64 sessId, Net::BrowserInf
 {
 	this->browser = browser;
 	this->os = os;
-	NEW_CLASS(this->items, Data::FastStringMap<Int64>());
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->sessId = sessId;
 }
 
 Net::WebServer::MemoryWebSession::~MemoryWebSession()
 {
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->items);
 }
 
 Bool Net::WebServer::MemoryWebSession::RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os)
@@ -29,12 +25,12 @@ Bool Net::WebServer::MemoryWebSession::RequestValid(Net::BrowserInfo::BrowserTyp
 
 void Net::WebServer::MemoryWebSession::BeginUse()
 {
-	this->mut->Lock();
+	this->mut.Lock();
 }
 
 void Net::WebServer::MemoryWebSession::EndUse()
 {
-	this->mut->Unlock();
+	this->mut.Unlock();
 }
 
 Int64 Net::WebServer::MemoryWebSession::GetSessId()
@@ -44,41 +40,41 @@ Int64 Net::WebServer::MemoryWebSession::GetSessId()
 
 void Net::WebServer::MemoryWebSession::SetValuePtr(const UTF8Char *name, UOSInt nameLen, void *val)
 {
-	this->items->PutC({name, nameLen}, (Int64)val);
+	this->items.PutC({name, nameLen}, (Int64)val);
 }
 
 void Net::WebServer::MemoryWebSession::SetValueDbl(const UTF8Char *name, UOSInt nameLen, Double val)
 {
-	this->items->PutC({name, nameLen}, *(Int64*)&val);
+	this->items.PutC({name, nameLen}, *(Int64*)&val);
 }
 
 void Net::WebServer::MemoryWebSession::SetValueInt64(const UTF8Char *name, UOSInt nameLen, Int64 val)
 {
-	this->items->PutC({name, nameLen}, val);
+	this->items.PutC({name, nameLen}, val);
 }
 
 void Net::WebServer::MemoryWebSession::SetValueInt32(const UTF8Char *name, UOSInt nameLen, Int32 val)
 {
-	this->items->PutC({name, nameLen}, val);
+	this->items.PutC({name, nameLen}, val);
 }
 
 void *Net::WebServer::MemoryWebSession::GetValuePtr(const UTF8Char *name, UOSInt nameLen)
 {
-	return (void*)this->items->GetC({name, nameLen});
+	return (void*)this->items.GetC({name, nameLen});
 }
 
 Double Net::WebServer::MemoryWebSession::GetValueDbl(const UTF8Char *name, UOSInt nameLen)
 {
-	Int64 ret = this->items->GetC({name, nameLen});
+	Int64 ret = this->items.GetC({name, nameLen});
 	return *(Double*)&ret;
 }
 
 Int64 Net::WebServer::MemoryWebSession::GetValueInt64(const UTF8Char *name, UOSInt nameLen)
 {
-	return this->items->GetC({name, nameLen});
+	return this->items.GetC({name, nameLen});
 }
 
 Int32 Net::WebServer::MemoryWebSession::GetValueInt32(const UTF8Char *name, UOSInt nameLen)
 {
-	return (Int32)this->items->GetC({name, nameLen});
+	return (Int32)this->items.GetC({name, nameLen});
 }

@@ -48,18 +48,19 @@ namespace Media
 
 		public:
 			TransferParam();
-			TransferParam(TransferParam *tran);
+			TransferParam(const TransferParam *tran);
 			TransferParam(TransferType tranType, Double gamma);
-			TransferParam(Media::LUT *lut);
+			TransferParam(const Media::LUT *lut);
 			~TransferParam();
 
 			void Set(TransferType tranType, Double gamma);
 			void Set(TransferType tranType, Double *params, UOSInt paramCnt);
 			void Set(Media::LUT *lut);
 			void Set(const TransferParam *tran);
-			TransferType GetTranType();
-			Double GetGamma();
-			Media::LUT *GetLUT();
+			TransferType GetTranType() const { return this->tranType; }
+			Double GetGamma() const { return this->gamma; }
+			Media::LUT *GetLUT() { return this->lut; }
+			const Media::LUT *GetLUTRead() const { return this->lut; }
 			Bool Equals(const TransferParam *tran);
 		};
 	}

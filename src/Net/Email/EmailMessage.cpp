@@ -11,10 +11,10 @@ UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nam
 {
 	Text::String *header;
 	UOSInt i = 0;
-	UOSInt j = this->headerList->GetCount();
+	UOSInt j = this->headerList.GetCount();
 	while (i < j)
 	{
-		header = this->headerList->GetItem(i);
+		header = this->headerList.GetItem(i);
 		if (header->StartsWith(name, nameLen) && header->v[nameLen] == ':' && header->v[nameLen + 1] == ' ')
 		{
 			return i;
@@ -34,12 +34,12 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	UOSInt i = this->GetHeaderIndex(name, nameLen);
 	if (i == INVALID_INDEX)
 	{
-		this->headerList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+		this->headerList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	else
 	{
-		this->headerList->GetItem(i)->Release();
-		this->headerList->SetItem(i, Text::String::New(sb.ToString(), sb.GetLength()));
+		this->headerList.GetItem(i)->Release();
+		this->headerList.SetItem(i, Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	return true;
 }
@@ -56,8 +56,6 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF8 *sb, con
 Net::Email::EmailMessage::EmailMessage()
 {
 	this->fromAddr = 0;
-	NEW_CLASS(this->recpList, Data::ArrayList<const UTF8Char*>());
-	NEW_CLASS(this->headerList, Data::ArrayList<Text::String*>());
 	this->content = 0;
 	this->contentLen = 0;
 }
@@ -65,10 +63,8 @@ Net::Email::EmailMessage::EmailMessage()
 Net::Email::EmailMessage::~EmailMessage()
 {
 	SDEL_STRING(this->fromAddr);
-	LIST_FREE_FUNC(this->recpList, Text::StrDelNew);
-	DEL_CLASS(this->recpList);
-	LIST_FREE_STRING(this->headerList);
-	DEL_CLASS(this->headerList);
+	LIST_FREE_STRING(&this->recpList);
+	LIST_FREE_STRING(&this->headerList);
 	if (this->content)
 	{
 		MemFree(this->content);
@@ -177,7 +173,7 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CString addr)
 	Text::StringBuilderUTF8 sb;
 	if (i != INVALID_INDEX)
 	{
-		sb.Append(this->headerList->GetItem(i) + 4);
+		sb.Append(this->headerList.GetItem(i)->ToCString().Substring(4));
 		sb.AppendC(UTF8STRC(", "));
 	}
 	if (name.leng > 0)
@@ -198,7 +194,7 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CString addr)
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
 	this->SetHeader(UTF8STRC("To"), sb.ToString(), sb.GetLength());
-	this->recpList->Add(Text::StrCopyNewC(addr.v, addr.leng));
+	this->recpList.Add(Text::String::New(addr));
 	return true;
 }
 
@@ -234,7 +230,7 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CString addr)
 	Text::StringBuilderUTF8 sb;
 	if (i != INVALID_INDEX)
 	{
-		Text::String *s = this->headerList->GetItem(i);
+		Text::String *s = this->headerList.GetItem(i);
 		sb.AppendC(s->v + 4, s->leng - 4);
 		sb.AppendC(UTF8STRC(", "));
 	}
@@ -256,19 +252,19 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CString addr)
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
 	this->SetHeader(UTF8STRC("Cc"), sb.ToString(), sb.GetLength());
-	this->recpList->Add(Text::StrCopyNewC(addr.v, addr.leng));
+	this->recpList.Add(Text::String::New(addr));
 	return true;
 }
 
 Bool Net::Email::EmailMessage::AddBcc(Text::CString addr)
 {
-	this->recpList->Add(Text::StrCopyNewC(addr.v, addr.leng));
+	this->recpList.Add(Text::String::New(addr));
 	return true;
 }
 
 Bool Net::Email::EmailMessage::CompletedMessage()
 {
-	if (this->fromAddr == 0 || this->recpList->GetCount() == 0 || this->contentLen == 0)
+	if (this->fromAddr == 0 || this->recpList.GetCount() == 0 || this->contentLen == 0)
 	{
 		return false;
 	}
@@ -280,9 +276,9 @@ Text::String *Net::Email::EmailMessage::GetFromAddr()
 	return this->fromAddr;
 }
 
-Data::ArrayList<const UTF8Char*> *Net::Email::EmailMessage::GetRecpList()
+Data::ArrayList<Text::String*> *Net::Email::EmailMessage::GetRecpList()
 {
-	return this->recpList;
+	return &this->recpList;
 }
 
 Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
@@ -293,10 +289,10 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	}
 	Text::String *header;
 	UOSInt i = 0;
-	UOSInt j = this->headerList->GetCount();
+	UOSInt j = this->headerList.GetCount();
 	while (i < j)
 	{
-		header = this->headerList->GetItem(i);
+		header = this->headerList.GetItem(i);
 		stm->Write(header->v, header->leng);
 		stm->Write((const UInt8*)"\r\n", 2);
 		i++;

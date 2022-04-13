@@ -13,9 +13,6 @@
 
 UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
-
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
 	{
@@ -26,9 +23,6 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 
 UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
-
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
 	{
@@ -43,16 +37,14 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 
 UI::GUITextBox::~GUITextBox()
 {
-	DEL_CLASS(this->txtChgObjs);
-	DEL_CLASS(this->txtChgHdlrs);
 }
 
 void UI::GUITextBox::EventTextChange()
 {
-	UOSInt i = this->txtChgHdlrs->GetCount();
+	UOSInt i = this->txtChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->txtChgHdlrs->GetItem(i)(this->txtChgObjs->GetItem(i));
+		this->txtChgHdlrs.GetItem(i)(this->txtChgObjs.GetItem(i));
 	}
 }
 
@@ -111,8 +103,8 @@ OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
 {
-	this->txtChgHdlrs->Add(hdlr);
-	this->txtChgObjs->Add(userObj);
+	this->txtChgHdlrs.Add(hdlr);
+	this->txtChgObjs.Add(userObj);
 }
 
 void UI::GUITextBox::SelectAll()

@@ -24,7 +24,7 @@ namespace Net
 		} GroupInfo;
 
 	private:
-		Data::FastStringMap<GroupInfo*> *groupMap;
+		Data::FastStringMap<GroupInfo*> groupMap;
 
 		void Init(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize);
 	public:

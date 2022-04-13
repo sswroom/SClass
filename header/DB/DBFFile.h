@@ -25,7 +25,7 @@ namespace DB
 	private:
 		//IO::SeekableStream *stm;
 		IO::IStreamData *stmData;
-		Text::Encoding *enc;
+		Text::Encoding enc;
 //		Sync::Mutex *mut;
 		UInt64 refPos;
 		UInt32 rowSize;

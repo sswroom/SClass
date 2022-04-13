@@ -9,6 +9,8 @@ namespace Data
 {
 	template <class T> class UInt32Map : public ArrayMap<UInt32, T>
 	{
+	private:
+		Data::ArrayListUInt32 keyList;
 	public:
 		UInt32Map();
 		virtual ~UInt32Map();
@@ -16,12 +18,11 @@ namespace Data
 
 	template <class T> UInt32Map<T>::UInt32Map() : ArrayMap<UInt32, T>()
 	{
-		NEW_CLASS(this->keys, Data::ArrayListUInt32());
+		this->keys = &this->keyList;
 	}
 
 	template <class T> UInt32Map<T>::~UInt32Map()
 	{
-		DEL_CLASS(this->keys);
 	}
 }
 

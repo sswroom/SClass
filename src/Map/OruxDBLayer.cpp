@@ -104,7 +104,7 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 	this->currLayer = (UInt32)level;
 }
 
-Map::MapView *Map::OruxDBLayer::CreateMapView(UOSInt width, UOSInt height)
+Map::MapView *Map::OruxDBLayer::CreateMapView(Double width, Double height)
 {
 	Map::MapView *view;
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);

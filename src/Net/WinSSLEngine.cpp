@@ -257,6 +257,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Tex
 		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
 #endif
 		Text::StrDelNew(wptr);
+		if (err)
+			*err = ErrorType::InitSession;
 		return 0;
 	}
 	Net::SocketFactory::ErrorType et;
@@ -271,6 +273,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Tex
 		DeleteSecurityContext(&ctxt);
 		FreeContextBuffer(outputBuff[0].pvBuffer);
 		Text::StrDelNew(wptr);
+		if (err)
+			*err = ErrorType::InitSession;
 		return 0;
 	}
 	FreeContextBuffer(outputBuff[0].pvBuffer);
@@ -292,6 +296,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Tex
 			if (recvSize <= 0)
 			{
 				Text::StrDelNew(wptr);
+				if (err)
+					*err = ErrorType::InitSession;
 				return 0;
 			}
 			recvOfst += recvSize;
@@ -352,6 +358,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Tex
 			{
 				DeleteSecurityContext(&ctxt);
 				Text::StrDelNew(wptr);
+				if (err)
+					*err = ErrorType::InitSession;
 				return 0;
 			}
 			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
@@ -375,6 +383,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Tex
 			}
 			DeleteSecurityContext(&ctxt);
 			Text::StrDelNew(wptr);
+			if (err)
+				*err = ErrorType::InitSession;
 			return 0;
 		}
 	}
@@ -1042,6 +1052,8 @@ Net::SSLClient *Net::WinSSLEngine::Connect(Text::CString hostName, UInt16 port, 
 			!this->InitClient(Method::TLSV1_1, 0) &&
 			!this->InitClient(Method::TLSV1, 0))
 		{
+			if (err)
+				*err = ErrorType::InitEnv;
 			return 0;
 		}
 		this->clsData->cliInit = true;
@@ -1049,7 +1061,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(Text::CString hostName, UInt16 port, 
 
 	Net::SocketUtil::AddressInfo addr;
 	Socket *s;
-	if (!this->sockf->DNSResolveIP(hostName.v, hostName.leng, &addr))
+	if (!this->sockf->DNSResolveIP(hostName, &addr))
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;

@@ -12,9 +12,9 @@ namespace Net
 		class MemoryWebSessionManager : public Net::WebServer::IWebSessionManager
 		{
 		private:
-			Data::ArrayListInt64 *sessIds;
-			Data::ArrayList<Net::WebServer::MemoryWebSession*> *sesses;
-			Sync::Mutex *mut;
+			Data::ArrayListInt64 sessIds;
+			Data::ArrayList<Net::WebServer::MemoryWebSession*> sesses;
+			Sync::Mutex mut;
 			Text::String *path;
 
 			Int32 chkInterval;
@@ -22,7 +22,7 @@ namespace Net
 			void *chkHdlrObj;
 			Bool chkRunning;
 			Bool chkToStop;
-			Sync::Event *chkEvt;
+			Sync::Event chkEvt;
 
 			static UInt32 __stdcall CheckThread(void *userObj);
 			Int64 GetSessId(Net::WebServer::IWebRequest *req);

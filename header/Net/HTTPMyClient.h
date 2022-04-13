@@ -22,9 +22,9 @@ namespace Net
 		Net::SSLEngine *ssl;
 		Net::TCPClient *cli;
 		Text::String *cliHost;
-		IO::MemoryStream *reqMstm;
+		IO::MemoryStream reqMstm;
 		Text::String *userAgent;
-		Data::ArrayListString *reqHeaders;
+		Data::ArrayListString reqHeaders;
 
 		Bool writing;
 

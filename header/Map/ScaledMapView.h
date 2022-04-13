@@ -18,13 +18,13 @@ namespace Map
 		Double bottomY;
 
 	public:
-		ScaledMapView(UOSInt scnWidth, UOSInt scnHeight, Double centLat, Double centLon, Double scale);
+		ScaledMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, Double scale);
 		virtual ~ScaledMapView();
 
-		virtual void ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double centX, Double centY, Double scale);
+		virtual void ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale);
 		virtual void SetCenterXY(Double mapX, Double mapY);
 		virtual void SetMapScale(Double scale);
-		virtual void UpdateSize(UOSInt width, UOSInt height);
+		virtual void UpdateSize(Double width, Double height);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		virtual Double GetLeftX();

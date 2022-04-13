@@ -105,6 +105,7 @@ global _MyString_StrToInt64UTF16
 global MyString_StrToInt64UTF32
 global _MyString_StrToInt64UTF32
 
+extern _UseSSE42
 
 ;Char *MyString_StrConcat(Char *oriStr, const Char *strToJoin);
 ;rdi oriStr
@@ -130,7 +131,7 @@ sconcatlop:
 	align 16
 MyString_StrConcatS:
 _MyString_StrConcatS:
-			xor rcx,rcx
+	xor rcx,rcx
 	align 16
 sconcatslop:
 	movzx eax,byte [rsi+rcx]
@@ -2788,6 +2789,45 @@ scmpicu32ret:
 _MyString_StrCharCnt:
 MyString_StrCharCnt:
 	mov rax,rdi
+	cmp dword [rel _UseSSE42],0
+	jz scclop
+	pxor xmm0,xmm0
+	align 16
+scclop_sse42:
+	pcmpistri xmm0,[rax],8
+	jz scclop_sse42_0
+	pcmpistri xmm0,[rax+16],8
+	jz scclop_sse42_1
+	pcmpistri xmm0,[rax+32],8
+	jz scclop_sse42_2
+	pcmpistri xmm0,[rax+48],8
+	jz scclop_sse42_3
+	add rax,64
+	jmp scclop_sse42
+	align 16
+scclop_sse42_0:
+	sub rax,rdi
+	add rax,rcx
+	ret
+	align 16
+scclop_sse42_1:
+	sub rax,rdi
+	lea rax,[rax+rcx+16]
+	ret
+	align 16
+scclop_sse42_2:
+	sub rax,rdi
+	lea rax,[rax+rcx+32]
+	ret
+	align 16
+scclop_sse42_3:
+	sub rax,rdi
+	lea rax,[rax+rcx+48]
+	ret
+
+	align 16
+MyString_StrCharCnt_Old:
+	mov rax,rdi
 	align 16
 scclop:
 	cmp byte[rax],0
@@ -2798,7 +2838,15 @@ scclop:
 	jz scclop2
 	cmp byte[rax+3],0
 	jz scclop3
-	lea rax,[rax+4]
+	cmp byte[rax+4],0
+	jz scclop4
+	cmp byte[rax+5],0
+	jz scclop5
+	cmp byte[rax+6],0
+	jz scclop6
+	cmp byte[rax+7],0
+	jz scclop7
+	add rax,8
 	jmp scclop
 	align 16
 scclop0:
@@ -2818,6 +2866,26 @@ scclop2:
 scclop3:
 	sub rax,rdi
 	add rax,3
+	ret
+	align 16
+scclop4:
+	sub rax,rdi
+	add rax,4
+	ret
+	align 16
+scclop5:
+	sub rax,rdi
+	add rax,5
+	ret
+	align 16
+scclop6:
+	sub rax,rdi
+	add rax,6
+	ret
+	align 16
+scclop7:
+	sub rax,rdi
+	add rax,7
 	ret
 
 ;OSInt MyString_StrCharCntUTF16(const UTF16Char *s)

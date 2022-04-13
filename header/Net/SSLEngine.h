@@ -29,6 +29,7 @@ namespace Net
 		enum class ErrorType
 		{
 			None,
+			InitEnv,
 			HostnameNotResolved,
 			OutOfMemory,
 			CannotConnect,
@@ -64,7 +65,7 @@ namespace Net
 		UOSInt maxThreadCnt;
 		UOSInt currThreadCnt;
 		Bool threadToStop;
-		Sync::Mutex *threadMut;
+		Sync::Mutex threadMut;
 		ThreadState *threadSt;
 
 		static UInt32 __stdcall ServerThread(void *userObj);

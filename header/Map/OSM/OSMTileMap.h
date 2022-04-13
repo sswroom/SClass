@@ -17,9 +17,9 @@ namespace Map
 		class OSMTileMap : public Map::TileMap
 		{
 		private:
-			Data::ArrayListString *urls;
+			Data::ArrayListString urls;
 			UOSInt urlNext;
-			Sync::Mutex *urlMut;
+			Sync::Mutex urlMut;
 
 			Text::String *cacheDir;
 			IO::SPackageFile *spkg;

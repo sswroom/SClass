@@ -9,8 +9,8 @@ namespace Net
 	private:
 		Net::UDPServer *svr;
 		Net::SocketFactory *sockf;
-		Sync::Mutex *mut;
-		Sync::Event *evt;
+		Sync::Mutex mut;
+		Sync::Event evt;
 
 		Data::DateTime *resultTime;
 		Bool hasResult;

@@ -258,7 +258,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 	UOSInt k;
 	Data::ArrayList<IO::FileExporter*> *exp;
 	NEW_CLASS(exp, Data::ArrayList<IO::FileExporter*>());
-	this->exporters->GetSupportedExporters(exp, pobj);
+	this->exporters.GetSupportedExporters(exp, pobj);
 	if (exp->GetCount() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);

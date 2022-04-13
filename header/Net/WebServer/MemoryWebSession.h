@@ -13,8 +13,8 @@ namespace Net
 		private:
 			Net::BrowserInfo::BrowserType browser;
 			Manage::OSInfo::OSType os;
-			Data::FastStringMap<Int64> *items;
-			Sync::Mutex *mut;
+			Data::FastStringMap<Int64> items;
+			Sync::Mutex mut;
 			Int64 sessId;
 
 		public:

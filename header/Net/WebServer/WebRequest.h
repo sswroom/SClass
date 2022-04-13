@@ -24,7 +24,7 @@ namespace Net
 		private:
 			Text::String *requestURI;
 			Net::WebUtil::RequestMethod reqMeth;
-			Data::FastStringMap<Text::String*> *headers;
+			Data::FastStringMap<Text::String*> headers;
 			Data::FastStringMap<Text::String*> *queryMap;
 			Net::SocketUtil::AddressInfo cliAddr;
 			UInt16 cliPort;

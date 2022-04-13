@@ -19,8 +19,6 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	this->ent.ipaddr = 0;
 	this->ent.dnsSuffix = 0;
 	this->ent.dhcpSvr = 0;
-	this->ent.dhcpLeaseTime = 0;
-	this->ent.dhcpLeaseExpire = 0;
 	if (addr->AdapterName)
 	{
 		this->ent.internalName = Text::StrCopyNew(addr->AdapterName);
@@ -37,8 +35,6 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		this->ent.dnsSuffix = Text::StrToUTF8New(addr->DnsSuffix);
 	}
-	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32(4));
-	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32(4));
 	IP_ADAPTER_UNICAST_ADDRESS *ipaddrs = addr->FirstUnicastAddress;
 	IP_ADAPTER_DNS_SERVER_ADDRESS *dnsaddrs = addr->FirstDnsServerAddress;
 
@@ -46,7 +42,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		if (ipaddrs->Address.lpSockaddr->sa_family == AF_INET)
 		{
-			this->ent.ipaddr->Add((UInt32)((sockaddr_in*)ipaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
+			this->ent.ipaddr.Add((UInt32)((sockaddr_in*)ipaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
 		}
 		ipaddrs = ipaddrs->Next;
 	}
@@ -54,7 +50,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		if (dnsaddrs->Address.lpSockaddr->sa_family == AF_INET)
 		{
-			this->ent.dnsaddr->Add((UInt32)((sockaddr_in*)dnsaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
+			this->ent.dnsaddr.Add((UInt32)((sockaddr_in*)dnsaddrs->Address.lpSockaddr)->sin_addr.S_un.S_addr);
 		}
 		dnsaddrs = dnsaddrs->Next;
 	}
@@ -104,23 +100,13 @@ Bool Net::ConnectionInfo::SetInfo(void *info)
 	this->ent.index = inf->Index;
 	if (inf->GatewayList.IpAddress.String[0])
 	{
-		this->ent.defGW = Net::SocketUtil::GetIPAddr((const UTF8Char*)inf->GatewayList.IpAddress.String, Text::StrCharCnt(inf->GatewayList.IpAddress.String));
+		this->ent.defGW = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->GatewayList.IpAddress.String));
 	}
 	if (inf->DhcpEnabled != 0)
 	{
-		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr((const UTF8Char*)inf->DhcpServer.IpAddress.String, Text::StrCharCnt(inf->GatewayList.IpAddress.String));
-		if (this->ent.dhcpLeaseTime == 0)
-		{
-			NEW_CLASS(this->ent.dhcpLeaseTime, Data::DateTime());
-		}
-		if (this->ent.dhcpLeaseExpire == 0)
-		{
-			NEW_CLASS(this->ent.dhcpLeaseExpire, Data::DateTime());
-		}
-		this->ent.dhcpLeaseTime->SetUnixTimestamp(inf->LeaseObtained);
-		this->ent.dhcpLeaseTime->ToLocalTime();
-		this->ent.dhcpLeaseExpire->SetUnixTimestamp(inf->LeaseExpires);
-		this->ent.dhcpLeaseExpire->ToLocalTime();
+		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->DhcpServer.IpAddress.String));
+		this->ent.dhcpLeaseTime = Data::Timestamp::FromUnixTimestamp(inf->LeaseObtained).ToLocalTime();
+		this->ent.dhcpLeaseExpire = Data::Timestamp::FromUnixTimestamp(inf->LeaseExpires).ToLocalTime();
 	}
 	return true;
 }

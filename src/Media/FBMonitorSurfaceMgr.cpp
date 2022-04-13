@@ -36,16 +36,16 @@ Double Media::FBMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
 	return 96.0;
 }
 
-Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHandle *hMonitor)
+const Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHandle *hMonitor)
 {
 	if (this->colorMgr)
 	{
 		Media::MonitorColorManager *monColor = this->colorMgr->GetMonColorManager(hMonitor);
-		return monColor->GetRGBParam()->monProfile;
+		return &monColor->GetRGBParam()->monProfile;
 	}
 	else if (this->colorSess)
 	{
-		return this->colorSess->GetRGBParam()->monProfile;
+		return &this->colorSess->GetRGBParam()->monProfile;
 	}
 	return 0;
 }

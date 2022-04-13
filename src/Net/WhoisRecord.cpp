@@ -65,8 +65,8 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 			else
 			{
 				sptr[i] = 0;
-				this->startIP = Net::SocketUtil::GetIPAddr(sptr, i);
-				this->endIP = Net::SocketUtil::GetIPAddr(&sptr[i + 3], sb.GetLength() - i - 3);
+				this->startIP = Net::SocketUtil::GetIPAddr(Text::CString(sptr, i));
+				this->endIP = Net::SocketUtil::GetIPAddr(Text::CString(&sptr[i + 3], sb.GetLength() - i - 3));
 			}
 		}
 		else if (Text::StrStartsWithICaseC(item, itemLen, UTF8STRC("NetRange:")))
@@ -100,8 +100,8 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 			else
 			{
 				sptr[i] = 0;
-				this->startIP = Net::SocketUtil::GetIPAddr(sptr, i);
-				this->endIP = Net::SocketUtil::GetIPAddr(&sptr[i + 3], sb.GetLength() - i - 3);
+				this->startIP = Net::SocketUtil::GetIPAddr(Text::CString(sptr, i));
+				this->endIP = Net::SocketUtil::GetIPAddr(Text::CString(&sptr[i + 3], sb.GetLength() - i - 3));
 			}
 		}
 	}

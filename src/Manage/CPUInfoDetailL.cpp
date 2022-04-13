@@ -12,27 +12,26 @@
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
-	IO::FileStream *fs;
 	this->cpuModel = CSTR_NULL;
 
-	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		Int32 cpuPart = 0;
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader *reader;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWith(UTF8STRC("CPU part	:")))
+			Text::UTF8Reader reader(&fs);
+			while (reader.ReadLine(&sb, 512))
 			{
-				cpuPart = Text::StrToInt32(sb.ToString() + 11);
+				if (sb.StartsWith(UTF8STRC("CPU part	:")))
+				{
+					cpuPart = Text::StrToInt32(sb.ToString() + 11);
+				}
+				sb.ClearStr();
 			}
-			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
-		fs->SeekFromBeginning(0);
-		this->cpuModel = Manage::CPUDB::ParseCPUInfo(fs);
+		fs.SeekFromBeginning(0);
+		this->cpuModel = Manage::CPUDB::ParseCPUInfo(&fs);
 		if (this->cpuModel.v == 0)
 		{
 			if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"spade"))
@@ -87,12 +86,11 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (this->brand == Manage::CPUVendor::CB_TI)
 			{
-				IO::FileStream *fs2;
 				UInt8 fileBuff[33];
-				NEW_CLASS(fs2, IO::FileStream(CSTR("/sys/devices/soc0/machine"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				if (!fs2->IsError())
+				IO::FileStream fs2(CSTR("/sys/devices/soc0/machine"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (!fs2.IsError())
 				{
-					UOSInt i = fs2->Read(fileBuff, 32);
+					UOSInt i = fs2.Read(fileBuff, 32);
 					fileBuff[i] = 0;
 					while (i > 0)
 					{
@@ -153,7 +151,6 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 						}
 					}
 				}
-				DEL_CLASS(fs2);
 			}
 			else if (this->brand == Manage::CPUVendor::CB_AMLOGIC)
 			{
@@ -216,7 +213,6 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 		}
 	}
-	DEL_CLASS(fs);
 }
 
 Manage::CPUInfoDetail::~CPUInfoDetail()
@@ -240,47 +236,45 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
 	Text::StringBuilderUTF8 sb;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	sb.ClearStr();
-	if (reader->ReadLine(&sb, 512))
 	{
-		Double val = Text::StrToDouble(sb.ToString());
-		if (val < 100 && val > 0)
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
+		sb.ClearStr();
+		if (reader.ReadLine(&sb, 512))
 		{
-			*temp = val;
+			Double val = Text::StrToDouble(sb.ToString());
+			if (val < 100 && val > 0)
+			{
+				*temp = val;
+			}
+			else
+			{
+				*temp = val * 0.001;
+			}
+			ret = true;
 		}
-		else
-		{
-			*temp = val * 0.001;
-		}
-		ret = true;
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	if (ret)
 		return true;
 
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/hwmon/hwmon")), index), UTF8STRC("/device/temperature"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	sb.ClearStr();
-	if (reader->ReadLine(&sb, 512))
 	{
-		if (sb.ToString()[0] == '+')
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
+		sb.ClearStr();
+		if (reader.ReadLine(&sb, 512))
 		{
-			*temp = Text::StrToDouble(sb.ToString() + 1);
+			if (sb.ToString()[0] == '+')
+			{
+				*temp = Text::StrToDouble(sb.ToString() + 1);
+			}
+			else
+			{
+				*temp = Text::StrToDouble(sb.ToString());
+			}
+			ret = true;
 		}
-		else
-		{
-			*temp = Text::StrToDouble(sb.ToString());
-		}
-		ret = true;
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	if (ret)
 		return true;
 	return false;

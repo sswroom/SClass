@@ -6,8 +6,8 @@
 void Map::LeveledMapView::UpdateVals()
 {
 	Double scale = this->scales->GetItem(this->level);
-	Double diffx = UOSInt2Double(this->scnWidth) * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
-	Double diffy = UOSInt2Double(this->scnHeight) * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
+	Double diffx = this->scnWidth * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
+	Double diffy = this->scnHeight * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
 
 	this->rightX = this->centX + diffx;
 	this->leftX = this->centX - diffx;
@@ -15,7 +15,7 @@ void Map::LeveledMapView::UpdateVals()
 	this->topY = this->centY - diffy;
 }
 
-Map::LeveledMapView::LeveledMapView(UOSInt scnWidth, UOSInt scnHeight, Double centLat, Double centLon, Data::ArrayListDbl *scales) : Map::MapView(scnWidth, scnHeight)
+Map::LeveledMapView::LeveledMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, Data::ArrayListDbl *scales) : Map::MapView(scnWidth, scnHeight)
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
@@ -29,7 +29,7 @@ Map::LeveledMapView::~LeveledMapView()
 	DEL_CLASS(this->scales);
 }
 
-void Map::LeveledMapView::ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double centX, Double centY, Double scale)
+void Map::LeveledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale)
 {
 	this->centX = centX;
 	this->centY = centY;
@@ -70,7 +70,7 @@ void Map::LeveledMapView::SetMapScale(Double scale)
 	this->UpdateVals();
 }
 
-void Map::LeveledMapView::UpdateSize(UOSInt width, UOSInt height)
+void Map::LeveledMapView::UpdateSize(Double width, Double height)
 {
 	this->scnWidth = width;
 	this->scnHeight = height;
@@ -149,8 +149,8 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOS
 		return false;
 	}
 
-	Double xmul = UOSInt2Double(this->scnWidth) / (rightX - leftX);
-	Double ymul = UOSInt2Double(this->scnHeight) / (bottomY - topY);
+	Double xmul = this->scnWidth / (rightX - leftX);
+	Double ymul = this->scnHeight / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 #ifdef HAS_ASM32
@@ -251,8 +251,8 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UO
 		return false;
 	}
 
-	Double xmul = UOSInt2Double(this->scnWidth) / (rightX - leftX);
-	Double ymul = UOSInt2Double(this->scnHeight) / (bottomY - topY);
+	Double xmul = this->scnWidth / (rightX - leftX);
+	Double ymul = this->scnHeight / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double iminX = 0;
@@ -282,7 +282,7 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UO
 				imaxY = thisY;
 		}
 	}
-	return (imaxX >= 0) && (iminX < UOSInt2Double(scnWidth)) && (imaxY >= 0) && (iminY < UOSInt2Double(scnHeight));
+	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);
 }
 
 Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
@@ -291,8 +291,8 @@ Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int
 	{
 		return false;
 	}
-	Double xmul = UOSInt2Double(this->scnWidth) / (rightX - leftX);
-	Double ymul = UOSInt2Double(this->scnHeight) / (bottomY - topY);
+	Double xmul = this->scnWidth / (rightX - leftX);
+	Double ymul = this->scnHeight / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Double rRate = 1 / mapRate;
@@ -392,14 +392,14 @@ mtslop4:
 
 void Map::LeveledMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
 {
-	*scnX = (mapX - this->leftX) * UOSInt2Double(scnWidth) / (this->rightX - this->leftX);
-	*scnY = (this->bottomY - mapY) * UOSInt2Double(scnHeight) / (this->bottomY - this->topY);
+	*scnX = (mapX - this->leftX) * scnWidth / (this->rightX - this->leftX);
+	*scnY = (this->bottomY - mapY) * scnHeight / (this->bottomY - this->topY);
 }
 
 void Map::LeveledMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
 {
-	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / UOSInt2Double(scnWidth)));
-	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / UOSInt2Double(scnHeight)));
+	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / scnWidth));
+	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / scnHeight));
 }
 
 Map::MapView *Map::LeveledMapView::Clone()

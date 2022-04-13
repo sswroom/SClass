@@ -9,7 +9,7 @@
 Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sarr[4];
+	Text::PString sarr[4];
 	UOSInt i;
 	IO::Device::SIM7000 *me = (IO::Device::SIM7000*)userObj;
 	if (me->nextReceive)
@@ -28,28 +28,30 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 	if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("+CDNSGIP: ")))
 	{
 		Text::StrConcatC(sbuff, &cmd[10], cmdLen - 10);
-		i = Text::StrSplit(sarr, 4, sbuff, ',');
-		if (sarr[0][0] == '1' && i >= 3)
+		i = Text::StrSplitP(sarr, 4, {sbuff, cmdLen - 10}, ',');
+		if (sarr[0].v[0] == '1' && i >= 3)
 		{
-			if (sarr[1][0] == '"')
+			if (sarr[1].v[0] == '"')
 			{
-				i = Text::StrIndexOfChar(&sarr[1][1], '"');
-				sarr[1][i + 1] = 0;
-				sarr[1]++;
+				i = Text::StrIndexOfCharC(&sarr[1].v[1], sarr[1].leng - 1, '"');
+				sarr[1].v[i + 1] = 0;
+				sarr[1].v++;
+				sarr[1].leng = i;
 			}
-			if (sarr[2][0] == '"')
+			if (sarr[2].v[0] == '"')
 			{
-				i = Text::StrIndexOfChar(&sarr[2][1], '"');
-				sarr[2][i + 1] = 0;
-				sarr[2]++;
+				i = Text::StrIndexOfCharC(&sarr[2].v[1], sarr[2].leng - 1, '"');
+				sarr[2].v[i + 1] = 0;
+				sarr[2].v++;
+				sarr[2].leng = i;
 			}
-			Sync::MutexUsage mutUsage(me->dnsMut);
-			if (me->dnsReq && me->dnsResp)
+			Sync::MutexUsage mutUsage(&me->dnsMut);
+			if (me->dnsReq.v && me->dnsResp)
 			{
-				if (Text::StrEquals(me->dnsReq, sarr[1]) && Net::SocketUtil::GetIPAddr(sarr[2], Text::StrCharCnt(sarr[2]), me->dnsResp))
+				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::GetIPAddr(sarr[2].ToCString(), me->dnsResp))
 				{
 					me->dnsResult = true;
-					me->respEvt->Set();
+					me->respEvt.Set();
 				}
 			}
 			mutUsage.EndUse();
@@ -60,17 +62,18 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 	{
 		me->nextReceive = true;
 		Text::StrConcatC(sbuff, &cmd[9], cmdLen - 9);
-		if (Text::StrSplit(sarr, 4, sbuff, ',') == 3)
+		if (Text::StrSplitP(sarr, 4, {sbuff, cmdLen - 9}, ',') == 3)
 		{
-			me->recvIndex = Text::StrToUInt32(sarr[0]);
-			me->recvSize = Text::StrToUInt32(sarr[1]);
-			i = Text::StrIndexOfChar(sarr[2], ':');
+			me->recvIndex = Text::StrToUInt32(sarr[0].v);
+			me->recvSize = Text::StrToUInt32(sarr[1].v);
+			i = sarr[2].IndexOf(':');
 			if (i != INVALID_INDEX)
 			{
-				sarr[2][i] = 0;
-				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2], i);
+				sarr[2].v[i] = 0;
+				sarr[2].leng = i;
+				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2].ToCString());
 				me->recvPort = 0;
-				Text::StrToUInt16(&sarr[2][i + 1], &me->recvPort);
+				Text::StrToUInt16(&sarr[2].v[i + 1], &me->recvPort);
 			}
 			else
 			{
@@ -96,7 +99,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 			if (i == me->connInd)
 			{
 				me->connResult = 1;
-				me->respEvt->Set();
+				me->respEvt.Set();
 			}
 			return true;
 		}
@@ -105,7 +108,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 			if (i == me->connInd)
 			{
 				me->connResult = 2;
-				me->respEvt->Set();
+				me->respEvt.Set();
 			}
 			return true;
 		}
@@ -114,7 +117,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 			if (i == me->connInd)
 			{
 				me->connResult = 3;
-				me->respEvt->Set();
+				me->respEvt.Set();
 			}
 			return true;
 		}
@@ -125,9 +128,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 
 IO::Device::SIM7000::SIM7000(IO::ATCommandChannel *channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
-	NEW_CLASS(this->respEvt, Sync::Event(true));
-	NEW_CLASS(this->dnsMut, Sync::Mutex());
-	this->dnsReq = 0;
+	this->dnsReq = CSTR_NULL;
 	this->dnsResp = 0;
 	this->nextReceive = false;
 	this->recvHdlr = 0;
@@ -141,8 +142,6 @@ IO::Device::SIM7000::~SIM7000()
 	{
 		this->channel->SetCommandHandler(0, 0);
 	}
-	DEL_CLASS(this->dnsMut);
-	DEL_CLASS(this->respEvt);
 }
 
 void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userObj)
@@ -262,10 +261,10 @@ Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 	sptr = Text::StrUInt16(sptr, port);
 	this->connInd = index;
 	this->connResult = 0;
-	this->respEvt->Clear();
+	this->respEvt.Clear();
 	if (this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff)))
 	{
-		this->respEvt->Wait(30000);
+		this->respEvt.Wait(30000);
 		if (this->connResult == 1 || this->connResult == 2)
 		{
 			return true;
@@ -289,10 +288,10 @@ Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 	sptr = Text::StrUInt16(sptr, port);
 	this->connInd = index;
 	this->connResult = 0;
-	this->respEvt->Clear();
+	this->respEvt.Clear();
 	if (this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff)))
 	{
-		this->respEvt->Wait(30000);
+		this->respEvt.Wait(30000);
 		if (this->connResult == 1 || this->connResult == 2)
 		{
 			return true;
@@ -404,7 +403,7 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 			k = s->IndexOf(UTF8STRC("Dns: "));
 			if (k != INVALID_INDEX && k > 0)
 			{
-				dnsList->Add(Net::SocketUtil::GetIPAddr(&s->v[k + 5], s->leng - k - 5));
+				dnsList->Add(Net::SocketUtil::GetIPAddr(s->ToCString().Substring(k + 5)));
 			}
 			s->Release();
 			i++;
@@ -414,15 +413,15 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 	return false;
 }
 
-Bool IO::Device::SIM7000::NetDNSResolveIP(const UTF8Char *domain, Net::SocketUtil::AddressInfo *addr)
+Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, Net::SocketUtil::AddressInfo *addr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CDNSGIP=\""));
-	sptr = Text::StrConcat(sptr, domain);
+	sptr = domain.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
-	Sync::MutexUsage mutUsage(this->dnsMut);
-	while (this->dnsReq)
+	Sync::MutexUsage mutUsage(&this->dnsMut);
+	while (this->dnsReq.v)
 	{
 		mutUsage.EndUse();
 		Sync::Thread::Sleep(100);
@@ -431,17 +430,17 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(const UTF8Char *domain, Net::SocketUti
 	this->dnsResult = false;
 	this->dnsReq = domain;
 	this->dnsResp = addr;
-	this->respEvt->Clear();
+	this->respEvt.Clear();
 	mutUsage.EndUse();
 	if (!this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000))
 	{
 		return false;
 	}
-	this->respEvt->Wait(3000);
+	this->respEvt.Wait(3000);
 	Bool ret;
 	mutUsage.BeginUse();
 	ret = this->dnsResult;
-	this->dnsReq = 0;
+	this->dnsReq = CSTR_NULL;
 	this->dnsResp = 0;
 	mutUsage.EndUse();
 	return ret;

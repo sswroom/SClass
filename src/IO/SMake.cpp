@@ -9,6 +9,8 @@
 #include "Sync/MutexUsage.h"
 #include "Text/UTF8Reader.h"
 
+#include <stdio.h>
+
 #define OBJECTPATH "obj"
 
 void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val)
@@ -298,7 +300,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			{
 				const UTF8Char *ccfg = sptr1;
 				const UTF8Char *ccfgEnd = sptr1End;
-				IO::SMake::ConfigItem *cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+				IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTRP(sptr1, sptr1End));
 				if (cfg)
 				{
 					ccfg = cfg->value->v;
@@ -1400,7 +1402,7 @@ Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringM
 
 void IO::SMake::CleanFiles()
 {
-	UTF8Char sbuff[256];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	IO::Path::PathType pt;

@@ -9,54 +9,50 @@
 
 Parser::ParserList::ParserList()
 {
-	NEW_CLASS(this->filePArr, Data::ArrayList<IO::FileParser*>());
-	NEW_CLASS(this->objPArr, Data::ArrayList<IO::IObjectParser*>());
 }
 
 Parser::ParserList::~ParserList()
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		DEL_CLASS(parser);
 	}
-	DEL_CLASS(this->filePArr);
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		DEL_CLASS(parser);
 	}
-	DEL_CLASS(this->objPArr);
 }
 
 void Parser::ParserList::AddFileParser(IO::FileParser *parser)
 {
-	this->filePArr->Add(parser);
+	this->filePArr.Add(parser);
 	parser->SetParserList(this);
 }
 
 void Parser::ParserList::AddObjectParser(IO::IObjectParser *parser)
 {
-	this->objPArr->Add(parser);
+	this->objPArr.Add(parser);
 	parser->SetParserList(this);
 }
 
 void Parser::ParserList::SetCodePage(UInt32 codePage)
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->SetCodePage(codePage);
 	}
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->SetCodePage(codePage);
 	}
 }
@@ -64,16 +60,16 @@ void Parser::ParserList::SetCodePage(UInt32 codePage)
 void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->SetMapManager(mapMgr);
 	}
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->SetMapManager(mapMgr);
 	}
 }
@@ -81,16 +77,16 @@ void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->SetEncFactory(encFact);
 	}
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->SetEncFactory(encFact);
 	}
 }
@@ -98,16 +94,16 @@ void Parser::ParserList::SetEncFactory(Text::EncodingFactory *encFact)
 void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->SetWebBrowser(browser);
 	}
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->SetWebBrowser(browser);
 	}
 }
@@ -115,16 +111,16 @@ void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->SetSocketFactory(sockf);
 	}
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->SetSocketFactory(sockf);
 	}
 }
@@ -132,16 +128,16 @@ void Parser::ParserList::SetSocketFactory(Net::SocketFactory *sockf)
 void Parser::ParserList::SetSSLEngine(Net::SSLEngine *ssl)
 {
 	IO::IParser *parser;
-	UOSInt i = this->filePArr->GetCount();
+	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->SetSSLEngine(ssl);
 	}
-	i = this->objPArr->GetCount();
+	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->SetSSLEngine(ssl);
 	}
 }
@@ -150,19 +146,19 @@ void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::Parser
 {
 	IO::IParser *parser;
 	UOSInt i;
-	UOSInt j = this->filePArr->GetCount();
+	UOSInt j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		parser->PrepareSelector(selector, t);
 		i++;
 	}
 	i = 0;
-	j = this->objPArr->GetCount();
+	j = this->objPArr.GetCount();
 	while (i < j)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		parser->PrepareSelector(selector, t);
 		i++;
 	}
@@ -171,14 +167,14 @@ void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::Parser
 IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
 {
 	UOSInt i = 0;
-	UOSInt j = this->filePArr->GetCount();
+	UOSInt j = this->filePArr.GetCount();
 	IO::FileParser *parser;
 	IO::ParsedObject *result;
 	if (fd->GetDataSize() <= 0)
 		return 0;
 	while (i < j)
 	{
-		parser = this->filePArr->GetItem(i);
+		parser = this->filePArr.GetItem(i);
 		if ((result = parser->ParseFile(fd, pkgFile, targetType)) != 0)
 		{
 			if (t)
@@ -221,12 +217,12 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::Par
 IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::ParserType *t)
 {
 	UOSInt i = 0;
-	UOSInt j = this->objPArr->GetCount();
+	UOSInt j = this->objPArr.GetCount();
 	IO::IObjectParser *parser;
 	IO::ParsedObject *result;
 	while (i < j)
 	{
-		parser = this->objPArr->GetItem(i);
+		parser = this->objPArr.GetItem(i);
 		if ((result = parser->ParseObject(pobj, 0, IO::ParserType::Unknown)) != 0)
 		{
 			if (t)

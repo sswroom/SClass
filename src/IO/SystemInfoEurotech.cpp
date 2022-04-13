@@ -15,8 +15,6 @@ struct IO::SystemInfo::ClassData
 
 IO::SystemInfo::SystemInfo()
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
 	ClassData *data = MemAlloc(ClassData, 1);
@@ -24,18 +22,16 @@ IO::SystemInfo::SystemInfo()
 	data->platformSN = 0;
 	this->clsData = data;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hostname", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/etc/hostname"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		while (reader->ReadLine(&sb, 512))
+		while (reader.ReadLine(&sb, 512))
 		{
 		}
-		DEL_CLASS(reader);
 		data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
-	DEL_CLASS(fs);
 }
 
 IO::SystemInfo::~SystemInfo()

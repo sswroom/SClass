@@ -17,18 +17,19 @@ namespace Media
 			AT_ALSA = 8
 		} APIType;
 	private:
-		Data::ArrayList<Media::IAudioRenderer*> *rendererList;
+		Data::ArrayList<Media::IAudioRenderer*> rendererList;
 		Media::IAudioRenderer *currRenderer;
 
 	public:
 		static UOSInt GetDeviceCount();
 		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);
-		static Media::IAudioRenderer *CreateRenderer(const UTF8Char *devName);
+		static Media::IAudioRenderer *CreateRenderer(Text::CString devName);
 
 		AudioDevice();
 		~AudioDevice();
 
-		Bool AddDevice(const UTF8Char *devName);
+		Bool AddDevice(Text::CString devName);
+		void ClearDevices();
 
 		Media::IAudioRenderer *BindAudio(Media::IAudioSource *audsrc);
 	};

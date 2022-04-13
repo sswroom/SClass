@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 	me->txtPort->GetText(&sbPort);
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), sbHost.GetLength(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host name"), CSTR("EqasyWay EW-DTU01"), me);
 		return;

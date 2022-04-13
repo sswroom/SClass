@@ -10,9 +10,9 @@ namespace IO
 		struct ClassData;
 		
 		struct ClassData *clsData;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *pubRecMap;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *randRecMap;
-		Sync::Mutex *recMut;
+		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> pubRecMap;
+		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> randRecMap;
+		Sync::Mutex recMut;
 
 		static __stdcall UInt32 RecvThread(void *userObj);
 		void FreeRec(IO::BTScanLog::ScanRecord3* rec);

@@ -31,7 +31,6 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	UOSInt nameLen = Text::StrCharCnt(data->name);
 	Text::StrConcatC(ifr.ifr_name, data->name, nameLen);
 	UInt8 buff[64];
-	IO::FileStream *fs;
 
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC((const UTF8Char*)data->name, nameLen);
@@ -143,9 +142,10 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		sb.AppendC(UTF8STRC("/address"));
 	
 		UOSInt readSize;
-		NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		readSize = fs->Read(buff, 63);
-		DEL_CLASS(fs);
+		{
+			IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			readSize = fs.Read(buff, 63);
+		}
 		buff[readSize] = 0;
 		this->ent.physicalAddr = 0;
 		this->ent.physicalAddrLeng = 0;
@@ -167,11 +167,8 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		}
 	}
 	this->ent.dhcpSvr = 0;
-	this->ent.dhcpLeaseTime = 0;
-	this->ent.dhcpLeaseExpire = 0;
 	this->ent.dnsSuffix = 0;
 	
-	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32(4));
 #if !defined(NO_GETIFADDRS) && (!defined(__ANDROID_API__) || __ANDROID_API__ >= 24)
 	struct ifaddrs *ifap;
 	struct ifaddrs *ifa;
@@ -182,7 +179,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		{
 			if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET && Text::StrEquals(ifa->ifa_name, data->name))
 			{
-				this->ent.ipaddr->Add((UInt32)((sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr);
+				this->ent.ipaddr.Add((UInt32)((sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr);
 			}
 			ifa = ifa->ifa_next;
 		}
@@ -191,32 +188,30 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 #else
 #endif
 	
-	Text::UTF8Reader *reader;
-	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32(4));
-	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		Text::PString sarr[3];
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sb.ClearStr();
-		while (reader->ReadLine(&sb, 512))
+		IO::FileStream fs(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			sb.Trim();
-			if (sb.ToString()[0] == '#')
-			{
-			}
-			else if (sb.StartsWith(UTF8STRC("nameserver")))
-			{
-				if (Text::StrSplitWSP(sarr, 3, sb) >= 2)
-				{
-					this->ent.dnsaddr->Add(Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng));
-				}
-			}
+			Text::PString sarr[3];
+			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
+			while (reader.ReadLine(&sb, 512))
+			{
+				sb.Trim();
+				if (sb.ToString()[0] == '#')
+				{
+				}
+				else if (sb.StartsWith(UTF8STRC("nameserver")))
+				{
+					if (Text::StrSplitWSP(sarr, 3, sb) >= 2)
+					{
+						this->ent.dnsaddr.Add(Net::SocketUtil::GetIPAddr(sarr[1].ToCString()));
+					}
+				}
+				sb.ClearStr();
+			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 	this->ent.defGW = 0;
 
 /*	NEW_CLASS(fs, IO::FileStream(L"/proc/net/route", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

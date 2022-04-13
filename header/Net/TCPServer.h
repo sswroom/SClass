@@ -34,8 +34,8 @@ namespace Net
 		Socket *svrSocv6;
 		void *userObj;
 		Int32 threadRunning;
-		Data::SyncLinkedList *socs;
-		Sync::Event *socsEvt;
+		Data::SyncLinkedList socs;
+		Sync::Event socsEvt;
 
 	private:
 		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev);

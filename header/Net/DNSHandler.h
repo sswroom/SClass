@@ -10,27 +10,28 @@ namespace Net
 	class DNSHandler
 	{
 	private:
-		typedef struct
+		class DomainStatus
 		{
+		public:
 			Text::String *domain;
 			Double timeout;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> *answers;
+			Data::ArrayList<Net::DNSClient::RequestAnswer*> answers;
 			Net::SocketUtil::AddressInfo addr;
-		} DomainStatus;
+		};
 	private:
-		Net::DNSClient *dnsCli;
-		Sync::Mutex *reqv4Mut;
-		Data::ICaseBTreeUTF8Map<DomainStatus*> *reqv4Map;
-		Sync::Mutex *reqv6Mut;
-		Data::ICaseBTreeUTF8Map<DomainStatus*> *reqv6Map;
-		Manage::HiResClock *clk;
+		Net::DNSClient dnsCli;
+		Sync::Mutex reqv4Mut;
+		Data::ICaseBTreeUTF8Map<DomainStatus*> reqv4Map;
+		Sync::Mutex reqv6Mut;
+		Data::ICaseBTreeUTF8Map<DomainStatus*> reqv6Map;
+		Manage::HiResClock clk;
 
 	public:
 		DNSHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr);
 		~DNSHandler();
 	
-		Bool GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
-		Bool GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
+		Bool GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text::CString domain);
+		Bool GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text::CString domain);
 
 		Bool AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
 		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);

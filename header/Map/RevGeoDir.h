@@ -16,8 +16,8 @@ namespace Map
 			UInt32 lcid;
 		} RevGeoFile;
 
-		Data::ArrayList<RevGeoFile*> *files;
-		Map::MapSearchManager *mapSrchMgr;
+		Data::ArrayList<RevGeoFile*> files;
+		Map::MapSearchManager mapSrchMgr;
 		UInt32 defLCID;
 
 	public:

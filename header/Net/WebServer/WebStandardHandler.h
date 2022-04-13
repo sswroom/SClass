@@ -10,8 +10,8 @@ namespace Net
 		class WebStandardHandler : public Net::WebServer::IWebHandler
 		{
 		protected:
-			Data::FastStringMap<Net::WebServer::WebStandardHandler *> *hdlrs;
-			Data::ArrayList<Net::WebServer::WebStandardHandler*> *relHdlrs;
+			Data::FastStringMap<Net::WebServer::WebStandardHandler *> hdlrs;
+			Data::ArrayList<Net::WebServer::WebStandardHandler*> relHdlrs;
 
 		protected:
 			virtual ~WebStandardHandler();

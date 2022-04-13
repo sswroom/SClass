@@ -12,7 +12,7 @@ namespace Crypto
 		{
 		private:
 			Crypto::Hash::IHash *hash;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 
 		public:
 			HashCalc(Crypto::Hash::IHash *hash); //hash will be released

@@ -3,7 +3,7 @@
 #include "Media/ImageUtil.h"
 #include "Media/MemorySurface.h"
 
-Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, Media::ColorProfile *color, Double dpi)
+Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi)
 {
 	this->buffPtr = MemAllocA(UInt8, width * height * (bitPerPixel >> 3));
 	this->info.fourcc = 0;

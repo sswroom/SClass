@@ -125,10 +125,8 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	this->status.reqCnt = 0;
 	this->status.totalRead = 0;
 	this->status.totalWrite = 0;
-	NEW_CLASS(this->accLogMut, Sync::Mutex());
-	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHdlr, this, CSTR("Web: ")));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, &this->log, ConnHdlr, this, CSTR("Web: ")));
 	if (this->allowProxy)
 	{
 		NEW_CLASS(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));
@@ -140,8 +138,6 @@ Net::WebServer::WebListener::~WebListener()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 	SDEL_CLASS(this->proxyCliMgr);
-	DEL_CLASS(this->log);
-	DEL_CLASS(this->accLogMut);
 	this->svrName->Release();
 }
 
@@ -158,14 +154,14 @@ Text::String *Net::WebServer::WebListener::GetServerName()
 
 void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::ILogHandler::LogLevel accLogLev)
 {
-	Sync::MutexUsage mutUsage(this->accLogMut);
+	Sync::MutexUsage mutUsage(&this->accLogMut);
 	this->accLog = accLog;
 	this->accLogLev = accLogLev;
 }
 
 void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqLog)
 {
-	Sync::MutexUsage mutUsage(this->accLogMut);
+	Sync::MutexUsage mutUsage(&this->accLogMut);
 	this->reqLog = reqLog;
 }
 
@@ -175,7 +171,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 	UTF8Char *sptr;
 	Text::CString cstr;
 	Interlocked_IncrementU32(&this->status.reqCnt);
-	Sync::MutexUsage accLogMutUsage(this->accLogMut);
+	Sync::MutexUsage accLogMutUsage(&this->accLogMut);
 	if (this->reqLog)
 	{
 		this->reqLog->LogRequest(req);
@@ -232,7 +228,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen)
 {
 	UTF8Char sbuff[32];
-	Sync::MutexUsage mutUsage(this->accLogMut);
+	Sync::MutexUsage mutUsage(&this->accLogMut);
 	if (this->accLog)
 	{
 		if (req)

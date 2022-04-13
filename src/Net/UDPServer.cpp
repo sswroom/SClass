@@ -12,68 +12,72 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Net::UDPServer::ThreadStat *stat = (Net::UDPServer::ThreadStat*)obj;
-	stat->threadRunning = true;
-	stat->me->ctrlEvt->Set();
-
-	UInt8 *buff = MemAlloc(UInt8, 2048);
-	while (!stat->toStop)
 	{
-		UOSInt recvSize;
-		Net::SocketUtil::AddressInfo recvAddr;
-		UInt16 recvPort;
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->threadRunning = true;
+		stat->me->ctrlEvt->Set();
 
-		recvSize = stat->me->sockf->UDPReceive(stat->me->socV4, buff, 2048, &recvAddr, &recvPort, 0);
-		Data::DateTime logTime;
-		logTime.SetCurrTimeUTC();
-		if (recvSize > 0)
+		UInt8 *buff = MemAlloc(UInt8, 2048);
+		while (!stat->toStop)
 		{
-			Sync::Interlocked::Increment(&stat->me->recvCnt);
-			if (stat->me->msgLog)
-			{
-				if (stat->me->msgPrefix)
-					sptr = stat->me->msgPrefix->ConcatTo(sbuff);
-				else
-					sptr = sbuff;
-				sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
-				sptr = Text::StrUOSInt(sptr, recvSize);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
-				sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
-				stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
-			}
+			UOSInt recvSize;
+			Net::SocketUtil::AddressInfo recvAddr;
+			UInt16 recvPort;
 
-			if (stat->me->logPrefix)
+			recvSize = stat->me->sockf->UDPReceive(stat->me->socV4, buff, 2048, &recvAddr, &recvPort, 0);
+			Data::DateTime logTime;
+			logTime.SetCurrTimeUTC();
+			if (recvSize > 0)
 			{
-				Sync::MutexUsage mutUsage(stat->me->logFileMut);
-				if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
+				Sync::Interlocked::Increment(&stat->me->recvCnt);
+				if (stat->me->msgLog)
 				{
+					if (stat->me->msgPrefix)
+						sptr = stat->me->msgPrefix->ConcatTo(sbuff);
+					else
+						sptr = sbuff;
+					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
+					sptr = Text::StrUOSInt(sptr, recvSize);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
+					sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
+					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
+				}
+
+				if (stat->me->logPrefix)
+				{
+					Sync::MutexUsage mutUsage(&stat->me->logFileMut);
+					if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
+					{
+						if (stat->me->logFileR)
+						{
+							DEL_CLASS(stat->me->logFileR);
+							stat->me->logFileR = 0;
+						}
+						sptr = stat->me->logPrefix->ConcatTo(sbuff);
+						sptr = logTime.ToString(sptr, "yyyyMMdd");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
+						NEW_CLASS(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+					}
+
 					if (stat->me->logFileR)
 					{
-						DEL_CLASS(stat->me->logFileR);
-						stat->me->logFileR = 0;
+						Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
+						UInt8 hbuff[8];
+						hbuff[0] = 0xaa;
+						hbuff[1] = 0xbb;
+						WriteInt16(&hbuff[2], (Int16)recvSize);
+						WriteInt32(&hbuff[4], v);
+						stat->me->logFileR->Write(hbuff, 8);
+						stat->me->logFileR->Write(buff, recvSize);
 					}
-					sptr = stat->me->logPrefix->ConcatTo(sbuff);
-					sptr = logTime.ToString(sptr, "yyyyMMdd");
-					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
-					NEW_CLASS(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+					mutUsage.EndUse();
 				}
-
-				if (stat->me->logFileR)
-				{
-					Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
-					UInt8 hbuff[8];
-					hbuff[0] = 0xaa;
-					hbuff[1] = 0xbb;
-					WriteInt16(&hbuff[2], (Int16)recvSize);
-					WriteInt32(&hbuff[4], v);
-					stat->me->logFileR->Write(hbuff, 8);
-					stat->me->logFileR->Write(buff, recvSize);
-				}
-				mutUsage.EndUse();
+				stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
 			}
-			stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
 		}
+		MemFree(buff);
 	}
-	MemFree(buff);
 	stat->threadRunning = false;
 	stat->me->ctrlEvt->Set();
 	return 0;
@@ -84,68 +88,72 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Net::UDPServer::ThreadStat *stat = (Net::UDPServer::ThreadStat*)obj;
-	stat->threadRunning = true;
-	stat->me->ctrlEvt->Set();
-
-	UInt8 *buff = MemAlloc(UInt8, 2048);
-	while (!stat->toStop)
 	{
-		UOSInt recvSize;
-		Net::SocketUtil::AddressInfo recvAddr;
-		UInt16 recvPort;
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->threadRunning = true;
+		stat->me->ctrlEvt->Set();
 
-		recvSize = stat->me->sockf->UDPReceive(stat->me->socV6, buff, 2048, &recvAddr, &recvPort, 0);
-		Data::DateTime logTime;
-		logTime.SetCurrTimeUTC();
-		if (recvSize > 0)
+		UInt8 *buff = MemAlloc(UInt8, 2048);
+		while (!stat->toStop)
 		{
-			Sync::Interlocked::Increment(&stat->me->recvCnt);
-			if (stat->me->msgLog)
-			{
-				if (stat->me->msgPrefix)
-					sptr = stat->me->msgPrefix->ConcatTo(sbuff);
-				else
-					sptr = sbuff;
-				sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
-				sptr = Text::StrUOSInt(sptr, recvSize);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
-				sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
-				stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
-			}
+			UOSInt recvSize;
+			Net::SocketUtil::AddressInfo recvAddr;
+			UInt16 recvPort;
 
-			if (stat->me->logPrefix)
+			recvSize = stat->me->sockf->UDPReceive(stat->me->socV6, buff, 2048, &recvAddr, &recvPort, 0);
+			Data::DateTime logTime;
+			logTime.SetCurrTimeUTC();
+			if (recvSize > 0)
 			{
-				Sync::MutexUsage mutUsage(stat->me->logFileMut);
-				if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
+				Sync::Interlocked::Increment(&stat->me->recvCnt);
+				if (stat->me->msgLog)
 				{
+					if (stat->me->msgPrefix)
+						sptr = stat->me->msgPrefix->ConcatTo(sbuff);
+					else
+						sptr = sbuff;
+					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
+					sptr = Text::StrUOSInt(sptr, recvSize);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
+					sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
+					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
+				}
+
+				if (stat->me->logPrefix)
+				{
+					Sync::MutexUsage mutUsage(&stat->me->logFileMut);
+					if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
+					{
+						if (stat->me->logFileR)
+						{
+							DEL_CLASS(stat->me->logFileR);
+							stat->me->logFileR = 0;
+						}
+						sptr = stat->me->logPrefix->ConcatTo(sbuff);
+						sptr = logTime.ToString(sptr, "yyyyMMdd");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
+						NEW_CLASS(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+					}
+
 					if (stat->me->logFileR)
 					{
-						DEL_CLASS(stat->me->logFileR);
-						stat->me->logFileR = 0;
+						Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
+						UInt8 hbuff[8];
+						hbuff[0] = 0xaa;
+						hbuff[1] = 0xbb;
+						WriteInt16(&hbuff[2], (Int16)recvSize);
+						WriteInt32(&hbuff[4], v);
+						stat->me->logFileR->Write(hbuff, 8);
+						stat->me->logFileR->Write(buff, recvSize);
 					}
-					sptr = stat->me->logPrefix->ConcatTo(sbuff);
-					sptr = logTime.ToString(sptr, "yyyyMMdd");
-					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
-					NEW_CLASS(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+					mutUsage.EndUse();
 				}
-
-				if (stat->me->logFileR)
-				{
-					Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
-					UInt8 hbuff[8];
-					hbuff[0] = 0xaa;
-					hbuff[1] = 0xbb;
-					WriteInt16(&hbuff[2], (Int16)recvSize);
-					WriteInt32(&hbuff[4], v);
-					stat->me->logFileR->Write(hbuff, 8);
-					stat->me->logFileR->Write(buff, recvSize);
-				}
-				mutUsage.EndUse();
+				stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
 			}
-			stat->me->hdlr(&recvAddr, recvPort, buff, recvSize, stat->me->userData);
 		}
+		MemFree(buff);
 	}
-	MemFree(buff);
 	stat->threadRunning = false;
 	stat->me->ctrlEvt->Set();
 	return 0;
@@ -166,7 +174,6 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	this->logFileR = 0;
 	this->logFileS = 0;
 	this->ctrlEvt = 0;
-	NEW_CLASS(this->logFileMut, Sync::Mutex());
 	this->msgLog = msgLog;
 	this->msgPrefix = Text::String::NewOrNull(msgPrefix);
 	this->port = port;
@@ -271,7 +278,6 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 		{
 			this->v4threadStats[i].toStop = false;
 			this->v4threadStats[i].threadRunning = false;
-			NEW_CLASS(this->v4threadStats[i].evt, Sync::Event(true));
 			this->v4threadStats[i].me = this;
 			Sync::Thread::Create(DataV4Thread, &this->v4threadStats[i]);
 
@@ -279,7 +285,6 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 			{
 				this->v6threadStats[i].toStop = false;
 				this->v6threadStats[i].threadRunning = false;
-				NEW_CLASS(this->v6threadStats[i].evt, Sync::Event(true));
 				this->v6threadStats[i].me = this;
 				Sync::Thread::Create(DataV6Thread, &this->v6threadStats[i]);
 			}
@@ -382,15 +387,6 @@ Net::UDPServer::~UDPServer()
 			this->ctrlEvt->Wait(10);
 		}
 
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			DEL_CLASS(this->v4threadStats[i].evt);
-			if (this->socV6)
-			{
-				DEL_CLASS(this->v6threadStats[i].evt);
-			}
-		}
 		MemFree(this->v4threadStats);
 		if (this->socV6)
 		{
@@ -408,7 +404,6 @@ Net::UDPServer::~UDPServer()
 		this->socV6 = 0;
 	}
 
-	DEL_CLASS(this->logFileMut);
 	SDEL_CLASS(this->logDateR);
 	SDEL_CLASS(this->logDateS);
 	SDEL_CLASS(this->logFileS);
@@ -443,7 +438,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 		Data::DateTime logTime;
 		logTime.SetCurrTimeUTC();
 
-		Sync::MutexUsage mutUsage(this->logFileMut);
+		Sync::MutexUsage mutUsage(&this->logFileMut);
 		if ((logTime.GetDay() != this->logDateS->GetDay()) || (logFileS == 0))
 		{
 			if (logFileS)

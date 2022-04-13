@@ -35,13 +35,13 @@ namespace Net
 			Net::TCPClientMgr *proxyCliMgr;
 			Net::SSLEngine *ssl;
 			Net::SocketFactory *sockf;
-			IO::LogTool *log;
+			IO::LogTool log;
 			Text::String *svrName;
 			Bool allowProxy;
 			Bool allowKA;
 			SERVER_STATUS status;
 
-			Sync::Mutex *accLogMut;
+			Sync::Mutex accLogMut;
 			IO::LogTool *accLog;
 			IO::ILogHandler::LogLevel accLogLev;
 			IReqLogger *reqLog;

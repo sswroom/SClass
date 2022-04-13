@@ -68,6 +68,7 @@ typedef __m128i Int16x8;
 typedef __m128i UInt16x8;
 typedef __m128i Int32x4;
 typedef __m128i UInt32x4;
+typedef __m128d Doublex2;
 
 #define PUInt8x4Clear() _mm_setzero_si128()
 #define PUInt8x8Clear() _mm_setzero_si128()
@@ -87,6 +88,8 @@ typedef __m128i UInt32x4;
 #define PUInt16x8SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt32x4SetA(v) _mm_set1_epi32(v)
 #define PUInt32x4SetA(v) _mm_set1_epi32((Int32)v)
+#define PDoublex2SetA(v) _mm_set1_pd(v)
+#define PDoublex2Set(lo, hi) _mm_set_pd(hi, lo)
 #define PLoadUInt8x4(ptr) _mm_cvtsi32_si128(*(Int32*)(ptr))
 #define PLoadUInt8x8(ptr) _mm_loadl_epi64((__m128i*)(ptr))
 #define PLoadUInt8x16(ptr) _mm_loadu_si128((__m128i*)(ptr))
@@ -193,6 +196,15 @@ typedef __m128i UInt32x4;
 #define SI32ToI16x4(v1) _mm_packs_epi32(v1, v1)
 #define SI32ToI16x8(v1, v2) _mm_packs_epi32(v1, v2)
 
+#define PADDPD(v1, v2) _mm_add_pd(v1, v2)
+#define PSUBPD(v1, v2) _mm_sub_pd(v1, v2)
+#define PMULPD(v1, v2) _mm_mul_pd(v1, v2)
+#define PMINPD(v1, v2) _mm_min_pd(v1, v2)
+#define PMAXPD(v1, v2) _mm_max_pd(v1, v2)
+#define PLoadDoublex2(ptr) _mm_loadu_pd(ptr)
+#define PStoreDoublex2(ptr, v) _mm_storeu_pd(ptr, v)
+#define Doublex2GetLo(v) _mm_cvtsd_f64(v)
+#define Doublex2GetHi(v) _mm_cvtsd_f64(_mm_unpackhi_pd(v, v))
 #if defined(__AVX__)
 typedef __m256i Int32x8;
 #define PResetAVX() _mm256_zeroupper()
@@ -511,6 +523,89 @@ Int32x4 FORCEINLINE PMADDWD(Int16x8 v1, Int16x8 v2)
 #define PStoreInt32x8(ptr, v) _mm256_store_si256((__m256i*)ptr, v)
 #define PStoreInt32x8NC(ptr, v) _mm256_stream_si256((__m256i*)ptr, v)
 */
+
+#if 0//defined(_M_ARM64)
+typedef float64x2_t Doublex2;
+
+#else
+struct Doublex2
+{
+	Double vals[2];
+};
+
+Doublex2 FORCEINLINE PDoublex2SetA(Double val)
+{
+	Doublex2 ret;
+	ret.vals[0] = val;
+	ret.vals[1] = val;
+	return ret;
+}
+
+Doublex2 FORCEINLINE PDoublex2Set(Double val1, Double val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1;
+	ret.vals[1] = val2;
+	return ret;
+}
+
+void FORCEINLINE PStoreDoublex2(void *ptr, Doublex2 v)
+{
+	*(Doublex2*)ptr = v;
+}
+
+
+Doublex2 FORCEINLINE PADDPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] + val2.vals[0];
+	ret.vals[1] = val1.vals[1] + val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PSUBPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] - val2.vals[0];
+	ret.vals[1] = val1.vals[1] - val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PMULPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] * val2.vals[0];
+	ret.vals[1] = val1.vals[1] * val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PMINPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = (val1.vals[0] < val2.vals[0])?val1.vals[0]:val2.vals[0];
+	ret.vals[1] = (val1.vals[1] < val2.vals[1])?val1.vals[1]:val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PMAXPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = (val1.vals[0] > val2.vals[0])?val1.vals[0]:val2.vals[0];
+	ret.vals[1] = (val1.vals[1] > val2.vals[1])?val1.vals[1]:val2.vals[1];
+	return ret;
+}
+
+Double FORCEINLINE Doublex2GetLo(Doublex2 val)
+{
+	return val.vals[0];
+}
+
+Double FORCEINLINE Doublex2GetHi(Doublex2 val)
+{
+	return val.vals[0];
+}
+
+#endif
 #else
 #define SIMD_SIMULATE
 typedef struct
@@ -577,6 +672,11 @@ typedef struct
 {
 	UInt32 vals[4];
 } UInt32x4;
+
+struct Doublex2
+{
+	Double vals[2];
+};
 
 void FORCEINLINE PResetAVX()
 {
@@ -814,6 +914,22 @@ UInt32x4 FORCEINLINE PUInt32x4SetA(UInt32 val)
 	return ret;
 }
 
+Doublex2 FORCEINLINE PDoublex2SetA(Double val)
+{
+	Doublex2 ret;
+	ret.vals[0] = val;
+	ret.vals[1] = val;
+	return ret;
+}
+
+Doublex2 FORCEINLINE PDoublex2Set(Double val1, Double val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1;
+	ret.vals[1] = val2;
+	return ret;
+}
+
 UInt8x4 FORCEINLINE PLoadUInt8x4(const void *ptr)
 {
 	return *(UInt8x4*)ptr;	
@@ -963,6 +1079,10 @@ void FORCEINLINE PStoreInt32x8NC(void *ptr, Int32x8 v)
 	*(Int32x8*)ptr = v;
 }
 
+void FORCEINLINE PStoreDoublex2(void *ptr, Doublex2 v)
+{
+	*(Doublex2*)ptr = v;
+}
 
 Int16x4 FORCEINLINE PCONVU16x4_I(UInt16x4 val)
 {
@@ -1786,6 +1906,56 @@ UInt8x8 FORCEINLINE SI32ToU8x8(Int32x4 val1, Int32x4 val2)
 	ret.vals[6] = SI32ToU8(val2.vals[2]);
 	ret.vals[7] = SI32ToU8(val2.vals[3]);
 	return ret;
+}
+
+Doublex2 FORCEINLINE PADDPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] + val2.vals[0];
+	ret.vals[1] = val1.vals[1] + val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PSUBPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] - val2.vals[0];
+	ret.vals[1] = val1.vals[1] - val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PMULPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] * val2.vals[0];
+	ret.vals[1] = val1.vals[1] * val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PMINPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = (val1.vals[0] < val2.vals[0])?val1.vals[0]:val2.vals[0];
+	ret.vals[1] = (val1.vals[1] < val2.vals[1])?val1.vals[1]:val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PMAXPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = (val1.vals[0] > val2.vals[0])?val1.vals[0]:val2.vals[0];
+	ret.vals[1] = (val1.vals[1] > val2.vals[1])?val1.vals[1]:val2.vals[1];
+	return ret;
+}
+
+Double FORCEINLINE Doublex2GetLo(Doublex2 val)
+{
+	return val.vals[0];
+}
+
+Double FORCEINLINE Doublex2GetHi(Doublex2 val)
+{
+	return val.vals[0];
 }
 #endif
 #endif

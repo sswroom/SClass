@@ -1,6 +1,6 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOSYNCHANDLER
 #define _SM_IO_PROTOHDLR_PROTOSYNCHANDLER
-#include "Crypto/Hash/HashCalc.h"
+#include "Crypto/Hash/CRC32RIEEE.h"
 #include "IO/IProtocolHandler.h"
 #include "Sync/Mutex.h"
 
@@ -12,7 +12,7 @@ namespace IO
 		{
 		private:
 			IO::IProtocolHandler::DataListener *listener;
-			Crypto::Hash::HashCalc *crc;
+			Crypto::Hash::CRC32RIEEE crc;
 
 		public:
 			ProtoSyncHandler(IO::IProtocolHandler::DataListener *listener);

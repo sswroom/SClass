@@ -4439,17 +4439,13 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 	UTF8Char *baseDir = layerName;
 	Text::PString strs[10];
 	UTF8Char *sptr;
-	IO::FileStream *fstm;
-	IO::StreamReader *rdr;
 	UOSInt i;
 	UOSInt j;
 	MapLineStyle *currLine;
 	MapFontStyle *currFont;
 	MapLayerStyle *currLayer;
 	MapLayerStyle *currLayer2;
-	Media::Resizer::LanczosResizerH8_8 *resizer;
-	Data::ArrayList<MapLayerStyle*> *poiArr;
-	NEW_CLASS(poiArr, Data::ArrayList<MapLayerStyle*>());
+	Data::ArrayList<MapLayerStyle*> poiArr;
 
 	if (minScale == 0)
 	{
@@ -4463,8 +4459,8 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 	this->drawEng = eng;
 	this->inited = false;
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fstm->IsError())
+	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fstm.IsError())
 	{
 		this->bgColor = 0;
 		this->nLine = 0;
@@ -4476,13 +4472,13 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 	}
 	else
 	{
-		NEW_CLASS(rdr, IO::StreamReader(fstm));
-		NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
+		IO::StreamReader rdr(&fstm);
+//		Media::Resizer::LanczosResizerH8_8 resizer(3, 3, Media::AT_NO_ALPHA);
 		if (forceBase)
 		{
 			baseDir = Text::StrConcat(layerName, forceBase);
 		}
-		while ((sptr = rdr->ReadLine(lineBuff, 1023)) != 0)
+		while ((sptr = rdr.ReadLine(lineBuff, 1023)) != 0)
 		{
 			UOSInt strCnt;
 			Int32 lyrType;
@@ -4742,12 +4738,12 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 								Media::GDIImage *newImg;
 								Media::GDIImage *oldImg = (Media::GDIImage*)currLayer->img;
 								newImg = (Media::GDIImage*)this->drawEng->CreateImage32(oldImg->GetWidth() * OVERSAMPLESIZE, oldImg->GetHeight() * OVERSAMPLESIZE);
-								resizer->Resize((UInt8*)oldImg->bmpBits, oldImg->GetWidth() * 4, oldImg->GetWidth(), oldImg->GetHeight(), (UInt8*)newImg->bmpBits, newImg->GetWidth() * 4, newImg->GetWidth(), newImg->GetHeight());
+								resizer.Resize((UInt8*)oldImg->bmpBits, oldImg->GetWidth() * 4, oldImg->GetWidth(), oldImg->GetHeight(), (UInt8*)newImg->bmpBits, newImg->GetWidth() * 4, newImg->GetWidth(), newImg->GetHeight());
 								this->drawEng->DeleteImage(oldImg);
 								currLayer->img = newImg;
 							}*/
 							this->drawList->Add(currLayer);
-							poiArr->Add(currLayer);
+							poiArr.Add(currLayer);
 						}
 					}
 				}
@@ -4767,10 +4763,10 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 			currLayer = (MapLayerStyle*)this->drawList->GetItem(i);
 			if (currLayer->drawType == 9)
 			{
-				j = poiArr->GetCount();
+				j = poiArr.GetCount();
 				while (j-- > 0)
 				{
-					currLayer2 = (MapLayerStyle*)poiArr->GetItem(j);
+					currLayer2 = (MapLayerStyle*)poiArr.GetItem(j);
 					if (currLayer2->lyr == currLayer->lyr)
 					{
 						currLayer->img = currLayer2->img;
@@ -4779,11 +4775,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 				}
 			}
 		}
-		DEL_CLASS(rdr);
-		DEL_CLASS(resizer);
 	}
-	DEL_CLASS(fstm);
-	DEL_CLASS(poiArr);
 }
 
 Map::MapConfig2TGen::~MapConfig2TGen()
@@ -4928,7 +4920,6 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	UInt32 index;
 	UInt32 index2;
 	UOSInt layerCnt = this->drawList->GetCount();
-	Data::ArrayListInt64 *arr;
 	Data::ArrayList<MapFontStyle*> **myArrs;
 	Data::ArrayList<MapFontStyle*> *fontArr;
 	Map::IMapDrawLayer *lyr;
@@ -4938,7 +4929,6 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	Map::MapFontStyle *fnt2;
 	Media::DrawBrush *brush;
 	Media::DrawPen *pen;
-	MapLogger *log;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -4948,9 +4938,11 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	Double thisScale;
 	UOSInt labelCnt[3];
 //	view->SetDestImage(img);
-	NEW_CLASS(log, MapLogger(dbOutput, view));
+	MapLogger log(dbOutput, view);
+	Data::ArrayListInt64 arr;
+
 	labelCnt[0] = 0;
-	labelCnt[1] = (UOSInt)log;
+	labelCnt[1] = (UOSInt)&log;
 	labelCnt[2] = (UInt32)params->labelType;
 	UOSInt maxLabel = this->nStr;
 	*isLayerEmpty = true;
@@ -4958,7 +4950,6 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	Double *objBounds = MemAlloc(Double, this->nStr * 8);
 	UOSInt objCnt = 0;
 
-	NEW_CLASS(arr, Data::ArrayListInt64());
 	thisScale = view->GetMapScale();
 #ifndef NOSCH
 	mapSch->SetMapView(view, img);
@@ -5054,10 +5045,10 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 				lyr = lyrs->lyr;
 				if (lyr)
 				{
-					arr->Clear();
-					lyr->GetObjectIdsMapXY(arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+					arr.Clear();
+					lyr->GetObjectIdsMapXY(&arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
 
-					if ((i = arr->GetCount()) > 0)
+					if ((i = arr.GetCount()) > 0)
 					{
 #ifdef NOSCH
 						Data::ArrayList *drawArr;
@@ -5070,7 +5061,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						lastId = -1;
 						while (i-- > 0)
 						{
-							thisId = arr->GetItem(i);
+							thisId = arr.GetItem(i);
 							if (thisId != lastId)
 							{
 								lastId = thisId;
@@ -5159,10 +5150,10 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 				lyr = lyrs->lyr;
 				if (lyr)
 				{
-					arr->Clear();
-					lyr->GetObjectIdsMapXY(arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+					arr.Clear();
+					lyr->GetObjectIdsMapXY(&arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
 
-					if ((i = arr->GetCount()) > 0)
+					if ((i = arr.GetCount()) > 0)
 					{
 #ifdef NOSCH
 						Data::ArrayList *drawArr;
@@ -5175,7 +5166,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						lastId = -1;
 						while (i-- > 0)
 						{
-							thisId = arr->GetItem(i);
+							thisId = arr.GetItem(i);
 							if (thisId != lastId)
 							{
 								lastId = thisId;
@@ -5304,8 +5295,6 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	MemFree(labels);
 	MemFree(objBounds);
 
-	DEL_CLASS(log);
-	DEL_CLASS(arr);
 //	Double t = clk.GetTimeDiff();
 //	printf("Time used: %d\n", (Int32)(t * 1000));
 	return 0;
