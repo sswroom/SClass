@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSSLInfoForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 {
@@ -11,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("SSL Info"), me);
+		me->txtStatus->SetText(CSTR("Please enter valid port"));
 		return;
 	}
 	sb.ClearStr();
@@ -19,19 +18,75 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Host name"), CSTR("SSL Info"), me);
+		me->txtStatus->SetText(CSTR("Please enter Host name"));
 		return;
 	}
 	else if (!me->sockf->DNSResolveIP(sb.ToCString(), &addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host name"), CSTR("SSL Info"), me);
+		me->txtStatus->SetText(CSTR("Error in resolving host name"));
 		return;
 	}
+
+	Socket *s;
+	if (addr.addrType == Net::AddrType::IPv4)
+	{
+		s = me->sockf->CreateTCPSocketv4();
+	}
+	else if (addr.addrType == Net::AddrType::IPv6)
+	{
+		s = me->sockf->CreateTCPSocketv6();
+	}
+	else
+	{
+		me->txtStatus->SetText(CSTR("Error in address type"));
+		return;
+	}
+	if (s == 0)
+	{
+		me->txtStatus->SetText(CSTR("Error in creating socket"));
+		return;
+	}
+	if (!me->sockf->Connect(s, &addr, port))
+	{
+		me->sockf->DestroySocket(s);
+		me->txtStatus->SetText(CSTR("Error in connecting to remote host"));
+		return;
+	}
+	Net::SSLEngine::ErrorType err;
+	Net::SSLClient *cli = me->ssl->ClientInit(s, sb.ToCString(), &err);
+	if (cli == 0)
+	{
+		me->sockf->DestroySocket(s);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Error in initializing SSL: "));
+		sb.Append(Net::SSLEngine::ErrorTypeGetName(err));
+		me->txtStatus->SetText(sb.ToCString());
+		return;
+	}
+	Crypto::Cert::Certificate *cert = cli->GetRemoteCert();
+	SDEL_CLASS(me->currCert);
+	if (cert)
+	{
+		Text::StringBuilderUTF8 sb;
+		cert->ToString(&sb);
+		me->txtCert->SetText(sb.ToCString());
+		me->currCert = cert->CreateX509Cert();
+	}
+	else
+	{
+		me->txtCert->SetText(CSTR(""));
+	}
+	DEL_CLASS(cli);
+	me->txtStatus->SetText(CSTR("Success"));
 }
 
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
+	if (me->currCert)
+	{
+		me->core->OpenObject(me->currCert->Clone());
+	}
 }
 
 SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
@@ -42,6 +97,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->currCert = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
@@ -58,12 +114,12 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtStatus->SetRect(104, 76, 150, 23, false);
+	this->txtStatus->SetRect(104, 76, 400, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->lblCert, UI::GUILabel(ui, this, CSTR("Status")));
+	NEW_CLASS(this->lblCert, UI::GUILabel(ui, this, CSTR("Cert")));
 	this->lblCert->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtCert->SetRect(104, 100, 150, 23, false);
+	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, this, CSTR(""), true));
+	this->txtCert->SetRect(104, 100, 150, 144, false);
 	this->txtCert->SetReadOnly(true);
 	NEW_CLASS(this->btnCert, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnCert->SetRect(254, 100, 75, 23, false);
@@ -72,6 +128,8 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRSSLInfoForm::~AVIRSSLInfoForm()
 {
+	SDEL_CLASS(this->ssl);
+	SDEL_CLASS(this->currCert);
 }
 
 void SSWR::AVIRead::AVIRSSLInfoForm::OnMonitorChanged()

@@ -44,6 +44,11 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned()
 	return Text::StrEquals(this->clsData->certInfo->lpszSubjectInfo, this->clsData->certInfo->lpszIssuerInfo);
 }
 
+Crypto::Cert::X509Cert *Crypto::Cert::WinHttpCert::CreateX509Cert()
+{
+	return 0;
+}
+
 void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb)
 {
 	Data::DateTime dt;

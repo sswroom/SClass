@@ -190,6 +190,8 @@ Text::CString Net::SSLEngine::ErrorTypeGetName(ErrorType err)
 	{
 	case ErrorType::None:
 		return CSTR("No Error");
+	case ErrorType::InitEnv:
+		return CSTR("Failed in initializing environment");
 	case ErrorType::HostnameNotResolved:
 		return CSTR("Hostname cannot not resolve");
 	case ErrorType::OutOfMemory:

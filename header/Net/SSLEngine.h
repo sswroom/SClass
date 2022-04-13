@@ -29,6 +29,7 @@ namespace Net
 		enum class ErrorType
 		{
 			None,
+			InitEnv,
 			HostnameNotResolved,
 			OutOfMemory,
 			CannotConnect,

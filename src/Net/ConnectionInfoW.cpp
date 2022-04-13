@@ -100,11 +100,11 @@ Bool Net::ConnectionInfo::SetInfo(void *info)
 	this->ent.index = inf->Index;
 	if (inf->GatewayList.IpAddress.String[0])
 	{
-		this->ent.defGW = Net::SocketUtil::GetIPAddr((const UTF8Char*)inf->GatewayList.IpAddress.String, Text::StrCharCnt(inf->GatewayList.IpAddress.String));
+		this->ent.defGW = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->GatewayList.IpAddress.String));
 	}
 	if (inf->DhcpEnabled != 0)
 	{
-		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr((const UTF8Char*)inf->DhcpServer.IpAddress.String, Text::StrCharCnt(inf->GatewayList.IpAddress.String));
+		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->DhcpServer.IpAddress.String));
 		this->ent.dhcpLeaseTime = Data::Timestamp::FromUnixTimestamp(inf->LeaseObtained).ToLocalTime();
 		this->ent.dhcpLeaseExpire = Data::Timestamp::FromUnixTimestamp(inf->LeaseExpires).ToLocalTime();
 	}

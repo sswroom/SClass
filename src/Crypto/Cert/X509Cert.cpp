@@ -74,6 +74,13 @@ Net::ASN1Data *Crypto::Cert::X509Cert::Clone()
 	return asn1;
 }
 
+Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::CreateX509Cert()
+{
+	Crypto::Cert::X509Cert *asn1;
+	NEW_CLASS(asn1, Crypto::Cert::X509Cert(this->GetSourceNameObj(), this->buff, this->buffSize));
+	return asn1;
+}
+
 void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF8 *sb)
 {
 	if (IsCertificate(this->buff, this->buff + this->buffSize, "1"))

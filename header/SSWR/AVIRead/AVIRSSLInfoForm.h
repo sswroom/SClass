@@ -33,6 +33,8 @@ namespace SSWR
 			UI::GUITextBox *txtCert;
 			UI::GUIButton *btnCert;
 
+			Crypto::Cert::X509Cert *currCert;
+
 		private:
 			static void __stdcall OnCheckClicked(void *userObj);
 			static void __stdcall OnCertClicked(void *userObj);

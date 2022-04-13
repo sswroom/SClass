@@ -1,10 +1,12 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509Cert.h"
 #include "Net/WinSSLClient.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
 #define SECURITY_WIN32
 #include <sspi.h>
+#include <schannel.h>
 
 //#define DEBUG_PRINT
 #if defined(DEBUG_PRINT)
@@ -31,6 +33,7 @@ struct Net::WinSSLClient::ClassData
 
 	UInt8 *readBuff;
 	UOSInt readSize;
+	Crypto::Cert::X509Cert *remoteCert;
 };
 
 void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng)
@@ -66,6 +69,14 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt
 	this->clsData->decSize = 0;
 	this->clsData->readBuff = 0;
 	this->clsData->readSize = 0;
+	this->clsData->remoteCert = 0;
+
+	PCCERT_CONTEXT certTxt = 0;
+	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_REMOTE_CERT_CONTEXT, &certTxt);
+	if (certTxt)
+	{
+		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), certTxt->pbCertEncoded, certTxt->cbCertEncoded));
+	}
 }
 
 Net::WinSSLClient::~WinSSLClient()
@@ -84,6 +95,7 @@ Net::WinSSLClient::~WinSSLClient()
 	{
 		MemFree(this->clsData->decBuff);
 	}
+	SDEL_CLASS(this->clsData->remoteCert);
 	MemFree(this->clsData);
 }
 
@@ -643,5 +655,5 @@ Bool Net::WinSSLClient::Recover()
 
 Crypto::Cert::Certificate *Net::WinSSLClient::GetRemoteCert()
 {
-	return 0;
+	return this->clsData->remoteCert;
 }
