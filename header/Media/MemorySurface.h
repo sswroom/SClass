@@ -27,6 +27,7 @@ namespace Media
 		virtual Bool DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank);
 		virtual UInt8 *LockSurface(OSInt *lineAdd);
 		virtual void UnlockSurface();
+		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 	};
 }
 #endif

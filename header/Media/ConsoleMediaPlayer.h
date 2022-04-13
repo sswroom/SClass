@@ -24,6 +24,7 @@ namespace Media
 
 		Bool IsError();
 		void SetRotateType(Media::RotateType rotateType);
+		void SetSurfaceBugMode(Bool surfaceBugMode);
 	};
 }
 #endif

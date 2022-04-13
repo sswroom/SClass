@@ -47,6 +47,15 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 	}	
 }
 
+void Media::ConsoleVideoRenderer::SetSurfaceBugMode(Bool surfaceBugMode)
+{
+	Sync::MutexUsage mutUsage(&this->mut);
+	if (this->primarySurface)
+	{
+		this->primarySurface->SetSurfaceBugMode(surfaceBugMode);
+	}	
+}
+
 Bool Media::ConsoleVideoRenderer::IsUpdatingSize()
 {
 	return false;

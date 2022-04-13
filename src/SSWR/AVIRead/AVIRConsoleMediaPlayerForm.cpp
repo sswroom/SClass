@@ -46,6 +46,12 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *user
 	me->player->SetRotateType((Media::RotateType)(OSInt)me->cboRotate->GetSelectedItem());
 }
 
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(void *userObj, Bool newVal)
+{
+	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	me->player->SetSurfaceBugMode(me->chkSurfaceBug->IsChecked());
+}
+
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetText(CSTR("Console Media Player"));
@@ -77,6 +83,9 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->cboRotate->AddItem(CSTR("CW 270"), (void*)Media::RotateType::CW_270);
 	this->cboRotate->SetSelectedIndex(0);
 	this->cboRotate->HandleSelectionChange(OnRotateChg, this);
+	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, this, CSTR("Surface Bug"), false));
+	this->chkSurfaceBug->SetRect(4, 100, 200, 23, false);
+	this->chkSurfaceBug->HandleCheckedChange(OnSurfaceBugChg, this);
 
 	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	if (this->player->IsError())

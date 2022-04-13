@@ -200,7 +200,13 @@ UInt8 *Media::MemorySurface::LockSurface(OSInt *lineAdd)
 	*lineAdd = (OSInt)this->GetDataBpl();
 	return this->buffPtr;
 }
+
 void Media::MemorySurface::UnlockSurface()
+{
+
+}
+
+void Media::MemorySurface::SetSurfaceBugMode(Bool surfaceBugMode)
 {
 
 }

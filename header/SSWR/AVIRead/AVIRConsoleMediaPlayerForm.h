@@ -5,6 +5,7 @@
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -23,6 +24,7 @@ namespace SSWR
 			UI::GUIButton *btnCaptureDev;
 			UI::GUILabel *lblRotate;
 			UI::GUIComboBox *cboRotate;
+			UI::GUICheckBox *chkSurfaceBug;
 
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ConsoleMediaPlayer *player;
@@ -33,6 +35,7 @@ namespace SSWR
 			static void __stdcall OnCaptureDevClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnRotateChg(void *userObj);
+			static void __stdcall OnSurfaceBugChg(void *userObj, Bool newVal);
 
 		public:
 			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

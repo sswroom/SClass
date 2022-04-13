@@ -24,14 +24,16 @@ struct Media::FBSurface::ClassData
 	struct fb_var_screeninfo vinfo;
 	UInt8 *dataPtr;
 	MonitorSurface *buffSurface;
+	Bool bugHandleMode;
 };
 
-Bool Media::FBSurface::UpdateToScreen()
+Bool Media::FBSurface::UpdateToScreen(Bool waitForVBlank)
 {
-	if (this->clsData->ttyfd < 0)
+	if (!this->clsData->bugHandleMode || this->clsData->ttyfd < 0)
 	{
 		return true;
 	}
+	if (waitForVBlank) this->WaitForVBlank();
 	return write(this->clsData->ttyfd, " \r", 2) == 2;
 }
 
@@ -41,6 +43,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *colo
 	this->clsData->hMon = hMon;
 	this->clsData->buffSurface = 0;
 	this->clsData->ttyfd = -1;
+	this->clsData->bugHandleMode = false;
 	Char sbuff[64];
 	Text::StrUOSInt(Text::StrConcat(sbuff, "/dev/fb"), ((UOSInt)hMon) - 1);
 	this->clsData->fd = open(sbuff, O_RDWR);
@@ -217,7 +220,7 @@ Bool Media::FBSurface::DrawFromBuff()
 				}
 			}
 		}
-		this->UpdateToScreen();
+		this->UpdateToScreen(true);
 		return true;
 	}
 	return false;
@@ -227,9 +230,9 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool wait
 {
 	if (surface && surface->info.dispWidth == this->info.dispWidth && surface->info.dispHeight == this->info.dispHeight && surface->info.storeBPP == this->info.storeBPP)
 	{
-		if (waitForVBlank) this->WaitForVBlank();
+		if (waitForVBlank && !this->clsData->bugHandleMode) this->WaitForVBlank();
 		surface->GetImageData(this->clsData->dataPtr, 0, 0, this->info.dispWidth, this->info.dispHeight, this->clsData->finfo.line_length, false);
-		this->UpdateToScreen();
+		this->UpdateToScreen(waitForVBlank);
 		return true;
 	}
 	return false;
@@ -263,7 +266,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 	{
 		buffH = (UOSInt)(destHeight - destY);
 	}
-	if (waitForVBlank) this->WaitForVBlank();
+	if (waitForVBlank && !this->clsData->bugHandleMode) this->WaitForVBlank();
 	if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 	{
 		if (rt == Media::RotateType::None)
@@ -383,7 +386,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destHeight, (UInt32)this->clsData->finfo.line_length, 0xff000000);
 		}
 	}
-	this->UpdateToScreen();
+	this->UpdateToScreen(waitForVBlank);
 	succ = true;
 	return succ;
 }
@@ -396,6 +399,11 @@ UInt8 *Media::FBSurface::LockSurface(OSInt *lineAdd)
 
 void Media::FBSurface::UnlockSurface()
 {
+}
+
+void Media::FBSurface::SetSurfaceBugMode(Bool surfaceBugMode)
+{
+	this->clsData->bugHandleMode = surfaceBugMode;
 }
 
 void Media::FBSurface::SetBuffSurface(Media::MonitorSurface *buffSurface)

@@ -22,6 +22,7 @@ namespace Media
 
 		Bool IsError();
 		void SetRotateType(Media::RotateType rotateType);
+		void SetSurfaceBugMode(Bool surfaceBugMode);
 
 		virtual Bool IsUpdatingSize();
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);

@@ -56,3 +56,8 @@ void Media::ConsoleMediaPlayer::SetRotateType(Media::RotateType rotateType)
 {
 	this->renderer->SetRotateType(rotateType);
 }
+
+void Media::ConsoleMediaPlayer::SetSurfaceBugMode(Bool surfaceBugMode)
+{
+	this->renderer->SetSurfaceBugMode(surfaceBugMode);
+}
