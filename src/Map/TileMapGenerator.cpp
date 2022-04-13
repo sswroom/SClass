@@ -15,7 +15,7 @@
 
 void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale)
 {
-	view->UpdateSize((this->imgSize * this->osSize), (this->imgSize * this->osSize));
+	view->UpdateSize(UOSInt2Double(this->imgSize * this->osSize), UOSInt2Double(this->imgSize * this->osSize));
 	view->SetDPI((UOSInt2Double(this->osSize) * 96.0), 96.0);
 	view->SetCenterXY((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464);
 }

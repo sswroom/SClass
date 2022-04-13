@@ -31,7 +31,7 @@ void IO::DebugWriter::Flush()
 	{
 		while (i == 2)
 		{
-			syslog(LOG_DEBUG, (const Char*)sarr[0]);
+			syslog(LOG_DEBUG, "%s", (const Char*)sarr[0]);
 			i = Text::StrSplitLine(sarr, 2, sarr[1]);
 		}
 		i = Text::StrCharCnt(sarr[0]);
@@ -53,7 +53,7 @@ Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 	Text::StrConcatC(&this->clsData->buff[this->clsData->buffSize], str, nChar);
 	this->clsData->buffSize += nChar;
 	this->Flush();
-	syslog(LOG_DEBUG, (const Char*)this->clsData->buff);
+	syslog(LOG_DEBUG, "%s", (const Char*)this->clsData->buff);
 	this->clsData->buff[0] = 0;
 	this->clsData->buffSize = 0;
 	return true;
@@ -61,7 +61,7 @@ Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 
 Bool IO::DebugWriter::WriteLine()
 {
-	syslog(LOG_DEBUG, (const Char*)this->clsData->buff);
+	syslog(LOG_DEBUG, "%s", (const Char*)this->clsData->buff);
 	this->clsData->buff[0] = 0;
 	this->clsData->buffSize = 0;
 	return true;

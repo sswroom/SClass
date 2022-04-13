@@ -131,18 +131,18 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 
 void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 {
-	OSInt j;
+	UOSInt j;
 	Double *objPtr = &this->objBounds[4 * *this->objCnt];
 	Double pts[2];
-	OSInt imgW;
-	OSInt imgH;
+	Double imgW;
+	Double imgH;
 	Double scale = this->img->GetHDPI() / this->ico->GetHDPI();
-	UOSInt scnW = this->map->GetScnWidth();
-	UOSInt scnH = this->map->GetScnHeight();
-	OSInt spotX = Double2Int32(this->icoSpotX * scale);
-	OSInt spotY = Double2Int32(this->icoSpotY * scale);
-	imgW = Double2Int32(UOSInt2Double(this->ico->GetWidth()) * scale);
-	imgH = Double2Int32(UOSInt2Double(this->ico->GetHeight()) * scale);
+	Double scnW = this->map->GetScnWidth();
+	Double scnH = this->map->GetScnHeight();
+	Double spotX = this->icoSpotX * scale;
+	Double spotY = this->icoSpotY * scale;
+	imgW = UOSInt2Double(this->ico->GetWidth()) * scale;
+	imgH = UOSInt2Double(this->ico->GetHeight()) * scale;
 	j = dobj->nPoint;
 	while (j-- > 0)
 	{
@@ -153,11 +153,11 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 			--(*this->objCnt);
 			objPtr -= 4;
 		}
-		objPtr[0] = pts[0] - OSInt2Double(spotX);
-		objPtr[1] = pts[1] - OSInt2Double(spotY);
-		objPtr[2] = objPtr[0] + OSInt2Double(imgW);
-		objPtr[3] = objPtr[1] + OSInt2Double(imgH);
-		if (objPtr[0] < UOSInt2Double(scnW) && objPtr[1] < UOSInt2Double(scnH) && objPtr[2] >= 0 && objPtr[3] >= 0)
+		objPtr[0] = pts[0] - spotX;
+		objPtr[1] = pts[1] - spotY;
+		objPtr[2] = objPtr[0] + imgW;
+		objPtr[3] = objPtr[1] + imgH;
+		if (objPtr[0] < scnW && objPtr[1] < scnH && objPtr[2] >= 0 && objPtr[3] >= 0)
 		{
 			this->img->DrawImagePt(this->ico, objPtr[0], objPtr[1]);
 			objPtr += 4;

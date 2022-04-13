@@ -45,8 +45,8 @@ class MapLogger
 private:
 	Text::UTF8Writer *writer;
 	IO::FileStream *fs;
-	UOSInt scnW;
-	UOSInt scnH;
+	Double scnW;
+	Double scnH;
 public:
 	MapLogger(Text::CString fileName, Map::MapView *view)
 	{
@@ -78,7 +78,7 @@ public:
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		if (this->writer == 0 || x < -UOSInt2Double(scnW) || x > UOSInt2Double(scnW << 1) || y < -UOSInt2Double(scnH) || y > UOSInt2Double(scnH << 1))
+		if (this->writer == 0 || x < -scnW || x > scnW * 2 || y < -scnH || y > scnH * 2)
 		{
 			return;
 		}
@@ -119,7 +119,7 @@ public:
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		UOSInt i;
-		if (this->writer == 0 || bounds[2] < -UOSInt2Double(scnW) || bounds[0] > UOSInt2Double(scnW << 1) || bounds[3] < -UOSInt2Double(scnH) || bounds[1] > UOSInt2Double(scnH << 1))
+		if (this->writer == 0 || bounds[2] < -scnW || bounds[0] > scnW * 2 || bounds[3] < -scnH || bounds[1] > scnH * 2)
 		{
 			return;
 		}
@@ -5240,14 +5240,14 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 
 	///////////////////////////////////////////////
 	//blkId[0], blkId[1]
-	UOSInt w = view->GetScnWidth();
-	UOSInt h = view->GetScnHeight();
+	Double w = view->GetScnWidth();
+	Double h = view->GetScnHeight();
 	if (params->labelType == 1)
 	{
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX - 1, params->tileY, UOSInt2Double(-w), 0, 0);
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX + 1, params->tileY, UOSInt2Double(w), 0, 0);
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY - 1, 0, UOSInt2Double(h), 0);
-		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY + 1, 0, UOSInt2Double(-h), 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX - 1, params->tileY, -w, 0, 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX + 1, params->tileY, w, 0, 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY - 1, 0, h, 0);
+		LoadLabels(img, labels, maxLabel, labelCnt, view, myArrs, drawEng, objBounds, &objCnt, dbOutput, params->tileX, params->tileY + 1, 0, -h, 0);
 	}
 	else if (params->labelType == 2)
 	{
