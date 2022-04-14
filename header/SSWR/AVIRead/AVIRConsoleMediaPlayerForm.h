@@ -25,18 +25,32 @@ namespace SSWR
 			UI::GUILabel *lblRotate;
 			UI::GUIComboBox *cboRotate;
 			UI::GUICheckBox *chkSurfaceBug;
+			UI::GUILabel *lblYUVType;
+			UI::GUIComboBox *cboYUVType;
+			UI::GUILabel *lblRGBTrans;
+			UI::GUIComboBox *cboRGBTrans;
+			UI::GUILabel *lblColorPrimaries;
+			UI::GUIComboBox *cboColorPrimaries;
 
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ConsoleMediaPlayer *player;
 			Media::MediaPlayerWebInterface *webIface;
 			Net::WebServer::WebListener *listener;
+			Bool videoOpening;
 
 			static void __stdcall OnStopClicked(void *userObj);
 			static void __stdcall OnCaptureDevClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnRotateChg(void *userObj);
 			static void __stdcall OnSurfaceBugChg(void *userObj, Bool newVal);
+			static void __stdcall OnYUVTypeChg(void *userObj);
+			static void __stdcall OnRGBTransChg(void *userObj);
+			static void __stdcall OnColorPrimariesChg(void *userObj);
 
+			void AddYUVType(Media::ColorProfile::YUVType yuvType);
+			void AddRGBTrans(Media::CS::TransferType rgbType);
+			void AddColorPrimaries(Media::ColorProfile::ColorType colorType);
+			void UpdateColorDisp();
 		public:
 			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRConsoleMediaPlayerForm();

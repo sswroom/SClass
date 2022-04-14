@@ -212,6 +212,14 @@ void Media::ColorProfile::ColorPrimaries::SetColorType(ColorType colorType)
 		this->SetWhiteType(WPT_D65);
 		break;
 
+	case CT_GOPRO_PROTUNE:
+		this->colorType = CT_GOPRO_PROTUNE;
+		rx = 0.698448; ry = 0.193026;
+		gx = 0.329555; gy = 1.024597;
+		bx = 0.108443; by = -0.034679;
+		this->SetWhiteType(WPT_D65);
+		break;
+
 	case CT_CUSTOM:
 		this->colorType = CT_CUSTOM;
 		rx = 0.6400;	ry = 0.3300;
@@ -817,11 +825,11 @@ const Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimariesRead
 void Media::ColorProfile::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("-R Transfer: "));
-	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetRTranParam()->GetTranType()));
+	sb->Append(Media::CS::TransferTypeGetName(this->GetRTranParam()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-G Transfer: "));
-	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetGTranParam()->GetTranType()));
+	sb->Append(Media::CS::TransferTypeGetName(this->GetGTranParam()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-B Transfer: "));
-	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetBTranParam()->GetTranType()));
+	sb->Append(Media::CS::TransferTypeGetName(this->GetBTranParam()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-Gamma: "));
 	Text::SBAppendF64(sb, this->GetRTranParam()->GetGamma());
 	Media::ColorProfile::ColorPrimaries *primaries = this->GetPrimaries(); 
@@ -970,6 +978,8 @@ Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 		return CSTR("ALEXA Wide Gamut");
 	case CT_VGAMUT:
 		return CSTR("V-Gamut");
+	case CT_GOPRO_PROTUNE:
+		return CSTR("GoPro Protune");
 	case CT_CUSTOM:
 		return CSTR("Custom");
 	case CT_DISPLAY:

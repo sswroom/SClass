@@ -172,6 +172,64 @@ Bool Media::CS::TransferParam::Equals(const TransferParam *tran)
 	}
 }
 
+
+Text::CString Media::CS::TransferTypeGetName(Media::CS::TransferType ttype)
+{
+	switch (ttype)
+	{
+	case Media::CS::TRANT_sRGB:
+		return CSTR("sRGB");
+	case Media::CS::TRANT_GAMMA:
+		return CSTR("Constant Gamma");
+	case Media::CS::TRANT_LINEAR:
+		return CSTR("Linear RGB");
+	case Media::CS::TRANT_BT709:
+		return CSTR("BT.709");
+	case Media::CS::TRANT_SMPTE240:
+		return CSTR("SMPTE 240M");
+	case Media::CS::TRANT_BT1361:
+		return CSTR("BT.1361");
+	case Media::CS::TRANT_BT2100:
+		return CSTR("BT.2100/SMPTE ST 2084 (HDR10)");
+	case Media::CS::TRANT_HLG:
+		return CSTR("Hybrid Log Gamma (HLG)");
+	case Media::CS::TRANT_LOG100:
+		return CSTR("Log Transfer (100:1)");
+	case Media::CS::TRANT_LOGSQRT10:
+		return CSTR("Log Transfer (100 * Sqrt(10) : 1)");
+	case Media::CS::TRANT_NLOG:
+		return CSTR("N-Log");
+	case Media::CS::TRANT_NTSC:
+		return CSTR("NTSC");
+	case Media::CS::TRANT_SLOG:
+		return CSTR("Sony S-Log");
+	case Media::CS::TRANT_SLOG1:
+		return CSTR("Sony S-Log1");
+	case Media::CS::TRANT_SLOG2:
+		return CSTR("Sony S-Log2");
+	case Media::CS::TRANT_SLOG3:
+		return CSTR("Sony S-Log3");
+	case Media::CS::TRANT_VLOG:
+		return CSTR("Panasonic V-Log");
+	case Media::CS::TRANT_PROTUNE:
+		return CSTR("GoPro Protune");
+	case Media::CS::TRANT_LUT:
+		return CSTR("LUT");
+	case Media::CS::TRANT_PARAM1:
+		return CSTR("Parameter Function1");
+	case Media::CS::TRANT_VDISPLAY:
+		return CSTR("As Display (Video)");
+	case Media::CS::TRANT_PDISPLAY:
+		return CSTR("As Display (Picture)");
+	case Media::CS::TRANT_VUNKNOWN:
+		return CSTR("Unknown (Video)");
+	case Media::CS::TRANT_PUNKNOWN:
+		return CSTR("Unknown (Picture)");
+	default:
+		return CSTR("Unknown function");
+	}
+}
+
 Media::CS::TransferFunc::TransferFunc(TransferType tranType, Double gamma) : param(tranType, gamma)
 {
 }
@@ -296,61 +354,4 @@ Double Media::CS::TransferFunc::GetRefLuminance(Media::CS::TransferParam *param)
 		return 1000.0;
 	}
 	return 0.0;
-}
-
-Text::CString Media::CS::TransferFunc::GetTransferFuncName(Media::CS::TransferType ttype)
-{
-	switch (ttype)
-	{
-	case Media::CS::TRANT_sRGB:
-		return CSTR("sRGB");
-	case Media::CS::TRANT_GAMMA:
-		return CSTR("Constant Gamma");
-	case Media::CS::TRANT_LINEAR:
-		return CSTR("Linear RGB");
-	case Media::CS::TRANT_BT709:
-		return CSTR("BT.709");
-	case Media::CS::TRANT_SMPTE240:
-		return CSTR("SMPTE 240M");
-	case Media::CS::TRANT_BT1361:
-		return CSTR("BT.1361");
-	case Media::CS::TRANT_BT2100:
-		return CSTR("BT.2100/SMPTE ST 2084 (HDR10)");
-	case Media::CS::TRANT_HLG:
-		return CSTR("Hybrid Log Gamma (HLG)");
-	case Media::CS::TRANT_LOG100:
-		return CSTR("Log Transfer (100:1)");
-	case Media::CS::TRANT_LOGSQRT10:
-		return CSTR("Log Transfer (100 * Sqrt(10) : 1)");
-	case Media::CS::TRANT_NLOG:
-		return CSTR("N-Log");
-	case Media::CS::TRANT_NTSC:
-		return CSTR("NTSC");
-	case Media::CS::TRANT_SLOG:
-		return CSTR("Sony S-Log");
-	case Media::CS::TRANT_SLOG1:
-		return CSTR("Sony S-Log1");
-	case Media::CS::TRANT_SLOG2:
-		return CSTR("Sony S-Log2");
-	case Media::CS::TRANT_SLOG3:
-		return CSTR("Sony S-Log3");
-	case Media::CS::TRANT_VLOG:
-		return CSTR("Panasonic V-Log");
-	case Media::CS::TRANT_PROTUNE:
-		return CSTR("GoPro Protune");
-	case Media::CS::TRANT_LUT:
-		return CSTR("LUT");
-	case Media::CS::TRANT_PARAM1:
-		return CSTR("Parameter Function1");
-	case Media::CS::TRANT_VDISPLAY:
-		return CSTR("As Display (Video)");
-	case Media::CS::TRANT_PDISPLAY:
-		return CSTR("As Display (Picture)");
-	case Media::CS::TRANT_VUNKNOWN:
-		return CSTR("Unknown (Video)");
-	case Media::CS::TRANT_PUNKNOWN:
-		return CSTR("Unknown (Picture)");
-	default:
-		return CSTR("Unknown function");
-	}
 }

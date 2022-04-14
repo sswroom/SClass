@@ -97,6 +97,7 @@ typedef enum
 	MNU_VIDEO_PRIMARIES_ACESGAMUT,
 	MNU_VIDEO_PRIMARIES_ALEXAWIDE,
 	MNU_VIDEO_PRIMARIES_VGAMUT,
+	MNU_VIDEO_PRIMARIES_GOPRO_PROTUNE,
 	MNU_VIDEO_YUVT_BT601,
 	MNU_VIDEO_YUVT_BT709,
 	MNU_VIDEO_YUVT_FCC,
@@ -188,7 +189,6 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		Media::VideoRenderer::RendererStatus dbg;
 		UInt32 currTime;
 		UInt32 v;
-		NEW_CLASS(dbg.color, Media::ColorProfile());
 		me->vbox->GetStatus(&dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendU32(dbg.currTime);
@@ -312,18 +312,18 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.Append(Media::ColorProfile::YUVTypeGetName(dbg.srcYUVType));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src R Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetRTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(dbg.color.GetRTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src G Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetGTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(dbg.color.GetGTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src B Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetBTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(dbg.color.GetBTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src Gamma: "));
-		Text::SBAppendF64(&sb, dbg.color->GetRTranParam()->GetGamma());
+		Text::SBAppendF64(&sb, dbg.color.GetRTranParam()->GetGamma());
 		sb.AppendC(UTF8STRC("\r\n"));
-		Media::ColorProfile::ColorPrimaries *primaries = dbg.color->GetPrimaries(); 
+		Media::ColorProfile::ColorPrimaries *primaries = dbg.color.GetPrimaries(); 
 		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.AppendC(UTF8STRC("\r\n"));
@@ -348,7 +348,6 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		Text::SBAppendF64(&sb, primaries->wy);
 		sb.AppendC(UTF8STRC("\r\n"));
 		me->txtDebug->SetText(sb.ToCString());
-		DEL_CLASS(dbg.color);
 	}
 	if (me->player->IsPlaying())
 	{
@@ -684,6 +683,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("ACES-Gamut"), MNU_VIDEO_PRIMARIES_ACESGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ALEXA Wide"), MNU_VIDEO_PRIMARIES_ALEXAWIDE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Panasonic V-Gamut"), MNU_VIDEO_PRIMARIES_VGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("GoPro Protune"), MNU_VIDEO_PRIMARIES_GOPRO_PROTUNE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3 = mnu2->AddSubMenu(CSTR("Custom White Point"));
 	mnu3->AddItem(CSTR("D50"), MNU_VIDEO_WP_D50, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("D65"), MNU_VIDEO_WP_D65, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1184,6 +1184,9 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VIDEO_PRIMARIES_VGAMUT:
 		this->vbox->SetSrcPrimaries(Media::ColorProfile::CT_VGAMUT);
+		break;
+	case MNU_VIDEO_PRIMARIES_GOPRO_PROTUNE:
+		this->vbox->SetSrcPrimaries(Media::ColorProfile::CT_GOPRO_PROTUNE);
 		break;
 	case MNU_VIDEO_YUVT_BT601:
 		this->vbox->SetSrcYUVType(Media::ColorProfile::YUVT_BT601);

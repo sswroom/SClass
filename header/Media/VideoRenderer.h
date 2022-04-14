@@ -37,8 +37,9 @@ namespace Media
 			UOSInt height;
 		};
 
-		struct RendererStatus
+		class RendererStatus
 		{
+		public:
 			UInt32 currTime;
 			Int32 procDelay;
 			Int32 dispDelay;
@@ -59,7 +60,7 @@ namespace Media
 			UOSInt seekCnt;
 			Double par;
 			UInt32 dispBitDepth;
-			Media::ColorProfile *color;
+			Media::ColorProfile color;
 			Media::ColorProfile::YUVType srcYUVType;
 			Text::CString decoderName;
 			Int32 buffProc;

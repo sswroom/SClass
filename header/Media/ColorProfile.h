@@ -74,6 +74,7 @@ namespace Media
 			CT_ACESGAMUT,
 			CT_ALEXAWIDE,
 			CT_VGAMUT,
+			CT_GOPRO_PROTUNE,
 
 			CT_CUSTOM = 256,
 			CT_DISPLAY = 257,

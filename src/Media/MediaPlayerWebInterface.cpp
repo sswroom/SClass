@@ -252,7 +252,6 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		UInt32 v;
 
 		writer->WriteLineC(UTF8STRC("<hr/>"));
-		NEW_CLASS(status.color, Media::ColorProfile());
 		this->iface->GetVideoRenderer()->GetStatus(&status);
 		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendU32(status.currTime);
@@ -376,18 +375,18 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		sb.Append(Media::ColorProfile::YUVTypeGetName(status.srcYUVType));
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Src R Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(status.color->GetRTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(status.color.GetRTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Src G Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(status.color->GetGTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(status.color.GetGTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Src B Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(status.color->GetBTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(status.color.GetBTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Src Gamma: "));
-		Text::SBAppendF64(&sb, status.color->GetRTranParam()->GetGamma());
+		Text::SBAppendF64(&sb, status.color.GetRTranParam()->GetGamma());
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		Media::ColorProfile::ColorPrimaries *primaries = status.color->GetPrimaries(); 
+		Media::ColorProfile::ColorPrimaries *primaries = status.color.GetPrimaries(); 
 		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
@@ -411,7 +410,6 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->wy);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
-		DEL_CLASS(status.color);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 	}
 

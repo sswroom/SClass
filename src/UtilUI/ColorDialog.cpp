@@ -1521,7 +1521,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 
 	NEW_CLASS(this->lblTrans, UI::GUILabel(ui, this, CSTR("RGB Transfer Func")));
 	this->lblTrans->SetRect(16, 546, 150, 23, false);
-	NEW_CLASS(this->txtTrans, UI::GUITextBox(ui, this, Media::CS::TransferFunc::GetTransferFuncName(this->colorProfile->GetRTranParam()->GetTranType())));
+	NEW_CLASS(this->txtTrans, UI::GUITextBox(ui, this, Media::CS::TransferTypeGetName(this->colorProfile->GetRTranParam()->GetTranType())));
 	this->txtTrans->SetRect(166, 546, 100, 23, false);
 	this->txtTrans->SetReadOnly(true);
 	NEW_CLASS(this->lblPrimaries, UI::GUILabel(ui, this, CSTR("RGB Primaries")));

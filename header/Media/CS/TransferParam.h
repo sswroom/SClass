@@ -63,6 +63,8 @@ namespace Media
 			const Media::LUT *GetLUTRead() const { return this->lut; }
 			Bool Equals(const TransferParam *tran);
 		};
+
+		Text::CString TransferTypeGetName(Media::CS::TransferType ttype);
 	}
 }
 #endif

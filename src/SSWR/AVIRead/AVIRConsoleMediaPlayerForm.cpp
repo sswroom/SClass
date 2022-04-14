@@ -22,7 +22,10 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(vo
 		sptr = dlg.capture->GetSourceName(sbuff);
 		NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 		mf->AddSource(dlg.capture, 0);
-		me->player->OpenVideo(mf);
+		if (me->player->OpenVideo(mf))
+		{
+			me->UpdateColorDisp();
+		}
 	}
 }
 
@@ -34,6 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 	{
 		if (me->player->OpenFile(files[i]->ToCString()))
 		{
+			me->UpdateColorDisp();
 			return;
 		}
 		i++;
@@ -53,6 +57,81 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(void *
 	me->player->SetSurfaceBugMode(me->chkSurfaceBug->IsChecked());
 }
 
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	if (!me->videoOpening)
+		me->player->GetVideoRenderer()->SetSrcYUVType((Media::ColorProfile::YUVType)(OSInt)me->cboYUVType->GetSelectedItem());
+}
+
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	if (!me->videoOpening)
+		me->player->GetVideoRenderer()->SetSrcRGBType((Media::CS::TransferType)(OSInt)me->cboRGBTrans->GetSelectedItem());
+}
+
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	if (!me->videoOpening)
+		me->player->GetVideoRenderer()->SetSrcPrimaries((Media::ColorProfile::ColorType)(OSInt)me->cboColorPrimaries->GetSelectedItem());
+}
+
+void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddYUVType(Media::ColorProfile::YUVType yuvType)
+{
+	this->cboYUVType->AddItem(Media::ColorProfile::YUVTypeGetName(yuvType), (void*)(OSInt)yuvType);
+}
+
+void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddRGBTrans(Media::CS::TransferType rgbType)
+{
+	this->cboRGBTrans->AddItem(Media::CS::TransferTypeGetName(rgbType), (void*)(OSInt)rgbType);
+}
+
+void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddColorPrimaries(Media::ColorProfile::ColorType colorType)
+{
+	this->cboColorPrimaries->AddItem(Media::ColorProfile::ColorTypeGetName(colorType), (void*)(OSInt)colorType);
+}
+
+void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
+{
+	Media::VideoRenderer::RendererStatus status;
+	this->videoOpening = true;
+	this->player->GetVideoRenderer()->GetStatus(&status);
+	UOSInt i;
+	i = this->cboYUVType->GetCount();
+	while (i-- > 0)
+	{
+		if (this->cboYUVType->GetItem(i) == (void*)status.srcYUVType)
+		{
+			this->cboYUVType->SetSelectedIndex(i);
+			break;
+		}
+	}
+
+	Media::CS::TransferType tranType = status.color.rtransfer.GetTranType();
+	i = this->cboRGBTrans->GetCount();
+	while (i-- > 0)
+	{
+		if (this->cboRGBTrans->GetItem(i) == (void*)tranType)
+		{
+			this->cboRGBTrans->SetSelectedIndex(i);
+			break;
+		}
+	}
+
+	i = this->cboColorPrimaries->GetCount();
+	while (i-- > 0)
+	{
+		if (this->cboColorPrimaries->GetItem(i) == (void*)status.color.primaries.colorType)
+		{
+			this->cboColorPrimaries->SetSelectedIndex(i);
+			break;
+		}
+	}
+	this->videoOpening = false;
+}
+
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetText(CSTR("Console Media Player"));
@@ -61,6 +140,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->core = core;
 	this->listener = 0;
 	this->webIface = 0;
+	this->videoOpening = false;
 	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -88,6 +168,76 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, this, CSTR("Surface Bug"), true));
 	this->chkSurfaceBug->SetRect(4, 100, 200, 23, false);
 	this->chkSurfaceBug->HandleCheckedChange(OnSurfaceBugChg, this);
+	NEW_CLASS(this->lblYUVType, UI::GUILabel(ui, this, CSTR("YUV Type")));
+	this->lblYUVType->SetRect(4, 124, 100, 23, false);
+	NEW_CLASS(this->cboYUVType, UI::GUIComboBox(ui, this, false));
+	this->cboYUVType->SetRect(104, 124, 150, 23, false);
+	this->AddYUVType(Media::ColorProfile::YUVT_BT601);
+	this->AddYUVType(Media::ColorProfile::YUVT_BT709);
+	this->AddYUVType(Media::ColorProfile::YUVT_FCC);
+	this->AddYUVType(Media::ColorProfile::YUVT_BT470BG);
+	this->AddYUVType(Media::ColorProfile::YUVT_SMPTE170M);
+	this->AddYUVType(Media::ColorProfile::YUVT_SMPTE240M);
+	this->AddYUVType(Media::ColorProfile::YUVT_BT2020);
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_BT601));
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_BT709));
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_FCC));
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_BT470BG));
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_SMPTE170M));
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_SMPTE240M));
+	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_BT2020));
+	this->cboYUVType->SetSelectedIndex(0);
+	this->cboYUVType->HandleSelectionChange(OnYUVTypeChg, this);
+	NEW_CLASS(this->lblRGBTrans, UI::GUILabel(ui, this, CSTR("RGB Transfer")));
+	this->lblRGBTrans->SetRect(4, 148, 100, 23, false);
+	NEW_CLASS(this->cboRGBTrans, UI::GUIComboBox(ui, this, false));
+	this->cboRGBTrans->SetRect(104, 148, 150, 23, false);
+	this->AddRGBTrans(Media::CS::TRANT_sRGB);
+	this->AddRGBTrans(Media::CS::TRANT_BT709);
+	this->AddRGBTrans(Media::CS::TRANT_GAMMA);
+	this->AddRGBTrans(Media::CS::TRANT_SMPTE240);
+	this->AddRGBTrans(Media::CS::TRANT_LINEAR);
+	this->AddRGBTrans(Media::CS::TRANT_BT1361);
+	this->AddRGBTrans(Media::CS::TRANT_BT2100);
+	this->AddRGBTrans(Media::CS::TRANT_LOG100);
+	this->AddRGBTrans(Media::CS::TRANT_LOGSQRT10);
+	this->AddRGBTrans(Media::CS::TRANT_PROTUNE);
+	this->AddRGBTrans(Media::CS::TRANT_NTSC);
+	this->AddRGBTrans(Media::CS::TRANT_HLG);
+	this->AddRGBTrans(Media::CS::TRANT_SLOG);
+	this->AddRGBTrans(Media::CS::TRANT_SLOG1);
+	this->AddRGBTrans(Media::CS::TRANT_SLOG2);
+	this->AddRGBTrans(Media::CS::TRANT_SLOG3);
+	this->AddRGBTrans(Media::CS::TRANT_VLOG);
+	this->AddRGBTrans(Media::CS::TRANT_NLOG);
+	this->cboRGBTrans->SetSelectedIndex(0);
+	this->cboRGBTrans->HandleSelectionChange(OnRGBTransChg, this);
+	NEW_CLASS(this->lblColorPrimaries, UI::GUILabel(ui, this, CSTR("Color Primaries")));
+	this->lblColorPrimaries->SetRect(4, 172, 100, 23, false);
+	NEW_CLASS(this->cboColorPrimaries, UI::GUIComboBox(ui, this, false));
+	this->cboColorPrimaries->SetRect(104, 172, 150, 23, false);
+	this->AddColorPrimaries(Media::ColorProfile::CT_VUNKNOWN);
+	this->AddColorPrimaries(Media::ColorProfile::CT_SRGB);
+	this->AddColorPrimaries(Media::ColorProfile::CT_BT470M);
+	this->AddColorPrimaries(Media::ColorProfile::CT_BT470BG);
+	this->AddColorPrimaries(Media::ColorProfile::CT_SMPTE170M);
+	this->AddColorPrimaries(Media::ColorProfile::CT_SMPTE240M);
+	this->AddColorPrimaries(Media::ColorProfile::CT_GENERIC_FILM);
+	this->AddColorPrimaries(Media::ColorProfile::CT_BT2020);
+	this->AddColorPrimaries(Media::ColorProfile::CT_ADOBE);
+	this->AddColorPrimaries(Media::ColorProfile::CT_APPLE);
+	this->AddColorPrimaries(Media::ColorProfile::CT_CIERGB);
+	this->AddColorPrimaries(Media::ColorProfile::CT_COLORMATCH);
+	this->AddColorPrimaries(Media::ColorProfile::CT_WIDE);
+	this->AddColorPrimaries(Media::ColorProfile::CT_SGAMUT);
+	this->AddColorPrimaries(Media::ColorProfile::CT_SGAMUTCINE);
+	this->AddColorPrimaries(Media::ColorProfile::CT_DCI_P3);
+	this->AddColorPrimaries(Media::ColorProfile::CT_ACESGAMUT);
+	this->AddColorPrimaries(Media::ColorProfile::CT_ALEXAWIDE);
+	this->AddColorPrimaries(Media::ColorProfile::CT_VGAMUT);
+	this->AddColorPrimaries(Media::ColorProfile::CT_GOPRO_PROTUNE);
+	this->cboColorPrimaries->SetSelectedIndex(0);
+	this->cboColorPrimaries->HandleSelectionChange(OnColorPrimariesChg, this);
 
 	if (this->player->IsError())
 	{

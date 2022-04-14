@@ -24,8 +24,7 @@ namespace Media
 
 			static TransferFunc *CreateFunc(const TransferParam *param);
 			static Double GetRefLuminance(TransferParam *param);
-			static Text::CString GetTransferFuncName(Media::CS::TransferType ttype);
 		};
-	};
-};
+	}
+}
 #endif

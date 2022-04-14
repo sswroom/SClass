@@ -2283,7 +2283,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	status->srcDelay = this->timeDelay;
 	status->dispFrameNum = this->dispFrameNum;
 	status->srcYUVType = this->srcYUVType;
-	status->color->Set(this->videoInfo.color);
+	status->color.Set(this->videoInfo.color);
 	status->dispBitDepth = this->outputBpp;
 	status->srcWidth = this->videoInfo.dispWidth;
 	status->srcHeight = this->videoInfo.dispHeight;

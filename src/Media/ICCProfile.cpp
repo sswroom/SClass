@@ -1421,7 +1421,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff,
 			sb->AppendC(UTF8STRC("Closed to "));
 		}
 		tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], &gamma);
-		sb->Append(Media::CS::TransferFunc::GetTransferFuncName(tt));
+		sb->Append(Media::CS::TransferTypeGetName(tt));
 		if (tt == Media::CS::TRANT_GAMMA)
 		{
 			sb->AppendC(UTF8STRC(", gamma = "));
