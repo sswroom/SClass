@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(void *userOb
 	if (stm)
 	{
 		me->stm = stm;
-		me->txtStreamType->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+		me->txtStreamType->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
 	}
 }
 

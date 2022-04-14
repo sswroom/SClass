@@ -37,7 +37,8 @@ namespace SSWR
 				ST_TCPCLIENT = 4,
 				ST_FILE = 5,
 				ST_HID = 6,
-				ST_UDPSERVER = 7
+				ST_UDPSERVER = 7,
+				ST_UDPCLIENT = 8
 			} StreamType;
 
 			typedef enum
@@ -129,8 +130,8 @@ namespace SSWR
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
 			SSWR::AVIRead::AVIRGISForm *GetGISForm();
 
-			static Text::CString GetStreamTypeName(StreamType st);
-			static Text::CString GetIOPinTypeName(IOPinType iopt);
+			static Text::CString StreamTypeGetName(StreamType st);
+			static Text::CString IOPinTypeGetName(IOPinType iopt);
 		};
 	}
 }

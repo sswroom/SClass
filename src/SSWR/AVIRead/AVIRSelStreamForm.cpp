@@ -226,6 +226,47 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
+	case SSWR::AVIRead::AVIRCore::ST_UDPCLIENT:
+		{
+			Text::StringBuilderUTF8 sb;
+			Net::SocketUtil::AddressInfo addr;
+			UInt16 port;
+			me->txtUDPCliHost->GetText(&sb);
+			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("Error"), me);
+				return;
+			}
+			sb.ClearStr();
+			me->txtUDPCliPort->GetText(&sb);
+			if (!sb.ToUInt16(&port))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				return;
+			}
+			if (port <= 0 || port >= 65535)
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				return;
+			}
+
+			Net::UDPServerStream *stm;
+			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), 0, 0));
+			if (stm->IsError())
+			{
+				DEL_CLASS(stm);
+				UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+				return;
+			}
+			else
+			{
+				stm->SetClientAddr(&addr, port);
+				me->stm = stm;
+				me->stmType = st;
+				me->SetDialogResult(UI::GUIForm::DR_OK);
+			}
+		}
+		break;
 	}
 }
 
@@ -313,19 +354,20 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboStreamType, UI::GUIComboBox(ui, this->pnlStreamType, false));
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT), (void*)SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT), (void*)SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
 	if (this->siLabDriver)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_USBXPRESS), (void*)SSWR::AVIRead::AVIRCore::ST_USBXPRESS);
+		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_USBXPRESS), (void*)SSWR::AVIRead::AVIRCore::ST_USBXPRESS);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_TCPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_TCPSERVER);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_TCPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_TCPCLIENT);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_UDPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_UDPSERVER);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_TCPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_TCPSERVER);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_TCPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_TCPCLIENT);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_UDPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_UDPSERVER);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_UDPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_UDPCLIENT);
 	if (allowReadOnly)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_FILE), (void*)SSWR::AVIRead::AVIRCore::ST_FILE);
+		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_FILE), (void*)SSWR::AVIRead::AVIRCore::ST_FILE);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_HID), (void*)SSWR::AVIRead::AVIRCore::ST_HID);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_HID), (void*)SSWR::AVIRead::AVIRCore::ST_HID);
 	this->cboStreamType->HandleSelectionChange(OnStmTypeChg, this);
 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
@@ -505,6 +547,16 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->lblUDPSvrPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUDPSvrPort, UI::GUITextBox(ui, this->tpUDPSvr, CSTR("")));
 	this->txtUDPSvrPort->SetRect(104, 4, 100, 23, false);
+
+	this->tpUDPCli = this->tcConfig->AddTabPage(CSTR("UDP Client"));
+	NEW_CLASS(this->lblUDPCliHost, UI::GUILabel(ui, this->tpUDPCli, CSTR("Host")));
+	this->lblUDPCliHost->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtUDPCliHost, UI::GUITextBox(ui, this->tpUDPCli, CSTR("")));
+	this->txtUDPCliHost->SetRect(104, 4, 100, 23, false);
+	NEW_CLASS(this->lblUDPCliPort, UI::GUILabel(ui, this->tpUDPCli, CSTR("Port")));
+	this->lblUDPCliPort->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtUDPCliPort, UI::GUITextBox(ui, this->tpUDPCli, CSTR("")));
+	this->txtUDPCliPort->SetRect(104, 28, 100, 23, false);
 
 	if (allowReadOnly)
 	{

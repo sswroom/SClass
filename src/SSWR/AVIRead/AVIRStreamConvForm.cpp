@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 			{
 				NEW_CLASS(me->stmLog1, IO::FileStream(CSTR("Stm1Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
-			me->txtStream1->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream1->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
 			me->btnStream1->SetText(CSTR("&Close"));
 			me->remoteClosed1 = false;
 			me->thread1Running = false;
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 			{
 				NEW_CLASS(me->stmLog2, IO::FileStream(CSTR("Stm2Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
-			me->txtStream2->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream2->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
 			me->btnStream2->SetText(CSTR("&Close"));
 			me->remoteClosed2 = false;
 			me->thread2Running = false;

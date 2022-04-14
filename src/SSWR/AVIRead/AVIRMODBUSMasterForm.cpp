@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 				NEW_CLASS(me->modbus, IO::MODBUSRTUMaster(me->stm));
 			}
 			NEW_CLASS(me->modbusCtrl, IO::MODBUSController(me->modbus));
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 		}
 	}

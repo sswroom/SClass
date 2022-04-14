@@ -13,6 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(vo
 {
 	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
 	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
+	me->player->CloseFile();
 	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		UTF8Char sbuff[256];
@@ -60,6 +61,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->core = core;
 	this->listener = 0;
 	this->webIface = 0;
+	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Control Port")));
@@ -83,15 +85,16 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->cboRotate->AddItem(CSTR("CW 270"), (void*)Media::RotateType::CW_270);
 	this->cboRotate->SetSelectedIndex(0);
 	this->cboRotate->HandleSelectionChange(OnRotateChg, this);
-	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, this, CSTR("Surface Bug"), false));
+	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, this, CSTR("Surface Bug"), true));
 	this->chkSurfaceBug->SetRect(4, 100, 200, 23, false);
 	this->chkSurfaceBug->HandleCheckedChange(OnSurfaceBugChg, this);
 
-	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	if (this->player->IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in initialize player"), CSTR("Console Media Player"), this);
 	}
+	this->player->SetSurfaceBugMode(true);
+
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt16 port = 8080;

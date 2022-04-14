@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(void *userObj)
 		me->stm = me->core->OpenStream(&st, me, 0, false);
 		if (me->stm)
 		{
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 			me->remoteClosed = false;
 			me->threadRunning = false;

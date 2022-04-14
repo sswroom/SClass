@@ -35,6 +35,7 @@ namespace Net
 		virtual Bool Recover();
 
 		Bool IsError();
+		void SetClientAddr(const Net::SocketUtil::AddressInfo *addr, UInt16 port);
 	};
 }
 #endif

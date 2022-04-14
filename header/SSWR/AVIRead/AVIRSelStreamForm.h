@@ -69,6 +69,12 @@ namespace SSWR
 			UI::GUILabel *lblUDPSvrPort;
 			UI::GUITextBox *txtUDPSvrPort;
 
+			UI::GUITabPage *tpUDPCli;
+			UI::GUILabel *lblUDPCliHost;
+			UI::GUITextBox *txtUDPCliHost;
+			UI::GUILabel *lblUDPCliPort;
+			UI::GUITextBox *txtUDPCliPort;
+
 			UI::GUITabPage *tpFile;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;

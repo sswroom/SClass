@@ -120,3 +120,9 @@ Bool Net::UDPServerStream::IsError()
 {
 	return this->svr == 0;
 }
+
+void Net::UDPServerStream::SetClientAddr(const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+{
+	this->lastAddr = *addr;
+	this->lastPort = port;
+}

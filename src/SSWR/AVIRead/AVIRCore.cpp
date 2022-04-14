@@ -560,7 +560,7 @@ SSWR::AVIRead::AVIRGISForm *SSWR::AVIRead::AVIRCore::GetGISForm()
 	return this->gisForm;
 }
 
-Text::CString SSWR::AVIRead::AVIRCore::GetStreamTypeName(StreamType st)
+Text::CString SSWR::AVIRead::AVIRCore::StreamTypeGetName(StreamType st)
 {
 	switch (st)
 	{
@@ -578,12 +578,14 @@ Text::CString SSWR::AVIRead::AVIRCore::GetStreamTypeName(StreamType st)
 		return CSTR("HID");
 	case AVIRCore::ST_UDPSERVER:
 		return CSTR("UDP Server");
+	case AVIRCore::ST_UDPCLIENT:
+		return CSTR("UDP Client");
 	default:
 		return CSTR("Unknown");
 	}
 }
 
-Text::CString SSWR::AVIRead::AVIRCore::GetIOPinTypeName(IOPinType iopt)
+Text::CString SSWR::AVIRead::AVIRCore::IOPinTypeGetName(IOPinType iopt)
 {
 	switch (iopt)
 	{
