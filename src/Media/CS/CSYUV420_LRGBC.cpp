@@ -143,74 +143,77 @@ UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(void *obj)
 	CSYUV420_LRGBC *converter = (CSYUV420_LRGBC*)obj;
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
-
-	ts->status = 1;
-	converter->evtMain->Set();
-	while (true)
 	{
-		ts->evt->Wait();
-		if (ts->status == 2)
+		Sync::Event evt;
+		ts->evt = &evt;
+		ts->status = 1;
+		converter->evtMain->Set();
+		while (true)
 		{
-			break;
-		}
-		else if (ts->status == 3)
-		{
-			if (ts->width & 3)
+			ts->evt->Wait();
+			if (ts->status == 2)
 			{
-				CSYUV420_LRGBC_do_yv12rgb2(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				break;
 			}
-			else
+			else if (ts->status == 3)
 			{
-				CSYUV420_LRGBC_do_yv12rgb8(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				if (ts->width & 3)
+				{
+					CSYUV420_LRGBC_do_yv12rgb2(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				}
+				else
+				{
+					CSYUV420_LRGBC_do_yv12rgb8(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				}
+				ts->status = 4;
+				converter->evtMain->Set();
 			}
-			ts->status = 4;
-			converter->evtMain->Set();
-		}
-/*		else if (ts->status == 5)
-		{
-			VerticalFilter(ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
-			ts->status = 4;
-			converter->evtMain->Set();
-		}
-		else if (ts->status == 6)
-		{
-			converter->do_yv12rgb8vc2(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl);
-			ts->status = 4;
-			converter->evtMain->Set();
-		}
-		else if (ts->status == 7)
-		{
-			VerticalFilter16(ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
-			ts->status = 4;
-			converter->evtMain->Set();
-		}
-		else if (ts->status == 8)
-		{
-			converter->do_yv12rgb8vc16(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl);
-			ts->status = 4;
-			converter->evtMain->Set();
-		}
-		else if (ts->status == 9)
-		{
-			VerticalFilter16UV(ts->yPtr, ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
-			ts->status = 4;
-			converter->evtMain->Set();
-		}
-		else if (ts->status == 10)
-		{
-			converter->do_yv12rgb8vc16uv(ts->yPtr, ts->uPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl);
-			ts->status = 4;
-			converter->evtMain->Set();
-		}*/
-		else if (ts->status == 11)
-		{
-#if LANCZOS_NTAP == 4
-			CSYUV420_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
-#else
-			CSYUV420_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
-#endif
-			ts->status = 4;
-			converter->evtMain->Set();
+	/*		else if (ts->status == 5)
+			{
+				VerticalFilter(ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
+				ts->status = 4;
+				converter->evtMain->Set();
+			}
+			else if (ts->status == 6)
+			{
+				converter->do_yv12rgb8vc2(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl);
+				ts->status = 4;
+				converter->evtMain->Set();
+			}
+			else if (ts->status == 7)
+			{
+				VerticalFilter16(ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
+				ts->status = 4;
+				converter->evtMain->Set();
+			}
+			else if (ts->status == 8)
+			{
+				converter->do_yv12rgb8vc16(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl);
+				ts->status = 4;
+				converter->evtMain->Set();
+			}
+			else if (ts->status == 9)
+			{
+				VerticalFilter16UV(ts->yPtr, ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
+				ts->status = 4;
+				converter->evtMain->Set();
+			}
+			else if (ts->status == 10)
+			{
+				converter->do_yv12rgb8vc16uv(ts->yPtr, ts->uPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl);
+				ts->status = 4;
+				converter->evtMain->Set();
+			}*/
+			else if (ts->status == 11)
+			{
+	#if LANCZOS_NTAP == 4
+				CSYUV420_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
+	#else
+				CSYUV420_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
+	#endif
+				ts->status = 4;
+				converter->evtMain->Set();
+			}
 		}
 	}
 	converter->stats[threadId].status = 0;
@@ -264,7 +267,6 @@ Media::CS::CSYUV420_LRGBC::CSYUV420_LRGBC(const Media::ColorProfile *srcProfile,
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;

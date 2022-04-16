@@ -20,7 +20,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 	OSInt nextIndex;
 
 	me->playing = true;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
 	frameBuff = MemAllocA(UInt8, me->maxFrameSize);
 	nextIndex = BUFFCNT;
@@ -33,16 +33,16 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 	{
 		if (me->playEnd)
 		{
-			me->playEvt->Wait(1000);
+			me->playEvt.Wait(1000);
 		}
 		else
 		{
 			frameNum = me->currFrameNum++;
-			if (frameNum >= (UOSInt)me->frameParts->GetCount())
+			if (frameNum >= me->frameParts.GetCount())
 			{
 				while (me->outputCount > 0 && me->outputRunning)
 				{
-					me->playEvt->Wait(1000);
+					me->playEvt.Wait(1000);
 				}
 				needNotify = true;
 				me->playEnd = true;
@@ -51,25 +51,25 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 			}
 			else
 			{
-				currPart = me->frameParts->GetItem(frameNum);
-				if (frameNum + 1 >= (UOSInt)me->frameParts->GetCount())
+				currPart = me->frameParts.GetItem(frameNum);
+				if (frameNum + 1 >= me->frameParts.GetCount())
 				{
-					nextPart = me->frameOfsts->GetCount();
+					nextPart = me->frameOfsts.GetCount();
 				}
 				else
 				{
-					nextPart = me->frameParts->GetItem(frameNum + 1);
+					nextPart = me->frameParts.GetItem(frameNum + 1);
 				}
 
 				frameSize = 0;
 				while (currPart < nextPart)
 				{
-					frameSize += me->data->GetRealData(me->frameOfsts->GetItem(currPart), me->frameSizes->GetItem(currPart), &frameBuff[frameSize]);
+					frameSize += me->data->GetRealData(me->frameOfsts.GetItem(currPart), me->frameSizes.GetItem(currPart), &frameBuff[frameSize]);
 					currPart++;
 				}
 				if (frameSize > 0)
 				{
-					UInt32 frameTime = me->frameTimes->GetItem(frameNum);
+					UInt32 frameTime = me->frameTimes.GetItem(frameNum);
 					if (frameTime == 0)
 					{
 						frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
@@ -85,7 +85,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 					{
 						isOdd = (frameNum & 1) != 0;
 					}
-					if (me->frameInfo->ftype == Media::FT_FIELD_TF)
+					if (me->frameInfo.ftype == Media::FT_FIELD_TF)
 					{
 						if (isOdd)
 						{
@@ -96,7 +96,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 							ftype = Media::FT_FIELD_TF;
 						}
 					}
-					else if (me->frameInfo->ftype == Media::FT_FIELD_BF)
+					else if (me->frameInfo.ftype == Media::FT_FIELD_BF)
 					{
 						if (isOdd)
 						{
@@ -109,15 +109,15 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 					}
 					else
 					{
-						ftype = me->frameInfo->ftype;
+						ftype = me->frameInfo.ftype;
 					}
 					while (me->outputCount >= BUFFCNT)
 					{
-						me->playEvt->Wait(100);
+						me->playEvt.Wait(100);
 						if (me->playToStop)
 							break;
 					}
-					Sync::MutexUsage mutUsage(me->outputMut);
+					Sync::MutexUsage mutUsage(&me->outputMut);
 					nextIndex = (me->outputStart + me->outputCount) & (BUFFCNT - 1);
 					mutUsage.EndUse();
 					if (!me->playToStop)
@@ -127,14 +127,14 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 						frameBuff2 = me->outputFrames[nextIndex].frameBuff;
 						me->outputFrames[nextIndex].frameBuff = frameBuff;
 						me->outputFrames[nextIndex].frameSize = frameSize;
-						me->outputFrames[nextIndex].frameStruct = me->frameIsKey->GetItem(frameNum)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P);
+						me->outputFrames[nextIndex].frameStruct = me->frameIsKey.GetItem(frameNum)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P);
 						me->outputFrames[nextIndex].fType = ftype;
 						me->outputFrames[nextIndex].flags = (frameNum != lastFrameNum + 1)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE;
 						me->outputFrames[nextIndex].ycOfst = Media::YCOFST_C_CENTER_LEFT;
 						mutUsage.BeginUse();
 						me->outputCount++;
 						mutUsage.EndUse();
-						me->outputEvt->Set();
+						me->outputEvt.Set();
 						frameBuff = frameBuff2;
 					}
 				}
@@ -144,7 +144,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 	}
 	while (me->outputCount > 0 && me->outputRunning)
 	{
-		me->playEvt->Wait(100);
+		me->playEvt.Wait(100);
 	}
 	nextIndex = BUFFCNT;
 	while (nextIndex-- > 0)
@@ -153,7 +153,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(void *userObj)
 	}
 	MemFreeA(frameBuff);
 	me->playing = false;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	if (needNotify)
 	{
 		me->fcCb(Media::IVideoSource::FC_ENDPLAY, me->playCbData);
@@ -166,7 +166,7 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 	Media::FileVideoSource *me = (Media::FileVideoSource*)userObj;
 	OSInt nextIndex;
 	me->outputRunning = true;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
 	while (!me->outputToStop)
 	{
@@ -174,30 +174,29 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 		{
 			nextIndex = me->outputStart;
 			me->playCb(me->outputFrames[nextIndex].frameTime, me->outputFrames[nextIndex].frameNum, &me->outputFrames[nextIndex].frameBuff, me->outputFrames[nextIndex].frameSize, me->outputFrames[nextIndex].frameStruct, me->playCbData, me->outputFrames[nextIndex].fType, me->outputFrames[nextIndex].flags, me->outputFrames[nextIndex].ycOfst);
-			Sync::MutexUsage mutUsage(me->outputMut);
+			Sync::MutexUsage mutUsage(&me->outputMut);
 			me->outputStart = (me->outputStart + 1) & (BUFFCNT - 1);
 			me->outputCount--;
 			mutUsage.EndUse();
-			me->playEvt->Set();
+			me->playEvt.Set();
 		}
 		else
 		{
-			me->outputEvt->Wait(1000);
+			me->outputEvt.Wait(1000);
 		}
 	}
 	me->outputRunning = false;
-	Sync::MutexUsage mutUsage(me->outputMut);
+	Sync::MutexUsage mutUsage(&me->outputMut);
 	me->outputCount = 0;
 	mutUsage.EndUse();
-	me->playEvt->Set();
-	me->mainEvt->Set();
+	me->playEvt.Set();
+	me->mainEvt.Set();
 	return 0;
 }
 
 Media::FileVideoSource::FileVideoSource(IO::IStreamData *data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased)
 {
-	NEW_CLASS(this->frameInfo, Media::FrameInfo());
-	this->frameInfo->Set(frameInfo);
+	this->frameInfo.Set(frameInfo);
 	this->data = data->GetPartialData(0, data->GetDataSize());
 	this->frameRateNorm = frameRateNorm;
 	this->frameRateDenorm = frameRateDenorm;
@@ -205,22 +204,11 @@ Media::FileVideoSource::FileVideoSource(IO::IStreamData *data, Media::FrameInfo 
 	this->currFrameNum = 0;
 	this->timeBased = timeBased;
 
-	NEW_CLASS(this->frameOfsts, Data::ArrayListUInt64());
-	NEW_CLASS(this->frameSizes, Data::ArrayListUInt32());
-	NEW_CLASS(this->frameIsKey, Data::ArrayList<Bool>());
-	NEW_CLASS(this->frameParts, Data::ArrayListUInt32());
-	NEW_CLASS(this->frameTimes, Data::ArrayListUInt32());
-
 	this->playing = false;
 	this->outputRunning = false;
 	this->outputStart = 0;
 	this->outputCount = 0;
 	this->outputFrames = MemAlloc(OutputFrameInfo, BUFFCNT);
-	NEW_CLASS(this->outputMut, Sync::Mutex());
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
-	NEW_CLASS(this->playEvt, Sync::Event(true));
-	NEW_CLASS(this->outputEvt, Sync::Event(true));
-	NEW_CLASS(this->pbcMut, Sync::Mutex());
 }
 
 Media::FileVideoSource::~FileVideoSource()
@@ -228,27 +216,16 @@ Media::FileVideoSource::~FileVideoSource()
 	Stop();
 
 	MemFree(this->outputFrames);
-	DEL_CLASS(this->frameOfsts);
-	DEL_CLASS(this->frameSizes);
-	DEL_CLASS(this->frameIsKey);
-	DEL_CLASS(this->frameParts);
-	DEL_CLASS(this->frameTimes);
 	DEL_CLASS(this->data);
-	DEL_CLASS(this->outputEvt);
-	DEL_CLASS(this->outputMut);
-	DEL_CLASS(this->playEvt);
-	DEL_CLASS(this->pbcMut);
-	DEL_CLASS(this->mainEvt);
-	DEL_CLASS(this->frameInfo);
 }
 
 void Media::FileVideoSource::AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, UInt32 frameTime)
 {
-	this->frameIsKey->Add(isKey);
-	this->frameParts->Add((UInt32)this->frameOfsts->GetCount());
-	this->frameOfsts->Add(frameOfst);
-	this->frameSizes->Add(frameSize);
-	this->frameTimes->Add(frameTime);
+	this->frameIsKey.Add(isKey);
+	this->frameParts.Add((UInt32)this->frameOfsts.GetCount());
+	this->frameOfsts.Add(frameOfst);
+	this->frameSizes.Add(frameSize);
+	this->frameTimes.Add(frameTime);
 	this->currFrameSize = frameSize;
 
 	if (this->maxFrameSize < frameSize)
@@ -259,8 +236,8 @@ void Media::FileVideoSource::AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Boo
 
 void Media::FileVideoSource::AddFramePart(UInt64 frameOfst, UInt32 frameSize)
 {
-	this->frameOfsts->Add(frameOfst);
-	this->frameSizes->Add(frameSize);
+	this->frameOfsts.Add(frameOfst);
+	this->frameSizes.Add(frameSize);
 	this->currFrameSize += frameSize;
 	if (this->maxFrameSize < currFrameSize)
 	{
@@ -286,7 +263,7 @@ Text::CString Media::FileVideoSource::GetFilterName()
 
 Bool Media::FileVideoSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
-	info->Set(this->frameInfo);
+	info->Set(&this->frameInfo);
 	*frameRateNorm = this->frameRateNorm;
 	*frameRateDenorm = this->frameRateDenorm;
 	*maxFrameSize = this->maxFrameSize;
@@ -325,7 +302,7 @@ Bool Media::FileVideoSource::Start()
 			return false;
 		}
 	}
-	Sync::MutexUsage mutUsage(this->pbcMut);
+	Sync::MutexUsage mutUsage(&this->pbcMut);
 	this->playEnd = false;
 	this->playToStop = false;
 	this->outputToStop = false;
@@ -334,12 +311,12 @@ Bool Media::FileVideoSource::Start()
 	Sync::Thread::Create(OutputThread, this);
 	while (!this->outputRunning)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->playing && !this->playEnd)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	mutUsage.EndUse();
 	return true;
@@ -347,23 +324,23 @@ Bool Media::FileVideoSource::Start()
 
 void Media::FileVideoSource::Stop()
 {
-	Sync::MutexUsage mutUsage(this->pbcMut);
+	Sync::MutexUsage mutUsage(&this->pbcMut);
 	if (this->outputRunning)
 	{
 		this->outputToStop = true;
-		this->outputEvt->Set();
+		this->outputEvt.Set();
 		while (this->outputRunning)
 		{
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 	if (this->playing)
 	{
 		this->playToStop = true;
-		this->playEvt->Set();
+		this->playEvt.Set();
 		while (this->playing)
 		{
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 	mutUsage.EndUse();
@@ -376,7 +353,7 @@ Bool Media::FileVideoSource::IsRunning()
 
 Int32 Media::FileVideoSource::GetStreamTime()
 {
-	return (Int32)MulDivU32((UInt32)this->frameParts->GetCount(), this->frameRateDenorm * 1000, this->frameRateNorm);
+	return (Int32)MulDivU32((UInt32)this->frameParts.GetCount(), this->frameRateDenorm * 1000, this->frameRateNorm);
 }
 
 Bool Media::FileVideoSource::CanSeek()
@@ -392,12 +369,12 @@ UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 		UInt32 lastKeyTime = 0;
 		UInt32 thisTime;
 		UOSInt i = 0;
-		UOSInt j = this->frameParts->GetCount();
+		UOSInt j = this->frameParts.GetCount();
 		while (i < j)
 		{
-			if (this->frameIsKey->GetItem(i))
+			if (this->frameIsKey.GetItem(i))
 			{
-				thisTime = this->frameTimes->GetItem(i);
+				thisTime = this->frameTimes.GetItem(i);
 				if (thisTime > time)
 					break;
 				lastKey = i;
@@ -411,13 +388,13 @@ UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 	else
 	{
 		UInt32 newNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
-		if (newNum > this->frameParts->GetCount())
+		if (newNum > this->frameParts.GetCount())
 		{
-			newNum = (UInt32)this->frameParts->GetCount();
+			newNum = (UInt32)this->frameParts.GetCount();
 		}
 		if (newNum != this->currFrameNum)
 		{
-			while (newNum >= 0 && !this->frameIsKey->GetItem(newNum))
+			while (newNum >= 0 && !this->frameIsKey.GetItem(newNum))
 				newNum--;
 			this->currFrameNum = newNum;
 		}
@@ -448,12 +425,12 @@ Bool Media::FileVideoSource::HasFrameCount()
 
 UOSInt Media::FileVideoSource::GetFrameCount()
 {
-	return this->frameParts->GetCount();
+	return this->frameParts.GetCount();
 }
 
 UInt32 Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
 {
-	UInt32 frameTime = this->frameTimes->GetItem(frameIndex);
+	UInt32 frameTime = this->frameTimes.GetItem(frameIndex);
 	if (frameTime == 0)
 	{
 		frameTime = MulDivU32((UInt32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
@@ -467,29 +444,29 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 	UOSInt currPart;
 	UOSInt nextPart;
 	UOSInt i = 0;
-	UOSInt j = this->frameParts->GetCount();
+	UOSInt j = this->frameParts.GetCount();
 	UInt32 lastFrameTime = 0;
 	while (i < j)
 	{
-		currPart = this->frameParts->GetItem(i);
+		currPart = this->frameParts.GetItem(i);
 		if (i + 1 >= j)
 		{
-			nextPart = this->frameOfsts->GetCount();
+			nextPart = this->frameOfsts.GetCount();
 		}
 		else
 		{
-			nextPart = this->frameParts->GetItem(i + 1);
+			nextPart = this->frameParts.GetItem(i + 1);
 		}
 
 		frameSize = 0;
 		while (currPart < nextPart)
 		{
-			frameSize += this->frameSizes->GetItem(currPart);
+			frameSize += this->frameSizes.GetItem(currPart);
 			currPart++;
 		}
 		if (frameSize > 0)
 		{
-			UInt32 frameTime = this->frameTimes->GetItem(i);
+			UInt32 frameTime = this->frameTimes.GetItem(i);
 			if (frameTime == 0)
 			{
 				frameTime = MulDivU32((UInt32)i, this->frameRateDenorm * 1000, this->frameRateNorm);
@@ -506,7 +483,7 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 			{
 				isOdd = (i & 1) != 0;
 			}
-			if (this->frameInfo->ftype == Media::FT_FIELD_TF)
+			if (this->frameInfo.ftype == Media::FT_FIELD_TF)
 			{
 				if (isOdd)
 				{
@@ -517,7 +494,7 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 					ftype = Media::FT_FIELD_TF;
 				}
 			}
-			else if (this->frameInfo->ftype == Media::FT_FIELD_BF)
+			else if (this->frameInfo.ftype == Media::FT_FIELD_BF)
 			{
 				if (isOdd)
 				{
@@ -530,9 +507,9 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 			}
 			else
 			{
-				ftype = this->frameInfo->ftype;
+				ftype = this->frameInfo.ftype;
 			}
-			if (!cb(frameTime, i, (UInt32)frameSize, this->frameIsKey->GetItem(i)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), ftype, userData, Media::YCOFST_C_TOP_LEFT))
+			if (!cb(frameTime, i, (UInt32)frameSize, this->frameIsKey.GetItem(i)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), ftype, userData, Media::YCOFST_C_TOP_LEFT))
 				break;
 		}
 		else
@@ -548,19 +525,19 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, void *userData
 
 UOSInt Media::FileVideoSource::GetFrameSize(UOSInt frameIndex)
 {
-	if (frameIndex >= frameSizes->GetCount())
+	if (frameIndex >= this->frameSizes.GetCount())
 		return 0;
 
-	return this->frameSizes->GetItem(frameIndex);
+	return this->frameSizes.GetItem(frameIndex);
 }
 
 UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UInt8 *frameBuff)
 {
-	if(frameIndex >= frameSizes->GetCount())
+	if(frameIndex >= this->frameSizes.GetCount())
 		return 0;
 
-	UOSInt frameSize = this->frameSizes->GetItem(frameIndex);
-	return this->data->GetRealData(this->frameOfsts->GetItem(frameIndex), frameSize, frameBuff);
+	UOSInt frameSize = this->frameSizes.GetItem(frameIndex);
+	return this->data->GetRealData(this->frameOfsts.GetItem(frameIndex), frameSize, frameBuff);
 }
 
 UOSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)

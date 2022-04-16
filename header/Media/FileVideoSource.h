@@ -24,18 +24,18 @@ namespace Media
 		} OutputFrameInfo;
 	private:
 		IO::IStreamData *data;
-		Media::FrameInfo *frameInfo;
+		Media::FrameInfo frameInfo;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
 		UOSInt maxFrameSize;
 		UOSInt currFrameSize;
 		Bool timeBased;
 
-		Data::ArrayListUInt64 *frameOfsts;
-		Data::ArrayListUInt32 *frameSizes;
-		Data::ArrayListUInt32 *frameParts;
-		Data::ArrayList<Bool> *frameIsKey;
-		Data::ArrayListUInt32 *frameTimes;
+		Data::ArrayListUInt64 frameOfsts;
+		Data::ArrayListUInt32 frameSizes;
+		Data::ArrayListUInt32 frameParts;
+		Data::ArrayList<Bool> frameIsKey;
+		Data::ArrayListUInt32 frameTimes;
 
 		UInt32 currFrameNum;
 		Bool playing;
@@ -44,18 +44,18 @@ namespace Media
 		FrameCallback playCb;
 		FrameChangeCallback fcCb;
 		void *playCbData;
-		Sync::Event *playEvt;
-		Sync::Mutex *pbcMut;
+		Sync::Event playEvt;
+		Sync::Mutex pbcMut;
 
 		Bool outputRunning;
 		Bool outputToStop;
-		Sync::Event *outputEvt;
-		Sync::Mutex *outputMut;
+		Sync::Event outputEvt;
+		Sync::Mutex outputMut;
 		OSInt outputStart;
 		OSInt outputCount;
 		OutputFrameInfo *outputFrames;
 
-		Sync::Event *mainEvt;
+		Sync::Event mainEvt;
 
 		static UInt32 __stdcall PlayThread(void *userObj);
 		static UInt32 __stdcall OutputThread(void *userObj);

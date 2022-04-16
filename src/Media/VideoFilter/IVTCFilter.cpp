@@ -1281,65 +1281,69 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 	ThreadStat *tStat = (ThreadStat*)userObj;
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
 	tStat->threadStat = 1;
-	tStat->me->mainEvt.Set();
-	while (true)
 	{
-		if (tStat->currCmd == 1)
+		Sync::Event evt;
+		tStat->evt = &evt;
+		tStat->me->mainEvt.Set();
+		while (true)
 		{
-			break;
-		}
-		else if (tStat->currCmd == 2)
-		{
-			tStat->threadStat = 2;
-			do_CalcFieldStat(&tStat->fieldStat, tStat->oddPtr, tStat->evenPtr, tStat->sw, tStat->h);
-			tStat->threadStat = 1;
-			tStat->currCmd = 0;
-			tStat->me->mainEvt.Set();
-		}
-		else if (tStat->currCmd == 3)
-		{
-			tStat->threadStat = 2;
-			do_CalcFieldStatP(&tStat->fieldStat, tStat->oddPtr, tStat->sw, tStat->h);
-			tStat->threadStat = 1;
-			tStat->currCmd = 0;
-			tStat->me->mainEvt.Set();
-		}
-		else if (tStat->currCmd == 4)
-		{
-			UOSInt i;
-			UOSInt h;
-			UOSInt sw;
-			UOSInt sw2;
-			UInt8 *srcPtr;
-			UInt8 *destPtr;
-			tStat->threadStat = 2;
-			sw = tStat->sw;
-			h = tStat->h;
-			sw2 = sw << 1;
-			srcPtr = tStat->oddPtr;
-			destPtr = tStat->evenPtr;
-			i = 0;
-			while (i < h)
+			if (tStat->currCmd == 1)
 			{
-				MemCopyNANC(destPtr, srcPtr, sw);
-				srcPtr += sw2;
-				destPtr += sw2;
-				i++;
+				break;
 			}
-			tStat->threadStat = 1;
-			tStat->currCmd = 0;
-			tStat->me->mainEvt.Set();
+			else if (tStat->currCmd == 2)
+			{
+				tStat->threadStat = 2;
+				do_CalcFieldStat(&tStat->fieldStat, tStat->oddPtr, tStat->evenPtr, tStat->sw, tStat->h);
+				tStat->threadStat = 1;
+				tStat->currCmd = 0;
+				tStat->me->mainEvt.Set();
+			}
+			else if (tStat->currCmd == 3)
+			{
+				tStat->threadStat = 2;
+				do_CalcFieldStatP(&tStat->fieldStat, tStat->oddPtr, tStat->sw, tStat->h);
+				tStat->threadStat = 1;
+				tStat->currCmd = 0;
+				tStat->me->mainEvt.Set();
+			}
+			else if (tStat->currCmd == 4)
+			{
+				UOSInt i;
+				UOSInt h;
+				UOSInt sw;
+				UOSInt sw2;
+				UInt8 *srcPtr;
+				UInt8 *destPtr;
+				tStat->threadStat = 2;
+				sw = tStat->sw;
+				h = tStat->h;
+				sw2 = sw << 1;
+				srcPtr = tStat->oddPtr;
+				destPtr = tStat->evenPtr;
+				i = 0;
+				while (i < h)
+				{
+					MemCopyNANC(destPtr, srcPtr, sw);
+					srcPtr += sw2;
+					destPtr += sw2;
+					i++;
+				}
+				tStat->threadStat = 1;
+				tStat->currCmd = 0;
+				tStat->me->mainEvt.Set();
+			}
+			else if (tStat->currCmd == 0)
+			{
+			}
+			else
+			{
+				tStat->currCmd = 0;
+			}
+			tStat->evt->Wait(1000);
 		}
-		else if (tStat->currCmd == 0)
-		{
-		}
-		else
-		{
-			tStat->currCmd = 0;
-		}
-		tStat->evt->Wait(1000);
+		tStat->currCmd = 0;
 	}
-	tStat->currCmd = 0;
 	tStat->threadStat = 0;
 	tStat->me->mainEvt.Set();
 	return 0;
@@ -1971,7 +1975,6 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
 		this->threadStats[i].currCmd = 0;
-		NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 		Sync::Thread::Create(CalcThread, &this->threadStats[i]);
 	}
 
@@ -2040,11 +2043,6 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 	{
 		MemFreeA64(this->fieldBuff);
 		this->fieldBuff = 0;
-	}
-	i = this->threadCnt;
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->threadStats[i].evt);
 	}
 	MemFree(this->threadStats);
 #ifdef _DEBUG
