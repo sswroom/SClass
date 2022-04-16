@@ -1,6 +1,5 @@
 #ifndef _SM_MEDIA_ALSARENDERER
 #define _SM_MEDIA_ALSARENDERER
-
 #include "Media/IAudioRenderer.h"
 
 namespace Media
@@ -9,6 +8,8 @@ namespace Media
 	{
 	private:
 		Media::IAudioSource *audsrc;
+		Media::IAudioSource *resampler;
+		UInt32 resampleFreq;
 		const UTF8Char *devName;
 		Bool playing;
 		Bool threadInit;

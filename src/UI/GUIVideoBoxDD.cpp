@@ -63,7 +63,7 @@
 
 void UI::GUIVideoBoxDD::LockUpdateSize(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->surfaceMut);
+	mutUsage->ReplaceMutex(&this->surfaceMut);
 }
 
 void UI::GUIVideoBoxDD::DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "Math/Math.h"
 
 extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)
 {
@@ -33,5 +34,26 @@ extern "C" void AudioUtil_Amplify16(UInt8 *audioBuff, UOSInt buffSize, Int32 vol
 			WriteInt16(audioBuff, v);
 		audioBuff += 2;
 		buffSize -= 2;
+	}
+}
+
+extern "C" void AudioUtil_ConvI16_F32(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt nSample)
+{
+	Double mul = 1 / 32768.0;
+	while (nSample-- > 0)
+	{
+		WriteFloat(destBuff, (Single)(ReadInt16(srcBuff) * mul));
+		srcBuff += 2;
+		destBuff += 4;
+	}
+}
+
+extern "C" void AudioUtil_ConvF32_I16(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt nSample)
+{
+	while (nSample-- > 0)
+	{
+		WriteInt16(destBuff, Math::SDouble2Int16(ReadFloat(srcBuff) * 32767.0));
+		srcBuff += 4;
+		destBuff += 2;
 	}
 }

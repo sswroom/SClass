@@ -40,6 +40,8 @@ Double Math_MyPow(Double x, Double y);
 #define Math_ArcCosh(val) (Math_Ln(val + Math_Sqrt(val - 1) * Math_Sqrt(val + 1)))
 #define Math_ArcTanh(val) (0.5 * Math_Ln((1 + val) / (1 - val)))
 #define Math_Fix(val) floor(val)
+#define Math_Round(val) ((val) >= 0 ? ((Int32)((val) + 0.5)) : ((Int32)((val) - 0.5)))
+
 
 namespace Math
 {

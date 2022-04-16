@@ -6,6 +6,7 @@
 #include "Media/IAudioSource.h"
 #include "Media/LPCMConverter.h"
 #include "Media/RefClock.h"
+#include "Media/SOXRFilter.h"
 #include "Sync/Event.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -442,7 +443,12 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
-//	printf("ALSA: Actual sample rate:%d\r\n", rrate);
+	if (rrate != fmt.frequency)
+	{
+		printf("ALSA: Sample rate conversion required: %d -> %d\r\n", fmt.frequency, rrate);
+		fmt.frequency = rrate;
+		this->resampleFreq = rrate;
+	}
 	this->dataBits = fmt.bitpersample;
 	err = snd_pcm_hw_params_set_format(hand, params, sndFmt);
 	if (err < 0)
@@ -612,6 +618,7 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 		this->devName = Text::StrCopyNew(devName);
 	}
 	this->audsrc = 0;
+	this->resampler = 0;
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 500;
@@ -647,6 +654,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	{
 		snd_pcm_close((snd_pcm_t*)this->hand);
 		this->audsrc = 0;
+		SDEL_CLASS(this->resampler);
 		this->hand = 0;
 		DEL_CLASS(playEvt);
 	}
@@ -659,6 +667,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 		return false;
 	}
 
+	this->resampleFreq = 0;
 	this->dataConv = false;
 	this->dataBits = 16;
 	this->dataNChannel = 2;
@@ -772,7 +781,15 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	}
 
 	this->hand = hand;
-	this->audsrc = audsrc;
+	if (this->resampleFreq != 0)
+	{
+		NEW_CLASS(this->resampler, Media::SOXRFilter(audsrc, this->resampleFreq));
+		this->audsrc = this->resampler;
+	}
+	else
+	{
+		this->audsrc = audsrc;
+	}
 	NEW_CLASS(this->playEvt, Sync::Event());
 	return true;
 }

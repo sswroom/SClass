@@ -218,7 +218,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(data->me->surfaceMut);
+		Sync::MutexUsage mutUsage(&data->me->surfaceMut);
 		data->me->surfaceW = (UOSInt)data->allocation->width;
 		data->me->surfaceH = (UOSInt)data->allocation->height;
 		data->me->ReleaseSubSurface();
@@ -251,7 +251,7 @@ void UI::GUIDDrawControl::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		Sync::MutexUsage mutUsage(this->surfaceMut);
+		Sync::MutexUsage mutUsage(&this->surfaceMut);
 		DrawToScreen();
 		mutUsage.EndUse();
 	}
@@ -390,10 +390,10 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
 {
-	this->surfaceMut->Lock();
+	this->surfaceMut.Lock();
 	if (this->buffSurface == 0)
 	{
-		this->surfaceMut->Unlock();
+		this->surfaceMut.Unlock();
 		return 0;
 	}
 	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
@@ -404,14 +404,14 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 			return dptr;
 		}
 	}
-	this->surfaceMut->Unlock();
+	this->surfaceMut.Unlock();
 	return 0;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
 	this->buffSurface->UnlockSurface();
-	this->surfaceMut->Unlock();
+	this->surfaceMut.Unlock();
 }
 
 Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
@@ -444,8 +444,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->imgCopy = 0;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
-	NEW_CLASS(this->drawEvt, Sync::Event(false));
-	NEW_CLASS(this->surfaceMut, Sync::Mutex());
 	this->rootForm = parent->GetRootForm();
 	this->fullScnMode = SM_WINDOWED;
 	this->directMode = directMode;
@@ -479,8 +477,6 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	this->clsData->imgCtrl = 0;
 	this->ReleaseSubSurface();
 
-	DEL_CLASS(this->surfaceMut);
-	DEL_CLASS(this->drawEvt);
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
 	{
@@ -532,7 +528,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 
 void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
-	Sync::MutexUsage mutUsage(this->surfaceMut);
+	Sync::MutexUsage mutUsage(&this->surfaceMut);
 	if (this->primarySurface)
 	{
 		if (this->clsData->drawPause)
@@ -667,12 +663,12 @@ void *UI::GUIDDrawControl::GetPixBuf()
 
 void UI::GUIDDrawControl::UseDrawSurface(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->surfaceMut);
+	mutUsage->ReplaceMutex(&this->surfaceMut);
 }
 
 void UI::GUIDDrawControl::UnuseDrawSurface(Sync::MutexUsage *mutUsage)
 {
 	this->clsData->drawPause = 0;
 	mutUsage->EndUse();
-	this->drawEvt->Set();
+	this->drawEvt.Set();
 }

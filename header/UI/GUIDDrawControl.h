@@ -29,7 +29,7 @@ namespace UI
 		UI::GUIForm *rootForm;
 		Media::ImageCopy *imgCopy;
 
-		Sync::Event *drawEvt;
+		Sync::Event drawEvt;
 		Media::MonitorSurfaceMgr *surfaceMgr;
 		MonitorHandle *surfaceMon;
 		Media::MonitorSurface *primarySurface;
@@ -42,7 +42,7 @@ namespace UI
 		Bool directMode;
 		Bool inited;
 	protected:
-		Sync::Mutex *surfaceMut;
+		Sync::Mutex surfaceMut;
 		UOSInt surfaceW;
 		UOSInt surfaceH;
 		UInt32 bitDepth;

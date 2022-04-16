@@ -12,4 +12,5 @@ libavcodec-dev
 libmongoc-dev
 libcurl4-openssl-dev
 libpcap-dev
-
+libopenjp2-7-dev
+libsoxr-dev
