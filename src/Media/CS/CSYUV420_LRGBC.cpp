@@ -217,6 +217,7 @@ UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(void *obj)
 			case ThreadState::NotRunning:
 			case ThreadState::Idling:
 			case ThreadState::Finished:
+			case ThreadState::ToExit:
 			default:
 				break;
 			}
