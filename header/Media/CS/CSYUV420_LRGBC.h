@@ -10,6 +10,16 @@ namespace Media
 		class CSYUV420_LRGBC : public Media::CS::CSYUV_LRGBC
 		{
 		protected:
+			enum class ThreadState
+			{
+				NotRunning,
+				Idling,
+				ToExit,
+				YV12_RGB,
+				Finished,
+				VFilter
+			}; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
+
 			typedef struct
 			{
 				UOSInt length;
@@ -21,7 +31,7 @@ namespace Media
 			typedef struct
 			{
 				Sync::Event *evt;
-				Int32 status; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
+				ThreadState status;
 				UInt8 *yPtr;
 				UOSInt yBpl;
 				UInt8 *uPtr;
@@ -52,14 +62,14 @@ namespace Media
 
 			UOSInt currId;
 			UOSInt nThread;
-			Sync::Event *evtMain;
+			Sync::Event evtMain;
 			THREADSTAT *stats;
 
 			static Double lanczos3_weight(Double phase);
 			static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr);
 
 			static UInt32 __stdcall WorkerThread(void *obj);
-			void WaitForWorker(Int32 jobStatus);
+			void WaitForWorker(ThreadState jobStatus);
 		public:
 			CSYUV420_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYUV420_LRGBC();

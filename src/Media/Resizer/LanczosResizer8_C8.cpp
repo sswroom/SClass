@@ -625,6 +625,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(UInt8 *inPt, UI
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
+	FuncType funcType = FuncType::HFilterPA;
 	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
@@ -642,7 +643,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(UInt8 *inPt, UI
 
 		if (this->params[i].swidth != 0 && this->params[i].height != 0)
 		{
-			this->params[i].funcType = 12;
+			this->params[i].funcType = funcType;
 			this->ptask->AddTask(DoTask, &this->params[i]);
 		}
 		lastHeight = currHeight;
@@ -654,6 +655,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(UInt8 *inPt, UInt8
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
+	FuncType funcType = FuncType::HFilter;
 	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
@@ -671,7 +673,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(UInt8 *inPt, UInt8
 
 		if (this->params[i].swidth != 0 && this->params[i].height != 0)
 		{
-			this->params[i].funcType = 3;
+			this->params[i].funcType = funcType;
 			this->ptask->AddTask(DoTask, &this->params[i]);
 		}
 		lastHeight = currHeight;
@@ -683,6 +685,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UInt8 *inPt, UInt8 *
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
+	FuncType funcType = FuncType::VFilter;
 	UOSInt i = this->nThread;
 	if (height < 16)
 	{
@@ -703,7 +706,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UInt8 *inPt, UInt8 *
 			this->params[i].sstep = sstep;
 			this->params[i].dstep = dstep;
 
-			this->params[i].funcType = 5;
+			this->params[i].funcType = funcType;
 			this->ptask->AddTask(DoTask, &this->params[i]);
 			lastHeight = currHeight;
 		}
@@ -750,8 +753,9 @@ void Media::Resizer::LanczosResizer8_C8::UpdateRGBTable()
 void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(void *obj)
 {
 	TaskParam *ts = (TaskParam*)obj;
-	if (ts->funcType == 3)
+	switch (ts->funcType)
 	{
+	case FuncType::HFilter:
 		if (ts->swidth != ts->tmpbuffSize)
 		{
 			if (ts->tmpbuff)
@@ -760,25 +764,20 @@ void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(void *obj)
 			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
 		LanczosResizer8_C8_horizontal_filter(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
-	}
-	else if (ts->funcType == 5)
-	{
+		break;
+	case FuncType::VFilter:
 		LanczosResizer8_C8_vertical_filter(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
-	}
-	else if (ts->funcType == 7)
-	{
+		break;
+	case FuncType::Expand:
 		LanczosResizer8_C8_expand(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
-	}
-	else if (ts->funcType == 9)
-	{
+		break;
+	case FuncType::Collapse:
 		LanczosResizer8_C8_collapse(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
-	}
-	else if (ts->funcType == 11)
-	{
+		break;
+	case FuncType::ImgCopy:
 		LanczosResizer8_C8_imgcopy(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
-	}
-	else if (ts->funcType == 12)
-	{
+		break;
+	case FuncType::HFilterPA:
 		if (ts->swidth != ts->tmpbuffSize)
 		{
 			if (ts->tmpbuff)
@@ -787,14 +786,16 @@ void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(void *obj)
 			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
 		LanczosResizer8_C8_horizontal_filter_pa(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
-	}
-	else if (ts->funcType == 13)
-	{
+		break;
+	case FuncType::ExpandPA:
 		LanczosResizer8_C8_expand_pa(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
-	}
-	else if (ts->funcType == 14)
-	{
+		break;
+	case FuncType::ImgCopyPA:
 		LanczosResizer8_C8_imgcopy_pa(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		break;
+	default:
+	case FuncType::NoFunction:
+		break;
 	}
 }
 

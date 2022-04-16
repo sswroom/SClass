@@ -146,17 +146,18 @@ UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(void *obj)
 	{
 		Sync::Event evt;
 		ts->evt = &evt;
-		ts->status = 1;
-		converter->evtMain->Set();
+		ts->status = ThreadState::Idling;
+		converter->evtMain.Set();
 		while (true)
 		{
 			ts->evt->Wait();
-			if (ts->status == 2)
+			if (ts->status == ThreadState::ToExit)
 			{
 				break;
 			}
-			else if (ts->status == 3)
+			switch (ts->status)
 			{
+			case ThreadState::YV12_RGB:
 				if (ts->width & 3)
 				{
 					CSYUV420_LRGBC_do_yv12rgb2(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
@@ -165,9 +166,9 @@ UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(void *obj)
 				{
 					CSYUV420_LRGBC_do_yv12rgb8(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
 				}
-				ts->status = 4;
-				converter->evtMain->Set();
-			}
+				ts->status = ThreadState::Finished;
+				converter->evtMain.Set();
+				break;
 	/*		else if (ts->status == 5)
 			{
 				VerticalFilter(ts->uPtr, ts->vPtr, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, 0, ts->dbpl);
@@ -204,24 +205,29 @@ UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(void *obj)
 				ts->status = 4;
 				converter->evtMain->Set();
 			}*/
-			else if (ts->status == 11)
-			{
+			case ThreadState::VFilter:
 	#if LANCZOS_NTAP == 4
 				CSYUV420_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
 	#else
 				CSYUV420_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
 	#endif
-				ts->status = 4;
-				converter->evtMain->Set();
+				ts->status = ThreadState::Finished;
+				converter->evtMain.Set();
+				break;
+			case ThreadState::NotRunning:
+			case ThreadState::Idling:
+			case ThreadState::Finished:
+			default:
+				break;
 			}
 		}
 	}
-	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->stats[threadId].status = ThreadState::NotRunning;
+	converter->evtMain.Set();
 	return 0;
 }
 
-void Media::CS::CSYUV420_LRGBC::WaitForWorker(Int32 jobStatus)
+void Media::CS::CSYUV420_LRGBC::WaitForWorker(ThreadState jobStatus)
 {
 	UOSInt i;
 	Bool exited;
@@ -240,7 +246,7 @@ void Media::CS::CSYUV420_LRGBC::WaitForWorker(Int32 jobStatus)
 		}
 		if (exited)
 			break;
-		this->evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
@@ -262,21 +268,20 @@ Media::CS::CSYUV420_LRGBC::CSYUV420_LRGBC(const Media::ColorProfile *srcProfile,
 	this->uvBuff = 0;
 	this->uvBuffSize = 0;
 
-	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		stats[i].status = 0;
+		stats[i].status = ThreadState::NotRunning;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;
 		stats[i].csLineBuff2 = 0;
 
 		currId = i;
 		Sync::Thread::Create(WorkerThread, this, 65536);
-		while (stats[i].status == 0)
+		while (stats[i].status == ThreadState::NotRunning)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -287,9 +292,9 @@ Media::CS::CSYUV420_LRGBC::~CSYUV420_LRGBC()
 	Bool exited;
 	while (i-- > 0)
 	{
-		if (stats[i].status != 0)
+		if (stats[i].status != ThreadState::NotRunning)
 		{
-			stats[i].status = 2;
+			stats[i].status = ThreadState::ToExit;
 			stats[i].evt->Set();
 		}
 	}
@@ -299,17 +304,17 @@ Media::CS::CSYUV420_LRGBC::~CSYUV420_LRGBC()
 		i = nThread;
 		while (i-- > 0)
 		{
-			if (stats[i].status != 0)
+			if (stats[i].status != ThreadState::NotRunning)
 			{
-				if (stats[i].status == 2)
+				if (stats[i].status == ThreadState::ToExit)
 				{
 					stats[i].evt->Set();
 					exited = false;
 					break;
 				}
-				else if (stats[i].status > 0)
+				else if (stats[i].status != ThreadState::NotRunning)
 				{
-					stats[i].status = 2;
+					stats[i].status = ThreadState::ToExit;
 					stats[i].evt->Set();
 					exited = false;
 					break;
@@ -325,7 +330,7 @@ Media::CS::CSYUV420_LRGBC::~CSYUV420_LRGBC()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
@@ -340,9 +345,7 @@ Media::CS::CSYUV420_LRGBC::~CSYUV420_LRGBC()
 			MemFreeA(stats[i].csLineBuff2);
 			stats[i].csLineBuff2 = 0;
 		}
-		DEL_CLASS(stats[i].evt);
 	}
-	DEL_CLASS(evtMain);
 	MemFree(stats);
 
 	if (this->yvParamO.index)

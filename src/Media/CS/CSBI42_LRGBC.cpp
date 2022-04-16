@@ -124,11 +124,11 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 					stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 					stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 				}
-				stats[i].status = 11;
+				stats[i].status = ThreadState::VFilter;
 				stats[i].evt->Set();
 				lastHeight = currHeight;
 			}
-			WaitForWorker(11);
+			WaitForWorker(ThreadState::VFilter);
 
 		}
 		else
@@ -164,11 +164,11 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 					stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1) + 15);
 					stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1) + 15);
 				}
-				stats[i].status = 3;
+				stats[i].status = ThreadState::YV12_RGB;
 				stats[i].evt->Set();
 				lastHeight = currHeight;
 			}
-			WaitForWorker(3);
+			WaitForWorker(ThreadState::YV12_RGB);
 		}
 	}
 	else if (ftype == Media::FT_INTERLACED_BFF || ftype == Media::FT_INTERLACED_TFF || ftype == Media::FT_INTERLACED_NODEINT)
@@ -245,7 +245,7 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 						stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 						stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 					}
-					stats[i].status = 11;
+					stats[i].status = ThreadState::VFilter;
 					stats[i].evt->Set();
 					lastHeight = currHeight;
 				}
@@ -284,11 +284,11 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 						stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 						stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 					}
-					stats[i].status = 11;
+					stats[i].status = ThreadState::VFilter;
 					stats[i].evt->Set();
 					lastHeight = currHeight;
 				}
-				WaitForWorker(11);
+				WaitForWorker(ThreadState::VFilter);
 			}
 			else
 			{
@@ -325,7 +325,7 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 						stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 						stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 					}
-					stats[i].status = 3;
+					stats[i].status = ThreadState::YV12_RGB;
 					stats[i].evt->Set();
 					lastHeight = currHeight;
 				}
@@ -364,11 +364,11 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 						stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 						stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 					}
-					stats[i].status = 3;
+					stats[i].status = ThreadState::YV12_RGB;
 					stats[i].evt->Set();
 					lastHeight = currHeight;
 				}
-				WaitForWorker(3);
+				WaitForWorker(ThreadState::YV12_RGB);
 			}
 		}
 	}
@@ -510,11 +510,11 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 					stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 					stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 				}
-				stats[i].status = 11;
+				stats[i].status = ThreadState::VFilter;
 				stats[i].evt->Set();
 				lastHeight = currHeight;
 			}
-			WaitForWorker(11);
+			WaitForWorker(ThreadState::VFilter);
 		}
 		else
 		{
@@ -548,11 +548,11 @@ void Media::CS::CSBI42_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt d
 					stats[i].csLineBuff = MemAllocA64(UInt8, (cSize << 1));
 					stats[i].csLineBuff2 = MemAllocA64(UInt8, (cSize << 1));
 				}
-				stats[i].status = 3;
+				stats[i].status = ThreadState::YV12_RGB;
 				stats[i].evt->Set();
 				lastHeight = currHeight;
 			}
-			WaitForWorker(3);
+			WaitForWorker(ThreadState::YV12_RGB);
 		}
 	}
 }

@@ -13,10 +13,23 @@ namespace Media
 		class LanczosResizer8_C8 : public Media::IImgResizer, public Media::IColorHandler
 		{
 		private:
+			enum class FuncType
+			{
+				NoFunction,
+				HFilter,
+				VFilter,
+				Expand,
+				Collapse,
+				ImgCopy,
+				HFilterPA,
+				ExpandPA,
+				ImgCopyPA
+			};
+
 			typedef struct
 			{
 				LanczosResizer8_C8 *me;
-				Int32 funcType; // 3 = h filter, 5 = v filter, 7 = expand, 9 = collapse, 11 = copying, 12 = h filter pa, 13 = expand pa
+				FuncType funcType; // 3 = h filter, 5 = v filter, 7 = expand, 9 = collapse, 11 = copying, 12 = h filter pa, 13 = expand pa
 				UInt8 *inPt;
 				UInt8 *outPt;
 				UOSInt swidth;

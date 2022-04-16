@@ -443,18 +443,18 @@ vflop2:
 	psrad xmm3,16
 	packssdw xmm1,xmm3
 	movdqa [rsi],xmm1
-	lea rcx,[rcx+4]
-	lea rdx,[rdx+4]
-	lea rsi,[rsi+16]
+	add rcx,4
+	add rdx,4
+	add rsi,16
 	dec rbp
 	jnz vflop2
 
-	mov rbp,qword [rsp+48] ;cSub
+	mov r12,qword [rsp+48] ;cSub
 	mov rsi,r10 ;inYPt
 	mov rdi,r9 ;outPt
 	mov rcx,qword [rsp+152] ;csLineBuff2
 	mov rbx,qword [rsp+176] ;yuv2rgb
-	mov r12,qword [rsp+184] ;rgbGammaCorr
+	mov rbp,qword [rsp+184] ;rgbGammaCorr
 
 	movzx rdx,word [rsi]
 	movzx rax,dl
@@ -493,25 +493,22 @@ y2rllop2b:
 	paddsw xmm2,xmm3
 	
 	pextrw rax,xmm2,0
-	movq xmm1,[r12+rax*8+1048576]
+	movq xmm1,[rbp+rax*8+1048576]
 	pextrw rax,xmm2,4
-	movq xmm7,[r12+rax*8+1048576]
+	movhps xmm1,[rbp+rax*8+1048576]
 
 	pextrw rax,xmm2,1
-	movq xmm6,[r12+rax*8+524288]
+	movq xmm6,[rbp+rax*8+524288]
 	pextrw rax,xmm2,5
-	movq xmm5,[r12+rax*8+524288]
+	movhps xmm6,[rbp+rax*8+524288]
 	paddsw xmm1,xmm6
-	paddsw xmm7,xmm5
 
 	pextrw rax,xmm2,2
-	movq xmm6,[r12+rax*8]
+	movq xmm6,[rbp+rax*8]
 	pextrw rax,xmm2,6
-	movq xmm5,[r12+rax*8]
+	movhps xmm6,[rbp+rax*8]
 	paddsw xmm1,xmm6
-	paddsw xmm7,xmm5
 
-	punpcklqdq xmm1,xmm7
 	movdqu [rdi],xmm1
 
 	movzx rdx,word [rsi]
@@ -523,10 +520,10 @@ y2rllop2b:
 
 	paddsw xmm2,xmm0
 	paddsw xmm2,xmm3
-	lea rdi,[rdi+16]
-	lea rsi,[rsi+2]
-	lea rcx,[rcx+4]
-	dec rbp
+	add rdi,16
+	add rsi,2
+	add rcx,4
+	dec r12
 	jnz y2rllop2b
 
 	mov edx,dword [rcx]
@@ -543,55 +540,48 @@ y2rllop2b:
 	paddsw xmm2,xmm3
 
 	pextrw rax,xmm2,0
-	movq xmm1,[r12+rax*8+1048576]
+	movq xmm1,[rbp+rax*8+1048576]
 	pextrw rax,xmm2,4
-	movq xmm7,[r12+rax*8+1048576]
+	movhps xmm1,[rbp+rax*8+1048576]
 
 	pextrw rax,xmm2,1
-	movq xmm6,[r12+rax*8+524288]
+	movq xmm6,[rbp+rax*8+524288]
 	pextrw rax,xmm2,5
-	movq xmm5,[r12+rax*8+524288]
+	movhps xmm6,[rbp+rax*8+524288]
 	paddsw xmm1,xmm6
-	paddsw xmm7,xmm5
 
 	pextrw rax,xmm2,2
-	movq xmm6,[r12+rax*8]
+	movq xmm6,[rbp+rax*8]
 	pextrw rax,xmm2,6
-	movq xmm5,[r12+rax*8]
+	movhps xmm6,[rbp+rax*8]
 	paddsw xmm1,xmm6
-	paddsw xmm7,xmm5
 
-	punpcklqdq xmm1,xmm7
 	movdqu [rdi],xmm1
 
 	movzx rdx,word [rsi]
 	movzx rax,dl
 	movq xmm2,[rbx+rax * 8]
 	shr rdx,8
-	movq xmm4,[rbx+rdx * 8]
-	punpcklqdq xmm2,xmm4
+	movhps xmm2,[rbx+rdx * 8]
 	paddsw xmm2,xmm0
 
 	pextrw rax,xmm2,0
-	movq xmm1,[r12+rax*8+1048576]
+	movq xmm1,[rbp+rax*8+1048576]
 	pextrw rax,xmm2,4
-	movq xmm7,[r12+rax*8+1048576]
+	movhps xmm1,[rbp+rax*8+1048576]
 
 	pextrw rax,xmm2,1
-	movq xmm6,[r12+rax*8+524288]
+	movq xmm6,[rbp+rax*8+524288]
 	pextrw rax,xmm2,5
-	movq xmm5,[r12+rax*8+524288]
+	movhps xmm6,[rbp+rax*8+524288]
 	paddsw xmm1,xmm6
-	paddsw xmm7,xmm5
 
 	pextrw rax,xmm2,2
-	movq xmm6,[r12+rax*8]
+	movq xmm6,[rbp+rax*8]
 	pextrw rax,xmm2,6
-	movq xmm5,[r12+rax*8]
+	movhps xmm6,[rbp+rax*8]
 	paddsw xmm1,xmm6
-	paddsw xmm7,xmm5
 
-	punpcklqdq xmm1,xmm7
 	movdqu [rdi+16],xmm1
 
 	add rsi,qword [rsp+160] ;yAdd

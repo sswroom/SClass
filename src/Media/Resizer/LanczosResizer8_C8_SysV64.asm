@@ -6,6 +6,10 @@ global LanczosResizer8_C8_horizontal_filter
 global _LanczosResizer8_C8_horizontal_filter
 global LanczosResizer8_C8_vertical_filter
 global _LanczosResizer8_C8_vertical_filter
+global LanczosResizer8_C8_horizontal_filter_pac
+global _LanczosResizer8_C8_horizontal_filter_pac
+global LanczosResizer8_C8_horizontal_filter_c
+global _LanczosResizer8_C8_horizontal_filter_c
 global LanczosResizer8_C8_expand
 global _LanczosResizer8_C8_expand
 global LanczosResizer8_C8_expand_pa
@@ -39,6 +43,8 @@ global _LanczosResizer8_C8_imgcopy_pa
 	align 16
 LanczosResizer8_C8_horizontal_filter_pa:
 _LanczosResizer8_C8_horizontal_filter_pa:
+LanczosResizer8_C8_horizontal_filter_pac:
+_LanczosResizer8_C8_horizontal_filter_pac:
 	push rbp
 	push rbx
 	push r8
@@ -98,23 +104,20 @@ hfpalop4:
 	movzx rdx,al
 	movq xmm1, [rsi+rdx*8+266240]
 	movzx edx,bl
-	movq xmm2, [rsi+rdx*8+266240]
+	movhps xmm1, [rsi+rdx*8+266240]
 	movzx edx,ah
-	punpcklqdq xmm1,xmm2
 	movq xmm0, [rsi+rdx*8+264192]
 	movzx edx,bh
-	movq xmm2, [rsi+rdx*8+264192]
+	movhps xmm0, [rsi+rdx*8+264192]
 	shr eax,16
 	shr ebx,16
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 	movzx edx,al
 	movq xmm0, [rsi+rdx*8+262144]
 	movzx edx,bl
-	movq xmm2, [rsi+rdx*8+262144]
+	movhps xmm0, [rsi+rdx*8+262144]
 	movzx edx,ah
 	mov dh,bh
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 
 	movd xmm0,edx
@@ -125,8 +128,7 @@ hfpalop4:
 	movzx edx,ah
 	movq xmm1, [rsi+rdx*8+268288]
 	movzx edx,bh
-	movq xmm2, [rsi+rdx*8+268288]
-	punpcklqdq xmm1,xmm2
+	movhps xmm1, [rsi+rdx*8+268288]
 	paddsw xmm0,xmm1
 	movdqu [rdi],xmm0
 
@@ -218,23 +220,20 @@ hfpa6lop4:
 	movzx rdx,al
 	movq xmm1,[rsi+rdx*8+266240]
 	movzx rdx,bl
-	movq xmm2,[rsi+rdx*8+266240]
+	movhps xmm1,[rsi+rdx*8+266240]
 	movzx edx,ah
-	punpcklqdq xmm1,xmm2
 	movq xmm0,[rsi+rdx*8+264192]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+264192]
+	movhps xmm0,[rsi+rdx*8+264192]
 	shr eax,16
 	shr ebx,16
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 	movzx edx,al
 	movq xmm0,[rsi+rdx*8+262144]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+262144]
+	movhps xmm0,[rsi+rdx*8+262144]
 	movzx edx,ah
 	mov dh,bh
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 
 	movd xmm0,edx
@@ -245,8 +244,7 @@ hfpa6lop4:
 	movzx edx,ah
 	movq xmm1,[rsi+rdx*8+268288]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+268288]
-	punpcklqdq xmm1,xmm2
+	movhps xmm1,[rsi+rdx*8+268288]
 	paddsw xmm0,xmm1
 	movdqu [rdi],xmm0
 
@@ -300,14 +298,14 @@ hfpa6lop2:
 	pmaddwd xmm0,[rdi+80]
 	paddd xmm3,xmm0
 
-	lea rdi,[rdi+96]
-	lea rbx,[rbx+48]
+	add rdi,96
+	add rbx,48
 
 	psrad xmm1,15
 	psrad xmm3,15
 	packssdw xmm1,xmm3
 	movdqu [rsi],xmm1
-	lea rsi,[rsi+16]
+	add rsi,16
 	dec rbp
 	jnz hfpa6lop2
 
@@ -363,23 +361,20 @@ hfpa2lop4:
 	movzx rdx,al
 	movq xmm1, [rsi+rdx*8+266240]
 	movzx rdx,bl
-	movq xmm2, [rsi+rdx*8+266240]
+	movhps xmm1, [rsi+rdx*8+266240]
 	movzx edx,ah
-	punpcklqdq xmm1,xmm2
 	movq xmm0, [rsi+rdx*8+264192]
 	movzx edx,bh
-	movq xmm2, [rsi+rdx*8+264192]
+	movhps xmm0, [rsi+rdx*8+264192]
 	shr eax,16
 	shr ebx,16
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 	movzx edx,al
 	movq xmm0, [rsi+rdx*8+262144]
 	movzx edx,bl
-	movq xmm2, [rsi+rdx*8+262144]
+	movhps xmm0, [rsi+rdx*8+262144]
 	movzx edx,ah
 	mov dh,bh
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 
 	movd xmm0,edx
@@ -390,8 +385,7 @@ hfpa2lop4:
 	movzx edx,ah
 	movq xmm1,[rsi+rdx*8+268288]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+268288]
-	punpcklqdq xmm1,xmm2
+	movhps xmm1,[rsi+rdx*8+268288]
 	paddsw xmm0,xmm1
 	movdqu [rdi],xmm0
 
@@ -484,6 +478,8 @@ hfpaexit:
 	align 16
 LanczosResizer8_C8_horizontal_filter:
 _LanczosResizer8_C8_horizontal_filter:
+LanczosResizer8_C8_horizontal_filter_c:
+_LanczosResizer8_C8_horizontal_filter_c:
 	push rbp
 	push rbx
 	push r8
@@ -537,27 +533,23 @@ hflop4:
 	movzx rdx,al
 	movq xmm1,[rsi+rdx*8+266240]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+266240]
+	movhps xmm1,[rsi+rdx*8+266240]
 	movzx edx,ah
-	punpcklqdq xmm1,xmm2
 	movq xmm0,[rsi+rdx*8+264192]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+264192]
+	movhps xmm0,[rsi+rdx*8+264192]
 	shr eax,16
 	shr ebx,16
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 	movzx edx,al
 	movq xmm0,[rsi+rdx*8+262144]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+262144]
-	punpcklqdq xmm0,xmm2
+	movhps xmm0,[rsi+rdx*8+262144]
 	paddsw xmm1,xmm0
 	movzx edx,ah
 	movq xmm0,[rsi+rdx*8+268288]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+268288]
-	punpcklqdq xmm0,xmm2
+	movhps xmm0,[rsi+rdx*8+268288]
 	paddsw xmm1,xmm0
 	movdqu [rdi],xmm1
 
@@ -649,27 +641,23 @@ hf6lop4:
 	movzx rdx,al
 	movq xmm1,[rsi+rdx*8+266240]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+266240]
+	movhps xmm1,[rsi+rdx*8+266240]
 	movzx edx,ah
-	punpcklqdq xmm1,xmm2
 	movq xmm0,[rsi+rdx*8+264192]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+264192]
+	movhps xmm0,[rsi+rdx*8+264192]
 	shr eax,16
 	shr ebx,16
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 	movzx edx,al
 	movq xmm0,[rsi+rdx*8+262144]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+262144]
-	punpcklqdq xmm0,xmm2
+	movhps xmm0,[rsi+rdx*8+262144]
 	paddsw xmm1,xmm0
 	movzx edx,ah
 	movq xmm0,[rsi+rdx*8+268288]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+268288]
-	punpcklqdq xmm0,xmm2
+	movhps xmm0,[rsi+rdx*8+268288]
 	paddsw xmm1,xmm0
 	movdqu [rdi],xmm1
 
@@ -976,7 +964,7 @@ vf1lop3:
 	mov al,byte [rdi+rbx]
 	mov ah,byte [rdi+rdx+65536]
 
-	movnti dword [rcx],eax
+	mov dword [rcx],eax
 	lea rsi,[rsi+8]
 	lea rcx,[rcx+4]
 	dec rbp
@@ -1357,7 +1345,7 @@ collop2:
 	movzx ebx,word [rdi]
 	mov al,byte [rbp+rbx]
 
-	movnti dword [rsi],eax
+	mov dword [rsi],eax
 	lea rsi,[rsi+4]
 	lea rdi,[rdi+8]
 	dec r10
@@ -1414,7 +1402,7 @@ iclop2:
 	mov ah,byte [rbp+rbx+65536]
 	pextrw rbx,xmm1,0
 	mov al,byte [rbp+rbx]
-	movnti [rsi],rax
+	mov [rsi],rax
 	lea rsi,[rsi+4]
 	lea rdi,[rdi+4]
 	dec r10
@@ -1498,7 +1486,7 @@ icpalop2:
 	mov bh,byte [rbp+rax+65536]
 	pextrw rax,xmm1,0
 	mov bl,byte [rbp+rax]
-	movnti dword [rsi],ebx
+	mov dword [rsi],ebx
 
 	pextrw rax,xmm1,6
 	movzx ebx,byte [rbp+rax+131072]
@@ -1508,7 +1496,7 @@ icpalop2:
 	mov bh,byte [rbp+rax+65536]
 	pextrw rax,xmm1,4
 	mov bl,byte [rbp+rax]
-	movnti dword [rsi+4],ebx
+	mov dword [rsi+4],ebx
 
 	lea rsi,[rsi+8]
 	lea rdi,[rdi+8]
