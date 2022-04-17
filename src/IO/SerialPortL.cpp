@@ -42,6 +42,10 @@ Bool IO::SerialPort::InitStream()
 	{
 		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyACM")), portNum - 65);
 	}
+	else if (portNum <= 128)
+	{
+		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/rfcomm")), portNum - 97);
+	}
 	else
 	{
 		return false;
@@ -205,6 +209,17 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 		}
 		IO::Path::FindFileClose(sess);
 	}
+	sess = IO::Path::FindFile(CSTR("/dev/rfcomm*"));
+	if (sess)
+	{
+		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, 0, 0)) != 0)
+		{
+			ports->Add(97 + Text::StrToUOSInt(&sbuff[6]));
+			if (portTypes)
+				portTypes->Add(SPT_BLUETOOTH);
+		}
+		IO::Path::FindFileClose(sess);
+	}
 	return true;
 }
 
@@ -263,6 +278,10 @@ UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 	else if (portNum <= 96)
 	{
 		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyACM")), portNum - 65);
+	}
+	else if (portNum <= 128)
+	{
+		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/rfcomm")), portNum - 97);
 	}
 	else
 	{
