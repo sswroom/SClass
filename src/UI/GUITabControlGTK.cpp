@@ -27,9 +27,6 @@ gboolean GUITabControl_OnShow(gpointer user_data)
 
 UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->tabPages, Data::ArrayList<UI::GUITabPage*>());
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void *>());
 	this->selIndex = 0;
 	this->hwnd = (ControlHandle*)gtk_notebook_new();
 	g_signal_connect((GtkWidget*)this->hwnd, "switch-page", G_CALLBACK(GUITabControl_SelChange), this);
@@ -42,25 +39,22 @@ UI::GUITabControl::~GUITabControl()
 {
 	UI::GUITabPage *tp;
 	PageInfo *page;
-	UOSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		tp = this->tabPages->GetItem(i);
+		tp = this->tabPages.GetItem(i);
 		page = (PageInfo*)tp->GetCustObj();
 		page->txt->Release();
 		MemFree(page);
 		DEL_CLASS(tp);
 	}
-	DEL_CLASS(this->tabPages);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
 }
 
 UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 {
 	UI::GUITabPage *tp;
 	PageInfo *page;
-	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages->GetCount()));
+	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName);
 	page->txt = tabName->Clone();
@@ -74,7 +68,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 	tp->SetRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
-	this->tabPages->Add(tp);
+	this->tabPages.Add(tp);
 	return tp;
 }
 
@@ -82,7 +76,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CString tabName)
 {
 	UI::GUITabPage *tp;
 	PageInfo *page;
-	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages->GetCount()));
+	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName.v);
 	page->txt = Text::String::New(tabName);
@@ -96,7 +90,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CString tabName)
 	tp->SetRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
-	this->tabPages->Add(tp);
+	this->tabPages.Add(tp);
 	return tp;
 }
 
@@ -113,10 +107,10 @@ void UI::GUITabControl::SetSelectedPage(UI::GUITabPage *page)
 {
 	if (page == 0)
 		return;
-	UOSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		if (page == this->tabPages->GetItem(i))
+		if (page == this->tabPages.GetItem(i))
 		{
 			SetSelectedIndex(i);
 		}
@@ -130,7 +124,7 @@ UOSInt UI::GUITabControl::GetSelectedIndex()
 
 void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CString name)
 {
-	UI::GUITabPage *tp = this->tabPages->GetItem(index);
+	UI::GUITabPage *tp = this->tabPages.GetItem(index);
 	if (tp == 0)
 		return;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
@@ -141,7 +135,7 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CString name)
 
 UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 {
-	UI::GUITabPage *tp = this->tabPages->GetItem(index);
+	UI::GUITabPage *tp = this->tabPages.GetItem(index);
 	if (tp == 0)
 		return 0;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
@@ -217,18 +211,18 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 	UOSInt h2;
 	GetSizeP(&w1, &h1);
 	GetTabPageRect(0, 0, &w2, &h2);
-	i = this->tabPages->GetCount();
+	i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetSizeP(w2, h2);
-		this->tabPages->GetItem(i)->UpdateChildrenSize(false);
+		this->tabPages.GetItem(i)->SetSizeP(w2, h2);
+		this->tabPages.GetItem(i)->UpdateChildrenSize(false);
 	}
 }
 
 void UI::GUITabControl::HandleSelChanged(UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
@@ -245,16 +239,16 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	UOSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetDPI(hdpi, ddpi);
+		this->tabPages.GetItem(i)->SetDPI(hdpi, ddpi);
 	}
 
-	i = this->tabPages->GetCount();
+	i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->UpdateChildrenSize(false);
+		this->tabPages.GetItem(i)->UpdateChildrenSize(false);
 	}
 }
 
@@ -264,10 +258,10 @@ void UI::GUITabControl::EventSelChange(UOSInt index)
 	{
 		this->selIndex = index;
 		UOSInt i;
-		i = this->selChgHdlrs->GetCount();
+		i = this->selChgHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+			this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 		}
 	}
 }

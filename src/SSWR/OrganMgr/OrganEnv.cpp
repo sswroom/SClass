@@ -411,7 +411,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 	UOSInt i;
 	UOSInt j;
 	WebFileInfo *webFile;
-	Data::ArrayList<WebFileInfo*> *webFiles = species->wfileMap->GetValues();
+	Data::ArrayList<WebFileInfo*> *webFiles = species->wfileMap.GetValues();
 	i = 0;
 	j = webFiles->GetCount();
 	while (i < j)
@@ -423,9 +423,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 		MemFree(webFile);
 		i++;
 	}
-	DEL_CLASS(species->wfileMap);
-	DEL_CLASS(species->files);
-	MemFree(species);
+	DEL_CLASS(species);
 }
 
 void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
@@ -610,10 +608,8 @@ SSWR::OrganMgr::SpeciesInfo *SSWR::OrganMgr::OrganEnv::GetSpeciesInfo(Int32 spec
 	sp = this->speciesMap->Get(speciesId);
 	if (sp == 0 && createNew)
 	{
-		sp = MemAlloc(SpeciesInfo, 1);
+		NEW_CLASS(sp, SpeciesInfo());
 		sp->id = speciesId;
-		NEW_CLASS(sp->files, Data::ArrayList<UserFileInfo*>());
-		NEW_CLASS(sp->wfileMap, Data::Int32Map<WebFileInfo*>());
 		this->speciesMap->Put(sp->id, sp);
 	}
 	return sp;

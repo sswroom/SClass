@@ -10,9 +10,9 @@ namespace UI
 	class GUITabControl : public GUIControl
 	{
 	private:
-		Data::ArrayList<UI::GUITabPage*> *tabPages;
-		Data::ArrayList<UIEvent> *selChgHdlrs;
-		Data::ArrayList<void *> *selChgObjs;
+		Data::ArrayList<UI::GUITabPage*> tabPages;
+		Data::ArrayList<UIEvent> selChgHdlrs;
+		Data::ArrayList<void *> selChgObjs;
 		UOSInt selIndex;
 		void *oriWndProc;
 		void *hbrBackground;

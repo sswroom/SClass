@@ -1654,7 +1654,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			//pen = CreatePen(img, lyrs->style, 0, osSize);
-			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1673,7 +1673,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 						{
 							Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[(k << 1)], dobj->pointArr[(k << 1) + 1], 0, &dobj->pointArr[(k << 1)], &dobj->pointArr[(k << 1) + 1], 0);
 						}
-						this->mapSch->Draw(dobj);
+						this->mapSch.Draw(dobj);
 					}
 				}
 				i++;
@@ -1685,10 +1685,10 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					mapSch->DrawNextType(p, 0);
+					this->mapSch.DrawNextType(p, 0);
 				}
 			}
-			mapSch->WaitForFinish();
+			this->mapSch.WaitForFinish();
 		}
 	}
 	else
@@ -1711,7 +1711,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			//pen = CreatePen(img, lyrs->style, 0, osSize);
-			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1725,7 +1725,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 					lastId = thisId;
 					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
 					{
-						this->mapSch->Draw(dobj);
+						this->mapSch.Draw(dobj);
 					}
 				}
 				i++;
@@ -1737,10 +1737,10 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					mapSch->DrawNextType(p, 0);
+					this->mapSch.DrawNextType(p, 0);
 				}
 			}
-			mapSch->WaitForFinish();
+			this->mapSch.WaitForFinish();
 		}
 	}
 }
@@ -1783,7 +1783,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1800,7 +1800,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 						{
 							Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[(j << 1)], dobj->pointArr[(j << 1) + 1], 0, &dobj->pointArr[(j << 1)], &dobj->pointArr[(j << 1) + 1], 0);
 						}
-						this->mapSch->Draw(dobj);
+						this->mapSch.Draw(dobj);
 					}
 				}
 			}
@@ -1811,10 +1811,10 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					mapSch->DrawNextType(p, 0);
+					this->mapSch.DrawNextType(p, 0);
 				}
 			}
-			mapSch->WaitForFinish();
+			this->mapSch.WaitForFinish();
 		}
 	}
 	else
@@ -1831,7 +1831,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1843,7 +1843,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 					lastId = thisId;
 					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
 					{
-						this->mapSch->Draw(dobj);
+						this->mapSch.Draw(dobj);
 					}
 				}
 			}
@@ -1854,17 +1854,17 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					mapSch->DrawNextType(p, 0);
+					this->mapSch.DrawNextType(p, 0);
 				}
 			}
-			mapSch->WaitForFinish();
+			this->mapSch.WaitForFinish();
 		}
 	}
 }
 
 void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex)
 {
-	Data::ArrayListInt64 *arri;
+	Data::ArrayListInt64 arri;
 	Map::DrawObjectL *dobj;
 	UOSInt i;
 	UOSInt k;
@@ -1911,15 +1911,13 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
-	NEW_CLASS(arri, Data::ArrayListInt64());
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
 		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, leftLon, topLat, 0, &leftLon, &topLat, 0);
 		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, rightLon, bottomLat, 0, &rightLon, &bottomLat, 0);
-		layer->GetObjectIdsMapXY(arri, 0, leftLon - ((rightLon - leftLon) * 0.5), topLat - ((bottomLat - topLat) * 0.5), rightLon + ((rightLon - leftLon) * 0.5), bottomLat + ((bottomLat - topLat) * 0.5), true);
-		if (arri->GetCount() <= 0)
+		layer->GetObjectIdsMapXY(&arri, 0, leftLon - ((rightLon - leftLon) * 0.5), topLat - ((bottomLat - topLat) * 0.5), rightLon + ((rightLon - leftLon) * 0.5), bottomLat + ((bottomLat - topLat) * 0.5), true);
+		if (arri.GetCount() <= 0)
 		{
-			DEL_CLASS(arri);
 			return;
 		}
 		Media::DrawImage *dimg;
@@ -1954,34 +1952,33 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			dimg = this->eng->ConvImage(img);
 		}
 
-		this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
-		this->mapSch->SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
+		this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
+		this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
 		session = layer->BeginGetObject();
 
-		i = arri->GetCount();
+		i = arri.GetCount();
 		while (i-- > 0)
 		{
-			if ((dobj = layer->GetNewObjectById(session, arri->GetItem(i))) != 0)
+			if ((dobj = layer->GetNewObjectById(session, arri.GetItem(i))) != 0)
 			{
 				k = dobj->nPoint;
 				while (k-- > 0)
 				{
 					Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[(k << 1)], dobj->pointArr[(k << 1) + 1], 0, &dobj->pointArr[(k << 1)], &dobj->pointArr[(k << 1) + 1], 0);
 				}
-				this->mapSch->Draw(dobj);
+				this->mapSch.Draw(dobj);
 			}
 		}
 
 		layer->EndGetObject(session);
-		this->mapSch->WaitForFinish();
+		this->mapSch.WaitForFinish();
 		this->eng->DeleteImage(dimg);
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(arri, 0, leftLon - ((rightLon - leftLon) * 0.5), topLat - ((bottomLat - topLat) * 0.5), rightLon + ((rightLon - leftLon) * 0.5), bottomLat + ((bottomLat - topLat) * 0.5), true);
-		if (arri->GetCount() <= 0)
+		layer->GetObjectIdsMapXY(&arri, 0, leftLon - ((rightLon - leftLon) * 0.5), topLat - ((bottomLat - topLat) * 0.5), rightLon + ((rightLon - leftLon) * 0.5), bottomLat + ((bottomLat - topLat) * 0.5), true);
+		if (arri.GetCount() <= 0)
 		{
-			DEL_CLASS(arri);
 			return;
 		}
 
@@ -2017,30 +2014,29 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			dimg = this->eng->ConvImage(img);
 		}
 
-		this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
-		this->mapSch->SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
+		this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
+		this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
 		session = layer->BeginGetObject();
 
-		i = arri->GetCount();
+		i = arri.GetCount();
 		while (i-- > 0)
 		{
-			if ((dobj = layer->GetNewObjectById(session, arri->GetItem(i))) != 0)
+			if ((dobj = layer->GetNewObjectById(session, arri.GetItem(i))) != 0)
 			{
-				this->mapSch->Draw(dobj);
+				this->mapSch.Draw(dobj);
 			}
 		}
 
 		layer->EndGetObject(session);
-		this->mapSch->WaitForFinish();
+		this->mapSch.WaitForFinish();
 		this->eng->DeleteImage(dimg);
 	}
-	DEL_CLASS(arri);
 }
 
 void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType, Map::MapEnv::FontType fontType)
 {
 	void *arr;
-	Data::ArrayListInt64 *arri;
+	Data::ArrayListInt64 arri;
 	UOSInt i;
 	UInt32 j;
 	UOSInt k;
@@ -2071,15 +2067,14 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 		csysConv = true;
 	}
 
-	NEW_CLASS(arri, Data::ArrayListInt64());
-	layer->GetObjectIdsMapXY(arri, &arr, x1, y1, x2, y2, false);
+	layer->GetObjectIdsMapXY(&arri, &arr, x1, y1, x2, y2, false);
 	session = layer->BeginGetObject();
-	i = arri->GetCount();
+	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = layer->GetNewObjectById(session, arri->GetItem(i))) != 0)
+		if ((dobj = layer->GetNewObjectById(session, arri.GetItem(i))) != 0)
 		{
-			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), labelCol);
+			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), labelCol);
 			if (sptrEnd)
 			{
 				if (csysConv)
@@ -2198,7 +2193,6 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	}
 	layer->EndGetObject(session);
 	layer->ReleaseNameArr(arr);
-	DEL_CLASS(arri);
 }
 
 void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer)
@@ -3906,7 +3900,6 @@ Map::DrawMapRenderer::DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, 
 	this->lastLayerEmpty = true;
 	this->drawType = drawType;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->mapSch, Map::MapScheduler());
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 3, &srcColor, &this->color, colorSess, Media::AT_NO_ALPHA));
 	NEW_CLASS(this->colorConv, Media::ColorConv(&srcColor, &this->color, colorSess));
 }
@@ -3914,7 +3907,6 @@ Map::DrawMapRenderer::DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, 
 Map::DrawMapRenderer::~DrawMapRenderer()
 {
 	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->mapSch);
 	DEL_CLASS(this->colorConv);
 }
 
@@ -3928,7 +3920,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	img->DrawRect(0, 0, view->GetScnWidth(), view->GetScnHeight(), 0, b);
 	img->DelBrush(b);*/
 
-	this->mapSch->SetMapView(view, img);
+	this->mapSch.SetMapView(view, img);
 
 	denv.env = env;
 	denv.img = img;

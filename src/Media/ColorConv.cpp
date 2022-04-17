@@ -7,29 +7,25 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/TransferFunc.h"
 
-Media::ColorConv::ColorConv(const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess)
+Media::ColorConv::ColorConv(const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess) : srcColor(srcColor), destColor(destColor)
 {
 	this->colorSess = colorSess;
-	NEW_CLASS(this->srcColor, Media::ColorProfile(srcColor));
-	NEW_CLASS(this->destColor, Media::ColorProfile(destColor));
 	this->rgbTable = MemAlloc(UInt8, 256 * 4 * 8 + 262144);
 	Media::RGBLUTGen rgbGen(this->colorSess);
-	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor->GetPrimaries(), 14);
-	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor->rtransfer));
+	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, &this->srcColor, this->destColor.GetPrimaries(), 14);
+	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, &this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor.rtransfer));
 }
 
 Media::ColorConv::~ColorConv()
 {
 	MemFree(this->rgbTable);
-	DEL_CLASS(this->srcColor);
-	DEL_CLASS(this->destColor);
 }
 
 void Media::ColorConv::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
 	Media::RGBLUTGen rgbGen(this->colorSess);
-	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor->GetPrimaries(), 14);
-	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor->rtransfer));
+	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, &this->srcColor, this->destColor.GetPrimaries(), 14);
+	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, &this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor.rtransfer));
 }
 
 UInt32 Media::ColorConv::ConvRGB8(UInt32 c)

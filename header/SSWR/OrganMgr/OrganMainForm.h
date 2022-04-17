@@ -127,13 +127,13 @@ namespace SSWR
 			OrganSpecies *lastSpeciesObj;
 			OrganGroup *lastGroupObj;
 			InputMode inputMode;
-			Data::ArrayList<OrganGroupItem*> *groupItems;
-			Data::ArrayList<OrganGroup*> *groupList;
-			Data::ArrayList<OrganImageItem*> *imgItems;
+			Data::ArrayList<OrganGroupItem*> groupItems;
+			Data::ArrayList<OrganGroup*> groupList;
+			Data::ArrayList<OrganImageItem*> imgItems;
 			Bool indexChanged;
 			Media::StaticImage *lastBmp;
 			Bool newDirName;
-			Data::ArrayList<OrganGroupItem*> *pickObjs;
+			Data::ArrayList<OrganGroupItem*> pickObjs;
 
 			Media::ImageList *dispImage;
 			UserFileInfo *dispImageUF;
@@ -151,13 +151,13 @@ namespace SSWR
 			Map::TileMapLayer *mapTileLyr;
 			Map::TileMap *mapTile;
 			Bool mapUpdated;
-			Data::UInt32Map<OrganSpImgLayer*> *mapImgLyrs;
+			Data::UInt32Map<OrganSpImgLayer*> mapImgLyrs;
 			UOSInt imgFontStyle;
 
 			Text::String *initSelObj;
 			Text::String *initSelImg;
 
-			Data::ArrayList<UserFileInfo*> *mapUFiles;
+			Data::ArrayList<UserFileInfo*> mapUFiles;
 			UserFileInfo *mapCurrFile;
 			Media::DrawImage *mapCurrImage;
 			Media::Resizer::LanczosResizer8_C8 *mapResizer;

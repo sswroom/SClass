@@ -460,8 +460,7 @@ vflop2:
 	movzx rax,dl
 	movq xmm2,[rbx+rax * 8]
 	shr rdx,8
-	movq xmm4,[rbx+rdx * 8]
-	punpcklqdq xmm2,xmm4
+	movhps xmm2,[rbx+rdx * 8]
 
 	mov edx,dword [rcx]
 	movzx rax,dx
@@ -515,8 +514,7 @@ y2rllop2b:
 	movzx rax,dl
 	movq xmm2,[rbx+rax * 8]
 	shr rdx,8
-	movq xmm4,[rbx+rdx * 8]
-	punpcklqdq xmm2,xmm4
+	movhps xmm2,[rbx+rdx * 8]
 
 	paddsw xmm2,xmm0
 	paddsw xmm2,xmm3

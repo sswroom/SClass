@@ -46,19 +46,17 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<Category *> *cates;
-	NEW_CLASS(cates, Data::ArrayList<Category*>());
-	env->GetCategories(cates);
+	Data::ArrayList<Category *> cates;
+	env->GetCategories(&cates);
 	i = 0;
-	j = cates->GetCount();
+	j = cates.GetCount();
 	while (i < j)
 	{
 		Category *cate;
-		cate = cates->GetItem(i);
+		cate = cates.GetItem(i);
 		this->lbCategory->AddItem(cate->chiName, cate);
 		i++;
 	}
-	DEL_CLASS(cates);
 	this->lbCategory->Focus();
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }

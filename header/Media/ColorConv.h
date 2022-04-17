@@ -8,8 +8,8 @@ namespace Media
 	{
 	private:
 		Media::ColorManagerSess *colorSess;
-		Media::ColorProfile *srcColor;
-		Media::ColorProfile *destColor;
+		Media::ColorProfile srcColor;
+		Media::ColorProfile destColor;
 		UInt8 *rgbTable;
 
 	public:

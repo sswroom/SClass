@@ -9,7 +9,6 @@ SSWR::OrganMgr::OrganBook::OrganBook()
 	this->title = 0;
 	this->dispAuthor = 0;
 	this->press = 0;
-	NEW_CLASS(this->publishDate, Data::DateTime());
 	this->groupId = 0;
 	this->url = 0;
 }
@@ -19,7 +18,6 @@ SSWR::OrganMgr::OrganBook::~OrganBook()
 	SDEL_STRING(this->title);
 	SDEL_STRING(this->dispAuthor);
 	SDEL_STRING(this->press);
-	DEL_CLASS(this->publishDate);
 	SDEL_STRING(this->url);
 }
 
@@ -86,12 +84,12 @@ void SSWR::OrganMgr::OrganBook::SetPress(Text::StringBase<UTF8Char> *press)
 
 Data::DateTime *SSWR::OrganMgr::OrganBook::GetPublishDate()
 {
-	return this->publishDate;
+	return &this->publishDate;
 }
 
 void SSWR::OrganMgr::OrganBook::SetPublishDate(Data::DateTime *publishDate)
 {
-	this->publishDate->SetValue(publishDate);
+	this->publishDate.SetValue(publishDate);
 }
 
 Int32 SSWR::OrganMgr::OrganBook::GetGroupId()
@@ -127,7 +125,7 @@ void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC(": "));
 	sb->Append(this->dispAuthor);
 	sb->AppendC(UTF8STRC(" "));
-	sb->AppendU16(this->publishDate->GetYear());
+	sb->AppendU16(this->publishDate.GetYear());
 	sb->AppendC(UTF8STRC(". "));
 	sb->Append(this->title);
 	sb->AppendC(UTF8STRC(". "));

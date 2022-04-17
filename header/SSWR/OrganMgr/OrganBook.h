@@ -16,7 +16,7 @@ namespace SSWR
 			Text::String *title;
 			Text::String *dispAuthor;
 			Text::String *press;
-			Data::DateTime *publishDate;
+			Data::DateTime publishDate;
 			Int32 groupId;
 			Text::String *url;
 

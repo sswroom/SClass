@@ -924,33 +924,27 @@ Media::ColorManagerSess::ColorManagerSess(ColorManager *colorMgr, MonitorColorMa
 {
 	this->colorMgr = colorMgr;
 	this->monColor = monColor;
-	NEW_CLASS(this->mut, Sync::RWMutex());
-	NEW_CLASS(this->hdlrs, Data::ArrayList<Media::IColorHandler*>());
-	NEW_CLASS(this->hdlrMut, Sync::Mutex());
 	this->monColor->AddSess(this);
 }
 
 Media::ColorManagerSess::~ColorManagerSess()
 {
 	this->monColor->RemoveSess(this);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->hdlrs);
-	DEL_CLASS(this->hdlrMut);
 }
 
 void Media::ColorManagerSess::AddHandler(Media::IColorHandler *hdlr)
 {
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	this->hdlrs->Add(hdlr);
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	this->hdlrs.Add(hdlr);
 }
 
 void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 {
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt index = this->hdlrs->IndexOf(hdlr);
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	UOSInt index = this->hdlrs.IndexOf(hdlr);
 	if (index != INVALID_INDEX)
 	{
-		this->hdlrs->RemoveAt((UOSInt)index);
+		this->hdlrs.RemoveAt((UOSInt)index);
 	}
 	mutUsage.EndUse();
 }
@@ -958,18 +952,18 @@ void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 const Media::IColorHandler::YUVPARAM *Media::ColorManagerSess::GetYUVParam()
 {
 	const Media::IColorHandler::YUVPARAM *yuvParam;
-	this->mut->LockRead();
+	this->mut.LockRead();
 	yuvParam = this->monColor->GetYUVParam();
-	this->mut->UnlockRead();
+	this->mut.UnlockRead();
 	return yuvParam;
 }
 
 const Media::IColorHandler::RGBPARAM2 *Media::ColorManagerSess::GetRGBParam()
 {
 	const Media::IColorHandler::RGBPARAM2 *rgbParam;
-	this->mut->LockRead();
+	this->mut.LockRead();
 	rgbParam = this->monColor->GetRGBParam();
-	this->mut->UnlockRead();
+	this->mut.UnlockRead();
 	return rgbParam;
 }
 
@@ -999,38 +993,38 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 	Text::String *monName = monInfo.GetMonitorID();
 	if (monName == 0)
 		return;
-	this->mut->LockWrite();
+	this->mut.LockWrite();
 	if (monName->Equals(this->monColor->GetProfileName()))
 	{
-		this->mut->UnlockWrite();
+		this->mut.UnlockWrite();
 		return;
 	}
 	this->monColor->RemoveSess(this);
 	this->monColor = this->colorMgr->GetMonColorManager(monName);
 	this->monColor->AddSess(this);
-	this->mut->UnlockWrite();
+	this->mut.UnlockWrite();
 	this->RGBUpdated(this->GetRGBParam());
 	this->YUVUpdated(this->GetYUVParam());
 }
 
 void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrs->GetCount();
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	UOSInt i = this->hdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrs->GetItem(i)->RGBParamChanged(rgbParam);
+		this->hdlrs.GetItem(i)->RGBParamChanged(rgbParam);
 	}
 	mutUsage.EndUse();
 }
 
 void Media::ColorManagerSess::YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam)
 {
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrs->GetCount();
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	UOSInt i = this->hdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrs->GetItem(i)->YUVParamChanged(yuvParam);
+		this->hdlrs.GetItem(i)->YUVParamChanged(yuvParam);
 	}
 	mutUsage.EndUse();
 }

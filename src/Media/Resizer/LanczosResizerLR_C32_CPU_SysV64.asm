@@ -1116,8 +1116,8 @@ vf8start:							;else if (tap == 8)
 	mov rbp,qword [rsp+64] ;rgbTable
 	ALIGN 16
 vf8lop4:
-	movdqa xmm5,[r8]
-	punpcklqdq xmm5,[r8+16]
+	movq xmm5,[r8]
+	movhps xmm5,[r8+16]
 	movdqa xmm6,[r8+32]
 	movdqa xmm7,[r8+48]
 

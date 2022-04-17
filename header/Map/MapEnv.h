@@ -96,11 +96,14 @@ namespace Map
 			UOSInt npattern;
 		} LineStyleLayer;
 
-		typedef struct
+		class LineStyle
 		{
-			Data::ArrayList<LineStyleLayer*> *layers;
+		public:
+			Data::ArrayList<LineStyleLayer*> layers;
 			Text::String *name;
-		} LineStyle;
+
+			LineStyle() : layers(4) {}
+		};
 
 		typedef struct
 		{

@@ -5,13 +5,11 @@
 
 SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
 {
-	NEW_CLASS(this->objList, Data::ArrayList<UserFileInfo*>());
 	this->ClearItems();
 }
 
 SSWR::OrganMgr::OrganSpImgLayer::~OrganSpImgLayer()
 {
-	DEL_CLASS(this->objList);
 }
 
 Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType()
@@ -22,7 +20,7 @@ Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType()
 UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
 	UOSInt i = 0;
-	UOSInt j = this->objList->GetCount();
+	UOSInt j = this->objList.GetCount();
 	while (i < j)
 	{
 		outArr->Add((Int64)i);
@@ -43,10 +41,10 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *
 	UOSInt j;
 	UserFileInfo *ufile;
 	i = 0;
-	j = this->objList->GetCount();
+	j = this->objList.GetCount();
 	while (i < j)
 	{
-		ufile = this->objList->GetItem(i);
+		ufile = this->objList.GetItem(i);
 		if (x1 <= ufile->lon && x2 >= ufile->lon && y1 <= ufile->lat && y2 >= ufile->lat)
 		{
 			outArr->Add((Int64)i);
@@ -59,7 +57,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *
 
 Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax()
 {
-	return (Int64)objList->GetCount() - 1;
+	return (Int64)this->objList.GetCount() - 1;
 }
 
 void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(void *nameArr)
@@ -69,7 +67,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(void *nameArr)
 UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
 	UserFileInfo *ufile;
-	ufile = this->objList->GetItem((UOSInt)id);
+	ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	if (strIndex == 0)
@@ -154,7 +152,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetNewObjectById(void *session, Int64 id)
 {
-	UserFileInfo *ufile = this->objList->GetItem((UOSInt)id);
+	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	Map::DrawObjectL *dobj;
@@ -174,7 +172,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetNewObjectById(void *sessio
 
 Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session, Int64 id)
 {
-	UserFileInfo *ufile = this->objList->GetItem((UOSInt)id);
+	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
 	Math::Point *pt;
@@ -199,7 +197,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::ClearItems()
 	this->minY = 0;
 	this->maxX = 0;
 	this->maxY = 0;
-	this->objList->Clear();
+	this->objList.Clear();
 }
 
 void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> *objList)
@@ -222,7 +220,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> 
 			{
 				if (ufile->lat != 0 || ufile->lon != 0)
 				{
-					this->objList->Add(ufile);
+					this->objList.Add(ufile);
 					if (!found)
 					{
 						this->minX = ufile->lon;
@@ -263,7 +261,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<UserFileInfo*> *o
 		ufile = objList->GetItem(i);
 		if (ufile->lat != 0 || ufile->lon != 0)
 		{
-			this->objList->Add(ufile);
+			this->objList.Add(ufile);
 			if (!found)
 			{
 				this->minX = ufile->lon;
@@ -292,8 +290,8 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItem(UserFileInfo *obj)
 {
 	if (obj->lat != 0 || obj->lon != 0)
 	{
-		Bool found = (this->objList->GetCount() > 0);
-		this->objList->Add(obj);
+		Bool found = (this->objList.GetCount() > 0);
+		this->objList.Add(obj);
 		if (!found)
 		{
 			this->minX = obj->lon;

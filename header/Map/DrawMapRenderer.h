@@ -69,7 +69,7 @@ namespace Map
 		};
 
 	private:
-		Map::MapScheduler *mapSch;
+		Map::MapScheduler mapSch;
 		Media::DrawEngine *eng;
 		Map::MapEnv *env;
 		Media::Resizer::LanczosResizer8_C8 *resizer;

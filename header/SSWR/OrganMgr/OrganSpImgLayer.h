@@ -14,7 +14,7 @@ namespace SSWR
 			Double minY;
 			Double maxX;
 			Double maxY;
-			Data::ArrayList<UserFileInfo *> *objList;
+			Data::ArrayList<UserFileInfo *> objList;
 
 		public:
 			OrganSpImgLayer();

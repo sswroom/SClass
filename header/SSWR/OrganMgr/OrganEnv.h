@@ -104,12 +104,13 @@ namespace SSWR
 			Double cropBottom;
 		} WebFileInfo;
 
-		typedef struct
+		class SpeciesInfo
 		{
+		public:
 			Int32 id;
-			Data::ArrayList<UserFileInfo*> *files;
-			Data::Int32Map<WebFileInfo*> *wfileMap;
-		} SpeciesInfo;
+			Data::ArrayList<UserFileInfo*> files;
+			Data::Int32Map<WebFileInfo*> wfileMap;
+		};
 
 		typedef struct
 		{

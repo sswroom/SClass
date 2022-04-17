@@ -117,9 +117,9 @@ namespace Media
 	private:
 		ColorManager *colorMgr;
 		MonitorColorManager *monColor;
-		Sync::RWMutex *mut;
-		Data::ArrayList<Media::IColorHandler *> *hdlrs;
-		Sync::Mutex *hdlrMut;
+		Sync::RWMutex mut;
+		Data::ArrayList<Media::IColorHandler *> hdlrs;
+		Sync::Mutex hdlrMut;
 
 	public:
 		ColorManagerSess(ColorManager *colorMgr, MonitorColorManager *monColor);

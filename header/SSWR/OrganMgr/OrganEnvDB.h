@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			DB::DBTool *db;
-			IO::LogTool *log;
+			IO::LogTool log;
 			IO::ConfigFile *cfg;
 			Text::String *cfgImgDirBase;
 			Text::String *cfgDataPath;

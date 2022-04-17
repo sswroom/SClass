@@ -207,20 +207,18 @@ UOSInt Map::MapEnv::AddLineStyle()
 	Map::MapEnv::LineStyle *style;
 	if (cnt == 0)
 	{
-		style = MemAlloc(Map::MapEnv::LineStyle, 1);
-		NEW_CLASS(style->layers, Data::ArrayList<Map::MapEnv::LineStyleLayer*>(4));
+		NEW_CLASS(style, Map::MapEnv::LineStyle());
 		style->name = 0;
 		return this->lineStyles.Add(style);
 	}
 	else
 	{
 		style = this->lineStyles.GetItem(cnt - 1);
-		if (style->layers->GetCount() == 0)
+		if (style->layers.GetCount() == 0)
 		{
 			return cnt - 1;
 		}
-		style = MemAlloc(Map::MapEnv::LineStyle, 1);
-		NEW_CLASS(style->layers, Data::ArrayList<Map::MapEnv::LineStyleLayer*>(4));
+		NEW_CLASS(style, Map::MapEnv::LineStyle());
 		style->name = 0;
 		return this->lineStyles.Add(style);
 	}
@@ -285,7 +283,7 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, co
 		layer->pattern = 0;
 		layer->npattern = 0;
 	}
-	style->layers->Add(layer);
+	style->layers.Add(layer);
 	return true;
 }
 
@@ -299,11 +297,11 @@ Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, 
 	Map::MapEnv::LineStyleLayer *layer;
 	Map::MapEnv::LineStyle *style;
 	style = this->lineStyles.GetItem(index);
-	if (style->layers->GetCount() <= layerId)
+	if (style->layers.GetCount() <= layerId)
 	{
 		return false;
 	}
-	layer = style->layers->GetItem(layerId);
+	layer = style->layers.GetItem(layerId);
 	if (layer->pattern)
 	{
 		MemFree(layer->pattern);
@@ -335,11 +333,11 @@ Bool Map::MapEnv::RemoveLineStyleLayer(UOSInt index, UOSInt layerId)
 	Map::MapEnv::LineStyleLayer *layer;
 	Map::MapEnv::LineStyle *style;
 	style = this->lineStyles.GetItem(index);
-	if (style->layers->GetCount() <= layerId)
+	if (style->layers.GetCount() <= layerId)
 	{
 		return false;
 	}
-	layer = style->layers->RemoveAt(layerId);
+	layer = style->layers.RemoveAt(layerId);
 	if (layer->pattern)
 	{
 		MemFree(layer->pattern);
@@ -360,19 +358,18 @@ Bool Map::MapEnv::RemoveLineStyle(UOSInt index)
 	Map::MapEnv::LineStyle *style;
 	UOSInt i;
 	style = this->lineStyles.RemoveAt(index);
-	i = style->layers->GetCount();
+	i = style->layers.GetCount();
 	while (i-- > 0)
 	{
-		layer = style->layers->RemoveAt(i);
+		layer = style->layers.RemoveAt(i);
 		if (layer->pattern)
 		{
 			MemFree(layer->pattern);
 		}
 		MemFree(layer);
 	}
-	DEL_CLASS(style->layers);
 	SDEL_STRING(style->name);
-	MemFree(style);
+	DEL_CLASS(style);
 	return true;
 }
 
@@ -391,11 +388,11 @@ Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color,
 	Map::MapEnv::LineStyleLayer *layer;
 	Map::MapEnv::LineStyle *style;
 	style = this->lineStyles.GetItem(index);
-	if (style->layers->GetCount() <= layerId)
+	if (style->layers.GetCount() <= layerId)
 	{
 		return false;
 	}
-	layer = style->layers->GetItem(layerId);
+	layer = style->layers.GetItem(layerId);
 	*color = layer->color;
 	*thick = layer->thick;
 	*pattern = layer->pattern;
@@ -412,7 +409,7 @@ UOSInt Map::MapEnv::GetLineStyleLayerCnt(UOSInt index)
 	}
 	Map::MapEnv::LineStyle *style;
 	style = this->lineStyles.GetItem(index);
-	return style->layers->GetCount();
+	return style->layers.GetCount();
 }
 
 UOSInt Map::MapEnv::AddFontStyle(Text::CString styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
