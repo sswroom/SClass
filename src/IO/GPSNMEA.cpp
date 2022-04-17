@@ -200,8 +200,23 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 			t3 = t2 / 100;
 
 			Data::DateTime dt;
+			dt.SetCurrTimeUTC();
+			dt.SetYear((UInt16)(dt.GetYear() - 5));
+			Int64 minTime = dt.ToTicks();
+			dt.SetCurrTimeUTC();
+			dt.SetYear((UInt16)(dt.GetYear() + 1));
+			Int64 maxTime = dt.ToTicks();
+
 			dt.SetValue((UInt16)((d % 100) + 2000), d2 % 100, d3, t3, t2 % 100, it % 100, Double2Int32((t - it) * 1000));
 			record->utcTimeTicks = dt.ToTicks();
+			while (record->utcTimeTicks < minTime)
+			{
+				record->utcTimeTicks += 619315200000; //7168 days
+			}
+			while (record->utcTimeTicks > maxTime)
+			{
+				record->utcTimeTicks -= 619315200000; //7168 days
+			}
 
 			if ((sarr[4][0] == 'N' || sarr[4][0] == 'S') && (sarr[6][0] == 'E' || sarr[6][0] == 'W'))
 			{
@@ -239,7 +254,6 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 {
 	IO::GPSNMEA *me = (IO::GPSNMEA*)userObj;
-	Text::UTF8Reader *reader;
 	UTF8Char sbuff[8200];
 	UTF8Char *sptr;
 	Map::GPSTrack::GPSRecord2 record;
@@ -248,49 +262,50 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 	MemClear(&record, sizeof(record));
 	MemClear(&sateRec, sizeof(sateRec));
 	me->threadRunning = true;
-	NEW_CLASS(reader, Text::UTF8Reader(me->stm));
-
-	while (!me->threadToStop)
 	{
-		sptr = reader->ReadLine(sbuff, 8192);
-		if (sptr && (sptr - sbuff) > 3)
+		Text::UTF8Reader reader(me->stm);
+
+		while (!me->threadToStop)
 		{
-			if (me->cmdHdlr)
+			sptr = reader.ReadLine(sbuff, 8192);
+			if (sptr && (sptr - sbuff) > 3)
 			{
-				me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
-			}
-			ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), &record, &sateRec);
-			switch (ps)
-			{
-			case ParseStatus::NotNMEA:
-				break;
-			case ParseStatus::Unsupported:
-				me->ParseUnknownCmd(sbuff);
-				break;
-			case ParseStatus::NewRecord:
+				if (me->cmdHdlr)
 				{
-					me->hdlrMut->LockRead();
-					UOSInt i = me->hdlrList->GetCount();
-					while (i-- > 0)
+					me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
+				}
+				ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), &record, &sateRec);
+				switch (ps)
+				{
+				case ParseStatus::NotNMEA:
+					break;
+				case ParseStatus::Unsupported:
+					me->ParseUnknownCmd(sbuff);
+					break;
+				case ParseStatus::NewRecord:
 					{
-						me->hdlrList->GetItem(i)(me->hdlrObjs->GetItem(i), &record, sateRec.sateCnt, sateRec.sates);
+						me->hdlrMut.LockRead();
+						UOSInt i = me->hdlrList.GetCount();
+						while (i-- > 0)
+						{
+							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), &record, sateRec.sateCnt, sateRec.sates);
+						}
+						me->hdlrMut.UnlockRead();
+						MemClear(&record, sizeof(record));
+						sateRec.sateCnt = 0;
+						break;
 					}
-					me->hdlrMut->UnlockRead();
-					MemClear(&record, sizeof(record));
-					sateRec.sateCnt = 0;
+				case ParseStatus::Handled:
+				default:
 					break;
 				}
-			case ParseStatus::Handled:
-			default:
-				break;
+			}
+			else
+			{
+				Sync::Thread::Sleep(10);
 			}
 		}
-		else
-		{
-			Sync::Thread::Sleep(10);
-		}
 	}
-	DEL_CLASS(reader);
 	me->threadRunning = false;
 	return 0;
 }
@@ -301,11 +316,9 @@ IO::GPSNMEA::GPSNMEA(IO::Stream *stm, Bool relStm)
 	this->relStm = relStm;
 	this->cmdHdlr = 0;
 	this->cmdHdlrObj = 0;
-	NEW_CLASS(this->hdlrMut, Sync::RWMutex());
-	NEW_CLASS(this->hdlrList, Data::ArrayList<LocationHandler>());
-	NEW_CLASS(this->hdlrObjs, Data::ArrayList<void *>());
 	this->threadRunning = false;
 	this->threadToStop = false;
+
 	Sync::Thread::Create(NMEAThread, this);
 	while (!this->threadRunning)
 	{
@@ -327,9 +340,6 @@ IO::GPSNMEA::~GPSNMEA()
 		this->stm = 0;
 		this->relStm = false;
 	}
-	DEL_CLASS(this->hdlrList);
-	DEL_CLASS(this->hdlrObjs);
-	DEL_CLASS(this->hdlrMut);
 }
 
 Bool IO::GPSNMEA::IsDown()
@@ -339,26 +349,26 @@ Bool IO::GPSNMEA::IsDown()
 
 void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
-	this->hdlrMut->LockWrite();
-	this->hdlrList->Add(hdlr);
-	this->hdlrObjs->Add(userObj);
-	this->hdlrMut->UnlockWrite();
+	this->hdlrMut.LockWrite();
+	this->hdlrList.Add(hdlr);
+	this->hdlrObjs.Add(userObj);
+	this->hdlrMut.UnlockWrite();
 }
 
 void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
-	this->hdlrMut->LockWrite();
-	UOSInt i = this->hdlrList->GetCount();
+	this->hdlrMut.LockWrite();
+	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		if (this->hdlrList->GetItem(i) == hdlr && this->hdlrObjs->GetItem(i) == userObj)
+		if (this->hdlrList.GetItem(i) == hdlr && this->hdlrObjs.GetItem(i) == userObj)
 		{
-			this->hdlrList->RemoveAt(i);
-			this->hdlrObjs->RemoveAt(i);
+			this->hdlrList.RemoveAt(i);
+			this->hdlrObjs.RemoveAt(i);
 			break;
 		}
 	}
-	this->hdlrMut->UnlockWrite();
+	this->hdlrMut.UnlockWrite();
 }
 
 void IO::GPSNMEA::ErrorRecover()
@@ -404,16 +414,15 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 	Map::GPSTrack::GPSRecord2 record;
 	SateRecord sateRec;
 	Text::StringBuilderUTF8 sb;
-	Text::UTF8Reader *reader;
 	ParseStatus ps;
 	MemClear(&record, sizeof(record));
 	MemClear(&sateRec, sizeof(sateRec));
 	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
-	NEW_CLASS(reader, Text::UTF8Reader(stm));
+	Text::UTF8Reader reader(stm);
 	while (true)
 	{
 		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 1024))
+		if (!reader.ReadLine(&sb, 1024))
 		{
 			break;
 		}
@@ -424,6 +433,5 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 			MemClear(&record, sizeof(record));
 		}
 	}
-	DEL_CLASS(reader);
 	return trk;
 }
