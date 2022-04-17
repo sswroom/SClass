@@ -64,6 +64,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	this->cfgImgDirBase = cfg->GetValue(CSTR("ImageDir"));
 	this->cfgDataPath = cfg->GetValue(CSTR("DataDir"));
 	this->cfgCacheDir = cfg->GetValue(CSTR("CacheDir"));
+	this->cfgMapFont = cfg->GetValue(CSTR("MapFont"));
 	Text::String *userId = cfg->GetValue(CSTR("WebUser"));
 
 	if (this->cfgImgDirBase == 0 || this->cfgImgDirBase->leng == 0 || this->cfgDataPath == 0 || this->cfgDataPath->leng == 0 || this->cfgCacheDir == 0 || this->cfgCacheDir->leng == 0)
@@ -107,7 +108,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			cate->chiName = r->GetNewStr(1);
 			cate->dirName = r->GetNewStr(2);
 			cate->srcDir = r->GetNewStr(3);
-			this->categories->Add(cate);
+			this->categories.Add(cate);
 		}
 		this->db->CloseReader(r);
 	}
@@ -152,7 +153,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			dataFile->oriFileName = r->GetNewStr(4);
 			dataFile->fileName = r->GetNewStr(5);
 			dataFile->webUserId = r->GetInt32(6);
-			this->dataFiles->Add(dataFile);
+			this->dataFiles.Add(dataFile);
 
 			if (dataFile->fileType == 1)
 			{
@@ -205,13 +206,13 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 
 		UserFileComparator comparator;
 		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
-		this->userFileMap->AllocSize(userFileList.GetCount());
+		this->userFileMap.AllocSize(userFileList.GetCount());
 		i = 0;
 		j = userFileList.GetCount();
 		while (i < j)
 		{
 			userFile = userFileList.GetItem(i);
-			this->userFileMap->Put(userFile->id, userFile);
+			this->userFileMap.Put(userFile->id, userFile);
 			i++;
 		}
 
@@ -317,6 +318,18 @@ Text::String *SSWR::OrganMgr::OrganEnvDB::GetDataDir()
 Text::String *SSWR::OrganMgr::OrganEnvDB::GetCacheDir()
 {
 	return this->cfgCacheDir;
+}
+
+Text::CString SSWR::OrganMgr::OrganEnvDB::GetMapFont()
+{
+	if (this->cfgMapFont)
+	{
+		return this->cfgMapFont->ToCString();
+	}
+	else
+	{
+		return CSTR("Arial");
+	}
 }
 
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp)
@@ -492,7 +505,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 			photoWId = r->GetInt32(10);
 			if (photoId != 0)
 			{
-				UserFileInfo *userFile = this->userFileMap->Get(photoId);
+				UserFileInfo *userFile = this->userFileMap.Get(photoId);
 				if (userFile != 0)
 				{
 					item->SetFullName(userFile->dataFileName);
@@ -502,7 +515,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 			}
 			else if (photoWId != 0)
 			{
-				SpeciesInfo *sp = this->speciesMap->Get(spId);
+				SpeciesInfo *sp = this->speciesMap.Get(spId);
 				if (sp)
 				{
 					WebFileInfo *webFile = sp->wfileMap.Get(photoWId);
@@ -633,7 +646,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		}
 	}
 
-	SpeciesInfo *spInfo = this->speciesMap->Get(sp->GetSpeciesId());
+	SpeciesInfo *spInfo = this->speciesMap.Get(sp->GetSpeciesId());
 	if (spInfo)
 	{
 		UserFileInfo *userFile;
@@ -1079,7 +1092,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(Data::ArrayList<UserFileI
 		{
 			v = r->GetInt32(0);
 			c = (UInt32)r->GetInt32(1);
-			species = this->speciesMap->Get(v);
+			species = this->speciesMap.Get(v);
 			if (species != 0)
 			{
 				items->AddAll(&species->files);
@@ -1507,7 +1520,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		fileTime.ToLocalTime();
 
 		NEW_CLASS(md, IO::StmData::MemoryData(readBuff, readSize));
-		pobj = this->parsers->ParseFile(md, &t);
+		pobj = this->parsers.ParseFile(md, &t);
 		DEL_CLASS(md);
 		if (pobj)
 		{
@@ -1692,7 +1705,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
 						userFile->location = 0;
-						this->userFileMap->Put(userFile->id, userFile);
+						this->userFileMap.Put(userFile->id, userFile);
 
 						SpeciesInfo *species = this->GetSpeciesInfo(userFile->speciesId, true);
 						species->files.Add(userFile);
@@ -1772,7 +1785,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		crcVal = ReadMUInt32(crcBuff);
 
 		NEW_CLASS(fd, IO::StmData::FileData({fileName, fileNameLen}, false));
-		pobj = this->parsers->ParseFile(fd, &t);
+		pobj = this->parsers.ParseFile(fd, &t);
 		DEL_CLASS(fd);
 		if (pobj)
 		{
@@ -1909,7 +1922,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
 						userFile->location = 0;
-						this->userFileMap->Put(userFile->id, userFile);
+						this->userFileMap.Put(userFile->id, userFile);
 
 						SpeciesInfo *species = this->GetSpeciesInfo(userFile->speciesId, true);
 						species->files.Add(userFile);
@@ -2611,7 +2624,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			UserFileInfo *userFile = img->GetImgItem()->GetUserFile();
 			if (userFile->speciesId != destSp->GetSpeciesId())
 			{
-				SpeciesInfo *sp = this->speciesMap->Get(userFile->speciesId);
+				SpeciesInfo *sp = this->speciesMap.Get(userFile->speciesId);
 				UOSInt oldInd;
 				if (sp)
 				{
@@ -2641,7 +2654,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			WebFileInfo *wfile = img->GetImgItem()->GetWebFile();
 			if (wfile->speciesId != destSp->GetSpeciesId())
 			{
-				SpeciesInfo *sp = this->speciesMap->Get(wfile->speciesId);
+				SpeciesInfo *sp = this->speciesMap.Get(wfile->speciesId);
 				if (sp)
 				{
 					sp->wfileMap.Remove(wfile->id);
@@ -2836,8 +2849,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::CombineSpecies(OrganSpecies *destSp, OrganSpeci
 	{
 		return false;
 	}
-	SpeciesInfo *spInfos = this->speciesMap->Get(srcSp->GetSpeciesId());
-	SpeciesInfo *spInfod = this->speciesMap->Get(destSp->GetSpeciesId());
+	SpeciesInfo *spInfos = this->speciesMap.Get(srcSp->GetSpeciesId());
+	SpeciesInfo *spInfod = this->speciesMap.Get(destSp->GetSpeciesId());
 	if (spInfos && spInfod)
 	{
 		spInfod->files.AddAll(&spInfos->files);
@@ -3088,7 +3101,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 	IO::ParserType t;
 	IO::ParsedObject *pobj;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pobj = this->parsers->ParseFile(fd, &t);
+	pobj = this->parsers.ParseFile(fd, &t);
 	DEL_CLASS(fd);
 	Data::DateTime startDT;
 	Data::DateTime endDT;
@@ -3233,7 +3246,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 				dataFile->webUserId = this->userId;
 				dataFile->oriFileName = Text::String::NewP(oriFileName, oriFileNameEnd);
 				dataFile->fileName = Text::String::NewP(dataFileName, sptr);
-				this->dataFiles->Add(dataFile);
+				this->dataFiles.Add(dataFile);
 
 				if (fileType == 1)
 				{
@@ -3242,7 +3255,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 					webUser->gpsFileObj->Insert(i, dataFile);
 					
 					NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-					pobj = this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
+					pobj = this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
 					DEL_CLASS(fd);
 
 					if (pobj)
@@ -3286,10 +3299,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	Bool found = false;
 	UTF8Char sbuff[512];
 	UOSInt i;
-	i = this->dataFiles->GetCount();
+	i = this->dataFiles.GetCount();
 	while (i-- > 0)
 	{
-		if (dataFile == this->dataFiles->GetItem(i))
+		if (dataFile == this->dataFiles.GetItem(i))
 		{
 			found = true;
 			break;
@@ -3313,11 +3326,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	sql.AppendCmdC(CSTR("delete from datafile where id = "));
 	sql.AppendInt32(dataFile->id);
 	this->db->ExecuteNonQuery(sql.ToCString());
-	this->dataFiles->RemoveAt(i);
+	this->dataFiles.RemoveAt(i);
 	if (dataFile->fileType == 1)
 	{
 		OSInt j;
-		WebUserInfo *webUser = this->userMap->Get(dataFile->webUserId);
+		WebUserInfo *webUser = this->userMap.Get(dataFile->webUserId);
 		j = webUser->gpsFileIndex->SortedIndexOf(dataFile->startTimeTicks);
 		if (j >= 0)
 		{
@@ -3337,7 +3350,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
-	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime->CompareTo(t) > 0 || this->gpsEndTime->CompareTo(t) < 0)
+	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime.CompareTo(t) > 0 || this->gpsEndTime.CompareTo(t) < 0)
 	{
 		SDEL_CLASS(this->gpsTrk);
 		this->gpsUserId = userId;
@@ -3350,8 +3363,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 		dataFile = webUser->gpsFileObj->GetItem((UOSInt)i);
 		if (dataFile != 0)
 		{
-			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
-			this->gpsEndTime->SetTicks(dataFile->endTimeTicks);
+			this->gpsStartTime.SetTicks(dataFile->startTimeTicks);
+			this->gpsEndTime.SetTicks(dataFile->endTimeTicks);
 			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
@@ -3361,7 +3374,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
 			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
+			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
 			{
@@ -3406,7 +3419,7 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	sptr = dataFile->fileName->ConcatTo(sptr);
 	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 	Map::GPSTrack *trk = 0;
-	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
+	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
 	if (lyr)
 	{
 		if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
@@ -3599,7 +3612,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 			sbuffEnd = r->GetStr(1, sbuff, sizeof(sbuff));
 			sbuff2End = r->GetStr(2, sbuff2, sizeof(sbuff2));
 			NEW_CLASS(locT, LocationType(r->GetInt32(0), CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End)))
-			this->locType->Add(locT);
+			this->locType.Add(locT);
 		}
 		this->db->CloseReader(r);
 	}
@@ -3616,7 +3629,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 			sbuffEnd = r->GetStr(2, sbuff, sizeof(sbuff));
 			sbuff2End = r->GetStr(3, sbuff2, sizeof(sbuff2));
 			NEW_CLASS(loc, Location(r->GetInt32(0), r->GetInt32(1), CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End), r->GetInt32(4)));
-			this->locs->Add(loc);
+			this->locs.Add(loc);
 		}
 		this->db->CloseReader(r);
 	}
@@ -3636,7 +3649,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 			r->GetDate(0, &dt);
 			r->GetDate(1, &dt2);
 			NEW_CLASS(t, Trip(&dt, &dt2, r->GetInt32(2)));
-			this->trips->Add(t);
+			this->trips.Add(t);
 		}
 		this->db->CloseReader(r);
 	}
@@ -3665,7 +3678,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(Data::DateTime *fromDate, Data::DateTim
 			{
 				Trip *t;
 				NEW_CLASS(t, Trip(fromDate, toDate, locId));
-				this->trips->Insert((UOSInt)(-i - 1), t);
+				this->trips.Insert((UOSInt)(-i - 1), t);
 				return true;
 			}
 			else
@@ -3728,9 +3741,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CString engName,
 			return false;
 	}
 	
-	if ((UOSInt)lType + 1 >= this->locType->GetCount())
+	if ((UOSInt)lType + 1 >= this->locType.GetCount())
 		return false;
-	lType = this->locType->GetItem((UInt32)lType + 1)->id;
+	lType = this->locType.GetItem((UInt32)lType + 1)->id;
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into location (parentId, ename, cname, cate_id, locType) values ("));
 	sql.AppendInt32(locId);
@@ -3758,7 +3771,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CString engName,
 			{
 				Location *l;
 				NEW_CLASS(l, Location(r->GetInt32(0), locId, engName, chiName, lType));
-				this->locs->Add(l);
+				this->locs.Add(l);
 				this->db->CloseReader(r);
 				return true;
 			}
@@ -3856,7 +3869,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 				sptr = userFile->dataFileName->ConcatTo(sptr);
 			}
 			NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
+			IO::ParsedObject *pobj = this->parsers.ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 			if (pobj == 0)
 			{
@@ -3922,7 +3935,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
 			NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
+			IO::ParsedObject *pobj = this->parsers.ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 			if (pobj == 0)
 			{
@@ -3960,7 +3973,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		}
 		return 0;
 	}
-	else
+	else if (img->GetFullName())
 	{
 		if (outUserFile)
 		{
@@ -3971,7 +3984,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			*outWebFile = 0;
 		}
 		NEW_CLASS(fd, IO::StmData::FileData(img->GetFullName(), false));
-		IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
+		IO::ParsedObject *pobj = this->parsers.ParseFile(fd, &pt);
 		DEL_CLASS(fd);
 		if (pobj == 0)
 		{
@@ -3982,6 +3995,18 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			return (Media::ImageList*)pobj;
 		}
 		DEL_CLASS(pobj);
+		return 0;
+	}
+	else
+	{
+		if (outUserFile)
+		{
+			*outUserFile = 0;
+		}
+		if (outWebFile)
+		{
+			*outWebFile = 0;
+		}
 		return 0;
 	}
 }
@@ -4001,7 +4026,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	IO::ParsedObject *pobj = 0;
 	if (sp->GetPhotoId() != 0)
 	{
-		UserFileInfo *userFile = this->userFileMap->Get(sp->GetPhotoId());
+		UserFileInfo *userFile = this->userFileMap.Get(sp->GetPhotoId());
 		if (userFile)
 		{
 			return this->ParseFileImage(userFile);
@@ -4013,7 +4038,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	}
 	else if (sp->GetPhotoWId() != 0)
 	{
-		SpeciesInfo *spInfo = this->speciesMap->Get(sp->GetSpeciesId());
+		SpeciesInfo *spInfo = this->speciesMap.Get(sp->GetSpeciesId());
 		if (spInfo)
 		{
 			WebFileInfo *wfile = spInfo->wfileMap.Get(sp->GetPhotoWId());
@@ -4056,13 +4081,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
 				{
 					NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
-					pobj = this->parsers->ParseFile(fd, 0);
+					pobj = this->parsers.ParseFile(fd, 0);
 					DEL_CLASS(fd);
 				}
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".TIF") == 0)
 				{
 					NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
-					pobj = this->parsers->ParseFile(fd, 0);
+					pobj = this->parsers.ParseFile(fd, 0);
 					DEL_CLASS(fd);
 				}
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".AVI") == 0)
@@ -4095,7 +4120,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 						if (Text::StrStartsWith(sptr, coverName))
 						{
 							NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
-							pobj = this->parsers->ParseFile(fd, 0);
+							pobj = this->parsers.ParseFile(fd, 0);
 							DEL_CLASS(fd);
 							break;
 						}
@@ -4143,7 +4168,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = userFile->dataFileName->ConcatTo(sptr);
 	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
+	IO::ParsedObject *pobj = this->parsers.ParseFile(fd, &pt);
 	DEL_CLASS(fd);
 	if (pobj == 0)
 	{
@@ -4198,7 +4223,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 	sptr = Text::StrInt32(sptr, wfile->id);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
+	IO::ParsedObject *pobj = this->parsers.ParseFile(fd, &pt);
 	DEL_CLASS(fd);
 	if (pobj == 0)
 	{
@@ -4388,36 +4413,34 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 {
 	OrganGroupType *grpType;
 	DB::DBReader *r;
-	DB::SQLBuilder *sql;
 	UOSInt i;
 	Int32 seq;
 	UTF8Char cname[64];
 	UTF8Char *cnameEnd;
 	UTF8Char ename[64];
 	UTF8Char *enameEnd;
-	i = this->grpTypes->GetCount();
+	i = this->grpTypes.GetCount();
 	while (i-- > 0)
 	{
-		grpType = this->grpTypes->GetItem(i);
+		grpType = this->grpTypes.GetItem(i);
 		DEL_CLASS(grpType);
 	}
-	this->grpTypes->Clear();
+	this->grpTypes.Clear();
 
-	NEW_CLASS(sql, DB::SQLBuilder(this->db));
-	sql->AppendCmdC(CSTR("Select seq, chi_name, eng_name from group_type where cate_id = "));
-	sql->AppendInt32(this->currCate->cateId);
-	sql->AppendCmdC(CSTR(" order by seq"));
-	r = this->db->ExecuteReader(sql->ToCString());
+	DB::SQLBuilder sql(this->db);
+	sql.AppendCmdC(CSTR("Select seq, chi_name, eng_name from group_type where cate_id = "));
+	sql.AppendInt32(this->currCate->cateId);
+	sql.AppendCmdC(CSTR(" order by seq"));
+	r = this->db->ExecuteReader(sql.ToCString());
 	while (r->ReadNext())
 	{
 		seq = r->GetInt32(0);
 		cnameEnd = r->GetStr(1, cname, sizeof(cname));
 		enameEnd = r->GetStr(2, ename, sizeof(ename));
 		NEW_CLASS(grpType, OrganGroupType(seq, {cname, (UOSInt)(cnameEnd - cname)}, {ename, (UOSInt)(enameEnd - ename)}));
-		this->grpTypes->Add(grpType);
+		this->grpTypes.Add(grpType);
 	}
 	this->db->CloseReader(r);
-	DEL_CLASS(sql);	
 }
 
 Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvDB::GetGroupTree()
@@ -4550,7 +4573,7 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr:
 
 void SSWR::OrganMgr::OrganEnvDB::Test()
 {
-	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
+	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
 	Data::Int32Map<OrganSpecies*> *speciesMap;
 	Data::ArrayListInt32 speciesList;
 	UserFileInfo *userFile;
@@ -5096,7 +5119,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 					IO::FileStream *fs;
 					IO::StmData::FileData *fd;
 					NEW_CLASS(fd, IO::StmData::FileData({sbuff2, (UOSInt)(sptr3End - sbuff2)}, false));
-					Media::ImageList *imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+					Media::ImageList *imgList = (Media::ImageList*)this->parsers.ParseFileType(fd, IO::ParserType::ImageList);
 					DEL_CLASS(fd);
 
 					if (imgList)

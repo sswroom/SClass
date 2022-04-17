@@ -2782,7 +2782,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	this->mapEnv->AddLayer(0, this->mapTileLyr, true);
-	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), CSTR("Arial"), 12, false, 0xff000000, 2, 0x80ffffff);
+	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), this->env->GetMapFont(), 12, false, 0xff000000, 2, 0x80ffffff);
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));

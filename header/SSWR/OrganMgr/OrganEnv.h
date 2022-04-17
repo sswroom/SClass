@@ -11,7 +11,7 @@
 #include "Media/ImageList.h"
 #include "Media/MonitorMgr.h"
 #include "Net/SSLEngine.h"
-#include "Parser/ParserList.h"
+#include "Parser/FullParserList.h"
 #include "SSWR/OrganMgr/OrganGroup.h"
 #include "SSWR/OrganMgr/OrganGroupType.h"
 #include "SSWR/OrganMgr/OrganBook.h"
@@ -171,32 +171,32 @@ namespace SSWR
 			} FileStatus;
 
 		protected:
-			Media::ColorManager *colorMgr;
-			Parser::ParserList *parsers;
+			Media::ColorManager colorMgr;
+			Parser::FullParserList parsers;
 			Media::DrawEngine *drawEng;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Media::MonitorMgr *monMgr;
+			Media::MonitorMgr monMgr;
 			ErrorType errType;
 			IO::ConfigFile *langFile;
-			Data::ArrayList<Category*> *categories;
-			Data::ArrayList<OrganGroupType*> *grpTypes;
+			Data::ArrayList<Category*> categories;
+			Data::ArrayList<OrganGroupType*> grpTypes;
 			Category *currCate;
 			Bool cateIsFullDir;
 			Data::ArrayListInt32 *bookIds;
 			Data::ArrayList<OrganBook*> *bookObjs;
-			Data::ArrayList<DataFileInfo*> *dataFiles;
+			Data::ArrayList<DataFileInfo*> dataFiles;
 			Int32 userId;
-			Data::Int32Map<SpeciesInfo*> *speciesMap;
-			Data::Int32Map<UserFileInfo*> *userFileMap;
-			Data::Int32Map<WebUserInfo*> *userMap;
+			Data::Int32Map<SpeciesInfo*> speciesMap;
+			Data::Int32Map<UserFileInfo*> userFileMap;
+			Data::Int32Map<WebUserInfo*> userMap;
 
-			Data::ArrayList<Trip*> *trips;
-			Data::ArrayList<Location*> *locs;
-			Data::ArrayList<LocationType*> *locType;
+			Data::ArrayList<Trip*> trips;
+			Data::ArrayList<Location*> locs;
+			Data::ArrayList<LocationType*> locType;
 
-			Data::DateTime *gpsStartTime;
-			Data::DateTime *gpsEndTime;
+			Data::DateTime gpsStartTime;
+			Data::DateTime gpsEndTime;
 			Map::GPSTrack *gpsTrk;
 			Int32 gpsUserId;
 
@@ -213,6 +213,7 @@ namespace SSWR
 			ErrorType GetErrorType();
 			Text::CString GetLang(const UTF8Char *name, UOSInt nameLen);
 			virtual Text::String *GetCacheDir() = 0;
+			virtual Text::CString GetMapFont() = 0;
 
 			UOSInt GetCategories(Data::ArrayList<Category*> *categories);
 			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp) = 0;

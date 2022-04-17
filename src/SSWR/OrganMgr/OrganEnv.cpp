@@ -140,28 +140,13 @@ OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(WebFileInfo *a, WebFileI
 
 SSWR::OrganMgr::OrganEnv::OrganEnv()
 {
-	NEW_CLASS(this->parsers, Parser::FullParserList());
-	NEW_CLASS(this->colorMgr, Media::ColorManager());
 	this->drawEng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->currCate = 0;
-	this->trips = 0;
 	this->cateIsFullDir = false;
 	this->bookIds = 0;
 	this->bookObjs = 0;
-	NEW_CLASS(this->dataFiles, Data::ArrayList<DataFileInfo*>());
-	NEW_CLASS(this->categories, Data::ArrayList<Category*>());
-	NEW_CLASS(this->grpTypes, Data::ArrayList<OrganGroupType*>());
-	NEW_CLASS(this->speciesMap, Data::Int32Map<SpeciesInfo*>());
-	NEW_CLASS(this->userFileMap, Data::Int32Map<UserFileInfo*>());
-	NEW_CLASS(this->userMap, Data::Int32Map<WebUserInfo*>());
-	NEW_CLASS(this->gpsStartTime, Data::DateTime());
-	NEW_CLASS(this->gpsEndTime, Data::DateTime());
-	NEW_CLASS(this->trips, Data::ArrayList<Trip*>());
-	NEW_CLASS(this->locs, Data::ArrayList<Location*>());
-	NEW_CLASS(this->locType, Data::ArrayList<LocationType*>());
 	this->gpsTrk = 0;
 	this->gpsUserId = 0;
 	this->errType = ERR_NONE;
@@ -178,51 +163,47 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 SSWR::OrganMgr::OrganEnv::~OrganEnv()
 {
 	UOSInt i;
-	i = this->categories->GetCount();
+	i = this->categories.GetCount();
 	while (i-- > 0)
 	{
-		this->FreeCategory(this->categories->RemoveAt(i));
+		this->FreeCategory(this->categories.RemoveAt(i));
 	}
-	i = this->grpTypes->GetCount();
+	i = this->grpTypes.GetCount();
 	while (i-- > 0)
 	{
 		OrganGroupType *grpType;
-		grpType = this->grpTypes->GetItem(i);
+		grpType = this->grpTypes.GetItem(i);
 		DEL_CLASS(grpType);
 	}
-	DEL_CLASS(this->grpTypes);
 	DataFileInfo *dataFile;
 	this->BooksDeinit();
-	i = this->dataFiles->GetCount();
+	i = this->dataFiles.GetCount();
 	while (i-- > 0)
 	{
-		dataFile = this->dataFiles->GetItem(i);
+		dataFile = this->dataFiles.GetItem(i);
 		this->ReleaseDataFile(dataFile);
 	}
-	DEL_CLASS(this->dataFiles);
 	SpeciesInfo *species;
 	UserFileInfo *userFile;
 	WebUserInfo *webUser;
 	Data::ArrayList<SpeciesInfo*> *speciesList;
 	Data::ArrayList<UserFileInfo*> *userFileList;
 	Data::ArrayList<WebUserInfo*> *userList;
-	speciesList = this->speciesMap->GetValues();
+	speciesList = this->speciesMap.GetValues();
 	i = speciesList->GetCount();
 	while (i-- > 0)
 	{
 		species = speciesList->GetItem(i);
 		this->ReleaseSpecies(species);
 	}
-	DEL_CLASS(this->speciesMap);
-	userFileList = this->userFileMap->GetValues();
+	userFileList = this->userFileMap.GetValues();
 	i = userFileList->GetCount();
 	while (i-- > 0)
 	{
 		userFile = userFileList->GetItem(i);
 		this->ReleaseUserFile(userFile);
 	}
-	DEL_CLASS(this->userFileMap);
-	userList = this->userMap->GetValues();
+	userList = this->userMap.GetValues();
 	i = userList->GetCount();
 	while (i-- > 0)
 	{
@@ -233,26 +214,12 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 		DEL_CLASS(webUser->userFileObj);
 		MemFree(webUser);
 	}
-	DEL_CLASS(this->userMap);
-	if (this->trips)
-	{
-		this->TripRelease();
-		DEL_CLASS(this->trips);
-	}
-	DEL_CLASS(this->locs);
-	DEL_CLASS(this->locType);
-
-	DEL_CLASS(this->gpsStartTime);
-	DEL_CLASS(this->gpsEndTime);
+	this->TripRelease();
 	SDEL_CLASS(this->gpsTrk);
 	SDEL_CLASS(this->langFile);
-	DEL_CLASS(this->categories);
 	DEL_CLASS(this->drawEng);
-	DEL_CLASS(this->parsers);
 	SDEL_CLASS(this->ssl);
 	DEL_CLASS(this->sockf);
-	DEL_CLASS(this->colorMgr);
-	DEL_CLASS(this->monMgr);
 }
 
 Media::DrawEngine *SSWR::OrganMgr::OrganEnv::GetDrawEngine()
@@ -262,7 +229,7 @@ Media::DrawEngine *SSWR::OrganMgr::OrganEnv::GetDrawEngine()
 
 Parser::ParserList *SSWR::OrganMgr::OrganEnv::GetParserList()
 {
-	return this->parsers;
+	return &this->parsers;
 }
 
 Net::SocketFactory *SSWR::OrganMgr::OrganEnv::GetSocketFactory()
@@ -277,12 +244,12 @@ Net::SSLEngine *SSWR::OrganMgr::OrganEnv::GetSSLEngine()
 
 Media::ColorManager *SSWR::OrganMgr::OrganEnv::GetColorMgr()
 {
-	return this->colorMgr;
+	return &this->colorMgr;
 }
 
 Media::MonitorMgr *SSWR::OrganMgr::OrganEnv::GetMonitorMgr()
 {
-	return this->monMgr;
+	return &this->monMgr;
 }
 
 SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()
@@ -302,13 +269,13 @@ Text::CString SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nam
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)
 {
-	categories->AddAll(this->categories);
-	return this->categories->GetCount();
+	categories->AddAll(&this->categories);
+	return this->categories.GetCount();
 }
 
 Data::ArrayList<SSWR::OrganMgr::OrganGroupType*> *SSWR::OrganMgr::OrganEnv::GetGroupTypes()
 {
-	return this->grpTypes;
+	return &this->grpTypes;
 }
 
 Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img)
@@ -380,7 +347,7 @@ UOSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(Data::ArrayList<OrganBook*> *ite
 
 SSWR::OrganMgr::WebUserInfo *SSWR::OrganMgr::OrganEnv::GetWebUser(Int32 userId)
 {
-	WebUserInfo *webUser = this->userMap->Get(userId);
+	WebUserInfo *webUser = this->userMap.Get(userId);
 	if (webUser == 0)
 	{
 		webUser = MemAlloc(WebUserInfo, 1);
@@ -389,14 +356,14 @@ SSWR::OrganMgr::WebUserInfo *SSWR::OrganMgr::OrganEnv::GetWebUser(Int32 userId)
 		NEW_CLASS(webUser->gpsFileObj, Data::ArrayList<DataFileInfo*>());
 		NEW_CLASS(webUser->userFileIndex, Data::ArrayListInt64());
 		NEW_CLASS(webUser->userFileObj, Data::ArrayList<UserFileInfo*>());
-		this->userMap->Put(webUser->id, webUser);
+		this->userMap.Put(webUser->id, webUser);
 	}
 	return webUser;
 }
 
 Data::ArrayList<SSWR::OrganMgr::DataFileInfo*> *SSWR::OrganMgr::OrganEnv::GetDataFiles()
 {
-	return this->dataFiles;
+	return &this->dataFiles;
 }
 
 void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(DataFileInfo *dataFile)
@@ -438,7 +405,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks)
 {
-	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
+	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
 	UserFileInfo *userFile;
 	UOSInt initCnt = userFiles->GetCount();
 	UOSInt i;
@@ -463,22 +430,22 @@ void SSWR::OrganMgr::OrganEnv::TripRelease()
 	Trip *trip;
 	Location *loc;
 	LocationType *locTyp;
-	i = this->trips->GetCount();
+	i = this->trips.GetCount();
 	while (i-- > 0)
 	{
-		trip = this->trips->RemoveAt(i);
+		trip = this->trips.RemoveAt(i);
 		DEL_CLASS(trip);
 	}
-	i = this->locs->GetCount();
+	i = this->locs.GetCount();
 	while (i-- > 0)
 	{
-		loc = this->locs->RemoveAt(i);
+		loc = this->locs.RemoveAt(i);
 		DEL_CLASS(loc);
 	}
-	i = this->locType->GetCount();
+	i = this->locType.GetCount();
 	while (i-- > 0)
 	{
-		locTyp = this->locType->RemoveAt(i);
+		locTyp = this->locType.RemoveAt(i);
 		DEL_CLASS(locTyp);
 	}
 }
@@ -487,13 +454,13 @@ OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::DateTime *d)
 {
 	Int64 ts = d->ToUnixTimestamp();
 	OSInt i = 0;
-	OSInt j = (OSInt)this->trips->GetCount() - 1;
+	OSInt j = (OSInt)this->trips.GetCount() - 1;
 	OSInt k;
 	Trip *t;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		t = this->trips->GetItem((UOSInt)k);
+		t = this->trips.GetItem((UOSInt)k);
 		if (t->fromDate > ts)
 		{
 			j = k - 1;
@@ -516,24 +483,24 @@ SSWR::OrganMgr::Trip *SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, Data::Date
 	if (i < 0)
 		return 0;
 	else
-		return this->trips->GetItem((UOSInt)i);
+		return this->trips.GetItem((UOSInt)i);
 }
 
 Data::ArrayList<SSWR::OrganMgr::Trip*> *SSWR::OrganMgr::OrganEnv::TripGetList()
 {
-	return this->trips;
+	return &this->trips;
 }
 
 OSInt SSWR::OrganMgr::OrganEnv::LocationGetIndex(Int32 locId)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->locs->GetCount() - 1;
+	OSInt j = (OSInt)this->locs.GetCount() - 1;
 	OSInt k;
 	Int32 l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = this->locs->GetItem((UOSInt)k)->id;
+		l = this->locs.GetItem((UOSInt)k)->id;
 		if (locId > l)
 		{
 			i = k + 1;
@@ -556,7 +523,7 @@ SSWR::OrganMgr::Location *SSWR::OrganMgr::OrganEnv::LocationGet(Int32 locId)
 	if (i < 0)
 		return 0;
 	else
-		return this->locs->GetItem((UOSInt)i);
+		return this->locs.GetItem((UOSInt)i);
 }
 
 Data::ArrayList<SSWR::OrganMgr::Location*> *SSWR::OrganMgr::OrganEnv::LocationGetSub(Int32 locId)
@@ -564,11 +531,11 @@ Data::ArrayList<SSWR::OrganMgr::Location*> *SSWR::OrganMgr::OrganEnv::LocationGe
 	Data::ArrayList<Location *> *outArr;
 	NEW_CLASS(outArr, Data::ArrayList<Location*>());
 	UOSInt i = 0;
-	UOSInt j = this->locs->GetCount();
+	UOSInt j = this->locs.GetCount();
 	Location *loc;
 	while (i < j)
 	{
-		loc = this->locs->GetItem(i);
+		loc = this->locs.GetItem(i);
 		if (loc->parId == locId)
 			outArr->Add(loc);
 		i += 1;
@@ -579,13 +546,13 @@ Data::ArrayList<SSWR::OrganMgr::Location*> *SSWR::OrganMgr::OrganEnv::LocationGe
 OSInt SSWR::OrganMgr::OrganEnv::LocationGetTypeIndex(Int32 lType)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->locType->GetCount() - 1;
+	OSInt j = (OSInt)this->locType.GetCount() - 1;
 	OSInt k;
 	Int32 l;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = this->locType->GetItem((UOSInt)k)->id;
+		l = this->locType.GetItem((UOSInt)k)->id;
 		if (l > lType)
 		{
 			j = k - 1;
@@ -605,12 +572,12 @@ OSInt SSWR::OrganMgr::OrganEnv::LocationGetTypeIndex(Int32 lType)
 SSWR::OrganMgr::SpeciesInfo *SSWR::OrganMgr::OrganEnv::GetSpeciesInfo(Int32 speciesId, Bool createNew)
 {
 	SpeciesInfo *sp;
-	sp = this->speciesMap->Get(speciesId);
+	sp = this->speciesMap.Get(speciesId);
 	if (sp == 0 && createNew)
 	{
 		NEW_CLASS(sp, SpeciesInfo());
 		sp->id = speciesId;
-		this->speciesMap->Put(sp->id, sp);
+		this->speciesMap.Put(sp->id, sp);
 	}
 	return sp;
 }
@@ -1151,15 +1118,15 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 
 Double SSWR::OrganMgr::OrganEnv::GetMonitorHDPI(MonitorHandle *hMonitor)
 {
-	return this->monMgr->GetMonitorHDPI(hMonitor);
+	return this->monMgr.GetMonitorHDPI(hMonitor);
 }
 
 Double SSWR::OrganMgr::OrganEnv::GetMonitorDDPI(MonitorHandle *hMonitor)
 {
-	return this->monMgr->GetMonitorDDPI(hMonitor);
+	return this->monMgr.GetMonitorDDPI(hMonitor);
 }
 
 void SSWR::OrganMgr::OrganEnv::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
 {
-	this->monMgr->SetMonitorHDPI(hMonitor, monitorHDPI);
+	this->monMgr.SetMonitorHDPI(hMonitor, monitorHDPI);
 }

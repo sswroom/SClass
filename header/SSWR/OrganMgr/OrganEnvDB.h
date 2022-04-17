@@ -25,6 +25,7 @@ namespace SSWR
 			Text::String *cfgImgDirBase;
 			Text::String *cfgDataPath;
 			Text::String *cfgCacheDir;
+			Text::String *cfgMapFont;
 
 		public:
 			OrganEnvDB();
@@ -32,6 +33,7 @@ namespace SSWR
 
 			Text::String *GetDataDir();
 			virtual Text::String *GetCacheDir();
+			virtual Text::CString GetMapFont();
 
 			ErrorType GetErrorType();
 			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);
