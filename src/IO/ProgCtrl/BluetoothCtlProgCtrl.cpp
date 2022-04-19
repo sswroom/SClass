@@ -23,10 +23,10 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 		while (!me->threadToStop)
 		{
 			readSize = me->prog->Read(buff, 512);
-			sb.ClearStr();
+/*			sb.ClearStr();
 			sb.AppendHexBuff(buff, readSize, ' ', Text::LineBreakType::CRLF);
 			printf("Read Size: %d\r\n", (Int32)readSize);
-			printf("%s\r\n", sb.ToString());
+			printf("%s\r\n", sb.ToString());*/
 
 			sbBuff.AppendC(buff, readSize);
 			sbBuff.RemoveANSIEscapes();

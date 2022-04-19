@@ -281,7 +281,6 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 		}
 		ParseAdvisement(rec, buff, i, optEnd);
 
-		rec->addrType = AT_UNKNOWN;
 		if (addrType == 0)
 		{
 			rec->addrType = AT_PUBLIC;
@@ -289,6 +288,10 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 		else if (addrType == 1)
 		{
 			rec->addrType = AT_RANDOM;
+		}
+		else
+		{
+			rec->addrType = AT_UNKNOWN;
 		}
 		rec->radioType = RT_LE;
 		rec->macInt = ReadMUInt64(mac);
