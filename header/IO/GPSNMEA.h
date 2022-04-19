@@ -32,9 +32,9 @@ namespace IO
 		IO::Stream *stm;
 	private:
 		Bool relStm;
-		Data::ArrayList<LocationHandler> *hdlrList;
-		Data::ArrayList<void *> *hdlrObjs;
-		Sync::RWMutex *hdlrMut;
+		Data::ArrayList<LocationHandler> hdlrList;
+		Data::ArrayList<void *> hdlrObjs;
+		Sync::RWMutex hdlrMut;
 		CommandHandler cmdHdlr;
 		void *cmdHdlrObj;
 
