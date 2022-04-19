@@ -653,8 +653,8 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 
 	UInt32 sz[2];
 	Media::GTKDrawImage *gimg;
-	UOSInt swidth;
-	UOSInt sheight;
+	OSInt swidth;
+	OSInt sheight;
 	OSInt sx;
 	OSInt sy;
 	OSInt dwidth;
@@ -676,7 +676,9 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 	}
 	else
 	{
-		gimg = (Media::GTKDrawImage*)eng->CreateImage32(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1), Media::AT_ALPHA);
+		swidth = (OSInt)(sz[0] + (buffSize << 1));
+		sheight = (OSInt)(sz[1] + (buffSize << 1));
+		gimg = (Media::GTKDrawImage*)eng->CreateImage32((UOSInt)swidth, (UOSInt)sheight, Media::AT_ALPHA);
 		if (gimg == 0)
 		{
 			return false;
@@ -685,7 +687,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 		if (px < (OSInt)buffSize)
 		{
 			sx = -px + (OSInt)buffSize;
-			swidth += (UOSInt)px;
+			swidth += px;
 			px = 0;
 		}
 		else
@@ -696,7 +698,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 		if (py < (OSInt)buffSize)
 		{
 			sy = -py + (OSInt)buffSize;
-			sheight = (UOSInt)((OSInt)sheight + py);
+			sheight = (sheight + py);
 			py = 0;
 		}
 		else
@@ -704,21 +706,21 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 			sy = 0;
 			py -= (OSInt)buffSize;
 		}
-		if ((OSInt)(gimg->GetHeight() - sheight) < sy)
+		if (((OSInt)gimg->GetHeight() - sheight) < sy)
 		{
-			sheight = gimg->GetHeight() - (UOSInt)sy;
+			sheight = (OSInt)gimg->GetHeight() - sy;
 		}
-		if ((OSInt)(gimg->GetWidth() - swidth) < sx)
+		if (((OSInt)gimg->GetWidth() - swidth) < sx)
 		{
-			swidth = gimg->GetWidth() - (UOSInt)sx;
+			swidth = (OSInt)gimg->GetWidth() - sx;
 		}
-		if ((UOSInt)dwidth + buffSize < swidth)
+		if (dwidth + (OSInt)buffSize < swidth)
 		{
-			swidth = (UOSInt)dwidth + buffSize;
+			swidth = dwidth + (OSInt)buffSize;
 		}
-		if ((UOSInt)dheight + buffSize < sheight)
+		if (dheight + (OSInt)buffSize < sheight)
 		{
-			sheight = (UOSInt)dheight + buffSize;
+			sheight = dheight + (OSInt)buffSize;
 		}
 		if (swidth <= 0 || sheight <= 0 || sz[0] <= 0 || sz[1] <= 0)
 		{
@@ -739,15 +741,15 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 			UInt8 *pbits = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 			UInt8 *dbits = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 			ImageUtil_ImageColorBuffer32(pbits + bpl * buffSize + buffSize * 4, sz[0], sz[1], bpl, buffSize);
-			if (py + (OSInt)sheight > (OSInt)this->info.dispHeight)
+			if (py + sheight > (OSInt)this->info.dispHeight)
 			{
-				sheight = this->info.dispHeight - (UOSInt)py;
+				sheight = (OSInt)this->info.dispHeight - py;
 			}
-			if (px + (OSInt)swidth > (OSInt)this->info.dispWidth)
+			if (px + swidth > (OSInt)this->info.dispWidth)
 			{
-				swidth = this->info.dispWidth - (UOSInt)px;
+				swidth = (OSInt)this->info.dispWidth - px;
 			}
-			if ((OSInt)swidth > 0 && (OSInt)sheight > 0)
+			if (swidth > 0 && sheight > 0)
 			{
 				if (dbits)
 				{
@@ -756,11 +758,11 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 
 					if ((color & 0xff000000) == 0xff000000)
 					{
-						ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, (OSInt)bpl, (OSInt)dbpl, color);
+						ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)dbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)dbpl, color);
 					}
 					else
 					{
-						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, (OSInt)bpl, (OSInt)dbpl, color);
+						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)dbpl, color);
 					}
 					cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 				}
@@ -768,7 +770,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 				{
 					pbits = ((UInt8*)pbits) + (sy * (OSInt)bpl) + (sx << 2);
 
-					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, swidth, sheight, (OSInt)bpl, (OSInt)bpl, color);
+					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, (UOSInt)swidth, (UOSInt)sheight, (OSInt)bpl, (OSInt)bpl, color);
 					gimg->SetHDPI(this->GetHDPI());
 					gimg->SetVDPI(this->GetVDPI());
 					this->DrawImagePt(gimg, OSInt2Double(px - sx), OSInt2Double(py - sy));
