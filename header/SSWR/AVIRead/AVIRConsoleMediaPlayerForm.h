@@ -51,6 +51,7 @@ namespace SSWR
 			void AddRGBTrans(Media::CS::TransferType rgbType);
 			void AddColorPrimaries(Media::ColorProfile::ColorType colorType);
 			void UpdateColorDisp();
+			Bool OpenICC(Text::CString iccFile);
 		public:
 			AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRConsoleMediaPlayerForm();

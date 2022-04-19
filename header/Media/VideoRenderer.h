@@ -246,7 +246,9 @@ namespace Media
 
 		void SetEndNotify(EndNotifier endHdlr, void *userObj);
 		void SetSrcRGBType(Media::CS::TransferType rgbType);
+		void SetSrcRGBTransfer(const Media::CS::TransferParam *transf);
 		void SetSrcPrimaries(Media::ColorProfile::ColorType colorType);
+		void SetSrcPrimaries(const Media::ColorProfile::ColorPrimaries *primaries);
 		void SetSrcWP(Media::ColorProfile::WhitePointType wpType);
 		void SetSrcWPTemp(Double colorTemp);
 		void SetSrcYUVType(Media::ColorProfile::YUVType yuvType);

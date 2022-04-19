@@ -2148,6 +2148,24 @@ void Media::VideoRenderer::SetSrcRGBType(Media::CS::TransferType rgbType)
 	this->VideoEndLoad();
 }
 
+void Media::VideoRenderer::SetSrcRGBTransfer(const Media::CS::TransferParam *transf)
+{
+	UOSInt i;
+	this->VideoBeginLoad();
+	this->videoInfo.color->GetRTranParam()->Set(transf);
+	this->videoInfo.color->GetGTranParam()->Set(transf);
+	this->videoInfo.color->GetBTranParam()->Set(transf);
+	this->srcColor.GetRTranParam()->Set(transf);
+	this->srcColor.GetGTranParam()->Set(transf);
+	this->srcColor.GetBTranParam()->Set(transf);
+	i = this->threadCnt;
+	while (i-- > 0)
+	{
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
+	}
+	this->VideoEndLoad();
+}
+
 void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorType)
 {
 	UOSInt i;
@@ -2160,6 +2178,19 @@ void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorT
 	{
 		this->videoInfo.color->GetPrimaries()->SetColorType(colorType);
 	}
+	i = this->threadCnt;
+	while (i-- > 0)
+	{
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
+	}
+	this->VideoEndLoad();
+}
+
+void Media::VideoRenderer::SetSrcPrimaries(const Media::ColorProfile::ColorPrimaries *primaries)
+{
+	UOSInt i;
+	this->VideoBeginLoad();
+	this->videoInfo.color->GetPrimaries()->Set(primaries);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{

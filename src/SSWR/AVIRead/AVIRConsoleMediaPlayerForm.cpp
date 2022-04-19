@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Media/ICCProfile.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h"
 #include "UI/MessageDialog.h"
@@ -35,7 +36,12 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->player->OpenFile(files[i]->ToCString()))
+		if (files[i]->EndsWith(UTF8STRC(".icm")) || files[i]->EndsWith(UTF8STRC(".icc")))
+		{
+			me->OpenICC(files[i]->ToCString());
+			return;
+		}
+		else if (me->player->OpenFile(files[i]->ToCString()))
 		{
 			me->UpdateColorDisp();
 			return;
@@ -130,6 +136,45 @@ void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
 		}
 	}
 	this->videoOpening = false;
+}
+
+Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CString iccFile)
+{
+	IO::FileStream fs(iccFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Bool succ = false;
+	UInt64 len = fs.GetLength();
+	Bool changed = false;
+	if (len > 4 && len <= 16384)
+	{
+		UInt8 *buff = MemAlloc(UInt8, (UOSInt)len);
+		if (fs.Read(buff, (UOSInt)len) == len)
+		{
+			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff, (UOSInt)len);
+			if (icc)
+			{
+				Media::CS::TransferParam param;
+				if (icc->GetRedTransferParam(&param))
+				{
+					this->player->GetVideoRenderer()->SetSrcRGBTransfer(&param);
+					changed = true;
+				}
+				Media::ColorProfile::ColorPrimaries primaries;
+				if (icc->GetColorPrimaries(&primaries))
+				{
+					this->player->GetVideoRenderer()->SetSrcPrimaries(&primaries);
+					changed = true;
+				}
+				DEL_CLASS(icc);
+				succ = true;
+			}
+		}
+		MemFree(buff);
+	}
+	if (changed)
+	{
+		this->UpdateColorDisp();
+	}
+	return succ;
 }
 
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
