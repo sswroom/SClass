@@ -1195,6 +1195,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 	VideoBuff *buff = 0;
 	VideoBuff *buff2;
 	Bool found;
+	Bool hasNew;
 	UOSInt minIndex = 0;
 	UInt32 minTime = 0;
 	UInt32 minFrame = 0;
@@ -1203,6 +1204,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 	while (!tstat->me->threadToStop)
 	{
 		found = false;
+		hasNew = false;
 		Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 		i = tstat->me->allBuffCnt;
 		while (i-- > 0)
@@ -1221,12 +1223,14 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 					minIndex = i;
 					minTime = tstat->me->buffs[i].frameTime;
 					minFrame = tstat->me->buffs[i].frameNum;
+					hasNew = true;
 				}
 				else if (tstat->me->buffs[i].frameNum == minFrame && tstat->me->buffs[i].frameTime < minTime)
 				{
 					minIndex = i;
 					minTime = tstat->me->buffs[i].frameTime;
 					minFrame = tstat->me->buffs[i].frameNum;
+					hasNew = true;
 				}
 			}
 		}
@@ -1288,7 +1292,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 					if (buff->flags & Media::IVideoSource::FF_FORCEDISP)
 					{
 					}
-					else if (currTime > buff->frameTime && ((buff->flags & Media::IVideoSource::FF_REALTIME) == 0 || tstat->me->hasAudio))
+					else if (currTime > buff->frameTime && ((buff->flags & Media::IVideoSource::FF_REALTIME) == 0 || tstat->me->hasAudio || hasNew))
 					{
 						toSkip = true;
 					}

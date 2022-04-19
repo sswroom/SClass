@@ -511,7 +511,6 @@ hf16nlop4:
 	ALIGN 16
 hf16nlop5:
 	mov rax,qword [rbx]
-	prefetcht0 [rdi+rax+128]
 	movdqa xmm1,xmm7
 	movdqu xmm0,[rdi+rax]
 	movdqa xmm4,xmm0
@@ -620,7 +619,6 @@ hf16lop4:
 	ALIGN 16
 hf16lop5:
 	mov rax,qword [rbx]
-	prefetcht0 [rdi+rax+128]
 	movdqa xmm1,xmm7
 	movdqu xmm0,[rdi+rax]
 	movdqa xmm4,xmm0
@@ -1998,6 +1996,12 @@ vf12nalop4:
 
 	mov rbp,rdi ;inPt
 	mov r10,r8 ;width
+
+	mov r11,qword [rcx+56]
+	mov r12,qword [rcx+64]
+	mov r13,qword [rcx+72]
+	mov r14,qword [rcx+80]
+	mov r15,qword [rcx+88]
 	ALIGN 16
 vf12nalop5:
 	mov rax,qword [rcx]
@@ -2034,33 +2038,38 @@ vf12nalop5:
 	mov rax,qword [rcx+48]
 	pmaddwd xmm0,xmm7
 	pmaddwd xmm4,xmm7
-	mov rdx,qword [rcx+56]
+;	mov rdx,qword [rcx+56]
 	paddd xmm2,xmm0
 	movdqu xmm0,[rbp+rax]
 	paddd xmm3,xmm4
-	movdqu xmm1,[rbp+rdx]
+;	movdqu xmm1,[rbp+rdx]
+	movdqu xmm1,[rbp+r11]
 	movdqa xmm4,xmm0
 	punpcklwd xmm0, xmm1
 	punpckhwd xmm4, xmm1
-	mov rax,qword [rcx+64]
+;	mov rax,qword [rcx+64]
 	pmaddwd xmm0,xmm9
 	pmaddwd xmm4,xmm9
-	mov rdx,qword [rcx+72]
+;	mov rdx,qword [rcx+72]
 	paddd xmm2,xmm0
-	movdqu xmm0,[rbp+rax]
+;	movdqu xmm0,[rbp+rax]
+	movdqu xmm0,[rbp+r12]
 	paddd xmm3,xmm4
-	movdqu xmm1,[rbp+rdx]
+;	movdqu xmm1,[rbp+rdx]
+	movdqu xmm1,[rbp+r13]
 	movdqa xmm4,xmm0
 	punpcklwd xmm0, xmm1
 	punpckhwd xmm4, xmm1
-	mov rax,qword [rcx+80]
+;	mov rax,qword [rcx+80]
 	pmaddwd xmm0,xmm10
 	pmaddwd xmm4,xmm10
-	mov rdx,qword [rcx+88]
+;	mov rdx,qword [rcx+88]
 	paddd xmm2,xmm0
-	movdqu xmm0,[rbp+rax]
+;	movdqu xmm0,[rbp+rax]
+	movdqu xmm0,[rbp+r14]
 	paddd xmm3,xmm4
-	movdqu xmm1,[rbp+rdx]
+;	movdqu xmm1,[rbp+rdx]
+	movdqu xmm1,[rbp+r15]
 	movdqa xmm4,xmm0
 	punpcklwd xmm0, xmm1
 	punpckhwd xmm4, xmm1

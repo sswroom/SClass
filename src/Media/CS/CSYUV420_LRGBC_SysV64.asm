@@ -136,7 +136,7 @@ vf7lop2:
 	psrad xmm3,16
 	packssdw xmm1,xmm3
 
-	movdqu [rsi],xmm1
+	movdqa [rsi],xmm1
 	add rsi,16
 	add rcx,4
 	add rdx,4
@@ -197,10 +197,10 @@ vf7lop3:
 	psrad xmm1,16
 	psrad xmm3,16
 	packssdw xmm1,xmm3
-	movdqu [rsi],xmm1
-	lea rcx,[rcx+4]
-	lea rsi,[rsi+16]
-	lea rdx,[rdx+4]
+	movdqa [rsi],xmm1
+	add rcx,4
+	add rsi,16
+	add rdx,4
 
 	align 16
 vf7lop3b:
@@ -257,7 +257,7 @@ vf7lop3b:
 	psrad xmm3,16
 	packssdw xmm1,xmm3
 	movd [rsi],xmm1
-	lea rsi,[rsi+4]
+	add rsi,4
 
 	align 16
 vf7lop3c:
@@ -285,8 +285,8 @@ vf7lop3c:
 	paddsw xmm2,xmm0
 	paddsw xmm2,xmm3
 
-	lea rsi,[rsi+2]
-	lea rcx,[rcx+4]
+	add rsi,2
+	add rcx,4
 	ALIGN 16
 vf7lop2b:
 	movzx rax,word [rcx]
@@ -304,14 +304,13 @@ vf7lop2b:
 	movzx rax,byte [rsi]
 	movq xmm2,[rbx+rax * 8]
 	movzx rax,byte [rsi+1]
-	movq xmm4,[rbx+rax * 8]
-	punpcklqdq xmm2,xmm4
+	movhps xmm2,[rbx+rax * 8]
 
 	paddsw xmm2,xmm0
 	paddsw xmm2,xmm3
-	lea rdi,[rdi+16]
-	lea rsi,[rsi+2]
-	lea rcx,[rcx+4]
+	add rdi,16
+	add rsi,2
+	add rcx,4
 	dec rbp
 	jnz vf7lop2b
 
@@ -331,8 +330,7 @@ vf7lop2b:
 	movzx rax,byte [rsi]
 	movq xmm2,[rbx+rax * 8]
 	movzx rax,byte [rsi+1]
-	movq xmm4,[rbx+rax * 8]
-	punpcklqdq xmm2,xmm4
+	movhps xmm2,[rbx+rax * 8]
 	paddsw xmm2,xmm0
 	movdqa [rdi+16],xmm2
 	lea rsi,[rsi+2]
@@ -475,15 +473,14 @@ vflop2:
 	paddsw xmm2,xmm0
 	paddsw xmm2,xmm3
 
-	lea rsi,[rsi+2]
-	lea rcx,[rcx+4]
+	add rsi,2
+	add rcx,4
 	ALIGN 16
 y2rllop2b:
 	mov edx,dword [rcx]
 	movzx rax,dx
-	shr rdx,16
 	movq xmm0,[rbx+rax*8 + 2048]
-	pxor xmm3,xmm3
+	shr rdx,16
 	movq xmm1,[rbx+rdx*8 + 526336]
 	paddsw xmm0,xmm1
 
@@ -531,7 +528,6 @@ y2rllop2b:
 	movq xmm1,[rbx+rdx*8 + 526336]
 	paddsw xmm0,xmm1
 
-	pxor xmm3,xmm3
 	punpcklqdq xmm3,xmm0
 	por xmm0,xmm3
 	psraw xmm3,1
