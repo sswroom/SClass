@@ -34,6 +34,7 @@ namespace Media
 		virtual Media::Image *Clone() = 0;
 		virtual Media::Image::ImageType GetImageType() = 0;
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) = 0;
+		void InitGrayPal();
 		UOSInt GetDataBpl();
 		Bool IsUpsideDown();
 		void SetHotSpot(OSInt hotSpotX, OSInt hotSpotY);

@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_POINTCOLLECTION
 #define _SM_MATH_POINTCOLLECTION
+#include "Math/RectArea.h"
 #include "Math/Vector2D.h"
 
 namespace Math

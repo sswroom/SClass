@@ -1,12 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/FrameInfo.h"
+#include "Media/ImageCopyC.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/OpenCV/OCVFrame.h"
 #include "Media/OpenCV/OCVInit.h"
 
 #include <opencv2/imgproc.hpp>
 #include <stdio.h>
+
+#include <opencv2/highgui.hpp>
 
 Media::OpenCV::OCVFrame::OCVFrame(void *frame)
 {
@@ -22,6 +25,101 @@ Media::OpenCV::OCVFrame::~OCVFrame()
 void *Media::OpenCV::OCVFrame::GetFrame()
 {
 	return this->frame;
+}
+
+Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSInt> *area)
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	cv::Mat *cimg = new cv::Mat();
+	*cimg = (*fr)(cv::Range(area->top, area->top + area->height), cv::Range(area->left, area->left + area->width)).clone();
+	return NEW_CLASS_D(OCVFrame(cimg));
+}
+
+void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UOSInt *poly, UOSInt nPoints, UInt8 color)
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	int nPt = nPoints;
+	cv::Point2i *points = MemAlloc(cv::Point2i, nPoints);
+	UOSInt i = nPoints;
+	while (i-- > 0)
+	{
+		points[i].x = poly[i << 1];
+		points[i].y = poly[(i << 1) + 1];
+	}
+	cv::Mat mask = cv::Mat::zeros(fr->size(), fr->type());
+	cv::fillPoly(mask, (const cv::Point**)&points, &nPt, 1, cv::Scalar(255));
+//	cv::bitwise_and(*fr, mask, *fr);
+	cv::bitwise_not(mask, mask);
+	cv::bitwise_or(*fr, mask, *fr);
+	MemFree(points);
+}
+
+UOSInt Media::OpenCV::OCVFrame::GetWidth()
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	return (UOSInt)fr->cols;
+}
+
+UOSInt Media::OpenCV::OCVFrame::GetHeight()
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	return (UOSInt)fr->rows;
+}
+
+OSInt Media::OpenCV::OCVFrame::GetBpl()
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	return fr->cols;
+}
+
+void Media::OpenCV::OCVFrame::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	OSInt srcW = fr->cols;
+	OSInt srcH = fr->rows;
+	ImageCopy_ImgCopyR(fr->data + srcW * top + left, destBuff, width, height, (UOSInt)srcW, destBpl, upsideDown);
+}
+
+Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
+{
+	Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
+	Media::StaticImage *simg;
+	UOSInt w = this->GetWidth();
+	UOSInt h = this->GetHeight();
+	NEW_CLASS(simg, Media::StaticImage(w, h, 0, 8, Media::PF_PAL_W8, w * h, &sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	simg->InitGrayPal();
+	this->GetImageData(simg->data, 0, 0, w, h, simg->GetDataBpl(), false);
+	cv::imshow("Clear", *(cv::Mat *)this->frame);
+	return simg;
+}
+
+void Media::OpenCV::OCVFrame::ToBlackAndWhite(UInt8 middleC)
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	UOSInt w = this->GetWidth();
+	UOSInt h = this->GetHeight();
+	OSInt bpl = this->GetBpl();
+	OSInt lineAdd = bpl - (OSInt)w;
+	UInt8 *ptr = fr->data;
+	UOSInt i = h;
+	UOSInt j;
+	while (i-- > 0)
+	{
+		j = w;
+		while (j-- > 0)
+		{
+			if (*ptr > middleC)
+			{
+				*ptr = 255;
+			}
+			else
+			{
+				*ptr = 0;
+			}
+			ptr++;
+		}
+		ptr += lineAdd;
+	}
 }
 
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
@@ -54,4 +152,19 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, 
 		
 		return 0;		
 	}
+}
+
+Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(Media::StaticImage *simg)
+{
+	cv::Mat *fr;
+	if (!simg->ToW8())
+	{
+		return 0;
+	}
+	fr = new cv::Mat((int)simg->info.dispHeight, (int)simg->info.dispWidth, CV_8UC1);
+	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispWidth, simg->info.dispHeight, simg->info.dispWidth, false);
+
+	Media::OpenCV::OCVFrame *frame;
+	NEW_CLASS(frame, Media::OpenCV::OCVFrame(fr));
+	return frame;
 }

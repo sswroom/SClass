@@ -33,5 +33,5 @@ namespace Media
 			void HandleDetectResult(DetectResultFunc func, void *userObj);
 		};
 	}
-};
+}
 #endif

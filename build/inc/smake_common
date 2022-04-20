@@ -114,6 +114,7 @@ nodeps:
 @ImageResize
 @MonitorInfoTest
 @NearestNeighbourResizer32_32Test
+@OCRTest
 @PrinterTest
 #@RASPStillCaptureTest
 @VideoCaptureTest
@@ -435,6 +436,9 @@ MonitorInfoTest:
 @ConsoleStartup.o
 NearestNeighbourResizer32_32Test:
 @NearestNeighbourResizer32_32Test.o
+@ConsoleStartup.o
+OCRTest:
+@OCRTest.o
 @ConsoleStartup.o
 PrinterTest:
 @PrinterTest.o
@@ -936,6 +940,7 @@ ImageCopyTest.o: ../../main/Media/ImageCopyTest.cpp
 ImageResizeMain.o: ../../main/Media/ImageResizeMain.cpp
 MonitorInfoTest.o: ../../main/Media/MonitorInfoTest.cpp
 NearestNeighbourResizer32_32Test.o: ../../main/Media/NearestNeighbourResizer32_32Test.cpp
+OCRTest.o: ../../main/Media/OCRTest.cpp
 PrinterTest.o: ../../main/Media/PrinterTest.cpp
 RASPStillCaptureTest.o: ../../main/Media/RASPStillCaptureTest.cpp
 VideoCaptureTest.o: ../../main/Media/VideoCaptureTest.cpp
@@ -2016,6 +2021,7 @@ Math/Polyline3D.h: ../../src/Math/Polyline3D.cpp
 @Polyline3D.o
 Math/ProjectedCoordinateSystem.h: ../../src/Math/ProjectedCoordinateSystem.cpp
 @ProjectedCoordinateSystem.o
+Math/RectArea.h:
 Math/SRESRIWKTWriter.h: ../../src/Math/SRESRIWKTWriter.cpp
 @SRESRIWKTWriter.o
 Math/SROGCWKTWriter.h: ../../src/Math/SROGCWKTWriter.cpp
@@ -2076,6 +2082,8 @@ Math/Unit/UnitBase.h: ../../src/Math/Unit/UnitBase.cpp
 
 Media/AACFrameSource.h: ../../src/Media/AACFrameSource.cpp
 @AACFrameSource.o
+Media/ANPR.h: ../../src/Media/ANPR.cpp
+@ANPR.o
 Media/AudioBlockParser.h: ../../src/Media/AudioBlockParser.cpp
 @AudioBlockParser.o
 Media/AudioBlockSource.h: ../../src/Media/AudioBlockSource.cpp
@@ -4460,6 +4468,7 @@ ReactivePower.o: ../../src/Math/Unit/ReactivePower.cpp
 Temperature.o: ../../src/Math/Unit/Temperature.cpp
 UnitBase.o: ../../src/Math/Unit/UnitBase.cpp
 AACFrameSource.o: ../../src/Media/AACFrameSource.cpp
+ANPR.o: ../../src/Media/ANPR.cpp
 AudioBlockParser.o: ../../src/Media/AudioBlockParser.cpp
 AudioBlockSource.o: ../../src/Media/AudioBlockSource.cpp
 AudioConcatSource.o: ../../src/Media/AudioConcatSource.cpp

@@ -1,5 +1,7 @@
 #ifndef _SM_MEDIA_OPENCV_OCVFRAME
 #define _SM_MEDIA_OPENCV_OCVFRAME
+#include "Math/RectArea.h"
+#include "Media/StaticImage.h"
 
 namespace Media
 {
@@ -15,8 +17,17 @@ namespace Media
 			~OCVFrame();
 
 			void *GetFrame();
+			OCVFrame *CropToNew(Math::RectArea<UOSInt> *area);
+			void ClearOutsidePolygon(UOSInt *poly, UOSInt nPoints, UInt8 color);
+			UOSInt GetWidth();
+			UOSInt GetHeight();
+			OSInt GetBpl();
+			void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
+			Media::StaticImage *CreateStaticImage();
+			void ToBlackAndWhite(UInt8 middleV);
 
 			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
+			static OCVFrame *CreateYFrame(Media::StaticImage *simg);
 		};
 	}
 }

@@ -166,6 +166,57 @@ Media::Image::~Image()
 	}
 }
 
+void Media::Image::InitGrayPal()
+{
+	if (this->pal)
+	{
+		if (this->info.storeBPP == 1)
+		{
+			WriteUInt32(this->pal, 0xff000000);
+			WriteUInt32(&this->pal[4], 0xffffffff);
+		}
+		else if (this->info.storeBPP == 2)
+		{
+			WriteUInt32(this->pal, 0xff000000);
+			WriteUInt32(&this->pal[4], 0xff555555);
+			WriteUInt32(&this->pal[8], 0xffaaaaaa);
+			WriteUInt32(&this->pal[12], 0xffffffff);
+		}
+		else if (this->info.storeBPP == 4)
+		{
+			WriteUInt32(this->pal, 0xff000000);
+			WriteUInt32(&this->pal[4], 0xff111111);
+			WriteUInt32(&this->pal[8], 0xff222222);
+			WriteUInt32(&this->pal[12], 0xff333333);
+			WriteUInt32(&this->pal[16], 0xff444444);
+			WriteUInt32(&this->pal[20], 0xff555555);
+			WriteUInt32(&this->pal[24], 0xff666666);
+			WriteUInt32(&this->pal[28], 0xff777777);
+			WriteUInt32(&this->pal[32], 0xff888888);
+			WriteUInt32(&this->pal[36], 0xff999999);
+			WriteUInt32(&this->pal[40], 0xffaaaaaa);
+			WriteUInt32(&this->pal[44], 0xffbbbbbb);
+			WriteUInt32(&this->pal[48], 0xffcccccc);
+			WriteUInt32(&this->pal[52], 0xffdddddd);
+			WriteUInt32(&this->pal[56], 0xffeeeeee);
+			WriteUInt32(&this->pal[60], 0xffffffff);
+		}
+		else if (this->info.storeBPP == 8)
+		{
+			UInt8 *ptr = this->pal;
+			UOSInt i = 0;
+			UOSInt j = 256;
+			while (i < j)
+			{
+				UInt32 c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
+				WriteUInt32(ptr, c);
+				ptr += 4;
+				i++;
+			}
+		}
+	}
+}
+
 UOSInt Media::Image::GetDataBpl()
 {
 	if (this->info.fourcc == *(UInt32*)"LRGB")

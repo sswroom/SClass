@@ -6,7 +6,8 @@
 #include "Media/ImageTo8Bit.h"
 #include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"
-//#include <stdio.h>
+
+#include <stdio.h>
 
 Media::StaticImage::StaticImage(UOSInt dispWidth, UOSInt dispHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::Image(dispWidth, dispHeight, 0, 0, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
@@ -717,6 +718,181 @@ Bool Media::StaticImage::To64bpp()
 	default:
 		return false;
 	}
+}
+
+Bool Media::StaticImage::ToW8()
+{
+	Double kr;
+	Double kg;
+	Double kb;
+	if (this->info.fourcc == 0)
+	{
+		UOSInt i;
+		UOSInt j;
+		UInt32 c;
+		UInt8 *buff;
+		UInt8 *dptr;
+		UInt8 *sptr;
+		UOSInt lineAdd;
+		switch (this->info.pf)
+		{
+		case PF_PAL_W8:
+			this->info.pf = Media::PF_PAL_W8;
+			return true;
+		case PF_B8G8R8A8:
+			buff = MemAllocA(UInt8, this->info.dispWidth * this->info.dispHeight);
+			if (this->pal == 0)
+			{
+				this->pal = MemAlloc(UInt8, 1024);
+			}
+			i = 0;
+			j = 256;
+			while (i < j)
+			{
+				c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
+				WriteUInt32(&this->pal[i * 4], c);
+				i++;
+			}
+			Media::ColorProfile::GetYUVConstants(this->info.yuvType, &kr, &kb);
+			kg = 1 - kr - kb;
+			dptr = buff;
+			sptr = this->data;
+			lineAdd = (this->info.storeWidth - this->info.dispWidth) * 4;
+			i = this->info.dispHeight;
+			while (i-- > 0)
+			{
+				j = this->info.dispWidth;
+				while (j-- > 0)
+				{
+					*dptr = Math::SDouble2UInt8(sptr[0] * kb + sptr[1] * kg + sptr[2] * kr);
+					sptr += 4;
+					dptr += 1;
+				}
+				sptr += lineAdd;
+			}
+			MemFreeA(this->data);
+			this->data = buff;
+			this->info.storeWidth = this->info.dispWidth;
+			this->info.storeHeight = this->info.dispHeight;
+			this->info.byteSize = this->info.dispWidth * this->info.dispHeight;
+			this->info.storeBPP = 8;
+			this->info.pf = Media::PF_PAL_W8;
+			return true;
+		case PF_B8G8R8:
+			buff = MemAllocA(UInt8, this->info.dispWidth * this->info.dispHeight);
+			if (this->pal == 0)
+			{
+				this->pal = MemAlloc(UInt8, 1024);
+			}
+			i = 0;
+			j = 256;
+			while (i < j)
+			{
+				c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
+				WriteUInt32(&this->pal[i * 4], c);
+				i++;
+			}
+			Media::ColorProfile::GetYUVConstants(this->info.yuvType, &kr, &kb);
+			kg = 1 - kr - kb;
+			dptr = buff;
+			sptr = this->data;
+			lineAdd = (this->info.storeWidth - this->info.dispWidth) * 3;
+			i = this->info.dispHeight;
+			while (i-- > 0)
+			{
+				j = this->info.dispWidth;
+				while (j-- > 0)
+				{
+					*dptr = Math::SDouble2UInt8(sptr[0] * kb + sptr[1] * kg + sptr[2] * kr);
+					sptr += 3;
+					dptr += 1;
+				}
+				sptr += lineAdd;
+			}
+			MemFreeA(this->data);
+			this->data = buff;
+			this->info.storeWidth = this->info.dispWidth;
+			this->info.storeHeight = this->info.dispHeight;
+			this->info.byteSize = this->info.dispWidth * this->info.dispHeight;
+			this->info.storeBPP = 8;
+			this->info.pf = Media::PF_PAL_W8;
+			return true;
+		case PF_R8G8B8:
+			buff = MemAllocA(UInt8, this->info.dispWidth * this->info.dispHeight);
+			if (this->pal == 0)
+			{
+				this->pal = MemAlloc(UInt8, 1024);
+			}
+			i = 0;
+			j = 256;
+			while (i < j)
+			{
+				c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
+				WriteUInt32(&this->pal[i * 4], c);
+				i++;
+			}
+			#define SET_DATA_BYTE 	( 	  	pdata,n,val) 		   (*(l_uint8 *)((l_uintptr_t)((l_uint8 *)(pdata) + (n)) ^ 3) = (val))
+			Media::ColorProfile::GetYUVConstants(this->info.yuvType, &kr, &kb);
+			kg = 1 - kr - kb;
+			dptr = buff;
+			sptr = this->data;
+			lineAdd = (this->info.storeWidth - this->info.dispWidth) * 3;
+			i = this->info.dispHeight;
+			while (i-- > 0)
+			{
+				j = this->info.dispWidth;
+				while (j-- > 0)
+				{
+					*dptr = Math::SDouble2UInt8(sptr[0] * kr + sptr[1] * kg + sptr[2] * kb);
+					sptr += 3;
+					dptr += 1;
+				}
+				sptr += lineAdd;
+			}
+			MemFreeA(this->data);
+			this->data = buff;
+			this->info.storeWidth = this->info.dispWidth;
+			this->info.storeHeight = this->info.dispHeight;
+			this->info.byteSize = this->info.dispWidth * this->info.dispHeight;
+			this->info.storeBPP = 8;
+			this->info.pf = Media::PF_PAL_W8;
+			return true;
+		case PF_LE_FB32G32R32A32:
+		case PF_LE_FB32G32R32:
+		case PF_LE_B16G16R16A16:
+		case PF_LE_B16G16R16:
+		case PF_PAL_8:
+		case PF_LE_A2B10G10R10:
+		case PF_LE_R5G5B5:
+		case PF_LE_R5G6B5:
+		case PF_LE_FW32:
+		case PF_LE_FW32A32:
+		case PF_LE_W16:
+		case PF_LE_W16A16:
+		case PF_PAL_1:
+		case PF_PAL_1_A1:
+		case PF_PAL_2:
+		case PF_PAL_2_A1:
+		case PF_PAL_4:
+		case PF_PAL_4_A1:
+		case PF_PAL_8_A1:
+		case PF_PAL_W1:
+		case PF_PAL_W2:
+		case PF_PAL_W4:
+		case PF_R8G8B8A8:
+		case PF_B8G8R8A1:
+		case PF_W8A8:
+		case PF_UNKNOWN:
+		default:
+			printf("StaticImage.ToW8: not supported\r\n");
+			return false;
+		}
+	}
+	else
+	{
+		printf("StaticImage.ToW8: not supported\r\n");
+	}
+	return false;
 }
 
 Bool Media::StaticImage::ToPal8()
