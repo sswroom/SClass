@@ -14,7 +14,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Media::OpenCV::OCVFrame filteredFrame(filtered);
 	cv::bilateralFilter(*inp, *filtered, 11, 17, 17);
 	cv::Mat edged;
-	cv::Canny(*filtered, edged, 30, 200);
+	cv::Canny(*filtered, edged, 16, 200);
     std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Point> c;
 	cv::findContours(edged.clone(), contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
@@ -47,12 +47,16 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				UOSInt k = 4;
 				while (k-- > 0)
 				{
-					if (ang[k] >= -45 && ang[k] <= 45)
+					if (ang[k] < 0)
+					{
+						ang[k] += 360;
+					}
+					if (ang[k] <= 70 || ang[k] >= 290)
 					{
 						found = true;
 						break;
 					}
-					if (ang[k] >= 315 || ang[k] <= -315)
+					if (ang[k] >= 110 && ang[k] <= 250)
 					{
 						found = true;
 						break;
@@ -60,6 +64,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				}
 				if (!found)
 				{
+//					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
 					UOSInt rect[8];
 					rect[0] = (UOSInt)poly[0].x;
 					rect[1] = (UOSInt)poly[0].y;
@@ -75,7 +80,8 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 		}
 		i++;
 	}
-	cv::imshow("Test", edged);
+	cv::imshow("Filtered", *filtered);
+	cv::imshow("Edged", edged);
 	
 	cv::waitKey(0);
 	cv::destroyAllWindows();

@@ -122,6 +122,12 @@ void Media::OpenCV::OCVFrame::ToBlackAndWhite(UInt8 middleC)
 	}
 }
 
+void Media::OpenCV::OCVFrame::Normalize()
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	cv::normalize(*fr, *fr, 1.0, 255.0, cv::NORM_MINMAX);
+}
+
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	Media::CS::CSConverter *converter = Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, 0, *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, 0, Media::ColorProfile::YUVT_UNKNOWN, 0);

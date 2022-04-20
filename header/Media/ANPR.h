@@ -1,20 +1,28 @@
 #ifndef _SM_MEDIA_ANPR
 #define _SM_MEDIA_ANPR
 #include "Media/OCREngine.h"
+#include "Math/RectArea.h"
 #include "Text/String.h"
 
 namespace Media
 {
 	class ANPR
 	{
+	public:
+		typedef void (__stdcall *NumPlateResult)(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result);
 	private:
 		Media::OCREngine ocr;
+		UOSInt parsedCnt;
+		NumPlateResult hdlr;
+		void *hdlrObj;
 
+		static void NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect);
 	public:
 		ANPR();
 		~ANPR();
 
-		Text::String *ParseImage(Media::StaticImage *simg);
+		void SetResultHandler(NumPlateResult hdlr, void *userObj);
+		Bool ParseImage(Media::StaticImage *simg);
 	};
 }
 #endif

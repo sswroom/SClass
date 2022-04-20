@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-struct ParseStatus
+/*struct ParseStatus
 {
 	Media::OCREngine *ocr;
 	Media::OpenCV::OCVFrame *frame;
@@ -69,11 +69,6 @@ void PossibleArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt 
 
 void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngine *ocr)
 {
-/*	UOSInt imgLeft = 321;
-	UOSInt imgTop = 104;
-	UOSInt imgWidth = 153;
-	UOSInt imgHeight = 47;*/
-
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(sbuff, imgPath.v, imgPath.leng);
@@ -94,16 +89,25 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 			Media::OpenCV::OCVNumPlateFinder::Find(frame, PossibleArea, &status);
 			DEL_CLASS(frame);
 		}
-/*		Text::String *s = ocr.ParseInsideImage(imgLeft, imgTop, imgWidth, imgHeight);
-		if (s)
-		{
-			printf("OCR result: %s\r\n", s->v);
-			s->Release();
-		}
-		else
-		{
-			printf("OCR parsing error\r\n");
-		}*/
+		DEL_CLASS(imgList);
+	}
+}*/
+
+void __stdcall OnNumberPlate(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result)
+{
+	printf("Parsed Number Plate: %s\r\n", result->v);
+}
+
+void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *apnr)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = IO::Path::GetRealPath(sbuff, imgPath.v, imgPath.leng);
+	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+	if (imgList)
+	{
+		apnr->ParseImage((Media::StaticImage*)imgList->GetImage(0, 0));
 		DEL_CLASS(imgList);
 	}
 }
@@ -111,10 +115,12 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Parser::FullParserList parsers;
-	Media::OCREngine ocr(Media::OCREngine::Language::English);
-	ocr.SetCharWhiteList("0123456789ABCDEFGHJKLMNPQRSTUVWXYZ");
-	TestFile(CSTR("~/Progs/Temp/OCR1.jpg"), &parsers, &ocr);
-	TestFile(CSTR("~/Progs/Temp/OCR2.jpg"), &parsers, &ocr);
-	TestFile(CSTR("~/Progs/Temp/OCR3.jpg"), &parsers, &ocr);
+/*	Media::OCREngine ocr(Media::OCREngine::Language::English);
+	ocr.SetCharWhiteList("0123456789ABCDEFGHJKLMNPQRSTUVWXYZ");*/
+	Media::ANPR anpr;
+	anpr.SetResultHandler(OnNumberPlate, 0);
+	TestFile2(CSTR("~/Progs/Temp/OCR1.jpg"), &parsers, &anpr);
+	TestFile2(CSTR("~/Progs/Temp/OCR2.jpg"), &parsers, &anpr);
+	TestFile2(CSTR("~/Progs/Temp/OCR3.jpg"), &parsers, &anpr);
 	return 0;
 }

@@ -11,6 +11,11 @@ namespace Math
 		T width;
 		T height;
 
+		Bool ContainPt(T x, T y)
+		{
+			return (x >= left && x < (left + width) && y >= top && y < (top + height));
+		}
+
 		static void GetRectArea(RectArea<T> *area, T *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;

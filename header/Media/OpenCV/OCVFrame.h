@@ -25,6 +25,7 @@ namespace Media
 			void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
 			Media::StaticImage *CreateStaticImage();
 			void ToBlackAndWhite(UInt8 middleV);
+			void Normalize();
 
 			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
 			static OCVFrame *CreateYFrame(Media::StaticImage *simg);
