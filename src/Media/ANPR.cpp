@@ -16,8 +16,6 @@ struct ParseStatus
 void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect)
 {
 	ParseStatus *status = (ParseStatus*)userObj;
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
 	Math::RectArea<UOSInt> area;
 	Math::RectArea<UOSInt>::GetRectArea(&area, rect, 4);
 	UOSInt i = status->pastPos->GetCount();
@@ -48,7 +46,7 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 		Text::String *s = status->me->ocr.ParseInsideImage(0, 0, area.width, area.height);
 		if (s)
 		{
-			if (s->leng == 0)
+			if (s->leng == 0 || s->leng > 10)
 			{
 			}
 			else
@@ -57,7 +55,11 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 				{
 					status->me->hdlr(status->me->hdlrObj, status->simg, &area, s);
 				}
-/*				printf("OCR result: %s\r\n", s->v);
+				
+/*				UTF8Char sbuff[32];
+				UTF8Char *sptr;
+
+				printf("OCR result: %s\r\n", s->v);
 				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("OCRRes")), status->me->parsedCnt), UTF8STRC(".png"));
 				Media::ImageList imgList(CSTRP(sbuff, sptr));
 				Media::StaticImage *simg = croppedFrame->CreateStaticImage();
@@ -65,7 +67,7 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 				simg->To32bpp();
 				Exporter::PNGExporter exporter;
 				exporter.ExportNewFile(imgList.GetSourceNameObj()->ToCString(), &imgList, 0);*/
-				
+
 				status->me->parsedCnt++;
 				status->pastPos->Add((rect[0] + rect[2] + rect[4] + rect[6]) >> 2);
 				status->pastPos->Add((rect[1] + rect[3] + rect[5] + rect[7]) >> 2);
@@ -113,7 +115,7 @@ Bool Media::ANPR::ParseImage(Media::StaticImage *simg)
 		status.me = this;
 		status.simg = simg;
 		status.pastPos = &pastPos;
-		Media::OpenCV::OCVNumPlateFinder::Find(frame, NumPlateArea, &status);
+		this->finder.Find(frame, NumPlateArea, &status);
 		DEL_CLASS(frame);
 		found = pastPos.GetCount() > 0;
 	}

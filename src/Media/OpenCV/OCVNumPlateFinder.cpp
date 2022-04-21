@@ -3,9 +3,21 @@
 #include "Media/OpenCV/OCVNumPlateFinder.h"
 #include <opencv2/imgproc.hpp>
 
+#define VERBOSE
+#if defined(VERBOSE)
 #include <opencv2/highgui.hpp>
+#endif
 
 //https://circuitdigest.com/microcontroller-projects/license-plate-recognition-using-raspberry-pi-and-opencv
+
+Media::OpenCV::OCVNumPlateFinder::OCVNumPlateFinder()
+{
+	this->maxTileAngle = 20;
+}
+
+Media::OpenCV::OCVNumPlateFinder::~OCVNumPlateFinder()
+{
+}
 
 void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj)
 {
@@ -14,7 +26,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Media::OpenCV::OCVFrame filteredFrame(filtered);
 	cv::bilateralFilter(*inp, *filtered, 11, 17, 17);
 	cv::Mat edged;
-	cv::Canny(*filtered, edged, 16, 200);
+	cv::Canny(*inp, edged, 16, 200);
     std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Point> c;
 	cv::findContours(edged.clone(), contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
@@ -23,6 +35,10 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Double peri;
 	std::vector<cv::Point> poly;
 	cv::Scalar col(160);
+	Double v1 = 90 - this->maxTileAngle;
+	Double v2 = 90 + this->maxTileAngle;
+	Double v3 = 270 - this->maxTileAngle;
+	Double v4 = 270 + this->maxTileAngle;
 	while (i < j)
 	{
 		c = contours[i];
@@ -31,7 +47,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 		if (poly.size() == 4)
 		{
 			Double area = cv::contourArea(poly);
-			if (area > 1000)
+			if (area > 2000)
 			{
 				Double dir[4];
 				dir[0] = Math_ArcTan2(poly[0].y - poly[1].y, poly[0].x - poly[1].x) * 180 / Math::PI;
@@ -43,6 +59,11 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				ang[1] = dir[1] - dir[2];
 				ang[2] = dir[2] - dir[3];
 				ang[3] = dir[3] - dir[0];
+				Double leng[4];
+				leng[0] = Math_Sqrt((poly[0].x - poly[1].x) * (poly[0].x - poly[1].x) + (poly[0].y - poly[1].y) * (poly[0].y - poly[1].y));
+				leng[1] = Math_Sqrt((poly[1].x - poly[2].x) * (poly[1].x - poly[2].x) + (poly[1].y - poly[2].y) * (poly[1].y - poly[2].y));
+				leng[2] = Math_Sqrt((poly[2].x - poly[3].x) * (poly[2].x - poly[3].x) + (poly[2].y - poly[3].y) * (poly[2].y - poly[3].y));
+				leng[3] = Math_Sqrt((poly[3].x - poly[0].x) * (poly[3].x - poly[0].x) + (poly[3].y - poly[0].y) * (poly[3].y - poly[0].y));
 				Bool found = false;
 				UOSInt k = 4;
 				while (k-- > 0)
@@ -51,12 +72,12 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					{
 						ang[k] += 360;
 					}
-					if (ang[k] <= 70 || ang[k] >= 290)
+					if (ang[k] <= v1 || ang[k] >= v4)
 					{
 						found = true;
 						break;
 					}
-					if (ang[k] >= 110 && ang[k] <= 250)
+					if (ang[k] >= v2 && ang[k] <= v3)
 					{
 						found = true;
 						break;
@@ -64,7 +85,29 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				}
 				if (!found)
 				{
-//					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
+					found = true;
+					Double lengRatio = leng[0] / leng[1];
+					if (lengRatio >= 3.5 && lengRatio <= 4.5)
+					{
+						found = false;
+					}
+					else if (lengRatio >= 0.2 && lengRatio <= 0.3)
+					{
+						found = false;
+					}
+					else if (lengRatio >= 1.7 && lengRatio <= 2.1)
+					{
+						found = false;
+					}
+					else if (lengRatio >= 0.45 && lengRatio <= 0.65)
+					{
+						found = false;
+					}
+				}
+				if (!found)
+				{
+					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
+					printf("Area leng: %lf %lf %lf %lf, ratio = %lf\r\n", leng[0], leng[1], leng[2], leng[3], leng[0] / leng[1]);
 					UOSInt rect[8];
 					rect[0] = (UOSInt)poly[0].x;
 					rect[1] = (UOSInt)poly[0].y;
@@ -80,9 +123,11 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 		}
 		i++;
 	}
+#if defined(VERBOSE)
 	cv::imshow("Filtered", *filtered);
 	cv::imshow("Edged", edged);
 	
-	cv::waitKey(0);
-	cv::destroyAllWindows();
+//	cv::waitKey(0);
+//	cv::destroyAllWindows();
+#endif
 }

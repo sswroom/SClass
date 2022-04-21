@@ -3117,6 +3117,8 @@ SSWR/AVIRead/AVIRAccessConnForm.h: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 @AVIRAccessConnForm.o
 SSWR/AVIRead/AVIRACMEClientForm.h: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
 @AVIRACMEClientForm.o
+SSWR/AVIRead/AVIRANPRForm.h: ../../src/SSWR/AVIRead/AVIRANPRForm.cpp
+@AVIRANPRForm.o
 SSWR/AVIRead/AVIRARPPingForm.h: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 @AVIRARPPingForm.o
 SSWR/AVIRead/AVIRARPScanForm.h: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
@@ -4947,6 +4949,7 @@ AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
 AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
 AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 AVIRACMEClientForm.o: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
+AVIRANPRForm.o: ../../src/SSWR/AVIRead/AVIRANPRForm.cpp
 AVIRARPPingForm.o: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 AVIRARPScanForm.o: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
 AVIRAsmConvForm.o: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp

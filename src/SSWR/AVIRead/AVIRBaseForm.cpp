@@ -28,6 +28,7 @@
 #include "SSWR/AVIRead/AVIRAboutForm.h"
 #include "SSWR/AVIRead/AVIRAccelerometerForm.h"
 #include "SSWR/AVIRead/AVIRACMEClientForm.h"
+#include "SSWR/AVIRead/AVIRANPRForm.h"
 #include "SSWR/AVIRead/AVIRARPPingForm.h"
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
 #include "SSWR/AVIRead/AVIRAsmConvForm.h"
@@ -414,7 +415,8 @@ typedef enum
 	MNU_MYSQL_CONN,
 	MNU_ASN1_PARSE,
 	MNU_SERVICE,
-	MNU_SSLINFO
+	MNU_SSLINFO,
+	MNU_ANPR
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -712,6 +714,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Video Checker"), MNU_VIDEOCHECKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Image PSNR"), MNU_IMAGE_PSNR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Image Batch Convert"), MNU_IMAGE_BATCH_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("ANPR"), MNU_ANPR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Map"));
 	mnu->AddItem(CSTR("Add ESRI Tile Map"), MNU_ESRI_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2440,6 +2443,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSSLInfoForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSSLInfoForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_ANPR:
+		{
+			SSWR::AVIRead::AVIRANPRForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRANPRForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

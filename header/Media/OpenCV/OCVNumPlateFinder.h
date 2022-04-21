@@ -10,8 +10,13 @@ namespace Media
 		{
 		public:
 			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect);
+		private:
+			Double maxTileAngle;
 		public:
-			static void Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj);
+			OCVNumPlateFinder();
+			~OCVNumPlateFinder();
+			
+			void Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj);
 		};
 	}
 }
