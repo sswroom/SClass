@@ -16,6 +16,7 @@ namespace Text
 		void ToLower();
 		void ToCapital();
 		UOSInt Replace(UTF8Char fromChar, UTF8Char toChar);
+		void RemoveWS();
 
 		PString()
 		{

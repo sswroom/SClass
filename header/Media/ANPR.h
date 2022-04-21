@@ -10,7 +10,7 @@ namespace Media
 	class ANPR
 	{
 	public:
-		typedef void (__stdcall *NumPlateResult)(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result);
+		typedef void (__stdcall *NumPlateResult)(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence);
 	private:
 		Media::OCREngine ocr;
 		Media::OpenCV::OCVNumPlateFinder finder;
@@ -18,7 +18,7 @@ namespace Media
 		NumPlateResult hdlr;
 		void *hdlrObj;
 
-		static void NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect);
+		static void NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double maxTileAngle, Double pxArea);
 	public:
 		ANPR();
 		~ANPR();

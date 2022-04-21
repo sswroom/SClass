@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
-#include "UI/GUIListBox.h"
+#include "UI/GUIListView.h"
 #include "UI/GUIPictureBoxDD.h"
 
 namespace SSWR
@@ -18,6 +18,9 @@ namespace SSWR
 			{
 				Math::RectArea<UOSInt> area;
 				Text::String *result;
+				Double maxTileAngle;
+				Double pxArea;
+				UOSInt confidence;
 			} ResultInfo;
 			
 		private:
@@ -27,12 +30,12 @@ namespace SSWR
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
 
-			UI::GUIListBox *lbPlate;
+			UI::GUIListView *lvPlate;
 			UI::GUIHSplitter *hspPlate;
 			UI::GUIPictureBoxDD *pbImg;
 
 			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles);
-			static void __stdcall OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result);
+			static void __stdcall OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence);
 			void ClearResults();
 		public:
 			AVIRANPRForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

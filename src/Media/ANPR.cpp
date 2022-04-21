@@ -13,11 +13,12 @@ struct ParseStatus
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
-void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect)
+void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double maxTileAngle, Double pxArea)
 {
 	ParseStatus *status = (ParseStatus*)userObj;
 	Math::RectArea<UOSInt> area;
 	Math::RectArea<UOSInt>::GetRectArea(&area, rect, 4);
+	UOSInt confidence;
 	UOSInt i = status->pastPos->GetCount();
 	while (i > 0)
 	{
@@ -43,9 +44,10 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 		croppedFrame->ClearOutsidePolygon(cropRect, 4, 255);
 
 		status->me->ocr.SetOCVFrame(croppedFrame);
-		Text::String *s = status->me->ocr.ParseInsideImage(0, 0, area.width, area.height);
+		Text::String *s = status->me->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, area.width, area.height), &confidence);
 		if (s)
 		{
+			s->RemoveWS();
 			if (s->leng == 0 || s->leng > 10)
 			{
 			}
@@ -53,7 +55,7 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 			{
 				if (status->me->hdlr)
 				{
-					status->me->hdlr(status->me->hdlrObj, status->simg, &area, s);
+					status->me->hdlr(status->me->hdlrObj, status->simg, &area, s, maxTileAngle, pxArea, confidence);
 				}
 				
 /*				UTF8Char sbuff[32];

@@ -11,6 +11,18 @@ namespace Math
 		T width;
 		T height;
 
+		RectArea()
+		{
+		}
+
+		RectArea(T left, T top, T width, T height)
+		{
+			this->left = left;
+			this->top = top;
+			this->width = width;
+			this->height = height;
+		}
+
 		Bool ContainPt(T x, T y)
 		{
 			return (x >= left && x < (left + width) && y >= top && y < (top + height));

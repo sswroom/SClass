@@ -91,6 +91,30 @@ UOSInt Text::PString::Replace(UTF8Char fromChar, UTF8Char toChar)
 	return Text::StrReplace(this->v, fromChar, toChar);
 }
 
+void Text::PString::RemoveWS()
+{
+	UTF8Char *sptr = this->v;
+	UTF8Char *dptr = sptr;
+	UTF8Char c;
+	while (c = *sptr)
+	{
+		switch (c)
+		{
+		case ' ':
+		case '\t':
+		case '\r':
+		case '\n':
+			break;
+		default:
+			*dptr++ = c;
+			break;
+		}
+		sptr++;
+	}
+	*dptr = 0;
+	this->leng = (UOSInt)(dptr - this->v);
+}
+
 UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
 {
 	UOSInt i = 1;

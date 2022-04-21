@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, Text::S
 			DEL_CLASS(imgList);
 			me->pbImg->SetImage(me->currImg, false);
 
-			me->lbPlate->ClearItems();
+			me->lvPlate->ClearItems();
 			me->ClearResults();
 			me->anpr.ParseImage(me->currImg);
 			break;
@@ -29,15 +29,27 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, Text::S
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
 	ResultInfo *res;
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	UOSInt i;
 	res = MemAlloc(ResultInfo, 1);
 	res->area = *area;
 	res->result = result->Clone();
+	res->maxTileAngle = maxTileAngle;
+	res->pxArea = pxArea;
+	res->confidence = confidence;
 	me->results.Add(res);
-	me->lbPlate->AddItem(res->result, res);
+	i = me->lvPlate->AddItem(res->result, res);
+	sptr = Text::StrDouble(sbuff, maxTileAngle);
+	me->lvPlate->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, pxArea);
+	me->lvPlate->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+	sptr = Text::StrUOSInt(sbuff, confidence);
+	me->lvPlate->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRANPRForm::ClearResults()
@@ -64,9 +76,13 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbPlate, UI::GUIListBox(ui, this, false));
-	this->lbPlate->SetRect(0, 0, 150, 100, false);
-	this->lbPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	NEW_CLASS(this->lvPlate, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvPlate->SetRect(0, 0, 250, 100, false);
+	this->lvPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lvPlate->AddColumn(CSTR("Result"), 100);
+	this->lvPlate->AddColumn(CSTR("Tilt"), 50);
+	this->lvPlate->AddColumn(CSTR("Area"), 50);
+	this->lvPlate->AddColumn(CSTR("Confidence"), 50);
 	NEW_CLASS(this->hspPlate, UI::GUIHSplitter(ui, this, 3, true));
 	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);

@@ -105,17 +105,21 @@ Bool Media::OCREngine::SetOCVFrame(Media::OpenCV::OCVFrame *frame)
 	return true;
 }
 
-Text::String *Media::OCREngine::ParseInsideImage(UOSInt left, UOSInt top, UOSInt width, UOSInt height)
+Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UOSInt *confidence)
 {
 	if (this->clsData->currImg == 0)
 	{
 		return 0;
 	}
 	Text::String *s = 0;
-	this->clsData->api.SetRectangle((int)left, (int)top, (int)width, (int)height);
+	this->clsData->api.SetRectangle((int)area.left, (int)area.top, (int)area.width, (int)area.height);
 	char *resultText = this->clsData->api.GetUTF8Text();
 	if (resultText)
 	{
+		if (confidence)
+		{
+			*confidence = (UOSInt)this->clsData->api.MeanTextConf();
+		}
 		s = Text::String::NewNotNullSlow((const UTF8Char*)resultText);
 		delete [] resultText;
 	}

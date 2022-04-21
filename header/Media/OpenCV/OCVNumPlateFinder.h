@@ -9,13 +9,17 @@ namespace Media
 		class OCVNumPlateFinder
 		{
 		public:
-			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect);
+			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double tileAngle, Double area);
 		private:
 			Double maxTileAngle;
+			Double minArea;
+			Double maxArea;
 		public:
 			OCVNumPlateFinder();
 			~OCVNumPlateFinder();
 			
+			void SetMaxTileAngle(Double maxTileAngleDegree);
+			void SetAreaRange(Double minArea, Double maxArea);
 			void Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj);
 		};
 	}

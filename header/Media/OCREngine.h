@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_OCRENGINE
 #define _SM_MEDIA_OCRENGINE
+#include "Math/RectArea.h"
 #include "Media/StaticImage.h"
 #include "Media/OpenCV/OCVFrame.h"
 #include "Text/String.h"
@@ -25,8 +26,7 @@ namespace Media
 
 		Bool SetParsingImage(Media::StaticImage *img);
 		Bool SetOCVFrame(Media::OpenCV::OCVFrame *frame);
-		Text::String *ParseInsideImage(UOSInt left, UOSInt top, UOSInt width, UOSInt height);
-		Text::String *ParseOCVFrame(Media::OpenCV::OCVFrame *frame);
+		Text::String *ParseInsideImage(Math::RectArea<UOSInt> area, UOSInt *confidence);
 	};
 }
 #endif

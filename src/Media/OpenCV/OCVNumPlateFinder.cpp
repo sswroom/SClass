@@ -3,7 +3,7 @@
 #include "Media/OpenCV/OCVNumPlateFinder.h"
 #include <opencv2/imgproc.hpp>
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <opencv2/highgui.hpp>
 #endif
@@ -12,11 +12,24 @@
 
 Media::OpenCV::OCVNumPlateFinder::OCVNumPlateFinder()
 {
-	this->maxTileAngle = 20;
+	this->maxTileAngle = 30;
+	this->minArea = 2000;
+	this->maxArea = 20000;
 }
 
 Media::OpenCV::OCVNumPlateFinder::~OCVNumPlateFinder()
 {
+}
+
+void Media::OpenCV::OCVNumPlateFinder::SetMaxTileAngle(Double maxTileAngleDegree)
+{
+	this->maxTileAngle = maxTileAngleDegree;
+}
+
+void Media::OpenCV::OCVNumPlateFinder::SetAreaRange(Double minArea, Double maxArea)
+{
+	this->minArea = minArea;
+	this->maxArea = maxArea;
 }
 
 void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj)
@@ -26,7 +39,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Media::OpenCV::OCVFrame filteredFrame(filtered);
 	cv::bilateralFilter(*inp, *filtered, 11, 17, 17);
 	cv::Mat edged;
-	cv::Canny(*inp, edged, 16, 200);
+	cv::Canny(*filtered, edged, 16, 200);
     std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Point> c;
 	cv::findContours(edged.clone(), contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
@@ -47,7 +60,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 		if (poly.size() == 4)
 		{
 			Double area = cv::contourArea(poly);
-			if (area > 2000)
+			if (area >= this->minArea && area <= this->maxArea)
 			{
 				Double dir[4];
 				dir[0] = Math_ArcTan2(poly[0].y - poly[1].y, poly[0].x - poly[1].x) * 180 / Math::PI;
@@ -64,6 +77,8 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				leng[1] = Math_Sqrt((poly[1].x - poly[2].x) * (poly[1].x - poly[2].x) + (poly[1].y - poly[2].y) * (poly[1].y - poly[2].y));
 				leng[2] = Math_Sqrt((poly[2].x - poly[3].x) * (poly[2].x - poly[3].x) + (poly[2].y - poly[3].y) * (poly[2].y - poly[3].y));
 				leng[3] = Math_Sqrt((poly[3].x - poly[0].x) * (poly[3].x - poly[0].x) + (poly[3].y - poly[0].y) * (poly[3].y - poly[0].y));
+				Double tileAngle;
+				Double maxTileAngle = 0;
 				Bool found = false;
 				UOSInt k = 4;
 				while (k-- > 0)
@@ -81,6 +96,22 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					{
 						found = true;
 						break;
+					}
+					if (ang[k] < 180)
+					{
+						tileAngle = ang[k] - 90;
+					}
+					else
+					{
+						tileAngle = ang[k] - 270;
+					}
+					if (tileAngle < 0)
+					{
+						tileAngle = -tileAngle;
+					}
+					if (maxTileAngle < tileAngle)
+					{
+						maxTileAngle = tileAngle;
 					}
 				}
 				if (!found)
@@ -106,8 +137,8 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				}
 				if (!found)
 				{
-					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
-					printf("Area leng: %lf %lf %lf %lf, ratio = %lf\r\n", leng[0], leng[1], leng[2], leng[3], leng[0] / leng[1]);
+//					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
+//					printf("Area leng: %lf %lf %lf %lf, ratio = %lf\r\n", leng[0], leng[1], leng[2], leng[3], leng[0] / leng[1]);
 					UOSInt rect[8];
 					rect[0] = (UOSInt)poly[0].x;
 					rect[1] = (UOSInt)poly[0].y;
@@ -117,7 +148,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					rect[5] = (UOSInt)poly[2].y;
 					rect[6] = (UOSInt)poly[3].x;
 					rect[7] = (UOSInt)poly[3].y;
-					func(userObj, &filteredFrame, rect);
+					func(userObj, &filteredFrame, rect, maxTileAngle, area);
 				}
 			}
 		}
