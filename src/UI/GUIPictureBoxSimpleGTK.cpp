@@ -261,6 +261,7 @@ void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, void *userOb
 void UI::GUIPictureBoxSimple::SetImage(Media::StaticImage *currImage)
 {
 	this->currImage = currImage;
+	this->currImage->To32bpp();
 	this->UpdatePreview();
 }
 

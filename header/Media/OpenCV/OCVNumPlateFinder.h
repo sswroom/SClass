@@ -9,7 +9,13 @@ namespace Media
 		class OCVNumPlateFinder
 		{
 		public:
-			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double tileAngle, Double area);
+			enum class PlateSize
+			{
+				SingleRow, //440x140
+				DoubleRow //440x220
+			};
+
+			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double tileAngle, Double area, PlateSize psize);
 		private:
 			Double maxTileAngle;
 			Double minArea;

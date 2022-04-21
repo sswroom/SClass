@@ -72,6 +72,12 @@ OSInt Media::OpenCV::OCVFrame::GetBpl()
 	return fr->cols;
 }
 
+UInt8 *Media::OpenCV::OCVFrame::GetDataPtr()
+{
+	cv::Mat *fr = (cv::Mat *)this->frame;
+	return fr->data;
+}
+
 void Media::OpenCV::OCVFrame::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;

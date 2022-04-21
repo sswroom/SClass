@@ -114,24 +114,29 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 						maxTileAngle = tileAngle;
 					}
 				}
+				PlateSize pSize = PlateSize::SingleRow;
 				if (!found)
 				{
 					found = true;
 					Double lengRatio = leng[0] / leng[1];
 					if (lengRatio >= 3.5 && lengRatio <= 4.5)
 					{
+						pSize = PlateSize::SingleRow;
 						found = false;
 					}
 					else if (lengRatio >= 0.2 && lengRatio <= 0.3)
 					{
+						pSize = PlateSize::SingleRow;
 						found = false;
 					}
 					else if (lengRatio >= 1.7 && lengRatio <= 2.1)
 					{
+						pSize = PlateSize::DoubleRow;
 						found = false;
 					}
 					else if (lengRatio >= 0.45 && lengRatio <= 0.65)
 					{
+						pSize = PlateSize::DoubleRow;
 						found = false;
 					}
 				}
@@ -148,7 +153,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					rect[5] = (UOSInt)poly[2].y;
 					rect[6] = (UOSInt)poly[3].x;
 					rect[7] = (UOSInt)poly[3].y;
-					func(userObj, &filteredFrame, rect, maxTileAngle, area);
+					func(userObj, &filteredFrame, rect, maxTileAngle, area, pSize);
 				}
 			}
 		}

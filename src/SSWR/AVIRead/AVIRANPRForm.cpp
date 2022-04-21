@@ -29,7 +29,17 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, Text::S
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnPlateSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
+	ResultInfo *res = (ResultInfo*)me->lvPlate->GetSelectedItem();
+	if (res)
+	{
+		me->pbPlate->SetImage(res->plateImg);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
 	ResultInfo *res;
@@ -42,6 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::S
 	res->maxTileAngle = maxTileAngle;
 	res->pxArea = pxArea;
 	res->confidence = confidence;
+	res->plateImg = (Media::StaticImage*)plateImg->Clone();
 	me->results.Add(res);
 	i = me->lvPlate->AddItem(res->result, res);
 	sptr = Text::StrDouble(sbuff, maxTileAngle);
@@ -60,6 +71,7 @@ void SSWR::AVIRead::AVIRANPRForm::ClearResults()
 	{
 		res = this->results.GetItem(i);
 		res->result->Release();
+		DEL_CLASS(res->plateImg);
 		MemFree(res);
 	}
 	this->results.Clear();
@@ -76,13 +88,20 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lvPlate, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	NEW_CLASS(this->pnlPlate, UI::GUIPanel(ui, this));
+	this->pnlPlate->SetRect(0, 0, 250, 100, false);
+	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	NEW_CLASS(this->pbPlate, UI::GUIPictureBoxSimple(ui, this->pnlPlate, this->core->GetDrawEngine(), false));
+	this->pbPlate->SetRect(0, 0, 100, 80, false);
+	this->pbPlate->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->lvPlate, UI::GUIListView(ui, this->pnlPlate, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvPlate->SetRect(0, 0, 250, 100, false);
-	this->lvPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lvPlate->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPlate->AddColumn(CSTR("Result"), 100);
 	this->lvPlate->AddColumn(CSTR("Tilt"), 50);
 	this->lvPlate->AddColumn(CSTR("Area"), 50);
 	this->lvPlate->AddColumn(CSTR("Confidence"), 50);
+	this->lvPlate->HandleSelChg(OnPlateSelChg, this);
 	NEW_CLASS(this->hspPlate, UI::GUIHSplitter(ui, this, 3, true));
 	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
