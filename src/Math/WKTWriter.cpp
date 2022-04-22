@@ -50,12 +50,11 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 		else
 		{
 			Math::Point *pt = (Math::Point*)vec;
-			Double x;
-			Double y;
-			pt->GetCenter(&x, &y);
-			sb->AppendDouble(x);
+			Math::Coord2D<Double> coord;
+			coord = pt->GetCenter();
+			sb->AppendDouble(coord.x);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(y);
+			sb->AppendDouble(coord.y);
 		}
 		sb->AppendC(UTF8STRC(")"));
 		return true;
@@ -66,7 +65,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-			Double *pointList = pg->GetPointList(&nPoint);
+			Math::Coord2D<Double> *pointList = pg->GetPointList(&nPoint);
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -78,9 +77,9 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 				sb->AppendUTF8Char('(');
 				while (k < ptOfstList[i + 1])
 				{
-					sb->AppendDouble(pointList[k * 2]);
+					sb->AppendDouble(pointList[k].x);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[k * 2 + 1]);
+					sb->AppendDouble(pointList[k].y);
 					k++;
 					if (k < ptOfstList[i + 1])
 					{
@@ -94,9 +93,9 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			sb->AppendUTF8Char('(');
 			while (k < nPoint)
 			{
-				sb->AppendDouble(pointList[k * 2]);
+				sb->AppendDouble(pointList[k].x);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k * 2 + 1]);
+				sb->AppendDouble(pointList[k].y);
 				k++;
 				if (k < nPoint)
 				{
@@ -114,7 +113,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pl->GetPtOfstList(&nPtOfst);
-			Double *pointList = pl->GetPointList(&nPoint);
+			Math::Coord2D<Double> *pointList = pl->GetPointList(&nPoint);
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -126,9 +125,9 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 				sb->AppendUTF8Char('(');
 				while (k < ptOfstList[i + 1])
 				{
-					sb->AppendDouble(pointList[k * 2]);
+					sb->AppendDouble(pointList[k].x);
 					sb->AppendUTF8Char(' ');
-					sb->AppendDouble(pointList[k * 2 + 1]);
+					sb->AppendDouble(pointList[k].y);
 					k++;
 					if (k < ptOfstList[i + 1])
 					{
@@ -142,9 +141,9 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			sb->AppendUTF8Char('(');
 			while (k < nPoint)
 			{
-				sb->AppendDouble(pointList[k * 2]);
+				sb->AppendDouble(pointList[k].x);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k * 2 + 1]);
+				sb->AppendDouble(pointList[k].y);
 				k++;
 				if (k < nPoint)
 				{

@@ -155,10 +155,11 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			stmPos += 8 + dobj->nPtOfst * 4;
 		}
 		Int32 *ptArr = MemAlloc(Int32, dobj->nPoint << 1);
-		j = dobj->nPoint << 1;
+		j = dobj->nPoint;
 		while (j-- > 0)
 		{
-			ptArr[j] = Double2Int32(dobj->pointArr[j] * 200000.0);
+			ptArr[j << 1] = Double2Int32(dobj->pointArr[j].x * 200000.0);
+			ptArr[(j << 1) + 1] = Double2Int32(dobj->pointArr[j].y * 200000.0);
 		}
 		stm->Write((UInt8*)&dobj->nPoint, 4);
 		stm->Write((UInt8*)ptArr, 8 * dobj->nPoint);

@@ -576,15 +576,16 @@ Map::DrawObjectL *Map::SPDLayer::GetNewObjectById(void *session, Int64 id)
 		obj->ptOfstArr = 0;
 	}
 	cip->Read((UInt8*)&obj->nPoint, 4);
-	UOSInt j = obj->nPoint * 2;
-	obj->pointArr = MemAlloc(Double, j);
-	Int32 *tmpArr = MemAlloc(Int32, j);
+	UOSInt j = obj->nPoint;
+	obj->pointArr = MemAlloc(Math::Coord2D<Double>, j);
+	Int32 *tmpArr = MemAlloc(Int32, j * 2);
 	Double r = 1 / 200000.0;
 	UOSInt i = 0;
 	cip->Read((UInt8*)tmpArr, obj->nPoint * 8);
 	while (i < j)
 	{
-		obj->pointArr[i] = tmpArr[i] * r;
+		obj->pointArr[i].x = tmpArr[i << 1] * r;
+		obj->pointArr[i].y = tmpArr[(i << 1) + 1] * r;
 		i++;
 	}
 	MemFree(tmpArr);
@@ -604,7 +605,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 	Int32 *points;
 	UOSInt i;
 	UInt32 *tmpPtOfsts;
-	Double *tmpPoints;
+	Math::Coord2D<Double> *tmpPoints;
 
 	cip->SeekFromBeginning(ofst);
 	cip->Read((UInt8*)buff, 8);
@@ -643,10 +644,10 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
 		tmpPoints = ptColl->GetPointList(&i);
-		i = i << 1;
 		while (i--)
 		{
-			tmpPoints[i] = points[i] / 200000.0;
+			tmpPoints[i].x = points[(i << 1)] / 200000.0;
+			tmpPoints[i].y = points[(i << 1) + 1] / 200000.0;
 		}
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
@@ -656,10 +657,10 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
 		tmpPoints = ptColl->GetPointList(&i);
-		i = i << 1;
 		while (i--)
 		{
-			tmpPoints[i] = points[i] / 200000.0;
+			tmpPoints[i].x = points[(i << 1)] / 200000.0;
+			tmpPoints[i].y = points[(i << 1) + 1] / 200000.0;
 		}
 	}
 

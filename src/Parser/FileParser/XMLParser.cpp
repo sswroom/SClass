@@ -842,7 +842,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Polygon *pg;
-															Double *ptList;
+															Math::Coord2D<Double> *ptList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
@@ -907,8 +907,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																										ptList = pg->GetPointList(&i);
 																										while (i-- > 0)
 																										{
-																											ptList[(i << 1)] = xPts.GetItem(i);
-																											ptList[(i << 1) + 1] = yPts.GetItem(i);
+																											ptList[i].x = xPts.GetItem(i);
+																											ptList[i].y = yPts.GetItem(i);
 																										}
 																										lyr->AddVector(pg, scols);
 																									}
@@ -1000,7 +1000,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Polyline3D *pl;
-															Double *ptList;
+															Math::Coord2D<Double> *ptList;
 															Double *hList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
@@ -1038,8 +1038,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																			while (i-- > 0)
 																			{
 																				hList[i] = zPts.GetItem(i);
-																				ptList[(i << 1)] = xPts.GetItem(i);
-																				ptList[(i << 1) + 1] = yPts.GetItem(i);
+																				ptList[i].x = xPts.GetItem(i);
+																				ptList[i].y = yPts.GetItem(i);
 																			}
 																			lyr->AddVector(pl, scols);
 																		}
@@ -1108,7 +1108,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Polygon *pg;
-															Double *ptList;
+															Math::Coord2D<Double> *ptList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
@@ -1176,8 +1176,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																										ptList = pg->GetPointList(&i);
 																										while (i-- > 0)
 																										{
-																											ptList[(i << 1)] = xPts.GetItem(i);
-																											ptList[(i << 1) + 1] = yPts.GetItem(i);
+																											ptList[i].x = xPts.GetItem(i);
+																											ptList[i].y = yPts.GetItem(i);
 																										}
 																										lyr->AddVector(pg, scols);
 																									}
@@ -3168,7 +3168,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						{
 							Math::Polyline3D *pl;
 							UOSInt nPoints;
-							Double *ptArr;
+							Math::Coord2D<Double> *ptArr;
 							Double *altArr;
 							UOSInt j;
 
@@ -3339,7 +3339,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				{
 					Math::Polygon *pg;
 					UOSInt nPoints;
-					Double *ptArr;
+					Math::Coord2D<Double> *ptArr;
 					UInt32 *ptList;
 					UOSInt i;
 

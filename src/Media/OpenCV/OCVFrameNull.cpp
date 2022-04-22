@@ -23,7 +23,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSIn
 	return 0;
 }
 
-void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UOSInt *poly, UOSInt nPoints, UInt8 color)
+void Media::OpenCV::OCVFrame::ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color)
 {
 
 }

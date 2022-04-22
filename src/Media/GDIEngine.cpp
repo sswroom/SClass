@@ -1084,35 +1084,37 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyline(Double *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GDIImage::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p)
 {
-	UOSInt i = nPoints << 1;
+	UOSInt i = nPoints;
 	Bool ret;
-	Int32 *ipts = MemAlloc(Int32, i);
+	Int32 *ipts = MemAlloc(Int32, i << 1);
 	while (i-- > 0)
 	{
-		ipts[i] = Double2Int32(points[i]);
+		ipts[i << 1] = Double2Int32(points[i].x);
+		ipts[(i << 1) + 1] = Double2Int32(points[i].y);
 	}
 	ret = DrawPolylineI(ipts, nPoints, p);
 	MemFree(ipts);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolygon(Double *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
-	UOSInt i = nPoints << 1;
+	UOSInt i = nPoints;
 	Bool ret;
-	Int32 *ipts = MemAlloc(Int32, i);
+	Int32 *ipts = MemAlloc(Int32, i << 1);
 	while (i-- > 0)
 	{
-		ipts[i] = Double2Int32(points[i]);
+		ipts[i << 1] = Double2Int32(points[i].x);
+		ipts[(i << 1) + 1] = Double2Int32(points[i].y);
 	}
 	ret = DrawPolygonI(ipts, nPoints, p, b);
 	MemFree(ipts);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolyPolygon(Double *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	UOSInt i = 0;
 	UOSInt j = nPointCnt;
@@ -1121,11 +1123,11 @@ Bool Media::GDIImage::DrawPolyPolygon(Double *points, UInt32 *pointCnt, UOSInt n
 	{
 		i += pointCnt[j];
 	}
-	i = i << 1;
-	Int32 *ipts = MemAlloc(Int32, i);
+	Int32 *ipts = MemAlloc(Int32, i << 1);
 	while (i-- > 0)
 	{
-		ipts[i] = Double2Int32(points[i]);
+		ipts[i << 1] = Double2Int32(points[i].x);
+		ipts[(i << 1) + 1] = Double2Int32(points[i].y);
 	}
 	ret = DrawPolyPolygonI(ipts, pointCnt, nPointCnt, p, b);
 	MemFree(ipts);

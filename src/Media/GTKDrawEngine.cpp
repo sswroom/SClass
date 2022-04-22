@@ -424,18 +424,18 @@ Bool Media::GTKDrawImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSI
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(Double *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	if (nPoints >= 2)
 	{
 		pen->Init(this->cr);
-		cairo_move_to((cairo_t*)this->cr, points[0] + OSInt2Double(this->left), points[1] + OSInt2Double(this->top));
-		points += 2;
+		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points[0] + OSInt2Double(this->left), points[1] + OSInt2Double(this->top));
-			points += 2;
+			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+			points++;
 		}
 		cairo_stroke((cairo_t*)this->cr);
 
@@ -447,18 +447,18 @@ Bool Media::GTKDrawImage::DrawPolyline(Double *points, UOSInt nPoints, DrawPen *
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolygon(Double *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	if (nPoints >= 2)
 	{
-		cairo_move_to((cairo_t*)this->cr, points[0] + OSInt2Double(this->left), points[1] + OSInt2Double(this->top));
-		points += 2;
+		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points[0] + OSInt2Double(this->left), points[1] + OSInt2Double(this->top));
-			points += 2;
+			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+			points++;
 		}
 		cairo_close_path((cairo_t*)this->cr);
 		if (pen && brush)
@@ -491,7 +491,7 @@ Bool Media::GTKDrawImage::DrawPolygon(Double *points, UOSInt nPoints, DrawPen *p
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygon(Double *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -503,12 +503,12 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(Double *points, UInt32 *pointCnt, UOSI
 			i = *pointCnt++;
 			if (i > 0)
 			{
-				cairo_move_to((cairo_t*)this->cr, points[0] + OSInt2Double(this->left), points[1] + OSInt2Double(this->top));
-				points += 2;
+				cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+				points++;
 				while (i-- > 1)
 				{
-					cairo_line_to((cairo_t*)this->cr, points[0] + OSInt2Double(this->left), points[1] + OSInt2Double(this->top));
-					points += 2;
+					cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->left), points->y + OSInt2Double(this->top));
+					points++;
 				}
 				cairo_close_path((cairo_t*)this->cr);
 			}

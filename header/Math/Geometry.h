@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY
 #define _SM_MATH_GEOMETRY
+#include "Math/Coord2D.h"
+
 namespace Math
 {
 	class Geometry
@@ -17,7 +19,7 @@ namespace Math
 		static void PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt ptY, Int32 *nearPtX, Int32 *nearPtY);
 		static Double SphereDistDeg(Double lat1, Double lon1, Double lat2, Double lon2, Double radius);
 		static void GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Int32 *points, Int32 *outPtX, Int32 *outPtY);
-		static void GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Double *points, Double *outPtX, Double *outPtY);
+		static Math::Coord2D<Double> GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2D<Double> *points);
 	};
 }
 #endif

@@ -1974,6 +1974,7 @@ Map/OSM/OSMTileMap.h: ../../src/Map/OSM/OSMTileMap.cpp
 
 Math/ComplexNumber.h: ../../src/Math/ComplexNumber.cpp
 @ComplexNumber.o
+Math/Coord2D.h:
 Math/CoordinateSystem.h: ../../src/Math/CoordinateSystem.cpp
 @CoordinateSystem.o
 Math/CoordinateSystemManager.h: ../../src/Math/CoordinateSystemManager.cpp

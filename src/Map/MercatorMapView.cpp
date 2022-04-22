@@ -167,7 +167,7 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UO
 	return (imaxX >= 0) && (iminX < (OSInt)scnWidth) && (imaxY >= 0) && (iminY < (OSInt)scnHeight);
 }
 
-Bool Map::MercatorMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY)
+Bool Map::MercatorMapView::MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofstPt)
 {
 	if (nPoints == 0)
 	{
@@ -212,20 +212,20 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, U
 	Doublex2 rate = PDoublex2SetA(this->hdpi / this->ddpi);
 	Doublex2 hScnSize = PDoublex2Set(this->scnWidth * 0.5, this->scnHeight * 0.5);
 	Doublex2 centPixel = PLoadDoublex2(this->centPixel);
-	Doublex2 ofst = PDoublex2Set(ofstX, ofstY);
-	thisVal = PDoublex2Set(Lon2PixelX(srcArr[0]), Lat2PixelY(srcArr[1]));
+	Doublex2 ofst = PDoublex2Set(ofstPt.x, ofstPt.y);
+	thisVal = PDoublex2Set(Lon2PixelX(srcArr->x), Lat2PixelY(srcArr->y));
 	imin = imax = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
-	PStoreDoublex2(destArr, PADDPD(imin, ofst));
-	srcArr += 2;
-	destArr += 2;
+	PStoreDoublex2((Double*)destArr, PADDPD(imin, ofst));
+	srcArr += 1;
+	destArr += 1;
 	nPoints--;
 	while (nPoints-- > 0)
 	{
-		thisVal = PDoublex2Set(Lon2PixelX(srcArr[0]), Lat2PixelY(srcArr[1]));
+		thisVal = PDoublex2Set(Lon2PixelX(srcArr->x), Lat2PixelY(srcArr->y));
 		thisVal = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
-		PStoreDoublex2(destArr, PADDPD(thisVal, ofst));
-		srcArr += 2;
-		destArr += 2;
+		PStoreDoublex2((Double*)destArr, PADDPD(thisVal, ofst));
+		srcArr += 1;
+		destArr += 1;
 		imin = PMINPD(imin, thisVal);
 		imax = PMAXPD(imax, thisVal);
 	}

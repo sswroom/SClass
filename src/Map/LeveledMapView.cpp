@@ -244,7 +244,7 @@ mtslop4:
 #endif
 }
 
-Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY)
+Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofst)
 {
 	if (nPoints == 0)
 	{
@@ -263,8 +263,10 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UO
 	Double thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = ((*srcArr++  - dleft) * xmul + ofstX);
-		*destArr++ = thisY = ((dbottom - *srcArr++) * ymul + ofstY);
+		destArr->x = thisX = ((srcArr->x  - dleft) * xmul + ofst.x);
+		destArr->y = thisY = ((dbottom - srcArr->y) * ymul + ofst.y);
+		destArr++;
+		srcArr++;
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;

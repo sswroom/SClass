@@ -34,7 +34,7 @@ namespace Map
 		UInt32 nPtOfst;
 		UInt32 nPoint;
 		UInt32 *ptOfstArr;
-		Double *pointArr;
+		Math::Coord2D<Double> *pointArr;
 		Int32 flags; //bit0 = has Line color
 		UInt32 lineColor;
 	} DrawObjectL;

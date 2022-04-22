@@ -31,20 +31,20 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSIn
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	cv::Mat *cimg = new cv::Mat();
-	*cimg = (*fr)(cv::Range(area->top, area->top + area->height), cv::Range(area->left, area->left + area->width)).clone();
+	*cimg = (*fr)(cv::Range((int)area->tl.y, (int)(area->tl.y + area->height)), cv::Range((int)area->tl.x, (int)(area->tl.x + area->width))).clone();
 	return NEW_CLASS_D(OCVFrame(cimg));
 }
 
-void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UOSInt *poly, UOSInt nPoints, UInt8 color)
+void Media::OpenCV::OCVFrame::ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color)
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
-	int nPt = nPoints;
+	int nPt = (int)nPoints;
 	cv::Point2i *points = MemAlloc(cv::Point2i, nPoints);
 	UOSInt i = nPoints;
 	while (i-- > 0)
 	{
-		points[i].x = poly[i << 1];
-		points[i].y = poly[(i << 1) + 1];
+		points[i].x = (int)poly[i].x;
+		points[i].y = (int)poly[i].y;
 	}
 	cv::Mat mask = cv::Mat::zeros(fr->size(), fr->type());
 	cv::fillPoly(mask, (const cv::Point**)&points, &nPt, 1, cv::Scalar(255));
@@ -82,7 +82,6 @@ void Media::OpenCV::OCVFrame::GetImageData(UInt8 *destBuff, OSInt left, OSInt to
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	OSInt srcW = fr->cols;
-	OSInt srcH = fr->rows;
 	ImageCopy_ImgCopyR(fr->data + srcW * top + left, destBuff, width, height, (UOSInt)srcW, destBpl, upsideDown);
 }
 

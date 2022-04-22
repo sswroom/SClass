@@ -16,7 +16,7 @@ namespace Math
 		virtual ~PointMappingCoordinateSystem();
 
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);
-		void CalcBaseXY(Double mapX, Double mapY, Double *baseX, Double *baseY);
+		Math::Coord2D<Double> CalcBaseXY(Math::Coord2D<Double> mapPt);
 
 		virtual Double CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit);
 		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit);

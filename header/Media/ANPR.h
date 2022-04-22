@@ -18,8 +18,8 @@ namespace Media
 		NumPlateResult hdlr;
 		void *hdlrObj;
 
-		static void NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
-		static Media::StaticImage *CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, UOSInt *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
+		static void NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
+		static Media::StaticImage *CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
 	public:
 		ANPR();
 		~ANPR();

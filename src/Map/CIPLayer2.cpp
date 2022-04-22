@@ -766,13 +766,14 @@ Map::DrawObjectL *Map::CIPLayer2::GetNewObjectById(void *session, Int64 id)
 		obj->ptOfstArr = MemAlloc(UInt32, fobj->nPtOfst);
 		MemCopyNO(obj->ptOfstArr, fobj->ptOfstArr, sizeof(Int32) * fobj->nPtOfst);
 	}
-	obj->pointArr = MemAlloc(Double, fobj->nPoint << 1);
+	obj->pointArr = MemAlloc(Math::Coord2D<Double>, fobj->nPoint);
 	Double r = 1 / 200000.0;
 	UOSInt i = 0;
-	UOSInt j = fobj->nPoint * 2;
+	UOSInt j = fobj->nPoint;
 	while (i < j)
 	{
-		obj->pointArr[i] = fobj->pointArr[i] * r;
+		obj->pointArr[i].x = fobj->pointArr[(i << 1)] * r;
+		obj->pointArr[i].y = fobj->pointArr[(i << 1) + 1] * r;
 		i++;
 	}
 	obj->flags = 0;
@@ -801,7 +802,7 @@ Math::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 	{
 		Math::PointCollection *ptColl = 0;
 		UInt32 *tmpPtOfsts;
-		Double *tmpPoints;
+		Math::Coord2D<Double> *tmpPoints;
 		UOSInt i;
 		if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 		{
@@ -815,10 +816,10 @@ Math::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 		MemCopyNO(tmpPtOfsts, fobj->ptOfstArr, fobj->nPtOfst * sizeof(UInt32));
 		
 		tmpPoints = ptColl->GetPointList(&i);
-		i = i << 1;
 		while (i--)
 		{
-			tmpPoints[i] = fobj->pointArr[i] / 200000.0;
+			tmpPoints[i].x = fobj->pointArr[(i << 1)] / 200000.0;
+			tmpPoints[i].y = fobj->pointArr[(i << 1) + 1] / 200000.0;
 		}
 		return ptColl;
 	}

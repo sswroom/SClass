@@ -344,7 +344,7 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 				UInt32 l;
 				UInt32 m;
 				UInt32 *ptOfstArr;
-				Double *pointArr;
+				Math::Coord2D<Double> *pointArr;
 				Int32 currFound;
 				Double mapX = lon;
 				Double mapY = lat;
@@ -371,8 +371,8 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 					l--;
 					while (l-- > m)
 					{
-						calH = pointArr[(l << 1) + 1] - pointArr[(l << 1) + 3];
-						calW = pointArr[(l << 1) + 0] - pointArr[(l << 1) + 2];
+						calH = pointArr[l].y - pointArr[l + 1].y;
+						calW = pointArr[l].x - pointArr[l + 1].x;
 
 						if (calH == 0)
 						{
@@ -382,8 +382,8 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 						{
 							calX = (calBase = (calW * calW)) * mapX;
 							calBase += calH * calH;
-							calX += calH * calH * (pointArr[(l << 1) + 0]);
-							calX += (mapY - pointArr[(l << 1) + 1]) * calH * calW;
+							calX += calH * calH * pointArr[l].x;
+							calX += (mapY - pointArr[l].y) * calH * calW;
 							calX /= calBase;
 						}
 
@@ -393,36 +393,36 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 						}
 						else
 						{
-							calY = ((calX - (pointArr[(l << 1) + 0])) * calH / calW) + pointArr[(l << 1) + 1];
+							calY = ((calX - pointArr[l].x) * calH / calW) + pointArr[l].y;
 						}
 
 						if (calW < 0)
 						{
-							if (pointArr[(l << 1) + 0] > calX)
+							if (pointArr[l].x > calX)
 								continue;
-							if (pointArr[(l << 1) + 2] < calX)
+							if (pointArr[l + 1].x < calX)
 								continue;
 						}
 						else
 						{
-							if (pointArr[(l << 1) + 0] < calX)
+							if (pointArr[l].x < calX)
 								continue;
-							if (pointArr[(l << 1) + 2] > calX)
+							if (pointArr[l + 1].x > calX)
 								continue;
 						}
 
 						if (calH < 0)
 						{
-							if (pointArr[(l << 1) + 1] > calY)
+							if (pointArr[l].y > calY)
 								continue;
-							if (pointArr[(l << 1) + 3] < calY)
+							if (pointArr[l + 1].y < calY)
 								continue;
 						}
 						else
 						{
-							if (pointArr[(l << 1) + 1] < calY)
+							if (pointArr[l].y < calY)
 								continue;
-							if (pointArr[(l << 1) + 3] > calY)
+							if (pointArr[l + 1].y > calY)
 								continue;
 						}
 
@@ -908,8 +908,8 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 		dobj->nPoint = 1;
 		dobj->ptOfstArr = MemAlloc(UInt32, 1);
 		dobj->ptOfstArr[0] = 0;
-		dobj->pointArr = MemAlloc(Double, 2);
-		pt->GetCenter(&dobj->pointArr[0], &dobj->pointArr[1]);
+		dobj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
+		dobj->pointArr[0] = pt->GetCenter();
 		dobj->flags = 0;
 		dobj->lineColor = 0;
 		return dobj;
@@ -918,7 +918,7 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 	{
 		Math::PointCollection *ptColl = (Math::PointCollection*)vec;
 		UInt32 *ptOfstArr;
-		Double *ptArr;
+		Math::Coord2D<Double> *ptArr;
 		UOSInt cnt;
 
 		Map::DrawObjectL *dobj;
@@ -932,9 +932,8 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 
 		ptArr = ptColl->GetPointList(&cnt);
 		dobj->nPoint = (UInt32)cnt;
-		cnt <<= 1;
-		dobj->pointArr = MemAlloc(Double, cnt);
-		MemCopyNO(dobj->pointArr, ptArr, cnt << 3);
+		dobj->pointArr = MemAlloc(Math::Coord2D<Double>, cnt);
+		MemCopyNO(dobj->pointArr, ptArr, cnt * sizeof(Math::Coord2D<Double>));
 		dobj->flags = 0;
 		dobj->lineColor = 0;
 		return dobj;

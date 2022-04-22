@@ -1322,7 +1322,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 
 
 //	System::Drawing::PointF currPos[];
-	DRAW_UNIT *currPos;
+	Math::Coord2D<DRAW_UNIT> *currPos;
 	UOSInt currPosLen;
     
 	i = 0;
@@ -1346,12 +1346,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		if (chart->lineStyle == Data::LineChart::LS_FILL)
 		{
 			currPosLen = xDataCnt + 2;
-			currPos = MemAlloc(DRAW_UNIT, currPosLen << 1);
+			currPos = MemAlloc(Math::Coord2D<DRAW_UNIT>, currPosLen);
 		}
 		else
 		{
 			currPosLen = xDataCnt;
-			currPos = MemAlloc(DRAW_UNIT, currPosLen << 1);
+			currPos = MemAlloc(Math::Coord2D<DRAW_UNIT>, currPosLen);
 		}
 
 		Double xChartLeng = width - y1Leng - y2Leng - this->pointSize * 2.0;
@@ -1361,7 +1361,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j << 1] = (DRAW_UNIT)(x + y1Leng + this->pointSize + Data::DateTimeUtil::MS2Minutes(data[j] - xMinDate) / Data::DateTimeUtil::MS2Minutes(xMaxDate - xMinDate) * xChartLeng);
+				currPos[j].x = (DRAW_UNIT)(x + y1Leng + this->pointSize + Data::DateTimeUtil::MS2Minutes(data[j] - xMinDate) / Data::DateTimeUtil::MS2Minutes(xMaxDate - xMinDate) * xChartLeng);
 				j++;
 			}
 		}
@@ -1371,7 +1371,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j << 1] = (DRAW_UNIT)(x + y1Leng + this->pointSize + (data[j] - xMinDbl) / (xMaxDbl - xMinDbl) * xChartLeng);
+				currPos[j].x = (DRAW_UNIT)(x + y1Leng + this->pointSize + (data[j] - xMinDbl) / (xMaxDbl - xMinDbl) * xChartLeng);
 				j++;
 			}
 		}
@@ -1382,7 +1382,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j << 1] = (DRAW_UNIT)(x + y1Leng + this->pointSize + (Double)(data[j] - xMinInt) / (Single)(xMaxInt - xMinInt) * xChartLeng);
+				currPos[j].x = (DRAW_UNIT)(x + y1Leng + this->pointSize + (Double)(data[j] - xMinInt) / (Single)(xMaxInt - xMinInt) * xChartLeng);
 				j++;
 			}
 		}
@@ -1407,7 +1407,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[(j << 1) + 1] = (DRAW_UNIT)(y + height - this->pointSize - xLeng - (Double)(data[j] - iMin) / (Single)(iMax - iMin) * xChartLeng);
+				currPos[j].y = (DRAW_UNIT)(y + height - this->pointSize - xLeng - (Double)(data[j] - iMin) / (Single)(iMax - iMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1431,7 +1431,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[(j << 1) + 1] = (DRAW_UNIT)(y + height - this->pointSize - xLeng - (data[j] - dMin) / (dMax - dMin) * xChartLeng);
+				currPos[j].y = (DRAW_UNIT)(y + height - this->pointSize - xLeng - (data[j] - dMin) / (dMax - dMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1454,7 +1454,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[(j << 1) + 1] = (DRAW_UNIT)(y + height - this->pointSize - xLeng - Data::DateTimeUtil::MS2Minutes(data[j] - dMin) / Data::DateTimeUtil::MS2Minutes(dMax - dMin) * xChartLeng);
+				currPos[j].y = (DRAW_UNIT)(y + height - this->pointSize - xLeng - Data::DateTimeUtil::MS2Minutes(data[j] - dMin) / Data::DateTimeUtil::MS2Minutes(dMax - dMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1464,10 +1464,10 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			if (currPosLen >= 4)
 			{
 				j = currPosLen;
-				currPos[(j << 1) - 4] = currPos[(j << 1) - 6];
-				currPos[(j << 1) - 3] = (DRAW_UNIT)(y + height - xLeng);
-				currPos[(j << 1) - 2] = currPos[0];
-				currPos[(j << 1) - 1] = (DRAW_UNIT)(y + height - xLeng);
+				currPos[j - 2].x = currPos[j - 3].x;
+				currPos[j - 2].y = (DRAW_UNIT)(y + height - xLeng);
+				currPos[j - 1].x = currPos[0].x;
+				currPos[j - 1].y = (DRAW_UNIT)(y + height - xLeng);
 				Media::DrawPen *p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
 				Media::DrawBrush *b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
 				img->DrawPolygon(currPos, currPosLen, p, b);
@@ -1489,7 +1489,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 					j = currPosLen;
 					while (j-- > 0)
 					{
-						img->DrawEllipse(currPos[(j << 1)] - this->pointSize, currPos[(j << 1) + 1] - this->pointSize, this->pointSize * 2.0, this->pointSize * 2.0, 0, b);
+						img->DrawEllipse(currPos[j].x - this->pointSize, currPos[j].y - this->pointSize, this->pointSize * 2.0, this->pointSize * 2.0, 0, b);
 					}
 					img->DelBrush(b);
 				}

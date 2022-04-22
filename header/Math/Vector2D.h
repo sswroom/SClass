@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_VECTOR2D
 #define _SM_MATH_VECTOR2D
+#include "Math/Coord2D.h"
 
 namespace Math
 {
@@ -27,7 +28,7 @@ namespace Math
 		virtual ~Vector2D();
 
 		virtual VectorType GetVectorType() = 0;
-		virtual void GetCenter(Double *x, Double *y) = 0;
+		virtual Math::Coord2D<Double> GetCenter() = 0;
 		virtual Math::Vector2D *Clone() = 0;
 		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY) = 0;
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY) = 0;

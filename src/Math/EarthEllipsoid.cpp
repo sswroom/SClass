@@ -107,27 +107,24 @@ Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Dista
 	UOSInt nPoint;
 	UOSInt nPtOfst;
 	UInt32 *ptOfsts;
-	Double *points;
+	Math::Coord2D<Double> *points;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
 	UOSInt i = nPtOfst;
 	UOSInt j = nPoint;
 	UOSInt k;
 	Double totalDist = 0;
-	Double lastX;
-	Double lastY;
+	Math::Coord2D<Double> lastPt;
 	while (i-- > 0)
 	{
 		k = ptOfsts[i];
 		if (j-- > k)
 		{
-			lastX = points[(j << 1)];
-			lastY = points[(j << 1) + 1];
+			lastPt = points[j];
 			while (j-- > k)
 			{
-				totalDist += CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
-				lastX = points[(j << 1)];
-				lastY = points[(j << 1) + 1];
+				totalDist += CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
+				lastPt = points[j];
 			}
 		}
 		j++;
@@ -141,7 +138,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	UOSInt nPtOfst;
 	UOSInt nAlts;
 	UInt32 *ptOfsts;
-	Double *points;
+	Math::Coord2D<Double> *points;
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
@@ -151,8 +148,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	UOSInt k;
 	Double dist;
 	Double totalDist = 0;
-	Double lastX;
-	Double lastY;
+	Math::Coord2D<Double> lastPt;
 	Double lastH;
 	Double altDiff;
 	while (i-- > 0)
@@ -160,17 +156,15 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 		k = ptOfsts[i];
 		if (j-- > k)
 		{
-			lastX = points[(j << 1)];
-			lastY = points[(j << 1) + 1];
+			lastPt = points[j];
 			lastH = alts[j];
 			while (j-- > k)
 			{
-				dist = CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
+				dist = CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
 				altDiff = (alts[j] - lastH);
 				dist = Math_Sqrt(dist * dist + altDiff * altDiff);
 				totalDist += dist;
-				lastX = points[(j << 1)];
-				lastY = points[(j << 1) + 1];
+				lastPt = points[j];
 				lastH = alts[j];
 			}
 		}

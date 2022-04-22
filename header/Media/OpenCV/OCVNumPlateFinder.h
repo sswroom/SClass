@@ -15,7 +15,7 @@ namespace Media
 				DoubleRow //440x220
 			};
 
-			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double tileAngle, Double area, PlateSize psize);
+			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double tileAngle, Double area, PlateSize psize);
 		private:
 			Double maxTileAngle;
 			Double minArea;

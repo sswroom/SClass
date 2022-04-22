@@ -208,10 +208,9 @@ Math::Vector2D::VectorType Math::VectorImage::GetVectorType()
 	return Math::Vector2D::VectorType::Image;
 }
 
-void Math::VectorImage::GetCenter(Double *x, Double *y)
+Math::Coord2D<Double> Math::VectorImage::GetCenter()
 {
-	*x = (x1 + x2) * 0.5;
-	*y = (y1 + y2) * 0.5;
+	return Math::Coord2D<Double>((x1 + x2) * 0.5, (y1 + y2) * 0.5);
 }
 
 Math::Vector2D *Math::VectorImage::Clone()

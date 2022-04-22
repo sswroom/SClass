@@ -76,7 +76,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UOSInt l;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".TXT")))
 	{
 		return 0;
@@ -392,7 +391,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Math::Polyline3D *pl;
 		Math::Point3D *pt;
 		Math::Vector2D *vec;
-		Double *ptList;
+		Math::Coord2D<Double> *ptList;
 		Double *hList;
 
 		NEW_CLASS(fs2, IO::FileStream({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -420,13 +419,11 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1));
 						ptList = pg->GetPointList(&k);
 						k = 0;
-						l = 0;
 						while (k < j - 1)
 						{
-							ptList[l] = ptX.GetItem(k);
-							ptList[l+1] = ptY.GetItem(k);
+							ptList[k].x = ptX.GetItem(k);
+							ptList[k].y = ptY.GetItem(k);
 							k++;
-							l += 2;
 						}
 						vecMap.Put(currId, pg);
 					}
@@ -437,14 +434,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						ptList = pl->GetPointList(&k);
 						hList = pl->GetAltitudeList(&k);
 						k = 0;
-						l = 0;
 						while (k < j)
 						{
-							ptList[l] = ptX.GetItem(k);
-							ptList[l+1] = ptY.GetItem(k);
+							ptList[k].x = ptX.GetItem(k);
+							ptList[k].y = ptY.GetItem(k);
 							hList[k] = ptZ.GetItem(k);
 							k++;
-							l += 2;
 						}
 						vecMap.Put(currId, pl);
 					}
@@ -482,13 +477,11 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1));
 				ptList = pg->GetPointList(&k);
 				k = 0;
-				l = 0;
 				while (k < j - 1)
 				{
-					ptList[l] = ptX.GetItem(k);
-					ptList[l+1] = ptY.GetItem(k);
+					ptList[k].x = ptX.GetItem(k);
+					ptList[k].y = ptY.GetItem(k);
 					k++;
-					l += 2;
 				}
 				vecMap.Put(currId, pg);
 			}
@@ -499,14 +492,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				ptList = pl->GetPointList(&k);
 				hList = pl->GetAltitudeList(&k);
 				k = 0;
-				l = 0;
 				while (k < j)
 				{
-					ptList[l] = ptX.GetItem(k);
-					ptList[l+1] = ptY.GetItem(k);
+					ptList[k].x = ptX.GetItem(k);
+					ptList[k].y = ptY.GetItem(k);
 					hList[k] = ptZ.GetItem(k);
 					k++;
-					l += 2;
 				}
 				vecMap.Put(currId, pl);
 			}

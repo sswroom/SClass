@@ -49,11 +49,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(void *userObj,
 		{
 			if (me->lastMapX != 0 || me->lastMapY != 0)
 			{
-				Double pts[4];
-				pts[0] = mapX;
-				pts[1] = mapY;
-				pts[2] = me->lastMapX;
-				pts[3] = me->lastMapY;
+				Math::Coord2D<Double> pts[2];
+				pts[0].x = mapX;
+				pts[0].y = mapY;
+				pts[1].x = me->lastMapX;
+				pts[1].y = me->lastMapY;
 				Double dist = me->csys->CalSurfaceDistanceXY(mapX, mapY, me->lastMapX, me->lastMapY, Math::Unit::Distance::DU_METER);
 				me->dispDist = dist;
 				me->UpdateDistDisp();
@@ -92,30 +92,31 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj,
 		if (me->radTypePath->IsSelected())
 		{
 			Math::Polyline *pl;
-			Double *pts;
+			Math::Coord2D<Double> *pts;
 			UOSInt i;
 			UOSInt j;
 			NEW_CLASS(pl, Math::Polyline(me->csys->GetSRID(), 1, (me->ptList->GetCount() >> 1) + 1));
 			pts = pl->GetPointList(&j);
 			i = 0;
-			j = me->ptList->GetCount();
+			j = me->ptList->GetCount() >> 1;
 			while (i < j)
 			{
-				pts[i] = me->ptList->GetItem(i);
+				pts[i].x = me->ptList->GetItem((i << 1));
+				pts[i].y = me->ptList->GetItem((i << 1) + 1);
 				i++;
 			}
-			pts[j] = mapX;
-			pts[j + 1] = mapY;
+			pts[j].x = mapX;
+			pts[j].y = mapY;
 			me->navi->SetSelectedVector(pl);
 		}
 		else
 		{
 			Math::Polyline *pl;
-			Double pts[4];
-			pts[0] = mapX;
-			pts[1] = mapY;
-			pts[2] = me->lastMapX;
-			pts[3] = me->lastMapY;
+			Math::Coord2D<Double> pts[2];
+			pts[0].x = mapX;
+			pts[0].y = mapY;
+			pts[1].x = me->lastMapX;
+			pts[1].y = me->lastMapY;
 			NEW_CLASS(pl, Math::Polyline(me->csys->GetSRID(), pts, 2));
 			me->navi->SetSelectedVector(pl);
 		}

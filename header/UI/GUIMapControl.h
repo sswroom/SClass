@@ -84,7 +84,7 @@ namespace UI
 
 		virtual void OnTimerTick();
 		virtual void OnDraw(Media::DrawImage *img);
-		void DrawScnObjects(Media::DrawImage *img, Double xOfst, Double yOfst);
+		void DrawScnObjects(Media::DrawImage *img, Math::Coord2D<Double> ofst);
 	public:
 		/*
 		view - will release

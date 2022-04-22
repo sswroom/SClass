@@ -14,7 +14,7 @@ Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char
 	Math::Polyline *pl;
 	UOSInt i;
 	UOSInt j;
-	Double *ptList;
+	Math::Coord2D<Double> *ptList;
 	lastX = 0;
 	lastY = 0;
 	i = 0;
@@ -60,13 +60,14 @@ Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char
 		return 0;
 	if (isX)
 		return 0;
-	j = pointList.GetCount();
-	NEW_CLASS(pl, Math::Polyline(4326, 1, j >> 1));
+	j = pointList.GetCount() >> 1;
+	NEW_CLASS(pl, Math::Polyline(4326, 1, j));
 	ptList = pl->GetPointList(&i);
 	i = 0;
 	while (i < j)
 	{
-		ptList[i] = pointList.GetItem(i) * 0.00001;
+		ptList[i].x = pointList.GetItem((i << 1)) * 0.00001;
+		ptList[i].y = pointList.GetItem((i << 1) + 1) * 0.00001;
 		i++;
 	}
 	return pl;

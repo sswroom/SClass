@@ -275,15 +275,16 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 					if (hasZ)
 					{
 						Math::Polyline3D *pl;
-						Double *ptArr;
+						Math::Coord2D<Double> *ptArr;
 						Double *altArr;
 						NEW_CLASS(pl, Math::Polyline3D(srid, 1, zList.GetCount()));
 						ptArr = pl->GetPointList(&i);
 						i = 0;
-						j = ptList.GetCount();
+						j = ptList.GetCount() >> 1;
 						while (i < j)
 						{
-							ptArr[i] = ptList.GetItem(i);
+							ptArr[i].x = ptList.GetItem(i << 1);
+							ptArr[i].y = ptList.GetItem((i << 1) + 1);
 							i++;
 						}
 						altArr = pl->GetAltitudeList(&i);
@@ -301,7 +302,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 						Double *ptArr;
 						ptArr = ptList.GetArray(&i);
 						Math::Polyline *pl;
-						NEW_CLASS(pl, Math::Polyline(srid, ptArr, i >> 1));
+						NEW_CLASS(pl, Math::Polyline(srid, (Math::Coord2D<Double>*)ptArr, i >> 1));
 						return pl;
 					}
 				}
@@ -371,7 +372,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				}
 				if (ptList.GetCount() >= 4)
 				{
-					Double *ptArr;
+					Math::Coord2D<Double> *ptArr;
 					Math::Polygon *pg;
 					NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
 					UInt32 *ptOfsts = pg->GetPtOfstList(&j);
@@ -382,11 +383,11 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 						i++;
 					}
 					ptArr = pg->GetPointList(&j);
-					j = j << 1;
 					i = 0;
 					while (i < j)
 					{
-						ptArr[i] = ptList.GetItem(i);
+						ptArr[i].x = ptList.GetItem((i << 1));
+						ptArr[i].y = ptList.GetItem((i << 1) + 1);
 						i++;
 					}
 					return pg;
@@ -460,7 +461,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 					}
 					if (ptList.GetCount() >= 4)
 					{
-						Double *ptArr;
+						Math::Coord2D<Double> *ptArr;
 						Math::Polygon *pg;
 						NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
 						UInt32 *ptOfsts = pg->GetPtOfstList(&j);
@@ -471,11 +472,11 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 							i++;
 						}
 						ptArr = pg->GetPointList(&j);
-						j = j << 1;
 						i = 0;
 						while (i < j)
 						{
-							ptArr[i] = ptList.GetItem(i);
+							ptArr[i].x = ptList.GetItem((i << 1));
+							ptArr[i].y = ptList.GetItem((i << 1) + 1);
 							i++;
 						}
 						return pg;

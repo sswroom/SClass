@@ -124,14 +124,14 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewObjectById(void *sess
 	dobj->nPoint = 1;
 	dobj->objId = id;
 	dobj->ptOfstArr = 0;
-	dobj->pointArr = MemAlloc(Double, 2);
+	dobj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
 	Data::DateTime dt;
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
 	{
 		dt.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
-	this->gpsTrk->GetLatLonByTime(&dt, &dobj->pointArr[1], &dobj->pointArr[0]);
+	this->gpsTrk->GetLatLonByTime(&dt, &dobj->pointArr[0].y, &dobj->pointArr[0].x);
 	dobj->flags = 0;
 	dobj->lineColor = 0;
 	return dobj;

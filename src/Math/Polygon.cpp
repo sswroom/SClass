@@ -7,9 +7,9 @@
 
 Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointCollection(srid)
 {
-	this->pointArr = MemAlloc(Double, nPoint << 1);
+	this->pointArr = MemAlloc(Math::Coord2D<Double>, nPoint);
 	this->nPoint = nPoint;
-	MemClear(this->pointArr, sizeof(Double) * (nPoint << 1));
+	MemClear(this->pointArr, sizeof(Math::Coord2D<Double>) * nPoint);
 	this->nPtOfst = nPtOfst;
 	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
 	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
@@ -32,7 +32,7 @@ UInt32 *Math::Polygon::GetPtOfstList(UOSInt *nPtOfst)
 	return this->ptOfstArr;
 }
 
-Double *Math::Polygon::GetPointList(UOSInt *nPoint)
+Math::Coord2D<Double> *Math::Polygon::GetPointList(UOSInt *nPoint)
 {
 	*nPoint = this->nPoint;
 	return this->pointArr;
@@ -49,31 +49,31 @@ Math::Vector2D *Math::Polygon::Clone()
 
 void Math::Polygon::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
-	UOSInt i = this->nPoint << 1;
+	UOSInt i = this->nPoint;
 	Double x1;
 	Double y1;
 	Double x2;
 	Double y2;
-	x1 = x2 = this->pointArr[0];
-	y1 = y2 = this->pointArr[1];
-	while (i > 2)
+	x1 = x2 = this->pointArr[0].x;
+	y1 = y2 = this->pointArr[0].y;
+	while (i > 1)
 	{
-		i -= 2;
-		if (x1 > this->pointArr[i])
+		i -= 1;
+		if (x1 > this->pointArr[i].x)
 		{
-			x1 = this->pointArr[i];
+			x1 = this->pointArr[i].x;
 		}
-		if (x2 < this->pointArr[i])
+		if (x2 < this->pointArr[i].x)
 		{
-			x2 = this->pointArr[i];
+			x2 = this->pointArr[i].x;
 		}
-		if (y1 > this->pointArr[i + 1])
+		if (y1 > this->pointArr[i].y)
 		{
-			y1 = this->pointArr[i + 1];
+			y1 = this->pointArr[i].y;
 		}
-		if (y2 < this->pointArr[i + 1])
+		if (y2 < this->pointArr[i].y)
 		{
-			y2 = this->pointArr[i + 1];
+			y2 = this->pointArr[i].y;
 		}
 		i -= 2;
 	}
@@ -99,7 +99,7 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 	UOSInt l;
 	UInt32 m;
 	UInt32 *ptOfsts;
-	Double *points;
+	Math::Coord2D<Double> *points;
 
 	ptOfsts = this->ptOfstArr;
 	points = this->pointArr;
@@ -123,8 +123,8 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 		l--;
 		while (l-- > m)
 		{
-			calH = points[(l << 1) + 1] - points[(l << 1) + 3];
-			calW = points[(l << 1) + 0] - points[(l << 1) + 2];
+			calH = points[l].y - points[l + 1].y;
+			calW = points[l].x - points[l + 1].x;
 
 			if (calH == 0)
 			{
@@ -134,8 +134,8 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 			{
 				calX = (calBase = (calW * calW)) * x;
 				calBase += calH * calH;
-				calX += calH * calH * (points[(l << 1) + 0]);
-				calX += (y - points[(l << 1) + 1]) * calH * calW;
+				calX += calH * calH * points[l].x;
+				calX += (y - points[l].y) * calH * calW;
 				calX /= calBase;
 			}
 
@@ -145,36 +145,36 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 			}
 			else
 			{
-				calY = ((calX - (points[(l << 1) + 0])) * calH / calW) + points[(l << 1) + 1];
+				calY = ((calX - points[l].x) * calH / calW) + points[l].y;
 			}
 
 			if (calW < 0)
 			{
-				if (points[(l << 1) + 0] > calX)
+				if (points[l].x > calX)
 					continue;
-				if (points[(l << 1) + 2] < calX)
+				if (points[l + 1].x < calX)
 					continue;
 			}
 			else
 			{
-				if (points[(l << 1) + 0] < calX)
+				if (points[l].x < calX)
 					continue;
-				if (points[(l << 1) + 2] > calX)
+				if (points[l + 1].x > calX)
 					continue;
 			}
 
 			if (calH < 0)
 			{
-				if (points[(l << 1) + 1] > calY)
+				if (points[l].y > calY)
 					continue;
-				if (points[(l << 1) + 3] < calY)
+				if (points[l + 1].y < calY)
 					continue;
 			}
 			else
 			{
-				if (points[(l << 1) + 1] < calY)
+				if (points[l].y < calY)
 					continue;
-				if (points[(l << 1) + 3] > calY)
+				if (points[l + 1].y > calY)
 					continue;
 			}
 
@@ -192,14 +192,14 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 	k = this->nPoint;
 	while (k-- > 0)
 	{
-		calH = y - points[(k << 1) + 1];
-		calW = x - points[(k << 1) + 0];
+		calH = y - points[k].y;
+		calW = x - points[k].x;
 		calD = calW * calW + calH * calH;
 		if (calD < dist)
 		{
 			dist = calD;
-			calPtX = points[(k << 1) + 0];
-			calPtY = points[(k << 1) + 1];
+			calPtX = points[k].x;
+			calPtY = points[k].y;
 		}
 	}
 	if (nearPtX && nearPtY)
@@ -215,15 +215,15 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 	if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
 		return false;
 	Math::Polygon *pg = (Math::Polygon*)vec;
-	Double *newPoints;
+	Math::Coord2D<Double> *newPoints;
 	UOSInt nPoint = this->nPoint + pg->nPoint;
 	UInt32 *newPtOfsts;
 	UOSInt nPtOfst = this->nPtOfst + pg->nPtOfst;
 	
-	newPoints = MemAlloc(Double, nPoint * 2);
+	newPoints = MemAlloc(Math::Coord2D<Double>, nPoint);
 	newPtOfsts = MemAlloc(UInt32, nPtOfst);
-	MemCopyNO(newPoints, this->pointArr, sizeof(Double) * this->nPoint * 2);
-	MemCopyNO(&newPoints[this->nPoint * 2], pg->pointArr, sizeof(Double) * pg->nPoint * 2);
+	MemCopyNO(newPoints, this->pointArr, sizeof(Math::Coord2D<Double>) * this->nPoint);
+	MemCopyNO(&newPoints[this->nPoint], pg->pointArr, sizeof(Math::Coord2D<Double>) * pg->nPoint);
 	MemCopyNO(newPtOfsts, this->ptOfstArr, sizeof(UInt32) * this->nPtOfst);
 	UOSInt i = pg->nPtOfst;
 	UOSInt j = i + this->nPtOfst;
@@ -247,7 +247,7 @@ void Math::Polygon::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 	UOSInt i = this->nPoint;
 	while (i-- > 0)
 	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[(i << 1)], this->pointArr[(i << 1) + 1], 0, &this->pointArr[(i << 1)], &this->pointArr[(i << 1) + 1], 0);
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, 0, &this->pointArr[i].x, &this->pointArr[i].y, 0);
 	}
 }
 
@@ -265,7 +265,7 @@ Bool Math::Polygon::Equals(Math::Vector2D *vec)
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UInt32 *ptOfst = pg->GetPtOfstList(&nPtOfst);
-		Double *ptList = pg->GetPointList(&nPoint);
+		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoint);
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
 			return false;
@@ -314,12 +314,12 @@ Bool Math::Polygon::InsideVector(Double x, Double y)
 	{
 		m = this->ptOfstArr[k];
 
-		lastX = this->pointArr[(m << 1) + 0];
-		lastY = this->pointArr[(m << 1) + 1];
+		lastX = this->pointArr[m].x;
+		lastY = this->pointArr[m].y;
 		while (l-- > m)
 		{
-			thisX = this->pointArr[(l << 1) + 0];
-			thisY = this->pointArr[(l << 1) + 1];
+			thisX = this->pointArr[l].x;
+			thisY = this->pointArr[l].y;
 			j = 0;
 			if (lastY > y)
 				j += 1;
@@ -387,13 +387,13 @@ Bool Math::Polygon::HasJunction()
 	while (j-- > 0)
 	{
 		nextPart = this->ptOfstArr[j];
-		lastPtX = this->pointArr[(nextPart << 1) + 0];
-		lastPtY = this->pointArr[(nextPart << 1) + 1];
+		lastPtX = this->pointArr[nextPart].x;
+		lastPtY = this->pointArr[nextPart].y;
 		lastIndex = nextPart;
 		while (i-- > nextPart)
 		{
-			thisPtX = this->pointArr[(i << 1) + 0];
-			thisPtY = this->pointArr[(i << 1) + 1];
+			thisPtX = this->pointArr[i].x;
+			thisPtY = this->pointArr[i].y;
 
 			if (thisPtX != lastPtX || thisPtY != lastPtY)
 			{
@@ -411,14 +411,14 @@ Bool Math::Polygon::HasJunction()
 					nextChkPart = this->ptOfstArr[l];
 					if (l != j)
 					{
-						lastChkPtX = this->pointArr[(nextChkPart << 1) + 0];
-						lastChkPtY = this->pointArr[(nextChkPart << 1) + 1];
+						lastChkPtX = this->pointArr[nextChkPart].x;
+						lastChkPtY = this->pointArr[nextChkPart].y;
 					}
 
 					while (k-- > nextChkPart)
 					{
-						thisChkPtX = this->pointArr[(k << 1) + 0];
-						thisChkPtY = this->pointArr[(k << 1) + 1];
+						thisChkPtX = this->pointArr[k].x;
+						thisChkPtY = this->pointArr[k].y;
 
 						if (k == i || k == lastIndex || lastChkIndex == i || lastChkIndex == lastIndex)
 						{
@@ -475,7 +475,7 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	UOSInt i;
 	UOSInt j;
 	Math::Polygon *tmpPG;
-	Double *points;
+	Math::Coord2D<Double> *points;
 	UOSInt nPoints;
 	Data::ArrayListDbl *junctionX;
 	Data::ArrayListDbl *junctionY;
@@ -514,13 +514,13 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	NEW_CLASS(junctionPtNum, Data::ArrayListInt32());
 
 	i = this->nPoint;
-	lastPtX = this->pointArr[0];
-	lastPtY = this->pointArr[1];
+	lastPtX = this->pointArr[0].x;
+	lastPtY = this->pointArr[0].y;
 	lastIndex = 0;
 	while (i-- > 0)
 	{
-		thisPtX = this->pointArr[(i << 1) + 0];
-		thisPtY = this->pointArr[(i << 1) + 1];
+		thisPtX = this->pointArr[i].x;
+		thisPtY = this->pointArr[i].y;
 
 		if (thisPtX != lastPtX || thisPtY != lastPtY)
 		{
@@ -532,8 +532,8 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 			j = i;
 			while (j-- > 0)
 			{
-				thisChkPtX = this->pointArr[(j << 1) + 0];
-				thisChkPtY = this->pointArr[(j << 1) + 1];
+				thisChkPtX = this->pointArr[j].x;
+				thisChkPtY = this->pointArr[j].y;
 
 				if (j == i || j == lastIndex || lastChkIndex == i || lastChkIndex == lastIndex)
 				{

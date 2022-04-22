@@ -1324,11 +1324,11 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 						}
 						Math::Polygon *pg;
 						NEW_CLASS(pg, Math::Polygon(4326, 1, latList.GetCount()));
-						Double *points = pg->GetPointList(&i);
+						Math::Coord2D<Double> *points = pg->GetPointList(&i);
 						while (i-- > 0)
 						{
-							points[i * 2 + 0] = lonList.GetItem(i);
-							points[i * 2 + 1] = latList.GetItem(i);
+							points[i].x = lonList.GetItem(i);
+							points[i].y = latList.GetItem(i);
 						}
 						layers[elemType - 1]->AddVector(pg, names);
 					}
@@ -1345,11 +1345,11 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 						}
 						Math::Polyline *pl;
 						NEW_CLASS(pl, Math::Polyline(4326, 1, latList.GetCount()));
-						Double *points = pl->GetPointList(&i);
+						Math::Coord2D<Double> *points = pl->GetPointList(&i);
 						while (i-- > 0)
 						{
-							points[i * 2 + 0] = lonList.GetItem(i);
-							points[i * 2 + 1] = latList.GetItem(i);
+							points[i].x = lonList.GetItem(i);
+							points[i].y = latList.GetItem(i);
 						}
 						layers[elemType - 1]->AddVector(pl, names);
 					}

@@ -387,7 +387,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	UOSInt j;
 	Double lastLat;
 	Double lastLon;
-	Double *ptPtr;
+	Math::Coord2D<Double> *ptPtr;
 	if (id < 0)
 		return 0;
 	Sync::MutexUsage mutUsage(&this->recMut);
@@ -408,7 +408,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 			outObj->nPtOfst = 1;
 			outObj->nPoint = (UInt32)(j = this->currRecs.GetCount());
 			outObj->ptOfstArr = MemAlloc(UInt32, 1);
-			outObj->pointArr = MemAlloc(Double, outObj->nPoint * 2);
+			outObj->pointArr = MemAlloc(Math::Coord2D<Double>, outObj->nPoint);
 			outObj->ptOfstArr[0] = 0;
 			ptPtr = outObj->pointArr;
 			i = 0;
@@ -417,15 +417,15 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 				rec = this->currRecs.GetItem(i);
 				if (rec->lat == 0 && rec->lon == 0)
 				{
-					ptPtr[0] = lastLon;
-					ptPtr[1] = lastLat;
+					ptPtr[0].x = lastLon;
+					ptPtr[0].y = lastLat;
 				}
 				else
 				{
-					lastLon = ptPtr[0] = rec->lon;
-					lastLat = ptPtr[1] = rec->lat;
+					lastLon = ptPtr[0].x = rec->lon;
+					lastLat = ptPtr[0].y = rec->lat;
 				}
-				ptPtr += 2;
+				ptPtr += 1;
 				i++;
 			}
 			outObj->flags = 0;
@@ -450,7 +450,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 		outObj->nPtOfst = 1;
 		outObj->nPoint = (UInt32)(j = track->nRecords);
 		outObj->ptOfstArr = MemAlloc(UInt32, 1);
-		outObj->pointArr = MemAlloc(Double, outObj->nPoint * 2);
+		outObj->pointArr = MemAlloc(Math::Coord2D<Double>, outObj->nPoint);
 		outObj->ptOfstArr[0] = 0;
 		ptPtr = outObj->pointArr;
 		i = 0;
@@ -458,15 +458,15 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 		{
 			if (track->records[i].lat == 0 && track->records[i].lon == 0)
 			{
-				ptPtr[0] = lastLon;
-				ptPtr[1] = lastLat;
+				ptPtr->x = lastLon;
+				ptPtr->y = lastLat;
 			}
 			else
 			{
-				lastLon = ptPtr[0] = track->records[i].lon;
-				lastLat = ptPtr[1] = track->records[i].lat;
+				lastLon = ptPtr->x = track->records[i].lon;
+				lastLat = ptPtr->y = track->records[i].lat;
 			}
-			ptPtr += 2;
+			ptPtr += 1;
 			i++;
 		}
 		outObj->flags = 0;
@@ -483,7 +483,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 	Double lastLat;
 	Double lastLon;
 	Double lastAlt;
-	Double *ptPtr;
+	Math::Coord2D<Double> *ptPtr;
 	Double *altList;
 	if (id < 0)
 		return 0;
@@ -515,17 +515,17 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 					rec = this->currRecs.GetItem(i);
 					if (rec->lat == 0 && rec->lon == 0)
 					{
-						ptPtr[0] = lastLon;
-						ptPtr[1] = lastLat;
+						ptPtr->x = lastLon;
+						ptPtr->y = lastLat;
 						altList[i] = lastAlt;
 					}
 					else
 					{
-						lastLon = ptPtr[0] = rec->lon;
-						lastLat = ptPtr[1] = rec->lat;
+						lastLon = ptPtr->x = rec->lon;
+						lastLat = ptPtr->y = rec->lat;
 						lastAlt = altList[i] = rec->altitude;
 					}
-					ptPtr += 2;
+					ptPtr += 1;
 					i++;
 				}
 				mutUsage.EndUse();
@@ -543,16 +543,16 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 					rec = this->currRecs.GetItem(i);
 					if (rec->lat == 0 && rec->lon == 0)
 					{
-						ptPtr[0] = lastLon;
-						ptPtr[1] = lastLat;
+						ptPtr->x = lastLon;
+						ptPtr->y = lastLat;
 					}
 					else
 					{
-						lastLon = ptPtr[0] = rec->lon;
-						lastLat = ptPtr[1] = rec->lat;
+						lastLon = ptPtr->x = rec->lon;
+						lastLat = ptPtr->y = rec->lat;
 					}
 
-					ptPtr += 2;
+					ptPtr += 1;
 					i++;
 				}
 				mutUsage.EndUse();
@@ -585,17 +585,17 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			{
 				if (track->records[i].lat == 0 && track->records[i].lon == 0)
 				{
-					ptPtr[0] = lastLon;
-					ptPtr[1] = lastLat;
+					ptPtr->x = lastLon;
+					ptPtr->y = lastLat;
 					altList[i] = lastAlt;
 				}
 				else
 				{
-					lastLon = ptPtr[0] = track->records[i].lon;
-					lastLat = ptPtr[1] = track->records[i].lat;
+					lastLon = ptPtr->x = track->records[i].lon;
+					lastLat = ptPtr->y = track->records[i].lat;
 					lastAlt = altList[i] = track->records[i].altitude;
 				}
-				ptPtr += 2;
+				ptPtr += 1;
 				i++;
 			}
 			mutUsage.EndUse();
@@ -613,15 +613,15 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			{
 				if (track->records[i].lat == 0 && track->records[i].lon == 0)
 				{
-					ptPtr[0] = lastLon;
-					ptPtr[1] = lastLat;
+					ptPtr->x = lastLon;
+					ptPtr->y = lastLat;
 				}
 				else
 				{
-					lastLon = ptPtr[0] = track->records[i].lon;
-					lastLat = ptPtr[1] = track->records[i].lat;
+					lastLon = ptPtr->x = track->records[i].lon;
+					lastLat = ptPtr->y = track->records[i].lat;
 				}
-				ptPtr += 2;
+				ptPtr += 1;
 				i++;
 			}
 			mutUsage.EndUse();

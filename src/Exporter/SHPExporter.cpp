@@ -106,36 +106,35 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Point *pt;
-		Double x;
-		Double y;
+		Math::Coord2D<Double> coord;
 		ilayerType = 1;
 		i = 0;
 		while (i < recCnt)
 		{
 			pt = (Math::Point*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pt->GetCenter(&x, &y);
+			coord = pt->GetCenter();
 			if (i == 0)
 			{
-				xMin = xMax = x;
-				yMin = yMax = y;
+				xMin = xMax = coord.x;
+				yMin = yMax = coord.y;
 			}
 			else
 			{
-				if (x > xMax)
+				if (coord.x > xMax)
 				{
-					xMax = x;
+					xMax = coord.x;
 				}
-				else if (x < xMin)
+				else if (coord.x < xMin)
 				{
-					xMin = x;
+					xMin = coord.x;
 				}
-				if (y > yMax)
+				if (coord.y > yMax)
 				{
-					yMax = y;
+					yMax = coord.y;
 				}
-				else if (y < yMin)
+				else if (coord.y < yMin)
 				{
-					yMin = y;
+					yMin = coord.y;
 				}
 			}
 
@@ -145,8 +144,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 			WriteMInt32(buff, (Int32)i);
 			*(Int32*)&buff[8] = 1;
-			*(Double*)&buff[12] = x;
-			*(Double*)&buff[20] = y;
+			*(Double*)&buff[12] = coord.x;
+			*(Double*)&buff[20] = coord.y;
 			stm->Write(buff, 28);
 			fileSize += 28;
 
@@ -229,7 +228,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UOSInt nPoint;
 		UOSInt nvals[2];
 		UInt32 *ptOfsts;
-		Double *points;
+		Math::Coord2D<Double> *points;
 		
 		i = 0;
 		while (i < recCnt)
@@ -298,7 +297,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		Double ranges[2];
 		UOSInt nvals[2];
 		UInt32 *ptOfsts;
-		Double *points;
+		Math::Coord2D<Double> *points;
 		Double *alts;
 		
 		i = 0;
@@ -390,7 +389,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UOSInt nPoint;
 		UOSInt nvals[2];
 		UInt32 *ptOfsts;
-		Double *points;
+		Math::Coord2D<Double> *points;
 		
 		i = 0;
 		while (i < recCnt)

@@ -892,17 +892,15 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	return;
 }
 
-void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Double *points, Double *outPtX, Double *outPtY)
+Math::Coord2D<Double> Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2D<Double> *points)
 {
 	Double minX;
 	Double maxX;
 	Double minY;
 	Double maxY;
 	Double centY;
-	Double lastX;
-	Double lastY;
-	Double thisX;
-	Double thisY;
+	Math::Coord2D<Double> lastCoord;
+	Math::Coord2D<Double> thisCoord;
 	Double tempX;
 	Double sum;
 	UOSInt k;
@@ -910,31 +908,29 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	UOSInt i = nPoints;
 	if (i <= 0)
 	{
-		*outPtX = 0;
-		*outPtY = 0;
-		return;
+		return Math::Coord2D<Double>(0, 0);
 	}
 	Data::ArrayListDbl ptArr(4);
 
-	maxX = minX = points[0];
-	maxY = minY = points[1];
+	maxX = minX = points[0].x;
+	maxY = minY = points[0].y;
 	while (i-- > 1)
 	{
-		if (points[(i << 1) + 0] > maxX)
+		if (points[i].x > maxX)
 		{
-			maxX = points[(i << 1) + 0];
+			maxX = points[i].x;
 		}
-		if (points[(i << 1) + 0] < minX)
+		if (points[i].x < minX)
 		{
-			minX = points[(i << 1) + 0];
+			minX = points[i].x;
 		}
-		if (points[(i << 1) + 1] > maxY)
+		if (points[i].y > maxY)
 		{
-			maxY = points[(i << 1) + 1];
+			maxY = points[i].y;
 		}
-		if (points[(i << 1) + 1] < minY)
+		if (points[i].y < minY)
 		{
-			minY = points[(i << 1) + 1];
+			minY = points[i].y;
 		}
 	}
 	centY = (maxY + minY) * 0.5;
@@ -944,20 +940,17 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	while (j-- > 0)
 	{
 		k = parts[j];
-		lastX = points[(k << 1) + 0];
-		lastY = points[(k << 1) + 1];
+		lastCoord = points[k];
 		while (i-- > k)
 		{
-			thisX = points[(i << 1) + 0];
-			thisY = points[(i << 1) + 1];
+			thisCoord = points[i];
 
-			if ((lastY >= centY && thisY < centY) || (thisY >= centY && lastY < centY))
+			if ((lastCoord.y >= centY && thisCoord.y < centY) || (thisCoord.y >= centY && lastCoord.y < centY))
 			{
-				tempX = lastX + (centY - lastY) * (thisX - lastX) / (thisY - lastY);
+				tempX = lastCoord.x + (centY - lastCoord.y) * (thisCoord.x - lastCoord.x) / (thisCoord.y - lastCoord.y);
 				ptArr.SortedInsert(tempX);
 			}
-			lastX = thisX;
-			lastY = thisY;
+			lastCoord = thisCoord;
 		}
 
 		i = k;
@@ -965,9 +958,7 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	j = ptArr.GetCount();
 	if ((j & 1) == 1 || j == 0)
 	{
-		*outPtX = 0;
-		*outPtY = 0;
-		return;
+		return Math::Coord2D<Double>(0, 0);
 	}
 	sum = 0;
 	i = 0;
@@ -981,18 +972,14 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	i = 0;
 	while (i < j)
 	{
-		lastX = ptArr.GetItem(i);
-		thisX = ptArr.GetItem(i + 1);
-		if ((thisX - lastX) > sum)
+		lastCoord.x = ptArr.GetItem(i);
+		thisCoord.x = ptArr.GetItem(i + 1);
+		if ((thisCoord.x - lastCoord.x) > sum)
 		{
-			*outPtX = (lastX + sum);
-			*outPtY = centY;
-			return;
+			return Math::Coord2D<Double>(lastCoord.x + sum, centY);
 		}
-		sum -= thisX - lastX;
+		sum -= thisCoord.x - lastCoord.x;
 		i += 2;
 	}
-	*outPtX = 0;
-	*outPtY = 0;
-	return;
+	return Math::Coord2D<Double>(0, 0);
 }

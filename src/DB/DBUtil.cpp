@@ -1373,7 +1373,9 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUti
 			WriteUInt32(buff, vec->GetSRID());
 			buff[4] = 1;
 			buff[5] = 12;
-			pt->GetCenter((Double*)&buff[6], (Double*)&buff[14]);
+			Math::Coord2D<Double> coord = pt->GetCenter();
+			WriteDouble(&buff[6], coord.x);
+			WriteDouble(&buff[14], coord.y);
 			return SDBBin(sqlstr, buff, 22, svrType);
 		}
 		else

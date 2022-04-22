@@ -413,20 +413,20 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		{
 			Media::DrawImage *drawImg = this->eng->CloneImage(this->bgImg);
 			this->drawHdlr(this->drawHdlrObj, drawImg, 0, 0);
-			this->DrawScnObjects(drawImg, 0, 0);
+			this->DrawScnObjects(drawImg, Math::Coord2D<Double>(0, 0));
 			img->DrawImagePt(drawImg, tlx, tly);
 			this->eng->DeleteImage(drawImg);
 		}
 		else
 		{
 			img->DrawImagePt(this->bgImg, tlx, tly);
-			this->DrawScnObjects(img, tlx, tly);
+			this->DrawScnObjects(img, Math::Coord2D<Double>(tlx, tly));
 		}
 		mutUsage.EndUse();
 	}
 }
 
-void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Double yOfst)
+void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2D<Double> ofst)
 {
 	Double hdpi = this->view->GetHDPI();
 	Double ddpi = this->view->GetDDPI();
@@ -437,8 +437,8 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 		Int32 x;
 		Int32 y;
 		this->view->MapXYToScnXY(this->markerX, this->markerY, &scnX, &scnY);
-		x = Double2Int32(scnX + xOfst);
-		y = Double2Int32(scnY + yOfst);
+		x = Double2Int32(scnX + ofst.x);
+		y = Double2Int32(scnY + ofst.y);
 		Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
 		if (this->markerHasDir)
 		{
@@ -466,14 +466,14 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			UOSInt nPoint;
 			UOSInt nPtOfst;
-			Double *points = pl->GetPointList(&nPoint);
+			Math::Coord2D<Double> *points = pl->GetPointList(&nPoint);
 			UInt32 *ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			UOSInt i;
-			Double *dpoints = MemAlloc(Double, nPoint * 2);
+			Math::Coord2D<Double> *dpoints = MemAlloc(Math::Coord2D<Double>, nPoint);
 			UOSInt lastCnt;
 			UOSInt thisCnt;
 
-			view->MapXYToScnXY(points, dpoints, nPoint, xOfst, yOfst);
+			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
 			lastCnt = nPoint;
 			i = nPtOfst;
 			while (i-- > 0)
@@ -493,11 +493,11 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			UOSInt nPoint;
 			UOSInt nPtOfst;
-			Double *points = pg->GetPointList(&nPoint);
+			Math::Coord2D<Double> *points = pg->GetPointList(&nPoint);
 			UInt32 *ptOfsts = pg->GetPtOfstList(&nPtOfst);
-			Double *dpoints = MemAlloc(Double, nPoint * 2);
+			Math::Coord2D<Double> *dpoints = MemAlloc(Math::Coord2D<Double>, nPoint);
 			UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
-			view->MapXYToScnXY(points, dpoints, nPoint, xOfst, yOfst);
+			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
 
 			UOSInt i = nPtOfst;
 			while (i-- > 0)
@@ -666,7 +666,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			UInt32 nPoints;
-			Double pts[10];
+			Math::Coord2D<Double> pts[5];
 			Double x1;
 			Double y1;
 			Double x2;
@@ -675,32 +675,32 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			if (vimg->IsScnCoord())
 			{
 				vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &x1, &y1, &x2, &y2);
-				pts[0] = x1;
-				pts[1] = y1;
-				pts[2] = x1;
-				pts[3] = y2;
-				pts[4] = x2;
-				pts[5] = y2;
-				pts[6] = x2;
-				pts[7] = y1;
-				pts[8] = x1;
-				pts[9] = y1;
+				pts[0].x = x1;
+				pts[0].y = y1;
+				pts[1].x = x1;
+				pts[1].y = y2;
+				pts[2].x = x2;
+				pts[2].y = y2;
+				pts[3].x = x2;
+				pts[3].y = y1;
+				pts[4].x = x1;
+				pts[4].y = y1;
 			}
 			else
 			{
 				vimg->GetBounds(&x1, &y1, &x2, &y2);
 				view->MapXYToScnXY(x1, y1, &x1, &y1);
 				view->MapXYToScnXY(x2, y2, &x2, &y2);
-				pts[0] = x1;
-				pts[1] = y1;
-				pts[2] = x1;
-				pts[3] = y2;
-				pts[4] = x2;
-				pts[5] = y2;
-				pts[6] = x2;
-				pts[7] = y1;
-				pts[8] = x1;
-				pts[9] = y1;
+				pts[0].x = x1;
+				pts[0].y = y1;
+				pts[1].x = x1;
+				pts[1].y = y2;
+				pts[2].x = x2;
+				pts[2].y = y2;
+				pts[3].x = x2;
+				pts[3].y = y1;
+				pts[4].x = x1;
+				pts[4].y = y1;
 			}
 			nPoints = 5;
 			img->DrawPolyPolygon(pts, &nPoints, 1, p, b);

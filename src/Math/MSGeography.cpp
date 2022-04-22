@@ -73,12 +73,11 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buff
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pg, Math::Polygon(srid, 1, nPoints));
-				Double *points = pg->GetPointList(&j);
+				Math::Coord2D<Double> *points = pg->GetPointList(&j);
 				i = 0;
 				while (i < j)
 				{
-					points[i * 2] = ReadDouble(&pointPtr[i * 16]);
-					points[i * 2 + 1] = ReadDouble(&pointPtr[i * 16 + 8]);
+					points[i] = Math::Coord2D<Double>(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
 					i++;
 				}
 				return pg;

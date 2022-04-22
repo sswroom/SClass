@@ -44,7 +44,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
 				NEW_CLASS(pl, Math::Polyline(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -56,8 +56,9 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
 				return pl;
@@ -82,7 +83,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
 				NEW_CLASS(pl, Math::Polygon(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -94,8 +95,9 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
 				return pl;
@@ -145,7 +147,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
+				Double *alts;
 				NEW_CLASS(pl, Math::Polyline3D(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -157,14 +160,15 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
-				points = pl->GetAltitudeList(&tmpV);
+				alts = pl->GetAltitudeList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
+					*alts++ = ReadDouble(&buff[0]);
 					buff += 8;
 				}
 				return pl;
@@ -197,7 +201,8 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
+				Double *alts;
 				NEW_CLASS(pl, Math::Polyline3D(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -209,14 +214,15 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
-				points = pl->GetAltitudeList(&tmpV);
+				alts = pl->GetAltitudeList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
+					*alts++ = ReadDouble(&buff[0]);
 					buff += 8;
 				}
 				return pl;
@@ -241,7 +247,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
 				NEW_CLASS(pl, Math::Polygon(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -253,8 +259,9 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
 				return pl;
@@ -280,7 +287,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
 				NEW_CLASS(pl, Math::Polygon(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -292,8 +299,9 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
 				return pl;
@@ -329,7 +337,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
 				NEW_CLASS(pl, Math::Polyline(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -341,8 +349,9 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
 				return pl;
@@ -367,7 +376,7 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 			{
 				UOSInt tmpV;
 				UInt32 *ptOfsts;
-				Double *points;
+				Math::Coord2D<Double> *points;
 				NEW_CLASS(pl, Math::Polygon(srid, nPtOfst, nPoint));
 				ptOfsts = pl->GetPtOfstList(&tmpV);
 				buff += 44;
@@ -379,8 +388,9 @@ Math::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOS
 				points = pl->GetPointList(&tmpV);
 				while (tmpV-- > 0)
 				{
-					*points++ = ReadDouble(&buff[0]);
-					*points++ = ReadDouble(&buff[8]);
+					points->x = ReadDouble(&buff[0]);
+					points->y = ReadDouble(&buff[8]);
+					points++;
 					buff += 16;
 				}
 				return pl;

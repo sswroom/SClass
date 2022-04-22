@@ -12,9 +12,9 @@ Math::PointCollection::~PointCollection()
 
 }
 
-void Math::PointCollection::GetCenter(Double *x, Double *y)
+Math::Coord2D<Double> Math::PointCollection::GetCenter()
 {
-	Double *points;
+	Math::Coord2D<Double> *points;
 	UOSInt nPoints;
 
 	Double maxX;
@@ -25,18 +25,17 @@ void Math::PointCollection::GetCenter(Double *x, Double *y)
 	points = this->GetPointList(&nPoints);
 	if (nPoints <= 0)
 	{
-		*x = 0;
-		*y = 0;
+		return Math::Coord2D<Double>(0, 0);
 	}
 	else
 	{
 		UOSInt i = nPoints;
-		minX = maxX = points[0];
-		minY = maxY = points[1];
+		minX = maxX = points[0].x;
+		minY = maxY = points[0].y;
 
 		while (i-- > 0)
 		{
-			v = points[(i << 1)];
+			v = points[i].x;
 			if (v > maxX)
 			{
 				maxX = v;
@@ -45,7 +44,7 @@ void Math::PointCollection::GetCenter(Double *x, Double *y)
 			{
 				minX = v;
 			}
-			v = points[(i << 1) + 1];
+			v = points[i].y;
 			if (v > maxY)
 			{
 				maxY = v;
@@ -55,7 +54,6 @@ void Math::PointCollection::GetCenter(Double *x, Double *y)
 				minY = v;
 			}
 		}
-		*x = (minX + maxX) * 0.5;
-		*y = (minY + maxY) * 0.5;
+		return Math::Coord2D<Double>((minX + maxX) * 0.5, (minY + maxY) * 0.5);
 	}
 }

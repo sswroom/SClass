@@ -50,7 +50,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	UOSInt nPoint;
 	UOSInt nPtOfst;
 	UInt32 *ptOfsts;
-	Double *points;
+	Math::Coord2D<Double> *points;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
 	UOSInt i = nPtOfst;
@@ -58,8 +58,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	UOSInt k;
 	Double totalDist = 0;
 	Bool hasLast;
-	Double lastX;
-	Double lastY;
+	Math::Coord2D<Double> lastPt;
 	while (i-- > 0)
 	{
 		k = ptOfsts[i];
@@ -68,11 +67,10 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 		{
 			if (hasLast)
 			{
-				totalDist += CalSurfaceDistanceXY(lastX, lastY, points[(j << 1)], points[(j << 1) + 1], unit);
+				totalDist += CalSurfaceDistanceXY(lastPt.x, lastPt.y, points[j].x, points[j].y, unit);
 			}
 			hasLast = true;
-			lastX = points[(j << 1)];
-			lastY = points[(j << 1) + 1];
+			lastPt = points[j];
 		}
 		j++;
 	}
@@ -85,7 +83,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	UOSInt nPtOfst;
 	UOSInt nAlts;
 	UInt32 *ptOfsts;
-	Double *points;
+	Math::Coord2D<Double> *points;
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
@@ -96,8 +94,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	Double dist;
 	Double totalDist = 0;
 	Bool hasLast;
-	Double lastX;
-	Double lastY;
+	Math::Coord2D<Double> lastPt;
 	Double lastH;
 	while (i-- > 0)
 	{
@@ -107,13 +104,12 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 		{
 			if (hasLast)
 			{
-				dist = CalSurfaceDistanceXY(lastX, lastY, points[(j << 1)], points[(j << 1) + 1], unit);
+				dist = CalSurfaceDistanceXY(lastPt.x, lastPt.y, points[j].x, points[j].y, unit);
 				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 				totalDist += dist;
 			}
 			hasLast = true;
-			lastX = points[(j << 1)];
-			lastY = points[(j << 1) + 1];
+			lastPt = points[j];
 			lastH = alts[j];
 		}
 		j++;

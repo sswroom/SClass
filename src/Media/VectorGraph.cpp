@@ -297,11 +297,9 @@ UOSInt Media::VectorGraph::GetImgBpl()
 
 Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p)
 {
-	Double pt[4];
-	pt[0] = x1;
-	pt[1] = y1;
-	pt[2] = x2;
-	pt[3] = y2;
+	Math::Coord2D<Double> pt[2];
+	pt[0] = Math::Coord2D<Double>(x1, y1);
+	pt[1] = Math::Coord2D<Double>(x2, y2);
 	Math::Polyline *pl;
 	VectorStyles *style;
 	NEW_CLASS(pl, Math::Polyline(this->srid, pt, 2));
@@ -320,7 +318,7 @@ Bool Media::VectorGraph::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
 	Math::Polyline *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Polyline(this->srid, dPoints, nPoints));
+	NEW_CLASS(pl, Math::Polyline(this->srid, (Math::Coord2D<Double>*)dPoints, nPoints));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;
@@ -343,7 +341,7 @@ Bool Media::VectorGraph::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSIn
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyline(Double *points, UOSInt nPoints, DrawPen *p)
+Bool Media::VectorGraph::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p)
 {
 	Math::Polyline *pl;
 	VectorStyles *style;
@@ -357,13 +355,13 @@ Bool Media::VectorGraph::DrawPolyline(Double *points, UOSInt nPoints, DrawPen *p
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygon(Double *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygon(Double *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
@@ -829,25 +827,24 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 //			OSInt nParts;
 			UOSInt nPoints;
 //			Int32 *parts;
-			Double *points;
-			Double *dpoints;
+			Math::Coord2D<Double> *points;
+			Math::Coord2D<Double> *dpoints;
 //			parts = pl->GetPartList(&nParts);
 			dpoints = pl->GetPointList(&nPoints);
-			points = MemAlloc(Double, nPoints * 2);
-			k = nPoints * 2;
+			points = MemAlloc(Math::Coord2D<Double>, nPoints);
+			Math::Coord2D<Double> dScale = Math::Coord2D<Double>(scale, scale);
+			k = nPoints;
 			while (k-- > 0)
 			{
-				points[k] = dpoints[k] * scale;
+				points[k] = dpoints[k] * dScale;
 			}
 			dimg->DrawPolyline(points, nPoints, p);
 			MemFree(points);
 		}
 		else if (vec->GetVectorType() == Math::Vector2D::VectorType::String)
 		{
-			Double x;
-			Double y;
 			Math::VectorString *vstr = (Math::VectorString*)vec;
-			vstr->GetCenter(&x, &y);
+			Math::Coord2D<Double> coord = vstr->GetCenter();
 			align = vstr->GetTextAlign();
 			if (align != currAlign)
 			{
@@ -858,22 +855,22 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			{
 				if (vstr->GetBuffSize() == 0)
 				{
-					dimg->DrawString(x * scale, y * scale, vstr->GetString(), f, b);
+					dimg->DrawString(coord.x * scale, coord.y * scale, vstr->GetString(), f, b);
 				}
 				else
 				{
-					dimg->DrawStringB(x * scale, y * scale, vstr->GetString(), f, b, (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
+					dimg->DrawStringB(coord.x * scale, coord.y * scale, vstr->GetString(), f, b, (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
 				}
 			}
 			else
 			{
 				if (vstr->GetBuffSize() == 0)
 				{
-					dimg->DrawStringRot(x * scale, y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()));
+					dimg->DrawStringRot(coord.x * scale, coord.y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()));
 				}
 				else
 				{
-					dimg->DrawStringRotB(x * scale, y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()), (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
+					dimg->DrawStringRotB(coord.x * scale, coord.y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()), (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
 				}
 			}
 		}

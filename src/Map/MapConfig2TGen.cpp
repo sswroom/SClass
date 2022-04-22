@@ -291,22 +291,21 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 			}
 			else if (font->fontType == 2)
 			{
-				Double pt[10];
+				Math::Coord2D<Double> pt[5];
 				rcLeft = scnPosX - ((size[0] + font->fontSizePt) * 0.5);
 				rcRight = rcLeft + size[0] + font->fontSizePt;
 				rcTop = scnPosY - ((size[1] + font->fontSizePt) * 0.5);
 				rcBottom = rcTop + size[1] + font->fontSizePt;
 
-				pt[0] = rcLeft;
-				pt[1] = rcTop;
-				pt[2] = rcRight;
-				pt[3] = rcTop;
-				pt[4] = rcRight;
-				pt[5] = rcBottom;
-				pt[6] = rcLeft;
-				pt[7] = rcBottom;
-				pt[8] = pt[0];
-				pt[9] = pt[1];
+				pt[0].x = rcLeft;
+				pt[0].y = rcTop;
+				pt[1].x = rcRight;
+				pt[1].y = rcTop;
+				pt[2].x = rcRight;
+				pt[2].y = rcBottom;
+				pt[3].x = rcLeft;
+				pt[3].y = rcBottom;
+				pt[4] = pt[0];
 
 				img->DrawPolyline(pt, 5, (Media::DrawPen*)font->other);
 			}
@@ -347,7 +346,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 
 		scaleW = lastScaleW;
 		scaleH = lastScaleH;
-		Double pt[10];
+		Math::Coord2D<Double> pt[5];
 		Double xPos;
 		Double yPos;
 		Double sVal;
@@ -364,14 +363,14 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 			Double xc = ((xPos * 0.5) * (cVal = Math_Cos(degD)));
 			Double yc = ((yPos * 0.5) * cVal);
 
-			pt[0] = scnPosX - xc - ys;
-			pt[1] = scnPosY + xs - yc;
-			pt[2] = scnPosX + xc - ys;
-			pt[3] = scnPosY - xs - yc;
-			pt[4] = scnPosX + xc + ys;
-			pt[5] = scnPosY - xs + yc;
-			pt[6] = scnPosX - xc + ys;
-			pt[7] = scnPosY + xs + yc;
+			pt[0].x = scnPosX - xc - ys;
+			pt[0].y = scnPosY + xs - yc;
+			pt[1].x = scnPosX + xc - ys;
+			pt[1].y = scnPosY - xs - yc;
+			pt[2].x = scnPosX + xc + ys;
+			pt[2].y = scnPosY - xs + yc;
+			pt[3].x = scnPosX - xc + ys;
+			pt[3].y = scnPosY + xs + yc;
 
 
 			p = 0;
@@ -397,16 +396,15 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 			Double xc = ((xPos * 0.5) * (cVal = Math_Cos(degD)));
 			Double yc = ((yPos * 0.5) * cVal);
 
-			pt[0] = scnPosX - xc - ys;
-			pt[1] = scnPosY + xs - yc;
-			pt[2] = scnPosX + xc - ys;
-			pt[3] = scnPosY - xs - yc;
-			pt[4] = scnPosX + xc + ys;
-			pt[5] = scnPosY - xs + yc;
-			pt[6] = scnPosX - xc + ys;
-			pt[7] = scnPosY + xs + yc;
-			pt[8] = pt[0];
-			pt[9] = pt[1];
+			pt[0].x = scnPosX - xc - ys;
+			pt[0].y = scnPosY + xs - yc;
+			pt[1].x = scnPosX + xc - ys;
+			pt[1].y = scnPosY - xs - yc;
+			pt[2].x = scnPosX + xc + ys;
+			pt[2].y = scnPosY - xs + yc;
+			pt[3].x = scnPosX - xc + ys;
+			pt[3].y = scnPosY + xs + yc;
+			pt[4] = pt[0];
 
 			img->DrawPolyline(pt, 5, (Media::DrawPen*)font->other);
 		}
@@ -2657,7 +2655,7 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 						maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
 				}
 				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-				if (AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI(), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI())))
+				if (AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos].x, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI(), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI())))
 				{
 					lyrs->lyr->ReleaseObject(session, dobj);
 				}
@@ -2671,19 +2669,21 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 				if (dobj->nPoint & 1)
 				{
-					pts[0] = dobj->pointArr[dobj->nPoint - 1];
-					pts[1] = dobj->pointArr[dobj->nPoint];
+					UOSInt k = dobj->nPoint >> 1;
+					pts[0] = dobj->pointArr[k].x;
+					pts[1] = dobj->pointArr[k].y;
 
-					scaleW = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 3];
-					scaleH = dobj->pointArr[dobj->nPoint + 2] - dobj->pointArr[dobj->nPoint - 2];
+					scaleW = dobj->pointArr[k + 1].x - dobj->pointArr[k - 1].x;
+					scaleH = dobj->pointArr[k + 1].y - dobj->pointArr[k - 1].y;
 				}
 				else
 				{
-					pts[0] = (dobj->pointArr[dobj->nPoint - 2] + dobj->pointArr[dobj->nPoint]) * 0.5;
-					pts[1] = (dobj->pointArr[dobj->nPoint - 1] + dobj->pointArr[dobj->nPoint + 1]) * 0.5;
+					UOSInt k = dobj->nPoint >> 1;
+					pts[0] = (dobj->pointArr[k - 1].x + dobj->pointArr[k].x) * 0.5;
+					pts[1] = (dobj->pointArr[k - 1].y + dobj->pointArr[k].y) * 0.5;
 
-					scaleW = dobj->pointArr[dobj->nPoint] - dobj->pointArr[dobj->nPoint - 2];
-					scaleH = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 1];
+					scaleW = dobj->pointArr[k].x - dobj->pointArr[k - 1].x;
+					scaleH = dobj->pointArr[k].y - dobj->pointArr[k - 1].y;
 				}
 
 				if ((lyrs->bkColor & SFLG_ROTATE) == 0)
@@ -2701,14 +2701,15 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 			{
 				Double lastPtX = 0;
 				Double lastPtY = 0;
-				Double *pointPos = dobj->pointArr;
+				Math::Coord2D<Double> *pointPos = dobj->pointArr;
 				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 
 				j = dobj->nPoint;
 				while (j--)
 				{
-					lastPtX += *pointPos++;
-					lastPtY += *pointPos++;
+					lastPtX += pointPos->x;
+					lastPtY += pointPos->y;
+					pointPos++;
 				}
 
 				pts[0] = (lastPtX / dobj->nPoint);

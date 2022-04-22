@@ -1278,9 +1278,9 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
 		obj->nPtOfst = (UInt32)cnt;
 		obj->ptOfstArr = MemAlloc(UInt32, cnt);
 		MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * cnt);
-		Double *points = pl->GetPointList(&cnt);
+		Math::Coord2D<Double> *points = pl->GetPointList(&cnt);
 		obj->nPoint = (UInt32)cnt;
-		obj->pointArr = MemAlloc(Double, cnt << 1);
+		obj->pointArr = MemAlloc(Math::Coord2D<Double>, cnt);
 		if (road->lev == Map::HKTrafficLayer::SL_GOOD)
 		{
 			obj->flags = 1;
@@ -1302,7 +1302,7 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
 			obj->lineColor = 0;
 		}
 		
-		MemCopyNO(obj->pointArr, points, sizeof(Double) * cnt * 2);
+		MemCopyNO(obj->pointArr, points, sizeof(Math::Coord2D<Double>) * cnt);
 	}
 	mutUsage.EndUse();
 	return obj;

@@ -69,7 +69,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			UOSInt nPtOfst;
 			UInt32 *ptOfsts;
 			UOSInt nPoint;
-			Double *points;
+			Math::Coord2D<Double> *points;
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -103,8 +103,8 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 				while (j < k)
 				{
 					json->ArrayBeginArray();
-					json->ArrayAddFloat64(points[j << 1]);
-					json->ArrayAddFloat64(points[(j << 1) + 1]);
+					json->ArrayAddFloat64(points[j].x);
+					json->ArrayAddFloat64(points[j].y);
 					json->ArrayEnd();
 					j++;
 				}
@@ -116,15 +116,14 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 		break;
 	case Math::Vector2D::VectorType::Point:
 		{
-			Double x;
-			Double y;
+			Math::Coord2D<Double> coord;
 			Math::Point *pt = (Math::Point*)vec;
 			json->ObjectBeginObject(name);
 			json->ObjectAddStr(CSTR("type"), CSTR("Point"));
 			json->ObjectBeginArray(CSTR("coordinates"));
-			pt->GetCenter(&x, &y);
-			json->ArrayAddFloat64(x);
-			json->ArrayAddFloat64(y);
+			coord = pt->GetCenter();
+			json->ArrayAddFloat64(coord.x);
+			json->ArrayAddFloat64(coord.y);
 			json->ArrayEnd();
 			json->ObjectEnd();
 		}

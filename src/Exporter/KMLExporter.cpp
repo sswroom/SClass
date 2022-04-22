@@ -159,18 +159,17 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 			{
-				Double x;
-				Double y;
+				Math::Coord2D<Double> coord;
 				Double z;
 				if (vec->Support3D())
 				{
 					Math::Point3D *pt = (Math::Point3D*)vec;
-					pt->GetCenter3D(&x, &y, &z);
+					pt->GetCenter3D(&coord.x, &coord.y, &z);
 				}
 				else
 				{
 					Math::Point *pt = (Math::Point*)vec;
-					pt->GetCenter(&x, &y);
+					coord = pt->GetCenter();
 					z = 0;
 				}
 
@@ -180,7 +179,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				}
 				if (needConv)
 				{
-					Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, x, y, z, &x, &y, &z);
+					Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, coord.x, coord.y, z, &coord.x, &coord.y, &z);
 				}
 
 				sptr = Text::StrConcatC(sbuff2, UTF8STRC("<Placemark>"));
@@ -188,9 +187,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sptr = Text::XML::ToXMLText(sptr, sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
 				sptr = Text::StrConcatC(sptr, UTF8STRC("<Point><coordinates>"));
-				sptr = Text::StrDouble(sptr, x);
+				sptr = Text::StrDouble(sptr, coord.x);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-				sptr = Text::StrDouble(sptr, y);
+				sptr = Text::StrDouble(sptr, coord.y);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 				sptr = Text::StrDouble(sptr, z);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("</coordinates></Point>"));
@@ -212,7 +211,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.AppendP(sbuff2, sptr);
 				sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-				Double *points = pl->GetPointList(&nPoints);
+				Math::Coord2D<Double> *points = pl->GetPointList(&nPoints);
 				if (needConv)
 				{
 					Double x;
@@ -224,7 +223,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						k = 0;
 						while (k < nPoints)
 						{
-							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k << 1], points[(k << 1) + 1], alts[k], &x, &y, &z);
+							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, alts[k], &x, &y, &z);
 
 							sptr = sbuff2;
 							sptr = Text::StrDouble(sptr, x);
@@ -244,7 +243,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						k = 0;
 						while (k < nPoints)
 						{
-							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k << 1], points[(k << 1) + 1], defHeight, &x, &y, &z);
+							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
 							sptr = sbuff2;
 							sptr = Text::StrDouble(sptr, x);
 							*sptr++ = ',';
@@ -268,9 +267,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						while (k < nPoints)
 						{
 							sptr = sbuff2;
-							sptr = Text::StrDouble(sptr, points[k << 1]);
+							sptr = Text::StrDouble(sptr, points[k].x);
 							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, points[(k << 1) + 1]);
+							sptr = Text::StrDouble(sptr, points[k].y);
 							*sptr++ = ',';
 							sptr = Text::StrDouble(sptr, alts[k]);
 							*sptr++ = ' ';
@@ -286,9 +285,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						while (k < nPoints)
 						{
 							sptr = sbuff2;
-							sptr = Text::StrDouble(sptr, points[k << 1]);
+							sptr = Text::StrDouble(sptr, points[k].x);
 							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, points[(k << 1) + 1]);
+							sptr = Text::StrDouble(sptr, points[k].y);
 							*sptr++ = ',';
 							sptr = Text::StrDouble(sptr, defHeight);
 							*sptr++ = ' ';
@@ -323,7 +322,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
 				sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
-				Double *points = pg->GetPointList(&nPoints);
+				Math::Coord2D<Double> *points = pg->GetPointList(&nPoints);
 				UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
 
 				if (needConv)
@@ -338,7 +337,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
 						while (k-- > ptOfsts[l])
 						{
-							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k << 1], points[(k << 1) + 1], defHeight, &x, &y, &z);
+							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
 							sptr = Text::StrDouble(sbuff2, x);
 							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 							sptr = Text::StrDouble(sptr, y);
@@ -360,9 +359,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
 						while (k-- > ptOfsts[l])
 						{
-							sptr = Text::StrDouble(sbuff2, points[k << 1]);
+							sptr = Text::StrDouble(sbuff2, points[k].x);
 							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-							sptr = Text::StrDouble(sptr, points[(k << 1) + 1]);
+							sptr = Text::StrDouble(sptr, points[k].y);
 							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 							sptr = Text::StrDouble(sptr, defHeight);
 							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));

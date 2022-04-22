@@ -155,7 +155,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		Double maxX;
 		Double maxY;
 		Double v;
-		Double *points;
+		Math::Coord2D<Double> *points;
 		Int32 currInd = 1;
 		Data::ArrayListInt64 *objIds;
 		void *nameArr;
@@ -181,7 +181,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 			{
 				sptr = Text::StrInt32(sbuff, currInd);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-				v = points[(k << 1) + 1];
+				v = points[k].y;
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
@@ -192,7 +192,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					sptr = Text::StrDouble(sptr, v);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(",N,"));
 				}
-				v = points[(k << 1)];
+				v = points[k].x;
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);

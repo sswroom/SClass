@@ -40,7 +40,7 @@ namespace Map
 
 		virtual Bool InViewXY(Double mapX, Double mapY);
 		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
-		virtual Bool MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY); // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofst); // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
 		virtual void MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY);
 		virtual void ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY);

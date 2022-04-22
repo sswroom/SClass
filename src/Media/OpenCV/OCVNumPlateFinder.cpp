@@ -144,15 +144,11 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				{
 //					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
 //					printf("Area leng: %lf %lf %lf %lf, ratio = %lf\r\n", leng[0], leng[1], leng[2], leng[3], leng[0] / leng[1]);
-					UOSInt rect[8];
-					rect[0] = (UOSInt)poly[0].x;
-					rect[1] = (UOSInt)poly[0].y;
-					rect[2] = (UOSInt)poly[1].x;
-					rect[3] = (UOSInt)poly[1].y;
-					rect[4] = (UOSInt)poly[2].x;
-					rect[5] = (UOSInt)poly[2].y;
-					rect[6] = (UOSInt)poly[3].x;
-					rect[7] = (UOSInt)poly[3].y;
+					Math::Coord2D<UOSInt> rect[4];
+					rect[0] = Math::Coord2D<UOSInt>((UOSInt)poly[0].x, (UOSInt)poly[0].y);
+					rect[1] = Math::Coord2D<UOSInt>((UOSInt)poly[1].x, (UOSInt)poly[1].y);
+					rect[2] = Math::Coord2D<UOSInt>((UOSInt)poly[2].x, (UOSInt)poly[2].y);
+					rect[3] = Math::Coord2D<UOSInt>((UOSInt)poly[3].x, (UOSInt)poly[3].y);
 					func(userObj, &filteredFrame, rect, maxTileAngle, area, pSize);
 				}
 			}

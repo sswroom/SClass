@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPVIEW
 #define _SM_MAP_MAPVIEW
-
+#include "Math/Coord2D.h"
 #include "Media/DrawEngine.h"
 
 namespace Map
@@ -34,7 +34,7 @@ namespace Map
 
 		virtual Bool InViewXY(Double x, Double y) = 0;
 		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
-		virtual Bool MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY) = 0; // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofst) = 0; // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
 		virtual void MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY) = 0;
 		virtual void ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY) = 0;

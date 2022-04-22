@@ -44,7 +44,7 @@ void Math::Polyline3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordinat
 	UOSInt i = this->nPoint;
 	while (i-- > 0)
 	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[(i << 1)], this->pointArr[(i << 1) + 1], this->altitudes[i], &this->pointArr[(i << 1)], &this->pointArr[(i << 1) + 1], &this->altitudes[i]);
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, this->altitudes[i], &this->pointArr[i].x, &this->pointArr[i].y, &this->altitudes[i]);
 	}
 }
 
@@ -62,7 +62,8 @@ Bool Math::Polyline3D::Equals(Math::Vector2D *vec)
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
-		Double *ptList = pl->GetPointList(&nPoint);
+		Math::Coord2D<Double> *ptList = pl->GetPointList(&nPoint);
+		Double *alts;
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
 			return false;
@@ -75,7 +76,7 @@ Bool Math::Polyline3D::Equals(Math::Vector2D *vec)
 				return false;
 			}
 		}
-		i = nPoint << 1;
+		i = nPoint;
 		while (i-- > 0)
 		{
 			if (ptList[i] != this->pointArr[i])
@@ -83,11 +84,11 @@ Bool Math::Polyline3D::Equals(Math::Vector2D *vec)
 				return false;
 			}
 		}
-		ptList = pl->GetAltitudeList(&nPoint);
+		alts = pl->GetAltitudeList(&nPoint);
 		i = nPoint;
 		while (i-- > 0)
 		{
-			if (ptList[i] != this->altitudes[i])
+			if (alts[i] != this->altitudes[i])
 			{
 				return false;
 			}
@@ -106,7 +107,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	UOSInt l;
 	UInt32 m;
 	UInt32 *ptOfsts;
-	Double *points;
+	Math::Coord2D<Double> *points;
 
 	ptOfsts = this->ptOfstArr;
 	points = this->pointArr;
@@ -135,8 +136,8 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		l--;
 		while (l-- > m)
 		{
-			calH = points[(l << 1) + 1] - points[(l << 1) + 3];
-			calW = points[(l << 1) + 0] - points[(l << 1) + 2];
+			calH = points[l].y - points[l + 1].y;
+			calW = points[l].x - points[l + 1].x;
 			calZD = altitudes[l] - altitudes[l + 1];
 
 			if (calH == 0)
@@ -147,8 +148,8 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			{
 				calX = (calBase = (calW * calW)) * x;
 				calBase += calH * calH;
-				calX += calH * calH * (points[(l << 1) + 0]);
-				calX += (y - points[(l << 1) + 1]) * calH * calW;
+				calX += calH * calH * points[l].x;
+				calX += (y - points[l].y) * calH * calW;
 				calX /= calBase;
 			}
 
@@ -161,49 +162,49 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 				}
 				else
 				{
-					calZ = ((calY - (points[(l << 1) + 1])) * calZD / calH) + altitudes[l];
+					calZ = ((calY - points[l].y) * calZD / calH) + altitudes[l];
 				}
 			}
 			else
 			{
-				calY = ((calX - (points[(l << 1) + 0])) * calH / calW) + points[(l << 1) + 1];
+				calY = ((calX - points[l].x) * calH / calW) + points[l].y;
 				if (calZD == 0)
 				{
 					calZ = altitudes[l];
 				}
 				else
 				{
-					calZ = ((calX - (points[(l << 1) + 0])) * calZD / calW) + altitudes[l];
+					calZ = ((calX - points[l].x) * calZD / calW) + altitudes[l];
 				}
 			}
 
 			if (calW < 0)
 			{
-				if (points[(l << 1) + 0] > calX)
+				if (points[l].x > calX)
 					continue;
-				if (points[(l << 1) + 2] < calX)
+				if (points[l + 1].x < calX)
 					continue;
 			}
 			else
 			{
-				if (points[(l << 1) + 0] < calX)
+				if (points[l].x < calX)
 					continue;
-				if (points[(l << 1) + 2] > calX)
+				if (points[l + 1].x > calX)
 					continue;
 			}
 
 			if (calH < 0)
 			{
-				if (points[(l << 1) + 1] > calY)
+				if (points[l].y > calY)
 					continue;
-				if (points[(l << 1) + 3] < calY)
+				if (points[l + 1].y < calY)
 					continue;
 			}
 			else
 			{
-				if (points[(l << 1) + 1] < calY)
+				if (points[l].y < calY)
 					continue;
-				if (points[(l << 1) + 3] > calY)
+				if (points[l + 1].y > calY)
 					continue;
 			}
 
@@ -224,14 +225,14 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	k = this->nPoint;
 	while (k-- > 0)
 	{
-		calH = y - points[(k << 1) + 1];
-		calW = x - points[(k << 1) + 0];
+		calH = y - points[k].y;
+		calW = x - points[k].x;
 		calD = calW * calW + calH * calH;
 		if (calD < dist)
 		{
 			dist = calD;
-			calPtX = points[(k << 1) + 0];
-			calPtY = points[(k << 1) + 1];
+			calPtX = points[k].x;
+			calPtY = points[k].y;
 			calPtZ = altitudes[k];
 			minId = k;
 			isPoint = true;
@@ -239,8 +240,8 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	}
 	UInt32 *oldPtOfsts;
 	UInt32 *newPtOfsts;
-	Double *oldPoints;
-	Double *newPoints;
+	Math::Coord2D<Double> *oldPoints;
+	Math::Coord2D<Double> *newPoints;
 	Double *oldAltitudes;
 	Double *newAltitudes;
 	Math::Polyline3D *newPL;
@@ -272,13 +273,12 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			}
 		}
 		newPtOfsts = MemAlloc(UInt32, k + 1);
-		newPoints = MemAlloc(Double, (minId + 1) * 2);
+		newPoints = MemAlloc(Math::Coord2D<Double>, (minId + 1));
 		newAltitudes = MemAlloc(Double, minId + 1);
 		l = minId + 1;
 		while (l-- > 0)
 		{
-			newPoints[(l << 1) + 0] = oldPoints[(l << 1) + 0];
-			newPoints[(l << 1) + 1] = oldPoints[(l << 1) + 1];
+			newPoints[l] = oldPoints[l];
 			newAltitudes[l] = oldAltitudes[l];
 		}
 		l = k + 1;
@@ -303,8 +303,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		l = this->nPoint;
 		while (l-- > minId)
 		{
-			newPoints[((l - minId) << 1) + 0] = oldPoints[(l << 1) + 0];
-			newPoints[((l - minId) << 1) + 1] = oldPoints[(l << 1) + 1];
+			newPoints[(l - minId)] = oldPoints[l];
 			newAltitudes[l - minId] = oldAltitudes[l];
 		}
 		this->nPoint = minId + 1;
@@ -330,17 +329,15 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			}
 		}
 		newPtOfsts = MemAlloc(UInt32, k + 1);
-		newPoints = MemAlloc(Double, (minId + 2) * 2);
+		newPoints = MemAlloc(Math::Coord2D<Double>, (minId + 2));
 		newAltitudes = MemAlloc(Double,  minId + 2);
 		l = minId + 1;
 		while (l-- > 0)
 		{
-			newPoints[(l << 1) + 0] = oldPoints[(l << 1) + 0];
-			newPoints[(l << 1) + 1] = oldPoints[(l << 1) + 1];
+			newPoints[l] = oldPoints[l];
 			newAltitudes[l] = oldAltitudes[l];
 		}
-		newPoints[((minId + 1) << 1) + 0] = calPtX;
-		newPoints[((minId + 1) << 1) + 1] = calPtY;
+		newPoints[minId + 1] = Math::Coord2D<Double>(calPtX, calPtY);
 		newAltitudes[minId + 1] = calPtZ;
 
 		l = k + 1;
@@ -365,12 +362,10 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		l = this->nPoint;
 		while (--l > minId)
 		{
-			newPoints[((l - minId) << 1) + 0] = oldPoints[(l << 1) + 0];
-			newPoints[((l - minId) << 1) + 1] = oldPoints[(l << 1) + 1];
+			newPoints[l - minId] = oldPoints[l];
 			newAltitudes[l - minId] = oldAltitudes[l];
 		}
-		newPoints[0] = calPtX;
-		newPoints[1] = calPtY;
+		newPoints[0] = Math::Coord2D<Double>(calPtX, calPtY);
 		newAltitudes[0] = calPtZ;
 
 		this->nPoint = minId + 2;

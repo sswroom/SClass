@@ -18,7 +18,7 @@ namespace Media
 
 			void *GetFrame();
 			OCVFrame *CropToNew(Math::RectArea<UOSInt> *area);
-			void ClearOutsidePolygon(UOSInt *poly, UOSInt nPoints, UInt8 color);
+			void ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color);
 			UOSInt GetWidth();
 			UOSInt GetHeight();
 			OSInt GetBpl();

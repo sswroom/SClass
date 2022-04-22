@@ -224,7 +224,7 @@ mtslop4:
 #endif
 }
 
-Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOSInt nPoints, Double ofstX, Double ofstY)
+Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofst)
 {
 	if (nPoints == 0)
 	{
@@ -267,23 +267,23 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOS
 	Double dleft = leftX;
 	Double dbottom = bottomY;
 	Doublex2 ptMul = PDoublex2Set(this->scnWidth / (rightX - leftX), this->scnHeight / (bottomY - topY));
-	Doublex2 ptOfst = PDoublex2Set(ofstX, ofstY);
+	Doublex2 ptOfst = PDoublex2Set(ofst.x, ofst.y);
 	Doublex2 thisVal;
 	Doublex2 minVal;
 	Doublex2 maxVal;
-	thisVal = PDoublex2Set((srcArr[0]  - dleft), (dbottom - srcArr[1]));
+	thisVal = PDoublex2Set((srcArr->x  - dleft), (dbottom - srcArr->y));
 	minVal = maxVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
-	PStoreDoublex2(destArr, minVal);
-	srcArr += 2;
-	destArr += 2;
+	PStoreDoublex2((Double*)destArr, minVal);
+	srcArr++;
+	destArr++;
 	nPoints--;
 	while (nPoints-- > 0)
 	{
-		thisVal = PDoublex2Set((srcArr[0]  - dleft), (dbottom - srcArr[1]));
+		thisVal = PDoublex2Set((srcArr->x  - dleft), (dbottom - srcArr->y));
 		thisVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
-		PStoreDoublex2(destArr, thisVal);
-		srcArr += 2;
-		destArr += 2;
+		PStoreDoublex2((Double*)destArr, thisVal);
+		srcArr++;
+		destArr++;
 		minVal = PMINPD(minVal, thisVal);
 		maxVal = PMAXPD(maxVal, thisVal);
 	}

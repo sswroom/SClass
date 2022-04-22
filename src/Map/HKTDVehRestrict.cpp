@@ -175,27 +175,27 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				route = this->routeMap->Get(roadRouteId);
 				if (route)
 				{
-					Double *points = route->pl->GetPointList(&j);
+					Math::Coord2D<Double> *points = route->pl->GetPointList(&j);
 					if (location <= 0)
 					{
-						ptX = points[0];
-						ptY = points[1];
+						ptX = points[0].x;
+						ptY = points[0].y;
 					}
 					else
 					{
-						ptX = points[j * 2 - 2];
-						ptY = points[j * 2 - 1];
+						ptX = points[j - 1].x;
+						ptY = points[j - 1].y;
 
 						i = 1;
 						while (i < j)
 						{
-							diffX = points[i * 2 - 2] - points[i * 2];
-							diffY = points[i * 2 - 1] - points[i * 2 + 1];
+							diffX = points[i - 1].x - points[i].x;
+							diffY = points[i - 1].y - points[i].y;
 							dist = Math_Sqrt(diffX * diffX + diffY * diffY);
 							if (dist > location)
 							{
-								ptX = points[i * 2 - 2] + (points[i * 2] - points[i * 2 - 2]) * location / dist;
-								ptY = points[i * 2 - 1] + (points[i * 2 + 1] - points[i * 2 - 1]) * location / dist;
+								ptX = points[i - 1].x + (points[i].x - points[i - 1].x) * location / dist;
+								ptY = points[i - 1].y + (points[i].y - points[i - 1].y) * location / dist;
 								break;
 							}
 							else

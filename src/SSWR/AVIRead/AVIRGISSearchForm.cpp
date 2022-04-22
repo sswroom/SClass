@@ -21,8 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 	UOSInt i = me->lbResults->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		Double x;
-		Double y;
+		Math::Coord2D<Double> center;
 		void *sess;
 		Text::String *s = me->lbResults->GetItemTextNew(i);
 
@@ -39,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 				vec->ConvCSys(csys2, csys1);
 			}
 
-			vec->GetCenter(&x, &y);
+			center = vec->GetCenter();
 			me->navi->SetSelectedVector(vec);
-			me->navi->PanToMap(y, x);
+			me->navi->PanToMap(center.y, center.x);
 		}
 		s->Release();
 	}

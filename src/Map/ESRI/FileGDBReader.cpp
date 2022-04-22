@@ -734,7 +734,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			}
 			UOSInt i;
 			UInt32 *parts;
-			Double *points;
+			Math::Coord2D<Double> *points;
 			Double *altitiudes = 0;
 			if (this->tableInfo->geometryFlags & 0x80)
 			{
@@ -770,8 +770,8 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 				dy -= (OSInt)iv;
 				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
-				points[i * 2] = x;
-				points[i * 2 + 1] = y;
+				points[i].x = x;
+				points[i].y = y;
 				i++;
 			}
 			if (this->tableInfo->geometryFlags & 0x80)
@@ -829,7 +829,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
 			UOSInt i;
 			UInt32 *parts = pg->GetPtOfstList(&i);
-			Double *points = pg->GetPointList(&i);
+			Math::Coord2D<Double> *points = pg->GetPointList(&i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -852,8 +852,8 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 				dy += (OSInt)iv;
 				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
-				points[i * 2] = x;
-				points[i * 2 + 1] = y;
+				points[i].x = x;
+				points[i].y = y;
 				i++;
 			}
 			if (this->tableInfo->geometryFlags & 0x80)
@@ -911,7 +911,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				srid = this->tableInfo->csys->GetSRID();
 			}
 			UInt32 *parts;
-			Double *points;
+			Math::Coord2D<Double> *points;
 			Double *altitiudes = 0;
 			if (geometryType & 0x80000000)
 			{
@@ -960,8 +960,8 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dy -= iv;
 					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
-					points[j * 2] = x;
-					points[j * 2 + 1] = y;
+					points[j].x = x;
+					points[j].y = y;
 					j++;
 				}
 				if (geometryType & 0x80000000)

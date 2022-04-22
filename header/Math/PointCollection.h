@@ -12,8 +12,8 @@ namespace Math
 		virtual ~PointCollection();
 
 		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst) = 0;
-		virtual Double *GetPointList(UOSInt *nPoint) = 0;
-		virtual void GetCenter(Double *x, Double *y);
+		virtual Math::Coord2D<Double> *GetPointList(UOSInt *nPoint) = 0;
+		virtual Math::Coord2D<Double> GetCenter();
 	};
 }
 #endif

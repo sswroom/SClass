@@ -14,7 +14,7 @@ struct ParseStatus
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
-void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSInt *rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	ParseStatus *status = (ParseStatus*)userObj;
 	Math::RectArea<UOSInt> area;
@@ -61,8 +61,8 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 				exporter.ExportNewFile(imgList.GetSourceNameObj()->ToCString(), &imgList, 0);*/
 
 				status->me->parsedCnt++;
-				status->pastPos->Add((rect[0] + rect[2] + rect[4] + rect[6]) >> 2);
-				status->pastPos->Add((rect[1] + rect[3] + rect[5] + rect[7]) >> 2);
+				status->pastPos->Add((rect[0].x + rect[1].x + rect[2].x + rect[3].x) >> 2);
+				status->pastPos->Add((rect[0].y + rect[1].y + rect[2].y + rect[3].y) >> 2);
 			}
 			s->Release();
 		}
@@ -75,18 +75,18 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 	DEL_CLASS(plainImg);
 }
 
-Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, UOSInt *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	Double xPos;
 	Double yPos;
-	Double pt1x = UOSInt2Double(rect[0]);
-	Double pt1y = UOSInt2Double(rect[1]);
-	Double pt2x = UOSInt2Double(rect[2]);
-	Double pt2y = UOSInt2Double(rect[3]);
-	Double pt3x = UOSInt2Double(rect[4]);
-	Double pt3y = UOSInt2Double(rect[5]);
-	Double pt4x = UOSInt2Double(rect[6]);
-	Double pt4y = UOSInt2Double(rect[7]);
+	Double pt1x;
+	Double pt1y;
+	Double pt2x;
+	Double pt2y;
+	Double pt3x;
+	Double pt3y;
+	Double pt4x;
+	Double pt4y;
 	Double x;
 	Double y;
 	Double xRate;
@@ -105,26 +105,26 @@ Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UO
 	Double bRate;
 	Double c;
 	
-	UOSInt minX = rect[6];
-	UOSInt minY = rect[7];
+	UOSInt minX = rect[3].x;
+	UOSInt minY = rect[3].y;
 	UOSInt maxX = minX;
 	UOSInt maxY = minY;
 	i = 3;
 	while (i-- > 0)
 	{
-		if (rect[(i << 1)] < minX) minX = rect[(i << 1)];
-		if (rect[(i << 1)] > maxX) maxX = rect[(i << 1)];
-		if (rect[(i << 1) + 1] < minY) minY = rect[(i << 1) + 1];
-		if (rect[(i << 1) + 1] > maxY) maxY = rect[(i << 1) + 1];
+		if (rect[i].x < minX) minX = rect[i].x;
+		if (rect[i].x > maxX) maxX = rect[i].x;
+		if (rect[i].y < minY) minY = rect[i].y;
+		if (rect[i].y > maxY) maxY = rect[i].y;
 	}
 
 	UOSInt diff;
-	UOSInt tldiff = rect[6] - minX + rect[7] - minY;
+	UOSInt tldiff = rect[3].x - minX + rect[3].y - minY;
 	UOSInt tlIndex = 3;
 	i = 3;
 	while (i-- > 0)
 	{
-		diff = rect[(i << 1)] - minX + rect[(i << 1) + 1] - minY;
+		diff = rect[i].x - minX + rect[i].y - minY;
 		if (diff < tldiff)
 		{
 			tldiff = diff;
@@ -134,83 +134,83 @@ Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UO
 	switch (tlIndex)
 	{
 	case 0:
-		pt1x = UOSInt2Double(rect[0]);
-		pt1y = UOSInt2Double(rect[1]);
-		pt3x = UOSInt2Double(rect[4]);
-		pt3y = UOSInt2Double(rect[5]);
-		if (rect[2] > rect[6])
+		pt1x = UOSInt2Double(rect[0].x);
+		pt1y = UOSInt2Double(rect[0].y);
+		pt3x = UOSInt2Double(rect[2].x);
+		pt3y = UOSInt2Double(rect[2].y);
+		if (rect[1].x > rect[3].x)
 		{
-			pt2x = UOSInt2Double(rect[2]);
-			pt2y = UOSInt2Double(rect[3]);
-			pt4x = UOSInt2Double(rect[6]);
-			pt4y = UOSInt2Double(rect[7]);
+			pt2x = UOSInt2Double(rect[1].x);
+			pt2y = UOSInt2Double(rect[1].y);
+			pt4x = UOSInt2Double(rect[3].x);
+			pt4y = UOSInt2Double(rect[3].y);
 		}
 		else
 		{
-			pt2x = UOSInt2Double(rect[6]);
-			pt2y = UOSInt2Double(rect[7]);
-			pt4x = UOSInt2Double(rect[2]);
-			pt4y = UOSInt2Double(rect[3]);
+			pt2x = UOSInt2Double(rect[3].x);
+			pt2y = UOSInt2Double(rect[3].y);
+			pt4x = UOSInt2Double(rect[1].x);
+			pt4y = UOSInt2Double(rect[1].y);
 		}
 		break;
 	case 1:
-		pt1x = UOSInt2Double(rect[2]);
-		pt1y = UOSInt2Double(rect[3]);
-		pt3x = UOSInt2Double(rect[6]);
-		pt3y = UOSInt2Double(rect[7]);
-		if (rect[0] > rect[4])
+		pt1x = UOSInt2Double(rect[1].x);
+		pt1y = UOSInt2Double(rect[1].y);
+		pt3x = UOSInt2Double(rect[3].x);
+		pt3y = UOSInt2Double(rect[3].y);
+		if (rect[0].x > rect[2].x)
 		{
-			pt2x = UOSInt2Double(rect[0]);
-			pt2y = UOSInt2Double(rect[1]);
-			pt4x = UOSInt2Double(rect[4]);
-			pt4y = UOSInt2Double(rect[5]);
+			pt2x = UOSInt2Double(rect[0].x);
+			pt2y = UOSInt2Double(rect[0].y);
+			pt4x = UOSInt2Double(rect[2].x);
+			pt4y = UOSInt2Double(rect[2].y);
 		}
 		else
 		{
-			pt2x = UOSInt2Double(rect[4]);
-			pt2y = UOSInt2Double(rect[5]);
-			pt4x = UOSInt2Double(rect[0]);
-			pt4y = UOSInt2Double(rect[1]);
+			pt2x = UOSInt2Double(rect[2].x);
+			pt2y = UOSInt2Double(rect[2].y);
+			pt4x = UOSInt2Double(rect[0].x);
+			pt4y = UOSInt2Double(rect[0].y);
 		}
 		break;
 	case 2:
-		pt1x = UOSInt2Double(rect[4]);
-		pt1y = UOSInt2Double(rect[5]);
-		pt3x = UOSInt2Double(rect[0]);
-		pt3y = UOSInt2Double(rect[1]);
-		if (rect[2] > rect[6])
+		pt1x = UOSInt2Double(rect[2].x);
+		pt1y = UOSInt2Double(rect[2].y);
+		pt3x = UOSInt2Double(rect[0].x);
+		pt3y = UOSInt2Double(rect[0].y);
+		if (rect[1].x > rect[3].x)
 		{
-			pt2x = UOSInt2Double(rect[2]);
-			pt2y = UOSInt2Double(rect[3]);
-			pt4x = UOSInt2Double(rect[6]);
-			pt4y = UOSInt2Double(rect[7]);
+			pt2x = UOSInt2Double(rect[1].x);
+			pt2y = UOSInt2Double(rect[1].y);
+			pt4x = UOSInt2Double(rect[3].x);
+			pt4y = UOSInt2Double(rect[3].y);
 		}
 		else
 		{
-			pt2x = UOSInt2Double(rect[6]);
-			pt2y = UOSInt2Double(rect[7]);
-			pt4x = UOSInt2Double(rect[2]);
-			pt4y = UOSInt2Double(rect[3]);
+			pt2x = UOSInt2Double(rect[3].x);
+			pt2y = UOSInt2Double(rect[3].y);
+			pt4x = UOSInt2Double(rect[1].x);
+			pt4y = UOSInt2Double(rect[1].y);
 		}
 		break;
 	default:
-		pt1x = UOSInt2Double(rect[6]);
-		pt1y = UOSInt2Double(rect[7]);
-		pt3x = UOSInt2Double(rect[2]);
-		pt3y = UOSInt2Double(rect[3]);
-		if (rect[0] > rect[4])
+		pt1x = UOSInt2Double(rect[3].x);
+		pt1y = UOSInt2Double(rect[3].y);
+		pt3x = UOSInt2Double(rect[1].x);
+		pt3y = UOSInt2Double(rect[1].y);
+		if (rect[0].x > rect[2].x)
 		{
-			pt2x = UOSInt2Double(rect[0]);
-			pt2y = UOSInt2Double(rect[1]);
-			pt4x = UOSInt2Double(rect[4]);
-			pt4y = UOSInt2Double(rect[5]);
+			pt2x = UOSInt2Double(rect[0].x);
+			pt2y = UOSInt2Double(rect[0].y);
+			pt4x = UOSInt2Double(rect[2].x);
+			pt4y = UOSInt2Double(rect[2].y);
 		}
 		else
 		{
-			pt2x = UOSInt2Double(rect[4]);
-			pt2y = UOSInt2Double(rect[5]);
-			pt4x = UOSInt2Double(rect[0]);
-			pt4y = UOSInt2Double(rect[1]);
+			pt2x = UOSInt2Double(rect[2].x);
+			pt2y = UOSInt2Double(rect[2].y);
+			pt4x = UOSInt2Double(rect[0].x);
+			pt4y = UOSInt2Double(rect[0].y);
 		}
 		break;
 	}
