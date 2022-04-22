@@ -96,9 +96,6 @@ UI::GUITabControl::GUITabControl(UI::GUICore *ui, UI::GUIClientControl *parent) 
 	parent->GetClientSize(&w, &h);
 	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, w, h);
 	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
-	NEW_CLASS(this->tabPages, Data::ArrayList<UI::GUITabPage*>());
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void *>());
 	this->selIndex = 0;
 
 	WNDCLASSW wc;
@@ -110,15 +107,12 @@ UI::GUITabControl::~GUITabControl()
 {
 	UI::GUITabPage *tp;
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
-	UOSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		tp = this->tabPages->GetItem(i);
+		tp = this->tabPages.GetItem(i);
 		DEL_CLASS(tp);
 	}
-	DEL_CLASS(this->tabPages);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
 }
 
 UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
@@ -128,7 +122,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName->v);
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages->GetCount(), (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	if (index != INVALID_INDEX)
 	{
@@ -136,14 +130,14 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
 		NEW_CLASS(page, UI::GUITabPage(this->ui, 0, this, index));
 		page->SetDPI(this->hdpi, this->ddpi);
-		this->tabPages->Add(page);
+		this->tabPages.Add(page);
 		OSInt x;
 		OSInt y;
 		UOSInt w;
 		UOSInt h;
 		GetTabPageRect(&x, &y, &w, &h);
 		page->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
-		if (this->tabPages->GetCount() > 1)
+		if (this->tabPages.GetCount() > 1)
 		{
 			page->SetVisible(false);
 		}
@@ -162,7 +156,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CString tabName)
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName.v);
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages->GetCount(), (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	if (index != INVALID_INDEX)
 	{
@@ -170,14 +164,14 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CString tabName)
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
 		NEW_CLASS(page, UI::GUITabPage(this->ui, 0, this, index));
 		page->SetDPI(this->hdpi, this->ddpi);
-		this->tabPages->Add(page);
+		this->tabPages.Add(page);
 		OSInt x;
 		OSInt y;
 		UOSInt w;
 		UOSInt h;
 		GetTabPageRect(&x, &y, &w, &h);
 		page->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
-		if (this->tabPages->GetCount() > 1)
+		if (this->tabPages.GetCount() > 1)
 		{
 			page->SetVisible(false);
 		}
@@ -194,19 +188,19 @@ void UI::GUITabControl::SetSelectedIndex(UOSInt index)
 	if (this->selIndex != index)
 	{
 		UI::GUITabPage *page;
-		page = this->tabPages->GetItem(this->selIndex);
+		page = this->tabPages.GetItem(this->selIndex);
 		if (page)
 			page->SetVisible(false);
 		this->selIndex = index;
 		SendMessage((HWND)this->hwnd, TCM_SETCURSEL, index, 0);
 
 		UOSInt i;
-		i = this->selChgHdlrs->GetCount();
+		i = this->selChgHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+			this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 		}
-		page = this->tabPages->GetItem(this->selIndex);
+		page = this->tabPages.GetItem(this->selIndex);
 		if (page)
 		{
 			page->SetVisible(true);
@@ -219,10 +213,10 @@ void UI::GUITabControl::SetSelectedPage(UI::GUITabPage *page)
 {
 	if (page == 0)
 		return;
-	UOSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		if (page == this->tabPages->GetItem(i))
+		if (page == this->tabPages.GetItem(i))
 		{
 			SetSelectedIndex(i);
 		}
@@ -297,19 +291,19 @@ OSInt UI::GUITabControl::OnNotify(UInt32 code, void *lParam)
 		newIndex = (UOSInt)SendMessage((HWND)this->hwnd, TCM_GETCURSEL, 0, 0);
 		if (newIndex != this->selIndex)
 		{
-			tp = this->tabPages->GetItem(this->selIndex);
+			tp = this->tabPages.GetItem(this->selIndex);
 			if (tp)
 				tp->SetVisible(false);
 			this->selIndex = newIndex;
-			tp = this->tabPages->GetItem(this->selIndex);
+			tp = this->tabPages.GetItem(this->selIndex);
 			if (tp)
 				tp->SetVisible(true);
 			InvalidateRect((HWND)this->hwnd, 0, false);
 			
-			i = this->selChgHdlrs->GetCount();
+			i = this->selChgHdlrs.GetCount();
 			while (i-- > 0)
 			{
-				this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+				this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 			}
 		}
 		return 0;
@@ -330,18 +324,18 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 	UOSInt h;
 	GetTabPageRect(&x, &y, &w, &h);
 
-	i = this->tabPages->GetCount();
+	i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+		this->tabPages.GetItem(i)->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
 //		this->tabPages->GetItem(i)->UpdateChildrenSize(false);
 	}
 }
 
 void UI::GUITabControl::HandleSelChanged(UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
@@ -358,10 +352,10 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	UOSInt i = this->tabPages->GetCount();
+	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetDPI(hdpi, ddpi);
+		this->tabPages.GetItem(i)->SetDPI(hdpi, ddpi);
 	}
 
 	OSInt x;
@@ -370,9 +364,9 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 	UOSInt h;
 	GetTabPageRect(&x, &y, &w, &h);
 
-	i = this->tabPages->GetCount();
+	i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages->GetItem(i)->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+		this->tabPages.GetItem(i)->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
 	}
 }

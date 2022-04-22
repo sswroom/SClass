@@ -228,7 +228,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(me->surfaceMut);
+		Sync::MutexUsage mutUsage(&me->surfaceMut);
 		me->GetSizeP(&me->surfaceW, &me->surfaceH);
 		me->ReleaseSubSurface();
 		me->CreateSubSurface();
@@ -276,7 +276,7 @@ void UI::GUIDDrawControl::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		Sync::MutexUsage mutUsage(this->surfaceMut);
+		Sync::MutexUsage mutUsage(&this->surfaceMut);
 		DrawToScreen();
 		mutUsage.EndUse();
 	}
@@ -406,10 +406,10 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 
 UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
 {
-	this->surfaceMut->Lock();
+	this->surfaceMut.Lock();
 	if (this->buffSurface == 0)
 	{
-		this->surfaceMut->Unlock();
+		this->surfaceMut.Unlock();
 		return 0;
 	}
 	if (targetWidth == this->surfaceW && targetHeight == this->surfaceH)
@@ -420,14 +420,14 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 			return dptr;
 		}
 	}
-	this->surfaceMut->Unlock();
+	this->surfaceMut.Unlock();
 	return 0;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
 	this->buffSurface->UnlockSurface();
-	this->surfaceMut->Unlock();
+	this->surfaceMut.Unlock();
 }
 
 Media::PixelFormat UI::GUIDDrawControl::GetPixelFormat()
@@ -461,7 +461,6 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
 	this->focusing = false;
-	NEW_CLASS(this->surfaceMut, Sync::Mutex());
 	this->rootForm = parent->GetRootForm();
 	this->fullScnMode = SM_WINDOWED;
 	this->directMode = directMode;
@@ -548,7 +547,6 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	this->ReleaseSurface();
 	this->ReleaseSubSurface();
 
-	DEL_CLASS(this->surfaceMut);
 	DEL_CLASS(this->surfaceMgr);
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
@@ -569,7 +567,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	Sync::MutexUsage mutUsage(this->surfaceMut);
+	Sync::MutexUsage mutUsage(&this->surfaceMut);
 	if (this->debugWriter)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -667,7 +665,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (this->currScnMode == SM_WINDOWED || this->currScnMode == SM_WINDOWED_DIR)
 			return;
 	}
-	Sync::MutexUsage mutUsage(this->surfaceMut);
+	Sync::MutexUsage mutUsage(&this->surfaceMut);
 	if (fullScn && !vfs)
 	{
 		this->BeginUpdateSize();

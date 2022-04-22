@@ -394,6 +394,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 	if (sb.GetCharCnt() > 0)
 	{
 		UTF8Char *sptr = sb.ToString();
+		UTF8Char *sbuffEnd;
 		UOSInt spInd;
 		UOSInt eqInd;
 		UOSInt i;
@@ -409,15 +410,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 			if (eqInd != INVALID_INDEX)
 			{
 				sptr[eqInd] = 0;
-				sptr = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
-				param->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-				sptr = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, &sptr[eqInd + 1]);
-				param->value = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				sbuffEnd = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
+				param->name = Text::String::NewP(sbuff, sbuffEnd);
+				sbuffEnd = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, &sptr[eqInd + 1]);
+				param->value = Text::String::NewP(sbuff, sbuffEnd);
 			}
 			else
 			{
-				sptr = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
-				param->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				sbuffEnd = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
+				param->name = Text::String::NewP(sbuff, sbuffEnd);
 				param->value = Text::String::NewEmpty();
 			}
 			me->params->Add(param);
@@ -547,14 +548,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				{
 					cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
 				}
-
-				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
-				{
-					sptr = Text::StrUOSInt(sbuff, currBodyLen);
-					cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
-					cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
-					cli->Write(currBody, currBodyLen);
-				}
+				
 				if (currHeaders)
 				{
 					Text::StringBuilderUTF8 sb;
@@ -575,6 +569,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							break;
 						}
 					}
+				}
+
+				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
+				{
+					sptr = Text::StrUOSInt(sbuff, currBodyLen);
+					cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
+					cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
+					cli->Write(currBody, currBodyLen);
 				}
 
 				cli->EndRequest(&me->respTimeReq, &me->respTimeResp);

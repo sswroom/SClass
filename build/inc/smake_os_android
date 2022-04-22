@@ -52,6 +52,8 @@ Media/AudioDevice.h: ../../src/Media/AudioDeviceAndroid.cpp
 @AudioDevice.o
 Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 @MonitorSurfaceMgrFactory.o
+Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
+@OCREngine.o
 Media/OpenSLESRenderer.h: ../../src/Media/OpenSLESRenderer.cpp
 @OpenSLESRenderer.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
@@ -63,6 +65,8 @@ Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
 Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
+Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
+@OCVNumPlateFinder.o
 Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 @OCVObjectDetector.o
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
@@ -115,11 +119,13 @@ AndroidVideoCapture.o: ../../src/Media/AndroidVideoCapture.cpp
 !?(ANDROID_API >= 24) -lcamera2ndk -lmediandk
 AudioDevice.o: ../../src/Media/AudioDeviceAndroid.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
+OCREngine.o: ../../src/Media/OCREngine_Null.cpp
 OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp

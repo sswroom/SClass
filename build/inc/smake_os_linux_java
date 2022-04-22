@@ -51,6 +51,8 @@ Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr.cpp
 @FBMonitorSurfaceMgr.o
 Media/FBSurface.h: ../../src/Media/FBSurface.cpp
 @FBSurface.o
+Media/OCREngine.h: ../../src/Media/OCREngine.cpp
+@OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
@@ -60,6 +62,8 @@ Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
 Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
+Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
+@OCVNumPlateFinder.o
 Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 @OCVObjectDetector.o
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
@@ -124,6 +128,9 @@ AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
 FBSurface.o: ../../src/Media/FBSurface.cpp
+OCREngine.o: ../../src/Media/OCREngine.cpp
+!-llept
+!-ltesseract
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
@@ -136,6 +143,10 @@ OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 #$`pkg-config --cflags opencv4`
 !`pkg-config --libs opencv`
+OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
+#$@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
+!@(pkg-config --exists opencv) `pkg-config --libs opencv`
+!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 #$`pkg-config --cflags opencv4`
 !`pkg-config --libs opencv`

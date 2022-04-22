@@ -65,8 +65,6 @@ Media/AudioDevice.h: ../../src/Media/AudioDeviceW.cpp
 @AudioDevice.o
 Media/DDrawSurface.h: ../../src/Media/DDrawSurface.cpp
 @DDrawSurface.o
-Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
-@MonitorSurfaceMgrFactory.o
 Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @KSRenderer.o
 @audfilter.o
@@ -77,6 +75,10 @@ Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @node.o
 @pin.o
 @util.o
+Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
+@MonitorSurfaceMgrFactory.o
+Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
+@OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterW.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
@@ -98,6 +100,8 @@ Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
 Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
+Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
+@OCVNumPlateFinder.o
 Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 @OCVObjectDetector.o
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
@@ -183,11 +187,12 @@ ASIOOutRenderer.o: ../../src/Media/ASIOOutRenderer.cpp
 !-lole32
 AudioDevice.o: ../../src/Media/AudioDeviceW.cpp
 DDrawSurface.o: ../../src/Media/DDrawSurface.cpp
-MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
 KSRenderer.o: ../../src/Media/KSRenderer.cpp
 $-I ../../ThirdParty/KSSample
 !-luuid
 !-lksguid
+MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
+OCREngine.o: ../../src/Media/OCREngine_Null.cpp
 Printer.o: ../../src/Media/PrinterW.cpp
 !-lwinspool
 !-lgdi32
@@ -204,6 +209,7 @@ $-fpermissive
 !-loleaut32
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp

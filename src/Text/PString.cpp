@@ -96,7 +96,7 @@ void Text::PString::RemoveWS()
 	UTF8Char *sptr = this->v;
 	UTF8Char *dptr = sptr;
 	UTF8Char c;
-	while (c = *sptr)
+	while ((c = *sptr) != 0)
 	{
 		switch (c)
 		{
@@ -222,12 +222,12 @@ UOSInt Text::StrSplitLineP(PString *strs, UOSInt maxStrs, PString strToSplit)
 			{
 				sptr++;
 				strs[i].v = sptr;
-				strs[i].leng -= strs[i - 1].leng - 2;
+				strs[i].leng -= strs[i - 1].leng + 2;
 			}
 			else
 			{
 				strs[i].v = sptr;
-				strs[i].leng -= strs[i - 1].leng - 1;
+				strs[i].leng -= strs[i - 1].leng + 1;
 			}
 			i++;
 		}
@@ -237,7 +237,7 @@ UOSInt Text::StrSplitLineP(PString *strs, UOSInt maxStrs, PString strToSplit)
 			strs[i].leng = strs[i - 1].leng;
 			strs[i - 1].leng = (UOSInt)(&sptr[-1] - strs[i - 1].v);
 			strs[i].v = sptr;
-			strs[i].leng -= strs[i - 1].leng - 1;
+			strs[i].leng -= strs[i - 1].leng + 1;
 			i++;
 		}
 	}
