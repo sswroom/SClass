@@ -1994,7 +1994,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 	}
 	MemFree(buff);
 #if defined(VERBOSE)
-	printf("MySQLTCP Sent SQL: %s\r\n", sql);
+	printf("MySQLTCP Sent SQL: %s\r\n", sql.v);
 #endif
 //	dt.SetCurrTimeUTC();
 //	startTime = dt.ToTicks();
@@ -2048,7 +2048,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 	}
 	MemFree(buff);
 #if defined(VERBOSE)
-	printf("MySQLTCP Sent Prepare Stmt: %s\r\n", sql);
+	printf("MySQLTCP Sent Prepare Stmt: %s\r\n", sql.v);
 #endif
 //	dt.SetCurrTimeUTC();
 //	startTime = dt.ToTicks();

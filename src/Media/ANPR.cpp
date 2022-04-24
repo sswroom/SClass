@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
+#include "Math/Quadrilateral.h"
 #include "Media/ANPR.h"
 #include "Media/OpenCV/OCVNumPlateFinder.h"
 
@@ -77,18 +78,10 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 
 Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
+	Math::Quadrilateral quad = Math::Quadrilateral::FromPolygon(rect);
 	Double xPos;
 	Double yPos;
-	Double pt1x;
-	Double pt1y;
-	Double pt2x;
-	Double pt2y;
-	Double pt3x;
-	Double pt3y;
-	Double pt4x;
-	Double pt4y;
-	Double x;
-	Double y;
+	Math::Coord2D<Double> pt;
 	Double xRate;
 	Double yRate;
 	UOSInt ix;
@@ -104,116 +97,6 @@ Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UO
 	Double tRate;
 	Double bRate;
 	Double c;
-	
-	UOSInt minX = rect[3].x;
-	UOSInt minY = rect[3].y;
-	UOSInt maxX = minX;
-	UOSInt maxY = minY;
-	i = 3;
-	while (i-- > 0)
-	{
-		if (rect[i].x < minX) minX = rect[i].x;
-		if (rect[i].x > maxX) maxX = rect[i].x;
-		if (rect[i].y < minY) minY = rect[i].y;
-		if (rect[i].y > maxY) maxY = rect[i].y;
-	}
-
-	UOSInt diff;
-	UOSInt tldiff = rect[3].x - minX + rect[3].y - minY;
-	UOSInt tlIndex = 3;
-	i = 3;
-	while (i-- > 0)
-	{
-		diff = rect[i].x - minX + rect[i].y - minY;
-		if (diff < tldiff)
-		{
-			tldiff = diff;
-			tlIndex = i;
-		}
-	}
-	switch (tlIndex)
-	{
-	case 0:
-		pt1x = UOSInt2Double(rect[0].x);
-		pt1y = UOSInt2Double(rect[0].y);
-		pt3x = UOSInt2Double(rect[2].x);
-		pt3y = UOSInt2Double(rect[2].y);
-		if (rect[1].x > rect[3].x)
-		{
-			pt2x = UOSInt2Double(rect[1].x);
-			pt2y = UOSInt2Double(rect[1].y);
-			pt4x = UOSInt2Double(rect[3].x);
-			pt4y = UOSInt2Double(rect[3].y);
-		}
-		else
-		{
-			pt2x = UOSInt2Double(rect[3].x);
-			pt2y = UOSInt2Double(rect[3].y);
-			pt4x = UOSInt2Double(rect[1].x);
-			pt4y = UOSInt2Double(rect[1].y);
-		}
-		break;
-	case 1:
-		pt1x = UOSInt2Double(rect[1].x);
-		pt1y = UOSInt2Double(rect[1].y);
-		pt3x = UOSInt2Double(rect[3].x);
-		pt3y = UOSInt2Double(rect[3].y);
-		if (rect[0].x > rect[2].x)
-		{
-			pt2x = UOSInt2Double(rect[0].x);
-			pt2y = UOSInt2Double(rect[0].y);
-			pt4x = UOSInt2Double(rect[2].x);
-			pt4y = UOSInt2Double(rect[2].y);
-		}
-		else
-		{
-			pt2x = UOSInt2Double(rect[2].x);
-			pt2y = UOSInt2Double(rect[2].y);
-			pt4x = UOSInt2Double(rect[0].x);
-			pt4y = UOSInt2Double(rect[0].y);
-		}
-		break;
-	case 2:
-		pt1x = UOSInt2Double(rect[2].x);
-		pt1y = UOSInt2Double(rect[2].y);
-		pt3x = UOSInt2Double(rect[0].x);
-		pt3y = UOSInt2Double(rect[0].y);
-		if (rect[1].x > rect[3].x)
-		{
-			pt2x = UOSInt2Double(rect[1].x);
-			pt2y = UOSInt2Double(rect[1].y);
-			pt4x = UOSInt2Double(rect[3].x);
-			pt4y = UOSInt2Double(rect[3].y);
-		}
-		else
-		{
-			pt2x = UOSInt2Double(rect[3].x);
-			pt2y = UOSInt2Double(rect[3].y);
-			pt4x = UOSInt2Double(rect[1].x);
-			pt4y = UOSInt2Double(rect[1].y);
-		}
-		break;
-	default:
-		pt1x = UOSInt2Double(rect[3].x);
-		pt1y = UOSInt2Double(rect[3].y);
-		pt3x = UOSInt2Double(rect[1].x);
-		pt3y = UOSInt2Double(rect[1].y);
-		if (rect[0].x > rect[2].x)
-		{
-			pt2x = UOSInt2Double(rect[0].x);
-			pt2y = UOSInt2Double(rect[0].y);
-			pt4x = UOSInt2Double(rect[2].x);
-			pt4y = UOSInt2Double(rect[2].y);
-		}
-		else
-		{
-			pt2x = UOSInt2Double(rect[2].x);
-			pt2y = UOSInt2Double(rect[2].y);
-			pt4x = UOSInt2Double(rect[0].x);
-			pt4y = UOSInt2Double(rect[0].y);
-		}
-		break;
-	}
 
 	if (psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow)
 	{
@@ -242,22 +125,18 @@ Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UO
 			xRate = UOSInt2Double(j) / xPos;
 			if (xRate + yRate <= 1)
 			{
-				x = pt1x + (pt2x - pt1x) * xRate + (pt4x - pt1x) * yRate;
-				y = pt1y + (pt2y - pt1y) * xRate + (pt4y - pt1y) * yRate;
+				pt = quad.tl + (quad.tr - quad.tl) * xRate + (quad.bl - quad.tl) * yRate;
 			}
 			else
 			{
-				lRate = 1 - xRate;
-				rRate = 1 - yRate;
-				x = pt3x + (pt2x - pt3x) * rRate + (pt4x - pt3x) * lRate;
-				y = pt3y + (pt2y - pt3y) * rRate + (pt4y - pt3y) * lRate;
+				pt = quad.br + (quad.tr - quad.br) * (1 - yRate) + (quad.bl - quad.br) * (1 - xRate);
 			}
-			ix = (UOSInt)x;
-			iy = (UOSInt)y;
+			ix = (UOSInt)pt.x;
+			iy = (UOSInt)pt.y;
 			ofst = iy * sbpl + ix;
-			rRate = x - UOSInt2Double(ix);
+			rRate = pt.x - UOSInt2Double(ix);
 			lRate = 1 - rRate;
-			bRate = y - UOSInt2Double(iy);
+			bRate = pt.y - UOSInt2Double(iy);
 			tRate = 1 - bRate;
 			if (ix + 1 < swidth)
 			{

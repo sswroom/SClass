@@ -157,7 +157,6 @@ void Math::Polyline::GetBounds(Double *minX, Double *minY, Double *maxX, Double 
 		{
 			y2 = this->pointArr[i].y;
 		}
-		i -= 2;
 	}
 	*minX = x1;
 	*minY = y1;

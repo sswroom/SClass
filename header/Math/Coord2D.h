@@ -8,9 +8,7 @@ namespace Math
 		T x;
 		T y;
 
-		Coord2D()
-		{
-		}
+		Coord2D() = default;
 
 		Coord2D(T x, T y)
 		{
@@ -28,9 +26,24 @@ namespace Math
 			return (this->x == v.x) && (this->y == v.y);
 		}
 
+		Coord2D<T> operator+(Coord2D<T> v)
+		{
+			return {this->x + v.x, this->y + v.y};
+		}
+
+		Coord2D<T> operator-(Coord2D<T> v)
+		{
+			return {this->x - v.x, this->y - v.y};
+		}
+
 		Coord2D<T> operator*(Coord2D<T> v)
 		{
 			return {this->x * v.x, this->y * v.y};
+		}
+
+		Coord2D<T> operator*(T v)
+		{
+			return {this->x * v, this->y * v};
 		}
 	};
 }
