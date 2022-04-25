@@ -2,6 +2,7 @@
 #include "Math/Math.h"
 #include "Math/Quadrilateral.h"
 #include "Media/ANPR.h"
+#include "Media/LinearRectRemapper.h"
 #include "Media/OpenCV/OCVNumPlateFinder.h"
 
 #include "Exporter/PNGExporter.h"
@@ -15,7 +16,7 @@ struct ParseStatus
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
-void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	ParseStatus *status = (ParseStatus*)userObj;
 	Math::RectArea<UOSInt> area;
@@ -45,9 +46,10 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 			}
 			else
 			{
+				s->Replace('I', '1');
 				if (status->me->hdlr)
 				{
-					status->me->hdlr(status->me->hdlrObj, status->simg, &area, s, maxTileAngle, pxArea, confidence, plainImg);
+					status->me->hdlr(status->me->hdlrObj, status->simg, &area, s, maxTiltAngle, pxArea, confidence, plainImg);
 				}
 				
 /*				printf("OCR result: %s\r\n", s->v);
@@ -78,101 +80,31 @@ void Media::ANPR::NumPlateArea(void *userObj, Media::OpenCV::OCVFrame *filteredF
 
 Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
-	Math::Quadrilateral quad = Math::Quadrilateral::FromPolygon(rect);
-	Double xPos;
-	Double yPos;
-	Math::Coord2D<Double> pt;
-	Double xRate;
-	Double yRate;
-	UOSInt ix;
-	UOSInt iy;
-	Media::StaticImage *ret;
+	return CreatePlainImage(sptr, swidth, sheight, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
+}
+
+Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UOSInt sheight, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+{
 	UOSInt imgW;
 	UOSInt imgH;
-	UOSInt ofst;
-	UOSInt i;
-	UOSInt j;
-	Double lRate;
-	Double rRate;
-	Double tRate;
-	Double bRate;
-	Double c;
 
-	if (psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow)
+	if (psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow) //520 x 110 or 520 x 120
 	{
-		imgW = 150;
-		imgH = 48;
+		imgW = 195;
+		imgH = 45;
 	}
-	else
+	else // 331 x 170 or 331 x 180
 	{
 		imgW = 150;
 		imgW = 75;
 	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(ret, Media::StaticImage(imgW, imgH, 0, 8, Media::PF_PAL_W8, imgW * imgH, &color, Media::ColorProfile::YUVT_SMPTE170M, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	ret->InitGrayPal();
-	xPos = UOSInt2Double(imgW - 1);
-	yPos = UOSInt2Double(imgH - 1);
-	UInt8 *dptr = ret->data;
-	i = 0;
-	while (i < imgH)
-	{
-		yRate = UOSInt2Double(i) / yPos;
-
-		j = 0;
-		while (j < imgW)
-		{
-			xRate = UOSInt2Double(j) / xPos;
-			if (xRate + yRate <= 1)
-			{
-				pt = quad.tl + (quad.tr - quad.tl) * xRate + (quad.bl - quad.tl) * yRate;
-			}
-			else
-			{
-				pt = quad.br + (quad.tr - quad.br) * (1 - yRate) + (quad.bl - quad.br) * (1 - xRate);
-			}
-			ix = (UOSInt)pt.x;
-			iy = (UOSInt)pt.y;
-			ofst = iy * sbpl + ix;
-			rRate = pt.x - UOSInt2Double(ix);
-			lRate = 1 - rRate;
-			bRate = pt.y - UOSInt2Double(iy);
-			tRate = 1 - bRate;
-			if (ix + 1 < swidth)
-			{
-				if (iy + 1 < sheight)
-				{
-					c = (sptr[ofst] * lRate + sptr[ofst + 1] * rRate) * tRate;
-					c += (sptr[ofst + sbpl] * lRate + sptr[ofst + sbpl + 1] * rRate) * bRate;
-				}
-				else
-				{
-					c = (sptr[ofst] * lRate + sptr[ofst + 1] * rRate);
-				}
-			}
-			else
-			{
-				if (iy + 1 < sheight)
-				{
-					c = (sptr[ofst] * tRate + sptr[ofst + sbpl] * bRate);
-				}
-				else
-				{
-					c = sptr[ofst];
-				}
-			}
-			*dptr = (UInt8)(UInt32)(c + 0.5);
-			dptr++;
-			j++;
-		}
-		i++;
-	}
-	return ret;
+	return Media::LinearRectRemapper::RemapW8(sptr, swidth, sheight, (OSInt)sbpl, imgW, imgH, quad, &color, Media::ColorProfile::YUVT_SMPTE170M, Media::YCOFST_C_CENTER_LEFT);
 }
 
 Media::ANPR::ANPR() : ocr(Media::OCREngine::Language::English)
 {
-	this->ocr.SetCharWhiteList("0123456789ABCDEFGHJKLMNPQRSTUVWXYZ");
+	this->ocr.SetCharWhiteList("0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ");
 	this->parsedCnt = 0;
 	this->hdlr = 0;
 	this->hdlrObj = 0;
@@ -208,19 +140,61 @@ Bool Media::ANPR::ParseImage(Media::StaticImage *simg)
 		found = pastPos.GetCount() > 0;
 	}
 	DEL_CLASS(bwImg);
-/*	UOSInt imgLeft = 321;
-	UOSInt imgTop = 104;
-	UOSInt imgWidth = 153;
-	UOSInt imgHeight = 47;
-	Text::String *s = ocr.ParseInsideImage(imgLeft, imgTop, imgWidth, imgHeight);
-	if (s)
+	return found;
+}
+
+Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral quad)
+{
+	Bool found = false;
+	UOSInt confidence;
+	Media::StaticImage *bwImg = (Media::StaticImage*)simg->Clone();
+	bwImg->ToW8();
+	Media::OpenCV::OCVNumPlateFinder::PlateSize psize;
+	Double ratio = quad.CalcLenTop() / quad.CalcLenLeft();
+	if (ratio >= 0.4 && ratio <= 2.5)
 	{
-		printf("OCR result: %s\r\n", s->v);
-		s->Release();
+		psize = Media::OpenCV::OCVNumPlateFinder::PlateSize::DoubleRow;
 	}
 	else
 	{
-		printf("OCR parsing error\r\n");
-	}*/	
+		psize = Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow;
+	}
+
+	Media::StaticImage *plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispWidth, bwImg->info.dispHeight, bwImg->GetDataBpl(), quad, psize);
+	Media::OpenCV::OCVFrame *croppedFrame = Media::OpenCV::OCVFrame::CreateYFrame(plainImg);
+	if (croppedFrame)
+	{
+		croppedFrame->Normalize();
+		this->ocr.SetOCVFrame(croppedFrame);
+		Text::String *s = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight), &confidence);
+		if (s)
+		{
+			s->RemoveWS();
+			if (s->leng == 0 || s->leng > 10)
+			{
+			}
+			else
+			{
+				s->Replace('I', '1');
+				if (this->hdlr)
+				{
+					Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
+					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.width), (UOSInt)Double2OSInt(dblArea.height));
+					this->hdlr(this->hdlrObj, simg, &area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
+				}
+				found = true;
+				
+				this->parsedCnt++;
+			}
+			s->Release();
+		}
+		else
+		{
+			printf("OCR parsing error\r\n");
+		}
+		DEL_CLASS(croppedFrame);
+	}
+	DEL_CLASS(plainImg);
+	DEL_CLASS(bwImg);
 	return found;
 }

@@ -14,10 +14,14 @@ namespace Media
 		{
 			English
 		};
+		
+		typedef void (__stdcall *OCRResultFunc)(void *userObj, Text::String *text, Double confidence, Math::RectArea<OSInt> boundary);
 	private:
 		class ClassData;
 		ClassData *clsData;
 
+		OCRResultFunc hdlr;
+		void *hdlrObj;
 	public:
 		OCREngine(Language lang);
 		~OCREngine();
@@ -27,6 +31,9 @@ namespace Media
 		Bool SetParsingImage(Media::StaticImage *img);
 		Bool SetOCVFrame(Media::OpenCV::OCVFrame *frame);
 		Text::String *ParseInsideImage(Math::RectArea<UOSInt> area, UOSInt *confidence);
+		
+		void HandleOCRResult(OCRResultFunc hdlr, void *userObj);
+		Bool ParseAllInImage();
 	};
 }
 #endif

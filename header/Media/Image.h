@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_IMAGE
 #define _SM_MEDIA_IMAGE
+#include "Math/RectArea.h"
 #include "Media/FrameInfo.h"
 #include "Media/EXIFData.h"
 #include "Text/CString.h"
@@ -43,6 +44,7 @@ namespace Media
 		OSInt GetHotSpotY();
 
 		Media::StaticImage *CreateStaticImage();
+		Media::StaticImage *CreateSubImage(Math::RectArea<OSInt> area);
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
 		void ToString(Text::StringBuilderUTF8 *sb);
 

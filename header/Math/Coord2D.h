@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_COORD2D
 #define _SM_MATH_COORD2D
+#include "Math/Math.h"
 
 namespace Math
 {
@@ -9,11 +10,20 @@ namespace Math
 		T y;
 
 		Coord2D() = default;
-
+		Coord2D(void *)
+		{
+			this->x = 0;
+			this->y = 0;
+		}
 		Coord2D(T x, T y)
 		{
 			this->x = x;
 			this->y = y;
+		}
+
+		Double CalcLengTo(Coord2D<T> coord)
+		{
+			return Math_Sqrt(Math_Sqr((Double)(this->x - coord.x)) + Math_Sqr((Double)(this->y - coord.y)));
 		}
 
 		Bool operator!=(Coord2D<T> v)

@@ -1,6 +1,8 @@
 #ifndef _SM_MATH_RECTAREA
 #define _SM_MATH_RECTAREA
 #include "Math/Coord2D.h"
+#include "Math/Math.h"
+#include "Math/Quadrilateral.h"
 
 namespace Math
 {
@@ -11,9 +13,7 @@ namespace Math
 		T width;
 		T height;
 
-		RectArea()
-		{
-		}
+		RectArea() = default;
 
 		RectArea(T left, T top, T width, T height)
 		{
@@ -48,6 +48,15 @@ namespace Math
 			area->tl = Coord2D<T>(minX, minY);
 			area->width = maxX - minX;
 			area->height = maxY - minY;
+		}
+
+		static RectArea<Double> FromQuadrilateral(Math::Quadrilateral quad)
+		{
+			Double minX = Math::Min(quad.tl.x, quad.tr.x, quad.br.x, quad.bl.x);
+			Double minY = Math::Min(quad.tl.y, quad.tr.y, quad.br.y, quad.bl.y);
+			Double maxX = Math::Max(quad.tl.x, quad.tr.x, quad.br.x, quad.bl.x);
+			Double maxY = Math::Max(quad.tl.y, quad.tr.y, quad.br.y, quad.bl.y);
+			return RectArea<Double>(minX, minY, maxX - minX, maxY - minY);
 		}
 	};
 }

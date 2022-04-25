@@ -40,6 +40,8 @@ namespace Media
 		Bool Resize(Media::IImgResizer *resizer, UOSInt newWidth, UOSInt newHeight);
 		Bool RotateImage(RotateType rtype);
 		Double CalcPSNR(Media::StaticImage *simg);
+		Double CalcAvgContrast(UOSInt *bgPxCnt);
+		Double CalcColorRate();
 	};
 }
 #endif

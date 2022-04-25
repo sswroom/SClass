@@ -38,16 +38,14 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	if (me->currImg)
 	{
-		Double imgX;
-		Double imgY;
 		Double dR;
 		Double dG;
 		Double dB;
 		UInt8 pixel[16];
 		Text::StringBuilderUTF8 sb;
-		me->pbImage->Scn2ImagePos(scnX, scnY, &imgX, &imgY);
-		OSInt xPos = Double2Int32(imgX);
-		OSInt yPos = Double2Int32(imgY);
+		Math::Coord2D<Double> imgPos = me->pbImage->Scn2ImagePos(scnX, scnY);
+		OSInt xPos = Double2Int32(imgPos.x);
+		OSInt yPos = Double2Int32(imgPos.y);
 		if (xPos < 0)
 			xPos = 0;
 		else if ((UOSInt)xPos >= me->currImg->info.dispWidth)
@@ -526,7 +524,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / UOSInt2Double(me->currImg->info.dispWidth), imgY / UOSInt2Double(me->currImg->info.dispHeight)));
+			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(me->currImg->info.dispWidth), imgPos.y / UOSInt2Double(me->currImg->info.dispHeight)));
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);

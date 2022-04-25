@@ -8,7 +8,9 @@ namespace UI
 	class GUIPictureBoxSimple : public GUIControl
 	{
 	private:
+		struct ClassData;
 		static Int32 useCnt;
+		ClassData *clsData;
 		Media::StaticImage *currImage;
 		Media::DrawImage *prevImageD;
 		Bool hasBorder;
@@ -20,7 +22,6 @@ namespace UI
 		Data::ArrayList<void *> *mouseMoveObjs;
 		Data::ArrayList<MouseEventHandler> *mouseUpHdlrs;
 		Data::ArrayList<void *> *mouseUpObjs;
-		void *clsData;
 
 		static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		void OnPaint();

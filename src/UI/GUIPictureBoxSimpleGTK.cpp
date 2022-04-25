@@ -2,15 +2,16 @@
 #include "MyMemory.h"
 #include "Sync/Interlocked.h"
 #include "Media/GTKDrawEngine.h"
+#include "Media/ImageUtil.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIPictureBoxSimple.h"
 #include <gtk/gtk.h>
 
-typedef struct
+struct UI::GUIPictureBoxSimple::ClassData
 {
 	GdkPixbuf *pixbuf;
 	Media::StaticImage *tmpImage;
-} PictureBoxData;
+};
 
 /*OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
 {
@@ -141,34 +142,36 @@ void UI::GUIPictureBoxSimple::OnPaint()
 
 void UI::GUIPictureBoxSimple::UpdatePreview()
 {
-	PictureBoxData *data = (PictureBoxData*)this->clsData;
 	gtk_image_clear((GtkImage*)this->hwnd);
-	if (data->pixbuf)
+	if (this->clsData->pixbuf)
 	{
-		g_object_unref(data->pixbuf);
-		data->pixbuf = 0;
+		g_object_unref(this->clsData->pixbuf);
+		this->clsData->pixbuf = 0;
 	}
-	if (data->tmpImage)
+	if (this->clsData->tmpImage)
 	{
-		DEL_CLASS(data->tmpImage);
-		data->tmpImage = 0;
+		DEL_CLASS(this->clsData->tmpImage);
+		this->clsData->tmpImage = 0;
 	}
 	if (this->currImage)
 	{
 		GdkPixbuf *buf;
-		if (this->currImage->info.atype == Media::AT_ALPHA)
+		this->clsData->tmpImage = (Media::StaticImage*)this->currImage->Clone();
+		this->clsData->tmpImage->To32bpp();
+		ImageUtil_SwapRGB(this->clsData->tmpImage->data, this->clsData->tmpImage->info.storeWidth * this->clsData->tmpImage->info.storeHeight, this->clsData->tmpImage->info.storeBPP);
+		if (this->clsData->tmpImage->info.atype == Media::AT_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->currImage->info.dispWidth, (int)(UInt32)this->currImage->info.dispHeight, (int)(UInt32)(this->currImage->info.storeWidth << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispWidth, (int)(UInt32)this->clsData->tmpImage->info.dispHeight, (int)(UInt32)(this->clsData->tmpImage->info.storeWidth << 2), 0, 0);
 		}
 		else if (this->currImage->info.atype == Media::AT_PREMUL_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->currImage->info.dispWidth, (int)(UInt32)this->currImage->info.dispHeight, (int)(UInt32)(this->currImage->info.storeWidth << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispWidth, (int)(UInt32)this->clsData->tmpImage->info.dispHeight, (int)(UInt32)(this->clsData->tmpImage->info.storeWidth << 2), 0, 0);
 		}
 		else
 		{
-			buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->currImage->info.dispWidth, (int)(UInt32)this->currImage->info.dispHeight, (int)(UInt32)(this->currImage->info.storeWidth << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->clsData->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->clsData->tmpImage->info.dispWidth, (int)(UInt32)this->clsData->tmpImage->info.dispHeight, (int)(UInt32)(this->clsData->tmpImage->info.storeWidth << 2), 0, 0);
 		}
-		data->pixbuf = buf;
+		this->clsData->pixbuf = buf;
 		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd, buf);
 	}
 	else if (this->prevImageD)
@@ -186,11 +189,9 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientContr
 	this->prevImageD = 0;
 	this->noBGColor = false;
 
-	PictureBoxData *data;
-	data = MemAlloc(PictureBoxData, 1);
-	data->pixbuf = 0;
-	data->tmpImage = 0;
-	this->clsData = data;
+	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData->pixbuf = 0;
+	this->clsData->tmpImage = 0;
 
 	NEW_CLASS(this->mouseDownHdlrs, Data::ArrayList<MouseEventHandler>());
 	NEW_CLASS(this->mouseDownObjs, Data::ArrayList<void *>());
@@ -216,18 +217,17 @@ UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 		this->eng->DeleteImage(this->prevImageD);
 		this->prevImageD = 0;
 	}
-	PictureBoxData *data = (PictureBoxData*)this->clsData;
-	if (data->pixbuf)
+	if (this->clsData->pixbuf)
 	{
-		g_object_unref(data->pixbuf);
-		data->pixbuf = 0;
+		g_object_unref(this->clsData->pixbuf);
+		this->clsData->pixbuf = 0;
 	}
-	if (data->tmpImage)
+	if (this->clsData->tmpImage)
 	{
-		DEL_CLASS(data->tmpImage);
-		data->tmpImage = 0;
+		DEL_CLASS(this->clsData->tmpImage);
+		this->clsData->tmpImage = 0;
 	}
-	MemFree(data);
+	MemFree(this->clsData);
 }
 
 Text::CString UI::GUIPictureBoxSimple::GetObjectClass()
@@ -261,7 +261,6 @@ void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, void *userOb
 void UI::GUIPictureBoxSimple::SetImage(Media::StaticImage *currImage)
 {
 	this->currImage = currImage;
-	this->currImage->To32bpp();
 	this->UpdatePreview();
 }
 

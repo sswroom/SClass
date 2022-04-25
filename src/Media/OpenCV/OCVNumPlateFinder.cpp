@@ -39,7 +39,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Media::OpenCV::OCVFrame filteredFrame(filtered);
 	cv::bilateralFilter(*inp, *filtered, 11, 17, 17);
 	cv::Mat edged;
-	cv::Canny(*filtered, edged, 16, 200);
+	cv::Canny(*filtered, edged, 20, 200);
     std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Point> c;
 	cv::findContours(edged.clone(), contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
@@ -52,11 +52,12 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Double v2 = 90 + this->maxTileAngle;
 	Double v3 = 270 - this->maxTileAngle;
 	Double v4 = 270 + this->maxTileAngle;
+	Double epsilon = 0.018; //0.018
 	while (i < j)
 	{
 		c = contours[i];
 		peri = cv::arcLength(c, true);
-		cv::approxPolyDP(c, poly, 0.018 * peri, true);
+		cv::approxPolyDP(c, poly, epsilon * peri, true);
 		if (poly.size() == 4)
 		{
 			Double area = cv::contourArea(poly);
@@ -77,8 +78,8 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				leng[1] = Math_Sqrt((poly[1].x - poly[2].x) * (poly[1].x - poly[2].x) + (poly[1].y - poly[2].y) * (poly[1].y - poly[2].y));
 				leng[2] = Math_Sqrt((poly[2].x - poly[3].x) * (poly[2].x - poly[3].x) + (poly[2].y - poly[3].y) * (poly[2].y - poly[3].y));
 				leng[3] = Math_Sqrt((poly[3].x - poly[0].x) * (poly[3].x - poly[0].x) + (poly[3].y - poly[0].y) * (poly[3].y - poly[0].y));
-				Double tileAngle;
-				Double maxTileAngle = 0;
+				Double tiltAngle;
+				Double maxTiltAngle = 0;
 				Bool found = false;
 				UOSInt k = 4;
 				while (k-- > 0)
@@ -99,19 +100,19 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					}
 					if (ang[k] < 180)
 					{
-						tileAngle = ang[k] - 90;
+						tiltAngle = ang[k] - 90;
 					}
 					else
 					{
-						tileAngle = ang[k] - 270;
+						tiltAngle = ang[k] - 270;
 					}
-					if (tileAngle < 0)
+					if (tiltAngle < 0)
 					{
-						tileAngle = -tileAngle;
+						tiltAngle = -tiltAngle;
 					}
-					if (maxTileAngle < tileAngle)
+					if (maxTileAngle < tiltAngle)
 					{
-						maxTileAngle = tileAngle;
+						maxTileAngle = tiltAngle;
 					}
 				}
 				PlateSize pSize = PlateSize::SingleRow;
@@ -142,6 +143,9 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 				}
 				if (!found)
 				{
+//					std::vector<std::vector<cv::Point> > drawPoly;
+//					drawPoly.push_back(poly);
+//					cv::drawContours(edged, drawPoly, 0, cv::Scalar(160));
 //					printf("Area dir: %lf %lf %lf %lf, ang: %lf, %lf, %lf, %lf\r\n", dir[0], dir[1], dir[2], dir[3], ang[0], ang[1], ang[2], ang[3]);
 //					printf("Area leng: %lf %lf %lf %lf, ratio = %lf\r\n", leng[0], leng[1], leng[2], leng[3], leng[0] / leng[1]);
 					Math::Coord2D<UOSInt> rect[4];

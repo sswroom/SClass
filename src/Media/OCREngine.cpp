@@ -13,6 +13,8 @@ public:
 
 Media::OCREngine::OCREngine(Language lang)
 {
+	this->hdlr = 0;
+	this->hdlrObj = 0;
 	NEW_CLASS(this->clsData, ClassData());
 	this->clsData->currImg = 0;
 	switch (lang)
@@ -59,7 +61,7 @@ Bool Media::OCREngine::SetParsingImage(Media::StaticImage *img)
 	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.hdpi * img->info.par2));
 	UOSInt wpl = (UOSInt)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
-	img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, wpl * 4 * img->info.storeBPP >> 3, false);
+	img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, wpl * 4, false);
 	if (img->info.pf == Media::PF_PAL_W8)
 	{
 		UOSInt wordCnt = wpl * img->info.dispHeight;
@@ -124,4 +126,49 @@ Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UO
 		delete [] resultText;
 	}
 	return s;
+}
+
+void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, void *userObj)
+{
+	this->hdlr = hdlr;
+	this->hdlrObj = userObj;
+}
+
+Bool Media::OCREngine::ParseAllInImage()
+{
+	if (this->clsData->api.Recognize(0) != 0)
+	{
+		return false;
+	}
+	tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
+	tesseract::ResultIterator* ri = this->clsData->api.GetIterator();
+	if (ri)
+	{
+		while (true)
+		{
+			int left = 0;
+			int top = 0;
+			int right = 0;
+			int bottom = 0;
+			const Char *txt = ri->GetUTF8Text(level);
+			if (txt[0])
+			{
+				Single confidence = ri->Confidence(level);
+				ri->BoundingBox(level, &left, &top, &right, &bottom);
+				if (this->hdlr)
+				{
+					Text::String *res = Text::String::NewNotNullSlow((const UTF8Char*)txt);
+					this->hdlr(this->hdlrObj, res, confidence, Math::RectArea<OSInt>(left, top, right - left, bottom - top));
+					res->Release();
+				}
+			}
+			delete []txt;
+			if (!ri->Next(level))
+			{
+				break;
+			}
+		}
+		delete ri;
+	}
+	return true;
 }

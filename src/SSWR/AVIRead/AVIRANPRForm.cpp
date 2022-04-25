@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
+#include "Math/Quadrilateral.h"
 #include "SSWR/AVIRead/AVIRANPRForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -37,6 +38,48 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnPlateSelChg(void *userObj)
 	{
 		me->pbPlate->SetImage(res->plateImg);
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelPlateClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
+	if (me->pointSelecting)
+	{
+		me->pointSelecting = false;
+		me->points.Clear();
+		me->lblSelStatus->SetText(CSTR(""));
+	}
+	else
+	{
+		me->pointSelecting = true;
+		me->points.Clear();
+		me->lblSelStatus->SetText(CSTR("Select point 1"));
+	}
+}
+
+Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+{
+	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
+	if (me->pointSelecting)
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		me->points.Add(me->pbImg->Scn2ImagePos(scnX, scnY));
+		if (me->points.GetCount() >= 4)
+		{
+			UOSInt i;
+			me->pointSelecting = false;
+			me->lblSelStatus->SetText(CSTR(""));
+			me->anpr.ParseImageQuad(me->currImg, Math::Quadrilateral::FromPolygon(me->points.GetArray(&i)));
+		}
+		else
+		{
+			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Select point ")), me->points.GetCount() + 1);
+			me->lblSelStatus->SetText(CSTRP(sbuff, sptr));
+		}
+		return true;
+	}
+	return false;
 }
 
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg)
@@ -84,10 +127,19 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 
 	this->core = core;
 	this->currImg = 0;
+	this->pointSelecting = false;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
+	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->btnSelPlate, UI::GUIButton(ui, this->pnlCtrl, CSTR("Sel Plate")));
+	this->btnSelPlate->SetRect(4, 4, 75, 23, false);
+	this->btnSelPlate->HandleButtonClick(OnSelPlateClicked, this);
+	NEW_CLASS(this->lblSelStatus, UI::GUILabel(ui, this->pnlCtrl, CSTR("")));
+	this->lblSelStatus->SetRect(84, 4, 200, 23, false);
 	NEW_CLASS(this->pnlPlate, UI::GUIPanel(ui, this));
 	this->pnlPlate->SetRect(0, 0, 250, 100, false);
 	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
@@ -105,6 +157,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->hspPlate, UI::GUIHSplitter(ui, this, 3, true));
 	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImg->HandleMouseDown(OnImgDown, this);
 
 	this->HandleDropFiles(OnFileHandler, this);
 }

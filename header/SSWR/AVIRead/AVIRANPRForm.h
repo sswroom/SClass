@@ -2,8 +2,10 @@
 #define _SM_SSWR_AVIREAD_AVIRANPRFORM
 #include "Media/ANPR.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
+#include "UI/GUILabel.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIPictureBoxDD.h"
@@ -32,7 +34,12 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
+			Bool pointSelecting;
+			Data::ArrayList<Math::Coord2D<Double>> points;
 
+			UI::GUIPanel *pnlCtrl;
+			UI::GUIButton *btnSelPlate;
+			UI::GUILabel *lblSelStatus;
 			UI::GUIPanel *pnlPlate;
 			UI::GUIPictureBoxSimple *pbPlate;
 			UI::GUIListView *lvPlate;
@@ -41,6 +48,8 @@ namespace SSWR
 
 			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnPlateSelChg(void *userObj);
+			static void __stdcall OnSelPlateClicked(void *userObj);
+			static Bool __stdcall OnImgDown(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
 			static void __stdcall OnANPRResult(void *userObj, Media::StaticImage *simg, Math::RectArea<UOSInt> *area, Text::String *result, Double maxTileAngle, Double pxArea, UOSInt confidence, Media::StaticImage *plateImg);
 			void ClearResults();
 		public:

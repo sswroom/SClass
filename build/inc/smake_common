@@ -2031,6 +2031,7 @@ Math/SROGCWKTWriter.h: ../../src/Math/SROGCWKTWriter.cpp
 @SROGCWKTWriter.o
 Math/SRWKTWriter.h: ../../src/Math/SRWKTWriter.cpp
 @SRWKTWriter.o
+Math/Triangle.h:
 Math/TSPFile.h: ../../src/Math/TSPFile.cpp
 @TSPFile.o
 Math/UTMGridConvertDbl.h: ../../src/Math/UTMGridConvertDbl.cpp
@@ -2194,6 +2195,8 @@ Media/IVideoSource.h: ../../src/Media/IVideoSource.cpp
 @IVideoSource.o
 Media/JPEGFile.h: ../../src/Media/JPEGFile.cpp
 @JPEGFile.o
+Media/LinearRectRemapper.h: ../../src/Media/LinearRectRemapper.cpp
+@LinearRectRemapper.o
 Media/LPCMConverter.h: ../../src/Media/LPCMConverter.cpp
 @LPCMConverter.o
 Media/LPCMSource.h: ../../src/Media/LPCMSource.cpp
@@ -3434,6 +3437,8 @@ SSWR/AVIRead/AVIRNTPClientForm.h: ../../src/SSWR/AVIRead/AVIRNTPClientForm.cpp
 @AVIRNTPClientForm.o
 SSWR/AVIRead/AVIRNTPServerForm.h: ../../src/SSWR/AVIRead/AVIRNTPServerForm.cpp
 @AVIRNTPServerForm.o
+SSWR/AVIRead/AVIROCRForm.h: ../../src/SSWR/AVIRead/AVIROCRForm.cpp
+@AVIROCRForm.o
 SSWR/AVIRead/AVIRODBCDSNForm.h: ../../src/SSWR/AVIRead/AVIRODBCDSNForm.cpp
 @AVIRODBCDSNForm.o
 SSWR/AVIRead/AVIRODBCStrForm.h: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
@@ -4518,6 +4523,7 @@ ImageUtil.o: ../../src/Media/ImageUtil.cpp
 IRealtimeVideoSource.o: ../../src/Media/IRealtimeVideoSource.cpp
 IVideoSource.o: ../../src/Media/IVideoSource.cpp
 JPEGFile.o: ../../src/Media/JPEGFile.cpp
+LinearRectRemapper.o: ../../src/Media/LinearRectRemapper.cpp
 LPCMConverter.o: ../../src/Media/LPCMConverter.cpp
 LPCMSource.o: ../../src/Media/LPCMSource.cpp
 LUT.o: ../../src/Media/LUT.cpp
@@ -5110,6 +5116,7 @@ AVIRNetPingForm.o: ../../src/SSWR/AVIRead/AVIRNetPingForm.cpp
 AVIRNetRAWCaptureForm.o: ../../src/SSWR/AVIRead/AVIRNetRAWCaptureForm.cpp
 AVIRNTPClientForm.o: ../../src/SSWR/AVIRead/AVIRNTPClientForm.cpp
 AVIRNTPServerForm.o: ../../src/SSWR/AVIRead/AVIRNTPServerForm.cpp
+AVIROCRForm.o: ../../src/SSWR/AVIRead/AVIROCRForm.cpp
 AVIRODBCDSNForm.o: ../../src/SSWR/AVIRead/AVIRODBCDSNForm.cpp
 AVIRODBCStrForm.o: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
 AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp

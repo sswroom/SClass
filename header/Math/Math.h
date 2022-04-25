@@ -42,7 +42,10 @@ Double Math_MyPow(Double x, Double y);
 #define Math_Fix(val) floor(val)
 #define Math_Round(val) ((val) >= 0 ? ((Int32)((val) + 0.5)) : ((Int32)((val) - 0.5)))
 
-
+FORCEINLINE Double Math_Sqr(Double v)
+{
+	return v * v;
+}
 namespace Math
 {
 	extern const Double PI;
@@ -167,6 +170,22 @@ namespace Math
 			return false;
 		}
 		return true;
+	}
+
+	FORCEINLINE Double Max(Double v1, Double v2, Double v3, Double v4)
+	{
+		if (v2 > v1) v1 = v2;
+		if (v3 > v1) v1 = v3;
+		if (v4 > v1) v1 = v4;
+		return v1;
+	}
+
+	FORCEINLINE Double Min(Double v1, Double v2, Double v3, Double v4)
+	{
+		if (v2 < v1) v1 = v2;
+		if (v3 < v1) v1 = v3;
+		if (v4 < v1) v1 = v4;
+		return v1;
 	}
 }
 extern "C"

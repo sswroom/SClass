@@ -1241,3 +1241,116 @@ Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
 	}
 }
 
+Double Media::StaticImage::CalcAvgContrast(UOSInt *bgPxCnt)
+{
+	UOSInt i;
+	UOSInt j;
+	UInt8 *ptr = this->data;
+	UOSInt dataBpl = this->GetDataBpl();
+	Double sum;
+	Double thisPx;
+	UOSInt cnt;
+	if (this->info.pf == Media::PF_B8G8R8A8)
+	{
+		sum = 0;
+		cnt = 0;
+		j = this->info.dispWidth;
+		while (j-- > 1)
+		{
+			thisPx  = Math_Sqr(ptr[(j * 4) + 0] - ptr[((j - 1) * 4) + 0]);
+			thisPx += Math_Sqr(ptr[(j * 4) + 1] - ptr[((j - 1) * 4) + 1]);
+			thisPx += Math_Sqr(ptr[(j * 4) + 2] - ptr[((j - 1) * 4) + 2]);
+			sum += thisPx;
+			if (thisPx < 30)
+			{
+				cnt++;
+			}
+		}
+		ptr += dataBpl;
+		i = this->info.dispHeight - 1;
+		while (i-- > 0)
+		{
+			j = this->info.dispWidth;
+			while (j-- > 1)
+			{
+				thisPx  = Math_Sqr(ptr[(j * 4) + 0] - ptr[((j - 1) * 4) + 0]);
+				thisPx += Math_Sqr(ptr[(j * 4) + 1] - ptr[((j - 1) * 4) + 1]);
+				thisPx += Math_Sqr(ptr[(j * 4) + 2] - ptr[((j - 1) * 4) + 2]);
+				thisPx += Math_Sqr(ptr[(j * 4) + 0] - ptr[(j * 4) - dataBpl + 0]);
+				thisPx += Math_Sqr(ptr[(j * 4) + 1] - ptr[(j * 4) - dataBpl + 1]);
+				thisPx += Math_Sqr(ptr[(j * 4) + 2] - ptr[(j * 4) - dataBpl + 2]);
+				sum += thisPx;
+				if (thisPx < 30)
+				{
+					cnt++;
+				}
+			}
+			ptr += dataBpl;
+		}
+		if (bgPxCnt)
+		{
+			*bgPxCnt = cnt;
+		}
+		return sum / UOSInt2Double(this->info.dispWidth - 1) / UOSInt2Double(this->info.dispHeight - 1) * 0.5;
+	}
+	return 0;
+}
+
+Double Media::StaticImage::CalcColorRate()
+{
+	UOSInt i;
+	UOSInt j;
+	UInt8 *ptr = this->data;
+	UOSInt dataBpl = this->GetDataBpl();
+	UOSInt lineAdd;
+	Double sum;
+	if (this->info.pf == Media::PF_B8G8R8A8)
+	{
+		sum = 0;
+		lineAdd = dataBpl - this->info.dispWidth * 4;
+		UOSInt thisPx;
+		UOSInt maxPx = 0;
+		UInt8 maxR = 0;
+		UInt8 maxG = 0;
+		UInt8 maxB = 0;
+
+		i = this->info.dispHeight;
+		while (i-- > 0)
+		{
+			j = this->info.dispWidth;
+			while (j-- > 0)
+			{
+				thisPx = (UOSInt)ptr[0] + ptr[1] + ptr[2];
+				if (thisPx > maxPx)
+				{
+					maxPx = thisPx;
+					maxR = ptr[2];
+					maxG = ptr[1];
+					maxB = ptr[0];
+				}
+				ptr += 4;
+			}
+			ptr += lineAdd;
+		}
+
+		Double rMul = 255.0 / maxR;
+		Double gMul = 255.0 / maxG;
+		Double bMul = 255.0 / maxB;
+
+		ptr = this->data;
+		i = this->info.dispHeight;
+		while (i-- > 0)
+		{
+			j = this->info.dispWidth;
+			while (j-- > 0)
+			{
+				sum += Math_Sqr(ptr[0] * bMul - ptr[1] * gMul);
+				sum += Math_Sqr(ptr[1] * gMul - ptr[2] * rMul);
+				ptr += 4;
+			}
+			ptr += lineAdd;
+		}
+		return sum / UOSInt2Double(this->info.dispWidth) / UOSInt2Double(this->info.dispHeight);
+	}
+	return 0;
+}

@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUIPICTUREBOXDD
 #define _SM_UI_GUIPICTUREBOXDD
+#include "Math/Coord2D.h"
 #include "Media/ColorManager.h"
 #include "Media/IImgResizer.h"
 #include "Media/StaticImage.h"
@@ -110,7 +111,7 @@ namespace UI
 		void HandleDraw(DrawHandler32 hdlr, void *userObj);
 		void HandleMoveToNext(UI::UIEvent hdlr, void *userObj);
 		void HandleMoveToPrev(UI::UIEvent hdlr, void *userObj);
-		void Scn2ImagePos(OSInt x, OSInt y, Double *imgX, Double *imgY);
+		Math::Coord2D<Double> Scn2ImagePos(OSInt x, OSInt y);
 		void Image2ScnPos(Double x, Double y, Double *scnX, Double *scnY);
 		void ZoomToFit();
 		void UpdateBufferImage();

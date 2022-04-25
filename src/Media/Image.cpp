@@ -301,6 +301,38 @@ Media::StaticImage *Media::Image::CreateStaticImage()
 	return outImg;
 }
 
+Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area)
+{
+	Media::FrameInfo frameInfo;
+	frameInfo.Set(&this->info);
+	frameInfo.dispWidth = (UOSInt)area.width;
+	frameInfo.dispHeight = (UOSInt)area.height;
+	frameInfo.storeWidth = frameInfo.dispWidth;
+	frameInfo.storeHeight = frameInfo.dispHeight;
+	frameInfo.byteSize = frameInfo.storeWidth * frameInfo.storeHeight * (frameInfo.storeBPP >> 3);
+	Media::StaticImage *outImg;
+	NEW_CLASS(outImg, Media::StaticImage(&frameInfo));
+	if (this->exif)
+	{
+		outImg->exif = this->exif->Clone();
+	}
+	this->GetImageData(outImg->data, area.tl.x, area.tl.y, frameInfo.dispWidth, frameInfo.dispHeight, outImg->GetDataBpl(), false);
+	if (this->pal)
+	{
+		UOSInt size;
+		if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
+		{
+			size = ((UOSInt)4 << (this->info.storeBPP - 1));
+		}
+		else
+		{
+			size = ((UOSInt)4 << this->info.storeBPP);
+		}
+		MemCopyNO(outImg->pal, this->pal, size);
+	}
+	return outImg;
+}
+
 Media::EXIFData *Media::Image::SetEXIFData(Media::EXIFData *exif)
 {
 	Media::EXIFData *oldExif = this->exif;
