@@ -8,17 +8,16 @@ Map::ProjectedMapView::ProjectedMapView(Double scnWidth, Double scnHeight, Doubl
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
-	ChangeViewXY(scnWidth, scnHeight, centX, centY, scale);
+	ChangeViewXY(scnWidth, scnHeight, Math::Coord2D<Double>(centX, centY), scale);
 }
 
 Map::ProjectedMapView::~ProjectedMapView()
 {
 }
 
-void Map::ProjectedMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale)
+void Map::ProjectedMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Math::Coord2D<Double> centMap, Double scale)
 {
-	this->centX = centX;
-	this->centY = centY;
+	this->centMap = centMap;
 	if (scale < 400)
 		scale = 400;
 	if (scale > 100000000)
@@ -28,28 +27,28 @@ void Map::ProjectedMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Doub
 	Double diffx = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, scnWidth * 0.5 / this->hdpi * this->scale);
 	Double diffy = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, scnHeight * 0.5 / this->hdpi * this->scale);
 
-	this->rightX = centX + diffx;
-	this->leftX = centX - diffx;
-	this->bottomY = centY + diffy;
-	this->topY = centY - diffy;
+	this->rightX = centMap.x + diffx;
+	this->leftX = centMap.x - diffx;
+	this->bottomY = centMap.x + diffy;
+	this->topY = centMap.y - diffy;
 
 	this->scnWidth = scnWidth;
 	this->scnHeight = scnHeight;
 }
 
-void Map::ProjectedMapView::SetCenterXY(Double mapX, Double mapY)
+void Map::ProjectedMapView::SetCenterXY(Math::Coord2D<Double> mapPos)
 {
-	ChangeViewXY(scnWidth, scnHeight, mapX, mapY, scale);
+	ChangeViewXY(scnWidth, scnHeight, mapPos, scale);
 }
 
 void Map::ProjectedMapView::SetMapScale(Double scale)
 {
-	ChangeViewXY(scnWidth, scnHeight, this->centX, this->centY, scale);
+	ChangeViewXY(scnWidth, scnHeight, this->centMap, scale);
 }
 
 void Map::ProjectedMapView::UpdateSize(Double width, Double height)
 {
-	ChangeViewXY(width, height, this->centX, this->centY, this->scale);
+	ChangeViewXY(width, height, this->centMap, this->scale);
 }
 
 void Map::ProjectedMapView::SetDPI(Double hdpi, Double ddpi)
@@ -58,7 +57,7 @@ void Map::ProjectedMapView::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->hdpi = hdpi;
 		this->ddpi = ddpi;
-		ChangeViewXY(this->scnWidth, this->scnHeight, this->centX, this->centY, this->scale);
+		ChangeViewXY(this->scnWidth, this->scnHeight, this->centMap, this->scale);
 	}
 }
 
@@ -94,12 +93,12 @@ Double Map::ProjectedMapView::GetViewScale()
 
 Double Map::ProjectedMapView::GetCenterX()
 {
-	return this->centX;
+	return this->centMap.x;
 }
 
 Double Map::ProjectedMapView::GetCenterY()
 {
-	return this->centY;
+	return this->centMap.y;
 }
 
 Double Map::ProjectedMapView::GetHDPI()
@@ -368,21 +367,21 @@ mtslop4:
 #endif
 }
 
-void Map::ProjectedMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
+Math::Coord2D<Double> Map::ProjectedMapView::MapXYToScnXY(Math::Coord2D<Double> mapPos)
 {
-	*scnX = (mapX - this->leftX) * scnWidth / (this->rightX - this->leftX);
-	*scnY = (this->bottomY - mapY) * scnHeight / (this->bottomY - this->topY);
+	return Math::Coord2D<Double>((mapPos.x - this->leftX) * scnWidth / (this->rightX - this->leftX),
+		(this->bottomY - mapPos.y) * scnHeight / (this->bottomY - this->topY));
 }
 
-void Map::ProjectedMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
+Math::Coord2D<Double> Map::ProjectedMapView::ScnXYToMapXY(Math::Coord2D<Double> scnPos)
 {
-	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / scnWidth));
-	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / scnHeight));
+	return Math::Coord2D<Double>((this->leftX + (scnPos.x * (this->rightX - this->leftX) / scnWidth)),
+		(this->bottomY - (scnPos.y * (this->bottomY - this->topY) / scnHeight)));
 }
 
 Map::MapView *Map::ProjectedMapView::Clone()
 {
 	Map::ProjectedMapView *view;
-	NEW_CLASS(view, Map::ProjectedMapView(this->scnWidth, this->scnHeight, this->centY, this->centX, this->scale));
+	NEW_CLASS(view, Map::ProjectedMapView(this->scnWidth, this->scnHeight, this->centMap.x, this->centMap.y, this->scale));
 	return view;
 }

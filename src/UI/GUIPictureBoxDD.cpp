@@ -782,7 +782,7 @@ void UI::GUIPictureBoxDD::OnMouseMove(OSInt x, OSInt y)
 	j = this->mouseMoveHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), x, y, UI::GUIControl::MBTN_LEFT))
+		if (this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), UI::GUIControl::MBTN_LEFT))
 		{
 			return;
 		}
@@ -805,7 +805,7 @@ void UI::GUIPictureBoxDD::OnMouseDown(OSInt x, OSInt y, MouseButton button)
 	j = this->mouseDownHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseDownHdlrs.GetItem(i)(this->mouseDownObjs.GetItem(i), x, y, button))
+		if (this->mouseDownHdlrs.GetItem(i)(this->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), button))
 		{
 			return;
 		}
@@ -827,7 +827,7 @@ void UI::GUIPictureBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 	j = this->mouseUpHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseUpHdlrs.GetItem(i)(this->mouseUpObjs.GetItem(i), x, y, button))
+		if (this->mouseUpHdlrs.GetItem(i)(this->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), button))
 		{
 			return;
 		}
@@ -1137,7 +1137,7 @@ void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, void *userObj)
 	this->moveToPrevObjs.Add(userObj);
 }
 
-Math::Coord2D<Double> UI::GUIPictureBoxDD::Scn2ImagePos(OSInt x, OSInt y)
+Math::Coord2D<Double> UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
 {
 	if (this->currImage == 0)
 		return Math::Coord2D<Double>(0, 0);
@@ -1161,8 +1161,8 @@ Math::Coord2D<Double> UI::GUIPictureBoxDD::Scn2ImagePos(OSInt x, OSInt y)
 		y = destRect[1] + destRect[3];
 	}*/
 
-	return Math::Coord2D<Double>(srcRect[0] + OSInt2Double(x - destRect[0]) * srcRect[2] / OSInt2Double(destRect[2]),
-		srcRect[1] + OSInt2Double(y - destRect[1]) * srcRect[3] / OSInt2Double(destRect[3]));
+	return Math::Coord2D<Double>(srcRect[0] + OSInt2Double(scnPos.x - destRect[0]) * srcRect[2] / OSInt2Double(destRect[2]),
+		srcRect[1] + OSInt2Double(scnPos.y - destRect[1]) * srcRect[3] / OSInt2Double(destRect[3]));
 }
 
 void UI::GUIPictureBoxDD::Image2ScnPos(Double imgX, Double imgY, Double *scnX, Double *scnY)

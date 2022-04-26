@@ -9,7 +9,7 @@ namespace UI
 	{
 	public:
 		GUIPopupMenu();
-		void ShowMenu(UI::GUIControl *ctrl, OSInt x, OSInt y);
+		void ShowMenu(UI::GUIControl *ctrl, Math::Coord2D<OSInt> scnPos);
 	};
 }
 #endif

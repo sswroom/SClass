@@ -43,13 +43,13 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 	me->UpdateTableList();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	UOSInt i = me->lbConn->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->mnuConn->ShowMenu(me->lbConn, scnX, scnY);
+		me->mnuConn->ShowMenu(me->lbConn, scnPos);
 	}
 	return false;
 }
@@ -62,13 +62,13 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 	SDEL_STRING(tableName);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	UOSInt i = me->lbTable->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->mnuTable->ShowMenu(me->lbTable, scnX, scnY);
+		me->mnuTable->ShowMenu(me->lbTable, scnPos);
 	}
 	return false;
 }

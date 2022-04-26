@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(Media::IAudioSource *audio, In
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(void *userObj, OSInt scnX, OSInt scnY, UI::GUIControl::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm *)userObj;
 	me->popMedia = (Media::IMediaSource*)me->lbFiles->GetSelectedItem();
@@ -192,11 +192,11 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(void *userObj, OSInt
 		Media::MediaType mediaType = me->popMedia->GetMediaType();
 		if (mediaType == Media::MEDIA_TYPE_VIDEO)
 		{
-			me->mnuVideo->ShowMenu(me->lbFiles, scnX, scnY);
+			me->mnuVideo->ShowMenu(me->lbFiles, scnPos);
 		}
 		else if (mediaType == Media::MEDIA_TYPE_AUDIO)
 		{
-			me->mnuAudio->ShowMenu(me->lbFiles, scnX, scnY);
+			me->mnuAudio->ShowMenu(me->lbFiles, scnPos);
 		}
 	}
 	return false;

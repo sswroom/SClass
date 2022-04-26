@@ -137,7 +137,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	{
 		while (i-- > 0)
 		{
-			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), x, y, UI::GUIControl::MBTN_RIGHT);
+			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), UI::GUIControl::MBTN_RIGHT);
 		}
 	}
 }

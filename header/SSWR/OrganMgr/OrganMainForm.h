@@ -140,10 +140,8 @@ namespace SSWR
 			WebFileInfo *dispImageWF;
 			Bool dispImageToCrop;
 			Bool dispImageDown;
-			OSInt dispImageDownX;
-			OSInt dispImageDownY;
-			OSInt dispImageCurrX;
-			OSInt dispImageCurrY;
+			Math::Coord2D<OSInt> dispImageDownPos;
+			Math::Coord2D<OSInt> dispImageCurrPos;
 
 			Map::DrawMapRenderer *mapRenderer;
 			Map::MapView *mapView;
@@ -173,10 +171,10 @@ namespace SSWR
 			static void __stdcall OnObjDblClicked(void *userObj);
 			static void __stdcall OnObjSelChg(void *userObj);
 			static void __stdcall OnImgSelChg(void *userObj);
-			static Bool __stdcall OnImgRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
-			static Bool __stdcall OnImgMouseDown(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
-			static Bool __stdcall OnImgMouseUp(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
-			static Bool __stdcall OnImgMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
+			static Bool __stdcall OnImgRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static Bool __stdcall OnImgMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static Bool __stdcall OnImgMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static Bool __stdcall OnImgMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnImgDraw(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 			static void __stdcall OnImgDblClicked(void *userObj);
 			static void __stdcall OnImgDirClicked(void *userObj);
@@ -203,12 +201,12 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnMapScaleScroll(void *userObj, UOSInt newVal);
 			static void __stdcall OnTileUpdated(void *userObj);
-			static void __stdcall OnMapMouseMove(void *userObj, OSInt x, OSInt y);
+			static void __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnMapDraw(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);
 
 			static OSInt __stdcall GroupCompare(void *obj1, void *obj2);
 
-			Bool CalcCropRect(OSInt *rect);
+			Bool CalcCropRect(Math::Coord2D<OSInt> *rect);
 
 			void UpdateDir();
 			void UpdateImgDir();

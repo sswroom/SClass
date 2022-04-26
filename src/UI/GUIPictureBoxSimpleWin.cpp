@@ -31,49 +31,49 @@ OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSIn
 		i = me->mouseDownHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_LEFT);
+			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		}
 		return 0;
 	case WM_RBUTTONDOWN:
 		i = me->mouseDownHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_RIGHT);
+			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		}
 		return 0;
 	case WM_MBUTTONDOWN:
 		i = me->mouseDownHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_MIDDLE);
+			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		}
 		return 0;
 	case WM_LBUTTONUP:
 		i = me->mouseUpHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_LEFT);
+			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		}
 		return 0;
 	case WM_RBUTTONUP:
 		i = me->mouseUpHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_RIGHT);
+			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		}
 		return 0;
 	case WM_MBUTTONUP:
 		i = me->mouseUpHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_MIDDLE);
+			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		}
 		return 0;
 	case WM_MOUSEMOVE:
 		i = me->mouseMoveHdlrs->GetCount();
 		while (i-- > 0)
 		{
-			me->mouseMoveHdlrs->GetItem(i)(me->mouseMoveObjs->GetItem(i), (Int16)LOWORD(lParam), (Int16)HIWORD(lParam), MBTN_MIDDLE);
+			me->mouseMoveHdlrs->GetItem(i)(me->mouseMoveObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		}
 		return 0;
 	}

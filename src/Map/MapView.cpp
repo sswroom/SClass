@@ -13,6 +13,11 @@ Map::MapView::~MapView()
 {
 }
 
+Math::Coord2D<Double> Map::MapView::GetCenterMap()
+{
+	return Math::Coord2D<Double>(this->GetCenterX(), this->GetCenterY());
+}
+
 Double Map::MapView::GetScnWidth()
 {
 	return this->scnWidth;
@@ -28,7 +33,7 @@ void Map::MapView::SetDestImage(Media::DrawImage *img)
 	if (this->scnWidth != UOSInt2Double(img->GetWidth()) || this->scnHeight != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
-		ChangeViewXY(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()), this->GetCenterX(), this->GetCenterY(), this->GetMapScale());
+		ChangeViewXY(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()), this->GetCenterMap(), this->GetMapScale());
 	}
 }
 
@@ -58,10 +63,10 @@ void Map::MapView::SetViewBounds(Double x1, Double y1, Double x2, Double y2)
 		yRatio = -yRatio;
 	if (xRatio < yRatio)
 	{
-		ChangeViewXY(this->scnWidth, this->scnHeight, (x1 + x2) * 0.5, (y1 + y2) * 0.5, currScale / xRatio);
+		ChangeViewXY(this->scnWidth, this->scnHeight, Math::Coord2D<Double>((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / xRatio);
 	}
 	else
 	{
-		ChangeViewXY(this->scnWidth, this->scnHeight, (x1 + x2) * 0.5, (y1 + y2) * 0.5, currScale / yRatio);
+		ChangeViewXY(this->scnWidth, this->scnHeight, Math::Coord2D<Double>((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / yRatio);
 	}
 }

@@ -19,11 +19,10 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			IMapNavigator *navi;
 			Map::IMapDrawLayer *lyr;
-			OSInt downX;
-			OSInt downY;
+			Math::Coord2D<OSInt> downPos;
 
-			static Bool __stdcall OnMouseDown(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseUp(void *userObj, OSInt x, OSInt y);
+			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
 		public:
 			AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::IMapDrawLayer *lyr, IMapNavigator *navi);
 			virtual ~AVIRGISQueryForm();

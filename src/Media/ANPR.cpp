@@ -95,8 +95,8 @@ Media::StaticImage *Media::ANPR::CreatePlainImage(UInt8 *sptr, UOSInt swidth, UO
 	}
 	else // 331 x 170 or 331 x 180
 	{
-		imgW = 150;
-		imgW = 75;
+		imgW = 165;
+		imgH = 90;
 	}
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	return Media::LinearRectRemapper::RemapW8(sptr, swidth, sheight, (OSInt)sbpl, imgW, imgH, quad, &color, Media::ColorProfile::YUVT_SMPTE170M, Media::YCOFST_C_CENTER_LEFT);
@@ -164,34 +164,73 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 	Media::OpenCV::OCVFrame *croppedFrame = Media::OpenCV::OCVFrame::CreateYFrame(plainImg);
 	if (croppedFrame)
 	{
-		croppedFrame->Normalize();
-		this->ocr.SetOCVFrame(croppedFrame);
-		Text::String *s = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight), &confidence);
-		if (s)
+		Media::OpenCV::OCVFrame *filteredFrame = croppedFrame->BilateralFilter(11, 17, 17);
+		filteredFrame->Normalize();
+		this->ocr.SetOCVFrame(filteredFrame);
+		if (false)//psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::DoubleRow)
 		{
-			s->RemoveWS();
-			if (s->leng == 0 || s->leng > 10)
+			Text::String *s1 = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight >> 1), &confidence);
+			Text::String *s2 = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispHeight >> 1, plainImg->info.dispWidth, (plainImg->info.dispHeight >> 1) + (plainImg->info.dispHeight & 1)), &confidence);
+			s1 = Text::String::OrEmpty(s1);
+			s2 = Text::String::OrEmpty(s2);
+			s1->RemoveWS();
+			s2->RemoveWS();
+			if ((s1->leng + s2->leng) == 0 || (s1->leng + s2->leng) > 10)
 			{
 			}
 			else
 			{
-				s->Replace('I', '1');
+				s1->Replace('I', '1');
+				s2->Replace('I', '1');
+				printf("s1 = \"%s\", s2 = \"%s\"\r\n", s1->v, s2->v);
+				UTF8Char sbuff[11];
+				UTF8Char *sptr;
+				sptr = s2->ConcatTo(s1->ConcatTo(sbuff));
+				s1->Release();
+				s1 = Text::String::NewP(sbuff, sptr);
 				if (this->hdlr)
 				{
 					Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
 					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.width), (UOSInt)Double2OSInt(dblArea.height));
-					this->hdlr(this->hdlrObj, simg, &area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
+					this->hdlr(this->hdlrObj, simg, &area, s1, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 				}
 				found = true;
 				
 				this->parsedCnt++;
 			}
-			s->Release();
+			s1->Release();
+			s2->Release();
 		}
 		else
 		{
-			printf("OCR parsing error\r\n");
+			Text::String *s = this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispWidth, plainImg->info.dispHeight), &confidence);
+			if (s)
+			{
+				s->RemoveWS();
+				if (s->leng == 0 || s->leng > 10)
+				{
+				}
+				else
+				{
+					s->Replace('I', '1');
+					if (this->hdlr)
+					{
+						Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
+						Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.width), (UOSInt)Double2OSInt(dblArea.height));
+						this->hdlr(this->hdlrObj, simg, &area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
+					}
+					found = true;
+					
+					this->parsedCnt++;
+				}
+				s->Release();
+			}
+			else
+			{
+				printf("OCR parsing error\r\n");
+			}
 		}
+		DEL_CLASS(filteredFrame);
 		DEL_CLASS(croppedFrame);
 	}
 	DEL_CLASS(plainImg);

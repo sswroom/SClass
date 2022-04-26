@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -108,7 +108,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, OSIn
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 	DEL_CLASS(frm);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -193,7 +193,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, OSIn
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)

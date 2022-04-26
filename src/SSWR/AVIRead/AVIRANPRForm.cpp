@@ -43,32 +43,47 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnPlateSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelPlateClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
-	if (me->pointSelecting)
+	if (me->selectMode == ActionType::Plate)
 	{
-		me->pointSelecting = false;
+		me->selectMode = ActionType::None;
+		me->lblSelStatus->SetText(CSTR(""));
+	}
+	else
+	{
+		me->selectMode = ActionType::Plate;
+		me->lblSelStatus->SetText(CSTR("Select plate bg color"));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelCornersClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
+	if (me->selectMode == ActionType::Corners)
+	{
+		me->selectMode = ActionType::None;
 		me->points.Clear();
 		me->lblSelStatus->SetText(CSTR(""));
 	}
 	else
 	{
-		me->pointSelecting = true;
+		me->selectMode = ActionType::Corners;
 		me->points.Clear();
 		me->lblSelStatus->SetText(CSTR("Select point 1"));
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRANPRForm *me = (SSWR::AVIRead::AVIRANPRForm*)userObj;
-	if (me->pointSelecting)
+	if (me->selectMode == ActionType::Corners)
 	{
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
-		me->points.Add(me->pbImg->Scn2ImagePos(scnX, scnY));
+		me->points.Add(me->pbImg->Scn2ImagePos(scnPos));
 		if (me->points.GetCount() >= 4)
 		{
 			UOSInt i;
-			me->pointSelecting = false;
+			me->selectMode = ActionType::None;
 			me->lblSelStatus->SetText(CSTR(""));
 			me->anpr.ParseImageQuad(me->currImg, Math::Quadrilateral::FromPolygon(me->points.GetArray(&i)));
 		}
@@ -78,6 +93,11 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, OSInt scnX,
 			me->lblSelStatus->SetText(CSTRP(sbuff, sptr));
 		}
 		return true;
+	}
+	else if (me->selectMode == ActionType::Plate)
+	{
+		Math::Coord2D<Double> coord = me->pbImg->Scn2ImagePos(scnPos);
+
 	}
 	return false;
 }
@@ -127,7 +147,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 
 	this->core = core;
 	this->currImg = 0;
-	this->pointSelecting = false;
+	this->selectMode = ActionType::None;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -138,6 +158,9 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->btnSelPlate, UI::GUIButton(ui, this->pnlCtrl, CSTR("Sel Plate")));
 	this->btnSelPlate->SetRect(4, 4, 75, 23, false);
 	this->btnSelPlate->HandleButtonClick(OnSelPlateClicked, this);
+	NEW_CLASS(this->btnSelCorners, UI::GUIButton(ui, this->pnlCtrl, CSTR("Sel Corners")));
+	this->btnSelCorners->SetRect(84, 4, 75, 23, false);
+	this->btnSelCorners->HandleButtonClick(OnSelCornersClicked, this);
 	NEW_CLASS(this->lblSelStatus, UI::GUILabel(ui, this->pnlCtrl, CSTR("")));
 	this->lblSelStatus->SetRect(84, 4, 200, 23, false);
 	NEW_CLASS(this->pnlPlate, UI::GUIPanel(ui, this));

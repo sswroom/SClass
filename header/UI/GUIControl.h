@@ -210,7 +210,7 @@ namespace UI
 			DET_ALREADYREGISTER
 		} DragErrorType;
 
-		typedef Bool (__stdcall *MouseEventHandler)(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
+		typedef Bool (__stdcall *MouseEventHandler)(void *userObj, Math::Coord2D<OSInt> scnCoord, MouseButton btn);
 
 
 	protected:

@@ -33,8 +33,7 @@ namespace SSWR
 			Math::CoordinateSystem *csys;
 
 			Data::ArrayList<Double> *ptList;
-			Double lastMapX;
-			Double lastMapY;
+			Math::Coord2D<Double> lastMapPos;
 			Double pathDist;
 			Double dispDist;
 
@@ -42,8 +41,8 @@ namespace SSWR
 			static void __stdcall OnTypeSelChg(void *userObj, Bool newState);
 			static void __stdcall OnMeasureSelChg(void *userObj, Bool newState);
 			static void __stdcall OnDistanceUnitChg(void *userObj);
-			static Bool __stdcall OnMapMouseDown(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMapMouseMove(void *userObj, OSInt x, OSInt y);
+			static Bool __stdcall OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			void UpdateDistDisp();
 
 		public:

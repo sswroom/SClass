@@ -19,20 +19,17 @@ namespace SSWR
 			UI::GUIButton *btnRandom;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Double selX1;
-			Double selY1;
-			Double selX2;
-			Double selY2;
+			Math::Coord2D<Double> selPt1;
+			Math::Coord2D<Double> selPt2;
 			Bool selecting;
 			Bool isDown;
-			OSInt downX;
-			OSInt downY;
+			Math::Coord2D<OSInt> downPt;
 
 			IMapNavigator *navi;
 
-			static Bool __stdcall OnMouseDown(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseUp(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseMove(void *userObj, OSInt x, OSInt y);
+			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 
 			static void __stdcall OnAreaClicked(void *userObj);
 			static void __stdcall OnRandomClicked(void *userObj);

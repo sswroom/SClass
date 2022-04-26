@@ -17,7 +17,7 @@ void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UI
 {
 	view->UpdateSize(UOSInt2Double(this->imgSize * this->osSize), UOSInt2Double(this->imgSize * this->osSize));
 	view->SetDPI((UOSInt2Double(this->osSize) * 96.0), 96.0);
-	view->SetCenterXY((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464);
+	view->SetCenterXY(Math::Coord2D<Double>((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464));
 }
 
 UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, Text::CString ext)

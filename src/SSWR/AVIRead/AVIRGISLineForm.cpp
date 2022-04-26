@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, UOS
 	me->UpdatePreview();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(void *userObj, OSInt x, OSInt y, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
 	UtilUI::ColorDialog *dlg;

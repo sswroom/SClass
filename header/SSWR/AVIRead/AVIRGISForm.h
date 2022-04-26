@@ -75,9 +75,9 @@ namespace SSWR
 
 		private:
 			static void __stdcall FileHandler(void *userObj, Text::String **files, UOSInt nFiles);
-			static void __stdcall OnMapMouseMove(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMapMouseDown(void *userObj, OSInt x, OSInt y, MouseButton button);
-			static Bool __stdcall OnMapMouseUp(void *userObj, OSInt x, OSInt y, MouseButton button);
+			static void __stdcall OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static Bool __stdcall OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static void __stdcall OnMapScaleChanged(void *userObj, Double newScale);
 			static void __stdcall OnMapUpdated(void *userObj, Double centerX, Double centerY, Double timeUsed);
 			static void __stdcall OnScaleScrolled(void *userObj, UOSInt newVal);
@@ -119,8 +119,8 @@ namespace SSWR
 			virtual void RedrawMap();
 			virtual Math::CoordinateSystem *GetCoordinateSystem();
 
-			virtual void ScnXY2MapXY(OSInt scnX, OSInt scnY, Double *mapX, Double *mapY);
-			virtual void MapXY2ScnXY(Double mapX, Double mapY, OSInt *scnX, OSInt *scnY);
+			virtual Math::Coord2D<Double> ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
+			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2D<Double> mapPos);
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType);
 			virtual void HandleMapMouseDown(MouseEvent evt, void *userObj);
 			virtual void HandleMapMouseUp(MouseEvent evt, void *userObj);

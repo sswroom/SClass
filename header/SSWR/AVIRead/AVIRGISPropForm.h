@@ -72,12 +72,12 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
-			static Bool __stdcall OnFillClicked(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-			static Bool __stdcall OnLineDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
+			static Bool __stdcall OnFillClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+			static Bool __stdcall OnLineDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
 			static void __stdcall OnLineModifyClicked(void *userObj);
 			static void __stdcall OnLineStyleClicked(void *userObj);
-			static Bool __stdcall OnIconClicked(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-			static Bool __stdcall OnFontModifyDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
+			static Bool __stdcall OnIconClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+			static Bool __stdcall OnFontModifyDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
 			static void __stdcall OnFontModifyClicked(void *userObj);
 			static void __stdcall OnFontStyleClicked(void *userObj);
 /*

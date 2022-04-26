@@ -693,8 +693,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 		Double bry;
 		Double scnPtX;
 		Double scnPtY;
-		Double dscnX;
-		Double dscnY;
+		Math::Coord2D<Double> dscnPos;
 		OSInt thisPts[10];
 		Int32 thisCnt = 0;
 
@@ -737,9 +736,9 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 			if (denv->labels[i].layerType == Map::DRAW_LAYER_POINT || denv->labels[i].layerType == Map::DRAW_LAYER_POINT3D)
 			{
 				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				denv->view->MapXYToScnXY(denv->labels[i].lon, denv->labels[i].lat, &dscnX, &dscnY);
-				scnPtX = dscnX;
-				scnPtY = dscnY;
+				dscnPos = denv->view->MapXYToScnXY(Math::Coord2D<Double>(denv->labels[i].lon, denv->labels[i].lat));
+				scnPtX = dscnPos.x;
+				scnPtY = dscnPos.y;
 
 				overlapped = true;
 				if (denv->labels[i].xOfst == 0)
@@ -1254,9 +1253,9 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYGON)
 			{
 				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				denv->view->MapXYToScnXY(denv->labels[i].lon, denv->labels[i].lat, &dscnX, &dscnY);
-				scnPtX = dscnX;
-				scnPtY = dscnY;
+				dscnPos = denv->view->MapXYToScnXY(Math::Coord2D<Double>(denv->labels[i].lon, denv->labels[i].lat));
+				scnPtX = dscnPos.x;
+				scnPtY = dscnPos.y;
 
 				overlapped = true;
 				if (overlapped)
@@ -2143,7 +2142,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 
 					if (denv->view->InViewXY(pts.x, pts.y))
 					{
-						denv->view->MapXYToScnXY(pts.x, pts.y, &pts.x, &pts.y);
+						pts = denv->view->MapXYToScnXY(pts);
 
 						if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
 							scaleW = scaleH = 0;
@@ -2156,7 +2155,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 					pts = Math::Geometry::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr);
 					if (denv->view->InViewXY(pts.x, pts.y))
 					{
-						denv->view->MapXYToScnXY(pts.x, pts.y, &pts.x, &pts.y);
+						pts = denv->view->MapXYToScnXY(pts);
 						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 					}
 					layer->ReleaseObject(session, dobj);
@@ -2179,7 +2178,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 					pts.y = (lastPtY / dobj->nPoint);
 					if (denv->view->InViewXY(pts.x, pts.y))
 					{
-						denv->view->MapXYToScnXY(pts.x, pts.y, &pts.x, &pts.y);
+						pts = denv->view->MapXYToScnXY(pts);
 						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 					}
 					layer->ReleaseObject(session, dobj);
@@ -2253,27 +2252,27 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	j = imgList.GetCount();
 	while (i < j)
 	{
-		Double mapCoords[4];
-		Double scnCoords[4];
+		Math::Coord2D<Double> mapCoords[2];
+		Math::Coord2D<Double> scnCoords[2];
 		vimg = imgList.GetItem(i);
 		if (vimg->IsScnCoord())
 		{
-			vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0], &scnCoords[1], &scnCoords[2], &scnCoords[3]);
+			vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0].x, &scnCoords[0].y, &scnCoords[1].x, &scnCoords[1].y);
 		}
 		else
 		{
-			vimg->GetBounds(&mapCoords[0], &mapCoords[3], &mapCoords[2], &mapCoords[1]);
+			vimg->GetBounds(&mapCoords[0].x, &mapCoords[1].y, &mapCoords[1].x, &mapCoords[0].y);
 			if (geoConv)
 			{
-				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[0], mapCoords[1], 0, &mapCoords[0], &mapCoords[1], 0);
-				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[2], mapCoords[3], 0, &mapCoords[2], &mapCoords[3], 0);
+				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[0].x, mapCoords[0].y, 0, &mapCoords[0].x, &mapCoords[0].y, 0);
+				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[1].x, mapCoords[1].y, 0, &mapCoords[1].x, &mapCoords[1].y, 0);
 			}
-			denv->view->MapXYToScnXY(mapCoords[0], mapCoords[1], &scnCoords[0], &scnCoords[1]);
-			denv->view->MapXYToScnXY(mapCoords[2], mapCoords[3], &scnCoords[2], &scnCoords[3]);
+			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords[0]);
+			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords[1]);
 		}
 		UInt32 imgTimeMS;
-		Media::StaticImage *simg = vimg->GetImage(scnCoords[2] - scnCoords[0], scnCoords[3] - scnCoords[1], &imgTimeMS);
-		DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], scnCoords[2], scnCoords[3], vimg->GetSrcAlpha());
+		Media::StaticImage *simg = vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, &imgTimeMS);
+		DrawImageObject(denv, simg, scnCoords[0].x, scnCoords[0].y, scnCoords[1].x, scnCoords[1].y, vimg->GetSrcAlpha());
 		if (imgTimeMS != 0)
 		{
 			if (denv->imgDurMS == 0)

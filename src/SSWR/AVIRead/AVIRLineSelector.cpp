@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 			OSInt x;
 			OSInt y;
 			this->GetScreenPosP(&x, &y);
-			this->mnuLayers->ShowMenu(this, x + xPos, y + yPos);
+			this->mnuLayers->ShowMenu(this, Math::Coord2D<OSInt>(x + xPos, y + yPos));
 		}
 	}
 }

@@ -27,6 +27,7 @@ namespace Media
 			Media::StaticImage *CreateStaticImage();
 			void ToBlackAndWhite(UInt8 middleV);
 			void Normalize();
+			Media::OpenCV::OCVFrame *BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);
 
 			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
 			static OCVFrame *CreateYFrame(Media::StaticImage *simg);

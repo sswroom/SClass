@@ -21,11 +21,10 @@ namespace SSWR
 			IMapNavigator *navi;
 			Map::MapEnv *env;
 			Map::MapEnv::GroupItem *group;
-			OSInt downX;
-			OSInt downY;
+			Math::Coord2D<OSInt> downPos;
 
-			static Bool __stdcall OnMouseDown(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseUp(void *userObj, OSInt x, OSInt y);
+			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
 		public:
 			AVIRGISGroupQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi, Map::MapEnv *env, Map::MapEnv::GroupItem *group);
 			virtual ~AVIRGISGroupQueryForm();

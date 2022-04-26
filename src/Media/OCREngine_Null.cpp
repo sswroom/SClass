@@ -28,3 +28,14 @@ Text::String *Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, UO
 {
 	return 0;
 }
+
+void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, void *userObj)
+{
+	this->hdlr = hdlr;
+	this->hdlrObj = userObj;
+}
+
+Bool Media::OCREngine::ParseAllInImage()
+{
+	return false;
+}

@@ -41,18 +41,17 @@ namespace SSWR
 			Double imgMaxX;
 			Double imgMaxY;
 			Int32 downType;
-			OSInt downX;
-			OSInt downY;
+			Math::Coord2D<OSInt> downPos;
 
 			Map::VectorLayer *lyr;
 			IMapNavigator *navi;
 
 			static void __stdcall OnImageChg(void *userObj);
 			void UpdateImgStat();
-			static Bool __stdcall OnMouseDown(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseUp(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseMove(void *userObj, OSInt x, OSInt y);
-			Int32 CalcDownType(OSInt x, OSInt y);
+			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
+			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:
 			AVIRGISEditImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::VectorLayer *lyr, IMapNavigator *navi);
 			virtual ~AVIRGISEditImageForm();

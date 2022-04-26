@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(void *userObj)
 	me->UpdateInfo();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	if (me->currImg)
@@ -43,7 +43,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		Double dB;
 		UInt8 pixel[16];
 		Text::StringBuilderUTF8 sb;
-		Math::Coord2D<Double> imgPos = me->pbImage->Scn2ImagePos(scnX, scnY);
+		Math::Coord2D<Double> imgPos = me->pbImage->Scn2ImagePos(scnPos);
 		OSInt xPos = Double2Int32(imgPos.x);
 		OSInt yPos = Double2Int32(imgPos.y);
 		if (xPos < 0)

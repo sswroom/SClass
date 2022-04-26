@@ -63,7 +63,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(void *userObj)
 	{
 		if (!me->mapView->InViewXY(rec->lon, rec->lat))
 		{
-			me->mapView->SetCenterXY(rec->lon, rec->lat);
+			me->mapView->SetCenterXY(Math::Coord2D<Double>(rec->lon, rec->lat));
 			me->mapMain->UpdateMap();
 		}
 	}
@@ -227,7 +227,7 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 
 		if (!this->mapView->InViewXY(lon, lat))
 		{
-			this->mapView->SetCenterXY(lon, lat);
+			this->mapView->SetCenterXY(Math::Coord2D<Double>(lon, lat));
 			this->mapMain->UpdateMap();
 		}
 	}

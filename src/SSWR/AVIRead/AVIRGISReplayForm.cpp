@@ -141,10 +141,10 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(void *userObj, OSInt scnX, OSInt scnY, UI::GUIControl::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
-	me->mnuRecord->ShowMenu(me, scnX, scnY);
+	me->mnuRecord->ShowMenu(me, scnPos);
 	return false;
 }
 

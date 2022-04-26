@@ -26,7 +26,7 @@ namespace UI
 		virtual void DisplayOff();
 		virtual void Suspend();
 		virtual void GetDesktopSize(UOSInt *w, UOSInt *h);
-		virtual void GetCursorPos(OSInt *x, OSInt *y);
+		virtual Math::Coord2D<OSInt> GetCursorPos();
 		virtual void SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot);
 		virtual void GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi);
 		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr);

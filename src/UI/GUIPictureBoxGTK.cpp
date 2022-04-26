@@ -382,7 +382,7 @@ void UI::GUIPictureBox::EventButtonDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 	i = this->mouseDownHdlrs->GetCount();
 	while (i-- > 0)
 	{
-		this->mouseDownHdlrs->GetItem(i)(this->mouseDownObjs->GetItem(i), x, y, btn);
+		this->mouseDownHdlrs->GetItem(i)(this->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>(x, y), btn);
 	}
 }
 
@@ -392,7 +392,7 @@ void UI::GUIPictureBox::EventButtonUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 	i = this->mouseUpHdlrs->GetCount();
 	while (i-- > 0)
 	{
-		this->mouseUpHdlrs->GetItem(i)(this->mouseUpObjs->GetItem(i), x, y, btn);
+		this->mouseUpHdlrs->GetItem(i)(this->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>(x, y), btn);
 	}
 }
 
@@ -401,6 +401,6 @@ void UI::GUIPictureBox::EventMouseMove(OSInt x, OSInt y)
 	UOSInt i = this->mouseMoveHdlrs->GetCount();
 	while (i-- > 0)
 	{
-		this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), x, y, MBTN_MIDDLE);
+		this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), Math::Coord2D<OSInt>(x, y), MBTN_MIDDLE);
 	}
 }

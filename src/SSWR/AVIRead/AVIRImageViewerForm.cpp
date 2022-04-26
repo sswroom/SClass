@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRImageViewerForm *me = (SSWR::AVIRead::AVIRImageViewerForm *)userObj;
 	if (me->hideCursor)

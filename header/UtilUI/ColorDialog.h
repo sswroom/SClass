@@ -108,12 +108,12 @@ namespace UtilUI
 
 		static void __stdcall OnOKClicked(void *userObj);
 		static void __stdcall OnCancelClicked(void *userObj);
-		static Bool __stdcall OnSubDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-		static Bool __stdcall OnSubMove(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-		static Bool __stdcall OnSubUp(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-		static Bool __stdcall OnMainDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-		static Bool __stdcall OnMainMove(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
-		static Bool __stdcall OnMainUp(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn);
+		static Bool __stdcall OnSubDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static Bool __stdcall OnSubMove(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static Bool __stdcall OnSubUp(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static Bool __stdcall OnMainDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static Bool __stdcall OnMainMove(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
+		static Bool __stdcall OnMainUp(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
 		static void __stdcall OnTransChange(void *userObj);
 		static void __stdcall OnRedChange(void *userObj, Bool newState);
 		static void __stdcall OnGreenChange(void *userObj, Bool newState);

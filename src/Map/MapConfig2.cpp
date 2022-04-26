@@ -2471,7 +2471,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	Map::DrawObjectL *dobj;
 	Double scaleW;
 	Double scaleH;
-	Double pts[2];
+	Math::Coord2D<Double> pts;
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UTF8Char lblStr[128];
@@ -2526,8 +2526,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 				if (dobj->nPoint & 1)
 				{
 					UOSInt k = dobj->nPoint >> 1;
-					pts[0] = dobj->pointArr[k].x;
-					pts[1] = dobj->pointArr[k].y;
+					pts = dobj->pointArr[k];
 
 					scaleW = dobj->pointArr[k + 1].x - dobj->pointArr[k - 1].x;
 					scaleH = dobj->pointArr[k + 1].y - dobj->pointArr[k - 1].y;
@@ -2535,44 +2534,40 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 				else
 				{
 					UOSInt k = dobj->nPoint >> 1;
-					pts[0] = (dobj->pointArr[k - 1].x + dobj->pointArr[k].x) * 0.5;
-					pts[1] = (dobj->pointArr[k - 1].y + dobj->pointArr[k].y) * 0.5;
+					pts = (dobj->pointArr[k - 1] + dobj->pointArr[k]) * 0.5;
 
 					scaleW = dobj->pointArr[k].x - dobj->pointArr[k - 1].x;
 					scaleH = dobj->pointArr[k].y - dobj->pointArr[k - 1].y;
 				}
 
-				if (view->InViewXY(pts[0], pts[1]))
+				if (view->InViewXY(pts.x, pts.y))
 				{
-					view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
+					pts = view->MapXYToScnXY(pts);
 
 					if ((lyrs->bkColor & SFLG_ROTATE) == 0)
 						scaleW = scaleH = 0;
-					DrawChars(img, CSTRP(sptr, sptrEnd), pts[0], pts[1], scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 				}
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
 			else
 			{
-				Double lastPtX = 0;
-				Double lastPtY = 0;
+				Math::Coord2D<Double> lastPt = {0, 0};
 				Math::Coord2D<Double> *pointPos = dobj->pointArr;
 				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 
 				j = dobj->nPoint;
 				while (j--)
 				{
-					lastPtX += pointPos->x;
-					lastPtY += pointPos->y;
+					lastPt += *pointPos;
 					pointPos++;
 				}
 
-				pts[0] = (lastPtX / dobj->nPoint);
-				pts[1] = (lastPtY / dobj->nPoint);
-				if (view->InViewXY(pts[0], pts[1]))
+				pts = (lastPt / dobj->nPoint);
+				if (view->InViewXY(pts.x, pts.y))
 				{
-					view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-					DrawChars(img, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					pts = view->MapXYToScnXY(pts);
+					DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 				}
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
@@ -3342,11 +3337,9 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 			if (labels[i].shapeType == 1)
 			{
 				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				Double scnXD;
-				Double scnYD;
-				view->MapXYToScnXY(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate, &scnXD, &scnYD);
-				scnPtX = (scnXD);
-				scnPtY = (scnYD);
+				Math::Coord2D<Double> scnD = view->MapXYToScnXY(Math::Coord2D<Double>(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate));
+				scnPtX = scnD.x;
+				scnPtY = scnD.y;
 
 				Bool valid = true;
 				if (labels[i].xOfst == 0)
@@ -3865,12 +3858,10 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 			}
 			else if (labels[i].shapeType == 5)
 			{
-				Double scnXD;
-				Double scnYD;
 				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				view->MapXYToScnXY(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate, &scnXD, &scnYD);
-				scnPtX = (scnXD);
-				scnPtY = (scnYD);
+				Math::Coord2D<Double> scnD = view->MapXYToScnXY(Math::Coord2D<Double>(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate));
+				scnPtX = scnD.x;
+				scnPtY = scnD.y;
 
 				Bool valid = true;
 				if (valid)

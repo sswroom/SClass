@@ -21,7 +21,7 @@ void __stdcall UtilUI::ColorDialog::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -32,15 +32,15 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, OSInt x, OSInt y, U
 		me->subDowned = true;
 		me->pbSub->SetCapture();
 		me->pbSub->GetSizeP(&w, &h);
-		if (y < 1)
+		if (scnPos.y < 1)
 		{
-			y = 1;
+			scnPos.y = 1;
 		}
-		else if (y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)h - 2)
 		{
-			y = (OSInt)h - 2;
+			scnPos.y = (OSInt)h - 2;
 		}
-		newV = OSInt2Double(y - 1) / (Double)(h - 3);
+		newV = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -51,7 +51,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, OSInt x, OSInt y, U
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (me->subDowned)
@@ -60,15 +60,15 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, OSInt x, OSInt y, U
 		UOSInt h;
 		Double newV;
 		me->pbSub->GetSizeP(&w, &h);
-		if (y < 1)
+		if (scnPos.y < 1)
 		{
-			y = 1;
+			scnPos.y = 1;
 		}
-		else if (y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)h - 2)
 		{
-			y = (OSInt)h - 2;
+			scnPos.y = (OSInt)h - 2;
 		}
-		newV = OSInt2Double(y - 1) / (Double)(h - 3);
+		newV = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -79,7 +79,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, OSInt x, OSInt y, U
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -92,15 +92,15 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, OSInt x, OSInt y, UI:
 			UOSInt h;
 			Double newV;
 			me->pbSub->GetSizeP(&w, &h);
-			if (y < 1)
+			if (scnPos.y < 1)
 			{
-				y = 1;
+				scnPos.y = 1;
 			}
-			else if (y > (OSInt)h - 2)
+			else if (scnPos.y > (OSInt)h - 2)
 			{
-				y = (OSInt)h - 2;
+				scnPos.y = (OSInt)h - 2;
 			}
-			newV = OSInt2Double(y - 1) / (Double)(h - 3);
+			newV = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
 			if (me->mainZ != newV)
 			{
 				me->mainZ = newV;
@@ -112,7 +112,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, OSInt x, OSInt y, UI:
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -125,24 +125,24 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, 
 		Double newV2;
 		me->pbMain->GetSizeP(&w, &h);
 
-		if (x < 1)
+		if (scnPos.x < 1)
 		{
-			x = 1;
+			scnPos.x = 1;
 		}
-		else if (x > (OSInt)w - 2)
+		else if (scnPos.x > (OSInt)w - 2)
 		{
-			x = (OSInt)w - 2;
+			scnPos.x = (OSInt)w - 2;
 		}
-		if (y < 1)
+		if (scnPos.y < 1)
 		{
-			y = 1;
+			scnPos.y = 1;
 		}
-		else if (y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)h - 2)
 		{
-			y = (OSInt)h - 2;
+			scnPos.y = (OSInt)h - 2;
 		}
-		newV1 = OSInt2Double(x - 1) / (Double)(w - 3);
-		newV2 = OSInt2Double(y - 1) / (Double)(h - 3);
+		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(w - 3);
+		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -154,7 +154,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, 
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (me->subDowned)
@@ -164,24 +164,24 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, OSInt x, OSInt y, 
 		Double newV1;
 		Double newV2;
 		me->pbMain->GetSizeP(&w, &h);
-		if (x < 1)
+		if (scnPos.x < 1)
 		{
-			x = 1;
+			scnPos.x = 1;
 		}
-		else if (x > (OSInt)w - 2)
+		else if (scnPos.x > (OSInt)w - 2)
 		{
-			x = (OSInt)w - 2;
+			scnPos.x = (OSInt)w - 2;
 		}
-		if (y < 1)
+		if (scnPos.y < 1)
 		{
-			y = 1;
+			scnPos.y = 1;
 		}
-		else if (y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)h - 2)
 		{
-			y = (OSInt)h - 2;
+			scnPos.y = (OSInt)h - 2;
 		}
-		newV1 = OSInt2Double(x - 1) / (Double)(w - 3);
-		newV2 = OSInt2Double(y - 1) / (Double)(h - 3);
+		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(w - 3);
+		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -193,7 +193,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, OSInt x, OSInt y, 
 	return false;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, OSInt x, OSInt y, UI::GUIPictureBox::MouseButton btn)
+Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -207,24 +207,24 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, OSInt x, OSInt y, UI
 			Double newV1;
 			Double newV2;
 			me->pbMain->GetSizeP(&w, &h);
-			if (x < 1)
+			if (scnPos.x < 1)
 			{
-				x = 1;
+				scnPos.x = 1;
 			}
-			else if (x > (OSInt)w - 2)
+			else if (scnPos.x > (OSInt)w - 2)
 			{
-				x = (OSInt)w - 2;
+				scnPos.x = (OSInt)w - 2;
 			}
-			if (y < 1)
+			if (scnPos.y < 1)
 			{
-				y = 1;
+				scnPos.y = 1;
 			}
-			else if (y > (OSInt)h - 2)
+			else if (scnPos.y > (OSInt)h - 2)
 			{
-				y = (OSInt)h - 2;
+				scnPos.y = (OSInt)h - 2;
 			}
-			newV1 = OSInt2Double(x - 1) / (Double)(w - 3);
-			newV2 = OSInt2Double(y - 1) / (Double)(h - 3);
+			newV1 = OSInt2Double(scnPos.x - 1) / (Double)(w - 3);
+			newV2 = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
 			if (me->mainX != newV1 || me->mainY != newV2)
 			{
 				me->mainX = newV1;

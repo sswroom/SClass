@@ -62,7 +62,7 @@ namespace SSWR
 			UI::GUITextBox *txtPronun4;
 			
 			static void __stdcall OnCharChg(void *userObj);
-			static Bool __stdcall OnCharMouseDown(void *userObj, OSInt x, OSInt y, UI::GUIControl::MouseButton btn);
+			static Bool __stdcall OnCharMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnCharPrevClicked(void *userObj);
 			static void __stdcall OnCharNextClicked(void *userObj);
 			static void __stdcall OnRadicalChg(void *userObj);

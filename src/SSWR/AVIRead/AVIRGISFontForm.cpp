@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 	DEL_CLASS(dlg);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
 	UtilUI::ColorDialog *dlg;

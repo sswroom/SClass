@@ -38,7 +38,7 @@ namespace SSWR
 			UInt32 currImgDelay;
 
 			static void __stdcall ImagesSelChg(void *userObj);
-			static Bool __stdcall OnImageMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
+			static Bool __stdcall OnImageMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnInfoICCClicked(void *userObj);
 			void UpdateInfo();
 		public:

@@ -13,17 +13,16 @@ Map::ScaledMapView::ScaledMapView(Double scnWidth, Double scnHeight, Double cent
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
-	ChangeViewXY(scnWidth, scnHeight, centLon, centLat, scale);
+	ChangeViewXY(scnWidth, scnHeight, Math::Coord2D<Double>(centLon, centLat), scale);
 }
 
 Map::ScaledMapView::~ScaledMapView()
 {
 }
 
-void Map::ScaledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale)
+void Map::ScaledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Math::Coord2D<Double> centMap, Double scale)
 {
-	this->centX = centX;
-	this->centY = centY;
+	this->centMap = centMap;
 	if (scale < 400)
 		scale = 400;
 	if (scale > 100000000)
@@ -33,28 +32,28 @@ void Map::ScaledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double 
 	Double diffx = scnWidth * 0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0;
 	Double diffy = scnHeight * 0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0;
 
-	this->rightX = centX + diffx;
-	this->leftX = centX - diffx;
-	this->bottomY = centY + diffy;
-	this->topY = centY - diffy;
+	this->rightX = centMap.x + diffx;
+	this->leftX = centMap.x - diffx;
+	this->bottomY = centMap.y + diffy;
+	this->topY = centMap.y - diffy;
 
 	this->scnWidth = scnWidth;
 	this->scnHeight = scnHeight;
 }
 
-void Map::ScaledMapView::SetCenterXY(Double x, Double y)
+void Map::ScaledMapView::SetCenterXY(Math::Coord2D<Double> mapPos)
 {
-	ChangeViewXY(scnWidth, scnHeight, x, y, scale);
+	ChangeViewXY(scnWidth, scnHeight, mapPos, scale);
 }
 
 void Map::ScaledMapView::SetMapScale(Double scale)
 {
-	ChangeViewXY(scnWidth, scnHeight, this->centX, this->centY, scale);
+	ChangeViewXY(scnWidth, scnHeight, this->centMap, scale);
 }
 
 void Map::ScaledMapView::UpdateSize(Double width, Double height)
 {
-	ChangeViewXY(width, height, this->centX, this->centY, scale);
+	ChangeViewXY(width, height, this->centMap, scale);
 }
 
 void Map::ScaledMapView::SetDPI(Double hdpi, Double ddpi)
@@ -63,7 +62,7 @@ void Map::ScaledMapView::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->hdpi = hdpi;
 		this->ddpi = ddpi;
-		ChangeViewXY(this->scnWidth, this->scnHeight, this->centX, this->centY, this->scale);
+		ChangeViewXY(this->scnWidth, this->scnHeight, this->centMap, this->scale);
 	}
 }
 
@@ -99,12 +98,12 @@ Double Map::ScaledMapView::GetViewScale()
 
 Double Map::ScaledMapView::GetCenterX()
 {
-	return this->centX;
+	return this->centMap.x;
 }
 
 Double Map::ScaledMapView::GetCenterY()
 {
-	return this->centY;
+	return this->centMap.y;
 }
 
 Double Map::ScaledMapView::GetHDPI()
@@ -305,21 +304,21 @@ Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int3
 	return ScaledMapView_IMapXYToScnXY(srcArr, destArr, nPoints, rRate, dleft, dbottom, xmul, ymul, ofstX, ofstY, (UOSInt)this->scnWidth, (UOSInt)this->scnHeight);
 }
 
-void Map::ScaledMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
+Math::Coord2D<Double> Map::ScaledMapView::MapXYToScnXY(Math::Coord2D<Double> mapPos)
 {
-	*scnX = (mapX - this->leftX) * scnWidth / (this->rightX - this->leftX);
-	*scnY = (this->bottomY - mapY) * scnHeight / (this->bottomY - this->topY);
+	return Math::Coord2D<Double>((mapPos.x - this->leftX) * scnWidth / (this->rightX - this->leftX),
+		(this->bottomY - mapPos.y) * scnHeight / (this->bottomY - this->topY));
 }
 
-void Map::ScaledMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
+Math::Coord2D<Double> Map::ScaledMapView::ScnXYToMapXY(Math::Coord2D<Double> scnPos)
 {
-	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / scnWidth));
-	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / scnHeight));
+	return Math::Coord2D<Double>((this->leftX + (scnPos.x * (this->rightX - this->leftX) / scnWidth)), 
+		(this->bottomY - (scnPos.y * (this->bottomY - this->topY) / scnHeight)));
 }
 
 Map::MapView *Map::ScaledMapView::Clone()
 {
 	Map::ScaledMapView *view;
-	NEW_CLASS(view, Map::ScaledMapView(this->scnWidth, this->scnHeight, this->centY, this->centX, this->scale));
+	NEW_CLASS(view, Map::ScaledMapView(this->scnWidth, this->scnHeight, this->centMap.y, this->centMap.x, this->scale));
 	return view;
 }

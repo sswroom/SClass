@@ -111,7 +111,7 @@ namespace UI
 		void HandleDraw(DrawHandler32 hdlr, void *userObj);
 		void HandleMoveToNext(UI::UIEvent hdlr, void *userObj);
 		void HandleMoveToPrev(UI::UIEvent hdlr, void *userObj);
-		Math::Coord2D<Double> Scn2ImagePos(OSInt x, OSInt y);
+		Math::Coord2D<Double> Scn2ImagePos(Math::Coord2D<OSInt> scnPos);
 		void Image2ScnPos(Double x, Double y, Double *scnX, Double *scnY);
 		void ZoomToFit();
 		void UpdateBufferImage();

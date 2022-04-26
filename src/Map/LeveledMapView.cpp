@@ -9,10 +9,10 @@ void Map::LeveledMapView::UpdateVals()
 	Double diffx = this->scnWidth * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
 	Double diffy = this->scnHeight * 0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0;
 
-	this->rightX = this->centX + diffx;
-	this->leftX = this->centX - diffx;
-	this->bottomY = this->centY + diffy;
-	this->topY = this->centY - diffy;
+	this->rightX = this->centMap.x + diffx;
+	this->leftX = this->centMap.x - diffx;
+	this->bottomY = this->centMap.y + diffy;
+	this->topY = this->centMap.y - diffy;
 }
 
 Map::LeveledMapView::LeveledMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, Data::ArrayListDbl *scales) : Map::MapView(scnWidth, scnHeight)
@@ -21,7 +21,7 @@ Map::LeveledMapView::LeveledMapView(Double scnWidth, Double scnHeight, Double ce
 	this->ddpi = 96.0;
 	NEW_CLASS(this->scales, Data::ArrayListDbl());
 	this->scales->AddAll(scales);
-	ChangeViewXY(scnWidth, scnHeight, centLon, centLat, Double2Int32(this->scales->GetItem(this->scales->GetCount() >> 1)));
+	ChangeViewXY(scnWidth, scnHeight, Math::Coord2D<Double>(centLon, centLat), Double2Int32(this->scales->GetItem(this->scales->GetCount() >> 1)));
 }
 
 Map::LeveledMapView::~LeveledMapView()
@@ -29,19 +29,17 @@ Map::LeveledMapView::~LeveledMapView()
 	DEL_CLASS(this->scales);
 }
 
-void Map::LeveledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale)
+void Map::LeveledMapView::ChangeViewXY(Double scnWidth, Double scnHeight, Math::Coord2D<Double> centMap, Double scale)
 {
-	this->centX = centX;
-	this->centY = centY;
+	this->centMap = centMap;
 	this->scnWidth = scnWidth;
 	this->scnHeight = scnHeight;
 	this->SetMapScale(scale);
 }
 
-void Map::LeveledMapView::SetCenterXY(Double x, Double y)
+void Map::LeveledMapView::SetCenterXY(Math::Coord2D<Double> mapPos)
 {
-	this->centX = x;
-	this->centY = y;
+	this->centMap = mapPos;
 	this->UpdateVals();
 }
 
@@ -119,12 +117,12 @@ Double Map::LeveledMapView::GetViewScale()
 
 Double Map::LeveledMapView::GetCenterX()
 {
-	return this->centX;
+	return this->centMap.x;
 }
 
 Double Map::LeveledMapView::GetCenterY()
 {
-	return this->centY;
+	return this->centMap.y;
 }
 
 Double Map::LeveledMapView::GetHDPI()
@@ -392,21 +390,21 @@ mtslop4:
 #endif
 }
 
-void Map::LeveledMapView::MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY)
+Math::Coord2D<Double> Map::LeveledMapView::MapXYToScnXY(Math::Coord2D<Double> mapPos)
 {
-	*scnX = (mapX - this->leftX) * scnWidth / (this->rightX - this->leftX);
-	*scnY = (this->bottomY - mapY) * scnHeight / (this->bottomY - this->topY);
+	return Math::Coord2D<Double>((mapPos.x - this->leftX) * scnWidth / (this->rightX - this->leftX),
+		(this->bottomY - mapPos.y) * scnHeight / (this->bottomY - this->topY));
 }
 
-void Map::LeveledMapView::ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
+Math::Coord2D<Double> Map::LeveledMapView::ScnXYToMapXY(Math::Coord2D<Double> scnPos)
 {
-	*mapX = (this->leftX + (scnX * (this->rightX - this->leftX) / scnWidth));
-	*mapY = (this->bottomY - (scnY * (this->bottomY - this->topY) / scnHeight));
+	return Math::Coord2D<Double>((this->leftX + (scnPos.x * (this->rightX - this->leftX) / scnWidth)),
+		(this->bottomY - (scnPos.y * (this->bottomY - this->topY) / scnHeight)));
 }
 
 Map::MapView *Map::LeveledMapView::Clone()
 {
 	Map::LeveledMapView *view;
-	NEW_CLASS(view, Map::LeveledMapView(this->scnWidth, this->scnHeight, this->centY, this->centX, this->scales));
+	NEW_CLASS(view, Map::LeveledMapView(this->scnWidth, this->scnHeight, this->centMap.y, this->centMap.x, this->scales));
 	return view;
 }

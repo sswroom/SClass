@@ -26,6 +26,11 @@ namespace Math
 			return Math_Sqrt(Math_Sqr((Double)(this->x - coord.x)) + Math_Sqr((Double)(this->y - coord.y)));
 		}
 
+		Math::Coord2D<Double> ToDouble()
+		{
+			return Math::Coord2D<Double>((Double)this->x, (Double)this->y);
+		}
+
 		Bool operator!=(Coord2D<T> v)
 		{
 			return (this->x != v.x) || (this->y != v.y);
@@ -54,6 +59,18 @@ namespace Math
 		Coord2D<T> operator*(T v)
 		{
 			return {this->x * v, this->y * v};
+		}
+
+		Coord2D<T> operator/(T v)
+		{
+			return {this->x / v, this->y / v};
+		}
+
+		Coord2D<T>& operator+=(Coord2D<T> v)
+		{
+			this->x += v.x;
+			this->y += v.y;
+			return *this;
 		}
 	};
 }

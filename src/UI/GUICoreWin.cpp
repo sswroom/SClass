@@ -180,14 +180,13 @@ void UI::GUICoreWin::GetDesktopSize(UOSInt *w, UOSInt *h)
 	*h = (UOSInt)(OSInt)GetSystemMetrics(SM_CYFULLSCREEN);
 }
 
-void UI::GUICoreWin::GetCursorPos(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUICoreWin::GetCursorPos()
 {
 	POINT pt;
 	pt.x = 0;
 	pt.y = 0;
 	::GetCursorPos(&pt);
-	*x = pt.x;
-	*y = pt.y;
+	return Math::Coord2D<OSInt>(pt.x, pt.y);
 }
 
 typedef BOOL (WINAPI* SETAUTOROTATION)(BOOL bEnable);

@@ -3,29 +3,26 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
-	me->downX = x;
-	me->downY = y;
+	me->downPos = scnPos;
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
-	if (me->downX == x && me->downY == y)
+	if (me->downPos == scnPos)
 	{
-		Double mapX;
-		Double mapY;
 		void *sess;
 		Int64 id;
 		UOSInt i;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		me->navi->ScnXY2MapXY(x, y, &mapX, &mapY);
+		Math::Coord2D<Double> mapPt = me->navi->ScnXY2MapXY(scnPos);
 		sess = me->lyr->BeginGetObject();
-		id = me->lyr->GetNearestObjectId(sess, mapX, mapY, &mapX, &mapY);
+		id = me->lyr->GetNearestObjectId(sess, mapPt.x, mapPt.y, &mapPt.x, &mapPt.y);
 		if (id == -1)
 		{
 			i = me->lyr->GetColumnCnt();
@@ -39,7 +36,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, OSInt x
 		{
 			Data::ArrayListInt64 arr;
 			void *nameArr;
-			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, mapX, mapY, mapX, mapY, true);
+			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, mapPt.x, mapPt.y, mapPt.x, mapPt.y, true);
 			i = me->lyr->GetColumnCnt();
 			while (i-- > 0)
 			{

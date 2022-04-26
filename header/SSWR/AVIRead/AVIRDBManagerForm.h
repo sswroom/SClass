@@ -48,9 +48,9 @@ namespace SSWR
 			DB::DBTool *currDB;
 
 			static void __stdcall OnConnSelChg(void *userObj);
-			static Bool __stdcall OnConnRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
+			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(void *userObj);
-			static Bool __stdcall OnTableRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn);
+			static Bool __stdcall OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnDatabaseClicked(void *userObj);
 
 			void UpdateDatabaseList();

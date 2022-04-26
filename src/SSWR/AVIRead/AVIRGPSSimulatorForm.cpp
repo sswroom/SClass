@@ -10,27 +10,25 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FolderDialog.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
 	if (!me->chkAddPoints->IsChecked())
 		return false;
-	Double mapX;
-	Double mapY;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	me->navi->ScnXY2MapXY(x, y, &mapX, &mapY);
+	Math::Coord2D<Double> mapPos = me->navi->ScnXY2MapXY(scnPos);
 	Double lat;
 	Double lon;
 	if (me->navi->GetCoordinateSystem()->Equals(me->wgs84))
 	{
-		lat = mapY;
-		lon = mapX;
+		lat = mapPos.y;
+		lon = mapPos.y;
 	}
 	else
 	{
 		Double z;
-		Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, mapX, mapY, 0, &lon, &lat, &z);
+		Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, mapPos.x, mapPos.y, 0, &lon, &lat, &z);
 	}
 	if (me->currX == 0 && me->currY == 0)
 	{

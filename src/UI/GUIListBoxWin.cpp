@@ -86,7 +86,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 		this->GetScreenPosP(&scnX, &scnY);
 		while (i-- > 0)
 		{
-			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), x + scnX, y + scnY, UI::GUIControl::MBTN_RIGHT);
+			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), Math::Coord2D<OSInt>(x + scnX, y + scnY), UI::GUIControl::MBTN_RIGHT);
 		}
 	}
 }

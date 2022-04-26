@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 	DEL_CLASS(dlg);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userObj, OSInt x, OSInt y, MouseButton mouseBtn)
+Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
 	UtilUI::ColorDialog *dlg;
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(void *userO
 	me->UpdateFontPreview();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(void *userObj, OSInt x, OSInt y, MouseButton mouseBtn)
+Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
 	UtilUI::ColorDialog *dlg;

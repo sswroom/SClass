@@ -120,7 +120,7 @@ void UI::GUICoreGTK::GetDesktopSize(UOSInt *w, UOSInt *h)
 #endif
 }
 
-void UI::GUICoreGTK::GetCursorPos(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUICoreGTK::GetCursorPos()
 {
 	GdkDisplay *display = gdk_display_get_default();
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
@@ -133,16 +133,14 @@ void UI::GUICoreGTK::GetCursorPos(OSInt *x, OSInt *y)
 	{
 		gdk_device_get_position(dev, &scn, &outx, &outy);
 	}
-	*x = outx;
-	*y = outy;
+	return Math::Coord2D<OSInt>(outx, outy);
 #else
 	GdkDeviceManager *devMgr = gdk_display_get_device_manager(display);
 	GdkDevice *dev = gdk_device_manager_get_client_pointer(devMgr);
 	gint outx;
 	gint outy;
 	gdk_device_get_position(dev, 0, &outx, &outy);
-	*x = outx;
-	*y = outy;
+	return Math::Coord2D<OSInt>(outx, outy);
 #endif
 }
 

@@ -68,6 +68,11 @@ void Media::OpenCV::OCVFrame::Normalize()
 
 }
 
+Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace)
+{
+	return 0;
+}
+
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	return 0;		

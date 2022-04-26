@@ -133,6 +133,13 @@ void Media::OpenCV::OCVFrame::Normalize()
 	cv::normalize(*fr, *fr, 1.0, 255.0, cv::NORM_MINMAX);
 }
 
+Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace)
+{
+	cv::Mat *newFr = new cv::Mat();
+	cv::bilateralFilter(*(cv::Mat*)this->frame, *newFr, d, sigmaColor, sigmaSpace);
+	return NEW_CLASS_D(Media::OpenCV::OCVFrame(newFr));
+}
+
 Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	Media::CS::CSConverter *converter = Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, 0, *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, 0, Media::ColorProfile::YUVT_UNKNOWN, 0);

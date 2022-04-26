@@ -55,7 +55,7 @@ namespace SSWR
 			static UInt32 __stdcall AddressThread(void *userObj);
 			static void __stdcall OnCboNameChg(void *userObj);
 			static void __stdcall OnLbRecordChg(void *userObj);
-			static Bool __stdcall OnLbRecordRClick(void *userObj, OSInt scnX, OSInt scnY, UI::GUIControl::MouseButton btn);
+			static Bool __stdcall OnLbRecordRClick(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			void FreeNames();
 
 		public:

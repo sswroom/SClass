@@ -11,7 +11,7 @@ namespace SSWR
 		class IMapNavigator
 		{
 		public:
-			typedef Bool (__stdcall *MouseEvent)(void *userObj, OSInt scnX, OSInt scnY);
+			typedef Bool (__stdcall *MouseEvent)(void *userObj, Math::Coord2D<OSInt> scnPos);
 
 			virtual UInt32 GetSRID() = 0;
 			virtual Bool InMap(Double lat, Double lon) = 0;
@@ -24,8 +24,8 @@ namespace SSWR
 			virtual void RedrawMap() = 0;
 			virtual Math::CoordinateSystem *GetCoordinateSystem() = 0;
 
-			virtual void ScnXY2MapXY(OSInt scnX, OSInt scnY, Double *mapX, Double *mapY) = 0;
-			virtual void MapXY2ScnXY(Double mapX, Double mapY, OSInt *scnX, OSInt *scnY) = 0;
+			virtual Math::Coord2D<Double> ScnXY2MapXY(Math::Coord2D<OSInt> scnPos) = 0;
+			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2D<Double> mapPos) = 0;
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType) = 0;
 			virtual void HandleMapMouseDown(MouseEvent evt, void *userObj) = 0;
 			virtual void HandleMapMouseUp(MouseEvent evt, void *userObj) = 0;

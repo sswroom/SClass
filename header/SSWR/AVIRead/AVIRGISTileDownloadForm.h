@@ -48,8 +48,7 @@ namespace SSWR
 			Double selY2;
 			Bool selecting;
 			Bool isDown;
-			OSInt downX;
-			OSInt downY;
+			Math::Coord2D<OSInt> downPos;
 
 			Int32 errCnt;
 			Sync::Event *mainEvt;
@@ -60,9 +59,9 @@ namespace SSWR
 			Map::TileMapLayer *lyr;
 			IMapNavigator *navi;
 
-			static Bool __stdcall OnMouseDown(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseUp(void *userObj, OSInt x, OSInt y);
-			static Bool __stdcall OnMouseMove(void *userObj, OSInt x, OSInt y);
+			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 
 			static void __stdcall OnAreaClicked(void *userObj);
 			static void __stdcall OnSaveDirClicked(void *userObj);

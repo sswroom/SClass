@@ -8,9 +8,8 @@ namespace Map
 	class MercatorMapView : public MapView
 	{
 	private:
-		Double centMapX;
-		Double centMapY;
-		Double centPixel[2];
+		Math::Coord2D<Double> centMap;
+		Math::Coord2D<Double> centPixel;
 		Double hdpi;
 		Double ddpi;
 		UOSInt level;
@@ -21,8 +20,8 @@ namespace Map
 		MercatorMapView(Double scnWidth, Double scnHeight, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize);
 		virtual ~MercatorMapView();
 
-		virtual void ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale);
-		virtual void SetCenterXY(Double x, Double y);
+		virtual void ChangeViewXY(Double scnWidth, Double scnHeight, Math::Coord2D<Double> centMap, Double scale);
+		virtual void SetCenterXY(Math::Coord2D<Double> mapPos);
 		virtual void SetMapScale(Double scale);
 		virtual void UpdateSize(Double width, Double height);
 		virtual void SetDPI(Double hdpi, Double ddpi);
@@ -43,8 +42,8 @@ namespace Map
 		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
 		virtual Bool MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofst); // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
-		virtual void MapXYToScnXY(Double mapX, Double mapY, Double *scnX, Double *scnY);
-		virtual void ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY);
+		virtual Math::Coord2D<Double> MapXYToScnXY(Math::Coord2D<Double> mapPos);
+		virtual Math::Coord2D<Double> ScnXYToMapXY(Math::Coord2D<Double> scnPos);
 		virtual Map::MapView *Clone();
 
 	private:

@@ -32,7 +32,7 @@ Bool UI::GUIMapControl::OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
 		this->SetCapture();
 		if (this->mouseDownHdlr)
 		{
-			Bool done = this->mouseDownHdlr(this->mouseDownObj, scnX, scnY, btn);
+			Bool done = this->mouseDownHdlr(this->mouseDownObj, Math::Coord2D<OSInt>(scnX, scnY), btn);
 			if (done)
 			{
 				return true;
@@ -82,7 +82,7 @@ Bool UI::GUIMapControl::OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
 		this->ReleaseCapture();
 		if (this->mouseUpHdlr)
 		{
-			Bool done = this->mouseUpHdlr(this->mouseUpObj, scnX, scnY, btn);
+			Bool done = this->mouseUpHdlr(this->mouseUpObj, Math::Coord2D<OSInt>(scnX, scnY), btn);
 			if (done)
 			{
 				return true;
@@ -94,10 +94,8 @@ Bool UI::GUIMapControl::OnMouseUp(OSInt scnX, OSInt scnY, MouseButton btn)
 			OSInt diffY = this->mouseCurrY - this->mouseDownY;
 			Double newCentX = UOSInt2Double(this->currWidth) * 0.5 - OSInt2Double(diffX);
 			Double newCentY = UOSInt2Double(this->currHeight) * 0.5 - OSInt2Double(diffY);
-			Double mapX;
-			Double mapY;
-			this->view->ScnXYToMapXY(newCentX, newCentY, &mapX, &mapY);
-			this->view->SetCenterXY(mapX, mapY);
+			Math::Coord2D<Double> mapPos = this->view->ScnXYToMapXY(Math::Coord2D<Double>(newCentX, newCentY));
+			this->view->SetCenterXY(mapPos);
 			this->UpdateMap();
 			this->mouseDown = false;
 		}
@@ -121,7 +119,7 @@ void UI::GUIMapControl::OnMouseMove(OSInt scnX, OSInt scnY)
 		UOSInt i = this->mouseMoveHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), x, y);
+			this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), Math::Coord2D<OSInt>(x, y));
 		}
 	}
 /*	if (me->IsFormFocused())
@@ -132,11 +130,8 @@ void UI::GUIMapControl::OnMouseMove(OSInt scnX, OSInt scnY)
 
 Bool UI::GUIMapControl::OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta)
 {
-	Double ptX;
-	Double ptY;
-	Double newPtX;
-	Double newPtY;
-	this->view->ScnXYToMapXY(OSInt2Double(scnX), OSInt2Double(scnY), &ptX, &ptY);
+	Math::Coord2D<Double> newPt;
+	Math::Coord2D<Double> pt = this->view->ScnXYToMapXY(Math::Coord2D<Double>(OSInt2Double(scnX), OSInt2Double(scnY)));
 	if (delta < 0)
 	{
 		this->view->SetMapScale(this->view->GetMapScale() * 2.0);
@@ -145,9 +140,9 @@ Bool UI::GUIMapControl::OnMouseWheel(OSInt scnX, OSInt scnY, Int32 delta)
 	{
 		this->view->SetMapScale(this->view->GetMapScale() * 0.5);
 	}
-	this->view->MapXYToScnXY(ptX, ptY, &newPtX, &newPtY);
-	this->view->ScnXYToMapXY(newPtX - OSInt2Double(scnX) + (UOSInt2Double(this->currWidth) * 0.5), newPtY - OSInt2Double(scnY) + (UOSInt2Double(this->currHeight) * 0.5), &ptX, &ptY);
-	this->view->SetCenterXY(ptX, ptY);
+	newPt = this->view->MapXYToScnXY(pt);
+	pt = this->view->ScnXYToMapXY(Math::Coord2D<Double>(newPt.x - OSInt2Double(scnX) + (UOSInt2Double(this->currWidth) * 0.5), newPt.y - OSInt2Double(scnY) + (UOSInt2Double(this->currHeight) * 0.5)));
+	this->view->SetCenterXY(pt);
 	this->EventScaleChanged(this->view->GetMapScale());
 	this->UpdateMap();
 	this->Redraw();
@@ -180,20 +175,18 @@ void UI::GUIMapControl::OnGestureEnd(OSInt scnX, OSInt scnY, UInt64 dist)
 {
 	if (this->gZoom)
 	{
-		Double ptX;
-		Double ptY;
-		Double newPtX;
-		Double newPtY;
+		Math::Coord2D<Double> pt;
+		Math::Coord2D<Double> newPt;
 
 		this->gZoomCurrX = scnX;
 		this->gZoomCurrY = scnY;
 
 		this->gZoom = false;
-		this->view->ScnXYToMapXY(OSInt2Double(this->gZoomX), OSInt2Double(this->gZoomY), &ptX, &ptY);
+		pt = this->view->ScnXYToMapXY(Math::Coord2D<Double>(OSInt2Double(this->gZoomX), OSInt2Double(this->gZoomY)));
 		this->view->SetMapScale(this->view->GetMapScale() * (Double)this->gZoomDist /(Double)dist);
-		this->view->MapXYToScnXY(ptX, ptY, &newPtX, &newPtY);
-		this->view->ScnXYToMapXY(newPtX - OSInt2Double(this->gZoomCurrX) + (UOSInt2Double(this->currWidth) * 0.5), newPtY - OSInt2Double(this->gZoomCurrY) + (UOSInt2Double(this->currHeight) * 0.5), &ptX, &ptY);
-		this->view->SetCenterXY(ptX, ptY);
+		newPt = this->view->MapXYToScnXY(pt);
+		pt = this->view->ScnXYToMapXY(Math::Coord2D<Double>(newPt.x - OSInt2Double(this->gZoomCurrX) + (UOSInt2Double(this->currWidth) * 0.5), newPt.y - OSInt2Double(this->gZoomCurrY) + (UOSInt2Double(this->currHeight) * 0.5)));
+		this->view->SetCenterXY(pt);
 		this->EventScaleChanged(this->view->GetMapScale());
 		this->UpdateMap();
 		this->Redraw();
@@ -236,10 +229,8 @@ void UI::GUIMapControl::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt ax
 		OSInt diffY = axis2;
 		Double newCentX = UOSInt2Double(this->currWidth) * 0.5 - OSInt2Double(diffX);
 		Double newCentY = UOSInt2Double(this->currHeight) * 0.5 - OSInt2Double(diffY);
-		Double mapX;
-		Double mapY;
-		this->view->ScnXYToMapXY(newCentX, newCentY, &mapX, &mapY);
-		this->view->SetCenterXY(mapX, mapY);
+		Math::Coord2D<Double> mapPos = this->view->ScnXYToMapXY(Math::Coord2D<Double>(newCentX, newCentY));
+		this->view->SetCenterXY(mapPos);
 		this->UpdateMap();
 		this->Redraw();
 	}
@@ -432,13 +423,12 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2D<Doub
 	Double ddpi = this->view->GetDDPI();
 	if (this->showMarker)
 	{
-		Double scnX;
-		Double scnY;
+		Math::Coord2D<Double> scnPos;
 		Int32 x;
 		Int32 y;
-		this->view->MapXYToScnXY(this->markerX, this->markerY, &scnX, &scnY);
-		x = Double2Int32(scnX + ofst.x);
-		y = Double2Int32(scnY + ofst.y);
+		scnPos = this->view->MapXYToScnXY(Math::Coord2D<Double>(this->markerX, this->markerY));
+		x = Double2Int32(scnPos.x + ofst.x);
+		y = Double2Int32(scnPos.y + ofst.y);
 		Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
 		if (this->markerHasDir)
 		{
@@ -689,18 +679,15 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2D<Doub
 			else
 			{
 				vimg->GetBounds(&x1, &y1, &x2, &y2);
-				view->MapXYToScnXY(x1, y1, &x1, &y1);
-				view->MapXYToScnXY(x2, y2, &x2, &y2);
-				pts[0].x = x1;
-				pts[0].y = y1;
-				pts[1].x = x1;
-				pts[1].y = y2;
-				pts[2].x = x2;
-				pts[2].y = y2;
-				pts[3].x = x2;
-				pts[3].y = y1;
-				pts[4].x = x1;
-				pts[4].y = y1;
+				Math::Coord2D<Double> pt1 = view->MapXYToScnXY(Math::Coord2D<Double>(x1, y1));
+				Math::Coord2D<Double> pt2 = view->MapXYToScnXY(Math::Coord2D<Double>(x2, y2));
+				pts[0] = pt1;
+				pts[1].x = pt1.x;
+				pts[1].y = pt2.y;
+				pts[2] = pt2;
+				pts[3].x = pt2.x;
+				pts[3].y = pt1.y;
+				pts[4] = pt1;
 			}
 			nPoints = 5;
 			img->DrawPolyPolygon(pts, &nPoints, 1, p, b);
@@ -747,7 +734,7 @@ UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 	this->view = view;
 	view->SetDPI(this->hdpi, this->ddpi);
-	view->ChangeViewXY(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 114.2, 22.4, 10000);
+	view->ChangeViewXY(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), Math::Coord2D<Double>(114.2, 22.4), 10000);
 	this->SetBGColor(bgColor);
 	if (this->renderer)
 	{
@@ -790,7 +777,7 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 
 	this->view = mapEnv->CreateMapView(640, 480);
 	view->SetDPI(this->hdpi, this->ddpi);
-	view->ChangeViewXY(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 114.2, 22.4, 10000);
+	view->ChangeViewXY(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), Math::Coord2D<Double>(114.2, 22.4), 10000);
 
 	this->SetBGColor(bgColor);
 	if (this->renderer)
@@ -967,30 +954,27 @@ void UI::GUIMapControl::UpdateMap()
 	mutUsage.EndUse();
 }
 
-void UI::GUIMapControl::ScnXY2MapXY(OSInt scnX, OSInt scnY, Double *mapX, Double *mapY)
+Math::Coord2D<Double> UI::GUIMapControl::ScnXY2MapXY(Math::Coord2D<OSInt> scnPos)
 {
-	this->view->ScnXYToMapXY(OSInt2Double(scnX), OSInt2Double(scnY), mapX, mapY);
+	return this->view->ScnXYToMapXY(scnPos.ToDouble());
 }
 
-void UI::GUIMapControl::ScnXYD2MapXY(Double scnX, Double scnY, Double *mapX, Double *mapY)
+Math::Coord2D<Double> UI::GUIMapControl::ScnXYD2MapXY(Math::Coord2D<Double> scnPos)
 {
-	this->view->ScnXYToMapXY(scnX, scnY, mapX, mapY);
+	return this->view->ScnXYToMapXY(scnPos);
 }
 
-void UI::GUIMapControl::MapXY2ScnXY(Double mapX, Double mapY, OSInt *scnX, OSInt *scnY)
+Math::Coord2D<OSInt> UI::GUIMapControl::MapXY2ScnXY(Math::Coord2D<Double> mapPos)
 {
-	Double x;
-	Double y;
-	this->view->MapXYToScnXY(mapX, mapY, &x, &y);
+	Math::Coord2D<Double> scnPos = this->view->MapXYToScnXY(mapPos);
 	if (this->mouseDown)
 	{
-		*scnX = Double2Int32(x) - this->mouseDownX + this->mouseCurrX;
-		*scnY = Double2Int32(y) - this->mouseDownY + this->mouseCurrY;
+		return Math::Coord2D<OSInt>(Double2OSInt(scnPos.x) - this->mouseDownX + this->mouseCurrX,
+			Double2OSInt(scnPos.y) - this->mouseDownY + this->mouseCurrY);
 	}
 	else
 	{
-		*scnX = Double2Int32(x);
-		*scnY = Double2Int32(y);
+		return Math::Coord2D<OSInt>(Double2OSInt(scnPos.x), Double2OSInt(scnPos.y));
 	}
 }
 
@@ -1017,11 +1001,11 @@ Double UI::GUIMapControl::GetViewScale()
 	return this->view->GetViewScale();
 }
 
-void UI::GUIMapControl::PanToMapXY(Double mapX, Double mapY)
+void UI::GUIMapControl::PanToMapXY(Math::Coord2D<Double> mapPos)
 {
-	if (this->view->GetCenterX() == mapX && this->view->GetCenterY() == mapY)
+	if (this->view->GetCenterMap() == mapPos)
 		return;
-	this->view->SetCenterXY(mapX, mapY);
+	this->view->SetCenterXY(mapPos);
 	if (!this->pauseUpdate)
 	{
 		this->UpdateMap();

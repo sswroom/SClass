@@ -3,30 +3,26 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISGroupQueryForm *me = (SSWR::AVIRead::AVIRGISGroupQueryForm*)userObj;
-	me->downX = x;
-	me->downY = y;
+	me->downPos = scnPos;
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISGroupQueryForm *me = (SSWR::AVIRead::AVIRGISGroupQueryForm*)userObj;
-	if (me->downX == x && me->downY == y)
+	if (me->downPos == scnPos)
 	{
-		Double mapX;
-		Double mapY;
-		Double ptNearX = 0;
-		Double ptNearY = 0;
+		Math::Coord2D<Double> mapPos;
+		Math::Coord2D<Double> ptNear = {0, 0};
 		UOSInt ptNearInd = 0;
 		Double ptNearDist = 0;
 		Int64 ptNearId = -1;
 		UOSInt pgNearInd = 0;
 		Int64 pgNearId = -1;
-		Double nearX;
-		Double nearY;
+		Math::Coord2D<Double> nearPos;
 		void *sess;
 		Int64 id;
 		UOSInt i;
@@ -35,32 +31,30 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 		UTF8Char *sptr;
 		Data::ArrayList<Map::IMapDrawLayer*> layers;
 		Map::IMapDrawLayer *lyr;
-		me->navi->ScnXY2MapXY(x, y, &mapX, &mapY);
+		mapPos = me->navi->ScnXY2MapXY(scnPos);
 		me->env->GetLayersInGroup(me->group, &layers);
 		i = layers.GetCount();
 		while (i-- > 0)
 		{
 			lyr = layers.GetItem(i);
 			sess = lyr->BeginGetObject();
-			nearX = 0;
-			nearY = 0;
-			id = lyr->GetNearestObjectId(sess, mapX, mapY, &nearX, &nearY);
+			nearPos = {0, 0};
+			id = lyr->GetNearestObjectId(sess, mapPos.x, mapPos.y, &nearPos.x, &nearPos.y);
 			if (id != -1)
 			{
 				Map::DrawLayerType lyrType = lyr->GetLayerType();
 				if (lyrType == Map::DRAW_LAYER_POINT3D || lyrType == Map::DRAW_LAYER_POINT || lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 				{
-					Double dist = (nearX - mapX) * (nearX - mapX) + (nearY - mapY) * (nearY - mapY);
+					Double dist = nearPos.CalcLengTo(mapPos);
 					if (ptNearId == -1 || ptNearDist > dist)
 					{
 						ptNearId = id;
 						ptNearInd = i;
 						ptNearDist = dist;
-						ptNearX = nearX;
-						ptNearY = nearY;
+						ptNear = nearPos;
 					}
 				}
-				else if (mapX == nearX && mapY == nearY)
+				else if (mapPos == nearPos)
 				{
 					if (pgNearId == -1)
 					{
@@ -81,26 +75,24 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 		}
 		if (ptNearId != -1)
 		{
-			OSInt nearScnX;
-			OSInt nearScnY;
-			me->navi->MapXY2ScnXY(ptNearX, ptNearY, &nearScnX, &nearScnY);
-			if (nearScnX < x)
+			Math::Coord2D<OSInt> nearScn = me->navi->MapXY2ScnXY(ptNear);
+			if (nearScn.x < scnPos.x)
 			{
-				nearScnX = x - nearScnX;
+				nearScn.x = scnPos.x - nearScn.x;
 			}
 			else
 			{
-				nearScnX = nearScnX - x;
+				nearScn.x = nearScn.x - scnPos.x;
 			}
-			if (nearScnY < y)
+			if (nearScn.y < scnPos.y)
 			{
-				nearScnY = y - nearScnY;
+				nearScn.y = scnPos.y - nearScn.y;
 			}
 			else
 			{
-				nearScnY = nearScnY - y;
+				nearScn.y = nearScn.y - scnPos.y;
 			}
-			if (nearScnX < 10 && nearScnY < 10)
+			if (nearScn.x < 10 && nearScn.x < 10)
 			{
 				id = ptNearId;
 				lyr = layers.GetItem(ptNearInd);
@@ -119,7 +111,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 			void *nameArr;
 			me->txtLayer->SetText(lyr->GetName()->ToCString());
 			sess = lyr->BeginGetObject();
-			lyr->GetObjectIdsMapXY(&arr, &nameArr, mapX, mapY, mapX, mapY, true);
+			lyr->GetObjectIdsMapXY(&arr, &nameArr, mapPos.x, mapPos.y, mapPos.x, mapPos.y, true);
 			i = 0;
 			j = lyr->GetColumnCnt();
 			while (i < j)

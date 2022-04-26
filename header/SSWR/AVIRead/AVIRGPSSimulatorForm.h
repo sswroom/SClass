@@ -44,7 +44,7 @@ namespace SSWR
 			Double currY;
 			Double speed;
 
-			static Bool __stdcall OnMouseDown(void *userObj, OSInt x, OSInt y);
+			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnStreamClicked(void *userObj);
 			static void __stdcall OnSpeedClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

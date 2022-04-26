@@ -336,8 +336,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(void *userObj)
 //	StopAudio();
 	me->dispImageToCrop = false;
 	me->dispImageDown = false;
-	me->dispImageDownX = false;
-	me->dispImageDownY = false;
+	me->dispImageDownPos = {0, 0};
 	if (me->lbImage->GetSelectedIndex() == INVALID_INDEX)
 	{
 		me->pbImg->SetImage(0, false);
@@ -395,7 +394,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(void *userObj)
 	}
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	if (me->inputMode == IM_SPECIES)
@@ -477,7 +476,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, OSInt
 	return false;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	if ((me->dispImageUF == 0 && me->dispImageWF == 0) || !me->dispImageToCrop)
@@ -486,35 +485,31 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(void *userObj, OSIn
 	}
 
 	me->dispImageDown = true;
-	me->dispImageDownX = scnX;
-	me->dispImageDownY = scnY;
-	me->dispImageCurrX = scnX;
-	me->dispImageCurrY = scnY;
+	me->dispImageDownPos = scnPos;
+	me->dispImageCurrPos = scnPos;
 	return true;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	if (me->dispImageToCrop && me->dispImageDown)
 	{
-		OSInt rect[4];
-		Double ptX1;
-		Double ptY1;
-		Double ptX2;
-		Double ptY2;
+		Math::Coord2D<OSInt> rect[2];
+		Math::Coord2D<Double> pt1;
+		Math::Coord2D<Double> pt2;
 		if (me->CalcCropRect(rect))
 		{
-			me->pbImg->Scn2ImagePos(rect[0], rect[1], &ptX1, &ptY1);
-			me->pbImg->Scn2ImagePos(rect[2], rect[3], &ptX2, &ptY2);
+			pt1 = me->pbImg->Scn2ImagePos(rect[0]);
+			pt2 = me->pbImg->Scn2ImagePos(rect[1]);
 			Media::Image *img = me->dispImage->GetImage(0, 0);
 			if (me->dispImageUF)
 			{
-				me->env->UpdateUserFileCrop(me->dispImageUF, ptX1, ptY1, UOSInt2Double(img->info.dispWidth) - ptX2, UOSInt2Double(img->info.dispHeight) - ptY2);
+				me->env->UpdateUserFileCrop(me->dispImageUF, pt1.x, pt1.y, UOSInt2Double(img->info.dispWidth) - pt2.x, UOSInt2Double(img->info.dispHeight) - pt2.y);
 			}
 			else if (me->dispImageWF)
 			{
-				me->env->UpdateWebFileCrop(me->dispImageWF, ptX1, ptY1, UOSInt2Double(img->info.dispWidth) - ptX2, UOSInt2Double(img->info.dispHeight) - ptY2);
+				me->env->UpdateWebFileCrop(me->dispImageWF, pt1.x, pt1.y, UOSInt2Double(img->info.dispWidth) - pt2.x, UOSInt2Double(img->info.dispHeight) - pt2.y);
 			}
 		}
 
@@ -526,13 +521,12 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, OSInt 
 	return false;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
+Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	if (me->dispImageDown)
 	{
-		me->dispImageCurrX = scnX;
-		me->dispImageCurrY = scnY;
+		me->dispImageCurrPos = scnPos;
 		me->pbImg->UpdateBufferImage();
 	}
 	return false;
@@ -598,10 +592,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 	}
 	if (me->dispImageDown)
 	{
-		OSInt rect[4];
+		Math::Coord2D<OSInt> rect[2];
 		if (me->CalcCropRect(rect))
 		{
-			ImageUtil_DrawRectNA32(imgPtr + (OSInt)bpl * rect[1] + rect[0] * 4, (UOSInt)(rect[2] - rect[0]), (UOSInt)(rect[3] - rect[1]), bpl, 0xffff0000);
+			ImageUtil_DrawRectNA32(imgPtr + (OSInt)bpl * rect[0].y + rect[0].x * 4, (UOSInt)(rect[1].x - rect[0].x), (UOSInt)(rect[1].y - rect[0].y), bpl, 0xffff0000);
 		}
 	}
 }
@@ -1583,16 +1577,15 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTileUpdated(void *userObj)
 	me->mapUpdated = true;
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, OSInt x, OSInt y)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	Bool updated = false;
-	OSInt dispX;
-	OSInt dispY;
+	Math::Coord2D<OSInt> dispPos;
 	if (me->mapCurrFile)
 	{
-		me->mcMap->MapXY2ScnXY(me->mapCurrFile->lon, me->mapCurrFile->lat, &dispX, &dispY);
-		if (x >= dispX - 3 && x <= dispX + 3 && y >= dispY - 3 && y <= dispY + 3)
+		dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2D<Double>(me->mapCurrFile->lon, me->mapCurrFile->lat));
+		if (scnPos.x >= dispPos.x - 3 && scnPos.x <= dispPos.x + 3 && scnPos.y >= dispPos.y - 3 && scnPos.y <= dispPos.y + 3)
 		{
 			return;
 		}
@@ -1617,8 +1610,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, OSIn
 		{
 			if (me->mcMap->InMapMapXY(ufile->lon, ufile->lat))
 			{
-				me->mcMap->MapXY2ScnXY(ufile->lon, ufile->lat, &dispX, &dispY);
-				if (x >= dispX - 3 && x <= dispX + 3 && y >= dispY - 3 && y <= dispY + 3)
+				dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2D<Double>(ufile->lon, ufile->lat));
+				if (scnPos.x >= dispPos.x - 3 && scnPos.x <= dispPos.x + 3 && scnPos.y >= dispPos.y - 3 && scnPos.y <= dispPos.y + 3)
 				{
 					Text::StringBuilderUTF8 sb;
 					IO::StmData::FileData *fd;
@@ -1695,29 +1688,29 @@ OSInt __stdcall SSWR::OrganMgr::OrganMainForm::GroupCompare(void *obj1, void *ob
 	}
 }
 
-Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(OSInt *rect)
+Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(Math::Coord2D<OSInt> *rect)
 {
 	OSInt drawWidth;
 	OSInt drawHeight;
-	if (this->dispImageDownX < this->dispImageCurrX)
+	if (this->dispImageDownPos.x < this->dispImageCurrPos.x)
 	{
-		drawWidth = this->dispImageCurrX - this->dispImageDownX;
+		drawWidth = this->dispImageCurrPos.x - this->dispImageDownPos.x;
 	}
-	else if (this->dispImageDownX > this->dispImageCurrX)
+	else if (this->dispImageDownPos.x > this->dispImageCurrPos.x)
 	{
-		drawWidth = this->dispImageDownX - this->dispImageCurrX;
+		drawWidth = this->dispImageDownPos.x - this->dispImageCurrPos.x;
 	}
 	else
 	{
 		return false;
 	}
-	if (this->dispImageDownY < this->dispImageCurrY)
+	if (this->dispImageDownPos.y < this->dispImageCurrPos.y)
 	{
-		drawHeight = this->dispImageCurrY - this->dispImageDownY;
+		drawHeight = this->dispImageCurrPos.y - this->dispImageDownPos.y;
 	}
-	else if (this->dispImageDownY > this->dispImageCurrY)
+	else if (this->dispImageDownPos.y > this->dispImageCurrPos.y)
 	{
-		drawHeight = this->dispImageDownY - this->dispImageCurrY;
+		drawHeight = this->dispImageDownPos.y - this->dispImageCurrPos.y;
 	}
 	else
 	{
@@ -1734,25 +1727,25 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(OSInt *rect)
 		drawWidth = MulDivOS(drawHeight, (OSInt)img->info.dispWidth, (OSInt)img->info.dispHeight);
 	}
 
-	if (this->dispImageDownX < this->dispImageCurrX)
+	if (this->dispImageDownPos.x < this->dispImageCurrPos.x)
 	{
-		rect[0] = this->dispImageDownX;
-		rect[2] = this->dispImageDownX + drawWidth;
+		rect[0].x = this->dispImageDownPos.x;
+		rect[1].x = this->dispImageDownPos.x + drawWidth;
 	}
 	else
 	{
-		rect[0] = this->dispImageDownX - drawWidth;
-		rect[2] = this->dispImageDownX;
+		rect[0].x = this->dispImageDownPos.x - drawWidth;
+		rect[1].x = this->dispImageDownPos.x;
 	}
-	if (this->dispImageDownY < this->dispImageCurrY)
+	if (this->dispImageDownPos.y < this->dispImageCurrPos.y)
 	{
-		rect[1] = this->dispImageDownY;
-		rect[3] = this->dispImageDownY + drawHeight;
+		rect[0].y = this->dispImageDownPos.y;
+		rect[1].y = this->dispImageDownPos.y + drawHeight;
 	}
 	else
 	{
-		rect[1] = this->dispImageDownY - drawHeight;
-		rect[3] = this->dispImageDownY;
+		rect[0].y = this->dispImageDownPos.y - drawHeight;
+		rect[1].y = this->dispImageDownPos.y;
 	}
 	return true;
 }

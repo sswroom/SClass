@@ -8,17 +8,17 @@ UI::GUIPopupMenu::GUIPopupMenu() : UI::GUIMenu(true)
 {
 }
 
-void UI::GUIPopupMenu::ShowMenu(UI::GUIControl *ctrl, OSInt x, OSInt y)
+void UI::GUIPopupMenu::ShowMenu(UI::GUIControl *ctrl, Math::Coord2D<OSInt> scnPos)
 {
 	UI::GUIForm *frm = ctrl->GetRootForm();
 	if (frm)
 	{
 		gint tranX;
 		gint tranY;
-		if (gtk_widget_translate_coordinates((GtkWidget*)ctrl->GetHandle(), (GtkWidget*)frm->GetHandle(), (gint)x, (gint)y, &tranX, &tranY))
+		if (gtk_widget_translate_coordinates((GtkWidget*)ctrl->GetHandle(), (GtkWidget*)frm->GetHandle(), (gint)scnPos.x, (gint)scnPos.y, &tranX, &tranY))
 		{
-			x = tranX;
-			y = tranY;
+			scnPos.x = tranX;
+			scnPos.y = tranY;
 		}
 		this->SetMenuForm(frm);
 		ctrl = frm;
@@ -26,8 +26,8 @@ void UI::GUIPopupMenu::ShowMenu(UI::GUIControl *ctrl, OSInt x, OSInt y)
 	GdkWindow *window = gtk_widget_get_window((GtkWidget*)ctrl->GetHandle());
 
 	GdkRectangle rect;
-	rect.x = (int)x;
-	rect.y = (int)y;
+	rect.x = (int)scnPos.x;
+	rect.y = (int)scnPos.y;
 	rect.width = 0;
 	rect.height = 0;
 	gtk_menu_popup_at_rect((GtkMenu*)this->hMenu, window, &rect, GDK_GRAVITY_SOUTH_WEST, GDK_GRAVITY_NORTH_WEST, 0);

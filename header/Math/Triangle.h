@@ -20,9 +20,9 @@ namespace Math
 
 		Double CalcArea()
 		{
-			Double a1 = (pt[1].x - pt[0].x) * (pt[2].y - pt[0].y);
-			Double a2 = (pt[1].y - pt[0].y) * (pt[1].x - pt[2].x);
-			Double a3 = (pt[1].x - pt[0].x) * (pt[1].y - pt[0].y);
+			Double a1 = (pt[1].x - pt[0].x) * (pt[0].y - pt[1].y);
+			Double a2 = (pt[0].y - pt[1].y) * (pt[1].x - pt[2].x);
+			Double a3 = (pt[1].x - pt[0].x) * (pt[0].y - pt[1].y);
 			return (a1 + a2 - a3) * 0.5;
 		}
 	};

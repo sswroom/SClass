@@ -50,9 +50,9 @@ namespace SSWR
 			UI::GUIButton *btnCancel;
 
 			static void __stdcall FontNameClicked(void *userObj);
-			static Bool __stdcall FontColorClicked(void *userObj, OSInt x, OSInt y, MouseButton mouseBtn);
+			static Bool __stdcall FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
 			static void __stdcall BufferSizeChanged(void *userObj, UOSInt scrollPos);
-			static Bool __stdcall BufferColorClicked(void *userObj, OSInt x, OSInt y, MouseButton mouseBtn);
+			static Bool __stdcall BufferColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
 			static void __stdcall FontsDoubleClicked(void *userObj);
 			static void __stdcall OKClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);

@@ -9,47 +9,42 @@
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
 	if (!me->selecting)
 		return false;
 	me->isDown = true;
 	me->selecting = false;
-	me->downX = x;
-	me->downY = y;
+	me->downPos = scnPos;
 	return true;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
 	if (me->isDown)
 	{
 		me->isDown = false;
-		Double mapX1;
-		Double mapY1;
-		Double mapX2;
-		Double mapY2;
 		Double tmpV;
-		me->navi->ScnXY2MapXY(me->downX, me->downY, &mapX1, &mapY1);
-		me->navi->ScnXY2MapXY(x, y, &mapX2, &mapY2);
-		if (mapX1 > mapX2)
+		Math::Coord2D<Double> mapPt1 = me->navi->ScnXY2MapXY(me->downPos);
+		Math::Coord2D<Double> mapPt2 = me->navi->ScnXY2MapXY(scnPos);
+		if (mapPt1.x > mapPt2.x)
 		{
-			tmpV = mapX1;
-			mapX1 = mapX2;
-			mapX2 = tmpV;
+			tmpV = mapPt1.x;
+			mapPt1.x = mapPt2.x;
+			mapPt2.x = tmpV;
 		}
-		if (mapY1 > mapY2)
+		if (mapPt1.y > mapPt2.y)
 		{
-			tmpV = mapY1;
-			mapY1 = mapY2;
-			mapY2 = tmpV;
+			tmpV = mapPt1.y;
+			mapPt1.y = mapPt2.y;
+			mapPt2.y = tmpV;
 		}
-		me->selX1 = mapX1;
-		me->selY1 = mapY1;
-		me->selX2 = mapX2;
-		me->selY2 = mapY2;
+		me->selX1 = mapPt1.x;
+		me->selY1 = mapPt1.y;
+		me->selX2 = mapPt2.x;
+		me->selY2 = mapPt2.y;
 
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
@@ -71,45 +66,41 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj, OSInt x, OSInt y)
+Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
 	if (me->isDown)
 	{
-		Double mapX1;
-		Double mapY1;
-		Double mapX2;
-		Double mapY2;
 		Double tmpV;
-		me->navi->ScnXY2MapXY(me->downX, me->downY, &mapX1, &mapY1);
-		me->navi->ScnXY2MapXY(x, y, &mapX2, &mapY2);
-		if (mapX1 > mapX2)
+		Math::Coord2D<Double> mapPt1 = me->navi->ScnXY2MapXY(me->downPos);
+		Math::Coord2D<Double> mapPt2 = me->navi->ScnXY2MapXY(scnPos);
+		if (mapPt1.x > mapPt2.x)
 		{
-			tmpV = mapX1;
-			mapX1 = mapX2;
-			mapX2 = tmpV;
+			tmpV = mapPt1.x;
+			mapPt1.x = mapPt2.x;
+			mapPt2.x = tmpV;
 		}
-		if (mapY1 > mapY2)
+		if (mapPt1.y > mapPt2.y)
 		{
-			tmpV = mapY1;
-			mapY1 = mapY2;
-			mapY2 = tmpV;
+			tmpV = mapPt1.y;
+			mapPt1.y = mapPt2.y;
+			mapPt2.y = tmpV;
 		}
 
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
 		UOSInt nPoints;
 		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoints);
-		ptList[0].x = mapX1;
-		ptList[0].y = mapY1;
-		ptList[1].x = mapX2;
-		ptList[1].y = mapY1;
-		ptList[2].x = mapX2;
-		ptList[2].y = mapY2;
-		ptList[3].x = mapX1;
-		ptList[3].y = mapY2;
-		ptList[4].x = mapX1;
-		ptList[4].y = mapY1;
+		ptList[0].x = mapPt1.x;
+		ptList[0].y = mapPt1.y;
+		ptList[1].x = mapPt2.x;
+		ptList[1].y = mapPt1.y;
+		ptList[2].x = mapPt2.x;
+		ptList[2].y = mapPt2.y;
+		ptList[3].x = mapPt1.x;
+		ptList[3].y = mapPt2.y;
+		ptList[4].x = mapPt1.x;
+		ptList[4].y = mapPt1.y;
 		me->navi->SetSelectedVector(pg);
 		return true;
 	}
@@ -568,8 +559,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->SetNoResize(true);
 	this->selecting = false;
 	this->isDown = false;
-	this->downX = 0;
-	this->downY = 0;
+	this->downPos = Math::Coord2D<OSInt>(0, 0);
 	this->selX1 = 0;
 	this->selY1 = 0;
 	this->selX2 = 0;

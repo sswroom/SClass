@@ -15,7 +15,7 @@ namespace UI
 	public:
 		typedef void (__stdcall *MapUpdatedHandler)(void *userObj, Double centerX, Double centerY, Double drawTime);
 		typedef void (__stdcall *ScaleChangedHandler)(void *userObj, Double newScale);
-		typedef void (__stdcall *MouseMoveHandler)(void *userObj, OSInt x, OSInt y);
+		typedef void (__stdcall *MouseMoveHandler)(void *userObj, Math::Coord2D<OSInt> scnPos);
 		typedef void (__stdcall *DrawHandler)(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);
 	private:
 		Media::DrawImage *bgImg;
@@ -105,13 +105,13 @@ namespace UI
 		void SetBGColor(UInt32 bgColor);
 		void SetRenderer(Map::DrawMapRenderer *renderer);
 		void UpdateMap();
-		void ScnXY2MapXY(OSInt scnX, OSInt scnY, Double *mapX, Double *mapY);
-		void ScnXYD2MapXY(Double scnX, Double scnY, Double *mapX, Double *mapY);
-		void MapXY2ScnXY(Double mapX, Double mapY, OSInt *scnX, OSInt *scnY);
+		Math::Coord2D<Double> ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
+		Math::Coord2D<Double> ScnXYD2MapXY(Math::Coord2D<Double> scnPos);
+		Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2D<Double> mapPos);
 		void SetMapScale(Double newScale);
 		Double GetMapScale();
 		Double GetViewScale();
-		void PanToMapXY(Double mapX, Double mapY);
+		void PanToMapXY(Math::Coord2D<Double> mapPos);
 		void ZoomToRect(Double mapX1, Double mapY1, Double mapX2, Double mapY2);
 		Bool InMapMapXY(Double mapX, Double mapY);
 		void ShowMarkerMapXY(Double mapX, Double mapY);

@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
+Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer)
