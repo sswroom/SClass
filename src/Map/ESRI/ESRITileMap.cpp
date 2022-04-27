@@ -440,10 +440,10 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, (Int32)level);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, imgY);
 	IO::Path::CreateDirectory(CSTRP(filePath, sptr));
-	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, imgX);
 	filePathEnd = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
