@@ -87,14 +87,9 @@ Double Map::ProjectedMapView::GetViewScale()
 	return this->scale;
 }
 
-Double Map::ProjectedMapView::GetCenterX()
+Math::Coord2DDbl Map::ProjectedMapView::GetCenter()
 {
-	return this->centMap.x;
-}
-
-Double Map::ProjectedMapView::GetCenterY()
-{
-	return this->centMap.y;
+	return this->centMap;
 }
 
 Double Map::ProjectedMapView::GetHDPI()
@@ -112,7 +107,7 @@ Bool Map::ProjectedMapView::InViewXY(Math::Coord2DDbl mapPos)
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::ProjectedMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
 {
 	if (nPoints == 0)
 	{
@@ -130,8 +125,9 @@ Bool Map::ProjectedMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, U
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Double2Int32((*srcArr++  - dleft) * mul.x + ofstX);
-		*destArr++ = thisY = Double2Int32((dbottom - *srcArr++) * mul.y + ofstY);
+		*destArr++ = thisX = Double2Int32((srcArr->x  - dleft) * mul.x + ofstX);
+		*destArr++ = thisY = Double2Int32((dbottom - srcArr->y) * mul.y + ofstY);
+		srcArr++;
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;

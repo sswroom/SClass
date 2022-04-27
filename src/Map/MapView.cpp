@@ -12,11 +12,6 @@ Map::MapView::~MapView()
 {
 }
 
-Math::Coord2DDbl Map::MapView::GetCenterMap()
-{
-	return Math::Coord2DDbl(this->GetCenterX(), this->GetCenterY());
-}
-
 Double Map::MapView::GetScnWidth()
 {
 	return this->scnSize.width;
@@ -27,12 +22,17 @@ Double Map::MapView::GetScnHeight()
 	return this->scnSize.height;
 }
 
+Math::Size2D<Double> Map::MapView::GetScnSize()
+{
+	return this->scnSize;
+}
+
 void Map::MapView::SetDestImage(Media::DrawImage *img)
 {
 	if (this->scnSize.width != UOSInt2Double(img->GetWidth()) || this->scnSize.height != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
-		ChangeViewXY(Math::Size2D<Double>(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight())), this->GetCenterMap(), this->GetMapScale());
+		ChangeViewXY(Math::Size2D<Double>(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight())), this->GetCenter(), this->GetMapScale());
 	}
 }
 

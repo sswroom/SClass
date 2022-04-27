@@ -920,13 +920,10 @@ void UI::GUIMapControl::UpdateMap()
 	Sync::MutexUsage mutUsage(&this->drawMut);
 	if (this->bgImg && this->renderer)
 	{
-		Double centerX;
-		Double centerY;
 		Double t;
 		UOSInt i;
 		UInt32 imgDurMS;
-		centerX = this->view->GetCenterX();
-		centerY = this->view->GetCenterY();
+		Math::Coord2DDbl center = this->view->GetCenter();
 		Manage::HiResClock clk;
 		Media::DrawBrush *b = this->bgImg->NewBrushARGB(this->bgDispColor);
 		this->bgImg->DrawRect(0, 0, UOSInt2Double(this->bgImg->GetWidth()), UOSInt2Double(this->bgImg->GetHeight()), 0, b);
@@ -946,7 +943,7 @@ void UI::GUIMapControl::UpdateMap()
 		i = this->mapUpdHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->mapUpdHdlrs.GetItem(i)(this->mapUpdObjs.GetItem(i), centerX, centerY, t);
+			this->mapUpdHdlrs.GetItem(i)(this->mapUpdObjs.GetItem(i), center, t);
 		}
 	}
 	mutUsage.EndUse();
@@ -1001,7 +998,7 @@ Double UI::GUIMapControl::GetViewScale()
 
 void UI::GUIMapControl::PanToMapXY(Math::Coord2DDbl mapPos)
 {
-	if (this->view->GetCenterMap() == mapPos)
+	if (this->view->GetCenter() == mapPos)
 		return;
 	this->view->SetCenterXY(mapPos);
 	if (!this->pauseUpdate)

@@ -40,6 +40,7 @@ test:
 @TestDateTime
 @TestFastStringMap
 @TestFloat16
+@TestCoord
 @TestFloat
 @TestMyString
 @TestPunycode
@@ -724,6 +725,9 @@ TestFastStringMap:
 TestFloat16:
 @TestFloat16.o
 @ConsoleStartup.o
+TestCoord:
+@TestCoord.o
+@ConsoleStartup.o
 TestFloat:
 @TestFloat.o
 @ConsoleStartup.o
@@ -1033,6 +1037,7 @@ TestSHA512.o: ../../main/Test/Crypto/TestSHA512.cpp
 TestDateTime.o: ../../main/Test/Data/TestDateTime.cpp
 TestFastStringMap.o: ../../main/Test/Data/TestFastStringMap.cpp
 TestFloat16.o: ../../main/Test/Data/TestFloat16.cpp
+TestCoord.o: ../../main/Test/Math/TestCoord.cpp
 TestFloat.o: ../../main/Test/Math/TestFloat.cpp
 TestMyString.o: ../../main/Test/Text/TestMyString.cpp
 TestPunycode.o: ../../main/Test/Text/TestPunycode.cpp
@@ -1233,6 +1238,7 @@ Crypto/Token/JWTParam.h: ../../src/Crypto/Token/JWTHandler.cpp
 Data/ArrayCmpMap.h:
 Data/ArrayCollection.h:
 Data/ArrayList.h:
+Data/ArrayListA.h:
 Data/ArrayListCmp.h: ../../src/Data/ArrayListCmp.cpp
 @ArrayListCmp.o
 Data/ArrayListDbl.h: ../../src/Data/ArrayListDbl.cpp

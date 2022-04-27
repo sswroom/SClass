@@ -79,7 +79,7 @@ namespace SSWR
 			static Bool __stdcall OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static Bool __stdcall OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static void __stdcall OnMapScaleChanged(void *userObj, Double newScale);
-			static void __stdcall OnMapUpdated(void *userObj, Double centerX, Double centerY, Double timeUsed);
+			static void __stdcall OnMapUpdated(void *userObj, Math::Coord2DDbl center, Double timeUsed);
 			static void __stdcall OnScaleScrolled(void *userObj, UOSInt newVal);
 			static void __stdcall OnTreeRightClick(void *userObj);
 			static void __stdcall OnCtrlFormClosed(void *userObj, UI::GUIForm *frm);

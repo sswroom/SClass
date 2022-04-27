@@ -304,24 +304,21 @@ UOSInt Math::Geometry::BoundPolygonX(Int32 *points, UOSInt nPoints, Int32 *point
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *pointOut, Double minY, Double maxY, Double ofstX, Double ofstY)
+UOSInt Math::Geometry::BoundPolygonY(Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
 {
-	Double *pointsCurr = pointOut;
-	Double lastX;
-	Double lastY;
-	Double thisX;
-	Double thisY;
+	Math::Coord2DDbl *pointsCurr = pointOut;
+	Math::Coord2DDbl lastPt;
+	Math::Coord2DDbl thisPt;
 	OSInt yStat;
 	UOSInt i;
 
-	lastX = points[(nPoints << 1) - 2];
-	lastY = points[(nPoints << 1) - 1];
+	lastPt = points[nPoints - 1];
 
-	if (lastY <= minY)
+	if (lastPt.y <= minY)
 	{
 		yStat = -1;
 	}
-	else if (lastY >= maxY)
+	else if (lastPt.y >= maxY)
 	{
 		yStat = 1;
 	}
@@ -333,66 +330,59 @@ UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *poi
 	i = nPoints;
 	while (i-- > 0)
 	{
-		thisX = points[0];
-		thisY = points[1];
-		points += 2;
+		thisPt = points[0];
+		points += 1;
 
-		if (thisY <= minY)
+		if (thisPt.y <= minY)
 		{
 			if (yStat == 0)
 			{
-				pointsCurr[0] = (ofstX + lastX + (thisX - lastX) * (minY - lastY) / (thisY - lastY));
-				pointsCurr[1] = (ofstY + minY);
-				pointsCurr += 2;
+				pointsCurr[0].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (minY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[0].y = (ofst.y + minY);
+				pointsCurr += 1;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else if (yStat == -1)
 			{
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else
 			{
-				pointsCurr[0] = (ofstX + lastX + (thisX - lastX) * (maxY - lastY) / (thisY - lastY));
-				pointsCurr[1] = (ofstY + maxY);
-				pointsCurr[2] = (ofstX + lastX + (thisX - lastX) * (minY - lastY) / (thisY - lastY));
-				pointsCurr[3] = (ofstY + minY);
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (maxY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[0].y = (ofst.y + maxY);
+				pointsCurr[1].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (minY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[1].y = (ofst.y + minY);
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 
 			yStat = -1;
 		}
-		else if (thisY >= maxY)
+		else if (thisPt.y >= maxY)
 		{
 			if (yStat == 0)
 			{
-				pointsCurr[0] = (ofstX + lastX + (thisX - lastX) * (maxY - lastY) / (thisY - lastY));
-				pointsCurr[1] = (ofstY + maxY);
-				pointsCurr += 2;
+				pointsCurr[0].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (maxY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[0].y = (ofst.y + maxY);
+				pointsCurr += 1;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else if (yStat == -1)
 			{
-				pointsCurr[0] = (ofstX + lastX + (thisX - lastX) * (minY - lastY) / (thisY - lastY));
-				pointsCurr[1] = (ofstY + minY);
-				pointsCurr[2] = (ofstX + lastX + (thisX - lastX) * (maxY - lastY) / (thisY - lastY));
-				pointsCurr[3] = (ofstY + maxY);
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (minY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[0].y = (ofst.y + minY);
+				pointsCurr[1].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (maxY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[1].y = (ofst.y + maxY);
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else
 			{
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 
 			yStat = 1;
@@ -401,34 +391,30 @@ UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *poi
 		{
 			if (yStat == 0)
 			{
-				if (thisX != lastX || thisY != lastY)
+				if (thisPt != lastPt)
 				{
-					pointsCurr[0] = (ofstX + (lastX = thisX));
-					pointsCurr[1] = (ofstY + (lastY = thisY));
-					pointsCurr += 2;
+					pointsCurr[0] = ofst + thisPt;
+					pointsCurr += 1;
+					lastPt = thisPt;
 				}
 			}
 			else if (yStat == -1)
 			{
-				pointsCurr[0] = (ofstX + lastX + (thisX - lastX) * (minY - lastY) / (thisY - lastY));
-				pointsCurr[1] = (ofstY + minY);
-				pointsCurr[2] = (ofstX + thisX);
-				pointsCurr[3] = (ofstY + thisY);
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (minY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[0].y = (ofst.y + minY);
+				pointsCurr[1] = (ofst + thisPt);
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else
 			{
-				pointsCurr[0] = (ofstX + lastX + (thisX - lastX) * (maxY - lastY) / (thisY - lastY));
-				pointsCurr[1] = (ofstY + maxY);
-				pointsCurr[2] = (ofstX + thisX);
-				pointsCurr[3] = (ofstY + thisY);
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + lastPt.x + (thisPt.x - lastPt.x) * (maxY - lastPt.y) / (thisPt.y - lastPt.y));
+				pointsCurr[0].y = (ofst.y + maxY);
+				pointsCurr[1] = ofst + thisPt;
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			yStat = 0;
 		}
@@ -437,24 +423,21 @@ UOSInt Math::Geometry::BoundPolygonY(Double *points, UOSInt nPoints, Double *poi
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::Geometry::BoundPolygonX(Double *points, UOSInt nPoints, Double *pointOut, Double minX, Double maxX, Double ofstX, Double ofstY)
+UOSInt Math::Geometry::BoundPolygonX(Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
 {
-	Double *pointsCurr = pointOut;
-	Double lastX;
-	Double lastY;
-	Double thisX;
-	Double thisY;
+	Math::Coord2DDbl *pointsCurr = pointOut;
+	Math::Coord2DDbl lastPt;
+	Math::Coord2DDbl thisPt;
 	Double xStat;
 	UOSInt i;
 
-	lastX = points[(nPoints << 1) - 2];
-	lastY = points[(nPoints << 1) - 1];
+	lastPt = points[nPoints - 1];
 
-	if (lastX <= minX)
+	if (lastPt.x <= minX)
 	{
 		xStat = -1;
 	}
-	else if (lastX >= maxX)
+	else if (lastPt.x >= maxX)
 	{
 		xStat = 1;
 	}
@@ -466,66 +449,59 @@ UOSInt Math::Geometry::BoundPolygonX(Double *points, UOSInt nPoints, Double *poi
 	i = nPoints;
 	while (i-- > 0)
 	{
-		thisX = points[0];
-		thisY = points[1];
-		points += 2;
+		thisPt = points[0];
+		points += 1;
 
-		if (thisX <= minX)
+		if (thisPt.x <= minX)
 		{
 			if (xStat == 0)
 			{
-				pointsCurr[0] = (ofstX + minX);
-				pointsCurr[1] = (ofstY + lastY + (thisY - lastY) * (minX - lastX) / (thisX - lastX));
-				pointsCurr += 2;
+				pointsCurr[0].x = (ofst.x + minX);
+				pointsCurr[0].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (minX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr += 1;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else if (xStat == -1)
 			{
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else
 			{
-				pointsCurr[0] = (ofstX + maxX);
-				pointsCurr[1] = (ofstY + lastY + (thisY - lastY) * (maxX - lastX) / (thisX - lastX));
-				pointsCurr[2] = (ofstX + minX);
-				pointsCurr[3] = (ofstY + lastY + (thisY - lastY) * (minX - lastX) / (thisX - lastX));
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + maxX);
+				pointsCurr[0].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (maxX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr[1].x = (ofst.x + minX);
+				pointsCurr[1].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (minX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 
 			xStat = -1;
 		}
-		else if (thisX >= maxX)
+		else if (thisPt.x >= maxX)
 		{
 			if (xStat == 0)
 			{
-				pointsCurr[0] = (ofstX + maxX);
-				pointsCurr[1] = (ofstY + lastY + (thisY - lastY) * (maxX - lastX) / (thisX - lastX));
-				pointsCurr += 2;
+				pointsCurr[0].x = (ofst.x + maxX);
+				pointsCurr[0].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (maxX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr += 1;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else if (xStat == -1)
 			{
-				pointsCurr[0] = (ofstX + minX);
-				pointsCurr[1] = (ofstY + lastY + (thisY - lastY) * (minX - lastX) / (thisX - lastX));
-				pointsCurr[2] = (ofstX + maxX);
-				pointsCurr[3] = (ofstY + lastY + (thisY - lastY) * (maxX - lastX) / (thisX - lastX));
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + minX);
+				pointsCurr[0].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (minX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr[1].x = (ofst.x + maxX);
+				pointsCurr[1].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (maxX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else
 			{
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 
 			xStat = 1;
@@ -534,34 +510,30 @@ UOSInt Math::Geometry::BoundPolygonX(Double *points, UOSInt nPoints, Double *poi
 		{
 			if (xStat == 0)
 			{
-				if (thisX != lastX || thisY != lastY)
+				if (thisPt != lastPt)
 				{
-					pointsCurr[0] = (ofstX + (lastX = thisX));
-					pointsCurr[1] = (ofstY + (lastY = thisY));
-					pointsCurr += 2;
+					pointsCurr[0] = ofst + thisPt;
+					pointsCurr += 1;
+					lastPt = thisPt;
 				}
 			}
 			else if (xStat == -1)
 			{
-				pointsCurr[0] = (ofstX + minX);
-				pointsCurr[1] = (ofstY + lastY + (thisY - lastY) * (minX - lastX) / (thisX - lastX));
-				pointsCurr[2] = (ofstX + thisX);
-				pointsCurr[3] = (ofstY + thisY);
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + minX);
+				pointsCurr[0].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (minX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr[1] = ofst + thisPt;
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			else
 			{
-				pointsCurr[0] = (ofstX + maxX);
-				pointsCurr[1] = (ofstY + lastY + (thisY - lastY) * (maxX - lastX) / (thisX - lastX));
-				pointsCurr[2] = (ofstX + thisX);
-				pointsCurr[3] = (ofstY + thisY);
-				pointsCurr += 4;
+				pointsCurr[0].x = (ofst.x + maxX);
+				pointsCurr[0].y = (ofst.y + lastPt.y + (thisPt.y - lastPt.y) * (maxX - lastPt.x) / (thisPt.x - lastPt.x));
+				pointsCurr[1] = ofst + thisPt;
+				pointsCurr += 2;
 
-				lastX = thisX;
-				lastY = thisY;
+				lastPt = thisPt;
 			}
 			xStat = 0;
 		}

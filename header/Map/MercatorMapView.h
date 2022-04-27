@@ -33,13 +33,12 @@ namespace Map
 		virtual Double GetBottomY();
 		virtual Double GetMapScale();
 		virtual Double GetViewScale();
-		virtual Double GetCenterX();
-		virtual Double GetCenterY();
+		virtual Math::Coord2DDbl GetCenter();
 		virtual Double GetHDPI();
 		virtual Double GetDDPI();
 
 		virtual Bool InViewXY(Math::Coord2DDbl mapPos);
-		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
 		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst); // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY); // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos);

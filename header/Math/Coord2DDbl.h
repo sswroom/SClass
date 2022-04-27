@@ -43,7 +43,9 @@ namespace Math
 
 		Double CalcLengTo(Coord2DDbl coord)
 		{
-			return Math_Sqrt(Math_Sqr((Double)(this->x - coord.x)) + Math_Sqr((Double)(this->y - coord.y)));
+			Math::Coord2DDbl diff = *this - coord;
+			diff = diff * diff;
+			return Math_Sqrt(diff.x + diff.y);
 		}
 
 		Bool operator!=(Coord2DDbl v)
@@ -66,19 +68,29 @@ namespace Math
 			return (this->x < v.x) && (this->y < v.y);
 		}
 
+		Coord2DDbl Max(Coord2DDbl v)
+		{
+			return PMAXPD(this->vals, v.vals);
+		}
+
+		Coord2DDbl Min(Coord2DDbl v)
+		{
+			return PMINPD(this->vals, v.vals);
+		}
+		
 		Coord2DDbl operator+(Coord2DDbl v)
 		{
-			return this->vals + v.vals;
+			return PADDPD(this->vals, v.vals);
 		}
 
 		Coord2DDbl operator-(Coord2DDbl v)
 		{
-			return this->vals - v.vals;
+			return PSUBPD(this->vals, v.vals);
 		}
 
 		Coord2DDbl operator*(Coord2DDbl v)
 		{
-			return this->vals * v.vals;
+			return PMULPD(this->vals, v.vals);
 		}
 
 		Coord2DDbl operator*(Double v)
@@ -88,7 +100,7 @@ namespace Math
 
 		Coord2DDbl operator/(Coord2DDbl v)
 		{
-			return this->vals / v.vals;
+			return PDIVPD(this->vals, v.vals);
 		}
 
 		Coord2DDbl operator/(Double v)
@@ -98,7 +110,7 @@ namespace Math
 
 		Coord2DDbl& operator+=(Coord2DDbl v)
 		{
-			this->vals += v.vals;
+			this->vals = PADDPD(this->vals, v.vals);
 			return *this;
 		}
 	};

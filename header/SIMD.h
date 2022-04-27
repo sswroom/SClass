@@ -199,6 +199,7 @@ typedef __m128d Doublex2;
 #define PADDPD(v1, v2) _mm_add_pd(v1, v2)
 #define PSUBPD(v1, v2) _mm_sub_pd(v1, v2)
 #define PMULPD(v1, v2) _mm_mul_pd(v1, v2)
+#define PDIVPD(v1, v2) _mm_div_pd(v1, v2)
 #define PMINPD(v1, v2) _mm_min_pd(v1, v2)
 #define PMAXPD(v1, v2) _mm_max_pd(v1, v2)
 #define PLoadDoublex2(ptr) _mm_loadu_pd(ptr)
@@ -576,6 +577,14 @@ Doublex2 FORCEINLINE PMULPD(Doublex2 val1, Doublex2 val2)
 	Doublex2 ret;
 	ret.vals[0] = val1.vals[0] * val2.vals[0];
 	ret.vals[1] = val1.vals[1] * val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PDIVPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] / val2.vals[0];
+	ret.vals[1] = val1.vals[1] / val2.vals[1];
 	return ret;
 }
 
@@ -1929,6 +1938,14 @@ Doublex2 FORCEINLINE PMULPD(Doublex2 val1, Doublex2 val2)
 	Doublex2 ret;
 	ret.vals[0] = val1.vals[0] * val2.vals[0];
 	ret.vals[1] = val1.vals[1] * val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE PDIVPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = val1.vals[0] / val2.vals[0];
+	ret.vals[1] = val1.vals[1] / val2.vals[1];
 	return ret;
 }
 

@@ -97,7 +97,6 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord
 	else if (me->selectMode == ActionType::Plate)
 	{
 		Math::Coord2DDbl coord = me->pbImg->Scn2ImagePos(scnPos);
-
 	}
 	return false;
 }
@@ -162,7 +161,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, UI::GUIC
 	this->btnSelCorners->SetRect(84, 4, 75, 23, false);
 	this->btnSelCorners->HandleButtonClick(OnSelCornersClicked, this);
 	NEW_CLASS(this->lblSelStatus, UI::GUILabel(ui, this->pnlCtrl, CSTR("")));
-	this->lblSelStatus->SetRect(84, 4, 200, 23, false);
+	this->lblSelStatus->SetRect(164, 4, 200, 23, false);
 	NEW_CLASS(this->pnlPlate, UI::GUIPanel(ui, this));
 	this->pnlPlate->SetRect(0, 0, 250, 100, false);
 	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);

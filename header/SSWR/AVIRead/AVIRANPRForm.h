@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRANPRFORM
 #define _SM_SSWR_AVIREAD_AVIRANPRFORM
+#include "Data/ArrayListA.h"
 #include "Media/ANPR.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -42,7 +43,7 @@ namespace SSWR
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
 			ActionType selectMode;
-			Data::ArrayList<Math::Coord2DDbl> points;
+			Data::ArrayListA<Math::Coord2DDbl> points;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnSelPlate;

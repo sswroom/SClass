@@ -110,14 +110,9 @@ Double Map::LeveledMapView::GetViewScale()
 	return this->scales->GetItem(this->level);
 }
 
-Double Map::LeveledMapView::GetCenterX()
+Math::Coord2DDbl Map::LeveledMapView::GetCenter()
 {
-	return this->centMap.x;
-}
-
-Double Map::LeveledMapView::GetCenterY()
-{
-	return this->centMap.y;
+	return this->centMap;
 }
 
 Double Map::LeveledMapView::GetHDPI()
@@ -135,7 +130,7 @@ Bool Map::LeveledMapView::InViewXY(Math::Coord2DDbl mapPos)
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
 {
 	if (nPoints == 0)
 	{
@@ -153,8 +148,9 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOS
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Double2Int32((*srcArr++  - dleft) * mul.x + ofstX);
-		*destArr++ = thisY = Double2Int32((dbottom - *srcArr++) * mul.y + ofstY);
+		*destArr++ = thisX = Double2Int32((srcArr->x  - dleft) * mul.x + ofstX);
+		*destArr++ = thisY = Double2Int32((dbottom - srcArr->y) * mul.y + ofstY);
+		srcArr++;
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;

@@ -319,7 +319,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 	me->txtScale->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapUpdated(void *userObj, Double centerX, Double centerY, Double timeUsed)
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapUpdated(void *userObj, Math::Coord2DDbl center, Double timeUsed)
 {
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	me->mapUpdT = timeUsed;

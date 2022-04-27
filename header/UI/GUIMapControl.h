@@ -13,7 +13,7 @@ namespace UI
 	class GUIMapControl : public GUICustomDraw, public Media::IColorHandler
 	{
 	public:
-		typedef void (__stdcall *MapUpdatedHandler)(void *userObj, Double centerX, Double centerY, Double drawTime);
+		typedef void (__stdcall *MapUpdatedHandler)(void *userObj, Math::Coord2DDbl center, Double drawTime);
 		typedef void (__stdcall *ScaleChangedHandler)(void *userObj, Double newScale);
 		typedef void (__stdcall *MouseMoveHandler)(void *userObj, Math::Coord2D<OSInt> scnPos);
 		typedef void (__stdcall *DrawHandler)(void *userObj, Media::DrawImage *dimg, OSInt xOfst, OSInt yOfst);

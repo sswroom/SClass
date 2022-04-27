@@ -27,14 +27,12 @@ namespace Map
 		virtual Double GetBottomY() = 0;
 		virtual Double GetMapScale() = 0;
 		virtual Double GetViewScale() = 0;
-		virtual Double GetCenterX() = 0;
-		virtual Double GetCenterY() = 0;
+		virtual Math::Coord2DDbl GetCenter() = 0;
 		virtual Double GetHDPI() = 0;
 		virtual Double GetDDPI() = 0;
-		Math::Coord2DDbl GetCenterMap();
 
 		virtual Bool InViewXY(Math::Coord2DDbl mapPos) = 0;
-		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
 		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) = 0; // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) = 0;
@@ -43,6 +41,7 @@ namespace Map
 
 		Double GetScnWidth();
 		Double GetScnHeight();
+		Math::Size2D<Double> GetScnSize();
 
 		void SetDestImage(Media::DrawImage *img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints);
