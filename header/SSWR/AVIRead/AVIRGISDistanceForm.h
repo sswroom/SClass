@@ -33,7 +33,7 @@ namespace SSWR
 			Math::CoordinateSystem *csys;
 
 			Data::ArrayList<Double> *ptList;
-			Math::Coord2D<Double> lastMapPos;
+			Math::Coord2DDbl lastMapPos;
 			Double pathDist;
 			Double dispDist;
 

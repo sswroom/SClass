@@ -147,12 +147,10 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 //	printf("Control.GetSize %lf, %lf\r\n", *width, *height);
 }
 
-void UI::GUIControl::GetSizeP(UOSInt *width, UOSInt *height)
+Math::Size2D<UOSInt> UI::GUIControl::GetSizeP()
 {
-	if (width)
-		*width = (UInt32)Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
-	if (height)
-		*height = (UInt32)Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+	return Math::Size2D<UOSInt>((UOSInt)Double2OSInt((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi),
+		(UOSInt)Double2OSInt((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 //	printf("Control.GetSizeP %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 
@@ -539,10 +537,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		Double newY;
 		gint winX;
 		gint winY;
-		UOSInt winW;
-		UOSInt winH;
 		gtk_window_get_position((GtkWindow*)this->hwnd, &winX, &winY);
-		this->GetSizeP(&winW, &winH);
+		Math::Size2D<UOSInt> winSize = this->GetSizeP();
 		if (monInfo)
 		{
 			Int32 maxW = monInfo->GetPixelWidth();
@@ -551,8 +547,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxW;
 			if (newH > maxH)
 				newH = maxH;
-			newX = (OSInt2Double(winX + winX + (OSInt)winW) - newW) * 0.5;
-			newY = (OSInt2Double(winY + winY + (OSInt)winH) - newH) * 0.5;
+			newX = (OSInt2Double(winX + winX + (OSInt)winSize.width) - newW) * 0.5;
+			newY = (OSInt2Double(winY + winY + (OSInt)winSize.height) - newH) * 0.5;
 			if (newY < monInfo->GetTop())
 			{
 				newY = monInfo->GetTop();
@@ -567,8 +563,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxX;
 			if (newH > maxY)
 				newH = maxY;
-			newX = (OSInt2Double(winX + winX + (OSInt)winW) - newW) * 0.5;
-			newY = (OSInt2Double(winY + winY + (OSInt)winH) - newH) * 0.5;
+			newX = (OSInt2Double(winX + winX + (OSInt)winSize.width) - newW) * 0.5;
+			newY = (OSInt2Double(winY + winY + (OSInt)winSize.height) - newH) * 0.5;
 			if (newY < 0)
 			{
 				newY = 0;

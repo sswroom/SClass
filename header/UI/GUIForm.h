@@ -98,7 +98,7 @@ namespace UI
 		void MakeForeground();
 		virtual void Close();
 		virtual void SetText(Text::CString text);
-		virtual void GetSizeP(UOSInt *width, UOSInt *height);
+		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
 		virtual UI::GUITimer *AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);

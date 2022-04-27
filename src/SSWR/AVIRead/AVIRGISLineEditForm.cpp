@@ -307,13 +307,12 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlLayer, UI::GUIPanel(ui, this->grpLayer));
 	this->pnlLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> sz;
 	NEW_CLASS(this->pbPreview, UI::GUIPictureBox(ui, this->pnlStyle, this->eng, false, false));
 	this->pbPreview->SetRect(0, 0, 100, 24, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->pbPreview->GetSizeP(&w, &h);
-	this->prevImage = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	sz = this->pbPreview->GetSizeP();
+	this->prevImage = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlStyle, CSTR("Name:")));
 	this->lblName->SetRect(0, 32, 100, 23, false);
@@ -436,11 +435,9 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	this->colorSess->ChangeMonitor(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	UOSInt w;
-	UOSInt h;
-	this->pbPreview->GetSizeP(&w, &h);
+	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
 	this->eng->DeleteImage(this->prevImage);
-	this->prevImage = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	this->prevImage = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->currLayer)
 	{

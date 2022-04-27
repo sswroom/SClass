@@ -1,13 +1,27 @@
 #ifndef _SM_MATH_COORD2D
 #define _SM_MATH_COORD2D
+#include "Math/Coord2DDbl.h"
 #include "Math/Math.h"
 
 namespace Math
 {
 	template <typename T> struct Coord2D
 	{
-		T x;
-		T y;
+		union
+		{
+			struct
+			{
+				T x;
+				T y;
+			};
+			struct
+			{
+				T lon;
+				T lat;
+			};
+			T vals[2];
+		};
+		
 
 		Coord2D() = default;
 		Coord2D(void *)
@@ -26,9 +40,9 @@ namespace Math
 			return Math_Sqrt(Math_Sqr((Double)(this->x - coord.x)) + Math_Sqr((Double)(this->y - coord.y)));
 		}
 
-		Math::Coord2D<Double> ToDouble()
+		Math::Coord2DDbl ToDouble()
 		{
-			return Math::Coord2D<Double>((Double)this->x, (Double)this->y);
+			return Math::Coord2DDbl((Double)this->x, (Double)this->y);
 		}
 
 		Bool operator!=(Coord2D<T> v)
@@ -39,6 +53,16 @@ namespace Math
 		Bool operator==(Coord2D<T> v)
 		{
 			return (this->x == v.x) && (this->y == v.y);
+		}
+
+		Bool operator>=(Coord2D<T> v)
+		{
+			return (this->x >= v.x) && (this->y >= v.y);
+		}
+
+		Bool operator<(Coord2D<T> v)
+		{
+			return (this->x < v.x) && (this->y < v.y);
 		}
 
 		Coord2D<T> operator+(Coord2D<T> v)
@@ -59,6 +83,11 @@ namespace Math
 		Coord2D<T> operator*(T v)
 		{
 			return {this->x * v, this->y * v};
+		}
+
+		Coord2D<T> operator/(Coord2D<T> v)
+		{
+			return {this->x / v.x, this->y / v.y};
 		}
 
 		Coord2D<T> operator/(T v)

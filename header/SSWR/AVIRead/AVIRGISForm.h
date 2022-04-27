@@ -119,8 +119,8 @@ namespace SSWR
 			virtual void RedrawMap();
 			virtual Math::CoordinateSystem *GetCoordinateSystem();
 
-			virtual Math::Coord2D<Double> ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
-			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2D<Double> mapPos);
+			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
+			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType);
 			virtual void HandleMapMouseDown(MouseEvent evt, void *userObj);
 			virtual void HandleMapMouseUp(MouseEvent evt, void *userObj);

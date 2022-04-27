@@ -96,9 +96,9 @@ namespace Media
 		virtual Bool DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p) = 0;
 		virtual Bool DrawPolygonI(Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b) = 0;
 		virtual Bool DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b) = 0;
-		virtual Bool DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p) = 0;
-		virtual Bool DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b) = 0;
-		virtual Bool DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b) = 0;
+		virtual Bool DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p) = 0;
+		virtual Bool DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b) = 0;
+		virtual Bool DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b) = 0;
 		virtual Bool DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b) = 0;
 		virtual Bool DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b) = 0;
 		virtual Bool DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b) = 0;

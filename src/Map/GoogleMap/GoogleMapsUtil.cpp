@@ -14,7 +14,7 @@ Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char
 	Math::Polyline *pl;
 	UOSInt i;
 	UOSInt j;
-	Math::Coord2D<Double> *ptList;
+	Math::Coord2DDbl *ptList;
 	lastX = 0;
 	lastY = 0;
 	i = 0;

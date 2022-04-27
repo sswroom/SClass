@@ -27,8 +27,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 	{
 		me->isDown = false;
 		Double tmpV;
-		Math::Coord2D<Double> mapPt1 = me->navi->ScnXY2MapXY(me->downPos);
-		Math::Coord2D<Double> mapPt2 = me->navi->ScnXY2MapXY(scnPos);
+		Math::Coord2DDbl mapPt1 = me->navi->ScnXY2MapXY(me->downPos);
+		Math::Coord2DDbl mapPt2 = me->navi->ScnXY2MapXY(scnPos);
 		if (mapPt1.x > mapPt2.x)
 		{
 			tmpV = mapPt1.x;
@@ -49,7 +49,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
 		UOSInt nPoints;
-		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoints);
+		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->selX1;
 		ptList[0].y = me->selY1;
 		ptList[1].x = me->selX2;
@@ -72,8 +72,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 	if (me->isDown)
 	{
 		Double tmpV;
-		Math::Coord2D<Double> mapPt1 = me->navi->ScnXY2MapXY(me->downPos);
-		Math::Coord2D<Double> mapPt2 = me->navi->ScnXY2MapXY(scnPos);
+		Math::Coord2DDbl mapPt1 = me->navi->ScnXY2MapXY(me->downPos);
+		Math::Coord2DDbl mapPt2 = me->navi->ScnXY2MapXY(scnPos);
 		if (mapPt1.x > mapPt2.x)
 		{
 			tmpV = mapPt1.x;
@@ -90,7 +90,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
 		UOSInt nPoints;
-		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoints);
+		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPt1.x;
 		ptList[0].y = mapPt1.y;
 		ptList[1].x = mapPt2.x;

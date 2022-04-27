@@ -126,8 +126,7 @@ void UI::GUIVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OS
 			OSInt drawY = y - this->dragY;
 			this->GetPositionP(&x, &y);
 			drawY += y;
-			UOSInt w;
-			UOSInt h;
+			Math::Size2D<UOSInt> sz;
 			UOSInt i = this->parent->GetChildCount();
 			while (i-- > 0)
 			{
@@ -142,16 +141,16 @@ void UI::GUIVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, OSInt x, OS
 					if (dockType == UI::GUIControl::DOCK_BOTTOM && this->isBottom)
 					{
 						ctrl->GetPositionP(&x, &y);
-						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, drawY, x + (OSInt)w, y + (OSInt)h, false);
+						sz = ctrl->GetSizeP();
+						ctrl->SetAreaP(x, drawY, x + (OSInt)sz.width, y + (OSInt)sz.height, false);
 						this->parent->UpdateChildrenSize(true);
 						break;
 					}
 					else if (dockType == UI::GUIControl::DOCK_TOP && !this->isBottom)
 					{
 						ctrl->GetPositionP(&x, &y);
-						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, y, x + (OSInt)w, drawY, false);
+						sz = ctrl->GetSizeP();
+						ctrl->SetAreaP(x, y, x + (OSInt)sz.width, drawY, false);
 						this->parent->UpdateChildrenSize(true);
 						break;
 					}

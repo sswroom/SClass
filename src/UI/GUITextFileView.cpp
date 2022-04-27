@@ -616,12 +616,10 @@ void UI::GUITextFileView::EnsureCaretVisible()
 	}
 	else
 	{
-		UOSInt scnW;
-		UOSInt scnH;
-		this->GetSizeP(&scnW, &scnH);
-		if (xScr + scnW - 1 < xPos)
+		Math::Size2D<UOSInt> scnSize = this->GetSizeP();
+		if (xScr + scnSize.width - 1 < xPos)
 		{
-			this->SetScrollHPos(xPos - (scnW - 1), true);
+			this->SetScrollHPos(xPos - (scnSize.width - 1), true);
 			needRedraw = true;
 		}
 	}

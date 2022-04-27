@@ -106,7 +106,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Point *pt;
-		Math::Coord2D<Double> coord;
+		Math::Coord2DDbl coord;
 		ilayerType = 1;
 		i = 0;
 		while (i < recCnt)
@@ -228,7 +228,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UOSInt nPoint;
 		UOSInt nvals[2];
 		UInt32 *ptOfsts;
-		Math::Coord2D<Double> *points;
+		Math::Coord2DDbl *points;
 		
 		i = 0;
 		while (i < recCnt)
@@ -297,7 +297,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		Double ranges[2];
 		UOSInt nvals[2];
 		UInt32 *ptOfsts;
-		Math::Coord2D<Double> *points;
+		Math::Coord2DDbl *points;
 		Double *alts;
 		
 		i = 0;
@@ -389,7 +389,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UOSInt nPoint;
 		UOSInt nvals[2];
 		UInt32 *ptOfsts;
-		Math::Coord2D<Double> *points;
+		Math::Coord2DDbl *points;
 		
 		i = 0;
 		while (i < recCnt)

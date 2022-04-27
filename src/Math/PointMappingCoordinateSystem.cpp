@@ -42,7 +42,7 @@ void Math::PointMappingCoordinateSystem::AddMappingPoint(Double mapX, Double map
 	this->mappingList->Add(ptItem);
 }
 
-Math::Coord2D<Double> Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2D<Double> mapPt)
+Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl mapPt)
 {
 	if (this->mappingList->GetCount() < 3)
 	{
@@ -105,9 +105,9 @@ Math::Coord2D<Double> Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord
 
 Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit)
 {
-	Math::Coord2D<Double> ptList[2];
-	ptList[0] = CalcBaseXY(Math::Coord2D<Double>(x1, y1));
-	ptList[1] = CalcBaseXY(Math::Coord2D<Double>(x2, y2));
+	Math::Coord2DDbl ptList[2];
+	ptList[0] = CalcBaseXY(Math::Coord2DDbl(x1, y1));
+	ptList[1] = CalcBaseXY(Math::Coord2DDbl(x2, y2));
 	return this->baseCSys->CalSurfaceDistanceXY(ptList[0].x, ptList[0].y , ptList[1].x, ptList[1].y, unit);
 }
 
@@ -116,7 +116,7 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Mat
 	Math::Polyline *tmpPl = (Math::Polyline*)pl->Clone();
 	Double ret;
 	UOSInt i;
-	Math::Coord2D<Double> *ptList = tmpPl->GetPointList(&i);
+	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);
 	while (i-- > 0)
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);
@@ -131,7 +131,7 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl,
 	Math::Polyline3D *tmpPl = (Math::Polyline3D *)pl->Clone();
 	Double ret;
 	UOSInt i;
-	Math::Coord2D<Double> *ptList = tmpPl->GetPointList(&i);
+	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);
 	while (i-- > 0)
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);

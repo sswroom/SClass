@@ -50,7 +50,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	UOSInt nPoint;
 	UOSInt nPtOfst;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
 	UOSInt i = nPtOfst;
@@ -58,7 +58,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	UOSInt k;
 	Double totalDist = 0;
 	Bool hasLast;
-	Math::Coord2D<Double> lastPt;
+	Math::Coord2DDbl lastPt;
 	while (i-- > 0)
 	{
 		k = ptOfsts[i];
@@ -83,7 +83,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	UOSInt nPtOfst;
 	UOSInt nAlts;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
@@ -94,7 +94,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	Double dist;
 	Double totalDist = 0;
 	Bool hasLast;
-	Math::Coord2D<Double> lastPt;
+	Math::Coord2DDbl lastPt;
 	Double lastH;
 	while (i-- > 0)
 	{

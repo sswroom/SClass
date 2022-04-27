@@ -19,9 +19,9 @@ Math::Vector2D::VectorType Math::Point::GetVectorType()
 	return Math::Vector2D::VectorType::Point;
 }
 
-Math::Coord2D<Double> Math::Point::GetCenter()
+Math::Coord2DDbl Math::Point::GetCenter()
 {
-	return Math::Coord2D<Double>(this->x, this->y);
+	return Math::Coord2DDbl(this->x, this->y);
 }
 
 Math::Vector2D *Math::Point::Clone()

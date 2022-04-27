@@ -1975,6 +1975,7 @@ Map/OSM/OSMTileMap.h: ../../src/Map/OSM/OSMTileMap.cpp
 Math/ComplexNumber.h: ../../src/Math/ComplexNumber.cpp
 @ComplexNumber.o
 Math/Coord2D.h:
+Math/Coord2DDbl.h:
 Math/CoordinateSystem.h: ../../src/Math/CoordinateSystem.cpp
 @CoordinateSystem.o
 Math/CoordinateSystemManager.h: ../../src/Math/CoordinateSystemManager.cpp
@@ -2025,6 +2026,7 @@ Math/ProjectedCoordinateSystem.h: ../../src/Math/ProjectedCoordinateSystem.cpp
 Math/Quadrilateral.h: ../../src/Math/Quadrilateral.cpp
 @Quadrilateral.o
 Math/RectArea.h:
+Math/Size2D.h:
 Math/SRESRIWKTWriter.h: ../../src/Math/SRESRIWKTWriter.cpp
 @SRESRIWKTWriter.o
 Math/SROGCWKTWriter.h: ../../src/Math/SROGCWKTWriter.cpp

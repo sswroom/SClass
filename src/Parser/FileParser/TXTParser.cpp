@@ -391,7 +391,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Math::Polyline3D *pl;
 		Math::Point3D *pt;
 		Math::Vector2D *vec;
-		Math::Coord2D<Double> *ptList;
+		Math::Coord2DDbl *ptList;
 		Double *hList;
 
 		NEW_CLASS(fs2, IO::FileStream({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

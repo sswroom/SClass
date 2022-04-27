@@ -69,7 +69,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			UOSInt nPtOfst;
 			UInt32 *ptOfsts;
 			UOSInt nPoint;
-			Math::Coord2D<Double> *points;
+			Math::Coord2DDbl *points;
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -116,7 +116,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 		break;
 	case Math::Vector2D::VectorType::Point:
 		{
-			Math::Coord2D<Double> coord;
+			Math::Coord2DDbl coord;
 			Math::Point *pt = (Math::Point*)vec;
 			json->ObjectBeginObject(name);
 			json->ObjectAddStr(CSTR("type"), CSTR("Point"));

@@ -34,7 +34,7 @@ namespace Map
 		UInt32 nPtOfst;
 		UInt32 nPoint;
 		UInt32 *ptOfstArr;
-		Math::Coord2D<Double> *pointArr;
+		Math::Coord2DDbl *pointArr;
 		Int32 flags; //bit0 = has Line color
 		UInt32 lineColor;
 	} DrawObjectL;
@@ -101,7 +101,7 @@ namespace Map
 		virtual void SetCurrTimeTS(Int64 timeStamp);
 		virtual Int64 GetTimeStartTS();
 		virtual Int64 GetTimeEndTS();
-		virtual Map::MapView *CreateMapView(Double width, Double height);
+		virtual Map::MapView *CreateMapView(Math::Size2D<Double> scnSize);
 
 		virtual DrawLayerType GetLayerType() = 0;
 		virtual void SetMixedType(DrawLayerType mixedType);

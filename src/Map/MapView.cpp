@@ -3,37 +3,36 @@
 #include "Map/MapView.h"
 #include "Math/Math.h"
 
-Map::MapView::MapView(Double scnWidth, Double scnHeight)
+Map::MapView::MapView(Math::Size2D<Double> scnSize)
 {
-	this->scnWidth = scnWidth;
-	this->scnHeight = scnHeight;
+	this->scnSize = scnSize;
 }
 
 Map::MapView::~MapView()
 {
 }
 
-Math::Coord2D<Double> Map::MapView::GetCenterMap()
+Math::Coord2DDbl Map::MapView::GetCenterMap()
 {
-	return Math::Coord2D<Double>(this->GetCenterX(), this->GetCenterY());
+	return Math::Coord2DDbl(this->GetCenterX(), this->GetCenterY());
 }
 
 Double Map::MapView::GetScnWidth()
 {
-	return this->scnWidth;
+	return this->scnSize.width;
 }
 
 Double Map::MapView::GetScnHeight()
 {
-	return this->scnHeight;
+	return this->scnSize.height;
 }
 
 void Map::MapView::SetDestImage(Media::DrawImage *img)
 {
-	if (this->scnWidth != UOSInt2Double(img->GetWidth()) || this->scnHeight != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
+	if (this->scnSize.width != UOSInt2Double(img->GetWidth()) || this->scnSize.height != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
-		ChangeViewXY(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()), this->GetCenterMap(), this->GetMapScale());
+		ChangeViewXY(Math::Size2D<Double>(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight())), this->GetCenterMap(), this->GetMapScale());
 	}
 }
 
@@ -63,10 +62,10 @@ void Map::MapView::SetViewBounds(Double x1, Double y1, Double x2, Double y2)
 		yRatio = -yRatio;
 	if (xRatio < yRatio)
 	{
-		ChangeViewXY(this->scnWidth, this->scnHeight, Math::Coord2D<Double>((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / xRatio);
+		ChangeViewXY(this->scnSize, Math::Coord2DDbl((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / xRatio);
 	}
 	else
 	{
-		ChangeViewXY(this->scnWidth, this->scnHeight, Math::Coord2D<Double>((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / yRatio);
+		ChangeViewXY(this->scnSize, Math::Coord2DDbl((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / yRatio);
 	}
 }

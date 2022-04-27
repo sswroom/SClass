@@ -19,8 +19,8 @@ namespace SSWR
 			UI::GUIButton *btnRandom;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Math::Coord2D<Double> selPt1;
-			Math::Coord2D<Double> selPt2;
+			Math::Coord2DDbl selPt1;
+			Math::Coord2DDbl selPt2;
 			Bool selecting;
 			Bool isDown;
 			Math::Coord2D<OSInt> downPt;

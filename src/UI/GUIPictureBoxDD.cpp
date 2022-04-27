@@ -1137,10 +1137,10 @@ void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, void *userObj)
 	this->moveToPrevObjs.Add(userObj);
 }
 
-Math::Coord2D<Double> UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
+Math::Coord2DDbl UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scnPos)
 {
 	if (this->currImage == 0)
-		return Math::Coord2D<Double>(0, 0);
+		return Math::Coord2DDbl(0, 0);
 	Double srcRect[4];
 	OSInt destRect[4];
 	CalDispRect(srcRect, destRect);
@@ -1161,7 +1161,7 @@ Math::Coord2D<Double> UI::GUIPictureBoxDD::Scn2ImagePos(Math::Coord2D<OSInt> scn
 		y = destRect[1] + destRect[3];
 	}*/
 
-	return Math::Coord2D<Double>(srcRect[0] + OSInt2Double(scnPos.x - destRect[0]) * srcRect[2] / OSInt2Double(destRect[2]),
+	return Math::Coord2DDbl(srcRect[0] + OSInt2Double(scnPos.x - destRect[0]) * srcRect[2] / OSInt2Double(destRect[2]),
 		srcRect[1] + OSInt2Double(scnPos.y - destRect[1]) * srcRect[3] / OSInt2Double(destRect[3]));
 }
 

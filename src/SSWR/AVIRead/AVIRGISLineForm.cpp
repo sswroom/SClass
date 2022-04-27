@@ -53,11 +53,10 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnCancelClicked(void *userObj)
 
 void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 {
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> sz;
 	Media::DrawImage *dimg;
-	this->pbPreview->GetSizeP(&w, &h);
-	dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	sz = this->pbPreview->GetSizeP();
+	dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI());
 	dimg->SetVDPI(this->GetHDPI());
 	this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);

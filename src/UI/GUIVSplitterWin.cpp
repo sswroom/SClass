@@ -55,8 +55,7 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 			OSInt drawY;
 			OSInt x;
 			OSInt y;
-			UOSInt w;
-			UOSInt h;
+			Math::Size2D<UOSInt> sz;
 			Bool foundThis;
 			UI::GUIControl::DockType dockType;
 
@@ -92,16 +91,16 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					if (dockType == UI::GUIControl::DOCK_BOTTOM && me->isBottom)
 					{
 						ctrl->GetPositionP(&x, &y);
-						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, drawY, x + (OSInt)w, y + (OSInt)h, false);
+						sz = ctrl->GetSizeP();
+						ctrl->SetAreaP(x, drawY, x + (OSInt)sz.width, y + (OSInt)sz.height, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
 					else if (dockType == UI::GUIControl::DOCK_TOP && !me->isBottom)
 					{
 						ctrl->GetPositionP(&x, &y);
-						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, y, x + (OSInt)w, drawY, false);
+						sz = ctrl->GetSizeP();
+						ctrl->SetAreaP(x, y, x + (OSInt)sz.width, drawY, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -168,13 +167,12 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	Double lcliOfstY = 0;
 	OSInt posX;
 	OSInt posY;
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> sz;
 	this->parent->GetClientOfst(&lcliOfstX, &lcliOfstY);
 	cliOfstX = Double2Int32(lcliOfstX * this->hdpi / 96.0);
 	cliOfstY = Double2Int32(lcliOfstY * this->hdpi / 96.0);
 	this->GetPositionP(&posX, &posY);
-	this->GetSizeP(&w, &h);
+	sz = this->GetSizeP();
 	drawY = posY + y - this->dragY;
 	if (drawY < dragMin)
 	{
@@ -191,7 +189,7 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	SetBrushOrgEx((HDC)hdc, (int)(posX + cliOfstX), (int)(drawY + cliOfstY), 0);
 	hbrushOld = (HBRUSH)SelectObject((HDC)hdc, hbr);
 
-	PatBlt((HDC)hdc, (int)(posX + cliOfstX), (int)(drawY + cliOfstY), (int)w, (int)h, PATINVERT);
+	PatBlt((HDC)hdc, (int)(posX + cliOfstX), (int)(drawY + cliOfstY), (int)sz.width, (int)sz.height, PATINVERT);
 	
 	SelectObject((HDC)hdc, hbrushOld);
 	DeleteObject(hbr);
@@ -203,7 +201,6 @@ void UI::GUIVSplitter::CalDragRange()
 	UOSInt i;
 	OSInt max;
 	OSInt min;
-	UOSInt tmp;
 	Bool foundTop = false;
 	Bool foundBottom = false;
 	Bool foundThis = false;
@@ -233,8 +230,7 @@ void UI::GUIVSplitter::CalDragRange()
 					{
 						foundBottom = true;
 						ctrl->GetPositionP(0, &max);
-						ctrl->GetSizeP(0, &tmp);
-						max += (OSInt)tmp;
+						max += (OSInt)ctrl->GetSizeP().height;
 					}
 				}
 				else if (dockType == UI::GUIControl::DOCK_TOP)
@@ -243,8 +239,7 @@ void UI::GUIVSplitter::CalDragRange()
 					{
 						foundTop = true;
 						ctrl->GetPositionP(0, &min);
-						ctrl->GetSizeP(0, &tmp);
-						min += (OSInt)tmp;
+						min += (OSInt)ctrl->GetSizeP().height;
 					}
 				}
 			}

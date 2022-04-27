@@ -125,8 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineForm(0, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor));
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		me->lineType = 1;
 		me->lineThick = frm->GetLineThick();
 		me->lineColor = frm->GetLineColor();
@@ -135,8 +134,8 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 		{
 			DEL_CLASS(me->imgLine);
 		}
-		me->pbLineStyle->GetSizeP(&w, &h);
-		Media::DrawImage *dimg = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		sz = me->pbLineStyle->GetSizeP();
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenLinePreview(dimg, me->eng, me->lineThick, me->lineColor, me->colorConv);
@@ -154,8 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineStyleForm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle));
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK || frm->IsChanged())
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		me->lineType = 0;
 		me->lineStyle = frm->GetLineStyle();
 
@@ -163,8 +161,8 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 		{
 			DEL_CLASS(me->imgLine);
 		}
-		me->pbLineStyle->GetSizeP(&w, &h);
-		Media::DrawImage *dimg = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		sz = me->pbLineStyle->GetSizeP();
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenLineStylePreview(dimg, me->eng, me->env, me->lineStyle, me->colorConv);
@@ -210,8 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontForm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor));
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		me->fontType = Map::MapEnv::FontType::LayerStyle;
 		SDEL_STRING(me->fontName);
 		me->fontName = frm->GetFontName()->Clone();
@@ -222,8 +219,8 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 		{
 			DEL_CLASS(me->imgFont);
 		}
-		me->pbFontStyle->GetSizeP(&w, &h);
-		Media::DrawImage *dimg = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		sz = me->pbFontStyle->GetSizeP();
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenFontPreview(dimg, me->eng, me->fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
@@ -241,8 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontStyleForm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle));
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK || frm->IsChanged())
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		me->fontStyle = frm->GetFontStyle();
 		me->fontType = Map::MapEnv::FontType::GlobalStyle;
 
@@ -250,8 +246,8 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 		{
 			DEL_CLASS(me->imgFont);
 		}
-		me->pbFontStyle->GetSizeP(&w, &h);
-		Media::DrawImage *dimg = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		sz = me->pbFontStyle->GetSizeP();
+		Media::DrawImage *dimg = me->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		me->core->GenFontStylePreview(dimg, me->eng, me->env, me->fontStyle, me->colorConv);
@@ -391,14 +387,12 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->txtPriority->SetText(CSTRP(sbuff, sptr));
 
 		Media::DrawImage *dimg;
-		UOSInt w;
-		UOSInt h;
-		this->pbLineStyle->GetSizeP(&w, &h);
+		Math::Size2D<UOSInt> sz = this->pbLineStyle->GetSizeP();
 		this->lineType = setting.lineType;
 		this->lineStyle = setting.lineStyle;
 		this->lineThick = setting.lineThick;
 		this->lineColor = setting.lineColor;
-		dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		if (this->lineType == 0)
@@ -413,8 +407,8 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->pbLineStyle->SetImage(this->imgLine);
 		this->eng->DeleteImage(dimg);
 
-		this->pbFontStyle->GetSizeP(&w, &h);
-		dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		sz = this->pbFontStyle->GetSizeP();
+		dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		if (setting.fontType == Map::MapEnv::FontType::GlobalStyle)
@@ -550,8 +544,7 @@ void SSWR::AVIRead::AVIRGISPropForm::YUVParamChanged(const Media::IColorHandler:
 
 void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
 {
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> sz;
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->pbFillStyle->SetBGColor(this->colorConv->ConvRGB8(this->fillStyle));
 	this->pbFillStyle->Redraw();
@@ -560,8 +553,8 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 	{
 		DEL_CLASS(this->imgLine);
 	}
-	this->pbLineStyle->GetSizeP(&w, &h);
-	Media::DrawImage *dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	sz = this->pbLineStyle->GetSizeP();
+	Media::DrawImage *dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->lineType == 0)
@@ -580,8 +573,8 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 	{
 		DEL_CLASS(this->imgFont);
 	}
-	this->pbFontStyle->GetSizeP(&w, &h);
-	dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	sz = this->pbFontStyle->GetSizeP();
+	dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	if (this->fontType == Map::MapEnv::FontType::GlobalStyle)

@@ -167,11 +167,11 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys?(csys->Clone()):0));
 		if (this->batchLyrs->GetCount() > 0)
 		{
-			view = this->batchLyrs->GetItem(0)->CreateMapView(320, 240);
+			view = this->batchLyrs->GetItem(0)->CreateMapView(Math::Size2D<Double>(320, 240));
 		}
 		else
 		{
-			view = env->CreateMapView(320, 240);
+			view = env->CreateMapView(Math::Size2D<Double>(320, 240));
 		}
 		NEW_CLASS(gisForm, AVIRead::AVIRGISForm(0, this->ui, this, env, view));
 		gisForm->AddLayers(this->batchLyrs);

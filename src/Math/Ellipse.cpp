@@ -21,9 +21,9 @@ Math::Vector2D::VectorType Math::Ellipse::GetVectorType()
 	return Math::Vector2D::VectorType::Ellipse;
 }
 
-Math::Coord2D<Double> Math::Ellipse::GetCenter()
+Math::Coord2DDbl Math::Ellipse::GetCenter()
 {
-	return Math::Coord2D<Double>(this->tlx + (this->w * 0.5), this->tly + (this->h * 0.5));
+	return Math::Coord2DDbl(this->tlx + (this->w * 0.5), this->tly + (this->h * 0.5));
 }
 
 Math::Vector2D *Math::Ellipse::Clone()

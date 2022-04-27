@@ -107,14 +107,14 @@ Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Dista
 	UOSInt nPoint;
 	UOSInt nPtOfst;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
 	UOSInt i = nPtOfst;
 	UOSInt j = nPoint;
 	UOSInt k;
 	Double totalDist = 0;
-	Math::Coord2D<Double> lastPt;
+	Math::Coord2DDbl lastPt;
 	while (i-- > 0)
 	{
 		k = ptOfsts[i];
@@ -138,7 +138,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	UOSInt nPtOfst;
 	UOSInt nAlts;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
@@ -148,7 +148,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	UOSInt k;
 	Double dist;
 	Double totalDist = 0;
-	Math::Coord2D<Double> lastPt;
+	Math::Coord2DDbl lastPt;
 	Double lastH;
 	Double altDiff;
 	while (i-- > 0)

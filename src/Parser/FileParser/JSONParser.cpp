@@ -275,7 +275,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 					if (hasZ)
 					{
 						Math::Polyline3D *pl;
-						Math::Coord2D<Double> *ptArr;
+						Math::Coord2DDbl *ptArr;
 						Double *altArr;
 						NEW_CLASS(pl, Math::Polyline3D(srid, 1, zList.GetCount()));
 						ptArr = pl->GetPointList(&i);
@@ -302,7 +302,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 						Double *ptArr;
 						ptArr = ptList.GetArray(&i);
 						Math::Polyline *pl;
-						NEW_CLASS(pl, Math::Polyline(srid, (Math::Coord2D<Double>*)ptArr, i >> 1));
+						NEW_CLASS(pl, Math::Polyline(srid, (Math::Coord2DDbl*)ptArr, i >> 1));
 						return pl;
 					}
 				}
@@ -372,7 +372,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				}
 				if (ptList.GetCount() >= 4)
 				{
-					Math::Coord2D<Double> *ptArr;
+					Math::Coord2DDbl *ptArr;
 					Math::Polygon *pg;
 					NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
 					UInt32 *ptOfsts = pg->GetPtOfstList(&j);
@@ -461,7 +461,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 					}
 					if (ptList.GetCount() >= 4)
 					{
-						Math::Coord2D<Double> *ptArr;
+						Math::Coord2DDbl *ptArr;
 						Math::Polygon *pg;
 						NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
 						UInt32 *ptOfsts = pg->GetPtOfstList(&j);

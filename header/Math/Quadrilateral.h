@@ -7,10 +7,10 @@ namespace Math
 	struct Quadrilateral
 	{
 	public:
-		Coord2D<Double> tl;
-		Coord2D<Double> tr;
-		Coord2D<Double> br;
-		Coord2D<Double> bl;
+		Coord2DDbl tl;
+		Coord2DDbl tr;
+		Coord2DDbl br;
+		Coord2DDbl bl;
 
 		Double CalcMaxTiltAngle();
 		Double CalcArea();
@@ -19,7 +19,7 @@ namespace Math
 		Double CalcLenRight();
 		Double CalcLenBottom();
 		static Quadrilateral FromPolygon(Coord2D<UOSInt> *pg);
-		static Quadrilateral FromPolygon(Coord2D<Double> *pg);
+		static Quadrilateral FromPolygon(Coord2DDbl *pg);
 	};
 }
 #endif

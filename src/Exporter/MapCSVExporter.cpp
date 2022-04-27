@@ -155,7 +155,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		Double maxX;
 		Double maxY;
 		Double v;
-		Math::Coord2D<Double> *points;
+		Math::Coord2DDbl *points;
 		Int32 currInd = 1;
 		Data::ArrayListInt64 *objIds;
 		void *nameArr;

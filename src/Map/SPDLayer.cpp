@@ -577,7 +577,7 @@ Map::DrawObjectL *Map::SPDLayer::GetNewObjectById(void *session, Int64 id)
 	}
 	cip->Read((UInt8*)&obj->nPoint, 4);
 	UOSInt j = obj->nPoint;
-	obj->pointArr = MemAlloc(Math::Coord2D<Double>, j);
+	obj->pointArr = MemAllocA(Math::Coord2DDbl, j);
 	Int32 *tmpArr = MemAlloc(Int32, j * 2);
 	Double r = 1 / 200000.0;
 	UOSInt i = 0;
@@ -605,7 +605,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 	Int32 *points;
 	UOSInt i;
 	UInt32 *tmpPtOfsts;
-	Math::Coord2D<Double> *tmpPoints;
+	Math::Coord2DDbl *tmpPoints;
 
 	cip->SeekFromBeginning(ofst);
 	cip->Read((UInt8*)buff, 8);
@@ -677,7 +677,7 @@ void Map::SPDLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 	if (obj->ptOfstArr)
 		MemFree(obj->ptOfstArr);
 	if (obj->pointArr)
-		MemFree(obj->pointArr);
+		MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

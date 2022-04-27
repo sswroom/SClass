@@ -24,8 +24,7 @@ namespace UI
 		Map::MapEnv *mapEnv;
 		Map::DrawMapRenderer *renderer;
 		Bool releaseRenderer;
-		UOSInt currWidth;
-		UOSInt currHeight;
+		Math::Size2D<UOSInt> currSize;
 
 		Bool bgUpdated;
 		UInt32 bgColor;
@@ -84,7 +83,7 @@ namespace UI
 
 		virtual void OnTimerTick();
 		virtual void OnDraw(Media::DrawImage *img);
-		void DrawScnObjects(Media::DrawImage *img, Math::Coord2D<Double> ofst);
+		void DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl ofst);
 	public:
 		/*
 		view - will release
@@ -105,15 +104,15 @@ namespace UI
 		void SetBGColor(UInt32 bgColor);
 		void SetRenderer(Map::DrawMapRenderer *renderer);
 		void UpdateMap();
-		Math::Coord2D<Double> ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
-		Math::Coord2D<Double> ScnXYD2MapXY(Math::Coord2D<Double> scnPos);
-		Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2D<Double> mapPos);
+		Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
+		Math::Coord2DDbl ScnXYD2MapXY(Math::Coord2DDbl scnPos);
+		Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
 		void SetMapScale(Double newScale);
 		Double GetMapScale();
 		Double GetViewScale();
-		void PanToMapXY(Math::Coord2D<Double> mapPos);
+		void PanToMapXY(Math::Coord2DDbl mapPos);
 		void ZoomToRect(Double mapX1, Double mapY1, Double mapX2, Double mapY2);
-		Bool InMapMapXY(Double mapX, Double mapY);
+		Bool InMapMapXY(Math::Coord2DDbl mapPos);
 		void ShowMarkerMapXY(Double mapX, Double mapY);
 		void ShowMarkerMapXYDir(Double mapX, Double mapY, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();

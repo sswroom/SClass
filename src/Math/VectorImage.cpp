@@ -208,9 +208,9 @@ Math::Vector2D::VectorType Math::VectorImage::GetVectorType()
 	return Math::Vector2D::VectorType::Image;
 }
 
-Math::Coord2D<Double> Math::VectorImage::GetCenter()
+Math::Coord2DDbl Math::VectorImage::GetCenter()
 {
-	return Math::Coord2D<Double>((x1 + x2) * 0.5, (y1 + y2) * 0.5);
+	return Math::Coord2DDbl((x1 + x2) * 0.5, (y1 + y2) * 0.5);
 }
 
 Math::Vector2D *Math::VectorImage::Clone()

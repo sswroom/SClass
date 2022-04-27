@@ -19,7 +19,7 @@ namespace Math
 		static void PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt ptY, Int32 *nearPtX, Int32 *nearPtY);
 		static Double SphereDistDeg(Double lat1, Double lon1, Double lat2, Double lon2, Double radius);
 		static void GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Int32 *points, Int32 *outPtX, Int32 *outPtY);
-		static Math::Coord2D<Double> GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2D<Double> *points);
+		static Math::Coord2DDbl GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2DDbl *points);
 	};
 }
 #endif

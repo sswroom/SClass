@@ -136,16 +136,14 @@ void UI::GUIPictureList::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::
 
 UOSInt UI::GUIPictureList::IndexFromPoint(Int32 x, Int32 y)
 {
-	UOSInt w;
-	UOSInt h;
 	UOSInt index;
 	UOSInt currY = this->GetVScrollPos();
-	this->GetSizeP(&w, &h);
-	if (x < 0 || x >= (OSInt)w || y < 0 || y >= (OSInt)h)
+	Math::Size2D<UOSInt> sz = this->GetSizeP();
+	if (x < 0 || x >= (OSInt)sz.width || y < 0 || y >= (OSInt)sz.height)
 	{
 		return INVALID_INDEX;
 	}
-	if (w <= this->iconWidth + ICONPADDING)
+	if (sz.width <= this->iconWidth + ICONPADDING)
 	{
 		index = ((UInt32)y + currY) / (this->iconHeight + ICONPADDING);
 		if (index >= this->imgList->GetCount())
@@ -154,7 +152,7 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Int32 x, Int32 y)
 	}
 	else
 	{
-		UOSInt iconPerRow = w / (this->iconWidth + ICONPADDING);
+		UOSInt iconPerRow = sz.width / (this->iconWidth + ICONPADDING);
 		if (x >= (OSInt)(iconPerRow * (this->iconWidth + ICONPADDING)))
 			return INVALID_INDEX;
 		index = ((UInt32)y + currY) / (this->iconHeight + ICONPADDING) * iconPerRow + (UInt32)x / (this->iconWidth + ICONPADDING);

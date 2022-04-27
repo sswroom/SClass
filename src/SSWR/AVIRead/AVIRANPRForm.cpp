@@ -96,7 +96,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord
 	}
 	else if (me->selectMode == ActionType::Plate)
 	{
-		Math::Coord2D<Double> coord = me->pbImg->Scn2ImagePos(scnPos);
+		Math::Coord2DDbl coord = me->pbImg->Scn2ImagePos(scnPos);
 
 	}
 	return false;

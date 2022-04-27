@@ -62,7 +62,7 @@ Bool Math::Polyline3D::Equals(Math::Vector2D *vec)
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
-		Math::Coord2D<Double> *ptList = pl->GetPointList(&nPoint);
+		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
 		Double *alts;
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
@@ -107,7 +107,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	UOSInt l;
 	UInt32 m;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 
 	ptOfsts = this->ptOfstArr;
 	points = this->pointArr;
@@ -240,8 +240,8 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	}
 	UInt32 *oldPtOfsts;
 	UInt32 *newPtOfsts;
-	Math::Coord2D<Double> *oldPoints;
-	Math::Coord2D<Double> *newPoints;
+	Math::Coord2DDbl *oldPoints;
+	Math::Coord2DDbl *newPoints;
 	Double *oldAltitudes;
 	Double *newAltitudes;
 	Math::Polyline3D *newPL;
@@ -273,7 +273,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			}
 		}
 		newPtOfsts = MemAlloc(UInt32, k + 1);
-		newPoints = MemAlloc(Math::Coord2D<Double>, (minId + 1));
+		newPoints = MemAllocA(Math::Coord2DDbl, (minId + 1));
 		newAltitudes = MemAlloc(Double, minId + 1);
 		l = minId + 1;
 		while (l-- > 0)
@@ -308,7 +308,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		}
 		this->nPoint = minId + 1;
 		this->nPtOfst = k + 1;
-		MemFree(oldPoints);
+		MemFreeA(oldPoints);
 		MemFree(oldPtOfsts);
 		MemFree(oldAltitudes);
 
@@ -329,7 +329,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			}
 		}
 		newPtOfsts = MemAlloc(UInt32, k + 1);
-		newPoints = MemAlloc(Math::Coord2D<Double>, (minId + 2));
+		newPoints = MemAllocA(Math::Coord2DDbl, (minId + 2));
 		newAltitudes = MemAlloc(Double,  minId + 2);
 		l = minId + 1;
 		while (l-- > 0)
@@ -337,7 +337,7 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			newPoints[l] = oldPoints[l];
 			newAltitudes[l] = oldAltitudes[l];
 		}
-		newPoints[minId + 1] = Math::Coord2D<Double>(calPtX, calPtY);
+		newPoints[minId + 1] = Math::Coord2DDbl(calPtX, calPtY);
 		newAltitudes[minId + 1] = calPtZ;
 
 		l = k + 1;
@@ -365,12 +365,12 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			newPoints[l - minId] = oldPoints[l];
 			newAltitudes[l - minId] = oldAltitudes[l];
 		}
-		newPoints[0] = Math::Coord2D<Double>(calPtX, calPtY);
+		newPoints[0] = Math::Coord2DDbl(calPtX, calPtY);
 		newAltitudes[0] = calPtZ;
 
 		this->nPoint = minId + 2;
 		this->nPtOfst = k + 1;
-		MemFree(oldPoints);
+		MemFreeA(oldPoints);
 		MemFree(oldPtOfsts);
 		MemFree(oldAltitudes);
 

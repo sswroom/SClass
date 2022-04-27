@@ -21,8 +21,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 	if (me->isDown)
 	{
 		me->isDown = false;
-		Math::Coord2D<Double> mapPt1;
-		Math::Coord2D<Double> mapPt2;
+		Math::Coord2DDbl mapPt1;
+		Math::Coord2DDbl mapPt2;
 		Double tmpV;
 		mapPt1 = me->navi->ScnXY2MapXY(me->downPt);
 		mapPt2 = me->navi->ScnXY2MapXY(scnPos);
@@ -44,7 +44,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
 		UOSInt nPoints;
-		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoints);
+		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0] = me->selPt1;
 		ptList[1].x = me->selPt2.x;
 		ptList[1].y = me->selPt1.y;
@@ -63,8 +63,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 	SSWR::AVIRead::AVIRGISRandomLocForm *me = (SSWR::AVIRead::AVIRGISRandomLocForm*)userObj;
 	if (me->isDown)
 	{
-		Math::Coord2D<Double> mapPt1;
-		Math::Coord2D<Double> mapPt2;
+		Math::Coord2DDbl mapPt1;
+		Math::Coord2DDbl mapPt2;
 		Double tmpV;
 		mapPt1 = me->navi->ScnXY2MapXY(me->downPt);
 		mapPt2 = me->navi->ScnXY2MapXY(scnPos);
@@ -84,7 +84,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
 		UOSInt nPoints;
-		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoints);
+		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0] = mapPt1;
 		ptList[1].x = mapPt2.x;
 		ptList[1].y = mapPt1.y;
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(void *userOb
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		Data::RandomMT19937 r((UInt32)(dt.ToTicks() & 0xffffffff));
-		Math::Coord2D<Double> pt = me->selPt1 + (me->selPt2 - me->selPt1) * Math::Coord2D<Double>(r.NextDouble(), r.NextDouble());
+		Math::Coord2DDbl pt = me->selPt1 + (me->selPt2 - me->selPt1) * Math::Coord2DDbl(r.NextDouble(), r.NextDouble());
 		me->navi->ShowMarker(pt.y, pt.x);
 		if (!me->navi->InMap(pt.y, pt.x))
 		{
@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(UI::GUIClientControl *
 	this->selecting = false;
 	this->isDown = false;
 	this->downPt = Math::Coord2D<OSInt>(0, 0);
-	this->selPt1 = Math::Coord2D<Double>(0, 0);
+	this->selPt1 = Math::Coord2DDbl(0, 0);
 	this->selPt2 = this->selPt1;
 
 	NEW_CLASS(this->btnArea, UI::GUIButton(ui, this, CSTR("Select Area")));

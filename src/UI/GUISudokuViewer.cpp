@@ -26,23 +26,22 @@ Bool UI::GUISudokuViewer::OnMouseDown(OSInt x, OSInt y, MouseButton btn)
 	{
 		this->Focus();
 
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		UOSInt size;
 		UOSInt tlx;
 		UOSInt tly;
-		this->GetSizeP(&w, &h);
-		if (w > h)
+		sz = this->GetSizeP();
+		if (sz.width > sz.height)
 		{
-			size = h;
+			size = sz.height;
 			tly = 0;
-			tlx = (w - h) >> 1;
+			tlx = (sz.width - sz.height) >> 1;
 		}
 		else
 		{
-			size = w;
+			size = sz.width;
 			tlx = 0;
-			tly = (h - w) >> 1;
+			tly = (sz.height - sz.width) >> 1;
 		}
 		if (x >= (OSInt)tlx && x < (OSInt)(tlx + size) && y >= (OSInt)tly && y < (OSInt)(tly + size))
 		{
@@ -125,30 +124,29 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 
 void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 {
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> sz;
 	UOSInt size;
 	UOSInt blockSize;
 	UOSInt tlx;
 	UOSInt tly;
 	Media::DrawBrush *b3;
-	this->GetSizeP(&w, &h);
+	sz = this->GetSizeP();
 	b3 = img->NewBrushARGB(0xffffffff);
-	if (w > h)
+	if (sz.width > sz.height)
 	{
-		size = h;
+		size = sz.height;
 		tly = 0;
-		tlx = (w - h) >> 1;
-		img->DrawRect(0, 0, UOSInt2Double(tlx), UOSInt2Double(h), 0, b3);
-		img->DrawRect(UOSInt2Double(tlx + size), 0, UOSInt2Double(w - tlx - size), UOSInt2Double(h), 0, b3);
+		tlx = (sz.width - sz.height) >> 1;
+		img->DrawRect(0, 0, UOSInt2Double(tlx), UOSInt2Double(sz.height), 0, b3);
+		img->DrawRect(UOSInt2Double(tlx + size), 0, UOSInt2Double(sz.width - tlx - size), UOSInt2Double(sz.height), 0, b3);
 	}
 	else
 	{
-		size = w;
+		size = sz.width;
 		tlx = 0;
-		tly = (h - w) >> 1;
-		img->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(tly), 0, b3);
-		img->DrawRect(0, UOSInt2Double(tly + size), UOSInt2Double(w), UOSInt2Double(h - tly - size), 0, b3);
+		tly = (sz.height - sz.width) >> 1;
+		img->DrawRect(0, 0, UOSInt2Double(sz.width), UOSInt2Double(tly), 0, b3);
+		img->DrawRect(0, UOSInt2Double(tly + size), UOSInt2Double(sz.width), UOSInt2Double(sz.height - tly - size), 0, b3);
 	}
 	blockSize = (size / 9) - 2;
 

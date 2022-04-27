@@ -74,10 +74,8 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 		mutUsage.EndUse();
 		totalHeight = imgCnt * (20 + 12 + 12 + me->previewSize);
 
-		UOSInt scnW;
-		UOSInt scnH;
-		me->GetSizeP(&scnW, &scnH);
-		me->SetVScrollBar(0, totalHeight, (UOSInt)Double2OSInt(UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
+		Math::Size2D<UOSInt> scnSize = me->GetSizeP();
+		me->SetVScrollBar(0, totalHeight, (UOSInt)Double2OSInt(UOSInt2Double(scnSize.height) / me->GetHDPI() * me->GetDDPI()));
 		me->imgUpdated = true;
 	}
 

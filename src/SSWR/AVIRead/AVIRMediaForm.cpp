@@ -508,10 +508,8 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		if (this->activeVideo)
 		{
 			Media::FrameInfo info;
-			UOSInt w1;
-			UOSInt h1;
-			UOSInt w2;
-			UOSInt h2;
+			Math::Size2D<UOSInt> sz1;
+			Math::Size2D<UOSInt> sz2;
 			UOSInt cropLeft;
 			UOSInt cropTop;
 			UOSInt cropRight;
@@ -522,19 +520,19 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 
 			if (this->currDecoder)
 			{
-				this->currDecoder->GetVideoInfo(&info, &tmpV, &tmpV, &w1);
+				this->currDecoder->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.width);
 			}
 			else
 			{
-				this->activeVideo->GetVideoInfo(&info, &tmpV, &tmpV, &w1);
+				this->activeVideo->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.width);
 			}
 			this->activeVideo->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
 			if (this->vbdMain->IsFullScreen())
 			{
 				this->vbdMain->SwitchFullScreen(false, false);
 			}
-			this->vbdMain->GetSizeP(&w1, &h1);
-			this->GetSizeP(&w2, &h2);
+			sz1 = this->vbdMain->GetSizeP();
+			sz2 = this->GetSizeP();
 
 			vw = info.dispWidth - cropLeft - cropRight;
 			vh = info.dispHeight - cropTop - cropBottom;
@@ -552,7 +550,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			}
 
 			this->SetFormState(UI::GUIForm::FS_NORMAL);
-			this->SetSizeP(w2 - w1 + vw, h2 - h1 + vh);
+			this->SetSizeP(sz2.width - sz1.width + vw, sz2.height - sz1.height + vh);
 		}
 		break;
 	case MNU_VIDEO_FULLSCN:

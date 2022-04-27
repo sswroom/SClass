@@ -5,8 +5,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-#define DRAW_UNIT Double
-
 Data::LineChart::LineChart(Text::CString title)
 {
 	this->titleBuff = 0;
@@ -557,8 +555,8 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	Media::DrawPen *gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
 	Media::DrawPen *refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
 
-	fnt = img->NewFontPt(fntName->ToCString(), (DRAW_UNIT)fntSizePt, Media::DrawEngine::DFS_ANTIALIAS, 0);
-	img->DrawRect((DRAW_UNIT)x, (DRAW_UNIT)y, (DRAW_UNIT)width, (DRAW_UNIT)height, 0, bgBrush);
+	fnt = img->NewFontPt(fntName->ToCString(), (Double)fntSizePt, Media::DrawEngine::DFS_ANTIALIAS, 0);
+	img->DrawRect((Double)x, (Double)y, (Double)width, (Double)height, 0, bgBrush);
 
 	Double rcSize[2];
 	rcSize[0] = 0;
@@ -1209,11 +1207,11 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		y2show = false;
 	}
 
-	img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)y, (DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)(y + height - xLeng), boundPen);
-	img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)(y + height - xLeng), (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)(y + height - xLeng), boundPen);
+	img->DrawLine((Double)(x + y1Leng), (Double)y, (Double)(x + y1Leng), (Double)(y + height - xLeng), boundPen);
+	img->DrawLine((Double)(x + y1Leng), (Double)(y + height - xLeng), (Double)(x + width - y2Leng), (Double)(y + height - xLeng), boundPen);
 	if (y2show)
 	{
-		img->DrawLine((DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)y, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)(y + height - xLeng), boundPen);
+		img->DrawLine((Double)(x + width - y2Leng), (Double)y, (Double)(x + width - y2Leng), (Double)(y + height - xLeng), boundPen);
 	}
 	
 	Data::ArrayListDbl *locations;
@@ -1243,7 +1241,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	i = 0;
 	while (i < locations->GetCount())
 	{
-		img->DrawLine((DRAW_UNIT)(x + y1Leng + this->pointSize + locations->GetItem(i)), (DRAW_UNIT)(y + height - xLeng), (DRAW_UNIT)(x + y1Leng + this->pointSize + locations->GetItem(i)), (DRAW_UNIT)(y + height - xLeng + barLeng), boundPen);
+		img->DrawLine((Double)(x + y1Leng + this->pointSize + locations->GetItem(i)), (Double)(y + height - xLeng), (Double)(x + y1Leng + this->pointSize + locations->GetItem(i)), (Double)(y + height - xLeng + barLeng), boundPen);
 		i++;
 	}
 
@@ -1252,7 +1250,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	i = 0;
 	while (i < locations->GetCount())
 	{
-		img->DrawStringRot((DRAW_UNIT)(x + y1Leng + this->pointSize + locations->GetItem(i)), (DRAW_UNIT)(y + height - xLeng + barLeng), labels->GetItem(i), fnt, fontBrush, 90);
+		img->DrawStringRot((Double)(x + y1Leng + this->pointSize + locations->GetItem(i)), (Double)(y + height - xLeng + barLeng), labels->GetItem(i), fnt, fontBrush, 90);
 		i += 1;
 	}
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
@@ -1290,26 +1288,26 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	{
 		if (locations->GetItem(i))
 		{
-			img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), gridPen);
+			img->DrawLine((Double)(x + y1Leng), (Double)(y + height - this->pointSize - xLeng - locations->GetItem(i)), (Double)(x + width - y2Leng), (Double)(y + height - this->pointSize - xLeng - locations->GetItem(i)), gridPen);
 		}
-		img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), (DRAW_UNIT)(x + y1Leng - barLeng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), boundPen);
+		img->DrawLine((Double)(x + y1Leng), (Double)(y + height - this->pointSize - xLeng - locations->GetItem(i)), (Double)(x + y1Leng - barLeng), (Double)(y + height - this->pointSize - xLeng - locations->GetItem(i)), boundPen);
 		s = labels->GetItem(i);
 		img->GetTextSize(fnt, s->ToCString(), rcSize);
-		img->DrawString((DRAW_UNIT)(x + y1Leng - barLeng - rcSize[0]), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i) - fntH / 2), s->ToCString(), fnt, fontBrush);
+		img->DrawString((Double)(x + y1Leng - barLeng - rcSize[0]), (Double)(y + height - this->pointSize - xLeng - locations->GetItem(i) - fntH / 2), s->ToCString(), fnt, fontBrush);
 		i++;
 	}
 
 	if (this->yAxisName)
 	{
 		img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
-		img->DrawStringRot((DRAW_UNIT)(x + fntH / 2), (DRAW_UNIT)(y + (height - xLeng) / 2), this->yAxisName, fnt, fontBrush, 90);
+		img->DrawStringRot((Double)(x + fntH / 2), (Double)(y + (height - xLeng) / 2), this->yAxisName, fnt, fontBrush, 90);
 		img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
 	}
 
 	if (this->xAxisName)
 	{
 		img->GetTextSize(fnt, this->xAxisName->ToCString(), rcSize);
-		img->DrawString((DRAW_UNIT)(x + y1Leng + (width - y1Leng - y2Leng) / 2 - rcSize[0] / 2), (DRAW_UNIT)(y + height - rcSize[1]), this->xAxisName->ToCString(), fnt, fontBrush);
+		img->DrawString((Double)(x + y1Leng + (width - y1Leng - y2Leng) / 2 - rcSize[0] / 2), (Double)(y + height - rcSize[1]), this->xAxisName->ToCString(), fnt, fontBrush);
 	}
 
 	locations->Clear();
@@ -1322,7 +1320,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 
 
 //	System::Drawing::PointF currPos[];
-	Math::Coord2D<DRAW_UNIT> *currPos;
+	Math::Coord2DDbl *currPos;
 	UOSInt currPosLen;
     
 	i = 0;
@@ -1346,12 +1344,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		if (chart->lineStyle == Data::LineChart::LS_FILL)
 		{
 			currPosLen = xDataCnt + 2;
-			currPos = MemAlloc(Math::Coord2D<DRAW_UNIT>, currPosLen);
+			currPos = MemAllocA(Math::Coord2DDbl, currPosLen);
 		}
 		else
 		{
 			currPosLen = xDataCnt;
-			currPos = MemAlloc(Math::Coord2D<DRAW_UNIT>, currPosLen);
+			currPos = MemAllocA(Math::Coord2DDbl, currPosLen);
 		}
 
 		Double xChartLeng = width - y1Leng - y2Leng - this->pointSize * 2.0;
@@ -1361,7 +1359,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j].x = (DRAW_UNIT)(x + y1Leng + this->pointSize + Data::DateTimeUtil::MS2Minutes(data[j] - xMinDate) / Data::DateTimeUtil::MS2Minutes(xMaxDate - xMinDate) * xChartLeng);
+				currPos[j].x = (Double)(x + y1Leng + this->pointSize + Data::DateTimeUtil::MS2Minutes(data[j] - xMinDate) / Data::DateTimeUtil::MS2Minutes(xMaxDate - xMinDate) * xChartLeng);
 				j++;
 			}
 		}
@@ -1371,7 +1369,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j].x = (DRAW_UNIT)(x + y1Leng + this->pointSize + (data[j] - xMinDbl) / (xMaxDbl - xMinDbl) * xChartLeng);
+				currPos[j].x = (Double)(x + y1Leng + this->pointSize + (data[j] - xMinDbl) / (xMaxDbl - xMinDbl) * xChartLeng);
 				j++;
 			}
 		}
@@ -1382,7 +1380,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j].x = (DRAW_UNIT)(x + y1Leng + this->pointSize + (Double)(data[j] - xMinInt) / (Single)(xMaxInt - xMinInt) * xChartLeng);
+				currPos[j].x = (Double)(x + y1Leng + this->pointSize + (Double)(data[j] - xMinInt) / (Single)(xMaxInt - xMinInt) * xChartLeng);
 				j++;
 			}
 		}
@@ -1407,7 +1405,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[j].y = (DRAW_UNIT)(y + height - this->pointSize - xLeng - (Double)(data[j] - iMin) / (Single)(iMax - iMin) * xChartLeng);
+				currPos[j].y = (Double)(y + height - this->pointSize - xLeng - (Double)(data[j] - iMin) / (Single)(iMax - iMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1431,7 +1429,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[j].y = (DRAW_UNIT)(y + height - this->pointSize - xLeng - (data[j] - dMin) / (dMax - dMin) * xChartLeng);
+				currPos[j].y = (Double)(y + height - this->pointSize - xLeng - (data[j] - dMin) / (dMax - dMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1454,7 +1452,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[j].y = (DRAW_UNIT)(y + height - this->pointSize - xLeng - Data::DateTimeUtil::MS2Minutes(data[j] - dMin) / Data::DateTimeUtil::MS2Minutes(dMax - dMin) * xChartLeng);
+				currPos[j].y = (Double)(y + height - this->pointSize - xLeng - Data::DateTimeUtil::MS2Minutes(data[j] - dMin) / Data::DateTimeUtil::MS2Minutes(dMax - dMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1465,9 +1463,9 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			{
 				j = currPosLen;
 				currPos[j - 2].x = currPos[j - 3].x;
-				currPos[j - 2].y = (DRAW_UNIT)(y + height - xLeng);
+				currPos[j - 2].y = (Double)(y + height - xLeng);
 				currPos[j - 1].x = currPos[0].x;
-				currPos[j - 1].y = (DRAW_UNIT)(y + height - xLeng);
+				currPos[j - 1].y = (Double)(y + height - xLeng);
 				Media::DrawPen *p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
 				Media::DrawBrush *b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
 				img->DrawPolygon(currPos, currPosLen, p, b);
@@ -1497,7 +1495,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		}
 
 
-		MemFree(currPos);
+		MemFreeA(currPos);
 		i += 1;
 	}
 
@@ -1519,7 +1517,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			if (this->refInt >= iMin && this->refInt <= iMax)
 			{
 				yPos = (Single)(y + height - xLeng - (Double)(this->refInt - iMin) / (Single)(iMax - iMin) * xChartLeng);
-				img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
+				img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 
 				sptr = Text::StrInt32(sbuff, this->refInt);
 				if (this->yUnit)
@@ -1527,12 +1525,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				if (this->refType == RT_LEFTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 				else if (this->refType == RT_RIGHTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 			}
 		}
@@ -1543,7 +1541,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			if (this->refInt >= iMin && this->refInt <= iMax)
 			{
 				yPos = (Single)(y + height - xLeng - (Double)(this->refInt - iMin) / (Single)(iMax - iMin) * xChartLeng);
-				img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
+				img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 
 				sptr = Text::StrInt32(sbuff, this->refInt);
 				if (this->yUnit)
@@ -1551,12 +1549,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				if (this->refType == RT_LEFTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 				else if (this->refType == RT_RIGHTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 			}
 		}
@@ -1568,7 +1566,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			if (this->refDbl >= dMin && this->refDbl <= dMax)
 			{
 				yPos = (Single)(y + height - xLeng - (this->refDbl - dMin) / (dMax - dMin) * xChartLeng);
-				img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
+				img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 
 				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, (const Char*)this->dblFormat->v);
 				if (this->yUnit)
@@ -1576,12 +1574,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				if (this->refType == RT_LEFTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 				else if (this->refType == RT_RIGHTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 			}
 		}
@@ -1592,7 +1590,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			if (this->refDbl >= dMin && this->refDbl <= dMax)
 			{
 				yPos = (Single)(y + height - xLeng - (this->refDbl - dMin) / (dMax - dMin) * xChartLeng);
-				img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
+				img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 
 				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, (const Char*)this->dblFormat->v);
 				if (this->yUnit)
@@ -1600,12 +1598,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				if (this->refType == RT_LEFTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + y1Leng), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 				else if (this->refType == RT_RIGHTALIGN)
 				{
 					img->GetTextSize(fnt, CSTRP(sbuff, sptr), rcSize);
-					img->DrawString((DRAW_UNIT)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
+					img->DrawString((Double)(x + width - y2Leng - rcSize[0]), yPos - rcSize[1], CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 			}
 		}
@@ -1619,7 +1617,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				if (this->refTime >= tMin && this->refTime <= tMax)
 				{
 					yPos = (Single)(y + height - xLeng - Data::DateTimeUtil::MS2Minutes(this->refTime - tMin) / Data::DateTimeUtil::MS2Minutes(tMax - tMin) * xChartLeng);
-					img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
+					img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 				}
 			}
 			else if (Data::IChart::DataType::DateTicks == yAxis2Type)
@@ -1629,7 +1627,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				if (this->refTime >= tMin && this->refTime <= tMax)
 				{
 					yPos = (Single)(y + height - xLeng - Data::DateTimeUtil::MS2Minutes(this->refTime - tMin) / Data::DateTimeUtil::MS2Minutes(tMax - tMin) * xChartLeng);
-					img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
+					img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 				}
 			}
 		}

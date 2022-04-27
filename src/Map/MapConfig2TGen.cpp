@@ -291,7 +291,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 			}
 			else if (font->fontType == 2)
 			{
-				Math::Coord2D<Double> pt[5];
+				Math::Coord2DDbl pt[5];
 				rcLeft = scnPosX - ((size[0] + font->fontSizePt) * 0.5);
 				rcRight = rcLeft + size[0] + font->fontSizePt;
 				rcTop = scnPosY - ((size[1] + font->fontSizePt) * 0.5);
@@ -346,7 +346,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 
 		scaleW = lastScaleW;
 		scaleH = lastScaleH;
-		Math::Coord2D<Double> pt[5];
+		Math::Coord2DDbl pt[5];
 		Double xPos;
 		Double yPos;
 		Double sVal;
@@ -2609,7 +2609,7 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 	Map::DrawObjectL *dobj;
 	Double scaleW;
 	Double scaleH;
-	Math::Coord2D<Double> pts;
+	Math::Coord2DDbl pts;
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UTF8Char lblStr[128];
@@ -2697,8 +2697,8 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 			}
 			else
 			{
-				Math::Coord2D<Double> lastPt = {0, 0};
-				Math::Coord2D<Double> *pointPos = dobj->pointArr;
+				Math::Coord2DDbl lastPt = {0, 0};
+				Math::Coord2DDbl *pointPos = dobj->pointArr;
 				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 
 				j = dobj->nPoint;
@@ -3505,7 +3505,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 			if (labels[i].shapeType == 1)
 			{
 				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				Math::Coord2D<Double> scnD = view->MapXYToScnXY(Math::Coord2D<Double>(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate));
+				Math::Coord2DDbl scnD = view->MapXYToScnXY(Math::Coord2DDbl(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate));
 				scnPtX = scnD.x;
 				scnPtY = scnD.y;
 
@@ -3897,7 +3897,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 					j = 1;
 					while (j)
 					{
-						Math::Coord2D<Double> tmpD = view->MapXYToScnXY(Math::Coord2D<Double>(dscnPtX / labels[i].mapRate, dscnPtY / labels[i].mapRate));
+						Math::Coord2DDbl tmpD = view->MapXYToScnXY(Math::Coord2DDbl(dscnPtX / labels[i].mapRate, dscnPtY / labels[i].mapRate));
 						tmpArr[4] = Double2Int32(tmpD.x);
 						tmpArr[5] = Double2Int32(tmpD.y);
 						tlx = tmpArr[4] - (szThis[0] * 0.5);
@@ -4085,7 +4085,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 			else if (labels[i].shapeType == 5)
 			{
 				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				Math::Coord2D<Double> scnD = view->MapXYToScnXY(Math::Coord2D<Double>(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate));
+				Math::Coord2DDbl scnD = view->MapXYToScnXY(Math::Coord2DDbl(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate));
 				scnPtX = scnD.x;
 				scnPtY = scnD.y;
 

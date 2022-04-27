@@ -43,7 +43,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 		Double dB;
 		UInt8 pixel[16];
 		Text::StringBuilderUTF8 sb;
-		Math::Coord2D<Double> imgPos = me->pbImage->Scn2ImagePos(scnPos);
+		Math::Coord2DDbl imgPos = me->pbImage->Scn2ImagePos(scnPos);
 		OSInt xPos = Double2Int32(imgPos.x);
 		OSInt yPos = Double2Int32(imgPos.y);
 		if (xPos < 0)

@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_VECTORGRAPH
 #define _SM_MEDIA_VECTORGRAPH
 #include "Data/ArrayList.h"
+#include "Math/Size2D.h"
 #include "Math/Vector2D.h"
 #include "Math/Unit/Distance.h"
 #include "Media/DrawEngine.h"
@@ -77,8 +78,7 @@ namespace Media
 		Media::DrawEngine *refEng;
 		Media::ColorProfile *colorProfile;
 		UInt32 srid;
-		Double width;
-		Double height;
+		Math::Size2D<Double> size;
 		Math::Unit::Distance::DistanceUnit unit;
 		Data::ArrayList<VectorPenStyle*> *penStyles;
 		Data::ArrayList<VectorFontStyle*> *fontStyles;
@@ -92,6 +92,7 @@ namespace Media
 		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile);
 		virtual ~VectorGraph();
 
+		Math::Size2D<Double> GetSize();
 		virtual UOSInt GetWidth();
 		virtual UOSInt GetHeight();
 		virtual UInt32 GetBitCount();
@@ -113,9 +114,9 @@ namespace Media
 		virtual Bool DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p);
 		virtual Bool DrawPolygonI(Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p);
-		virtual Bool DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b);
+		virtual Bool DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p);
+		virtual Bool DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b);
+		virtual Bool DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b);

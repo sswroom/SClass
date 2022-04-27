@@ -275,27 +275,21 @@ void UI::GUIForm::SetText(Text::CString text)
 	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text.v);
 }
 
-void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)
+Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
 	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd);
 	if (wnd)
 	{
 		GdkRectangle rect;
 		gdk_window_get_frame_extents(wnd, &rect);
-		if (width)
-			*width = (UInt32)rect.width;
-		if (height)
-			*height = (UInt32)rect.height;
+		return Math::Size2D<UOSInt>((UInt32)rect.width, (UInt32)rect.height);
 	}
 	else
 	{
 		int w;
 		int h;
 		gtk_window_get_size((GtkWindow*)this->hwnd, &w, &h);
-		if (width)
-			*width = (UInt32)w;
-		if (height)
-			*height = (UInt32)h;
+		return Math::Size2D<UOSInt>((UInt32)w, (UInt32)h);
 	}
 }
 

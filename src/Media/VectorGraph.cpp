@@ -155,8 +155,7 @@ Media::DrawBrush *Media::VectorGraph::VectorBrushStyle::CreateDrawBrush(Double o
 
 Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile)
 {
-	this->width = width;
-	this->height = height;
+	this->size = Math::Size2D<Double>(width, height);
 	this->unit = unit;
 	this->align = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	this->refEng = refEng;
@@ -219,14 +218,19 @@ Media::VectorGraph::~VectorGraph()
 	DEL_CLASS(this->colorProfile);
 }
 
+Math::Size2D<Double> Media::VectorGraph::GetSize()
+{
+	return this->size;
+}
+
 UOSInt Media::VectorGraph::GetWidth()
 {
-	return (UOSInt)Double2Int32(this->width);
+	return (UOSInt)Double2Int32(this->size.width);
 }
 
 UOSInt Media::VectorGraph::GetHeight()
 {
-	return (UOSInt)Double2Int32(this->height);
+	return (UOSInt)Double2Int32(this->size.height);
 }
 
 UInt32 Media::VectorGraph::GetBitCount()
@@ -297,9 +301,9 @@ UOSInt Media::VectorGraph::GetImgBpl()
 
 Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p)
 {
-	Math::Coord2D<Double> pt[2];
-	pt[0] = Math::Coord2D<Double>(x1, y1);
-	pt[1] = Math::Coord2D<Double>(x2, y2);
+	Math::Coord2DDbl pt[2];
+	pt[0] = Math::Coord2DDbl(x1, y1);
+	pt[1] = Math::Coord2DDbl(x2, y2);
 	Math::Polyline *pl;
 	VectorStyles *style;
 	NEW_CLASS(pl, Math::Polyline(this->srid, pt, 2));
@@ -318,7 +322,7 @@ Bool Media::VectorGraph::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
 	Math::Polyline *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Polyline(this->srid, (Math::Coord2D<Double>*)dPoints, nPoints));
+	NEW_CLASS(pl, Math::Polyline(this->srid, (Math::Coord2DDbl*)dPoints, nPoints));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;
@@ -341,7 +345,7 @@ Bool Media::VectorGraph::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSIn
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p)
+Bool Media::VectorGraph::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
 	Math::Polyline *pl;
 	VectorStyles *style;
@@ -355,13 +359,13 @@ Bool Media::VectorGraph::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoi
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
@@ -728,18 +732,18 @@ UOSInt Media::VectorGraph::SaveJPG(IO::SeekableStream *stm)
 
 Double Media::VectorGraph::GetVisibleWidthMM()
 {
-	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->width);
+	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.width);
 }
 
 Double Media::VectorGraph::GetVisibleHeightMM()
 {
-	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->height);
+	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.height);
 }
 
 void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 {
 	UInt32 imgTimeMS = 0;
-	Double scale = (UOSInt2Double(dimg->GetWidth()) / this->width + UOSInt2Double(dimg->GetHeight()) / this->height) * 0.5;
+	Double scale = (UOSInt2Double(dimg->GetWidth()) / this->size.width + UOSInt2Double(dimg->GetHeight()) / this->size.height) * 0.5;
 	Double dpi = this->GetHDPI();
 	Media::DrawEngine::DrawPos currAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	Media::DrawEngine::DrawPos align;
@@ -827,24 +831,24 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 //			OSInt nParts;
 			UOSInt nPoints;
 //			Int32 *parts;
-			Math::Coord2D<Double> *points;
-			Math::Coord2D<Double> *dpoints;
+			Math::Coord2DDbl *points;
+			Math::Coord2DDbl *dpoints;
 //			parts = pl->GetPartList(&nParts);
 			dpoints = pl->GetPointList(&nPoints);
-			points = MemAlloc(Math::Coord2D<Double>, nPoints);
-			Math::Coord2D<Double> dScale = Math::Coord2D<Double>(scale, scale);
+			points = MemAllocA(Math::Coord2DDbl, nPoints);
+			Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
 			k = nPoints;
 			while (k-- > 0)
 			{
 				points[k] = dpoints[k] * dScale;
 			}
 			dimg->DrawPolyline(points, nPoints, p);
-			MemFree(points);
+			MemFreeA(points);
 		}
 		else if (vec->GetVectorType() == Math::Vector2D::VectorType::String)
 		{
 			Math::VectorString *vstr = (Math::VectorString*)vec;
-			Math::Coord2D<Double> coord = vstr->GetCenter();
+			Math::Coord2DDbl coord = vstr->GetCenter();
 			align = vstr->GetTextAlign();
 			if (align != currAlign)
 			{

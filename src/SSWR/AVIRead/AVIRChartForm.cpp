@@ -10,16 +10,14 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRChartForm *me = (SSWR::AVIRead::AVIRChartForm*)userObj;
-	UOSInt width;
-	UOSInt height;
-	me->pbMain->GetSizeP(&width, &height);
-	if (width == 0 || height == 0)
+	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
+	if (sz.width == 0 || sz.height == 0)
 		return;
-	Media::DrawImage *gimg = me->core->GetDrawEngine()->CreateImage32(width, height, Media::AT_NO_ALPHA);
+	Media::DrawImage *gimg = me->core->GetDrawEngine()->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
 	gimg->SetHDPI(dpi);
 	gimg->SetVDPI(dpi);
-	me->chart->Plot(gimg, 0, 0, UOSInt2Double(width), UOSInt2Double(height));
+	me->chart->Plot(gimg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
 	me->pbMain->SetImageDImg(gimg);
 	me->core->GetDrawEngine()->DeleteImage(gimg);
 }

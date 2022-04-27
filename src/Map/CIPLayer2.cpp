@@ -766,7 +766,7 @@ Map::DrawObjectL *Map::CIPLayer2::GetNewObjectById(void *session, Int64 id)
 		obj->ptOfstArr = MemAlloc(UInt32, fobj->nPtOfst);
 		MemCopyNO(obj->ptOfstArr, fobj->ptOfstArr, sizeof(Int32) * fobj->nPtOfst);
 	}
-	obj->pointArr = MemAlloc(Math::Coord2D<Double>, fobj->nPoint);
+	obj->pointArr = MemAllocA(Math::Coord2DDbl, fobj->nPoint);
 	Double r = 1 / 200000.0;
 	UOSInt i = 0;
 	UOSInt j = fobj->nPoint;
@@ -802,7 +802,7 @@ Math::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 	{
 		Math::PointCollection *ptColl = 0;
 		UInt32 *tmpPtOfsts;
-		Math::Coord2D<Double> *tmpPoints;
+		Math::Coord2DDbl *tmpPoints;
 		UOSInt i;
 		if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 		{
@@ -831,7 +831,7 @@ void Map::CIPLayer2::ReleaseObject(void *session, Map::DrawObjectL *obj)
 	if (obj->ptOfstArr)
 		MemFree(obj->ptOfstArr);
 	if (obj->pointArr)
-		MemFree(obj->pointArr);
+		MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

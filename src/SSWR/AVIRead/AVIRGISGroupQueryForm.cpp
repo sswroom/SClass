@@ -15,14 +15,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 	SSWR::AVIRead::AVIRGISGroupQueryForm *me = (SSWR::AVIRead::AVIRGISGroupQueryForm*)userObj;
 	if (me->downPos == scnPos)
 	{
-		Math::Coord2D<Double> mapPos;
-		Math::Coord2D<Double> ptNear = {0, 0};
+		Math::Coord2DDbl mapPos;
+		Math::Coord2DDbl ptNear = {0, 0};
 		UOSInt ptNearInd = 0;
 		Double ptNearDist = 0;
 		Int64 ptNearId = -1;
 		UOSInt pgNearInd = 0;
 		Int64 pgNearId = -1;
-		Math::Coord2D<Double> nearPos;
+		Math::Coord2DDbl nearPos;
 		void *sess;
 		Int64 id;
 		UOSInt i;

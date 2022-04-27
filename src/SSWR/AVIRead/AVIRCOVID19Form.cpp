@@ -67,10 +67,8 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	if (country == 0)
 		return;
 	Media::DrawEngine *deng = me->core->GetDrawEngine();
-	UOSInt w;
-	UOSInt h;
-	me->pbNewCases->GetSizeP(&w, &h);
-	Media::DrawImage *dimg = deng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
+	Media::DrawImage *dimg = deng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	Data::LineChart *chart;
 	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList = country->records->GetValues();
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
@@ -99,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	}
 	chart->AddXDataDate(dates, j);
 	chart->AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-	chart->Plot(dimg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
+	chart->Plot(dimg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
 	MemFree(counts);
 	MemFree(dates);
 	DEL_CLASS(chart);

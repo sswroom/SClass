@@ -50,7 +50,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 		else
 		{
 			Math::Point *pt = (Math::Point*)vec;
-			Math::Coord2D<Double> coord;
+			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
 			sb->AppendDouble(coord.x);
 			sb->AppendUTF8Char(' ');
@@ -65,7 +65,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
-			Math::Coord2D<Double> *pointList = pg->GetPointList(&nPoint);
+			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -113,7 +113,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pl->GetPtOfstList(&nPtOfst);
-			Math::Coord2D<Double> *pointList = pl->GetPointList(&nPoint);
+			Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;

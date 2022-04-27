@@ -42,7 +42,7 @@ namespace SSWR
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
 			ActionType selectMode;
-			Data::ArrayList<Math::Coord2D<Double>> points;
+			Data::ArrayList<Math::Coord2DDbl> points;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnSelPlate;

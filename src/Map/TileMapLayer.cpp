@@ -282,12 +282,12 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	}
 }
 
-Map::MapView *Map::TileMapLayer::CreateMapView(Double width, Double height)
+Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::MapView *view;
 	if (this->tileMap->GetProjectionType() == Map::TileMap::PT_MERCATOR)
 	{
-		NEW_CLASS(view, Map::MercatorMapView(width, height, 22.4, 114.2, this->tileMap->GetLevelCount(), this->tileMap->GetTileSize()));
+		NEW_CLASS(view, Map::MercatorMapView(scnSize, 22.4, 114.2, this->tileMap->GetLevelCount(), this->tileMap->GetTileSize()));
 		return view;
 	}
 	else if (this->tileMap->GetProjectionType() == Map::TileMap::PT_WGS84)
@@ -300,12 +300,12 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Double width, Double height)
 			scales.Add(this->tileMap->GetLevelScale(i));
 			i++;
 		}
-		NEW_CLASS(view, Map::LeveledMapView(width, height, 22.4, 114.2, &scales));
+		NEW_CLASS(view, Map::LeveledMapView(scnSize, 22.4, 114.2, &scales));
 		return view;
 	}
 	else
 	{
-		NEW_CLASS(view, Map::ScaledMapView(width, height, 22.4, 114.2, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, 22.4, 114.2, 10000));
 		return view;
 	}
 }

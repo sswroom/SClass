@@ -2,6 +2,7 @@
 #define _SM_UI_GUICONTROL
 #include "Handles.h"
 #include "Data/ArrayList.h"
+#include "Math/Size2D.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorInfo.h"
 #include "Text/CString.h"
@@ -256,7 +257,7 @@ namespace UI
 		virtual void SetSize(Double width, Double height);
 		virtual void SetSizeP(UOSInt width, UOSInt height);
 		virtual void GetSize(Double *width, Double *height);
-		virtual void GetSizeP(UOSInt *width, UOSInt *height);
+		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetPosition(Double x, Double y);
 		virtual void GetPositionP(OSInt *x, OSInt *y);
 		virtual void GetScreenPosP(OSInt *x, OSInt *y);

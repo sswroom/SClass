@@ -33,7 +33,7 @@ namespace Math
 		virtual ~VectorImage();
 
 		virtual VectorType GetVectorType();
-		virtual Math::Coord2D<Double> GetCenter();
+		virtual Math::Coord2DDbl GetCenter();
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);

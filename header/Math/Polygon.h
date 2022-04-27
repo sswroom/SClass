@@ -8,7 +8,7 @@ namespace Math
 	class Polygon : public Math::PointCollection
 	{
 	private:
-		Math::Coord2D<Double> *pointArr;
+		Math::Coord2DDbl *pointArr;
 		UOSInt nPoint;
 		UInt32 *ptOfstArr;
 		UOSInt nPtOfst;
@@ -18,7 +18,7 @@ namespace Math
 
 		virtual VectorType GetVectorType();
 		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst);
-		virtual Math::Coord2D<Double> *GetPointList(UOSInt *nPoint);
+		virtual Math::Coord2DDbl *GetPointList(UOSInt *nPoint);
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);

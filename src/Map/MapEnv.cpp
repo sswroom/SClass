@@ -1460,29 +1460,29 @@ Bool Map::MapEnv::GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Doub
 	return !isFirst;
 }
 
-Map::MapView *Map::MapEnv::CreateMapView(Double width, Double height)
+Map::MapView *Map::MapEnv::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::IMapDrawLayer *baseLayer = GetFirstLayer(0);
 	if (baseLayer)
 	{
-		return baseLayer->CreateMapView(width, height);
+		return baseLayer->CreateMapView(scnSize);
 	}
 	else if (csys == 0)
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(width, height, 22.4, 114.2, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, 22.4, 114.2, 10000));
 		return view;
 	}
 	else if (csys->IsProjected())
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ProjectedMapView(width, height, 835000, 820000, 10000));
+		NEW_CLASS(view, Map::ProjectedMapView(scnSize, 835000, 820000, 10000));
 		return view;
 	}
 	else
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(width, height, 22.4, 114.2, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, 22.4, 114.2, 10000));
 		return view;
 	}
 }

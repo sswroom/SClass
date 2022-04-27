@@ -315,25 +315,23 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 {
 	Media::DrawImage *dimg;
 	Media::DrawEngine *deng = this->core->GetDrawEngine();
-	UOSInt w;
-	UOSInt h;
-	this->pbTopic->GetSizeP(&w, &h);
-	if (w > 0 && h > 0)
+	Math::Size2D<UOSInt> sz = this->pbTopic->GetSizeP();
+	if (sz.width > 0 && sz.height > 0)
 	{
-		if (this->dispImg == 0 || this->dispImg->GetWidth() != w || this->dispImg->GetHeight() != h)
+		if (this->dispImg == 0 || this->dispImg->GetWidth() != sz.width || this->dispImg->GetHeight() != sz.height)
 		{
 			if (this->dispImg)
 			{
 				deng->DeleteImage(this->dispImg);
 			}
-			dimg = deng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+			dimg = deng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 			this->dispImg = dimg;
 		}
 		if (this->currTopic == 0 || this->currTopic->recvCnt <= 1)
 		{
 			Media::DrawBrush *b;
 			b = this->dispImg->NewBrushARGB(0xffffffff);
-			this->dispImg->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
+			this->dispImg->DrawRect(0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height), 0, b);
 			this->dispImg->DelBrush(b);
 		}
 		else
@@ -345,7 +343,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
-				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
+				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
 				DEL_CLASS(chart);
 			}
 			else
@@ -370,7 +368,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, 256);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
-				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
+				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
 				DEL_CLASS(chart);
 				MemFree(dateList);
 				MemFree(valueList);

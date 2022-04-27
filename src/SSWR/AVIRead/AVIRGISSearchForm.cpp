@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 	UOSInt i = me->lbResults->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		Math::Coord2D<Double> center;
+		Math::Coord2DDbl center;
 		void *sess;
 		Text::String *s = me->lbResults->GetItemTextNew(i);
 

@@ -222,12 +222,10 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 		*height = this->lyPos2 - this->lyPos;
 }
 
-void UI::GUIControl::GetSizeP(UOSInt *width, UOSInt *height)
+Math::Size2D<UOSInt> UI::GUIControl::GetSizeP()
 {
-	if (width)
-		*width = (UOSInt)(OSInt)Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
-	if (height)
-		*height = (UOSInt)(OSInt)Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+	return Math::Size2D<UOSInt>((UOSInt)(OSInt)Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi),
+		(UOSInt)(OSInt)Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 }
 
 void UI::GUIControl::SetPosition(Double x, Double y)

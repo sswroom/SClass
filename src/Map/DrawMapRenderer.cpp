@@ -693,7 +693,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 		Double bry;
 		Double scnPtX;
 		Double scnPtY;
-		Math::Coord2D<Double> dscnPos;
+		Math::Coord2DDbl dscnPos;
 		OSInt thisPts[10];
 		Int32 thisCnt = 0;
 
@@ -736,7 +736,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 			if (denv->labels[i].layerType == Map::DRAW_LAYER_POINT || denv->labels[i].layerType == Map::DRAW_LAYER_POINT3D)
 			{
 				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				dscnPos = denv->view->MapXYToScnXY(Math::Coord2D<Double>(denv->labels[i].lon, denv->labels[i].lat));
+				dscnPos = denv->view->MapXYToScnXY(Math::Coord2DDbl(denv->labels[i].lon, denv->labels[i].lat));
 				scnPtX = dscnPos.x;
 				scnPtY = dscnPos.y;
 
@@ -1253,7 +1253,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYGON)
 			{
 				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
-				dscnPos = denv->view->MapXYToScnXY(Math::Coord2D<Double>(denv->labels[i].lon, denv->labels[i].lat));
+				dscnPos = denv->view->MapXYToScnXY(Math::Coord2DDbl(denv->labels[i].lon, denv->labels[i].lat));
 				scnPtX = dscnPos.x;
 				scnPtY = dscnPos.y;
 
@@ -1360,8 +1360,8 @@ OSInt Map::DrawMapRenderer::VImgCompare(void *obj1, void *obj2)
 	{
 		return -1;
 	}
-	Math::Coord2D<Double> coord1;
-	Math::Coord2D<Double> coord2;
+	Math::Coord2DDbl coord1;
+	Math::Coord2DDbl coord2;
 	coord1 = vimg1->GetCenter();
 	coord2 = vimg2->GetCenter();
 	if (coord2.y > coord1.y)
@@ -2040,7 +2040,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	Map::DrawObjectL *dobj;
 	Double scaleW;
 	Double scaleH;
-	Math::Coord2D<Double> pts;
+	Math::Coord2DDbl pts;
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UTF8Char lblStr[256];
@@ -2140,7 +2140,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 						scaleH = dobj->pointArr[l].y - dobj->pointArr[l - 1].y;
 					}
 
-					if (denv->view->InViewXY(pts.x, pts.y))
+					if (denv->view->InViewXY(pts))
 					{
 						pts = denv->view->MapXYToScnXY(pts);
 
@@ -2153,7 +2153,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 				else if (layerType == Map::DRAW_LAYER_POLYGON)
 				{
 					pts = Math::Geometry::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr);
-					if (denv->view->InViewXY(pts.x, pts.y))
+					if (denv->view->InViewXY(pts))
 					{
 						pts = denv->view->MapXYToScnXY(pts);
 						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
@@ -2164,7 +2164,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 				{
 					Double lastPtX = 0;
 					Double lastPtY = 0;
-					Math::Coord2D<Double> *pointPos = dobj->pointArr;
+					Math::Coord2DDbl *pointPos = dobj->pointArr;
 
 					j = dobj->nPoint;
 					while (j--)
@@ -2176,7 +2176,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 
 					pts.x = (lastPtX / dobj->nPoint);
 					pts.y = (lastPtY / dobj->nPoint);
-					if (denv->view->InViewXY(pts.x, pts.y))
+					if (denv->view->InViewXY(pts))
 					{
 						pts = denv->view->MapXYToScnXY(pts);
 						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
@@ -2252,8 +2252,8 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	j = imgList.GetCount();
 	while (i < j)
 	{
-		Math::Coord2D<Double> mapCoords[2];
-		Math::Coord2D<Double> scnCoords[2];
+		Math::Coord2DDbl mapCoords[2];
+		Math::Coord2DDbl scnCoords[2];
 		vimg = imgList.GetItem(i);
 		if (vimg->IsScnCoord())
 		{

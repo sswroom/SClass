@@ -7,9 +7,9 @@
 
 Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointCollection(srid)
 {
-	this->pointArr = MemAlloc(Math::Coord2D<Double>, nPoint);
+	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
-	MemClear(this->pointArr, sizeof(Math::Coord2D<Double>) * nPoint);
+	MemClear(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	this->nPtOfst = nPtOfst;
 	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
 	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
@@ -17,7 +17,7 @@ Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::Point
 
 Math::Polygon::~Polygon()
 {
-	MemFree(this->pointArr);
+	MemFreeA(this->pointArr);
 	MemFree(this->ptOfstArr);
 }
 
@@ -32,7 +32,7 @@ UInt32 *Math::Polygon::GetPtOfstList(UOSInt *nPtOfst)
 	return this->ptOfstArr;
 }
 
-Math::Coord2D<Double> *Math::Polygon::GetPointList(UOSInt *nPoint)
+Math::Coord2DDbl *Math::Polygon::GetPointList(UOSInt *nPoint)
 {
 	*nPoint = this->nPoint;
 	return this->pointArr;
@@ -99,7 +99,7 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 	UOSInt l;
 	UInt32 m;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 
 	ptOfsts = this->ptOfstArr;
 	points = this->pointArr;
@@ -215,15 +215,15 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 	if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
 		return false;
 	Math::Polygon *pg = (Math::Polygon*)vec;
-	Math::Coord2D<Double> *newPoints;
+	Math::Coord2DDbl *newPoints;
 	UOSInt nPoint = this->nPoint + pg->nPoint;
 	UInt32 *newPtOfsts;
 	UOSInt nPtOfst = this->nPtOfst + pg->nPtOfst;
 	
-	newPoints = MemAlloc(Math::Coord2D<Double>, nPoint);
+	newPoints = MemAllocA(Math::Coord2DDbl, nPoint);
 	newPtOfsts = MemAlloc(UInt32, nPtOfst);
-	MemCopyNO(newPoints, this->pointArr, sizeof(Math::Coord2D<Double>) * this->nPoint);
-	MemCopyNO(&newPoints[this->nPoint], pg->pointArr, sizeof(Math::Coord2D<Double>) * pg->nPoint);
+	MemCopyNO(newPoints, this->pointArr, sizeof(Math::Coord2DDbl) * this->nPoint);
+	MemCopyNO(&newPoints[this->nPoint], pg->pointArr, sizeof(Math::Coord2DDbl) * pg->nPoint);
 	MemCopyNO(newPtOfsts, this->ptOfstArr, sizeof(UInt32) * this->nPtOfst);
 	UOSInt i = pg->nPtOfst;
 	UOSInt j = i + this->nPtOfst;
@@ -234,7 +234,7 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 		newPtOfsts[j] = pg->ptOfstArr[i] + k;
 	}
 	MemFree(this->ptOfstArr);
-	MemFree(this->pointArr);
+	MemFreeA(this->pointArr);
 	this->ptOfstArr = newPtOfsts;
 	this->pointArr = newPoints;
 	this->nPtOfst = nPtOfst;
@@ -265,7 +265,7 @@ Bool Math::Polygon::Equals(Math::Vector2D *vec)
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UInt32 *ptOfst = pg->GetPtOfstList(&nPtOfst);
-		Math::Coord2D<Double> *ptList = pg->GetPointList(&nPoint);
+		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoint);
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
 			return false;
@@ -475,7 +475,7 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	UOSInt i;
 	UOSInt j;
 	Math::Polygon *tmpPG;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 	UOSInt nPoints;
 	Data::ArrayListDbl *junctionX;
 	Data::ArrayListDbl *junctionY;

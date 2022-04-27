@@ -892,15 +892,15 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	return;
 }
 
-Math::Coord2D<Double> Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2D<Double> *points)
+Math::Coord2DDbl Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2DDbl *points)
 {
 	Double minX;
 	Double maxX;
 	Double minY;
 	Double maxY;
 	Double centY;
-	Math::Coord2D<Double> lastCoord;
-	Math::Coord2D<Double> thisCoord;
+	Math::Coord2DDbl lastCoord;
+	Math::Coord2DDbl thisCoord;
 	Double tempX;
 	Double sum;
 	UOSInt k;
@@ -908,7 +908,7 @@ Math::Coord2D<Double> Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPo
 	UOSInt i = nPoints;
 	if (i <= 0)
 	{
-		return Math::Coord2D<Double>(0, 0);
+		return Math::Coord2DDbl(0, 0);
 	}
 	Data::ArrayListDbl ptArr(4);
 
@@ -958,7 +958,7 @@ Math::Coord2D<Double> Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPo
 	j = ptArr.GetCount();
 	if ((j & 1) == 1 || j == 0)
 	{
-		return Math::Coord2D<Double>(0, 0);
+		return Math::Coord2DDbl(0, 0);
 	}
 	sum = 0;
 	i = 0;
@@ -976,10 +976,10 @@ Math::Coord2D<Double> Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPo
 		thisCoord.x = ptArr.GetItem(i + 1);
 		if ((thisCoord.x - lastCoord.x) > sum)
 		{
-			return Math::Coord2D<Double>(lastCoord.x + sum, centY);
+			return Math::Coord2DDbl(lastCoord.x + sum, centY);
 		}
 		sum -= thisCoord.x - lastCoord.x;
 		i += 2;
 	}
-	return Math::Coord2D<Double>(0, 0);
+	return Math::Coord2DDbl(0, 0);
 }

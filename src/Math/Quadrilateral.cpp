@@ -181,7 +181,7 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(Math::Coord2D<UOSInt> *pg)
 	return quad;
 }
 
-Math::Quadrilateral Math::Quadrilateral::FromPolygon(Math::Coord2D<Double> *pg)
+Math::Quadrilateral Math::Quadrilateral::FromPolygon(Math::Coord2DDbl *pg)
 {
 	Double minX = pg[3].x;
 	Double minY = pg[3].y;

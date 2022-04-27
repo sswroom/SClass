@@ -34,9 +34,9 @@ Math::Vector2D::VectorType Math::VectorString::GetVectorType()
 	return Math::Vector2D::VectorType::String;
 }
 
-Math::Coord2D<Double> Math::VectorString::GetCenter()
+Math::Coord2DDbl Math::VectorString::GetCenter()
 {
-	return Math::Coord2D<Double>(this->x, this->y);
+	return Math::Coord2DDbl(this->x, this->y);
 }
 
 Math::Vector2D *Math::VectorString::Clone()

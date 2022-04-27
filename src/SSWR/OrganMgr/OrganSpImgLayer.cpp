@@ -162,7 +162,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetNewObjectById(void *sessio
 	dobj->nPoint = 1;
 	dobj->objId = id;
 	dobj->ptOfstArr = 0;
-	dobj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
+	dobj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 	dobj->pointArr[0].x = ufile->lon;
 	dobj->pointArr[0].y = ufile->lat;
 	dobj->flags = 0;
@@ -182,7 +182,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session,
 
 void SSWR::OrganMgr::OrganSpImgLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	MemFree(obj->pointArr);
+	MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

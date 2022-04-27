@@ -124,7 +124,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewObjectById(void *sess
 	dobj->nPoint = 1;
 	dobj->objId = id;
 	dobj->ptOfstArr = 0;
-	dobj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
+	dobj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 	Data::DateTime dt;
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
@@ -158,7 +158,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *sessio
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	MemFree(obj->pointArr);
+	MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

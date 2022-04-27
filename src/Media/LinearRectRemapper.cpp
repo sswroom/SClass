@@ -3,7 +3,7 @@
 
 Media::StaticImage *Media::LinearRectRemapper::RemapW8(const UInt8 *imgPtr, UOSInt imgW, UOSInt imgH, OSInt imgBpl, UOSInt outputW, UOSInt outputH, Math::Quadrilateral quad, Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
 {
-	Math::Coord2D<Double> pt;
+	Math::Coord2DDbl pt;
 	Double xPos;
 	Double yPos;
 	Double xRate;

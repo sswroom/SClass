@@ -1,6 +1,7 @@
 #ifndef _SM_UI_GUICORE
 #define _SM_UI_GUICORE
 #include "Math/Coord2D.h"
+#include "Math/Size2D.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorMgr.h"
 
@@ -31,7 +32,7 @@ namespace UI
 		virtual void SetNoDisplayOff(Bool noDispOff) = 0;
 		virtual void DisplayOff() = 0;
 		virtual void Suspend() = 0;
-		virtual void GetDesktopSize(UOSInt *w, UOSInt *h) = 0;
+		virtual Math::Size2D<UOSInt> GetDesktopSize() = 0;
 		virtual Math::Coord2D<OSInt> GetCursorPos() = 0;
 		virtual void SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot) = 0;
 		virtual void GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi) = 0;

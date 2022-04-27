@@ -159,7 +159,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 			{
-				Math::Coord2D<Double> coord;
+				Math::Coord2DDbl coord;
 				Double z;
 				if (vec->Support3D())
 				{
@@ -211,7 +211,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.AppendP(sbuff2, sptr);
 				sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-				Math::Coord2D<Double> *points = pl->GetPointList(&nPoints);
+				Math::Coord2DDbl *points = pl->GetPointList(&nPoints);
 				if (needConv)
 				{
 					Double x;
@@ -322,7 +322,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
 				sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
-				Math::Coord2D<Double> *points = pg->GetPointList(&nPoints);
+				Math::Coord2DDbl *points = pg->GetPointList(&nPoints);
 				UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
 
 				if (needConv)

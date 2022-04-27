@@ -26,21 +26,20 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, Math::Coord2D<OSInt
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		Double newV;
 		me->subDowned = true;
 		me->pbSub->SetCapture();
-		me->pbSub->GetSizeP(&w, &h);
+		sz = me->pbSub->GetSizeP();
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)sz.height - 2)
 		{
-			scnPos.y = (OSInt)h - 2;
+			scnPos.y = (OSInt)sz.height - 2;
 		}
-		newV = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
+		newV = OSInt2Double(scnPos.y - 1) / (Double)(sz.height - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -56,19 +55,18 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, Math::Coord2D<OSInt
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (me->subDowned)
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		Double newV;
-		me->pbSub->GetSizeP(&w, &h);
+		sz = me->pbSub->GetSizeP();
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)sz.height - 2)
 		{
-			scnPos.y = (OSInt)h - 2;
+			scnPos.y = (OSInt)sz.height - 2;
 		}
-		newV = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
+		newV = OSInt2Double(scnPos.y - 1) / (Double)(sz.height - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -88,19 +86,18 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, Math::Coord2D<OSInt> 
 		if (me->subDowned)
 		{
 			me->subDowned = false;
-			UOSInt w;
-			UOSInt h;
+			Math::Size2D<UOSInt> sz;
 			Double newV;
-			me->pbSub->GetSizeP(&w, &h);
+			sz = me->pbSub->GetSizeP();
 			if (scnPos.y < 1)
 			{
 				scnPos.y = 1;
 			}
-			else if (scnPos.y > (OSInt)h - 2)
+			else if (scnPos.y > (OSInt)sz.height - 2)
 			{
-				scnPos.y = (OSInt)h - 2;
+				scnPos.y = (OSInt)sz.height - 2;
 			}
-			newV = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
+			newV = OSInt2Double(scnPos.y - 1) / (Double)(sz.height - 3);
 			if (me->mainZ != newV)
 			{
 				me->mainZ = newV;
@@ -119,30 +116,29 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, Math::Coord2D<OSIn
 	{
 		me->subDowned = true;
 		me->pbMain->SetCapture();
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		Double newV1;
 		Double newV2;
-		me->pbMain->GetSizeP(&w, &h);
+		sz = me->pbMain->GetSizeP();
 
 		if (scnPos.x < 1)
 		{
 			scnPos.x = 1;
 		}
-		else if (scnPos.x > (OSInt)w - 2)
+		else if (scnPos.x > (OSInt)sz.width - 2)
 		{
-			scnPos.x = (OSInt)w - 2;
+			scnPos.x = (OSInt)sz.width - 2;
 		}
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)sz.height - 2)
 		{
-			scnPos.y = (OSInt)h - 2;
+			scnPos.y = (OSInt)sz.height - 2;
 		}
-		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(w - 3);
-		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
+		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(sz.width - 3);
+		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(sz.height - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -159,29 +155,28 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, Math::Coord2D<OSIn
 	UtilUI::ColorDialog *me = (UtilUI::ColorDialog*)userObj;
 	if (me->subDowned)
 	{
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		Double newV1;
 		Double newV2;
-		me->pbMain->GetSizeP(&w, &h);
+		sz = me->pbMain->GetSizeP();
 		if (scnPos.x < 1)
 		{
 			scnPos.x = 1;
 		}
-		else if (scnPos.x > (OSInt)w - 2)
+		else if (scnPos.x > (OSInt)sz.width - 2)
 		{
-			scnPos.x = (OSInt)w - 2;
+			scnPos.x = (OSInt)sz.width - 2;
 		}
 		if (scnPos.y < 1)
 		{
 			scnPos.y = 1;
 		}
-		else if (scnPos.y > (OSInt)h - 2)
+		else if (scnPos.y > (OSInt)sz.height - 2)
 		{
-			scnPos.y = (OSInt)h - 2;
+			scnPos.y = (OSInt)sz.height - 2;
 		}
-		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(w - 3);
-		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
+		newV1 = OSInt2Double(scnPos.x - 1) / (Double)(sz.width - 3);
+		newV2 = OSInt2Double(scnPos.y - 1) / (Double)(sz.height - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -202,29 +197,28 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, Math::Coord2D<OSInt>
 		if (me->subDowned)
 		{
 			me->subDowned = false;
-			UOSInt w;
-			UOSInt h;
+			Math::Size2D<UOSInt> sz;
 			Double newV1;
 			Double newV2;
-			me->pbMain->GetSizeP(&w, &h);
+			sz = me->pbMain->GetSizeP();
 			if (scnPos.x < 1)
 			{
 				scnPos.x = 1;
 			}
-			else if (scnPos.x > (OSInt)w - 2)
+			else if (scnPos.x > (OSInt)sz.width - 2)
 			{
-				scnPos.x = (OSInt)w - 2;
+				scnPos.x = (OSInt)sz.width - 2;
 			}
 			if (scnPos.y < 1)
 			{
 				scnPos.y = 1;
 			}
-			else if (scnPos.y > (OSInt)h - 2)
+			else if (scnPos.y > (OSInt)sz.height - 2)
 			{
-				scnPos.y = (OSInt)h - 2;
+				scnPos.y = (OSInt)sz.height - 2;
 			}
-			newV1 = OSInt2Double(scnPos.x - 1) / (Double)(w - 3);
-			newV2 = OSInt2Double(scnPos.y - 1) / (Double)(h - 3);
+			newV1 = OSInt2Double(scnPos.x - 1) / (Double)(sz.width - 3);
+			newV2 = OSInt2Double(scnPos.y - 1) / (Double)(sz.height - 3);
 			if (me->mainX != newV1 || me->mainY != newV2)
 			{
 				me->mainX = newV1;
@@ -1571,19 +1565,18 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 
 	Media::ColorProfile color;
 	color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
-	UOSInt w;
-	UOSInt h;
-	this->pbMain->GetSizeP(&w, &h);
-	NEW_CLASS(this->mainImg, Media::StaticImage(w, h, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	this->pbSub->GetSizeP(&w, &h);
-	NEW_CLASS(this->subImg, Media::StaticImage(w, h, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	Math::Size2D<UOSInt> sz;
+	sz = this->pbMain->GetSizeP();
+	NEW_CLASS(this->mainImg, Media::StaticImage(sz.width, sz.height, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	sz = this->pbSub->GetSizeP();
+	NEW_CLASS(this->subImg, Media::StaticImage(sz.width, sz.height, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	this->GenMainImage();
 	this->GenSubImage();
-	this->ui->GetDesktopSize(&w, &h);
-	if (h > w)
+	sz = this->ui->GetDesktopSize();
+	if (sz.height > sz.width)
 	{
-		this->OnDisplaySizeChange(w, h);
+		this->OnDisplaySizeChange(sz.width, sz.height);
 	}
 }
 
@@ -1682,14 +1675,13 @@ void UtilUI::ColorDialog::OnMonitorChanged()
 
 		Media::ColorProfile color;
 		color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
-		UOSInt w;
-		UOSInt h;
+		Math::Size2D<UOSInt> sz;
 		DEL_CLASS(this->mainImg);
 		DEL_CLASS(this->subImg);
-		this->pbMain->GetSizeP(&w, &h);
-		NEW_CLASS(this->mainImg, Media::StaticImage(w - 2, h - 2, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-		this->pbSub->GetSizeP(&w, &h);
-		NEW_CLASS(this->subImg, Media::StaticImage(w - 2, h - 2, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		sz = this->pbMain->GetSizeP();
+		NEW_CLASS(this->mainImg, Media::StaticImage(sz.width - 2, sz.height - 2, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		sz = this->pbSub->GetSizeP();
+		NEW_CLASS(this->subImg, Media::StaticImage(sz.width - 2, sz.height - 2, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 		this->GenMainImage();
 		this->GenSubImage();

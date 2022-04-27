@@ -99,7 +99,7 @@ Int64 Map::IMapDrawLayer::GetTimeEndTS()
 	return 0;
 }
 
-Map::MapView *Map::IMapDrawLayer::CreateMapView(Double width, Double height)
+Map::MapView *Map::IMapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::MapView *view;
 	Double xMin;
@@ -109,11 +109,11 @@ Map::MapView *Map::IMapDrawLayer::CreateMapView(Double width, Double height)
 	this->GetBoundsDbl(&xMin, &yMin, &xMax, &yMax);
 	if (xMax > 1000)
 	{
-		NEW_CLASS(view, Map::ProjectedMapView(width, height, (yMin + yMax) * 0.5, (xMin + xMax) * 0.5, 10000));
+		NEW_CLASS(view, Map::ProjectedMapView(scnSize, (yMin + yMax) * 0.5, (xMin + xMax) * 0.5, 10000));
 	}
 	else
 	{
-		NEW_CLASS(view, Map::ScaledMapView(width, height, (yMin + yMax) * 0.5, (xMin + xMax) * 0.5, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, (yMin + yMax) * 0.5, (xMin + xMax) * 0.5, 10000));
 	}
 	return view;
 }
@@ -344,7 +344,7 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 				UInt32 l;
 				UInt32 m;
 				UInt32 *ptOfstArr;
-				Math::Coord2D<Double> *pointArr;
+				Math::Coord2DDbl *pointArr;
 				Int32 currFound;
 				Double mapX = lon;
 				Double mapY = lat;
@@ -908,7 +908,7 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 		dobj->nPoint = 1;
 		dobj->ptOfstArr = MemAlloc(UInt32, 1);
 		dobj->ptOfstArr[0] = 0;
-		dobj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
+		dobj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 		dobj->pointArr[0] = pt->GetCenter();
 		dobj->flags = 0;
 		dobj->lineColor = 0;
@@ -918,7 +918,7 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 	{
 		Math::PointCollection *ptColl = (Math::PointCollection*)vec;
 		UInt32 *ptOfstArr;
-		Math::Coord2D<Double> *ptArr;
+		Math::Coord2DDbl *ptArr;
 		UOSInt cnt;
 
 		Map::DrawObjectL *dobj;
@@ -932,8 +932,8 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 
 		ptArr = ptColl->GetPointList(&cnt);
 		dobj->nPoint = (UInt32)cnt;
-		dobj->pointArr = MemAlloc(Math::Coord2D<Double>, cnt);
-		MemCopyNO(dobj->pointArr, ptArr, cnt * sizeof(Math::Coord2D<Double>));
+		dobj->pointArr = MemAllocA(Math::Coord2DDbl, cnt);
+		MemCopyNO(dobj->pointArr, ptArr, cnt * sizeof(Math::Coord2DDbl));
 		dobj->flags = 0;
 		dobj->lineColor = 0;
 		return dobj;

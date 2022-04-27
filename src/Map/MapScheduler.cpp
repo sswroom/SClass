@@ -71,7 +71,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					UInt32 l;
 					if (me->isFirst)
 					{
-						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2D<Double>(0, 0)))
+						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
 							*me->isLayerEmpty = false;
 					}
 
@@ -106,7 +106,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					{
 						UInt32 k;
 						UInt32 l;
-						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2D<Double>(0, 0)))
+						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
 							*me->isLayerEmpty = false;
 						k = dobj->nPtOfst;
 						l = 1;
@@ -133,7 +133,7 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 {
 	UOSInt j;
 	Double *objPtr = &this->objBounds[4 * *this->objCnt];
-	Math::Coord2D<Double> pts;
+	Math::Coord2DDbl pts;
 	Double imgW;
 	Double imgH;
 	Double scale = this->img->GetHDPI() / this->ico->GetHDPI();
@@ -146,7 +146,7 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 	j = dobj->nPoint;
 	while (j-- > 0)
 	{
-		if (this->map->MapXYToScnXY(&dobj->pointArr[j], &pts, 1, Math::Coord2D<Double>(0, 0)))
+		if (this->map->MapXYToScnXY(&dobj->pointArr[j], &pts, 1, Math::Coord2DDbl(0, 0)))
 			*this->isLayerEmpty = false;
 		if (*this->objCnt >= this->maxCnt)
 		{

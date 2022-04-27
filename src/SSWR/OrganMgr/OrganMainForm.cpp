@@ -496,8 +496,8 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, Math::
 	if (me->dispImageToCrop && me->dispImageDown)
 	{
 		Math::Coord2D<OSInt> rect[2];
-		Math::Coord2D<Double> pt1;
-		Math::Coord2D<Double> pt2;
+		Math::Coord2DDbl pt1;
+		Math::Coord2DDbl pt2;
 		if (me->CalcCropRect(rect))
 		{
 			pt1 = me->pbImg->Scn2ImagePos(rect[0]);
@@ -1584,7 +1584,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 	Math::Coord2D<OSInt> dispPos;
 	if (me->mapCurrFile)
 	{
-		dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2D<Double>(me->mapCurrFile->lon, me->mapCurrFile->lat));
+		dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2DDbl(me->mapCurrFile->lon, me->mapCurrFile->lat));
 		if (scnPos.x >= dispPos.x - 3 && scnPos.x <= dispPos.x + 3 && scnPos.y >= dispPos.y - 3 && scnPos.y <= dispPos.y + 3)
 		{
 			return;
@@ -1608,9 +1608,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 		ufile = me->mapUFiles.GetItem(i);
 		if (ufile->lat != 0 || ufile->lon != 0)
 		{
-			if (me->mcMap->InMapMapXY(ufile->lon, ufile->lat))
+			if (me->mcMap->InMapMapXY(Math::Coord2DDbl(ufile->lon, ufile->lat)))
 			{
-				dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2D<Double>(ufile->lon, ufile->lat));
+				dispPos = me->mcMap->MapXY2ScnXY(Math::Coord2DDbl(ufile->lon, ufile->lat));
 				if (scnPos.x >= dispPos.x - 3 && scnPos.x <= dispPos.x + 3 && scnPos.y >= dispPos.y - 3 && scnPos.y <= dispPos.y + 3)
 				{
 					Text::StringBuilderUTF8 sb;
@@ -1658,10 +1658,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, Media::Dr
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	if (me->mapCurrImage)
 	{
-		UOSInt scnW;
-		UOSInt scnH;
-		me->mcMap->GetSizeP(&scnW, &scnH);
-		dimg->DrawImagePt(me->mapCurrImage, OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnH - me->mapCurrImage->GetHeight())));
+		Math::Size2D<UOSInt> scnSize = me->mcMap->GetSizeP();
+		dimg->DrawImagePt(me->mapCurrImage, OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnSize.height - me->mapCurrImage->GetHeight())));
 		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info.dispHeight, me->mapCurrImage->info.dispWidth, me->mapCurrImage->info.dispHeight, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
 	}
 }
@@ -2779,7 +2777,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
-	this->mapView = this->mapEnv->CreateMapView(1024, 768);
+	this->mapView = this->mapEnv->CreateMapView(Math::Size2D<Double>(1024, 768));
 	NEW_CLASS(this->mcMap, UI::GUIMapControl(ui, this->tpMap, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mcMap->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mcMap->HandleMouseMove(OnMapMouseMove, this);

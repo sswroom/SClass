@@ -665,14 +665,12 @@ void UI::GUIForm::SetText(Text::CString text)
 	Text::StrDelNew(wptr);
 }
 
-void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)
+Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
-	if (width)
-		*width = (UOSInt)(OSInt)(rect.right - rect.left);
-	if (height)
-		*height = (UOSInt)(OSInt)(rect.bottom - rect.top);
+	return Math::Size2D<UOSInt>((UOSInt)(OSInt)(rect.right - rect.left),
+		(UOSInt)(OSInt)(rect.bottom - rect.top));
 }
 
 void UI::GUIForm::SetExitOnClose(Bool exitOnClose)

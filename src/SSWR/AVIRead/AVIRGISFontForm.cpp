@@ -65,11 +65,9 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontText()
 
 void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 {
-	UOSInt w;
-	UOSInt h;
 	SDEL_CLASS(this->previewImage);
-	this->pbPreview->GetSizeP(&w, &h);
-	Media::DrawImage *dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
+	Media::DrawImage *dimg = this->eng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	this->core->GenFontPreview(dimg, this->eng, this->fontName->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);

@@ -312,37 +312,35 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 
 void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 {
-	UOSInt newW;
-	UOSInt newH;
-	this->pbChar->GetSizeP(&newW, &newH);
+	Math::Size2D<UOSInt> newSize = this->pbChar->GetSizeP();
 
 	if (this->charImg == 0)
 	{
-		this->charImg = this->deng->CreateImage32(newW, newH, Media::AT_NO_ALPHA);
+		this->charImg = this->deng->CreateImage32(newSize.width, newSize.height, Media::AT_NO_ALPHA);
 	}
-	else if (this->charImg->GetWidth() != newW || this->charImg->GetHeight() != newH)
+	else if (this->charImg->GetWidth() != newSize.width || this->charImg->GetHeight() != newSize.height)
 	{
 		this->pbChar->SetImageDImg(0);
 		this->deng->DeleteImage(this->charImg);
-		this->charImg = this->deng->CreateImage32(newW, newH, Media::AT_NO_ALPHA);
+		this->charImg = this->deng->CreateImage32(newSize.width, newSize.height, Media::AT_NO_ALPHA);
 	}
 	UTF8Char sbuff[7];
 	Media::DrawBrush *b;
 	Media::DrawFont *f;
 	b = this->charImg->NewBrushARGB(0xffffffff);
-	this->charImg->DrawRect(0, 0, UOSInt2Double(newW), UOSInt2Double(newH), 0, b);
+	this->charImg->DrawRect(0, 0, UOSInt2Double(newSize.width), UOSInt2Double(newSize.height), 0, b);
 	this->charImg->DelBrush(b);
 	if (this->currChar != 0)
 	{
 		UOSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.height), Media::DrawEngine::DFS_NORMAL, 950);
 		len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
 		sbuff[len] = 0;
 		
 		this->charImg->GetTextSize(f, {sbuff, len}, sz);
-		this->charImg->DrawString((UOSInt2Double(newW) - sz[0]) * 0.5, (UOSInt2Double(newH) - sz[1]) * 0.5, {sbuff, len}, f, b);
+		this->charImg->DrawString((UOSInt2Double(newSize.width) - sz[0]) * 0.5, (UOSInt2Double(newSize.height) - sz[1]) * 0.5, {sbuff, len}, f, b);
 		this->charImg->DelFont(f);
 		this->charImg->DelBrush(b);
 	}

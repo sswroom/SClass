@@ -424,7 +424,7 @@ Bool Media::GTKDrawImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSI
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	if (nPoints >= 2)
@@ -447,7 +447,7 @@ Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPo
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -491,7 +491,7 @@ Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoi
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;

@@ -60,8 +60,7 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 			OSInt drawX;
 			OSInt x;
 			OSInt y;
-			UOSInt w;
-			UOSInt h;
+			Math::Size2D<UOSInt> sz;
 			Bool foundThis;
 			UI::GUIControl::DockType dockType;
 
@@ -97,16 +96,16 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 					if (dockType == UI::GUIControl::DOCK_RIGHT && me->isRight)
 					{
 						ctrl->GetPositionP(&x, &y);
-						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(drawX, y, x + (OSInt)w, y + (OSInt)h, false);
+						sz = ctrl->GetSizeP();
+						ctrl->SetAreaP(drawX, y, x + (OSInt)sz.width, y + (OSInt)sz.height, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
 					else if (dockType == UI::GUIControl::DOCK_LEFT && !me->isRight)
 					{
 						ctrl->GetPositionP(&x, &y);
-						ctrl->GetSizeP(&w, &h);
-						ctrl->SetAreaP(x, y, drawX, y + (OSInt)h, false);
+						sz = ctrl->GetSizeP();
+						ctrl->SetAreaP(x, y, drawX, y + (OSInt)sz.height, false);
 						me->parent->UpdateChildrenSize(true);
 						break;
 					}
@@ -174,10 +173,9 @@ void UI::GUIHSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 
 	OSInt posX;
 	OSInt posY;
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> sz;
 	this->GetPositionP(&posX, &posY);
-	this->GetSizeP(&w, &h);
+	sz = this->GetSizeP();
 	drawX = posX + x - this->dragX;
 	if (drawX < dragMin)
 	{
@@ -194,7 +192,7 @@ void UI::GUIHSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	SetBrushOrgEx((HDC)hdc, (int)drawX, (int)posY, 0);
 	hbrushOld = (HBRUSH)SelectObject((HDC)hdc, hbr);
 
-	PatBlt((HDC)hdc, (int)drawX, (int)posY, (int)w, (int)h, PATINVERT);
+	PatBlt((HDC)hdc, (int)drawX, (int)posY, (int)sz.width, (int)sz.height, PATINVERT);
 	
 	SelectObject((HDC)hdc, hbrushOld);
 	DeleteObject(hbr);
@@ -206,7 +204,6 @@ void UI::GUIHSplitter::CalDragRange()
 	UOSInt i;
 	OSInt max;
 	OSInt min;
-	UOSInt tmp;
 	Bool foundLeft = false;
 	Bool foundRight = false;
 	Bool foundThis = false;
@@ -236,8 +233,7 @@ void UI::GUIHSplitter::CalDragRange()
 					{
 						foundRight = true;
 						ctrl->GetPositionP(&max, 0);
-						ctrl->GetSizeP(&tmp, 0);
-						max += (OSInt)tmp;
+						max += (OSInt)ctrl->GetSizeP().width;
 					}
 				}
 				else if (dockType == UI::GUIControl::DOCK_LEFT)
@@ -246,8 +242,7 @@ void UI::GUIHSplitter::CalDragRange()
 					{
 						foundLeft = true;
 						ctrl->GetPositionP(&min, 0);
-						ctrl->GetSizeP(&tmp, 0);
-						min += (OSInt)tmp;
+						min += (OSInt)ctrl->GetSizeP().width;
 					}
 				}
 			}

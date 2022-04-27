@@ -20,7 +20,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		UOSInt i;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		Math::Coord2D<Double> mapPt = me->navi->ScnXY2MapXY(scnPos);
+		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		sess = me->lyr->BeginGetObject();
 		id = me->lyr->GetNearestObjectId(sess, mapPt.x, mapPt.y, &mapPt.x, &mapPt.y);
 		if (id == -1)

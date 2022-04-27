@@ -1084,7 +1084,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GDIImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1099,7 +1099,7 @@ Bool Media::GDIImage::DrawPolyline(Math::Coord2D<Double> *points, UOSInt nPoints
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1114,7 +1114,7 @@ Bool Media::GDIImage::DrawPolygon(Math::Coord2D<Double> *points, UOSInt nPoints,
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolyPolygon(Math::Coord2D<Double> *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	UOSInt i = 0;
 	UOSInt j = nPointCnt;

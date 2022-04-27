@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_MAPVIEW
 #define _SM_MAP_MAPVIEW
 #include "Math/Coord2D.h"
+#include "Math/Size2D.h"
 #include "Media/DrawEngine.h"
 
 namespace Map
@@ -8,17 +9,16 @@ namespace Map
 	class MapView
 	{
 	protected:
-		Double scnWidth;
-		Double scnHeight;
+		Math::Size2D<Double> scnSize;
 		
 	public:
-		MapView(Double scnWidth, Double scnHeight);
+		MapView(Math::Size2D<Double> scnSize);
 		virtual ~MapView();
 
-		virtual void ChangeViewXY(Double scnWidth, Double scnHeight, Math::Coord2D<Double> centMap, Double scale) = 0;
-		virtual void SetCenterXY(Math::Coord2D<Double> mapPos) = 0;
+		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale) = 0;
+		virtual void SetCenterXY(Math::Coord2DDbl mapPos) = 0;
 		virtual void SetMapScale(Double scale) = 0;
-		virtual void UpdateSize(Double width, Double height) = 0;
+		virtual void UpdateSize(Math::Size2D<Double> scnSize) = 0;
 		virtual void SetDPI(Double hdpi, Double ddpi) = 0;
 
 		virtual Double GetLeftX() = 0;
@@ -31,14 +31,14 @@ namespace Map
 		virtual Double GetCenterY() = 0;
 		virtual Double GetHDPI() = 0;
 		virtual Double GetDDPI() = 0;
-		Math::Coord2D<Double> GetCenterMap();
+		Math::Coord2DDbl GetCenterMap();
 
-		virtual Bool InViewXY(Double x, Double y) = 0;
+		virtual Bool InViewXY(Math::Coord2DDbl mapPos) = 0;
 		virtual Bool MapXYToScnXY(const Double *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
-		virtual Bool MapXYToScnXY(const Math::Coord2D<Double> *srcArr, Math::Coord2D<Double> *destArr, UOSInt nPoints, Math::Coord2D<Double> ofst) = 0; // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) = 0; // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY) = 0; // return inScreen
-		virtual Math::Coord2D<Double> MapXYToScnXY(Math::Coord2D<Double> mapPos) = 0;
-		virtual Math::Coord2D<Double> ScnXYToMapXY(Math::Coord2D<Double> scnPos) = 0;
+		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) = 0;
+		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) = 0;
 		virtual Map::MapView *Clone() = 0;
 
 		Double GetScnWidth();

@@ -144,11 +144,10 @@ UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 
 void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 {
-	UOSInt width;
-	UOSInt height;
+	Math::Size2D<UOSInt> sz;
 	OSInt btnH = 0;
 	GtkAllocation clip;
-	this->GetSizeP(&width, &height);
+	sz = this->GetSizeP();
 	GtkWidget *page;
 	clip.y = 0;
 	clip.height = 0;
@@ -176,9 +175,9 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 	if (y)
 		*y = btnH;
 	if (w)
-		*w = width - 2;
+		*w = sz.width - 2;
 	if (h)
-		*h = height - (UOSInt)btnH - 2;
+		*h = sz.height - (UOSInt)btnH - 2;
 //	printf("TabPage Rect: %d, %d, %d, %d\r\n", 0, (Int32)btnH, (Int32)width - 2, (Int32)(height - (UOSInt)btnH - 2));
 }
 
@@ -205,16 +204,14 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 
-	UOSInt w1;
-	UOSInt h1;
-	UOSInt w2;
-	UOSInt h2;
-	GetSizeP(&w1, &h1);
-	GetTabPageRect(0, 0, &w2, &h2);
+	Math::Size2D<UOSInt> sz1;
+	Math::Size2D<UOSInt> sz2;
+	sz1 = GetSizeP();
+	GetTabPageRect(0, 0, &sz2.width, &sz2.height);
 	i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		this->tabPages.GetItem(i)->SetSizeP(w2, h2);
+		this->tabPages.GetItem(i)->SetSizeP(sz2.width, sz2.height);
 		this->tabPages.GetItem(i)->UpdateChildrenSize(false);
 	}
 }

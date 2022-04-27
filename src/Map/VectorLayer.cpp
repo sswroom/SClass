@@ -606,13 +606,13 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 			obj->nPtOfst = 0;
 			obj->ptOfstArr = 0;
 			obj->nPoint = 1;
-			obj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
+			obj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 			obj->pointArr[0] = vec->GetCenter();
 		}
 		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Vector2D::VectorType::Polygon || vec->GetVectorType() == Math::Vector2D::VectorType::Multipoint)
 		{
 			UInt32 *ptOfsts;
-			Math::Coord2D<Double> *points;
+			Math::Coord2DDbl *points;
 			UOSInt i;
 			Math::PointCollection *pts = (Math::PointCollection*)vec;
 			ptOfsts = pts->GetPtOfstList(&i);
@@ -621,7 +621,7 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 			MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * i);
 			points = pts->GetPointList(&i);
 			obj->nPoint = (UInt32)i;
-			obj->pointArr = MemAlloc(Math::Coord2D<Double>, i);
+			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);
 			MemCopyNO(obj->pointArr, points, i * 16);
 		}
 		obj->flags = 0;
@@ -652,7 +652,7 @@ void Map::VectorLayer::ReleaseObject(void *session, DrawObjectL *obj)
 	if (obj->ptOfstArr)
 		MemFree(obj->ptOfstArr);
 	if (obj->pointArr)
-		MemFree(obj->pointArr);
+		MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 
@@ -884,7 +884,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	Double y;
 	Double nearPtX;
 	Double nearPtY;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 	UOSInt nPoints;
 	Int32 ix;
 	Int32 iy;

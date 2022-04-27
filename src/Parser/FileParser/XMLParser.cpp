@@ -842,7 +842,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Polygon *pg;
-															Math::Coord2D<Double> *ptList;
+															Math::Coord2DDbl *ptList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
@@ -1000,7 +1000,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Polyline3D *pl;
-															Math::Coord2D<Double> *ptList;
+															Math::Coord2DDbl *ptList;
 															Double *hList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
@@ -1108,7 +1108,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Polygon *pg;
-															Math::Coord2D<Double> *ptList;
+															Math::Coord2DDbl *ptList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
@@ -3168,7 +3168,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						{
 							Math::Polyline3D *pl;
 							UOSInt nPoints;
-							Math::Coord2D<Double> *ptArr;
+							Math::Coord2DDbl *ptArr;
 							Double *altArr;
 							UOSInt j;
 
@@ -3339,7 +3339,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				{
 					Math::Polygon *pg;
 					UOSInt nPoints;
-					Math::Coord2D<Double> *ptArr;
+					Math::Coord2DDbl *ptArr;
 					UInt32 *ptList;
 					UOSInt i;
 

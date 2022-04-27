@@ -8,10 +8,10 @@ namespace Math
 	struct Triangle
 	{
 	public:
-		Coord2D<Double> pt[3];
+		Coord2DDbl pt[3];
 
 		Triangle() = default;
-		Triangle(Coord2D<Double> p1, Coord2D<Double> p2, Coord2D<Double> p3)
+		Triangle(Coord2DDbl p1, Coord2DDbl p2, Coord2DDbl p3)
 		{
 			pt[0] = p1;
 			pt[1] = p2;

@@ -174,10 +174,10 @@ void UI::GUICoreWin::Suspend()
 #endif
 }
 
-void UI::GUICoreWin::GetDesktopSize(UOSInt *w, UOSInt *h)
+Math::Size2D<UOSInt> UI::GUICoreWin::GetDesktopSize()
 {
-	*w = (UOSInt)(OSInt)GetSystemMetrics(SM_CXFULLSCREEN);
-	*h = (UOSInt)(OSInt)GetSystemMetrics(SM_CYFULLSCREEN);
+	return Math::Size2D<UOSInt>((UOSInt)(OSInt)GetSystemMetrics(SM_CXFULLSCREEN),
+		(UOSInt)(OSInt)GetSystemMetrics(SM_CYFULLSCREEN));
 }
 
 Math::Coord2D<OSInt> UI::GUICoreWin::GetCursorPos()

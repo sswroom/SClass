@@ -61,9 +61,9 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(void *userObj)
 	Map::GPSTrack::GPSRecord2 *rec = (Map::GPSTrack::GPSRecord2 *)me->lbTrack->GetSelectedItem();
 	if (rec)
 	{
-		if (!me->mapView->InViewXY(rec->lon, rec->lat))
+		if (!me->mapView->InViewXY(Math::Coord2DDbl(rec->lon, rec->lat)))
 		{
-			me->mapView->SetCenterXY(Math::Coord2D<Double>(rec->lon, rec->lat));
+			me->mapView->SetCenterXY(Math::Coord2DDbl(rec->lon, rec->lat));
 			me->mapMain->UpdateMap();
 		}
 	}
@@ -225,9 +225,9 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 		this->gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
 		this->mapMain->ShowMarkerMapXY(lon, lat);
 
-		if (!this->mapView->InViewXY(lon, lat))
+		if (!this->mapView->InViewXY(Math::Coord2DDbl(lon, lat)))
 		{
-			this->mapView->SetCenterXY(Math::Coord2D<Double>(lon, lat));
+			this->mapView->SetCenterXY(Math::Coord2DDbl(lon, lat));
 			this->mapMain->UpdateMap();
 		}
 	}
@@ -279,7 +279,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->mapEnv->AddLayer(0, this->adjLyr, true);
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
-	this->mapView = this->mapEnv->CreateMapView(1024, 768);
+	this->mapView = this->mapEnv->CreateMapView(Math::Size2D<Double>(1024, 768));
 
 	this->env->GetUserFiles(this->userFileList, this->dataFile->startTimeTicks, this->dataFile->endTimeTicks);
 

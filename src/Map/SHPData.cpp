@@ -543,7 +543,7 @@ Map::DrawObjectL *Map::SHPData::GetNewObjectById(void *session, Int64 id)
 		obj->nPoint = 1;
 		obj->objId = id;
 		obj->ptOfstArr = 0;
-		obj->pointArr = MemAlloc(Math::Coord2D<Double>, 1);
+		obj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 		obj->pointArr[0].x = (this->ptX->GetItem((UOSInt)id));
 		obj->pointArr[0].y = (this->ptY->GetItem((UOSInt)id));
 		obj->flags = 0;
@@ -561,7 +561,7 @@ Map::DrawObjectL *Map::SHPData::GetNewObjectById(void *session, Int64 id)
 		obj->nPoint = rec->nPoint;
 		obj->objId = id;
 		obj->ptOfstArr = MemAlloc(UInt32, rec->nPtOfst);
-		obj->pointArr = MemAlloc(Math::Coord2D<Double>, rec->nPoint);
+		obj->pointArr = MemAllocA(Math::Coord2DDbl, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)obj->ptOfstArr);
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)obj->pointArr);
 		obj->flags = 0;
@@ -579,7 +579,7 @@ Map::DrawObjectL *Map::SHPData::GetNewObjectById(void *session, Int64 id)
 		obj->nPoint = rec->nPoint;
 		obj->objId = id;
 		obj->ptOfstArr = MemAlloc(UInt32, rec->nPtOfst);
-		obj->pointArr = MemAlloc(Math::Coord2D<Double>, rec->nPoint);
+		obj->pointArr = MemAllocA(Math::Coord2DDbl, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)obj->ptOfstArr);
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)obj->pointArr);
 		obj->flags = 0;
@@ -667,7 +667,7 @@ void Map::SHPData::ReleaseObject(void *session, DrawObjectL *obj)
 	if (obj->ptOfstArr)
 		MemFree(obj->ptOfstArr);
 	if (obj->pointArr)
-		MemFree(obj->pointArr);
+		MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

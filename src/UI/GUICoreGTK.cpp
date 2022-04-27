@@ -76,7 +76,7 @@ void UI::GUICoreGTK::Suspend()
 {
 }
 
-void UI::GUICoreGTK::GetDesktopSize(UOSInt *w, UOSInt *h)
+Math::Size2D<UOSInt> UI::GUICoreGTK::GetDesktopSize()
 {
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
 	GdkDisplay *display = gdk_display_get_default();
@@ -111,12 +111,10 @@ void UI::GUICoreGTK::GetDesktopSize(UOSInt *w, UOSInt *h)
 		}
 		i++;
 	}
-	*w = (UOSInt)(maxX - minX);
-	*h = (UOSInt)(maxY - minY);
+	return Math::Size2D<UOSInt>((UOSInt)(maxX - minX), (UOSInt)(maxY - minY));
 #else
 	GdkScreen *scn = gdk_screen_get_default();
-	*w = gdk_screen_get_width(scn);
-	*h = gdk_screen_get_height(scn);
+	return Math::Size2D<UOSInt>(gdk_screen_get_width(scn), gdk_screen_get_height(scn));
 #endif
 }
 

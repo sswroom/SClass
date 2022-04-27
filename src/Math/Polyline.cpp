@@ -5,10 +5,10 @@
 #include "Math/Polyline.h"
 #include "Data/ArrayListDbl.h"
 
-Math::Polyline::Polyline(UInt32 srid, Math::Coord2D<Double> *pointArr, UOSInt nPoint) : PointCollection(srid)
+Math::Polyline::Polyline(UInt32 srid, Math::Coord2DDbl *pointArr, UOSInt nPoint) : PointCollection(srid)
 {
-	this->pointArr = MemAlloc(Math::Coord2D<Double>, nPoint << 1);
-	MemCopyNO(this->pointArr, pointArr, sizeof(Math::Coord2D<Double>) * nPoint);
+	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint << 1);
+	MemCopyNO(this->pointArr, pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	this->nPoint = nPoint;
 	this->nPtOfst = 1;
 	this->ptOfstArr = MemAlloc(UInt32, 1);
@@ -23,9 +23,9 @@ Math::Polyline::Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : PointColl
 	{
 		nPtOfst = 1;
 	}
-	this->pointArr = MemAlloc(Math::Coord2D<Double>, nPoint);
+	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
-	MemClear(this->pointArr, sizeof(Math::Coord2D<Double>) * nPoint);
+	MemClear(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	this->nPtOfst = nPtOfst;
 	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
 	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
@@ -35,7 +35,7 @@ Math::Polyline::Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : PointColl
 
 Math::Polyline::~Polyline()
 {
-	MemFree(this->pointArr);
+	MemFreeA(this->pointArr);
 	MemFree(this->ptOfstArr);
 }
 
@@ -50,13 +50,13 @@ UInt32 *Math::Polyline::GetPtOfstList(UOSInt *nPtOfst)
 	return this->ptOfstArr;
 }
 
-Math::Coord2D<Double> *Math::Polyline::GetPointList(UOSInt *nPoint)
+Math::Coord2DDbl *Math::Polyline::GetPointList(UOSInt *nPoint)
 {
 	*nPoint = this->nPoint;
 	return this->pointArr;
 }
 
-Math::Coord2D<Double> Math::Polyline::GetCenter()
+Math::Coord2DDbl Math::Polyline::GetCenter()
 {
 	Double maxLength = 0;
 	UOSInt maxId = 0;
@@ -64,8 +64,8 @@ Math::Coord2D<Double> Math::Polyline::GetCenter()
 	UOSInt i = this->nPoint - 1;
 	UOSInt j = this->nPtOfst;
 	UOSInt k;
-	Math::Coord2D<Double> lastPt;
-	Math::Coord2D<Double> thisPt;
+	Math::Coord2DDbl lastPt;
+	Math::Coord2DDbl thisPt;
 	while (j-- > 0)
 	{
 		lastPt = this->pointArr[i];
@@ -106,7 +106,7 @@ Math::Coord2D<Double> Math::Polyline::GetCenter()
 		currLength = Math_Sqrt((thisPt.x - lastPt.x) * (thisPt.x - lastPt.x) + (thisPt.y - lastPt.y) * (thisPt.y - lastPt.y));
 		if (currLength >= maxLength)
 		{
-			return Math::Coord2D<Double>(lastPt.x + (thisPt.x - lastPt.x) * maxLength / currLength,
+			return Math::Coord2DDbl(lastPt.x + (thisPt.x - lastPt.x) * maxLength / currLength,
 				lastPt.y + (thisPt.y - lastPt.y) * maxLength / currLength);
 		}
 		else
@@ -170,7 +170,7 @@ Double Math::Polyline::CalSqrDistance(Double x, Double y, Double *nearPtX, Doubl
 	UOSInt l;
 	UInt32 m;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 
 	ptOfsts = this->ptOfstArr;
 	points = this->pointArr;
@@ -289,17 +289,17 @@ Bool Math::Polyline::JoinVector(Math::Vector2D *vec)
 	}
 	Math::Polyline *pl = (Math::Polyline*)vec;
 	UInt32 *newPtOfsts = MemAlloc(UInt32, this->nPtOfst + pl->nPtOfst);
-	Math::Coord2D<Double> *newPoints = MemAlloc(Math::Coord2D<Double>, (this->nPoint + pl->nPoint));
+	Math::Coord2DDbl *newPoints = MemAllocA(Math::Coord2DDbl, (this->nPoint + pl->nPoint));
 	MemCopyNO(newPtOfsts, this->ptOfstArr, this->nPtOfst * sizeof(UInt32));
-	MemCopyNO(newPoints, this->pointArr, this->nPoint * sizeof(Math::Coord2D<Double>));
-	MemCopyNO(&newPoints[this->nPoint], pl->pointArr, pl->nPoint * sizeof(Math::Coord2D<Double>));
+	MemCopyNO(newPoints, this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+	MemCopyNO(&newPoints[this->nPoint], pl->pointArr, pl->nPoint * sizeof(Math::Coord2DDbl));
 	UOSInt i = pl->nPtOfst;
 	while (i-- > 0)
 	{
 		newPtOfsts[this->nPtOfst + i] = pl->ptOfstArr[i] + (UInt32)this->nPoint;
 	}
 	MemFree(this->ptOfstArr);
-	MemFree(this->pointArr);
+	MemFreeA(this->pointArr);
 	this->ptOfstArr = newPtOfsts;
 	this->pointArr = newPoints;
 	this->nPtOfst += pl->nPtOfst;
@@ -332,7 +332,7 @@ Bool Math::Polyline::Equals(Math::Vector2D *vec)
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
-		Math::Coord2D<Double> *ptList = pl->GetPointList(&nPoint);
+		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
 			return false;
@@ -379,8 +379,8 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 
 	UInt32 *oldPtOfsts;
 	UInt32 *newPtOfsts;
-	Math::Coord2D<Double> *oldPoints;
-	Math::Coord2D<Double> *newPoints;
+	Math::Coord2DDbl *oldPoints;
+	Math::Coord2DDbl *newPoints;
 	Math::Polyline *newPL;
 	if (isPoint)
 	{
@@ -409,7 +409,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 			}
 		}
 		newPtOfsts = MemAlloc(UInt32, k + 1);
-		newPoints = MemAlloc(Math::Coord2D<Double>, (minId + 1));
+		newPoints = MemAllocA(Math::Coord2DDbl, (minId + 1));
 		l = minId + 1;
 		while (l-- > 0)
 		{
@@ -439,7 +439,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 		}
 		this->nPoint = minId + 1;
 		this->nPtOfst = k + 1;
-		MemFree(oldPoints);
+		MemFreeA(oldPoints);
 		MemFree(oldPtOfsts);
 
 		return newPL;
@@ -458,7 +458,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 			}
 		}
 		newPtOfsts = MemAlloc(UInt32, k + 1);
-		newPoints = MemAlloc(Math::Coord2D<Double>, (minId + 2));
+		newPoints = MemAllocA(Math::Coord2DDbl, (minId + 2));
 		l = minId + 1;
 		while (l-- > 0)
 		{
@@ -494,7 +494,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 
 		this->nPoint = minId + 2;
 		this->nPtOfst = k + 1;
-		MemFree(oldPoints);
+		MemFreeA(oldPoints);
 		MemFree(oldPtOfsts);
 
 		return newPL;
@@ -503,7 +503,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 
 void Math::Polyline::OptimizePolyline()
 {
-	Math::Coord2D<Double> *tmpPoints = MemAlloc(Math::Coord2D<Double>, this->nPoint);
+	Math::Coord2DDbl *tmpPoints = MemAllocA(Math::Coord2DDbl, this->nPoint);
 	UInt32 lastPoints = (UInt32)this->nPoint;
 	UInt32 thisPoints;
 	UInt32 lastChkPoint;
@@ -520,19 +520,19 @@ void Math::Polyline::OptimizePolyline()
 			thisChkPoint = this->ptOfstArr[j];
 			if (this->pointArr[lastChkPoint - 1] == this->pointArr[thisPoints])
 			{
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2D<Double>) * (lastPoints - thisPoints));
+				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
-					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2D<Double>) * (this->nPoint - lastPoints));
+					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
 				}
 				if (lastChkPoint < thisPoints)
 				{
-					MemCopyNO(&tmpPoints[(lastPoints - thisPoints)], &this->pointArr[lastChkPoint], sizeof(Math::Coord2D<Double>) * (thisPoints - lastChkPoint));
-					MemCopyNO(&this->pointArr[lastChkPoint], tmpPoints + 1, sizeof(Math::Coord2D<Double>) * (lastPoints - lastChkPoint - 1));
+					MemCopyNO(&tmpPoints[(lastPoints - thisPoints)], &this->pointArr[lastChkPoint], sizeof(Math::Coord2DDbl) * (thisPoints - lastChkPoint));
+					MemCopyNO(&this->pointArr[lastChkPoint], tmpPoints + 1, sizeof(Math::Coord2DDbl) * (lastPoints - lastChkPoint - 1));
 				}
 				else
 				{
-					MemCopyNO(&this->pointArr[lastChkPoint], tmpPoints + 1, sizeof(Math::Coord2D<Double>) * (lastPoints - thisPoints - 1));
+					MemCopyNO(&this->pointArr[lastChkPoint], tmpPoints + 1, sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints - 1));
 				}
 				this->nPtOfst -= 1;
 				while (++j < i)
@@ -557,15 +557,15 @@ void Math::Polyline::OptimizePolyline()
 			}
 			else if (this->pointArr[thisChkPoint] == this->pointArr[lastPoints - 1])
 			{
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2D<Double>) * (lastPoints - thisPoints));
+				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
-					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2D<Double>) * (this->nPoint - lastPoints));
+					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
 				}
 //				MemCopyO(&points[(thisChkPoint + lastPoints - thisPoints - 1) << 1], &points[thisChkPoint << 1], sizeof(Double) * 2 * (thisPoints - thisChkPoint));
 //				MemCopyNO(&points[thisChkPoint << 1], tmpPoints, sizeof(Double) * 2 * (lastPoints - thisPoints - 1));
-				MemCopyNO(&tmpPoints[(lastPoints - thisPoints)], &this->pointArr[(thisChkPoint + 1)], sizeof(Math::Coord2D<Double>) * (thisPoints - thisChkPoint - 1));
-				MemCopyNO(&this->pointArr[thisChkPoint], tmpPoints, sizeof(Math::Coord2D<Double>) * (lastPoints - thisChkPoint - 1));
+				MemCopyNO(&tmpPoints[(lastPoints - thisPoints)], &this->pointArr[(thisChkPoint + 1)], sizeof(Math::Coord2DDbl) * (thisPoints - thisChkPoint - 1));
+				MemCopyNO(&this->pointArr[thisChkPoint], tmpPoints, sizeof(Math::Coord2DDbl) * (lastPoints - thisChkPoint - 1));
 				this->nPtOfst -= 1;
 				while (++j < i)
 				{
@@ -589,16 +589,16 @@ void Math::Polyline::OptimizePolyline()
 			}
 			else if (this->pointArr[thisChkPoint] == this->pointArr[thisPoints])
 			{
-				Math::Coord2D<Double> *srcPt;
-				Math::Coord2D<Double> *destPt;
+				Math::Coord2DDbl *srcPt;
+				Math::Coord2DDbl *destPt;
 				UInt32 ptCnt;
 
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2D<Double>) * (lastPoints - thisPoints));
+				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
-					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2D<Double>) * (this->nPoint - lastPoints));
+					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
 				}
-				MemCopyO(&this->pointArr[(thisChkPoint + lastPoints - thisPoints - 1)], &this->pointArr[thisChkPoint], sizeof(Math::Coord2D<Double>) * (thisPoints - thisChkPoint));
+				MemCopyO(&this->pointArr[(thisChkPoint + lastPoints - thisPoints - 1)], &this->pointArr[thisChkPoint], sizeof(Math::Coord2DDbl) * (thisPoints - thisChkPoint));
 
 				srcPt = tmpPoints;
 				destPt = &this->pointArr[thisChkPoint];
@@ -631,18 +631,18 @@ void Math::Polyline::OptimizePolyline()
 			}
 			else if (this->pointArr[(lastChkPoint - 1)] == this->pointArr[(lastPoints - 1)])
 			{
-				Math::Coord2D<Double> *srcPt;
-				Math::Coord2D<Double> *destPt;
+				Math::Coord2DDbl *srcPt;
+				Math::Coord2DDbl *destPt;
 				UInt32 ptCnt;
 
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2D<Double>) * (lastPoints - thisPoints));
+				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
-					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2D<Double>) * (this->nPoint - lastPoints));
+					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
 				}
 				if (lastChkPoint < thisPoints)
 				{
-					MemCopyO(&this->pointArr[(lastChkPoint + lastPoints - thisPoints - 1)], &this->pointArr[lastChkPoint], sizeof(Math::Coord2D<Double>) * (thisPoints - lastChkPoint));
+					MemCopyO(&this->pointArr[(lastChkPoint + lastPoints - thisPoints - 1)], &this->pointArr[lastChkPoint], sizeof(Math::Coord2DDbl) * (thisPoints - lastChkPoint));
 				}
 				srcPt = tmpPoints;
 				destPt = &this->pointArr[lastChkPoint];
@@ -677,7 +677,7 @@ void Math::Polyline::OptimizePolyline()
 		}
 		lastPoints = thisPoints;
 	}
-	MemFree(tmpPoints);
+	MemFreeA(tmpPoints);
 }
 
 OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calPtXOut, Double *calPtYOut)
@@ -686,7 +686,7 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 	UOSInt l;
 	UInt32 m;
 	UInt32 *ptOfsts;
-	Math::Coord2D<Double> *points;
+	Math::Coord2DDbl *points;
 
 	ptOfsts = this->ptOfstArr;
 	points = this->pointArr;
@@ -937,7 +937,7 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 
 	Math::Polygon *pg;
 	UOSInt nPoints;
-	Math::Coord2D<Double> *pts;
+	Math::Coord2DDbl *pts;
 	NEW_CLASS(pg, Math::Polygon(this->srid, 1, outPoints->GetCount() >> 1));
 	pts = pg->GetPointList(&nPoints);
 	i = 0;

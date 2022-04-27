@@ -79,8 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(void *userObj)
 
 void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 {
-	UOSInt w;
-	UOSInt h;
+	Math::Size2D<UOSInt> usz;
 	UOSInt v;
 	Int32 currV;
 	Double initX;
@@ -96,15 +95,15 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	Media::DrawPen *p;
 	this->pbPreview->SetImage(0);
 	SDEL_CLASS(this->pimg);
-	this->pbPreview->GetSizeP(&w, &h);
+	usz = this->pbPreview->GetSizeP();
 	eng = this->core->GetDrawEngine();
-	if (w > 0 && h > 0)
+	if (usz.width > 0 && usz.height > 0)
 	{
 		Double ddpi = this->core->GetMonitorDDPI(this->GetHMonitor());
 		v = this->hsbDPI->GetPos();
-		gimg = eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
+		gimg = eng->CreateImage32(usz.width, usz.height, Media::AT_NO_ALPHA);
 		b = gimg->NewBrushARGB(0xffffffff);
-		gimg->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
+		gimg->DrawRect(0, 0, UOSInt2Double(usz.width), UOSInt2Double(usz.height), 0, b);
 		gimg->DelBrush(b);
 
 		f = gimg->NewFontPx(CSTR("Arial"), 12 * UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -117,15 +116,15 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		while (true)
 		{
 			currX = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, currV) * UOSInt2Double(v) * 0.1 + initX;
-			if (currX > UOSInt2Double(w))
+			if (currX > UOSInt2Double(usz.width))
 				break;
 
 			if (currX >= lastX + 20)
 			{
 				sptr = Text::StrInt32(sbuff, currV);
 				gimg->GetTextSize(f, CSTRP(sbuff, sptr), sz);
-				gimg->DrawLine(currX, 0, currX, UOSInt2Double(h) - sz[1], p);
-				gimg->DrawString(currX - sz[0] * 0.5, UOSInt2Double(h) - sz[1], CSTRP(sbuff, sptr), f, b);
+				gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.height) - sz[1], p);
+				gimg->DrawString(currX - sz[0] * 0.5, UOSInt2Double(usz.height) - sz[1], CSTRP(sbuff, sptr), f, b);
 				lastX = currX;
 			}
 			currV++;

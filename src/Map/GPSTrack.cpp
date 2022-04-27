@@ -387,7 +387,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	UOSInt j;
 	Double lastLat;
 	Double lastLon;
-	Math::Coord2D<Double> *ptPtr;
+	Math::Coord2DDbl *ptPtr;
 	if (id < 0)
 		return 0;
 	Sync::MutexUsage mutUsage(&this->recMut);
@@ -408,7 +408,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 			outObj->nPtOfst = 1;
 			outObj->nPoint = (UInt32)(j = this->currRecs.GetCount());
 			outObj->ptOfstArr = MemAlloc(UInt32, 1);
-			outObj->pointArr = MemAlloc(Math::Coord2D<Double>, outObj->nPoint);
+			outObj->pointArr = MemAllocA(Math::Coord2DDbl, outObj->nPoint);
 			outObj->ptOfstArr[0] = 0;
 			ptPtr = outObj->pointArr;
 			i = 0;
@@ -450,7 +450,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 		outObj->nPtOfst = 1;
 		outObj->nPoint = (UInt32)(j = track->nRecords);
 		outObj->ptOfstArr = MemAlloc(UInt32, 1);
-		outObj->pointArr = MemAlloc(Math::Coord2D<Double>, outObj->nPoint);
+		outObj->pointArr = MemAllocA(Math::Coord2DDbl, outObj->nPoint);
 		outObj->ptOfstArr[0] = 0;
 		ptPtr = outObj->pointArr;
 		i = 0;
@@ -483,7 +483,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 	Double lastLat;
 	Double lastLon;
 	Double lastAlt;
-	Math::Coord2D<Double> *ptPtr;
+	Math::Coord2DDbl *ptPtr;
 	Double *altList;
 	if (id < 0)
 		return 0;
@@ -633,7 +633,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 void Map::GPSTrack::ReleaseObject(void *session, DrawObjectL *obj)
 {
 	MemFree(obj->ptOfstArr);
-	MemFree(obj->pointArr);
+	MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

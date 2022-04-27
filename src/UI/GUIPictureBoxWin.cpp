@@ -229,11 +229,9 @@ OSInt UI::GUIPictureBox::OnNotify(UInt32 code, void *lParam)
 void UI::GUIPictureBox::OnSizeChanged(Bool updateScn)
 {
 	UI::GUIControl::OnSizeChanged(updateScn);
-	UOSInt w;
-	UOSInt h;
-	GetSizeP(&w, &h);
-	this->resizer->SetTargetWidth(w);
-	this->resizer->SetTargetHeight(h);
+	Math::Size2D<UOSInt> sz = GetSizeP();
+	this->resizer->SetTargetWidth(sz.width);
+	this->resizer->SetTargetHeight(sz.height);
 	if (this->allowResize)
 	{
 		this->UpdatePreview();

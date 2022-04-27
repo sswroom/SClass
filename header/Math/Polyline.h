@@ -8,21 +8,21 @@ namespace Math
 	class Polyline : public Math::PointCollection
 	{
 	protected:
-		Math::Coord2D<Double> *pointArr;
+		Math::Coord2DDbl *pointArr;
 		UOSInt nPoint;
 		UInt32 *ptOfstArr;
 		UOSInt nPtOfst;
 		Int32 flags;
 		UInt32 color;
 	public:
-		Polyline(UInt32 srid, Math::Coord2D<Double> *pointArr, UOSInt nPoint);
+		Polyline(UInt32 srid, Math::Coord2DDbl *pointArr, UOSInt nPoint);
 		Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint);
 		virtual ~Polyline();
 
 		virtual VectorType GetVectorType();
 		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst);
-		virtual Math::Coord2D<Double> *GetPointList(UOSInt *nPoint);
-		virtual Math::Coord2D<Double> GetCenter();
+		virtual Math::Coord2DDbl *GetPointList(UOSInt *nPoint);
+		virtual Math::Coord2DDbl GetCenter();
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);

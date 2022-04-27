@@ -734,7 +734,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			}
 			UOSInt i;
 			UInt32 *parts;
-			Math::Coord2D<Double> *points;
+			Math::Coord2DDbl *points;
 			Double *altitiudes = 0;
 			if (this->tableInfo->geometryFlags & 0x80)
 			{
@@ -829,7 +829,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
 			UOSInt i;
 			UInt32 *parts = pg->GetPtOfstList(&i);
-			Math::Coord2D<Double> *points = pg->GetPointList(&i);
+			Math::Coord2DDbl *points = pg->GetPointList(&i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -911,7 +911,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				srid = this->tableInfo->csys->GetSRID();
 			}
 			UInt32 *parts;
-			Math::Coord2D<Double> *points;
+			Math::Coord2DDbl *points;
 			Double *altitiudes = 0;
 			if (geometryType & 0x80000000)
 			{

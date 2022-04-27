@@ -17,7 +17,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, M
 		return false;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	Math::Coord2D<Double> mapPos = me->navi->ScnXY2MapXY(scnPos);
+	Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 	Double lat;
 	Double lon;
 	if (me->navi->GetCoordinateSystem()->Equals(me->wgs84))

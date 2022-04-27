@@ -107,7 +107,7 @@ void UI::GUICoreJava::Suspend()
 {
 }
 
-void UI::GUICoreJava::GetDesktopSize(UOSInt *w, UOSInt *h)
+Math::Size2D<UOSInt> UI::GUICoreJava::GetDesktopSize()
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls;
@@ -118,19 +118,16 @@ void UI::GUICoreJava::GetDesktopSize(UOSInt *w, UOSInt *h)
 	cls = env->GetObjectClass(tk);
 	mid = env->GetMethodID(cls, "getScreenSize", "()Ljava/awt/Dimension");
 	jobject size = env->CallObjectMethod(tk, mid);
-	if (w)
-	{
-		mid = env->GetMethodID(cls, "getWidth", "()D");
-		*w = (UInt32)Double2Int32(env->CallDoubleMethod(size, mid));
-	}
-	if (h)
-	{
-		mid = env->GetMethodID(cls, "getHeight", "()D");
-		*h = (UInt32)Double2Int32(env->CallDoubleMethod(size, mid));
-	}
+	UOSInt w;
+	UOSInt h;
+	mid = env->GetMethodID(cls, "getWidth", "()D");
+	w = (UOSInt)Double2OSInt(env->CallDoubleMethod(size, mid));
+	mid = env->GetMethodID(cls, "getHeight", "()D");
+	h = (UOSInt)Double2OSInt(env->CallDoubleMethod(size, mid));
+	return Math::Size2D<UOSInt>(w, h);
 }
 
-void UI::GUICoreJava::GetCursorPos(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUICoreJava::GetCursorPos()
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls;
@@ -142,16 +139,13 @@ void UI::GUICoreJava::GetCursorPos(OSInt *x, OSInt *y)
 	mid = env->GetMethodID(cls, "getLocation", "()Ljava/awt/Point;");
 	jobject loc = env->CallObjectMethod(pointer, mid);
 	cls = env->GetObjectClass(loc);
-	if (x)
-	{
-		mid = env->GetMethodID(cls, "getX", "()D");
-		*x = Double2Int32(env->CallDoubleMethod(loc, mid));
-	}
-	if (x)
-	{
-		mid = env->GetMethodID(cls, "getY", "()D");
-		*y = Double2Int32(env->CallDoubleMethod(loc, mid));
-	}
+	OSInt x;
+	OSInt y;
+	mid = env->GetMethodID(cls, "getX", "()D");
+	x = Double2OSInt(env->CallDoubleMethod(loc, mid));
+	mid = env->GetMethodID(cls, "getY", "()D");
+	y = Double2OSInt(env->CallDoubleMethod(loc, mid));
+	return Math::Coord2D<OSInt>(x, y);
 }
 
 void UI::GUICoreJava::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
