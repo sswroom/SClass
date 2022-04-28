@@ -657,30 +657,24 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			UInt32 nPoints;
 			Math::Coord2DDbl pts[5];
-			Double x1;
-			Double y1;
-			Double x2;
-			Double y2;
+			Math::RectAreaDbl bounds;
 			
 			if (vimg->IsScnCoord())
 			{
-				vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &x1, &y1, &x2, &y2);
-				pts[0].x = x1;
-				pts[0].y = y1;
-				pts[1].x = x1;
-				pts[1].y = y2;
-				pts[2].x = x2;
-				pts[2].y = y2;
-				pts[3].x = x2;
-				pts[3].y = y1;
-				pts[4].x = x1;
-				pts[4].y = y1;
+				vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &bounds.tl.x, &bounds.tl.y, &bounds.br.x, &bounds.br.y);
+				pts[0] = bounds.tl;
+				pts[1].x = bounds.tl.x;
+				pts[1].y = bounds.br.y;
+				pts[2] = bounds.br;
+				pts[3].x = bounds.br.x;
+				pts[3].y = bounds.tl.y;
+				pts[4] = bounds.tl;
 			}
 			else
 			{
-				vimg->GetBounds(&x1, &y1, &x2, &y2);
-				Math::Coord2DDbl pt1 = view->MapXYToScnXY(Math::Coord2DDbl(x1, y1));
-				Math::Coord2DDbl pt2 = view->MapXYToScnXY(Math::Coord2DDbl(x2, y2));
+				vimg->GetBounds(&bounds);
+				Math::Coord2DDbl pt1 = view->MapXYToScnXY(bounds.tl);
+				Math::Coord2DDbl pt2 = view->MapXYToScnXY(bounds.br);
 				pts[0] = pt1;
 				pts[1].x = pt1.x;
 				pts[1].y = pt2.y;
@@ -1069,6 +1063,11 @@ void UI::GUIMapControl::SetSelectedVector(Math::Vector2D *vec)
 	}
 	this->selVec = vec;
 	this->Redraw();
+}
+
+void UI::GUIMapControl::SetVAngle(Double angleRad)
+{
+	this->view->SetVAngle(angleRad);
 }
 
 void UI::GUIMapControl::HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj)

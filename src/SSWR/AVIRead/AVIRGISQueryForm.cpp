@@ -36,7 +36,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		{
 			Data::ArrayListInt64 arr;
 			void *nameArr;
-			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, mapPt.x, mapPt.y, mapPt.x, mapPt.y, true);
+			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 			i = me->lyr->GetColumnCnt();
 			while (i-- > 0)
 			{

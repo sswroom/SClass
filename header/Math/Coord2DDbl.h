@@ -83,9 +83,19 @@ namespace Math
 			return PADDPD(this->vals, v.vals);
 		}
 
+		Coord2DDbl operator+(Double v)
+		{
+			return PADDPD(this->vals, PDoublex2SetA(v));
+		}
+
 		Coord2DDbl operator-(Coord2DDbl v)
 		{
 			return PSUBPD(this->vals, v.vals);
+		}
+
+		Coord2DDbl operator-(Double v)
+		{
+			return PSUBPD(this->vals, PDoublex2SetA(v));
 		}
 
 		Coord2DDbl operator*(Coord2DDbl v)

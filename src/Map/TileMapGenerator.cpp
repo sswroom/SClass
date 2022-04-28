@@ -108,7 +108,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	this->dbGenList->SortedInsert(id);
 	mutUsage.EndUse();
 
-	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), 0, 0, scale);
+	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale);
 	InitMapView(&view, x, y, scale);
 
 	params.tileX = x;
@@ -201,7 +201,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	params.labelType = 2;
 	params.dbStream = mstm;
 
-	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), 0, 0, scale);
+	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale);
 	InitMapView(&view, x, y, scale);
 
 	dimg = this->geng->CreateImage32(this->imgSize, this->imgSize, Media::AT_NO_ALPHA);

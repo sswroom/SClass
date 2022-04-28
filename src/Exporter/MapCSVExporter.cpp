@@ -150,10 +150,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	}
 	else
 	{
-		Double minX;
-		Double minY;
-		Double maxX;
-		Double maxY;
+		Math::RectAreaDbl minMax;
 		Double v;
 		Math::Coord2DDbl *points;
 		Int32 currInd = 1;
@@ -168,8 +165,8 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 
 		NEW_CLASS(objIds, Data::ArrayListInt64());
 		void *sess = layer->BeginGetObject();
-		layer->GetBoundsDbl(&minX, &minY, &maxX, &maxY);
-		layer->GetObjectIdsMapXY(objIds, &nameArr, minX, minY, maxX, maxY, true);
+		layer->GetBounds(&minMax);
+		layer->GetObjectIdsMapXY(objIds, &nameArr, minMax, true);
 		i = 0;
 		j = objIds->GetCount();
 		while (i < j)

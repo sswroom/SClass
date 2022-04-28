@@ -205,7 +205,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	Map::IMapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -224,7 +224,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 		lyr = this->layerList.GetItem(k);
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
-		m2 = lyr->GetObjectIds(&tmpArr, nameArr, mapRate, x1, y1, x2, y2, keepEmpty);
+		m2 = lyr->GetObjectIds(&tmpArr, nameArr, mapRate, rect, keepEmpty);
 		m1 = 0;
 		while (m1 < m2)
 		{
@@ -239,7 +239,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Map::IMapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -258,7 +258,7 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		lyr = this->layerList.GetItem(k);
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
-		m2 = lyr->GetObjectIdsMapXY(&tmpArr, nameArr, x1, y1, x2, y2, keepEmpty);
+		m2 = lyr->GetObjectIdsMapXY(&tmpArr, nameArr, rect, keepEmpty);
 		m1 = 0;
 		while (m1 < m2)
 		{
@@ -346,19 +346,13 @@ UInt32 Map::MapLayerCollection::GetCodePage()
 	return 0;
 }
 
-Bool Map::MapLayerCollection::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
 {
 	Bool isFirst = true;
 	UOSInt k;
 	UOSInt l;
-	Double currMaxX;
-	Double currMaxY;
-	Double currMinX;
-	Double currMinY;
-	Double thisMaxX;
-	Double thisMaxY;
-	Double thisMinX;
-	Double thisMinY;
+	Math::RectAreaDbl minMax;
+	Math::RectAreaDbl thisBounds;
 
 	this->mut.LockRead();
 	Map::IMapDrawLayer *lyr;
@@ -369,23 +363,17 @@ Bool Map::MapLayerCollection::GetBoundsDbl(Double *minX, Double *minY, Double *m
 		lyr = this->layerList.GetItem(k);
 		if (isFirst)
 		{
-			if (lyr->GetBoundsDbl(&currMinX, &currMinY, &currMaxX, &currMaxY))
+			if (lyr->GetBounds(&minMax))
 			{
 				isFirst = false;
 			}
 		}
 		else
 		{
-			if (lyr->GetBoundsDbl(&thisMinX, &thisMinY, &thisMaxX, &thisMaxY))
+			if (lyr->GetBounds(&thisBounds))
 			{
-				if (thisMinX < currMinX)
-					currMinX = thisMinX;
-				if (thisMinY < currMinY)
-					currMinY = thisMinY;
-				if (thisMaxX > currMaxX)
-					currMaxX = thisMaxX;
-				if (thisMaxY > currMaxY)
-					currMaxY = thisMaxY;
+				minMax.tl = minMax.tl.Min(thisBounds.tl);
+				minMax.br = minMax.br.Max(thisBounds.br);
 			}
 		}
 		k++;
@@ -397,10 +385,7 @@ Bool Map::MapLayerCollection::GetBoundsDbl(Double *minX, Double *minY, Double *m
 	}
 	else
 	{
-		*minX = currMinX;
-		*minY = currMinY;
-		*maxX = currMaxX;
-		*maxY = currMaxY;
+		*bounds = minMax;
 		return true;
 	}
 }

@@ -226,10 +226,8 @@ Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *
 	this->csys = csys;
 	this->nextId = 0;
 	this->boundsExists = false;
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 	this->minTime = 0;
 	this->maxTime = 0;
 	this->currTime = 0;
@@ -413,12 +411,12 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **
 	return retCnt;
 }
 
-UOSInt Map::WebImageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	ImageStat *stat;
@@ -428,30 +426,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void 
 	Bool valid;
 	NEW_CLASS(imgList, Data::ArrayList<ImageStat*>());
 
-	Double minX;
-	Double minY;
-	Double maxX;
-	Double maxY;
-	if (x1 > x2)
-	{
-		minX = x2;
-		maxX = x1;
-	}
-	else
-	{
-		minX = x1;
-		maxX = x2;
-	}
-	if (y1 > y2)
-	{
-		minY = y2;
-		maxY = y1;
-	}
-	else
-	{
-		minY = y1;
-		maxY = y2;
-	}
+	rect = rect.Reorder();
 
 	this->loadedMut->LockRead();
 	i = 0;
@@ -463,7 +438,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void 
 		if (stat->isScreen)
 		{
 		}
-		else if (stat->x1 < maxX && stat->x2 > minX && stat->y1 < maxY && stat->y2 > minY)
+		else if (stat->x1 < rect.br.x && stat->x2 > rect.tl.x && stat->y1 < rect.br.y && stat->y2 > rect.tl.y)
 		{
 		}
 		else
@@ -596,13 +571,10 @@ UInt32 Map::WebImageLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::WebImageLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::WebImageLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->minX;
-	*minY = this->minY;
-	*maxX = this->maxX;
-	*maxY = this->maxY;
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	*bounds = Math::RectAreaDbl(this->min, this->max);
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 void *Map::WebImageLayer::BeginGetObject()
@@ -625,7 +597,7 @@ Math::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, Int64 id)
 	if (stat)
 	{
 		Math::VectorImage *img;
-		NEW_CLASS(img, Math::VectorImage(this->csys->GetSRID(), stat->simg, stat->x1, stat->y1, stat->x2, stat->y2, stat->sizeX, stat->sizeY, stat->isScreen, stat->url, stat->timeStart, stat->timeEnd));
+		NEW_CLASS(img, Math::VectorImage(this->csys->GetSRID(), stat->simg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url, stat->timeStart, stat->timeEnd));
 		if (stat->hasAltitude)
 		{
 			img->SetHeight(stat->altitude);
@@ -749,30 +721,30 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 z
 
 		if (boundsExists)
 		{
-			if (this->minX > stat->x1)
+			if (this->min.x > stat->x1)
 			{
-				this->minX = stat->x1;
+				this->min.x = stat->x1;
 			}
-			if (this->minY > stat->y1)
+			if (this->min.y > stat->y1)
 			{
-				this->minY = stat->y1;
+				this->min.y = stat->y1;
 			}
-			if (this->maxX < stat->x2)
+			if (this->max.x < stat->x2)
 			{
-				this->maxX = stat->x2;
+				this->max.x = stat->x2;
 			}
-			if (this->maxY < stat->y2)
+			if (this->max.y < stat->y2)
 			{
-				this->maxY = stat->y2;
+				this->max.y = stat->y2;
 			}
 		}
 		else
 		{
 			boundsExists = true;
-			this->minX = stat->x1;
-			this->minY = stat->y1;
-			this->maxX = stat->x2;
-			this->maxY = stat->y2;
+			this->min.x = stat->x1;
+			this->min.y = stat->y1;
+			this->max.x = stat->x2;
+			this->max.y = stat->y2;
 		}
 	}
 	stat->isScreen = isScreen;

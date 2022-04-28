@@ -2032,6 +2032,7 @@ Math/ProjectedCoordinateSystem.h: ../../src/Math/ProjectedCoordinateSystem.cpp
 Math/Quadrilateral.h: ../../src/Math/Quadrilateral.cpp
 @Quadrilateral.o
 Math/RectArea.h:
+Math/RectAreaDbl.h:
 Math/Size2D.h:
 Math/SRESRIWKTWriter.h: ../../src/Math/SRESRIWKTWriter.cpp
 @SRESRIWKTWriter.o

@@ -46,12 +46,10 @@ Math::Vector2D *Math::VectorString::Clone()
 	return vstr;
 }
 
-void Math::VectorString::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+void Math::VectorString::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->x;
-	*minY = this->y;
-	*maxX = this->x;
-	*maxY = this->y;
+	Math::Coord2DDbl pt = Math::Coord2DDbl(this->x, this->y);
+	*bounds = Math::RectAreaDbl(pt, pt);
 }
 
 Double Math::VectorString::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)

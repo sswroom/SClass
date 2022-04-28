@@ -1406,57 +1406,43 @@ UOSInt Map::MapEnv::GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayL
 	return ret;
 }
 
-Bool Map::MapEnv::GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds)
 {
 	Data::ArrayList<Map::IMapDrawLayer*> layers;
 	UOSInt i = 0;
 	UOSInt j = this->GetLayersInGroup(group, &layers);
-	Double currMinX = 0;
-	Double currMinY = 0;
-	Double currMaxX = 0;
-	Double currMaxY = 0;
-	Double thisMinX;
-	Double thisMinY;
-	Double thisMaxX;
-	Double thisMaxY;
+	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
+	Math::RectAreaDbl thisBounds;
 	Math::CoordinateSystem *lyrCSys;
 	Bool isFirst = true;
 	while (i < j)
 	{
 		Map::IMapDrawLayer *lyr = layers.GetItem(i);
-		if (lyr->GetBoundsDbl(&thisMinX, &thisMinY, &thisMaxX, &thisMaxY))
+		if (lyr->GetBounds(&thisBounds))
 		{
 			lyrCSys = lyr->GetCoordinateSystem();
 			if (this->csys != 0 && lyrCSys != 0)
 			{
 				if (!this->csys->Equals(lyrCSys))
 				{
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisMinX, thisMinY, 0, &thisMinX, &thisMinY, 0);
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisMaxX, thisMaxY, 0, &thisMaxX, &thisMaxY, 0);
+					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisBounds.tl.x, thisBounds.tl.y, 0, &thisBounds.tl.x, &thisBounds.tl.y, 0);
+					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisBounds.br.x, thisBounds.br.y, 0, &thisBounds.br.x, &thisBounds.br.y, 0);
 				}
 			}
 			if (isFirst)
 			{
 				isFirst = false;
-				currMinX = thisMinX;
-				currMinY = thisMinY;
-				currMaxX = thisMaxX;
-				currMaxY = thisMaxY;
+				minMax = thisBounds;
 			}
 			else
 			{
-				if (currMinX > thisMinX) currMinX = thisMinX;
-				if (currMinY > thisMinY) currMinY = thisMinY;
-				if (currMaxX < thisMaxX) currMaxX = thisMaxX;
-				if (currMaxY < thisMaxY) currMaxY = thisMaxY;
+				minMax.tl = minMax.tl.Min(thisBounds.tl);
+				minMax.br = minMax.br.Max(thisBounds.br);
 			}
 		}	
 		i++;
 	}
-	*minX = currMinX;
-	*minY = currMinY;
-	*maxX = currMaxX;
-	*maxY = currMaxY;
+	*bounds = minMax;
 	return !isFirst;
 }
 
@@ -1470,19 +1456,19 @@ Map::MapView *Map::MapEnv::CreateMapView(Math::Size2D<Double> scnSize)
 	else if (csys == 0)
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, 22.4, 114.2, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000));
 		return view;
 	}
 	else if (csys->IsProjected())
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ProjectedMapView(scnSize, 835000, 820000, 10000));
+		NEW_CLASS(view, Map::ProjectedMapView(scnSize, Math::Coord2DDbl(835000, 820000), 10000));
 		return view;
 	}
 	else
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, 22.4, 114.2, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000));
 		return view;
 	}
 }

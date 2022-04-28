@@ -27,6 +27,10 @@ Math::Size2D<Double> Map::MapView::GetScnSize()
 	return this->scnSize;
 }
 
+void Map::MapView::SetVAngle(Double angleRad)
+{
+}
+
 void Map::MapView::SetDestImage(Media::DrawImage *img)
 {
 	if (this->scnSize.width != UOSInt2Double(img->GetWidth()) || this->scnSize.height != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
@@ -50,12 +54,9 @@ void Map::MapView::ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints)
 void Map::MapView::SetViewBounds(Double x1, Double y1, Double x2, Double y2)
 {
 	Double currScale = this->GetMapScale();
-	Double left = this->GetLeftX();
-	Double right = this->GetRightX();
-	Double top = this->GetTopY();
-	Double bottom = this->GetBottomY();
-	Double xRatio = (right - left) / (x2 - x1);
-	Double yRatio = (bottom - top) / (y2 - y1);
+	Math::RectAreaDbl rect = this->GetVerticalRect();
+	Double xRatio = rect.GetWidth() / (x2 - x1);
+	Double yRatio = rect.GetHeight() / (y2 - y1);
 	if (xRatio < 0)
 		xRatio = -xRatio;
 	if (yRatio < 0)

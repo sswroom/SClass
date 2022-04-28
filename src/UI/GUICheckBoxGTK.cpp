@@ -29,6 +29,16 @@ UI::GUICheckBox::~GUICheckBox()
 {
 }
 
+void UI::GUICheckBox::SetText(Text::CString text)
+{
+	GList *children = gtk_container_get_children((GtkContainer*)this->hwnd);
+	if (children)
+	{
+		gtk_label_set_text((GtkLabel*)children->data, (const Char*)text.v);
+	}
+	g_list_free(children);
+}
+
 Text::CString UI::GUICheckBox::GetObjectClass()
 {
 	return CSTR("CheckBox");

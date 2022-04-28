@@ -72,10 +72,8 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	this->currDB = 0;
 	this->lastDB = 0;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
-	this->maxX = 0;
-	this->minX = 0;
-	this->maxY = 0;
-	this->minY = 0;
+	this->max = Math::Coord2DDbl(0, 0);
+	this->min = Math::Coord2DDbl(0, 0);
 	this->objIdCol = 0;
 	this->shapeCol = 1;
 	UOSInt nameCol = 0;
@@ -133,29 +131,18 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 			vec = Map::SHPUtil::ParseShpRecord(srid, buff, buffSize);
 			if (vec)
 			{
-				Double thisMaxX;
-				Double thisMinX;
-				Double thisMaxY;
-				Double thisMinY;
+				Math::RectAreaDbl thisBounds;
 				this->objects->Put(objId, vec);
-				vec->GetBounds(&thisMinX, &thisMinY, &thisMaxX, &thisMaxY);
-				if (this->minX == 0 && this->minY == 0 && this->maxX == 0 && this->maxY == 0)
+				vec->GetBounds(&thisBounds);
+				if (this->min.x == 0 && this->min.y == 0 && this->max.x == 0 && this->max.y == 0)
 				{
-					maxX = thisMaxX;
-					minX = thisMinX;
-					maxY = thisMaxY;
-					minY = thisMinY;
+					min = thisBounds.tl;
+					max = thisBounds.br;
 				}
 				else
 				{
-					if (maxX < thisMaxX)
-						maxX = thisMaxX;
-					if (minX > thisMinX)
-						minX = thisMinX;
-					if (maxY < thisMaxY)
-						maxY = thisMaxY;
-					if (minY > thisMinY)
-						minY = thisMinY;
+					min = min.Min(thisBounds.tl);
+					max = max.Max(thisBounds.br);
 				}
 
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
@@ -246,12 +233,12 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	return this->objects->GetCount();
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
@@ -260,10 +247,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	UOSInt cnt = 0;
 	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
 	Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
-	Double minX;
-	Double minY;
-	Double maxX;
-	Double maxY;
+	Math::RectAreaDbl minMax;
 	Math::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
@@ -272,8 +256,8 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	while (i < j)
 	{
 		vec = vecList->GetItem(i);
-		vec->GetBounds(&minX, &minY, &maxX, &maxY);
-		if (x1 <= maxX && x2 >= minX && y1 <= maxY && y2 >= minY)
+		vec->GetBounds(&minMax);
+		if (rect.OverlapOrTouch(minMax))
 		{
 			outArr->Add(vecKeys->GetItem(i));
 			cnt++;
@@ -354,17 +338,10 @@ UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::ESRI::ESRIMDBLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	if (minX)
-		*minX = this->minX;
-	if (minY)
-		*minY = this->minY;
-	if (maxX)
-		*maxX = this->maxX;
-	if (maxY)
-		*maxY = this->maxY;
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	*bounds = Math::RectAreaDbl(this->min, this->max);
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 void *Map::ESRI::ESRIMDBLayer::BeginGetObject()

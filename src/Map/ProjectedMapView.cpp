@@ -4,11 +4,11 @@
 #include "Math/Math.h"
 #include "Math/Unit/Distance.h"
 
-Map::ProjectedMapView::ProjectedMapView(Math::Size2D<Double> scnSize, Double centX, Double centY, Double scale) : Map::MapView(scnSize)
+Map::ProjectedMapView::ProjectedMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale) : Map::MapView(scnSize)
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
-	ChangeViewXY(scnSize, Math::Coord2DDbl(centX, centY), scale);
+	ChangeViewXY(scnSize, centMap, scale);
 }
 
 Map::ProjectedMapView::~ProjectedMapView()
@@ -57,24 +57,15 @@ void Map::ProjectedMapView::SetDPI(Double hdpi, Double ddpi)
 	}
 }
 
-Double Map::ProjectedMapView::GetLeftX()
+Math::Quadrilateral Map::ProjectedMapView::GetBounds()
 {
-	return this->tl.x;
+	return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
 }
 
-Double Map::ProjectedMapView::GetTopY()
+Math::RectAreaDbl Map::ProjectedMapView::GetVerticalRect()
 {
-	return this->tl.y;
-}
-
-Double Map::ProjectedMapView::GetRightX()
-{
-	return this->br.x;
-}
-
-Double Map::ProjectedMapView::GetBottomY()
-{
-	return this->br.y;
+	Math::Coord2DDbl sz = this->br - this->tl;
+	return Math::RectAreaDbl(this->tl.x, this->tl.y, sz.x, sz.y);
 }
 
 Double Map::ProjectedMapView::GetMapScale()
@@ -243,6 +234,6 @@ Math::Coord2DDbl Map::ProjectedMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos)
 Map::MapView *Map::ProjectedMapView::Clone()
 {
 	Map::ProjectedMapView *view;
-	NEW_CLASS(view, Map::ProjectedMapView(this->scnSize, this->centMap.x, this->centMap.y, this->scale));
+	NEW_CLASS(view, Map::ProjectedMapView(this->scnSize, this->centMap, this->scale));
 	return view;
 }

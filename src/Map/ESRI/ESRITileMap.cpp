@@ -21,12 +21,9 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
-	this->oriX = 0;
-	this->oriY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
+	this->ori = Math::Coord2DDbl(0, 0);
 	this->tileWidth = 0;
 	this->tileHeight = 0;
 	this->isMercatorProj = false;
@@ -66,10 +63,10 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 				if (o != 0 && o->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *ext = (Text::JSONObject*)o;
-					this->minX = ext->GetObjectDouble(CSTR("xmin"));
-					this->minY = ext->GetObjectDouble(CSTR("ymin"));
-					this->maxX = ext->GetObjectDouble(CSTR("xmax"));
-					this->maxY = ext->GetObjectDouble(CSTR("ymax"));
+					this->min.x = ext->GetObjectDouble(CSTR("xmin"));
+					this->min.y = ext->GetObjectDouble(CSTR("ymin"));
+					this->max.x = ext->GetObjectDouble(CSTR("xmax"));
+					this->max.y = ext->GetObjectDouble(CSTR("ymax"));
 				}
 				else
 				{
@@ -77,10 +74,10 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 					if (o != 0 && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *ext = (Text::JSONObject*)o;
-						this->minX = ext->GetObjectDouble(CSTR("xmin"));
-						this->minY = ext->GetObjectDouble(CSTR("ymin"));
-						this->maxX = ext->GetObjectDouble(CSTR("xmax"));
-						this->maxY = ext->GetObjectDouble(CSTR("ymax"));
+						this->min.x = ext->GetObjectDouble(CSTR("xmin"));
+						this->min.y = ext->GetObjectDouble(CSTR("ymin"));
+						this->max.x = ext->GetObjectDouble(CSTR("xmax"));
+						this->max.y = ext->GetObjectDouble(CSTR("ymax"));
 					}
 				}
 
@@ -101,8 +98,8 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 					if (v != 0 && v->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *origin = (Text::JSONObject*)v;
-						this->oriX = origin->GetObjectDouble(CSTR("x"));
-						this->oriY = origin->GetObjectDouble(CSTR("y"));
+						this->ori.x = origin->GetObjectDouble(CSTR("x"));
+						this->ori.y = origin->GetObjectDouble(CSTR("y"));
 					}
 					v = tinfo->GetObjectValue(CSTR("lods"));
 					if (v != 0 && v->GetType() == Text::JSONType::Array)
@@ -156,7 +153,7 @@ Text::CString Map::ESRI::ESRITileMap::GetName()
 
 Bool Map::ESRI::ESRITileMap::IsError()
 {
-	if (this->minX == this->maxX || this->minY == this->maxY)
+	if (this->min.x == this->max.x || this->min.y == this->max.y)
 		return true;
 	if (this->tileWidth == 0 || this->tileHeight == 0)
 		return true;
@@ -231,23 +228,19 @@ UOSInt Map::ESRI::ESRITileMap::GetConcurrentCount()
 	return 2;
 }
 
-Bool Map::ESRI::ESRITileMap::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::ESRI::ESRITileMap::GetBounds(Math::RectAreaDbl *bounds)
 {
 	if (this->isMercatorProj)
 	{
-		*minX = WebMercatorX2Lon(this->minX);
-		*minY = WebMercatorY2Lat(this->minY);
-		*maxX = WebMercatorX2Lon(this->maxX);
-		*maxY = WebMercatorY2Lat(this->maxY);
+		*bounds = Math::RectAreaDbl(
+			Math::Coord2DDbl(WebMercatorX2Lon(this->min.x), WebMercatorY2Lat(this->min.y)),
+			Math::Coord2DDbl(WebMercatorX2Lon(this->max.x), WebMercatorY2Lat(this->max.y)));
 	}
 	else
 	{
-		*minX = this->minX;
-		*minY = this->minY;
-		*maxX = this->maxX;
-		*maxY = this->maxY;
+		*bounds = Math::RectAreaDbl(this->min, this->max);
 	}
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 Map::TileMap::ProjectionType Map::ESRI::ESRITileMap::GetProjectionType()
@@ -267,30 +260,30 @@ UOSInt Map::ESRI::ESRITileMap::GetTileSize()
 	return this->tileWidth;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, Double x2, Double y2, Data::ArrayList<Int64> *ids)
+UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
 {
 	if (this->isMercatorProj)
 	{
 		Int32 i;
 		Int32 j;
 		Double max = 85.051128779806592377796715521925;
-		if (y1 < -max)
-			y1 = -max;
-		else if (y1 > max)
-			y1 = max;
-		if (y2 < -max)
-			y2 = -max;
-		else if (y2 > max)
-			y2 = max;
+		if (rect.tl.y < -max)
+			rect.tl.y = -max;
+		else if (rect.tl.y > max)
+			rect.tl.y = max;
+		if (rect.br.y < -max)
+			rect.br.y = -max;
+		else if (rect.br.y > max)
+			rect.br.y = max;
 		
-		if (x1 == x2)
+		if (rect.tl.x == rect.br.x)
 			return 0;
-		if (y1 == y2)
+		if (rect.tl.y == rect.br.y)
 			return 0;
-		Int32 pixX1 = Lon2TileX(x1, level);
-		Int32 pixX2 = Lon2TileX(x2, level);
-		Int32 pixY1 = Lat2TileY(y1, level);
-		Int32 pixY2 = Lat2TileY(y2, level);
+		Int32 pixX1 = Lon2TileX(rect.tl.x, level);
+		Int32 pixX2 = Lon2TileX(rect.br.x, level);
+		Int32 pixY1 = Lat2TileY(rect.tl.y, level);
+		Int32 pixY2 = Lat2TileY(rect.br.y, level);
 		if (pixX1 > pixX2)
 		{
 			i = pixX1;
@@ -335,31 +328,17 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, D
 		Int32 j;
 		if (resol == 0)
 			return 0;
-		if (x1 > this->maxX)
-			x1 = this->maxX;
-		if (x1 < this->minX)
-			x1 = this->minX;
-		if (x2 > this->maxX)
-			x2 = this->maxX;
-		if (x2 < this->minX)
-			x2 = this->minX;
-		if (y1 > this->maxY)
-			y1 = this->maxY;
-		if (y1 < this->minY)
-			y1 = this->minY;
-		if (y2 > this->maxY)
-			y2 = this->maxY;
-		if (y2 < this->minY)
-			y2 = this->minY;
+		rect.tl = rect.tl.Min(this->max).Max(this->min);
+		rect.br = rect.br.Min(this->max).Max(this->min);
 
-		if (x1 == x2)
+		if (rect.tl.x == rect.br.x)
 			return 0;
-		if (y1 == y2)
+		if (rect.tl.y == rect.br.y)
 			return 0;
-		Int32 pixX1 = (Int32)((x1 - this->oriX) / resol / UOSInt2Double(this->tileWidth));
-		Int32 pixX2 = (Int32)((x2 - this->oriX) / resol / UOSInt2Double(this->tileWidth));
-		Int32 pixY1 = (Int32)((this->oriY - y1) / resol / UOSInt2Double(this->tileHeight));
-		Int32 pixY2 = (Int32)((this->oriY - y2) / resol / UOSInt2Double(this->tileHeight));
+		Int32 pixX1 = (Int32)((rect.tl.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
+		Int32 pixX2 = (Int32)((rect.br.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
+		Int32 pixY1 = (Int32)((this->ori.y - rect.tl.y) / resol / UOSInt2Double(this->tileHeight));
+		Int32 pixY2 = (Int32)((this->ori.y - rect.br.y) / resol / UOSInt2Double(this->tileHeight));
 		if (pixX1 > pixX2)
 		{
 			i = pixX1;
@@ -422,12 +401,12 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		Double resol = this->levels->GetItem(level);
 		if (resol == 0)
 			return 0;
-		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->oriX;
-		Double y1 = this->oriY - imgY * UOSInt2Double(this->tileHeight) * resol;
+		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
+		Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
 		Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
 		Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
 
-		if (x1 > this->maxX || x2 < this->minX || y1 < minY || y2 > maxY)
+		if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
 			return 0;
 
 		boundsXY[0] = x1;
@@ -550,12 +529,12 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		Double resol = this->levels->GetItem(level);
 		if (resol == 0)
 			return 0;
-		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->oriX;
-		Double y1 = this->oriY - imgY * UOSInt2Double(this->tileHeight) * resol;
+		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
+		Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
 		Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
 		Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
 
-		if (x1 > this->maxX || x2 < this->minX || y1 < minY || y2 > maxY)
+		if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
 			return 0;
 
 		boundsXY[0] = x1;

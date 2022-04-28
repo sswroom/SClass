@@ -9,11 +9,11 @@ extern "C"
 	Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, UOSInt scnWidth, UOSInt scnHeight);
 }
 
-Map::ScaledMapView::ScaledMapView(Math::Size2D<Double> scnSize, Double centLat, Double centLon, Double scale) : Map::MapView(scnSize)
+Map::ScaledMapView::ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale) : Map::MapView(scnSize)
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
-	ChangeViewXY(scnSize, Math::Coord2DDbl(centLon, centLat), scale);
+	ChangeViewXY(scnSize, centMap, scale);
 }
 
 Map::ScaledMapView::~ScaledMapView()
@@ -60,24 +60,15 @@ void Map::ScaledMapView::SetDPI(Double hdpi, Double ddpi)
 	}
 }
 
-Double Map::ScaledMapView::GetLeftX()
+Math::Quadrilateral Map::ScaledMapView::GetBounds()
 {
-	return this->tl.x;
+	return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
 }
 
-Double Map::ScaledMapView::GetTopY()
+Math::RectAreaDbl Map::ScaledMapView::GetVerticalRect()
 {
-	return this->tl.y;
-}
-
-Double Map::ScaledMapView::GetRightX()
-{
-	return this->br.x;
-}
-
-Double Map::ScaledMapView::GetBottomY()
-{
-	return this->br.y;
+	Math::Coord2DDbl sz = this->br - this->tl;
+	return Math::RectAreaDbl(this->tl.x, this->tl.y, sz.x, sz.y);
 }
 
 Double Map::ScaledMapView::GetMapScale()
@@ -245,6 +236,6 @@ Math::Coord2DDbl Map::ScaledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos)
 Map::MapView *Map::ScaledMapView::Clone()
 {
 	Map::ScaledMapView *view;
-	NEW_CLASS(view, Map::ScaledMapView(this->scnSize, this->centMap.y, this->centMap.x, this->scale));
+	NEW_CLASS(view, Map::ScaledMapView(this->scnSize, this->centMap, this->scale));
 	return view;
 }

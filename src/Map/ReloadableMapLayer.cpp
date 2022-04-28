@@ -190,7 +190,7 @@ UOSInt Map::ReloadableMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	return ret;
 }
 
-UOSInt Map::ReloadableMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::ReloadableMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	UOSInt i;
 	UOSInt j;
@@ -210,7 +210,7 @@ UOSInt Map::ReloadableMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 		{
 			maxId = innerLayer->innerLayer->GetObjectIdMax();
 			tmpArr.Clear();
-			l = innerLayer->innerLayer->GetObjectIds(&tmpArr, nameArr, mapRate, x1, y1, x2, y2, keepEmpty);
+			l = innerLayer->innerLayer->GetObjectIds(&tmpArr, nameArr, mapRate, rect, keepEmpty);
 			k = 0;
 			while (k < l)
 			{
@@ -227,7 +227,7 @@ UOSInt Map::ReloadableMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 	return ret;
 }
 
-UOSInt Map::ReloadableMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::ReloadableMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt i;
 	UOSInt j;
@@ -247,7 +247,7 @@ UOSInt Map::ReloadableMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		{
 			maxId = innerLayer->innerLayer->GetObjectIdMax();
 			tmpArr.Clear();
-			l = innerLayer->innerLayer->GetObjectIdsMapXY(&tmpArr, nameArr, x1, y1, x2, y2, keepEmpty);
+			l = innerLayer->innerLayer->GetObjectIdsMapXY(&tmpArr, nameArr, rect, keepEmpty);
 			k = 0;
 			while (k < l)
 			{
@@ -340,18 +340,12 @@ UInt32 Map::ReloadableMapLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::ReloadableMapLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::ReloadableMapLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
 	Bool isFirst = true;
 	UOSInt i;
-	Double currMaxX;
-	Double currMaxY;
-	Double currMinX;
-	Double currMinY;
-	Double thisMaxX;
-	Double thisMaxY;
-	Double thisMinX;
-	Double thisMinY;
+	Math::RectAreaDbl minMax;
+	Math::RectAreaDbl thisBounds;
 	this->innerLayerMut->LockRead();
 	i = this->innerLayers->GetCount();
 	while (i-- > 0)
@@ -361,23 +355,17 @@ Bool Map::ReloadableMapLayer::GetBoundsDbl(Double *minX, Double *minY, Double *m
 		{
 			if (isFirst)
 			{
-				if (innerLayer->innerLayer->GetBoundsDbl(&currMinX, &currMinY, &currMaxX, &currMaxY))
+				if (innerLayer->innerLayer->GetBounds(&minMax))
 				{
 					isFirst = false;
 				}
 			}
 			else
 			{
-				if (innerLayer->innerLayer->GetBoundsDbl(&thisMinX, &thisMinY, &thisMaxX, &thisMaxY))
+				if (innerLayer->innerLayer->GetBounds(&thisBounds))
 				{
-					if (thisMinX < currMinX)
-						currMinX = thisMinX;
-					if (thisMinY < currMinY)
-						currMinY = thisMinY;
-					if (thisMaxX > currMaxX)
-						currMaxX = thisMaxX;
-					if (thisMaxY > currMaxY)
-						currMaxY = thisMaxY;
+					minMax.tl = minMax.tl.Min(thisBounds.tl);
+					minMax.br = minMax.br.Max(thisBounds.br);
 				}
 			}
 		}
@@ -385,18 +373,12 @@ Bool Map::ReloadableMapLayer::GetBoundsDbl(Double *minX, Double *minY, Double *m
 	this->innerLayerMut->UnlockRead();
 	if (isFirst)
 	{
-		*minX = 0;
-		*minY = 0;
-		*maxX = 0;
-		*maxY = 0;
+		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
 		return false;
 	}
 	else
 	{
-		*minX = currMinX;
-		*minY = currMinY;
-		*maxX = currMaxX;
-		*maxY = currMaxY;
+		*bounds = minMax;
 		return true;
 	}
 }

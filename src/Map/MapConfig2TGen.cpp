@@ -2531,7 +2531,8 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	NEW_CLASS(arri, Data::ArrayListInt64());
-	lyrs->lyr->GetObjectIdsMapXY(arri, 0, view->GetLeftX() - (view->GetRightX() - view->GetLeftX()), view->GetTopY() - (view->GetBottomY() - view->GetTopY()), view->GetRightX() + (view->GetRightX() - view->GetLeftX()), view->GetBottomY() + (view->GetBottomY() - view->GetTopY()), true);
+	Math::RectAreaDbl rect = view->GetVerticalRect();
+	lyrs->lyr->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(rect.tl - rect.GetSize(), rect.br + rect.GetSize()), true);
 	if (arri->GetCount() <= 0)
 	{
 		DEL_CLASS(arri);
@@ -2634,8 +2635,9 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 	}
 
 	NEW_CLASS(arri, Data::ArrayListInt64());
-	Double tmpSize = (view->GetRightX() - view->GetLeftX()) * 1.5;
-	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, view->GetLeftX() - tmpSize, view->GetTopY() - tmpSize, view->GetRightX() + tmpSize, view->GetBottomY() + tmpSize, false);
+	Math::RectAreaDbl rect = view->GetVerticalRect();
+	Double tmpSize = rect.GetWidth() * 1.5;
+	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, Math::RectAreaDbl(rect.tl - tmpSize, rect.br + tmpSize), false);
 	session = lyrs->lyr->BeginGetObject();
 	i = arri->GetCount();
 	while (i-- > 0)
@@ -4960,7 +4962,8 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 				if (lyr)
 				{
 					arr.Clear();
-					lyr->GetObjectIdsMapXY(&arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+					Math::RectAreaDbl rect = view->GetVerticalRect();
+					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
 
 					if ((i = arr.GetCount()) > 0)
 					{
@@ -5065,7 +5068,8 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 				if (lyr)
 				{
 					arr.Clear();
-					lyr->GetObjectIdsMapXY(&arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+					Math::RectAreaDbl rect = view->GetVerticalRect();
+					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
 
 					if ((i = arr.GetCount()) > 0)
 					{

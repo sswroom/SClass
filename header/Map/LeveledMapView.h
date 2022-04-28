@@ -30,10 +30,8 @@ namespace Map
 		virtual void UpdateSize(Math::Size2D<Double> scnSize);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
-		virtual Double GetLeftX();
-		virtual Double GetTopY();
-		virtual Double GetRightX();
-		virtual Double GetBottomY();
+		virtual Math::Quadrilateral GetBounds();
+		virtual Math::RectAreaDbl GetVerticalRect();
 		virtual Double GetMapScale();
 		virtual Double GetViewScale();
 		virtual Math::Coord2DDbl GetCenter();

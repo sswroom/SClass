@@ -52,7 +52,7 @@ Map::OruxDBLayer::~OruxDBLayer()
 	while (i-- > 0)
 	{
 		lyr = layerList->GetItem(i);
-		MemFree(lyr);
+		MemFreeA(lyr);
 	}
 	DEL_CLASS(this->layerMap);
 	SDEL_CLASS(this->db);
@@ -69,16 +69,16 @@ void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, 
 	if (lyr == 0)
 	{
 		this->tileSize = tileSize;
-		lyr = MemAlloc(Map::OruxDBLayer::LayerInfo, 1);
+		lyr = MemAllocA(Map::OruxDBLayer::LayerInfo, 1);
 		lyr->layerId = layerId;
-		lyr->mapXMin = mapXMin;
-		lyr->mapYMin = mapYMin;
-		lyr->mapXMax = mapXMax;
-		lyr->mapYMax = mapYMax;
+		lyr->mapMin.x = mapXMin;
+		lyr->mapMin.y = mapYMin;
+		lyr->mapMax.x = mapXMax;
+		lyr->mapMax.y = mapYMax;
 		lyr->projYMin = (1.0 - Math_Ln( Math_Tan(mapYMin * Math::PI / 180.0) + 1.0 / Math_Cos(mapYMin * Math::PI / 180.0)) / Math::PI) / 2.0;
 		lyr->projYMax = (1.0 - Math_Ln( Math_Tan(mapYMax * Math::PI / 180.0) + 1.0 / Math_Cos(mapYMax * Math::PI / 180.0)) / Math::PI) / 2.0;
-		lyr->maxX = maxX;
-		lyr->maxY = maxY;
+		lyr->max.x = maxX;
+		lyr->max.y = maxY;
 		this->layerMap->Put(layerId, lyr);
 		if (this->currLayer == (UInt32)-1 || this->currLayer < layerId)
 		{
@@ -110,12 +110,12 @@ Map::MapView *Map::OruxDBLayer::CreateMapView(Math::Size2D<Double> scnSize)
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr)
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, (lyr->mapYMax + lyr->mapYMin) * 0.5, (lyr->mapXMax + lyr->mapXMin) * 0.5, this->layerMap->GetCount(), this->tileSize));
+		NEW_CLASS(view, Map::MercatorMapView(scnSize, (lyr->mapMax + lyr->mapMin) * 0.5, this->layerMap->GetCount(), this->tileSize));
 		return view;
 	}
 	else
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, 22.4, 114.2, 18, 256));
+		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 18, 256));
 		return view;
 	}
 }
@@ -133,17 +133,17 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 		UInt32 i;
 		UInt32 j;
 		i = 0;
-		while (i < lyr->maxX)
+		while (i < lyr->max.x)
 		{
 			j = 0;
-			while (j < lyr->maxY)
+			while (j < lyr->max.y)
 			{
 				outArr->Add((Int64)((((UInt64)i) << 32) | j));
 				j++;
 			}
 			i++;
 		}
-		return lyr->maxX * lyr->maxY;
+		return lyr->max.x * lyr->max.y;
 	}
 	else
 	{
@@ -151,12 +151,12 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Int32 minX;
 	Int32 minY;
@@ -164,46 +164,32 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 	Int32 maxY;
 	Int32 i;
 	Int32 j;
-	Double tmpV;
-	Double xDiff;
-	Double yDiff;
+	Math::Coord2DDbl diff;
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr)
 	{
-		if (x1 > x2)
-		{
-			tmpV = x1;
-			x1 = x2;
-			x2 = tmpV;
-		}
-		if (y1 > y2)
-		{
-			tmpV = y1;
-			y1 = y2;
-			y2 = tmpV;
-		}
-		xDiff = (lyr->mapXMax - lyr->mapXMin) / lyr->maxX;
-		yDiff = (lyr->mapYMax - lyr->mapYMin) / lyr->maxY;
-		minX = (Int32)((x1 - lyr->mapXMin) / xDiff);
-		minY = (Int32)((lyr->mapYMax - y2) / yDiff);
-		maxX = 1 + (Int32)((x2 - lyr->mapXMin) / xDiff);
-		maxY = 1 + (Int32)((lyr->mapYMax - y1) / yDiff);
+		rect = rect.Reorder();
+		diff = (lyr->mapMax - lyr->mapMin) / lyr->max.ToDouble();
+		minX = (Int32)((rect.tl.x - lyr->mapMin.x) / diff.x);
+		minY = (Int32)((lyr->mapMax.y - rect.br.y) / diff.y);
+		maxX = 1 + (Int32)((rect.br.x - lyr->mapMin.x) / diff.x);
+		maxY = 1 + (Int32)((lyr->mapMax.y - rect.tl.y) / diff.y);
 		if (maxX < 0)
 			return 0;
 		if (maxY < 0)
 			return 0;
-		if (minX >= (Int32)lyr->maxX)
+		if (minX >= (Int32)lyr->max.x)
 			return 0;
-		if (minY >= (Int32)lyr->maxY)
+		if (minY >= (Int32)lyr->max.y)
 			return 0;
 		if (minX < 0)
 			minX = 0;
 		if (minY < 0)
 			minY = 0;
-		if (maxX > (Int32)lyr->maxX)
-			maxX = (Int32)lyr->maxX;
-		if (maxY > (Int32)lyr->maxY)
-			maxY = (Int32)lyr->maxY;
+		if (maxX > (Int32)lyr->max.x)
+			maxX = (Int32)lyr->max.x;
+		if (maxY > (Int32)lyr->max.y)
+			maxY = (Int32)lyr->max.y;
 		i = minX;
 		while (i < maxX)
 		{
@@ -228,7 +214,7 @@ Int64 Map::OruxDBLayer::GetObjectIdMax()
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr)
 	{
-		return (((Int64)lyr->maxX - 1) << 32) | (UInt32)(lyr->maxY - 1);
+		return (((Int64)lyr->max.x - 1) << 32) | (UInt32)(lyr->max.y - 1);
 	}
 	else
 	{
@@ -270,23 +256,17 @@ UInt32 Map::OruxDBLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::OruxDBLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::OruxDBLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr)
 	{
-		*minX = lyr->mapXMin;
-		*maxX = lyr->mapXMax;
-		*minY = lyr->mapYMin;
-		*maxY = lyr->mapYMax;
-		return lyr->mapXMin != 0 || lyr->mapYMin != 0 || lyr->mapXMax != 0 || lyr->mapYMax != 0;
+		*bounds = Math::RectAreaDbl(lyr->mapMin, lyr->mapMax);
+		return lyr->mapMin.x != 0 || lyr->mapMin.y != 0 || lyr->mapMax.x != 0 || lyr->mapMax.y != 0;
 	}
 	else
 	{
-		*minX = 0;
-		*maxX = 0;
-		*minY = 0;
-		*maxY = 0;
+		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
 		return false;
 	}
 }
@@ -350,14 +330,14 @@ Math::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 		Double projY1;
 		Double projY2;
 		NEW_CLASS(shImg, Media::SharedImage(imgList, false));
-		x1 = lyr->mapXMin + (lyr->mapXMax - lyr->mapXMin) * x / lyr->maxX;
-		projY1 = lyr->projYMax - (lyr->projYMax - lyr->projYMin) * y / lyr->maxY;
-		projY2 = projY1 - (lyr->projYMax - lyr->projYMin) / lyr->maxY;
+		x1 = lyr->mapMin.x + (lyr->mapMax.x - lyr->mapMin.x) * x / lyr->max.x;
+		projY1 = lyr->projYMax - (lyr->projYMax - lyr->projYMin) * y / lyr->max.y;
+		projY2 = projY1 - (lyr->projYMax - lyr->projYMin) / lyr->max.y;
 		n = Math::PI - 2.0 * Math::PI * projY1;
 		y1 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 		n = Math::PI - 2.0 * Math::PI * projY2;
 		y2 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
-		NEW_CLASS(vimg, Math::VectorImage(4326, shImg, x1, y2, x1 + (lyr->mapXMax - lyr->mapXMin) / lyr->maxX, y1, false, CSTR_NULL, 0, 0));
+		NEW_CLASS(vimg, Math::VectorImage(4326, shImg, Math::Coord2DDbl(x1, y2), Math::Coord2DDbl(x1 + (lyr->mapMax.x - lyr->mapMin.x) / lyr->max.x, y1), false, CSTR_NULL, 0, 0));
 		DEL_CLASS(shImg);
 		return vimg;
 	}

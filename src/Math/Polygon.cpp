@@ -47,40 +47,19 @@ Math::Vector2D *Math::Polygon::Clone()
 	return pg;
 }
 
-void Math::Polygon::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+void Math::Polygon::GetBounds(Math::RectAreaDbl *bounds)
 {
 	UOSInt i = this->nPoint;
-	Double x1;
-	Double y1;
-	Double x2;
-	Double y2;
-	x1 = x2 = this->pointArr[0].x;
-	y1 = y2 = this->pointArr[0].y;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
+	min = max = this->pointArr[0];
 	while (i > 1)
 	{
 		i -= 1;
-		if (x1 > this->pointArr[i].x)
-		{
-			x1 = this->pointArr[i].x;
-		}
-		if (x2 < this->pointArr[i].x)
-		{
-			x2 = this->pointArr[i].x;
-		}
-		if (y1 > this->pointArr[i].y)
-		{
-			y1 = this->pointArr[i].y;
-		}
-		if (y2 < this->pointArr[i].y)
-		{
-			y2 = this->pointArr[i].y;
-		}
-		i -= 2;
+		min = min.Min(this->pointArr[i]);
+		max = max.Max(this->pointArr[i]);
 	}
-	*minX = x1;
-	*minY = y1;
-	*maxX = x2;
-	*maxY = y2;
+	*bounds = Math::RectAreaDbl(min, max);
 }
 
 Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)

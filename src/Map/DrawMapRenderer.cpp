@@ -96,10 +96,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 	if (label.leng == 0)
 		return false;
 
-	Double left = view->GetLeftX();
-	Double right = view->GetRightX();
-	Double top = view->GetTopY();
-	Double bottom = view->GetBottomY();
+	Math::RectAreaDbl rect = view->GetVerticalRect();
 	Math::Coord2DDbl mapPos = view->GetCenter();
 
 	if (recType == Map::DRAW_LAYER_POINT || recType == Map::DRAW_LAYER_POINT3D) //Point
@@ -150,7 +147,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			j = nPoints;
 			while (j--)
 			{
-				if (ptPtr->x >= left && ptPtr->x < right && ptPtr->y >= top && ptPtr->y < bottom)
+				if (rect.ContainPt(ptPtr->x, ptPtr->y))
 				{
 					found = 1;
 
@@ -216,6 +213,12 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		Math::Coord2DDbl thisPt;
 		UOSInt i;
 		Int32 toUpdate;
+
+		////////////////////////////
+		Double left = rect.tl.x;
+		Double top = rect.tl.y;
+		Double right = rect.br.x;
+		Double bottom = rect.br.y;
 
 		visibleSize = 0;
 		size = 0;
@@ -481,6 +484,12 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 
 		if (found == 0)
 		{
+			////////////////////////////
+			Double left = rect.tl.x;
+			Double top = rect.tl.y;
+			Double right = rect.br.x;
+			Double bottom = rect.br.y;
+
 			Math::Coord2DDbl lastPt;
 			Math::Coord2DDbl thisPt;
 			Math::Coord2DDbl thisT;
@@ -1570,17 +1579,14 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	denv->idArr.Clear();
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
-		Double x1;
-		Double y1;
-		Double x2;
-		Double y2;
-		x1 = denv->view->GetLeftX();
-		y1 = denv->view->GetTopY();
-		x2 = denv->view->GetRightX();
-		y2 = denv->view->GetBottomY();
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x1, y1, 0, &x1, &y1, 0);
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x2, y2, 0, &x2, &y2, 0);
-		layer->GetObjectIdsMapXY(&denv->idArr, 0, x1, y1, x2, y2, true);
+		Math::Coord2DDbl tl;
+		Math::Coord2DDbl br;
+		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+		tl = rect.tl;
+		br = rect.br;
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
 
 		if ((i = denv->idArr.GetCount()) > 0)
 		{
@@ -1637,7 +1643,12 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(&denv->idArr, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), true);
+		Math::Coord2DDbl tl;
+		Math::Coord2DDbl br;
+		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+		tl = rect.tl;
+		br = rect.GetBR();
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
 
 		if ((i = denv->idArr.GetCount()) > 0)
 		{
@@ -1705,17 +1716,14 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	denv->idArr.Clear();
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
-		Double x1;
-		Double y1;
-		Double x2;
-		Double y2;
-		x1 = denv->view->GetLeftX();
-		y1 = denv->view->GetTopY();
-		x2 = denv->view->GetRightX();
-		y2 = denv->view->GetBottomY();
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x1, y1, 0, &x1, &y1, 0);
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x2, y2, 0, &x2, &y2, 0);
-		layer->GetObjectIdsMapXY(&denv->idArr, 0, x1, y1, x2, y2, true);
+		Math::Coord2DDbl tl;
+		Math::Coord2DDbl br;
+		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+		tl = rect.tl;
+		br = rect.GetBR();
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
 
 		if ((i = denv->idArr.GetCount()) > 0)
 		{
@@ -1763,7 +1771,12 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(&denv->idArr, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), true);
+		Math::Coord2DDbl tl;
+		Math::Coord2DDbl br;
+		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+		tl = rect.tl;
+		br = rect.br;
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
 
 		if ((i = denv->idArr.GetCount()) > 0)
 		{
@@ -1813,10 +1826,11 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	UOSInt i;
 	UOSInt k;
 	void *session;
-	Double leftLon = denv->view->GetLeftX();
-	Double topLat = denv->view->GetTopY();
-	Double rightLon = denv->view->GetRightX();
-	Double bottomLat = denv->view->GetBottomY();
+	Math::Coord2DDbl tl;
+	Math::Coord2DDbl br;
+	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+	tl = rect.tl;
+	br = rect.br;
 	Double spotX;
 	Double spotY;
 	UOSInt maxLabel = denv->env->GetNString();
@@ -1857,9 +1871,9 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, leftLon, topLat, 0, &leftLon, &topLat, 0);
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, rightLon, bottomLat, 0, &rightLon, &bottomLat, 0);
-		layer->GetObjectIdsMapXY(&arri, 0, leftLon - ((rightLon - leftLon) * 0.5), topLat - ((bottomLat - topLat) * 0.5), rightLon + ((rightLon - leftLon) * 0.5), bottomLat + ((bottomLat - topLat) * 0.5), true);
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+		layer->GetObjectIdsMapXY(&arri, 0, Math::RectAreaDbl(tl - ((br - tl) * 0.5), br + ((br - tl) * 0.5)), true);
 		if (arri.GetCount() <= 0)
 		{
 			return;
@@ -1920,7 +1934,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(&arri, 0, leftLon - ((rightLon - leftLon) * 0.5), topLat - ((bottomLat - topLat) * 0.5), rightLon + ((rightLon - leftLon) * 0.5), bottomLat + ((bottomLat - topLat) * 0.5), true);
+		layer->GetObjectIdsMapXY(&arri, 0, Math::RectAreaDbl(tl - ((br - tl) * 0.5), br + ((br - tl) * 0.5)), true);
 		if (arri.GetCount() <= 0)
 		{
 			return;
@@ -1993,25 +2007,22 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	UTF8Char lblStr[256];
 	void *session;
 	UOSInt maxLabel = denv->env->GetNString();
-	Double x1;
-	Double y1;
-	Double x2;
-	Double y2;
 	Bool csysConv = false;;
-	x1 = denv->view->GetLeftX();
-	y1 = denv->view->GetTopY();
-	x2 = denv->view->GetRightX();
-	y2 = denv->view->GetBottomY();
+	Math::Coord2DDbl tl;
+	Math::Coord2DDbl br;
+	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+	tl = rect.tl;
+	br = rect.br;
 	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x1, y1, 0, &x1, &y1, 0);
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x2, y2, 0, &x2, &y2, 0);
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, br.x, br.y, 0, &br.x, &br.y, 0);
 		csysConv = true;
 	}
 
-	layer->GetObjectIdsMapXY(&arri, &arr, x1, y1, x2, y2, false);
+	layer->GetObjectIdsMapXY(&arri, &arr, Math::RectAreaDbl(tl, br), false);
 	session = layer->BeginGetObject();
 	i = arri.GetCount();
 	while (i-- > 0)
@@ -2157,19 +2168,20 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	{
 		layer->SetCurrScale(denv->view->GetMapScale());
 	}
+	Math::Coord2DDbl tl;
+	Math::Coord2DDbl br;
+	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+	tl = rect.tl;
+	br = rect.br;
 	if (geoConv)
 	{
-		Double x1 = denv->view->GetLeftX();
-		Double y1 = denv->view->GetTopY();
-		Double x2 = denv->view->GetRightX();
-		Double y2 = denv->view->GetBottomY();
-		Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, x1, y1, 0, &x1, &y1, 0);
-		Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, x2, y2, 0, &x2, &y2, 0);
-		layer->GetObjectIdsMapXY(&arri, 0, x1, y1, x2, y2, false);
+		Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, br.x, br.y, 0, &br.x, &br.y, 0);
+		layer->GetObjectIdsMapXY(&arri, 0, Math::RectAreaDbl(tl, br), false);
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(&arri, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), false);
+		layer->GetObjectIdsMapXY(&arri, 0, Math::RectAreaDbl(tl, br), false);
 	}
 	Data::ArrayList<Math::VectorImage *> imgList;
 	sess = layer->BeginGetObject();
@@ -2199,7 +2211,6 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	j = imgList.GetCount();
 	while (i < j)
 	{
-		Math::Coord2DDbl mapCoords[2];
 		Math::Coord2DDbl scnCoords[2];
 		vimg = imgList.GetItem(i);
 		if (vimg->IsScnCoord())
@@ -2208,14 +2219,18 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 		}
 		else
 		{
-			vimg->GetBounds(&mapCoords[0].x, &mapCoords[1].y, &mapCoords[1].x, &mapCoords[0].y);
+			Math::RectAreaDbl mapCoords;
+			vimg->GetBounds(&mapCoords);
+			Double t = mapCoords.tl.y;
+			mapCoords.tl.y = mapCoords.br.y;
+			mapCoords.br.y = t;
 			if (geoConv)
 			{
-				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[0].x, mapCoords[0].y, 0, &mapCoords[0].x, &mapCoords[0].y, 0);
-				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[1].x, mapCoords[1].y, 0, &mapCoords[1].x, &mapCoords[1].y, 0);
+				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords.tl.x, mapCoords.tl.y, 0, &mapCoords.tl.x, &mapCoords.tl.y, 0);
+				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords.br.x, mapCoords.br.y, 0, &mapCoords.br.x, &mapCoords.br.y, 0);
 			}
-			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords[0]);
-			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords[1]);
+			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords.tl);
+			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords.br);
 		}
 		UInt32 imgTimeMS;
 		Media::StaticImage *simg = vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, &imgTimeMS);

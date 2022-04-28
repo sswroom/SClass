@@ -205,7 +205,7 @@ namespace Map
 
 		Map::IMapDrawLayer *GetFirstLayer(GroupItem *group);
 		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::IMapDrawLayer *> *layers);
-		Bool GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Double *minY, Double *maxX, Double *maxY);
+		Bool GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds);
 		Map::MapView *CreateMapView(Math::Size2D<Double> scnSize);
 		Math::CoordinateSystem *GetCoordinateSystem();
 		UInt32 GetSRID();

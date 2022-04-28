@@ -5,42 +5,20 @@
 #include "Math/VectorImage.h"
 #include "Media/StaticImage.h"
 
-Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
 	{
-		this->x1 = x1;
-		this->y1 = y1;
-		this->x2 = 0;
-		this->y2 = 0;
-		this->sizeX = x2;
-		this->sizeY = y2;
+		this->tl = tl;
+		this->br = Math::Coord2DDbl(0, 0);
+		this->size = br;
 	}
 	else
 	{
-		this->sizeX = 0;
-		this->sizeY = 0;
-		if (x1 > x2)
-		{
-			this->x2 = x1;
-			this->x1 = x2;
-		}
-		else
-		{
-			this->x1 = x1;
-			this->x2 = x2;
-		}
-		if (y1 > y2)
-		{
-			this->y2 = y1;
-			this->y1 = y2;
-		}
-		else
-		{
-			this->y1 = y1;
-			this->y2 = y2;
-		}
+		this->size = Math::Coord2DDbl(0, 0);
+		this->tl = tl.Min(br);
+		this->br = tl.Max(br);
 	}
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
@@ -53,42 +31,20 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->zIndex = 0;
 }
 
-Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
 	{
-		this->x1 = x1;
-		this->y1 = y1;
-		this->x2 = 0;
-		this->y2 = 0;
-		this->sizeX = x2;
-		this->sizeY = y2;
+		this->tl = tl;
+		this->br = Math::Coord2DDbl(0, 0);
+		this->size = br;
 	}
 	else
 	{
-		this->sizeX = 0;
-		this->sizeY = 0;
-		if (x1 > x2)
-		{
-			this->x2 = x1;
-			this->x1 = x2;
-		}
-		else
-		{
-			this->x1 = x1;
-			this->x2 = x2;
-		}
-		if (y1 > y2)
-		{
-			this->y2 = y1;
-			this->y1 = y2;
-		}
-		else
-		{
-			this->y1 = y1;
-			this->y2 = y2;
-		}
+		this->size = Math::Coord2DDbl(0, 0);
+		this->tl = tl.Min(br);
+		this->br = tl.Max(br);
 	}
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
@@ -101,42 +57,20 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->zIndex = 0;
 }
 
-Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
 	{
-		this->x1 = x1;
-		this->y1 = y1;
-		this->x2 = x2;
-		this->y2 = y2;
-		this->sizeX = sizeX;
-		this->sizeY = sizeY;
+		this->tl = tl;
+		this->br = br;
+		this->size = size;
 	}
 	else
 	{
-		this->sizeX = 0;
-		this->sizeY = 0;
-		if (x1 > x2)
-		{
-			this->x2 = x1;
-			this->x1 = x2;
-		}
-		else
-		{
-			this->x1 = x1;
-			this->x2 = x2;
-		}
-		if (y1 > y2)
-		{
-			this->y2 = y1;
-			this->y1 = y2;
-		}
-		else
-		{
-			this->y1 = y1;
-			this->y2 = y2;
-		}
+		this->size = Math::Coord2DDbl(0, 0);
+		this->tl = tl.Min(br);
+		this->br = tl.Max(br);
 	}
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
@@ -149,42 +83,20 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->zIndex = 0;
 }
 
-Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
 	{
-		this->x1 = x1;
-		this->y1 = y1;
-		this->x2 = x2;
-		this->y2 = y2;
-		this->sizeX = sizeX;
-		this->sizeY = sizeY;
+		this->tl = tl;
+		this->br = br;
+		this->size = size;
 	}
 	else
 	{
-		this->sizeX = 0;
-		this->sizeY = 0;
-		if (x1 > x2)
-		{
-			this->x2 = x1;
-			this->x1 = x2;
-		}
-		else
-		{
-			this->x1 = x1;
-			this->x2 = x2;
-		}
-		if (y1 > y2)
-		{
-			this->y2 = y1;
-			this->y1 = y2;
-		}
-		else
-		{
-			this->y1 = y1;
-			this->y2 = y2;
-		}
+		this->size = Math::Coord2DDbl(0, 0);
+		this->tl = tl.Min(br);
+		this->br = tl.Max(br);
 	}
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
@@ -210,7 +122,7 @@ Math::Vector2D::VectorType Math::VectorImage::GetVectorType()
 
 Math::Coord2DDbl Math::VectorImage::GetCenter()
 {
-	return Math::Coord2DDbl((x1 + x2) * 0.5, (y1 + y2) * 0.5);
+	return (this->tl + this->br) * 0.5;
 }
 
 Math::Vector2D *Math::VectorImage::Clone()
@@ -218,11 +130,11 @@ Math::Vector2D *Math::VectorImage::Clone()
 	Math::VectorImage *vimg;
 	if (this->scnCoord)
 	{
-		NEW_CLASS(vimg, Math::VectorImage(this->srid, this->img, this->x1, this->y1, this->x2, this->y2, this->sizeX, this->sizeY, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
+		NEW_CLASS(vimg, Math::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
 	}
 	else
 	{
-		NEW_CLASS(vimg, Math::VectorImage(this->srid, this->img, this->x1, this->y1, this->x2, this->y2, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
+		NEW_CLASS(vimg, Math::VectorImage(this->srid, this->img, this->tl, this->br, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
 	}
 	if (this->hasHeight)
 	{
@@ -235,37 +147,34 @@ Math::Vector2D *Math::VectorImage::Clone()
 	return vimg;
 }
 
-void Math::VectorImage::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+void Math::VectorImage::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->x1;
-	*minY = this->y1;
-	*maxX = this->x2;
-	*maxY = this->y2;
+	*bounds = Math::RectAreaDbl(this->tl, this->br);
 }
 
 Double Math::VectorImage::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
 {
 	Double nearX;
 	Double nearY;
-	if (x > x2)
+	if (x > br.x)
 	{
-		nearX = x2;
+		nearX = br.x;
 	}
-	else if (x < x1)
+	else if (x < tl.x)
 	{
-		nearX = x1;
+		nearX = tl.x;
 	}
 	else
 	{
 		nearX = x;
 	}
-	if (y > y2)
+	if (y > br.y)
 	{
-		nearY = y2;
+		nearY = br.y;
 	}
-	else if (y < y1)
+	else if (y < tl.y)
 	{
-		nearY = y1;
+		nearY = tl.y;
 	}
 	else
 	{
@@ -301,8 +210,8 @@ void Math::VectorImage::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordina
 	}
 	else
 	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, x1, y1, 0, &x1, &y1, 0);
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, x2, y2, 0, &x2, &y2, 0);
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, br.x, br.y, 0, &br.x, &br.y, 0);
 	}
 }
 
@@ -381,29 +290,29 @@ void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Doubl
 	Double sizeX;
 	Double sizeY;
 
-	if (this->sizeX == 0 && this->sizeY == 0)
+	if (this->size.x == 0 && this->size.y == 0)
 	{
 		sizeX = UOSInt2Double(simg->info.dispWidth) * hdpi / simg->info.hdpi;
 		sizeY = UOSInt2Double(simg->info.dispHeight) * vdpi / simg->info.vdpi;
 	}
-	else if (this->sizeX == 0)
+	else if (this->size.x == 0)
 	{
-		sizeY = UOSInt2Double(scnHeight) * this->sizeY;
-		sizeX = UOSInt2Double(scnHeight) * this->sizeY * UOSInt2Double(simg->info.dispWidth) / UOSInt2Double(simg->info.dispHeight);
+		sizeY = UOSInt2Double(scnHeight) * this->size.y;
+		sizeX = UOSInt2Double(scnHeight) * this->size.y * UOSInt2Double(simg->info.dispWidth) / UOSInt2Double(simg->info.dispHeight);
 	}
-	else if (this->sizeY == 0)
+	else if (this->size.y == 0)
 	{
-		sizeX = UOSInt2Double(scnWidth) * this->sizeX;
-		sizeY = UOSInt2Double(scnWidth) * this->sizeX * UOSInt2Double(simg->info.dispHeight) / UOSInt2Double(simg->info.dispWidth);
+		sizeX = UOSInt2Double(scnWidth) * this->size.x;
+		sizeY = UOSInt2Double(scnWidth) * this->size.x * UOSInt2Double(simg->info.dispHeight) / UOSInt2Double(simg->info.dispWidth);
 	}
 	else
 	{
-		sizeX = UOSInt2Double(scnWidth) * this->sizeX;
-		sizeY = UOSInt2Double(scnHeight) * this->sizeY;
+		sizeX = UOSInt2Double(scnWidth) * this->size.x;
+		sizeY = UOSInt2Double(scnHeight) * this->size.y;
 	}
 
-	scnX = UOSInt2Double(scnWidth) * this->x1 - sizeX * this->x2;
-	scnY = UOSInt2Double(scnHeight) * (1 - this->y1) - sizeY * (1 - this->y2);
+	scnX = UOSInt2Double(scnWidth) * this->tl.x - sizeX * this->br.x;
+	scnY = UOSInt2Double(scnHeight) * (1 - this->tl.y) - sizeY * (1 - this->br.y);
 	*x1 = scnX;
 	*y1 = scnY;
 	*x2 = scnX + sizeX;
@@ -412,8 +321,8 @@ void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Doubl
 
 void Math::VectorImage::GetVectorSize(Double *sizeX, Double *sizeY)
 {
-	*sizeX = this->sizeX;
-	*sizeY = this->sizeY;
+	*sizeX = this->size.x;
+	*sizeY = this->size.y;
 }
 
 Bool Math::VectorImage::IsScnCoord()
@@ -423,10 +332,10 @@ Bool Math::VectorImage::IsScnCoord()
 
 void Math::VectorImage::SetBounds(Double minX, Double minY, Double maxX, Double maxY)
 {
-	this->x1 = minX;
-	this->y1 = minY;
-	this->x2 = maxX;
-	this->y2 = maxY;
+	this->tl.x = minX;
+	this->tl.y = minY;
+	this->br.x = maxX;
+	this->br.y = maxY;
 }
 
 Media::StaticImage *Math::VectorImage::GetImage(UInt32 *imgTimeMS)

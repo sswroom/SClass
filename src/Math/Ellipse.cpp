@@ -33,12 +33,9 @@ Math::Vector2D *Math::Ellipse::Clone()
 	return ellipse;
 }
 
-void Math::Ellipse::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+void Math::Ellipse::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->tlx;
-	*minY = this->tly;
-	*maxX = this->tlx + this->w;
-	*maxY = this->tly + this->h;
+	*bounds = Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
 }
 
 Double Math::Ellipse::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)

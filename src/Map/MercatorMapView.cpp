@@ -4,12 +4,11 @@
 #include "Map/MercatorMapView.h"
 #include "Math/Math.h"
 
-Map::MercatorMapView::MercatorMapView(Math::Size2D<Double> scnSize, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize) : Map::MapView(scnSize)
+Map::MercatorMapView::MercatorMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl center, UOSInt maxLevel, UOSInt tileSize) : Map::MapView(scnSize)
 {
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
-	this->centMap.x = centLon;
-	this->centMap.y = centLat;
+	this->centMap = center;
 	this->maxLevel = maxLevel;
 	this->level = maxLevel >> 1;
 	this->dtileSize = UOSInt2Double(tileSize);
@@ -64,24 +63,18 @@ void Map::MercatorMapView::UpdateXY()
 	this->centPixel.y = Lat2PixelY(this->centMap.y);
 }
 
-Double Map::MercatorMapView::GetLeftX()
+Math::Quadrilateral Map::MercatorMapView::GetBounds()
 {
-	return PixelX2Lon(this->centPixel.x - this->scnSize.width * 0.5 * this->ddpi / this->hdpi);
+	return this->GetVerticalRect().ToQuadrilateral();
 }
 
-Double Map::MercatorMapView::GetTopY()
+Math::RectAreaDbl Map::MercatorMapView::GetVerticalRect()
 {
-	return PixelY2Lat(this->centPixel.y + this->scnSize.height * 0.5 * this->ddpi / this->hdpi);
-}
-
-Double Map::MercatorMapView::GetRightX()
-{
-	return PixelX2Lon(this->centPixel.x + this->scnSize.width * 0.5 * this->ddpi / this->hdpi);
-}
-
-Double Map::MercatorMapView::GetBottomY()
-{
-	return PixelY2Lat(this->centPixel.y - this->scnSize.height * 0.5 * this->ddpi / this->hdpi);
+	Double left = PixelX2Lon(this->centPixel.x - this->scnSize.width * 0.5 * this->ddpi / this->hdpi);
+	Double top = PixelY2Lat(this->centPixel.y + this->scnSize.height * 0.5 * this->ddpi / this->hdpi);
+	Double right = PixelX2Lon(this->centPixel.x + this->scnSize.width * 0.5 * this->ddpi / this->hdpi);
+	Double bottom = PixelY2Lat(this->centPixel.y - this->scnSize.height * 0.5 * this->ddpi / this->hdpi);
+	return Math::RectAreaDbl(left, top, right - left, bottom - top);
 }
 
 Double Map::MercatorMapView::GetMapScale()
@@ -274,7 +267,7 @@ Math::Coord2DDbl Map::MercatorMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos)
 Map::MapView *Map::MercatorMapView::Clone()
 {
 	Map::MercatorMapView *view;
-	NEW_CLASS(view, Map::MercatorMapView(this->scnSize, this->centMap.y, this->centMap.x, this->maxLevel, (UOSInt)this->dtileSize));
+	NEW_CLASS(view, Map::MercatorMapView(this->scnSize, this->centMap, this->maxLevel, (UOSInt)this->dtileSize));
 	return view;
 }
 

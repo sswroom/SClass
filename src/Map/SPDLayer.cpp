@@ -234,37 +234,22 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	x1 = Double2Int32(x1 * 200000.0 / mapRate);
-	y1 = Double2Int32(y1 * 200000.0 / mapRate);
-	x2 = Double2Int32(x2 * 200000.0 / mapRate);
-	y2 = Double2Int32(y2 * 200000.0 / mapRate);
+	rect.tl.x = Double2Int32(rect.tl.x * 200000.0 / mapRate);
+	rect.tl.y = Double2Int32(rect.tl.y * 200000.0 / mapRate);
+	rect.br.x = Double2Int32(rect.br.x * 200000.0 / mapRate);
+	rect.br.y = Double2Int32(rect.br.y * 200000.0 / mapRate);
+	rect = rect.Reorder();
 	Int32 leftBlk;
 	Int32 rightBlk;
 	Int32 topBlk;
 	Int32 bottomBlk;
 //	this->mut->Lock();
-	if (x1 > x2)
-	{
-		leftBlk = x2 / blkScale;
-		rightBlk = x1 / blkScale;
-	}
-	else
-	{
-		leftBlk = x1 / blkScale;
-		rightBlk = x2 / blkScale;
-	}
-	if (y1 > y2)
-	{
-		topBlk = y2 / blkScale;
-		bottomBlk = y1 / blkScale;
-	}
-	else
-	{
-		topBlk = y1 / blkScale;
-		bottomBlk = y2 / blkScale;
-	}
+	leftBlk = rect.tl.x / blkScale;
+	rightBlk = rect.br.x / blkScale;
+	topBlk = rect.tl.y / blkScale;
+	bottomBlk = rect.br.y / blkScale;
 
 	UOSInt textSize;
 	Int32 i;
@@ -278,19 +263,19 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
-			if (this->blks[k].xblk < leftBlk)
+			if (this->blks[k].blk.x < leftBlk)
 			{
 				i = k + 1;
 			}
-			else if (this->blks[k].xblk > leftBlk)
+			else if (this->blks[k].blk.x > leftBlk)
 			{
 				j = k - 1;
 			}
-			else if (this->blks[k].yblk < topBlk)
+			else if (this->blks[k].blk.y < topBlk)
 			{
 				i = k + 1;
 			}
-			else if (this->blks[k].yblk > topBlk)
+			else if (this->blks[k].blk.y > topBlk)
 			{
 				j = k - 1;
 			}
@@ -325,11 +310,11 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		
 		while ((UOSInt)k < this->nblks)
 		{
-			if (this->blks[k].xblk > rightBlk)
+			if (this->blks[k].blk.x > rightBlk)
 				break;
 
 
-			if ((this->blks[k].yblk >= topBlk) && (this->blks[k].yblk <= bottomBlk) && (this->blks[k].xblk >= leftBlk))
+			if ((this->blks[k].blk.y >= topBlk) && (this->blks[k].blk.y <= bottomBlk) && (this->blks[k].blk.x >= leftBlk))
 			{
 				WChar *strTmp;
 				UInt8 buff[13];
@@ -369,11 +354,11 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	{
 		while ((UOSInt)k < this->nblks)
 		{
-			if (this->blks[k].xblk > rightBlk)
+			if (this->blks[k].blk.x > rightBlk)
 				break;
 
 
-			if ((this->blks[k].yblk >= topBlk) && (this->blks[k].yblk <= bottomBlk) && (this->blks[k].xblk >= leftBlk))
+			if ((this->blks[k].blk.y >= topBlk) && (this->blks[k].blk.y <= bottomBlk) && (this->blks[k].blk.x >= leftBlk))
 			{
 				outArr->AddRangeI32(this->blks[k].ids, this->blks[k].objCnt);
 				l += this->blks[k].objCnt;
@@ -385,9 +370,11 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	return GetObjectIds(outArr, nameArr, 200000.0, Double2Int32(x1 * 200000), Double2Int32(y1 * 200000), Double2Int32(x2 * 200000), Double2Int32(y2 * 200000), keepEmpty);
+	rect = rect * 200000;
+	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.tl.x), Double2Int32(rect.tl.y)),
+		 Math::Coord2D<Int32>(Double2Int32(rect.br.x), Double2Int32(rect.br.y))), keepEmpty);
 }
 
 Int64 Map::SPDLayer::GetObjectIdMax()
@@ -489,48 +476,39 @@ UInt32 Map::SPDLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::SPDLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::SPDLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
 	if (this->nblks == 0)
 	{
-		*minX = 0;
-		*minY = 0;
-		*maxX = 0;
-		*maxY = 0;
+		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
 		return false;
 	}
 	else
 	{
-		Int32 maxXBlk;
-		Int32 maxYBlk;
-		Int32 minXBlk;
-		Int32 minYBlk;
-		maxXBlk = minXBlk = this->blks[0].xblk;
-		maxYBlk = minYBlk = this->blks[0].yblk;
+		Math::Coord2D<Int32> minBlk;
+		Math::Coord2D<Int32> maxBlk;
+		maxBlk = minBlk = this->blks[0].blk;
 		OSInt i = this->nblks;
 		while (i-- > 0)
 		{
-			if (this->blks[i].xblk > maxXBlk)
+			if (this->blks[i].blk.x > maxBlk.x)
 			{
-				maxXBlk = this->blks[i].xblk;
+				maxBlk.x = this->blks[i].blk.x;
 			}
-			if (this->blks[i].xblk < minXBlk)
+			if (this->blks[i].blk.x < minBlk.x)
 			{
-				minXBlk = this->blks[i].xblk;
+				minBlk.x = this->blks[i].blk.x;
 			}
-			if (this->blks[i].yblk > maxYBlk)
+			if (this->blks[i].blk.y > maxBlk.y)
 			{
-				maxYBlk = this->blks[i].yblk;
+				maxBlk.y = this->blks[i].blk.y;
 			}
-			if (this->blks[i].yblk < minYBlk)
+			if (this->blks[i].blk.y < minBlk.y)
 			{
-				minYBlk = this->blks[i].yblk;
+				minBlk.y = this->blks[i].blk.y;
 			}
 		}
-		*minX = minXBlk / 200000.0 * this->blkScale;
-		*minY = minYBlk / 200000.0 * this->blkScale;
-		*maxX = (maxXBlk + 1) / 200000.0 * this->blkScale;
-		*maxY = (maxYBlk + 1) / 200000.0 * this->blkScale;
+		*bounds = Math::RectAreaDbl(minBlk.ToDouble(), maxBlk.ToDouble() + 1) * (this->blkScale / 200000.0);
 		return true;
 	}
 }

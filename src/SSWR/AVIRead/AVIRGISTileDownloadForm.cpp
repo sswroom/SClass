@@ -41,25 +41,23 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 			mapPt1.y = mapPt2.y;
 			mapPt2.y = tmpV;
 		}
-		me->selX1 = mapPt1.x;
-		me->selY1 = mapPt1.y;
-		me->selX2 = mapPt2.x;
-		me->selY2 = mapPt2.y;
+		me->sel1 = mapPt1;
+		me->sel2 = mapPt2;
 
 		Math::Polygon *pg;
 		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
-		ptList[0].x = me->selX1;
-		ptList[0].y = me->selY1;
-		ptList[1].x = me->selX2;
-		ptList[1].y = me->selY1;
-		ptList[2].x = me->selX2;
-		ptList[2].y = me->selY2;
-		ptList[3].x = me->selX1;
-		ptList[3].y = me->selY2;
-		ptList[4].x = me->selX1;
-		ptList[4].y = me->selY1;
+		ptList[0].x = me->sel1.x;
+		ptList[0].y = me->sel1.y;
+		ptList[1].x = me->sel2.x;
+		ptList[1].y = me->sel1.y;
+		ptList[2].x = me->sel2.x;
+		ptList[2].y = me->sel2.y;
+		ptList[3].x = me->sel1.x;
+		ptList[3].y = me->sel2.y;
+		ptList[4].x = me->sel1.x;
+		ptList[4].y = me->sel1.y;
 		me->navi->SetSelectedVector(pg);
 		return true;
 	}
@@ -117,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *us
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
 	UI::FolderDialog *dlg;
-	if (me->selX1 != 0 || me->selY1 != 0 || me->selX2 != 0 || me->selY2 != 0)
+	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
 		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"GISTileDown"));
 		if (dlg->ShowDialog(me->GetHandle()))
@@ -132,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
 	UI::FileDialog *dlg;
-	if (me->selX1 != 0 || me->selY1 != 0 || me->selX2 != 0 || me->selY2 != 0)
+	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISTileDownFile", true));
 		dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
@@ -271,7 +269,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 
 		imgIdList.Clear();
-		tileMap->GetImageIDs(currLyr, this->selX1, this->selY1, this->selX2, this->selY2, &imgIdList);
+		tileMap->GetImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
 		cnt = imgIdList.GetCount();
 		i = cnt;
 		while (i-- > 0)
@@ -363,7 +361,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 
 		imgIdList.Clear();
-		tileMap->GetImageIDs(currLyr, this->selX1, this->selY1, this->selX2, this->selY2, &imgIdList);
+		tileMap->GetImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
 		cnt = imgIdList.GetCount();
 		i = cnt;
 		while (i-- > 0)
@@ -560,10 +558,8 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->selecting = false;
 	this->isDown = false;
 	this->downPos = Math::Coord2D<OSInt>(0, 0);
-	this->selX1 = 0;
-	this->selY1 = 0;
-	this->selX2 = 0;
-	this->selY2 = 0;
+	this->sel1 = Math::Coord2DDbl(0, 0);
+	this->sel2 = Math::Coord2DDbl(0, 0);
 	this->stopDownload = false;
 
 	NEW_CLASS(this->btnArea, UI::GUIButton(ui, this, CSTR("Select Area")));

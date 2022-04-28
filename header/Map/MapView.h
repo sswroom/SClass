@@ -21,10 +21,8 @@ namespace Map
 		virtual void UpdateSize(Math::Size2D<Double> scnSize) = 0;
 		virtual void SetDPI(Double hdpi, Double ddpi) = 0;
 
-		virtual Double GetLeftX() = 0;
-		virtual Double GetTopY() = 0;
-		virtual Double GetRightX() = 0;
-		virtual Double GetBottomY() = 0;
+		virtual Math::Quadrilateral GetBounds() = 0;
+		virtual Math::RectAreaDbl GetVerticalRect() = 0;
 		virtual Double GetMapScale() = 0;
 		virtual Double GetViewScale() = 0;
 		virtual Math::Coord2DDbl GetCenter() = 0;
@@ -42,6 +40,7 @@ namespace Map
 		Double GetScnWidth();
 		Double GetScnHeight();
 		Math::Size2D<Double> GetScnSize();
+		void SetVAngle(Double angleRad);
 
 		void SetDestImage(Media::DrawImage *img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints);

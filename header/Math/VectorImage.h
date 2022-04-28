@@ -10,12 +10,9 @@ namespace Math
 	private:
 		Media::SharedImage *img;
 		Text::String *srcAddr;
-		Double x1;
-		Double y1;
-		Double x2;
-		Double y2;
-		Double sizeX;
-		Double sizeY;
+		Math::Coord2DDbl tl;
+		Math::Coord2DDbl br;
+		Math::Coord2DDbl size;
 		Bool scnCoord;
 		Bool hasHeight;
 		Double height;
@@ -26,16 +23,16 @@ namespace Math
 		Int32 zIndex;
 		
 	public:
-		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
-		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 		virtual ~VectorImage();
 
 		virtual VectorType GetVectorType();
 		virtual Math::Coord2DDbl GetCenter();
 		virtual Math::Vector2D *Clone();
-		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
+		virtual void GetBounds(Math::RectAreaDbl *bounds);
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual Bool Support3D();

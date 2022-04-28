@@ -17,7 +17,7 @@ namespace Map
 		Double dtileSize;
 
 	public:
-		MercatorMapView(Math::Size2D<Double> scnSize, Double centLat, Double centLon, UOSInt maxLevel, UOSInt tileSize);
+		MercatorMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl center, UOSInt maxLevel, UOSInt tileSize);
 		virtual ~MercatorMapView();
 
 		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
@@ -27,10 +27,8 @@ namespace Map
 		virtual void SetDPI(Double hdpi, Double ddpi);
 		void UpdateXY();
 
-		virtual Double GetLeftX();
-		virtual Double GetTopY();
-		virtual Double GetRightX();
-		virtual Double GetBottomY();
+		virtual Math::Quadrilateral GetBounds();
+		virtual Math::RectAreaDbl GetVerticalRect();
 		virtual Double GetMapScale();
 		virtual Double GetViewScale();
 		virtual Math::Coord2DDbl GetCenter();

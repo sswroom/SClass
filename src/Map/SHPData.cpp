@@ -62,36 +62,36 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	}
 	this->isPoint = false;
 	this->shpData = data->GetPartialData(0, data->GetDataSize());
-	this->xMin = ReadDouble(&shpHdr[36]);
-	this->yMin = ReadDouble(&shpHdr[44]);
-	this->xMax = ReadDouble(&shpHdr[52]);
-	this->yMax = ReadDouble(&shpHdr[60]);
+	this->min.x = ReadDouble(&shpHdr[36]);
+	this->min.y = ReadDouble(&shpHdr[44]);
+	this->max.x = ReadDouble(&shpHdr[52]);
+	this->max.y = ReadDouble(&shpHdr[60]);
 
-	if (xMax > 200000000 || xMin < -200000000 || yMax > 200000000 || yMin < -200000000)
+	if (max.x > 200000000 || min.x < -200000000 || max.y > 200000000 || min.y < -200000000)
 	{
 		this->mapRate = 1.0;
 	}
-	else if (xMax > 20000000 || xMin < -20000000 || yMax > 20000000 || yMin < -20000000)
+	else if (max.x > 20000000 || min.x < -20000000 || max.y > 20000000 || min.y < -20000000)
 	{
 		this->mapRate = 10.0;
 	}
-	else if (xMax > 2000000 || xMin < -2000000 || yMax > 2000000 || yMin < -2000000)
+	else if (max.x > 2000000 || min.x < -2000000 || max.y > 2000000 || min.y < -2000000)
 	{
 		this->mapRate = 100.0;
 	}
-	else if (xMax > 200000 || xMin < -200000 || yMax > 200000 || yMin < -200000)
+	else if (max.x > 200000 || min.x < -200000 || max.y > 200000 || min.y < -200000)
 	{
 		this->mapRate = 1000.0;
 	}
-	else if (xMax > 20000 || xMin < -20000 || yMax > 20000 || yMin < -20000)
+	else if (max.x > 20000 || min.x < -20000 || max.y > 20000 || min.y < -20000)
 	{
 		this->mapRate = 10000.0;
 	}
-	else if (xMax > 2000 || xMin < -2000 || yMax > 2000 || yMin < -2000)
+	else if (max.x > 2000 || min.x < -2000 || max.y > 2000 || min.y < -2000)
 	{
 		this->mapRate = 100000.0;
 	}
-	else if (xMax > 200 || xMin < -200 || yMax > 200 || yMin < -200)
+	else if (max.x > 200 || min.x < -200 || max.y > 200 || min.y < -200)
 	{
 		this->mapRate = 1000000.0;
 	}
@@ -406,12 +406,12 @@ UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameAr
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
@@ -425,7 +425,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **name
 		{
 			x = this->ptX->GetItem(i);
 			y = this->ptY->GetItem(i);
-			if (x1 <= x && x2 >= x && y1 <= y && y2 >= y)
+			if (rect.ContainPt(x, y))
 			{
 				outArr->Add((Int64)i);
 				retCnt++;
@@ -443,7 +443,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **name
 			rec = (Map::SHPData::RecHdr*)this->recs->GetItem(i);
 			if (rec)
 			{
-				if (rec->x2 >= x1 && rec->x1 <= x2 && rec->y2 >= y1 && rec->y1 <= y2)
+				if (rec->x2 >= rect.tl.x && rec->x1 <= rect.br.x && rec->y2 >= rect.tl.y && rec->y1 <= rect.br.y)
 				{
 					outArr->Add((Int64)i);
 					retCnt++;
@@ -509,13 +509,10 @@ UInt32 Map::SHPData::GetCodePage()
 	return this->dbf->GetCodePage();
 }
 
-Bool Map::SHPData::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::SHPData::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->xMin;
-	*minY = this->yMin;
-	*maxX = this->xMax;
-	*maxY = this->yMax;
-	return this->xMin != 0 || this->yMin != 0 || this->xMax != 0 || this->yMax != 0;
+	*bounds = Math::RectAreaDbl(this->min, this->max);
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 void *Map::SHPData::BeginGetObject()

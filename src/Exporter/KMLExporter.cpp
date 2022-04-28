@@ -384,10 +384,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					sptr = Text::StrInt64(sbuff, currId);
 				}
 
-				Double minX;
-				Double minY;
-				Double maxX;
-				Double maxY;
+				Math::RectAreaDbl bounds;
 				Int64 timeStart;
 				Int64 timeEnd;
 				if (img->IsScnCoord())
@@ -446,24 +443,24 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					sb.Append(img->GetSourceAddr());
 					sb.AppendC(UTF8STRC("</href></Icon>"));
 
-					img->GetBounds(&minX, &minY, &maxX, &maxY);
+					img->GetBounds(&bounds);
 					sb.AppendC(UTF8STRC("<overlayXY x=\""));
-					Text::SBAppendF64(&sb, maxX);
+					Text::SBAppendF64(&sb, bounds.br.x);
 					sb.AppendC(UTF8STRC("\" y=\""));
-					Text::SBAppendF64(&sb, maxY);
+					Text::SBAppendF64(&sb, bounds.br.y);
 					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 					sb.AppendC(UTF8STRC("<screenXY x=\""));
-					Text::SBAppendF64(&sb, minX);
+					Text::SBAppendF64(&sb, bounds.tl.x);
 					sb.AppendC(UTF8STRC("\" y=\""));
-					Text::SBAppendF64(&sb, minY);
+					Text::SBAppendF64(&sb, bounds.tl.y);
 					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
-					img->GetVectorSize(&maxX, &maxY);
+					img->GetVectorSize(&bounds.tl.x, &bounds.tl.x);
 					sb.AppendC(UTF8STRC("<size x=\""));
-					Text::SBAppendF64(&sb, maxX);
+					Text::SBAppendF64(&sb, bounds.tl.x);
 					sb.AppendC(UTF8STRC("\" y=\""));
-					Text::SBAppendF64(&sb, maxY);
+					Text::SBAppendF64(&sb, bounds.tl.y);
 					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 					sb.AppendC(UTF8STRC("</ScreenOverlay>"));
@@ -526,22 +523,22 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					sb.AppendC(UTF8STRC("</href></Icon>"));
 					sb.AppendC(UTF8STRC("<LatLonBox>"));
 
-					img->GetBounds(&minX, &minY, &maxX, &maxY);
+					img->GetBounds(&bounds);
 					if (needConv)
 					{
 						Double z;
-						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, minX, minY, defHeight, &minX, &minY, &z);
-						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, maxX, maxY, defHeight, &maxX, &maxY, &z);
+						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.tl.x, bounds.tl.y, defHeight, &bounds.tl.x, &bounds.tl.y, &z);
+						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.br.x, bounds.br.y, defHeight, &bounds.br.x, &bounds.br.y, &z);
 					}
 					sb.AppendC(UTF8STRC("<north>"));
-					Text::SBAppendF64(&sb, maxY);
+					Text::SBAppendF64(&sb, bounds.br.y);
 					sb.AppendC(UTF8STRC("</north><south>"));
-					Text::SBAppendF64(&sb, minY);
+					Text::SBAppendF64(&sb, bounds.tl.y);
 					sb.AppendC(UTF8STRC("</south>"));
 					sb.AppendC(UTF8STRC("<east>"));
-					Text::SBAppendF64(&sb, maxX);
+					Text::SBAppendF64(&sb, bounds.br.x);
 					sb.AppendC(UTF8STRC("</east><west>"));
-					Text::SBAppendF64(&sb, minX);
+					Text::SBAppendF64(&sb, bounds.tl.x);
 					sb.AppendC(UTF8STRC("</west>"));
 					sb.AppendC(UTF8STRC("</LatLonBox>"));
 					if (img->Support3D())

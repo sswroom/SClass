@@ -80,24 +80,15 @@ void Map::LeveledMapView::SetDPI(Double hdpi, Double ddpi)
 	}
 }
 
-Double Map::LeveledMapView::GetLeftX()
+Math::Quadrilateral Map::LeveledMapView::GetBounds()
 {
-	return this->tl.x;
+	return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
 }
 
-Double Map::LeveledMapView::GetTopY()
+Math::RectAreaDbl Map::LeveledMapView::GetVerticalRect()
 {
-	return this->tl.y;
-}
-
-Double Map::LeveledMapView::GetRightX()
-{
-	return this->br.x;
-}
-
-Double Map::LeveledMapView::GetBottomY()
-{
-	return this->br.y;
+	Math::Coord2DDbl sz = this->br - this->tl;
+	return Math::RectAreaDbl(this->tl.x, this->tl.y, sz.x, sz.y);
 }
 
 Double Map::LeveledMapView::GetMapScale()

@@ -36,10 +36,8 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			Int64 currImage;
-			Double imgMinX;
-			Double imgMinY;
-			Double imgMaxX;
-			Double imgMaxY;
+			Math::Coord2DDbl imgMin;
+			Math::Coord2DDbl imgMax;
 			Int32 downType;
 			Math::Coord2D<OSInt> downPos;
 

@@ -139,10 +139,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	this->maxLevel = 0;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
-	this->minX = 0;
-	this->maxX = 0;
-	this->minY = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 
 	UInt32 minXBlk;
 	UInt32 maxXBlk;
@@ -257,10 +255,10 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 
 					if (minYBlk != (UInt32)-1)
 					{
-						this->minX = Map::OSM::OSMTileMap::TileX2Lon((Int32)minXBlk, this->maxLevel);
-						this->maxX = Map::OSM::OSMTileMap::TileX2Lon((Int32)maxXBlk + 1, this->maxLevel);
-						this->minY = Map::OSM::OSMTileMap::TileY2Lat((Int32)maxYBlk + 1, this->maxLevel);
-						this->maxY = Map::OSM::OSMTileMap::TileY2Lat((Int32)minYBlk, this->maxLevel);
+						this->min.x = Map::OSM::OSMTileMap::TileX2Lon((Int32)minXBlk, this->maxLevel);
+						this->max.x = Map::OSM::OSMTileMap::TileX2Lon((Int32)maxXBlk + 1, this->maxLevel);
+						this->min.y = Map::OSM::OSMTileMap::TileY2Lat((Int32)maxYBlk + 1, this->maxLevel);
+						this->max.y = Map::OSM::OSMTileMap::TileY2Lat((Int32)minYBlk, this->maxLevel);
 					}
 				}
 			}
@@ -315,13 +313,10 @@ UOSInt Map::OSM::OSMLocalTileMap::GetConcurrentCount()
 	return 1;
 }
 
-Bool Map::OSM::OSMLocalTileMap::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::OSM::OSMLocalTileMap::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->minX;
-	*minY = this->minY;
-	*maxX = this->maxX;
-	*maxY = this->maxY;
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	*bounds = Math::RectAreaDbl(this->min, this->max);
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 Map::TileMap::ProjectionType Map::OSM::OSMLocalTileMap::GetProjectionType()
@@ -334,35 +329,20 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileSize()
 	return this->tileWidth;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Double x1, Double y1, Double x2, Double y2, Data::ArrayList<Int64> *ids)
+UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
 {
 	Int32 i;
 	Int32 j;
-	if (y1 < this->minY)
-		y1 = this->minY;
-	else if (y1 > this->maxY)
-		y1 = this->maxY;
-	if (y2 < this->minY)
-		y2 = this->minY;
-	else if (y2 > this->maxY)
-		y2 = this->maxY;
-	
-	if (x1 < this->minX)
-		x1 = this->minX;
-	else if (x1 > this->maxX)
-		x1 = this->maxX;
-	if (x2 < this->minX)
-		x2 = this->minX;
-	else if (x2 > this->maxX)
-		x2 = this->maxX;
-	if (x1 == x2)
+	rect.tl = rect.tl.Max(this->min);
+	rect.br = rect.br.Min(this->max);
+	if (rect.tl.x == rect.br.x)
 		return 0;
-	if (y1 == y2)
+	if (rect.tl.y == rect.br.y)
 		return 0;
-	Int32 pixX1 = Map::OSM::OSMTileMap::Lon2TileX(x1, level);
-	Int32 pixX2 = Map::OSM::OSMTileMap::Lon2TileX(x2, level);
-	Int32 pixY1 = Map::OSM::OSMTileMap::Lat2TileY(y1, level);
-	Int32 pixY2 = Map::OSM::OSMTileMap::Lat2TileY(y2, level);
+	Int32 pixX1 = Map::OSM::OSMTileMap::Lon2TileX(rect.tl.x, level);
+	Int32 pixX2 = Map::OSM::OSMTileMap::Lon2TileX(rect.br.x, level);
+	Int32 pixY1 = Map::OSM::OSMTileMap::Lat2TileY(rect.tl.y, level);
+	Int32 pixY2 = Map::OSM::OSMTileMap::Lat2TileY(rect.br.y, level);
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;

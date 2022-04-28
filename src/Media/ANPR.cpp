@@ -191,7 +191,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 				if (this->hdlr)
 				{
 					Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
-					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.width), (UOSInt)Double2OSInt(dblArea.height));
+					Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
 					this->hdlr(this->hdlrObj, simg, &area, s1, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 				}
 				found = true;
@@ -216,7 +216,7 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 					if (this->hdlr)
 					{
 						Math::RectArea<Double> dblArea = Math::RectArea<Double>::FromQuadrilateral(quad);
-						Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.width), (UOSInt)Double2OSInt(dblArea.height));
+						Math::RectArea<UOSInt> area = Math::RectArea<UOSInt>((UOSInt)Double2OSInt(dblArea.tl.x), (UOSInt)Double2OSInt(dblArea.tl.y), (UOSInt)Double2OSInt(dblArea.GetWidth()), (UOSInt)Double2OSInt(dblArea.GetHeight()));
 						this->hdlr(this->hdlrObj, simg, &area, s, quad.CalcMaxTiltAngle() * 180 / Math::PI, quad.CalcArea(), confidence, plainImg);
 					}
 					found = true;
@@ -243,25 +243,25 @@ Bool Media::ANPR::ParseImagePlatePoint(Media::StaticImage *simg, Math::Coord2D<U
 	Int32 rate = 16;
 	Math::RectArea<UOSInt> rect;
 	rect = simg->CalcNearPixelRange(coord, rate);
-	if (rect.height > 100)
+	if (rect.GetHeight() > 100)
 	{
 		while (rate > 10)
 		{
 			rate--;
 			rect = simg->CalcNearPixelRange(coord, rate);
-			if (rect.height <= 100)
+			if (rect.GetHeight() <= 100)
 			{
 				break;
 			}
 		}
 	}
-	else if (rect.width < 150)
+	else if (rect.GetWidth() < 150)
 	{
 		while (rate < 32)
 		{
 			rate++;
 			rect = simg->CalcNearPixelRange(coord, rate);
-			if (rect.width >= 150)
+			if (rect.GetWidth() >= 150)
 			{
 				break;
 			}

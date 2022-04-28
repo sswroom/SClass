@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, Text::Stri
 	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (boundary.width * boundary.height >= 1000)
+	if (boundary.GetArea() >= 1000)
 	{
 		ResultInfo *res = MemAlloc(ResultInfo, 1);
 		res->result = txt->Clone();
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(void *userObj, Text::Stri
 		res->resImg = me->currImg->CreateSubImage(boundary);
 		me->results.Add(res);
 		UOSInt i = me->lvText->AddItem(res->result, res);
-		sptr = Text::StrOSInt(sbuff, boundary.width * boundary.height);
+		sptr = Text::StrOSInt(sbuff, boundary.GetArea());
 		me->lvText->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, res->resImg->CalcColorRate());
 		me->lvText->SetSubItem(i, 2, CSTRP(sbuff, sptr));

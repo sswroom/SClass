@@ -29,12 +29,12 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *ou
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -45,7 +45,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *
 	while (i < j)
 	{
 		ufile = this->objList.GetItem(i);
-		if (x1 <= ufile->lon && x2 >= ufile->lon && y1 <= ufile->lat && y2 >= ufile->lat)
+		if (rect.ContainPt(ufile->lon, ufile->lat))
 		{
 			outArr->Add((Int64)i);
 			cnt++;
@@ -131,13 +131,10 @@ UInt32 SSWR::OrganMgr::OrganSpImgLayer::GetCodePage()
 	return 65001;
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->minX;
-	*minY = this->minY;
-	*maxX = this->maxX;
-	*maxY = this->maxY;
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	*bounds = Math::RectAreaDbl(this->min, this->max);
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 void *SSWR::OrganMgr::OrganSpImgLayer::BeginGetObject()
@@ -193,10 +190,8 @@ Map::IMapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass(
 
 void SSWR::OrganMgr::OrganSpImgLayer::ClearItems()
 {
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 	this->objList.Clear();
 }
 
@@ -221,24 +216,16 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> 
 				if (ufile->lat != 0 || ufile->lon != 0)
 				{
 					this->objList.Add(ufile);
+					Math::Coord2DDbl pt = Math::Coord2DDbl(ufile->lon, ufile->lat);
 					if (!found)
 					{
-						this->minX = ufile->lon;
-						this->maxX = ufile->lon;
-						this->minY = ufile->lat;
-						this->maxY = ufile->lat;
+						this->min = this->max = pt;
 						found = true;
 					}
 					else
 					{
-						if (this->minX > ufile->lon)
-							this->minX = ufile->lon;
-						if (this->maxX < ufile->lon)
-							this->maxX = ufile->lon;
-						if (this->minY > ufile->lat)
-							this->minY = ufile->lat;
-						if (this->maxY < ufile->lat)
-							this->maxY = ufile->lat;
+						this->min = this->min.Min(pt);
+						this->max = this->max.Max(pt);
 					}
 				}
 			}
@@ -262,24 +249,16 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<UserFileInfo*> *o
 		if (ufile->lat != 0 || ufile->lon != 0)
 		{
 			this->objList.Add(ufile);
+			Math::Coord2DDbl pt = Math::Coord2DDbl(ufile->lon, ufile->lat);
 			if (!found)
 			{
-				this->minX = ufile->lon;
-				this->maxX = ufile->lon;
-				this->minY = ufile->lat;
-				this->maxY = ufile->lat;
+				this->min = this->max = pt;
 				found = true;
 			}
 			else
 			{
-				if (this->minX > ufile->lon)
-					this->minX = ufile->lon;
-				if (this->maxX < ufile->lon)
-					this->maxX = ufile->lon;
-				if (this->minY > ufile->lat)
-					this->minY = ufile->lat;
-				if (this->maxY < ufile->lat)
-					this->maxY = ufile->lat;
+				this->min = this->min.Min(pt);
+				this->max = this->max.Max(pt);
 			}
 		}
 		i++;
@@ -292,24 +271,17 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItem(UserFileInfo *obj)
 	{
 		Bool found = (this->objList.GetCount() > 0);
 		this->objList.Add(obj);
+		Math::Coord2DDbl pt = Math::Coord2DDbl(obj->lon, obj->lat);
 		if (!found)
 		{
-			this->minX = obj->lon;
-			this->maxX = obj->lon;
-			this->minY = obj->lat;
-			this->maxY = obj->lat;
+			this->min = pt;
+			this->max = pt;
 			found = true;
 		}
 		else
 		{
-			if (this->minX > obj->lon)
-				this->minX = obj->lon;
-			if (this->maxX < obj->lon)
-				this->maxX = obj->lon;
-			if (this->minY > obj->lat)
-				this->minY = obj->lat;
-			if (this->maxY < obj->lat)
-				this->maxY = obj->lat;
+			this->min = this->min.Min(pt);
+			this->max = this->max.Max(pt);
 		}
 	}
 }

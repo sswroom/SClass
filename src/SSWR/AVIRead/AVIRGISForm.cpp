@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
-				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, pt1.x, pt1.y, pt2.x, pt2.y, pt2.x - pt1.x, pt1.y - pt2.y, false, files[i], 0, 0));
+				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i], 0, 0));
 				DEL_CLASS(simg);
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
@@ -446,6 +446,12 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeDrag(void *userObj, UI::GUIMapT
 	me->mapCtrl->Redraw();
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnVAngleScrolled(void *userObj, UOSInt newVal)
+{
+	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
+	me->mapCtrl->SetVAngle(UOSInt2Double(newVal) * Math::PI / 180);
+}
+
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
@@ -670,6 +676,11 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	this->chkTime->SetEnabled(false);
 	this->chkTime->SetRect(0, 0, 150, 24, false);
 	this->chkTime->HandleCheckedChange(OnTimeChecked, this);
+	NEW_CLASS(this->lblVAngle, UI::GUILabel(ui, this->pnlControl, CSTR("VAngle")));
+	this->lblVAngle->SetRect(250, 0, 100, 23, false);
+	NEW_CLASS(this->tbVAngle, UI::GUITrackBar(ui, this->pnlControl, 0, 90, 0));
+	this->tbVAngle->SetRect(350, 0, 100, 23, false);
+	this->tbVAngle->HandleScrolled(OnVAngleScrolled, this);
 
 	NEW_CLASS(this->mapTree, UI::GUIMapTreeView(ui, this, env));
 	this->mapTree->SetRect(0, 0, 200, 10, false);
@@ -889,13 +900,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GROUP_CENTER:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			Double minX;
-			Double minY;
-			Double maxX;
-			Double maxY;
-			if (this->env->GetBoundsDbl((Map::MapEnv::GroupItem*)ind->item, &minX, &minY, &maxX, &maxY))
+			Math::RectAreaDbl bounds;
+			if (this->env->GetBounds((Map::MapEnv::GroupItem*)ind->item, &bounds))
 			{
-				this->mapCtrl->PanToMapXY(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+				this->mapCtrl->PanToMapXY(bounds.GetCenter());
 			}
 		}
 		break;
@@ -921,28 +929,24 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_CENTER:
 		{
-			Double minX;
-			Double minY;
-			Double maxX;
-			Double maxY;
+			Math::RectAreaDbl bounds;
 			Math::CoordinateSystem *envCSys;
 			Math::CoordinateSystem *lyrCSys;
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(ind->group, ind->index);
-			if (lyr->layer->GetBoundsDbl(&minX, &minY, &maxX, &maxY))
+			if (lyr->layer->GetBounds(&bounds))
 			{
-				minX = (minX + maxX) * 0.5;
-				minY = (minY + maxY) * 0.5;
+				Math::Coord2DDbl center = bounds.GetCenter();
 				envCSys = this->env->GetCoordinateSystem();
 				lyrCSys = lyr->layer->GetCoordinateSystem();
 				if (envCSys != 0 && lyrCSys != 0)
 				{
 					if (!envCSys->Equals(lyrCSys))
 					{
-						Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, minX, minY, 0, &minX, &minY, 0);
+						Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, center.x, center.y, 0, &center.x, &center.y, 0);
 					}
 				}
-				this->mapCtrl->PanToMapXY(Math::Coord2DDbl(minX, minY));
+				this->mapCtrl->PanToMapXY(center);
 			}
 		}
 		break;
@@ -1488,17 +1492,14 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(Map::IMapDrawLayer *layer)
 	layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 	if (this->env->GetItemCount(0) == 0)
 	{
-		Double minX;
-		Double minY;
-		Double maxX;
-		Double maxY;
+		Math::RectAreaDbl bounds;
 //		OSInt w;
 //		OSInt h;
-		layer->GetBoundsDbl(&minX, &minY, &maxX, &maxY);
+		layer->GetBounds(&bounds);
 //		this->mapCtrl->GetSize(&w, &h);
 //		this->mapCtrl->UpdateMapView(layer->CreateMapView(w, h));
 		this->env->AddLayer(0, layer, true);
-		this->mapCtrl->PanToMapXY(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+		this->mapCtrl->PanToMapXY(bounds.GetCenter());
 	}
 	else
 	{
@@ -1516,15 +1517,12 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 	Bool needPan = this->env->GetItemCount(0) == 0;
 	UOSInt i;
 	UOSInt j;
-	Double minX;
-	Double minY;
-	Double maxX;
-	Double maxY;
+	Math::RectAreaDbl bounds;
 
 	if (needPan)
 	{
 		layer = layers->GetItem(0);
-		layer->GetBoundsDbl(&minX, &minY, &maxX, &maxY);
+		layer->GetBounds(&bounds);
 	}
 
 	i = 0;
@@ -1540,7 +1538,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 	this->mapTree->UpdateTree();
 	if (needPan)
 	{
-		this->mapCtrl->PanToMapXY(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+		this->mapCtrl->PanToMapXY(bounds.GetCenter());
 	}
 	else
 	{

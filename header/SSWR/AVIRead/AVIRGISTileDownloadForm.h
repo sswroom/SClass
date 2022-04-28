@@ -42,10 +42,8 @@ namespace SSWR
 			UI::GUITextBox *txtError;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Double selX1;
-			Double selY1;
-			Double selX2;
-			Double selY2;
+			Math::Coord2DDbl sel1;
+			Math::Coord2DDbl sel2;
 			Bool selecting;
 			Bool isDown;
 			Math::Coord2D<OSInt> downPos;

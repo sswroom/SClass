@@ -31,12 +31,10 @@ Math::Vector2D *Math::Point::Clone()
 	return pt;
 }
 
-void Math::Point::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+void Math::Point::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->x;
-	*minY = this->y;
-	*maxX = this->x;
-	*maxY = this->y;
+	Math::Coord2DDbl pt(this->x, this->y);
+	*bounds = Math::RectAreaDbl(pt, pt);
 }
 
 Double Math::Point::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)

@@ -769,7 +769,12 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		if (lineInfo)
 		{
 			road->vec = lineInfo->pl->Clone();
-			road->vec->GetBounds(&road->minX, &road->minY, &road->maxX, &road->maxY);
+			Math::RectAreaDbl bounds;
+			road->vec->GetBounds(&bounds);
+			road->minX = bounds.tl.x;
+			road->minY = bounds.tl.y;
+			road->maxX = bounds.br.x;
+			road->maxY = bounds.br.y;
 		}
 		else
 		{
@@ -907,10 +912,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 	Int64 id;
 	CenterlineInfo *lineInfo;
 	Bool isFirst = false;
-	Double minX;
-	Double minY;
-	Double maxX;
-	Double maxY;
+	Math::RectAreaDbl minMax;
 	void *nameArr;
 	if (this->minX == 0 && this->minY == 0)
 	{
@@ -957,7 +959,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 					{
 						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 						{
-							vec->GetBounds(&minX, &minY, &maxX, &maxY);
+							vec->GetBounds(&minMax);
 							if (isFirst)
 							{
 								isFirst = false;
@@ -1152,31 +1154,19 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	RoadInfo *road;
 	UOSInt i;
 	UOSInt j;
-	Double tmp;
 	Data::ArrayList<RoadInfo*> *roadList;
-	if (x1 > x2)
-	{
-		tmp = x2;
-		x2 = x1;
-		x1 = tmp;
-	}
-	if (y1 > y2)
-	{
-		tmp = y2;
-		y2 = y1;
-		y1 = tmp;
-	}
+	rect = rect.Reorder();
 	Sync::MutexUsage mutUsage(&this->roadMut);
 	roadList = this->roadMap.GetValues();
 	i = 0;
@@ -1184,7 +1174,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 	while (i < j)
 	{
 		road = roadList->GetItem(i);
-		if (road->vec && road->minX <= x2 && road->maxX >= x1 && road->minY <= y2 && road->maxY >= y1)
+		if (road->vec && road->minX <= rect.br.x && road->maxX >= rect.tl.x && road->minY <= rect.br.y && road->maxY >= rect.tl.y)
 		{
 			outArr->Add(road->objId);
 			retCnt++;
@@ -1244,12 +1234,9 @@ UInt32 Map::HKTrafficLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::HKTrafficLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::HKTrafficLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->minX;
-	*minY = this->minY;
-	*maxX = this->maxX;
-	*maxY = this->maxY;
+	*bounds = Math::RectAreaDbl(Math::Coord2DDbl(this->minX, this->minY), Math::Coord2DDbl(this->maxX, this->maxY));
 	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
 }
 

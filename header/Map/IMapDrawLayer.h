@@ -7,6 +7,7 @@
 #include "DB/ReadingDB.h"
 #include "IO/ParsedObject.h"
 #include "Map/MapView.h"
+#include "Math/RectArea.h"
 #include "Math/Vector2D.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Media/SharedImage.h"
@@ -106,8 +107,8 @@ namespace Map
 		virtual DrawLayerType GetLayerType() = 0;
 		virtual void SetMixedType(DrawLayerType mixedType);
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr) = 0;
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty) = 0;
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty) = 0;
+		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
 		virtual Int64 GetObjectIdMax() = 0;
 		virtual void ReleaseNameArr(void *nameArr) = 0;
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex) = 0;
@@ -116,7 +117,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
 		virtual UInt32 GetCodePage() = 0;
-		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY) = 0;
+		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
 
 		virtual void *BeginGetObject() = 0;
 		virtual void EndGetObject(void *session) = 0;

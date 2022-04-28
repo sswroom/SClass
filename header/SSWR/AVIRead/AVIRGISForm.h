@@ -6,6 +6,7 @@
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
+#include "UI/GUILabel.h"
 #include "UI/GUIMainMenu.h"
 #include "UI/GUIMapControl.h"
 #include "UI/GUIMapTreeView.h"
@@ -45,6 +46,8 @@ namespace SSWR
 			UI::GUIPopupMenu *mnuGroup;
 			UI::GUITrackBar *tbTimeRange;
 			UI::GUICheckBox *chkTime;
+			UI::GUILabel *lblVAngle;
+			UI::GUITrackBar *tbVAngle;
 			Map::MapEnv *env;
 			Map::DrawMapRenderer *envRenderer;
 			Bool scaleChanging;
@@ -88,6 +91,7 @@ namespace SSWR
 			static void __stdcall OnTimeScrolled(void *userObj, UOSInt newVal);
 			static void __stdcall OnTimeChecked(void *userObj, Bool newState);
 			static void __stdcall OnTreeDrag(void *userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem);
+			static void __stdcall OnVAngleScrolled(void *userObj, UOSInt newVal);
 			static void __stdcall OnTimerTick(void *userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
@@ -140,6 +144,6 @@ namespace SSWR
 			virtual Bool PrintPage(Media::DrawImage *printPage);
 			virtual Bool EndPrint(Media::IPrintDocument *doc);
 		};
-	};
-};
+	}
+}
 #endif

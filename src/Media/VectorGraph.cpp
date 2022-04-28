@@ -513,7 +513,7 @@ Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + UOSInt2Double(stImg->info.dispWidth) * this->GetHDPI() / stImg->info.hdpi, tly + UOSInt2Double(stImg->info.dispHeight) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi, true, CSTR_NULL, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, Math::Coord2DDbl(tlx, tly), Math::Coord2DDbl(tlx + UOSInt2Double(stImg->info.dispWidth) * this->GetHDPI() / stImg->info.hdpi, tly + UOSInt2Double(stImg->info.dispHeight) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -533,7 +533,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Doubl
 	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + UOSInt2Double(img->info.dispWidth) * this->GetHDPI() / img->info.hdpi, tly + UOSInt2Double(img->info.dispHeight) * img->info.par2 * this->GetVDPI() / img->info.vdpi, true, CSTR_NULL, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, Math::Coord2DDbl(tlx, tly), Math::Coord2DDbl(tlx + UOSInt2Double(img->info.dispWidth) * this->GetHDPI() / img->info.hdpi, tly + UOSInt2Double(img->info.dispHeight) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -554,7 +554,7 @@ Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Double destX, Double destY
 	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, destX, destY, destX + UOSInt2Double(stImg->info.dispWidth) * this->GetHDPI() / stImg->info.hdpi, destY + UOSInt2Double(stImg->info.dispHeight) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi, true, CSTR_NULL, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, Math::Coord2DDbl(destX, destY), Math::Coord2DDbl(destX + UOSInt2Double(stImg->info.dispWidth) * this->GetHDPI() / stImg->info.hdpi, destY + UOSInt2Double(stImg->info.dispHeight) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -881,14 +881,11 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
 		{
 			Math::VectorImage *vimg = (Math::VectorImage*)vec;
-			Double minX;
-			Double minY;
-			Double maxX;
-			Double maxY;
+			Math::RectAreaDbl bounds;
 			UInt32 thisTimeMS;
-			vimg->GetBounds(&minX, &minY, &maxX, &maxY);
+			vimg->GetBounds(&bounds);
 			Media::StaticImage *simg = vimg->GetImage(&thisTimeMS);
-			dimg->DrawImagePt2(simg, minX * scale, minY * scale);
+			dimg->DrawImagePt2(simg, bounds.tl.x * scale, bounds.tl.y * scale);
 			if (imgTimeMS == 0)
 			{
 				imgTimeMS = thisTimeMS;
@@ -904,12 +901,10 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Ellipse)
 		{
 			Math::Ellipse *ellipse = (Math::Ellipse*)vec;
-			Double minX;
-			Double minY;
-			Double maxX;
-			Double maxY;
-			ellipse->GetBounds(&minX, &minY, &maxX, &maxY);
-			dimg->DrawEllipse(minX * scale, minY * scale, (maxX - minX) * scale, (maxY - minY) * scale, p, b);
+			Math::RectAreaDbl bounds;
+			ellipse->GetBounds(&bounds);
+			bounds = bounds * scale;
+			dimg->DrawEllipse(bounds.tl.x, bounds.tl.y, bounds.GetWidth(), bounds.GetHeight(), p, b);
 		}
 		else
 		{

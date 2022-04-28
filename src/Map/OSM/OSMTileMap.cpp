@@ -136,12 +136,10 @@ UOSInt Map::OSM::OSMTileMap::GetConcurrentCount()
 	return 2 * this->urls.GetCount();
 }
 
-Bool Map::OSM::OSMTileMap::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::OSM::OSMTileMap::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = -180;
-	*minY = -85.051128779806592377796715521925;
-	*maxX = 180;
-	*maxY = 85.051128779806592377796715521925;
+	*bounds = Math::RectAreaDbl(Math::Coord2DDbl(-180, -85.051128779806592377796715521925),
+		Math::Coord2DDbl(180, 85.051128779806592377796715521925));
 	return true;
 }
 
@@ -155,28 +153,28 @@ UOSInt Map::OSM::OSMTileMap::GetTileSize()
 	return this->tileWidth;
 }
 
-UOSInt Map::OSM::OSMTileMap::GetImageIDs(UOSInt level, Double x1, Double y1, Double x2, Double y2, Data::ArrayList<Int64> *ids)
+UOSInt Map::OSM::OSMTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
 {
 	Int32 i;
 	Int32 j;
 	Double max = 85.051128779806592377796715521925;
-	if (y1 < -max)
-		y1 = -max;
-	else if (y1 > max)
-		y1 = max;
-	if (y2 < -max)
-		y2 = -max;
-	else if (y2 > max)
-		y2 = max;
+	if (rect.tl.y < -max)
+		rect.tl.y = -max;
+	else if (rect.tl.y > max)
+		rect.tl.y = max;
+	if (rect.br.y < -max)
+		rect.br.y = -max;
+	else if (rect.br.y > max)
+		rect.br.y = max;
 	
-	if (x1 == x2)
+	if (rect.tl.x == rect.br.x)
 		return 0;
-	if (y1 == y2)
+	if (rect.tl.y == rect.br.y)
 		return 0;
-	Int32 pixX1 = Lon2TileX(x1, level);
-	Int32 pixX2 = Lon2TileX(x2, level);
-	Int32 pixY1 = Lat2TileY(y1, level);
-	Int32 pixY2 = Lat2TileY(y2, level);
+	Int32 pixX1 = Lon2TileX(rect.tl.x, level);
+	Int32 pixX2 = Lon2TileX(rect.br.x, level);
+	Int32 pixY1 = Lat2TileY(rect.tl.y, level);
+	Int32 pixY2 = Lat2TileY(rect.br.y, level);
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;

@@ -117,10 +117,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		{
 			IO::SPackageFile *spkg;
 			Map::OruxDBLayer *orux = (Map::OruxDBLayer*)layer;
-			Double minX;
-			Double minY;
-			Double maxX;
-			Double maxY;
+			Math::RectAreaDbl bounds;
 			void *nameArr;
 			Data::ArrayListInt64 objIds;
 			Int32 xAdd;
@@ -144,9 +141,9 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			while (i < j)
 			{
 				orux->SetCurrLayer(i);
-				orux->GetBoundsDbl(&minX, &minY, &maxX, &maxY);
-				xAdd = Map::OSM::OSMTileMap::Lon2TileXR(minX, i);
-				yAdd = Map::OSM::OSMTileMap::Lat2TileYR(maxY, i);
+				orux->GetBounds(&bounds);
+				xAdd = Map::OSM::OSMTileMap::Lon2TileXR(bounds.tl.x, i);
+				yAdd = Map::OSM::OSMTileMap::Lat2TileYR(bounds.br.y, i);
 
 				objIds.Clear();
 				orux->GetAllObjectIds(&objIds, &nameArr);

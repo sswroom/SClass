@@ -23,6 +23,11 @@ UI::GUICheckBox::~GUICheckBox()
 {
 }
 
+void UI::GUICheckBox::SetText(Text::CString text)
+{
+	this->UI::GUIControl::SetText(text);
+}
+
 Text::CString UI::GUICheckBox::GetObjectClass()
 {
 	return CSTR("CheckBox");

@@ -102,18 +102,15 @@ Int64 Map::IMapDrawLayer::GetTimeEndTS()
 Map::MapView *Map::IMapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::MapView *view;
-	Double xMin;
-	Double yMin;
-	Double xMax;
-	Double yMax;
-	this->GetBoundsDbl(&xMin, &yMin, &xMax, &yMax);
-	if (xMax > 1000)
+	Math::RectAreaDbl minMax;
+	this->GetBounds(&minMax);
+	if (minMax.br.x > 1000)
 	{
-		NEW_CLASS(view, Map::ProjectedMapView(scnSize, (yMin + yMax) * 0.5, (xMin + xMax) * 0.5, 10000));
+		NEW_CLASS(view, Map::ProjectedMapView(scnSize, minMax.GetCenter(), 10000));
 	}
 	else
 	{
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, (yMin + yMax) * 0.5, (xMin + xMax) * 0.5, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000));
 	}
 	return view;
 }
@@ -217,17 +214,14 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 	{
 		Int32 blkSize;
 		Data::ArrayListInt64 *idList;
-		Double xMin;
-		Double yMin;
-		Double xMax;
-		Double yMax;
-		this->GetBoundsDbl(&xMin, &yMin, &xMax, &yMax);
+		Math::RectAreaDbl minMax;
+		this->GetBounds(&minMax);
 		
 		NEW_CLASS(idList, Data::ArrayListInt64());
 		this->GetAllObjectIds(idList, 0);
 		
-		Double tVal = (yMax - yMin) * (xMax - xMin) / UOSInt2Double(idList->GetCount());
-		if (xMax > 180)
+		Double tVal = minMax.GetArea() / UOSInt2Double(idList->GetCount());
+		if (minMax.br.x > 180)
 		{
 			blkSize = Double2Int32(Math_Sqrt(tVal) * 3);
 			if (blkSize < 5000)
@@ -270,7 +264,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	UOSInt i;
 	Int64 thisId;
 	NEW_CLASS(arr, Data::ArrayListInt64());
-	GetObjectIdsMapXY(arr, &names, lon, lat, lon, lat, false);
+	GetObjectIdsMapXY(arr, &names, Math::RectAreaDbl(lon, lat, 0, 0), false);
 	lastId = -1;
 	i = arr->GetCount();
 	while (i-- > 0)
@@ -327,7 +321,7 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 
 	Int32 xBlk = Double2Int32(lon * 200000.0 / blkSize);
 	Int32 yBlk = Double2Int32(lat * 200000.0 / blkSize);
-	GetObjectIds(arr, &names, 200000.0, (xBlk - 1) * blkSize, (yBlk - 1) * blkSize, (xBlk + 2) * blkSize - 1, (yBlk + 2) * blkSize - 1, false);
+	GetObjectIds(arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
 	lastId = -1;
 	i = arr->GetCount();
 	while (i-- > 0)
@@ -466,11 +460,11 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Double x, Double y, 
 	Int32 blkSize = this->CalBlockSize();
 	if (x > 180 || x < -180)
 	{
-		this->GetObjectIdsMapXY(objIds, 0, x - blkSize, y - blkSize, x + blkSize, y + blkSize, true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - blkSize, y - blkSize, blkSize * 2, blkSize * 2), true);
 	}
 	else
 	{
-		this->GetObjectIdsMapXY(objIds, 0, x - (blkSize / 200000.0), y - (blkSize / 200000.0), x + (blkSize / 200000.0), y + (blkSize / 200000.0), true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - (blkSize / 200000.0), y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
 	UOSInt i = objIds->GetCount();
@@ -515,11 +509,11 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 	Int32 blkSize = this->CalBlockSize();
 	if (x > 180 || x < -180)
 	{
-		this->GetObjectIdsMapXY(objIds, 0, x - blkSize, y - blkSize, x + blkSize, y + blkSize, true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - blkSize, y - blkSize, blkSize * 2, blkSize * 2), true);
 	}
 	else
 	{
-		this->GetObjectIdsMapXY(objIds, 0, x - (blkSize / 200000.0), y - (blkSize / 200000.0), x + (blkSize / 200000.0), y + (blkSize / 200000.0), true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - (blkSize / 200000.0), y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
 	UOSInt i = objIds->GetCount();

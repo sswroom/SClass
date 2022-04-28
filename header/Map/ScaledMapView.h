@@ -15,7 +15,7 @@ namespace Map
 		Math::Coord2DDbl br;
 
 	public:
-		ScaledMapView(Math::Size2D<Double> scnSize, Double centLat, Double centLon, Double scale);
+		ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
 		virtual ~ScaledMapView();
 
 		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
@@ -24,10 +24,8 @@ namespace Map
 		virtual void UpdateSize(Math::Size2D<Double> scnSize);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
-		virtual Double GetLeftX();
-		virtual Double GetTopY();
-		virtual Double GetRightX();
-		virtual Double GetBottomY();
+		virtual Math::Quadrilateral GetBounds();
+		virtual Math::RectAreaDbl GetVerticalRect();
 		virtual Double GetMapScale();
 		virtual Double GetViewScale();
 		virtual Math::Coord2DDbl GetCenter();

@@ -15,10 +15,8 @@ namespace Map
 			IO::PackageFile *pkgFile;
 			UOSInt maxLevel;
 
-			Double minX;
-			Double minY;
-			Double maxX;
-			Double maxY;
+			Math::Coord2DDbl min;
+			Math::Coord2DDbl max;
 			UOSInt tileWidth;
 			UOSInt tileHeight;
 
@@ -33,11 +31,11 @@ namespace Map
 			virtual Double GetLevelScale(UOSInt level);
 			virtual UOSInt GetNearestLevel(Double scale);
 			virtual UOSInt GetConcurrentCount();
-			virtual Bool GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
+			virtual Bool GetBounds(Math::RectAreaDbl *bounds);
 			virtual ProjectionType GetProjectionType();
 			virtual UOSInt GetTileSize();
 
-			virtual UOSInt GetImageIDs(UOSInt level, Double x1, Double y1, Double x2, Double y2, Data::ArrayList<Int64> *ids);
+			virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids);
 			virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly);
 			virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
 			virtual IO::IStreamData *LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it);

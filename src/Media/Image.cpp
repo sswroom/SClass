@@ -305,8 +305,8 @@ Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area)
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(&this->info);
-	frameInfo.dispWidth = (UOSInt)area.width;
-	frameInfo.dispHeight = (UOSInt)area.height;
+	frameInfo.dispWidth = (UOSInt)area.GetWidth();
+	frameInfo.dispHeight = (UOSInt)area.GetHeight();
 	frameInfo.storeWidth = frameInfo.dispWidth;
 	frameInfo.storeHeight = frameInfo.dispHeight;
 	frameInfo.byteSize = frameInfo.storeWidth * frameInfo.storeHeight * (frameInfo.storeBPP >> 3);

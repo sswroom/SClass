@@ -110,27 +110,15 @@ UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	}
 }
 
-UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(&this->recMut);
-	Double tmpVal;
-	if (x1 > x2)
-	{
-		tmpVal = x1;
-		x1 = x2;
-		x2 = tmpVal;
-	}
-	if (y1 > y2)
-	{
-		tmpVal = y1;
-		y1 = y2;
-		y2 = tmpVal;
-	}
+	rect = rect.Reorder();
 	Int32 cnt = 0;
 	UOSInt i = 0;
 	UOSInt j = this->currTracks.GetCount();
@@ -138,7 +126,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 	{
 		Map::GPSTrack::TrackRecord *track;
 		track = this->currTracks.GetItem(i);
-		if (track->minLon <= x2 && track->maxLon >= x1 && track->minLat <= y2 && track->maxLat >= y1)
+		if (track->minLon <= rect.br.x && track->maxLon >= rect.tl.x && track->minLat <= rect.br.y && track->maxLat >= rect.tl.y)
 		{
 			outArr->Add((Int64)i);
 			cnt++;
@@ -147,7 +135,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 	}
 	if (this->currTimes.GetCount() > 0)
 	{
-		if (this->currMinLon <= x2 && this->currMaxLon >= x1 && this->currMinLat <= y2 && this->currMaxLat >= y1)
+		if (this->currMinLon <= rect.br.x && this->currMaxLon >= rect.tl.x && this->currMinLat <= rect.br.y && this->currMaxLat >= rect.tl.y)
 		{
 			outArr->Add((Int64)j);
 			cnt++;
@@ -362,12 +350,9 @@ UInt32 Map::GPSTrack::GetCodePage()
 	return this->codePage;
 }
 
-Bool Map::GPSTrack::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::GPSTrack::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = minLon;
-	*minY = minLat;
-	*maxX = maxLon;
-	*maxY = maxLat;
+	*bounds = Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat));
 	return this->minLon != 0 || this->minLat != 0 || this->maxLon != 0 || this->maxLat != 0;
 }
 

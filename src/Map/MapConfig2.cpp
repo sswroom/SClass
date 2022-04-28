@@ -2394,7 +2394,8 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	NEW_CLASS(arri, Data::ArrayListInt64());
-	lyrs->lyr->GetObjectIdsMapXY(arri, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+	Math::RectAreaDbl rect = view->GetVerticalRect();
+	lyrs->lyr->GetObjectIdsMapXY(arri, 0, rect, true);
 	if (arri->GetCount() == 0)
 	{
 		DEL_CLASS(arri);
@@ -2491,7 +2492,8 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	}
 
 	NEW_CLASS(arri, Data::ArrayListInt64());
-	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), false);
+	Math::RectAreaDbl rect = view->GetVerticalRect();
+	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, rect, false);
 	session = lyrs->lyr->BeginGetObject();
 	i = arri->GetCount();
 	while (i-- > 0)
@@ -2644,10 +2646,11 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 	Double scnSqrLen;
 	Int32 found;
 
-	Double left = view->GetLeftX();
-	Double right = view->GetRightX();
-	Double top = view->GetTopY();
-	Double bottom = view->GetBottomY();
+	Math::RectAreaDbl rect = view->GetVerticalRect();
+	Double left = rect.tl.x;
+	Double right = rect.br.x;
+	Double top = rect.tl.y;
+	Double bottom = rect.br.y;
 	Math::Coord2DDbl mapPos = view->GetCenter();
 
 	if (recType == 1) //Point
@@ -4510,7 +4513,8 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 				if (lyr)
 				{
 					arr->Clear();
-					lyr->GetObjectIdsMapXY(arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+					Math::RectAreaDbl rect = view->GetVerticalRect();
+					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
 
 					if ((i = arr->GetCount()) > 0)
 					{
@@ -4615,7 +4619,8 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 				if (lyr)
 				{
 					arr->Clear();
-					lyr->GetObjectIdsMapXY(arr, 0, view->GetLeftX(), view->GetTopY(), view->GetRightX(), view->GetBottomY(), true);
+					Math::RectAreaDbl rect = view->GetVerticalRect();
+					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
 
 					if ((i = arr->GetCount()) > 0)
 					{

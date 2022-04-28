@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_VECTOR2D
 #define _SM_MATH_VECTOR2D
 #include "Math/Coord2DDbl.h"
+#include "Math/RectAreaDbl.h"
 
 namespace Math
 {
@@ -30,7 +31,7 @@ namespace Math
 		virtual VectorType GetVectorType() = 0;
 		virtual Math::Coord2DDbl GetCenter() = 0;
 		virtual Math::Vector2D *Clone() = 0;
-		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY) = 0;
+		virtual void GetBounds(Math::RectAreaDbl *bounds) = 0;
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY) = 0;
 		virtual Bool JoinVector(Math::Vector2D *vec) = 0;
 		virtual Bool Support3D() { return false; };

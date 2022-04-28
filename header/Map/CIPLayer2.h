@@ -13,8 +13,7 @@ namespace Map
 		typedef struct
 		{
 			UInt32 objCnt;
-			Int32 xblk;
-			Int32 yblk;
+			Math::Coord2D<Int32> blk;
 			UInt32 sofst;
 			Int32 *ids;
 		} CIPBlock;
@@ -52,8 +51,8 @@ namespace Map
 
 		virtual DrawLayerType GetLayerType();
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty);
+		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax();
 		virtual void ReleaseNameArr(void *nameArr);
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex);
@@ -63,7 +62,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual Int32 GetBlockSize();
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
+		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
 
 	private:
 		CIPFileObject *GetFileObject(void *session, Int32 id);

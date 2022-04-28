@@ -72,10 +72,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UOSInt recCnt = 0;
 	UOSInt i;
 	Int32 ilayerType = 0;
-	Double xMin = 0;
-	Double xMax = 0;
-	Double yMin = 0;
-	Double yMax = 0;
+	Math::Coord2DDbl min = Math::Coord2DDbl(0, 0);
+	Math::Coord2DDbl max = Math::Coord2DDbl(0, 0);
 	Double zMin = 0;
 	Double zMax = 0;
 	IO::FileStream *shx;
@@ -115,27 +113,12 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			coord = pt->GetCenter();
 			if (i == 0)
 			{
-				xMin = xMax = coord.x;
-				yMin = yMax = coord.y;
+				min = max = coord;
 			}
 			else
 			{
-				if (coord.x > xMax)
-				{
-					xMax = coord.x;
-				}
-				else if (coord.x < xMin)
-				{
-					xMin = coord.x;
-				}
-				if (coord.y > yMax)
-				{
-					yMax = coord.y;
-				}
-				else if (coord.y < yMin)
-				{
-					yMin = coord.y;
-				}
+				min = min.Min(coord);
+				max = max.Max(coord);
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));
@@ -157,39 +140,23 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	else if (layerType == Map::DRAW_LAYER_POINT3D)
 	{
 		Math::Point3D *pt;
-		Double x;
-		Double y;
+		Math::Coord2DDbl coord;
 		Double z;
 		ilayerType = 11;
 		i = 0;
 		while (i < recCnt)
 		{
 			pt = (Math::Point3D*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pt->GetCenter3D(&x, &y, &z);
+			pt->GetCenter3D(&coord.x, &coord.y, &z);
 			if (i == 0)
 			{
-				xMin = xMax = x;
-				yMin = yMax = y;
+				min = max = coord;
 				zMin = zMax = z;
 			}
 			else
 			{
-				if (x > xMax)
-				{
-					xMax = x;
-				}
-				else if (x < xMin)
-				{
-					xMin = x;
-				}
-				if (y > yMax)
-				{
-					yMax = y;
-				}
-				else if (y < yMin)
-				{
-					yMin = y;
-				}
+				min = min.Min(coord);
+				max = max.Max(coord);
 				if (z > zMax)
 				{
 					zMax = z;
@@ -206,8 +173,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 			WriteMInt32(buff, (Int32)i);
 			*(Int32*)&buff[8] = 11;
-			*(Double*)&buff[12] = x;
-			*(Double*)&buff[20] = y;
+			*(Double*)&buff[12] = coord.x;
+			*(Double*)&buff[20] = coord.y;
 			*(Double*)&buff[28] = z;
 			*(Double*)&buff[36] = 0;
 			stm->Write(buff, 44);
@@ -223,7 +190,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		ilayerType = 3;
 
 		Math::Polyline *pl;
-		Double box[4];
+		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UOSInt nvals[2];
@@ -234,7 +201,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		while (i < recCnt)
 		{
 			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pl->GetBounds(&box[0], &box[1], &box[2], &box[3]);
+			pl->GetBounds(&box);
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
 			nvals[0] = nPtOfst;
@@ -242,29 +209,13 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 			if (i == 0)
 			{
-				xMin = box[0];
-				yMin = box[1];
-				xMax = box[2];
-				yMax = box[3];
+				min = box.tl;
+				max = box.br;
 			}
 			else
 			{
-				if (box[2] > xMax)
-				{
-					xMax = box[2];
-				}
-				else if (box[0] < xMin)
-				{
-					xMin = box[0];
-				}
-				if (box[3] > yMax)
-				{
-					yMax = box[3];
-				}
-				else if (box[1] < yMin)
-				{
-					yMin = box[1];
-				}
+				min = min.Min(box.tl);
+				max = max.Max(box.br);
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));
@@ -274,7 +225,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			WriteMInt32(buff, (Int32)i);
 			*(Int32*)&buff[8] = 3;
 			stm->Write(buff, 12);
-			stm->Write((UInt8*)box, 32);
+			stm->Write((UInt8*)&box, 32);
 			stm->Write((UInt8*)nvals, 8);
 			fileSize += 52;
 			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
@@ -291,7 +242,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 		UOSInt j;
 		Math::Polyline3D *pl;
-		Double box[4];
+		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		Double ranges[2];
@@ -304,7 +255,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		while (i < recCnt)
 		{
 			pl = (Math::Polyline3D*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pl->GetBounds(&box[0], &box[1], &box[2], &box[3]);
+			pl->GetBounds(&box);
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
 			alts = pl->GetAltitudeList(&nPoint);
@@ -323,31 +274,15 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 			if (i == 0)
 			{
-				xMin = box[0];
-				yMin = box[1];
-				xMax = box[2];
-				yMax = box[3];
+				min = box.tl;
+				max = box.br;
 				zMin = ranges[0];
 				zMax = ranges[1];
 			}
 			else
 			{
-				if (box[2] > xMax)
-				{
-					xMax = box[2];
-				}
-				else if (box[0] < xMin)
-				{
-					xMin = box[0];
-				}
-				if (box[3] > yMax)
-				{
-					yMax = box[3];
-				}
-				else if (box[1] < yMin)
-				{
-					yMin = box[1];
-				}
+				min = min.Min(box.tl);
+				max = max.Max(box.br);
 				if (ranges[1] > zMax)
 				{
 					zMax = ranges[1];
@@ -365,7 +300,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			WriteMInt32(buff, (Int32)i);
 			*(Int32*)&buff[8] = 3;
 			stm->Write(buff, 12);
-			stm->Write((UInt8*)box, 32);
+			stm->Write((UInt8*)&box, 32);
 			stm->Write((UInt8*)nvals, 8);
 			fileSize += 52;
 			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
@@ -384,7 +319,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		ilayerType = 5;
 
 		Math::Polygon *pg;
-		Double box[4];
+		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		UOSInt nvals[2];
@@ -395,7 +330,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		while (i < recCnt)
 		{
 			pg = (Math::Polygon*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pg->GetBounds(&box[0], &box[1], &box[2], &box[3]);
+			pg->GetBounds(&box);
 			ptOfsts = pg->GetPtOfstList(&nPtOfst);
 			points = pg->GetPointList(&nPoint);
 			nvals[0] = nPtOfst;
@@ -403,29 +338,13 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 			if (i == 0)
 			{
-				xMin = box[0];
-				yMin = box[1];
-				xMax = box[2];
-				yMax = box[3];
+				min = box.tl;
+				max = box.br;
 			}
 			else
 			{
-				if (box[2] > xMax)
-				{
-					xMax = box[2];
-				}
-				else if (box[0] < xMin)
-				{
-					xMin = box[0];
-				}
-				if (box[3] > yMax)
-				{
-					yMax = box[3];
-				}
-				else if (box[1] < yMin)
-				{
-					yMin = box[1];
-				}
+				min = min.Min(box.tl);
+				max = max.Max(box.br);
 			}
 
 			WriteMInt32(buff, (Int32)(fileSize >> 1));
@@ -435,7 +354,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			WriteMInt32(buff, (Int32)i);
 			*(Int32*)&buff[8] = 5;
 			stm->Write(buff, 12);
-			stm->Write((UInt8*)box, 32);
+			stm->Write((UInt8*)&box, 32);
 			stm->Write((UInt8*)nvals, 8);
 			fileSize += 52;
 			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
@@ -459,10 +378,10 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	WriteMInt32(&buff[24], (Int32)(fileSize >> 1));
 	*(Int32*)&buff[28] = 1000;
 	*(Int32*)&buff[32] = ilayerType;
-	*(Double*)&buff[36] = xMin;
-	*(Double*)&buff[44] = yMin;
-	*(Double*)&buff[52] = xMax;
-	*(Double*)&buff[60] = yMax;
+	*(Double*)&buff[36] = min.x;
+	*(Double*)&buff[44] = min.y;
+	*(Double*)&buff[52] = max.x;
+	*(Double*)&buff[60] = max.y;
 	*(Double*)&buff[68] = zMin;
 	*(Double*)&buff[76] = zMax;
 	*(Double*)&buff[84] = 0;

@@ -117,6 +117,7 @@ namespace UI
 		void ShowMarkerMapXYDir(Double mapX, Double mapY, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();
 		void SetSelectedVector(Math::Vector2D *vec);
+		void SetVAngle(Double angleRad);
 
 		void HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj);
 		void HandleMapUpdated(MapUpdatedHandler hdlr, void *userObj);

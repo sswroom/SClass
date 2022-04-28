@@ -32,12 +32,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(Data::ArrayListInt64 *
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -48,7 +48,7 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64
 	while (i < j)
 	{
 		ufile = this->userFileList->GetItem(i);
-		if (x1 <= ufile->lon && x2 >= ufile->lon && y1 <= ufile->lat && y2 >= ufile->lat)
+		if (rect.ContainPt(ufile->lon, ufile->lat))
 		{
 			outArr->Add((Int64)i);
 			cnt++;
@@ -97,9 +97,9 @@ UInt32 SSWR::OrganMgr::OrganTimeAdjLayer::GetCodePage()
 	return 0;
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	return this->gpsTrk->GetBoundsDbl(minX, minY, maxX, maxY);
+	return this->gpsTrk->GetBounds(bounds);
 }
 
 void *SSWR::OrganMgr::OrganTimeAdjLayer::BeginGetObject()

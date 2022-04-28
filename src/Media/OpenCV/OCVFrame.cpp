@@ -31,7 +31,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSIn
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	cv::Mat *cimg = new cv::Mat();
-	*cimg = (*fr)(cv::Range((int)area->tl.y, (int)(area->tl.y + area->height)), cv::Range((int)area->tl.x, (int)(area->tl.x + area->width))).clone();
+	*cimg = (*fr)(cv::Range((int)area->tl.y, (int)area->br.y), cv::Range((int)area->tl.x, (int)area->br.x)).clone();
 	return NEW_CLASS_D(OCVFrame(cimg));
 }
 

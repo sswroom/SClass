@@ -117,7 +117,7 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 			{
 				DEL_CLASS(cimg->img);
 			}
-			MemFree(cimg);
+			MemFreeA(cimg);
 		}
 		else
 		{
@@ -137,7 +137,7 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 			{
 				DEL_CLASS(cimg->img);
 			}
-			MemFree(cimg);
+			MemFreeA(cimg);
 		}
 	}
 	idleMutUsage.EndUse();
@@ -230,7 +230,7 @@ Map::TileMapLayer::~TileMapLayer()
 		{
 			DEL_CLASS(cimg->img);
 		}
-		MemFree(cimg);
+		MemFreeA(cimg);
 	}
 	i = this->idleImgs.GetCount();
 	while (i-- > 0)
@@ -240,7 +240,7 @@ Map::TileMapLayer::~TileMapLayer()
 		{
 			DEL_CLASS(cimg->img);
 		}
-		MemFree(cimg);
+		MemFreeA(cimg);
 	}
 	DEL_CLASS(this->tileMap);
 }
@@ -267,7 +267,7 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 				{
 					DEL_CLASS(cimg->img);
 				}
-				MemFree(cimg);
+				MemFreeA(cimg);
 			}
 			else
 			{
@@ -287,7 +287,7 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
 	Map::MapView *view;
 	if (this->tileMap->GetProjectionType() == Map::TileMap::PT_MERCATOR)
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, 22.4, 114.2, this->tileMap->GetLevelCount(), this->tileMap->GetTileSize()));
+		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetLevelCount(), this->tileMap->GetTileSize()));
 		return view;
 	}
 	else if (this->tileMap->GetProjectionType() == Map::TileMap::PT_WGS84)
@@ -305,7 +305,7 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
 	}
 	else
 	{
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, 22.4, 114.2, 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000));
 		return view;
 	}
 }
@@ -321,28 +321,28 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **n
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (nameArr)
 		*nameArr = 0;
-	retCnt = this->tileMap->GetImageIDs(level, -180, -90, 180, 90, outArr);
+	retCnt = this->tileMap->GetImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), outArr);
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (nameArr)
 		*nameArr = 0;
-	retCnt = this->tileMap->GetImageIDs(level, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, outArr);
+	retCnt = this->tileMap->GetImageIDs(level, rect.ToDouble() / mapRate, outArr);
 	CheckCache(outArr);
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (nameArr)
 		*nameArr = 0;
-	retCnt = this->tileMap->GetImageIDs(level, x1, y1, x2, y2, outArr);
+	retCnt = this->tileMap->GetImageIDs(level, rect, outArr);
 	CheckCache(outArr);
 	return retCnt;
 }
@@ -434,9 +434,9 @@ UInt32 Map::TileMapLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::TileMapLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::TileMapLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	return this->tileMap->GetBounds(minX, minY, maxX, maxY);
+	return this->tileMap->GetBounds(bounds);
 }
 
 void *Map::TileMapLayer::BeginGetObject()
@@ -472,7 +472,7 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 		if (cimg->img == 0)
 			return 0;
 		sptr = this->tileMap->GetImageURL(sbuff, cimg->level, cimg->imgId);
-		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tlx, cimg->tly, cimg->brx, cimg->bry, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 
@@ -483,12 +483,10 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 	imgList = this->tileMap->LoadTileImage(level, id, this->parsers, bounds, true);
 	if (imgList)
 	{
-		cimg = MemAlloc(CachedImage, 1);
+		cimg = MemAllocA(CachedImage, 1);
 		cimg->imgId = id;
-		cimg->tlx = bounds[0];
-		cimg->tly = bounds[1];
-		cimg->brx = bounds[2];
-		cimg->bry = bounds[3];
+		cimg->tl = Math::Coord2DDbl(bounds[0], bounds[1]);
+		cimg->br = Math::Coord2DDbl(bounds[2], bounds[3]);
 		cimg->level = level;
 		cimg->isFinish = true;
 		cimg->isCancel = false;
@@ -500,17 +498,15 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 		mutUsage.EndUse();
 
 		sptr = this->tileMap->GetImageURL(sbuff, level, id);
-		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tlx, cimg->tly, cimg->brx, cimg->bry, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 	else
 	{
-		cimg = MemAlloc(CachedImage, 1);
+		cimg = MemAllocA(CachedImage, 1);
 		cimg->imgId = id;
-		cimg->tlx = bounds[0];
-		cimg->tly = bounds[1];
-		cimg->brx = bounds[2];
-		cimg->bry = bounds[3];
+		cimg->tl = Math::Coord2DDbl(bounds[0], bounds[1]);
+		cimg->br = Math::Coord2DDbl(bounds[2], bounds[3]);
 		cimg->level = level;
 		cimg->isFinish = false;
 		cimg->isCancel = false;

@@ -137,31 +137,31 @@ const UTF8Char **Map::VectorLayer::CopyStrs(Text::PString *strs)
 
 void Map::VectorLayer::UpdateMapRate()
 {
-	if (this->maxX > 200000000 || this->minX < -200000000 || this->maxY > 200000000 || this->minY < -200000000)
+	if (this->max.x > 200000000 || this->min.x < -200000000 || this->max.y > 200000000 || this->min.y < -200000000)
 	{
 		this->mapRate = 1.0;
 	}
-	else if (this->maxX > 20000000 || this->minX < -20000000 || this->maxY > 20000000 || this->minY < -20000000)
+	else if (this->max.x > 20000000 || this->min.x < -20000000 || this->max.y > 20000000 || this->min.y < -20000000)
 	{
 		this->mapRate = 10.0;
 	}
-	else if (this->maxX > 2000000 || this->minX < -2000000 || this->maxY > 2000000 || this->minY < -2000000)
+	else if (this->max.x > 2000000 || this->min.x < -2000000 || this->max.y > 2000000 || this->min.y < -2000000)
 	{
 		this->mapRate = 100.0;
 	}
-	else if (this->maxX > 200000 || this->minX < -200000 || this->maxY > 200000 || this->minY < -200000)
+	else if (this->max.x > 200000 || this->min.x < -200000 || this->max.y > 200000 || this->min.y < -200000)
 	{
 		this->mapRate = 1000.0;
 	}
-	else if (this->maxX > 20000 || this->minX < -20000 || this->maxY > 20000 || this->minY < -20000)
+	else if (this->max.x > 20000 || this->min.x < -20000 || this->max.y > 20000 || this->min.y < -20000)
 	{
 		this->mapRate = 10000.0;
 	}
-	else if (this->maxX > 2000 || this->minX < -2000 || this->maxY > 2000 || this->minY < -2000)
+	else if (this->max.x > 2000 || this->min.x < -2000 || this->max.y > 2000 || this->min.y < -2000)
 	{
 		this->mapRate = 100000.0;
 	}
-	else if (this->maxX > 200 || this->minX < -200 || this->maxY > 200 || this->minY < -200)
+	else if (this->max.x > 200 || this->min.x < -200 || this->max.y > 200 || this->min.y < -200)
 	{
 		this->mapRate = 1000000.0;
 	}
@@ -177,10 +177,8 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->csys  = csys;
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
@@ -208,10 +206,8 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->csys  = csys;
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
@@ -239,10 +235,8 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->csys = csys;
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
@@ -273,10 +267,8 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->csys = csys;
-	this->minX = 0;
-	this->minY = 0;
-	this->maxX = 0;
-	this->maxY = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
@@ -413,17 +405,14 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	}
 }
 
-UOSInt Map::VectorLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	Double vx1;
-	Double vy1;
-	Double vx2;
-	Double vy2;
+	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
 	Math::Vector2D *vec;
 	UOSInt i;
@@ -437,8 +426,8 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 			vec = this->vectorList.GetItem(i);
 			if (vec->GetVectorType() == this->mixedType)
 			{
-				vec->GetBounds(&vx1, &vy1, &vx2, &vy2);
-				if (x1 <= vx2 && y1 <= vy2 && x2 >= vx1 && y2 >= vy1)
+				vec->GetBounds(&vBounds);
+				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
 				{
 					recCnt++;
 					outArr->Add((Int64)i);
@@ -454,8 +443,8 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 		while (i < j)
 		{
 			vec = this->vectorList.GetItem(i);
-			vec->GetBounds(&vx1, &vy1, &vx2, &vy2);
-			if (x1 <= vx2 && y1 <= vy2 && x2 >= vx1 && y2 >= vy1)
+			vec->GetBounds(&vBounds);
+			if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
 			{
 				recCnt++;
 				outArr->Add((Int64)i);
@@ -575,13 +564,10 @@ UInt32 Map::VectorLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::VectorLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::VectorLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*minX = this->minX;
-	*minY = this->minY;
-	*maxX = this->maxX;
-	*maxY = this->maxY;
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	*bounds = Math::RectAreaDbl(this->min, this->max);
+	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
 void *Map::VectorLayer::BeginGetObject()
@@ -704,40 +690,35 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
 		return false;
 	const UTF8Char **newStrs = CopyStrs(strs);
 
-	Double x1;
-	Double y1;
-	Double x2;
-	Double y2;
+	Math::RectAreaDbl bounds;
 	Bool updated = false;
-	vec->GetBounds(&x1, &y1, &x2, &y2);
+	vec->GetBounds(&bounds);
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->minX = x1;
-		this->minY = y1;
-		this->maxX = x2;
-		this->maxY = y2;
+		this->min = bounds.tl;
+		this->max = bounds.br;
 		updated = true;
 	}
 	else
 	{
-		if (this->minX > x1)
+		if (this->min.x > bounds.tl.x)
 		{
-			this->minX = x1;
+			this->min.x = bounds.tl.x;
 			updated = true;
 		}
-		if (this->minY > y1)
+		if (this->min.y > bounds.tl.y)
 		{
-			this->minY = y1;
+			this->min.y = bounds.tl.y;
 			updated = true;
 		}
-		if (this->maxX < x2)
+		if (this->max.x < bounds.br.x)
 		{
-			this->maxX = x2;
+			this->max.x = bounds.br.x;
 			updated = true;
 		}
-		if (this->maxY < y2)
+		if (this->max.y < bounds.br.y)
 		{
-			this->maxY = y2;
+			this->max.y = bounds.br.y;
 			updated = true;
 		}
 	}
@@ -755,40 +736,35 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::PString *strs)
 		return false;
 	const UTF8Char **newStrs = CopyStrs(strs);
 
-	Double x1;
-	Double y1;
-	Double x2;
-	Double y2;
+	Math::RectAreaDbl bounds;
 	Bool updated = false;
-	vec->GetBounds(&x1, &y1, &x2, &y2);
+	vec->GetBounds(&bounds);
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->minX = x1;
-		this->minY = y1;
-		this->maxX = x2;
-		this->maxY = y2;
+		this->min = bounds.tl;
+		this->max = bounds.br;
 		updated = true;
 	}
 	else
 	{
-		if (this->minX > x1)
+		if (this->min.x > bounds.tl.x)
 		{
-			this->minX = x1;
+			this->min.x = bounds.tl.x;
 			updated = true;
 		}
-		if (this->minY > y1)
+		if (this->min.y > bounds.tl.y)
 		{
-			this->minY = y1;
+			this->min.y = bounds.tl.y;
 			updated = true;
 		}
-		if (this->maxX < x2)
+		if (this->max.x < bounds.br.x)
 		{
-			this->maxX = x2;
+			this->max.x = bounds.br.x;
 			updated = true;
 		}
-		if (this->maxY < y2)
+		if (this->max.y < bounds.br.y)
 		{
-			this->maxY = y2;
+			this->max.y = bounds.br.y;
 			updated = true;
 		}
 	}
@@ -806,40 +782,35 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, const UTF8Char **strs)
 		return false;
 	const UTF8Char **newStrs = CopyStrs(strs);
 
-	Double x1;
-	Double y1;
-	Double x2;
-	Double y2;
+	Math::RectAreaDbl bounds;
 	Bool updated = false;
-	vec->GetBounds(&x1, &y1, &x2, &y2);
+	vec->GetBounds(&bounds);
 	if (this->vectorList.GetCount() == 0)
 	{
-		this->minX = x1;
-		this->minY = y1;
-		this->maxX = x2;
-		this->maxY = y2;
+		this->min = bounds.tl;
+		this->max = bounds.br;
 		updated = true;
 	}
 	else
 	{
-		if (this->minX > x1)
+		if (this->min.x > bounds.tl.x)
 		{
-			this->minX = x1;
+			this->min.x = bounds.tl.x;
 			updated = true;
 		}
-		if (this->minY > y1)
+		if (this->min.y > bounds.tl.y)
 		{
-			this->minY = y1;
+			this->min.y = bounds.tl.y;
 			updated = true;
 		}
-		if (this->maxX < x2)
+		if (this->max.x < bounds.br.x)
 		{
-			this->maxX = x2;
+			this->max.x = bounds.br.x;
 			updated = true;
 		}
-		if (this->maxY < y2)
+		if (this->max.y < bounds.br.y)
 		{
-			this->maxY = y2;
+			this->max.y = bounds.br.y;
 			updated = true;
 		}
 	}
@@ -1003,8 +974,8 @@ void Map::VectorLayer::ConvCoordinateSystem(Math::CoordinateSystem *csys)
 			v->ConvCSys(this->csys, csys);
 		}
 
-		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->minX, this->minY, 0, &this->minX, &this->minY, 0);
-		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->maxX, this->maxY, 0, &this->maxX, &this->maxY, 0);
+		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->min.x, this->min.y, 0, &this->min.x, &this->min.y, 0);
+		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->max.x, this->max.y, 0, &this->max.x, &this->max.y, 0);
 		this->UpdateMapRate();
 
 		SDEL_CLASS(this->csys);
