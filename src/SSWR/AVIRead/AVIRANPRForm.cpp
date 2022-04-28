@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Exporter/PNGExporter.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Quadrilateral.h"
 #include "SSWR/AVIRead/AVIRANPRForm.h"
@@ -97,6 +98,44 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(void *userObj, Math::Coord
 	else if (me->selectMode == ActionType::Plate)
 	{
 		Math::Coord2DDbl coord = me->pbImg->Scn2ImagePos(scnPos);
+		Int32 rate = 16;
+		Math::RectArea<UOSInt> rect;
+		rect = me->currImg->CalcNearPixelRange(Math::Coord2D<UOSInt>((UOSInt)Double2OSInt(coord.x), (UOSInt)Double2OSInt(coord.y)), rate);
+		if (rect.height > 100)
+		{
+			while (rate > 10)
+			{
+				rate--;
+				rect = me->currImg->CalcNearPixelRange(Math::Coord2D<UOSInt>((UOSInt)Double2OSInt(coord.x), (UOSInt)Double2OSInt(coord.y)), rate);
+				if (rect.height <= 100)
+				{
+					break;
+				}
+			}
+		}
+		else if (rect.width < 150)
+		{
+			while (rate < 32)
+			{
+				rate++;
+				rect = me->currImg->CalcNearPixelRange(Math::Coord2D<UOSInt>((UOSInt)Double2OSInt(coord.x), (UOSInt)Double2OSInt(coord.y)), rate);
+				if (rect.width >= 150)
+				{
+					break;
+				}
+			}
+		}
+		me->anpr.ParseImageQuad(me->currImg, Math::Quadrilateral(rect.GetTL().ToDouble(), rect.GetTR().ToDouble(), rect.GetBR().ToDouble(), rect.GetBL().ToDouble()));
+
+		Media::StaticImage *simg = me->currImg->CreateSubImage(Math::RectArea<OSInt>((OSInt)rect.tl.x, (OSInt)rect.tl.y, (OSInt)rect.width, (OSInt)rect.height));
+		Media::ImageList imgList(CSTR("Temp.png"));
+		simg->To32bpp();
+		imgList.AddImage(simg, 0);
+		Exporter::PNGExporter exporter;
+		exporter.ExportNewFile(imgList.GetSourceNameObj()->ToCString(), &imgList, 0);
+		
+		me->selectMode = ActionType::None;
+		me->lblSelStatus->SetText(CSTR(""));
 	}
 	return false;
 }

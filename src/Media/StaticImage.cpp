@@ -1354,3 +1354,282 @@ Double Media::StaticImage::CalcColorRate()
 	}
 	return 0;
 }
+
+UInt8 *Media::StaticImage::CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate)
+{
+	if (this->info.pf == Media::PF_B8G8R8A8)
+	{
+		UOSInt w = this->info.dispWidth;
+		UOSInt h = this->info.dispHeight;
+		UInt8 *selMask = MemAlloc(UInt8, w * h);
+		UOSInt bpl = this->GetDataBpl();
+		UInt8 *imgPtr = this->data;
+		MemClear(selMask, w * h);
+		selMask[pxCoord.y * w + pxCoord.x] = 0xff;
+		CalcNearPixelMaskH32(selMask, pxCoord.x, pxCoord.y, imgPtr + pxCoord.y * bpl + pxCoord.x * 4, maxRate);
+		CalcNearPixelMaskV32(selMask, pxCoord.x, pxCoord.y, imgPtr + pxCoord.y * bpl + pxCoord.x * 4, maxRate);
+		return selMask;
+	}
+	else if (this->info.pf == Media::PF_B8G8R8 || this->info.pf == Media::PF_R8G8B8)
+	{
+		UOSInt w = this->info.dispWidth;
+		UOSInt h = this->info.dispHeight;
+		UInt8 *selMask = MemAlloc(UInt8, w * h);
+		UOSInt bpl = this->GetDataBpl();
+		UInt8 *imgPtr = this->data;
+		MemClear(selMask, w * h);
+		selMask[pxCoord.y * w + pxCoord.x] = 0xff;
+		CalcNearPixelMaskH32(selMask, pxCoord.x, pxCoord.y, imgPtr + pxCoord.y * bpl + pxCoord.x * 3, maxRate);
+		CalcNearPixelMaskV32(selMask, pxCoord.x, pxCoord.y, imgPtr + pxCoord.y * bpl + pxCoord.x * 3, maxRate);
+		return selMask;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+Math::RectArea<UOSInt> Media::StaticImage::CalcNearPixelRange(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate)
+{
+	UInt8 *selMask = CreateNearPixelMask(pxCoord, maxRate);
+	if (selMask)
+	{
+		Math::Coord2D<UOSInt> min = pxCoord;
+		Math::Coord2D<UOSInt> max = pxCoord;
+		UInt8 *currPtr = selMask;
+		UOSInt w = this->info.dispWidth;
+		UOSInt h = this->info.dispHeight;
+		UOSInt i = 0;
+		UOSInt j;
+		while (i < h)
+		{
+			j = 0;
+			while (j < w)
+			{
+				if (*currPtr)
+				{
+					if (j < min.x)
+					{
+						min.x = j;
+					}
+					if (j > max.x)
+					{
+						max.x = j;
+					}
+					if (i < min.y)
+					{
+						min.y = i;
+					}
+					if (i > max.y)
+					{
+						max.y = i;
+					}
+				}
+				currPtr++;
+				j++;
+			}
+			i++;
+		}
+		MemFree(selMask);
+		return Math::RectArea<UOSInt>(min.x, min.y, max.x - min.x + 1, max.y - min.y + 1);
+	}
+	else
+	{
+		return Math::RectArea<UOSInt>(pxCoord.x, pxCoord.y, 1, 1);
+	}
+}
+
+void Media::StaticImage::CalcNearPixelMaskH32(UInt8 *pixelMask, UOSInt x, UOSInt y, UInt8 *c, Int32 maxRate)
+{
+	UOSInt w = this->info.dispWidth;
+	UOSInt bpl = this->GetDataBpl();
+	UInt8 *imgPtr = this->data;
+	UOSInt pxSize = this->info.storeBPP >> 3;
+	UInt8 *c2;
+	UInt8 *lastC;
+	UInt8 *lastC2;
+	Int32 r;
+	Int32 g;
+	Int32 b;
+	Int32 total;
+	UOSInt i;
+	lastC = c;
+	lastC2 = c;
+	i = x;
+	while (i > 0)
+	{
+		if (pixelMask[y * w + i - 1] != 0)
+		{
+			break;
+		}
+		c2 = imgPtr + y * bpl + (i - 1) * pxSize;
+		b = lastC[0] - c2[0];
+		g = lastC[1] - c2[1];
+		r = lastC[2] - c2[2];
+		if (r < 0)
+		{
+			r = -r;
+		}
+		if (g < 0)
+		{
+			g = -g;
+		}
+		if (b < 0)
+		{
+			b = -b;
+		}
+		total = r + g + b;
+		if (total >= maxRate)
+		{
+			break;
+		}
+		i--;
+		pixelMask[y * w + i] = 0xff;
+		lastC = lastC2;
+		lastC2 = c2;
+	}
+	while (i < x)
+	{
+		CalcNearPixelMaskV32(pixelMask, i, y, imgPtr + y * bpl + i * pxSize, maxRate);
+		i++;
+	}
+	lastC = c;
+	lastC2 = c;
+	i = x + 1;
+	while (i < w)
+	{
+		if (pixelMask[y * w + i] != 0)
+		{
+			break;
+		}
+		c2 = imgPtr + y * bpl + i * pxSize;
+		b = lastC[0] - c2[0];
+		g = lastC[1] - c2[1];
+		r = lastC[2] - c2[2];
+		if (r < 0)
+		{
+			r = -r;
+		}
+		if (g < 0)
+		{
+			g = -g;
+		}
+		if (b < 0)
+		{
+			b = -b;
+		}
+		total = r + g + b;
+		if (total >= maxRate)
+		{
+			break;
+		}
+		pixelMask[y * w + i] = 0xff;
+		lastC = lastC2;
+		lastC2 = c2;
+		i++;
+	}
+	i--;
+	while (i > x)
+	{
+		CalcNearPixelMaskV32(pixelMask, i, y, imgPtr + y * bpl + i * pxSize, maxRate);
+		i--;
+	}
+}
+
+void Media::StaticImage::CalcNearPixelMaskV32(UInt8 *pixelMask, UOSInt x, UOSInt y, UInt8 *c, Int32 maxRate)
+{
+	UOSInt w = this->info.dispWidth;
+	UOSInt h = this->info.dispHeight;
+	UOSInt bpl = this->GetDataBpl();
+	UOSInt pxSize = this->info.storeBPP >> 3;
+	UInt8 *imgPtr = this->data;
+	UInt8 *lastC;
+	UInt8 *lastC2;
+	UInt8 *c2;
+	Int32 r;
+	Int32 g;
+	Int32 b;
+	Int32 total;
+	UOSInt i;
+	i = y;
+	lastC = c;
+	lastC2 = c;
+	while (i > 0)
+	{
+		if (pixelMask[(i - 1) * w + x] != 0)
+		{
+			break;
+		}
+		c2 = imgPtr + (i - 1) * bpl + x * pxSize;
+		b = lastC[0] - c2[0];
+		g = lastC[1] - c2[1];
+		r = lastC[2] - c2[2];
+		if (r < 0)
+		{
+			r = -r;
+		}
+		if (g < 0)
+		{
+			g = -g;
+		}
+		if (b < 0)
+		{
+			b = -b;
+		}
+		total = r + g + b;
+		if (total >= maxRate)
+		{
+			break;
+		}
+		i--;
+		pixelMask[i * w + x] = 0xff;
+		lastC = lastC2;
+		lastC2 = c2;
+	}
+	while (i < y)
+	{
+		CalcNearPixelMaskH32(pixelMask, x, i, imgPtr + i * bpl + x * pxSize, maxRate);
+		i++;
+	}
+	lastC = c;
+	lastC2 = c;
+	i = y + 1;
+	while (i < h)
+	{
+		if (pixelMask[i * w + x] != 0)
+		{
+			break;
+		}
+		c2 = imgPtr + i * bpl + x * pxSize;
+		b = lastC[0] - c2[0];
+		g = lastC[1] - c2[1];
+		r = lastC[2] - c2[2];
+		if (r < 0)
+		{
+			r = -r;
+		}
+		if (g < 0)
+		{
+			g = -g;
+		}
+		if (b < 0)
+		{
+			b = -b;
+		}
+		total = r + g + b;
+		if (total >= maxRate)
+		{
+			break;
+		}
+		pixelMask[i * w + x] = 0xff;
+		lastC = lastC2;
+		lastC2 = c2;
+		i++;
+	}
+	i--;
+	while (i > y)
+	{
+		CalcNearPixelMaskH32(pixelMask, x, i, imgPtr + i * bpl + x * pxSize, maxRate);
+		i--;
+	}
+}

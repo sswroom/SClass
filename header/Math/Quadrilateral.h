@@ -12,6 +12,9 @@ namespace Math
 		Coord2DDbl br;
 		Coord2DDbl bl;
 
+		Quadrilateral() = default;
+		Quadrilateral(Coord2DDbl tl, Coord2DDbl tr, Coord2DDbl br, Coord2DDbl bl);
+
 		Double CalcMaxTiltAngle();
 		Double CalcArea();
 		Double CalcLenLeft();

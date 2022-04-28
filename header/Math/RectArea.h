@@ -27,6 +27,26 @@ namespace Math
 			return (x >= tl.x && x < (tl.x + width) && y >= tl.y && y < (tl.y + height));
 		}
 
+		Math::Coord2D<T> GetTL()
+		{
+			return this->tl;
+		}
+
+		Math::Coord2D<T> GetTR()
+		{
+			return Math::Coord2D<T>(this->tl.x + this->width, this->tl.y);
+		}
+
+		Math::Coord2D<T> GetBR()
+		{
+			return Math::Coord2D<T>(this->tl.x + this->width, this->tl.y + this->height);
+		}
+
+		Math::Coord2D<T> GetBL()
+		{
+			return Math::Coord2D<T>(this->tl.x, this->tl.y + this->height);
+		}
+
 		static void GetRectArea(RectArea<T> *area, Coord2D<T> *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;

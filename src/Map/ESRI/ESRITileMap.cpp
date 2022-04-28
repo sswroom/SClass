@@ -646,7 +646,7 @@ Double Map::ESRI::ESRITileMap::TileY2Lat(Int32 y, UOSInt level)
 Double Map::ESRI::ESRITileMap::WebMercatorX2Lon(Double x)
 {
 	x = x / 6378137.0;
-	Double w2 = x * 57.295779513082323;\
+	Double w2 = x * 57.295779513082323;
 	Double w3 = Math_Fix((x + 180.0) / 360.0);
 	return w2 - (w3 * 360.0);
 }

@@ -3,6 +3,14 @@
 #include "Math/Quadrilateral.h"
 #include "Math/Triangle.h"
 
+Math::Quadrilateral::Quadrilateral(Coord2DDbl tl, Coord2DDbl tr, Coord2DDbl br, Coord2DDbl bl)
+{
+	this->tl = tl;
+	this->tr = tr;
+	this->br = br;
+	this->bl = bl;
+}
+
 Double Math::Quadrilateral::CalcMaxTiltAngle()
 {
 	Double deg360 = Math::PI * 2;
