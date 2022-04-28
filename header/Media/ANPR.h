@@ -28,6 +28,7 @@ namespace Media
 		void SetResultHandler(NumPlateResult hdlr, void *userObj);
 		Bool ParseImage(Media::StaticImage *simg);
 		Bool ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral quad);
+		Bool ParseImagePlatePoint(Media::StaticImage *simg, Math::Coord2D<UOSInt> coord);
 	};
 }
 #endif

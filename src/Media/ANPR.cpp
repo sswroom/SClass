@@ -237,3 +237,42 @@ Bool Media::ANPR::ParseImageQuad(Media::StaticImage *simg, Math::Quadrilateral q
 	DEL_CLASS(bwImg);
 	return found;
 }
+
+Bool Media::ANPR::ParseImagePlatePoint(Media::StaticImage *simg, Math::Coord2D<UOSInt> coord)
+{
+	Int32 rate = 16;
+	Math::RectArea<UOSInt> rect;
+	rect = simg->CalcNearPixelRange(coord, rate);
+	if (rect.height > 100)
+	{
+		while (rate > 10)
+		{
+			rate--;
+			rect = simg->CalcNearPixelRange(coord, rate);
+			if (rect.height <= 100)
+			{
+				break;
+			}
+		}
+	}
+	else if (rect.width < 150)
+	{
+		while (rate < 32)
+		{
+			rate++;
+			rect = simg->CalcNearPixelRange(coord, rate);
+			if (rect.width >= 150)
+			{
+				break;
+			}
+		}
+	}
+	/*Media::StaticImage *subimg = simg->CreateSubImage(Math::RectArea<OSInt>((OSInt)rect.tl.x, (OSInt)rect.tl.y, (OSInt)rect.width, (OSInt)rect.height));
+	Media::ImageList imgList(CSTR("Temp.png"));
+	subimg->To32bpp();
+	imgList.AddImage(subimg, 0);
+	Exporter::PNGExporter exporter;
+	exporter.ExportNewFile(imgList.GetSourceNameObj()->ToCString(), &imgList, 0);*/
+
+	return this->ParseImageQuad(simg, Math::Quadrilateral(rect.GetTL().ToDouble(), rect.GetTR().ToDouble(), rect.GetBR().ToDouble(), rect.GetBL().ToDouble()));
+}
