@@ -152,7 +152,6 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Media::VideoRenderer::RendererStatus dbg;
-		NEW_CLASS(dbg.color, Media::ColorProfile());
 		me->vbox->GetStatus(&dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendI32(dbg.currTime);
@@ -217,18 +216,18 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.Append(Media::ColorProfile::YUVTypeGetName(dbg.srcYUVType));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src R Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetRTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(dbg.color.GetRTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src G Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetGTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(dbg.color.GetGTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src B Transfer: "));
-		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetBTranParam()->GetTranType()));
+		sb.Append(Media::CS::TransferTypeGetName(dbg.color.GetBTranParam()->GetTranType()));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Src Gamma: "));
-		Text::SBAppendF64(&sb, dbg.color->GetRTranParam()->GetGamma());
+		Text::SBAppendF64(&sb, dbg.color.GetRTranParam()->GetGamma());
 		sb.AppendC(UTF8STRC("\r\n"));
-		Media::ColorProfile::ColorPrimaries *primaries = dbg.color->GetPrimaries(); 
+		Media::ColorProfile::ColorPrimaries *primaries = dbg.color.GetPrimaries(); 
 		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.AppendC(UTF8STRC("\r\n"));
@@ -253,7 +252,6 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		Text::SBAppendF64(&sb, primaries->wy);
 		sb.AppendC(UTF8STRC("\r\n"));
 		me->txtDebug->SetText(sb.ToCString());
-		DEL_CLASS(dbg.color);
 	}
 }
 

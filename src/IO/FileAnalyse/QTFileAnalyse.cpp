@@ -957,11 +957,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	{
 		if (pack->packSize >= 0x100000000)
 		{
-			frame->AddSubframe(16, pack->packSize - 16);
+			frame->AddSubframe(16, (UOSInt)pack->packSize - 16);
 		}
 		else
 		{
-			frame->AddSubframe(8, pack->packSize - 8);
+			frame->AddSubframe(8, (UOSInt)pack->packSize - 8);
 		}
 	}
 	else if (pack->packType == *(Int32*)"ftyp")
@@ -1136,7 +1136,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddUInt(20, 4, CSTR("Component manufacturer"), ReadMUInt32(&packBuff[12]));
 			frame->AddUInt(24, 4, CSTR("Component flags"), ReadMUInt32(&packBuff[16]));
 			frame->AddUInt(28, 4, CSTR("Component flags mask"), ReadMUInt32(&packBuff[20]));
-			frame->AddStrC(32, pack->packSize - 32, CSTR("Component name"),&packBuff[24]);
+			frame->AddStrC(32, (UOSInt)pack->packSize - 32, CSTR("Component name"),&packBuff[24]);
 			MemFree(packBuff);
 		}
 	}

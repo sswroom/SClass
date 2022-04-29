@@ -240,8 +240,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 	switch (pack->packType)
 	{
 	case PackType::FileHeaderV1:
-		packBuff = MemAlloc(UInt8, pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddStrC(0, 4, CSTR("Magic number"), packBuff);
 		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
@@ -273,8 +273,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 		MemFree(packBuff);
 		break;
 	case PackType::PreviewImage:
-		packBuff = MemAlloc(UInt8, pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		uuid.SetValue(packBuff);
 		sptr = uuid.ToString(sbuff);
@@ -287,23 +287,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 		case 1:
 			frame->AddUInt(22, 4, CSTR("Header data start"), ReadUInt32(&packBuff[22]));
 			frame->AddUInt(26, 4, CSTR("Header data size"), ReadUInt32(&packBuff[26]));
-			frame->AddHexBuff(30, pack->packSize - 46, CSTR("Header Data"), &packBuff[30], true);
+			frame->AddHexBuff(30, (UOSInt)pack->packSize - 46, CSTR("Header Data"), &packBuff[30], true);
 			break;
 		case 2:
 			frame->AddUInt(22, 4, CSTR("Bmp start"), ReadUInt32(&packBuff[22]));
 			frame->AddUInt(26, 4, CSTR("Bmp size"), ReadUInt32(&packBuff[26]));
-			frame->AddHexBuff(30, pack->packSize - 46, CSTR("Bmp Data"), &packBuff[30], true);
+			frame->AddHexBuff(30, (UOSInt)pack->packSize - 46, CSTR("Bmp Data"), &packBuff[30], true);
 			break;
 		case 3:
 			frame->AddUInt(22, 4, CSTR("Wmf start"), ReadUInt32(&packBuff[22]));
 			frame->AddUInt(26, 4, CSTR("Wmf size"), ReadUInt32(&packBuff[26]));
-			frame->AddHexBuff(30, pack->packSize - 46, CSTR("Wmf Data"), &packBuff[30], true);
+			frame->AddHexBuff(30, (UOSInt)pack->packSize - 46, CSTR("Wmf Data"), &packBuff[30], true);
 			break;
 		}
 
 		uuid.SetValue(&packBuff[pack->packSize - 16]);
 		sptr = uuid.ToString(sbuff);
-		frame->AddField(pack->packSize - 16, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
+		frame->AddField((UOSInt)pack->packSize - 16, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
 
 		MemFree(packBuff);
 		break;
