@@ -111,7 +111,7 @@ Bool Map::MercatorMapView::InViewXY(Math::Coord2DDbl mapPos)
 	return x >= 0 && x < this->scnSize.width && y >= 0 && y < this->scnSize.height;
 }
 
-Bool Map::MercatorMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::MercatorMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst)
 {
 	if (nPoints == 0)
 	{
@@ -129,9 +129,10 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *d
 	{
 		thisX = Double2Int32((Lon2PixelX(srcArr->lon) - this->centPixel.x) * rate + this->scnSize.width * 0.5);
 		thisY = Double2Int32((Lat2PixelY(srcArr->lat) - this->centPixel.y) * rate + this->scnSize.height * 0.5);
+		destArr->x = thisX + ofst.x;
+		destArr->y = thisY + ofst.y;
 		srcArr++;
-		*destArr++ = thisX + ofstX;
-		*destArr++ = thisY + ofstY;
+		destArr++;
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;
@@ -217,7 +218,7 @@ Bool Map::MercatorMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Co
 	return (Doublex2GetLo(imax) >= 0) && (Doublex2GetLo(imin) < this->scnSize.width) && (Doublex2GetHi(imax) >= 0) && (Doublex2GetHi(imin) < this->scnSize.height);
 }
 
-Bool Map::MercatorMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::MercatorMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst)
 {
 	if (nPoints == 0)
 	{
@@ -234,13 +235,17 @@ Bool Map::MercatorMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, In
 	rate = this->hdpi / this->ddpi;
 	Double dScnWidth = this->scnSize.width * 0.5;
 	Double dScnHeight = this->scnSize.height * 0.5;
-	*destArr++ = iminX = imaxX = Double2Int32((Lon2PixelX(*srcArr++ * rRate) - this->centPixel.x) * rate + dScnWidth);
-	*destArr++ = iminY = imaxY = Double2Int32((Lat2PixelY(*srcArr++ * rRate) - this->centPixel.y) * rate + dScnHeight);
+	destArr->x = iminX = imaxX = Double2Int32((Lon2PixelX(srcArr->x * rRate) - this->centPixel.x) * rate + dScnWidth);
+	destArr->y = iminY = imaxY = Double2Int32((Lat2PixelY(srcArr->y * rRate) - this->centPixel.y) * rate + dScnHeight);
+	srcArr++;
+	destArr++;
 	nPoints--;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Double2Int32((Lon2PixelX(*srcArr++ * rRate) - this->centPixel.x) * rate + dScnWidth);
-		*destArr++ = thisY = Double2Int32((Lat2PixelY(*srcArr++ * rRate) - this->centPixel.y) * rate + dScnHeight);
+		destArr->x = thisX = Double2Int32((Lon2PixelX(srcArr->x * rRate) - this->centPixel.x) * rate + dScnWidth);
+		destArr->y = thisY = Double2Int32((Lat2PixelY(srcArr->y * rRate) - this->centPixel.y) * rate + dScnHeight);
+		srcArr++;
+		destArr++;
 		if (thisX < iminX)
 			iminX = thisX;
 		if (thisX > imaxX)

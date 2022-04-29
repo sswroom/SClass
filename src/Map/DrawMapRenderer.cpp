@@ -70,11 +70,11 @@ void Map::DrawMapRenderer::SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt 
 	MemCopyNO(&mapLabels[index2], &l, sizeof(MapLabels));
 }
 
-Bool Map::DrawMapRenderer::LabelOverlapped(Double *points, UOSInt nPoints, Double tlx, Double tly, Double brx, Double bry)
+Bool Map::DrawMapRenderer::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect)
 {
 	while (nPoints--)
 	{
-		if (points[(nPoints << 2) + 0] < brx && points[(nPoints << 2) + 2] > tlx && points[(nPoints << 2) + 1] < bry && points[(nPoints << 2) + 3] > tly)
+		if (rect.OverlapOrTouch(points[nPoints]))
 			return true;
 	}
 
@@ -640,15 +640,11 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 	if (denv->labelCnt)
 	{
-		Double szThis[2];
+		Math::Coord2DDbl szThis;
 		UOSInt currPt;
 
-		Double tlx;
-		Double tly;
-		Double brx;
-		Double bry;
-		Double scnPtX;
-		Double scnPtY;
+		Math::RectAreaDbl rect;
+		Math::Coord2DDbl scnPt;
 		Math::Coord2DDbl dscnPos;
 		OSInt thisPts[10];
 		Int32 thisCnt = 0;
@@ -691,66 +687,57 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 		//	labels[i].shapeType = 0;
 			if (denv->labels[i].layerType == Map::DRAW_LAYER_POINT || denv->labels[i].layerType == Map::DRAW_LAYER_POINT3D)
 			{
-				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				dscnPos = denv->view->MapXYToScnXY(denv->labels[i].pos);
-				scnPtX = dscnPos.x;
-				scnPtY = dscnPos.y;
+				scnPt = dscnPos;
 
 				overlapped = true;
 				if (denv->labels[i].xOfst == 0)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl = scnPt - (szThis * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX + 1 + OSInt2Double(denv->labels[i].xOfst >> 1);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x + 1 + OSInt2Double(denv->labels[i].xOfst >> 1);
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - szThis[0] - 1 - OSInt2Double(denv->labels[i].xOfst >> 1);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - szThis.x - 1 - OSInt2Double(denv->labels[i].xOfst >> 1);
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - szThis[1] - 1 - OSInt2Double(denv->labels[i].yOfst >> 1);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y - szThis.y - 1 - OSInt2Double(denv->labels[i].yOfst >> 1);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY + 1 + OSInt2Double(denv->labels[i].yOfst >> 1);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y + 1 + OSInt2Double(denv->labels[i].yOfst >> 1);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 
 				if (!overlapped)
 				{
-					DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
+					Math::Coord2DDbl center = rect.GetCenter();
+					DrawChars(denv, denv->labels[i].label->ToCString(), center.x, center.y, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
 
-					denv->objBounds[(currPt << 2)] = tlx;
-					denv->objBounds[(currPt << 2) + 1] = tly;
-					denv->objBounds[(currPt << 2) + 2] = brx;
-					denv->objBounds[(currPt << 2) + 3] = bry;
+					denv->objBounds[currPt] = rect;
 					currPt++;
 				}
 			}
@@ -780,14 +767,13 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				//	MessageBoxW(NULL, L"Test", lastLbl, MB_OK);
 				}
 
-				Int32 *points = MemAlloc(Int32, denv->labels[i].nPoints << 1);
-				denv->view->MapXYToScnXY(denv->labels[i].points, points, denv->labels[i].nPoints, 0, 0);
+				Math::Coord2D<Int32> *points = MemAlloc(Math::Coord2D<Int32>, denv->labels[i].nPoints);
+				denv->view->MapXYToScnXY(denv->labels[i].points, points, denv->labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
 				OSInt minX = 0;
 				OSInt minY = 0;
 				OSInt maxX = 0;
 				OSInt maxY = 0;
-				OSInt xDiff;
-				OSInt yDiff;
+				Math::Coord2D<OSInt> diff;
 				Double scaleN;
 				Double scaleD;
 				OSInt lastX;
@@ -797,9 +783,9 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				UOSInt k;
 				Bool hasPoint;
 
-				j = (denv->labels[i].nPoints << 1) - 2;
-				lastX = points[j];
-				lastY = points[j + 1];
+				j = denv->labels[i].nPoints - 1;
+				lastX = points[j].x;
+				lastY = points[j].y;
 				if (lastX >= 0 && lastX < (OSInt)scnWidth && lastY >= 0 && lastY < (OSInt)scnHeight)
 				{
 					maxX = minX = lastX;
@@ -812,13 +798,13 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				}
 				while (j > 0)
 				{
-					lastX = points[j];
-					lastY = points[j + 1];
+					lastX = points[j].x;
+					lastY = points[j].y;
 
-					j -= 2;
+					j -= 1;
 
-					thisX = points[j];
-					thisY = points[j + 1];
+					thisX = points[j].x;
+					thisY = points[j].y;
 
 					if (lastX > scnWidth)
 					{
@@ -920,47 +906,47 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				}
 				if (!hasPoint)
 				{
-					j = (UOSInt)((denv->labels[i].nPoints - 1) & (UOSInt)~1);
-					minX = maxX = points[j];
-					minY = maxY = points[j + 1];
-					if (points[j + 2] > minX)
+					j = (UOSInt)((denv->labels[i].nPoints - 1) >> 1);
+					minX = maxX = points[j].x;
+					minY = maxY = points[j].y;
+					if (points[j + 1].x > minX)
 					{
-						maxX = points[j + 2];
+						maxX = points[j + 1].x;
 					}
 					else
 					{
-						minX = points[j + 2];
+						minX = points[j + 1].x;
 					}
-					if (points[j + 3] > minY)
+					if (points[j + 1].y > minY)
 					{
-						maxY = points[j + 3];
+						maxY = points[j + 1].y;
 					}
 					else
 					{
-						minY = points[j + 3];
+						minY = points[j + 1].y;
 					}
 				}
-				xDiff = maxX - minX;
-				yDiff = maxY - minY;
+				diff.x = maxX - minX;
+				diff.y = maxY - minY;
 				scaleN = 0;
 				scaleD = 1;
 
-				if (xDiff > yDiff)
+				if (diff.x > diff.y)
 				{
-					scnPtX = OSInt2Double((maxX + minX) >> 1);
+					scnPt.x = OSInt2Double((maxX + minX) >> 1);
 					k = 0;
 					while (k < denv->labels[i].nPoints - 1)
 					{
-						if (points[k << 1] >= scnPtX && points[(k << 1) + 2] <= scnPtX)
+						if (points[k].x >= scnPt.x && points[k + 1].x <= scnPt.x)
 						{
-							scaleD = points[(k << 1) + 0] - points[(k << 1) + 2];
-							scaleN = (points[k << 1] - scnPtX);
+							scaleD = points[k].x - points[k + 1].x;
+							scaleN = (points[k].x - scnPt.x);
 							break;
 						}
-						else if (points[k << 1] <= scnPtX && points[(k << 1) + 2] >= scnPtX)
+						else if (points[k].x <= scnPt.x && points[k + 1].x >= scnPt.x)
 						{
-							scaleD = points[(k << 1) + 2] - points[(k << 1)];
-							scaleN = scnPtX - points[k << 1];
+							scaleD = points[k + 1].x - points[k].x;
+							scaleN = scnPt.x - points[k ].x;
 							break;
 						}
 						k++;
@@ -969,27 +955,27 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				}
 				else
 				{
-					scnPtY = OSInt2Double((maxY + minY) >> 1);
+					scnPt.y = OSInt2Double((maxY + minY) >> 1);
 					k = 0;
 					while (k < denv->labels[i].nPoints - 1)
 					{
-						if (points[(k << 1) + 1] >= scnPtY && points[(k << 1) + 3] <= scnPtY)
+						if (points[k].y >= scnPt.y && points[k + 1].y <= scnPt.y)
 						{
-							scaleD = points[(k << 1) + 1] - points[(k << 1) + 3];
-							scaleN = (points[(k << 1) + 1] - scnPtY);
+							scaleD = points[k].y - points[k + 1].y;
+							scaleN = (points[k].y - scnPt.y);
 							break;
 						}
-						else if (points[(k << 1) + 1] <= scnPtY && points[(k << 1) + 3] >= scnPtY)
+						else if (points[k].y <= scnPt.y && points[k + 1].y >= scnPt.y)
 						{
-							scaleD = points[(k << 1) + 3] - points[(k << 1) + 1];
-							scaleN = scnPtY - points[(k << 1) + 1];
+							scaleD = points[k + 1].y - points[k].y;
+							scaleN = scnPt.y - points[k].y;
 							break;
 						}
 						k++;
 					}
 				}
-				scnPtX = points[(k << 1)] + ((points[(k << 1) + 2] - points[(k << 1)]) * scaleN / scaleD);
-				scnPtY = points[(k << 1) + 1] + ((points[(k << 1) + 3] - points[(k << 1) + 1]) * scaleN / scaleD);
+				scnPt.x = points[k].x + ((points[k + 1].x - points[k].x) * scaleN / scaleD);
+				scnPt.y = points[k].y + ((points[k + 1].y - points[k].y) * scaleN / scaleD);
 				if (denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE)
 				{
 					denv->labels[i].scaleW = denv->labels[i].points[k + 1].x - denv->labels[i].points[k].y;
@@ -1000,23 +986,19 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 					denv->labels[i].scaleW = 0;
 					denv->labels[i].scaleH = 0;
 				}
-				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
-				if (OSInt2Double(xDiff) < szThis[0] && OSInt2Double(yDiff) < szThis[1])
+				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
+				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl = scnPt - (szThis * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 					if (!overlapped)
 					{
-						DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
+						Math::Coord2DDbl center = rect.GetCenter();
+						DrawChars(denv, denv->labels[i].label->ToCString(), center.x, center.y, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
 
-						denv->objBounds[(currPt << 2)] = tlx;
-						denv->objBounds[(currPt << 2) + 1] = tly;
-						denv->objBounds[(currPt << 2) + 2] = brx;
-						denv->objBounds[(currPt << 2) + 3] = bry;
+						denv->objBounds[currPt] = rect;
 						currPt++;
 					}
 				}
@@ -1027,12 +1009,10 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 					j = 1;
 					while (j)
 					{
-						tlx = scnPtX - (szThis[0] * 0.5);
-						brx = tlx + szThis[0];
-						tly = scnPtY - (szThis[1] * 0.5);
-						bry = tly + szThis[1];
+						rect.tl = scnPt - (szThis * 0.5);
+						rect.br = rect.tl + szThis;
 
-						overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+						overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 						if (!overlapped || --tryCnt <= 0)
 						{
 							break;
@@ -1040,43 +1020,43 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 						else
 						{
 							/////////////////////////////////////
-							if (xDiff > yDiff)
+							if (diff.x > diff.y)
 							{
 								if (scnDiff < 0)
 								{
-									scnPtX += OSInt2Double(scnDiff) - 1;
-									if (scnPtX <= OSInt2Double(minX))
+									scnPt.x += OSInt2Double(scnDiff) - 1;
+									if (scnPt.x <= OSInt2Double(minX))
 									{
 										scnDiff = -scnDiff;
-										scnPtX = OSInt2Double(((minX + maxX) >> 1) + scnDiff + 1);
+										scnPt.x = OSInt2Double(((minX + maxX) >> 1) + scnDiff + 1);
 									}
 								}
 								else
 								{
-									scnPtX += OSInt2Double(scnDiff) + 1;
-									if (scnPtX >= OSInt2Double(maxX))
+									scnPt.x += OSInt2Double(scnDiff) + 1;
+									if (scnPt.x >= OSInt2Double(maxX))
 									{
 										scnDiff = scnDiff >> 1;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										scnPtX = OSInt2Double(((minX + maxX) >> 1) + scnDiff - 1);
+										scnPt.x = OSInt2Double(((minX + maxX) >> 1) + scnDiff - 1);
 									}
 								}
 
 								k = 0;
 								while (k < denv->labels[i].nPoints - 1)
 								{
-									if (points[k << 1] >= scnPtX && points[(k << 1) + 2] <= scnPtX)
+									if (points[k].x >= scnPt.x && points[k + 1].x <= scnPt.x)
 									{
-										scaleD = points[(k << 1) + 0] - points[(k << 1) + 2];
-										scaleN = (points[k << 1] - scnPtX);
+										scaleD = points[k].x - points[k + 1].x;
+										scaleN = (points[k].x - scnPt.x);
 										break;
 									}
-									else if (points[k << 1] <= scnPtX && points[(k << 1) + 2] >= scnPtX)
+									else if (points[k].x <= scnPt.x && points[k + 1].x >= scnPt.x)
 									{
-										scaleD = points[(k << 1) + 2] - points[(k << 1)];
-										scaleN = scnPtX - points[k << 1];
+										scaleD = points[k + 1].x - points[k].x;
+										scaleN = scnPt.x - points[k].x;
 										break;
 									}
 									k++;
@@ -1087,46 +1067,45 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 							{
 								if (scnDiff < 0)
 								{
-									scnPtY += OSInt2Double(scnDiff - 1);
-									if (scnPtY <= OSInt2Double(minY))
+									scnPt.y += OSInt2Double(scnDiff - 1);
+									if (scnPt.y <= OSInt2Double(minY))
 									{
 										scnDiff = -scnDiff;
-										scnPtY = OSInt2Double(((minY + maxY) >> 1) + scnDiff + 1);
+										scnPt.y = OSInt2Double(((minY + maxY) >> 1) + scnDiff + 1);
 									}
 								}
 								else
 								{
-									scnPtY += OSInt2Double(scnDiff + 1);
-									if (scnPtY >= OSInt2Double(maxY))
+									scnPt.y += OSInt2Double(scnDiff + 1);
+									if (scnPt.y >= OSInt2Double(maxY))
 									{
 										scnDiff = scnDiff >> 1;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										scnPtY = OSInt2Double(((minY + maxY) >> 1) + scnDiff - 1);
+										scnPt.y = OSInt2Double(((minY + maxY) >> 1) + scnDiff - 1);
 									}
 								}
 
 								k = 0;
 								while (k < denv->labels[i].nPoints - 1)
 								{
-									if (points[(k << 1) + 1] >= scnPtY && points[(k << 1) + 3] <= scnPtY)
+									if (points[k].y >= scnPt.y && points[k + 1].y <= scnPt.y)
 									{
-										scaleD = points[(k << 1) + 1] - points[(k << 1) + 3];
-										scaleN = (points[(k << 1) + 1] - scnPtY);
+										scaleD = points[k].y - points[k + 1].y;
+										scaleN = (points[k].y - scnPt.y);
 										break;
 									}
-									else if (points[(k << 1) + 1] <= scnPtY && points[(k << 1) + 3] >= scnPtY)
+									else if (points[k].y <= scnPt.y && points[k + 1].y >= scnPt.y)
 									{
-										scaleD = points[(k << 1) + 3] - points[(k << 1) + 1];
-										scaleN = scnPtY - points[(k << 1) + 1];
+										scaleD = points[k + 1].y - points[k].y;
+										scaleN = scnPt.y - points[k].y;
 										break;
 									}
 									k++;
 								}
 							}
-							scnPtX = points[(k << 1)] + ((points[(k << 1) + 2] - points[(k << 1)]) * scaleN / scaleD);
-							scnPtY = points[(k << 1) + 1] + ((points[(k << 1) + 3] - points[(k << 1) + 1]) * scaleN / scaleD);
+							scnPt = points[k].ToDouble() + ((points[k + 1].ToDouble() - points[k].ToDouble()) * scaleN / scaleD);
 							if (denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE)
 							{
 								denv->labels[i].scaleW = denv->labels[i].points[k + 1].x - denv->labels[i].points[k].x;
@@ -1137,7 +1116,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 								denv->labels[i].scaleW = 0;
 								denv->labels[i].scaleH = 0;
 							}
-							GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
+							GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
 						}
 					}
 
@@ -1151,12 +1130,12 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 						{
 							n = 0;
 							tmpV = thisPts[--m];
-							if (OSInt2Double(tmpV - LBLMINDIST) < bry && OSInt2Double(tmpV + LBLMINDIST) > tly)
+							if (OSInt2Double(tmpV - LBLMINDIST) < rect.br.y && OSInt2Double(tmpV + LBLMINDIST) > rect.tl.y)
 							{
 								n++;
 							}
 							tmpV = thisPts[--m];
-							if (OSInt2Double(tmpV - LBLMINDIST) < brx && OSInt2Double(tmpV + LBLMINDIST) > tlx)
+							if (OSInt2Double(tmpV - LBLMINDIST) < rect.br.x && OSInt2Double(tmpV + LBLMINDIST) > rect.tl.x)
 							{
 								n++;
 							}
@@ -1165,41 +1144,33 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 						if (n)
 						{
+							Math::Coord2DDbl center = rect.GetCenter();
 							if ((denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0)
 							{
-								Double realBounds[4];
-								DrawCharsLA(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
+								Math::RectAreaDbl realBounds;
+								DrawCharsLA(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
 
-								denv->objBounds[(currPt << 2)] = realBounds[0];
-								denv->objBounds[(currPt << 2) + 1] = realBounds[1];
-								denv->objBounds[(currPt << 2) + 2] = realBounds[2];
-								denv->objBounds[(currPt << 2) + 3] = realBounds[3];
+								denv->objBounds[currPt] = realBounds;
 								currPt++;
 							}
 							else if ((denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE) != 0)
 							{
-								Double realBounds[4];
-								DrawCharsL(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
+								Math::RectAreaDbl realBounds;
+								DrawCharsL(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
 
-								denv->objBounds[(currPt << 2)] = realBounds[0];
-								denv->objBounds[(currPt << 2) + 1] = realBounds[1];
-								denv->objBounds[(currPt << 2) + 2] = realBounds[2];
-								denv->objBounds[(currPt << 2) + 3] = realBounds[3];
+								denv->objBounds[currPt] = realBounds;
 								currPt++;
 							}
 							else
 							{
-								DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
+								DrawChars(denv, denv->labels[i].label->ToCString(), center.x, center.y, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
 
-								denv->objBounds[(currPt << 2)] = tlx;
-								denv->objBounds[(currPt << 2) + 1] = tly;
-								denv->objBounds[(currPt << 2) + 2] = brx;
-								denv->objBounds[(currPt << 2) + 3] = bry;
+								denv->objBounds[currPt] = rect;
 								currPt++;
 							}
 
-							thisPts[thisCnt++] = Double2Int32((tlx + brx) * 0.5);
-							thisPts[thisCnt++] = Double2Int32((tly + bry) * 0.5);
+							thisPts[thisCnt++] = Double2OSInt(center.x);
+							thisPts[thisCnt++] = Double2OSInt(center.y);
 						}
 						j = (thisCnt < 10);
 					}
@@ -1208,66 +1179,57 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 			}
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYGON)
 			{
-				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				dscnPos = denv->view->MapXYToScnXY(denv->labels[i].pos);
-				scnPtX = dscnPos.x;
-				scnPtY = dscnPos.y;
+				scnPt = dscnPos;
 
 				overlapped = true;
 				if (overlapped)
 				{
-					tlx = scnPtX  - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl = scnPt  - (szThis * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX + 1;
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x + 1;
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - szThis[0] - 1;
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - szThis.x - 1;
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - szThis[1] - 1;
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y - szThis.y - 1;
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY + 1;
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y + 1;
+					rect.br = rect.tl + szThis;
 
-					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
+					overlapped = LabelOverlapped(denv->objBounds, currPt, rect);
 				}
 
 				if (!overlapped)
 				{
-					DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
+					Math::Coord2DDbl center = rect.GetCenter();
+					DrawChars(denv, denv->labels[i].label->ToCString(), center.x, center.y, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
 
-					denv->objBounds[(currPt << 2)] = tlx;
-					denv->objBounds[(currPt << 2) + 1] = tly;
-					denv->objBounds[(currPt << 2) + 2] = brx;
-					denv->objBounds[(currPt << 2) + 3] = bry;
+					denv->objBounds[currPt] = rect;
 					currPt++;
 				}
 			}
@@ -2378,7 +2340,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 	}
 }
 
-void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
+void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Double szTmp[2];
 	UOSInt buffSize;
@@ -2397,8 +2359,8 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, Text::CStri
 
 	if (scaleH == 0)
 	{
-		size[0] = (szTmp[0] + UOSInt2Double(buffSize << 1));
-		size[1] = (szTmp[1] + UOSInt2Double(buffSize << 1));
+		size->x = (szTmp[0] + UOSInt2Double(buffSize << 1));
+		size->y = (szTmp[1] + UOSInt2Double(buffSize << 1));
 
 		return;
 	}
@@ -2448,8 +2410,8 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, Text::CStri
 	if (pt[6] < minX) minX = pt[6];
 	if (pt[7] > maxY) maxY = pt[7];
 	if (pt[7] < minY) minY = pt[7];
-	size[0] = maxX - minX;
-	size[1] = maxY - minY;
+	size->x = maxX - minX;
+	size->y = maxY - minY;
 }
 
 void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double scnPosX, Double scnPosY, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
@@ -2530,8 +2492,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 	if (isAlign)
 	{
 		denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
-		Double currX = 0;
-		Double currY = 0;
+		Math::Coord2DDbl currPt = Math::Coord2DDbl(0, 0);
 		Double startX;
 		Double startY;
 		Double tmp;
@@ -2578,8 +2539,8 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 		if (font && font->buffSize > 0)
 		{
-			currX = 0;
-			currY = 0;
+			currPt.x = 0;
+			currPt.y = 0;
 
 			cnt = str1.leng;
 
@@ -2592,29 +2553,29 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currPt.x - (szThis[0] * 0.5), startY + currPt.y, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
-					currY += szThis[1];
+					currPt.y += szThis[1];
 
 					if (scaleH)
-						currX = (currY * scaleW / scaleH);
+						currPt.x = (currPt.y * scaleW / scaleH);
 				}
 				else
 				{
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currX, startY + currY, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currPt.x, startY + currPt.y, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
-					currX += szThis[0];
+					currPt.x += szThis[0];
 					if (scaleW)
-						currY = (currX * scaleH / scaleW);
+						currPt.y = (currPt.x * scaleH / scaleW);
 				}
 				lbl += 1;
 			}
 		}
-		currX = 0;
-		currY = 0;
+		currPt.x = 0;
+		currPt.y = 0;
 		lbl = str1.v;
 
 		cnt = str1.leng;
@@ -2628,23 +2589,23 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
-				denv->img->DrawString(startX + currX - (szThis[0] * 0.5), startY + currY, {l, 1}, df, db);
+				denv->img->DrawString(startX + currPt.x - (szThis[0] * 0.5), startY + currPt.y, {l, 1}, df, db);
 
-				currY += szThis[1];
+				currPt.y += szThis[1];
 
 				if (scaleH)
-					currX = (currY * scaleW / scaleH);
+					currPt.x = (currPt.y * scaleW / scaleH);
 			}
 			else
 			{
 				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
-				denv->img->DrawString(startX + currX, startY + currY, {l, 1}, df, db);
+				denv->img->DrawString(startX + currPt.x, startY + currPt.y, {l, 1}, df, db);
 
-				currX += szThis[0];
+				currPt.x += szThis[0];
 				if (scaleW)
-					currY = (currX * scaleH / scaleW);
+					currPt.y = (currPt.x * scaleH / scaleW);
 			}
 			lbl += 1;
 		}
@@ -2661,26 +2622,19 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 	}
 }
 
-void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
+void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
-	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
-	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
-	Double currX;
-	Double currY;
-	Double nextX;
-	Double nextY;
+	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl nextPt;
 	Double startX = 0;
 	Double startY = 0;
-	Double xDiff;
-	Double yDiff;
-	Double axDiff;
-	Double ayDiff;
-	Double minX;
-	Double maxX;
-	Double minY;
-	Double maxY;
+	Math::Coord2DDbl diff;
+	Math::Coord2DDbl aDiff;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
 	Double angleOfst;
 	UOSInt j;
 	Double szThis[2];
@@ -2711,29 +2665,12 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		return;
 	}
 
-	minX = maxX = centX;
-	minY = maxY = centY;
+	min = max = centPt;
 
-	xDiff = scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1) + 0];
-	yDiff = scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1];
-	if (xDiff > 0)
-	{
-		axDiff = xDiff;
-	}
-	else
-	{
-		axDiff = -xDiff;
-	}
-	if (yDiff > 0)
-	{
-		ayDiff = yDiff;
-	}
-	else
-	{
-		ayDiff = -yDiff;
-	}
+	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	aDiff = diff.Abs();
 
-	if (xDiff > 0)
+	if (diff.x > 0)
 	{
 		mode = 0;
 		angleOfst = 0;
@@ -2744,60 +2681,58 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		angleOfst = Math::PI;
 	}
 
-	currX = centX;
-	currY = centY;
+	currPt = centPt;
 	j = thisPt;
-	nextX = xDiff;
-	nextY = yDiff;
-	xDiff = 0;
-	yDiff = 0;
+	nextPt = diff;
+	diff.x = 0;
+	diff.y = 0;
 
 	denv->img->GetTextSize(df, str1, szThis);
-	xDiff = szThis[0] * 0.5;
-	yDiff = xDiff * xDiff;
+	diff.x = szThis[0] * 0.5;
+	diff.y = diff.x * diff.x;
 
 	if (mode == 0)
 	{
 		while (j != (UOSInt)-1)
 		{
-			startX = scnPts[(j << 1) + 0] - centX;
-			startY = scnPts[(j << 1) + 1] - centY;
-			xDiff = (startX * startX) + (startY * startY);
-			if (xDiff >= yDiff)
+			startX = scnPts[j].x - centPt.x;
+			startY = scnPts[j].y - centPt.y;
+			diff.x = (startX * startX) + (startY * startY);
+			if (diff.x >= diff.y)
 			{
 				if (startX > 0)
 				{
-					axDiff = startX;
+					aDiff.x = startX;
 				}
 				else
 				{
-					axDiff = -startX;
+					aDiff.x = -startX;
 				}
 				if (startY > 0)
 				{
-					ayDiff = startY;
+					aDiff.y = startY;
 				}
 				else
 				{
-					ayDiff = -startY;
+					aDiff.y = -startY;
 				}
 
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					startX = centX + (startX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + (startX * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 				}
 				else
 				{
-					startY = centY + (startY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + (startY * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 				}
 				break;
 			}
 			if (j == (UOSInt)-1)
 			{
-				startX = scnPts[0];
-				startY = scnPts[1];
+				startX = scnPts[0].x;
+				startY = scnPts[0].y;
 				break;
 			}
 			j--;
@@ -2807,37 +2742,37 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	{
 		while (j < nPoints - 1)
 		{
-			startX = scnPts[(j << 1) + 2] - centX;
-			startY = scnPts[(j << 1) + 3] - centY;
-			xDiff = (startX * startX) + (startY * startY);
-			if (xDiff >= yDiff)
+			startX = scnPts[j + 1].x - centPt.x;
+			startY = scnPts[j + 1].y - centPt.y;
+			diff.x = (startX * startX) + (startY * startY);
+			if (diff.x >= diff.y)
 			{
 				if (startX > 0)
 				{
-					axDiff = startX;
+					aDiff.x = startX;
 				}
 				else
 				{
-					axDiff = -startX;
+					aDiff.x = -startX;
 				}
 				if (startY > 0)
 				{
-					ayDiff = startY;
+					aDiff.y = startY;
 				}
 				else
 				{
-					ayDiff = -startY;
+					aDiff.y = -startY;
 				}
 
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					startX = centX + (startX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + (startX * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 				}
 				else
 				{
-					startY = centY + (startY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + (startY * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 				}
 				break;
 			}
@@ -2846,8 +2781,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
-				startX = scnPts[(j << 1) + 2];
-				startY = scnPts[(j << 1) + 3];
+				startX = scnPts[j + 1].x;
+				startY = scnPts[j + 1].y;
 				break;
 			}
 		}
@@ -2872,8 +2807,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 
 	szLast[0] = 0;
 
-	lastX = currX = startX;
-	lastY = currY = startY;
+	lastX = currPt.x = startX;
+	lastY = currPt.y = startY;
 	j = startInd;
 	UOSInt lastInd = j;
 
@@ -2953,86 +2888,69 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 
 		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), szThis);
 		dist = (szLast[0] + szThis[0]) * 0.5;
-		nextX = currX + (dist * cosAngle);
-		nextY = currY - (dist * sinAngle);
-		if ( (((nextX > scnPts[(j << 1)]) ^ (nextX > scnPts[(j << 1) + 2])) || (nextX == scnPts[(j << 1)]) || (nextX == scnPts[(j << 1) + 2])) && (((nextY > scnPts[(j << 1) + 1]) ^ (nextY > scnPts[(j << 1) + 3])) || (nextY == scnPts[(j << 1) + 1]) || (nextY == scnPts[(j << 1) + 3])))
+		nextPt.x = currPt.x + (dist * cosAngle);
+		nextPt.y = currPt.y - (dist * sinAngle);
+		if ( (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x)) && (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y)))
 		{
-			currX = nextX;
-			currY = nextY;
+			currPt = nextPt;
 		}
 		else
 		{
-			xDiff = szLast[0] + szThis[0];
-			yDiff = (xDiff * xDiff) * 0.5;
+			diff.x = szLast[0] + szThis[0];
+			diff.y = (diff.x * diff.x) * 0.5;
 
 			if (mode == 0)
 			{
 				j++;
 				while (j < nPoints - 1)
 				{
-					nextX = scnPts[(j << 1) + 2] - currX;
-					nextY = scnPts[(j << 1) + 3] - currY;
-					xDiff = (nextX * nextX) + (nextY * nextY);
-					if (xDiff < yDiff)
+					nextPt = scnPts[j + 1].ToDouble() - currPt;
+					diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
+					if (diff.x < diff.y)
 					{
 						j++;
 					}
 					else
 					{
-						if (nextX > 0)
-						{
-							axDiff = nextX;
-						}
-						else
-						{
-							axDiff = -nextX;
-						}
-						if (nextY > 0)
-						{
-							ayDiff = nextY;
-						}
-						else
-						{
-							ayDiff = -nextY;
-						}
+						aDiff = nextPt.Abs();
 
-						if (axDiff > ayDiff)
+						if (aDiff.x > aDiff.y)
 						{
-							if ((scnPts[(j << 1) + 0] < scnPts[(j << 1) + 2]) ^ (nextX > 0))
+							if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
 							{
-								currX = currX - (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+								currPt.x = currPt.x - (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 							}
 							else
 							{
-								currX = currX + (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+								currPt.x = currPt.x + (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 							}
-							if (((currX > scnPts[(j << 1)]) ^ (currX > scnPts[(j << 1) + 2])) || (currX == scnPts[(j << 1)]) || (currX == scnPts[(j << 1) + 2]))
+							if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
 							{
 							}
 							else
 							{
-								currX = scnPts[(j << 1) + 0];
+								currPt.x = scnPts[j].x;
 							}
-							currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (currX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+							currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						}
 						else
 						{
-							if ((scnPts[(j << 1) + 1] < scnPts[(j << 1) + 3]) ^ (nextY > 0))
+							if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
 							{
-								currY = currY - (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+								currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 							}
 							else
 							{
-								currY = currY + (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+								currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 							}
-							if (((currY > scnPts[(j << 1) + 1]) ^ (currY > scnPts[(j << 1) + 3])) || (currY == scnPts[(j << 1) + 1]) || (currY == scnPts[(j << 1) + 3]))
+							if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
 							{
 							}
 							else
 							{
-								currY = scnPts[(j << 1) + 1];
+								currPt.y = scnPts[j].y;
 							}
-							currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						}
 						break;
 					}
@@ -3041,77 +2959,61 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 				{
 					j--;
 
-					currX = currX + (dist * cosAngle);
-					currY = currY - (dist * sinAngle);
+					currPt.x = currPt.x + (dist * cosAngle);
+					currPt.y = currPt.y - (dist * sinAngle);
 				}
 			}
 			else if (mode == 1)
 			{
 				while (j-- > 0)
 				{
-					nextX = scnPts[(j << 1) + 0] - currX;
-					nextY = scnPts[(j << 1) + 1] - currY;
-					xDiff = (nextX * nextX) + (nextY * nextY);
-					if (xDiff < yDiff)
+					nextPt = scnPts[j].ToDouble() - currPt;
+					diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
+					if (diff.x < diff.y)
 					{
 
 					}
 					else
 					{
-						if (nextX > 0)
-						{
-							axDiff = nextX;
-						}
-						else
-						{
-							axDiff = -nextX;
-						}
-						if (nextY > 0)
-						{
-							ayDiff = nextY;
-						}
-						else
-						{
-							ayDiff = -nextY;
-						}
+						aDiff = nextPt.Abs();
 
-						if (axDiff > ayDiff)
+						if (aDiff.x > aDiff.y)
 						{
-							if ((scnPts[(j << 1) + 0] < scnPts[(j << 1) + 2]) ^ (nextX > 0))
+							if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
 							{
-								currX = currX + nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff);
+								currPt.x = currPt.x + nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
 							}
 							else
 							{
-								currX = currX - nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff);
+								currPt.x = currPt.x - nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
 							}
-							if (((currX > scnPts[(j << 1)]) ^ (currX > scnPts[(j << 1) + 2])) || (currX == scnPts[(j << 1)]) || (currX == scnPts[(j << 1) + 2]))
+							if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
 							{
 							}
 							else
 							{
-								currX = scnPts[(j << 1) + 2];
+								currPt.x = scnPts[j + 1].x;
 							}
-							currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (currX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+							currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						}
 						else
 						{
-							if ((scnPts[(j << 1) + 1] < scnPts[(j << 1) + 3]) ^ (nextY > 0))
+							if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
 							{
-								currY = currY + nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff);
+								currPt.y = currPt.y + nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
 							}
 							else
 							{
-								currY = currY - nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff);
+								currPt.y = currPt.y - nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
 							}
-							if (((currY > scnPts[(j << 1) + 1]) ^ (currY > scnPts[(j << 1) + 3])) || (currY == scnPts[(j << 1) + 1]) || (currY == scnPts[(j << 1) + 3]))
+							if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
 							{
 							}
 							else
 							{
-								currY = scnPts[(j << 1) + 3];
+								currPt.y = scnPts[j + 1].y;
 							}
-							currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						}
 						break;
 					}
@@ -3119,8 +3021,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 				if (j == (UOSInt)-1)
 				{
 					j = 0;
-					currX = currX + (dist * cosAngle);
-					currY = currY - (dist * sinAngle);
+					currPt.x = currPt.x + (dist * cosAngle);
+					currPt.y = currPt.y - (dist * sinAngle);
 				}
 			}
 
@@ -3147,8 +3049,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		{
 			Double lsa = Math_Sin(lastAngle * Math::PI / 180.0);
 			Double lca = Math_Cos(lastAngle * Math::PI / 180.0);
-			currX = lastX + (dist * lca);
-			currY = lastY - (dist * lsa);
+			currPt.x = lastX + (dist * lca);
+			currPt.y = lastY - (dist * lsa);
 
 			Double xadd = szThis[0] * lca;
 			Double yadd = szThis[0] * lsa;
@@ -3156,38 +3058,38 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 				xadd = -xadd;
 			if (yadd < 0)
 				yadd = -yadd;
-			if ((currX - xadd) < minX)
+			if ((currPt.x - xadd) < min.x)
 			{
-				minX = (currX - xadd);
+				min.x = (currPt.x - xadd);
 			}
-			if ((currX + xadd) > maxX)
+			if ((currPt.x + xadd) > max.x)
 			{
-				maxX = (currX + xadd);
+				max.x = (currPt.x + xadd);
 			}
-			if ((currY - yadd) < minY)
+			if ((currPt.y - yadd) < min.y)
 			{
-				minY = (currY - yadd);
+				min.y = (currPt.y - yadd);
 			}
-			if ((currY + yadd) > maxY)
+			if ((currPt.y + yadd) > max.y)
 			{
-				maxY = (currY + yadd);
+				max.y = (currPt.y + yadd);
 			}
 
 			if (mode == 0)
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, lastAngle);
+				denv->img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db, lastAngle);
 			}
 			else
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, lastAngle);
+				denv->img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db, lastAngle);
 			}
 		}
 		else
@@ -3199,73 +3101,64 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 				xadd = -xadd;
 			if (yadd < 0)
 				yadd = -yadd;
-			if ((currX - xadd) < minX)
+			if ((currPt.x - xadd) < min.x)
 			{
-				minX = (currX - xadd);
+				min.x = (currPt.x - xadd);
 			}
-			if ((currX + xadd) > maxX)
+			if ((currPt.x + xadd) > max.x)
 			{
-				maxX = (currX + xadd);
+				max.x = (currPt.x + xadd);
 			}
-			if ((currY - yadd) < minY)
+			if ((currPt.y - yadd) < min.y)
 			{
-				minY = (currY - yadd);
+				min.y = (currPt.y - yadd);
 			}
-			if ((currY + yadd) > maxY)
+			if ((currPt.y + yadd) > max.y)
 			{
-				maxY = (currY + yadd);
+				max.y = (currPt.y + yadd);
 			}
 
 			if (mode == 0)
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, angleDegree);
+				denv->img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db, angleDegree);
 			}
 			else
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, angleDegree);
+				denv->img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db, angleDegree);
 			}
 
 		}
-		lastX = currX;
-		lastY = currY;
+		lastX = currPt.x;
+		lastY = currPt.y;
 		szLast[0] = szThis[0];
 	}
 
-	realBounds[0] = minX;
-	realBounds[1] = minY;
-	realBounds[2] = maxX;
-	realBounds[3] = maxY;
+	realBounds->tl = min;
+	realBounds->br = max;
 }
 
-void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
+void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	UOSInt lblSize = str1.leng;
 	str1.ConcatTo(sbuff);
-	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
-	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
-	Double currX;
-	Double currY;
-	Double nextX;
-	Double nextY;
+	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl nextPt;
 	Double startX = 0;
 	Double startY = 0;
-	Double xDiff;
-	Double yDiff;
-	Double axDiff;
-	Double ayDiff;
-	Double minX;
-	Double maxX;
-	Double minY;
-	Double maxY;
+	Math::Coord2DDbl diff;
+	Math::Coord2DDbl aDiff;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
 	UOSInt i;
 	UOSInt j;
 	Double angleOfst;
@@ -3298,31 +3191,14 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		return;
 	}
 
-	maxX = minX = centX;
-	maxY = minY = centY;
+	max = min = centPt;
 
-	xDiff = scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1) + 0];
-	yDiff = scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1];
-	if (xDiff > 0)
-	{
-		axDiff = xDiff;
-	}
-	else
-	{
-		axDiff = -xDiff;
-	}
-	if (yDiff > 0)
-	{
-		ayDiff = yDiff;
-	}
-	else
-	{
-		ayDiff = -yDiff;
-	}
+	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	aDiff = diff.Abs();
 
-	if (axDiff > ayDiff)
+	if (aDiff.x > aDiff.y)
 	{
-		if (xDiff > 0)
+		if (diff.x > 0)
 		{
 			mode = 0;
 			angleOfst = 0;
@@ -3335,7 +3211,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	}
 	else
 	{
-		if (yDiff > 0)
+		if (diff.y > 0)
 		{
 			mode = 0;
 			angleOfst = 0;
@@ -3347,62 +3223,60 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		}
 	}
 
-	currX = centX;
-	currY = centY;
+	currPt = centPt;
 	i = lblSize;
 	j = thisPt;
-	nextX = xDiff;
-	nextY = yDiff;
-	xDiff = 0;
-	yDiff = 0;
+	nextPt = diff;
+	diff.x = 0;
+	diff.y = 0;
 
 	while (i-- > 0)
 	{
 		denv->img->GetTextSize(df, {&str1.v[i], 1}, szThis);
-		xDiff += szThis[0];
-		yDiff += szThis[1];
+		diff.x += szThis[0];
+		diff.y += szThis[1];
 	}
 	found = false;
 	if (mode == 0)
 	{
-		if (axDiff > ayDiff)
+		if (aDiff.x > aDiff.y)
 		{
-			if (nextX > 0)
+			if (nextPt.x > 0)
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1)])
+				if ((centPt.x - diff.x) >= scnPts[j].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centX + xDiff) >= scnPts[(j << 1)])
+				if ((centPt.x + diff.x) >= scnPts[j].x)
 				{
-					startX = centX + xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 		}
 		else
 		{
-			if (nextY > 0)
+			if (nextPt.y > 0)
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 1])
+				if ((centPt.y - diff.y) >= scnPts[j].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centY + yDiff) >= scnPts[(j << 1) + 1])
+				if ((centPt.y + diff.y) >= scnPts[j].y)
 				{
-					startY = centY + yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
@@ -3410,44 +3284,44 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	}
 	else
 	{
-		if (axDiff > ayDiff)
+		if (aDiff.x > aDiff.y)
 		{
-			if (nextX > 0)
+			if (nextPt.x > 0)
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1) + 2])
+				if ((centPt.x - diff.x) >= scnPts[j + 1].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1) + 2])
+				if ((centPt.x - diff.x) >= scnPts[j + 1].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 		}
 		else
 		{
-			if (nextY > 0)
+			if (nextPt.y > 0)
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 3])
+				if ((centPt.y - diff.y) >= scnPts[j + 1].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 3])
+				if ((centPt.y - diff.y) >= scnPts[j + 1].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
@@ -3460,57 +3334,57 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		{
 			while (j-- > 0)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
 				}
 				else
 				{
-					if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
 				}
@@ -3519,8 +3393,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 			if (j == (UOSInt)-1)
 			{
 				j = 0;
-				startX = scnPts[0];
-				startY = scnPts[1];
+				startX = scnPts[0].x;
+				startY = scnPts[0].y;
 			}
 		}
 		else
@@ -3528,57 +3402,57 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 			j++;
 			while (j < nPoints - 1)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
 				}
 				else
 				{
-					if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
 				}
@@ -3588,8 +3462,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
-				startX = scnPts[(j << 1) + 2];
-				startY = scnPts[(j << 1) + 3];
+				startX = scnPts[j + 1].x;
+				startY = scnPts[j + 1].y;
 			}
 		}
 	}
@@ -3619,8 +3493,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	szLast[0] = 0;
 	szLast[1] = 0;
 
-	lastX = currX = startX;
-	lastY = currY = startY;
+	lastX = currPt.x = startX;
+	lastY = currPt.y = startY;
 	j = startInd;
 
 	angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
@@ -3645,47 +3519,47 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		{
 			if (angleDegree <= 90)
 			{
-				nextX = currX + ((szLast[0] + szThis[0]) * 0.5);
-				nextY = currY - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
 			}
 			else if (angleDegree <= 180)
 			{
-				nextX = currX - ((szLast[0] + szThis[0]) * 0.5);
-				nextY = currY - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
 			}
 			else if (angleDegree <= 270)
 			{
-				nextX = currX - ((szLast[0] + szThis[0]) * 0.5);
-				nextY = currY + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
 			}
 			else
 			{
-				nextX = currX + ((szLast[0] + szThis[0]) * 0.5);
-				nextY = currY + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
 			}
 
-			if (((nextX > scnPts[(j << 1)]) ^ (nextX > scnPts[(j << 1) + 2])) || (nextX == scnPts[(j << 1)]) || (nextX == scnPts[(j << 1) + 2]))
+			if (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x))
 			{
-				Double tempY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
-				tempY -= currY;
+				Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+				tempY -= currPt.y;
 				if (tempY < 0)
 					tempY = -tempY;
 				if (tempY > (szLast[1] + szThis[1]) * 0.5)
 				{
-					currY = nextY;
-					currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					currPt.y = nextPt.y;
+					currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 				}
 				else
 				{
-					currX = nextX;
-					currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					currPt.x = nextPt.x;
+					currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 				}
 				break;
 			}
-			else if (((nextY > scnPts[(j << 1) + 1]) ^ (nextY > scnPts[(j << 1) + 3])) || (nextY == scnPts[(j << 1) + 1]) || (nextY == scnPts[(j << 1) + 3]))
+			else if (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y))
 			{
-				currY = nextY;
-				currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+				currPt.y = nextPt.y;
+				currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 				break;
 			}
 			else
@@ -3697,19 +3571,19 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 					{
 						j = nPoints - 2;
 
-						Double tempY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
-						tempY -= currY;
+						Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+						tempY -= currPt.y;
 						if (tempY < 0)
 							tempY = -tempY;
 						if (tempY > (szLast[1] + szThis[1]) * 0.5)
 						{
-							currY = nextY;
-							currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+							currPt.y = nextPt.y;
+							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						}
 						else
 						{
-							currX = nextX;
-							currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+							currPt.x = nextPt.x;
+							currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						}
 						break;
 					}
@@ -3721,19 +3595,19 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 					{
 						j = 0;
 
-						Double tempY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
-						tempY -= currY;
+						Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+						tempY -= currPt.y;
 						if (tempY < 0)
 							tempY = -tempY;
 						if (tempY > (szLast[1] + szThis[1]) * 0.5)
 						{
-							currY = nextY;
-							currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+							currPt.y = nextPt.y;
+							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						}
 						else
 						{
-							currX = nextX;
-							currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+							currPt.x = nextPt.x;
+							currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						}
 						break;
 					}
@@ -3761,26 +3635,26 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		{
 			if (lastAngle <= 90)
 			{
-				nextX = lastX + ((szLast[0] + szThis[0]) * 0.5);
-				nextY = lastY - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
 			}
 			else if (lastAngle <= 180)
 			{
-				nextX = lastX - ((szLast[0] + szThis[0]) * 0.5);
-				nextY = lastY - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
 			}
 			else if (lastAngle <= 270)
 			{
-				nextX = lastX - ((szLast[0] + szThis[0]) * 0.5);
-				nextY = lastY + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
 			}
 			else
 			{
-				nextX = lastX + ((szLast[0] + szThis[0]) * 0.5);
-				nextY = lastY + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
+				nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
 			}
-			Double tempY = scnPts[(lastAInd << 1) + 1] + (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]) * (nextX - scnPts[(lastAInd << 1)]) / (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1)]);
-			Double tempX = scnPts[(lastAInd << 1) + 0] + (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1) + 0]) * (nextY - scnPts[(lastAInd << 1) + 1]) / (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]);
+			Double tempY = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
+			Double tempX = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
 			tempY -= lastY;
 			tempX -= lastX;
 			if (tempY < 0)
@@ -3789,13 +3663,13 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 				tempX = -tempX;
 			if (tempX <= (szLast[0] + szThis[0]) * 0.5)
 			{
-				currY = nextY;
-				currX = scnPts[(lastAInd << 1) + 0] + (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1) + 0]) * (nextY - scnPts[(lastAInd << 1) + 1]) / (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]);
+				currPt.y = nextPt.y;
+				currPt.x = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
 			}
 			else
 			{
-				currX = nextX;
-				currY = scnPts[(lastAInd << 1) + 1] + (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]) * (nextX - scnPts[(lastAInd << 1)]) / (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1)]);
+				currPt.x = nextPt.x;
+				currPt.y = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
 			}
 		}
 		else
@@ -3807,49 +3681,47 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 
 		Double xadd = szThis[0] * 0.5;
 		Double yadd = szThis[1] * 0.5;
-		if ((currX - xadd) < minX)
+		if ((currPt.x - xadd) < min.x)
 		{
-			minX = (currX - xadd);
+			min.x = (currPt.x - xadd);
 		}
-		if ((currX + xadd) > maxX)
+		if ((currPt.x + xadd) > max.x)
 		{
-			maxX = (currX + xadd);
+			max.x = (currPt.x + xadd);
 		}
-		if ((currY - yadd) < minY)
+		if ((currPt.y - yadd) < min.y)
 		{
-			minY = (currY - yadd);
+			min.y = (currPt.y - yadd);
 		}
-		if ((currY + yadd) > maxY)
+		if ((currPt.y + yadd) > max.y)
 		{
-			maxY = (currY + yadd);
+			max.y = (currPt.y + yadd);
 		}
 
-		lastX = currX;
-		lastY = currY;
+		lastX = currPt.x;
+		lastY = currPt.y;
 		if (mode == 0)
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
-			denv->img->DrawString(currX, currY, CSTRP(lbl, nextPos), df, db);
+			denv->img->DrawString(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db);
 		}
 		else
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
-			denv->img->DrawString(currX, currY, CSTRP(lbl, nextPos), df, db);
+			denv->img->DrawString(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db);
 		}
 		szLast[0] = szThis[0];
 		szLast[1] = szThis[1];
 	}
 
-	realBounds[0] = minX;
-	realBounds[1] = minY;
-	realBounds[2] = maxX;
-	realBounds[3] = maxY;
+	realBounds->tl = min;
+	realBounds->br = max;
 }
 
 Map::DrawMapRenderer::DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType)
@@ -3887,7 +3759,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	denv.img = img;
 	denv.view = view;
 	denv.isLayerEmpty = true;
-	denv.objBounds = MemAlloc(Double, this->env->GetNString() << 2);
+	denv.objBounds = MemAllocA(Math::RectAreaDbl, this->env->GetNString());
 	denv.objCnt = 0;
 	denv.labelCnt = 0;
 	denv.labels = MemAlloc(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
@@ -3940,7 +3812,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 		img->DelBrush(denv.layerFontColor.GetItem(i));
 	}
 	MemFree(denv.fontStyles);
-	MemFree(denv.objBounds);
+	MemFreeA(denv.objBounds);
 	MemFree(denv.labels);
 
 	this->lastLayerEmpty = denv.isLayerEmpty;

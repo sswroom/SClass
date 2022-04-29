@@ -51,7 +51,7 @@ namespace Math
 			return Math::Coord2DDbl(this->tl.x, this->br.y);
 		}
 
-		Math::Coord2DDbl GetCenter()
+		Math::Coord2DDbl GetCenter() const
 		{
 			return (this->tl + this->br) * 0.5;
 		}

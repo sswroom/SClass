@@ -77,8 +77,13 @@ namespace Math
 		{
 			return PMINPD(this->vals, v.vals);
 		}
+
+		Coord2DDbl Abs()
+		{
+			return Math::Coord2DDbl((this->x < 0)?-x:x, (this->y < 0)?-y:y);
+		}
 		
-		Coord2DDbl operator+(Coord2DDbl v)
+		Coord2DDbl operator+(Coord2DDbl v) const
 		{
 			return PADDPD(this->vals, v.vals);
 		}

@@ -132,7 +132,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 {
 	UOSInt j;
-	Double *objPtr = &this->objBounds[4 * *this->objCnt];
+	Math::RectAreaDbl *objPtr = &this->objBounds[*this->objCnt];
 	Math::Coord2DDbl pts;
 	Double imgW;
 	Double imgH;
@@ -153,14 +153,14 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 			--(*this->objCnt);
 			objPtr -= 4;
 		}
-		objPtr[0] = pts.x - spotX;
-		objPtr[1] = pts.y - spotY;
-		objPtr[2] = objPtr[0] + imgW;
-		objPtr[3] = objPtr[1] + imgH;
-		if (objPtr[0] < scnW && objPtr[1] < scnH && objPtr[2] >= 0 && objPtr[3] >= 0)
+		objPtr->tl.x = pts.x - spotX;
+		objPtr->tl.y = pts.y - spotY;
+		objPtr->br.x = objPtr->tl.x + imgW;
+		objPtr->br.y = objPtr->tl.y + imgH;
+		if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
 		{
-			this->img->DrawImagePt(this->ico, objPtr[0], objPtr[1]);
-			objPtr += 4;
+			this->img->DrawImagePt(this->ico, objPtr->tl.x, objPtr->tl.y);
+			objPtr += 1;
 			++*(this->objCnt);
 		}
 	}
@@ -215,7 +215,7 @@ void Map::MapScheduler::SetDrawType(Map::IMapDrawLayer *lyr, DrawType dt, Media:
 	this->isLayerEmpty = isLayerEmpty;
 }
 
-void Map::MapScheduler::SetDrawObjs(Double *objBounds, UOSInt *objCnt, UOSInt maxCnt)
+void Map::MapScheduler::SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt)
 {
 	this->objBounds = objBounds;
 	this->objCnt = objCnt;

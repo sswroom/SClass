@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	void AddString(const UTF8Char *label, Double x, Double y, Double scaleW, Double scaleH, UInt32 fontStyle, Bool isAlign, const Double *bounds)
+	void AddString(const UTF8Char *label, Double x, Double y, Double scaleW, Double scaleH, UInt32 fontStyle, Bool isAlign, const Math::RectAreaDbl *bounds)
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
@@ -89,13 +89,13 @@ public:
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[0]);
+		sptr = Text::StrDouble(sptr, bounds->tl.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[1]);
+		sptr = Text::StrDouble(sptr, bounds->tl.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[2]);
+		sptr = Text::StrDouble(sptr, bounds->br.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[3]);
+		sptr = Text::StrDouble(sptr, bounds->br.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, scaleW);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
@@ -114,29 +114,30 @@ public:
 		this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 
-	void AddStringL(const UTF8Char *label, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, UInt32 fontStyle, Bool isAlign, const Double *bounds)
+	void AddStringL(const UTF8Char *label, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, UInt32 fontStyle, Bool isAlign, const Math::RectAreaDbl *bounds)
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		UOSInt i;
-		if (this->writer == 0 || bounds[2] < -scnW || bounds[0] > scnW * 2 || bounds[3] < -scnH || bounds[1] > scnH * 2)
+		if (this->writer == 0 || bounds->br.x < -scnW || bounds->tl.x > scnW * 2 || bounds->br.y < -scnH || bounds->tl.y > scnH * 2)
 		{
 			return;
 		}
+		Math::Coord2DDbl center = bounds->GetCenter();
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("2,"));
 		sptr = Text::StrToCSVRec(sptr, label);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, (bounds[2] + bounds[0]) * 0.5);
+		sptr = Text::StrDouble(sptr, center.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, (bounds[3] + bounds[1]) * 0.5);
+		sptr = Text::StrDouble(sptr, center.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[0]);
+		sptr = Text::StrDouble(sptr, bounds->tl.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[1]);
+		sptr = Text::StrDouble(sptr, bounds->tl.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[2]);
+		sptr = Text::StrDouble(sptr, bounds->br.x);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		sptr = Text::StrDouble(sptr, bounds[3]);
+		sptr = Text::StrDouble(sptr, bounds->br.y);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrUOSInt(sptr, nPoints);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
@@ -165,12 +166,12 @@ public:
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			sptr = Text::StrDouble(sptr, mapPts->y);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			sptr = Text::StrInt32(sptr, scnPts[0]);
+			sptr = Text::StrInt32(sptr, scnPts[0].x);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			sptr = Text::StrInt32(sptr, scnPts[1]);
+			sptr = Text::StrInt32(sptr, scnPts[0].y);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("}"));
 			mapPts += 1;
-			scnPts += 2;
+			scnPts += 1;
 			this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
@@ -413,8 +414,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 			if (isAlign)
 			{
 				img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
-				Double currX = 0;
-				Double currY = 0;
+				Math::Coord2DDbl currPt = Math::Coord2DDbl(0, 0);
 				Double startX;
 				Double startY;
 				Double tmp;
@@ -461,8 +461,8 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 //				else
 //					cHeight = -szThis[1];
 
-				currX = 0;
-				currY = 0;
+				currPt.x = 0;
+				currPt.y = 0;
 
 				UOSInt cnt;
 				UTF8Char *lbl = sbuff;
@@ -479,20 +479,20 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawString(startX + currX - szThis[0] * 0.5, startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currPt.x - szThis[0] * 0.5, startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringB(startX + currX - szThis[0] * 0.5, startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+							img->DrawStringB(startX + currPt.x - szThis[0] * 0.5, startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 						}
 
-						currY += szThis[1];
+						currPt.y += szThis[1];
 
 						if (scaleH)
-							currX = currY * scaleW / scaleH;
+							currPt.x = currPt.y * scaleW / scaleH;
 					}
 					else
 					{
@@ -501,19 +501,19 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawString(startX + currX, startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currPt.x, startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringB(startX + currX, startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+							img->DrawStringB(startX + currPt.x, startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 						}
 
-						currX += szThis[0];
+						currPt.x += szThis[0];
 						if (scaleW)
-							currY = (Int16)((Int32)currX * (Int32)scaleH / (Int32)scaleW);
+							currPt.y = (Int16)((Int32)currPt.x * (Int32)scaleH / (Int32)scaleW);
 					}
 					lbl += 1;
 				}
@@ -537,27 +537,20 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 	}
 }
 
-void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds)
+void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
 	UOSInt lblSize = str1.leng;
-	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
-	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
-	Double currX;
-	Double currY;
-	Double nextX;
-	Double nextY;
+	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl nextPt;
 	Double startX = 0;
 	Double startY = 0;
-	Double xDiff;
-	Double yDiff;
-	Double axDiff;
-	Double ayDiff;
-	Double minX;
-	Double maxX;
-	Double minY;
-	Double maxY;
+	Math::Coord2DDbl diff;
+	Math::Coord2DDbl aDiff;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
 	UOSInt i;
 	UOSInt j;
 	Double angleOfst;
@@ -571,34 +564,17 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 	if (fontStyle == 0)
 		return;
 
-	maxX = minX = centX;
-	maxY = minY = centY;
+	max = min = centPt;
 
 	fntCount = fontStyle->GetCount();
 	font = (Map::MapFontStyle*)fontStyle->GetItem(0);
 
-	xDiff = scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1) + 0];
-	yDiff = scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1];
-	if (xDiff > 0)
-	{
-		axDiff = xDiff;
-	}
-	else
-	{
-		axDiff = -xDiff;
-	}
-	if (yDiff > 0)
-	{
-		ayDiff = yDiff;
-	}
-	else
-	{
-		ayDiff = -yDiff;
-	}
+	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	aDiff = diff.Abs();
 
-	if (axDiff > ayDiff)
+	if (aDiff.x > aDiff.y)
 	{
-		if (xDiff > 0)
+		if (diff.x > 0)
 		{
 			mode = 0;
 			angleOfst = 0;
@@ -611,7 +587,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 	}
 	else
 	{
-		if (yDiff > 0)
+		if (diff.y > 0)
 		{
 			mode = 0;
 			angleOfst = 0;
@@ -623,62 +599,60 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 		}
 	}
 
-	currX = centX;
-	currY = centY;
+	currPt = centPt;
 	i = lblSize;
 	j = thisPt;
-	nextX = xDiff;
-	nextY = yDiff;
-	xDiff = 0;
-	yDiff = 0;
+	nextPt = diff;
+	diff.x = 0;
+	diff.y = 0;
 
 	while (i-- > 0)
 	{
 		img->GetTextSize(font->font, {&str1.v[i], 1}, szThis);
-		xDiff += szThis[0];
-		yDiff += szThis[1];
+		diff.x += szThis[0];
+		diff.y += szThis[1];
 	}
 	found = false;
 	if (mode == 0)
 	{
-		if (axDiff > ayDiff)
+		if (aDiff.x > aDiff.y)
 		{
-			if (nextX > 0)
+			if (nextPt.x > 0)
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1)])
+				if ((centPt.x - diff.x) >= scnPts[j].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centX + xDiff) >= scnPts[(j << 1)])
+				if ((centPt.x + diff.x) >= scnPts[j].x)
 				{
-					startX = centX + xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 		}
 		else
 		{
-			if (nextY > 0)
+			if (nextPt.y > 0)
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 1])
+				if ((centPt.y - diff.y) >= scnPts[j].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centY + yDiff) >= scnPts[(j << 1) + 1])
+				if ((centPt.y + diff.y) >= scnPts[j].y)
 				{
-					startY = centY + yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
@@ -686,44 +660,44 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 	}
 	else
 	{
-		if (axDiff > ayDiff)
+		if (aDiff.x > aDiff.y)
 		{
-			if (nextX > 0)
+			if (nextPt.x > 0)
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1) + 2])
+				if ((centPt.x - diff.x) >= scnPts[j + 1].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1) + 2])
+				if ((centPt.x - diff.x) >= scnPts[j + 1].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 		}
 		else
 		{
-			if (nextY > 0)
+			if (nextPt.y > 0)
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 3])
+				if ((centPt.y - diff.y) >= scnPts[j + 1].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 3])
+				if ((centPt.y - diff.y) >= scnPts[j + 1].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
@@ -736,57 +710,57 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 		{
 			while (j-- > 0)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
 				}
 				else
 				{
-					if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
 				}
@@ -795,8 +769,8 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 			if (j == (UOSInt)-1)
 			{
 				j = 0;
-				startX = scnPts[0];
-				startY = scnPts[1];
+				startX = scnPts[0].x;
+				startY = scnPts[0].y;
 			}
 		}
 		else
@@ -804,57 +778,57 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 			j++;
 			while (j < nPoints - 1)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
 				}
 				else
 				{
-					if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
 				}
@@ -864,8 +838,8 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
-				startX = scnPts[(j << 1) + 2];
-				startY = scnPts[(j << 1) + 3];
+				startX = scnPts[j + 1].x;
+				startY = scnPts[j + 1].y;
 			}
 		}
 	}
@@ -899,8 +873,8 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 		szLast[0] = 0;
 		szLast[1] = 0;
 
-		lastX = currX = startX;
-		lastY = currY = startY;
+		lastX = currPt.x = startX;
+		lastY = currPt.y = startY;
 		j = startInd;
 
 		angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
@@ -925,47 +899,47 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 			{
 				if (angleDegree <= 90)
 				{
-					nextX = currX + ((szLast[0] + szThis[0]) * 0.5);
-					nextY = currY - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
 				}
 				else if (angleDegree <= 180)
 				{
-					nextX = currX - ((szLast[0] + szThis[0]) * 0.5);
-					nextY = currY - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
 				}
 				else if (angleDegree <= 270)
 				{
-					nextX = currX - ((szLast[0] + szThis[0]) * 0.5);
-					nextY = currY + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
 				}
 				else
 				{
-					nextX = currX + ((szLast[0] + szThis[0]) * 0.5);
-					nextY = currY + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
 				}
 
-				if (((nextX > scnPts[(j << 1)]) ^ (nextX > scnPts[(j << 1) + 2])) || (nextX == scnPts[(j << 1)]) || (nextX == scnPts[(j << 1) + 2]))
+				if (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x))
 				{
-					Double tempY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (Double)(nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
-					tempY -= currY;
+					Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (Double)(nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+					tempY -= currPt.y;
 					if (tempY < 0)
 						tempY = -tempY;
 					if (tempY > (szLast[1] + szThis[1]) * 0.5)
 					{
-						currY = nextY;
-						currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (Double)(currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						currPt.y = nextPt.y;
+						currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (Double)(currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					}
 					else
 					{
-						currX = nextX;
-						currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (Double)(nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						currPt.x = nextPt.x;
+						currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (Double)(nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					}
 					break;
 				}
-				else if (((nextY > scnPts[(j << 1) + 1]) ^ (nextY > scnPts[(j << 1) + 3])) || (nextY == scnPts[(j << 1) + 1]) || (nextY == scnPts[(j << 1) + 3]))
+				else if (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y))
 				{
-					currY = nextY;
-					currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (Double)(currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					currPt.y = nextPt.y;
+					currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (Double)(currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					break;
 				}
 				else
@@ -977,19 +951,19 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 						{
 							j = nPoints - 2;
 
-							Double tempY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (Double)(nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
-							tempY -= currY;
+							Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (Double)(nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+							tempY -= currPt.y;
 							if (tempY < 0)
 								tempY = -tempY;
 							if (tempY > (szLast[1] + szThis[1]) * 0.5)
 							{
-								currY = nextY;
-								currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (Double)(currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+								currPt.y = nextPt.y;
+								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (Double)(currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 							}
 							else
 							{
-								currX = nextX;
-								currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (Double)(nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+								currPt.x = nextPt.x;
+								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (Double)(nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 							}
 							break;
 						}
@@ -1001,19 +975,19 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 						{
 							j = 0;
 
-							Double tempY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (Double)(nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
-							tempY -= currY;
+							Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (Double)(nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+							tempY -= currPt.y;
 							if (tempY < 0)
 								tempY = -tempY;
 							if (tempY > (szLast[1] + szThis[1]) * 0.5)
 							{
-								currY = nextY;
-								currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (Double)(currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+								currPt.y = nextPt.y;
+								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (Double)(currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 							}
 							else
 							{
-								currX = nextX;
-								currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (Double)(nextX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+								currPt.x = nextPt.x;
+								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (Double)(nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 							}
 							break;
 						}
@@ -1041,26 +1015,26 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 			{
 				if (lastAngle <= 90)
 				{
-					nextX = lastX + ((szLast[0] + szThis[0]) * 0.5);
-					nextY = lastY - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
 				}
 				else if (lastAngle <= 180)
 				{
-					nextX = lastX - ((szLast[0] + szThis[0]) * 0.5);
-					nextY = lastY - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
 				}
 				else if (lastAngle <= 270)
 				{
-					nextX = lastX - ((szLast[0] + szThis[0]) * 0.5);
-					nextY = lastY + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
 				}
 				else
 				{
-					nextX = lastX + ((szLast[0] + szThis[0]) * 0.5);
-					nextY = lastY + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
+					nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
 				}
-				Double tempY = scnPts[(lastAInd << 1) + 1] + (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]) * (Double)(nextX - scnPts[(lastAInd << 1)]) / (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1)]);
-				Double tempX = scnPts[(lastAInd << 1) + 0] + (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1) + 0]) * (Double)(nextY - scnPts[(lastAInd << 1) + 1]) / (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]);
+				Double tempY = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (Double)(nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
+				Double tempX = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (Double)(nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
 				tempY -= lastY;
 				tempX -= lastX;
 				if (tempY < 0)
@@ -1069,13 +1043,13 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 					tempX = -tempX;
 				if (tempX <= (szLast[0] + szThis[0]) * 0.5)
 				{
-					currY = nextY;
-					currX = scnPts[(lastAInd << 1) + 0] + (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1) + 0]) * (Double)(nextY - scnPts[(lastAInd << 1) + 1]) / (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]);
+					currPt.y = nextPt.y;
+					currPt.x = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (Double)(nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
 				}
 				else
 				{
-					currX = nextX;
-					currY = scnPts[(lastAInd << 1) + 1] + (scnPts[(lastAInd << 1) + 3] - scnPts[(lastAInd << 1) + 1]) * (Double)(nextX - scnPts[(lastAInd << 1)]) / (scnPts[(lastAInd << 1) + 2] - scnPts[(lastAInd << 1)]);
+					currPt.x = nextPt.x;
+					currPt.y = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (Double)(nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
 				}
 			}
 			else
@@ -1087,45 +1061,45 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 
 			Double xadd = szThis[0] * 0.5;
 			Double yadd = szThis[1] * 0.5;
-			if ((currX - xadd) < minX)
+			if ((currPt.x - xadd) < min.x)
 			{
-				minX = currX - xadd;
+				min.x = currPt.x - xadd;
 			}
-			if ((currX + xadd) > maxX)
+			if ((currPt.x + xadd) > max.x)
 			{
-				maxX = currX + xadd;
+				max.x = currPt.x + xadd;
 			}
-			if ((currY - yadd) < minY)
+			if ((currPt.y - yadd) < min.y)
 			{
-				minY = currY - yadd;
+				min.y = currPt.y - yadd;
 			}
-			if ((currY + yadd) > maxY)
+			if ((currPt.y + yadd) > max.y)
 			{
-				maxY = currY + yadd;
+				max.y = currPt.y + yadd;
 			}
 
-			lastX = currX;
-			lastY = currY;
+			lastX = currPt.x;
+			lastY = currPt.y;
 			if (mode == 0)
 			{
 				if (font->fontType == 0)
 				{
-					img->DrawString(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
+					img->DrawString(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
 				}
 				else
 				{
-					img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+					img->DrawStringB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 				}
 			}
 			else
 			{
 				if (font->fontType == 0)
 				{
-					img->DrawString(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
+					img->DrawString(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
 				}
 				else
 				{
-					img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+					img->DrawStringB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 				}
 			}
 			szLast[0] = szThis[0];
@@ -1133,29 +1107,22 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 		}
 		i++;
 	}
-	realBounds[0] = minX;
-	realBounds[1] = minY;
-	realBounds[2] = maxX;
-	realBounds[3] = maxY;
+	realBounds->tl = min;
+	realBounds->br = max;
 }
 
-void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
+void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
 	UOSInt lblSize = str1.leng;
-	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
-	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
-	Double currX;
-	Double currY;
-	Double nextX;
-	Double nextY;
+	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl nextPt;
 	Double startX = 0;
 	Double startY = 0;
-	Double xDiff;
-	Double yDiff;
-	Double axDiff;
-	Double ayDiff;
+	Math::Coord2DDbl diff;
+	Math::Coord2DDbl aDiff;
 	UOSInt i;
 	UOSInt j;
 	Double szThis[2];
@@ -1170,28 +1137,12 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 	fntCount = fontStyle->GetCount();
 	font = (Map::MapFontStyle*)fontStyle->GetItem(0);
 
-	xDiff = scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1) + 0];
-	yDiff = scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1];
-	if (xDiff > 0)
-	{
-		axDiff = xDiff;
-	}
-	else
-	{
-		axDiff = -xDiff;
-	}
-	if (yDiff > 0)
-	{
-		ayDiff = yDiff;
-	}
-	else
-	{
-		ayDiff = -yDiff;
-	}
+	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	aDiff = diff.Abs();
 
-	if (axDiff > ayDiff)
+	if (aDiff.x > aDiff.y)
 	{
-		if (xDiff > 0)
+		if (diff.x > 0)
 		{
 			mode = 0;
 		}
@@ -1202,7 +1153,7 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 	}
 	else
 	{
-		if (yDiff > 0)
+		if (diff.y > 0)
 		{
 			mode = 0;
 		}
@@ -1212,62 +1163,60 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 		}
 	}
 
-	currX = centX;
-	currY = centY;
+	currPt = centPt;
 	i = lblSize;
 	j = thisPt;
-	nextX = xDiff;
-	nextY = yDiff;
-	xDiff = 0;
-	yDiff = 0;
+	nextPt = diff;
+	diff.x = 0;
+	diff.y = 0;
 
 	while (i-- > 0)
 	{
 		img->GetTextSize(font->font, {&str1.v[i], 1}, szThis);
-		xDiff += szThis[0];
-		yDiff += szThis[1];
+		diff.x += szThis[0];
+		diff.y += szThis[1];
 	}
 	found = false;
 	if (mode == 0)
 	{
-		if (axDiff > ayDiff)
+		if (aDiff.x > aDiff.y)
 		{
-			if (nextX > 0)
+			if (nextPt.x > 0)
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1)])
+				if ((centPt.x - diff.x) >= scnPts[j].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centX + xDiff) >= scnPts[(j << 1)])
+				if ((centPt.x + diff.x) >= scnPts[j].x)
 				{
-					startX = centX + xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 		}
 		else
 		{
-			if (nextY > 0)
+			if (nextPt.y > 0)
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 1])
+				if ((centPt.y - diff.y) >= scnPts[j].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centY + yDiff) >= scnPts[(j << 1) + 1])
+				if ((centPt.y + diff.y) >= scnPts[j].y)
 				{
-					startY = centY + yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
@@ -1275,44 +1224,44 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 	}
 	else
 	{
-		if (axDiff > ayDiff)
+		if (aDiff.x > aDiff.y)
 		{
-			if (nextX > 0)
+			if (nextPt.x > 0)
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1) + 2])
+				if ((centPt.x - diff.x) >= scnPts[j + 1].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centX - xDiff) >= scnPts[(j << 1) + 2])
+				if ((centPt.x - diff.x) >= scnPts[j + 1].x)
 				{
-					startX = centX - xDiff;
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x - diff.x;
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 					found = true;
 				}
 			}
 		}
 		else
 		{
-			if (nextY > 0)
+			if (nextPt.y > 0)
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 3])
+				if ((centPt.y - diff.y) >= scnPts[j + 1].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
 			else
 			{
-				if ((centY - yDiff) >= scnPts[(j << 1) + 3])
+				if ((centPt.y - diff.y) >= scnPts[j + 1].y)
 				{
-					startY = centY - yDiff;
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y - diff.y;
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 					found = true;
 				}
 			}
@@ -1325,57 +1274,57 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 		{
 			while (j-- > 0)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
 				}
 				else
 				{
-					if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
 				}
@@ -1384,8 +1333,8 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 			if (j == (UOSInt)-1)
 			{
 				j = 0;
-				startX = scnPts[0];
-				startY = scnPts[1];
+				startX = scnPts[0].x;
+				startY = scnPts[0].y;
 			}
 		}
 		else
@@ -1393,57 +1342,57 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 			j++;
 			while (j < nPoints - 1)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
 				}
 				else
 				{
-					if ((scnPts[(j << 1) + 1] - (centY - yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY - yDiff) >= 0))
+					if ((scnPts[j].y - (centPt.y - diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y - diff.y) >= 0))
 					{
-						startY = centY - yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y - diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1) + 1] - (centY + yDiff) >= 0) ^ (scnPts[(j << 1) + 3] - (centY + yDiff) >= 0))
+					else if ((scnPts[j].y - (centPt.y + diff.y) >= 0) ^ (scnPts[j + 1].y - (centPt.y + diff.y) >= 0))
 					{
-						startY = centY + yDiff;
-						startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+						startY = centPt.y + diff.y;
+						startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX - xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX - xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x - diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x - diff.x) >= 0))
 					{
-						startX = centX - xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x - diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
-					else if ((scnPts[(j << 1)] - (centX + xDiff) >= 0) ^ (scnPts[(j << 1) + 2] - (centX + xDiff) >= 0))
+					else if ((scnPts[j].x - (centPt.x + diff.x) >= 0) ^ (scnPts[j + 1].x - (centPt.x + diff.x) >= 0))
 					{
-						startX = centX + xDiff;
-						startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+						startX = centPt.x + diff.x;
+						startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 						break;
 					}
 				}
@@ -1453,8 +1402,8 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
-				startX = scnPts[(j << 1) + 2];
-				startY = scnPts[(j << 1) + 3];
+				startX = scnPts[j + 1].x;
+				startY = scnPts[j + 1].y;
 			}
 		}
 	}
@@ -1478,8 +1427,8 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 		UOSInt lastInd;
 		UOSInt cnt;
 		cnt = lblSize;
-		currX = startX;
-		currY = startY;
+		currPt.x = startX;
+		currPt.y = startY;
 		lastInd = (UOSInt)-1;
 		currInd = j;
 
@@ -1489,34 +1438,15 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 			{
 				lastInd = currInd;
 
-				xDiff = scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0];
-				yDiff = scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1];
-				if (xDiff > 0)
-				{
-					axDiff = xDiff;
-				}
-				else
-				{
-					axDiff = -xDiff;
-				}
-				if (yDiff > 0)
-				{
-					ayDiff = yDiff;
-				}
-				else
-				{
-					ayDiff = -yDiff;
-				}
-
+				diff = scnPts[currInd + 1].ToDouble() - scnPts[currInd].ToDouble();
+				aDiff = diff.Abs();
 				if (mode == 0)
 				{
-					nextX = scnPts[(currInd << 1) + 2];
-					nextY = scnPts[(currInd << 1) + 3];
+					nextPt = scnPts[currInd + 1].ToDouble();
 				}
 				else
 				{
-					nextX = scnPts[(currInd << 1) + 0];
-					nextY = scnPts[(currInd << 1) + 1];
+					nextPt = scnPts[currInd].ToDouble();
 				}
 			}
 
@@ -1525,42 +1455,42 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 			l[1] = 0;
 			if (font->fontType == 0)
 			{
-				img->DrawString(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(currPt.x - (szThis[0] * 0.5), currPt.y - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other);
 			}
 			else
 			{
-				img->DrawStringB(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+				img->DrawStringB(currPt.x - (szThis[0] * 0.5), currPt.y - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 			}
 
 			found = false;
 			if (mode == 0)
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if (xDiff > 0)
+					if (diff.x > 0)
 					{
-						if (currX + szThis[0] <= nextX)
+						if (currPt.x + szThis[0] <= nextPt.x)
 						{
-							currX += szThis[0];
-							currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+							currPt.x += szThis[0];
+							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextX = currX + szThis[0];
+							nextPt.x = currPt.x + szThis[0];
 						}
 					}
 					else
 					{
-						if (currX - szThis[0] >= nextX)
+						if (currPt.x - szThis[0] >= nextPt.x)
 						{
-							currX -= szThis[0];
-							currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+							currPt.x -= szThis[0];
+							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextX = currX - szThis[0];
+							nextPt.x = currPt.x - szThis[0];
 						}
 					}
 					if (!found)
@@ -1568,24 +1498,24 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 						currInd++;
 						while (currInd < nPoints - 1)
 						{
-							if (((scnPts[(currInd << 1)] - nextX > 0) ^ (scnPts[(currInd << 1) + 2] - nextX > 0)) || (scnPts[(currInd << 1)] == nextX) || (scnPts[(currInd << 1) + 2] == nextX))
+							if (((scnPts[currInd].x - nextPt.x > 0) ^ (scnPts[currInd + 1].x - nextPt.x > 0)) || (scnPts[currInd].x == nextPt.x) || (scnPts[currInd + 1].x == nextPt.x))
 							{
-								currX = nextX;
-								currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+								currPt.x = nextPt.x;
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 1] - (currY - szThis[1]) > 0) ^ (scnPts[(currInd << 1) + 3] - (currY - szThis[1]) > 0)) || (scnPts[(currInd << 1) + 1] == (currY - szThis[1])) || (scnPts[(currInd << 1) + 3] == (currY - szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y - szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y - szThis[1])) || (scnPts[currInd + 1].y == (currPt.y - szThis[1])))
 							{
-								currY = currY - szThis[1];
-								currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+								currPt.y = currPt.y - szThis[1];
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 1] - (currY + szThis[1]) > 0) ^ (scnPts[(currInd << 1) + 3] - (currY + szThis[1]) > 0)) || (scnPts[(currInd << 1) + 1] == (currY + szThis[1])) || (scnPts[(currInd << 1) + 3] == (currY + szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y + szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y + szThis[1])) || (scnPts[currInd + 1].y == (currPt.y + szThis[1])))
 							{
-								currY = currY + szThis[1];
-								currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+								currPt.y = currPt.y + szThis[1];
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
@@ -1600,30 +1530,30 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 				}
 				else
 				{
-					if (yDiff > 0)
+					if (diff.y > 0)
 					{
-						if (currY + szThis[1] <= nextY)
+						if (currPt.y + szThis[1] <= nextPt.y)
 						{
-							currY += szThis[1];
-							currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+							currPt.y += szThis[1];
+							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextY = currY + szThis[1];
+							nextPt.y = currPt.y + szThis[1];
 						}
 					}
 					else
 					{
-						if (currY - szThis[1] >= nextY)
+						if (currPt.y - szThis[1] >= nextPt.y)
 						{
-							currY -= szThis[1];
-							currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+							currPt.y -= szThis[1];
+							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextY = currY - szThis[1];
+							nextPt.y = currPt.y - szThis[1];
 						}
 					}
 					if (!found)
@@ -1631,24 +1561,24 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 						currInd++;
 						while (currInd < nPoints - 1)
 						{
-							if (((scnPts[(currInd << 1) + 1] - nextY > 0) ^ (scnPts[(currInd << 1) + 3] - nextY > 0)) || (scnPts[(currInd << 1) + 1] == nextY) || (scnPts[(currInd << 1) + 3] == nextY))
+							if (((scnPts[currInd].y - nextPt.y > 0) ^ (scnPts[currInd + 1].y - nextPt.y > 0)) || (scnPts[currInd].y == nextPt.y) || (scnPts[currInd + 1].y == nextPt.y))
 							{
-								currY = nextY;
-								currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+								currPt.y = nextPt.y;
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 0] - (currX - szThis[0]) > 0) ^ (scnPts[(currInd << 1) + 2] - (currX - szThis[0]) > 0)) || (scnPts[(currInd << 1) + 0] == (currX - szThis[0])) || (scnPts[(currInd << 1) + 2] == (currX - szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x - szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x - szThis[0])) || (scnPts[currInd + 1].x == (currPt.x - szThis[0])))
 							{
-								currX = currX - szThis[0];
-								currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+								currPt.x = currPt.x - szThis[0];
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 0] - (currX + szThis[0]) > 0) ^ (scnPts[(currInd << 1) + 2] - (currX + szThis[0]) > 0)) || (scnPts[(currInd << 1) + 0] == (currX + szThis[0])) || (scnPts[(currInd << 1) + 2] == (currX + szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x + szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x + szThis[0])) || (scnPts[currInd + 1].x == (currPt.x + szThis[0])))
 							{
-								currX = currX + szThis[0];
-								currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+								currPt.x = currPt.x + szThis[0];
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
@@ -1664,32 +1594,32 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 			}
 			else
 			{
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					if (xDiff < 0)
+					if (diff.x < 0)
 					{
-						if (currX + szThis[0] <= nextX)
+						if (currPt.x + szThis[0] <= nextPt.x)
 						{
-							currX += szThis[0];
-							currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+							currPt.x += szThis[0];
+							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextX = currX + szThis[0];
+							nextPt.x = currPt.x + szThis[0];
 						}
 					}
 					else
 					{
-						if (currX - szThis[0] >= nextX)
+						if (currPt.x - szThis[0] >= nextPt.x)
 						{
-							currX -= szThis[0];
-							currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+							currPt.x -= szThis[0];
+							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextX = currX - szThis[0];
+							nextPt.x = currPt.x - szThis[0];
 						}
 					}
 					if (!found)
@@ -1697,24 +1627,24 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 						while (currInd > 0)
 						{
 							currInd--;
-							if (((scnPts[(currInd << 1)] - nextX > 0) ^ (scnPts[(currInd << 1) + 2] - nextX > 0)) || (scnPts[(currInd << 1)] == nextX) || (scnPts[(currInd << 1) + 2] == nextX))
+							if (((scnPts[currInd].x - nextPt.x > 0) ^ (scnPts[currInd + 1].x - nextPt.x > 0)) || (scnPts[currInd].x == nextPt.x) || (scnPts[currInd + 1].x == nextPt.x))
 							{
-								currX = nextX;
-								currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+								currPt.x = nextPt.x;
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 1] - (currY - szThis[1]) > 0) ^ (scnPts[(currInd << 1) + 3] - (currY - szThis[1]) > 0)) || (scnPts[(currInd << 1) + 1] == (currY - szThis[1])) || (scnPts[(currInd << 1) + 3] == (currY - szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y - szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y - szThis[1])) || (scnPts[currInd + 1].y == (currPt.y - szThis[1])))
 							{
-								currY = currY - szThis[1];
-								currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+								currPt.y = currPt.y - szThis[1];
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 1] - (currY + szThis[1]) > 0) ^ (scnPts[(currInd << 1) + 3] - (currY + szThis[1]) > 0)) || (scnPts[(currInd << 1) + 1] == (currY + szThis[1])) || (scnPts[(currInd << 1) + 3] == (currY + szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y + szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y + szThis[1])) || (scnPts[currInd + 1].y == (currPt.y + szThis[1])))
 							{
-								currY = currY + szThis[1];
-								currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+								currPt.y = currPt.y + szThis[1];
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
@@ -1727,30 +1657,30 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 				}
 				else
 				{
-					if (yDiff < 0)
+					if (diff.y < 0)
 					{
-						if (currY + szThis[1] <= nextY)
+						if (currPt.y + szThis[1] <= nextPt.y)
 						{
-							currY += szThis[1];
-							currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+							currPt.y += szThis[1];
+							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextY = currY + szThis[1];
+							nextPt.y = currPt.y + szThis[1];
 						}
 					}
 					else
 					{
-						if (currY - szThis[1] >= nextY)
+						if (currPt.y - szThis[1] >= nextPt.y)
 						{
-							currY -= szThis[1];
-							currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+							currPt.y -= szThis[1];
+							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextY = currY - szThis[1];
+							nextPt.y = currPt.y - szThis[1];
 						}
 					}
 					if (!found)
@@ -1758,24 +1688,24 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 						while (currInd > 0)
 						{
 							currInd--;
-							if (((scnPts[(currInd << 1) + 1] - nextY > 0) ^ (scnPts[(currInd << 1) + 3] - nextY > 0)) || (scnPts[(currInd << 1) + 1] == nextY) || (scnPts[(currInd << 1) + 3] == nextY))
+							if (((scnPts[currInd].y - nextPt.y > 0) ^ (scnPts[currInd + 1].y - nextPt.y > 0)) || (scnPts[currInd].y == nextPt.y) || (scnPts[currInd + 1].y == nextPt.y))
 							{
-								currY = nextY;
-								currX = scnPts[(currInd << 1) + 0] + (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1) + 0]) * (currY - scnPts[(currInd << 1) + 1]) / (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]);
+								currPt.y = nextPt.y;
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 0] - (currX - szThis[0]) > 0) ^ (scnPts[(currInd << 1) + 2] - (currX - szThis[0]) > 0)) || (scnPts[(currInd << 1) + 0] == (currX - szThis[0])) || (scnPts[(currInd << 1) + 2] == (currX - szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x - szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x - szThis[0])) || (scnPts[currInd + 1].x == (currPt.x - szThis[0])))
 							{
-								currX = currX - szThis[0];
-								currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+								currPt.x = currPt.x - szThis[0];
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
-							else if (((scnPts[(currInd << 1) + 0] - (currX + szThis[0]) > 0) ^ (scnPts[(currInd << 1) + 2] - (currX + szThis[0]) > 0)) || (scnPts[(currInd << 1) + 0] == (currX + szThis[0])) || (scnPts[(currInd << 1) + 2] == (currX + szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x + szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x + szThis[0])) || (scnPts[currInd + 1].x == (currPt.x + szThis[0])))
 							{
-								currX = currX + szThis[0];
-								currY = scnPts[(currInd << 1) + 1] + (scnPts[(currInd << 1) + 3] - scnPts[(currInd << 1) + 1]) * (currX - scnPts[(currInd << 1)]) / (scnPts[(currInd << 1) + 2] - scnPts[(currInd << 1)]);
+								currPt.x = currPt.x + szThis[0];
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
@@ -1793,27 +1723,20 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 	}
 }
 
-void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds)
+void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
 	UOSInt lblSize = str1.leng;
-	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
-	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
-	Double currX;
-	Double currY;
-	Double nextX;
-	Double nextY;
+	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl nextPt;
 	Double startX = 0;
 	Double startY = 0;
-	Double xDiff;
-	Double yDiff;
-	Double axDiff;
-	Double ayDiff;
-	Double minX;
-	Double maxX;
-	Double minY;
-	Double maxY;
+	Math::Coord2DDbl diff;
+	Math::Coord2DDbl aDiff;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
 	Double angleOfst;
 	UOSInt i;
 	UOSInt j;
@@ -1826,8 +1749,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 	if (fontStyle == 0)
 		return;
 
-	minX = maxX = centX;
-	minY = maxY = centY;
+	min = max = centPt;
 
 	fntCount = fontStyle->GetCount();
 	font = (Map::MapFontStyle*)fontStyle->GetItem(0);
@@ -1836,26 +1758,10 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 		i = 0;
 	}
 
-	xDiff = scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1) + 0];
-	yDiff = scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1];
-	if (xDiff > 0)
-	{
-		axDiff = xDiff;
-	}
-	else
-	{
-		axDiff = -xDiff;
-	}
-	if (yDiff > 0)
-	{
-		ayDiff = yDiff;
-	}
-	else
-	{
-		ayDiff = -yDiff;
-	}
+	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	aDiff = diff.Abs();
 
-	if (xDiff > 0)
+	if (diff.x > 0)
 	{
 		mode = 0;
 		angleOfst = 0;
@@ -1865,9 +1771,9 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 		mode = 1;
 		angleOfst = PI;
 	}
-/*	if (axDiff > ayDiff)
+/*	if (aDiff.x > aDiff.y)
 	{
-		if (xDiff > 0)
+		if (diff.x > 0)
 		{
 			mode = 0;
 		}
@@ -1878,7 +1784,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 	}
 	else
 	{
-		if (yDiff > 0)
+		if (diff.y > 0)
 		{
 			mode = 0;
 		}
@@ -1888,61 +1794,59 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 		}
 	}*/
 
-	currX = centX;
-	currY = centY;
+	currPt = centPt;
 	i = lblSize;
 	j = thisPt;
-	nextX = xDiff;
-	nextY = yDiff;
-	xDiff = 0;
-	yDiff = 0;
+	nextPt = diff;
+	diff.x = 0;
+	diff.y = 0;
 
 	img->GetTextSize(font->font, str1, szThis);
-	xDiff = szThis[0] * 0.5;
-	yDiff = xDiff * xDiff;
+	diff.x = szThis[0] * 0.5;
+	diff.y = diff.x * diff.x;
 
 	if (mode == 0)
 	{
 		while (j >= 0)
 		{
-			startX = scnPts[(j << 1) + 0] - centX;
-			startY = scnPts[(j << 1) + 1] - centY;
-			xDiff = (startX * startX) + (startY * startY);
-			if (xDiff >= yDiff)
+			startX = scnPts[j].x - centPt.x;
+			startY = scnPts[j].y - centPt.y;
+			diff.x = (startX * startX) + (startY * startY);
+			if (diff.x >= diff.y)
 			{
 				if (startX > 0)
 				{
-					axDiff = startX;
+					aDiff.x = startX;
 				}
 				else
 				{
-					axDiff = -startX;
+					aDiff.x = -startX;
 				}
 				if (startY > 0)
 				{
-					ayDiff = startY;
+					aDiff.y = startY;
 				}
 				else
 				{
-					ayDiff = -startY;
+					aDiff.y = -startY;
 				}
 
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					startX = centX + (startX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + (startX * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 				}
 				else
 				{
-					startY = centY + (startY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + (startY * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 				}
 				break;
 			}
 			if (j <= 0)
 			{
-				startX = scnPts[0];
-				startY = scnPts[1];
+				startX = scnPts[0].x;
+				startY = scnPts[0].y;
 				break;
 			}
 			j--;
@@ -1952,37 +1856,37 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 	{
 		while (j < nPoints - 1)
 		{
-			startX = scnPts[(j << 1) + 2] - centX;
-			startY = scnPts[(j << 1) + 3] - centY;
-			xDiff = (startX * startX) + (startY * startY);
-			if (xDiff >= yDiff)
+			startX = scnPts[j + 1].x - centPt.x;
+			startY = scnPts[j + 1].y - centPt.y;
+			diff.x = (startX * startX) + (startY * startY);
+			if (diff.x >= diff.y)
 			{
 				if (startX > 0)
 				{
-					axDiff = startX;
+					aDiff.x = startX;
 				}
 				else
 				{
-					axDiff = -startX;
+					aDiff.x = -startX;
 				}
 				if (startY > 0)
 				{
-					ayDiff = startY;
+					aDiff.y = startY;
 				}
 				else
 				{
-					ayDiff = -startY;
+					aDiff.y = -startY;
 				}
 
-				if (axDiff > ayDiff)
+				if (aDiff.x > aDiff.y)
 				{
-					startX = centX + (startX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+					startX = centPt.x + (startX * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (startX - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 				}
 				else
 				{
-					startY = centY + (startY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
-					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+					startY = centPt.y + (startY * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+					startX = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (startY - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 				}
 				break;
 			}
@@ -1991,8 +1895,8 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
-				startX = scnPts[(j << 1) + 2];
-				startY = scnPts[(j << 1) + 3];
+				startX = scnPts[j + 1].x;
+				startY = scnPts[j + 1].y;
 				break;
 			}
 		}
@@ -2019,8 +1923,8 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 
 		szLast[0] = 0;
 
-		lastX = currX = startX;
-		lastY = currY = startY;
+		lastX = currPt.x = startX;
+		lastY = currPt.y = startY;
 		j = startInd;
 		UOSInt lastInd = j;
 
@@ -2060,86 +1964,86 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 
 			img->GetTextSize(font->font, CSTRP(lbl, nextPos), szThis);
 			dist = (szLast[0] + szThis[0]) * 0.5;
-			nextX = currX + dist * cosAngle;
-			nextY = currY - dist * sinAngle;
-			if ( (((nextX > scnPts[(j << 1)]) ^ (nextX > scnPts[(j << 1) + 2])) || (nextX == scnPts[(j << 1)]) || (nextX == scnPts[(j << 1) + 2])) && (((nextY > scnPts[(j << 1) + 1]) ^ (nextY > scnPts[(j << 1) + 3])) || (nextY == scnPts[(j << 1) + 1]) || (nextY == scnPts[(j << 1) + 3])))
+			nextPt.x = currPt.x + dist * cosAngle;
+			nextPt.y = currPt.y - dist * sinAngle;
+			if ( (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x)) && (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y)))
 			{
-				currX = nextX;
-				currY = nextY;
+				currPt.x = nextPt.x;
+				currPt.y = nextPt.y;
 			}
 			else
 			{
-				xDiff = szLast[0] + szThis[0];
-				yDiff = (xDiff * xDiff) * 0.25;
+				diff.x = szLast[0] + szThis[0];
+				diff.y = (diff.x * diff.x) * 0.25;
 
 				if (mode == 0)
 				{
 					j++;
 					while (j < nPoints - 1)
 					{
-						nextX = scnPts[(j << 1) + 2] - currX;
-						nextY = scnPts[(j << 1) + 3] - currY;
-						xDiff = (nextX * nextX) + (nextY * nextY);
-						if (xDiff < yDiff)
+						nextPt.x = scnPts[j + 1].x - currPt.x;
+						nextPt.y = scnPts[j + 1].y - currPt.y;
+						diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
+						if (diff.x < diff.y)
 						{
 							j++;
 						}
 						else
 						{
-							if (nextX > 0)
+							if (nextPt.x > 0)
 							{
-								axDiff = nextX;
+								aDiff.x = nextPt.x;
 							}
 							else
 							{
-								axDiff = -nextX;
+								aDiff.x = -nextPt.x;
 							}
-							if (nextY > 0)
+							if (nextPt.y > 0)
 							{
-								ayDiff = nextY;
+								aDiff.y = nextPt.y;
 							}
 							else
 							{
-								ayDiff = -nextY;
+								aDiff.y = -nextPt.y;
 							}
 
-							if (axDiff > ayDiff)
+							if (aDiff.x > aDiff.y)
 							{
-								if ((scnPts[(j << 1) + 0] < scnPts[(j << 1) + 2]) ^ (nextX > 0))
+								if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
 								{
-									currX = currX - (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.x = currPt.x - (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
 								else
 								{
-									currX = currX + (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.x = currPt.x + (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
-								if (((currX > scnPts[(j << 1)]) ^ (currX > scnPts[(j << 1) + 2])) || (currX == scnPts[(j << 1)]) || (currX == scnPts[(j << 1) + 2]))
+								if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
 								{
 								}
 								else
 								{
-									currX = scnPts[(j << 1) + 0];
+									currPt.x = scnPts[j].x;
 								}
-								currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (currX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 							}
 							else
 							{
-								if ((scnPts[(j << 1) + 1] < scnPts[(j << 1) + 3]) ^ (nextY > 0))
+								if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
 								{
-									currY = currY - (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
 								else
 								{
-									currY = currY + (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
-								if (((currY > scnPts[(j << 1) + 1]) ^ (currY > scnPts[(j << 1) + 3])) || (currY == scnPts[(j << 1) + 1]) || (currY == scnPts[(j << 1) + 3]))
+								if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
 								{
 								}
 								else
 								{
-									currY = scnPts[(j << 1) + 1];
+									currPt.y = scnPts[j].y;
 								}
-								currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 							}
 							break;
 						}
@@ -2148,77 +2052,77 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 					{
 						j--;
 
-						currX = currX + (dist * cosAngle);
-						currY = currY - (dist * sinAngle);
+						currPt.x = currPt.x + (dist * cosAngle);
+						currPt.y = currPt.y - (dist * sinAngle);
 					}
 				}
 				else if (mode == 1)
 				{
 					while (j-- > 0)
 					{
-						nextX = scnPts[(j << 1) + 0] - currX;
-						nextY = scnPts[(j << 1) + 1] - currY;
-						xDiff = (nextX * nextX) + (nextY * nextY);
-						if (xDiff < yDiff)
+						nextPt.x = scnPts[j].x - currPt.x;
+						nextPt.y = scnPts[j].y - currPt.y;
+						diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
+						if (diff.x < diff.y)
 						{
 
 						}
 						else
 						{
-							if (nextX > 0)
+							if (nextPt.x > 0)
 							{
-								axDiff = nextX;
+								aDiff.x = nextPt.x;
 							}
 							else
 							{
-								axDiff = -nextX;
+								aDiff.x = -nextPt.x;
 							}
-							if (nextY > 0)
+							if (nextPt.y > 0)
 							{
-								ayDiff = nextY;
+								aDiff.y = nextPt.y;
 							}
 							else
 							{
-								ayDiff = -nextY;
+								aDiff.y = -nextPt.y;
 							}
 
-							if (axDiff > ayDiff)
+							if (aDiff.x > aDiff.y)
 							{
-								if ((scnPts[(j << 1) + 0] < scnPts[(j << 1) + 2]) ^ (nextX > 0))
+								if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
 								{
-									currX = currX + (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.x = currPt.x + (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
 								else
 								{
-									currX = currX - (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.x = currPt.x - (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
-								if (((currX > scnPts[(j << 1)]) ^ (currX > scnPts[(j << 1) + 2])) || (currX == scnPts[(j << 1)]) || (currX == scnPts[(j << 1) + 2]))
+								if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
 								{
 								}
 								else
 								{
-									currX = scnPts[(j << 1) + 2];
+									currPt.x = scnPts[j + 1].x;
 								}
-								currY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (currX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
+								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
 							}
 							else
 							{
-								if ((scnPts[(j << 1) + 1] < scnPts[(j << 1) + 3]) ^ (nextY > 0))
+								if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
 								{
-									currY = currY + (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
 								else
 								{
-									currY = currY - (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
+									currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
 								}
-								if (((currY > scnPts[(j << 1) + 1]) ^ (currY > scnPts[(j << 1) + 3])) || (currY == scnPts[(j << 1) + 1]) || (currY == scnPts[(j << 1) + 3]))
+								if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
 								{
 								}
 								else
 								{
-									currY = scnPts[(j << 1) + 3];
+									currPt.y = scnPts[j + 1].y;
 								}
-								currX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (currY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
+								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
 							}
 							break;
 						}
@@ -2226,8 +2130,8 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 					if (j == (UOSInt)-1)
 					{
 						j = 0;
-						currX = currX + (dist * cosAngle);
-						currY = currY - (dist * sinAngle);
+						currPt.x = currPt.x + (dist * cosAngle);
+						currPt.y = currPt.y - (dist * sinAngle);
 					}
 				}
 
@@ -2254,8 +2158,8 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 			{
 				Double lsa = Math_Sin(lastAngle * PI / 180.0);
 				Double lca = Math_Cos(lastAngle * PI / 180.0);
-				currX = lastX + (dist * lca);
-				currY = lastY - (dist * lsa);
+				currPt.x = lastX + (dist * lca);
+				currPt.y = lastY - (dist * lsa);
 
 				Double xadd = szThis[0] * lca;
 				Double yadd = szThis[0] * lsa;
@@ -2263,43 +2167,43 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 					xadd = -xadd;
 				if (yadd < 0)
 					yadd = -yadd;
-				if ((currX - xadd) < minX)
+				if ((currPt.x - xadd) < min.x)
 				{
-					minX = (currX - xadd);
+					min.x = (currPt.x - xadd);
 				}
-				if ((currX + xadd) > maxX)
+				if ((currPt.x + xadd) > max.x)
 				{
-					maxX = (currX + xadd);
+					max.x = (currPt.x + xadd);
 				}
-				if ((currY - yadd) < minY)
+				if ((currPt.y - yadd) < min.y)
 				{
-					minY = (currY - yadd);
+					min.y = (currPt.y - yadd);
 				}
-				if ((currY + yadd) > maxY)
+				if ((currPt.y + yadd) > max.y)
 				{
-					maxY = (currY + yadd);
+					max.y = (currPt.y + yadd);
 				}
 
 				if (mode == 0)
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
+						img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
 					}
 				}
 				else
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
+						img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
 					}
 				}
 			}
@@ -2312,60 +2216,58 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 					xadd = -xadd;
 				if (yadd < 0)
 					yadd = -yadd;
-				if ((currX - xadd) < minX)
+				if ((currPt.x - xadd) < min.x)
 				{
-					minX = (currX - xadd);
+					min.x = (currPt.x - xadd);
 				}
-				if ((currX + xadd) > maxX)
+				if ((currPt.x + xadd) > max.x)
 				{
-					maxX = (currX + xadd);
+					max.x = (currPt.x + xadd);
 				}
-				if ((currY - yadd) < minY)
+				if ((currPt.y - yadd) < min.y)
 				{
-					minY = (currY - yadd);
+					min.y = (currPt.y - yadd);
 				}
-				if ((currY + yadd) > maxY)
+				if ((currPt.y + yadd) > max.y)
 				{
-					maxY = (currY + yadd);
+					max.y = (currPt.y + yadd);
 				}
 
 				if (mode == 0)
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
+						img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
 					}
 				}
 				else
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
+						img->DrawStringRot(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
 					}
 				}
 
 			}
-			lastX = currX;
-			lastY = currY;
+			lastX = currPt.x;
+			lastY = currPt.y;
 			szLast[0] = szThis[0];
 		}
 		i++;
 	}
-	realBounds[0] = minX;
-	realBounds[1] = minY;
-	realBounds[2] = maxX;
-	realBounds[3] = maxY;
+	realBounds->tl = min;
+	realBounds->br = max;
 }
 
-void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
+void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
 {
 	Double xSizeAdd = 0;
 	Double ySizeAdd = 0;
@@ -2428,8 +2330,8 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, Text
 
 	if (scaleH == 0)
 	{
-		size[0] = szTmp[0] + xSizeAdd;
-		size[1] = szTmp[1] + ySizeAdd;
+		size->x = szTmp[0] + xSizeAdd;
+		size->y = szTmp[1] + ySizeAdd;
 
 		return;
 	}
@@ -2477,8 +2379,8 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Double *size, Text
 	if (pt[6] < minX) minX = pt[6];
 	if (pt[7] > maxY) maxY = pt[7];
 	if (pt[7] < minY) minY = pt[7];
-	size[0] = maxX - minX;
-	size[1] = maxY - minY;
+	size->x = maxX - minX;
+	size->y = maxY - minY;
 }
 
 UInt32 Map::MapConfig2TGen::ToColor(const UTF8Char *str)
@@ -2512,7 +2414,7 @@ Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(Text::CString name, Data::
 	return cip;
 }
 
-void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Double *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
+void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
 	Data::ArrayListInt64 *arri;
 	Map::DrawObjectL *dobj;
@@ -2688,10 +2590,10 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 
 				if ((lyrs->bkColor & SFLG_ROTATE) == 0)
 					scaleW = scaleH = 0;
-				Double szThis[2];
-				GetCharsSize(img, szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], scaleW, scaleH);
+				Math::Coord2DDbl szThis;
+				GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], scaleW, scaleH);
 				pts = view->MapXYToScnXY(pts);
-				if ((pts.x + (szThis[0] * 0.5)) >= 0 && (pts.y + (szThis[1] * 0.5)) >= 0 && (pts.x - (szThis[0] * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis[1] * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+				if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
 				{
 					DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 				}
@@ -2711,10 +2613,10 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 				}
 
 				pts = (lastPt / dobj->nPoint);
-				Double szThis[2];
-				GetCharsSize(img, szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], 0, 0);
+				Math::Coord2DDbl szThis;
+				GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], 0, 0);
 				pts = view->MapXYToScnXY(pts);
-				if ((pts.x + (szThis[0] * 0.5)) >= 0 && (pts.y + (szThis[1] * 0.5)) >= 0 && (pts.x - (szThis[0] * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis[1] * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+				if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
 				{
 					DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 				}
@@ -3372,17 +3274,17 @@ void Map::MapConfig2TGen::SwapLabel(MapLabels2 *mapLabels, UOSInt index, UOSInt 
 	mapLabels[index2].yOfst = l.yOfst;
 }
 
-Bool Map::MapConfig2TGen::LabelOverlapped(Double *points, UOSInt nPoints, Double tlx, Double tly, Double brx, Double bry)
+Bool Map::MapConfig2TGen::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect)
 {
 	while (nPoints--)
 	{
-		if (points[(nPoints << 2) + 0] < brx && points[(nPoints << 2) + 2] > tlx && points[(nPoints << 2) + 1] < bry && points[(nPoints << 2) + 3] > tly) return true;
+		if (rect.OverlapOrTouch(points[nPoints])) return true;
 	}
 
 	return false;
 }
 
-void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt)
+void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt)
 {
 	UOSInt i;
 	UOSInt j;
@@ -3399,15 +3301,11 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 
 	if (*labelCnt)
 	{
-		Double szThis[2];
+		Math::Coord2DDbl szThis;
 		UOSInt currPt;
 
-		Double tlx;
-		Double tly;
-		Double brx;
-		Double bry;
-		Double scnPtX;
-		Double scnPtY;
+		Math::RectAreaDbl rect;
+		Math::Coord2DDbl scnPt;
 		Double thisPts[10];
 		Int32 thisCnt = 0;
 
@@ -3448,68 +3346,59 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 		//	labels[i].shapeType = 0;
 			if (labels[i].shapeType == 1)
 			{
-				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				Math::Coord2DDbl scnD = view->MapXYToScnXY(labels[i].pos / labels[i].mapRate);
-				scnPtX = scnD.x;
-				scnPtY = scnD.y;
+				scnPt = scnD;
 
 				j = 1;
 				if (labels[i].xOfst == 0)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl = scnPt - (szThis * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX + 1 + (labels[i].xOfst * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x + 1 + (labels[i].xOfst * 0.5);
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX - szThis[0] - 1 - (labels[i].xOfst * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - szThis.x - 1 - (labels[i].xOfst * 0.5);
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - szThis[1] - 1 - (labels[i].yOfst * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y - szThis.y - 1 - (labels[i].yOfst * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY + 1 + (labels[i].yOfst * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y + 1 + (labels[i].yOfst * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 
 				if (!j)
 				{
-					DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, fonts[labels[i].fontStyle], 0);
+					Math::Coord2DDbl center = rect.GetCenter();
+					DrawChars(img, labels[i].label->ToCString(), center.x, center.y, 0, 0, fonts[labels[i].fontStyle], 0);
 
-					objBounds[(currPt << 2)] = tlx;
-					objBounds[(currPt << 2) + 1] = tly;
-					objBounds[(currPt << 2) + 2] = brx;
-					objBounds[(currPt << 2) + 3] = bry;
+					objBounds[currPt] = rect;
 
-					log->AddString(labels[i].label->v, (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, labels[i].fontStyle, 0, &objBounds[(currPt << 2)]);
+					log->AddString(labels[i].label->v, center.x, center.y, 0, 0, labels[i].fontStyle, 0, &objBounds[currPt]);
 
 					currPt++;
 				}
@@ -3721,20 +3610,20 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 					}
 					if (diff.x > diff.y)
 					{
-						scnPtX = (max.x + min.x) * 0.5;
+						scnPt.x = (max.x + min.x) * 0.5;
 						k = 0;
 						while ((UOSInt)k < labels[i].nPoints - 1)
 						{
-							if (labels[i].points[k].x >= scnPtX && labels[i].points[k + 1].x <= scnPtX)
+							if (labels[i].points[k].x >= scnPt.x && labels[i].points[k + 1].x <= scnPt.x)
 							{
 								scaleD = labels[i].points[k].x - labels[i].points[k + 1].x;
-								scaleN = (labels[i].points[k].x - scnPtX);
+								scaleN = (labels[i].points[k].x - scnPt.x);
 								break;
 							}
-							else if (labels[i].points[k].x <= scnPtX && labels[i].points[k + 1].x >= scnPtX)
+							else if (labels[i].points[k].x <= scnPt.x && labels[i].points[k + 1].x >= scnPt.x)
 							{
 								scaleD = labels[i].points[k + 1].x - labels[i].points[k].x;
-								scaleN = scnPtX - labels[i].points[k].x;
+								scaleN = scnPt.x - labels[i].points[k].x;
 								break;
 							}
 							k++;
@@ -3743,20 +3632,20 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 					}
 					else
 					{
-						scnPtY = (max.y + min.y) * 0.5;
+						scnPt.y = (max.y + min.y) * 0.5;
 						k = 0;
 						while ((UOSInt)k < labels[i].nPoints - 1)
 						{
-							if (labels[i].points[k].y >= scnPtY && labels[i].points[k + 1].y <= scnPtY)
+							if (labels[i].points[k].y >= scnPt.y && labels[i].points[k + 1].y <= scnPt.y)
 							{
 								scaleD = labels[i].points[k].y - labels[i].points[k + 1].y;
-								scaleN = (labels[i].points[k].y - scnPtY);
+								scaleN = (labels[i].points[k].y - scnPt.y);
 								break;
 							}
-							else if (labels[i].points[k].y <= scnPtY && labels[i].points[k + 1].y >= scnPtY)
+							else if (labels[i].points[k].y <= scnPt.y && labels[i].points[k + 1].y >= scnPt.y)
 							{
 								scaleD = labels[i].points[k + 1].y - labels[i].points[k].y;
-								scaleN = scnPtY - labels[i].points[k].y;
+								scaleN = scnPt.y - labels[i].points[k].y;
 								break;
 							}
 							k++;
@@ -3766,53 +3655,45 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 
 				labels[i].scaleW = labels[i].points[k + 1].x - labels[i].points[k].x;
 				labels[i].scaleH = labels[i].points[k + 1].y - labels[i].points[k].y;
-				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 //				scnPtX = labels[i].points[(k << 1)] + MulDiv(labels[i].points[(k << 1) + 2] - labels[i].points[(k << 1)], scaleN, scaleD);
 //				scnPtY = labels[i].points[(k << 1) + 1] + MulDiv(labels[i].points[(k << 1) + 3] - labels[i].points[(k << 1) + 1], scaleN, scaleD);
-				Double dscnPtX;
-				Double dscnPtY;
+				Math::Coord2DDbl dscnPt;
 				Math::Coord2DDbl dblArr[3];
 				dblArr[0] = min / labels[i].mapRate;
 				dblArr[1] = max / labels[i].mapRate;
 				if (scaleD == 0)
 				{
-					dscnPtX = labels[i].points[k].x;
-					dscnPtY = labels[i].points[k].y;
+					dscnPt = labels[i].points[k];
 				}
 				else
 				{
-					dscnPtX = labels[i].points[k].x + (labels[i].points[k + 1].x - labels[i].points[k].x) / (Double)scaleD * scaleN;
-					dscnPtY = labels[i].points[k].y + (labels[i].points[k + 1].y - labels[i].points[k].y) / (Double)scaleD * scaleN;
+					dscnPt = labels[i].points[k] + (labels[i].points[k + 1] - labels[i].points[k]) / (Double)scaleD * scaleN;
 				}
-				dblArr[2].x = dscnPtX / labels[i].mapRate;
-				dblArr[2].y = dscnPtY / labels[i].mapRate;
-				Int32 tmpArr[6];
+				dblArr[2] = dscnPt / labels[i].mapRate;
+				Math::Coord2D<Int32> tmpArr[3];
 /*				tmpArr[0] = minX;
 				tmpArr[1] = minY;
 				tmpArr[2] = maxX;
 				tmpArr[3] = maxY;
 				tmpArr[4] = scnPtX;
 				tmpArr[5] = scnPtY;*/
-				view->MapXYToScnXY(dblArr, tmpArr, 3, 0, 0);
+				view->MapXYToScnXY(dblArr, tmpArr, 3, Math::Coord2D<Int32>(0, 0));
 
-				if ((tmpArr[2] - tmpArr[0]) < szThis[0] && (tmpArr[1] - tmpArr[3]) < szThis[1])
+				if ((tmpArr[1].x - tmpArr[0].x) < szThis.x && (tmpArr[0].y - tmpArr[1].y) < szThis.y)
 				{
-					tlx = tmpArr[4] - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = tmpArr[5] - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl = tmpArr[2].ToDouble() - (szThis * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 					if (j == 0)
 					{
-						DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
+						Math::Coord2DDbl center = rect.GetCenter();
+						DrawChars(img, labels[i].label->ToCString(), center.x, center.y, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
 
-						objBounds[(currPt << 2)] = tlx;
-						objBounds[(currPt << 2) + 1] = tly;
-						objBounds[(currPt << 2) + 2] = brx;
-						objBounds[(currPt << 2) + 3] = bry;
+						objBounds[currPt] = rect;
 
-						log->AddString(labels[i].label->v, (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, labels[i].fontStyle, (labels[i].flags & SFLG_ALIGN) != 0, &objBounds[(currPt << 2)]);
+						log->AddString(labels[i].label->v, center.x, center.y, labels[i].scaleW, labels[i].scaleH, labels[i].fontStyle, (labels[i].flags & SFLG_ALIGN) != 0, &objBounds[currPt]);
 
 						currPt++;
 					}
@@ -3823,15 +3704,13 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 					j = 1;
 					while (j)
 					{
-						Math::Coord2DDbl tmpD = view->MapXYToScnXY(Math::Coord2DDbl(dscnPtX / labels[i].mapRate, dscnPtY / labels[i].mapRate));
-						tmpArr[4] = Double2Int32(tmpD.x);
-						tmpArr[5] = Double2Int32(tmpD.y);
-						tlx = tmpArr[4] - (szThis[0] * 0.5);
-						brx = tlx + szThis[0];
-						tly = tmpArr[5] - (szThis[1] * 0.5);
-						bry = tly + szThis[1];
+						Math::Coord2DDbl tmpD = view->MapXYToScnXY(dscnPt / labels[i].mapRate);
+						tmpArr[2].x = Double2Int32(tmpD.x);
+						tmpArr[2].y = Double2Int32(tmpD.y);
+						rect.tl = tmpArr[2].ToDouble() - (szThis * 0.5);
+						rect.br = rect.tl + szThis;
 
-						j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+						j = LabelOverlapped(objBounds, currPt, rect);
 						if (j == 0)
 						{
 							break;
@@ -3843,39 +3722,39 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 							{
 								if (scnDiff < 0)
 								{
-									dscnPtX += scnDiff - 1;
-									if (dscnPtX <= min.x)
+									dscnPt.x += scnDiff - 1;
+									if (dscnPt.x <= min.x)
 									{
 										scnDiff = -scnDiff;
-										dscnPtX = ((min.x + max.x) * 0.5) + scnDiff + 1;
+										dscnPt.x = ((min.x + max.x) * 0.5) + scnDiff + 1;
 									}
 								}
 								else
 								{
-									dscnPtX += scnDiff + 1;
-									if (dscnPtX >= max.x)
+									dscnPt.x += scnDiff + 1;
+									if (dscnPt.x >= max.x)
 									{
 										scnDiff = scnDiff * 0.51;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										dscnPtX = ((min.x + max.x) * 0.5) + scnDiff - 1;
+										dscnPt.x = ((min.x + max.x) * 0.5) + scnDiff - 1;
 									}
 								}
 
 								k = 0;
 								while ((UOSInt)k < labels[i].nPoints - 1)
 								{
-									if (labels[i].points[k].x >= dscnPtX && labels[i].points[k + 1].x <= dscnPtX)
+									if (labels[i].points[k].x >= dscnPt.x && labels[i].points[k + 1].x <= dscnPt.x)
 									{
 										scaleD = labels[i].points[k].x - labels[i].points[k + 1].x;
-										scaleN = (labels[i].points[k].x - dscnPtX);
+										scaleN = (labels[i].points[k].x - dscnPt.x);
 										break;
 									}
-									else if (labels[i].points[k].x <= dscnPtX && labels[i].points[k + 1].x >= dscnPtX)
+									else if (labels[i].points[k].x <= dscnPt.x && labels[i].points[k + 1].x >= dscnPt.x)
 									{
 										scaleD = labels[i].points[k + 1].x - labels[i].points[k].x;
-										scaleN = (dscnPtX - labels[i].points[k].x);
+										scaleN = (dscnPt.x - labels[i].points[k].x);
 										break;
 									}
 									k++;
@@ -3886,49 +3765,48 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 							{
 								if (scnDiff < 0)
 								{
-									dscnPtY += scnDiff - 1;
-									if (dscnPtY <= min.y)
+									dscnPt.y += scnDiff - 1;
+									if (dscnPt.y <= min.y)
 									{
 										scnDiff = -scnDiff;
-										dscnPtY = ((min.y + max.y) * 0.5) + scnDiff + 1;
+										dscnPt.y = ((min.y + max.y) * 0.5) + scnDiff + 1;
 									}
 								}
 								else
 								{
-									dscnPtY += scnDiff + 1;
-									if (dscnPtY >= max.y)
+									dscnPt.y += scnDiff + 1;
+									if (dscnPt.y >= max.y)
 									{
 										scnDiff = scnDiff * 0.5;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										dscnPtY = ((min.y + max.y) * 0.5) + scnDiff - 1;
+										dscnPt.y = ((min.y + max.y) * 0.5) + scnDiff - 1;
 									}
 								}
 
 								k = 0;
 								while ((UOSInt)k < labels[i].nPoints - 1)
 								{
-									if (labels[i].points[k].y >= dscnPtY && labels[i].points[k + 1].y <= dscnPtY)
+									if (labels[i].points[k].y >= dscnPt.y && labels[i].points[k + 1].y <= dscnPt.y)
 									{
 										scaleD = labels[i].points[k].y - labels[i].points[k + 1].y;
-										scaleN = (labels[i].points[k].y - dscnPtY);
+										scaleN = (labels[i].points[k].y - dscnPt.y);
 										break;
 									}
-									else if (labels[i].points[k].y <= dscnPtY && labels[i].points[k + 1].y >= dscnPtY)
+									else if (labels[i].points[k].y <= dscnPt.y && labels[i].points[k + 1].y >= dscnPt.y)
 									{
 										scaleD = labels[i].points[k + 1].y - labels[i].points[k].y;
-										scaleN = (dscnPtY - labels[i].points[k].y);
+										scaleN = (dscnPt.y - labels[i].points[k].y);
 										break;
 									}
 									k++;
 								}
 							}
-							dscnPtX = labels[i].points[k].x + (labels[i].points[k + 1].x - labels[i].points[k].x) / (Double)scaleD * scaleN;
-							dscnPtY = labels[i].points[k].y + (labels[i].points[k + 1].y - labels[i].points[k].y) / (Double)scaleD * scaleN;
+							dscnPt = labels[i].points[k] + (labels[i].points[k + 1] - labels[i].points[k]) / (Double)scaleD * scaleN;
 							labels[i].scaleW = labels[i].points[k + 1].x - labels[i].points[k].x;
 							labels[i].scaleH = labels[i].points[k + 1].y - labels[i].points[k].y;
-							GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
+							GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 						}
 					}
 
@@ -3942,12 +3820,12 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 						{
 							n = 0;
 							tmpV = thisPts[--m];
-							if ((tmpV - LBLMINDIST) < bry && (tmpV + LBLMINDIST) > tly)
+							if ((tmpV - LBLMINDIST) < rect.br.y && (tmpV + LBLMINDIST) > rect.tl.y)
 							{
 								n++;
 							}
 							tmpV = thisPts[--m];
-							if ((tmpV - LBLMINDIST) < brx && (tmpV + LBLMINDIST) > tlx)
+							if ((tmpV - LBLMINDIST) < rect.br.x && (tmpV + LBLMINDIST) > rect.tl.x)
 							{
 								n++;
 							}
@@ -3956,53 +3834,44 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 
 						if (n)
 						{
-							Int32 *points;
+							Math::Coord2DDbl center = rect.GetCenter();
+							Math::Coord2D<Int32> *points;
 							if ((labels[i].flags & SFLG_ALIGN) != 0)
 							{
-								Double realBounds[4];
-								points = MemAlloc(Int32, labels[i].nPoints << 1);
-								view->MapXYToScnXY(labels[i].points, points, labels[i].nPoints, 0, 0);
-								DrawCharsLA(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
-								DrawCharsLA(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
+								Math::RectAreaDbl realBounds;
+								points = MemAlloc(Math::Coord2D<Int32>, labels[i].nPoints);
+								view->MapXYToScnXY(labels[i].points, points, labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
+								DrawCharsLA(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
+								DrawCharsLA(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
 								MemFree(points);
 
-								objBounds[(currPt << 2)] = realBounds[0];
-								objBounds[(currPt << 2) + 1] = realBounds[1];
-								objBounds[(currPt << 2) + 2] = realBounds[2];
-								objBounds[(currPt << 2) + 3] = realBounds[3];
+								objBounds[currPt] = realBounds;
 								currPt++;
 							}
 							else if ((labels[i].flags & SFLG_ROTATE) != 0)
 							{
-								Double realBounds[4];
-								points = MemAlloc(Int32, labels[i].nPoints << 1);
-								view->MapXYToScnXY(labels[i].points, points, labels[i].nPoints, 0, 0);
-								DrawCharsL(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
-								log->AddStringL(labels[i].label->v, labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, labels[i].fontStyle, false, realBounds);
+								Math::RectAreaDbl realBounds;
+								points = MemAlloc(Math::Coord2D<Int32>, labels[i].nPoints);
+								view->MapXYToScnXY(labels[i].points, points, labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
+								DrawCharsL(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
+								log->AddStringL(labels[i].label->v, labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, labels[i].fontStyle, false, &realBounds);
 								MemFree(points);
 
-								objBounds[(currPt << 2)] = realBounds[0];
-								objBounds[(currPt << 2) + 1] = realBounds[1];
-								objBounds[(currPt << 2) + 2] = realBounds[2];
-								objBounds[(currPt << 2) + 3] = realBounds[3];
+								objBounds[currPt] = realBounds;
 								currPt++;
 							}
 							else
 							{
-								DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
+								DrawChars(img, labels[i].label->ToCString(), center.x, center.y, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
 
-								objBounds[(currPt << 2)] = tlx;
-								objBounds[(currPt << 2) + 1] = tly;
-								objBounds[(currPt << 2) + 2] = brx;
-								objBounds[(currPt << 2) + 3] = bry;
-
-								log->AddString(labels[i].label->v, (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, labels[i].fontStyle, (labels[i].flags & SFLG_ALIGN) != 0, &objBounds[(currPt << 2)]);
+								objBounds[currPt] = rect;
+								log->AddString(labels[i].label->v, center.x, center.y, labels[i].scaleW, labels[i].scaleH, labels[i].fontStyle, (labels[i].flags & SFLG_ALIGN) != 0, &objBounds[currPt]);
 
 								currPt++;
 							}
 
-							thisPts[thisCnt++] = (tlx + brx) * 0.5;
-							thisPts[thisCnt++] = (tly + bry) * 0.5;
+							thisPts[thisCnt++] = center.x;
+							thisPts[thisCnt++] = center.y;
 						}
 						j = (thisCnt < 10);
 					}
@@ -4010,68 +3879,59 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 			}
 			else if (labels[i].shapeType == 5)
 			{
-				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, &szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				Math::Coord2DDbl scnD = view->MapXYToScnXY(labels[i].pos / labels[i].mapRate);
-				scnPtX = scnD.x;
-				scnPtY = scnD.y;
+				scnPt = scnD;
 
 				j = 1;
 				if (j)
 				{
-					tlx = scnPtX  - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl = scnPt  - (szThis * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX + 1;
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x + 1;
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX - szThis[0] - 1;
-					brx = tlx + szThis[0];
-					tly = scnPtY - (szThis[1] * 0.5);
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - szThis.x - 1;
+					rect.tl.y = scnPt.y - (szThis.y * 0.5);
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY - szThis[1] - 1;
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y - szThis.y - 1;
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 				if (j)
 				{
-					tlx = scnPtX - (szThis[0] * 0.5);
-					brx = tlx + szThis[0];
-					tly = scnPtY + 1;
-					bry = tly + szThis[1];
+					rect.tl.x = scnPt.x - (szThis.x * 0.5);
+					rect.tl.y = scnPt.y + 1;
+					rect.br = rect.tl + szThis;
 
-					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
+					j = LabelOverlapped(objBounds, currPt, rect);
 				}
 
 				if (!j)
 				{
-					DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, fonts[labels[i].fontStyle], 0);
+					Math::Coord2DDbl center = rect.GetCenter();
+					DrawChars(img, labels[i].label->ToCString(), center.x, center.y, 0, 0, fonts[labels[i].fontStyle], 0);
 
-					objBounds[(currPt << 2)] = tlx;
-					objBounds[(currPt << 2) + 1] = tly;
-					objBounds[(currPt << 2) + 2] = brx;
-					objBounds[(currPt << 2) + 3] = bry;
+					objBounds[currPt] = rect;
 
-					log->AddString(labels[i].label->v, (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, labels[i].fontStyle, 0, &objBounds[(currPt << 2)]);
+					log->AddString(labels[i].label->v, center.x, center.y, 0, 0, labels[i].fontStyle, 0, &objBounds[currPt]);
 
 					currPt++;
 				}
@@ -4098,7 +3958,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 		lastLbl->Release();
 }
 
-void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, Text::CString fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream)
+void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt, Text::CString fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream)
 {
 	IO::FileStream *fs = 0;
 	IO::StreamReader *reader;
@@ -4310,17 +4170,17 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 				{
 					if (maxX >= 0 && minX < UOSInt2Double(view->GetScnWidth()) && maxY >= 0 && minY < UOSInt2Double(view->GetScnHeight()))
 					{
-						Int32 *scnPts;
-						Double realBounds[4];
-						scnPts = MemAlloc(Int32, nPoints << 1);
-						view->MapXYToScnXY(ptArr, scnPts, nPoints, 0, 0);
+						Math::Coord2D<Int32> *scnPts;
+						Math::RectAreaDbl realBounds;
+						scnPts = MemAlloc(Math::Coord2D<Int32>, nPoints);
+						view->MapXYToScnXY(ptArr, scnPts, nPoints, Math::Coord2D<Int32>(0, 0));
 						if (isAlign)
 						{
-							DrawCharsLA(img, label->ToCString(), ptArr, scnPts, nPoints, ptCurr, scaleN, scaleD, fonts[fontStyle], realBounds);
+							DrawCharsLA(img, label->ToCString(), ptArr, scnPts, nPoints, ptCurr, scaleN, scaleD, fonts[fontStyle], &realBounds);
 						}
 						else
 						{
-							DrawCharsL(img, label->ToCString(), ptArr, scnPts, nPoints, ptCurr, scaleN, scaleD, fonts[fontStyle], realBounds);
+							DrawCharsL(img, label->ToCString(), ptArr, scnPts, nPoints, ptCurr, scaleN, scaleD, fonts[fontStyle], &realBounds);
 						}
 						MemFree(scnPts);
 					}
@@ -4863,7 +4723,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	UOSInt maxLabel = this->nStr;
 	*isLayerEmpty = true;
 	Map::MapConfig2TGen::MapLabels2 *labels = MemAlloc(Map::MapConfig2TGen::MapLabels2, maxLabel);
-	Double *objBounds = MemAlloc(Double, this->nStr * 8);
+	Math::RectAreaDbl *objBounds = MemAllocA(Math::RectAreaDbl, this->nStr * 2);
 	UOSInt objCnt = 0;
 
 	thisScale = view->GetMapScale();
@@ -5211,7 +5071,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	}
 	MemFree(myArrs);
 	MemFree(labels);
-	MemFree(objBounds);
+	MemFreeA(objBounds);
 
 //	Double t = clk.GetTimeDiff();
 //	printf("Time used: %d\n", (Int32)(t * 1000));

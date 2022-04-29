@@ -53,7 +53,7 @@ namespace Map
 			Media::DrawImage *img;
 			Map::MapView *view;
 			Bool isLayerEmpty;
-			Double *objBounds;
+			Math::RectAreaDbl *objBounds;
 			UOSInt objCnt;
 			MapLabels *labels;
 			UOSInt labelCnt;
@@ -81,7 +81,7 @@ namespace Map
 	private:
 		static UOSInt NewLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
 		static void SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt index2);
-		static Bool LabelOverlapped(Double *points, UOSInt nPoints, Double tlx, Double tly, Double brx, Double bry);
+		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
 		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, Map::MapView *view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
 		static void DrawLabels(DrawEnv *denv);
 		static OSInt __stdcall VImgCompare(void *obj1, void *obj2);
@@ -94,10 +94,10 @@ namespace Map
 		void DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer);
 		void DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha);
 
-		static void GetCharsSize(DrawEnv *denv, Double *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);
+		static void GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);
 		static void DrawChars(DrawEnv *denv, Text::CString str1, Double xPos, Double yPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign);
-		static void DrawCharsL(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds);
-		static void DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds);
+		static void DrawCharsL(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
+		static void DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 	public:
 		DrawMapRenderer(Media::DrawEngine *eng, Map::MapEnv *env, const Media::ColorProfile *color, Media::ColorManagerSess *colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();

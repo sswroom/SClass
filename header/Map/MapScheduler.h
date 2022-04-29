@@ -30,7 +30,7 @@ namespace Map
 		Double icoSpotX;
 		Double icoSpotY;
 		DrawType dt;
-		Double *objBounds;
+		Math::RectAreaDbl *objBounds;
 		UOSInt *objCnt;
 		UOSInt maxCnt;
 
@@ -55,7 +55,7 @@ namespace Map
 
 		void SetMapView(Map::MapView *map, Media::DrawImage *img);
 		void SetDrawType(Map::IMapDrawLayer *lyr, DrawType dt, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
-		void SetDrawObjs(Double *objBounds, UOSInt *objCnt, UOSInt maxCnt);
+		void SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt);
 		void Draw(Map::DrawObjectL *obj);
 		void DrawNextType(Media::DrawPen *p, Media::DrawBrush *b);
 		void WaitForFinish();

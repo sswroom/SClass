@@ -121,7 +121,7 @@ Bool Map::LeveledMapView::InViewXY(Math::Coord2DDbl mapPos)
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst)
 {
 	if (nPoints == 0)
 	{
@@ -139,9 +139,10 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Int32 *de
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Double2Int32((srcArr->x  - dleft) * mul.x + ofstX);
-		*destArr++ = thisY = Double2Int32((dbottom - srcArr->y) * mul.y + ofstY);
+		destArr[0].x = thisX = Double2Int32((srcArr->x  - dleft) * mul.x + ofst.x);
+		destArr[0].y = thisY = Double2Int32((dbottom - srcArr->y) * mul.y + ofst.y);
 		srcArr++;
+		destArr++;
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;
@@ -202,7 +203,7 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coo
 	return (imaxX >= 0) && (iminX < scnSize.width) && (imaxY >= 0) && (iminY < scnSize.height);
 }
 
-Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)
+Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst)
 {
 	if (nPoints == 0)
 	{
@@ -220,8 +221,10 @@ Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Double2Int32((*srcArr++ * rRate - dleft) * mul.x + ofstX);
-		*destArr++ = thisY = Double2Int32((dbottom - *srcArr++ * rRate) * mul.y + ofstY);
+		destArr[0].x = thisX = Double2Int32((srcArr[0].x * rRate - dleft) * mul.x + ofst.x);
+		destArr[0].y = thisY = Double2Int32((dbottom - srcArr[0].y * rRate) * mul.y + ofst.y);
+		srcArr++;
+		destArr++;
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;
