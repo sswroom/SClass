@@ -50,7 +50,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 	return false;
 }
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	return false;
 }
@@ -77,7 +77,7 @@ UOSInt Manage::CPUInfo::GetInfoCnt()
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index >= this->infoCnt)
 		return false;
@@ -116,31 +116,31 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 	return false;
 }
 
-const UTF8Char *Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
+Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CString Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CString Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
 	return 0;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
 	return 0;
 }
 
-void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
 {
 }
 
-void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
 {
 }
 #endif
