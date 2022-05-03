@@ -10,6 +10,11 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 #define PI 3.141592653589793
 
 extern "C"
@@ -252,8 +257,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 					work[3] = sum;
 				}
 			}
-			v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 16384.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 16384.0));
 			tmpPtr = (UInt16*)&out->weight[i * out->tap];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -264,8 +269,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 16384.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 16384.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -276,8 +281,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 16384.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 16384.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -336,8 +341,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 					{
 						work[j - 2] += work[j] - sum;
 						work[j] = sum;
-						v1 = (UInt16)(0xffff & Double2Int32((work[j - 2] / sum) * 32767.0));
-						v2 = (UInt16)(0xffff & Double2Int32((work[j - 1] / sum) * 32767.0));
+						v1 = (UInt16)(0xffff & Double2Int32((work[j - 2] / sum) * 16384.0));
+						v2 = (UInt16)(0xffff & Double2Int32((work[j - 1] / sum) * 16384.0));
 						tmpPtr = (UInt16*)&out->weight[i * out->tap + j - 2];
 						tmpPtr[0] = v1;
 						tmpPtr[1] = v2;
@@ -365,8 +370,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 						work[j + 1] = sum;
 					}
 				}
-				v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
-				v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
+				v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 16384.0));
+				v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 16384.0));
 				tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;
@@ -484,6 +489,23 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			}
 			out->index[i * out->tap + j] = ind1 * indexSep;
 			out->index[i * out->tap + j + 1] = ind2 * indexSep;
+
+			j = 0;
+			while (j < ttap)
+			{
+				Int32 v1 = Double2Int32((work[j] / sum) * 16384.0);
+				Int32 v2 = Double2Int32((work[j + 1] / sum) * 16384.0);
+				Int16 *tmpPtr = (Int16*)&out->weight[i * out->tap + j];
+				tmpPtr[0] = (Int16)v1;
+				tmpPtr[1] = (Int16)v2;
+				tmpPtr[2] = (Int16)v1;
+				tmpPtr[3] = (Int16)v2;
+				tmpPtr[4] = (Int16)v1;
+				tmpPtr[5] = (Int16)v2;
+				tmpPtr[6] = (Int16)v1;
+				tmpPtr[7] = (Int16)v2;
+				j += 2;
+			}
 		}
 		else if (ttap == 6 && (result_length & 1) == 0)
 		{
@@ -524,8 +546,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				j += 2;
 			}
 
-			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 16384.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 16384.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -536,8 +558,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 16384.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 16384.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -548,8 +570,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 16384.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 16384.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -597,24 +619,25 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				n += 2;
 				j += 2;
 			}
+
+			j = 0;
+			while (j < ttap)
+			{
+				Int32 v1 = Double2Int32((work[j] / sum) * 16384.0);
+				Int32 v2 = Double2Int32((work[j + 1] / sum) * 16384.0);
+				Int16 *tmpPtr = (Int16*)&out->weight[i * out->tap + j];
+				tmpPtr[0] = (Int16)v1;
+				tmpPtr[1] = (Int16)v2;
+				tmpPtr[2] = (Int16)v1;
+				tmpPtr[3] = (Int16)v2;
+				tmpPtr[4] = (Int16)v1;
+				tmpPtr[5] = (Int16)v2;
+				tmpPtr[6] = (Int16)v1;
+				tmpPtr[7] = (Int16)v2;
+				j += 2;
+			}
 		}
 
-		j = 0;
-		while (j < ttap)
-		{
-			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
-			tmpPtr[0] = v1;
-			tmpPtr[1] = v2;
-			tmpPtr[2] = v1;
-			tmpPtr[3] = v2;
-			tmpPtr[4] = v1;
-			tmpPtr[5] = v2;
-			tmpPtr[6] = v1;
-			tmpPtr[7] = v2;
-			j += 2;
-		}
 		i++;
 	}
 
@@ -623,6 +646,9 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 
 void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
+#if defined(VERBOSE)
+	printf("LR8_C8: HFilterPA w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
+#endif
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
 	FuncType funcType = FuncType::HFilterPA;
@@ -653,6 +679,9 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter_pa(UInt8 *inPt, UI
 
 void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
+#if defined(VERBOSE)
+	printf("LR8_C8: HFilter w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
+#endif
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
 	FuncType funcType = FuncType::HFilter;
@@ -683,6 +712,9 @@ void Media::Resizer::LanczosResizer8_C8::mt_horizontal_filter(UInt8 *inPt, UInt8
 
 void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
+#if defined(VERBOSE)
+	printf("LR8_C8: VFilter w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
+#endif
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
 	FuncType funcType = FuncType::VFilter;
@@ -765,17 +797,8 @@ void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(void *obj)
 		}
 		LanczosResizer8_C8_horizontal_filter(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
 		break;
-	case FuncType::VFilter:
-		LanczosResizer8_C8_vertical_filter(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
-		break;
 	case FuncType::Expand:
 		LanczosResizer8_C8_expand(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
-		break;
-	case FuncType::Collapse:
-		LanczosResizer8_C8_collapse(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
-		break;
-	case FuncType::ImgCopy:
-		LanczosResizer8_C8_imgcopy(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
 		break;
 	case FuncType::HFilterPA:
 		if (ts->swidth != ts->tmpbuffSize)
@@ -789,6 +812,15 @@ void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(void *obj)
 		break;
 	case FuncType::ExpandPA:
 		LanczosResizer8_C8_expand_pa(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		break;
+	case FuncType::VFilter:
+		LanczosResizer8_C8_vertical_filter(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		break;
+	case FuncType::Collapse:
+		LanczosResizer8_C8_collapse(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		break;
+	case FuncType::ImgCopy:
+		LanczosResizer8_C8_imgcopy(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
 		break;
 	case FuncType::ImgCopyPA:
 		LanczosResizer8_C8_imgcopy_pa(ts->inPt, ts->outPt, ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
@@ -925,6 +957,9 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 	if (dwidth < this->hnTap || dheight < this->vnTap)
 		return;
 
+#if defined(VERBOSE)
+	printf("LR8_C8: Resize %lf x %lf -> %d x %d\r\n", swidth, sheight, (UInt32)dwidth, (UInt32)dheight);
+#endif
 	w = xOfst + swidth;
 	h = yOfst + sheight;
 	siWidth = (OSInt)w;
@@ -1007,8 +1042,8 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 		else
 		{
 			mt_horizontal_filter(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, (UOSInt)siWidth);
-/*			UInt8 *tmpbuff = MemAllocA(UInt8, siWidth << 3);
-			LanczosResizer8_C8_horizontal_filter(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dwidth << 3, this->rgbTable, siWidth, tmpbuff);
+/*			UInt8 *tmpbuff = MemAllocA(UInt8, (UOSInt)siWidth << 3);
+			LanczosResizer8_C8_horizontal_filter(src, buffPtr, dwidth, (UOSInt)siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, this->rgbTable, (UOSInt)siWidth, tmpbuff);
 			MemFreeA(tmpbuff);*/
 		}
 		mt_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (OSInt)dwidth << 3, dbpl);

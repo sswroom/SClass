@@ -153,7 +153,7 @@ hfpalop3:
 	dec rdx
 	jnz hfpalop3
 
-	psrad xmm2,15
+	psrad xmm2,14
 	packssdw xmm2,xmm3
 	movq [rsi],xmm2
 	lea rsi,[rsi+8]
@@ -300,8 +300,8 @@ hfpa6lop2:
 	lea rdi,[rdi+96]
 	lea rbx,[rbx+48]
 
-	psrad xmm1,15
-	psrad xmm3,15
+	psrad xmm1,14
+	psrad xmm3,14
 	packssdw xmm1,xmm3
 	movdqu [rsi],xmm1
 	lea rsi,[rsi+16]
@@ -438,8 +438,8 @@ hfpa2lop3b:
 	dec rdx
 	jnz hfpa2lop3b
 
-	psrad xmm2,15
-	psrad xmm3,15
+	psrad xmm2,14
+	psrad xmm3,14
 	packssdw xmm2,xmm3
 	movdqu [rsi],xmm2
 	lea rsi,[rsi+16]
@@ -582,7 +582,7 @@ hflop3:
 	dec rdx
 	jnz hflop3
 
-	psrad xmm2,15
+	psrad xmm2,14
 	packssdw xmm2,xmm3
 	movq [rsi],xmm2
 	lea rsi,[rsi+8]
@@ -712,8 +712,8 @@ hf6lop2:
 	lea rdi,[rdi+96]
 	lea rbx,[rbx+48]
 
-	psrad xmm1,15
-	psrad xmm3,15
+	psrad xmm1,14
+	psrad xmm3,14
 	packssdw xmm1,xmm3
 	movdqu [rsi],xmm1
 	lea rsi,[rsi+16]
@@ -836,8 +836,8 @@ hf2lop3b:
 	dec rdx
 	jnz hf2lop3b
 
-	psrad xmm2,15
-	psrad xmm3,15
+	psrad xmm2,14
+	psrad xmm3,14
 	packssdw xmm2,xmm3
 	movdqu [rsi],xmm2
 	lea rsi,[rsi+16]

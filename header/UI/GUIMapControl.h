@@ -111,7 +111,7 @@ namespace UI
 		Double GetMapScale();
 		Double GetViewScale();
 		void PanToMapXY(Math::Coord2DDbl mapPos);
-		void ZoomToRect(Double mapX1, Double mapY1, Double mapX2, Double mapY2);
+		void ZoomToRect(Math::RectAreaDbl mapRect);
 		Bool InMapMapXY(Math::Coord2DDbl mapPos);
 		void ShowMarkerMapXY(Double mapX, Double mapY);
 		void ShowMarkerMapXYDir(Double mapX, Double mapY, Double dir, Math::Unit::Angle::AngleUnit unit);

@@ -53,7 +53,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 					currWeight += 8;
 					currIndex += 2;
 				}
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 15));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
 				outPt += 8;
 			}
 
@@ -100,7 +100,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval2));
 				currWeight += 24;
 				currIndex += 3;
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 15));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
 				outPt += 8;
 			}
 			outPt += dstep;
@@ -143,7 +143,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 					currWeight += 8;
 					currIndex += 2;
 				}
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 15));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
 				outPt += 8;
 			}
 
@@ -199,7 +199,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 					currWeight += 8;
 					currIndex += 2;
 				}
-				PStoreInt16x8A(outPt, PMergeSARDW4(cvals2, cvals2b, 15));
+				PStoreInt16x8A(outPt, PMergeSARDW4(cvals2, cvals2b, 14));
 				outPt += 16;
 			}
 
@@ -261,7 +261,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,O
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval2));
 				currWeight += 24;
 				currIndex += 3;
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 15));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
 				outPt += 8;
 			}
 			outPt += dstep;
@@ -302,7 +302,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,O
 					currWeight += 8;
 					currIndex += 2;
 				}
-				PStoreInt16x4(outPt, PSARSDW4(cvals2, 15));
+				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
 				outPt += 8;
 			}
 

@@ -51,22 +51,23 @@ void Map::MapView::ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints)
 	}
 }
 
-void Map::MapView::SetViewBounds(Double x1, Double y1, Double x2, Double y2)
+void Map::MapView::SetViewBounds(Math::RectAreaDbl bounds)
 {
 	Double currScale = this->GetMapScale();
 	Math::RectAreaDbl rect = this->GetVerticalRect();
-	Double xRatio = rect.GetWidth() / (x2 - x1);
-	Double yRatio = rect.GetHeight() / (y2 - y1);
+	Math::Coord2DDbl sz = bounds.GetSize();
+	Double xRatio = rect.GetWidth() / sz.x;
+	Double yRatio = rect.GetHeight() / sz.y;
 	if (xRatio < 0)
 		xRatio = -xRatio;
 	if (yRatio < 0)
 		yRatio = -yRatio;
 	if (xRatio < yRatio)
 	{
-		ChangeViewXY(this->scnSize, Math::Coord2DDbl((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / xRatio);
+		ChangeViewXY(this->scnSize, bounds.GetCenter(), currScale / xRatio);
 	}
 	else
 	{
-		ChangeViewXY(this->scnSize, Math::Coord2DDbl((x1 + x2) * 0.5, (y1 + y2) * 0.5), currScale / yRatio);
+		ChangeViewXY(this->scnSize, bounds.GetCenter(), currScale / yRatio);
 	}
 }

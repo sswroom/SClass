@@ -1002,9 +1002,9 @@ void UI::GUIMapControl::PanToMapXY(Math::Coord2DDbl mapPos)
 	}
 }
 
-void UI::GUIMapControl::ZoomToRect(Double mapX1, Double mapY1, Double mapX2, Double mapY2)
+void UI::GUIMapControl::ZoomToRect(Math::RectAreaDbl mapRect)
 {
-	this->view->SetViewBounds(mapX1, mapY1, mapX2, mapY2);
+	this->view->SetViewBounds(mapRect);
 	if (!this->pauseUpdate)
 	{
 		this->UpdateMap();

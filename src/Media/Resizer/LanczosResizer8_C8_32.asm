@@ -161,7 +161,7 @@ hfpalop3:
 	dec edx
 	jnz hfpalop3
 
-	psrad xmm2,15
+	psrad xmm2,14
 	packssdw xmm2,xmm3
 	movq [esi],xmm2
 	lea esi,[esi+8]
@@ -313,8 +313,8 @@ hfpa6lop2:
 	lea edi,[edi+96]
 	lea ebx,[ebx+24]
 
-	psrad xmm1,15
-	psrad xmm3,15
+	psrad xmm1,14
+	psrad xmm3,14
 	packssdw xmm1,xmm3
 	movdqu [esi],xmm1
 	lea esi,[esi+16]
@@ -459,8 +459,8 @@ hfpa2lop3b:
 	dec edx
 	jnz hfpa2lop3b
 
-	psrad xmm2,15
-	psrad xmm3,15
+	psrad xmm2,14
+	psrad xmm3,14
 	packssdw xmm2,xmm3
 	movdqu [esi],xmm2
 	lea esi,[esi+16]
@@ -608,7 +608,7 @@ hflop3:
 	dec edx
 	jnz hflop3
 
-	psrad xmm2,15
+	psrad xmm2,14
 	packssdw xmm2,xmm3
 	movq [esi],xmm2
 	lea esi,[esi+8]
@@ -742,8 +742,8 @@ hf6lop2:
 	lea edi,[edi+96]
 	lea ebx,[ebx+24]
 
-	psrad xmm1,15
-	psrad xmm3,15
+	psrad xmm1,14
+	psrad xmm3,14
 	packssdw xmm1,xmm3
 	movdqu [esi],xmm1
 	lea esi,[esi+16]
@@ -870,8 +870,8 @@ hf2lop3b:
 	dec edx
 	jnz hf2lop3b
 
-	psrad xmm2,15
-	psrad xmm3,15
+	psrad xmm2,14
+	psrad xmm3,14
 	packssdw xmm2,xmm3
 	movdqu [esi],xmm2
 	lea esi,[esi+16]

@@ -44,7 +44,7 @@ namespace Map
 
 		void SetDestImage(Media::DrawImage *img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints);
-		void SetViewBounds(Double x1, Double y1, Double x2, Double y2);
+		void SetViewBounds(Math::RectAreaDbl bounds);
 	};
 }
 #endif
