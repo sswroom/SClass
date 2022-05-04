@@ -4,8 +4,14 @@ namespace Math
 {
 	class LanczosFilter
 	{
+	private:
+		Double nTap;
+		Double iTap;
 	public:
-		static Double Weight(Double phase, UOSInt nTap);
+		LanczosFilter(UOSInt nTap);
+		~LanczosFilter();
+
+		Double Weight(Double phase);
 	};
 }
 #endif

@@ -38,6 +38,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 	Double  sum;
 	Double  pos;
 	Double dnTap = UOSInt2Double(nTap);
+	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = nTap;
@@ -64,7 +65,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = Math::LanczosFilter::Weight(pos, nTap);
+			work[j] = lanczos.Weight(pos);
 			sum += work[j];
 			pos += 1;
 			n += 1;
@@ -103,6 +104,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 	Double  pos, phase;
 	Double dnTap = UOSInt2Double(nTap);
 	Double rLength = UOSInt2Double(result_length);
+	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = (UOSInt)Math_Fix((dnTap * (source_length) + (rLength - 1)) / rLength);
@@ -133,7 +135,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = Math::LanczosFilter::Weight(phase, nTap);
+			work[j] = lanczos.Weight(phase);
 			sum += work[j];
 			n += 1;
 			j++;
@@ -176,6 +178,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 	Double  pos;
 	OSInt ind1;
 	OSInt ind2;
+	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = nTap;
@@ -201,7 +204,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
+					work[j] = lanczos.Weight(pos) + lanczos.Weight(pos + 1);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
@@ -210,15 +213,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 					ind1 = source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
+					work[j + 1] = lanczos.Weight(pos) + lanczos.Weight(pos + 1);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = Math::LanczosFilter::Weight(pos, nTap);
-					work[j + 1] = Math::LanczosFilter::Weight(pos + 1, nTap);
+					work[j] = lanczos.Weight(pos);
+					work[j + 1] = lanczos.Weight(pos + 1);
 					sum += work[j] + work[j + 1];
 				}
 //				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -302,7 +305,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
+					work[j] = lanczos.Weight(pos) + lanczos.Weight(pos + 1);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
@@ -311,15 +314,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 					ind1 = source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = Math::LanczosFilter::Weight(pos, nTap) + Math::LanczosFilter::Weight(pos + 1, nTap);
+					work[j + 1] = lanczos.Weight(pos) + lanczos.Weight(pos + 1);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = Math::LanczosFilter::Weight(pos, nTap);
-					work[j + 1] = Math::LanczosFilter::Weight(pos + 1, nTap);
+					work[j] = lanczos.Weight(pos);
+					work[j + 1] = lanczos.Weight(pos + 1);
 					sum += work[j] + work[j + 1];
 				}
 				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -406,6 +409,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 	OSInt ind1;
 	OSInt ind2;
 	Double rLength = UOSInt2Double(result_length);
+	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = (UOSInt)Math_Fix((UOSInt2Double(nTap) * (source_length) + (rLength - 1)) / rLength);
@@ -437,7 +441,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
+					work[j] = lanczos.Weight(phase) + lanczos.Weight(phase2);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
@@ -446,15 +450,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 					ind1 = source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
+					work[j + 1] = lanczos.Weight(phase) + lanczos.Weight(phase2);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = Math::LanczosFilter::Weight(phase, nTap);
-					work[j + 1] = Math::LanczosFilter::Weight(phase2, nTap);
+					work[j] = lanczos.Weight(phase);
+					work[j + 1] = lanczos.Weight(phase2);
 					sum += work[j] + work[j + 1];
 				}
 				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -467,7 +471,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			{
 				ind1 = 0;
 				ind2 = 0;
-				work[j] = Math::LanczosFilter::Weight(phase, nTap);
+				work[j] = lanczos.Weight(phase);
 				work[j + 1] = 0;
 				sum += work[j];
 			}
@@ -476,14 +480,14 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				ind1 = source_max_pos - 2;
 				ind2 = ind1 + 1;
 				work[j] = 0;
-				work[j + 1] = Math::LanczosFilter::Weight(phase, nTap);
+				work[j + 1] = lanczos.Weight(phase);
 				sum += work[j + 1];
 			}
 			else
 			{
 				ind1 = n;
 				ind2 = n + 1;
-				work[j] = Math::LanczosFilter::Weight(phase, nTap);
+				work[j] = lanczos.Weight(phase);
 				work[j + 1] = 0;
 				sum += work[j];
 			}
@@ -493,17 +497,17 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			j = 0;
 			while (j < ttap)
 			{
-				Int32 v1 = Double2Int32((work[j] / sum) * 16384.0);
-				Int32 v2 = Double2Int32((work[j + 1] / sum) * 16384.0);
+				Int16 v1 = (Int16)Double2Int32((work[j] / sum) * 16384.0);
+				Int16 v2 = (Int16)Double2Int32((work[j + 1] / sum) * 16384.0);
 				Int16 *tmpPtr = (Int16*)&out->weight[i * out->tap + j];
-				tmpPtr[0] = (Int16)v1;
-				tmpPtr[1] = (Int16)v2;
-				tmpPtr[2] = (Int16)v1;
-				tmpPtr[3] = (Int16)v2;
-				tmpPtr[4] = (Int16)v1;
-				tmpPtr[5] = (Int16)v2;
-				tmpPtr[6] = (Int16)v1;
-				tmpPtr[7] = (Int16)v2;
+				tmpPtr[0] = v1;
+				tmpPtr[1] = v2;
+				tmpPtr[2] = v1;
+				tmpPtr[3] = v2;
+				tmpPtr[4] = v1;
+				tmpPtr[5] = v2;
+				tmpPtr[6] = v1;
+				tmpPtr[7] = v2;
 				j += 2;
 			}
 		}
@@ -519,7 +523,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
+					work[j] = lanczos.Weight(phase) + lanczos.Weight(phase2);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
@@ -528,15 +532,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 					ind1 = source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
+					work[j + 1] = lanczos.Weight(phase) + lanczos.Weight(phase2);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = Math::LanczosFilter::Weight(phase, nTap);
-					work[j + 1] = Math::LanczosFilter::Weight(phase2, nTap);
+					work[j] = lanczos.Weight(phase);
+					work[j + 1] = lanczos.Weight(phase2);
 					sum += work[j] + work[j + 1];
 				}
 //				out->index[i * out->tap + j] = ind1 * indexSep;
@@ -546,9 +550,9 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				j += 2;
 			}
 
-			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 16384.0));
-			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 16384.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap];
+			Int16 v1 = (Int16)(0xffff & Double2Int32((work[0] / sum) * 16384.0));
+			Int16 v2 = (Int16)(0xffff & Double2Int32((work[2] / sum) * 16384.0));
+			Int16 *tmpPtr = (Int16*)&out->weight[i * out->tap];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -558,8 +562,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 16384.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 16384.0));
+			v1 = (Int16)(0xffff & Double2Int32((work[1] / sum) * 16384.0));
+			v2 = (Int16)(0xffff & Double2Int32((work[3] / sum) * 16384.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -570,8 +574,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 16384.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 16384.0));
+			v1 = (Int16)(0xffff & Double2Int32((work[4] / sum) * 16384.0));
+			v2 = (Int16)(0xffff & Double2Int32((work[5] / sum) * 16384.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -594,7 +598,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				{
 					ind1 = 0;
 					ind2 = 0;
-					work[j] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
+					work[j] = lanczos.Weight(phase) + lanczos.Weight(phase2);
 					work[j + 1] = 0;
 					sum += work[j];
 				}
@@ -603,15 +607,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 					ind1 = source_max_pos - 2;
 					ind2 = ind1 + 1;
 					work[j] = 0;
-					work[j + 1] = Math::LanczosFilter::Weight(phase, nTap) + Math::LanczosFilter::Weight(phase2, nTap);
+					work[j + 1] = lanczos.Weight(phase) + lanczos.Weight(phase2);
 					sum += work[j + 1];
 				}
 				else
 				{
 					ind1 = n;
 					ind2 = n + 1;
-					work[j] = Math::LanczosFilter::Weight(phase, nTap);
-					work[j + 1] = Math::LanczosFilter::Weight(phase2, nTap);
+					work[j] = lanczos.Weight(phase);
+					work[j + 1] = lanczos.Weight(phase2);
 					sum += work[j] + work[j + 1];
 				}
 				out->index[i * out->tap + j] = ind1 * indexSep;

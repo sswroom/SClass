@@ -26,6 +26,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt 
 	Double *work;
 	Double  sum;
 	Double  pos;
+	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = nTap;
@@ -52,7 +53,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt 
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = Math::LanczosFilter::Weight(pos, nTap);
+			work[j] = lanczos.Weight(pos);
 			sum += work[j];
 			pos += 1;
 			n += 1;
@@ -90,6 +91,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(UOSInt nTa
 	Double *work;
 	Double  sum;
 	Double  pos, phase;
+	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = (UOSInt)Math_Fix((UOSInt2Double(nTap) * (source_length) + UOSInt2Double(result_length - 1)) / UOSInt2Double(result_length));
@@ -120,7 +122,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(UOSInt nTa
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
-			work[j] = Math::LanczosFilter::Weight(phase, nTap);
+			work[j] = lanczos.Weight(phase);
 			sum += work[j];
 			n += 1;
 			j++;

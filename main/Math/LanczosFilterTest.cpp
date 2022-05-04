@@ -12,6 +12,7 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 {
 	if (destSize == srcSize)
 		return;
+	Math::LanczosFilter lanczos(nTap);
 	if (destSize > srcSize)
 	{
 		UOSInt i;
@@ -49,7 +50,7 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 				{
 					v = srcBuff[n];
 				}
-				lv = Math::LanczosFilter::Weight(pos, nTap);
+				lv = lanczos.Weight(pos);
 				sum += lv;
 				tval += v * lv;
 
@@ -103,7 +104,7 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 				{
 					v = srcBuff[n];
 				}
-				lv = Math::LanczosFilter::Weight(pos, nTap);
+				lv = lanczos.Weight(pos);
 				sum += lv;
 				tval += v * lv;
 
