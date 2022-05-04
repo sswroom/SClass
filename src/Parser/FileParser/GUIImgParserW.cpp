@@ -276,12 +276,10 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 	if (targetType != IO::ParserType::ImageList && imgList && imgList->GetCount() == 1)
 	{
 		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-		Double minX;
-		Double minY;
-		Double maxX;
-		Double maxY;
+		Math::Coord2DDbl min;
+		Math::Coord2DDbl max;
 		UInt32 srid;
-		if (img->exif && img->exif->GetGeoBounds(img->info.dispWidth, img->info.dispHeight, &srid, &minX, &minY, &maxX, &maxY))
+		if (img->exif && img->exif->GetGeoBounds(img->info.dispWidth, img->info.dispHeight, &srid, &min.x, &min.y, &max.x, &max.y))
 		{
 			Map::VectorLayer *lyr;
 			Math::VectorImage *vimg;
@@ -295,7 +293,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			img->To32bpp();
 			
 			NEW_CLASS(simg, Media::SharedImage(imgList, true));
-			NEW_CLASS(vimg, Math::VectorImage(srid, simg, minX, minY, maxX, maxY, false, fd->GetFullName(), 0, 0));
+			NEW_CLASS(vimg, Math::VectorImage(srid, simg, min, max, false, fd->GetFullName(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
 			DEL_CLASS(simg);
 			
@@ -364,7 +362,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispHeight) - 0.5), xCoord + xPxSize * (UOSInt2Double(img->info.dispWidth) - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
+					NEW_CLASS(vimg, Math::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispHeight) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispWidth) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
 					DEL_CLASS(simg);
 					
