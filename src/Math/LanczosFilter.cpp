@@ -15,20 +15,28 @@ Math::LanczosFilter::~LanczosFilter()
 
 Double Math::LanczosFilter::Weight(Double phase)
 {
-	Double ret;
-	Double aphase = Math_Abs(phase);
-	
-	if(aphase < DBL_EPSILON)
+	if (phase < 0)
 	{
-		return 1.0;
-	}
+		if(phase > -DBL_EPSILON)
+		{
+			return 1.0;
+		}
+		if ((phase * -2) >= nTap){
+			return 0.0;
+		}
 
-	if ((aphase * 2) >= nTap){
-		return 0.0;
+	}
+	else
+	{
+		if(phase < DBL_EPSILON)
+		{
+			return 1.0;
+		}
+		if ((phase * 2) >= nTap){
+			return 0.0;
+		}
 	}
 
 	Double pp = Math::PI * phase;
-	ret = Math_Sin(pp) * Math_Sin(pp * this->iTap) / (pp * pp * this->iTap);
-
-	return ret;
+	return Math_Sin(pp) * Math_Sin(pp * this->iTap) / (pp * pp * this->iTap);
 }

@@ -38,7 +38,10 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 	Double  sum;
 	Double  pos;
 	Double dnTap = UOSInt2Double(nTap);
+	Double posDiff = (dnTap / 2 - 0.5);//2.5);
+	Double dresultLength = UOSInt2Double(result_length);
 	Math::LanczosFilter lanczos(nTap);
+	OSInt maxOfst = (source_max_pos - 1) * indexSep;
 
 	out->length = result_length;
 	out->tap = nTap;
@@ -52,8 +55,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 	while (i < result_length)
 	{
 		pos = (UOSInt2Double(i) + 0.5) * source_length;
-		pos = pos / UOSInt2Double(result_length) + offsetCorr;
-		n = (OSInt)floor(pos - (dnTap / 2 - 0.5));//2.5);
+		pos = pos / dresultLength + offsetCorr;
+		n = (OSInt)Math_Fix(pos - posDiff);
 		pos = (OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		for(j = 0; j < out->tap; j++)
@@ -61,7 +64,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
 			}else if(n >= source_max_pos){
-				out->index[i * out->tap + j] = (source_max_pos - 1) * indexSep;
+				out->index[i * out->tap + j] = maxOfst;
 			}else{
 				out->index[i * out->tap + j] = n * indexSep;
 			}
@@ -71,12 +74,13 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 			n += 1;
 		}
 
+		Double workRate = 32767.0 / sum;
 		j = 0;
 		while (j < out->tap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
+			Int16 v1 = (Int16)(0xffff & Double2Int32(work[j] * workRate));
+			Int16 v2 = (Int16)(0xffff & Double2Int32(work[j + 1] * workRate));
+			Int16 *tmpPtr = (Int16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -146,12 +150,13 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 			out->index[i * out->tap + ttap] = out->index[i * out->tap + ttap - 1];
 		}
 
+		Double workRate = 32767.0 / sum;
 		j = 0;
 		while (j < ttap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
+			Int16 v1 = (Int16)(0xffff & Double2Int32(work[j] * workRate));
+			Int16 v2 = (Int16)(0xffff & Double2Int32(work[j + 1] * workRate));
+			Int16 *tmpPtr = (Int16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -176,6 +181,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 	Double *work;
 	Double  sum;
 	Double  pos;
+	Double posDiff = UOSInt2Double(nTap / 2) - 0.5; //2.5
+	Double dresultLength = UOSInt2Double(result_length);
 	OSInt ind1;
 	OSInt ind2;
 	Math::LanczosFilter lanczos(nTap);
@@ -191,8 +198,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 	while (i < result_length)
 	{
 		pos = (UOSInt2Double(i) + 0.5) * source_length;
-		pos = pos / UOSInt2Double(result_length) + offsetCorr;
-		n = (OSInt)Math_Fix(pos - (UOSInt2Double(nTap / 2) - 0.5));//2.5);
+		pos = pos / dresultLength + offsetCorr;
+		n = (OSInt)Math_Fix(pos - posDiff);
 		pos = (OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		if (out->tap == 6 && (result_length & 1) == 0)
@@ -235,33 +242,9 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			UInt16 v1;
 			UInt16 v2;
 			UInt16 *tmpPtr;
-
-			if (work[2] > sum)
-			{
-				if (out->index[i * 3 + 1] == out->index[i * 3 + 0])
-				{
-					work[0] += work[2] - sum;
-					work[2] = sum;
-				}
-				else
-				{
-					work[2] = sum;
-				}
-			}
-			if (work[3] > sum)
-			{
-				if (out->index[i * 3 + 1] == out->index[i * 3 + 2])
-				{
-					work[5] += work[3] - sum;
-					work[3] = sum;
-				}
-				else
-				{
-					work[3] = sum;
-				}
-			}
-			v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 16384.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 16384.0));
+			Double workRate = 16384.0 / sum;
+			v1 = (UInt16)(0xffff & Double2Int32(work[0] * workRate));
+			v2 = (UInt16)(0xffff & Double2Int32(work[2] * workRate));
 			tmpPtr = (UInt16*)&out->weight[i * out->tap];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -272,8 +255,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 16384.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 16384.0));
+			v1 = (UInt16)(0xffff & Double2Int32(work[1] * workRate));
+			v2 = (UInt16)(0xffff & Double2Int32(work[3] * workRate));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -284,8 +267,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 16384.0));
-			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 16384.0));
+			v1 = (UInt16)(0xffff & Double2Int32(work[4] * workRate));
+			v2 = (UInt16)(0xffff & Double2Int32(work[5] * workRate));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -332,49 +315,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 				j += 2;
 			}
 
+			Double workRate = 16384.0 / sum;
 			j = 0;
 			while (j < out->tap)
 			{
 				UInt16 v1;
 				UInt16 v2;
 				UInt16 *tmpPtr;
-				if (work[j] > sum)
-				{
-					if (j > 0 && out->index[i * out->tap + j] == out->index[i * out->tap + j - 2])
-					{
-						work[j - 2] += work[j] - sum;
-						work[j] = sum;
-						v1 = (UInt16)(0xffff & Double2Int32((work[j - 2] / sum) * 16384.0));
-						v2 = (UInt16)(0xffff & Double2Int32((work[j - 1] / sum) * 16384.0));
-						tmpPtr = (UInt16*)&out->weight[i * out->tap + j - 2];
-						tmpPtr[0] = v1;
-						tmpPtr[1] = v2;
-						tmpPtr[2] = v1;
-						tmpPtr[3] = v2;
-						tmpPtr[4] = v1;
-						tmpPtr[5] = v2;
-						tmpPtr[6] = v1;
-						tmpPtr[7] = v2;
-					}
-					else
-					{
-						work[j] = sum;
-					}
-				}
-				if (work[j + 1] > sum)
-				{
-					if (j + 2 < out->tap && out->index[i * out->tap + j + 1] == out->index[i * out->tap + j + 3])
-					{
-						work[j + 3] += work[j + 1] - sum;
-						work[j + 1] = sum;
-					}
-					else
-					{
-						work[j + 1] = sum;
-					}
-				}
-				v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 16384.0));
-				v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 16384.0));
+				v1 = (UInt16)(0xffff & Double2Int32(work[j] * workRate));
+				v2 = (UInt16)(0xffff & Double2Int32(work[j + 1] * workRate));
 				tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;

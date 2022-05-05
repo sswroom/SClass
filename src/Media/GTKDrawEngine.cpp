@@ -438,7 +438,6 @@ Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints,
 			points++;
 		}
 		cairo_stroke((cairo_t*)this->cr);
-
 		return true;
 	}
 	else
@@ -482,7 +481,6 @@ Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, 
 		{
 			cairo_new_path((cairo_t*)this->cr);
 		}
-
 		return true;
 	}
 	else
@@ -535,7 +533,6 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *poin
 		{
 			cairo_new_path((cairo_t*)this->cr);
 		}
-
 		return true;
 	}
 	else
@@ -1126,6 +1123,7 @@ UOSInt Media::GTKDrawImage::SaveJPG(IO::SeekableStream *stm)
 		Bool revOrder;
 		UInt8 *imgPtr = this->GetImgBits(&revOrder);
 		ImageUtil_ImageFillAlpha32(imgPtr, this->GetWidth(), this->GetHeight(), this->GetDataBpl(), 0xff);
+		this->GetImgBitsEnd(true);
 	}
 	GdkPixbuf *pixbuf;
 	pixbuf = gdk_pixbuf_get_from_surface((cairo_surface_t*)this->surface, 0, 0, (gint)this->info.dispWidth, (gint)this->info.dispHeight);
