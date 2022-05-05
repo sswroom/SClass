@@ -331,6 +331,7 @@ Net::UDPServer::~UDPServer()
 		while (i-- > 0)
 		{
 			this->v4threadStats[i].toStop = true;
+			this->v4threadStats[i].evt->Set();
 		}
 	}
 	if (this->v6threadStats)
@@ -339,6 +340,7 @@ Net::UDPServer::~UDPServer()
 		while (i-- > 0)
 		{
 			this->v6threadStats[i].toStop = true;
+			this->v6threadStats[i].evt->Set();
 		}
 	}
 	if (this->socV4)
@@ -351,16 +353,6 @@ Net::UDPServer::~UDPServer()
 	}
 	if (this->v4threadStats)
 	{
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			this->v4threadStats[i].evt->Set();
-			if (this->socV6)
-			{
-				this->v6threadStats[i].evt->Set();
-			}
-		}
-
 		Bool threadRunning = true;
 		while (threadRunning)
 		{
