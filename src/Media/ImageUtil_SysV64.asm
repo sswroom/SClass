@@ -806,6 +806,15 @@ _ImageUtil_ImageFillAlpha32:
 	mov r9,rcx ;bpl
 	sub r9,rax ;bpl
 	mov al,r8b ;a
+;	mov ecx,0xff000000
+;	movd xmm1,ecx
+;	mov cl,al
+;	shl cl,24
+;	movd xmm0,ecx
+;	punpckldq xmm0,xmm0
+;	punpckldq xmm0,xmm0
+;	punpckldq xmm1,xmm1
+;	punpckldq xmm1,xmm1
 	test rsi,7
 	jnz ifa32lop
 	shr rsi,3
@@ -823,6 +832,10 @@ ifa32lop4b:
 	mov byte [rdi+27],al
 	mov byte [rdi+31],al
 	add rdi,32
+;	maskmovdqu xmm0,xmm1
+;	add rdi,16
+;	maskmovdqu xmm0,xmm1
+;	add rdi,16
 	dec rcx
 	jnz ifa32lop4b
 	add rdi,r9 ;bpl
@@ -846,6 +859,10 @@ ifa32lop2:
 	mov byte [rdi+27],al
 	mov byte [rdi+31],al
 	add rdi,32
+;	maskmovdqu xmm0,xmm1
+;	add rdi,16
+;	maskmovdqu xmm0,xmm1
+;	add rdi,16
 	dec rcx
 	jnz ifa32lop2
 	align 16
@@ -1016,6 +1033,10 @@ ImageUtil_ConvP1_ARGB32:
 _ImageUtil_ConvP1_ARGB32:
 	mov r10,rcx
 	mov rcx,qword [rsp+8] ;pal
+	push rbx
+	push rbp
+	mov ebx,[rcx]
+	mov ebp,[rcx+4]
 	lea rax,[rdx*4]
 	test rdx,7
 	jnz cargb1_32lop
@@ -1028,46 +1049,41 @@ cargb1_32lop2:
 	mov r11,rdx
 	align 16
 cargb1_32lop3:
-	movzx rax,byte [rdi]
-	shr rax,7
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi],eax
-	movzx rax,byte [rdi]
-	shr rax,6
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi+4],eax
-	movzx rax,byte [rdi]
-	shr rax,5
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi+8],eax
-	movzx rax,byte [rdi]
-	shr rax,4
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi+12],eax
-	movzx rax,byte [rdi]
-	shr rax,3
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi+16],eax
-	movzx rax,byte [rdi]
-	shr rax,2
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi+20],eax
-	movzx rax,byte [rdi]
-	shr rax,1
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	movnti dword [rsi+24],eax
-	movzx rax,byte [rdi]
-	and rax,1
-	mov eax,dword [rcx+rax*4]
-	lea rdi,[rdi+1]
-	movnti dword [rsi+28],eax
-	lea rsi,[rsi+32]
+	mov al,byte [rdi]
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+4],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+8],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+12],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+16],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+20],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+24],ecx
+	mov ecx,ebx
+	shl al,1
+	cmovc ecx,ebp
+	movnti dword [rsi+28],ecx
+	add rdi,1
+	add rsi,32
 	dec r11
 	jnz cargb1_32lop3
 	
@@ -1092,45 +1108,37 @@ cargb1_32lop4:
 	align 16
 cargb1_32lop5:
 	movzx rax,byte [rdi]
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+4],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+8],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+12],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+16],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+20],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+24],ecx
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi+28],ecx
 	add rdi,1
 	add rsi,32
@@ -1142,10 +1150,9 @@ cargb1_32lop5:
 	movzx rax,byte [rdi]
 	align 16
 cargb1_32lop6:
-	xor rcx,rcx
+	mov ecx,ebx
 	shl al,1
-	adc rcx,0
-	mov ecx,dword [rdx+rcx*4]
+	cmovc ecx,ebp
 	movnti dword [rsi],ecx
 	add rsi,4
 	dec r11
@@ -1159,6 +1166,8 @@ cargb1_32lop6:
 
 	align 16
 cargb1_32exit:
+	pop rbp
+	pop rbx
 	ret
 
 ;void ImageUtil_ConvP2_ARGB32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, UInt8 *pal);
