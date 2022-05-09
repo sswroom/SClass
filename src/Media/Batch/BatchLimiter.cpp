@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Media/LRGBLimiter.h"
+#include "Media/LRGBLimiterC.h"
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchLimiter.h"
 

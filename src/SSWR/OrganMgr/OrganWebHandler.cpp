@@ -22,7 +22,6 @@
 #include "Media/ICCProfile.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
-#include "Media/LRGBLimiter.h"
 #include "Media/MediaFile.h"
 #include "Media/PhotoInfo.h"
 #include "Net/WebServer/WebSessionUsage.h"
@@ -7947,7 +7946,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 
 				if (lrimg)
 				{
-					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
+					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
@@ -8230,7 +8229,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 			if (lrimg)
 			{
-				LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
+				this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 				if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 				{
 					Sync::MutexUsage mutUsage(this->resizerMut);
@@ -8524,7 +8523,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 				if (lrimg)
 				{
-					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
+					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 					if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						Sync::MutexUsage mutUsage(this->resizerMut);

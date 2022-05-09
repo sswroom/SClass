@@ -201,7 +201,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 
 					return true;
 				}
-				ptPtr += 2;
+				ptPtr += 1;
 			}
 		}
 		return false;
@@ -3762,7 +3762,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	denv.objBounds = MemAllocA(Math::RectAreaDbl, this->env->GetNString());
 	denv.objCnt = 0;
 	denv.labelCnt = 0;
-	denv.labels = MemAlloc(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
+	denv.labels = MemAllocA(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
 	denv.fontStyleCnt = env->GetFontStyleCount();
 	denv.fontStyles = MemAlloc(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
 	denv.imgDurMS = 0;
@@ -3813,7 +3813,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	}
 	MemFree(denv.fontStyles);
 	MemFreeA(denv.objBounds);
-	MemFree(denv.labels);
+	MemFreeA(denv.labels);
 
 	this->lastLayerEmpty = denv.isLayerEmpty;
 	if (imgDurMS)

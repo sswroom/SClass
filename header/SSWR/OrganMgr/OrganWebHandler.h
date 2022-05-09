@@ -11,6 +11,7 @@
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
 #include "IO/MemoryStream.h"
+#include "Media/LRGBLimiter.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Net/SocketFactory.h"
@@ -246,6 +247,7 @@ namespace SSWR
 			UInt32 csconvBpp;
 			Media::PixelFormat csconvPF;
 			Media::ColorProfile *csconvColor;
+			Media::LRGBLimiter lrgbLimiter;
 
 			Media::ColorManager *colorMgr;
 			Media::ColorManagerSess *colorSess;

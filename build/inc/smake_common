@@ -2210,7 +2210,9 @@ Media/LPCMConverter.h: ../../src/Media/LPCMConverter.cpp
 @LPCMConverter.o
 Media/LPCMSource.h: ../../src/Media/LPCMSource.cpp
 @LPCMSource.o
-Media/LRGBLimiter.h:
+Media/LRGBLimiter.h: ../../src/Media/LRGBLimiter.cpp
+@LRGBLimiter.o
+Media/LRGBLimiterC.h:
 @LRGBLimiter_CPP.o
 Media/LUT.h: ../../src/Media/LUT.cpp
 @LUT.o
@@ -4535,6 +4537,7 @@ JPEGFile.o: ../../src/Media/JPEGFile.cpp
 LinearRectRemapper.o: ../../src/Media/LinearRectRemapper.cpp
 LPCMConverter.o: ../../src/Media/LPCMConverter.cpp
 LPCMSource.o: ../../src/Media/LPCMSource.cpp
+LRGBLimiter.o: ../../src/Media/LRGBLimiter.cpp
 LUT.o: ../../src/Media/LUT.cpp
 M2VFile.o: ../../src/Media/M2VFile.cpp
 M2VStreamSource.o: ../../src/Media/M2VStreamSource.cpp

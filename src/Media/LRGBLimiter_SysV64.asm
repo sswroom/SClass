@@ -22,9 +22,8 @@ _LRGBLimiter_LimitImageLRGB:
 	mov rbp,rax
 	ALIGN 16
 lilrgblop:
-	movsx rax,word [rsi]
-	mov rdx,rax ;minV
-	mov rbx,rax ;maxV
+	movsx rdx,word [rsi] ;minV
+	mov rbx,rdx ;maxV
 	movsx rax,word [rsi+2]
 	cmp rdx,rax
 	cmovg rdx,rax
