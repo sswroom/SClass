@@ -23,7 +23,7 @@ extern _UseAVX
 ;16 retAddr
 ;rdi inPt
 ;rsi outPt
-;rdx width
+;rdx width r11
 ;rcx height / currHeight
 ;r8 tap
 ;r9 index
@@ -64,6 +64,7 @@ _LanczosResizerLR_C32_CPU_horizontal_filter:
 ;	jmp test16
 	push rbp
 	push rbx
+	mov r11,rdx
 	mov eax,0x4000
 	movd xmm7,eax
 	punpckldq xmm7,xmm7				; Int32 tmpV[4] = {16384, 16384, 16384, 16384};
@@ -86,8 +87,8 @@ hfstart:						; if (width & 1)
 	pxor xmm3,xmm3
 	align 16
 hflop:
-	mov rbp,rdx ;width
-	mov r11,r9 ;index
+	mov rbp,r11 ;width
+	mov rdx,r9 ;index
 	mov rbx,qword [rsp+24] ;weight
 	align 16
 hflop2:
@@ -95,15 +96,15 @@ hflop2:
 	movdqa xmm1,xmm7
 	ALIGN 16
 hflop3:
-	mov rax,qword [r11]
+	mov rax,qword [rdx]
 	movq xmm0,[rdi+rax]
-	mov rax,qword [r11+8]
+	mov rax,qword [rdx+8]
 	movq xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
 	pmaddwd xmm0, [rbx]
 	paddd xmm1,xmm0
 	lea rbx,[rbx+16]
-	lea r11,[r11+16]
+	lea rdx,[rdx+16]
 	dec r10
 	jnz hflop3
 
@@ -128,57 +129,57 @@ hf6nstart:						; else if (tap == 6)
 	test qword [rsp+40],15 ;dstep
 	jnz hf6start
 								; if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
-	shr rdx,1 ;width
+	shr r11,1 ;width
 	mov r8,qword [rsp+24] ;weight
 	ALIGN 16
 hf6nlop4:
 
-	mov rbp,rdx ;width
+	mov r10,r11 ;width
 
-	mov r10,r9 ;index
-	mov r11,r8 ;weight
+	mov rbp,r9 ;index
+	mov rdx,r8 ;weight
 	ALIGN 16
 hf6nlop5:
-	mov rax,qword [r10]
+	mov rax,qword [rbp]
 	movdqa xmm1,xmm7
 	movdqu xmm0,[rdi+rax]
-	mov rax,qword [r10+8]
+	mov rax,qword [rbp+8]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11]
+	pmaddwd xmm0,[rdx]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+16]
+	pmaddwd xmm4,[rdx+16]
 	paddd xmm1,xmm0
-	mov rax,qword [r10+16]
+	mov rax,qword [rbp+16]
 	paddd xmm1,xmm4
 	movdqu xmm0,[rdi+rax]
 	pshufd xmm2,xmm0,14
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+32]
+	pmaddwd xmm0,[rdx+32]
 	paddd xmm1,xmm0
 
-	mov rax,qword [r10+24]
+	mov rax,qword [rbp+24]
 	movdqa xmm3,xmm7
 	movdqu xmm0,[rdi+rax]
-	mov rax,qword [r10+32]
+	mov rax,qword [rbp+32]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+48]
+	pmaddwd xmm0,[rdx+48]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+64]
+	pmaddwd xmm4,[rdx+64]
 	paddd xmm3,xmm0
-	mov rax,qword [r10+40]
+	mov rax,qword [rbp+40]
 	paddd xmm3,xmm4
 	movdqu xmm0,[rdi+rax]
 	pshufd xmm2,xmm0,14
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+80]
+	pmaddwd xmm0,[rdx+80]
 	paddd xmm3,xmm0
 
-	add r11,96
-	add r10,48
+	add rdx,96
+	add rbp,48
 
 	psrad xmm1,15
 	psrad xmm3,15
@@ -186,7 +187,7 @@ hf6nlop5:
 	movntdq [rsi],xmm1
 
 	lea rsi,[rsi+16]
-	dec rbp
+	dec r10
 	jnz hf6nlop5
 
 	add rdi,qword [rsp+32] ;sstep
@@ -198,13 +199,13 @@ hf6nlop5:
 
 	align 16
 hf6start:
-	shr rdx,1 ;width
+	shr r11,1 ;width
 	mov r8,qword [rsp+24] ;weight
 	ALIGN 16
 hf6lop4:
-	mov rbp,rdx ;width
+	mov rbp,r11 ;width
 	mov rbx,r9 ;index
-	mov r11,r8 ;weight
+	mov rdx,r8 ;weight
 	ALIGN 16
 hf6lop5:
 
@@ -215,16 +216,16 @@ hf6lop5:
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11]
+	pmaddwd xmm0,[rdx]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+16]
+	pmaddwd xmm4,[rdx+16]
 	paddd xmm1,xmm0
 	mov rax,qword [rbx+16]
 	paddd xmm1,xmm4
 	movq xmm0,[rdi+rax]
 	movq xmm2,[rdi+rax+8]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+32]
+	pmaddwd xmm0,[rdx+32]
 	paddd xmm1,xmm0
 
 	mov rax,qword [rbx+24]
@@ -234,18 +235,18 @@ hf6lop5:
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+48]
+	pmaddwd xmm0,[rdx+48]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+64]
+	pmaddwd xmm4,[rdx+64]
 	paddd xmm3,xmm0
 	mov rax,qword [rbx+40]
 	paddd xmm3,xmm4
 	movq xmm0,[rdi+rax]
 	movq xmm2,[rdi+rax+8]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+80]
+	pmaddwd xmm0,[rdx+80]
 	paddd xmm3,xmm0
-	add r11,96
+	add rdx,96
 	add rbx,48
 
 	psrad xmm1,15
@@ -275,27 +276,27 @@ hf8nstart:						; else if (tap == 8)
 	jnz hf8navxstart
 								; if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
 	mov rbx,qword [rsp+24] ;weight
-	shr rdx,1 ;width
+	shr r11,1 ;width
 	mov r8,qword [rsp+32] ;sstep
 	mov r10,qword [rsp+40] ;dAdd
 
 	ALIGN 16
 hf8nlop4:
-	mov rbp,rdx ;width
-	mov r11,rbx ;weight
+	mov rbp,r11 ;width
+	mov rdx,rbx ;weight
 	
 	ALIGN 16
 hf8nlop5:
-	mov rax,qword [r11]
+	mov rax,qword [rdx]
 	add rax,rdi
 	movdqa xmm1,xmm7
 	movdqu xmm0,[rax]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rax+16]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+16]
+	pmaddwd xmm0,[rdx+16]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+32]
+	pmaddwd xmm4,[rdx+32]
 	paddd xmm1,xmm0
 	movdqu xmm0,[rax+32]
 	paddd xmm1,xmm4
@@ -303,12 +304,12 @@ hf8nlop5:
 	movdqa xmm4,xmm0
 	punpcklwd xmm0,xmm2
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm0,[r11+48]
+	pmaddwd xmm0,[rdx+48]
 	paddd xmm1,xmm0
-	pmaddwd xmm4,[r11+64]
+	pmaddwd xmm4,[rdx+64]
 	paddd xmm1,xmm4
 
-	mov rax,qword [r11+8]
+	mov rax,qword [rdx+8]
 	add rax,rdi
 	movdqa xmm3,xmm7
 	movdqu xmm0,[rax]
@@ -316,21 +317,21 @@ hf8nlop5:
 	movdqu xmm2,[rax+16]
 	punpcklwd xmm0,xmm2
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm0,[r11+80]
+	pmaddwd xmm0,[rdx+80]
 	paddd xmm3,xmm0
-	pmaddwd xmm4,[r11+96]
+	pmaddwd xmm4,[rdx+96]
 	paddd xmm3,xmm4
 	movdqu xmm0,[rax+32]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rax+48]
 	punpcklwd xmm0,xmm2
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm0,[r11+112]
+	pmaddwd xmm0,[rdx+112]
 	paddd xmm3,xmm0
-	pmaddwd xmm4,[r11+128]
+	pmaddwd xmm4,[rdx+128]
 	paddd xmm3,xmm4
 
-	add r11,144
+	add rdx,144
 
 	psrad xmm1,15
 	psrad xmm3,15
@@ -351,58 +352,58 @@ hf8nlop5:
 	align 16
 hf8navxstart:
 	mov rbx,qword [rsp+24] ;weight
-	shr rdx,1 ;width
+	shr r11,1 ;width
 	mov r8,qword [rsp+32] ;sstep
 	mov r10,qword [rsp+40] ;dAdd
 
 	ALIGN 16
 hf8navxlop4:
-	mov rbp,rdx ;width
-	mov r11,rbx ;weight
+	mov rbp,r11 ;width
+	mov rdx,rbx ;weight
 	
 	ALIGN 16
 hf8navxlop5:
-	mov rax,qword [r11]
+	mov rax,qword [rdx]
 	add rax,rdi
 	movdqa xmm1,xmm7
 	movdqu xmm0,[rax]
 	movdqu xmm2,[rax+16]
 	vpunpckhwd xmm4,xmm0,xmm2
-	pmaddwd xmm4,[r11+32]
+	pmaddwd xmm4,[rdx+32]
 	vpunpcklwd xmm0,xmm0,xmm2
-	pmaddwd xmm0,[r11+16]
+	pmaddwd xmm0,[rdx+16]
 	paddd xmm1,xmm0
 	movdqu xmm0,[rax+32]
 	paddd xmm1,xmm4
 	movdqu xmm2,[rax+48]
 	vpunpckhwd xmm4,xmm0,xmm2
 	vpunpcklwd xmm0,xmm0,xmm2
-	pmaddwd xmm0,[r11+48]
+	pmaddwd xmm0,[rdx+48]
 	paddd xmm1,xmm0
-	pmaddwd xmm4,[r11+64]
+	pmaddwd xmm4,[rdx+64]
 	paddd xmm1,xmm4
 
-	mov rax,qword [r11+8]
+	mov rax,qword [rdx+8]
 	add rax,rdi
 	movdqa xmm3,xmm7
 	movdqu xmm0,[rax]
 	movdqu xmm2,[rax+16]
 	vpunpckhwd xmm4,xmm0,xmm2
 	vpunpcklwd xmm0,xmm0,xmm2
-	pmaddwd xmm0,[r11+80]
+	pmaddwd xmm0,[rdx+80]
 	paddd xmm3,xmm0
-	pmaddwd xmm4,[r11+96]
+	pmaddwd xmm4,[rdx+96]
 	paddd xmm3,xmm4
 	movdqu xmm0,[rax+32]
 	movdqu xmm2,[rax+48]
 	vpunpckhwd xmm4,xmm0,xmm2
 	vpunpcklwd xmm0,xmm0,xmm2
-	pmaddwd xmm0,[r11+112]
+	pmaddwd xmm0,[rdx+112]
 	paddd xmm3,xmm0
-	pmaddwd xmm4,[r11+128]
+	pmaddwd xmm4,[rdx+128]
 	paddd xmm3,xmm4
 
-	add r11,144
+	add rdx,144
 
 	psrad xmm1,15
 	psrad xmm3,15
@@ -423,59 +424,59 @@ hf8navxlop5:
 
 	align 16
 hf8start:
-	shr rdx,1 ;width
+	shr r11,1 ;width
 	mov rbx,qword [rsp+24] ;weight
 	mov r8,qword [rsp+32] ;sstep
 	mov r10,qword [rsp+40] ;dstep
 	ALIGN 16
 hf8lop4:
-	mov rbp,rdx ;width
-	mov r11,rbx ;weight
+	mov rbp,r11 ;width
+	mov rdx,rbx ;weight
 	ALIGN 16
 hf8lop5:
-	mov rax,qword [r11]
+	mov rax,qword [rdx]
 	prefetcht0 [rdi+rax+128]
 	movdqa xmm1,xmm7
 	movdqu xmm0,[rdi+rax]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax+16]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+16]
+	pmaddwd xmm0,[rdx+16]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+32]
+	pmaddwd xmm4,[rdx+32]
 	paddd xmm1,xmm0
 	paddd xmm1,xmm4
 	movdqu xmm0,[rdi+rax+32]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax+48]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+48]
+	pmaddwd xmm0,[rdx+48]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+64]
+	pmaddwd xmm4,[rdx+64]
 	paddd xmm1,xmm0
 	paddd xmm1,xmm4
 
-	mov rax,qword [r11+8]
+	mov rax,qword [rdx+8]
 	movdqa xmm3,xmm7
 	movdqu xmm0,[rdi+rax]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax+16]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+80]
+	pmaddwd xmm0,[rdx+80]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+96]
+	pmaddwd xmm4,[rdx+96]
 	paddd xmm3,xmm0
 	paddd xmm3,xmm4
 	movdqu xmm0,[rdi+rax+32]
 	movdqa xmm4,xmm0
 	movdqu xmm2,[rdi+rax+48]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11+112]
+	pmaddwd xmm0,[rdx+112]
 	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[r11+128]
+	pmaddwd xmm4,[rdx+128]
 	paddd xmm3,xmm0
 	paddd xmm3,xmm4
-	add r11,144
+	add rdx,144
 
 	psrad xmm1,15
 	psrad xmm3,15
@@ -500,14 +501,14 @@ hf16nstart:						; else if (tap == 16)
 	test qword [rsp+40],15 ;dstep
 	jnz hf16start
 								; if ((((OSInt)outPt) & 15) == 0 && (dstep & 15) == 0)
-	shr rdx,1 ;width
-	mov r11,qword [rsp+24] ;weight
+	shr r11,1 ;width
+	mov rdx,qword [rsp+24] ;weight
 	mov r8,qword [rsp+32] ;sstep
 	mov r10,qword [rsp+40] ;dstep
 	ALIGN 16
 hf16nlop4:
-	mov rbp,rdx ;width
-	mov rbx,r11 ;weight
+	mov rbp,r11 ;width
+	mov rbx,rdx ;weight
 	ALIGN 16
 hf16nlop5:
 	mov rax,qword [rbx]
@@ -608,14 +609,14 @@ hf16nlop5:
 
 	align 16	
 hf16start:
-	shr rdx,1 ;width
-	mov r11,qword [rsp+24] ;weight
+	shr r11,1 ;width
+	mov rdx,qword [rsp+24] ;weight
 	mov r8,qword [rsp+32] ;sstep
 	mov r10,qword [rsp+40] ;dstep
 	ALIGN 16
 hf16lop4:
-	mov rbp,rdx ;width
-	mov rbx,r11 ;weight
+	mov rbp,r11 ;width
+	mov rbx,rdx ;weight
 	ALIGN 16
 hf16lop5:
 	mov rax,qword [rbx]
@@ -731,12 +732,12 @@ hf16lop5:
 	align 16
 hfstart2:
 	shr r8,1 ;tap
-	shr rdx,1 ;width
+	shr r11,1 ;width
 	align 16
 hflop4:
-	mov rbp,rdx ;width
+	mov rbp,r11 ;width
 	mov rbx,r9 ;index
-	mov r11,qword [rsp+24] ;weight	
+	mov rdx,qword [rsp+24] ;weight	
 	align 16
 hflop5:
 	mov r10,r8 ;tap
@@ -748,9 +749,9 @@ hflop6:
 	mov rax,qword [rbx+8]
 	movq xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11]
+	pmaddwd xmm0,[rdx]
 	paddd xmm1,xmm0
-	lea r11,[r11+16]
+	lea rdx,[rdx+16]
 	lea rbx,[rbx+16]
 	dec r10
 	jnz hflop6
@@ -764,10 +765,10 @@ hflop7:
 	mov rax,qword [rbx+8]
 	movq xmm2,[rdi+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11]
+	pmaddwd xmm0,[rdx]
 	paddd xmm3,xmm0
-	lea r11,[r11+16]
-	lea rbx,[rbx+16]
+	add rdx,16
+	add rbx,16
 	dec r10
 	jnz hflop7
 
@@ -1603,12 +1604,12 @@ vfna_1start:
 	align 16
 vfnalop:
 	mov rcx,rdi ;inPt
-	mov rbp,rdx ;width
+	mov r11,rdx ;width
 
 	align 16
 vfnalop2:
 	mov rbx,r9 ;index
-	mov r11,qword [rsp+72] ;weight
+	mov rbp,qword [rsp+72] ;weight
 	mov r10,r8 ;tap
 
 	pxor xmm1,xmm1
@@ -1619,28 +1620,28 @@ vfnalop3:
 	mov rax,qword [rbx+8]
 	movq xmm2,[rcx+rax]
 	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[r11]
+	pmaddwd xmm0,[rbp]
 	paddd xmm1,xmm0
-	lea rbx,[rbx+16]
-	lea r11,[r11+16]
+	add rbx,16
+	add rbp,16
 	dec r10
 	jnz vfnalop3
 
 	psrad xmm1,15
 	packssdw xmm1,xmm3
-	mov r11,qword [rsp+96] ;rgbTable
+	mov rbp,qword [rsp+96] ;rgbTable
 
 	pextrw rbx,xmm1,0
-	mov eax,dword [r11+rbx*4]
+	mov eax,dword [rbp+rbx*4]
 	pextrw rbx,xmm1,1
-	or eax,dword [r11+rbx*4+262144]
+	or eax,dword [rbp+rbx*4+262144]
 	pextrw rbx,xmm1,2
-	or eax,dword [r11+rbx*4+524288]
+	or eax,dword [rbp+rbx*4+524288]
 
 	mov dword [rsi],eax
 	lea rcx,[rcx+8]
 	lea rsi,[rsi+4]
-	dec rbp
+	dec r11
 	jnz vfnalop2
 
 	mov rax,r8 ;tap
@@ -1680,7 +1681,7 @@ vf6nastart2:
 	mov qword [rsp+80],rcx ;height
 	shr rdx,1 ;width
 	mov rbx,qword [rsp+72] ;weight
-	mov r10,qword [rsp+96] ;rgbTable
+	mov rbp,qword [rsp+96] ;rgbTable
 	xor r11,r11
 	xor r9,r9
 	ALIGN 16
@@ -1696,7 +1697,7 @@ vf6nalop4:
 	mov r9d,dword [rbx+20]
 
 	mov r8,rdi ;inPt
-	mov rbp,rdx ;width
+	mov r10,rdx ;width
 	ALIGN 16
 vf6nalop5:
 	movdqa xmm2,xmm8 ;tmpV
@@ -1733,24 +1734,24 @@ vf6nalop5:
 	psrad xmm2,15
 	packssdw xmm2,xmm3
 	pextrw rcx,xmm2,0
-	mov eax,dword [r10+rcx*4]
+	mov eax,dword [rbp+rcx*4]
 	pextrw rcx,xmm2,1
-	or eax,dword [r10+rcx*4+262144]
+	or eax,dword [rbp+rcx*4+262144]
 	pextrw rcx,xmm2,2
-	or eax,dword [r10+rcx*4+524288]
+	or eax,dword [rbp+rcx*4+524288]
 	mov dword [rsi],eax
 
 	pextrw rcx,xmm2,4
-	mov eax,dword [r10+rcx*4]
+	mov eax,dword [rbp+rcx*4]
 	pextrw rcx,xmm2,5
-	or eax,dword [r10+rcx*4+262144]
+	or eax,dword [rbp+rcx*4+262144]
 	pextrw rcx,xmm2,6
-	or eax,dword [r10+rcx*4+524288]
+	or eax,dword [rbp+rcx*4+524288]
 	mov dword [rsi+4],eax
 
 	lea rsi,[rsi+8]
 	lea r8,[r8+16]
-	dec rbp
+	dec r10
 	jnz vf6nalop5
 
 	lea rbx,[rbx+80]
@@ -1769,7 +1770,7 @@ vf6nastartavx:
 	mov qword [rsp+80],rcx ;height
 	shr rdx,2 ;width
 	mov rbx,qword [rsp+72] ;weight
-	mov r10,qword [rsp+96] ;rgbTable
+	mov rbp,qword [rsp+96] ;rgbTable
 	xor r11,r11
 	xor r9,r9
 	ALIGN 16
@@ -1789,7 +1790,7 @@ vf6naavxlop4:
 	vinsertf128 ymm8,ymm8,xmm8,1 ;tmpV
 
 	mov r8,rdi ;inPt
-	mov rbp,rdx ;width
+	mov r10,rdx ;width
 	ALIGN 16
 vf6naavxlop5:
 	vmovdqa ymm2,ymm8 ;tmpV
@@ -1827,40 +1828,40 @@ vf6naavxlop5:
 	vpackssdw ymm2,ymm2,ymm3
 	vpextrw rcx,xmm2,0
 	vextractf128 xmm0,ymm2,1
-	mov eax,dword [r10+rcx*4]
+	mov eax,dword [rbp+rcx*4]
 	vpextrw rcx,xmm2,1
-	or eax,dword [r10+rcx*4+262144]
+	or eax,dword [rbp+rcx*4+262144]
 	vpextrw rcx,xmm2,2
-	or eax,dword [r10+rcx*4+524288]
+	or eax,dword [rbp+rcx*4+524288]
 	mov dword [rsi],eax
 
 	vpextrw rcx,xmm2,4
-	mov eax,dword [r10+rcx*4]
+	mov eax,dword [rbp+rcx*4]
 	vpextrw rcx,xmm2,5
-	or eax,dword [r10+rcx*4+262144]
+	or eax,dword [rbp+rcx*4+262144]
 	vpextrw rcx,xmm2,6
-	or eax,dword [r10+rcx*4+524288]
+	or eax,dword [rbp+rcx*4+524288]
 	mov dword [rsi+4],eax
 
 	vpextrw rcx,xmm0,0
-	mov eax,dword [r10+rcx*4]
+	mov eax,dword [rbp+rcx*4]
 	vpextrw rcx,xmm0,1
-	or eax,dword [r10+rcx*4+262144]
+	or eax,dword [rbp+rcx*4+262144]
 	vpextrw rcx,xmm0,2
-	or eax,dword [r10+rcx*4+524288]
+	or eax,dword [rbp+rcx*4+524288]
 	mov dword [rsi+8],eax
 
 	vpextrw rcx,xmm0,4
-	mov eax,dword [r10+rcx*4]
+	mov eax,dword [rbp+rcx*4]
 	vpextrw rcx,xmm0,5
-	or eax,dword [r10+rcx*4+262144]
+	or eax,dword [rbp+rcx*4+262144]
 	vpextrw rcx,xmm0,6
-	or eax,dword [r10+rcx*4+524288]
+	or eax,dword [rbp+rcx*4+524288]
 	mov dword [rsi+12],eax
 
 	lea rsi,[rsi+16]
 	lea r8,[r8+32]
-	dec rbp
+	dec r10
 	jnz vf6naavxlop5
 
 	lea rbx,[rbx+80]
@@ -2115,15 +2116,16 @@ vfnastart:
 	shr rdx,1 ;width
 	pxor xmm3,xmm3
 	mov qword [rsp+80],rcx ;height
+	mov r11,rdx
 
 	align 16
 vfnalop4:
-	mov r10,rdi ;inPt
-	mov rbp,rdx ;width
+	mov rbp,rdi ;inPt
+	mov r10,r11 ;width
 
 	align 16
 vfnalop5:
-	mov r11,qword [rsp+72] ;weight
+	mov rdx,qword [rsp+72] ;weight
 	mov rbx,r9 ;index
 	mov rcx,r8 ;tap
 
@@ -2132,49 +2134,49 @@ vfnalop5:
 	ALIGN 16
 vfnalop6:
 	mov rax,qword [rbx]
-	movdqu xmm0,[r10+rax]
+	movdqu xmm0,[rbp+rax]
 	mov rax,qword [rbx+8]
 	movdqa xmm4,xmm0
-	movdqu xmm1,[r10+rax]
+	movdqu xmm1,[rbp+rax]
 	punpcklwd xmm0, xmm1
 	punpckhwd xmm4, xmm1
-	movdqa xmm5,[r11]
+	movdqa xmm5,[rdx]
 	pmaddwd xmm0,xmm5
 	pmaddwd xmm4,xmm5
 	paddd xmm2,xmm0
 	paddd xmm6,xmm4
-	lea r11,[r11+16]
-	lea rbx,[rbx+16]
+	add rdx,16
+	add rbx,16
 
 	dec rcx
 	jnz vfnalop6
 
-	mov r11,qword [rsp+96] ;rgbTable
+	mov rdx,qword [rsp+96] ;rgbTable
 
 	psrad xmm6,15
 	packssdw xmm6,xmm3
 	pextrw rcx,xmm6,0
-	mov eax,dword [r11+rcx*4]
+	mov eax,dword [rdx+rcx*4]
 	pextrw rcx,xmm6,1
-	or eax,dword [r11+rcx*4+262144]
+	or eax,dword [rdx+rcx*4+262144]
 	pextrw rcx,xmm6,2
-	or eax,dword [r11+rcx*4+524288]
+	or eax,dword [rdx+rcx*4+524288]
 	movd xmm0,eax
 
 	psrad xmm2,15
 	packssdw xmm2,xmm3
 	pextrw rcx,xmm2,0
-	mov eax,dword [r11+rcx*4]
+	mov eax,dword [rdx+rcx*4]
 	pextrw rcx,xmm2,1
-	or eax,dword [r11+rcx*4+262144]
+	or eax,dword [rdx+rcx*4+262144]
 	pextrw rcx,xmm2,2
-	or eax,dword [r11+rcx*4+524288]
+	or eax,dword [rdx+rcx*4+524288]
 
 	mov dword [rsi],eax
 	movd dword [rsi+4],xmm0
-	lea r10,[r10+16]
+	lea rbp,[rbp+16]
 	lea rsi,[rsi+8]
-	dec rbp
+	dec r10
 	jnz vfnalop5
 
 	mov rax,r8 ;tap

@@ -360,11 +360,62 @@ crgb24rstart:
 	sub r8,rax ;srcRGBBpl
 	sub r9,rbx ;destRGBBpl
 	mov rbx,qword [rsp+32] ;tab
+	shr rdx,1
+	jb crgb24rolop
 	align 16
 crgb24rlop:
 	mov r11,rdx ;width
 	align 16
 crgb24rlop2:
+	movzx rax,byte [rdi+2]
+	movq xmm1,[rbx+rax*8+4096]
+	movzx rax,byte [rdi+5]
+	movhps xmm1,[rbx+rax*8+4096]
+	movzx rax,byte [rdi+1]
+	movq xmm0,[rbx+rax*8+2048]
+	movzx rax,byte [rdi+4]
+	movhps xmm0,[rbx+rax*8+2048]
+	paddsw xmm1,xmm0
+	movzx rax,byte [rdi+0]
+	movq xmm0,[rbx+rax*8]
+	movzx rax,byte [rdi+3]
+	movhps xmm0,[rbx+rax*8]
+	paddsw xmm1,xmm0
+	movdqu [rsi],xmm1
+	add rdi,6
+	add rsi,16
+	dec r11
+	jnz crgb24rlop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
+	dec rcx
+	jnz crgb24rlop
+	jmp crgbexit
+
+	align 16
+crgb24rolop:
+	mov r11,rdx ;width
+	align 16
+crgb24rolop2:
+	movzx rax,byte [rdi+2]
+	movq xmm1,[rbx+rax*8+4096]
+	movzx rax,byte [rdi+5]
+	movhps xmm1,[rbx+rax*8+4096]
+	movzx rax,byte [rdi+1]
+	movq xmm0,[rbx+rax*8+2048]
+	movzx rax,byte [rdi+4]
+	movhps xmm0,[rbx+rax*8+2048]
+	paddsw xmm1,xmm0
+	movzx rax,byte [rdi+0]
+	movq xmm0,[rbx+rax*8]
+	movzx rax,byte [rdi+3]
+	movhps xmm0,[rbx+rax*8]
+	paddsw xmm1,xmm0
+	movdqu [rsi],xmm1
+	add rdi,6
+	add rsi,16
+	dec r11
+	jnz crgb24rolop2
 	movzx rax,byte [rdi+2]
 	movq xmm1,[rbx+rax*8+4096]
 	movzx rax,byte [rdi+1]
@@ -374,14 +425,13 @@ crgb24rlop2:
 	movq xmm0,[rbx+rax*8]
 	paddsw xmm1,xmm0
 	movq [rsi],xmm1
-	lea rdi,[rdi+3]
-	lea rsi,[rsi+8]
-	dec r11
-	jnz crgb24rlop2
+	add rdi,3
+	add rsi,8
+
 	add rdi,r8 ;srcRGBBpl
 	add rsi,r9 ;destRGBBpl
 	dec rcx
-	jnz crgb24rlop
+	jnz crgb24rolop
 	jmp crgbexit
 
 ca8w8start:

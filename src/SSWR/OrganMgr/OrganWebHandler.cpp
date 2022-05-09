@@ -4808,7 +4808,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				}
 
 				if (env.user && env.user->userType == 0)
-
+				{
+					
+				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("species.html?id="));
 				sb.AppendI32(species->speciesId);
