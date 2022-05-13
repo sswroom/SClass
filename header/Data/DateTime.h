@@ -37,6 +37,7 @@ namespace Data
 	public:
 		DateTime();
 		DateTime(Int64 ticks);
+		DateTime(Int64 ticks, Int8 tzQhr);
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second);
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
 		DateTime(Text::CString dateStr);
@@ -49,6 +50,7 @@ namespace Data
 		void SetValue(const DateTime *time);
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
+		void SetValue(Int64 ticks, Int8 tzQhr);
 		void SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
 		Bool SetValueSlow(const Char *dateStr);
 		Bool SetValue(Text::CString dateStr);

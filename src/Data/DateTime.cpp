@@ -190,6 +190,13 @@ Data::DateTime::DateTime(Int64 ticks)
 	this->tzQhr = 0;
 }
 
+Data::DateTime::DateTime(Int64 ticks, Int8 tzQhr)
+{
+	this->timeType = TimeType::Ticks;
+	this->val.ticks = ticks;
+	this->tzQhr = tzQhr;
+}
+
 Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second)
 {
 	this->timeType = TimeType::Time;
@@ -371,6 +378,13 @@ void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, O
 	this->SetMinute(minute);
 	this->SetSecond(second);
 	this->SetMS(ms);
+}
+
+void Data::DateTime::SetValue(Int64 ticks, Int8 tzQhr)
+{
+	this->timeType = Data::DateTime::TimeType::Ticks;
+	this->val.ticks = ticks;
+	this->tzQhr = tzQhr;
 }
 
 void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)

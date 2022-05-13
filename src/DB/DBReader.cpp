@@ -32,10 +32,9 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
 	{
-		Data::DateTime *dt;
-		NEW_CLASS(dt, Data::DateTime());
-		this->GetDate(colIndex, dt);
-		item->SetDateDirect(dt);
+		Data::DateTime dt;
+		this->GetDate(colIndex, &dt);
+		item->SetDate(&dt);
 		return true;
 	}
 	case DB::DBUtil::CT_Double:

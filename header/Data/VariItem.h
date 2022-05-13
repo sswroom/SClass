@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_VARIITEM
 #define _SM_DATA_VARIITEM
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Data/ReadonlyArray.h"
 #include "Data/UUID.h"
 #include "Math/Vector2D.h"
@@ -16,7 +17,6 @@ namespace Data
 		{
 			Unknown,
 			Null,
-			Str,
 			Date,
 			F32,
 			F64,
@@ -29,16 +29,18 @@ namespace Data
 			I64,
 			U64,
 			BOOL,
+			CStr,
+
+			Str,
 			ByteArr,
 			Vector,
-			UUID,
-			CStr
+			UUID
 		};
 	
 		union ItemValue
 		{
 			Text::String *str;
-			Data::DateTime *date;
+			Data::Timestamp date;
 			Single f32;
 			Double f64;
 			Int8 i8;
@@ -54,19 +56,66 @@ namespace Data
 			Math::Vector2D *vector;
 			Data::UUID *uuid;
 			struct { const UTF8Char *v; UOSInt leng; } cstr;
+
+			ItemValue() = default;
+			~ItemValue(){};
 		};
 	private:
 		ItemValue val;
 		ItemType itemType;
 		
-		VariItem(ItemType itemType, ItemValue val);
-		void FreeItem();
-	public:
-		VariItem();
-		~VariItem();
+		VariItem(ItemType itemType, ItemValue val)
+		{
+			this->itemType = itemType;
+			this->val = val;
+		}
 
-		ItemType GetItemType();
-		const ItemValue GetItemValue();
+		void FreeItem()
+		{
+			if (this->itemType >= ItemType::Str && this->itemType <= ItemType::UUID)
+			{
+				if (this->itemType == ItemType::Str)
+				{
+					this->val.str->Release();
+				}
+				else if (this->itemType == ItemType::ByteArr)
+				{
+					DEL_CLASS(this->val.byteArr);
+				}
+				else if (this->itemType == ItemType::Vector)
+				{
+					DEL_CLASS(this->val.vector);
+				}
+				else
+				{
+					DEL_CLASS(this->val.uuid);
+				}
+			}
+			this->itemType = ItemType::Unknown;
+		}
+
+	public:
+		VariItem()
+		{
+			this->itemType = ItemType::Unknown;
+			this->val.str = 0;
+		}
+
+		~VariItem()
+		{
+			this->FreeItem();
+		}
+
+		ItemType GetItemType() const
+		{
+			return this->itemType;
+		}
+
+		const ItemValue GetItemValue()
+		{
+			return this->val;
+		}
+
 		Single GetAsF32();
 		Double GetAsF64();
 		Int8 GetAsI8();
@@ -81,10 +130,10 @@ namespace Data
 		void GetAsString(Text::StringBuilderUTF8 *sb);
 		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize);
 		Data::DateTime *GetAsNewDate();
+		Data::Timestamp GetAsTimestamp();
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();
 		Math::Vector2D *GetAsNewVector();
 		Data::UUID *GetAsNewUUID();
-		Data::DateTime *GetAndRemoveDate();
 		Data::ReadonlyArray<UInt8> *GetAndRemoveByteArr();
 		Math::Vector2D *GetAndRemoveVector();
 		Data::UUID *GetAndRemoveUUID();
@@ -95,6 +144,7 @@ namespace Data
 		void SetStr(const UTF8Char *str, UOSInt strLen);
 		void SetStr(Text::String *str);
 		void SetDate(Data::DateTime *dt);
+		void SetDate(Data::Timestamp ts);
 		void SetF32(Single val);
 		void SetF64(Double val);
 		void SetI8(Int8 val);
@@ -110,7 +160,6 @@ namespace Data
 		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
 		void SetVector(Math::Vector2D *vec);
 		void SetUUID(Data::UUID *uuid);
-		void SetDateDirect(Data::DateTime *dt);
 		void SetVectorDirect(Math::Vector2D *vec);
 		void SetUUIDDirect(Data::UUID *uuid);
 		void Set(VariItem *item);

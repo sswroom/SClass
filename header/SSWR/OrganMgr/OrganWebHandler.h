@@ -58,8 +58,9 @@ namespace SSWR
 				Text::String *dispName;
 			} BookSpInfo;
 
-			typedef struct
+			class BookInfo
 			{
+			public:
 				Int32 id;
 				Text::String *title;
 				Text::String *author;
@@ -67,8 +68,8 @@ namespace SSWR
 				Int64 publishDate;
 				Text::String *url;
 
-				Data::ArrayList<BookSpInfo*> *species;
-			} BookInfo;
+				Data::ArrayList<BookSpInfo*> species;
+			};
 
 			typedef struct
 			{
@@ -140,8 +141,9 @@ namespace SSWR
 				Int32 unorganSpId;
 			} WebUserInfo;
 
-			typedef struct
+			class SpeciesInfo
 			{
+			public:
 				Int32 speciesId;
 				Text::String *engName;
 				Text::String *chiName;
@@ -157,13 +159,14 @@ namespace SSWR
 				Int32 photoId;
 				Int32 photoWId;
 
-				Data::ArrayList<BookSpInfo*> *books;
-				Data::ArrayList<UserFileInfo*> *files;
-				Data::Int32Map<WebFileInfo*> *wfiles;
-			} SpeciesInfo;
+				Data::ArrayList<BookSpInfo*> books;
+				Data::ArrayList<UserFileInfo*> files;
+				Data::Int32Map<WebFileInfo*> wfiles;
+			};
 
-			struct GroupInfo
+			class GroupInfo
 			{
+			public:
 				Int32 id;
 				Int32 groupType;
 				Text::String *engName;
@@ -180,8 +183,8 @@ namespace SSWR
 				UOSInt myPhotoCount;
 				UOSInt totalCount;
 				SpeciesInfo *photoSpObj;
-				Data::ArrayList<SpeciesInfo*> *species;
-				Data::ArrayList<GroupInfo *> *groups;
+				Data::ArrayList<SpeciesInfo*> species;
+				Data::ArrayList<GroupInfo *> groups;
 			};
 
 			typedef struct

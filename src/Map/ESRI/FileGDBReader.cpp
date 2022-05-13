@@ -1063,10 +1063,9 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item
 		}
 	case 5:
 		{
-			Data::DateTime *dt;
-			NEW_CLASS(dt, Data::DateTime());
-			Text::XLSUtil::Number2Date(dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-			item->SetDateDirect(dt);
+			Data::DateTime dt;
+			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			item->SetDate(&dt);
 			return true;
 		}
 	case 6:

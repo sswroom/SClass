@@ -227,7 +227,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 	{
 		while (r->ReadNext())
 		{
-			sp = MemAlloc(SSWR::OrganMgr::OrganWebHandler::SpeciesInfo, 1);
+			NEW_CLASS(sp, SSWR::OrganMgr::OrganWebHandler::SpeciesInfo());
 			sp->speciesId = r->GetInt32(0);
 			sp->engName = Text::String::OrEmpty(r->GetNewStr(1));
 			sp->chiName = Text::String::OrEmpty(r->GetNewStr(2));
@@ -242,9 +242,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 			sp->photoId = r->GetInt32(11);
 			sp->photoWId = r->GetInt32(12);
 
-			NEW_CLASS(sp->books, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookSpInfo*>());
-			NEW_CLASS(sp->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-			NEW_CLASS(sp->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 			this->spMap->Put(sp->speciesId, sp);
 			sp->sciNameHash = this->spNameMap->CalcHash(sp->sciName->v, sp->sciName->leng);
 		}
@@ -283,7 +280,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 				wfile->cropRight = r->GetDbl(8);
 				wfile->cropBottom = r->GetDbl(9);
 				wfile->location = r->GetNewStr(10);
-				sp->wfiles->Put(wfile->id, wfile);
+				sp->wfiles.Put(wfile->id, wfile);
 			}
 		}
 		this->db->CloseReader(r);
@@ -306,7 +303,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 	{
 		while (r->ReadNext())
 		{
-			group = MemAlloc(SSWR::OrganMgr::OrganWebHandler::GroupInfo, 1);
+			NEW_CLASS(group, SSWR::OrganMgr::OrganWebHandler::GroupInfo());
 			group->id = r->GetInt32(0);
 			group->groupType = r->GetInt32(1);
 			group->engName = r->GetNewStr(2);
@@ -318,8 +315,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 			group->idKey = Text::String::OrEmpty(r->GetNewStr(8));
 			group->cateId = r->GetInt32(9);
 			group->flags = (GroupFlags)r->GetInt32(10);
-			NEW_CLASS(group->species, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
-			NEW_CLASS(group->groups, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
 			group->photoCount = (UOSInt)-1;
 			group->myPhotoCount = (UOSInt)-1;
 			group->totalCount = (UOSInt)-1;
@@ -337,7 +332,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 			group = this->groupMap->Get(sp->groupId);
 			if (group)
 			{
-				group->species->Add(sp);
+				group->species.Add(sp);
 			}
 		}
 
@@ -351,7 +346,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 				pGroup = this->groupMap->Get(group->parentId);
 				if (pGroup)
 				{
-					pGroup->groups->Add(group);
+					pGroup->groups.Add(group);
 				}
 			}
 			else
@@ -380,7 +375,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 	{
 		while (r->ReadNext())
 		{
-			book = MemAlloc(SSWR::OrganMgr::OrganWebHandler::BookInfo, 1);
+			NEW_CLASS(book, SSWR::OrganMgr::OrganWebHandler::BookInfo());
 			book->id = r->GetInt32(0);
 			book->title = r->GetNewStr(1);
 			book->author = r->GetNewStr(2);
@@ -388,7 +383,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 			r->GetDate(4, &dt);
 			book->publishDate = dt.ToTicks();
 			book->url = r->GetNewStr(5);
-			NEW_CLASS(book->species, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookSpInfo*>());
 
 			this->bookMap->Put(book->id, book);
 		}
@@ -408,8 +402,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 				bookSp->bookId = book->id;
 				bookSp->speciesId = sp->speciesId;
 				bookSp->dispName = r->GetNewStr(2);
-				book->species->Add(bookSp);
-				sp->books->Add(bookSp);
+				book->species.Add(bookSp);
+				sp->books.Add(bookSp);
 			}
 		}
 		this->db->CloseReader(r);
@@ -504,7 +498,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				species = this->spMap->Get(userFile->speciesId);
 				if (species != 0)
 				{
-					species->files->Add(userFile);
+					species->files.Add(userFile);
 				}
 				this->userFileMap->Put(userFile->id, userFile);
 			}
@@ -594,10 +588,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 					Text::StringBuilderUTF8 sbSName;
 					sbSName.AppendC(UTF8STRC("Unorganized "));
 					sbSName.Append(user->userName);
-					j = group->species->GetCount();
+					j = group->species.GetCount();
 					while (j-- > 0)
 					{
-						species = group->species->GetItem(j);
+						species = group->species.GetItem(j);
 						if (species->sciName->Equals(sbSName.ToString(), sbSName.GetLength()))
 						{
 							user->unorganSpId = species->speciesId;
@@ -670,9 +664,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 		SDEL_STRING(sp->photo);
 		sp->idKey->Release();
 
-		DEL_CLASS(sp->books);
-		DEL_CLASS(sp->files);
-		wfiles = sp->wfiles->GetValues();
+		wfiles = sp->wfiles.GetValues();
 		j = wfiles->GetCount();
 		while (j-- > 0)
 		{
@@ -682,8 +674,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 			wfile->location->Release();
 			MemFree(wfile);
 		}
-		DEL_CLASS(sp->wfiles);
-		MemFree(sp);
+		DEL_CLASS(sp);
 	}
 	this->spMap->Clear();
 	this->spNameMap->Clear();
@@ -720,10 +711,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeGroup(GroupInfo *group)
 	group->chiName->Release();
 	group->descript->Release();
 	SDEL_STRING(group->idKey);
-	DEL_CLASS(group->species);
-	DEL_CLASS(group->groups);
-
-	MemFree(group);
+	DEL_CLASS(group);
 }
 
 void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
@@ -743,15 +731,14 @@ void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 		book->author->Release();
 		book->press->Release();
 		SDEL_STRING(book->url);
-		j = book->species->GetCount();
+		j = book->species.GetCount();
 		while (j-- > 0)
 		{
-			bookSp = book->species->GetItem(j);
+			bookSp = book->species.GetItem(j);
 			bookSp->dispName->Release();
 			MemFree(bookSp);
 		}
-		DEL_CLASS(book->species);
-		MemFree(book);
+		DEL_CLASS(book);
 	}
 	this->bookMap->Clear();
 }
@@ -880,11 +867,11 @@ void SSWR::OrganMgr::OrganWebHandler::CalcGroupCount(SSWR::OrganMgr::OrganWebHan
 	group->photoCount = 0;
 	group->totalCount = 0;
 
-	group->totalCount += group->species->GetCount();
-	i = group->species->GetCount();
+	group->totalCount += group->species.GetCount();
+	i = group->species.GetCount();
 	while (i-- > 0)
 	{
-		sp = group->species->GetItem(i);
+		sp = group->species.GetItem(i);
 		if (sp->flags & 9)
 		{
 			group->photoCount++;
@@ -902,10 +889,10 @@ void SSWR::OrganMgr::OrganWebHandler::CalcGroupCount(SSWR::OrganMgr::OrganWebHan
 		}
 	}
 
-	i = group->groups->GetCount();
+	i = group->groups.GetCount();
 	while (i-- > 0)
 	{
-		sgroup = group->groups->GetItem(i);
+		sgroup = group->groups.GetItem(i);
 		this->CalcGroupCount(sgroup);
 		group->myPhotoCount += sgroup->myPhotoCount;
 		group->photoCount += sgroup->photoCount;
@@ -924,17 +911,17 @@ void SSWR::OrganMgr::OrganWebHandler::GetGroupSpecies(SSWR::OrganMgr::OrganWebHa
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *sgroup;
 	i = 0;
-	j = group->species->GetCount();
+	j = group->species.GetCount();
 	while (i < j)
 	{
-		sp = group->species->GetItem(i);
+		sp = group->species.GetItem(i);
 		spMap->Put(sp->sciName, sp);
 		i++;
 	}
-	i = group->groups->GetCount();
+	i = group->groups.GetCount();
 	while (i-- > 0)
 	{
-		sgroup = group->groups->GetItem(i);
+		sgroup = group->groups.GetItem(i);
 		if ((sgroup->flags & 1) == 0 || user != 0)
 		{
 			GetGroupSpecies(sgroup, spMap, user);
@@ -957,11 +944,11 @@ o = a
 i = l
 e = c
 */
-	i = group->species->GetCount();
+	i = group->species.GetCount();
 	while (i-- > 0)
 	{
 		rating = 0;
-		species = group->species->GetItem(i);
+		species = group->species.GetItem(i);
 		if (species->sciName->Equals(searchStr, searchStrLen) || species->chiName->Equals(searchStr, searchStrLen))
 		{
 			speciesIndice->Add(1.0);
@@ -977,10 +964,10 @@ e = c
 				rating = currRating;
 			if (rating < (currRating = species->descript->MatchRating(searchStr, searchStrLen)))
 				rating = currRating;
-			j = species->books->GetCount();
+			j = species->books.GetCount();
 			while (j-- > 0)
 			{
-				bookSp = species->books->GetItem(j);
+				bookSp = species->books.GetItem(j);
 				if (bookSp->dispName->Equals(searchStr, searchStrLen))
 				{
 					rating = 1.0;
@@ -999,11 +986,11 @@ e = c
 			}
 		}
 	}
-	i = group->groups->GetCount();
+	i = group->groups.GetCount();
 	while (i-- > 0)
 	{
 		rating = 0;
-		subGroup = group->groups->GetItem(i);
+		subGroup = group->groups.GetItem(i);
 		if (user == 0 && (subGroup->flags & 1))
 		{
 
@@ -1155,7 +1142,8 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(Text::CString engName, Text::C
 	sql.AppendCmdC(CSTR(")"));
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
-		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = MemAlloc(SSWR::OrganMgr::OrganWebHandler::SpeciesInfo, 1);
+		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
+		NEW_CLASS(species, SSWR::OrganMgr::OrganWebHandler::SpeciesInfo());
 		species->speciesId = this->db->GetLastIdentity32();
 		species->engName = Text::String::NewOrNull(engName);
 		species->chiName = Text::String::NewOrNull(chiName);
@@ -1170,16 +1158,13 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(Text::CString engName, Text::C
 		species->photoId = 0;
 		species->photoWId = 0;
 
-		NEW_CLASS(species->books, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookSpInfo*>());
-		NEW_CLASS(species->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-		NEW_CLASS(species->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 		this->spMap->Put(species->speciesId, species);
 		this->spNameMap->PutC(species->sciName->ToCString(), species);
 
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(species->groupId);
 		if (group)
 		{
-			group->species->Add(species);
+			group->species.Add(species);
 			this->GroupAddCounts(group->id, 1, 0, 0);
 		}
 		return species->speciesId;
@@ -1273,7 +1258,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(species->groupId);
 		if (group)
 		{
-			group->species->Remove(species);
+			group->species.Remove(species);
 			if (group->photoSpecies == species->speciesId)
 			{
 				group->photoSpObj = 0;
@@ -1286,7 +1271,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId
 		group = this->groupMap->Get(species->groupId);
 		if (group)
 		{
-			group->species->Add(species);
+			group->species.Add(species);
 			if (group->photoSpObj == 0 && (species->photoId != 0 || species->photo != 0 || species->photoWId != 0))
 			{
 				group->photoSpObj = species;
@@ -1590,7 +1575,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(userFile->speciesId);
 						if (species)
 						{
-							species->files->Add(userFile);
+							species->files.Add(userFile);
 							if (species->photoId == 0)
 							{
 								this->SpeciesSetPhotoId(species->speciesId, userFile->id);
@@ -1784,7 +1769,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(userFile->speciesId);
 						if (species)
 						{
-							species->files->Add(userFile);
+							species->files.Add(userFile);
 							if (species->photoId == 0)
 							{
 								this->SpeciesSetPhotoId(species->speciesId, userFile->id);
@@ -1903,17 +1888,17 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileMove(Int32 userfileId, Int32 speci
 	{
 		userFile->speciesId = speciesId;
 
-		UOSInt i = srcSpecies->files->GetCount();
+		UOSInt i = srcSpecies->files.GetCount();
 		while (i-- > 0)
 		{
-			if (srcSpecies->files->GetItem(i) == userFile)
+			if (srcSpecies->files.GetItem(i) == userFile)
 			{
-				srcSpecies->files->RemoveAt(i);
+				srcSpecies->files.RemoveAt(i);
 				break;
 			}
 		}
 
-		destSpecies->files->Add(userFile);
+		destSpecies->files.Add(userFile);
 		if ((destSpecies->flags & 1) == 0)
 		{
 			this->SpeciesSetFlags(destSpecies->speciesId, (SpeciesFlags)(destSpecies->flags | SF_HAS_MYPHOTO));
@@ -2006,10 +1991,10 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(Text::CString speciesNa
 	while (i < j)
 	{
 		book = bookList->GetItem(i);
-		k = book->species->GetCount();
+		k = book->species.GetCount();
 		while (k-- > 0)
 		{
-			bookSp = book->species->GetItem(k);
+			bookSp = book->species.GetItem(k);
 			if (bookSp->dispName && bookSp->dispName->Equals(speciesName.v, nameLen))
 			{
 				bookNameOut->Append(book->title);
@@ -2046,7 +2031,8 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(Text::CString engName, Text::CSt
 	sql.AppendCmdC(CSTR(")"));
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
-		SSWR::OrganMgr::OrganWebHandler::GroupInfo *newGroup = MemAlloc(SSWR::OrganMgr::OrganWebHandler::GroupInfo, 1);
+		SSWR::OrganMgr::OrganWebHandler::GroupInfo *newGroup;
+		NEW_CLASS(newGroup, SSWR::OrganMgr::OrganWebHandler::GroupInfo());
 		newGroup->id = this->db->GetLastIdentity32();
 		newGroup->groupType = groupTypeId;
 		newGroup->engName = Text::String::NewOrNull(engName);
@@ -2059,14 +2045,12 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(Text::CString engName, Text::CSt
 		newGroup->cateId = cateId;
 		newGroup->flags = flags;
 
-		NEW_CLASS(newGroup->species, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
-		NEW_CLASS(newGroup->groups, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
 		newGroup->photoCount = (UOSInt)-1;
 		newGroup->myPhotoCount = (UOSInt)-1;
 		newGroup->totalCount = (UOSInt)-1;
 		newGroup->photoSpObj = 0;
 		this->groupMap->Put(newGroup->id, newGroup);
-		group->groups->Add(newGroup);
+		group->groups.Add(newGroup);
 
 		return newGroup->id;
 	}
@@ -2111,9 +2095,9 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupDelete(Int32 id)
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(id);
 	if (group == 0)
 		return false;
-	if (group->groups->GetCount() > 0)
+	if (group->groups.GetCount() > 0)
 		return false;
-	if (group->species->GetCount() > 0)
+	if (group->species.GetCount() > 0)
 		return false;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate = this->cateMap->Get(group->cateId);
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *parentGroup = this->groupMap->Get(group->parentId);
@@ -2127,7 +2111,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupDelete(Int32 id)
 	sql.AppendInt32(id);
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
-		parentGroup->groups->Remove(group);
+		parentGroup->groups.Remove(group);
 		cate->groups->Remove(group);
 		this->groupMap->Remove(group->id);
 		FreeGroup(group);
@@ -2166,12 +2150,12 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId
 		parentGroup = this->groupMap->Get(group->parentId);
 		if (parentGroup)
 		{
-			parentGroup->groups->Remove(group);
+			parentGroup->groups.Remove(group);
 			if (parentGroup->photoGroup == group->id)
 			{
 				this->GroupSetPhotoGroup(parentGroup->id, 0);
 			}
-			if (parentGroup->groups->GetCount() == 0)
+			if (parentGroup->groups.GetCount() == 0)
 			{
 				parentGroup->photoSpObj = 0;
 			}
@@ -2185,7 +2169,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId
 		parentGroup = this->groupMap->Get(group->parentId);
 		if (parentGroup)
 		{
-			parentGroup->groups->Add(group);
+			parentGroup->groups.Add(group);
 			if (group->myPhotoCount != (UOSInt)-1)
 			{
 				this->GroupAddCounts(parentGroup->id, group->totalCount, group->photoCount, group->myPhotoCount);
@@ -2483,45 +2467,45 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			Int32 itemId;
 			if (action && action->Equals(UTF8STRC("pickall")))
 			{
-				if (group->groups->GetCount() > 0)
+				if (group->groups.GetCount() > 0)
 				{
 					env.pickObjType = POT_GROUP;
 					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
-					j = group->groups->GetCount();
+					j = group->groups.GetCount();
 					while (i < j)
 					{
-						env.pickObjs->SortedInsert(group->groups->GetItem(i)->id);
+						env.pickObjs->SortedInsert(group->groups.GetItem(i)->id);
 						i++;
 					}
 				}
-				else if (group->species->GetCount() > 0)
+				else if (group->species.GetCount() > 0)
 				{
 					env.pickObjType = POT_SPECIES;
 					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
-					j = group->species->GetCount();
+					j = group->species.GetCount();
 					while (i < j)
 					{
-						env.pickObjs->SortedInsert(group->species->GetItem(i)->speciesId);
+						env.pickObjs->SortedInsert(group->species.GetItem(i)->speciesId);
 						i++;
 					}
 				}
 			}
 			else if (action && action->Equals(UTF8STRC("picksel")))
 			{
-				if (group->groups->GetCount() > 0)
+				if (group->groups.GetCount() > 0)
 				{
 					env.pickObjType = POT_GROUP;
 					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
-					j = group->groups->GetCount();
+					j = group->groups.GetCount();
 					while (i < j)
 					{
-						itemId = group->groups->GetItem(i)->id;
+						itemId = group->groups.GetItem(i)->id;
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("group"));
 						sb.AppendI32(itemId);
@@ -2533,16 +2517,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						i++;
 					}
 				}
-				else if (group->species->GetCount() > 0)
+				else if (group->species.GetCount() > 0)
 				{
 					env.pickObjType = POT_SPECIES;
 					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
-					j = group->species->GetCount();
+					j = group->species.GetCount();
 					while (i < j)
 					{
-						itemId = group->species->GetItem(i)->speciesId;
+						itemId = group->species.GetItem(i)->speciesId;
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("species"));
 						sb.AppendI32(itemId);
@@ -2557,7 +2541,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			}
 			else if (action && action->Equals(UTF8STRC("place")))
 			{
-				if (env.pickObjType == POT_GROUP && group->species->GetCount() == 0)
+				if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
 				{
 					i = 0;
 					j = env.pickObjs->GetCount();
@@ -2584,7 +2568,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
-				else if (env.pickObjType == POT_SPECIES && group->groups->GetCount() == 0)
+				else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
 				{
 					i = 0;
 					j = env.pickObjs->GetCount();
@@ -2614,7 +2598,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			}
 			else if (action && action->Equals(UTF8STRC("placeall")))
 			{
-				if (env.pickObjType == POT_GROUP && group->species->GetCount() == 0)
+				if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
 				{
 					i = 0;
 					j = env.pickObjs->GetCount();
@@ -2634,7 +2618,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
-				else if (env.pickObjType == POT_SPECIES && group->groups->GetCount() == 0)
+				else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
 				{
 					i = 0;
 					j = env.pickObjs->GetCount();
@@ -2702,7 +2686,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		if (!notAdmin)
 		{
 			writer->WriteLineC(UTF8STRC("<br/>"));
-			if (group->groups->GetCount() == 0)
+			if (group->groups.GetCount() == 0)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<a href=\"speciesmod.html?id="));
@@ -2712,7 +2696,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				sb.AppendC(UTF8STRC("\">New Species</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			if (group->species->GetCount() == 0)
+			if (group->species.GetCount() == 0)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<a href=\"groupmod.html?id="));
@@ -2749,14 +2733,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\"/>"));
 		}
-		if (group->groups->GetCount())
+		if (group->groups.GetCount())
 		{
 			SSWR::OrganMgr::OrganWebHandler::GroupInfo *sgroup;
 			Data::StringMap<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> groups;
-			i = group->groups->GetCount();
+			i = group->groups.GetCount();
 			while (i-- > 0)
 			{
-				sgroup = group->groups->GetItem(i);
+				sgroup = group->groups.GetItem(i);
 				if ((sgroup->flags & 1) == 0 || !notAdmin)
 				{
 					groups.Put(sgroup->engName, sgroup);
@@ -2769,14 +2753,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				found = true;
 			}
 		}
-		if (group->species->GetCount())
+		if (group->species.GetCount())
 		{
 			SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 			Data::StringMap<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> species;
-			i = group->species->GetCount();
+			i = group->species.GetCount();
 			while (i-- > 0)
 			{
-				sp = group->species->GetItem(i);
+				sp = group->species.GetItem(i);
 				species.Put(sp->sciName, sp);
 			}
 			me->WriteSpeciesTable(writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin);
@@ -2957,10 +2941,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 				{
 					sb.ClearStr();
 					Bool found = false;
-					i = group->groups->GetCount();
+					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups->GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -2998,10 +2982,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 				else if (task->Equals(UTF8STRC("modify")) && modGroup != 0 && modGroup->cateId == cateId)
 				{
 					Bool found = false;
-					i = group->groups->GetCount();
+					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups->GetItem(i) != modGroup && group->groups->GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItem(i) != modGroup && group->groups.GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -3035,7 +3019,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						me->dataMut->LockRead();
 					}
 				}
-				else if (task->Equals(UTF8STRC("delete")) && modGroup != 0 && modGroup->groups->GetCount() == 0 && modGroup->species->GetCount() == 0)
+				else if (task->Equals(UTF8STRC("delete")) && modGroup != 0 && modGroup->groups.GetCount() == 0 && modGroup->species.GetCount() == 0)
 				{
 					Int32 id = modGroup->id;
 					Int32 cateId = modGroup->cateId;
@@ -3155,7 +3139,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newgroup.task.value='modify';document.forms.newgroup.submit();\"/>"));
 		}
 		writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>"));
-		if (group->species->GetCount() == 0 && group->groups->GetCount() == 0)
+		if (group->species.GetCount() == 0 && group->groups.GetCount() == 0)
 		{
 			writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
 		}
@@ -3256,10 +3240,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 				env.pickObjs->Clear();
 				i = 0;
-				j = species->files->GetCount();
+				j = species->files.GetCount();
 				while (i < j)
 				{
-					env.pickObjs->SortedInsert(species->files->GetItem(i)->id);
+					env.pickObjs->SortedInsert(species->files.GetItem(i)->id);
 					i++;
 				}
 			}
@@ -3269,10 +3253,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 				env.pickObjs->Clear();
 				i = 0;
-				j = species->files->GetCount();
+				j = species->files.GetCount();
 				while (i < j)
 				{
-					userfileId = species->files->GetItem(i)->id;
+					userfileId = species->files.GetItem(i)->id;
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("userfile"));
 					sb.AppendI32(userfileId);
@@ -3364,7 +3348,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		if (species->files->GetCount() > 0)
+		if (species->files.GetCount() > 0)
 		{
 			Bool months[12];
 			i = 12;
@@ -3372,10 +3356,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			{
 				months[i] = false;
 			}
-			i = species->files->GetCount();
+			i = species->files.GetCount();
 			while (i-- > 0)
 			{
-				userFile = species->files->GetItem(i);
+				userFile = species->files.GetItem(i);
 				if (userFile->captureTimeTicks)
 				{
 					dt.SetTicks(userFile->captureTimeTicks);
@@ -3402,7 +3386,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			}
 			writer->WriteLineC(UTF8STRC("</tr></table>"));
 		}
-		if (species->books->GetCount() > 0)
+		if (species->books.GetCount() > 0)
 		{
 			Data::DateTime dt;
 			writer->WriteLineC(UTF8STRC("<br/><br/>"));
@@ -3410,10 +3394,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			writer->WriteLineC(UTF8STRC(":<br/>"));
 			writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
 			i = 0;
-			j = species->books->GetCount();
+			j = species->books.GetCount();
 			while (i < j)
 			{
-				bookSp = species->books->GetItem(i);
+				bookSp = species->books.GetItem(i);
 				book = me->bookMap->Get(bookSp->bookId);
 				if (book != 0)
 				{
@@ -3517,7 +3501,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		UInt32 colCount = env.scnWidth / PREVIEW_SIZE;
 		UInt32 colWidth = 100 / colCount;
 		UInt32 currColumn;
-		if (fileNameList->GetCount() > 0 || species->files->GetCount() > 0 || species->wfiles->GetCount() > 0)
+		if (fileNameList->GetCount() > 0 || species->files.GetCount() > 0 || species->wfiles.GetCount() > 0)
 		{
 			currColumn = 0;
 			if (env.user != 0 && env.user->userType == 0)
@@ -3534,10 +3518,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 
 			i = 0;
-			j = species->files->GetCount();
+			j = species->files.GetCount();
 			while (i < j)
 			{
-				userFile = species->files->GetItem(i);
+				userFile = species->files.GetItem(i);
 				if (currColumn == 0)
 				{
 					writer->WriteLineC(UTF8STRC("<tr>"));
@@ -3679,7 +3663,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				i++;
 			}
 
-			wfiles = species->wfiles->GetValues();
+			wfiles = species->wfiles.GetValues();
 			i = 0;
 			j = wfiles->GetCount();
 			while (i < j)
@@ -4441,10 +4425,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 			Bool found = false;
 			SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 			i = 0;
-			j = species->files->GetCount();
+			j = species->files.GetCount();
 			while (i < j)
 			{
-				userFile = species->files->GetItem(i);
+				userFile = species->files.GetItem(i);
 				if (userFile->id == fileId)
 				{
 					found = true;
@@ -4506,11 +4490,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(species->cateId);
 					sb.AppendC(UTF8STRC("&fileId="));
-					sb.AppendI32(species->files->GetItem(i + 1)->id);
+					sb.AppendI32(species->files.GetItem(i + 1)->id);
 				}
-				else if (species->wfiles->GetCount() != 0)
+				else if (species->wfiles.GetCount() != 0)
 				{
-					wfile = species->wfiles->GetValues()->GetItem(0);
+					wfile = species->wfiles.GetValues()->GetItem(0);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photodetail.html?id="));
 					sb.AppendI32(species->speciesId);
@@ -4847,7 +4831,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		else if (req->GetQueryValueI32(CSTR("fileWId"), &fileId))
 		{
 			Data::ArrayListICaseString *fileNameList;
-			wfile = species->wfiles->Get(fileId);
+			wfile = species->wfiles.Get(fileId);
 			if (wfile)
 			{
 				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
@@ -4872,8 +4856,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 				writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
-				i = (UOSInt)species->wfiles->GetIndex(fileId);
-				j = species->wfiles->GetCount();
+				i = (UOSInt)species->wfiles.GetIndex(fileId);
+				j = species->wfiles.GetCount();
 				if (i + 1 < j)
 				{
 					sb.ClearStr();
@@ -4882,7 +4866,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(species->cateId);
 					sb.AppendC(UTF8STRC("&fileWId="));
-					sb.AppendI32(species->wfiles->GetKey(i + 1));
+					sb.AppendI32(species->wfiles.GetKey(i + 1));
 				}
 				else
 				{
@@ -7170,10 +7154,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		}
 
 		i = 0;
-		j = book->species->GetCount();
+		j = book->species.GetCount();
 		while (i < j)
 		{
-			bookSp = book->species->GetItem(i);
+			bookSp = book->species.GetItem(i);
 			species = me->spMap->Get(bookSp->speciesId);
 			if (species)
 			{
@@ -8435,7 +8419,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 	sp = this->spMap->Get(speciesId);
 	if (sp && sp->cateId == cateId)
 	{
-		wfile = sp->wfiles->Get(fileWId);
+		wfile = sp->wfiles.Get(fileWId);
 		if (wfile)
 		{
 			Data::DateTime dt;

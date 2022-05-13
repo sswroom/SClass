@@ -77,7 +77,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item
 	{
 	case Data::VariItem::ItemType::Date:
 		{
-			Int64 t = item->GetItemValue().date->ToTicks();
+			Int64 t = item->GetItemValue().date.ticks;
 			return t >= this->t1 && t <= this->t2;
 		}
 	case Data::VariItem::ItemType::F32:

@@ -11,11 +11,7 @@ namespace Data
 		Int8 tzQhr;
 
 	public:
-		Timestamp()
-		{
-			this->ticks = 0;
-			this->tzQhr = 0;
-		}
+		Timestamp() = default;
 
 		Timestamp(Int64 ticks, Int8 tzQhr)
 		{
@@ -134,6 +130,16 @@ namespace Data
 		Bool operator<(Timestamp dt)
 		{
 			return this->ticks < dt.ticks;
+		}
+
+		OSInt CompareTo(const Timestamp& ts) const
+		{
+			if (this->ticks > ts.ticks)
+				return 1;
+			else if (this->ticks < ts.ticks)
+				return -1;
+			else
+				return 0;
 		}
 		
 		/*UTF8Char *ToLocalStr(UTF8Char *buff);

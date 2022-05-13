@@ -378,7 +378,8 @@ DB::DBReader::DateErrType DB::SortableDBReader::GetDate(UOSInt colIndex, Data::D
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::Date)
 	{
-		outVal->SetValue(item->GetItemValue().date);
+		Data::Timestamp ts = item->GetItemValue().date;
+		outVal->SetValue(ts.ticks, ts.tzQhr);
 		return DB::DBReader::DET_OK;
 	}
 	else if (item && item->GetItemType() == Data::VariItem::ItemType::Null)
