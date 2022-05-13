@@ -17,12 +17,12 @@ namespace Net
 		public:
 			typedef struct
 			{
-				UInt8 *buff;
+				UInt8 buff[2048];
 				UOSInt buffSize;
 				Int32 userId;
 				const UTF8Char *cliName;
 				const UTF8Char *userName;
-				Data::ArrayList<const UTF8Char *> *rcptTo;
+				Data::ArrayList<const UTF8Char *> rcptTo;
 				Bool dataMode;
 				IO::MemoryStream *dataStm;
 			} MailStatus;
@@ -32,7 +32,7 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
+			Net::TCPClientMgr cliMgr;
 			IO::LogTool *log;
 			Text::String *greeting;
 

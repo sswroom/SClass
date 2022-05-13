@@ -49,12 +49,12 @@ namespace Text
 		Text::String *name;
 		Text::String *fontName;
 		UOSInt colCount;
-		Data::ArrayList<Text::String **> *preheaders;
-		Data::ArrayList<Text::String **> *headers;
-		Data::ArrayList<Text::String **> *tableContent;
-		Data::ArrayList<RowType> *tableRowType;
-		Data::ArrayList<ColURLLatLon*> *urlList;
-		Data::ArrayList<Data::ArrayList<ColIcon*>*> *icons;
+		Data::ArrayList<Text::String **> preheaders;
+		Data::ArrayList<Text::String **> headers;
+		Data::ArrayList<Text::String **> tableContent;
+		Data::ArrayList<RowType> tableRowType;
+		Data::ArrayList<ColURLLatLon*> urlList;
+		Data::ArrayList<Data::ArrayList<ColIcon*>*> icons;
 		Double *colWidthPts;
 		ColType *colTypes;
 		Data::IChart *chart;

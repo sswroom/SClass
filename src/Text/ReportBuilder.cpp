@@ -50,14 +50,8 @@ Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UT
 		this->colTypes[i] = CT_STRING;
 		i++;
 	}
-	NEW_CLASS(this->preheaders, Data::ArrayList<Text::String **>());
-	NEW_CLASS(this->headers, Data::ArrayList<Text::String **>());
-	NEW_CLASS(this->tableContent, Data::ArrayList<Text::String **>());
-	NEW_CLASS(this->tableRowType, Data::ArrayList<RowType>());
-	NEW_CLASS(this->urlList, Data::ArrayList<ColURLLatLon*>());
-	NEW_CLASS(this->icons, Data::ArrayList<Data::ArrayList<Text::ReportBuilder::ColIcon*>*>());
-	this->tableContent->Add(cols);
-	this->tableRowType->Add(RT_HEADER);
+	this->tableContent.Add(cols);
+	this->tableRowType.Add(RT_HEADER);
 }
 
 Text::ReportBuilder::~ReportBuilder()
@@ -68,26 +62,26 @@ Text::ReportBuilder::~ReportBuilder()
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
 	UOSInt i;
 	UOSInt j;
-	j = this->headers->GetCount();
+	j = this->headers.GetCount();
 	while (j-- > 0)
 	{
-		cols = this->headers->GetItem(j);
+		cols = this->headers.GetItem(j);
 		cols[0]->Release();
 		cols[1]->Release();
 		MemFree(cols);
 	}
-	j = this->preheaders->GetCount();
+	j = this->preheaders.GetCount();
 	while (j-- > 0)
 	{
-		cols = this->preheaders->GetItem(j);
+		cols = this->preheaders.GetItem(j);
 		cols[0]->Release();
 		cols[1]->Release();
 		MemFree(cols);
 	}
-	j = this->tableContent->GetCount();
+	j = this->tableContent.GetCount();
 	while (j-- > 0)
 	{
-		cols = this->tableContent->GetItem(j);
+		cols = this->tableContent.GetItem(j);
 		i = this->colCount;
 		while (i-- > 0)
 		{
@@ -95,16 +89,16 @@ Text::ReportBuilder::~ReportBuilder()
 		}
 		MemFree(cols);
 	}
-	i = this->urlList->GetCount();
+	i = this->urlList.GetCount();
 	while (i-- > 0)
 	{
-		url = this->urlList->GetItem(i);
+		url = this->urlList.GetItem(i);
 		MemFree(url);
 	}
-	i = this->icons->GetCount();
+	i = this->icons.GetCount();
 	while (i-- > 0)
 	{
-		iconList = this->icons->GetItem(i);
+		iconList = this->icons.GetItem(i);
 		if (iconList)
 		{
 			j = iconList->GetCount();
@@ -118,13 +112,7 @@ Text::ReportBuilder::~ReportBuilder()
 			DEL_CLASS(iconList);
 		}
 	}
-	DEL_CLASS(this->headers);
-	DEL_CLASS(this->preheaders);
-	DEL_CLASS(this->tableContent);
-	DEL_CLASS(this->tableRowType);
-	DEL_CLASS(this->urlList);
 	SDEL_CLASS(this->chart);
-	DEL_CLASS(this->icons);
 	MemFree(this->colWidthPts);
 	MemFree(this->colTypes);
 	this->fontName->Release();
@@ -166,7 +154,7 @@ void Text::ReportBuilder::AddPreHeader(Text::CString name, Text::CString val)
 	cols = MemAlloc(Text::String *, 2);
 	cols[0] = Text::String::New(name.v, name.leng);
 	cols[1] = Text::String::New(val.v, val.leng);
-	this->preheaders->Add(cols);
+	this->preheaders.Add(cols);
 }
 
 void Text::ReportBuilder::AddHeader(Text::CString name, Text::CString val)
@@ -175,7 +163,7 @@ void Text::ReportBuilder::AddHeader(Text::CString name, Text::CString val)
 	cols = MemAlloc(Text::String *, 2);
 	cols[0] = Text::String::New(name.v, name.leng);
 	cols[1] = Text::String::New(val.v, val.leng);
-	this->headers->Add(cols);
+	this->headers.Add(cols);
 }
 
 void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
@@ -196,8 +184,8 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 		}
 		i++;
 	}
-	this->tableContent->Add(cols);
-	this->tableRowType->Add(RT_CONTENT);
+	this->tableContent.Add(cols);
+	this->tableRowType.Add(RT_CONTENT);
 }
 
 void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
@@ -218,24 +206,24 @@ void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 		}
 		i++;
 	}
-	this->tableContent->Add(cols);
-	this->tableRowType->Add(RT_SUMMARY);
+	this->tableContent.Add(cols);
+	this->tableRowType.Add(RT_SUMMARY);
 }
 
 void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CString name)
 {
-	UOSInt cnt = this->tableContent->GetCount() - 1;
+	UOSInt cnt = this->tableContent.GetCount() - 1;
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
 	Text::ReportBuilder::ColIcon *icon;
-	while (this->icons->GetCount() < cnt)
+	while (this->icons.GetCount() < cnt)
 	{
-		this->icons->Add(0);
+		this->icons.Add(0);
 	}
-	iconList = this->icons->GetItem(cnt);
+	iconList = this->icons.GetItem(cnt);
 	if (iconList == 0)
 	{
 		NEW_CLASS(iconList, Data::ArrayList<Text::ReportBuilder::ColIcon*>());
-		this->icons->Add(iconList);
+		this->icons.Add(iconList);
 	}
 	icon = MemAlloc(Text::ReportBuilder::ColIcon, 1);
 	icon->col = index;
@@ -277,10 +265,10 @@ void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Double lat, Double lon)
 	ColURLLatLon *url;
 	url = MemAlloc(ColURLLatLon, 1);
 	url->col = index;
-	url->row = this->tableContent->GetCount();
+	url->row = this->tableContent.GetCount();
 	url->lat = lat;
 	url->lon = lon;
-	this->urlList->Add(url);
+	this->urlList.Add(url);
 }
 
 Bool Text::ReportBuilder::HasChart()
@@ -316,10 +304,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 
 		k = 0;
 		i = 0;
-		j = this->preheaders->GetCount();
+		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			csarr = this->preheaders->GetItem(i);
+			csarr = this->preheaders.GetItem(i);
 			ws->SetCellString(k, 0, csarr[0]);
 			ws->SetCellString(k, 1, csarr[1]);
 			k++;
@@ -340,10 +328,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 
 		i = 0;
 		k++;
-		j = this->headers->GetCount();
+		j = this->headers.GetCount();
 		while (i < j)
 		{
-			csarr = this->headers->GetItem(i);
+			csarr = this->headers.GetItem(i);
 			ws->SetCellString(k, 0, csarr[0]);
 			ws->SetCellString(k, 1, csarr[1]);
 			k++;
@@ -353,12 +341,12 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		k++;
 		lastRowType = RT_UNKNOWN;
 		i = 0;
-		j = this->tableContent->GetCount();
+		j = this->tableContent.GetCount();
 		while (i < j)
 		{
-			iconList = this->icons->GetItem(i);
-			csarr = this->tableContent->GetItem(i);
-			currRowType = this->tableRowType->GetItem(i);
+			iconList = this->icons.GetItem(i);
+			csarr = this->tableContent.GetItem(i);
+			currRowType = this->tableRowType.GetItem(i);
 			if ((lastRowType == RT_CONTENT && currRowType == RT_SUMMARY) || (lastRowType == RT_HEADER && currRowType != RT_HEADER))
 			{
 				if (styleSummary == 0)
@@ -454,10 +442,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			i++;
 		}
 		i = 0;
-		j = this->urlList->GetCount();
+		j = this->urlList.GetCount();
 		while (i < j)
 		{
-			url = this->urlList->GetItem(i);
+			url = this->urlList.GetItem(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("https://www.google.com/maps/place/"));
 			Text::SBAppendF64(&sb, url->lat);
@@ -483,10 +471,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 
 		k = 0;
 		i = 0;
-		j = this->preheaders->GetCount();
+		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			csarr = this->preheaders->GetItem(i);
+			csarr = this->preheaders.GetItem(i);
 			ws->SetCellString(k, 0, strStyle, csarr[0]);
 			ws->SetCellString(k, 1, strStyle, csarr[1]);
 			k++;
@@ -507,10 +495,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 
 		i = 0;
 		k++;
-		j = this->headers->GetCount();
+		j = this->headers.GetCount();
 		while (i < j)
 		{
-			csarr = this->headers->GetItem(i);
+			csarr = this->headers.GetItem(i);
 			ws->SetCellString(k, 0, strStyle, csarr[0]);
 			ws->SetCellString(k, 1, strStyle, csarr[1]);
 			k++;
@@ -743,10 +731,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
-	i = this->headers->GetCount();
+	i = this->headers.GetCount();
 	while (i-- > 0)
 	{
-		strs = this->headers->GetItem(i);
+		strs = this->headers.GetItem(i);
 		g->GetTextSize(f, strs[0]->ToCString(), sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
@@ -754,10 +742,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
-	i = this->preheaders->GetCount();
+	i = this->preheaders.GetCount();
 	while (i-- > 0)
 	{
-		strs = this->preheaders->GetItem(i);
+		strs = this->preheaders.GetItem(i);
 		g->GetTextSize(f, strs[0]->ToCString(), sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
@@ -775,11 +763,11 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		colSize[i] = 0;
 	}
 
-	i = this->tableContent->GetCount();
+	i = this->tableContent.GetCount();
 	while (i-- > 0)
 	{
-		strs = this->tableContent->GetItem(i);
-		iconList = this->icons->GetItem(i);
+		strs = this->tableContent.GetItem(i);
+		iconList = this->icons.GetItem(i);
 		j = this->colCount;
 		while (j-- > 0)
 		{
@@ -861,7 +849,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	g->DelFont(f);
 
 	k = 1;
-	l = this->tableContent->GetCount();
+	l = this->tableContent.GetCount();
 	while (true)
 	{
 		f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
@@ -870,10 +858,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 
 		currY = border;
 		i = 0;
-		j = this->preheaders->GetCount();
+		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			strs = this->preheaders->GetItem(i);
+			strs = this->preheaders.GetItem(i);
 			g->DrawString(border, currY, strs[0], f, b);
 			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
 
@@ -884,10 +872,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		g->DrawString(border, currY, this->name, f, b);
 		currY += fontHeightMM * 2;
 		i = 0;
-		j = this->headers->GetCount();
+		j = this->headers.GetCount();
 		while (i < j)
 		{
-			strs = this->headers->GetItem(i);
+			strs = this->headers.GetItem(i);
 			g->DrawString(border, currY, strs[0], f, b);
 			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
 
@@ -902,7 +890,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		}
 		else
 		{
-			strs = this->tableContent->GetItem(0);
+			strs = this->tableContent.GetItem(0);
 			i = 0;
 			j = this->colCount;
 			while (i < j)
@@ -918,8 +906,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			}
 			while (k < l)
 			{
-				strs = this->tableContent->GetItem(k);
-				currRowType = this->tableRowType->GetItem(k);
+				strs = this->tableContent.GetItem(k);
+				currRowType = this->tableRowType.GetItem(k);
 				if (lastRowType == RT_CONTENT && currRowType == RT_SUMMARY)
 				{
 					g->DrawLine(border, currY, border + drawWidth, currY, p);
@@ -936,7 +924,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					i++;
 				}
 
-				iconList = this->icons->GetItem(k);
+				iconList = this->icons.GetItem(k);
 				if (iconList)
 				{
 					i = 0;

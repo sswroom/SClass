@@ -68,7 +68,7 @@ namespace SSWR
 
 			Net::Email::SMTPServer *smtpSvr;
 			Net::Email::POP3Server *pop3Svr;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
@@ -77,10 +77,10 @@ namespace SSWR
 			Net::Email::SMTPConn::ConnType smtpType;
 
 			Int64 currId;
-			Sync::Mutex *currIdMut;
+			Sync::Mutex currIdMut;
 
-			Data::ArrayList<EmailInfo*> *mailList;
-			Sync::Mutex *mailMut;
+			Data::ArrayList<EmailInfo*> mailList;
+			Sync::Mutex mailMut;
 			UOSInt totalSize;
 			UOSInt recvIndex;
 			UOSInt recvSize;

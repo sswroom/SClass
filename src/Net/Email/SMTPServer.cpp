@@ -10,18 +10,16 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	MailStatus *cliStatus;
-	cliStatus = MemAlloc(MailStatus, 1);
-	cliStatus->buff = MemAlloc(UInt8, 4096);
+	NEW_CLASS(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
 	cliStatus->cliName = 0;
 	cliStatus->mailFrom = 0;
-	NEW_CLASS(cliStatus->rcptTo, Data::ArrayList<Text::String *>());
 	cliStatus->dataStm = 0;
 	cliStatus->dataMode = false;
 	cliStatus->loginMode = 0;
 	cliStatus->login = false;
 	cliStatus->userName = 0;
-	me->cliMgr->AddClient(cli, cliStatus);
+	me->cliMgr.AddClient(cli, cliStatus);
 
 	if (me->connType != Net::Email::SMTPConn::CT_STARTTLS || !cli->IsSSL())
 	{
@@ -55,20 +53,18 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(Net::TCPClient *cli, void *us
 		MailStatus *cliStatus;
 		UOSInt i;
 		cliStatus = (MailStatus*)cliData;
-		MemFree(cliStatus->buff);
 		SDEL_STRING(cliStatus->cliName);
 		SDEL_STRING(cliStatus->mailFrom);
-		i = cliStatus->rcptTo->GetCount();
+		i = cliStatus->rcptTo.GetCount();
 		while (i-- > 0)
 		{
-			cliStatus->rcptTo->GetItem(i)->Release();
+			cliStatus->rcptTo.GetItem(i)->Release();
 		}
-		DEL_CLASS(cliStatus->rcptTo);
 		if (cliStatus->dataStm)
 		{
 			DEL_CLASS(cliStatus->dataStm);
 		}
-		MemFree(cliStatus);
+		DEL_CLASS(cliStatus);
 		DEL_CLASS(cli);
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
@@ -334,7 +330,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("DATA")))
 	{
-		if (cliStatus->cliName != 0 && cliStatus->mailFrom != 0 && cliStatus->rcptTo->GetCount() > 0)
+		if (cliStatus->cliName != 0 && cliStatus->mailFrom != 0 && cliStatus->rcptTo.GetCount() > 0)
 		{
 			cliStatus->dataMode = true;
 			cliStatus->lastLBT = Text::LineBreakType::None;
@@ -393,7 +389,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("RCPT TO:")))
 	{
-		cliStatus->rcptTo->Add(Text::String::New(cmd, cmdLen));
+		cliStatus->rcptTo.Add(Text::String::New(cmd, cmdLen));
 		WriteMessage(cli, 250, CSTR("Ok"));
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("AUTH ")))
@@ -462,7 +458,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
+Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -474,7 +470,6 @@ Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->mailObj = userObj;
 	this->loginHdlr = loginHdlr;
 	this->maxMailSize = 104857600;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("SMTPLog.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
@@ -482,7 +477,7 @@ Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ss
 Net::Email::SMTPServer::~SMTPServer()
 {
 	DEL_CLASS(this->svr);
-	DEL_CLASS(this->cliMgr);
+	this->cliMgr.CloseAll();
 	DEL_CLASS(this->rawLog);
 	this->domain->Release();
 	this->serverName->Release();

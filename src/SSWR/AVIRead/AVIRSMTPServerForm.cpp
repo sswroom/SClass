@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 			SDEL_CLASS(issuerCert);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
-		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, CSTR("127.0.0.1"), CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me));
+		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, &me->log, CSTR("127.0.0.1"), CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me));
 		if (me->smtpSvr->IsError())
 		{
 			DEL_CLASS(me->smtpSvr);
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 			ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
-		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, CSTR("Welcome to SSWR POP3 Server"), me));
+		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, &me->log, CSTR("Welcome to SSWR POP3 Server"), me));
 		if (me->pop3Svr->IsError())
 		{
 			DEL_CLASS(me->pop3Svr);
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnLogFileClicked(void *userObj
 	{
 		IO::Path::AppendPath(&sb, UTF8STRC("log/SMTP"));
 	}
-	me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
+	me->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
 	me->btnLogFile->SetEnabled(false);
 }
 
@@ -123,16 +123,14 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userOb
 	if (email)
 	{
 		Text::MIMEObj::MailMessage *mail;
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(email->fileName, false));
-		mail = Text::MIMEObj::MailMessage::ParseFile(fd);
-		DEL_CLASS(fd);
+		{
+			IO::StmData::FileData fd(email->fileName, false);
+			mail = Text::MIMEObj::MailMessage::ParseFile(&fd);
+		}
 		if (mail)
 		{
-			SSWR::AVIRead::AVIRMIMEViewerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, me->ui, me->core, mail));
-			frm->ShowDialog(me);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRMIMEViewerForm frm(0, me->ui, me->core, mail);
+			frm.ShowDialog(me);
 		}
 		else
 		{
@@ -153,11 +151,10 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	Int64 id = me->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 	Data::DateTime currTime;
 	EmailInfo *email;
-	IO::FileStream *fs;
 	UOSInt buffSize;
 	UInt8 *buff;
 	UOSInt i;
@@ -181,20 +178,21 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	sptr = Text::StrInt64(sbuff, id);
 	email->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 	i = 0;
-	j = mail->rcptTo->GetCount();
+	j = mail->rcptTo.GetCount();
 	while (i < j)
 	{
-		email->rcptList->Add(mail->rcptTo->GetItem(i)->Clone());
+		email->rcptList->Add(mail->rcptTo.GetItem(i)->Clone());
 		i++;
 	}
-	NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	buff = mail->dataStm->GetBuff(&buffSize);
-	fs->Write(buff, buffSize);
-	DEL_CLASS(fs);
+	{
+		IO::FileStream fs(email->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		buff = mail->dataStm->GetBuff(&buffSize);
+		fs.Write(buff, buffSize);
+	}
 	email->fileSize = buffSize;
 
-	Sync::MutexUsage mutUsage(me->mailMut);
-	me->mailList->Add(email);
+	Sync::MutexUsage mutUsage(&me->mailMut);
+	me->mailList.Add(email);
 	me->mailChanged = true;
 	me->totalSize += buffSize;
 	mutUsage.EndUse();
@@ -210,7 +208,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, Tex
 	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
 	sb.Append(pwd);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	return true;
 }
 
@@ -231,13 +229,13 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 	if (me->mailChanged)
 	{
 		me->mailChanged = false;
-		Sync::MutexUsage mutUsage(me->mailMut);
+		Sync::MutexUsage mutUsage(&me->mailMut);
 		me->lvEmail->ClearItems();
 		i = 0;
-		j = me->mailList->GetCount();
+		j = me->mailList.GetCount();
 		while (i < j)
 		{
-			email = me->mailList->GetItem(i);
+			email = me->mailList.GetItem(i);
 			sb.ClearStr();
 			sb.AppendI64(email->id);
 			k = me->lvEmail->AddItem(sb.ToCString(), email);
@@ -274,21 +272,19 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnCertKeyClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRSSLCertKeyForm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->sslCert);
 		SDEL_CLASS(me->sslKey);
-		me->sslCert = frm->GetCert();
-		me->sslKey = frm->GetKey();
+		me->sslCert = frm.GetCert();
+		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(&sb);
 		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
 		me->lblCertKey->SetText(sb.ToCString());
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPTypeSelChg(void *userObj)
@@ -329,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3SSLChanged(void *userObj
 
 Int64 SSWR::AVIRead::AVIRSMTPServerForm::NextEmailId()
 {
-	Sync::MutexUsage mutUsage(this->currIdMut);
+	Sync::MutexUsage mutUsage(&this->currIdMut);
 	Int64 id = this->currId++;
 	mutUsage.EndUse();
 	return id;
@@ -354,9 +350,6 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	this->currId = dt.ToTicks();
-	NEW_CLASS(this->currIdMut, Sync::Mutex());
-	NEW_CLASS(this->mailList, Data::ArrayList<EmailInfo*>());
-	NEW_CLASS(this->mailMut, Sync::Mutex());
 	this->mailChanged = false;
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(&sb);
@@ -426,9 +419,8 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_COMMAND);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }
@@ -441,13 +433,13 @@ SSWR::AVIRead::AVIRSMTPServerForm::~AVIRSMTPServerForm()
 	SDEL_CLASS(this->smtpSvr);
 	SDEL_CLASS(this->pop3Svr);
 
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 	
-	i = this->mailList->GetCount();
+	i = this->mailList.GetCount();
 	while (i-- > 0)
 	{
-		email = this->mailList->GetItem(i);
+		email = this->mailList.GetItem(i);
 		email->fromAddr->Release();
 		email->fileName->Release();
 		Text::StrDelNew(email->uid);
@@ -459,9 +451,6 @@ SSWR::AVIRead::AVIRSMTPServerForm::~AVIRSMTPServerForm()
 		DEL_CLASS(email->rcptList);
 		MemFree(email);
 	}
-	DEL_CLASS(this->mailList);
-	DEL_CLASS(this->mailMut);
-	DEL_CLASS(this->currIdMut);
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
@@ -488,12 +477,12 @@ UOSInt SSWR::AVIRead::AVIRSMTPServerForm::GetMessageStat(Int32 userId, UOSInt *s
 	retSize = 0;
 	retCnt = 0;
 
-	Sync::MutexUsage mutUsage(this->mailMut);
-	totalCnt = this->mailList->GetCount();
+	Sync::MutexUsage mutUsage(&this->mailMut);
+	totalCnt = this->mailList.GetCount();
 	i = this->recvIndex;
 	while (i < totalCnt)
 	{
-		email = this->mailList->GetItem(i);
+		email = this->mailList.GetItem(i);
 		if (!email->isDeleted)
 		{
 			retCnt++;
@@ -512,12 +501,12 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetUnreadList(Int32 userId, Data::ArrayL
 	UOSInt i;
 	EmailInfo *email;
 
-	Sync::MutexUsage mutUsage(this->mailMut);
-	totalCnt = this->mailList->GetCount();
+	Sync::MutexUsage mutUsage(&this->mailMut);
+	totalCnt = this->mailList.GetCount();
 	i = this->recvIndex;
 	while (i < totalCnt)
 	{
-		email = this->mailList->GetItem(i);
+		email = this->mailList.GetItem(i);
 		if (!email->isDeleted)
 		{
 			unreadList->Add((UInt32)i);
@@ -533,8 +522,8 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageInfo(Int32 userId, UInt32 msgI
 	EmailInfo *email;
 	Bool succ = false;
 
-	Sync::MutexUsage mutUsage(this->mailMut);
-	email = this->mailList->GetItem(msgId);
+	Sync::MutexUsage mutUsage(&this->mailMut);
+	email = this->mailList.GetItem(msgId);
 	if (email)
 	{
 		succ = true;
@@ -549,14 +538,13 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 {
 	EmailInfo *email;
 	Bool succ = false;
-	IO::FileStream *fs;
 
-	Sync::MutexUsage mutUsage(this->mailMut);
-	email = this->mailList->GetItem(msgId);
+	Sync::MutexUsage mutUsage(&this->mailMut);
+	email = this->mailList.GetItem(msgId);
 	if (email)
 	{
-		NEW_CLASS(fs, IO::FileStream(email->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
-		if (fs->IsError())
+		IO::FileStream fs(email->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
+		if (fs.IsError())
 		{
 
 		}
@@ -565,7 +553,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 			UInt8 *buff;
 			UOSInt readSize;
 			buff = MemAlloc(UInt8, 1048576);
-			while ((readSize = fs->Read(buff, 1048576)) > 0)
+			while ((readSize = fs.Read(buff, 1048576)) > 0)
 			{
 				stm->Write(buff, readSize);
 			}
@@ -573,7 +561,6 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 
 			succ = true;
 		}
-		DEL_CLASS(fs);
 	}
 	mutUsage.EndUse();
 	return succ;
@@ -584,8 +571,8 @@ SSWR::AVIRead::AVIRSMTPServerForm::RemoveStatus SSWR::AVIRead::AVIRSMTPServerFor
 	EmailInfo *email;
 	SSWR::AVIRead::AVIRSMTPServerForm::RemoveStatus ret = RS_NOT_FOUND;
 
-	Sync::MutexUsage mutUsage(this->mailMut);
-	email = this->mailList->GetItem(msgId);
+	Sync::MutexUsage mutUsage(&this->mailMut);
+	email = this->mailList.GetItem(msgId);
 	if (email)
 	{
 		if (email->isDeleted)
