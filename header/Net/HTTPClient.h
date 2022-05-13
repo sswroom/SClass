@@ -77,7 +77,6 @@ namespace Net
 		UInt64 GetTotalDownload();
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
-		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
 		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(Text::CString url);

@@ -79,7 +79,7 @@ void Net::HTTPClient::AddTimeHeader(Text::CString name, Data::DateTime *dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	sptr = Date2Str(sbuff, dt);
+	sptr = Net::WebUtil::Date2Str(sbuff, dt);
 	this->AddHeaderC(name, CSTRP(sbuff, sptr));
 }
 
@@ -293,16 +293,6 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 			}
 		}
 	}
-}
-
-UTF8Char *Net::HTTPClient::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
-{
-	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
-	Data::DateTime t;
-	t.SetValue(dt);
-	t.ToUTCTime();
-	Int32 wd = (Int32)t.GetWeekday();
-	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }
 
 Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)

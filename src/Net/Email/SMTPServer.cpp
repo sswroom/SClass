@@ -81,63 +81,67 @@ void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *use
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	Net::Email::SMTPServer::MailStatus *cliStatus;
 	cliStatus = (Net::Email::SMTPServer::MailStatus*)cliData;
-	if (me->rawLog)
+	while (size > 0)
 	{
-		me->rawLog->Write(buff, size);
-	}
-	if (size > 4096)
-	{
-		MemCopyNO(cliStatus->buff, &buff[size - 4096], 2048);
-		cliStatus->buffSize = 4096;
-	}
-	else if (cliStatus->buffSize + size > 4096)
-	{
-		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - 4096 + size], 4096 - size);
-		MemCopyNO(&cliStatus->buff[4096 - size], buff, size);
-		cliStatus->buffSize = 4096;
-	}
-	else
-	{
-		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, size);
-		cliStatus->buffSize += size;
-	}
-	UOSInt i;
-	UOSInt j;
-	j = 0;
-	i = 0;
-	while (i < cliStatus->buffSize)
-	{
-		if (cliStatus->buff[i] == '\r')
+		if (cliStatus->buffSize + size > 4096)
 		{
-			cliStatus->buff[i] = 0;
-			if (i + 1 < cliStatus->buffSize && cliStatus->buff[i + 1] == '\n')
+			if (me->rawLog)
 			{
-				me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::CRLF);
-				j = i + 2;
-				i++;
+				me->rawLog->Write(buff, 4096 - cliStatus->buffSize);
 			}
-			else
+			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, 4096 - cliStatus->buffSize);
+			buff += 4096 - cliStatus->buffSize;
+			size -= 4096 - cliStatus->buffSize;
+			cliStatus->buffSize = 4096;
+		}
+		else
+		{
+			if (me->rawLog)
 			{
-				me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::CR);
+				me->rawLog->Write(buff, size);
+			}
+			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff, size);
+			cliStatus->buffSize += size;
+			size = 0;
+		}
+		UOSInt i;
+		UOSInt j;
+		j = 0;
+		i = 0;
+		while (i < cliStatus->buffSize)
+		{
+			if (cliStatus->buff[i] == '\r')
+			{
+				cliStatus->buff[i] = 0;
+				if (i + 1 < cliStatus->buffSize && cliStatus->buff[i + 1] == '\n')
+				{
+					me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::CRLF);
+					j = i + 2;
+					i++;
+				}
+				else
+				{
+					me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::CR);
+					j = i + 1;
+				}
+			}
+			else if (cliStatus->buff[i] == '\n')
+			{
+				cliStatus->buff[i] = 0;
+				me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::LF);
 				j = i + 1;
 			}
+			i++;
 		}
-		else if (cliStatus->buff[i] == '\n')
+		if (j >= cliStatus->buffSize)
 		{
-			cliStatus->buff[i] = 0;
-			me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::LF);
-			j = i + 1;
+			cliStatus->buffSize = 0;
 		}
-		i++;
-	}
-	if (j >= cliStatus->buffSize)
-	{
-		cliStatus->buffSize = 0;
-	}
-	else if (j > 0)
-	{
-		MemCopyO(cliStatus->buff, &cliStatus->buff[j], cliStatus->buffSize - j);
-		cliStatus->buffSize -= j;
+		else if (j > 0)
+		{
+			MemCopyO(cliStatus->buff, &cliStatus->buff[j], cliStatus->buffSize - j);
+			cliStatus->buffSize -= j;
+		}
 	}
 }
 

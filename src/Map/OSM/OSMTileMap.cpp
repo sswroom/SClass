@@ -336,7 +336,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::HTTPClient::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), {sbuff, (UOSInt)(sptr - sbuff)});
 	}
 	if (cli->GetRespStatus() == 304)
@@ -544,7 +544,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::HTTPClient::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	if (cli->GetRespStatus() == 304)

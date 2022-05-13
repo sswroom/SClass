@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/Email/EmailMessage.h"
 #include "Net/Email/SMTPClient.h"
 
@@ -19,12 +20,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	message->SetSentDate(&dt);
 	message->SetFrom(CSTR("Test"), CSTR("sswroom@yahoo.com"));
 	message->AddTo(CSTR("Simon"), CSTR("sswroom@yahoo.com"));
+	message->AddAttachment(CSTR("/home/sswroom/Progs/Temp/OCR2.jpg"));
 
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	NEW_CLASS(client, Net::Email::SMTPClient(sockf, 0, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::CT_PLAIN, &writer));
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
+	NEW_CLASS(client, Net::Email::SMTPClient(sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::CT_PLAIN, &writer));
 	client->Send(message);
 	DEL_CLASS(message)
 	DEL_CLASS(client);
+	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);
 	return 0;
 }

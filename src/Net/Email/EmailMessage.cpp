@@ -1,11 +1,19 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/SHA1.h"
 #include "Data/ByteTool.h"
+#include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
+#include "IO/Path.h"
+#include "Net/MIME.h"
+#include "Net/WebUtil.h"
 #include "Net/Email/EmailMessage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 #include "Text/TextBinEnc/Base64Enc.h"
+
+#define LINECHARCNT 77
 
 UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nameLen)
 {
@@ -53,11 +61,165 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF8 *sb, con
 	return true;
 }
 
+UTF8Char *Net::Email::EmailMessage::GenMultipartBoundary(UTF8Char *sbuff)
+{
+	Int64 ts = Data::DateTimeUtil::GetCurrTimeMillis();
+	Crypto::Hash::SHA1 sha1;
+	UInt8 sha1Val[20];
+	sha1.Calc((const UInt8*)&ts, sizeof(ts));
+	sha1.Calc(this->content, this->contentLen);
+	sha1.GetValue(sha1Val);
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
+	return b64.EncodeBin(sbuff, sha1Val, 20);
+}
+
+void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString boundary)
+{
+	stm->Write(UTF8STRC("--"));
+	stm->Write(boundary.v, boundary.leng);
+	stm->Write(UTF8STRC("\r\nContent-Type: "));
+	stm->Write(this->contentType->v, this->contentType->leng);
+	stm->Write(UTF8STRC("\r\nContent-Transfer-Encoding: base64\r\n\r\n"));
+	WriteB64Data(stm, this->content, this->contentLen);
+
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	Attachment *att;
+	Text::CString mime;
+	UOSInt k;
+	UOSInt i = 0;
+	UOSInt j = this->attachments.GetCount();
+	while (i < j)
+	{
+		att = this->attachments.GetItem(i);
+		stm->Write(UTF8STRC("--"));
+		stm->Write(boundary.v, boundary.leng);
+		stm->Write(UTF8STRC("\r\nContent-Type: "));
+		mime = Net::MIME::GetMIMEFromFileName(att->fileName->v, att->fileName->leng);
+		stm->Write(mime.v, mime.leng);
+		stm->Write(UTF8STRC("; name=\""));
+		stm->Write(att->fileName->v, att->fileName->leng);
+		stm->Write(UTF8STRC("\"\r\nContent-Description: "));
+		stm->Write(att->fileName->v, att->fileName->leng);
+		stm->Write(UTF8STRC("\r\nContent-Disposition: "));
+		if (att->isInline)
+		{
+			stm->Write(UTF8STRC("inline;"));
+			k = 21 + 7;
+		}
+		else
+		{
+			stm->Write(UTF8STRC("attachment;"));
+			k = 21 + 11;
+		}
+		if (k + 13 + att->fileName->leng > LINECHARCNT)
+		{
+			stm->Write(UTF8STRC("\r\n\tfilename=\""));
+			stm->Write(att->fileName->v, att->fileName->leng);
+			stm->Write(UTF8STRC("\";"));
+			k = 16 + att->fileName->leng;
+		}
+		else
+		{
+			stm->Write(UTF8STRC(" filename=\""));
+			stm->Write(att->fileName->v, att->fileName->leng);
+			stm->Write(UTF8STRC("\";"));
+			k += 13 + att->fileName->leng;
+		}
+		sptr = Text::StrUOSInt(sbuff, att->contentLen);
+		if (k + 7 + (UOSInt)(sptr - sbuff) > LINECHARCNT)
+		{
+			stm->Write(UTF8STRC("\r\n\tsize="));
+			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			stm->Write(UTF8STRC(";"));
+			k = 10 + (UOSInt)(sptr - sbuff);
+		}
+		else
+		{
+			stm->Write(UTF8STRC(" size="));
+			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			stm->Write(UTF8STRC(";"));
+			k += 7 + (UOSInt)(sptr - sbuff);
+		}
+		if (k + 47 > LINECHARCNT)
+		{
+			stm->Write(UTF8STRC("\r\n\tcreation-date=\""));
+			sptr = Net::WebUtil::Date2Str(sbuff, &att->createTime);
+			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			stm->Write(UTF8STRC("\";"));
+			k = 21 + (UOSInt)(sptr - sbuff);
+		}
+		else
+		{
+			stm->Write(UTF8STRC(" creation-date=\""));
+			sptr = Net::WebUtil::Date2Str(sbuff, &att->createTime);
+			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			stm->Write(UTF8STRC("\";"));
+			k += 18 + (UOSInt)(sptr - sbuff);
+		}
+		if (k + 50 > LINECHARCNT)
+		{
+			stm->Write(UTF8STRC("\r\n\tmodification-date=\""));
+			sptr = Net::WebUtil::Date2Str(sbuff, &att->modifyTime);
+			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			stm->Write(UTF8STRC("\"\r\n"));
+		}
+		else
+		{
+			stm->Write(UTF8STRC(" modification-date=\""));
+			sptr = Net::WebUtil::Date2Str(sbuff, &att->modifyTime);
+			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			stm->Write(UTF8STRC("\"\r\n"));
+			k = 21 + (UOSInt)(sptr - sbuff);
+		}
+		stm->Write(UTF8STRC("Content-ID: <"));
+		stm->Write(att->contentId->v, att->contentId->leng);
+		stm->Write(UTF8STRC(">\r\nContent-Transfer-Encoding: base64\r\n\r\n"));
+		WriteB64Data(stm, att->content, att->contentLen);
+
+		i++;
+	}
+	stm->Write(UTF8STRC("--"));
+	stm->Write(boundary.v, boundary.leng);
+	stm->Write(UTF8STRC("--\r\n"));
+}
+
+void Net::Email::EmailMessage::WriteB64Data(IO::Stream *stm, const UInt8 *data, UOSInt dataSize)
+{
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
+	UTF8Char sbuff[80];
+	UTF8Char *sptr;
+	while (dataSize > 57)
+	{
+		sptr = b64.EncodeBin(sbuff, data, 57);
+		sptr[0] = '\r';
+		sptr[1] = '\n';
+		sptr += 2;
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		data += 57;
+		dataSize -= 57;
+	}
+	sptr = b64.EncodeBin(sbuff, data, dataSize);
+	sptr[0] = '\r';
+	sptr[1] = '\n';
+	sptr += 2;
+	stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+}
+
+void Net::Email::EmailMessage::AttachmentFree(Attachment *attachment)
+{
+	MemFree(attachment->content);
+	attachment->fileName->Release();
+	attachment->contentId->Release();
+	MemFree(attachment);
+}
+
 Net::Email::EmailMessage::EmailMessage()
 {
 	this->fromAddr = 0;
 	this->content = 0;
 	this->contentLen = 0;
+	this->contentType = 0;
 }
 
 Net::Email::EmailMessage::~EmailMessage()
@@ -65,9 +227,15 @@ Net::Email::EmailMessage::~EmailMessage()
 	SDEL_STRING(this->fromAddr);
 	LIST_FREE_STRING(&this->recpList);
 	LIST_FREE_STRING(&this->headerList);
+	SDEL_STRING(this->contentType);
 	if (this->content)
 	{
 		MemFree(this->content);
+	}
+	UOSInt i = this->attachments.GetCount();
+	while (i-- > 0)
+	{
+		AttachmentFree(this->attachments.GetItem(i));
 	}
 }
 
@@ -88,7 +256,8 @@ Bool Net::Email::EmailMessage::SetSubject(Text::CString subject)
 
 Bool Net::Email::EmailMessage::SetContent(Text::CString content, Text::CString contentType)
 {
-	this->SetHeader(UTF8STRC("Content-Type"), contentType.v, contentType.leng);
+	SDEL_STRING(this->contentType);
+	this->contentType = Text::String::New(contentType);
 	if (this->content)
 		MemFree(this->content);
 	this->content = MemAlloc(UInt8, content.leng);
@@ -101,34 +270,7 @@ Bool Net::Email::EmailMessage::SetSentDate(Data::DateTime *dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	switch (dt->GetWeekday())
-	{
-	case Data::DateTimeUtil::Weekday::Sunday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Sun, "));
-		break;
-	case Data::DateTimeUtil::Weekday::Monday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Mon, "));
-		break;
-	case Data::DateTimeUtil::Weekday::Tuesday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Tue, "));
-		break;
-	case Data::DateTimeUtil::Weekday::Wednesday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Wed, "));
-		break;
-	case Data::DateTimeUtil::Weekday::Thursday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Thu, "));
-		break;
-	case Data::DateTimeUtil::Weekday::Friday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Fri, "));
-		break;
-	case Data::DateTimeUtil::Weekday::Saturday:
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("Sat, "));
-		break;
-	default:
-		sptr = sbuff;
-		break;
-	};
-	sptr = dt->ToString(sptr, "dd MMM yyyy HH:mm:ss zzz");
+	sptr = Net::WebUtil::Date2Str(sbuff, dt);
 	return this->SetHeader(UTF8STRC("Date"), sbuff, (UOSInt)(sptr - sbuff));
 }
 
@@ -262,6 +404,58 @@ Bool Net::Email::EmailMessage::AddBcc(Text::CString addr)
 	return true;
 }
 
+Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Text::CString fileName)
+{
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		return 0;
+	}
+	UInt64 len = fs.GetLength();
+	if (len > 104857600)
+	{
+		return 0;
+	}
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	Attachment *attachment = MemAlloc(Attachment, 1);
+	attachment->contentLen = (UOSInt)len;
+	attachment->content = MemAlloc(UInt8, attachment->contentLen);
+	if (fs.Read(attachment->content, attachment->contentLen) != attachment->contentLen)
+	{
+		MemFree(attachment->content);
+		MemFree(attachment);
+		return 0;
+	}
+	attachment->createTime.SetTicks(0);
+	attachment->modifyTime.SetTicks(0);
+	fs.GetFileTimes(&attachment->createTime, 0, &attachment->modifyTime);
+	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
+	attachment->contentId = Text::String::NewP(sbuff, sptr);
+	attachment->isInline = false;
+	this->attachments.Add(attachment);
+	return attachment;
+}
+
+Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	Attachment *attachment = MemAlloc(Attachment, 1);
+	attachment->contentLen = contentLen;
+	attachment->content = MemAlloc(UInt8, attachment->contentLen);
+	MemCopyNO(attachment->content, content, contentLen);
+	attachment->createTime.SetCurrTimeUTC();
+	attachment->modifyTime.SetValue(&attachment->createTime);
+	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
+	attachment->contentId = Text::String::NewP(sbuff, sptr);
+	attachment->isInline = false;
+	this->attachments.Add(attachment);
+	return attachment;
+}
+
 Bool Net::Email::EmailMessage::CompletedMessage()
 {
 	if (this->fromAddr == 0 || this->recpList.GetCount() == 0 || this->contentLen == 0)
@@ -287,6 +481,8 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	{
 		return false;
 	}
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::String *header;
 	UOSInt i = 0;
 	UOSInt j = this->headerList.GetCount();
@@ -297,16 +493,40 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		stm->Write((const UInt8*)"\r\n", 2);
 		i++;
 	}
-	stm->Write((const UInt8*)"\r\n", 2);
-	stm->Write(this->content, this->contentLen);
+	if (this->attachments.GetCount() > 0)
+	{
+		UOSInt len;
+		sptr = GenMultipartBoundary(sbuff);
+		stm->Write(UTF8STRC("Content-Type: multipart/mixed;\r\n\tboundary=\""));
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(UTF8STRC("\"\r\n"));
+		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
+		GenMultipart(&mstm, CSTRP(sbuff, sptr));
+		stm->Write(UTF8STRC("Content-Length: "));
+		sptr = Text::StrUOSInt(sbuff, mstm.GetLength());
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
+	}
+	else
+	{
+		stm->Write(UTF8STRC("Content-Type: "));
+		stm->Write(this->contentType->v, this->contentType->leng);
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(UTF8STRC("Content-Length: "));
+		sptr = Text::StrUOSInt(sbuff, this->contentLen);
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(this->content, this->contentLen);
+	}
 	return true;
 }
 
 Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF8 *sb, Text::CString mailFrom)
 {
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
-	sb->AppendHex64((UInt64)dt.ToTicks());
+	sb->AppendHex64((UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 	sb->AppendUTF8Char('.');
 	UInt8 crcVal[4];
 	Crypto::Hash::CRC32R crc;
