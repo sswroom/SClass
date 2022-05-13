@@ -38,10 +38,9 @@ global _MD5_CalcBlock
 
 ;#define MD5STEP(f, w, x, y, z, data, data2, s) f(x, y, z) asm {add w,eax} asm{add w,dword ptr [edi + data * 4]} asm {add w, data2} asm {rol w, s} asm {add w,x}
 %macro MD5STEP 8
-	%1 %3, %4, %5
 	add %2, dword [rdi + %6 * 4]
-	add %2, %7
-	add %2, eax
+	%1 %3, %4, %5
+	lea %2, [%2+eax+%7]
 	rol %2, %8
 	add %2, %3
 %endmacro
@@ -143,10 +142,9 @@ cblop:
 	mov dword [r9+4],ecx ;h1
 	mov dword [r9+8],edx ;h2
 	mov dword [r9+12],esi ;h3
-	lea rdi,[rdi+64]
+	add rdi,64
 	dec r8
 	jnz cblop
-	
 	
 	pop rbx
 	ret
