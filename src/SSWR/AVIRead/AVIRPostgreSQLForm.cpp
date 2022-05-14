@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Net/MySQLTCPClient.h"
+#include "DB/PostgreSQLConn.h"
 #include "SSWR/AVIRead/AVIRPostgreSQLForm.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
@@ -19,21 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
 	me->txtPort->GetText(&sbPort);
 	UInt16 port;
 
-	Net::MySQLTCPClient *conn;
-	Net::SocketFactory *sockf = me->core->GetSocketFactory();
-	Net::SocketUtil::AddressInfo addr;
+	DB::PostgreSQLConn *conn;
 	if (!sbPort.ToUInt16(&port))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("PostgreSQL Connection"), me);
 		return;
 	}
-	else if (!sockf->DNSResolveIP(sb.ToCString(), &addr))
-	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving server host"), CSTR("PostgreSQL Connection"), me);
-		return;
-	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
-	if (conn->IsError())
+	NEW_CLASS(conn, DB::PostgreSQLConn(sb.ToCString(), port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString(), me->core->GetLog()));
+	if (conn->IsConnError())
 	{
 		DEL_CLASS(conn);
 		UI::MessageDialog::ShowDialog(CSTR("Error in opening PostgreSQL connection"), CSTR("PostgreSQL Connection"), me);

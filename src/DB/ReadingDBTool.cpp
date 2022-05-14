@@ -6,6 +6,7 @@
 #include "Data/DateTime.h"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
+#include "DB/PostgreSQLConn.h"
 #include "DB/ReadingDBTool.h"
 #include "DB/SQL/CreateTableCommand.h"
 #include "DB/SQL/SQLCommand.h"
@@ -21,6 +22,8 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
+
+#include <stdio.h>
 
 void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
 {
@@ -739,7 +742,9 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 {
 	UTF8Char buff[256];
 	UTF8Char *ptr;
-	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	switch (this->svrType)
+	{
+	case DB::DBUtil::ServerType::MySQL:
 	{
 		OSInt i = 4;
 		DB::DBReader *r = 0;
@@ -841,11 +846,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 		}
 		return tab;
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
+	case DB::DBUtil::ServerType::Oracle:
 	{
 		return 0;
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	case DB::DBUtil::ServerType::MSSQL:
 	{
 		Int32 i = 4;
 		DB::DBReader *r = 0;
@@ -949,11 +954,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 
 		return tab;
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::Access)
+	case DB::DBUtil::ServerType::Access:
 	{
 		return 0;
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
+	case DB::DBUtil::ServerType::SQLite:
 	{
 		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
@@ -982,9 +987,127 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 		}
 		return tab;
 	}
-	else
+	case DB::DBUtil::ServerType::PostgreSQL:
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, data_type, character_maximum_length from information_schema.columns where table_name="));
+		sql.AppendStrC(tableName);
+		if (this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
+		{
+			sql.AppendCmdC(CSTR(" and table_schema in ("));
+			sql.AppendStr(((DB::PostgreSQLConn*)this->db)->GetConnDB());
+			sql.AppendCmdC(CSTR(", 'public')"));
+		}
+		sql.AppendCmdC(CSTR(" order by ordinal_position"));
+		DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
+		if (r == 0)
+		{
+			return 0;
+		}
+		DB::TableDef *tab;
+		DB::ColDef *col;
+		Text::String *s;
+		NEW_CLASS(tab, DB::TableDef(tableName));
+		while (r->ReadNext())
+		{
+			s = r->GetNewStr(0);
+			NEW_CLASS(col, DB::ColDef(s));
+			SDEL_STRING(s);
+			s = r->GetNewStr(1);
+			col->SetDefVal(s);
+			SDEL_STRING(s);
+			s = r->GetNewStr(2);
+			col->SetNotNull((s != 0) && s->Equals(UTF8STRC("NO")));
+			SDEL_STRING(s);
+			s = r->GetNewStr(3);
+			if (s)
+			{
+				//////////////////////////
+				if (s->Equals(UTF8STRC("name")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+				}
+				else if (s->Equals(UTF8STRC("bigint")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int64);
+				}
+				else if (s->Equals(UTF8STRC("timestamp with time zone")))
+				{
+					col->SetColType(DB::DBUtil::CT_DateTime2);
+				}
+				else if (s->Equals(UTF8STRC("character varying")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+				}
+				else if (s->Equals(UTF8STRC("boolean")))
+				{
+					col->SetColType(DB::DBUtil::CT_Bool);
+				}
+				else if (s->Equals(UTF8STRC("integer")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int32);
+				}
+				else if (s->Equals(UTF8STRC("text")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("uuid")))
+				{
+					col->SetColType(DB::DBUtil::CT_UUID);
+				}
+				else if (s->Equals(UTF8STRC("bytea")))
+				{
+					col->SetColType(DB::DBUtil::CT_Binary);
+				}
+				else if (s->Equals(UTF8STRC("jsonb"))) //////////////////////////////////
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("numeric")))
+				{
+					col->SetColType(DB::DBUtil::CT_Double);
+				}
+				else if (s->Equals(UTF8STRC("point")))
+				{
+					col->SetColType(DB::DBUtil::CT_Vector);
+				}
+				else if (s->Equals(UTF8STRC("double precision")))
+				{
+					col->SetColType(DB::DBUtil::CT_Double);
+				}
+				else if (s->Equals(UTF8STRC("smallint")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int16);
+				}
+				else if (s->Equals(UTF8STRC("USER-DEFINED")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+				}
+				else
+				{
+					printf("ReadingDBTool.GetTableDef: PSQL Unknown type: %s\r\n", s->v);
+				}
+				s->Release();
+			}
+			if (!r->IsNull(4))
+			{
+				col->SetColSize((UOSInt)r->GetInt32(4));
+			}
+			tab->AddCol(col);
+		}
+		this->db->CloseReader(r);
+		return tab;
+	}
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::MDBTools:
+	case DB::DBUtil::ServerType::Unknown:
+	default:
 	{
 		return 0;
+	}
 	}
 }
 

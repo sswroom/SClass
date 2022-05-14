@@ -567,6 +567,87 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize)
 	}
 }
 
+Text::String *Data::VariItem::GetAsNewString()
+{
+	Text::String *s;
+	switch (this->itemType)
+	{
+	case ItemType::Unknown:
+	case ItemType::Null:
+		return 0;
+	case ItemType::F32:
+		s = Text::String::New(32);
+		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f32) - s->v);
+		return s;
+	case ItemType::F64:
+		s = Text::String::New(32);
+		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f64) - s->v);
+		return s;
+	case ItemType::I8:
+		s = Text::String::New(4);
+		s->leng = (UOSInt)(Text::StrInt16(s->v, this->val.i8) - s->v);
+		return s;
+	case ItemType::U8:
+		s = Text::String::New(3);
+		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u8) - s->v);
+		return s;
+	case ItemType::I16:
+		s = Text::String::New(6);
+		s->leng = (UOSInt)(Text::StrInt16(s->v, this->val.i16) - s->v);
+		return s;
+	case ItemType::U16:
+		s = Text::String::New(5);
+		s->leng = (UOSInt)(Text::StrUInt16(s->v, this->val.u16) - s->v);
+		return s;
+	case ItemType::I32:
+		s = Text::String::New(11);
+		s->leng = (UOSInt)(Text::StrInt32(s->v, this->val.i32) - s->v);
+		return s;
+	case ItemType::U32:
+		s = Text::String::New(10);
+		s->leng = (UOSInt)(Text::StrUInt32(s->v, this->val.u32) - s->v);
+		return s;
+	case ItemType::I64:
+		s = Text::String::New(21);
+		s->leng = (UOSInt)(Text::StrInt64(s->v, this->val.i64) - s->v);
+		return s;
+	case ItemType::U64:
+		s = Text::String::New(20);
+		s->leng = (UOSInt)(Text::StrUInt64(s->v, this->val.u64) - s->v);
+		return s;
+	case ItemType::BOOL:
+		if (this->val.boolean)
+		{
+			return Text::String::New(UTF8STRC("true"));
+		}
+		else
+		{
+			return Text::String::New(UTF8STRC("false"));
+		}
+		break;
+	case ItemType::Str:
+		return this->val.str->Clone();
+	case ItemType::CStr:
+		return Text::String::New(this->val.cstr.v, this->val.cstr.leng);
+	case ItemType::Date:
+		s = Text::String::New(25);
+		s->leng = (UOSInt)(this->val.date.ToString(s->v, "yyyy-MM-dd HH:mm:ss.fff") - s->v);
+		return s;
+	case ItemType::ByteArr:
+		s = Text::String::New(this->val.byteArr->GetCount() * 2);
+		s->leng = (UOSInt)(Text::StrHexBytes(s->v, this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0) - s->v);
+		return s;
+	case ItemType::Vector:
+		return Text::String::NewEmpty();
+	case ItemType::UUID:
+		s = Text::String::New(48);
+		s->leng = (UOSInt)(Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(s->v, UTF8STRC("{"))), UTF8STRC("}")) - s->v);
+		return s;
+	default:
+		return 0;
+	}
+}
+
 Data::DateTime *Data::VariItem::GetAsNewDate()
 {
 	Data::DateTime *date;

@@ -129,6 +129,7 @@ namespace Data
 		Bool GetAsBool();
 		void GetAsString(Text::StringBuilderUTF8 *sb);
 		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize);
+		Text::String *GetAsNewString();
 		Data::DateTime *GetAsNewDate();
 		Data::Timestamp GetAsTimestamp();
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();

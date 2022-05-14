@@ -158,7 +158,7 @@ UOSInt UI::GUIListView::GetColumnCnt()
 
 Bool UI::GUIListView::AddColumn(Text::String *columnName, Double colWidth)
 {
-	return this->AddColumn(columnName, colWidth);
+	return this->AddColumn(columnName->ToCString(), colWidth);
 }
 
 Bool UI::GUIListView::AddColumn(Text::CString columnName, Double colWidth)

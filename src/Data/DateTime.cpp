@@ -124,6 +124,11 @@ void Data::DateTime::SetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *ti
 		{
 			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
 		}
+		else if (valTmp > 3)
+		{
+			strs[1].v[3] = 0;
+			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
+		}
 		else
 		{
 			t->ms = 0;
@@ -454,7 +459,8 @@ Bool Data::DateTime::SetValue(Text::CString dateStr)
 		{
 			UTF8Char c = strs2[1].v[i];
 			strs2[1].v[i] = 0;
-			if ((strs2[1].leng - i - 1) == 5)
+			UOSInt tzlen = strs2[1].leng - i - 1;
+			if (tzlen == 5)
 			{
 				UInt32 min = Text::StrToUInt32(&strs2[1].v[i + 4]);
 				if (strs2[1].v[i + 3] == ':')
@@ -473,6 +479,17 @@ Bool Data::DateTime::SetValue(Text::CString dateStr)
 				else
 				{
 					this->tzQhr = (Int8)(min / 15);
+				}
+			}
+			else if (tzlen == 2)
+			{
+				if (c == '-')
+				{
+					this->tzQhr = (Int8)-(Text::StrToInt32(&strs2[1].v[i + 1]) * 4);
+				}
+				else
+				{
+					this->tzQhr = (Int8)(Text::StrToUInt32(&strs2[1].v[i + 1]) * 4);
 				}
 			}
 			strs2[1].leng = i;
