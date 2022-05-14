@@ -3476,6 +3476,8 @@ SSWR/AVIRead/AVIRPingMonitorForm.h: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.c
 @AVIRPingMonitorForm.o
 SSWR/AVIRead/AVIRPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRPlaylistForm.cpp
 @AVIRPlaylistForm.o
+SSWR/AVIRead/AVIRPostgreSQLForm.h: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
+@AVIRPostgreSQLForm.o
 SSWR/AVIRead/AVIRPowerForm.h: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
 @AVIRPowerForm.o
 SSWR/AVIRead/AVIRProcInfoForm.h: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
@@ -5142,6 +5144,7 @@ AVIRPCIDeviceForm.o: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
 AVIRPerformanceLogForm.o: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
 AVIRPingMonitorForm.o: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
 AVIRPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRPlaylistForm.cpp
+AVIRPostgreSQLForm.o: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
 AVIRPowerForm.o: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
 AVIRProcInfoForm.o: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
 AVIRProfiledResizerForm.o: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp

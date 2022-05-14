@@ -269,7 +269,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 			}
 			else
 			{
-				WriteInt64(&this->recordBuff[m], item.GetItemValue().date->ToTicks());
+				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ticks);
 				m += 8;
 			}
 			break;
@@ -525,10 +525,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 								}
 								else
 								{
-									Data::DateTime *dt;
-									NEW_CLASS(dt, Data::DateTime());
-									dt->SetTicks(ticks);
-									item.SetDateDirect(dt);
+									item.SetDate(Data::Timestamp(ticks, 0));
 									cls->SetFieldClearItem(obj, k, &item);
 								}
 								m2 += 8;

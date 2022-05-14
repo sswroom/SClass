@@ -38,10 +38,10 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 	if (me->radPredefine->IsSelected())
 	{
 		UOSInt i = me->cboPredefine->GetSelectedIndex();
-		const UTF8Char *v = (const UTF8Char*)me->cboPredefine->GetItem(i);
+		MapServer *v = (MapServer*)me->cboPredefine->GetItem(i);
 		if (v)
 		{
-			me->url = Text::StrCopyNew(v);
+			me->url = Text::String::New(v->url, v->urlLen);
 		}
 		else
 		{
@@ -51,15 +51,16 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 	else
 	{
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		sbuff[0] = 0;
-		me->txtOther->GetText(sbuff);
+		sptr = me->txtOther->GetText(sbuff);
 		if (sbuff[0] == 0)
 		{
 			return;
 		}
 		else
 		{
-			me->url = Text::StrCopyNew(sbuff);
+			me->url = Text::String::NewP(sbuff, sptr);
 		}
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -110,7 +111,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 	OSInt j = sizeof(mapSvrs) / sizeof(mapSvrs[0]);
 	while (i < j)
 	{
-		this->cboPredefine->AddItem({mapSvrs[i].name, mapSvrs[i].nameLen}, (void*)mapSvrs[i].url);
+		this->cboPredefine->AddItem({mapSvrs[i].name, mapSvrs[i].nameLen}, (void*)&mapSvrs[i]);
 		i++;
 	}
 	if (j > 0)
@@ -121,11 +122,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRESRIMapForm::~AVIRESRIMapForm()
 {
-	if (this->url)
-	{
-		Text::StrDelNew(this->url);
-		this->url = 0;
-	}
+	SDEL_STRING(this->url);
 }
 
 void SSWR::AVIRead::AVIRESRIMapForm::OnMonitorChanged()
@@ -133,7 +130,7 @@ void SSWR::AVIRead::AVIRESRIMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRESRIMapForm::GetSelectedURL()
+Text::String *SSWR::AVIRead::AVIRESRIMapForm::GetSelectedURL()
 {
 	return this->url;
 }
