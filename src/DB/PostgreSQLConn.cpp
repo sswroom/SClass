@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/PostgreSQLConn.h"
+#include "Math/Point.h"
 #include "Text/MyStringW.h"
 #include <libpq-fe.h>
 
@@ -219,13 +220,12 @@ public:
 		case 16: //bool
 			item->SetBool(PQgetvalue(this->res, this->currrow, (int)colIndex)[0] == 't');
 			return true;
-		case 17: //bytea
-			item->SetByteArr((const UInt8*)PQgetvalue(this->res, this->currrow, (int)colIndex), (UOSInt)PQgetlength(this->res, this->currrow, (int)colIndex));
-			return true;
 		case 19: //name
 		case 25: //text
+		case 1042: //bpchar
 		case 1043: //varchar
 		case 3802: //jsonb ///////////////////////////////////
+		case 16468: //hstore ////////////////////////////////
 			item->SetStrSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			return true;
 		case 20: //int8
@@ -249,6 +249,109 @@ public:
 			return true;
 		}
 		case 2950: //uuid
+		{
+			Data::UUID *uuid;
+			NEW_CLASS(uuid, Data::UUID(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex))));
+			item->SetUUIDDirect(uuid);
+			return true;
+		}
+		case 1005: //_int2
+		{
+			Data::ArrayList<Int16> arr;
+			Int16 v;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			if (sb.ToString()[0] != '{' || !sb.EndsWith('}'))
+			{
+				return false;
+			}
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sb.RemoveChars(1);
+			sarr[1] = sb.Substring(1);
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+				if (sarr[0].ToInt16(&v))
+				{
+					arr.Add(v);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			Int16 *bytes = arr.GetArray(&scnt);
+			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
+			return true;
+		}
+		case 1016: //_int8
+		{
+			Data::ArrayList<Int64> arr;
+			Int64 v;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			if (sb.ToString()[0] != '{' || !sb.EndsWith('}'))
+			{
+				return false;
+			}
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sb.RemoveChars(1);
+			sarr[1] = sb.Substring(1);
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+				if (sarr[0].ToInt64(&v))
+				{
+					arr.Add(v);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			Int64 *bytes = arr.GetArray(&scnt);
+			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
+			return true;
+		}
+		case 600: //point
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			if (sb.ToString()[0] != '(' || !sb.EndsWith(')'))
+			{
+				return false;
+			}
+			Text::PString sarr[3];
+			sb.RemoveChars(1);
+			if (Text::StrSplitP(sarr, 3, sb.Substring(1), ',') != 2)
+			{
+				return false;
+			}
+			Math::Point *pt;
+			NEW_CLASS(pt, Math::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
+			item->SetVectorDirect(pt);
+			return true;
+		}
+		case 17: //bytea
+		{
+			const UTF8Char *val = (const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex);
+			if (val[0] == '\\' && val[1] == 'x')
+			{
+				UOSInt len = Text::StrCharCnt(val);
+				UInt8 *buff = MemAlloc(UInt8, (len >> 1) - 1);
+				len = Text::StrHex2Bytes(val + 2, buff);
+				item->SetByteArr(buff, len);
+				MemFree(buff);
+				return true;
+			}
+			else
+			{
+				item->SetByteArr(val, (UOSInt)PQgetlength(this->res, this->currrow, (int)colIndex));
+			}
+			return true;
+		}
 		//////////////////////////////////
 		default:
 #if defined(VERBOSE)
@@ -728,6 +831,12 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 		return DB::DBUtil::CT_Vector;
 	case 701: //float8
 		return DB::DBUtil::CT_Double;
+	case 1005: //_int2
+		return DB::DBUtil::CT_Binary;
+	case 1016: //_int8
+		return DB::DBUtil::CT_Binary;
+	case 1042: //bpchar
+		return DB::DBUtil::CT_Char;
 	case 1043: //varchar
 		return DB::DBUtil::CT_VarChar;
 	case 1184: //timestamptz

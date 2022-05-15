@@ -9,6 +9,8 @@
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -23,12 +25,16 @@ namespace SSWR
 
 			Net::UDPServer *udp;
 			IO::LogTool log;
+			UI::ListBoxLogger *logger;
 			Net::SocketUtil::AddressInfo svrAddr;
 			UInt16 svrPort;
 			UInt8 gatewayEUI[8];
 			UInt16 tokenNext;
 			Sync::Mutex tokenMut;
 
+			UI::GUITabControl *tcMain;
+			
+			UI::GUITabPage *tpControl;
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblServerIP;
 			UI::GUITextBox *txtServerIP;
@@ -38,11 +44,28 @@ namespace SSWR
 			UI::GUITextBox *txtGatewayEUI;
 			UI::GUIButton *btnStart;
 			UI::GUIPanel *pnlDevice;
-			UI::GUIButton *btnTest;
+			UI::GUILabel *lblDevAddr;
+			UI::GUITextBox *txtDevAddr;
+			UI::GUILabel *lblNwkSKey;
+			UI::GUITextBox *txtNwkSKey;
+			UI::GUILabel *lblAppSKey;
+			UI::GUITextBox *txtAppSKey;
+			UI::GUILabel *lblFCnt;
+			UI::GUITextBox *txtFCnt;
+			UI::GUILabel *lblRSSI;
+			UI::GUITextBox *txtRSSI;
+			UI::GUILabel *lblLSNR;
+			UI::GUITextBox *txtLSNR;
+			UI::GUIButton *btnSendULData;
+
+			UI::GUITabPage *tpLog;
+			UI::GUITextBox *txtLog;
+			UI::GUIListBox *lbLog;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);
-			static void __stdcall OnTestClick(void *userObj);
+			static void __stdcall OnSendULDataClick(void *userObj);
+			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 			static void __stdcall OnTimerTick(void *userObj);
 

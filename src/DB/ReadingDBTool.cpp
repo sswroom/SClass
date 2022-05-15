@@ -1035,6 +1035,10 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 				{
 					col->SetColType(DB::DBUtil::CT_DateTime2);
 				}
+				else if (s->Equals(UTF8STRC("character")))
+				{
+					col->SetColType(DB::DBUtil::CT_Char);
+				}
 				else if (s->Equals(UTF8STRC("character varying")))
 				{
 					col->SetColType(DB::DBUtil::CT_VarChar);
@@ -1084,6 +1088,10 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 				else if (s->Equals(UTF8STRC("USER-DEFINED")))
 				{
 					col->SetColType(DB::DBUtil::CT_VarChar);
+				}
+				else if (s->Equals(UTF8STRC("ARRAY")))
+				{
+					col->SetColType(DB::DBUtil::CT_Binary);
 				}
 				else
 				{

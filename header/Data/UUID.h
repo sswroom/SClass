@@ -12,10 +12,12 @@ namespace Data
 	public:
 		UUID();
 		UUID(const UInt8 *buff);
+		UUID(Text::CString str);
 		~UUID();
 
 		void SetValue(const UInt8 *buff);
 		void SetValue(UUID *uuid);
+		void SetValue(Text::CString str);
 		UOSInt GetValue(UInt8 *buff);
 		OSInt CompareTo(UUID *uuid);
 		

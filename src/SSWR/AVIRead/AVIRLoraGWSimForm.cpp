@@ -56,21 +56,89 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnTestClick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
-	if (me->udp)
+	if (me->udp == 0)
 	{
-		UInt8 nwkSKey[] = {0x48, 0x4e, 0x85, 0x4a, 0x06, 0xc6, 0x79, 0x4f, 0x93, 0x97, 0x6f, 0xa1, 0xf8, 0x67, 0x7e, 0xac};
-		UInt8 appSKey[] = {0x6b, 0xa6, 0x25, 0xcc, 0x40, 0xfc, 0x70, 0x1a, 0xe6, 0x75, 0x28, 0xa0, 0x52, 0x90, 0x7a, 0x9e};
-		UInt8 buff[] = {0x04, 0x01, 0x64, 0x01, 0x00, 0x00};
-		UInt8 payload[64];
-		UOSInt payloadLen = GenUpPayload(payload, false, 0x00e94cc2, 1, 10, nwkSKey, appSKey, buff, 6);
-		Text::StringBuilderUTF8 sb;
-		GenRxpkJSON(&sb, 923400000, 2, 0, 4, -100, -120, payload, payloadLen);
-
-		me->SendPushData(sb.ToString(), sb.GetLength());
+		return;
 	}
+	UInt8 payload[64];
+	Text::StringBuilderUTF8 sb;
+	UInt8 nwkSKey[16];
+	UInt8 appSKey[16];
+	UInt32 devAddr;
+	UInt32 fCnt;
+	Int32 rssi;
+	Int32 lsnr;
+	sb.ClearStr();
+	me->txtDevAddr->GetText(&sb);
+	if (sb.GetLength() != 8 || sb.Hex2Bytes(payload) != 4)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("DevAddr invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	devAddr = ReadMUInt32(payload);
+	sb.ClearStr();
+	me->txtNwkSKey->GetText(&sb);
+	if (sb.GetLength() != 32 || sb.Hex2Bytes(nwkSKey) != 16)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("NwkSKey invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	sb.ClearStr();
+	me->txtAppSKey->GetText(&sb);
+	if (sb.GetLength() != 32 || sb.Hex2Bytes(appSKey) != 16)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("AppSKey invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	sb.ClearStr();
+	me->txtFCnt->GetText(&sb);
+	if (!sb.ToUInt32(&fCnt))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("FCnt invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	sb.ClearStr();
+	me->txtRSSI->GetText(&sb);
+	if (!sb.ToInt32(&rssi))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("RSSI invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	Double dlsnr;
+	sb.ClearStr();
+	me->txtLSNR->GetText(&sb);
+	if (!sb.ToDouble(&dlsnr))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("LSNR invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	lsnr = Double2Int32(dlsnr * 10);
+	UInt8 buff[] = {0x04, 0x01, 0x64, 0x01, 0x00, 0x00};
+	UOSInt payloadLen = GenUpPayload(payload, false, devAddr, fCnt, 10, nwkSKey, appSKey, buff, 6);
+	sb.ClearStr();
+	GenRxpkJSON(&sb, 923400000, 2, 0, 4, rssi, lsnr, payload, payloadLen);
+
+	if (!me->SendPushData(sb.ToString(), sb.GetLength()))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in sending UL data"), CSTR("LoRa Gateway Simulator"), me);
+	}
+	else
+	{
+		sb.ClearStr();
+		sb.AppendU32(fCnt + 1);
+		me->txtFCnt->SetText(sb.ToCString());
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnLogSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->lbLog->SetText(Text::String::OrEmpty(s)->ToCString());
+	SDEL_STRING(s);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -242,7 +310,11 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->sockf = this->core->GetSocketFactory();
 	this->udp = 0;
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
+	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->tpControl));
 	this->pnlControl->SetRect(0, 0, 100, 103, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblServerIP, UI::GUILabel(ui, this->pnlControl, CSTR("Server IP")));
@@ -260,12 +332,47 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-
-	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpControl));
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnTest, UI::GUIButton(ui, this->pnlDevice, CSTR("Test")));
-	this->btnTest->SetRect(4, 4, 75, 23, false);
-	this->btnTest->HandleButtonClick(OnTestClick, this);
+	NEW_CLASS(this->lblDevAddr, UI::GUILabel(ui, this->pnlDevice, CSTR("DevAddr")));
+	this->lblDevAddr->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtDevAddr, UI::GUITextBox(ui, this->pnlDevice, CSTR("00e94cc2")));
+	this->txtDevAddr->SetRect(104, 4, 100, 23, false);
+	NEW_CLASS(this->lblNwkSKey, UI::GUILabel(ui, this->pnlDevice, CSTR("NwkSKey")));
+	this->lblNwkSKey->SetRect(4, 28, 200, 23, false);
+	NEW_CLASS(this->txtNwkSKey, UI::GUITextBox(ui, this->pnlDevice, CSTR("484e854a06c6794f93976fa1f8677eac")));
+	this->txtNwkSKey->SetRect(104, 28, 200, 23, false);
+	NEW_CLASS(this->lblAppSKey, UI::GUILabel(ui, this->pnlDevice, CSTR("AppSKey")));
+	this->lblAppSKey->SetRect(4, 52, 200, 23, false);
+	NEW_CLASS(this->txtAppSKey, UI::GUITextBox(ui, this->pnlDevice, CSTR("6ba625cc40fc701ae67528a052907a9e")));
+	this->txtAppSKey->SetRect(104, 52, 200, 23, false);
+	NEW_CLASS(this->lblFCnt, UI::GUILabel(ui, this->pnlDevice, CSTR("FCnt")));
+	this->lblFCnt->SetRect(4, 76, 200, 23, false);
+	NEW_CLASS(this->txtFCnt, UI::GUITextBox(ui, this->pnlDevice, CSTR("1")));
+	this->txtFCnt->SetRect(104, 76, 200, 23, false);
+	NEW_CLASS(this->lblRSSI, UI::GUILabel(ui, this->pnlDevice, CSTR("RSSI")));
+	this->lblRSSI->SetRect(4, 100, 200, 23, false);
+	NEW_CLASS(this->txtRSSI, UI::GUITextBox(ui, this->pnlDevice, CSTR("-100")));
+	this->txtRSSI->SetRect(104, 100, 200, 23, false);
+	NEW_CLASS(this->lblLSNR, UI::GUILabel(ui, this->pnlDevice, CSTR("LSNR")));
+	this->lblLSNR->SetRect(4, 124, 200, 23, false);
+	NEW_CLASS(this->txtLSNR, UI::GUITextBox(ui, this->pnlDevice, CSTR("-12.0")));
+	this->txtLSNR->SetRect(104, 124, 200, 23, false);
+	NEW_CLASS(this->btnSendULData, UI::GUIButton(ui, this->pnlDevice, CSTR("Send UL Data")));
+	this->btnSendULData->SetRect(104, 148, 75, 23, false);
+	this->btnSendULData->HandleButtonClick(OnSendULDataClick, this);
+
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog->SetRect(0, 0, 100, 23, false);
+	this->txtLog->SetReadOnly(true);
+	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
+
+	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, true));
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 
 	this->AddTimer(10000, OnTimerTick, this);
 }
@@ -273,6 +380,8 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRLoraGWSimForm::~AVIRLoraGWSimForm()
 {
 	SDEL_CLASS(this->udp);
+	this->log.RemoveLogHandler(this->logger);
+	DEL_CLASS(this->logger);
 }
 
 void SSWR::AVIRead::AVIRLoraGWSimForm::OnMonitorChanged()
