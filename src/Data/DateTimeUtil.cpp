@@ -381,7 +381,7 @@ Data::DateTimeUtil::Weekday Data::DateTimeUtil::Ticks2Weekday(Int64 ticks, Int8 
 	return (Data::DateTimeUtil::Weekday)(((ticks + tzQhr * 900000) / 86400000 + 4) % 7);
 }
 
-UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, const UTF8Char *pattern)
+UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)
 {
 	while (*pattern)
 	{
@@ -492,24 +492,117 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 		}
 		case 'f':
 		{
+			UInt32 sv;
 			if (pattern[1] != 'f')
 			{
-				*sbuff = (UTF8Char)((tval->ms / 100) + 0x30);
+				*sbuff = (UTF8Char)((nanosec / 100000000) + 0x30);
 				pattern += 1;
 				sbuff++;
 			}
 			else if (pattern[2] != 'f')
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[(tval->ms / 10) * 2]));
+				sv = nanosec / 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sbuff += 2;
 				pattern += 2;
 			}
-			else
+			else if (pattern[3] != 'f')
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[(tval->ms / 10) * 2]));
-				sbuff[2] = (UTF8Char)((tval->ms % 10) + 0x30);
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff[2] = (UTF8Char)((nanosec / 1000000) + 0x30);
 				sbuff += 3;
 				pattern += 3;
+			}
+			else if (pattern[4] != 'f')
+			{
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 100000;
+				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff += 4;
+				pattern += 4;
+			}
+			else if (pattern[5] != 'f')
+			{
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 100000;
+				nanosec = nanosec % 100000;
+				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff[4] = (UTF8Char)((nanosec / 10000) + 0x30);
+				sbuff += 5;
+				pattern += 5;
+			}
+			else if (pattern[6] != 'f')
+			{
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 100000;
+				nanosec = nanosec % 100000;
+				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 1000;
+				WriteNUInt16(&sbuff[4], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff += 6;
+				pattern += 6;
+			}
+			else if (pattern[7] != 'f')
+			{
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 100000;
+				nanosec = nanosec % 100000;
+				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 1000;
+				nanosec = nanosec % 1000;
+				WriteNUInt16(&sbuff[4], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff[6] = (UTF8Char)((nanosec / 100) + 0x30);
+				sbuff += 7;
+				pattern += 7;
+			}
+			else if (pattern[8] != 'f')
+			{
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 100000;
+				nanosec = nanosec % 100000;
+				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 1000;
+				nanosec = nanosec % 1000;
+				WriteNUInt16(&sbuff[4], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 10;
+				WriteNUInt16(&sbuff[6], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff += 8;
+				pattern += 8;
+			}
+			else
+			{
+				sv = nanosec / 10000000;
+				nanosec = nanosec % 10000000;
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 100000;
+				nanosec = nanosec % 100000;
+				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 1000;
+				nanosec = nanosec % 1000;
+				WriteNUInt16(&sbuff[4], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sv = nanosec / 10;
+				nanosec = nanosec % 10;
+				WriteNUInt16(&sbuff[6], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				sbuff[8] = (UTF8Char)(nanosec + 0x30);
+				sbuff += 9;
+				pattern += 9;
+				while (*pattern == 'f')
+				{
+					*sbuff++ = '0';
+					pattern++;
+				}
 			}
 			break;
 		}
@@ -1056,6 +1149,31 @@ Int64 Data::DateTimeUtil::GetCurrTimeMillis()
 		clock_gettime(CLOCK_REALTIME, &ts);
 		return 1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000);
 	}
+#else
+	return 0;
+#endif
+}
+
+Int64 Data::DateTimeUtil::GetCurrTimeHighP(UInt32 *nanosec)
+{
+#if defined(_WIN32) || defined(_WIN32_WCE)
+	TimeValue tval;
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	tval.year = st.wYear;
+	tval.month = (UInt8)st.wMonth;
+	tval.day = (UInt8)st.wDay;
+	tval.hour = (UInt8)st.wHour;
+	tval.minute = (UInt8)st.wMinute;
+	tval.second = (UInt8)st.wSecond;
+	tval.ms = st.wMilliseconds;
+	*nanosec = (UInt32)st.wMilliseconds * 1000000;
+	return TimeValue2Ticks(&tval, 0);
+#elif !defined(CPU_AVR)
+	struct timespec ts;
+	clock_gettime(CLOCK_REALTIME, &ts);
+	*nanosec = (UInt32)ts.tv_nsec;
+	return 1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000);
 #else
 	return 0;
 #endif

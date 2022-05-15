@@ -2118,7 +2118,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	{
 		if (packetSize >= 12 && packet[3] < 6)
 		{
-			frame->AddText(frameOfst, CSTR("LoRa Gateway:"));
+			frame->AddText(frameOfst, CSTR("LoRa Gateway Send:"));
 			frame->AddUInt(frameOfst + 0, 1, CSTR("Protocol Version"), packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, CSTR("Random Token"), ReadMUInt16(&packet[1]));
 			vName = CSTR_NULL;
@@ -2222,7 +2222,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	{
 		if (packetSize >= 4 && packet[3] < 5)
 		{
-			frame->AddText(frameOfst, CSTR("LoRa Gateway PUSH_ACK:"));
+			frame->AddText(frameOfst, CSTR("LoRa Gateway Recv:"));
 			frame->AddUInt(frameOfst + 0, 1, CSTR("Protocol Version"), packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, CSTR("Random Token"), ReadMUInt16(&packet[1]));
 			vName = CSTR_NULL;

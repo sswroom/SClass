@@ -1291,7 +1291,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
 UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, (const UTF8Char*)pattern);
+	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, (UInt32)tval->ms * 1000000, (const UTF8Char*)pattern);
 }
 
 Data::DateTime Data::DateTime::operator=(Data::DateTime dt)

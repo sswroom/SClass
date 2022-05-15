@@ -8,6 +8,7 @@ namespace Data
 	{
 	public:
 		Int64 ticks;
+		UInt32 nanosec;
 		Int8 tzQhr;
 
 	public:
@@ -16,6 +17,14 @@ namespace Data
 		Timestamp(Int64 ticks, Int8 tzQhr)
 		{
 			this->ticks = ticks;
+			this->nanosec = (UInt32)(ticks % 1000) * 1000000;
+			this->tzQhr = tzQhr;
+		};
+		
+		Timestamp(Int64 ticks, UInt32 nanosec, Int8 tzQhr)
+		{
+			this->ticks = ticks;
+			this->nanosec = nanosec;
 			this->tzQhr = tzQhr;
 		};
 		
@@ -45,7 +54,8 @@ namespace Data
 
 		Timestamp AddMS(OSInt val)
 		{
-			return Timestamp(this->ticks + val, this->tzQhr);
+			Int64 newTick = this->ticks + val;
+			return Timestamp(newTick, (nanosec % 1000000) + (UInt32)(newTick % 1000) * 1000000, this->tzQhr);
 		}
 
 		Timestamp ClearTime()
@@ -114,7 +124,7 @@ namespace Data
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			Data::DateTimeUtil::Ticks2TimeValue(this->ticks, &tval, this->tzQhr);
-			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, (const UTF8Char*)pattern);
+			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, this->nanosec, (const UTF8Char*)pattern);
 		}
 		
 		Bool operator==(Timestamp dt)
@@ -186,12 +196,16 @@ namespace Data
 
 		static Timestamp Now()
 		{
-			return Timestamp(Data::DateTimeUtil::GetCurrTimeMillis(), Data::DateTimeUtil::GetLocalTzQhr());
+			UInt32 nanosec;
+			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
+			return Timestamp(ticks, nanosec, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
 		static Timestamp UtcNow()
 		{
-			return Timestamp(Data::DateTimeUtil::GetCurrTimeMillis(), 0);
+			UInt32 nanosec;
+			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
+			return Timestamp(ticks, nanosec, 0);
 		}
 	};
 }
