@@ -4,6 +4,7 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIHSplitter.h"
@@ -20,6 +21,17 @@ namespace SSWR
 		class AVIRLoraGWSimForm : public UI::GUIForm
 		{
 		private:
+			struct PredefData
+			{
+			const UTF8Char *name;
+			UOSInt nameLen;
+			UInt8 fPort;
+			const UTF8Char *data;
+			UOSInt dataLen;
+			};
+		private:
+			static PredefData pdata[];
+
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
 
@@ -56,6 +68,13 @@ namespace SSWR
 			UI::GUITextBox *txtRSSI;
 			UI::GUILabel *lblLSNR;
 			UI::GUITextBox *txtLSNR;
+			UI::GUILabel *lblPredef;
+			UI::GUIComboBox *cboPredef;
+			UI::GUIButton *btnPredef;
+			UI::GUILabel *lblFPort;
+			UI::GUITextBox *txtFPort;
+			UI::GUILabel *lblData;
+			UI::GUITextBox *txtData;
 			UI::GUIButton *btnSendULData;
 
 			UI::GUITabPage *tpLog;
@@ -64,6 +83,7 @@ namespace SSWR
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);
+			static void __stdcall OnPredefClicked(void *userObj);
 			static void __stdcall OnSendULDataClick(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);

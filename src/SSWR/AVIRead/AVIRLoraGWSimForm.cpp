@@ -7,12 +7,18 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "UI/MessageDialog.h"
 
+SSWR::AVIRead::AVIRLoraGWSimForm::PredefData SSWR::AVIRead::AVIRLoraGWSimForm::pdata[] = {
+	{UTF8STRC("Arwin LRS2060x Open"), 10, UTF8STRC("040064000001")},
+	{UTF8STRC("Arwin LRS2060x Close"), 10, UTF8STRC("040064010001")},
+};
+
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
 	if (me->udp)
 	{
 		DEL_CLASS(me->udp);
+		me->udp = 0;
 		me->txtGatewayEUI->SetReadOnly(false);
 		me->txtServerIP->SetReadOnly(false);
 		me->txtServerPort->SetReadOnly(false);
@@ -56,6 +62,20 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
+	PredefData *data = (PredefData*)me->cboPredef->GetSelectedItem();
+	if (data)
+	{
+		UTF8Char sbuff[16];
+		UTF8Char *sptr;
+		sptr = Text::StrUInt16(sbuff, data->fPort);
+		me->txtFPort->SetText(CSTRP(sbuff, sptr));
+		me->txtData->SetText(Text::CString(data->data, data->dataLen));
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
@@ -71,6 +91,10 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	UInt32 fCnt;
 	Int32 rssi;
 	Int32 lsnr;
+	UInt8 fPort;
+	UInt8 buff[32];
+	UOSInt buffLen;
+
 	sb.ClearStr();
 	me->txtDevAddr->GetText(&sb);
 	if (sb.GetLength() != 8 || sb.Hex2Bytes(payload) != 4)
@@ -116,8 +140,22 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 		return;
 	}
 	lsnr = Double2Int32(dlsnr * 10);
-	UInt8 buff[] = {0x04, 0x01, 0x64, 0x01, 0x00, 0x00};
-	UOSInt payloadLen = GenUpPayload(payload, false, devAddr, fCnt, 10, nwkSKey, appSKey, buff, 6);
+	sb.ClearStr();
+	me->txtFPort->GetText(&sb);
+	if (!sb.ToUInt8(&fPort))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("FPort invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+	sb.ClearStr();
+	me->txtData->GetText(&sb);
+	if (sb.GetLength() > 64 || (buffLen = sb.Hex2Bytes(buff)) != (sb.GetLength() >> 1))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Data invalid"), CSTR("LoRa Gateway Simulator"), me);
+		return;
+	}
+
+	UOSInt payloadLen = GenUpPayload(payload, false, devAddr, fCnt, fPort, nwkSKey, appSKey, buff, buffLen);
 	sb.ClearStr();
 	GenRxpkJSON(&sb, 923400000, 2, 0, 4, rssi, lsnr, payload, payloadLen);
 
@@ -327,7 +365,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->txtServerPort->SetRect(104, 28, 50, 23, false);
 	NEW_CLASS(this->lblGatewayEUI, UI::GUILabel(ui, this->pnlControl, CSTR("GatewayEUI")));
 	this->lblGatewayEUI->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtGatewayEUI, UI::GUITextBox(ui, this->pnlControl, CSTR("00800000A000131F")));
+	NEW_CLASS(this->txtGatewayEUI, UI::GUITextBox(ui, this->pnlControl, CSTR("1122334455667788")));
 	this->txtGatewayEUI->SetRect(104, 52, 150, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
@@ -339,27 +377,42 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtDevAddr, UI::GUITextBox(ui, this->pnlDevice, CSTR("00e94cc2")));
 	this->txtDevAddr->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->lblNwkSKey, UI::GUILabel(ui, this->pnlDevice, CSTR("NwkSKey")));
-	this->lblNwkSKey->SetRect(4, 28, 200, 23, false);
+	this->lblNwkSKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtNwkSKey, UI::GUITextBox(ui, this->pnlDevice, CSTR("484e854a06c6794f93976fa1f8677eac")));
 	this->txtNwkSKey->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblAppSKey, UI::GUILabel(ui, this->pnlDevice, CSTR("AppSKey")));
-	this->lblAppSKey->SetRect(4, 52, 200, 23, false);
+	this->lblAppSKey->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtAppSKey, UI::GUITextBox(ui, this->pnlDevice, CSTR("6ba625cc40fc701ae67528a052907a9e")));
 	this->txtAppSKey->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->lblFCnt, UI::GUILabel(ui, this->pnlDevice, CSTR("FCnt")));
-	this->lblFCnt->SetRect(4, 76, 200, 23, false);
+	this->lblFCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFCnt, UI::GUITextBox(ui, this->pnlDevice, CSTR("1")));
-	this->txtFCnt->SetRect(104, 76, 200, 23, false);
+	this->txtFCnt->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->lblRSSI, UI::GUILabel(ui, this->pnlDevice, CSTR("RSSI")));
-	this->lblRSSI->SetRect(4, 100, 200, 23, false);
+	this->lblRSSI->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtRSSI, UI::GUITextBox(ui, this->pnlDevice, CSTR("-100")));
-	this->txtRSSI->SetRect(104, 100, 200, 23, false);
+	this->txtRSSI->SetRect(104, 100, 100, 23, false);
 	NEW_CLASS(this->lblLSNR, UI::GUILabel(ui, this->pnlDevice, CSTR("LSNR")));
-	this->lblLSNR->SetRect(4, 124, 200, 23, false);
+	this->lblLSNR->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtLSNR, UI::GUITextBox(ui, this->pnlDevice, CSTR("-12.0")));
-	this->txtLSNR->SetRect(104, 124, 200, 23, false);
+	this->txtLSNR->SetRect(104, 124, 100, 23, false);
+	NEW_CLASS(this->lblPredef, UI::GUILabel(ui, this->pnlDevice, CSTR("Predef Data")));
+	this->lblPredef->SetRect(4, 148, 100, 23, false);
+	NEW_CLASS(this->cboPredef, UI::GUIComboBox(ui, this->pnlDevice, false));
+	this->cboPredef->SetRect(104, 148, 250, 23, false);
+	NEW_CLASS(this->btnPredef, UI::GUIButton(ui, this->pnlDevice, CSTR("Set")));
+	this->btnPredef->SetRect(354, 148, 75, 23, false);
+	this->btnPredef->HandleButtonClick(OnPredefClicked, this);
+	NEW_CLASS(this->lblFPort, UI::GUILabel(ui, this->pnlDevice, CSTR("FPort")));
+	this->lblFPort->SetRect(4, 172, 100, 23, false);
+	NEW_CLASS(this->txtFPort, UI::GUITextBox(ui, this->pnlDevice, CSTR("1")));
+	this->txtFPort->SetRect(104, 172, 100, 23, false);
+	NEW_CLASS(this->lblData, UI::GUILabel(ui, this->pnlDevice, CSTR("Data(Hex)")));
+	this->lblData->SetRect(4, 196, 100, 23, false);
+	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this->pnlDevice, CSTR("00000000")));
+	this->txtData->SetRect(104, 196, 300, 23, false);
 	NEW_CLASS(this->btnSendULData, UI::GUIButton(ui, this->pnlDevice, CSTR("Send UL Data")));
-	this->btnSendULData->SetRect(104, 148, 75, 23, false);
+	this->btnSendULData->SetRect(104, 220, 75, 23, false);
 	this->btnSendULData->HandleButtonClick(OnSendULDataClick, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
@@ -375,6 +428,18 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 
 	this->AddTimer(10000, OnTimerTick, this);
+
+	UOSInt i = 0;
+	UOSInt j = sizeof(pdata) / sizeof(pdata[0]);
+	while (i < j)
+	{
+		this->cboPredef->AddItem(Text::CString(pdata[i].name, pdata[i].nameLen), &pdata[i]);
+		i++;
+	}
+	if (j > 0)
+	{
+		this->cboPredef->SetSelectedIndex(0);
+	}
 }
 
 SSWR::AVIRead::AVIRLoraGWSimForm::~AVIRLoraGWSimForm()

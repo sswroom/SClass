@@ -18,6 +18,7 @@ test:
 @TestAES128
 @TestAES192
 @TestAES256
+@TestAESCMAC
 @TestBcrypt
 @TestBlowfish
 @TestCRC16
