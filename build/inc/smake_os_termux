@@ -10,6 +10,8 @@ DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 @ODBCConn.o
+DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
+@PostgreSQLConn.o
 
 IO/BTController.h: ../../src/IO/BTControllerNull.cpp
 @BTController.o
@@ -86,6 +88,7 @@ MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
+PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
 BTScanner.o: ../../src/IO/BTScannerNull.cpp

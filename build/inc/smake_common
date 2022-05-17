@@ -1813,6 +1813,8 @@ IO/ProtoHdlr/ProtoDUploadHandler.h: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.c
 @ProtoDUploadHandler.o
 IO/ProtoHdlr/ProtoGPSDevInfoHandler.h: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
 @ProtoGPSDevInfoHandler.o
+IO/ProtoHdlr/ProtoJMVL01Handler.h: ../../src/IO/ProtoHdlr/ProtoJMVL01Handler.cpp
+@ProtoJMVL01Handler.o
 IO/ProtoHdlr/ProtoJTT808Handler.h: ../../src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
 @ProtoJTT808Handler.o
 IO/ProtoHdlr/ProtoLogCliHandler.h: ../../src/IO/ProtoHdlr/ProtoLogCliHandler.cpp
@@ -2008,6 +2010,7 @@ Math/Geometry.h: ../../src/Math/Geometry.cpp
 @Geometry.o
 Math/LanczosFilter.h: ../../src/Math/LanczosFilter.cpp
 @LanczosFilter.o
+Math/LithiumBattery.h:
 Math/Math.h: ../../src/Math/Math.cpp
 @Math.o
 @Math_CPP.o
@@ -4371,6 +4374,7 @@ TSProtocolDecoder.o: ../../src/IO/ProtoDec/TSProtocolDecoder.cpp
 ProtoCortexHandler.o: ../../src/IO/ProtoHdlr/ProtoCortexHandler.cpp
 ProtoDUploadHandler.o: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.cpp
 ProtoGPSDevInfoHandler.o: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
+ProtoJMVL01Handler.o: ../../src/IO/ProtoHdlr/ProtoJMVL01Handler.cpp
 ProtoJTT808Handler.o: ../../src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
 ProtoLogCliHandler.o: ../../src/IO/ProtoHdlr/ProtoLogCliHandler.cpp
 ProtoMDataHandler.o: ../../src/IO/ProtoHdlr/ProtoMDataHandler.cpp

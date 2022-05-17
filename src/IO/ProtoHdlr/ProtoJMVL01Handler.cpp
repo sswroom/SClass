@@ -28,7 +28,6 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(IO::Stream *stm, void *s
 	UInt16 crcVal;
 	UInt16 len;
 	UOSInt i;
-	UOSInt j;
 	i = 0;
 	while (i < buffSize - 1)
 	{

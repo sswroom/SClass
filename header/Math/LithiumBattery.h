@@ -5,8 +5,8 @@ namespace Math
 	class LithiumBattery
 	{
 	public:
-		static Double voltageMax = 4.2;
-		static Double voltageShutdown = 3.0;
+		static constexpr Double voltageMax = 4.2;
+		static constexpr Double voltageShutdown = 3.0;
 	public:
 		static Double PercentToVoltage(Double percent)
 		{
