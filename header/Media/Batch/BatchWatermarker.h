@@ -12,9 +12,9 @@ namespace Media
 		class BatchWatermarker : public BatchHandler
 		{
 		private:
-			Data::RandomOS *rnd;
+			Data::RandomOS rnd;
 			Media::DrawEngine *deng;
-			Media::ABlend::AlphaBlend8_8 *ablend;
+			Media::ABlend::AlphaBlend8_8 ablend;
 			Text::String *watermark;
 			Media::Batch::BatchHandler *hdlr;
 

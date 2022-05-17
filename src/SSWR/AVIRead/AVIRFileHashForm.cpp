@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->UpdateUI();
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(me->readMut);
+	Sync::MutexUsage mutUsage(&me->readMut);
 	if (me->progNameChg)
 	{
 		me->txtFileName->SetText(me->progName->ToCString());
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->prgFile->ProgressUpdate(me->progCurr, me->progCount);
 	mutUsage.EndUse();
 
-	Int64 timeDiff = currTime.DiffMS(me->lastTimerTime);
+	Int64 timeDiff = currTime.DiffMS(&me->lastTimerTime);
 	Double spd;
 	if (timeDiff > 0)
 	{
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	me->rlcSpeed->AddSample(&spd);
 	sptr = Text::StrUInt64(sbuff, currTotal);
 	me->txtTotalSize->SetText(CSTRP(sbuff, sptr));
-	me->lastTimerTime->SetValue(&currTime);
+	me->lastTimerTime.SetValue(&currTime);
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(void *userObj)
@@ -87,13 +87,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	me->threadStatus = 1;
 	while (!me->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(me->fileMut);
+		Sync::MutexUsage mutUsage(&me->fileMut);
 		found = false;
 		i = 0;
 		j = me->fileList->GetCount();
 		while (i < j)
 		{
-			status = me->fileList->GetItem(i);
+			status = me->fileList.GetItem(i);
 			if (status->status == 0)
 			{
 				found = true;
@@ -131,7 +131,6 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Unknown)
 			{
 				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName->ToCString(), chkType, me, false);
-				IO::FileStream *fs;
 				if (fchk)
 				{
 					if (chkType == IO::FileCheck::CheckType::CRC32)
@@ -157,9 +156,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 					if (exporter)
 					{
 						exporter->SetCodePage(me->core->GetCurrCodePage());
-						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						exporter->ExportFile(fs, CSTRP(sbuff, sptr), fchk, 0);
-						DEL_CLASS(fs);
+						{
+							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							exporter->ExportFile(&fs, CSTRP(sbuff, sptr), fchk, 0);
+						}
 						DEL_CLASS(exporter);
 					}
 					DEL_CLASS(fchk);
@@ -178,7 +178,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 		}
 		else
 		{
-			me->fileEvt->Wait(1000);
+			me->fileEvt.Wait(1000);
 		}
 	}
 	me->threadStatus = 2;
@@ -188,13 +188,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CString fileName)
 {
 	FileStatus *status;
-	Sync::MutexUsage mutUsage(this->fileMut);
+	Sync::MutexUsage mutUsage(&this->fileMut);
 	status = MemAlloc(FileStatus, 1);
 	status->status = 0;
 	status->fileName = Text::String::New(fileName);
-	this->fileList->Add(status);
+	this->fileList.Add(status);
 	mutUsage.EndUse();
-	this->fileEvt->Set();
+	this->fileEvt.Set();
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
@@ -207,12 +207,12 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 		FileStatus *status;
 		this->fileListChg = false;
 		this->lvTasks->ClearItems();
-		Sync::MutexUsage mutUsage(this->fileMut);
+		Sync::MutexUsage mutUsage(&this->fileMut);
 		i = 0;
-		j = this->fileList->GetCount();
+		j = this->fileList.GetCount();
 		while (i < j)
 		{
-			status = this->fileList->GetItem(i);
+			status = this->fileList.GetItem(i);
 			k = this->lvTasks->AddItem(status->fileName, status);
 			if (status->status == 0)
 			{
@@ -247,10 +247,6 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->fileMut, Sync::Mutex());
-	NEW_CLASS(this->fileList, Data::ArrayList<FileStatus*>());
-	NEW_CLASS(this->readMut, Sync::Mutex());
-	NEW_CLASS(this->fileEvt, Sync::Event(true));
 	this->progName = 0;
 	this->progNameChg = false;
 	this->progLastCount = 0;
@@ -261,7 +257,6 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->currHashType = IO::FileCheck::CheckType::MD5;
 	this->readSize = 0;
 	this->totalRead = 0;
-	NEW_CLASS(this->lastTimerTime, Data::DateTime());
 
 	NEW_CLASS(this->pnlCheckType, UI::GUIPanel(ui, this));
 	this->pnlCheckType->SetRect(0, 0, 100, 31, false);
@@ -339,24 +334,19 @@ SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 	UOSInt i;
 	FileStatus *status;
 	this->threadToStop = true;
-	this->fileEvt->Set();
+	this->fileEvt.Set();
 	while (this->threadStatus != 2)
 	{
 		Sync::Thread::Sleep(10);
 	}
 
-	DEL_CLASS(this->lastTimerTime);
-	DEL_CLASS(this->readMut);
-	i = this->fileList->GetCount();
+	i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		status = this->fileList->GetItem(i);
+		status = this->fileList.GetItem(i);
 		status->fileName->Release();
 		MemFree(status);
 	}
-	DEL_CLASS(this->fileEvt);
-	DEL_CLASS(this->fileList);
-	DEL_CLASS(this->fileMut);
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
@@ -366,7 +356,7 @@ void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 count)
 {
-	Sync::MutexUsage mutUsage(this->readMut);
+	Sync::MutexUsage mutUsage(&this->readMut);
 	if (this->progName)
 	{
 		this->progName->Release();
@@ -382,7 +372,7 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 c
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
 {
-	Sync::MutexUsage mutUsage(this->readMut);
+	Sync::MutexUsage mutUsage(&this->readMut);
 	this->readSize += currCount - this->progCurr;
 	this->totalRead += currCount - this->progCurr;
 	this->progCurr = currCount;

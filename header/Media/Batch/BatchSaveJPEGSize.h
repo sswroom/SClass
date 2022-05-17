@@ -10,8 +10,8 @@ namespace Media
 		class BatchSaveJPEGSize : public BatchSaver
 		{
 		private:
-			Exporter::GUIJPGExporter *exporter;
-			Sync::Mutex *mut;
+			Exporter::GUIJPGExporter exporter;
+			Sync::Mutex mut;
 			UInt32 sizePercent;
 
 		public:

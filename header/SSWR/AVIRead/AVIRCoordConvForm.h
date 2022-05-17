@@ -43,10 +43,10 @@ namespace SSWR
 			UI::GUIListView *lvCoord;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<Text::String *> *nameList;
-			Data::ArrayList<Double> *xList;
-			Data::ArrayList<Double> *yList;
-			Data::ArrayList<Double> *zList;
+			Data::ArrayList<Text::String *> nameList;
+			Data::ArrayList<Double> xList;
+			Data::ArrayList<Double> yList;
+			Data::ArrayList<Double> zList;
 			Bool inited;
 
 			static void __stdcall OnSrcRadChanged(void *userObj, Bool newValue);

@@ -50,7 +50,6 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		Data::DateTime t;
-		IO::FileStream *fs;
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
@@ -65,21 +64,22 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		UOSInt readSize;
 		UInt8 *buff;
 		buff = MemAlloc(UInt8, 1048576);
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		while (true)
 		{
-			readSize = fd->GetRealData(currOfst, 1048576, buff);
-			if (readSize <= 0)
-				break;
-			if (fs->Write(buff, readSize) != readSize)
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			while (true)
 			{
-				valid = false;
+				readSize = fd->GetRealData(currOfst, 1048576, buff);
+				if (readSize <= 0)
+					break;
+				if (fs.Write(buff, readSize) != readSize)
+				{
+					valid = false;
+				}
+				currOfst += readSize;
+				if (readSize < 1048576)
+					break;
 			}
-			currOfst += readSize;
-			if (readSize < 1048576)
-				break;
 		}
-		DEL_CLASS(fs);
 
 		if (valid)
 		{

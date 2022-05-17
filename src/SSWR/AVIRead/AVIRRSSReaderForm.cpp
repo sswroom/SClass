@@ -145,10 +145,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(void *userObj, 
 	Net::RSSItem *item = (Net::RSSItem*)me->lvItems->GetItem(index);
 	if (item)
 	{
-		SSWR::AVIRead::AVIRRSSItemForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRRSSItemForm(0, me->ui, me->core, item));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);
+		SSWR::AVIRead::AVIRRSSItemForm frm(0, me->ui, me->core, item);
+		frm.ShowDialog(me);
 	}
 }
 
@@ -158,23 +156,19 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(&sb, 4096))
+		Text::UTF8Reader reader(&fs);
+		while (reader.ReadLine(&sb, 4096))
 		{
 			i = this->rssList->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 			this->cboRecent->InsertItem(i, sb.ToCString(), 0);
 			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 }
 
 void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
@@ -183,25 +177,21 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
+		Text::UTF8Writer writer(&fs);
 		i = 0;
 		j = this->rssList->GetCount();
 		while (i < j)
 		{
 			Text::String *s = rssList->GetItem(i);
-			writer->WriteLineC(s->v, s->leng);
+			writer.WriteLineC(s->v, s->leng);
 			i++;
 		}
-		DEL_CLASS(writer);
 	}
-	DEL_CLASS(fs);
 }
 
 SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

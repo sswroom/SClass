@@ -116,7 +116,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 			Text::String *reqURL;
 			const UTF8Char *reqBody;
 			UOSInt reqBodyLen;
@@ -142,15 +142,15 @@ namespace SSWR
 			UInt64 respULSize;
 			Int32 respStatus;
 			Text::String *respReqURL;
-			Data::ArrayList<Text::String*> *respHeaders;
-			Sync::Mutex *respMut;
+			Data::ArrayList<Text::String*> respHeaders;
+			Sync::Mutex respMut;
 			Text::String *respContType;
 			IO::MemoryStream *respData;
 			Text::String *respCert;
-			Data::ArrayList<ParamValue*> *params;
-			Data::ArrayList<HTTPCookie *> *cookieList;
-			Sync::Mutex *cookieMut;
-			Data::ArrayList<Text::String*> *fileList;
+			Data::ArrayList<ParamValue*> params;
+			Data::ArrayList<HTTPCookie *> cookieList;
+			Sync::Mutex cookieMut;
+			Data::ArrayList<Text::String*> fileList;
 
 			static void __stdcall OnUserAgentClicked(void *userObj);
 			static void __stdcall OnRequestClicked(void *userObj);

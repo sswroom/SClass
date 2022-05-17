@@ -186,9 +186,8 @@ Bool SDCardMgr_ReadId(Text::CString fileName, UInt8 *buff)
 	UOSInt i;
 	Bool ret = false;
 	UInt8 fileBuff[64];
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	i = fs->Read(fileBuff, 64);
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	i = fs.Read(fileBuff, 64);
 	if (i >= 32)
 	{
 		fileBuff[32] = 0;
@@ -197,7 +196,6 @@ Bool SDCardMgr_ReadId(Text::CString fileName, UInt8 *buff)
 			ret = true;
 		}
 	}
-	DEL_CLASS(fs);
 	return ret;
 }
 

@@ -214,8 +214,6 @@ void Media::ProfiledResizer::ProcessFile(Text::CString fileName)
 
 Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 {
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[256];
 	UTF8Char *sptr;
@@ -227,19 +225,15 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 	{
 		IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prof"));
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		fileName = CSTRP(sbuff, sptr);
 	}
-	else
+	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	}
-	if (fs->IsError())
-	{
-		DEL_CLASS(fs);
 		return false;
 	}
 
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	Text::UTF8Writer writer(&fs);
 	i = 0;
 	j = this->profiles->GetCount();
 	while (i < j)
@@ -267,12 +261,10 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 		sptr = Text::StrInt32(sptr, (Int32)profile->sizeType) + 1;
 
 		sptr = Text::StrCSVJoin(sbuff, cols, 8);
-		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 		i++;
 	}
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
 	return true;
 }
 

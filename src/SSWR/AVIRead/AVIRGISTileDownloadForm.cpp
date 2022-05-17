@@ -169,7 +169,6 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 	OSInt j;
 	OSInt cnt;
 	OSInt err = 0;
-	IO::FileStream *fs;
 	this->txtError->SetText(L"0");
 	currLyr = 0;
 	while (currLyr < lyrCnt)
@@ -224,9 +223,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 					{
 						sb.AppendC(UTF8STRC(".jpg"));
 					}
-					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-					fs->Write(fileBuff, (OSInt)fileSize);
-					DEL_CLASS(fs);
+					IO::FileStream fs(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					fs.Write(fileBuff, (OSInt)fileSize);
 				}
 				DEL_CLASS(fd);
 			}
@@ -439,106 +437,102 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	Double bounds[4];
 	UInt64 fileSize;
 	OSInt j;
-	Text::StringBuilderUTF8 *sb;
-	IO::FileStream *fs;
-	Data::DateTime *dt;
 
 	stat->threadStat = 1;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(dt, Data::DateTime());
-	stat->me->mainEvt->Set();
-	while (true)
 	{
-		if (stat->threadStat == 2)
+		Text::StringBuilderUTF8 sb;
+		Data::DateTime dt;
+		stat->me->mainEvt->Set();
+		while (true)
 		{
-			fd = 0;
-			j = 3;
-			while (fd == 0 && j-- > 0)
+			if (stat->threadStat == 2)
 			{
-				fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, bounds, false, &blockX, &blockY, &it);
-			}
-			if (fd)
-			{
-				fileSize = fd->GetDataSize();
-				if (fileSize > fileBuffSize)
+				fd = 0;
+				j = 3;
+				while (fd == 0 && j-- > 0)
 				{
-					fileBuffSize = (UOSInt)fileSize;
-					if (fileBuff)
-					{
-						MemFree(fileBuff);
-					}
-					fileBuff = MemAlloc(UInt8, fileBuffSize);
+					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, bounds, false, &blockX, &blockY, &it);
 				}
-				if (fd->GetRealData(0, (UOSInt)fileSize, fileBuff) == fileSize)
+				if (fd)
 				{
-					if (stat->spkg)
+					fileSize = fd->GetDataSize();
+					if (fileSize > fileBuffSize)
 					{
-						sb->ClearStr();
-						sb->AppendUOSInt(stat->lyrId);
-						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb->AppendI32(blockX);
-						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb->AppendI32(blockY);
-						if (it == Map::TileMap::IT_PNG)
+						fileBuffSize = (UOSInt)fileSize;
+						if (fileBuff)
 						{
-							sb->AppendC(UTF8STRC(".png"));
+							MemFree(fileBuff);
 						}
-						else
+						fileBuff = MemAlloc(UInt8, fileBuffSize);
+					}
+					if (fd->GetRealData(0, (UOSInt)fileSize, fileBuff) == fileSize)
+					{
+						if (stat->spkg)
 						{
-							sb->AppendC(UTF8STRC(".jpg"));
-						}
-						dt->SetCurrTimeUTC();
+							sb.ClearStr();
+							sb.AppendUOSInt(stat->lyrId);
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendI32(blockX);
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendI32(blockY);
+							if (it == Map::TileMap::IT_PNG)
+							{
+								sb.AppendC(UTF8STRC(".png"));
+							}
+							else
+							{
+								sb.AppendC(UTF8STRC(".jpg"));
+							}
+							dt.SetCurrTimeUTC();
 
-//						stat->pkgMut->Lock();
-						stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb->ToCString(), dt->ToTicks());
-//						stat->pkgMut->Unlock();
-					}
-					else
-					{
-						sb->ClearStr();
-						sb->AppendSlow(stat->folderName);
-						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb->AppendUOSInt(stat->lyrId);
-						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb->AppendI32(blockX);
-						IO::Path::CreateDirectory(sb->ToCString());
-						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb->AppendI32(blockY);
-						if (it == Map::TileMap::IT_PNG)
-						{
-							sb->AppendC(UTF8STRC(".png"));
+	//						stat->pkgMut->Lock();
+							stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb.ToCString(), dt.ToTicks());
+	//						stat->pkgMut->Unlock();
 						}
 						else
 						{
-							sb->AppendC(UTF8STRC(".jpg"));
+							sb.ClearStr();
+							sb.AppendSlow(stat->folderName);
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendUOSInt(stat->lyrId);
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendI32(blockX);
+							IO::Path::CreateDirectory(sb.ToCString());
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendI32(blockY);
+							if (it == Map::TileMap::IT_PNG)
+							{
+								sb.AppendC(UTF8STRC(".png"));
+							}
+							else
+							{
+								sb.AppendC(UTF8STRC(".jpg"));
+							}
+							IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+							fs.Write(fileBuff, (UOSInt)fileSize);
 						}
-						NEW_CLASS(fs, IO::FileStream(sb->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-						fs->Write(fileBuff, (UOSInt)fileSize);
-						DEL_CLASS(fs);
 					}
+					DEL_CLASS(fd);
 				}
-				DEL_CLASS(fd);
+				else
+				{
+					Sync::Interlocked::Increment(&stat->me->errCnt);
+				}
+				stat->threadStat = 1;
+				stat->me->mainEvt->Set();
 			}
-			else
+			else if (stat->threadStat == 3)
 			{
-				Sync::Interlocked::Increment(&stat->me->errCnt);
+				break;
 			}
-			stat->threadStat = 1;
-			stat->me->mainEvt->Set();
+			stat->threadEvt->Wait(1000);
 		}
-		else if (stat->threadStat == 3)
+		if (fileBuff)
 		{
-			break;
+			MemFree(fileBuff);
+			fileBuff = 0;
 		}
-		stat->threadEvt->Wait(1000);
 	}
-	if (fileBuff)
-	{
-		MemFree(fileBuff);
-		fileBuff = 0;
-	}
-	DEL_CLASS(dt);
-	DEL_CLASS(sb);
 	stat->threadStat = 0;
 	return 0;
 }

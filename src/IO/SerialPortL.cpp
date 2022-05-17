@@ -292,19 +292,17 @@ UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 Bool SerialPort_WriteInt32(Text::CString path, Int32 num)
 {
 	UTF8Char sbuff[32];
-	IO::FileStream *fs;
 	Bool ret = false;
 	UTF8Char *sptr;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(path, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		sptr = Text::StrInt32(sbuff, num);
-		if (fs->Write(sbuff, (UOSInt)(sptr - sbuff)) == (UOSInt)(sptr - sbuff))
+		if (fs.Write(sbuff, (UOSInt)(sptr - sbuff)) == (UOSInt)(sptr - sbuff))
 		{
 			ret = true;
 		}
 	}
-	DEL_CLASS(fs);
 	return ret;
 }
 

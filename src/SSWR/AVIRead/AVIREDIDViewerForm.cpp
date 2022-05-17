@@ -92,7 +92,6 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Media::EDID::EDIDInfo info;
-	UI::FileDialog *dlg;
 
 	if (Media::EDID::Parse(me->edid, &info))
 	{
@@ -106,23 +105,19 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"EDIDSave", true));
-		dlg->SetFileName(CSTRP(sbuff, sptr));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"EDIDSave", true);
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			fs->Write(me->edid, me->edidSize);
-			DEL_CLASS(fs);
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+			fs.Write(me->edid, me->edidSize);
 		}
-		DEL_CLASS(dlg);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
-	IO::FileStream *fs;
 	UInt8 *fileCont;
 	UOSInt fileSize;
 	UOSInt i;
@@ -130,28 +125,29 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, Text
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fs, IO::FileStream(fileNames[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileSize = (UOSInt)fs->GetLength();
-		if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 		{
-			fileCont = MemAlloc(UInt8, fileSize);
-			fs->Read(fileCont, fileSize);
-			if (fileCont[0] == 0 && fileCont[1] == 0xff && fileCont[2] == 0xff && fileCont[3] == 0xff && fileCont[4] == 0xff && fileCont[5] == 0xff && fileCont[6] == 0xff && fileCont[7] == 0)
+			IO::FileStream fs(fileNames[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fileSize = (UOSInt)fs.GetLength();
+			if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 			{
-				if (me->edid)
+				fileCont = MemAlloc(UInt8, fileSize);
+				fs.Read(fileCont, fileSize);
+				if (fileCont[0] == 0 && fileCont[1] == 0xff && fileCont[2] == 0xff && fileCont[3] == 0xff && fileCont[4] == 0xff && fileCont[5] == 0xff && fileCont[6] == 0xff && fileCont[7] == 0)
 				{
-					MemFree(me->edid);
-					me->edid = 0;
+					if (me->edid)
+					{
+						MemFree(me->edid);
+						me->edid = 0;
+					}
+					me->edid = MemAlloc(UInt8, fileSize);
+					me->edidSize = fileSize;
+					MemCopyNO(me->edid, fileCont, fileSize);
+					found = true;
 				}
-				me->edid = MemAlloc(UInt8, fileSize);
-				me->edidSize = fileSize;
-				MemCopyNO(me->edid, fileCont, fileSize);
-				found = true;
-			}
 
-			MemFree(fileCont);
+				MemFree(fileCont);
+			}
 		}
-		DEL_CLASS(fs);
 
 		if (found)
 		{
@@ -196,7 +192,6 @@ SSWR::AVIRead::AVIREDIDViewerForm::~AVIREDIDViewerForm()
 
 void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 {
-	Media::DDCReader *reader;
 	UOSInt edidSize;
 	UInt8 *edid;
 	MonitorHandle *hMon = this->GetHMonitor();
@@ -207,15 +202,17 @@ void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 		MemFree(this->edid);
 		this->edid = 0;
 	}
-	NEW_CLASS(reader, Media::DDCReader(hMon));
-	edid = reader->GetEDID(&edidSize);
 
-	if (edid)
 	{
-		this->edidSize = edidSize;
-		this->edid = MemAlloc(UInt8, edidSize);
-		MemCopyNO(this->edid, edid, edidSize);
+		Media::DDCReader reader(hMon);
+		edid = reader.GetEDID(&edidSize);
+
+		if (edid)
+		{
+			this->edidSize = edidSize;
+			this->edid = MemAlloc(UInt8, edidSize);
+			MemCopyNO(this->edid, edid, edidSize);
+		}
 	}
-	DEL_CLASS(reader);
 	this->UpdateEDIDDisp();
 }

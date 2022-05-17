@@ -2,11 +2,11 @@
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
-#include "IO/StreamReader.h"
 #include "Manage/Process.h"
 #include "SSWR/ProcMonForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
 void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
@@ -93,21 +93,19 @@ void SSWR::ProcMonForm::LoadProgList()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::PString sarr[2];
-	IO::FileStream *fs;
-	IO::StreamReader *reader;
 	Text::StringBuilderUTF8 sb;
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(reader, IO::StreamReader(fs, 65001));
+		Text::UTF8Reader reader(&fs);
 		
 		while (true)
 		{
 			sb.ClearStr();
-			if (!reader->ReadLine(&sb, 4096))
+			if (!reader.ReadLine(&sb, 4096))
 				break;
 			if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
 			{
@@ -121,17 +119,13 @@ void SSWR::ProcMonForm::LoadProgList()
 				}
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 }
 
 void SSWR::ProcMonForm::SaveProgList()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -139,8 +133,8 @@ void SSWR::ProcMonForm::SaveProgList()
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer);
+	Text::UTF8Writer writer(&fs);
 	i = 0;
 	j = this->progList->GetCount();
 	while (i < j)
@@ -153,11 +147,9 @@ void SSWR::ProcMonForm::SaveProgList()
 		{
 			sb.Append(prog->progPath);
 		}
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
 }
 
 void __stdcall SSWR::ProcMonForm::OnProgSelChange(void *userObj)

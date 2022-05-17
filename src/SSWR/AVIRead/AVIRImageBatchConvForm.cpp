@@ -16,17 +16,15 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *user
 	SSWR::AVIRead::AVIRImageBatchConvForm *me = (SSWR::AVIRead::AVIRImageBatchConvForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtDir->GetText(&sb);
-	UI::FolderDialog *dlg;
-	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatchConv"));
+	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"ImageBatchConv");
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFolder(sb.ToCString());
+		dlg.SetFolder(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtDir->SetText(dlg->GetFolder()->ToCString());
+		me->txtDir->SetText(dlg.GetFolder()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *userObj)
@@ -63,8 +61,6 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	IO::Path::FindFileSession *sess;
 	Bool succ = true;
 	Exporter::GUIJPGExporter exporter;
-	IO::StmData::FileData *fd;
-	IO::FileStream *fs;
 	IO::Path::PathType pt;
 	Media::ImageList *imgList;
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -87,9 +83,10 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptrEnd - sbuff)}, false));
-				imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-				DEL_CLASS(fd);
+				{
+					IO::StmData::FileData fd({sbuff, (UOSInt)(sptrEnd - sbuff)}, false);
+					imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
+				}
 				if (imgList)
 				{
 					imgList->ToStaticImage(0);
@@ -101,19 +98,20 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					{
 						exporter.SetParamInt32(param, 0, quality);
 					}
-					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, param))
 					{
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("Error in converting to "));
-						sb.AppendP(sptr2, sptr2End);
-						sb.AppendC(UTF8STRC(", do you want to continue?"));
-						if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Image Batch Convert"), me))
+						IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+						if (!exporter.ExportFile(&fs, CSTRP(sbuff2, sptr2End), imgList, param))
 						{
-							succ = false;
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("Error in converting to "));
+							sb.AppendP(sptr2, sptr2End);
+							sb.AppendC(UTF8STRC(", do you want to continue?"));
+							if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Image Batch Convert"), me))
+							{
+								succ = false;
+							}
 						}
 					}
-					DEL_CLASS(fs);
 
 					if (param)
 					{

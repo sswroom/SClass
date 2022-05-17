@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 
 
 	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
-	me->threadEvt->Set();
+	me->threadEvt.Set();
 	while (me->threadRunning && me->reqURL)
 	{
 		Sync::Thread::Sleep(1);
@@ -56,7 +56,6 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	Text::String *currURL;
 	Text::String *currPath;
 	Text::String *currHeader;
-	IO::FileStream *fs;
 	UInt8 buff[4096];
 	Text::PString sarr[2];
 	Text::PString sarr2[2];
@@ -101,7 +100,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 				sptrEnd = &sptr[i];
 			}
 			Net::HTTPClient *cli;
-			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, currURL->StartsWith(UTF8STRC("https://")));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)
@@ -140,21 +139,20 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			while (i < j)
 			{
 				sptr = cli->GetRespHeader(i, buff);
-				me->respHeaders->Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
+				me->respHeaders.Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
 				i++;
 			}
 			me->respHdrChanged = true;
 
 			while ((i = cli->Read(buff, 4096)) > 0)
 			{
-				fs->Write(buff, i);
+				fs.Write(buff, i);
 				me->currSize += i;
 			}
 			me->respTimeTotal = cli->GetTotalTime();
 			me->respSvrAddr = *cli->GetSvrAddr();
 
 			DEL_CLASS(cli);
-			DEL_CLASS(fs);
 			me->respChanged = true;
 
 			currURL->Release();
@@ -181,11 +179,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 	{
 		me->lvHeaders->ClearItems();
 		i = 0;
-		j = me->respHeaders->GetCount();
+		j = me->respHeaders.GetCount();
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.Append(me->respHeaders->GetItem(i));
+			sb.Append(me->respHeaders.GetItem(i));
 			me->lvHeaders->AddItem(sb.ToCString(), 0);
 			i++;
 		}
@@ -259,10 +257,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIRHTTPDownloaderForm::ClearHeaders()
 {
 	UOSInt i;
-	i = this->respHeaders->GetCount();
+	i = this->respHeaders.GetCount();
 	while (i-- > 0)
 	{
-		this->respHeaders->RemoveAt(i)->Release();
+		this->respHeaders.RemoveAt(i)->Release();
 	}
 }
 
@@ -282,8 +280,6 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->reqURL = 0;
 	this->reqHeader = 0;
 	this->downPath = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
-	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 
 	Data::DateTime t;
 	t.SetCurrTimeUTC();
@@ -384,14 +380,12 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 SSWR::AVIRead::AVIRHTTPDownloaderForm::~AVIRHTTPDownloaderForm()
 {
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(1);
 	}
-	DEL_CLASS(this->threadEvt);
 	this->ClearHeaders();
-	DEL_CLASS(this->respHeaders);
 	SDEL_STRING(this->downPath);
 	SDEL_STRING(this->reqHeader);
 	SDEL_CLASS(this->ssl);

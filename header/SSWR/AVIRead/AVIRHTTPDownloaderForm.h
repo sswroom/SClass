@@ -55,7 +55,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 			Text::String *reqURL;
 			Text::String *reqHeader;
 			Text::String *downPath;
@@ -72,7 +72,7 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
-			Data::ArrayList<Text::String*> *respHeaders;
+			Data::ArrayList<Text::String*> respHeaders;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);

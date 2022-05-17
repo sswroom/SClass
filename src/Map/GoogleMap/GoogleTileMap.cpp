@@ -292,7 +292,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::HTTPClient::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	if (cli->GetRespStatus() == 304)
@@ -406,7 +406,6 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	Net::HTTPClient *cli;
-	IO::FileStream *fs;
 	IO::IStreamData *fd;
 	if (level < 0 || level > this->maxLevel)
 		return 0;
@@ -499,15 +498,14 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::HTTPClient::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(CSTRP(filePathU, sptru), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream fs(CSTRP(filePathU, sptru), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
-		fs->SetFileTimes(&dt, 0, 0);
-		DEL_CLASS(fs);
+		fs.SetFileTimes(&dt, 0, 0);
 	}
 	else
 	{
@@ -529,19 +527,18 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(CSTRP(filePathU, sptru), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-					fs->Write(imgBuff, (UOSInt)contLeng);
+					IO::FileStream fs(CSTRP(filePathU, sptru), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					fs.Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
 						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, &dt);
+						fs.SetFileTimes(&currTime, 0, &dt);
 					}
 					else
 					{
 						currTime.SetCurrTimeUTC();
-						fs->SetFileTimes(&currTime, 0, 0);
+						fs.SetFileTimes(&currTime, 0, 0);
 					}
-					DEL_CLASS(fs);
 				}
 				else if (this->spkg)
 				{

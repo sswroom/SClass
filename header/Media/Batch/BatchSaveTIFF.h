@@ -11,8 +11,8 @@ namespace Media
 		class BatchSaveTIFF : public BatchSaver
 		{
 		private:
-			Exporter::GUITIFExporter *exporter;
-			Sync::Mutex *mut;
+			Exporter::GUITIFExporter exporter;
+			Sync::Mutex mut;
 			Bool isCompressed;
 
 		public:

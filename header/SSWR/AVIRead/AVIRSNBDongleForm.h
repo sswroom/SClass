@@ -43,13 +43,13 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			IO::Stream *stm;
 			IO::SNBDongle *snb;
-			IO::LogTool *log;
+			IO::LogTool log;
 			Bool dongleUpdated;
 
-			Sync::RWMutex *devMut;
-			Data::UInt64Map<DeviceInfo*> *devMap;
+			Sync::RWMutex devMut;
+			Data::UInt64Map<DeviceInfo*> devMap;
 			Bool devChg;
-			Data::UInt64Map<Int32> *devHandlerMap;
+			Data::UInt64Map<Int32> devHandlerMap;
 
 			UI::GUITabControl *tcMain;
 

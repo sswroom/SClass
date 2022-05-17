@@ -209,8 +209,6 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			sb.AppendC(UTF8STRC(".tfw"));
 			if (IO::Path::GetPathType(sb.ToCString()) == IO::Path::PathType::File)
 			{
-				IO::FileStream *fs;
-				IO::StreamReader *reader;
 				Bool valid = true;
 				Double xPxSize;
 				Double rotY;
@@ -218,40 +216,40 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 				Double yPxSize;
 				Double xCoord;
 				Double yCoord;
-				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-				NEW_CLASS(reader, IO::StreamReader(fs, 0));
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
 				{
-					valid = false;
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+					IO::StreamReader reader(&fs, 0);
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
+					{
+						valid = false;
+					}
 				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
-				{
-					valid = false;
-				}
-				DEL_CLASS(reader);
-				DEL_CLASS(fs);
 
 				if (valid && rotX == 0 && rotY == 0)
 				{

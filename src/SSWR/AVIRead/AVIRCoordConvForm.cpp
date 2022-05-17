@@ -79,10 +79,10 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
 	me->txtName->GetText(&sb);
 	if (sb.GetLength() <= 0)
 		return;
-	me->nameList->Add(Text::String::New(sb.ToCString()));
-	me->xList->Add(x);
-	me->yList->Add(y);
-	me->zList->Add(z);
+	me->nameList.Add(Text::String::New(sb.ToCString()));
+	me->xList.Add(x);
+	me->yList.Add(y);
+	me->zList.Add(z);
 	me->UpdateList();
 }
 
@@ -95,7 +95,6 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnClearClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
-	UI::FileDialog *dlg;
 	UTF8Char sbuff[256];
 	UTF8Char *strBuff;
 	UTF8Char *sptr;
@@ -119,83 +118,75 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		return;
 	}
 
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false));
-	parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
-	if (!dlg->ShowDialog(me->GetHandle()))
-	{
-		DEL_CLASS(dlg);
-		return;
-	}
-	DB::ReadingDB *db = 0;
-	if (dlg->GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
-	{
-		DB::CSVFile *csv;
-		NEW_CLASS(csv, DB::CSVFile(dlg->GetFileName(), 0));
-		db = csv;
-	}
-	if (db == 0)
-	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-		DEL_CLASS(dlg);
-		db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
-		DEL_CLASS(fd);
-		if (db == 0)
-		{
-			UI::MessageDialog::ShowDialog(CSTR("File is not a database file"), CSTR("Error"), me);
-			return;
-		}
-	}
 	UOSInt xCol = (UOSInt)-1;
 	UOSInt yCol = (UOSInt)-1;
 	UOSInt colCnt;
-	DB::DBReader *reader = db->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
-	if (reader == 0)
+	DB::ReadingDB *db = 0;
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unsupported database format"), CSTR("Error"), me);
-		DEL_CLASS(db);
-		return;
-	}
-	i = reader->ColCount();
-	colCnt = i;
-	while (i-- > 0)
-	{
-		if ((sptr = reader->GetName(i, sbuff)) != 0)
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CoordConvFile", false);
+		parsers->PrepareSelector(&dlg, IO::ParserType::ReadingDB);
+		if (!dlg.ShowDialog(me->GetHandle()))
 		{
-			if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPX")))
+			return;
+		}
+		if (dlg.GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
+		{
+			DB::CSVFile *csv;
+			NEW_CLASS(csv, DB::CSVFile(dlg.GetFileName(), 0));
+			db = csv;
+		}
+		if (db == 0)
+		{
+			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			db = (DB::ReadingDB*)parsers->ParseFileType(&fd, IO::ParserType::ReadingDB);
+			if (db == 0)
 			{
-				xCol = i;
-			}
-			else if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPY")))
-			{
-				yCol = i;
+				UI::MessageDialog::ShowDialog(CSTR("File is not a database file"), CSTR("Error"), me);
+				return;
 			}
 		}
+		DB::DBReader *reader = db->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+		if (reader == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Unsupported database format"), CSTR("Error"), me);
+			DEL_CLASS(db);
+			return;
+		}
+		i = reader->ColCount();
+		colCnt = i;
+		while (i-- > 0)
+		{
+			if ((sptr = reader->GetName(i, sbuff)) != 0)
+			{
+				if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPX")))
+				{
+					xCol = i;
+				}
+				else if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPY")))
+				{
+					yCol = i;
+				}
+			}
+		}
+		db->CloseReader(reader);
+		if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
+		{
+			DEL_CLASS(db);
+			UI::MessageDialog::ShowDialog(CSTR("XY Database column not found"), CSTR("Error"), me);
+			return;
+		}
 	}
-	db->CloseReader(reader);
-	if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
-	{
-		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog(CSTR("XY Database column not found"), CSTR("Error"), me);
-		return;
-	}
-	
 
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true));
-	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
-	if (!dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CoordConvSave", true);
+	dlg.AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+	if (!dlg.ShowDialog(me->GetHandle()))
 	{
-		DEL_CLASS(dlg);
 		DEL_CLASS(db);
 		return;
 	}
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
-	NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
-		DEL_CLASS(dlg);
 		DEL_CLASS(db);
 		UI::MessageDialog::ShowDialog(CSTR("Error in creating output file"), CSTR("Error"), me);
 		return;
@@ -204,12 +195,10 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	const UTF8Char **sarr;
 	sarr = MemAlloc(const UTF8Char *, colCnt + 2);
 	i = 0;
-	reader = db->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *reader = db->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 		MemFree(sarr);
-		DEL_CLASS(dlg);
-		DEL_CLASS(fs);
 		DEL_CLASS(db);
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading source file"), CSTR("Error"), me);
 		return;
@@ -238,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	}
 
 	strBuff = MemAlloc(UTF8Char, 16384);
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	Text::UTF8Writer writer(&fs);
 	sptr = strBuff;
 	i = 0;
 	while (i < colCnt)
@@ -259,7 +248,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	sarr[colCnt + 1] = (const UTF8Char*)"OutY";
 	sb.ClearStr();
 	sb.AppendCSV(sarr, colCnt + 2);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 	Double inX;
 	Double inY;
@@ -300,31 +289,28 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		}
 		sb.ClearStr();
 		sb.AppendCSV(sarr, colCnt + 2);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	MemFree(strBuff);
 	MemFree(sarr);
 	DEL_CLASS(srcCoord);
 	DEL_CLASS(destCoord);
-	DEL_CLASS(dlg);
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
 	DEL_CLASS(db);
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
 {
 	UOSInt i;
-	i = this->nameList->GetCount();
+	i = this->nameList.GetCount();
 	while (i-- > 0)
 	{
-		this->nameList->GetItem(i)->Release();
+		this->nameList.GetItem(i)->Release();
 	}
-	this->nameList->Clear();
-	this->xList->Clear();
-	this->yList->Clear();
-	this->zList->Clear();
+	this->nameList.Clear();
+	this->xList.Clear();
+	this->yList.Clear();
+	this->zList.Clear();
 	this->UpdateList();
 }
 
@@ -384,13 +370,13 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 
 	this->lvCoord->ClearItems();
 	i = 0;
-	j = this->nameList->GetCount();
+	j = this->nameList.GetCount();
 	while (i < j)
 	{
-		k = this->lvCoord->AddItem(this->nameList->GetItem(i)->ToCString(), 0);
-		x = this->xList->GetItem(i);
-		y = this->yList->GetItem(i);
-		z = this->zList->GetItem(i);
+		k = this->lvCoord->AddItem(this->nameList.GetItem(i)->ToCString(), 0);
+		x = this->xList.GetItem(i);
+		y = this->yList.GetItem(i);
+		z = this->zList.GetItem(i);
 		sptr = Text::StrDouble(sbuff, x);
 		this->lvCoord->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, y);
@@ -445,10 +431,6 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->nameList, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->xList, Data::ArrayList<Double>());
-	NEW_CLASS(this->yList, Data::ArrayList<Double>());
-	NEW_CLASS(this->zList, Data::ArrayList<Double>());
 	this->inited = false;
 
 	NEW_CLASS(this->pnlSrc, UI::GUIPanel(ui, this));
@@ -525,10 +507,6 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRCoordConvForm::~AVIRCoordConvForm()
 {
 	this->ClearItems();
-	DEL_CLASS(this->nameList);
-	DEL_CLASS(this->xList);
-	DEL_CLASS(this->yList);
-	DEL_CLASS(this->zList);
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::OnMonitorChanged()

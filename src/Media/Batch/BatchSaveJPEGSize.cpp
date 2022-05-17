@@ -8,8 +8,6 @@
 
 Media::Batch::BatchSaveJPEGSize::BatchSaveJPEGSize(UInt32 sizePercent)
 {
-	NEW_CLASS(exporter, Exporter::GUIJPGExporter());
-	NEW_CLASS(mut, Sync::Mutex());
 	if (sizePercent > 100)
 		this->sizePercent = 100;
 	else if (sizePercent < 1)
@@ -20,16 +18,12 @@ Media::Batch::BatchSaveJPEGSize::BatchSaveJPEGSize(UInt32 sizePercent)
 
 Media::Batch::BatchSaveJPEGSize::~BatchSaveJPEGSize()
 {
-	DEL_CLASS(mut);
-	DEL_CLASS(exporter);
 }
 
 void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *targetId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::MemoryStream *mstm;
-	IO::FileStream *fs;
 	void *param;
 	Int32 minIndex;
 	UInt64 minSize;
@@ -46,25 +40,25 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	img = imgList->GetImage(0, 0);
 	targetSize = (img->info.dispWidth * img->info.dispHeight * img->info.storeBPP >> 3) / this->sizePercent;
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Media.Batch.BatchSaveJPEGSize")));
-	param = exporter->CreateParam(imgList);
+	IO::MemoryStream mstm(UTF8STRC("Media.Batch.BatchSaveJPEGSize"));
+	param = this->exporter.CreateParam(imgList);
 
-	mstm->Clear();
-	exporter->SetParamInt32(param, 0, 0);
-	exporter->ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
+	mstm.Clear();
+	this->exporter.SetParamInt32(param, 0, 0);
+	this->exporter.ExportFile(&mstm, CSTRP(sbuff, sptr), imgList, param);
 	minIndex = 0;
-	minSize = mstm->GetLength();
+	minSize = mstm.GetLength();
 	if (minSize > targetSize)
 	{
 		currIndex = minIndex;
 	}
 	else
 	{
-		mstm->Clear();
-		exporter->SetParamInt32(param, 0, 100);
-		exporter->ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
+		mstm.Clear();
+		this->exporter.SetParamInt32(param, 0, 100);
+		this->exporter.ExportFile(&mstm, CSTRP(sbuff, sptr), imgList, param);
 		maxIndex = 100;
-		maxSize = mstm->GetLength();
+		maxSize = mstm.GetLength();
 		if (maxSize < targetSize)
 		{
 			currIndex = maxIndex;
@@ -86,10 +80,10 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 					}
 					break;
 				}
-				mstm->Clear();
-				exporter->SetParamInt32(param, 0, currIndex);
-				exporter->ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
-				currSize = mstm->GetLength();
+				mstm.Clear();
+				this->exporter.SetParamInt32(param, 0, currIndex);
+				this->exporter.ExportFile(&mstm, CSTRP(sbuff, sptr), imgList, param);
+				currSize = mstm.GetLength();
 				if (currSize > targetSize)
 				{
 					maxIndex = currIndex;
@@ -108,11 +102,10 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 		}
 	}
 
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	exporter->SetParamInt32(param, 0, currIndex);
-	exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
-	DEL_CLASS(fs);
-	exporter->DeleteParam(param);
-	DEL_CLASS(mstm);
-
+	{
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+		this->exporter.SetParamInt32(param, 0, currIndex);
+		this->exporter.ExportFile(&fs, CSTRP(sbuff, sptr), imgList, param);
+	}
+	this->exporter.DeleteParam(param);
 }

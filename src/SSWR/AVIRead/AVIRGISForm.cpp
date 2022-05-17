@@ -1228,22 +1228,20 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MTK_FILE:
 		{
-			UI::FileDialog *dlg;
-			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISMTKFile", false));
-			dlg->AddFilter(CSTR("*.bin"), CSTR("MTK Binary File"));
-			if (dlg->ShowDialog(this->GetHandle()))
+			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISMTKFile", false);
+			dlg.AddFilter(CSTR("*.bin"), CSTR("MTK Binary File"));
+			if (dlg.ShowDialog(this->GetHandle()))
 			{
-				IO::FileStream *fs;
 				UInt64 fileSize;
-				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				fileSize = fs->GetLength();
+				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				fileSize = fs.GetLength();
 				if (fileSize > 0 && fileSize <= 8388608 && (fileSize & 0xffff) == 0)
 				{
 					UOSInt i;
 					Map::GPSTrack *trk;
 					UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)fileSize);
-					fs->Read(fileBuff, (UOSInt)fileSize);
-					NEW_CLASS(trk, Map::GPSTrack(dlg->GetFileName(), true, 0, 0));
+					fs.Read(fileBuff, (UOSInt)fileSize);
+					NEW_CLASS(trk, Map::GPSTrack(dlg.GetFileName(), true, 0, 0));
 					i = 0;
 					while (i < fileSize)
 					{
@@ -1256,9 +1254,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					MemFree(fileBuff);
 					this->AddLayer(trk);
 				}
-				DEL_CLASS(fs);
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_GPS_TRACKER:

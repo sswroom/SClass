@@ -17,21 +17,19 @@
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MACManagerFile", false));
-	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MACManagerFile", false);
+	dlg.SetAllowMultiSel(false);
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->LogFileLoad(dlg->GetFileName()->ToCString());
+		me->LogFileLoad(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	if (me->macList->Store())
+	if (me->macList.Store())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
@@ -44,10 +42,10 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList->GetItem(index);
+	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList.GetItem(index);
 	if (log == 0)
 		return;
-	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
+	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
@@ -60,17 +58,17 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Text::String *name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
+		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
-		entry = me->macList->GetItem(i);
+		entry = me->macList.GetItem(i);
 		me->UpdateStatus();
 
 		UOSInt j;
 		i = 0;
-		j = me->logList->GetCount();
+		j = me->logList.GetCount();
 		while (i < j)
 		{
-			log = me->logList->GetItem(i);
+			log = me->logList.GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
@@ -147,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 		i++;
 	}
 	UInt64 macInt = ReadMUInt64(buff);
-	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(macInt);
+	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(macInt);
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
@@ -160,18 +158,18 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Text::String *name = frm->GetNameNew();
-		i = me->macList->SetEntry(macInt, name->ToCString());
+		i = me->macList.SetEntry(macInt, name->ToCString());
 		name->Release();
 		me->UpdateStatus();
-		entry = me->macList->GetItem(i);
+		entry = me->macList.GetItem(i);
 
 		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
 		UOSInt j;
 		i = 0;
-		j = me->logList->GetCount();
+		j = me->logList.GetCount();
 		while (i < j)
 		{
-			log = me->logList->GetItem(i);
+			log = me->logList.GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
@@ -191,95 +189,93 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 	dlg->AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		IO::FileStream *fs;
-		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[3];
 		UOSInt i;
 		UOSInt j;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (true)
 		{
-			sb.ClearStr();
-			if (!reader->ReadLine(&sb, 512))
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			Text::UTF8Reader reader(&fs);
+			while (true)
 			{
-				break;
-			}
-
-			i = sb.IndexOf('#');
-			if (i != INVALID_INDEX)
-			{
-				sb.TrimToLength(i);
-			}
-			sb.RTrim();
-			j = Text::StrSplitP(sarr, 3, sb, '\t');
-			if (j == 2 || j == 3)
-			{
-				UInt8 buff[8];
-				UOSInt bitCnt;
-				Bool succ;
-				UInt64 startAddr;
-				UInt64 endAddr;
-				if (j == 2)
+				sb.ClearStr();
+				if (!reader.ReadLine(&sb, 512))
 				{
-					sarr[2] = sarr[1];
-				}
-				succ = false;
-				j = sarr[0].leng;
-				if (j == 8 && sarr[0].v[2] == ':' && sarr[0].v[5] == ':')
-				{
-					buff[0] = 0;
-					buff[1] = 0;
-					buff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
-					buff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
-					buff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
-					buff[5] = 0;
-					buff[6] = 0;
-					buff[7] = 0;
-					startAddr = ReadMUInt64(buff);
-					endAddr = startAddr | 0xffffff;
-					succ = true;
-				}
-				else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUOSInt(&sarr[0].v[18], &bitCnt))
-				{
-					buff[0] = 0;
-					buff[1] = 0;
-					buff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
-					buff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
-					buff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
-					buff[5] = Text::StrHex2UInt8C(&sarr[0].v[9]);
-					buff[6] = Text::StrHex2UInt8C(&sarr[0].v[12]);
-					buff[7] = Text::StrHex2UInt8C(&sarr[0].v[15]);
-					startAddr = ReadMUInt64(buff);
-					endAddr = startAddr | (((UInt64)1 << (48 - bitCnt)) - 1);
-					succ = true;
-				}
-				else
-				{
-					printf("Error in file2: %s\r\n", sarr[0].v);
+					break;
 				}
 
-				if (succ)
+				i = sb.IndexOf('#');
+				if (i != INVALID_INDEX)
 				{
-					const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(startAddr);
-					if (sarr[2].Equals(UTF8STRC("IEEE Registration Authority")))
+					sb.TrimToLength(i);
+				}
+				sb.RTrim();
+				j = Text::StrSplitP(sarr, 3, sb, '\t');
+				if (j == 2 || j == 3)
+				{
+					UInt8 buff[8];
+					UOSInt bitCnt;
+					Bool succ;
+					UInt64 startAddr;
+					UInt64 endAddr;
+					if (j == 2)
 					{
-
+						sarr[2] = sarr[1];
 					}
-					else if (entry && (entry->rangeStart != startAddr || entry->rangeEnd != endAddr))
+					succ = false;
+					j = sarr[0].leng;
+					if (j == 8 && sarr[0].v[2] == ':' && sarr[0].v[5] == ':')
 					{
-						printf("Range mismatch: %llx - %llx\r\n", startAddr, endAddr);
+						buff[0] = 0;
+						buff[1] = 0;
+						buff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
+						buff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
+						buff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
+						buff[5] = 0;
+						buff[6] = 0;
+						buff[7] = 0;
+						startAddr = ReadMUInt64(buff);
+						endAddr = startAddr | 0xffffff;
+						succ = true;
+					}
+					else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUOSInt(&sarr[0].v[18], &bitCnt))
+					{
+						buff[0] = 0;
+						buff[1] = 0;
+						buff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
+						buff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
+						buff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
+						buff[5] = Text::StrHex2UInt8C(&sarr[0].v[9]);
+						buff[6] = Text::StrHex2UInt8C(&sarr[0].v[12]);
+						buff[7] = Text::StrHex2UInt8C(&sarr[0].v[15]);
+						startAddr = ReadMUInt64(buff);
+						endAddr = startAddr | (((UInt64)1 << (48 - bitCnt)) - 1);
+						succ = true;
 					}
 					else
 					{
-						me->macList->SetEntry(startAddr, endAddr, sarr[2].ToCString());
+						printf("Error in file2: %s\r\n", sarr[0].v);
+					}
+
+					if (succ)
+					{
+						const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(startAddr);
+						if (sarr[2].Equals(UTF8STRC("IEEE Registration Authority")))
+						{
+
+						}
+						else if (entry && (entry->rangeStart != startAddr || entry->rangeEnd != endAddr))
+						{
+							printf("Range mismatch: %llx - %llx\r\n", startAddr, endAddr);
+						}
+						else
+						{
+							me->macList.SetEntry(startAddr, endAddr, sarr[2].ToCString());
+						}
 					}
 				}
 			}
 		}
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
 		me->UpdateStatus();
 	}
 	DEL_CLASS(dlg);
@@ -288,12 +284,10 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		Text::PString sarr[12];
 		Text::PString sarr2[7];
@@ -302,125 +296,126 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 		UOSInt j;
 		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sb.ClearStr();
-		this->LogFileClear();
-		buff[0] = 0;
-		buff[1] = 0;
-		while (reader->ReadLine(&sb, 4096))
 		{
-			i = Text::StrSplitP(sarr, 12, sb, '\t');
-			if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
+			Text::UTF8Reader reader(&fs);
+			sb.ClearStr();
+			this->LogFileClear();
+			buff[0] = 0;
+			buff[1] = 0;
+			while (reader.ReadLine(&sb, 4096))
 			{
-				if (Text::StrSplitP(sarr2, 7, sarr[0], ':') == 6)
+				i = Text::StrSplitP(sarr, 12, sb, '\t');
+				if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
 				{
-					log = MemAlloc(SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry, 1);
-					MemClear(log->neighbour, sizeof(log->neighbour));
-					log->mac[0] = Text::StrHex2UInt8C(sarr2[0].v);
-					log->mac[1] = Text::StrHex2UInt8C(sarr2[1].v);
-					log->mac[2] = Text::StrHex2UInt8C(sarr2[2].v);
-					log->mac[3] = Text::StrHex2UInt8C(sarr2[3].v);
-					log->mac[4] = Text::StrHex2UInt8C(sarr2[4].v);
-					log->mac[5] = Text::StrHex2UInt8C(sarr2[5].v);
-					buff[2] = log->mac[0];
-					buff[3] = log->mac[1];
-					buff[4] = log->mac[2];
-					buff[5] = log->mac[3];
-					buff[6] = log->mac[4];
-					buff[7] = log->mac[5];
-					log->macInt = ReadMUInt64(buff);
-					log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
-					log->phyType = Text::StrToInt32(sarr[2].v);
-					log->freq = Text::StrToDouble(sarr[3].v);
-					if (i >= 7)
+					if (Text::StrSplitP(sarr2, 7, sarr[0], ':') == 6)
 					{
-						log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
-						log->model = Text::String::New(sarr[5].v, sarr[5].leng);
-						log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
-					}
-					else
-					{
-						log->manuf = 0;
-						log->model = 0;
-						log->serialNum = 0;
-					}
-					j = 3;
-					while (j-- > 0)
-					{
-						log->ouis[j][0] = 0;
-						log->ouis[j][1] = 0;
-						log->ouis[j][2] = 0;
-					}
-					if (i >= 9)
-					{
-						log->country = Text::String::New(sarr[8].v, sarr[8].leng);
-						j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
-						while (j-- > 0)
+						log = MemAlloc(SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry, 1);
+						MemClear(log->neighbour, sizeof(log->neighbour));
+						log->mac[0] = Text::StrHex2UInt8C(sarr2[0].v);
+						log->mac[1] = Text::StrHex2UInt8C(sarr2[1].v);
+						log->mac[2] = Text::StrHex2UInt8C(sarr2[2].v);
+						log->mac[3] = Text::StrHex2UInt8C(sarr2[3].v);
+						log->mac[4] = Text::StrHex2UInt8C(sarr2[4].v);
+						log->mac[5] = Text::StrHex2UInt8C(sarr2[5].v);
+						buff[2] = log->mac[0];
+						buff[3] = log->mac[1];
+						buff[4] = log->mac[2];
+						buff[5] = log->mac[3];
+						buff[6] = log->mac[4];
+						buff[7] = log->mac[5];
+						log->macInt = ReadMUInt64(buff);
+						log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
+						log->phyType = Text::StrToInt32(sarr[2].v);
+						log->freq = Text::StrToDouble(sarr[3].v);
+						if (i >= 7)
 						{
-							if (sarr2[j].leng == 6)
-							{
-								Text::StrHex2Bytes(sarr2[j].v, log->ouis[j]);
-							}
-						}
-					}
-					else
-					{
-						log->country = 0;
-					}
-					if (i >= 10)
-					{
-						sarr2[1] = sarr[9];
-						if (sarr2[1].v[0])
-						{
-							j = 0;
-							while (Text::StrSplitP(sarr2, 2, sarr2[1], ',') == 2)
-							{
-								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
-								j++;
-							}
-							log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
-						}
-					}
-					if (i >= 11)
-					{
-						log->ieLen = (UInt32)(sarr[10].leng >> 1);
-						if (log->ieLen > 0)
-						{
-							log->ieBuff = MemAlloc(UInt8, log->ieLen);
-							Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
+							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
+							log->model = Text::String::New(sarr[5].v, sarr[5].leng);
+							log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
 						}
 						else
 						{
+							log->manuf = 0;
+							log->model = 0;
+							log->serialNum = 0;
+						}
+						j = 3;
+						while (j-- > 0)
+						{
+							log->ouis[j][0] = 0;
+							log->ouis[j][1] = 0;
+							log->ouis[j][2] = 0;
+						}
+						if (i >= 9)
+						{
+							log->country = Text::String::New(sarr[8].v, sarr[8].leng);
+							j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
+							while (j-- > 0)
+							{
+								if (sarr2[j].leng == 6)
+								{
+									Text::StrHex2Bytes(sarr2[j].v, log->ouis[j]);
+								}
+							}
+						}
+						else
+						{
+							log->country = 0;
+						}
+						if (i >= 10)
+						{
+							sarr2[1] = sarr[9];
+							if (sarr2[1].v[0])
+							{
+								j = 0;
+								while (Text::StrSplitP(sarr2, 2, sarr2[1], ',') == 2)
+								{
+									log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
+									j++;
+								}
+								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
+							}
+						}
+						if (i >= 11)
+						{
+							log->ieLen = (UInt32)(sarr[10].leng >> 1);
+							if (log->ieLen > 0)
+							{
+								log->ieBuff = MemAlloc(UInt8, log->ieLen);
+								Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
+							}
+							else
+							{
+								log->ieBuff = 0;
+							}
+						}
+						else
+						{
+							log->ieLen = 0;
 							log->ieBuff = 0;
 						}
-					}
-					else
-					{
-						log->ieLen = 0;
-						log->ieBuff = 0;
-					}
-					
+						
 
-					this->logList->Add(log);
+						this->logList.Add(log);
+					}
 				}
+				sb.ClearStr();
 			}
-			sb.ClearStr();
-		}
 
-		this->txtFile->SetText(fileName);
-		DEL_CLASS(reader);
+			this->txtFile->SetText(fileName);
+		}
 
 		const Net::MACInfo::MACEntry *entry;
 		this->lvContent->BeginUpdate();
 		this->lvContent->ClearItems();
 		i = 0;
-		j = this->logList->GetCount();
+		j = this->logList.GetCount();
 		while (i < j)
 		{
-			log = this->logList->GetItem(i);
+			log = this->logList.GetItem(i);
 			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
-			entry = this->macList->GetEntry(log->macInt);
+			entry = this->macList.GetEntry(log->macInt);
 			if (entry)
 			{
 				this->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
@@ -461,16 +456,15 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 		}
 		this->lvContent->EndUpdate();
 	}
-	DEL_CLASS(fs);
 }
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 {
-	UOSInt i = this->logList->GetCount();
+	UOSInt i = this->logList.GetCount();
 	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
 	while (i-- > 0)
 	{
-		log = this->logList->GetItem(i);
+		log = this->logList.GetItem(i);
 		SDEL_STRING(log->ssid);
 		SDEL_STRING(log->manuf);
 		SDEL_STRING(log->model);
@@ -482,13 +476,13 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 		}
 		MemFree(log);
 	}
-	this->logList->Clear();
+	this->logList.Clear();
 }
 
 void SSWR::AVIRead::AVIRMACManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList->GetCount());
+	sb.AppendUOSInt(this->macList.GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }
@@ -499,8 +493,6 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->SetText(CSTR("MAC Manager"));
 
 	this->core = core;
-	NEW_CLASS(this->logList, Data::ArrayList<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry*>());
-	NEW_CLASS(this->macList, Net::MACInfoList());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -570,8 +562,6 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRMACManagerForm::~AVIRMACManagerForm()
 {
 	this->LogFileClear();
-	DEL_CLASS(this->logList);
-	DEL_CLASS(this->macList);
 }
 
 void SSWR::AVIRead::AVIRMACManagerForm::OnMonitorChanged()

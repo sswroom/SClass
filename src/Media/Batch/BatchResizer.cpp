@@ -9,15 +9,11 @@ Media::Batch::BatchResizer::BatchResizer(Media::IImgResizer *resizer, Media::Bat
 {
 	this->resizer = resizer;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->resizeMut, Sync::Mutex());
-	NEW_CLASS(this->targetParam, Data::ArrayList<TargetParam*>());
 }
 
 Media::Batch::BatchResizer::~BatchResizer()
 {
 	ClearTargetSizes();
-	DEL_CLASS(this->targetParam);
-	DEL_CLASS(this->resizeMut);
 }
 
 void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, Text::String *targetId)
@@ -28,7 +24,7 @@ void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 target
 	param->height = targetHeight;
 	param->sizeType = 0;
 	param->targetId = targetId->Clone();
-	this->targetParam->Add(param);
+	this->targetParam.Add(param);
 }
 
 void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, Text::String *targetId)
@@ -39,16 +35,16 @@ void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVD
 	param->height = targetVDPI;
 	param->sizeType = 1;
 	param->targetId = targetId->Clone();
-	this->targetParam->Add(param);
+	this->targetParam.Add(param);
 }
 
 void Media::Batch::BatchResizer::ClearTargetSizes()
 {
 	TargetParam *param;
-	UOSInt i = this->targetParam->GetCount();
+	UOSInt i = this->targetParam.GetCount();
 	while (i-- > 0)
 	{
-		param = this->targetParam->RemoveAt(i);
+		param = this->targetParam.RemoveAt(i);
 		param->targetId->Release();
 		MemFree(param);
 	}
@@ -65,19 +61,18 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 	UOSInt j;
 	UOSInt k;
 	TargetParam *param;
-	Media::ImageList *newImgList;
 	Media::StaticImage *newImg;
 	Bool succ;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
 
-	i = this->targetParam->GetCount();
+	i = this->targetParam.GetCount();
 	while (i-- > 0)
 	{
-		param = this->targetParam->GetItem(i);
+		param = this->targetParam.GetItem(i);
 
-		Sync::MutexUsage mutUsage(this->resizeMut);
+		Sync::MutexUsage mutUsage(&this->resizeMut);
 		if (param->sizeType == 0)
 		{
 			resizer->SetTargetWidth(param->width);
@@ -86,7 +81,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 
 		succ = true;
 		sptr = imgList->GetSourceName(sbuff);
-		NEW_CLASS(newImgList, Media::ImageList(CSTRP(sbuff, sptr)));
+		Media::ImageList newImgList(CSTRP(sbuff, sptr));
 		j = 0;
 		k = imgList->GetCount();
 		while (j < k)
@@ -110,7 +105,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 			}
 			else
 			{
-				newImgList->AddImage(newImg, 0);
+				newImgList.AddImage(newImg, 0);
 			}
 			j++;
 		}
@@ -118,12 +113,11 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		if (succ)
 		{
 			if (this->hdlr)
-				this->hdlr->ImageOutput(newImgList, fileId, param->targetId->v);
+				this->hdlr->ImageOutput(&newImgList, fileId, param->targetId->v);
 		}
 		else
 		{
 			newImg = 0;
 		}
-		DEL_CLASS(newImgList);
 	}
 }

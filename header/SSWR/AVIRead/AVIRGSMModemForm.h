@@ -61,16 +61,16 @@ namespace SSWR
 			Text::String *initModemModel;
 			Text::String *initModemVer;
 			Text::String *initIMEI;
-			Data::ArrayList<IO::GSMModemController::SMSMessage *> *msgList;
+			Data::ArrayList<IO::GSMModemController::SMSMessage *> msgList;
 
 			IO::GSMModemController::RSSI signalQuality;
 			Bool operUpdated;
 			Text::String *operName;
-			Data::DateTime *operNextTime;
+			Data::DateTime operNextTime;
 
 			Bool toStop;
 			Bool running;
-			Sync::Event *modemEvt;
+			Sync::Event modemEvt;
 
 			static UInt32 __stdcall ModemThread(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

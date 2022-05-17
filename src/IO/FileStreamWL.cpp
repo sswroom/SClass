@@ -12,16 +12,10 @@
 #include <share.h>
 #endif
 
-IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare share)
+IO::FileStream::FileStream(Text::CString fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType bufferType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
-	if (fileName == 0)
-	{
-		this->currPos = -1;
-		handle = (void*)-1;
-		return;
-	}
-	else if (*fileName == 0)
+	if (fileName.v == 0)
 	{
 		this->currPos = -1;
 		handle = (void*)-1;
@@ -46,14 +40,14 @@ IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare s
 		shflag = _SH_DENYRW;
 	}
 
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == IO::FileMode::Create)
 	{
-		handle = (void*)_wsopen(fileName, _O_BINARY | _O_CREAT | _O_TRUNC | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
+		handle = (void*)_sopen((const Char*)fileName.v, _O_BINARY | _O_CREAT | _O_TRUNC | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == IO::FileMode::Append)
 	{
-		handle = (void*)_wsopen(fileName, _O_BINARY | _O_APPEND | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
+		handle = (void*)_sopen((const Char*)fileName.v, _O_BINARY | _O_APPEND | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
 		if ((Int32)handle == -1)
 		{
 			this->currPos = -1;
@@ -63,23 +57,17 @@ IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare s
 			this->currPos = _telli64((Int32)handle);
 		}
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == IO::FileMode::ReadOnly)
 	{
-		handle = (void*)_wsopen(fileName, _O_BINARY | _O_RDONLY, shflag, _S_IREAD);
+		handle = (void*)_sopen((const Char*)fileName.v, _O_BINARY | _O_RDONLY, shflag, _S_IREAD);
 		currPos = 0;
 	}
 }
 
-IO::FileStream::FileStream(const Char *fileName, IO::FileMode mode, FileShare share)
+IO::FileStream::FileStream(Text::String *fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType bufferType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
 	if (fileName == 0)
-	{
-		this->currPos = -1;
-		handle = (void*)-1;
-		return;
-	}
-	else if (*fileName == 0)
 	{
 		this->currPos = -1;
 		handle = (void*)-1;
@@ -104,14 +92,14 @@ IO::FileStream::FileStream(const Char *fileName, IO::FileMode mode, FileShare sh
 		shflag = _SH_DENYRW;
 	}
 
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == IO::FileMode::Create)
 	{
-		handle = (void*)_sopen(fileName, _O_BINARY | _O_CREAT | _O_TRUNC | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
+		handle = (void*)_sopen((const Char*)fileName->v, _O_BINARY | _O_CREAT | _O_TRUNC | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == IO::FileMode::Append)
 	{
-		handle = (void*)_sopen(fileName, _O_BINARY | _O_APPEND | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
+		handle = (void*)_sopen((const Char*)fileName->v, _O_BINARY | _O_APPEND | _O_RDWR, shflag, _S_IREAD | _S_IWRITE);
 		if ((Int32)handle == -1)
 		{
 			this->currPos = -1;
@@ -121,9 +109,9 @@ IO::FileStream::FileStream(const Char *fileName, IO::FileMode mode, FileShare sh
 			this->currPos = _telli64((Int32)handle);
 		}
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == IO::FileMode::ReadOnly)
 	{
-		handle = (void*)_sopen(fileName, _O_BINARY | _O_RDONLY, shflag, _S_IREAD);
+		handle = (void*)_sopen((const Char*)fileName->v, _O_BINARY | _O_RDONLY, shflag, _S_IREAD);
 		currPos = 0;
 	}
 }
@@ -138,22 +126,22 @@ Bool IO::FileStream::IsError()
 	return (Int32)this->handle == -1;
 }
 
-OSInt IO::FileStream::Read(UInt8 *buff, OSInt size)
+UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
 {
 	if ((Int32)handle == -1)
 		return 0;
 	OSInt readSize = _read((Int32)handle, buff, (UInt32)size);
-	this->currPos += readSize;
-	return readSize;
+	this->currPos += (UOSInt)readSize;
+	return (UOSInt)readSize;
 }
 
-OSInt IO::FileStream::Write(const UInt8 *buff, OSInt size)
+UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
 {
 	if ((Int32)handle == -1)
 		return 0;
 	OSInt readSize = _write((Int32)handle, buff, (UInt32)size);
-	this->currPos += readSize;
-	return readSize;
+	this->currPos += (UOSInt)readSize;
+	return (UOSInt)readSize;
 }
 
 Int32 IO::FileStream::Flush()
@@ -172,36 +160,38 @@ void IO::FileStream::Close()
 	}
 }
 
-Int64 IO::FileStream::Seek(IO::SeekableStream::SeekType origin, Int64 position)
+UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)
 {
 	if ((Int32)handle == -1)
 		return -1;
-	if (origin == IO::SeekableStream::ST_BEGIN)
-	{
-		this->currPos = _lseeki64((Int32)handle, position, SEEK_SET);
-		return currPos;
-	}
-	else if (origin == IO::SeekableStream::ST_CURRENT)
-	{
-		this->currPos = _lseeki64((Int32)handle, position, SEEK_CUR);
-		return this->currPos;
-	}
-	else if (origin == IO::SeekableStream::ST_END)
-	{
-		this->currPos = _lseeki64((Int32)handle, position, SEEK_END);
-		return this->currPos;
-	}
-	return -1;
-}
-
-Int64 IO::FileStream::GetPosition()
-{
+	this->currPos = (UInt64)_lseeki64((Int32)handle, position, SEEK_SET);
 	return currPos;
 }
 
-Int64 IO::FileStream::GetLength()
+UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
 {
-	return _filelengthi64((Int32)handle);
+	if ((Int32)handle == -1)
+		return -1;
+	this->currPos = (UInt64)_lseeki64((Int32)handle, position, SEEK_CUR);
+	return this->currPos;
+}
+
+UInt64 IO::FileStream::SeekFromEnd(Int64 position)
+{
+	if ((Int32)handle == -1)
+		return -1;
+	this->currPos = (UInt64)_lseeki64((Int32)handle, position, SEEK_END);
+	return this->currPos;
+}
+
+UInt64 IO::FileStream::GetPosition()
+{
+	return this->currPos;
+}
+
+UInt64 IO::FileStream::GetLength()
+{
+	return (UInt64)_filelengthi64((Int32)handle);
 }
 
 Int32 IO::FileStream::GetErrCode()
@@ -224,23 +214,19 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 {
 }
 
-UOSInt IO::FileStream::LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return 0;
 	}
-	UInt64 fileLen = fs->GetLength();
+	UInt64 fileLen = fs.GetLength();
 	if (fileLen > maxBuffSize || fileLen == 0)
 	{
-		DEL_CLASS(fs);
 		return 0;
 	}
-	UOSInt readSize = fs->Read(buff, maxBuffSize);
-	DEL_CLASS(fs);
+	UOSInt readSize = fs.Read(buff, maxBuffSize);
 	if (readSize == fileLen)
 	{
 		return readSize;

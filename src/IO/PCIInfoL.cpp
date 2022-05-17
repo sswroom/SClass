@@ -47,9 +47,8 @@ UInt16 PCIInfo_ReadI16(Text::CString fileName)
 {
 	UInt8 buff[33];
 	UOSInt readSize;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	readSize = fs->Read(buff, 32);
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	readSize = fs.Read(buff, 32);
 	buff[readSize] = 0;
 	while (readSize > 0)
 	{
@@ -63,7 +62,6 @@ UInt16 PCIInfo_ReadI16(Text::CString fileName)
 			break;
 		}
 	}
-	DEL_CLASS(fs);
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 

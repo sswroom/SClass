@@ -132,14 +132,12 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		return false;
 	Bool succ = false;
 	Int32 val;
-	Text::UTF8Reader *reader;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		if (reader->ReadLine(&sb, 512))
+		Text::UTF8Reader reader(&fs);
+		if (reader.ReadLine(&sb, 512))
 		{
 			if (sb.ToInt32(&val))
 			{
@@ -147,9 +145,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 				*temp = val * 0.001;
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 	return succ;
 }
 #endif

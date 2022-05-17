@@ -22,8 +22,8 @@ namespace Media
 		private:
 			Media::IImgResizer *resizer;
 			Media::Batch::BatchHandler *hdlr;
-			Data::ArrayList<TargetParam*> *targetParam;
-			Sync::Mutex *resizeMut;
+			Data::ArrayList<TargetParam*> targetParam;
+			Sync::Mutex resizeMut;
 
 		public:
 			BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr);

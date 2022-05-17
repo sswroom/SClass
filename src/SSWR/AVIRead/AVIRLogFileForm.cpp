@@ -94,38 +94,30 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_LOG_SAVE:
 		{
-			UI::FileDialog *dlg;
-			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogFileSave", true));
-			dlg->AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
-			if (dlg->ShowDialog(this->hwnd))
+			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogFileSave", true);
+			dlg.AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
+			if (dlg.ShowDialog(this->hwnd))
 			{
 				Data::DateTime dt;
-				IO::FileStream *fs;
-				Text::UTF8Writer *writer;
-				Text::StringBuilderUTF8 *sb;
+				Text::StringBuilderUTF8 sb;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(sb, Text::StringBuilderUTF8());
-				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				NEW_CLASS(writer, Text::UTF8Writer(fs));
+				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				Text::UTF8Writer writer(&fs);
 				i = 0;
 				j = this->logFile->GetCount(this->logLevel);
 				while (i < j)
 				{
-					sb->ClearStr();
-					sb->AppendC(UTF8STRC("\t"));
-					this->logFile->GetLogMessage(this->logLevel, i, &dt, sb, Text::LineBreakType::CRLF);
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("\t"));
+					this->logFile->GetLogMessage(this->logLevel, i, &dt, &sb, Text::LineBreakType::CRLF);
 					dt.ToLocalTime();
 					sptr = dt.ToString(sbuff);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteLineC(sb->ToString(), sb->GetLength());
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					i++;
 				}
-				DEL_CLASS(writer);
-				DEL_CLASS(fs);
-				DEL_CLASS(sb);
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	}

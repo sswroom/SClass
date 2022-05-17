@@ -256,14 +256,13 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 {
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime t;
-	IO::FileStream *fs;
 	Text::CString mime;
 	UInt64 sizeLeft;
 	UInt8 sbuff[32];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	fs->GetFileTimes(0, 0, &t);
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+	fs.GetFileTimes(0, 0, &t);
 
 	if (req->GetHeaderC(&sb2, CSTR("If-Modified-Since")))
 	{
@@ -277,14 +276,13 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
 			resp->Write(sbuff, 0);
-			DEL_CLASS(fs);
 			return true;
 		}
 	}
 
 	sptr2 = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);
 
-	sizeLeft = fs->GetLength();
+	sizeLeft = fs.GetLength();
 	sb2.ClearStr();
 	if (req->GetHeaderC(&sb2, CSTR("Range")))
 	{
@@ -296,7 +294,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
 			resp->Write(sbuff, 0);
-			DEL_CLASS(fs);
 			return true;
 		}
 		if (sb2.IndexOf(',') != INVALID_INDEX)
@@ -306,7 +303,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
 			resp->Write(sbuff, 0);
-			DEL_CLASS(fs);
 			return true;
 		}
 		UInt64 start = 0;
@@ -319,7 +315,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
 			resp->Write(sbuff, 0);
-			DEL_CLASS(fs);
 			return true;
 		}
 		sptr = sb2.ToString();
@@ -331,7 +326,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
 			resp->Write(sbuff, 0);
-			DEL_CLASS(fs);
 			return true;
 		}
 		if (i + 1 < sb2.GetLength())
@@ -343,7 +337,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				resp->AddCacheControl(cacheAge);
 				resp->AddContentLength(0);
 				resp->Write(sbuff, 0);
-				DEL_CLASS(fs);
 				return true;
 			}
 			if (end <= (Int64)start || end > (Int64)sizeLeft)
@@ -353,7 +346,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				resp->AddCacheControl(cacheAge);
 				resp->AddContentLength(0);
 				resp->Write(sbuff, 0);
-				DEL_CLASS(fs);
 				return true;
 			}
 			sizeLeft = (UInt64)end - start;
@@ -362,7 +354,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		{
 			sizeLeft = sizeLeft - start;
 		}
-		fs->SeekFromBeginning(start);
+		fs.SeekFromBeginning(start);
 		resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
@@ -384,10 +376,10 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	{
 		UInt8 buff[BUFFSIZE];
 		UOSInt readSize;
-		readSize = fs->Read(buff, BUFFSIZE);
+		readSize = fs.Read(buff, BUFFSIZE);
 		if (readSize == 0)
 		{
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
 		}
 		else
 		{
@@ -395,7 +387,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			while (readSize > 0)
 			{
 				sizeLeft += mstm.Write(buff, readSize);
-				readSize = fs->Read(buff, BUFFSIZE);
+				readSize = fs.Read(buff, BUFFSIZE);
 			}
 			mstm.SeekFromBeginning(0);
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
@@ -403,8 +395,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	}
 	else
 	{
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
 	}
-	DEL_CLASS(fs);
 	return true;
 }

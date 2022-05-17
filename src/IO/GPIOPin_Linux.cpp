@@ -5,34 +5,32 @@
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "Text/MyString.h"
+#include "Text/UTF8Reader.h"
 
-Bool GPIOPin_EchoFile(const UTF8Char *fileName, const Char *msg)
+Bool GPIOPin_EchoFile(Text::CString fileName, Text::CString msg)
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	UOSInt fileSize = Text::StrCharCnt(msg);
-	fs->Write((const UInt8*)msg, fileSize);
-	DEL_CLASS(fs);
+	fs.Write(msg.v, msg.leng);
 	return true;
 }
 
-IO::GPIOPin::GPIOPin(UOSInt pinNum)
+IO::GPIOPin::GPIOPin(IO::GPIOControl *gpio, UInt16 pinNum)
 {
 	this->pinNum = pinNum;
 
 	UTF8Char sbuff[128];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory)
 	{
-		Char sbuff2[12];
-		Text::StrInt32(sbuff2, this->pinNum);
-		GPIOPin_EchoFile((const UTF8Char*)"/sys/class/gpio/export", sbuff2);
+		UTF8Char sbuff2[12];
+		UTF8Char *sptr2;
+		sptr2 = Text::StrInt32(sbuff2, this->pinNum);
+		GPIOPin_EchoFile(CSTR("/sys/class/gpio/export"), CSTRP(sbuff2, sptr2));
 	}
 }
 
@@ -45,7 +43,7 @@ Bool IO::GPIOPin::IsError()
 	UTF8Char sbuff[128];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	return IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory;
+	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory;
 }
 
 Bool IO::GPIOPin::IsPinHigh()
@@ -56,19 +54,15 @@ Bool IO::GPIOPin::IsPinHigh()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/value"));
 
 	Bool isHigh = false;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		IO::StreamReader *reader;
-		NEW_CLASS(reader, IO::StreamReader(fs, 65001));
-		if (reader->ReadLine(sbuff, 120))
+		Text::UTF8Reader reader(&fs);
+		if (reader.ReadLine(sbuff, 120))
 		{
 			isHigh = Text::StrToInt32(sbuff) != 0;
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 
 	return isHigh;
 }
@@ -81,20 +75,15 @@ Bool IO::GPIOPin::IsPinOutput()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/direction"));
 
 	Bool isOutput = false;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		IO::StreamReader *reader;
-		NEW_CLASS(reader, IO::StreamReader(fs, 65001));
-		if (reader->ReadLine(sbuff, 120))
+		Text::UTF8Reader reader(&fs);
+		if ((sptr = reader.ReadLine(sbuff, 120)) != 0)
 		{
-			isOutput = Text::StrEquals(sbuff, (const UTF8Char*)"out");
+			isOutput = Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("out"));
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
-
 	return isOutput;
 }
 
@@ -104,7 +93,7 @@ void IO::GPIOPin::SetPinOutput(Bool isOutput)
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/direction"));
-	GPIOPin_EchoFile(sbuff, isOutput?"out":"in");
+	GPIOPin_EchoFile(CSTRP(sbuff, sptr), isOutput?CSTR("out"):CSTR("in"));
 }
 
 void IO::GPIOPin::SetPinState(Bool isHigh)
@@ -113,7 +102,7 @@ void IO::GPIOPin::SetPinState(Bool isHigh)
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/value"));
-	GPIOPin_EchoFile(sbuff, isHigh?"1":"0");
+	GPIOPin_EchoFile(CSTRP(sbuff, sptr), isHigh?CSTR("1"):CSTR("0"));
 }
 
 Bool IO::GPIOPin::SetPullType(PullType pt)

@@ -294,10 +294,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 		else if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
 		{
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
-			IO::FileStream *fs;
-			Crypto::Hash::HashStream *hashStm;
 			Crypto::Hash::IHash *hash;
-			Data::DateTime *t;
 			if (decomp == 0)
 				return 0;
 
@@ -307,8 +304,6 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 				DEL_CLASS(decomp);
 				return 0;
 			}
-			NEW_CLASS(t, Data::DateTime());
-			t->SetCurrTimeUTC();
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			UInt8 chkResult[32];
@@ -319,7 +314,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
 			IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
-			sptr = Text::StrHexVal64(sptr, (UInt64)t->ToTicks());
+			sptr = Text::StrHexVal64(sptr, (UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 			*sptr++ = '_';
 			if (item->name)
 			{
@@ -329,28 +324,27 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			{
 				sptr = item->fd->GetShortName().ConcatTo(sptr);
 			}
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
-
-			hash->Clear();
-			decomp->Decompress(hashStm, item->fd);
-			resSize = hash->GetResultSize();
-			hash->GetValue(chkResult);
-
-			i = 0;
-			while (i < resSize)
 			{
-				if (chkResult[i] != item->compInfo->checkBytes[i])
-				{
-					diff = true;
-					break;
-				}
-				i++;
-			}
-			DEL_CLASS(hashStm);
-			DEL_CLASS(fs);
+				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				Crypto::Hash::HashStream hashStm(&fs, hash);
 
-			DEL_CLASS(t);
+				hash->Clear();
+				decomp->Decompress(&hashStm, item->fd);
+				resSize = hash->GetResultSize();
+				hash->GetValue(chkResult);
+
+				i = 0;
+				while (i < resSize)
+				{
+					if (chkResult[i] != item->compInfo->checkBytes[i])
+					{
+						diff = true;
+						break;
+					}
+					i++;
+				}
+			}
+
 			DEL_CLASS(hash);
 			DEL_CLASS(decomp);
 			if (diff)
@@ -633,8 +627,6 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 				return false;
 
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
-			IO::FileStream *fs;
-			Crypto::Hash::HashStream *hashStm;
 			Crypto::Hash::IHash *hash;
 			if (decomp == 0)
 				return false;
@@ -649,26 +641,26 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 			UOSInt resSize;
 			UOSInt i;
 			Bool diff = false;
-			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
-
-			hash->Clear();
-			decomp->Decompress(hashStm, item->fd);
-			resSize = hash->GetResultSize();
-			hash->GetValue(chkResult);
-
-			i = 0;
-			while (i < resSize)
 			{
-				if (chkResult[i] != item->compInfo->checkBytes[i])
+				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				Crypto::Hash::HashStream hashStm(&fs, hash);
+
+				hash->Clear();
+				decomp->Decompress(&hashStm, item->fd);
+				resSize = hash->GetResultSize();
+				hash->GetValue(chkResult);
+
+				i = 0;
+				while (i < resSize)
 				{
-					diff = true;
-					break;
+					if (chkResult[i] != item->compInfo->checkBytes[i])
+					{
+						diff = true;
+						break;
+					}
+					i++;
 				}
-				i++;
 			}
-			DEL_CLASS(hashStm);
-			DEL_CLASS(fs);
 
 			DEL_CLASS(hash);
 			DEL_CLASS(decomp);
@@ -693,10 +685,8 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 				succ = (item->fd->GetRealData(0, (UOSInt)fileSize, tmpBuff) == fileSize);
 				if (succ)
 				{
-					IO::FileStream *fs;
-					NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-					succ = (fs->Write(tmpBuff, (UOSInt)fileSize) == fileSize);
-					DEL_CLASS(fs);
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					succ = (fs.Write(tmpBuff, (UOSInt)fileSize) == fileSize);
 				}
 				MemFree(tmpBuff);
 			}
@@ -704,31 +694,32 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 			{
 				UInt8 *tmpBuff = MemAlloc(UInt8, 1048576);
 				UInt64 currOfst = 0;
-				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-				while (currOfst < fileSize)
 				{
-					if ((fileSize - currOfst) >= 1048576)
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					while (currOfst < fileSize)
 					{
-						readSize = 1048576;
+						if ((fileSize - currOfst) >= 1048576)
+						{
+							readSize = 1048576;
+						}
+						else
+						{
+							readSize = (UOSInt)(fileSize - currOfst);
+						}
+						if (item->fd->GetRealData(currOfst, readSize, tmpBuff) != readSize)
+						{
+							succ = false;
+							break;
+						}
+						if (fs.Write(tmpBuff, readSize) != readSize)
+						{
+							succ = false;
+							break;
+						}
+						currOfst += readSize;
 					}
-					else
-					{
-						readSize = (UOSInt)(fileSize - currOfst);
-					}
-					if (item->fd->GetRealData(currOfst, readSize, tmpBuff) != readSize)
-					{
-						succ = false;
-						break;
-					}
-					if (fs->Write(tmpBuff, readSize) != readSize)
-					{
-						succ = false;
-						break;
-					}
-					currOfst += readSize;
 				}
-				DEL_CLASS(fs);
+
 				if (!succ)
 				{
 					IO::Path::DeleteFile(sb.ToString());

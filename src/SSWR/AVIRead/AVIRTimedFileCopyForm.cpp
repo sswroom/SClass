@@ -36,9 +36,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		return;
 	}
 
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"TimedFileCopy", true));
-	dlg->AddFilter(CSTR("*.zip"), CSTR("Zip file"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"TimedFileCopy", true);
+	dlg.AddFilter(CSTR("*.zip"), CSTR("Zip file"));
 	if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth() && dt1.GetDay() == dt2.GetDay())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
@@ -65,28 +64,25 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		sptr = dt2.ToString(sptr, "yyyyMMdd");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
-	dlg->SetFileName(CSTRP(sbuff, sptr));
-	if (dlg->ShowDialog(me->GetHandle()))
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		IO::ZIPBuilder *zip;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (fs->IsError())
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs.IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in creating zip file"), me->GetFormName(), me);
 		}
-		NEW_CLASS(zip, IO::ZIPBuilder(fs));
-		sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
-		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+		else
 		{
-			*sptr++ = IO::Path::PATH_SEPERATOR;
+			IO::ZIPBuilder zip(&fs);
+			sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
+			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+			{
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+			}
+			me->CopyToZip(&zip, sbuff, sptr, sptr, &dt1, &dt2, true);
 		}
-		me->CopyToZip(zip, sbuff, sptr, sptr, &dt1, &dt2, true);
-
-		DEL_CLASS(zip);
-		DEL_CLASS(fs);
 	}
-	DEL_CLASS(dlg);
 }
 
 Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, Data::DateTime *startTime, Data::DateTime *endTime, Bool monthDir)
@@ -127,42 +123,42 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 					dt.SetDay(iVal % 100);
 					if (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0)
 					{
-						IO::FileStream *fs;
-						NEW_CLASS(fs, IO::FileStream({buffStart, (UOSInt)(sptr - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						if (fs->IsError())
 						{
-							succ = false;
-						}
-						else
-						{
-							UInt8 *fileBuff;
-							UInt64 fileLeng = fs->GetLength();
-							UOSInt totalRead = 0;
-							UOSInt readSize;
-							if (fileLeng > 0)
+							IO::FileStream fs({buffStart, (UOSInt)(sptr - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							if (fs.IsError())
 							{
-								fileBuff = MemAlloc(UInt8, (UOSInt)fileLeng);
-								while (totalRead < fileLeng)
+								succ = false;
+							}
+							else
+							{
+								UInt8 *fileBuff;
+								UInt64 fileLeng = fs.GetLength();
+								UOSInt totalRead = 0;
+								UOSInt readSize;
+								if (fileLeng > 0)
 								{
-									readSize = fs->Read(&fileBuff[totalRead], (UOSInt)(fileLeng - totalRead));
-									if (readSize <= 0)
+									fileBuff = MemAlloc(UInt8, (UOSInt)fileLeng);
+									while (totalRead < fileLeng)
 									{
-										break;
+										readSize = fs.Read(&fileBuff[totalRead], (UOSInt)(fileLeng - totalRead));
+										if (readSize <= 0)
+										{
+											break;
+										}
+										totalRead += readSize;
 									}
-									totalRead += readSize;
+									if (totalRead == fileLeng)
+									{
+										succ = zip->AddFile(CSTRP(pathBase, sptr), fileBuff, totalRead, modTime.ToTicks(), false);
+									}
+									else
+									{
+										succ = false;
+									}
+									MemFree(fileBuff);
 								}
-								if (totalRead == fileLeng)
-								{
-									succ = zip->AddFile(CSTRP(pathBase, sptr), fileBuff, totalRead, modTime.ToTicks(), false);
-								}
-								else
-								{
-									succ = false;
-								}
-								MemFree(fileBuff);
 							}
 						}
-						DEL_CLASS(fs);
 						if (!succ)
 						{
 							Text::StringBuilderUTF8 sb;

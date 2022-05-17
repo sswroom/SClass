@@ -243,10 +243,8 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	if (sz < 0)
 	{
 		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
-		DEL_CLASS(fs);
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		sz = (OSInt)fs.Read((UInt8*)sbuff2, 511);
 		sbuff2[sz] = 0;
 		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, 0);
 	}
@@ -268,17 +266,15 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 	if (sz < 0)
 	{
 		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (fs->IsError())
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs.IsError())
 		{
 			sz = 0;
 		}
 		else
 		{
-			sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
+			sz = (OSInt)fs.Read((UInt8*)sbuff2, 511);
 		}
-		DEL_CLASS(fs);
 		sbuff2[sz] = 0;
 		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
 	}
@@ -399,8 +395,6 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UTF8Char *sptr;
 		UTF8Char *sarr[6];
 		UTF8Char *sarr2[2];
-		IO::FileStream *fs;
-		Text::UTF8Reader *reader;
 		Data::Int32Map<ModuleInfoData*> dataMap;
 		Data::ArrayList<ModuleInfoData*> *dataList;
 		ModuleInfoData *data;
@@ -408,42 +402,42 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UOSInt ret = 0;
 		UOSInt i;
 		Text::StringBuilderUTF8 sb;
-		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/maps"));
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sb.ClearStr();
-		while (reader->ReadLine(&sb, 512))
 		{
-			ret = Text::StrSplitTrim(sarr, 6, sb.ToString(), ' ');
-			if (ret == 6)
+			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/maps"));
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			Text::UTF8Reader reader(&fs);
+			sb.ClearStr();
+			while (reader.ReadLine(&sb, 512))
 			{
-				Int32 inode = Text::StrToInt32(sarr[4]);
-				if (inode != 0)
+				ret = Text::StrSplitTrim(sarr, 6, sb.ToString(), ' ');
+				if (ret == 6)
 				{
-					if (Text::StrSplit(sarr2, 2, sarr[0], '-') == 2)
+					Int32 inode = Text::StrToInt32(sarr[4]);
+					if (inode != 0)
 					{
-						UOSInt startAddr = (UOSInt)Text::StrHex2Int64C(sarr2[0]);
-						UOSInt endAddr = (UOSInt)Text::StrHex2Int64C(sarr2[1]);
-						data = dataMap.Get(inode);
-						if (data)
+						if (Text::StrSplit(sarr2, 2, sarr[0], '-') == 2)
 						{
-							data->size += (UOSInt)(endAddr - startAddr);
-						}
-						else
-						{
-							data = MemAlloc(ModuleInfoData, 1);
-							data->fileName = Text::StrCopyNew(sarr[5]);
-							data->addr = startAddr;
-							data->size = (UOSInt)(endAddr - startAddr);
-							dataMap.Put(inode, data);
+							UOSInt startAddr = (UOSInt)Text::StrHex2Int64C(sarr2[0]);
+							UOSInt endAddr = (UOSInt)Text::StrHex2Int64C(sarr2[1]);
+							data = dataMap.Get(inode);
+							if (data)
+							{
+								data->size += (UOSInt)(endAddr - startAddr);
+							}
+							else
+							{
+								data = MemAlloc(ModuleInfoData, 1);
+								data->fileName = Text::StrCopyNew(sarr[5]);
+								data->addr = startAddr;
+								data->size = (UOSInt)(endAddr - startAddr);
+								dataMap.Put(inode, data);
+							}
 						}
 					}
 				}
+				sb.ClearStr();
 			}
-			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
 
 		dataList = dataMap.GetValues();
 		i = 0;
@@ -514,15 +508,13 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	UOSInt pageSize = (UOSInt)sysconf(_SC_PAGESIZE);
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Bool succ = false;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/statm"));
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Reader reader(&fs);
 	sb.ClearStr();
-	if (reader->ReadLine(&sb, 512))
+	if (reader.ReadLine(&sb, 512))
 	{
 		UTF8Char *sarr[8];
 		if (Text::StrSplit(sarr, 8, sb.ToString(), ' ') == 7)
@@ -551,8 +543,6 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return succ;
 }
 
@@ -561,15 +551,13 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 	OSInt hertz = (OSInt)sysconf(_SC_CLK_TCK);
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Bool succ = false;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/stat"));
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Reader reader(&fs);
 	sb.ClearStr();
-	if (reader->ReadLine(&sb, 512))
+	if (reader.ReadLine(&sb, 512))
 	{
 		UTF8Char *sarr[24];
 		if (Text::StrSplit(sarr, 24, sb.ToString(), ' ') >= 23)
@@ -589,8 +577,6 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return succ;
 }
 
@@ -782,51 +768,48 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
 		{
-			IO::FileStream *fs;
-			Text::UTF8Reader *reader;
-
 			info->processId = pid;
 			info->threadCnt = 0;
 			info->parentId = 0;
 
-			sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/status"));
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (!fs->IsError())
 			{
-				NEW_CLASS(reader, Text::UTF8Reader(fs));
-				sb.ClearStr();
-				while (reader->ReadLine(&sb, 512))
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/status"));
+				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (!fs.IsError())
 				{
-					if (sb.StartsWith(UTF8STRC("PPid:\t")))
-					{
-						info->parentId = Text::StrToUInt32(sb.ToString() + 6);
-					}
-					else if (sb.StartsWith(UTF8STRC("Threads:\t")))
-					{
-						info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
-					}
+					Text::UTF8Reader reader(&fs);
 					sb.ClearStr();
+					while (reader.ReadLine(&sb, 512))
+					{
+						if (sb.StartsWith(UTF8STRC("PPid:\t")))
+						{
+							info->parentId = Text::StrToUInt32(sb.ToString() + 6);
+						}
+						else if (sb.StartsWith(UTF8STRC("Threads:\t")))
+						{
+							info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
+						}
+						sb.ClearStr();
+					}
 				}
-				DEL_CLASS(reader);
 			}
-			DEL_CLASS(fs);
 
-			sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/comm"));
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (!fs->IsError())
 			{
-				NEW_CLASS(reader, Text::UTF8Reader(fs));
-				sb.ClearStr();
-				while (reader->ReadLine(&sb, 512))
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/comm"));
+				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (!fs.IsError())
 				{
-				}
-				DEL_CLASS(reader);
-				if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
-				{
-					found = true;
+					Text::UTF8Reader reader(&fs);
+					sb.ClearStr();
+					while (reader.ReadLine(&sb, 512))
+					{
+					}
+					if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
+					{
+						found = true;
+					}
 				}
 			}
-			DEL_CLASS(fs);
 
 			if (found)
 			{
@@ -852,51 +835,48 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
 		{
-			IO::FileStream *fs;
-			Text::UTF8Reader *reader;
-
 			info->processId = pid;
 			info->threadCnt = 0;
 			info->parentId = 0;
 
-			sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/status"));
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (!fs->IsError())
 			{
-				NEW_CLASS(reader, Text::UTF8Reader(fs));
-				sb.ClearStr();
-				while (reader->ReadLine(&sb, 512))
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/status"));
+				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (!fs.IsError())
 				{
-					if (sb.StartsWith(UTF8STRC("PPid:\t")))
-					{
-						info->parentId = Text::StrToUInt32(sb.ToString() + 6);
-					}
-					else if (sb.StartsWith(UTF8STRC("Threads:\t")))
-					{
-						info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
-					}
+					Text::UTF8Reader reader(&fs);
 					sb.ClearStr();
+					while (reader.ReadLine(&sb, 512))
+					{
+						if (sb.StartsWith(UTF8STRC("PPid:\t")))
+						{
+							info->parentId = Text::StrToUInt32(sb.ToString() + 6);
+						}
+						else if (sb.StartsWith(UTF8STRC("Threads:\t")))
+						{
+							info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
+						}
+						sb.ClearStr();
+					}
 				}
-				DEL_CLASS(reader);
 			}
-			DEL_CLASS(fs);
 
-			sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/comm"));
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (!fs->IsError())
 			{
-				NEW_CLASS(reader, Text::UTF8Reader(fs));
-				sb.ClearStr();
-				while (reader->ReadLine(&sb, 512))
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/comm"));
+				IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (!fs.IsError())
 				{
-				}
-				DEL_CLASS(reader);
-				if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
-				{
-					found = true;
+					Text::UTF8Reader reader(&fs);
+					sb.ClearStr();
+					while (reader.ReadLine(&sb, 512))
+					{
+					}
+					if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
+					{
+						found = true;
+					}
 				}
 			}
-			DEL_CLASS(fs);
 
 			if (found)
 			{

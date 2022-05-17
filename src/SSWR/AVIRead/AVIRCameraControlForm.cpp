@@ -22,40 +22,36 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 	}
 	else if (selIndices.GetCount() == 1)
 	{
-		UI::FileDialog *dlg;
 		IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(0));
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"CameraControlFile", true));
-		dlg->SetFileName(Text::CString::FromPtr(file->fileName));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CameraControlFile", true);
+		dlg.SetFileName(Text::CString::FromPtr(file->fileName));
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
 			Data::DateTime dt;
-			IO::FileStream *fs;
 			Bool succ;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			succ = me->camera->GetFile(file, fs);
-			if (file->fileTimeTicks)
 			{
-				dt.SetTicks(file->fileTimeTicks);
-				fs->SetFileTimes(0, 0, &dt);
+				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				succ = me->camera->GetFile(file, &fs);
+				if (file->fileTimeTicks)
+				{
+					dt.SetTicks(file->fileTimeTicks);
+					fs.SetFileTimes(0, 0, &dt);
+				}
 			}
-			DEL_CLASS(fs);
 			if (!succ)
 			{
-				IO::Path::DeleteFile(dlg->GetFileName()->v);
+				IO::Path::DeleteFile(dlg.GetFileName()->v);
 				UI::MessageDialog::ShowDialog(CSTR("Error in downloading the file"), CSTR("Camera Control"), me);
 			}
 		}
-		DEL_CLASS(dlg);
 	}
 	else
 	{
 		Data::DateTime dt;
 		Text::StringBuilderUTF8 sb;
-		UI::FolderDialog *dlg;
-		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"CameraControlFolder"));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"CameraControlFolder");
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream *fs;
 			Bool succ = true;
 			UOSInt i = 0;
 			UOSInt j = selIndices.GetCount();
@@ -63,21 +59,22 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			{
 				IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(i));
 				sb.ClearStr();
-				sb.Append(dlg->GetFolder());
+				sb.Append(dlg.GetFolder());
 				if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
 				sb.AppendSlow(file->fileName);
-				
-				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				succ = me->camera->GetFile(file, fs);
-				if (file->fileTimeTicks)
+
 				{
-					dt.SetTicks(file->fileTimeTicks);
-					fs->SetFileTimes(0, 0, &dt);
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					succ = me->camera->GetFile(file, &fs);
+					if (file->fileTimeTicks)
+					{
+						dt.SetTicks(file->fileTimeTicks);
+						fs.SetFileTimes(0, 0, &dt);
+					}
 				}
-				DEL_CLASS(fs);
 				if (!succ)
 				{
 					IO::Path::DeleteFile(sb.ToString());
@@ -97,7 +94,6 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 				UI::MessageDialog::ShowDialog(CSTR("Finish downloading selected files"), CSTR("Camera Control"), me);
 			}
 		}
-		DEL_CLASS(dlg);
 	}
 }
 
@@ -111,34 +107,32 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 	{
 		if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".JPG"))
 		{
-			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm")));
-			if (me->camera->GetFile(file, mstm))
+			IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm"));
+			if (me->camera->GetFile(file, &mstm))
 			{
+				IO::ParsedObject *pobj;
 				UOSInt size;
-				UInt8 *buff = mstm->GetBuff(&size);
-				IO::StmData::MemoryData *fd;
-				NEW_CLASS(fd, IO::StmData::MemoryData(buff, size));
-				IO::ParsedObject *pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-				DEL_CLASS(fd);
+				UInt8 *buff = mstm.GetBuff(&size);
+				{
+					IO::StmData::MemoryData fd(buff, size);
+					pobj = me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
+				}
 				if (pobj)
 				{
 					me->core->OpenObject(pobj);
 				}
 			}
-			DEL_CLASS(mstm);
 		}
 	}
 	else if (file->fileType == IO::CameraControl::FT_GPSLOG)
 	{
 		if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".LOG"))
 		{
-			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm2")));
-			if (me->camera->GetFile(file, mstm))
+			IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm2"));
+			if (me->camera->GetFile(file, &mstm))
 			{
-				mstm->SeekFromBeginning(0);
-				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
+				mstm.SeekFromBeginning(0);
+				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(&mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)
 				{
@@ -149,7 +143,6 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 					me->core->OpenObject(trk);
 				}
 			}
-			DEL_CLASS(mstm);
 		}
 	}
 }
@@ -160,30 +153,28 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(void *userObj
 	IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetSelectedItem();
 	if (file == 0)
 		return;
-	Media::ImageList *previewImg = me->previewMap->Get(file->fileName);
+	Media::ImageList *previewImg = me->previewMap.Get(file->fileName);
 	if (previewImg)
 	{
 		me->pbPreview->SetImage((Media::StaticImage*)previewImg->GetImage(0, 0));
 		return;
 	}
-	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIROlympusCameraForm.OnFilesSelChg.mstm")));
-	if (me->camera->GetThumbnailFile(file, mstm))
+	IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIROlympusCameraForm.OnFilesSelChg.mstm"));
+	if (me->camera->GetThumbnailFile(file, &mstm))
 	{
 		UOSInt size;
-		UInt8 *buff = mstm->GetBuff(&size);
-		IO::StmData::MemoryData *fd;
-		NEW_CLASS(fd, IO::StmData::MemoryData(buff, size));
-		previewImg = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-		DEL_CLASS(fd);
+		UInt8 *buff = mstm.GetBuff(&size);
+		{
+			IO::StmData::MemoryData fd(buff, size);
+			previewImg = (Media::ImageList*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
+		}
 		if (previewImg)
 		{
 			previewImg->ToStaticImage(0);
-			me->previewMap->Put(file->fileName, previewImg);
+			me->previewMap.Put(file->fileName, previewImg);
 			me->pbPreview->SetImage((Media::StaticImage*)previewImg->GetImage(0, 0));
 		}
 	}
-	DEL_CLASS(mstm);
 }
 
 SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::CameraControl *camera) : UI::GUIForm(parent, 640, 768, ui)
@@ -194,7 +185,6 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->camera = camera;
-	NEW_CLASS(this->previewMap, Data::StringUTF8Map<Media::ImageList*>());
 
 	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvInfo->SetRect(0, 0, 100, 96, false);
@@ -272,7 +262,7 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 {
 	this->ClearChildren();
 	DEL_CLASS(this->camera);
-	Data::ArrayList<Media::ImageList*> *previewList = this->previewMap->GetValues();
+	Data::ArrayList<Media::ImageList*> *previewList = this->previewMap.GetValues();
 	UOSInt i = previewList->GetCount();
 	Media::ImageList *previewImg;
 	while (i-- > 0)
@@ -280,7 +270,6 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 		previewImg = previewList->GetItem(i);
 		DEL_CLASS(previewImg);
 	}
-	DEL_CLASS(this->previewMap);
 }
 
 void SSWR::AVIRead::AVIRCameraControlForm::OnMonitorChanged()

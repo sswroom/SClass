@@ -10,52 +10,48 @@
 void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRBTScanLogDevForm *me = (SSWR::AVIRead::AVIRBTScanLogDevForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BTScanLogDev", true));
-	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BTScanLogDev", true);
+	dlg.AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		IO::FileStream *fs;
-		IO::BufferedOutputStream *stm;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(stm, IO::BufferedOutputStream(fs, 8192));
-		Data::DateTime dt;
-		IO::BTScanLog::LogEntry *log;
-		Int64 lastTick;
-		UOSInt i = 0;
-		UOSInt j = me->entry->logs->GetCount();
-		if (j > 0)
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		{
-			lastTick = me->entry->logs->GetItem(0)->timeTicks;
+			IO::BufferedOutputStream stm(&fs, 8192);
+			Data::DateTime dt;
+			IO::BTScanLog::LogEntry *log;
+			Int64 lastTick;
+			UOSInt i = 0;
+			UOSInt j = me->entry->logs->GetCount();
+			if (j > 0)
+			{
+				lastTick = me->entry->logs->GetItem(0)->timeTicks;
+			}
+			while (i < j)
+			{
+				log = me->entry->logs->GetItem(i);
+				dt.SetTicks(log->timeTicks);
+				dt.ToLocalTime();
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb.ClearStr();
+				sb.AppendUTF8Char('\"');
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				sb.AppendUTF8Char('\"');
+				sb.AppendUTF8Char(',');
+				sb.AppendDouble((Double)(log->timeTicks - lastTick) / 1000.0);
+				lastTick = log->timeTicks;
+				sb.AppendUTF8Char(',');
+				sb.AppendI16(log->rssi);
+				sb.AppendUTF8Char(',');
+				sb.AppendI16(log->txPower);
+				sb.AppendC(UTF8STRC("\r\n"));
+				stm.Write(sb.ToString(), sb.GetLength());
+				i++;
+			}
 		}
-		while (i < j)
-		{
-			log = me->entry->logs->GetItem(i);
-			dt.SetTicks(log->timeTicks);
-			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			sb.ClearStr();
-			sb.AppendUTF8Char('\"');
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			sb.AppendUTF8Char('\"');
-			sb.AppendUTF8Char(',');
-			sb.AppendDouble((Double)(log->timeTicks - lastTick) / 1000.0);
-			lastTick = log->timeTicks;
-			sb.AppendUTF8Char(',');
-			sb.AppendI16(log->rssi);
-			sb.AppendUTF8Char(',');
-			sb.AppendI16(log->txPower);
-			sb.AppendC(UTF8STRC("\r\n"));
-			stm->Write(sb.ToString(), sb.GetLength());
-			i++;
-		}
-		DEL_CLASS(stm);
-		DEL_CLASS(fs);
 	}
-	DEL_CLASS(dlg);
 }
 
 SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const IO::BTScanLog::DevEntry *entry) : UI::GUIForm(parent, 1024, 768, ui)
