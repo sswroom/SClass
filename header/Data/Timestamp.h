@@ -194,6 +194,11 @@ namespace Data
 			return Data::DateTimeUtil::Ticks2Weekday(this->ticks, this->tzQhr);
 		}
 
+		Bool SameDate(Data::Timestamp ts)
+		{
+			return (this->ticks / 86400000) == (ts.ticks / 86400000);
+		}
+
 		static Timestamp Now()
 		{
 			UInt32 nanosec;

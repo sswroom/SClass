@@ -16,7 +16,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 		Sync::Event evt;
 		stat->evt = &evt;
 		stat->threadRunning = true;
-		stat->me->ctrlEvt->Set();
+		stat->me->ctrlEvt.Set();
 
 		UInt8 *buff = MemAlloc(UInt8, 2048);
 		while (!stat->toStop)
@@ -26,8 +26,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 			UInt16 recvPort;
 
 			recvSize = stat->me->sockf->UDPReceive(stat->me->socV4, buff, 2048, &recvAddr, &recvPort, 0);
-			Data::DateTime logTime;
-			logTime.SetCurrTimeUTC();
+			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
 				Sync::Interlocked::Increment(&stat->me->recvCnt);
@@ -47,7 +46,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 				if (stat->me->logPrefix)
 				{
 					Sync::MutexUsage mutUsage(&stat->me->logFileMut);
-					if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
+					if ((!logTime.SameDate(stat->me->logDateR)) || (stat->me->logFileR == 0))
 					{
 						if (stat->me->logFileR)
 						{
@@ -79,7 +78,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 		MemFree(buff);
 	}
 	stat->threadRunning = false;
-	stat->me->ctrlEvt->Set();
+	stat->me->ctrlEvt.Set();
 	return 0;
 }
 
@@ -92,7 +91,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 		Sync::Event evt;
 		stat->evt = &evt;
 		stat->threadRunning = true;
-		stat->me->ctrlEvt->Set();
+		stat->me->ctrlEvt.Set();
 
 		UInt8 *buff = MemAlloc(UInt8, 2048);
 		while (!stat->toStop)
@@ -102,8 +101,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 			UInt16 recvPort;
 
 			recvSize = stat->me->sockf->UDPReceive(stat->me->socV6, buff, 2048, &recvAddr, &recvPort, 0);
-			Data::DateTime logTime;
-			logTime.SetCurrTimeUTC();
+			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
 				Sync::Interlocked::Increment(&stat->me->recvCnt);
@@ -123,7 +121,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 				if (stat->me->logPrefix)
 				{
 					Sync::MutexUsage mutUsage(&stat->me->logFileMut);
-					if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
+					if ((!logTime.SameDate(stat->me->logDateR)) || (stat->me->logFileR == 0))
 					{
 						if (stat->me->logFileR)
 						{
@@ -155,7 +153,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 		MemFree(buff);
 	}
 	stat->threadRunning = false;
-	stat->me->ctrlEvt->Set();
+	stat->me->ctrlEvt.Set();
 	return 0;
 }
 
@@ -173,7 +171,6 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	this->userData = userData;
 	this->logFileR = 0;
 	this->logFileS = 0;
-	this->ctrlEvt = 0;
 	this->msgLog = msgLog;
 	this->msgPrefix = Text::String::NewOrNull(msgPrefix);
 	this->port = port;
@@ -254,19 +251,14 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 		}
 		if (this->logPrefix)
 		{
-			NEW_CLASS(this->logDateR, Data::DateTime());
-			NEW_CLASS(this->logDateS, Data::DateTime());
-			this->logDateR->SetCurrTimeUTC();
-			this->logDateS->SetCurrTimeUTC();
-			this->logDateR->AddDay(-1);
-			this->logDateS->AddDay(-1);
+			this->logDateR = Data::Timestamp::UtcNow().AddDay(-1);
+			this->logDateS = this->logDateR;
 		}
 		else
 		{
-			this->logDateR = 0;
-			this->logDateS = 0;
+			this->logDateR = Data::Timestamp(0, 0, 0);
+			this->logDateS = Data::Timestamp(0, 0, 0);
 		}
-		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
 		this->v4threadStats = MemAlloc(ThreadStat, this->threadCnt);
 		if (this->socV6)
@@ -312,13 +304,13 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 			}
 			if (running)
 				break;
-			this->ctrlEvt->Wait(10);
+			this->ctrlEvt.Wait(10);
 		}
 	}
 	else
 	{
-		this->logDateR = 0;
-		this->logDateS = 0;
+		this->logDateR = Data::Timestamp(0, 0, 0);
+		this->logDateS = Data::Timestamp(0, 0, 0);
 	}
 }
 
@@ -376,7 +368,7 @@ Net::UDPServer::~UDPServer()
 			}
 			if (!threadRunning)
 				break;
-			this->ctrlEvt->Wait(10);
+			this->ctrlEvt.Wait(10);
 		}
 
 		MemFree(this->v4threadStats);
@@ -396,13 +388,10 @@ Net::UDPServer::~UDPServer()
 		this->socV6 = 0;
 	}
 
-	SDEL_CLASS(this->logDateR);
-	SDEL_CLASS(this->logDateS);
 	SDEL_CLASS(this->logFileS);
 	SDEL_CLASS(this->logFileR);
 	SDEL_STRING(this->logPrefix);
 	SDEL_STRING(this->msgPrefix);
-	SDEL_CLASS(this->ctrlEvt);
 }
 
 UInt16 Net::UDPServer::GetPort()
@@ -427,11 +416,10 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 	Bool succ;
 	if (this->logPrefix)
 	{
-		Data::DateTime logTime;
-		logTime.SetCurrTimeUTC();
+		Data::Timestamp logTime = Data::Timestamp::UtcNow();
 
 		Sync::MutexUsage mutUsage(&this->logFileMut);
-		if ((logTime.GetDay() != this->logDateS->GetDay()) || (logFileS == 0))
+		if ((!logTime.SameDate(this->logDateS)) || (logFileS == 0))
 		{
 			if (logFileS)
 			{

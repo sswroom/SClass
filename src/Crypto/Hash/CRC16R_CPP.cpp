@@ -9,18 +9,14 @@ extern "C" void CRC16R_InitTable(UInt16 *tab, UInt16 polynomial)
 	while (i-- > 0)
 	{
 		v = i;
-		j = 8;
-		while (j-- > 0)
-		{
-			if (v & 1)
-			{
-				v = (UInt16)(v >> 1) ^ polynomial;
-			}
-			else
-			{
-				v = (UInt16)(v >> 1);
-			}
-		}
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
+		v = (UInt16)(v >> 1) ^ ((v & 1)?polynomial:0);
 		tab[i] = v;
 	}
 

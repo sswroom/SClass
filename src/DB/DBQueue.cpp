@@ -158,7 +158,7 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::Stri
 	while (i < dbs->GetCount())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, (DB::DBTool *)dbs->GetItem(i)));
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, dbs->GetItem(i)));
 		this->dbList.Add(dbHdlr);
 		i += 1;
 	}
@@ -186,7 +186,7 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CStr
 	while (i < dbs->GetCount())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, (DB::DBTool *)dbs->GetItem(i)));
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, dbs->GetItem(i)));
 		this->dbList.Add(dbHdlr);
 		i += 1;
 	}
