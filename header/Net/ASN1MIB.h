@@ -19,8 +19,8 @@ namespace Net
 			Text::String *typeVal;
 			UInt8 oid[32];
 			UOSInt oidLen;
-			Data::ArrayList<Text::String *> *valName;
-			Data::ArrayList<Text::String *> *valCont;
+			Data::ArrayList<Text::String *> valName;
+			Data::ArrayList<Text::String *> valCont;
 			ModuleInfo *impModule;
 			Bool parsed;
 		};
@@ -29,12 +29,12 @@ namespace Net
 		{
 			Text::String *moduleName;
 			Text::String *moduleFileName;
-			Data::ArrayListString *objKeys;
-			Data::ArrayList<ObjectInfo*> *objValues;
-			Data::ArrayList<ObjectInfo *> *oidList;
+			Data::ArrayListString objKeys;
+			Data::ArrayList<ObjectInfo*> objValues;
+			Data::ArrayList<ObjectInfo *> oidList;
 		};
 	private:
-		Data::FastStringMap<ModuleInfo *> *moduleMap;
+		Data::FastStringMap<ModuleInfo *> moduleMap;
 		ModuleInfo globalModule;
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);

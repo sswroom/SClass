@@ -4,7 +4,6 @@
 extern "C" void CRC16R_InitTable(UInt16 *tab, UInt16 polynomial)
 {
 	UInt16 i = 256;
-	UInt32 j;
 	UInt16 v;
 	while (i-- > 0)
 	{

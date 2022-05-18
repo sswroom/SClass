@@ -86,11 +86,11 @@ namespace SSWR
 
 			Media::DrawEngine *deng;
 			Media::MonitorMgr *monMgr;
-			Data::ArrayList<MapFilter *> *globalFilters;
+			Data::ArrayList<MapFilter *> globalFilters;
 			Text::CString progressName;
 			UInt64 totalVal;
 			UOSInt currGroup;
-			Text::HKSCSFix *hkscsConv;
+			Text::HKSCSFix hkscsConv;
 			Bool isGrid80;
 
 			static void __stdcall OnDirectoryClicked(void *userObj);

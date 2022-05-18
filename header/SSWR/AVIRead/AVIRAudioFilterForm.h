@@ -144,11 +144,11 @@ namespace SSWR
 			UI::GUILabel *lblAmplifierVolV;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Math::FFTCalc *fft;
+			Math::FFTCalc fft;
 			Media::IAudioSource *audSrc;
 			Int32 audRenderType;
 			Media::IAudioRenderer *audRender;
-			Media::RefClock *clk;
+			Media::RefClock clk;
 			Media::DrawEngine *eng;
 			Media::DrawImage *sampleImg;
 			Media::DrawImage *fftImg;
@@ -157,8 +157,8 @@ namespace SSWR
 			UInt16 bitCount;
 
 			Bool dtmfMod;
-			Sync::Mutex *dtmfMut;
-			Text::StringBuilderUTF8 *dtmfSb;
+			Sync::Mutex dtmfMut;
+			Text::StringBuilderUTF8 dtmfSb;
 
 			Media::AudioFilter::AudioLevelMeter *audioLevel;
 			Media::AudioFilter::AudioCaptureFilter *audioCapture;

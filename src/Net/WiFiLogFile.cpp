@@ -285,87 +285,83 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 
 Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 {
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
-	IO::BufferedOutputStream *cstm;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	Net::WiFiLogFile::LogFileEntry *log;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(cstm, IO::BufferedOutputStream(fs, 8192));
-	NEW_CLASS(writer, Text::UTF8Writer(cstm));
-	succ = true;
-	i = 0;
-	j = this->logList->GetCount();
-	while (i < j)
+	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	{
-		log = this->logList->GetItem(i);
-		sb.ClearStr();
-		sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
-		sb.AppendC(UTF8STRC("\t"));
-		sb.Append(log->ssid);
-		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendI32(log->phyType);
-		sb.AppendC(UTF8STRC("\t"));
-		Text::SBAppendF64(&sb, log->freq);
-		sb.AppendC(UTF8STRC("\t"));
-		if (log->manuf)
+		IO::BufferedOutputStream cstm(&fs, 8192);
+		Text::UTF8Writer writer(&cstm);
+		succ = true;
+		i = 0;
+		j = this->logList->GetCount();
+		while (i < j)
 		{
-			sb.Append(log->manuf);
-		}
-		sb.AppendC(UTF8STRC("\t"));
-		if (log->model)
-		{
-			sb.Append(log->model);
-		}
-		sb.AppendC(UTF8STRC("\t"));
-		if (log->serialNum)
-		{
-			sb.Append(log->serialNum);
-		}
-		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LineBreakType::None);
-		sb.AppendUTF8Char(',');
-		sb.AppendHexBuff(log->ouis[1], 3, 0, Text::LineBreakType::None);
-		sb.AppendUTF8Char(',');
-		sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LineBreakType::None);
-		sb.AppendC(UTF8STRC("\t"));
-		if (log->country)
-		{
-			sb.Append(log->country);
-		}
-		sb.AppendUTF8Char('\t');
-		k = 0;
-		while (k < 20)
-		{
-			if (log->neighbour[k] == 0)
+			log = this->logList->GetItem(i);
+			sb.ClearStr();
+			sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
+			sb.AppendC(UTF8STRC("\t"));
+			sb.Append(log->ssid);
+			sb.AppendC(UTF8STRC("\t"));
+			sb.AppendI32(log->phyType);
+			sb.AppendC(UTF8STRC("\t"));
+			Text::SBAppendF64(&sb, log->freq);
+			sb.AppendC(UTF8STRC("\t"));
+			if (log->manuf)
 			{
-				break;
+				sb.Append(log->manuf);
 			}
-			if (k > 0)
+			sb.AppendC(UTF8STRC("\t"));
+			if (log->model)
 			{
-				sb.AppendUTF8Char(',');
+				sb.Append(log->model);
 			}
-			sb.AppendHex64(log->neighbour[k]);
-			k++;
+			sb.AppendC(UTF8STRC("\t"));
+			if (log->serialNum)
+			{
+				sb.Append(log->serialNum);
+			}
+			sb.AppendC(UTF8STRC("\t"));
+			sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LineBreakType::None);
+			sb.AppendUTF8Char(',');
+			sb.AppendHexBuff(log->ouis[1], 3, 0, Text::LineBreakType::None);
+			sb.AppendUTF8Char(',');
+			sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LineBreakType::None);
+			sb.AppendC(UTF8STRC("\t"));
+			if (log->country)
+			{
+				sb.Append(log->country);
+			}
+			sb.AppendUTF8Char('\t');
+			k = 0;
+			while (k < 20)
+			{
+				if (log->neighbour[k] == 0)
+				{
+					break;
+				}
+				if (k > 0)
+				{
+					sb.AppendUTF8Char(',');
+				}
+				sb.AppendHex64(log->neighbour[k]);
+				k++;
+			}
+			sb.AppendUTF8Char('\t');
+			if (log->ieLen > 0)
+			{
+				sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LineBreakType::None);
+			}
+			if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+			{
+				succ = false;
+			}
+			i++;
 		}
-		sb.AppendUTF8Char('\t');
-		if (log->ieLen > 0)
-		{
-			sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LineBreakType::None);
-		}
-		if (!writer->WriteLineC(sb.ToString(), sb.GetLength()))
-		{
-			succ = false;
-		}
-		i++;
 	}
-	DEL_CLASS(writer);
-	DEL_CLASS(cstm);
-	DEL_CLASS(fs);
 	return succ;
 }
 

@@ -2737,7 +2737,6 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 
 		if (srcDir)
 		{
-			IO::StreamReader *reader;
 			Text::StringBuilderUTF8 sb2;
 			sptr = Text::StrConcat(sbuff, srcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;

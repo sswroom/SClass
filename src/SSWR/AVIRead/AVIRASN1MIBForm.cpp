@@ -16,16 +16,14 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *dlg;
 	me->txtFile->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false));
-	dlg->AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
-	dlg->AddFilter(CSTR("*.mib"), CSTR("MIB file"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ASN1MIB", false);
+	dlg.AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
+	dlg.AddFilter(CSTR("*.mib"), CSTR("MIB file"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->ToCString());
+		me->LoadFile(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
@@ -36,11 +34,11 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
 	if (obj)
 	{
 		UOSInt i = 0;
-		UOSInt j = obj->valName->GetCount();
+		UOSInt j = obj->valName.GetCount();
 		while (i < j)
 		{
-			me->lvObjectsVal->AddItem(obj->valName->GetItem(i), 0);
-			me->lvObjectsVal->SetSubItem(i, 1, obj->valCont->GetItem(i));
+			me->lvObjectsVal->AddItem(obj->valName.GetItem(i), 0);
+			me->lvObjectsVal->SetSubItem(i, 1, obj->valCont.GetItem(i));
 			i++;
 		}
 	}
@@ -50,10 +48,10 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtFile->SetText(fileName);
-	this->mib->UnloadAll();
+	this->mib.UnloadAll();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Error in loading MIB file: "));
-	if (this->mib->LoadFile(fileName, &sb))
+	if (this->mib.LoadFile(fileName, &sb))
 	{
 
 	}
@@ -66,12 +64,12 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 	UOSInt i;
 	UOSInt j;
 	Net::ASN1MIB::ObjectInfo *obj;
-	Net::ASN1MIB::ModuleInfo *module = this->mib->GetModuleByFileName(fileName);
+	Net::ASN1MIB::ModuleInfo *module = this->mib.GetModuleByFileName(fileName);
 	if (module == 0)
 	{
-		module = this->mib->GetGlobalModule();
+		module = this->mib.GetGlobalModule();
 	}
-	Data::ArrayList<Net::ASN1MIB::ObjectInfo *> *objList = module->objValues;
+	Data::ArrayList<Net::ASN1MIB::ObjectInfo *> *objList = &module->objValues;
 	i = 0;
 	j = objList->GetCount();
 	while (i < j)
@@ -96,10 +94,10 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 	}
 	Text::StringBuilderUTF8 sbOIDText;
 	i = 0;
-	j = module->oidList->GetCount();
+	j = module->oidList.GetCount();
 	while (i < j)
 	{
-		obj = module->oidList->GetItem(i);
+		obj = module->oidList.GetItem(i);
 		sb.ClearStr();
 		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
 		this->lvOID->AddItem(sb.ToCString(), obj);
@@ -123,7 +121,6 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->mib, Net::ASN1MIB());
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
@@ -177,7 +174,6 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRASN1MIBForm::~AVIRASN1MIBForm()
 {
-	DEL_CLASS(this->mib);
 }
 
 void SSWR::AVIRead::AVIRASN1MIBForm::OnMonitorChanged()

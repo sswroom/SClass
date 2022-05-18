@@ -66,6 +66,7 @@ nodeps:
 @RSATest
 @X509Test
 @DateTimeTest
+@MiscTest
 @SortSpeed
 @DBDataFileTest
 @FileGDBTest
@@ -245,6 +246,9 @@ X509Test:
 #Data
 DateTimeTest:
 @DateTimeTest.o
+@ConsoleStartup.o
+MiscTest:
+@MiscTest.o
 @ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
@@ -889,6 +893,7 @@ RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
 RSATest.o: ../../main/CryptoTest/RSATest.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
+MiscTest.o: ../../main/Data/MiscTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp

@@ -23,19 +23,15 @@ struct IO::SystemInfo::ClassData
 Bool SystemInfo_ReadFile(Text::CString fileName, Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(sb, 512))
+		Text::UTF8Reader reader(&fs);
+		while (reader.ReadLine(sb, 512))
 		{
 		}
-		DEL_CLASS(reader);
 		succ = true;
 	}
-	DEL_CLASS(fs);
 	return succ;
 }
 

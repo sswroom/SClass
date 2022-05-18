@@ -9,16 +9,15 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *dlg;
 	me->txtFileName->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AccessConn", false));
-	dlg->AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
-	dlg->AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
-	dlg->SetFileName(sb.ToCString());
-	dlg->SetAllowMultiSel(false);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AccessConn", false);
+	dlg.AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
+	dlg.AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
+	dlg.SetFileName(sb.ToCString());
+	dlg.SetAllowMultiSel(false);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg->GetFileName()->ToCString());
+		me->txtFileName->SetText(dlg.GetFileName()->ToCString());
 	}
 }
 

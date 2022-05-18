@@ -11,8 +11,6 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UI::GUICore *ui;
-	SSWR::AVIRead::AVIRCore *core;
-	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -24,27 +22,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #else
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBControl.log"));
 #endif
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
-	ui = progCtrl->CreateGUICore(progCtrl);
-	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
-	SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
-	SSWR::AVIRead::AVIRSelStreamForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, ui, core, false));
-	frm->SetText(CSTR("Select SNB Dongle"));
-	if (frm->ShowDialog(0) == UI::GUIForm::DR_OK)
+	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE);
 	{
-		NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, core, frm->stm));
-		snbFrm->SetExitOnClose(true);
-		snbFrm->Show();
+		ui = progCtrl->CreateGUICore(progCtrl);
+		SSWR::AVIRead::AVIRCoreWin core(ui);
+		SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
+		{
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, ui, &core, false);
+			frm.SetText(CSTR("Select SNB Dongle"));
+			if (frm.ShowDialog(0) == UI::GUIForm::DR_OK)
+			{
+				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, &core, frm.stm));
+				snbFrm->SetExitOnClose(true);
+				snbFrm->Show();
+			}
+		}
+		if (snbFrm)
+		{
+			ui->Run();
+		}
+		DEL_CLASS(ui);
 	}
-	DEL_CLASS(frm);
-	if (snbFrm)
-	{
-		ui->Run();
-	}
-
-	DEL_CLASS(core);
-	DEL_CLASS(ui);
-	DEL_CLASS(exHdlr);
 	return 0;
 }

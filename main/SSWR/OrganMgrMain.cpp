@@ -11,42 +11,40 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Manage::ExceptionRecorder *exHdlr;
-	UI::GUICore *ui;
-	SSWR::OrganMgr::OrganMainForm *frm;
-	SSWR::OrganMgr::OrganSelCategoryForm *cateFrm;
-	SSWR::OrganMgr::OrganEnv *env;
-
 	MemSetLogFile(UTF8STRC("Memory.log"));
 
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
+	Manage::ExceptionRecorder exHdlr(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART);
 	if (Manage::Process::IsAlreadyStarted())
 	{
 	}
 	else
 	{
+		UI::GUICore *ui;
 		ui = progCtrl->CreateGUICore(progCtrl);
-		NEW_CLASS(env, SSWR::OrganMgr::OrganEnvDB());
+		SSWR::OrganMgr::OrganEnvDB env;
 
-		if (env->GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_NONE)
+		if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_NONE)
 		{
-			NEW_CLASS(cateFrm, SSWR::OrganMgr::OrganSelCategoryForm(0, ui, env));
-			UI::GUIForm::DialogResult dr = cateFrm->ShowDialog(0);
-			DEL_CLASS(cateFrm);
+			UI::GUIForm::DialogResult dr;
+			{
+				SSWR::OrganMgr::OrganSelCategoryForm cateFrm(0, ui, &env);
+				dr = cateFrm.ShowDialog(0);
+			}
 
 			if (dr == UI::GUIForm::DR_OK)
 			{
-				NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, 0, env));
+				SSWR::OrganMgr::OrganMainForm *frm;
+				NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, 0, &env));
 				frm->SetExitOnClose(true);
 				frm->Show();
 				ui->Run();
 			}
 		}
-		else if (env->GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_CONFIG)
+		else if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_CONFIG)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please prepare the config file"), CSTR("Error"), 0);
 		}
-		else if (env->GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_DB)
+		else if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_DB)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Cannot connect to the database"), CSTR("Error"), 0);
 		}
@@ -54,10 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Unknown error occurs"), CSTR("Error"), 0);
 		}
-		DEL_CLASS(env);
 		DEL_CLASS(ui);
 	}
-	DEL_CLASS(exHdlr);
-
 	return 0;
 }

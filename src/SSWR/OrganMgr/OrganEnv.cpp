@@ -611,19 +611,19 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime 
 	else if (userId == this->userId)
 	{
 		Text::StringBuilderUTF8 sb;
-		OrganTripForm *frm;
 		Data::DateTime dt2(dt);
 		Data::DateTime dt3(dt);
 		dt2.ClearTime();
 		dt3.ClearTime();
 		dt3.AddDay(1);
-		NEW_CLASS(frm, OrganTripForm(0, ui, this));
-		sb.AppendC(UTF8STRC("Trip not found at "));
-		sb.AppendDate(dt);
-		frm->SetText(sb.ToCString());
-		frm->SetTimes(&dt2, &dt3);
-		frm->ShowDialog(ownerFrm);
-		DEL_CLASS(frm);
+		{
+			OrganTripForm frm(0, ui, this);
+			sb.AppendC(UTF8STRC("Trip not found at "));
+			sb.AppendDate(dt);
+			frm.SetText(sb.ToCString());
+			frm.SetTimes(&dt2, &dt3);
+			frm.ShowDialog(ownerFrm);
+		}
 		tr = this->TripGet(userId, dt);
 		if (tr)
 		{

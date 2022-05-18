@@ -19,8 +19,8 @@ namespace SSWR
 		private:
 			SSWR::DownloadMonitor::DownMonCore *core;
 			SSWR::DownloadMonitor::DownMonCore::CheckStatus currStatus;
-			Sync::Mutex *endedMut;
-			Data::ArrayList<Int32> *endedList;
+			Sync::Mutex endedMut;
+			Data::ArrayList<Int32> endedList;
 			Bool alarmSet;
 			Int64 alarmTime;
 

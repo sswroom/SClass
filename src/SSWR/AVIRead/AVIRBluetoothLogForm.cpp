@@ -17,31 +17,29 @@
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BluetoothLogFile", false));
-	dlg->SetAllowMultiSel(true);
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BluetoothLogFile", false);
+	dlg.SetAllowMultiSel(true);
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
-		UOSInt j = dlg->GetFileNameCount();
+		UOSInt j = dlg.GetFileNameCount();
 		while (i < j)
 		{
-			const UTF8Char *name = dlg->GetFileNames(i);
+			const UTF8Char *name = dlg.GetFileNames(i);
 			UOSInt nameLen = Text::StrCharCnt(name);
-			me->btLog->LoadFile({name, nameLen});
+			me->btLog.LoadFile({name, nameLen});
 			i++;
 		}
 		me->LogFileStore();
 		me->LogUIUpdate();
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
-	if (me->macList->Store())
+	if (me->macList.Store())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
@@ -57,22 +55,15 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	const IO::BTDevLog::DevEntry *log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
-	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
-	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
-	if (entry)
+	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
+	Text::CString name = entry?Text::CString(entry->name, entry->nameLen):CSTR_NULL;
+	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, {entry->name, entry->nameLen}));
-	}
-	else
-	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, CSTR_NULL));
-	}
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
-	{
-		Text::String *name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
+		Text::String *name = frm.GetNameNew();
+		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
-		entry = me->macList->GetItem(i);
+		entry = me->macList.GetItem(i);
 		me->UpdateStatus();
 
 		UOSInt j;
@@ -88,7 +79,6 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 			i++;
 		}
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentSelChg(void *userObj)
@@ -107,7 +97,7 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("BTDevLog.txt"));
-	return this->btLog->StoreFile(CSTRP(sbuff, sptr));
+	return this->btLog.StoreFile(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
@@ -115,8 +105,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	const Net::MACInfo::MACEntry *entry;
 	IO::BTDevLog::DevEntry *log;
 	Data::ArrayList<IO::BTDevLog::DevEntry*> logList;
-	logList.AddAll(this->btLog->GetPublicList());
-	logList.AddAll(this->btLog->GetRandomList());
+	logList.AddAll(this->btLog.GetPublicList());
+	logList.AddAll(this->btLog.GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -129,7 +119,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	while (i < j)
 	{
 		log = logList.GetItem(i);
-		entry = this->macList->GetEntry(log->macInt);
+		entry = this->macList.GetEntry(log->macInt);
 		if (unkOnly && (entry != 0 && entry->nameLen != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{
 
@@ -200,7 +190,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 void SSWR::AVIRead::AVIRBluetoothLogForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList->GetCount());
+	sb.AppendUOSInt(this->macList.GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }
@@ -211,8 +201,6 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->SetText(CSTR("Bluetooth Log"));
 
 	this->core = core;
-	NEW_CLASS(this->btLog, IO::BTDevLog());
-	NEW_CLASS(this->macList, Net::MACInfoList());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -250,14 +238,12 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("BTDevLog.txt"));
-	this->btLog->LoadFile(CSTRP(sbuff, sptr));
+	this->btLog.LoadFile(CSTRP(sbuff, sptr));
 	this->LogUIUpdate();
 }
 
 SSWR::AVIRead::AVIRBluetoothLogForm::~AVIRBluetoothLogForm()
 {
-	DEL_CLASS(this->btLog);
-	DEL_CLASS(this->macList);
 }
 
 void SSWR::AVIRead::AVIRBluetoothLogForm::OnMonitorChanged()

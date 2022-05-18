@@ -12,10 +12,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Text::Doc::TextDocument *doc;
 	Text::Doc::DocValidator *validator;
-	Exporter::DocHTMLExporter *exporter;
-	IO::FileStream *fs;
 	Text::CString fileName;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -24,21 +21,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, fileName);
 
-	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
-	NEW_CLASS(doc, Text::Doc::TextDocument());
-	doc->SetDocumentName(CSTR("sswroom's test"));
-	doc->SetTextColor(0xffc0e0ff);
-	doc->SetLinkColor(0xff6080ff);
-	doc->SetVisitedLinkColor(0xff4060ff);
-	doc->SetActiveLinkColor(0xff4040ff);
-	doc->SetBGColor(0xff000000);
+	Exporter::DocHTMLExporter exporter;
+	Text::Doc::TextDocument doc;
+	doc.SetDocumentName(CSTR("sswroom's test"));
+	doc.SetTextColor(0xffc0e0ff);
+	doc.SetLinkColor(0xff6080ff);
+	doc.SetVisitedLinkColor(0xff4060ff);
+	doc.SetActiveLinkColor(0xff4040ff);
+	doc.SetBGColor(0xff000000);
 	
 	Text::Doc::DocHeading *heading;
 	Text::Doc::DocText *txt;
 	Text::Doc::DocLink *link;
 	Text::Doc::DocSection *section;
 	NEW_CLASS(section, Text::Doc::DocSection(Media::PaperSize::PT_A4, false));
-	doc->Add(section);
+	doc.Add(section);
 
 	NEW_CLASS(heading, Text::Doc::DocHeading());
 	NEW_CLASS(txt, Text::Doc::DocText((const UTF8Char*)"sswroom's test"));
@@ -52,11 +49,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(validator, Text::Doc::DocValidator());
 	section->Add(validator);
 
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	exporter->ExportFile(fs, CSTRP(sbuff, sptr), doc, 0);
-	DEL_CLASS(fs);
-
-	DEL_CLASS(doc);
-	DEL_CLASS(exporter);
+	{
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+		exporter.ExportFile(&fs, CSTRP(sbuff, sptr), &doc, 0);
+	}
 	return 0;
 }

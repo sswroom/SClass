@@ -26,15 +26,13 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile->ToCString()) == IO::Path::PathType::File)
 	{
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
 			Data::DateTime dt;
-			fs->GetFileTimes(0, 0, &dt);
+			fs.GetFileTimes(0, 0, &dt);
 			fdh->cli->AddTimeHeader(CSTR("If-Modified-Since"), &dt);
 		}
-		DEL_CLASS(fs);
 	}
 	while (fdh->cli->GetRespStatus() == 301)
 	{
@@ -108,19 +106,17 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			if (!fdh->cli->GetRespHeader(CSTR("Content-Length"), &sb))
 			{
-				Sync::Event *readEvt;
 				void *sess;
-
-				NEW_CLASS(readEvt, Sync::Event(false));
+				Sync::Event readEvt(false);
 				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				while (true)
 				{
-					readEvt->Clear();
-					sess = fdh->cli->BeginRead(buff, 2048, readEvt);
+					readEvt.Clear();
+					sess = fdh->cli->BeginRead(buff, 2048, &readEvt);
 					if (sess)
 					{
 						Bool incomplete;
-						readEvt->Wait(2000);
+						readEvt.Wait(2000);
 						readSize = fdh->cli->EndRead(sess, false, &incomplete);
 						if (readSize <= 0)
 						{
@@ -145,7 +141,6 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					fdh->currentOffset = fdh->fileLength;
 					mutUsage.EndUse();
 				}
-				DEL_CLASS(readEvt);
 				Data::DateTime dt;
 				if (fdh->file && fdh->cli->GetLastModified(&dt))
 				{

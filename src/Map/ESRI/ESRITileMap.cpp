@@ -367,8 +367,6 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	UTF8Char *sptr;
 	UTF8Char *filePathEnd;
 	Net::HTTPClient *cli;
-	IO::FileStream *fs;
-	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
@@ -417,22 +415,22 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, imgX);
 	filePathEnd = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
-	if (fd->GetDataSize() > 0)
 	{
-		IO::ParserType pt;
-		pobj = parsers->ParseFile(fd, &pt);
-		if (pobj)
+		IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
+		if (fd.GetDataSize() > 0)
 		{
-			if (pt == IO::ParserType::ImageList)
+			IO::ParserType pt;
+			pobj = parsers->ParseFile(&fd, &pt);
+			if (pobj)
 			{
-				DEL_CLASS(fd);
-				return (Media::ImageList*)pobj;
+				if (pt == IO::ParserType::ImageList)
+				{
+					return (Media::ImageList*)pobj;
+				}
+				DEL_CLASS(pobj);
 			}
-			DEL_CLASS(pobj);
 		}
 	}
-	DEL_CLASS(fd);
 
 	if (localOnly)
 		return 0;
@@ -445,31 +443,30 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
-		fs->Write(dataBuff, readSize);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		IO::FileStream fs({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		{
+			fs.Write(dataBuff, readSize);
+		}
+		DEL_CLASS(cli);
 	}
-	DEL_CLASS(cli);
-	DEL_CLASS(fs);
 
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
-	if (fd->GetDataSize() > 0)
+	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
+	if (fd.GetDataSize() > 0)
 	{
 		IO::ParserType pt;
-		pobj = parsers->ParseFile(fd, &pt);
+		pobj = parsers->ParseFile(&fd, &pt);
 		if (pobj)
 		{
 			if (pt == IO::ParserType::ImageList)
 			{
-				DEL_CLASS(fd);
 				return (Media::ImageList*)pobj;
 			}
 			DEL_CLASS(pobj);
 		}
 	}
-	DEL_CLASS(fd);
 	return 0;
 }
 

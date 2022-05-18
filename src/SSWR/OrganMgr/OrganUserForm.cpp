@@ -5,13 +5,11 @@
 void __stdcall SSWR::OrganMgr::OrganUserForm::OnAddClicked(void *userObj)
 {
 	OrganUserForm *me = (OrganUserForm*)userObj;
-	OrganUserEditForm *frm;
-	NEW_CLASS(frm, OrganUserEditForm(0, me->ui, me->env, 0));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	OrganUserEditForm frm(0, me->ui, me->env, 0);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->UpdateUserList();
 	}
-	DEL_CLASS(frm);
 }
 void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(void *userObj)
 {
@@ -19,21 +17,19 @@ void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(void *userObj)
 	OrganWebUser *user = (OrganWebUser*)me->lvUser->GetSelectedItem();
 	if (user)
 	{
-		OrganUserEditForm *frm;
-		NEW_CLASS(frm, OrganUserEditForm(0, me->ui, me->env, user));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		OrganUserEditForm frm(0, me->ui, me->env, user);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->UpdateUserList();
 		}
-		DEL_CLASS(frm);
 	}
 }
 
 void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 {
 	this->lvUser->ClearItems();
-	this->env->ReleaseWebUsers(this->userList);
-	this->env->GetWebUsers(this->userList);
+	this->env->ReleaseWebUsers(&this->userList);
+	this->env->GetWebUsers(&this->userList);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -41,10 +37,10 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	UTF8Char *sptr;
 	OrganWebUser *user;
 	i = 0;
-	j = this->userList->GetCount();
+	j = this->userList.GetCount();
 	while (i < j)
 	{
-		user = this->userList->GetItem(i);
+		user = this->userList.GetItem(i);
 		sptr = Text::StrInt32(sbuff, user->id);
 		k = this->lvUser->AddItem(CSTRP(sbuff, sptr), user);
 		this->lvUser->SetSubItem(k, 1, user->userName);
@@ -58,7 +54,6 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, UI::G
 	this->SetFont(0, 0, 10.5, false);
 
 	this->env = env;
-	NEW_CLASS(this->userList, Data::ArrayList<OrganWebUser*>());
 
 	this->SetText(this->env->GetLang(UTF8STRC("UserFormTitle")));
 
@@ -84,8 +79,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, UI::G
 
 SSWR::OrganMgr::OrganUserForm::~OrganUserForm()
 {
-	this->env->ReleaseWebUsers(this->userList);
-	DEL_CLASS(this->userList);
+	this->env->ReleaseWebUsers(&this->userList);
 }
 
 void SSWR::OrganMgr::OrganUserForm::OnMonitorChanged()

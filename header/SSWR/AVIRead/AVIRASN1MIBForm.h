@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Net::ASN1MIB *mib;
+			Net::ASN1MIB mib;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUILabel *lblFile;

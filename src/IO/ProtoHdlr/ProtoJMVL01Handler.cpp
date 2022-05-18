@@ -31,14 +31,14 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(IO::Stream *stm, void *s
 	i = 0;
 	while (i < buffSize - 1)
 	{
-		if (buff[i] == 0x78 && buff[i] == 0x78)
+		if (buff[i] == 0x78 && buff[i + 1] == 0x78)
 		{
 			if (i + 11 > buffSize)
 			{
 				return buffSize - i;
 			}
 			len = buff[i + 2];
-			if (len + i + 11 > buffSize)
+			if (len + i + 5 > buffSize)
 			{
 				return buffSize - i;
 			}
@@ -49,7 +49,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(IO::Stream *stm, void *s
 				i += len + 4;
 			}
 		}
-		else if (buff[i] == 0x78 && buff[i] == 0x78)
+		else if (buff[i] == 0x79 && buff[i + 1] == 0x79)
 		{
 			if (i + 12 > buffSize)
 			{

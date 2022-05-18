@@ -2,11 +2,11 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "IO/StreamReader.h"
 #include "IO/SystemInfo.h"
 #include "IO/UnixConfigFile.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Reader.h"
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
@@ -17,24 +17,20 @@ struct IO::SystemInfo::ClassData
 
 IO::SystemInfo::SystemInfo()
 {
-	IO::FileStream *fs;
-	IO::StreamReader *reader;
 	Text::StringBuilderUTF8 sb;
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/devicetree/base/model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/sys/firmware/devicetree/base/model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(reader, IO::StreamReader(fs, 65001));
+		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		while (reader->ReadLine(&sb, 512))
+		while (reader.ReadLine(&sb, 512))
 		{
 		}
-		DEL_CLASS(reader);
 		data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
-	DEL_CLASS(fs);
 }
 
 IO::SystemInfo::~SystemInfo()

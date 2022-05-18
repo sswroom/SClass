@@ -11,12 +11,10 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/mnt/raid2_3/Progs/DownList2.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	while (reader->ReadLine(&sb, 4096))
+	IO::FileStream fs(CSTR("/mnt/raid2_3/Progs/DownList2.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Reader reader(&fs);
+	while (reader.ReadLine(&sb, 4096))
 	{
 		if (!Text::UTF8Util::ValidStr(sb.ToString()))
 		{
@@ -29,7 +27,5 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		sb.ClearStr();
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return 0;
 }

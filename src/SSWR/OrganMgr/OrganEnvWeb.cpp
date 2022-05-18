@@ -804,12 +804,10 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 		if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 		{
-			Text::UTF8Reader *reader;
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-			NEW_CLASS(reader, Text::UTF8Reader(fs));
+			IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			Text::UTF8Reader reader(&fs);
 
-			while (reader->ReadLine(sbuff2, 511))
+			while (reader.ReadLine(sbuff2, 511))
 			{
 				if (Text::StrSplit(cols, 4, sbuff2, '\t') == 3)
 				{
@@ -817,7 +815,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					Text::StrConcat(Text::StrConcatC(sptr, UTF8STRC("web\\")), cols[0]);
 					imgItem->SetDispName(sptr);
 					imgItem->SetIsCoverPhoto(false);
-					if (coverName)
+					if (coverName.v)
 					{
 						if (Text::StrStartsWith(sptr, coverName))
 						{
@@ -834,8 +832,6 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					retCnt++;
 				}
 			}
-			DEL_CLASS(reader);
-			DEL_CLASS(fs);
 		}
 	}
 
