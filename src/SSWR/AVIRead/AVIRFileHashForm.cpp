@@ -90,7 +90,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 		Sync::MutexUsage mutUsage(&me->fileMut);
 		found = false;
 		i = 0;
-		j = me->fileList->GetCount();
+		j = me->fileList.GetCount();
 		while (i < j)
 		{
 			status = me->fileList.GetItem(i);

@@ -178,21 +178,22 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 	}
 	else
 	{
-		ProgressHandler *progress;
-		NEW_CLASS(progress, ProgressHandler());
-		IO::FileCheck *fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, IO::FileCheck::CheckType::MD5, progress, false);
-		DEL_CLASS(progress);
+		IO::FileCheck *fileChk;
+		{
+			ProgressHandler progress;
+			fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, IO::FileCheck::CheckType::MD5, &progress, false);
+		}
 		console->WriteLine();
 		if (fileChk)
 		{
 			Text::StringBuilderUTF8 sb;
-			IO::FileStream *fs;
 			Exporter::MD5Exporter exporter;
 			sb.AppendC(fileName, fileNameLen);
 			sb.AppendC(UTF8STRC(".md5"));
-			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			exporter.ExportFile(fs, sb.ToCString(), fileChk, 0);
-			DEL_CLASS(fs);
+			{
+				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				exporter.ExportFile(&fs, sb.ToCString(), fileChk, 0);
+			}
 			DEL_CLASS(fileChk);
 			showHelp = false;
 			return true;

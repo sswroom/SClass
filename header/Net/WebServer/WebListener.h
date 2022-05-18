@@ -31,7 +31,7 @@ namespace Net
 		private:
 			IWebHandler *hdlr;
 			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
+			Net::TCPClientMgr cliMgr;
 			Net::TCPClientMgr *proxyCliMgr;
 			Net::SSLEngine *ssl;
 			Net::SocketFactory *sockf;

@@ -332,10 +332,6 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 	OSInt sl;
 	OSInt sm;
 	UInt32 cipPos;
-	IO::FileStream *cip;
-	IO::FileStream *cix;
-	IO::FileStream *blk;
-	IO::FileStream *cib;
 	IO::StmData::FileData *fd;
 	DB::DBFFile *dbf;
 	DB::DBReader *dbfr;
@@ -364,48 +360,46 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 //	Dim tmpWriter As IO.StreamWriter
 	UInt32 tRec;
 
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sourceFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(sourceFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Failed in converting "));
 		sb.Append(sourceFile);
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), this);
 		return 0;
 	}
-	fs->Read(buff, 100);
+	fs.Read(buff, 100);
 	fileLeng = ReadMUInt32(&buff[24]) * 2;
 	shpType = ReadInt32(&buff[32]);
 	filePos = 100;
 	nRecords = 0;
 	while (filePos < fileLeng)
 	{
-		if (fs->Read(buff, 8) != 8)
+		if (fs.Read(buff, 8) != 8)
 			break;
-		fs->SeekFromCurrent(ReadMUInt32(&buff[4]) * 2);
+		fs.SeekFromCurrent(ReadMUInt32(&buff[4]) * 2);
 		filePos += ReadMUInt32(&buff[4]) * 2 + 8;
 		nRecords += 1;
 	}
 
-	fs->SeekFromBeginning(100);
+	fs.SeekFromBeginning(100);
 	if (shpType == 3 || shpType == 5)
 	{
 		sb.ClearStr();
 		sb.Append(outFilePrefix);
 		sb.AppendC(UTF8STRC(".cip"));
-		NEW_CLASS(cip, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream cip(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sb.RemoveChars(4);
 		sb.AppendC(UTF8STRC(".cix"));
-		NEW_CLASS(cix, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream cix(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sb.RemoveChars(4);
 		sb.AppendC(UTF8STRC(".blk"));
-		NEW_CLASS(blk, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream blk(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sb.RemoveChars(4);
 		sb.AppendC(UTF8STRC(".ciu"));
-		NEW_CLASS(cib, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!cip->IsError() && !cix->IsError() && !blk->IsError() && !cib->IsError())
+		IO::FileStream cib(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!cip.IsError() && !cix.IsError() && !blk.IsError() && !cib.IsError())
 		{
 			sb.ClearStr();
 			sb.Append(sourceFile);
@@ -424,8 +418,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 
 			WriteUInt32(&buff[0], nRecords);
 			WriteInt32(&buff[4], shpType);
-			cip->Write(buff, 8);
-			cix->Write(buff, 4);
+			cip.Write(buff, 8);
+			cix.Write(buff, 4);
 			tRec = 0;
 			currRec = 0;
 			cipPos = 8;
@@ -440,7 +434,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				{
 					progress->ProgressUpdate(tRec, nRecords);
 				}
-				fs->Read(buff, 12);
+				fs.Read(buff, 12);
 
 				Int32 recSize = ReadMInt32(&buff[4]);
 				Bool chkVal = true;
@@ -455,7 +449,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				}
 				else if (ReadInt32(&buff[8]) != shpType)
 				{
-					fs->SeekFromCurrent(recSize * 2 - 4);
+					fs.SeekFromCurrent(recSize * 2 - 4);
 //					tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
 					if (dbfr)
 					{
@@ -465,7 +459,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				}
 				else
 				{
-					fs->Read(&buff[12], 32);
+					fs.Read(&buff[12], 32);
 					xMin = ReadDouble(&buff[12]);
 					yMin = ReadDouble(&buff[20]);
 					xMax = ReadDouble(&buff[28]);
@@ -498,39 +492,39 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 					}
 					if (!chkVal)
 					{
-						fs->SeekFromCurrent(recSize * 2 - 36);
+						fs.SeekFromCurrent(recSize * 2 - 36);
 //						tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
 					}
 				}
 				if (chkVal)
 				{
-					fs->Read(buff, 8);
+					fs.Read(buff, 8);
 					nParts = ReadUInt32(&buff[0]);
 					nPoints = ReadUInt32(&buff[4]);
 //					'tmpWriter.WriteLine(nParts.ToString() + ControlChars.Tab + nPoints.ToString())
 
 					WriteInt32(&buff[0], currRec);
 					WriteUInt32(&buff[4], cipPos);
-					cix->Write(buff, 8);
+					cix.Write(buff, 8);
 
 					WriteUInt32(&buff[4], nParts);
-					cip->Write(buff, 8);
+					cip.Write(buff, 8);
 					cipPos += 8;
 					outBuff = MemAlloc(UInt8, nParts * 4 + 4);
-					fs->Read(outBuff, nParts * 4);
+					fs.Read(outBuff, nParts * 4);
 					WriteUInt32(&outBuff[nParts * 4], nPoints);
-					cip->Write(outBuff, nParts * 4 + 4);
+					cip.Write(outBuff, nParts * 4 + 4);
 					cipPos += nParts * 4 + 4;
 					MemFree(outBuff);
 
 					if (isGrid80)
 					{
-						fs->Read(&buff[16], 16);
+						fs.Read(&buff[16], 16);
 						currX = ReadDouble(&buff[16]);
 						currY = ReadDouble(&buff[24]);
 						WriteInt32(&buff[0], Double2Int32(currX));
 						WriteInt32(&buff[4], Double2Int32(currY));
-						cip->Write(buff, 8);
+						cip.Write(buff, 8);
 						cipPos += 8;
 						xMin = currX;
 						xMax = currX;
@@ -539,12 +533,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 						i = 1;
 						while (i < nPoints)
 						{
-							fs->Read(&buff[16], 16);
+							fs.Read(&buff[16], 16);
 							currX = ReadDouble(&buff[16]);
 							currY = ReadDouble(&buff[24]);
 							WriteInt32(&buff[0], Double2Int32(currX));
 							WriteInt32(&buff[4], Double2Int32(currY));
-							cip->Write(buff, 8);
+							cip.Write(buff, 8);
 							cipPos += 8;
 
 							if (currX > xMax) xMax = currX;
@@ -558,12 +552,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 					{
 //						Double lastX;
 //						Double lastY;
-						fs->Read(&buff[16], 16);
+						fs.Read(&buff[16], 16);
 						currX = ReadDouble(&buff[16]);
 						currY = ReadDouble(&buff[24]);
 						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
 						WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
-						cip->Write(buff, 8);
+						cip.Write(buff, 8);
 						cipPos += 8;
 						xMin = currX;
 						xMax = currX;
@@ -576,12 +570,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 						i = 1;
 						while (i < nPoints)
 						{
-							fs->Read(&buff[16], 16);
+							fs.Read(&buff[16], 16);
 							currX = ReadDouble(&buff[16]);
 							currY = ReadDouble(&buff[24]);
 							WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
 							WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
-							cip->Write(buff, 8);
+							cip.Write(buff, 8);
 							cipPos += 8;
 							if (i == nPoints >> 1)
 							{
@@ -698,8 +692,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 
 			WriteInt32(&buff[0], (Int32)blks.GetCount());
 			WriteInt32(&buff[4], blkScale);
-			blk->Write(buff, 8);
-			cib->Write(buff, 8);
+			blk.Write(buff, 8);
+			cib.Write(buff, 8);
 
 			i = 0;
 			j = blks.GetCount();
@@ -709,20 +703,20 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				WriteInt32(&buff[0], (Int32)theBlk->records->GetCount());
 				WriteInt32(&buff[4], theBlk->blockX);
 				WriteInt32(&buff[8], theBlk->blockY);
-				blk->Write(buff, 12);
+				blk.Write(buff, 12);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
 					WriteInt32(&buff[0], theBlk->records->GetItem(k)->recId);
-					blk->Write(buff, 4);
+					blk.Write(buff, 4);
 					k++;
 				}
-				cib->Write(buff, 16);
+				cib.Write(buff, 16);
 				i++;
 			}
 
-			filePos = cib->GetPosition();
+			filePos = cib.GetPosition();
 			Text::StringBuilderUTF16 u16buff;
 
 			i = 0;
@@ -730,15 +724,15 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				cib->SeekFromBeginning(8 + i * 16);
+				cib.SeekFromBeginning(8 + i * 16);
 
 				WriteInt32(&buff[0], theBlk->blockX);
 				WriteInt32(&buff[4], theBlk->blockY);
 				WriteInt32(&buff[8], (Int32)theBlk->records->GetCount());
 				WriteInt32(&buff[12], (Int32)filePos);
-				cib->Write(buff, 16);
+				cib.Write(buff, 16);
 
-				cib->SeekFromBeginning(filePos);
+				cib.SeekFromBeginning(filePos);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
@@ -755,10 +749,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 						u16buff.RemoveChars(u16buff.GetLength() - 127);
 					}
 					buff[4] = (UInt8)(u16buff.GetLength() << 1);
-					cib->Write(buff, 5);
+					cib.Write(buff, 5);
 					if (buff[4] > 0)
 					{
-						cib->Write((const UInt8*)u16buff.ToString(), buff[4]);
+						cib.Write((const UInt8*)u16buff.ToString(), buff[4]);
 					}
 					filePos += (UOSInt)buff[4] + 5;
 					k++;
@@ -800,10 +794,6 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in writing output files"), CSTR("Error"), this);
 		}
-		DEL_CLASS(cip);
-		DEL_CLASS(cix);
-		DEL_CLASS(blk);
-		DEL_CLASS(cib);
 		progress->ProgressEnd();
 	}
 	else if (shpType == 1 || shpType == 11)
@@ -811,17 +801,17 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 		sb.ClearStr();
 		sb.Append(outFilePrefix);
 		sb.AppendC(UTF8STRC(".cip"));
-		NEW_CLASS(cip, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream cip(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sb.RemoveChars(4);
 		sb.AppendC(UTF8STRC(".cix"));
-		NEW_CLASS(cix, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream cix(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sb.RemoveChars(4);
 		sb.AppendC(UTF8STRC(".blk"));
-		NEW_CLASS(blk, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream blk(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sb.RemoveChars(4);
 		sb.AppendC(UTF8STRC(".ciu"));
-		NEW_CLASS(cib, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!cip->IsError() && !cix->IsError() && !blk->IsError() && !cib->IsError())
+		IO::FileStream cib(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!cip.IsError() && !cix.IsError() && !blk.IsError() && !cib.IsError())
 		{
 			sb.ClearStr();
 			sb.Append(sourceFile);
@@ -840,8 +830,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			cipPos = 0;
 			WriteUInt32(&buff[0], nRecords);
 			WriteInt32(&buff[4], 1); //shpType;
-			cip->Write(buff, 8);
-			cix->Write(buff, 4);
+			cip.Write(buff, 8);
+			cix.Write(buff, 4);
 			cipPos += 8;
 			tRec = 0;
 			currRec = 0;
@@ -852,7 +842,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 
 			while (tRec < nRecords)
 			{
-				fs->Read(buff, 12);
+				fs.Read(buff, 12);
 				if ((tRec % 100) == 0)
 				{
 					progress->ProgressUpdate(tRec, nRecords);
@@ -870,7 +860,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				}
 				else
 				{
-					fs->Read(&buff[12], recSize * 2 - 4);
+					fs.Read(&buff[12], recSize * 2 - 4);
 					if (shpType == 11)
 					{
 						currX = ReadDouble(&buff[12]);
@@ -910,19 +900,19 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				{
 					WriteInt32(&buff[0], currRec);
 					WriteUInt32(&buff[4], cipPos);
-					cix->Write(buff, 8);
+					cix.Write(buff, 8);
 
 					WriteInt32(&buff[4], 1);
 					WriteInt32(&buff[8], 0);
 					WriteInt32(&buff[12], 1);
-					cip->Write(buff, 16);
+					cip.Write(buff, 16);
 					cipPos += 16;
 
 					if (isGrid80)
 					{
 						WriteInt32(&buff[0], Double2Int32(currX));
 						WriteInt32(&buff[4], Double2Int32(currY));
-						cip->Write(buff, 8);
+						cip.Write(buff, 8);
 
 						left = Double2Int32(currX) / blkScale;
 						right = 1 + Double2Int32(currX) / blkScale;
@@ -933,7 +923,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 					{
 						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
 						WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
-						cip->Write(buff, 8);
+						cip.Write(buff, 8);
 
 						left = Double2Int32(currX * LATSCALE) / blkScale;
 						right = 1 + Double2Int32(currX * LATSCALE) / blkScale;
@@ -1027,8 +1017,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 
 			WriteInt32(&buff[0], (Int32)blks.GetCount());
 			WriteInt32(&buff[4], blkScale);
-			blk->Write(buff, 8);
-			cib->Write(buff, 8);
+			blk.Write(buff, 8);
+			cib.Write(buff, 8);
 
 			i = 0;
 			j = blks.GetCount();
@@ -1038,20 +1028,20 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 				WriteInt32(&buff[0], (Int32)theBlk->records->GetCount());
 				WriteInt32(&buff[4], theBlk->blockX);
 				WriteInt32(&buff[8], theBlk->blockY);
-				blk->Write(buff, 12);
+				blk.Write(buff, 12);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
 					WriteInt32(&buff[0], theBlk->records->GetItem(k)->recId);
-					blk->Write(buff, 4);
+					blk.Write(buff, 4);
 					k++;
 				}
-				cib->Write(buff, 16);
+				cib.Write(buff, 16);
 				i++;
 			}
 
-			filePos = cib->GetPosition();
+			filePos = cib.GetPosition();
 			Text::StringBuilderUTF16 u16buff;
 
 			i = 0;
@@ -1059,15 +1049,15 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				cib->SeekFromBeginning(8 + i * 16);
+				cib.SeekFromBeginning(8 + i * 16);
 
 				WriteInt32(&buff[0], theBlk->blockX);
 				WriteInt32(&buff[4], theBlk->blockY);
 				WriteInt32(&buff[8], (Int32)theBlk->records->GetCount());
 				WriteInt32(&buff[12], (Int32)filePos);
-				cib->Write(buff, 16);
+				cib.Write(buff, 16);
 
-				cib->SeekFromBeginning(filePos);
+				cib.SeekFromBeginning(filePos);
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
@@ -1084,10 +1074,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 						u16buff.RemoveChars(u16buff.GetLength() - 127);
 					}
 					buff[4] = (UInt8)(u16buff.GetLength() << 1);
-					cib->Write(buff, 5);
+					cib.Write(buff, 5);
 					if (buff[4] > 0)
 					{
-						cib->Write((const UInt8*)u16buff.ToString(), buff[4]);
+						cib.Write((const UInt8*)u16buff.ToString(), buff[4]);
 					}
 					filePos += (UOSInt)buff[4] + 5;
 					k++;
@@ -1128,17 +1118,12 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in writing output files"), CSTR("Error"), this);
 		}
-		DEL_CLASS(cip);
-		DEL_CLASS(cix);
-		DEL_CLASS(blk);
-		DEL_CLASS(cib);
 		progress->ProgressEnd();
 	}
 	else
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Unsupported shape type"), CSTR("Error"), this);
 	}
-	DEL_CLASS(fs);
 	return shpType;
 }
 

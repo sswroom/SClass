@@ -13,7 +13,7 @@ namespace SSWR
 		private:
 			typedef Bool (__stdcall *RequestHandler)(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		private:
-			Data::FastStringMap<RequestHandler> *reqMap;
+			Data::FastStringMap<RequestHandler> reqMap;
 
 			static Bool __stdcall UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 			static Bool __stdcall CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);

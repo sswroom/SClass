@@ -136,7 +136,6 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 
 			if (valid)
 			{
-				IO::FileStream *fs;
 				Data::DateTime dt;
 				UTF8Char *sptrTmp;
 				dt.SetCurrTimeUTC();
@@ -154,17 +153,16 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sptr = Text::StrInt64(sptr, t);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
-				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				if (fs->IsError())
+				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (fs.IsError())
 				{
 					printf("Error in creating file\r\n");
 					valid = false;
 				}
 				else
 				{
-					fs->Write(data, leng);
+					fs.Write(data, leng);
 				}
-				DEL_CLASS(fs);
 			}
 			SDEL_TEXT(platform);
 			SDEL_TEXT(cpu);
@@ -185,7 +183,6 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::CString msg = CSTR_NULL;
-	IO::FileStream *fs;
 	UTF8Char fileName[512];
 	UTF8Char *fileNameEnd;
 	UTF8Char path[512];
@@ -198,13 +195,12 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, fileName, (UOSInt)(fileNameEnd - fileName));
-		NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileSize = (UOSInt)fs->GetLength();
+		IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fileSize = (UOSInt)fs.GetLength();
 		if (fileSize > 0)
 		{
 			UInt8 *fileBuff = MemAlloc(UInt8, fileSize);
-			fs->Read(fileBuff, fileSize);
-			DEL_CLASS(fs);
+			fs.Read(fileBuff, fileSize);
 
 			resp->SetStatusCode(Net::WebStatus::SC_OK);
 			resp->AddDefHeaders(req);
@@ -213,10 +209,6 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			resp->Write(fileBuff, fileSize);
 			MemFree(fileBuff);
 			return true;
-		}
-		else
-		{
-			DEL_CLASS(fs);
 		}
 	}
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -236,7 +228,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			{
 				sptr = IO::Path::GetProcessFileName(path);
 				sptr = IO::Path::AppendPath(path, sptr, CSTR("X86CPUInfo.txt"));
-				NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 
 				sptr = Text::StrInt32(fileName, cpuFamily);
 				*sptr++ = '\t';
@@ -244,10 +236,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				*sptr++ = '\t';
 				sptr = Text::StrInt32(sptr, cpuStepping);
 				*sptr++ = '\t';
-				fs->Write(fileName, (UOSInt)(sptr - fileName));
-				fs->Write(reqData, reqSize);
-				fs->Write((const UInt8*)"\r\n", 2);
-				DEL_CLASS(fs);
+				fs.Write(fileName, (UOSInt)(sptr - fileName));
+				fs.Write(reqData, reqSize);
+				fs.Write((const UInt8*)"\r\n", 2);
 
 				resp->SetStatusCode(Net::WebStatus::SC_OK);
 				resp->AddDefHeaders(req);
@@ -305,11 +296,10 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 					if (IO::Path::GetPathType(CSTRP(path, sptr)) == IO::Path::PathType::Unknown)
 					{
-						NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						if (fileSize == fs->Write(fileBuff, fileSize))
+						IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+						if (fileSize == fs.Write(fileBuff, fileSize))
 						{
 						}
-						DEL_CLASS(fs);
 					}
 				}
 				else
@@ -323,8 +313,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Unknown_"));
 					sptr = Text::StrInt64(sptr, dt.ToTicks());
 
-					NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (fileSize == fs->Write(fileBuff, fileSize))
+					IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (fileSize == fs.Write(fileBuff, fileSize))
 					{
 						msg = CSTR("File uploaded successfully");
 					}
@@ -332,7 +322,6 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					{
 						msg = CSTR("Error in storing file");
 					}
-					DEL_CLASS(fs);
 				}
 			}
 		}
@@ -452,7 +441,7 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq);
+	RequestHandler reqHdlr = this->reqMap.GetC(subReq);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -463,12 +452,10 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRe
 
 SSWR::Benchmark::BenchmarkWebHandler::BenchmarkWebHandler()
 {
-	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
-	this->reqMap->PutC(CSTR("/upload"), UploadReq);
-	this->reqMap->PutC(CSTR("/cpuinfo"), CPUInfoReq);
+	this->reqMap.PutC(CSTR("/upload"), UploadReq);
+	this->reqMap.PutC(CSTR("/cpuinfo"), CPUInfoReq);
 }
 
 SSWR::Benchmark::BenchmarkWebHandler::~BenchmarkWebHandler()
 {
-	DEL_CLASS(this->reqMap);
 }

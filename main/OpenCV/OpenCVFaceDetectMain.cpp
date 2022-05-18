@@ -63,9 +63,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 		}
 		if (csConv)
 		{
-			Media::ImageList *imgList;
 			Media::StaticImage *simg;
-			IO::FileStream *fs;
 			Data::DateTime dt;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
@@ -77,19 +75,16 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispWidth * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispWidth * 4, 0xffff0000);
 				i++;
 			}
-			NEW_CLASS(imgList, Media::ImageList(CSTR("ImageCapture")));
-			imgList->AddImage(simg, 0);
+			Media::ImageList imgList(CSTR("ImageCapture"));
+			imgList.AddImage(simg, 0);
 
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("People_"));
 			dt.SetCurrTime();
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
-			DEL_CLASS(fs);
-
-			DEL_CLASS(imgList);
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			exporter->ExportFile(&fs, CSTRP(sbuff, sptr), &imgList, 0);
 		}		
 	}
 	lastCnt = thisCnt;

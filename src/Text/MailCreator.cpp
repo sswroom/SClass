@@ -379,16 +379,16 @@ Bool Text::MailCreator::SetContentFile(Text::CString filePath)
 	Text::IMIMEObj *obj;
 	OSInt buffSize;
 	UInt8 *buff;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
-		return false;
+		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs.IsError())
+		{
+			return false;
+		}
+		buffSize = (OSInt)fs.GetLength();
+		buff = MemAlloc(UInt8, buffSize);
+		fs.Read(buff, buffSize);
 	}
-	buffSize = (OSInt)fs->GetLength();
-	buff = MemAlloc(UInt8, buffSize);
-	fs->Read(buff, buffSize);
 	obj = ParseContentHTML(buff, buffSize, 65001, filePath);
 	MemFree(buff);
 	if (obj)
