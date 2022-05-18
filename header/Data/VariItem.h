@@ -56,8 +56,13 @@ namespace Data
 			Math::Vector2D *vector;
 			Data::UUID *uuid;
 			struct { const UTF8Char *v; UOSInt leng; } cstr;
+			UInt8 buff[16];
 
 			ItemValue() = default;
+			ItemValue(const ItemValue &v)
+			{
+				MemCopyNO(this->buff, v.buff, 16);
+			}
 			~ItemValue(){};
 		};
 	private:
