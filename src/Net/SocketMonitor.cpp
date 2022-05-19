@@ -9,28 +9,32 @@
 UInt32 __stdcall Net::SocketMonitor::DataThread(void *obj)
 {
 	Net::SocketMonitor::ThreadStat *stat = (Net::SocketMonitor::ThreadStat*)obj;
-	stat->threadRunning = true;
-	stat->me->ctrlEvt->Set();
-
-	UInt8 *buff = MemAlloc(UInt8, 65536);
-	while (!stat->toStop)
 	{
-		UOSInt recvSize;
-		Net::SocketUtil::AddressInfo addr;
-		UInt16 port;
-		Net::SocketFactory::ErrorType et;
-		recvSize = stat->me->sockf->UDPReceive(stat->me->soc, buff, 65536, &addr, &port, &et);
-		Data::DateTime logTime;
-		logTime.SetCurrTimeUTC();
-		if (recvSize > 0)
+		Sync::Event evt(true);
+		stat->evt = &evt;
+		stat->threadRunning = true;
+		stat->me->ctrlEvt->Set();
+
+		UInt8 *buff = MemAlloc(UInt8, 65536);
+		while (!stat->toStop)
 		{
-			if (stat->me->hdlr)
+			UOSInt recvSize;
+			Net::SocketUtil::AddressInfo addr;
+			UInt16 port;
+			Net::SocketFactory::ErrorType et;
+			recvSize = stat->me->sockf->UDPReceive(stat->me->soc, buff, 65536, &addr, &port, &et);
+			Data::DateTime logTime;
+			logTime.SetCurrTimeUTC();
+			if (recvSize > 0)
 			{
-				stat->me->hdlr(stat->me->userData, buff, recvSize);
+				if (stat->me->hdlr)
+				{
+					stat->me->hdlr(stat->me->userData, buff, recvSize);
+				}
 			}
 		}
+		MemFree(buff);
 	}
-	MemFree(buff);
 	stat->threadRunning = false;
 	stat->me->ctrlEvt->Set();
 	return 0;
@@ -58,7 +62,6 @@ Net::SocketMonitor::SocketMonitor(Net::SocketFactory *sockf, Socket *soc, RAWDat
 		{
 			this->threadStats[i].toStop = false;
 			this->threadStats[i].threadRunning = false;
-			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 			this->threadStats[i].me = this;
 			Sync::Thread::Create(DataThread, &this->threadStats[i]);
 		}
@@ -91,6 +94,7 @@ Net::SocketMonitor::~SocketMonitor()
 		while (i-- > 0)
 		{
 			this->threadStats[i].toStop = true;
+			this->threadStats[i].evt->Set();
 		}
 	}
 	if (this->soc)
@@ -99,12 +103,6 @@ Net::SocketMonitor::~SocketMonitor()
 	}
 	if (this->threadStats)
 	{
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			this->threadStats[i].evt->Set();
-		}
-
 		Bool threadRunning = true;
 		while (threadRunning)
 		{

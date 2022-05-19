@@ -210,6 +210,11 @@ Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::Add
 	}
 }
 
+Bool Net::OSSocketFactory::SocketBindRAWIf(Socket *socket, UOSInt ifIndex)
+{
+	return false;
+}
+
 Bool Net::OSSocketFactory::SocketListen(Socket *socket)
 {
 	return listen((SOCKET)socket, 128) != SOCKET_ERROR;

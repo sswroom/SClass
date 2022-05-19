@@ -133,6 +133,7 @@ nodeps:
 @HTTPSTest
 @HTTPThroughputTest
 @LogServer
+@LoRaGWLogger
 @MQTTFailover
 @NetRAWCapture
 @OAuth2Test
@@ -497,6 +498,9 @@ HTTPThroughputTest:
 @ConsoleStartup.o
 LogServer:
 @LogServerMain.o
+@ConsoleStartup.o
+LoRaGWLogger:
+@LoRaGWLoggerMain.o
 @ConsoleStartup.o
 MQTTFailover:
 @MQTTFailoverTest.o
@@ -971,6 +975,7 @@ HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
 HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
 HTTPThroughputTest.o: ../../main/NetTest/HTTPThroughputTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
+LoRaGWLoggerMain.o: ../../main/NetTest/LoRaGWLoggerMain.cpp
 MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
 OAuth2Test.o: ../../main/NetTest/OAuth2Test.cpp
@@ -2694,6 +2699,8 @@ Net/LogClient.h: ../../src/Net/LogClient.cpp
 @LogClient.o
 Net/LogServer.h: ../../src/Net/LogServer.cpp
 @LogServer.o
+Net/LoRaGWMonitor.h: ../../src/Net/LoRaGWMonitor.cpp
+@LoRaGWMonitor.o
 Net/MACInfo.h: ../../src/Net/MACInfo.cpp
 @MACInfo.o
 Net/MACInfoList.h: ../../src/Net/MACInfoList.cpp
@@ -2733,6 +2740,8 @@ Net/PacketAnalyzerBluetooth.h: ../../src/Net/PacketAnalyzerBluetooth.cpp
 @PacketAnalyzerBluetooth.o
 Net/PacketAnalyzerEthernet.h: ../../src/Net/PacketAnalyzerEthernet.cpp
 @PacketAnalyzerEthernet.o
+Net/PacketExtractorEthernet.h: ../../src/Net/PacketExtractorEthernet.cpp
+@PacketExtractorEthernet.o
 Net/PingMonitor.h: ../../src/Net/PingMonitor.cpp
 @PingMonitor.o
 Net/ProxyServer.h: ../../src/Net/ProxyServer.cpp
@@ -4768,6 +4777,7 @@ IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
 LDAPClient.o: ../../src/Net/LDAPClient.cpp
 LogClient.o: ../../src/Net/LogClient.cpp
 LogServer.o: ../../src/Net/LogServer.cpp
+LoRaGWMonitor.o: ../../src/Net/LoRaGWMonitor.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MIBReader.o: ../../src/Net/MIBReader.cpp
@@ -4787,6 +4797,7 @@ NTPServer.o: ../../src/Net/NTPServer.cpp
 PacketAnalyzer.o: ../../src/Net/PacketAnalyzer.cpp
 PacketAnalyzerBluetooth.o: ../../src/Net/PacketAnalyzerBluetooth.cpp
 PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
+PacketExtractorEthernet.o: ../../src/Net/PacketExtractorEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp
 POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 ProxyServer.o: ../../src/Net/ProxyServer.cpp
