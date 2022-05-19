@@ -7,20 +7,18 @@
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OpenFile", false));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OpenFile", false);
 	me->txtName->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	me->core->GetParserList()->PrepareSelector(dlg, me->t);
-	if (dlg->ShowDialog(me->GetHandle()))
+	me->core->GetParserList()->PrepareSelector(&dlg, me->t);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtName->SetText(dlg->GetFileName()->ToCString());
+		me->txtName->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)

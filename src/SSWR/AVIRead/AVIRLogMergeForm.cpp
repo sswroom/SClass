@@ -11,60 +11,54 @@
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogMergeFile1", false));
-	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
-	dlg->SetAllowMultiSel(false);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogMergeFile1", false);
+	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg.SetAllowMultiSel(false);
 	me->txtFile1->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtFile1->SetText(dlg->GetFileName()->ToCString());
+		me->txtFile1->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogMergeFile2", false));
-	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
-	dlg->SetAllowMultiSel(false);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogMergeFile2", false);
+	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg.SetAllowMultiSel(false);
 	me->txtFile2->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtFile2->SetText(dlg->GetFileName()->ToCString());
+		me->txtFile2->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogMergeForm *me = (SSWR::AVIRead::AVIRLogMergeForm *)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogMergeOFile", true));
-	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogMergeOFile", true);
+	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
 	me->txtOFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtOFile->SetText(dlg->GetFileName()->ToCString());
+		me->txtOFile->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)

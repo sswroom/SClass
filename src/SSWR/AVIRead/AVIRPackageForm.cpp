@@ -684,15 +684,14 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i = selIndices.GetCount();
 			if (i > 0)
 			{
-				UI::FolderDialog *dlg;
-				NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"PackageCopyTo"));
-				if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
+				UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"PackageCopyTo");
+				if (dlg.ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 				{
 					UOSInt j;
 					j = 0;
 					while (j < i)
 					{
-						if (!packFile->CopyTo(selIndices.GetItem(j), dlg->GetFolder()->ToCString(), false))
+						if (!packFile->CopyTo(selIndices.GetItem(j), dlg.GetFolder()->ToCString(), false))
 						{
 							UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 							break;
@@ -700,22 +699,20 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 						j++;
 					}
 				}
-				DEL_CLASS(dlg);
 			}
 		}
 		break;
 	case MNU_COPYALLTO:
 		if (packFile->GetCount() > 0)
 		{
-			UI::FolderDialog *dlg;
-			NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"PackageCopyAllTo"));
-			if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
+			UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"PackageCopyAllTo");
+			if (dlg.ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 			{
 				UOSInt i = 0;
 				UOSInt j = packFile->GetCount();
 				while (i < j)
 				{
-					if (!packFile->CopyTo(i, dlg->GetFolder()->ToCString(), false))
+					if (!packFile->CopyTo(i, dlg.GetFolder()->ToCString(), false))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 						break;
@@ -723,7 +720,6 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					i++;
 				}
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_SAVEAS:

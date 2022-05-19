@@ -151,14 +151,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false));
-	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
-	dlg->SetAllowMultiSel(false);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
+	dlg.AddFilter(CSTR("*.crt"), CSTR("Cert file"));
+	dlg.SetAllowMultiSel(false);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+		NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
 		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		DEL_CLASS(fd);
 		if (asn1 == 0)
@@ -181,24 +180,22 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		Text::String *s = dlg->GetFileName();
+		Text::String *s = dlg.GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false));
-	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
-	dlg->SetAllowMultiSel(false);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
+	dlg.AddFilter(CSTR("*.key"), CSTR("Key file"));
+	dlg.SetAllowMultiSel(false);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+		NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
 		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		DEL_CLASS(fd);
 		if (asn1 == 0)
@@ -214,11 +211,10 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		Text::String *s = dlg->GetFileName();
+		Text::String *s = dlg.GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userObj)

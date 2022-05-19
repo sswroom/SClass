@@ -8,16 +8,14 @@
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false));
-	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter(CSTR("*.xml"), CSTR("XML File"));
-	dlg->AddFilter(CSTR("*.html"), CSTR("HTML File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"XMLWalk", false);
+	dlg.SetAllowMultiSel(false);
+	dlg.AddFilter(CSTR("*.xml"), CSTR("XML File"));
+	dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->ToCString());
+		me->LoadFile(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt nFiles)

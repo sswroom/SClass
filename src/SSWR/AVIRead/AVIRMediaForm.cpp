@@ -211,11 +211,9 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 	}
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 	{
-		SSWR::AVIRead::AVIRAudioViewerForm *frm;
 		Media::IAudioSource *audSrc = (Media::IAudioSource*)mediaSrc;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRAudioViewerForm(0, me->ui, me->core, audSrc));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);
+		SSWR::AVIRead::AVIRAudioViewerForm frm(0, me->ui, me->core, audSrc);
+		frm.ShowDialog(me);
 	}
 }
 

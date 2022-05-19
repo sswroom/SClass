@@ -93,17 +93,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, Math
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
-		UtilUI::ColorDialog *dlg;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		NEW_CLASS(dlg, UtilUI::ColorDialog(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr()));
-		dlg->SetColor32(me->fillStyle);
-		if (dlg->ShowDialog(me) == UI::GUIForm::DR_OK)
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.SetColor32(me->fillStyle);
+		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->fillStyle = dlg->GetColor32();
+			me->fillStyle = dlg.GetColor32();
 			me->pbFillStyle->SetBGColor(me->colorConv->ConvRGB8(me->fillStyle));
 			me->pbFillStyle->Redraw();
 		}
-		DEL_CLASS(dlg);
 	}
 	return false;
 }
@@ -121,14 +119,13 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(void *userObj, Math::C
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
-	SSWR::AVIRead::AVIRGISLineForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineForm(0, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRGISLineForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Math::Size2D<UOSInt> sz;
 		me->lineType = 1;
-		me->lineThick = frm->GetLineThick();
-		me->lineColor = frm->GetLineColor();
+		me->lineThick = frm.GetLineThick();
+		me->lineColor = frm.GetLineColor();
 
 		if (me->imgLine)
 		{
@@ -143,19 +140,17 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(void *userObj
 		me->pbLineStyle->SetImage(me->imgLine);
 		me->eng->DeleteImage(dimg);
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
-	SSWR::AVIRead::AVIRGISLineStyleForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineStyleForm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK || frm->IsChanged())
+	SSWR::AVIRead::AVIRGISLineStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
 		Math::Size2D<UOSInt> sz;
 		me->lineType = 0;
-		me->lineStyle = frm->GetLineStyle();
+		me->lineStyle = frm.GetLineStyle();
 
 		if (me->imgLine)
 		{
@@ -170,7 +165,6 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(void *userObj)
 		me->pbLineStyle->SetImage(me->imgLine);
 		me->eng->DeleteImage(dimg);
 	}
-	DEL_CLASS(frm);
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
@@ -178,15 +172,13 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, Math
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
-		SSWR::AVIRead::AVIRGISImageForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRGISImageForm(0, me->ui, me->core, me->env, me->imgIndex));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::AVIRead::AVIRGISImageForm frm(0, me->ui, me->core, me->env, me->imgIndex);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			UInt32 imgDurMS;
-			me->imgIndex = frm->GetImgIndex();
+			me->imgIndex = frm.GetImgIndex();
 			me->pbIcon->SetImage(me->env->GetImage(me->imgIndex, &imgDurMS));
 		}
-		DEL_CLASS(frm);
 	}
 	return false;
 }
@@ -204,16 +196,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(void *userObj, M
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
-	SSWR::AVIRead::AVIRGISFontForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontForm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRGISFontForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Math::Size2D<UOSInt> sz;
 		me->fontType = Map::MapEnv::FontType::LayerStyle;
 		SDEL_STRING(me->fontName);
-		me->fontName = frm->GetFontName()->Clone();
-		me->fontSizePt = frm->GetFontSizePt();
-		me->fontColor = frm->GetFontColor();
+		me->fontName = frm.GetFontName()->Clone();
+		me->fontSizePt = frm.GetFontSizePt();
+		me->fontColor = frm.GetFontColor();
 
 		if (me->imgFont)
 		{
@@ -228,18 +219,16 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 		me->pbFontStyle->SetImage(me->imgFont);
 		me->eng->DeleteImage(dimg);
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
-	SSWR::AVIRead::AVIRGISFontStyleForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontStyleForm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK || frm->IsChanged())
+	SSWR::AVIRead::AVIRGISFontStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
 		Math::Size2D<UOSInt> sz;
-		me->fontStyle = frm->GetFontStyle();
+		me->fontStyle = frm.GetFontStyle();
 		me->fontType = Map::MapEnv::FontType::GlobalStyle;
 
 		if (me->imgFont)
@@ -255,7 +244,6 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 		me->pbFontStyle->SetImage(me->imgFont);
 		me->eng->DeleteImage(dimg);
 	}
-	DEL_CLASS(frm);
 }
 
 SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapEnv::GroupItem *group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)

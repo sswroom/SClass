@@ -12,35 +12,31 @@
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
-	SSWR::AVIRead::AVIRMySQLConnForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRMySQLConnForm(0, me->GetUI(), me->core));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRMySQLConnForm frm(0, me->GetUI(), me->core);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->dbCache);
 		SDEL_CLASS(me->dbModel);
 		SDEL_CLASS(me->db);
 		SDEL_CLASS(me->dbConn);
-		me->dbConn = frm->GetDBConn();
+		me->dbConn = frm.GetDBConn();
 		me->InitDB();
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
-	SSWR::AVIRead::AVIRODBCDSNForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRODBCDSNForm(0, me->GetUI(), me->core));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRODBCDSNForm frm(0, me->GetUI(), me->core);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->dbCache);
 		SDEL_CLASS(me->dbModel);
 		SDEL_CLASS(me->db);
 		SDEL_CLASS(me->dbConn);
-		me->dbConn = frm->GetDBConn();
+		me->dbConn = frm.GetDBConn();
 		me->InitDB();
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)

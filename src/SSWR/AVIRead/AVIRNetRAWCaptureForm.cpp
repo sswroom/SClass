@@ -26,20 +26,18 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *user
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"NetRAWCapture", true));
-	Net::RAWCapture::AddFilters(dlg);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
+	Net::RAWCapture::AddFilters(&dlg);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg->GetFileName()->ToCString());
+		me->txtFileName->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userObj)

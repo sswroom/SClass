@@ -552,57 +552,45 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_ABOUT:
 		{
-			SSWR::AVIRead::AVIRAboutForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRAboutForm(0, this->ui, this->core));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRAboutForm dlg(0, this->ui, this->core);
+			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_OPEN_ODBC:
 		{
-			SSWR::AVIRead::AVIRODBCStrForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRODBCStrForm(0, this->ui, this->core));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRODBCStrForm dlg(0, this->ui, this->core);
+			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_SET_CODEPAGE:
 		{
-			SSWR::AVIRead::AVIRCodePageForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRCodePageForm(0, this->ui, this->core));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRCodePageForm dlg(0, this->ui, this->core);
+			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_SET_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRColorSettingForm(0, this->ui, this->core, this->GetHMonitor()));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRColorSettingForm dlg(0, this->ui, this->core, this->GetHMonitor());
+			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_GEN_IMAGE:
 		{
-			SSWR::AVIRead::AVIRGenImageForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRGenImageForm(0, this->ui, this->core));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRGenImageForm dlg(0, this->ui, this->core);
+			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_CAP_DEV:
 		{
-			SSWR::AVIRead::AVIRCaptureDevForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRCaptureDevForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Media::MediaFile *mf;
-				sptr = dlg->capture->GetSourceName(sbuff);
+				sptr = dlg.capture->GetSourceName(sbuff);
 				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-				mf->AddSource(dlg->capture, 0);
+				mf->AddSource(dlg.capture, 0);
 				this->core->OpenObject(mf);
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_MTK_GPS:
@@ -639,41 +627,35 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GSM_MODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select GSM Modem"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			frm.SetText(CSTR("Select GSM Modem"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenGSMModem(frm->stm);
+				this->core->OpenGSMModem(frm.stm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, true));
-			frm->SetText(CSTR("Select GPS Tracker"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, true);
+			frm.SetText(CSTR("Select GPS Tracker"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
-				NEW_CLASS(gps, IO::GPSNMEA(frm->stm, true));
+				NEW_CLASS(gps, IO::GPSNMEA(frm.stm, true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->core->ShowForm(gpsFrm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_WIA_DEV:
 		{
-			SSWR::AVIRead::AVIRWIADevForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRWIADevForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRWIADevForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_OSM_TILE:
@@ -751,59 +733,50 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_ESRI_MAP:
 		{
-			SSWR::AVIRead::AVIRESRIMapForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRESRIMapForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRESRIMapForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
 				Map::ESRI::ESRITileMap *map;
 				UInt8 crcVal[4];
-				const UTF8Char *url = frm->GetSelectedURL();
-				crc.Calc((UInt8*)url, Text::StrCharCnt(url) * sizeof(UTF8Char));
+				Text::String *url = frm.GetSelectedURL();
+				crc.Calc((UInt8*)url->v, url->leng * sizeof(UTF8Char));
 				crc.GetValue(crcVal);
 				sptr = IO::Path::GetProcessFileName(sbuff);
 				sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				*sptr = 0;
-				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, sbuff, this->core->GetSocketFactory(), 0));
+				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, CSTRP(sbuff, sptr), this->core->GetSocketFactory(), 0));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 /*	case MNU_TEXT_VIEWER:
 		{
-			UtilUI::TextViewerForm *frm;
-			NEW_CLASS(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetCurrCodePage()));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			UtilUI::TextViewerForm frm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetCurrCodePage());
+			frm.ShowDialog(this);
 		}
 		break;*/
 	case MNU_NET_INFO:
 		{
-			SSWR::AVIRead::AVIRNetInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRNetInfoForm(0, this->ui, this->core));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRNetInfoForm frm(0, this->ui, this->core);
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_SUDOKU_SOLVER:
 		{
-			SSWR::AVIRead::AVIRSudokuForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSudokuForm(0, this->ui, this->core));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRSudokuForm frm(0, this->ui, this->core);
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_OPEN_FILE:
 		{
-			SSWR::AVIRead::AVIROpenFileForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIROpenFileForm frm(0, this->ui, this->core, IO::ParserType::Unknown);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = frm->GetFileName();
+				Text::String *fname = frm.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
@@ -841,13 +814,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					}
 				}
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_PLAYLIST:
 		{
 			Media::Playlist *playlist;
-			NEW_CLASS(playlist, Media::Playlist((const UTF8Char*)"Untitled", this->core->GetParserList()));
+			NEW_CLASS(playlist, Media::Playlist(CSTR("Untitled"), this->core->GetParserList()));
 			this->core->OpenObject(playlist);
 		}
 		break;
@@ -881,10 +853,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SET_AUDIO:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSetAudioForm(0, this->ui, this->core));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRSetAudioForm frm(0, this->ui, this->core);
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_FILE_ANALYSE:
@@ -903,10 +873,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SET_DPI:
 		{
-			SSWR::AVIRead::AVIRSetDPIForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSetDPIForm(0, this->ui, this->core));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRSetDPIForm frm(0, this->ui, this->core);
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_DNSCLIENT:
@@ -1207,25 +1175,21 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_WMI:
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
 		{
-			SSWR::AVIRead::AVIRWMIForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRWMIForm(0, this->ui, this->core));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRWMIForm frm(0, this->ui, this->core);
+			frm.ShowDialog(this);
 		}
 #endif
 		break;
 	case MNU_SNB_DONGLE:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select SNB Dongle"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			frm.SetText(CSTR("Select SNB Dongle"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRSNBDongleForm *snbFrm;
-				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, this->ui, this->core, frm->stm));
+				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, this->ui, this->core, frm.stm));
 				this->core->ShowForm(snbFrm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_CHINESE:
@@ -1272,30 +1236,27 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OSM_LOCAL_DIR:
 		{
-			UI::FolderDialog *dlg;
-			NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"OSMLocal"));
-			if (dlg->ShowDialog(this->GetHandle()))
+			UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"OSMLocal");
+			if (dlg.ShowDialog(this->GetHandle()))
 			{
 				IO::DirectoryPackage *pkg;
-				NEW_CLASS(pkg, IO::DirectoryPackage(dlg->GetFolder()));
+				NEW_CLASS(pkg, IO::DirectoryPackage(dlg.GetFolder()));
 				NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_OSM_LOCAL_FILE:
 		{
-			UI::FileDialog *dlg;
 			Parser::ParserList *parsers = this->core->GetParserList();
-			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OSMLocalFile", false));
-			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
-			if (dlg->ShowDialog(this->GetHandle()))
+			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
+			parsers->PrepareSelector(&dlg, IO::ParserType::PackageFile);
+			if (dlg.ShowDialog(this->GetHandle()))
 			{
 				IO::StmData::FileData *fd;
 				IO::PackageFile *pkg;
-				NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+				NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
 				pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				DEL_CLASS(fd);
 				if (pkg)
@@ -1305,7 +1266,6 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					this->core->OpenObject(mapLyr);
 				}
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_TCPSPDCLI:
@@ -1369,44 +1329,38 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_IOPINTEST:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText(CSTR("Select IO Pin"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelIOPinForm frm(0, this->ui, this->core);
+			frm.SetText(CSTR("Select IO Pin"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRIOPinTestForm *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRIOPinTestForm(0, this->ui, this->core, frm->ioPin));
+				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRIOPinTestForm(0, this->ui, this->core, frm.ioPin));
 				this->core->ShowForm(testFrm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_DHT22:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText(CSTR("Select DHT22 IO Pin"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelIOPinForm frm(0, this->ui, this->core);
+			frm.SetText(CSTR("Select DHT22 IO Pin"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRDHT22Form *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDHT22Form(0, this->ui, this->core, frm->ioPin));
+				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDHT22Form(0, this->ui, this->core, frm.ioPin));
 				this->core->ShowForm(testFrm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_DS18B20:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText(CSTR("Select DS18B20 IO Pin"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelIOPinForm frm(0, this->ui, this->core);
+			frm.SetText(CSTR("Select DS18B20 IO Pin"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRDS18B20Form *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDS18B20Form(0, this->ui, this->core, frm->ioPin));
+				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDS18B20Form(0, this->ui, this->core, frm.ioPin));
 				this->core->ShowForm(testFrm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_TIMEDCAPTURE:
@@ -1476,21 +1430,19 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_VOICEMODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select Voice Modem"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			frm.SetText(CSTR("Select Voice Modem"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRVoiceModemForm *innerFrm;
 				IO::Device::RockwellModemController *modem;
 				IO::ATCommandChannel *channel;
-				NEW_CLASS(channel, IO::ATCommandChannel(frm->stm, false));
+				NEW_CLASS(channel, IO::ATCommandChannel(frm.stm, false));
 				NEW_CLASS(modem, IO::Device::RockwellModemController(channel, false));
 
-				NEW_CLASS(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, frm->stm));
+				NEW_CLASS(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, frm.stm));
 				this->core->ShowForm(innerFrm);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_PERFORMANCELOG:

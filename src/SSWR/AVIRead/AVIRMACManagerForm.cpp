@@ -46,18 +46,19 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 	if (log == 0)
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
-	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
+	Text::CString name;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, {entry->name, entry->nameLen}));
+		name = {entry->name, entry->nameLen};
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, CSTR_NULL));
+		name = CSTR_NULL;
 	}
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		Text::String *name = frm->GetNameNew();
+		Text::String *name = frm.GetNameNew();
 		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItem(i);
@@ -76,8 +77,6 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 			i++;
 		}
 	}
-	DEL_CLASS(frm);
-
 }
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(void *userObj)
@@ -146,18 +145,19 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	}
 	UInt64 macInt = ReadMUInt64(buff);
 	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(macInt);
-	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
+	Text::CString name;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], {entry->name, entry->nameLen}));
+		name = {entry->name, entry->nameLen};
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], CSTR_NULL));
+		name = CSTR_NULL;
 	}
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, &buff[2], name);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		Text::String *name = frm->GetNameNew();
+		Text::String *name = frm.GetNameNew();
 		i = me->macList.SetEntry(macInt, name->ToCString());
 		name->Release();
 		me->UpdateStatus();
@@ -177,24 +177,22 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 			i++;
 		}
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false));
-	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false);
+	dlg.SetAllowMultiSel(false);
+	dlg.AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[3];
 		UOSInt i;
 		UOSInt j;
 		{
-			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(&fs);
 			while (true)
 			{
@@ -278,8 +276,6 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 		}
 		me->UpdateStatus();
 	}
-	DEL_CLASS(dlg);
-	
 }
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)

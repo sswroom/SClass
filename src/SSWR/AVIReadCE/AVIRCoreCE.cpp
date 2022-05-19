@@ -186,36 +186,32 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	Data::ArrayList<IO::FileExporter*> *exp;
-	NEW_CLASS(exp, Data::ArrayList<IO::FileExporter*>());
-	this->exporters->GetSupportedExporters(exp, pobj);
-	if (exp->GetCount() == 0)
+	Data::ArrayList<IO::FileExporter*> exp;
+	this->exporters.GetSupportedExporters(&exp, pobj);
+	if (exp.GetCount() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
 	}
 	else
 	{
-		Data::ArrayList<IO::FileExporter*> *exp2;
+		Data::ArrayList<IO::FileExporter*> exp2;
 		IO::FileExporter *fileExp;
 		UTF8Char sbuff1[256];
 		UTF8Char *sptr;
 		UTF8Char sbuff2[256];
-		Text::StringBuilderUTF8 *sb;
-		NEW_CLASS(exp2, Data::ArrayList<IO::FileExporter*>());
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
+		Text::StringBuilderUTF8 sb;
 
-		UI::FileDialog *sfd;
-		NEW_CLASS(sfd, UI::FileDialog(L"SSWR", L"AVIRead", dialogName, true));
+		UI::FileDialog sfd(L"SSWR", L"AVIRead", dialogName, true);
 		i = 0;
-		j = exp->GetCount();
+		j = exp.GetCount();
 		while (i < j)
 		{
-			fileExp = exp->GetItem(i);
+			fileExp = exp.GetItem(i);
 			k = 0;
 			while (fileExp->GetOutputName(k, sbuff1, sbuff2))
 			{
-				sfd->AddFilter(sbuff2, sbuff1);
-				exp2->Add(fileExp);
+				sfd.AddFilter(sbuff2, sbuff1);
+				exp2.Add(fileExp);
 				k++;
 			}
 			i++;
@@ -227,18 +223,17 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 				sbuff1[i] = 0;
 				sptr = &sbuff1[i];
 			}
-			sfd->SetFileName(CSTRP(sbuff1, sptr));
+			sfd.SetFileName(CSTRP(sbuff1, sptr));
 		}
-		if (sfd->ShowDialog(ownerForm->GetHandle()))
+		if (sfd.ShowDialog(ownerForm->GetHandle()))
 		{
 			IO::FileStream *fs;
 			IO::FileExporter::SupportType suppType;
-			fileExp = exp2->GetItem(sfd->GetFilterIndex());
+			fileExp = exp2.GetItem(sfd.GetFilterIndex());
 			suppType = fileExp->IsObjectSupported(pobj);
 			if (fileExp->GetParamCnt() > 0)
 			{
-/*				AVIRExportParamForm *frm;
-				void *param;
+/*				void *param;
 				param = fileExp->CreateParam(pobj);
 				if (param == 0)
 				{
@@ -246,20 +241,20 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 				}
 				else
 				{
-					NEW_CLASS(frm, AVIRExportParamForm(ui->GetHInst(), 0, this->ui, fileExp, param));
-					if (frm->ShowDialog(ownerForm) == UI::GUIForm::DR_OK)
+					AVIRExportParamForm frm(ui->GetHInst(), 0, this->ui, fileExp, param);
+					if (frm.ShowDialog(ownerForm) == UI::GUIForm::DR_OK)
 					{
 						if (suppType == IO::FileExporter::SupportType::PathOnly)
 						{
-							if (!fileExp->ExportFile(0, sfd->GetFileName(), pobj, param))
+							if (!fileExp->ExportFile(0, sfd.GetFileName(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(L"Error in saving file", L"Save Data");
 							}
 						}
 						else
 						{
-							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-							if (!fileExp->ExportFile(fs, sfd->GetFileName(), pobj, param))
+							NEW_CLASS(fs, IO::FileStream(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+							if (!fileExp->ExportFile(fs, sfd.GetFileName(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(L"Error in saving file", L"Save Data");
 							}
@@ -267,22 +262,21 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 						}
 					}
 					fileExp->DeleteParam(param);
-					DEL_CLASS(frm);
 				}*/
 			}
 			else
 			{
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
-					if (!fileExp->ExportFile(0, sfd->GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(0, sfd.GetFileName()->ToCString(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 				}
 				else
 				{
-					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, 0))
+					NEW_CLASS(fs, IO::FileStream(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					if (!fileExp->ExportFile(fs, sfd.GetFileName()->ToCString(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
@@ -290,12 +284,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 				}
 			}
 		}
-
-		DEL_CLASS(sfd);
-		DEL_CLASS(sb);
-		DEL_CLASS(exp2);
 	}
-	DEL_CLASS(exp);
 }
 
 void SSWR::AVIReadCE::AVIRCoreCE::OpenGSMModem(IO::Stream *modemPort)
@@ -314,13 +303,11 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenGSMModem(IO::Stream *modemPort)
 Media::Printer *SSWR::AVIReadCE::AVIRCoreCE::SelectPrinter(UI::GUIForm *frm)
 {
 	Media::Printer *printer = 0;
-/*	SSWR::AVIRead::AVIRSelPrinterForm *selFrm;
-	NEW_CLASS(selFrm, SSWR::AVIRead::AVIRSelPrinterForm(this->ui->GetHInst(), 0, this->ui, this));
-	if (selFrm->ShowDialog(frm) == UI::GUIForm::DR_OK)
+/*	SSWR::AVIRead::AVIRSelPrinterForm selFrm(this->ui->GetHInst(), 0, this->ui, this);
+	if (selFrm.ShowDialog(frm) == UI::GUIForm::DR_OK)
 	{
-		printer = selFrm->printer;
-	}
-	DEL_CLASS(selFrm);*/
+		printer = selFrm.printer;
+	}*/
 	return printer;
 }
 

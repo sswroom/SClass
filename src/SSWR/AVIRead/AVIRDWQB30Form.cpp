@@ -20,11 +20,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 	else
 	{
 		IO::Stream *stm = 0;
-		SSWR::AVIRead::AVIRSelStreamForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, me->ui, me->core, false));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::AVIRead::AVIRSelStreamForm frm(0, me->ui, me->core, false);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			stm = frm->stm;
+			stm = frm.stm;
 			UOSInt i = me->cboDevType->GetSelectedIndex();
 			if (i == 0)
 			{
@@ -36,7 +35,6 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 			}
 			me->scanner->HandleCodeScanned(OnCodeScanned, me);
 		}
-		DEL_CLASS(frm);
 
 		if (me->scanner)
 		{

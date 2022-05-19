@@ -17,23 +17,21 @@
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(void *userObj)
 {
 /*	SSWR::AVIRead::AVIRBTScanLogForm *me = (SSWR::AVIRead::AVIRBTScanLogForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BTScanLogFile", false));
-	dlg->SetAllowMultiSel(true);
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BTScanLogFile", false);
+	dlg.SetAllowMultiSel(true);
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
-		UOSInt j = dlg->GetFileNameCount();
+		UOSInt j = dlg.GetFileNameCount();
 		while (i < j)
 		{
-			me->btLog->LoadFile(dlg->GetFileNames(i));
+			me->btLog->LoadFile(dlg.GetFileNames(i));
 			i++;
 		}
 		me->LogFileStore();
 		me->LogUIUpdate();
-	}
-	DEL_CLASS(dlg);*/
+	}*/
 }
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(void *userObj)
@@ -55,10 +53,10 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(void *userO
 	const IO::BTScanLog::DevEntry *log = (const IO::BTScanLog::DevEntry*)me->lvContent->GetItem(index);
 	if (log == 0)
 		return;
-	SSWR::AVIRead::AVIRBTScanLogDevForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRBTScanLogDevForm(0, me->ui, me->core, log));
-	frm->ShowDialog(me);
-	DEL_CLASS(frm);
+	{
+		SSWR::AVIRead::AVIRBTScanLogDevForm frm(0, me->ui, me->core, log);
+		frm.ShowDialog(me);
+	}
 	
 /*	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;

@@ -307,10 +307,8 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MON_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRColorSettingForm(0, this->ui, this->core, this->GetHMonitor()));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRColorSettingForm frm(0, this->ui, this->core, this->GetHMonitor());
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_SWITCH_FS:
@@ -328,15 +326,13 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_IMAGE_INFO:
 		if (this->imgList) 
 		{
-			SSWR::AVIRead::AVIRStringMsgForm *frm;
 			Text::StringBuilderUTF8 sbImg;
 			Text::StringBuilderUTF8 sbTitle;
 			this->imgList->ToString(&sbImg);
 			sbTitle.AppendC(UTF8STRC("Image info for "));
 			sbTitle.Append(this->imgList->GetSourceNameObj());
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStringMsgForm(0, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString()));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRStringMsgForm frm(0, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString());
+			frm.ShowDialog(this);
 		}
 		break;
 	}

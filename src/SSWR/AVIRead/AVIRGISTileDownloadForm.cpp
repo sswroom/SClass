@@ -114,31 +114,27 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnAreaClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
-	UI::FolderDialog *dlg;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
-		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"GISTileDown"));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"GISTileDown");
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesDir(dlg->GetFolder()->v);
+			me->SaveTilesDir(dlg.GetFolder()->v);
 		}
-		DEL_CLASS(dlg);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISTileDownloadForm *me = (SSWR::AVIRead::AVIRGISTileDownloadForm*)userObj;
-	UI::FileDialog *dlg;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISTileDownFile", true));
-		dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISTileDownFile", true);
+		dlg.AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesFile(dlg->GetFileName()->ToCString());
+			me->SaveTilesFile(dlg.GetFileName()->ToCString());
 		}
-		DEL_CLASS(dlg);
 	}
 }
 

@@ -77,10 +77,8 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 		}
 		funcOfst = Text::StrHex2Int32C(sbuff);
 
-/*		SSWR::AVIRead::AVIRFunctionInfoForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRFunctionInfoForm(me->hInst, 0, me->ui, me->proc, me->symbol, funcOfst));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);*/
+/*		SSWR::AVIRead::AVIRFunctionInfoForm frm(me->hInst, 0, me->ui, me->proc, me->symbol, funcOfst);
+		frm.ShowDialog(me);*/
 	}
 }
 

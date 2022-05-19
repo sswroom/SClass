@@ -19,24 +19,22 @@
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WiFiLoganagerFile", false));
-	dlg->SetAllowMultiSel(true);
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WiFiLoganagerFile", false);
+	dlg.SetAllowMultiSel(true);
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
-		UOSInt j = dlg->GetFileNameCount();
+		UOSInt j = dlg.GetFileNameCount();
 		while (i < j)
 		{
-			const UTF8Char *fileName = dlg->GetFileNames(i);
+			const UTF8Char *fileName = dlg.GetFileNames(i);
 			me->wifiLogFile->LoadFile({fileName, Text::StrCharCnt(fileName)});
 			i++;
 		}
 		me->LogFileStore();
 		me->LogUIUpdate();
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(void *userObj)
@@ -73,25 +71,25 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 	else
 	{
 		const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
-		SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
+		Text::CString name;
 		if (entry)
 		{
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, {entry->name, entry->nameLen}));
+			name = {entry->name, entry->nameLen};
 		}
 		else
 		{
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, CSTR_NULL));
+			name = CSTR_NULL;
 		}
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			Text::String *name = frm->GetNameNew();
+			Text::String *name = frm.GetNameNew();
 			UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
 			name->Release();
 			entry = me->macList->GetItem(i);
 			me->UpdateStatus();
 			me->EntryUpdated(entry);
 		}
-		DEL_CLASS(frm);
 	}
 }
 

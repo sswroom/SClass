@@ -266,10 +266,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(void *user
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem();
 	if (agent)
 	{
-		SSWR::AVIRead::AVIRSNMPWalkForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRSNMPWalkForm(0, me->ui, me->core, &agent->addr, agent->community));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);
+		SSWR::AVIRead::AVIRSNMPWalkForm frm(0, me->ui, me->core, &agent->addr, agent->community);
+		frm.ShowDialog(me);
 	}
 }
 

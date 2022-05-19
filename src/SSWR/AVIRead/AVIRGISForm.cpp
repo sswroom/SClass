@@ -953,14 +953,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LAYER_PROP:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
-			AVIRGISPropForm *frm;
-			NEW_CLASS(frm, AVIRGISPropForm(0, this->ui, this->core, this->env, ind->group, ind->index));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			AVIRGISPropForm frm(0, this->ui, this->core, this->env, ind->group, ind->index);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->mapCtrl->UpdateMap();
 				this->mapCtrl->Redraw();
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_LAYER_PATH:
@@ -1002,18 +1000,16 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Data::ArrayList<Map::IMapDrawLayer *> *layers;
 			NEW_CLASS(layers, Data::ArrayList<Map::IMapDrawLayer*>());
 			this->env->GetLayersOfType(layers, lyr->layer->GetLayerType());
-			AVIRGISCombineForm *frm;
-			NEW_CLASS(frm, AVIRGISCombineForm(0, this->ui, this->core, layers));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			AVIRGISCombineForm frm(0, this->ui, this->core, layers);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::IMapDrawLayer *newLyr;
-				this->env->AddLayer(0, newLyr = frm->GetCombinedLayer(), true);
+				this->env->AddLayer(0, newLyr = frm.GetCombinedLayer(), true);
 				newLyr->AddUpdatedHandler(OnMapLayerUpdated, this);
 				this->mapTree->UpdateTree();
 				this->mapCtrl->UpdateMap();
 				this->mapCtrl->Redraw();
 			}
-			DEL_CLASS(frm);
 			DEL_CLASS(layers);
 		}
 		break;
@@ -1058,34 +1054,30 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LAYER_ASSIGN_CSYS:
 		{
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
-			AVIRGISCSysForm *frm;
-			NEW_CLASS(frm, AVIRGISCSysForm(0, this->ui, this->core, lyr->GetCoordinateSystem()));
-			frm->SetText(CSTR("Assign Coordinate System"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem());
+			frm.SetText(CSTR("Assign Coordinate System"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				lyr->SetCoordinateSystem(frm->GetCSys());
+				lyr->SetCoordinateSystem(frm.GetCSys());
 				this->mapCtrl->UpdateMap();
 				this->mapCtrl->Redraw();
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_LAYER_CONV_CSYS:
 		{
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
-			AVIRGISCSysForm *frm;
 			if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_VECTOR_LAYER)
 			{
 				Map::VectorLayer *vec = (Map::VectorLayer*)lyr;
-				NEW_CLASS(frm, AVIRGISCSysForm(0, this->ui, this->core, lyr->GetCoordinateSystem()));
-				frm->SetText(CSTR("Convert Coordinate System"));
-				if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem());
+				frm.SetText(CSTR("Convert Coordinate System"));
+				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 				{
-					vec->ConvCoordinateSystem(frm->GetCSys());
+					vec->ConvCoordinateSystem(frm.GetCSys());
 					this->mapCtrl->UpdateMap();
 					this->mapCtrl->Redraw();
 				}
-				DEL_CLASS(frm);
 			}
 		}
 		break;
@@ -1120,13 +1112,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
 					if (osm->HasSPackageFile())
 					{
-						UI::FileDialog *dlg;
-						NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISImportTiles", false));
-						this->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::PackageFile);
-						if (dlg->ShowDialog(this->GetHandle()))
+						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISImportTiles", false);
+						this->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::PackageFile);
+						if (dlg.ShowDialog(this->GetHandle()))
 						{
 							IO::StmData::FileData *fd;
-							NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+							NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
 							IO::PackageFile *pkg = (IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile);
 							DEL_CLASS(fd);
 							if (pkg)
@@ -1135,7 +1126,6 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 								DEL_CLASS(pkg);
 							}
 						}
-						DEL_CLASS(dlg);
 					}
 				}
 			}
@@ -1153,14 +1143,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
 					if (osm->HasSPackageFile())
 					{
-						UI::FileDialog *dlg;
-						NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISOptimizeFile", true));
-						dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
-						if (dlg->ShowDialog(this->GetHandle()))
+						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISOptimizeFile", true);
+						dlg.AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
+						if (dlg.ShowDialog(this->GetHandle()))
 						{
-							osm->OptimizeToFile(dlg->GetFileName()->ToCString());
+							osm->OptimizeToFile(dlg.GetFileName()->ToCString());
 						}
-						DEL_CLASS(dlg);
 					}
 				}
 			}
@@ -1259,15 +1247,14 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, true));
-			frm->SetText(CSTR("Select GPS Tracker"));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, true);
+			frm.SetText(CSTR("Select GPS Tracker"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
 				Map::GPSTrack *trk;
-				NEW_CLASS(gps, IO::GPSNMEA(frm->stm, true));
+				NEW_CLASS(gps, IO::GPSNMEA(frm.stm, true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASS(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
@@ -1275,21 +1262,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_MTKGPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select MTK GPS Tracker"));
-			frm->SetInitSerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort());
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			frm.SetText(CSTR("Select MTK GPS Tracker"));
+			frm.SetInitSerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort());
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
 				Map::GPSTrack *trk;
-				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm->stm, true));
+				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm.stm, true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
@@ -1297,30 +1282,26 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_GOOGLE_POLYLINE:
 		{
-			SSWR::AVIRead::AVIRGooglePolylineForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGooglePolylineForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRGooglePolylineForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::VectorLayer *lyr;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
-				lyr->AddVector(frm->GetPolyline(), (const UTF8Char**)0);
+				lyr->AddVector(frm.GetPolyline(), (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_OPEN_FILE:
 		{
-			SSWR::AVIRead::AVIROpenFileForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIROpenFileForm frm(0, this->ui, this->core, IO::ParserType::Unknown);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = frm->GetFileName();
+				Text::String *fname = frm.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
@@ -1341,7 +1322,6 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					this->OpenURL(fname->ToCString(), CSTR_NULL);
 				}
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_HKO_RADAR_64:
@@ -1433,27 +1413,23 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_HKTD_TRAFFIC:
 		{
-			SSWR::AVIRead::AVIRGISHKTrafficForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGISHKTrafficForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRGISHKTrafficForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (frm->GetMapLayer())
+				if (frm.GetMapLayer())
 				{
-					this->AddLayer(frm->GetMapLayer());
+					this->AddLayer(frm.GetMapLayer());
 				}
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_HKTD_TONNES_SIGN:
 		{
-			SSWR::AVIRead::AVIRGISHKTDTonnesForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGISHKTDTonnesForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRGISHKTDTonnesForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->AddLayer(frm->GetMapLayer());
+				this->AddLayer(frm.GetMapLayer());
 			}
-			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_RANDOMLOC:

@@ -221,10 +221,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(void *user
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
 	UInt32 threadId = (UInt32)(UOSInt)me->lvDetThread->GetItem(index);
-	SSWR::AVIRead::AVIRThreadInfoForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRThreadInfoForm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId));
-	frm->ShowDialog(me);
-	DEL_CLASS(frm);
+	SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId);
+	frm.ShowDialog(me);
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapRefClicked(void *userObj)

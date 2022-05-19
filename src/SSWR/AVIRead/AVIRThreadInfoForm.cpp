@@ -18,8 +18,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
 	UOSInt i = me->lbMyStack->GetSelectedIndex();
-	const UTF8Char *s = me->stacks->GetItem(i);
-	const UTF8Char *sMem = me->stacksMem->GetItem(i);
+	const UTF8Char *s = me->stacks.GetItem(i);
+	const UTF8Char *sMem = me->stacksMem.GetItem(i);
 	UOSInt slen;
 	UTF8Char *sbuff;
 	Text::PString sline[2];
@@ -117,10 +117,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 		}
 		funcOfst = Text::StrHex2Int64C(sbuff);
 
-		SSWR::AVIRead::AVIRFunctionInfoForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRFunctionInfoForm(0, me->ui, me->core, me->proc, me->symbol, funcOfst));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);
+		SSWR::AVIRead::AVIRFunctionInfoForm frm(0, me->ui, me->core, me->proc, me->symbol, funcOfst);
+		frm.ShowDialog(me);
 	}
 }
 
@@ -130,8 +128,6 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->SetText(CSTR("Thread Info"));
 
 	this->core = core;
-	NEW_CLASS(this->stacks, Data::ArrayList<const UTF8Char *>());
-	NEW_CLASS(this->stacksMem, Data::ArrayList<const UTF8Char *>());
 	this->proc = proc;
 	this->symbol = symbol;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -405,11 +401,11 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
-				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));
+				this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 				sb.ClearStr();
 				ret = dasm->Disasm64(&sbWriter, symbol, &rip, &rsp, &rbp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
-				this->stacks->Add(Text::StrCopyNew(sb.ToString()));
+				this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 				if (!ret)
 					break;
 				if (++callLev > 50)
@@ -483,14 +479,12 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRThreadInfoForm::~AVIRThreadInfoForm()
 {
 	UOSInt i;
-	i = this->stacks->GetCount();
+	i = this->stacks.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->stacks->GetItem(i));
-		Text::StrDelNew(this->stacksMem->GetItem(i));
+		Text::StrDelNew(this->stacks.GetItem(i));
+		Text::StrDelNew(this->stacksMem.GetItem(i));
 	}
-	DEL_CLASS(this->stacks);
-	DEL_CLASS(this->stacksMem);
 }
 
 void SSWR::AVIRead::AVIRThreadInfoForm::OnMonitorChanged()

@@ -199,15 +199,13 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
-	UI::FontDialog *dlg;
-	NEW_CLASS(dlg, UI::FontDialog(me->fontName, me->fontHeightPt, me->fontIsBold, false));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FontDialog dlg(me->fontName, me->fontHeightPt, me->fontIsBold, false);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		Text::String *fontName = dlg->GetFontName();
-		me->SetFont(fontName->v, fontName->leng, dlg->GetFontSizePt(), dlg->IsBold());
+		Text::String *fontName = dlg.GetFontName();
+		me->SetFont(fontName->v, fontName->leng, dlg.GetFontSizePt(), dlg.IsBold());
 		me->hexView->UpdateFont();
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)

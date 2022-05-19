@@ -694,9 +694,8 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 
 				this->pbImage->SetImage(prevImg, true);
 
-				SSWR::AVIRead::AVIRImageColorForm *frm;
-				NEW_CLASS(frm, SSWR::AVIRead::AVIRImageColorForm(0, this->ui, this->core, buffImg, prevImg, this->pbImage));
-				UI::GUIForm::DialogResult dr = frm->ShowDialog(this);
+				SSWR::AVIRead::AVIRImageColorForm frm(0, this->ui, this->core, buffImg, prevImg, this->pbImage);
+				UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
 				
 				if (dr == UI::GUIForm::DR_OK)
 				{
@@ -709,7 +708,6 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					DEL_CLASS(buffImg);
 					this->pbImage->SetImage(img, true);
 				}
-				DEL_CLASS(frm);
 				this->currImg = img;
 				this->UpdateInfo();
 			}
@@ -734,9 +732,8 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 
 					this->pbImage->SetImage(prevImg, true);
 
-					SSWR::AVIRead::AVIRImageGRForm *frm;
-					NEW_CLASS(frm, SSWR::AVIRead::AVIRImageGRForm(0, this->ui, this->core, buffImg, prevImg, this->pbImage));
-					UI::GUIForm::DialogResult dr = frm->ShowDialog(this);
+					SSWR::AVIRead::AVIRImageGRForm frm(0, this->ui, this->core, buffImg, prevImg, this->pbImage);
+					UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
 					
 					if (dr == UI::GUIForm::DR_OK)
 					{
@@ -751,7 +748,6 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 						DEL_CLASS(buffImg);
 						this->pbImage->SetImage(img, true);
 					}
-					DEL_CLASS(frm);
 					this->currImg = img;
 					this->UpdateInfo();
 				}
@@ -772,23 +768,18 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				
 				if (valid)
 				{
-					SSWR::AVIRead::AVIRImageResizeForm *frm;
-					NEW_CLASS(frm, SSWR::AVIRead::AVIRImageResizeForm(0, this->ui, this->core, img));
-					UI::GUIForm::DialogResult dr = frm->ShowDialog(this);
+					SSWR::AVIRead::AVIRImageResizeForm frm(0, this->ui, this->core, img);
+					UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
 					
 					if (dr == UI::GUIForm::DR_OK)
 					{
-						img = frm->GetNewImage();
+						img = frm.GetNewImage();
 						this->pbImage->SetImage(0, false);
 						this->imgList->ReplaceImage((UOSInt)selInd, img);
 						this->pbImage->SetImage(img, false);
 						this->currImg = img;
 						this->UpdateInfo();
 					}
-					else
-					{
-					}
-					DEL_CLASS(frm);
 				}
 			}
 		}

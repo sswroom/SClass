@@ -5,18 +5,16 @@
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvCurrFilterForm *me = (SSWR::SHPConv::SHPConvCurrFilterForm*)userObj;
-	SSWR::SHPConv::SHPConvAddFilterForm *frm;
-	NEW_CLASS(frm, SSWR::SHPConv::SHPConvAddFilterForm(0, me->ui, me->dbf, me->deng));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::SHPConv::SHPConvAddFilterForm frm(0, me->ui, me->dbf, me->deng);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		MapFilter *filter = frm->GetFilter();
+		MapFilter *filter = frm.GetFilter();
 		me->filters->Add(filter);
 		sptr = filter->ToString(sbuff);
 		me->lbFilters->AddItem(CSTRP(sbuff, sptr), filter);
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(void *userObj)

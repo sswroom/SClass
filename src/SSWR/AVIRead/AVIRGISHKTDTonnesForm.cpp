@@ -12,40 +12,36 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 {
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *dlg;
 	me->txtRoadRoute->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	dlg->SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
-	if (dlg->ShowDialog(me->GetHandle()))
+	dlg.SetAllowMultiSel(false);
+	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::MapLayer);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadRoute->SetText(dlg->GetFileName()->ToCString());
+		me->txtRoadRoute->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *dlg;
 	me->txtVehicleRes->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	dlg->SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
-	if (dlg->ShowDialog(me->GetHandle()))
+	dlg.SetAllowMultiSel(false);
+	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::MapLayer);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtVehicleRes->SetText(dlg->GetFileName()->ToCString());
+		me->txtVehicleRes->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)

@@ -286,18 +286,16 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, U
 
 		if (dev)
 		{
-			SSWR::AVIRead::AVIRSNBHandlerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSNBHandlerForm(0, me->ui, me->core, dev->handType));
-			if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSNBHandlerForm frm(0, me->ui, me->core, dev->handType);
+			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 			{
-				dev->handType = frm->GetHandleType();
+				dev->handType = frm.GetHandleType();
 				me->devMut.LockWrite();
 				me->devHandlerMap.Put(devId, (Int32)dev->handType);
 				me->devMut.UnlockWrite();
 				me->snb->SetDevHandleType(dev->devId, dev->handType);
 				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			}
-			DEL_CLASS(frm);
 	//		me->snb->SendSetReportTime(devId, 3, true);
 		}
 	}

@@ -31,20 +31,18 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
-	UtilUI::ColorDialog *dlg;
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		NEW_CLASS(dlg, UtilUI::ColorDialog(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr()));
-		dlg->SetColor32(me->currColor);
-		if (dlg->ShowDialog(me) == UI::GUIForm::DR_OK)
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.SetColor32(me->currColor);
+		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->currColor = dlg->GetColor32();
+			me->currColor = dlg.GetColor32();
 			me->pbFontColor->SetBGColor(me->colorConv->ConvRGB8(me->currColor));
 			me->pbFontColor->Redraw();
 			me->UpdateFontPreview();
 		}
-		DEL_CLASS(dlg);
 	}
 	return false;
 }
@@ -59,20 +57,18 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(void *userO
 Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
-	UtilUI::ColorDialog *dlg;
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		NEW_CLASS(dlg, UtilUI::ColorDialog(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr()));
-		dlg->SetColor32(me->currBuffColor);
-		if (dlg->ShowDialog(me) == UI::GUIForm::DR_OK)
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.SetColor32(me->currBuffColor);
+		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->currBuffColor = dlg->GetColor32();
+			me->currBuffColor = dlg.GetColor32();
 			me->pbBufferColor->SetBGColor(me->colorConv->ConvRGB8(me->currBuffColor));
 			me->pbBufferColor->Redraw();
 			me->UpdateFontPreview();
 		}
-		DEL_CLASS(dlg);
 	}
 	return false;
 }
