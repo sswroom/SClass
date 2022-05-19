@@ -3432,6 +3432,8 @@ SSWR/AVIRead/AVIRLogServerForm.h: ../../src/SSWR/AVIRead/AVIRLogServerForm.cpp
 @AVIRLogServerForm.o
 SSWR/AVIRead/AVIRLoraGWSimForm.h: ../../src/SSWR/AVIRead/AVIRLoraGWSimForm.cpp
 @AVIRLoraGWSimForm.o
+SSWR/AVIRead/AVIRLoRaJSONForm.h: ../../src/SSWR/AVIRead/AVIRLoRaJSONForm.cpp
+@AVIRLoRaJSONForm.o
 SSWR/AVIRead/AVIRLUTForm.h: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 @AVIRLUTForm.o
 SSWR/AVIRead/AVIRMACGenForm.h: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
@@ -5140,6 +5142,7 @@ AVIRLogFileForm.o: ../../src/SSWR/AVIRead/AVIRLogFileForm.cpp
 AVIRLogMergeForm.o: ../../src/SSWR/AVIRead/AVIRLogMergeForm.cpp
 AVIRLogServerForm.o: ../../src/SSWR/AVIRead/AVIRLogServerForm.cpp
 AVIRLoraGWSimForm.o: ../../src/SSWR/AVIRead/AVIRLoraGWSimForm.cpp
+AVIRLoRaJSONForm.o: ../../src/SSWR/AVIRead/AVIRLoRaJSONForm.cpp
 AVIRLUTForm.o: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp

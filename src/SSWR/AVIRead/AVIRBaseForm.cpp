@@ -110,11 +110,12 @@
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
 #include "SSWR/AVIRead/AVIRLDAPExplorerForm.h"
 #include "SSWR/AVIRead/AVIRLineCounterForm.h"
-#include "SSWR/AVIRead/AVIRLoraGWSimForm.h"
 #include "SSWR/AVIRead/AVIRLogBackupForm.h"
 #include "SSWR/AVIRead/AVIRLogExtractForm.h"
 #include "SSWR/AVIRead/AVIRLogMergeForm.h"
 #include "SSWR/AVIRead/AVIRLogServerForm.h"
+#include "SSWR/AVIRead/AVIRLoraGWSimForm.h"
+#include "SSWR/AVIRead/AVIRLoRaJSONForm.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "SSWR/AVIRead/AVIRMACManagerForm.h"
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
@@ -422,7 +423,8 @@ typedef enum
 	MNU_ANPR,
 	MNU_OCR,
 	MNU_POSTGRESQL_CONN,
-	MNU_LORA_GW_SIM
+	MNU_LORA_GW_SIM,
+	MNU_LORA_JSON
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -666,6 +668,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("NetBIOS Scanner"), MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
 	mnu2->AddItem(CSTR("GW Simulator"), MNU_LORA_GW_SIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("ACME Client"), MNU_ACME_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SSDP Client"), MNU_SSDP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RSS Reader"), MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2421,6 +2424,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRLoraGWSimForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRLoraGWSimForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_LORA_JSON:
+		{
+			SSWR::AVIRead::AVIRLoRaJSONForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRLoRaJSONForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
