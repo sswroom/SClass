@@ -31,12 +31,12 @@ namespace Net
 		UInt32 firstIP;
 		UInt32 devCount;
 		UInt32 gateway;
-		Data::ArrayList<UInt32> *dnsList;
+		Data::ArrayList<UInt32> dnsList;
 		UInt32 ipLeaseTime;
 
-		Sync::Mutex *devMut;
+		Sync::Mutex devMut;
 		UInt8 *devUsed;
-		Data::UInt64Map<DeviceStatus*> *devMap;
+		Data::UInt64Map<DeviceStatus*> devMap;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:

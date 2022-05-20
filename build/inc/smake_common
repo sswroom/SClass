@@ -2699,8 +2699,12 @@ Net/LogClient.h: ../../src/Net/LogClient.cpp
 @LogClient.o
 Net/LogServer.h: ../../src/Net/LogServer.cpp
 @LogServer.o
+Net/LoRaGateway.h: ../../src/Net/LoRaGateway.cpp
+@LoRaGateway.o
 Net/LoRaGWMonitor.h: ../../src/Net/LoRaGWMonitor.cpp
 @LoRaGWMonitor.o
+Net/LoRaGWUtil.h: ../../src/Net/LoRaGWUtil.cpp
+@LoRaGWUtil.o
 Net/MACInfo.h: ../../src/Net/MACInfo.cpp
 @MACInfo.o
 Net/MACInfoList.h: ../../src/Net/MACInfoList.cpp
@@ -4779,7 +4783,9 @@ IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
 LDAPClient.o: ../../src/Net/LDAPClient.cpp
 LogClient.o: ../../src/Net/LogClient.cpp
 LogServer.o: ../../src/Net/LogServer.cpp
+LoRaGateway.o: ../../src/Net/LoRaGateway.cpp
 LoRaGWMonitor.o: ../../src/Net/LoRaGWMonitor.cpp
+LoRaGWUtil.o: ../../src/Net/LoRaGWUtil.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MIBReader.o: ../../src/Net/MIBReader.cpp
