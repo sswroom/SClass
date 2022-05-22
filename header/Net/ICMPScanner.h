@@ -19,8 +19,8 @@ namespace Net
 
 	private:
 		Net::SocketFactory *sockf;
-		Sync::Mutex *resultMut;
-		Data::UInt32Map<ScanResult*> *results;
+		Sync::Mutex resultMut;
+		Data::UInt32Map<ScanResult*> results;
 		Manage::HiResClock *clk;
 		Socket *soc;
 		Bool threadRunning;

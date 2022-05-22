@@ -312,6 +312,11 @@ Bool IO::Device::SIM7000SocketFactory::SocketBind(Socket *socket, const Net::Soc
 	return false;
 }
 
+Bool IO::Device::SIM7000SocketFactory::SocketBindRAWIf(Socket *socket, UOSInt ifIndex)
+{
+	return false;
+}
+
 Bool IO::Device::SIM7000SocketFactory::SocketListen(Socket *socket)
 {
 	return false;

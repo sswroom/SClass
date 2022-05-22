@@ -43,7 +43,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 			pack->fileOfst = ofst;
 			pack->packSize = sz;
 			pack->packType = *(Int32*)&buff[4];
-			this->packs->Add(pack);
+			this->packs.Add(pack);
 			
 			if (this->maxLev < lev)
 			{
@@ -72,13 +72,13 @@ UInt32 __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(void *userObj)
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -108,7 +108,6 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->maxLev = 0;
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::QTFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 8, buff);
 	if (ReadInt32(&buff[4]) != *(Int32*)"ftyp" && ReadInt32(&buff[4]) != *(Int32*)"moov")
 	{
@@ -138,8 +137,7 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::QTFileAnalyse::GetFormatName()
@@ -149,14 +147,14 @@ Text::CString IO::FileAnalyse::QTFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 buff[5];
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -178,7 +176,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -932,7 +930,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

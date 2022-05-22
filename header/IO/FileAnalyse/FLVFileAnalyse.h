@@ -21,7 +21,7 @@ namespace IO
 			} FLVTag;
 		private:
 			IO::IStreamData *fd;
-			Data::SyncArrayList<FLVTag*> *tags;
+			Data::SyncArrayList<FLVTag*> tags;
 			UOSInt hdrSize;
 
 			Bool pauseParsing;

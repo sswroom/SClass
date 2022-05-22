@@ -21,7 +21,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::SyncArrayList<PackInfo*> *packs;
+			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
 			Bool threadRunning;

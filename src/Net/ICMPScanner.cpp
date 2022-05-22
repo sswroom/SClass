@@ -66,8 +66,8 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(void *userObj)
 				result->mac[3] = 0;
 				result->mac[4] = 0;
 				result->mac[5] = 0;
-				Sync::MutexUsage mutUsage(status->me->resultMut);
-				status->me->results->Put(Net::SocketUtil::IPv4ToSortable(result->ip), result);
+				Sync::MutexUsage mutUsage(&status->me->resultMut);
+				status->me->results.Put(Net::SocketUtil::IPv4ToSortable(result->ip), result);
 				mutUsage.EndUse();
 			}
 		}
@@ -114,8 +114,8 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(void *userObj)
 
 				if (ipData[0] == 0 && ipDataSize >= 8)
 				{
-					Sync::MutexUsage mutUsage(me->resultMut);
-					result = me->results->Get(ReadMUInt32(&readBuff[12]));
+					Sync::MutexUsage mutUsage(&me->resultMut);
+					result = me->results.Get(ReadMUInt32(&readBuff[12]));
 					if (result == 0)
 					{
 						result = MemAlloc(ScanResult, 1);
@@ -127,7 +127,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(void *userObj)
 						result->mac[3] = 0;
 						result->mac[4] = 0;
 						result->mac[5] = 0;
-						me->results->Put(ReadMUInt32(&readBuff[12]), result);
+						me->results.Put(ReadMUInt32(&readBuff[12]), result);
 					}
 					mutUsage.EndUse();
 				}
@@ -157,7 +157,7 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 		ipAddr = arp->GetIPAddress();
 		if (arp->GetARPType() != Net::ARPInfo::ARPT_INVALID && arp->GetPhysicalAddr(mac) == 6)
 		{
-			result = this->results->Get(Net::SocketUtil::IPv4ToSortable(ipAddr));
+			result = this->results.Get(Net::SocketUtil::IPv4ToSortable(ipAddr));
 			if (result)
 			{
 				MemCopyNO(result->mac, mac, 6);
@@ -186,7 +186,7 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 			{
 				if (conn->GetPhysicalAddress(mac, 6) == 6)
 				{
-					result = this->results->Get(Net::SocketUtil::IPv4ToSortable(ipAddr));
+					result = this->results.Get(Net::SocketUtil::IPv4ToSortable(ipAddr));
 					if (result)
 					{
 						MemCopyNO(result->mac, mac, 6);
@@ -203,15 +203,11 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 Net::ICMPScanner::ICMPScanner(Net::SocketFactory *sockf)
 {
 	this->sockf = sockf;
-	NEW_CLASS(this->resultMut, Sync::Mutex());
-	NEW_CLASS(this->results, Data::UInt32Map<ScanResult*>());
 }
 
 Net::ICMPScanner::~ICMPScanner()
 {
 	this->ClearResults();
-	DEL_CLASS(this->results);
-	DEL_CLASS(this->resultMut);
 }
 
 Bool Net::ICMPScanner::Scan(UInt32 ip)
@@ -327,12 +323,12 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 
 Data::ArrayList<Net::ICMPScanner::ScanResult*> *Net::ICMPScanner::GetResults()
 {
-	return this->results->GetValues();
+	return this->results.GetValues();
 }
 
 void Net::ICMPScanner::ClearResults()
 {
-	Data::ArrayList<ScanResult*> *resultList = this->results->GetValues();
+	Data::ArrayList<ScanResult*> *resultList = this->results.GetValues();
 	ScanResult *result;
 	UOSInt i = resultList->GetCount();
 	while (i-- > 0)
@@ -340,5 +336,5 @@ void Net::ICMPScanner::ClearResults()
 		result = resultList->GetItem(i);
 		MemFree(result);
 	}
-	this->results->Clear();
+	this->results.Clear();
 }

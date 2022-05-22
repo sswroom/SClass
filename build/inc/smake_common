@@ -1782,6 +1782,8 @@ IO/FileAnalyse/IFileAnalyse.h: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 @IFileAnalyse.o
 IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 @JPGFileAnalyse.o
+IO/FileAnalyse/JMVL01FileAnalyse.h: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
+@JMVL01FileAnalyse.o
 IO/FileAnalyse/MDBFileAnalyse.h: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 @MDBFileAnalyse.o
 IO/FileAnalyse/MPEGFileAnalyse.h: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
@@ -4374,6 +4376,7 @@ FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
 FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
 IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
+JMVL01FileAnalyse.o: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
 MDBFileAnalyse.o: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
 NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp

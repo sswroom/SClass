@@ -2,6 +2,9 @@
 #define _SM_IO_ACTIVESTREAMREADER
 #include "IO/Stream.h"
 
+#define ACTIVESTREAMREADER_BUFFCNT 2
+
+
 namespace IO
 {
 	class ActiveStreamReader
@@ -32,9 +35,9 @@ namespace IO
 		BottleNeckType *bnt;
 		Bool reading;
 
-		ReadBuffer *buffs;
-		Sync::Event *fullEvt;
-		Sync::Event *emptyEvt;
+		ReadBuffer buffs[ACTIVESTREAMREADER_BUFFCNT];
+		Sync::Event fullEvt;
+		Sync::Event emptyEvt;
 		void *userData;
 
 		static UInt32 __stdcall ReadThread(void *obj);

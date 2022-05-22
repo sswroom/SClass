@@ -22,7 +22,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::SyncArrayList<PackInfo*> *packs;
+			Data::SyncArrayList<PackInfo*> packs;
 			UInt8 *imageBuff;
 			UOSInt imageSize;
 

@@ -125,7 +125,7 @@ UInt32 __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(void *userObj)
 			block->linkType = linkTypeList->GetItem(ifId);
 		}
 
-		me->blockList->Add(block);
+		me->blockList.Add(block);
 		ofst += thisSize;
 	}
 	DEL_CLASS(linkTypeList);
@@ -143,7 +143,6 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->isBE = false;
-	NEW_CLASS(this->blockList, Data::SyncArrayList<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo*>());
 	this->packetBuff = MemAlloc(UInt8, 65536);
 	if (fd->GetRealData(0, 16, buff) != 16)
 	{
@@ -187,8 +186,7 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->blockList, MemFree);
-	DEL_CLASS(this->blockList);
+	LIST_FREE_FUNC(&this->blockList, MemFree);
 	MemFree(this->packetBuff);
 }
 
@@ -199,17 +197,17 @@ Text::CString IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 {
-	return this->blockList->GetCount();
+	return this->blockList.GetCount();
 }
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
-	if (index >= this->blockList->GetCount())
+	if (index >= this->blockList.GetCount())
 	{
 		return false;
 	}
-	block = this->blockList->GetItem(index);
+	block = this->blockList.GetItem(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendU64(block->ofst);
 	sb->AppendC(UTF8STRC(", size="));
@@ -296,11 +294,11 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
-	if (index >= this->blockList->GetCount())
+	if (index >= this->blockList.GetCount())
 	{
 		return false;
 	}
-	block = this->blockList->GetItem(index);
+	block = this->blockList.GetItem(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(block->ofst);
@@ -845,13 +843,13 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->blockList->GetCount() - 1;
+	OSInt j = (OSInt)this->blockList.GetCount() - 1;
 	OSInt k;
 	BlockInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->blockList->GetItem((UOSInt)k);
+		pack = this->blockList.GetItem((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -874,11 +872,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
-	if (index >= this->blockList->GetCount())
+	if (index >= this->blockList.GetCount())
 	{
 		return 0;
 	}
-	block = this->blockList->GetItem(index);
+	block = this->blockList.GetItem(index);
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(block->ofst, block->blockLength));
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	if (this->isBE)

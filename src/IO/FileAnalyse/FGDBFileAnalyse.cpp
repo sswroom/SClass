@@ -28,7 +28,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	tag->ofst = 0;
 	tag->size = 40;
 	tag->tagType = TagType::Header;
-	me->tags->Add(tag);
+	me->tags.Add(tag);
 
 	me->fd->GetRealData(40, 4, tagHdr);
 	lastSize = ReadUInt32(tagHdr);
@@ -36,7 +36,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	tag->ofst = 40;
 	tag->size = lastSize + 4;
 	tag->tagType = TagType::Field;
-	me->tags->Add(tag);
+	me->tags.Add(tag);
 
 	UInt8 *fieldBuff = MemAlloc(UInt8, tag->size);
 	me->fd->GetRealData(40, tag->size, fieldBuff);
@@ -65,7 +65,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 		tag->ofst = ofst;
 		tag->size = (UInt32)rowSize + 4;
 		tag->tagType = tagType;
-		me->tags->Add(tag);
+		me->tags.Add(tag);
 		ofst += (UInt32)rowSize + 4;
 	}
 	
@@ -82,7 +82,6 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->tableInfo = 0;
-	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::FGDBFileAnalyse::TagInfo*>());
 	fd->GetRealData(0, 40, buff);
 	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
 	{
@@ -113,8 +112,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 		this->tableInfo = 0;
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->tags, MemFree);
-	DEL_CLASS(this->tags);
+	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
 Text::CString IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
@@ -124,12 +122,12 @@ Text::CString IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
 {
-	return this->tags->GetCount();
+	return this->tags.GetCount();
 }
 
 Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
-	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return false;
 	sb->AppendU64(tag->ofst);
@@ -143,13 +141,13 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
 	TagInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags->GetItem((UOSInt)k);
+		pack = this->tags.GetItem((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -172,7 +170,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UInt8 *tagData;
-	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
 	

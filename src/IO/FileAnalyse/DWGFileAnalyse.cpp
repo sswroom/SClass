@@ -46,7 +46,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 		pack->fileOfst = 0;
 		pack->packSize = 25 + 9 * sectionCnt + 2 + 16;
 		pack->packType = PackType::FileHeaderV1;
-		me->packs->Add(pack);
+		me->packs.Add(pack);
 		if (sectionCnt <= 6)
 		{
 			UInt32 secOfst;
@@ -83,7 +83,7 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 						pack->packType = PackType::Unknown;
 						break;
 					}
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				i++;
 				ofst += 9;
@@ -97,11 +97,11 @@ UInt32 __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(void *userObj)
 		pack->fileOfst = imgAddr;
 		pack->packSize = imgSize + 20 + 16;
 		pack->packType = PackType::PreviewImage;
-		me->packs->Add(pack);
+		me->packs.Add(pack);
 
 		DWGFileAnalyseComparator comparator;
 		Sync::MutexUsage mutUsage;
-		Data::Sort::ArtificialQuickSort::Sort(me->packs->GetArrayList(&mutUsage), &comparator);
+		Data::Sort::ArtificialQuickSort::Sort(me->packs.GetArrayList(&mutUsage), &comparator);
 		mutUsage.EndUse();
 	}
 	me->threadRunning = false;
@@ -117,7 +117,6 @@ IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->fileVer = 0;
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::DWGFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 6, buff);
 	if (ReadNInt32(buff) != *(Int32*)"AC10")
 	{
@@ -161,8 +160,7 @@ IO::FileAnalyse::DWGFileAnalyse::~DWGFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::DWGFileAnalyse::GetFormatName()
@@ -172,13 +170,13 @@ Text::CString IO::FileAnalyse::DWGFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::DWGFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -192,13 +190,13 @@ Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -222,7 +220,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::DWGFileAnalyse::GetFrameDetail(UO
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

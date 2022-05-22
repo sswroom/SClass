@@ -30,7 +30,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 		pack->packSize = (UOSInt)fileSize;
 		pack->packType = PT_FILE;
 		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize);
-		this->packs->Add(pack);
+		this->packs.Add(pack);
 		ofst += 26 + (UOSInt)fileNameSize;
 	}
 	MemFree(buff);
@@ -60,7 +60,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 	pack->packSize = (UOSInt)dirSize;
 	pack->packType = PT_V2DIRECTORY;
 	pack->fileName = 0;
-	this->packs->Add(pack);
+	this->packs.Add(pack);
 }
 
 UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
@@ -100,7 +100,7 @@ UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
 	pack->packSize = endOfst;
 	pack->packType = PT_HEADER;
 	pack->fileName = 0;
-	me->packs->Add(pack);
+	me->packs.Add(pack);
 	if (dirType == PT_V1DIRECTORY)
 	{
 		me->ParseV1Directory(lastOfst, me->fd->GetDataSize() - lastOfst);
@@ -110,7 +110,7 @@ UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
 		pack->packSize = (UOSInt)(me->fd->GetDataSize() - lastOfst);
 		pack->packType = PT_V1DIRECTORY;
 		pack->fileName = 0;
-		me->packs->Add(pack);
+		me->packs.Add(pack);
 	}
 	else if (dirType == PT_V2DIRECTORY)
 	{
@@ -135,9 +135,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->extMap, Data::Int32Map<UInt8 *>());
 
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::SPKFileAnalyse::PackInfo *>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 'S' || buff[1] != 'm' || buff[2] != 'p' || buff[3] != 'f')
 	{
@@ -162,11 +160,7 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, FreePackInfo);
-	Data::ArrayList<UInt8 *> *extList = this->extMap->GetValues();
-	LIST_FREE_FUNC(extList, MemFree);
-	DEL_CLASS(this->extMap);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, FreePackInfo);
 }
 
 Text::CString IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
@@ -176,13 +170,13 @@ Text::CString IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -216,13 +210,13 @@ Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -246,7 +240,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

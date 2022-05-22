@@ -36,7 +36,7 @@ UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
 			pack->fileOfst = readOfst;
 			pack->packSize = 4096;
 			pack->packType = ReadUInt16(readBuff);
-			me->packs->Add(pack);
+			me->packs.Add(pack);
 			readOfst += 4096;
 		}
 	}
@@ -52,7 +52,6 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::SyncArrayList<PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadInt32(buff) != 0x00000100)
 	{
@@ -90,8 +89,7 @@ IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
@@ -101,13 +99,13 @@ Text::CString IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -142,7 +140,7 @@ Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	UOSInt index = (UOSInt)(ofst >> 12);
-	if (index >= this->packs->GetCount())
+	if (index >= this->packs.GetCount())
 	{
 		return INVALID_INDEX;
 	}
@@ -159,7 +157,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 	UTF8Char *sptr2;
 	UInt8 packBuff[4096];
 	UInt8 decBuff[128];
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

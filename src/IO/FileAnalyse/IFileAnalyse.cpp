@@ -7,6 +7,7 @@
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "IO/FileAnalyse/JPGFileAnalyse.h"
+#include "IO/FileAnalyse/JMVL01FileAnalyse.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
@@ -112,6 +113,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	else if (buff[0] == 'A' && buff[1] == 'C' && buff[2] == '1' && buff[3] == '0')
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::DWGFileAnalyse(fd));
+	}
+	else if (buffSize >= 22 && buff[0] == 0x78 && buff[1] == 0x78 && buff[2] == 0x11 && buff[3] == 0x01 && buff[20] == 13 && buff[21] == 10)
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::JMVL01FileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())

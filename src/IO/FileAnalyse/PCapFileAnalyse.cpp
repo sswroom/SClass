@@ -35,9 +35,9 @@ UInt32 __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(void *userObj)
 		{
 			break;
 		}
-		Sync::MutexUsage mutUsage(me->dataMut);
-		me->ofstList->Add(ofst);
-		me->sizeList->Add(thisSize + 16);
+		Sync::MutexUsage mutUsage(&me->dataMut);
+		me->ofstList.Add(ofst);
+		me->sizeList.Add(thisSize + 16);
 		mutUsage.EndUse();
 		ofst += thisSize + 16;
 	}
@@ -54,9 +54,6 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->isBE = false;
-	NEW_CLASS(this->dataMut, Sync::Mutex());
-	NEW_CLASS(this->ofstList, Data::ArrayList<UInt64>());
-	NEW_CLASS(this->sizeList, Data::ArrayList<UInt64>());
 	this->packetBuff = MemAlloc(UInt8, 65536);
 	if (fd->GetRealData(0, 24, buff) != 24)
 	{
@@ -98,9 +95,6 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	DEL_CLASS(this->ofstList);
-	DEL_CLASS(this->sizeList);
-	DEL_CLASS(this->dataMut);
 	MemFree(this->packetBuff);
 }
 
@@ -111,7 +105,7 @@ Text::CString IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
 {
-	return 1 + this->ofstList->GetCount();
+	return 1 + this->ofstList.GetCount();
 }
 
 Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
@@ -124,13 +118,13 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	UInt64 ofst;
 	UInt64 size;
 	UInt32 psize;
-	if (index > this->ofstList->GetCount())
+	if (index > this->ofstList.GetCount())
 	{
 		return false;
 	}
-	Sync::MutexUsage mutUsage(this->dataMut);
-	ofst = this->ofstList->GetItem(index - 1);
-	size = this->sizeList->GetItem(index - 1);
+	Sync::MutexUsage mutUsage(&this->dataMut);
+	ofst = this->ofstList.GetItem(index - 1);
+	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sb->AppendU64(ofst);
@@ -207,13 +201,13 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	UInt64 ofst;
 	UInt64 size;
 	UInt32 psize;
-	if (index > this->ofstList->GetCount())
+	if (index > this->ofstList.GetCount())
 	{
 		return false;
 	}
-	Sync::MutexUsage mutUsage(this->dataMut);
-	ofst = this->ofstList->GetItem(index - 1);
-	size = this->sizeList->GetItem(index - 1);
+	Sync::MutexUsage mutUsage(&this->dataMut);
+	ofst = this->ofstList.GetItem(index - 1);
+	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sb->AppendC(UTF8STRC("Offset="));
@@ -252,18 +246,18 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 		return 0;
 	}
 	OSInt i = 0;
-	OSInt j = (OSInt)this->ofstList->GetCount() - 1;
+	OSInt j = (OSInt)this->ofstList.GetCount() - 1;
 	OSInt k;
 	UInt64 packOfst;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		packOfst = this->ofstList->GetItem((UOSInt)k);
+		packOfst = this->ofstList.GetItem((UOSInt)k);
 		if (ofst < packOfst)
 		{
 			j = k - 1;
 		}
-		else if (ofst >= packOfst + this->sizeList->GetItem((UOSInt)k))
+		else if (ofst >= packOfst + this->sizeList.GetItem((UOSInt)k))
 		{
 			i = k + 1;
 		}
@@ -324,13 +318,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	UInt64 size;
 	UInt32 storeSize;
 	UInt32 psize;
-	if (index > this->ofstList->GetCount())
+	if (index > this->ofstList.GetCount())
 	{
 		return 0;
 	}
-	Sync::MutexUsage mutUsage(this->dataMut);
-	ofst = this->ofstList->GetItem(index - 1);
-	size = this->sizeList->GetItem(index - 1);
+	Sync::MutexUsage mutUsage(&this->dataMut);
+	ofst = this->ofstList.GetItem(index - 1);
+	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
