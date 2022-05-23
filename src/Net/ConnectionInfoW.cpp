@@ -16,8 +16,6 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	this->ent.name = 0;
 	this->ent.description = 0;
 	this->ent.dnsSuffix = 0;
-	this->ent.ipaddr = 0;
-	this->ent.dnsSuffix = 0;
 	this->ent.dhcpSvr = 0;
 	if (addr->AdapterName)
 	{
@@ -55,7 +53,8 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		dnsaddrs = dnsaddrs->Next;
 	}
 	this->ent.defGW = 0;
-	this->ent.physicalAddr = MemAlloc(UInt8, this->ent.physicalAddrLeng = addr->PhysicalAddressLength);
+	this->ent.physicalAddrLeng = addr->PhysicalAddressLength;
+	this->ent.physicalAddr = MemAlloc(UInt8, this->ent.physicalAddrLeng);
 	MemCopyNO(this->ent.physicalAddr, addr->PhysicalAddress, addr->PhysicalAddressLength);
 	this->ent.dhcpEnabled = (addr->Flags & IP_ADAPTER_DHCP_ENABLED) != 0;
 	this->ent.mtu = addr->Mtu;

@@ -10,6 +10,10 @@ Data::ArrayListUInt32::ArrayListUInt32(UOSInt capacity) : Data::SortableArrayLis
 {
 }
 
+Data::ArrayListUInt32::~ArrayListUInt32()
+{
+}
+
 Data::ArrayList<UInt32> *Data::ArrayListUInt32::Clone()
 {
 	Data::ArrayListUInt32 *newArr;

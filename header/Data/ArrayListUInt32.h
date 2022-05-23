@@ -9,6 +9,7 @@ namespace Data
 	public:
 		ArrayListUInt32();
 		ArrayListUInt32(UOSInt capacity);
+		virtual ~ArrayListUInt32();
 
 		virtual ArrayList<UInt32> *Clone();
 	};

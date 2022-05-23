@@ -9,6 +9,7 @@ namespace Data
 	public:
 		SortableArrayListNative() : ArrayList<T>() {};
 		SortableArrayListNative(UOSInt capacity) : ArrayList<T>() {};
+		virtual ~SortableArrayListNative() {};
 
 		UOSInt SortedInsert(T val);
 		OSInt SortedIndexOf(T val);
