@@ -78,41 +78,41 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;
-	UI::FileDialog *dlg;
-	UtilUI::TextGotoDialog *gotoDlg;
 	Text::String *fileName;
 	switch (cmdId)
 	{
 	case MNU_FILE_OPEN:
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"TextViewer", L"Open", false));
-		dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
-		dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
-		dlg->AddFilter(CSTR("*.cfg"), CSTR("Config File"));
-		dlg->AddFilter(CSTR("*.ini"), CSTR("Ini File"));
-		fileName = this->txtView->GetFileName();
-		if (fileName)
 		{
-			dlg->SetFileName(fileName->ToCString());
-		}
-		if (dlg->ShowDialog(this->GetHandle()))
-		{
-			if (this->txtView->LoadFile(dlg->GetFileName()))
+			UI::FileDialog dlg(L"SSWR", L"TextViewer", L"Open", false);
+			dlg.AddFilter(CSTR("*.txt"), CSTR("Text File"));
+			dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
+			dlg.AddFilter(CSTR("*.cfg"), CSTR("Config File"));
+			dlg.AddFilter(CSTR("*.ini"), CSTR("Ini File"));
+			fileName = this->txtView->GetFileName();
+			if (fileName)
 			{
-				sptr = dlg->GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
-				this->SetText(CSTRP(sbuff, sptr));
+				dlg.SetFileName(fileName->ToCString());
+			}
+			if (dlg.ShowDialog(this->GetHandle()))
+			{
+				if (this->txtView->LoadFile(dlg.GetFileName()))
+				{
+					sptr = dlg.GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
+					this->SetText(CSTRP(sbuff, sptr));
+				}
 			}
 		}
-		DEL_CLASS(dlg);
 		break;
 	case MNU_EDIT_GOTO:
-		NEW_CLASS(gotoDlg, UtilUI::TextGotoDialog(0, this->ui, this->monMgr));
-		gotoDlg->SetLineNumber(this->txtView->GetTextPosY() + 1);
-		if (gotoDlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 		{
-			this->txtView->GoToText(gotoDlg->GetLineNumber() - 1, 0);
-			this->txtView->Focus();
+			UtilUI::TextGotoDialog gotoDlg(0, this->ui, this->monMgr);
+			gotoDlg.SetLineNumber(this->txtView->GetTextPosY() + 1);
+			if (gotoDlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				this->txtView->GoToText(gotoDlg.GetLineNumber() - 1, 0);
+				this->txtView->Focus();
+			}
 		}
-		DEL_CLASS(gotoDlg);
 		break;
 	case MNU_EDIT_SEARCH:
 		if (this->srchFrm)

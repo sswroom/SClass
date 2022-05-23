@@ -10,15 +10,15 @@
 #include "Net/HTTPClient.h"
 #include "Map/ESRI/ESRITileMap.h"
 
-Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt8 buff[2048];
 	UOSInt readSize;
 	UInt32 codePage;
-	this->url = Text::StrCopyNew(url);
-	this->cacheDir = Text::StrCopyNew(cacheDir);
+	this->url = url->Clone();
+	this->cacheDir = Text::String::New(cacheDir);
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->min = Math::Coord2DDbl(0, 0);
@@ -27,10 +27,9 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	this->tileWidth = 0;
 	this->tileHeight = 0;
 	this->isMercatorProj = false;
-	NEW_CLASS(this->levels, Data::ArrayListDbl());
 
 	IO::MemoryStream *mstm;
-	sptr = Text::StrConcatC(Text::StrConcat(sbuff, url), UTF8STRC("?f=json"));
+	sptr = Text::StrConcatC(url->ConcatTo(sbuff), UTF8STRC("?f=json"));
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap")));
 	while ((readSize = cli->Read(buff, 2048)) > 0)
@@ -117,7 +116,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 								vobj = (Text::JSONObject*)v;
 								Double lev = vobj->GetObjectDouble(CSTR("resolution"));
 								if (lev != 0)
-									this->levels->Add(lev);
+									this->levels.Add(lev);
 							}
 							i++;
 						}
@@ -135,15 +134,8 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 
 Map::ESRI::ESRITileMap::~ESRITileMap()
 {
-	if (this->url)
-	{
-		Text::StrDelNew(this->url);
-	}
-	if (this->cacheDir)
-	{
-		Text::StrDelNew(this->cacheDir);
-	}
-	DEL_CLASS(this->levels);
+	SDEL_STRING(this->url);
+	SDEL_STRING(this->cacheDir);
 }
 
 Text::CString Map::ESRI::ESRITileMap::GetName()
@@ -167,7 +159,7 @@ Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType()
 
 UOSInt Map::ESRI::ESRITileMap::GetLevelCount()
 {
-	return this->levels->GetCount();
+	return this->levels.GetCount();
 }
 
 
@@ -179,7 +171,7 @@ Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 	}
 	else
 	{
-		Double level = this->levels->GetItem(index);
+		Double level = this->levels.GetItem(index);
 		if (level == 0)
 			return 0;
 
@@ -207,10 +199,10 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 		Double logResol = Math_Log10(scale / 566928000.0);
 		minInd = 0;
 		minDiff = 100000.0;
-		i = this->levels->GetCount();
+		i = this->levels.GetCount();
 		while (i-- > 0)
 		{
-			ldiff = Math_Log10(this->levels->GetItem(i)) - logResol;
+			ldiff = Math_Log10(this->levels.GetItem(i)) - logResol;
 			if (ldiff < 0)
 				ldiff = -ldiff;
 			if (ldiff < minDiff)
@@ -323,7 +315,7 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect,
 	}
 	else
 	{
-		Double resol = this->levels->GetItem(level);
+		Double resol = this->levels.GetItem(level);
 		Int32 i;
 		Int32 j;
 		if (resol == 0)
@@ -375,14 +367,12 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	UTF8Char *sptr;
 	UTF8Char *filePathEnd;
 	Net::HTTPClient *cli;
-	IO::FileStream *fs;
-	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	if (this->isMercatorProj)
 	{
-		if (level < 0 || level >= this->levels->GetCount())
+		if (level < 0 || level >= this->levels.GetCount())
 			return 0;
 		Double x1 = TileX2Lon(imgX, level);
 		Double y1 = TileY2Lat(imgY, level);
@@ -398,7 +388,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	}
 	else
 	{
-		Double resol = this->levels->GetItem(level);
+		Double resol = this->levels.GetItem(level);
 		if (resol == 0)
 			return 0;
 		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
@@ -415,7 +405,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		boundsXY[3] = y2;
 	}
 
-	sptr = Text::StrConcat(filePath, this->cacheDir);
+	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, (Int32)level);
@@ -425,27 +415,27 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, imgX);
 	filePathEnd = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
-	if (fd->GetDataSize() > 0)
 	{
-		IO::ParserType pt;
-		pobj = parsers->ParseFile(fd, &pt);
-		if (pobj)
+		IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
+		if (fd.GetDataSize() > 0)
 		{
-			if (pt == IO::ParserType::ImageList)
+			IO::ParserType pt;
+			pobj = parsers->ParseFile(&fd, &pt);
+			if (pobj)
 			{
-				DEL_CLASS(fd);
-				return (Media::ImageList*)pobj;
+				if (pt == IO::ParserType::ImageList)
+				{
+					return (Media::ImageList*)pobj;
+				}
+				DEL_CLASS(pobj);
 			}
-			DEL_CLASS(pobj);
 		}
 	}
-	DEL_CLASS(fd);
 
 	if (localOnly)
 		return 0;
 
-	sptr = Text::StrConcat(url, this->url);
+	sptr = this->url->ConcatTo(url);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
 	sptr = Text::StrInt32(sptr, (Int32)level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -453,31 +443,30 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
-		fs->Write(dataBuff, readSize);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		IO::FileStream fs({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		{
+			fs.Write(dataBuff, readSize);
+		}
+		DEL_CLASS(cli);
 	}
-	DEL_CLASS(cli);
-	DEL_CLASS(fs);
 
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
-	if (fd->GetDataSize() > 0)
+	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
+	if (fd.GetDataSize() > 0)
 	{
 		IO::ParserType pt;
-		pobj = parsers->ParseFile(fd, &pt);
+		pobj = parsers->ParseFile(&fd, &pt);
 		if (pobj)
 		{
 			if (pt == IO::ParserType::ImageList)
 			{
-				DEL_CLASS(fd);
 				return (Media::ImageList*)pobj;
 			}
 			DEL_CLASS(pobj);
 		}
 	}
-	DEL_CLASS(fd);
 	return 0;
 }
 
@@ -486,7 +475,7 @@ UTF8Char *Map::ESRI::ESRITileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int
 	UTF8Char *sptr;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	sptr = Text::StrConcat(sbuff, this->url);
+	sptr = this->url->ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
 	sptr = Text::StrUOSInt(sptr, level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -510,7 +499,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	if (this->isMercatorProj)
 	{
-		if (level < 0 || level >= this->levels->GetCount())
+		if (level < 0 || level >= this->levels.GetCount())
 			return 0;
 		Double x1 = TileX2Lon(imgX, level);
 		Double y1 = TileY2Lat(imgY, level);
@@ -526,7 +515,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	}
 	else
 	{
-		Double resol = this->levels->GetItem(level);
+		Double resol = this->levels.GetItem(level);
 		if (resol == 0)
 			return 0;
 		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
@@ -543,7 +532,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		boundsXY[3] = y2;
 	}
 
-	sptr = Text::StrConcat(filePath, this->cacheDir);
+	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrUOSInt(sptr, level);
@@ -569,7 +558,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	if (localOnly)
 		return 0;
 
-	sptr = Text::StrConcat(url, this->url);
+	sptr = this->url->ConcatTo(url);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
 	sptr = Text::StrInt32(sptr, (Int32)level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));

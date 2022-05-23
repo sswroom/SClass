@@ -10,7 +10,7 @@ UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(void *userObj)
 	while (!me->threadToStop)
 	{
 		me->currOnline = me->CheckOnline();
-		me->threadEvt->Wait(30000);
+		me->threadEvt.Wait(30000);
 	}
 	me->threadRunning = false;
 	return 0;
@@ -32,7 +32,6 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	this->currOnline = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)
@@ -49,7 +48,6 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	this->currOnline = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)
@@ -61,12 +59,11 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 Net::HTTPServerMonitor::~HTTPServerMonitor()
 {
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(1);
 	}
-	DEL_CLASS(this->threadEvt);
 	this->url->Release();
 }
 

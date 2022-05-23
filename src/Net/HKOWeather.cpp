@@ -69,7 +69,6 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 {
 	UInt8 buff[1024];
 	UInt8 *mbuff;
-	IO::MemoryStream *mstm;
 	Net::HTTPClient *cli;
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
@@ -80,18 +79,17 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 		DEL_CLASS(cli);
 		return Net::HKOWeather::WS_UNKNOWN;
 	}
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.HKOWeather.GetSignalSummary")));
+	IO::MemoryStream mstm(UTF8STRC("Net.HKOWeather.GetSignalSummary"));
 	while ((i = cli->Read(buff, 1024)) > 0)
 	{
-		mstm->Write(buff, i);
+		mstm.Write(buff, i);
 	}
 	DEL_CLASS(cli);
 
-	Text::XMLDocument *doc;
-	mbuff = mstm->GetBuff(&i);
-	NEW_CLASS(doc, Text::XMLDocument());
-	doc->ParseBuff(encFact, mbuff, i);
-	Text::XMLNode **nodes = doc->SearchNode(CSTR("/rss/channel/item/description"), &i);
+	mbuff = mstm.GetBuff(&i);
+	Text::XMLDocument doc;
+	doc.ParseBuff(encFact, mbuff, i);
+	Text::XMLNode **nodes = doc.SearchNode(CSTR("/rss/channel/item/description"), &i);
 	Text::XMLNode *n;
 	Text::XMLNode *n2;
 
@@ -111,10 +109,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 			}
 		}
 	}
-	doc->ReleaseSearch(nodes);
-	DEL_CLASS(doc);
-
-	DEL_CLASS(mstm);
+	doc.ReleaseSearch(nodes);
 	return signal;
 }
 

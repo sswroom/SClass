@@ -3,24 +3,40 @@
 #include "Math/LanczosFilter.h"
 #include <float.h>
 
-Double Math::LanczosFilter::Weight(Double phase, UOSInt nTap)
+Math::LanczosFilter::LanczosFilter(UOSInt nTap)
 {
-	Double ret;
-	Double aphase = Math_Abs(phase);
-	
-	if(aphase < DBL_EPSILON)
-	{
-		return 1.0;
-	}
-	Double dnTap = UOSInt2Double(nTap);
+	this->nTap = UOSInt2Double(nTap);
+	this->iTap = 2 / this->nTap;
+}
 
-	if ((aphase * 2) >= dnTap){
-		return 0.0;
+Math::LanczosFilter::~LanczosFilter()
+{
+}
+
+Double Math::LanczosFilter::Weight(Double phase)
+{
+	if (phase < 0)
+	{
+		if(phase > -DBL_EPSILON)
+		{
+			return 1.0;
+		}
+		if ((phase * -2) >= nTap){
+			return 0.0;
+		}
+
+	}
+	else
+	{
+		if(phase < DBL_EPSILON)
+		{
+			return 1.0;
+		}
+		if ((phase * 2) >= nTap){
+			return 0.0;
+		}
 	}
 
 	Double pp = Math::PI * phase;
-	Double itap = 2 / dnTap;
-	ret = Math_Sin(pp) * Math_Sin(pp * itap) / (pp * pp * itap);
-
-	return ret;
+	return Math_Sin(pp) * Math_Sin(pp * this->iTap) / (pp * pp * this->iTap);
 }

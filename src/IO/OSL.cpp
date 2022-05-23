@@ -59,16 +59,14 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/release")) == IO::Path::PathType::File) //Eurotech
 	{
 		UTF8Char line[512];
-		Text::UTF8Reader *reader;
 		UOSInt i;
 		UOSInt j;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		line[0] = 0;
-		reader->ReadLine(line, 512);
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
+		{
+			IO::FileStream fs(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			Text::UTF8Reader reader(&fs);
+			line[0] = 0;
+			reader.ReadLine(line, 512);
+		}
 		i = INVALID_INDEX;
 		while (true)
 		{
@@ -90,35 +88,31 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/usr/sbin/ENG/stringlist_ENG.txt")) == IO::Path::PathType::File)
 	{
-		IO::FileStream *fs;
-		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
 		UTF8Char *ret = 0;
 
-		NEW_CLASS(fs, IO::FileStream(CSTR("/usr/sbin/ENG/stringlist_ENG.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(CSTR("/usr/sbin/ENG/stringlist_ENG.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			NEW_CLASS(reader, Text::UTF8Reader(fs));
+			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
-			while (reader->ReadLine(&sb, 512))
+			while (reader.ReadLine(&sb, 512))
 			{
 				if (sb.StartsWith(UTF8STRC("##0018")))
 				{
 					sb.ClearStr();
-					reader->ReadLine(&sb, 512);
+					reader.ReadLine(&sb, 512);
 					sb.ClearStr();
-					reader->ReadLine(&sb, 512);
+					reader.ReadLine(&sb, 512);
 					sb.ClearStr();
-					if (reader->ReadLine(&sb, 512))
+					if (reader.ReadLine(&sb, 512))
 					{
 						ret = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 					}
 				}
 				sb.ClearStr();
 			}
-			DEL_CLASS(reader);
 		}
-		DEL_CLASS(fs);
 		if (ret)
 			return ret;
 	}

@@ -7,36 +7,32 @@
 void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
-	UI::FontDialog *dlg;
-	NEW_CLASS(dlg, UI::FontDialog(me->fontName, me->fontSizePt, false, false));
-	if (dlg->ShowDialog(me->hwnd))
+	UI::FontDialog dlg(me->fontName, me->fontSizePt, false, false);
+	if (dlg.ShowDialog(me->hwnd))
 	{
 		SDEL_STRING(me->fontName);
-		me->fontName = dlg->GetFontName()->Clone();
-		me->fontSizePt = dlg->GetFontSizePt();
+		me->fontName = dlg.GetFontName()->Clone();
+		me->fontSizePt = dlg.GetFontSizePt();
 		me->UpdateFontText();
 		me->UpdateFontPreview();
 	}
-	DEL_CLASS(dlg);
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
-	UtilUI::ColorDialog *dlg;
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		NEW_CLASS(dlg, UtilUI::ColorDialog(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr()));
-		dlg->SetColor32(me->fontColor);
-		if (dlg->ShowDialog(me) == UI::GUIForm::DR_OK)
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.SetColor32(me->fontColor);
+		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->fontColor = dlg->GetColor32();
+			me->fontColor = dlg.GetColor32();
 			me->pbColor->SetBGColor(me->colorConv->ConvRGB8(me->fontColor));
 			me->pbColor->Redraw();
 			me->UpdateFontPreview();
 		}
-		DEL_CLASS(dlg);
 	}
 	return false;
 }

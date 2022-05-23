@@ -103,10 +103,8 @@ void IO::Registry::CloseInternal(void *data)
 	{
 		if (reg->modified)
 		{
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(reg->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			IO::IniFile::SaveConfig(fs, 65001, reg->cfg);
-			DEL_CLASS(fs);
+			IO::FileStream fs(reg->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::IniFile::SaveConfig(&fs, 65001, reg->cfg);
 			reg->modified = false;
 		}
 		DEL_CLASS(reg->mut);

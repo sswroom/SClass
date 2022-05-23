@@ -34,6 +34,7 @@ namespace Net
 		virtual Bool SocketIsInvalid(Socket *socket);
 		virtual Bool SocketBindv4(Socket *socket, UInt32 ip, UInt16 port);
 		virtual Bool SocketBind(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
+		virtual Bool SocketBindRAWIf(Socket *socket, UOSInt ifIndex);
 		virtual Bool SocketListen(Socket *socket);
 		virtual Socket *SocketAccept(Socket *socket);
 		virtual Int32 SocketGetLastError();

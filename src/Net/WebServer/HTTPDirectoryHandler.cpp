@@ -645,13 +645,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.ClearStr();
 			sb.AppendC(sb2.ToString(), sb2.GetLength());
 			sptr = sb.ToString();
-			IO::FileStream *fs;
 			UInt64 sizeLeft;
 			Text::String *hdrVal;
 
 			sptr3 = IO::Path::GetFileExt(sbuff, sptr, sptrLen);
-			NEW_CLASS(fs, IO::FileStream({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-			fs->GetFileTimes(0, 0, &t);
+			IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			fs.GetFileTimes(0, 0, &t);
 
 			if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
 			{
@@ -665,7 +664,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
 					resp->Write(buff, 0);
-					DEL_CLASS(fs);
 					return true;
 				}
 			}
@@ -676,7 +674,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			resp->AddLastModified(&t);
 			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
 			resp->AddContentType(mime);
-			sizeLeft = fs->GetLength();
+			sizeLeft = fs.GetLength();
 			if (sizeLeft < this->fileCacheSize)
 			{
 				UOSInt readSize;
@@ -684,7 +682,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
 				cache->buffSize = (UOSInt)sizeLeft;
 				cache->t = t.ToTicks();
-				readSize = fs->Read(cache->buff, (UOSInt)sizeLeft);
+				readSize = fs.Read(cache->buff, (UOSInt)sizeLeft);
 				if (readSize == sizeLeft)
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
@@ -702,9 +700,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
 			}
-			DEL_CLASS(fs);
 			return true;
 		}
 		else

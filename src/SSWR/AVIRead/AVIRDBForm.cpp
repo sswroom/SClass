@@ -355,14 +355,14 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CHART_LINE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			SSWR::AVIRead::AVIRLineChartForm *frm;
 			Data::IChart *chart = 0;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRLineChartForm(0, this->ui, this->core, this->db, CSTRP(sbuff, sptr)));
-			if (frm->ShowDialog(this) == DR_OK)
 			{
-				chart = frm->GetChart();
+				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, CSTRP(sbuff, sptr));
+				if (frm.ShowDialog(this) == DR_OK)
+				{
+					chart = frm.GetChart();
+				}
 			}
-			DEL_CLASS(frm);
 			if (chart)
 			{
 				SSWR::AVIRead::AVIRChartForm *chartFrm;

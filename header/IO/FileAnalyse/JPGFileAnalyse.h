@@ -21,7 +21,7 @@ namespace IO
 			} JPGTag;
 		private:
 			IO::IStreamData *fd;
-			Data::SyncArrayList<JPGTag*> *tags;
+			Data::SyncArrayList<JPGTag*> tags;
 
 			Bool pauseParsing;
 			Bool threadRunning;

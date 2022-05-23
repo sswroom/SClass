@@ -55,9 +55,8 @@ UInt16 USBInfo_ReadI16(Text::CString fileName)
 {
 	UInt8 buff[33];
 	UOSInt readSize;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	readSize = fs->Read(buff, 32);
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	readSize = fs.Read(buff, 32);
 	buff[readSize] = 0;
 	while (readSize > 0)
 	{
@@ -71,7 +70,6 @@ UInt16 USBInfo_ReadI16(Text::CString fileName)
 			break;
 		}
 	}
-	DEL_CLASS(fs);
 	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
@@ -143,7 +141,6 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 		UInt8 cbuff[256];
 		UOSInt readSize;
 		IO::Path::FindFileSession *sess;
-		IO::FileStream *fs;
 		IO::Path::PathType pt;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\bus\\usb\\devices\\"));
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -162,60 +159,62 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					clsData.bcdDevice = USBInfo_ReadI16(CSTRP(sbuff, sptr2End));
 					if (clsData.idVendor != 0)
 					{
-						sb.ClearStr();
-						sptr2End = Text::StrConcatC(sptr2, UTF8STRC("\\manufacturer"));
-						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2End), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						if (!fs->IsError())
 						{
-							readSize = fs->Read(cbuff, 250);
-							cbuff[readSize] = 0;
-							while (readSize > 0)
+							sb.ClearStr();
+							sptr2End = Text::StrConcatC(sptr2, UTF8STRC("\\manufacturer"));
+							IO::FileStream fs(CSTRP(sbuff, sptr2End), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							if (!fs.IsError())
 							{
-								if (cbuff[readSize - 1] == 13 || cbuff[readSize - 1] == 10)
+								readSize = fs.Read(cbuff, 250);
+								cbuff[readSize] = 0;
+								while (readSize > 0)
 								{
-									readSize--;
-									cbuff[readSize] = 0;
+									if (cbuff[readSize - 1] == 13 || cbuff[readSize - 1] == 10)
+									{
+										readSize--;
+										cbuff[readSize] = 0;
+									}
+									else
+									{
+										break;
+									}
 								}
-								else
+								if (readSize > 0)
 								{
-									break;
+									sb.AppendC((const UTF8Char*)cbuff, readSize);
 								}
-							}
-							if (readSize > 0)
-							{
-								sb.AppendC((const UTF8Char*)cbuff, readSize);
 							}
 						}
-						DEL_CLASS(fs);
 						
-						sptr2End = Text::StrConcatC(sptr2, UTF8STRC("\\product"));
-						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2End), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						if (!fs->IsError())
 						{
-							readSize = fs->Read(cbuff, 250);
-							cbuff[readSize] = 0;
-							while (readSize > 0)
+							sptr2End = Text::StrConcatC(sptr2, UTF8STRC("\\product"));
+							IO::FileStream fs(CSTRP(sbuff, sptr2End), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							if (!fs.IsError())
 							{
-								if (cbuff[readSize - 1] == 13 || cbuff[readSize - 1] == 10)
+								readSize = fs.Read(cbuff, 250);
+								cbuff[readSize] = 0;
+								while (readSize > 0)
 								{
-									readSize--;
-									cbuff[readSize] = 0;
+									if (cbuff[readSize - 1] == 13 || cbuff[readSize - 1] == 10)
+									{
+										readSize--;
+										cbuff[readSize] = 0;
+									}
+									else
+									{
+										break;
+									}
 								}
-								else
+								if (readSize > 0)
 								{
-									break;
+									if (sb.GetLength() > 0)
+									{
+										sb.AppendUTF8Char(' ');
+									}						
+									sb.AppendC((const UTF8Char*)cbuff, readSize);
 								}
-							}
-							if (readSize > 0)
-							{
-								if (sb.GetLength() > 0)
-								{
-									sb.AppendUTF8Char(' ');
-								}						
-								sb.AppendC((const UTF8Char*)cbuff, readSize);
 							}
 						}
-						DEL_CLASS(fs);
 						
 						if (sb.GetLength() > 0)
 						{

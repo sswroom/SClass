@@ -23,7 +23,7 @@ namespace IO
 		private:
 			IO::IStreamData *fd;
 			Bool isBE;
-			Data::SyncArrayList<BlockInfo *> *blockList;
+			Data::SyncArrayList<BlockInfo *> blockList;
 			UInt8 *packetBuff;
 
 			Bool pauseParsing;

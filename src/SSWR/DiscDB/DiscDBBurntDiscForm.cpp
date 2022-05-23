@@ -867,15 +867,14 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::MovieColsFree(MovieCols *anime)
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::DiscDB::DiscDBBurntDiscForm *me = (SSWR::DiscDB::DiscDBBurntDiscForm*)userObj;
-	UI::FileDialog *ofd;
-	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"DVDDB", L"Browse", true));
-	if (ofd->ShowDialog(me->GetHandle()))
+	UI::FileDialog ofd(L"SSWR", L"DVDDB", L"Browse", true);
+	if (ofd.ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = ofd->GetFileName()->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		UOSInt i = ofd.GetFileName()->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Text::StringBuilderUTF8 sbBasePath;
 		if (i != INVALID_INDEX)
 		{
-			sbBasePath.AppendC(ofd->GetFileName()->v, (UOSInt)i);
+			sbBasePath.AppendC(ofd.GetFileName()->v, (UOSInt)i);
 		}
 		me->lbFileName->ClearItems();
 		UOSInt j = me->fileList->GetCount();
@@ -890,7 +889,6 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 		i = Text::StrLastIndexOfCharC(sbBasePath.ToString(), sbBasePath.GetLength(), IO::Path::PATH_SEPERATOR);
 		me->txtDiscId->SetText(sbBasePath.ToCString().Substring(i + 1));
 	}
-	DEL_CLASS(ofd);
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj)

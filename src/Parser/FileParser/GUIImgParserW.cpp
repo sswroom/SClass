@@ -27,29 +27,23 @@
 #include "Win32/COMStream.h"
 #include <gdiplus.h>
 
-typedef struct
+struct Parser::FileParser::GUIImgParser::ClassData
 {
 	UInt32 gdip;
-	Gdiplus::GdiplusStartupInput *gdiplusStartupInput;
-	Sync::Mutex *mut;
-} ClassData;
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	Sync::Mutex mut;
+};
 
 Parser::FileParser::GUIImgParser::GUIImgParser()
 {
-	ClassData *data = MemAlloc(ClassData, 1);
-	NEW_CLASS(data->gdiplusStartupInput, Gdiplus::GdiplusStartupInput());
-	Gdiplus::GdiplusStartup((ULONG_PTR*)&data->gdip, data->gdiplusStartupInput, NULL);
-	NEW_CLASS(data->mut, Sync::Mutex());
-	this->clsData = data;
+	NEW_CLASS(this->clsData, ClassData());
+	Gdiplus::GdiplusStartup((ULONG_PTR*)&this->clsData->gdip, &this->clsData->gdiplusStartupInput, NULL);
 }
 
 Parser::FileParser::GUIImgParser::~GUIImgParser()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	Gdiplus::GdiplusShutdown(data->gdip);
-	DEL_CLASS(data->gdiplusStartupInput);
-	DEL_CLASS(data->mut);
-	MemFree(data);
+	Gdiplus::GdiplusShutdown(this->clsData->gdip);
+	DEL_CLASS(this->clsData);
 }
 
 Int32 Parser::FileParser::GUIImgParser::GetName()
@@ -82,7 +76,6 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	ClassData *data = (ClassData*)this->clsData;
 	IO::StreamDataStream *stm;
 	Win32::COMStream *cstm;
 	UInt8 buff[256];
@@ -109,7 +102,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 
 	Media::ImageList *imgList = 0;
 
-	Sync::MutexUsage mutUsage(data->mut);
+	Sync::MutexUsage mutUsage(&this->clsData->mut);
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(cstm, Win32::COMStream(stm));
 	Gdiplus::Bitmap *bmp = Gdiplus::Bitmap::FromStream(cstm, 0);
@@ -308,8 +301,6 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			sb.SetEndPtr(IO::Path::ReplaceExt(sb.ToString(), UTF8STRC("tfw")));
 			if (IO::Path::GetPathType(sb.ToCString()) == IO::Path::PathType::File)
 			{
-				IO::FileStream *fs;
-				IO::StreamReader *reader;
 				Bool valid = true;
 				Double xPxSize;
 				Double rotY;
@@ -317,40 +308,40 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 				Double yPxSize;
 				Double xCoord;
 				Double yCoord;
-				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-				NEW_CLASS(reader, IO::StreamReader(fs, 0));
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
 				{
-					valid = false;
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+					IO::StreamReader reader(&fs, 0);
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
+					{
+						valid = false;
+					}
 				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotY))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &rotX))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yPxSize))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xCoord))
-				{
-					valid = false;
-				}
-				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &yCoord))
-				{
-					valid = false;
-				}
-				DEL_CLASS(reader);
-				DEL_CLASS(fs);
 
 				if (valid && rotX == 0 && rotY == 0)
 				{

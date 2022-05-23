@@ -211,11 +211,9 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 	}
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 	{
-		SSWR::AVIRead::AVIRAudioViewerForm *frm;
 		Media::IAudioSource *audSrc = (Media::IAudioSource*)mediaSrc;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRAudioViewerForm(0, me->ui, me->core, audSrc));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);
+		SSWR::AVIRead::AVIRAudioViewerForm frm(0, me->ui, me->core, audSrc);
+		frm.ShowDialog(me);
 	}
 }
 
@@ -585,21 +583,18 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_POPV_SAVE_TIMECODE:
 		{
-			UI::FileDialog *dlg;
-			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SaveTimecode", true));
-			dlg->AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
-			if (dlg->ShowDialog(this->hwnd))
+			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"SaveTimecode", true);
+			dlg.AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
+			if (dlg.ShowDialog(this->hwnd))
 			{
 				Media::IVideoSource *video;
 				UTF8Char sbuff[40];
 				UTF8Char *sptr;
 				UOSInt j;
-				IO::FileStream *fs;
-				Text::UTF8Writer *writer;
 				video = (Media::IVideoSource*)this->popMedia;
-				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				NEW_CLASS(writer, Text::UTF8Writer(fs));
-				writer->WriteLineC(UTF8STRC("# timecode format v2"));
+				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				Text::UTF8Writer writer(&fs);
+				writer.WriteLineC(UTF8STRC("# timecode format v2"));
 				j = video->GetFrameCount();
 				if (j >= 0)
 				{
@@ -607,18 +602,15 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 					while (i < j)
 					{
 						sptr = Text::StrUInt32(sbuff, video->GetFrameTime(i));
-						writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+						writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 						i++;
 					}
 				}
 				else
 				{
-					video->EnumFrameInfos(OnFrameTime, writer);
+					video->EnumFrameInfos(OnFrameTime, &writer);
 				}
-				DEL_CLASS(writer);
-				DEL_CLASS(fs);
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_POPA_REMOVE:

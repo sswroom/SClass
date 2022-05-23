@@ -22,7 +22,8 @@ namespace DB
 			Text,
 			SQLite,
 			WBEM,
-			MDBTools
+			MDBTools,
+			PostgreSQL
 		};
 
 		typedef enum

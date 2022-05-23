@@ -11,13 +11,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Writer.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	IO::GPIOControl *gpioCtrl;
-	IO::GPIOPin *pin;
-	IO::IOPinCapture *pinCapture;
-	IO::Device::DHT22 *dht22;
 	IO::ConsoleWriter console;
 	Double temp;
 	Double rh;
@@ -33,17 +30,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
 	console.WriteLineC(sb.ToString(), sb.GetLength());
-	NEW_CLASS(gpioCtrl, IO::GPIOControl());
-	NEW_CLASS(pin, IO::GPIOPin(gpioCtrl, pinNum));
-	if (gpioCtrl->IsError() || pin->IsError())
+	IO::GPIOControl gpioCtrl;
+	IO::GPIOPin pin(&gpioCtrl, pinNum);
+	if (gpioCtrl.IsError() || pin.IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in opening pin."));
 	}
 	else
 	{
-		NEW_CLASS(pinCapture, IO::IOPinCapture(pin));
-		NEW_CLASS(dht22, IO::Device::DHT22(pinCapture));
-		if (dht22->ReadData(&temp, &rh))
+		IO::IOPinCapture pinCapture(&pin);
+		IO::Device::DHT22 dht22(&pinCapture);
+		if (dht22.ReadData(&temp, &rh))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temp = "));
@@ -60,15 +57,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		Data::ArrayList<Double> times;
 		Data::ArrayList<Int32> isHighs;
-		IO::FileStream *fs;
-		IO::StreamWriter *writer;
 		UOSInt i;
 		UOSInt j;
-		if (pinCapture->GetCaptureData(&times, &isHighs) > 0)
+		if (pinCapture.GetCaptureData(&times, &isHighs) > 0)
 		{
-			NEW_CLASS(fs, IO::FileStream(CSTR("Capture.csv"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
-			writer->WriteLineC(UTF8STRC("Time, State"));
+			IO::FileStream fs(CSTR("Capture.csv"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			Text::UTF8Writer writer(&fs);
+			writer.WriteLineC(UTF8STRC("Time, State"));
 			i = 0;
 			j = times.GetCount();
 			while (i < j)
@@ -77,17 +72,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Text::SBAppendF64(&sb, times.GetItem(i));
 				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(isHighs.GetItem(i));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				i++;
 			}		
-			DEL_CLASS(writer);
-			DEL_CLASS(fs);
 		}
-
-		DEL_CLASS(dht22);
-		DEL_CLASS(pinCapture);
 	}
-	DEL_CLASS(pin);
-	DEL_CLASS(gpioCtrl);
 	return 0;
 }

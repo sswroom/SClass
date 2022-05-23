@@ -2789,8 +2789,9 @@ scmpicu32ret:
 _MyString_StrCharCnt:
 MyString_StrCharCnt:
 	mov rax,rdi
-	cmp dword [rel _UseSSE42],0
-	jz scclop
+;	cmp dword [rel _UseSSE42],0
+;	jz scclop
+	jmp scclop
 	pxor xmm0,xmm0
 	align 16
 scclop_sse42:

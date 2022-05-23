@@ -18,6 +18,7 @@ test:
 @TestAES128
 @TestAES192
 @TestAES256
+@TestAESCMAC
 @TestBcrypt
 @TestBlowfish
 @TestCRC16
@@ -65,6 +66,7 @@ nodeps:
 @RSATest
 @X509Test
 @DateTimeTest
+@MiscTest
 @SortSpeed
 @DBDataFileTest
 @FileGDBTest
@@ -131,6 +133,7 @@ nodeps:
 @HTTPSTest
 @HTTPThroughputTest
 @LogServer
+@LoRaGWLogger
 @MQTTFailover
 @NetRAWCapture
 @OAuth2Test
@@ -244,6 +247,9 @@ X509Test:
 #Data
 DateTimeTest:
 @DateTimeTest.o
+@ConsoleStartup.o
+MiscTest:
+@MiscTest.o
 @ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
@@ -493,6 +499,9 @@ HTTPThroughputTest:
 LogServer:
 @LogServerMain.o
 @ConsoleStartup.o
+LoRaGWLogger:
+@LoRaGWLoggerMain.o
+@ConsoleStartup.o
 MQTTFailover:
 @MQTTFailoverTest.o
 @ConsoleStartup.o
@@ -658,6 +667,9 @@ TestAES192:
 @ConsoleStartup.o
 TestAES256:
 @TestAES256.o
+@ConsoleStartup.o
+TestAESCMAC:
+@TestAESCMAC.o
 @ConsoleStartup.o
 TestBcrypt:
 @TestBcrypt.o
@@ -885,6 +897,7 @@ RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
 RSATest.o: ../../main/CryptoTest/RSATest.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
+MiscTest.o: ../../main/Data/MiscTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
@@ -962,6 +975,7 @@ HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
 HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
 HTTPThroughputTest.o: ../../main/NetTest/HTTPThroughputTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
+LoRaGWLoggerMain.o: ../../main/NetTest/LoRaGWLoggerMain.cpp
 MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
 OAuth2Test.o: ../../main/NetTest/OAuth2Test.cpp
@@ -1015,6 +1029,7 @@ TestAdler32.o: ../../main/Test/Crypto/TestAdler32.cpp
 TestAES128.o: ../../main/Test/Crypto/TestAES128.cpp
 TestAES192.o: ../../main/Test/Crypto/TestAES192.cpp
 TestAES256.o: ../../main/Test/Crypto/TestAES256.cpp
+TestAESCMAC.o: ../../main/Test/Crypto/TestAESCMAC.cpp
 TestBcrypt.o: ../../main/Test/Crypto/TestBcrypt.cpp
 TestBlowfish.o: ../../main/Test/Crypto/TestBlowfish.cpp
 TestCRC16.o: ../../main/Test/Crypto/TestCRC16.cpp
@@ -1153,6 +1168,8 @@ Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
 Crypto/Hash/Adler32.h: ../../src/Crypto/Hash/Adler32.cpp
 @Adler32.o
 @Adler32_CPP.o
+Crypto/Hash/AESCMAC.h: ../../src/Crypto/Hash/AESCMAC.cpp
+@AESCMAC.o
 Crypto/Hash/Bcrypt.h: ../../src/Crypto/Hash/Bcrypt.cpp
 @Bcrypt.o
 Crypto/Hash/BruteForceAttack.h: ../../src/Crypto/Hash/BruteForceAttack.cpp
@@ -1765,6 +1782,8 @@ IO/FileAnalyse/IFileAnalyse.h: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 @IFileAnalyse.o
 IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 @JPGFileAnalyse.o
+IO/FileAnalyse/JMVL01FileAnalyse.h: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
+@JMVL01FileAnalyse.o
 IO/FileAnalyse/MDBFileAnalyse.h: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 @MDBFileAnalyse.o
 IO/FileAnalyse/MPEGFileAnalyse.h: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
@@ -1806,6 +1825,8 @@ IO/ProtoHdlr/ProtoDUploadHandler.h: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.c
 @ProtoDUploadHandler.o
 IO/ProtoHdlr/ProtoGPSDevInfoHandler.h: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
 @ProtoGPSDevInfoHandler.o
+IO/ProtoHdlr/ProtoJMVL01Handler.h: ../../src/IO/ProtoHdlr/ProtoJMVL01Handler.cpp
+@ProtoJMVL01Handler.o
 IO/ProtoHdlr/ProtoJTT808Handler.h: ../../src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
 @ProtoJTT808Handler.o
 IO/ProtoHdlr/ProtoLogCliHandler.h: ../../src/IO/ProtoHdlr/ProtoLogCliHandler.cpp
@@ -2001,6 +2022,7 @@ Math/Geometry.h: ../../src/Math/Geometry.cpp
 @Geometry.o
 Math/LanczosFilter.h: ../../src/Math/LanczosFilter.cpp
 @LanczosFilter.o
+Math/LithiumBattery.h:
 Math/Math.h: ../../src/Math/Math.cpp
 @Math.o
 @Math_CPP.o
@@ -2210,7 +2232,9 @@ Media/LPCMConverter.h: ../../src/Media/LPCMConverter.cpp
 @LPCMConverter.o
 Media/LPCMSource.h: ../../src/Media/LPCMSource.cpp
 @LPCMSource.o
-Media/LRGBLimiter.h:
+Media/LRGBLimiter.h: ../../src/Media/LRGBLimiter.cpp
+@LRGBLimiter.o
+Media/LRGBLimiterC.h:
 @LRGBLimiter_CPP.o
 Media/LUT.h: ../../src/Media/LUT.cpp
 @LUT.o
@@ -2677,6 +2701,12 @@ Net/LogClient.h: ../../src/Net/LogClient.cpp
 @LogClient.o
 Net/LogServer.h: ../../src/Net/LogServer.cpp
 @LogServer.o
+Net/LoRaGateway.h: ../../src/Net/LoRaGateway.cpp
+@LoRaGateway.o
+Net/LoRaGWMonitor.h: ../../src/Net/LoRaGWMonitor.cpp
+@LoRaGWMonitor.o
+Net/LoRaGWUtil.h: ../../src/Net/LoRaGWUtil.cpp
+@LoRaGWUtil.o
 Net/MACInfo.h: ../../src/Net/MACInfo.cpp
 @MACInfo.o
 Net/MACInfoList.h: ../../src/Net/MACInfoList.cpp
@@ -2716,6 +2746,8 @@ Net/PacketAnalyzerBluetooth.h: ../../src/Net/PacketAnalyzerBluetooth.cpp
 @PacketAnalyzerBluetooth.o
 Net/PacketAnalyzerEthernet.h: ../../src/Net/PacketAnalyzerEthernet.cpp
 @PacketAnalyzerEthernet.o
+Net/PacketExtractorEthernet.h: ../../src/Net/PacketExtractorEthernet.cpp
+@PacketExtractorEthernet.o
 Net/PingMonitor.h: ../../src/Net/PingMonitor.cpp
 @PingMonitor.o
 Net/ProxyServer.h: ../../src/Net/ProxyServer.cpp
@@ -3404,6 +3436,10 @@ SSWR/AVIRead/AVIRLogMergeForm.h: ../../src/SSWR/AVIRead/AVIRLogMergeForm.cpp
 @AVIRLogMergeForm.o
 SSWR/AVIRead/AVIRLogServerForm.h: ../../src/SSWR/AVIRead/AVIRLogServerForm.cpp
 @AVIRLogServerForm.o
+SSWR/AVIRead/AVIRLoraGWSimForm.h: ../../src/SSWR/AVIRead/AVIRLoraGWSimForm.cpp
+@AVIRLoraGWSimForm.o
+SSWR/AVIRead/AVIRLoRaJSONForm.h: ../../src/SSWR/AVIRead/AVIRLoRaJSONForm.cpp
+@AVIRLoRaJSONForm.o
 SSWR/AVIRead/AVIRLUTForm.h: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 @AVIRLUTForm.o
 SSWR/AVIRead/AVIRMACGenForm.h: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
@@ -3474,6 +3510,8 @@ SSWR/AVIRead/AVIRPingMonitorForm.h: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.c
 @AVIRPingMonitorForm.o
 SSWR/AVIRead/AVIRPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRPlaylistForm.cpp
 @AVIRPlaylistForm.o
+SSWR/AVIRead/AVIRPostgreSQLForm.h: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
+@AVIRPostgreSQLForm.o
 SSWR/AVIRead/AVIRPowerForm.h: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
 @AVIRPowerForm.o
 SSWR/AVIRead/AVIRProcInfoForm.h: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
@@ -4061,6 +4099,7 @@ RC4Cipher.o: ../../src/Crypto/Encrypt/RC4Cipher.cpp
 XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
 Adler32_CPP.o: ../../src/Crypto/Hash/Adler32_CPP.cpp
+AESCMAC.o: ../../src/Crypto/Hash/AESCMAC.cpp
 Bcrypt.o: ../../src/Crypto/Hash/Bcrypt.cpp
 BruteForceAttack.o: ../../src/Crypto/Hash/BruteForceAttack.cpp
 CRC16.o: ../../src/Crypto/Hash/CRC16.cpp
@@ -4337,6 +4376,7 @@ FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
 FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
 IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
+JMVL01FileAnalyse.o: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
 MDBFileAnalyse.o: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
 NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp
@@ -4357,6 +4397,7 @@ TSProtocolDecoder.o: ../../src/IO/ProtoDec/TSProtocolDecoder.cpp
 ProtoCortexHandler.o: ../../src/IO/ProtoHdlr/ProtoCortexHandler.cpp
 ProtoDUploadHandler.o: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.cpp
 ProtoGPSDevInfoHandler.o: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
+ProtoJMVL01Handler.o: ../../src/IO/ProtoHdlr/ProtoJMVL01Handler.cpp
 ProtoJTT808Handler.o: ../../src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
 ProtoLogCliHandler.o: ../../src/IO/ProtoHdlr/ProtoLogCliHandler.cpp
 ProtoMDataHandler.o: ../../src/IO/ProtoHdlr/ProtoMDataHandler.cpp
@@ -4535,6 +4576,7 @@ JPEGFile.o: ../../src/Media/JPEGFile.cpp
 LinearRectRemapper.o: ../../src/Media/LinearRectRemapper.cpp
 LPCMConverter.o: ../../src/Media/LPCMConverter.cpp
 LPCMSource.o: ../../src/Media/LPCMSource.cpp
+LRGBLimiter.o: ../../src/Media/LRGBLimiter.cpp
 LUT.o: ../../src/Media/LUT.cpp
 M2VFile.o: ../../src/Media/M2VFile.cpp
 M2VStreamSource.o: ../../src/Media/M2VStreamSource.cpp
@@ -4744,6 +4786,9 @@ IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
 LDAPClient.o: ../../src/Net/LDAPClient.cpp
 LogClient.o: ../../src/Net/LogClient.cpp
 LogServer.o: ../../src/Net/LogServer.cpp
+LoRaGateway.o: ../../src/Net/LoRaGateway.cpp
+LoRaGWMonitor.o: ../../src/Net/LoRaGWMonitor.cpp
+LoRaGWUtil.o: ../../src/Net/LoRaGWUtil.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MIBReader.o: ../../src/Net/MIBReader.cpp
@@ -4763,6 +4808,7 @@ NTPServer.o: ../../src/Net/NTPServer.cpp
 PacketAnalyzer.o: ../../src/Net/PacketAnalyzer.cpp
 PacketAnalyzerBluetooth.o: ../../src/Net/PacketAnalyzerBluetooth.cpp
 PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
+PacketExtractorEthernet.o: ../../src/Net/PacketExtractorEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp
 POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 ProxyServer.o: ../../src/Net/ProxyServer.cpp
@@ -5104,6 +5150,8 @@ AVIRLogExtractForm.o: ../../src/SSWR/AVIRead/AVIRLogExtractForm.cpp
 AVIRLogFileForm.o: ../../src/SSWR/AVIRead/AVIRLogFileForm.cpp
 AVIRLogMergeForm.o: ../../src/SSWR/AVIRead/AVIRLogMergeForm.cpp
 AVIRLogServerForm.o: ../../src/SSWR/AVIRead/AVIRLogServerForm.cpp
+AVIRLoraGWSimForm.o: ../../src/SSWR/AVIRead/AVIRLoraGWSimForm.cpp
+AVIRLoRaJSONForm.o: ../../src/SSWR/AVIRead/AVIRLoRaJSONForm.cpp
 AVIRLUTForm.o: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
@@ -5139,6 +5187,7 @@ AVIRPCIDeviceForm.o: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
 AVIRPerformanceLogForm.o: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
 AVIRPingMonitorForm.o: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
 AVIRPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRPlaylistForm.cpp
+AVIRPostgreSQLForm.o: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
 AVIRPowerForm.o: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
 AVIRProcInfoForm.o: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
 AVIRProfiledResizerForm.o: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp

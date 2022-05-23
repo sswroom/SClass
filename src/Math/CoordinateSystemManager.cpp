@@ -148,16 +148,15 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(Text::CStrin
 {
 	UInt8 buff[512];
 	UOSInt buffSize;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
-		return 0;
+		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+		if (fs.IsError())
+		{
+			return 0;
+		}
+		buffSize = fs.Read(buff, 511);
+		buff[buffSize] = 0;
 	}
-	buffSize = fs->Read(buff, 511);
-	buff[buffSize] = 0;
-	DEL_CLASS(fs);
 	if (buffSize == 511)
 		return 0;
 

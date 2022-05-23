@@ -111,61 +111,58 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 
 	UOSInt i;
 	UOSInt colCnt;
-	Data::ICaseStringUTF8Map<ImageSetting*> *imgSettMap;
 	Data::ArrayList<ImageSetting*> *imgSettList;
 	ImageSetting *imgSett;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Parser::ParserList *parsers;
-	Text::UTF8Reader *reader;
-	IO::FileStream *fs;
 	IO::StmData::FileData *fd;
-	NEW_CLASS(imgSettMap, Data::ICaseStringUTF8Map<ImageSetting*>());
+	Data::ICaseStringUTF8Map<ImageSetting*> imgSettMap;
 	sptr3 = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	if (!fs->IsError())
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(&sb, 4096))
+		IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+		if (!fs.IsError())
 		{
-			sptr3 = sb.ToString();
-			colCnt = Text::StrSplit(sarr, 11, sptr3, '\t');
-			if (colCnt == 5)
+			Text::UTF8Reader reader(&fs);
+			while (reader.ReadLine(&sb, 4096))
 			{
-				imgSett = MemAlloc(ImageSetting, 1);
-				imgSett->flags = Text::StrToInt32(sarr[1]);
-				imgSett->brightness = Text::StrToDouble(sarr[2]);
-				imgSett->contrast = Text::StrToDouble(sarr[3]);
-				imgSett->gamma = Text::StrToDouble(sarr[4]);
-				imgSett->cropEnabled = false;
-				imgSett->cropLeft = 0;
-				imgSett->cropTop = 0;
-				imgSett->cropWidth = 0;
-				imgSett->cropHeight = 0;
-				imgSett = imgSettMap->Put(sarr[0], imgSett);
-				if (imgSett)
-					MemFree(imgSett);
+				sptr3 = sb.ToString();
+				colCnt = Text::StrSplit(sarr, 11, sptr3, '\t');
+				if (colCnt == 5)
+				{
+					imgSett = MemAlloc(ImageSetting, 1);
+					imgSett->flags = Text::StrToInt32(sarr[1]);
+					imgSett->brightness = Text::StrToDouble(sarr[2]);
+					imgSett->contrast = Text::StrToDouble(sarr[3]);
+					imgSett->gamma = Text::StrToDouble(sarr[4]);
+					imgSett->cropEnabled = false;
+					imgSett->cropLeft = 0;
+					imgSett->cropTop = 0;
+					imgSett->cropWidth = 0;
+					imgSett->cropHeight = 0;
+					imgSett = imgSettMap.Put(sarr[0], imgSett);
+					if (imgSett)
+						MemFree(imgSett);
+				}
+				else if (colCnt == 10)
+				{
+					imgSett = MemAlloc(ImageSetting, 1);
+					imgSett->flags = Text::StrToInt32(sarr[1]);
+					imgSett->brightness = Text::StrToDouble(sarr[2]);
+					imgSett->contrast = Text::StrToDouble(sarr[3]);
+					imgSett->gamma = Text::StrToDouble(sarr[4]);
+					imgSett->cropEnabled = Text::StrToInt32(sarr[5]) != 0;
+					imgSett->cropLeft = Text::StrToInt32(sarr[6]);
+					imgSett->cropTop = Text::StrToInt32(sarr[7]);
+					imgSett->cropWidth = Text::StrToInt32(sarr[8]);
+					imgSett->cropHeight = Text::StrToInt32(sarr[9]);
+					imgSett = imgSettMap.Put(sarr[0], imgSett);
+					if (imgSett)
+						MemFree(imgSett);
+				}
+				sb.ClearStr();
 			}
-			else if (colCnt == 10)
-			{
-				imgSett = MemAlloc(ImageSetting, 1);
-				imgSett->flags = Text::StrToInt32(sarr[1]);
-				imgSett->brightness = Text::StrToDouble(sarr[2]);
-				imgSett->contrast = Text::StrToDouble(sarr[3]);
-				imgSett->gamma = Text::StrToDouble(sarr[4]);
-				imgSett->cropEnabled = Text::StrToInt32(sarr[5]) != 0;
-				imgSett->cropLeft = Text::StrToInt32(sarr[6]);
-				imgSett->cropTop = Text::StrToInt32(sarr[7]);
-				imgSett->cropWidth = Text::StrToInt32(sarr[8]);
-				imgSett->cropHeight = Text::StrToInt32(sarr[9]);
-				imgSett = imgSettMap->Put(sarr[0], imgSett);
-				if (imgSett)
-					MemFree(imgSett);
-			}
-			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 
 	sptr3 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr3));
@@ -203,21 +200,23 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
 						simg2 = resizer.ProcessToNew(simg);
-						NEW_CLASS(imgList, Media::ImageList(CSTRP(sptr2, sptr2End)));
-						imgList->AddImage(simg2, 0);
-						mutUsage.BeginUse();
-						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-						exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, 0);
-						DEL_CLASS(fs);
-						mutUsage.EndUse();
-						DEL_CLASS(imgList);
+						{
+							Media::ImageList imgList(CSTRP(sptr2, sptr2End));
+							imgList.AddImage(simg2, 0);
+							mutUsage.BeginUse();
+							{
+								IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+								exporter.ExportFile(&fs, CSTRP(sbuff2, sptr2End), &imgList, 0);
+							}
+							mutUsage.EndUse();
+						}
 						DEL_CLASS(simg);
 
 						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
 						status->filePath = Text::String::NewP(sbuff, sptr3);
 						status->cacheFile = Text::String::NewP(sbuff2, sptr2End);
 						status->fileName = status->filePath->ToCString().Substring((UOSInt)(sptr - sbuff));
-						imgSett = imgSettMap->Get(sptr);
+						imgSett = imgSettMap.Get(sptr);
 						if (imgSett)
 						{
 							MemCopyNO(&status->setting, imgSett, sizeof(ImageSetting));
@@ -252,14 +251,13 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		IO::Path::FindFileClose(sess);
 	}
 
-	imgSettList = imgSettMap->GetValues();
+	imgSettList = imgSettMap.GetValues();
 	i = imgSettList->GetCount();
 	while (i-- > 0)
 	{
 		imgSett = imgSettList->GetItem(i);
 		MemFree(imgSett);
 	}
-	DEL_CLASS(imgSettMap);
 }
 
 void SSWR::AVIRead::AVIRImageControl::ExportQueued()
@@ -279,10 +277,8 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 
 	ImageStatus *status;
 	Media::StaticImage *img;
-	Media::ImageList *imgList;
 	Exporter::TIFFExporter tifExporter;
 	Exporter::GUIJPGExporter jpgExporter;
-	IO::FileStream *fs;
 	while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3)
 	{
 		Sync::MutexUsage mutUsage(this->exportMut);
@@ -296,35 +292,32 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 		{
 			this->ApplySetting(img, img, &status->setting);
 			sptr2 = status->fileName.ConcatTo(sptr);
-			NEW_CLASS(imgList, Media::ImageList(CSTRP(sbuff, sptr2)));
-			imgList->AddImage(img, 0);
+			Media::ImageList imgList(CSTRP(sbuff, sptr2));
+			imgList.AddImage(img, 0);
 			Sync::MutexUsage ioMutUsage(this->ioMut);
 			if (this->exportFmt == EF_JPG)
 			{
 				img->To32bpp();
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("jpg"));
-				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-				void *param = jpgExporter.CreateParam(imgList);
+				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				void *param = jpgExporter.CreateParam(&imgList);
 				if (param)
 				{
 					jpgExporter.SetParamInt32(param, 0, 100);
 				}
-				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, param);
+				jpgExporter.ExportFile(&fs, CSTRP(sbuff, sptr2), &imgList, param);
 				if (param)
 				{
 					jpgExporter.DeleteParam(param);
 				}
-				DEL_CLASS(fs);
 			}
 			else if (this->exportFmt == EF_TIF)
 			{
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
-				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, 0);
-				DEL_CLASS(fs);
+				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				tifExporter.ExportFile(&fs, CSTRP(sbuff, sptr2), &imgList, 0);
 			}
 			ioMutUsage.EndUse();
-			DEL_CLASS(imgList);
 		}
 		MemFree(status);
 
@@ -471,34 +464,32 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, cameraName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".gamma"));
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<Double> gammaVals;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	while (true)
 	{
-		Double val;
-		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 512))
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
+		while (true)
 		{
-			break;
+			Double val;
+			sb.ClearStr();
+			if (!reader.ReadLine(&sb, 512))
+			{
+				break;
+			}
+			if (Text::StrToDouble(sb.ToString(), &val))
+			{
+				gammaVals.Add(val);
+			}
 		}
-		if (Text::StrToDouble(sb.ToString(), &val))
+		if (gammaVals.GetCount() > 0)
 		{
-			gammaVals.Add(val);
+			UOSInt i;
+			camera->gammaCnt = (UInt32)gammaVals.GetCount();
+			camera->gammaParam = MemAlloc(Double, camera->gammaCnt);
+			MemCopyNO(camera->gammaParam, gammaVals.GetArray(&i), sizeof(Double) * camera->gammaCnt);
 		}
 	}
-	if (gammaVals.GetCount() > 0)
-	{
-		UOSInt i;
-		camera->gammaCnt = (UInt32)gammaVals.GetCount();
-		camera->gammaParam = MemAlloc(Double, camera->gammaCnt);
-		MemCopyNO(camera->gammaParam, gammaVals.GetArray(&i), sizeof(Double) * camera->gammaCnt);
-	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 
 	mutUsage.EndUse();
 	*gammaCnt = camera->gammaCnt;
@@ -926,8 +917,6 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
 	UOSInt i;
 	UOSInt j;
@@ -943,14 +932,13 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
 
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	writer->WriteSignature();
+	Text::UTF8Writer writer(&fs);
+	writer.WriteSignature();
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
 	i = 0;
@@ -968,12 +956,10 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		Text::SBAppendF64(&sb, status->setting.contrast);
 		sb.AppendC(UTF8STRC("\t"));
 		Text::SBAppendF64(&sb, status->setting.gamma);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
 	mutUsage.EndUse();
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
 	return true;
 }
 

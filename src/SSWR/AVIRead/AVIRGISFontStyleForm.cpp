@@ -10,9 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(void *userOb
 	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm*)userObj;
 	UOSInt newStyle = me->env->AddFontStyle(CSTR_NULL, CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
 
-	SSWR::AVIRead::AVIRGISFontEditForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontEditForm(0, me->ui, me->core, me->env, me->eng, newStyle));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->fontStyle = newStyle;
 		me->fsFonts->Redraw();
@@ -22,7 +21,6 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(void *userOb
 	{
 		me->env->RemoveFontStyle(newStyle);
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::RemoveStyleClicked(void *userObj)
@@ -36,16 +34,14 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::RemoveStyleClicked(void *use
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontStyleForm *me = (SSWR::AVIRead::AVIRGISFontStyleForm*)userObj;
-	SSWR::AVIRead::AVIRGISFontEditForm *frm;
 	if (me->fontStyle < me->env->GetFontStyleCount())
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRGISFontEditForm(0, me->ui, me->core, me->env, me->eng, me->fontStyle));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, me->fontStyle);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->fsFonts->Redraw();
 			me->changed = true;
 		}
-		DEL_CLASS(frm);
 	}
 }
 

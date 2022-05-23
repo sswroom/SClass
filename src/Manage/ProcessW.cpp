@@ -1076,7 +1076,6 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 
 		if (result)
 		{
-			IO::StreamReader *reader;
 			IO::FileStream *fs;
 			UTF8Char lineBuff[128];
 			UTF8Char *linePtr;
@@ -1091,13 +1090,14 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 				DEL_CLASS(fs);
 				Sync::Thread::Sleep(100);
 			}
-			NEW_CLASS(reader, IO::StreamReader(fs));
-			while ((linePtr = reader->ReadLine(lineBuff, 124)) != 0)
 			{
-				linePtr = reader->GetLastLineBreak(linePtr);
-				result->AppendP(lineBuff, linePtr);
+				IO::StreamReader reader(fs);
+				while ((linePtr = reader.ReadLine(lineBuff, 124)) != 0)
+				{
+					linePtr = reader.GetLastLineBreak(linePtr);
+					result->AppendP(lineBuff, linePtr);
+				}
 			}
-			DEL_CLASS(reader);
 			DEL_CLASS(fs);
 		}
 		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);

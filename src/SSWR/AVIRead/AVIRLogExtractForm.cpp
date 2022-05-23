@@ -11,41 +11,37 @@
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogExtractSFile", false));
-	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
-	dlg->SetAllowMultiSel(false);
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
+	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg.SetAllowMultiSel(false);
 	me->txtSFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtSFile->SetText(dlg->GetFileName()->ToCString());
+		me->txtSFile->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogExtractOFile", true));
-	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
+	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Text File"));
 	me->txtOFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtOFile->SetText(dlg->GetFileName()->ToCString());
+		me->txtOFile->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj)

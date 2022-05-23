@@ -260,44 +260,35 @@ const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index)
 
 Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut)
 {
-	IO::FileStream *fs;
 	UInt8 buff[64];
-
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	if (fs->Read(buff, 64) != 64)
+	if (fs.Read(buff, 64) != 64)
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	if (buff[0] != 'M' || buff[1] != 'Z')
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	UInt32 ofst = ReadUInt32(&buff[60]);
 	if ((ofst & 7) != 0 || ofst < 64)
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	fs->SeekFromBeginning(ofst);
-	if (fs->Read(buff, 64) != 64)
+	fs.SeekFromBeginning(ofst);
+	if (fs.Read(buff, 64) != 64)
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	if (buff[0] != 'P' || buff[1] != 'E' || buff[2] != 0 || buff[3] != 0)
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	fileTimeOut->SetUnixTimestamp(ReadUInt32(&buff[8]));
-	DEL_CLASS(fs);
 	return true;
 }
 

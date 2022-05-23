@@ -117,7 +117,6 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt db
 {
 	this->db1 = db;
 	this->dbSize = dbSize / 200;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
@@ -132,16 +131,14 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt db
 	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	this->stopping = false;
-	NEW_CLASS(dbList, Data::ArrayList<DB::DBHandler *>());
 	DB::DBHandler *dbHdlr;
 	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
-	dbList->Add(dbHdlr);
+	this->dbList.Add(dbHdlr);
 }
 
 DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::String *name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->dbSize = dbSize / 200;
 	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
@@ -157,13 +154,12 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::Stri
 	this->name = name->Clone();
 	this->nextDB = 0;
 	stopping = false;
-	NEW_CLASS(dbList, Data::ArrayList<DBHandler*>())
 	i = 0;
 	while (i < dbs->GetCount())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, (DB::DBTool *)dbs->GetItem(i)));
-		dbList->Add(dbHdlr);
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, dbs->GetItem(i)));
+		this->dbList.Add(dbHdlr);
 		i += 1;
 	}
 }
@@ -171,7 +167,6 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::Stri
 DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->dbSize = dbSize / 200;
 	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
@@ -187,13 +182,12 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CStr
 	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	stopping = false;
-	NEW_CLASS(dbList, Data::ArrayList<DBHandler*>())
 	i = 0;
 	while (i < dbs->GetCount())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, (DB::DBTool *)dbs->GetItem(i)));
-		dbList->Add(dbHdlr);
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, dbs->GetItem(i)));
+		this->dbList.Add(dbHdlr);
 		i += 1;
 	}
 }
@@ -209,14 +203,14 @@ DB::DBQueue::~DBQueue()
 	IO::FileStream *fs = 0;
 	Text::UTF8Writer *writer = 0;
 	DB::DBHandler *dbHdlr;
-	i = dbList->GetCount();
+	i = this->dbList.GetCount();
 	while (i-- > 0)
 	{
-		dbHdlr = dbList->GetItem(i);
+		dbHdlr = this->dbList.GetItem(i);
 		DEL_CLASS(dbHdlr);
 	}
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
@@ -272,15 +266,13 @@ DB::DBQueue::~DBQueue()
 	MemFree(sqlList);
 	MemFree(sqlList2);
 	this->name->Release();
-	DEL_CLASS(dbList);
-	DEL_CLASS(this->mut);
 }
 
 void DB::DBQueue::AddDB(DB::DBTool *db)
 {
 	DB::DBHandler *dbHdlr;
 	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
-	dbList->Add(dbHdlr);
+	this->dbList.Add(dbHdlr);
 }
 
 void DB::DBQueue::ToStop()
@@ -289,10 +281,10 @@ void DB::DBQueue::ToStop()
 	{
 		stopping = true;
 		UOSInt i;
-		i = dbList->GetCount();
+		i = this->dbList.GetCount();
 		while (i-- > 0)
 		{
-			((DB::DBHandler *)dbList->GetItem(i))->Wake();
+			this->dbList.GetItem(i)->Wake();
 		}
 	}
 }
@@ -309,7 +301,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, 
 	if (priority < DB::DBQueue::Priority::Lowest)
 		priority = DB::DBQueue::Priority::Lowest;
 	UOSInt ipriority = (UOSInt)priority;
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	SQLCmd *cmd;
 	NEW_CLASS(cmd, SQLCmd(sql, sqlLen, progId, hdlr, userData, userData2));
 	sqlList[ipriority]->Add(cmd);
@@ -347,8 +339,8 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, 
 			sqlList2[ipriority]->Add(sqlArr);
 		}
 	}
-	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
-	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
+	this->dbList.GetItem(this->nextDB)->Wake();
+	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
 	mutUsage.EndUse();
 }
 
@@ -361,10 +353,10 @@ void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, voi
 	UOSInt ipriority = (UOSInt)priority;
 	DB::DBQueue::SQLTrans *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	sqlList[ipriority]->Add(trans);
-	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
-	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
+	this->dbList.GetItem(this->nextDB)->Wake();
+	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
 	mutUsage.EndUse();
 }
 
@@ -377,10 +369,10 @@ void DB::DBQueue::GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *
 	UOSInt ipriority = (UOSInt)priority;
 	DB::DBQueue::SQLGetDB *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLGetDB(progId, hdlr, userData, userData2));
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	sqlList[ipriority]->Add(trans);
-	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
-	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
+	this->dbList.GetItem(this->nextDB)->Wake();
+	this->nextDB = (this->nextDB + 1) % this->dbList.GetCount();
 	mutUsage.EndUse();
 }
 
@@ -389,7 +381,7 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	UOSInt j;
 	DB::DBQueue::IDBCmd *cmd;
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	while (i-- > 0)
 	{
 		j = sqlList[i]->GetCount();
@@ -408,11 +400,11 @@ void DB::DBQueue::RemoveSQLs(Int32 progId)
 
 UOSInt DB::DBQueue::GetDataCnt()
 {
-	UOSInt i = dbList->GetCount();
+	UOSInt i = this->dbList.GetCount();
 	UOSInt cnt = 0;
 	while (i-- > 0)
 	{
-		cnt += ((DB::DBHandler*)dbList->GetItem(i))->GetDataCnt();
+		cnt += this->dbList.GetItem(i)->GetDataCnt();
 	}
 	return cnt;
 }
@@ -421,7 +413,7 @@ UOSInt DB::DBQueue::GetQueueCnt()
 {
 	UOSInt cnt = 0;
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	while (i-- > 0)
 	{
 		cnt += sqlList2[i]->GetCount() * 200;
@@ -433,7 +425,7 @@ UOSInt DB::DBQueue::GetQueueCnt()
 
 UOSInt DB::DBQueue::GetConnCnt()
 {
-	return this->dbList->GetCount();
+	return this->dbList.GetCount();
 }
 
 UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
@@ -453,7 +445,7 @@ Int8 DB::DBQueue::GetTzQhr()
 
 UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	void **c;
 	UOSInt i;
 	UOSInt j;
@@ -525,10 +517,10 @@ Bool DB::DBQueue::IsExecTimeout()
 	UOSInt i;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	i = this->dbList->GetCount();
+	i = this->dbList.GetCount();
 	while (i-- > 0)
 	{
-		db = ((DB::DBHandler *)dbList->GetItem(i));
+		db = this->dbList.GetItem(i);
 		if (db->IsTimeout(&dt))
 		{
 			return true;
@@ -539,9 +531,6 @@ Bool DB::DBQueue::IsExecTimeout()
 
 DB::DBHandler::DBHandler(DB::DBQueue *dbQ, DB::DBTool *db)
 {
-	NEW_CLASS(this->evt, Sync::Event(true));
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->procTime, Data::DateTime());
 	this->processing = false;
 	this->dbQ = dbQ;
 	this->db = db;
@@ -555,10 +544,7 @@ DB::DBHandler::~DBHandler()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->procTime);
 	DEL_CLASS(this->db);
-	DEL_CLASS(this->evt);
-	DEL_CLASS(this->mut);
 }
 
 UInt32 DB::DBHandler::GetDataCnt()
@@ -569,16 +555,14 @@ UInt32 DB::DBHandler::GetDataCnt()
 void DB::DBHandler::WriteError(const UTF8Char *errMsg, Text::String *sqlCmd)
 {
 	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::ILogHandler::LOG_LEVEL_ERROR);
-	Text::UTF8Writer *writer;
-	IO::FileStream *fs;
 
-	Sync::MutexUsage mutUsage(this->mut);
-	NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	writer->WriteStrC(sqlCmd->v, sqlCmd->leng);
-	writer->WriteLineC(UTF8STRC(";"));
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
+	Sync::MutexUsage mutUsage(&this->mut);
+	{
+		IO::FileStream fs(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Writer writer(&fs);
+		writer.WriteStrC(sqlCmd->v, sqlCmd->leng);
+		writer.WriteLineC(UTF8STRC(";"));
+	}
 	mutUsage.EndUse();
 }
 
@@ -596,10 +580,10 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 	UOSInt l;
 	DB::DBQueue::IDBCmd *c;
 	OSInt sqlRet;
-	bool found;
+	Bool found;
 	while (!me->dbQ->stopping)
 	{
-		me->evt->Wait(1000);
+		me->evt.Wait(1000);
 		if (me->dbQ->stopping)
 			break;
 		found = true;
@@ -609,7 +593,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 			cmdSize = me->dbQ->GetNextCmds(cmds);
 			if (cmdSize > 0)
 			{
-				me->procTime->SetCurrTimeUTC();
+				me->procTime.SetCurrTimeUTC();
 				me->processing = true;
 				l = 0;
 				while (l < cmdSize)
@@ -618,7 +602,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 					switch (c->GetCmdType())
 					{
 					case DB::DBQueue::CmdType::SQLCmd:
-						me->procTime->SetCurrTimeUTC();
+						me->procTime.SetCurrTimeUTC();
 						cmd = (DB::DBQueue::SQLCmd*)c;
 						s = cmd->str;
 						if (cmd->hdlr == 0)
@@ -670,7 +654,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 					case DB::DBQueue::CmdType::SQLTrans:
 						{
 							Bool res = false;
-							me->procTime->SetCurrTimeUTC();
+							me->procTime.SetCurrTimeUTC();
 							me->db->BeginTrans();
 							DB::DBQueue::SQLTrans *obj = (DB::DBQueue::SQLTrans*)c;
 							res = obj->hdlr(obj->userData, obj->userData2, me->db);
@@ -684,7 +668,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 					case DB::DBQueue::CmdType::SQLGetDB:
 						{
 							Bool res = false;
-							me->procTime->SetCurrTimeUTC();
+							me->procTime.SetCurrTimeUTC();
 							DB::DBQueue::SQLGetDB *obj = (DB::DBQueue::SQLGetDB*)c;
 							res = obj->hdlr(obj->userData, obj->userData2, me->db);
 							if (res == false)
@@ -697,7 +681,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 						{
 							Bool hasError = false;
 							grp = (DB::DBQueue::SQLGroup *)c;
-							me->procTime->SetCurrTimeUTC();
+							me->procTime.SetCurrTimeUTC();
 							me->db->BeginTrans();
 							UOSInt k;
 							k = 0;
@@ -783,12 +767,12 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 
 void DB::DBHandler::Wake()
 {
-	evt->Set();
+	this->evt.Set();
 }
 
 Bool DB::DBHandler::IsTimeout(Data::DateTime *currTime)
 {
 	if (!this->processing)
 		return false;
-	return currTime->DiffMS(this->procTime) > 60000;
+	return currTime->DiffMS(&this->procTime) > 60000;
 }

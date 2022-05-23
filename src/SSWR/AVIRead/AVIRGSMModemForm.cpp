@@ -42,9 +42,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 		}
 
 		currTime->SetCurrTimeUTC();
-		if (currTime->CompareTo(me->operNextTime) >= 0)
+		if (currTime->CompareTo(&me->operNextTime) >= 0)
 		{
-			me->operNextTime->AddSecond(30);
+			me->operNextTime.AddSecond(30);
 			if ((sptr = me->modem->GSMGetCurrPLMN(sbuff)) != 0)
 			{
 				SDEL_STRING(me->operName);
@@ -53,7 +53,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 			}
 		}
 		me->modem->GSMGetSignalQuality(&me->signalQuality, &ber);
-		me->modemEvt->Wait(1000);
+		me->modemEvt.Wait(1000);
 	}
 	DEL_CLASS(currTime);
 	me->running = false;
@@ -119,13 +119,12 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 	sms = (IO::GSMModemController::SMSMessage *)me->lvSMS->GetSelectedItem();
 	if (sms)
 	{
-		UI::FileDialog *dlg;
 		Data::DateTime dt;
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 		smsMsg->GetMessageTime(&dt);
 
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SMSSave", true));
-		dlg->AddFilter(CSTR("*.sms"), CSTR("SMS File"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"SMSSave", true);
+		dlg.AddFilter(CSTR("*.sms"), CSTR("SMS File"));
 		
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("SMS"));
 		sptr = Text::StrInt64(sptr, dt.ToDotNetTicks());
@@ -134,32 +133,26 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress());
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sms"));
-		dlg->SetFileName(CSTRP(sbuff, sptr));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
 
-		if (dlg->ShowDialog(me->GetHandle()))
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream *fs;
-			Text::UTF8Writer *writer;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			NEW_CLASS(writer, Text::UTF8Writer(fs));
-			writer->WriteSignature();
-			writer->WriteStrC(UTF8STRC("From: "));
-			writer->WriteLineW(smsMsg->GetAddress());
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			Text::UTF8Writer writer(&fs);
+			writer.WriteSignature();
+			writer.WriteStrC(UTF8STRC("From: "));
+			writer.WriteLineW(smsMsg->GetAddress());
 			if (smsMsg->GetSMSC())
 			{
-				writer->WriteStrC(UTF8STRC("SMSC: "));
-				writer->WriteLineW(smsMsg->GetSMSC());
+				writer.WriteStrC(UTF8STRC("SMSC: "));
+				writer.WriteLineW(smsMsg->GetSMSC());
 			}
-			writer->WriteStrC(UTF8STRC("Date: "));
+			writer.WriteStrC(UTF8STRC("Date: "));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-			writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("Content: "));
-			writer->WriteLineW(smsMsg->GetContent());
-			
-			DEL_CLASS(writer);
-			DEL_CLASS(fs);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("Content: "));
+			writer.WriteLineW(smsMsg->GetContent());
 		}
-		DEL_CLASS(dlg);
 		DEL_CLASS(smsMsg);
 	}
 }
@@ -171,12 +164,12 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(void *userObj)
 	UOSInt index = me->lvSMS->GetSelectedIndex();
 	if (index != INVALID_INDEX)
 	{
-		sms = me->msgList->GetItem(index);
+		sms = me->msgList.GetItem(index);
 		if (me->modem->SMSDeleteMessage(sms->index))
 		{
 			me->modem->SMSFreeMessage(sms);
 			me->lvSMS->RemoveItem(index);
-			me->msgList->RemoveAt(index);
+			me->msgList.RemoveAt(index);
 		}
 	}
 }
@@ -188,13 +181,10 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::SMSMessage *smsMsg;
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	if (me->lvSMS->GetCount() > 0)
 	{
-		UI::FolderDialog *dlg;
-		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"SMSSaveAll"));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"SMSSaveAll");
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
 			UOSInt i = 0;
 			UOSInt j = me->lvSMS->GetCount();
@@ -206,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 				smsMsg->GetMessageTime(&dt);
 				sb.ClearStr();
-				sb.Append(dlg->GetFolder());
+				sb.Append(dlg.GetFolder());
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.AppendC(UTF8STRC("SMS"));
 				sb.AppendI64(dt.ToDotNetTicks());
@@ -218,24 +208,21 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				s->Release();
 				sb.AppendC(UTF8STRC(".sms"));
 
-				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				NEW_CLASS(writer, Text::UTF8Writer(fs));
-				writer->WriteSignature();
-				writer->WriteStrC(UTF8STRC("From: "));
-				writer->WriteLineW(smsMsg->GetAddress());
+				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				Text::UTF8Writer writer(&fs);
+				writer.WriteSignature();
+				writer.WriteStrC(UTF8STRC("From: "));
+				writer.WriteLineW(smsMsg->GetAddress());
 				if (smsMsg->GetSMSC())
 				{
-					writer->WriteStrC(UTF8STRC("SMSC: "));
-					writer->WriteLineW(smsMsg->GetSMSC());
+					writer.WriteStrC(UTF8STRC("SMSC: "));
+					writer.WriteLineW(smsMsg->GetSMSC());
 				}
-				writer->WriteStrC(UTF8STRC("Date: "));
+				writer.WriteStrC(UTF8STRC("Date: "));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteLineC(UTF8STRC("Content: "));
-				writer->WriteLineW(smsMsg->GetContent());
-				
-				DEL_CLASS(writer);
-				DEL_CLASS(fs);
+				writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteLineC(UTF8STRC("Content: "));
+				writer.WriteLineW(smsMsg->GetContent());
 				i++;
 			}
 		}
@@ -278,21 +265,21 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	UOSInt k;
 	UOSInt i;
 	UOSInt j;
-	this->modem->SMSFreeMessages(this->msgList);
+	this->modem->SMSFreeMessages(&this->msgList);
 	this->lvSMS->ClearItems();
-	this->msgList->Clear();
+	this->msgList.Clear();
 
 	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)(OSInt)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex());
 
 	this->modem->SMSSetStorage(store, IO::GSMModemController::SMSSTORE_SIM, IO::GSMModemController::SMSSTORE_SIM);
 	sptr = this->modem->SMSGetSMSC(sbuff);
 	this->txtSMSC->SetText(CSTRP(sbuff, sptr));
-	this->modem->SMSListMessages(this->msgList, IO::GSMModemController::SMSS_ALL);
+	this->modem->SMSListMessages(&this->msgList, IO::GSMModemController::SMSS_ALL);
 	i = 0;
-	j = this->msgList->GetCount();
+	j = this->msgList.GetCount();
 	while (i < j)
 	{
-		sms = this->msgList->GetItem(i);
+		sms = this->msgList.GetItem(i);
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 #if _WCHAR_SIZE == 2
 		k = this->lvSMS->AddItem(smsMsg->GetAddress(), sms);
@@ -328,7 +315,6 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->port = port;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->msgList, Data::ArrayList<IO::GSMModemController::SMSMessage*>());
 	this->signalQuality = IO::GSMModemController::RSSI_UNKNOWN;
 	this->operUpdated = false;
 	this->operName = 0;
@@ -337,9 +323,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->initModemModel = 0;
 	this->initModemVer = 0;
 	this->initIMEI = 0;
-
-	NEW_CLASS(this->operNextTime, Data::DateTime());
-	this->operNextTime->SetCurrTimeUTC();
+	this->operNextTime.SetCurrTimeUTC();
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -439,7 +423,6 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NEW_CLASS(this->modemEvt, Sync::Event(true));
 	this->toStop = false;
 	this->running = false;
 	Sync::Thread::Create(ModemThread, this);
@@ -452,7 +435,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 {
 	this->toStop = true;
-	this->modemEvt->Set();
+	this->modemEvt.Set();
 	this->port->Close();
 	this->channel->Close();
 	while (this->running)
@@ -460,15 +443,11 @@ SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 		Sync::Thread::Sleep(10);
 	}
 
-	this->modem->SMSFreeMessages(this->msgList);
-	DEL_CLASS(this->msgList);
+	this->modem->SMSFreeMessages(&this->msgList);
 
 	DEL_CLASS(this->modem);
 	DEL_CLASS(this->channel);
 	DEL_CLASS(this->port);
-
-	DEL_CLASS(this->modemEvt);
-	DEL_CLASS(this->operNextTime);
 
 	SDEL_STRING(this->operName);
 	SDEL_STRING(this->initModemManu);

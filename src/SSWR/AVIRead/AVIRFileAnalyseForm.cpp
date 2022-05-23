@@ -25,27 +25,25 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, Tex
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MPEGTool", false));
-	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MPEGTool", false);
+	IO::FileAnalyse::IFileAnalyse::AddFilters(&dlg);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->OpenFile(dlg->GetFileName()->ToCString());
+		me->OpenFile(dlg.GetFileName()->ToCString());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
-	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true));
-	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
+	dlg.AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	me->txtFile->GetText(&sb);
-	dlg->SetFileName(sb.ToCString());
-	if (dlg->ShowDialog(me->GetHandle()))
+	dlg.SetFileName(sb.ToCString());
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		if (me->file->TrimPadding(dlg->GetFileName()->ToCString()))
+		if (me->file->TrimPadding(dlg.GetFileName()->ToCString()))
 		{
 		}
 		else
@@ -53,7 +51,6 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 			UI::MessageDialog::ShowDialog(CSTR("Error in saving the file"), CSTR("Error"), me);
 		}
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)

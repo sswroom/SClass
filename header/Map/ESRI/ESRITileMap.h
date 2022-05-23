@@ -4,6 +4,7 @@
 #include "Map/TileMap.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Text/String.h"
 
 namespace Map
 {
@@ -12,8 +13,8 @@ namespace Map
 		class ESRITileMap : public Map::TileMap
 		{
 		private:
-			const UTF8Char *url;
-			const UTF8Char *cacheDir;
+			Text::String *url;
+			Text::String *cacheDir;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Math::Coord2DDbl ori;
@@ -23,10 +24,10 @@ namespace Map
 
 			UOSInt tileWidth;
 			UOSInt tileHeight;
-			Data::ArrayListDbl *levels;
+			Data::ArrayListDbl levels;
 
 		public:
-			ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			ESRITileMap(Text::String *url, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~ESRITileMap();
 
 			virtual Text::CString GetName();
@@ -54,6 +55,6 @@ namespace Map
 			static Double Lon2WebMercatorX(Double lon);
 			static Double Lat2WebMercatorY(Double lat);
 		};
-	};
-};
+	}
+}
 #endif

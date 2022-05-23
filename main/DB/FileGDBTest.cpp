@@ -1001,12 +1001,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			fileGDB->CloseReader(r);
 
 			sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/Lamppost.csv"));
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			clk.Start();
-			DB::DBUtil::SaveCSV(fs, &lamppostList, cls);
-			t2 = clk.GetTimeDiff();
-			DEL_CLASS(fs);
+			{
+				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				clk.Start();
+				DB::DBUtil::SaveCSV(&fs, &lamppostList, cls);
+				t2 = clk.GetTimeDiff();
+			}
 			
 
 			Data::ArrayList<Lamppost*> lamppostListCSV;

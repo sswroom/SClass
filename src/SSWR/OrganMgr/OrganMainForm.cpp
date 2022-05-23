@@ -2877,11 +2877,11 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_MANAGE_GROUP:
 		{
-/*			frmMainGrpType *frm = new frmMainGrpType();
-			frm->grps = this->grpTypes;
-			frm->db = this->db;
-			frm->cate = this->cate;
-			frm->ShowDialog(this);
+/*			frmMainGrpType frm;
+			frm.grps = this->grpTypes;
+			frm.db = this->db;
+			frm.cate = this->cate;
+			frm.ShowDialog(this);
 			FillGroupCboBox();*/
 		}
 		break;
@@ -3075,8 +3075,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			this->ClosePercentage();
 			if (missDates->Count > 0)
 			{
-				frmDateList *frm = new frmDateList(trips, missDates);
-				frm->ShowDialog(this);
+				frmDateList frm(trips, missDates);
+				frm.ShowDialog(this);
 			}*/
 		}
 		break;

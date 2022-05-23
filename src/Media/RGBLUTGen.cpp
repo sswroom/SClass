@@ -595,24 +595,9 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destP
 			rgbTable[i + 196608] = 255;
 		else
 			rgbTable[i + 196608] = (UInt8)((i >> (nBitLRGB - 8)) & 0xff);
-		if (rV > 255.0)
-			rgbTable[i + 131072] = 255;
-		else if (rV < 0)
-			rgbTable[i + 131072] = 0;
-		else
-			rgbTable[i + 131072] = (UInt8)Double2Int32(rV);
-		if (gV > 255.0)
-			rgbTable[i + 65536] = 255;
-		else if (gV < 0)
-			rgbTable[i + 65536] = 0;
-		else
-			rgbTable[i + 65536] = (UInt8)Double2Int32(gV);
-		if (bV > 255.0)
-			rgbTable[i + 0] = 255;
-		else if (bV < 0)
-			rgbTable[i + 0] = 0;
-		else
-			rgbTable[i + 0] = (UInt8)Double2Int32(bV);
+		rgbTable[i + 131072] = Math::SDouble2UInt8(rV);
+		rgbTable[i + 65536] = Math::SDouble2UInt8(gV);
+		rgbTable[i + 0] = Math::SDouble2UInt8(bV);
 	}
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);

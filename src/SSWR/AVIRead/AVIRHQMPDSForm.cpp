@@ -577,15 +577,14 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_FILE_OPEN:
 		{
-			SSWR::AVIRead::AVIROpenFileForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::MediaFile));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = dlg->GetFileName();
+				Text::String *fname = dlg.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
-					this->OpenFile(dlg->GetFileName()->ToCString());
+					this->OpenFile(dlg.GetFileName()->ToCString());
 				}
 				else
 				{
@@ -607,55 +606,46 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 					}
 				}
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
-			SSWR::AVIRead::AVIRCaptureDevForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRCaptureDevForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char* sptr;
 				Media::MediaFile *mf;
-				sptr = dlg->capture->GetSourceName(sbuff);
+				sptr = dlg.capture->GetSourceName(sbuff);
 				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-				mf->AddSource(dlg->capture, 0);
+				mf->AddSource(dlg.capture, 0);
 				this->OpenVideo(mf);
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_FILE_PLAYLIST:
 		{
-			SSWR::AVIRead::AVIRHQMPPlaylistForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRHQMPPlaylistForm(0, this->ui, this->core, this->playlist));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRHQMPPlaylistForm dlg(0, this->ui, this->core, this->playlist);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->currPBC->StopPlayback();
 				SDEL_CLASS(this->playlist);
-				this->playlist = dlg->GetPlaylist();
+				this->playlist = dlg.GetPlaylist();
 				this->playlist->SetPlayer(this->player);
 				this->currPBC = this->playlist;
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_FILE_MON_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRColorSettingForm(0, this->ui, this->core, this->GetHMonitor()));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRColorSettingForm dlg(0, this->ui, this->core, this->GetHMonitor());
+			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_FILE_AUDIO_DEV:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRSetAudioForm(0, this->ui, this->core));
-			dlg->ShowDialog(this);
-			DEL_CLASS(dlg);
+			SSWR::AVIRead::AVIRSetAudioForm dlg(0, this->ui, this->core);
+			dlg.ShowDialog(this);
 			this->player->SwitchAudio(0);
 		}
 		break;
@@ -744,26 +734,24 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt vh;
 			if (this->player->GetVideoSize(&vw, &vh))
 			{
-				UOSInt w1;
-				UOSInt h1;
-				UOSInt w2;
-				UOSInt h2;
+				Math::Size2D<UOSInt> size1;
+				Math::Size2D<UOSInt> size2;
 
 				if (this->vbox->IsFullScreen())
 				{
 					this->vbox->SwitchFullScreen(false, false);
 				}
-				this->vbox->GetSizeP(&w1, &h1);
-				this->GetSizeP(&w2, &h2);
+				size1 = this->vbox->GetSizeP();
+				size2 = this->GetSizeP();
 
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
-				if (w1 == vw && h1 == vh)
+				if (size1.width == vw && size1.height == vh)
 				{
 					this->vbox->OnSizeChanged(false);
 				}
 				else
 				{
-					this->SetSizeP(w2 - w1 + vw, h2 - h1 + vh);
+					this->SetSizeP(size2.width - size1.width + vw, size2.height - size1.height + vh);
 				}
 			}
 		}

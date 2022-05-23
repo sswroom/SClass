@@ -11,20 +11,18 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 {
 	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *dlg;
 	me->txtRoadCenterline->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HKTraffic", false));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTraffic", false);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	dlg->SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
-	if (dlg->ShowDialog(me->GetHandle()))
+	dlg.SetAllowMultiSel(false);
+	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::MapLayer);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadCenterline->SetText(dlg->GetFileName()->ToCString());
+		me->txtRoadCenterline->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)

@@ -61,7 +61,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = currOfst + j;
 				pack->packSize = 4;
 				pack->packType = 0xb9;
-				me->packs->Add(pack);
+				me->packs.Add(pack);
 				break;
 			}
 			if (readBuff[j + 3] == 0xba) 
@@ -82,7 +82,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
 				pack->packType = 0xba;
-				me->packs->Add(pack);
+				me->packs.Add(pack);
 			}
 			else
 			{
@@ -91,7 +91,7 @@ UInt32 __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = currOfst + j;
 				pack->packSize = frameSize;
 				pack->packType = readBuff[j + 3];
-				me->packs->Add(pack);
+				me->packs.Add(pack);
 			}
 			if (j + frameSize < buffSize)
 			{
@@ -119,7 +119,6 @@ IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::MPEGFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadMInt32(buff) != 0x000001ba)
 	{
@@ -156,8 +155,7 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
@@ -167,13 +165,13 @@ Text::CString IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -218,7 +216,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -756,13 +754,13 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -786,7 +784,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

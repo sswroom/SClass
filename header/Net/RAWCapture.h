@@ -35,7 +35,7 @@ namespace Net
 		Net::SocketMonitor *socMon;
 		IO::Stream *fs;
 		FileFormat format;
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		UInt64 packetCnt;
 		UInt64 dataSize;
 	

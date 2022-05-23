@@ -25,12 +25,12 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 	pack->fileOfst = 0;
 	pack->packSize = 140;
 	pack->packType = 0;
-	me->packs->Add(pack);
+	me->packs.Add(pack);
 	pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
 	pack->fileOfst = 140;
 	pack->packSize = 136;
 	pack->packType = 1;
-	me->packs->Add(pack);
+	me->packs.Add(pack);
 
 	endOfst = me->fd->GetDataSize();
 	ofst = 276;
@@ -53,13 +53,13 @@ UInt32 __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(void *userObj)
 			pack->fileOfst = ofst;
 			pack->packSize = 12;
 			pack->packType = 2;
-			me->packs->Add(pack);
+			me->packs.Add(pack);
 			
 			pack = MemAlloc(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo, 1);
 			pack->fileOfst = ofst + 12;
 			pack->packSize = sz;
 			pack->packType = 3;
-			me->packs->Add(pack);
+			me->packs.Add(pack);
 
 			ofst += sz + 12;
 		}
@@ -90,11 +90,8 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->extMap, Data::Int32Map<UInt8*>());
-
 	this->hasLZODecomp = true;
 
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 0x0c || buff[1] != 0xa5 || buff[2] != 1 || buff[3] != 0)
 	{
@@ -119,11 +116,9 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	Data::ArrayList<UInt8*> *extList = this->extMap->GetValues();
+	LIST_FREE_FUNC(&this->packs, MemFree);
+	Data::ArrayList<UInt8*> *extList = this->extMap.GetValues();
 	LIST_FREE_FUNC(extList, MemFree);
-	DEL_CLASS(this->extMap);
-	DEL_CLASS(this->packs);
 }
 
 Text::CString IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
@@ -133,13 +128,13 @@ Text::CString IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -176,7 +171,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -412,7 +407,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 							j += 4;
 						}
-						extBuff = this->extMap->Get(ReadUInt16(&decBuff[i + 6]));
+						extBuff = this->extMap.Get(ReadUInt16(&decBuff[i + 6]));
 						if (extBuff)
 						{
 							OSInt extId;
@@ -632,13 +627,13 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 							j++;
 							k += 2;
 						}
-						extBuff = this->extMap->Get(ReadUInt16(&decBuff[i + 4]));
+						extBuff = this->extMap.Get(ReadUInt16(&decBuff[i + 4]));
 						if (extBuff == 0)
 						{
 							extBuff = MemAlloc(UInt8, recSize - 4);
 							MemCopyNO(extBuff, &decBuff[i + 4], recSize - 4);
 							WriteInt16(&extBuff[2], recSize - 4);
-							this->extMap->Put(ReadUInt16(&decBuff[i + 4]), extBuff);
+							this->extMap.Put(ReadUInt16(&decBuff[i + 4]), extBuff);
 						}
 					}
 					else if (recType == 3)
@@ -743,13 +738,13 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -771,7 +766,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	IO::FileAnalyse::FrameDetail *frame;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

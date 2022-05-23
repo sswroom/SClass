@@ -9,15 +9,15 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, Text::S
 {
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	UOSInt i;
-	IO::FileStream *fs;
 	UInt8 *buff = MemAlloc(UInt8, 1048576);
 	UOSInt fileSize;
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fs, IO::FileStream(files[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
-		fileSize = fs->Read(buff, 1048576);
-		DEL_CLASS(fs);
+		{
+			IO::FileStream fs(files[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
+			fileSize = fs.Read(buff, 1048576);
+		}
 		if (fileSize == 0 || fileSize >= 1048576)
 		{
 		}

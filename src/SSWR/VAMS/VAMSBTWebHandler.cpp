@@ -74,10 +74,8 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(Net::WebServer::IWebRequest
 		*sptr++ = '_';
 		sptr = Text::StrInt32(sptr, logDate);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".log"));
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fs->Write(reqData, dataSize);
-		DEL_CLASS(fs);
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fs.Write(reqData, dataSize);
 		return resp->ResponseJSONStr(req, 0, CSTR("{\"status\":\"ok\"}"));
 	}
 	else

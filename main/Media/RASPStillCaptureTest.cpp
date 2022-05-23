@@ -8,42 +8,41 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Media::MMALStillCapture *capture;
 	IO::ConsoleWriter console;
-	NEW_CLASS(capture, Media::MMALStillCapture());
-	if (capture->DeviceBegin())
+	Media::MMALStillCapture capture;
+	if (capture.DeviceBegin())
 	{
-		IO::FileStream *fs;
 		Media::IPhotoCapture::PhotoFormat pf;
 		Sync::Thread::Sleep(5000);
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.jpg", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!capture->CapturePhoto(&pf, fs))
 		{
-			console.WriteLineC(UTF8STRC("Error in capturing image");
+			IO::FileStream fs(CSTR("Capture.jpg"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!capture.CapturePhoto(&pf, &fs))
+			{
+				console.WriteLineC(UTF8STRC("Error in capturing image"));
+			}
+			else
+			{
+				console.WriteLineC(UTF8STRC("Image captured to Capture.jpg"));
+			}
 		}
-		else
-		{
-			console.WriteLineC(UTF8STRC("Image captured to Capture.jpg");
-		}
-		DEL_CLASS(fs);
 
 		Sync::Thread::Sleep(5000);
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture2.jpg", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!capture->CapturePhoto(&pf, fs))
 		{
-			console.WriteLineC(UTF8STRC("Error in capturing image");
+			IO::FileStream fs(CSTR("Capture2.jpg"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!capture.CapturePhoto(&pf, &fs))
+			{
+				console.WriteLineC(UTF8STRC("Error in capturing image"));
+			}
+			else
+			{
+				console.WriteLineC(UTF8STRC("Image captured to Capture2.jpg"));
+			}
 		}
-		else
-		{
-			console.WriteLineC(UTF8STRC("Image captured to Capture2.jpg");
-		}
-		DEL_CLASS(fs);
-		capture->DeviceEnd();
+		capture.DeviceEnd();
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Error in begin capture");
+		console.WriteLineC(UTF8STRC("Error in begin capture"));
 	}
-	DEL_CLASS(capture);
 	return 0;
 }

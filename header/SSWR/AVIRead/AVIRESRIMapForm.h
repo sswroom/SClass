@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRESRIMAPFORM
 #define _SM_SSWR_AVIREAD_AVIRESRIMAPFORM
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -31,7 +32,7 @@ namespace SSWR
 			UI::GUITextBox *txtOther;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
-			const UTF8Char *url;
+			Text::String *url;
 
 
 			static void __stdcall OKClicked(void *userObj);
@@ -42,8 +43,8 @@ namespace SSWR
 			virtual ~AVIRESRIMapForm();
 
 			virtual void OnMonitorChanged();
-			const UTF8Char *GetSelectedURL();
+			Text::String *GetSelectedURL();
 		};
-	};
-};
+	}
+}
 #endif

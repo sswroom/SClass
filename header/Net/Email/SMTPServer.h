@@ -19,11 +19,11 @@ namespace Net
 		public:
 			typedef struct
 			{
-				UInt8 *buff;
+				UInt8 buff[4096];
 				UOSInt buffSize;
 				Text::String *cliName;
 				Text::String *mailFrom;
-				Data::ArrayList<Text::String *> *rcptTo;
+				Data::ArrayList<Text::String *> rcptTo;
 				Bool dataMode;
 				Int32 loginMode;
 				IO::MemoryStream *dataStm;
@@ -39,7 +39,7 @@ namespace Net
 			Net::SSLEngine *ssl;
 			Net::Email::SMTPConn::ConnType connType;
 			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
+			Net::TCPClientMgr cliMgr;
 			IO::LogTool *log;
 			Text::String *domain;
 			Text::String *serverName;

@@ -20,16 +20,40 @@ _CRC32R_InitTable:
 	align 16
 crc32clop:
 	mov rax,rcx
-	mov edx,8
-	align 16
-crc32clop2:
+
+	xor edx,edx
 	shr eax,1
-	jnb crc32clop3
-	xor eax,esi
-	align 16
-crc32clop3:
-	dec edx
-	jnz crc32clop2
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+	xor edx,edx
+	shr eax,1
+	cmovb edx,esi
+	xor eax,edx
+
 	mov dword [rdi+rcx*4],eax
 	inc cl
 	jnz crc32clop

@@ -171,21 +171,19 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(void *userObj, M
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
 	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer)
 	{
-		UtilUI::ColorDialog *dlg;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		NEW_CLASS(dlg, UtilUI::ColorDialog(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr()));
-		dlg->SetColor32(me->currLayer->color);
-		if (dlg->ShowDialog(me) == UI::GUIForm::DR_OK)
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.SetColor32(me->currLayer->color);
+		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 			Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 
-			me->currLayer->color = dlg->GetColor32();
+			me->currLayer->color = dlg.GetColor32();
 			me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, me->colorSess, me->currLayer->color | 0xff000000));
 			me->pbColor->Redraw();
 			me->UpdatePreview();
 		}
-		DEL_CLASS(dlg);
 	}
 	return false;
 }

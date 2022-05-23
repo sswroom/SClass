@@ -31,7 +31,7 @@ namespace IO
 			};
 		private:
 			IO::IStreamData *fd;
-			Data::SyncArrayList<TagInfo*> *tags;
+			Data::SyncArrayList<TagInfo*> tags;
 			Map::ESRI::FileGDBTableInfo *tableInfo;
 
 			Bool pauseParsing;

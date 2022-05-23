@@ -1,79 +1,38 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/LRGBLimiter.h"
+#include "Media/LRGBLimiterC.h"
+#include "Sync/Thread.h"
 
-/*void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h)
+void Media::LRGBLimiter::TaskFunc(void *userObj)
 {
-	_asm
-	{
-		mov eax,w
-		mov esi,imgPtr
-		mul h
-		mov ecx,eax
-		ALIGN 16
-lilrgblop:
-		movsx eax,word ptr [esi]
-		mov edx,eax //minV
-		mov ebx,eax //maxV
-		movsx eax,word ptr [esi+2]
-		cmp edx,eax
-		cmovg edx,eax
-		cmp ebx,eax
-		cmovl ebx,eax
-		movsx eax,word ptr [esi+4]
-		cmp edx,eax
-		cmovg edx,eax
-		cmp ebx,eax
-		cmovl ebx,eax
-
-		cmp edx,16384
-		jge lilrgblop5
-		cmp ebx,16384
-		jle lilrgblop4
-
-		push ecx
-		mov ecx,ebx
-		mov edi,edx
-		movsx eax,word ptr [esi]
-		mov edx,16384
-		sub eax,edi
-		sub edx,edi
-		sub ecx,edi
-		imul edx
-		idiv ecx
-		add eax,edi
-		mov word ptr [esi],ax
-
-		movsx eax,word ptr [esi+2]
-		mov edx,16384
-		sub eax,edi
-		sub edx,edi
-		imul edx
-		idiv ecx
-		add eax,edi
-		mov word ptr [esi+2],ax
-
-		movsx eax,word ptr [esi+4]
-		mov edx,16384
-		sub eax,edi
-		sub edx,edi
-		imul edx
-		idiv ecx
-		add eax,edi
-		mov word ptr [esi+4],ax
-		pop ecx
-		jmp lilrgblop4
-		ALIGN 16
-lilrgblop5:
-		mov word ptr [esi],16383
-		mov word ptr [esi+2],16383
-		mov word ptr [esi+4],16383
-
-		ALIGN 16
-lilrgblop4:
-		add esi,8
-		dec ecx
-		jnz lilrgblop
-	}
+	ThreadStatus *status = (ThreadStatus*)userObj;
+	LRGBLimiter_LimitImageLRGB(status->imgPtr, status->w, status->h);
 }
-*/
+
+Media::LRGBLimiter::LRGBLimiter() : ptask((Sync::Thread::GetThreadCnt() >= 4)?4:Sync::Thread::GetThreadCnt(), false)
+{
+}
+
+Media::LRGBLimiter::~LRGBLimiter()
+{
+}
+
+void Media::LRGBLimiter::LimitImageLRGB(UInt8 *imgPtr, UOSInt w, UOSInt h)
+{
+	ThreadStatus status[4];
+	UOSInt j = this->ptask.GetThreadCnt();
+	UOSInt i = j;
+	UOSInt lastH = h;
+	UOSInt thisH;
+	while (i-- > 0)
+	{
+		thisH = MulDivUOS(h, i, j);
+		status[i].w = w;
+		status[i].h = lastH - thisH;
+		status[i].imgPtr = imgPtr + w * 8 * thisH;
+		this->ptask.AddTask(TaskFunc, &status[i]);
+		lastH = thisH;
+	}
+	this->ptask.WaitForIdle();
+}

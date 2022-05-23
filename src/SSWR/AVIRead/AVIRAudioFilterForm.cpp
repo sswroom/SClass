@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 			if (me->audRender)
 			{
 				me->audRender->SetBufferTime(buffSize);
-				me->audRender->AudioInit(me->clk);
+				me->audRender->AudioInit(&me->clk);
 				me->audRender->Start();
 
 				me->dtmfDec->HandleToneChange(OnDTMFToneChange, me);
@@ -201,7 +201,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 		me->txtBuffSize->SetReadOnly(false);
 		me->txtDTMFInterval->SetReadOnly(false);
 		me->txtFileMix->SetText(CSTR(""));
-		me->dtmfSb->ClearStr();
+		me->dtmfSb.ClearStr();
 		me->dtmfMod = true;
 	}
 }
@@ -231,8 +231,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
-	Sync::MutexUsage mutUsage(me->dtmfMut);
-	me->dtmfSb->ClearStr();
+	Sync::MutexUsage mutUsage(&me->dtmfMut);
+	me->dtmfSb.ClearStr();
 	me->dtmfMod = true;
 	mutUsage.EndUse();
 }
@@ -719,7 +719,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 					}
 					if (!err)
 					{
-						me->fft->ForwardBits(me->sampleBuff + ((UOSInt)(me->bitCount >> 3) * i), data, st, me->nChannels, 1.0);
+						me->fft.ForwardBits(me->sampleBuff + ((UOSInt)(me->bitCount >> 3) * i), data, st, me->nChannels, 1.0);
 					}
 					if (i == 0)
 					{
@@ -776,8 +776,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 	if (me->dtmfMod)
 	{
 		me->dtmfMod = false;
-		Sync::MutexUsage mutUsage(me->dtmfMut);
-		me->txtDTMFDecode->SetText(me->dtmfSb->ToCString());
+		Sync::MutexUsage mutUsage(&me->dtmfMut);
+		me->txtDTMFDecode->SetText(me->dtmfSb.ToCString());
 		mutUsage.EndUse();
 	}
 }
@@ -791,8 +791,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFToneChange(void *userOb
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(me->dtmfMut);
-		me->dtmfSb->AppendChar(tone, 1);
+		Sync::MutexUsage mutUsage(&me->dtmfMut);
+		me->dtmfSb.AppendChar(tone, 1);
 		me->dtmfMod = true;
 		mutUsage.EndUse();
 	}
@@ -803,17 +803,15 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userOb
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
 	if (me->fileMix)
 	{
-		UI::FileDialog *dlg;
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AudioFilterFileMix", false));
-		dlg->AddFilter(CSTR("*.wav"), CSTR("Wave file"));
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AudioFilterFileMix", false);
+		dlg.AddFilter(CSTR("*.wav"), CSTR("Wave file"));
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			if (me->fileMix->LoadFile(dlg->GetFileName()))
+			if (me->fileMix->LoadFile(dlg.GetFileName()))
 			{
-				me->txtFileMix->SetText(dlg->GetFileName()->ToCString());
+				me->txtFileMix->SetText(dlg.GetFileName()->ToCString());
 			}
 		}
-		DEL_CLASS(dlg);
 	}
 }
 
@@ -965,7 +963,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 	}
 }
 
-SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool showMenu) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool showMenu) : UI::GUIForm(parent, 1024, 768, ui), fft(FFTSAMPLE, Math::FFTCalc::WT_BLACKMANN_HARRIS)
 {
 	this->SetText(CSTR("Audio Filter"));
 	this->SetFont(0, 0, 8.25, false);
@@ -987,10 +985,6 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->sampleImg = 0;
 	this->fftImg = 0;
 	this->dtmfMod = false;
-	NEW_CLASS(this->dtmfMut, Sync::Mutex());
-	NEW_CLASS(this->dtmfSb, Text::StringBuilderUTF8());
-	NEW_CLASS(this->clk, Media::RefClock());
-	NEW_CLASS(this->fft, Math::FFTCalc(FFTSAMPLE, Math::FFTCalc::WT_BLACKMANN_HARRIS));
 
 	NEW_CLASS(this->pnlInput, UI::GUIPanel(ui, this));
 	this->pnlInput->SetRect(0, 0, 100, 168, false);
@@ -1244,7 +1238,6 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 SSWR::AVIRead::AVIRAudioFilterForm::~AVIRAudioFilterForm()
 {
 	this->StopAudio();
-	DEL_CLASS(this->clk);
 	if (this->sampleImg)
 	{
 		this->eng->DeleteImage(this->sampleImg);
@@ -1255,9 +1248,6 @@ SSWR::AVIRead::AVIRAudioFilterForm::~AVIRAudioFilterForm()
 		this->eng->DeleteImage(this->fftImg);
 		this->fftImg = 0;
 	}
-	DEL_CLASS(this->fft);
-	DEL_CLASS(this->dtmfMut);
-	DEL_CLASS(this->dtmfSb);
 }
 
 void SSWR::AVIRead::AVIRAudioFilterForm::EventMenuClicked(UInt16 cmdId)
@@ -1266,10 +1256,8 @@ void SSWR::AVIRead::AVIRAudioFilterForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_SET_DEVICE:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSetAudioForm(0, this->ui, this->core));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::AVIRead::AVIRSetAudioForm frm(0, this->ui, this->core);
+			frm.ShowDialog(this);
 		}
 		break;
 	}

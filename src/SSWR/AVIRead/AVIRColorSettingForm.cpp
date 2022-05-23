@@ -42,20 +42,19 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	if (me->inited)
 	{
-		UI::FileDialog *dlg;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ColorMonProfile", false));
-		dlg->AddFilter(CSTR("*.icc"), CSTR("ICC File"));
-		dlg->AddFilter(CSTR("*.icm"), CSTR("ICM File"));
-		dlg->SetAllowMultiSel(false);
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ColorMonProfile", false);
+		dlg.AddFilter(CSTR("*.icc"), CSTR("ICC File"));
+		dlg.AddFilter(CSTR("*.icm"), CSTR("ICM File"));
+		dlg.SetAllowMultiSel(false);
 		sptr = Media::ICCProfile::GetProfilePath(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		*sptr = 0;
-		dlg->SetFileName(CSTRP(sbuff, sptr));
-		if (dlg->ShowDialog(me->GetHandle()))
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			Text::String *s = dlg->GetFileName();
+			Text::String *s = dlg.GetFileName();
 			if (me->monColor->SetMonProfileFile(s))
 			{
 				SDEL_STRING(me->monFileName);
@@ -69,7 +68,6 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 				me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 1);
 			}
 		}
-		DEL_CLASS(dlg);
 	}
 }
 
@@ -80,10 +78,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonCustomClicked(void *use
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		SSWR::AVIRead::AVIRColorCustomForm *frm;
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRColorCustomForm(0, me->ui, me->core, me->monColor));
-		frm->ShowDialog(me);
-		DEL_CLASS(frm);
+		{
+			SSWR::AVIRead::AVIRColorCustomForm frm(0, me->ui, me->core, me->monColor);
+			frm.ShowDialog(me);
+		}
 
 		const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 		me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));

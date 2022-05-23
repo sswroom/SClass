@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userOb
 	{
 		sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::None);
 	}
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDongleInfoClicked(void *userObj)
@@ -81,10 +81,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 
 	if (me->devChg)
 	{
-		me->devMut->LockRead();
-		devList.AddAll(me->devMap->GetValues());
+		me->devMut.LockRead();
+		devList.AddAll(me->devMap.GetValues());
 		me->devChg = false;
-		me->devMut->UnlockRead();
+		me->devMut.UnlockRead();
 
 		me->lvDevice->ClearItems();
 		i = 0;
@@ -135,9 +135,9 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	}
 	else
 	{
-		me->devMut->LockRead();
-		devList.AddAll(me->devMap->GetValues());
-		me->devMut->UnlockRead();
+		me->devMut.LockRead();
+		devList.AddAll(me->devMap.GetValues());
+		me->devMut.UnlockRead();
 
 		i = 0;
 		j = devList.GetCount();
@@ -280,24 +280,22 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, U
 		s->Release();
 
 		DeviceInfo *dev;
-		me->devMut->LockRead();
-		dev = me->devMap->Get(devId);
-		me->devMut->UnlockRead();
+		me->devMut.LockRead();
+		dev = me->devMap.Get(devId);
+		me->devMut.UnlockRead();
 
 		if (dev)
 		{
-			SSWR::AVIRead::AVIRSNBHandlerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSNBHandlerForm(0, me->ui, me->core, dev->handType));
-			if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRSNBHandlerForm frm(0, me->ui, me->core, dev->handType);
+			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 			{
-				dev->handType = frm->GetHandleType();
-				me->devMut->LockWrite();
-				me->devHandlerMap->Put(devId, (Int32)dev->handType);
-				me->devMut->UnlockWrite();
+				dev->handType = frm.GetHandleType();
+				me->devMut.LockWrite();
+				me->devHandlerMap.Put(devId, (Int32)dev->handType);
+				me->devMut.UnlockWrite();
 				me->snb->SetDevHandleType(dev->devId, dev->handType);
 				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			}
-			DEL_CLASS(frm);
 	//		me->snb->SendSetReportTime(devId, 3, true);
 		}
 	}
@@ -339,14 +337,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	sb.Append(remarks);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.AppendC(UTF8STRC("sensor_list="));
-	me->devMut->LockRead();
-	Data::ArrayList<DeviceInfo*> *sensors = me->devMap->GetValues();
+	me->devMut.LockRead();
+	Data::ArrayList<DeviceInfo*> *sensors = me->devMap.GetValues();
 	DeviceInfo *dev;
 	UOSInt i;
 	UOSInt j;
 	if (sensors->GetCount() == 0)
 	{
-		me->devMut->UnlockRead();
+		me->devMut.UnlockRead();
 		UI::MessageDialog::ShowDialog(CSTR("No devices found"), CSTR("Error"), me);
 		return;
 	}
@@ -357,7 +355,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		dev = sensors->GetItem(i);
 		if (dev->readingTime == 0 || dev->nReading == 0)
 		{
-			me->devMut->UnlockRead();
+			me->devMut.UnlockRead();
 			UI::MessageDialog::ShowDialog(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
 			return;
 		}
@@ -375,7 +373,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		i++;
 	}
 	sb.AppendC(UTF8STRC("\r\n"));
-	me->devMut->UnlockRead();
+	me->devMut.UnlockRead();
 
 
 	Int32 status = 0;
@@ -419,28 +417,26 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("snb.dat"));
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		UInt64 flen = fs->GetLength();
+		UInt64 flen = fs.GetLength();
 		if (flen > 0 && (flen % 12) == 0)
 		{
 			UInt8 *dataBuff = MemAlloc(UInt8, (UOSInt)flen);
 			UOSInt i;
-			fs->Read(dataBuff, (UOSInt)flen);
-			this->devMut->LockWrite();
+			fs.Read(dataBuff, (UOSInt)flen);
+			this->devMut.LockWrite();
 			i = 0;
 			while (i < flen)
 			{
-				this->devHandlerMap->Put(ReadUInt64(&dataBuff[i]), ReadInt32(&dataBuff[i + 8]));
+				this->devHandlerMap.Put(ReadUInt64(&dataBuff[i]), ReadInt32(&dataBuff[i + 8]));
 				i += 12;
 			}
-			this->devMut->UnlockWrite();
+			this->devMut.UnlockWrite();
 			MemFree(dataBuff);
 		}
 	}
-	DEL_CLASS(fs);
 }
 
 void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
@@ -451,13 +447,13 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	UInt8 *dataBuff;
 	Data::ArrayList<UInt64> *keys;
 	Data::ArrayList<Int32> *vals;
-	this->devMut->LockRead();
+	this->devMut.LockRead();
 	i = 0;
-	j = this->devHandlerMap->GetCount();
+	j = this->devHandlerMap.GetCount();
 	k = 0;
 	dataBuff = MemAlloc(UInt8, j * 12);
-	keys = this->devHandlerMap->GetKeys();
-	vals = this->devHandlerMap->GetValues();
+	keys = this->devHandlerMap.GetKeys();
+	vals = this->devHandlerMap.GetValues();
 	while (i < j)
 	{
 		WriteUInt64(&dataBuff[k], keys->GetItem(i));
@@ -466,16 +462,16 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 		k += 12;
 	}
 
-	this->devMut->UnlockRead();
+	this->devMut.UnlockRead();
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("snb.dat"));
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	fs->Write(dataBuff, k);
-	DEL_CLASS(fs);
+	{
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fs.Write(dataBuff, k);
+	}
 	MemFree(dataBuff);
 }
 
@@ -487,10 +483,6 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->stm = stm;
-	NEW_CLASS(this->log, IO::LogTool());
-	NEW_CLASS(this->devMut, Sync::RWMutex());
-	NEW_CLASS(this->devMap, Data::UInt64Map<DeviceInfo*>());
-	NEW_CLASS(this->devHandlerMap, Data::UInt64Map<Int32>());
 	this->devChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->dongleUpdated = false;
@@ -576,7 +568,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->lbLog->HandleSelectionChange(OnLogClicked, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 
 	this->LoadFile();
 	NEW_CLASS(this->snb, IO::SNBDongle(stm, this));
@@ -589,9 +581,9 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 {
 	this->SaveFile();
 	DEL_CLASS(this->snb);
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	Data::ArrayList<DeviceInfo*> *devList = this->devMap->GetValues();
+	Data::ArrayList<DeviceInfo*> *devList = this->devMap.GetValues();
 	DeviceInfo *dev;
 	UOSInt i = devList->GetCount();
 	while (i-- > 0)
@@ -600,9 +592,6 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 		DEL_CLASS(dev->mut);
 		MemFree(dev);
 	}
-	DEL_CLASS(this->devHandlerMap);
-	DEL_CLASS(this->devMap);
-	DEL_CLASS(this->devMut);
 	SDEL_CLASS(this->ssl);
 }
 
@@ -614,34 +603,34 @@ void SSWR::AVIRead::AVIRSNBDongleForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 {
 	DeviceInfo *dev;
-	this->devMut->LockWrite();
-	dev = this->devMap->Get(devId);
+	this->devMut.LockWrite();
+	dev = this->devMap.Get(devId);
 	if (dev == 0)
 	{
 		dev = MemAlloc(DeviceInfo, 1);
 		dev->devId = devId;
 		dev->shortAddr = 0;
 		NEW_CLASS(dev->mut, Sync::RWMutex());
-		dev->handType = (IO::SNBDongle::HandleType)this->devHandlerMap->Get(devId);
+		dev->handType = (IO::SNBDongle::HandleType)this->devHandlerMap.Get(devId);
 		dev->nReading = 0;
 		dev->readingChg = false;
 		dev->readingTime = 0;
-		this->devMap->Put(devId, dev);
+		this->devMap.Put(devId, dev);
 		if (dev->handType != IO::SNBDongle::HT_UNKNOWN)
 		{
 			this->snb->SetDevHandleType(devId, dev->handType);
 		}
 		this->devChg = true;
 	}
-	this->devMut->UnlockWrite();
+	this->devMut.UnlockWrite();
 }
 
 void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
 {
 	DeviceInfo *dev;
-	this->devMut->LockRead();
-	dev = this->devMap->Get(devId);
-	this->devMut->UnlockRead();
+	this->devMut.LockRead();
+	dev = this->devMap.Get(devId);
+	this->devMut.UnlockRead();
 	if (dev)
 	{
 		Data::DateTime dt;
@@ -667,9 +656,9 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle:
 void SSWR::AVIRead::AVIRSNBDongleForm::DeviceUpdated(UInt64 devId, UInt16 shortAddr)
 {
 	DeviceInfo *dev;
-	this->devMut->LockRead();
-	dev = this->devMap->Get(devId);
-	this->devMut->UnlockRead();
+	this->devMut.LockRead();
+	dev = this->devMap.Get(devId);
+	this->devMut.UnlockRead();
 	if (dev)
 	{
 		dev->mut->LockWrite();

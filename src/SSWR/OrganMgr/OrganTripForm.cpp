@@ -122,15 +122,13 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 {
 	OrganTripForm *me = (OrganTripForm*)userObj;
 	
-	OrganLocationForm *frm;
-	NEW_CLASS(frm, OrganLocationForm(0, me->ui, me->env, OrganLocationForm::SM_CHILD, me->locId));
-	if (frm->ShowDialog(me) == DR_OK)
+	OrganLocationForm frm(0, me->ui, me->env, OrganLocationForm::SM_CHILD, me->locId);
+	if (frm.ShowDialog(me) == DR_OK)
 	{
-		Location *selVal = frm->GetSelVal();
+		Location *selVal = frm.GetSelVal();
 		me->locId = selVal->id;
 		me->txtLocation->SetText(selVal->cname->ToCString());
 	}
-	DEL_CLASS(frm);
 }
 
 SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env) : UI::GUIForm(parent, 640, 300, ui)

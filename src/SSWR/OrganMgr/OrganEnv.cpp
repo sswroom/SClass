@@ -611,19 +611,19 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime 
 	else if (userId == this->userId)
 	{
 		Text::StringBuilderUTF8 sb;
-		OrganTripForm *frm;
 		Data::DateTime dt2(dt);
 		Data::DateTime dt3(dt);
 		dt2.ClearTime();
 		dt3.ClearTime();
 		dt3.AddDay(1);
-		NEW_CLASS(frm, OrganTripForm(0, ui, this));
-		sb.AppendC(UTF8STRC("Trip not found at "));
-		sb.AppendDate(dt);
-		frm->SetText(sb.ToCString());
-		frm->SetTimes(&dt2, &dt3);
-		frm->ShowDialog(ownerFrm);
-		DEL_CLASS(frm);
+		{
+			OrganTripForm frm(0, ui, this);
+			sb.AppendC(UTF8STRC("Trip not found at "));
+			sb.AppendDate(dt);
+			frm.SetText(sb.ToCString());
+			frm.SetTimes(&dt2, &dt3);
+			frm.ShowDialog(ownerFrm);
+		}
 		tr = this->TripGet(userId, dt);
 		if (tr)
 		{
@@ -689,19 +689,16 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 
 	sptrEnd = Text::StrConcatC(sptr, UTF8STRC("indexhd.html"));
 
-	Text::UTF8Writer *writer;
-	IO::FileStream *fs;
 	UOSInt photoParsed = 0;
 	UOSInt speciesParsed = 0;
 	UOSInt thisPhotoCnt;
 	UOSInt thisSpeciesCnt;
 	UOSInt thisPhSpeciesCnt;
-	Text::StringBuilderUTF8 *sb;
 
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Writer writer(&fs);
 
-	ExportBeginPage(writer, this->currCate->chiName->v);
+	ExportBeginPage(&writer, this->currCate->chiName->v);
 	
 	OrganGroup *grp;
 	UOSInt i;
@@ -711,61 +708,59 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
 	Data::ArrayList<OrganGroup*> *grps;
 
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-
-	grpTree = GetGroupTree();
-	spTree = GetSpeciesTree();
-
-	grps = grpTree->Get(0);
-
-	if (grps)
+	Text::StringBuilderUTF8 sb;
 	{
-		i = 0;
-		j = grps->GetCount();
-		while (i < j)
+		grpTree = GetGroupTree();
+		spTree = GetSpeciesTree();
+
+		grps = grpTree->Get(0);
+
+		if (grps)
 		{
-			grp = grps->GetItem(i);
-			ExportGroup(grp, grpTree, spTree, (const UTF8Char*)"../../index.html", sbuff, sptr, includeWebPhoto, includeNoPhoto, locId, &thisPhotoCnt, &thisSpeciesCnt, &thisPhSpeciesCnt);
-			if (thisSpeciesCnt > 0)
+			i = 0;
+			j = grps->GetCount();
+			while (i < j)
 			{
-				photoParsed += thisPhotoCnt;
-				speciesParsed += thisSpeciesCnt;
+				grp = grps->GetItem(i);
+				ExportGroup(grp, grpTree, spTree, (const UTF8Char*)"../../index.html", sbuff, sptr, includeWebPhoto, includeNoPhoto, locId, &thisPhotoCnt, &thisSpeciesCnt, &thisPhSpeciesCnt);
+				if (thisSpeciesCnt > 0)
+				{
+					photoParsed += thisPhotoCnt;
+					speciesParsed += thisSpeciesCnt;
 
-				writer->WriteStrC(UTF8STRC("<a href="));
-				sb->ClearStr();
-				sb->AppendC(UTF8STRC("indexhd/grp"));
-				sb->AppendI32(grp->GetGroupId());
-				sb->AppendC(UTF8STRC("/index.html"));
-				s = Text::XML::ToNewAttrText(sb->ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteStrC(UTF8STRC(">"));
+					writer.WriteStrC(UTF8STRC("<a href="));
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("indexhd/grp"));
+					sb.AppendI32(grp->GetGroupId());
+					sb.AppendC(UTF8STRC("/index.html"));
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(">"));
 
-				sb->ClearStr();
-				sb->Append(grp->GetCName());
-				sb->AppendC(UTF8STRC(" "));
-				sb->Append(grp->GetEName());
-				sb->AppendC(UTF8STRC(" ("));
-				sb->AppendUOSInt(thisPhSpeciesCnt);
-				sb->AppendC(UTF8STRC("/"));
-				sb->AppendUOSInt(thisSpeciesCnt);
-				sb->AppendC(UTF8STRC(")"));
-				s = Text::XML::ToNewXMLText(sb->ToString());
-				writer->WriteStrC(s->v, s->leng);
-				s->Release();
-				writer->WriteLineC(UTF8STRC("</a><br/>"));
+					sb.ClearStr();
+					sb.Append(grp->GetCName());
+					sb.AppendC(UTF8STRC(" "));
+					sb.Append(grp->GetEName());
+					sb.AppendC(UTF8STRC(" ("));
+					sb.AppendUOSInt(thisPhSpeciesCnt);
+					sb.AppendC(UTF8STRC("/"));
+					sb.AppendUOSInt(thisSpeciesCnt);
+					sb.AppendC(UTF8STRC(")"));
+					s = Text::XML::ToNewXMLText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteLineC(UTF8STRC("</a><br/>"));
+				}
+
+				i++;
 			}
-
-			i++;
 		}
+		FreeSpeciesTree(spTree);
+		FreeGroupTree(grpTree);
 	}
-	FreeSpeciesTree(spTree);
-	FreeGroupTree(grpTree);
-	DEL_CLASS(sb);
 
-	ExportEndPage(writer);
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
+	ExportEndPage(&writer);
 	*photoCnt = photoParsed;
 	*speciesCnt = speciesParsed;
 }
@@ -1067,11 +1062,9 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("index.html"));
 
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	IO::FileStream fs({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Writer writer(&fs);
 	sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 	sb.AppendC(UTF8STRC(" - "));
 	sb.Append(sp->GetSName());
@@ -1082,7 +1075,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(sp->GetEName());
 	}
-	ExportBeginPage(writer, sb.ToString());
+	ExportBeginPage(&writer, sb.ToString());
 
 	i = 0;
 	j = items.GetCount();
@@ -1092,16 +1085,13 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	}
 
 
-	writer->WriteStrC(UTF8STRC("<a href="));
+	writer.WriteStrC(UTF8STRC("<a href="));
 	s = Text::XML::ToNewAttrText(backURL);
-	writer->WriteStrC(s->v, s->leng);
+	writer.WriteStrC(s->v, s->leng);
 	s->Release();
-	writer->WriteW(L">戻る</a><br/>");
+	writer.WriteW(L">戻る</a><br/>");
 
-	ExportEndPage(writer);
-
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
+	ExportEndPage(&writer);
 
 	*photoCnt = items.GetCount();
 	*hasMyPhoto = myPhotoExist;

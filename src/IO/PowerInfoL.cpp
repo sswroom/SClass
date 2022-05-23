@@ -5,14 +5,13 @@
 
 Bool Power_ReadIntFile(Text::CString filePath, Int32 *val)
 {
-	IO::FileStream *fs;
 	UInt8 buff[128];
 	UOSInt readSize;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		readSize = fs->Read(buff, 127);
+		readSize = fs.Read(buff, 127);
 		if (readSize > 0)
 		{
 			buff[readSize] = 0;
@@ -34,19 +33,17 @@ Bool Power_ReadIntFile(Text::CString filePath, Int32 *val)
 			succ = Text::StrToInt32((UTF8Char*)buff, val);
 		}
 	}
-	DEL_CLASS(fs);
 	return succ;
 }
 
 Bool Power_ReadStrFile(Text::CString filePath, UTF8Char *val, UOSInt maxCharCnt)
 {
-	IO::FileStream *fs;
 	UOSInt readSize;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		readSize = fs->Read(val, maxCharCnt);
+		readSize = fs.Read(val, maxCharCnt);
 		if (readSize > 0)
 		{
 			val[readSize] = 0;
@@ -68,7 +65,6 @@ Bool Power_ReadStrFile(Text::CString filePath, UTF8Char *val, UOSInt maxCharCnt)
 			succ = true;
 		}
 	}
-	DEL_CLASS(fs);
 	return succ;
 }
 

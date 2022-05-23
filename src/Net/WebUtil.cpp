@@ -134,3 +134,13 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 		return CSTR("?");
 	}
 }
+
+UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
+{
+	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
+	Data::DateTime t;
+	t.SetValue(dt);
+	t.ToUTCTime();
+	Int32 wd = (Int32)t.GetWeekday();
+	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
+}

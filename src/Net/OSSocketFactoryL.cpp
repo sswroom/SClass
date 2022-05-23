@@ -209,6 +209,22 @@ Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::Add
 	}
 }
 
+Bool Net::OSSocketFactory::SocketBindRAWIf(Socket *socket, UOSInt ifIndex)
+{
+	struct sockaddr_ll sll;
+	MemClear(&sll, sizeof(sll));
+	sll.sll_family          = AF_PACKET;
+	sll.sll_ifindex         = (int)ifIndex;
+	sll.sll_protocol        = htons(ETH_P_ALL);
+	Bool ret = bind(this->SocketGetFD(socket), (struct sockaddr *) &sll, sizeof(sll)) != -1;
+
+	struct packet_mreq mr;
+	MemClear(&mr, sizeof(mr));
+	mr.mr_ifindex = (int)ifIndex;
+	mr.mr_type    = PACKET_MR_PROMISC;
+	return (setsockopt(this->SocketGetFD(socket), SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mr, sizeof(mr)) != -1) && ret;
+}
+
 Bool Net::OSSocketFactory::SocketListen(Socket *socket)
 {
 	return listen(this->SocketGetFD(socket), SOMAXCONN) != -1;

@@ -9,15 +9,11 @@ Media::Batch::BatchWatermarker::BatchWatermarker(Media::DrawEngine *deng, Media:
 {
 	this->deng = deng;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rnd, Data::RandomOS());
-	NEW_CLASS(this->ablend, Media::ABlend::AlphaBlend8_8());
 	this->watermark = 0;
 }
 
 Media::Batch::BatchWatermarker::~BatchWatermarker()
 {
-	DEL_CLASS(this->rnd);
-	DEL_CLASS(this->ablend);
 	SDEL_STRING(this->watermark);
 }
 			
@@ -84,14 +80,14 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 				gimg2->SetAlphaType(Media::AT_ALPHA);
 				Bool revOrder;
 				UInt8 *bmpBits = gimg2->GetImgBits(&revOrder);
-				ImageUtil_ColorReplace32A(bmpBits, iWidth, iHeight, (this->rnd->NextInt30() & 0xffffff) | 0x5f808080);
+				ImageUtil_ColorReplace32A(bmpBits, iWidth, iHeight, (this->rnd.NextInt30() & 0xffffff) | 0x5f808080);
 				if (revOrder)
 				{
-					this->ablend->Blend(simg->data + (UInt32)Double2Int32(this->rnd->NextDouble() * yRand) * simg->info.storeWidth * 4 + Double2Int32(this->rnd->NextDouble() * xRand) * 4, (OSInt)simg->info.storeWidth << 2, bmpBits + iWidth * 4 * (iHeight - 1), -(Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+					this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeWidth * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeWidth << 2, bmpBits + iWidth * 4 * (iHeight - 1), -(Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
 				}
 				else
 				{
-					this->ablend->Blend(simg->data + (UInt32)Double2Int32(this->rnd->NextDouble() * yRand) * simg->info.storeWidth * 4 + Double2Int32(this->rnd->NextDouble() * xRand) * 4, (OSInt)simg->info.storeWidth << 2, bmpBits, (Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+					this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeWidth * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeWidth << 2, bmpBits, (Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
 				}
 				this->deng->DeleteImage(gimg2);
 				tmpImg->DelFont(f);

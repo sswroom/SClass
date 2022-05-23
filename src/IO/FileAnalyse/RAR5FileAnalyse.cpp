@@ -98,7 +98,7 @@ UInt32 __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(void *userObj)
 		{
 			block->dataSize = 0;
 		}
-		me->packs->Add(block);
+		me->packs.Add(block);
 		currOfst += block->headerSize + block->dataSize;
 	}
 	me->threadRunning = false;
@@ -113,7 +113,6 @@ IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadInt32(&buff[0]) != 0x21726152 || ReadInt32(&buff[4]) != 0x0001071A)
 	{
@@ -138,8 +137,7 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
@@ -149,13 +147,13 @@ Text::CString IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::RAR5FileAnalyse::BlockInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -179,7 +177,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	const UInt8 *extraEnd;
 	const UInt8 *packEnd;
 	const UInt8 *nextPtr;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -495,13 +493,13 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	BlockInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -532,7 +530,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	const UInt8 *packEnd;
 	const UInt8 *nextPtr;
 	const UInt8 *nextPtr2;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

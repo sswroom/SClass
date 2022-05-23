@@ -2,6 +2,7 @@
 #define _SM_NET_EMAIL_EMAILMESSAGE
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "IO/Stream.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -12,16 +13,34 @@ namespace Net
 	{
 		class EmailMessage
 		{
+		public:
+			struct Attachment
+			{
+				UInt8 *content;
+				UOSInt contentLen;
+				Text::String *contentId;
+				Text::String *fileName;
+				Data::DateTime createTime;
+				Data::DateTime modifyTime;
+				Bool isInline;
+			};
+			
 		private:
 			Text::String *fromAddr;
 			Data::ArrayList<Text::String*> recpList;
 			Data::ArrayList<Text::String*> headerList;
+			Text::String *contentType;
 			UInt8 *content;
 			UOSInt contentLen;
+			Data::ArrayList<Attachment*> attachments;
 
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
 			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
+			UTF8Char *GenMultipartBoundary(UTF8Char *sbuff);
+			void GenMultipart(IO::Stream *stm, Text::CString boundary);
+			static void WriteB64Data(IO::Stream *stm, const UInt8 *data, UOSInt dataSize);
+			static void AttachmentFree(Attachment *attachment);
 		public:
 			EmailMessage();
 			~EmailMessage();
@@ -35,6 +54,8 @@ namespace Net
 			Bool AddToList(Text::CString addrs);
 			Bool AddCc(Text::CString name, Text::CString addr);
 			Bool AddBcc(Text::CString addr);
+			Attachment *AddAttachment(Text::CString fileName);
+			Attachment *AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
 
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();

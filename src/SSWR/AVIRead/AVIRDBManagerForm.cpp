@@ -442,57 +442,47 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_CONN_ODBCDSN:
 		{
-			SSWR::AVIRead::AVIRODBCDSNForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRODBCDSNForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRODBCDSNForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->ConnAdd(dlg->GetDBConn());
+				this->ConnAdd(dlg.GetDBConn());
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_CONN_ODBCSTR:
 		{
-			SSWR::AVIRead::AVIRODBCStrForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRODBCStrForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRODBCStrForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->ConnAdd(dlg->GetDBConn());
+				this->ConnAdd(dlg.GetDBConn());
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_CONN_MYSQL:
 		{
-			SSWR::AVIRead::AVIRMySQLConnForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRMySQLConnForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRMySQLConnForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->ConnAdd(dlg->GetDBConn());
+				this->ConnAdd(dlg.GetDBConn());
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_CONN_MSSQL:
 		{
-			SSWR::AVIRead::AVIRMSSQLConnForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRMSSQLConnForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRMSSQLConnForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->ConnAdd(dlg->GetDBConn());
+				this->ConnAdd(dlg.GetDBConn());
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_CONN_ACCESS:
 		{
-			SSWR::AVIRead::AVIRAccessConnForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIRAccessConnForm(0, this->ui, this->core));
-			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			SSWR::AVIRead::AVIRAccessConnForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->ConnAdd(dlg->GetDBConn());
+				this->ConnAdd(dlg.GetDBConn());
 			}
-			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_CONN_REMOVE:

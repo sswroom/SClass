@@ -9,8 +9,6 @@
 
 Manage::CPUInfo::CPUInfo()
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	UOSInt i;
 	OSInt sysType = 0;
 
@@ -21,13 +19,13 @@ Manage::CPUInfo::CPUInfo()
 	this->steppingId = 0;
 	this->clsData = 0;
 
-	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 //		Int32 cpuPart = 0;
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(&sb, 512))
+		Text::UTF8Reader reader(&fs);
+		while (reader.ReadLine(&sb, 512))
 		{
 			if (sb.StartsWith(UTF8STRC("Hardware"))) //ARM
 			{
@@ -124,9 +122,7 @@ Manage::CPUInfo::CPUInfo()
 			}
 			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 }
 
 Manage::CPUVendor::CPU_BRAND Manage::CPUInfo::GetBrand()

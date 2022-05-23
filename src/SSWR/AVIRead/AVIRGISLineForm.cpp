@@ -21,20 +21,18 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, UOS
 Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
-	UtilUI::ColorDialog *dlg;
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		NEW_CLASS(dlg, UtilUI::ColorDialog(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr()));
-		dlg->SetColor32(me->lineColor);
-		if (dlg->ShowDialog(me) == UI::GUIForm::DR_OK)
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.SetColor32(me->lineColor);
+		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->lineColor = dlg->GetColor32();
+			me->lineColor = dlg.GetColor32();
 			me->pbColor->SetBGColor(me->colorConv->ConvRGB8(me->lineColor));
 			me->pbColor->Redraw();
 			me->UpdatePreview();
 		}
-		DEL_CLASS(dlg);
 	}
 	return false;
 }

@@ -44,7 +44,7 @@ UInt32 __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(void *userObj)
 		tag->size = lastSize + 12;
 		tag->tagType = ReadInt32(&tagHdr[8]);
 		tag->crc = 0;
-		me->tags->Add(tag);
+		me->tags.Add(tag);
 		ofst += lastSize + 12;
 	}
 	
@@ -60,7 +60,6 @@ IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::PNGFileAnalyse::PNGTag*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 0x89 && buff[1] != 0x50 && buff[2] != 0x4e && buff[3] != 0x47 && buff[4] != 0x0d && buff[5] != 0x0a && buff[6] != 0x1a && buff[7] != 0x0a)
 	{
@@ -87,8 +86,7 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->tags, MemFree);
-	DEL_CLASS(this->tags);
+	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
 Text::CString IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
@@ -98,12 +96,12 @@ Text::CString IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
 {
-	return this->tags->GetCount();
+	return this->tags.GetCount();
 }
 
 Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return false;
 	sb->AppendU64(tag->ofst);
@@ -119,7 +117,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 *tagData;
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
@@ -330,13 +328,13 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
 	PNGTag *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags->GetItem((UOSInt)k);
+		pack = this->tags.GetItem((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -360,7 +358,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 	UTF8Char *sptr;
 	IO::FileAnalyse::FrameDetail *frame;
 	UInt8 *tagData;
-	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));

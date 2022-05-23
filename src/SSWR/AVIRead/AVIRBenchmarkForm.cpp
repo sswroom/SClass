@@ -220,7 +220,6 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 	SSWR::AVIRead::AVIRBenchmarkForm *me = (SSWR::AVIRead::AVIRBenchmarkForm*)userObj;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	UI::FileDialog *dlg;
 	UOSInt i;
 	UOSInt j;
 	SSWR::AVIRead::AVIRBenchmarkForm::TestResult *result;
@@ -233,23 +232,21 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("No result"), CSTR("Error"), me);
 		return;
 	}
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BenchmarkSave", true));
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Result File"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BenchmarkSave", true);
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Result File"));
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Benchmark_"));
 		me->txtPlatform->GetText(&sb);
 		sb.AppendC(UTF8STRC(".txt"));
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfo sysInfo;
-		IO::FileStream *fs;
-		Text::UTF8Writer *writer;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Writer writer(&fs);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform: "));
 		if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
@@ -260,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 		Manage::CPUInfo cpu;
 		sb.ClearStr();
@@ -273,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
 		IO::SystemInfo::RAMInfo *ram;
@@ -314,12 +311,12 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendU32(ram->totalWidth);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->memorySize);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
 		sysInfo.FreeRAMInfo(&ramList);
 
-		writer->WriteLineC(UTF8STRC("Result:"));
+		writer.WriteLineC(UTF8STRC("Result:"));
 		i = 0;
 		j = me->resultList->GetCount();
 		while (i < j)
@@ -345,13 +342,10 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendUOSInt(result->testSize);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendDouble(result->resultRate);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
-		DEL_CLASS(writer);
-		DEL_CLASS(fs);
 	}
-	DEL_CLASS(dlg);
 }
 
 SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)

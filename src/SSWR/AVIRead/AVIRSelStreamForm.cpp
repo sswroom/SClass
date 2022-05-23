@@ -280,19 +280,17 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 {
 	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *ofd;
 	me->txtFileName->GetText(&sb);
-	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"AVIRead", L"OpenStreamFile", false));
-	ofd->SetAllowMultiSel(false);
+	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
+	ofd.SetAllowMultiSel(false);
 	if (sb.GetLength() > 0)
 	{
-		ofd->SetFileName(sb.ToCString());
+		ofd.SetFileName(sb.ToCString());
 	}
-	if (ofd->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	if (ofd.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		me->txtFileName->SetText(ofd->GetFileName()->ToCString());
+		me->txtFileName->SetText(ofd.GetFileName()->ToCString());
 	}
-	DEL_CLASS(ofd);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)

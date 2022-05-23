@@ -11,16 +11,14 @@ void __stdcall Net::Email::POP3Server::ConnReady(Net::TCPClient *cli, void *user
 {
 	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
 	MailStatus *cliStatus;
-	cliStatus = MemAlloc(MailStatus, 1);
-	cliStatus->buff = MemAlloc(UInt8, 2048);
+	NEW_CLASS(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
 	cliStatus->cliName = 0;
 	cliStatus->userName = 0;
 	cliStatus->userId = 0;
-	NEW_CLASS(cliStatus->rcptTo, Data::ArrayList<const UTF8Char *>());
 	cliStatus->dataStm = 0;
 	cliStatus->dataMode = false;
-	me->cliMgr->AddClient(cli, cliStatus);
+	me->cliMgr.AddClient(cli, cliStatus);
 
 	me->WriteMessage(cli, true, me->greeting->v, me->greeting->leng);
 }
@@ -47,7 +45,6 @@ void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *us
 		MailStatus *cliStatus;
 		UOSInt i;
 		cliStatus = (MailStatus*)cliData;
-		MemFree(cliStatus->buff);
 		if (cliStatus->cliName)
 		{
 			Text::StrDelNew(cliStatus->cliName);
@@ -56,17 +53,16 @@ void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *us
 		{
 			Text::StrDelNew(cliStatus->userName);
 		}
-		i = cliStatus->rcptTo->GetCount();
+		i = cliStatus->rcptTo.GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(cliStatus->rcptTo->GetItem(i));
+			Text::StrDelNew(cliStatus->rcptTo.GetItem(i));
 		}
-		DEL_CLASS(cliStatus->rcptTo);
 		if (cliStatus->dataStm)
 		{
 			DEL_CLASS(cliStatus->dataStm);
 		}
-		MemFree(cliStatus);
+		DEL_CLASS(cliStatus);
 		DEL_CLASS(cli);
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
@@ -461,14 +457,13 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	}
 }
 
-Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl)
+Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
 	this->greeting = Text::String::New(greeting);
 	this->mailCtrl = mailCtrl;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("POP3Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
@@ -476,7 +471,7 @@ Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ss
 Net::Email::POP3Server::~POP3Server()
 {
 	DEL_CLASS(this->svr);
-	DEL_CLASS(this->cliMgr);
+	this->cliMgr.CloseAll();
 	DEL_CLASS(this->rawLog);
 	this->greeting->Release();
 }

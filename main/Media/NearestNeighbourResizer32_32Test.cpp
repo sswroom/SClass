@@ -64,9 +64,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		imgList->AddImage(simg2, 0);
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
-		DEL_CLASS(fs);
+		{
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			exporter.ExportFile(&fs, CSTRP(sbuff, sptr), imgList, 0);
+		}
 		DEL_CLASS(simg2);
 	}
 	DEL_CLASS(simg);

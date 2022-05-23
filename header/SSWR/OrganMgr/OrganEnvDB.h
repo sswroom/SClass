@@ -35,7 +35,6 @@ namespace SSWR
 			virtual Text::String *GetCacheDir();
 			virtual Text::CString GetMapFont();
 
-			ErrorType GetErrorType();
 			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);
 			virtual UOSInt GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp);
 			virtual UOSInt GetSpeciesImages(Data::ArrayList<OrganImageItem*> *items, OrganSpecies *sp);

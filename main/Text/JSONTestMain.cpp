@@ -8,16 +8,15 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	IO::FileStream *fs;
 	UInt8 *buff;
 	UInt64 flen;
 	
-	NEW_CLASS(fs, IO::FileStream(CSTR("test.json"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	flen = fs->GetLength();
+	IO::FileStream fs(CSTR("test.json"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	flen = fs.GetLength();
 	if (flen > 0)
 	{
 		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
-		fs->Read(buff, (UOSInt)flen);
+		fs.Read(buff, (UOSInt)flen);
 		buff[flen] = 0;
 		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CString(buff, flen));
 		if (obj)
@@ -34,6 +33,5 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		MemFree(buff);
 	}
-	DEL_CLASS(fs);
 	return 0;
 }

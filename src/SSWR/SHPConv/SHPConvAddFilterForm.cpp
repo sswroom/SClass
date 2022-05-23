@@ -10,36 +10,30 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(void *userObj)
 	UOSInt i = me->cboFilter->GetSelectedIndex();
 	if (i == 0)
 	{
-		SSWR::SHPConv::SHPConvValueFilterForm *frm;
-		NEW_CLASS(frm, SSWR::SHPConv::SHPConvValueFilterForm(0, me->ui, me->dbf));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::SHPConv::SHPConvValueFilterForm frm(0, me->ui, me->dbf);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->filter = frm->GetFilter();
+			me->filter = frm.GetFilter();
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
-		DEL_CLASS(frm);
 	}
 	else if (i == 1)
 	{
-		SSWR::SHPConv::SHPConvRangeFilterForm *frm;
-		NEW_CLASS(frm, SSWR::SHPConv::SHPConvRangeFilterForm(0, me->ui, me->deng));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::SHPConv::SHPConvRangeFilterForm frm(0, me->ui, me->deng);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->filter = frm->GetFilter();
+			me->filter = frm.GetFilter();
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
-		DEL_CLASS(frm);
 	}
 	else if (i == 2)
 	{
-		SSWR::SHPConv::SHPConvElevationFilterForm *frm;
-		NEW_CLASS(frm, SSWR::SHPConv::SHPConvElevationFilterForm(0, me->ui, me->dbf));
-		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+		SSWR::SHPConv::SHPConvElevationFilterForm frm(0, me->ui, me->dbf);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			me->filter = frm->GetFilter();
+			me->filter = frm.GetFilter();
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
-		DEL_CLASS(frm);
 	}
 }
 

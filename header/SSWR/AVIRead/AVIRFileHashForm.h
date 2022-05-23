@@ -54,14 +54,14 @@ namespace SSWR
 			UI::GUIListView *lvFiles;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Sync::Event *fileEvt;
+			Sync::Event fileEvt;
 			Int32 threadStatus;
 			Bool threadToStop;
-			Data::ArrayList<FileStatus*> *fileList;
-			Sync::Mutex *fileMut;
+			Data::ArrayList<FileStatus*> fileList;
+			Sync::Mutex fileMut;
 			Bool fileListChg;
-			Data::DateTime *lastTimerTime;
-			Sync::Mutex *readMut;
+			Data::DateTime lastTimerTime;
+			Sync::Mutex readMut;
 			Text::String *progName;
 			Bool progNameChg;
 			UInt64 readSize;

@@ -30,11 +30,11 @@ namespace Media
 		private:
 			Parser::ParserList *parsers;
 			Media::Batch::BatchHandler *hdlr;
-			Sync::Event *mainEvt;
-			Sync::Mutex *ioMut;
-			Sync::Mutex *reqMut;
-			Data::SyncCircularBuff<Text::String*> *fileNames;
-			Data::SyncCircularBuff<DataInfo*> *datas;
+			Sync::Event mainEvt;
+			Sync::Mutex ioMut;
+			Sync::Mutex reqMut;
+			Data::SyncCircularBuff<Text::String*> fileNames;
+			Data::SyncCircularBuff<DataInfo*> datas;
 			UOSInt threadCnt;
 			ThreadState *threadStates;
 			UOSInt nextThread;

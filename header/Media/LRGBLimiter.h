@@ -1,13 +1,27 @@
 #ifndef _SM_MEDIA_LRGBLIMITER
 #define _SM_MEDIA_LRGBLIMITER
+#include "Sync/ParallelTask.h"
 
 namespace Media
 {
-/*	class LRGBLimiter
+	class LRGBLimiter
 	{
+	private:
+		struct ThreadStatus
+		{
+			UInt8 *imgPtr;
+			UOSInt w;
+			UOSInt h;
+		};
+	private:
+		Sync::ParallelTask ptask;
+
+		static void TaskFunc(void *userObj);
 	public:
-		static void LimitImageLRGB(UInt8 *imgPtr, OSInt w, OSInt h);
-	};*/
-};
-extern "C" void LRGBLimiter_LimitImageLRGB(UInt8 *imgPtr, UOSInt w, UOSInt h);
+		LRGBLimiter();
+		~LRGBLimiter();
+
+		void LimitImageLRGB(UInt8 *imgPtr, UOSInt w, UOSInt h);
+	};
+}
 #endif

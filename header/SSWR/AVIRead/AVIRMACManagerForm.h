@@ -60,8 +60,8 @@ namespace SSWR
 			UI::GUITabPage *tpWireshark;
 			UI::GUIButton *btnWireshark;
 
-			Data::ArrayList<LogFileEntry*> *logList;
-			Net::MACInfoList *macList;
+			Data::ArrayList<LogFileEntry*> logList;
+			Net::MACInfoList macList;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnStoreClicked(void *userObj);

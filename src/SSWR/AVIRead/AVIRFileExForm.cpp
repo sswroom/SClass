@@ -31,28 +31,26 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
-	UI::FileDialog *ofd;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"AVIRead", L"FileExSrc", false));
+	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"FileExSrc", false);
 	me->txtSrc->GetText(&sb);
-	ofd->SetFileName(sb.ToCString());
-	if (ofd->ShowDialog(me->GetHandle()))
+	ofd.SetFileName(sb.ToCString());
+	if (ofd.ShowDialog(me->GetHandle()))
 	{
-		me->txtSrc->SetText(ofd->GetFileName()->ToCString());
+		me->txtSrc->SetText(ofd.GetFileName()->ToCString());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
-	UI::FileDialog *ofd;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"AVIRead", L"FileExDest", true));
+	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"FileExDest", true);
 	me->txtDest->GetText(&sb);
-	ofd->SetFileName(sb.ToCString());
-	if (ofd->ShowDialog(me->GetHandle()))
+	ofd.SetFileName(sb.ToCString());
+	if (ofd.ShowDialog(me->GetHandle()))
 	{
-		me->txtDest->SetText(ofd->GetFileName()->ToCString());
+		me->txtDest->SetText(ofd.GetFileName()->ToCString());
 	}
 }
 

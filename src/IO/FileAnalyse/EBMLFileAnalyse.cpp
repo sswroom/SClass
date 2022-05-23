@@ -377,7 +377,7 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 			pack->lev = lev;
 			pack->hdrSize = (UOSInt)(buffPtr - buff);
 			WriteNInt32(pack->packType, ReadNInt32(buff));
-			this->packs->Add(pack);
+			this->packs.Add(pack);
 			if (lev > this->maxLev)
 			{
 				this->maxLev = lev;
@@ -406,13 +406,13 @@ UInt32 __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(void *userObj)
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -442,7 +442,6 @@ IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->maxLev = 0;
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::EBMLFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadMInt32(buff) != 0x1A45DFA3)
 	{
@@ -467,8 +466,7 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
@@ -478,13 +476,13 @@ Text::CString IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendChar('+', pack->lev);
@@ -522,7 +520,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -758,7 +756,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UInt64 ofst)
 IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

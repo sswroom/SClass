@@ -53,46 +53,40 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 		me->txtFileName->Focus();
 		return;
 	}
-	Net::TFTPClient *cli;
-	NEW_CLASS(cli, Net::TFTPClient(me->core->GetSocketFactory(), &addr, port));
-	if (cli->IsError())
+	Net::TFTPClient cli(me->core->GetSocketFactory(), &addr, port);
+	if (cli.IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
 	}
 	else
 	{
-		IO::MemoryStream *mstm;
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRTFTPClientForm.mstm")));
-		if (cli->RecvFile(sb.ToString(), mstm))
+		IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRTFTPClientForm.mstm"));
+		if (cli.RecvFile(sb.ToString(), &mstm))
 		{
 			UInt8 *buff;
 			UOSInt buffSize;
-			buff = mstm->GetBuff(&buffSize);
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (fs->IsError())
+			buff = mstm.GetBuff(&buffSize);
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (fs.IsError())
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in creating file"), CSTR("TFTP Client"), me);
 			}
-			else if (fs->Write(buff, buffSize) == buffSize)
+			else if (fs.Write(buff, buffSize) == buffSize)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("File received successfully"), CSTR("TFTP Client"), me);
 			}
 			else
 			{
-				fs->Close();
+				fs.Close();
 				IO::Path::DeleteFile(sbuff);
 				UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("TFTP Client"), me);
 			}
-			DEL_CLASS(fs);
 		}
 		else
 		{
 			UI::MessageDialog::ShowDialog(CSTR("File receive failed"), CSTR("TFTP Client"), me);
 		}
-		DEL_CLASS(mstm);
 	}
-	DEL_CLASS(cli);
 }
 
 void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
@@ -116,28 +110,25 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 		me->txtPort->Focus();
 		return;
 	}
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"TFTPClient", false));
-	dlg->SetAllowMultiSel(false);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"TFTPClient", false);
+	dlg.SetAllowMultiSel(false);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		Text::String *fileName = dlg->GetFileName();
+		Text::String *fileName = dlg.GetFileName();
 		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		Net::TFTPClient *cli;
-		NEW_CLASS(cli, Net::TFTPClient(me->core->GetSocketFactory(), &addr, port));
-		if (cli->IsError())
+		Net::TFTPClient cli(me->core->GetSocketFactory(), &addr, port);
+		if (cli.IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
 		}
 		else
 		{
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (fs->IsError())
+			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (fs.IsError())
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("TFTP Client"), me);
 			}
-			else if (cli->SendFile(&fileName->v[i + 1], fs))
+			else if (cli.SendFile(&fileName->v[i + 1], &fs))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("File sent successfully"), CSTR("TFTP Client"), me);
 			}
@@ -145,11 +136,8 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("File sent failed"), CSTR("TFTP Client"), me);
 			}
-			DEL_CLASS(fs);
 		}
-		DEL_CLASS(cli);
 	}
-	DEL_CLASS(dlg);
 }
 
 SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 240, ui)

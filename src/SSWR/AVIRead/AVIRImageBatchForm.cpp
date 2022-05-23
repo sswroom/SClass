@@ -23,16 +23,15 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	UI::FolderDialog *dlg;
 	path = me->icMain->GetFolder();
-	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatch"));
+	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"ImageBatch");
 	if (path)
 	{
-		dlg->SetFolder(path->ToCString());
+		dlg.SetFolder(path->ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		path = dlg->GetFolder();
+		path = dlg.GetFolder();
 		sptr = path->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -62,7 +61,6 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 		SDEL_CLASS(me->previewImage);
 		SDEL_CLASS(me->filteredImage);
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)

@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_SEARCHINDEXER
 #define _SM_TEXT_SEARCHINDEXER
-#include "Data/IMap.h"
 #include "Data/ArrayListInt64.h"
+#include "Data/ICaseBTreeUTF8Map.h"
 #include "Text/CString.h"
 #include "Text/TextAnalyzer.h"
 
@@ -10,7 +10,7 @@ namespace Text
 	class SearchIndexer
 	{
 	private:
-		Data::IMap<Text::CString, Data::ArrayListInt64*> *strIndex;
+		Data::ICaseBTreeUTF8Map<Data::ArrayListInt64*> strIndex;
 		Text::TextAnalyzer *ta;
 
 	public:

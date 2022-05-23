@@ -49,13 +49,13 @@ namespace SSWR
 			} WifiLog;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			IO::SensorManager *sensorMgr;
+			IO::SensorManager sensorMgr;
 			IO::MotionDetectorAccelerometer *motion;
 			Net::WirelessLAN *wlan;
 			Net::WirelessLAN::Interface *wlanInterf;
 			UOSInt wlanScan;
-			Data::UInt64Map<BSSStatus*> *bssMap;
-			Data::UInt64Map<WifiLog*> *wifiLogMap;
+			Data::UInt64Map<BSSStatus*> bssMap;
+			Data::UInt64Map<WifiLog*> wifiLogMap;
 			Int32 lastMotion;
 			Bool gpsChg;
 			Int64 currGPSTimeTick;
@@ -67,7 +67,7 @@ namespace SSWR
 			Bool locSvcRel;
 			IO::FileStream *captureFS;
 			IO::Writer *captureWriter;
-			Sync::Mutex *captureMut;
+			Sync::Mutex captureMut;
 			Int64 lastTimeTick;
 
 			UI::GUITabControl *tcMain;

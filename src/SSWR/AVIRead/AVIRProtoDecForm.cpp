@@ -32,19 +32,17 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog *dlg;
 	me->txtFile->GetText(&sb);
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ProtoDec", false));
-	dlg->AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ProtoDec", false);
+	dlg.AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToCString());
+		dlg.SetFileName(sb.ToCString());
 	}
-	if (dlg->ShowDialog(me->GetHandle()))
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg->GetFileName()->ToCString());
+		me->txtFile->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)

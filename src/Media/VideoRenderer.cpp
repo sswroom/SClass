@@ -108,7 +108,6 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			UOSInt i;
-			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			NEW_CLASS(simg, Media::StaticImage(info->dispWidth, info->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
 			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispWidth, info->dispHeight, info->storeWidth, info->storeHeight, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
@@ -121,13 +120,11 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			sptr = Text::StrConcatC(sptr, UTF8STRC("Snapshot"));
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-			NEW_CLASS(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
-			imgList->AddImage(simg, 0);
+			Media::ImageList imgList(CSTRP(sbuff, sptr));
+			imgList.AddImage(simg, 0);
 			Exporter::PNGExporter exporter;
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
-			DEL_CLASS(imgList);
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			exporter.ExportFile(&fs, CSTRP(sbuff, sptr), &imgList, 0);
 			DEL_CLASS(csconv);
 		}
 	}

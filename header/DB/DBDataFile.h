@@ -269,7 +269,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 			}
 			else
 			{
-				WriteInt64(&this->recordBuff[m], item.GetItemValue().date->ToTicks());
+				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ticks);
 				m += 8;
 			}
 			break;
@@ -345,11 +345,9 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut)
 {
 	UOSInt maxBuffSize = 65536;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
 	Data::VariItem item;
@@ -363,7 +361,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 	UOSInt m3;
 	UOSInt rowSize;
 	Data::VariItem::ItemType *colTypes = MemAlloc(Data::VariItem::ItemType, l);
-	buffSize = fs->Read(buff, maxBuffSize);
+	buffSize = fs.Read(buff, maxBuffSize);
 	if (buff[0] == 'S' && buff[1] == 'M' && buff[2] == 'D' && buff[3] == 'f')
 	{
 		succ = true;
@@ -403,7 +401,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 						buffSize = 0;
 						m = 0;
 					}
-					m2 = fs->Read(&buff[buffSize], maxBuffSize - buffSize);
+					m2 = fs.Read(&buff[buffSize], maxBuffSize - buffSize);
 					if (m2 == 0)
 					{
 						break;
@@ -429,7 +427,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 						m2 -= m;
 						m = 0;
 					}
-					k = fs->Read(&buff[buffSize], maxBuffSize - buffSize);
+					k = fs.Read(&buff[buffSize], maxBuffSize - buffSize);
 					if (k == 0)
 					{
 						succ = false;
@@ -525,10 +523,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 								}
 								else
 								{
-									Data::DateTime *dt;
-									NEW_CLASS(dt, Data::DateTime());
-									dt->SetTicks(ticks);
-									item.SetDateDirect(dt);
+									item.SetDate(Data::Timestamp(ticks, 0));
 									cls->SetFieldClearItem(obj, k, &item);
 								}
 								m2 += 8;
@@ -574,7 +569,6 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 	}
 	MemFree(buff);
 	MemFree(colTypes);
-	DEL_CLASS(fs);
 	return succ;
 }
 

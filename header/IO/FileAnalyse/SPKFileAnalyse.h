@@ -29,8 +29,7 @@ namespace IO
 			} PackInfo;
 		private:
 			IO::IStreamData *fd;
-			Data::SyncArrayList<PackInfo*> *packs;
-			Data::Int32Map<UInt8*> *extMap;
+			Data::SyncArrayList<PackInfo*> packs;
 
 			Bool pauseParsing;
 			Bool threadRunning;

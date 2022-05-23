@@ -185,21 +185,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				ProgressHandler *progress;
-				NEW_CLASS(progress, ProgressHandler());
-				IO::FileCheck *fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, IO::FileCheck::CheckType::CRC32, progress, false);
-				DEL_CLASS(progress);
+				IO::FileCheck *fileChk;
+				{
+					ProgressHandler progress;
+					fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, IO::FileCheck::CheckType::CRC32, &progress, false);
+				}
 				console->WriteLine();
 				if (fileChk)
 				{
 					Text::StringBuilderUTF8 sb;
-					IO::FileStream *fs;
 					Exporter::SFVExporter exporter;
 					sb.AppendC(cmdLines[1], cmdLen);
 					sb.AppendC(UTF8STRC(".sfv"));
-					NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					exporter.ExportFile(fs, sb.ToCString(), fileChk, 0);
-					DEL_CLASS(fs);
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					exporter.ExportFile(&fs, sb.ToCString(), fileChk, 0);
 					DEL_CLASS(fileChk);
 					showHelp = false;
 				}

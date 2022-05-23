@@ -135,21 +135,18 @@ void IO::BTDevLog::ClearList()
 Bool IO::BTDevLog::LoadFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::PString sarr[9];
 	UOSInt colCnt;
 	UInt8 macBuff[8];
 	UInt64 macInt;
 	UInt32 advType;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	while (reader->ReadLine(&sb, 512))
+	Text::UTF8Reader reader(&fs);
+	while (reader.ReadLine(&sb, 512))
 	{
 		colCnt = Text::StrSplitP(sarr, 9, sb, '\t');
 		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].leng == 17)
@@ -217,23 +214,18 @@ Bool IO::BTDevLog::LoadFile(Text::CString fileName)
 		}
 		sb.ClearStr();
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return true;
 }
 
 Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	Text::UTF8Writer writer(&fs);
 	Data::ArrayList<DevEntry*> logList;
 	logList.AddAll(this->pubDevs->GetValues());
 	logList.AddAll(this->randDevs->GetValues());
@@ -286,11 +278,9 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 		sb.AppendI32(log->measurePower);
 		sb.AppendUTF8Char('\t');
 		sb.AppendU32((UInt32)log->advType);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
 	return true;
 }
 

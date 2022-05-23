@@ -27,8 +27,8 @@ namespace SSWR
 			UI::GUILabel *lblInfo;
 			UI::GUIListView *lvContent;
 
-			IO::BTDevLog *btLog;
-			Net::MACInfoList *macList;
+			IO::BTDevLog btLog;
+			Net::MACInfoList macList;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnStoreClicked(void *userObj);

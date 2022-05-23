@@ -12,9 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(void *userOb
 	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
 	UOSInt newStyle = me->env->AddLineStyle();
 
-	SSWR::AVIRead::AVIRGISLineEditForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineEditForm(0, me->ui, me->core, me->env, me->eng, newStyle));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRGISLineEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->lineStyle = newStyle;
 		me->lineSelector->Redraw();
@@ -24,7 +23,6 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::AddStyleClicked(void *userOb
 	{
 		me->env->RemoveLineStyle(newStyle);
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::RemoveStyleClicked(void *userObj)
@@ -38,14 +36,12 @@ void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::RemoveStyleClicked(void *use
 void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::EditStyleClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISLineStyleForm *me = (SSWR::AVIRead::AVIRGISLineStyleForm*)userObj;
-	SSWR::AVIRead::AVIRGISLineEditForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGISLineEditForm(0, me->ui, me->core, me->env, me->eng, me->lineStyle));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRGISLineEditForm frm(0, me->ui, me->core, me->env, me->eng, me->lineStyle);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->lineSelector->Redraw();
 		me->changed = true;
 	}
-	DEL_CLASS(frm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISLineStyleForm::LineSelChanged(void *userObj)

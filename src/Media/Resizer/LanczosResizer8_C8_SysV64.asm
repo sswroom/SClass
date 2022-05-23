@@ -61,7 +61,9 @@ _LanczosResizer8_C8_horizontal_filter_pac:
 
 	align 16
 hfpastart:							;if (dwidth & 1)
-	shr qword [rsp+8],1 ;tap
+	movq xmm4,r12
+	mov r12,[rsp+8] ;tap
+	shr r12,1 ;tap
 	pxor xmm3,xmm3
 	align 16
 hfpalop:
@@ -94,8 +96,8 @@ hfpalop:
 	paddsw xmm0,xmm1
 	movq [rdi],xmm0
 
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+4]
+	add rdi,8
+	add rcx,4
 
 	align 16
 hfpalop4:
@@ -132,8 +134,8 @@ hfpalop4:
 	paddsw xmm0,xmm1
 	movdqu [rdi],xmm0
 
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+8]
+	add rdi,16
+	add rcx,8
 	dec rbp
 	jnz hfpalop4
 
@@ -144,21 +146,21 @@ hfpalop4:
 	mov rcx,qword [rsp+80] ;tmpbuff
 	align 16
 hfpalop2:
-	mov rdx,qword [rsp+8] ;tap
+	mov rdx,r12 ;tap
 	pxor xmm2,xmm2
 
 	ALIGN 16
 hfpalop3:
 	mov rax,qword [rbx]
 	movq xmm0,[rcx+rax]
-	mov rax,qword [rbx+8]
-	movq xmm1,[rcx+rax]
+;	mov rax,qword [rbx+8]
+	movq xmm1,[rcx+rax+8]
 	punpcklwd xmm0,xmm1
 	pmaddwd xmm0,[rdi]
 	paddd xmm2,xmm0
 	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
+	add rdi,16
+	add rbx,16
 	dec rdx
 	jnz hfpalop3
 
@@ -173,6 +175,7 @@ hfpalop3:
 	add r11,qword [rsp+56] ;dstep
 	dec r9 ;currHeight
 	jnz hfpalop
+	movq r12,xmm4
 	jmp hfpaexit
 
 	align 16
@@ -929,11 +932,11 @@ vf1start:					; if (dwidth & 1)
 	align 16
 vf1lop:
 	mov rsi,r10 ;inPt
-	mov rbp,r8 ;dwidth
+	mov r15,r8 ;dwidth
 	align 16
 vf1lop2:
 	mov rbx,r13 ;index
-	mov r15,r14 ;weight
+	mov rbp,r14 ;weight
 	mov rdx,r12 ;tap
 	
 	pxor xmm2,xmm2
@@ -944,10 +947,10 @@ vf1lop3:
 	mov eax,dword [rbx+8]
 	movq xmm1,[rsi+rax]
 	punpcklwd xmm0, xmm1
-	pmaddwd xmm0,[r15]
+	pmaddwd xmm0,[rbp]
 	paddd xmm2,xmm0
-	lea r15,[r15+16]
-	lea rbx,[rbx+16]
+	add rbp,16
+	add rbx,16
 
 	dec rdx
 	jnz vf1lop3
@@ -967,7 +970,7 @@ vf1lop3:
 	mov dword [rcx],eax
 	lea rsi,[rsi+8]
 	lea rcx,[rcx+4]
-	dec rbp
+	dec r15
 	jnz vf1lop2
 
 	mov rax,r12 ;tap
@@ -1101,14 +1104,14 @@ vflop4:
 
 	mov rsi,r10 ;inPt
 	mov rcx,r11 ;outPt
-	mov rbp,r8 ;dwidth
+	mov r15,r8 ;dwidth
 	
 	align 16
 vflop5:
 
 	mov rdx,r12 ;tap
 	mov rbx,r13 ;index
-	mov r15,r14 ;weight
+	mov rbp,r14 ;weight
 	pxor xmm2,xmm2
 	pxor xmm6,xmm6
 	ALIGN 16
@@ -1120,12 +1123,12 @@ vflop6:
 	movdqu xmm4,xmm0
 	punpcklwd xmm0, xmm1
 	punpckhwd xmm4, xmm1
-	movdqa xmm5,[r15]
+	movdqa xmm5,[rbp]
 	pmaddwd xmm0,xmm5
 	pmaddwd xmm4,xmm5
 	paddd xmm2,xmm0
 	paddd xmm6,xmm4
-	lea r15,[r15+16]
+	lea rbp,[rbp+16]
 	lea rbx,[rbx+16]
 
 	dec rdx
@@ -1159,7 +1162,7 @@ vflop6:
 	mov qword [rcx],rax
 	lea rcx,[rcx+8]
 	lea rsi,[rsi+16]
-	dec rbp
+	dec r15
 	jnz vflop5
 
 	mov rax,r12 ;tap

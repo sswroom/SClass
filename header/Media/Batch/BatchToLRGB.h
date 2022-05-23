@@ -11,11 +11,11 @@ namespace Media
 		class BatchToLRGB : public BatchHandler
 		{
 		private:
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Media::CS::CSConverter *csconv;
 			Media::Batch::BatchHandler *hdlr;
-			Media::ColorProfile *srcProfile;
-			Media::ColorProfile *destProfile;
+			Media::ColorProfile srcProfile;
+			Media::ColorProfile destProfile;
 			UInt32 srcFCC;
 			UInt32 srcBpp;
 			Media::PixelFormat srcPF;

@@ -7,19 +7,17 @@
 Text::SearchIndexer::SearchIndexer(Text::TextAnalyzer* ta)
 {
 	this->ta = ta;
-	NEW_CLASS(this->strIndex, Data::ICaseBTreeUTF8Map<Data::ArrayListInt64*>());
 }
 
 Text::SearchIndexer::~SearchIndexer()
 {
 	UOSInt cnt;
-	Data::ArrayListInt64**vals = ((Data::ICaseBTreeUTF8Map<Data::ArrayListInt64*>*)this->strIndex)->ToArray(&cnt);
+	Data::ArrayListInt64**vals = this->strIndex.ToArray(&cnt);
 	while (cnt-- > 0)
 	{
 		DEL_CLASS(vals[cnt]);
 	}
 	MemFree(vals);
-	DEL_CLASS(this->strIndex);
 }
 
 void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
@@ -32,11 +30,11 @@ void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 		return;
 	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
 	{
-		Data::ArrayListInt64 *tmpVal = this->strIndex->Get(CSTRP(sbuff, sptr));
+		Data::ArrayListInt64 *tmpVal = this->strIndex.Get(CSTRP(sbuff, sptr));
 		if (tmpVal == 0)
 		{
 			NEW_CLASS(tmpVal, Data::ArrayListInt64());
-			this->strIndex->Put(CSTRP(sbuff, sptr), tmpVal);
+			this->strIndex.Put(CSTRP(sbuff, sptr), tmpVal);
 		}
 		i = tmpVal->SortedIndexOf(key);
 		if (i < 0)
@@ -51,26 +49,22 @@ UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Data::ArrayList<Data::ArrayListInt64*> *resultList;
-	Data::ArrayListInt32 *resultListCnt;
 	Data::ArrayListInt64 *tmpIndex;
 	Data::ArrayListInt64 *tmpIndex2;
 	void *sess = this->ta->BeginAnalyze(searchStr);
 	if (sess == 0)
 		return 0;
-	NEW_CLASS(resultList, Data::ArrayList<Data::ArrayListInt64*>());
-	NEW_CLASS(resultListCnt, Data::ArrayListInt32());
+	Data::ArrayList<Data::ArrayListInt64*> resultList;
+	Data::ArrayListInt32 resultListCnt;
 	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
 	{
-		tmpIndex = this->strIndex->Get(CSTRP(sbuff, sptr));
+		tmpIndex = this->strIndex.Get(CSTRP(sbuff, sptr));
 		if (tmpIndex == 0)
 		{
 			this->ta->EndAnalyze(sess);
-			DEL_CLASS(resultList);
-			DEL_CLASS(resultListCnt);
 			return 0;
 		}
-		resultList->Insert(resultListCnt->SortedInsert((Int32)tmpIndex->GetCount()), tmpIndex);
+		resultList.Insert(resultListCnt.SortedInsert((Int32)tmpIndex->GetCount()), tmpIndex);
 	}
 	this->ta->EndAnalyze(sess);
 	
@@ -80,10 +74,10 @@ UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF
 	UOSInt k;
 	UOSInt l;
 	Int64 ind;
-	j = resultList->GetCount();
+	j = resultList.GetCount();
 	if (j > 0)
 	{
-		tmpIndex = resultList->GetItem(0);
+		tmpIndex = resultList.GetItem(0);
 		k = tmpIndex->GetCount();
 		i = 0;
 		while (retCnt < maxResults && i < k)
@@ -92,7 +86,7 @@ UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF
 			l = 1;
 			while (l < j)
 			{
-				tmpIndex2 = resultList->GetItem(l);
+				tmpIndex2 = resultList.GetItem(l);
 				if (tmpIndex2->SortedIndexOf(ind) < 0)
 				{
 					break;
@@ -107,7 +101,5 @@ UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF
 			i++;
 		}
 	}
-	DEL_CLASS(resultList);
-	DEL_CLASS(resultListCnt);
 	return retCnt;
 }

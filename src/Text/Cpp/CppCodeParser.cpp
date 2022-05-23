@@ -2320,49 +2320,47 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 	UTF8Char *lineBuff;
 	UTF8Char *sptr;
 	UOSInt i;
-	IO::StreamReader *reader;
-	IO::FileStream *fs;
+	Bool succ;
 
 	lineBuff = MemAlloc(UTF8Char, 65536);
-	NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	if (fs->IsError())
 	{
-		Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
-		if (fileStatus)
+		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+		if (fs.IsError())
 		{
-			i = fileStatus->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			sptr = Text::StrConcatC(lineBuff, &fileStatus->fileName->v[i + 1], fileStatus->fileName->leng - i - 1);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-			sptr = Text::StrOSInt(sptr, fileStatus->lineNum);
-			sptr = Text::StrConcatC(sptr, UTF8STRC("): "));
+			Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
+			if (fileStatus)
+			{
+				i = fileStatus->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+				sptr = Text::StrConcatC(lineBuff, &fileStatus->fileName->v[i + 1], fileStatus->fileName->leng - i - 1);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
+				sptr = Text::StrOSInt(sptr, fileStatus->lineNum);
+				sptr = Text::StrConcatC(sptr, UTF8STRC("): "));
+			}
+			else
+			{
+				sptr = lineBuff;
+			}
+			sptr = Text::StrConcatC(sptr, UTF8STRC("Cannot open \""));
+			sptr = Text::StrConcatC(sptr, fileName, fileNameLen);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
+			errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
+			MemFree(lineBuff);
+			return false;
 		}
-		else
-		{
-			sptr = lineBuff;
-		}
-		sptr = Text::StrConcatC(sptr, UTF8STRC("Cannot open \""));
-		sptr = Text::StrConcatC(sptr, fileName, fileNameLen);
-		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
-		errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
-		MemFree(lineBuff);
-		DEL_CLASS(fs);
-		return false;
-	}
 
-	status->BeginParseFile({fileName, fileNameLen});
-	Bool succ = true;
+		status->BeginParseFile({fileName, fileNameLen});
+		succ = true;
 
-	NEW_CLASS(reader, IO::StreamReader(fs, 0));
-	while ((sptr = reader->ReadLine(lineBuff, 65535)) != 0)
-	{
-		if (!ParseLine(lineBuff, sptr, status, errMsgs))
+		IO::StreamReader reader(&fs, 0);
+		while ((sptr = reader.ReadLine(lineBuff, 65535)) != 0)
 		{
-			succ = false;
-			break;
+			if (!ParseLine(lineBuff, sptr, status, errMsgs))
+			{
+				succ = false;
+				break;
+			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	if (!status->EndParseFile(fileName, fileNameLen))
 	{
 		succ = false;

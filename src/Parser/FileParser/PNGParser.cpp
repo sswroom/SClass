@@ -43,42 +43,169 @@ UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	OSInt pxId;
 	UInt8 px;
 	currY = initY;
+	switch (pxShift)
+	{
+	case 1:
+		while (currY < maxY)
+		{
+			currX = initX;
+			srcData++;
+
+			while (currX < maxX)
+			{
+				px = *srcData++;
+				lineStart[currX] = px >> 7;
+				lineStart[currX + xAdd * 1] = (px >> 6) & 1;
+				lineStart[currX + xAdd * 2] = (px >> 5) & 1;
+				lineStart[currX + xAdd * 3] = (px >> 4) & 1;
+				lineStart[currX + xAdd * 4] = (px >> 3) & 1;
+				lineStart[currX + xAdd * 5] = (px >> 2) & 1;
+				lineStart[currX + xAdd * 6] = (px >> 1) & 1;
+				lineStart[currX + xAdd * 7] = px & 1;
+				currX += xAdd * 8;
+			}
+			currY += yAdd;
+			lineStart += bpl * yAdd;
+		}
+		break;
+	case 2:
+		while (currY < maxY)
+		{
+			currX = initX;
+			srcData++;
+
+			while (currX < maxX)
+			{
+				px = *srcData++;
+				lineStart[currX] = px >> 6;
+				lineStart[currX + xAdd * 1] = (px >> 4) & 3;
+				lineStart[currX + xAdd * 2] = (px >> 2) & 3;
+				lineStart[currX + xAdd * 3] = px & 3;
+				currX += xAdd * 4;
+			}
+			currY += yAdd;
+			lineStart += bpl * yAdd;
+		}
+		break;
+	case 4:
+		while (currY < maxY)
+		{
+			currX = initX;
+			srcData++;
+
+			while (currX < maxX)
+			{
+				px = *srcData++;
+				lineStart[currX] = px >> 4;
+				lineStart[currX + xAdd * 1] = px & 15;
+				currX += xAdd * 2;
+			}
+			currY += yAdd;
+			lineStart += bpl * yAdd;
+		}
+		break;
+	default:
+		while (currY < maxY)
+		{
+			currX = initX;
+			pxId = 0;
+			px = *srcData++;
+
+			if (px == 0)
+			{
+				while (currX < maxX)
+				{
+					if ((pxId & pxMask) == 0)
+					{
+						px = *srcData++;
+					}
+					lineStart[currX] = (UInt8)((px >> (8 - pxShift)) & pxAMask);
+					px = (UInt8)(px << pxShift);
+					pxId++;
+					currX += xAdd;
+				}
+			}
+			else
+			{
+				while (currX < maxX)
+				{
+					if ((pxId & pxMask) == 0)
+					{
+						px = *srcData++;
+					}
+					lineStart[currX] = (UInt8)((px >> (8 - pxShift)) & pxAMask);
+					px = (UInt8)(px << pxShift);
+					pxId++;
+					currX += xAdd;
+				}
+			}
+			currY += yAdd;
+			lineStart += bpl * yAdd;
+		}
+
+	}
+	return srcData;
+}
+
+UInt8 *PNGParser_ParsePixelsBits1(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+{
+	UInt8 *lineStart = destBuff + initY * bpl;
+	UOSInt currX;
+	UOSInt currY;
+	currY = initY;
 	while (currY < maxY)
 	{
 		currX = initX;
-		pxId = 0;
-		px = *srcData++;
+		srcData++;
 
-		if (px == 0)
+		while (currX < maxX)
 		{
-			while (currX < maxX)
-			{
-				if ((pxId & pxMask) == 0)
-				{
-					px = *srcData++;
-				}
-				lineStart[currX] = (UInt8)((px >> (8 - pxShift)) & pxAMask);
-				px = (UInt8)(px << pxShift);
-				pxId++;
-				currX += xAdd;
-			}
+			lineStart[currX >> 3] = *srcData++;
+			currX += xAdd * 8;
 		}
-		else
+		currY += yAdd;
+		lineStart += bpl * yAdd;
+	}
+	return srcData;
+}
+
+UInt8 *PNGParser_ParsePixelsBits2(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+{
+	UInt8 *lineStart = destBuff + initY * bpl;
+	UOSInt currX;
+	UOSInt currY;
+	currY = initY;
+	while (currY < maxY)
+	{
+		currX = initX;
+		srcData++;
+
+		while (currX < maxX)
 		{
-//			printf("%d, Line type = %d\r\n", px);
-//			sb.AppendHexBuff(srcData, (maxX - currX) * pxShift / 8, ' ', Text::LineBreakType::CRLF);
-//			printf("%s\r\n", sb.ToString());
-			while (currX < maxX)
-			{
-				if ((pxId & pxMask) == 0)
-				{
-					px = *srcData++;
-				}
-				lineStart[currX] = (UInt8)((px >> (8 - pxShift)) & pxAMask);
-				px = (UInt8)(px << pxShift);
-				pxId++;
-				currX += xAdd;
-			}
+			lineStart[currX >> 2] = *srcData++;
+			currX += xAdd * 4;
+		}
+		currY += yAdd;
+		lineStart += bpl * yAdd;
+	}
+	return srcData;
+}
+
+UInt8 *PNGParser_ParsePixelsBits4(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+{
+	UInt8 *lineStart = destBuff + initY * bpl;
+	UOSInt currX;
+	UOSInt currY;
+	currY = initY;
+	while (currY < maxY)
+	{
+		currX = initX;
+		srcData++;
+
+		while (currX < maxX)
+		{
+			lineStart[currX >> 1] = *srcData++;
+			currX += xAdd * 2;
 		}
 		currY += yAdd;
 		lineStart += bpl * yAdd;
@@ -2073,63 +2200,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			if (bitDepth < 8)
 			{
 				UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
-				UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispHeight);
 				UInt8 *lineStart;
-				OSInt pxMask;
-				OSInt pxAMask;
-				OSInt pxShift;
-				if (bitDepth == 1)
-				{
-					pxMask = 7;
-					pxAMask = 1;
-					pxShift = 1;
-				}
-				else if (bitDepth == 2)
-				{
-					pxMask = 3;
-					pxAMask = 3;
-					pxShift = 2;
-				}
-				else if (bitDepth == 4)
-				{
-					pxMask = 1;
-					pxAMask = 15;
-					pxShift = 4;
-				}
-				else
-				{
-					pxMask = 1;
-					pxAMask = 15;
-					pxShift = 4;
-				}
-
-				MemClearAC(tmpData, storeWidth * info->dispHeight);
-
-				if (interlaceMeth == 1)
-				{
-					//Pass1
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 8, 8, pxMask, pxAMask, pxShift);
-					//Pass2
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 4, 0, imgW, imgH, 8, 8, pxMask, pxAMask, pxShift);
-					//Pass3
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 4, imgW, imgH, 4, 8, pxMask, pxAMask, pxShift);
-					//Pass4
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 2, 0, imgW, imgH, 4, 4, pxMask, pxAMask, pxShift);
-					//Pass5
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 2, imgW, imgH, 2, 4, pxMask, pxAMask, pxShift);
-					//Pass6
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 1, 0, imgW, imgH, 2, 2, pxMask, pxAMask, pxShift);
-					//Pass7
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 1, imgW, imgH, 1, 2, pxMask, pxAMask, pxShift);
-				}
-				else
-				{
-					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 1, 1, pxMask, pxAMask, pxShift);
-				}
 
 				info->atype = Media::AT_ALPHA;
 				info->storeWidth = storeWidth;
-				UOSInt byteCnt;
 				if (bitDepth == 1)
 				{
 					info->storeBPP = 1;
@@ -2138,13 +2212,29 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					NEW_CLASS(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 8);
 
-					byteCnt = info->byteSize;
-					dataBuff = tmpData;
 					lineStart = simg->data;
-					while (byteCnt-- > 0)
+
+					MemClearAC(lineStart, info->byteSize);
+					if (interlaceMeth == 1)
 					{
-						*lineStart++ = (UInt8)((dataBuff[0] << 7) | (dataBuff[1] << 6) | (dataBuff[2] << 5) | (dataBuff[3] << 4) | (dataBuff[4] << 3) | (dataBuff[5] << 2) | (dataBuff[6] << 1) | dataBuff[7]);
-						dataBuff += 8;
+						//Pass1
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 0, 0, imgW, imgH, 8, 8);
+						//Pass2
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 4, 0, imgW, imgH, 8, 8);
+						//Pass3
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 0, 4, imgW, imgH, 4, 8);
+						//Pass4
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 2, 0, imgW, imgH, 4, 4);
+						//Pass5
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 0, 2, imgW, imgH, 2, 4);
+						//Pass6
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 1, 0, imgW, imgH, 2, 2);
+						//Pass7
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 0, 1, imgW, imgH, 1, 2);
+					}
+					else
+					{
+						dataBuff = PNGParser_ParsePixelsBits1(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 3), storeWidth >> 3, 0, 0, imgW, imgH, 1, 1);
 					}
 
 					imgList->AddImage(simg, imgDelay);
@@ -2157,13 +2247,28 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					NEW_CLASS(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 16);
 
-					byteCnt = info->byteSize;
-					dataBuff = tmpData;
 					lineStart = simg->data;
-					while (byteCnt-- > 0)
+					MemClearAC(lineStart, info->byteSize);
+					if (interlaceMeth == 1)
 					{
-						*lineStart++ = (UInt8)((dataBuff[0] << 6) | (dataBuff[1] << 4) | (dataBuff[2] << 2) | dataBuff[3]);
-						dataBuff += 4;
+						//Pass1
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 0, 0, imgW, imgH, 8, 8);
+						//Pass2
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 4, 0, imgW, imgH, 8, 8);
+						//Pass3
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 0, 4, imgW, imgH, 4, 8);
+						//Pass4
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 2, 0, imgW, imgH, 4, 4);
+						//Pass5
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 0, 2, imgW, imgH, 2, 4);
+						//Pass6
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 1, 0, imgW, imgH, 2, 2);
+						//Pass7
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 0, 1, imgW, imgH, 1, 2);
+					}
+					else
+					{
+						dataBuff = PNGParser_ParsePixelsBits2(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 2), storeWidth >> 2, 0, 0, imgW, imgH, 1, 1);
 					}
 
 					imgList->AddImage(simg, imgDelay);
@@ -2176,19 +2281,32 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					NEW_CLASS(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 64);
 
-					byteCnt = info->byteSize;
-					dataBuff = tmpData;
 					lineStart = simg->data;
-					while (byteCnt-- > 0)
+					MemClearAC(lineStart, info->byteSize);
+					if (interlaceMeth == 1)
 					{
-						*lineStart++ = (UInt8)((dataBuff[0] << 4) | dataBuff[1]);
-						dataBuff += 2;
+						//Pass1
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 0, 0, imgW, imgH, 8, 8);
+						//Pass2
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 4, 0, imgW, imgH, 8, 8);
+						//Pass3
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 0, 4, imgW, imgH, 4, 8);
+						//Pass4
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 2, 0, imgW, imgH, 4, 4);
+						//Pass5
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 0, 2, imgW, imgH, 2, 4);
+						//Pass6
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 1, 0, imgW, imgH, 2, 2);
+						//Pass7
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 0, 1, imgW, imgH, 1, 2);
+					}
+					else
+					{
+						dataBuff = PNGParser_ParsePixelsBits4(dataBuff, lineStart + ((imgY * storeWidth + imgX) >> 1), storeWidth >> 1, 0, 0, imgW, imgH, 1, 1);
 					}
 
 					imgList->AddImage(simg, imgDelay);
 				}
-
-				MemFreeA(tmpData);
 			}
 			else if (bitDepth == 8)
 			{

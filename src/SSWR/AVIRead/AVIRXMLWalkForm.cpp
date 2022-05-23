@@ -8,16 +8,14 @@
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false));
-	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter(CSTR("*.xml"), CSTR("XML File"));
-	dlg->AddFilter(CSTR("*.html"), CSTR("HTML File"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"XMLWalk", false);
+	dlg.SetAllowMultiSel(false);
+	dlg.AddFilter(CSTR("*.xml"), CSTR("XML File"));
+	dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->ToCString());
+		me->LoadFile(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt nFiles)
@@ -32,8 +30,6 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, Text::S
 void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
-	IO::FileStream *fs;
-	Text::XMLReader *reader;
 	Text::XMLReader::ParseMode mode;
 	UOSInt i;
 	this->lvXML->ClearItems();
@@ -51,25 +47,23 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 	{
 		mode = Text::XMLReader::PM_XML;
 	}
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::XMLReader(this->core->GetEncFactory(), fs, mode));
-	while (reader->ReadNext())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::XMLReader reader(this->core->GetEncFactory(), &fs, mode);
+	while (reader.ReadNext())
 	{
 		sb.ClearStr();
-		reader->GetCurrPath(&sb);
+		reader.GetCurrPath(&sb);
 		i = this->lvXML->AddItem(sb.ToCString(), 0);
-		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader->GetNodeType()));
-		this->lvXML->SetSubItem(i, 2, reader->GetNodeText());
+		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader.GetNodeType()));
+		this->lvXML->SetSubItem(i, 2, reader.GetNodeText());
 	}
-	if (!reader->IsComplete())
+	if (!reader.IsComplete())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in parsing the file, code = "));
-		sb.AppendOSInt(reader->GetErrorCode());
+		sb.AppendOSInt(reader.GetErrorCode());
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("XML Walk"), this);
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 }
 
 SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

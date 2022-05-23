@@ -163,6 +163,7 @@ namespace Net
 		virtual Bool SocketIsInvalid(Socket *socket) = 0;
 		virtual Bool SocketBindv4(Socket *socket, UInt32 ip, UInt16 port) = 0;
 		virtual Bool SocketBind(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual Bool SocketBindRAWIf(Socket *socket, UOSInt ifIndex) = 0;
 		virtual Bool SocketListen(Socket *socket) = 0;
 		virtual Socket *SocketAccept(Socket *socket) = 0;
 		virtual Int32 SocketGetLastError() = 0;

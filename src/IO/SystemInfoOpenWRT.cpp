@@ -17,8 +17,6 @@ struct IO::SystemInfo::ClassData
 
 IO::SystemInfo::SystemInfo()
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 
@@ -27,33 +25,33 @@ IO::SystemInfo::SystemInfo()
 	data->platformSN = 0;
 	this->clsData = data;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		sb.ClearStr();
-		while (reader->ReadLine(&sb, 512))
+		IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			if (sb.StartsWith(UTF8STRC("machine")))
-			{
-				i = sb.IndexOf(UTF8STRC(": "));
-				data->platformName = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
-			}
-			else if (sb.StartsWith(UTF8STRC("Serial")))
-			{
-				i = sb.IndexOf(UTF8STRC(": "));
-				data->platformSN = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
-			}
+			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
+			while (reader.ReadLine(&sb, 512))
+			{
+				if (sb.StartsWith(UTF8STRC("machine")))
+				{
+					i = sb.IndexOf(UTF8STRC(": "));
+					data->platformName = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
+				}
+				else if (sb.StartsWith(UTF8STRC("Serial")))
+				{
+					i = sb.IndexOf(UTF8STRC(": "));
+					data->platformSN = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
+				}
+				sb.ClearStr();
+			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 
 	if (data->platformName == 0) //Asus Routers
 	{
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess(UTF8STRC("nvram get productid"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("nvram get productid"), &sb);
 		if (sb.GetLength() > 0)
 		{
 			while (sb.EndsWith('\r') || sb.EndsWith('\n'))
@@ -66,18 +64,16 @@ IO::SystemInfo::SystemInfo()
 
 	if (data->platformName == 0) //Bivocom
 	{
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/fw_model", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(CSTR("/etc/fw_model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			NEW_CLASS(reader, Text::UTF8Reader(fs));
+			Text::UTF8Reader reader(&fs);
 			sb.ClearStr();
-			if (reader->ReadLine(&sb, 512))
+			if (reader.ReadLine(&sb, 512))
 			{
 				data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 			}
-			DEL_CLASS(reader);
 		}
-		DEL_CLASS(fs);
 	}
 }
 

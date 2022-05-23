@@ -16,18 +16,14 @@
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"COVID19", false));
-	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
-	dlg->SetAllowMultiSel(false);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"COVID19", false);
+	dlg.AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+	dlg.SetAllowMultiSel(false);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		me->LoadCSV(fs);
-		DEL_CLASS(fs);
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		me->LoadCSV(&fs);
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
@@ -35,9 +31,8 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
 	UInt8 buff[2048];
 	UOSInt i;
-	IO::MemoryStream *mstm;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(mstm, IO::MemoryStream(1024, UTF8STRC("SSWR.AVIRead.AVIRCOVID19Form.OnDownloadClicked.mstm")));
+	IO::MemoryStream mstm(1024, UTF8STRC("SSWR.AVIRead.AVIRCOVID19Form.OnDownloadClicked.mstm"));
 	while (true)
 	{
 		i = cli->Read(buff, 2048);
@@ -45,14 +40,13 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 		{
 			break;
 		}
-		mstm->Write(buff, i);
+		mstm.Write(buff, i);
 	}
 	DEL_CLASS(cli);
-	if (mstm->GetLength() > 100)
+	if (mstm.GetLength() > 100)
 	{
-		me->LoadCSV(mstm);
+		me->LoadCSV(&mstm);
 	}
-	DEL_CLASS(mstm);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnCountrySelChg(void *userObj)
@@ -69,7 +63,6 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	Media::DrawEngine *deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
 	Media::DrawImage *dimg = deng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
-	Data::LineChart *chart;
 	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList = country->records->GetValues();
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
 	UOSInt i;
@@ -79,28 +72,29 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	Int64 *dates;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
-	NEW_CLASS(chart, Data::LineChart(CSTRP(sbuff, sptr)));
-	chart->SetFontHeightPt(9.0);
-	chart->SetDateFormat(CSTR("yyyy-MM-dd"));
-	i = 0;
-	j = recordList->GetCount();
-	counts = MemAlloc(Int32, j);
-	dates = MemAlloc(Int64, j);
-	while (i < j)
 	{
-		record = recordList->GetItem(i);
-		counts[i] = (Int32)(record->totalCases - lastCount);
-		lastCount = record->totalCases;
-		dates[i] = record->timeTicks;
-		i++;
+		sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
+		Data::LineChart chart(CSTRP(sbuff, sptr));
+		chart.SetFontHeightPt(9.0);
+		chart.SetDateFormat(CSTR("yyyy-MM-dd"));
+		i = 0;
+		j = recordList->GetCount();
+		counts = MemAlloc(Int32, j);
+		dates = MemAlloc(Int64, j);
+		while (i < j)
+		{
+			record = recordList->GetItem(i);
+			counts[i] = (Int32)(record->totalCases - lastCount);
+			lastCount = record->totalCases;
+			dates[i] = record->timeTicks;
+			i++;
+		}
+		chart.AddXDataDate(dates, j);
+		chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
+		chart.Plot(dimg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
+		MemFree(counts);
+		MemFree(dates);
 	}
-	chart->AddXDataDate(dates, j);
-	chart->AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-	chart->Plot(dimg, 0, 0, UOSInt2Double(sz.width), UOSInt2Double(sz.height));
-	MemFree(counts);
-	MemFree(dates);
-	DEL_CLASS(chart);
 	me->pbNewCases->SetImageDImg(dimg);
 	deng->DeleteImage(dimg);
 }
@@ -108,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 {
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
-	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*> *countryList = this->countries->GetValues();
+	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*> *countryList = this->countries.GetValues();
 	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList;
 	UOSInt i = countryList->GetCount();
 	UOSInt j;
@@ -126,7 +120,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 		DEL_CLASS(country->records);
 		MemFree(country);
 	}
-	this->countries->Clear();
+	this->countries.Clear();
 	this->lvCountry->ClearItems();
 }
 
@@ -134,7 +128,6 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	DB::CSVFile *csv;
 	UOSInt colIsoCode = (UOSInt)-1;
 	UOSInt colLocation = (UOSInt)-1;
 	UOSInt colDate = (UOSInt)-1;
@@ -144,89 +137,88 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	this->ClearRecords();
-	NEW_CLASS(csv, DB::CSVFile(stm, 65001));
-	DB::DBReader *r = csv->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
-	if (r == 0)
-	{
-		DEL_CLASS(csv);
-		return false;
-	}
-	i = r->ColCount();
-	while (i-- > 0)
-	{
-		if ((sptr = r->GetName(i, sbuff)) != 0)
-		{
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("iso_code")))
-			{
-				colIsoCode = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("location")))
-			{
-				colLocation = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("date")))
-			{
-				colDate = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_cases")))
-			{
-				colTotalCases = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_deaths")))
-			{
-				colTotalDeath = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("population")))
-			{
-				colPopulation = i;
-			}
-		}
-	}
-
-	if (colIsoCode == (UOSInt)-1 || colLocation == (UOSInt)-1 || colDate == (UOSInt)-1 || colTotalCases == (UOSInt)-1 || colTotalDeath == (UOSInt)-1 || colPopulation == (UOSInt)-1)
-	{
-		csv->CloseReader(r);
-		DEL_CLASS(csv);
-		return false;
-	}
-
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
-	Data::DateTime dt;
-	Int64 t;
-	while (r->ReadNext())
+	this->ClearRecords();
 	{
-		sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff));
-		country = this->countries->Get(CSTRP(sbuff, sptr));
-		if (country == 0)
+		DB::CSVFile csv(stm, 65001);
+		DB::DBReader *r = csv.QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+		if (r == 0)
 		{
-			country = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::CountryInfo, 1);
-			country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-			sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff));
-			country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-			r->GetStr(colPopulation, sbuff, sizeof(sbuff));
-			country->population = Text::StrToDouble(sbuff);
-			NEW_CLASS(country->records, Data::Int64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
-			this->countries->Put(country->isoCode, country);
+			return false;
 		}
-		r->GetDate(colDate, &dt);
-		t = dt.ToTicks();
-		if (country->records->Get(t) == 0)
+		i = r->ColCount();
+		while (i-- > 0)
 		{
-			record = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::DailyRecord, 1);
-			record->timeTicks = t;
-			r->GetStr(colTotalCases, sbuff, sizeof(sbuff));
-			record->totalCases = Text::StrToInt64(sbuff);
-			r->GetStr(colTotalDeath, sbuff, sizeof(sbuff));
-			record->totalDeaths = Text::StrToInt64(sbuff);
-			country->records->Put(record->timeTicks, record);
+			if ((sptr = r->GetName(i, sbuff)) != 0)
+			{
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("iso_code")))
+				{
+					colIsoCode = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("location")))
+				{
+					colLocation = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("date")))
+				{
+					colDate = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_cases")))
+				{
+					colTotalCases = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_deaths")))
+				{
+					colTotalDeath = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("population")))
+				{
+					colPopulation = i;
+				}
+			}
 		}
+
+		if (colIsoCode == (UOSInt)-1 || colLocation == (UOSInt)-1 || colDate == (UOSInt)-1 || colTotalCases == (UOSInt)-1 || colTotalDeath == (UOSInt)-1 || colPopulation == (UOSInt)-1)
+		{
+			csv.CloseReader(r);
+			return false;
+		}
+
+		Data::DateTime dt;
+		Int64 t;
+		while (r->ReadNext())
+		{
+			sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff));
+			country = this->countries.Get(CSTRP(sbuff, sptr));
+			if (country == 0)
+			{
+				country = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::CountryInfo, 1);
+				country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff));
+				country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				r->GetStr(colPopulation, sbuff, sizeof(sbuff));
+				country->population = Text::StrToDouble(sbuff);
+				NEW_CLASS(country->records, Data::Int64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
+				this->countries.Put(country->isoCode, country);
+			}
+			r->GetDate(colDate, &dt);
+			t = dt.ToTicks();
+			if (country->records->Get(t) == 0)
+			{
+				record = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::DailyRecord, 1);
+				record->timeTicks = t;
+				r->GetStr(colTotalCases, sbuff, sizeof(sbuff));
+				record->totalCases = Text::StrToInt64(sbuff);
+				r->GetStr(colTotalDeath, sbuff, sizeof(sbuff));
+				record->totalDeaths = Text::StrToInt64(sbuff);
+				country->records->Put(record->timeTicks, record);
+			}
+		}
+		csv.CloseReader(r);
 	}
-	csv->CloseReader(r);
-	DEL_CLASS(csv);
 	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *> *countryList;
-	countryList = this->countries->GetValues();
+	countryList = this->countries.GetValues();
 	i = 0;
 	j = countryList->GetCount();
 	while (i < j)
@@ -255,7 +247,6 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->countries, Data::StringMap<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
@@ -287,7 +278,6 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 SSWR::AVIRead::AVIRCOVID19Form::~AVIRCOVID19Form()
 {
 	this->ClearRecords();
-	DEL_CLASS(this->countries);
 	SDEL_CLASS(this->ssl);
 }
 

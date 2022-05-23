@@ -7,6 +7,8 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+#include <stdio.h>
+
 void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::DHCPServer *me = (Net::DHCPServer*)userData;
@@ -73,8 +75,8 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			WriteMUInt32(&repBuff[4], transactionId);
 			WriteMUInt64(&repBuff[26], hwAddr);
 			WriteNUInt32(&repBuff[20], me->infIP);
-			Sync::MutexUsage mutUsage(me->devMut);
-			dev = me->devMap->Get(hwAddr);
+			Sync::MutexUsage mutUsage(&me->devMut);
+			dev = me->devMap.Get(hwAddr);
 			if (dev)
 			{
 				reqIP = dev->assignedIP;
@@ -138,7 +140,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				dev->assignTime = dt.ToTicks();
-				me->devMap->Put(hwAddr, dev);
+				me->devMap.Put(hwAddr, dev);
 			}
 			mutUsage.EndUse();
 			WriteNUInt32(&repBuff[16], reqIP);
@@ -167,15 +169,15 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				WriteNUInt32(&repBuff[i + 2], me->gateway);
 				i += 6;
 			}
-			if (me->dnsList->GetCount() > 0)
+			if (me->dnsList.GetCount() > 0)
 			{
 				repBuff[i] = 6;
-				repBuff[i + 1] = (UInt8)(4 * me->dnsList->GetCount());
+				repBuff[i + 1] = (UInt8)(4 * me->dnsList.GetCount());
 				i += 2;
 				j = 0;
-				while (j < me->dnsList->GetCount())
+				while (j < me->dnsList.GetCount())
 				{
-					WriteNUInt32(&repBuff[i], me->dnsList->GetItem(j));
+					WriteNUInt32(&repBuff[i], me->dnsList.GetItem(j));
 					j++;
 					i += 4;
 				}
@@ -195,8 +197,8 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 			repBuff[2] = 6;
 			WriteMUInt32(&repBuff[4], transactionId);
 			WriteMUInt64(&repBuff[26], hwAddr);
-			Sync::MutexUsage mutUsage(me->devMut);
-			dev = me->devMap->Get(hwAddr);
+			Sync::MutexUsage mutUsage(&me->devMut);
+			dev = me->devMap.Get(hwAddr);
 			if (dev == 0)
 			{
 				mutUsage.EndUse();
@@ -238,15 +240,15 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				WriteNUInt32(&repBuff[i + 2], me->gateway);
 				i += 6;
 			}
-			if (me->dnsList->GetCount() > 0)
+			if (me->dnsList.GetCount() > 0)
 			{
 				repBuff[i] = 6;
-				repBuff[i + 1] = (UInt8)(4 * me->dnsList->GetCount());
+				repBuff[i + 1] = (UInt8)(4 * me->dnsList.GetCount());
 				i += 2;
 				j = 0;
-				while (j < me->dnsList->GetCount())
+				while (j < me->dnsList.GetCount())
 				{
-					WriteNUInt32(&repBuff[i], me->dnsList->GetItem(j));
+					WriteNUInt32(&repBuff[i], me->dnsList.GetItem(j));
 					j++;
 					i += 4;
 				}
@@ -271,12 +273,9 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 	this->firstIP = firstIP;
 	this->devCount = devCount;
 	this->gateway = gateway;
-	NEW_CLASS(this->dnsList, Data::ArrayList<UInt32>());
-	this->dnsList->AddAll(dnsList);
+	this->dnsList.AddAll(dnsList);
 	this->ipLeaseTime = 86400;
 
-	this->devMut = 0;
-	this->devMap = 0;
 	this->devUsed = 0;
 
 	UOSInt i;
@@ -305,23 +304,24 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 	UInt32 lastIP = firstIP + devCount;
 	if (!Net::SocketUtil::IPv4SubnetValid(subnet))
 	{
+		printf("Subnet not valid\r\n");
 		return;
 	}
 	if (firstIP == 0 || devCount == 0 || Net::SocketUtil::IPv4ToSortable(subnet) < lastIP)
 	{
+		printf("Parameter validation failed\r\n");
 		return;
 	}
 	if (gateway != 0)
 	{
 		if ((this->infIP & subnet) != (this->gateway & subnet))
 		{
+			printf("Gateway not valid\r\n");
 			return;
 		}
 	}
 
-	NEW_CLASS(this->devMut, Sync::Mutex());
 	this->devUsed = MemAlloc(UInt8, this->devCount);
-	NEW_CLASS(this->devMap, Data::UInt64Map<DeviceStatus*>());
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(&addr, infIP);
@@ -335,7 +335,7 @@ Net::DHCPServer::~DHCPServer()
 		DEL_CLASS(this->svr);
 		this->svr = 0;
 
-		Data::ArrayList<DeviceStatus*> *devList = this->devMap->GetValues();
+		Data::ArrayList<DeviceStatus*> *devList = this->devMap.GetValues();
 		DeviceStatus *dev;
 		UOSInt i = devList->GetCount();
 		while (i-- > 0)
@@ -345,9 +345,7 @@ Net::DHCPServer::~DHCPServer()
 			SDEL_STRING(dev->vendorClass);
 			MemFree(dev);
 		}
-		DEL_CLASS(this->devMap);
 		MemFree(this->devUsed);
-		DEL_CLASS(this->devMut);
 	}
 }
 
@@ -362,12 +360,12 @@ Bool Net::DHCPServer::IsError()
 
 void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->devMut);
+	mutUsage->ReplaceMutex(&this->devMut);
 }
 
 Data::ArrayList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList()
 {
-	return this->devMap->GetValues();
+	return this->devMap.GetValues();
 }
 
 UInt32 Net::DHCPServer::GetIPLeaseTime()

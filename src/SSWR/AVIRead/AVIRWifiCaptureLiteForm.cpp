@@ -423,84 +423,82 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		succ = true;
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		writer->WriteSignature();
-		SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
-		Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
-		i = 0;
-		j = wifiLogList->GetCount();
-		while (i < j)
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			wifiLog = wifiLogList->GetItem(i);
-			sb.ClearStr();
-			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.Append(wifiLog->ssid);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendI32(wifiLog->phyType);
-			sb.AppendC(UTF8STRC("\t"));
-			Text::SBAppendF64(&sb, wifiLog->freq);
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->manuf)
+			succ = true;
+			Text::UTF8Writer writer(&fs);
+			writer.WriteSignature();
+			SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
+			Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
+			i = 0;
+			j = wifiLogList->GetCount();
+			while (i < j)
 			{
-				sb.Append(wifiLog->manuf);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->model)
-			{
-				sb.Append(wifiLog->model);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->serialNum)
-			{
-				sb.Append(wifiLog->serialNum);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
-			sb.AppendUTF8Char(',');
-			sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
-			sb.AppendUTF8Char(',');
-			sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->country)
-			{
-				sb.Append(wifiLog->country);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			k = 0;
-			while (k < 20)
-			{
-				if (wifiLog->neighbour[k] == 0)
-					break;
-				if (k > 0)
+				wifiLog = wifiLogList->GetItem(i);
+				sb.ClearStr();
+				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.Append(wifiLog->ssid);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendI32(wifiLog->phyType);
+				sb.AppendC(UTF8STRC("\t"));
+				Text::SBAppendF64(&sb, wifiLog->freq);
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->manuf)
 				{
-					sb.AppendUTF8Char(',');
+					sb.Append(wifiLog->manuf);
 				}
-				sb.AppendHex64(wifiLog->neighbour[k]);
-				k++;
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->ieLen > 0)
-			{
-				sb.AppendHexBuff(wifiLog->ieBuff, wifiLog->ieLen, 0, Text::LineBreakType::None);
-			}
-			if (!writer->WriteLineC(sb.ToString(), sb.GetLength()))
-			{
-				succ = false;
-			}
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->model)
+				{
+					sb.Append(wifiLog->model);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->serialNum)
+				{
+					sb.Append(wifiLog->serialNum);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
+				sb.AppendUTF8Char(',');
+				sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
+				sb.AppendUTF8Char(',');
+				sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->country)
+				{
+					sb.Append(wifiLog->country);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				k = 0;
+				while (k < 20)
+				{
+					if (wifiLog->neighbour[k] == 0)
+						break;
+					if (k > 0)
+					{
+						sb.AppendUTF8Char(',');
+					}
+					sb.AppendHex64(wifiLog->neighbour[k]);
+					k++;
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->ieLen > 0)
+				{
+					sb.AppendHexBuff(wifiLog->ieBuff, wifiLog->ieLen, 0, Text::LineBreakType::None);
+				}
+				if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+				{
+					succ = false;
+				}
 
-			i++;
+				i++;
+			}
 		}
-		DEL_CLASS(writer);
 	}
-	DEL_CLASS(fs);
 	if (succ)
 	{
 		sb.ClearStr();
@@ -533,47 +531,45 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		succ = true;
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		writer->WriteSignature();
-		SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
-		Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
-		i = 0;
-		j = wifiLogList->GetCount();
-		while (i < j)
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			wifiLog = wifiLogList->GetItem(i);
-			MemCopyNO(&macBuff[2], wifiLog->mac, 6);
-			macBuff[0] = 0;
-			macBuff[1] = 0;
-			const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
-			if (Text::StrEqualsC(ent->name, ent->nameLen, UTF8STRC("Unknown")))
+			succ = true;
+			Text::UTF8Writer writer(&fs);
+			writer.WriteSignature();
+			SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
+			Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
+			i = 0;
+			j = wifiLogList->GetCount();
+			while (i < j)
 			{
-				sb.ClearStr();
-				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
-				sb.AppendC(UTF8STRC("\t"));
-				sb.Append(wifiLog->ssid);
-				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendI32(wifiLog->phyType);
-				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, wifiLog->freq);
-				if (!writer->WriteLineC(sb.ToString(), sb.GetLength()))
+				wifiLog = wifiLogList->GetItem(i);
+				MemCopyNO(&macBuff[2], wifiLog->mac, 6);
+				macBuff[0] = 0;
+				macBuff[1] = 0;
+				const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
+				if (Text::StrEqualsC(ent->name, ent->nameLen, UTF8STRC("Unknown")))
 				{
-					succ = false;
+					sb.ClearStr();
+					sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
+					sb.AppendC(UTF8STRC("\t"));
+					sb.Append(wifiLog->ssid);
+					sb.AppendC(UTF8STRC("\t"));
+					sb.AppendI32(wifiLog->phyType);
+					sb.AppendC(UTF8STRC("\t"));
+					Text::SBAppendF64(&sb, wifiLog->freq);
+					if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+					{
+						succ = false;
+					}
 				}
-			}
 
-			i++;
+				i++;
+			}
 		}
-		DEL_CLASS(writer);
 	}
-	DEL_CLASS(fs);
 	if (succ)
 	{
 		sb.ClearStr();

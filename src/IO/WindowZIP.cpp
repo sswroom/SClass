@@ -26,11 +26,9 @@ IO::WindowZIP::WindowZIP(const WChar *zipFile)
 	else
 	{
 		UInt8 buff[] = {80,75,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(zipFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (fs->Write(buff, 22) == 22)
+		IO::FileStream fs(zipFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs.Write(buff, 22) == 22)
 			this->error = false;
-		DEL_CLASS(fs);
 	}
 	CoInitialize(0);
 }

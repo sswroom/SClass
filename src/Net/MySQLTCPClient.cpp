@@ -844,30 +844,34 @@ public:
 		case Net::MySQLUtil::MYSQL_TYPE_DATETIME:
 		case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP:
 		{
-			Data::DateTime *dt;
 			switch (col->len)
 			{
 			case 0:
-				NEW_CLASS(dt, Data::DateTime());
-				dt->SetTicks(0);
-				item->SetDateDirect(dt);
+
+				item->SetDate(Data::Timestamp(0, 0));
 				return true;
 			case 4:
-				NEW_CLASS(dt, Data::DateTime());
-				dt->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3], 0, 0, 0, 0, 0);
-				item->SetDateDirect(dt);
+				{
+					Data::DateTime dt;
+					dt.SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3], 0, 0, 0, 0, 0);
+					item->SetDate(&dt);
+				}
 				return true;
 			case 7:
-				NEW_CLASS(dt, Data::DateTime());
-				dt->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
-					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], 0, 0);
-				item->SetDateDirect(dt);
+				{
+					Data::DateTime dt;
+					dt.SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
+						this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], 0, 0);
+					item->SetDate(&dt);
+				}
 				return true;
 			case 11:
-				NEW_CLASS(dt, Data::DateTime());
-				dt->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
-					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], (UInt16)(ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]) / 1000), 0);
-				item->SetDateDirect(dt);
+				{
+					Data::DateTime dt;
+					dt.SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
+						this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], (UInt16)(ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]) / 1000), 0);
+					item->SetDate(&dt);
+				}
 				return true;
 			default:
 				//////////////////////////////////////
@@ -2190,6 +2194,7 @@ DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString tableName, Data:
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -2214,8 +2219,32 @@ DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString tableName, Data:
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::MySQL);
-	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	i = 0;
+	while (true)
+	{
+		j = Text::StrIndexOfChar(&tableName.v[i], '.');
+		if (j == INVALID_INDEX)
+		{
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName.v[i], DB::DBUtil::ServerType::MySQL);
+			sb.AppendP(sbuff, sptr);
+			break;
+		}
+		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UOSInt)j);
+		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
+		sb.AppendP(sptr + 1, sptr2);
+		sb.AppendUTF8Char('.');
+		i += j + 1;
+	}
+	if (condition)
+	{
+		sb.AppendC(UTF8STRC(" where "));
+		condition->ToWhereClause(&sb, DB::DBUtil::ServerType::MySQL, 0, 100, 0);
+	}
+	if (ordering.leng > 0)
+	{
+		sb.AppendC(UTF8STRC(" order by "));
+		sb.Append(ordering);
+	}
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));

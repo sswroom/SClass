@@ -41,7 +41,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 			{
 				this->maxLev = lev;
 			}
-			this->packs->Add(pack);
+			this->packs.Add(pack);
 			
 			if (pack->subPackType != 0)
 			{
@@ -69,13 +69,13 @@ UInt32 __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(void *userObj)
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -105,7 +105,6 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(IO::IStreamData *fd)
 	this->threadToStop = false;
 	this->threadStarted = false;
 	this->maxLev = 0;
-	NEW_CLASS(this->packs, Data::SyncArrayList<PackInfo*>());
 	fd->GetRealData(0, 256, buff);
 	if (ReadNInt32(buff) != *(Int32*)"RIFF")
 	{
@@ -135,8 +134,7 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 }
 
 Text::CString IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
@@ -146,14 +144,14 @@ Text::CString IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	PackInfo *pack;
 	UInt8 buff[5];
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -181,7 +179,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -483,7 +481,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

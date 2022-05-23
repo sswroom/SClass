@@ -11,6 +11,8 @@ DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
+DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
+@PostgreSQLConn.o
 
 IO/BTController.h: ../../src/IO/BTControllerL.cpp
 @BTController.o
@@ -94,6 +96,9 @@ $`mysql_config --cflags`
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc
 !-lodbcinst
+PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
+$`pkg-config --cflags libpq`
+!`pkg-config --libs libpq`
 BTController.o: ../../src/IO/BTControllerL.cpp
 !-lbluetooth
 BTManager.o: ../../src/IO/BTManagerL.cpp

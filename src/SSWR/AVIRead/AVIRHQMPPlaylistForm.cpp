@@ -34,20 +34,19 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, Te
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
-	UI::FileDialog *dlg;
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HQMPPlaylist", false));
-	dlg->SetAllowMultiSel(true);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MediaFile);
-	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
+	dlg.SetAllowMultiSel(true);
+	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::MediaFile);
+	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
 		i = 0;
-		j = dlg->GetFileNameCount();
+		j = dlg.GetFileNameCount();
 		while (i < j)
 		{
-			const UTF8Char *fileName = dlg->GetFileNames(i);
+			const UTF8Char *fileName = dlg.GetFileNames(i);
 			if (me->playlist->AddFile({fileName, Text::StrCharCnt(fileName)}))
 			{
 				changed = true;
@@ -60,24 +59,21 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 			me->UpdatePlaylist();
 		}
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
-	UI::FolderDialog *dlg;
 	UTF8Char sbuff[512];
-	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"HQMPPlaylistDir"));
-	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"HQMPPlaylistDir");
+	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		Text::String *folder = dlg->GetFolder();
+		Text::String *folder = dlg.GetFolder();
 		if (me->AddFolder(sbuff, folder->ConcatTo(sbuff)))
 		{
 			me->UpdatePlaylist();
 		}
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnClearClicked(void *userObj)

@@ -2,7 +2,7 @@
 #define _SM_NET_UDPSERVER
 #include "IO/LogTool.h"
 #include "IO/FileStream.h"
-#include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Sync/Event.h"
 #include "Net/SocketFactory.h"
 #include "Text/CString.h"
@@ -36,7 +36,7 @@ namespace Net
 		ThreadStat *v6threadStats;
 		UOSInt threadCnt;
 		UInt16 port;
-		Sync::Event *ctrlEvt;
+		Sync::Event ctrlEvt;
 
 		IO::LogTool *msgLog;
 		Text::String *msgPrefix;
@@ -44,8 +44,8 @@ namespace Net
 		Sync::Mutex logFileMut;
 		IO::FileStream *logFileR;
 		IO::FileStream *logFileS;
-		Data::DateTime *logDateR;
-		Data::DateTime *logDateS;
+		Data::Timestamp logDateR;
+		Data::Timestamp logDateS;
 
 	private:
 		static UInt32 __stdcall DataV4Thread(void *obj);

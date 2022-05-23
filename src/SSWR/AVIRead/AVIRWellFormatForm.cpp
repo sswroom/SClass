@@ -18,44 +18,40 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::IFileSelector *selector)
 Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF8 *output)
 {
 	Bool succ = false;
-	IO::FileStream *fs;
 	UInt64 fileLen;
 	UInt8 *buff;
 
 	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".json")))
 	{
-		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileLen = fs->GetLength();
+		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
 			buff = MemAlloc(UInt8, (UOSInt)fileLen);
-			if (fs->Read(buff, (UOSInt)fileLen) == fileLen)
+			if (fs.Read(buff, (UOSInt)fileLen) == fileLen)
 			{
 				succ = Text::JSText::JSONWellFormat(buff, (UOSInt)fileLen, 0, output);
 			}
 			MemFree(buff);
 		}
-		DEL_CLASS(fs);
 	}
 	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".html")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".htm")))
 	{
-		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileLen = fs->GetLength();
+		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
-			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
+			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
 		}
-		DEL_CLASS(fs);
 	}
 	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".xml")))
 	{
-		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileLen = fs->GetLength();
+		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fileLen = fs.GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
-			succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
+			succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
 		}
-		DEL_CLASS(fs);
 	}
 	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".js")))
 	{
@@ -68,14 +64,12 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSI
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WellFormat", false));
-	AddFilters(dlg);
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WellFormat", false);
+	AddFilters(&dlg);
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg->GetFileName()->ToCString());
+		me->txtFile->SetText(dlg.GetFileName()->ToCString());
 	}
-	DEL_CLASS(dlg);
 }
 
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFile)
@@ -112,18 +106,14 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 	}
 	if (me->ParseFile(sbFile.ToString(), sbFile.GetLength(), &sbOutput))
 	{
-		UI::FileDialog *dlg;
-		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WellFormatParse", true));
-		AddFilters(dlg);
-		dlg->SetFileName(sbFile.ToCString());
-		if (dlg->ShowDialog(me->GetHandle()))
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WellFormatParse", true);
+		AddFilters(&dlg);
+		dlg.SetFileName(sbFile.ToCString());
+		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			fs->Write(sbOutput.ToString(), sbOutput.GetLength());
-			DEL_CLASS(fs);
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fs.Write(sbOutput.ToString(), sbOutput.GetLength());
 		}
-		DEL_CLASS(dlg);
 	}
 }
 

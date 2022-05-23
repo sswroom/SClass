@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			me->txtBattery->SetText(CSTRP(sbuff, sptr));
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
-				Sync::MutexUsage mutUsage(me->captureMut);
+				Sync::MutexUsage mutUsage(&me->captureMut);
 				DEL_CLASS(me->captureWriter);
 				DEL_CLASS(me->captureFS);
 				me->captureWriter = 0;
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		if (me->motion->IsMovving())
 		{
 			me->txtMotion->SetText(CSTR("Moving"));
-			Sync::MutexUsage mutUsage(me->captureMut);
+			Sync::MutexUsage mutUsage(&me->captureMut);
 			if (me->captureWriter && me->lastMotion != 1)
 			{
 				me->lastMotion = 1;
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		else
 		{
 			me->txtMotion->SetText(CSTR("Stopped"));
-			Sync::MutexUsage mutUsage(me->captureMut);
+			Sync::MutexUsage mutUsage(&me->captureMut);
 			if (me->captureWriter && me->lastMotion != 0)
 			{
 				me->lastMotion = 0;
@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 				maxIMAC = 0;
 				maxRSSI = -128;
-				Sync::MutexUsage mutUsage(me->captureMut);
+				Sync::MutexUsage mutUsage(&me->captureMut);
 				if (me->captureWriter)
 				{
 					sb.ClearStr();
@@ -195,7 +195,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						maxIMAC = imac;
 					}
 
-					SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog = me->wifiLogMap->Get(imac);
+					SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog = me->wifiLogMap.Get(imac);
 					const UInt8 *oui1 = bss->GetChipsetOUI(0);
 					const UInt8 *oui2 = bss->GetChipsetOUI(1);
 					const UInt8 *oui3 = bss->GetChipsetOUI(2);
@@ -222,10 +222,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						wifiLog->ouis[2][0] = oui3[0];
 						wifiLog->ouis[2][1] = oui3[1];
 						wifiLog->ouis[2][2] = oui3[2];
-						me->wifiLogMap->Put(imac, wifiLog);
+						me->wifiLogMap.Put(imac, wifiLog);
 
 						sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
-						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
+						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap.GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
 						const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
 						me->lvLogWifi->SetSubItem(k, 1, {entry->name, entry->nameLen});
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					}
 					else
 					{
-						k = (UOSInt)me->wifiLogMap->GetIndex(imac);
+						k = (UOSInt)me->wifiLogMap.GetIndex(imac);
 						if (wifiLog->manuf == 0 && bss->GetManuf())
 						{
 							wifiLog->manuf = bss->GetManuf()->Clone();
@@ -350,7 +350,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					}
 
 					WriteInt16(id, Double2Int32(bss->GetFreq() / 1000000.0));
-					bsss = me->bssMap->Get(ReadUInt64(id));
+					bsss = me->bssMap.Get(ReadUInt64(id));
 					if (bsss == 0)
 					{
 						bssListUpd = true;
@@ -367,7 +367,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						{
 							bsss->ssid = 0;
 						}
-						me->bssMap->Put(ReadUInt64(id), bsss);
+						me->bssMap.Put(ReadUInt64(id), bsss);
 					}
 					else if (ssid && bsss->ssid == 0)
 					{
@@ -380,7 +380,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 				if (maxRSSI >= -60 && maxRSSI < 0)
 				{
-					SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog = me->wifiLogMap->Get(maxIMAC);
+					SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog = me->wifiLogMap.Get(maxIMAC);
 					i = 0;
 					j = bssList.GetCount();
 					while (i < j)
@@ -451,7 +451,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 				if (bssListUpd)
 				{
-					sptr = Text::StrUOSInt(sbuff, me->bssMap->GetCount());
+					sptr = Text::StrUOSInt(sbuff, me->bssMap.GetCount());
 					me->txtBSSCount->SetText(CSTRP(sbuff, sptr));
 				}
 			}
@@ -496,7 +496,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->captureWriter)
 	{
-		Sync::MutexUsage mutUsage(me->captureMut);
+		Sync::MutexUsage mutUsage(&me->captureMut);
 		DEL_CLASS(me->captureWriter);
 		DEL_CLASS(me->captureFS);
 		me->captureWriter = 0;
@@ -533,7 +533,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		dt.SetCurrTimeUTC();
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-		Sync::MutexUsage mutUsage(me->captureMut);
+		Sync::MutexUsage mutUsage(&me->captureMut);
 		NEW_CLASS(me->captureFS, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (me->captureFS->IsError())
 		{
@@ -583,79 +583,77 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		succ = true;
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		writer->WriteSignature();
-		SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
-		Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
-		i = 0;
-		j = wifiLogList->GetCount();
-		while (i < j)
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			wifiLog = wifiLogList->GetItem(i);
-			sb.ClearStr();
-			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.Append(wifiLog->ssid);
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendI32(wifiLog->phyType);
-			sb.AppendC(UTF8STRC("\t"));
-			Text::SBAppendF64(&sb, wifiLog->freq);
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->manuf)
+			succ = true;
+			Text::UTF8Writer writer(&fs);
+			writer.WriteSignature();
+			SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
+			Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = me->wifiLogMap.GetValues();
+			i = 0;
+			j = wifiLogList->GetCount();
+			while (i < j)
 			{
-				sb.Append(wifiLog->manuf);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->model)
-			{
-				sb.Append(wifiLog->model);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->serialNum)
-			{
-				sb.Append(wifiLog->serialNum);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
-			sb.AppendUTF8Char(',');
-			sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
-			sb.AppendUTF8Char(',');
-			sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
-			sb.AppendC(UTF8STRC("\t"));
-			if (wifiLog->country)
-			{
-				sb.Append(wifiLog->country);
-			}
-			sb.AppendC(UTF8STRC("\t"));
-			k = 0;
-			while (k < 20)
-			{
-				if (wifiLog->neighbour[k] == 0)
-					break;
-				if (k > 0)
+				wifiLog = wifiLogList->GetItem(i);
+				sb.ClearStr();
+				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.Append(wifiLog->ssid);
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendI32(wifiLog->phyType);
+				sb.AppendC(UTF8STRC("\t"));
+				Text::SBAppendF64(&sb, wifiLog->freq);
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->manuf)
 				{
-					sb.AppendUTF8Char(',');
+					sb.Append(wifiLog->manuf);
 				}
-				sb.AppendHex64(wifiLog->neighbour[k]);
-				k++;
-			}
-			if (!writer->WriteLineC(sb.ToString(), sb.GetLength()))
-			{
-				succ = false;
-			}
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->model)
+				{
+					sb.Append(wifiLog->model);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->serialNum)
+				{
+					sb.Append(wifiLog->serialNum);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
+				sb.AppendUTF8Char(',');
+				sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
+				sb.AppendUTF8Char(',');
+				sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
+				sb.AppendC(UTF8STRC("\t"));
+				if (wifiLog->country)
+				{
+					sb.Append(wifiLog->country);
+				}
+				sb.AppendC(UTF8STRC("\t"));
+				k = 0;
+				while (k < 20)
+				{
+					if (wifiLog->neighbour[k] == 0)
+						break;
+					if (k > 0)
+					{
+						sb.AppendUTF8Char(',');
+					}
+					sb.AppendHex64(wifiLog->neighbour[k]);
+					k++;
+				}
+				if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+				{
+					succ = false;
+				}
 
-			i++;
+				i++;
+			}
 		}
-		DEL_CLASS(writer);
 	}
-	DEL_CLASS(fs);
 	if (succ)
 	{
 		sb.ClearStr();
@@ -688,47 +686,45 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		succ = true;
-		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		writer->WriteSignature();
-		SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
-		Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
-		i = 0;
-		j = wifiLogList->GetCount();
-		while (i < j)
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			wifiLog = wifiLogList->GetItem(i);
-			MemCopyNO(&macBuff[2], wifiLog->mac, 6);
-			macBuff[0] = 0;
-			macBuff[1] = 0;
-			const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
-			if (Text::StrEqualsC(ent->name, ent->nameLen, UTF8STRC("Unknown")))
+			succ = true;
+			Text::UTF8Writer writer(&fs);
+			writer.WriteSignature();
+			SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
+			Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = me->wifiLogMap.GetValues();
+			i = 0;
+			j = wifiLogList->GetCount();
+			while (i < j)
 			{
-				sb.ClearStr();
-				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
-				sb.AppendC(UTF8STRC("\t"));
-				sb.Append(wifiLog->ssid);
-				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendI32(wifiLog->phyType);
-				sb.AppendC(UTF8STRC("\t"));
-				Text::SBAppendF64(&sb, wifiLog->freq);
-				if (!writer->WriteLineC(sb.ToString(), sb.GetLength()))
+				wifiLog = wifiLogList->GetItem(i);
+				MemCopyNO(&macBuff[2], wifiLog->mac, 6);
+				macBuff[0] = 0;
+				macBuff[1] = 0;
+				const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
+				if (Text::StrEqualsC(ent->name, ent->nameLen, UTF8STRC("Unknown")))
 				{
-					succ = false;
+					sb.ClearStr();
+					sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
+					sb.AppendC(UTF8STRC("\t"));
+					sb.Append(wifiLog->ssid);
+					sb.AppendC(UTF8STRC("\t"));
+					sb.AppendI32(wifiLog->phyType);
+					sb.AppendC(UTF8STRC("\t"));
+					Text::SBAppendF64(&sb, wifiLog->freq);
+					if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+					{
+						succ = false;
+					}
 				}
-			}
 
-			i++;
+				i++;
+			}
 		}
-		DEL_CLASS(writer);
 	}
-	DEL_CLASS(fs);
 	if (succ)
 	{
 		sb.ClearStr();
@@ -764,7 +760,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->currActive || record->valid != 0)
 	{
-		Sync::MutexUsage mutUsage(me->captureMut);
+		Sync::MutexUsage mutUsage(&me->captureMut);
 		if (me->captureWriter)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -816,19 +812,15 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->locSvcRel = false;
 	this->captureFS = 0;
 	this->captureWriter = 0;
-	NEW_CLASS(this->captureMut, Sync::Mutex());
-	NEW_CLASS(this->bssMap, Data::UInt64Map<BSSStatus*>());
-	NEW_CLASS(this->wifiLogMap, Data::UInt64Map<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*>());
-	NEW_CLASS(this->sensorMgr, IO::SensorManager());
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->sensorMgr->GetSensorCnt();
+	j = this->sensorMgr.GetSensorCnt();
 	while (i < j)
 	{
-		if (this->sensorMgr->GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
+		if (this->sensorMgr.GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
 		{
-			IO::Sensor *sensor = this->sensorMgr->CreateSensor(0);
+			IO::Sensor *sensor = this->sensorMgr.CreateSensor(0);
 			if (sensor)
 			{
 				NEW_CLASS(this->motion, IO::MotionDetectorAccelerometer(sensor->GetSensorAccelerator(), true));
@@ -963,7 +955,6 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 {
-	DEL_CLASS(this->sensorMgr);
 	SDEL_CLASS(this->motion);
 	SDEL_CLASS(this->wlanInterf);
 	if (this->locSvc)
@@ -981,11 +972,10 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 		SDEL_CLASS(this->captureWriter);
 		SDEL_CLASS(this->captureFS);
 	}
-	DEL_CLASS(this->captureMut);
 	DEL_CLASS(this->wlan);
 	UOSInt i;
 	BSSStatus *bss;
-	Data::ArrayList<BSSStatus*> *bssList = this->bssMap->GetValues();
+	Data::ArrayList<BSSStatus*> *bssList = this->bssMap.GetValues();
 	i = bssList->GetCount();
 	while (i-- > 0)
 	{
@@ -993,9 +983,8 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 		SDEL_STRING(bss->ssid);
 		MemFree(bss);
 	}
-	DEL_CLASS(this->bssMap);
 
-	Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = this->wifiLogMap->GetValues();
+	Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = this->wifiLogMap.GetValues();
 	SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
 	i = wifiLogList->GetCount();
 	while (i-- > 0)
@@ -1008,7 +997,6 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 		SDEL_STRING(wifiLog->country);
 		MemFree(wifiLog);
 	}
-	DEL_CLASS(this->wifiLogMap);
 }
 
 void SSWR::AVIRead::AVIRWifiCaptureForm::OnMonitorChanged()

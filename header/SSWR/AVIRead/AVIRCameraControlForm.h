@@ -28,7 +28,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			IO::CameraControl *camera;
-			Data::StringUTF8Map<Media::ImageList *> *previewMap;
+			Data::StringUTF8Map<Media::ImageList *> previewMap;
 
 			static void __stdcall OnDownloadClicked(void *userObj);
 			static void __stdcall OnFilesDblClick(void *userObj, UOSInt index);

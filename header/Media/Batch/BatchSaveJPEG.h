@@ -11,8 +11,8 @@ namespace Media
 		class BatchSaveJPEG : public BatchSaver
 		{
 		private:
-			Exporter::GUIJPGExporter *exporter;
-			Sync::Mutex *mut;
+			Exporter::GUIJPGExporter exporter;
+			Sync::Mutex mut;
 			UInt32 quality;
 
 		public:

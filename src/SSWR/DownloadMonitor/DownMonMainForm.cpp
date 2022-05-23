@@ -50,10 +50,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj
 	UOSInt i;
 	UOSInt j;
 	Int32 id;
-	Sync::MutexUsage mutUsage(me->endedMut);
-	while (me->endedList->GetCount() > 0)
+	Sync::MutexUsage mutUsage(&me->endedMut);
+	while (me->endedList.GetCount() > 0)
 	{
-		id = me->endedList->RemoveAt(0);
+		id = me->endedList.RemoveAt(0);
 		i = 0;
 		j = me->lvFiles->GetCount();
 		while (i < j)
@@ -337,8 +337,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(void *us
 		if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
 		{
 			me->core->FileEnd(id & 0xffffff, id >> 24);
-			Sync::MutexUsage mutUsage(me->endedMut);
-			me->endedList->Add(id);
+			Sync::MutexUsage mutUsage(&me->endedMut);
+			me->endedList.Add(id);
 			mutUsage.EndUse();
 		}
 	}
@@ -437,8 +437,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(void *
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(void *userObj, Int32 fileId, Int32 webType)
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
-	Sync::MutexUsage mutUsage(me->endedMut);
-	me->endedList->Add((webType << 24) | fileId);
+	Sync::MutexUsage mutUsage(&me->endedMut);
+	me->endedList.Add((webType << 24) | fileId);
 	mutUsage.EndUse();
 }
 
@@ -475,8 +475,6 @@ Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(Text::CString url, Int32 
 
 void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 
 	Net::WebSite::WebSite48IdolControl *ctrl = 0;
@@ -490,55 +488,55 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	UTF8Char *sptr;
 	Text::PString sarr[2];
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	while (reader->ReadLine(&sb, 4096))
 	{
-		if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)
+		IO::FileStream fs(this->core->GetListFile(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Reader reader(&fs);
+		while (reader.ReadLine(&sb, 4096))
 		{
-			Int32 id = 0;
-			Int32 webType = 0;
-			id = ParseURL(sarr[0].ToCString(), &webType);
-
-			if (id != 0)
+			if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)
 			{
-				if (!Text::UTF8Util::ValidStr(sarr[1].v))
-				{
-					printf("Invalid char found, id = %d\r\n", id);
-					if (ctrl == 0)
-					{
-						NEW_CLASS(encFact, Text::EncodingFactory());
-						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua));
-					}
-					sb2.ClearStr();
-					if (ctrl->GetVideoName(id, &sb2))
-					{
-						printf("Name of id %d updated\r\n", id);
-						sarr[1].v = sb2.ToString();
-						sarr[1].leng = sb2.GetLength();
-						updated = true;
-					}
-				}
-				Text::String *s = Text::String::New(sarr[1].v, sarr[1].leng);
-				if (this->core->FileAdd(id, webType, s))
-				{
-					Sync::MutexUsage mutUsage;
-					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, &mutUsage);
-					if (file != 0)
-					{
-						sptr = Text::StrInt32(sbuff, file->id);
-						i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
-						this->lvFiles->SetSubItem(i, 1, file->fileName);
-					}
-				}
-				s->Release();
-			}
-		}
+				Int32 id = 0;
+				Int32 webType = 0;
+				id = ParseURL(sarr[0].ToCString(), &webType);
 
-		sb.ClearStr();
+				if (id != 0)
+				{
+					if (!Text::UTF8Util::ValidStr(sarr[1].v))
+					{
+						printf("Invalid char found, id = %d\r\n", id);
+						if (ctrl == 0)
+						{
+							NEW_CLASS(encFact, Text::EncodingFactory());
+							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua));
+						}
+						sb2.ClearStr();
+						if (ctrl->GetVideoName(id, &sb2))
+						{
+							printf("Name of id %d updated\r\n", id);
+							sarr[1].v = sb2.ToString();
+							sarr[1].leng = sb2.GetLength();
+							updated = true;
+						}
+					}
+					Text::String *s = Text::String::New(sarr[1].v, sarr[1].leng);
+					if (this->core->FileAdd(id, webType, s))
+					{
+						Sync::MutexUsage mutUsage;
+						SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, &mutUsage);
+						if (file != 0)
+						{
+							sptr = Text::StrInt32(sbuff, file->id);
+							i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
+							this->lvFiles->SetSubItem(i, 1, file->fileName);
+						}
+					}
+					s->Release();
+				}
+			}
+
+			sb.ClearStr();
+		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	ua->Release();
 	SDEL_CLASS(ctrl);
 	SDEL_CLASS(encFact);
@@ -551,15 +549,13 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 
 void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 {
-	IO::FileStream *fs;
-	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
 
-	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	writer->WriteSignature();
+	IO::FileStream fs(this->core->GetListFile(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	Text::UTF8Writer writer(&fs);
+	writer.WriteSignature();
 	i = 0;
 	j = this->lvFiles->GetCount();
 	while (i < j)
@@ -589,12 +585,10 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 			sb.AppendI32(file->id);
 			sb.AppendUTF8Char('\t');
 			sb.Append(file->dbName);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		i++;
 	}
-	DEL_CLASS(writer);
-	DEL_CLASS(fs);
 }
 
 SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DownloadMonitor::DownMonCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -604,8 +598,6 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->SetFont(0, 0, 8.25, false);
 	this->alarmSet = false;
 	this->alarmTime = 0;
-	NEW_CLASS(this->endedMut, Sync::Mutex());
-	NEW_CLASS(this->endedList, Data::ArrayList<Int32>());
 	this->core->SetFileEndHandler(OnFileEnd, this);
 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
@@ -654,6 +646,4 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 
 SSWR::DownloadMonitor::DownMonMainForm::~DownMonMainForm()
 {
-	DEL_CLASS(this->endedList);
-	DEL_CLASS(this->endedMut);
 }

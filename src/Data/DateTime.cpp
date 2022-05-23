@@ -124,6 +124,11 @@ void Data::DateTime::SetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *ti
 		{
 			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
 		}
+		else if (valTmp > 3)
+		{
+			strs[1].v[3] = 0;
+			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
+		}
 		else
 		{
 			t->ms = 0;
@@ -188,6 +193,13 @@ Data::DateTime::DateTime(Int64 ticks)
 	this->timeType = TimeType::Ticks;
 	this->val.ticks = ticks;
 	this->tzQhr = 0;
+}
+
+Data::DateTime::DateTime(Int64 ticks, Int8 tzQhr)
+{
+	this->timeType = TimeType::Ticks;
+	this->val.ticks = ticks;
+	this->tzQhr = tzQhr;
 }
 
 Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second)
@@ -373,6 +385,13 @@ void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, O
 	this->SetMS(ms);
 }
 
+void Data::DateTime::SetValue(Int64 ticks, Int8 tzQhr)
+{
+	this->timeType = Data::DateTime::TimeType::Ticks;
+	this->val.ticks = ticks;
+	this->tzQhr = tzQhr;
+}
+
 void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
@@ -440,7 +459,8 @@ Bool Data::DateTime::SetValue(Text::CString dateStr)
 		{
 			UTF8Char c = strs2[1].v[i];
 			strs2[1].v[i] = 0;
-			if ((strs2[1].leng - i - 1) == 5)
+			UOSInt tzlen = strs2[1].leng - i - 1;
+			if (tzlen == 5)
 			{
 				UInt32 min = Text::StrToUInt32(&strs2[1].v[i + 4]);
 				if (strs2[1].v[i + 3] == ':')
@@ -459,6 +479,17 @@ Bool Data::DateTime::SetValue(Text::CString dateStr)
 				else
 				{
 					this->tzQhr = (Int8)(min / 15);
+				}
+			}
+			else if (tzlen == 2)
+			{
+				if (c == '-')
+				{
+					this->tzQhr = (Int8)-(Text::StrToInt32(&strs2[1].v[i + 1]) * 4);
+				}
+				else
+				{
+					this->tzQhr = (Int8)(Text::StrToUInt32(&strs2[1].v[i + 1]) * 4);
 				}
 			}
 			strs2[1].leng = i;
@@ -1260,7 +1291,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
 UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, (const UTF8Char*)pattern);
+	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, (UInt32)tval->ms * 1000000, (const UTF8Char*)pattern);
 }
 
 Data::DateTime Data::DateTime::operator=(Data::DateTime dt)

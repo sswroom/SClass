@@ -120,7 +120,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 	tag->ofst = 0;
 	tag->size = 2;
 	tag->tagType = 0xd8; //SOI
-	me->tags->Add(tag);
+	me->tags.Add(tag);
 
 	while (ofst < dataSize - 11 && !me->threadToStop)
 	{
@@ -139,7 +139,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			tag->ofst = ofst;
 			tag->size = lastSize + 2;
 			tag->tagType = tagHdr[1];
-			me->tags->Add(tag);
+			me->tags.Add(tag);
 			ofst += lastSize + 2;
 
 			me->fd->GetRealData(dataSize - 2, 2, tagHdr);
@@ -149,12 +149,12 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 				tag->ofst = ofst;
 				tag->size = (UOSInt)(dataSize - ofst - 2);
 				tag->tagType = 0;
-				me->tags->Add(tag);
+				me->tags.Add(tag);
 				tag = MemAlloc(IO::FileAnalyse::JPGFileAnalyse::JPGTag, 1);
 				tag->ofst = dataSize - 2;
 				tag->size = 2;
 				tag->tagType = 0xd9;
-				me->tags->Add(tag);
+				me->tags.Add(tag);
 			}
 			else
 			{
@@ -162,7 +162,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 				tag->ofst = ofst;
 				tag->size = (UOSInt)(dataSize - ofst);
 				tag->tagType = 0;
-				me->tags->Add(tag);
+				me->tags.Add(tag);
 			}
 			break;
 		}
@@ -174,7 +174,7 @@ UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
 			tag->ofst = ofst;
 			tag->size = lastSize + 2;
 			tag->tagType = tagHdr[1];
-			me->tags->Add(tag);
+			me->tags.Add(tag);
 			ofst += lastSize + 2;
 		}
 	}
@@ -191,7 +191,6 @@ IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
-	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::JPGFileAnalyse::JPGTag*>());
 	fd->GetRealData(0, 256, buff);
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 	{
@@ -218,8 +217,7 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 	}
 
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->tags, MemFree);
-	DEL_CLASS(this->tags);
+	LIST_FREE_FUNC(&this->tags, MemFree);
 }
 
 Text::CString IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
@@ -229,12 +227,12 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 {
-	return this->tags->GetCount();
+	return this->tags.GetCount();
 }
 
 Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
 	Text::CString name;
 	if (tag == 0)
 		return false;
@@ -261,7 +259,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	UOSInt k;
 	Int32 v;
 	Text::CString name;
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return false;
 	sb->AppendC(UTF8STRC("Tag "));
@@ -580,13 +578,13 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->tags->GetCount() - 1;
+	OSInt j = (OSInt)this->tags.GetCount() - 1;
 	OSInt k;
 	JPGTag *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->tags->GetItem((UOSInt)k);
+		pack = this->tags.GetItem((UOSInt)k);
 		if (ofst < pack->ofst)
 		{
 			j = k - 1;
@@ -613,7 +611,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
+	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
 	

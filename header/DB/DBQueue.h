@@ -110,7 +110,7 @@ namespace DB
 
 	private:
 		DBTool *db1;
-		Data::ArrayList<DB::DBHandler *> *dbList;
+		Data::ArrayList<DB::DBHandler *> dbList;
 
 	public:
 		Data::ArrayList<IDBCmd*> **sqlList;
@@ -126,7 +126,7 @@ namespace DB
 		Bool stopping;
 
 	private:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		UOSInt dbSize;
 		UOSInt nextDB;
 
@@ -165,11 +165,11 @@ namespace DB
 	private:
 		DBQueue *dbQ;
 		DBTool *db;
-		Sync::Event *evt;
-		Sync::Mutex *mut;
+		Sync::Event evt;
+		Sync::Mutex mut;
 		Bool running;
 		Bool processing;
-		Data::DateTime *procTime;
+		Data::DateTime procTime;
 
 	public:
 		DBHandler(DBQueue *dbQ, DBTool *db);

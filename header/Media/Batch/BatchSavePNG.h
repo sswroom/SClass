@@ -11,8 +11,8 @@ namespace Media
 		class BatchSavePNG : public BatchSaver
 		{
 		private:
-			Exporter::GUIPNGExporter *exporter;
-			Sync::Mutex *mut;
+			Exporter::GUIPNGExporter exporter;
+			Sync::Mutex mut;
 
 		public:
 			BatchSavePNG();

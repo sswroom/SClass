@@ -33,8 +33,8 @@ namespace IO
 			UInt64 ofst;
 			UInt64 size;
 
-			Data::ArrayList<Text::String*> *headers;
-			Data::ArrayList<FieldInfo*> *fields;
+			Data::ArrayList<Text::String*> headers;
+			Data::ArrayList<FieldInfo*> fields;
 
 			void FreeFieldInfo(FieldInfo *field);
 			void AddFieldInfo(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value, FieldType fieldType);

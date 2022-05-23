@@ -4,15 +4,12 @@
 
 Bool IO::FileExporter::ExportNewFile(Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	Bool succ = this->ExportFile(fs, fileName, pobj, param);
-	DEL_CLASS(fs);
+	Bool succ = this->ExportFile(&fs, fileName, pobj, param);
 	return succ;
 }
 

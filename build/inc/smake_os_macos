@@ -10,6 +10,8 @@ DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
+DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
+@PostgreSQLConn.o
 
 IO/BTController.h: ../../src/IO/BTControllerNull.cpp
 @BTController.o
@@ -90,6 +92,9 @@ $-I /opt/local/include/mariadb/mysql
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc
 !-lodbcinst
+PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
+$`pkg-config --cflags libpq`
+!`pkg-config --libs libpq`
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
 BTScanner.o: ../../src/IO/BTScannerNull.cpp

@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageUtil.h"
-#include "Media/LRGBLimiter.h"
+#include "Media/LRGBLimiterC.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"

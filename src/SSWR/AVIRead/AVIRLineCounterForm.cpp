@@ -15,15 +15,15 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 	me->txtExtensions->GetText(&sb);
 	if (sb.GetLength() == 0)
 		return;
-	UOSInt i = me->extList->GetCount();
+	UOSInt i = me->extList.GetCount();
 	while (i-- > 0)
 	{
-		if (me->extList->GetItem(i)->EqualsICase(sb.ToString(), sb.GetLength()))
+		if (me->extList.GetItem(i)->EqualsICase(sb.ToString(), sb.GetLength()))
 		{
 			return;
 		}
 	}
-	me->extList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+	me->extList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	me->lbExtensions->AddItem(sb.ToCString(), 0);
 }
 
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(voi
 	UOSInt i = me->lbExtensions->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->extList->RemoveAt(i)->Release();
+		me->extList.RemoveAt(i)->Release();
 		me->lbExtensions->RemoveItem(i);
 	}
 }
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
-	if (me->extList->GetCount() <= 0)
+	if (me->extList.GetCount() <= 0)
 		return;
 	me->txtPath->GetText(&sb);
 	if (sb.GetLength() == 0)
@@ -73,10 +73,10 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	UOSInt totalLine = 0;
 	FileInfo *fi;
 	i = 0;
-	j = me->resList->GetCount();
+	j = me->resList.GetCount();
 	while (i < j)
 	{
-		fi = me->resList->GetItem(i);
+		fi = me->resList.GetItem(i);
 		sptr = Text::StrUOSInt(sbuff, fi->lineCnt);
 		k = me->lvResult->AddItem(CSTRP(sbuff, sptr), fi);
 		me->lvResult->SetSubItem(k, 1, fi->fileName);
@@ -90,38 +90,32 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
-	if (me->resList->GetCount() == 0)
+	if (me->resList.GetCount() == 0)
 		return;
 
-	UI::FileDialog *dlg;
-	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LineCounterSave", true));
-	dlg->AddFilter(CSTR("*.txt"), CSTR("Result file"));
-	if (dlg->ShowDialog(me->GetHandle()))
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LineCounterSave", true);
+	dlg.AddFilter(CSTR("*.txt"), CSTR("Result file"));
+	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		FileInfo *fi;
-		IO::FileStream *fs;
-		IO::StreamWriter *writer;
 		UOSInt i;
 		UOSInt j;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(writer, IO::StreamWriter(fs, (UInt32)0));
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::StreamWriter writer(&fs, (UInt32)0);
 		i = 0;
-		j = me->resList->GetCount();
+		j = me->resList.GetCount();
 		while (i < j)
 		{
-			fi = me->resList->GetItem(i);
+			fi = me->resList.GetItem(i);
 			sb.ClearStr();
 			sb.AppendUOSInt(fi->lineCnt);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.Append(fi->fileName);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
-		DEL_CLASS(writer);
-		DEL_CLASS(fs);
 	}
-	DEL_CLASS(dlg);
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *pathBuffEnd)
@@ -130,8 +124,6 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
 	Text::StringBuilderUTF8 sb;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	UOSInt lineCnt;
 	UOSInt i;
 	UOSInt j;
@@ -156,10 +148,10 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 			{
 				found = false;
 				i = Text::StrLastIndexOfCharC(pathBuffEnd, (UOSInt)(sptr - pathBuffEnd), '.') + 1;
-				j = this->extList->GetCount();
+				j = this->extList.GetCount();
 				while (j-- > 0)
 				{
-					if (this->extList->GetItem(j)->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
+					if (this->extList.GetItem(j)->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
 					{
 						found = true;
 						break;
@@ -168,27 +160,27 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 				if (found)
 				{
 					lineCnt = 0;
-					NEW_CLASS(fs, IO::FileStream({pathBuff, (UOSInt)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					NEW_CLASS(reader, Text::UTF8Reader(fs));
-					while (true)
 					{
-						sb.ClearStr();
-						if (reader->ReadLine(&sb, 4096))
+						IO::FileStream fs({pathBuff, (UOSInt)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+						Text::UTF8Reader reader(&fs);
+						while (true)
 						{
-							lineCnt++;
-						}
-						else
-						{
-							break;
+							sb.ClearStr();
+							if (reader.ReadLine(&sb, 4096))
+							{
+								lineCnt++;
+							}
+							else
+							{
+								break;
+							}
 						}
 					}
-					DEL_CLASS(reader);
-					DEL_CLASS(fs);
 
 					fi = MemAlloc(FileInfo, 1);
 					fi->lineCnt = lineCnt;
 					fi->fileName = Text::String::New(pathBuff, (UOSInt)(sptr - pathBuff));
-					this->resList->Add(fi);
+					this->resList.Add(fi);
 				}
 			}
 		}
@@ -200,12 +192,12 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
 {
 	UOSInt i;
 	if (this->lbExtensions) this->lbExtensions->ClearItems();
-	i = this->extList->GetCount();
+	i = this->extList.GetCount();
 	while (i-- > 0)
 	{
-		this->extList->GetItem(i)->Release();
+		this->extList.GetItem(i)->Release();
 	}
-	this->extList->Clear();
+	this->extList.Clear();
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()
@@ -213,14 +205,14 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()
 	UOSInt i;
 	FileInfo *fi;
 	if (this->lvResult) this->lvResult->ClearItems();
-	i = this->resList->GetCount();
+	i = this->resList.GetCount();
 	while (i-- > 0)
 	{
-		fi = this->resList->GetItem(i);
+		fi = this->resList.GetItem(i);
 		fi->fileName->Release();
 		MemFree(fi);
 	}
-	this->resList->Clear();
+	this->resList.Clear();
 }
 
 SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -229,9 +221,6 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Line Counter"));
 	this->SetFont(0, 0, 8.25, false);
-
-	NEW_CLASS(this->extList, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->resList, Data::ArrayList<FileInfo*>());
 
 	NEW_CLASS(this->pnlConfig, UI::GUIPanel(ui, this));
 	this->pnlConfig->SetRect(0, 0, 100, 220, false);
@@ -283,8 +272,6 @@ SSWR::AVIRead::AVIRLineCounterForm::~AVIRLineCounterForm()
 	this->lbExtensions = 0;
 	this->ClearExts();
 	this->ClearResult();
-	DEL_CLASS(this->extList);
-	DEL_CLASS(this->resList);
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::OnMonitorChanged()

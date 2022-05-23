@@ -25,27 +25,25 @@ IO::SystemInfo::SystemInfo()
 	this->clsData = data;
 
 	Int64 flen;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/class/i2c-dev/i2c-0/device/0-0056/eeprom", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/sys/class/i2c-dev/i2c-0/device/0-0056/eeprom"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		flen = fs->GetLength();
+		flen = fs.GetLength();
 		if (flen >= 256 && (flen & 255) == 0)
 		{
-			fs->Read(buff, 256);
+			fs.Read(buff, 256);
 			if (buff[32])
 			{
 				SDEL_STRING(data->platformName);
-				data->platformName = Text::String::NewNotNull(&buff[32]);
+				data->platformName = Text::String::NewNotNullSlow(&buff[32]);
 			}
 			if (buff[64])
 			{
 				SDEL_STRING(data->platformSN);
-				data->platformSN = Text::String::NewNotNull(&buff[64]);
+				data->platformSN = Text::String::NewNotNullSlow(&buff[64]);
 			}
 		}
 	}
-	SDEL_CLASS(fs);
 }
 
 IO::SystemInfo::~SystemInfo()

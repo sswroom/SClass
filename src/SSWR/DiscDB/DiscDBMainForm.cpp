@@ -89,28 +89,24 @@ SSWR::DiscDB::DiscDBMainForm::~DiscDBMainForm()
 
 void SSWR::DiscDB::DiscDBMainForm::EventMenuClicked(UInt16 cmdId)
 {
-	UI::GUIForm *frm;
 	switch (cmdId)
 	{
 	case MNU_DVDTYPE:
 		{
-			NEW_CLASS(frm, SSWR::DiscDB::DiscDBDVDTypeForm(0, this->ui, this->env));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::DiscDB::DiscDBDVDTypeForm frm(0, this->ui, this->env);
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_BURNT_DISC:
 		{
-			NEW_CLASS(frm, SSWR::DiscDB::DiscDBBurntDiscForm(0, this->ui, this->env));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::DiscDB::DiscDBBurntDiscForm frm(0, this->ui, this->env);
+			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_SEARCH_DISC:
 		{
-			NEW_CLASS(frm, SSWR::DiscDB::DiscDBSearchDiscForm(0, this->ui, this->env));
-			frm->ShowDialog(this);
-			DEL_CLASS(frm);
+			SSWR::DiscDB::DiscDBSearchDiscForm frm(0, this->ui, this->env);
+			frm.ShowDialog(this);
 		}
 		break;
 	}

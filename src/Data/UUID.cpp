@@ -12,6 +12,11 @@ Data::UUID::UUID(const UInt8 *buff)
 	this->SetValue(buff);
 }
 
+Data::UUID::UUID(Text::CString str)
+{
+	this->SetValue(str);
+}
+
 Data::UUID::~UUID()
 {
 }
@@ -24,6 +29,30 @@ void Data::UUID::SetValue(const UInt8 *buff)
 void Data::UUID::SetValue(UUID *uuid)
 {
 	MemCopyNO(this->data, uuid->data, 16);
+}
+
+void Data::UUID::SetValue(Text::CString str)
+{
+	if (str.leng == 38 && str.v[0] == '{' && str.v[37] == '}')
+	{
+		str.v = str.v + 1;
+		str.leng = 36;
+	}
+	else if (str.leng != 36)
+	{
+		MemClear(this->data, 16);
+		return;
+	}
+	if (str.v[8] != '-' || str.v[13] != '-' || str.v[18] != '-' || str.v[23] != '-')
+	{
+		MemClear(this->data, 16);
+		return;
+	}
+	WriteUInt32(&this->data[0], Text::StrHex2UInt32C(&str.v[0]));
+	WriteUInt16(&this->data[4], Text::StrHex2UInt16C(&str.v[9]));
+	WriteUInt16(&this->data[6], Text::StrHex2UInt16C(&str.v[14]));
+	WriteUInt16(&this->data[8], Text::StrHex2UInt16C(&str.v[19]));
+	Text::StrHex2Bytes(&str.v[24], &this->data[10]);
 }
 
 UOSInt Data::UUID::GetValue(UInt8 *buff)

@@ -258,21 +258,19 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
-	SSWR::AVIRead::AVIRSSLCertKeyForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRSSLCertKeyForm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey));
-	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->sslCert);
 		SDEL_CLASS(me->sslKey);
-		me->sslCert = frm->GetCert();
-		me->sslKey = frm->GetKey();
+		me->sslCert = frm.GetCert();
+		me->sslKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(&sb);
 		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
-	DEL_CLASS(frm);
 }
 
 SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

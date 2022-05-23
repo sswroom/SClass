@@ -12,7 +12,7 @@ void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetD
 {
 	Net::RAWCapture *me = (Net::RAWCapture*)userData;
 	UInt8 buff[256];
-	Sync::MutexUsage mutUsage(me->mut);
+	Sync::MutexUsage mutUsage(&me->mut);
 	me->packetCnt++;
 	me->dataSize += packetSize;
 	if (me->format == FF_PCAP)
@@ -83,7 +83,6 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 	this->sockf = sockf;
 	this->socMon = 0;
 	this->format = format;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->fs = 0;
 	this->packetCnt = 0;
 	this->dataSize = 0;
@@ -244,7 +243,6 @@ Net::RAWCapture::~RAWCapture()
 {
 	SDEL_CLASS(this->socMon);
 	SDEL_CLASS(this->fs);
-	DEL_CLASS(this->mut);
 }
 
 Bool Net::RAWCapture::IsError()

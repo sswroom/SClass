@@ -316,9 +316,28 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString tableName, Data::Array
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("select * from "));
-	UOSInt i = 0;
+	UOSInt i;
 	UOSInt j;
+	sb.AppendC(UTF8STRC("select "));
+	if (columnNames != 0 && (j = columnNames->GetCount()) > 0)
+	{
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(0)->v, DB::DBUtil::ServerType::MySQL);
+		sb.AppendP(sbuff, sptr);
+		i = 1;
+		while (i < j)
+		{
+			sb.AppendUTF8Char(',');
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
+			sb.AppendP(sbuff, sptr);
+			i++;
+		}
+	}
+	else
+	{
+		sb.AppendUTF8Char('*');
+	}
+	sb.AppendC(UTF8STRC(" from "));
+	i = 0;
 	while (true)
 	{
 		j = Text::StrIndexOfChar(&tableName.v[i], '.');
@@ -333,6 +352,16 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString tableName, Data::Array
 		sb.AppendP(sptr + 1, sptr2);
 		sb.AppendUTF8Char('.');
 		i += j + 1;
+	}
+	if (condition)
+	{
+		sb.AppendC(UTF8STRC(" where "));
+		condition->ToWhereClause(&sb, DB::DBUtil::ServerType::MySQL, 0, 100, 0);
+	}
+	if (ordering.leng > 0)
+	{
+		sb.AppendC(UTF8STRC(" order by "));
+		sb.Append(ordering);
 	}
 	if (maxCnt > 0)
 	{

@@ -3,8 +3,6 @@
 #include "IO/ActiveStreamReader.h"
 #include "Sync/Thread.h"
 
-#define BUFFCNT 2
-
 UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 {
 	IO::ActiveStreamReader *me = (IO::ActiveStreamReader *)obj;
@@ -17,18 +15,18 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 		{
 			me->hdlr(me->buffs[i].buff, me->buffs[i].buffSize, me->userData);
 			me->buffs[i].buffSize = 0;
-			me->emptyEvt->Set();
-			i = (i + 1) % BUFFCNT;
+			me->emptyEvt.Set();
+			i = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
 		}
 		bnt = me->bnt;
 		if (bnt && me->reading)
 		{
 			*bnt = IO::ActiveStreamReader::BNT_READ;
 		}
-		me->fullEvt->Wait(1000);
+		me->fullEvt.Wait(1000);
 	}
 	me->running = false;
-	me->emptyEvt->Set();
+	me->emptyEvt.Set();
 	return 0;
 }
 
@@ -39,14 +37,11 @@ IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, IO::St
 	this->buffSize = buffSize;
 	this->currIndex = 0;
 	this->userData = userData;
-	NEW_CLASS(emptyEvt, Sync::Event());
-	NEW_CLASS(fullEvt, Sync::Event());
 	this->running = false;
 	this->toStop = false;
 	this->reading = false;
 
-	Int32 i = BUFFCNT;
-	this->buffs = MemAlloc(ReadBuffer, BUFFCNT);
+	Int32 i = ACTIVESTREAMREADER_BUFFCNT;
 	while (i-- > 0)
 	{
 		buffs[i].buff = MemAllocA(UInt8, buffSize);
@@ -58,19 +53,16 @@ IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, IO::St
 IO::ActiveStreamReader::~ActiveStreamReader()
 {
 	this->toStop = true;
-	this->fullEvt->Set();
+	this->fullEvt.Set();
 	while (this->running)
 	{
-		this->emptyEvt->Wait(1000);
+		this->emptyEvt.Wait(1000);
 	}
-	DEL_CLASS(fullEvt);
-	DEL_CLASS(emptyEvt);
-	Int32 i = BUFFCNT;
+	Int32 i = ACTIVESTREAMREADER_BUFFCNT;
 	while (i-- > 0)
 	{
 		MemFreeA(this->buffs[i].buff);
 	}
-	MemFree(this->buffs);
 }
 
 void IO::ActiveStreamReader::ReadStream(IO::ActiveStreamReader::BottleNeckType *bnt)
@@ -89,22 +81,22 @@ void IO::ActiveStreamReader::ReadStream(IO::ActiveStreamReader::BottleNeckType *
 			{
 				*bnt = IO::ActiveStreamReader::BNT_WRITE;
 			}
-			this->emptyEvt->Wait(1000);
+			this->emptyEvt.Wait(1000);
 		}
 		actSize = stm->Read(this->buffs[i].buff, readSize);
 		if (actSize <= 0)
 			break;
 		this->buffs[i].buffSize = actSize;
-		this->fullEvt->Set();
-		i = (i + 1) % BUFFCNT;
+		this->fullEvt.Set();
+		i = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
 	}
 	this->reading = false;
 	this->bnt = 0;
 	
-	i = (i + BUFFCNT - 1) % BUFFCNT;
+	i = (i + ACTIVESTREAMREADER_BUFFCNT - 1) % ACTIVESTREAMREADER_BUFFCNT;
 	while (this->buffs[i].buffSize)
 	{
-		this->emptyEvt->Wait(1000);
+		this->emptyEvt.Wait(1000);
 	}
-	this->currIndex = (i + 1) % BUFFCNT;
+	this->currIndex = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
 }

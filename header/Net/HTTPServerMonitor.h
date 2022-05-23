@@ -15,7 +15,7 @@ namespace Net
 		Bool currOnline;
 		Bool threadRunning;
 		Bool threadToStop;
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 
 		static UInt32 __stdcall ThreadProc(void *userObj);
 		Bool CheckOnline();

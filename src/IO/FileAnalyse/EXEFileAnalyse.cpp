@@ -17,7 +17,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 	pack->fileOfst = 0;
 	pack->packSize = 64;
 	pack->packType = 0;
-	me->packs->Add(pack);
+	me->packs.Add(pack);
 	me->fd->GetRealData(0, 64, buff);
 	val = ReadUInt32(&buff[60]);
 	if (val > 64)
@@ -29,13 +29,13 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 			pack->fileOfst = 64;
 			pack->packSize = val - 64;
 			pack->packType = 1;
-			me->packs->Add(pack);
+			me->packs.Add(pack);
 
 			pack = MemAlloc(IO::FileAnalyse::EXEFileAnalyse::PackInfo, 1);
 			pack->fileOfst = val;
 			pack->packSize = 24;
 			pack->packType = 2;
-			me->packs->Add(pack);
+			me->packs.Add(pack);
 
 			UInt16 optHdrSize = ReadUInt16(&buff[20]);
 			UOSInt nSection = ReadUInt16(&buff[6]);
@@ -50,7 +50,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = val + 24;
 					pack->packSize = optHdrSize;
 					pack->packType = 3;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				else if (ReadUInt16(&buff[24]) == 0x20b)
 				{
@@ -59,7 +59,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = val + 24;
 					pack->packSize = optHdrSize;
 					pack->packType = 4;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				if (me->imageSize > 0)
 				{
@@ -77,7 +77,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 				pack->fileOfst = ofst;
 				pack->packSize = 40;
 				pack->packType = 5;
-				me->packs->Add(pack);
+				me->packs.Add(pack);
 
 				me->fd->GetRealData(ofst, 40, buff);
 				virtualSize = ReadUInt32(&buff[8]);
@@ -111,7 +111,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 6;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[8]);
 				virtualSize = ReadUInt32(&buff[12]);
@@ -121,7 +121,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 7;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[16]);
 				virtualSize = ReadUInt32(&buff[20]);
@@ -131,7 +131,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 8;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[24]);
 				virtualSize = ReadUInt32(&buff[28]);
@@ -141,7 +141,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 9;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[32]);
 				virtualSize = ReadUInt32(&buff[36]);
@@ -151,7 +151,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 10;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[40]);
 				virtualSize = ReadUInt32(&buff[44]);
@@ -161,7 +161,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 11;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[48]);
 				virtualSize = ReadUInt32(&buff[52]);
@@ -171,7 +171,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 12;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[56]);
 				virtualSize = ReadUInt32(&buff[60]);
@@ -181,7 +181,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 13;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[64]);
 				virtualSize = ReadUInt32(&buff[68]);
@@ -191,7 +191,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 14;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[72]);
 				virtualSize = ReadUInt32(&buff[76]);
@@ -201,7 +201,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 15;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[80]);
 				virtualSize = ReadUInt32(&buff[84]);
@@ -211,7 +211,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 16;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[88]);
 				virtualSize = ReadUInt32(&buff[92]);
@@ -221,7 +221,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 17;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[96]);
 				virtualSize = ReadUInt32(&buff[100]);
@@ -231,7 +231,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 18;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[104]);
 				virtualSize = ReadUInt32(&buff[108]);
@@ -241,7 +241,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 19;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 				virtualAddr = ReadUInt32(&buff[112]);
 				virtualSize = ReadUInt32(&buff[116]);
@@ -251,7 +251,7 @@ UInt32 __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(void *userObj)
 					pack->fileOfst = virtualAddr;
 					pack->packSize = virtualSize;
 					pack->packType = 20;
-					me->packs->Add(pack);
+					me->packs.Add(pack);
 				}
 			}
 		}
@@ -270,7 +270,6 @@ IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(IO::IStreamData *fd)
 	this->threadStarted = false;
 	this->imageBuff = 0;
 	this->imageSize = 0;
-	NEW_CLASS(this->packs, Data::SyncArrayList<IO::FileAnalyse::EXEFileAnalyse::PackInfo*>());
 	fd->GetRealData(0, 8, buff);
 	if (ReadInt16(buff) != 0x5A4D)
 	{
@@ -295,8 +294,7 @@ IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 		}
 	}
 	SDEL_CLASS(this->fd);
-	LIST_FREE_FUNC(this->packs, MemFree);
-	DEL_CLASS(this->packs);
+	LIST_FREE_FUNC(&this->packs, MemFree);
 	if (this->imageBuff)
 	{
 		MemFree(this->imageBuff);
@@ -311,13 +309,13 @@ Text::CString IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
 
 UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameCount()
 {
-	return this->packs->GetCount();
+	return this->packs.GetCount();
 }
 
 Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -332,7 +330,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 {
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return false;
 
@@ -831,13 +829,13 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
-	OSInt j = (OSInt)this->packs->GetCount() - 1;
+	OSInt j = (OSInt)this->packs.GetCount() - 1;
 	OSInt k;
 	PackInfo *pack;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		pack = this->packs->GetItem((UOSInt)k);
+		pack = this->packs.GetItem((UOSInt)k);
 		if (ofst < pack->fileOfst)
 		{
 			j = k - 1;
@@ -861,7 +859,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 *packBuff;
-	pack = this->packs->GetItem(index);
+	pack = this->packs.GetItem(index);
 	if (pack == 0)
 		return 0;
 

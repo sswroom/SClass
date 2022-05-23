@@ -10,7 +10,8 @@ namespace Parser
 		class GUIImgParser : public IO::FileParser
 		{
 		private:
-			void *clsData;
+			struct ClassData;
+			ClassData *clsData;
 			Parser::ParserList *parsers;
 		public:
 			GUIImgParser();

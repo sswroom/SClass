@@ -12,6 +12,8 @@ DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
+DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
+@PostgreSQLConn.o
 
 IO/AMDGPUControl.h: ../../src/IO/AMDGPUControl.cpp
 @AMDGPUControl.o
@@ -157,6 +159,7 @@ MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc32
 !-lodbccp32
+PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
 AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp
 $-I ../../ThirdParty/adl
 AMDGPUManager.o: ../../src/IO/AMDGPUManager.cpp

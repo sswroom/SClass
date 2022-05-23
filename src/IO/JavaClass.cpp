@@ -8857,21 +8857,19 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 
 IO::JavaClass *IO::JavaClass::ParseFile(Text::CString fileName)
 {
-	IO::FileStream *fs;
 	IO::JavaClass *cls = 0;
 	UInt64 fileLen;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	fileLen = fs->GetLength();
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	fileLen = fs.GetLength();
 	if (fileLen >= 26 && fileLen <= 1048576)
 	{
 		UInt8 *buff = MemAlloc(UInt8, (UOSInt)fileLen);
-		if (fs->Read(buff, (UOSInt)fileLen) == fileLen)
+		if (fs.Read(buff, (UOSInt)fileLen) == fileLen)
 		{
 			cls = ParseBuff(fileName, buff, (UOSInt)fileLen);
 		}
 		MemFree(buff);
 	}
-	DEL_CLASS(fs);
 	return cls;
 }
 

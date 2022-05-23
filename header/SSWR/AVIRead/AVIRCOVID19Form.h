@@ -36,7 +36,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Data::StringMap<CountryInfo*> *countries;
+			Data::StringMap<CountryInfo*> countries;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUIButton *btnFile;
