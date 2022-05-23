@@ -97,7 +97,7 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::IMapDrawLayer(layerNam
 		i = (UOSInt)file->GetLength();
 		this->ofsts = (UInt32*)MAlloc(i);
 		file->Read((UInt8*)this->ofsts, i);
-		this->maxId = (OSInt)(i / 8) - 2;
+		this->maxId = (OSInt)((i - 4) / 8) - 1;
 	}
 	DEL_CLASS(file);
 
@@ -229,27 +229,26 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 		*nameArr = tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
-		IO::FileStream *cis;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		IO::FileStream cis({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		
 		k = 0;
 		while (k < this->nblks)
 		{
 			UTF16Char *strTmp;
 			UInt8 buff[5];
-			cis->SeekFromBeginning(this->blks[k].sofst);
+			cis.SeekFromBeginning(this->blks[k].sofst);
 			i = this->blks[k].objCnt;
 			while (i-- > 0)
 			{
-				cis->Read(buff, 5);
+				cis.Read(buff, 5);
 				if (tmpArr->Get(*(Int32*)buff) == 0)
 				{
 					if (buff[4])
 					{
 						strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[4] >> 1) + 1);
-						cis->Read((UInt8*)strTmp, buff[4]);
+						cis.Read((UInt8*)strTmp, buff[4]);
 						strTmp[buff[4] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Put(*(Int32*)buff, strTmp);
@@ -269,13 +268,12 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 				{
 					if (buff[4])
 					{
-						cis->SeekFromCurrent(buff[4]);
+						cis.SeekFromCurrent(buff[4]);
 					}
 				}
 			}
 			k++;
 		}
-		DEL_CLASS(cis);
 	}
 	else
 	{
@@ -644,7 +642,7 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	obj = this->currObjs->Get(id);
 	if (obj)
 		return obj;
-	if (id > maxId)
+	if (id > this->maxId)
 		return 0;
 
 	UInt32 ofst = this->ofsts[2 + (id << 1)];

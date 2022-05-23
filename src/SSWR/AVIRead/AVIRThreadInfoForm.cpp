@@ -187,16 +187,15 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 
-	Manage::ThreadInfo *thread;
 	Manage::ThreadContext *context;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt64 startAddr;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
+	Manage::ThreadInfo thread(proc->GetProcId(), threadId);
 
-	startAddr = thread->GetStartAddress();
+	startAddr = thread.GetStartAddress();
 	sptr = Text::StrUInt32(sbuff, threadId);
 	this->txtThreadId->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrHexVal64(sbuff, startAddr);
@@ -205,45 +204,42 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 	this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
 
-	if (thread->IsCurrThread())
+	if (thread.IsCurrThread())
 	{
 	}
 	else
 	{
-		Manage::StackTracer *tracer;
 		UInt64 currAddr;
 		UOSInt callLev;
-		thread->Suspend();
-		context = thread->GetThreadContext();
-		NEW_CLASS(tracer, Manage::StackTracer(context));
-		callLev = 0;
-		while (true)
+		thread.Suspend();
+		context = thread.GetThreadContext();
 		{
-			currAddr = tracer->GetCurrentAddr();
-			sptr = Text::StrHexVal64(sbuff, currAddr);
-			i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
-			sptr = symbol->ResolveName(sbuff, currAddr);
-			j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-			this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
-			if (!tracer->GoToNextLevel())
-				break;
-			if (++callLev > 50)
-				break;
+			Manage::StackTracer tracer(context);
+			callLev = 0;
+			while (true)
+			{
+				currAddr = tracer.GetCurrentAddr();
+				sptr = Text::StrHexVal64(sbuff, currAddr);
+				i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
+				sptr = symbol->ResolveName(sbuff, currAddr);
+				j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+				this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
+				if (!tracer.GoToNextLevel())
+					break;
+				if (++callLev > 50)
+					break;
+			}
 		}
-		DEL_CLASS(tracer);
 
 #if defined(CPU_X86_32) || (defined(CPU_X86_64) && defined(WIN32))
 		if (context->GetType() == Manage::ThreadContext::CT_X86_32)
 		{
-			Manage::DasmX86_32 *dasm;
 			UInt32 eip;
 			UInt32 esp;
 			UInt32 ebp;
 			UInt8 buff[256];
 			UOSInt buffSize;
 			Bool ret;
-			Data::ArrayListUInt32 *callAddrs;
-			Data::ArrayListUInt32 *jmpAddrs;
 			UInt32 blockStart;
 			UInt32 blockEnd;
 			Text::StringBuilderUTF8 sb;
@@ -261,12 +257,12 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn(CSTR("Edi"), 70);
 			this->contextType = Manage::ThreadContext::CT_X86_32;
 
-			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
-			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
+			Data::ArrayListUInt32 callAddrs;
+			Data::ArrayListUInt32 jmpAddrs;
 			eip = (UInt32)context->GetInstAddr();
 			esp = (UInt32)context->GetStackAddr();
 			ebp = (UInt32)context->GetFrameAddr();
-			NEW_CLASS(dasm, Manage::DasmX86_32());
+			Manage::DasmX86_32 dasm;
 
 			Text::StringBuilderWriter sbWriter(&sb);
 			Manage::DasmX86_32::DasmX86_32_Regs regs;
@@ -304,34 +300,27 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
-				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));
+				this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 				sb.ClearStr();
-				ret = dasm->Disasm32(&sbWriter, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
-				this->stacks->Add(Text::StrCopyNew(sb.ToString()));
+				ret = dasm.Disasm32(&sbWriter, symbol, &eip, &esp, &ebp, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+				this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 				if (!ret)
 					break;
 				if (++callLev > 50)
 					break;
 			}
-			
-			DEL_CLASS(dasm);
-			DEL_CLASS(jmpAddrs);
-			DEL_CLASS(callAddrs);
 		}
 #endif
 #if defined(CPU_X86_64)
 		if (context->GetType() == Manage::ThreadContext::CT_X86_64)
 		{
-			Manage::DasmX86_64 *dasm;
 			UInt64 rip;
 			UInt64 rsp;
 			UInt64 rbp;
 			UInt8 buff[256];
 			UOSInt buffSize;
 			Bool ret;
-			Data::ArrayListUInt64 *callAddrs;
-			Data::ArrayListUInt64 *jmpAddrs;
 			UInt64 blockStart;
 			UInt64 blockEnd;
 			Text::StringBuilderUTF8 sb;
@@ -357,13 +346,12 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn(CSTR("R15"), 140);
 			this->contextType = Manage::ThreadContext::CT_X86_64;
 
-			NEW_CLASS(callAddrs, Data::ArrayListUInt64());
-			NEW_CLASS(jmpAddrs, Data::ArrayListUInt64());
+			Data::ArrayListUInt64 callAddrs;
+			Data::ArrayListUInt64 jmpAddrs;
 			rip = context->GetInstAddr();
 			rsp = context->GetStackAddr();
 			rbp = context->GetFrameAddr();
-
-			NEW_CLASS(dasm, Manage::DasmX86_64());
+			Manage::DasmX86_64 dasm;
 
 			Text::StringBuilderWriter sbWriter(&sb);
 			Manage::DasmX86_64::DasmX86_64_Regs regs;
@@ -404,21 +392,17 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 				sb.ClearStr();
-				ret = dasm->Disasm64(&sbWriter, symbol, &rip, &rsp, &rbp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+				ret = dasm.Disasm64(&sbWriter, symbol, &rip, &rsp, &rbp, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
 				this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 				if (!ret)
 					break;
 				if (++callLev > 50)
 					break;
 			}
-			
-			DEL_CLASS(dasm);
-			DEL_CLASS(jmpAddrs);
-			DEL_CLASS(callAddrs);
 		}
 #endif
 
-		thread->Resume();
+		thread.Resume();
 		if (context)
 		{
 			UInt8 buff[16];
@@ -473,7 +457,6 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			DEL_CLASS(context);
 		}
 	}
-	DEL_CLASS(thread);
 }
 
 SSWR::AVIRead::AVIRThreadInfoForm::~AVIRThreadInfoForm()

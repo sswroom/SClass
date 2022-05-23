@@ -17,6 +17,7 @@
 #include "IO/FileAnalyse/QTFileAnalyse.h"
 #include "IO/FileAnalyse/RAR5FileAnalyse.h"
 #include "IO/FileAnalyse/RIFFFileAnalyse.h"
+#include "IO/FileAnalyse/SHPFileAnalyse.h"
 #include "IO/FileAnalyse/SPKFileAnalyse.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 
@@ -117,6 +118,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	else if (buffSize >= 22 && buff[0] == 0x78 && buff[1] == 0x78 && buff[2] == 0x11 && buff[3] == 0x01 && buff[20] == 13 && buff[21] == 10)
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::JMVL01FileAnalyse(fd));
+	}
+	else if (buffSize >= 100 && ReadMInt32(buff) == 9994 && ReadInt32(&buff[28]) == 1000 && (ReadMUInt32(&buff[24]) << 1) == fd->GetDataSize())
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::SHPFileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())

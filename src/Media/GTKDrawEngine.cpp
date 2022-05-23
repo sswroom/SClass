@@ -621,7 +621,7 @@ Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::CStrin
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
-	Double angleR = angleDegree * Math::PI / 180;
+	Double angleR = -angleDegree * Math::PI / 180;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	brush->Init(this->cr);

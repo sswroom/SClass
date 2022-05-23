@@ -12,6 +12,8 @@
 #include "Math/SRESRIWKTWriter.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+
 Exporter::SHPExporter::SHPExporter()
 {
 	this->codePage = 0;
@@ -167,7 +169,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				}
 			}
 
-			WriteMInt32(buff, (Int32)(fileSize >> 1));
+			WriteMInt32(buff, (Int32)(i + 1));
 			WriteMInt32(&buff[4], 18);
 			shx->Write(buff, 8);
 
@@ -193,46 +195,54 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
-		UOSInt nvals[2];
+		UInt8 nvals[8];
 		UInt32 *ptOfsts;
 		Math::Coord2DDbl *points;
 		
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pl->GetBounds(&box);
-			ptOfsts = pl->GetPtOfstList(&nPtOfst);
-			points = pl->GetPointList(&nPoint);
-			nvals[0] = nPtOfst;
-			nvals[1] = nPoint;
-
-			if (i == 0)
+			Int64 objId = objIds->GetItem(i);
+			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objId);
+			if (pl)
 			{
-				min = box.tl;
-				max = box.br;
+				pl->GetBounds(&box);
+				ptOfsts = pl->GetPtOfstList(&nPtOfst);
+				points = pl->GetPointList(&nPoint);
+				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
+				WriteUInt32(&nvals[4], (UInt32)nPoint);
+
+				if (i == 0)
+				{
+					min = box.tl;
+					max = box.br;
+				}
+				else
+				{
+					min = min.Min(box.tl);
+					max = max.Max(box.br);
+				}
+
+				WriteMInt32(buff, (Int32)(fileSize >> 1));
+				WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
+				shx->Write(buff, 8);
+
+				WriteMInt32(buff, (Int32)(i + 1));
+				WriteUInt32(&buff[8], 3);
+				stm->Write(buff, 12);
+				stm->Write((UInt8*)&box, 32);
+				stm->Write(nvals, 8);
+				fileSize += 52;
+				stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
+				stm->Write((UInt8*)points, nPoint * 16);
+				fileSize += nPtOfst * 4 + nPoint * 16;
+
+				DEL_CLASS(pl);
 			}
 			else
 			{
-				min = min.Min(box.tl);
-				max = max.Max(box.br);
+				printf("Error in getting object: %lld\r\n", objId);
 			}
-
-			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
-			shx->Write(buff, 8);
-
-			WriteMInt32(buff, (Int32)i);
-			*(Int32*)&buff[8] = 3;
-			stm->Write(buff, 12);
-			stm->Write((UInt8*)&box, 32);
-			stm->Write((UInt8*)nvals, 8);
-			fileSize += 52;
-			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
-			stm->Write((UInt8*)points, nPoint * 16);
-			fileSize += nPtOfst * 4 + nPoint * 16;
-
-			DEL_CLASS(pl);
 			i++;
 		}
 	}
@@ -246,7 +256,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UOSInt nPtOfst;
 		UOSInt nPoint;
 		Double ranges[2];
-		UOSInt nvals[2];
+		UInt8 nvals[8];
 		UInt32 *ptOfsts;
 		Math::Coord2DDbl *points;
 		Double *alts;
@@ -259,8 +269,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
 			alts = pl->GetAltitudeList(&nPoint);
-			nvals[0] = nPtOfst;
-			nvals[1] = nPoint;
+			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
+			WriteUInt32(&nvals[4], (UInt32)nPoint);
 
 			ranges[1] = ranges[0] = alts[0];
 			j = nPoint;
@@ -297,8 +307,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			WriteMInt32(&buff[4], (Int32)(30 + 2 * nPtOfst + 12 * nPoint));
 			shx->Write(buff, 8);
 
-			WriteMInt32(buff, (Int32)i);
-			*(Int32*)&buff[8] = 3;
+			WriteMInt32(buff, (Int32)(i + 1));
+			WriteUInt32(&buff[8], 3);
 			stm->Write(buff, 12);
 			stm->Write((UInt8*)&box, 32);
 			stm->Write((UInt8*)nvals, 8);
@@ -322,7 +332,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
-		UOSInt nvals[2];
+		UInt8 nvals[8];
 		UInt32 *ptOfsts;
 		Math::Coord2DDbl *points;
 		
@@ -333,8 +343,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			pg->GetBounds(&box);
 			ptOfsts = pg->GetPtOfstList(&nPtOfst);
 			points = pg->GetPointList(&nPoint);
-			nvals[0] = nPtOfst;
-			nvals[1] = nPoint;
+			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
+			WriteUInt32(&nvals[4], (UInt32)nPoint);
 
 			if (i == 0)
 			{
@@ -351,8 +361,8 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
 			shx->Write(buff, 8);
 
-			WriteMInt32(buff, (Int32)i);
-			*(Int32*)&buff[8] = 5;
+			WriteMInt32(buff, (Int32)(i + 1));
+			WriteUInt32(&buff[8], 5);
 			stm->Write(buff, 12);
 			stm->Write((UInt8*)&box, 32);
 			stm->Write((UInt8*)nvals, 8);

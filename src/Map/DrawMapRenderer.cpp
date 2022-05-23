@@ -46,7 +46,7 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 		if (labels[j].label)
 			labels[j].label->Release();
 		if (labels[j].points)
-			MemFree(labels[j].points);
+			MemFreeA(labels[j].points);
 		labels[j].label = 0;
 		labels[j].points = 0;
 		labels[j].priority = priority;
@@ -319,7 +319,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoints - 1;
-						Math::Coord2DDbl* newArr = MemAlloc(Math::Coord2DDbl, newSize);
+						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
 						MemCopyNO(newArr, points, nPoints << 4);
 						MemCopyNO(&newArr[nPoints], &labels[i].points[1], (labels[i].nPoints - 1) << 4);
@@ -1249,7 +1249,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 	{
 		denv->labels[i].label->Release();
 		if (denv->labels[i].points)
-			MemFree(denv->labels[i].points);
+			MemFreeA(denv->labels[i].points);
 	}
 	if (lastLbl)
 		lastLbl->Release();
@@ -2788,6 +2788,14 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		}
 	}
 
+	if (j >= nPoints - 1)
+	{
+		j -= 1;
+	}
+	else if (j == (UOSInt)-1)
+	{
+		j = 0;
+	}
 	UOSInt startInd = j;
 	denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
@@ -3763,6 +3771,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	denv.objCnt = 0;
 	denv.labelCnt = 0;
 	denv.labels = MemAllocA(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
+	MemClear(denv.labels, denv.maxLabels * sizeof(Map::DrawMapRenderer::MapLabels));
 	denv.fontStyleCnt = env->GetFontStyleCount();
 	denv.fontStyles = MemAlloc(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
 	denv.imgDurMS = 0;

@@ -112,6 +112,7 @@ nodeps:
 @MapSearchTest
 @OruxMapTest
 @LanczosFilterTest
+@DrawRotTest
 @GUIExportJPG
 @ImageCopy
 @ImageResize
@@ -428,6 +429,9 @@ MCU_SIM7000:
 #Media
 AudioDeviceTest:
 @AudioDeviceTest.o
+@ConsoleStartup.o
+DrawRotTest:
+@DrawRotTest.o
 @ConsoleStartup.o
 GUIExportJPG:
 @GUIExportJPG.o
@@ -952,6 +956,7 @@ MCU_Serial.o: ../../main/MCU/MCU_Serial.cpp
 MCU_SerialEcho.o: ../../main/MCU/MCU_SerialEcho.cpp
 MCU_SIM7000.o: ../../main/MCU/MCU_SIM7000.cpp
 AudioDeviceTest.o: ../../main/Media/AudioDeviceTest.cpp
+DrawRotTest.o: ../../main/Media/DrawRotTest.cpp
 GUIExportJPG.o: ../../main/Media/GUIExportJPG.cpp
 ImageCopyTest.o: ../../main/Media/ImageCopyTest.cpp
 ImageResizeMain.o: ../../main/Media/ImageResizeMain.cpp
@@ -1804,6 +1809,8 @@ IO/FileAnalyse/RIFFFileAnalyse.h: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
 @RIFFFileAnalyse.o
 IO/FileAnalyse/SBFrameDetail.h: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 @SBFrameDetail.o
+IO/FileAnalyse/SHPFileAnalyse.h: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
+@SHPFileAnalyse.o
 IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
@@ -4387,6 +4394,7 @@ QTFileAnalyse.o: ../../src/IO/FileAnalyse/QTFileAnalyse.cpp
 RAR5FileAnalyse.o: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 RIFFFileAnalyse.o: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
 SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
+SHPFileAnalyse.o: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
