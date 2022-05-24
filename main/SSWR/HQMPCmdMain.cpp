@@ -16,41 +16,33 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (cmdCnt >= 2)
 	{
-		Manage::ExceptionRecorder *exHdlr;
-		Media::ConsoleMediaPlayer *player;
-		Media::MonitorMgr *monMgr;
-		Media::ColorManager *colorMgr;
-		Parser::ParserList *parsers;
-		Media::AudioDevice *audioDev;
-		NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("HQMPCmd.log"), Manage::ExceptionRecorder::EA_CLOSE));
-		NEW_CLASS(monMgr, Media::MonitorMgr());
-		NEW_CLASS(colorMgr, Media::ColorManager());
-		NEW_CLASS(parsers, Parser::FullParserList());
-		NEW_CLASS(audioDev, Media::AudioDevice());
-		NEW_CLASS(player, Media::ConsoleMediaPlayer(monMgr, colorMgr, parsers, audioDev));
-		if (player->IsError())
+		Manage::ExceptionRecorder exHdlr(CSTR("HQMPCmd.log"), Manage::ExceptionRecorder::EA_CLOSE);
 		{
-			console.WriteLineC(UTF8STRC("Error in initiaizing player, no Permission?"));
-		}
-		else
-		{
-			if (!player->OpenFile({cmdLines[1], Text::StrCharCnt(cmdLines[1])}))
+			Media::MonitorMgr monMgr;
+			Media::ColorManager colorMgr;
+			Parser::FullParserList parsers;
+			Media::AudioDevice audioDev;
 			{
-				console.WriteLineC(UTF8STRC("Error in loading file"));
-			}
-			else
-			{
-				IO::Console::GetChar();
-//				progCtrl->WaitForExit(progCtrl);
+				Media::ConsoleMediaPlayer player(&monMgr, &colorMgr, &parsers, &audioDev);
+				if (player.IsError())
+				{
+					console.WriteLineC(UTF8STRC("Error in initiaizing player, no Permission?"));
+				}
+				else
+				{
+					if (!player.OpenFile({cmdLines[1], Text::StrCharCnt(cmdLines[1])}, IO::ParserType::MediaFile))
+					{
+						console.WriteLineC(UTF8STRC("Error in loading file"));
+					}
+					else
+					{
+						IO::Console::GetChar();
+		//				progCtrl->WaitForExit(progCtrl);
+					}
+				}
+				player.OpenVideo(0);
 			}
 		}
-		player->OpenVideo(0);
-		DEL_CLASS(player);
-		DEL_CLASS(audioDev);
-		DEL_CLASS(parsers);
-		DEL_CLASS(colorMgr);
-		DEL_CLASS(monMgr);
-		DEL_CLASS(exHdlr);
 	}
 	else
 	{
