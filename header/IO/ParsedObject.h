@@ -34,8 +34,12 @@ namespace IO
 		Smake,
 		ASN1Data,
 		BTScanLog,
-		SystemInfoLog
+		SystemInfoLog,
+
+		LastType = SystemInfoLog
 	};
+
+	Text::CString ParserTypeGetName(ParserType pt);
 
 	class ParsedObject
 	{

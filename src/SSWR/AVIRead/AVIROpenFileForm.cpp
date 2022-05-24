@@ -27,6 +27,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(&sb);
 	me->fileName = Text::String::New(sb.ToString(), sb.GetLength());
+	me->parserType = (IO::ParserType)(UOSInt)me->cboType->GetSelectedItem();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -42,6 +43,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->fileName = 0;
+	this->parserType = IO::ParserType::Unknown;
 	this->core = core;
 	this->t = t;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -53,15 +55,28 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("B&rowse")));
 	this->btnBrowse->SetRect(550, 16, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, CSTR("Type")));
+	this->lblType->SetRect(8, 40, 100, 23, false);
+	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this, false));
+	this->cboType->SetRect(108, 40, 200, 23, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&Ok")));
-	this->btnOK->SetRect(240, 52, 75, 23, false);
+	this->btnOK->SetRect(240, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
-	this->btnCancel->SetRect(325, 52, 75, 23, false);
+	this->btnCancel->SetRect(325, 76, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->txtName->Focus();
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
+
+	this->cboType->AddItem(CSTR("-- Any Type --"), (void*)IO::ParserType::Unknown);
+	UOSInt i = (UOSInt)IO::ParserType::Unknown;
+	while (i < (UOSInt)IO::ParserType::LastType)
+	{
+		i++;
+		this->cboType->AddItem(IO::ParserTypeGetName((IO::ParserType)i), (void*)i);
+	}
+	this->cboType->SetSelectedIndex(0);
 }
 
 SSWR::AVIRead::AVIROpenFileForm::~AVIROpenFileForm()
@@ -77,4 +92,9 @@ void SSWR::AVIRead::AVIROpenFileForm::OnMonitorChanged()
 Text::String *SSWR::AVIRead::AVIROpenFileForm::GetFileName()
 {
 	return this->fileName;
+}
+
+IO::ParserType SSWR::AVIRead::AVIROpenFileForm::GetParserType()
+{
+	return this->parserType;
 }

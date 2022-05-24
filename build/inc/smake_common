@@ -1263,6 +1263,10 @@ Data/ArrayList.h:
 Data/ArrayListA.h:
 Data/ArrayListCmp.h: ../../src/Data/ArrayListCmp.cpp
 @ArrayListCmp.o
+Data/ArrayListCStr.h: ../../src/Data/ArrayListCStr.cpp
+@ArrayListCStr.o
+Data/ArrayListCStrFast.h: ../../src/Data/ArrayListCStrFast.cpp
+@ArrayListCStrFast.o
 Data/ArrayListDbl.h: ../../src/Data/ArrayListDbl.cpp
 @ArrayListDbl.o
 Data/ArrayListICaseString.h: ../../src/Data/ArrayListICaseString.cpp
@@ -3838,6 +3842,7 @@ Text/CodeProject.h: ../../src/Text/CodeProject.cpp
 Text/CSSBuilder.h: ../../src/Text/CSSBuilder.cpp
 @CSSBuilder.o
 Text/CString.h:
+Text/CStringComparatorFast.h:
 Text/Encoding.h: ../../src/Text/Encoding.cpp
 @Encoding.o
 Text/EncodingFactory.h: ../../src/Text/EncodingFactory.cpp
@@ -4149,6 +4154,8 @@ JWSignature.o: ../../src/Crypto/Token/JWSignature.cpp
 JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
 JWTParam.o: ../../src/Crypto/Token/JWTParam.cpp
 ArrayListCmp.o: ../../src/Data/ArrayListCmp.cpp
+ArrayListCStr.o: ../../src/Data/ArrayListCStr.cpp
+ArrayListCStrFast.o: ../../src/Data/ArrayListCStrFast.cpp
 ArrayListDbl.o: ../../src/Data/ArrayListDbl.cpp
 ArrayListICaseString.o: ../../src/Data/ArrayListICaseString.cpp
 ArrayListICaseStrUTF8.o: ../../src/Data/ArrayListICaseStrUTF8.cpp

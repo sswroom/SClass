@@ -1,5 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_SQLITEPARSER
 #define _SM_PARSER_FILEPARSER_SQLITEPARSER
+#include "DB/DBConn.h"
 #include "IO/FileParser.h"
 
 namespace Parser
@@ -16,7 +17,9 @@ namespace Parser
 			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+
+			static IO::ParsedObject *ParseAsMap(DB::DBConn *conn);
 		};
-	};
-};
+	}
+}
 #endif

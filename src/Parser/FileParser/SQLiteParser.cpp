@@ -1,10 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListCStrFast.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Parser/FileParser/SQLiteParser.h"
+#include "Text/CStringComparatorFast.h"
 #include "Text/MyString.h"
+
+#include <stdio.h>
 
 Parser::FileParser::SQLiteParser::SQLiteParser()
 {
@@ -43,6 +48,10 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		DB::SQLiteFile *pf;
 		NEW_CLASS(pf, DB::SQLiteFile(fd->GetFullFileName()));
 		pf->SetSourceName(fd->GetFullName());
+		if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
+		{
+			return ParseAsMap(pf);
+		}
 		return pf;
 	}
 	else
@@ -87,6 +96,10 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 			NEW_CLASS(pf, DB::SQLiteFile(CSTRP(sbuff, sptr)));
 			pf->SetDeleteOnClose(true);
 			pf->SetSourceName(fd->GetFullName());
+			if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
+			{
+				return ParseAsMap(pf);
+			}
 			return pf;
 		}
 		else
@@ -95,4 +108,21 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 			return 0;
 		}
 	}
+}
+
+IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
+{
+	Data::ArrayListCStrFast tableNames;
+	conn->GetTableNames(&tableNames);
+	Text::CStringComparatorFast comparator;
+	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &comparator);
+	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("gpkg_contents")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("gpkg_ogr_contents")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("gpkg_geometry_columns")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix_set")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("layers")) < 0) return conn;
+	printf("Valid GeoPackage file\r\n");
+	return conn;
 }

@@ -3,6 +3,7 @@
 #include "IO/ParsedObject.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUITextBox.h"
@@ -17,9 +18,12 @@ namespace SSWR
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
 			UI::GUIButton *btnBrowse;
+			UI::GUILabel *lblType;
+			UI::GUIComboBox *cboType;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 			Text::String *fileName;
+			IO::ParserType parserType;
 			SSWR::AVIRead::AVIRCore *core;
 			IO::ParserType t;
 
@@ -33,6 +37,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			Text::String *GetFileName();
+			IO::ParserType GetParserType();
 		};
 	}
 }
