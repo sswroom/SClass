@@ -1018,7 +1018,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						}
 						else
 						{
-							this->core->LoadData(&fd, 0);
+							this->core->LoadDataType(&fd, 0, dlg.GetParserType());
 						}
 					}
 				}

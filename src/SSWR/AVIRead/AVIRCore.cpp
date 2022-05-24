@@ -198,10 +198,11 @@ Bool SSWR::AVIRead::AVIRCore::LoadData(IO::IStreamData *data, IO::PackageFile *p
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadDataType(IO::IStreamData *data, IO::ParserType targetType)
+Bool SSWR::AVIRead::AVIRCore::LoadDataType(IO::IStreamData *data, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	IO::ParsedObject *pobj;
-	pobj = this->parsers->ParseFileType(data, targetType);
+	IO::ParserType pt;
+	pobj = this->parsers->ParseFile(data, pkgFile, &pt, targetType);
 	if (pobj)
 	{
 		OpenObject(pobj);

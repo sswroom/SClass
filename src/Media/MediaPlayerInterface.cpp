@@ -33,21 +33,18 @@ Media::MediaPlayerInterface::~MediaPlayerInterface()
 	SDEL_CLASS(this->player);
 }
 
-Bool Media::MediaPlayerInterface::OpenFile(Text::CString fileName)
+Bool Media::MediaPlayerInterface::OpenFile(Text::CString fileName, IO::ParserType targetType)
 {
 	IO::ParsedObject *pobj;
-	IO::StmData::FileData *fd;
 
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pobj = this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+	IO::StmData::FileData fd(fileName, false);
+	pobj = this->parsers->ParseFileType(&fd, targetType);
 	if (pobj)
 	{
-		DEL_CLASS(fd);
 		return OpenVideo((Media::MediaFile*)pobj);
 	}
 	else
 	{
-		DEL_CLASS(fd);
 		return false;
 	}
 }
@@ -124,11 +121,11 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 
 							if (audFile)
 							{
-								IO::StmData::FileData *fd;
 								Media::MediaFile *audFile;
-								NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-								audFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-								DEL_CLASS(fd);
+								{
+									IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+									audFile = (Media::MediaFile*)this->parsers->ParseFileType(&fd, IO::ParserType::MediaFile);
+								}
 								if (audFile)
 								{
 									Int32 syncTime;

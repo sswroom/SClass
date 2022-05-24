@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 			me->OpenICC(files[i]->ToCString());
 			return;
 		}
-		else if (me->player->OpenFile(files[i]->ToCString()))
+		else if (me->player->OpenFile(files[i]->ToCString(), IO::ParserType::MediaFile))
 		{
 			me->UpdateColorDisp();
 			return;

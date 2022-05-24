@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, Text::Stri
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile(files[i]->ToCString()))
+		if (me->OpenFile(files[i]->ToCString(), IO::ParserType::MediaFile))
 			return;
 		i++;
 	}
@@ -384,7 +384,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 					*sptr++ = '.';
 				}
 
-				if (me->OpenFile({sbuff, (UOSInt)(sptrEnd - sbuff)}))
+				if (me->OpenFile(CSTRP(sbuff, sptrEnd), IO::ParserType::MediaFile))
 				{
 					if (!me->player->IsPlaying())
 					{
@@ -825,7 +825,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
-					this->OpenFile(fname->ToCString());
+					this->OpenFile(fname->ToCString(), dlg.GetParserType());
 				}
 				else
 				{

@@ -261,14 +261,14 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(void *userObj, UI::G
 	me->dbgFrm = 0;
 }
 
-Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CString fileName)
+Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CString fileName, IO::ParserType targetType)
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
 	IO::ParsedObject *pobj;
 	IO::StmData::FileData *fd;
 
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pobj = parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+	pobj = parsers->ParseFileType(fd, targetType);
 	DEL_CLASS(fd);
 	if (pobj)
 	{
@@ -584,7 +584,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
-					this->OpenFile(dlg.GetFileName()->ToCString());
+					this->OpenFile(dlg.GetFileName()->ToCString(), dlg.GetParserType());
 				}
 				else
 				{
