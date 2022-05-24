@@ -2080,6 +2080,8 @@ Math/VectorImage.h: ../../src/Math/VectorImage.cpp
 @VectorImage.o
 Math/VectorString.h: ../../src/Math/VectorString.cpp
 @VectorString.o
+Math/WKBReader.h: ../../src/Math/WKBReader.cpp
+@WKBReader.o
 Math/WKTReader.h: ../../src/Math/WKTReader.cpp
 @WKTReader.o
 Math/WKTWriter.h: ../../src/Math/WKTWriter.cpp
@@ -4516,6 +4518,7 @@ UTMGridConvertDbl.o: ../../src/Math/UTMGridConvertDbl.cpp
 Vector2D.o: ../../src/Math/Vector2D.cpp
 VectorImage.o: ../../src/Math/VectorImage.cpp
 VectorString.o: ../../src/Math/VectorString.cpp
+WKBReader.o: ../../src/Math/WKBReader.cpp
 WKTReader.o: ../../src/Math/WKTReader.cpp
 WKTWriter.o: ../../src/Math/WKTWriter.cpp
 Acceleration.o: ../../src/Math/Unit/Acceleration.cpp

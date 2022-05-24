@@ -1856,10 +1856,30 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			*colSize = 4;
 			return DB::DBUtil::CT_Int32;
 		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("MEDIUMINT")))
+		{
+			*colSize = 2;
+			return DB::DBUtil::CT_Int16;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("TINYINT")))
+		{
+			*colSize = 1;
+			return DB::DBUtil::CT_Byte;
+		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("REAL")))
 		{
 			*colSize = 8;
 			return DB::DBUtil::CT_Double;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DOUBLE")))
+		{
+			*colSize = 8;
+			return DB::DBUtil::CT_Double;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DATETIME")))
+		{
+			*colSize = 16;
+			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BLOB")))
 		{
@@ -1875,6 +1895,21 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			*colSize = 2147483647;
 			return DB::DBUtil::CT_VarChar;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POINT")))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("LINESTRING")))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POLYGON")))
+		{
+			*colSize = 2147483647;
+			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BOOLEAN")))
 		{

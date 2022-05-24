@@ -48,6 +48,8 @@ namespace DB
 		Bool IsError();
 		Text::String *GetFileName();
 
+		static Math::Vector2D *GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
+		
 		static DBTool *CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix);
 		static DBTool *CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix);
 	};

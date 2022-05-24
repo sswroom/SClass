@@ -9,6 +9,8 @@
 #include "IO/LogTool.h"
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
+#include "Math/WKBReader.h"
+#include "Math/WKTWriter.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
@@ -309,6 +311,52 @@ void DB::SQLiteReader::UpdateColTypes()
 	}
 }
 
+Math::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOSInt buffSize)
+{
+	if (buffSize < 8 || buff[0] != 'G' || buff[1] != 'P')
+	{
+		return 0;
+	}
+
+	UOSInt ofst;
+	switch ((buff[3] & 0xE) >> 1)
+	{
+	case 0:
+		ofst = 8;
+		break;
+	case 1:
+		ofst = 40;
+		break;
+	case 2:
+		ofst = 56;
+		break;
+	case 3:
+		ofst = 56;
+		break;
+	case 4:
+		ofst = 72;
+		break;
+	default:
+		return 0;
+	}
+
+	if (buffSize <= ofst)
+	{
+		return 0;
+	}
+	UInt32 srsId;
+	if (buff[3] & 1)
+	{
+		srsId = ReadUInt32(&buff[4]);
+	}
+	else
+	{
+		srsId = ReadMUInt32(&buff[4]);
+	}
+	Math::WKBReader reader(srsId);
+	return reader.ParseWKB(buff + ofst, buffSize - ofst);
+}
+
 DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
@@ -416,24 +464,62 @@ WChar *DB::SQLiteReader::GetStr(UOSInt colIndex, WChar *buff)
 
 Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 {
-	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
-	if (outp == 0)
+	if (colIndex >= this->colCnt)
 		return 0;
-	else
-		return Text::String::NewNotNull((const UTF16Char *)outp);
+	Text::StringBuilderUTF8 sb;
+	if (!this->GetStr(colIndex, &sb))
+		return 0;
+	return Text::String::New(sb.ToCString());
 }
 
 Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
-	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
-	if (outp == 0)
+	if (colIndex >= this->colCnt)
 		return false;
+	if (this->colTypes[colIndex] == DB::DBUtil::CT_Binary)
+	{
+		UOSInt len = (UOSInt)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt, (int)colIndex);
+		if (len > 0)
+		{
+			const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt, (int)colIndex);
+			if (data)
+			{
+				Math::Vector2D *vec = DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len);
+				if (vec)
+				{
+					Math::WKTWriter wkt;
+					wkt.GenerateWKT(sb, vec);
+					DEL_CLASS(vec);
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("0x"));
+					sb->AppendHexBuff((const UInt8*)data, len, 0, Text::LineBreakType::None);
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
 	else
 	{
-		Text::String *s = Text::String::NewNotNull((const UTF16Char*)outp);
-		sb->Append(s);
-		s->Release();
-		return true;
+		const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
+		if (outp == 0)
+			return false;
+		else
+		{
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)outp);
+			sb->Append(s);
+			s->Release();
+			return true;
+		}
 	}
 }
 
@@ -472,7 +558,23 @@ UOSInt DB::SQLiteReader::GetBinarySize(UOSInt colIndex)
 
 Math::Vector2D *DB::SQLiteReader::GetVector(UOSInt colIndex)
 {
-	return 0;
+	UOSInt leng = GetBinarySize(colIndex);
+	if (leng > 0)
+	{
+		const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt, (int)colIndex);
+		if (data)
+		{
+			return DB::SQLiteFile::GPGeometryParse((const UInt8*)data, leng);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UInt8 *buff)
