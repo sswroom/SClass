@@ -17,30 +17,28 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 {
 	UInt8 readBuff[1024];
 	UOSInt readSize;
-	Text::StringBuilderUTF8 *sb;
-	Data::DateTime *dt;
-	running = true;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(dt, Data::DateTime());
-	while (!toStop)
 	{
-		readSize = port->Read(readBuff, 1024);
-		if (readSize <= 0)
+		running = true;
+		Text::StringBuilderUTF8 sb;
+		Data::DateTime dt;
+		while (!toStop)
 		{
-			readError = true;
-			break;
+			readSize = port->Read(readBuff, 1024);
+			if (readSize <= 0)
+			{
+				readError = true;
+				break;
+			}
+			dt.SetCurrTime();
+			sb.ClearStr();
+			sb.AppendDate(&dt);
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			sb.ClearStr();
+			sb.AppendHexBuff(readBuff, readSize, ' ', Text::LineBreakType::CRLF);
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			console->WriteLine();
 		}
-		dt->SetCurrTime();
-		sb->ClearStr();
-		sb->AppendDate(dt);
-		console->WriteLineC(sb->ToString(), sb->GetLength());
-		sb->ClearStr();
-		sb->AppendHexBuff(readBuff, readSize, ' ', Text::LineBreakType::CRLF);
-		console->WriteLineC(sb->ToString(), sb->GetLength());
-		console->WriteLine();
 	}
-	DEL_CLASS(dt);
-	DEL_CLASS(sb);
 	running = false;
 	return 0;
 }

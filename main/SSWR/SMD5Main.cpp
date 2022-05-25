@@ -40,44 +40,42 @@ private:
 		Double lastDispTime = 0;
 		UInt64 currCount;
 		Double currTime;
-		Manage::HiResClock *clk;
-		Text::StringBuilderUTF8 *sb;
-		NEW_CLASS(clk, Manage::HiResClock());
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
-
-		me->threadRunning = true;
-		while (!me->threadToStop)
 		{
-			me->evt->Wait(1000);
+			Manage::HiResClock clk;
+			Text::StringBuilderUTF8 sb;
 
-			currCount = me->currCount;
-			currTime = clk->GetTimeDiff();
+			me->threadRunning = true;
+			while (!me->threadToStop)
+			{
+				me->evt->Wait(1000);
 
-			sb->ClearStr();
-			sb->AppendC(UTF8STRC("\rSpeed: "));
-			if (currCount == lastDispCount || currTime == lastDispTime)
-			{
-				sb->AppendC(UTF8STRC("0"));
+				currCount = me->currCount;
+				currTime = clk.GetTimeDiff();
+
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("\rSpeed: "));
+				if (currCount == lastDispCount || currTime == lastDispTime)
+				{
+					sb.AppendC(UTF8STRC("0"));
+				}
+				else
+				{
+					Text::SBAppendF64(&sb, (Double)(currCount - lastDispCount)  / (currTime - lastDispTime));
+					lastDispCount = currCount;
+					lastDispTime = currTime;
+				}
+				sb.AppendC(UTF8STRC("Bytes/s"));
+				Sync::MutexUsage mutUsage(me->mut);
+				if (me->fileName.leng > 0)
+				{
+					sb.AppendC(UTF8STRC(" ("));
+					sb.Append(me->fileName);
+					sb.AppendC(UTF8STRC(")"));
+				}
+				mutUsage.EndUse();
+				console->WriteStrC(sb.ToString(), sb.GetLength());
 			}
-			else
-			{
-				Text::SBAppendF64(sb, (Double)(currCount - lastDispCount)  / (currTime - lastDispTime));
-				lastDispCount = currCount;
-				lastDispTime = currTime;
-			}
-			sb->AppendC(UTF8STRC("Bytes/s"));
-			Sync::MutexUsage mutUsage(me->mut);
-			if (me->fileName.leng > 0)
-			{
-				sb->AppendC(UTF8STRC(" ("));
-				sb->Append(me->fileName);
-				sb->AppendC(UTF8STRC(")"));
-			}
-			mutUsage.EndUse();
-			console->WriteStrC(sb->ToString(), sb->GetLength());
 		}
-		DEL_CLASS(clk);
-		DEL_CLASS(sb);
 		me->threadRunning = false;
 		return 0;
 	}

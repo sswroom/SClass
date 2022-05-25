@@ -18,41 +18,72 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(void *userObj)
 	UOSInt i;
 	Bool incomplete;
 	AddrResultCb *cb;
-//	Text::StringBuilderUTF8 *sb;
 	me->threadRunning = true;
-//	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	while (!me->threadToStop)
 	{
-		readSize = me->stm->Read(&buff[buffSize], 1024 - buffSize);
-//		printf("ReadSize: %d\r\n", readSize);
-		if (readSize > 0)
+	//	Text::StringBuilderUTF8 sb;
+		while (!me->threadToStop)
 		{
-//			sb->ClearStr();
-//			sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
-//			printf("Received: %s\r\n", sb->ToString());
-			buffSize += readSize;
-			incomplete = false;
-			i = 0;
-			while (i < buffSize - 1)
+			readSize = me->stm->Read(&buff[buffSize], 1024 - buffSize);
+	//		printf("ReadSize: %d\r\n", readSize);
+			if (readSize > 0)
 			{
-				switch (buff[i + 1])
+	//			sb.ClearStr();
+	//			sb.AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
+	//			printf("Received: %s\r\n", sb.ToString());
+				buffSize += readSize;
+				incomplete = false;
+				i = 0;
+				while (i < buffSize - 1)
 				{
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					if (i + 5 <= buffSize)
+					switch (buff[i + 1])
 					{
-						if (i + 5 + buff[i + 2] <= buffSize)
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+						if (i + 5 <= buffSize)
 						{
-							if (me->IsCRCValid(&buff[i], 5 + (UOSInt)buff[i + 2]))
+							if (i + 5 + buff[i + 2] <= buffSize)
+							{
+								if (me->IsCRCValid(&buff[i], 5 + (UOSInt)buff[i + 2]))
+								{
+									cb = me->cbMap->Get(buff[i]);
+									if (cb && cb->readFunc)
+									{
+										cb->readFunc(cb->userObj, buff[i + 1], &buff[i + 3], buff[i + 2]);
+									}
+									i += 5 + (UOSInt)buff[i + 2];
+								}
+								else
+								{
+									printf("CRC Invalid\r\n");
+									i++;
+								}
+							}
+							else
+							{
+								incomplete = true;
+							}
+						}
+						else
+						{
+							incomplete = true;
+						}
+						break;
+					case 5:
+					case 6:
+					case 15:
+					case 16:
+						if (i + 8 <= buffSize)
+						{
+							if (me->IsCRCValid(&buff[i], 8))
 							{
 								cb = me->cbMap->Get(buff[i]);
-								if (cb && cb->readFunc)
+								if (cb && cb->setFunc)
 								{
-									cb->readFunc(cb->userObj, buff[i + 1], &buff[i + 3], buff[i + 2]);
+									cb->setFunc(cb->userObj, buff[i + 1], ReadMUInt16(&buff[i + 2]), ReadMUInt16(&buff[i + 4]));
 								}
-								i += 5 + (UOSInt)buff[i + 2];
+								i += 8;
 							}
 							else
 							{
@@ -64,65 +95,35 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(void *userObj)
 						{
 							incomplete = true;
 						}
+						break;
+					default:
+						i++;
 					}
-					else
+
+					if (incomplete)
 					{
-						incomplete = true;
+						break;
 					}
-					break;
-				case 5:
-				case 6:
-				case 15:
-				case 16:
-					if (i + 8 <= buffSize)
-					{
-						if (me->IsCRCValid(&buff[i], 8))
-						{
-							cb = me->cbMap->Get(buff[i]);
-							if (cb && cb->setFunc)
-							{
-								cb->setFunc(cb->userObj, buff[i + 1], ReadMUInt16(&buff[i + 2]), ReadMUInt16(&buff[i + 4]));
-							}
-							i += 8;
-						}
-						else
-						{
-							printf("CRC Invalid\r\n");
-							i++;
-						}
-					}
-					else
-					{
-						incomplete = true;
-					}
-					break;
-				default:
-					i++;
 				}
 
-				if (incomplete)
+				if (i >= buffSize)
 				{
-					break;
+					buffSize = 0;
+				}
+				else if (i >= 0)
+				{
+					MemCopyO(buff, &buff[i], buffSize - i);
+					buffSize -= i;
 				}
 			}
-
-			if (i >= buffSize)
+			else
 			{
-				buffSize = 0;
+				Sync::Thread::Sleep(100);
 			}
-			else if (i >= 0)
-			{
-				MemCopyO(buff, &buff[i], buffSize - i);
-				buffSize -= i;
-			}
+			
 		}
-		else
-		{
-			Sync::Thread::Sleep(100);
-		}
-		
+	//	DEL_CLASS(sb);
 	}
-//	DEL_CLASS(sb);
 	me->threadRunning = false;
 	return 0;
 }

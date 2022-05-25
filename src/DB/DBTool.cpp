@@ -163,14 +163,14 @@ DB::DBConn *DB::DBTool::GetConn()
 	return (DB::DBConn*)this->db;
 }
 
-Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::TableDef *tabDef)
+Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::TableDef *tabDef)
 {
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	DB::ColDef *col;
 	sql->AppendCmdC(CSTR("create table "));
-	sql->AppendCol(tableName);
+	sql->AppendCol(tableName.v);
 	sql->AppendCmdC(CSTR(" ("));
 	if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
@@ -275,17 +275,17 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 	return true;
 }
 
-Bool DB::DBTool::GenDropTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName)
+Bool DB::DBTool::GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName)
 {
 	sql->AppendCmdC(CSTR("drop table "));
-	sql->AppendCol(tableName);
+	sql->AppendCol(tableName.v);
 	return true;
 }
 
-Bool DB::DBTool::GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName)
+Bool DB::DBTool::GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName)
 {
 	sql->AppendCmdC(CSTR("delete from "));
-	sql->AppendCol(tableName);
+	sql->AppendCol(tableName.v);
 	return true;
 }
 
@@ -399,20 +399,18 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 	return status;
 }
 
-Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r)
+Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::DBReader *r)
 {
 	UTF8Char tmpBuff[256];
 	DB::DBUtil::ColType colType;
-	Text::StringBuilderUTF8 *sb;
-	Data::DateTime *dt;
 	UOSInt i;
 	UOSInt j;
 
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(dt, Data::DateTime());
+	Text::StringBuilderUTF8 sb;
+	Data::DateTime dt;
 
 	sql->AppendCmdC(CSTR("insert into "));
-	sql->AppendCol(tableName);
+	sql->AppendCol(tableName.v);
 	sql->AppendCmdC(CSTR(" ("));
 	j = r->ColCount();
 	i = 1;
@@ -450,8 +448,8 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 				break;
 			case DB::DBUtil::CT_DateTime:
 			case DB::DBUtil::CT_DateTime2:
-				r->GetDate(i, dt);
-				sql->AppendDate(dt);
+				r->GetDate(i, &dt);
+				sql->AppendDate(&dt);
 				break;
 			case DB::DBUtil::CT_Int64:
 				sql->AppendInt64(r->GetInt64(i));
@@ -498,21 +496,19 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 			case DB::DBUtil::CT_UUID:
 			case DB::DBUtil::CT_Unknown:
 			default:
-				sb->ClearStr();
-				r->GetStr(i, sb);
-				sql->AppendStrUTF8(sb->ToString());
+				sb.ClearStr();
+				r->GetStr(i, &sb);
+				sql->AppendStrC(sb.ToCString());
 				break;
 			}
 		}
 		i++;
 	}
 	sql->AppendCmdC(CSTR(")"));
-	DEL_CLASS(dt);
-	DEL_CLASS(sb);
 	return true;
 }
 
-UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, DB::DBReader *r)
+UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, Text::CString tableName, DB::DBReader *r)
 {
 	UTF8Char *currPtr;
 	UTF8Char tmpBuff[256];
@@ -520,7 +516,7 @@ UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, 
 	UOSInt j;
 
 	currPtr = Text::StrConcatC(sqlstr, UTF8STRC("insert into "));
-	currPtr = DBColUTF8(currPtr, tableName);
+	currPtr = DBColUTF8(currPtr, tableName.v);
 	r->GetName(0, tmpBuff);
 	currPtr = DBColUTF8(currPtr, tmpBuff);
 	j = r->ColCount();

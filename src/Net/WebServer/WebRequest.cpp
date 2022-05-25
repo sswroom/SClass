@@ -465,23 +465,22 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 		return;
 	}
 
-	Text::StringBuilderUTF8 *sb;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	if (this->GetHeaderC(sb, CSTR("Content-Type")))
+	Text::StringBuilderUTF8 sb;
+	if (this->GetHeaderC(&sb, CSTR("Content-Type")))
 	{
-		if (Text::StrEqualsC(sb->ToString(), sb->GetLength(), UTF8STRC("application/x-www-form-urlencoded")))
+		if (sb.Equals(UTF8STRC("application/x-www-form-urlencoded")))
 		{
 			NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 			ParseFormStr(this->formMap, this->reqData, this->reqDataSize);
 		}
-		else if (Text::StrStartsWithC(sb->ToString(), sb->GetLength(), UTF8STRC("multipart/form-data")))
+		else if (sb.StartsWith(UTF8STRC("multipart/form-data")))
 		{
-			UTF8Char *sptr = sb->ToString();
-			UOSInt i = Text::StrIndexOfC(sptr, sb->GetLength(), UTF8STRC("boundary="));
+			UTF8Char *sptr = sb.ToString();
+			UOSInt i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC("boundary="));
 			if (i != INVALID_INDEX)
 			{
 				UInt8 *boundary = &sptr[i + 9];
-				UOSInt boundSize = sb->GetLength() - i - 9;
+				UOSInt boundSize = sb.GetLength() - i - 9;
 				NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 				NEW_CLASS(this->formFileList, Data::ArrayList<FormFileInfo *>());
 
@@ -527,7 +526,6 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 			}
 		}
 	}
-	DEL_CLASS(sb);
 }
 
 Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(Text::CString name)

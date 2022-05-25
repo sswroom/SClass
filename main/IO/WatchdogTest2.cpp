@@ -34,44 +34,44 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 	Int32 i = 15;
 	Single tempVal;
 	Single rhVal;
-	Text::StringBuilderUTF8 *sb;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	running = true;
-	while (!toStop)
 	{
-		if (i-- > 0)
+		Text::StringBuilderUTF8 sb;
+		running = true;
+		while (!toStop)
 		{
-			consoleWriter->WriteLineC(UTF8STRC("Keep Alive"));
-			wd->Keepalive();
-		}
-		if (am2315->ReadTemperature(&tempVal))
-		{
-			if (am2315->ReadRH(&rhVal))
+			if (i-- > 0)
 			{
-				sb->ClearStr();
-				sb->AppendC(UTF8STRC("AM2315: Temp = "));
-				Text::SBAppendF64(sb, tempVal);
-				sb->AppendC(UTF8STRC(", RH = "));
-				Text::SBAppendF64(sb, rhVal);
-				consoleWriter->WriteLineC(sb->ToString(), sb->GetLength());
+				consoleWriter->WriteLineC(UTF8STRC("Keep Alive"));
+				wd->Keepalive();
+			}
+			if (am2315->ReadTemperature(&tempVal))
+			{
+				if (am2315->ReadRH(&rhVal))
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("AM2315: Temp = "));
+					Text::SBAppendF64(&sb, tempVal);
+					sb.AppendC(UTF8STRC(", RH = "));
+					Text::SBAppendF64(&sb, rhVal);
+					consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				}
+				else
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("AM2315: Temp = "));
+					Text::SBAppendF64(&sb, tempVal);
+					sb.AppendC(UTF8STRC(", RH = error"));
+					consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				}
 			}
 			else
 			{
-				sb->ClearStr();
-				sb->AppendC(UTF8STRC("AM2315: Temp = "));
-				Text::SBAppendF64(sb, tempVal);
-				sb->AppendC(UTF8STRC(", RH = error"));
-				consoleWriter->WriteLineC(sb->ToString(), sb->GetLength());
+				consoleWriter->WriteLineC(UTF8STRC("Fail in reading from AM2315"));
 			}
+			
+			evt->Wait(2000);
 		}
-		else
-		{
-			consoleWriter->WriteLineC(UTF8STRC("Fail in reading from AM2315"));
-		}
-		
-		evt->Wait(2000);
 	}
-	DEL_CLASS(sb);
 	running = false;
 	return 0;
 }
@@ -79,37 +79,37 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 UInt32 __stdcall HTTPThread(void *userObj)
 {
 	Net::HTTPClient *cli;
-	Text::StringBuilderUTF8 *sb;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	httpRunning = true;
-	while (!toStop)
 	{
-		consoleWriter->WriteStrC(UTF8STRC("Requesting to "));
-		consoleWriter->WriteLineC(UTF8STRC(TESTURL));
-		cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR(USERAGENT), false, Text::StrStartsWithC(UTF8STRC(TESTURL), UTF8STRC("https://")));
-		cli->Connect(CSTR(TESTURL), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
-		cli->AddHeaderC(CSTR("User-Agent"), CSTR(USERAGENT));
-		cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
-		cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
-		cli->AddHeaderC(CSTR("Connection"), CSTR("close"));
-		
-		if (cli->IsError())
+		Text::StringBuilderUTF8 sb;
+		httpRunning = true;
+		while (!toStop)
 		{
-			consoleWriter->WriteLineC(UTF8STRC("Error in requesting to server"));
+			consoleWriter->WriteStrC(UTF8STRC("Requesting to "));
+			consoleWriter->WriteLineC(UTF8STRC(TESTURL));
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR(USERAGENT), false, Text::StrStartsWithC(UTF8STRC(TESTURL), UTF8STRC("https://")));
+			cli->Connect(CSTR(TESTURL), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
+			cli->AddHeaderC(CSTR("User-Agent"), CSTR(USERAGENT));
+			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+			cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
+			cli->AddHeaderC(CSTR("Connection"), CSTR("close"));
+			
+			if (cli->IsError())
+			{
+				consoleWriter->WriteLineC(UTF8STRC("Error in requesting to server"));
+			}
+			else
+			{
+				cli->EndRequest(0, 0);
+				Int32 respCode = cli->GetRespStatus();
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Resp Code = "));
+				sb.AppendI32(respCode);
+				consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			}
+			DEL_CLASS(cli);
+			httpEvt->Wait(1000);
 		}
-		else
-		{
-			cli->EndRequest(0, 0);
-			Int32 respCode = cli->GetRespStatus();
-			sb->ClearStr();
-			sb->AppendC(UTF8STRC("Resp Code = "));
-			sb->AppendI32(respCode);
-			consoleWriter->WriteLineC(sb->ToString(), sb->GetLength());
-		}
-		DEL_CLASS(cli);
-		httpEvt->Wait(1000);
 	}
-	DEL_CLASS(sb);
 	httpRunning = false;
 	return 0;
 }

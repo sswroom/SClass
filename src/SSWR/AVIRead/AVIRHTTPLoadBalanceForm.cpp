@@ -20,17 +20,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	}
 	UInt16 port = 0;
 	Bool valid = true;
-	Text::StringBuilderUTF8 *sb;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	me->txtPort->GetText(sb);
-	Text::StrToUInt16S(sb->ToString(), &port, 0);
-	sb->ClearStr();
-	me->txtFwdURL->GetText(sb);
+	Text::StringBuilderUTF8 sb;
+	me->txtPort->GetText(&sb);
+	Text::StrToUInt16S(sb.ToString(), &port, 0);
+	sb.ClearStr();
+	me->txtFwdURL->GetText(&sb);
 	Net::SSLEngine *ssl = 0;
-	if (!sb->StartsWith(UTF8STRC("http://")) && !sb->StartsWith(UTF8STRC("https://")))
+	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid Forward URL"), CSTR("HTTP Load Balance"), me);
-		DEL_CLASS(sb);
 		return;
 	}
 
@@ -39,7 +37,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 		if (me->sslCert == 0 || me->sslKey == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
-			DEL_CLASS(sb);
 			return;
 		}
 		ssl = me->ssl;
@@ -49,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	}
 	if (port > 0 && port < 65535)
 	{
-		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb->ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)(OSInt)me->cboFwdType->GetSelectedItem()));
+		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)(OSInt)me->cboFwdType->GetSelectedItem()));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
 		if (me->svr->IsError())
 		{
@@ -58,18 +55,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 		}
 		else
 		{
-			sb->ClearStr();
-			me->txtLogDir->GetText(sb);
-			if (sb->GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
+			sb.ClearStr();
+			me->txtLogDir->GetText(&sb);
+			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
 			{
-				sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 			}
-			sb->AppendC(UTF8STRC("Acccess"));
+			sb.AppendC(UTF8STRC("Acccess"));
 
 			if (!me->chkSkipLog->IsChecked())
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb->ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
 				me->svr->SetRequestLog(me->reqLog);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
@@ -100,7 +97,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 		SDEL_CLASS(me->log);
 		SDEL_CLASS(me->logger);
 	}
-	DEL_CLASS(sb);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(void *userObj)

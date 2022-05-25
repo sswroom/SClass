@@ -10,7 +10,7 @@
 #include "IO/Console.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::RTPSvrChannel::PacketHdlr(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData)
+void __stdcall Net::RTPSvrChannel::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::RTPSvrChannel *me = (Net::RTPSvrChannel*)userData;
 
@@ -95,11 +95,10 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(UInt32 ip, UInt16 port, UInt8 *buf
 	me->packMut->Unlock();*/
 }
 
-void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData)
+void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::RTPSvrChannel *me = (Net::RTPSvrChannel*)userData;
 	Data::DateTime *dt;
-	Text::StringBuilder *sb;
 	Int32 size = 0;
 	Int32 ofst = 0;
 	OSInt i;
@@ -115,43 +114,46 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(UInt32 ip, UInt16 port, UInt8 
 			switch (buff[ofst + 1])
 			{
 			case 200: //SR - Sender Report
-/*				NEW_CLASS(sb, Text::StringBuilder());
-				sb->Append(L"SR: Len=");
-				sb->Append(size);
-				sb->Append(L",RC=");
-				sb->Append(buff[ofst + 0] & 0x1f);
-				sb->Append(L",SSRC=");
-				sb->Append(ReadMInt32(&buff[ofst + 4]));
-				if (size >= 28)
+/*				
 				{
-					NEW_CLASS(dt, Data::DateTime());
-					sb->Append(L",NTP ts=");
-					dt->SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
-					sb->Append(dt);
-					sb->Append(L",RTP ts=");
-					sb->Append(ReadMInt32(&buff[ofst + 16]));
-					sb->Append(L",nPacket=");
-					sb->Append(ReadMInt32(&buff[ofst + 20]));
-					sb->Append(L",nOctet=");
-					sb->Append(ReadMInt32(&buff[ofst + 24]));
-					DEL_CLASS(dt);
-				}
-				sb->Append(L"\r\n");
-				IO::Console::PrintStrO(sb->ToString());
-				DEL_CLASS(sb);*/
+					Text::StringBuilder sb;
+					sb.Append(L"SR: Len=");
+					sb.Append(size);
+					sb.Append(L",RC=");
+					sb.Append(buff[ofst + 0] & 0x1f);
+					sb.Append(L",SSRC=");
+					sb.Append(ReadMInt32(&buff[ofst + 4]));
+					if (size >= 28)
+					{
+						NEW_CLASS(dt, Data::DateTime());
+						sb.Append(L",NTP ts=");
+						dt->SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
+						sb.Append(dt);
+						sb.Append(L",RTP ts=");
+						sb.Append(ReadMInt32(&buff[ofst + 16]));
+						sb.Append(L",nPacket=");
+						sb.Append(ReadMInt32(&buff[ofst + 20]));
+						sb.Append(L",nOctet=");
+						sb.Append(ReadMInt32(&buff[ofst + 24]));
+						DEL_CLASS(dt);
+					}
+					sb->Append(L"\r\n");
+					IO::Console::PrintStrO(sb->ToString());
+				}*/
 
 				break;
 			case 201: //RR - Receiver Report
-/*				NEW_CLASS(sb, Text::StringBuilder());
-				sb->Append(L"RR: Len=");
-				sb->Append(size);
-				sb->Append(L",RC=");
-				sb->Append(buff[ofst + 0] & 0x1f);
-				sb->Append(L",SSRC=");
-				sb->Append(ReadMInt32(&buff[ofst + 4]));
-				sb->Append(L"\r\n");
-				IO::Console::PrintStrO(sb->ToString());
-				DEL_CLASS(sb);*/
+/*				{
+					Text::StringBuilderUTF8 sb;
+					sb.Append(L"RR: Len=");
+					sb.Append(size);
+					sb.Append(L",RC=");
+					sb.Append(buff[ofst + 0] & 0x1f);
+					sb.Append(L",SSRC=");
+					sb.Append(ReadMInt32(&buff[ofst + 4]));
+					sb.Append(L"\r\n");
+					IO::Console::PrintStrO(sb.ToString());
+				}*/
 				me->sessCtrl->SessionKA(me->ssrc);
 				break;
 			case 202: //SDES - Source Description RTCP Packet
@@ -168,13 +170,13 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(UInt32 ip, UInt16 port, UInt8 
 	}
 }
 
-Net::RTPSvrChannel::RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 ssrc, Int32 targetIP, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
+Net::RTPSvrChannel::RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
 {
 	this->rtpUDP = 0;
 	this->rtcpUDP = 0;
 	this->threadCnt = 5;
 	this->ssrc = ssrc;
-	this->targetIP = targetIP;
+	this->targetAddr = *targetAddr;
 	this->targetPort = targetPort;
 	this->sessCtrl = sessCtrl;
 	this->seqNum = 12442;
@@ -183,7 +185,7 @@ Net::RTPSvrChannel::RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 
 	{
 		port += 1;
 	}
-	NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, port, 0, PacketHdlr, this, 0, 0, this->threadCnt, false));
+	NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this, 0, 0, this->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->rtpUDP->GetPort();
@@ -191,10 +193,10 @@ Net::RTPSvrChannel::RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 
 		{
 			port += 1;
 			DEL_CLASS(this->rtpUDP);
-			NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, port, 0, PacketHdlr, this, 0, 0, this->threadCnt, false));
+			NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this, 0, 0, this->threadCnt, false));
 		}
 	}
-	NEW_CLASS(this->rtcpUDP, Net::UDPServer(sockf, port + 1, 0, PacketCtrlHdlr, this, 0, 0, 1, false));
+	NEW_CLASS(this->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, 0, PacketCtrlHdlr, this, 0, 0, 1, false));
 }
 
 Net::RTPSvrChannel::~RTPSvrChannel()
@@ -204,9 +206,9 @@ Net::RTPSvrChannel::~RTPSvrChannel()
 	SDEL_CLASS(this->rtcpUDP);
 }
 
-Int32 Net::RTPSvrChannel::GetTargetIP()
+const Net::SocketUtil::AddressInfo *Net::RTPSvrChannel::GetTargetAddr()
 {
-	return this->targetIP;
+	return &this->targetAddr;
 }
 
 UInt16 Net::RTPSvrChannel::GetPort()
@@ -237,13 +239,13 @@ Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UI
 	this->seqNum = (seqNum + 1) & 65535;
 	WriteMInt32(&sendBuff[4], ts);
 	WriteMInt32(&sendBuff[8], this->ssrc);
-	MemCopy(&sendBuff[12], buff, dataSize);
-	this->rtpUDP->SendTo(this->targetIP, this->targetPort, sendBuff, sendSize);
+	MemCopyNO(&sendBuff[12], buff, dataSize);
+	this->rtpUDP->SendTo(&this->targetAddr, this->targetPort, sendBuff, sendSize);
 	return true;
 }
 
 Bool Net::RTPSvrChannel::SendControl(UInt8 *buff, UInt32 dataSize)
 {
-	this->rtcpUDP->SendTo(this->targetIP, this->targetPort + 1, buff, dataSize);
+	this->rtcpUDP->SendTo(&this->targetAddr, this->targetPort + 1, buff, dataSize);
 	return true;
 }

@@ -116,57 +116,55 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	DB::ColDef *col;
-	Text::StringBuilderUTF8 *sb;
 	UOSInt *colSize;
 
 	this->lvResult->ClearAll();
 
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(col, DB::ColDef(CSTR("")));
-	j = r->ColCount();
-	this->lvResult->ChangeColumnCnt(j);
-	i = 0;
-	colSize = MemAlloc(UOSInt, j);
-	while (i < j)
+	Text::StringBuilderUTF8 sb;
 	{
-		if (r->GetColDef(i, col))
+		DB::ColDef col(CSTR(""));
+		j = r->ColCount();
+		this->lvResult->ChangeColumnCnt(j);
+		i = 0;
+		colSize = MemAlloc(UOSInt, j);
+		while (i < j)
 		{
-			this->lvResult->AddColumn(col->GetColName(), 100);
+			if (r->GetColDef(i, &col))
+			{
+				this->lvResult->AddColumn(col.GetColName(), 100);
+			}
+			else
+			{
+				this->lvResult->AddColumn(CSTR("Unnamed"), 100);
+			}
+			colSize[i] = 0;
+			i++;
 		}
-		else
-		{
-			this->lvResult->AddColumn(L"Unnamed", 100);
-		}
-		colSize[i] = 0;
-		i++;
 	}
-	DEL_CLASS(col);
 
 	OSInt rowCnt = 0;
 	while (r->ReadNext())
 	{
 		i = 1;
-		sb->ClearStr();
-		r->GetStr(0, sb);
-		if (sb->GetLength() > colSize[0])
-			colSize[0] = sb->GetLength();
-		k = this->lvResult->AddItem(sb->ToCString(), 0);
+		sb.ClearStr();
+		r->GetStr(0, &sb);
+		if (sb.GetLength() > colSize[0])
+			colSize[0] = sb.GetLength();
+		k = this->lvResult->AddItem(sb.ToCString(), 0);
 		while (i < j)
 		{
-			sb->ClearStr();
-			r->GetStr(i, sb);
-			this->lvResult->SetSubItem(k, i, sb->ToCString());
+			sb.ClearStr();
+			r->GetStr(i, &sb);
+			this->lvResult->SetSubItem(k, i, sb.ToCString());
 
-			if (sb->GetLength() > colSize[i])
-				colSize[i] = sb->GetLength();
+			if (sb.GetLength() > colSize[i])
+				colSize[i] = sb.GetLength();
 			i++;
 		}
 		rowCnt++;
 		if (rowCnt > MAX_ROW_CNT)
 			break;
 	}
-	DEL_CLASS(sb);
 
 	k = 0;
 	i = j;

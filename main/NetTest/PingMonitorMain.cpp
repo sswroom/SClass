@@ -36,83 +36,83 @@ UInt32 __stdcall RecvThread(void *userObj)
 	UInt16 etherType;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Text::StringBuilderUTF8 *sb;
 	Net::SocketFactory::ErrorType et;
 	Sync::Interlocked::Increment(&threadCnt);
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	while (!threadToStop)
 	{
-		packetSize = sockf->UDPReceive(rawSock, packetBuff, 10240, &addr, &port, &et);
-		if (packetSize >= 14)
+		Text::StringBuilderUTF8 sb;
+		while (!threadToStop)
 		{
-			etherType = ReadMUInt16(&packetBuff[12]);
-			switch (etherType)
+			packetSize = sockf->UDPReceive(rawSock, packetBuff, 10240, &addr, &port, &et);
+			if (packetSize >= 14)
 			{
-			case 0x0026: //Unknown
-				break;
-			case 0x0046: //Unknown
-				break;
-			case 0x0800: //IPv4
-				buff = &packetBuff[14];
-				buffSize = packetSize - 14;
-				if ((buff[0] & 0xf0) == 0x40)
+				etherType = ReadMUInt16(&packetBuff[12]);
+				switch (etherType)
 				{
-					UInt8 *ipData;
-					UOSInt ipDataSize;
+				case 0x0026: //Unknown
+					break;
+				case 0x0046: //Unknown
+					break;
+				case 0x0800: //IPv4
+					buff = &packetBuff[14];
+					buffSize = packetSize - 14;
+					if ((buff[0] & 0xf0) == 0x40)
+					{
+						UInt8 *ipData;
+						UOSInt ipDataSize;
 
-					if ((buff[0] & 0xf) <= 5)
-					{
-						ipData = &buff[20];
-						ipDataSize = buffSize - 20;
-					}
-					else
-					{
-						ipData = &buff[(buff[0] & 0xf) << 2];
-						ipDataSize = buffSize - ((buff[0] & 0xf) << 2);
-					}
-					
-					switch (buff[9])
-					{
-					case 1: //ICMP
-						if (ipData[0] == 8) //Echo Request
+						if ((buff[0] & 0xf) <= 5)
 						{
-							sb->ClearStr();
-							sb->AppendC(UTF8STRC("Received ping from "));
-							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
-							sb->AppendP(sbuff, sptr);
-							sb->AppendC(UTF8STRC(", Size = "));
-							sb->AppendUOSInt(ipDataSize);
-							logTool->LogMessage(sb->ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
-//							console->WriteLineC(sb->ToString(), sb->GetLength());
+							ipData = &buff[20];
+							ipDataSize = buffSize - 20;
 						}
-						break;
-					case 2: //IGMP
-						break;
-					case 6: //TCP
-						break;
-					case 17: //UDP
-						break;
-					default:
-						break;
+						else
+						{
+							ipData = &buff[(buff[0] & 0xf) << 2];
+							ipDataSize = buffSize - ((buff[0] & 0xf) << 2);
+						}
+						
+						switch (buff[9])
+						{
+						case 1: //ICMP
+							if (ipData[0] == 8) //Echo Request
+							{
+								sb.ClearStr();
+								sb.AppendC(UTF8STRC("Received ping from "));
+								sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
+								sb.AppendP(sbuff, sptr);
+								sb.AppendC(UTF8STRC(", Size = "));
+								sb.AppendUOSInt(ipDataSize);
+								logTool->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	//							console->WriteLineC(sb->ToString(), sb->GetLength());
+							}
+							break;
+						case 2: //IGMP
+							break;
+						case 6: //TCP
+							break;
+						case 17: //UDP
+							break;
+						default:
+							break;
+						}
 					}
+					break;
+				case 0x0806: //ARP
+					break;
+				case 0x86DD: //IPv6
+					break;
+				case 0x888E: //EAP over LAN
+					break;
+				default:
+					break;
 				}
-				break;
-			case 0x0806: //ARP
-				break;
-			case 0x86DD: //IPv6
-				break;
-			case 0x888E: //EAP over LAN
-				break;
-			default:
-				break;
+			}
+			else
+			{
+				
 			}
 		}
-		else
-		{
-			
-		}
 	}
-	DEL_CLASS(sb);
 	Sync::Interlocked::Decrement(&threadCnt);
 	return 0;
 }

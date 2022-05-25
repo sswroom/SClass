@@ -23,138 +23,132 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 	UInt8 *recvBuff;
 	UOSInt buffSize;
 	UOSInt recvSize;
-	Manage::HiResClock *clk;
-	#if defined(VERBOSE)
-	Text::StringBuilderUTF8 *sb;
-	#endif
 	UOSInt i;
 	UOSInt j;
 	Double t;
 	me->recvRunning = true;
-	buffSize = 0;
-	recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
-	NEW_CLASS(clk, Manage::HiResClock());
-	#if defined(VERBOSE)
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	#endif
-	while (!me->recvToStop)
 	{
-		clk->Start();
-		recvSize = me->cli->Read(&recvBuff[buffSize], RECVBUFFSIZE - buffSize);
-		if (recvSize == 0)
-		{
-			break;
-		}
-		t = clk->GetTimeDiff();
+		buffSize = 0;
+		recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
+		Manage::HiResClock clk;
 		#if defined(VERBOSE)
-		sb->ClearStr();
-		sb->AppendHexBuff(&recvBuff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
-		printf("%s\r\n", sb->ToString());
+		Text::StringBuilderUTF8 sb;
 		#endif
+		while (!me->recvToStop)
+		{
+			clk.Start();
+			recvSize = me->cli->Read(&recvBuff[buffSize], RECVBUFFSIZE - buffSize);
+			if (recvSize == 0)
+			{
+				break;
+			}
+			t = clk.GetTimeDiff();
+			#if defined(VERBOSE)
+			sb.ClearStr();
+			sb.AppendHexBuff(&recvBuff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
+			printf("%s\r\n", sb.ToString());
+			#endif
 
-		if (t > 2)
-		{
-			i = buffSize;
-		}
-		else
-		{
-			i = 0;
-		}
-		buffSize += recvSize;
-
-		while (i < buffSize)
-		{
-			if (recvBuff[i] != 0x30)
+			if (t > 2)
 			{
 				i = buffSize;
-				break;
-			}
-			if (i + 1 >= buffSize)
-			{
-				break;
-			}
-			UInt32 len = recvBuff[i + 1];
-			if (len <= 128)
-			{
-				j = i + 2;
-			}
-			else if (len == 0x81)
-			{
-				if (i + 2 >= buffSize)
-					break;
-				else
-				{
-					len = recvBuff[i + 2];
-					j = i + 3;
-				}
-			}
-			else if (len == 0x82)
-			{
-				if (i + 3 >= buffSize)
-					break;
-				else
-				{
-					len = ReadMUInt16(&recvBuff[i + 2]);
-					j = i + 4;
-				}
-			}
-			else if (len == 0x83)
-			{
-				if (i + 4 >= buffSize)
-					break;
-				else
-				{
-					len = ReadMUInt24(&recvBuff[i + 2]);
-					j = i + 5;
-				}
-			}
-			else if (len == 0x84)
-			{
-				if (i + 5 >= buffSize)
-					break;
-				else
-				{
-					len = ReadMUInt32(&recvBuff[i + 2]);
-					j = i + 6;
-				}
 			}
 			else
 			{
-				i = buffSize;
-				break;
+				i = 0;
 			}
+			buffSize += recvSize;
 
-			if (j > RECVBUFFSIZE - 6)
+			while (i < buffSize)
 			{
-				i = buffSize;
-				break;
-			}
-			else if (j + len > buffSize)
-			{
-				break;
-			}
-			else
-			{
-				me->ParseLDAPMessage(&recvBuff[j], len);
+				if (recvBuff[i] != 0x30)
+				{
+					i = buffSize;
+					break;
+				}
+				if (i + 1 >= buffSize)
+				{
+					break;
+				}
+				UInt32 len = recvBuff[i + 1];
+				if (len <= 128)
+				{
+					j = i + 2;
+				}
+				else if (len == 0x81)
+				{
+					if (i + 2 >= buffSize)
+						break;
+					else
+					{
+						len = recvBuff[i + 2];
+						j = i + 3;
+					}
+				}
+				else if (len == 0x82)
+				{
+					if (i + 3 >= buffSize)
+						break;
+					else
+					{
+						len = ReadMUInt16(&recvBuff[i + 2]);
+						j = i + 4;
+					}
+				}
+				else if (len == 0x83)
+				{
+					if (i + 4 >= buffSize)
+						break;
+					else
+					{
+						len = ReadMUInt24(&recvBuff[i + 2]);
+						j = i + 5;
+					}
+				}
+				else if (len == 0x84)
+				{
+					if (i + 5 >= buffSize)
+						break;
+					else
+					{
+						len = ReadMUInt32(&recvBuff[i + 2]);
+						j = i + 6;
+					}
+				}
+				else
+				{
+					i = buffSize;
+					break;
+				}
 
-				i = j + len;
+				if (j > RECVBUFFSIZE - 6)
+				{
+					i = buffSize;
+					break;
+				}
+				else if (j + len > buffSize)
+				{
+					break;
+				}
+				else
+				{
+					me->ParseLDAPMessage(&recvBuff[j], len);
+
+					i = j + len;
+				}
+			}
+			if (i >= buffSize)
+			{
+				buffSize = 0;
+			}
+			else if (i > 0)
+			{
+				MemCopyNO(recvBuff, &recvBuff[i], buffSize - i);
+				buffSize -= i;
 			}
 		}
-		if (i >= buffSize)
-		{
-			buffSize = 0;
-		}
-		else if (i > 0)
-		{
-			MemCopyNO(recvBuff, &recvBuff[i], buffSize - i);
-			buffSize -= i;
-		}
+		MemFree(recvBuff);
 	}
-	DEL_CLASS(clk);
-	MemFree(recvBuff);
-	#if defined(VERBOSE)
-	DEL_CLASS(sb);
-	#endif
 	me->recvRunning = false;
 	return 0;
 }

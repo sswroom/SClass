@@ -18,104 +18,104 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 	UOSInt i;
 	Bool incomplete;
 	AddrResultCb *cb;
-//	Text::StringBuilderUTF8 *sb;
-	me->threadRunning = true;
-//	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	while (!me->threadToStop)
 	{
-		readSize = me->stm->Read(&buff[buffSize], 1024 - buffSize);
-//		printf("ReadSize: %d\r\n", (UInt32)readSize);
-		if (readSize > 0)
+		me->threadRunning = true;
+	//	Text::StringBuilderUTF8 sb;
+		while (!me->threadToStop)
 		{
-//			sb->ClearStr();
-//			sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
-//			printf("Received: %s\r\n", sb->ToString());
-			buffSize += readSize;
-			incomplete = false;
-			i = 0;
-			while (i < buffSize - 5)
+			readSize = me->stm->Read(&buff[buffSize], 1024 - buffSize);
+	//		printf("ReadSize: %d\r\n", (UInt32)readSize);
+			if (readSize > 0)
 			{
-				if ( buff[i + 2] == 0 && buff[i + 3] == 0)
+	//			sb.ClearStr();
+	//			sb.AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
+	//			printf("Received: %s\r\n", sb.ToString());
+				buffSize += readSize;
+				incomplete = false;
+				i = 0;
+				while (i < buffSize - 5)
 				{
-					UInt16 packetSize = ReadMUInt16(&buff[i + 4]);
-					if (i + 6 + packetSize > buffSize)
+					if ( buff[i + 2] == 0 && buff[i + 3] == 0)
 					{
-						incomplete = true;
+						UInt16 packetSize = ReadMUInt16(&buff[i + 4]);
+						if (i + 6 + packetSize > buffSize)
+						{
+							incomplete = true;
+						}
+						else
+						{
+							switch (buff[i + 7])
+							{
+							case 1:
+							case 2:
+							case 3:
+							case 4:
+								if (3 + buff[i + 8] == packetSize)
+								{
+									cb = me->cbMap->Get(buff[i + 6]);
+									if (cb && cb->readFunc)
+									{
+										cb->readFunc(cb->userObj, buff[i + 7], &buff[i + 9], buff[i + 8]);
+									}
+									i += 6 + (UOSInt)packetSize;
+								}
+								else
+								{
+									i++;
+								}
+								break;
+							case 5:
+							case 6:
+							case 15:
+							case 16:
+								if (packetSize == 6)
+								{
+									cb = me->cbMap->Get(buff[i + 6]);
+									if (cb && cb->setFunc)
+									{
+										cb->setFunc(cb->userObj, buff[i + 7], ReadMUInt16(&buff[i + 8]), ReadMUInt16(&buff[i + 10]));
+									}
+									i += 12;
+								}
+								else
+								{
+									i++;
+								}
+								break;
+							default:
+								i += (UOSInt)packetSize + 6;
+								break;
+							}
+						}
 					}
 					else
 					{
-						switch (buff[i + 7])
-						{
-						case 1:
-						case 2:
-						case 3:
-						case 4:
-							if (3 + buff[i + 8] == packetSize)
-							{
-								cb = me->cbMap->Get(buff[i + 6]);
-								if (cb && cb->readFunc)
-								{
-									cb->readFunc(cb->userObj, buff[i + 7], &buff[i + 9], buff[i + 8]);
-								}
-								i += 6 + (UOSInt)packetSize;
-							}
-							else
-							{
-								i++;
-							}
-							break;
-						case 5:
-						case 6:
-						case 15:
-						case 16:
-							if (packetSize == 6)
-							{
-								cb = me->cbMap->Get(buff[i + 6]);
-								if (cb && cb->setFunc)
-								{
-									cb->setFunc(cb->userObj, buff[i + 7], ReadMUInt16(&buff[i + 8]), ReadMUInt16(&buff[i + 10]));
-								}
-								i += 12;
-							}
-							else
-							{
-								i++;
-							}
-							break;
-						default:
-							i += (UOSInt)packetSize + 6;
-							break;
-						}
+						i++;
+					}
+
+					if (incomplete)
+					{
+						break;
 					}
 				}
-				else
-				{
-					i++;
-				}
 
-				if (incomplete)
+				if (i >= buffSize)
 				{
-					break;
+					buffSize = 0;
+				}
+				else if (i >= 0)
+				{
+					MemCopyO(buff, &buff[i], buffSize - i);
+					buffSize -= i;
 				}
 			}
-
-			if (i >= buffSize)
+			else
 			{
-				buffSize = 0;
+				Sync::Thread::Sleep(100);
 			}
-			else if (i >= 0)
-			{
-				MemCopyO(buff, &buff[i], buffSize - i);
-				buffSize -= i;
-			}
+			
 		}
-		else
-		{
-			Sync::Thread::Sleep(100);
-		}
-		
 	}
-//	DEL_CLASS(sb);
 	me->threadRunning = false;
 	return 0;
 }

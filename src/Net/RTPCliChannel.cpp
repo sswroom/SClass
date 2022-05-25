@@ -119,8 +119,6 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 	UInt8 tmpBuff[100];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Data::DateTime *dt;
-	Text::StringBuilderUTF8 *sb;
 	UOSInt size = 0;
 	UOSInt ofst = 0;
 	UOSInt i;
@@ -136,30 +134,30 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 			switch (buff[ofst + 1])
 			{
 			case 200: //SR - Sender Report
-				NEW_CLASS(sb, Text::StringBuilderUTF8());
-				sb->AppendC(UTF8STRC("SR: Len="));
-				sb->AppendUOSInt(size);
-				sb->AppendC(UTF8STRC(",RC="));
-				sb->AppendU32(buff[ofst +0] & 0x1f);
-				sb->AppendC(UTF8STRC(",SSRC="));
-				sb->AppendI32(ReadMInt32(&buff[ofst + 4]));
-				if (size >= 28)
 				{
-					NEW_CLASS(dt, Data::DateTime());
-					sb->AppendC(UTF8STRC(",NTP ts="));
-					dt->SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
-					sb->AppendDate(dt);
-					sb->AppendC(UTF8STRC(",RTP ts="));
-					sb->AppendI32(ReadMInt32(&buff[ofst + 16]));
-					sb->AppendC(UTF8STRC(",nPacket="));
-					sb->AppendI32(ReadMInt32(&buff[ofst + 20]));
-					sb->AppendC(UTF8STRC(",nOctet="));
-					sb->AppendI32(ReadMInt32(&buff[ofst + 24]));
-					DEL_CLASS(dt);
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("SR: Len="));
+					sb.AppendUOSInt(size);
+					sb.AppendC(UTF8STRC(",RC="));
+					sb.AppendU32(buff[ofst +0] & 0x1f);
+					sb.AppendC(UTF8STRC(",SSRC="));
+					sb.AppendI32(ReadMInt32(&buff[ofst + 4]));
+					if (size >= 28)
+					{
+						Data::DateTime dt;
+						sb.AppendC(UTF8STRC(",NTP ts="));
+						dt.SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
+						sb.AppendDate(&dt);
+						sb.AppendC(UTF8STRC(",RTP ts="));
+						sb.AppendI32(ReadMInt32(&buff[ofst + 16]));
+						sb.AppendC(UTF8STRC(",nPacket="));
+						sb.AppendI32(ReadMInt32(&buff[ofst + 20]));
+						sb.AppendC(UTF8STRC(",nOctet="));
+						sb.AppendI32(ReadMInt32(&buff[ofst + 24]));
+					}
+					sb.AppendC(UTF8STRC("\r\n"));
+					printf("%s", sb.ToString());
 				}
-				sb->AppendC(UTF8STRC("\r\n"));
-				printf("%s", sb->ToString());
-				DEL_CLASS(sb);
 
 				tmpBuff[0] = 0x81;
 				tmpBuff[1] = 201;
@@ -200,68 +198,69 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 				printf("RR\r\n");
 				break;
 			case 202: //SDES - Source Description RTCP Packet
-				NEW_CLASS(sb, Text::StringBuilderUTF8());
-				sb->AppendC(UTF8STRC("SDES: Len="));
-				sb->AppendUOSInt(size);
-				sb->AppendC(UTF8STRC(",RC="));
-				sb->AppendU32(buff[ofst + 0] & 0x1f);
-				sb->AppendC(UTF8STRC(",SSRC="));
-				sb->AppendI32(ReadMInt32(&buff[ofst + 4]));
 				{
-					i = 8;
-					while (i < size)
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("SDES: Len="));
+					sb.AppendUOSInt(size);
+					sb.AppendC(UTF8STRC(",RC="));
+					sb.AppendU32(buff[ofst + 0] & 0x1f);
+					sb.AppendC(UTF8STRC(",SSRC="));
+					sb.AppendI32(ReadMInt32(&buff[ofst + 4]));
 					{
-						switch (buff[ofst + i])
+						i = 8;
+						while (i < size)
 						{
-						case 0:
-						default:
-							i = size;
-							break;
-						case 1:
-							sb->AppendC(UTF8STRC(", CNAME="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 2:
-							sb->AppendC(UTF8STRC(", NAME="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 3:
-							sb->AppendC(UTF8STRC(", EMAIL="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 4:
-							sb->AppendC(UTF8STRC(", PHONE="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 5:
-							sb->AppendC(UTF8STRC(", LOC="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 6:
-							sb->AppendC(UTF8STRC(", TOOL="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 7:
-							sb->AppendC(UTF8STRC(", NOTE="));
-							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-							i += (UOSInt)(buff[ofst + i + 1] + 2);
-							break;
-						case 8:
-							sb->AppendC(UTF8STRC(", PRIV="));
-							i = size;
-							break;
+							switch (buff[ofst + i])
+							{
+							case 0:
+							default:
+								i = size;
+								break;
+							case 1:
+								sb.AppendC(UTF8STRC(", CNAME="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 2:
+								sb.AppendC(UTF8STRC(", NAME="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 3:
+								sb.AppendC(UTF8STRC(", EMAIL="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 4:
+								sb.AppendC(UTF8STRC(", PHONE="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 5:
+								sb.AppendC(UTF8STRC(", LOC="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 6:
+								sb.AppendC(UTF8STRC(", TOOL="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 7:
+								sb.AppendC(UTF8STRC(", NOTE="));
+								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
+								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								break;
+							case 8:
+								sb.AppendC(UTF8STRC(", PRIV="));
+								i = size;
+								break;
+							}
 						}
 					}
+					sb.AppendC(UTF8STRC("\r\n"));
+					printf("%s", sb.ToString());
 				}
-				sb->AppendC(UTF8STRC("\r\n"));
-				printf("%s", sb->ToString());
-				DEL_CLASS(sb);
 				break;
 			case 203: //BYE
 				break;
@@ -277,33 +276,31 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 UInt32 __stdcall Net::RTPCliChannel::PlayThread(void *userObj)
 {
 	Net::RTPCliChannel *me = (Net::RTPCliChannel*)userObj;
-	Data::DateTime *dt;
-	Data::DateTime *lastDt;
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(lastDt, Data::DateTime());
-
-	me->chData->playing = true;
-	if (me->chData->playCtrl->Init(me))
 	{
-		if (me->chData->playCtrl->Play(me))
+		Data::DateTime dt;
+		Data::DateTime lastDt;
+
+		me->chData->playing = true;
+		if (me->chData->playCtrl->Init(me))
 		{
-			lastDt->SetCurrTimeUTC();
-			while (!me->chData->playToStop)
+			if (me->chData->playCtrl->Play(me))
 			{
-				dt->SetCurrTimeUTC();
-				if (dt->DiffMS(lastDt) > 5000)
+				lastDt.SetCurrTimeUTC();
+				while (!me->chData->playToStop)
 				{
-					lastDt->SetCurrTimeUTC();
-					me->chData->playCtrl->KeepAlive(me);
+					dt.SetCurrTimeUTC();
+					if (dt.DiffMS(&lastDt) > 5000)
+					{
+						lastDt.SetCurrTimeUTC();
+						me->chData->playCtrl->KeepAlive(me);
+					}
+					me->chData->playEvt->Wait(5000);
 				}
-				me->chData->playEvt->Wait(5000);
+				me->chData->playCtrl->StopPlay(me);
 			}
-			me->chData->playCtrl->StopPlay(me);
+			me->chData->playCtrl->Deinit(me);
 		}
-		me->chData->playCtrl->Deinit(me);
 	}
-	DEL_CLASS(dt);
-	DEL_CLASS(lastDt);
 	me->chData->playing = false;
 	return 0;
 }

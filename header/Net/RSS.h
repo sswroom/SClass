@@ -52,7 +52,7 @@ namespace Net
 //		Text::String *cloud;
 		Int32 ttl;
 //		RSSImage *image;
-		Data::ArrayList<RSSItem*> *items;
+		Data::ArrayList<RSSItem*> items;
 
 	public:
 		RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl);

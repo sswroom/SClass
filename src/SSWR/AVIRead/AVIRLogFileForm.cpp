@@ -23,24 +23,19 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		Text::StringBuilderUTF8 *sb;
-		Data::DateTime *dt;
-
-		NEW_CLASS(dt, Data::DateTime());
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
+		Data::DateTime dt;
+		Text::StringBuilderUTF8 sb;
 		while (i < j)
 		{
-			sb->ClearStr();
-			this->logFile->GetLogMessage(this->logLevel, i, dt, sb, Text::LineBreakType::CRLF);
-			dt->ToLocalTime();
-			sptr = dt->ToString(sbuff);
+			sb.ClearStr();
+			this->logFile->GetLogMessage(this->logLevel, i, &dt, &sb, Text::LineBreakType::CRLF);
+			dt.ToLocalTime();
+			sptr = dt.ToString(sbuff);
 			k = this->lvLogs->AddItem(CSTRP(sbuff, sptr), 0);
-			this->lvLogs->SetSubItem(k, 1, sb->ToCString());
+			this->lvLogs->SetSubItem(k, 1, sb.ToCString());
 
 			i++;
 		}
-		DEL_CLASS(sb);
-		DEL_CLASS(dt);
 	}
 }
 

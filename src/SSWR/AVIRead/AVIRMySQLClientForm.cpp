@@ -179,8 +179,6 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	DB::ColDef *col;
-	Text::StringBuilderUTF8 *sb;
 	UOSInt *colSize;
 
 	rowChg = r->GetRowChanged();
@@ -189,17 +187,17 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		this->txtQueryStatus->SetText(CSTR(""));
 		this->lvQueryResult->ClearAll();
 
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
-		NEW_CLASS(col, DB::ColDef(CSTR("")));
+		Text::StringBuilderUTF8 sb;
+		DB::ColDef col(CSTR(""));
 		j = r->ColCount();
 		this->lvQueryResult->ChangeColumnCnt(j);
 		i = 0;
 		colSize = MemAlloc(UOSInt, j);
 		while (i < j)
 		{
-			if (r->GetColDef(i, col))
+			if (r->GetColDef(i, &col))
 			{
-				this->lvQueryResult->AddColumn(col->GetColName(), 100);
+				this->lvQueryResult->AddColumn(col.GetColName(), 100);
 			}
 			else
 			{
@@ -208,32 +206,30 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 			colSize[i] = 0;
 			i++;
 		}
-		DEL_CLASS(col);
 
 		OSInt rowCnt = 0;
 		while (r->ReadNext())
 		{
 			i = 1;
-			sb->ClearStr();
-			r->GetStr(0, sb);
-			if (sb->GetLength() > colSize[0])
-				colSize[0] = sb->GetLength();
-			k = this->lvQueryResult->AddItem(sb->ToCString(), 0);
+			sb.ClearStr();
+			r->GetStr(0, &sb);
+			if (sb.GetLength() > colSize[0])
+				colSize[0] = sb.GetLength();
+			k = this->lvQueryResult->AddItem(sb.ToCString(), 0);
 			while (i < j)
 			{
-				sb->ClearStr();
-				r->GetStr(i, sb);
-				this->lvQueryResult->SetSubItem(k, i, sb->ToCString());
+				sb.ClearStr();
+				r->GetStr(i, &sb);
+				this->lvQueryResult->SetSubItem(k, i, sb.ToCString());
 
-				if (sb->GetLength() > colSize[i])
-					colSize[i] = sb->GetLength();
+				if (sb.GetLength() > colSize[i])
+					colSize[i] = sb.GetLength();
 				i++;
 			}
 			rowCnt++;
 			if (rowCnt > 1000)
 				break;
 		}
-		DEL_CLASS(sb);
 
 		k = 0;
 		i = j;
@@ -261,11 +257,10 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 	else
 	{
 		this->lvQueryResult->ClearItems();
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
-		sb->AppendC(UTF8STRC("Record changed = "));
-		sb->AppendOSInt(rowChg);
-		this->txtQueryStatus->SetText(sb->ToCString());
-		DEL_CLASS(sb);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Record changed = "));
+		sb.AppendOSInt(rowChg);
+		this->txtQueryStatus->SetText(sb.ToCString());
 	}
 }
 

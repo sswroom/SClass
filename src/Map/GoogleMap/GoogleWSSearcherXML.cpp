@@ -66,21 +66,19 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 		}
 		if (status == 200)
 		{
-			Text::StringBuilderUTF8 *sb;
-			NEW_CLASS(sb, Text::StringBuilderUTF8());
+			Text::StringBuilderUTF8 sb;
 			UInt8 *xmlBuff = mstm->GetBuff(&readSize);
-			Text::XMLDocument *doc;
-			NEW_CLASS(doc, Text::XMLDocument());
-			if (doc->ParseBuff(this->encFact, xmlBuff, readSize))
+			Text::XMLDocument doc;
+			if (doc.ParseBuff(this->encFact, xmlBuff, readSize))
 			{
 				Bool succ = false;
 				Text::XMLNode **result;
 				UOSInt resultCnt;
-				result = doc->SearchNode(CSTR("/GeocodeResponse/status"), &resultCnt);
+				result = doc.SearchNode(CSTR("/GeocodeResponse/status"), &resultCnt);
 				if (resultCnt == 1)
 				{
-					result[0]->GetInnerXML(sb);
-					if (Text::StrEqualsICaseC(sb->ToString(), sb->GetLength(), UTF8STRC("OK")))
+					result[0]->GetInnerXML(&sb);
+					if (Text::StrEqualsICaseC(sb.ToString(), sb.GetLength(), UTF8STRC("OK")))
 					{
 						succ = true;
 					}
@@ -88,7 +86,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 					{
 						this->lastIsError = true;
 						errWriter->WriteStrC(UTF8STRC("Google respose status invalid: "));
-						errWriter->WriteLineC(sb->ToString(), sb->GetLength());
+						errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 					}
 				}
 				else
@@ -98,20 +96,20 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 				}
 				if (result)
 				{
-					doc->ReleaseSearch(result);
+					doc.ReleaseSearch(result);
 				}
 				if (succ)
 				{
-					result = doc->SearchNode(CSTR("/GeocodeResponse/result[type='street_address']/formatted_address"), &resultCnt);
+					result = doc.SearchNode(CSTR("/GeocodeResponse/result[type='street_address']/formatted_address"), &resultCnt);
 					if (resultCnt > 0)
 					{
-						sb->ClearStr();
-						result[0]->GetInnerXML(sb);
-						buff = Text::StrConcatS(buff, sb->ToString(), buffSize);
+						sb.ClearStr();
+						result[0]->GetInnerXML(&sb);
+						buff = Text::StrConcatS(buff, sb.ToString(), buffSize);
 					}
 					if (result)
 					{
-						doc->ReleaseSearch(result);
+						doc.ReleaseSearch(result);
 					}
 				}
 			}
@@ -120,8 +118,6 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 				this->lastIsError = true;
 				*buff = 0;
 			}
-			DEL_CLASS(doc);
-			DEL_CLASS(sb);
 		}
 		else
 		{

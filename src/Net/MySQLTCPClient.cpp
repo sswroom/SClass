@@ -1237,568 +1237,566 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	UInt8 *ptrCurr;
 	UInt8 *ptrEnd;
 	OSInt i;
-#if defined(VERBOSE)
-	Text::StringBuilderUTF8 *sb;
-#endif
-	me->recvStarted = true;
-	me->recvRunning = true;
-	buffSize = 0;
-#if defined(VERBOSE)
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-#endif
-	buff = MemAlloc(UInt8, BUFFSIZE);
-	while (true)
 	{
-		readSize = me->cli->Read(&buff[buffSize], BUFFSIZE - buffSize);
-		if (readSize <= 0)
-			break;
-#if defined(VERBOSE)
-		sb->ClearStr();
-		sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
-		printf("MySQLTCP Received Buff:\r\n%s\r\n", sb->ToString());
-#endif
-		buffSize += readSize;
-
-		if (me->mode == 0)
+		me->recvStarted = true;
+		me->recvRunning = true;
+		buffSize = 0;
+	#if defined(VERBOSE)
+		Text::StringBuilderUTF8 sb;
+	#endif
+		buff = MemAlloc(UInt8, BUFFSIZE);
+		while (true)
 		{
-			readSize = buffSize;
-			if (buffSize >= 10)
+			readSize = me->cli->Read(&buff[buffSize], BUFFSIZE - buffSize);
+			if (readSize <= 0)
+				break;
+	#if defined(VERBOSE)
+			sb.ClearStr();
+			sb.AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
+			printf("MySQLTCP Received Buff:\r\n%s\r\n", sb.ToString());
+	#endif
+			buffSize += readSize;
+
+			if (me->mode == 0)
 			{
-				if (buff[3] != 0)
+				readSize = buffSize;
+				if (buffSize >= 10)
 				{
-#if defined(VERBOSE)
-					printf("MySQLTCP Seq Id Invalid\r\n");
-#endif
-					me->cli->Close();
-					readSize = 0;
-				}
-				else
-				{
-					UOSInt packetSize = ReadUInt32(buff);
-					if (packetSize < 10 || packetSize > 1024)
+					if (buff[3] != 0)
 					{
-#if defined(VERBOSE)
-						printf("MySQLTCP packet size Invalid\r\n");
-#endif
+	#if defined(VERBOSE)
+						printf("MySQLTCP Seq Id Invalid\r\n");
+	#endif
 						me->cli->Close();
 						readSize = 0;
 					}
-					else if (packetSize + 4 <= buffSize)
+					else
 					{
-						if (buff[4] == 9)
+						UOSInt packetSize = ReadUInt32(buff);
+						if (packetSize < 10 || packetSize > 1024)
 						{
-							if (buff[packetSize + 3] != 0 || buff[packetSize - 10] != 0)
-							{
-#if defined(VERBOSE)
-								printf("MySQLTCP protocol ver 9 invalid\r\n");
-#endif
-								me->cli->Close();
-								readSize = 0;
-							}
-							else
-							{
-								me->svrVer = Text::String::NewNotNullSlow(&buff[5]);
-								me->connId = ReadUInt32(&buff[packetSize - 9]);
-								MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
-								me->authPluginDataSize = 8;
-								me->mode = 1;
-								////////////////////////////////
-#if defined(VERBOSE)
-								printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
-								printf("MySQLTCP Conn Id = %d\r\n", me->connId);
-								sb->ClearStr();
-								sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-								printf("MySQLTCP Auth Plugin Data = %s\r\n", sb->ToString());
-#endif
-								readSize = 0;
-							}
+	#if defined(VERBOSE)
+							printf("MySQLTCP packet size Invalid\r\n");
+	#endif
+							me->cli->Close();
+							readSize = 0;
 						}
-						else if (buff[4] == 10)
+						else if (packetSize + 4 <= buffSize)
 						{
-							ptrEnd = &buff[packetSize + 4];
-							sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
-							ptrCurr = &buff[6] + (sptr - sbuff);
-							me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-#if defined(VERBOSE)
-							printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
-#endif
-							if (ptrEnd - ptrCurr >= 15)
+							if (buff[4] == 9)
 							{
-								me->connId = ReadUInt32(&ptrCurr[0]);
-								MemCopyNO(me->authPluginData, &ptrCurr[4], 8);
-								me->authPluginDataSize = 8;
-								me->svrCap = ReadUInt16(&ptrCurr[13]);
-								ptrCurr += 15;
-								if (ptrEnd - ptrCurr >= 16)
+								if (buff[packetSize + 3] != 0 || buff[packetSize - 10] != 0)
 								{
-									me->svrCS = ptrCurr[0];
-									me->connStatus = ReadUInt16(&ptrCurr[1]);
-									me->svrCap |= ((UInt32)ReadUInt16(&ptrCurr[3])) << 16;
-									UInt8 len = ptrCurr[5];
-									ptrCurr += 16;
-									if (me->svrCap & Net::MySQLUtil::CLIENT_SECURE_CONNECTION)
+	#if defined(VERBOSE)
+									printf("MySQLTCP protocol ver 9 invalid\r\n");
+	#endif
+									me->cli->Close();
+									readSize = 0;
+								}
+								else
+								{
+									me->svrVer = Text::String::NewNotNullSlow(&buff[5]);
+									me->connId = ReadUInt32(&buff[packetSize - 9]);
+									MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
+									me->authPluginDataSize = 8;
+									me->mode = 1;
+									////////////////////////////////
+	#if defined(VERBOSE)
+									printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
+									printf("MySQLTCP Conn Id = %d\r\n", me->connId);
+									sb.ClearStr();
+									sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
+									printf("MySQLTCP Auth Plugin Data = %s\r\n", sb.ToString());
+	#endif
+									readSize = 0;
+								}
+							}
+							else if (buff[4] == 10)
+							{
+								ptrEnd = &buff[packetSize + 4];
+								sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
+								ptrCurr = &buff[6] + (sptr - sbuff);
+								me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+	#if defined(VERBOSE)
+								printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
+	#endif
+								if (ptrEnd - ptrCurr >= 15)
+								{
+									me->connId = ReadUInt32(&ptrCurr[0]);
+									MemCopyNO(me->authPluginData, &ptrCurr[4], 8);
+									me->authPluginDataSize = 8;
+									me->svrCap = ReadUInt16(&ptrCurr[13]);
+									ptrCurr += 15;
+									if (ptrEnd - ptrCurr >= 16)
 									{
-										if (len == 21 && (ptrEnd - ptrCurr) >= 13)
+										me->svrCS = ptrCurr[0];
+										me->connStatus = ReadUInt16(&ptrCurr[1]);
+										me->svrCap |= ((UInt32)ReadUInt16(&ptrCurr[3])) << 16;
+										UInt8 len = ptrCurr[5];
+										ptrCurr += 16;
+										if (me->svrCap & Net::MySQLUtil::CLIENT_SECURE_CONNECTION)
 										{
-											MemCopyNO(&me->authPluginData[8], ptrCurr, 12);
-											me->authPluginDataSize = 20;
-											ptrCurr += 13;
+											if (len == 21 && (ptrEnd - ptrCurr) >= 13)
+											{
+												MemCopyNO(&me->authPluginData[8], ptrCurr, 12);
+												me->authPluginDataSize = 20;
+												ptrCurr += 13;
+											}
+											else if (len > 21)
+											{
+												ptrCurr += 13;
+											}
+											else
+											{
+												ptrCurr += len - 8;
+											}
 										}
-										else if (len > 21)
+										if (me->svrCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 										{
-											ptrCurr += 13;
+											Text::StrConcatS(sbuff, ptrCurr, (UOSInt)(ptrEnd - ptrCurr));
 										}
 										else
 										{
-											ptrCurr += len - 8;
+											sbuff[0] = 0;
 										}
-									}
-									if (me->svrCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
-									{
-										Text::StrConcatS(sbuff, ptrCurr, (UOSInt)(ptrEnd - ptrCurr));
+	#if defined(VERBOSE)
+										printf("MySQLTCP Conn Id = %d\r\n", me->connId);
+										printf("MySQLTCP Server Cap = 0x%x\r\n", me->svrCap);
+										printf("MySQLTCP character set = %d\r\n", me->svrCS);
+										printf("MySQLTCP status = 0x%x\r\n", me->connStatus);
+										sb.ClearStr();
+										sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
+										printf("MySQLTCP auth plugin data = %s\r\n", sb->ToString());
+										printf("MySQLTCP auth plugin name = %s\r\n", sbuff);
+	#endif
 									}
 									else
 									{
-										sbuff[0] = 0;
+	#if defined(VERBOSE)
+										printf("MySQLTCP Conn Id = %d\r\n", me->connId);
+										printf("MySQLTCP Server Cap = 0x%x\r\n", me->svrCap);
+										sb.ClearStr();
+										sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
+										printf("MySQLTCP auth plugin data = %s\r\n", sb.ToString());
+	#endif
 									}
-#if defined(VERBOSE)
-									printf("MySQLTCP Conn Id = %d\r\n", me->connId);
-									printf("MySQLTCP Server Cap = 0x%x\r\n", me->svrCap);
-									printf("MySQLTCP character set = %d\r\n", me->svrCS);
-									printf("MySQLTCP status = 0x%x\r\n", me->connStatus);
-									sb->ClearStr();
-									sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-									printf("MySQLTCP auth plugin data = %s\r\n", sb->ToString());
-									printf("MySQLTCP auth plugin name = %s\r\n", sbuff);
-#endif
+									me->mode = 1;
+
+									if (me->authPluginDataSize == 20)
+									{
+										UInt32 cliCap = Net::MySQLUtil::CLIENT_LONG_PASSWORD | 
+											Net::MySQLUtil::CLIENT_FOUND_ROWS |
+											Net::MySQLUtil::CLIENT_LONG_FLAG |
+											Net::MySQLUtil::CLIENT_PROTOCOL_41 |
+											Net::MySQLUtil::CLIENT_TRANSACTIONS |
+											Net::MySQLUtil::CLIENT_SECURE_CONNECTION |
+											Net::MySQLUtil::CLIENT_MULTI_RESULTS |
+											Net::MySQLUtil::CLIENT_PLUGIN_AUTH |
+											Net::MySQLUtil::CLIENT_CONNECT_ATTRS |
+											Net::MySQLUtil::CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA;
+										if (me->database)
+										{
+											cliCap |= Net::MySQLUtil::CLIENT_CONNECT_WITH_DB;
+										}
+										WriteUInt32(&buff[4], cliCap);
+										WriteInt32(&buff[8], 16777215);
+										buff[12] = 45;
+										MemClear(&buff[13], 23);
+										ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
+										ptrCurr[0] = 20;
+										Crypto::Hash::SHA1 sha1;
+										sha1.Calc(me->password->v, me->password->leng);
+										sha1.GetValue(sbuff);
+										sha1.Clear();
+										sha1.Calc(sbuff, 20);
+										sha1.GetValue(&ptrCurr[1]);
+										sha1.Clear();
+										sha1.Calc(me->authPluginData, 20);
+										sha1.Calc(&ptrCurr[1], 20);
+										sha1.GetValue(&ptrCurr[1]);
+										i = 0;
+										while (i < 20)
+										{
+											ptrCurr[i + 1] ^= sbuff[i];
+											i++;
+										}
+										ptrCurr += 21;
+										if (me->database)
+										{
+											ptrCurr = me->database->ConcatTo(ptrCurr) + 1;
+										}
+										if (cliCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
+										{
+											ptrCurr = Text::StrConcatC(ptrCurr, UTF8STRC("mysql_native_password")) + 1;
+										}
+
+										if (cliCap & Net::MySQLUtil::CLIENT_CONNECT_ATTRS)
+										{
+											sptr = sbuff;
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_name"));
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("MySQL TCP Client/SSWR"));
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_version"));
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC(CLIVERSION));
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os"));
+											sptr2 = IO::OS::GetDistro(sbuff2);
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os_version"));
+											sptr2 = IO::OS::GetVersion(sbuff2);
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
+											ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, (UOSInt)(sptr - sbuff));
+											MemCopyNO(ptrCurr, sbuff, (UOSInt)(sptr - sbuff));
+											ptrCurr += sptr - sbuff;
+										}
+										WriteInt24(buff, (ptrCurr - buff - 4));
+										buff[3] = 1;
+										me->cli->Write(buff, (UOSInt)(ptrCurr - buff));
+	#if defined(VERBOSE)
+										printf("MySQLTCP handshake response sent\r\n");
+	#endif
+									}
+
+									readSize = 0;
 								}
 								else
 								{
-#if defined(VERBOSE)
-									printf("MySQLTCP Conn Id = %d\r\n", me->connId);
-									printf("MySQLTCP Server Cap = 0x%x\r\n", me->svrCap);
-									sb->ClearStr();
-									sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-									printf("MySQLTCP auth plugin data = %s\r\n", sb->ToString());
-#endif
+	#if defined(VERBOSE)
+									printf("MySQLTCP protocol version 10 invalid\r\n");
+	#endif
+									me->mode = 1;
+									////////////////////////////////
+									readSize = 0;
+									me->cli->Close();
 								}
-								me->mode = 1;
-
-								if (me->authPluginDataSize == 20)
-								{
-									UInt32 cliCap = Net::MySQLUtil::CLIENT_LONG_PASSWORD | 
-										Net::MySQLUtil::CLIENT_FOUND_ROWS |
-										Net::MySQLUtil::CLIENT_LONG_FLAG |
-										Net::MySQLUtil::CLIENT_PROTOCOL_41 |
-										Net::MySQLUtil::CLIENT_TRANSACTIONS |
-										Net::MySQLUtil::CLIENT_SECURE_CONNECTION |
-										Net::MySQLUtil::CLIENT_MULTI_RESULTS |
-										Net::MySQLUtil::CLIENT_PLUGIN_AUTH |
-										Net::MySQLUtil::CLIENT_CONNECT_ATTRS |
-										Net::MySQLUtil::CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA;
-									if (me->database)
-									{
-										cliCap |= Net::MySQLUtil::CLIENT_CONNECT_WITH_DB;
-									}
-									WriteUInt32(&buff[4], cliCap);
-									WriteInt32(&buff[8], 16777215);
-									buff[12] = 45;
-									MemClear(&buff[13], 23);
-									ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
-									ptrCurr[0] = 20;
-									Crypto::Hash::SHA1 sha1;
-									sha1.Calc(me->password->v, me->password->leng);
-									sha1.GetValue(sbuff);
-									sha1.Clear();
-									sha1.Calc(sbuff, 20);
-									sha1.GetValue(&ptrCurr[1]);
-									sha1.Clear();
-									sha1.Calc(me->authPluginData, 20);
-									sha1.Calc(&ptrCurr[1], 20);
-									sha1.GetValue(&ptrCurr[1]);
-									i = 0;
-									while (i < 20)
-									{
-										ptrCurr[i + 1] ^= sbuff[i];
-										i++;
-									}
-									ptrCurr += 21;
-									if (me->database)
-									{
-										ptrCurr = me->database->ConcatTo(ptrCurr) + 1;
-									}
-									if (cliCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
-									{
-										ptrCurr = Text::StrConcatC(ptrCurr, UTF8STRC("mysql_native_password")) + 1;
-									}
-
-									if (cliCap & Net::MySQLUtil::CLIENT_CONNECT_ATTRS)
-									{
-										sptr = sbuff;
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_name"));
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("MySQL TCP Client/SSWR"));
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_version"));
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC(CLIVERSION));
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os"));
-										sptr2 = IO::OS::GetDistro(sbuff2);
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os_version"));
-										sptr2 = IO::OS::GetVersion(sbuff2);
-										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
-										ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, (UOSInt)(sptr - sbuff));
-										MemCopyNO(ptrCurr, sbuff, (UOSInt)(sptr - sbuff));
-										ptrCurr += sptr - sbuff;
-									}
-									WriteInt24(buff, (ptrCurr - buff - 4));
-									buff[3] = 1;
-									me->cli->Write(buff, (UOSInt)(ptrCurr - buff));
-#if defined(VERBOSE)
-									printf("MySQLTCP handshake response sent\r\n");
-#endif
-								}
-
-								readSize = 0;
 							}
 							else
 							{
-#if defined(VERBOSE)
-								printf("MySQLTCP protocol version 10 invalid\r\n");
-#endif
-								me->mode = 1;
-								////////////////////////////////
+	#if defined(VERBOSE)
+								printf("MySQLTCP protocol version unsupported (%d)\r\n", buff[4]);
+	#endif
 								readSize = 0;
 								me->cli->Close();
 							}
 						}
-						else
-						{
-#if defined(VERBOSE)
-							printf("MySQLTCP protocol version unsupported (%d)\r\n", buff[4]);
-#endif
-							readSize = 0;
-							me->cli->Close();
-						}
 					}
 				}
 			}
-		}
-		else if (me->mode == 1)
-		{
-			if (buffSize < 4)
+			else if (me->mode == 1)
 			{
-				readSize = buffSize;
-			}
-			else
-			{
-				readSize = ReadUInt24(&buff[buffSize - readSize]);
-				if (readSize + 4 <= buffSize)
-				{
-					if (buff[4] == 0xff)
-					{
-						me->SetLastError({&buff[7], readSize - 3});
-						me->cli->Close();
-					}
-					else if (buff[3] != 2)
-					{
-						me->SetLastError(CSTR("Invalid login reply"));
-						me->cli->Close();
-					}
-					else if (buff[4] == 0)
-					{
-						me->mode = 2;
-#if defined(VERBOSE)
-						printf("MySQLTCP login success\r\n");
-#endif
-					}
-					else if (buff[4] == 0xFE)
-					{
-						Text::StringBuilderUTF8 sb;
-						sb.AppendC(UTF8STRC("AuthSwitchRequest received: plugin name = "));
-						sb.AppendSlow(&buff[5]);
-						me->SetLastError(sb.ToCString());
-						me->cli->Close();
-					}
-					else
-					{
-						me->SetLastError(CSTR("Invalid reply on login"));
-						me->cli->Close();
-					}
-					readSize = 0;
-				}
-				else
+				if (buffSize < 4)
 				{
 					readSize = buffSize;
 				}
-			}
-		}
-		else if (me->mode == 2)
-		{
-			UInt32 packetSize;
-			UInt64 val;
-			readSize = 0;
-			while (readSize + 4 <= buffSize)
-			{
-				packetSize = ReadUInt24(&buff[readSize]);
-				if (readSize + 4 + packetSize > buffSize)
+				else
 				{
-					break;
-				}
-				if (buff[readSize + 4] == 0xFF || (buff[readSize + 3] == (me->cmdSeqNum & 0xff) && me->cmdReader))
-				{
-					if (me->cmdSeqNum == 1)
+					readSize = ReadUInt24(&buff[buffSize - readSize]);
+					if (readSize + 4 <= buffSize)
 					{
-						if (me->cmdResultType == CmdResultType::ProcessingBinary)
+						if (buff[4] == 0xff)
 						{
-							if (buff[readSize + 4] == 0) //OK
-							{
-								UInt32 stmtId = ReadUInt32(&buff[readSize + 5]);
-								((MySQLTCPBinaryReader*)me->cmdReader)->SetStmtId(stmtId);
-#if defined(VERBOSE)
-								UInt16 numColumns = ReadUInt16(&buff[readSize + 9]);
-								UInt16 numParams = ReadUInt16(&buff[readSize + 11]);
-								printf("MySQLTCP COM_STMT_PREPARE OK, stmt id = %d, num_columns = %d, num_params = %d\r\n", stmtId, numColumns, numParams);
-#endif
-							}
-							else if (buff[readSize + 4] == 0xFF) //ERR
-							{
-								me->SetLastError({&buff[readSize + 7], packetSize - 3});
-								if (me->cmdReader)
-								{
-									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt.Set();
-									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
-								}
-								else
-								{
-									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt.Set();
-								}
-#if defined(VERBOSE)
-								printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
-#endif
-							}
-							else
-							{
-								me->cmdResultType = CmdResultType::Error;
-								me->cmdEvt.Set();
-								if (me->cmdReader)
-								{
-									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
-								}
-#if defined(VERBOSE)
-								printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
-#endif
-							}
+							me->SetLastError({&buff[7], readSize - 3});
+							me->cli->Close();
 						}
-						else if (me->cmdResultType == CmdResultType::BinaryExecuting)
+						else if (buff[3] != 2)
 						{
-							if (buff[readSize + 4] == 0xFF) //ERR
-							{
-								me->SetLastError({&buff[readSize + 7], packetSize - 3});
-								if (me->cmdReader)
-								{
-									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt.Set();
-									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
-								}
-								else
-								{
-									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt.Set();
-								}
-#if defined(VERBOSE)
-								printf("MySQLTCP COM_STMT_EXECUTE Error\r\n");
-#endif
-							}
-							else
-							{
-								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
-#if defined(VERBOSE)
-								printf("MySQLTCP COM_STMT_EXECUTE executed, column cnt = %lld\r\n", val);
-#endif
-							}
+							me->SetLastError(CSTR("Invalid login reply"));
+							me->cli->Close();
+						}
+						else if (buff[4] == 0)
+						{
+							me->mode = 2;
+	#if defined(VERBOSE)
+							printf("MySQLTCP login success\r\n");
+	#endif
+						}
+						else if (buff[4] == 0xFE)
+						{
+							Text::StringBuilderUTF8 sb;
+							sb.AppendC(UTF8STRC("AuthSwitchRequest received: plugin name = "));
+							sb.AppendSlow(&buff[5]);
+							me->SetLastError(sb.ToCString());
+							me->cli->Close();
 						}
 						else
 						{
-							if (buff[readSize + 4] == 0) //OK
+							me->SetLastError(CSTR("Invalid reply on login"));
+							me->cli->Close();
+						}
+						readSize = 0;
+					}
+					else
+					{
+						readSize = buffSize;
+					}
+				}
+			}
+			else if (me->mode == 2)
+			{
+				UInt32 packetSize;
+				UInt64 val;
+				readSize = 0;
+				while (readSize + 4 <= buffSize)
+				{
+					packetSize = ReadUInt24(&buff[readSize]);
+					if (readSize + 4 + packetSize > buffSize)
+					{
+						break;
+					}
+					if (buff[readSize + 4] == 0xFF || (buff[readSize + 3] == (me->cmdSeqNum & 0xff) && me->cmdReader))
+					{
+						if (me->cmdSeqNum == 1)
+						{
+							if (me->cmdResultType == CmdResultType::ProcessingBinary)
 							{
-								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
-								((MySQLTCPReader*)me->cmdReader)->SetRowChanged((Int64)val);
-								me->cmdResultType = CmdResultType::ResultEnd;
-								me->cmdEvt.Set();
-#if defined(VERBOSE)
-								printf("MySQLTCP Command OK, row changed = %lld\r\n", val);
-#endif
-							}
-							else if (buff[readSize + 4] == 0xFF) //ERR
-							{
-								me->SetLastError({&buff[readSize + 7], packetSize - 3});
-								if (me->cmdReader)
+								if (buff[readSize + 4] == 0) //OK
 								{
-									if (me->cmdResultType == CmdResultType::Processing)
+									UInt32 stmtId = ReadUInt32(&buff[readSize + 5]);
+									((MySQLTCPBinaryReader*)me->cmdReader)->SetStmtId(stmtId);
+	#if defined(VERBOSE)
+									UInt16 numColumns = ReadUInt16(&buff[readSize + 9]);
+									UInt16 numParams = ReadUInt16(&buff[readSize + 11]);
+									printf("MySQLTCP COM_STMT_PREPARE OK, stmt id = %d, num_columns = %d, num_params = %d\r\n", stmtId, numColumns, numParams);
+	#endif
+								}
+								else if (buff[readSize + 4] == 0xFF) //ERR
+								{
+									me->SetLastError({&buff[readSize + 7], packetSize - 3});
+									if (me->cmdReader)
+									{
+										me->cmdResultType = CmdResultType::Error;
+										me->cmdEvt.Set();
+										((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+									}
+									else
 									{
 										me->cmdResultType = CmdResultType::Error;
 										me->cmdEvt.Set();
 									}
-									((MySQLTCPReader*)me->cmdReader)->EndData();
+	#if defined(VERBOSE)
+									printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
+	#endif
 								}
 								else
 								{
 									me->cmdResultType = CmdResultType::Error;
 									me->cmdEvt.Set();
+									if (me->cmdReader)
+									{
+										((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+									}
+	#if defined(VERBOSE)
+									printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
+	#endif
 								}
-	//							me->cli->Close();
+							}
+							else if (me->cmdResultType == CmdResultType::BinaryExecuting)
+							{
+								if (buff[readSize + 4] == 0xFF) //ERR
+								{
+									me->SetLastError({&buff[readSize + 7], packetSize - 3});
+									if (me->cmdReader)
+									{
+										me->cmdResultType = CmdResultType::Error;
+										me->cmdEvt.Set();
+										((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+									}
+									else
+									{
+										me->cmdResultType = CmdResultType::Error;
+										me->cmdEvt.Set();
+									}
+	#if defined(VERBOSE)
+									printf("MySQLTCP COM_STMT_EXECUTE Error\r\n");
+	#endif
+								}
+								else
+								{
+									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+	#if defined(VERBOSE)
+									printf("MySQLTCP COM_STMT_EXECUTE executed, column cnt = %lld\r\n", val);
+	#endif
+								}
 							}
 							else
 							{
-								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
-#if defined(VERBOSE)
-								printf("MySQLTCP Command executed, column cnt = %lld\r\n", val);
-#endif
+								if (buff[readSize + 4] == 0) //OK
+								{
+									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
+									((MySQLTCPReader*)me->cmdReader)->SetRowChanged((Int64)val);
+									me->cmdResultType = CmdResultType::ResultEnd;
+									me->cmdEvt.Set();
+	#if defined(VERBOSE)
+									printf("MySQLTCP Command OK, row changed = %lld\r\n", val);
+	#endif
+								}
+								else if (buff[readSize + 4] == 0xFF) //ERR
+								{
+									me->SetLastError({&buff[readSize + 7], packetSize - 3});
+									if (me->cmdReader)
+									{
+										if (me->cmdResultType == CmdResultType::Processing)
+										{
+											me->cmdResultType = CmdResultType::Error;
+											me->cmdEvt.Set();
+										}
+										((MySQLTCPReader*)me->cmdReader)->EndData();
+									}
+									else
+									{
+										me->cmdResultType = CmdResultType::Error;
+										me->cmdEvt.Set();
+									}
+		//							me->cli->Close();
+								}
+								else
+								{
+									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+	#if defined(VERBOSE)
+									printf("MySQLTCP Command executed, column cnt = %lld\r\n", val);
+	#endif
+								}
 							}
 						}
-					}
-					else if (buff[readSize + 4] == 0xFE) //EOF
-					{
-#if defined(VERBOSE)
-						printf("MySQLTCP EOF found, curr result type = %d\r\n", (int)me->cmdResultType);
-#endif
-						switch (me->cmdResultType)
+						else if (buff[readSize + 4] == 0xFE) //EOF
 						{
-						case CmdResultType::Processing:
-							me->cmdResultType = CmdResultType::ResultReady;
-							me->cmdEvt.Set();
-							break;
-						case CmdResultType::ProcessingBinary:
+	#if defined(VERBOSE)
+							printf("MySQLTCP EOF found, curr result type = %d\r\n", (int)me->cmdResultType);
+	#endif
+							switch (me->cmdResultType)
+							{
+							case CmdResultType::Processing:
+								me->cmdResultType = CmdResultType::ResultReady;
+								me->cmdEvt.Set();
+								break;
+							case CmdResultType::ProcessingBinary:
+							{
+								UInt32 stmtId = ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId();
+								me->cmdSeqNum = 0;
+								WriteUInt32(&sbuff[0], 10);
+								sbuff[3] = 0;
+								sbuff[4] = 0x17;
+								WriteUInt32(&sbuff[5], stmtId);
+								sbuff[9] = 0;
+								WriteUInt32(&sbuff[10], 1);
+								me->cli->Write(sbuff, 14);
+	#if defined(VERBOSE)
+								printf("MySQLTCP EOF found, execute statment id %d\r\n", stmtId);
+	#endif
+								me->cmdResultType = CmdResultType::BinaryExecuting;
+								me->cmdEvt.Set();
+								break;
+							}
+							case CmdResultType::BinaryExecuting:
+								me->cmdResultType = CmdResultType::BinaryResultReady;
+								((MySQLTCPBinaryReader*)me->cmdReader)->EndCols();
+								me->cmdEvt.Set();
+								break;
+							case CmdResultType::BinaryResultReady:
+								WriteUInt32(&sbuff[0], 5);
+								sbuff[3] = 0;
+								sbuff[4] = 0x19; //COM_STMT_CLOSE
+								WriteUInt32(&sbuff[5], ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
+								me->cli->Write(sbuff, 9);
+
+								me->cmdResultType = CmdResultType::ResultEnd;
+								((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+								me->cmdEvt.Set();
+
+								break;
+							case CmdResultType::ResultEnd:
+							case CmdResultType::ResultReady:
+							case CmdResultType::Error:
+							default:
+								me->cmdResultType = CmdResultType::ResultEnd;
+								((MySQLTCPReader*)me->cmdReader)->EndData();
+								me->cmdEvt.Set();
+								break;
+							}
+						}
+						else
 						{
-							UInt32 stmtId = ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId();
-							me->cmdSeqNum = 0;
-							WriteUInt32(&sbuff[0], 10);
-							sbuff[3] = 0;
-							sbuff[4] = 0x17;
-							WriteUInt32(&sbuff[5], stmtId);
-							sbuff[9] = 0;
-							WriteUInt32(&sbuff[10], 1);
-							me->cli->Write(sbuff, 14);
-#if defined(VERBOSE)
-							printf("MySQLTCP EOF found, execute statment id %d\r\n", stmtId);
-#endif
-							me->cmdResultType = CmdResultType::BinaryExecuting;
-							me->cmdEvt.Set();
-							break;
+							switch (me->cmdResultType)
+							{
+							case CmdResultType::Processing: //ColumnDef
+	#if defined(VERBOSE)
+								printf("MySQLTCP Seq %d Column found\r\n", buff[readSize + 3]);
+	#endif
+								((MySQLTCPReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
+								break;
+							case CmdResultType::ProcessingBinary: //ColumnDefinition
+	#if defined(VERBOSE)
+								printf("MySQLTCP Seq %d Statement Column found\r\n", buff[readSize + 3]);
+	#endif
+								break;
+							case CmdResultType::BinaryExecuting:
+	#if defined(VERBOSE)
+								printf("MySQLTCP Seq %d Binary Column found\r\n", buff[readSize + 3]);
+	#endif
+								((MySQLTCPBinaryReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
+								break;
+							case CmdResultType::BinaryResultReady:
+	#if defined(VERBOSE)
+								printf("MySQLTCP Seq %d Binary Row found\r\n", buff[readSize + 3]);
+	#endif
+								((MySQLTCPBinaryReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
+								break;
+							case CmdResultType::ResultEnd:
+							case CmdResultType::Error:
+							case CmdResultType::ResultReady:
+							default:
+	#if defined(VERBOSE)
+								printf("MySQLTCP Seq %d Text Row found\r\n", buff[readSize + 3]);
+	#endif
+								((MySQLTCPReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
+								break;
+							}
 						}
-						case CmdResultType::BinaryExecuting:
-							me->cmdResultType = CmdResultType::BinaryResultReady;
-							((MySQLTCPBinaryReader*)me->cmdReader)->EndCols();
-							me->cmdEvt.Set();
-							break;
-						case CmdResultType::BinaryResultReady:
-							WriteUInt32(&sbuff[0], 5);
-							sbuff[3] = 0;
-							sbuff[4] = 0x19; //COM_STMT_CLOSE
-							WriteUInt32(&sbuff[5], ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
-							me->cli->Write(sbuff, 9);
-
-							me->cmdResultType = CmdResultType::ResultEnd;
-							((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
-							me->cmdEvt.Set();
-
-							break;
-						case CmdResultType::ResultEnd:
-						case CmdResultType::ResultReady:
-						case CmdResultType::Error:
-						default:
-							me->cmdResultType = CmdResultType::ResultEnd;
-							((MySQLTCPReader*)me->cmdReader)->EndData();
-							me->cmdEvt.Set();
-							break;
-						}
+						me->cmdSeqNum++;
 					}
 					else
 					{
-						switch (me->cmdResultType)
-						{
-						case CmdResultType::Processing: //ColumnDef
-#if defined(VERBOSE)
-							printf("MySQLTCP Seq %d Column found\r\n", buff[readSize + 3]);
-#endif
-							((MySQLTCPReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
-							break;
-						case CmdResultType::ProcessingBinary: //ColumnDefinition
-#if defined(VERBOSE)
-							printf("MySQLTCP Seq %d Statement Column found\r\n", buff[readSize + 3]);
-#endif
-							break;
-						case CmdResultType::BinaryExecuting:
-#if defined(VERBOSE)
-							printf("MySQLTCP Seq %d Binary Column found\r\n", buff[readSize + 3]);
-#endif
-							((MySQLTCPBinaryReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
-							break;
-						case CmdResultType::BinaryResultReady:
-#if defined(VERBOSE)
-							printf("MySQLTCP Seq %d Binary Row found\r\n", buff[readSize + 3]);
-#endif
-							((MySQLTCPBinaryReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
-							break;
-						case CmdResultType::ResultEnd:
-						case CmdResultType::Error:
-						case CmdResultType::ResultReady:
-						default:
-#if defined(VERBOSE)
-							printf("MySQLTCP Seq %d Text Row found\r\n", buff[readSize + 3]);
-#endif
-							((MySQLTCPReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
-							break;
-						}
+	#if defined(VERBOSE)
+						printf("MySQLTCP Seq num mismatch: %d != %d\r\n", buff[readSize + 3], (int)me->cmdSeqNum);
+	#endif
 					}
-					me->cmdSeqNum++;
+					readSize += packetSize + 4;
 				}
-				else
-				{
-#if defined(VERBOSE)
-					printf("MySQLTCP Seq num mismatch: %d != %d\r\n", buff[readSize + 3], (int)me->cmdSeqNum);
-#endif
-				}
-				readSize += packetSize + 4;
+				readSize = buffSize - readSize;
 			}
-			readSize = buffSize - readSize;
+
+			if (readSize == 0)
+			{
+				buffSize = 0;
+			}
+			else if (readSize < buffSize)
+			{
+				MemCopyO(buff, &buff[buffSize - readSize], readSize);
+				buffSize = readSize;
+			}
 		}
 
-		if (readSize == 0)
+		if (me->cmdReader)
 		{
-			buffSize = 0;
+			if (me->cmdResultType == CmdResultType::Processing)
+			{
+	#if defined(VERBOSE)	
+				printf("MySQLTCP End Conn: signal waiting\r\n");
+	#endif
+				me->cmdResultType = CmdResultType::Error;
+				me->cmdEvt.Set();
+			}
+			else
+			{
+	#if defined(VERBOSE)	
+				printf("MySQLTCP End Conn: end data\r\n");
+	#endif
+				((MySQLTCPReader*)me->cmdReader)->EndData();
+			}
 		}
-		else if (readSize < buffSize)
-		{
-			MemCopyO(buff, &buff[buffSize - readSize], readSize);
-			buffSize = readSize;
-		}
+	#if defined(VERBOSE)	
+		printf("MySQLTCP End connection\r\n");
+	#endif
+		MemFree(buff);
 	}
-
-	if (me->cmdReader)
-	{
-		if (me->cmdResultType == CmdResultType::Processing)
-		{
-#if defined(VERBOSE)	
-			printf("MySQLTCP End Conn: signal waiting\r\n");
-#endif
-			me->cmdResultType = CmdResultType::Error;
-			me->cmdEvt.Set();
-		}
-		else
-		{
-#if defined(VERBOSE)	
-			printf("MySQLTCP End Conn: end data\r\n");
-#endif
-			((MySQLTCPReader*)me->cmdReader)->EndData();
-		}
-	}
-#if defined(VERBOSE)	
-	printf("MySQLTCP End connection\r\n");
-	DEL_CLASS(sb);
-#endif
-	MemFree(buff);
 	me->recvRunning = false;
 	return 0;
 }

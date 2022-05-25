@@ -151,12 +151,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	}
 	UInt16 port = 0;
 	Bool valid = true;
-	Text::StringBuilderUTF8 *sb;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	me->txtPort->GetText(sb);
-	Text::StrToUInt16S(sb->ToString(), &port, 0);
-	sb->ClearStr();
-	me->txtDocDir->GetText(sb);
+	Text::StringBuilderUTF8 sb;
+	me->txtPort->GetText(&sb);
+	Text::StrToUInt16S(sb.ToString(), &port, 0);
+	sb.ClearStr();
+	me->txtDocDir->GetText(&sb);
 	Net::SSLEngine *ssl = 0;
 
 	if (me->chkSSL->IsChecked())
@@ -183,7 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		{
 			cacheSize = 4096;
 		}
-		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb->ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
+		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
 		if (me->svr->IsError())
 		{
@@ -192,18 +191,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		}
 		else
 		{
-			sb->ClearStr();
-			me->txtLogDir->GetText(sb);
-			if (sb->GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
+			sb.ClearStr();
+			me->txtLogDir->GetText(&sb);
+			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
 			{
-				sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
-			sb->AppendC(UTF8STRC("Acccess"));
+			sb.AppendC(UTF8STRC("Acccess"));
 
 			if (!me->chkSkipLog->IsChecked())
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb->ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
 				me->svr->SetRequestLog(me->reqLog);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
@@ -251,7 +250,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		SDEL_CLASS(me->log);
 		SDEL_CLASS(me->logger);
 	}
-	DEL_CLASS(sb);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)

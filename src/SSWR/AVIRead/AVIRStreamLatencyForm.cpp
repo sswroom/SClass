@@ -92,61 +92,59 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
 	UOSInt i;
 	UInt8 chk;
 	Double diff;
-	Data::DateTime *dt;
-	Text::StringBuilderUTF8 *sb;
-	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	while (!me->threadToStop)
 	{
-		recvSize = me->stm->Read(&buff[buffSize], 2048);
-		if (recvSize <= 0)
+		me->threadRunning = true;
+		Data::DateTime dt;
+		Text::StringBuilderUTF8 sb;
+		while (!me->threadToStop)
 		{
-			me->remoteClosed = true;
-		}
-		else
-		{
-			buffSize += recvSize;
-			recvSize = 0;
-			while (recvSize < buffSize - 10)
+			recvSize = me->stm->Read(&buff[buffSize], 2048);
+			if (recvSize <= 0)
 			{
-				if (buff[recvSize] == 's' && buff[recvSize + 1] == 'l')
-				{
-					chk = buff[recvSize + 10];
-					i = 10;
-					while (i-- > 0)
-					{
-						chk = (UInt8)(chk ^ buff[recvSize + i]);
-					}
-					if (chk == 0)
-					{
-						dt->SetCurrTimeUTC();
-						Int64 currTime = dt->ToTicks();
-						diff = (Double)(currTime - ReadInt64(&buff[recvSize + 2]));
-						me->rlcLatency->AddSample(&diff);
-						sb->ClearStr();
-						sb->AppendC(UTF8STRC("Received packet: diff = "));
-						sb->AppendI64(currTime - ReadInt64(&buff[recvSize + 2]));
-						me->log->LogMessage(sb->ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
-						me->recvCnt++;
-						recvSize += 10;
-					}
-				}
-				recvSize++;
-			}
-			if (recvSize >= buffSize)
-			{
-				buffSize = 0;
+				me->remoteClosed = true;
 			}
 			else
 			{
-				MemCopyO(buff, &buff[recvSize], buffSize - recvSize);
-				buffSize -= recvSize;
+				buffSize += recvSize;
+				recvSize = 0;
+				while (recvSize < buffSize - 10)
+				{
+					if (buff[recvSize] == 's' && buff[recvSize + 1] == 'l')
+					{
+						chk = buff[recvSize + 10];
+						i = 10;
+						while (i-- > 0)
+						{
+							chk = (UInt8)(chk ^ buff[recvSize + i]);
+						}
+						if (chk == 0)
+						{
+							dt.SetCurrTimeUTC();
+							Int64 currTime = dt.ToTicks();
+							diff = (Double)(currTime - ReadInt64(&buff[recvSize + 2]));
+							me->rlcLatency->AddSample(&diff);
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("Received packet: diff = "));
+							sb.AppendI64(currTime - ReadInt64(&buff[recvSize + 2]));
+							me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+							me->recvCnt++;
+							recvSize += 10;
+						}
+					}
+					recvSize++;
+				}
+				if (recvSize >= buffSize)
+				{
+					buffSize = 0;
+				}
+				else
+				{
+					MemCopyO(buff, &buff[recvSize], buffSize - recvSize);
+					buffSize -= recvSize;
+				}
 			}
 		}
 	}
-	DEL_CLASS(sb);
-	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return 0;
 }

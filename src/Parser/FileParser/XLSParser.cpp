@@ -38,7 +38,6 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 buff[4096];
 	IO::ParsedObject *pobj = 0;
-	IO::StmData::BlockStreamData *itemFd;
 	fd->GetRealData(0, 512, buff);
 	if (ReadUInt32(buff) != 0xe011cfd0 || ReadUInt32(&buff[4]) != 0xe11ab1a1)
 	{
@@ -107,26 +106,25 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, 
 
 				currSect = ReadUInt32(&buff[i + 116]);
 				sizeLeft = ReadUInt64(&buff[i + 120]);
-				NEW_CLASS(itemFd, IO::StmData::BlockStreamData(fd));
+				IO::StmData::BlockStreamData itemFd(fd);
 				while (sizeLeft > 0)
 				{
 					if ((UInt32)currSect == 0xfffffffd)
 						break;
 					if (sizeLeft < sectorSize)
 					{
-						itemFd->Append(512 + sectorSize * currSect, (UInt32)sizeLeft);
+						itemFd.Append(512 + sectorSize * currSect, (UInt32)sizeLeft);
 						sizeLeft = 0;
 						break;
 					}
 					else
 					{
-						itemFd->Append(512 + sectorSize * currSect, (UInt32)sectorSize);
+						itemFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
 						sizeLeft -= sectorSize;
 					}
 					currSect = ReadUInt32(&fat[currSect * 4]);
 				}
-				ParseWorkbook(itemFd, 0, 0, wb);
-				DEL_CLASS(itemFd);
+				ParseWorkbook(&itemFd, 0, 0, wb);
 				pobj = wb;
 				break;
 			}
@@ -150,7 +148,6 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 {
 	Bool eofFound = false;
 	Bool bofFound = false;
-	Text::StringBuilderUTF8 *sb;
 	WorkbookStatus status;
 	Parser::FileParser::XLSParser::FontInfo *font;
 	Text::SpreadSheet::CellStyle *style;
@@ -164,52 +161,48 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 	Text::String *fmt;
 	readBuff = MemAlloc(UInt8, 1048576);
 	readBuffSize = 0;
-	NEW_CLASS(status.sst, Data::ArrayList<Text::String*>());
-	NEW_CLASS(status.wsList, Data::ArrayList<WorksheetStatus*>());
-	NEW_CLASS(status.fontList, Data::ArrayList<FontInfo*>());
-	NEW_CLASS(status.formatMap, Data::Int32Map<Text::String *>());
 	Text::SpreadSheet::Workbook::GetDefPalette(status.palette);
 
-	status.formatMap->Put(0x1, Text::String::New(UTF8STRC("0")));
-	status.formatMap->Put(0x2, Text::String::New(UTF8STRC("0.00")));
-	status.formatMap->Put(0x3, Text::String::New(UTF8STRC("#,##0")));
-	status.formatMap->Put(0x4, Text::String::New(UTF8STRC("#,##0.00")));
-	status.formatMap->Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")));
-	status.formatMap->Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")));
-	status.formatMap->Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")));
-	status.formatMap->Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")));
-	status.formatMap->Put(0x9, Text::String::New(UTF8STRC("0%")));
-	status.formatMap->Put(0xa, Text::String::New(UTF8STRC("0.00%")));
-	status.formatMap->Put(0xb, Text::String::New(UTF8STRC("0.00E+00")));
-	status.formatMap->Put(0xc, Text::String::New(UTF8STRC("# ?/?")));
-	status.formatMap->Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")));
-	status.formatMap->Put(0xe, Text::String::New(UTF8STRC("m/d/yy")));
-	status.formatMap->Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")));
+	status.formatMap.Put(0x1, Text::String::New(UTF8STRC("0")));
+	status.formatMap.Put(0x2, Text::String::New(UTF8STRC("0.00")));
+	status.formatMap.Put(0x3, Text::String::New(UTF8STRC("#,##0")));
+	status.formatMap.Put(0x4, Text::String::New(UTF8STRC("#,##0.00")));
+	status.formatMap.Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")));
+	status.formatMap.Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")));
+	status.formatMap.Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")));
+	status.formatMap.Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")));
+	status.formatMap.Put(0x9, Text::String::New(UTF8STRC("0%")));
+	status.formatMap.Put(0xa, Text::String::New(UTF8STRC("0.00%")));
+	status.formatMap.Put(0xb, Text::String::New(UTF8STRC("0.00E+00")));
+	status.formatMap.Put(0xc, Text::String::New(UTF8STRC("# ?/?")));
+	status.formatMap.Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")));
+	status.formatMap.Put(0xe, Text::String::New(UTF8STRC("m/d/yy")));
+	status.formatMap.Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")));
 
-	status.formatMap->Put(0x10, Text::String::New(UTF8STRC("d-mmm")));
-	status.formatMap->Put(0x11, Text::String::New(UTF8STRC("mmm-yy")));
-	status.formatMap->Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")));
-	status.formatMap->Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")));
-	status.formatMap->Put(0x14, Text::String::New(UTF8STRC("h:mm")));
-	status.formatMap->Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")));
-	status.formatMap->Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")));
+	status.formatMap.Put(0x10, Text::String::New(UTF8STRC("d-mmm")));
+	status.formatMap.Put(0x11, Text::String::New(UTF8STRC("mmm-yy")));
+	status.formatMap.Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")));
+	status.formatMap.Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")));
+	status.formatMap.Put(0x14, Text::String::New(UTF8STRC("h:mm")));
+	status.formatMap.Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")));
+	status.formatMap.Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")));
 
-	status.formatMap->Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")));
-	status.formatMap->Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")));
-	status.formatMap->Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")));
-	status.formatMap->Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")));
-	status.formatMap->Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")));
-	status.formatMap->Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")));
-	status.formatMap->Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")));
-	status.formatMap->Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")));
-	status.formatMap->Put(0x2d, Text::String::New(UTF8STRC("mm:ss")));
-	status.formatMap->Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")));
-	status.formatMap->Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")));
+	status.formatMap.Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")));
+	status.formatMap.Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")));
+	status.formatMap.Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")));
+	status.formatMap.Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")));
+	status.formatMap.Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")));
+	status.formatMap.Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")));
+	status.formatMap.Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")));
+	status.formatMap.Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")));
+	status.formatMap.Put(0x2d, Text::String::New(UTF8STRC("mm:ss")));
+	status.formatMap.Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")));
+	status.formatMap.Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")));
 
-	status.formatMap->Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")));
-	status.formatMap->Put(0x31, Text::String::New(UTF8STRC("@")));
+	status.formatMap.Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")));
+	status.formatMap.Put(0x31, Text::String::New(UTF8STRC("@")));
 
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
+	Text::StringBuilderUTF8 sb;
 	while (!eofFound)
 	{
 		readSize = fd->GetRealData(currOfst, 1048576 - readBuffSize, &readBuff[readBuffSize]);
@@ -261,14 +254,14 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					font->uls = readBuff[i + 14];
 					font->bFamily = readBuff[i + 15];
 					font->bCharSet = readBuff[i + 16];
-					sb->ClearStr();
-					ReadUStringB(&readBuff[i + 18], sb);
-					font->fontName = Text::String::New(sb->ToCString());
-					if (status.fontList->GetCount() == 4)
+					sb.ClearStr();
+					ReadUStringB(&readBuff[i + 18], &sb);
+					font->fontName = Text::String::New(sb.ToCString());
+					if (status.fontList.GetCount() == 4)
 					{
-						status.fontList->Add(0);
+						status.fontList.Add(0);
 					}
-					status.fontList->Add(font);
+					status.fontList.Add(font);
 
 					Bool isBold = false;
 					if (font->bls == 0x2bc)
@@ -295,27 +288,27 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 			case 0x42: //CODEPAGE
 				break;
 			case 0x5c: //WRITEACCESS
-				sb->ClearStr();
-				ReadUString(&readBuff[i + 4], sb);
-				wb->SetAuthor(sb->ToString());
+				sb.ClearStr();
+				ReadUString(&readBuff[i + 4], &sb);
+				wb->SetAuthor(sb.ToString());
 				break;
 			case 0x85: //BOUNDSHEET
 				{
-					sb->ClearStr();
+					sb.ClearStr();
 					if (readBuff[i + 11] & 1)
 					{
 						Text::String *s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
-						sb->Append(s);
+						sb.Append(s);
 						s->Release();
 					}
 					else
 					{
-						sb->AppendC((UTF8Char*)&readBuff[i + 12], readBuff[i + 10]);
+						sb.AppendC((UTF8Char*)&readBuff[i + 12], readBuff[i + 10]);
 					}
 					WorksheetStatus *wsStatus = MemAlloc(WorksheetStatus, 1);
-					wsStatus->ws = wb->AddWorksheet(sb->ToCString());
+					wsStatus->ws = wb->AddWorksheet(sb.ToCString());
 					wsStatus->ofst = ofstRef + ReadUInt32(&readBuff[i + 4]);
-					status.wsList->Add(wsStatus);
+					status.wsList.Add(wsStatus);
 				}
 				break;
 			case 0x8c: //COUNTRY
@@ -349,7 +342,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					UOSInt j = ReadUInt16(&readBuff[i + 4]);
 					if (j)
 					{
-						font = status.fontList->GetItem(j);
+						font = status.fontList.GetItem(j);
 						if (font)
 						{
 							style->SetFont(wb->GetFont(j));
@@ -358,7 +351,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					j = ReadUInt16(&readBuff[i + 6]);
 					if (j)
 					{
-						style->SetDataFormat(status.formatMap->Get((Int32)j));
+						style->SetDataFormat(status.formatMap.Get((Int32)j));
 					}
 					Text::SpreadSheet::CellStyle::BorderStyle borderLeft;
 					Text::SpreadSheet::CellStyle::BorderStyle borderRight;
@@ -528,13 +521,13 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 								break;
 							j = i + 4;
 						}
-						sb->ClearStr();
-						k = ReadUString(&readBuff[j], sb);
+						sb.ClearStr();
+						k = ReadUString(&readBuff[j], &sb);
 						if (j + k > i + 4 + recLeng)
 						{
 							UInt32 charCnt = ReadUInt16(&readBuff[j]);
-							sb->ClearStr();
-							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, &charCnt, sb);
+							sb.ClearStr();
+							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, &charCnt, &sb);
 							while (true)
 							{
 								i += (UOSInt)(4 + recLeng);
@@ -554,17 +547,17 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 								if (recNo != 0x3c)
 									break;
 								j = i + 4;
-								k = ReadUStringPartial(&readBuff[i + 4], i + 4 + recLeng - j, &charCnt, sb);
+								k = ReadUStringPartial(&readBuff[i + 4], i + 4 + recLeng - j, &charCnt, &sb);
 								if (charCnt <= 0)
 									break;
 							}
 							j += k;
-							status.sst->Add(Text::String::New(sb->ToCString()));
+							status.sst.Add(Text::String::New(sb.ToCString()));
 						}
 						else
 						{
 							j += k;
-							status.sst->Add(Text::String::New(sb->ToCString()));
+							status.sst.Add(Text::String::New(sb.ToCString()));
 						}
 					}
 					j = 0;
@@ -600,9 +593,9 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 			case 0x41e: //FORMAT
 				{
 					UInt16 ifmt = ReadUInt16(&readBuff[i + 4]);
-					sb->ClearStr();
-					ReadUString(&readBuff[i + 6], sb);
-					fmt = status.formatMap->Put(ifmt, Text::String::New(sb->ToCString()));
+					sb.ClearStr();
+					ReadUString(&readBuff[i + 6], &sb);
+					fmt = status.formatMap.Put(ifmt, Text::String::New(sb.ToCString()));
 					if (fmt)
 					{
 						fmt->Release();
@@ -718,38 +711,35 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 		}
 	}
 	style = wb->GetDefaultStyle();
-	font = status.fontList->GetItem(0);
+	font = status.fontList.GetItem(0);
 	if (font)
 	{
 		style->SetFont(wb->GetFont(0));
 	}
 
-	i = status.wsList->GetCount();
+	i = status.wsList.GetCount();
 	while (i-- > 0)
 	{
-		WorksheetStatus *wsStatus = status.wsList->GetItem(i);
+		WorksheetStatus *wsStatus = status.wsList.GetItem(i);
 		ParseWorksheet(fd, wsStatus->ofst, wb, wsStatus->ws, &status);
 		MemFree(wsStatus);
 	}
-	DEL_CLASS(status.wsList);
-	i = status.sst->GetCount();
+	i = status.sst.GetCount();
 	while (i-- > 0)
 	{
-		status.sst->GetItem(i)->Release();
+		status.sst.GetItem(i)->Release();
 	}
-	DEL_CLASS(status.sst);
-	i = status.fontList->GetCount();
+	i = status.fontList.GetCount();
 	while (i-- > 0)
 	{
-		font = status.fontList->GetItem(i);
+		font = status.fontList.GetItem(i);
 		if (font)
 		{
 			font->fontName->Release();
 			MemFree(font);
 		}
 	}
-	DEL_CLASS(status.fontList);
-	Data::ArrayList<Text::String *> *formatList = status.formatMap->GetValues();
+	Data::ArrayList<Text::String *> *formatList = status.formatMap.GetValues();
 	i = formatList->GetCount();
 	while (i-- > 0)
 	{
@@ -759,9 +749,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 			fmt->Release();
 		}
 	}
-	DEL_CLASS(status.formatMap);
 	MemFree(readBuff);
-	DEL_CLASS(sb);
 	return eofFound;
 }
 
@@ -945,7 +933,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 			case 0xef: ///////////////////////////////////
 				break;
 			case 0xfd: //LABELSST
-				ws->SetCellString(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), status->sst->GetItem(ReadUInt32(&readBuff[i + 10])));
+				ws->SetCellString(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), status->sst.GetItem(ReadUInt32(&readBuff[i + 10])));
 				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
 				break;
 			case 0x1b6: //TXO

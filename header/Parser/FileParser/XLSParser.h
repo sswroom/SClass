@@ -32,14 +32,14 @@ namespace Parser
 				Text::String *fontName;
 			} FontInfo;
 
-			typedef struct
+			struct WorkbookStatus
 			{
-				Data::ArrayList<Text::String *> *sst;
-				Data::ArrayList<WorksheetStatus*> *wsList;
-				Data::ArrayList<FontInfo *> *fontList;
-				Data::Int32Map<Text::String *> *formatMap;
+				Data::ArrayList<Text::String *> sst;
+				Data::ArrayList<WorksheetStatus*> wsList;
+				Data::ArrayList<FontInfo *> fontList;
+				Data::Int32Map<Text::String *> formatMap;
 				UInt32 palette[56];
-			} WorkbookStatus;
+			};
 
 		public:
 			XLSParser();

@@ -25,10 +25,9 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 	{
 		UInt16 port = 0;
 		Bool valid = true;
-		Text::StringBuilderUTF8 *sb;
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
-		me->txtPort->GetText(sb);
-		Text::StrToUInt16S(sb->ToString(), &port, 0);
+		Text::StringBuilderUTF8 sb;
+		me->txtPort->GetText(&sb);
+		Text::StrToUInt16S(sb.ToString(), &port, 0);
 
 		if (port > 0 && port <= 65535)
 		{
@@ -64,7 +63,6 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 			SDEL_CLASS(me->log);
 			SDEL_CLASS(me->logger);
 		}
-		DEL_CLASS(sb);
 	}
 }
 

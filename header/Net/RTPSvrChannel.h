@@ -13,7 +13,7 @@ namespace Net
 	private:
 		Net::UDPServer *rtpUDP;
 		Net::UDPServer *rtcpUDP;
-		Int32 targetIP;
+		Net::SocketUtil::AddressInfo targetAddr;
 		UInt16 targetPort;
 		Int32 ssrc;
 		OSInt threadCnt;
@@ -22,14 +22,14 @@ namespace Net
 		Net::RTPSessionController *sessCtrl;
 
 	private:
-		static void __stdcall PacketHdlr(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData);
-		static void __stdcall PacketCtrlHdlr(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData);
+		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+		static void __stdcall PacketCtrlHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
 	public:
-		RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 ssrc, Int32 targetIP, UInt16 targetPort, Net::RTPSessionController *sessCtrl);
+		RTPSvrChannel(Net::SocketFactory *sockf, UInt16 port, Int32 ssrc, const Net::SocketUtil::AddressInfo *targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl);
 		~RTPSvrChannel();
 
-		Int32 GetTargetIP();
+		const Net::SocketUtil::AddressInfo *GetTargetAddr();
 		UInt16 GetPort();
 		Int32 GetSeqNum();
 		Bool SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UInt32 dataSize, Bool marker);

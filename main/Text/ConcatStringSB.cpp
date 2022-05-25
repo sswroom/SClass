@@ -12,31 +12,24 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Manage::HiResClock *clk;
 	OSInt i;
 	OSInt j;
-	Text::StringBuilderUTF8 *sb;
-
-	NEW_CLASS(clk, Manage::HiResClock());
-	clk->Start();
+	Manage::HiResClock clk;
+	clk.Start();
 	i = 10000;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
+		Text::StringBuilderUTF8 sb;
 		j = 1000001000;
 		while (j-- > 1000000000)
 		{
-			sb->AppendC(UTF8STRC("1234567890"));
+			sb.AppendC(UTF8STRC("1234567890"));
 		}
-		DEL_CLASS(sb);
 	}
-	Double t1 = clk->GetTimeDiff();
-	IO::ConsoleWriter *console;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	Double t1 = clk.GetTimeDiff();
+	IO::ConsoleWriter console;
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, t1), UTF8STRC(" s"));
-	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	DEL_CLASS(console);
+	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
-	DEL_CLASS(clk);
 	return 0;
 }

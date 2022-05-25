@@ -115,16 +115,14 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		if (r)
 		{
 			sql.Clear();
-			destDB->GenCreateTableCmd(&sql, tables.GetItem(i).v, tabDef);
+			destDB->GenCreateTableCmd(&sql, tables.GetItem(i), tabDef);
 			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
-				IO::FileStream *debugFS;
-				Text::UTF8Writer *debugWriter;
-				NEW_CLASS(debugFS, IO::FileStream(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
-				debugWriter->WriteLineC(sql.ToString(), sql.GetLength());
-				DEL_CLASS(debugWriter);
-				DEL_CLASS(debugFS);
+				{
+					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					Text::UTF8Writer debugWriter(&debugFS);
+					debugWriter.WriteLineCStr(sql.ToCString());
+				}
 
 				DEL_CLASS(tabDef);
 				succ = false;
@@ -144,20 +142,16 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					k = 10000;
 				}
 				sql.Clear();
-				destDB->GenInsertCmd(&sql, tables.GetItem(i).v, r);
+				destDB->GenInsertCmd(&sql, tables.GetItem(i), r);
 				if (destDB->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
 					destDB->GetLastErrorMsg(&sb);
 
-					IO::FileStream *debugFS;
-					Text::UTF8Writer *debugWriter;
-					NEW_CLASS(debugFS, IO::FileStream(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
-					debugWriter->WriteLineC(sql.ToString(), sql.GetLength());
-					debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
-					DEL_CLASS(debugWriter);
-					DEL_CLASS(debugFS);
+					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					Text::UTF8Writer debugWriter(&debugFS);
+					debugWriter.WriteLineCStr(sql.ToCString());
+					debugWriter.WriteLineCStr(sb.ToCString());
 					succ = false;
 					break;
 				}

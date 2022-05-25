@@ -53,10 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	}
 	UInt16 port = 0;
 	Bool valid = true;
-	Text::StringBuilderUTF8 *sb;
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	me->txtPort->GetText(sb);
-	if (sb->ToUInt16(&port) && port > 0 && port <= 65535)
+	Text::StringBuilderUTF8 sb;
+	me->txtPort->GetText(&sb);
+	if (sb.ToUInt16(&port) && port > 0 && port <= 65535)
 	{
 		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
@@ -68,18 +67,18 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 		}
 		else
 		{
-			sb->ClearStr();
-			me->txtLogDir->GetText(sb);
-			if (sb->GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
+			sb.ClearStr();
+			me->txtLogDir->GetText(&sb);
+			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
 			{
-				sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 			}
-			sb->AppendC(UTF8STRC("Acccess"));
+			sb.AppendC(UTF8STRC("Acccess"));
 
 			if (!me->chkSkipLog->IsChecked())
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb->ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->log->AddLogHandler(me->logger, IO::ILogHandler::LOG_LEVEL_RAW);
@@ -133,8 +132,6 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("RESTful Server"), me);
 	}
-
-	DEL_CLASS(sb);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(void *userObj)

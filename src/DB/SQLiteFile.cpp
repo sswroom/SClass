@@ -29,21 +29,19 @@ void DB::SQLiteFile::Init()
 	
 	if (SQLITE_OK == ret)
 	{
-		Text::StringBuilderUTF8 *sb;
-		NEW_CLASS(sb, Text::StringBuilderUTF8());
+		Text::StringBuilderUTF8 sb;
 		this->db = db;
 		DB::DBReader *r = ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"));
 		if (r)
 		{
 			while (r->ReadNext())
 			{
-				sb->ClearStr();
-				r->GetStr(0, sb);
-				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sb->ToString(), sb->GetLength()), sb->GetLength()));
+				sb.ClearStr();
+				r->GetStr(0, &sb);
+				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
 			}
 			this->CloseReader(r);
 		}
-		DEL_CLASS(sb);
 	}
 	else
 	{

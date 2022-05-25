@@ -58,63 +58,61 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 {
 	Net::NTPServer *me = (Net::NTPServer*)userObj;
 	Net::SocketUtil::AddressInfo addr;
-	Text::StringBuilderUTF8 *sb;
-	Data::DateTime *dt;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	while (!me->threadToStop)
 	{
-		if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), &addr))
+		me->threadRunning = true;
+		Data::DateTime dt;
+		Text::StringBuilderUTF8 sb;
+		while (!me->threadToStop)
 		{
-			if (me->cli->GetServerTime(&addr, Net::NTPClient::GetDefaultPort(), dt))
+			if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), &addr))
 			{
-				if (dt->SetAsComputerTime())
+				if (me->cli->GetServerTime(&addr, Net::NTPClient::GetDefaultPort(), &dt))
 				{
-					me->refTime = dt->ToTicks();
-					me->timeDiff = 0;
-					sb->ClearStr();
-					sb->AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
-					dt->ToLocalTime();
-					sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-					me->log->LogMessage(sb->ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					if (dt.SetAsComputerTime())
+					{
+						me->refTime = dt.ToTicks();
+						me->timeDiff = 0;
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
+						dt.ToLocalTime();
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					}
+					else
+					{
+						me->refTime = dt.ToTicks();
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("NTP: Time update to "));
+						dt.ToLocalTime();
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+						sb.AppendC(UTF8STRC(" failed"));
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+						dt.SetCurrTimeUTC();
+						me->timeDiff = me->refTime - dt.ToTicks();
+					}
 				}
 				else
 				{
-					me->refTime = dt->ToTicks();
-					sb->ClearStr();
-					sb->AppendC(UTF8STRC("NTP: Time update to "));
-					dt->ToLocalTime();
-					sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-					sb->AppendC(UTF8STRC(" failed"));
-					me->log->LogMessage(sb->ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
-					dt->SetCurrTimeUTC();
-					me->timeDiff = me->refTime - dt->ToTicks();
+					if (me->log)
+					{
+						me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::ILogHandler::LOG_LEVEL_ERROR);
+					}
 				}
 			}
 			else
 			{
 				if (me->log)
 				{
-					me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::ILogHandler::LOG_LEVEL_ERROR);
 				}
 			}
+			me->evt->Wait(60000);
 		}
-		else
-		{
-			if (me->log)
-			{
-				me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::ILogHandler::LOG_LEVEL_ERROR);
-			}
-		}
-		me->evt->Wait(60000);
 	}
-	DEL_CLASS(sb);
-	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return 0;
 }

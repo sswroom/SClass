@@ -40,12 +40,12 @@ namespace DB
 		Int64 GetLastIdentity64();
 		DB::DBConn *GetConn();
 		
-		Bool GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::TableDef *tabDef);
-		Bool GenDropTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName);
-		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName);
+		Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::TableDef *tabDef);
+		Bool GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
+		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);
-		Bool GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB::DBReader *r);
-		UTF8Char *GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, DB::DBReader *r);
+		Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::DBReader *r);
+		UTF8Char *GenInsertCmd(UTF8Char *sqlstr, Text::CString tableName, DB::DBReader *r);
 	};
 }
 #endif
