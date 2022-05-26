@@ -67,6 +67,18 @@ namespace Text
 				return {this->v + index, this->leng - index};
 			}
 		}
+
+		CString LTrim()
+		{
+			UOSInt i = 0;
+			while (i < this->leng)
+			{
+				if (this->v[i] != ' ' && this->v[i] != '\t')
+					break;
+				i++;
+			}
+			return {this->v + i, this->leng - i};
+		}
 	};
 
 	FORCEINLINE UTF8Char *StrCSVJoinC(UTF8Char *oriStr, Text::CString *strs, UOSInt nStrs)

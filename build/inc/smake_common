@@ -2863,8 +2863,12 @@ Net/WOLClient.h: ../../src/Net/WOLClient.cpp
 @WOLClient.o
 Net/Email/EmailMessage.h: ../../src/Net/Email/EmailMessage.cpp
 @EmailMessage.o
+Net/Email/EmailStore.h: ../../src/Net/Email/EmailStore.cpp
+@EmailStore.o
 Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
 @EmailValidator.o
+Net/Email/FileEmailStore.h: ../../src/Net/Email/FileEmailStore.cpp
+@FileEmailStore.o
 Net/Email/MailController.h:
 Net/Email/POP3Server.h: ../../src/Net/Email/POP3Server.cpp
 @POP3Server.o
@@ -4880,7 +4884,9 @@ WiFiLogFile.o: ../../src/Net/WiFiLogFile.cpp
 WirelessLANIE.o: ../../src/Net/WirelessLANIE.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
 EmailMessage.o: ../../src/Net/Email/EmailMessage.cpp
+EmailStore.o: ../../src/Net/Email/EmailStore.cpp
 EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
+FileEmailStore.o: ../../src/Net/Email/FileEmailStore.cpp
 SMTPClient.o: ../../src/Net/Email/SMTPClient.cpp
 SMTPConn.o: ../../src/Net/Email/SMTPConn.cpp
 SMTPServer.o: ../../src/Net/Email/SMTPServer.cpp

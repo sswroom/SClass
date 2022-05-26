@@ -103,6 +103,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 		this->lvRecp->SetSubItem(k, 2, addr->address);
 		i++;
 	}
+	this->mail->FreeRecpList(&addrList);
 	i = 0;
 	j = this->mail->GetHeaderCount();
 	while (i < j)

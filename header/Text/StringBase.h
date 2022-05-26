@@ -20,6 +20,7 @@ namespace Text
 		Bool Equals(const UTF8Char *s, UOSInt len) const;
 		Bool EqualsICase(StringBase<UTF8Char> *s) const;
 		Bool EqualsICase(const UTF8Char *s, UOSInt len) const;
+		Bool StartsWith(UTF8Char c) const;
 		Bool StartsWith(StringBase<UTF8Char> *s) const;
 		Bool StartsWith(const UTF8Char *s, UOSInt len) const;
 		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len) const;
@@ -35,6 +36,7 @@ namespace Text
 		UOSInt IndexOf(StringBase<const UTF8Char> *s) const;
 		UOSInt IndexOf(const UTF8Char *s, UOSInt len, UOSInt startIndex) const;
 		UOSInt IndexOf(UTF8Char c) const;
+		UOSInt IndexOf(UTF8Char c, UOSInt startIndex) const;
 		UOSInt IndexOfICase(const UTF8Char *s, UOSInt len) const;
 		UOSInt IndexOfICase(StringBase<UTF8Char> *s) const;
 		UOSInt LastIndexOf(UTF8Char c) const;
@@ -137,6 +139,11 @@ template <typename T> Bool Text::StringBase<T>::EqualsICase(const UTF8Char *s, U
 	return Text::StrEqualsICaseC(this->v, this->leng, s, len);
 }
 
+template <typename T> Bool Text::StringBase<T>::StartsWith(UTF8Char c) const
+{
+	return this->v[0] == c;
+}
+
 template <typename T> Bool Text::StringBase<T>::StartsWith(StringBase<UTF8Char> *s) const
 {
 	return StartsWith(s->v, s->leng);
@@ -235,24 +242,17 @@ template <typename T> UOSInt Text::StringBase<T>::IndexOf(const UTF8Char *s, UOS
 
 template <typename T> UOSInt Text::StringBase<T>::IndexOf(UTF8Char c) const
 {
-	REGVAR const UTF8Char *ptr = this->v;
-	REGVAR UOSInt len1 = this->leng;
-	REGVAR UInt16 c2;
-	while (len1 >= 2)
-	{
-		c2 = ReadUInt16(ptr);
-		if ((UTF8Char)(c2 & 0xff) == c)
-			return (UOSInt)(ptr - this->v);
-		if ((UTF8Char)(c2 >> 8) == c)
-			return (UOSInt)(ptr - this->v + 1);
-		ptr += 2;
-		len1 -= 2;
-	}
-	if (len1 && (*ptr == c))
-	{
-		return (UOSInt)(ptr - this->v);
-	}
-	return INVALID_INDEX;
+	return Text::StrIndexOfCharC(this->v, this->leng, c);
+}
+
+template <typename T> UOSInt Text::StringBase<T>::IndexOf(UTF8Char c, UOSInt startIndex) const
+{
+	if (startIndex >= this->leng)
+		return INVALID_INDEX;
+	UOSInt i = Text::StrIndexOfCharC(this->v + startIndex, this->leng - startIndex, c);
+	if (i == INVALID_INDEX)
+		return INVALID_INDEX;
+	return i + startIndex;
 }
 
 template <typename T> UOSInt Text::StringBase<T>::IndexOfICase(const UTF8Char *s, UOSInt len) const

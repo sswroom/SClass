@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSMTPSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIRSMTPSERVERFORM
+#include "Net/Email/EmailStore.h"
 #include "Net/Email/POP3Server.h"
 #include "Net/Email/SMTPServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -24,20 +25,6 @@ namespace SSWR
 	{
 		class AVIRSMTPServerForm : public UI::GUIForm, public Net::Email::MailController
 		{
-		private:
-			typedef struct
-			{
-				Int64 id;
-				Net::SocketUtil::AddressInfo remoteAddr;
-				UInt16 remotePort;
-				Int64 recvTime;
-				Text::String *fromAddr;
-				Data::ArrayList<Text::String *> *rcptList;
-				Text::String *fileName;
-				const UTF8Char *uid;
-				UOSInt fileSize;
-				Bool isDeleted;
-			} EmailInfo;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 
@@ -76,13 +63,12 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Net::Email::SMTPConn::ConnType smtpType;
 
-			Int64 currId;
-			Sync::Mutex currIdMut;
+			Sync::Mutex userMut;
+			Data::FastStringMap<UOSInt> userMap;
+			Data::ArrayList<Text::String*> userList;
 
-			Data::ArrayList<EmailInfo*> mailList;
-			Sync::Mutex mailMut;
+			Net::Email::EmailStore *store;
 			UOSInt totalSize;
-			UOSInt recvIndex;
 			UOSInt recvSize;
 			Bool mailChanged;
 
@@ -96,7 +82,8 @@ namespace SSWR
 			static void __stdcall OnCertKeyClicked(void *userObj);
 			static void __stdcall OnSMTPTypeSelChg(void *userObj);
 			static void __stdcall OnPOP3SSLChanged(void *userObj, Bool isChecked);
-			Int64 NextEmailId();
+
+			Text::String *GetUserName(Int32 userId);
 		public:
 			AVIRSMTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSMTPServerForm();

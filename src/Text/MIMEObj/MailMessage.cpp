@@ -338,17 +338,18 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 					buff[i] = 0;
 					if (buff[lineStart] == '\t')
 					{
+						sb.AppendUTF8Char(' ');
 						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 					}
 					else if (buff[lineStart] == ' ')
 					{
-						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
+						sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 					}
 					else
 					{
 						sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 					}
-					if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
+					if (buff[i - 1] != ';' && (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 					{
 						if (Text::StrSplitTrimP(sarr, 2, sb, ':') == 1)
 						{
@@ -382,17 +383,18 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 					buff[i] = 0;
 					if (buff[lineStart] == '\t')
 					{
+						sb.AppendUTF8Char(' ');
 						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 					}
 					else if (buff[lineStart] == ' ')
 					{
-						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
+						sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 					}
 					else
 					{
 						sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 					}
-					if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
+					if (buff[i - 1] != ';' && (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 					{
 						if (Text::StrSplitTrimP(sarr, 2, sb, ':') == 1)
 						{

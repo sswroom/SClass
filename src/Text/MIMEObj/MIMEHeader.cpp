@@ -46,7 +46,7 @@ Text::String *Text::MIMEObj::MIMEHeader::GetHeader(const UTF8Char *name, UOSInt 
 	j = this->headerName->GetCount();
 	while (i < j)
 	{
-		if (this->headerName->GetItem(i)->Equals(name, nameLen))
+		if (this->headerName->GetItem(i)->EqualsICase(name, nameLen))
 			return this->headerValue->GetItem(i);
 		i++;
 	}
