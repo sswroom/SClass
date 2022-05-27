@@ -42,6 +42,7 @@ namespace SSWR
 			UI::GUILabel *lblValidDays;
 			UI::GUITextBox *txtValidDays;
 			UI::GUICheckBox *chkCACert;
+			UI::GUICheckBox *chkDigitalSign;
 			UI::GUILabel *lblSAN;
 			UI::GUITextBox *txtSAN;
 			UI::GUIButton *btnSANAdd;

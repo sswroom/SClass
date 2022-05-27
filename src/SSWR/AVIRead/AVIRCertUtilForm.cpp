@@ -201,6 +201,8 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&ext, sizeof(ext));
 	ext.subjectAltName = me->sanList;
+	ext.caCert = me->chkCACert->IsChecked();
+	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, me->key, &ext);
 	if (csr)
 	{
@@ -243,6 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	ext.useAuthKeyId = true;
 	me->key->GetKeyId(ext.authKeyId);
 	ext.caCert = me->chkCACert->IsChecked();
+	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, me->key, validDays, &ext);
 	if (cert)
 	{
@@ -263,6 +266,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	{
 		if (sb.GetLength() != 2)
 		{
+			UI::MessageDialog::ShowDialog(CSTR("C must be 2 chars"), CSTR("Cert Util"), this);
 			return false;
 		}
 		SDEL_STRING(names->countryName);
@@ -300,6 +304,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	this->txtCommonName->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
+		UI::MessageDialog::ShowDialog(CSTR("CN cannot be null"), CSTR("Cert Util"), this);
 		return false;
 	}
 	SDEL_STRING(names->commonName);
@@ -311,6 +316,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	{
 		if (!Text::StringTool::IsEmailAddress(sb.ToString()))
 		{
+			UI::MessageDialog::ShowDialog(CSTR("Email address is not valid"), CSTR("Cert Util"), this);
 			return false;
 		}
 		SDEL_STRING(names->emailAddress);
@@ -429,23 +435,25 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->txtValidDays->SetRect(104, 196, 200, 23, false);
 	NEW_CLASS(this->chkCACert, UI::GUICheckBox(ui, this, CSTR("CA Cert"), false));
 	this->chkCACert->SetRect(104, 220, 200, 23, false);
+	NEW_CLASS(this->chkDigitalSign, UI::GUICheckBox(ui, this, CSTR("Digital Sign"), false));
+	this->chkDigitalSign->SetRect(104, 244, 200, 23, false);
 	NEW_CLASS(this->lblSAN, UI::GUILabel(ui, this, CSTR("SubjAltName")));
-	this->lblSAN->SetRect(4, 244, 100, 23, false);
+	this->lblSAN->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtSAN, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtSAN->SetRect(104, 244, 200, 23, false);
+	this->txtSAN->SetRect(104, 268, 200, 23, false);
 	NEW_CLASS(this->btnSANAdd, UI::GUIButton(ui, this, CSTR("Add")));
-	this->btnSANAdd->SetRect(304, 244, 75, 23, false);
+	this->btnSANAdd->SetRect(304, 268, 75, 23, false);
 	this->btnSANAdd->HandleButtonClick(OnSANAddClicked, this);
 	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, this, false));
-	this->lbSAN->SetRect(104, 268, 200, 95, false);
+	this->lbSAN->SetRect(104, 292, 200, 95, false);
 	NEW_CLASS(this->btnSANClear, UI::GUIButton(ui, this, CSTR("Clear")));
-	this->btnSANClear->SetRect(304, 268, 75, 23, false);
+	this->btnSANClear->SetRect(304, 292, 75, 23, false);
 	this->btnSANClear->HandleButtonClick(OnSANClearClicked, this);
 	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, CSTR("Generate CSR")));
-	this->btnCSRGenerate->SetRect(104, 364, 150, 23, false);
+	this->btnCSRGenerate->SetRect(104, 388, 150, 23, false);
 	this->btnCSRGenerate->HandleButtonClick(OnCSRGenerateClicked, this);
 	NEW_CLASS(this->btnSelfSignedCert, UI::GUIButton(ui, this, CSTR("Self-Signed Cert")));
-	this->btnSelfSignedCert->SetRect(254, 364, 150, 23, false);
+	this->btnSelfSignedCert->SetRect(254, 388, 150, 23, false);
 	this->btnSelfSignedCert->HandleButtonClick(OnSelfSignedCertClicked, this);
 
 	this->HandleDropFiles(OnFileDrop, this);

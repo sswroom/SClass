@@ -61,6 +61,8 @@ namespace Net
 			ResultStatus SendRetr(UOSInt msgIndex, Text::StringBuilderUTF8 *msgBuff);
 			ResultStatus SendDele(UOSInt msgIndex);
 			ResultStatus SendQuit();
+
+			static UInt16 GetDefaultPort(ConnType connType);
 		};
 	}
 }

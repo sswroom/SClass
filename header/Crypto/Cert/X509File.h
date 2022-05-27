@@ -34,6 +34,7 @@ namespace Crypto
 			UInt8 subjKeyId[20];
 			Bool useAuthKeyId;
 			UInt8 authKeyId[20];
+			Bool digitalSign;
 			Bool caCert;
 			Int32 caCertPathLen;
 

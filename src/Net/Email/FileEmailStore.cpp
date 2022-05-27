@@ -217,9 +217,9 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 
 		sb.AppendC(UTF8STRC("X-Apparently-To: "));
 		Text::CString rcptTo = mail->rcptTo.GetItem(i)->ToCString();
-		if (rcptTo.StartsWith(UTF8STRC("RCPT TO: ")))
+		if (rcptTo.StartsWith(UTF8STRC("RCPT TO:")))
 		{
-			rcptTo = rcptTo.Substring(9);
+			rcptTo = rcptTo.Substring(8).LTrim();
 		}
 		if (rcptTo.StartsWith('<') && rcptTo.EndsWith('>'))
 		{

@@ -376,3 +376,16 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendQuit()
 	writer->WriteLineC(UTF8STRC("QUIT"));
 	return WaitForResult(0);
 }
+
+UInt16 Net::Email::POP3Conn::GetDefaultPort(ConnType connType)
+{
+	switch (connType)
+	{
+	default:
+	case ConnType::CT_PLAIN:
+	case ConnType::CT_STARTTLS:
+		return 110;
+	case ConnType::CT_SSL:
+		return 995;
+	}
+}

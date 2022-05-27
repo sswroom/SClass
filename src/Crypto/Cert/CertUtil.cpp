@@ -200,34 +200,45 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 		builder->EndLevel();
 		builder->EndLevel();
 	}
-	if (ext->caCert)
+	if (ext->caCert || ext->digitalSign)
 	{
 		if (!found)
 		{
 			builder->BeginSequence();
 			found = true;
 		}
-		builder->BeginSequence();
-		builder->AppendOIDString(UTF8STRC("2.5.29.19")); //basicConstraint
-		builder->AppendBool(true); // Critical
-		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
-		builder->BeginSequence();
-		builder->AppendBool(true);
-		if (ext->caCertPathLen == 0)
+		if (ext->caCert)
 		{
-			builder->AppendInt32(3);
+			builder->BeginSequence();
+			builder->AppendOIDString(UTF8STRC("2.5.29.19")); //basicConstraint
+			builder->AppendBool(true); // Critical
+			builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+			builder->BeginSequence();
+			builder->AppendBool(true);
+			if (ext->caCertPathLen == 0)
+			{
+				builder->AppendInt32(3);
+			}
+			else
+			{
+				builder->AppendInt32(ext->caCertPathLen);
+			}
+			builder->EndLevel();
+			builder->EndLevel();
+			builder->EndLevel();
 		}
-		else
-		{
-			builder->AppendInt32(ext->caCertPathLen);
-		}
-		builder->EndLevel();
-		builder->EndLevel();
-		builder->EndLevel();
 
 		UInt8 buff[2];
 		buff[0] = 1;
-		buff[1] = 6;
+		buff[1] = 0;
+		if (ext->caCert)
+		{
+			buff[1] |= 6;
+		}
+		if (ext->digitalSign)
+		{
+			buff[1] |= 0x80;
+		}
 		builder->BeginSequence();
 		builder->AppendOIDString(UTF8STRC("2.5.29.15")); //keyUsage
 		builder->AppendBool(true); // Critical
