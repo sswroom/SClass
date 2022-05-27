@@ -2,6 +2,7 @@
 #define _SM_NET_EMAIL_MAILCONTROLLER
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -25,7 +26,7 @@ namespace Net
 		public:
 			virtual ~MailController() {};
 
-			virtual Bool Login(const UTF8Char *user, const UTF8Char *pwd, Int32 *userId) = 0;
+			virtual Bool Login(Text::CString user, Text::CString pwd, Int32 *userId) = 0;
 			virtual UOSInt GetMessageStat(Int32 userId, UOSInt *size) = 0;
 			virtual Bool GetUnreadList(Int32 userId, Data::ArrayList<UInt32> *unreadList) = 0;
 			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info) = 0;

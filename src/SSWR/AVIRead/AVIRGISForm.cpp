@@ -1247,7 +1247,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, true);
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, true, this->ssl);
 			frm.SetText(CSTR("Select GPS Tracker"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1266,7 +1266,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MTKGPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false, this->ssl);
 			frm.SetText(CSTR("Select MTK GPS Tracker"));
 			frm.SetInitSerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort());
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)

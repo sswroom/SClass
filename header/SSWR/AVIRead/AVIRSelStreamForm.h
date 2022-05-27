@@ -27,8 +27,9 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			IO::SiLabDriver *siLabDriver;
-			IO::DeviceManager *devMgr;
-			Data::ArrayList<IO::DeviceInfo*> *devList;
+			Net::SSLEngine *ssl;
+			IO::DeviceManager devMgr;
+			Data::ArrayList<IO::DeviceInfo*> devList;
 
 			UI::GUIPanel *pnlStreamType;
 			UI::GUILabel *lblStreamType;
@@ -65,6 +66,12 @@ namespace SSWR
 			UI::GUILabel *lblTCPCliPort;
 			UI::GUITextBox *txtTCPCliPort;
 
+			UI::GUITabPage *tpSSLCli;
+			UI::GUILabel *lblSSLCliHost;
+			UI::GUITextBox *txtSSLCliHost;
+			UI::GUILabel *lblSSLCliPort;
+			UI::GUITextBox *txtSSLCliPort;
+
 			UI::GUITabPage *tpUDPSvr;
 			UI::GUILabel *lblUDPSvrPort;
 			UI::GUITextBox *txtUDPSvrPort;
@@ -92,7 +99,7 @@ namespace SSWR
 			static void __stdcall OnFileBrowseClick(void *userObj);
 			static void __stdcall OnStmTypeChg(void *userObj);
 		public:
-			AVIRSelStreamForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool allowReadOnly);
+			AVIRSelStreamForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool allowReadOnly, Net::SSLEngine *ssl);
 			virtual ~AVIRSelStreamForm();
 
 			virtual void OnMonitorChanged();

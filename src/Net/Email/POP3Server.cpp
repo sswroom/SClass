@@ -7,6 +7,11 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 void __stdcall Net::Email::POP3Server::ConnReady(Net::TCPClient *cli, void *userObj)
 {
 	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
@@ -49,10 +54,7 @@ void __stdcall Net::Email::POP3Server::ClientEvent(Net::TCPClient *cli, void *us
 		{
 			Text::StrDelNew(cliStatus->cliName);
 		}
-		if (cliStatus->userName)
-		{
-			Text::StrDelNew(cliStatus->userName);
-		}
+		SDEL_STRING(cliStatus->userName);
 		i = cliStatus->rcptTo.GetCount();
 		while (i-- > 0)
 		{
@@ -146,7 +148,9 @@ UOSInt Net::Email::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, c
 		sb.AppendC(msg, msgLen);
 	}
 	sb.AppendC(UTF8STRC("\r\n"));
-
+#if defined(VERBOSE)
+	printf("%s", sb.ToString());
+#endif
 
 	UOSInt buffSize;
 	buffSize = cli->Write(sb.ToString(), sb.GetLength());
@@ -170,6 +174,9 @@ UOSInt Net::Email::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg
 
 void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
 {
+#if defined(VERBOSE)
+	printf("%s\r\n", cmd);
+#endif
 	if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("CAPA")))
 	{
 		if (cliStatus->userId == 0)
@@ -423,11 +430,8 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("USER ")))
 	{
-		if (cliStatus->userName)
-		{
-			Text::StrDelNew(cliStatus->userName);
-		}
-		cliStatus->userName = Text::StrCopyNewC(&cmd[5], cmdLen - 5);
+		SDEL_STRING(cliStatus->userName);
+		cliStatus->userName = Text::String::New(&cmd[5], cmdLen - 5);
 		WriteMessage(cli, true, 0, 0);
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("PASS ")))
@@ -436,7 +440,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 		if (cliStatus->userName)
 		{
 			Int32 userId;
-			if (this->mailCtrl->Login(cliStatus->userName, &cmd[5], &userId))
+			if (this->mailCtrl->Login(cliStatus->userName->ToCString(), Text::CString(&cmd[5], cmdLen - 5), &userId))
 			{
 				succ = true;
 				cliStatus->userId = userId;
@@ -450,6 +454,10 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 		{
 			WriteMessage(cli, false, UTF8STRC("authorization failed  Check your server settings."));
 		}
+	}
+	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("NOOP")))
+	{
+		WriteMessage(cli, true, 0, 0);
 	}
 	else
 	{

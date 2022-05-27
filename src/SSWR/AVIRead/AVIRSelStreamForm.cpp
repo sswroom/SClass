@@ -158,6 +158,48 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
+	case SSWR::AVIRead::AVIRCore::ST_SSLCLIENT:
+		{
+			Text::StringBuilderUTF8 sb;
+			Net::SocketUtil::AddressInfo addr;
+			UInt16 port;
+			me->txtSSLCliPort->GetText(&sb);
+			if (!sb.ToUInt16(&port))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				return;
+			}
+			if (port <= 0 || port > 65535)
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				return;
+			}
+			sb.ClearStr();
+			me->txtSSLCliHost->GetText(&sb);
+			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
+				return;
+			}
+			Net::SSLEngine::ErrorType err;
+			Net::SSLClient *cli;
+			cli = me->ssl->Connect(sb.ToCString(), port, &err);
+			if (cli == 0)
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Error in connect to server: "));
+				sb.Append(Net::SSLEngine::ErrorTypeGetName(err));
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
+				return;
+			}
+			else
+			{
+				me->stm = cli;
+				me->stmType = st;
+				me->SetDialogResult(UI::GUIForm::DR_OK);
+			}
+		}
+		break;
 	case SSWR::AVIRead::AVIRCore::ST_FILE:
 		{
 			Text::StringBuilderUTF8 sb;
@@ -327,7 +369,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool allowReadOnly) : UI::GUIForm(parent, 640, 300, ui)
+SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool allowReadOnly, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
 	UOSInt i;
@@ -341,8 +383,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 
 	this->core = core;
 	this->siLabDriver = this->core->GetSiLabDriver();
-	NEW_CLASS(this->devMgr, IO::DeviceManager());
-	NEW_CLASS(this->devList, Data::ArrayList<IO::DeviceInfo*>());
+	this->ssl = ssl;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlStreamType, UI::GUIPanel(ui, this));
@@ -359,6 +400,10 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	}
 	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_TCPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_TCPSERVER);
 	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_TCPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_TCPCLIENT);
+	if (this->ssl)
+	{
+		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_SSLCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_SSLCLIENT);
+	}
 	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_UDPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_UDPSERVER);
 	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_UDPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_UDPCLIENT);
 	if (allowReadOnly)
@@ -540,6 +585,19 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliPort->SetRect(104, 28, 100, 23, false);
 
+	if (this->ssl)
+	{
+		this->tpSSLCli = this->tcConfig->AddTabPage(CSTR("SSL Client"));
+		NEW_CLASS(this->lblSSLCliHost, UI::GUILabel(ui, this->tpSSLCli, CSTR("Host")));
+		this->lblSSLCliHost->SetRect(4, 4, 100, 23, false);
+		NEW_CLASS(this->txtSSLCliHost, UI::GUITextBox(ui, this->tpSSLCli, CSTR("")));
+		this->txtSSLCliHost->SetRect(104, 4, 100, 23, false);
+		NEW_CLASS(this->lblSSLCliPort, UI::GUILabel(ui, this->tpSSLCli, CSTR("Port")));
+		this->lblSSLCliPort->SetRect(4, 28, 100, 23, false);
+		NEW_CLASS(this->txtSSLCliPort, UI::GUITextBox(ui, this->tpSSLCli, CSTR("")));
+		this->txtSSLCliPort->SetRect(104, 28, 100, 23, false);
+	}
+
 	this->tpUDPSvr = this->tcConfig->AddTabPage(CSTR("UDP Server"));
 	NEW_CLASS(this->lblUDPSvrPort, UI::GUILabel(ui, this->tpUDPSvr, CSTR("Port")));
 	this->lblUDPSvrPort->SetRect(4, 4, 100, 23, false);
@@ -573,11 +631,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lbHIDDevice, UI::GUIListBox(ui, this->tpHID, false));
 	this->lbHIDDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	IO::DeviceInfo *dev;
-	j = this->devMgr->QueryHIDDevices(this->devList);
+	j = this->devMgr.QueryHIDDevices(&this->devList);
 	i = 0;
 	while (i < j)
 	{
-		dev = this->devList->GetItem(i);
+		dev = this->devList.GetItem(i);
 		Text::String *name = dev->GetName();
 		this->lbHIDDevice->AddItem(name->ToCString(), dev);
 		i++;
@@ -590,9 +648,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 
 SSWR::AVIRead::AVIRSelStreamForm::~AVIRSelStreamForm()
 {
-	this->devMgr->FreeDevices(this->devList);
-	DEL_CLASS(this->devList);
-	DEL_CLASS(this->devMgr);
+	this->devMgr.FreeDevices(&this->devList);
 }
 
 void SSWR::AVIRead::AVIRSelStreamForm::OnMonitorChanged()

@@ -21,7 +21,7 @@ namespace Net
 				UOSInt buffSize;
 				Int32 userId;
 				const UTF8Char *cliName;
-				const UTF8Char *userName;
+				Text::String *userName;
 				Data::ArrayList<const UTF8Char *> rcptTo;
 				Bool dataMode;
 				IO::MemoryStream *dataStm;

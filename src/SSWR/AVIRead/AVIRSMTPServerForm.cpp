@@ -410,14 +410,13 @@ void SSWR::AVIRead::AVIRSMTPServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Bool SSWR::AVIRead::AVIRSMTPServerForm::Login(const UTF8Char *user, const UTF8Char *pwd, Int32 *userId)
+Bool SSWR::AVIRead::AVIRSMTPServerForm::Login(Text::CString user, Text::CString pwd, Int32 *userId)
 {
-	UOSInt userLen = Text::StrCharCnt(user);
 	Sync::MutexUsage mutUsage(&this->userMut);
-	UOSInt index = this->userMap.GetC(Text::CString(user, userLen));
+	UOSInt index = this->userMap.GetC(user);
 	if (index == 0)
 	{
-		Text::String *str = Text::String::New(user, userLen);
+		Text::String *str = Text::String::New(user);
 		index = this->userList.Add(str) + 1;
 		this->userMap.Put(str, index);
 	}
@@ -512,6 +511,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 		}
 		MemFree(buff);
 	}
+	DEL_CLASS(fd);
 
 	return succ;
 }

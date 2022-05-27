@@ -16,7 +16,6 @@
 UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 {
 	Net::Email::SMTPConn *me = (Net::Email::SMTPConn *)userObj;
-	Text::UTF8Reader *reader;
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
 	UTF8Char *sptr;
@@ -24,70 +23,71 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 
 	me->threadStarted = true;
 	me->threadRunning = true;
-	NEW_CLASS(reader, Text::UTF8Reader(me->cli));
-	while (!me->threadToStop)
 	{
-		sptr = reader->ReadLine(sbuff, 2048);
-		if (sptr == 0)
+		Text::UTF8Reader reader(me->cli);
+		while (!me->threadToStop)
 		{
+			sptr = reader.ReadLine(sbuff, 2048);
+			if (sptr == 0)
+			{
+				if (me->logWriter)
+				{
+					me->logWriter->WriteLineC(UTF8STRC("Connection Closed"));
+				}
+				break;
+			}
+
 			if (me->logWriter)
 			{
-				me->logWriter->WriteLineC(UTF8STRC("Connection Closed"));
+				me->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			}
-			break;
-		}
-
-		if (me->logWriter)
-		{
-			me->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-		}
-#ifdef VERBOSE
-		printf("SMTP Read: %s\r\n", sbuff);
-#endif
-		if (sbuff[0] == ' ')
-		{
-			if (me->msgRet)
-			{
-				me->msgRet = Text::StrConcatC(me->msgRet, sbuff, (UOSInt)(sptr - sbuff));
-				me->msgRet = reader->GetLastLineBreak(me->msgRet);
-			}
-		}
-		else
-		{
-			sbuff2[0] = sbuff[0];
-			sbuff2[1] = sbuff[1];
-			sbuff2[2] = sbuff[2];
-			sbuff2[3] = 0;
-			msgCode = Text::StrToUInt32(sbuff2);
-			if (msgCode == 235)
-			{
-				me->logged = true;
-			}
-			if (sbuff[3] == ' ')
+	#ifdef VERBOSE
+			printf("SMTP Read: %s\r\n", sbuff);
+	#endif
+			if (sbuff[0] == ' ')
 			{
 				if (me->msgRet)
 				{
-					me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[4], (UOSInt)(sptr - &sbuff[4]));
-					me->msgRet[0] = 0;
+					me->msgRet = Text::StrConcatC(me->msgRet, sbuff, (UOSInt)(sptr - sbuff));
+					me->msgRet = reader.GetLastLineBreak(me->msgRet);
 				}
-				me->lastStatus = msgCode;
-				me->statusChg = true;
-				me->evt->Set();
 			}
-			else if (sbuff[3] == '-')
+			else
 			{
-				if (me->msgRet)
+				sbuff2[0] = sbuff[0];
+				sbuff2[1] = sbuff[1];
+				sbuff2[2] = sbuff[2];
+				sbuff2[3] = 0;
+				msgCode = Text::StrToUInt32(sbuff2);
+				if (msgCode == 235)
 				{
-					me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[4], (UOSInt)(sptr - &sbuff[4]));
-					me->msgRet = reader->GetLastLineBreak(me->msgRet);
+					me->logged = true;
+				}
+				if (sbuff[3] == ' ')
+				{
+					if (me->msgRet)
+					{
+						me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[4], (UOSInt)(sptr - &sbuff[4]));
+						me->msgRet[0] = 0;
+					}
+					me->lastStatus = msgCode;
+					me->statusChg = true;
+					me->evt.Set();
+				}
+				else if (sbuff[3] == '-')
+				{
+					if (me->msgRet)
+					{
+						me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[4], (UOSInt)(sptr - &sbuff[4]));
+						me->msgRet = reader.GetLastLineBreak(me->msgRet);
+					}
 				}
 			}
 		}
+		me->lastStatus = 0;
+		me->statusChg = true;
+		me->evt.Set();
 	}
-	me->lastStatus = 0;
-	me->statusChg = true;
-	me->evt->Set();
-	DEL_CLASS(reader);
 	me->threadRunning = false;
 	return 0;
 }
@@ -97,7 +97,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult(UTF8Char **msgRetEnd)
 	Manage::HiResClock clk;
 	while (this->threadRunning && !this->statusChg && clk.GetTimeDiff() < 30.0)
 	{
-		this->evt->Wait(1000);
+		this->evt.Wait(1000);
 	}
 	if (msgRetEnd)
 	{
@@ -127,7 +127,6 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	addr.addrType = Net::AddrType::Unknown;
 	sockf->DNSResolveIP(host, &addr);
 	this->logWriter = logWriter;
-	NEW_CLASS(this->evt, Sync::Event(true));
 	if (connType == CT_SSL)
 	{
 		Net::SSLEngine::ErrorType err;
@@ -242,7 +241,6 @@ Net::Email::SMTPConn::~SMTPConn()
 	}
 	DEL_CLASS(this->writer);
 	DEL_CLASS(this->cli);
-	DEL_CLASS(this->evt);
 }
 
 Bool Net::Email::SMTPConn::IsError()

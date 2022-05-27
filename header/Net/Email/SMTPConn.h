@@ -31,7 +31,7 @@ namespace Net
 			Bool statusChg;
 			UInt32 lastStatus;
 			UTF8Char *msgRet;
-			Sync::Event *evt;
+			Sync::Event evt;
 			IO::Writer *logWriter;
 			UInt32 initCode;
 			UOSInt maxSize;

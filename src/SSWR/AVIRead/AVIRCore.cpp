@@ -134,7 +134,7 @@ void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
 	IO::Stream *retStm = 0;
-	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this, allowReadOnly);
+	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this, allowReadOnly, this->ssl);
 	if (defBaudRate != 0)
 	{
 		frm.SetInitBaudRate(defBaudRate);
@@ -581,6 +581,8 @@ Text::CString SSWR::AVIRead::AVIRCore::StreamTypeGetName(StreamType st)
 		return CSTR("UDP Server");
 	case AVIRCore::ST_UDPCLIENT:
 		return CSTR("UDP Client");
+	case AVIRCore::ST_SSLCLIENT:
+		return CSTR("SSL Client");
 	default:
 		return CSTR("Unknown");
 	}

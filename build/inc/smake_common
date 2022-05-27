@@ -141,6 +141,7 @@ nodeps:
 @PingMonitor
 @PingScan
 @PingTest
+@POP3Test
 @SMTPTest
 @WiFiCapture
 @WiFiScan
@@ -523,6 +524,9 @@ PingScan:
 @ConsoleStartup.o
 PingTest:
 @PingTest.o
+@ConsoleStartup.o
+POP3Test:
+@POP3Test.o
 @ConsoleStartup.o
 SMTPTest:
 @SMTPTest.o
@@ -987,6 +991,7 @@ OAuth2Test.o: ../../main/NetTest/OAuth2Test.cpp
 PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
 PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
 PingTest.o: ../../main/NetTest/PingTest.cpp
+POP3Test.o: ../../main/NetTest/POP3Test.cpp
 SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
@@ -2870,6 +2875,10 @@ Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
 Net/Email/FileEmailStore.h: ../../src/Net/Email/FileEmailStore.cpp
 @FileEmailStore.o
 Net/Email/MailController.h:
+Net/Email/POP3Client.h: ../../src/Net/Email/POP3Client.cpp
+@POP3Client.o
+Net/Email/POP3Conn.h: ../../src/Net/Email/POP3Conn.cpp
+@POP3Conn.o
 Net/Email/POP3Server.h: ../../src/Net/Email/POP3Server.cpp
 @POP3Server.o
 Net/Email/SMTPClient.h: ../../src/Net/Email/SMTPClient.cpp
@@ -4832,7 +4841,6 @@ PacketAnalyzerBluetooth.o: ../../src/Net/PacketAnalyzerBluetooth.cpp
 PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
 PacketExtractorEthernet.o: ../../src/Net/PacketExtractorEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp
-POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 ProxyServer.o: ../../src/Net/ProxyServer.cpp
 RAWAnalyzer.o: ../../src/Net/RAWAnalyzer.cpp
 RAWCapture.o: ../../src/Net/RAWCapture.cpp
@@ -4887,6 +4895,9 @@ EmailMessage.o: ../../src/Net/Email/EmailMessage.cpp
 EmailStore.o: ../../src/Net/Email/EmailStore.cpp
 EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
 FileEmailStore.o: ../../src/Net/Email/FileEmailStore.cpp
+POP3Client.o: ../../src/Net/Email/POP3Client.cpp
+POP3Conn.o: ../../src/Net/Email/POP3Conn.cpp
+POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 SMTPClient.o: ../../src/Net/Email/SMTPClient.cpp
 SMTPConn.o: ../../src/Net/Email/SMTPConn.cpp
 SMTPServer.o: ../../src/Net/Email/SMTPServer.cpp

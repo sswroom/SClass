@@ -41,33 +41,28 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	{
 		return false;
 	}
-	Net::Email::SMTPConn *conn;
-	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter));
-	if (conn->IsError())
+	Net::Email::SMTPConn conn(this->sockf, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter);
+	if (conn.IsError())
 	{
-		DEL_CLASS(conn);
 		return false;
 	}
-	if (!conn->SendEHlo(CSTR("[127.0.0.1]")))
+	if (!conn.SendEHlo(CSTR("[127.0.0.1]")))
 	{
-		if (!conn->SendHelo(CSTR("[127.0.0.1]")))
+		if (!conn.SendHelo(CSTR("[127.0.0.1]")))
 		{
-			DEL_CLASS(conn);
 			return false;
 		}
 	}
 	Sync::Thread::Sleep(10);
 	if (this->authUser && this->authPassword)
 	{
-		if (!conn->SendAuth(this->authUser->ToCString(), this->authPassword->ToCString()))
+		if (!conn.SendAuth(this->authUser->ToCString(), this->authPassword->ToCString()))
 		{
-			DEL_CLASS(conn);
 			return false;
 		}
 	}
-	if (!conn->SendMailFrom(message->GetFromAddr()->ToCString()))
+	if (!conn.SendMailFrom(message->GetFromAddr()->ToCString()))
 	{
-		DEL_CLASS(conn);
 		return false;
 	}
 	Data::ArrayList<Text::String *> *recpList = message->GetRecpList();
@@ -75,16 +70,14 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	UOSInt j = recpList->GetCount();
 	while (i < j)
 	{
-		if (!conn->SendRcptTo(recpList->GetItem(i)->ToCString()))
+		if (!conn.SendRcptTo(recpList->GetItem(i)->ToCString()))
 		{
-			DEL_CLASS(conn);
 			return false;
 		}
 		i++;
 	}
 	const UInt8 *content = mstm.GetBuff(&i);
-	Bool succ = conn->SendData(content, i);
-	conn->SendQuit();
-	DEL_CLASS(conn);
+	Bool succ = conn.SendData(content, i);
+	conn.SendQuit();
 	return succ;
 }
