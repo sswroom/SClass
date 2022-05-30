@@ -166,6 +166,10 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
 		}
+		else if (fileName->EndsWithICase(UTF8STRC(".P7S")))
+		{
+			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
+		}
 		else
 		{
 			return 0;

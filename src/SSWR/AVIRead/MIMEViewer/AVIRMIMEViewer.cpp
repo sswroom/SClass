@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEJSONViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.h"
+#include "SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.h"
@@ -68,6 +69,11 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEVi
 		else if (contType.StartsWith(UTF8STRC("text/html")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			return viewer;
+		}
+		else if (contType.StartsWith(UTF8STRC("application/pkcs7-signature")))
+		{
+			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
 		else

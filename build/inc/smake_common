@@ -3703,6 +3703,8 @@ SSWR/AVIRead/MIMEViewer/AVIRMIMEJSONViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/
 @AVIRMIMEJSONViewer.o
 SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.cpp
 @AVIRMIMETextViewer.o
+SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.cpp
+@AVIRMIMEX509Viewer.o
 SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.cpp
 @AVIRMIMEXMLViewer.o
 SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.cpp
@@ -5306,6 +5308,7 @@ AVIRMIMEImageViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.cpp
 AVIRMIMEJSONViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEJSONViewer.cpp
 AVIRMIMETextViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.cpp
 AVIRMIMEViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.cpp
+AVIRMIMEX509Viewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.cpp
 AVIRMIMEXMLViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.cpp
 AVIRMultipartViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.cpp
 AVIRUnknownViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.cpp

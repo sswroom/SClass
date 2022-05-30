@@ -101,7 +101,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		sb.ClearStr();
 		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
 		this->lvOID->AddItem(sb.ToCString(), obj);
-		Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
+		const Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
 		if (entry)
 		{
 			this->lvOID->SetSubItem(i, 1, Text::CString::FromPtr((const UTF8Char*)entry->name));

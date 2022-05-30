@@ -29,6 +29,7 @@ namespace SSWR
 			UI::GUIComboBox *cboDest;
 			UI::GUITextBox *txtDest;
 			UI::GUIButton *btnConvert;
+			UOSInt fileIndex;
 
 			SSWR::AVIRead::AVIRCore *core;
 			Text::TextBinEnc::TextBinEncList *encList;

@@ -56,7 +56,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 	PageInfo *page;
 	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
-	page->lbl = gtk_label_new((const Char*)tabName);
+	page->lbl = gtk_label_new((const Char*)tabName->v);
 	page->txt = tabName->Clone();
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);

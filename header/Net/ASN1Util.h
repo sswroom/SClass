@@ -44,7 +44,9 @@ namespace Net
 		static Bool PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::DateTime *dt);
 
 		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, UOSInt level);
+		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, UOSInt level, const UInt8 **pduNext);
 
+		static Bool PDUDSizeEnd(const UInt8 *pdu, const UInt8 *pduEnd, const UInt8 **pduNext);
 		static const UInt8 *PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, UOSInt *itemOfst);
 		static const UInt8 *PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType);
 		static ItemType PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
@@ -59,6 +61,9 @@ namespace Net
 		static UOSInt OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UInt8 *pduBuff);
 
 		static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, Text::StringBuilderUTF8 *sb);
+
+		static void BooleanToString(const UInt8 *data, UOSInt dataLen, Text::StringBuilderUTF8 *sb);
+		static void IntegerToString(const UInt8 *data, UOSInt dataLen, Text::StringBuilderUTF8 *sb);
 	private:
 		static UInt32 Str2Digit(const UTF8Char *s);
 	};

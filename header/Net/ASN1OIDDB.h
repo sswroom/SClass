@@ -19,7 +19,7 @@ namespace Net
 
 	public:
 		static void OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF8 *sb);
-		static OIDInfo *OIDGetEntry(const UInt8 *pdu, UOSInt pduSize);
+		static const OIDInfo *OIDGetEntry(const UInt8 *pdu, UOSInt pduSize);
 	};
 }
 #endif

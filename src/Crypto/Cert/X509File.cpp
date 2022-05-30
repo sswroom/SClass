@@ -212,6 +212,14 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 			DEL_CLASS(pubKey);
 		}
 	}
+	Text::StrUOSInt(sptr, i++);
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_3)
+		{
+			AppendCRLExtensions(itemPDU, itemPDU + itemLen, sb, CSTR("extensions"));
+		}
+	}
 }
 
 Bool Crypto::Cert::X509File::IsCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
@@ -389,6 +397,25 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 			DEL_CLASS(pubKey);
 		}
 	}
+	Text::StrUOSInt(sptr, i++);
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			const UInt8 *extOID;
+			UOSInt extOIDLen;
+			const UInt8 *ext;
+			UOSInt extLen;
+			if ((extOID = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &extOIDLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_OID &&
+				(ext = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &extLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_SET)
+			{
+				if (Net::ASN1Util::OIDEqualsText(extOID, extOIDLen, UTF8STRC("1.2.840.113549.1.9.14")))
+				{
+					AppendCRLExtensions(ext, ext + extLen, sb, CSTR("extensionRequest"));
+				}
+			}
+		}
+	}
 }
 
 Bool Crypto::Cert::X509File::IsCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
@@ -447,6 +474,87 @@ void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *
 			DEL_CLASS(key);
 		}
 		DEL_CLASS(pubKey);
+	}
+}
+
+Bool Crypto::Cert::X509File::IsPKCS7ContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+{
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, path) != Net::ASN1Util::IT_SEQUENCE)
+		return false;
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, path);
+	if (cnt != 2)
+	{
+		return false;
+	}
+	Char sbuff[256];
+	Char *sptr = Text::StrConcat(sbuff, path);
+	Text::StrConcat(sptr, ".1");
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_OID)
+	{
+		return false;
+	}
+	Text::StrConcat(sptr, ".2");
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Crypto::Cert::X509File::AppendPKCS7ContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb)
+{
+	UOSInt buffSize;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *buff = Net::ASN1Util::PDUGetItem(pdu, pduEnd, path, &buffSize, &itemType);
+	if (itemType == Net::ASN1Util::IT_SEQUENCE)
+	{
+		Net::ASN1Util::ItemType itemType1;
+		UOSInt contentTypeLen;
+		const UInt8 *contentType = Net::ASN1Util::PDUGetItem(buff, buff + buffSize, "1", &contentTypeLen, &itemType1);
+		Net::ASN1Util::ItemType itemType2;
+		UOSInt contentLen;
+		const UInt8 *content = Net::ASN1Util::PDUGetItem(buff, buff + buffSize, "2", &contentLen, &itemType2);
+
+		if (contentType)
+		{
+			sb->AppendC(UTF8STRC("contentType = "));
+			Net::ASN1Util::OIDToString(contentType, contentTypeLen, sb);
+			const Net::ASN1OIDDB::OIDInfo *oid = Net::ASN1OIDDB::OIDGetEntry(contentType, contentLen);
+			if (oid)
+			{
+				sb->AppendC(UTF8STRC(" ("));
+				sb->AppendSlow((const UTF8Char*)oid->name);
+				sb->AppendUTF8Char(')');
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+		}
+		if (contentType && content)
+		{
+			if (Net::ASN1Util::OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.1"))) //data
+			{
+
+			}
+			else if (Net::ASN1Util::OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.2"))) //signedData
+			{
+
+			}
+			else if (Net::ASN1Util::OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.3"))) //envelopedData
+			{
+
+			}
+			else if (Net::ASN1Util::OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.4"))) //signedAndEnvelopedData
+			{
+
+			}
+			else if (Net::ASN1Util::OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.5"))) //digestedData
+			{
+
+			}
+			else if (Net::ASN1Util::OIDEqualsText(contentType, contentTypeLen, UTF8STRC("1.2.840.113549.1.7.6"))) //encryptedData
+			{
+
+			}
+		}
 	}
 }
 
@@ -575,6 +683,7 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 			{
 				Crypto::Cert::X509Key pkey(CSTR("PubKey"), itemPDU, itemLen, keyType);
 				pkey.ToString(sb);
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 		}
 	}
@@ -675,6 +784,282 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 		sb->AppendC(UTF8STRC(" = "));
 		sb->AppendC(valuePDU, valueLen);
 		sb->AppendC(UTF8STRC("\r\n"));
+	}
+}
+
+void Crypto::Cert::X509File::AppendCRLExtensions(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName)
+{
+	UTF8Char sbuff[12];
+	const UInt8 *itemPDU;
+	UOSInt itemLen;
+	const UInt8 *subItemPDU;
+	UOSInt subItemLen;
+	Net::ASN1Util::ItemType itemType;
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			UOSInt i = 1;
+			Text::StrUOSInt(sbuff, i);
+			while ((subItemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, &subItemLen, &itemType)) != 0)
+			{
+				AppendCRLExtension(subItemPDU, subItemPDU + subItemLen, sb, varName);
+				Text::StrUOSInt(sbuff, ++i);
+			}
+		}
+	}
+}
+
+void Crypto::Cert::X509File::AppendCRLExtension(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName)
+{
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	const UInt8 *extension = 0;
+	UOSInt extensionLen = 0;
+	const UInt8 *itemPDU;
+	UOSInt itemLen;
+	const UInt8 *subItemPDU;
+	UOSInt subItemLen;
+	Net::ASN1Util::ItemType itemType;
+	if ((extension = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &extensionLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_OID)
+		{
+			sb->Append(varName);
+			sb->AppendUTF8Char('.');
+			sb->AppendC(UTF8STRC("extensionType = "));
+			Net::ASN1Util::OIDToString(extension, extensionLen, sb);
+			const Net::ASN1OIDDB::OIDInfo *oid = Net::ASN1OIDDB::OIDGetEntry(extension, extensionLen);
+			if (oid)
+			{
+				sb->AppendC(UTF8STRC(" ("));
+				sb->AppendSlow((const UTF8Char*)oid->name);
+				sb->AppendUTF8Char(')');
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+		}
+	}
+	else
+	{
+		return;
+	}
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_BOOLEAN)
+		{
+			sb->Append(varName);
+			sb->AppendUTF8Char('.');
+			sb->AppendC(UTF8STRC("critical = "));
+			Net::ASN1Util::BooleanToString(itemPDU, itemLen, sb);
+			sb->AppendC(UTF8STRC("\r\n"));
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "3", &itemLen, &itemType)) == 0)
+			{
+				return;
+			}
+		}
+		if (itemType == Net::ASN1Util::IT_OCTET_STRING)
+		{
+			if (Net::ASN1Util::OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.14"))) //id-ce-subjectKeyIdentifier
+			{
+				sb->Append(varName);
+				sb->AppendUTF8Char('.');
+				sb->AppendC(UTF8STRC("subjectKeyId = "));
+				sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
+				sb->AppendC(UTF8STRC("\r\n"));
+			}
+			else if (Net::ASN1Util::OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.15"))) //id-ce-keyUsage
+			{
+				if ((subItemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &subItemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
+				{
+					sb->Append(varName);
+					sb->AppendUTF8Char('.');
+					sb->AppendC(UTF8STRC("keyUsage ="));
+					if (subItemLen == (UOSInt)subItemPDU[0] + 1)
+					{
+						if (subItemLen >= 2)
+						{
+							if (subItemPDU[1] & 0x80) sb->AppendC(UTF8STRC(" digitalSignature"));
+							if (subItemPDU[1] & 0x40) sb->AppendC(UTF8STRC(" nonRepudiation"));
+							if (subItemPDU[1] & 0x20) sb->AppendC(UTF8STRC(" keyEncipherment"));
+							if (subItemPDU[1] & 0x10) sb->AppendC(UTF8STRC(" dataEncipherment"));
+							if (subItemPDU[1] & 0x8) sb->AppendC(UTF8STRC(" keyAgreement"));
+							if (subItemPDU[1] & 0x4) sb->AppendC(UTF8STRC(" keyCertSign"));
+							if (subItemPDU[1] & 0x2) sb->AppendC(UTF8STRC(" cRLSign"));
+							if (subItemPDU[1] & 0x1) sb->AppendC(UTF8STRC(" encipherOnly"));
+						}
+						if (subItemLen >= 3)
+						{
+							if (subItemPDU[2] & 0x80) sb->AppendC(UTF8STRC(" decipherOnly"));
+						}
+					}
+					sb->AppendC(UTF8STRC("\r\n"));
+				}
+			}
+			else if (Net::ASN1Util::OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.17"))) //id-ce-subjectAltName
+			{
+				sptr = varName.ConcatTo(sbuff);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".subjectAltName"));
+				AppendGeneralNames(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+			}
+			else if (Net::ASN1Util::OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.19"))) //id-ce-basicConstraints
+			{
+				if ((itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+				{
+					if ((subItemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &subItemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_BOOLEAN)
+					{
+						sb->Append(varName);
+						sb->AppendUTF8Char('.');
+						sb->AppendC(UTF8STRC("basicConstraints.cA = "));
+						Net::ASN1Util::BooleanToString(subItemPDU, subItemLen, sb);
+						sb->AppendC(UTF8STRC("\r\n"));
+					}
+					if ((subItemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &subItemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_INTEGER)
+					{
+						sb->Append(varName);
+						sb->AppendUTF8Char('.');
+						sb->AppendC(UTF8STRC("basicConstraints.pathLenConstraint = "));
+						Net::ASN1Util::IntegerToString(subItemPDU, subItemLen, sb);
+						sb->AppendC(UTF8STRC("\r\n"));
+					}
+				}
+			}
+			else if (Net::ASN1Util::OIDEqualsText(extension, extensionLen, UTF8STRC("2.5.29.35"))) //id-ce-authorityKeyIdentifier
+			{
+				if ((itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+				{
+					UOSInt i = 1;
+					const UInt8 *subItemPDU;
+					UOSInt subItemLen;
+					Text::StrUOSInt(sbuff, i);
+					while ((subItemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, &subItemLen, &itemType)) != 0)
+					{
+						if (itemType == 0x80)
+						{
+							sb->Append(varName);
+							sb->AppendUTF8Char('.');
+							sb->AppendC(UTF8STRC("authorityKey.keyId = "));
+							sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
+							sb->AppendC(UTF8STRC("\r\n"));
+						}
+						else if (itemType == 0x81)
+						{
+							sb->Append(varName);
+							sb->AppendUTF8Char('.');
+							sb->AppendC(UTF8STRC("authorityKey.authorityCertIssuer = "));
+							sb->AppendC(UTF8STRC("\r\n"));
+						}
+						else if (itemType == 0x82)
+						{
+							sb->Append(varName);
+							sb->AppendUTF8Char('.');
+							sb->AppendC(UTF8STRC("authorityKey.authorityCertSerialNumber = "));
+							sb->AppendC(UTF8STRC("\r\n"));
+						}
+						Text::StrUOSInt(sbuff, ++i);
+					}
+				}
+			}
+		}
+	}
+}
+
+void Crypto::Cert::X509File::AppendGeneralNames(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	const UInt8 *itemPDU;
+	UOSInt itemLen;
+	const UInt8 *subItemPDU;
+	UOSInt subItemLen;
+	Net::ASN1Util::ItemType itemType;
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &itemLen, &itemType)) != 0)
+	{
+		if (itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			UOSInt i = 1;
+			Text::StrUOSInt(sbuff, i);
+			while ((subItemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, &subItemLen, &itemType)) != 0)
+			{
+				switch ((UOSInt)itemType)
+				{
+				case 0x80:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".otherName = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x81:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".rfc822Name = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x82:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".dNSName = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x83:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".x400Address = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x84:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".directoryName = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x85:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".ediPartyName = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x86:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".uniformResourceIdentifier = "));
+					sb->AppendC(subItemPDU, subItemLen);
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x87:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".iPAddress = "));
+					if (subItemLen == 4)
+					{
+						sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(subItemPDU));
+						sb->AppendP(sbuff, sptr);
+					}
+					else if (subItemLen == 16)
+					{
+						Net::SocketUtil::AddressInfo addr;
+						Net::SocketUtil::SetAddrInfoV6(&addr, subItemPDU, 0);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+						sb->AppendP(sbuff, sptr);
+					}
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case 0x88:
+					sb->Append(varName);
+					sb->AppendC(UTF8STRC(".registeredID = "));
+					Net::ASN1Util::OIDToString(subItemPDU, subItemLen, sb);
+					{
+						const Net::ASN1OIDDB::OIDInfo *ent = Net::ASN1OIDDB::OIDGetEntry(subItemPDU, subItemLen);
+						if (ent)
+						{
+							sb->AppendC(UTF8STRC(" ("));
+							sb->AppendSlow((const UTF8Char*)ent->name);
+							sb->AppendUTF8Char(')');
+						}
+					}
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				}
+				Text::StrUOSInt(sbuff, ++i);
+			}
+		}
 	}
 }
 
@@ -817,6 +1202,10 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID)
 				{
 					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &strLen, &itemType);
+					if (strPDU && itemType == Net::ASN1Util::IT_BOOLEAN)
+					{
+						strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "3", &strLen, &itemType);
+					}
 					if (strPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
 					{
 						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.17"))) //id-ce-subjectAltName
@@ -864,6 +1253,21 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 							{
 								ext->useAuthKeyId = true;
 								MemCopyNO(ext->authKeyId, subItemPDU, subItemLen);
+							}
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.15"))) //id-ce-keyUsage
+						{
+							subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, "1", &subItemLen, &itemType);
+							if (subItemPDU && itemType == Net::ASN1Util::IT_BIT_STRING && subItemLen >= 2)
+							{
+								if (subItemPDU[1] & 6)
+								{
+									ext->caCert = true;
+								}
+								if (subItemPDU[1] & 0x80)
+								{
+									ext->digitalSign = true;
+								}
 							}
 						}
 					}

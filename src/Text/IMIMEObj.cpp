@@ -71,7 +71,10 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, Text::CStri
 		MemFree(buff);
 		return obj;
 	}
-	else if (contentType.StartsWith(UTF8STRC("multipart/mixed;")) || contentType.StartsWith(UTF8STRC("multipart/related;")) || contentType.StartsWith(UTF8STRC("multipart/alternative;")))
+	else if (contentType.StartsWith(UTF8STRC("multipart/mixed;")) ||
+			 contentType.StartsWith(UTF8STRC("multipart/related;")) ||
+			 contentType.StartsWith(UTF8STRC("multipart/signed;")) ||
+			 contentType.StartsWith(UTF8STRC("multipart/alternative;")))
 	{
 		obj = Text::MIMEObj::MultipartMIMEObj::ParseFile(contentType, data);
 		if (obj)

@@ -11855,7 +11855,7 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 
 void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF8 *sb)
 {
-	Net::ASN1OIDDB::OIDInfo *oid;
+	const Net::ASN1OIDDB::OIDInfo *oid;
 	UInt32 v;
 	UOSInt checkSize = pduSize;
 	while (checkSize > 0)
@@ -11882,7 +11882,7 @@ void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::Str
 	}
 }
 
-Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
+const Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
 {
 	Net::ASN1OIDDB::OIDInfo *oid;
 	OSInt i = 0;

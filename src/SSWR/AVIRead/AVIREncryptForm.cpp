@@ -1,7 +1,9 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
+#include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
@@ -17,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
 	}
-	else if (destEnc == 0)
+	else if (destEnc == 0 && me->cboDest->GetSelectedIndex() != me->fileIndex)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please select dest encryption"), CSTR("Encrypt"), me);
 	}
@@ -34,6 +36,18 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 			if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
+			}
+			else if (destEnc == 0)
+			{
+				UI::FileDialog dlg(L"SSWR", L"AVIRead", L"TextEncFile", true);
+				if (dlg.ShowDialog(me->GetHandle()))
+				{
+					IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					if (fs.Write(decBuff, buffSize) != buffSize)
+					{
+						UI::MessageDialog::ShowDialog(CSTR("Error in writing to file"), CSTR("Encrypt"), me);
+					}
+				}
 			}
 			else
 			{
@@ -108,7 +122,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 		this->cboSrc->SetSelectedIndex(0);
 		this->cboDest->SetSelectedIndex(0);
 	}
-
+	this->fileIndex = this->cboDest->AddItem(CSTR("File Output"), 0);
 }
 
 SSWR::AVIRead::AVIREncryptForm::~AVIREncryptForm()

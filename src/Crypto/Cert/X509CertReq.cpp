@@ -70,7 +70,7 @@ Bool Crypto::Cert::X509CertReq::GetExtensions(CertExtensions *ext)
 	{
 		UOSInt oidLen;
 		const UInt8 *oid = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", &oidLen, &itemType);
-		if (oid && Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.113549.1.9.14")))
+		if (oid && Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.113549.1.9.14"))) //extensionRequest
 		{
 			UOSInt extSeqSize;
 			const UInt8 *extSeq = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", &extSeqSize, &itemType);

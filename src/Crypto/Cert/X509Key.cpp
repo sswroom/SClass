@@ -138,6 +138,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 	{
 		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 		found = true;
+		sb->Append(this->sourceName);
+		sb->AppendUTF8Char('.');
 		sb->AppendC(UTF8STRC("KeyId = "));
 		sb->AppendHexBuff(keyId, 20, ' ', Text::LineBreakType::None);
 	}

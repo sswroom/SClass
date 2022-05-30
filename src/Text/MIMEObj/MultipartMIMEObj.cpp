@@ -145,6 +145,12 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 
 				MemFree(tmpBuff);
 			}
+			else if (tenc->Equals(UTF8STRC("7bit")))
+			{
+				NEW_CLASS(mdata, IO::StmData::MemoryData(&buff[lineStart], buffSize - lineStart));
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
+				DEL_CLASS(mdata);
+			}
 			else
 			{
 				//////////////////////////////////////
@@ -416,77 +422,92 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text
 	{
 		j = 22;
 	}
+	else if (contentType.StartsWith(UTF8STRC("multipart/signed;")))
+	{
+		j = 17;
+	}
 	else
 	{
 		return 0;
 	}
 
-	UOSInt i = contentType.leng;
-	UOSInt k;
-	while (contentType.v[j] == '\r' || contentType.v[j] == '\n' || contentType.v[j] == '\t' || contentType.v[j] == ' ')
+	Text::CString currPart = contentType;
+	while (true)
 	{
-		j++;
-	}
-	if (Text::StrStartsWithC(&contentType.v[j], contentType.leng - j, UTF8STRC("boundary=")))
-	{
-		Text::StringBuilderUTF8 boundary;
-		Text::MIMEObj::MultipartMIMEObj *obj;
-		UOSInt buffSize;
-		UInt8 *buff;
-		k = Text::StrIndexOfCharC(&contentType.v[j], contentType.leng - j, ';');
-		if (k != INVALID_INDEX)
+		UOSInt i;
+		while (currPart.v[j] == '\r' || currPart.v[j] == '\n' || currPart.v[j] == '\t' || currPart.v[j] == ' ')
 		{
-			i = j + k;
+			j++;
 		}
+		currPart = currPart.Substring(j);
+		if (currPart.StartsWith(UTF8STRC("boundary=")))
+		{
+			Text::StringBuilderUTF8 boundary;
+			Text::MIMEObj::MultipartMIMEObj *obj;
+			UOSInt buffSize;
+			UInt8 *buff;
+			i = currPart.leng;
+			j = currPart.IndexOf(';');
+			if (j != INVALID_INDEX)
+			{
+				i = j;
+			}
 
-		boundary.AppendC(UTF8STRC("--"));
-		if (contentType.v[j + 9] == '"' && contentType.v[i - 1] == '"')
-		{
-			boundary.AppendC(&contentType.v[j + 10], i - j - 11);
-		}
+			boundary.AppendC(UTF8STRC("--"));
+			if (currPart.v[9] == '"' && currPart.v[i - 1] == '"')
+			{
+				boundary.AppendC(&currPart.v[10], i - 11);
+			}
+			else
+			{
+				boundary.AppendC(&currPart.v[9], i - 9);
+			}
+
+			buffSize = (UOSInt)data->GetDataSize();
+			buff = MemAlloc(UInt8, buffSize + 1);
+			data->GetRealData(0, buffSize, buff);
+			buff[buffSize] = 0;
+
+			j = Text::StrIndexOfC(buff, buffSize, boundary.ToString(), boundary.GetLength());
+			if (j == INVALID_INDEX)
+			{
+				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, CSTR_NULL, boundary.ToCString()));
+				i = 0;
+			}
+			else
+			{
+				buff[j] = 0;
+				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, {buff, j}, boundary.ToCString()));
+				i = j + boundary.GetLength();
+				if (buff[i] == '\r' && buff[i + 1] == '\n')
+				{
+					i += 2;
+				}
+			}
+			while (true)
+			{
+				j = Text::StrIndexOfC(&buff[i], buffSize - i, boundary.ToString(), boundary.GetLength());
+				if (j == INVALID_INDEX)
+					break;
+				j += i;
+
+				obj->ParsePart(&buff[i], j - i);
+				i = j + boundary.GetLength();
+				if (buff[i] == '\r' && buff[i + 1] == '\n')
+				{
+					i += 2;
+				}
+			}
+			obj->ParsePart(&buff[i], buffSize - i);
+			MemFree(buff);
+			return obj;
+		}	
 		else
 		{
-			boundary.AppendC(&contentType.v[j + 9], i - j - 9);
+			j = currPart.IndexOf(';');
+			if (j == INVALID_INDEX)
+				return 0;
+			j++;
 		}
-
-		buffSize = (UOSInt)data->GetDataSize();
-		buff = MemAlloc(UInt8, buffSize + 1);
-		data->GetRealData(0, buffSize, buff);
-		buff[buffSize] = 0;
-
-		k = Text::StrIndexOfC(buff, buffSize, boundary.ToString(), boundary.GetLength());
-		if (k == INVALID_INDEX)
-		{
-			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, CSTR_NULL, boundary.ToCString()));
-			i = 0;
-		}
-		else
-		{
-			buff[k] = 0;
-			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, {buff, k}, boundary.ToCString()));
-			i = k + boundary.GetLength();
-			if (buff[i] == '\r' && buff[i + 1] == '\n')
-			{
-				i += 2;
-			}
-		}
-		while (true)
-		{
-			k = Text::StrIndexOfC(&buff[i], buffSize - i, boundary.ToString(), boundary.GetLength());
-			if (k == INVALID_INDEX)
-				break;
-			k += i;
-
-			obj->ParsePart(&buff[i], k - i);
-			i = k + boundary.GetLength();
-			if (buff[i] == '\r' && buff[i + 1] == '\n')
-			{
-				i += 2;
-			}
-		}
-		obj->ParsePart(&buff[i], buffSize - i);
-		MemFree(buff);
-		return obj;
 	}
-	return 0;
 }
