@@ -64,6 +64,7 @@ namespace Net
 
 		static void BooleanToString(const UInt8 *data, UOSInt dataLen, Text::StringBuilderUTF8 *sb);
 		static void IntegerToString(const UInt8 *data, UOSInt dataLen, Text::StringBuilderUTF8 *sb);
+		static void UTCTimeToString(const UInt8 *data, UOSInt dataLen, Text::StringBuilderUTF8 *sb);
 	private:
 		static UInt32 Str2Digit(const UTF8Char *s);
 	};

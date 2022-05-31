@@ -51,6 +51,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Modulus = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -59,6 +61,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Public Exponent = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -67,6 +71,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Private Exponent = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -75,6 +81,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Prime1 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -83,6 +91,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Prime2 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -91,6 +101,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Exponent1 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -99,6 +111,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Exponent2 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -107,6 +121,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Coefficient = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -120,6 +136,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Modulus = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
@@ -128,6 +146,8 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
 			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("RSA.Public Exponent = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}

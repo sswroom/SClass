@@ -85,7 +85,7 @@ void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF8 *sb)
 {
 	if (IsCertificate(this->buff, this->buff + this->buffSize, "1"))
 	{
-		AppendCertificate(this->buff, this->buff + this->buffSize, "1", sb);
+		AppendCertificate(this->buff, this->buff + this->buffSize, "1", sb, CSTR_NULL);
 	}
 }
 

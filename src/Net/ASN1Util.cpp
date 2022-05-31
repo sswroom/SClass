@@ -1186,6 +1186,18 @@ void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, Text::Str
 	}
 }
 
+void Net::ASN1Util::UTCTimeToString(const UInt8 *data, UOSInt dataLen, Text::StringBuilderUTF8 *sb)
+{
+	Data::DateTime dt;
+	if (PDUParseUTCTimeCont(data, dataLen, &dt))
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		sb->AppendP(sbuff, sptr);
+	}
+}
+
 UInt32 Net::ASN1Util::Str2Digit(const UTF8Char *s)
 {
 	return (UInt32)(s[0] - 0x30) * 10 + (UInt32)(s[1] - 0x30);
