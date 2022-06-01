@@ -57,10 +57,6 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF8 *sb, const
 UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine)
 {
 	const UTF8Char *encArr = GetEncArr(this->cs);
-	if (lbt == Text::LineBreakType::None || charsPerLine == 0)
-	{
-		charsPerLine = buffSize << 1;
-	}
 	UOSInt outSize;
 	UTF8Char sptr[4];
 	UOSInt tmp1 = buffSize % 3;
@@ -75,7 +71,6 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF8 *sb, const
 	}
 	if (outSize == 0)
 		return 0;
-	UOSInt lineCnt = outSize / charsPerLine;
 	UOSInt lbSize;
 	switch (lbt)
 	{
@@ -91,101 +86,149 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF8 *sb, const
 		lbSize = 0;
 		break;
 	}
-	sb->AllocLeng(outSize + lineCnt * lbSize);
-	UOSInt lineLeft = charsPerLine;
-	while (tmp2-- > 0)
+	if (lbt == Text::LineBreakType::None || charsPerLine == 0)
 	{
-		sptr[0] = encArr[dataBuff[0] >> 2];
-		sptr[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
-		sptr[2] = encArr[((dataBuff[1] << 2) | (dataBuff[2] >> 6)) & 0x3f];
-		sptr[3] = encArr[dataBuff[2] & 0x3f];
-		if (lineLeft > 4)
+		sb->AllocLeng(outSize);
+		while (tmp2-- > 0)
 		{
+			sptr[0] = encArr[dataBuff[0] >> 2];
+			sptr[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
+			sptr[2] = encArr[((dataBuff[1] << 2) | (dataBuff[2] >> 6)) & 0x3f];
+			sptr[3] = encArr[dataBuff[2] & 0x3f];
 			sb->AppendC(sptr, 4);
-			lineLeft -= 4;
+			dataBuff += 3;
 		}
-		else if (lineLeft == 4)
+		if (tmp1 == 1)
 		{
-			sb->AppendC(sptr, 4);
-			sb->AppendLB(lbt);
-			lineLeft = charsPerLine;
-		}
-		else
-		{
-			sb->AppendC(sptr, lineLeft);
-			sb->AppendLB(lbt);
-			sb->AppendC(sptr + lineLeft, 4 - lineLeft);
-			lineLeft = charsPerLine + lineLeft - 4;
-		}
-		dataBuff += 3;
-	}
-	if (tmp1 == 1)
-	{
-		sptr[0] = encArr[dataBuff[0] >> 2];
-		sptr[1] = encArr[(dataBuff[0] << 4) & 0x3f];
-		if (this->noPadding)
-		{
-			if (lineLeft >= 2)
+			sptr[0] = encArr[dataBuff[0] >> 2];
+			sptr[1] = encArr[(dataBuff[0] << 4) & 0x3f];
+			if (this->noPadding)
 			{
 				sb->AppendC(sptr, 2);
 			}
 			else
 			{
-				sb->AppendChar(sptr[0], 1);
-				sb->AppendLB(lbt);
-				sb->AppendChar(sptr[1], 1);
-			}
-		}
-		else
-		{
-			sptr[2] = '=';
-			sptr[3] = '=';
-			if (lineLeft >= 4)
-			{
+				sptr[2] = '=';
+				sptr[3] = '=';
 				sb->AppendC(sptr, 4);
 			}
-			else
-			{
-				sb->AppendC(sptr, lineLeft);
-				sb->AppendLB(lbt);
-				sb->AppendC(sptr + lineLeft, 4 - lineLeft);
-			}
 		}
-	}
-	else if (tmp1 == 2)
-	{
-		sptr[0] = encArr[dataBuff[0] >> 2];
-		sptr[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
-		sptr[2] = encArr[(dataBuff[1] << 2) & 0x3f];
-		if (this->noPadding)
+		else if (tmp1 == 2)
 		{
-			if (lineLeft >= 3)
+			sptr[0] = encArr[dataBuff[0] >> 2];
+			sptr[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
+			sptr[2] = encArr[(dataBuff[1] << 2) & 0x3f];
+			if (this->noPadding)
 			{
 				sb->AppendC(sptr, 3);
 			}
 			else
 			{
-				sb->AppendC(sptr, lineLeft);
-				sb->AppendLB(lbt);
-				sb->AppendC(sptr + lineLeft, 3 - lineLeft);
+				sptr[3] = '=';
+				sb->AppendC(sptr, 4);
 			}
 		}
-		else
+		return outSize;
+	}
+	else
+	{
+		UOSInt lineCnt = outSize / charsPerLine;
+		sb->AllocLeng(outSize + lineCnt * lbSize);
+		UOSInt lineLeft = charsPerLine;
+		while (tmp2-- > 0)
 		{
-			sptr[3] = '=';
-			if (lineLeft >= 4)
+			sptr[0] = encArr[dataBuff[0] >> 2];
+			sptr[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
+			sptr[2] = encArr[((dataBuff[1] << 2) | (dataBuff[2] >> 6)) & 0x3f];
+			sptr[3] = encArr[dataBuff[2] & 0x3f];
+			if (lineLeft > 4)
 			{
 				sb->AppendC(sptr, 4);
+				lineLeft -= 4;
+			}
+			else if (lineLeft == 4)
+			{
+				sb->AppendC(sptr, 4);
+				sb->AppendLB(lbt);
+				lineLeft = charsPerLine;
 			}
 			else
 			{
 				sb->AppendC(sptr, lineLeft);
 				sb->AppendLB(lbt);
 				sb->AppendC(sptr + lineLeft, 4 - lineLeft);
+				lineLeft = charsPerLine + lineLeft - 4;
+			}
+			dataBuff += 3;
+		}
+		if (tmp1 == 1)
+		{
+			sptr[0] = encArr[dataBuff[0] >> 2];
+			sptr[1] = encArr[(dataBuff[0] << 4) & 0x3f];
+			if (this->noPadding)
+			{
+				if (lineLeft >= 2)
+				{
+					sb->AppendC(sptr, 2);
+				}
+				else
+				{
+					sb->AppendChar(sptr[0], 1);
+					sb->AppendLB(lbt);
+					sb->AppendChar(sptr[1], 1);
+				}
+			}
+			else
+			{
+				sptr[2] = '=';
+				sptr[3] = '=';
+				if (lineLeft >= 4)
+				{
+					sb->AppendC(sptr, 4);
+				}
+				else
+				{
+					sb->AppendC(sptr, lineLeft);
+					sb->AppendLB(lbt);
+					sb->AppendC(sptr + lineLeft, 4 - lineLeft);
+				}
 			}
 		}
+		else if (tmp1 == 2)
+		{
+			sptr[0] = encArr[dataBuff[0] >> 2];
+			sptr[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
+			sptr[2] = encArr[(dataBuff[1] << 2) & 0x3f];
+			if (this->noPadding)
+			{
+				if (lineLeft >= 3)
+				{
+					sb->AppendC(sptr, 3);
+				}
+				else
+				{
+					sb->AppendC(sptr, lineLeft);
+					sb->AppendLB(lbt);
+					sb->AppendC(sptr + lineLeft, 3 - lineLeft);
+				}
+			}
+			else
+			{
+				sptr[3] = '=';
+				if (lineLeft >= 4)
+				{
+					sb->AppendC(sptr, 4);
+				}
+				else
+				{
+					sb->AppendC(sptr, lineLeft);
+					sb->AppendLB(lbt);
+					sb->AppendC(sptr + lineLeft, 4 - lineLeft);
+				}
+			}
+		}
+		return outSize;
 	}
-	return outSize;
 }
 
 UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize)
