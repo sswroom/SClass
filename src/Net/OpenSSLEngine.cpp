@@ -590,3 +590,70 @@ Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Has
 	EVP_PKEY_free(pkey);
 	return true;
 }
+
+Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt signLen)
+{
+	const EVP_MD *htype = 0;
+	if (hashType == Crypto::Hash::HT_SHA256)
+	{
+		htype = EVP_sha256();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA384)
+	{
+		htype = EVP_sha384();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA512)
+	{
+		htype = EVP_sha512();
+	}
+	else
+	{
+		return false;
+	}
+	EVP_PKEY *pkey;
+	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
+	{
+		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
+		const UInt8 *keyPtr = pubKey->GetASN1Buff();
+		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)pubKey->GetASN1BuffSize());
+		DEL_CLASS(pubKey);
+	}
+	else
+	{
+		const UInt8 *keyPtr = key->GetASN1Buff();
+		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+	}
+	if (pkey == 0)
+	{
+		return false;
+	}
+	EVP_MD_CTX *emc = EVP_MD_CTX_create();
+    if (emc == 0)
+	{
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+    if (!EVP_VerifyInit(emc, htype))
+	{
+		EVP_MD_CTX_destroy(emc);
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+    if (!EVP_VerifyUpdate(emc, payload, payloadLen))
+	{
+		EVP_MD_CTX_destroy(emc);
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+	Bool succ = false;
+	int res = EVP_VerifyFinal(emc, signData, (UInt32)signLen, pkey);
+    if (res < 0) {
+		EVP_MD_CTX_destroy(emc);
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+	succ = (res == 1);
+	EVP_MD_CTX_destroy(emc);
+	EVP_PKEY_free(pkey);
+	return succ;
+}

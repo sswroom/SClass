@@ -1344,7 +1344,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		return false;
 	}
 	DWORD len = 512;
-	if (!CryptSignHash(hHash, AT_SIGNATURE, 0, 0, signData, &len))
+	if (!CryptSignHashW(hHash, AT_SIGNATURE, 0, 0, signData, &len))
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 errCode = GetLastError();
@@ -1374,4 +1374,10 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	printf("SSL: Signature success, len = %d\r\n", (UInt32)len);
 #endif
 	return true;
+}
+
+Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt signLen)
+{
+	//CryptVerifySignatureW
+	return false;
 }
