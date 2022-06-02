@@ -93,9 +93,6 @@ UI::GUIHScrollBar::GUIHScrollBar(UI::GUICore *ui, UI::GUIClientControl *parent, 
 		Init(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
 
-	NEW_CLASS(this->posChgHdlrs, Data::ArrayList<PosChgEvent>());
-	NEW_CLASS(this->posChgObjs, Data::ArrayList<void *>());
-
 	UInt32 style = WS_CHILD| WS_HSCROLL | WS_TABSTOP;
 	if (parent->IsChildVisible())
 	{
@@ -106,8 +103,6 @@ UI::GUIHScrollBar::GUIHScrollBar(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 UI::GUIHScrollBar::~GUIHScrollBar()
 {
-	DEL_CLASS(this->posChgHdlrs);
-	DEL_CLASS(this->posChgObjs);
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
 		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
@@ -254,17 +249,17 @@ void UI::GUIHScrollBar::EventPosChanged()
 {
 	UOSInt newPos = this->GetPos();
 	UOSInt i;
-	i = this->posChgHdlrs->GetCount();
+	i = this->posChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->posChgHdlrs->GetItem(i)(this->posChgObjs->GetItem(i), newPos);
+		this->posChgHdlrs.GetItem(i)(this->posChgObjs.GetItem(i), newPos);
 	}
 }
 
 void UI::GUIHScrollBar::HandlePosChanged(PosChgEvent hdlr, void *userObj)
 {
-	this->posChgHdlrs->Add(hdlr);
-	this->posChgObjs->Add(userObj);
+	this->posChgHdlrs.Add(hdlr);
+	this->posChgObjs.Add(userObj);
 }
 
 Int32 UI::GUIHScrollBar::GetSystemSize()

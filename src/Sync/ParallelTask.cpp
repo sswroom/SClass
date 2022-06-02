@@ -10,7 +10,7 @@ UInt32 __stdcall Sync::ParallelTask::WorkerThread(void *userObj)
 		Sync::Event evt;
 		stat->evt = &evt;
 		stat->running = true;
-		stat->me->mainEvt->Set();
+		stat->me->mainEvt.Set();
 		while (!stat->toStop)
 		{
 			if (stat->currTaskFunc)
@@ -18,13 +18,13 @@ UInt32 __stdcall Sync::ParallelTask::WorkerThread(void *userObj)
 				stat->currTaskFunc(stat->currTaskObj);
 				stat->currTaskObj = 0;
 				stat->currTaskFunc = 0;
-				stat->me->mainEvt->Set();
+				stat->me->mainEvt.Set();
 			}
 			stat->evt->Wait(1000);
 		}
 	}
 	stat->running = false;
-	stat->me->mainEvt->Set();
+	stat->me->mainEvt.Set();
 	return 0;
 }
 
@@ -40,7 +40,6 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 	}
 	if (this->threadCnt > 1)
 	{
-		NEW_CLASS(this->mainEvt, Sync::Event(true));
 		this->stats = MemAlloc(Sync::ParallelTask::ThreadStatus, this->threadCnt);
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
@@ -68,7 +67,7 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 			}
 			if (inited)
 				break;
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 }
@@ -111,11 +110,10 @@ Sync::ParallelTask::~ParallelTask()
 			this->stats[i].evt->Set();
 			while (this->stats[i].running)
 			{
-				this->mainEvt->Wait(100);
+				this->mainEvt.Wait(100);
 			}
 		}
 #endif
-		DEL_CLASS(this->mainEvt);
 		MemFree(this->stats);
 	}
 }
@@ -147,7 +145,7 @@ void Sync::ParallelTask::AddTask(TaskFunc func, void *taskObj)
 			}
 			if (!added)
 			{
-				this->mainEvt->Wait(1000);
+				this->mainEvt.Wait(1000);
 			}
 		}
 	}
@@ -177,7 +175,7 @@ void Sync::ParallelTask::WaitForIdle()
 			}
 			if (!idle)
 			{
-				this->mainEvt->Wait(1000);
+				this->mainEvt.Wait(1000);
 			}
 		}
 	}

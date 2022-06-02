@@ -17,30 +17,34 @@ extern "C"
 UInt32 __stdcall Media::RGBColorFilter::ProcessThread(void *userObj)
 {
 	ThreadStat *tstat = (ThreadStat *)userObj;
-	tstat->threadStat = 1;
-	while (true)
 	{
-		if (tstat->threadStat == 3)
+		Sync::Event evt;
+		tstat->evt = &evt;
+		tstat->threadStat = 1;
+		while (true)
 		{
-			break;
-		}
-		else if (tstat->threadStat == 2)
-		{
-			if (tstat->me->hdrLev != 0 && tstat->me->hasSSE41)
+			if (tstat->threadStat == 3)
 			{
-				RGBColorFilter_ProcessImageHDRDLPart(tstat->srcPtr, tstat->destPtr, tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp, tstat->me->hdrLev);
+				break;
 			}
-			else
+			else if (tstat->threadStat == 2)
 			{
-				RGBColorFilter_ProcessImagePart(tstat->srcPtr, tstat->destPtr, tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp);
+				if (tstat->me->hdrLev != 0 && tstat->me->hasSSE41)
+				{
+					RGBColorFilter_ProcessImageHDRDLPart(tstat->srcPtr, tstat->destPtr, tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp, tstat->me->hdrLev);
+				}
+				else
+				{
+					RGBColorFilter_ProcessImagePart(tstat->srcPtr, tstat->destPtr, tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp);
+				}
+				tstat->threadStat = 1;
+				tstat->me->threadEvt.Set();
 			}
-			tstat->threadStat = 1;
-			tstat->me->threadEvt->Set();
+			tstat->evt->Wait(10000);
 		}
-		tstat->evt->Wait(10000);
 	}
 	tstat->threadStat = 4;
-	tstat->me->threadEvt->Set();
+	tstat->me->threadEvt.Set();
 	return 0;
 }
 
@@ -50,7 +54,7 @@ void Media::RGBColorFilter::WaitForThread(Int32 stat)
 	Bool found = true;
 	while (found)
 	{
-		this->threadEvt->Wait(1000);
+		this->threadEvt.Wait(1000);
 		found = false;
 		i = this->nThread;
 		while (i-- > 0)
@@ -69,7 +73,6 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 	this->colorMgr = colorMgr;
 	this->lut = 0;
 	this->nThread = Sync::Thread::GetThreadCnt();
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->threadStats = MemAlloc(ThreadStat, this->nThread);
 	this->hdrLev = 0;
 	this->gammaParam = 0;
@@ -83,7 +86,6 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
-		NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
 		Sync::Thread::Create(ProcessThread, &this->threadStats[i]);
@@ -102,7 +104,7 @@ Media::RGBColorFilter::~RGBColorFilter()
 	Bool found = true;
 	while (found)
 	{
-		this->threadEvt->Wait(1000);
+		this->threadEvt.Wait(1000);
 		found = false;
 		i = this->nThread;
 		while (i-- > 0)
@@ -119,13 +121,7 @@ Media::RGBColorFilter::~RGBColorFilter()
 			}
 		}
 	}
-	i = this->nThread;
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->threadStats[i].evt);
-	}
 	MemFree(this->threadStats);
-	DEL_CLASS(this->threadEvt);
 	if (this->lut)
 	{
 		MemFree(this->lut);

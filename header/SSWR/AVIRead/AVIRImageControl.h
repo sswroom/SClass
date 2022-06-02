@@ -61,35 +61,35 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Media::Resizer::LanczosResizer8_C8 *dispResizer;
 
-			Sync::Mutex *ioMut;
-			Sync::Mutex *folderMut;
+			Sync::Mutex ioMut;
+			Sync::Mutex folderMut;
 			Text::String *folderPath;
 			Bool folderChanged;
-			Sync::Event *folderThreadEvt;
-			Sync::Event *folderCtrlEvt;
-			Sync::Mutex *imgMut;
-			Data::ICaseStringUTF8Map<ImageStatus*> *imgMap;
+			Sync::Event folderThreadEvt;
+			Sync::Event folderCtrlEvt;
+			Sync::Mutex imgMut;
+			Data::ICaseStringUTF8Map<ImageStatus*> imgMap;
 			Bool imgMapUpdated;
 			Bool imgUpdated;
 			UInt32 previewSize;
 			UOSInt currSel;
 			ImageStatus *dispImg;
 			Bool dispImgChg;
-			Sync::Mutex *filterMut;
-			Media::RGBColorFilter *filter;
+			Sync::Mutex filterMut;
+			Media::RGBColorFilter filter;
 			DispImageChanged dispHdlr;
 			void *dispHdlrObj;
 			ProgressUpdated progHdlr;
 			void *progHdlrObj;
-			Data::SyncLinkedList *exportList;
+			Data::SyncLinkedList exportList;
 			UOSInt exportCurrCnt;
-			Sync::Mutex *exportMut;
+			Sync::Mutex exportMut;
 			ExportFormat exportFmt;
 			KeyDownHandler keyHdlr;
 			void *keyObj;
 
-			Sync::Mutex *cameraMut;
-			Data::StringMap<CameraCorr*> *cameraMap;
+			Sync::Mutex cameraMut;
+			Data::StringMap<CameraCorr*> cameraMap;
 
 			Int32 threadState; //0 = not started, 1 = idle, 2 = initDir, 3 = exporting
 			Int32 threadCtrlCode; //0 = no control, 1 = initDir, 2 = stop thread, 3 = force idle

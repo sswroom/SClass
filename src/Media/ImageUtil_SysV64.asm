@@ -2373,20 +2373,29 @@ _ImageUtil_ConvARGB48_32:
 	sub r8,rax ;sbpl
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
+	shr rdx,1
+	jb cargb48_32lopb
 	
 	align 16
 cargb48_32lop:
 	mov r10,rdx
 	align 16
 cargb48_32lop2:
-	movzx eax,byte [rdi+5]
-	or eax,0xff00
-	shl eax,16
+	movzx rax,byte [rdi+11]
+	or rax,0xff00
+	shl rax,16
+	mov ah,byte [rdi+9]
+	mov al,byte [rdi+7]
+	shl rax,16
+	mov al,byte [rdi+5]
+	mov ah,0xff
+	shl rax,16
 	mov ah,byte [rdi+3]
 	mov al,byte [rdi+1]
-	lea rdi,[rdi+6]
-	movnti dword [rsi],eax
-	lea rsi,[rsi+4]
+
+	add rdi,12
+	movnti qword [rsi],rax
+	add rsi,8
 	dec r10
 	jnz cargb48_32lop2
 	
@@ -2394,6 +2403,46 @@ cargb48_32lop2:
 	add rsi,r9 ;dbpl
 	dec rcx
 	jnz cargb48_32lop
+	ret
+
+	
+	align 16
+cargb48_32lopb:
+	mov r10,rdx
+	align 16
+cargb48_32lop2b:
+	movzx rax,byte [rdi+11]
+	or rax,0xff00
+	shl rax,16
+	mov ah,byte [rdi+9]
+	mov al,byte [rdi+7]
+	shl rax,16
+	mov al,byte [rdi+5]
+	mov ah,0xff
+	shl rax,16
+	mov ah,byte [rdi+3]
+	mov al,byte [rdi+1]
+
+	add rdi,12
+	movnti qword [rsi],rax
+	add rsi,8
+	dec r10
+	jnz cargb48_32lop2b
+
+	movzx eax,byte [rdi+5]
+	mov ah,0xff
+	shl rax,16
+	mov ah,byte [rdi+3]
+	mov al,byte [rdi+1]
+
+	add rdi,6
+	movnti dword [rsi],eax
+	add rsi,4
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cargb48_32lopb
 	ret
 
 ;void ImageUtil_ConvARGB64_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);

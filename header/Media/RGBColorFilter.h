@@ -36,7 +36,7 @@ namespace Media
 		UOSInt gammaCnt;
 
 		UOSInt nThread;
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 		ThreadStat *threadStats;
 
 		static UInt32 __stdcall ProcessThread(void *userObj);

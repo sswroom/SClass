@@ -96,7 +96,7 @@ namespace Media
 		static EXIFInfo casio1Infos[];
 		static EXIFInfo casio2Infos[];
 		static EXIFInfo flirInfos[];
-		Data::Int32Map<EXIFItem*> *exifMap;
+		Data::Int32Map<EXIFItem*> exifMap;
 		EXIFMaker exifMaker;
 
 	private:

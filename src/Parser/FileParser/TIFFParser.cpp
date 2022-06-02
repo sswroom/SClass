@@ -1150,11 +1150,14 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			else if (nChannels == 1 && bpp == 16)
 			{
 				imgData = (UInt8*)img->data;
-				i = imgWidth * imgHeight;
-				while (i-- > 0)
+				if (isBE)
 				{
-					WriteInt16(&imgData[0], readInt16(&imgData[0]));
-					imgData += 2;
+					i = imgWidth * imgHeight;
+					while (i-- > 0)
+					{
+						WriteInt16(&imgData[0], ReadMInt16(&imgData[0]));
+						imgData += 2;
+					}
 				}
 			}
 			else if (nChannels == 2 && bpp == 16)
@@ -1184,24 +1187,41 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					UInt8 *aPtr = wPtr + imgWidth * imgHeight * 2;
 					imgData = (UInt8*)img->data;
 					i = imgWidth * imgHeight;
+					if (isBE)
+					{
+						while (i-- > 0)
+						{
+							WriteInt16(&imgData[0], ReadMInt16(wPtr));
+							WriteInt16(&imgData[2], ReadMInt16(aPtr));
+							wPtr += 2;
+							aPtr += 2;
+							imgData += 4;
+						}
+					}
+					else
+					{
 					while (i-- > 0)
 					{
-						WriteInt16(&imgData[0], readInt16(wPtr));
-						WriteInt16(&imgData[2], readInt16(aPtr));
+						WriteInt16(&imgData[0], ReadInt16(wPtr));
+						WriteInt16(&imgData[2], ReadInt16(aPtr));
 						wPtr += 2;
 						aPtr += 2;
 						imgData += 4;
 					}
+					}
 				}
 				else
 				{
-					imgData = (UInt8*)img->data;
-					i = imgWidth * imgHeight;
-					while (i-- > 0)
+					if (isBE)
 					{
-						WriteInt16(&imgData[0], readInt16(&imgData[0]));
-						WriteInt16(&imgData[2], readInt16(&imgData[2]));
-						imgData += 4;
+						imgData = (UInt8*)img->data;
+						i = imgWidth * imgHeight;
+						while (i-- > 0)
+						{
+							WriteInt16(&imgData[0], ReadMInt16(&imgData[0]));
+							WriteInt16(&imgData[2], ReadMInt16(&imgData[2]));
+							imgData += 4;
+						}
 					}
 				}
 			}
@@ -1278,15 +1298,31 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
 					imgData = (UInt8*)img->data;
 					i = imgWidth * imgHeight;
-					while (i-- > 0)
+					if (isBE)
 					{
-						WriteInt16(&imgData[0], readInt16(bPtr));
-						WriteInt16(&imgData[2], readInt16(gPtr));
-						WriteInt16(&imgData[4], readInt16(rPtr));
-						bPtr += 2;
-						gPtr += 2;
-						rPtr += 2;
-						imgData += 6;
+						while (i-- > 0)
+						{
+							WriteInt16(&imgData[0], ReadMInt16(bPtr));
+							WriteInt16(&imgData[2], ReadMInt16(gPtr));
+							WriteInt16(&imgData[4], ReadMInt16(rPtr));
+							bPtr += 2;
+							gPtr += 2;
+							rPtr += 2;
+							imgData += 6;
+						}
+					}
+					else
+					{
+						while (i-- > 0)
+						{
+							WriteInt16(&imgData[0], ReadInt16(bPtr));
+							WriteInt16(&imgData[2], ReadInt16(gPtr));
+							WriteInt16(&imgData[4], ReadInt16(rPtr));
+							bPtr += 2;
+							gPtr += 2;
+							rPtr += 2;
+							imgData += 6;
+						}
 					}
 				}
 				else
@@ -1294,13 +1330,26 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					Int16 tmpByte;
 					imgData = (UInt8*)img->data;
 					i = imgWidth * imgHeight;
-					while (i-- > 0)
+					if (isBE)
 					{
-						tmpByte = readInt16(&imgData[0]);
-						WriteInt16(&imgData[0], readInt16(&imgData[4]));
-						WriteInt16(&imgData[2], readInt16(&imgData[2]));
-						WriteInt16(&imgData[4], tmpByte);
-						imgData += 6;
+						while (i-- > 0)
+						{
+							tmpByte = ReadMInt16(&imgData[0]);
+							WriteInt16(&imgData[0], ReadMInt16(&imgData[4]));
+							WriteInt16(&imgData[2], ReadMInt16(&imgData[2]));
+							WriteInt16(&imgData[4], tmpByte);
+							imgData += 6;
+						}
+					}
+					else
+					{
+						while (i-- > 0)
+						{
+							tmpByte = ReadInt16(&imgData[0]);
+							WriteInt16(&imgData[0], ReadInt16(&imgData[4]));
+							WriteInt16(&imgData[4], tmpByte);
+							imgData += 6;
+						}
 					}
 				}
 			}
@@ -1314,17 +1363,35 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					UInt8 *aPtr = bPtr + imgWidth * imgHeight * 2;
 					imgData = (UInt8*)img->data;
 					i = imgWidth * imgHeight;
-					while (i-- > 0)
+					if (isBE)
 					{
-						WriteInt16(&imgData[0], readInt16(bPtr));
-						WriteInt16(&imgData[2], readInt16(gPtr));
-						WriteInt16(&imgData[4], readInt16(rPtr));
-						WriteInt16(&imgData[6], readInt16(aPtr));
-						bPtr += 2;
-						gPtr += 2;
-						rPtr += 2;
-						aPtr += 2;
-						imgData += 8;
+						while (i-- > 0)
+						{
+							WriteInt16(&imgData[0], ReadMInt16(bPtr));
+							WriteInt16(&imgData[2], ReadMInt16(gPtr));
+							WriteInt16(&imgData[4], ReadMInt16(rPtr));
+							WriteInt16(&imgData[6], ReadMInt16(aPtr));
+							bPtr += 2;
+							gPtr += 2;
+							rPtr += 2;
+							aPtr += 2;
+							imgData += 8;
+						}
+					}
+					else
+					{
+						while (i-- > 0)
+						{
+							WriteInt16(&imgData[0], ReadInt16(bPtr));
+							WriteInt16(&imgData[2], ReadInt16(gPtr));
+							WriteInt16(&imgData[4], ReadInt16(rPtr));
+							WriteInt16(&imgData[6], ReadInt16(aPtr));
+							bPtr += 2;
+							gPtr += 2;
+							rPtr += 2;
+							aPtr += 2;
+							imgData += 8;
+						}
 					}
 				}
 				else
@@ -1332,14 +1399,27 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					Int16 tmpByte;
 					imgData = (UInt8*)img->data;
 					i = imgWidth * imgHeight;
-					while (i-- > 0)
+					if (isBE)
 					{
-						tmpByte = readInt16(&imgData[0]);
-						WriteInt16(&imgData[0], readInt16(&imgData[4]));
-						WriteInt16(&imgData[2], readInt16(&imgData[2]));
-						WriteInt16(&imgData[4], tmpByte);
-						WriteInt16(&imgData[6], readInt16(&imgData[6]));
-						imgData += 8;
+						while (i-- > 0)
+						{
+							tmpByte = ReadMInt16(&imgData[0]);
+							WriteInt16(&imgData[0], ReadMInt16(&imgData[4]));
+							WriteInt16(&imgData[2], ReadMInt16(&imgData[2]));
+							WriteInt16(&imgData[4], tmpByte);
+							WriteInt16(&imgData[6], ReadMInt16(&imgData[6]));
+							imgData += 8;
+						}
+					}
+					else
+					{
+						while (i-- > 0)
+						{
+							tmpByte = ReadInt16(&imgData[0]);
+							WriteInt16(&imgData[0], ReadInt16(&imgData[4]));
+							WriteInt16(&imgData[4], tmpByte);
+							imgData += 8;
+						}
 					}
 				}
 			}

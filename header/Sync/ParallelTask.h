@@ -19,7 +19,7 @@ namespace Sync
 			void *currTaskObj;
 		} ThreadStatus;
 
-		Sync::Event *mainEvt;
+		Sync::Event mainEvt;
 		UOSInt threadCnt;
 		ThreadStatus *stats;
 

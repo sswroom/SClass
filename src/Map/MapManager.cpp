@@ -33,11 +33,12 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::P
 		}
 		return info->layer;
 	}
-	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+	IO::ParsedObject *pobj;
 	IO::ParserType pt;
-	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
-	DEL_CLASS(fd);
+	{
+		IO::StmData::FileData fd(fileName, false);
+		pobj = parsers->ParseFile(&fd, &pt);
+	}
 	if (pt != IO::ParserType::MapLayer)
 	{
 		if (pobj)
