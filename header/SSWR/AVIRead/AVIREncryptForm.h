@@ -32,7 +32,7 @@ namespace SSWR
 			UOSInt fileIndex;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Text::TextBinEnc::TextBinEncList *encList;
+			Text::TextBinEnc::TextBinEncList encList;
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:
 			AVIREncryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

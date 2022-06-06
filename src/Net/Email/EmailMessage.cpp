@@ -563,11 +563,11 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\"\r\n\r\n"));
 		stm->Write(UTF8STRC("This is a cryptographically signed message in MIME format.\r\n"));
-		stm->Write(UTF8STRC("\r\n--"));
+		stm->Write(UTF8STRC("\r\n\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\r\n"));
 		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
-		stm->Write(UTF8STRC("--"));
+		stm->Write(UTF8STRC("\r\n\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\r\n"));
 		stm->Write(UTF8STRC("Content-Type: application/pkcs7-signature; name=\"smime.p7s\"\r\n"));

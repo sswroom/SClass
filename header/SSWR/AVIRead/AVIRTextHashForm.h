@@ -1,23 +1,29 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRPASSWORDHASHFORM
-#define _SM_SSWR_AVIREAD_AVIRPASSWORDHASHFORM
+#ifndef _SM_SSWR_AVIREAD_AVIRTEXTHASHFORM
+#define _SM_SSWR_AVIREAD_AVIRTEXTHASHFORM
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/TextBinEnc/TextBinEncList.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIPanel.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRPasswordHashForm : public UI::GUIForm
+		class AVIRTextHashForm : public UI::GUIForm
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
+			Text::TextBinEnc::TextBinEncList encList;
 
-			UI::GUILabel *lblPassword;
-			UI::GUITextBox *txtPassword;
+			UI::GUILabel *lblText;
+			UI::GUITextBox *txtText;
+			UI::GUIPanel *pnlControl;
+			UI::GUILabel *lblEncrypt;
+			UI::GUIComboBox *cboEncrypt;
 			UI::GUILabel *lblHashType;
 			UI::GUIComboBox *cboHashType;
 			UI::GUIButton *btnGenerate;
@@ -26,8 +32,8 @@ namespace SSWR
 
 			static void __stdcall OnGenerateClicked(void *userObj);
 		public:
-			AVIRPasswordHashForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
-			virtual ~AVIRPasswordHashForm();
+			AVIRTextHashForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			virtual ~AVIRTextHashForm();
 
 			virtual void OnMonitorChanged();
 		};

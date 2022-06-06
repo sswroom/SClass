@@ -71,7 +71,6 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->encList, Text::TextBinEnc::TextBinEncList());
 	NEW_CLASS(this->pnlSrc, UI::GUIPanel(ui, this));
 	this->pnlSrc->SetRect(0, 0, 512, 100, false);
 	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -104,7 +103,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 	this->txtDest->SetReadOnly(true);
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList->GetEncList();
+	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
 	Text::TextBinEnc::ITextBinEnc *enc;
 	UOSInt i;
 	UOSInt j;
@@ -127,7 +126,6 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIREncryptForm::~AVIREncryptForm()
 {
-	DEL_CLASS(this->encList);
 }
 
 void SSWR::AVIRead::AVIREncryptForm::OnMonitorChanged()

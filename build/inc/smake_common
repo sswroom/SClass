@@ -3531,8 +3531,6 @@ SSWR/AVIRead/AVIRPackageForm.h: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 @AVIRPackageForm.o
 SSWR/AVIRead/AVIRPaintCntForm.h: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
 @AVIRPaintCntForm.o
-SSWR/AVIRead/AVIRPasswordHashForm.h: ../../src/SSWR/AVIRead/AVIRPasswordHashForm.cpp
-@AVIRPasswordHashForm.o
 SSWR/AVIRead/AVIRPCIDeviceForm.h: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
 @AVIRPCIDeviceForm.o
 SSWR/AVIRead/AVIRPerformanceLogForm.h: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
@@ -3633,6 +3631,8 @@ SSWR/AVIRead/AVIRTCPSpdSvrForm.h: ../../src/SSWR/AVIRead/AVIRTCPSpdSvrForm.cpp
 @AVIRTCPSpdSvrForm.o
 SSWR/AVIRead/AVIRTCPTestForm.h: ../../src/SSWR/AVIRead/AVIRTCPTestForm.cpp
 @AVIRTCPTestForm.o
+SSWR/AVIRead/AVIRTextHashForm.h: ../../src/SSWR/AVIRead/AVIRTextHashForm.cpp
+@AVIRTextHashForm.o
 SSWR/AVIRead/AVIRTFTPClientForm.h: ../../src/SSWR/AVIRead/AVIRTFTPClientForm.cpp
 @AVIRTFTPClientForm.o
 SSWR/AVIRead/AVIRTFTPServerForm.h: ../../src/SSWR/AVIRead/AVIRTFTPServerForm.cpp
@@ -5224,7 +5224,6 @@ AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
 AVIROTPForm.o: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
 AVIRPackageForm.o: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
 AVIRPaintCntForm.o: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
-AVIRPasswordHashForm.o: ../../src/SSWR/AVIRead/AVIRPasswordHashForm.cpp
 AVIRPCIDeviceForm.o: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
 AVIRPerformanceLogForm.o: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
 AVIRPingMonitorForm.o: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
@@ -5275,6 +5274,7 @@ AVIRTCPPortScanForm.o: ../../src/SSWR/AVIRead/AVIRTCPPortScanForm.cpp
 AVIRTCPSpdCliForm.o: ../../src/SSWR/AVIRead/AVIRTCPSpdCliForm.cpp
 AVIRTCPSpdSvrForm.o: ../../src/SSWR/AVIRead/AVIRTCPSpdSvrForm.cpp
 AVIRTCPTestForm.o: ../../src/SSWR/AVIRead/AVIRTCPTestForm.cpp
+AVIRTextHashForm.o: ../../src/SSWR/AVIRead/AVIRTextHashForm.cpp
 AVIRTFTPClientForm.o: ../../src/SSWR/AVIRead/AVIRTFTPClientForm.cpp
 AVIRTFTPServerForm.o: ../../src/SSWR/AVIRead/AVIRTFTPServerForm.cpp
 AVIRThreadInfoForm.o: ../../src/SSWR/AVIRead/AVIRThreadInfoForm.cpp

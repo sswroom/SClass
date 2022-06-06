@@ -141,7 +141,6 @@
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
 #include "SSWR/AVIRead/AVIROTPForm.h"
 #include "SSWR/AVIRead/AVIRPaintCntForm.h"
-#include "SSWR/AVIRead/AVIRPasswordHashForm.h"
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
 #include "SSWR/AVIRead/AVIRPerformanceLogForm.h"
 #include "SSWR/AVIRead/AVIRPingMonitorForm.h"
@@ -181,6 +180,7 @@
 #include "SSWR/AVIRead/AVIRTCPSpdCliForm.h"
 #include "SSWR/AVIRead/AVIRTCPSpdSvrForm.h"
 #include "SSWR/AVIRead/AVIRTCPTestForm.h"
+#include "SSWR/AVIRead/AVIRTextHashForm.h"
 #include "SSWR/AVIRead/AVIRTFTPClientForm.h"
 #include "SSWR/AVIRead/AVIRTFTPServerForm.h"
 #include "SSWR/AVIRead/AVIRThreadSpeedForm.h"
@@ -383,7 +383,7 @@ typedef enum
 	MNU_ARPSCAN,
 	MNU_IPSCANDETECTOR,
 	MNU_MYSQLSERVER,
-	MNU_PASSWORDHASH,
+	MNU_TEXTHASH,
 	MNU_MYSQLCLIENT,
 	MNU_WOL,
 	MNU_MQTT_EXPLORER,
@@ -555,7 +555,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Javascript Text"), MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("C++ Enum to Switch Case"), MNU_CPP_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Cryptography"));
-	mnu2->AddItem(CSTR("Password Hash"), MNU_PASSWORDHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Text Hash"), MNU_TEXTHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Brute Force"), MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Hash Speed"), MNU_HASHTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Jasypt Encryptor"), MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2137,10 +2137,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			this->core->ShowForm(frm);
 		}
 		break;
-	case MNU_PASSWORDHASH:
+	case MNU_TEXTHASH:
 		{
-			SSWR::AVIRead::AVIRPasswordHashForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPasswordHashForm(0, this->ui, this->core));
+			SSWR::AVIRead::AVIRTextHashForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTextHashForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
