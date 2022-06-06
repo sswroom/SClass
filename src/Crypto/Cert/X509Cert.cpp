@@ -331,3 +331,63 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned()
 	Crypto::Cert::CertNames::FreeNames(&issueNames);
 	return ret;
 }
+
+const UInt8 *Crypto::Cert::X509Cert::GetIssueNamesSeq(UOSInt *dataLen)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt len;
+	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+	if (pdu == 0)
+	{
+		return 0;
+	}
+	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4", &len, &itemType);
+		if (pdu && itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			*dataLen = len;
+			return pdu;
+		}
+	}
+	else
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.3", &len, &itemType);
+		if (pdu && itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			*dataLen = len;
+			return pdu;
+		}
+	}
+	return 0;
+}
+
+const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(UOSInt *dataLen)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt len;
+	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+	if (pdu == 0)
+	{
+		return 0;
+	}
+	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &len, &itemType);
+		if (pdu && itemType == Net::ASN1Util::IT_INTEGER)
+		{
+			*dataLen = len;
+			return pdu;
+		}
+	}
+	else
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+		if (pdu && itemType == Net::ASN1Util::IT_INTEGER)
+		{
+			*dataLen = len;
+			return pdu;
+		}
+	}
+	return 0;
+}

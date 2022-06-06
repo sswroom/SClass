@@ -22,6 +22,7 @@ namespace Net
 		void BeginOther(UInt8 type);
 		void BeginSequence();
 		void BeginSet();
+		void BeginContentSpecific(UInt8 n);
 		void EndLevel();
 		void EndAll();
 		void AppendBool(Bool v);
@@ -42,6 +43,9 @@ namespace Net
 		void AppendUTCTime(Data::DateTime *t);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 		void AppendOtherWith0(UInt8 type, const UInt8 *buff, UOSInt buffSize);
+		void AppendContentSpecific(UInt8 n, const UInt8 *buff, UOSInt buffSize);
+		void AppendSequence(const UInt8 *buff, UOSInt buffSize);
+		void AppendInteger(const UInt8 *buff, UOSInt buffSize);
 
 		const UInt8 *GetItemRAW(const Char *path, UOSInt *itemLen, UOSInt *itemOfst);
 		const UInt8 *GetBuff(UOSInt *buffSize);

@@ -54,6 +54,11 @@ void Net::ASN1PDUBuilder::BeginSet()
 	this->BeginOther(0x31);
 }
 
+void Net::ASN1PDUBuilder::BeginContentSpecific(UInt8 n)
+{
+	this->BeginOther((UInt8)(0xA0 + n));
+}
+
 void Net::ASN1PDUBuilder::EndLevel()
 {
 	if (this->currLev > 0)
@@ -401,6 +406,21 @@ void Net::ASN1PDUBuilder::AppendOtherWith0(UInt8 type, const UInt8 *buff, UOSInt
 		this->buff[this->currOffset + 5] = 0;
 		this->currOffset += buffSize + 5;
 	}
+}
+
+void Net::ASN1PDUBuilder::AppendContentSpecific(UInt8 n, const UInt8 *buff, UOSInt buffSize)
+{
+	this->AppendOther((UInt8)(0xA0 + n), buff, buffSize);
+}
+
+void Net::ASN1PDUBuilder::AppendSequence(const UInt8 *buff, UOSInt buffSize)
+{
+	this->AppendOther(0x30, buff, buffSize);
+}
+
+void Net::ASN1PDUBuilder::AppendInteger(const UInt8 *buff, UOSInt buffSize)
+{
+	this->AppendOther(2, buff, buffSize);
 }
 
 const UInt8 *Net::ASN1PDUBuilder::GetItemRAW(const Char *path, UOSInt *itemLen, UOSInt *itemOfst)

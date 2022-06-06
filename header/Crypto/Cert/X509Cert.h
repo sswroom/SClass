@@ -36,6 +36,9 @@ namespace Crypto
 			Bool GetNotAfter(Data::DateTime *dt);
 			Bool DomainValid(Text::CString domain);
 			Bool IsSelfSigned();
+
+			const UInt8 *GetIssueNamesSeq(UOSInt *dataLen);
+			const UInt8 *GetSerialNumber(UOSInt *dataLen);
 		};
 	}
 }

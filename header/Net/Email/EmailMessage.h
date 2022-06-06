@@ -1,9 +1,11 @@
 #ifndef _SM_NET_EMAIL_EMAILMESSAGE
 #define _SM_NET_EMAIL_EMAILMESSAGE
+#include "Crypto/Cert/X509Cert.h"
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "IO/Stream.h"
+#include "Net/SSLEngine.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -34,6 +36,10 @@ namespace Net
 			UOSInt contentLen;
 			Data::ArrayList<Attachment*> attachments;
 
+			Net::SSLEngine *ssl;
+			Crypto::Cert::X509Cert *signCert;
+			Crypto::Cert::X509Key *signKey;
+
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
 			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
@@ -59,6 +65,7 @@ namespace Net
 			Bool AddBcc(Text::CString addr);
 			Attachment *AddAttachment(Text::CString fileName);
 			Attachment *AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
+			Bool AddSignature(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
 
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();

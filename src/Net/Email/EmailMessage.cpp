@@ -1,10 +1,13 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509Key.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/SHA1.h"
+#include "Crypto/Hash/SHA256.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
+#include "Net/ASN1PDUBuilder.h"
 #include "Net/MIME.h"
 #include "Net/WebUtil.h"
 #include "Net/Email/EmailMessage.h"
@@ -268,6 +271,8 @@ Net::Email::EmailMessage::EmailMessage()
 	this->content = 0;
 	this->contentLen = 0;
 	this->contentType = 0;
+	this->signCert = 0;
+	this->signKey = 0;
 }
 
 Net::Email::EmailMessage::~EmailMessage()
@@ -285,6 +290,8 @@ Net::Email::EmailMessage::~EmailMessage()
 	{
 		AttachmentFree(this->attachments.GetItem(i));
 	}
+	SDEL_CLASS(this->signCert);
+	SDEL_CLASS(this->signKey);
 }
 
 Bool Net::Email::EmailMessage::SetSubject(Text::CString subject)
@@ -504,6 +511,16 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(co
 	return attachment;
 }
 
+Bool Net::Email::EmailMessage::AddSignature(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key)
+{
+	SDEL_CLASS(this->signCert);
+	SDEL_CLASS(this->signKey);
+	this->ssl = ssl;
+	this->signCert = cert;
+	this->signKey = key;
+	return cert != 0 && key != 0;
+}
+
 Bool Net::Email::EmailMessage::CompletedMessage()
 {
 	if (this->fromAddr == 0 || this->recpList.GetCount() == 0 || this->contentLen == 0)
@@ -530,7 +547,167 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		return false;
 	}
 	this->WriteHeaders(stm);
-	this->WriteContents(stm);
+	if (this->signCert && this->signKey)
+	{
+		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
+		this->WriteContents(&mstm);
+		mstm.Write(UTF8STRC("\r\n"));
+
+		UInt8 signData[512];
+		UOSInt signLen;
+		UTF8Char sbuff[32];
+		UTF8Char *sptr;
+		UOSInt len;
+		sptr = GenBoundary(sbuff, mstm.GetBuff(&len), mstm.GetLength());
+		stm->Write(UTF8STRC("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\""));
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(UTF8STRC("\"\r\n\r\n"));
+		stm->Write(UTF8STRC("This is a cryptographically signed message in MIME format.\r\n"));
+		stm->Write(UTF8STRC("\r\n--"));
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(UTF8STRC("\r\n"));
+		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
+		stm->Write(UTF8STRC("--"));
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(UTF8STRC("\r\n"));
+		stm->Write(UTF8STRC("Content-Type: application/pkcs7-signature; name=\"smime.p7s\"\r\n"));
+		stm->Write(UTF8STRC("Content-Transfer-Encoding: base64\r\n"));
+		stm->Write(UTF8STRC("Content-Disposition: attachment; filename=\"smime.p7s\"\r\n"));
+		stm->Write(UTF8STRC("Content-Description: S/MIME Cryptographic Signature\r\n\r\n"));
+
+		const UInt8 *data;
+		UOSInt dataSize;
+		Data::DateTime dt;
+		dt.SetCurrTimeUTC();
+		Net::ASN1PDUBuilder builder;
+		builder.BeginSequence();
+			builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.7.2")); //signedData
+			builder.BeginContentSpecific(0);
+				builder.BeginSequence();
+					builder.AppendInt32(1);
+					builder.BeginSet();
+						builder.BeginSequence();
+							builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.2.1")); //id-sha256
+							builder.AppendNull();
+						builder.EndLevel();
+					builder.EndLevel();
+					builder.BeginSequence();
+						builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.7.1")); //data
+					builder.EndLevel();
+					builder.AppendContentSpecific(0, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize());
+					builder.BeginSet();
+						builder.BeginSequence();
+							builder.AppendInt32(1);
+							builder.BeginSequence();
+								data = this->signCert->GetIssueNamesSeq(&dataSize);
+								builder.AppendSequence(data, dataSize);
+								data = this->signCert->GetSerialNumber(&dataSize);
+								builder.AppendInteger(data, dataSize);
+							builder.EndLevel();
+							builder.BeginSequence();
+								builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.2.1")); //id-sha256
+								builder.AppendNull();
+							builder.EndLevel();
+							builder.BeginContentSpecific(0);
+								builder.BeginSequence();
+									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.3")); //contentType
+									builder.BeginSet();
+										builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.7.1")); //data
+									builder.EndLevel();
+								builder.EndLevel();
+								builder.BeginSequence();
+									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.5")); //signing-time
+									builder.BeginSet();
+										builder.AppendUTCTime(&dt);
+									builder.EndLevel();
+								builder.EndLevel();
+								{
+									Crypto::Hash::SHA256 sha;
+									sha.Calc(mstm.GetBuff(&len), mstm.GetLength());
+									sha.GetValue(signData);
+
+									builder.BeginSequence();
+										builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.4")); //messageDigest
+										builder.BeginSet();
+											builder.AppendOctetStringC(signData, 32);
+										builder.EndLevel();
+									builder.EndLevel();
+								}
+								builder.BeginSequence();
+									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.15")); //smimeCapabilities
+									builder.BeginSet();
+										builder.BeginSequence();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.1.42")); //aes256-CBC
+											builder.EndLevel();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.1.2")); //aes128-CBC
+											builder.EndLevel();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.7")); //des-ede3-cbc
+											builder.EndLevel();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.2")); //rc2CBC
+												builder.AppendInt32(128);
+											builder.EndLevel();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.2")); //rc2CBC
+												builder.AppendInt32(64);
+											builder.EndLevel();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("1.3.14.3.2.7")); //desCBC
+											builder.EndLevel();
+											builder.BeginSequence();
+												builder.AppendOIDString(UTF8STRC("1.2.840.113549.3.2")); //rc2CBC
+												builder.AppendInt32(40);
+											builder.EndLevel();
+										builder.EndLevel();
+									builder.EndLevel();
+								builder.EndLevel();
+								builder.BeginSequence();
+									builder.AppendOIDString(UTF8STRC("1.3.6.1.4.1.311.16.4")); //outlookExpress
+									builder.BeginSet();
+										builder.BeginSequence();
+											data = this->signCert->GetIssueNamesSeq(&dataSize);
+											builder.AppendSequence(data, dataSize);
+											data = this->signCert->GetSerialNumber(&dataSize);
+											builder.AppendInteger(data, dataSize);
+										builder.EndLevel();
+									builder.EndLevel();
+								builder.EndLevel();
+								builder.BeginSequence();
+									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.16.2.11")); //id-aa-encrypKeyPref
+									builder.BeginSet();
+										builder.BeginContentSpecific(0);
+											data = this->signCert->GetIssueNamesSeq(&dataSize);
+											builder.AppendSequence(data, dataSize);
+											data = this->signCert->GetSerialNumber(&dataSize);
+											builder.AppendInteger(data, dataSize);
+										builder.EndLevel();
+									builder.EndLevel();
+								builder.EndLevel();
+							builder.EndLevel();
+							builder.BeginSequence();
+								builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.1.1")); //rsaEncryption
+								builder.AppendNull();
+							builder.EndLevel();
+							this->ssl->Signature(this->signKey, Crypto::Hash::HT_SHA256, mstm.GetBuff(&len), mstm.GetLength(), signData, &signLen);
+							builder.AppendOctetStringC(signData, signLen);
+						builder.EndLevel();
+					builder.EndLevel();
+				builder.EndLevel();
+			builder.EndLevel();
+		builder.EndLevel();
+		
+		WriteB64Data(stm, builder.GetBuff(&len), builder.GetBuffSize());
+		stm->Write(UTF8STRC("\r\n--"));
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(UTF8STRC("--"));
+	}
+	else
+	{
+		this->WriteContents(stm);
+	}
 	return true;
 }
 
