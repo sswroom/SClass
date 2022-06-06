@@ -37,8 +37,11 @@ namespace Net
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
 			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
-			UTF8Char *GenMultipartBoundary(UTF8Char *sbuff);
 			void GenMultipart(IO::Stream *stm, Text::CString boundary);
+
+			void WriteHeaders(IO::Stream *stm);
+			void WriteContents(IO::Stream *stm);
+			static UTF8Char *GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen);
 			static void WriteB64Data(IO::Stream *stm, const UInt8 *data, UOSInt dataSize);
 			static void AttachmentFree(Attachment *attachment);
 		public:

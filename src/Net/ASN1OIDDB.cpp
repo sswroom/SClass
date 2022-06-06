@@ -3,6 +3,11 @@
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 #if defined(_MSC_VER)
 Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"zeroDotZero",													1,  {0x00}}, // 0.0
@@ -9303,6 +9308,8 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"nsAgentNotifyGroup",											10, {0x2B, 0x06, 0x01, 0x04, 0x01, 0xBF, 0x08, 0x05, 0x02, 0x09}}, // 1.3.6.1.4.1.8072.5.2.9
 	{"netSnmpExperimental",											9,  {0x2B, 0x06, 0x01, 0x04, 0x01, 0xBF, 0x08, 0xCE, 0x0F}}, // 1.3.6.1.4.1.8072.9999
 	{"netSnmpPlaypen",												11, {0x2B, 0x06, 0x01, 0x04, 0x01, 0xBF, 0x08, 0xCE, 0x0F, 0xCE, 0x0F}}, // 1.3.6.1.4.1.8072.9999.9999
+	{"google",														7,  {0x2B, 0x06, 0x01, 0x04, 0x01, 0xD6, 0x79}}, // 1.3.6.1.4.1.11129
+	{"extendedValidationCertificates",								10, {0x2B, 0x06, 0x01, 0x04, 0x01, 0xD6, 0x79, 0x02, 0x04, 0x02}}, // 1.3.6.1.4.1.11129.2.4.2
 	{"fortinet",													7,  {0x2B, 0x06, 0x01, 0x04, 0x01, 0xE0, 0x44}}, // 1.3.6.1.4.1.12356
 	{"fnCoreMib",													8,  {0x2B, 0x06, 0x01, 0x04, 0x01, 0xE0, 0x44, 0x64}}, // 1.3.6.1.4.1.12356.100
 	{"fnCommon",													9,  {0x2B, 0x06, 0x01, 0x04, 0x01, 0xE0, 0x44, 0x64, 0x01}}, // 1.3.6.1.4.1.12356.100.1
@@ -11845,6 +11852,8 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 	{"cert-renewal-time",											9,  {0x60, 0x86, 0x48, 0x01, 0x86, 0xF8, 0x42, 0x01, 0x0F}}, // 2.16.840.1.113730.1.15
 	{"aia",															9,  {0x60, 0x86, 0x48, 0x01, 0x86, 0xF8, 0x42, 0x01, 0x10}}, // 2.16.840.1.113730.1.16
 	{"cert-scope-of-use",											9,  {0x60, 0x86, 0x48, 0x01, 0x86, 0xF8, 0x42, 0x01, 0x11}}, // 2.16.840.1.113730.1.17
+	{"godaddy",														7,  {0x60, 0x86, 0x48, 0x01, 0x86, 0xFD, 0x6D}}, // 2.16.840.1.114413
+	{"starfield",													7,  {0x60, 0x86, 0x48, 0x01, 0x86, 0xFD, 0x6E}}, // 2.16.840.1.114414
 	{"certificate-policies",										4,  {0x67, 0x81, 0x0C, 0x01}}, // 2.23.140.1
 	{"ev-guidelines",												5,  {0x67, 0x81, 0x0C, 0x01, 0x01}}, // 2.23.140.1.1
 	{"baseline-requirements",										5,  {0x67, 0x81, 0x0C, 0x01, 0x02}}, // 2.23.140.1.2
@@ -11885,6 +11894,13 @@ void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::Str
 
 const Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
 {
+#if defined(VERBOSE)
+	{
+		Text::StringBuilderUTF8 sb;
+		Net::ASN1Util::OIDToString(pdu, pduSize, &sb);
+		printf("Searching: %s\r\n", sb.ToString());
+	}
+#endif
 	Net::ASN1OIDDB::OIDInfo *oid;
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(oidList) / sizeof(oidList[0])) - 1;
@@ -11895,6 +11911,9 @@ const Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOS
 		k = (i + j) >> 1;
 		oid = &oidList[k];
 		l = Net::ASN1Util::OIDCompare(pdu, pduSize, oid->oid, oid->len);
+#if defined(VERBOSE)
+		printf("%d\t%s\t%d\r\n", (UInt32)k, oid->name, (Int32)l);
+#endif
 		if (l > 0)
 		{
 			i = k + 1;

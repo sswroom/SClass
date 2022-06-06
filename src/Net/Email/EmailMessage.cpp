@@ -61,18 +61,6 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF8 *sb, con
 	return true;
 }
 
-UTF8Char *Net::Email::EmailMessage::GenMultipartBoundary(UTF8Char *sbuff)
-{
-	Int64 ts = Data::DateTimeUtil::GetCurrTimeMillis();
-	Crypto::Hash::SHA1 sha1;
-	UInt8 sha1Val[20];
-	sha1.Calc((const UInt8*)&ts, sizeof(ts));
-	sha1.Calc(this->content, this->contentLen);
-	sha1.GetValue(sha1Val);
-	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	return b64.EncodeBin(sbuff, sha1Val, 20);
-}
-
 void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString boundary)
 {
 	stm->Write(UTF8STRC("--"));
@@ -182,6 +170,66 @@ void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString bound
 	stm->Write(UTF8STRC("--"));
 	stm->Write(boundary.v, boundary.leng);
 	stm->Write(UTF8STRC("--\r\n"));
+}
+
+void Net::Email::EmailMessage::WriteHeaders(IO::Stream *stm)
+{
+	Text::String *header;
+	UOSInt i = 0;
+	UOSInt j = this->headerList.GetCount();
+	while (i < j)
+	{
+		header = this->headerList.GetItem(i);
+		stm->Write(header->v, header->leng);
+		stm->Write((const UInt8*)"\r\n", 2);
+		i++;
+	}
+}
+
+void Net::Email::EmailMessage::WriteContents(IO::Stream *stm)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	if (this->attachments.GetCount() > 0)
+	{
+		UOSInt len;
+		sptr = GenBoundary(sbuff, this->content, this->contentLen);
+		stm->Write(UTF8STRC("Content-Type: multipart/mixed;\r\n\tboundary=\""));
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(UTF8STRC("\"\r\n"));
+		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
+		GenMultipart(&mstm, CSTRP(sbuff, sptr));
+		stm->Write(UTF8STRC("Content-Length: "));
+		sptr = Text::StrUOSInt(sbuff, mstm.GetLength());
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
+	}
+	else
+	{
+		stm->Write(UTF8STRC("Content-Type: "));
+		stm->Write(this->contentType->v, this->contentType->leng);
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(UTF8STRC("Content-Length: "));
+		sptr = Text::StrUOSInt(sbuff, this->contentLen);
+		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(this->content, this->contentLen);
+	}
+}
+
+UTF8Char *Net::Email::EmailMessage::GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen)
+{
+	Int64 ts = Data::DateTimeUtil::GetCurrTimeMillis();
+	Crypto::Hash::SHA1 sha1;
+	UInt8 sha1Val[20];
+	sha1.Calc((const UInt8*)&ts, sizeof(ts));
+	sha1.Calc(data, dataLen);
+	sha1.GetValue(sha1Val);
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
+	return b64.EncodeBin(sbuff, sha1Val, 20);
 }
 
 void Net::Email::EmailMessage::WriteB64Data(IO::Stream *stm, const UInt8 *data, UOSInt dataSize)
@@ -481,46 +529,8 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	{
 		return false;
 	}
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	Text::String *header;
-	UOSInt i = 0;
-	UOSInt j = this->headerList.GetCount();
-	while (i < j)
-	{
-		header = this->headerList.GetItem(i);
-		stm->Write(header->v, header->leng);
-		stm->Write((const UInt8*)"\r\n", 2);
-		i++;
-	}
-	if (this->attachments.GetCount() > 0)
-	{
-		UOSInt len;
-		sptr = GenMultipartBoundary(sbuff);
-		stm->Write(UTF8STRC("Content-Type: multipart/mixed;\r\n\tboundary=\""));
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write(UTF8STRC("\"\r\n"));
-		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
-		GenMultipart(&mstm, CSTRP(sbuff, sptr));
-		stm->Write(UTF8STRC("Content-Length: "));
-		sptr = Text::StrUOSInt(sbuff, mstm.GetLength());
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
-	}
-	else
-	{
-		stm->Write(UTF8STRC("Content-Type: "));
-		stm->Write(this->contentType->v, this->contentType->leng);
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(UTF8STRC("Content-Length: "));
-		sptr = Text::StrUOSInt(sbuff, this->contentLen);
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(this->content, this->contentLen);
-	}
+	this->WriteHeaders(stm);
+	this->WriteContents(stm);
 	return true;
 }
 
