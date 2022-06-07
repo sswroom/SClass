@@ -1,6 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509PKCS7
 #define _SM_CRYPTO_CERT_X509PKCS7
 #include "Crypto/Cert/X509File.h"
+#include "Crypto/Hash/IHash.h"
 
 namespace Crypto
 {
@@ -18,10 +19,15 @@ namespace Crypto
 			
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
-			virtual X509Cert *NewCert(UOSInt index);
+			virtual X509Cert *GetNewCert(UOSInt index);
 
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF8 *sb);
+
+			Bool IsSignData();
+			Crypto::Hash::HashType GetDigestType();
+			const UInt8 *GetMessageDigest(UOSInt *digestSize);
+			const UInt8 *GetEncryptedDigest(UOSInt *encSize);
 		};
 	}
 }

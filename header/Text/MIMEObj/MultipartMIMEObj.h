@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "IO/IStreamData.h"
 #include "Text/IMIMEObj.h"
-#include "Text/MIMEObj/MIMEHeader.h"
+#include "Text/MIMEObj/MIMEMessage.h"
 
 namespace Text
 {
@@ -11,24 +11,11 @@ namespace Text
 	{
 		class MultipartMIMEObj : public Text::IMIMEObj
 		{
-		public:
-			class PartInfo : public Text::MIMEObj::MIMEHeader
-			{
-			private:
-				Text::IMIMEObj *obj;
-
-			public:
-				PartInfo(Text::IMIMEObj *obj);
-				virtual ~PartInfo();
-
-				Text::IMIMEObj *GetObject();
-				PartInfo *Clone();
-			};
 		private:
 			Text::String *contentType;
 			Text::String *boundary;
 			Text::String *defMsg;
-			Data::ArrayList<PartInfo*> *parts;
+			Data::ArrayList<MIMEMessage*> parts;
 
 			void ParsePart(UInt8 *buff, UOSInt buffSize);
 			MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary);
@@ -44,9 +31,10 @@ namespace Text
 
 			Text::String *GetDefMsg();
 			UOSInt AddPart(Text::IMIMEObj *obj);
+			void SetPartTransferData(UOSInt partIndex, const UInt8 *data, UOSInt dataSize);
 			Bool AddPartHeader(UOSInt partIndex, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
-			Text::IMIMEObj *GetPartObj(UOSInt partIndex);
-			PartInfo *GetPart(UOSInt partIndex);
+			Text::IMIMEObj *GetPartContent(UOSInt partIndex);
+			MIMEMessage *GetPart(UOSInt partIndex);
 			UOSInt GetPartCount();
 
 			static MultipartMIMEObj *ParseFile(Text::CString contentType, IO::IStreamData *data);

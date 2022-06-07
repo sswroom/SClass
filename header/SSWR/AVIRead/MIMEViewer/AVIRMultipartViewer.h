@@ -3,7 +3,10 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.h"
 #include "Text/MIMEObj/MultipartMIMEObj.h"
+#include "UI/GUILabel.h"
+#include "UI/GUIPanel.h"
 #include "UI/GUITabControl.h"
+#include "UI/GUITextBox.h"
 
 namespace SSWR
 {
@@ -15,8 +18,11 @@ namespace SSWR
 			{
 			private:
 				UI::GUITabControl *tcParts;
-				Data::ArrayList<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer*> *subViewers;
+				UI::GUIPanel *pnlSMIME;
+				UI::GUILabel *lblSignState;
+				UI::GUITextBox *txtSignState;
 
+				Data::ArrayList<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer*> subViewers;
 				Text::MIMEObj::MultipartMIMEObj *obj;
 
 			public:

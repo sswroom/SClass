@@ -7,14 +7,14 @@
 #include "Text/IMIMEObj.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/MIMEObj/MIMEHeader.h"
+#include "Text/MIMEObj/MIMEMessage.h"
 #include "Text/MIMEObj/TextMIMEObj.h"
 
 namespace Text
 {
 	namespace MIMEObj
 	{
-		class MailMessage : public Text::IMIMEObj, public Text::MIMEObj::MIMEHeader
+		class MailMessage : public Text::MIMEObj::MIMEMessage
 		{
 		public:
 			typedef enum
@@ -30,18 +30,12 @@ namespace Text
 				Text::String *address;
 			} MailAddress;
 
-		private:
-			Text::IMIMEObj *content;
 		public:
 			MailMessage();
 			virtual ~MailMessage();
 
 			virtual Text::CString GetClassName();
-			virtual Text::CString GetContentType();
-			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
-
-			void SetContent(Text::IMIMEObj *content);
 
 			Bool GetDate(Data::DateTime *dt);
 			UTF8Char *GetFromAddr(UTF8Char *sbuff);

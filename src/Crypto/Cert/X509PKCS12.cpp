@@ -43,7 +43,7 @@ Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, Text::StringBuilderUTF8
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS12::NewCert(UOSInt index)
+Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
 {
 	return 0;
 }

@@ -22,7 +22,7 @@ namespace Crypto
 
 			Bool GetNames(CertNames *names);
 			Bool GetExtensions(CertExtensions *ext);
-			Crypto::Cert::X509Key *GetPublicKey();
+			Crypto::Cert::X509Key *GetNewPublicKey();
 			Bool GetKeyId(UInt8 *keyId);
 		};
 	}

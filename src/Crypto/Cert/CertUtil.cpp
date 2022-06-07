@@ -474,7 +474,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	}
 	sbFileName.Append(names.commonName);
 	Crypto::Cert::CertNames::FreeNames(&names);
-	Crypto::Cert::X509Key *pubKey = csr->GetPublicKey();
+	Crypto::Cert::X509Key *pubKey = csr->GetNewPublicKey();
 	if (pubKey == 0)
 	{
 		return 0;

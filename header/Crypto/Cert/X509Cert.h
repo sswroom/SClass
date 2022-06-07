@@ -21,7 +21,7 @@ namespace Crypto
 
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
-			virtual X509Cert *NewCert(UOSInt index);
+			virtual X509Cert *GetNewCert(UOSInt index);
 
 			virtual ASN1Data *Clone();
 			virtual X509Cert *CreateX509Cert();
@@ -30,7 +30,7 @@ namespace Crypto
 			Bool GetIssueNames(CertNames *names);
 			Bool GetSubjNames(CertNames *names);
 			Bool GetExtensions(CertExtensions *ext);
-			Crypto::Cert::X509Key *GetPublicKey();
+			Crypto::Cert::X509Key *GetNewPublicKey();
 			Bool GetKeyId(UInt8 *keyId);
 			Bool GetNotBefore(Data::DateTime *dt);
 			Bool GetNotAfter(Data::DateTime *dt);

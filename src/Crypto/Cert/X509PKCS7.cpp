@@ -79,7 +79,7 @@ Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, Text::StringBuilderUTF8 
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS7::NewCert(UOSInt index)
+Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS7::GetNewCert(UOSInt index)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -114,4 +114,80 @@ void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb)
 	{
 		AppendPKCS7ContentInfo(this->buff, this->buff + this->buffSize, "1", sb, CSTR_NULL);
 	}
+}
+
+Bool Crypto::Cert::X509PKCS7::IsSignData()
+{
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1", &itemLen, &itemType);
+	if (itemPDU == 0 || itemType != Net::ASN1Util::IT_OID)
+	{
+		return false;
+	}
+	return Net::ASN1Util::OIDEqualsText(itemPDU, itemLen, UTF8STRC("1.2.840.113549.1.7.2"));
+}
+
+Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType()
+{
+	if (!this->IsSignData())
+	{
+		return Crypto::Hash::HT_UNKNOWN;
+	}
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2.1.5.1.3.1", &itemLen, &itemType);
+	if (itemPDU && itemType == Net::ASN1Util::IT_OID)
+	{
+		return HashTypeFromOID(itemPDU, itemLen);
+	}
+	return Crypto::Hash::HT_UNKNOWN;
+}
+
+const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt itemLen;
+	const UInt8 *itemPDU;
+	UOSInt subitemLen;
+	const UInt8 *subitemPDU;
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2.1.5.1.4", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		UOSInt i = 0;
+		while (true)
+		{
+			sptr = Text::StrUOSInt(sbuff, ++i);
+			Text::StrConcatC(sptr, UTF8STRC(".1"));
+			if ((subitemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, &subitemLen, &itemType)) == 0)
+			{
+				break;
+			}
+			else if (itemType == Net::ASN1Util::IT_OID && Net::ASN1Util::OIDEqualsText(subitemPDU, subitemLen, UTF8STRC("1.2.840.113549.1.9.4")))
+			{
+				Text::StrConcatC(sptr, UTF8STRC(".2.1"));
+				if ((subitemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, &subitemLen, &itemType)) != 0 &&
+					itemType == Net::ASN1Util::IT_OCTET_STRING)
+				{
+					*digestSize = subitemLen;
+					return subitemPDU;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+const UInt8 *Crypto::Cert::X509PKCS7::GetEncryptedDigest(UOSInt *signSize)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt itemLen;
+	const UInt8 *itemPDU;
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2.1.5.1.6", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_OCTET_STRING)
+	{
+		*signSize = itemLen;
+		return itemPDU;
+	}
+	return 0;
 }

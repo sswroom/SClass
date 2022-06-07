@@ -83,21 +83,21 @@ Bool Crypto::Cert::X509CertReq::GetExtensions(CertExtensions *ext)
 	return false;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509CertReq::GetPublicKey()
+Crypto::Cert::X509Key *Crypto::Cert::X509CertReq::GetNewPublicKey()
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
 	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.3", &itemLen, &itemType);
 	if (keyPDU)
 	{
-		return PublicKeyGet(keyPDU, keyPDU + itemLen);
+		return PublicKeyGetNew(keyPDU, keyPDU + itemLen);
 	}
 	return 0;
 }
 
 Bool Crypto::Cert::X509CertReq::GetKeyId(UInt8 *keyId)
 {
-	Crypto::Cert::X509Key *key = GetPublicKey();
+	Crypto::Cert::X509Key *key = GetNewPublicKey();
 	if (key == 0)
 	{
 		return false;

@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_CERT_X509FILE
 #define _SM_CRYPTO_CERT_X509FILE
+#include "Crypto/Hash/IHash.h"
 #include "Data/ArrayList.h"
 #include "Net/ASN1Data.h"
 #include "Text/CString.h"
@@ -112,10 +113,11 @@ namespace Crypto
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb);
 			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
 			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
-			static Crypto::Cert::X509Key *PublicKeyGet(const UInt8 *pdu, const UInt8 *pduEnd);
+			static Crypto::Cert::X509Key *PublicKeyGetNew(const UInt8 *pdu, const UInt8 *pduEnd);
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
+			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
 
 			X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
@@ -128,7 +130,7 @@ namespace Crypto
 
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
-			virtual X509Cert *NewCert(UOSInt index);
+			virtual X509Cert *GetNewCert(UOSInt index);
 
 			void ToShortString(Text::StringBuilderUTF8 *sb);
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);

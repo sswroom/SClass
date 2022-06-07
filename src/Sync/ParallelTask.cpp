@@ -100,7 +100,7 @@ Sync::ParallelTask::~ParallelTask()
 			if (exited)
 				break;
 
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 #else
 		i = this->threadCnt;

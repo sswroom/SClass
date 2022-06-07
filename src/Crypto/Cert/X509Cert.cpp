@@ -60,7 +60,7 @@ Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, Text::StringBuilderUTF8 *
 	return true;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::NewCert(UOSInt index)
+Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::GetNewCert(UOSInt index)
 {
 	if (index != 0)
 		return 0;
@@ -173,7 +173,7 @@ Bool Crypto::Cert::X509Cert::GetExtensions(CertExtensions *ext)
 	return false;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetPublicKey()
+Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetNewPublicKey()
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -187,7 +187,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetPublicKey()
 		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.7", &len, &itemType);
 		if (pdu)
 		{
-			return PublicKeyGet(pdu, pdu + len);
+			return PublicKeyGetNew(pdu, pdu + len);
 		}
 	}
 	else
@@ -195,7 +195,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetPublicKey()
 		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.6", &len, &itemType);
 		if (pdu)
 		{
-			return PublicKeyGet(pdu, pdu + len);
+			return PublicKeyGetNew(pdu, pdu + len);
 		}
 	}
 	return 0;
@@ -204,7 +204,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetPublicKey()
 
 Bool Crypto::Cert::X509Cert::GetKeyId(UInt8 *keyId)
 {
-	Crypto::Cert::X509Key *key = GetPublicKey();
+	Crypto::Cert::X509Key *key = GetNewPublicKey();
 	if (key == 0)
 	{
 		return false;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "Text/MIMEObj/MIMEHeader.h"
+#include "Text/MIMEObj/MIMEMessage.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
 Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CString contentType) : Text::IMIMEObj(contentType)
@@ -26,11 +26,11 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 			if (sarr[0].v[5] == '"' && sarr[0].v[j - 1] == '"')
 			{
 				sarr[0].v[j - 1] = 0;
-				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0].v[6]);
+				sptr = Text::MIMEObj::MIMEMessage::ParseHeaderStr(sbuff, &sarr[0].v[6]);
 			}
 			else
 			{
-				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0].v[5]);
+				sptr = Text::MIMEObj::MIMEMessage::ParseHeaderStr(sbuff, &sarr[0].v[5]);
 			}
 			this->SetSourceName(CSTRP(sbuff, sptr));
 		}

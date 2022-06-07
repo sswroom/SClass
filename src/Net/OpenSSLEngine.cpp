@@ -9,6 +9,7 @@
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/MyString.h"
 #include <openssl/ssl.h>
+#include <openssl/rsa.h>
 #include <openssl/err.h>
 
 //#define SHOW_DEBUG
@@ -591,7 +592,7 @@ Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Has
 	return true;
 }
 
-Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt signLen)
+Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
 {
 	const EVP_MD *htype = 0;
 	if (hashType == Crypto::Hash::HT_SHA256)
@@ -656,4 +657,57 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 	EVP_MD_CTX_destroy(emc);
 	EVP_PKEY_free(pkey);
 	return succ;
+}
+
+UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen)
+{
+	EVP_PKEY *pkey;
+	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
+	{
+		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
+		const UInt8 *keyPtr = pubKey->GetASN1Buff();
+		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)pubKey->GetASN1BuffSize());
+		DEL_CLASS(pubKey);
+	}
+	else
+	{
+		const UInt8 *keyPtr = key->GetASN1Buff();
+		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+	}
+	if (pkey == 0)
+	{
+		return 0;
+	}
+	EVP_PKEY_CTX *ctx;
+	ctx = EVP_PKEY_CTX_new(pkey, 0);
+	if (!ctx)
+	{
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	if (EVP_PKEY_encrypt_init(ctx) <= 0)
+	{
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) //RSA_PKCS1_OAEP_PADDING
+	{
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	size_t outlen = 512;
+	int ret = EVP_PKEY_encrypt(ctx, encData, &outlen, payload, payloadLen);
+	if (ret <= 0)
+	{
+//		printf("EVP_PKEY_encrypt returns %d\r\n", ret);
+//		ERR_print_errors_fp(stdout);
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	EVP_PKEY_CTX_free(ctx);
+	EVP_PKEY_free(pkey);
+	return (UOSInt)outlen;
 }

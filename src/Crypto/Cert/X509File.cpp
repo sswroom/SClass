@@ -1925,7 +1925,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 	return true;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGet(const UInt8 *pdu, const UInt8 *pduEnd)
+Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGetNew(const UInt8 *pdu, const UInt8 *pduEnd)
 {
 	Net::ASN1Util::ItemType oidType;
 	UOSInt oidLen;
@@ -2017,6 +2017,15 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UIn
 	return KeyType::Unknown;
 }
 
+Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid, UOSInt oidLen)
+{
+	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.1")))
+	{
+		return Crypto::Hash::HT_SHA256;
+	}
+	return Crypto::Hash::HT_UNKNOWN;
+}
+
 Crypto::Cert::X509File::X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
 {
 }
@@ -2044,7 +2053,7 @@ Bool Crypto::Cert::X509File::GetCertName(UOSInt index, Text::StringBuilderUTF8 *
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::X509File::NewCert(UOSInt index)
+Crypto::Cert::X509Cert *Crypto::Cert::X509File::GetNewCert(UOSInt index)
 {
 	return 0;
 }
