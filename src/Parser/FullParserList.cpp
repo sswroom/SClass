@@ -10,6 +10,7 @@
 #include "Parser/FileParser/ASN1Parser.h"
 #include "Parser/FileParser/AUIParser.h"
 #include "Parser/FileParser/AVIParser.h"
+#include "Parser/FileParser/B3DMParser.h"
 #include "Parser/FileParser/BMPParser.h"
 #include "Parser/FileParser/BSAParser.h"
 #include "Parser/FileParser/BurikoArcParser.h"
@@ -264,6 +265,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::NS2Parser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::PFS2Parser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::B3DMParser());
 	this->AddFileParser(parser);
 
 //	NEW_CLASS(parser, Parser::FileParser::M2VParser());

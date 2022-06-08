@@ -23,6 +23,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("exe"),  UTF8STRC("application/x-exe")},
 	{UTF8STRC("flv"),  UTF8STRC("video/x-flv")},
 	{UTF8STRC("gif"),  UTF8STRC("image/gif")},
+	{UTF8STRC("glb"),  UTF8STRC("model/gltf-binary")},
 	{UTF8STRC("gpx"),  UTF8STRC("application/gpx+xml")},
 	{UTF8STRC("gz"),   UTF8STRC("application/x-gzip")},
 	{UTF8STRC("htm"),  UTF8STRC("text/html")},

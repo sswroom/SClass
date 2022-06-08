@@ -2980,6 +2980,8 @@ Parser/FileParser/ASN1Parser.h: ../../src/Parser/FileParser/ASN1Parser.cpp
 @ASN1Parser.o
 Parser/FileParser/AVIParser.h: ../../src/Parser/FileParser/AVIParser.cpp
 @AVIParser.o
+Parser/FileParser/B3DMParser.h: ../../src/Parser/FileParser/B3DMParser.cpp
+@B3DMParser.o
 Parser/FileParser/BMPParser.h: ../../src/Parser/FileParser/BMPParser.cpp
 @BMPParser.o
 Parser/FileParser/BSAParser.h: ../../src/Parser/FileParser/BSAParser.cpp
@@ -3373,6 +3375,8 @@ SSWR/AVIRead/AVIRGISSearchForm.h: ../../src/SSWR/AVIRead/AVIRGISSearchForm.cpp
 @AVIRGISSearchForm.o
 SSWR/AVIRead/AVIRGISTileDownloadForm.h: ../../src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
 @AVIRGISTileDownloadForm.o
+SSWR/AVIRead/AVIRGLBViewerForm.h: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp
+@AVIRGLBViewerForm.o
 SSWR/AVIRead/AVIRGooglePolylineForm.h: ../../src/SSWR/AVIRead/AVIRGooglePolylineForm.cpp
 @AVIRGooglePolylineForm.o
 SSWR/AVIRead/AVIRGPIOStatusForm.h: ../../src/SSWR/AVIRead/AVIRGPIOStatusForm.cpp
@@ -4950,6 +4954,7 @@ ANIParser.o: ../../src/Parser/FileParser/ANIParser.cpp
 AOSParser.o: ../../src/Parser/FileParser/AOSParser.cpp
 ASN1Parser.o: ../../src/Parser/FileParser/ASN1Parser.cpp
 AVIParser.o: ../../src/Parser/FileParser/AVIParser.cpp
+B3DMParser.o: ../../src/Parser/FileParser/B3DMParser.cpp
 BMPParser.o: ../../src/Parser/FileParser/BMPParser.cpp
 BSAParser.o: ../../src/Parser/FileParser/BSAParser.cpp
 BurikoArcParser.o: ../../src/Parser/FileParser/BurikoArcParser.cpp
@@ -5145,6 +5150,7 @@ AVIRGISRandomLocForm.o: ../../src/SSWR/AVIRead/AVIRGISRandomLocForm.cpp
 AVIRGISReplayForm.o: ../../src/SSWR/AVIRead/AVIRGISReplayForm.cpp
 AVIRGISSearchForm.o: ../../src/SSWR/AVIRead/AVIRGISSearchForm.cpp
 AVIRGISTileDownloadForm.o: ../../src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
+AVIRGLBViewerForm.o: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp
 AVIRGooglePolylineForm.o: ../../src/SSWR/AVIRead/AVIRGooglePolylineForm.cpp
 AVIRGPIOStatusForm.o: ../../src/SSWR/AVIRead/AVIRGPIOStatusForm.cpp
 AVIRGPSDevForm.o: ../../src/SSWR/AVIRead/AVIRGPSDevForm.cpp

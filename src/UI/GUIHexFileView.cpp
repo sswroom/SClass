@@ -23,8 +23,6 @@ UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent
 		this->frameColor = 0xffdedf9a;
 		this->fieldColor = 0xffdf9abd;
 	}
-	NEW_CLASS(this->hdlrList, Data::ArrayList<OffsetChgHandler>());
-	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
 	this->SetScrollHRange(0, 0);
 }
 
@@ -34,8 +32,6 @@ UI::GUIHexFileView::~GUIHexFileView()
 	SDEL_CLASS(this->fd);
 	SDEL_CLASS(this->analyse);
 	SDEL_CLASS(this->frame);
-	DEL_CLASS(this->hdlrList);
-	DEL_CLASS(this->hdlrObjList);
 }
 
 void UI::GUIHexFileView::EventLineUp()
@@ -423,6 +419,23 @@ Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
 	return true;
 }
 
+Bool UI::GUIHexFileView::LoadData(IO::IStreamData *data)
+{
+	SDEL_CLASS(this->analyse);
+	SDEL_CLASS(this->fs);
+	SDEL_CLASS(this->fd);
+	SDEL_CLASS(this->frame);
+	this->fd = data;
+	this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
+	this->fileSize = this->fd->GetDataSize();
+	this->currOfst = 1;
+	this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
+	this->GoToOffset(0);
+	this->Redraw();
+	return true;
+
+}
+
 void UI::GUIHexFileView::GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst)
 {
 	UOSInt addrLen;
@@ -500,10 +513,10 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	}
 	this->Redraw();
 	this->UpdateCaretPos();
-	UOSInt i = this->hdlrList->GetCount();
+	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrList->GetItem(i)(this->hdlrObjList->GetItem(i), ofst);
+		this->hdlrList.GetItem(i)(this->hdlrObjList.GetItem(i), ofst);
 	}
 }
 
@@ -531,8 +544,8 @@ UOSInt UI::GUIHexFileView::GetFileData(UInt64 ofst, UOSInt size, UInt8 *outBuff)
 
 void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)
 {
-	this->hdlrObjList->Add(hdlrObj);
-	this->hdlrList->Add(hdlr);
+	this->hdlrObjList.Add(hdlrObj);
+	this->hdlrList.Add(hdlr);
 }
 
 Text::CString UI::GUIHexFileView::GetAnalyzerName()

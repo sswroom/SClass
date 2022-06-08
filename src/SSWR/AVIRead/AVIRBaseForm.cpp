@@ -80,6 +80,7 @@
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
 #include "SSWR/AVIRead/AVIRGenImageForm.h"
+#include "SSWR/AVIRead/AVIRGLBViewerForm.h"
 #include "SSWR/AVIRead/AVIRGPIOStatusForm.h"
 #include "SSWR/AVIRead/AVIRGPSDevForm.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
@@ -424,7 +425,8 @@ typedef enum
 	MNU_OCR,
 	MNU_POSTGRESQL_CONN,
 	MNU_LORA_GW_SIM,
-	MNU_LORA_JSON
+	MNU_LORA_JSON,
+	MNU_GLBVIEWER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -749,6 +751,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Coordinate System Info"), MNU_COORD_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("OSM Cache Server"), MNU_OSM_CACHE_SERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SHPConv"), MNU_SHPCONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("SMBIOS"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2431,6 +2434,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRLoRaJSONForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRLoRaJSONForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_GLBVIEWER:
+		{
+			SSWR::AVIRead::AVIRGLBViewerForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRGLBViewerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

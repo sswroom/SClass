@@ -728,7 +728,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 		{
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
-			sb->AppendC(UTF8STRC("notBefore = "));
+			sb->AppendC(UTF8STRC("notAfter = "));
 			sb->AppendDate(&dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
@@ -1318,6 +1318,8 @@ void Crypto::Cert::X509File::AppendDistributionPointName(const UInt8 *pdu, const
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	UOSInt i;
+	Char pathBuff[16];
 	const UInt8 *itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -1328,7 +1330,12 @@ void Crypto::Cert::X509File::AppendDistributionPointName(const UInt8 *pdu, const
 			sptr = varName.ConcatTo(sbuff);
 			*sptr++ = '.';
 			sptr = Text::StrConcatC(sptr, UTF8STRC("fullName"));
-			AppendGeneralName(itemPDU, itemPDU + itemLen, "1", sb, CSTRP(sbuff, sptr));
+			i = 0;
+			Text::StrUOSInt(pathBuff, ++i);
+			while (AppendGeneralName(itemPDU, itemPDU + itemLen, pathBuff, sb, CSTRP(sbuff, sptr)))
+			{
+				Text::StrUOSInt(pathBuff, ++i);
+			}
 		}
 		else if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
 		{
