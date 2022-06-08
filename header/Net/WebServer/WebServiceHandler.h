@@ -16,7 +16,7 @@ namespace Net
 			typedef struct
 			{
 				Text::String *svcPath;
-				Data::Int32Map<ServiceFunc> *funcs;
+				Data::Int32Map<ServiceFunc> funcs;
 			} ServiceInfo;
 			
 			Data::FastStringMap<ServiceInfo *> services;

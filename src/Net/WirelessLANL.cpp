@@ -133,21 +133,19 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 		this->chipsetOUIs[i][2] = bss->ouis[i][2];
 		i++;
 	}
-	NEW_CLASS(this->ieList, Data::ArrayList<Net::WirelessLANIE*>());
-	this->ieList->AddAll(bss->ieList);
+	this->ieList.AddAll(bss->ieList);
 	bss->ieList->Clear();
 }
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
-	UOSInt i = this->ieList->GetCount();
+	UOSInt i = this->ieList.GetCount();
 	Net::WirelessLANIE *ie;
 	while (i-- > 0)
 	{
-		ie = this->ieList->GetItem(i);
+		ie = this->ieList.GetItem(i);
 		DEL_CLASS(ie);
 	}
-	DEL_CLASS(this->ieList);
 	SDEL_STRING(this->ssid);
 	SDEL_STRING(this->devManuf);
 	SDEL_STRING(this->devModel);
@@ -228,12 +226,12 @@ const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 
 UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 {
-	return this->ieList->GetCount();
+	return this->ieList.GetCount();
 }
 
 Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
-	return this->ieList->GetItem(index);
+	return this->ieList.GetItem(index);
 }
 
 Net::WirelessLAN::Interface::Interface()
@@ -279,7 +277,6 @@ Bool Net::WirelessLAN::IsError()
 UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
 {
 	WirelessLANData *thisData = (WirelessLANData*)this->clsData;
-	IO::FileStream *fs;
 	UOSInt ret = 0;
 	Net::WirelessLAN::Interface *interf;
 /*	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -311,11 +308,10 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 	}
 	DEL_CLASS(fs);*/
 
-	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/dev"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTR("/proc/net/dev"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		Text::UTF8Reader *reader;
 		UOSInt i;
 		struct iwreq wrq;
 		UInt8 *buff;
@@ -323,13 +319,13 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		int ioret;
 		buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
 
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		reader->ReadLine(&sb, 1024);
+		reader.ReadLine(&sb, 1024);
 		sb.ClearStr();
-		reader->ReadLine(&sb, 1024);
+		reader.ReadLine(&sb, 1024);
 		sb.ClearStr();
-		while (reader->ReadLine(&sb, 1024))
+		while (reader.ReadLine(&sb, 1024))
 		{
 			sb.Trim();
 			i = sb.IndexOf(':');
@@ -412,11 +408,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 			}
 			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
-
 		MemFree(buff);
 	}
-	DEL_CLASS(fs);
-
 	return ret;
 }

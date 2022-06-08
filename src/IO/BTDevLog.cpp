@@ -30,15 +30,11 @@ void IO::BTDevLog::FreeDev(DevEntry *dev)
 
 IO::BTDevLog::BTDevLog()
 {
-	NEW_CLASS(this->pubDevs, Data::UInt64Map<DevEntry*>());
-	NEW_CLASS(this->randDevs, Data::UInt64Map<DevEntry*>());
 }
 
 IO::BTDevLog::~BTDevLog()
 {
 	this->ClearList();
-	DEL_CLASS(this->pubDevs);
-	DEL_CLASS(this->randDevs);
 }
 
 IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
@@ -47,11 +43,11 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 	DevEntry *log;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		log = this->randDevs->Get(macInt);
+		log = this->randDevs.Get(macInt);
 	}
 	else
 	{
-		log = this->pubDevs->Get(macInt);
+		log = this->pubDevs.Get(macInt);
 	}
 	if (log)
 	{
@@ -100,11 +96,11 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 	log->advType = advType;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		this->randDevs->Put(macInt, log);
+		this->randDevs.Put(macInt, log);
 	}
 	else
 	{
-		this->pubDevs->Put(macInt, log);
+		this->pubDevs.Put(macInt, log);
 	}
 	return log;
 }
@@ -124,12 +120,12 @@ void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devM
 void IO::BTDevLog::ClearList()
 {
 	Data::ArrayList<DevEntry*> *logList;
-	logList = this->randDevs->GetValues();
+	logList = this->randDevs.GetValues();
 	LIST_FREE_FUNC(logList, this->FreeDev);
-	logList = this->pubDevs->GetValues();
+	logList = this->pubDevs.GetValues();
 	LIST_FREE_FUNC(logList, this->FreeDev);
-	this->randDevs->Clear();
-	this->pubDevs->Clear();
+	this->randDevs.Clear();
+	this->pubDevs.Clear();
 }
 
 Bool IO::BTDevLog::LoadFile(Text::CString fileName)
@@ -227,8 +223,8 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	}
 	Text::UTF8Writer writer(&fs);
 	Data::ArrayList<DevEntry*> logList;
-	logList.AddAll(this->pubDevs->GetValues());
-	logList.AddAll(this->randDevs->GetValues());
+	logList.AddAll(this->pubDevs.GetValues());
+	logList.AddAll(this->randDevs.GetValues());
 	DevEntry *log;
 	UOSInt i = 0;
 	UOSInt j = logList.GetCount();
@@ -286,10 +282,10 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 
 Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList()
 {
-	return this->pubDevs->GetValues();
+	return this->pubDevs.GetValues();
 }
 
 Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList()
 {
-	return this->randDevs->GetValues();
+	return this->randDevs.GetValues();
 }

@@ -10,9 +10,8 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 	while (i-- > 0)
 	{
 		service = this->services.GetItem(i);
-		DEL_CLASS(service->funcs);
 		service->svcPath->Release();
-		MemFree(service);
+		DEL_CLASS(service);
 	}
 }
 
@@ -32,7 +31,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 	if (service != 0)
 	{
 
-		ServiceFunc func = service->funcs->Get((Int32)req->GetReqMethod());
+		ServiceFunc func = service->funcs.Get((Int32)req->GetReqMethod());
 		if (func)
 		{
 			return func(req, resp, subReq, this);
@@ -40,7 +39,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			Data::ArrayList<Int32> *methods = service->funcs->GetKeys();
+			Data::ArrayList<Int32> *methods = service->funcs.GetKeys();
 			UOSInt i = 0;
 			UOSInt j = methods->GetCount();
 			while (i < j)
@@ -73,10 +72,9 @@ void Net::WebServer::WebServiceHandler::AddService(Text::CString svcPath, Net::W
 	service = this->services.GetC(svcPath);
 	if (service == 0)
 	{
-		service = MemAlloc(Net::WebServer::WebServiceHandler::ServiceInfo, 1);
+		NEW_CLASS(service, Net::WebServer::WebServiceHandler::ServiceInfo());
 		service->svcPath = Text::String::New(svcPath);
-		NEW_CLASS(service->funcs, Data::Int32Map<ServiceFunc>());
 		this->services.Put(service->svcPath, service);
 	}
-	service->funcs->Put((Int32)reqMeth, func);
+	service->funcs.Put((Int32)reqMeth, func);
 }

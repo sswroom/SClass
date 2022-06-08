@@ -28,7 +28,7 @@ namespace Net
 		} LogFileEntry;
 
 	private:
-		Data::ArrayList<LogFileEntry*> *logList;
+		Data::ArrayList<LogFileEntry*> logList;
 
 		UOSInt DirectInsert(LogFileEntry *log);
 	public:

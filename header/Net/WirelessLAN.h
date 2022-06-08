@@ -9,7 +9,7 @@
 
 namespace Net
 {
-	class WirelessLAN
+	class 	WirelessLAN
 	{
 
 	private:
@@ -62,7 +62,7 @@ namespace Net
 			Text::String *devSN;
 			UTF8Char devCountry[3];
 			UInt8 chipsetOUIs[WLAN_OUI_CNT][3];
-			Data::ArrayList<Net::WirelessLANIE*> *ieList;
+			Data::ArrayList<Net::WirelessLANIE*> ieList;
 		public:
 			BSSInfo(Text::CString ssid, const void *bssEntry);
 			~BSSInfo();

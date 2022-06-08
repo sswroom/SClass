@@ -61,8 +61,6 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 		this->chipsetOUIs[i][2] = 0;
 		i++;
 	}
-	NEW_CLASS(this->ieList, Data::ArrayList<Net::WirelessLANIE*>());
-
 	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry;
 	const UInt8 *ptrEnd = ptrCurr + bss->ulIeSize;
 	Net::WirelessLANIE *ie;
@@ -79,7 +77,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 			break;
 		}
 		NEW_CLASS(ie, Net::WirelessLANIE(ptrCurr - 2));
-		this->ieList->Add(ie);
+		this->ieList.Add(ie);
 		switch (ieCmd)
 		{
 		case 0:
@@ -169,14 +167,13 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
-	UOSInt i = this->ieList->GetCount();
+	UOSInt i = this->ieList.GetCount();
 	Net::WirelessLANIE *ie;
 	while (i-- > 0)
 	{
-		ie = this->ieList->GetItem(i);
+		ie = this->ieList.GetItem(i);
 		DEL_CLASS(ie);
 	}
-	DEL_CLASS(this->ieList);
 	SDEL_STRING(this->ssid);
 	SDEL_STRING(this->devManuf);
 	SDEL_STRING(this->devModel);
@@ -255,12 +252,12 @@ const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 
 UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 {
-	return this->ieList->GetCount();
+	return this->ieList.GetCount();
 }
 
 Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
-	return this->ieList->GetItem(index);
+	return this->ieList.GetItem(index);
 }
 
 Net::WirelessLAN::Interface::Interface()

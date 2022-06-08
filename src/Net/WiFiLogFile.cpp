@@ -16,11 +16,11 @@ UOSInt Net::WiFiLogFile::DirectInsert(LogFileEntry *newLog)
 	OSInt j;
 	OSInt k;
 	i = 0;
-	j = (OSInt)this->logList->GetCount() - 1;
+	j = (OSInt)this->logList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList->GetItem((UOSInt)k);
+		log = this->logList.GetItem((UOSInt)k);
 		if (newLog->macInt > log->macInt)
 		{
 			i = k + 1;
@@ -31,31 +31,27 @@ UOSInt Net::WiFiLogFile::DirectInsert(LogFileEntry *newLog)
 		}
 		else
 		{
-			this->logList->Insert((UOSInt)k, newLog);
+			this->logList.Insert((UOSInt)k, newLog);
 			return (UOSInt)k;
 		}
 	}
-	this->logList->Insert((UOSInt)i, newLog);
+	this->logList.Insert((UOSInt)i, newLog);
 	return (UOSInt)i;
 }
 
 Net::WiFiLogFile::WiFiLogFile()
 {
-	NEW_CLASS(this->logList, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>());
 }
 
 Net::WiFiLogFile::~WiFiLogFile()
 {
 	this->Clear();
-	DEL_CLASS(this->logList);
 }
 
 void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
 		Text::PString sarr[12];
 		Text::PString sarr2[7];
@@ -66,11 +62,11 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 		Net::WiFiLogFile::LogFileEntry *log;
 		Text::StringBuilderUTF8 sb;
 		UInt64 iMAC;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
 		buff[0] = 0;
 		buff[1] = 0;
-		while (reader->ReadLine(&sb, 4096))
+		while (reader.ReadLine(&sb, 4096))
 		{
 			i = Text::StrSplitP(sarr, 12, sb, '\t');
 			if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
@@ -277,10 +273,7 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 			}
 			sb.ClearStr();
 		}
-
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 }
 
 Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
@@ -297,10 +290,10 @@ Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 		Text::UTF8Writer writer(&cstm);
 		succ = true;
 		i = 0;
-		j = this->logList->GetCount();
+		j = this->logList.GetCount();
 		while (i < j)
 		{
-			log = this->logList->GetItem(i);
+			log = this->logList.GetItem(i);
 			sb.ClearStr();
 			sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("\t"));
@@ -367,11 +360,11 @@ Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 
 void Net::WiFiLogFile::Clear()
 {
-	UOSInt i = this->logList->GetCount();
+	UOSInt i = this->logList.GetCount();
 	Net::WiFiLogFile::LogFileEntry *log;
 	while (i-- > 0)
 	{
-		log = this->logList->GetItem(i);
+		log = this->logList.GetItem(i);
 		SDEL_STRING(log->ssid);
 		SDEL_STRING(log->manuf);
 		SDEL_STRING(log->model);
@@ -383,7 +376,7 @@ void Net::WiFiLogFile::Clear()
 		}
 		MemFree(log);
 	}
-	this->logList->Clear();
+	this->logList.Clear();
 }
 
 Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::Get(UInt64 iMAC)
@@ -393,11 +386,11 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::Get(UInt64 iMAC)
 	OSInt j;
 	OSInt k;
 	i = 0;
-	j = (OSInt)this->logList->GetCount() - 1;
+	j = (OSInt)this->logList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList->GetItem((UOSInt)k);
+		log = this->logList.GetItem((UOSInt)k);
 		if (iMAC > log->macInt)
 		{
 			i = k + 1;
@@ -421,11 +414,11 @@ OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
 	OSInt j;
 	OSInt k;
 	i = 0;
-	j = (OSInt)this->logList->GetCount() - 1;
+	j = (OSInt)this->logList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		log = this->logList->GetItem((UOSInt)k);
+		log = this->logList.GetItem((UOSInt)k);
 		if (iMAC > log->macInt)
 		{
 			i = k + 1;
@@ -444,12 +437,12 @@ OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
 
 Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *Net::WiFiLogFile::GetLogList()
 {
-	return this->logList;
+	return &this->logList;
 }
 
 const Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::GetItem(UOSInt index)
 {
-	return this->logList->GetItem(index);
+	return this->logList.GetItem(index);
 }
 
 Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::BSSInfo *bss, OSInt *lastIndex)

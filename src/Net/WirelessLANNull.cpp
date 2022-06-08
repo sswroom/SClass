@@ -7,14 +7,22 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-Net::WirelessLAN::Network::Network(const UTF8Char *ssid, Double rssi)
+
+Net::WirelessLAN::Network::Network(Text::CString ssid, Double rssi)
 {
-	this->ssid = Text::StrCopyNew(ssid);
+	this->ssid = Text::String::New(ssid);
 	this->rssi = rssi;
 }
+
+Net::WirelessLAN::Network::Network(Text::String *ssid, Double rssi)
+{
+	this->ssid = ssid->Clone();
+	this->rssi = rssi;
+}
+
 Net::WirelessLAN::Network::~Network()
 {
-	Text::StrDelNew(this->ssid);
+	this->ssid->Release();
 }
 
 Double Net::WirelessLAN::Network::GetRSSI()
@@ -22,12 +30,12 @@ Double Net::WirelessLAN::Network::GetRSSI()
 	return this->rssi;
 }
 
-const UTF8Char *Net::WirelessLAN::Network::GetSSID()
+Text::String *Net::WirelessLAN::Network::GetSSID()
 {
 	return this->ssid;
 }
 
-Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
+Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 {
 	this->ssid = 0;
 	this->phyId = 0;
@@ -49,26 +57,24 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 		this->chipsetOUIs[i][2] = 0;
 		i++;
 	}
-	NEW_CLASS(this->ieList, Data::ArrayList<Net::WirelessLANIE*>());
 }
 
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
-	OSInt i = this->ieList->GetCount();
+	OSInt i = this->ieList.GetCount();
 	Net::WirelessLANIE *ie;
 	while (i-- > 0)
 	{
-		ie = this->ieList->GetItem(i);
+		ie = this->ieList.GetItem(i);
 		DEL_CLASS(ie);
 	}
-	DEL_CLASS(this->ieList);
-	SDEL_TEXT(this->ssid);
-	SDEL_TEXT(this->devManuf);
-	SDEL_TEXT(this->devModel);
-	SDEL_TEXT(this->devSN);
+	SDEL_STRING(this->ssid);
+	SDEL_STRING(this->devManuf);
+	SDEL_STRING(this->devModel);
+	SDEL_STRING(this->devSN);
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetSSID()
+Text::String *Net::WirelessLAN::BSSInfo::GetSSID()
 {
 	return this->ssid;
 }
@@ -108,17 +114,17 @@ Double Net::WirelessLAN::BSSInfo::GetFreq()
 	return this->freq;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetManuf()
+Text::String *Net::WirelessLAN::BSSInfo::GetManuf()
 {
 	return this->devManuf;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetModel()
+Text::String *Net::WirelessLAN::BSSInfo::GetModel()
 {
 	return this->devModel;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetSN()
+Text::String *Net::WirelessLAN::BSSInfo::GetSN()
 {
 	return this->devSN;
 }
@@ -142,12 +148,12 @@ const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 
 UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 {
-	return this->ieList->GetCount();
+	return this->ieList.GetCount();
 }
 
 Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
-	return this->ieList->GetItem(index);
+	return this->ieList.GetItem(index);
 }
 
 Net::WirelessLAN::Interface::Interface()

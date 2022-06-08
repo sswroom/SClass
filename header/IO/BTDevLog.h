@@ -22,8 +22,8 @@ namespace IO
 			IO::BTScanLog::AdvType advType;
 		} DevEntry;
 	private:
-		Data::UInt64Map<DevEntry*> *pubDevs;
-		Data::UInt64Map<DevEntry*> *randDevs;
+		Data::UInt64Map<DevEntry*> pubDevs;
+		Data::UInt64Map<DevEntry*> randDevs;
 
 		static Bool IsDefaultName(Text::String *name);
 		void FreeDev(DevEntry *dev);
