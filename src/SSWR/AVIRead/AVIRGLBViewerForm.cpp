@@ -42,18 +42,8 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 		{
 			return false;
 		}
-		UInt8 *jsonBuff = MemAlloc(UInt8, jsonLen);
-		if (fd.GetRealData(20, jsonLen, jsonBuff) != jsonLen)
-		{
-			MemFree(jsonBuff);
-			return false;
-		}
-		Text::StringBuilderUTF8 sb;
-		Text::JSText::JSONWellFormat(jsonBuff, jsonLen, 0, &sb);
-		this->txtJSON->SetText(sb.ToCString());
-		MemFree(jsonBuff);
-		this->hfvBinBuff->LoadData(fd.GetPartialData(20 + jsonLen, fileLen - 20 - jsonLen));
-		return true;
+		UInt64 ofst = 20 + jsonLen;
+		return this->LoadData(fd.GetPartialData(20, jsonLen), fd.GetPartialData(ofst, fileLen - ofst));
 	}
 	else if (ver == 2)
 	{
@@ -61,16 +51,6 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 		{
 			return false;
 		}
-		UInt8 *jsonBuff = MemAlloc(UInt8, jsonLen);
-		if (fd.GetRealData(20, jsonLen, jsonBuff) != jsonLen)
-		{
-			MemFree(jsonBuff);
-			return false;
-		}
-		Text::StringBuilderUTF8 sb;
-		Text::JSText::JSONWellFormat(jsonBuff, jsonLen, 0, &sb);
-		this->txtJSON->SetText(sb.ToCString());
-		MemFree(jsonBuff);
 		UInt64 ofst = 20 + jsonLen;
 		if (fd.GetRealData(ofst, 8, &hdr[12]) != 8)
 		{
@@ -80,13 +60,32 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 		{
 			return false;
 		}
-		this->hfvBinBuff->LoadData(fd.GetPartialData(ofst + 8, fileLen - 8 - ofst));
-		return true;
+		return this->LoadData(fd.GetPartialData(20, jsonLen), fd.GetPartialData(ofst + 8, fileLen - 8 - ofst));
 	}
 	else
 	{
 		return false;
 	}
+}
+
+Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(IO::IStreamData *jsonFD, IO::IStreamData *binBuffFD)
+{
+	UOSInt jsonLen = (UOSInt)jsonFD->GetDataSize();
+	UInt8 *jsonBuff = MemAlloc(UInt8, jsonLen);
+	if (jsonFD->GetRealData(0, jsonLen, jsonBuff) != jsonLen)
+	{
+		DEL_CLASS(jsonFD);
+		DEL_CLASS(binBuffFD);
+		MemFree(jsonBuff);
+		return false;
+	}
+	Text::StringBuilderUTF8 sb;
+	Text::JSText::JSONWellFormat(jsonBuff, jsonLen, 0, &sb);
+	this->txtJSON->SetText(sb.ToCString());
+	MemFree(jsonBuff);
+	this->hfvBinBuff->LoadData(binBuffFD);
+	DEL_CLASS(jsonFD);
+	return true;
 }
 
 SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
