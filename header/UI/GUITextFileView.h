@@ -13,8 +13,8 @@ namespace UI
 	public:
 		typedef void (__stdcall *TextPosEvent)(void *userObj, UInt32 textPosX, UOSInt textPosY);
 	private:
-		Data::ArrayList<TextPosEvent> *textPosUpdHdlr;
-		Data::ArrayList<void *> *textPosUpdObj;
+		Data::ArrayList<TextPosEvent> textPosUpdHdlr;
+		Data::ArrayList<void *> textPosUpdObj;
 		IO::FileStream *fs;
 		UInt32 codePage;
 //		void *drawFont;
@@ -24,12 +24,12 @@ namespace UI
 		UInt8 *readBuff;
 		UInt64 readBuffOfst;
 		UOSInt readBuffSize;
-		Data::ArrayListUInt64 *lineOfsts;
+		Data::ArrayListUInt64 lineOfsts;
 		UInt32 fileCodePage;
 		UInt64 fileSize;
 
-		Sync::Mutex *mut;
-		Sync::Event *evtThread;
+		Sync::Mutex mut;
+		Sync::Event evtThread;
 		Bool threadToStop;
 		Bool threadRunning;
 		Bool loadNewFile;

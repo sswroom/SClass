@@ -17,14 +17,15 @@ namespace Net
 			MQTTFailoverClient *me;
 		};
 	private:
-		Net::FailoverHandler<MQTTStaticClient> *foHdlr;
+		Net::FailoverHandler<MQTTStaticClient> foHdlr;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		UInt16 kaSeconds;
-		Sync::Mutex *hdlrMut;
-		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> *hdlrList;
-		Data::ArrayList<void *> *hdlrObjList;
-		Data::ArrayList<ClientInfo*> *cliList;
+		Sync::Mutex hdlrMut;
+		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> hdlrList;
+		Data::ArrayList<void *> hdlrObjList;
+		Data::ArrayList<ClientInfo*> cliList;
+		
 		void FreeClient(ClientInfo *cliInfo);
 		static void __stdcall OnMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize);
 	public:

@@ -55,9 +55,9 @@ namespace SSWR
 			UI::GUIListBox *lbDevServices;
 			UI::GUIListView *lvDevice;
 
-			Data::ArrayList<BTStatus*> *btList;
+			Data::ArrayList<BTStatus*> btList;
 			IO::BTController::BTDevice *currDev;
-			Data::ArrayList<void *> *guidList;
+			Data::ArrayList<void *> guidList;
 
 			SSWR::AVIRead::AVIRCore *core;
 

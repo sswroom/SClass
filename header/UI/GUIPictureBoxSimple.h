@@ -16,12 +16,12 @@ namespace UI
 		Bool hasBorder;
 		Bool noBGColor;
 		Media::DrawEngine *eng;
-		Data::ArrayList<MouseEventHandler> *mouseDownHdlrs;
-		Data::ArrayList<void *> *mouseDownObjs;
-		Data::ArrayList<MouseEventHandler> *mouseMoveHdlrs;
-		Data::ArrayList<void *> *mouseMoveObjs;
-		Data::ArrayList<MouseEventHandler> *mouseUpHdlrs;
-		Data::ArrayList<void *> *mouseUpObjs;
+		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
+		Data::ArrayList<void *> mouseDownObjs;
+		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
+		Data::ArrayList<void *> mouseMoveObjs;
+		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
+		Data::ArrayList<void *> mouseUpObjs;
 
 		static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		void OnPaint();

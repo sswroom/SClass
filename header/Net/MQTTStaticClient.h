@@ -12,22 +12,22 @@ namespace Net
 	class MQTTStaticClient : public Net::FailoverChannel, public Net::MQTTClient
 	{
 	private:
-		Sync::Mutex *connMut;
+		Sync::Mutex connMut;
 		Net::MQTTConn *conn;
 		UInt16 kaSeconds;
 		Bool kaRunning;
 		Bool kaToStop;
-		Sync::Event *kaEvt;
+		Sync::Event kaEvt;
 		UInt16 packetId;
-		Sync::Mutex *packetIdMut;
+		Sync::Mutex packetIdMut;
 		IO::Writer *errLog;
 
 		Text::String *clientId;
-		Sync::Mutex *hdlrMut;
-		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> *hdlrList;
-		Data::ArrayList<void *> *hdlrObjList;
-		Sync::Mutex *topicMut;
-		Data::ArrayList<Text::String*> *topicList;
+		Sync::Mutex hdlrMut;
+		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> hdlrList;
+		Data::ArrayList<void *> hdlrObjList;
+		Sync::Mutex topicMut;
+		Data::ArrayList<Text::String*> topicList;
 
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;

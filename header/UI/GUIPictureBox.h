@@ -21,12 +21,12 @@ namespace UI
 		Bool allowResize;
 		Bool noBGColor;
 		Media::DrawEngine *eng;
-		Data::ArrayList<MouseEventHandler> *mouseDownHdlrs;
-		Data::ArrayList<void *> *mouseDownObjs;
-		Data::ArrayList<MouseEventHandler> *mouseMoveHdlrs;
-		Data::ArrayList<void *> *mouseMoveObjs;
-		Data::ArrayList<MouseEventHandler> *mouseUpHdlrs;
-		Data::ArrayList<void *> *mouseUpObjs;
+		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
+		Data::ArrayList<void *> mouseDownObjs;
+		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
+		Data::ArrayList<void *> mouseMoveObjs;
+		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
+		Data::ArrayList<void *> mouseUpObjs;
 		void *clsData;
 
 		static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);

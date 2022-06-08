@@ -28,52 +28,52 @@ OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSIn
 		me->OnPaint();
 		return 0;
 	case WM_LBUTTONDOWN:
-		i = me->mouseDownHdlrs->GetCount();
+		i = me->mouseDownHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+			me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		}
 		return 0;
 	case WM_RBUTTONDOWN:
-		i = me->mouseDownHdlrs->GetCount();
+		i = me->mouseDownHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+			me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		}
 		return 0;
 	case WM_MBUTTONDOWN:
-		i = me->mouseDownHdlrs->GetCount();
+		i = me->mouseDownHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+			me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		}
 		return 0;
 	case WM_LBUTTONUP:
-		i = me->mouseUpHdlrs->GetCount();
+		i = me->mouseUpHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+			me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
 		}
 		return 0;
 	case WM_RBUTTONUP:
-		i = me->mouseUpHdlrs->GetCount();
+		i = me->mouseUpHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+			me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
 		}
 		return 0;
 	case WM_MBUTTONUP:
-		i = me->mouseUpHdlrs->GetCount();
+		i = me->mouseUpHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+			me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		}
 		return 0;
 	case WM_MOUSEMOVE:
-		i = me->mouseMoveHdlrs->GetCount();
+		i = me->mouseMoveHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			me->mouseMoveHdlrs->GetItem(i)(me->mouseMoveObjs->GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+			me->mouseMoveHdlrs.GetItem(i)(me->mouseMoveObjs.GetItem(i), Math::Coord2D<OSInt>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
 		}
 		return 0;
 	}
@@ -202,22 +202,10 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(UI::GUICore *ui, UI::GUIClientContr
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
-	NEW_CLASS(this->mouseDownHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseDownObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseMoveHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseUpHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseUpObjs, Data::ArrayList<void *>());
 }
 
 UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 {
-	DEL_CLASS(this->mouseDownHdlrs);
-	DEL_CLASS(this->mouseDownObjs);
-	DEL_CLASS(this->mouseMoveHdlrs);
-	DEL_CLASS(this->mouseMoveObjs);
-	DEL_CLASS(this->mouseUpHdlrs);
-	DEL_CLASS(this->mouseUpObjs);
 	if (this->prevImageD)
 	{
 		this->eng->DeleteImage(this->prevImageD);
@@ -241,20 +229,20 @@ OSInt UI::GUIPictureBoxSimple::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIPictureBoxSimple::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseDownHdlrs->Add(hdlr);
-	this->mouseDownObjs->Add(userObj);
+	this->mouseDownHdlrs.Add(hdlr);
+	this->mouseDownObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxSimple::HandleMouseMove(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseMoveHdlrs->Add(hdlr);
-	this->mouseMoveObjs->Add(userObj);
+	this->mouseMoveHdlrs.Add(hdlr);
+	this->mouseMoveObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseUpHdlrs->Add(hdlr);
-	this->mouseUpObjs->Add(userObj);
+	this->mouseUpHdlrs.Add(hdlr);
+	this->mouseUpObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxSimple::SetImage(Media::StaticImage *currImage)

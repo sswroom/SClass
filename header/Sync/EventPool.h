@@ -9,11 +9,11 @@ namespace Sync
 	class EventPool
 	{
 	private:
-		Data::ArrayList<void *> *handList;
-		Data::ArrayList<Sync::Event*> *evtList;
-		Data::ArrayList<void *> *objList;
-		Sync::Mutex *mut;
-		Sync::Event *mainEvt;
+		Data::ArrayList<void *> handList;
+		Data::ArrayList<Sync::Event*> evtList;
+		Data::ArrayList<void *> objList;
+		Sync::Mutex mut;
+		Sync::Event mainEvt;
 		Int32 state; //0 = normal, 1 = changing, 2 = closing
 		
 	public:

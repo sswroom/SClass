@@ -11,11 +11,11 @@ namespace UI
 		class GtkComboBox : public GtkControl
 		{
 		private:
-			Data::ArrayList<UI::UIEvent> *selChgHdlrs;
-			Data::ArrayList<void *> *selChgObjs;
+			Data::ArrayList<UI::UIEvent> selChgHdlrs;
+			Data::ArrayList<void *> selChgObjs;
 			void *store;
-			Data::ArrayList<void *> *items;
-			Data::ArrayList<const WChar *> *texts;
+			Data::ArrayList<void *> items;
+			Data::ArrayList<const WChar *> texts;
 
 			static void EventChanged(void *window, void *userObj);
 		public:

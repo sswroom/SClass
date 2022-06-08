@@ -30,14 +30,14 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				SDEL_STRING(me->srchText);
 				me->isSearching = false;
 			}
-			Sync::MutexUsage mutUsage(me->mut);
+			Sync::MutexUsage mutUsage(&me->mut);
 			me->loadNewFile = false;
 			if (me->fs)
 			{
 				DEL_CLASS(me->fs);
 			}
 			NEW_CLASS(me->fs, IO::FileStream(me->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-			me->lineOfsts->Clear();
+			me->lineOfsts.Clear();
 			me->readingFile = true;
 			me->readBuffOfst = 0;
 			me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
@@ -69,8 +69,8 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				}
 			}
 
-			mutUsage.ReplaceMutex(me->mut);
-			me->lineOfsts->Add(me->readBuffOfst);
+			mutUsage.ReplaceMutex(&me->mut);
+			me->lineOfsts.Add(me->readBuffOfst);
 			mutUsage.EndUse();
 			lastC = 0;
 			if (me->fileCodePage == 1200)
@@ -80,7 +80,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 					if (me->loadNewFile || me->threadToStop)
 						break;
 
-					Sync::MutexUsage mutUsage(me->mut);
+					Sync::MutexUsage mutUsage(&me->mut);
 					lineCurr = 0;
 					while (lineCurr < me->readBuffSize)
 					{
@@ -90,11 +90,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							if (c == 0xa)
 							{
 								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 							}
 							else
 							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 							}
 						}
 						else if (lastC == 0xa)
@@ -102,11 +102,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							if (c == 0xd)
 							{
 								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 							}
 							else
 							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 							}
 						}
 						lastC = c;
@@ -127,7 +127,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						break;
 
 					lineCurr = 0;
-					Sync::MutexUsage mutUsage(me->mut);
+					Sync::MutexUsage mutUsage(&me->mut);
 					while (lineCurr < me->readBuffSize)
 					{
 						c = (WChar)((me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1]);
@@ -136,11 +136,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							if (c == 0xa)
 							{
 								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 							}
 							else
 							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 							}
 						}
 						else if (lastC == 0xa)
@@ -148,11 +148,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							if (c == 0xd)
 							{
 								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 							}
 							else
 							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 							}
 						}
 						lastC = c;
@@ -173,7 +173,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						break;
 
 					lineCurr = 0;
-					Sync::MutexUsage mutUsage(me->mut);
+					Sync::MutexUsage mutUsage(&me->mut);
 					while (lineCurr < me->readBuffSize)
 					{
 						c = me->readBuff[lineCurr];
@@ -182,11 +182,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							if (c == 0xa)
 							{
 								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 							}
 							else
 							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 							}
 						}
 						else if (lastC == 0xa)
@@ -194,11 +194,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							if (c == 0xd)
 							{
 								c = 0;
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 							}
 							else
 							{
-								me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 							}
 						}
 						lastC = c;
@@ -216,7 +216,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			}
 			else
 			{
-				me->lineOfsts->Add(me->readBuffOfst);
+				me->lineOfsts.Add(me->readBuffOfst);
 			}
 			me->fileSize = me->readBuffOfst;
 			me->readingFile = false;
@@ -224,16 +224,16 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 		else if (me->fs)
 		{
 			UInt64 size;
-			Sync::MutexUsage mutUsage(me->mut);
+			Sync::MutexUsage mutUsage(&me->mut);
 			size = me->fs->GetLength();
 			mutUsage.EndUse();
 			if (size > me->fileSize)
 			{
 				UOSInt i;
-				Sync::MutexUsage mutUsage(me->mut);
-				i = me->lineOfsts->GetCount();
-				me->lineOfsts->RemoveAt(i - 1);
-				me->readBuffOfst = me->lineOfsts->GetItem(i - 2);
+				Sync::MutexUsage mutUsage(&me->mut);
+				i = me->lineOfsts.GetCount();
+				me->lineOfsts.RemoveAt(i - 1);
+				me->readBuffOfst = me->lineOfsts.GetItem(i - 2);
 				me->readingFile = true;
 				me->fs->SeekFromBeginning(me->readBuffOfst);
 				me->readBuffSize = me->fs->Read(me->readBuff, READBUFFSIZE);
@@ -247,7 +247,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						if (me->loadNewFile || me->threadToStop)
 							break;
 
-						Sync::MutexUsage mutUsage(me->mut);
+						Sync::MutexUsage mutUsage(&me->mut);
 						lineCurr = 0;
 						while (lineCurr < me->readBuffSize)
 						{
@@ -257,11 +257,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 								if (c == 0xa)
 								{
 									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 								}
 								else
 								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 								}
 							}
 							else if (lastC == 0xa)
@@ -269,11 +269,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 								if (c == 0xd)
 								{
 									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 								}
 								else
 								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 								}
 							}
 							lastC = c;
@@ -294,7 +294,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							break;
 
 						lineCurr = 0;
-						Sync::MutexUsage mutUsage(me->mut);
+						Sync::MutexUsage mutUsage(&me->mut);
 						while (lineCurr < me->readBuffSize)
 						{
 							c = (WChar)((me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1]);
@@ -303,11 +303,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 								if (c == 0xa)
 								{
 									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 								}
 								else
 								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 								}
 							}
 							else if (lastC == 0xa)
@@ -315,11 +315,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 								if (c == 0xd)
 								{
 									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 								}
 								else
 								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 								}
 							}
 							lastC = c;
@@ -340,7 +340,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							break;
 
 						lineCurr = 0;
-						Sync::MutexUsage mutUsage(me->mut);
+						Sync::MutexUsage mutUsage(&me->mut);
 						while (lineCurr < me->readBuffSize)
 						{
 							c = me->readBuff[lineCurr];
@@ -349,11 +349,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 								if (c == 0xa)
 								{
 									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 								}
 								else
 								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 								}
 							}
 							else if (lastC == 0xa)
@@ -361,11 +361,11 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 								if (c == 0xd)
 								{
 									c = 0;
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr + 1);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
 								}
 								else
 								{
-									me->lineOfsts->Add(me->readBuffOfst + lineCurr);
+									me->lineOfsts.Add(me->readBuffOfst + lineCurr);
 								}
 							}
 							lastC = c;
@@ -383,7 +383,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				}
 				else
 				{
-					me->lineOfsts->Add(me->readBuffOfst);
+					me->lineOfsts.Add(me->readBuffOfst);
 				}
 				me->fileSize = me->readBuffOfst;
 				me->readingFile = false;
@@ -399,8 +399,8 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			UOSInt startCaretY = me->caretY;
 			UInt32 srchCaretX;
 			UOSInt srchCaretY;
-			UInt64 startLineOfst = me->lineOfsts->GetItem(startCaretY);
-			UInt64 nextLineOfst = me->lineOfsts->GetItem(startCaretY + 1);
+			UInt64 startLineOfst = me->lineOfsts.GetItem(startCaretY);
+			UInt64 nextLineOfst = me->lineOfsts.GetItem(startCaretY + 1);
 			UInt8 *srchBuff;
 			UInt64 currOfst;
 			UOSInt currSize;
@@ -420,7 +420,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				currOfst = startLineOfst;
 				while (true)
 				{
-					Sync::MutexUsage mutUsage(me->mut);
+					Sync::MutexUsage mutUsage(&me->mut);
 					if (me->fs)
 					{
 						me->fs->SeekFromBeginning(currOfst);
@@ -492,7 +492,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 					currOfst = 0;
 					while (currOfst < nextLineOfst)
 					{
-						Sync::MutexUsage mutUsage(me->mut);
+						Sync::MutexUsage mutUsage(&me->mut);
 						if (me->fs)
 						{
 							currSize = (UOSInt)(nextLineOfst - currOfst);
@@ -540,7 +540,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			SDEL_STRING(me->srchText);
 			me->isSearching = false;
 		}
-		me->evtThread->Wait(1000);
+		me->evtThread.Wait(1000);
 	}
 	me->threadRunning = false;
 	return 0;
@@ -569,7 +569,7 @@ void UI::GUITextFileView::EnsureCaretVisible()
 		needRedraw = true;
 	}
 
-	if (caretY >= this->lineOfsts->GetCount() - 1)
+	if (caretY >= this->lineOfsts.GetCount() - 1)
 	{
 	}
 	else if (this->fs)
@@ -577,12 +577,12 @@ void UI::GUITextFileView::EnsureCaretVisible()
 		UInt8 *rbuff;
 		UInt64 lineOfst;
 		UInt64 nextOfst;
-		Sync::MutexUsage mutUsage(this->mut);
-		lineOfst = this->lineOfsts->GetItem(this->caretY);
-		nextOfst = this->lineOfsts->GetItem(this->caretY + 1);
-		if (nextOfst == 0 && this->lineOfsts->GetCount() - 1 <= this->caretY + 1)
+		Sync::MutexUsage mutUsage(&this->mut);
+		lineOfst = this->lineOfsts.GetItem(this->caretY);
+		nextOfst = this->lineOfsts.GetItem(this->caretY + 1);
+		if (nextOfst == 0 && this->lineOfsts.GetCount() - 1 <= this->caretY + 1)
 		{
-			nextOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+			nextOfst = this->lineOfsts.GetItem(this->lineOfsts.GetCount() - 1);
 		}
 		if (nextOfst > lineOfst)
 		{
@@ -696,7 +696,7 @@ void UI::GUITextFileView::CopySelected()
 	else if (selTopX < selBottomX)
 	{
 	}
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->fs == 0)
 	{
 		mutUsage.EndUse();
@@ -713,8 +713,8 @@ void UI::GUITextFileView::CopySelected()
 	NEW_CLASS(enc, Text::Encoding(this->fileCodePage));
 	if (selTopY == selBottomY)
 	{
-		startOfst = this->lineOfsts->GetItem(selTopY);
-		endOfst = this->lineOfsts->GetItem(selTopY + 1);
+		startOfst = this->lineOfsts.GetItem(selTopY);
+		endOfst = this->lineOfsts.GetItem(selTopY + 1);
 		if (endOfst == 0)
 		{
 			mutUsage.EndUse();
@@ -739,8 +739,8 @@ void UI::GUITextFileView::CopySelected()
 	{
 		Text::StringBuilderUTF8 sb;
 
-		startOfst = this->lineOfsts->GetItem(selTopY);
-		endOfst = this->lineOfsts->GetItem(selBottomY);
+		startOfst = this->lineOfsts.GetItem(selTopY);
+		endOfst = this->lineOfsts.GetItem(selBottomY);
 		if (endOfst == 0)
 		{
 			mutUsage.EndUse();
@@ -766,8 +766,8 @@ void UI::GUITextFileView::CopySelected()
 		MemFree(line);
 		MemFree(rbuff);
 
-		startOfst = this->lineOfsts->GetItem(selBottomY);
-		endOfst = this->lineOfsts->GetItem(selBottomY + 1);
+		startOfst = this->lineOfsts.GetItem(selBottomY);
+		endOfst = this->lineOfsts.GetItem(selBottomY + 1);
 		if (endOfst == 0)
 		{
 			mutUsage.EndUse();
@@ -797,11 +797,11 @@ UOSInt UI::GUITextFileView::GetLineCharCnt(UOSInt lineNum)
 	UInt64 nextOfst;
 	UInt8 *rbuff;
 
-	lineOfst = this->lineOfsts->GetItem(lineNum);
-	nextOfst = this->lineOfsts->GetItem(lineNum + 1);
-	if (nextOfst == 0 && this->lineOfsts->GetCount() - 1 <= lineNum + 1)
+	lineOfst = this->lineOfsts.GetItem(lineNum);
+	nextOfst = this->lineOfsts.GetItem(lineNum + 1);
+	if (nextOfst == 0 && this->lineOfsts.GetCount() - 1 <= lineNum + 1)
 	{
-		nextOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+		nextOfst = this->lineOfsts.GetItem(this->lineOfsts.GetCount() - 1);
 	}
 	if (nextOfst > lineOfst)
 	{
@@ -829,7 +829,7 @@ UOSInt UI::GUITextFileView::GetLineCharCnt(UOSInt lineNum)
 
 void UI::GUITextFileView::GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY)
 {
-	OSInt lineNum = this->lineOfsts->SortedIndexOf(byteOfst);
+	OSInt lineNum = this->lineOfsts.SortedIndexOf(byteOfst);
 	if (lineNum >= 0)
 	{
 		*txtPosX = 0;
@@ -837,11 +837,11 @@ void UI::GUITextFileView::GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, U
 		return;
 	}
 	lineNum = ~lineNum - 1;
-	UInt64 thisOfst = this->lineOfsts->GetItem((UOSInt)lineNum);
+	UInt64 thisOfst = this->lineOfsts.GetItem((UOSInt)lineNum);
 	UOSInt buffSize = (UOSInt)(byteOfst - thisOfst);
 	UInt8 *rbuff = MemAlloc(UInt8, buffSize);
 	Text::Encoding enc(this->fileCodePage);
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->fs->SeekFromBeginning(thisOfst);
 	this->fs->Read(rbuff, buffSize);
 	mutUsage.EndUse();
@@ -852,10 +852,10 @@ void UI::GUITextFileView::GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, U
 
 void UI::GUITextFileView::EventTextPosUpdated()
 {
-	UOSInt i = this->textPosUpdHdlr->GetCount();
+	UOSInt i = this->textPosUpdHdlr.GetCount();
 	while (i-- > 0)
 	{
-		this->textPosUpdHdlr->GetItem(i)(this->textPosUpdObj->GetItem(i), this->caretX, this->caretY);
+		this->textPosUpdHdlr.GetItem(i)(this->textPosUpdObj.GetItem(i), this->caretX, this->caretY);
 	}
 }
 
@@ -883,19 +883,14 @@ UI::GUITextFileView::GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *pare
 	this->isSearching = false;
 	this->srchText = 0;
 	this->fileSize = 0;
-	NEW_CLASS(lineOfsts, Data::ArrayListUInt64());
-	NEW_CLASS(this->textPosUpdHdlr, Data::ArrayList<TextPosEvent>());
-	NEW_CLASS(this->textPosUpdObj, Data::ArrayList<void *>());
 
-	NEW_CLASS(this->evtThread, Sync::Event(true));
-	NEW_CLASS(this->mut, Sync::Mutex());
 	Sync::Thread::Create(ProcThread, this);
 }
 
 UI::GUITextFileView::~GUITextFileView()
 {
 	this->threadToStop = true;
-	this->evtThread->Set();
+	this->evtThread.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(10);
@@ -910,11 +905,6 @@ UI::GUITextFileView::~GUITextFileView()
 		this->fileName->Release();
 		this->fileName = 0;
 	}
-	DEL_CLASS(this->evtThread);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->lineOfsts);
-	DEL_CLASS(this->textPosUpdHdlr);
-	DEL_CLASS(this->textPosUpdObj);
 	SDEL_STRING(this->srchText);
 }
 
@@ -967,9 +957,9 @@ void UI::GUITextFileView::EventPageUp()
 void UI::GUITextFileView::EventPageDown()
 {
 	this->caretY += this->pageLineCnt - 1;
-	if (this->caretY >= this->lineOfsts->GetCount() - 1)
+	if (this->caretY >= this->lineOfsts.GetCount() - 1)
 	{
-		this->caretY = this->lineOfsts->GetCount() - 1;
+		this->caretY = this->lineOfsts.GetCount() - 1;
 		this->caretX = 0;
 	}
 	this->UpdateCaretSel(false);
@@ -1005,8 +995,8 @@ void UI::GUITextFileView::EventRight()
 	{
 		this->caretX = 0;
 		this->caretY++;
-		if (this->caretY >= this->lineOfsts->GetCount() - 1)
-			this->caretY = this->lineOfsts->GetCount() - 1;
+		if (this->caretY >= this->lineOfsts.GetCount() - 1)
+			this->caretY = this->lineOfsts.GetCount() - 1;
 		this->UpdateCaretSel(false);
 		this->EnsureCaretVisible();
 		this->UpdateCaretPos();
@@ -1035,9 +1025,9 @@ void UI::GUITextFileView::EventHome()
 void UI::GUITextFileView::EventEnd()
 {
 	this->caretX = 0;
-	this->caretY = this->lineOfsts->GetCount() - 1;
+	this->caretY = this->lineOfsts.GetCount() - 1;
 	this->UpdateCaretSel(true);
-	this->SetScrollVPos(this->lineOfsts->GetCount() - 1, false);
+	this->SetScrollVPos(this->lineOfsts.GetCount() - 1, false);
 	this->Redraw();
 	this->EventTextPosUpdated();
 }
@@ -1139,7 +1129,7 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 
 void UI::GUITextFileView::EventTimerTick()
 {
-	UOSInt currLineCnt = this->lineOfsts->GetCount();
+	UOSInt currLineCnt = this->lineOfsts.GetCount();
 	if (this->lastLineCnt != currLineCnt)
 	{
 		Bool needRedraw = false;
@@ -1195,18 +1185,18 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, bgBrush);
 	dimg->DelBrush(bgBrush);
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->fs == 0)
 	{
 		mutUsage.EndUse();
 		return;
 	}
 	NEW_CLASS(enc, Text::Encoding(this->fileCodePage));
-	startOfst = this->lineOfsts->GetItem(yPos);
-	endOfst = this->lineOfsts->GetItem(yPos + this->pageLineCnt);
+	startOfst = this->lineOfsts.GetItem(yPos);
+	endOfst = this->lineOfsts.GetItem(yPos + this->pageLineCnt);
 	if (endOfst == 0)
 	{
-		endOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+		endOfst = this->lineOfsts.GetItem(this->lineOfsts.GetCount() - 1);
 	}
 	rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));
 	this->fs->SeekFromBeginning(startOfst);
@@ -1255,8 +1245,8 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	i = 0;
 	while (i < this->pageLineCnt)
 	{
-		nextOfst = this->lineOfsts->GetItem(i + yPos + 1);
-		if (nextOfst == 0 && i + yPos + 1 >= this->lineOfsts->GetCount() - 1)
+		nextOfst = this->lineOfsts.GetItem(i + yPos + 1);
+		if (nextOfst == 0 && i + yPos + 1 >= this->lineOfsts.GetCount() - 1)
 		{
 			nextOfst = endOfst;
 		}
@@ -1459,7 +1449,7 @@ void UI::GUITextFileView::UpdateCaretPos()
 	xPos = this->dispLineNumW;
 	xScr = (UOSInt)this->GetScrollHPos();
 
-	if (caretY < 0 || caretY >= this->lineOfsts->GetCount() - 1)
+	if (caretY < 0 || caretY >= this->lineOfsts.GetCount() - 1)
 	{
 	}
 	else if (this->fs)
@@ -1467,12 +1457,12 @@ void UI::GUITextFileView::UpdateCaretPos()
 		UInt8 *rbuff;
 		UInt64 lineOfst;
 		UInt64 nextOfst;
-		Sync::MutexUsage mutUsage(this->mut);
-		lineOfst = this->lineOfsts->GetItem(this->caretY);
-		nextOfst = this->lineOfsts->GetItem(this->caretY + 1);
-		if (nextOfst == 0 && this->lineOfsts->GetCount() - 1 <= this->caretY + 1)
+		Sync::MutexUsage mutUsage(&this->mut);
+		lineOfst = this->lineOfsts.GetItem(this->caretY);
+		nextOfst = this->lineOfsts.GetItem(this->caretY + 1);
+		if (nextOfst == 0 && this->lineOfsts.GetCount() - 1 <= this->caretY + 1)
 		{
-			nextOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+			nextOfst = this->lineOfsts.GetItem(this->lineOfsts.GetCount() - 1);
 		}
 		if (nextOfst > lineOfst)
 		{
@@ -1512,12 +1502,12 @@ Bool UI::GUITextFileView::IsLoading()
 
 UOSInt UI::GUITextFileView::GetLineCount()
 {
-	return this->lineOfsts->GetCount() - 1;
+	return this->lineOfsts.GetCount() - 1;
 }
 
 void UI::GUITextFileView::SetCodePage(UInt32 codePage)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->codePage = codePage;
 }
 
@@ -1528,7 +1518,7 @@ Bool UI::GUITextFileView::LoadFile(Text::String *fileName)
 		Sync::Thread::Sleep(10);
 	}
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->fileName)
 	{
 		this->fileName->Release();
@@ -1548,7 +1538,7 @@ Bool UI::GUITextFileView::LoadFile(Text::String *fileName)
 	this->selEndY = 0;
 	this->selLastX = 0;
 	this->selLastY = 0;
-	this->evtThread->Set();
+	this->evtThread.Set();
 	mutUsage.EndUse();
 	this->EventTextPosUpdated();
 	return true;
@@ -1564,9 +1554,9 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textP
 	OSInt textY = (OSInt)(OSInt2Double(this->GetScrollVPos()) + OSInt2Double(scnPosY) / this->pageLineHeight);
 	Int32 drawX;
 	UInt32 textX = 0;
-	if (textY >= (OSInt)this->lineOfsts->GetCount() - 1)
+	if (textY >= (OSInt)this->lineOfsts.GetCount() - 1)
 	{
-		textY = (OSInt)this->lineOfsts->GetCount() - 1;
+		textY = (OSInt)this->lineOfsts.GetCount() - 1;
 		textX = 0;
 		*textPosX = textX;
 		*textPosY = (UOSInt)textY;
@@ -1585,12 +1575,12 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textP
 		UInt8 *rbuff;
 		UInt64 lineOfst;
 		UInt64 nextOfst;
-		Sync::MutexUsage mutUsage(this->mut);
-		lineOfst = this->lineOfsts->GetItem((UOSInt)textY);
-		nextOfst = this->lineOfsts->GetItem((UOSInt)textY + 1);
-		if (nextOfst == 0 && (OSInt)this->lineOfsts->GetCount() - 1 <= textY + 1)
+		Sync::MutexUsage mutUsage(&this->mut);
+		lineOfst = this->lineOfsts.GetItem((UOSInt)textY);
+		nextOfst = this->lineOfsts.GetItem((UOSInt)textY + 1);
+		if (nextOfst == 0 && (OSInt)this->lineOfsts.GetCount() - 1 <= textY + 1)
 		{
-			nextOfst = this->lineOfsts->GetItem(this->lineOfsts->GetCount() - 1);
+			nextOfst = this->lineOfsts.GetItem(this->lineOfsts.GetCount() - 1);
 		}
 		if (nextOfst > lineOfst)
 		{
@@ -1632,9 +1622,9 @@ UInt32 UI::GUITextFileView::GetTextPosX()
 void UI::GUITextFileView::GoToText(UOSInt newPosY, UInt32 newPosX)
 {
 	UOSInt lineCharCnt;
-	if (newPosY >= this->lineOfsts->GetCount())
+	if (newPosY >= this->lineOfsts.GetCount())
 	{
-		newPosY = this->lineOfsts->GetCount() - 1;
+		newPosY = this->lineOfsts.GetCount() - 1;
 	}
 	if (newPosY < 0)
 	{
@@ -1661,12 +1651,12 @@ void UI::GUITextFileView::SearchText(Text::CString txt)
 		SDEL_STRING(this->srchText);
 		this->srchText = Text::String::New(txt);
 		this->isSearching = true;
-		this->evtThread->Set();
+		this->evtThread.Set();
 	}
 }
 
 void UI::GUITextFileView::HandleTextPosUpdate(TextPosEvent hdlr, void *obj)
 {
-	this->textPosUpdHdlr->Add(hdlr);
-	this->textPosUpdObj->Add(obj);
+	this->textPosUpdHdlr.Add(hdlr);
+	this->textPosUpdObj.Add(obj);
 }

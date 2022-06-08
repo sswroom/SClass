@@ -43,12 +43,12 @@ namespace Map
 	private:
 		Net::WebBrowser *browser;
 		Parser::ParserList *parsers;
-		Data::ArrayList<ImageStat *> *pendingList;
-		Data::ArrayList<ImageStat *> *loadingList;
-		Data::ArrayList<ImageStat *> *loadedList;
-		Sync::Mutex *loadingMut;
-		Sync::RWMutex *loadedMut;
-		Sync::Event *loadEvt;
+		Data::ArrayList<ImageStat *> pendingList;
+		Data::ArrayList<ImageStat *> loadingList;
+		Data::ArrayList<ImageStat *> loadedList;
+		Sync::Mutex loadingMut;
+		Sync::RWMutex loadedMut;
+		Sync::Event loadEvt;
 		Int32 nextId;
 		Bool boundsExists;
 		Math::Coord2DDbl min;
@@ -56,9 +56,9 @@ namespace Map
 		Int64 minTime;
 		Int64 maxTime;
 		Int64 currTime;
-		Sync::Mutex *updMut;
-		Data::ArrayList<UpdatedHandler> *updHdlrs;
-		Data::ArrayList<void *> *updObjs;
+		Sync::Mutex updMut;
+		Data::ArrayList<UpdatedHandler> updHdlrs;
+		Data::ArrayList<void *> updObjs;
 
 		Bool threadRunning;
 		Bool threadToStop;

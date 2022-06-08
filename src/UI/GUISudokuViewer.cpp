@@ -10,14 +10,10 @@ UI::GUISudokuViewer::GUISudokuViewer(UI::GUICore *ui, UI::GUIClientControl *pare
 	this->board = board;
 	this->selX = 0;
 	this->selY = 0;
-	NEW_CLASS(this->numInputHdlr, Data::ArrayList<NumberInputEvent>());
-	NEW_CLASS(this->numInputObj, Data::ArrayList<void *>());
 }
 
 UI::GUISudokuViewer::~GUISudokuViewer()
 {
-	DEL_CLASS(this->numInputHdlr);
-	DEL_CLASS(this->numInputObj);
 }
 
 Bool UI::GUISudokuViewer::OnMouseDown(OSInt x, OSInt y, MouseButton btn)
@@ -64,22 +60,22 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 	if (key >= UI::GUIControl::GK_0 && key <= UI::GUIControl::GK_9)
 	{
 		NumberInputEvent hdlr;
-		i = this->numInputHdlr->GetCount();
+		i = this->numInputHdlr.GetCount();
 		while (i-- > 0)
 		{
-			hdlr = this->numInputHdlr->GetItem(i);
-			hdlr(this->numInputObj->GetItem(i), this->selX, this->selY, (UInt8)(key - UI::GUIControl::GK_0));
+			hdlr = this->numInputHdlr.GetItem(i);
+			hdlr(this->numInputObj.GetItem(i), this->selX, this->selY, (UInt8)(key - UI::GUIControl::GK_0));
 		}
 		return true;
 	}
 	else if (key >= UI::GUIControl::GK_NUMPAD0 && key <= UI::GUIControl::GK_NUMPAD9)
 	{
 		NumberInputEvent hdlr;
-		i = this->numInputHdlr->GetCount();
+		i = this->numInputHdlr.GetCount();
 		while (i-- > 0)
 		{
-			hdlr = this->numInputHdlr->GetItem(i);
-			hdlr(this->numInputObj->GetItem(i), this->selX, this->selY, (UInt8)(key - UI::GUIControl::GK_NUMPAD0));
+			hdlr = this->numInputHdlr.GetItem(i);
+			hdlr(this->numInputObj.GetItem(i), this->selX, this->selY, (UInt8)(key - UI::GUIControl::GK_NUMPAD0));
 		}
 		return true;
 	}
@@ -233,6 +229,6 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 
 void UI::GUISudokuViewer::HandleNumberInput(NumberInputEvent hdlr, void *userObj)
 {
-	this->numInputHdlr->Add(hdlr);
-	this->numInputObj->Add(userObj);
+	this->numInputHdlr.Add(hdlr);
+	this->numInputObj.Add(userObj);
 }

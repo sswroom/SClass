@@ -15,7 +15,6 @@ UI::GUIPictureList::GUIPictureList(UI::GUICore *ui, UI::GUIClientControl *parent
 	this->iconWidth = iconWidth;
 	this->iconHeight = iconHeight;
 	this->selectedIndex = INVALID_INDEX;
-	NEW_CLASS(this->imgList, Data::ArrayList<Media::DrawImage*>());
 
 	Media::ColorProfile rgbColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &rgbColor, &rgbColor, 0, Media::AT_NO_ALPHA));
@@ -27,7 +26,6 @@ UI::GUIPictureList::GUIPictureList(UI::GUICore *ui, UI::GUIClientControl *parent
 UI::GUIPictureList::~GUIPictureList()
 {
 	this->Clear();
-	DEL_CLASS(this->imgList);
 	DEL_CLASS(this->resizer);
 }
 

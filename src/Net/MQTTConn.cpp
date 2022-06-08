@@ -79,10 +79,10 @@ void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int
 		packet->packetType = (UInt8)cmdType;
 		packet->size = cmdSize;
 		MemCopyNO(packet->content, cmd, cmdSize);
-		Sync::MutexUsage mutUsage(this->packetMut);
-		this->packetList->Add(packet);
+		Sync::MutexUsage mutUsage(&this->packetMut);
+		this->packetList.Add(packet);
 		mutUsage.EndUse();
-		this->packetEvt->Set();
+		this->packetEvt.Set();
 	}
 }
 
@@ -108,7 +108,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 			break;
 		me->totalDownload += readSize;
 		buffSize += readSize;
-		readSize = me->protoHdlr->ParseProtocol(me->cli, me, me->cliData, buff, buffSize);
+		readSize = me->protoHdlr.ParseProtocol(me->cli, me, me->cliData, buff, buffSize);
 		if (readSize == 0)
 		{
 			buffSize = 0;
@@ -121,7 +121,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	}
 	MemFree(buff);
 	me->recvRunning = false;
-	me->packetEvt->Set();
+	me->packetEvt.Set();
 	if (me->discHdlr)
 	{
 		me->discHdlr(me->discHdlrObj);
@@ -131,10 +131,10 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 
 void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
-	UOSInt i = this->hdlrList->GetCount();
+	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
-		this->hdlrList->GetItem(i)(this->hdlrObjList->GetItem(i), topic, message, msgSize);
+		this->hdlrList.GetItem(i)(this->hdlrObjList.GetItem(i), topic, message, msgSize);
 	}
 }
 
@@ -145,10 +145,10 @@ Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt
 	Int64 t;
 	while (true)
 	{
-		while (this->packetList->GetCount() > 0)
+		while (this->packetList.GetCount() > 0)
 		{
-			Sync::MutexUsage mutUsage(this->packetMut);
-			packet = this->packetList->RemoveAt(0);
+			Sync::MutexUsage mutUsage(&this->packetMut);
+			packet = this->packetList.RemoveAt(0);
 			mutUsage.EndUse();
 			if ((packet->packetType & 0xf0) == packetType)
 			{
@@ -159,7 +159,7 @@ Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt
 		t = clk.GetTimeDiffus() / 1000;
 		if (!this->recvRunning || t >= (OSInt)timeoutMS)
 			return 0;
-		this->packetEvt->Wait(timeoutMS - (UOSInt)t);
+		this->packetEvt.Wait(timeoutMS - (UOSInt)t);
 	}
 }
 
@@ -174,7 +174,7 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 	return sendSize == packetSize;
 }
 
-Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj)
+Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -184,13 +184,6 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CS
 	this->totalUpload = 0;
 	this->discHdlr = discHdlr;
 	this->discHdlrObj = discHdlrObj;
-	NEW_CLASS(this->hdlrList, Data::ArrayList<PublishMessageHdlr>());
-	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
-
-	NEW_CLASS(this->packetMut, Sync::Mutex());
-	NEW_CLASS(this->packetList, Data::ArrayList<PacketInfo*>());
-	NEW_CLASS(this->packetEvt, Sync::Event(true));
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
 
 	if (this->ssl)
 	{
@@ -220,7 +213,7 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CS
 	else
 	{
 		this->cli->SetNoDelay(true);
-		this->cliData = this->protoHdlr->CreateStreamData(this->cli);
+		this->cliData = this->protoHdlr.CreateStreamData(this->cli);
 		Sync::Thread::Create(RecvThread, this);
 		while (!this->recvStarted)
 		{
@@ -241,28 +234,22 @@ Net::MQTTConn::~MQTTConn()
 		{
 			Sync::Thread::Sleep(1);
 		}
-		this->protoHdlr->DeleteStreamData(this->cli, this->cliData);
+		this->protoHdlr.DeleteStreamData(this->cli, this->cliData);
 		DEL_CLASS(this->cli);
 		this->cli = 0;
 	}
-	DEL_CLASS(this->protoHdlr);
 	UOSInt i;
-	i = this->packetList->GetCount();
+	i = this->packetList.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->packetList->GetItem(i));
+		MemFree(this->packetList.GetItem(i));
 	}
-	DEL_CLASS(this->hdlrList);
-	DEL_CLASS(this->hdlrObjList);
-	DEL_CLASS(this->packetList);
-	DEL_CLASS(this->packetEvt);
-	DEL_CLASS(this->packetMut);
 }
 
 void Net::MQTTConn::HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj)
 {
-	this->hdlrObjList->Add(userObj);
-	this->hdlrList->Add(hdlr);
+	this->hdlrObjList.Add(userObj);
+	this->hdlrList.Add(hdlr);
 }
 
 Bool Net::MQTTConn::IsError()
@@ -307,7 +294,7 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 		MemCopyNO(&packet1[i + 2], password.v, j);
 		i += j + 2;
 	}
-	j = this->protoHdlr->BuildPacket(packet2, 0x10, 0, packet1, i, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0x10, 0, packet1, i, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -328,7 +315,7 @@ Bool Net::MQTTConn::SendPublish(Text::CString topic, Text::CString message)
 	MemCopyNO(&packet1[i], message.v, j);
 	i += j;
 
-	j = this->protoHdlr->BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -339,7 +326,7 @@ Bool Net::MQTTConn::SendPubAck(UInt16 packetId)
 	UOSInt j;
 
 	WriteMInt16(&packet1[0], packetId);
-	j = this->protoHdlr->BuildPacket(packet2, 0x40, 0, packet1, 2, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0x40, 0, packet1, 2, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -350,7 +337,7 @@ Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 	UOSInt j;
 
 	WriteMInt16(&packet1[0], packetId);
-	j = this->protoHdlr->BuildPacket(packet2, 0x50, 0, packet1, 2, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0x50, 0, packet1, 2, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -373,7 +360,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
 #if defined(DEBUG_PRINT)
 	printf("Subscribing topic %s\r\n", topic);
 #endif
-	j = this->protoHdlr->BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -381,7 +368,7 @@ Bool Net::MQTTConn::SendPing()
 {
 	UInt8 packet2[16];
 	UOSInt j;
-	j = this->protoHdlr->BuildPacket(packet2, 0xc0, 0, 0, 0, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0xc0, 0, 0, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -389,7 +376,7 @@ Bool Net::MQTTConn::SendDisconnect()
 {
 	UInt8 packet2[16];
 	UOSInt j;
-	j = this->protoHdlr->BuildPacket(packet2, 0xe0, 0, 0, 0, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0xe0, 0, 0, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -425,9 +412,9 @@ UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, UOSInt timeoutMS)
 
 void Net::MQTTConn::ClearPackets()
 {
-	Sync::MutexUsage mutUsage(this->packetMut);
-	LIST_FREE_FUNC(this->packetList, MemFree);
-	this->packetList->Clear();
+	Sync::MutexUsage mutUsage(&this->packetMut);
+	LIST_FREE_FUNC(&this->packetList, MemFree);
+	this->packetList.Clear();
 	mutUsage.EndUse();
 }
 

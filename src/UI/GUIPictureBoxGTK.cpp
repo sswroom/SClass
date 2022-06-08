@@ -277,12 +277,6 @@ UI::GUIPictureBox::GUIPictureBox(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
-	NEW_CLASS(this->mouseDownHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseDownObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseMoveHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseUpHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseUpObjs, Data::ArrayList<void *>());
 	this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetWidth(200);
 	this->resizer->SetTargetHeight(200);
@@ -303,12 +297,6 @@ UI::GUIPictureBox::GUIPictureBox(UI::GUICore *ui, UI::GUIClientControl *parent, 
 UI::GUIPictureBox::~GUIPictureBox()
 {
 	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->mouseDownHdlrs);
-	DEL_CLASS(this->mouseDownObjs);
-	DEL_CLASS(this->mouseMoveHdlrs);
-	DEL_CLASS(this->mouseMoveObjs);
-	DEL_CLASS(this->mouseUpHdlrs);
-	DEL_CLASS(this->mouseUpObjs);
 	PictureBoxData *data = (PictureBoxData*)this->clsData;
 	if (data->pixbuf)
 	{
@@ -348,20 +336,20 @@ void UI::GUIPictureBox::OnSizeChanged(Bool updateScn)
 
 void UI::GUIPictureBox::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseDownHdlrs->Add(hdlr);
-	this->mouseDownObjs->Add(userObj);
+	this->mouseDownHdlrs.Add(hdlr);
+	this->mouseDownObjs.Add(userObj);
 }
 
 void UI::GUIPictureBox::HandleMouseMove(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseMoveHdlrs->Add(hdlr);
-	this->mouseMoveObjs->Add(userObj);
+	this->mouseMoveHdlrs.Add(hdlr);
+	this->mouseMoveObjs.Add(userObj);
 }
 
 void UI::GUIPictureBox::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseUpHdlrs->Add(hdlr);
-	this->mouseUpObjs->Add(userObj);
+	this->mouseUpHdlrs.Add(hdlr);
+	this->mouseUpObjs.Add(userObj);
 }
 
 void UI::GUIPictureBox::SetImage(Media::StaticImage *currImage)
@@ -378,28 +366,28 @@ void UI::GUIPictureBox::SetNoBGColor(Bool noBGColor)
 void UI::GUIPictureBox::EventButtonDown(OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
 {
 	UOSInt i;
-	i = this->mouseDownHdlrs->GetCount();
+	i = this->mouseDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->mouseDownHdlrs->GetItem(i)(this->mouseDownObjs->GetItem(i), Math::Coord2D<OSInt>(x, y), btn);
+		this->mouseDownHdlrs.GetItem(i)(this->mouseDownObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), btn);
 	}
 }
 
 void UI::GUIPictureBox::EventButtonUp(OSInt x, OSInt y, UI::GUIControl::MouseButton btn)
 {
 	UOSInt i;
-	i = this->mouseUpHdlrs->GetCount();
+	i = this->mouseUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->mouseUpHdlrs->GetItem(i)(this->mouseUpObjs->GetItem(i), Math::Coord2D<OSInt>(x, y), btn);
+		this->mouseUpHdlrs.GetItem(i)(this->mouseUpObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), btn);
 	}
 }
 
 void UI::GUIPictureBox::EventMouseMove(OSInt x, OSInt y)
 {
-	UOSInt i = this->mouseMoveHdlrs->GetCount();
+	UOSInt i = this->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), Math::Coord2D<OSInt>(x, y), MBTN_MIDDLE);
+		this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), Math::Coord2D<OSInt>(x, y), MBTN_MIDDLE);
 	}
 }

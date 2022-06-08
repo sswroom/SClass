@@ -23,14 +23,14 @@ namespace Map
 	private:
 		Net::WebBrowser *browser;
 		Parser::ParserList *parsers;
-		Sync::RWMutex *innerLayerMut;
-		Data::ArrayList<InnerLayerInfo*> *innerLayers;
+		Sync::RWMutex innerLayerMut;
+		Data::ArrayList<InnerLayerInfo*> innerLayers;
 		Map::DrawLayerType innerLayerType;
 
 		Double currScale;
 		Int64 currTime;
-		Data::ArrayList<UpdatedHandler> *updHdlrs;
-		Data::ArrayList<void *> *updObjs;
+		Data::ArrayList<UpdatedHandler> updHdlrs;
+		Data::ArrayList<void *> updObjs;
 
 		static void __stdcall InnerUpdated(void *userObj);
 	public:

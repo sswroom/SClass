@@ -249,10 +249,6 @@ void UI::GUICustomDrawVScroll::ClearBackground(Media::DrawImage *img)
 UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->dblClkHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->dblClkObjs, Data::ArrayList<void *>());
 
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -280,10 +276,6 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientCon
 
 UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 {
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
-	DEL_CLASS(this->dblClkHdlrs);
-	DEL_CLASS(this->dblClkObjs);
 	MemFree(this->clsData);
 }
 
@@ -316,33 +308,33 @@ void UI::GUICustomDrawVScroll::OnKeyDown(UInt32 keyCode)
 
 void UI::GUICustomDrawVScroll::HandleSelChg(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, void *userObj)
 {
-	this->dblClkHdlrs->Add(hdlr);
-	this->dblClkObjs->Add(userObj);
+	this->dblClkHdlrs.Add(hdlr);
+	this->dblClkObjs.Add(userObj);
 }
 
 void UI::GUICustomDrawVScroll::EventSelChg()
 {
 	UOSInt i;
-	i = this->selChgHdlrs->GetCount();
+	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
 void UI::GUICustomDrawVScroll::EventDblClk()
 {
 	UOSInt i;
-	i = this->dblClkHdlrs->GetCount();
+	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClkHdlrs->GetItem(i)(this->dblClkObjs->GetItem(i));
+		this->dblClkHdlrs.GetItem(i)(this->dblClkObjs.GetItem(i));
 	}
 }
 

@@ -36,20 +36,20 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
-		IO::ProtoHdlr::ProtoMQTTHandler *protoHdlr;
+		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
 		Net::TCPClient *cli;
 		void *cliData;
 		Bool recvRunning;
 		Bool recvStarted;
 
-		Data::ArrayList<PublishMessageHdlr> *hdlrList;
-		Data::ArrayList<void *> *hdlrObjList;
+		Data::ArrayList<PublishMessageHdlr> hdlrList;
+		Data::ArrayList<void *> hdlrObjList;
 		DisconnectHdlr discHdlr;
 		void *discHdlrObj;
 
-		Data::ArrayList<PacketInfo *> *packetList;
-		Sync::Mutex *packetMut;
-		Sync::Event *packetEvt;
+		Data::ArrayList<PacketInfo *> packetList;
+		Sync::Mutex packetMut;
+		Sync::Event packetEvt;
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 

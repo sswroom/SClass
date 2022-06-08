@@ -11,8 +11,8 @@ namespace UI
 		class GtkButton : public GtkControl
 		{
 		private:
-			Data::ArrayList<UIEvent> *btnClkHandlers;
-			Data::ArrayList<void *> *btnClkHandlerObjs;
+			Data::ArrayList<UIEvent> btnClkHandlers;
+			Data::ArrayList<void *> btnClkHandlerObjs;
 
 			static void EventClicked(void *window, void *userObj);
 		public:

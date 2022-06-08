@@ -33,14 +33,14 @@ namespace Net
 			UInt32 ttl;
 			NameStatus status;
 			Net::SocketUtil::AddressInfo customAddr;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 		} RequestResult;
 
 		typedef struct
 		{
 			UInt8 respBuff[512];
 			UOSInt respSize;
-			Sync::Event *finEvt;
+			Sync::Event finEvt;
 		} CliRequestStatus;
 	public:
 		typedef void (__stdcall *DNSProxyRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
@@ -51,39 +51,39 @@ namespace Net
 
 		UInt32 currServerIP;
 		UOSInt currServerIndex;
-		Data::DateTime *currIPTime;
-		Sync::Mutex *dnsMut;
-		Data::ArrayList<UInt32> *dnsList;
+		Data::DateTime currIPTime;
+		Sync::Mutex dnsMut;
+		Data::ArrayList<UInt32> dnsList;
 		Bool disableV6;
 
-		Sync::Mutex *reqv4Mut;
-		Data::ICaseStringMap<RequestResult*> *reqv4Map;
+		Sync::Mutex reqv4Mut;
+		Data::ICaseStringMap<RequestResult*> reqv4Map;
 		Bool reqv4Updated;
 
-		Sync::Mutex *reqv6Mut;
-		Data::ICaseStringMap<RequestResult*> *reqv6Map;
+		Sync::Mutex reqv6Mut;
+		Data::ICaseStringMap<RequestResult*> reqv6Map;
 		Bool reqv6Updated;
 
-		Sync::Mutex *reqothMut;
-		Data::ICaseStringMap<RequestResult*> *reqothMap;
+		Sync::Mutex reqothMut;
+		Data::ICaseStringMap<RequestResult*> reqothMap;
 		Bool reqothUpdated;
 
 		Sync::Mutex *targetMut;
 		Data::UInt32Map<TargetInfo*> *targetMap;
 		Bool targetUpdated;
 
-		Sync::Mutex *lastIdMut;
+		Sync::Mutex lastIdMut;
 		UInt32 lastId;
 
-		Sync::Mutex *cliReqMut;
-		Data::UInt32Map<CliRequestStatus*> *cliReqMap;
+		Sync::Mutex cliReqMut;
+		Data::UInt32Map<CliRequestStatus*> cliReqMap;
 
-		Sync::Mutex *hdlrMut;
-		Data::ArrayList<DNSProxyRequest> *hdlrList;
-		Data::ArrayList<void *> *hdlrObjs;
+		Sync::Mutex hdlrMut;
+		Data::ArrayList<DNSProxyRequest> hdlrList;
+		Data::ArrayList<void *> hdlrObjs;
 
-		Sync::Mutex *blackListMut;
-		Data::ArrayList<Text::String *> *blackList;
+		Sync::Mutex blackListMut;
+		Data::ArrayList<Text::String *> blackList;
 
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayList<const UTF8Char *> *whiteList;

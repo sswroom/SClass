@@ -184,19 +184,10 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(UI::GUICore *ui, UI::GUIClientCon
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
-
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->dblClkHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->dblClkObjs, Data::ArrayList<void *>());
 }
 
 UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 {
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
-	DEL_CLASS(this->dblClkHdlrs);
-	DEL_CLASS(this->dblClkObjs);
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
 		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
@@ -232,33 +223,33 @@ void UI::GUICustomDrawVScroll::OnKeyDown(UInt32 keyCode)
 
 void UI::GUICustomDrawVScroll::HandleSelChg(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUICustomDrawVScroll::HandleDblClk(UI::UIEvent hdlr, void *userObj)
 {
-	this->dblClkHdlrs->Add(hdlr);
-	this->dblClkObjs->Add(userObj);
+	this->dblClkHdlrs.Add(hdlr);
+	this->dblClkObjs.Add(userObj);
 }
 
 void UI::GUICustomDrawVScroll::EventSelChg()
 {
 	UOSInt i;
-	i = this->selChgHdlrs->GetCount();
+	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
 void UI::GUICustomDrawVScroll::EventDblClk()
 {
 	UOSInt i;
-	i = this->dblClkHdlrs->GetCount();
+	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClkHdlrs->GetItem(i)(this->dblClkObjs->GetItem(i));
+		this->dblClkHdlrs.GetItem(i)(this->dblClkObjs.GetItem(i));
 	}
 }
 

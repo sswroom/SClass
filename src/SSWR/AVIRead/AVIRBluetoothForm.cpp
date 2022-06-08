@@ -93,12 +93,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(void *userObj)
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		void *guid;
-		dev->QueryServices(me->guidList);
+		dev->QueryServices(&me->guidList);
 		i = 0;
-		j = me->guidList->GetCount();
+		j = me->guidList.GetCount();
 		while (i < j)
 		{
-			guid = me->guidList->GetItem(i);
+			guid = me->guidList.GetItem(i);
 			sb.ClearStr();
 			IO::BTUtil::GetServiceName(&sb, guid);
 			me->lbDevServices->AddItem(sb.ToCString(), guid);
@@ -135,7 +135,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::ClearGUIDs()
 {
 	if (this->currDev)
 	{
-		this->currDev->FreeServices(this->guidList);
+		this->currDev->FreeServices(&this->guidList);
 		this->lbDevServices->ClearItems();
 	}
 }
@@ -247,8 +247,6 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(this->btList, Data::ArrayList<BTStatus*>());
-	NEW_CLASS(this->guidList, Data::ArrayList<void *>());
 	Data::ArrayList<IO::BTController*> btList;
 	BTStatus *btStatus;
 	Text::CString cstr;
@@ -264,7 +262,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 		btStatus = MemAlloc(BTStatus, 1);
 		btStatus->bt = btList.GetItem(i);
 		NEW_CLASS(btStatus->devList, Data::ArrayList<IO::BTController::BTDevice*>());
-		this->btList->Add(btStatus);
+		this->btList.Add(btStatus);
 		btStatus->bt->CreateDevices(btStatus->devList, false);
 
 		sb.ClearStr();
@@ -288,10 +286,10 @@ SSWR::AVIRead::AVIRBluetoothForm::~AVIRBluetoothForm()
 	BTStatus *btStatus;
 	IO::BTController::BTDevice *dev;
 	this->ClearGUIDs();
-	i = this->btList->GetCount();
+	i = this->btList.GetCount();
 	while (i-- > 0)
 	{
-		btStatus = this->btList->GetItem(i);
+		btStatus = this->btList.GetItem(i);
 		j = btStatus->devList->GetCount();
 		while (j-- > 0)
 		{
@@ -302,8 +300,6 @@ SSWR::AVIRead::AVIRBluetoothForm::~AVIRBluetoothForm()
 		DEL_CLASS(btStatus->bt);
 		MemFree(btStatus);
 	}
-	DEL_CLASS(this->btList);
-	DEL_CLASS(this->guidList);
 }
 
 void SSWR::AVIRead::AVIRBluetoothForm::OnMonitorChanged()
