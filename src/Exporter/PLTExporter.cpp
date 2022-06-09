@@ -64,20 +64,19 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Text::UTF8Writer *writer;
-	Map::GPSTrack::GPSRecord2 *recs;
+	Map::GPSTrack::GPSRecord3 *recs;
 	Data::DateTime dt;
 	Data::DateTime refTime;
 	
-	NEW_CLASS(writer, Text::UTF8Writer(stm));
+	Text::UTF8Writer writer(stm);
 	refTime.SetValue(1899, 12, 30, 0, 0, 0, 0);
 
-	writer->WriteLineC(UTF8STRC("OziExplorer Track Point File Version 2.0"));
-	writer->WriteLineC(UTF8STRC("WGS 84"));
-	writer->WriteLineC(UTF8STRC("Altitude is in Feet"));
-	writer->WriteLineC(UTF8STRC("Reserved 3"));
-	writer->WriteLineC(UTF8STRC("0,2,255,Ozi Track Log File,1")); //0,<line width>,<line color>,<description>,<track skip value>,<type: 0=normal, 10=closed polygon, 20=alarm zone>,<fill style>,<fill color>
-	writer->WriteLineC(UTF8STRC("0")); //number of points
+	writer.WriteLineC(UTF8STRC("OziExplorer Track Point File Version 2.0"));
+	writer.WriteLineC(UTF8STRC("WGS 84"));
+	writer.WriteLineC(UTF8STRC("Altitude is in Feet"));
+	writer.WriteLineC(UTF8STRC("Reserved 3"));
+	writer.WriteLineC(UTF8STRC("0,2,255,Ozi Track Log File,1")); //0,<line width>,<line color>,<description>,<track skip value>,<type: 0=normal, 10=closed polygon, 20=alarm zone>,<fill style>,<fill color>
+	writer.WriteLineC(UTF8STRC("0")); //number of points
 	
 	i = 0;
 	j = track->GetTrackCnt();
@@ -87,9 +86,9 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		recs = track->GetTrack(i, &l);
 		while (k < l)
 		{
-			sptr = FixDouble(sbuff, recs[k].lat, "0.000000", 11);
+			sptr = FixDouble(sbuff, recs[k].pos.lat, "0.000000", 11);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			sptr = FixDouble(sptr, recs[k].lon, "0.000000", 11);
+			sptr = FixDouble(sptr, recs[k].pos.lon, "0.000000", 11);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			if (k == 0)
 			{
@@ -108,15 +107,13 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			sptr = dt.ToString(sptr, "hh:mm:ss tt");
 
-			writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 			k++;
 		}
 
 		i++;
 	}
-
-	DEL_CLASS(writer);
 	return true;
 }
 

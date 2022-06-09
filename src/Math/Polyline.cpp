@@ -144,7 +144,7 @@ void Math::Polyline::GetBounds(Math::RectAreaDbl *bounds)
 	*bounds = Math::RectAreaDbl(min, max);
 }
 
-Double Math::Polyline::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
+Double Math::Polyline::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
 	UOSInt k;
 	UOSInt l;
@@ -159,14 +159,12 @@ Double Math::Polyline::CalSqrDistance(Double x, Double y, Double *nearPtX, Doubl
 	l = this->nPoint;
 
 	Double calBase;
-	Double calH;
-	Double calW;
-	Double calX;
-	Double calY;
+	Math::Coord2DDbl calDiff;
+	Math::Coord2DDbl calSqDiff;
+	Math::Coord2DDbl calPt;
+	Math::Coord2DDbl calPtOut = Math::Coord2DDbl(0, 0);
 	Double calD;
 	Double dist = 0x7fffffff;
-	Double calPtX = 0;
-	Double calPtY = 0;
 
 	while (k--)
 	{
@@ -174,89 +172,86 @@ Double Math::Polyline::CalSqrDistance(Double x, Double y, Double *nearPtX, Doubl
 		l--;
 		while (l-- > m)
 		{
-			calH = points[l].y - points[l + 1].y;
-			calW = points[l].x - points[l + 1].x;
+			calDiff = points[l] - points[l + 1];
 
-			if (calH == 0)
+			if (calDiff.y == 0)
 			{
-				calX = x;
+				calPt.x = pt.x;
 			}
 			else
 			{
-				calX = (calBase = (calW * calW)) * x;
-				calBase += calH * calH;
-				calX += calH * calH * points[l].x;
-				calX += (y - points[l].y) * calH * calW;
-				calX /= calBase;
+				calSqDiff = calDiff * calDiff;
+				calBase = calSqDiff.x + calSqDiff.y;
+				calPt.x = calSqDiff.x * pt.x;
+				calPt.x += calSqDiff.y * points[l].x;
+				calPt.x += (pt.y - points[l].y) * calDiff.x * calDiff.y;
+				calPt.x /= calBase;
 			}
 
-			if (calW == 0)
+			if (calDiff.x == 0)
 			{
-				calY = y;
+				calPt.y = pt.y;
 			}
 			else
 			{
-				calY = ((calX - points[l].x) * calH / calW) + points[l].y;
+				calPt.y = ((calPt.x - points[l].x) * calDiff.y / calDiff.x) + points[l].y;
 			}
 
-			if (calW < 0)
+			if (calDiff.x < 0)
 			{
-				if (points[l].x > calX)
+				if (points[l].x > calPt.x)
 					continue;
-				if (points[l + 1].x < calX)
-					continue;
-			}
-			else
-			{
-				if (points[l].x < calX)
-					continue;
-				if (points[l + 1].x > calX)
-					continue;
-			}
-
-			if (calH < 0)
-			{
-				if (points[l].y > calY)
-					continue;
-				if (points[l + 1].y < calY)
+				if (points[l + 1].x < calPt.x)
 					continue;
 			}
 			else
 			{
-				if (points[l].y < calY)
+				if (points[l].x < calPt.x)
 					continue;
-				if (points[l + 1].y > calY)
+				if (points[l + 1].x > calPt.x)
 					continue;
 			}
 
-			calH = y - calY;
-			calW = x - calX;
-			calD = calW * calW + calH * calH;
+			if (calDiff.y < 0)
+			{
+				if (points[l].y > calPt.y)
+					continue;
+				if (points[l + 1].y < calPt.y)
+					continue;
+			}
+			else
+			{
+				if (points[l].y < calPt.y)
+					continue;
+				if (points[l + 1].y > calPt.y)
+					continue;
+			}
+
+			calDiff = pt - calPt;
+			calSqDiff = calDiff * calDiff;
+			calD = calSqDiff.x + calSqDiff.y;
 			if (calD < dist)
 			{
 				dist = calD;
-				calPtX = calX;
-				calPtY = calY;
+				calPtOut = calPt;
 			}
 		}
 	}
 	k = this->nPoint;
 	while (k-- > 0)
 	{
-		calH = y - points[k].y;
-		calW = x - points[k].x;
-		calD = calW * calW + calH * calH;
+		calDiff = pt - points[k];
+		calSqDiff = calDiff * calDiff;
+		calD = calSqDiff.x + calSqDiff.y;
 		if (calD < dist)
 		{
 			dist = calD;
-			calPtX = points[k].x;
-			calPtY = points[k].y;
+			calPtOut = points[k];
 		}
 	}
-	if (nearPtX && nearPtY)
+	if (nearPt)
 	{
-		*nearPtX = calPtX;
-		*nearPtY = calPtY;
+		*nearPt = calPtOut;
 	}
 	return dist;
 }
@@ -341,7 +336,7 @@ Bool Math::Polyline::Equals(Math::Vector2D *vec)
 	}
 }
 
-Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
+Math::Polyline *Math::Polyline::SplitByPoint(Math::Coord2DDbl pt)
 {
 	UOSInt k;
 	UOSInt l;
@@ -352,10 +347,9 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 	k = this->nPtOfst;
 	l = this->nPoint;
 
-	Double calPtX;
-	Double calPtY;
+	Math::Coord2DDbl calPt;
 	Bool isPoint;
-	UOSInt minId = (UOSInt)this->GetPointNo(x, y, &isPoint, &calPtX, &calPtY);
+	UOSInt minId = (UOSInt)this->GetPointNo(pt, &isPoint, &calPt);
 
 	UInt32 *oldPtOfsts;
 	UInt32 *newPtOfsts;
@@ -444,8 +438,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 		{
 			newPoints[l] = oldPoints[l];
 		}
-		newPoints[minId + 1].x = calPtX;
-		newPoints[minId + 1].y = calPtY;
+		newPoints[minId + 1] = calPt;
 
 		l = k + 1;
 		while (l-- > 0)
@@ -469,8 +462,7 @@ Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 		{
 			newPoints[l - minId] = oldPoints[l];
 		}
-		newPoints[0].x = calPtX;
-		newPoints[0].y = calPtY;
+		newPoints[0] = calPt;
 
 		this->nPoint = minId + 2;
 		this->nPtOfst = k + 1;
@@ -660,7 +652,7 @@ void Math::Polyline::OptimizePolyline()
 	MemFreeA(tmpPoints);
 }
 
-OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calPtXOut, Double *calPtYOut)
+OSInt Math::Polyline::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPtOutPtr)
 {
 	UOSInt k;
 	UOSInt l;
@@ -675,13 +667,12 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 	l = this->nPoint;
 
 	Double calBase;
-	Double calH;
-	Double calW;
-	Double calX;
-	Double calY;
+	Math::Coord2DDbl calDiff;
+	Math::Coord2DDbl calSqDiff;
+	Math::Coord2DDbl calPt;
+	Math::Coord2DDbl calPtOut = Math::Coord2DDbl(0, 0);
 	Double calD;
 	Double dist = 0x7fffffff;
-	Double calPtX = 0;
 	Double calPtY = 0;
 	OSInt minId = -1;
 	Bool isPointI = false;
@@ -692,69 +683,68 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 		l--;
 		while (l-- > m)
 		{
-			calH = points[l].y - points[l + 1].y;
-			calW = points[l].x - points[l + 1].x;
+			calDiff = points[l] - points[l + 1];
 
-			if (calH == 0)
+			if (calDiff.y == 0)
 			{
-				calX = x;
+				calPt.x = pt.x;
 			}
 			else
 			{
-				calX = (calBase = (calW * calW)) * x;
-				calBase += calH * calH;
-				calX += calH * calH * (points[l].x);
-				calX += (y - points[l].y) * calH * calW;
-				calX /= calBase;
+				calSqDiff = calDiff * calDiff;
+				calBase = calSqDiff.x + calSqDiff.y;
+				calPt.x = calSqDiff.x * pt.x;
+				calPt.x += calSqDiff.y * points[l].x;
+				calPt.x += (pt.y - points[l].y) * calDiff.x * calDiff.y;
+				calPt.x /= calBase;
 			}
 
-			if (calW == 0)
+			if (calDiff.x == 0)
 			{
-				calY = y;
+				calPt.y = pt.y;
 			}
 			else
 			{
-				calY = ((calX - (points[l].x)) * calH / calW) + points[l].y;
+				calPt.y = ((calPt.x - (points[l].x)) * calDiff.y / calDiff.x) + points[l].y;
 			}
 
-			if (calW < 0)
+			if (calDiff.x < 0)
 			{
-				if (points[l].x > calX)
+				if (points[l].x > calPt.x)
 					continue;
-				if (points[l + 1].x < calX)
-					continue;
-			}
-			else
-			{
-				if (points[l].x < calX)
-					continue;
-				if (points[l + 1].x > calX)
-					continue;
-			}
-
-			if (calH < 0)
-			{
-				if (points[l].y > calY)
-					continue;
-				if (points[l + 1].y < calY)
+				if (points[l + 1].x < calPt.x)
 					continue;
 			}
 			else
 			{
-				if (points[l].y < calY)
+				if (points[l].x < calPt.x)
 					continue;
-				if (points[l + 1].y > calY)
+				if (points[l + 1].x > calPt.x)
 					continue;
 			}
 
-			calH = y - calY;
-			calW = x - calX;
-			calD = calW * calW + calH * calH;
+			if (calDiff.y < 0)
+			{
+				if (points[l].y > calPt.y)
+					continue;
+				if (points[l + 1].y < calPt.y)
+					continue;
+			}
+			else
+			{
+				if (points[l].y < calPt.y)
+					continue;
+				if (points[l + 1].y > calPt.y)
+					continue;
+			}
+
+			calDiff = pt - calPt;
+			calSqDiff = calDiff * calDiff;
+			calD = calSqDiff.x + calSqDiff.y;
 			if (calD < dist)
 			{
 				dist = calD;
-				calPtX = calX;
-				calPtY = calY;
+				calPtOut = calPt;
 				isPointI = false;
 				minId = (OSInt)l;
 			}
@@ -763,14 +753,13 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 	k = this->nPoint;
 	while (k-- > 0)
 	{
-		calH = y - points[k].y;
-		calW = x - points[k].x;
-		calD = calW * calW + calH * calH;
+		calDiff = pt - points[k];
+		calSqDiff = calDiff * calDiff;
+		calD = calSqDiff.x + calSqDiff.y;
 		if (calD < dist)
 		{
 			dist = calD;
-			calPtX = points[k].x;
-			calPtY = points[k].y;
+			calPtOut = points[k];
 			minId = (OSInt)k;
 			isPointI = true;
 		}
@@ -780,13 +769,9 @@ OSInt Math::Polyline::GetPointNo(Double x, Double y, Bool *isPoint, Double *calP
 	{
 		*isPoint = isPointI;
 	}
-	if (calPtXOut)
+	if (calPtOutPtr)
 	{
-		*calPtXOut = calPtX;
-	}
-	if (calPtYOut)
-	{
-		*calPtYOut = calPtY;
+		*calPtOutPtr = calPtOut;
 	}
 	return minId;
 }

@@ -114,10 +114,10 @@ namespace SSWR
 			void AddSubForm(UI::GUIForm *frm);
 
 			virtual UInt32 GetSRID();
-			virtual Bool InMap(Double lat, Double lon);
-			virtual void PanToMap(Double lat, Double lon);
-			virtual void ShowMarker(Double lat, Double lon);
-			virtual void ShowMarkerDir(Double lat, Double lon, Double dir, Math::Unit::Angle::AngleUnit unit);
+			virtual Bool InMap(Math::Coord2DDbl pos);
+			virtual void PanToMap(Math::Coord2DDbl pos);
+			virtual void ShowMarker(Math::Coord2DDbl pos);
+			virtual void ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit);
 			virtual void HideMarker();
 			virtual void SetSelectedVector(Math::Vector2D *vec);
 			virtual void RedrawMap();
@@ -133,7 +133,7 @@ namespace SSWR
 
 			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid);
 			virtual Bool HasKMap();
-			virtual UTF8Char *ResolveAddress(UTF8Char *sbuff, Double lat, Double lon);
+			virtual UTF8Char *ResolveAddress(UTF8Char *sbuff, Math::Coord2DDbl pos);
 
 			virtual void PauseUpdate();
 			virtual void ResumeUpdate();

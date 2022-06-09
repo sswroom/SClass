@@ -200,7 +200,7 @@ IO::ParserType Parser::FileParser::RLOCParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	Map::GPSTrack::GPSRecord2 rec;
+	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -261,8 +261,8 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 		rec.utcTimeTicks = ReadInt32(&buff[12]) * 1000LL;
 		extInfo.funcs = ReadInt24(&buff[16]);
 		rec.nSateUsedGPS = buff[19];
-		rec.lat = ReadInt32(&buff[20]) / 200000.0;
-		rec.lon = ReadInt32(&buff[24]) / 200000.0;
+		rec.pos.lat = ReadInt32(&buff[20]) / 200000.0;
+		rec.pos.lon = ReadInt32(&buff[24]) / 200000.0;
 		extInfo.status = ReadUInt32(&buff[28]);
 		extInfo.status2 = ReadUInt32(&buff[32]);
 		rec.nSateViewGPS = buff[36];

@@ -79,7 +79,7 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 	SDEL_STRING(this->gooKey);
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang)
+UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang)
 {
 	UTF8Char url[1024];
 	UTF8Char *sptr;
@@ -106,9 +106,9 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	Net::HTTPClient *cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/geo?q="));
-	sptr = Text::StrDouble(sptr, lat);
+	sptr = Text::StrDouble(sptr, pos.lat);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-	sptr = Text::StrDouble(sptr, lon);
+	sptr = Text::StrDouble(sptr, pos.lon);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&output=csv&oe=utf8&sensor=false"));
 	if (this->gooCliId)
 	{
@@ -212,7 +212,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -224,10 +224,10 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
+	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{
@@ -239,7 +239,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffS
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
+	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }
 
 UInt32 Map::GoogleMap::GoogleSearcher::GetSrchCnt()

@@ -595,7 +595,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetMTKSerialPort()
 Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 {
 	Int32 bitmask;
-	Map::GPSTrack::GPSRecord2 rec;
+	Map::GPSTrack::GPSRecord3 rec;
 	bitmask = *(Int32*)&block[2];
 	if ((bitmask & 0x3f) != 0x3f)
 		return false;
@@ -652,12 +652,12 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 //			}
 //			if (bitmask & 4) // LATITUDE
 //			{
-				rec.lat = *(Double*)&block[currOfst];
+				rec.pos.lat = *(Double*)&block[currOfst];
 				currOfst += 8;
 //			}
 //			if (bitmask & 8) // LONGITUDE
 //			{
-				rec.lon = *(Double*)&block[currOfst];
+				rec.pos.lon = *(Double*)&block[currOfst];
 				currOfst += 8;
 //			}
 			if (bitmask & 0x10) // HEIGHT

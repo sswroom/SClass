@@ -426,7 +426,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 		Math::Coord2DDbl scnPos;
 		Int32 x;
 		Int32 y;
-		scnPos = this->view->MapXYToScnXY(Math::Coord2DDbl(this->markerX, this->markerY));
+		scnPos = this->view->MapXYToScnXY(this->markerPos);
 		x = Double2Int32(scnPos.x + ofst.x);
 		y = Double2Int32(scnPos.y + ofst.y);
 		Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
@@ -717,8 +717,7 @@ UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	this->mapEnv = 0;
 	this->imgTimeoutTick = 0;
 
-	this->markerX = 0;
-	this->markerY = 0;
+	this->markerPos = Math::Coord2DDbl(0, 0);
 	this->showMarker = false;
 	this->selVec = 0;
 	this->renderer = renderer;
@@ -759,8 +758,7 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->mapEnv = mapEnv;
 	this->imgTimeoutTick = 0;
 
-	this->markerX = 0;
-	this->markerY = 0;
+	this->markerPos = Math::Coord2DDbl(0, 0);
 	this->showMarker = false;
 	this->selVec = 0;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
@@ -1020,10 +1018,9 @@ Bool UI::GUIMapControl::InMapMapXY(Math::Coord2DDbl mapPos)
 	return this->view->InViewXY(mapPos);
 }
 
-void UI::GUIMapControl::ShowMarkerMapXY(Double mapX, Double mapY)
+void UI::GUIMapControl::ShowMarkerMapXY(Math::Coord2DDbl mapPos)
 {
-	this->markerX = mapX;
-	this->markerY = mapY;
+	this->markerPos = mapPos;
 	this->markerHasDir = false;
 	this->showMarker = true;
 	if (!this->pauseUpdate)
@@ -1032,10 +1029,9 @@ void UI::GUIMapControl::ShowMarkerMapXY(Double mapX, Double mapY)
 	}
 }
 
-void UI::GUIMapControl::ShowMarkerMapXYDir(Double mapX, Double mapY, Double dir, Math::Unit::Angle::AngleUnit unit)
+void UI::GUIMapControl::ShowMarkerMapXYDir(Math::Coord2DDbl mapPos, Double dir, Math::Unit::Angle::AngleUnit unit)
 {
-	this->markerX = mapX;
-	this->markerY = mapY;
+	this->markerPos = mapPos;
 	this->markerDir = Math::Unit::Angle::Convert(unit, Math::Unit::Angle::AU_RADIAN, dir);
 	this->markerHasDir = true;
 	this->showMarker = true;

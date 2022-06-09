@@ -822,20 +822,19 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, const UTF8Char **strs)
 	return true;
 }
 
-Bool Map::VectorLayer::SplitPolyline(Double x, Double y)
+Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 {
-	Double nearPtX;
-	Double nearPtY;
+	Math::Coord2DDbl nearPt;
 	Int64 objId;
 	if (this->layerType != Map::DRAW_LAYER_POLYLINE)
 		return false;
-	objId = this->GetNearestObjectId(0, x, y, &nearPtX, &nearPtY);
+	objId = this->GetNearestObjectId(0, pt, &nearPt);
 	if (objId < 0)
 		return false;
 
 	Math::Polyline *pl = (Math::Polyline*)this->vectorList.GetItem((UOSInt)objId);
 	Math::Polyline *pl2;
-	if ((pl2 = pl->SplitByPoint(x, y)) != 0)
+	if ((pl2 = pl->SplitByPoint(pt)) != 0)
 	{
 		this->vectorList.Add(pl2);
 		this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -851,10 +850,8 @@ void Map::VectorLayer::OptimizePolylinePath()
 	const UTF8Char **tmpStr;
 	Math::Polyline *tmpPL;
 
-	Double x;
-	Double y;
-	Double nearPtX;
-	Double nearPtY;
+	Math::Coord2DDbl pt;
+	Math::Coord2DDbl nearPt;
 	Math::Coord2DDbl *points;
 	UOSInt nPoints;
 	Int32 ix;
@@ -880,20 +877,19 @@ void Map::VectorLayer::OptimizePolylinePath()
 			tmpPL = (Math::Polyline*)this->vectorList.RemoveAt(i);
 
 			points = tmpPL->GetPointList(&nPoints);
-			x = points->x;
-			y = points->y;
-			objId = this->GetNearestObjectId(0, x, y, &nearPtX, &nearPtY);
+			pt = *points;
+			objId = this->GetNearestObjectId(0, pt, &nearPt);
 			if (objId >= 0)
 			{
-				ix = (Int32)(x * 200000.0);
-				iy = (Int32)(y * 200000.0);
-				nix = (Int32)(nearPtX * 200000.0);
-				niy = (Int32)(nearPtY * 200000.0);
+				ix = (Int32)(pt.x * 200000.0);
+				iy = (Int32)(pt.y * 200000.0);
+				nix = (Int32)(nearPt.x * 200000.0);
+				niy = (Int32)(nearPt.y * 200000.0);
 				if (ix == nix && iy == niy)
 				{
 					Math::Polyline *pl = (Math::Polyline*)this->vectorList.GetItem((UOSInt)objId);
 					Math::Polyline *pl2;
-					if ((pl2 = pl->SplitByPoint(x, y)) != 0)
+					if ((pl2 = pl->SplitByPoint(pt)) != 0)
 					{
 						this->vectorList.Add(pl2);
 						this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -902,20 +898,19 @@ void Map::VectorLayer::OptimizePolylinePath()
 				}
 			}
 
-			x = points[nPoints - 1].x;
-			y = points[nPoints - 1].y;
-			objId = this->GetNearestObjectId(0, x, y, &nearPtX, &nearPtY);
+			pt = points[nPoints - 1];
+			objId = this->GetNearestObjectId(0, pt, &nearPt);
 			if (objId >= 0)
 			{
-				ix = (Int32)(x * 200000.0);
-				iy = (Int32)(y * 200000.0);
-				nix = (Int32)(nearPtX * 200000.0);
-				niy = (Int32)(nearPtY * 200000.0);
+				ix = (Int32)(pt.x * 200000.0);
+				iy = (Int32)(pt.y * 200000.0);
+				nix = (Int32)(nearPt.x * 200000.0);
+				niy = (Int32)(nearPt.y * 200000.0);
 				if (ix == nix && iy == niy)
 				{
 					Math::Polyline *pl = (Math::Polyline*)this->vectorList.GetItem((UOSInt)objId);
 					Math::Polyline *pl2;
-					if ((pl2 = pl->SplitByPoint(x, y)) != 0)
+					if ((pl2 = pl->SplitByPoint(pt)) != 0)
 					{
 						this->vectorList.Add(pl2);
 						this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));

@@ -1573,24 +1573,24 @@ UInt32 SSWR::AVIRead::AVIRGISForm::GetSRID()
 	return this->env->GetSRID();
 }
 
-Bool SSWR::AVIRead::AVIRGISForm::InMap(Double lat, Double lon)
+Bool SSWR::AVIRead::AVIRGISForm::InMap(Math::Coord2DDbl pos)
 {
-	return this->mapCtrl->InMapMapXY(Math::Coord2DDbl(lon, lat));
+	return this->mapCtrl->InMapMapXY(pos);
 }
 
-void SSWR::AVIRead::AVIRGISForm::PanToMap(Double lat, Double lon)
+void SSWR::AVIRead::AVIRGISForm::PanToMap(Math::Coord2DDbl pos)
 {
-	this->mapCtrl->PanToMapXY(Math::Coord2DDbl(lon, lat));
+	this->mapCtrl->PanToMapXY(pos);
 }
 
-void SSWR::AVIRead::AVIRGISForm::ShowMarker(Double lat, Double lon)
+void SSWR::AVIRead::AVIRGISForm::ShowMarker(Math::Coord2DDbl pos)
 {
-	this->mapCtrl->ShowMarkerMapXY(lon, lat);
+	this->mapCtrl->ShowMarkerMapXY(pos);
 }
 
-void SSWR::AVIRead::AVIRGISForm::ShowMarkerDir(Double lat, Double lon, Double dir, Math::Unit::Angle::AngleUnit unit)
+void SSWR::AVIRead::AVIRGISForm::ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit)
 {
-	this->mapCtrl->ShowMarkerMapXYDir(lon, lat, dir, unit);
+	this->mapCtrl->ShowMarkerMapXYDir(pos, dir, unit);
 }
 
 void SSWR::AVIRead::AVIRGISForm::HideMarker()
@@ -1708,13 +1708,13 @@ Bool SSWR::AVIRead::AVIRGISForm::HasKMap()
 	return false; //return this->kmap != 0;
 }
 
-UTF8Char *SSWR::AVIRead::AVIRGISForm::ResolveAddress(UTF8Char *sbuff, Double lat, Double lon)
+UTF8Char *SSWR::AVIRead::AVIRGISForm::ResolveAddress(UTF8Char *sbuff, Math::Coord2DDbl pos)
 {
 /*	if (this->kmap == 0)
 	{
 		return 0;
 	}
-	return this->kmap->ResolveAddress(sbuff, this->lcid, lat, lon, L"~@#");*/
+	return this->kmap->ResolveAddress(sbuff, this->lcid, pos, L"~@#");*/
 	return 0;
 }
 

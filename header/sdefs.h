@@ -17,6 +17,8 @@ HAS_INT64
 HAS_DOUBLE
 HAS_INTRIN
 IS_BYTEORDER_LE
+
+ASTRUCT
 */
 #if !defined(SDEFS_INCLUDED)
 #define SDEFS_INCLUDED
@@ -415,4 +417,11 @@ typedef UInt32 UTF32Char;
 #else
 #define REGVAR
 #endif
+
+#if defined(_MSC_VER)
+#define ASTRUCT __declspec(align(32)) struct
+#else
+#define ASTRUCT struct
+#endif
+
 #endif

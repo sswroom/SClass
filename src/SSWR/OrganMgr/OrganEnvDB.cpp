@@ -1505,8 +1505,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		IO::ParsedObject *pobj;
 		Bool valid = false;
 		Data::DateTime fileTime;
-		Double lat = 0;
-		Double lon = 0;
+		Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
 		UserFileInfo *userFile;
 		Text::String *camera = 0;
 		UInt32 crcVal = 0;
@@ -1533,7 +1532,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						exif->GetPhotoDate(&fileTime);
 						if (fileTime.GetYear() >= 2000)
 						{
-							this->GetGPSPos(this->userId, &fileTime, &lat, &lon);
+							this->GetGPSPos(this->userId, &fileTime, &pos);
 						}
 						Text::CString cstr;
 						Text::CString cstr2;
@@ -1654,9 +1653,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDate(&fileTime);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDbl(lat);
+					sql.AppendDbl(pos.lat);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDbl(lon);
+					sql.AppendDbl(pos.lon);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32(this->userId);
 					sql.AppendCmdC(CSTR(", "));
@@ -1685,8 +1684,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile->fileType = fileType;
 						userFile->oriFileName = Text::String::New(&fileName[i + 1], fileNameLen - i - 1);
 						userFile->fileTimeTicks = fileTime.ToTicks();
-						userFile->lat = lat;
-						userFile->lon = lon;
+						userFile->lat = pos.lat;
+						userFile->lon = pos.lon;
 						userFile->webuserId = this->userId;
 						userFile->speciesId = sp->GetSpeciesId();
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
@@ -3111,7 +3110,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 			{
 				Bool found = false;
 				Map::GPSTrack *gpsTrk = (Map::GPSTrack*)lyr;
-				Map::GPSTrack::GPSRecord2 *recArr;
+				Map::GPSTrack::GPSRecord3 *recArr;
 				i = 0;
 				j = gpsTrk->GetTrackCnt();
 				while (i < j)
@@ -3257,11 +3256,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 							SSWR::OrganMgr::UserFileInfo *userFile = webUser->userFileObj->GetItem((UOSInt)startIndex);
 							if (userFile->lat == 0 && userFile->lon == 0)
 							{
-								Double lat = 0;
-								Double lon = 0;
+								Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
 								dt.SetTicks(userFile->captureTimeTicks);
-								gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
-								this->UpdateUserFilePos(userFile, &dt, lat, lon);
+								gpsTrk->GetPosByTime(&dt, &pos);
+								this->UpdateUserFilePos(userFile, &dt, pos.lat, pos.lon);
 							}
 							startIndex++;
 						}
@@ -3322,7 +3320,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon)
+Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Math::Coord2DDbl *pos)
 {
 	OSInt i;
 	WebUserInfo *webUser;
@@ -3372,13 +3370,12 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 
 	if (this->gpsTrk)
 	{
-		this->gpsTrk->GetLatLonByTime(t, lat, lon);
+		this->gpsTrk->GetPosByTime(t, pos);
 		return true;
 	}
 	else
 	{
-		*lat = 0;
-		*lon = 0;
+		*pos = Math::Coord2DDbl(0, 0);
 		return false;
 	}
 }

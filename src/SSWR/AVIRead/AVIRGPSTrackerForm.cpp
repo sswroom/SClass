@@ -23,12 +23,12 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::OnFocusLost()
 	this->frm->DispOffFocusLost();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
 	Sync::MutexUsage mutUsage(me->recMut);
-	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord2));
+	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord3));
 	me->recSateCnt = sateCnt;
 	MemCopyNO(me->recSates, sates, sateCnt * sizeof(Map::ILocationService::SateStatus));
 	me->recUpdated = true;
@@ -38,13 +38,12 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map
 	}
 	if (record->valid)
 	{
-		if (me->lastLat != 0 || me->lastLon != 0)
+		if (!me->lastPos.IsZero())
 		{
-			dist = me->wgs84->CalSurfaceDistanceXY(me->lastLon, me->lastLat, record->lon, record->lat, Math::Unit::Distance::DU_METER);
+			dist = me->wgs84->CalSurfaceDistanceXY(me->lastPos, record->pos, Math::Unit::Distance::DU_METER);
 			me->dist += dist;
 		}
-		me->lastLat = record->lat;
-		me->lastLon = record->lon;
+		me->lastPos = record->pos;
 	}
 	mutUsage.EndUse();
 }
@@ -75,9 +74,9 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		dt.SetTicks(me->recCurr.utcTimeTicks);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, me->recCurr.lat);
+		sptr = Text::StrDouble(sbuff, me->recCurr.pos.lat);
 		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, me->recCurr.lon);
+		sptr = Text::StrDouble(sbuff, me->recCurr.pos.lon);
 		me->txtLongitude->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->recCurr.altitude);
 		me->txtAltitude->SetText(CSTRP(sbuff, sptr));
@@ -133,10 +132,10 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		me->recUpdated = false;
 		if (me->mapNavi && me->recCurr.valid)
 		{
-			me->mapNavi->ShowMarkerDir(me->recCurr.lat, me->recCurr.lon, me->recCurr.heading, Math::Unit::Angle::AU_DEGREE);
-			if (me->chkAutoPan->IsChecked() && !me->mapNavi->InMap(me->recCurr.lat, me->recCurr.lon))
+			me->mapNavi->ShowMarkerDir(me->recCurr.pos, me->recCurr.heading, Math::Unit::Angle::AU_DEGREE);
+			if (me->chkAutoPan->IsChecked() && !me->mapNavi->InMap(me->recCurr.pos))
 			{
-				me->mapNavi->PanToMap(me->recCurr.lat, me->recCurr.lon);
+				me->mapNavi->PanToMap(me->recCurr.pos);
 			}
 		}
 		mutUsage.EndUse();
@@ -282,8 +281,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->recSateCnt = 0;
 	this->gpsTrk = 0;
 	this->mapNavi = 0;
-	this->lastLat = 0;
-	this->lastLon = 0;
+	this->lastPos = Math::Coord2DDbl(0, 0);
 	this->dist = 0;
 	this->lastDown = true;
 	NEW_CLASS(this->nmeaMut, Sync::Mutex());

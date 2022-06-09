@@ -76,7 +76,7 @@ namespace Map
 
 		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);
-		Int32 GetLocMCCXY(Double x, Double y);
+		Int32 QueryMCC(Math::Coord2DDbl pos);
 		static void ReleaseLayers(Data::ArrayList<Map::IMapDrawLayer*> *layerList);
 	};
 }

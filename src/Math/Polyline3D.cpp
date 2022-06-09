@@ -101,7 +101,7 @@ Bool Math::Polyline3D::Equals(Math::Vector2D *vec)
 	}
 }
 
-Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
+Math::Polyline *Math::Polyline3D::SplitByPoint(Math::Coord2DDbl pt)
 {
 	UOSInt k;
 	UOSInt l;
@@ -116,17 +116,15 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	l = this->nPoint;
 
 	Double calBase;
-	Double calH;
-	Double calW;
-	Double calZD;
-	Double calX;
-	Double calY;
-	Double calZ;
+	Math::Coord2DDbl calDiff;
+	Math::Coord2DDbl calSqDiff;
+	Math::Coord2DDbl calPt;
+	Math::Coord2DDbl calPtOut = Math::Coord2DDbl(0, 0);
+	Double calDiffZ;
+	Double calPtZ;
 	Double calD;
 	Double dist = 0x7fffffff;
-	Double calPtX = 0;
-	Double calPtY = 0;
-	Double calPtZ = 0;
+	Double calPtOutZ = 0;
 	UOSInt minId = 0;
 	Bool isPoint = false;
 
@@ -136,87 +134,86 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 		l--;
 		while (l-- > m)
 		{
-			calH = points[l].y - points[l + 1].y;
-			calW = points[l].x - points[l + 1].x;
-			calZD = altitudes[l] - altitudes[l + 1];
+			calDiff = points[l] - points[l + 1];
+			calDiffZ = altitudes[l] - altitudes[l + 1];
 
-			if (calH == 0)
+			if (calDiff.y == 0)
 			{
-				calX = x;
+				calPt.x = pt.x;
 			}
 			else
 			{
-				calX = (calBase = (calW * calW)) * x;
-				calBase += calH * calH;
-				calX += calH * calH * points[l].x;
-				calX += (y - points[l].y) * calH * calW;
-				calX /= calBase;
+				calSqDiff = calDiff * calDiff;
+				calBase = calSqDiff.x + calSqDiff.y;
+				calPt.x = calSqDiff.x * pt.x;
+				calPt.x += calSqDiff.y * points[l].x;
+				calPt.x += (pt.y - points[l].y) * calDiff.x * calDiff.y;
+				calPt.x /= calBase;
 			}
 
-			if (calW == 0)
+			if (calDiff.x == 0)
 			{
-				calY = y;
-				if (calZD == 0)
+				calPt.y = pt.y;
+				if (calDiffZ == 0)
 				{
-					calZ = altitudes[l];
+					calPtZ = altitudes[l];
 				}
 				else
 				{
-					calZ = ((calY - points[l].y) * calZD / calH) + altitudes[l];
+					calPtZ = ((calPt.y - points[l].y) * calDiffZ / calDiff.y) + altitudes[l];
 				}
 			}
 			else
 			{
-				calY = ((calX - points[l].x) * calH / calW) + points[l].y;
-				if (calZD == 0)
+				calPt.y = ((calPt.x - points[l].x) * calDiff.y / calDiff.x) + points[l].y;
+				if (calDiffZ == 0)
 				{
-					calZ = altitudes[l];
+					calPtZ = altitudes[l];
 				}
 				else
 				{
-					calZ = ((calX - points[l].x) * calZD / calW) + altitudes[l];
+					calPtZ = ((calPt.x - points[l].x) * calDiffZ / calDiff.x) + altitudes[l];
 				}
 			}
 
-			if (calW < 0)
+			if (calDiff.x < 0)
 			{
-				if (points[l].x > calX)
+				if (points[l].x > calPt.x)
 					continue;
-				if (points[l + 1].x < calX)
+				if (points[l + 1].x < calPt.x)
 					continue;
 			}
 			else
 			{
-				if (points[l].x < calX)
+				if (points[l].x < calPt.x)
 					continue;
-				if (points[l + 1].x > calX)
+				if (points[l + 1].x > calPt.x)
 					continue;
 			}
 
-			if (calH < 0)
+			if (calDiff.y < 0)
 			{
-				if (points[l].y > calY)
+				if (points[l].y > calPt.y)
 					continue;
-				if (points[l + 1].y < calY)
+				if (points[l + 1].y < calPt.y)
 					continue;
 			}
 			else
 			{
-				if (points[l].y < calY)
+				if (points[l].y < calPt.y)
 					continue;
-				if (points[l + 1].y > calY)
+				if (points[l + 1].y > calPt.y)
 					continue;
 			}
 
-			calH = y - calY;
-			calW = x - calX;
-			calD = calW * calW + calH * calH;
+			calDiff = pt - calPt;
+			calSqDiff = calDiff * calDiff;
+			calD = calSqDiff.x + calSqDiff.y;
 			if (calD < dist)
 			{
 				dist = calD;
-				calPtX = calX;
-				calPtY = calY;
-				calPtZ = calZ;
+				calPtOut = calPt;
+				calPtOutZ = calPtZ;
 				isPoint = false;
 				minId = l;
 			}
@@ -225,15 +222,14 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 	k = this->nPoint;
 	while (k-- > 0)
 	{
-		calH = y - points[k].y;
-		calW = x - points[k].x;
-		calD = calW * calW + calH * calH;
+		calDiff = pt - points[k];
+		calSqDiff = calDiff * calDiff;
+		calD = calSqDiff.x + calSqDiff.y;
 		if (calD < dist)
 		{
 			dist = calD;
-			calPtX = points[k].x;
-			calPtY = points[k].y;
-			calPtZ = altitudes[k];
+			calPtOut = points[k];
+			calPtOutZ = altitudes[k];
 			minId = k;
 			isPoint = true;
 		}
@@ -337,8 +333,8 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			newPoints[l] = oldPoints[l];
 			newAltitudes[l] = oldAltitudes[l];
 		}
-		newPoints[minId + 1] = Math::Coord2DDbl(calPtX, calPtY);
-		newAltitudes[minId + 1] = calPtZ;
+		newPoints[minId + 1] = calPtOut;
+		newAltitudes[minId + 1] = calPtOutZ;
 
 		l = k + 1;
 		while (l-- > 0)
@@ -365,15 +361,14 @@ Math::Polyline *Math::Polyline3D::SplitByPoint(Double x, Double y)
 			newPoints[l - minId] = oldPoints[l];
 			newAltitudes[l - minId] = oldAltitudes[l];
 		}
-		newPoints[0] = Math::Coord2DDbl(calPtX, calPtY);
-		newAltitudes[0] = calPtZ;
+		newPoints[0] = calPtOut;
+		newAltitudes[0] = calPtOutZ;
 
 		this->nPoint = minId + 2;
 		this->nPtOfst = k + 1;
 		MemFreeA(oldPoints);
 		MemFree(oldPtOfsts);
 		MemFree(oldAltitudes);
-
 
 		return newPL;
 	}

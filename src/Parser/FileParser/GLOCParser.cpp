@@ -258,7 +258,7 @@ IO::ParserType Parser::FileParser::GLOCParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	Map::GPSTrack::GPSRecord2 rec;
+	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
@@ -317,8 +317,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		extInfo.devType = ReadInt32(&buff[4]);
 		rec.utcTimeTicks = ReadUInt32(&buff[8]) * 1000LL;
 		extInfo.recvTimeTS = ReadUInt32(&buff[12]);
-		rec.lat = ReadInt32(&buff[16]) / 10000000.0;
-		rec.lon = ReadInt32(&buff[20]) / 10000000.0;
+		rec.pos = Math::Coord2DDbl(ReadInt32(&buff[20]) / 10000000.0,  ReadInt32(&buff[16]) / 10000000.0);
 		rec.speed = ReadUInt16(&buff[24]) * 0.1;
 		rec.heading = ReadUInt16(&buff[26]) * 0.01;
 		extInfo.status = ReadUInt32(&buff[28]);

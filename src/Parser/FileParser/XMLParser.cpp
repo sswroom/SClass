@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListA.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/Int64Map.h"
 #include "DB/TextDB.h"
@@ -280,7 +281,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									{
 										if (reader.GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
 										{
-											Map::GPSTrack::GPSRecord2 rec;
+											Map::GPSTrack::GPSRecord3 rec;
 											if (ParseGPXPoint(&reader, &rec))
 											{
 												track->AddRecord(&rec);
@@ -2619,7 +2620,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 								{
 									if (timeList.GetCount() == coordList.GetCount())
 									{
-										Map::GPSTrack::GPSRecord2 rec;
+										Map::GPSTrack::GPSRecord3 rec;
 										rec.heading = 0;
 										rec.nSateUsed = 0;
 										rec.nSateUsedGPS = 0;
@@ -2644,8 +2645,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 											coordList.GetItem(i)->ConcatTo(sbuff);
 											if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 											{
-												rec.lon = Text::StrToDouble(strs[0]);
-												rec.lat = Text::StrToDouble(strs[1]);
+												rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
 												rec.altitude = Text::StrToDouble(strs[2]);
 												lyr->AddRecord(&rec);
 											}
@@ -2672,7 +2672,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 										coordList.Clear();
 									}
 									UOSInt recCnt;
-									Map::GPSTrack::GPSRecord2 *recs = lyr->GetTrack(0, &recCnt);
+									Map::GPSTrack::GPSRecord3 *recs = lyr->GetTrack(0, &recCnt);
 									while (reader->ReadNext())
 									{
 										if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -2810,7 +2810,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 						if (timeList.GetCount() == coordList.GetCount())
 						{
-							Map::GPSTrack::GPSRecord2 rec;
+							Map::GPSTrack::GPSRecord3 rec;
 							rec.heading = 0;
 							rec.nSateUsed = 0;
 							rec.nSateUsedGPS = 0;
@@ -2835,8 +2835,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 								coordList.GetItem(i)->ConcatTo(sbuff);
 								if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 								{
-									rec.lon = Text::StrToDouble(strs[0]);
-									rec.lat = Text::StrToDouble(strs[1]);
+									rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
 									rec.altitude = Text::StrToDouble(strs[2]);
 									lyr->AddRecord(&rec);
 								}
@@ -2908,7 +2907,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 				if (timeList.GetCount() == coordList.GetCount())
 				{
-					Map::GPSTrack::GPSRecord2 rec;
+					Map::GPSTrack::GPSRecord3 rec;
 					rec.heading = 0;
 					rec.nSateUsed = 0;
 					rec.nSateUsedGPS = 0;
@@ -2935,8 +2934,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 						coordList.GetItem(i)->ConcatTo(sbuff);
 						if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 						{
-							rec.lon = Text::StrToDouble(strs[0]);
-							rec.lat = Text::StrToDouble(strs[1]);
+							rec.pos.x = Text::StrToDouble(strs[0]);
+							rec.pos.y = Text::StrToDouble(strs[1]);
 							rec.altitude = Text::StrToDouble(strs[2]);
 							lyr->AddRecord(&rec);
 						}
@@ -3111,7 +3110,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
 					{
-						Data::ArrayListDbl coord;
+						Data::ArrayListA<Math::Coord2DDbl> coord;
 						Data::ArrayListDbl altList;
 						UTF8Char c;
 						UTF8Char *sptr;
@@ -3153,14 +3152,12 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							i = Text::StrSplit(sarr, 4, sbuff, ',');
 							if (i == 3)
 							{
-								coord.Add(Text::StrToDouble(sarr[0]));
-								coord.Add(Text::StrToDouble(sarr[1]));
+								coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
 								altList.Add(Text::StrToDouble(sarr[2]));
 							}
 							else if (i == 2)
 							{
-								coord.Add(Text::StrToDouble(sarr[0]));
-								coord.Add(Text::StrToDouble(sarr[1]));
+								coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
 								altList.Add(0);
 							}
 						}
@@ -3177,7 +3174,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							altArr = pl->GetAltitudeList(&nPoints);
 							ptArr = pl->GetPointList(&nPoints);
 							i = altList.GetCount();
-							MemCopyNO(ptArr, coord.GetArray(&j), sizeof(Double) * 2 * i);
+							MemCopyNO(ptArr, coord.GetArray(&j), sizeof(Math::Coord2DDbl) * i);
 							MemCopyNO(altArr, altList.GetArray(&j), sizeof(Double) * i);
 							lyr->AddVector(pl, &lyrNameSb);
 						}
@@ -3419,7 +3416,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 	return 0;
 }
 
-Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord2 *rec)
+Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord3 *rec)
 {
 	UOSInt i;
 	UOSInt j;
@@ -3434,11 +3431,11 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 		attr = reader->GetAttrib(i);
 		if (attr->name->EqualsICase(UTF8STRC("LAT")))
 		{
-			rec->lat = attr->value->ToDouble();
+			rec->pos.lat = attr->value->ToDouble();
 		}
 		else if (attr->name->EqualsICase(UTF8STRC("LON")))
 		{
-			rec->lon = attr->value->ToDouble();
+			rec->pos.lon = attr->value->ToDouble();
 		}
 		i++;
 	}

@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 
 			center = vec->GetCenter();
 			me->navi->SetSelectedVector(vec);
-			me->navi->PanToMap(center.y, center.x);
+			me->navi->PanToMap(center);
 		}
 		s->Release();
 	}

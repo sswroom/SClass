@@ -18,7 +18,7 @@ namespace Math
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec);
 
-		virtual Math::Polyline *SplitByPoint(Double x, Double y);
+		virtual Math::Polyline *SplitByPoint(Math::Coord2DDbl pt);
 		Double *GetAltitudeList(UOSInt *nPoint);
 	};
 }

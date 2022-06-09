@@ -71,7 +71,7 @@ Map::RevGeoDir::~RevGeoDir()
 	}
 }
 
-UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UOSInt i;
 	RevGeoFile *file;
@@ -93,10 +93,10 @@ UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat
 	}
 	if (file == 0)
 		return 0;
-	return file->cfg->GetStreetName(buff, buffSize, lat, lon);
+	return file->cfg->GetStreetName(buff, buffSize, pos);
 }
 
-UTF8Char *Map::RevGeoDir::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::RevGeoDir::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	return SearchName(buff, buffSize, lat, lon, lcid);
+	return SearchName(buff, buffSize, pos, lcid);
 }

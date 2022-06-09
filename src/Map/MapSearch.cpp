@@ -75,6 +75,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 				lyr->searchDist = 0;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
 				lyr->searchStr = 0;
+				lyr->strIndex = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
 
@@ -94,6 +95,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 				lyr->searchDist = layerDist;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
 				lyr->searchStr = 0;
+				lyr->strIndex = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
 
@@ -120,6 +122,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 				{
 					lyr->searchStr = Text::String::New(strs[4].v, strs[4].leng);
 				}
+				lyr->strIndex = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
 
@@ -155,18 +158,18 @@ Map::MapSearch::~MapSearch()
 	MemFree(this->layersArr);
 }
 
-UTF8Char *Map::MapSearch::SearchName(UTF8Char *buff, Double lat, Double lon)
+UTF8Char *Map::MapSearch::SearchName(UTF8Char *buff, Math::Coord2DDbl pos)
 {
 	UTF8Char sbuff[1024];
 	Text::PString outArrs[MAPSEARCH_LAYER_TYPES];
-	Double outPos[2 * MAPSEARCH_LAYER_TYPES];
+	Math::Coord2DDbl outPos[MAPSEARCH_LAYER_TYPES];
 	Int32 resTypes[MAPSEARCH_LAYER_TYPES];
-	SearchNames(sbuff, outArrs, outPos, resTypes, lat, lon);
+	SearchNames(sbuff, outArrs, outPos, resTypes, pos);
 	UTF8Char *ptr = ConcatNames(buff, outArrs, 0);
 	return ptr;
 }
 
-Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double *outPos, Int32 *resTypes, Double lat, Double lon)
+Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos)
 {
 	UTF8Char sbufftmp[128];
 	UTF8Char *sptr;
@@ -179,16 +182,14 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double
 	Int32 l = 0;
 	Double thisDist;
 	Double minDist;
-	Double xposNear;
-	Double yposNear;
+	Math::Coord2DDbl posNear;
 
 	outptr = buff;
 	*outptr = 0;
 	i = MAPSEARCH_LAYER_TYPES;
 	while (i-- > 0)
 	{
-		xposNear = 0;
-		yposNear = 0;
+		posNear = Math::Coord2DDbl(0, 0);
 		resType = 0;
 		sptr = 0;
 		minDist = 63781370;
@@ -197,10 +198,10 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double
 		k = 0;
 		while (k < j)
 		{
-			Map::MapSearchLayer *lyr = (Map::MapSearchLayer*)this->layersArr[i]->GetItem(k++);
+			Map::MapSearchLayer *lyr = this->layersArr[i]->GetItem(k++);
 			if (lyr->searchType == 2)
 			{
-				if ((sptrtmp = lyr->mapLayer->GetPGLabelD(sbufftmp, lon, lat)) != 0)
+				if ((sptrtmp = lyr->mapLayer->GetPGLabel(sbufftmp, sizeof(sbufftmp), pos, 0, lyr->strIndex)) != 0)
 				{
 					if (lyr->searchStr)
 					{
@@ -210,26 +211,22 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double
 					{
 						sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 					}
-					xposNear = lon;
-					yposNear = lat;
+					posNear = pos;
 					resType = 2;
 					break;
 				}
 			}
 			else if (lyr->searchType == 1)
 			{
-				Double xposout;
-				Double yposout;
-				if ((sptrtmp = lyr->mapLayer->GetPLLabelD(sbufftmp, lon, lat, &xposout, &yposout)) != 0)
+				Math::Coord2DDbl posout;
+				if ((sptrtmp = lyr->mapLayer->GetPLLabel(sbufftmp, sizeof(sbufftmp), pos, &posout, lyr->strIndex)) != 0)
 				{
-					Double tmp;
-					tmp = xposout - lon;
-					thisDist = tmp * tmp;
-					tmp = yposout - lat;
-					thisDist += tmp * tmp;
+					Math::Coord2DDbl tmp = posout - pos;
+					tmp = tmp * tmp;
+					thisDist = tmp.x + tmp.y;
 					if (lyr->searchDist)
 					{
-						Double meterDist = Math::Geometry::SphereDistDeg(lat, lon, yposout, xposout, 6378137.0);
+						Double meterDist = Math::Geometry::SphereDistDeg(pos.lat, pos.lon, posout.lat, posout.lon, 6378137.0);
 						if (meterDist < lyr->searchDist)
 						{
 							minDist = thisDist;
@@ -241,8 +238,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double
 							{
 								sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 							}
-							xposNear = xposout;
-							yposNear = yposout;
+							posNear = posout;
 							resType = 1;
 							break;
 						}
@@ -258,16 +254,14 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double
 						{
 							sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 						}
-						xposNear = xposout;
-						yposNear = yposout;
+						posNear = posout;
 						resType = 1;
 					}
 				}
 			}
 		}
 
-		outPos[(i << 1) + 1] = xposNear;
-		outPos[(i << 1) + 0] = yposNear;
+		outPos[i] = posNear;
 		resTypes[i] = resType;
 		if (sptr && *outptr)
 		{

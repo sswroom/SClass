@@ -59,8 +59,7 @@ namespace SSWR
 			Int32 lastMotion;
 			Bool gpsChg;
 			Int64 currGPSTimeTick;
-			Double currLat;
-			Double currLon;
+			Math::Coord2DDbl currPos;
 			Double currAlt;
 			Bool currActive;
 			Map::ILocationService *locSvc;
@@ -112,7 +111,7 @@ namespace SSWR
 			static void __stdcall OnLogWifiSaveClicked(void *userObj);
 			static void __stdcall OnLogWifiSaveFClicked(void *userObj);
 			static Bool __stdcall OnFormClosing(void *userObj, CloseReason reason);
-			static void __stdcall OnGPSData(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
+			static void __stdcall OnGPSData(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
 		public:
 			AVIRWifiCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWifiCaptureForm();

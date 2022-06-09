@@ -117,6 +117,9 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 			}
 		}
 		NEW_CLASS(lut, LUTInfo());
+		lut->sProfile.Set(&this->sProfile);
+		lut->dProfile.Set(&this->dProfile);
+		lut->oProfile.Set(&this->oProfile);
 		lut->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
 		this->lutList->Add(lut);
 		this->rgbTable = lut->rgbTable;
@@ -341,7 +344,6 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 		}
 		this->lutList->Clear();
 		this->changed = true;
-		mutUsage.EndUse();
 	}
 	else
 	{

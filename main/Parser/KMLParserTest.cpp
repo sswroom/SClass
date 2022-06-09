@@ -9,23 +9,20 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Parser::FullParserList *parsers;
-	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
 	Manage::HiResClock clk;
 	IO::ParserType pt;
 	Double t;
 	IO::ConsoleWriter console;
-	Text::EncodingFactory *encFact;
-	NEW_CLASS(encFact, Text::EncodingFactory());
-	NEW_CLASS(parsers, Parser::FullParserList());
-	parsers->SetEncFactory(encFact);
-	NEW_CLASS(fd, IO::StmData::FileData(CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml"), false));
-
-	clk.Start();
-	pobj = parsers->ParseFile(fd, &pt);
-	t = clk.GetTimeDiff();
-	DEL_CLASS(fd);
+	Text::EncodingFactory encFact;
+	Parser::FullParserList parsers;
+	parsers.SetEncFactory(&encFact);
+	{
+		IO::StmData::FileData fd(CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml"), false);
+		clk.Start();
+		pobj = parsers.ParseFile(&fd, &pt);
+		t = clk.GetTimeDiff();
+	}
 	if (pobj)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -41,7 +38,5 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendDouble(t);
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
-	DEL_CLASS(parsers);
-	DEL_CLASS(encFact);
 	return 0;
 }

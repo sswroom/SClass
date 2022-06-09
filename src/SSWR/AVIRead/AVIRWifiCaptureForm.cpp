@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		me->gpsChg = false;
-		sptr = Text::StrDouble(sbuff, me->currLat);
+		sptr = Text::StrDouble(sbuff, me->currPos.lat);
 		me->txtGPSLat->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, me->currLon);
+		sptr = Text::StrDouble(sbuff, me->currPos.lon);
 		me->txtGPSLon->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->currAlt);
 		me->txtGPSAlt->SetText(CSTRP(sbuff, sptr));
@@ -755,7 +755,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(void *userObj, 
 	return true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	if (me->currActive || record->valid != 0)
@@ -776,9 +776,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 			else
 			{
 				sb.AppendC(UTF8STRC("Active,"));
-				Text::SBAppendF64(&sb, record->lat);
+				Text::SBAppendF64(&sb, record->pos.lat);
 				sb.AppendC(UTF8STRC(","));
-				Text::SBAppendF64(&sb, record->lon);
+				Text::SBAppendF64(&sb, record->pos.lon);
 				sb.AppendC(UTF8STRC(","));
 				Text::SBAppendF64(&sb, record->altitude);
 			}
@@ -788,8 +788,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 	}
 
 	me->currGPSTimeTick = record->utcTimeTicks;
-	me->currLat = record->lat;
-	me->currLon = record->lon;
+	me->currPos = record->pos;
 	me->currAlt = record->altitude;
 	me->currActive = record->valid != 0;
 	me->gpsChg = true;
@@ -805,8 +804,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->gpsChg = false;
 	this->lastTimeTick = 0;
 	this->currGPSTimeTick = 0;
-	this->currLat = 0;
-	this->currLon = 0;
+	this->currPos = Math::Coord2DDbl(0, 0);
 	this->currAlt = 0;
 	this->locSvc = 0;
 	this->locSvcRel = false;

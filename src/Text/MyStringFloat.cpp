@@ -1967,6 +1967,99 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 	Double r = 0.0;
 	Bool neg = false;
 	UTF8Char c;
+	if (*str1 == '-')
+	{
+		neg = true;
+		++str1;
+	}
+	while (true)
+	{
+		c = *str1++;
+		if (c < '0' || c > '9')
+			break;
+		r = (r * 10.0) + (c - '0');
+	}
+	if (c == '.')
+	{
+		Double fmul = 1;
+        while (true)
+		{
+			c = *str1++;
+			if (c < '0' || c > '9')
+				break;
+			fmul *= 0.1;
+			r += (c - '0') * fmul;
+        }
+    }
+	else if (c == 0)
+	{
+		if (neg)
+		{
+			*outVal = -r;
+			return true;
+		}
+		else
+		{
+			*outVal = r;
+			return true;
+		}
+	}
+	else
+	{
+		return false;
+	}
+	if (c == 'e' || c == 'E')
+	{
+		c = *str1++;
+		Bool eneg;
+		Int32 expV;
+		if (c == '+')
+		{
+			eneg = false;
+		}
+		else if (c == '-')
+		{
+			eneg = true;
+		}
+		else
+		{
+			str1--;
+			eneg = false;
+		}
+		expV = 0;
+		while (true)
+		{
+			c = *str1++;
+			if (c < '0' || c > '9')
+				break;
+			expV = expV * 10 + c - '0';
+		}
+		if (eneg)
+		{
+			r = r * Math_Pow(10.0, -expV);
+		}
+		else
+		{
+			r = r * Math_Pow(10.0, expV);
+		}
+	}
+	if (c != 0)
+	{
+		return false;
+	}
+    if (neg)
+	{
+        r = -r;
+    }
+	*outVal = r;
+	return true;
+}
+
+Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
+{
+	Double r = 0.0;
+	Bool neg = false;
+	UTF16Char c;
 	OSInt n = 0;
 	if (*str1 == '-')
 	{
@@ -2057,101 +2150,6 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 	return true;
 }
 
-Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
-{
-	Double r = 0.0;
-	Bool neg = false;
-	UTF16Char c;
-	OSInt n = 0;
-	if (*str1 == '-')
-	{
-		neg = true;
-		++str1;
-	}
-	while (true)
-	{
-		c = *str1++;
-		if (c < '0' || c > '9')
-			break;
-		r = (r * 10.0) + (c - '0');
-	}
-	if (c == '.')
-	{
-		Double f = 0.0;
-        while (true)
-		{
-			c = *str1++;
-			if (c < '0' || c > '9')
-				break;
-			f = (f * 10.0) + (c - '0');
-            n++;
-        }
-		r += f / Math_Pow(10.0, OSInt2Double(n));
-    }
-	else if (c == 0)
-	{
-		if (neg)
-		{
-			*outVal = -r;
-			return true;
-		}
-		else
-		{
-			*outVal = r;
-			return true;
-		}
-	}
-	else
-	{
-		return false;
-	}
-	if (c == 'e' || c == 'E')
-	{
-		c = *str1++;
-		Bool eneg;
-		Int32 expV;
-		if (c == '+')
-		{
-			eneg = false;
-		}
-		else if (c == '-')
-		{
-			eneg = true;
-		}
-		else
-		{
-			str1--;
-			eneg = false;
-		}
-		expV = 0;
-		while (true)
-		{
-			c = *str1++;
-			if (c < '0' || c > '9')
-				break;
-			expV = expV * 10 + c - '0';
-		}
-		if (eneg)
-		{
-			r = r * Math_Pow(10.0, -expV);
-		}
-		else
-		{
-			r = r * Math_Pow(10.0, expV);
-		}
-	}
-	if (c != 0)
-	{
-		return false;
-	}
-    if (neg)
-	{
-        r = -r;
-    }
-	*outVal = r;
-	return true;
-}
-
 Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 {
 	Double r = 0.0;
@@ -2172,16 +2170,16 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 	}
 	if (c == '.')
 	{
-		Double f = 0.0;
+		Double fmul = 1;
         while (true)
 		{
 			c = *str1++;
 			if (c < '0' || c > '9')
 				break;
-			f = (f * 10.0) + (c - '0');
+			fmul *= 0.1;
+			r += (c - '0') * fmul;
             n++;
         }
-		r += f / Math_Pow(10.0, OSInt2Double(n));
     }
 	else if (c == 0)
 	{

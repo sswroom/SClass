@@ -33,11 +33,11 @@ Math::ProjectedCoordinateSystem::~ProjectedCoordinateSystem()
 	SDEL_CLASS(this->gcs);
 }
 
-Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit)
+Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit)
 {
-	Double xDiff = x2 - x1;
-	Double yDiff = y2 - y1;
-	Double d = Math_Sqrt(xDiff * xDiff + yDiff * yDiff);
+	Math::Coord2DDbl diff = pos2 - pos1;
+	diff = diff * diff;
+	Double d = Math_Sqrt(diff.x + diff.y);
 	if (unit != Math::Unit::Distance::DU_METER)
 	{
 		d = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, unit, d);
@@ -67,7 +67,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 		{
 			if (hasLast)
 			{
-				totalDist += CalSurfaceDistanceXY(lastPt.x, lastPt.y, points[j].x, points[j].y, unit);
+				totalDist += CalSurfaceDistanceXY(lastPt, points[j], unit);
 			}
 			hasLast = true;
 			lastPt = points[j];
@@ -104,7 +104,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 		{
 			if (hasLast)
 			{
-				dist = CalSurfaceDistanceXY(lastPt.x, lastPt.y, points[j].x, points[j].y, unit);
+				dist = CalSurfaceDistanceXY(lastPt, points[j], unit);
 				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 				totalDist += dist;
 			}

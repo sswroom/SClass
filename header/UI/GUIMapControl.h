@@ -45,8 +45,7 @@ namespace UI
 		OSInt gZoomCurrY;
 		Bool pauseUpdate;
 
-		Double markerX;
-		Double markerY;
+		Math::Coord2DDbl markerPos;
 		Double markerDir;
 		Bool markerHasDir;
 		Bool showMarker;
@@ -113,8 +112,8 @@ namespace UI
 		void PanToMapXY(Math::Coord2DDbl mapPos);
 		void ZoomToRect(Math::RectAreaDbl mapRect);
 		Bool InMapMapXY(Math::Coord2DDbl mapPos);
-		void ShowMarkerMapXY(Double mapX, Double mapY);
-		void ShowMarkerMapXYDir(Double mapX, Double mapY, Double dir, Math::Unit::Angle::AngleUnit unit);
+		void ShowMarkerMapXY(Math::Coord2DDbl mapPos);
+		void ShowMarkerMapXYDir(Math::Coord2DDbl mapPos, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();
 		void SetSelectedVector(Math::Vector2D *vec);
 		void SetVAngle(Double angleRad);

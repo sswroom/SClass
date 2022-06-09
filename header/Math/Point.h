@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_POINT
 #define _SM_MATH_POINT
+#include "Math/Coord2DDbl.h"
 #include "Math/Vector2D.h"
 
 namespace Math
@@ -7,17 +8,17 @@ namespace Math
 	class Point : public Math::Vector2D
 	{
 	protected:
-		Double x;
-		Double y;
+		Math::Coord2DDbl pos;
 	public:
 		Point(UInt32 srid, Double x, Double y);
+		Point(UInt32 srid, Math::Coord2DDbl pos);
 		virtual ~Point();
 
 		virtual VectorType GetVectorType();
 		virtual Math::Coord2DDbl GetCenter();
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Math::RectAreaDbl *bounds);
-		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec);

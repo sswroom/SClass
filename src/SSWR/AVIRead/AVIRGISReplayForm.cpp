@@ -17,33 +17,32 @@ typedef enum
 UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISReplayForm *me = (SSWR::AVIRead::AVIRGISReplayForm*)userObj;
-	Double *latLon;
+	Math::Coord2DDbl *latLon;
 	UOSInt recCnt;
 	UOSInt i;
-	Map::GPSTrack::GPSRecord2 *recs;
+	Map::GPSTrack::GPSRecord3 *recs;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
 	me->threadRunning = true;
 	recs = me->track->GetTrack(me->currTrackId, &recCnt);
-	latLon = MemAlloc(Double, recCnt << 1);
+	latLon = MemAllocA(Math::Coord2DDbl, recCnt);
 	i = 0;
 	while (i < recCnt)
 	{
-		latLon[(i << 1) + 0] = recs[i].lat;
-		latLon[(i << 1) + 1] = recs[i].lon;
+		latLon[i] = recs[i].pos;
 		i++;
 	}
 	i = 0;
 	while (!me->threadToStop && i < recCnt)
 	{
-		if ((sptr = me->navi->ResolveAddress(sbuff, latLon[(i << 1) + 0], latLon[(i << 1) + 1])) != 0)
+		if ((sptr = me->navi->ResolveAddress(sbuff, latLon[i])) != 0)
 		{
 			me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		i++;
 	}
-	MemFree(latLon);
+	MemFreeA(latLon);
 	me->threadRunning = false;
 	return 0;
 }
@@ -65,14 +64,14 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		UOSInt recCnt = 0;
-		Map::GPSTrack::GPSRecord2 *recs = me->track->GetTrack(me->currTrackId, &recCnt);
+		Map::GPSTrack::GPSRecord3 *recs = me->track->GetTrack(me->currTrackId, &recCnt);
 		Data::DateTime dt;
 		dt.SetTicks(recs[i].utcTimeTicks);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, recs[i].lat);
+		sptr = Text::StrDouble(sbuff, recs[i].pos.lat);
 		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, recs[i].lon);
+		sptr = Text::StrDouble(sbuff, recs[i].pos.lon);
 		me->txtLongitude->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDoubleFmt(sbuff, recs[i].altitude, "0.##########");
 		me->txtAltitude->SetText(CSTRP(sbuff, sptr));
@@ -118,24 +117,24 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 
 		if (recs[i].heading == 0)
 		{
-			if (i <= 0 || (recs[i - 1].lat == recs[i].lat && recs[i - 1].lon == recs[i].lon))
+			if (i <= 0 || (recs[i - 1].pos == recs[i].pos))
 			{
-				me->navi->ShowMarker(recs[i].lat, recs[i].lon);
+				me->navi->ShowMarker(recs[i].pos);
 			}
 			else
 			{
-				me->navi->ShowMarkerDir(recs[i].lat, recs[i].lon, Math_ArcTan2(recs[i - 1].lat - recs[i].lat, recs[i].lon - recs[i - 1].lon) + Math::PI * 0.5, Math::Unit::Angle::AU_RADIAN);
+				me->navi->ShowMarkerDir(recs[i].pos, Math_ArcTan2(recs[i - 1].pos.lat - recs[i].pos.lat, recs[i].pos.lon - recs[i - 1].pos.lon) + Math::PI * 0.5, Math::Unit::Angle::AU_RADIAN);
 			}
 		}
 		else
 		{
-			me->navi->ShowMarkerDir(recs[i].lat, recs[i].lon, recs[i].heading, Math::Unit::Angle::AU_DEGREE);
+			me->navi->ShowMarkerDir(recs[i].pos, recs[i].heading, Math::Unit::Angle::AU_DEGREE);
 		}
-		if (recs[i].lat != 0 || recs[i].lon != 0)
+		if (!recs[i].pos.IsZero())
 		{
-			if (!me->navi->InMap(recs[i].lat, recs[i].lon))
+			if (!me->navi->InMap(recs[i].pos))
 			{
-				me->navi->PanToMap(recs[i].lat, recs[i].lon);
+				me->navi->PanToMap(recs[i].pos);
 			}
 		}
 	}
@@ -356,7 +355,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *trackName = track->GetTrackName(this->currTrackId);
 			if (trackName)
 				newTrack->SetTrackName(trackName->ToCString());
-			Map::GPSTrack::GPSRecord2 *recs = track->GetTrack(this->currTrackId, &recCnt);
+			Map::GPSTrack::GPSRecord3 *recs = track->GetTrack(this->currTrackId, &recCnt);
 			i = this->startMark;
 			while (i <= this->endMark)
 			{
@@ -397,7 +396,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
-	Map::GPSTrack::GPSRecord2 *recs = this->track->GetTrack(this->currTrackId, &recCnt);
+	Map::GPSTrack::GPSRecord3 *recs = this->track->GetTrack(this->currTrackId, &recCnt);
 	if (recs)
 	{
 		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();

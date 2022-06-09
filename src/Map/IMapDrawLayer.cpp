@@ -250,7 +250,12 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 	}
 }
 
-UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex)
+Bool Map::IMapDrawLayer::IsError()
+{
+	return false;
+}
+
+UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 
@@ -264,7 +269,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	UOSInt i;
 	Int64 thisId;
 	NEW_CLASS(arr, Data::ArrayListInt64());
-	GetObjectIdsMapXY(arr, &names, Math::RectAreaDbl(lon, lat, 0, 0), false);
+	GetObjectIdsMapXY(arr, &names, Math::RectAreaDbl(coord, coord), false);
 	lastId = -1;
 	i = arr->GetCount();
 	while (i-- > 0)
@@ -277,13 +282,12 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 			pg = (Math::Polygon*)this->GetNewVectorById(sess, thisId);
 			if (pg)
 			{
-				if (pg->InsideVector(lon, lat))
+				if (pg->InsideVector(coord))
 				{
 					retVal = this->GetString(buff, buffSize, names, lastId, strIndex);
 					if (buff != retVal)
 					{
-						*outLat = lat;
-						*outLon = lon;
+						*outCoord = coord;
 						DEL_CLASS(pg);
 						break;
 					}
@@ -299,7 +303,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	return retVal;
 }
 
-UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex)
+UTF8Char *Map::IMapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 	UTF8Char *tmpBuff;
@@ -319,8 +323,8 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	NEW_CLASS(arr, Data::ArrayListInt64());
 	Int32 blkSize = this->CalBlockSize();
 
-	Int32 xBlk = Double2Int32(lon * 200000.0 / blkSize);
-	Int32 yBlk = Double2Int32(lat * 200000.0 / blkSize);
+	Int32 xBlk = Double2Int32(coord.x * 200000.0 / blkSize);
+	Int32 yBlk = Double2Int32(coord.y * 200000.0 / blkSize);
 	GetObjectIds(arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
 	lastId = -1;
 	i = arr->GetCount();
@@ -340,8 +344,6 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 				UInt32 *ptOfstArr;
 				Math::Coord2DDbl *pointArr;
 				Int32 currFound;
-				Double mapX = lon;
-				Double mapY = lat;
 
 				ptOfstArr = dobj->ptOfstArr;
 				pointArr = dobj->pointArr;
@@ -351,13 +353,13 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 
 				currFound = 0;
 				Double calBase;
-				Double calH;
-				Double calW;
+				Math::Coord2DDbl calDiff;
+				Math::Coord2DDbl calSqDiff;
 				Double calX;
 				Double calY;
 				Double calD;
-				Double calPtLat;
-				Double calPtLon;
+				Double calPtX;
+				Double calPtY;
 
 				while (k--)
 				{
@@ -365,32 +367,32 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 					l--;
 					while (l-- > m)
 					{
-						calH = pointArr[l].y - pointArr[l + 1].y;
-						calW = pointArr[l].x - pointArr[l + 1].x;
+						calDiff = pointArr[l] - pointArr[l + 1];
 
-						if (calH == 0)
+						if (calDiff.y == 0)
 						{
-							calX = mapX;
+							calX = coord.x;
 						}
 						else
 						{
-							calX = (calBase = (calW * calW)) * mapX;
-							calBase += calH * calH;
-							calX += calH * calH * pointArr[l].x;
-							calX += (mapY - pointArr[l].y) * calH * calW;
+							calSqDiff = calDiff * calDiff;
+							calX = (calBase = calSqDiff.x) * coord.x;
+							calBase += calSqDiff.y;
+							calX += calSqDiff.y * pointArr[l].x;
+							calX += (coord.y - pointArr[l].y) * calDiff.y * calDiff.x;
 							calX /= calBase;
 						}
 
-						if (calW == 0)
+						if (calDiff.x == 0)
 						{
-							calY = (float)mapY;
+							calY = coord.y;
 						}
 						else
 						{
-							calY = ((calX - pointArr[l].x) * calH / calW) + pointArr[l].y;
+							calY = ((calX - pointArr[l].x) * calDiff.y / calDiff.x) + pointArr[l].y;
 						}
 
-						if (calW < 0)
+						if (calDiff.x < 0)
 						{
 							if (pointArr[l].x > calX)
 								continue;
@@ -405,7 +407,7 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 								continue;
 						}
 
-						if (calH < 0)
+						if (calDiff.y < 0)
 						{
 							if (pointArr[l].y > calY)
 								continue;
@@ -420,25 +422,24 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 								continue;
 						}
 
-						calH = mapY - calY;
-						calW = mapX - calX;
-						calD = (calW * calW + calH * calH);
+						calDiff = coord - Math::Coord2DDbl(Math::Coord2DDbl(calX, calY));
+						calSqDiff = calDiff * calDiff;
+						calD = (calSqDiff.x + calSqDiff.y);
 						if (calD < dist)
 						{
 							currFound = 1;
 							dist = calD;
-							calPtLat = calY;
-							calPtLon = calX;
+							calPtX = calX;
+							calPtY = calY;
 						}
 					}
 				}
 				if (currFound)
 				{
 					retVal = Text::StrConcat(buff, tmpBuff);
-					if (outLat)
+					if (outCoord)
 					{
-						*outLat = calPtLat;
-						*outLon = calPtLon;
+						*outCoord = Math::Coord2DDbl(calPtX, calPtY);
 					}
 				}
 			}
@@ -453,40 +454,37 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	return retVal;
 }
 
-Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Double x, Double y, Double *pointX, Double *pointY)
+Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
 	Int32 blkSize = this->CalBlockSize();
-	if (x > 180 || x < -180)
+	if (pt.x > 180 || pt.x < -180)
 	{
-		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - blkSize, y - blkSize, blkSize * 2, blkSize * 2), true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt - blkSize, pt + blkSize), true);
 	}
 	else
 	{
-		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - (blkSize / 200000.0), y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
 	UOSInt i = objIds->GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
-	Double currPtX;
-	Double currPtY;
-	Double nearPtX = 0;
-	Double nearPtY = 0;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl near = Math::Coord2DDbl(0, 0);
 
 	while (i-- > 0)
 	{
 		Math::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
 		if (vec)
 		{
-			dist = vec->CalSqrDistance(x, y, &currPtX, &currPtY);
+			dist = vec->CalSqrDistance(pt, &currPt);
 			if (dist < minDist)
 			{
 				nearObjId = objIds->GetItem(i);
-				nearPtX = currPtX;
-				nearPtY = currPtY;
+				near = currPt;
 				minDist = dist;
 			}
 			DEL_CLASS(vec);
@@ -494,36 +492,33 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Double x, Double y, 
 	}
 
 	DEL_CLASS(objIds);
-	if (pointX && pointY)
+	if (nearPt)
 	{
-		*pointX = nearPtX;
-		*pointY = nearPtY;
+		*nearPt = near;
 	}
 	return nearObjId;
 }
 
-OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Double x, Double y, Double maxDist)
+OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 *objIds;
 	NEW_CLASS(objIds, Data::ArrayListInt64());
 	Int32 blkSize = this->CalBlockSize();
-	if (x > 180 || x < -180)
+	if (pt.x > 180 || pt.x < -180)
 	{
-		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - blkSize, y - blkSize, blkSize * 2, blkSize * 2), true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt - blkSize, pt + blkSize), true);
 	}
 	else
 	{
-		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(x - (blkSize / 200000.0), y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
 	UOSInt i = objIds->GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
-	Double currPtX;
-	Double currPtY;
-	Double nearPtX = 0;
-	Double nearPtY = 0;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl nearPt = Math::Coord2DDbl(0, 0);
 	Double sqrMaxDist = maxDist * maxDist;
 	ObjectInfo *objInfo;
 	OSInt ret = 0;
@@ -531,13 +526,12 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 	while (i-- > 0)
 	{
 		Math::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
-		dist = vec->CalSqrDistance(x, y, &currPtX, &currPtY);
+		dist = vec->CalSqrDistance(pt, &currPt);
 		if (dist <= sqrMaxDist)
 		{
-			objInfo = MemAlloc(ObjectInfo, 1);
+			objInfo = MemAllocA(ObjectInfo, 1);
 			objInfo->objId = objIds->GetItem(i);
-			objInfo->objX = currPtX;
-			objInfo->objY = currPtY;
+			objInfo->objPos = currPt;
 			objInfo->objDist = Math_Sqrt(dist);
 			objList->Add(objInfo);
 			ret++;
@@ -545,8 +539,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 		if (dist < minDist)
 		{
 			nearObjId = objIds->GetItem(i);
-			nearPtX = currPtX;
-			nearPtY = currPtY;
+			nearPt = currPt;
 			minDist = dist;
 		}
 		DEL_CLASS(vec);
@@ -561,10 +554,9 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 	}
 	else if (nearObjId != -1)
 	{
-		objInfo = MemAlloc(ObjectInfo, 1);
+		objInfo = MemAllocA(ObjectInfo, 1);
 		objInfo->objId = nearObjId;
-		objInfo->objX = nearPtX;
-		objInfo->objY = nearPtY;
+		objInfo->objPos = nearPt;
 		objInfo->objDist = Math_Sqrt(minDist);
 		objList->Add(objInfo);
 		ret++;
@@ -580,7 +572,7 @@ void Map::IMapDrawLayer::FreeObjects(Data::ArrayList<ObjectInfo*> *objList)
 	while (i-- > 0)
 	{
 		objInfo = objList->GetItem(i);
-		MemFree(objInfo);
+		MemFreeA(objInfo);
 	}
 	objList->Clear();
 }

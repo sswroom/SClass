@@ -22,7 +22,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		UTF8Char *sptr;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		sess = me->lyr->BeginGetObject();
-		id = me->lyr->GetNearestObjectId(sess, mapPt.x, mapPt.y, &mapPt.x, &mapPt.y);
+		id = me->lyr->GetNearestObjectId(sess, mapPt, &mapPt);
 		if (id == -1)
 		{
 			i = me->lyr->GetColumnCnt();

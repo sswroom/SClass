@@ -160,7 +160,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 		r = db->QueryTableData(CSTR("Line"), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
-			Map::GPSTrack::GPSRecord2 gpsRec;
+			Map::GPSTrack::GPSRecord3 gpsRec;
 			NEW_CLASS(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, 0));
 			while (r->ReadNext())
 			{
@@ -174,8 +174,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 					if (rec)
 					{
 						gpsRec.utcTimeTicks = rec->time * 1000LL;
-						gpsRec.lat = rec->latitude;
-						gpsRec.lon = rec->longitude;
+						gpsRec.pos = Math::Coord2DDbl(rec->longitude, rec->latitude);
 						gpsRec.altitude = rec->altitude;
 						gpsRec.speed = rec->speed;
 						gpsRec.heading = 0;

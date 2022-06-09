@@ -25,14 +25,14 @@ namespace Math
 		virtual Math::Coord2DDbl GetCenter();
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Math::RectAreaDbl *bounds);
-		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec);
 
-		virtual Math::Polyline *SplitByPoint(Double x, Double y);
+		virtual Math::Polyline *SplitByPoint(Math::Coord2DDbl pt);
 		virtual void OptimizePolyline();
-		OSInt GetPointNo(Double x, Double y, Bool *isPoint, Double *calPtX, Double *calPtY);
+		OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt);
 
 		Math::Polygon *CreatePolygonByDist(Double dist);
 		Bool HasColor();

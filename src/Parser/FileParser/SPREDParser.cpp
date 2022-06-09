@@ -35,11 +35,10 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord2*>*> *devRecs = 0;
-	Data::ArrayList<Map::GPSTrack::GPSRecord2*> *currDev = 0;
+	Data::ArrayList<Map::GPSTrack::GPSRecord3*> *currDev = 0;
 	Int32 currDevId = -1;
 	Int32 devId;
-	Map::GPSTrack::GPSRecord2 *rec;
+	Map::GPSTrack::GPSRecord3 *rec;
 	UInt8 buff[384];
 	Bool error = false;
 	UTF8Char sbuff[256];
@@ -98,7 +97,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	{
 		return 0;
 	}
-	NEW_CLASS(devRecs, Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord2*>*>());
+	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord3*>*> devRecs;
 	currPos += buffSize;
 	while (true)
 	{
@@ -137,17 +136,17 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 				devId = *(Int32*)&buff[i + 4];
 				if (currDevId != devId)
 				{
-					currDev = devRecs->Get(devId);
+					currDev = devRecs.Get(devId);
 					if (currDev == 0)
 					{
-						NEW_CLASS(currDev, Data::ArrayList<Map::GPSTrack::GPSRecord2*>());
-						devRecs->Put(devId, currDev);
+						NEW_CLASS(currDev, Data::ArrayList<Map::GPSTrack::GPSRecord3*>());
+						devRecs.Put(devId, currDev);
 					}
 					currDevId = devId;
 				}
-				rec = MemAlloc(Map::GPSTrack::GPSRecord2, 1);
-				rec->lat = (*(Int32*)&buff[i + 8]) / 200000.0;
-				rec->lon = (*(Int32*)&buff[i + 12]) / 200000.0;
+				rec = MemAllocA(Map::GPSTrack::GPSRecord3, 1);
+				rec->pos.lat = (*(Int32*)&buff[i + 8]) / 200000.0;
+				rec->pos.lon = (*(Int32*)&buff[i + 12]) / 200000.0;
 				rec->speed = *(Int32*)&buff[i + 16] * 0.0001;
 				rec->heading = *(UInt16*)&buff[i + 20] * 0.01;
 				rec->utcTimeTicks = 1000LL * *(UInt32*)&buff[i + 22];
@@ -194,7 +193,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	}
 	if (error)
 	{
-		Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord2 *> *>*recs = devRecs->GetValues();
+		Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord3 *> *>*recs = devRecs.GetValues();
 		i = recs->GetCount();
 		while (i-- > 0)
 		{
@@ -203,17 +202,16 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 			while (j-- > 0)
 			{
 				rec = currDev->GetItem(j);
-				MemFree(rec);
+				MemFreeA(rec);
 			}
 			DEL_CLASS(currDev);
 		}
-		DEL_CLASS(devRecs);
 		return 0;
 	}
 
 	Map::GPSTrack *track;
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, 0));
-	Data::SortableArrayListNative<Int32> *keys = devRecs->GetKeys();
+	Data::SortableArrayListNative<Int32> *keys = devRecs.GetKeys();
 	i = keys->GetCount();
 	while (i-- > 0)
 	{
@@ -221,13 +219,13 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 		sptr = Text::StrInt32(sbuff, devId);
 		track->SetTrackName(CSTRP(sbuff, sptr));
 
-		currDev = devRecs->Get(devId);
+		currDev = devRecs.Get(devId);
 		j = 0;
 		k = currDev->GetCount();
 		while (j < k)
 		{
 			track->AddRecord(rec = currDev->GetItem(j));
-			MemFree(rec);
+			MemFreeA(rec);
 			j++;
 		}
 		DEL_CLASS(currDev);

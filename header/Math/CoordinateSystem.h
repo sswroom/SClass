@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_COORDINATESYSTEM
 #define _SM_MATH_COORDINATESYSTEM
 #include "IO/ParsedObject.h"
+#include "Math/Coord2DDbl.h"
 #include "Math/EarthEllipsoid.h"
 #include "Math/Polyline3D.h"
 #include "Math/Unit/Angle.h"
@@ -69,7 +70,7 @@ namespace Math
 	public:
 		virtual ~CoordinateSystem();
 
-		virtual Double CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit) = 0;
+		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) = 0;
 		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) = 0;
 		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) = 0;
 		virtual CoordinateSystem *Clone() = 0;

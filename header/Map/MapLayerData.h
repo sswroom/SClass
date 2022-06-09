@@ -22,9 +22,8 @@ namespace Map
 		virtual ~MapLayerData();
 
 		virtual Bool IsError();
-
-		virtual UTF8Char *GetPGLabelD(UTF8Char *buff, Double xpos, Double ypos);
-		virtual UTF8Char *GetPLLabelD(UTF8Char *buff, Double xpos, Double ypos, Double *xposOut, Double *yposOut);
+		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
+		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 	};
 }
 #endif

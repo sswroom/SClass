@@ -80,7 +80,7 @@ namespace SSWR
 
 			virtual Bool AddDataFile(Text::CString fileName);
 			virtual Bool DelDataFile(DataFileInfo *dataFile);
-			virtual Bool GetGPSPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon);
+			virtual Bool GetGPSPos(Int32 userId, Data::DateTime *t, Math::Coord2DDbl *pos);
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile);
 
 			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);

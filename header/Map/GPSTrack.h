@@ -12,11 +12,10 @@ namespace Map
 	class GPSTrack : public IMapDrawLayer
 	{
 	public:
-		typedef struct
+		ASTRUCT GPSRecord3
 		{
+			Math::Coord2DDbl pos;
 			Int64 utcTimeTicks;
-			Double lat;
-			Double lon;
 			Double altitude;
 			Double speed;
 			Double heading;
@@ -30,7 +29,7 @@ namespace Map
 			UInt8 nSateViewGA; //Galileo
 			UInt8 nSateViewQZSS; //QZSS
 			UInt8 nSateViewBD; //BeiDou
-		} GPSRecord2;
+		};
 
 		typedef struct
 		{
@@ -40,7 +39,7 @@ namespace Map
 			Double minLon;
 			Text::String *name;
 			UOSInt nRecords;
-			GPSRecord2 *records;
+			GPSRecord3 *records;
 			const UInt8 **extraData;
 			UOSInt *extraDataSize;
 		} TrackRecord;
@@ -68,11 +67,11 @@ namespace Map
 		Text::String *currTrackName;
 		Sync::Mutex recMut;
 		Data::ArrayListInt64 currTimes;
-		Data::ArrayList<GPSRecord2*> currRecs;
+		Data::ArrayList<GPSRecord3*> currRecs;
 		Data::ArrayList<const UInt8 *> currExtraData;
 		Data::ArrayList<UOSInt> currExtraSize;
 		Data::ArrayList<TrackRecord*> currTracks;
-		Map::GPSTrack::GPSRecord2 *tmpRecord;
+		Map::GPSTrack::GPSRecord3 *tmpRecord;
 		GPSExtraParser *extraParser;
 
 		Sync::Mutex updMut;
@@ -111,7 +110,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass();
 
 		void NewTrack();
-		UOSInt AddRecord(GPSRecord2 *rec);
+		UOSInt AddRecord(GPSRecord3 *rec);
 		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);
 		Bool GetHasAltitude();
 		void SetTrackName(Text::CString name);
@@ -121,9 +120,9 @@ namespace Map
 		Bool GetTrackEndTime(UOSInt index, Data::DateTime *dt);
 
 		UOSInt GetTrackCnt();
-		GPSRecord2 *GetTrack(UOSInt index, UOSInt *recordCnt);
-		void GetLatLonByTime(Data::DateTime *dt, Double *lat, Double *lon);
-		void GetLatLonByTicks(Int64 tiemTicks, Double *lat, Double *lon);
+		GPSRecord3 *GetTrack(UOSInt index, UOSInt *recordCnt);
+		void GetPosByTime(Data::DateTime *dt, Math::Coord2DDbl *pos);
+		void GetPosByTicks(Int64 tiemTicks, Math::Coord2DDbl *pos);
 
 		void SetExtraParser(GPSExtraParser *parser);
 		void SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize);
@@ -149,7 +148,7 @@ namespace Map
 	private:
 		Map::GPSTrack *gps;
 		OSInt currRow;
-		GPSTrack::GPSRecord2 *currRec;
+		GPSTrack::GPSRecord3 *currRec;
 	public:
 		GPSDataReader(Map::GPSTrack *gps);
 		virtual ~GPSDataReader();

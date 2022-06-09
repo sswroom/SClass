@@ -92,7 +92,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::CString gooAPIK
 	this->gooAPIKey = Text::String::NewOrNull(gooAPIKey);
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, const UTF8Char *lang)
 {
 	UTF8Char url[1024];
 	UTF8Char *urlStart;
@@ -117,9 +117,9 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	Net::HTTPClient *cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("https://maps.googleapis.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/geocode/json?latlng="));
-	sptr = Text::StrDouble(sptr, lat);
+	sptr = Text::StrDouble(sptr, pos.lat);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-	sptr = Text::StrDouble(sptr, lon);
+	sptr = Text::StrDouble(sptr, pos.lon);
 //	sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 	if (lang)
 	{
@@ -286,7 +286,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -298,10 +298,10 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, pos, ent->shortName);
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{
@@ -313,7 +313,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, pos, ent->shortName);
 }
 
 UInt32 Map::GoogleMap::GoogleWSSearcherJSON::GetSrchCnt()

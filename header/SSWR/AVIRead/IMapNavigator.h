@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_IMAPNAVIGATOR
 #define _SM_SSWR_AVIREAD_IMAPNAVIGATOR
 #include "Map/IMapDrawLayer.h"
+#include "Math/Coord2DDbl.h"
 #include "Math/Vector2D.h"
 #include "UI/GUIControl.h"
 
@@ -14,10 +15,10 @@ namespace SSWR
 			typedef Bool (__stdcall *MouseEvent)(void *userObj, Math::Coord2D<OSInt> scnPos);
 
 			virtual UInt32 GetSRID() = 0;
-			virtual Bool InMap(Double lat, Double lon) = 0;
-			virtual void PanToMap(Double lat, Double lon) = 0;
-			virtual void ShowMarker(Double lat, Double lon) = 0;
-			virtual void ShowMarkerDir(Double lat, Double lon, Double dir, Math::Unit::Angle::AngleUnit unit) = 0;
+			virtual Bool InMap(Math::Coord2DDbl pos) = 0;
+			virtual void PanToMap(Math::Coord2DDbl pos) = 0;
+			virtual void ShowMarker(Math::Coord2DDbl pos) = 0;
+			virtual void ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit) = 0;
 			virtual void HideMarker() = 0;
 			virtual void AddLayer(Map::IMapDrawLayer *layer) = 0;
 			virtual void SetSelectedVector(Math::Vector2D *vec) = 0;
@@ -34,7 +35,7 @@ namespace SSWR
 
 			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid) = 0;
 			virtual Bool HasKMap() = 0;
-			virtual UTF8Char *ResolveAddress(UTF8Char *sbuff, Double lat, Double lon) = 0;
+			virtual UTF8Char *ResolveAddress(UTF8Char *sbuff, Math::Coord2DDbl pos) = 0;
 
 			virtual void PauseUpdate() = 0;
 			virtual void ResumeUpdate() = 0;

@@ -6,6 +6,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/ParsedObject.h"
+#include "Map/IMapSearchLayer.h"
 #include "Map/MapView.h"
 #include "Math/RectArea.h"
 #include "Math/Vector2D.h"
@@ -50,16 +51,16 @@ namespace Map
 		Double *points;
 	} DrawObjectDbl;*/
 
-	class IMapDrawLayer : public DB::ReadingDB //IO::ParsedObject
+	class IMapDrawLayer : public DB::ReadingDB, public Map::IMapSearchLayer
 	{
 	public:
-		typedef struct
+		struct ObjectInfo
 		{
-			Int64 objId;
-			Double objX;
+			Math::Coord2DDbl objPos;
 			Double objY;
+			Int64 objId;
 			Double objDist;
-		} ObjectInfo;
+		};
 	protected:
 		UOSInt nameCol;
 		Math::CoordinateSystem *csys;
@@ -144,10 +145,12 @@ namespace Map
 
 		Int32 CalBlockSize();
 
-		UTF8Char *GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex);
-		UTF8Char *GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Double *outLat, Double *outLon, UOSInt strIndex);
-		Int64 GetNearestObjectId(void *session, Double x, Double y, Double *pointX, Double *pointY);
-		OSInt GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Double x, Double y, Double maxDist); //return nearest object if no object within distance
+		virtual Bool IsError();
+		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
+		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
+
+		Int64 GetNearestObjectId(void *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
+		OSInt GetNearObjects(void *session, Data::ArrayList<ObjectInfo*> *objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(Data::ArrayList<ObjectInfo*> *objList);
 		Map::VectorLayer *CreateEditableLayer();
 

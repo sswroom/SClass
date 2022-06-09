@@ -76,7 +76,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
 	{
 		Map::GPSTrack *track = (Map::GPSTrack*)layer;
-		Map::GPSTrack::GPSRecord2 *rec;
+		Map::GPSTrack::GPSRecord3 *rec;
 		UOSInt recCnt;
 		Double v;
 		Int32 currInd = 1;
@@ -109,7 +109,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(", Estimated (dead reckoning), "));
 				}
-				v = rec[k].lat;
+				v = rec[k].pos.lat;
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
@@ -120,7 +120,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					sptr = Text::StrDouble(sptr, v);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(", N, "));
 				}
-				v = rec[k].lon;
+				v = rec[k].pos.lon;
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);

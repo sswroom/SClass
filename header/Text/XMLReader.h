@@ -30,9 +30,9 @@ namespace Text
 		OSInt parseError; //Max = 52
 		ParseMode mode;
 
-		Data::ArrayList<Text::XMLAttrib *> *attrList;
+		Data::ArrayList<Text::XMLAttrib *> attrList;
 		Text::XMLNode::NodeType nt;
-		Data::ArrayList<Text::String*> *pathList;
+		Data::ArrayList<Text::String*> pathList;
 		Text::String *nodeText;
 		Text::String *nodeOriText;
 		Bool emptyNode;

@@ -24,8 +24,8 @@ namespace Map
 		RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errWriter);
 		virtual ~RevGeoDir();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 	};
 }
 #endif

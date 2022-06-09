@@ -5,7 +5,7 @@
 #include "Text/XML.h"
 #include "Text/XMLReader.h"
 
-#define BUFFSIZE 65536
+#define BUFFSIZE 524288
 
 #include <stdio.h>
 
@@ -13,14 +13,14 @@ void Text::XMLReader::FreeCurrent()
 {
 	SDEL_STRING(this->nodeText);
 	SDEL_STRING(this->nodeOriText);
-	UOSInt i = this->attrList->GetCount();
+	UOSInt i = this->attrList.GetCount();
 	Text::XMLAttrib *attr;
 	while (i-- > 0)
 	{
-		attr = this->attrList->GetItem(i);
+		attr = this->attrList.GetItem(i);
 		DEL_CLASS(attr);
 	}
-	this->attrList->Clear();
+	this->attrList.Clear();
 }
 
 Bool Text::XMLReader::IsHTMLSkip()
@@ -130,13 +130,11 @@ Text::XMLReader::XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, Pars
 	this->stm = stm;
 	this->stmEnc = false;
 	this->mode = mode;
-	NEW_CLASS(this->attrList, Data::ArrayList<Text::XMLAttrib*>());
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffSize = 0;
 	this->rawBuff = MemAlloc(UInt8, BUFFSIZE);
 	this->rawBuffSize = 0;
 	this->parseOfst = 0;
-	NEW_CLASS(this->pathList, Data::ArrayList<Text::String*>());
 	this->nodeText = 0;
 	this->nodeOriText = 0;
 	this->emptyNode = false;
@@ -149,13 +147,11 @@ Text::XMLReader::~XMLReader()
 {
 	this->FreeCurrent();
 
-	UOSInt i = this->pathList->GetCount();
+	UOSInt i = this->pathList.GetCount();
 	while (i-- > 0)
 	{
-		this->pathList->GetItem(i)->Release();
+		this->pathList.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->pathList);
-	DEL_CLASS(this->attrList);
 	MemFree(this->readBuff);
 	MemFree(this->rawBuff);
 	SDEL_CLASS(this->enc);
@@ -164,7 +160,7 @@ Text::XMLReader::~XMLReader()
 void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt i = 0;
-	UOSInt j = this->pathList->GetCount();
+	UOSInt j = this->pathList.GetCount();
 	if (j == 0)
 	{
 		sb->AppendUTF8Char('/');
@@ -173,14 +169,14 @@ void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb)
 	while (i < j)
 	{
 		sb->AppendUTF8Char('/');
-		sb->Append(this->pathList->GetItem(i));
+		sb->Append(this->pathList.GetItem(i));
 		i++;
 	}
 }
 
 UOSInt Text::XMLReader::GetPathLev()
 {
-	return this->pathList->GetCount();
+	return this->pathList.GetCount();
 }
 
 Text::XMLNode::NodeType Text::XMLReader::GetNodeType()
@@ -200,21 +196,21 @@ Text::String *Text::XMLReader::GetNodeOriText()
 
 UOSInt Text::XMLReader::GetAttribCount()
 {
-	return this->attrList->GetCount();
+	return this->attrList.GetCount();
 }
 
 Text::XMLAttrib *Text::XMLReader::GetAttrib(UOSInt index)
 {
-	return this->attrList->GetItem(index);
+	return this->attrList.GetItem(index);
 }
 
 Text::XMLAttrib *Text::XMLReader::GetAttrib(const UTF8Char *name, UOSInt nameLen)
 {
-	UOSInt i = this->attrList->GetCount();
+	UOSInt i = this->attrList.GetCount();
 	Text::XMLAttrib *attr;
 	while (i-- > 0)
 	{
-		attr = this->attrList->GetItem(i);
+		attr = this->attrList.GetItem(i);
 		if (attr->name->Equals(name, nameLen))
 			return attr;
 	}
@@ -255,16 +251,16 @@ Bool Text::XMLReader::ReadNext()
 			else if (this->nodeText->EqualsICase(UTF8STRC("SCRIPT")))
 			{
 				isHTMLScript = true;
-				this->pathList->Add(this->nodeText->Clone());
+				this->pathList.Add(this->nodeText->Clone());
 			}
 			else
 			{
-				this->pathList->Add(this->nodeText->Clone());
+				this->pathList.Add(this->nodeText->Clone());
 			}
 		}
 		else
 		{
-			this->pathList->Add(this->nodeText->Clone());
+			this->pathList.Add(this->nodeText->Clone());
 		}
 	}
 
@@ -490,7 +486,7 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else if (isEqual)
 							{
-								Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+								Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 								SDEL_STRING(attr->value);
 								attr->value = Text::String::New(sb.ToString(), sb.GetLength());
 								isEqual = false;
@@ -499,7 +495,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								Text::XMLAttrib *attr;
 								NEW_CLASS(attr, Text::XMLAttrib(sb.ToString(), sb.GetLength(), 0, 0));
-								this->attrList->Add(attr);
+								this->attrList.Add(attr);
 							}
 							sb.ClearStr();
 						}
@@ -523,7 +519,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sb.ToString(), sb.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 							sb.ClearStr();
 						}
 						if (this->nodeText == 0)
@@ -531,7 +527,7 @@ Bool Text::XMLReader::ReadNext()
 							this->parseError = 47;
 							return false;
 						}
-						Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+						Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 						if (attr == 0)
 						{
 							this->parseError = 48;
@@ -687,7 +683,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (isEqual)
 						{
-							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
 							attr->value = Text::String::New(sb.ToString(), sb.GetLength());
 							isEqual = false;
@@ -696,7 +692,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sb.ToString(), sb.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 						}
 						sb.ClearStr();
 					}
@@ -711,7 +707,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (isEqual)
 						{
-							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
 							attr->value = Text::String::New(sb.ToString(), sb.GetLength());
 							isEqual = false;
@@ -720,7 +716,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sb.ToString(), sb.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 						}
 						sb.ClearStr();
 					}
@@ -731,11 +727,11 @@ Bool Text::XMLReader::ReadNext()
 						{
 							if (this->encFact && this->nodeText->Equals(UTF8STRC("xml")))
 							{
-								UOSInt i = this->attrList->GetCount();
+								UOSInt i = this->attrList.GetCount();
 								Text::XMLAttrib *attr;
 								while (i-- > 0)
 								{
-									attr = this->attrList->GetItem(i);
+									attr = this->attrList.GetItem(i);
 									if (attr->name->EqualsICase(UTF8STRC("ENCODING")))
 									{
 										UInt32 cp = this->encFact->GetCodePage(attr->value->ToCString());
@@ -768,7 +764,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						Text::XMLAttrib *attr;
 						NEW_CLASS(attr, Text::XMLAttrib(sb.ToString(), sb.GetLength(), 0, 0));
-						this->attrList->Add(attr);
+						this->attrList.Add(attr);
 						sb.ClearStr();
 					}
 					if (this->nodeText == 0)
@@ -776,7 +772,7 @@ Bool Text::XMLReader::ReadNext()
 						this->parseError = 11;
 						return false;
 					}
-					Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+					Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 					if (attr == 0)
 					{
 						this->parseError = 12;
@@ -876,20 +872,20 @@ Bool Text::XMLReader::ReadNext()
 						return false;
 					}
 					this->parseOfst++;
-					if (this->pathList->GetCount() == 0)
+					if (this->pathList.GetCount() == 0)
 					{
 						this->parseError = 21;
 						return false;
 					}
-					if (this->pathList->GetItem(this->pathList->GetCount() - 1)->Equals(this->nodeText))
+					if (this->pathList.GetItem(this->pathList.GetCount() - 1)->Equals(this->nodeText))
 					{
-						this->pathList->RemoveAt(this->pathList->GetCount() - 1)->Release();
+						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
 						return true;
 					}
-					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList->GetCount() >= 2 && this->pathList->GetItem(this->pathList->GetCount() - 2)->Equals(this->nodeText))
+					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2)->Equals(this->nodeText))
 					{
-						this->pathList->RemoveAt(this->pathList->GetCount() - 1)->Release();
-						this->pathList->RemoveAt(this->pathList->GetCount() - 1)->Release();
+						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
+						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
 						return true;
 					}
 					else
@@ -945,7 +941,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (isEqual)
 						{
-							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
@@ -970,7 +966,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 						}
 						sbText.ClearStr();
 						sbOri.ClearStr();
@@ -1121,7 +1117,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (isEqual)
 						{
-							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
@@ -1146,7 +1142,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 						}
 						sbText.ClearStr();
 						sbOri.ClearStr();
@@ -1163,7 +1159,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (isEqual)
 						{
-							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
@@ -1188,7 +1184,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 						}
 						sbText.ClearStr();
 						sbOri.ClearStr();
@@ -1228,7 +1224,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (isEqual)
 						{
-							Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+							Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
@@ -1253,7 +1249,7 @@ Bool Text::XMLReader::ReadNext()
 						{
 							Text::XMLAttrib *attr;
 							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
-							this->attrList->Add(attr);
+							this->attrList.Add(attr);
 						}
 						sbText.ClearStr();
 						sbOri.ClearStr();
@@ -1268,7 +1264,7 @@ Bool Text::XMLReader::ReadNext()
 					{
 						Text::XMLAttrib *attr;
 						NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
-						this->attrList->Add(attr);
+						this->attrList.Add(attr);
 						sbText.ClearStr();
 						sbOri.ClearStr();
 					}
@@ -1277,7 +1273,7 @@ Bool Text::XMLReader::ReadNext()
 						this->parseError = 30;
 						return false;
 					}
-					Text::XMLAttrib *attr = this->attrList->GetItem(this->attrList->GetCount() - 1);
+					Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 					if (attr == 0)
 					{
 						this->parseError = 31;
@@ -1523,13 +1519,13 @@ Bool Text::XMLReader::ReadNodeText(Text::StringBuilderUTF8 *sb)
 		{
 			return true;
 		}
-		UOSInt pathLev = this->pathList->GetCount();
+		UOSInt pathLev = this->pathList.GetCount();
 		Text::XMLNode::NodeType nt;
 		Bool succ = true;
 		while ((succ = this->ReadNext()) != false)
 		{
 			nt = this->GetNodeType();
-			if (nt == Text::XMLNode::NT_ELEMENTEND && pathLev == this->pathList->GetCount())
+			if (nt == Text::XMLNode::NT_ELEMENTEND && pathLev == this->pathList.GetCount())
 			{
 				break;
 			}
@@ -1565,11 +1561,11 @@ Bool Text::XMLReader::SkipElement()
 				return true;
 			}
 		}
-		UOSInt initLev = this->pathList->GetCount();
+		UOSInt initLev = this->pathList.GetCount();
 		Bool succ = true;
 		while ((succ = this->ReadNext()) != false)
 		{
-			if (this->nt == Text::XMLNode::NT_ELEMENTEND && initLev >= this->pathList->GetCount())
+			if (this->nt == Text::XMLNode::NT_ELEMENTEND && initLev >= this->pathList.GetCount())
 			{
 				break;
 			}
@@ -1589,7 +1585,7 @@ Bool Text::XMLReader::IsElementEmpty()
 
 Bool Text::XMLReader::IsComplete()
 {
-	return this->pathList->GetCount() == 0 && this->parseOfst == this->buffSize;	
+	return this->pathList.GetCount() == 0 && this->parseOfst == this->buffSize;	
 }
 
 OSInt Text::XMLReader::GetErrorCode()
@@ -1609,10 +1605,10 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
 		sb->AppendUTF8Char('?');
 		sb->Append(this->nodeText);
 		i = 0;
-		j = this->attrList->GetCount();
+		j = this->attrList.GetCount();
 		while (i < j)
 		{
-			attr = this->attrList->GetItem(i);
+			attr = this->attrList.GetItem(i);
 			sb->AppendUTF8Char(' ');
 			attr->ToString(sb);
 			i++;
@@ -1624,10 +1620,10 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
 		sb->AppendUTF8Char('<');
 		sb->Append(this->nodeText);
 		i = 0;
-		j = this->attrList->GetCount();
+		j = this->attrList.GetCount();
 		while (i < j)
 		{
-			attr = this->attrList->GetItem(i);
+			attr = this->attrList.GetItem(i);
 			sb->AppendUTF8Char(' ');
 			attr->ToString(sb);
 			i++;
@@ -1682,10 +1678,10 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
 		sb->AppendUTF8Char('!');
 		sb->Append(this->nodeText);
 		i = 0;
-		j = this->attrList->GetCount();
+		j = this->attrList.GetCount();
 		while (i < j)
 		{
-			attr = this->attrList->GetItem(i);
+			attr = this->attrList.GetItem(i);
 			sb->AppendUTF8Char(' ');
 			attr->ToString(sb);
 			i++;

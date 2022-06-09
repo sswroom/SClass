@@ -58,12 +58,12 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnMapScaleScroll(void *userObj,
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(void *userObj)
 {
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
-	Map::GPSTrack::GPSRecord2 *rec = (Map::GPSTrack::GPSRecord2 *)me->lbTrack->GetSelectedItem();
+	Map::GPSTrack::GPSRecord3 *rec = (Map::GPSTrack::GPSRecord3 *)me->lbTrack->GetSelectedItem();
 	if (rec)
 	{
-		if (!me->mapView->InViewXY(Math::Coord2DDbl(rec->lon, rec->lat)))
+		if (!me->mapView->InViewXY(rec->pos))
 		{
-			me->mapView->SetCenterXY(Math::Coord2DDbl(rec->lon, rec->lat));
+			me->mapView->SetCenterXY(rec->pos);
 			me->mapMain->UpdateMap();
 		}
 	}
@@ -178,8 +178,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	UserFileInfo *userFile;
 	Int32 succCnt = 0;
 	Int32 failCnt = 0;
-	Double lat;
-	Double lon;
+	Math::Coord2DDbl pos;
 	Data::DateTime dt;
 
 	me->cboCamera->GetText(&sb);
@@ -193,8 +192,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 		{
 			dt.SetTicks(userFile->fileTimeTicks);
 			dt.AddSecond(timeAdj);
-			me->gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
-			if (me->env->UpdateUserFilePos(userFile, &dt, lat, lon))
+			me->gpsTrk->GetPosByTime(&dt, &pos);
+			if (me->env->UpdateUserFilePos(userFile, &dt, pos.lat, pos.lon))
 			{
 				succCnt++;
 			}
@@ -218,16 +217,15 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 	Data::DateTime dt;
 	if (this->selImgCamera && this->selImgCamera->Equals(camera, cameraLen))
 	{
-		Double lat;
-		Double lon;
+		Math::Coord2DDbl pos;
 		dt.SetTicks(this->selImgTimeTicks);
 		dt.AddSecond(timeAdj);
-		this->gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
-		this->mapMain->ShowMarkerMapXY(lon, lat);
+		this->gpsTrk->GetPosByTime(&dt, &pos);
+		this->mapMain->ShowMarkerMapXY(pos);
 
-		if (!this->mapView->InViewXY(Math::Coord2DDbl(lon, lat)))
+		if (!this->mapView->InViewXY(pos))
 		{
-			this->mapView->SetCenterXY(Math::Coord2DDbl(lon, lat));
+			this->mapView->SetCenterXY(pos);
 			this->mapMain->UpdateMap();
 		}
 	}
@@ -336,7 +334,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		Map::GPSTrack::GPSRecord2 *records;
+		Map::GPSTrack::GPSRecord3 *records;
 		Data::DateTime dt;
 		records = this->gpsTrk->GetTrack(0, &j);
 		i = 0;

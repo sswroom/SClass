@@ -41,6 +41,11 @@ namespace Math
 			this->vals = vals;
 		}
 
+		static Coord2DDbl FromLatLon(Double lat, Double lon)
+		{
+			return Coord2DDbl(lon, lat);
+		}
+
 		Double CalcLengTo(Coord2DDbl coord)
 		{
 			Math::Coord2DDbl diff = *this - coord;
@@ -127,6 +132,11 @@ namespace Math
 		{
 			this->vals = PADDPD(this->vals, v.vals);
 			return *this;
+		}
+
+		Bool IsZero()
+		{
+			return this->x == 0 && this->y == 0;
 		}
 	};
 }

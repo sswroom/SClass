@@ -152,45 +152,40 @@ void Math::VectorImage::GetBounds(Math::RectAreaDbl *bounds)
 	*bounds = Math::RectAreaDbl(this->tl, this->br);
 }
 
-Double Math::VectorImage::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
+Double Math::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
-	Double nearX;
-	Double nearY;
-	if (x > br.x)
+	Math::Coord2DDbl near;
+	if (pt.x > br.x)
 	{
-		nearX = br.x;
+		near.x = br.x;
 	}
-	else if (x < tl.x)
+	else if (pt.x < tl.x)
 	{
-		nearX = tl.x;
-	}
-	else
-	{
-		nearX = x;
-	}
-	if (y > br.y)
-	{
-		nearY = br.y;
-	}
-	else if (y < tl.y)
-	{
-		nearY = tl.y;
+		near.x = tl.x;
 	}
 	else
 	{
-		nearY = y;
+		near.x = pt.x;
 	}
-	if (nearPtX)
+	if (pt.y > br.y)
 	{
-		*nearPtX = nearX;
+		near.y = br.y;
 	}
-	if (nearPtY)
+	else if (pt.y < tl.y)
 	{
-		*nearPtY = nearY;
+		near.y = tl.y;
 	}
-	if (nearX == x && nearY == y)
-		return 0;
-	return (x - nearX) * (x - nearX) + (y - nearY) * (y - nearY);
+	else
+	{
+		near.y = pt.y;
+	}
+	if (nearPt)
+	{
+		*nearPt = near;
+	}
+	near = pt - near;
+	near = near * near;
+	return near.x + near.y;
 }
 
 Bool Math::VectorImage::JoinVector(Math::Vector2D *vec)

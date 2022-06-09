@@ -113,10 +113,10 @@ void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(void *userOb
 		dt.SetCurrTimeUTC();
 		Data::RandomMT19937 r((UInt32)(dt.ToTicks() & 0xffffffff));
 		Math::Coord2DDbl pt = me->selPt1 + (me->selPt2 - me->selPt1) * Math::Coord2DDbl(r.NextDouble(), r.NextDouble());
-		me->navi->ShowMarker(pt.y, pt.x);
-		if (!me->navi->InMap(pt.y, pt.x))
+		me->navi->ShowMarker(pt);
+		if (!me->navi->InMap(pt))
 		{
-			me->navi->PanToMap(pt.y, pt.x);
+			me->navi->PanToMap(pt);
 		}
 	}
 }

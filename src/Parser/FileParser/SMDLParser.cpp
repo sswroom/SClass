@@ -224,7 +224,7 @@ IO::ParserType Parser::FileParser::SMDLParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	Map::GPSTrack::GPSRecord2 rec;
+	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -281,8 +281,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 		fd->GetRealData(currPos, 96, buff);
 		rec.utcTimeTicks = ReadInt64(&buff[0]);
 		recvTimeTick = ReadInt64(&buff[8]);
-		rec.lat = ReadDouble(&buff[16]);
-		rec.lon = ReadDouble(&buff[24]);
+		rec.pos = Math::Coord2DDbl(ReadDouble(&buff[24]), ReadDouble(&buff[16]));
 		rec.altitude = ReadDouble(&buff[32]);
 		rec.speed = ReadDouble(&buff[40]);
 		rec.heading = ReadDouble(&buff[48]);

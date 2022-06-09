@@ -17,6 +17,7 @@ namespace Map
 			Int32 searchType;
 			Int32 usedCnt;
 			Map::IMapSearchLayer *data;
+			UOSInt strIndex;
 		} SearchLayer;
 
 	private:
@@ -26,7 +27,7 @@ namespace Map
 		RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrchMgr);
 		~RevGeoCfg();
 
-		UTF8Char *GetStreetName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon);
+		UTF8Char *GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos);
 	};
 }
 #endif

@@ -168,7 +168,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::GPSTrack *track;
-		Map::GPSTrack::GPSRecord2 rec;
+		Map::GPSTrack::GPSRecord3 rec;
 		Data::DateTime dt;
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
 		track->SetTrackName(fd->GetShortName());
@@ -188,17 +188,16 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 					dt.SetValue(CSTRP(sbuff2, sptr2));
 				}
 				rec.utcTimeTicks = dt.ToTicks();
-				rec.lat = Text::StrToDouble(tmpArr2[latCol].v);
-				rec.lon = Text::StrToDouble(tmpArr2[lonCol].v);
+				rec.pos = Math::Coord2DDbl(Text::StrToDouble(tmpArr2[lonCol].v), Text::StrToDouble(tmpArr2[latCol].v));
 				if (latDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[latDirCol].v[0] == 'S')
-						rec.lat = -rec.lat;
+						rec.pos.lat = -rec.pos.lat;
 				}
 				if (lonDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[lonDirCol].v[0] == 'W')
-						rec.lon = -rec.lon;
+						rec.pos.lon = -rec.pos.lon;
 				}
 				if (validCol != INVALID_INDEX)
 				{

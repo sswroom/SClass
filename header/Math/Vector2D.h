@@ -32,7 +32,7 @@ namespace Math
 		virtual Math::Coord2DDbl GetCenter() = 0;
 		virtual Math::Vector2D *Clone() = 0;
 		virtual void GetBounds(Math::RectAreaDbl *bounds) = 0;
-		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY) = 0;
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) = 0;
 		virtual Bool JoinVector(Math::Vector2D *vec) = 0;
 		virtual Bool Support3D() { return false; };
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;

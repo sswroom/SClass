@@ -395,7 +395,7 @@ Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::String *str, D
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, 0, this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -409,7 +409,7 @@ Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::CString str, D
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, 0, this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -423,7 +423,7 @@ Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::String 
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, 0, this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -437,7 +437,7 @@ Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::CString
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, 0, this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -451,7 +451,7 @@ Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::String *str, 
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -465,7 +465,7 @@ Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::CString str, 
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(tlx, tly), 0, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -479,7 +479,7 @@ Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::String
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -493,7 +493,7 @@ Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::CStrin
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, Math::Coord2DDbl(centX, centY), angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;

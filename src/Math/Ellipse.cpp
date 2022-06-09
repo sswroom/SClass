@@ -38,11 +38,10 @@ void Math::Ellipse::GetBounds(Math::RectAreaDbl *bounds)
 	*bounds = Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
 }
 
-Double Math::Ellipse::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
+Double Math::Ellipse::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
 	//////////////////////////////////////////////////////////
-	*nearPtX = x;
-	*nearPtY = y;
+	*nearPt = pt;
 	return 0;
 }
 

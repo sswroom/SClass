@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(void *userObj)
 	if (me->chkAutoPan->IsChecked())
 	{
 		Math::Coord2DDbl pt = (me->imgMin + me->imgMax) * 0.5;
-		me->navi->PanToMap(pt.lat, pt.lon);
+		me->navi->PanToMap(pt);
 	}
 }
 

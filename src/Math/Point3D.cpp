@@ -15,14 +15,14 @@ Math::Point3D::~Point3D()
 Math::Vector2D *Math::Point3D::Clone()
 {
 	Math::Point3D *pt;
-	NEW_CLASS(pt, Math::Point3D(this->srid, this->x, this->y, this->z));
+	NEW_CLASS(pt, Math::Point3D(this->srid, this->pos.x, this->pos.y, this->z));
 	return pt;
 }
 
 void Math::Point3D::GetCenter3D(Double *x, Double *y, Double *z)
 {
-	*x = this->x;
-	*y = this->y;
+	*x = this->pos.x;
+	*y = this->pos.y;
 	*z = this->z;
 }
 
@@ -33,7 +33,7 @@ Bool Math::Point3D::Support3D()
 
 void Math::Point3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, this->z, &this->x, &this->y, &this->z);
+	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, this->z, &this->pos.x, &this->pos.y, &this->z);
 }
 
 Bool Math::Point3D::Equals(Math::Vector2D *vec)
@@ -47,7 +47,7 @@ Bool Math::Point3D::Equals(Math::Vector2D *vec)
 	if (vec->GetVectorType() == VectorType::Point && vec->Support3D())
 	{
 		Math::Point3D *pt = (Math::Point3D*)vec;
-		return this->x == pt->x && this->y == pt->y && this->z == pt->z;
+		return this->pos == pt->pos && this->z == pt->z;
 	}
 	else
 	{

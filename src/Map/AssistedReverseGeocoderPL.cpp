@@ -134,14 +134,14 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UTF8Char *sptr = 0;
 	if (this->conn == 0)
 		return 0;
 
-	Int32 keyx = Double2Int32(lon * 5000);
-	Int32 keyy = Double2Int32(lat * 5000);
+	Int32 keyx = Double2Int32(pos.lon * 5000);
+	Int32 keyy = Double2Int32(pos.lat * 5000);
 	if (keyx == 0 && keyy == 0)
 		return 0;
 
@@ -170,7 +170,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, lat, lon, lcid);
+		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
@@ -224,9 +224,9 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
+UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	return this->SearchName(buff, buffSize, lat, lon, lcid);
+	return this->SearchName(buff, buffSize, pos, lcid);
 }
 
 void Map::AssistedReverseGeocoderPL::AddReverseGeocoder(Map::IReverseGeocoder *revGeo)

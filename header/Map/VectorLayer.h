@@ -68,7 +68,7 @@ namespace Map
 		Bool AddVector(Math::Vector2D *vec, Text::String **strs);
 		Bool AddVector(Math::Vector2D *vec, Text::PString *strs);
 		Bool AddVector(Math::Vector2D *vec, const UTF8Char **strs);
-		Bool SplitPolyline(Double x, Double y);
+		Bool SplitPolyline(Math::Coord2DDbl pt);
 		void OptimizePolylinePath();
 		void ReplaceVector(Int64 id, Math::Vector2D *vec);
 		void ConvCoordinateSystem(Math::CoordinateSystem *csys);

@@ -19,11 +19,9 @@ namespace Map
 			DT_VECTORDRAW
 		} DrawType;
 	private:
-#if defined(_MSC_VER)	
-		__declspec(align(32)) 
-#endif
-		struct MapLabels
+		ASTRUCT MapLabels
 		{
+			Math::Coord2DDbl pos;
 			Text::String *label;
 			Double scaleW;
 			Double scaleH;
@@ -38,11 +36,6 @@ namespace Map
 			UOSInt fontStyle;
 			Double totalSize;
 			Double currSize;
-#if defined(_MSC_VER)
-			Math::Coord2DDbl pos;
-#else
-			Math::Coord2DDbl pos __attribute__ ((aligned (16)));
-#endif
 		};
 
 		typedef struct

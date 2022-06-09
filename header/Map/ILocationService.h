@@ -31,7 +31,7 @@ namespace Map
 			Int8 snr;
 		};
 
-		typedef void (__stdcall *LocationHandler)(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, SateStatus *sates);
+		typedef void (__stdcall *LocationHandler)(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, SateStatus *sates);
 
 		virtual ~ILocationService() {};
 

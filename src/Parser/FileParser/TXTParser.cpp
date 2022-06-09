@@ -80,14 +80,10 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	IO::StreamDataStream *stm;
-	IO::StreamReader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
-	if ((sptr = reader->ReadLine(sbuff, 255)) == 0)
+	IO::StreamDataStream stm(fd);
+	IO::StreamReader reader(&stm, this->codePage);
+	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
 	{
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
 		return 0;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && this->parsers != 0 && this->mapMgr != 0)
@@ -96,8 +92,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Map::MapEnv::GroupItem *currGroup = 0;
 		if (Text::StrSplitTrimP(sarr, 8, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 		{
-			DEL_CLASS(reader);
-			DEL_CLASS(stm);
 			return 0;
 		}
 
@@ -106,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
 
-		while ((sptr = reader->ReadLine(sbuff, 255)) != 0)
+		while ((sptr = reader.ReadLine(sbuff, 255)) != 0)
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("2,")))
 			{
@@ -114,8 +108,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				fileName = fd->GetFullFileName()->ConcatTo(baseDir);
@@ -128,8 +120,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				j = Text::StrToUInt32(sarr[1].v);
@@ -163,8 +153,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				env->SetLineStyleName(Text::StrToUInt32(sarr[1].v), sarr[2].ToCString());
@@ -184,8 +172,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				i = Text::StrToUInt32(sarr[1].v);
@@ -234,8 +220,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
@@ -260,8 +244,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 
@@ -289,8 +271,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
@@ -330,8 +310,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
-					DEL_CLASS(reader);
-					DEL_CLASS(stm);
 					return 0;
 				}
 				OSInt si;
@@ -360,8 +338,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 
 		//////////////////////////////
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
 		return env;
 	}
 	else if (fd->IsFullFile() && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID,")) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(",")))
@@ -370,8 +346,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		fileName = Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
 		if (IO::Path::GetPathType(CSTRP(sbuff4, fileName)) != IO::Path::PathType::File)
 		{
-			DEL_CLASS(reader);
-			DEL_CLASS(stm);
 			return 0;
 		}
 
@@ -379,8 +353,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Bool hasPL = false;
 		Bool hasPG = false;
 		UInt32 srid = 0;
-		IO::FileStream *fs2;
-		IO::StreamReader *reader2;
 		Data::ArrayListDbl ptX;
 		Data::ArrayListDbl ptY;
 		Data::ArrayListDbl ptZ;
@@ -394,70 +366,70 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Math::Coord2DDbl *ptList;
 		Double *hList;
 
-		NEW_CLASS(fs2, IO::FileStream({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(reader2, IO::StreamReader(fs2, 0));
-		while ((sptr2 = reader2->ReadLine(sbuff2, 512)) != 0)
 		{
-			i = Text::StrSplitP(sarr, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, ',');
-			if (i == 1)
+			IO::FileStream fs2({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::StreamReader reader2(&fs2, 0);
+			while ((sptr2 = reader2.ReadLine(sbuff2, 512)) != 0)
 			{
-				if (currId != 0)
+				i = Text::StrSplitP(sarr, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, ',');
+				if (i == 1)
 				{
-					j = ptX.GetCount();
-					if (j == 0)
+					if (currId != 0)
 					{
-					}
-					else if (j == 1)
-					{
-						hasPt = true;
-						NEW_CLASS(pt, Math::Point3D(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
-						vecMap.Put(currId, pt);
-					}
-					else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
-					{
-						hasPG = true;
-						NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1));
-						ptList = pg->GetPointList(&k);
-						k = 0;
-						while (k < j - 1)
+						j = ptX.GetCount();
+						if (j == 0)
 						{
-							ptList[k].x = ptX.GetItem(k);
-							ptList[k].y = ptY.GetItem(k);
-							k++;
 						}
-						vecMap.Put(currId, pg);
-					}
-					else
-					{
-						hasPL = true;
-						NEW_CLASS(pl, Math::Polyline3D(srid, 1, j));
-						ptList = pl->GetPointList(&k);
-						hList = pl->GetAltitudeList(&k);
-						k = 0;
-						while (k < j)
+						else if (j == 1)
 						{
-							ptList[k].x = ptX.GetItem(k);
-							ptList[k].y = ptY.GetItem(k);
-							hList[k] = ptZ.GetItem(k);
-							k++;
+							hasPt = true;
+							NEW_CLASS(pt, Math::Point3D(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+							vecMap.Put(currId, pt);
 						}
-						vecMap.Put(currId, pl);
+						else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
+						{
+							hasPG = true;
+							NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1));
+							ptList = pg->GetPointList(&k);
+							k = 0;
+							while (k < j - 1)
+							{
+								ptList[k].x = ptX.GetItem(k);
+								ptList[k].y = ptY.GetItem(k);
+								k++;
+							}
+							vecMap.Put(currId, pg);
+						}
+						else
+						{
+							hasPL = true;
+							NEW_CLASS(pl, Math::Polyline3D(srid, 1, j));
+							ptList = pl->GetPointList(&k);
+							hList = pl->GetAltitudeList(&k);
+							k = 0;
+							while (k < j)
+							{
+								ptList[k].x = ptX.GetItem(k);
+								ptList[k].y = ptY.GetItem(k);
+								hList[k] = ptZ.GetItem(k);
+								k++;
+							}
+							vecMap.Put(currId, pl);
+						}
 					}
+					ptX.Clear();
+					ptY.Clear();
+					ptZ.Clear();
+					currId = Text::StrToInt32(sarr[0].v);
 				}
-				ptX.Clear();
-				ptY.Clear();
-				ptZ.Clear();
-				currId = Text::StrToInt32(sarr[0].v);
-			}
-			else if (i == 3)
-			{
-				ptX.Add(Text::StrToDouble(sarr[0].v));
-				ptY.Add(Text::StrToDouble(sarr[1].v));
-				ptZ.Add(Text::StrToDouble(sarr[2].v));
+				else if (i == 3)
+				{
+					ptX.Add(Text::StrToDouble(sarr[0].v));
+					ptY.Add(Text::StrToDouble(sarr[1].v));
+					ptZ.Add(Text::StrToDouble(sarr[2].v));
+				}
 			}
 		}
-		DEL_CLASS(reader2);
-		DEL_CLASS(fs2);
 
 		if (currId != 0)
 		{
@@ -528,7 +500,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 		j = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 2, 0));
-		while ((sptr = reader->ReadLine(sbuff, 512)) != 0)
+		while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 			if (i == j)
@@ -558,13 +530,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				DEL_CLASS(vec);
 			}
 		}
-
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
 		return lyr;
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return 0;
 }
 

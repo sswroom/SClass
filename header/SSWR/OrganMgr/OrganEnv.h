@@ -7,6 +7,7 @@
 #include "IO/Writer.h"
 #include "DB/DBTool.h"
 #include "Map/GPSTrack.h"
+#include "Math/Coord2DDbl.h"
 #include "Media/ColorManager.h"
 #include "Media/ImageList.h"
 #include "Media/MonitorMgr.h"
@@ -268,7 +269,7 @@ namespace SSWR
 			Data::ArrayList<DataFileInfo*> *GetDataFiles();
 			virtual Bool DelDataFile(DataFileInfo *dataFile) = 0;
 			void ReleaseDataFile(DataFileInfo *dataFile);
-			virtual Bool GetGPSPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon) = 0;
+			virtual Bool GetGPSPos(Int32 userId, Data::DateTime *t, Math::Coord2DDbl *pos) = 0;
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile) = 0;
 
 			void ReleaseSpecies(SpeciesInfo *species);

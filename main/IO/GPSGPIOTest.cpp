@@ -14,13 +14,13 @@
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
-void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
+void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Lat = "));
-	Text::SBAppendF64(&sb, record->lat);
+	Text::SBAppendF64(&sb, record->pos.lat);
 	sb.AppendC(UTF8STRC(", Lon = "));
-	Text::SBAppendF64(&sb, record->lon);
+	Text::SBAppendF64(&sb, record->pos.lon);
 	sb.AppendC(UTF8STRC(", Altitude = "));
 	Text::SBAppendF64(&sb, record->altitude);
 	sb.AppendC(UTF8STRC(", Speed = "));

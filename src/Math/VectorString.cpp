@@ -4,21 +4,19 @@
 #include "Math/VectorString.h"
 #include "Text/MyString.h"
 
-Math::VectorString::VectorString(UInt32 srid, Text::String *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::VectorString::VectorString(UInt32 srid, Text::String *s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = s->Clone();
-	this->x = x;
-	this->y = y;
+	this->pos = pos;
 	this->angleDegree = angleDegree;
 	this->buffSize = buffSize;
 	this->align = align;
 }
 
-Math::VectorString::VectorString(UInt32 srid, Text::CString s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::VectorString::VectorString(UInt32 srid, Text::CString s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = Text::String::New(s);
-	this->x = x;
-	this->y = y;
+	this->pos = pos;
 	this->angleDegree = angleDegree;
 	this->buffSize = buffSize;
 	this->align = align;
@@ -36,29 +34,27 @@ Math::Vector2D::VectorType Math::VectorString::GetVectorType()
 
 Math::Coord2DDbl Math::VectorString::GetCenter()
 {
-	return Math::Coord2DDbl(this->x, this->y);
+	return this->pos;
 }
 
 Math::Vector2D *Math::VectorString::Clone()
 {
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, this->s, this->x, this->y, this->angleDegree, this->buffSize, this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, this->s, this->pos, this->angleDegree, this->buffSize, this->align));
 	return vstr;
 }
 
 void Math::VectorString::GetBounds(Math::RectAreaDbl *bounds)
 {
-	Math::Coord2DDbl pt = Math::Coord2DDbl(this->x, this->y);
-	*bounds = Math::RectAreaDbl(pt, pt);
+	*bounds = Math::RectAreaDbl(this->pos, this->pos);
 }
 
-Double Math::VectorString::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
+Double Math::VectorString::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
-	Double diffX = x - this->x;
-	Double diffY = y - this->y;
-	*nearPtX = this->x;
-	*nearPtY = this->y;
-	return diffX * diffX + diffY * diffY;
+	Math::Coord2DDbl diff = pt - this->pos;
+	*nearPt = this->pos;
+	diff = diff * diff;
+	return diff.x + diff.y;
 }
 
 Bool Math::VectorString::JoinVector(Math::Vector2D *vec)
@@ -73,7 +69,7 @@ Bool Math::VectorString::Support3D()
 
 void Math::VectorString::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, 0, &this->x, &this->y, 0);
+	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, 0, &this->pos.x, &this->pos.y, 0);
 }
 
 Bool Math::VectorString::Equals(Math::Vector2D *vec)
@@ -84,8 +80,7 @@ Bool Math::VectorString::Equals(Math::Vector2D *vec)
 	}
 	VectorString *vstr = (VectorString*)vec;
 	return this->srid == vstr->srid &&
-		this->x == vstr->x &&
-		this->y == vstr->y &&
+		this->pos == vstr->pos &&
 		this->align == vstr->align &&
 		this->angleDegree == vstr->angleDegree &&
 		this->buffSize == vstr->buffSize &&

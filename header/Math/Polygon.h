@@ -21,11 +21,11 @@ namespace Math
 		virtual Math::Coord2DDbl *GetPointList(UOSInt *nPoint);
 		virtual Math::Vector2D *Clone();
 		virtual void GetBounds(Math::RectAreaDbl *bounds);
-		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec);
-		Bool InsideVector(Double x, Double y);
+		Bool InsideVector(Math::Coord2DDbl coord);
 		Bool HasJunction();
 		void SplitByJunction(Data::ArrayList<Math::Polygon*> *results);
 	};

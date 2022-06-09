@@ -72,9 +72,9 @@ Math::GeographicCoordinateSystem::~GeographicCoordinateSystem()
 	DEL_CLASS(this->datum.spheroid.ellipsoid);
 }
 
-Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit)
+Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit)
 {
-	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(y1, x1, y2, x2, unit);
+	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.lat, pos1.lon, pos2.lat, pos2.lon, unit);
 }
 
 Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit)

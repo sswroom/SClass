@@ -54,10 +54,9 @@ Bool Map::MapLayerData::IsError()
 	return this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0;
 }
 
-UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yposD)
+UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
 {
-	Double xpos = xposD * 200000.0;
-	Double ypos = yposD * 200000.0;
+	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkx;
 	Int32 blky;
 	Int32 blkCnt;
@@ -75,8 +74,8 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 		return 0;
 	blkCnt = *sfile++;
 	blkScale = *sfile++;
-	blkx = (Int32)(xpos / blkScale);
-	blky = (Int32)(ypos / blkScale);
+	blkx = (Int32)(mapPos.x / blkScale);
+	blky = (Int32)(mapPos.y / blkScale);
 
 	if (blkCnt > 10)
 	{
@@ -169,9 +168,9 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 							{
 								if (o)
 								{
-									if ((lastY > ypos) ^ (firstY > ypos))
+									if ((lastY > mapPos.y) ^ (firstY > mapPos.y))
 									{
-										if ((lastX - (lastX - firstX) * (lastY - ypos) / (lastY - firstY)) > xpos)
+										if ((lastX - (lastX - firstX) * (lastY - mapPos.y) / (lastY - firstY)) > mapPos.x)
 											n++;
 									}
 								}
@@ -184,9 +183,9 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 						}
 						if (!firstPt)
 						{
-							if ((lastY > ypos) ^ (lastPolyPoint[1] > ypos))
+							if ((lastY > mapPos.y) ^ (lastPolyPoint[1] > mapPos.y))
 							{
-								if ((lastX - (lastX - *lastPolyPoint) * (lastY - ypos) / (lastY - lastPolyPoint[1])) > xpos)
+								if ((lastX - (lastX - *lastPolyPoint) * (lastY - mapPos.y) / (lastY - lastPolyPoint[1])) > mapPos.x)
 									n++;
 							}
 						}
@@ -196,9 +195,9 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 						o++;
 					}
 
-					if ((lastY > ypos) ^ (firstY > ypos))
+					if ((lastY > mapPos.y) ^ (firstY > mapPos.y))
 					{
-						if ((lastX - (lastX - firstX) * (lastY - ypos) / (lastY - firstY)) > xpos)
+						if ((lastX - (lastX - firstX) * (lastY - mapPos.y) / (lastY - firstY)) > mapPos.x)
 							n++;
 					}
 
@@ -206,6 +205,7 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 					{
 						buff = Text::StrUTF16_UTF8C(buff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
 						*buff = 0;
+						if (outCoord) *outCoord = coord;
 						return buff;
 					}
 				}
@@ -219,10 +219,9 @@ UTF8Char *Map::MapLayerData::GetPGLabelD(UTF8Char *buff, Double xposD, Double yp
 	return 0;
 }
 
-UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yposD, Double *xposOut, Double *yposOut)
+UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
 {
-	Double xpos = xposD * 200000.0;
-	Double ypos = yposD * 200000.0;
+	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkCnt;
 	Int32 blkScale;
 	Int32 blkx;
@@ -244,8 +243,8 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 		return 0;
 	blkCnt = *sfile++;
 	blkScale = *sfile++;
-	blkx = (Int32)(xpos / blkScale);
-	blky = (Int32)(ypos / blkScale);
+	blkx = (Int32)(mapPos.x / blkScale);
+	blky = (Int32)(mapPos.y / blkScale);
 	blkx1 = blkx - 1;
 	blky1 = blky - 1;
 	blkx2 = blkx + 1;
@@ -349,20 +348,20 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 
 						if (thisPtY == lastPtY)
 						{
-							calX = xpos;
+							calX = mapPos.x;
 						}
 						else
 						{
-							calX = (calBase = (xDiff * xDiff)) * xpos;
+							calX = (calBase = (xDiff * xDiff)) * mapPos.x;
 							calBase += yDiff * yDiff;
 							calX += yDiff * yDiff * thisPtX;
-							calX += (ypos - thisPtY) * xDiff * yDiff;
+							calX += (mapPos.y - thisPtY) * xDiff * yDiff;
 							calX /= calBase;
 						}
 
 						if (thisPtX == lastPtX)
 						{
-							calY = ypos;
+							calY = mapPos.y;
 						}
 						else
 						{
@@ -399,8 +398,8 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 								continue;
 						}
 
-						yDiff = ypos - calY;
-						xDiff = xpos - calX;
+						yDiff = mapPos.y - calY;
+						xDiff = mapPos.x - calX;
 						calD = xDiff * xDiff + yDiff * yDiff;
 						if (calD < dist)
 						{
@@ -414,8 +413,8 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 				j = nPoints;
 				while (j-- > 0)
 				{
-					xDiff = xpos - points[(j << 1) + 0];
-					yDiff = ypos - points[(j << 1) + 1];
+					xDiff = mapPos.x - points[(j << 1) + 0];
+					yDiff = mapPos.y - points[(j << 1) + 1];
 					calD = xDiff * xDiff + yDiff * yDiff;
 					if (calD < dist)
 					{
@@ -428,12 +427,11 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 				if (currFound)
 				{
 					foundRec = 1;
-					buffSize = Text::StrUTF16_UTF8C(buff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1) - buff;
-					buff[buffSize] = 0;
-					if (xposOut)
+					buffSize = Text::StrUTF16_UTF8C(sbuff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1) - sbuff;
+					sbuff[buffSize] = 0;
+					if (outCoord)
 					{
-						*xposOut = calPtX / 200000.0;
-						*yposOut = calPtY / 200000.0;
+						*outCoord = Math::Coord2DDbl(calPtX / 200000.0, calPtY / 200000.0);
 					}
 				}
 			}
@@ -443,7 +441,7 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 
 	if (foundRec)
 	{
-		return &buff[buffSize];
+		return &sbuff[buffSize];
 	}
 	return 0;
 }

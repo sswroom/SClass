@@ -18,34 +18,30 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, M
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
-	Double lat;
-	Double lon;
+	Math::Coord2DDbl pos;
 	if (me->navi->GetCoordinateSystem()->Equals(me->wgs84))
 	{
-		lat = mapPos.y;
-		lon = mapPos.y;
+		pos = mapPos;
 	}
 	else
 	{
 		Double z;
-		Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, mapPos.x, mapPos.y, 0, &lon, &lat, &z);
+		Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, mapPos.x, mapPos.y, 0, &pos.x, &pos.y, &z);
 	}
-	if (me->currX == 0 && me->currY == 0)
+	if (me->currPos.IsZero())
 	{
-		me->currX = lon;
-		me->currY = lat;
-		sptr = Text::StrDouble(sbuff, lat);
+		me->currPos = pos;
+		sptr = Text::StrDouble(sbuff, pos.lat);
 		me->txtCurrLat->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, lon);
+		sptr = Text::StrDouble(sbuff, pos.lon);
 		me->txtCurrLon->SetText(CSTRP(sbuff, sptr));
-		me->navi->ShowMarker(lat, lon);
+		me->navi->ShowMarker(pos);
 	}
 	else
 	{
-		sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, lat), UTF8STRC(", ")), lon);
+		sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, pos.lat), UTF8STRC(", ")), pos.lon);
 		me->lbPoints->AddItem(CSTRP(sbuff, sptr), 0);
-		me->points->Add(lon);
-		me->points->Add(lat);
+		me->points.Add(pos);
 	}
 	return true;
 }
@@ -91,40 +87,37 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
 	UTF8Char *sptr;
 	if (me->stm)
 	{
-		if (me->points->GetCount() > 0)
+		if (me->points.GetCount() > 0)
 		{
-			Double destX = me->points->GetItem(0);
-			Double destY = me->points->GetItem(1);
-			Double dir = Math_ArcTan2(destY - me->currY, destX - me->currX);
-			Double dist = me->wgs84->CalSurfaceDistanceXY(me->currX, me->currY, destX, destY, Math::Unit::Distance::DU_METER);
+			Math::Coord2DDbl destPos = me->points.GetItem(0);
+			Double dir = Math_ArcTan2(destPos.y - me->currPos.y, destPos.x - me->currPos.x);
+			Double dist = me->wgs84->CalSurfaceDistanceXY(me->currPos, destPos, Math::Unit::Distance::DU_METER);
 			Double maxDist = me->speed / 3.6;
 			if (dist < maxDist)
 			{
-				me->currX = destX;
-				me->currY = destY;
-				me->GenRecord(me->currY, me->currX, dir * 180 / Math::PI, dist * 3.6 / 1.852, true);
+				me->currPos = destPos;
+				me->GenRecord(me->currPos.lat, me->currPos.lon, dir * 180 / Math::PI, dist * 3.6 / 1.852, true);
 				me->lbPoints->RemoveItem(0);
-				me->points->RemoveRange(0, 2);
+				me->points.RemoveAt(0);
 			}
 			else
 			{
-				me->currX = me->currX + (destX - me->currX) * maxDist / dist;
-				me->currY = me->currY + (destY - me->currY) * maxDist / dist;
-				me->GenRecord(me->currY, me->currX, dir * 180 / Math::PI, maxDist * 3.6 / 1.852, true);
+				me->currPos = me->currPos + (destPos - me->currPos) * maxDist / dist;
+				me->GenRecord(me->currPos.lat, me->currPos.lon, dir * 180 / Math::PI, maxDist * 3.6 / 1.852, true);
 			}
-			me->navi->ShowMarker(me->currY, me->currX);
-			sptr = Text::StrDouble(sbuff, me->currX);
+			me->navi->ShowMarker(me->currPos);
+			sptr = Text::StrDouble(sbuff, me->currPos.lon);
 			me->txtCurrLon->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, me->currY);
+			sptr = Text::StrDouble(sbuff, me->currPos.lat);
 			me->txtCurrLat->SetText(CSTRP(sbuff, sptr));
 		}
-		else if (me->currX == 0 && me->currY == 0)
+		else if (me->currPos.IsZero())
 		{
-			me->GenRecord(me->currY, me->currX, 0, 0, false);
+			me->GenRecord(me->currPos.lat, me->currPos.lon, 0, 0, false);
 		}
 		else
 		{
-			me->GenRecord(me->currY, me->currX, 0, 0, true);
+			me->GenRecord(me->currPos.lat, me->currPos.lon, 0, 0, true);
 		}
 	}
 }
@@ -284,12 +277,10 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->SetText(CSTR("GPS Simulator"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
-	this->currX = 0;
-	this->currY = 0;
+	this->currPos = Math::Coord2DDbl(0, 0);
 	this->speed = 50;
 	this->stm = 0;
 	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	NEW_CLASS(this->points, Data::ArrayList<Double>());
 
 	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this, CSTR("Stream Type")));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
@@ -333,7 +324,6 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRGPSSimulatorForm::~AVIRGPSSimulatorForm()
 {
 	SDEL_CLASS(this->stm);
-	DEL_CLASS(this->points);
 	DEL_CLASS(this->wgs84);
 	this->navi->HideMarker();
 	this->navi->UnhandleMapMouse(this);

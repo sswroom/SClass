@@ -6,8 +6,12 @@
 
 Math::Point::Point(UInt32 srid, Double x, Double y) : Vector2D(srid)
 {
-	this->x = x;
-	this->y = y;
+	this->pos = Math::Coord2DDbl(x, y);
+}
+
+Math::Point::Point(UInt32 srid, Math::Coord2DDbl pos) : Vector2D(srid)
+{
+	this->pos = pos;
 }
 
 Math::Point::~Point()
@@ -21,32 +25,30 @@ Math::Vector2D::VectorType Math::Point::GetVectorType()
 
 Math::Coord2DDbl Math::Point::GetCenter()
 {
-	return Math::Coord2DDbl(this->x, this->y);
+	return this->pos;
 }
 
 Math::Vector2D *Math::Point::Clone()
 {
 	Math::Point *pt;
-	NEW_CLASS(pt, Math::Point(this->srid, this->x, this->y));
+	NEW_CLASS(pt, Math::Point(this->srid, this->pos));
 	return pt;
 }
 
 void Math::Point::GetBounds(Math::RectAreaDbl *bounds)
 {
-	Math::Coord2DDbl pt(this->x, this->y);
-	*bounds = Math::RectAreaDbl(pt, pt);
+	*bounds = Math::RectAreaDbl(this->pos, this->pos);
 }
 
-Double Math::Point::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
+Double Math::Point::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
-	Double xDiff = x - this->x;
-	Double yDiff = y - this->y;
-	if (nearPtX && nearPtY)
+	Math::Coord2DDbl diff = pt - this->pos;
+	if (nearPt)
 	{
-		*nearPtX = this->x;
-		*nearPtY = this->y;
+		*nearPt = this->pos;
 	}
-	return xDiff * xDiff + yDiff * yDiff;
+	diff = diff * diff;
+	return diff.x + diff.y;
 }
 
 Bool Math::Point::JoinVector(Math::Vector2D *vec)
@@ -56,7 +58,7 @@ Bool Math::Point::JoinVector(Math::Vector2D *vec)
 
 void Math::Point::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, 0, &this->x, &this->y, 0);
+	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, 0, &this->pos.x, &this->pos.y, 0);
 }
 
 Bool Math::Point::Equals(Math::Vector2D *vec)
@@ -70,7 +72,7 @@ Bool Math::Point::Equals(Math::Vector2D *vec)
 	if (vec->GetVectorType() == VectorType::Point && !vec->Support3D())
 	{
 		Math::Point *pt = (Math::Point*)vec;
-		return Data::DataComparer::NearlyEquals(this->x, pt->x) && Data::DataComparer::NearlyEquals(this->y, pt->y);
+		return Data::DataComparer::NearlyEquals(this->pos.x, pt->pos.x) && Data::DataComparer::NearlyEquals(this->pos.y, pt->pos.y);
 	}
 	else
 	{

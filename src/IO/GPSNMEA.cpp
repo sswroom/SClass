@@ -12,7 +12,7 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record, SateRecord *sateRec)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord3 *record, SateRecord *sateRec)
 {
 	UTF8Char *sarr[32];
 	UOSInt scnt;
@@ -227,7 +227,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 				{
 					ddeg = -ddeg;
 				}
-				record->lat = ddeg;
+				record->pos.lat = ddeg;
 
 				ddeg = Text::StrToDouble(sarr[5]);
 				deg = (Int32)(ddeg / 100);
@@ -236,7 +236,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 				{
 					ddeg = -ddeg;
 				}
-				record->lon = ddeg;
+				record->pos.lon = ddeg;
 			}
 			return ParseStatus::NewRecord;
 		}
@@ -256,7 +256,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 	IO::GPSNMEA *me = (IO::GPSNMEA*)userObj;
 	UTF8Char sbuff[8200];
 	UTF8Char *sptr;
-	Map::GPSTrack::GPSRecord2 record;
+	Map::GPSTrack::GPSRecord3 record;
 	SateRecord sateRec;
 
 	MemClear(&record, sizeof(record));
@@ -411,7 +411,7 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName)
 {
 	Map::GPSTrack *trk;
-	Map::GPSTrack::GPSRecord2 record;
+	Map::GPSTrack::GPSRecord3 record;
 	SateRecord sateRec;
 	Text::StringBuilderUTF8 sb;
 	ParseStatus ps;

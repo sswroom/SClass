@@ -9,7 +9,7 @@ namespace IO
 	public:
 		virtual ~SensorLocation() {};
 
-		virtual Bool ReadLocation(Map::GPSTrack::GPSRecord2 *rec) = 0;
+		virtual Bool ReadLocation(Map::GPSTrack::GPSRecord3 *rec) = 0;
 	};
 }
 #endif

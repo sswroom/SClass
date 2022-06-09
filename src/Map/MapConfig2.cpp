@@ -2276,15 +2276,14 @@ Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::Arra
 
 void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
-	Data::ArrayListInt64 *arri;
 	Map::DrawObjectL *dobj;
 	UOSInt imgW;
 	UOSInt imgH;
 	UOSInt i;
 #ifdef NOSCH
 	OSInt j;
-	Int32 pts[2];
-	Int32 *objPtr = &objBounds[4 * *objCnt];
+	Math::Coord2D<Int32> pts;
+	Math::RectAreaDbl *objPtr = &objBounds[*objCnt];
 #endif
 	void *session;
 
@@ -2292,12 +2291,11 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	sch->SetDrawType(lyrs->lyr, Map::MapScheduler::MSDT_POINTS, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
-	NEW_CLASS(arri, Data::ArrayListInt64());
+	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(arri, 0, rect, true);
-	if (arri->GetCount() == 0)
+	lyrs->lyr->GetObjectIdsMapXY(&arri, 0, rect, true);
+	if (arri.GetCount() == 0)
 	{
-		DEL_CLASS(arri);
 		return;
 	}
 	session = lyrs->lyr->BeginGetObject();
@@ -2329,20 +2327,20 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 		dimg = lyrs->img;
 	}
 
-	i = arri->GetCount();
+	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri->GetItem(i))) != 0)
+		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri.GetItem(i))) != 0)
 		{
 #ifdef NOSCH
-			j = dobj->nPoints;
+			j = dobj->nPoint;
 			while (j-- > 0)
 			{
-				if (view->LatLonToScnXY(&dobj->points[j << 1], pts, 1, 0, 0))
+				if (view->MapXYToScnXY(&dobj->pointArr[j], &pts, 1, Math::Coord2D<Int32>(0, 0)))
 					*isLayerEmpty = false;
-				img->DrawImagePt(dimg, objPtr[0] = pts[0] - imgW, objPtr[1] = pts[1] - imgH);
-				objPtr[2] = pts[0] + imgW;
-				objPtr[3] = pts[1] + imgH;
+				img->DrawImagePt(dimg, objPtr->tl.x = pts.x - imgW, objPtr->tl.y = pts.y - imgH);
+				objPtr->br.x = pts.x + imgW;
+				objPtr->br.y = pts.y + imgH;
 			}
 			lyrs->lyr->ReleaseObject(session, dobj);
 #else
@@ -2359,13 +2357,11 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	{
 		eng->DeleteImage(dimg);
 	}
-	DEL_CLASS(arri);
 }
 
 void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
 {
 	void *arr;
-	Data::ArrayListInt64 *arri;
 	UOSInt i;
 	UInt32 j;
 	Map::DrawObjectL *dobj;
@@ -2390,14 +2386,14 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 		imgHeight = 0;
 	}
 
-	NEW_CLASS(arri, Data::ArrayListInt64());
+	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, rect, false);
+	lyrs->lyr->GetObjectIdsMapXY(&arri, &arr, rect, false);
 	session = lyrs->lyr->BeginGetObject();
-	i = arri->GetCount();
+	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri->GetItem(i))) != 0)
+		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri.GetItem(i))) != 0)
 		{
 			if (lyrs->bkColor & SFLG_SMART)
 			{
@@ -2411,7 +2407,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 					if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
 						maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
 				}
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
 				if (AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI())))
 				{
 					lyrs->lyr->ReleaseObject(session, dobj);
@@ -2423,7 +2419,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 			}
 			else if (lyrs->lyr->GetLayerType() == 3)
 			{
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
 				if (dobj->nPoint & 1)
 				{
 					UOSInt k = dobj->nPoint >> 1;
@@ -2455,7 +2451,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 			{
 				Math::Coord2DDbl lastPt = {0, 0};
 				Math::Coord2DDbl *pointPos = dobj->pointArr;
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
 
 				j = dobj->nPoint;
 				while (j--)
@@ -2476,7 +2472,6 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	}
 	lyrs->lyr->EndGetObject(session);
 	lyrs->lyr->ReleaseNameArr(arr);
-	DEL_CLASS(arri);
 }
 
 UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Int32 priority)
@@ -3978,11 +3973,12 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				currLayer->maxScale = Text::StrToInt32(strs[3].v);
 				currLayer->img = 0;
 				{
-					IO::StmData::FileData *fd;
+					IO::ParsedObject *obj;
 					IO::ParserType pt;
-					NEW_CLASS(fd, IO::StmData::FileData(strs[4].ToCString(), false));
-					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
-					DEL_CLASS(fd);
+					{
+						IO::StmData::FileData fd(strs[4].ToCString(), false);
+						obj = parserList->ParseFile(&fd, &pt);
+					}
 					if (obj)
 					{
 						if (obj->GetParserType() == IO::ParserType::ImageList)
@@ -4249,7 +4245,6 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	UInt32 index;
 	UInt32 index2;
 	UOSInt layerCnt = this->drawList->GetCount();
-	Data::ArrayListInt64 *arr;
 	Data::ArrayList<MapFontStyle*> **myArrs;
 	Data::ArrayList<MapFontStyle*> *fontArr;
 	Map::IMapDrawLayer *lyr;
@@ -4275,7 +4270,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	UOSInt objCnt = 0;
 	view->SetDestImage(img);
 
-	NEW_CLASS(arr, Data::ArrayListInt64());
+	Data::ArrayListInt64 arr;
 	thisScale = view->GetMapScale();
 #ifndef NOSCH
 	mapSch->SetMapView(view, img);
@@ -4363,7 +4358,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	while (index < layerCnt)
 	{
 		void *session;
-		lyrs = (Map::MapLayerStyle*)this->drawList->GetItem(index++);
+		lyrs = this->drawList->GetItem(index++);
 		if (thisScale > lyrs->minScale && thisScale <= lyrs->maxScale)
 		{
 			clk.Start();
@@ -4372,15 +4367,14 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 				lyr = lyrs->lyr;
 				if (lyr)
 				{
-					arr->Clear();
+					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
+					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
 
-					if ((i = arr->GetCount()) > 0)
+					if ((i = arr.GetCount()) > 0)
 					{
 #ifdef NOSCH
-						Data::ArrayList<Map::DrawObject*> *drawArr;
-						NEW_CLASS(drawArr, Data::ArrayList<Map::DrawObject*>());
+						Data::ArrayList<Map::DrawObjectL*> drawArr;
 #else
 						mapSch->SetDrawType(lyr, Map::MapScheduler::MSDT_POLYGON, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), 0, 0, 0, isLayerEmpty);
 #endif
@@ -4389,7 +4383,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 						lastId = -1;
 						while (i-- > 0)
 						{
-							thisId = arr->GetItem(i);
+							thisId = arr.GetItem(i);
 							if (thisId != lastId)
 							{
 								lastId = thisId;
@@ -4398,9 +4392,9 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 #ifndef NOSCH
 									mapSch->Draw(dobj);
 #else
-									if (view->LatLonToScnXY(dobj->points, dobj->points, dobj->nPoints, 0, 0))
+									if (view->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
 										*isLayerEmpty = false;
-									drawArr->Add(dobj);
+									drawArr.Add(dobj);
 #endif
 								}
 							}
@@ -4409,20 +4403,20 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 #ifdef NOSCH
 						pen = CreatePen(img, lyrs->style, 0);
 						brush = img->NewBrushARGB(lyrs->bkColor);
-						i = drawArr->GetCount();
+						i = drawArr.GetCount();
 						while (i-- > 0)
 						{
-							dobj = (DrawObject*)drawArr->GetItem(i);
-							k = dobj->nParts;
+							dobj = drawArr.GetItem(i);
+							k = dobj->nPtOfst;
 							j = 1;
 							while (j < k)
 							{
-								dobj->parts[j - 1] = dobj->parts[j] - dobj->parts[j - 1];
+								dobj->ptOfstArr[j - 1] = dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1];
 								j++;
 							}
-							dobj->parts[k - 1] = dobj->nPoints - dobj->parts[k - 1];
+							dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
 
-							img->DrawPolyPolygon(dobj->points, dobj->parts, dobj->nParts, pen, brush);
+							img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, pen, brush);
 						}
 						img->DelPen(pen);
 						img->DelBrush(brush);
@@ -4432,32 +4426,31 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 							index2 = 1;
 							while (pen = CreatePen(img, lyrs->style, index2++))
 							{
-								i = drawArr->GetCount();
+								i = drawArr.GetCount();
 								while (i-- > 0)
 								{
-									dobj = (DrawObject*)drawArr->GetItem(i);
-									k = dobj->nParts;
+									dobj = drawArr.GetItem(i);
+									k = dobj->nPtOfst;
 									j = 1;
 									while (j < k)
 									{
-										dobj->parts[j - 1] = dobj->parts[j] - dobj->parts[j - 1];
+										dobj->ptOfstArr[j - 1] = dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1];
 										j++;
 									}
-									dobj->parts[k - 1] = dobj->nPoints - dobj->parts[k - 1];
+									dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
 
-									img->DrawPolyPolygon(dobj->points, dobj->parts, dobj->nParts, pen, 0);
+									img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, pen, 0);
 								}
 								img->DelPen(pen);
 							}
 						}
 
-						i = drawArr->GetCount();
+						i = drawArr.GetCount();
 						while (i-- > 0)
 						{
-							dobj = (DrawObject*)drawArr->RemoveAt(i);
+							dobj = drawArr.RemoveAt(i);
 							lyr->ReleaseObject(session, dobj);
 						}
-						DEL_CLASS(drawArr);
 #else
 
 						if (pen)
@@ -4478,15 +4471,14 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 				lyr = lyrs->lyr;
 				if (lyr)
 				{
-					arr->Clear();
+					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
+					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
 
-					if ((i = arr->GetCount()) > 0)
+					if ((i = arr.GetCount()) > 0)
 					{
 #ifdef NOSCH
-						Data::ArrayList<Map::DrawObject*> *drawArr;
-						NEW_CLASS(drawArr, Data::ArrayList<Map::DrawObject*>());
+						Data::ArrayList<Map::DrawObjectL*> drawArr;
 #else
 						mapSch->SetDrawType(lyr, Map::MapScheduler::MSDT_POLYLINE, pen = CreatePen(img, lyrs->style, 0), 0, 0, 0, 0, isLayerEmpty);
 #endif
@@ -4495,7 +4487,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 						lastId = -1;
 						while (i-- > 0)
 						{
-							thisId = arr->GetItem(i);
+							thisId = arr.GetItem(i);
 							if (thisId != lastId)
 							{
 								lastId = thisId;
@@ -4504,9 +4496,9 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 #ifndef NOSCH
 									mapSch->Draw(dobj);
 #else
-									if (view->LatLonToScnXY(dobj->points, dobj->points, dobj->nPoints, 0, 0))
+									if (view->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
 										*isLayerEmpty = false;
-									drawArr->Add(dobj);
+									drawArr.Add(dobj);
 #endif
 								}
 							}
@@ -4518,30 +4510,29 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 						while (pen = CreatePen(img, lyrs->style, index2))
 						{
 							index2++;
-							i = drawArr->GetCount();
+							i = drawArr.GetCount();
 							while (i-- > 0)
 							{
-								dobj = (DrawObject*)drawArr->GetItem(i);
+								dobj = drawArr.GetItem(i);
 
-								k = dobj->nParts;
+								k = dobj->nPtOfst;
 								j = 1;
 								while (j < k)
 								{
-									img->DrawPolyline(&dobj->points[dobj->parts[j-1] << 1], dobj->parts[j] - dobj->parts[j - 1], pen);
+									img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[j-1]], dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1], pen);
 									j++;
 								}
-								img->DrawPolyline(&dobj->points[dobj->parts[k-1] << 1], dobj->nPoints - dobj->parts[k - 1], pen);
+								img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k-1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], pen);
 							}
 							img->DelPen(pen);
 						}
 
-						i = drawArr->GetCount();
+						i = drawArr.GetCount();
 						while (i-- > 0)
 						{
-							dobj = (DrawObject*)drawArr->RemoveAt(i);
+							dobj = drawArr.RemoveAt(i);
 							lyr->ReleaseObject(session, dobj);
 						}
-						DEL_CLASS(drawArr);
 #else
 						if (pen)
 						{
@@ -4615,7 +4606,6 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 	MemFree(labels);
 	MemFreeA(objBounds);
 
-	DEL_CLASS(arr);
 	//Double t = clk.GetTimeDiff();
 	//printf("Time used: %d\n", (Int32)(t * 1000));
 	if (maxName && maxSpd && slowLayer && slowTime)
@@ -4645,7 +4635,7 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 	return false;
 }
 
-Int32 Map::MapConfig2::GetLocMCCXY(Double x, Double y)
+Int32 Map::MapConfig2::QueryMCC(Math::Coord2DDbl pos)
 {
 	UOSInt i = this->areaList.GetCount();
 	UTF8Char buff[256];
@@ -4655,7 +4645,7 @@ Int32 Map::MapConfig2::GetLocMCCXY(Double x, Double y)
 		area = this->areaList.GetItem(i);
 		if (area->data)
 		{
-			if (area->data->GetPGLabelD(buff, x, y))
+			if (area->data->GetPGLabel(buff, sizeof(buff), pos, 0, 0))
 			{
 //				IO::Console::PrintStr(L"Area found: ");
 //				IO::Console::PrintStr(buff);

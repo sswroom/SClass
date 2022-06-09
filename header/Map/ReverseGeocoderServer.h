@@ -37,8 +37,8 @@ namespace Map
 		ReverseGeocoderServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port);
 		virtual ~ReverseGeocoderServer();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 
 		virtual void *NewConn(Net::TCPClient *cli);
 		virtual void EndConn(Net::TCPClient *cli, void *cliObj);

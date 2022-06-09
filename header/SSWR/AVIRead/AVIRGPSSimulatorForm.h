@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGPSSIMULATORFORM
 #define _SM_SSWR_AVIREAD_AVIRGPSSIMULATORFORM
-#include "Data/ArrayList.h"
+#include "Data/ArrayListA.h"
 #include "IO/Stream.h"
 #include "Map/TileMapLayer.h"
 #include "Math/GeographicCoordinateSystem.h"
@@ -39,9 +39,8 @@ namespace SSWR
 			IMapNavigator *navi;
 			Math::GeographicCoordinateSystem *wgs84;
 			IO::Stream *stm;
-			Data::ArrayList<Double> *points;
-			Double currX;
-			Double currY;
+			Data::ArrayListA<Math::Coord2DDbl> points;
+			Math::Coord2DDbl currPos;
 			Double speed;
 
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);

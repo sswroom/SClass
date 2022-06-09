@@ -48,8 +48,8 @@ namespace Map
 		AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoderPL();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
 	private:
 		OSInt AddressIndexOf(Data::ArrayList<AddressEntry *> *list, Int32 keyx, Int32 keyy);

@@ -41,7 +41,7 @@ Map::GPSTrack::~GPSTrack()
 	i = this->currRecs.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->currRecs.GetItem(i));
+		MemFreeA(this->currRecs.GetItem(i));
 		data = this->currExtraData.GetItem(i);
 		if (data)
 		{
@@ -60,12 +60,12 @@ Map::GPSTrack::~GPSTrack()
 		}
 		MemFree(rec->extraData);
 		MemFree(rec->extraDataSize);
-		MemFree(rec->records);
+		MemFreeA(rec->records);
 		MemFree(rec);
 	}
 	if (tmpRecord)
 	{
-		MemFree(tmpRecord);
+		MemFreeA(tmpRecord);
 		tmpRecord = 0;
 	}
 	if (this->currTrackName)
@@ -370,8 +370,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	Map::DrawObjectL *outObj;
 	UOSInt i;
 	UOSInt j;
-	Double lastLat;
-	Double lastLon;
+	Math::Coord2DDbl lastPos;
 	Math::Coord2DDbl *ptPtr;
 	if (id < 0)
 		return 0;
@@ -385,9 +384,8 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	{
 		if (this->currTimes.GetCount() > 0)
 		{
-			Map::GPSTrack::GPSRecord2 *rec;
-			lastLat = 0;
-			lastLon = 0;
+			Map::GPSTrack::GPSRecord3 *rec;
+			lastPos = Math::Coord2DDbl(0, 0);
 			outObj = MemAlloc(Map::DrawObjectL, 1);
 			outObj->objId = id;
 			outObj->nPtOfst = 1;
@@ -400,15 +398,13 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 			while (i < j)
 			{
 				rec = this->currRecs.GetItem(i);
-				if (rec->lat == 0 && rec->lon == 0)
+				if (rec->pos.IsZero())
 				{
-					ptPtr[0].x = lastLon;
-					ptPtr[0].y = lastLat;
+					ptPtr[0] = lastPos;
 				}
 				else
 				{
-					lastLon = ptPtr[0].x = rec->lon;
-					lastLat = ptPtr[0].y = rec->lat;
+					lastPos = ptPtr[0] = rec->pos;
 				}
 				ptPtr += 1;
 				i++;
@@ -427,8 +423,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	else
 	{
 		Map::GPSTrack::TrackRecord *track;
-		lastLat = 0;
-		lastLon = 0;
+		lastPos = Math::Coord2DDbl(0, 0);
 		track = this->currTracks.GetItem((UOSInt)id);
 		outObj = MemAlloc(Map::DrawObjectL, 1);
 		outObj->objId = id;
@@ -441,15 +436,13 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 		i = 0;
 		while (i < j)
 		{
-			if (track->records[i].lat == 0 && track->records[i].lon == 0)
+			if (track->records[i].pos.IsZero())
 			{
-				ptPtr->x = lastLon;
-				ptPtr->y = lastLat;
+				*ptPtr = lastPos;
 			}
 			else
 			{
-				lastLon = ptPtr->x = track->records[i].lon;
-				lastLat = ptPtr->y = track->records[i].lat;
+				lastPos = *ptPtr = track->records[i].pos;
 			}
 			ptPtr += 1;
 			i++;
@@ -465,8 +458,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;
-	Double lastLat;
-	Double lastLon;
+	Math::Coord2DDbl lastPos;
 	Double lastAlt;
 	Math::Coord2DDbl *ptPtr;
 	Double *altList;
@@ -482,9 +474,8 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 	{
 		if (this->currTimes.GetCount() > 0)
 		{
-			Map::GPSTrack::GPSRecord2 *rec;
-			lastLat = 0;
-			lastLon = 0;
+			Map::GPSTrack::GPSRecord3 *rec;
+			lastPos = Math::Coord2DDbl(0, 0);
 			lastAlt = 0;
 			if (this->hasAltitude)
 			{
@@ -498,16 +489,14 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 				while (i < j)
 				{
 					rec = this->currRecs.GetItem(i);
-					if (rec->lat == 0 && rec->lon == 0)
+					if (rec->pos.IsZero())
 					{
-						ptPtr->x = lastLon;
-						ptPtr->y = lastLat;
+						*ptPtr = lastPos;
 						altList[i] = lastAlt;
 					}
 					else
 					{
-						lastLon = ptPtr->x = rec->lon;
-						lastLat = ptPtr->y = rec->lat;
+						lastPos = *ptPtr = rec->pos;
 						lastAlt = altList[i] = rec->altitude;
 					}
 					ptPtr += 1;
@@ -526,15 +515,13 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 				while (i < j)
 				{
 					rec = this->currRecs.GetItem(i);
-					if (rec->lat == 0 && rec->lon == 0)
+					if (rec->pos.IsZero())
 					{
-						ptPtr->x = lastLon;
-						ptPtr->y = lastLat;
+						*ptPtr = lastPos;
 					}
 					else
 					{
-						lastLon = ptPtr->x = rec->lon;
-						lastLat = ptPtr->y = rec->lat;
+						lastPos = *ptPtr = rec->pos;
 					}
 
 					ptPtr += 1;
@@ -553,8 +540,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 	else
 	{
 		Map::GPSTrack::TrackRecord *track;
-		lastLat = 0;
-		lastLon = 0;
+		lastPos = Math::Coord2DDbl(0, 0);
 		lastAlt = 0;
 		track = this->currTracks.GetItem((UOSInt)id);
 		if (this->hasAltitude)
@@ -568,16 +554,14 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			i = 0;
 			while (i < j)
 			{
-				if (track->records[i].lat == 0 && track->records[i].lon == 0)
+				if (track->records[i].pos.IsZero())
 				{
-					ptPtr->x = lastLon;
-					ptPtr->y = lastLat;
+					*ptPtr = lastPos;
 					altList[i] = lastAlt;
 				}
 				else
 				{
-					lastLon = ptPtr->x = track->records[i].lon;
-					lastLat = ptPtr->y = track->records[i].lat;
+					lastPos = *ptPtr = track->records[i].pos;
 					lastAlt = altList[i] = track->records[i].altitude;
 				}
 				ptPtr += 1;
@@ -596,15 +580,13 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			i = 0;
 			while (i < j)
 			{
-				if (track->records[i].lat == 0 && track->records[i].lon == 0)
+				if (track->records[i].pos.IsZero())
 				{
-					ptPtr->x = lastLon;
-					ptPtr->y = lastLat;
+					*ptPtr = lastPos;
 				}
 				else
 				{
-					lastLon = ptPtr->x = track->records[i].lon;
-					lastLat = ptPtr->y = track->records[i].lat;
+					lastPos = *ptPtr = track->records[i].pos;
 				}
 				ptPtr += 1;
 				i++;
@@ -685,8 +667,8 @@ void Map::GPSTrack::NewTrack()
 	{
 		Sync::MutexUsage mutUsage(&this->recMut);
 		Map::GPSTrack::TrackRecord *rec;
-		Map::GPSTrack::GPSRecord2 *recPtr;
-		Map::GPSTrack::GPSRecord2 *gpsrec;
+		Map::GPSTrack::GPSRecord3 *recPtr;
+		Map::GPSTrack::GPSRecord3 *gpsrec;
 		UOSInt i;
 		rec = MemAlloc(Map::GPSTrack::TrackRecord, 1);
 		rec->nRecords = this->currTimes.GetCount();
@@ -695,13 +677,13 @@ void Map::GPSTrack::NewTrack()
 		rec->minLat = this->currMinLat;
 		rec->minLon = this->currMinLon;
 		rec->name = this->currTrackName;
-		recPtr = rec->records = MemAlloc(Map::GPSTrack::GPSRecord2, rec->nRecords);
+		recPtr = rec->records = MemAllocA(Map::GPSTrack::GPSRecord3, rec->nRecords);
 		i = 0;
 		while (i < rec->nRecords)
 		{
 			gpsrec = this->currRecs.GetItem(i);
-			MemCopyNO(recPtr, gpsrec, sizeof(Map::GPSTrack::GPSRecord2));
-			MemFree(gpsrec);
+			MemCopyNO(recPtr, gpsrec, sizeof(Map::GPSTrack::GPSRecord3));
+			MemFreeA(gpsrec);
 			recPtr++;
 			i++;
 		}
@@ -718,72 +700,72 @@ void Map::GPSTrack::NewTrack()
 		mutUsage.EndUse();
 		if (this->tmpRecord)
 		{
-			MemFree(this->tmpRecord);
+			MemFreeA(this->tmpRecord);
 			this->tmpRecord = 0;
 		}
 	}
 }
 
-UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord2 *rec)
+UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord3 *rec)
 {
 	Sync::MutexUsage mutUsage(&this->recMut);
 	if (this->currTimes.GetCount() == 0)
 	{
-		this->currMaxLat = this->currMinLat = rec->lat;
-		this->currMaxLon = this->currMinLon = rec->lon;
+		this->currMaxLat = this->currMinLat = rec->pos.lat;
+		this->currMaxLon = this->currMinLon = rec->pos.lon;
 		if (this->currTracks.GetCount() == 0)
 		{
-			this->maxLat = this->minLat = rec->lat;
-			this->maxLon = this->minLon = rec->lon;
+			this->maxLat = this->minLat = rec->pos.lat;
+			this->maxLon = this->minLon = rec->pos.lon;
 		}
 	}
 	else
 	{
-		if (this->currMaxLat < rec->lat)
+		if (this->currMaxLat < rec->pos.lat)
 		{
-			this->currMaxLat = rec->lat;
+			this->currMaxLat = rec->pos.lat;
 		}
-		if (this->currMinLat > rec->lat)
+		if (this->currMinLat > rec->pos.lat)
 		{
-			this->currMinLat = rec->lat;
+			this->currMinLat = rec->pos.lat;
 		}
-		if (this->currMaxLon < rec->lon)
+		if (this->currMaxLon < rec->pos.lon)
 		{
-			this->currMaxLon = rec->lon;
+			this->currMaxLon = rec->pos.lon;
 		}
-		if (this->currMinLon > rec->lon)
+		if (this->currMinLon > rec->pos.lon)
 		{
-			this->currMinLon = rec->lon;
+			this->currMinLon = rec->pos.lon;
 		}
 	}
 
-	if (this->maxLat < rec->lat)
+	if (this->maxLat < rec->pos.lat)
 	{
-		this->maxLat = rec->lat;
+		this->maxLat = rec->pos.lat;
 	}
-	if (this->minLat > rec->lat)
+	if (this->minLat > rec->pos.lat)
 	{
-		this->minLat = rec->lat;
+		this->minLat = rec->pos.lat;
 	}
-	if (this->maxLon < rec->lon)
+	if (this->maxLon < rec->pos.lon)
 	{
-		this->maxLon = rec->lon;
+		this->maxLon = rec->pos.lon;
 	}
-	if (this->minLon > rec->lon)
+	if (this->minLon > rec->pos.lon)
 	{
-		this->minLon = rec->lon;
+		this->minLon = rec->pos.lon;
 	}
 
-	Map::GPSTrack::GPSRecord2 *newRec;
-	newRec = MemAlloc(Map::GPSTrack::GPSRecord2, 1);
-	MemCopyNO(newRec, rec, sizeof(Map::GPSTrack::GPSRecord2));
+	Map::GPSTrack::GPSRecord3 *newRec;
+	newRec = MemAllocA(Map::GPSTrack::GPSRecord3, 1);
+	MemCopyNO(newRec, rec, sizeof(Map::GPSTrack::GPSRecord3));
 	UOSInt i = this->currTimes.SortedInsert(rec->utcTimeTicks);
 	this->currRecs.Insert(i, newRec);
 	this->currExtraData.Insert(i, 0);
 	this->currExtraSize.Insert(i, 0);
 	if (this->tmpRecord)
 	{
-		MemFree(this->tmpRecord);
+		MemFreeA(this->tmpRecord);
 		this->tmpRecord = 0;
 	}
 	mutUsage.EndUse();
@@ -817,7 +799,7 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 		recEnd++;
 		while (recEnd-- > recStart)
 		{
-			MemFree(this->currRecs.RemoveAt(recEnd));
+			MemFreeA(this->currRecs.RemoveAt(recEnd));
 			data = this->currExtraData.RemoveAt(recEnd);
 			if (data)
 			{
@@ -826,7 +808,7 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 		}
 		if (this->tmpRecord)
 		{
-			MemFree(this->tmpRecord);
+			MemFreeA(this->tmpRecord);
 			this->tmpRecord = 0;
 		}
 		mutUsage.EndUse();
@@ -842,7 +824,7 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 		recs->nRecords -= recEnd - recStart;
 		while (recEnd < currCnt)
 		{
-			MemCopyO(&recs->records[recStart], &recs->records[recEnd], sizeof(Map::GPSTrack::GPSRecord2));
+			MemCopyO(&recs->records[recStart], &recs->records[recEnd], sizeof(Map::GPSTrack::GPSRecord3));
 			if (recs->extraData[recStart])
 			{
 				MemFree((void*)recs->extraData[recStart]);
@@ -954,7 +936,7 @@ UOSInt Map::GPSTrack::GetTrackCnt()
 	return cnt;
 }
 
-Map::GPSTrack::GPSRecord2 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordCnt)
+Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordCnt)
 {
 	if (this->currTracks.GetCount() < index)
 		return 0;
@@ -969,10 +951,10 @@ Map::GPSTrack::GPSRecord2 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 		{
 			return this->tmpRecord;
 		}
-		this->tmpRecord = MemAlloc(Map::GPSTrack::GPSRecord2, this->currTimes.GetCount());
+		this->tmpRecord = MemAllocA(Map::GPSTrack::GPSRecord3, this->currTimes.GetCount());
 		while (i-- > 0)
 		{
-			MemCopyNO(&this->tmpRecord[i], this->currRecs.GetItem(i), sizeof(Map::GPSTrack::GPSRecord2));
+			MemCopyNO(&this->tmpRecord[i], this->currRecs.GetItem(i), sizeof(Map::GPSTrack::GPSRecord3));
 		}
 		return this->tmpRecord;
 	}
@@ -985,12 +967,12 @@ Map::GPSTrack::GPSRecord2 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 	}
 }
 
-void Map::GPSTrack::GetLatLonByTime(Data::DateTime *dt, Double *lat, Double *lon)
+void Map::GPSTrack::GetPosByTime(Data::DateTime *dt, Math::Coord2DDbl *pos)
 {
-	GetLatLonByTicks(dt->ToTicks(), lat, lon);
+	GetPosByTicks(dt->ToTicks(), pos);
 }
 
-void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
+void Map::GPSTrack::GetPosByTicks(Int64 ticks, Math::Coord2DDbl *pos)
 {
 	OSInt si;
 	if (this->currTimes.GetCount() > 0)
@@ -1000,19 +982,17 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 			si = this->currTimes.SortedIndexOf(ticks);
 			if (si >= 0)
 			{
-				Map::GPSTrack::GPSRecord2 *rec = this->currRecs.GetItem((UOSInt)si);
-				*lat = rec->lat;
-				*lon = rec->lon;
+				Map::GPSTrack::GPSRecord3 *rec = this->currRecs.GetItem((UOSInt)si);
+				*pos = rec->pos;
 				return;
 			}
 			else
 			{
 				Int64 tDiff;
-				Map::GPSTrack::GPSRecord2 *rec1 = this->currRecs.GetItem((UOSInt)~si - 1);
-				Map::GPSTrack::GPSRecord2 *rec2 = this->currRecs.GetItem((UOSInt)~si);
+				Map::GPSTrack::GPSRecord3 *rec1 = this->currRecs.GetItem((UOSInt)~si - 1);
+				Map::GPSTrack::GPSRecord3 *rec2 = this->currRecs.GetItem((UOSInt)~si);
 				tDiff = rec2->utcTimeTicks - rec1->utcTimeTicks;
-				*lat = (rec1->lat * (Double)(rec2->utcTimeTicks - ticks) + rec2->lat * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
-				*lon = (rec1->lon * (Double)(rec2->utcTimeTicks - ticks) + rec2->lon * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
+				*pos = (rec1->pos * (Double)(rec2->utcTimeTicks - ticks) + rec2->pos * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
 				return;
 			}
 		}
@@ -1037,23 +1017,20 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 				}
 				if (ticks == rec->records[j].utcTimeTicks)
 				{
-					*lat = rec->records[j].lat;
-					*lon = rec->records[j].lon;
+					*pos = rec->records[j].pos;
 					return;
 				}
 				else
 				{
 					Int64 tDiff;
 					tDiff = rec->records[j].utcTimeTicks - rec->records[j - 1].utcTimeTicks;
-					*lat = (rec->records[j - 1].lat * (Double)(rec->records[j].utcTimeTicks - ticks) + rec->records[j].lat * (Double)(ticks - rec->records[j - 1].utcTimeTicks)) / (Double)tDiff;
-					*lon = (rec->records[j - 1].lon * (Double)(rec->records[j].utcTimeTicks - ticks) + rec->records[j].lon * (Double)(ticks - rec->records[j - 1].utcTimeTicks)) / (Double)tDiff;
+					*pos = (rec->records[j - 1].pos * (Double)(rec->records[j].utcTimeTicks - ticks) + rec->records[j].pos * (Double)(ticks - rec->records[j - 1].utcTimeTicks)) / (Double)tDiff;
 					return;
 				}
 			}
 		}
 	}
-	*lat = 0;
-	*lon = 0;
+	*pos = Math::Coord2DDbl(0, 0);
 }
 
 void Map::GPSTrack::SetExtraParser(GPSExtraParser *parser)
@@ -1182,7 +1159,7 @@ Bool Map::GPSDataReader::ReadNext()
 	UOSInt j;
 	UOSInt k;
 	UOSInt rowLeft;
-	Map::GPSTrack::GPSRecord2 *rec;
+	Map::GPSTrack::GPSRecord3 *rec;
 	this->currRow++;
 	rowLeft = (UOSInt)this->currRow;
 	i = 0;
@@ -1223,11 +1200,11 @@ Int32 Map::GPSDataReader::GetInt32(UOSInt colIndex)
 		return 0;
 	if (colIndex == 2)
 	{
-		return Double2Int32(this->currRec->lat);
+		return Double2Int32(this->currRec->pos.lat);
 	}
 	else if (colIndex == 3)
 	{
-		return Double2Int32(this->currRec->lon);
+		return Double2Int32(this->currRec->pos.lon);
 	}
 	else if (colIndex == 4)
 	{
@@ -1375,11 +1352,11 @@ Double Map::GPSDataReader::GetDbl(UOSInt colIndex)
 		return 0;
 	if (colIndex == 2)
 	{
-		return this->currRec->lat;
+		return this->currRec->pos.lat;
 	}
 	else if (colIndex == 3)
 	{
-		return this->currRec->lon;
+		return this->currRec->pos.lon;
 	}
 	else if (colIndex == 4)
 	{
@@ -1460,11 +1437,11 @@ Math::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
 	Math::Point *pt;
 	if (this->gps->GetHasAltitude())
 	{
-		NEW_CLASS(pt, Math::Point3D(4326, this->currRec->lon, this->currRec->lat, this->currRec->altitude));
+		NEW_CLASS(pt, Math::Point3D(4326, this->currRec->pos.x, this->currRec->pos.y, this->currRec->altitude));
 	}
 	else
 	{
-		NEW_CLASS(pt, Math::Point(4326, this->currRec->lon, this->currRec->lat));
+		NEW_CLASS(pt, Math::Point(4326, this->currRec->pos.x, this->currRec->pos.y));
 	}
 	return pt;
 }

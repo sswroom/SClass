@@ -37,7 +37,7 @@ namespace SSWR
 			Map::ILocationService *locSvc;
 			Bool relLocSvc;
 
-			Map::GPSTrack::GPSRecord2 recCurr;
+			Map::GPSTrack::GPSRecord3 recCurr;
 			Map::GPSTrack *gpsTrk;
 			Sync::Mutex *recMut;
 			Bool recUpdated;
@@ -45,8 +45,7 @@ namespace SSWR
 			Map::ILocationService::SateStatus recSates[32];
 			SSWR::AVIRead::IMapNavigator *mapNavi;
 			Math::GeographicCoordinateSystem *wgs84;
-			Double lastLat;
-			Double lastLon;
+			Math::Coord2DDbl lastPos;
 			Double dist;
 			Bool lastDown;
 			Data::DateTime *lastUpdateTime;
@@ -135,7 +134,7 @@ namespace SSWR
 			UI::GUITabPage *tpNMEA;
 			UI::GUIListBox *lbNMEA;
 
-			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
+			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord3 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnMTKFirmwareClicked(void *userObj);
 			static void __stdcall OnMTKLogDownloadClicked(void *userObj);

@@ -18,7 +18,7 @@ namespace Math
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);
 		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt);
 
-		virtual Double CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit);
+		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit);
 		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit);
 		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit);
 		virtual CoordinateSystem *Clone();

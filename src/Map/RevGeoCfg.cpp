@@ -48,6 +48,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 							layer = MemAlloc(Map::RevGeoCfg::SearchLayer, 1);
 							layer->layerName = Text::String::NewP(filePath, filePathNameEnd);
 							layer->searchType = srchType;
+							layer->strIndex = 0;
 							layer->usedCnt = 1;
 							layer->data = mdata;
 							this->layers[srchLyr].Add(layer);
@@ -79,7 +80,7 @@ Map::RevGeoCfg::~RevGeoCfg()
 	}
 }
 
-UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon)
+UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos)
 {
 	UTF8Char *buffEnd = buff + buffSize;
 	UTF8Char sbuff[256];
@@ -88,8 +89,7 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 	UOSInt i = 0;
 	UOSInt j;
 	UOSInt k;
-	Double xposOut;
-	Double yposOut;
+	Math::Coord2DDbl posOut;
 	Double minDist;
 	Double thisDist;
 	Map::RevGeoCfg::SearchLayer *layer;
@@ -102,14 +102,14 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 		k = layers->GetCount();
 		while (j < k)
 		{
-			layer = (Map::RevGeoCfg::SearchLayer*)layers->GetItem(j);
+			layer = layers->GetItem(j);
 			if (layer->searchType == 1)
 			{
-				if (layer->data->GetPLLabelD(sbuff, lon, lat, &xposOut, &yposOut))
+				if (layer->data->GetPLLabel(sbuff, sizeof(sbuff), pos, &posOut, layer->strIndex))
 				{
-					xposOut -= lon;
-					yposOut -= lat;
-					thisDist = xposOut * xposOut + yposOut * yposOut;
+					posOut = posOut - pos;
+					posOut = posOut * posOut;
+					thisDist = posOut.x + posOut.y;
 					if (minDist < 0)
 					{
 						minDist = thisDist;
@@ -135,7 +135,7 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 			}
 			else if (layer->searchType == 2)
 			{
-				if (layer->data->GetPGLabelD(sbuff, lon, lat))
+				if (layer->data->GetPGLabel(sbuff, sizeof(sbuff), pos, 0, layer->strIndex))
 				{
 					if (minDist < 0)
 					{
