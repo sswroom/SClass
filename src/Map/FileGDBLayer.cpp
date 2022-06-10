@@ -80,17 +80,16 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 	{
 		UOSInt i;
 		UOSInt j;
-		DB::ColDef *colDef;
-		NEW_CLASS(colDef, DB::ColDef(CSTR("")));
+		DB::ColDef colDef(CSTR(""));
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
 		{
-			r->GetColDef(i, colDef);
-			if (colDef->GetColType() == DB::DBUtil::CT_Vector)
+			r->GetColDef(i, &colDef);
+			if (colDef.GetColType() == DB::DBUtil::CT_Vector)
 			{
 				this->shapeCol = i;
-				Text::String *prj = colDef->GetAttr();
+				Text::String *prj = colDef.GetAttr();
 				if (prj && prj->v[0])
 				{
 					Math::CoordinateSystem *csys2 = 0;
@@ -100,7 +99,8 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 					}
 					else
 					{
-						csys2 = Math::CoordinateSystemManager::ParsePRJFile(prj->ToCString());
+						UOSInt tmp;
+						csys2 = Math::CoordinateSystemManager::ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
 					}
 					if (csys2)
 					{
@@ -109,11 +109,11 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 					}
 				}
 			}
-			else if (colDef->IsPK() && colDef->GetColType() == DB::DBUtil::CT_Int32)
+			else if (colDef.IsPK() && colDef.GetColType() == DB::DBUtil::CT_Int32)
 			{
 				this->objIdCol = i;
 			}
-			this->colNames.Add(colDef->GetColName()->Clone());
+			this->colNames.Add(colDef.GetColName()->Clone());
 			i++;
 		}
 		j = this->colNames.GetCount();
@@ -125,7 +125,6 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 			}
 		}
 		this->SetNameCol(nameCol);
-		DEL_CLASS(colDef);
 		while (r->ReadNext())
 		{
 			Int32 objId;

@@ -657,8 +657,8 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 			const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen}, &ellipsoid, 0);
-			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, &data, primem, unit));
+			FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen - 2}, &ellipsoid, 0);
+			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
 		else
@@ -666,8 +666,8 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 			Math::EarthEllipsoid ellipsoid(a, f_1, eet);
 			const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen}, &ellipsoid, 0);
-			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, &data, primem, unit));
+			FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen - 2}, &ellipsoid, 0);
+			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
 	}
@@ -862,12 +862,12 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 		}
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
-			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
+			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
 			return csys;
 		}
 		else if (cst == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
-			NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
+			NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
 			return csys;
 		}
 		else

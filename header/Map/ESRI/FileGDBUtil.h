@@ -18,6 +18,8 @@ namespace Map
 			UInt8 flags;
 			UInt8 defSize;
 			UInt8 *defValue;
+			UOSInt srsSize;
+			UInt8 *srsValue;
 		};
 
 		struct FileGDBTableInfo

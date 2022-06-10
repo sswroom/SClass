@@ -85,6 +85,9 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			UOSInt srsLen = ReadUInt16(&fieldDesc[ofst]);
 			sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 2], srsLen >> 1);
 			*sptr = 0;
+			field->srsSize = srsLen;
+			field->srsValue = MemAlloc(UInt8, srsLen);
+			MemCopyNO(field->srsValue, &fieldDesc[ofst + 2], srsLen);
 			UOSInt csysLen = (UOSInt)(sptr - sbuff);
 			table->csys = Math::CoordinateSystemManager::ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, &csysLen);
 			ofst += 2 + srsLen;
@@ -191,6 +194,10 @@ void Map::ESRI::FileGDBUtil::FreeFieldInfo(FileGDBFieldInfo *fieldInfo)
 	{
 		MemFree(fieldInfo->defValue);
 	}
+	if (fieldInfo->srsValue)
+	{
+		MemFree(fieldInfo->srsValue);
+	}
 	MemFree(fieldInfo);
 }
 
@@ -216,6 +223,13 @@ Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBField
 	{
 		newField->defValue = MemAlloc(UInt8, field->defSize);
 		MemCopyNO(newField->defValue, field->defValue, field->defSize);
+	}
+	newField->srsSize = field->srsSize;
+	newField->srsValue = 0;
+	if (field->srsValue)
+	{
+		newField->srsValue = MemAlloc(UInt8, field->srsSize);
+		MemCopyNO(newField->srsValue, field->srsValue, field->srsSize);
 	}
 	return newField;
 }
@@ -261,7 +275,7 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt6
 
 UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val)
 {
-	Bool sign = (buff[0] & 0x40) != 0;
+	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 v = 0;
 	UOSInt i = 0;
 	Int64 currV;
