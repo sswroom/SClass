@@ -1,7 +1,7 @@
 //Not finish
 #ifndef _SM_MATH_EQUATION
 #define _SM_MATH_EQUATION
-#include "Data/ArrayListInt.h"
+#include "Data/ArrayListInt32.h"
 #include "Data/ArrayList.h"
 
 namespace Math
@@ -9,22 +9,22 @@ namespace Math
 	class Equation
 	{
 	private:
-		Data::ArrayList<Data::ArrayListInt*> *equationLeft;
-		Data::ArrayList<Data::ArrayListInt*> *equationRight;
-		Data::ArrayListInt *equationSign;
-		Data::ArrayList<WChar*> *equationVari;
+		Data::ArrayList<Data::ArrayListInt32*> equationLeft;
+		Data::ArrayList<Data::ArrayListInt32*> equationRight;
+		Data::ArrayListInt32 equationSign;
+		Data::ArrayList<UTF8Char*> equationVari;
 
 		// Type, Value, Type = 0: Int value, 1: Float value, 2: Variable, 3: Function, 4:Operators
 		// Operators: 0 = +, 1 = -, 2 = *, 3 = /, 4 = Neg
 
-		Int32 ParseEquation(Data::ArrayListInt *equOut, WChar *equation, OSInt nChars, WChar **endPos);
+		Int32 ParseEquation(Data::ArrayListInt32 *equOut, UTF8Char *equation, OSInt nChars, UTF8Char **endPos);
 	public:
 		Equation();
 		~Equation();
 
-		Int32 AddEquation(WChar *equation); //Index
-		void Solve(WChar *variName, WChar *outBuff);
-		WChar *GetEquationStr(WChar *buff, Int32 index);
+		UOSInt AddEquation(UTF8Char *equation); //Index
+		void Solve(UTF8Char *variName, UTF8Char *outBuff);
+		UTF8Char *GetEquationStr(UTF8Char *buff, Int32 index);
 	};
 }
 #endif

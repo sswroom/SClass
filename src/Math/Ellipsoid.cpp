@@ -79,7 +79,8 @@ Double Math::Ellipsoid::GetSurfaceArea()
 	{
 		if (radiusX > radiusZ)
 		{
-			return 2 * Math::PI * (radiusX * radiusX + Math::ArcTanh(Math_Sin(modularAngle)) * radiusZ * radiusZ / Math_Sin(modularAngle));
+			Double sAng = Math_Sin(modularAngle);
+			return 2 * Math::PI * (radiusX * radiusX + Math_ArcTanh(sAng) * radiusZ * radiusZ / sAng);
 		}
 		else
 		{

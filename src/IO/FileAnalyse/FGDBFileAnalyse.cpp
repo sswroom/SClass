@@ -421,6 +421,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 						frame->AddUInt(ofst, ofst2 - ofst, CSTR("String Length"), (UOSInt)v);
 						ofst = ofst2;
+						if (ofst + v > tag->size)
+						{
+							break;
+						}
 						frame->AddStrC(ofst, (UOSInt)v, field->name->ToCString(), &tagData[ofst]);
 						ofst += (UOSInt)v;
 					}

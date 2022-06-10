@@ -12,11 +12,13 @@ namespace Map
 		{
 		private:
 			Text::String *tableName;
-			IO::IStreamData *fd;
+			IO::IStreamData *gdbtableFD;
+			IO::IStreamData *gdbtablxFD;
+			UOSInt indexCnt;
 			UInt64 dataOfst;
 			FileGDBTableInfo *tableInfo;
 		public:
-			FileGDBTable(Text::CString tableName, IO::IStreamData *fd);
+			FileGDBTable(Text::CString tableName, IO::IStreamData *gdbtableFD, IO::IStreamData *gdbtablxFD);
 			~FileGDBTable();
 
 			Bool IsError();

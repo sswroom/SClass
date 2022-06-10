@@ -16,7 +16,7 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
 		const UTF8Char **names;
-		UOSInt colCnt = this->colNames->GetCount();
+		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt i;
 		Int32 objId;
 
@@ -62,16 +62,12 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 	UInt8 *buff = 0; 
 	conn->UseObject();
 	this->conn = conn;
-	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
-	NEW_CLASS(this->colNames, Data::ArrayList<Text::String*>());
 	this->tableName = Text::String::New(tableName);
 	this->currDB = 0;
 	this->lastDB = 0;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
-	this->maxX = 0;
-	this->minX = 0;
-	this->maxY = 0;
-	this->minY = 0;
+	this->minPos = Math::Coord2DDbl(0, 0);
+	this->maxPos = Math::Coord2DDbl(0, 0);
 	this->objIdCol = 0;
 	this->shapeCol = 1;
 	UOSInt nameCol = 0;
@@ -117,13 +113,13 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 			{
 				this->objIdCol = i;
 			}
-			this->colNames->Add(colDef->GetColName()->Clone());
+			this->colNames.Add(colDef->GetColName()->Clone());
 			i++;
 		}
-		j = this->colNames->GetCount();
+		j = this->colNames.GetCount();
 		while (j-- > 0)
 		{
-			if (this->colNames->GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
+			if (this->colNames.GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
 			{
 				nameCol = j;
 			}
@@ -134,32 +130,24 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 		{
 			Int32 objId;
 			Math::Vector2D *vec;
-			Double bounds[4];
+			Math::RectAreaDbl bounds;
 
 			objId = r->GetInt32(this->objIdCol);
 			vec = r->GetVector(this->shapeCol);
 			if (vec)
 			{
-				this->objects->Put(objId, vec);
+				this->objects.Put(objId, vec);
 
-				vec->GetBounds(&bounds[0], &bounds[1], &bounds[2], &bounds[3]);
-				if (this->minX == 0 && this->minY == 0 && this->maxX == 0 && this->maxY == 0)
+				vec->GetBounds(&bounds);
+				if (this->minPos.IsZero() && this->maxPos.IsZero())
 				{
-					this->minX = bounds[0];
-					this->minY = bounds[1];
-					this->maxX = bounds[2];
-					this->maxY = bounds[3];
+					this->minPos = bounds.tl;
+					this->maxPos = bounds.br;
 				}
 				else
 				{
-					if (maxX < bounds[2])
-						maxX = bounds[2];
-					if (minX > bounds[0])
-						minX = bounds[0];
-					if (maxY < bounds[3])
-						maxY = bounds[3];
-					if (minY > bounds[1])
-						minY = bounds[1];
+					this->minPos = this->minPos.Min(bounds.tl);
+					this->maxPos = this->maxPos.Max(bounds.br);
 				}
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
 				{
@@ -182,13 +170,12 @@ Map::FileGDBLayer::~FileGDBLayer()
 	UOSInt i;
 
 	this->conn->UnuseObject();
-	i = this->colNames->GetCount();
+	i = this->colNames.GetCount();
 	while (i-- > 0)
 	{
-		this->colNames->RemoveAt(i)->Release();
+		this->colNames.RemoveAt(i)->Release();
 	}
-	DEL_CLASS(this->colNames);
-	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
+	Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
 	Math::Vector2D *vec;
 	i = vecList->GetCount();
 	while (i-- > 0)
@@ -196,7 +183,6 @@ Map::FileGDBLayer::~FileGDBLayer()
 		vec = vecList->GetItem(i);
 		DEL_CLASS(vec);
 	}
-	DEL_CLASS(this->objects);
 	this->tableName->Release();
 }
 
@@ -211,28 +197,25 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **n
 	{
 		*nameArr = ReadNameArr();
 	}
-	outArr->AddRangeI32(this->objects->GetKeys());
-	return this->objects->GetCount();
+	outArr->AddRangeI32(this->objects.GetKeys());
+	return this->objects.GetCount();
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return GetObjectIdsMapXY(outArr, nameArr, x1 / mapRate, y1 / mapRate, x2 / mapRate, y2 / mapRate, keepEmpty);
+	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
-	Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
-	Double minX;
-	Double minY;
-	Double maxX;
-	Double maxY;
+	Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
+	Data::SortableArrayListNative<Int32> *vecKeys = this->objects.GetKeys();
+	Math::RectAreaDbl bounds;
 	Math::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
@@ -241,8 +224,8 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 	while (i < j)
 	{
 		vec = vecList->GetItem(i);
-		vec->GetBounds(&minX, &minY, &maxX, &maxY);
-		if (x1 <= maxX && x2 >= minX && y1 <= maxY && y2 >= minY)
+		vec->GetBounds(&bounds);
+		if (rect.OverlapOrTouch(bounds))
 		{
 			outArr->Add(vecKeys->GetItem(i));
 			cnt++;
@@ -254,7 +237,7 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 
 Int64 Map::FileGDBLayer::GetObjectIdMax()
 {
-	Data::ArrayList<Int32> *objInd = this->objects->GetKeys();
+	Data::ArrayList<Int32> *objInd = this->objects.GetKeys();
 	return objInd->GetItem(objInd->GetCount() - 1);
 }
 
@@ -263,7 +246,7 @@ void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
 	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
 	Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
 	UOSInt i = nameList->GetCount();
-	UOSInt colCnt = this->colNames->GetCount();
+	UOSInt colCnt = this->colNames.GetCount();
 	UOSInt j;
 	const UTF8Char **nameStrs;
 	while (i-- > 0)
@@ -295,12 +278,12 @@ UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *na
 
 UOSInt Map::FileGDBLayer::GetColumnCnt()
 {
-	return this->colNames->GetCount();
+	return this->colNames.GetCount();
 }
 
 UTF8Char *Map::FileGDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	Text::String *colName = this->colNames->GetItem(colIndex);
+	Text::String *colName = this->colNames.GetItem(colIndex);
 	if (colName)
 	{
 		return Text::StrConcatC(buff, colName->v, colName->leng);
@@ -323,17 +306,13 @@ UInt32 Map::FileGDBLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::FileGDBLayer::GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::FileGDBLayer::GetBounds(Math::RectAreaDbl *rect)
 {
-	if (minX)
-		*minX = this->minX;
-	if (minY)
-		*minY = this->minY;
-	if (maxX)
-		*maxX = this->maxX;
-	if (maxY)
-		*maxY = this->maxY;
-	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
+	if (rect)
+	{
+		*rect = Math::RectAreaDbl(this->minPos, this->maxPos);
+	}
+	return !this->minPos.IsZero() || !this->maxPos.IsZero();
 }
 
 void *Map::FileGDBLayer::BeginGetObject()
@@ -347,13 +326,13 @@ void Map::FileGDBLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *Map::FileGDBLayer::GetNewObjectById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->objects->Get((Int32)id);
+	Math::Vector2D *vec = this->objects.Get((Int32)id);
 	return Vector2DrawObject(id, vec, this->layerType);
 }
 
 Math::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->objects->Get((Int32)id);
+	Math::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
 		return vec->Clone();
 	return 0;
@@ -362,7 +341,7 @@ Math::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
 void Map::FileGDBLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
 	MemFree(obj->ptOfstArr);
-	MemFree(obj->pointArr);
+	MemFreeA(obj->pointArr);
 	MemFree(obj);
 }
 

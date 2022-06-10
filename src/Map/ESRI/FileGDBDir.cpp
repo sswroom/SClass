@@ -8,10 +8,10 @@
 
 Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
 {
-	UOSInt i = this->tables->GetCount();
+	UOSInt i = this->tables.GetCount();
 	while (i-- > 0)
 	{
-		FileGDBTable *table = this->tables->GetItem(i);
+		FileGDBTable *table = this->tables.GetItem(i);
 		if (table->GetName()->EqualsICase(name.v, name.leng))
 		{
 			return table;
@@ -22,22 +22,20 @@ Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
 
 Map::ESRI::FileGDBDir::FileGDBDir(Text::String *sourceName) : DB::ReadingDB(sourceName)
 {
-	NEW_CLASS(this->tables, Data::ArrayList<FileGDBTable*>());
 }
 
 Map::ESRI::FileGDBDir::~FileGDBDir()
 {
-	LIST_FREE_FUNC(this->tables, DEL_CLASS);
-	DEL_CLASS(this->tables);
+	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
 UOSInt Map::ESRI::FileGDBDir::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	UOSInt i = 0;
-	UOSInt j = this->tables->GetCount();
+	UOSInt j = this->tables.GetCount();
 	while (i < j)
 	{
-		names->Add(this->tables->GetItem(i)->GetName()->ToCString());
+		names->Add(this->tables.GetItem(i)->GetName()->ToCString());
 		i++;
 	}
 	return j;
@@ -76,19 +74,22 @@ void Map::ESRI::FileGDBDir::Reconnect()
 
 void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 {
-	this->tables->Add(table);
+	this->tables.Add(table);
 }
 
 Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 {
-	IO::IStreamData *fd = pkg->GetItemStmData(UTF8STRC("a00000001.gdbtable"));
+	IO::IStreamData *tableFD = pkg->GetItemStmData(UTF8STRC("a00000001.gdbtable"));
+	IO::IStreamData *indexFD = pkg->GetItemStmData(UTF8STRC("a00000001.gdbtablx"));
 	FileGDBTable *table;
-	if (fd == 0)
+	if (tableFD == 0)
 	{
+		SDEL_CLASS(indexFD);
 		return 0;
 	}
-	NEW_CLASS(table, FileGDBTable(CSTR("GDB_SystemCatalog"), fd));
-	DEL_CLASS(fd);
+	NEW_CLASS(table, FileGDBTable(CSTR("GDB_SystemCatalog"), tableFD, indexFD));
+	DEL_CLASS(tableFD);
+	SDEL_CLASS(indexFD);
 	if (table->IsError())
 	{
 		DEL_CLASS(table);
@@ -117,11 +118,14 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 			FileGDBTable *innerTable;
 			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			fd = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
-			if (fd)
+			tableFD = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
+			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
+			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+			indexFD = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
+			if (tableFD)
 			{
-				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), fd));
-				DEL_CLASS(fd);
+				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD));
+				DEL_CLASS(tableFD);
 				if (innerTable->IsError())
 				{
 					DEL_CLASS(innerTable);
@@ -131,6 +135,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 					dir->AddTable(innerTable);
 				}
 			}
+			SDEL_CLASS(indexFD);
 		}
 	}
 	DEL_CLASS(reader);

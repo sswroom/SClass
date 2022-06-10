@@ -3,13 +3,13 @@
 #include "Math/Equation.h"
 #include "Text/MyString.h"
 
-Int32 Math::Equation::ParseEquation(Data::ArrayListInt *equOut, WChar *equation, OSInt nChars, WChar **endPos)
+Int32 Math::Equation::ParseEquation(Data::ArrayListInt32 *equOut, UTF8Char *equation, OSInt nChars, UTF8Char **endPos)
 {
-//	WChar name[128];
-	WChar *currPtr = equation;
-	WChar *nextPtr;
-//	WChar *nameStart;
-	WChar c;
+//	UTF8Char name[128];
+	UTF8Char *currPtr = equation;
+	UTF8Char *nextPtr;
+//	UTF8Char *nameStart;
+	UTF8Char c;
 	Int32 ret;
 	//Bool isDigit = false;
 	Bool isName = false;
@@ -63,40 +63,32 @@ Int32 Math::Equation::ParseEquation(Data::ArrayListInt *equOut, WChar *equation,
 
 Math::Equation::Equation()
 {
-	NEW_CLASS(equationLeft, Data::ArrayList<Data::ArrayListInt*>());
-	NEW_CLASS(equationRight, Data::ArrayList<Data::ArrayListInt*>());
-	NEW_CLASS(equationSign, Data::ArrayListInt());
-	NEW_CLASS(equationVari, Data::ArrayList<WChar*>());
 }
 
 Math::Equation::~Equation()
 {
-	OSInt i;
-	i = equationVari->GetCount();
+	UOSInt i;
+	i = this->equationVari.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew((WChar*)equationVari->GetItem(i));
+		Text::StrDelNew(this->equationVari.GetItem(i));
 	}
-	DEL_CLASS(equationVari);
 
-	i = equationLeft->GetCount();
+	i = this->equationLeft.GetCount();
 	while (i-- > 0)
 	{
-		DEL_CLASS((Data::ArrayListInt*)equationLeft->GetItem(i));
-		DEL_CLASS((Data::ArrayListInt*)equationRight->GetItem(i));
+		DEL_CLASS(this->equationLeft.GetItem(i));
+		DEL_CLASS(this->equationRight.GetItem(i));
 	}
-	DEL_CLASS(equationLeft);
-	DEL_CLASS(equationRight);
-	DEL_CLASS(equationSign);
 }
 
-Int32 Math::Equation::AddEquation(WChar *equation)
+UOSInt Math::Equation::AddEquation(UTF8Char *equation)
 {
-	WChar *currPtr = equation;
-	WChar *leftStart = currPtr;
-	WChar *signStart = 0;
-	WChar *rightStart = 0;
-	WChar c;
+	UTF8Char *currPtr = equation;
+	UTF8Char *leftStart = currPtr;
+	UTF8Char *signStart = 0;
+	UTF8Char *rightStart = 0;
+	UTF8Char c;
 	while ((c = *currPtr++) != 0)
 	{
 		if (c == '>' || c == '=' || c == '<')
@@ -115,31 +107,31 @@ Int32 Math::Equation::AddEquation(WChar *equation)
 			}
 			else
 			{
-				return -1;
+				return INVALID_INDEX;
 			}
 		}
 	}
 
 	if (rightStart == 0)
 	{
-		return -1;
+		return INVALID_INDEX;
 	}
 
-	Data::ArrayListInt *right;
-	Data::ArrayListInt *left;
-	NEW_CLASS(right, Data::ArrayListInt());
-	NEW_CLASS(left, Data::ArrayListInt());
+	Data::ArrayListInt32 *right;
+	Data::ArrayListInt32 *left;
+	NEW_CLASS(right, Data::ArrayListInt32());
+	NEW_CLASS(left, Data::ArrayListInt32());
 	if (ParseEquation(right, rightStart, currPtr - rightStart - 1, 0) != 0)
 	{
 		DEL_CLASS(right);
 		DEL_CLASS(left);
-		return -1;
+		return INVALID_INDEX;
 	}
 	if (ParseEquation(left, leftStart, signStart - leftStart, 0) != 0)
 	{
 		DEL_CLASS(right);
 		DEL_CLASS(left);
-		return -1;
+		return INVALID_INDEX;
 	}
 	Int32 sign;
 	if (*signStart == '=')
@@ -169,18 +161,18 @@ Int32 Math::Equation::AddEquation(WChar *equation)
 		}
 	}
 
-	OSInt ret = equationLeft->Add(left);
-	equationRight->Add(right);
-	equationSign->Add(sign);
-	return (Int32)ret;
+	UOSInt ret = this->equationLeft.Add(left);
+	this->equationRight.Add(right);
+	this->equationSign.Add(sign);
+	return ret;
 }
 
-void Math::Equation::Solve(WChar *variName, WChar *outBuff)
+void Math::Equation::Solve(UTF8Char *variName, UTF8Char *outBuff)
 {
 	//////////////////////////////////////////////
 }
 
-WChar *Math::Equation::GetEquationStr(WChar *buff, Int32 index)
+UTF8Char *Math::Equation::GetEquationStr(UTF8Char *buff, Int32 index)
 {
 	//////////////////////////////////////////////
 	return 0;

@@ -12,7 +12,7 @@ namespace Map
 		class FileGDBDir : public DB::ReadingDB
 		{
 		private:
-			Data::ArrayList<FileGDBTable *> *tables;
+			Data::ArrayList<FileGDBTable *> tables;
 
 			FileGDBTable *GetTable(Text::CString name);
 

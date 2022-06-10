@@ -1,6 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "DB/SharedReadingDB.h"
 #include "IO/PackageFile.h"
+#include "IO/Path.h"
+#include "Map/FileGDBLayer.h"
+#include "Map/MapLayerCollection.h"
 #include "Map/ESRI/FileGDBDir.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 
@@ -44,6 +48,54 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 	if (fgdb == 0)
 	{
 		return 0;
+	}
+	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
+	{
+		DB::DBReader *r = fgdb->QueryTableData(CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0);
+		if (r)
+		{
+			Data::ArrayList<Text::String*> layers;
+			Text::String *layerName;
+			while (r->ReadNext())
+			{
+				if (!r->IsNull(6) && !r->IsNull(7))
+				{
+					layerName = r->GetNewStr(3); //or 4?
+					if (layerName)
+					{
+						layers.Add(layerName);
+					}
+				}
+			}
+			fgdb->CloseReader(r);
+			if (layers.GetCount() > 0)
+			{
+				UTF8Char sbuff[512];
+				UTF8Char *sptr;
+				Map::MapLayerCollection *layerColl;
+				Map::FileGDBLayer *layer;
+				DB::SharedReadingDB *db;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(db, DB::SharedReadingDB(fgdb));
+				layerName = pobj->GetSourceNameObj();
+				sptr = layerName->ConcatTo(sbuff);
+				i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+				NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
+				i = 0;
+				j = layers.GetCount();
+				while (i < j)
+				{
+					layerName = layers.GetItem(i);
+					NEW_CLASS(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString()));
+					layerColl->Add(layer);
+					layerName->Release();
+					i++;
+				}
+				db->UnuseObject();
+				return layerColl;
+			}
+		}
 	}
 	return fgdb;
 }

@@ -25,6 +25,10 @@ namespace Map
 			UOSInt maxCnt;
 			Data::QueryConditions *conditions;
 
+			UOSInt indexCnt;
+			UOSInt indexNext;
+			UInt8 *indexBuff;
+			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
 			FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
@@ -54,6 +58,8 @@ namespace Map
 			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
+
+			void SetIndex(IO::IStreamData *fd, UOSInt indexCnt);
 		};
 	}
 }

@@ -1274,6 +1274,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x08BB, 0x29C3, 0x0000, "USB Audio Codec",                                   "TI PCM2903C"},
 	{0x08BB, 0x29C6, 0x0000, "USB Audio Codec",                                   "TI PCM2906C"},
 	{0x090C, 0x1000, 0x0000, "USB DISK 2.0",                                      "Silicon Motion USB 2.0 Flash Drive"},
+	{0x090C, 0x1000, 0x1100, "General USB Flash Disk",                            "Silicon Motion USB 2.0 Flash Drive"},
 	{0x090C, 0x937B, 0x0000, "Image Processor USB 2.0 PC Cam",                    "Silicon Motion USB 2.0 PC Cam"},
 	{0x093A, 0x2521, 0x0100, "USB OPTICAL MOUSE",                                 "Pixart USB Optical Mouse"},
 	{0x0951, 0x1666, 0x0001, "Kingston DataTraveler 3.0",                         "Kingston DataTraveler SWIVL"},

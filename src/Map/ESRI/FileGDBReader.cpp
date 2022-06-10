@@ -31,8 +31,11 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 
 Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
 {
-	this->fd = fd->GetPartialData(ofst, fd->GetDataSize() - ofst);
-	this->currOfst = 0;
+	this->indexCnt = 0;
+	this->indexNext = 0;
+	this->indexBuff = 0;
+	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->currOfst = ofst;
 	this->tableInfo = Map::ESRI::FileGDBUtil::TableInfoClone(tableInfo);
 	this->rowSize = 0;
 	this->rowData = 0;
@@ -83,6 +86,10 @@ Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGD
 Map::ESRI::FileGDBReader::~FileGDBReader()
 {
 	DEL_CLASS(this->fd);
+	if (this->indexBuff)
+	{
+		MemFree(this->indexBuff);
+	}
 	Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
 	if (this->rowData)
 	{
@@ -101,48 +108,102 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 		MemFree(this->rowData);
 		this->rowData = 0;
 	}
-	while (true)
+	if (this->indexBuff)
 	{
 		while (true)
 		{
-			if (this->fd->GetRealData(this->currOfst, 4, sizeBuff) != 4)
+			if (this->indexNext >= this->indexCnt)
 			{
 				return false;
 			}
-			Int32 size = ReadInt32(sizeBuff);
-			if (size < 0)
-			{
-				this->currOfst += 4 + (UInt32)(-size);
-			}
-			else
-			{
-				this->rowSize = (UInt32)size;
-				break;
-			}
-		}
 
-		if (this->currOfst + 4 + this->rowSize > this->fd->GetDataSize())
-		{
-			return false;
-		}
-		this->objectId++;
-		if (conditions && !conditions->IsValid(this))
-		{
-		}
-		else
-		{
-			if (this->dataOfst == 0)
+			this->currOfst = ReadUInt32(&this->indexBuff[this->indexNext * 5 + 1]);
+			this->currOfst = (this->currOfst << 8) + this->indexBuff[this->indexNext * 5];
+			this->indexNext++;
+			this->objectId = (Int32)this->indexNext;
+			if (this->currOfst != 0)
 			{
-				if (this->maxCnt == 0)
+				if (this->fd->GetRealData(this->currOfst, 4, sizeBuff) != 4)
 				{
 					return false;
 				}
-				this->maxCnt--;
-				break;
+				Int32 size = ReadInt32(sizeBuff);
+				if (size < 0)
+				{
+					return false;
+				}
+				else
+				{
+					this->rowSize = (UInt32)size;
+				}
+				if (this->currOfst + 4 + this->rowSize > this->fd->GetDataSize())
+				{
+					return false;
+				}
+				if (conditions && !conditions->IsValid(this))
+				{
+				}
+				else
+				{
+					if (this->dataOfst == 0)
+					{
+						if (this->maxCnt == 0)
+						{
+							return false;
+						}
+						this->maxCnt--;
+						break;
+					}
+					this->dataOfst--;
+				}
 			}
-			this->dataOfst--;
 		}
-		this->currOfst += 4 + this->rowSize;
+	}
+	else
+	{
+		while (true)
+		{
+			while (true)
+			{
+				if (this->fd->GetRealData(this->currOfst, 4, sizeBuff) != 4)
+				{
+					return false;
+				}
+				Int32 size = ReadInt32(sizeBuff);
+				if (size < 0)
+				{
+					this->currOfst += 4 + (UInt32)(-size);
+				}
+				else
+				{
+					this->rowSize = (UInt32)size;
+					break;
+				}
+			}
+
+			if (this->currOfst + 4 + this->rowSize > this->fd->GetDataSize())
+			{
+				return false;
+			}
+			this->objectId++;
+			if (conditions && !conditions->IsValid(this))
+			{
+			}
+			else
+			{
+				if (this->dataOfst == 0)
+				{
+					if (this->maxCnt == 0)
+					{
+						return false;
+					}
+					this->maxCnt--;
+					break;
+				}
+				this->dataOfst--;
+			}
+			this->currOfst += 4 + this->rowSize;
+		}
 	}
 	this->rowData = MemAlloc(UInt8, this->rowSize);
 	if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
@@ -186,6 +247,10 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				break;
 			case 4:
 				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, &v);
+				if (rowOfst + v > this->rowSize)
+				{
+					return false;
+				}
 				rowOfst += (UOSInt)v;
 				break;
 			case 5:
@@ -990,7 +1055,115 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				}
 				i++;
 			}
-			MemFree(parts);
+			return pl;
+		}
+		break;
+	case 51: //SHPT_GENERALPOLYGON
+		if (this->rowData[ofst] == 0)
+		{
+			return 0;
+		}
+		else
+		{
+			UInt64 nPoints;
+			UInt64 nParts;
+			UInt64 nCurves = 0;
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nPoints);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nParts);
+			if (geometryType & 0x20000000)
+			{
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nCurves);
+			}
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
+			Math::Polygon *pg;
+			srid = 0;
+			UOSInt i;
+			if (this->tableInfo->csys)
+			{
+				srid = this->tableInfo->csys->GetSRID();
+			}
+			UInt32 *parts;
+			Math::Coord2DDbl *points;
+			if (geometryType & 0x80000000)
+			{
+				NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
+			}
+			else
+			{
+				NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
+
+			}
+			parts = pg->GetPtOfstList(&i);
+			points = pg->GetPointList(&i);
+			parts[0] = 0;
+			UInt32 ptOfst = 0;
+			i = 1;
+			while (i < nParts)
+			{
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+				ptOfst += (UInt32)v;
+				parts[i] = ptOfst;
+				i++;
+			}
+			UOSInt j;
+			UOSInt k;
+			i = 0;
+			while (i < nParts)
+			{
+				Int64 iv;
+				OSInt dx = 0;
+				OSInt dy = 0;
+				j = parts[i];
+				if (i + 1 < nParts)
+				{
+					k = parts[i + 1];
+				}
+				else
+				{
+					k = nPoints;
+				}
+				while (j < k)
+				{
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					dx += iv;
+					x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					dy += iv;
+					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+					points[j].x = x;
+					points[j].y = y;
+					j++;
+				}
+				if (geometryType & 0x80000000)
+				{
+					dx = 0;
+					j = parts[i];
+					while (j < k)
+					{
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+						dx += iv;
+//						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+//						altitiudes[j] = z;
+						j++;
+					}
+				}
+				if (geometryType & 0x40000000)
+				{
+					dx = 0;
+					j = parts[i];
+					while (j < k)
+					{
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+						dx += iv;
+						//m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					}
+				}
+				i++;
+			}
+			return pg;
 		}
 		break;
 	}
@@ -1333,4 +1506,19 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		}
 	}
 	return true;
+}
+
+void Map::ESRI::FileGDBReader::SetIndex(IO::IStreamData *fd, UOSInt indexCnt)
+{
+	if (this->indexBuff == 0)
+	{
+		this->indexCnt = indexCnt;
+		UOSInt len = this->indexCnt * 5;
+		this->indexBuff = MemAlloc(UInt8, len);
+		if (fd->GetRealData(16, len, this->indexBuff) != len)
+		{
+			MemFree(this->indexBuff);
+			this->indexBuff = 0;
+		}
+	}
 }
