@@ -800,10 +800,12 @@ Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
 		return CSTR("PGRES_COPY_BOTH");
 	case PGRES_SINGLE_TUPLE:
 		return CSTR("PGRES_SINGLE_TUPLE");
+#if defined(LIBPQ_HAS_PIPELINING) && LIBPQ_HAS_PIPELINING
 	case PGRES_PIPELINE_SYNC:
 		return CSTR("PGRES_PIPELINE_SYNC");
 	case PGRES_PIPELINE_ABORTED:
 		return CSTR("PGRES_PIPELINE_ABORTED");
+#endif
 	default:
 		return CSTR("Unknown");
 	}
