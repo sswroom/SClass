@@ -18,7 +18,7 @@
 #define BUFFSIZE 65536
 
 #include <stdio.h>
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
@@ -1366,7 +1366,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										printf("MySQLTCP status = 0x%x\r\n", me->connStatus);
 										sb.ClearStr();
 										sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
-										printf("MySQLTCP auth plugin data = %s\r\n", sb->ToString());
+										printf("MySQLTCP auth plugin data = %s\r\n", sb.ToString());
 										printf("MySQLTCP auth plugin name = %s\r\n", sbuff);
 	#endif
 									}
