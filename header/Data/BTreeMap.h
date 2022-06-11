@@ -23,7 +23,7 @@ namespace Data
 	template <class T> class BTreeMap : public IMap<Text::String*, T>
 	{
 	protected:
-		Crypto::Hash::CRC32RC *crc;
+		Crypto::Hash::CRC32RC crc;
 		BTreeNode<T> *rootNode;
 
 	protected:
@@ -351,12 +351,12 @@ namespace Data
 
 	template <class T> UInt32 BTreeMap<T>::CalHash(Text::String *key)
 	{
-		return this->crc->CalcDirect(key->v, key->leng);
+		return this->crc.CalcDirect(key->v, key->leng);
 	}
 
 	template <class T> UInt32 BTreeMap<T>::CalHash(Text::CString key)
 	{
-		return this->crc->CalcDirect(key.v, key.leng);
+		return this->crc.CalcDirect(key.v, key.leng);
 	}
 
 	template <class T> void BTreeMap<T>::FillArr(T **arr, BTreeNode<T> *node)
@@ -382,7 +382,6 @@ namespace Data
 	template <class T> BTreeMap<T>::BTreeMap() : IMap<Text::String*, T>()
 	{
 		rootNode = 0;
-		NEW_CLASS(crc, Crypto::Hash::CRC32RC());
 	}
 
 	template <class T> BTreeMap<T>::~BTreeMap()
@@ -392,7 +391,6 @@ namespace Data
 			ReleaseNodeTree(this->rootNode);
 			this->rootNode = 0;
 		}
-		DEL_CLASS(crc);
 	}
 
 	template <class T> T BTreeMap<T>::Put(Text::String *key, T val)

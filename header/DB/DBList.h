@@ -26,10 +26,11 @@ namespace DB
 		DBList();
 		~DBList();
 
+		void Close();
 		void AddDB(DB::DBTool *db);
 		DB::DBTool *UseDB();
 		void UnuseDB(DB::DBTool *db);
 		UOSInt GetCount();
 	};
-};
+}
 #endif

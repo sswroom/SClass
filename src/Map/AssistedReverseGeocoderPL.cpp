@@ -52,24 +52,24 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 		{
 			UInt32 lcid;
 			Text::String *addr;
-			Text::String *s;
 			LCIDInfo *lcidInfo;
 			AddressEntry *entry;
+			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
 			{
 				lcid = (UInt32)r->GetInt32(0);
 				entry = MemAlloc(AddressEntry, 1);
 				entry->keyx = r->GetInt32(1);
 				entry->keyy = r->GetInt32(2);
-				s = r->GetNewStr(3);
-				addr = this->strMap.Get(s);
+				sb.ClearStr();
+				r->GetStr(3, &sb);
+				addr = this->strMap.Get(sb.ToCString());
 				if (addr == 0)
 				{
-					addr = s->Clone();
-					this->strMap.Put(s, addr);
+					addr = Text::String::New(sb.ToCString());
+					this->strMap.Put(addr, addr);
 				}
 				entry->address = addr;
-				s->Release();
 				
 				lcidInfo = this->lcidMap.Get(lcid);
 				if (lcidInfo == 0)

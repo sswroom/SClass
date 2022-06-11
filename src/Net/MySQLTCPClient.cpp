@@ -16,6 +16,7 @@
 
 #define CLIVERSION "1.0.0"
 #define BUFFSIZE 65536
+#define ROWBUFFCNT 4
 
 #include <stdio.h>
 //#define VERBOSE
@@ -480,6 +481,7 @@ private:
 		UInt8 *rowBuff;
 		UOSInt rowBuffCapacity;
 		RowColumn *cols;
+		UOSInt rowNum;
 	} RowData;	
 
 	Data::ArrayList<ColumnDef*> cols;
@@ -487,11 +489,13 @@ private:
 	UOSInt colCount;
 	OSInt rowChanged;
 	RowData *currRow;
-	RowData *nextRow;
-	Bool nextRowReady;
+	RowData *nextRow[ROWBUFFCNT];
+	Bool nextRowReady[ROWBUFFCNT];
+	RowData *preparingRow;
 	Sync::Event rowEvt;
 	Sync::Event nextRowEvt;
 	Sync::MutexUsage mutUsage;
+	UOSInt rowNum;
 	UInt32 stmtId;
 public:
 	MySQLTCPBinaryReader(Sync::Mutex *mut)
@@ -500,9 +504,15 @@ public:
 		this->colTypes = 0;
 		this->rowChanged = -1;
 		this->currRow = 0;
-		this->nextRow = 0;
+		this->rowNum = 0;
+		UOSInt i = ROWBUFFCNT;
+		while (i-- > 0)
+		{
+			this->nextRow[i] = 0;
+			this->nextRowReady[i] = false;
+		}
+		this->preparingRow = 0;
 		this->colCount = 0;
-		this->nextRowReady = false;
 		this->stmtId = 0;
 	}
 
@@ -521,12 +531,16 @@ public:
 			SDEL_STRING(col->defValues);
 			MemFree(col); 
 		}
-		if (this->nextRow)
+		i = ROWBUFFCNT;
+		while (i-- > 0)
 		{
-			MemFree(this->nextRow->cols);
-			MemFree(this->nextRow->rowBuff);
-			MemFree(this->nextRow);
-			this->nextRow = 0;
+			if (this->nextRow[i])
+			{
+				MemFree(this->nextRow[i]->cols);
+				MemFree(this->nextRow[i]->rowBuff);
+				MemFree(this->nextRow[i]);
+				this->nextRow[i] = 0;
+			}
 		}
 		if (this->currRow)
 		{
@@ -534,6 +548,13 @@ public:
 			MemFree(this->currRow->rowBuff);
 			MemFree(this->currRow);
 			this->currRow = 0;
+		}
+		if (this->preparingRow)
+		{
+			MemFree(this->preparingRow->cols);
+			MemFree(this->preparingRow->rowBuff);
+			MemFree(this->preparingRow);
+			this->preparingRow = 0;
 		}
 		if (this->colTypes)
 		{
@@ -544,16 +565,40 @@ public:
 
 	virtual Bool ReadNext()
 	{
-		while (!this->nextRowReady)
+		UOSInt rowIndex = INVALID_INDEX;
+		UOSInt i;
+		UOSInt minRowNum = INVALID_INDEX;
+		while (true)
 		{
+			i = ROWBUFFCNT;
+			while (i-- > 0)
+			{
+				if (this->nextRowReady[i])
+				{
+					if (this->nextRow[i] == 0)
+					{
+						rowIndex = i;
+						break;
+					}
+					else if (this->nextRow[i]->rowNum < minRowNum)
+					{
+						rowIndex = i;
+						minRowNum = this->nextRow[i]->rowNum;
+					}
+				}
+			}
+			if (rowIndex != INVALID_INDEX)
+			{
+				break;
+			}
 			this->rowEvt.Wait(1000);
 		}
-		if (this->nextRow)
+		if (this->nextRow[rowIndex])
 		{
 			RowData *row = this->currRow;
-			this->currRow = this->nextRow;
-			this->nextRow = row;
-			this->nextRowReady = false;
+			this->currRow = this->nextRow[rowIndex];
+			this->nextRow[rowIndex] = row;
+			this->nextRowReady[rowIndex] = false;
 			this->nextRowEvt.Set();
 			return true;
 		}
@@ -788,11 +833,7 @@ public:
 
 	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	{
-		if (this->currRow == 0)
-		{
-			return false;
-		}
-		if (colIndex >= this->colCount)
+		if (this->currRow == 0 || colIndex >= this->colCount)
 		{
 			return false;
 		}
@@ -996,7 +1037,7 @@ public:
 	void SetRowChanged(Int64 val)
 	{
 		this->rowChanged = (OSInt)val;
-		this->nextRowReady = true;
+		this->nextRowReady[0] = true;
 	}
 
 	void AddColumnDef41(const UInt8 *colDef, UOSInt buffSize)
@@ -1046,24 +1087,26 @@ public:
 
 	void AddRowData(const UInt8 *rowData, UOSInt dataSize)
 	{
-		while (this->nextRowReady)
+		RowData *row;
+		if (this->preparingRow == 0)
 		{
-			this->nextRowEvt.Wait(1000);
+			row = this->preparingRow = MemAlloc(RowData, 1);
+			row->cols = MemAlloc(RowColumn, this->colCount);
+			row->rowBuffCapacity = dataSize * 2;
+			row->rowBuff = MemAlloc(UInt8, dataSize * 2);
 		}
-		if (this->nextRow == 0)
+		else
 		{
-			this->nextRow = MemAlloc(RowData, 1);
-			this->nextRow->cols = MemAlloc(RowColumn, this->colCount);
-			this->nextRow->rowBuffCapacity = dataSize * 2;
-			this->nextRow->rowBuff = MemAlloc(UInt8, dataSize * 2);
+			row = this->preparingRow;
+			if (row->rowBuffCapacity < dataSize)
+			{
+				row->rowBuffCapacity = dataSize;
+				MemFree(row->rowBuff);
+				row->rowBuff = MemAlloc(UInt8, dataSize);
+			}
 		}
-		else if (this->nextRow->rowBuffCapacity < dataSize)
-		{
-			this->nextRow->rowBuffCapacity = dataSize;
-			MemFree(this->nextRow->rowBuff);
-			this->nextRow->rowBuff = MemAlloc(UInt8, dataSize);
-		}
-		MemCopyNO(this->nextRow->rowBuff, rowData, dataSize);
+		MemCopyNO(row->rowBuff, rowData, dataSize);
+		row->rowNum = this->rowNum++;
 		UOSInt i = 0;
 		UOSInt j = this->colCount;
 		UInt64 v;
@@ -1073,7 +1116,7 @@ public:
 		RowColumn *col;
 		while (i < j)
 		{
-			col = &this->nextRow->cols[i];
+			col = &row->cols[i];
 			if (rowData[nullOfst] & (1 << nullBitOfst))
 			{
 				col->isNull = true;
@@ -1173,7 +1216,27 @@ public:
 			}
 			i++;
 		}
-		this->nextRowReady = true;
+		while (true)
+		{
+			i = ROWBUFFCNT;
+			while (i-- > 0)
+			{
+				if (!this->nextRowReady[i])
+					break;
+			}
+			if (i == INVALID_INDEX)
+			{
+				this->nextRowEvt.Wait(1000);
+			}
+			else
+			{
+				break;
+			}
+		}
+		row = this->nextRow[i];
+		this->nextRow[i] = this->preparingRow;
+		this->preparingRow = row;
+		this->nextRowReady[i] = true;
 		this->rowEvt.Set();
 	}
 
@@ -1192,25 +1255,38 @@ public:
 
 	void EndData()
 	{
-		if (this->nextRow == 0 && this->nextRowReady)
+		if (this->nextRow[0] == 0 && this->nextRowReady[0])
 		{
 			return;
 		}
-		while (this->nextRowReady)
+		UOSInt i;
+		while (true)
 		{
+			i = ROWBUFFCNT;
+			while (i-- > 0)
+			{
+				if (this->nextRowReady[i])
+					break;
+			}
+			if (i == INVALID_INDEX)
+				break;
 			this->nextRowEvt.Wait(1000);
 		}
-		RowData *row = this->nextRow;
-		this->nextRow = 0;
-		this->nextRowReady = true;
-		this->rowEvt.Set();
-
-		if (row)
+		i = ROWBUFFCNT;
+		while (i-- > 0)
 		{
-			MemFree(row->cols);
-			MemFree(row->rowBuff);
-			MemFree(row);
+			RowData *row = this->nextRow[i];
+			this->nextRow[i] = 0;
+			this->nextRowReady[i] = true;
+
+			if (row)
+			{
+				MemFree(row->cols);
+				MemFree(row->rowBuff);
+				MemFree(row);
+			}
 		}
+		this->rowEvt.Set();
 	}
 
 	void SetStmtId(UInt32 stmtId)

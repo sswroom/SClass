@@ -9,6 +9,11 @@ DB::DBList::DBList()
 
 DB::DBList::~DBList()
 {
+	this->Close();
+}
+
+void DB::DBList::Close()
+{
 	DBInfo *db;
 	UOSInt i = this->dbList.GetCount();
 	while (i-- > 0)
@@ -17,6 +22,7 @@ DB::DBList::~DBList()
 		DEL_CLASS(db->db);
 		MemFree(db);
 	}
+	this->dbList.Clear();
 }
 
 void DB::DBList::AddDB(DB::DBTool *db)
