@@ -445,6 +445,42 @@ void TestBinaryRead(DB::DBTool *db)
 	}
 }
 
+void TempTest(Net::SocketFactory *sockf, IO::Writer *console)
+{
+	Text::CString mysqlServer;
+	Text::CString mysqlDB;
+	Text::CString mysqlUID;
+	Text::CString mysqlPWD;
+	DB::DBTool *db;
+	IO::LogTool log;
+	mysqlServer = CSTR("192.168.0.15");
+	mysqlDB = CSTR("organism");
+	mysqlUID = CSTR("organ");
+	mysqlPWD = CSTR("organ");
+	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, CSTR("DB: "));
+	if (db)
+	{
+		DB::DBReader *r = db->ExecuteReader(CSTR("select id, time1, time2 from test"));
+		if (r)
+		{
+			UTF8Char sbuff[64];
+			UTF8Char *sptr;
+			Data::DateTime dt;
+			while (r->ReadNext())
+			{
+				r->GetDate(1, &dt);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				r->GetDate(2, &dt);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			}
+			db->CloseReader(r);
+		}
+		DEL_CLASS(db);
+	}
+}
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Text::CString mysqlServer;
@@ -461,6 +497,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DB::DBTool *db;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
+	TempTest(sockf, console);
 	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, CSTR("DB: "));
 	if (db)
 	{

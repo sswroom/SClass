@@ -138,6 +138,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 
 void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 {
+	Text::StringBuilderUTF8 sb;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
@@ -157,8 +158,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 			{
 				cate = MemAlloc(SSWR::OrganMgr::OrganWebHandler::CategoryInfo, 1);
 				cate->cateId = cateId;
-				cate->chiName = r->GetNewStr(1);
-				cate->dirName = r->GetNewStr(2);
+				cate->chiName = r->GetNewStrB(1, &sb, false);
+				cate->dirName = r->GetNewStrB(2, &sb, false);
 				sb.ClearStr();
 				r->GetStr(3, &sb);
 				sptr = this->imageDir->ConcatTo(sbuff);
@@ -194,7 +195,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 	r = this->db->ExecuteReader(CSTR("select seq, eng_name, chi_name, cate_id from group_type"));
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			cateId = r->GetInt32(3);
@@ -206,8 +206,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 			{
 				grpType = MemAlloc(SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo, 1);
 				grpType->id = r->GetInt32(0);
-				grpType->engName = r->GetNewStr(1);
-				grpType->chiName = r->GetNewStr(2);
+				grpType->engName = r->GetNewStrB(1, &sb, false);
+				grpType->chiName = r->GetNewStrB(2, &sb, false);
 				cate->groupTypes->Put(grpType->id, grpType);
 			}
 		}
@@ -222,6 +222,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
+	Text::StringBuilderUTF8 sb;
 	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId from species"));
 	if (r != 0)
 	{
@@ -229,14 +230,14 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 		{
 			NEW_CLASS(sp, SSWR::OrganMgr::OrganWebHandler::SpeciesInfo());
 			sp->speciesId = r->GetInt32(0);
-			sp->engName = Text::String::OrEmpty(r->GetNewStr(1));
-			sp->chiName = Text::String::OrEmpty(r->GetNewStr(2));
-			sp->sciName = r->GetNewStr(3);
+			sp->engName = r->GetNewStrB(1, &sb, true);
+			sp->chiName = r->GetNewStrB(2, &sb, true);
+			sp->sciName = r->GetNewStrB(3, &sb, false);
 			sp->groupId = r->GetInt32(4);
-			sp->descript = Text::String::OrEmpty(r->GetNewStr(5));
-			sp->dirName = Text::String::OrEmpty(r->GetNewStr(6));
-			sp->photo = r->GetNewStr(7);
-			sp->idKey = Text::String::OrEmpty(r->GetNewStr(8));
+			sp->descript = r->GetNewStrB(5, &sb, true);
+			sp->dirName = r->GetNewStrB(6, &sb, true);
+			sp->photo = r->GetNewStrB(7, &sb, false);
+			sp->idKey = r->GetNewStrB(8, &sb, true);
 			sp->cateId = r->GetInt32(9);
 			sp->flags = (SpeciesFlags)r->GetInt32(10);
 			sp->photoId = r->GetInt32(11);
@@ -272,14 +273,14 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 				wfile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::WebFileInfo, 1);
 				wfile->id = r->GetInt32(0);
 				wfile->crcVal = r->GetInt32(2);
-				wfile->imgUrl = r->GetNewStr(3);
-				wfile->srcUrl = r->GetNewStr(4);
+				wfile->imgUrl = r->GetNewStrB(3, &sb, false);
+				wfile->srcUrl = r->GetNewStrB(4, &sb, false);
 				wfile->prevUpdated = r->GetBool(5);
 				wfile->cropLeft = r->GetDbl(6);
 				wfile->cropTop = r->GetDbl(7);
 				wfile->cropRight = r->GetDbl(8);
 				wfile->cropBottom = r->GetDbl(9);
-				wfile->location = r->GetNewStr(10);
+				wfile->location = r->GetNewStrB(10, &sb, false);
 				sp->wfiles.Put(wfile->id, wfile);
 			}
 		}
@@ -291,6 +292,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 {
 	FreeGroups();
 
+	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
@@ -306,13 +308,13 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 			NEW_CLASS(group, SSWR::OrganMgr::OrganWebHandler::GroupInfo());
 			group->id = r->GetInt32(0);
 			group->groupType = r->GetInt32(1);
-			group->engName = r->GetNewStr(2);
-			group->chiName = r->GetNewStr(3);
-			group->descript = Text::String::OrEmpty(r->GetNewStr(4));
+			group->engName = r->GetNewStrB(2, &sb, false);
+			group->chiName = r->GetNewStrB(3, &sb, false);
+			group->descript = r->GetNewStrB(4, &sb, true);
 			group->parentId = r->GetInt32(5);
 			group->photoGroup = r->GetInt32(6);
 			group->photoSpecies = r->GetInt32(7);
-			group->idKey = Text::String::OrEmpty(r->GetNewStr(8));
+			group->idKey = r->GetNewStrB(8, &sb, true);
 			group->cateId = r->GetInt32(9);
 			group->flags = (GroupFlags)r->GetInt32(10);
 			group->photoCount = (UOSInt)-1;
@@ -365,6 +367,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 {
 	FreeBooks();
 
+	Text::StringBuilderUTF8 sb;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
@@ -377,12 +380,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 		{
 			NEW_CLASS(book, SSWR::OrganMgr::OrganWebHandler::BookInfo());
 			book->id = r->GetInt32(0);
-			book->title = r->GetNewStr(1);
-			book->author = r->GetNewStr(2);
-			book->press = r->GetNewStr(3);
+			book->title = r->GetNewStrB(1, &sb, false);
+			book->author = r->GetNewStrB(2, &sb, false);
+			book->press = r->GetNewStrB(3, &sb, false);
 			r->GetDate(4, &dt);
 			book->publishDate = dt.ToTicks();
-			book->url = r->GetNewStr(5);
+			book->url = r->GetNewStrB(5, &sb, false);
 
 			this->bookMap->Put(book->id, book);
 		}
@@ -401,7 +404,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 				bookSp = MemAlloc(SSWR::OrganMgr::OrganWebHandler::BookSpInfo, 1);
 				bookSp->bookId = book->id;
 				bookSp->speciesId = sp->speciesId;
-				bookSp->dispName = r->GetNewStr(2);
+				bookSp->dispName = r->GetNewStrB(2, &sb, false);
 				book->species.Add(bookSp);
 				sp->books.Add(bookSp);
 			}
@@ -415,6 +418,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 	this->ClearUsers();
 
 	Int32 userId;
+	Text::StringBuilderUTF8 sb;
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, userName, pwd, watermark, userType from webuser"));
 	if (r != 0)
@@ -427,11 +431,11 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			{
 				this->userNameMap->Remove(user->userName);
 				SDEL_STRING(user->userName);
-				user->userName = r->GetNewStr(1);
+				user->userName = r->GetNewStrB(1, &sb, false);
 				SDEL_STRING(user->pwd);
-				user->pwd = r->GetNewStr(2);
+				user->pwd = r->GetNewStrB(2, &sb, false);
 				SDEL_STRING(user->watermark);
-				user->watermark = r->GetNewStr(3);
+				user->watermark = r->GetNewStrB(3, &sb, false);
 				user->userType = r->GetInt32(4);
 				this->userNameMap->Put(user->userName, user);
 			}
@@ -439,9 +443,9 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			{
 				user = MemAlloc(SSWR::OrganMgr::OrganWebHandler::WebUserInfo, 1);
 				user->id = userId;
-				user->userName = r->GetNewStr(1);
-				user->pwd = r->GetNewStr(2);
-				user->watermark = r->GetNewStr(3);
+				user->userName = r->GetNewStrB(1, &sb, false);
+				user->pwd = r->GetNewStrB(2, &sb, false);
+				user->watermark = r->GetNewStrB(3, &sb, false);
 				user->userType = r->GetInt32(4);
 				user->unorganSpId = 0;
 				NEW_CLASS(user->userFileIndex, Data::ArrayListInt64());
@@ -476,7 +480,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 				userFile->id = r->GetInt32(0);
 				userFile->fileType = r->GetInt32(1);
-				userFile->oriFileName = r->GetNewStr(2);
+				userFile->oriFileName = r->GetNewStrB(2, &sb, false);
 				r->GetDate(3, &dt);
 				userFile->fileTimeTicks = dt.ToTicks();
 				userFile->lat = r->GetDbl(4);
@@ -485,7 +489,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->speciesId = r->GetInt32(7);
 				r->GetDate(8, &dt);
 				userFile->captureTimeTicks = dt.ToTicks();
-				userFile->dataFileName = r->GetNewStr(9);
+				userFile->dataFileName = r->GetNewStrB(9, &sb, false);
 				userFile->crcVal = (UInt32)r->GetInt32(10);
 				userFile->rotType = r->GetInt32(11);
 				userFile->prevUpdated = r->GetInt32(12);
@@ -493,8 +497,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->cropTop = r->GetDbl(14);
 				userFile->cropRight = r->GetDbl(15);
 				userFile->cropBottom = r->GetDbl(16);
-				userFile->descript = r->GetNewStr(17);
-				userFile->location = r->GetNewStr(18);
+				userFile->descript = r->GetNewStrB(17, &sb, false);
+				userFile->location = r->GetNewStrB(18, &sb, false);
 				species = this->spMap->Get(userFile->speciesId);
 				if (species != 0)
 				{
@@ -620,6 +624,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 	Int32 id;
 	if (r != 0)
 	{
+		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			id = r->GetInt32(0);
@@ -629,8 +634,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 				loc = MemAlloc(SSWR::OrganMgr::OrganWebHandler::LocationInfo, 1);
 				loc->id = id;
 				loc->parentId = r->GetInt32(1);
-				loc->cname = r->GetNewStr(2);
-				loc->ename = r->GetNewStr(3);
+				loc->cname = r->GetNewStrB(2, &sb, false);
+				loc->ename = r->GetNewStrB(3, &sb, false);
 				loc->lat = r->GetDbl(4);
 				loc->lon = r->GetDbl(5);
 				loc->cateId = r->GetInt32(6);

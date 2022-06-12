@@ -1322,7 +1322,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 		}
 		else if (colType == DB::DBUtil::CT_DateTime)
 		{
-			sql->AppendCmdC(CSTR("DATETIME"));
+			sql->AppendCmdC(CSTR("DATETIME(3)"));
 		}
 		else if (colType == DB::DBUtil::CT_Double)
 		{

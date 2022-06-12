@@ -36,8 +36,25 @@ namespace DB
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb) = 0;
 		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF8 *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Text::String *GetNewStr(UOSInt colIndex) = 0;
+		Text::String *GetNewStrB(UOSInt colIndex, Text::StringBuilderUTF8 *tmpBuff, Bool emptyOnNull)
+		{
+			tmpBuff->ClearStr();
+			if (GetStr(colIndex, tmpBuff))
+				return Text::String::New(tmpBuff->ToCString());
+			else if (emptyOnNull)
+				return Text::String::NewEmpty();
+			else
+				return 0;
+		}
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal) = 0;
+		Int64 GetTicks(UOSInt colIndex, Data::DateTime *tmpBuff)
+		{
+			if (GetDate(colIndex, tmpBuff) == DET_OK)
+				return tmpBuff->ToTicks();
+			else
+				return 0;
+		}
 		virtual Double GetDbl(UOSInt colIndex) = 0;
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
