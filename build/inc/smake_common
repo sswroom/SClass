@@ -2025,6 +2025,8 @@ Map/OSM/OSMParser.h: ../../src/Map/OSM/OSMParser.cpp
 Map/OSM/OSMTileMap.h: ../../src/Map/OSM/OSMTileMap.cpp
 @OSMTileMap.o
 
+Math/CesiumEntityWriter.h: ../../src/Math/CesiumEntityWriter.cpp
+@CesiumEntityWriter.o
 Math/ComplexNumber.h: ../../src/Math/ComplexNumber.cpp
 @ComplexNumber.o
 Math/Coord2D.h:
@@ -2099,6 +2101,9 @@ Math/VectorImage.h: ../../src/Math/VectorImage.cpp
 @VectorImage.o
 Math/VectorString.h: ../../src/Math/VectorString.cpp
 @VectorString.o
+Math/VectorTextWriter.h:
+Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
+@VectorTextWriterList.o
 Math/WKBReader.h: ../../src/Math/WKBReader.cpp
 @WKBReader.o
 Math/WKTReader.h: ../../src/Math/WKTReader.cpp
@@ -4522,6 +4527,7 @@ OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp
 OSMParser.o: ../../src/Map/OSM/OSMParser.cpp
 OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
+CesiumEntityWriter.o: ../../src/Math/CesiumEntityWriter.cpp
 ComplexNumber.o: ../../src/Math/ComplexNumber.cpp
 CoordinateSystem.o: ../../src/Math/CoordinateSystem.cpp
 CoordinateSystemManager.o: ../../src/Math/CoordinateSystemManager.cpp
@@ -4554,6 +4560,7 @@ UTMGridConvertDbl.o: ../../src/Math/UTMGridConvertDbl.cpp
 Vector2D.o: ../../src/Math/Vector2D.cpp
 VectorImage.o: ../../src/Math/VectorImage.cpp
 VectorString.o: ../../src/Math/VectorString.cpp
+VectorTextWriterList.o: ../../src/Math/VectorTextWriterList.cpp
 WKBReader.o: ../../src/Math/WKBReader.cpp
 WKTReader.o: ../../src/Math/WKTReader.cpp
 WKTWriter.o: ../../src/Math/WKTWriter.cpp

@@ -486,7 +486,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 				if (vec)
 				{
 					Math::WKTWriter wkt;
-					wkt.GenerateWKT(sb, vec);
+					wkt.ToText(sb, vec);
 					DEL_CLASS(vec);
 				}
 				else

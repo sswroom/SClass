@@ -1841,7 +1841,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 			if (vec)
 			{
 				Math::WKTWriter wkt;
-				wkt.GenerateWKT(sb, vec);
+				wkt.ToText(sb, vec);
 				DEL_CLASS(vec);
 			}
 		}
@@ -1905,7 +1905,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
-				wkt.GenerateWKT(&sb, vec);
+				wkt.ToText(&sb, vec);
 				DEL_CLASS(vec);
 				return Text::String::New(sb.ToString(), sb.GetLength());
 			}
@@ -1959,7 +1959,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
-				wkt.GenerateWKT(&sb, vec);
+				wkt.ToText(&sb, vec);
 				DEL_CLASS(vec);
 				return Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}

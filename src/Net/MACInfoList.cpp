@@ -13,7 +13,6 @@
 Net::MACInfoList::MACInfoList()
 {
 	this->modified = false;
-	NEW_CLASS(this->dataList, Data::ArrayList<Net::MACInfo::MACEntry*>());
 	UOSInt cnt;
 	Net::MACInfo::MACEntry *ents = Net::MACInfo::GetMACEntryList(&cnt);
 	Net::MACInfo::MACEntry *entry;
@@ -25,7 +24,7 @@ Net::MACInfoList::MACInfoList()
 		entry->rangeEnd = ents[i].rangeEnd;
 		entry->name = Text::StrCopyNewC(ents[i].name, ents[i].nameLen);
 		entry->nameLen = ents[i].nameLen;
-		this->dataList->Add(entry);
+		this->dataList.Add(entry);
 		i++;
 	}
 	this->Load();
@@ -40,24 +39,23 @@ Net::MACInfoList::~MACInfoList()
 
 	UOSInt i;
 	Net::MACInfo::MACEntry *entry;
-	i = this->dataList->GetCount();
+	i = this->dataList.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->dataList->GetItem(i);
+		entry = this->dataList.GetItem(i);
 		SDEL_TEXT(entry->name);
 		MemFree(entry);
 	}
-	DEL_CLASS(this->dataList);
 }
 
 UOSInt Net::MACInfoList::GetCount()
 {
-	return this->dataList->GetCount();
+	return this->dataList.GetCount();
 }
 
 const Net::MACInfo::MACEntry *Net::MACInfoList::GetItem(UOSInt index)
 {
-	return this->dataList->GetItem(index);
+	return this->dataList.GetItem(index);
 }
 
 OSInt Net::MACInfoList::GetIndex(UInt64 macInt)
@@ -67,11 +65,11 @@ OSInt Net::MACInfoList::GetIndex(UInt64 macInt)
 	OSInt k;
 	Net::MACInfo::MACEntry *entry;
 	i = 0;
-	j = (OSInt)this->dataList->GetCount() - 1;
+	j = (OSInt)this->dataList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = this->dataList->GetItem((UOSInt)k);
+		entry = this->dataList.GetItem((UOSInt)k);
 		if (entry->rangeStart > macInt)
 		{
 			j = k - 1;
@@ -93,7 +91,7 @@ const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntry(UInt64 macInt)
 	OSInt si = this->GetIndex(macInt);
 	if (si >= 0)
 	{
-		return this->dataList->GetItem((UOSInt)si);
+		return this->dataList.GetItem((UOSInt)si);
 	}
 	return 0;
 }
@@ -112,7 +110,7 @@ const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntryOUI(const UInt8 *oui)
 	OSInt si = this->GetIndex(ReadMUInt64(macBuff));
 	if (si >= 0)
 	{
-		return this->dataList->GetItem((UOSInt)si);
+		return this->dataList.GetItem((UOSInt)si);
 	}
 	return 0;
 }
@@ -130,7 +128,7 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 	OSInt si = this->GetIndex(rangeStart);
 	if (si >= 0)
 	{
-		entry = this->dataList->GetItem((UOSInt)si);
+		entry = this->dataList.GetItem((UOSInt)si);
 		SDEL_TEXT(entry->name);
 		entry->name = Text::StrCopyNewC(name.v, name.leng);
 		entry->nameLen = name.leng;
@@ -143,7 +141,7 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 		entry->rangeEnd = rangeEnd;
 		entry->name = Text::StrCopyNewC(name.v, name.leng);
 		entry->nameLen = name.leng;
-		this->dataList->Insert((UOSInt)~si, entry);
+		this->dataList.Insert((UOSInt)~si, entry);
 		return (UOSInt)~si;
 	}
 }
@@ -155,22 +153,21 @@ void Net::MACInfoList::Load()
 	this->modified = false;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("MACList.txt"));
-	IO::FileStream *fs;
 	Text::PString sarr[3];
-	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbName;
 	UInt64 rangeStart;
 	UInt64 rangeEnd;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		while (reader->ReadLine(&sb, 1024))
+		while (reader.ReadLine(&sb, 1024))
 		{
-			if (sb.StartsWith(UTF8STRC("\t{")) && sb.EndsWith(UTF8STRC("\"},")))
+			if (sb.StartsWith(UTF8STRC("\t{")) && sb.EndsWith(UTF8STRC("\")},")))
 			{
+				sb.RemoveChars(2);
 				if (Text::StrSplitTrimP(sarr, 3, sb.Substring(2), ',') == 3)
 				{
 					if (sarr[0].EndsWith(UTF8STRC("LL")))
@@ -208,9 +205,7 @@ void Net::MACInfoList::Load()
 			}
 			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 }
 
 Bool Net::MACInfoList::Store()
@@ -219,42 +214,38 @@ Bool Net::MACInfoList::Store()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("MACList.txt"));
-	IO::FileStream *fs;
-	IO::BufferedOutputStream *cstm;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return false;
 	}
-	Text::UTF8Writer *writer;
-	Text::StringBuilderUTF8 sb;
-	Net::MACInfo::MACEntry *entry;
-	NEW_CLASS(cstm, IO::BufferedOutputStream(fs, 8192));
-	NEW_CLASS(writer, Text::UTF8Writer(cstm));
-	writer->WriteSignature();
-	i = 0;
-	j = this->dataList->GetCount();
-	while (i < j)
+	else
 	{
-		entry = this->dataList->GetItem(i);
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("\t{0x"));
-		sb.AppendHex64(entry->rangeStart);
-		sb.AppendC(UTF8STRC("LL, 0x"));
-		sb.AppendHex64(entry->rangeEnd);
-		sb.AppendC(UTF8STRC("LL, UTF8STRC("));
-		Text::CPPText::ToCPPString(&sb, entry->name);
-		sb.AppendC(UTF8STRC(")},"));
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
-		i++;
+		Text::StringBuilderUTF8 sb;
+		Net::MACInfo::MACEntry *entry;
+		IO::BufferedOutputStream cstm(&fs, 8192);
+		Text::UTF8Writer writer(&cstm);
+		writer.WriteSignature();
+		i = 0;
+		j = this->dataList.GetCount();
+		while (i < j)
+		{
+			entry = this->dataList.GetItem(i);
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("\t{0x"));
+			sb.AppendHex64(entry->rangeStart);
+			sb.AppendC(UTF8STRC("LL, 0x"));
+			sb.AppendHex64(entry->rangeEnd);
+			sb.AppendC(UTF8STRC("LL, UTF8STRC("));
+			Text::CPPText::ToCPPString(&sb, entry->name);
+			sb.AppendC(UTF8STRC(")},"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			i++;
+		}
 	}
 
-	DEL_CLASS(writer);
-	DEL_CLASS(cstm);
-	DEL_CLASS(fs);
 	this->modified = false;
 	return true;
 }

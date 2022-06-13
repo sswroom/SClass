@@ -489,7 +489,7 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb)
 	case ItemType::Vector:
 		{
 			Math::WKTWriter writer;
-			writer.GenerateWKT(sb, this->val.vector);
+			writer.ToText(sb, this->val.vector);
 		}
 		return;
 	case ItemType::UUID:
@@ -1190,7 +1190,7 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 	case ItemType::Vector:
 		{
 			Math::WKTWriter writer;
-			writer.GenerateWKT(sb, this->val.vector);
+			writer.ToText(sb, this->val.vector);
 		}
 		return;
 	case ItemType::UUID:

@@ -2,7 +2,6 @@
 #include "MyMemory.h"
 #include "Math/VectorView.h"
 #include "Math/Math.h"
-#include <windows.h>
 
 Math::VectorView::VectorView(Int32 scnWidth, Int32 scnHeight, Double left, Double top, Double right, Double bottom)
 {
@@ -147,8 +146,8 @@ mtslop4:
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Math::Double2Int((*srcArr++ - dleft) * xmul + ofstX);
-		*destArr++ = thisY = Math::Double2Int((*srcArr++ - dtop) * ymul + ofstY);
+		*destArr++ = thisX = Double2Int32((*srcArr++ - dleft) * xmul + ofstX);
+		*destArr++ = thisY = Double2Int32((*srcArr++ - dtop) * ymul + ofstY);
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;
@@ -172,8 +171,8 @@ mtslop4:
 
 void Math::VectorView::ViewToScnXY(Double xPos, Double yPos, Int32 *scnX, Int32 *scnY)
 {
-	*scnX = Math::Double2Int((xPos - this->left) * this->scnWidth / this->viewW);
-	*scnY = Math::Double2Int((yPos - this->top) * this->scnWidth / this->viewH);
+	*scnX = Double2Int32((xPos - this->left) * this->scnWidth / this->viewW);
+	*scnY = Double2Int32((yPos - this->top) * this->scnWidth / this->viewH);
 }
 
 void Math::VectorView::ScnXYToView(Int32 scnX, Int32 scnY, Double *xPos, Double *yPos)

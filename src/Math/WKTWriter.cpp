@@ -7,10 +7,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void Math::WKTWriter::SetLastError(const UTF8Char *lastError)
+void Math::WKTWriter::SetLastError(Text::CString lastError)
 {
-	SDEL_TEXT(this->lastError);
-	this->lastError = Text::StrCopyNew(lastError);
+	SDEL_STRING(this->lastError);
+	this->lastError = Text::String::New(lastError);
 }
 
 Math::WKTWriter::WKTWriter()
@@ -20,14 +20,19 @@ Math::WKTWriter::WKTWriter()
 
 Math::WKTWriter::~WKTWriter()
 {
-	SDEL_TEXT(this->lastError);
+	SDEL_STRING(this->lastError);
 }
 
-Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
+Text::CString Math::WKTWriter::GetWriterName()
+{
+	return CSTR("Well Known Text (WKT)");
+}
+
+Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 {
 	if (vec == 0)
 	{
-		this->SetLastError((const UTF8Char*)"Input vector is null");
+		this->SetLastError(CSTR("Input vector is null"));
 		return false;
 	}
 	switch (vec->GetVectorType())
@@ -161,13 +166,13 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 	case Math::Vector2D::VectorType::PieArea:
 	case Math::Vector2D::VectorType::Unknown:
 	default:
-		this->SetLastError((const UTF8Char*)"Unsupported vector type");
+		this->SetLastError(CSTR("Unsupported vector type"));
 		return false;
 	}
 
 }
 
-const UTF8Char *Math::WKTWriter::GetLastError()
+Text::String *Math::WKTWriter::GetLastError()
 {
 	return this->lastError;
 }

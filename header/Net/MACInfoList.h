@@ -7,7 +7,7 @@ namespace Net
 	class MACInfoList
 	{
 	private:
-		Data::ArrayList<Net::MACInfo::MACEntry*> *dataList;
+		Data::ArrayList<Net::MACInfo::MACEntry*> dataList;
 		Bool modified;
 
 	public:

@@ -420,7 +420,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *
 			if (vec)
 			{
 				Math::WKTWriter writer;
-				Bool succ = writer.GenerateWKT(sb, vec);
+				Bool succ = writer.ToText(sb, vec);
 				DEL_CLASS(vec);
 				return succ;
 			}
@@ -497,7 +497,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter writer;
-				writer.GenerateWKT(&sb, vec);
+				writer.ToText(&sb, vec);
 				DEL_CLASS(vec);
 				return Text::String::New(sb.ToCString());
 			}

@@ -806,7 +806,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 					break;
 				case DT_VECTOR:
 					vec = this->GetFieldVector(field);
-					wkt.GenerateWKT(sb, vec);
+					wkt.ToText(sb, vec);
 					break;
 				case DT_UNKNOWN:
 					sb->AppendC(UTF8STRC("?"));
