@@ -665,6 +665,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 		sp->dirName->Release();
 		SDEL_STRING(sp->photo);
 		sp->idKey->Release();
+		SDEL_STRING(sp->poiImg);
 
 		wfiles = sp->wfiles.GetValues();
 		j = wfiles->GetCount();
