@@ -29,6 +29,7 @@
 #include "Parser/FullParserList.h"
 #include "SSWR/OrganMgr/OrganWebHandler.h"
 #include "Sync/MutexUsage.h"
+#include "Text/JSText.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -221,7 +222,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
 	Text::StringBuilderUTF8 sb;
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId from species"));
+	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId, poiImg from species"));
 	if (r != 0)
 	{
 		while (r->ReadNext())
@@ -240,6 +241,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 			sp->flags = (SpeciesFlags)r->GetInt32(10);
 			sp->photoId = r->GetInt32(11);
 			sp->photoWId = r->GetInt32(12);
+			sp->poiImg = r->GetNewStrB(13, &sb, false);
 
 			this->spMap.Put(sp->speciesId, sp);
 			sp->sciNameHash = this->spNameMap.CalcHash(sp->sciName->v, sp->sciName->leng);
@@ -7611,6 +7613,107 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcFavicon(Net::WebServer::IWebR
 	return true;
 }
 
+Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPublicPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
+{
+	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	GroupInfo *poiGroup = me->groupMap.Get(21593);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendUTF8Char('[');
+	AddPublicPOI(&sb, poiGroup);
+	if (sb.GetLength() > 1)
+	{
+		sb.RemoveChars(3);
+	}
+	sb.AppendUTF8Char(']');
+	resp->AddDefHeaders(req);
+	resp->AddContentType(CSTR("application/json"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToString(), sb.GetLength());
+	return true;
+}
+
+void SSWR::OrganMgr::OrganWebHandler::AddPublicPOI(Text::StringBuilderUTF8 *sb, GroupInfo *group)
+{
+	Data::DateTime dt;
+	UOSInt i = 0;
+	UOSInt j = group->groups.GetCount();
+	while (i < j)
+	{
+		AddPublicPOI(sb, group->groups.GetItem(i));
+		i++;
+	}
+	i = 0;
+	j = group->species.GetCount();
+	while (i < j)
+	{
+		SpeciesInfo *species = group->species.GetItem(i);
+		UserFileInfo *file;
+		UOSInt k;
+		UOSInt l;
+		k = 0;
+		l = species->files.GetCount();
+		while (k < l)
+		{
+			file = species->files.GetItem(k);
+			if (file->lat != 0 || file->lon != 0)
+			{
+				sb->AppendUTF8Char('{');
+				sb->AppendC(UTF8STRC("\"id\":\""));
+				sb->AppendI32(file->id);
+				sb->AppendC(UTF8STRC("\",\"name\":"));
+				if (file->descript && file->descript->leng > 0)
+				{
+					Text::JSText::ToJSTextDQuote(sb, file->descript->v);
+				}
+				else
+				{
+					Text::JSText::ToJSTextDQuote(sb, species->sciName->v);
+				}
+				sb->AppendC(UTF8STRC(",\"description\":\"<img src=\\\"/photo.html?id="));
+				sb->AppendI32(species->speciesId);
+				sb->AppendC(UTF8STRC("&cateId="));
+				sb->AppendI32(species->cateId);
+				sb->AppendC(UTF8STRC("&width="));
+				sb->AppendI32(PREVIEW_SIZE);
+				sb->AppendC(UTF8STRC("&height="));
+				sb->AppendI32(PREVIEW_SIZE);
+				sb->AppendC(UTF8STRC("&fileId="));
+				sb->AppendI32(file->id);
+				sb->AppendC(UTF8STRC("\\\" /><br/>"));
+				dt.SetTicks(file->captureTimeTicks);
+				dt.SetTimeZoneQHR(32);
+				sb->AppendDate(&dt);
+				sb->AppendC(UTF8STRC("\",\"lat\":"));
+				sb->AppendDouble(file->lat);
+				sb->AppendC(UTF8STRC(",\"lon\":"));
+				sb->AppendDouble(file->lon);
+				sb->AppendC(UTF8STRC(",\"imgUrl\":\"/photo.html?id="));
+				sb->AppendI32(species->speciesId);
+				sb->AppendC(UTF8STRC("&cateId="));
+				sb->AppendI32(species->cateId);
+				sb->AppendC(UTF8STRC("&width="));
+				sb->AppendI32(PREVIEW_SIZE);
+				sb->AppendC(UTF8STRC("&height="));
+				sb->AppendI32(PREVIEW_SIZE);
+				sb->AppendC(UTF8STRC("&fileId="));
+				sb->AppendI32(file->id);
+				sb->AppendC(UTF8STRC("\",\"poiUrl\":\"img/"));
+				if (species->poiImg)
+				{
+					sb->Append(species->poiImg);
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("poi.png"));
+				}
+				sb->AppendC(UTF8STRC("\"},\r\n"));
+			}
+			k++;
+		}
+		i++;
+	}
+}
+
 void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
 {
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
@@ -9404,6 +9507,7 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 		this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
 		this->AddService(CSTR("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 		this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
+		this->AddService(CSTR("/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 
 		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true));
 		if (this->ssl && sslPort)
