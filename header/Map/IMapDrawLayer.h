@@ -144,6 +144,7 @@ namespace Map
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		Int32 CalBlockSize();
+		void SetLayerName(Text::CString name);
 
 		virtual Bool IsError();
 		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);

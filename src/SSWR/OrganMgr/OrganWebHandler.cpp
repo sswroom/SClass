@@ -123,7 +123,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 					if (langId)
 					{
 						lang = IO::IniFile::Parse(CSTRP(sbuff, sptr), 65001);
-						lang = this->langMap->Put(langId, lang);
+						lang = this->langMap.Put(langId, lang);
 						if (lang)
 						{
 							DEL_CLASS(lang);
@@ -153,10 +153,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 		while (r->ReadNext())
 		{
 			cateId = r->GetInt32(0);
-			cate = this->cateMap->Get(cateId);
+			cate = this->cateMap.Get(cateId);
 			if (cate == 0)
 			{
-				cate = MemAlloc(SSWR::OrganMgr::OrganWebHandler::CategoryInfo, 1);
+				NEW_CLASS(cate, SSWR::OrganMgr::OrganWebHandler::CategoryInfo());
 				cate->cateId = cateId;
 				cate->chiName = r->GetNewStrB(1, &sb, false);
 				cate->dirName = r->GetNewStrB(2, &sb, false);
@@ -171,14 +171,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 				}
 				cate->srcDir = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				cate->flags = r->GetInt32(4);
-				NEW_CLASS(cate->groups, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
-				NEW_CLASS(cate->groupTypes, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*>());
-				this->cateMap->Put(cate->cateId, cate);
-				this->cateSMap->Put(cate->dirName, cate);
+				this->cateMap.Put(cate->cateId, cate);
+				this->cateSMap.Put(cate->dirName, cate);
 			}
 			else
 			{
-				grpTypeList = cate->groupTypes->GetValues();
+				grpTypeList = cate->groupTypes.GetValues();
 				i = grpTypeList->GetCount();
 				while (i-- > 0)
 				{
@@ -187,7 +185,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 					grpType->engName->Release();
 					MemFree(grpType);
 				}
-				cate->groupTypes->Clear();
+				cate->groupTypes.Clear();
 			}
 		}
 		this->db->CloseReader(r);
@@ -198,7 +196,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 		while (r->ReadNext())
 		{
 			cateId = r->GetInt32(3);
-			cate = this->cateMap->Get(cateId);
+			cate = this->cateMap.Get(cateId);
 			if (cate == 0)
 			{
 			}
@@ -208,7 +206,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 				grpType->id = r->GetInt32(0);
 				grpType->engName = r->GetNewStrB(1, &sb, false);
 				grpType->chiName = r->GetNewStrB(2, &sb, false);
-				cate->groupTypes->Put(grpType->id, grpType);
+				cate->groupTypes.Put(grpType->id, grpType);
 			}
 		}
 		this->db->CloseReader(r);
@@ -243,21 +241,21 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 			sp->photoId = r->GetInt32(11);
 			sp->photoWId = r->GetInt32(12);
 
-			this->spMap->Put(sp->speciesId, sp);
-			sp->sciNameHash = this->spNameMap->CalcHash(sp->sciName->v, sp->sciName->leng);
+			this->spMap.Put(sp->speciesId, sp);
+			sp->sciNameHash = this->spNameMap.CalcHash(sp->sciName->v, sp->sciName->leng);
 		}
 		this->db->CloseReader(r);
 
 		SpeciesSciNameComparator comparator;
-		Data::ArrayList<SpeciesInfo*> speciesList(this->spMap->GetCount());
-		speciesList.AddAll(this->spMap->GetValues());
+		Data::ArrayList<SpeciesInfo*> speciesList(this->spMap.GetCount());
+		speciesList.AddAll(this->spMap.GetValues());
 		Data::Sort::ArtificialQuickSort::Sort(&speciesList, &comparator);
 		UOSInt i = 0;
 		UOSInt j = speciesList.GetCount();
 		while (i < j)
 		{
 			sp = speciesList.GetItem(i);
-			this->spNameMap->Put(sp->sciName, sp);
+			this->spNameMap.Put(sp->sciName, sp);
 			i++;
 		}
 	}
@@ -267,7 +265,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 	{
 		while (r->ReadNext())
 		{
-			sp = this->spMap->Get(r->GetInt32(1));
+			sp = this->spMap.Get(r->GetInt32(1));
 			if (sp)
 			{
 				wfile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::WebFileInfo, 1);
@@ -322,30 +320,30 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 			group->totalCount = (UOSInt)-1;
 			group->photoSpObj = 0;
 
-			this->groupMap->Put(group->id, group);
+			this->groupMap.Put(group->id, group);
 		}
 		this->db->CloseReader(r);
 
-		spList = this->spMap->GetValues();
+		spList = this->spMap.GetValues();
 		i = spList->GetCount();
 		while (i-- > 0)
 		{
 			sp = spList->GetItem(i);
-			group = this->groupMap->Get(sp->groupId);
+			group = this->groupMap.Get(sp->groupId);
 			if (group)
 			{
 				group->species.Add(sp);
 			}
 		}
 
-		groupList = this->groupMap->GetValues();
+		groupList = this->groupMap.GetValues();
 		i = groupList->GetCount();
 		while (i-- > 0)
 		{
 			group = groupList->GetItem(i);
 			if (group->parentId)
 			{
-				pGroup = this->groupMap->Get(group->parentId);
+				pGroup = this->groupMap.Get(group->parentId);
 				if (pGroup)
 				{
 					pGroup->groups.Add(group);
@@ -353,10 +351,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 			}
 			else
 			{
-				cate = this->cateMap->Get(group->cateId);
+				cate = this->cateMap.Get(group->cateId);
 				if (cate)
 				{
-					cate->groups->Add(group);
+					cate->groups.Add(group);
 				}
 			}
 		}
@@ -387,7 +385,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 			book->publishDate = dt.ToTicks();
 			book->url = r->GetNewStrB(5, &sb, false);
 
-			this->bookMap->Put(book->id, book);
+			this->bookMap.Put(book->id, book);
 		}
 		this->db->CloseReader(r);
 	}
@@ -397,8 +395,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 	{
 		while (r->ReadNext())
 		{
-			sp = this->spMap->Get(r->GetInt32(0));
-			book = this->bookMap->Get(r->GetInt32(1));
+			sp = this->spMap.Get(r->GetInt32(0));
+			book = this->bookMap.Get(r->GetInt32(1));
 			if (sp != 0 && book != 0)
 			{
 				bookSp = MemAlloc(SSWR::OrganMgr::OrganWebHandler::BookSpInfo, 1);
@@ -426,10 +424,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		while (r->ReadNext())
 		{
 			userId = r->GetInt32(0);
-			user = this->userMap->Get(userId);
+			user = this->userMap.Get(userId);
 			if (user)
 			{
-				this->userNameMap->Remove(user->userName);
+				this->userNameMap.Remove(user->userName);
 				SDEL_STRING(user->userName);
 				user->userName = r->GetNewStrB(1, &sb, false);
 				SDEL_STRING(user->pwd);
@@ -437,22 +435,19 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				SDEL_STRING(user->watermark);
 				user->watermark = r->GetNewStrB(3, &sb, false);
 				user->userType = r->GetInt32(4);
-				this->userNameMap->Put(user->userName, user);
+				this->userNameMap.Put(user->userName, user);
 			}
 			else
 			{
-				user = MemAlloc(SSWR::OrganMgr::OrganWebHandler::WebUserInfo, 1);
+				NEW_CLASS(user, SSWR::OrganMgr::OrganWebHandler::WebUserInfo());
 				user->id = userId;
 				user->userName = r->GetNewStrB(1, &sb, false);
 				user->pwd = r->GetNewStrB(2, &sb, false);
 				user->watermark = r->GetNewStrB(3, &sb, false);
 				user->userType = r->GetInt32(4);
 				user->unorganSpId = 0;
-				NEW_CLASS(user->userFileIndex, Data::ArrayListInt64());
-				NEW_CLASS(user->userFileObj, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-				NEW_CLASS(user->tripCates, Data::Int32Map<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*>());
-				this->userMap->Put(user->id, user);
-				this->userNameMap->Put(user->userName, user);
+				this->userMap.Put(user->id, user);
+				this->userNameMap.Put(user->userName, user);
 			}
 		}
 		this->db->CloseReader(r);
@@ -473,7 +468,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			userId = r->GetInt32(6);
 			if (user == 0 || user->id != userId)
 			{
-				user = this->userMap->Get(userId);
+				user = this->userMap.Get(userId);
 			}
 			if (user != 0)
 			{
@@ -499,19 +494,19 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->cropBottom = r->GetDbl(16);
 				userFile->descript = r->GetNewStrB(17, &sb, false);
 				userFile->location = r->GetNewStrB(18, &sb, false);
-				species = this->spMap->Get(userFile->speciesId);
+				species = this->spMap.Get(userFile->speciesId);
 				if (species != 0)
 				{
 					species->files.Add(userFile);
 				}
-				this->userFileMap->Put(userFile->id, userFile);
+				this->userFileMap.Put(userFile->id, userFile);
 			}
 		}
 		this->db->CloseReader(r);
 
 		UserFileTimeComparator comparator;
-		Data::ArrayList<UserFileInfo*> userFileList(this->userFileMap->GetCount());
-		userFileList.AddAll(this->userFileMap->GetValues());
+		Data::ArrayList<UserFileInfo*> userFileList(this->userFileMap.GetCount());
+		userFileList.AddAll(this->userFileMap.GetValues());
 		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
 		i = 0;
 		j = userFileList.GetCount();
@@ -520,12 +515,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			userFile = userFileList.GetItem(i);
 			if (user == 0 || user->id != userFile->webuserId)
 			{
-				user = this->userMap->Get(userFile->webuserId);
+				user = this->userMap.Get(userFile->webuserId);
 			}
 			if (user != 0)
 			{
-				k = user->userFileIndex->SortedInsert(userFile->captureTimeTicks);
-				user->userFileObj->Insert(k, userFile);
+				k = user->userFileIndex.SortedInsert(userFile->captureTimeTicks);
+				user->userFileObj.Insert(k, userFile);
 			}
 			i++;
 		}
@@ -548,15 +543,15 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			fromDate = dt.ToTicks();
 			if (user == 0 || user->id != userId)
 			{
-				user = this->userMap->Get(userId);
+				user = this->userMap.Get(userId);
 			}
 			if (user != 0)
 			{
-				tripCate = user->tripCates->Get(cateId);
+				tripCate = user->tripCates.Get(cateId);
 				if (tripCate == 0)
 				{
 					NEW_CLASS(tripCate, Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>());
-					user->tripCates->Put(cateId, tripCate);
+					user->tripCates.Put(cateId, tripCate);
 				}
 				trip = tripCate->Get(fromDate);
 				if (trip == 0)
@@ -577,10 +572,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 	if (this->unorganizedGroupId)
 	{
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
-		group = this->groupMap->Get(this->unorganizedGroupId);
+		group = this->groupMap.Get(this->unorganizedGroupId);
 		if (group != 0)
 		{
-			Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap->GetValues();
+			Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 			UOSInt i = userList->GetCount();
 			UOSInt j;
 			SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
@@ -628,7 +623,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 		while (r->ReadNext())
 		{
 			id = r->GetInt32(0);
-			loc = this->locMap->Get(id);
+			loc = this->locMap.Get(id);
 			if (loc == 0)
 			{
 				loc = MemAlloc(SSWR::OrganMgr::OrganWebHandler::LocationInfo, 1);
@@ -640,7 +635,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 				loc->lon = r->GetDbl(5);
 				loc->cateId = r->GetInt32(6);
 				loc->locType = r->GetInt32(7);
-				this->locMap->Put(id, loc);
+				this->locMap.Put(id, loc);
 			}
 		}
 		this->db->CloseReader(r);
@@ -656,7 +651,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 	UOSInt i;
 	UOSInt j;
 
-	spList = this->spMap->GetValues();
+	spList = this->spMap.GetValues();
 	i = spList->GetCount();
 	while (i-- > 0)
 	{
@@ -681,8 +676,8 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 		}
 		DEL_CLASS(sp);
 	}
-	this->spMap->Clear();
-	this->spNameMap->Clear();
+	this->spMap.Clear();
+	this->spNameMap.Clear();
 }
 
 void SSWR::OrganMgr::OrganWebHandler::FreeGroups()
@@ -692,22 +687,22 @@ void SSWR::OrganMgr::OrganWebHandler::FreeGroups()
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	UOSInt i;
-	cateList = this->cateMap->GetValues();
+	cateList = this->cateMap.GetValues();
 	i = cateList->GetCount();
 	while (i-- > 0)
 	{
 		cate = cateList->GetItem(i);
-		cate->groups->Clear();
+		cate->groups.Clear();
 	}
 
-	groupList = this->groupMap->GetValues();
+	groupList = this->groupMap.GetValues();
 	i = groupList->GetCount();
 	while (i-- > 0)
 	{
 		group = groupList->GetItem(i);
 		FreeGroup(group);
 	}
-	this->groupMap->Clear();
+	this->groupMap.Clear();
 }
 
 void SSWR::OrganMgr::OrganWebHandler::FreeGroup(GroupInfo *group)
@@ -727,7 +722,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 	UOSInt i;
 	UOSInt j;
 
-	bookList = this->bookMap->GetValues();
+	bookList = this->bookMap.GetValues();
 	i = bookList->GetCount();
 	while (i-- > 0)
 	{
@@ -745,12 +740,12 @@ void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 		}
 		DEL_CLASS(book);
 	}
-	this->bookMap->Clear();
+	this->bookMap.Clear();
 }
 
 void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap->GetValues();
+	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 	Data::ArrayList<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*> *tripCateList;
@@ -768,20 +763,18 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 		user->watermark->Release();
 		SDEL_STRING(user->pwd);
 
-		j = user->userFileObj->GetCount();
+		j = user->userFileObj.GetCount();
 		while (j-- > 0)
 		{
-			userFile = user->userFileObj->GetItem(j);
+			userFile = user->userFileObj.GetItem(j);
 			userFile->oriFileName->Release();
 			userFile->dataFileName->Release();
 			SDEL_STRING(userFile->descript);
 			SDEL_STRING(userFile->location);
 			MemFree(userFile);
 		}
-		DEL_CLASS(user->userFileIndex);
-		DEL_CLASS(user->userFileObj);
 
-		tripCateList = user->tripCates->GetValues();
+		tripCateList = user->tripCates.GetValues();
 		j = tripCateList->GetCount();
 		while (j-- > 0)
 		{
@@ -795,17 +788,16 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 			}
 			DEL_CLASS(tripCate);
 		}
-		DEL_CLASS(user->tripCates);
-		MemFree(user);
+		DEL_CLASS(user);
 	}
-	this->userMap->Clear();
-	this->userNameMap->Clear();
-	this->userFileMap->Clear();
+	this->userMap.Clear();
+	this->userNameMap.Clear();
+	this->userFileMap.Clear();
 }
 
 void SSWR::OrganMgr::OrganWebHandler::ClearUsers()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap->GetValues();
+	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 	UOSInt i;
@@ -815,19 +807,19 @@ void SSWR::OrganMgr::OrganWebHandler::ClearUsers()
 	{
 		user = userList->GetItem(i);
 
-		j = user->userFileObj->GetCount();
+		j = user->userFileObj.GetCount();
 		while (j-- > 0)
 		{
-			userFile = user->userFileObj->GetItem(j);
+			userFile = user->userFileObj.GetItem(j);
 			userFile->oriFileName->Release();
 			userFile->dataFileName->Release();
 			SDEL_STRING(userFile->descript);
 			MemFree(userFile);
 		}
-		user->userFileIndex->Clear();
-		user->userFileObj->Clear();
+		user->userFileIndex.Clear();
+		user->userFileObj.Clear();
 	}
-	this->userFileMap->Clear();
+	this->userFileMap.Clear();
 }
 
 void SSWR::OrganMgr::OrganWebHandler::UserFilePrevUpdated(SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile)
@@ -1032,7 +1024,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupIsAdmin(SSWR::OrganMgr::OrganWebHandl
 		{
 			return true;
 		}
-		group = this->groupMap->Get(group->parentId);
+		group = this->groupMap.Get(group->parentId);
 	}
 	return false;
 }
@@ -1163,10 +1155,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(Text::CString engName, Text::C
 		species->photoId = 0;
 		species->photoWId = 0;
 
-		this->spMap->Put(species->speciesId, species);
-		this->spNameMap->PutC(species->sciName->ToCString(), species);
+		this->spMap.Put(species->speciesId, species);
+		this->spNameMap.PutC(species->sciName->ToCString(), species);
 
-		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(species->groupId);
+		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(species->groupId);
 		if (group)
 		{
 			group->species.Add(species);
@@ -1182,7 +1174,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(Text::CString engName, Text::C
 
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesSetPhotoId(Int32 speciesId, Int32 photoId)
 {
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(speciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
 		return false;
 	if (species->photoId == photoId)
@@ -1208,7 +1200,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesSetPhotoId(Int32 speciesId, Int32 p
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesSetFlags(Int32 speciesId, SpeciesFlags flags)
 {
 
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(speciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
 		return false;
 	if (species->flags == flags)
@@ -1233,7 +1225,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesSetFlags(Int32 speciesId, SpeciesFl
 
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId, Int32 cateId)
 {
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(speciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
 		return false;
 	if (species->groupId == groupId)
@@ -1260,7 +1252,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId
 				myPhotoCount = 1;
 			}
 		}
-		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(species->groupId);
+		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(species->groupId);
 		if (group)
 		{
 			group->species.Remove(species);
@@ -1273,7 +1265,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId
 		}
 		species->groupId = groupId;
 		species->cateId = cateId;
-		group = this->groupMap->Get(species->groupId);
+		group = this->groupMap.Get(species->groupId);
 		if (group)
 		{
 			group->species.Add(species);
@@ -1293,7 +1285,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesMove(Int32 speciesId, Int32 groupId
 
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName)
 {
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(speciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
 		return false;
 	DB::SQLBuilder sql(this->db);
@@ -1378,7 +1370,6 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 	}
 	if (fileType == 1)
 	{
-		IO::StmData::MemoryData *md;
 		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
@@ -1391,9 +1382,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		fileTime.SetTicks(0);
 		fileTime.ToLocalTime();
 
-		NEW_CLASS(md, IO::StmData::MemoryData(fileCont, fileSize));
-		pobj = this->parsers->ParseFile(md, &t);
-		DEL_CLASS(md);
+		{
+			IO::StmData::MemoryData md(fileCont, fileSize);
+			pobj = this->parsers.ParseFile(&md, &t);
+		}
 		if (pobj)
 		{
 			if (t == IO::ParserType::ImageList)
@@ -1452,16 +1444,16 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		}
 		if (valid)
 		{
-			SSWR::OrganMgr::OrganWebHandler::WebUserInfo *webUser = this->userMap->Get(userId);
+			SSWR::OrganMgr::OrganWebHandler::WebUserInfo *webUser = this->userMap.Get(userId);
 			Int64 ticks = fileTime.ToTicks();
 			UOSInt k;
 			OSInt si;
-			si = webUser->userFileIndex->SortedIndexOf(ticks);
+			si = webUser->userFileIndex.SortedIndexOf(ticks);
 			if (si >= 0)
 			{
 				while (si > 0)
 				{
-					if (webUser->userFileIndex->GetItem((UOSInt)si - 1) == ticks)
+					if (webUser->userFileIndex.GetItem((UOSInt)si - 1) == ticks)
 					{
 						si--;
 					}
@@ -1471,13 +1463,13 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					}
 				}
 				j = (UOSInt)si;
-				k = webUser->userFileIndex->GetCount();
+				k = webUser->userFileIndex.GetCount();
 				while (j < k)
 				{
-					if (webUser->userFileIndex->GetItem(j) != ticks)
+					if (webUser->userFileIndex.GetItem(j) != ticks)
 						break;
 
-					userFile = webUser->userFileObj->GetItem(j);
+					userFile = webUser->userFileObj.GetItem(j);
 					if (userFile->fileType == fileType && userFile->crcVal == crcVal)
 					{
 						valid = false;
@@ -1576,9 +1568,9 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						userFile->cropBottom = 0;
 						userFile->descript = 0;
 						userFile->location = 0;
-						this->userFileMap->Put(userFile->id, userFile);
+						this->userFileMap.Put(userFile->id, userFile);
 
-						SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(userFile->speciesId);
+						SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap.Get(userFile->speciesId);
 						if (species)
 						{
 							species->files.Add(userFile);
@@ -1588,9 +1580,9 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 							}
 						}
 
-						webUser = this->userMap->Get(userFile->webuserId);
-						j = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
-						webUser->userFileObj->Insert(j, userFile);
+						webUser = this->userMap.Get(userFile->webuserId);
+						j = webUser->userFileIndex.SortedInsert(userFile->fileTimeTicks);
+						webUser->userFileObj.Insert(j, userFile);
 						
 						SDEL_STRING(camera);
 						return userFile->id;
@@ -1622,7 +1614,6 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 	else if (fileType == 3)
 	{
 		Crypto::Hash::CRC32R crc;
-		IO::StmData::FileData *fd;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
 		IO::ParserType t;
@@ -1636,9 +1627,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		crc.GetValue(crcBuff);
 		crcVal = ReadMUInt32(crcBuff);
 
-		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-		pobj = this->parsers->ParseFile(fd, &t);
-		DEL_CLASS(fd);
+		{
+			IO::StmData::FileData fd(fileName, false);
+			pobj = this->parsers.ParseFile(&fd, &t);
+		}
 		if (pobj)
 		{
 			if (t == IO::ParserType::MediaFile)
@@ -1658,16 +1650,16 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		}
 		if (valid)
 		{
-			SSWR::OrganMgr::OrganWebHandler::WebUserInfo *webUser = this->userMap->Get(userId);
+			SSWR::OrganMgr::OrganWebHandler::WebUserInfo *webUser = this->userMap.Get(userId);
 			Int64 ticks = 0;
 			UOSInt k;
 			OSInt si;
-			si = webUser->userFileIndex->SortedIndexOf(ticks);
+			si = webUser->userFileIndex.SortedIndexOf(ticks);
 			if (si >= 0)
 			{
 				while (si > 0)
 				{
-					if (webUser->userFileIndex->GetItem((UOSInt)si - 1) == ticks)
+					if (webUser->userFileIndex.GetItem((UOSInt)si - 1) == ticks)
 					{
 						si--;
 					}
@@ -1677,13 +1669,13 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					}
 				}
 				j = (UOSInt)si;
-				k = webUser->userFileIndex->GetCount();
+				k = webUser->userFileIndex.GetCount();
 				while (j < k)
 				{
-					if (webUser->userFileIndex->GetItem(j) != ticks)
+					if (webUser->userFileIndex.GetItem(j) != ticks)
 						break;
 
-					userFile = webUser->userFileObj->GetItem(j);
+					userFile = webUser->userFileObj.GetItem(j);
 					if (userFile->fileType == fileType && userFile->crcVal == crcVal)
 					{
 						valid = false;
@@ -1771,9 +1763,9 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						userFile->cropTop = 0;
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
-						this->userFileMap->Put(userFile->id, userFile);
+						this->userFileMap.Put(userFile->id, userFile);
 
-						SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap->Get(userFile->speciesId);
+						SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = this->spMap.Get(userFile->speciesId);
 						if (species)
 						{
 							species->files.Add(userFile);
@@ -1783,9 +1775,9 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 							}
 						}
 
-						webUser = this->userMap->Get(userFile->webuserId);
-						j = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
-						webUser->userFileObj->Insert(j, userFile);
+						webUser = this->userMap.Get(userFile->webuserId);
+						j = webUser->userFileIndex.SortedInsert(userFile->fileTimeTicks);
+						webUser->userFileObj.Insert(j, userFile);
 						
 						sptr = this->dataDir->ConcatTo(sbuff);
 						if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -1872,7 +1864,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 
 Bool SSWR::OrganMgr::OrganWebHandler::UserfileMove(Int32 userfileId, Int32 speciesId, Int32 cateId)
 {
-	UserFileInfo *userFile = this->userFileMap->Get(userfileId);
+	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
 	if (userFile == 0)
 	{
 		return false;
@@ -1881,8 +1873,8 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileMove(Int32 userfileId, Int32 speci
 	{
 		return true;
 	}
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *srcSpecies = this->spMap->Get(userFile->speciesId);
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *destSpecies = this->spMap->Get(speciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *srcSpecies = this->spMap.Get(userFile->speciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *destSpecies = this->spMap.Get(speciesId);
 	if (srcSpecies == 0 || destSpecies == 0)
 	{
 		return false;
@@ -1911,11 +1903,11 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileMove(Int32 userfileId, Int32 speci
 		{
 			this->SpeciesSetFlags(destSpecies->speciesId, (SpeciesFlags)(destSpecies->flags | SF_HAS_MYPHOTO));
 			this->GroupAddCounts(destSpecies->groupId, 0, 1, 1);
-			SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(destSpecies->groupId);
+			SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(destSpecies->groupId);
 			while (group && group->photoSpObj == 0)
 			{
 				group->photoSpObj = destSpecies;
-				group = this->groupMap->Get(group->parentId);
+				group = this->groupMap.Get(group->parentId);
 			}
 		}
 		if (destSpecies->photoId == 0)
@@ -1929,7 +1921,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileMove(Int32 userfileId, Int32 speci
 
 Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateDesc(Int32 userfileId, Text::CString descr)
 {
-	UserFileInfo *userFile = this->userFileMap->Get(userfileId);
+	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
 	if (userFile == 0)
 	{
 		return false;
@@ -1958,7 +1950,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateDesc(Int32 userfileId, Text:
 
 Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, Int32 rotType)
 {
-	UserFileInfo *userFile = this->userFileMap->Get(userfileId);
+	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
 	if (userFile == 0)
 	{
 		return false;
@@ -1989,7 +1981,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, In
 
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap->GetValues();
+	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 	UOSInt nameLen = speciesName.leng;
@@ -2016,7 +2008,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(Text::CString speciesNa
 
 Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(parentId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(parentId);
 	if (group == 0)
 		return 0;
 	DB::SQLBuilder sql(this->db);
@@ -2057,7 +2049,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(Text::CString engName, Text::CSt
 		newGroup->myPhotoCount = (UOSInt)-1;
 		newGroup->totalCount = (UOSInt)-1;
 		newGroup->photoSpObj = 0;
-		this->groupMap->Put(newGroup->id, newGroup);
+		this->groupMap.Put(newGroup->id, newGroup);
 		group->groups.Add(newGroup);
 
 		return newGroup->id;
@@ -2067,7 +2059,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(Text::CString engName, Text::CSt
 
 Bool SSWR::OrganMgr::OrganWebHandler::GroupModify(Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(id);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(id);
 	if (group == 0)
 		return false;
 	DB::SQLBuilder sql(this->db);
@@ -2100,15 +2092,15 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupModify(Int32 id, Text::CString engNam
 
 Bool SSWR::OrganMgr::OrganWebHandler::GroupDelete(Int32 id)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(id);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(id);
 	if (group == 0)
 		return false;
 	if (group->groups.GetCount() > 0)
 		return false;
 	if (group->species.GetCount() > 0)
 		return false;
-	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate = this->cateMap->Get(group->cateId);
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *parentGroup = this->groupMap->Get(group->parentId);
+	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate = this->cateMap.Get(group->cateId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *parentGroup = this->groupMap.Get(group->parentId);
 	if (parentGroup == 0)
 		return false;
 	if (cate == 0)
@@ -2120,8 +2112,8 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupDelete(Int32 id)
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		parentGroup->groups.Remove(group);
-		cate->groups->Remove(group);
-		this->groupMap->Remove(group->id);
+		cate->groups.Remove(group);
+		this->groupMap.Remove(group->id);
 		FreeGroup(group);
 		return true;
 	}
@@ -2130,7 +2122,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupDelete(Int32 id)
 
 Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(groupId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(groupId);
 	if (group == 0)
 		return false;
 	if (group->parentId == destGroupId)
@@ -2144,7 +2136,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId
 		{
 			return false;
 		}
-		parentGroup = this->groupMap->Get(parentGroup->parentId);
+		parentGroup = this->groupMap.Get(parentGroup->parentId);
 	}
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update groups set parent_id = "));
@@ -2155,7 +2147,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId
 	sql.AppendInt32(groupId);
 	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
-		parentGroup = this->groupMap->Get(group->parentId);
+		parentGroup = this->groupMap.Get(group->parentId);
 		if (parentGroup)
 		{
 			parentGroup->groups.Remove(group);
@@ -2174,7 +2166,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId
 		}
 		group->parentId = destGroupId;
 		group->cateId = cateId;
-		parentGroup = this->groupMap->Get(group->parentId);
+		parentGroup = this->groupMap.Get(group->parentId);
 		if (parentGroup)
 		{
 			parentGroup->groups.Add(group);
@@ -2193,7 +2185,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupMove(Int32 groupId, Int32 destGroupId
 
 Bool SSWR::OrganMgr::OrganWebHandler::GroupAddCounts(Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(groupId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(groupId);
 	if (group == 0)
 		return false;
 	if (group->myPhotoCount != (UOSInt)-1)
@@ -2210,10 +2202,10 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupAddCounts(Int32 groupId, UOSInt total
 
 Bool SSWR::OrganMgr::OrganWebHandler::GroupSetPhotoSpecies(Int32 groupId, Int32 photoSpeciesId)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(groupId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(groupId);
 	if (group == 0)
 		return false;
-	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *photoSpecies = this->spMap->Get(photoSpeciesId);
+	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *photoSpecies = this->spMap.Get(photoSpeciesId);
 	if (photoSpeciesId != 0 && photoSpecies == 0)
 		return false;
 
@@ -2241,10 +2233,10 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupSetPhotoSpecies(Int32 groupId, Int32 
 
 Bool SSWR::OrganMgr::OrganWebHandler::GroupSetPhotoGroup(Int32 groupId, Int32 photoGroupId)
 {
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(groupId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap.Get(groupId);
 	if (group == 0)
 		return false;
-	SSWR::OrganMgr::OrganWebHandler::GroupInfo *photoGroup = this->groupMap->Get(photoGroupId);
+	SSWR::OrganMgr::OrganWebHandler::GroupInfo *photoGroup = this->groupMap.Get(photoGroupId);
 	if (photoGroupId != 0 && photoGroup == 0)
 		return false;
 
@@ -2355,9 +2347,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
-		me->dataMut->LockRead();
-		sp = me->spMap->Get(spId);
-		userFile = me->userFileMap->Get(fileId);
+		me->dataMut.LockRead();
+		sp = me->spMap.Get(spId);
+		userFile = me->userFileMap.Get(fileId);
 		if (sp && sp->cateId == cateId && env.user && userFile && userFile->webuserId == env.user->id)
 		{
 			Data::DateTime dt;
@@ -2386,16 +2378,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			{
 				sptr = userFile->dataFileName->ConcatTo(sptr);
 			}
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 
 			UInt8 *buff;
 			UOSInt buffSize;
-			IO::StmData::FileData *fd;
-			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 			
-			buffSize = fd->GetDataSize();
+			buffSize = fd.GetDataSize();
 			buff = MemAlloc(UInt8, buffSize);
-			fd->GetRealData(0, buffSize, buff);
+			fd.GetRealData(0, buffSize, buff);
 			resp->AddDefHeaders(req);
 			resp->AddContentLength(buffSize);
 			if (userFile->fileType == 3)
@@ -2407,12 +2398,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 				resp->AddContentType(CSTR("image/jpeg"));
 			}
 			resp->Write(buff, buffSize);
-			DEL_CLASS(fd);
 			return true;
 		}
 		else
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -2436,33 +2426,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 		IO::ConfigFile *lang = me->LangGet(req);
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 		if (group == 0 || group->cateId != cateId)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0 || ((cate->flags & 1) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 		if (me->GroupIsAdmin(group) && notAdmin)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -2653,8 +2641,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcGroup")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcGroup"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -2662,38 +2650,38 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-		writer->WriteLineC(UTF8STRC("<tr>"));
-		writer->WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetCharCnt());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
-		writer->WriteLineC(UTF8STRC("</form></td>"));
-		writer->WriteLineC(UTF8STRC("</tr>"));
-		writer->WriteLineC(UTF8STRC("</table>"));
+		writer.WriteStrC(sb.ToString(), sb.GetCharCnt());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
+		writer.WriteLineC(UTF8STRC("</form></td>"));
+		writer.WriteLineC(UTF8STRC("</tr>"));
+		writer.WriteLineC(UTF8STRC("</table>"));
 
-		me->WriteLocator(writer, group, cate);
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		me->WriteLocator(&writer, group, cate);
+		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (group->descript)
 		{
 			s = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
 		if (!notAdmin)
 		{
-			writer->WriteLineC(UTF8STRC("<br/>"));
+			writer.WriteLineC(UTF8STRC("<br/>"));
 			if (group->groups.GetCount() == 0)
 			{
 				sb.ClearStr();
@@ -2702,7 +2690,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				sb.AppendC(UTF8STRC("&amp;cateId="));
 				sb.AppendI32(cateId);
 				sb.AppendC(UTF8STRC("\">New Species</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			if (group->species.GetCount() == 0)
 			{
@@ -2712,22 +2700,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				sb.AppendC(UTF8STRC("&amp;cateId="));
 				sb.AppendI32(cateId);
 				sb.AppendC(UTF8STRC("\">New Group</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			writer->WriteStrC(UTF8STRC("<a href=\"groupmod.html?id="));
+			writer.WriteStrC(UTF8STRC("<a href=\"groupmod.html?id="));
 			sb.ClearStr();
 			sb.AppendI32(group->parentId);
 			sb.AppendC(UTF8STRC("&amp;cateId="));
 			sb.AppendI32(group->cateId);
 			sb.AppendC(UTF8STRC("&amp;groupId="));
 			sb.AppendI32(group->id);
-			writer->WriteStrC(sb.ToString(), sb.GetCharCnt());
-			writer->WriteStrC(UTF8STRC("\">"));
-			writer->WriteStrC(UTF8STRC("Modify Group"));
-			writer->WriteStrC(UTF8STRC("</a>"));
-			writer->WriteLineC(UTF8STRC("<br/>"));
+			writer.WriteStrC(sb.ToString(), sb.GetCharCnt());
+			writer.WriteStrC(UTF8STRC("\">"));
+			writer.WriteStrC(UTF8STRC("Modify Group"));
+			writer.WriteStrC(UTF8STRC("</a>"));
+			writer.WriteLineC(UTF8STRC("<br/>"));
 		}
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Bool found = false;
 		if (!notAdmin)
@@ -2738,8 +2726,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			sb.AppendC(UTF8STRC("&amp;cateId="));
 			sb.AppendI32(cateId);
 			sb.AppendC(UTF8STRC("\">"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
-			writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\"/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\"/>"));
 		}
 		if (group->groups.GetCount())
 		{
@@ -2756,8 +2744,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			}
 			if (groups.GetCount() > 0)
 			{
-				me->WriteGroupTable(writer, groups.GetValues(), env.scnWidth, !notAdmin);
-				writer->WriteLineC(UTF8STRC("<hr/>"));
+				me->WriteGroupTable(&writer, groups.GetValues(), env.scnWidth, !notAdmin);
+				writer.WriteLineC(UTF8STRC("<hr/>"));
 				found = true;
 			}
 		}
@@ -2771,32 +2759,32 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				sp = group->species.GetItem(i);
 				species.Put(sp->sciName, sp);
 			}
-			me->WriteSpeciesTable(writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin);
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			me->WriteSpeciesTable(&writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin);
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;
 		}
 		if (!found)
 		{
-			writer->WriteLineCStr(LangGetValue(lang, UTF8STRC("NoItems")));
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineCStr(LangGetValue(lang, UTF8STRC("NoItems")));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 		}
 		if (!notAdmin)
 		{
-			writer->WriteLineC(UTF8STRC("</form>"));
+			writer.WriteLineC(UTF8STRC("</form>"));
 		}
 		if (env.user != 0 && env.user->userType == 0)
 		{
-			writer->WriteLineC(UTF8STRC("Pick Objects:<br/>"));
-			writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick Selected\" onclick=\"document.forms.groupform.action.value='picksel';document.forms.groupform.submit();\"/>"));
-			writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick All\" onclick=\"document.forms.groupform.action.value='pickall';document.forms.groupform.submit();\"/>"));
-			writer->WriteLineC(UTF8STRC("<hr/>"));
-			writer->WriteLineC(UTF8STRC("Picked Objects:<br/>"));
+			writer.WriteLineC(UTF8STRC("Pick Objects:<br/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick Selected\" onclick=\"document.forms.groupform.action.value='picksel';document.forms.groupform.submit();\"/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick All\" onclick=\"document.forms.groupform.action.value='pickall';document.forms.groupform.submit();\"/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("Picked Objects:<br/>"));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("group.html?id="));
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
-			me->WritePickObjs(writer, &env, sb.ToString());
+			me->WritePickObjs(&writer, &env, sb.ToString());
 		}
 
 		sb.ClearStr();
@@ -2807,7 +2795,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.AppendC(UTF8STRC("\">"));
 		sb.Append(LangGetValue(lang, UTF8STRC("ListAll")));
 		sb.AppendC(UTF8STRC("</a><br/>"));
-		writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
+		writer.WriteLineC(sb.ToString(), sb.GetCharCnt());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<a href=\"listimage.html?id="));
@@ -2817,47 +2805,44 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.AppendC(UTF8STRC("\">"));
 		sb.Append(LangGetValue(lang, UTF8STRC("ListImage")));
 		sb.AppendC(UTF8STRC("</a><br/>"));
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 		if (group->parentId == 0)
 		{
-			writer->WriteStrC(UTF8STRC("<a href="));
+			writer.WriteStrC(UTF8STRC("<a href="));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("cate.html?cateName="));
 			sb.Append(cate->dirName);
 			s = Text::XML::ToNewAttrText(sb.ToString());
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteStrC(UTF8STRC(">"));
-			writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-			writer->WriteStrC(UTF8STRC("</a>"));
+			writer.WriteStrC(UTF8STRC(">"));
+			writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+			writer.WriteStrC(UTF8STRC("</a>"));
 		}
 		else
 		{
-			writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+			writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 			sb.ClearStr();
 			sb.AppendI32(group->parentId);
 			sb.AppendC(UTF8STRC("&amp;cateId="));
 			sb.AppendI32(group->cateId);
-			writer->WriteStrC(sb.ToString(), sb.GetCharCnt());
-			writer->WriteStrC(UTF8STRC("\">"));
-			writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-			writer->WriteStrC(UTF8STRC("</a>"));
+			writer.WriteStrC(sb.ToString(), sb.GetCharCnt());
+			writer.WriteStrC(UTF8STRC("\">"));
+			writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+			writer.WriteStrC(UTF8STRC("</a>"));
 		}
 		if (env.user != 0 && env.user->userType == 0)
 		{
-			writer->WriteLineC(UTF8STRC("<br/>"));
+			writer.WriteLineC(UTF8STRC("<br/>"));
 
-			writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Set Parent Photo\" onclick=\"document.forms.groupform.action.value='setphoto';document.forms.groupform.submit();\"/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Set Parent Photo\" onclick=\"document.forms.groupform.action.value='setphoto';document.forms.groupform.submit();\"/>"));
 		}
 
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -2872,8 +2857,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 {
 	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
 	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
-	IO::MemoryStream *mstm;
-	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
 	me->ParseRequestEnv(req, resp, &env, false);
@@ -2897,18 +2880,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		Text::String *txt;
 		IO::ConfigFile *lang = me->LangGet(req);
 
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		if (group == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(cateId);
+		cate = me->cateMap.Get(cateId);
 		if (cate == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -2922,7 +2905,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *modGroup = 0;
 		if (req->GetQueryValueI32(CSTR("groupId"), &groupId))
 		{
-			modGroup = me->groupMap->Get(groupId);
+			modGroup = me->groupMap.Get(groupId);
 			if (modGroup)
 			{
 				cname = modGroup->chiName;
@@ -2964,12 +2947,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					}
 					else
 					{
-						me->dataMut->UnlockRead();
-						me->dataMut->LockWrite();
+						me->dataMut.UnlockRead();
+						me->dataMut.LockWrite();
 						Int32 newGroupId = me->GroupAdd(ename->ToCString(), cname->ToCString(), id, descr->ToCString(), groupTypeId, cateId, groupFlags);
 						if (newGroupId)
 						{
-							me->dataMut->UnlockWrite();
+							me->dataMut.UnlockWrite();
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("group.html?id="));
 							sb.AppendI32(newGroupId);
@@ -2983,8 +2966,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						{
 							msg.AppendC(UTF8STRC("Error in adding group"));
 						}
-						me->dataMut->UnlockWrite();
-						me->dataMut->LockRead();
+						me->dataMut.UnlockWrite();
+						me->dataMut.LockRead();
 					}
 				}
 				else if (task->Equals(UTF8STRC("modify")) && modGroup != 0 && modGroup->cateId == cateId)
@@ -3005,11 +2988,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					}
 					else
 					{
-						me->dataMut->UnlockRead();
-						me->dataMut->LockWrite();
+						me->dataMut.UnlockRead();
+						me->dataMut.LockWrite();
 						if (me->GroupModify(modGroup->id, STR_CSTR(ename), STR_CSTR(cname), STR_CSTR(descr), groupTypeId, groupFlags))
 						{
-							me->dataMut->UnlockWrite();
+							me->dataMut.UnlockWrite();
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("group.html?id="));
 							sb.AppendI32(modGroup->id);
@@ -3023,19 +3006,19 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						{
 							msg.AppendC(UTF8STRC("Error in modifying group"));
 						}
-						me->dataMut->UnlockWrite();
-						me->dataMut->LockRead();
+						me->dataMut.UnlockWrite();
+						me->dataMut.LockRead();
 					}
 				}
 				else if (task->Equals(UTF8STRC("delete")) && modGroup != 0 && modGroup->groups.GetCount() == 0 && modGroup->species.GetCount() == 0)
 				{
 					Int32 id = modGroup->id;
 					Int32 cateId = modGroup->cateId;
-					me->dataMut->UnlockRead();
-					me->dataMut->LockWrite();
+					me->dataMut.UnlockRead();
+					me->dataMut.LockWrite();
 					if (me->GroupDelete(modGroup->id))
 					{
-						me->dataMut->UnlockWrite();
+						me->dataMut.UnlockWrite();
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("group.html?id="));
 						sb.AppendI32(id);
@@ -3049,28 +3032,28 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					{
 						msg.AppendC(UTF8STRC("Error in deleting group"));
 					}
-					me->dataMut->UnlockWrite();
-					me->dataMut->LockRead();
+					me->dataMut.UnlockWrite();
+					me->dataMut.LockRead();
 				}
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcGroupMod")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcGroupMod"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("New group in "));
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteStrC(UTF8STRC("<form name=\"newgroup\" method=\"POST\" action=\"groupmod.html?id="));
+		writer.WriteStrC(UTF8STRC("<form name=\"newgroup\" method=\"POST\" action=\"groupmod.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&amp;cateId="));
@@ -3080,12 +3063,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("&amp;groupId="));
 			sb.AppendI32(groupId);
 		}
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(UTF8STRC("\">"));
-		writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
-		writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
-		writer->WriteLineC(UTF8STRC("<tr><td>Category</td><td><select name=\"groupType\">"));
-		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *groupTypes = cate->groupTypes->GetValues();
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(UTF8STRC("\">"));
+		writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
+		writer.WriteLineC(UTF8STRC("<tr><td>Category</td><td><select name=\"groupType\">"));
+		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *groupTypes = cate->groupTypes.GetValues();
 		SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *groupType;
 		i = 0;
 		j = groupTypes->GetCount();
@@ -3105,69 +3088,66 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC("</option>"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
-		writer->WriteLineC(UTF8STRC("</select></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>English Name</td><td><input type=\"text\" name=\"ename\""));
+		writer.WriteLineC(UTF8STRC("</select></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>English Name</td><td><input type=\"text\" name=\"ename\""));
 		if (ename)
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(ename->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("/></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>Chinese Name</td><td><input type=\"text\" name=\"cname\""));
+		writer.WriteLineC(UTF8STRC("/></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>Chinese Name</td><td><input type=\"text\" name=\"cname\""));
 		if (cname)
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(cname->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("/></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>Flags</td><td><input type=\"checkbox\" id=\"adminOnly\" name=\"adminOnly\" value=\"1\""));
+		writer.WriteLineC(UTF8STRC("/></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>Flags</td><td><input type=\"checkbox\" id=\"adminOnly\" name=\"adminOnly\" value=\"1\""));
 		if (groupFlags & GF_ADMIN_ONLY)
 		{
-			writer->WriteStrC(UTF8STRC(" checked"));
+			writer.WriteStrC(UTF8STRC(" checked"));
 		}
-		writer->WriteLineC(UTF8STRC("/><label for=\"adminOnly\">Admin Only</label></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
+		writer.WriteLineC(UTF8STRC("/><label for=\"adminOnly\">Admin Only</label></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
 		if (descr)
 		{
 			s = Text::XML::ToNewHTMLText(descr->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("</textarea></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td></td><td>"));
+		writer.WriteLineC(UTF8STRC("</textarea></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td></td><td>"));
 		if (groupId != 0)
 		{
-			writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newgroup.task.value='modify';document.forms.newgroup.submit();\"/>"));
+			writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newgroup.task.value='modify';document.forms.newgroup.submit();\"/>"));
 		}
-		writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>"));
+		writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>"));
 		if (group->species.GetCount() == 0 && group->groups.GetCount() == 0)
 		{
-			writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
+			writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
 		}
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
-		writer->WriteLineC(UTF8STRC("</table></form>"));
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
+		writer.WriteLineC(UTF8STRC("</td></tr>"));
+		writer.WriteLineC(UTF8STRC("</table></form>"));
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -3189,8 +3169,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
@@ -3211,27 +3189,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		IO::ConfigFile *lang = me->LangGet(req);
 		Data::DateTime dt;
 
-		me->dataMut->LockRead();
-		species = me->spMap->Get(id);
+		me->dataMut.LockRead();
+		species = me->spMap.Get(id);
 		if (species == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
-		group = me->groupMap->Get(species->groupId);
+		group = me->groupMap.Get(species->groupId);
 		if (group == 0 || group->cateId != cateId || (me->GroupIsAdmin(group) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0 || ((cate->flags & 1) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -3331,8 +3309,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSpecies")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSpecies"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -3342,18 +3320,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		sb.AppendC(species->chiName->v, species->chiName->leng);
 		sb.AppendC(UTF8STRC(" "));
 		sb.AppendC(species->engName->v, species->engName->leng);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteLineC(UTF8STRC("<table border=\"0\"><tr><td>"));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\"><tr><td>"));
 		if (species->descript)
 		{
 			s = Text::XML::ToNewHTMLText(species->descript->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
 		if (species->files.GetCount() > 0)
@@ -3374,39 +3352,39 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					months[dt.GetMonth() - 1] = true;
 				}
 			}
-			writer->WriteLineC(UTF8STRC("<br/><br/>Months"));
-			writer->WriteLineC(UTF8STRC("<table><tr>"));
+			writer.WriteLineC(UTF8STRC("<br/><br/>Months"));
+			writer.WriteLineC(UTF8STRC("<table><tr>"));
 			i = 0;
 			while (i < 12)
 			{
 				if (months[i])
 				{
-					writer->WriteStrC(UTF8STRC("<td bgcolor=\"#4060ff\">"));
+					writer.WriteStrC(UTF8STRC("<td bgcolor=\"#4060ff\">"));
 				}
 				else
 				{
-					writer->WriteStrC(UTF8STRC("<td>"));
+					writer.WriteStrC(UTF8STRC("<td>"));
 				}
 				sptr = Text::StrUOSInt(sbuff, i + 1);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("</td>"));
+				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteStrC(UTF8STRC("</td>"));
 				i++;
 			}
-			writer->WriteLineC(UTF8STRC("</tr></table>"));
+			writer.WriteLineC(UTF8STRC("</tr></table>"));
 		}
 		if (species->books.GetCount() > 0)
 		{
 			Data::DateTime dt;
-			writer->WriteLineC(UTF8STRC("<br/><br/>"));
-			writer->WriteStr(LangGetValue(lang, UTF8STRC("Document")));
-			writer->WriteLineC(UTF8STRC(":<br/>"));
-			writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
+			writer.WriteLineC(UTF8STRC("<br/><br/>"));
+			writer.WriteStr(LangGetValue(lang, UTF8STRC("Document")));
+			writer.WriteLineC(UTF8STRC(":<br/>"));
+			writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
 			i = 0;
 			j = species->books.GetCount();
 			while (i < j)
 			{
 				bookSp = species->books.GetItem(i);
-				book = me->bookMap->Get(bookSp->bookId);
+				book = me->bookMap.Get(bookSp->bookId);
 				if (book != 0)
 				{
 					sb.ClearStr();
@@ -3419,11 +3397,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("><i>"));
-					writer->WriteStrC(sb.ToString(), sb.GetLength());
+					writer.WriteStrC(sb.ToString(), sb.GetLength());
 					s = Text::XML::ToNewHTMLText(bookSp->dispName->v);
-					writer->WriteStrC(s->v, s->leng);
+					writer.WriteStrC(s->v, s->leng);
 					s->Release();
-					writer->WriteStrC(UTF8STRC("</i></a></td><td>"));
+					writer.WriteStrC(UTF8STRC("</i></a></td><td>"));
 					sb.ClearStr();
 					sb.Append(book->author);
 					sb.AppendC(UTF8STRC(" ("));
@@ -3431,23 +3409,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sb.AppendU32(dt.GetYear());
 					sb.AppendC(UTF8STRC(")"));
 					s = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->WriteStrC(s->v, s->leng);
+					writer.WriteStrC(s->v, s->leng);
 					s->Release();
-					writer->WriteLineC(UTF8STRC("</td></tr>"));
+					writer.WriteLineC(UTF8STRC("</td></tr>"));
 				}
 				i++;
 			}
-			writer->WriteLineC(UTF8STRC("</table>"));
+			writer.WriteLineC(UTF8STRC("</table>"));
 		}
-		writer->WriteLineC(UTF8STRC("</td><td>"));
-		me->WriteLocator(writer, group, cate);
-		writer->WriteLineC(UTF8STRC("</td></tr></table>"));
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("</td><td>"));
+		me->WriteLocator(&writer, group, cate);
+		writer.WriteLineC(UTF8STRC("</td></tr></table>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
-		Data::ArrayListICaseString *fileNameList;
-		Data::ArrayListString *refURLList;
-		NEW_CLASS(fileNameList, Data::ArrayListICaseString());
-		NEW_CLASS(refURLList, Data::ArrayListString());
+		Data::ArrayListICaseString fileNameList;
+		Data::ArrayListString refURLList;
 		sptr = cate->srcDir->ConcatTo(sbuff);
 		if (IO::Path::PATH_SEPERATOR != '\\')
 		{
@@ -3466,7 +3442,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 					{
 						sptr2[-4] = 0;
-						fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+						fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 					}
 				}
 			}
@@ -3483,9 +3459,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			{
 				if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 				{
-					if (refURLList->SortedIndexOfPtr(sarr[2].v, sarr[2].leng) < 0)
+					if (refURLList.SortedIndexOfPtr(sarr[2].v, sarr[2].leng) < 0)
 					{
-						refURLList->SortedInsert(Text::String::New(sarr[2].v, sarr[2].leng));
+						refURLList.SortedInsert(Text::String::New(sarr[2].v, sarr[2].leng));
 					}
 					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -3496,7 +3472,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						sptr[i] = 0;
 						sptr2 = &sptr[i];
 					}
-					fileNameList->Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)));
+					fileNameList.Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)));
 				}
 				sb.ClearStr();
 			}
@@ -3505,7 +3481,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		UInt32 colCount = env.scnWidth / PREVIEW_SIZE;
 		UInt32 colWidth = 100 / colCount;
 		UInt32 currColumn;
-		if (fileNameList->GetCount() > 0 || species->files.GetCount() > 0 || species->wfiles.GetCount() > 0)
+		if (fileNameList.GetCount() > 0 || species->files.GetCount() > 0 || species->wfiles.GetCount() > 0)
 		{
 			currColumn = 0;
 			if (env.user != 0 && env.user->userType == 0)
@@ -3516,10 +3492,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("&amp;cateId="));
 				sb.AppendI32(cateId);
 				sb.AppendC(UTF8STRC("\" method=\"POST\"/>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-				writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\"/>"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\"/>"));
 			}
-			writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 
 			i = 0;
 			j = species->files.GetCount();
@@ -3528,13 +3504,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				userFile = species->files.GetItem(i);
 				if (currColumn == 0)
 				{
-					writer->WriteLineC(UTF8STRC("<tr>"));
+					writer.WriteLineC(UTF8STRC("<tr>"));
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
 				sb.AppendU32(colWidth);
 				sb.AppendC(UTF8STRC("%\">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photodetail.html?id="));
 				sb.AppendI32(species->speciesId);
@@ -3547,10 +3523,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("<center><a href="));
 				sb.Append(s);
 				sb.AppendC(UTF8STRC(">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				s->Release();
 
-				writer->WriteStrC(UTF8STRC("<img src="));
+				writer.WriteStrC(UTF8STRC("<img src="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
 				sb.AppendI32(species->speciesId);
@@ -3563,10 +3539,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("&fileId="));
 				sb.AppendI32(userFile->id);
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(" border=\"0\">"));
-				writer->WriteStrC(UTF8STRC("</a><br/>"));
+				writer.WriteStrC(UTF8STRC(" border=\"0\">"));
+				writer.WriteStrC(UTF8STRC("</a><br/>"));
 				dt.SetTicks(userFile->fileTimeTicks);
 				dt.ToLocalTime();
 				if (env.user != 0 && (env.user->userType == 0 || userFile->webuserId == env.user->id))
@@ -3581,17 +3557,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"userfile"));
 						sb.AppendI32(userFile->id);
 						sb.AppendC(UTF8STRC("\">"));
-						writer->WriteStrC(sb.ToString(), sb.GetLength());
+						writer.WriteStrC(sb.ToString(), sb.GetLength());
 					}
 					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
-					writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					if (userFile->webuserId == env.user->id)
 					{
 						if (userFile->location)
 						{
-							writer->WriteStrC(UTF8STRC(" "));
+							writer.WriteStrC(UTF8STRC(" "));
 							s = Text::XML::ToNewHTMLText(userFile->location->v);
-							writer->WriteStrC(s->v, s->leng);
+							writer.WriteStrC(s->v, s->leng);
 							s->Release();
 						}
 	/*					Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(species->cateId);
@@ -3608,9 +3584,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 								SSWR::OrganMgr::OrganWebHandler::LocationInfo *loc = this->locMap->Get(trip->locId);
 								if (loc)
 								{
-									writer->WriteStrC(UTF8STRC(" "));
+									writer.WriteStrC(UTF8STRC(" "));
 									txt = Text::XML::ToNewHTMLText(loc->cname);
-									writer->Write(txt);
+									writer.Write(txt);
 									Text::XML::FreeNewText(txt);
 								}
 							}
@@ -3618,21 +3594,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					}
 					if (userFile->descript && userFile->descript->leng > 0)
 					{
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(UTF8STRC("<br/>"));
 						s = Text::XML::ToNewHTMLText(userFile->descript->v);
-						writer->WriteStrC(s->v, s->leng);
+						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 					}
 					if (userFile->webuserId == env.user->id)
 					{
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(UTF8STRC("<br/>"));
 						s = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
-						writer->WriteStrC(s->v, s->leng);
+						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 					}
 					if (env.user->userType == 0)
 					{
-						writer->WriteStrC(UTF8STRC("</label>"));
+						writer.WriteStrC(UTF8STRC("</label>"));
 					}
 					if (userFile->lat != 0 || userFile->lon != 0)
 					{
@@ -3648,20 +3624,20 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						Text::SBAppendF64(&sb, userFile->lon);
 						sb.AppendC(UTF8STRC(",19z\">"));
 						sb.AppendC(UTF8STRC("Google Map</a>"));
-						writer->WriteStrC(sb.ToString(), sb.GetLength());
+						writer.WriteStrC(sb.ToString(), sb.GetLength());
 					}
 				}
 				else
 				{
 					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd zzzz");
-					writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 				}
-				writer->WriteLineC(UTF8STRC("</center></td>"));
+				writer.WriteLineC(UTF8STRC("</center></td>"));
 
 				currColumn++;
 				if (currColumn >= colCount)
 				{
-					writer->WriteLineC(UTF8STRC("</tr>"));
+					writer.WriteLineC(UTF8STRC("</tr>"));
 					currColumn = 0;
 				}
 				i++;
@@ -3675,13 +3651,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				wfile = wfiles->GetItem(i);
 				if (currColumn == 0)
 				{
-					writer->WriteLineC(UTF8STRC("<tr>"));
+					writer.WriteLineC(UTF8STRC("<tr>"));
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
 				sb.AppendU32(colWidth);
 				sb.AppendC(UTF8STRC("%\">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photodetail.html?id="));
 				sb.AppendI32(species->speciesId);
@@ -3694,10 +3670,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("<center><a href="));
 				sb.Append(s);
 				sb.AppendC(UTF8STRC(">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				s->Release();
 
-				writer->WriteStrC(UTF8STRC("<img src="));
+				writer.WriteStrC(UTF8STRC("<img src="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
 				sb.AppendI32(species->speciesId);
@@ -3710,51 +3686,51 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("&fileWId="));
 				sb.AppendI32(wfile->id);
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(" border=\"0\">"));
-				writer->WriteStrC(UTF8STRC("</a>"));
+				writer.WriteStrC(UTF8STRC(" border=\"0\">"));
+				writer.WriteStrC(UTF8STRC("</a>"));
 				if (env.user && env.user->userType == 0)
 				{
 					if (wfile->location && wfile->location->leng > 0)
 					{
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(UTF8STRC("<br/>"));
 						s = Text::XML::ToNewHTMLText(wfile->location->v);
-						writer->WriteStrC(s->v, s->leng);
+						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 					}
 				}
-				writer->WriteLineC(UTF8STRC("</center></td>"));
+				writer.WriteLineC(UTF8STRC("</center></td>"));
 
 				currColumn++;
 				if (currColumn >= colCount)
 				{
-					writer->WriteLineC(UTF8STRC("</tr>"));
+					writer.WriteLineC(UTF8STRC("</tr>"));
 					currColumn = 0;
 				}
 
-				if (refURLList->SortedIndexOf(wfile->srcUrl) < 0)
+				if (refURLList.SortedIndexOf(wfile->srcUrl) < 0)
 				{
-					refURLList->SortedInsert(wfile->srcUrl->Clone());
+					refURLList.SortedInsert(wfile->srcUrl->Clone());
 				}
 
 				i++;
 			}
 
 			i = 0;
-			j = fileNameList->GetCount();
+			j = fileNameList.GetCount();
 			while (i < j)
 			{
-				sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(i)->v);
+				sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(i)->v);
 				if (currColumn == 0)
 				{
-					writer->WriteLineC(UTF8STRC("<tr>"));
+					writer.WriteLineC(UTF8STRC("<tr>"));
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<td width=\""));
 				sb.AppendU32(colWidth);
 				sb.AppendC(UTF8STRC("%\">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photodetail.html?id="));
 				sb.AppendI32(species->speciesId);
@@ -3767,10 +3743,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("<center><a href="));
 				sb.Append(s);
 				sb.AppendC(UTF8STRC(">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				s->Release();
 
-				writer->WriteStrC(UTF8STRC("<img src="));
+				writer.WriteStrC(UTF8STRC("<img src="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
 				sb.AppendI32(species->speciesId);
@@ -3783,19 +3759,19 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("&file="));
 				sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(" border=\"0\">"));
-				writer->WriteLineC(UTF8STRC("</a></center></td>"));
+				writer.WriteStrC(UTF8STRC(" border=\"0\">"));
+				writer.WriteLineC(UTF8STRC("</a></center></td>"));
 
 				currColumn++;
 				if (currColumn >= colCount)
 				{
-					writer->WriteLineC(UTF8STRC("</tr>"));
+					writer.WriteLineC(UTF8STRC("</tr>"));
 					currColumn = 0;
 				}
 
-				fileNameList->GetItem(i)->Release();
+				fileNameList.GetItem(i)->Release();
 				i++;
 			}
 
@@ -3807,75 +3783,70 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				sb.AppendC(UTF8STRC("%\"></td>"));
 				while (currColumn < colCount)
 				{
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					currColumn++;
 				}
-				writer->WriteLineC(UTF8STRC("</tr>"));
+				writer.WriteLineC(UTF8STRC("</tr>"));
 			}
-			writer->WriteLineC(UTF8STRC("</table><hr/>"));
+			writer.WriteLineC(UTF8STRC("</table><hr/>"));
 			if (env.user != 0 && env.user->userType == 0)
 			{
-				writer->WriteLineC(UTF8STRC("</form>"));
+				writer.WriteLineC(UTF8STRC("</form>"));
 			}
 		}
-		DEL_CLASS(fileNameList);
-		if (refURLList->GetCount() > 0)
+		if (refURLList.GetCount() > 0)
 		{
-			writer->WriteLineC(UTF8STRC("Reference URL:<br/>"));
+			writer.WriteLineC(UTF8STRC("Reference URL:<br/>"));
 			Text::String *url;
 			i = 0;
-			j = refURLList->GetCount();
+			j = refURLList.GetCount();
 			while (i < j)
 			{
-				url = refURLList->GetItem(i);
+				url = refURLList.GetItem(i);
 
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer.WriteStrC(UTF8STRC("<a href="));
 				s = Text::XML::ToNewAttrText(url->v);
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">"));
+				writer.WriteStrC(UTF8STRC(">"));
 				s = Text::XML::ToNewHTMLText(url->v);
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteLineC(UTF8STRC("</a><br/>"));
+				writer.WriteLineC(UTF8STRC("</a><br/>"));
 
 				url->Release();
 				i++;
 			}
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 		}
-		DEL_CLASS(refURLList);
 		if (env.user != 0 && env.user->userType == 0)
 		{
-			writer->WriteLineC(UTF8STRC("Pick Objects:<br/>"));
-			writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick Selected\" onclick=\"document.forms.userfiles.action.value='picksel';document.forms.userfiles.submit();\"/>"));
-			writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick All\" onclick=\"document.forms.userfiles.action.value='pickall';document.forms.userfiles.submit();\"/>"));
-			writer->WriteLineC(UTF8STRC("<hr/>"));
-			writer->WriteLineC(UTF8STRC("Picked Objects:<br/>"));
+			writer.WriteLineC(UTF8STRC("Pick Objects:<br/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick Selected\" onclick=\"document.forms.userfiles.action.value='picksel';document.forms.userfiles.submit();\"/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick All\" onclick=\"document.forms.userfiles.action.value='pickall';document.forms.userfiles.submit();\"/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("Picked Objects:<br/>"));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("species.html?id="));
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
-			me->WritePickObjs(writer, &env, sb.ToString());
+			me->WritePickObjs(&writer, &env, sb.ToString());
 		}
 
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(species->groupId);
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -3889,8 +3860,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 {
 	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
 	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
-	IO::MemoryStream *mstm;
-	Text::UTF8Writer *writer;
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	if (env.user == 0 || env.user->userType != 0)
@@ -3910,11 +3879,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		Text::String *s;
 		IO::ConfigFile *lang = me->LangGet(req);
 
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		if (group == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -3928,7 +3897,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = 0;
 		if (req->GetQueryValueI32(CSTR("spId"), &spId))
 		{
-			species = me->spMap->Get(spId);
+			species = me->spMap.Get(spId);
 			if (species)
 			{
 				cname = species->chiName;
@@ -3951,7 +3920,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 				if (task->Equals(UTF8STRC("new")))
 				{
 					sb.ClearStr();
-					if (me->spNameMap->Get(sname) != 0)
+					if (me->spNameMap.Get(sname) != 0)
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
@@ -3964,8 +3933,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					}
 					else
 					{
-						me->dataMut->UnlockRead();
-						me->dataMut->LockWrite();
+						me->dataMut.UnlockRead();
+						me->dataMut.LockWrite();
 						sb.ClearStr();
 						sb.Append(sname);
 						sb.ToLower();
@@ -3974,7 +3943,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						Int32 spId = me->SpeciesAdd(STR_CSTR(ename), STR_CSTR(cname), STR_CSTR(sname), id, STR_CSTR(descr), sb.ToCString(), CSTR(""), cateId);
 						if (spId)
 						{
-							me->dataMut->UnlockWrite();
+							me->dataMut.UnlockWrite();
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species.html?id="));
 							sb.AppendI32(spId);
@@ -3988,15 +3957,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						{
 							msg.AppendC(UTF8STRC("Error in adding species"));
 						}
-						me->dataMut->UnlockWrite();
-						me->dataMut->LockRead();
+						me->dataMut.UnlockWrite();
+						me->dataMut.LockRead();
 					}
 				}
 				else if (task->Equals(UTF8STRC("modify")) && species != 0)
 				{
 					Bool nameChg = !species->sciName->Equals(sname);
 					sb.ClearStr();
-					if (nameChg && me->spNameMap->Get(sname) != 0)
+					if (nameChg && me->spNameMap.Get(sname) != 0)
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
@@ -4009,8 +3978,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					}
 					else
 					{
-						me->dataMut->UnlockRead();
-						me->dataMut->LockWrite();
+						me->dataMut.UnlockRead();
+						me->dataMut.LockWrite();
 						sb.ClearStr();
 						sb.Append(sname);
 						sb.ToLower();
@@ -4018,7 +3987,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
 						if (me->SpeciesModify(spId, STR_CSTR(ename), STR_CSTR(cname), STR_CSTR(sname), STR_CSTR(descr), sb.ToCString()))
 						{
-							me->dataMut->UnlockWrite();
+							me->dataMut.UnlockWrite();
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species.html?id="));
 							sb.AppendI32(spId);
@@ -4032,29 +4001,29 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						{
 							msg.AppendC(UTF8STRC("Error in modifying species"));
 						}
-						me->dataMut->UnlockWrite();
-						me->dataMut->LockRead();
+						me->dataMut.UnlockWrite();
+						me->dataMut.LockRead();
 					}
 				}
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSpeciesMod")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSpeciesMod"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("New Species in "));
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteStrC(UTF8STRC("<form name=\"newspecies\" method=\"POST\" action=\"speciesmod.html?id="));
+		writer.WriteStrC(UTF8STRC("<form name=\"newspecies\" method=\"POST\" action=\"speciesmod.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&amp;cateId="));
@@ -4068,69 +4037,66 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		{
 			sb.AppendC(UTF8STRC("&amp;bookIgn=1"));
 		}
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(UTF8STRC("\">"));
-		writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
-		writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
-		writer->WriteStrC(UTF8STRC("<tr><td>Chinese Name</td><td><input type=\"text\" name=\"cname\""));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(UTF8STRC("\">"));
+		writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
+		writer.WriteStrC(UTF8STRC("<tr><td>Chinese Name</td><td><input type=\"text\" name=\"cname\""));
 		if (cname)
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(cname->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("/></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>Science Name</td><td><input type=\"text\" name=\"sname\""));
+		writer.WriteLineC(UTF8STRC("/></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>Science Name</td><td><input type=\"text\" name=\"sname\""));
 		if (sname)
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(sname->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("/></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>English Name</td><td><input type=\"text\" name=\"ename\""));
+		writer.WriteLineC(UTF8STRC("/></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>English Name</td><td><input type=\"text\" name=\"ename\""));
 		if (ename)
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(ename->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("/></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
+		writer.WriteLineC(UTF8STRC("/></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
 		if (descr)
 		{
 			s = Text::XML::ToNewHTMLText(descr->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("</textarea></td></tr>"));
-		writer->WriteStrC(UTF8STRC("<tr><td></td><td>"));
+		writer.WriteLineC(UTF8STRC("</textarea></td></tr>"));
+		writer.WriteStrC(UTF8STRC("<tr><td></td><td>"));
 		if (spId != 0)
 		{
-			writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newspecies.task.value='modify';document.forms.newspecies.submit();\"/>"));
+			writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Modify\" onclick=\"document.forms.newspecies.task.value='modify';document.forms.newspecies.submit();\"/>"));
 		}
-		writer->WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newspecies.task.value='new';document.forms.newspecies.submit();\"/>"));
+		writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newspecies.task.value='new';document.forms.newspecies.submit();\"/>"));
 
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
-		writer->WriteLineC(UTF8STRC("</table></form>"));
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
+		writer.WriteLineC(UTF8STRC("</td></tr>"));
+		writer.WriteLineC(UTF8STRC("</table></form>"));
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4155,39 +4121,37 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 	{
 		Bool imageOnly = subReq.Equals(UTF8STRC("/listimage.html"));
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 		IO::ConfigFile *lang = me->LangGet(req);
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 		if (group == 0 || group->cateId != cateId)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0 || ((cate->flags & 1) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 		if (me->GroupIsAdmin(group) && notAdmin)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcList")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcList"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -4195,23 +4159,23 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		me->WriteLocator(writer, group, cate);
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		me->WriteLocator(&writer, group, cate);
+		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (group->descript)
 		{
 			s = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::StringMap<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> spMap;
 		me->GetGroupSpecies(group, &spMap, env.user);
@@ -4255,8 +4219,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 			species.Add(spList->GetItem(i));
 			i++;
 		}
-		me->WriteSpeciesTable(writer, &species, env.scnWidth, group->cateId, false);
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		me->WriteSpeciesTable(&writer, &species, env.scnWidth, group->cateId, false);
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		if (imageOnly)
 		{
@@ -4274,7 +4238,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendUOSInt(perPage);
 				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			if ((page + 1) * perPage < spList->GetCount())
 			{
@@ -4290,7 +4254,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendUOSInt(perPage);
 				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 		}
 		else
@@ -4309,7 +4273,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendUOSInt(perPage);
 				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			if ((page + 1) * perPage < spMap.GetCount())
 			{
@@ -4325,27 +4289,24 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendUOSInt(perPage);
 				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4370,8 +4331,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		UTF8Char *fileNameEnd;
 		Int32 fileId;
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
@@ -4389,26 +4348,26 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
 		IO::ConfigFile *lang = me->LangGet(req);
 
-		me->dataMut->LockRead();
-		species = me->spMap->Get(id);
+		me->dataMut.LockRead();
+		species = me->spMap.Get(id);
 		if (species == 0 || species->cateId != cateId)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		group = me->groupMap->Get(species->groupId);
+		group = me->groupMap.Get(species->groupId);
 		if (group == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -4423,7 +4382,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
 		{
-			Data::ArrayListICaseString *fileNameList;
 			Bool found = false;
 			SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 			i = 0;
@@ -4462,8 +4420,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					}
 				}
 
-				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
-				NEW_CLASS(writer, Text::UTF8Writer(mstm));
+				IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+				Text::UTF8Writer writer(&mstm);
 
 				sb.ClearStr();
 				sb.Append(cate->chiName);
@@ -4473,16 +4431,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(species->chiName);
 				sb.AppendC(UTF8STRC(" "));
 				sb.Append(species->engName);
-				me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-				writer->WriteStrC(UTF8STRC("<center><h1>"));
+				me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+				writer.WriteStrC(UTF8STRC("<center><h1>"));
 				s = Text::XML::ToNewHTMLText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteLineC(UTF8STRC("</h1></center>"));
+				writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-				writer->WriteLineC(UTF8STRC("<center>"));
-				writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-				writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+				writer.WriteLineC(UTF8STRC("<center>"));
+				writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+				writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 				if (i < j - 1)
 				{
@@ -4507,7 +4465,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				}
 				else
 				{
-					NEW_CLASS(fileNameList, Data::ArrayListICaseString());
+					Data::ArrayListICaseString fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -4521,13 +4479,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
 						IO::Path::FindFileClose(sess);
 					}
-					if (fileNameList->GetCount() > 0)
+					if (fileNameList.GetCount() > 0)
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("photodetail.html?id="));
@@ -4535,7 +4493,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(0)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(0)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -4589,8 +4547,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							sb.AppendI32(species->cateId);
 						}
 					}
-					LIST_FREE_STRING(fileNameList);
-					DEL_CLASS(fileNameList);
+					LIST_FREE_STRING(&fileNameList);
 				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
@@ -4598,7 +4555,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
@@ -4617,15 +4574,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(" border=\"0\"></a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-				writer->WriteLineC(UTF8STRC("</td></tr>"));
-				writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(UTF8STRC("</td></tr>"));
+				writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 
 				if (userFile->fileType == 3)
 				{
 					Data::DateTime dt;
-					IO::StmData::FileData *fd;
 					UInt64 fileSize = 0;
 					Media::MediaFile *mediaFile;
 					sptr = me->dataDir->ConcatTo(sbuff);
@@ -4641,12 +4597,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sptr = dt.ToString(sptr, "yyyyMM");
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = userFile->dataFileName->ConcatTo(sptr);
-					Sync::MutexUsage mutUsage(me->parserMut);
-					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-					fileSize = fd->GetDataSize();
-					mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-					DEL_CLASS(fd);
-					mutUsage.EndUse();
+					{
+						Sync::MutexUsage mutUsage(&me->parserMut);
+						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+						fileSize = fd.GetDataSize();
+						mediaFile = (Media::MediaFile*)me->parsers.ParseFileType(&fd, IO::ParserType::MediaFile);
+					}
 
 					if (mediaFile)
 					{
@@ -4682,23 +4638,23 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								sb.AppendC(UTF8STRC(" ch"));
 							}
 						}
-						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
-						writer->WriteStrC(UTF8STRC("</b> "));
-						writer->WriteStrC(sb.ToString(), sb.GetLength());
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(UTF8STRC("<b>"));
+						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+						writer.WriteStrC(UTF8STRC("</b> "));
+						writer.WriteStrC(sb.ToString(), sb.GetLength());
+						writer.WriteStrC(UTF8STRC("<br/>"));
 						DEL_CLASS(mediaFile);
 					}
 					if (userFile->captureTimeTicks != 0)
 					{
 						dt.SetTicks(userFile->captureTimeTicks);
 						dt.ToLocalTime();
-						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
-						writer->WriteStrC(UTF8STRC("</b> "));
+						writer.WriteStrC(UTF8STRC("<b>"));
+						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+						writer.WriteStrC(UTF8STRC("</b> "));
 						sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
-						writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+						writer.WriteStrC(UTF8STRC("<br/>"));
 					}
 				}
 				else
@@ -4718,31 +4674,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = userFile->dataFileName->ConcatTo(sptr);
 
-					IO::StmData::FileData *fd;
-					Media::PhotoInfo *info;
-					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-					NEW_CLASS(info, Media::PhotoInfo(fd));
-					DEL_CLASS(fd);
-					if (info->HasInfo())
+					IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+					Media::PhotoInfo info(&fd);
+					if (info.HasInfo())
 					{
 						sb.ClearStr();
-						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
-						writer->WriteStrC(UTF8STRC("</b> "));
-						info->ToString(&sb);
-						writer->WriteStrC(sb.ToString(), sb.GetLength());
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(UTF8STRC("<b>"));
+						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+						writer.WriteStrC(UTF8STRC("</b> "));
+						info.ToString(&sb);
+						writer.WriteStrC(sb.ToString(), sb.GetLength());
+						writer.WriteStrC(UTF8STRC("<br/>"));
 
 						dt.SetTicks(userFile->captureTimeTicks);
 						dt.ToLocalTime();
-						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
-						writer->WriteStrC(UTF8STRC("</b> "));
+						writer.WriteStrC(UTF8STRC("<b>"));
+						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+						writer.WriteStrC(UTF8STRC("</b> "));
 						sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
-						writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-						writer->WriteStrC(UTF8STRC("<br/>"));
+						writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+						writer.WriteStrC(UTF8STRC("<br/>"));
 					}
-					DEL_CLASS(info);
 				}
 
 				if (env.user && (userFile->webuserId == env.user->id || env.user->userType == 0))
@@ -4762,7 +4714,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.AppendC(UTF8STRC(">"));
 					sb.Append(LangGetValue(lang, UTF8STRC("Download")));
 					sb.AppendC(UTF8STRC("</a>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<form name=\"photo\" method=\"POST\" action=\"photodetail.html?id="));
@@ -4778,7 +4730,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					}
 					sb.AppendC(UTF8STRC("<input type=\"button\" value=\"Rotate\" onclick=\"document.forms.photo.action.value='rotate';document.forms.photo.submit();\"/>"));
 					sb.AppendC(UTF8STRC("<br/>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Description<input type=\"text\" name=\"descr\""));
 					if (userFile->descript)
@@ -4790,7 +4742,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					}
 					sb.AppendC(UTF8STRC("/><input type=\"button\" value=\"Update\" onclick=\"document.forms.photo.action.value='setname';document.forms.photo.submit();\"/>"));
 					sb.AppendC(UTF8STRC("</form>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
 				if (env.user && env.user->userType == 0)
@@ -4810,34 +4762,30 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.AppendC(UTF8STRC(">"));
 				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-				writer->WriteLineC(UTF8STRC("</td></tr>"));
-				writer->WriteLineC(UTF8STRC("</table>"));
-				writer->WriteLineC(UTF8STRC("</center>"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(UTF8STRC("</td></tr>"));
+				writer.WriteLineC(UTF8STRC("</table>"));
+				writer.WriteLineC(UTF8STRC("</center>"));
 
-				me->WriteFooter(writer);
-				me->dataMut->UnlockRead();
-				ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-				DEL_CLASS(writer);
-				DEL_CLASS(mstm);
+				me->WriteFooter(&writer);
+				me->dataMut.UnlockRead();
+				ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 				return true;
 			}
 			else
 			{
 				resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-				me->dataMut->UnlockRead();
+				me->dataMut.UnlockRead();
 				return true;
 			}
 		}
 		else if (req->GetQueryValueI32(CSTR("fileWId"), &fileId))
 		{
-			Data::ArrayListICaseString *fileNameList;
 			wfile = species->wfiles.Get(fileId);
 			if (wfile)
 			{
-				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
-				NEW_CLASS(writer, Text::UTF8Writer(mstm));
+				IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+				Text::UTF8Writer writer(&mstm);
 
 				sb.ClearStr();
 				sb.Append(cate->chiName);
@@ -4847,16 +4795,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(species->chiName);
 				sb.AppendC(UTF8STRC(" "));
 				sb.Append(species->engName);
-				me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-				writer->WriteStrC(UTF8STRC("<center><h1>"));
+				me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+				writer.WriteStrC(UTF8STRC("<center><h1>"));
 				s = Text::XML::ToNewHTMLText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteLineC(UTF8STRC("</h1></center>"));
+				writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-				writer->WriteLineC(UTF8STRC("<center>"));
-				writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-				writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+				writer.WriteLineC(UTF8STRC("<center>"));
+				writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+				writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 				i = (UOSInt)species->wfiles.GetIndex(fileId);
 				j = species->wfiles.GetCount();
@@ -4872,7 +4820,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				}
 				else
 				{
-					NEW_CLASS(fileNameList, Data::ArrayListICaseString());
+					Data::ArrayListICaseString fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -4886,13 +4834,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
 						IO::Path::FindFileClose(sess);
 					}
-					if (fileNameList->GetCount() > 0)
+					if (fileNameList.GetCount() > 0)
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("photodetail.html?id="));
@@ -4900,7 +4848,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(0)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(0)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -4954,8 +4902,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							sb.AppendI32(species->cateId);
 						}
 					}
-					LIST_FREE_STRING(fileNameList);
-					DEL_CLASS(fileNameList);
+					LIST_FREE_STRING(&fileNameList);
 				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
@@ -4963,7 +4910,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(">"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
@@ -4982,25 +4929,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(" border=\"0\"></a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-				writer->WriteLineC(UTF8STRC("</td></tr>"));
-				writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(UTF8STRC("</td></tr>"));
+				writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
-				writer->WriteStrC(UTF8STRC("<b>Image URL:</b> <a href="));
+				writer.WriteStrC(UTF8STRC("<b>Image URL:</b> <a href="));
 				s = Text::XML::ToNewAttrText(wfile->imgUrl->v);
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">"));
-				writer->WriteStrC(wfile->imgUrl->v, wfile->imgUrl->leng);
-				writer->WriteStrC(UTF8STRC("</a><br/>"));
+				writer.WriteStrC(UTF8STRC(">"));
+				writer.WriteStrC(wfile->imgUrl->v, wfile->imgUrl->leng);
+				writer.WriteStrC(UTF8STRC("</a><br/>"));
 
-				writer->WriteStrC(UTF8STRC("<b>Source URL:</b> <a href="));
+				writer.WriteStrC(UTF8STRC("<b>Source URL:</b> <a href="));
 				s = Text::XML::ToNewAttrText(wfile->srcUrl->v);
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">"));
-				writer->WriteStrC(wfile->srcUrl->v, wfile->srcUrl->leng);
-				writer->WriteStrC(UTF8STRC("</a><br/>"));
+				writer.WriteStrC(UTF8STRC(">"));
+				writer.WriteStrC(wfile->srcUrl->v, wfile->srcUrl->leng);
+				writer.WriteStrC(UTF8STRC("</a><br/>"));
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("species.html?id="));
@@ -5014,23 +4961,20 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				s->Release();
 				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-				writer->WriteLineC(UTF8STRC("</td></tr>"));
-				writer->WriteLineC(UTF8STRC("</table>"));
-				writer->WriteLineC(UTF8STRC("</center>"));
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(UTF8STRC("</td></tr>"));
+				writer.WriteLineC(UTF8STRC("</table>"));
+				writer.WriteLineC(UTF8STRC("</center>"));
 
-				me->WriteFooter(writer);
-				me->dataMut->UnlockRead();
-				ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-				DEL_CLASS(writer);
-				DEL_CLASS(mstm);
+				me->WriteFooter(&writer);
+				me->dataMut.UnlockRead();
+				ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 				return true;
 			}
 			else
 			{
 				resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-				me->dataMut->UnlockRead();
+				me->dataMut.UnlockRead();
 				return true;
 			}
 		}
@@ -5042,7 +4986,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				Text::String *imgURL = 0;
 				Bool found;
 				Bool foundNext;
-
 				{
 					sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 					sptr2 = Text::StrConcatC(Text::StrConcat(sbuff2, &fileName[4]), UTF8STRC("."));
@@ -5080,8 +5023,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 				if (found)
 				{
-					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
-					NEW_CLASS(writer, Text::UTF8Writer(mstm));
+					IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+					Text::UTF8Writer writer(&mstm);
 
 					sb.ClearStr();
 					sb.Append(cate->chiName);
@@ -5091,16 +5034,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(species->chiName);
 					sb.AppendC(UTF8STRC(" "));
 					sb.Append(species->engName);
-					me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-					writer->WriteStrC(UTF8STRC("<center><h1>"));
+					me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+					writer.WriteStrC(UTF8STRC("<center><h1>"));
 					s = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->WriteStrC(s->v, s->leng);
+					writer.WriteStrC(s->v, s->leng);
 					s->Release();
-					writer->WriteLineC(UTF8STRC("</h1></center>"));
+					writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-					writer->WriteLineC(UTF8STRC("<center>"));
-					writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-					writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+					writer.WriteLineC(UTF8STRC("<center>"));
+					writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+					writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 					if (foundNext)
 					{
 						sb.ClearStr();
@@ -5132,7 +5075,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(">"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photo.html?id="));
@@ -5151,25 +5094,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(" border=\"0\"></a>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
-					writer->WriteLineC(UTF8STRC("</td></tr>"));
-					writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(UTF8STRC("</td></tr>"));
+					writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
-					writer->WriteStrC(UTF8STRC("<b>Image URL:</b> <a href="));
+					writer.WriteStrC(UTF8STRC("<b>Image URL:</b> <a href="));
 					s = Text::XML::ToNewAttrText(imgURL->v);
-					writer->WriteStrC(s->v, s->leng);
+					writer.WriteStrC(s->v, s->leng);
 					s->Release();
-					writer->WriteStrC(UTF8STRC(">"));
-					writer->WriteStrC(imgURL->v, imgURL->leng);
-					writer->WriteStrC(UTF8STRC("</a><br/>"));
+					writer.WriteStrC(UTF8STRC(">"));
+					writer.WriteStrC(imgURL->v, imgURL->leng);
+					writer.WriteStrC(UTF8STRC("</a><br/>"));
 
-					writer->WriteStrC(UTF8STRC("<b>Source URL:</b> <a href="));
+					writer.WriteStrC(UTF8STRC("<b>Source URL:</b> <a href="));
 					s = Text::XML::ToNewAttrText(srcURL->v);
-					writer->WriteStrC(s->v, s->leng);
+					writer.WriteStrC(s->v, s->leng);
 					s->Release();
-					writer->WriteStrC(UTF8STRC(">"));
-					writer->WriteStrC(srcURL->v, srcURL->leng);
-					writer->WriteStrC(UTF8STRC("</a><br/>"));
+					writer.WriteStrC(UTF8STRC(">"));
+					writer.WriteStrC(srcURL->v, srcURL->leng);
+					writer.WriteStrC(UTF8STRC("</a><br/>"));
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("species.html?id="));
@@ -5183,17 +5126,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					s->Release();
 					sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 					sb.AppendC(UTF8STRC("</a>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
-					writer->WriteLineC(UTF8STRC("</td></tr>"));
-					writer->WriteLineC(UTF8STRC("</table>"));
-					writer->WriteLineC(UTF8STRC("</center>"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(UTF8STRC("</td></tr>"));
+					writer.WriteLineC(UTF8STRC("</table>"));
+					writer.WriteLineC(UTF8STRC("</center>"));
 
-					me->WriteFooter(writer);
-					me->dataMut->UnlockRead();
-					ResponseMstm(req, resp, mstm, CSTR("text/html"));
+					me->WriteFooter(&writer);
+					me->dataMut.UnlockRead();
+					ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 
-					DEL_CLASS(writer);
-					DEL_CLASS(mstm);
 					srcURL->Release();
 					imgURL->Release();
 					return true;
@@ -5201,14 +5142,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				else
 				{
 					resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-					me->dataMut->UnlockRead();
+					me->dataMut.UnlockRead();
 					return true;
 				}
 			}
 			else
 			{
-				Data::ArrayListICaseString *fileNameList;
-				NEW_CLASS(fileNameList, Data::ArrayListICaseString());
+				Data::ArrayListICaseString fileNameList;
 
 				sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -5221,24 +5161,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 							{
 								sptr2[-4] = 0;
-								fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
+								fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 							}
 						}
 					}
 					IO::Path::FindFileClose(sess);
-					i = (UOSInt)fileNameList->SortedIndexOfPtr(fileName, (UOSInt)(fileNameEnd - fileName));
+					i = (UOSInt)fileNameList.SortedIndexOfPtr(fileName, (UOSInt)(fileNameEnd - fileName));
 					if ((OSInt)i < 0)
 					{
-						LIST_FREE_STRING(fileNameList);
-						DEL_CLASS(fileNameList);
-
+						LIST_FREE_STRING(&fileNameList);
 						resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-						me->dataMut->UnlockRead();
+						me->dataMut.UnlockRead();
 						return true;
 					}
 
-					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
-					NEW_CLASS(writer, Text::UTF8Writer(mstm));
+					IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+					Text::UTF8Writer writer(&mstm);
 
 					sb.ClearStr();
 					sb.Append(cate->chiName);
@@ -5248,17 +5186,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(species->chiName);
 					sb.AppendC(UTF8STRC(" "));
 					sb.Append(species->engName);
-					me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-					writer->WriteStrC(UTF8STRC("<center><h1>"));
+					me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+					writer.WriteStrC(UTF8STRC("<center><h1>"));
 					s = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->WriteStrC(s->v, s->leng);
+					writer.WriteStrC(s->v, s->leng);
 					s->Release();
-					writer->WriteLineC(UTF8STRC("</h1></center>"));
+					writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-					writer->WriteLineC(UTF8STRC("<center>"));
-					writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-					writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
-					if (i < fileNameList->GetCount() - 1)
+					writer.WriteLineC(UTF8STRC("<center>"));
+					writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+					writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+					if (i < fileNameList.GetCount() - 1)
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("photodetail.html?id="));
@@ -5266,7 +5204,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(i + 1)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(i + 1)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -5326,7 +5264,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(">"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photo.html?id="));
@@ -5345,37 +5283,35 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(" border=\"0\"></a>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
-					writer->WriteLineC(UTF8STRC("</td></tr>"));
-					writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(UTF8STRC("</td></tr>"));
+					writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, fileName), UTF8STRC(".jpg"));
-					IO::StmData::FileData *fd;
-					Media::PhotoInfo *info;
-					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptrEnd - sbuff)}, false));
-					NEW_CLASS(info, Media::PhotoInfo(fd));
-					DEL_CLASS(fd);
-					if (info->HasInfo())
 					{
-						Data::DateTime dt;
-						sb.ClearStr();
-						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
-						writer->WriteStrC(UTF8STRC("</b> "));
-						info->ToString(&sb);
-						writer->WriteStrC(sb.ToString(), sb.GetLength());
-						writer->WriteStrC(UTF8STRC("<br/>"));
-						if (info->GetPhotoDate(&dt))
+						IO::StmData::FileData fd({sbuff, (UOSInt)(sptrEnd - sbuff)}, false);
+						Media::PhotoInfo info(&fd);
+						if (info.HasInfo())
 						{
-							writer->WriteStrC(UTF8STRC("<b>"));
-							writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
-							writer->WriteStrC(UTF8STRC("</b> "));
-							sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
-							writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-							writer->WriteStrC(UTF8STRC("<br/>"));
+							Data::DateTime dt;
+							sb.ClearStr();
+							writer.WriteStrC(UTF8STRC("<b>"));
+							writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+							writer.WriteStrC(UTF8STRC("</b> "));
+							info.ToString(&sb);
+							writer.WriteStrC(sb.ToString(), sb.GetLength());
+							writer.WriteStrC(UTF8STRC("<br/>"));
+							if (info.GetPhotoDate(&dt))
+							{
+								writer.WriteStrC(UTF8STRC("<b>"));
+								writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+								writer.WriteStrC(UTF8STRC("</b> "));
+								sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
+								writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+								writer.WriteStrC(UTF8STRC("<br/>"));
+							}
 						}
 					}
-					DEL_CLASS(info);
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("species.html?id="));
@@ -5389,32 +5325,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					s->Release();
 					sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 					sb.AppendC(UTF8STRC("</a>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
-					writer->WriteLineC(UTF8STRC("</td></tr>"));
-					writer->WriteLineC(UTF8STRC("</table>"));
-					writer->WriteLineC(UTF8STRC("</center>"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLineC(UTF8STRC("</td></tr>"));
+					writer.WriteLineC(UTF8STRC("</table>"));
+					writer.WriteLineC(UTF8STRC("</center>"));
 
-					me->WriteFooter(writer);
-					me->dataMut->UnlockRead();
-					ResponseMstm(req, resp, mstm, CSTR("text/html"));
+					me->WriteFooter(&writer);
+					me->dataMut.UnlockRead();
+					ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 
-					DEL_CLASS(writer);
-					DEL_CLASS(mstm);
-
-					LIST_FREE_STRING(fileNameList);
-					DEL_CLASS(fileNameList);
+					LIST_FREE_STRING(&fileNameList);
 					return true;
 				}
 				else
 				{
 					resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-					me->dataMut->UnlockRead();
-					DEL_CLASS(fileNameList);
+					me->dataMut.UnlockRead();
 					return true;
 				}
 			}
 		}
-		me->dataMut->UnlockRead();
+		me->dataMut.UnlockRead();
 	}
 	resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 	return true;
@@ -5433,8 +5364,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		req->GetQueryValueU32(CSTR("index"), &index))
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 
 		UTF8Char sbuff[512];
 		UTF8Char sbuff2[512];
@@ -5445,11 +5374,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		Data::DateTime dt;
 		IO::ConfigFile *lang = me->LangGet(req);
 
-		me->dataMut->LockRead();
+		me->dataMut.LockRead();
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile = 0;
 		if (env.user)
 		{
-			userFile = env.user->userFileObj->GetItem(index);
+			userFile = env.user->userFileObj.GetItem(index);
 			if (userFile)
 			{
 				if (userFile->id != fileId)
@@ -5461,25 +5390,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		if (userFile)
 		{
 			SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile2;
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetailD")));
-			NEW_CLASS(writer, Text::UTF8Writer(mstm));
+			IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetailD"));
+			Text::UTF8Writer writer(&mstm);
 
 			dt.SetTicks(userFile->captureTimeTicks);
 			dt.ToString(sbuff, "yyyy-MM-dd");
 
-			me->WriteHeader(writer, sbuff, env.user, env.isMobile);
-			writer->WriteStrC(UTF8STRC("<center><h1>"));
+			me->WriteHeader(&writer, sbuff, env.user, env.isMobile);
+			writer.WriteStrC(UTF8STRC("<center><h1>"));
 			s = Text::XML::ToNewHTMLText(sbuff);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</h1></center>"));
+			writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-			writer->WriteLineC(UTF8STRC("<center>"));
-			writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-			writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
-			species = me->spMap->Get(userFile->speciesId);
+			writer.WriteLineC(UTF8STRC("<center>"));
+			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+			writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+			species = me->spMap.Get(userFile->speciesId);
 
-			userFile2 = env.user->userFileObj->GetItem(index + 1);
+			userFile2 = env.user->userFileObj.GetItem(index + 1);
 			if (userFile2 && (userFile->captureTimeTicks / 86400000LL) == (userFile2->captureTimeTicks / 86400000LL))
 			{
 				sb.ClearStr();
@@ -5500,7 +5429,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC(">"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("photo.html?id="));
@@ -5519,15 +5448,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC(" border=\"0\"></a>"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
-			writer->WriteLineC(UTF8STRC("</td></tr>"));
-			writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(UTF8STRC("</td></tr>"));
+			writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 
 			if (userFile->fileType == 3)
 			{
 				Data::DateTime dt;
-				IO::StmData::FileData *fd;
 				UInt64 fileSize = 0;
 				Media::MediaFile *mediaFile;
 				sptr = me->dataDir->ConcatTo(sbuff);
@@ -5543,13 +5471,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				sptr = dt.ToString(sptr, "yyyyMM");
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = userFile->dataFileName->ConcatTo(sptr);
-				Sync::MutexUsage mutUsage(me->parserMut);
-				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-				fileSize = fd->GetDataSize();
-				mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-				DEL_CLASS(fd);
-				mutUsage.EndUse();
-
+				{
+					Sync::MutexUsage mutUsage(&me->parserMut);
+					IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+					fileSize = fd.GetDataSize();
+					mediaFile = (Media::MediaFile*)me->parsers.ParseFileType(&fd, IO::ParserType::MediaFile);
+				}
 				if (mediaFile)
 				{
 					sb.ClearStr();
@@ -5584,23 +5511,23 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 							sb.AppendC(UTF8STRC(" ch"));
 						}
 					}
-					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
-					writer->WriteStrC(UTF8STRC("</b> "));
-					writer->WriteStrC(sb.ToString(), sb.GetLength());
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer.WriteStrC(UTF8STRC("<b>"));
+					writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+					writer.WriteStrC(UTF8STRC("</b> "));
+					writer.WriteStrC(sb.ToString(), sb.GetLength());
+					writer.WriteStrC(UTF8STRC("<br/>"));
 					DEL_CLASS(mediaFile);
 				}
 				if (userFile->captureTimeTicks != 0)
 				{
 					dt.SetTicks(userFile->captureTimeTicks);
 					dt.ToLocalTime();
-					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
-					writer->WriteStrC(UTF8STRC("</b> "));
+					writer.WriteStrC(UTF8STRC("<b>"));
+					writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+					writer.WriteStrC(UTF8STRC("</b> "));
 					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
-					writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+					writer.WriteStrC(UTF8STRC("<br/>"));
 				}
 			}
 			else
@@ -5619,31 +5546,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = userFile->dataFileName->ConcatTo(sptr);
 
-				IO::StmData::FileData *fd;
-				Media::PhotoInfo *info;
-				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-				NEW_CLASS(info, Media::PhotoInfo(fd));
-				DEL_CLASS(fd);
-				if (info->HasInfo())
+				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+				Media::PhotoInfo info(&fd);
+				if (info.HasInfo())
 				{
 					sb.ClearStr();
-					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
-					writer->WriteStrC(UTF8STRC("</b> "));
-					info->ToString(&sb);
-					writer->WriteStrC(sb.ToString(), sb.GetLength());
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer.WriteStrC(UTF8STRC("<b>"));
+					writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+					writer.WriteStrC(UTF8STRC("</b> "));
+					info.ToString(&sb);
+					writer.WriteStrC(sb.ToString(), sb.GetLength());
+					writer.WriteStrC(UTF8STRC("<br/>"));
 
 					dt.SetTicks(userFile->captureTimeTicks);
 					dt.ToLocalTime();
-					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
-					writer->WriteStrC(UTF8STRC("</b> "));
+					writer.WriteStrC(UTF8STRC("<b>"));
+					writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+					writer.WriteStrC(UTF8STRC("</b> "));
 					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
-					writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+					writer.WriteStrC(UTF8STRC("<br/>"));
 				}
-				DEL_CLASS(info);
 			}
 
 			sb.ClearStr();
@@ -5656,23 +5579,20 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 			s->Release();
 			sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 			sb.AppendC(UTF8STRC("</a>"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
-			writer->WriteLineC(UTF8STRC("</td></tr>"));
-			writer->WriteLineC(UTF8STRC("</table>"));
-			writer->WriteLineC(UTF8STRC("</center>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(UTF8STRC("</td></tr>"));
+			writer.WriteLineC(UTF8STRC("</table>"));
+			writer.WriteLineC(UTF8STRC("</center>"));
 
-			me->WriteFooter(writer);
-			me->dataMut->UnlockRead();
-			ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-			DEL_CLASS(writer);
-			DEL_CLASS(mstm);
+			me->WriteFooter(&writer);
+			me->dataMut.UnlockRead();
+			ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 			return true;
 		}
 		else
 		{
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			return true;
 		}
 	}
@@ -5693,23 +5613,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 	if (env.user != 0 &&
 		req->GetQueryValueU16(CSTR("y"), &y))
 	{
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		Data::DateTime dt;
 		Data::DateTime dt2;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoYear")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoYear"));
+		Text::UTF8Writer writer(&mstm);
 
 		sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("Year ")), y);
-		me->WriteHeader(writer, sbuff, env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		me->WriteHeader(&writer, sbuff, env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		me->dataMut->LockRead();
+		me->dataMut.LockRead();
 		Int64 startTime;
 		Int64 endTime;
 		OSInt startIndex;
@@ -5720,26 +5638,26 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		dt.SetValue(y, 1, 1, 0, 0, 0, 0);
 		startTime = dt.ToTicks();
 
-		startIndex = env.user->userFileIndex->SortedIndexOf(startTime);
+		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
 		if (startIndex < 0)
 		{
 			startIndex = ~startIndex;
 		}
 		else
 		{
-			while (startIndex > 0 && env.user->userFileIndex->GetItem((UOSInt)startIndex - 1) == startTime)
+			while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
 			{
 				startIndex--;
 			}
 		}
-		endIndex = env.user->userFileIndex->SortedIndexOf(endTime);
+		endIndex = env.user->userFileIndex.SortedIndexOf(endTime);
 		if (endIndex < 0)
 		{
 			endIndex = ~endIndex;
 		}
 		else
 		{
-			while (endIndex > 0 && env.user->userFileIndex->GetItem((UOSInt)endIndex - 1) == endTime)
+			while (endIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
 			{
 				endIndex--;
 			}
@@ -5758,73 +5676,73 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		UOSInt i;
 		UOSInt j;
 		currColumn = 0;
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 
 		while (startIndex < endIndex)
 		{
-			dt.SetTicks(env.user->userFileIndex->GetItem((UOSInt)startIndex));
+			dt.SetTicks(env.user->userFileIndex.GetItem((UOSInt)startIndex));
 			if (dt.GetMonth() != month || dt.GetDay() != day)
 			{
 				if (month != 0 && day != 0)
 				{
-					userFile = env.user->userFileObj->GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
-					sp = me->spMap->Get(userFile->speciesId);
+					userFile = env.user->userFileObj.GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
+					sp = me->spMap.Get(userFile->speciesId);
 
 					if (currColumn == 0)
 					{
-						writer->WriteLineC(UTF8STRC("<tr>"));
+						writer.WriteLineC(UTF8STRC("<tr>"));
 					}
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<td width=\""));
 					sb.AppendU32(colWidth);
 					sb.AppendC(UTF8STRC("%\"><center>"));
-					writer->WriteStrC(sb.ToString(), sb.GetLength());
+					writer.WriteStrC(sb.ToString(), sb.GetLength());
 
-					writer->WriteStrC(UTF8STRC("<a href=\"photoday.html?d="));
+					writer.WriteStrC(UTF8STRC("<a href=\"photoday.html?d="));
 					dt2.SetValue(y, month, day, 0, 0, 0, 0);
 					sptr = Text::StrInt64(sbuff, dt2.ToTicks() / 86400000LL);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("\">"));
-					writer->WriteStrC(UTF8STRC("<img src=\"photo.html?id="));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("\">"));
+					writer.WriteStrC(UTF8STRC("<img src=\"photo.html?id="));
 					sptr = Text::StrInt32(sbuff, userFile->speciesId);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&amp;cateId="));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("&amp;cateId="));
 					sptr = Text::StrInt32(sbuff, sp->cateId);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&amp;width="));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("&amp;width="));
 					sptr = Text::StrInt32(sbuff, PREVIEW_SIZE);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&amp;height="));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("&amp;height="));
 					sptr = Text::StrInt32(sbuff, PREVIEW_SIZE);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&amp;fileId="));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("&amp;fileId="));
 					sptr = Text::StrInt32(sbuff, userFile->id);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("\" border=\"0\" ALT=\""));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("\" border=\"0\" ALT=\""));
 					sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUInt32(Text::StrConcatC(Text::StrInt32(sbuff, y), UTF8STRC("-")), month), UTF8STRC("-")), day);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("\" title=\""));
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("\" /></a><br/>"));
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("\" title=\""));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteStrC(UTF8STRC("\" /></a><br/>"));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 					i = 0;
 					j = locList.GetCount();
 					while (i < j)
 					{
 						Text::String *s = Text::XML::ToNewHTMLText(locList.GetItem(i));
-						writer->WriteStrC(UTF8STRC(" "));
-						writer->WriteStrC(s->v, s->leng);
+						writer.WriteStrC(UTF8STRC(" "));
+						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 						i++;
 					}
 
-					writer->WriteLineC(UTF8STRC("</center></td>"));
+					writer.WriteLineC(UTF8STRC("</center></td>"));
 
 					currColumn++;
 					if (currColumn >= colCount)
 					{
-						writer->WriteLineC(UTF8STRC("</tr>"));
+						writer.WriteLineC(UTF8STRC("</tr>"));
 						currColumn = 0;
 					}
 				}
@@ -5840,17 +5758,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 						sb.AppendC(UTF8STRC("%\"></td>"));
 						while (currColumn < colCount)
 						{
-							writer->WriteLineC(sb.ToString(), sb.GetLength());
+							writer.WriteLineC(sb.ToString(), sb.GetLength());
 							currColumn++;
 						}
-						writer->WriteLineC(UTF8STRC("</tr>"));
+						writer.WriteLineC(UTF8STRC("</tr>"));
 					}
-					writer->WriteLineC(UTF8STRC("</table><hr/>"));
-					writer->WriteStrC(UTF8STRC("<h2>"));
+					writer.WriteLineC(UTF8STRC("</table><hr/>"));
+					writer.WriteStrC(UTF8STRC("<h2>"));
 					sptr = Text::StrUInt32(Text::StrConcatC(Text::StrInt32(sbuff, y), UTF8STRC("-")), month);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteLineC(UTF8STRC("</h2>"));
-					writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer.WriteLineC(UTF8STRC("</h2>"));
+					writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 					currColumn = 0;
 				}
 				day = dt.GetDay();
@@ -5859,7 +5777,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 			}
 
 			const UTF8Char *locName = (const UTF8Char*)"?";
-			userFile = env.user->userFileObj->GetItem((UOSInt)startIndex);
+			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
 			if (userFile->location)
 			{
 				locName = userFile->location->v;
@@ -5894,63 +5812,63 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		}
 		if (month != 0 && day != 0)
 		{
-			userFile = env.user->userFileObj->GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
-			sp = me->spMap->Get(userFile->speciesId);
+			userFile = env.user->userFileObj.GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
+			sp = me->spMap.Get(userFile->speciesId);
 			if (currColumn == 0)
 			{
-				writer->WriteLineC(UTF8STRC("<tr>"));
+				writer.WriteLineC(UTF8STRC("<tr>"));
 			}
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<td width=\""));
 			sb.AppendU32(colWidth);
 			sb.AppendC(UTF8STRC("%\"><center>"));
-			writer->WriteStrC(sb.ToString(), sb.GetLength());
+			writer.WriteStrC(sb.ToString(), sb.GetLength());
 
-			writer->WriteStrC(UTF8STRC("<a href=\"photoday.html?d="));
+			writer.WriteStrC(UTF8STRC("<a href=\"photoday.html?d="));
 			dt2.SetValue(y, month, day, 0, 0, 0, 0);
 			sptr = Text::StrInt64(sbuff, dt2.ToTicks() / 86400000LL);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("\">"));
-			writer->WriteStrC(UTF8STRC("<img src=\"photo.html?id="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\">"));
+			writer.WriteStrC(UTF8STRC("<img src=\"photo.html?id="));
 			sptr = Text::StrInt32(sbuff, userFile->speciesId);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("&amp;cateId="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("&amp;cateId="));
 			sptr = Text::StrInt32(sbuff, sp->cateId);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("&amp;width="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("&amp;width="));
 			sptr = Text::StrInt32(sbuff, PREVIEW_SIZE);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("&amp;height="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("&amp;height="));
 			sptr = Text::StrInt32(sbuff, PREVIEW_SIZE);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("&amp;fileId="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("&amp;fileId="));
 			sptr = Text::StrInt32(sbuff, userFile->id);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("\" border=\"0\" ALT=\""));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\" border=\"0\" ALT=\""));
 			sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUInt32(Text::StrConcatC(Text::StrInt32(sbuff, y), UTF8STRC("-")), month), UTF8STRC("-")), day);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("\" title=\""));
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("\" /></a><br/>"));
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\" title=\""));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\" /></a><br/>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			i = 0;
 			j = locList.GetCount();
 			while (i < j)
 			{
 				Text::String *s = Text::XML::ToNewHTMLText(locList.GetItem(i));
-				writer->WriteStrC(UTF8STRC(" "));
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(UTF8STRC(" "));
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
 				i++;
 			}
 
-			writer->WriteLineC(UTF8STRC("</center></td>"));
+			writer.WriteLineC(UTF8STRC("</center></td>"));
 
 			currColumn++;
 			if (currColumn >= colCount)
 			{
-				writer->WriteLineC(UTF8STRC("</tr>"));
+				writer.WriteLineC(UTF8STRC("</tr>"));
 				currColumn = 0;
 			}
 		}
@@ -5962,20 +5880,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 			sb.AppendC(UTF8STRC("%\"></td>"));
 			while (currColumn < colCount)
 			{
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				currColumn++;
 			}
-			writer->WriteLineC(UTF8STRC("</tr>"));
+			writer.WriteLineC(UTF8STRC("</tr>"));
 		}
-		writer->WriteLineC(UTF8STRC("</table><hr/>"));
-		writer->WriteLineC(UTF8STRC("<a href=\"/\">Index</a><br/>"));
-		me->dataMut->UnlockRead();
+		writer.WriteLineC(UTF8STRC("</table><hr/>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/\">Index</a><br/>"));
+		me->dataMut.UnlockRead();
 
-		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -5995,24 +5910,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 	if (env.user != 0 &&
 		req->GetQueryValueI32(CSTR("d"), &d))
 	{
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		Text::String *s;
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDay")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDay"));
+		Text::UTF8Writer writer(&mstm);
 
 		dt.SetTicks(d * 86400000LL);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-		me->WriteHeader(writer, sbuff, env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		me->WriteHeader(&writer, sbuff, env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		me->dataMut->LockRead();
+		me->dataMut.LockRead();
 		Int64 startTime;
 		Int64 endTime;
 		OSInt startIndex;
@@ -6021,26 +5934,26 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		startTime = d * 86400000LL;
 		endTime = startTime + 86400000LL;
 
-		startIndex = env.user->userFileIndex->SortedIndexOf(startTime);
+		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
 		if (startIndex < 0)
 		{
 			startIndex = ~startIndex;
 		}
 		else
 		{
-			while (startIndex > 0 && env.user->userFileIndex->GetItem((UOSInt)startIndex - 1) == startTime)
+			while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
 			{
 				startIndex--;
 			}
 		}
-		endIndex = env.user->userFileIndex->SortedIndexOf(endTime);
+		endIndex = env.user->userFileIndex.SortedIndexOf(endTime);
 		if (endIndex < 0)
 		{
 			endIndex = ~endIndex;
 		}
 		else
 		{
-			while (endIndex > 0 && env.user->userFileIndex->GetItem((UOSInt)endIndex - 1) == endTime)
+			while (endIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
 			{
 				endIndex--;
 			}
@@ -6051,22 +5964,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		UInt32 colWidth = 100 / colCount;
 		UInt32 currColumn;
 		currColumn = 0;
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 			
 		while (startIndex < endIndex)
 		{
-			userFile = env.user->userFileObj->GetItem((UOSInt)startIndex);
-			sp = me->spMap->Get(userFile->speciesId);
+			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
+			sp = me->spMap.Get(userFile->speciesId);
 			if (currColumn == 0)
 			{
-				writer->WriteLineC(UTF8STRC("<tr>"));
+				writer.WriteLineC(UTF8STRC("<tr>"));
 			}
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<td width=\""));
 			sb.AppendU32(colWidth);
 			sb.AppendC(UTF8STRC("%\">"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("photodetaild.html?fileId="));
 			sb.AppendI32(userFile->id);
@@ -6077,10 +5990,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("<center><a href="));
 			sb.Append(s);
 			sb.AppendC(UTF8STRC(">"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			s->Release();
 
-			writer->WriteStrC(UTF8STRC("<img src="));
+			writer.WriteStrC(UTF8STRC("<img src="));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("photo.html?id="));
 			sb.AppendI32(sp->speciesId);
@@ -6093,21 +6006,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("&fileId="));
 			sb.AppendI32(userFile->id);
 			s = Text::XML::ToNewAttrText(sb.ToString());
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteStrC(UTF8STRC(" border=\"0\">"));
-			writer->WriteStrC(UTF8STRC("</a>"));
+			writer.WriteStrC(UTF8STRC(" border=\"0\">"));
+			writer.WriteStrC(UTF8STRC("</a>"));
 
 			dt.SetTicks(userFile->captureTimeTicks);
 			sptr = dt.ToString(sbuff, "HH:mm:ss");
-			writer->WriteStrC(UTF8STRC("<br/>"));
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("<br/>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 
 			if (userFile->location)
 			{
-				writer->WriteStrC(UTF8STRC(" "));
+				writer.WriteStrC(UTF8STRC(" "));
 				s = Text::XML::ToNewHTMLText(userFile->location->v);
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
 			}
 
@@ -6125,9 +6038,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 					SSWR::OrganMgr::OrganWebHandler::LocationInfo *loc = this->locMap->Get(trip->locId);
 					if (loc)
 					{
-						writer->WriteStrC(UTF8STRC(" "));
+						writer.WriteStrC(UTF8STRC(" "));
 						txt = Text::XML::ToNewHTMLText(loc->cname);
-						writer->Write(txt);
+						writer.Write(txt);
 						Text::XML::FreeNewText(txt);
 					}
 				}
@@ -6135,9 +6048,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 
 			if (userFile->descript)
 			{
-				writer->WriteStrC(UTF8STRC("<br/>"));
+				writer.WriteStrC(UTF8STRC("<br/>"));
 				s = Text::XML::ToNewHTMLText(userFile->descript->v);
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
 			}
 			if (userFile->lat != 0 || userFile->lon != 0)
@@ -6154,14 +6067,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 				Text::SBAppendF64(&sb, userFile->lon);
 				sb.AppendC(UTF8STRC(",19z\">"));
 				sb.AppendC(UTF8STRC("Google Map</a>"));
-				writer->WriteStrC(sb.ToString(), sb.GetLength());
+				writer.WriteStrC(sb.ToString(), sb.GetLength());
 			}
-			writer->WriteLineC(UTF8STRC("</center></td>"));
+			writer.WriteLineC(UTF8STRC("</center></td>"));
 
 			currColumn++;
 			if (currColumn >= colCount)
 			{
-				writer->WriteLineC(UTF8STRC("</tr>"));
+				writer.WriteLineC(UTF8STRC("</tr>"));
 				currColumn = 0;
 			}
 			startIndex++;
@@ -6175,26 +6088,23 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("%\"></td>"));
 			while (currColumn < colCount)
 			{
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				currColumn++;
 			}
-			writer->WriteLineC(UTF8STRC("</tr>"));
+			writer.WriteLineC(UTF8STRC("</tr>"));
 		}
-		writer->WriteLineC(UTF8STRC("</table><hr/>"));
+		writer.WriteLineC(UTF8STRC("</table><hr/>"));
 		sptr = Text::StrUInt32(sbuff, dt.GetYear());
-		writer->WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Year "));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("</a><br/>"));
-		writer->WriteLineC(UTF8STRC("<a href=\"/\">Index</a><br/>"));
-		me->dataMut->UnlockRead();
+		writer.WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("\">Year "));
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("</a><br/>"));
+		writer.WriteLineC(UTF8STRC("<a href=\"/\">Index</a><br/>"));
+		me->dataMut.UnlockRead();
 
-		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -6222,17 +6132,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	const UInt8 *fileCont;
-	IO::MemoryStream *mstm;
-	Text::UTF8Writer *writer;
 	Text::String *s;
 	req->ParseHTTPForm();
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoUpload")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoUpload"));
+	Text::UTF8Writer writer(&mstm);
 
-	me->WriteHeader(writer, (const UTF8Char*)"Photo Upload", env.user, env.isMobile);
-	writer->WriteLineC(UTF8STRC("<table border=\"1\">"));
-	writer->WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
+	me->WriteHeader(&writer, (const UTF8Char*)"Photo Upload", env.user, env.isMobile);
+	writer.WriteLineC(UTF8STRC("<table border=\"1\">"));
+	writer.WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
 	while (true)
 	{
 		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
@@ -6240,33 +6148,33 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 		{
 			break;
 		}
-		writer->WriteStrC(UTF8STRC("<tr><td>"));
+		writer.WriteStrC(UTF8STRC("<tr><td>"));
 		s = Text::XML::ToNewHTMLText(fileName);
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteStrC(UTF8STRC("</td><td>"));
+		writer.WriteStrC(UTF8STRC("</td><td>"));
 		sptr = Text::StrUOSInt(sbuff, fileSize);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("</td><td>"));
-		me->dataMut->LockWrite();
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("</td><td>"));
+		me->dataMut.LockWrite();
 		Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize);
-		me->dataMut->UnlockWrite();
+		me->dataMut.UnlockWrite();
 		if (ret == 0)
 		{
-			writer->WriteStrC(UTF8STRC("Failed"));
+			writer.WriteStrC(UTF8STRC("Failed"));
 		}
 		else
 		{
-			writer->WriteStrC(UTF8STRC("Success"));
+			writer.WriteStrC(UTF8STRC("Success"));
 		}
 /*
-		IO::StmData::MemoryData *fd;
 		Media::ImageList *imgList;
-		NEW_CLASS(fd, IO::StmData::MemoryData(fileCont, fileSize));
-		me->parserMut->Lock();
-		imgList = (Media::ImageList*)me->parsers->ParseFileType(fd, IO::ParserType::ImageList);
-		me->parserMut->Unlock();
-		DEL_CLASS(fd);
+		{
+			IO::StmData::MemoryData fd(fileCont, fileSize);
+			me->parserMut->Lock();
+			imgList = (Media::ImageList*)me->parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+			me->parserMut->Unlock();
+		}
 		if (imgList)
 		{
 			Int32 imgDelay;
@@ -6274,28 +6182,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 			if (img)
 			{
 				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info.dispWidth), UTF8STRC(" x ")), img->info.dispHeight);
-				writer->Write(sbuff);
+				writer.Write(sbuff);
 			}
 			else
 			{
-				writer->WriteStrC(UTF8STRC("-"));
+				writer.WriteStrC(UTF8STRC("-"));
 			}
 			DEL_CLASS(imgList);
 		}
 		else
 		{
-			writer->WriteStrC(UTF8STRC("-"));
+			writer.WriteStrC(UTF8STRC("-"));
 		}*/
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
+		writer.WriteLineC(UTF8STRC("</td></tr>"));
 		i++;
 	}
-	writer->WriteLineC(UTF8STRC("</table>"));
-	me->WriteFooter(writer);
+	writer.WriteLineC(UTF8STRC("</table>"));
+	me->WriteFooter(&writer);
 
-	ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-	DEL_CLASS(writer);
-	DEL_CLASS(mstm);
+	ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 	return true;
 }
 
@@ -6326,9 +6231,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 		return true;
 	}
 
-	me->dataMut->LockWrite();
+	me->dataMut.LockWrite();
 	Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize);
-	me->dataMut->UnlockWrite();
+	me->dataMut.UnlockWrite();
 
 	if (ret == 0)
 	{
@@ -6361,8 +6266,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		(searchStr = req->GetHTTPFormStr(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -6371,25 +6274,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->LangGet(req);
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 		if (group == 0 || group->cateId != cateId || (me->GroupIsAdmin(group) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0 || ((cate->flags & 1) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInside")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInside"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -6397,37 +6300,37 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-		writer->WriteLineC(UTF8STRC("<tr>"));
-		writer->WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
-		writer->WriteLineC(UTF8STRC("</form></td>"));
-		writer->WriteLineC(UTF8STRC("</tr>"));
-		writer->WriteLineC(UTF8STRC("</table>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
+		writer.WriteLineC(UTF8STRC("</form></td>"));
+		writer.WriteLineC(UTF8STRC("</tr>"));
+		writer.WriteLineC(UTF8STRC("</table>"));
 
-		me->WriteLocator(writer, group, cate);
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		me->WriteLocator(&writer, group, cate);
+		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (group->descript)
 		{
 			s = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListDbl speciesIndice;
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> speciesObjs;
@@ -6436,11 +6339,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		sb.ClearStr();
 		sb.Append(searchStr);
 		sb.Trim();
-		writer->WriteStrC(UTF8STRC("Result for \""));
+		writer.WriteStrC(UTF8STRC("Result for \""));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("\"<br/>"));
+		writer.WriteLineC(UTF8STRC("\"<br/>"));
 		me->SearchInGroup(group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
 		Bool found = false;
@@ -6461,11 +6364,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			{
 				speciesList.Add(speciesObjs.GetItem(i));
 			}
-			me->WriteSpeciesTable(writer, &speciesList, env.scnWidth, group->cateId, false);
+			me->WriteSpeciesTable(&writer, &speciesList, env.scnWidth, group->cateId, false);
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer.WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemores.html?id="));
 				sb.AppendI32(group->id);
@@ -6474,11 +6377,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">More</a><br/>"));
+				writer.WriteStrC(UTF8STRC(">More</a><br/>"));
 			}
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;
 		}
 		if (groupObjs.GetCount() > 0)
@@ -6497,11 +6400,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			{
 				groupList.Add(groupObjs.GetItem(i));
 			}
-			me->WriteGroupTable(writer, &groupList, env.scnWidth, false);
+			me->WriteGroupTable(&writer, &groupList, env.scnWidth, false);
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer.WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
 				sb.AppendI32(group->id);
@@ -6510,34 +6413,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">More</a><br/>"));
+				writer.WriteStrC(UTF8STRC(">More</a><br/>"));
 			}
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;
 		}
 		if (!found)
 		{
-			writer->WriteLineC(UTF8STRC("No object found<br/>"));
+			writer.WriteLineC(UTF8STRC("No object found<br/>"));
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -6563,8 +6463,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -6573,25 +6471,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->LangGet(req);
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 		if (group == 0 || group->cateId != cateId || (me->GroupIsAdmin(group) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0 || ((cate->flags & 1) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreS")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreS"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -6599,37 +6497,37 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-		writer->WriteLineC(UTF8STRC("<tr>"));
-		writer->WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
-		writer->WriteLineC(UTF8STRC("</form></td>"));
-		writer->WriteLineC(UTF8STRC("</tr>"));
-		writer->WriteLineC(UTF8STRC("</table>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
+		writer.WriteLineC(UTF8STRC("</form></td>"));
+		writer.WriteLineC(UTF8STRC("</tr>"));
+		writer.WriteLineC(UTF8STRC("</table>"));
 
-		me->WriteLocator(writer, group, cate);
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		me->WriteLocator(&writer, group, cate);
+		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (group->descript)
 		{
 			s = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListDbl speciesIndice;
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> speciesObjs;
@@ -6638,11 +6536,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		sb.ClearStr();
 		sb.Append(searchStr);
 		sb.Trim();
-		writer->WriteStrC(UTF8STRC("Result for \""));
+		writer.WriteStrC(UTF8STRC("Result for \""));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("\"<br/>"));
+		writer.WriteLineC(UTF8STRC("\"<br/>"));
 		me->SearchInGroup(group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
 		Bool found = false;
@@ -6660,11 +6558,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			{
 				speciesList.Add(speciesObjs.GetItem(j));
 			}
-			me->WriteSpeciesTable(writer, &speciesList, env.scnWidth, group->cateId, false);
+			me->WriteSpeciesTable(&writer, &speciesList, env.scnWidth, group->cateId, false);
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer.WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemores.html?id="));
 				sb.AppendI32(group->id);
@@ -6675,14 +6573,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">Prev</a> "));
+				writer.WriteStrC(UTF8STRC(">Prev</a> "));
 			}
 			if (i > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
-				writer->WriteStrC(UTF8STRC(" <a href="));
+				writer.WriteStrC(UTF8STRC(" <a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemores.html?id="));
 				sb.AppendI32(group->id);
@@ -6693,34 +6591,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">Next</a>"));
+				writer.WriteStrC(UTF8STRC(">Next</a>"));
 			}
-			writer->WriteLineC(UTF8STRC("<br/><hr/>"));
+			writer.WriteLineC(UTF8STRC("<br/><hr/>"));
 			found = true;
 		}
 		if (!found)
 		{
-			writer->WriteLineC(UTF8STRC("No object found<br/>"));
+			writer.WriteLineC(UTF8STRC("No object found<br/>"));
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -6746,8 +6641,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -6756,25 +6649,25 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->LangGet(req);
-		me->dataMut->LockRead();
-		group = me->groupMap->Get(id);
+		me->dataMut.LockRead();
+		group = me->groupMap.Get(id);
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 		if (group == 0 || group->cateId != cateId || (me->GroupIsAdmin(group) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		cate = me->cateMap->Get(group->cateId);
+		cate = me->cateMap.Get(group->cateId);
 		if (cate == 0 || ((cate->flags & 1) && notAdmin))
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreG")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreG"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -6782,37 +6675,37 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-		writer->WriteLineC(UTF8STRC("<tr>"));
-		writer->WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteStrC(UTF8STRC("<td><form method=\"POST\" action=\"searchinside.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
-		writer->WriteLineC(UTF8STRC("</form></td>"));
-		writer->WriteLineC(UTF8STRC("</tr>"));
-		writer->WriteLineC(UTF8STRC("</table>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Search inside: <input type=\"text\" name=\"searchStr\"/><input type=\"submit\"/>"));
+		writer.WriteLineC(UTF8STRC("</form></td>"));
+		writer.WriteLineC(UTF8STRC("</tr>"));
+		writer.WriteLineC(UTF8STRC("</table>"));
 
-		me->WriteLocator(writer, group, cate);
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		me->WriteLocator(&writer, group, cate);
+		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (group->descript)
 		{
 			s = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListDbl speciesIndice;
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> speciesObjs;
@@ -6821,11 +6714,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		sb.ClearStr();
 		sb.Append(searchStr);
 		sb.Trim();
-		writer->WriteStrC(UTF8STRC("Result for \""));
+		writer.WriteStrC(UTF8STRC("Result for \""));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("\"<br/>"));
+		writer.WriteLineC(UTF8STRC("\"<br/>"));
 		me->SearchInGroup(group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
 		Bool found = false;
@@ -6843,11 +6736,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 			{
 				groupList.Add(groupObjs.GetItem(j));
 			}
-			me->WriteGroupTable(writer, &groupList, env.scnWidth, false);
+			me->WriteGroupTable(&writer, &groupList, env.scnWidth, false);
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer.WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
 				sb.AppendI32(group->id);
@@ -6858,14 +6751,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">Prev</a> "));
+				writer.WriteStrC(UTF8STRC(">Prev</a> "));
 			}
 			if (i > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
-				writer->WriteStrC(UTF8STRC(" <a href="));
+				writer.WriteStrC(UTF8STRC(" <a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
 				sb.AppendI32(group->id);
@@ -6876,34 +6769,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer.WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">Next</a>"));
+				writer.WriteStrC(UTF8STRC(">Next</a>"));
 			}
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 			found = true;
 		}
 		if (!found)
 		{
-			writer->WriteLineC(UTF8STRC("No object found<br/>"));
+			writer.WriteLineC(UTF8STRC("No object found<br/>"));
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"group.html?id="));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(group->id);
 		sb.AppendC(UTF8STRC("&cateId="));
 		sb.AppendI32(group->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -6923,8 +6813,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		Data::Int64Map<BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -6936,38 +6824,38 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		IO::ConfigFile *lang = me->LangGet(req);
-		me->dataMut->LockRead();
-		cate = me->cateMap->Get(id);
+		me->dataMut.LockRead();
+		cate = me->cateMap.Get(id);
 		if (cate == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcBookList")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcBookList"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
 		sb.AppendC(UTF8STRC(" - "));
 		sb.AppendC(UTF8STRC("Book List"));
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-		writer->WriteLineC(UTF8STRC("<tr>"));
-		writer->WriteLineC(UTF8STRC("<td>Book Name</td>"));
-		writer->WriteLineC(UTF8STRC("<td>Author</td>"));
-		writer->WriteLineC(UTF8STRC("<td>Press</td>"));
-		writer->WriteLineC(UTF8STRC("<td>Publish Date</td>"));
-		writer->WriteLineC(UTF8STRC("</tr>"));
+		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteLineC(UTF8STRC("<td>Book Name</td>"));
+		writer.WriteLineC(UTF8STRC("<td>Author</td>"));
+		writer.WriteLineC(UTF8STRC("<td>Press</td>"));
+		writer.WriteLineC(UTF8STRC("<td>Publish Date</td>"));
+		writer.WriteLineC(UTF8STRC("</tr>"));
 
-		bookList = me->bookMap->GetValues();
+		bookList = me->bookMap.GetValues();
 		i = 0;
 		j = bookList->GetCount();
 		while (i < j)
@@ -6984,62 +6872,59 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		{
 			book = bookList->GetItem(i);
 
-			writer->WriteLineC(UTF8STRC("<tr>"));
-			writer->WriteStrC(UTF8STRC("<td><a href=\"book.html?id="));
+			writer.WriteLineC(UTF8STRC("<tr>"));
+			writer.WriteStrC(UTF8STRC("<td><a href=\"book.html?id="));
 			sptr = Text::StrInt32(sbuff, book->id);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("&amp;cateId="));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("&amp;cateId="));
 			sptr = Text::StrInt32(sbuff, cate->cateId);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteStrC(UTF8STRC("\">"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("\">"));
 			sb.ClearStr();
 			s = Text::XML::ToNewHTMLText(book->title->v);
 			sb.Append(s);
 			sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
 			sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
-			writer->WriteStrC(sb.ToString(), sb.GetLength());
+			writer.WriteStrC(sb.ToString(), sb.GetLength());
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</a></td>"));
-			writer->WriteStrC(UTF8STRC("<td>"));
+			writer.WriteLineC(UTF8STRC("</a></td>"));
+			writer.WriteStrC(UTF8STRC("<td>"));
 			s = Text::XML::ToNewHTMLText(book->author->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</td>"));
-			writer->WriteStrC(UTF8STRC("<td>"));
+			writer.WriteLineC(UTF8STRC("</td>"));
+			writer.WriteStrC(UTF8STRC("<td>"));
 			s = Text::XML::ToNewHTMLText(book->press->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</td>"));
-			writer->WriteStrC(UTF8STRC("<td>"));
+			writer.WriteLineC(UTF8STRC("</td>"));
+			writer.WriteStrC(UTF8STRC("<td>"));
 			dt.SetTicks(book->publishDate);
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC("</td>"));
-			writer->WriteLineC(UTF8STRC("</tr>"));
+			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("</td>"));
+			writer.WriteLineC(UTF8STRC("</tr>"));
 
 			i++;
 		}
 
 
-		writer->WriteLineC(UTF8STRC("</table>"));
-		writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteStrC(UTF8STRC("<a href="));
+		writer.WriteLineC(UTF8STRC("</table>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<a href="));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("cate.html?cateName="));
 		sb.Append(cate->dirName);
 		s = Text::XML::ToNewAttrText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteStrC(UTF8STRC(">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteStrC(UTF8STRC("</a>"));
+		writer.WriteStrC(UTF8STRC(">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStrC(UTF8STRC("</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -7063,8 +6948,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		Data::Int64Map<BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
@@ -7079,67 +6962,67 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		UOSInt j;
 		IO::ConfigFile *lang = me->LangGet(req);
 		Text::StringBuilderUTF8 sb;
-		me->dataMut->LockRead();
-		cate = me->cateMap->Get(cateId);
+		me->dataMut.LockRead();
+		cate = me->cateMap.Get(cateId);
 		if (cate == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		book = me->bookMap->Get(id);
+		book = me->bookMap.Get(id);
 		if (book == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcBook")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcBook"));
+		Text::UTF8Writer writer(&mstm);
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
-		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
-		writer->WriteStrC(UTF8STRC("<b>Book Name:</b> "));
+		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> "));
 		s = Text::XML::ToNewHTMLText(book->title->v);
 		sb.ClearStr();
 		sb.Append(s);
 		s->Release();
 		sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
 		sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(UTF8STRC("<br/>"));
 
-		writer->WriteStrC(UTF8STRC("<b>Author:</b> "));
+		writer.WriteStrC(UTF8STRC("<b>Author:</b> "));
 		s = Text::XML::ToNewHTMLText(book->author->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
 
-		writer->WriteStrC(UTF8STRC("<b>Press:</b> "));
+		writer.WriteStrC(UTF8STRC("<b>Press:</b> "));
 		s = Text::XML::ToNewHTMLText(book->press->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
 
 		if (book->url)
 		{
-			writer->WriteStrC(UTF8STRC("<b>URL:</b> <a href="));
+			writer.WriteStrC(UTF8STRC("<b>URL:</b> <a href="));
 			s = Text::XML::ToNewAttrText(book->url->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteStrC(UTF8STRC(">"));
+			writer.WriteStrC(UTF8STRC(">"));
 			s = Text::XML::ToNewHTMLText(book->url->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</a><br/>"));
+			writer.WriteLineC(UTF8STRC("</a><br/>"));
 		}
 
 		if (env.user && env.user->userType == 0)
@@ -7150,7 +7033,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 				sb.AppendC(UTF8STRC("<b>View:</b> <a href=\"bookview.html?id="));
 				sb.AppendI32(id);
 				sb.AppendC(UTF8STRC("\">here</a><br/>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 		}
 
@@ -7159,7 +7042,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		while (i < j)
 		{
 			bookSp = book->species.GetItem(i);
-			species = me->spMap->Get(bookSp->speciesId);
+			species = me->spMap.Get(bookSp->speciesId);
 			if (species)
 			{
 				speciesMap.Put(species->sciName, species);
@@ -7175,7 +7058,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		{
 			perPage = SP_PER_PAGE_DESKTOP;
 		}
-		writer->WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLineC(UTF8STRC("<br/>"));
 		if (pageNo > 0)
 		{
 			sb.ClearStr();
@@ -7190,7 +7073,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			sb.AppendU32(perPage);
 			sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 			sb.AppendC(UTF8STRC("</a>"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		if ((pageNo + 1) * perPage < speciesMap.GetCount())
 		{
@@ -7206,7 +7089,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			sb.AppendU32(perPage);
 			sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 			sb.AppendC(UTF8STRC("&gt;</a>"));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		i = pageNo * perPage;
 		j = i + perPage;
@@ -7219,22 +7102,19 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			tempList.Add(speciesMap.GetItem(i));
 			i++;
 		}
-		writer->WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteSpeciesTable(writer, &tempList, env.scnWidth, cateId, false);
-		writer->WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+		me->WriteSpeciesTable(&writer, &tempList, env.scnWidth, cateId, false);
+		writer.WriteLineC(UTF8STRC("<hr/>"));
 
-		writer->WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStrC(UTF8STRC("Book List</a>"));
+		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteStrC(UTF8STRC("\">"));
+		writer.WriteStrC(UTF8STRC("Book List</a>"));
 
-		me->WriteFooter(writer);
-		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		me->dataMut.UnlockRead();
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -7256,17 +7136,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		BookInfo *book;
-		me->dataMut->LockRead();
-		book = me->bookMap->Get(id);
+		me->dataMut.LockRead();
+		book = me->bookMap.Get(id);
 		if (env.user == 0 || env.user->userType != 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
 			return true;
 		}
 		else if (book == 0)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
@@ -7284,13 +7164,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 		UInt64 fileLen = fs.GetLength();
 		if (fileLen <= 16)
 		{
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 
 		}
 
-		me->dataMut->UnlockRead();
+		me->dataMut.UnlockRead();
 
 		resp->AddDefHeaders(req);
 		resp->AddContentType(CSTR("application/pdf"));
@@ -7323,13 +7203,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
 	me->ParseRequestEnv(req, resp, &env, false);
 
-	IO::MemoryStream *mstm;
-	IO::Writer *writer;
 	Data::DateTime dt;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 
-	if (env.user)
+	if (env.user || !req->IsSecure())
 	{
 		resp->RedirectURL(req, CSTR("/"), 0);
 		return true;
@@ -7342,11 +7220,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 		if (userName && pwd)
 		{
 			sptr = me->PasswordEnc(sbuff, pwd->ToCString());
-			me->dataMut->LockRead();
-			env.user = me->userNameMap->Get(userName);
+			me->dataMut.LockRead();
+			env.user = me->userNameMap.Get(userName);
 			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
-				me->dataMut->UnlockRead();
+				me->dataMut.UnlockRead();
 				Net::WebServer::IWebSession *sess = me->sessMgr->CreateSession(req, resp);
 				Data::DateTime *t;
 				Data::ArrayListInt32 *pickObjs;
@@ -7358,52 +7236,46 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 				sess->SetValueInt32(UTF8STRC("PickObjType"), 0);
 				sess->EndUse();
 
-				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin")));
-				NEW_CLASS(writer, Text::UTF8Writer(mstm));
+				IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin"));
+				Text::UTF8Writer writer(&mstm);
 
-				me->dataMut->LockRead();
-				me->WriteHeaderPart1(writer, (const UTF8Char*)"Index", env.isMobile);
-				writer->WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
-				writer->WriteLineC(UTF8STRC("function afterLoad()"));
-				writer->WriteLineC(UTF8STRC("{"));
-				writer->WriteLineC(UTF8STRC("	document.location.replace('/');"));
-				writer->WriteLineC(UTF8STRC("}"));
-				writer->WriteLineC(UTF8STRC("</script>"));
-				me->WriteHeaderPart2(writer, 0, (const UTF8Char*)"afterLoad()");
-				writer->WriteLineC(UTF8STRC("Login succeeded"));
-				me->dataMut->UnlockRead();
+				me->dataMut.LockRead();
+				me->WriteHeaderPart1(&writer, (const UTF8Char*)"Index", env.isMobile);
+				writer.WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
+				writer.WriteLineC(UTF8STRC("function afterLoad()"));
+				writer.WriteLineC(UTF8STRC("{"));
+				writer.WriteLineC(UTF8STRC("	document.location.replace('/');"));
+				writer.WriteLineC(UTF8STRC("}"));
+				writer.WriteLineC(UTF8STRC("</script>"));
+				me->WriteHeaderPart2(&writer, 0, (const UTF8Char*)"afterLoad()");
+				writer.WriteLineC(UTF8STRC("Login succeeded"));
+				me->dataMut.UnlockRead();
 
-				me->WriteFooter(writer);
-				ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-				DEL_CLASS(writer);
-				DEL_CLASS(mstm);
+				me->WriteFooter(&writer);
+				ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 				return true;
 			}
 			env.user = 0;
-			me->dataMut->UnlockRead();
+			me->dataMut.UnlockRead();
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin"));
+	Text::UTF8Writer writer(&mstm);
 
-	me->dataMut->LockRead();
-	me->WriteHeader(writer, (const UTF8Char*)"Index", env.user, env.isMobile);
-	writer->WriteLineC(UTF8STRC("<center><h1>Login</h1></center>"));
+	me->dataMut.LockRead();
+	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
+	writer.WriteLineC(UTF8STRC("<center><h1>Login</h1></center>"));
 
-	writer->WriteLineC(UTF8STRC("<form method=\"POST\" action=\"login.html\">"));
-	writer->WriteLineC(UTF8STRC("User Name: <input type=\"text\" name=\"userName\"/><br/>"));
-	writer->WriteLineC(UTF8STRC("Password: <input type=\"password\" name=\"password\"/><br/>"));
-	writer->WriteLineC(UTF8STRC("<input type=\"submit\" /><br/>"));
-	writer->WriteLineC(UTF8STRC("</form>"));
-	me->dataMut->UnlockRead();
+	writer.WriteLineC(UTF8STRC("<form method=\"POST\" action=\"login.html\">"));
+	writer.WriteLineC(UTF8STRC("User Name: <input type=\"text\" name=\"userName\"/><br/>"));
+	writer.WriteLineC(UTF8STRC("Password: <input type=\"password\" name=\"password\"/><br/>"));
+	writer.WriteLineC(UTF8STRC("<input type=\"submit\" /><br/>"));
+	writer.WriteLineC(UTF8STRC("</form>"));
+	me->dataMut.UnlockRead();
 
-	me->WriteFooter(writer);
-	ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-	DEL_CLASS(writer);
-	DEL_CLASS(mstm);
+	me->WriteFooter(&writer);
+	ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 	return true;
 }
 
@@ -7426,15 +7298,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 
 	if (me->reloadPwd)
 	{
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		Data::DateTime dt;
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcReload")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcReload"));
+		Text::UTF8Writer writer(&mstm);
 
-		me->WriteHeader(writer, (const UTF8Char*)"Reload", env.user, env.isMobile);
-		writer->WriteLineC(UTF8STRC("<center><h1>Reload</h1></center>"));
+		me->WriteHeader(&writer, (const UTF8Char*)"Reload", env.user, env.isMobile);
+		writer.WriteLineC(UTF8STRC("<center><h1>Reload</h1></center>"));
 
 		Bool showPwd = true;;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -7446,30 +7316,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 			{
 				if (me->reloadPwd->Equals(pwd))
 				{
-					writer->WriteLineC(UTF8STRC("Reloaded<br/>"));
+					writer.WriteLineC(UTF8STRC("Reloaded<br/>"));
 					showPwd = false;
 					me->Reload();
 				}
 				else
 				{
-					writer->WriteLineC(UTF8STRC("Password Error<br/>"));
+					writer.WriteLineC(UTF8STRC("Password Error<br/>"));
 				}
 			}
 		}
 		if (showPwd)
 		{
-			writer->WriteLineC(UTF8STRC("<form name=\"pwd\" method=\"POST\" action=\"reload\">"));
-			writer->WriteLineC(UTF8STRC("Reload Password:"));
-			writer->WriteLineC(UTF8STRC("<input name=\"pwd\" type=\"password\" /><br/>"));
-			writer->WriteLineC(UTF8STRC("<input type=\"submit\" />"));
-			writer->WriteLineC(UTF8STRC("</form>"));
+			writer.WriteLineC(UTF8STRC("<form name=\"pwd\" method=\"POST\" action=\"reload\">"));
+			writer.WriteLineC(UTF8STRC("Reload Password:"));
+			writer.WriteLineC(UTF8STRC("<input name=\"pwd\" type=\"password\" /><br/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"submit\" />"));
+			writer.WriteLineC(UTF8STRC("</form>"));
 		}
 
-		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -7488,15 +7355,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 
 	if (me->reloadPwd)
 	{
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		Data::DateTime dt;
+		IO::MemoryStream mstm(UTF8STRC("SSWR.OrganMgr.OrganWebHandler.SvcRestart"));
+		Text::UTF8Writer writer(&mstm);
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.OrganMgr.OrganWebHandler.SvcRestart")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
-
-		me->WriteHeader(writer, (const UTF8Char*)"Restart", env.user, env.isMobile);
-		writer->WriteLineC(UTF8STRC("<center><h1>Restart</h1></center>"));
+		me->WriteHeader(&writer, (const UTF8Char*)"Restart", env.user, env.isMobile);
+		writer.WriteLineC(UTF8STRC("<center><h1>Restart</h1></center>"));
 
 		Bool showPwd = true;;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -7508,30 +7372,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 			{
 				if (me->reloadPwd->Equals(pwd))
 				{
-					writer->WriteLineC(UTF8STRC("Restarting<br/>"));
+					writer.WriteLineC(UTF8STRC("Restarting<br/>"));
 					showPwd = false;
 					me->Restart();
 				}
 				else
 				{
-					writer->WriteLineC(UTF8STRC("Password Error<br/>"));
+					writer.WriteLineC(UTF8STRC("Password Error<br/>"));
 				}
 			}
 		}
 		if (showPwd)
 		{
-			writer->WriteLineC(UTF8STRC("<form name=\"pwd\" method=\"POST\" action=\"restart\">"));
-			writer->WriteLineC(UTF8STRC("Restart Password:"));
-			writer->WriteLineC(UTF8STRC("<input name=\"pwd\" type=\"password\" /><br/>"));
-			writer->WriteLineC(UTF8STRC("<input type=\"submit\" />"));
-			writer->WriteLineC(UTF8STRC("</form>"));
+			writer.WriteLineC(UTF8STRC("<form name=\"pwd\" method=\"POST\" action=\"restart\">"));
+			writer.WriteLineC(UTF8STRC("Restart Password:"));
+			writer.WriteLineC(UTF8STRC("<input name=\"pwd\" type=\"password\" /><br/>"));
+			writer.WriteLineC(UTF8STRC("<input type=\"submit\" />"));
+			writer.WriteLineC(UTF8STRC("</form>"));
 		}
 
-		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		me->WriteFooter(&writer);
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -7547,20 +7408,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
 	me->ParseRequestEnv(req, resp, &env, false);
 
-	IO::MemoryStream *mstm;
-	IO::Writer *writer;
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcIndex")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcIndex"));
+	Text::UTF8Writer writer(&mstm);
 
-	me->WriteHeader(writer, (const UTF8Char*)"Index", env.user, env.isMobile);
-	writer->WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
+	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
+	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
 
-	me->dataMut->LockRead();
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList = me->cateMap->GetValues();
+	me->dataMut.LockRead();
+	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList = me->cateMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *firstCate = 0;
 	UOSInt i;
@@ -7575,18 +7434,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 		cate = cateList->GetItem(i);
 		if ((cate->flags & 1) == 0 || !notAdmin)
 		{
-			writer->WriteStrC(UTF8STRC("<a href="));
+			writer.WriteStrC(UTF8STRC("<a href="));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("cate.html?cateName="));
 			sb.Append(cate->dirName);
 			s = Text::XML::ToNewAttrText(sb.ToString());
-			writer->WriteStrC(s->v, s->leng);
-			writer->WriteStrC(UTF8STRC(">"));
+			writer.WriteStrC(s->v, s->leng);
+			writer.WriteStrC(UTF8STRC(">"));
 			s->Release();
 			s = Text::XML::ToNewHTMLText(cate->chiName->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer.WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->WriteLineC(UTF8STRC("</a><br/>"));
+			writer.WriteLineC(UTF8STRC("</a><br/>"));
 
 			if (firstCate == 0)
 				firstCate = cate;
@@ -7595,66 +7454,63 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	}
 	if (env.user)
 	{
-		OSInt endIndex = (OSInt)env.user->userFileIndex->GetCount();
+		OSInt endIndex = (OSInt)env.user->userFileIndex.GetCount();
 		OSInt startIndex;
-		Int64 currTime = env.user->userFileIndex->GetItem((UOSInt)endIndex - 1);
+		Int64 currTime = env.user->userFileIndex.GetItem((UOSInt)endIndex - 1);
 		Int64 thisTicks;
 		if (endIndex > 0)
 		{
-			writer->WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLineC(UTF8STRC("<hr/>"));
 			dt.ToUTCTime();
 			while (true)
 			{
 				dt.SetTicks(currTime);
 				dt.SetValue(dt.GetYear(), 1, 1, 0, 0, 0, 0);
 				thisTicks = dt.ToTicks();
-				startIndex = env.user->userFileIndex->SortedIndexOf(thisTicks);
+				startIndex = env.user->userFileIndex.SortedIndexOf(thisTicks);
 				if (startIndex < 0)
 				{
 					startIndex = ~startIndex;
 				}
 				else
 				{
-					while (startIndex > 0 && env.user->userFileIndex->GetItem((UOSInt)startIndex - 1) == thisTicks)
+					while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == thisTicks)
 					{
 						startIndex--;
 					}
 				}
 //				printf("Index startIndex = %d, endIndex = %d, currTime = %ld, year = %d\r\n", startIndex, endIndex, currTime, dt.GetYear());
 				sptr = Text::StrUInt32(sbuff, dt.GetYear());
-				writer->WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("\">Year "));
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteLineC(UTF8STRC("</a><br/>"));
+				writer.WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
+				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteStrC(UTF8STRC("\">Year "));
+				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteLineC(UTF8STRC("</a><br/>"));
 				if (startIndex <= 0)
 					break;
 				endIndex = startIndex;
-				currTime = env.user->userFileIndex->GetItem((UOSInt)endIndex - 1);
+				currTime = env.user->userFileIndex.GetItem((UOSInt)endIndex - 1);
 			}
 		}
-		writer->WriteLineC(UTF8STRC("<hr/>"));
-		writer->WriteLineC(UTF8STRC("<h3>Photo Upload</h3>"));
-		writer->WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" name=\"file\" multiple/>"));
-		writer->WriteLineC(UTF8STRC("<input type=\"submit\"></form>"));
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLineC(UTF8STRC("<h3>Photo Upload</h3>"));
+		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" name=\"file\" multiple/>"));
+		writer.WriteLineC(UTF8STRC("<input type=\"submit\"></form>"));
 	}
-	writer->WriteLineC(UTF8STRC("<hr/>"));
-	writer->WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+	writer.WriteLineC(UTF8STRC("<hr/>"));
+	writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
 	sb.ClearStr();
 	sb.AppendI32(firstCate->cateId);
-	writer->WriteStrC(sb.ToString(), sb.GetLength());
-	writer->WriteLineC(UTF8STRC("\">Book List</a><br/>"));
-	if (env.user == 0)
+	writer.WriteStrC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(UTF8STRC("\">Book List</a><br/>"));
+	if (env.user == 0 && req->IsSecure())
 	{
-		writer->WriteStrC(UTF8STRC("<a href=\"login.html\">Login</a><br/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"login.html\">Login</a><br/>"));
 	}
-	me->dataMut->UnlockRead();
+	me->dataMut.UnlockRead();
 
-	me->WriteFooter(writer);
-	ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-	DEL_CLASS(writer);
-	DEL_CLASS(mstm);
+	me->WriteFooter(&writer);
+	ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 	return true;
 }
 
@@ -7666,11 +7522,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	Text::String *cateName = req->GetQueryValue(CSTR("cateName"));
-	if (cateName != 0 && (cate = me->cateSMap->Get(cateName)) != 0)
+	if (cateName != 0 && (cate = me->cateSMap.Get(cateName)) != 0)
 	{
 		Text::String *s;
-		IO::MemoryStream *mstm;
-		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -7678,22 +7532,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> groups;
 		IO::ConfigFile *lang = me->LangGet(req);
 
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcCate")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcCate"));
+		Text::UTF8Writer writer(&mstm);
 
-		me->WriteHeader(writer, cate->chiName->v, env.user, env.isMobile);
-		writer->WriteStrC(UTF8STRC("<center><h1>"));
+		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
+		writer.WriteStrC(UTF8STRC("<center><h1>"));
 		s = Text::XML::ToNewHTMLText(cate->chiName->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer->WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLineC(UTF8STRC("</h1></center>"));
 
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 		i = 0;
-		j = cate->groups->GetCount();
+		j = cate->groups.GetCount();
 		while (i < j)
 		{
-			group = cate->groups->GetItem(i);
+			group = cate->groups.GetItem(i);
 			me->CalcGroupCount(group);
 			if (group->totalCount > 0 && ((group->flags & 1) == 0 || !notAdmin))
 			{
@@ -7717,30 +7571,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 				sb.AppendC(UTF8STRC("/"));
 				sb.AppendOSInt(group->totalCount);
 				sb.AppendC(UTF8STRC(")</a><br/>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());*/
+				writer.WriteLineC(sb.ToString(), sb.GetLength());*/
 				groups.Add(group);
 			}
 			i++;
 		}
 
-	/*	writer->WriteLineC(UTF8STRC("<br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+	/*	writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(cate->cateId);
-		writer->WriteStrC(sb.ToString(), sb.GetLength());
-		writer->WriteLineC(UTF8STRC("\">Book List</a>"));*/
-		me->WriteLocator(writer, 0, 0);
-		writer->WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteGroupTable(writer, &groups, env.scnWidth, false);
-		writer->WriteLineC(UTF8STRC("<hr/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"/\">"));
-		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer->WriteLineC(UTF8STRC("</a>"));
-		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-
-		DEL_CLASS(writer);
-		DEL_CLASS(mstm);
+		writer.WriteStrC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(UTF8STRC("\">Book List</a>"));*/
+		me->WriteLocator(&writer, 0, 0);
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+		me->WriteGroupTable(&writer, &groups, env.scnWidth, false);
+		writer.WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteStrC(UTF8STRC("<a href=\"/\">"));
+		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteLineC(UTF8STRC("</a>"));
+		me->WriteFooter(&writer);
+		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -7770,12 +7621,12 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 	Int32 rotateType = 0;
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd = sbuff;
-	this->dataMut->LockRead();
-	sp = this->spMap->Get(speciesId);
+	this->dataMut.LockRead();
+	sp = this->spMap.Get(speciesId);
 	Bool notAdmin = (user == 0 || user->userType != 0);
 	if (sp && sp->cateId == cateId)
 	{
-		cate = this->cateMap->Get(sp->cateId);
+		cate = this->cateMap.Get(sp->cateId);
 		if (cate && ((cate->flags & 1) == 0 || !notAdmin))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -7816,7 +7667,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						resp->AddContentLength(buffSize);
 						resp->AddContentType(CSTR("image/jpeg"));
 						resp->Write(buff, buffSize);
-						this->dataMut->UnlockRead();
+						this->dataMut.UnlockRead();
 						MemFree(buff);
 						return;
 					}
@@ -7868,7 +7719,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				sb.Replace('\\', '/');
 			}
 			sb.AppendC(UTF8STRC(".jpg"));
-			this->dataMut->UnlockRead();
+			this->dataMut.UnlockRead();
 			if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::File)
 			{
 				sb.RemoveChars(4);
@@ -7889,11 +7740,11 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			Media::StaticImage *simg;
 			Media::StaticImage *lrimg;
 			Media::StaticImage *dimg;
-			IO::StmData::FileData *fd;
-			Sync::MutexUsage mutUsage(this->parserMut);
-			NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
-			DEL_CLASS(fd);
+			Sync::MutexUsage mutUsage(&this->parserMut);
+			{
+				IO::StmData::FileData fd(sb.ToCString(), false);
+				imgList = (Media::ImageList*)this->parsers.ParseFileType(&fd, IO::ParserType::ImageList);
+			}
 			mutUsage.EndUse();
 			if (imgList)
 			{
@@ -7901,15 +7752,15 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(this->csconvColor))
+				Sync::MutexUsage mutUsage(&this->csconvMut);
+				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
 					this->csconvFCC = simg->info.fourcc;
 					this->csconvBpp = simg->info.storeBPP;
 					this->csconvPF = simg->info.pf;
-					this->csconvColor->Set(simg->info.color);
-					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
+					this->csconvColor.Set(simg->info.color);
+					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, &this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 				}
 				if (this->csconv)
 				{
@@ -7925,7 +7776,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				if (lrimg)
 				{
 					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
-					Sync::MutexUsage mutUsage(this->resizerMut);
+					Sync::MutexUsage mutUsage(&this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
 					resizerLR->SetTargetHeight(imgHeight);
@@ -7939,7 +7790,6 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				}
 				if (dimg)
 				{
-					IO::MemoryStream *mstm;
 					UInt8 *buff;
 					UOSInt buffSize;
 					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
@@ -8027,22 +7877,21 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					{
 						void *param;
 						Media::ImageList nimgList(CSTR("Temp"));
-						NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
+						IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest"));
 						nimgList.AddImage(dimg, 0);
 						Exporter::GUIJPGExporter exporter;
 						param = exporter.CreateParam(&nimgList);
 						exporter.SetParamInt32(param, 0, 95);
-						exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
+						exporter.ExportFile(&mstm, CSTR(""), &nimgList, param);
 						exporter.DeleteParam(param);
-						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+						ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
-						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && mstm->GetLength() > 0)
+						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && mstm.GetLength() > 0)
 						{
 							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							buff = mstm->GetBuff(&buffSize);
+							buff = mstm.GetBuff(&buffSize);
 							fs.Write(buff, buffSize);
 						}
-						DEL_CLASS(mstm);
 					}
 				}
 				else
@@ -8059,14 +7908,14 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 		}
 		else
 		{
-			this->dataMut->UnlockRead();
+			this->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return;
 		}
 	}
 	else
 	{
-		this->dataMut->UnlockRead();
+		this->dataMut.UnlockRead();
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return;
 	}
@@ -8081,14 +7930,14 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 	UTF8Char *sptr2;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 	Int32 rotateType = 0;
-	this->dataMut->LockRead();
-	sp = this->spMap->Get(speciesId);
-	userFile = this->userFileMap->Get(fileId);
+	this->dataMut.LockRead();
+	sp = this->spMap.Get(speciesId);
+	userFile = this->userFileMap.Get(fileId);
 	if (sp && sp->cateId == cateId && userFile && (userFile->fileType == 1 || userFile->fileType == 3))
 	{
 		Data::DateTime dt;
 		SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
-		user = this->userMap->Get(userFile->webuserId);
+		user = this->userMap.Get(userFile->webuserId);
 		dt.SetTicks(userFile->fileTimeTicks);
 		dt.ToUTCTime();
 		rotateType = userFile->rotType;
@@ -8112,7 +7961,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				Int64 tdiff = dt2.ToTicks() - dt3.ToTicks();
 				if (tdiff >= -1000 && tdiff <= 1000)
 				{
-					this->dataMut->UnlockRead();
+					this->dataMut.UnlockRead();
 					resp->ResponseNotModified(req, -1);
 					return;
 				}
@@ -8133,7 +7982,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				resp->AddContentType(CSTR("image/jpeg"));
 				resp->AddLastModified(&dt2);
 				resp->Write(buff, buffSize);
-				this->dataMut->UnlockRead();
+				this->dataMut.UnlockRead();
 				MemFree(buff);
 				return;
 			}
@@ -8161,16 +8010,16 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		{
 			sptr = userFile->dataFileName->ConcatTo(sptr);
 		}
-		this->dataMut->UnlockRead();
+		this->dataMut.UnlockRead();
 
 		Media::ImageList *imgList;
 		Media::StaticImage *simg;
 		Media::StaticImage *lrimg;
 		Media::StaticImage *dimg;
-		Sync::MutexUsage mutUsage(this->parserMut);
+		Sync::MutexUsage mutUsage(&this->parserMut);
 		{
 			IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+			imgList = (Media::ImageList*)this->parsers.ParseFileType(&fd, IO::ParserType::ImageList);
 		}
 		mutUsage.EndUse();
 		if (imgList)
@@ -8179,15 +8028,15 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			DEL_CLASS(imgList);
 			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			Sync::MutexUsage mutUsage(this->csconvMut);
-			if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(this->csconvColor))
+			Sync::MutexUsage mutUsage(&this->csconvMut);
+			if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
 			{
 				SDEL_CLASS(this->csconv);
 				this->csconvFCC = simg->info.fourcc;
 				this->csconvBpp = simg->info.storeBPP;
 				this->csconvPF = simg->info.pf;
-				this->csconvColor->Set(simg->info.color);
-				this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
+				this->csconvColor.Set(simg->info.color);
+				this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, &this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 			}
 			if (this->csconv)
 			{
@@ -8205,7 +8054,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 				if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 				{
-					Sync::MutexUsage mutUsage(this->resizerMut);
+					Sync::MutexUsage mutUsage(&this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
 					resizerLR->SetTargetHeight(imgHeight);
@@ -8238,7 +8087,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				}
 				else
 				{
-					Sync::MutexUsage mutUsage(this->resizerMut);
+					Sync::MutexUsage mutUsage(&this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
 					resizerLR->SetTargetHeight(imgHeight);
@@ -8253,7 +8102,6 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			}
 			if (dimg)
 			{
-				IO::MemoryStream *mstm;
 				UInt8 *buff;
 				UOSInt buffSize;
 				dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
@@ -8305,13 +8153,13 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 								{
 									Bool revOrder;
 									UInt8 *bits = gimg2->GetImgBits(&revOrder);
-									UInt32 col = (this->random->NextInt30() & 0xffffff) | 0x5f808080;
+									UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
 									if (bits)
 									{
 										ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
 									}
 								}
-								gimg->DrawImagePt(gimg2, Double2Int32(this->random->NextDouble() * xRand), Double2Int32(this->random->NextDouble() * yRand));
+								gimg->DrawImagePt(gimg2, Double2Int32(this->random.NextDouble() * xRand), Double2Int32(this->random.NextDouble() * yRand));
 								this->eng->DeleteImage(gimg2);
 								gimg->DelFont(f);
 								break;
@@ -8324,15 +8172,16 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 							}
 						}
 						gimg->DelBrush(b);
-					}	
-					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
-					gimg->SaveJPG(mstm);
-					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+					}
+
+					IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest"));
+					gimg->SaveJPG(&mstm);
+					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm->GetBuff(&buffSize);
+						buff = mstm.GetBuff(&buffSize);
 						fs.Write(buff, buffSize);
 						if (userFile->prevUpdated)
 						{
@@ -8340,7 +8189,6 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						}
 					}
 
-					DEL_CLASS(mstm);
 					DEL_CLASS(dimg);
 					this->eng->DeleteImage(gimg);
 				}
@@ -8348,26 +8196,25 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				{
 					void *param;
 					Media::ImageList nimgList(CSTR("Temp"));
-					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
+					IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest"));
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
+					exporter.ExportFile(&mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm->GetBuff(&buffSize);
+						buff = mstm.GetBuff(&buffSize);
 						fs.Write(buff, buffSize);
 						if (userFile->prevUpdated)
 						{
 							this->UserFilePrevUpdated(userFile);
 						}
 					}
-					DEL_CLASS(mstm);
 				}
 			}
 			else
@@ -8384,7 +8231,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 	}
 	else
 	{
-		this->dataMut->UnlockRead();
+		this->dataMut.UnlockRead();
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return;
 	}
@@ -8399,8 +8246,8 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 	UTF8Char *sptr2;
 	SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
 	Int32 rotateType = 0;
-	this->dataMut->LockRead();
-	sp = this->spMap->Get(speciesId);
+	this->dataMut.LockRead();
+	sp = this->spMap.Get(speciesId);
 	if (sp && sp->cateId == cateId)
 	{
 		wfile = sp->wfiles.Get(fileWId);
@@ -8433,7 +8280,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					resp->AddContentLength(buffSize);
 					resp->AddContentType(CSTR("image/jpeg"));
 					resp->Write(buff, buffSize);
-					this->dataMut->UnlockRead();
+					this->dataMut.UnlockRead();
 					MemFree(buff);
 					return;
 				}
@@ -8450,33 +8297,32 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrInt32(sptr, wfile->id);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
-			this->dataMut->UnlockRead();
+			this->dataMut.UnlockRead();
 
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			Media::StaticImage *lrimg;
 			Media::StaticImage *dimg;
-			IO::StmData::FileData *fd;
-			Sync::MutexUsage mutUsage(this->parserMut);
-			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
-			DEL_CLASS(fd);
-			mutUsage.EndUse();
+			{
+				Sync::MutexUsage mutUsage(&this->parserMut);
+				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+				imgList = (Media::ImageList*)this->parsers.ParseFileType(&fd, IO::ParserType::ImageList);
+			}
 			if (imgList)
 			{
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(this->csconvColor))
+				Sync::MutexUsage mutUsage(&this->csconvMut);
+				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(&this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
 					this->csconvFCC = simg->info.fourcc;
 					this->csconvBpp = simg->info.storeBPP;
 					this->csconvPF = simg->info.pf;
-					this->csconvColor->Set(simg->info.color);
-					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
+					this->csconvColor.Set(simg->info.color);
+					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, &this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 				}
 				if (this->csconv)
 				{
@@ -8494,7 +8340,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 					if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						Sync::MutexUsage mutUsage(this->resizerMut);
+						Sync::MutexUsage mutUsage(&this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetWidth(imgWidth);
 						resizerLR->SetTargetHeight(imgHeight);
@@ -8527,7 +8373,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					}
 					else
 					{
-						Sync::MutexUsage mutUsage(this->resizerMut);
+						Sync::MutexUsage mutUsage(&this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetWidth(imgWidth);
 						resizerLR->SetTargetHeight(imgHeight);
@@ -8542,7 +8388,6 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 				}
 				if (dimg)
 				{
-					IO::MemoryStream *mstm;
 					UInt8 *buff;
 					UOSInt buffSize;
 					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
@@ -8562,26 +8407,25 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 					void *param;
 					Media::ImageList nimgList(CSTR("Temp"));
-					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
+					IO::MemoryStream mstm(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest"));
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
+					exporter.ExportFile(&mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm->GetBuff(&buffSize);
+						buff = mstm.GetBuff(&buffSize);
 						fs.Write(buff, buffSize);
 						if (wfile->prevUpdated)
 						{
 							this->WebFilePrevUpdated(wfile);
 						}
 					}
-					DEL_CLASS(mstm);
 				}
 				else
 				{
@@ -8597,14 +8441,14 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 		}
 		else
 		{
-			this->dataMut->UnlockRead();
+			this->dataMut.UnlockRead();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return;
 		}
 	}
 	else
 	{
-		this->dataMut->UnlockRead();
+		this->dataMut.UnlockRead();
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return;
 	}
@@ -8683,7 +8527,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::Org
 	while (group)
 	{
 		groupList.Add(group);
-		group = this->groupMap->Get(group->parentId);
+		group = this->groupMap.Get(group->parentId);
 	}
 
 
@@ -8710,7 +8554,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::Org
 	while (i-- > 0)
 	{
 		group = groupList.GetItem(i);
-		grpType = cate->groupTypes->Get(group->groupType);
+		grpType = cate->groupTypes.Get(group->groupType);
 		writer->WriteLineC(UTF8STRC("<tr>"));
 		if (grpType)
 		{
@@ -8767,7 +8611,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocatorText(IO::Writer *writer, SSWR:
 			found = true;
 			break;
 		}
-		group = this->groupMap->Get(group->parentId);
+		group = this->groupMap.Get(group->parentId);
 	}
 
 	if (!found)
@@ -9218,9 +9062,9 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 		j = env->pickObjs->GetCount();
 		while (i < j)
 		{
-			userFile = this->userFileMap->Get(env->pickObjs->GetItem(i));
+			userFile = this->userFileMap.Get(env->pickObjs->GetItem(i));
 			species = 0;
-			if (userFile) species = this->spMap->Get(userFile->speciesId);
+			if (userFile) species = this->spMap.Get(userFile->speciesId);
 			if (userFile && species)
 			{
 				if (currColumn == 0)
@@ -9368,7 +9212,7 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 		j = env->pickObjs->GetCount();
 		while (i < j)
 		{
-			species = this->spMap->Get(env->pickObjs->GetItem(i));
+			species = this->spMap.Get(env->pickObjs->GetItem(i));
 			if (species)
 			{
 				spList.Add(species);
@@ -9397,7 +9241,7 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 		j = env->pickObjs->GetCount();
 		while (i < j)
 		{
-			group = this->groupMap->Get(env->pickObjs->GetItem(i));
+			group = this->groupMap.Get(env->pickObjs->GetItem(i));
 			if (group)
 			{
 				groupList.Add(group);
@@ -9450,19 +9294,19 @@ IO::ConfigFile *SSWR::OrganMgr::OrganWebHandler::LangGet(Net::WebServer::IWebReq
 		{
 			i = Text::StrSplitP(sarr, 2, sarr[1], ',');
 			Text::StrSplitP(sarr2, 2, sarr[0], ';');
-			ent = this->locale->GetLocaleEntryByName(sarr2[0].ToCString());
+			ent = this->locale.GetLocaleEntryByName(sarr2[0].ToCString());
 			if (ent)
 			{
-				lang = this->langMap->Get(ent->lcid);
+				lang = this->langMap.Get(ent->lcid);
 				if (lang)
 					return lang;
 			}
 		}
 	}
-	lang = this->langMap->Get(0x409);
+	lang = this->langMap.Get(0x409);
 	if (lang)
 		return lang;
-	return this->langMap->GetValues()->GetItem(0);
+	return this->langMap.GetValues()->GetItem(0);
 }
 
 Text::CString SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen)
@@ -9475,7 +9319,7 @@ Text::CString SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *lang
 	return {name, nameLen};
 }
 
-SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng)
+SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng, Text::CString osmCachePath) : csconvColor(Media::ColorProfile::CPT_SRGB)
 {
 	this->imageDir = SCOPY_STRING(imageDir);
 	this->sockf = sockf;
@@ -9484,44 +9328,33 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 	this->scnSize = scnSize;
 	this->dataDir = SCOPY_STRING(dataDir);
 	this->unorganizedGroupId = unorganizedGroupId;
-	NEW_CLASS(this->random, Data::RandomOS());
 	this->cacheDir = SCOPY_STRING(cacheDir);
 	this->reloadPwd = SCOPY_STRING(reloadPwd);
 
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->parsers, Parser::FullParserList());
-	NEW_CLASS(this->parserMut, Sync::Mutex());
-	NEW_CLASS(this->colorMgr, Media::ColorManager());
-	this->colorSess = this->colorMgr->CreateSess(0);
-	NEW_CLASS(this->resizerMut, Sync::Mutex());
+	this->colorSess = this->colorMgr.CreateSess(0);
 	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, &destProfile, this->colorSess, Media::AT_NO_ALPHA, 0, Media::PF_B8G8R8A8));
-	NEW_CLASS(this->csconvMut, Sync::Mutex());
 	this->csconv = 0;
-	NEW_CLASS(this->csconvColor, Media::ColorProfile(Media::ColorProfile::CPT_SRGB));
 	this->csconvFCC = 0;
 	this->csconvBpp = 0;
 	this->csconvPF = Media::PF_UNKNOWN;
 	this->eng = eng;
 
-	NEW_CLASS(this->cateMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
-	NEW_CLASS(this->cateSMap, Data::FastStringMap<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
-	NEW_CLASS(this->dataMut, Sync::RWMutex());
-	NEW_CLASS(this->spMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
-	NEW_CLASS(this->spNameMap, Data::FastStringMap<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
-	NEW_CLASS(this->groupMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
-	NEW_CLASS(this->bookMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::BookInfo*>());
-	NEW_CLASS(this->userMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
-	NEW_CLASS(this->userNameMap, Data::FastStringMap<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
-	NEW_CLASS(this->userFileMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
-	NEW_CLASS(this->langMap, Data::UInt32Map<IO::ConfigFile*>());
-	NEW_CLASS(this->locMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::LocationInfo*>());
 	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/"), OnSessionDel, this, 30000, OnSessionCheck, this));
-	NEW_CLASS(this->locale, Text::Locale());
+	NEW_CLASS(this->osmHdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), osmCachePath, 18, this->sockf, this->ssl));
+	this->osmHdlr->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
+	this->osmHdlr->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Map"));
+	NEW_CLASS(this->mapDirHdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), false, 0, false));
 
 	this->db = db;
 	if (this->db == 0)
 	{
 		this->listener = 0;
+		this->sslListener = 0;
 		return;
 	}
 	this->LoadLangs();
@@ -9529,9 +9362,12 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 	if (port == 0)
 	{
 		this->listener = 0;
+		this->sslListener = 0;
 	}
 	else
 	{
+		this->HandlePath(CSTR("/map"), this->mapDirHdlr, false);
+		this->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 		this->AddService(CSTR("/photo.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhoto);
 		this->AddService(CSTR("/photodown.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDown);
 		this->AddService(CSTR("/group.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroup);
@@ -9569,7 +9405,15 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 		this->AddService(CSTR("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 		this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, this->ssl, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true));
+		if (this->ssl && sslPort)
+		{
+			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, this, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, true));
+		}
+		else
+		{
+			this->sslListener = 0;
+		}
 		this->Reload();
 	}
 }
@@ -9588,23 +9432,18 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 	UOSInt j;
 
 	SDEL_CLASS(this->listener);
+	SDEL_CLASS(this->sslListener);
 	SDEL_CLASS(this->db);
 	SDEL_CLASS(this->sessMgr);
+	DEL_CLASS(this->osmHdlr);
+	this->mapDirHdlr->Release();
 
 	FreeGroups();
 	FreeSpecies();
 	FreeBooks();
 	FreeUsers();
-	DEL_CLASS(this->spMap);
-	DEL_CLASS(this->spNameMap);
-	DEL_CLASS(this->groupMap);
-	DEL_CLASS(this->bookMap);
-	DEL_CLASS(this->userMap);
-	DEL_CLASS(this->userNameMap);
-	DEL_CLASS(this->userFileMap);
-	DEL_CLASS(this->dataMut);
 
-	cateList = this->cateMap->GetValues();
+	cateList = this->cateMap.GetValues();
 	i = cateList->GetCount();
 	while (i-- > 0)
 	{
@@ -9612,9 +9451,8 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 		cate->chiName->Release();
 		cate->dirName->Release();
 		cate->srcDir->Release();
-		DEL_CLASS(cate->groups);
 
-		grpTypeList = cate->groupTypes->GetValues();
+		grpTypeList = cate->groupTypes.GetValues();
 		j = grpTypeList->GetCount();
 		while (j-- > 0)
 		{
@@ -9623,23 +9461,19 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 			grpType->engName->Release();
 			MemFree(grpType);
 		}
-		DEL_CLASS(cate->groupTypes);
 
-		MemFree(cate);
+		DEL_CLASS(cate);
 	}
-	DEL_CLASS(this->cateMap);
-	DEL_CLASS(this->cateSMap);
 
-	langList = this->langMap->GetValues();
+	langList = this->langMap.GetValues();
 	i = langList->GetCount();
 	while (i-- > 0)
 	{
 		lang = langList->GetItem(i);
 		DEL_CLASS(lang);
 	}
-	DEL_CLASS(this->langMap);
 
-	locList = this->locMap->GetValues();
+	locList = this->locMap.GetValues();
 	i = locList->GetCount();
 	while (i-- > 0)
 	{
@@ -9648,22 +9482,13 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 		SDEL_STRING(loc->ename);
 		MemFree(loc);
 	}
-	DEL_CLASS(this->locMap);
-	DEL_CLASS(this->parsers);
 	DEL_CLASS(this->resizerLR);
-	DEL_CLASS(this->resizerMut);
-	DEL_CLASS(this->csconvMut);
 	SDEL_CLASS(this->csconv);
-	DEL_CLASS(this->csconvColor);
-	this->colorMgr->DeleteSess(this->colorSess);
-	DEL_CLASS(this->colorMgr);
-	DEL_CLASS(this->parserMut);
+	this->colorMgr.DeleteSess(this->colorSess);
 	DEL_CLASS(this->eng);
-	DEL_CLASS(this->locale);
 
 	this->imageDir->Release();
 	this->dataDir->Release();
-	DEL_CLASS(this->random);
 	SDEL_STRING(this->cacheDir);
 	SDEL_STRING(this->reloadPwd);
 }
@@ -9674,19 +9499,21 @@ Bool SSWR::OrganMgr::OrganWebHandler::IsError()
 		return true;
 	if (this->listener->IsError())
 		return true;
+	if (this->sslListener != 0 && this->sslListener->IsError())
+		return true;
 	return false;
 }
 
 void SSWR::OrganMgr::OrganWebHandler::Reload()
 {
-	this->dataMut->LockWrite();
+	this->dataMut.LockWrite();
 	this->LoadCategory();
 	this->LoadLocations();
 	this->LoadSpecies();
 	this->LoadGroups();
 	this->LoadBooks();
 	this->LoadUsers();
-	this->dataMut->UnlockWrite();
+	this->dataMut.UnlockWrite();
 }
 
 void SSWR::OrganMgr::OrganWebHandler::Restart()

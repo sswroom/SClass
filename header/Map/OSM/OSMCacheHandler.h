@@ -56,7 +56,7 @@ namespace Map
 			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMCacheHandler();
 
-			void AddAlternateURL(const UTF8Char *url, UOSInt len);
+			void AddAlternateURL(Text::CString url);
 			void GetStatus(CacheStatus *status);
 			void SetIOMut(Sync::Mutex *ioMut);
 

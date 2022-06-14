@@ -1253,14 +1253,14 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					IO::Path::GetProcessFileName(&sb);
 					IO::Path::AppendPath(&sb, UTF8STRC("files"));
 					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), false, 0, false));
-					shdlr->HandlePath(UTF8STRC("/files"), fileshdlr, true);
-					hdlr->HandlePath(UTF8STRC("/monitor"), shdlr, true);
-					hdlr->HandlePath(UTF8STRC("/benchmark"), benchhdlr, true);
+					shdlr->HandlePath(CSTR("/files"), fileshdlr, true);
+					hdlr->HandlePath(CSTR("/monitor"), shdlr, true);
+					hdlr->HandlePath(CSTR("/benchmark"), benchhdlr, true);
 					if ((s = cfg->GetValue(CSTR("VAMSLogPath"))) != 0)
 					{
 						NEW_CLASS(btList, SSWR::VAMS::VAMSBTList());
 						NEW_CLASS(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(s, btList));
-						hdlr->HandlePath(UTF8STRC("/vams"), vamsHdlr, true);
+						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
 
 					hdlr->ExpandPackageFiles(this->parsers);

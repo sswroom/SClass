@@ -1960,6 +1960,8 @@ Map/MapSearch.h: ../../src/Map/MapSearch.cpp
 @MapSearch.o
 Map/MapSearchManager.h: ../../src/Map/MapSearchManager.cpp
 @MapSearchManager.o
+Map/MapServerHandler.h: ../../src/Map/MapServerHandler.cpp
+@MapServerHandler.o
 Map/MapView.h: ../../src/Map/MapView.cpp
 @MapView.o
 Map/MercatorMapView.h: ../../src/Map/MercatorMapView.cpp
@@ -4497,6 +4499,7 @@ MapManager.o: ../../src/Map/MapManager.cpp
 MapScheduler.o: ../../src/Map/MapScheduler.cpp
 MapSearch.o: ../../src/Map/MapSearch.cpp
 MapSearchManager.o: ../../src/Map/MapSearchManager.cpp
+MapServerHandler.o: ../../src/Map/MapServerHandler.cpp
 MapView.o: ../../src/Map/MapView.cpp
 MercatorMapView.o: ../../src/Map/MercatorMapView.cpp
 OruxDBLayer.o: ../../src/Map/OruxDBLayer.cpp

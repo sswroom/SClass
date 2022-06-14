@@ -250,6 +250,12 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 	}
 }
 
+void Map::IMapDrawLayer::SetLayerName(Text::CString name)
+{
+	SDEL_STRING(this->layerName);
+	this->layerName = Text::String::New(name);
+}
+
 Bool Map::IMapDrawLayer::IsError()
 {
 	return false;

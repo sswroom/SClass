@@ -98,3 +98,13 @@ void Math::CoordinateSystem::ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::
 	}
 }
 
+void Math::CoordinateSystem::ConvertToCartesianCoord(Math::CoordinateSystem *srcCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ)
+{
+	if (srcCoord->IsProjected())
+	{
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
+		pcs->ToGeographicCoordinate(srcX, srcY, &srcX, &srcY);
+		srcCoord = pcs->GetGeographicCoordinateSystem();
+	}
+	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoord(srcY, srcX, srcZ, destX, destY, destZ);
+}

@@ -147,9 +147,9 @@ Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 	SDEL_STRING(this->cacheDir);
 }
 
-void Map::OSM::OSMCacheHandler::AddAlternateURL(const UTF8Char *url, UOSInt len)
+void Map::OSM::OSMCacheHandler::AddAlternateURL(Text::CString url)
 {
-	this->urls.Add(Text::String::New(url, len));
+	this->urls.Add(Text::String::New(url));
 }
 
 void Map::OSM::OSMCacheHandler::GetStatus(CacheStatus *status)

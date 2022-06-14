@@ -115,7 +115,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		MyHandler *myHdlr;
 		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
 		NEW_CLASS(myHdlr, MyHandler());
-		hdlr->HandlePath(UTF8STRC("/api"), myHdlr, true);
+		hdlr->HandlePath(CSTR("/api"), myHdlr, true);
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, true));
 		if (!svr->IsError())
 		{

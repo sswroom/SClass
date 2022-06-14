@@ -135,12 +135,12 @@ Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	return DoRequest(req, resp, subReq);
 }
 
-void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath, UOSInt pathLen, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)
+void Net::WebServer::WebStandardHandler::HandlePath(Text::CString relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)
 {
 	Net::WebServer::WebStandardHandler *subHdlr;
 	if (hdlr == 0)
 		return;
-	if (absolutePath[0] != '/')
+	if (relativePath.v[0] != '/')
 	{
 		if (needRelease)
 		{
@@ -148,11 +148,11 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 		}
 		return;
 	}
-	UOSInt i = Text::StrIndexOfChar(&absolutePath[1], '/');
+	UOSInt i = relativePath.IndexOf('/', 1);
 	UTF8Char *sbuff;
 	if (i == INVALID_INDEX)
 	{
-		this->hdlrs.PutC({&absolutePath[1], pathLen - 1}, hdlr);
+		this->hdlrs.PutC(relativePath.Substring(1), hdlr);
 		if (needRelease)
 		{
 			this->relHdlrs.Add(hdlr);
@@ -160,8 +160,8 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 	}
 	else
 	{
-		sbuff = MemAlloc(UTF8Char, i + 1);
-		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * i);
+		sbuff = MemAlloc(UTF8Char, i);
+		MemCopyNO(sbuff, &relativePath.v[1], sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 
 		subHdlr = this->hdlrs.GetC({sbuff, i});
@@ -172,6 +172,6 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 			this->relHdlrs.Add(subHdlr);
 		}
 		MemFree(sbuff);
-		subHdlr->HandlePath(&absolutePath[i + 1], pathLen - i - 1, hdlr, needRelease);
+		subHdlr->HandlePath(relativePath.Substring(i), hdlr, needRelease);
 	}
 }

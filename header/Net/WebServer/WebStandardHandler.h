@@ -24,7 +24,7 @@ namespace Net
 
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 
-			void HandlePath(const UTF8Char *absolutePath, UOSInt pathLen, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease);
+			void HandlePath(Text::CString relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease);
 		};
 	}
 }

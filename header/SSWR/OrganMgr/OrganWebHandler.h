@@ -11,14 +11,16 @@
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
 #include "IO/MemoryStream.h"
+#include "Map/OSM/OSMCacheHandler.h"
 #include "Media/LRGBLimiter.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Net/SocketFactory.h"
+#include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebServiceHandler.h"
-#include "Parser/ParserList.h"
+#include "Parser/FullParserList.h"
 #include "Sync/RWMutex.h"
 #include "Text/Locale.h"
 #include "Text/String.h"
@@ -135,9 +137,9 @@ namespace SSWR
 				Text::String *pwd;
 				Text::String *watermark;
 				Int32 userType;
-				Data::ArrayListInt64 *userFileIndex;
-				Data::ArrayList<UserFileInfo*> *userFileObj;
-				Data::Int32Map<Data::Int64Map<TripInfo*>*> *tripCates;
+				Data::ArrayListInt64 userFileIndex;
+				Data::ArrayList<UserFileInfo*> userFileObj;
+				Data::Int32Map<Data::Int64Map<TripInfo*>*> tripCates;
 				Int32 unorganSpId;
 			} WebUserInfo;
 
@@ -194,16 +196,16 @@ namespace SSWR
 				Text::String *engName;
 			} GroupTypeInfo;
 
-			typedef struct
+			struct CategoryInfo
 			{
 				Int32 cateId;
 				Text::String *chiName;
 				Text::String *dirName;
 				Text::String *srcDir;
 				Int32 flags;
-				Data::Int32Map<GroupTypeInfo *> *groupTypes;
-				Data::ArrayList<GroupInfo*> *groups;
-			} CategoryInfo;
+				Data::Int32Map<GroupTypeInfo *> groupTypes;
+				Data::ArrayList<GroupInfo*> groups;
+			};
 
 			typedef struct
 			{
@@ -228,7 +230,7 @@ namespace SSWR
 				virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
 			};
 		private:
-			Data::RandomOS *random;
+			Data::RandomOS random;
 			DB::DBTool *db;
 			Text::String *imageDir;
 			Text::String *cacheDir;
@@ -240,37 +242,40 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			IO::LogTool *log;
 			Net::WebServer::WebListener *listener;
-			Sync::Mutex *parserMut;
-			Parser::ParserList *parsers;
-			Sync::Mutex *resizerMut;
+			Net::WebServer::WebListener *sslListener;
+			Sync::Mutex parserMut;
+			Parser::FullParserList parsers;
+			Sync::Mutex resizerMut;
 			Media::Resizer::LanczosResizerLR_C32 *resizerLR;
-			Sync::Mutex *csconvMut;
+			Sync::Mutex csconvMut;
 			Media::CS::CSConverter *csconv;
 			UInt32 csconvFCC;
 			UInt32 csconvBpp;
 			Media::PixelFormat csconvPF;
-			Media::ColorProfile *csconvColor;
+			Media::ColorProfile csconvColor;
 			Media::LRGBLimiter lrgbLimiter;
 
-			Media::ColorManager *colorMgr;
+			Media::ColorManager colorMgr;
 			Media::ColorManagerSess *colorSess;
 			Media::DrawEngine *eng;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
+			Map::OSM::OSMCacheHandler *osmHdlr;
+			Net::WebServer::HTTPDirectoryHandler *mapDirHdlr;
 
-			Data::FastStringMap<CategoryInfo*> *cateSMap;
-			Data::Int32Map<CategoryInfo*> *cateMap;
+			Data::FastStringMap<CategoryInfo*> cateSMap;
+			Data::Int32Map<CategoryInfo*> cateMap;
 
-			Sync::RWMutex *dataMut;
-			Data::Int32Map<SpeciesInfo*> *spMap;
-			Data::FastStringMap<SpeciesInfo*> *spNameMap;
-			Data::Int32Map<GroupInfo*> *groupMap;
-			Data::Int32Map<BookInfo*> *bookMap;
-			Data::Int32Map<WebUserInfo*> *userMap;
-			Data::FastStringMap<WebUserInfo*> *userNameMap;
-			Data::Int32Map<UserFileInfo*> *userFileMap;
-			Data::UInt32Map<IO::ConfigFile*> *langMap;
-			Data::Int32Map<LocationInfo*> *locMap;
-			Text::Locale *locale;
+			Sync::RWMutex dataMut;
+			Data::Int32Map<SpeciesInfo*> spMap;
+			Data::FastStringMap<SpeciesInfo*> spNameMap;
+			Data::Int32Map<GroupInfo*> groupMap;
+			Data::Int32Map<BookInfo*> bookMap;
+			Data::Int32Map<WebUserInfo*> userMap;
+			Data::FastStringMap<WebUserInfo*> userNameMap;
+			Data::Int32Map<UserFileInfo*> userFileMap;
+			Data::UInt32Map<IO::ConfigFile*> langMap;
+			Data::Int32Map<LocationInfo*> locMap;
+			Text::Locale locale;
 
 			void LoadLangs();
 			void LoadCategory();
@@ -364,7 +369,7 @@ namespace SSWR
 			IO::ConfigFile *LangGet(Net::WebServer::IWebRequest *req);
 			static Text::CString LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen);
 		public:
-			OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng);
+			OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng, Text::CString osmCachePath);
 			virtual ~OrganWebHandler();
 
 			Bool IsError();

@@ -1,14 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "IO/Path.h"
 #include "Map/SHPData.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Math.h"
 #include "Math/Polyline.h"
 #include "Math/Polygon.h"
 #include "Math/Point.h"
 #include "Math/Point3D.h"
+#include "Text/MyString.h"
 
 Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
 {
@@ -21,7 +22,6 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	UOSInt i;
 	Map::SHPData::RecHdr *rec;
 
-	
 	this->dbf = 0;
 	this->shpData = 0;
 	this->ptX = 0;
@@ -36,12 +36,17 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	{
 		return;
 	}
+	i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (sptr[-4] == '.')
 	{
+		sptr[-4] = 0;
+		this->SetLayerName(CSTRP(&sbuff[i + 1], &sptr[-4]));
+		sptr[-4] = '.';
 		Text::StrConcatC(&sptr[-3], UTF8STRC("prj"));
 	}
 	else
 	{
+		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
 	this->csys = Math::CoordinateSystemManager::ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)});
