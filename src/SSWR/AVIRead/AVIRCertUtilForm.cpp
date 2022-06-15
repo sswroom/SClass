@@ -114,6 +114,9 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, Text::
 					case Crypto::Cert::X509File::FileType::PKCS7:
 						DEL_CLASS(x509);
 						break;
+					case Crypto::Cert::X509File::FileType::CRL:
+						DEL_CLASS(x509);
+						break;
 					}
 				}
 				else

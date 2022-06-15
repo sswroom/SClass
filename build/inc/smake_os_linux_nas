@@ -1,3 +1,5 @@
+Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
+@TrustStore.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
 @MDBFileConn.o
@@ -85,6 +87,7 @@ Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
+TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp

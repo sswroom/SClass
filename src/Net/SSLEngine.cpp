@@ -1,10 +1,15 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "Crypto/Cert/TrustStore.h"
 #include "Net/SSLEngine.h"
 #include "Parser/FileParser/X509Parser.h"
+#include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
+
+Crypto::Cert::CertStore *Net::SSLEngine::trustStore = 0;
+UInt32 Net::SSLEngine::trustStoreCnt = 0;
 
 UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 {
@@ -43,6 +48,7 @@ Net::SSLEngine::SSLEngine(Net::SocketFactory *sockf)
 	this->sockf = sockf;
 	this->maxThreadCnt = 10;
 	this->currThreadCnt = 0;
+	this->trustStoreUsed = false;
 	this->threadMut.SetDebName((const UTF8Char*)"SSLEngine");
 	this->threadSt = MemAlloc(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
@@ -90,6 +96,13 @@ Net::SSLEngine::~SSLEngine()
 		DEL_CLASS(this->threadSt[i].evt);
 	}
 	MemFree(this->threadSt);
+	if (this->trustStoreUsed)
+	{
+		if (Sync::Interlocked::Decrement(&trustStoreCnt) == 0)
+		{
+			SDEL_CLASS(trustStore);
+		}
+	}
 }
 
 Bool Net::SSLEngine::SetServerCerts(Text::CString certFile, Text::CString keyFile)
@@ -182,6 +195,19 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 			mutUsage.BeginUse();
 		}
 	}
+}
+
+Crypto::Cert::CertStore *Net::SSLEngine::GetTrustStore()
+{
+	if (!this->trustStoreUsed)
+	{
+		this->trustStoreUsed = true;
+		if (Sync::Interlocked::Increment(&trustStoreCnt) == 1)
+		{
+			trustStore = Crypto::Cert::TrustStore::Load();
+		}
+	}
+	return trustStore;
 }
 
 Text::CString Net::SSLEngine::ErrorTypeGetName(ErrorType err)

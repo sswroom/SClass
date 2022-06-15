@@ -56,7 +56,8 @@ namespace Crypto
 				Jks,
 				PublicKey,
 				PKCS7,
-				PKCS12
+				PKCS12,
+				CRL
 			};
 
 			enum class KeyType
@@ -76,6 +77,10 @@ namespace Crypto
 			static void AppendTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
 			static Bool IsCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
 			static void AppendCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
+			static Bool IsTBSCertList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC3280
+			static void AppendTBSCertList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC3280
+			static Bool IsCertificateList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC3280
+			static void AppendCertificateList(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC3280
 			static Bool IsPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-8
 			static void AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // PKCS-8
 			static Bool IsCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-10

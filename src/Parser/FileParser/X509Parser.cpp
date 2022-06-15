@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509CertReq.h"
+#include "Crypto/Cert/X509CRL.h"
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Cert/X509PKCS7.h"
@@ -38,6 +39,7 @@ void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector
 		selector->AddFilter(CSTR("*.pem"), CSTR("PEM File"));
 		selector->AddFilter(CSTR("*.der"), CSTR("DER File"));
 		selector->AddFilter(CSTR("*.cer"), CSTR("CER File"));
+		selector->AddFilter(CSTR("*.crl"), CSTR("Certification Revocation List"));
 	}
 }
 
@@ -169,6 +171,10 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 		else if (fileName->EndsWithICase(UTF8STRC(".P7S")))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
+		}
+		else if (fileName->EndsWithICase(UTF8STRC(".CRL")))
+		{
+			NEW_CLASS(ret, Crypto::Cert::X509CRL(fileName, buff, buffSize));
 		}
 		else
 		{

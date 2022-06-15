@@ -1,6 +1,8 @@
 BUILD_OS := WINDOWS
 INCLUDEPATH+=:../../ThirdParty/KSSample
 
+Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Null.cpp
+@TrustStore.o
 Crypto/Cert/WinHttpCert.h: ../../src/Crypto/Cert/WinHttpCert.cpp
 @WinHttpCert.o
 
@@ -150,6 +152,7 @@ Win32/WindowsEvent.h: ../../src/Win32/WindowsEvent.cpp
 Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 @WinRTCore.o
 
+TrustStore.o: ../../src/Crypto/Cert/TrustStore_Null.cpp
 WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 !-lwinhttp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp

@@ -1,6 +1,8 @@
 
 Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
 @CurlCert.o
+Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
+@TrustStore.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
 @MDBFileConn.o
@@ -94,6 +96,7 @@ $-I/usr/lib/jvm/java-11-openjdk-amd64/include
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
 CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 !-lcurl
+TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc
 !-lodbcinst

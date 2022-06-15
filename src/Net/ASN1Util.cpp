@@ -342,6 +342,20 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			sb->AppendC(UTF8STRC(")\r\n"));
 			pdu += ofst + len;
 			break;
+		case 0x0a:
+			if (len == 1)
+			{
+				sb->AppendChar('\t', level);
+				sb->AppendC(UTF8STRC("ENUMERATED "));
+				sb->AppendU32(pdu[ofst]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				pdu += ofst + len;
+			}
+			else
+			{
+				return false;
+			}
+			break;
 		case 0x0C:
 			sb->AppendChar('\t', level);
 			sb->AppendC(UTF8STRC("UTF8String "));

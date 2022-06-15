@@ -1,5 +1,6 @@
 #ifndef _SM_NET_SSLENGINE
 #define _SM_NET_SSLENGINE
+#include "Crypto/Cert/CertStore.h"
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509Key.h"
@@ -68,6 +69,10 @@ namespace Net
 		Sync::Mutex threadMut;
 		ThreadState *threadSt;
 
+		static Crypto::Cert::CertStore *trustStore;
+		static UInt32 trustStoreCnt;
+		Bool trustStoreUsed;
+
 		static UInt32 __stdcall ServerThread(void *userObj);
 		virtual Net::SSLClient *CreateServerConn(Socket *s) = 0;
 		SSLEngine(Net::SocketFactory *sockf);
@@ -89,6 +94,8 @@ namespace Net
 
 		Bool SetServerCerts(Text::CString certFile, Text::CString keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
+
+		Crypto::Cert::CertStore *GetTrustStore();
 
 		static Text::CString ErrorTypeGetName(ErrorType err);
 	};

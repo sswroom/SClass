@@ -1,6 +1,8 @@
 
 Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
 @CurlCert.o
+Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
+@TrustStore.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
 @MDBFileConn.o
@@ -84,6 +86,7 @@ Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
 CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 !-lcurl
+TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
