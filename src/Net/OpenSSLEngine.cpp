@@ -552,6 +552,14 @@ Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Has
 	{
 		htype = EVP_sha512();
 	}
+	else if (hashType == Crypto::Hash::HT_SHA224)
+	{
+		htype = EVP_sha224();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA1)
+	{
+		htype = EVP_sha1();
+	}
 	else
 	{
 		return false;
@@ -606,6 +614,14 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 	else if (hashType == Crypto::Hash::HT_SHA512)
 	{
 		htype = EVP_sha512();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA224)
+	{
+		htype = EVP_sha224();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA1)
+	{
+		htype = EVP_sha1();
 	}
 	else
 	{

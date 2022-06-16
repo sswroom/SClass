@@ -62,8 +62,8 @@ Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone()
 
 void Crypto::Cert::X509PKCS12::ToString(Text::StringBuilderUTF8 *sb)
 {
-/*	if (IsCertificateRequest(this->buff, this->buff + this->buffSize, "1"))
+	if (IsPFX(this->buff, this->buff + this->buffSize, "1"))
 	{
-		AppendCertificateRequest(this->buff, this->buff + this->buffSize, "1", sb);
-	}*/
+		AppendPFX(this->buff, this->buff + this->buffSize, "1", sb, CSTR_NULL);
+	}
 }

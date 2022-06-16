@@ -2,6 +2,7 @@
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Net/ASN1Util.h"
+#include "Net/SSLEngine.h"
 
 Crypto::Cert::X509CertReq::X509CertReq(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
@@ -36,7 +37,31 @@ void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF8 *sb)
 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
 {
-	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+	SignedInfo signedInfo;
+	if (!this->GetSignedInfo(&signedInfo))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;		
+	}
+	Crypto::Hash::HashType hashType = GetRSAHash(signedInfo.algType);
+	if (hashType == Crypto::Hash::HT_UNKNOWN)
+	{
+		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
+	}
+	Crypto::Cert::X509Key *key = this->GetNewPublicKey();
+	if (key == 0)
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Bool valid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+	DEL_CLASS(key);
+	if (valid)
+	{
+		return Crypto::Cert::X509File::ValidStatus::Valid;
+	}
+	else
+	{
+		return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+	}
 }
 
 Net::ASN1Data *Crypto::Cert::X509CertReq::Clone()

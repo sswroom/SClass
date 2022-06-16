@@ -19,6 +19,12 @@ namespace Crypto
 			
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF8 *sb);
+
+			Bool HasVersion();
+			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb);
+			Bool GetThisUpdate(Data::DateTime *dt);
+			Bool GetNextUpdate(Data::DateTime *dt);
+			Bool IsRevoked(Crypto::Cert::X509Cert *cert);
 		};
 	}
 }

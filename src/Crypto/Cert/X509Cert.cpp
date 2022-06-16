@@ -106,12 +106,74 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
+	Data::DateTime dt;
+	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	if (!this->GetNotBefore(&dt))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	if (dt.ToTicks() > currTime)
+	{
+		return Crypto::Cert::X509File::ValidStatus::Expired;
+	}
+	if (!this->GetNotAfter(&dt))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	if (dt.ToTicks() < currTime)
+	{
+		return Crypto::Cert::X509File::ValidStatus::Expired;
+	}
+	SignedInfo signedInfo;
+	if (!this->GetSignedInfo(&signedInfo))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Crypto::Hash::HashType hashType = GetRSAHash(signedInfo.algType);
+	if (hashType == Crypto::Hash::HT_UNKNOWN)
+	{
+		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
+	}
+
 	Crypto::Cert::X509Cert *issuer = trustStore->GetCertByCN(sb.ToCString());
 	if (issuer == 0)
 	{
-		return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
+		if (!this->IsSelfSigned())
+		{
+			return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
+		}
+		Crypto::Cert::X509Key *key = this->GetNewPublicKey();
+		if (key == 0)
+		{
+			return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+		}
+		Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+		DEL_CLASS(key);
+		if (signValid)
+		{
+			return Crypto::Cert::X509File::ValidStatus::SelfSigned;
+		}
+		else
+		{
+			return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+		}
 	}
-	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+
+	Crypto::Cert::X509Key *key = issuer->GetNewPublicKey();
+	if (key == 0)
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+	DEL_CLASS(key);
+	if (!signValid)
+	{
+		return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+	}
+
+	//////////////////////////
+	// CRL
+	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
 Net::ASN1Data *Crypto::Cert::X509Cert::Clone()

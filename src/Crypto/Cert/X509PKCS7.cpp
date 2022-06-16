@@ -115,9 +115,9 @@ Net::ASN1Data *Crypto::Cert::X509PKCS7::Clone()
 
 void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb)
 {
-	if (IsPKCS7ContentInfo(this->buff, this->buff + this->buffSize, "1"))
+	if (IsContentInfo(this->buff, this->buff + this->buffSize, "1"))
 	{
-		AppendPKCS7ContentInfo(this->buff, this->buff + this->buffSize, "1", sb, CSTR_NULL);
+		AppendContentInfo(this->buff, this->buff + this->buffSize, "1", sb, CSTR_NULL, Crypto::Cert::X509File::ContentDataType::Unknown);
 	}
 }
 

@@ -322,7 +322,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				else
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+					sb->AppendHexBuff(&pdu[ofst + 1], len - 1, ' ', Text::LineBreakType::None);
 					sb->AppendC(UTF8STRC(")\r\n"));
 				}
 			}

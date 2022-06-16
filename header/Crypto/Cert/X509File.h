@@ -78,7 +78,36 @@ namespace Crypto
 				SignatureInvalid,
 				Revoked,
 				FileFormatInvalid,
-				UnknownIssuer
+				UnknownIssuer,
+				Expired,
+				UnsupportedAlgorithm
+			};
+
+			enum class AlgType
+			{
+				Unknown,
+				MD2WithRSAEncryption,
+				MD5WithRSAEncryption,
+				SHA1WithRSAEncryption,
+				SHA256WithRSAEncryption,
+				SHA384WithRSAEncryption,
+				SHA512WithRSAEncryption,
+				SHA224WithRSAEncryption
+			};
+
+			enum class ContentDataType
+			{
+				Unknown,
+				AuthenticatedSafe
+			};
+
+			struct SignedInfo
+			{
+				const UInt8 *signature;
+				UOSInt signSize;
+				const UInt8 *payload;
+				UOSInt payloadSize;
+				AlgType algType;
 			};
 
 		protected:
@@ -100,8 +129,10 @@ namespace Crypto
 			static void AppendCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // PKCS-8
 			static Bool IsPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
 			static void AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // AuthenticationFramework
-			static Bool IsPKCS7ContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC2315
-			static void AppendPKCS7ContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
+			static Bool IsContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // RFC2315 / PKCS7
+			static void AppendContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType); // RFC2315 / PKCS7
+			static Bool IsPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS12
+			static void AppendPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // PKCS12
 
 			static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // AuthenticationFramework
 
@@ -124,6 +155,12 @@ namespace Crypto
 			static void AppendPKCS7SignerInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
 			static void AppendIssuerAndSerialNumber(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
 			static void AppendPKCS7Attributes(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315
+			static Bool AppendMacData(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // PKCS12
+			static void AppendDigestInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); // RFC2315 / PKCS7
+			static void AppendData(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType);
+			static void AppendEncryptedData(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType);
+			static void AppendAuthenticatedSafe(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName); //PKCS12
+			static void AppendEncryptedContentInfo(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, ContentDataType dataType);
 
 			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, Text::StringBuilderUTF8 *sb);
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb);
@@ -134,6 +171,7 @@ namespace Crypto
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
 			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
+			static Bool AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType);
 
 			X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
@@ -151,7 +189,9 @@ namespace Crypto
 
 			void ToShortString(Text::StringBuilderUTF8 *sb);
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);
+			Bool GetSignedInfo(SignedInfo *signedInfo);
 
+			static Crypto::Hash::HashType GetRSAHash(AlgType algType);
 			static Text::CString FileTypeGetName(FileType fileType);
 			static Text::CString KeyTypeGetName(KeyType keyType);
 			static Text::CString KeyTypeGetOID(KeyType keyType);

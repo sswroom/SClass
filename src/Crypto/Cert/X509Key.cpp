@@ -34,7 +34,11 @@ void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb)
 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
 {
-	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+	if (this->keyType == KeyType::Unknown)
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
 Net::ASN1Data *Crypto::Cert::X509Key::Clone()
