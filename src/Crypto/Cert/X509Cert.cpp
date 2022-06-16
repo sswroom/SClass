@@ -2,6 +2,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Net/ASN1Util.h"
+#include "Net/SSLEngine.h"
 
 Crypto::Cert::X509Cert::X509Cert(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
@@ -18,7 +19,7 @@ Crypto::Cert::X509Cert::~X509Cert()
 
 }
 
-void Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF8 *sb)
+Bool Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -33,7 +34,34 @@ void Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF8 *sb)
 	}
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		NameGetCN(tmpBuff, tmpBuff + len, sb);
+		return NameGetCN(tmpBuff, tmpBuff + len, sb);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+Bool Crypto::Cert::X509Cert::GetIssuerCN(Text::StringBuilderUTF8 *sb)
+{
+	UOSInt len = 0;
+	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
+	const UInt8 *tmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff, this->buff + this->buffSize, "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4", &len, &itemType);
+	}
+	else
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.3", &len, &itemType);
+	}
+	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	{
+		return NameGetCN(tmpBuff, tmpBuff + len, sb);
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -67,6 +95,25 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::GetNewCert(UOSInt index)
 	return (Crypto::Cert::X509Cert*)this->Clone();
 }
 
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+{
+	if (trustStore == 0)
+	{
+		trustStore = ssl->GetTrustStore();
+	}
+	Text::StringBuilderUTF8 sb;
+	if (!this->GetIssuerCN(&sb))
+	{
+		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
+	}
+	Crypto::Cert::X509Cert *issuer = trustStore->GetCertByCN(sb.ToCString());
+	if (issuer == 0)
+	{
+		return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
+	}
+	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+}
+
 Net::ASN1Data *Crypto::Cert::X509Cert::Clone()
 {
 	Crypto::Cert::X509Cert *asn1;
@@ -89,7 +136,7 @@ void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Crypto::Cert::X509Cert::GetIssueNames(CertNames *names)
+Bool Crypto::Cert::X509Cert::GetIssuerNames(CertNames *names)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -231,7 +278,7 @@ Bool Crypto::Cert::X509Cert::GetNotBefore(Data::DateTime *dt)
 	{
 		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4.1", &len, &itemType);
 	}
-	if (itemType == Net::ASN1Util::IT_UTCTIME)
+	if (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME)
 	{
 		return Net::ASN1Util::PDUParseUTCTimeCont(tmpBuff, len, dt);
 	}
@@ -251,7 +298,7 @@ Bool Crypto::Cert::X509Cert::GetNotAfter(Data::DateTime *dt)
 	{
 		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4.2", &len, &itemType);
 	}
-	if (itemType == Net::ASN1Util::IT_UTCTIME)
+	if (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME)
 	{
 		return Net::ASN1Util::PDUParseUTCTimeCont(tmpBuff, len, dt);
 	}
@@ -323,7 +370,7 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned()
 	MemClear(&subjNames, sizeof(subjNames));
 	MemClear(&issueNames, sizeof(issueNames));
 	Bool ret = false;
-	if (this->GetIssueNames(&issueNames) && this->GetSubjNames(&subjNames))
+	if (this->GetIssuerNames(&issueNames) && this->GetSubjNames(&subjNames))
 	{
 		ret = issueNames.commonName->Equals(subjNames.commonName);
 	}
@@ -332,7 +379,7 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned()
 	return ret;
 }
 
-const UInt8 *Crypto::Cert::X509Cert::GetIssueNamesSeq(UOSInt *dataLen)
+const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(UOSInt *dataLen)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;

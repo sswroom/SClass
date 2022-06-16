@@ -24,7 +24,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
-			Net::WhoisHandler *whois;
+			Net::WhoisHandler whois;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblSelfIP;
@@ -46,6 +46,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

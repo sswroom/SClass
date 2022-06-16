@@ -189,6 +189,7 @@
 #include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
 #include "SSWR/AVIRead/AVIRTimeTestForm.h"
 #include "SSWR/AVIRead/AVIRTraceRouteForm.h"
+#include "SSWR/AVIRead/AVIRTrustStoreForm.h"
 #include "SSWR/AVIRead/AVIRTVControlForm.h"
 #include "SSWR/AVIRead/AVIRUDPCaptureForm.h"
 #include "SSWR/AVIRead/AVIRUDPTestForm.h"
@@ -426,7 +427,8 @@ typedef enum
 	MNU_POSTGRESQL_CONN,
 	MNU_LORA_GW_SIM,
 	MNU_LORA_JSON,
-	MNU_GLBVIEWER
+	MNU_GLBVIEWER,
+	MNU_TRUSTSTORE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -566,6 +568,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2 = mnu->AddSubMenu(CSTR("Certificates"));
 	mnu2->AddItem(CSTR("Cert Util"), MNU_CERT_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("CA Util"), MNU_CA_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Trust Store"), MNU_TRUSTSTORE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("ASN.1"));
 	mnu2->AddItem(CSTR("ASN.1 MIB"), MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 OID"), MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2441,6 +2444,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRGLBViewerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRGLBViewerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_TRUSTSTORE:
+		{
+			SSWR::AVIRead::AVIRTrustStoreForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

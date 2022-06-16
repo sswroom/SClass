@@ -48,6 +48,11 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
 	return 0;
 }
 
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+{
+	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+}
+
 Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone()
 {
 	Crypto::Cert::X509PKCS12 *asn1;

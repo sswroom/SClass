@@ -16,6 +16,7 @@ namespace Crypto
 			CertStore();
 			virtual ~CertStore();
 
+			Bool LoadDir(Text::CString certsDir);
 			void AddCert(Crypto::Cert::X509Cert *cert);
 
 			Crypto::Cert::X509Cert *GetCertByCN(Text::CString commonName);

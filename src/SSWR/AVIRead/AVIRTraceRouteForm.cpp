@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
 	if (ip)
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois->RequestIP(ip);
+		Net::WhoisRecord *rec = me->whois.RequestIP(ip);
 		if (rec)
 		{
 			UOSInt i = 0;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
 }
 
 
-SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory())
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Trace Route"));
@@ -91,7 +91,6 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
@@ -152,7 +151,6 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRTraceRouteForm::~AVIRTraceRouteForm()
 {
-	DEL_CLASS(this->whois);
 }
 
 void SSWR::AVIRead::AVIRTraceRouteForm::OnMonitorChanged()

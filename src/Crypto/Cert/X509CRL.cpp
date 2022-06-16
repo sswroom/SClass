@@ -41,6 +41,11 @@ void Crypto::Cert::X509CRL::ToShortName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+{
+	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+}
+
 Net::ASN1Data *Crypto::Cert::X509CRL::Clone()
 {
 	Crypto::Cert::X509CRL *asn1;

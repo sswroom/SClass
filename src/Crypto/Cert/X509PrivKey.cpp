@@ -44,6 +44,11 @@ void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PrivKey::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+{
+	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+}
+
 Net::ASN1Data *Crypto::Cert::X509PrivKey::Clone()
 {
 	Crypto::Cert::X509PrivKey *asn1;

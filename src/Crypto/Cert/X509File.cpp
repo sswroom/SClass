@@ -943,7 +943,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 	Net::ASN1Util::ItemType itemType;
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &itemLen, &itemType)) != 0)
 	{
-		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
+		if ((itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME) && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
 		{
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
@@ -954,7 +954,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 	}
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &itemLen, &itemType)) != 0)
 	{
-		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
+		if ((itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME) && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
 		{
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
@@ -987,12 +987,12 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 		{
 			sb->Append(varName);
 			sb->AppendC(UTF8STRC(".subjectPublicKey = "));
-			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
+			sb->AppendHexBuff(itemPDU + 1, itemLen - 1, ':', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (keyType != KeyType::Unknown)
 			{
 				sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".subjectPublicKey"));
-				Crypto::Cert::X509Key pkey(CSTRP(sbuff, sptr), itemPDU, itemLen, keyType);
+				Crypto::Cert::X509Key pkey(CSTRP(sbuff, sptr), itemPDU + 1, itemLen - 1, keyType);
 				pkey.ToString(sb);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
@@ -2462,4 +2462,47 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 	default:
 		return CSTR("1.2.840.113549.1.1.1");
 	}
+}
+
+Text::CString Crypto::Cert::X509File::ValidStatusGetName(ValidStatus validStatus)
+{
+	switch (validStatus)
+	{
+	case ValidStatus::Valid:
+		return CSTR("Valid");
+	case ValidStatus::SelfSigned:
+		return CSTR("SelfSigned");
+	case ValidStatus::SignatureInvalid:
+		return CSTR("SignatureInvalid");
+	case ValidStatus::Revoked:
+		return CSTR("Revoked");
+	case ValidStatus::FileFormatInvalid:
+		return CSTR("FileFormatInvalid");
+	case ValidStatus::UnknownIssuer:
+		return CSTR("UnknownIssuer");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString Crypto::Cert::X509File::ValidStatusGetDesc(ValidStatus validStatus)
+{
+	switch (validStatus)
+	{
+	case ValidStatus::Valid:
+		return CSTR("Valid");
+	case ValidStatus::SelfSigned:
+		return CSTR("Self-Signed Certificate");
+	case ValidStatus::SignatureInvalid:
+		return CSTR("Signature Invalid");
+	case ValidStatus::Revoked:
+		return CSTR("Certificate Revoked");
+	case ValidStatus::FileFormatInvalid:
+		return CSTR("File Format Invalid");
+	case ValidStatus::UnknownIssuer:
+		return CSTR("Unknown Issuer");
+	default:
+		return CSTR("Unknown");
+	}
+
 }

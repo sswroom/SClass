@@ -16,6 +16,7 @@ namespace Crypto
 
 			virtual FileType GetFileType();
 			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
 			
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF8 *sb);

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509PrivKey.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -60,6 +61,14 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	}
 	this->SetMenu(this->mnuMain);
 
+	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this));
+	this->pnlStatus->SetRect(0, 0, 100, 31, false);
+	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlStatus, CSTR("Valid Status")));
+	this->lblStatus->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatus->SetRect(104, 4, 200, 23, false);
+	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
@@ -77,6 +86,18 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	sb.ClearStr();
 	this->asn1->ToASN1String(&sb);
 	this->txtASN1->SetText(sb.ToCString());
+
+	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
+	{
+		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)this->asn1;
+		Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
+		this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
+		SDEL_CLASS(ssl);
+	}
+	else
+	{
+		this->txtStatus->SetText(CSTR("-"));
+	}
 }
 
 SSWR::AVIRead::AVIRASN1DataForm::~AVIRASN1DataForm()

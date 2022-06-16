@@ -3,6 +3,8 @@
 #include "Net/ASN1Data.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
+#include "UI/GUILabel.h"
+#include "UI/GUIPanel.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -19,6 +21,9 @@ namespace SSWR
 
 			UI::GUIMainMenu *mnuMain;
 
+			UI::GUIPanel *pnlStatus;
+			UI::GUILabel *lblStatus;
+			UI::GUITextBox *txtStatus;
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpDesc;

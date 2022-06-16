@@ -32,6 +32,11 @@ void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC(" bits"));
 }
 
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+{
+	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+}
+
 Net::ASN1Data *Crypto::Cert::X509Key::Clone()
 {
 	Crypto::Cert::X509Key *asn1;

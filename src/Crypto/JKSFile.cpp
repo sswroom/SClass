@@ -24,6 +24,11 @@ void Crypto::JKSFile::ToShortName(Text::StringBuilderUTF8 *sb)
 
 }
 
+Crypto::Cert::X509File::ValidStatus Crypto::JKSFile::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+{
+	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
+}
+
 Net::ASN1Data *Crypto::JKSFile::Clone()
 {
 	Crypto::JKSFile *asn1;

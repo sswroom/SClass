@@ -41,6 +41,7 @@ namespace Crypto
 
 			static void FreeExtensions(CertExtensions *ext);
 		};
+		class CertStore;
 		class X509Key;
 		class X509Cert;
 
@@ -68,6 +69,16 @@ namespace Crypto
 				ECDSA,
 				ED25519,
 				RSAPublic
+			};
+
+			enum class ValidStatus
+			{
+				Valid,
+				SelfSigned,
+				SignatureInvalid,
+				Revoked,
+				FileFormatInvalid,
+				UnknownIssuer
 			};
 
 		protected:
@@ -136,6 +147,7 @@ namespace Crypto
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) = 0;
 
 			void ToShortString(Text::StringBuilderUTF8 *sb);
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);
@@ -143,6 +155,8 @@ namespace Crypto
 			static Text::CString FileTypeGetName(FileType fileType);
 			static Text::CString KeyTypeGetName(KeyType keyType);
 			static Text::CString KeyTypeGetOID(KeyType keyType);
+			static Text::CString ValidStatusGetName(ValidStatus validStatus);
+			static Text::CString ValidStatusGetDesc(ValidStatus validStatus);
 		};
 	}
 }

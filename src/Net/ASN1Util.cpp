@@ -229,6 +229,12 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::Date
 		dt->SetValue((UInt16)((UInt32)(dt->GetYear() / 100) * 100 + Str2Digit(pdu)), (OSInt)Str2Digit(&pdu[2]), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), 0);
 		return true;
 	}
+	else if (len == 15 && pdu[14] == 'Z')
+	{
+		dt->SetCurrTimeUTC();
+		dt->SetValue((UInt16)(Str2Digit(&pdu[0]) * 100 + Str2Digit(&pdu[2])), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), (OSInt)Str2Digit(&pdu[12]), 0);
+		return true;
+	}
 	return false;
 }
 
@@ -303,8 +309,23 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 		case 0x3:
 			sb->AppendChar('\t', level);
 			sb->AppendC(UTF8STRC("BIT STRING "));
-			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendHex8(pdu[ofst]);
+			{
+				Text::StringBuilderUTF8 innerSb;
+				if (PDUToString(&pdu[ofst + 1], &pdu[ofst + len], &innerSb, level + 1))
+				{
+					sb->AppendC(UTF8STRC(" {\r\n"));
+					sb->Append(&innerSb);
+					sb->AppendChar('\t', level);
+					sb->AppendC(UTF8STRC("}\r\n"));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC(" ("));
+					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+					sb->AppendC(UTF8STRC(")\r\n"));
+				}
+			}
 			pdu += ofst + len;
 			break;
 		case 0x4:
@@ -406,6 +427,23 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), (OSInt)Str2Digit(&pdu[ofst + 2]), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), 0);
+				sb->AppendDate(&dt);
+			}
+			else
+			{
+				sb->AppendC(&pdu[ofst], len);
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			pdu += ofst + len;
+			break;
+		case 0x18:
+			sb->AppendChar('\t', level);
+			sb->AppendC(UTF8STRC("GeneralizedTime "));
+			if (len == 15 && pdu[ofst + 14] == 'Z')
+			{
+				Data::DateTime dt;
+				dt.SetCurrTimeUTC();
+				dt.SetValue((UInt16)(Str2Digit(&pdu[ofst]) * 100 + Str2Digit(&pdu[ofst + 2])), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), (OSInt)Str2Digit(&pdu[ofst + 12]), 0);
 				sb->AppendDate(&dt);
 			}
 			else

@@ -599,7 +599,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 						builder.BeginSequence();
 							builder.AppendInt32(1);
 							builder.BeginSequence();
-								data = this->signCert->GetIssueNamesSeq(&dataSize);
+								data = this->signCert->GetIssuerNamesSeq(&dataSize);
 								builder.AppendSequence(data, dataSize);
 								data = this->signCert->GetSerialNumber(&dataSize);
 								builder.AppendInteger(data, dataSize);
@@ -668,7 +668,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 									builder.AppendOIDString(UTF8STRC("1.3.6.1.4.1.311.16.4")); //outlookExpress
 									builder.BeginSet();
 										builder.BeginSequence();
-											data = this->signCert->GetIssueNamesSeq(&dataSize);
+											data = this->signCert->GetIssuerNamesSeq(&dataSize);
 											builder.AppendSequence(data, dataSize);
 											data = this->signCert->GetSerialNumber(&dataSize);
 											builder.AppendInteger(data, dataSize);
@@ -679,7 +679,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 									builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.16.2.11")); //id-aa-encrypKeyPref
 									builder.BeginSet();
 										builder.BeginContentSpecific(0);
-											data = this->signCert->GetIssueNamesSeq(&dataSize);
+											data = this->signCert->GetIssuerNamesSeq(&dataSize);
 											builder.AppendSequence(data, dataSize);
 											data = this->signCert->GetSerialNumber(&dataSize);
 											builder.AppendInteger(data, dataSize);
@@ -691,6 +691,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.1.1")); //rsaEncryption
 								builder.AppendNull();
 							builder.EndLevel();
+							///////////////////////////////////////
 							this->ssl->Signature(this->signKey, Crypto::Hash::HT_SHA256, mstm.GetBuff(&len), mstm.GetLength(), signData, &signLen);
 							builder.AppendOctetStringC(signData, signLen);
 						builder.EndLevel();
