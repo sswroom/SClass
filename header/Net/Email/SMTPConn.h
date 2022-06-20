@@ -27,7 +27,6 @@ namespace Net
 			Bool threadToStop;
 			Bool threadRunning;
 			Bool threadStarted;
-			Bool logged;
 			Bool statusChg;
 			UInt32 lastStatus;
 			UTF8Char *msgRet;
@@ -45,6 +44,7 @@ namespace Net
 			~SMTPConn();
 
 			Bool IsError();
+			UOSInt GetMaxSize();
 
 			Bool SendHelo(Text::CString cliName);
 			Bool SendEHlo(Text::CString cliName);

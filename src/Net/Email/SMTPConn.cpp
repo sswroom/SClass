@@ -61,7 +61,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 				msgCode = Text::StrToUInt32(sbuff2);
 				if (msgCode == 235)
 				{
-					me->logged = true;
+					//me->logged = true;
 				}
 				if (sbuff[3] == ' ')
 				{
@@ -117,7 +117,6 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	this->threadStarted = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	this->logged = false;
 	this->msgRet = 0;
 	this->statusChg = false;
 	this->maxSize = 0;
@@ -246,6 +245,11 @@ Net::Email::SMTPConn::~SMTPConn()
 Bool Net::Email::SMTPConn::IsError()
 {
 	return this->initCode != 220 || this->cli->IsConnectError();
+}
+
+UOSInt Net::Email::SMTPConn::GetMaxSize()
+{
+	return this->maxSize;
 }
 
 Bool Net::Email::SMTPConn::SendHelo(Text::CString cliName)
