@@ -497,15 +497,15 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 }
 
 
-Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile)
+Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
 {
-	Text::StringBuilderUTF8 sb;
 	Text::CString fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		sb.Append(sourceFile);
-		sb.Replace('/', '\\');
-		fileName = sb.ToCString();
+		tmpSb->ClearStr();
+		tmpSb->Append(sourceFile);
+		tmpSb->Replace('/', '\\');
+		fileName = tmpSb->ToCString();
 	}
 	else
 	{
@@ -515,11 +515,11 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 //		printf("Opening %s\r\n", fileName.v);
 	if (fs.IsError())
 	{
-		Text::StringBuilderUTF8 sb2;
-		sb2.AppendC(UTF8STRC("Error in opening source \""));
-		sb2.Append(sourceFile);
-		sb2.AppendC(UTF8STRC("\""));
-		this->SetErrorMsg(sb2.ToCString());
+		tmpSb->ClearStr();
+		tmpSb->AppendC(UTF8STRC("Error in opening source \""));
+		tmpSb->Append(sourceFile);
+		tmpSb->AppendC(UTF8STRC("\""));
+		this->SetErrorMsg(tmpSb->ToCString());
 		return false;
 	}
 	Int64 lastTime;
@@ -533,10 +533,10 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	UOSInt i;
 	IO::SMake::ProgramItem *prog;
 	Text::UTF8Reader reader(&fs);
-	sb.ClearStr();
-	while (reader.ReadLine(&sb, 1024))
+	tmpSb->ClearStr();
+	while (reader.ReadLine(tmpSb, 1024))
 	{
-		line = sb.TrimAsNew();
+		line = tmpSb->TrimAsNew();
 		if (line.StartsWith(UTF8STRC("#include")))
 		{
 			line = line.SubstrTrim(8);
@@ -605,7 +605,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 								sb2.Append(sourceFile);
 								this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 							}
-							if (!this->ParseHeader(objList, libList, procList, headerList, &thisTime, prog->name, sourceFile))
+							if (!this->ParseHeader(objList, libList, procList, headerList, &thisTime, prog->name, sourceFile, tmpSb))
 							{
 								return false;
 							}
@@ -615,7 +615,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 							}
 							if (prog->srcFile)
 							{
-								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->ToCString()))
+								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->ToCString(), tmpSb))
 								{
 									return false;
 								}
@@ -626,13 +626,13 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 				}
 			}
 		}
-		sb.ClearStr();
+		tmpSb->ClearStr();
 	}
 	*latestTime = lastTime;
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, Text::CString sourceFile)
+Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, Text::CString sourceFile, Text::StringBuilderUTF8 *tmpSb)
 {
 	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("INCLUDEPATH"));
 	if (cfg == 0)
@@ -640,24 +640,21 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 		this->SetErrorMsg(CSTR("INCLUDEPATH config not found"));
 		return false;
 	}
-	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
-	sb.Append(cfg->value);
-	sarr[1].v = sb.ToString();
-	sarr[1].leng = sb.GetLength();
+	sb2.Append(cfg->value);
+	sarr[1].v = sb2.ToString();
+	sarr[1].leng = sb2.GetLength();
 	i = 2;
 	while (i == 2)
 	{
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ':');
-		sb2.ClearStr();
-		sb2.AppendC(sarr[0].v, sarr[0].leng);
-		sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-		sb2.Append(headerFile);
-		sptr = IO::Path::GetRealPath(sbuff, sb2.ToString(), sb2.GetLength());
+		sptr = IO::Path::GetRealPath(sbuff, sarr[0].v, sarr[0].leng);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = headerFile->ConcatTo(sptr);
 
 		if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 		{
@@ -665,7 +662,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 			{
 				headerList->SortedInsert(headerFile);
 			}
-			if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr)))
+			if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr), tmpSb))
 			{
 				this->fileTimeMap.Put(headerFile, *latestTime);
 				return true;
@@ -676,29 +673,29 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 			}
 		}
 	}
-	sb.ClearStr();
-	sb.Append(sourceFile);
-	sb.Replace('\\', '/');
-	i = sb.LastIndexOf('/');
-	sb.TrimToLength(i);
+	tmpSb->ClearStr();
+	tmpSb->Append(sourceFile);
+	tmpSb->Replace('\\', '/');
+	i = tmpSb->LastIndexOf('/');
+	tmpSb->TrimToLength(i);
 	const UTF8Char *currHeader = headerFile->v;
 	const UTF8Char *currHeaderEnd = &headerFile->v[headerFile->leng];
 	while (Text::StrStartsWithC(currHeader, (UOSInt)(currHeaderEnd - currHeader), UTF8STRC("../")))
 	{
-		i = sb.LastIndexOf('/');
-		sb.TrimToLength(i);
+		i = tmpSb->LastIndexOf('/');
+		tmpSb->TrimToLength(i);
 		currHeader = currHeader + 3;
 	}
-	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	sb.AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
-	sptr = IO::Path::GetRealPath(sbuff, sb.ToString(), sb.GetLength());
+	tmpSb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
+	tmpSb->AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
+	sptr = IO::Path::GetRealPath(sbuff, tmpSb->ToString(), tmpSb->GetLength());
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{
 			headerList->SortedInsert(headerFile);
 		}
-		if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr)))
+		if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr), tmpSb))
 		{
 			this->fileTimeMap.Put(headerFile, *latestTime);
 			return true;
@@ -719,7 +716,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	return false;
 }
 
-Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const IO::SMake::ProgramItem *prog)
+Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const IO::SMake::ProgramItem *prog, Text::StringBuilderUTF8 *tmpSb)
 {
 	UOSInt i;
 	Text::String *subItem;
@@ -737,11 +734,11 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		}
 		if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
 		{
-			Text::StringBuilderUTF8 sb2;
-			sb2.Append(debugObj);
-			sb2.AppendC(UTF8STRC(" depends by "));
-			sb2.Append(prog->name);
-			this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
+			tmpSb->ClearStr();
+			tmpSb->Append(debugObj);
+			tmpSb->AppendC(UTF8STRC(" depends by "));
+			tmpSb->Append(prog->name);
+			this->messageWriter->WriteLineC(tmpSb->ToString(), tmpSb->GetLength());
 		}
 		objList->Put(subItem, 1);
 	}
@@ -757,15 +754,14 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		subProg = this->progMap.Get(cfg->value);
 		if (subProg == 0)
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendC(UTF8STRC("Item "));
-			sb.Append(cfg->value);
-			sb.AppendC(UTF8STRC(" not found"));
-			this->SetErrorMsg(sb.ToCString());
+			tmpSb->AppendC(UTF8STRC("Item "));
+			tmpSb->Append(cfg->value);
+			tmpSb->AppendC(UTF8STRC(" not found"));
+			this->SetErrorMsg(tmpSb->ToCString());
 			return false;
 		}
 		objList->Put(cfg->value, 1);
-		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->ToCString()))
+		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->ToCString(), tmpSb))
 		{
 			return false;
 		}
@@ -780,14 +776,13 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		subProg = this->progMap.Get(subItem);
 		if (subProg == 0)
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendC(UTF8STRC("Item "));
-			sb.Append(subItem);
-			sb.AppendC(UTF8STRC(" not found"));
-			this->SetErrorMsg(sb.ToCString());
+			tmpSb->AppendC(UTF8STRC("Item "));
+			tmpSb->Append(subItem);
+			tmpSb->AppendC(UTF8STRC(" not found"));
+			this->SetErrorMsg(tmpSb->ToCString());
 			return false;
 		}
-		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->ToCString()))
+		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->ToCString(), tmpSb))
 		{
 			return false;
 		}
@@ -849,7 +844,9 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		}
 	}
 
-	if (!this->ParseProgInternal(&objList, &libList, &procList, 0, &latestTime, &progGroup, prog))
+	Text::StringBuilderUTF8 sb;
+
+	if (!this->ParseProgInternal(&objList, &libList, &procList, 0, &latestTime, &progGroup, prog, &sb))
 	{
 		return false;
 	}
@@ -862,7 +859,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			subProg = this->progMap.Get(objList.GetKey(i));
 			if (subProg == 0)
 			{
-				Text::StringBuilderUTF8 sb;
+				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Program "));
 				sb.Append(objList.GetKey(i));
 				sb.AppendC(UTF8STRC(" not found"));
@@ -878,8 +875,6 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		return true;
 	}
 
-	Text::StringBuilderUTF8 sb;
-	Text::StringBuilderUTF8 sb2;
 	IO::SMake::ConfigItem *cppCfg = this->cfgMap.Get(CSTR("CXX"));
 	IO::SMake::ConfigItem *ccCfg = this->cfgMap.Get(CSTR("CC"));
 	IO::SMake::ConfigItem *asmCfg = this->cfgMap.Get(CSTR("ASM"));
@@ -1385,9 +1380,9 @@ Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
 Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
 {
 	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName->ToCString());
+	Text::StringBuilderUTF8 sb;
 	if (prog == 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Program "));
 		sb.AppendC(progName->v, progName->leng);
 		sb.AppendC(UTF8STRC(" not found"));
@@ -1396,7 +1391,7 @@ Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringM
 	}
 	else
 	{
-		return this->ParseProgInternal(objList, libList, procList, headerList, latestTime, progGroup, prog);
+		return this->ParseProgInternal(objList, libList, procList, headerList, latestTime, progGroup, prog, &sb);
 	}
 }
 

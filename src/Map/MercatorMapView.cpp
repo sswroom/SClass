@@ -34,11 +34,15 @@ void Map::MercatorMapView::SetCenterXY(Math::Coord2DDbl mapPos)
 
 void Map::MercatorMapView::SetMapScale(Double scale)
 {
+	if (scale < 400)
+	{
+		scale = 400;
+	}
 	OSInt level = (OSInt)(Math_Log10(204094080000.0 / scale / this->dtileSize) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
-	else if (level >= (OSInt)this->maxLevel)
-		level = (OSInt)this->maxLevel - 1;
+//	else if (level >= (OSInt)this->maxLevel)
+//		level = (OSInt)this->maxLevel - 1;
 	this->level = (UOSInt)level;
 	this->UpdateXY();
 }

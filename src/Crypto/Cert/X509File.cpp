@@ -2805,8 +2805,6 @@ Text::CString Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 		return CSTR("Key");
 	case FileType::PrivateKey:
 		return CSTR("PrivateKey");
-	case FileType::Jks:
-		return CSTR("JavaKeyStore");
 	case FileType::PublicKey:
 		return CSTR("PublicKey");
 	case FileType::PKCS7:

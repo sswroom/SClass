@@ -54,7 +54,6 @@ namespace Crypto
 				Key,
 				CertRequest,
 				PrivateKey,
-				Jks,
 				PublicKey,
 				PKCS7,
 				PKCS12,

@@ -89,8 +89,6 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.AppendC(UTF8STRC("\n-----END CERTIFICATE REQUEST-----\n"));
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
-	case Crypto::Cert::X509File::FileType::Jks:
-		return false;
 	case Crypto::Cert::X509File::FileType::Key:
 		{
 			Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
@@ -135,6 +133,7 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 		sb.AppendC(UTF8STRC("\n-----END PKCS7-----\n"));
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	case Crypto::Cert::X509File::FileType::PKCS12:
+	case Crypto::Cert::X509File::FileType::CRL:
 		break;
 	}
 	return false;

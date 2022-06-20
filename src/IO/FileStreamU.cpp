@@ -13,15 +13,8 @@
 #include <utime.h>
 #include <sys/stat.h>
 
-typedef struct
-{
-	Text::String *fileName;
-	Int32 hand;
-} ClassData;
-
 void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType)
 {
-	ClassData *clsData = (ClassData*)this->handle;
 	int flags = 0;
 #if defined(O_BINARY)
 	flags |= O_BINARY;
@@ -71,15 +64,15 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 
 #if defined(__USE_LARGEFILE64)
-	clsData->hand = open64((const Char*)clsData->fileName->v, flags, opmode);
+	this->handle = (void*)(OSInt)open64((const Char*)this->fileName->v, flags, opmode);
 #else
-	clsData->hand = open((const Char*)clsData->fileName->v, flags, opmode);
+	this->handle = (void*)(OSInt)open((const Char*)this->fileName->v, flags, opmode);
 #endif
-	if (clsData->hand == -1)
+	if ((OSInt)this->handle == -1)
 	{
-		clsData->hand = 0;
+		this->handle = 0;
 	}
-	if (mode == FileMode::Append && clsData->hand > 0)
+	if (mode == FileMode::Append && (OSInt)this->handle > 0)
 	{
 		this->SeekFromEnd(0);
 	}
@@ -97,9 +90,8 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 		this->handle = 0;
 		return;
 	}
-	ClassData *clsData = MemAlloc(ClassData, 1);
-	this->handle = clsData;
-	clsData->fileName = fileName->Clone();
+	this->handle = 0;
+	this->fileName = fileName->Clone();
 	this->InitStream(0, mode, share, buffType);
 }
 
@@ -111,47 +103,32 @@ IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare shar
 		this->handle = 0;
 		return;
 	}
-	ClassData *clsData = MemAlloc(ClassData, 1);
-	this->handle = clsData;
-	clsData->fileName = this->sourceName->Clone();
+	this->handle = 0;
+	this->fileName = this->sourceName->Clone();
 	this->InitStream(0, mode, share, buffType);
 }
 
 IO::FileStream::~FileStream()
 {
 	Close();
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData)
-	{
-		clsData->fileName->Release();
-		MemFree(clsData);
-	}
+	SDEL_STRING(this->fileName);
 }
 
 Bool IO::FileStream::IsDown()
 {
-	if (this->handle == 0)
-		return true;
-	ClassData *clsData = (ClassData*)this->handle;
-	return clsData->hand == 0;
+	return (OSInt)this->handle == 0;
 }
 
 Bool IO::FileStream::IsError()
 {
-	if (this->handle == 0)
-		return true;
-	ClassData *clsData = (ClassData*)this->handle;
-	return clsData->hand == 0;
+	return (OSInt)this->handle == 0;
 }
 
 UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
 {
 	if (this->handle == 0)
 		return 0;
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData->hand == 0)
-		return 0;
-	OSInt readSize = read(clsData->hand, buff, size);
+	OSInt readSize = read((int)(OSInt)this->handle, buff, size);
 	if (readSize >= 0)
 	{
 		this->currPos += (UOSInt)readSize;
@@ -167,10 +144,7 @@ UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
 {
 	if (this->handle == 0)
 		return 0;
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData->hand == 0)
-		return 0;
-	OSInt readSize = write(clsData->hand, buff, size);
+	OSInt readSize = write((int)(OSInt)this->handle, buff, size);
 	if (readSize >= 0)
 	{
 		this->currPos += (UOSInt)readSize;
@@ -186,22 +160,15 @@ Int32 IO::FileStream::Flush()
 {
 	if (this->handle == 0)
 		return 0;
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData->hand == 0)
-		return 0;
-	return fsync(clsData->hand);
+	return fsync((int)(OSInt)this->handle);
 }
 
 void IO::FileStream::Close()
 {
 	if (this->handle)
 	{
-		ClassData *clsData = (ClassData*)this->handle;
-		if (clsData->hand)
-		{
-			close(clsData->hand);
-			clsData->hand = 0;
-		}
+		close((int)(OSInt)this->handle);
+		this->handle = 0;
 	}
 }
 
@@ -214,13 +181,10 @@ UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)
 {
 	if (this->handle == 0)
 		return 0;
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData->hand == 0)
-		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-	this->currPos = (UInt64)lseek(clsData->hand, (Int64)position, SEEK_SET);
+	this->currPos = (UInt64)lseek((int)(OSInt)this->handle, (Int64)position, SEEK_SET);
 #else
-	this->currPos = (UInt64)lseek64(clsData->hand, (Int64)position, SEEK_SET);
+	this->currPos = (UInt64)lseek64((int)(OSInt)this->handle, (Int64)position, SEEK_SET);
 #endif
 	return this->currPos;
 }
@@ -230,13 +194,10 @@ UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
 {
 	if (this->handle == 0)
 		return 0;
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData->hand == 0)
-		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-	this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_CUR);
+	this->currPos = (UInt64)lseek((int)(OSInt)this->handle, position, SEEK_CUR);
 #else
-	this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_CUR);
+	this->currPos = (UInt64)lseek64((int)(OSInt)this->handle, position, SEEK_CUR);
 #endif
 	return this->currPos;
 }
@@ -246,13 +207,10 @@ UInt64 IO::FileStream::SeekFromEnd(Int64 position)
 {
 	if (this->handle == 0)
 		return 0;
-	ClassData *clsData = (ClassData*)this->handle;
-	if (clsData->hand == 0)
-		return 0;
 #if defined(__FreeBSD__) || defined(__APPLE__)
-	this->currPos = (UInt64)lseek(clsData->hand, position, SEEK_END);
+	this->currPos = (UInt64)lseek((int)(OSInt)this->handle, position, SEEK_END);
 #else
-	this->currPos = (UInt64)lseek64(clsData->hand, position, SEEK_END);
+	this->currPos = (UInt64)lseek64((int)(OSInt)this->handle, position, SEEK_END);
 #endif
 	return this->currPos;
 }
@@ -275,17 +233,15 @@ void IO::FileStream::SetLength(UInt64 newLength)
 	if (this->handle == 0)
 		return;
 #if defined(__APPLE__)
-	ClassData *clsData = (ClassData*)this->handle;
 	fstore_t store = {F_ALLOCATECONTIG, F_PEOFPOSMODE, 0, (off_t)newLength};
-	int ret = fcntl((int)clsData->hand, F_PREALLOCATE, &store);
+	int ret = fcntl((int)(OSInt)this->handle, F_PREALLOCATE, &store);
 	if (ret == -1)
 	{
 		store.fst_flags = F_ALLOCATEALL;
-		fcntl((int)clsData->hand, F_PREALLOCATE, &store);
+		fcntl((int)(OSInt)this->handle, F_PREALLOCATE, &store);
 	}
 #elif !defined(__ANDROID__)
-	ClassData *clsData = (ClassData*)this->handle;
-	posix_fallocate(clsData->hand, (off_t)this->currPos, (off_t)(newLength - this->currPos));
+	posix_fallocate((int)(OSInt)this->handle, (off_t)this->currPos, (off_t)(newLength - this->currPos));
 #endif
 }
 
@@ -303,31 +259,30 @@ Int32 IO::FileStream::GetErrCode()
 
 void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
-	if (handle == 0)
+	if (this->fileName == 0)
 		return;
-	ClassData *clsData = (ClassData*)this->handle;
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
-	if (clsData->hand == 0)
+	if (this->handle == 0)
 	{
-		if (stat64((const Char*)clsData->fileName, &s) != 0)
+		if (stat64((const Char*)this->fileName->v, &s) != 0)
 			return;
 	}
 	else
 	{
-		if (fstat64(clsData->hand, &s) != 0)
+		if (fstat64((int)(OSInt)this->handle, &s) != 0)
 			return;
 	}
 #else
 	struct stat s;
-	if (clsData->hand == 0)
+	if (this->handle == 0)
 	{
-		if (stat((const Char*)clsData->fileName, &s) != 0)
+		if (stat((const Char*)this->fileName->v, &s) != 0)
 			return;
 	}
 	else
 	{
-		if (fstat(clsData->hand, &s) != 0)
+		if (fstat((int)(OSInt)this->handle, &s) != 0)
 			return;
 	}
 #endif
@@ -362,19 +317,18 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 
 void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
-	if (handle == 0)
+	if (this->fileName == 0)
 		return;
-	ClassData *clsData = (ClassData*)this->handle;
 	struct utimbuf t;
 	if (lastAccessTime == 0 || lastWriteTime == 0)
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
-		if (stat64((const Char*)clsData->fileName, &s) != 0)
+		if (stat64((const Char*)this->fileName->v, &s) != 0)
 			return;
 #else
 		struct stat s;
-		if (stat((const Char*)clsData->fileName, &s) != 0)
+		if (stat((const Char*)this->fileName->v, &s) != 0)
 			return;
 #endif
 #if defined(__APPLE__)
@@ -393,7 +347,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	{
 		t.modtime = lastWriteTime->ToUnixTimestamp();
 	}
-	utime((const Char*)clsData->fileName, &t);
+	utime((const Char*)this->fileName->v, &t);
 }
 
 UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)

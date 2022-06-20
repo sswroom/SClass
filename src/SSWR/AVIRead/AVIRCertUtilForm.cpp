@@ -78,9 +78,6 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, Text::
 						}
 						DEL_CLASS(x509);
 						break;
-					case Crypto::Cert::X509File::FileType::Jks:
-						DEL_CLASS(x509);
-						break;
 					case Crypto::Cert::X509File::FileType::Key:
 						key = (Crypto::Cert::X509Key*)x509;
 						if (key->IsPrivateKey())

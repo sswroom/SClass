@@ -132,9 +132,6 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, Text::St
 					case Crypto::Cert::X509File::FileType::PublicKey:
 						DEL_CLASS(x509);
 						break;
-					case Crypto::Cert::X509File::FileType::Jks:
-						DEL_CLASS(x509);
-						break;
 					case Crypto::Cert::X509File::FileType::PKCS12:
 						DEL_CLASS(x509);
 						break;

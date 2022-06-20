@@ -1136,8 +1136,6 @@ Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
 @HOTP.o
 Crypto/JasyptEncryptor.h: ../../src/Crypto/JasyptEncryptor.cpp
 @JasyptEncryptor.o
-Crypto/JKSFile.h: ../../src/Crypto/JKSFile.cpp
-@JKSFile.o
 Crypto/OTP.h: ../../src/Crypto/OTP.cpp
 @OTP.o
 Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
@@ -4130,7 +4128,6 @@ Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
 Core.o: ../../src/Core/Core.cpp
 HOTP.o: ../../src/Crypto/HOTP.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
-JKSFile.o: ../../src/Crypto/JKSFile.cpp
 OTP.o: ../../src/Crypto/OTP.cpp
 PBKDF2.o: ../../src/Crypto/PBKDF2.cpp
 TOTP.o: ../../src/Crypto/TOTP.cpp
