@@ -3,6 +3,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Data/FastStringMap.h"
 #include "Data/ReadingList.h"
+#include "IO/PackageFile.h"
 
 namespace Crypto
 {
@@ -12,12 +13,15 @@ namespace Crypto
 		{
 		private:
 			Data::FastStringMap<Crypto::Cert::X509Cert*> certMap;
+			Text::String *storeName;
 		public:
-			CertStore();
+			CertStore(Text::CString name);
 			virtual ~CertStore();
 
 			Bool LoadDir(Text::CString certsDir);
 			void AddCert(Crypto::Cert::X509Cert *cert);
+			void FromPackageFile(IO::PackageFile *pkg);
+			Text::String *GetStoreName();
 
 			Crypto::Cert::X509Cert *GetCertByCN(Text::CString commonName);
 			virtual UOSInt GetCount() const;

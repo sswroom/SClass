@@ -20,11 +20,12 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
 			Net::SocketFactory *sockf;
+			Crypto::Cert::CertStore *store;
 
 			UI::GUIListView *lvTrustCert;
 			static void __stdcall OnTrustCertDblClicked(void *userObj, UOSInt index);
 		public:
-			AVIRTrustStoreForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRTrustStoreForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Crypto::Cert::CertStore *store);
 			virtual ~AVIRTrustStoreForm();
 
 			virtual void OnMonitorChanged();

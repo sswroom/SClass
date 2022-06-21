@@ -3052,6 +3052,8 @@ Parser/FileParser/IS2Parser.h: ../../src/Parser/FileParser/IS2Parser.cpp
 @IS2Parser.o
 Parser/FileParser/ISOParser.h: ../../src/Parser/FileParser/ISOParser.cpp
 @ISOParser.o
+Parser/FileParser/JKSParser.h: ../../src/Parser/FileParser/JKSParser.cpp
+@JKSParser.o
 Parser/FileParser/JSONParser.h: ../../src/Parser/FileParser/JSONParser.cpp
 @JSONParser.o
 Parser/FileParser/LinkArcParser.h: ../../src/Parser/FileParser/LinkArcParser.cpp
@@ -5003,6 +5005,7 @@ IMGParser.o: ../../src/Parser/FileParser/IMGParser.cpp
 IPACParser.o: ../../src/Parser/FileParser/IPACParser.cpp
 IS2Parser.o: ../../src/Parser/FileParser/IS2Parser.cpp
 ISOParser.o: ../../src/Parser/FileParser/ISOParser.cpp
+JKSParser.o: ../../src/Parser/FileParser/JKSParser.cpp
 JSONParser.o: ../../src/Parser/FileParser/JSONParser.cpp
 LinkArcParser.o: ../../src/Parser/FileParser/LinkArcParser.cpp
 LOGParser.o: ../../src/Parser/FileParser/LOGParser.cpp

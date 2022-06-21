@@ -10,6 +10,7 @@ namespace Crypto
 		{
 		public:
 			static Crypto::Cert::CertStore *Load();
+			static Crypto::Cert::CertStore *LoadJavaCA();
 		};
 	}
 }

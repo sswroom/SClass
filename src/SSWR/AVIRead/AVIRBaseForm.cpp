@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/TrustStore.h"
 #include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
@@ -428,7 +429,8 @@ typedef enum
 	MNU_LORA_GW_SIM,
 	MNU_LORA_JSON,
 	MNU_GLBVIEWER,
-	MNU_TRUSTSTORE
+	MNU_TRUSTSTORE,
+	MNU_JAVACACERTS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -569,6 +571,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Cert Util"), MNU_CERT_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("CA Util"), MNU_CA_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Trust Store"), MNU_TRUSTSTORE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Java CACerts"), MNU_JAVACACERTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("ASN.1"));
 	mnu2->AddItem(CSTR("ASN.1 MIB"), MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 OID"), MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2450,7 +2453,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TRUSTSTORE:
 		{
 			SSWR::AVIRead::AVIRTrustStoreForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core, 0));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_JAVACACERTS:
+		{
+			SSWR::AVIRead::AVIRTrustStoreForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core, Crypto::Cert::TrustStore::LoadJavaCA()));
 			this->core->ShowForm(frm);
 		}
 		break;

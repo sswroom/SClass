@@ -3,8 +3,9 @@
 #include "IO/Path.h"
 #include "Parser/FileParser/X509Parser.h"
 
-Crypto::Cert::CertStore::CertStore()
+Crypto::Cert::CertStore::CertStore(Text::CString name)
 {
+	this->storeName = Text::String::New(name);
 }
 
 Crypto::Cert::CertStore::~CertStore()
@@ -16,6 +17,7 @@ Crypto::Cert::CertStore::~CertStore()
 		cert = this->certMap.GetItem(i);
 		DEL_CLASS(cert);
 	}
+	this->storeName->Release();
 }
 
 Bool Crypto::Cert::CertStore::LoadDir(Text::CString certsDir)
@@ -92,6 +94,34 @@ void Crypto::Cert::CertStore::AddCert(Crypto::Cert::X509Cert *cert)
 		cert = this->certMap.PutC(sb.ToCString(), cert);
 	}
 	SDEL_CLASS(cert);
+}
+
+void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
+{
+	UOSInt i = 0;
+	UOSInt j = pkg->GetCount();
+	while (i < j)
+	{
+		IO::ParsedObject *pobj = pkg->GetItemPObj(i);
+		if (pobj && pobj->GetParserType() == IO::ParserType::ASN1Data)
+		{
+			Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+			if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
+			{
+				Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+				if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+				{
+					this->AddCert((Crypto::Cert::X509Cert*)x509->Clone());
+				}
+			}
+		}
+		i++;
+	}
+}
+
+Text::String *Crypto::Cert::CertStore::GetStoreName()
+{
+	return this->storeName;
 }
 
 Crypto::Cert::X509Cert *Crypto::Cert::CertStore::GetCertByCN(Text::CString commonName)
