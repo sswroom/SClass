@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertStore.h"
 #include "IO/Path.h"
+#include "Parser/FileParser/JKSParser.h"
 #include "Parser/FileParser/X509Parser.h"
 
 Crypto::Cert::CertStore::CertStore(Text::CString name)
@@ -77,6 +78,22 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CString certsDir)
 			}
 		}
 		IO::Path::FindFileClose(sess);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+Bool Crypto::Cert::CertStore::LoadJavaCACerts(Text::CString jksPath)
+{
+	Parser::FileParser::JKSParser parser;
+	IO::PackageFile *pkg = (IO::PackageFile*)parser.ParseFilePath(jksPath);
+	if (pkg)
+	{
+		this->FromPackageFile(pkg);
+		DEL_CLASS(pkg);
 		return true;
 	}
 	else

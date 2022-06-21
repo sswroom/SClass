@@ -19,6 +19,7 @@ namespace Crypto
 			virtual ~CertStore();
 
 			Bool LoadDir(Text::CString certsDir);
+			Bool LoadJavaCACerts(Text::CString jksPath);
 			void AddCert(Crypto::Cert::X509Cert *cert);
 			void FromPackageFile(IO::PackageFile *pkg);
 			Text::String *GetStoreName();

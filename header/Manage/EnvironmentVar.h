@@ -1,6 +1,6 @@
 #ifndef _SM_MANAGE_ENVIRONMENTVAR
 #define _SM_MANAGE_ENVIRONMENTVAR
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 
 namespace Manage
 {
@@ -8,15 +8,15 @@ namespace Manage
 	{
 	private:
 		void *envs;
-		Data::ICaseStringUTF8Map<const UTF8Char *> *names;
+		Data::ICaseStringMap<Text::String *> names;
 	public:
 		EnvironmentVar();
 		~EnvironmentVar();
 
-		const UTF8Char *GetValue(const UTF8Char *name);
-		void SetValue(const UTF8Char *name, const UTF8Char *val);
+		Text::String *GetValue(Text::CString name);
+		void SetValue(Text::CString name, Text::CString val);
 
-		static UTF8Char *GetEnvValue(UTF8Char *buff, const UTF8Char *name);
+		static UTF8Char *GetEnvValue(UTF8Char *buff, Text::CString name);
 	};
 }
 #endif

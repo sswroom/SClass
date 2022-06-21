@@ -11,7 +11,7 @@ namespace IO
 		SensorLocationWin(void *sensor);
 		virtual ~SensorLocationWin();
 
-		virtual Bool ReadLocation(Map::GPSTrack::GPSRecord2 *rec);
+		virtual Bool ReadLocation(Map::GPSTrack::GPSRecord3 *rec);
 		virtual SensorLocation *GetSensorLocation();
 		virtual IO::Sensor::SensorType GetSensorType();
 	};

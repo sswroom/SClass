@@ -1165,7 +1165,7 @@ WChar *IO::Path::GetSystemProgramPathW(WChar *buff)
 	return Text::StrConcat(buff, L"\\Program Files\\");
 #else
 	UTF8Char sbuff[512];
-	Manage::EnvironmentVar::GetEnvValue(sbuff, (const UTF8Char*)"PROGRAMFILES");
+	Manage::EnvironmentVar::GetEnvValue(sbuff, CSTR("PROGRAMFILES"));
 	return Text::StrUTF8_WChar(buff, sbuff, 0);
 #endif
 }
@@ -1200,9 +1200,9 @@ WChar *IO::Path::GetLocAppDataPathW(WChar *buff)
 UTF8Char *IO::Path::GetOSPath(UTF8Char *buff)
 {
 #ifdef _WIN32_WCE
-	return Text::StrConcat(buff, (const UTF8Char*)"\\Windows\\");
+	return Text::StrConcatC(buff, UTF8STRC("\\Windows\\"));
 #else
-	return Manage::EnvironmentVar::GetEnvValue(buff, (const UTF8Char*)"windir");
+	return Manage::EnvironmentVar::GetEnvValue(buff, CSTR("windir"));
 #endif
 }
 
@@ -1212,15 +1212,15 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 	return Text::StrConcat(buff, L"\\Windows\\");
 #else
 	UTF8Char sbuff[512];
-	Manage::EnvironmentVar::GetEnvValue(sbuff, (const UTF8Char*)"windir");
+	Manage::EnvironmentVar::GetEnvValue(sbuff, CSTR("windir"));
 	return Text::StrUTF8_WChar(buff, sbuff, 0);
 #endif
 }
 
 UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 {
-	buff = Manage::EnvironmentVar::GetEnvValue(buff, (const UTF8Char*)"HOMEDRIVE");
-	buff = Manage::EnvironmentVar::GetEnvValue(buff, (const UTF8Char*)"HOMEPATH");
+	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEDRIVE"));
+	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEPATH"));
 	return buff;
 }
 

@@ -36,7 +36,7 @@ IO::ParserType Parser::FileParser::JKSParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::JKSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	UInt8 buff[128];
+	UInt8 buff[256];
 	UInt64 fileSize = fd->GetDataSize();
 	if (fd->GetRealData(0, 12, buff) < 12)
 		return 0;
@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i = 0;
 	while (i < cnt && ofst < fileSize)
 	{
-		readSize = fd->GetRealData(ofst, 128, buff);
+		readSize = fd->GetRealData(ofst, 256, buff);
 		if (readSize < 25)
 		{
 			printf("JKS: readSize < 25\r\n");

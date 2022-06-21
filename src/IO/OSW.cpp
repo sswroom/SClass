@@ -19,7 +19,7 @@ void OS_LoadVersion()
 	{
 		OS_VersionLoaded = true;
 
-		sptr = Manage::EnvironmentVar::GetEnvValue(sbuff, (const UTF8Char*)"SystemRoot");
+		sptr = Manage::EnvironmentVar::GetEnvValue(sbuff, CSTR("SystemRoot"));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\kernel32.dll"));
 		DWORD dwDummy;
 		DWORD dwFVISize = GetFileVersionInfoSizeA((LPCSTR)sbuff, &dwDummy);
@@ -32,7 +32,7 @@ void OS_LoadVersion()
 
 		UINT uLen;
 		VS_FIXEDFILEINFO* lpFfi;
-		BOOL bVer = VerQueryValue(lpVersionInfo, L"\\", (LPVOID*)&lpFfi, &uLen);
+		BOOL bVer = VerQueryValueW(lpVersionInfo, L"\\", (LPVOID*)&lpFfi, &uLen);
 
 		if (!bVer || uLen == 0)
 		{

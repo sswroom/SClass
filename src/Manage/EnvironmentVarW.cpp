@@ -11,15 +11,13 @@ Manage::EnvironmentVar::EnvironmentVar()
 	WChar c;
 	const WChar *currPtr;
 	this->envs = 0;
-	this->names = 0;
 #ifndef _WIN32_WCE
 	const WChar *envs;
 	this->envs = (void*)(envs = (const WChar *)GetEnvironmentStringsW());
 	if (envs)
 	{
-		const UTF8Char *name;
-		const UTF8Char *val;
-		NEW_CLASS(this->names, Data::ICaseStringUTF8Map<const UTF8Char *>());
+		Text::String *name;
+		Text::String *val;
 
 		currPtr = envs;
 		while (*currPtr)
@@ -30,10 +28,10 @@ Manage::EnvironmentVar::EnvironmentVar()
 				if (c == '=')
 				{
 					*dptr = 0;
-					name = Text::StrToUTF8New(wbuff);
-					val = Text::StrToUTF8New(currPtr);
-					this->names->Put(name, val);
-					Text::StrDelNew(name);
+					name = Text::String::NewNotNull(wbuff);
+					val = Text::String::NewNotNull(currPtr);
+					this->names.Put(name, val);
+					name->Release();
 					while (*currPtr++);
 					break;
 				}
@@ -49,16 +47,12 @@ Manage::EnvironmentVar::EnvironmentVar()
 
 Manage::EnvironmentVar::~EnvironmentVar()
 {
-	if (this->names)
+	UOSInt i;
+	Data::ArrayList<Text::String*> *nameList = this->names.GetValues();
+	i = nameList->GetCount();
+	while (i-- > 0)
 	{
-		UOSInt i;
-		Data::ArrayList<const UTF8Char*> *nameList = this->names->GetValues();
-		i = nameList->GetCount();
-		while (i-- > 0)
-		{
-			Text::StrDelNew(nameList->GetItem(i));
-		}
-		DEL_CLASS(this->names);
+		nameList->GetItem(i)->Release();
 	}
 #ifndef _WIN32_WCE
 	if (envs)
@@ -69,27 +63,25 @@ Manage::EnvironmentVar::~EnvironmentVar()
 #endif
 }
 
-const UTF8Char *Manage::EnvironmentVar::GetValue(const UTF8Char *name)
+Text::String *Manage::EnvironmentVar::GetValue(Text::CString name)
 {
-	if (names == 0)
-		return 0;
-	return names->Get(name);
+	return this->names.Get(name);
 }
 
-void Manage::EnvironmentVar::SetValue(const UTF8Char *name, const UTF8Char *val)
+void Manage::EnvironmentVar::SetValue(Text::CString name, Text::CString val)
 {
-	const WChar *wname = Text::StrToWCharNew(name);
-	const WChar *wval = Text::StrToWCharNew(val);
+	const WChar *wname = Text::StrToWCharNew(name.v);
+	const WChar *wval = Text::StrToWCharNew(val.v);
 	SetEnvironmentVariableW(wname, wval);
 	Text::StrDelNew(wname);
 	Text::StrDelNew(wval);
 }
 
-UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, const UTF8Char *name)
+UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, Text::CString name)
 {
 #ifndef _WIN32_WCE
 	WChar wbuff[512];
-	const WChar *wptr = Text::StrToWCharNew(name);
+	const WChar *wptr = Text::StrToWCharNew(name.v);
 	UInt32 retSize = GetEnvironmentVariableW(wptr, wbuff, 512);
 	Text::StrDelNew(wptr);
 	if (retSize == 0)

@@ -14,7 +14,7 @@ IO::SensorLocationWin::~SensorLocationWin()
 {
 }
 
-Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord2 *loc)
+Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord3 *loc)
 {
 	ISensorDataReport *pReport;
 	HRESULT hr;
@@ -30,7 +30,7 @@ Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord2 *loc)
 		loc->utcTimeTicks = dt.ToTicks();
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_LATITUDE_DEGREES, &var)) && var.vt == VT_R8)
 		{
-			loc->lat = var.dblVal;
+			loc->pos.lat = var.dblVal;
 		}
 		else
 		{
@@ -50,7 +50,7 @@ Bool IO::SensorLocationWin::ReadLocation(Map::GPSTrack::GPSRecord2 *loc)
 
 		if (SUCCEEDED(pReport->GetSensorValue(SENSOR_DATA_TYPE_ALTITUDE_SEALEVEL_METERS, &var)) && var.vt == VT_R8)
 		{
-			loc->lon = var.dblVal;
+			loc->pos.lon = var.dblVal;
 		}
 		else
 		{

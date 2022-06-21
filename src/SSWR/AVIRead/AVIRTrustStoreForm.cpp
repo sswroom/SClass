@@ -16,7 +16,10 @@ void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(void *us
 {
 	SSWR::AVIRead::AVIRTrustStoreForm *me = (SSWR::AVIRead::AVIRTrustStoreForm*)userObj;
 	Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)me->lvTrustCert->GetItem(index);
-	me->core->OpenObject(cert->Clone());
+	if (cert)
+	{
+		me->core->OpenObject(cert->Clone());
+	}
 }
 
 SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Crypto::Cert::CertStore *store) : UI::GUIForm(parent, 1024, 768, ui)

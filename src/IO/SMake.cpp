@@ -61,10 +61,10 @@ void IO::SMake::AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path)
 	if (path.StartsWith(UTF8STRC("~/")))
 	{
 		Manage::EnvironmentVar env;
-		const UTF8Char *csptr = env.GetValue((const UTF8Char*)"HOME");
-		if (csptr)
+		Text::String *s = env.GetValue(CSTR("HOME"));
+		if (sb)
 		{
-			sb->AppendSlow(csptr);
+			sb->Append(s);
 			sb->Append(path.Substring(1));
 		}
 		else
@@ -327,7 +327,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			if (cfg)
 			{
 				Manage::EnvironmentVar env;
-				env.SetValue(cfg->name->v, cfg->value->v);
+				env.SetValue(cfg->name->ToCString(), cfg->value->ToCString());
 			}
 		}
 		else if ((i = sb.IndexOf(UTF8STRC("+="))) != INVALID_INDEX)
