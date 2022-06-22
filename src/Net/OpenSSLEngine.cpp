@@ -560,12 +560,20 @@ Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Has
 	{
 		htype = EVP_sha1();
 	}
+	else if (hashType == Crypto::Hash::HT_MD5)
+	{
+		htype = EVP_md5();
+	}
 	else
 	{
 		return false;
 	}
 	const UInt8 *keyPtr = key->GetASN1Buff();
-	EVP_PKEY *pkey = d2i_PrivateKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+	EVP_PKEY *pkey = 0;
+	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
+	{
+		pkey = d2i_PrivateKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+	}
 	if (pkey == 0)
 	{
 		return false;
@@ -623,11 +631,15 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 	{
 		htype = EVP_sha1();
 	}
+	else if (hashType == Crypto::Hash::HT_MD5)
+	{
+		htype = EVP_md5();
+	}
 	else
 	{
 		return false;
 	}
-	EVP_PKEY *pkey;
+	EVP_PKEY *pkey = 0;
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
 	{
 		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
@@ -635,10 +647,15 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)pubKey->GetASN1BuffSize());
 		DEL_CLASS(pubKey);
 	}
-	else
+	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
 		const UInt8 *keyPtr = key->GetASN1Buff();
 		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+	}
+	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::ECPublic)
+	{
+		const UInt8 *keyPtr = key->GetASN1Buff();
+		pkey = d2i_PublicKey(EVP_PKEY_EC, 0, &keyPtr, (long)key->GetASN1BuffSize());
 	}
 	if (pkey == 0)
 	{

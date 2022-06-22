@@ -36,6 +36,8 @@ namespace Crypto
 			const UInt8 *GetRSAExponent1(UOSInt *size);
 			const UInt8 *GetRSAExponent2(UOSInt *size);
 			const UInt8 *GetRSACoefficient(UOSInt *size);
+
+			const UInt8 *GetECPublic(UOSInt *size);
 		};
 	}
 }

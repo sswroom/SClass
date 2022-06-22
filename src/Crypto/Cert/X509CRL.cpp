@@ -75,7 +75,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
-	Crypto::Hash::HashType hashType = GetRSAHash(signedInfo.algType);
+	Crypto::Hash::HashType hashType = GetAlgHash(signedInfo.algType);
 	if (hashType == Crypto::Hash::HT_UNKNOWN)
 	{
 		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;

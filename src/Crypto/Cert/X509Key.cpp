@@ -161,6 +161,22 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
 	}
+	else if (this->keyType == KeyType::ECPublic)
+	{
+		const UInt8 *buff;
+		UOSInt buffSize;
+		buff = this->GetECPublic(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
+			sb->AppendC(UTF8STRC("EC.Public = "));
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+
+	}
 
 	UInt8 keyId[20];
 	if (this->GetKeyId(keyId))
@@ -194,6 +210,7 @@ Bool Crypto::Cert::X509Key::IsPrivateKey()
 	case KeyType::RSA:
 		return true;
 	case KeyType::RSAPublic:
+	case KeyType::ECPublic:
 	case KeyType::Unknown:
 	default:
 		return false;
@@ -220,6 +237,10 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey()
 		Crypto::Cert::X509Key *key;
 		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), builder.GetBuff(&buffSize), builder.GetBuffSize(), KeyType::RSAPublic));
 		return key;
+	}
+	else if (this->keyType == KeyType::ECPublic)
+	{
+		return (Crypto::Cert::X509Key*)this->Clone();
 	}
 	else
 	{
@@ -307,4 +328,11 @@ const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size)
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.9", size, 0);
+}
+
+const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size)
+{
+	if (this->keyType != KeyType::ECPublic) return 0;
+	*size = this->buffSize;
+	return this->buff;
 }

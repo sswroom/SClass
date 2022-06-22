@@ -109,6 +109,7 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 				sb.AppendC(UTF8STRC("\n-----END EC PRIVATE KEY-----\n"));
 				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+			case Crypto::Cert::X509Key::KeyType::ECPublic:
 			case Crypto::Cert::X509Key::KeyType::RSAPublic:
 			case Crypto::Cert::X509Key::KeyType::ED25519:
 			case Crypto::Cert::X509Key::KeyType::Unknown:

@@ -67,7 +67,8 @@ namespace Crypto
 				DSA,
 				ECDSA,
 				ED25519,
-				RSAPublic
+				RSAPublic,
+				ECPublic
 			};
 
 			enum class ValidStatus
@@ -91,7 +92,8 @@ namespace Crypto
 				SHA256WithRSAEncryption,
 				SHA384WithRSAEncryption,
 				SHA512WithRSAEncryption,
-				SHA224WithRSAEncryption
+				SHA224WithRSAEncryption,
+				ECDSAWithSHA256
 			};
 
 			enum class ContentDataType
@@ -190,7 +192,7 @@ namespace Crypto
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);
 			Bool GetSignedInfo(SignedInfo *signedInfo);
 
-			static Crypto::Hash::HashType GetRSAHash(AlgType algType);
+			static Crypto::Hash::HashType GetAlgHash(AlgType algType);
 			static Text::CString FileTypeGetName(FileType fileType);
 			static Text::CString KeyTypeGetName(KeyType keyType);
 			static Text::CString KeyTypeGetOID(KeyType keyType);

@@ -2517,15 +2517,23 @@ Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGetNew(const UInt8 *pdu,
 	if (oidPDU != 0 && oidType == Net::ASN1Util::IT_OID && bstrPDU != 0 && bstrType == Net::ASN1Util::IT_BIT_STRING)
 	{
 		KeyType keyType = KeyTypeFromOID(oidPDU, oidLen, true);
-		if (keyType != KeyType::Unknown)
+		if (keyType == KeyType::ECPublic)
 		{
-			if (bstrPDU[0] == 0)
+			Net::ASN1Util::ItemType paramType;
+			UOSInt paramLen;
+			const UInt8 *paramPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1.2", &paramLen, &paramType);
+			if (paramPDU != 0 && paramType == Net::ASN1Util::IT_OID)
 			{
-				bstrPDU++;
-				bstrLen--;
+				///////////////////////////////////////
+//				Crypto::Cert::X509Key *key;
+//				NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU + 1, bstrLen - 1, keyType));
+//				return key;
 			}
+		}
+		else if (keyType != KeyType::Unknown)
+		{
 			Crypto::Cert::X509Key *key;
-			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU, bstrLen, keyType));
+			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU + 1, bstrLen - 1, keyType));
 			return key;
 		}
 	}
@@ -2573,6 +2581,8 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 			}
 		}
 		return 0;
+	case KeyType::ECPublic:
+		return 0;
 	case KeyType::DSA:
 	case KeyType::ECDSA:
 	case KeyType::ED25519:
@@ -2595,6 +2605,10 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UIn
 			return KeyType::RSA;
 		}
 	}
+	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.10045.2.1")))
+	{
+		return KeyType::ECPublic;
+	}
 	return KeyType::Unknown;
 }
 
@@ -2609,7 +2623,8 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 
 Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType)
 {
-	if (Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0) != 2)
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	if (cnt != 2 && cnt != 1)
 	{
 		return false;
 	}
@@ -2647,6 +2662,10 @@ Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(const UInt8 *pdu, const UInt
 	else if (Net::ASN1Util::OIDEqualsText(itemPDU, itemLen, UTF8STRC("1.2.840.113549.1.1.14"))) //sha224WithRSAEncryption
 	{
 		*algType = AlgType::SHA224WithRSAEncryption;
+	}
+	else if (Net::ASN1Util::OIDEqualsText(itemPDU, itemLen, UTF8STRC("1.2.840.10045.4.3.2"))) //ecdsa-with-SHA256
+	{
+		*algType = AlgType::ECDSAWithSHA256;
 	}
 	else
 	{
@@ -2757,38 +2776,28 @@ Bool Crypto::Cert::X509File::GetSignedInfo(SignedInfo *signedInfo)
 	return true;
 }
 
-Crypto::Hash::HashType Crypto::Cert::X509File::GetRSAHash(AlgType algType)
+Crypto::Hash::HashType Crypto::Cert::X509File::GetAlgHash(AlgType algType)
 {
-	if (algType == AlgType::SHA1WithRSAEncryption)
+	switch (algType)
 	{
+	case AlgType::SHA1WithRSAEncryption:
 		return Crypto::Hash::HT_SHA1;
-	}
-	else if (algType == AlgType::SHA256WithRSAEncryption)
-	{
+	case AlgType::SHA256WithRSAEncryption:
 		return Crypto::Hash::HT_SHA256;
-	}
-	else if (algType == AlgType::SHA512WithRSAEncryption)
-	{
+	case AlgType::SHA512WithRSAEncryption:
 		return Crypto::Hash::HT_SHA512;
-	}
-	else if (algType == AlgType::SHA384WithRSAEncryption)
-	{
+	case AlgType::SHA384WithRSAEncryption:
 		return Crypto::Hash::HT_SHA384;
-	}
-	else if (algType == AlgType::SHA224WithRSAEncryption)
-	{
+	case AlgType::SHA224WithRSAEncryption:
 		return Crypto::Hash::HT_SHA224;
-	}
-	else if (algType == AlgType::MD2WithRSAEncryption)
-	{
+	case AlgType::MD2WithRSAEncryption:
 		return Crypto::Hash::HT_UNKNOWN;
-	}
-	else if (algType == AlgType::MD5WithRSAEncryption)
-	{
+	case AlgType::MD5WithRSAEncryption:
 		return Crypto::Hash::HT_MD5;
-	}
-	else
-	{
+	case AlgType::ECDSAWithSHA256:
+		return Crypto::Hash::HT_SHA256;
+	case AlgType::Unknown:
+	default:
 		return Crypto::Hash::HT_UNKNOWN;
 	}
 }
@@ -2832,6 +2841,8 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 		return CSTR("ED25519");
 	case KeyType::RSAPublic:
 		return CSTR("RSAPublic");
+	case KeyType::ECPublic:
+		return CSTR("ECPublic");
 	case KeyType::Unknown:
 	default:
 		return CSTR("Unknown");
@@ -2850,6 +2861,8 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 		return CSTR("1.2.840.10045.2.1");
 	case KeyType::ED25519:
 		return CSTR("1.3.101.112");
+	case KeyType::ECPublic:
+		return CSTR("1.2.840.10045.2.1");
 	case KeyType::RSAPublic:
 	case KeyType::Unknown:
 	default:

@@ -48,6 +48,7 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 			return Text::String::New(sb.ToCString());
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
+	case Crypto::Cert::X509Key::KeyType::ECPublic:
 		return 0;
 	case Crypto::Cert::X509Key::KeyType::DSA:
 	case Crypto::Cert::X509Key::KeyType::ED25519:
