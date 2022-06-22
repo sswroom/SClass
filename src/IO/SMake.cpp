@@ -61,10 +61,10 @@ void IO::SMake::AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path)
 	if (path.StartsWith(UTF8STRC("~/")))
 	{
 		Manage::EnvironmentVar env;
-		Text::String *s = env.GetValue(CSTR("HOME"));
+		const UTF8Char *csptr = env.GetValue(CSTR("HOME"));
 		if (sb)
 		{
-			sb->Append(s);
+			sb->AppendSlow(csptr);
 			sb->Append(path.Substring(1));
 		}
 		else

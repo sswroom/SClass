@@ -8,12 +8,12 @@ namespace Manage
 	{
 	private:
 		void *envs;
-		Data::ICaseStringMap<Text::String *> names;
+		Data::ICaseStringMap<const UTF8Char *> names;
 	public:
 		EnvironmentVar();
 		~EnvironmentVar();
 
-		Text::String *GetValue(Text::CString name);
+		const UTF8Char *GetValue(Text::CString name);
 		void SetValue(Text::CString name, Text::CString val);
 
 		static UTF8Char *GetEnvValue(UTF8Char *buff, Text::CString name);

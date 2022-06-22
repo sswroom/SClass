@@ -17,7 +17,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 	if (envs)
 	{
 		Text::String *name;
-		Text::String *val;
+		const UTF8Char *val;
 
 		currPtr = envs;
 		while (*currPtr)
@@ -29,7 +29,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 				{
 					*dptr = 0;
 					name = Text::String::NewNotNull(wbuff);
-					val = Text::String::NewNotNull(currPtr);
+					val = Text::StrToUTF8New(currPtr);
 					this->names.Put(name, val);
 					name->Release();
 					while (*currPtr++);
@@ -48,11 +48,11 @@ Manage::EnvironmentVar::EnvironmentVar()
 Manage::EnvironmentVar::~EnvironmentVar()
 {
 	UOSInt i;
-	Data::ArrayList<Text::String*> *nameList = this->names.GetValues();
+	Data::ArrayList<const UTF8Char*> *nameList = this->names.GetValues();
 	i = nameList->GetCount();
 	while (i-- > 0)
 	{
-		nameList->GetItem(i)->Release();
+		Text::StrDelNew(nameList->GetItem(i));
 	}
 #ifndef _WIN32_WCE
 	if (envs)
@@ -63,7 +63,7 @@ Manage::EnvironmentVar::~EnvironmentVar()
 #endif
 }
 
-Text::String *Manage::EnvironmentVar::GetValue(Text::CString name)
+const UTF8Char *Manage::EnvironmentVar::GetValue(Text::CString name)
 {
 	return this->names.Get(name);
 }

@@ -11,17 +11,17 @@ extern char **environ;
 Manage::EnvironmentVar::EnvironmentVar()
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(this->names, Data::ICaseStringUTF8Map<const UTF8Char *>());
 	i = 0;
 	while (environ[i])
 	{
 		j = Text::StrIndexOfChar(environ[i], '=');
 		if (j != INVALID_INDEX && j > 0)
 		{
-			Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], j);
-			this->names->Put(sbuff, (const UTF8Char*)&environ[i][j + 1]);
+			sptr = Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], j);
+			this->names.Put(CSTRP(sbuff, sptr), (const UTF8Char*)&environ[i][j + 1]);
 		}
 		i++;
 	}
@@ -29,27 +29,22 @@ Manage::EnvironmentVar::EnvironmentVar()
 
 Manage::EnvironmentVar::~EnvironmentVar()
 {
-	if (names)
-	{
-		DEL_CLASS(names);
-	}
+
 }
 
-const UTF8Char *Manage::EnvironmentVar::GetValue(const UTF8Char *name)
+const UTF8Char *Manage::EnvironmentVar::GetValue(Text::CString name)
 {
-	if (names == 0)
-		return 0;
-	return names->Get(name);
+	return this->names.Get(name);
 }
 
-void Manage::EnvironmentVar::SetValue(const UTF8Char *name, const UTF8Char *val)
+void Manage::EnvironmentVar::SetValue(Text::CString name, Text::CString val)
 {
-	setenv((const Char*)name, (const Char*)val, 1);
+	setenv((const Char*)name.v, (const Char*)val.v, 1);
 }
 
-UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, const UTF8Char *name)
+UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, Text::CString name)
 {
-	char *v = getenv((const Char*)name);
+	char *v = getenv((const Char*)name.v);
 	if (v)
 	{
 		return Text::StrConcat(buff, (const UTF8Char*)v);
