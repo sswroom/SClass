@@ -1463,61 +1463,6 @@ Bool Text::StrEqualsN(const UTF8Char *str1, const UTF8Char *str2)
 	return StrEquals(str1, str2);
 }
 
-Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
-{
-	if (len1 != len2)
-	{
-		return false;
-	}
-#if _OSINT_SIZE == 64
-	while (len2 >= 8)
-	{
-		UInt64 v = ReadNUInt64(str1);
-		if (v != ReadNUInt64(str2))
-		{
-			return false;
-		}
-		str1 += 8;
-		str2 += 8;
-		len2 -= 8;
-	}
-	if (len2 >= 4)
-	{
-		UInt32 v = ReadNUInt32(str1);
-		if (v != ReadNUInt32(str2))
-		{
-			return false;
-		}
-		str1 += 4;
-		str2 += 4;
-		len2 -= 4;
-	}
-#else
-	while (len2 >= 4)
-	{
-		UInt32 v = ReadNUInt32(str1);
-		if (v != ReadNUInt32(str2))
-		{
-			return false;
-		}
-		str1 += 4;
-		str2 += 4;
-		len2 -= 4;
-	}
-#endif
-	switch (len2)
-	{
-	case 3:
-		return ReadNUInt16(str1) == ReadNUInt16(str2) && str1[2] == str2[2];
-	case 2:
-		return ReadNUInt16(str1) == ReadNUInt16(str2);
-	case 1:
-		return str1[0] == str2[0];
-	default:
-		return true;
-	}
-}
-
 Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	UOSInt c1;
@@ -3198,54 +3143,6 @@ Bool Text::StrStartsWith(const UTF8Char *str1, const UTF8Char *str2)
 	{
 		if (*str1++ != *str2++)
 			return false;
-	}
-	return true;
-}
-
-Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
-{
-	if (len1 < len2)
-	{
-		return false;
-	}
-#if _OSINT_SIZE == 64
-	while (len2 >= 8)
-	{
-		if (ReadNUInt64(str1) != ReadNUInt64(str2))
-			return false;
-		str1 += 8;
-		str2 += 8;
-		len2 -= 8;
-	}
-	if (len2 >= 4)
-	{
-		if (ReadNUInt32(str1) != ReadNUInt32(str2))
-			return false;
-		str1 += 4;
-		str2 += 4;
-		len2 -= 4;
-	}
-#else
-	while (len2 >= 4)
-	{
-		if (ReadNUInt32(str1) != ReadNUInt32(str2))
-			return false;
-		str1 += 4;
-		str2 += 4;
-		len2 -= 4;
-	}
-#endif
-	if (len2 >= 2)
-	{
-		if (ReadNUInt16(str1) != ReadNUInt16(str2))
-			return false;
-		str1 += 2;
-		str2 += 2;
-		len2 -= 2;
-	}
-	if (len2 > 0)
-	{
-		return *str1 == *str2;
 	}
 	return true;
 }

@@ -15,14 +15,14 @@ namespace IO
 		} FindRecurPart;
 
 	private:
-		UTF8Char **srcStrs;
+		Text::PString *srcStrs;
 		FindRecurPart *srchParts;
 		UOSInt partCnt;
 		UTF8Char *srcBuff;
 		UTF8Char currBuff[2048];
 		Bool isFirst;
 	public:
-		FileFindRecur(const UTF8Char *path);
+		FileFindRecur(Text::CString path);
 		~FileFindRecur();
 
 		Text::CString NextFile(IO::Path::PathType *pt);

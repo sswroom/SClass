@@ -64,9 +64,9 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 
 #if defined(__USE_LARGEFILE64)
-	this->handle = (void*)(OSInt)open64((const Char*)this->fileName->v, flags, opmode);
+	this->handle = (void*)(OSInt)open64((const Char*)this->sourceName->v, flags, opmode);
 #else
-	this->handle = (void*)(OSInt)open((const Char*)this->fileName->v, flags, opmode);
+	this->handle = (void*)(OSInt)open((const Char*)this->sourceName->v, flags, opmode);
 #endif
 	if ((OSInt)this->handle == -1)
 	{
@@ -91,7 +91,6 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 		return;
 	}
 	this->handle = 0;
-	this->fileName = fileName->Clone();
 	this->InitStream(0, mode, share, buffType);
 }
 
@@ -104,14 +103,12 @@ IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare shar
 		return;
 	}
 	this->handle = 0;
-	this->fileName = this->sourceName->Clone();
 	this->InitStream(0, mode, share, buffType);
 }
 
 IO::FileStream::~FileStream()
 {
 	Close();
-	SDEL_STRING(this->fileName);
 }
 
 Bool IO::FileStream::IsDown()
@@ -259,13 +256,13 @@ Int32 IO::FileStream::GetErrCode()
 
 void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
-	if (this->fileName == 0)
+	if (this->sourceName == 0)
 		return;
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
 	{
-		if (stat64((const Char*)this->fileName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v, &s) != 0)
 			return;
 	}
 	else
@@ -277,7 +274,7 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	struct stat s;
 	if (this->handle == 0)
 	{
-		if (stat((const Char*)this->fileName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v, &s) != 0)
 			return;
 	}
 	else
@@ -317,18 +314,18 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 
 void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
-	if (this->fileName == 0)
+	if (this->sourceName == 0)
 		return;
 	struct utimbuf t;
 	if (lastAccessTime == 0 || lastWriteTime == 0)
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
-		if (stat64((const Char*)this->fileName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v, &s) != 0)
 			return;
 #else
 		struct stat s;
-		if (stat((const Char*)this->fileName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v, &s) != 0)
 			return;
 #endif
 #if defined(__APPLE__)
@@ -347,7 +344,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	{
 		t.modtime = lastWriteTime->ToUnixTimestamp();
 	}
-	utime((const Char*)this->fileName->v, &t);
+	utime((const Char*)this->sourceName->v, &t);
 }
 
 UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)

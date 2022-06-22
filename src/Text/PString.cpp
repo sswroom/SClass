@@ -35,42 +35,6 @@ void Text::PString::TrimWSCRLF()
 	this->leng = (UOSInt)(Text::StrTrimWSCRLFC(this->v, this->leng) - this->v);
 }
 
-void Text::PString::TrimToLength(UOSInt newLen)
-{
-	if (newLen < this->leng)
-	{
-		this->leng = newLen;
-		this->v[this->leng] = 0;
-	}
-}
-
-void Text::PString::RemoveChars(UOSInt cnt)
-{
-	if (cnt >= this->leng)
-	{
-		this->leng = 0;
-		this->v[0] = 0;
-	}
-	else
-	{
-		this->leng -= cnt;
-		this->v[this->leng] = 0;
-	}
-}
-
-void Text::PString::RemoveChars(UOSInt index, UOSInt cnt)
-{
-	UOSInt endOfst = index + cnt;
-	if (endOfst >= this->leng)
-	{
-		this->TrimToLength(index); 
-	}
-	else
-	{
-		this->leng = (UOSInt)(Text::StrConcatC(&this->v[index], &this->v[endOfst], this->leng - endOfst) - this->v);
-	}
-}
-
 void Text::PString::ToUpper()
 {
 	Text::StrToUpperC(this->v, this->v, this->leng);

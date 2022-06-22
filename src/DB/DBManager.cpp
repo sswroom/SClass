@@ -5,6 +5,7 @@
 #include "DB/MySQLConn.h"
 #include "DB/ODBCConn.h"
 #include "DB/OLEDBConn.h"
+#include "DB/PostgreSQLConn.h"
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
@@ -132,6 +133,34 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
 				connStr->Append(s);
 			}
 			if ((s = mysql->GetConnPWD()) != 0)
+			{
+				connStr->AppendC(UTF8STRC(";PWD="));
+				connStr->Append(s);
+			}
+			return true;
+		}
+		break;
+	case DB::DBConn::CT_POSTGRESQL:
+		{
+			UTF8Char sbuff[128];
+			UTF8Char *sptr;
+			DB::PostgreSQLConn *psql = (DB::PostgreSQLConn*)conn;
+			connStr->AppendC(UTF8STRC("postgresql:Server="));
+			sptr = psql->GetConnServer()->ConcatTo(sbuff);
+			connStr->AppendP(sbuff, sptr);
+			connStr->AppendC(UTF8STRC(";Port="));
+			connStr->AppendU16(psql->GetConnPort());
+			if ((s = psql->GetConnDB()) != 0)
+			{
+				connStr->AppendC(UTF8STRC(";Database="));
+				connStr->Append(s);
+			}
+			if ((s = psql->GetConnUID()) != 0)
+			{
+				connStr->AppendC(UTF8STRC(";UID="));
+				connStr->Append(s);
+			}
+			if ((s = psql->GetConnPWD()) != 0)
 			{
 				connStr->AppendC(UTF8STRC(";PWD="));
 				connStr->Append(s);
@@ -362,6 +391,66 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
 		if (cli->IsError())
+		{
+			DEL_CLASS(cli);
+		}
+		else
+		{
+			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
+			return db;
+		}
+	}
+	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("postgresql:")))
+	{
+		Text::StringBuilderUTF8 sb;
+		Text::String *server = 0;
+		UInt16 port = 0;
+		Text::String *uid = 0;
+		Text::String *pwd = 0;
+		Text::String *schema = 0;
+		UOSInt cnt;
+		sb.AppendC(connStr + 11, connStrLen - 11);
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
+			{
+				SDEL_STRING(server);
+				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
+			{
+				Text::StrToUInt16(sarr[0].v + 5, &port);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
+			{
+				SDEL_STRING(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
+			{
+				SDEL_STRING(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				SDEL_STRING(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+		DB::PostgreSQLConn *cli;
+		NEW_CLASS(cli, DB::PostgreSQLConn(server, port, uid, pwd, schema, log));
+		SDEL_STRING(server);
+		SDEL_STRING(uid);
+		SDEL_STRING(pwd);
+		SDEL_STRING(schema);
+		if (cli->IsConnError())
 		{
 			DEL_CLASS(cli);
 		}

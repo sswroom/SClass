@@ -2,13 +2,12 @@
 #include "MyMemory.h"
 #include "IO/FileFindRecur.h"
 
-IO::FileFindRecur::FileFindRecur(const UTF8Char *path)
+IO::FileFindRecur::FileFindRecur(Text::CString path)
 {
-	UOSInt strLen = Text::StrCharCnt(path);
-	this->srcBuff = MemAlloc(UTF8Char, strLen + 1);
-	Text::StrConcat(this->srcBuff, path);
+	this->srcBuff = MemAlloc(UTF8Char, path.leng + 1);
+	path.ConcatTo(this->srcBuff);
 	this->partCnt = Text::StrCountChar(this->srcBuff, IO::Path::PATH_SEPERATOR) + 1;
-	this->srcStrs = MemAlloc(UTF8Char *, this->partCnt);
+	this->srcStrs = MemAlloc(Text::PString, this->partCnt);
 	this->srchParts = MemAlloc(FindRecurPart, this->partCnt);
 	UOSInt i;
 	i = 0;
@@ -18,7 +17,7 @@ IO::FileFindRecur::FileFindRecur(const UTF8Char *path)
 		this->srchParts[i].buffPtr = 0;
 		i++;
 	}
-	Text::StrSplit(this->srcStrs, this->partCnt, this->srcBuff, IO::Path::PATH_SEPERATOR);
+	Text::StrSplitP(this->srcStrs, this->partCnt, Text::PString(this->srcBuff, path.leng), IO::Path::PATH_SEPERATOR);
 	this->isFirst = true;
 }
 
@@ -63,7 +62,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					return CSTR_NULL;
 				}
 				i--;
-				if (IO::Path::IsSearchPattern(this->srcStrs[i]))
+				if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 				{
 					sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
 					if (sptr)
@@ -87,8 +86,8 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
 			this->srchParts[i].buffPtr = sptr;
-			sptr = Text::StrConcat(sptr, this->srcStrs[i]);
-			if (IO::Path::IsSearchPattern(this->srcStrs[i]))
+			sptr = this->srcStrs[i].ConcatTo(sptr);
+			if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 			{
 				this->srchParts[i].sess = IO::Path::FindFile(CSTRP(this->currBuff, sptr));
 				if (this->srchParts[i].sess)
@@ -108,7 +107,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 								return CSTR_NULL;
 							}
 							i--;
-							if (IO::Path::IsSearchPattern(this->srcStrs[i]))
+							if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 							{
 								sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
 								if (sptr)
@@ -133,7 +132,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 							return CSTR_NULL;
 						}
 						i--;
-						if (IO::Path::IsSearchPattern(this->srcStrs[i]))
+						if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 						{
 							sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
 							if (sptr)

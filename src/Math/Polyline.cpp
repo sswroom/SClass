@@ -673,7 +673,6 @@ OSInt Math::Polyline::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord
 	Math::Coord2DDbl calPtOut = Math::Coord2DDbl(0, 0);
 	Double calD;
 	Double dist = 0x7fffffff;
-	Double calPtY = 0;
 	OSInt minId = -1;
 	Bool isPointI = false;
 

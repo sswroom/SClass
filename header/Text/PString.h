@@ -9,9 +9,6 @@ namespace Text
 		void Trim(UOSInt index);
 		void RTrim();
 		void TrimWSCRLF();
-		void TrimToLength(UOSInt newLen);
-		void RemoveChars(UOSInt cnt);
-		void RemoveChars(UOSInt index, UOSInt cnt);
 		void ToUpper();
 		void ToLower();
 		void ToCapital();
@@ -58,7 +55,7 @@ namespace Text
 		{
 			if (index >= this->leng)
 			{
-				return {this->v, 0};
+				return {this->v + this->leng, 0};
 			}
 			UTF8Char *sptr = this->v + index;
 			UTF8Char *endPtr = this->v + this->leng;
@@ -72,6 +69,70 @@ namespace Text
 			}
 			*endPtr = 0;
 			return {sptr, (UOSInt)(endPtr - sptr)};
+		}
+
+		Text::PString SubstrTrim(UOSInt index, UOSInt leng)
+		{
+			if (index >= this->leng)
+			{
+				return {this->v + this->leng, 0};
+			}
+			UTF8Char *sptr = this->v + index;
+			UTF8Char *endPtr;
+			if (index + leng >= this->leng)
+			{
+				endPtr = this->v + this->leng;
+			}
+			else
+			{
+				endPtr = this->v + index + leng;
+			}
+			while (sptr < endPtr && (*sptr == ' ' || *sptr == '\t'))
+			{
+				sptr++;
+			}
+			while (sptr < endPtr && (endPtr[-1] == ' ' || endPtr[-1] == '\t'))
+			{
+				endPtr--;
+			}
+			*endPtr = 0;
+			return {sptr, (UOSInt)(endPtr - sptr)};
+		}
+
+		void TrimToLength(UOSInt newLen)
+		{
+			if (newLen < this->leng)
+			{
+				this->leng = newLen;
+				this->v[this->leng] = 0;
+			}
+		}
+
+		void RemoveChars(UOSInt cnt)
+		{
+			if (cnt >= this->leng)
+			{
+				this->leng = 0;
+				this->v[0] = 0;
+			}
+			else
+			{
+				this->leng -= cnt;
+				this->v[this->leng] = 0;
+			}
+		}
+
+		void RemoveChars(UOSInt index, UOSInt cnt)
+		{
+			UOSInt endOfst = index + cnt;
+			if (endOfst >= this->leng)
+			{
+				this->TrimToLength(index); 
+			}
+			else
+			{
+				this->leng = (UOSInt)(Text::StrConcatC(&this->v[index], &this->v[endOfst], this->leng - endOfst) - this->v);
+			}
 		}
 	};
 

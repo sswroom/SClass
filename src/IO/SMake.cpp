@@ -164,11 +164,9 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	UTF8Char *sptr1;
-	UTF8Char *sptr1End;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
-	Text::PString line;
+	Text::PString str1;
+	Text::PString str2;
+	Text::PString str3;
 	UOSInt i;
 	IO::SMake::ConfigItem *cfg;
 	IO::SMake::ProgramItem *prog = 0;
@@ -190,47 +188,42 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		}
 		else if (sb.ToString()[0] == '!')
 		{
-			line = sb.SubstrTrim(1);
 			Bool valid = true;
-			sptr1 = line.v;
-			sptr1End = line.GetEndPtr();
-			if (Text::StrStartsWithC(sptr1, line.leng, UTF8STRC("?(")))
+			str1 = sb.SubstrTrim(1);
+			if (str1.StartsWith(UTF8STRC("?(")))
 			{
-				i = Text::StrIndexOfChar(sptr1, ')');
+				i = str1.IndexOf(')');
 				if (i != INVALID_INDEX)
 				{
-					sptr2 = &sptr1[i + 1];
+					str2 = str1.Substring(i + 1);
 					sb2.ClearStr();
-					sb2.AppendC(&sptr1[2], (UOSInt)i - 2);
-					Text::PString phase = sb2.TrimAsNew();
-					sptr1 = phase.v;
-					sptr1End = phase.GetEndPtr();
-					if ((i = Text::StrIndexOfC(sptr1, phase.leng, UTF8STRC(">="))) != INVALID_INDEX)
+					sb2.AppendC(&str1.v[2], (UOSInt)i - 2);
+					str1 = sb2.TrimAsNew();
+					if ((i = str1.IndexOf(UTF8STRC(">="))) != INVALID_INDEX)
 					{
-						Text::StrTrimC(&sptr1[i + 2], phase.leng - i - 2);
-						sptr1[i] = 0;
-						sptr1End = Text::StrTrimC(sptr1, i);
+						str3 = str1.SubstrTrim(i + 2);
+						str1 = str1.SubstrTrim(0, i);
 						Int32 val1 = 0;
 						Int32 val2 = 0;
-						if (sptr1[0] >= '0' && sptr1[0] <= '9')
+						if (str1.v[0] >= '0' && str1.v[0] <= '9')
 						{
-							val1 = Text::StrToInt32(sptr1);
+							val1 = str1.ToInt32();
 						}
 						else
 						{
-							cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+							cfg = this->cfgMap.Get(str1.ToCString());
 							if (cfg)
 							{
 								val1 = cfg->value->ToInt32();
 							}
 						}
-						if (sptr1[i + 2] >= '0' && sptr1[i + 2] <= '9')
+						if (str3.v[0] >= '0' && str3.v[0] <= '9')
 						{
-							val2 = Text::StrToInt32(&sptr1[i + 2]);
+							val2 = str3.ToInt32();
 						}
 						else
 						{
-							cfg = this->cfgMap.Get({&sptr1[i + 2], (UOSInt)(sptr1End - &sptr1[i + 2])});
+							cfg = this->cfgMap.Get(str3.ToCString());
 							if (cfg)
 							{
 								val2 = cfg->value->ToInt32();
@@ -238,7 +231,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 						}
 						if (val1 >= val2)
 						{
-							sptr1 = sptr2;
+							str1 = str2;
 						}
 						else
 						{
@@ -247,13 +240,13 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					}
 				}
 			}
-			else if (Text::StrStartsWithC(sptr1, sb.GetLength(), UTF8STRC("@(")))
+			else if (str1.StartsWith(UTF8STRC("@(")))
 			{
-				i = Text::StrIndexOfChar(sptr1, ')');
+				i = str1.IndexOf(')');
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 result;
-					Text::String *cmd = Text::String::New(sptr1 + 2, i - 2);
+					Text::String *cmd = Text::String::New(&str1.v[2], i - 2);
 					Int32 ret;
 					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), &result)) != 0)
 					{
@@ -261,29 +254,27 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					}
 					else
 					{
-						sptr1 += i + 1;
+						str1 = str1.Substring(i + 1);
 					}
 					cmd->Release();
 				}
 			}
 			if (valid && prog)
 			{
-				prog->libs.Add(Text::String::NewP(sptr1, sptr1End));
+				prog->libs.Add(Text::String::New(str1.ToCString()));
 			}
 		}
 		else if (sb.ToString()[0] == '$')
 		{
 			Bool valid = true;
-			line = sb.SubstrTrim(1);
-			sptr1 = line.v;
-			sptr1End = line.GetEndPtr();
-			if (Text::StrStartsWithC(sptr1, line.leng, UTF8STRC("@(")))
+			str1 = sb.SubstrTrim(1);
+			if (str1.StartsWith(UTF8STRC("@(")))
 			{
-				i = Text::StrIndexOfCharC(sptr1, (UOSInt)(sptr1End - sptr1), ')');
+				i = str1.IndexOf(')');
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 result;
-					Text::String *cmd = Text::String::New(sptr1 + 2, (UOSInt)i - 2);
+					Text::String *cmd = Text::String::New(&str1.v[2], (UOSInt)i - 2);
 					Int32 ret;
 					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), &result)) != 0)
 					{
@@ -291,33 +282,31 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					}
 					else
 					{
-						sptr1 += i + 1;
+						str1 = str1.Substring(i + 1);
 					}
 					cmd->Release();
 				}
 			}
 			if (prog && valid)
 			{
-				const UTF8Char *ccfg = sptr1;
-				const UTF8Char *ccfgEnd = sptr1End;
-				IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTRP(sptr1, sptr1End));
+				Text::CString ccfg = str1.ToCString();
+				IO::SMake::ConfigItem *cfg = this->cfgMap.Get(str1.ToCString());
 				if (cfg)
 				{
-					ccfg = cfg->value->v;
-					ccfgEnd = &cfg->value->v[cfg->value->leng];
+					ccfg = cfg->value->ToCString();
 				}
 				if (prog->compileCfg)
 				{
 					sb2.ClearStr();
 					sb2.Append(prog->compileCfg);
 					sb2.AppendUTF8Char(' ');
-					sb2.AppendC(ccfg, (UOSInt)(ccfgEnd - ccfg));
+					sb2.Append(ccfg);
 					prog->compileCfg->Release();
 					prog->compileCfg = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
 				{
-					prog->compileCfg = Text::String::NewP(ccfg, ccfgEnd);
+					prog->compileCfg = Text::String::New(ccfg);
 				}
 			}
 		}
@@ -332,12 +321,9 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		}
 		else if ((i = sb.IndexOf(UTF8STRC("+="))) != INVALID_INDEX)
 		{
-			sptr1 = sb.ToString();
-			sptr2 = &sptr1[i + 2];
-			sptr1[i] = 0;
-			sptr1End = Text::StrTrimC(sptr1, i);
-			sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
-			cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+			str2 = sb.SubstrTrim(i + 2);
+			str1 = sb.SubstrTrim(0, i);
+			cfg = this->cfgMap.Get(str1.ToCString());
 			if (cfg)
 			{
 				if (cfg->value->leng > 0)
@@ -345,7 +331,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					sb2.ClearStr();
 					sb2.Append(cfg->value);
 					sb2.AppendUTF8Char(' ');
-					AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
+					AppendCfgItem(&sb2, str2.ToCString());
 					cfg->value->Release();
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
@@ -353,16 +339,16 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				{
 					cfg->value->Release();
 					sb2.ClearStr();
-					AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
+					AppendCfgItem(&sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 			}
 			else
 			{
 				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-				cfg->name = Text::String::NewP(sptr1, sptr1End);
+				cfg->name = Text::String::New(str1.ToCString());
 				sb2.ClearStr();
-				AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
+				AppendCfgItem(&sb2, str2.ToCString());
 				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				this->cfgMap.Put(cfg->name, cfg);
 			}
@@ -371,49 +357,43 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		{
 			if (sb.ToString()[i + 1] == '=')
 			{
-				sptr1 = sb.ToString();
-				sptr2 = &sptr1[i + 2];
-				sptr1[i] = 0;
-				sptr1End = Text::StrTrimC(sptr1, i);
-				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
-				cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+				str1 = sb.SubstrTrim(0, i);
+				str2 = sb.SubstrTrim(i + 2);
+				cfg = this->cfgMap.Get(str1.ToCString());
 				if (cfg)
 				{
 					cfg->value->Release();
 					sb2.ClearStr();
-					AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
+					AppendCfgItem(&sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
 				{
 					cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-					cfg->name = Text::String::NewP(sptr1, sptr1End);
+					cfg->name = Text::String::New(str1.ToCString());
 					sb2.ClearStr();
-					AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
+					AppendCfgItem(&sb2, str2.ToCString());
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 					this->cfgMap.Put(cfg->name, cfg);
 				}
 			}
 			else
 			{
-				sptr1 = sb.ToString();
-				sptr2 = &sptr1[i + 1];
-				sptr1[i] = 0;
-				sptr1End = Text::StrTrimC(sptr1, i);
-				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 1);
-				if (sptr1[0] == '+')
+				str1 = sb.SubstrTrim(0, i);
+				str2 = sb.SubstrTrim(i + 1);
+				if (str1.v[0] == '+')
 				{
-					prog = this->progMap.GetC({sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1)});
+					prog = this->progMap.GetC(str1.Substring(1).ToCString());
 					if (prog)
 					{
 					}
 					else
 					{
 						NEW_CLASS(prog, IO::SMake::ProgramItem());
-						prog->name = Text::String::New(sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1));
-						if (sptr2[0])
+						prog->name = Text::String::New(str1.Substring(1).ToCString());
+						if (str2.v[0])
 						{
-							prog->srcFile = Text::String::New(sptr2, (UOSInt)(sptr2End - sptr2));
+							prog->srcFile = Text::String::New(str2.ToCString());
 						}
 						else
 						{
@@ -425,23 +405,23 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				}
 				else
 				{
-					prog = this->progMap.GetC({sptr1, (UOSInt)(sptr1End - sptr1)});
+					prog = this->progMap.GetC(str1.ToCString());
 					if (prog)
 					{
 						ret = false;
 						sb2.ClearStr();
 						sb2.AppendC(UTF8STRC("Program Item "));
-						sb2.AppendC(sptr1, (UOSInt)(sptr1End - sptr1));
+						sb2.Append(str1);
 						sb2.AppendC(UTF8STRC(" duplicated"));
 						this->SetErrorMsg(sb2.ToCString());
 					}
 					else
 					{
 						NEW_CLASS(prog, IO::SMake::ProgramItem());
-						prog->name = Text::String::New(sptr1, (UOSInt)(sptr1End - sptr1));
-						if (sptr2[0])
+						prog->name = Text::String::New(str1.ToCString());
+						if (str2.v[0])
 						{
-							prog->srcFile = Text::String::New(sptr2, (UOSInt)(sptr2End - sptr2));
+							prog->srcFile = Text::String::New(str2.ToCString());
 						}
 						else
 						{
@@ -459,11 +439,10 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			{
 				sb.Replace('/', IO::Path::PATH_SEPERATOR);
 			}
-			line = sb.SubstrTrim(8);
-			sptr1 = line.v;
-			if (IO::Path::IsSearchPattern(sptr1))
+			str1 = sb.SubstrTrim(8);
+			if (IO::Path::IsSearchPattern(str1.v))
 			{
-				IO::FileFindRecur srch(sptr1);
+				IO::FileFindRecur srch(str1.ToCString());
 				Text::CString cstr;
 				while (true)
 				{
@@ -484,7 +463,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			}
 			else
 			{
-				if (!LoadConfigFile(line.ToCString()))
+				if (!LoadConfigFile(str1.ToCString()))
 				{
 					ret = false;
 					break;
@@ -528,8 +507,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	fs.GetFileTimes(0, 0, &dt);
 	lastTime = dt.ToTicks();
 	Text::PString line;
-	UTF8Char *sptr1;
-	UTF8Char *sptr1End;
+	Text::PString str1;
 	UOSInt i;
 	IO::SMake::ProgramItem *prog;
 	Text::UTF8Reader reader(&fs);
@@ -539,36 +517,33 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 		line = tmpSb->TrimAsNew();
 		if (line.StartsWith(UTF8STRC("#include")))
 		{
-			line = line.SubstrTrim(8);
-			sptr1 = line.v;
-			sptr1End = line.GetEndPtr();
-			if (sptr1[0] == '"')
+			str1 = line.SubstrTrim(8);
+			if (str1.v[0] == '"')
 			{
-				sptr1++;
-				i = Text::StrIndexOfCharC(sptr1, (UOSInt)(sptr1End - sptr1), '"');
+				str1 = str1.Substring(1);
+				i = str1.IndexOf('"');
 				if (i != INVALID_INDEX)
 				{
-					sptr1[i] = 0;
-					sptr1End = &sptr1[i];
-					if (procList->IndexOfC(Text::CString(sptr1, i)) >= 0)
+					str1.TrimToLength(i);
+					if (procList->IndexOfC(str1.ToCString()) >= 0)
 					{
-						thisTime = this->fileTimeMap.GetC({sptr1, i});
+						thisTime = this->fileTimeMap.GetC(str1.ToCString());
 						if (thisTime && thisTime > lastTime)
 						{
 							lastTime = thisTime;
 						}
 					}
-					else if (Text::StrEndsWithC(sptr1, i, UTF8STRC(".cpp")))
+					else if (str1.EndsWith(UTF8STRC(".cpp")))
 					{
 						
 					}
 					else
 					{
-						prog = this->progMap.GetC({sptr1, i});
+						prog = this->progMap.GetC(str1.ToCString());
 						if (prog == 0)
 						{
 							Text::StringBuilderUTF8 sb2;
-							sb2.AppendC(sptr1, i);
+							sb2.Append(str1);
 							sb2.AppendC(UTF8STRC(" not found in "));
 							sb2.Append(sourceFile);
 							this->SetErrorMsg(sb2.ToCString());
@@ -646,8 +621,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	UTF8Char *sptr;
 	UOSInt i;
 	sb2.Append(cfg->value);
-	sarr[1].v = sb2.ToString();
-	sarr[1].leng = sb2.GetLength();
+	sarr[1] = sb2;
 	i = 2;
 	while (i == 2)
 	{

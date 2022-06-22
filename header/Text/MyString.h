@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_MYSTRING
 #define _SM_TEXT_MYSTRING
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 
 #define SCOPY_TEXT(var) (((var) != 0)?Text::StrCopyNew(var):0)
 #define SDEL_TEXT(var) if (var != 0) { Text::StrDelNew(var); var = 0;}
@@ -116,7 +117,7 @@ namespace Text
 
 	Bool StrEquals(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEqualsN(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
+	FORCEINLINE Bool StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEqualsICaseC(const UTF8Char *str1, UOSInt str1Len, const UTF8Char *str2, UOSInt str2Len);
 
@@ -233,7 +234,7 @@ namespace Text
 	const UTF8Char *StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
 	void StrDelNew(const UTF8Char *newStr);
 	Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
+	FORCEINLINE Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEndsWith(const UTF8Char *str1, const UTF8Char *str2);
@@ -376,5 +377,157 @@ namespace Text
 	FORCEINLINE Char *StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs) { return (Char*)StrCSVJoin((UTF8Char*)oriStr, (const UTF8Char**)strs, nStrs); };
 	FORCEINLINE UOSInt StrCountChar(const Char *str1, Char c) { return StrCountChar((const UTF8Char*)str1, (UTF8Char)c); };
 	FORCEINLINE Char *StrRemoveANSIEscapes(Char *str1) { return (Char*)StrRemoveANSIEscapes((UTF8Char*)str1); };
+}
+
+Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 != len2)
+	{
+		return false;
+	}
+#if _OSINT_SIZE == 64
+	while (len2 >= 8)
+	{
+		UInt64 v = ReadNUInt64(str1);
+		if (v != ReadNUInt64(str2))
+		{
+			return false;
+		}
+/*		v = ReadNUInt64(&str1[8]);
+		if (v != ReadNUInt64(&str2[8]))
+		{
+			return false;
+		}*/
+		str1 += 8;
+		str2 += 8;
+		len2 -= 8;
+	}
+#else
+	while (len2 >= 8)
+	{
+		UInt32 v = ReadNUInt32(str1);
+		if (v != ReadNUInt32(str2))
+		{
+			return false;
+		}
+		v = ReadNUInt32(&str1[4]);
+		if (v != ReadNUInt32(&str2[4]))
+		{
+			return false;
+		}
+/*		v = ReadNUInt32(&str1[8]);
+		if (v != ReadNUInt32(&str2[8]))
+		{
+			return false;
+		}
+		v = ReadNUInt32(&str1[12]);
+		if (v != ReadNUInt32(&str2[12]))
+		{
+			return false;
+		}*/
+		str1 += 8;
+		str2 += 8;
+		len2 -= 8;
+	}
+#endif
+	switch (len2)
+	{
+/*	case 15:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
+	case 14:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
+	case 13:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
+	case 12:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
+	case 11:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
+	case 10:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
+	case 9:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && str1[8] == str2[8];
+	case 8:
+		return ReadNUInt64(str1) == ReadNUInt64(str2);*/
+	case 7:
+		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
+	case 6:
+		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]);
+	case 5:
+		return ReadNUInt32(str1) == ReadNUInt32(str2) && str1[4] == str2[4];
+	case 4:
+		return ReadNUInt32(str1) == ReadNUInt32(str2);
+	case 3:
+		return ReadNUInt16(str1) == ReadNUInt16(str2) && str1[2] == str2[2];
+	case 2:
+		return ReadNUInt16(str1) == ReadNUInt16(str2);
+	case 1:
+		return str1[0] == str2[0];
+	default:
+		return true;
+	}
+}
+
+Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 < len2)
+	{
+		return false;
+	}
+#if _OSINT_SIZE == 64
+	while (len2 >= 8)
+	{
+		if (ReadNUInt64(str1) != ReadNUInt64(str2))
+			return false;
+		str1 += 8;
+		str2 += 8;
+		len2 -= 8;
+	}
+#else
+	while (len2 >= 8)
+	{
+		if (ReadNUInt32(str1) != ReadNUInt32(str2))
+			return false;
+		if (ReadNUInt32(&str1[4]) != ReadNUInt32(&str2[4]))
+			return false;
+		str1 += 8;
+		str2 += 8;
+		len2 -= 8;
+	}
+#endif
+	switch (len2)
+	{
+/*	case 15:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
+	case 14:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
+	case 13:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
+	case 12:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
+	case 11:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
+	case 10:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
+	case 9:
+		return ReadNUInt64(str1) == ReadNUInt64(str2) && str1[8] == str2[8];
+	case 8:
+		return ReadNUInt64(str1) == ReadNUInt64(str2);*/
+	case 7:
+		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
+	case 6:
+		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]);
+	case 5:
+		return ReadNUInt32(str1) == ReadNUInt32(str2) && str1[4] == str2[4];
+	case 4:
+		return ReadNUInt32(str1) == ReadNUInt32(str2);
+	case 3:
+		return ReadNUInt16(str1) == ReadNUInt16(str2) && str1[2] == str2[2];
+	case 2:
+		return ReadNUInt16(str1) == ReadNUInt16(str2);
+	case 1:
+		return str1[0] == str2[0];
+	default:
+		return true;
+	}
 }
 #endif

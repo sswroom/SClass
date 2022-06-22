@@ -71,7 +71,6 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			Math::Polygon *pg = (Math::Polygon*)vec;
-			UOSInt nPtOfst;
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
 			UOSInt k;
@@ -96,7 +95,6 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			Math::Polyline *pl = (Math::Polyline*)vec;
-			UOSInt nPtOfst;
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
 			UOSInt k;

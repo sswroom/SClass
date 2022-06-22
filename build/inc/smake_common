@@ -1739,6 +1739,8 @@ IO/UnixConfigFile.h: ../../src/IO/UnixConfigFile.cpp
 @UnixConfigFile.o
 IO/VirtualIOPinMgr.h: ../../src/IO/VirtualIOPinMgr.cpp
 @VirtualIOPinMgr.o
+IO/WindowsError.h: ../../src/IO/WindowsError.cpp
+@WindowsError.o
 IO/WriteCacheStream.h: ../../src/IO/WriteCacheStream.cpp
 @WriteCacheStream.o
 IO/Writer.h:
@@ -4402,6 +4404,7 @@ UDPFileLog.o: ../../src/IO/UDPFileLog.cpp
 UDPLog.o: ../../src/IO/UDPLog.cpp
 UnixConfigFile.o: ../../src/IO/UnixConfigFile.cpp
 VirtualIOPinMgr.o: ../../src/IO/VirtualIOPinMgr.cpp
+WindowsError.o: ../../src/IO/WindowsError.cpp
 WriteCacheStream.o: ../../src/IO/WriteCacheStream.cpp
 WriterLogHandler.o: ../../src/IO/WriterLogHandler.cpp
 WSConfigFile.o: ../../src/IO/WSConfigFile.cpp

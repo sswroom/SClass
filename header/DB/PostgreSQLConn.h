@@ -56,6 +56,7 @@ namespace DB
 
 		Bool IsConnError();
 		Text::String *GetConnServer();
+		UInt16 GetConnPort();
 		Text::String *GetConnDB();
 		Text::String *GetConnUID();
 		Text::String *GetConnPWD();

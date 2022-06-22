@@ -19,8 +19,8 @@ UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
 				{
 					UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceW * me->surfaceH << 2);
 					me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceW << 2, me->surfaceW, me->surfaceH, false);
-					UOSInt w = me->surfaceW;
-					UOSInt h = me->surfaceH;
+//					UOSInt w = me->surfaceW;
+//					UOSInt h = me->surfaceH;
 /*#if defined(HAS_ASM32)
 					_asm
 					{

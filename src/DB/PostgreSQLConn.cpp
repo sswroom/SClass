@@ -761,6 +761,11 @@ Text::String *DB::PostgreSQLConn::GetConnServer()
 	return this->server;
 }
 
+UInt16 DB::PostgreSQLConn::GetConnPort()
+{
+	return this->port;
+}
+
 Text::String *DB::PostgreSQLConn::GetConnDB()
 {
 	return this->database;

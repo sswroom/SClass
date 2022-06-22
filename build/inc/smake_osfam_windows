@@ -45,8 +45,6 @@ IO/USBInfo.h: ../../src/IO/USBInfoW.cpp
 @USBInfo.o
 IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferW.cpp
 @ViewFileBuffer.o
-IO/WindowsError.h: ../../src/IO/WindowsError.cpp
-@WindowsError.o
 
 Manage/EnvironmentVar.h: ../../src/Manage/EnvironmentVarW.cpp
 @EnvironmentVar.o
@@ -158,7 +156,6 @@ SerialPort.o: ../../src/IO/SerialPortW.cpp
 SimpleFileWriter.o: ../../src/IO/SimpleFileWriterW.cpp
 USBInfo.o: ../../src/IO/USBInfoW.cpp
 ViewFileBuffer.o: ../../src/IO/ViewFileBufferW.cpp
-WindowsError.o: ../../src/IO/WindowsError.cpp
 EnvironmentVar.o: ../../src/Manage/EnvironmentVarW.cpp
 ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderW.cpp
 HiResClock.o: ../../src/Manage/HiResClockW.cpp

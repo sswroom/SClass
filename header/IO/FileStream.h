@@ -12,7 +12,6 @@ namespace IO
 	protected:
 		void *handle;
 		UInt64 currPos;
-		Text::String *fileName;
 
 		FileStream();
 	public:
