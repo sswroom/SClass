@@ -3713,6 +3713,8 @@ SSWR/AVIRead/AVIRWiFiLogManagerForm.h: ../../src/SSWR/AVIRead/AVIRWiFiLogManager
 @AVIRWiFiLogManagerForm.o
 SSWR/AVIRead/AVIRWifiScanForm.h: ../../src/SSWR/AVIRead/AVIRWifiScanForm.cpp
 @AVIRWifiScanForm.o
+SSWR/AVIRead/AVIRWindowsErrorForm.h: ../../src/SSWR/AVIRead/AVIRWindowsErrorForm.cpp
+@AVIRWindowsErrorForm.o
 SSWR/AVIRead/AVIRWMIForm.h: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 @AVIRWMIForm.o
 SSWR/AVIRead/AVIRWOLForm.h: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
@@ -5334,6 +5336,7 @@ AVIRWifiCaptureForm.o: ../../src/SSWR/AVIRead/AVIRWifiCaptureForm.cpp
 AVIRWifiCaptureLiteForm.o: ../../src/SSWR/AVIRead/AVIRWifiCaptureLiteForm.cpp
 AVIRWiFiLogManagerForm.o: ../../src/SSWR/AVIRead/AVIRWiFiLogManagerForm.cpp
 AVIRWifiScanForm.o: ../../src/SSWR/AVIRead/AVIRWifiScanForm.cpp
+AVIRWindowsErrorForm.o: ../../src/SSWR/AVIRead/AVIRWindowsErrorForm.cpp
 AVIRWMIForm.o: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 AVIRWOLForm.o: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
 AVIRXMLWalkForm.o: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp

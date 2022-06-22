@@ -43,6 +43,8 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lvTrustCert, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvTrustCert->SetShowGrid(true);
+	this->lvTrustCert->SetFullRowSelect(true);
 	this->lvTrustCert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTrustCert->HandleDblClk(OnTrustCertDblClicked, this);
 	this->lvTrustCert->AddColumn(CSTR("SubjectCN"), 200);

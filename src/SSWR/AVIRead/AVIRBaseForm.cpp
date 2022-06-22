@@ -211,6 +211,7 @@
 #include "SSWR/AVIRead/AVIRWifiCaptureLiteForm.h"
 #include "SSWR/AVIRead/AVIRWiFiLogManagerForm.h"
 #include "SSWR/AVIRead/AVIRWifiScanForm.h"
+#include "SSWR/AVIRead/AVIRWindowsErrorForm.h"
 #include "SSWR/AVIRead/AVIRWMIForm.h"
 #include "SSWR/AVIRead/AVIRWOLForm.h"
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
@@ -430,7 +431,8 @@ typedef enum
 	MNU_LORA_JSON,
 	MNU_GLBVIEWER,
 	MNU_TRUSTSTORE,
-	MNU_JAVACACERTS
+	MNU_JAVACACERTS,
+	MNU_WINDOWS_ERROR
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -576,6 +578,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("ASN.1 MIB"), MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 OID"), MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 Parse"), MNU_ASN1_PARSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Windows Error"), MNU_WINDOWS_ERROR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("RAM Speed"), MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Thread Speed"), MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2461,6 +2464,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRTrustStoreForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core, Crypto::Cert::TrustStore::LoadJavaCA()));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_WINDOWS_ERROR:
+		{
+			SSWR::AVIRead::AVIRWindowsErrorForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRWindowsErrorForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
