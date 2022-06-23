@@ -423,6 +423,10 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			sb->AppendChar('\t', level);
 			sb->AppendC(UTF8STRC("IA5String "));
 			sb->AppendC(&pdu[ofst], len);
+			if (sb->GetEndPtr()[-1] == 0)
+			{
+				sb->RemoveChars(1);
+			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			pdu += ofst + len;
 			break;

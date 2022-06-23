@@ -21,6 +21,7 @@ namespace Crypto
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF8 *sb);
 			
+			Crypto::Cert::X509File::KeyType GetKeyType();
 			Crypto::Cert::X509Key *CreateKey();
 
 			static X509PrivKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName);

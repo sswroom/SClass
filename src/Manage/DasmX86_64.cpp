@@ -262,6 +262,7 @@ UTF8Char *DasmX86_64_ParseReg64(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8C
 		*regPtr = (UInt64*)&sess->regs.r15;
 		return Text::StrConcatC(regName, UTF8STRC("R15"));
 	default:
+		*regPtr = 0;
 		*regName = 0;
 		return regName;
 	}

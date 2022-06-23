@@ -64,6 +64,18 @@ void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType()
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt keyTypeLen;
+	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2.1", &keyTypeLen, &itemType);
+	if (keyTypeOID != 0)
+	{
+		return KeyTypeFromOID(keyTypeOID, keyTypeLen, false);
+	}
+	return Crypto::Cert::X509File::KeyType::Unknown;
+}
+
 Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey()
 {
 	Net::ASN1Util::ItemType itemType;
@@ -103,5 +115,18 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 
 Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(Crypto::Cert::X509Key *key)
 {
-	return CreateFromKeyBuff(key->GetKeyType(), key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
+	KeyType keyType = key->GetKeyType();
+	if (keyType == KeyType::ECDSA)
+	{
+		/////////////////////////////////////////////////
+		return 0;
+	}
+	else if (keyType == KeyType::RSA)
+	{
+		return CreateFromKeyBuff(keyType, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
+	}
+	else
+	{
+		return 0;
+	}
 }
