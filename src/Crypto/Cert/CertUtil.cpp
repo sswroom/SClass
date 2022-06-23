@@ -100,7 +100,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 		{
 			return false;
 		}
-		builder->AppendBitStringWith0(pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
+		builder->AppendBitString(0, pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
 		builder->EndLevel();
 		DEL_CLASS(pubKey);
 		return true;
@@ -112,7 +112,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 		builder->AppendOIDString(UTF8STRC("1.2.840.113549.1.1.1"));
 		builder->AppendNull();
 		builder->EndLevel();
-		builder->AppendBitStringWith0(key->GetASN1Buff(), key->GetASN1BuffSize());
+		builder->AppendBitString(0, key->GetASN1Buff(), key->GetASN1BuffSize());
 		builder->EndLevel();
 		return true;
 	}
@@ -228,22 +228,23 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 			builder->EndLevel();
 		}
 
+		UInt8 bitLeft = 1;
 		UInt8 buff[2];
-		buff[0] = 1;
+		buff[0] = 0;
 		buff[1] = 0;
 		if (ext->caCert)
 		{
-			buff[1] |= 6;
+			buff[0] |= 6;
 		}
 		if (ext->digitalSign)
 		{
-			buff[1] |= 0x80;
+			buff[0] |= 0x80;
 		}
 		builder->BeginSequence();
 		builder->AppendOIDString(UTF8STRC("2.5.29.15")); //keyUsage
 		builder->AppendBool(true); // Critical
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
-		builder->AppendBitString(buff, 2);
+		builder->AppendBitString(bitLeft, buff, 1);
 		builder->EndLevel();
 		builder->EndLevel();
 	}
@@ -305,7 +306,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEn
 		builder->AppendOIDString(UTF8STRC("1.2.840.113549.1.1.11"));
 		builder->AppendNull();
 		builder->EndLevel();
-		builder->AppendBitStringWith0(signData, signLen);
+		builder->AppendBitString(0, signData, signLen);
 		return true;
 	}
 	else

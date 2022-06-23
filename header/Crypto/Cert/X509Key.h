@@ -38,6 +38,9 @@ namespace Crypto
 			const UInt8 *GetRSACoefficient(UOSInt *size);
 
 			const UInt8 *GetECPublic(UOSInt *size);
+			ECName GetECName();
+
+			static X509Key *FromECPublicKey(const UInt8 *buff, UOSInt buffSize, const UInt8 *paramOID, UOSInt oidLen);
 		};
 	}
 }

@@ -225,13 +225,20 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::Date
 {
 	if (len == 13 && pdu[12] == 'Z')
 	{
-		dt->SetCurrTimeUTC();
-		dt->SetValue((UInt16)((UInt32)(dt->GetYear() / 100) * 100 + Str2Digit(pdu)), (OSInt)Str2Digit(&pdu[2]), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), 0);
+		UInt32 year = Str2Digit(pdu);
+		if (year < 70)
+		{
+			year += 2000;
+		}
+		else
+		{
+			year += 1900;
+		}
+		dt->SetValue((UInt16)year, (OSInt)Str2Digit(&pdu[2]), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), 0);
 		return true;
 	}
 	else if (len == 15 && pdu[14] == 'Z')
 	{
-		dt->SetCurrTimeUTC();
 		dt->SetValue((UInt16)(Str2Digit(&pdu[0]) * 100 + Str2Digit(&pdu[2])), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), (OSInt)Str2Digit(&pdu[12]), 0);
 		return true;
 	}

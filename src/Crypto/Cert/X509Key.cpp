@@ -332,7 +332,48 @@ const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size)
 
 const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size)
 {
-	if (this->keyType != KeyType::ECPublic) return 0;
-	*size = this->buffSize;
-	return this->buff;
+	if (this->keyType == KeyType::ECPublic)
+	{
+		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName()
+{
+	if (this->keyType == KeyType::ECPublic)
+	{
+		Net::ASN1Util::ItemType itemType;
+		UOSInt size;
+		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &size, &itemType);
+		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_OID)
+		{
+			if (Net::ASN1Util::OIDEqualsText(itemPDU, size, UTF8STRC("1.2.840.10045.3.1.7")))
+			{
+				return ECName::secp256r1;
+			}
+			else if (Net::ASN1Util::OIDEqualsText(itemPDU, size, UTF8STRC("1.3.132.0.34")))
+			{
+				return ECName::secp384r1;
+			}
+		}
+	}
+	return ECName::Unknown;
+}
+
+Crypto::Cert::X509Key *Crypto::Cert::X509Key::FromECPublicKey(const UInt8 *buff, UOSInt buffSize, const UInt8 *paramOID, UOSInt oidLen)
+{
+	Net::ASN1PDUBuilder pdu;
+	pdu.BeginSequence();
+	pdu.BeginSequence();
+	pdu.AppendOIDString(UTF8STRC("1.2.840.10045.2.1"));
+	pdu.AppendOID(paramOID, oidLen);
+	pdu.EndLevel();
+	pdu.AppendBitString(0, buff, buffSize);
+	pdu.EndLevel();
+	UOSInt i;
+	return NEW_CLASS_D(X509Key(CSTR("ECPublic.key"), pdu.GetBuff(&i), pdu.GetBuffSize(), KeyType::ECPublic));
 }

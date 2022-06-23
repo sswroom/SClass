@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 	this->store = store;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lvTrustCert, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	NEW_CLASS(this->lvTrustCert, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvTrustCert->SetShowGrid(true);
 	this->lvTrustCert->SetFullRowSelect(true);
 	this->lvTrustCert->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -51,6 +51,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 	this->lvTrustCert->AddColumn(CSTR("IssuerCN"), 200);
 	this->lvTrustCert->AddColumn(CSTR("NotValidBefore"), 150);
 	this->lvTrustCert->AddColumn(CSTR("NotValidAfter"), 150);
+	this->lvTrustCert->AddColumn(CSTR("Valid Status"), 150);
 
 	if (this->store == 0)
 	{
@@ -98,6 +99,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			this->lvTrustCert->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		}
+		this->lvTrustCert->SetSubItem(k, 4, Crypto::Cert::X509File::ValidStatusGetDesc(entry->cert->IsValid(ssl, store)));
 		entry->subjectCN->Release();
 		MemFree(entry);
 		i++;

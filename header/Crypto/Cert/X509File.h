@@ -93,13 +93,21 @@ namespace Crypto
 				SHA384WithRSAEncryption,
 				SHA512WithRSAEncryption,
 				SHA224WithRSAEncryption,
-				ECDSAWithSHA256
+				ECDSAWithSHA256,
+				ECDSAWithSHA384
 			};
 
 			enum class ContentDataType
 			{
 				Unknown,
 				AuthenticatedSafe
+			};
+
+			enum class ECName
+			{
+				Unknown,
+				secp256r1,
+				secp384r1
 			};
 
 			struct SignedInfo

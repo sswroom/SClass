@@ -28,8 +28,7 @@ namespace Net
 		void AppendBool(Bool v);
 		void AppendInt32(Int32 v);
 		void AppendUInt32(UInt32 v);
-		void AppendBitString(const UInt8 *buff, UOSInt len);
-		void AppendBitStringWith0(const UInt8 *buff, UOSInt len);
+		void AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSInt len);
 		void AppendOctetString(const UInt8 *buff, UOSInt len);
 		void AppendOctetString(Text::String *s);
 		void AppendOctetStringC(const UTF8Char *s, UOSInt len);
@@ -42,7 +41,6 @@ namespace Net
 		void AppendIA5String(Text::String *s);
 		void AppendUTCTime(Data::DateTime *t);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
-		void AppendOtherWith0(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 		void AppendContentSpecific(UInt8 n, const UInt8 *buff, UOSInt buffSize);
 		void AppendSequence(const UInt8 *buff, UOSInt buffSize);
 		void AppendInteger(const UInt8 *buff, UOSInt buffSize);

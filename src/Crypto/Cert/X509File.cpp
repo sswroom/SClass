@@ -2524,6 +2524,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGetNew(const UInt8 *pdu,
 			const UInt8 *paramPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1.2", &paramLen, &paramType);
 			if (paramPDU != 0 && paramType == Net::ASN1Util::IT_OID)
 			{
+				return Crypto::Cert::X509Key::FromECPublicKey(bstrPDU + 1, bstrLen - 1, paramPDU, paramLen);
 				///////////////////////////////////////
 //				Crypto::Cert::X509Key *key;
 //				NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU + 1, bstrLen - 1, keyType));
@@ -2667,6 +2668,10 @@ Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(const UInt8 *pdu, const UInt
 	{
 		*algType = AlgType::ECDSAWithSHA256;
 	}
+	else if (Net::ASN1Util::OIDEqualsText(itemPDU, itemLen, UTF8STRC("1.2.840.10045.4.3.3"))) //ecdsa-with-SHA384
+	{
+		*algType = AlgType::ECDSAWithSHA384;
+	}
 	else
 	{
 		*algType = AlgType::Unknown;
@@ -2796,6 +2801,8 @@ Crypto::Hash::HashType Crypto::Cert::X509File::GetAlgHash(AlgType algType)
 		return Crypto::Hash::HT_MD5;
 	case AlgType::ECDSAWithSHA256:
 		return Crypto::Hash::HT_SHA256;
+	case AlgType::ECDSAWithSHA384:
+		return Crypto::Hash::HT_SHA384;
 	case AlgType::Unknown:
 	default:
 		return Crypto::Hash::HT_UNKNOWN;

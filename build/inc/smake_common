@@ -39,6 +39,7 @@ test:
 @TestSHA384
 @TestSHA512
 @TestSignature
+@TestSignatureEC
 @TestAStruct
 @TestDateTime
 @TestFastStringMap
@@ -741,6 +742,9 @@ TestSHA512:
 TestSignature:
 @TestSignature.o
 @ConsoleStartup.o
+TestSignatureEC:
+@TestSignatureEC.o
+@ConsoleStartup.o
 TestAStruct:
 @TestAStruct.o
 @ConsoleStartup.o
@@ -1068,6 +1072,7 @@ TestSHA256.o: ../../main/Test/Crypto/TestSHA256.cpp
 TestSHA384.o: ../../main/Test/Crypto/TestSHA384.cpp
 TestSHA512.o: ../../main/Test/Crypto/TestSHA512.cpp
 TestSignature.o: ../../main/Test/Crypto/TestSignature.cpp
+TestSignatureEC.o: ../../main/Test/Crypto/TestSignatureEC.cpp
 TestAStruct.o: ../../main/Test/Data/TestAStruct.cpp
 TestDateTime.o: ../../main/Test/Data/TestDateTime.cpp
 TestFastStringMap.o: ../../main/Test/Data/TestFastStringMap.cpp

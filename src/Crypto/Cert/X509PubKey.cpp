@@ -100,15 +100,11 @@ Crypto::Cert::X509PubKey *Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType ke
 	keyPDU.EndLevel();
 	if (keyType == KeyType::RSAPublic)
 	{
-		UInt8 *tmpBuff = MemAlloc(UInt8, buffSize + 1);
-		MemCopyNO(&tmpBuff[1], buff, buffSize);
-		tmpBuff[0] = 0;
-		keyPDU.AppendBitString(tmpBuff, buffSize + 1);
-		MemFree(tmpBuff);
+		keyPDU.AppendBitString(0, buff, buffSize);
 	}
 	else
 	{
-		keyPDU.AppendBitString(buff, buffSize);
+		keyPDU.AppendBitString(0, buff, buffSize);
 	}
 	keyPDU.EndLevel();
 	Crypto::Cert::X509PubKey *key;

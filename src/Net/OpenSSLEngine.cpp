@@ -11,8 +11,9 @@
 #include <openssl/ssl.h>
 #include <openssl/rsa.h>
 #include <openssl/err.h>
+#include <openssl/ec.h>
 
-//#define SHOW_DEBUG
+#define SHOW_DEBUG
 #ifdef SHOW_DEBUG
 #if defined(DEBUGCON)
 #include <stdio.h>
@@ -537,43 +538,164 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 	return 0;
 }
 
-Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+int OpenSSLEngine_GetCurveName(Crypto::Cert::X509File::ECName ecName)
 {
-	const EVP_MD *htype = 0;
-	if (hashType == Crypto::Hash::HT_SHA256)
+	switch (ecName)
 	{
-		htype = EVP_sha256();
+	case Crypto::Cert::X509File::ECName::secp256r1:
+		return NID_X9_62_prime256v1;
+	case Crypto::Cert::X509File::ECName::secp384r1:
+		return NID_secp384r1;
+	case Crypto::Cert::X509File::ECName::Unknown:
+	default:
+		return 0;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA384)
-	{
-		htype = EVP_sha384();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA512)
-	{
-		htype = EVP_sha512();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA224)
-	{
-		htype = EVP_sha224();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA1)
-	{
-		htype = EVP_sha1();
-	}
-	else if (hashType == Crypto::Hash::HT_MD5)
-	{
-		htype = EVP_md5();
-	}
-	else
-	{
-		return false;
-	}
-	const UInt8 *keyPtr = key->GetASN1Buff();
+}
+EVP_PKEY *OpenSSLEngine_LoadKey(Crypto::Cert::X509Key *key, Bool privateKeyOnly)
+{
 	EVP_PKEY *pkey = 0;
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
 	{
+		const UInt8 *keyPtr = key->GetASN1Buff();
 		pkey = d2i_PrivateKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+#ifdef SHOW_DEBUG
+		if (pkey == 0)
+		{
+			printf("d2i_PrivateKey: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
+		}
+#endif
 	}
+	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::ECDSA)
+	{
+		const UInt8 *keyPtr = key->GetASN1Buff();
+		pkey = d2i_PrivateKey(EVP_PKEY_EC, 0, &keyPtr, (long)key->GetASN1BuffSize());
+#ifdef SHOW_DEBUG
+		if (pkey == 0)
+		{
+			printf("d2i_PrivateKey: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
+		}
+#endif
+	}
+	else if (privateKeyOnly)
+	{
+		return 0;
+	}
+	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::ECPublic)
+	{
+		Text::StringBuilderUTF8 sb;
+		key->ToASN1String(&sb);
+		printf("%s\r\n", sb.ToString());
+		Crypto::Cert::X509File::ECName ecName = key->GetECName();
+		UOSInt keyLen;
+		const UInt8 *keyPtr = key->GetECPublic(&keyLen);
+		if (ecName == Crypto::Cert::X509File::ECName::Unknown)
+		{
+#ifdef SHOW_DEBUG
+			printf("Unknown curve name\r\n");
+#endif
+			return 0;
+		}
+		else if (keyPtr == 0)
+		{
+#ifdef SHOW_DEBUG
+			printf("EC public key not found\r\n");
+#endif
+			return 0;			
+		}
+		EC_GROUP *group = EC_GROUP_new_by_curve_name(OpenSSLEngine_GetCurveName(ecName));
+		EC_POINT *point = EC_POINT_new(group);
+		if (EC_POINT_oct2point(group, point, keyPtr + 1, (size_t)keyLen - 1, 0) == 0)
+		{
+#ifdef SHOW_DEBUG
+			printf("EC_POINT_oct2point: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
+#endif
+			EC_POINT_free(point);
+			EC_GROUP_free(group);
+			return 0;
+		}
+		EC_KEY *eck = EC_KEY_new_by_curve_name(OpenSSLEngine_GetCurveName(ecName));
+		if (EC_KEY_set_public_key(eck, point) == 0)
+		{
+#ifdef SHOW_DEBUG
+			printf("EC_KEY_set_public_key: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
+#endif
+			EC_KEY_free(eck);
+			EC_POINT_free(point);
+			EC_GROUP_free(group);
+			return 0;
+		}
+		EC_POINT_free(point);
+		EC_GROUP_free(group);
+
+		pkey = EVP_PKEY_new();
+		int ret = EVP_PKEY_assign_EC_KEY(pkey, eck);
+		if (ret == 0)
+		{
+#ifdef SHOW_DEBUG
+			printf("EVP_PKEY_assign_EC_KEY: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
+#endif
+			EVP_PKEY_free(pkey);
+			EC_KEY_free(eck);
+			pkey = 0;
+		}
+	}
+	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
+	{
+		const UInt8 *keyPtr = key->GetASN1Buff();
+		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+#ifdef SHOW_DEBUG
+		if (pkey == 0)
+		{
+			printf("d2i_PublicKey: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
+		}
+#endif
+	}
+	else
+	{
+		return 0;
+	}
+	return pkey;
+}
+
+const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
+{
+	if (hashType == Crypto::Hash::HT_SHA256)
+	{
+		return EVP_sha256();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA384)
+	{
+		return EVP_sha384();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA512)
+	{
+		return EVP_sha512();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA224)
+	{
+		return EVP_sha224();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA1)
+	{
+		return EVP_sha1();
+	}
+	else if (hashType == Crypto::Hash::HT_MD5)
+	{
+		return EVP_md5();
+	}
+	else
+	{
+		return 0;
+	}
+}
+Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+{
+	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
+	if (htype == 0)
+	{
+		return false;
+	}
+	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, true);
 	if (pkey == 0)
 	{
 		return false;
@@ -610,53 +732,12 @@ Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Has
 
 Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
 {
-	const EVP_MD *htype = 0;
-	if (hashType == Crypto::Hash::HT_SHA256)
-	{
-		htype = EVP_sha256();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA384)
-	{
-		htype = EVP_sha384();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA512)
-	{
-		htype = EVP_sha512();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA224)
-	{
-		htype = EVP_sha224();
-	}
-	else if (hashType == Crypto::Hash::HT_SHA1)
-	{
-		htype = EVP_sha1();
-	}
-	else if (hashType == Crypto::Hash::HT_MD5)
-	{
-		htype = EVP_md5();
-	}
-	else
+	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
+	if (htype == 0)
 	{
 		return false;
 	}
-	EVP_PKEY *pkey = 0;
-	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
-	{
-		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
-		const UInt8 *keyPtr = pubKey->GetASN1Buff();
-		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)pubKey->GetASN1BuffSize());
-		DEL_CLASS(pubKey);
-	}
-	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
-	{
-		const UInt8 *keyPtr = key->GetASN1Buff();
-		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
-	}
-	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::ECPublic)
-	{
-		const UInt8 *keyPtr = key->GetASN1Buff();
-		pkey = d2i_PublicKey(EVP_PKEY_EC, 0, &keyPtr, (long)key->GetASN1BuffSize());
-	}
+	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
 	{
 		return false;
@@ -694,19 +775,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 
 UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen)
 {
-	EVP_PKEY *pkey;
-	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
-	{
-		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
-		const UInt8 *keyPtr = pubKey->GetASN1Buff();
-		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)pubKey->GetASN1BuffSize());
-		DEL_CLASS(pubKey);
-	}
-	else
-	{
-		const UInt8 *keyPtr = key->GetASN1Buff();
-		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
-	}
+	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
 	{
 		return 0;
