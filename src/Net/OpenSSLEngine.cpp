@@ -13,7 +13,7 @@
 #include <openssl/err.h>
 #include <openssl/ec.h>
 
-#define SHOW_DEBUG
+//#define SHOW_DEBUG
 #ifdef SHOW_DEBUG
 #if defined(DEBUGCON)
 #include <stdio.h>
