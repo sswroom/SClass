@@ -180,6 +180,7 @@ namespace Crypto
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
 			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
+			static ECName ECNameFromOID(const UInt8 *oid, UOSInt oidLen);
 			static Bool AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType);
 
 			X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
@@ -204,6 +205,8 @@ namespace Crypto
 			static Text::CString FileTypeGetName(FileType fileType);
 			static Text::CString KeyTypeGetName(KeyType keyType);
 			static Text::CString KeyTypeGetOID(KeyType keyType);
+			static Text::CString ECNameGetName(ECName ecName);
+			static Text::CString ECNameGetOID(ECName ecName);
 			static Text::CString ValidStatusGetName(ValidStatus validStatus);
 			static Text::CString ValidStatusGetDesc(ValidStatus validStatus);
 		};

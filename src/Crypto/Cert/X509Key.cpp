@@ -165,6 +165,14 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 	{
 		const UInt8 *buff;
 		UOSInt buffSize;
+		ECName ecName = this->GetECName();
+		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+		found = true;
+		sb->Append(this->sourceName);
+		sb->AppendUTF8Char('.');
+		sb->AppendC(UTF8STRC("EC.Name = "));
+		sb->Append(ECNameGetName(ecName));
+
 		buff = this->GetECPublic(&buffSize);
 		if (buff)
 		{
@@ -175,7 +183,39 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendC(UTF8STRC("EC.Public = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
+	}
+	else if (this->keyType == KeyType::ECDSA)
+	{
+		const UInt8 *buff;
+		UOSInt buffSize;
+		ECName ecName = this->GetECName();
+		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+		found = true;
+		sb->Append(this->sourceName);
+		sb->AppendUTF8Char('.');
+		sb->AppendC(UTF8STRC("EC.Name = "));
+		sb->Append(ECNameGetName(ecName));
 
+		buff = this->GetECPrivate(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
+			sb->AppendC(UTF8STRC("EC.Private = "));
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetECPublic(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append(this->sourceName);
+			sb->AppendUTF8Char('.');
+			sb->AppendC(UTF8STRC("EC.Public = "));
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
 	}
 
 	UInt8 keyId[20];
@@ -330,11 +370,57 @@ const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size)
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.9", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size)
 {
-	if (this->keyType == KeyType::ECPublic)
+	if (this->keyType == KeyType::ECDSA)
 	{
 		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+	}
+	else
+	{
+		return 0;
+	}
+}
+const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt itemLen;
+	const UInt8 *itemPDU;
+	if (this->keyType == KeyType::ECPublic)
+	{
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", &itemLen, &itemType);
+		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
+		{
+			*size = itemLen - 1;
+			return itemPDU + 1;
+		}
+		return 0;
+	}
+	else if (this->keyType == KeyType::ECDSA)
+	{
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &itemLen, &itemType);
+		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
+		{
+			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType);
+			if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
+			{
+				*size = itemLen - 1;
+				return itemPDU + 1;
+			}
+			return 0;
+		}
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.4", &itemLen, &itemType);
+		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
+		{
+			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType);
+			if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
+			{
+				*size = itemLen - 1;
+				return itemPDU + 1;
+			}
+			return 0;
+		}
+		return 0;
 	}
 	else
 	{
@@ -351,13 +437,20 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName()
 		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &size, &itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_OID)
 		{
-			if (Net::ASN1Util::OIDEqualsText(itemPDU, size, UTF8STRC("1.2.840.10045.3.1.7")))
+			return ECNameFromOID(itemPDU, size);
+		}
+	}
+	else if (this->keyType == KeyType::ECDSA)
+	{
+		Net::ASN1Util::ItemType itemType;
+		UOSInt size;
+		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &size, &itemType);
+		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+		{
+			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + size, "1", &size, &itemType);
+			if (itemPDU != 0 && itemType == Net::ASN1Util::IT_OID)
 			{
-				return ECName::secp256r1;
-			}
-			else if (Net::ASN1Util::OIDEqualsText(itemPDU, size, UTF8STRC("1.3.132.0.34")))
-			{
-				return ECName::secp384r1;
+				return ECNameFromOID(itemPDU, size);
 			}
 		}
 	}

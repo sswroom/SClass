@@ -37,6 +37,7 @@ namespace Crypto
 			const UInt8 *GetRSAExponent2(UOSInt *size);
 			const UInt8 *GetRSACoefficient(UOSInt *size);
 
+			const UInt8 *GetECPrivate(UOSInt *size);
 			const UInt8 *GetECPublic(UOSInt *size);
 			ECName GetECName();
 

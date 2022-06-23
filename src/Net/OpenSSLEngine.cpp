@@ -604,7 +604,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(Crypto::Cert::X509Key *key, Bool privateKeyOnly)
 		}
 		EC_GROUP *group = EC_GROUP_new_by_curve_name(OpenSSLEngine_GetCurveName(ecName));
 		EC_POINT *point = EC_POINT_new(group);
-		if (EC_POINT_oct2point(group, point, keyPtr + 1, (size_t)keyLen - 1, 0) == 0)
+		if (EC_POINT_oct2point(group, point, keyPtr, (size_t)keyLen, 0) == 0)
 		{
 #ifdef SHOW_DEBUG
 			printf("EC_POINT_oct2point: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));

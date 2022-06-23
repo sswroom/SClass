@@ -2622,6 +2622,19 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 	return Crypto::Hash::HT_UNKNOWN;
 }
 
+Crypto::Cert::X509File::ECName Crypto::Cert::X509File::ECNameFromOID(const UInt8 *oid, UOSInt oidLen)
+{
+	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.10045.3.1.7")))
+	{
+		return ECName::secp256r1;
+	}
+	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.3.132.0.34")))
+	{
+		return ECName::secp384r1;
+	}
+	return ECName::Unknown;
+}
+
 Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType)
 {
 	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
@@ -2874,6 +2887,34 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 	case KeyType::Unknown:
 	default:
 		return CSTR("1.2.840.113549.1.1.1");
+	}
+}
+
+Text::CString Crypto::Cert::X509File::ECNameGetName(ECName ecName)
+{
+	switch (ecName)
+	{
+	case ECName::secp256r1:
+		return CSTR("secp256r1");
+	case ECName::secp384r1:
+		return CSTR("secp384r1");
+	case ECName::Unknown:
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString Crypto::Cert::X509File::ECNameGetOID(ECName ecName)
+{
+	switch (ecName)
+	{
+	case ECName::secp256r1:
+		return CSTR("1.2.840.10045.3.1.7");
+	case ECName::secp384r1:
+		return CSTR("1.3.132.0.34");
+	case ECName::Unknown:
+	default:
+		return CSTR("1.3.132.0.34");
 	}
 }
 

@@ -78,15 +78,18 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType()
 
 Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey()
 {
+	KeyType keyType = GetKeyType();
+	if (keyType == KeyType::Unknown)
+	{
+		return 0;
+	}
 	Net::ASN1Util::ItemType itemType;
-	UOSInt keyTypeLen;
 	UOSInt keyDataLen;
-	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2.1", &keyTypeLen, &itemType);
 	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &keyDataLen, &itemType);
-	if (keyTypeOID != 0 && keyData != 0)
+	if (keyData != 0)
 	{
 		Crypto::Cert::X509Key *key;
-		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), keyData, keyDataLen, KeyTypeFromOID(keyTypeOID, keyTypeLen, false)));
+		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), keyData, keyDataLen, keyType));
 		return key;
 	}
 	return 0;
@@ -118,8 +121,36 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(Crypto::Cert
 	KeyType keyType = key->GetKeyType();
 	if (keyType == KeyType::ECDSA)
 	{
-		/////////////////////////////////////////////////
-		return 0;
+		ECName ecName = key->GetECName();
+		UOSInt keyBuffLen;
+		const UInt8 *keyBuff;
+		Net::ASN1PDUBuilder keyPDU;
+		keyPDU.BeginSequence();
+		keyPDU.AppendInt32(0);
+		keyPDU.BeginSequence();
+		Text::CString oidStr = KeyTypeGetOID(keyType);
+		keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
+		oidStr = ECNameGetOID(ecName);
+		keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
+		keyPDU.EndLevel();
+		keyPDU.BeginOther(4);
+		keyPDU.BeginSequence();
+		keyPDU.AppendInt32(1);
+		keyBuff = key->GetECPrivate(&keyBuffLen);
+		keyPDU.AppendOctetStringC(keyBuff, keyBuffLen);
+		keyBuff = key->GetECPublic(&keyBuffLen);
+		if (keyBuff)
+		{
+			keyPDU.BeginContentSpecific(1);
+			keyPDU.AppendBitString(0, keyBuff, keyBuffLen);
+			keyPDU.EndLevel();
+		}
+		keyPDU.EndLevel();
+		keyPDU.EndLevel();
+		keyPDU.EndLevel();
+		Crypto::Cert::X509PrivKey *pkey;
+		NEW_CLASS(pkey, Crypto::Cert::X509PrivKey(key->GetSourceNameObj(), keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
+		return pkey;
 	}
 	else if (keyType == KeyType::RSA)
 	{
