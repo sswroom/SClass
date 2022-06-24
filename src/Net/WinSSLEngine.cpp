@@ -15,6 +15,7 @@
 #define SECURITY_WIN32
 #include <sspi.h>
 #include <schnlsp.h>
+#include <bcrypt.h>
 
 #define VERBOSE_SVR
 #define VERBOSE_CLI
@@ -149,7 +150,7 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 	}
 }
 
-ALG_ID WinSSLEngine_GetHashAlg(Crypto::Hash::HashType hashType)
+ALG_ID WinSSLEngine_CryptGetHashAlg(Crypto::Hash::HashType hashType)
 {
 	if (hashType == Crypto::Hash::HT_SHA256)
 	{
@@ -421,7 +422,7 @@ Bool WinSSLEngine_CryptImportPublicKey(_Out_ HCRYPTKEY* phKey,
 	else
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: Import Pub Key failed: CryptDecodeObjectEx, error = 0x%x\r\n", GetLastError());
+		printf("SSL: Import Pub Key failed: CryptDecodeObjectEx, error = 0x%x\r\n", (UInt32)GetLastError());
 #endif
 	}
 
@@ -457,7 +458,7 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 			return hProv;
 		}
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: CryptAcquireContext ECDSA failed: %x\r\n", GetLastError());
+		printf("SSL: CryptAcquireContext ECDSA failed: %x\r\n", (UInt32)GetLastError());
 #endif
 		return 0;
 	}
@@ -479,20 +480,6 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, Crypto::Cert::X509Key *key, B
 		DEL_CLASS(privKey);
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: Import Key failed\r\n");
-#endif
-		return 0;
-	}
-	else if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
-	{
-		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
-		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), true))
-		{
-			DEL_CLASS(privKey);
-			return hKey;
-		}
-		DEL_CLASS(privKey);
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-			printf("SSL: Import Key failed\r\n");
 #endif
 		return 0;
 	}
@@ -571,6 +558,119 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert
 	{
 		return false;
 	}
+	*hProvOut = hProv;
+	*hKeyOut = hKey;
+	return true;
+}
+
+BCRYPT_ALG_HANDLE WinSSLEngine_BCryptOpenHash(Crypto::Hash::HashType hashType)
+{
+	const WChar *hashAlg = 0;
+	if (hashType == Crypto::Hash::HT_SHA256)
+	{
+		hashAlg = BCRYPT_SHA256_ALGORITHM;
+	}
+	else if (hashType == Crypto::Hash::HT_SHA384)
+	{
+		hashAlg = BCRYPT_SHA384_ALGORITHM;
+	}
+	else if (hashType == Crypto::Hash::HT_SHA512)
+	{
+		hashAlg = BCRYPT_SHA512_ALGORITHM;
+	}
+	else if (hashType == Crypto::Hash::HT_SHA1)
+	{
+		hashAlg = BCRYPT_SHA1_ALGORITHM;
+	}
+	else if (hashType == Crypto::Hash::HT_MD5)
+	{
+		hashAlg = BCRYPT_MD5_ALGORITHM;
+	}
+	else
+	{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: hashType not supported\r\n");
+#endif
+		return 0;
+	}
+	BCRYPT_ALG_HANDLE hAlg = 0;
+	NTSTATUS status;
+	if ((status = BCryptOpenAlgorithmProvider(&hAlg, hashAlg, NULL, 0)) == 0)
+	{
+		return hAlg;
+	}
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+	printf("SSL: BCryptOpenAlgorithmProvider Hash failed: 0x%x\r\n", (UInt32)status);
+#endif
+	return 0;
+}
+
+const WChar *WinSSLEngine_BCryptGetECDSAAlg(Crypto::Cert::X509File::ECName ecName)
+{
+	switch (ecName)
+	{
+	case Crypto::Cert::X509File::ECName::secp256r1:
+		return BCRYPT_ECDSA_P256_ALGORITHM;
+	case Crypto::Cert::X509File::ECName::secp384r1:
+		return BCRYPT_ECDSA_P384_ALGORITHM;
+	case Crypto::Cert::X509File::ECName::secp521r1:
+		return BCRYPT_ECDSA_P521_ALGORITHM;
+	case Crypto::Cert::X509File::ECName::Unknown:
+	default:
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: ECName not supported\r\n");
+#endif
+		return 0;
+	}
+
+}
+BCRYPT_ALG_HANDLE WinSSLEngine_BCryptOpenECDSA(Crypto::Cert::X509File::ECName ecName)
+{
+	const WChar *hashAlg = WinSSLEngine_BCryptGetECDSAAlg(ecName);
+	if (hashAlg == 0)
+	{
+		return 0;
+	}
+	BCRYPT_ALG_HANDLE hAlg = 0;
+	NTSTATUS status;
+	if ((status = BCryptOpenAlgorithmProvider(&hAlg, hashAlg, NULL, 0)) == 0)
+	{
+		return hAlg;
+	}
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+	printf("SSL: BCryptOpenAlgorithmProvider ECDSA failed: 0x%x\r\n", (UInt32)status);
+#endif
+	return 0;
+}
+
+Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE *hKeyOut, Crypto::Cert::X509Key *key, Bool privateKeyOnly)
+{
+	const WChar *algName = WinSSLEngine_BCryptGetECDSAAlg(key->GetECName());
+	if (algName == 0)
+	{
+		return false;
+	}
+	NTSTATUS status;
+	NCRYPT_PROV_HANDLE hProv;
+	NCRYPT_KEY_HANDLE hKey;
+	if((status = NCryptOpenStorageProvider(&hProv, MS_KEY_STORAGE_PROVIDER, 0)) != 0)
+	{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: NCryptOpenStorageProvider failed: 0x%x\r\n", (UInt32)status);
+#endif
+		return false;
+	}
+	Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
+	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff(), privKey->GetASN1BuffSize(), 0)) != 0)
+    {
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: NCryptImportKey failed: 0x%x\r\n", (UInt32)status);
+#endif
+		DEL_CLASS(privKey);
+		NCryptFreeObject(hProv);
+		return false;
+    }
+	DEL_CLASS(privKey);
 	*hProvOut = hProv;
 	*hKeyOut = hKey;
 	return true;
@@ -1464,74 +1564,120 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 #endif
 		return false;
 	}
-	ALG_ID alg = WinSSLEngine_GetHashAlg(hashType);
-	if (alg == 0)
+	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
+	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
 	{
-		return false;
-	}
-	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
-	if (hProv == 0)
-	{
-		return false;
-	}
-	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, true);
-	if (hKey == 0)
-	{
-		CryptReleaseContext(hProv, 0);
-		return false;
-	}
-	HCRYPTHASH hHash;
-	if (!CryptCreateHash(hProv, alg, 0, 0, &hHash))
-	{
+		ALG_ID alg = WinSSLEngine_CryptGetHashAlg(hashType);
+		if (alg == 0)
+		{
+			return false;
+		}
+		HCRYPTPROV hProv = WinSSLEngine_CreateProv(keyType, 0);
+		if (hProv == 0)
+		{
+			return false;
+		}
+		HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, true);
+		if (hKey == 0)
+		{
+			CryptReleaseContext(hProv, 0);
+			return false;
+		}
+		HCRYPTHASH hHash;
+		if (!CryptCreateHash(hProv, alg, 0, 0, &hHash))
+		{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		UInt32 errCode = GetLastError();
-		printf("SSL: CryptCreateHash failed, errCode = 0x%x\r\n", errCode);
+			UInt32 errCode = GetLastError();
+			printf("SSL: CryptCreateHash failed, errCode = 0x%x\r\n", errCode);
 #endif
-		CryptReleaseContext(hProv, 0);
-		CryptDestroyKey(hKey);
-		return false;
-	}
-	if (!CryptHashData(hHash, payload, (DWORD)payloadLen, 0))
-	{
+			CryptReleaseContext(hProv, 0);
+			CryptDestroyKey(hKey);
+			return false;
+		}
+		if (!CryptHashData(hHash, payload, (DWORD)payloadLen, 0))
+		{
+			CryptReleaseContext(hProv, 0);
+			CryptDestroyHash(hHash);
+			CryptDestroyKey(hKey);
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+			printf("SSL: CryptHashData failed\r\n");
+#endif
+			return false;
+		}
+		DWORD len = 512;
+		if (!CryptSignHashW(hHash, AT_SIGNATURE, 0, 0, signData, &len))
+		{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+			UInt32 errCode = GetLastError();
+			printf("SSL: CryptSignHash failed, errCode = 0x%x\r\n", errCode);
+#endif
+			CryptReleaseContext(hProv, 0);
+			CryptDestroyHash(hHash);
+			CryptDestroyKey(hKey);
+			return false;
+		}
+		*signLen = len;
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
 		CryptDestroyKey(hKey);
+		UOSInt i = 0;
+		UOSInt j = len - 1;
+		UInt8 t;
+		while (i < j)
+		{
+			t = signData[i];
+			signData[i] = signData[j];
+			signData[j] = t;
+			i++;
+			j--;
+		}
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: CryptHashData failed\r\n");
+		printf("SSL: Signature success, len = %d\r\n", (UInt32)len);
 #endif
+		return true;
+	}
+	else if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
+	{
+		BCRYPT_ALG_HANDLE hHashAlg = WinSSLEngine_BCryptOpenHash(hashType);
+		if (hHashAlg == 0)
+		{
+			return false;
+		}
+		BCRYPT_ALG_HANDLE hSignAlg = WinSSLEngine_BCryptOpenECDSA(key->GetECName());
+		if (hSignAlg == 0)
+		{
+			BCryptCloseAlgorithmProvider(hHashAlg, 0);
+			return false;
+		}
+		NTSTATUS status;
+		ULONG cbData;
+		DWORD hashSize;
+		DWORD hashObjSize;
+		if((status = BCryptGetProperty(hHashAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&hashObjSize, sizeof(DWORD), &cbData, 0)) != 0 ||
+			(status = BCryptGetProperty(hHashAlg, BCRYPT_HASH_LENGTH, (PBYTE)&hashSize, sizeof(DWORD), &cbData, 0)) != 0)
+		{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+			printf("SSL: BCryptGetProperty failed, status = 0x%x\r\n", (UInt32)status);
+#endif
+			BCryptCloseAlgorithmProvider(hHashAlg, 0);
+			BCryptCloseAlgorithmProvider(hSignAlg, 0);
+			return false;
+		}
+
+		NCRYPT_PROV_HANDLE hProv;
+		NCRYPT_KEY_HANDLE hKey;
+		if (!WinSSLEngine_NCryptInitKey(&hProv, &hKey, key, true))
+		{
+			BCryptCloseAlgorithmProvider(hHashAlg, 0);
+			BCryptCloseAlgorithmProvider(hSignAlg, 0);
+			return false;
+		}
+
+		BCryptCloseAlgorithmProvider(hHashAlg, 0);
+		BCryptCloseAlgorithmProvider(hSignAlg, 0);
 		return false;
 	}
-	DWORD len = 512;
-	if (!CryptSignHashW(hHash, AT_SIGNATURE, 0, 0, signData, &len))
-	{
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		UInt32 errCode = GetLastError();
-		printf("SSL: CryptSignHash failed, errCode = 0x%x\r\n", errCode);
-#endif
-		CryptReleaseContext(hProv, 0);
-		CryptDestroyHash(hHash);
-		CryptDestroyKey(hKey);
-		return false;
-	}
-	*signLen = len;
-	CryptReleaseContext(hProv, 0);
-	CryptDestroyHash(hHash);
-	CryptDestroyKey(hKey);
-	UOSInt i = 0;
-	UOSInt j = len - 1;
-	UInt8 t;
-	while (i < j)
-	{
-		t = signData[i];
-		signData[i] = signData[j];
-		signData[j] = t;
-		i++;
-		j--;
-	}
-#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-	printf("SSL: Signature success, len = %d\r\n", (UInt32)len);
-#endif
-	return true;
+	return false;
 }
 
 Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
@@ -1543,7 +1689,7 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 #endif
 		return false;
 	}
-	ALG_ID alg = WinSSLEngine_GetHashAlg(hashType);
+	ALG_ID alg = WinSSLEngine_CryptGetHashAlg(hashType);
 	if (alg == 0)
 	{
 		return false;

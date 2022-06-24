@@ -546,6 +546,8 @@ int OpenSSLEngine_GetCurveName(Crypto::Cert::X509File::ECName ecName)
 		return NID_X9_62_prime256v1;
 	case Crypto::Cert::X509File::ECName::secp384r1:
 		return NID_secp384r1;
+	case Crypto::Cert::X509File::ECName::secp521r1:
+		return NID_secp521r1;
 	case Crypto::Cert::X509File::ECName::Unknown:
 	default:
 		return 0;

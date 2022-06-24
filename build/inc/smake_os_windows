@@ -225,6 +225,8 @@ WinSSLClient.o: ../../src/Net/WinSSLClient.cpp
 WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 !-lsecur32
 !-lcrypt32
+!-lbcrypt
+!-lncrypt
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp

@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-void TrustStore_LoadStore(Crypto::Cert::CertStore *store, WChar *storeName)
+void TrustStore_LoadStore(Crypto::Cert::CertStore *store, const WChar *storeName)
 {
 	HCERTSTORE hSystemStore = CertOpenSystemStoreW(0, storeName);
 	if (hSystemStore)
