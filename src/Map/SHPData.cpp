@@ -486,7 +486,8 @@ void Map::SHPData::ReleaseNameArr(void *nameArr)
 
 UTF8Char *Map::SHPData::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
-	return this->dbf->GetRecord(buff, (UOSInt)id, strIndex);
+	UTF8Char *sptr = this->dbf->GetRecord(buff, (UOSInt)id, strIndex);
+	return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 }
 
 UOSInt Map::SHPData::GetColumnCnt()

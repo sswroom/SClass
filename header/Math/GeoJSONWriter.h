@@ -17,6 +17,7 @@ namespace Math
 		virtual Text::CString GetWriterName();
 		virtual Bool ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec);
 		virtual Text::String *GetLastError();
+		Bool ToGeometry(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec);
 	};
 }
 #endif

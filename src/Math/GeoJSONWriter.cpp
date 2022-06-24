@@ -239,3 +239,208 @@ Text::String *Math::GeoJSONWriter::GetLastError()
 {
 	return this->lastError;
 }
+
+Bool Math::GeoJSONWriter::ToGeometry(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
+{
+	if (vec == 0)
+	{
+		sb->AppendC(UTF8STRC("null"));
+		this->SetLastError(CSTR("Input vector is null"));
+		return false;
+	}
+	switch (vec->GetVectorType())
+	{
+	case Math::Vector2D::VectorType::Point:
+		sb->AppendUTF8Char('{');
+		sb->AppendC(UTF8STRC("\"type\":\"Point\","));
+		sb->AppendC(UTF8STRC("\"coordinates\":["));
+		if (vec->Support3D())
+		{
+			Math::Point3D *pt = (Math::Point3D*)vec;
+			Double x;
+			Double y;
+			Double z;
+			pt->GetCenter3D(&x, &y, &z);
+			sb->AppendDouble(x);
+			sb->AppendUTF8Char(',');
+			sb->AppendDouble(y);
+			sb->AppendUTF8Char(',');
+			sb->AppendDouble(z);
+		}
+		else
+		{
+			Math::Point *pt = (Math::Point*)vec;
+			Math::Coord2DDbl coord;
+			coord = pt->GetCenter();
+			sb->AppendDouble(coord.x);
+			sb->AppendUTF8Char(',');
+			sb->AppendDouble(coord.y);
+		}
+		sb->AppendUTF8Char(']');
+		sb->AppendUTF8Char('}');
+		return true;
+	case Math::Vector2D::VectorType::Polygon:
+		sb->AppendUTF8Char('{');
+		sb->AppendC(UTF8STRC("\"type\":\"Polygon\","));
+		sb->AppendC(UTF8STRC("\"coordinates\":["));
+		{
+			Math::Polygon *pg = (Math::Polygon*)vec;
+			UOSInt nPtOfst;
+			UOSInt nPoint;
+			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
+			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			Math::Coord2DDbl initPt;
+			UOSInt i = 0;
+			UOSInt j = 0;
+			UOSInt k;
+			while (i < nPtOfst)
+			{
+				if (i == 0)
+				{
+					sb->AppendUTF8Char('[');
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC(",["));
+				}
+				if (i + 1 == nPtOfst)
+				{
+					k = nPoint;
+				}
+				else
+				{
+					k = ptOfstList[i + 1];
+				}
+				sb->AppendUTF8Char('[');
+				sb->AppendDouble(pointList[j].x);
+				sb->AppendUTF8Char(',');
+				sb->AppendDouble(pointList[j].y);
+				sb->AppendUTF8Char(']');
+				initPt = pointList[j];
+				j++;
+				while (j < k)
+				{
+					sb->AppendC(UTF8STRC(",["));
+					sb->AppendDouble(pointList[j].x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(pointList[j].y);
+					sb->AppendUTF8Char(']');
+					j++;
+				}
+				if (pointList[k - 1] != initPt)
+				{
+					sb->AppendC(UTF8STRC(",["));
+					sb->AppendDouble(initPt.x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(initPt.y);
+					sb->AppendUTF8Char(']');
+				}
+				sb->AppendUTF8Char(']');
+				i++;
+			}
+			sb->AppendUTF8Char(']');
+			sb->AppendUTF8Char('}');
+		}
+		return true;
+	case Math::Vector2D::VectorType::Polyline:
+		{
+			Math::Polyline *pg = (Math::Polyline*)vec;
+			UOSInt nPtOfst;
+			UOSInt nPoint;
+			UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
+			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+			if (nPtOfst == 1)
+			{
+				sb->AppendUTF8Char('{');
+				sb->AppendC(UTF8STRC("\"type\":\"LineString\","));
+				sb->AppendC(UTF8STRC("\"coordinates\":["));
+				UOSInt i = 0;
+				sb->AppendC(UTF8STRC("["));
+				sb->AppendDouble(pointList[i].x);
+				sb->AppendUTF8Char(',');
+				sb->AppendDouble(pointList[i].y);
+				sb->AppendUTF8Char(']');
+				i++;
+				while (i < nPoint)
+				{
+					sb->AppendC(UTF8STRC(",["));
+					sb->AppendDouble(pointList[i].x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(pointList[i].y);
+					sb->AppendUTF8Char(']');
+					i++;
+				}
+				sb->AppendUTF8Char(']');
+				sb->AppendUTF8Char('}');
+			}
+			else
+			{
+				sb->AppendUTF8Char('{');
+				sb->AppendC(UTF8STRC("\"type\":\"MultiLineString\","));
+				sb->AppendC(UTF8STRC("\"coordinates\":["));
+				Math::Coord2DDbl initPt;
+				UOSInt i = 0;
+				UOSInt j = 0;
+				UOSInt k;
+				while (i < nPtOfst)
+				{
+					if (i == 0)
+					{
+						sb->AppendUTF8Char('[');
+					}
+					else
+					{
+						sb->AppendC(UTF8STRC(",["));
+					}
+					if (i + 1 == nPtOfst)
+					{
+						k = nPoint;
+					}
+					else
+					{
+						k = ptOfstList[i + 1];
+					}
+					sb->AppendUTF8Char('[');
+					sb->AppendDouble(pointList[j].x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(pointList[j].y);
+					sb->AppendUTF8Char(']');
+					initPt = pointList[j];
+					j++;
+					while (j < k)
+					{
+						sb->AppendC(UTF8STRC(",["));
+						sb->AppendDouble(pointList[j].x);
+						sb->AppendUTF8Char(',');
+						sb->AppendDouble(pointList[j].y);
+						sb->AppendUTF8Char(']');
+						j++;
+					}
+					if (pointList[k - 1] != initPt)
+					{
+						sb->AppendC(UTF8STRC(",["));
+						sb->AppendDouble(initPt.x);
+						sb->AppendUTF8Char(',');
+						sb->AppendDouble(initPt.y);
+						sb->AppendUTF8Char(']');
+					}
+					sb->AppendUTF8Char(']');
+					i++;
+				}
+				sb->AppendUTF8Char(']');
+				sb->AppendUTF8Char('}');
+			}
+		}
+		return true;
+	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::Image:
+	case Math::Vector2D::VectorType::String:
+	case Math::Vector2D::VectorType::Ellipse:
+	case Math::Vector2D::VectorType::PieArea:
+	case Math::Vector2D::VectorType::Unknown:
+	default:
+		sb->AppendC(UTF8STRC("null"));
+		this->SetLastError(CSTR("Unsupported vector type"));
+		return false;
+	}
+}
