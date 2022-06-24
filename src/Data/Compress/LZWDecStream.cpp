@@ -4,7 +4,7 @@
 #include "IO/BitReaderLSB.h"
 #include "IO/BitReaderMSB.h"
 
-#define DECBUFFSIZE 512
+#define DECBUFFSIZE 2048
 
 void Data::Compress::LZWDecStream::ResetTable()
 {

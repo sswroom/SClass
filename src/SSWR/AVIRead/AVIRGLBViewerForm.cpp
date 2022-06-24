@@ -14,19 +14,33 @@ void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(void *userObj, Text:
 		{
 			break;
 		}
+		i++;
 	}
 }
 
 Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 {
-	UInt8 hdr[20];
+	UInt8 hdr[40];
 	IO::StmData::FileData fd(fileName, false);
-	if (fd.GetRealData(0, 20, hdr) != 20)
+	if (fd.GetRealData(0, 40, hdr) != 40)
 	{
 		return false;
 	}
+	UInt64 fileOfst = 0;
 	UInt64 fileLen = fd.GetDataSize();
-	if (ReadNInt32(hdr) != *(Int32*)"glTF" || ReadUInt32(&hdr[8]) != fileLen)
+	if (ReadNInt32(hdr) == *(Int32*)"b3dm" && ReadUInt32(&hdr[4]) == 1 && ReadUInt32(&hdr[8]) == fileLen && ReadNInt32(&hdr[28]) == *(Int32*)"glTF" && ReadUInt32(&hdr[36]) == fileLen - 28)
+	{
+		fileOfst = 28;
+		if (fd.GetRealData(28, 40, hdr) != 40)
+		{
+			return false;
+		}
+		fileLen -= 28;
+	}
+	else if (ReadNInt32(hdr) == *(Int32*)"glTF" && ReadUInt32(&hdr[8]) == fileLen)
+	{
+	}
+	else
 	{
 		return false;
 	}
@@ -43,7 +57,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 			return false;
 		}
 		UInt64 ofst = 20 + jsonLen;
-		return this->LoadData(fd.GetPartialData(20, jsonLen), fd.GetPartialData(ofst, fileLen - ofst));
+		return this->LoadData(fd.GetPartialData(fileOfst + 20, jsonLen), fd.GetPartialData(fileOfst + ofst, fileLen - ofst));
 	}
 	else if (ver == 2)
 	{
@@ -52,7 +66,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 			return false;
 		}
 		UInt64 ofst = 20 + jsonLen;
-		if (fd.GetRealData(ofst, 8, &hdr[12]) != 8)
+		if (fd.GetRealData(fileOfst + ofst, 8, &hdr[12]) != 8)
 		{
 			return false;
 		}
@@ -60,7 +74,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(Text::String *fileName)
 		{
 			return false;
 		}
-		return this->LoadData(fd.GetPartialData(20, jsonLen), fd.GetPartialData(ofst + 8, fileLen - 8 - ofst));
+		return this->LoadData(fd.GetPartialData(fileOfst + 20, jsonLen), fd.GetPartialData(fileOfst + ofst + 8, fileLen - 8 - ofst));
 	}
 	else
 	{

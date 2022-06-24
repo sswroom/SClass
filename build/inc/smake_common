@@ -2057,6 +2057,8 @@ Math/FFTCalc.h: ../../src/Math/FFTCalc.cpp
 @FFTCalc_CPP.o
 Math/GeographicCoordinateSystem.h: ../../src/Math/GeographicCoordinateSystem.cpp
 @GeographicCoordinateSystem.o
+Math/GeoJSONWriter.h: ../../src/Math/GeoJSONWriter.cpp
+@GeoJSONWriter.o
 Math/Geometry.h: ../../src/Math/Geometry.cpp
 @Geometry.o
 Math/LanczosFilter.h: ../../src/Math/LanczosFilter.cpp
@@ -4556,6 +4558,7 @@ Ellipse.o: ../../src/Math/Ellipse.cpp
 FFT.o: ../../src/Math/FFT.cpp
 FFTCalc.o: ../../src/Math/FFTCalc.cpp
 GeographicCoordinateSystem.o: ../../src/Math/GeographicCoordinateSystem.cpp
+GeoJSONWriter.o: ../../src/Math/GeoJSONWriter.cpp
 Geometry.o: ../../src/Math/Geometry.cpp
 LanczosFilter.o: ../../src/Math/LanczosFilter.cpp
 Math.o: ../../src/Math/Math.cpp

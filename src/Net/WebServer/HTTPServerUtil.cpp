@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ByteTool.h"
-#include "Data/Compress/DeflateStream.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
@@ -10,6 +9,8 @@
 #include "Text/StringBuilderUTF8.h"
 
 #define BUFFSIZE 2048
+
+Data::Compress::DeflateStream::CompLevel Net::WebServer::HTTPServerUtil::compLevel = Data::Compress::DeflateStream::CompLevel::MaxSpeed;
 
 Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CString umime)
 {
@@ -105,7 +106,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						succ = (resp->Write(compBuff, 10) == 10);
 
 						Crypto::Hash::CRC32RIEEE crc;
-						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, Data::Compress::DeflateStream::CompLevel::MaxSpeed, false);
+						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, compLevel, false);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
@@ -127,7 +128,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
-						Data::Compress::DeflateStream dstm(fs, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
+						Data::Compress::DeflateStream dstm(fs, contLeng, 0, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
@@ -210,7 +211,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					crc.Calc(buff, (UOSInt)contLeng);
 
 					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, UTF8STRC("Net.HTTPServerUtil.SendContent"));
-					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, false);
+					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, false);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 					{
@@ -230,7 +231,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
 						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, UTF8STRC("Net.HTTPServerUtil.SendContent"));
-						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
+						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
@@ -398,4 +399,9 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
 	}
 	return true;
+}
+
+void Net::WebServer::HTTPServerUtil::SetCompLevel(Data::Compress::DeflateStream::CompLevel compLevel)
+{
+	Net::WebServer::HTTPServerUtil::compLevel = compLevel;
 }
