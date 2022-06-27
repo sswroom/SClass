@@ -189,10 +189,10 @@ namespace SSWR
 			Bool cliChg;
 			UInt32 currServer;
 
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> *v4ansList;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> *v6ansList;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> *othansList;
-			Data::ArrayList<Net::DNSClient::RequestAnswer*> *v4sansList;
+			Data::ArrayList<Net::DNSClient::RequestAnswer*> v4ansList;
+			Data::ArrayList<Net::DNSClient::RequestAnswer*> v6ansList;
+			Data::ArrayList<Net::DNSClient::RequestAnswer*> othansList;
+			Data::ArrayList<Net::DNSClient::RequestAnswer*> v4sansList;
 			Net::DNSProxy::TargetInfo *currTarget;
 			Net::DNSProxy *proxy;
 			Net::WhoisHandler *whois;

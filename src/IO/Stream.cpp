@@ -48,7 +48,7 @@ Bool IO::Stream::CanSeek()
 	return false;
 }
 
-IO::ParserType IO::Stream::GetParserType()
+IO::ParserType IO::Stream::GetParserType() const
 {
 	return IO::ParserType::Stream;
 }

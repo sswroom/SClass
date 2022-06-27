@@ -493,11 +493,11 @@ Int64 Map::CIPLayer2::GetObjectIdMax()
 void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<UTF16Char*> *tmpMap = (Data::Int32Map<UTF16Char*>*)nameArr;
-	Data::ArrayList<UTF16Char*> *tmpArr = tmpMap->GetValues();
+	const Data::ArrayList<UTF16Char*> *tmpArr = tmpMap->GetValues();
 	UOSInt i = tmpArr->GetCount();
 	while (i-- > 0)
 	{
-		MemFree(tmpArr->RemoveAt(i));
+		MemFree(tmpArr->GetItem(i));
 	}
 	DEL_CLASS(tmpMap);
 }
@@ -672,7 +672,7 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 
 void Map::CIPLayer2::ReleaseFileObjs(Data::Int32Map<Map::CIPLayer2::CIPFileObject*> *objs)
 {
-	Data::ArrayList<Map::CIPLayer2::CIPFileObject*> *objArr = objs->GetValues();
+	const Data::ArrayList<Map::CIPLayer2::CIPFileObject*> *objArr = objs->GetValues();
 	Map::CIPLayer2::CIPFileObject *obj;
 	UOSInt i = objArr->GetCount();
 	while (i-- > 0)

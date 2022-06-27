@@ -16,18 +16,18 @@ namespace Data
 		virtual ~ArrayCmpMap();
 
 		virtual V Put(T key, V val);
-		virtual V Get(T key);
+		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		T GetKey(UOSInt index);
+		T GetKey(UOSInt index) const;
 		void PutAll(ArrayCmpMap<T,V> *map);
-		OSInt GetIndex(T key);
-		Bool ContainsKey(T key);
+		OSInt GetIndex(T key) const;
+		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		Data::ArrayList<V> *GetValues();
-		Data::SortableArrayList<T> *GetKeys();
-		UOSInt GetCount();
-		virtual Bool IsEmpty();
+		Data::ArrayList<V> *GetValues() const;
+		Data::SortableArrayList<T> *GetKeys() const;
+		UOSInt GetCount() const;
+		virtual Bool IsEmpty() const;
 		virtual V *ToArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
@@ -61,7 +61,7 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> V ArrayCmpMap<T, V>::Get(T key)
+	template <class T, class V> V ArrayCmpMap<T, V>::Get(T key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -90,7 +90,7 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> T ArrayCmpMap<T, V>::GetKey(UOSInt index)
+	template <class T, class V> T ArrayCmpMap<T, V>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
@@ -110,12 +110,12 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> OSInt ArrayCmpMap<T, V>::GetIndex(T key)
+	template <class T, class V> OSInt ArrayCmpMap<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
 	}
 
-	template <class T, class V> Bool ArrayCmpMap<T, V>::ContainsKey(T key)
+	template <class T, class V> Bool ArrayCmpMap<T, V>::ContainsKey(T key) const
 	{
 		return this->keys->SortedIndexOf(key) >= 0;
 	}
@@ -127,22 +127,22 @@ namespace Data
 		this->vals->EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> Data::ArrayList<V> *ArrayCmpMap<T, V>::GetValues()
+	template <class T, class V> Data::ArrayList<V> *ArrayCmpMap<T, V>::GetValues() const
 	{
 		return this->vals;
 	}
 
-	template <class T, class V> Data::SortableArrayList<T> *ArrayCmpMap<T, V>::GetKeys()
+	template <class T, class V> Data::SortableArrayList<T> *ArrayCmpMap<T, V>::GetKeys() const
 	{
 		return this->keys;
 	}
 
-	template <class T, class V> UOSInt ArrayCmpMap<T, V>::GetCount()
+	template <class T, class V> UOSInt ArrayCmpMap<T, V>::GetCount() const
 	{
 		return this->vals->GetCount();
 	}
 
-	template <class T, class V> Bool ArrayCmpMap<T, V>::IsEmpty()
+	template <class T, class V> Bool ArrayCmpMap<T, V>::IsEmpty() const
 	{
 		return this->vals->GetCount() == 0;
 	}

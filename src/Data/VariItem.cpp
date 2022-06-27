@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Single Data::VariItem::GetAsF32()
+Single Data::VariItem::GetAsF32() const
 {
 	switch (this->itemType)
 	{
@@ -49,7 +49,7 @@ Single Data::VariItem::GetAsF32()
 	}
 }
 
-Double Data::VariItem::GetAsF64()
+Double Data::VariItem::GetAsF64() const
 {
 	switch (this->itemType)
 	{
@@ -90,7 +90,7 @@ Double Data::VariItem::GetAsF64()
 	}
 }
 
-Int8 Data::VariItem::GetAsI8()
+Int8 Data::VariItem::GetAsI8() const
 {
 	switch (this->itemType)
 	{
@@ -131,7 +131,7 @@ Int8 Data::VariItem::GetAsI8()
 	}
 }
 
-UInt8 Data::VariItem::GetAsU8()
+UInt8 Data::VariItem::GetAsU8() const
 {
 	switch (this->itemType)
 	{
@@ -172,7 +172,7 @@ UInt8 Data::VariItem::GetAsU8()
 	}
 }
 
-Int16 Data::VariItem::GetAsI16()
+Int16 Data::VariItem::GetAsI16() const
 {
 	switch (this->itemType)
 	{
@@ -213,7 +213,7 @@ Int16 Data::VariItem::GetAsI16()
 	}
 }
 
-UInt16 Data::VariItem::GetAsU16()
+UInt16 Data::VariItem::GetAsU16() const
 {
 	switch (this->itemType)
 	{
@@ -254,7 +254,7 @@ UInt16 Data::VariItem::GetAsU16()
 	}
 }
 
-Int32 Data::VariItem::GetAsI32()
+Int32 Data::VariItem::GetAsI32() const
 {
 	switch (this->itemType)
 	{
@@ -295,7 +295,7 @@ Int32 Data::VariItem::GetAsI32()
 	}
 }
 
-UInt32 Data::VariItem::GetAsU32()
+UInt32 Data::VariItem::GetAsU32() const
 {
 	switch (this->itemType)
 	{
@@ -336,7 +336,7 @@ UInt32 Data::VariItem::GetAsU32()
 	}
 }
 
-Int64 Data::VariItem::GetAsI64()
+Int64 Data::VariItem::GetAsI64() const
 {
 	switch (this->itemType)
 	{
@@ -377,7 +377,7 @@ Int64 Data::VariItem::GetAsI64()
 	}
 }
 
-UInt64 Data::VariItem::GetAsU64()
+UInt64 Data::VariItem::GetAsU64() const
 {
 	switch (this->itemType)
 	{
@@ -418,12 +418,12 @@ UInt64 Data::VariItem::GetAsU64()
 	}
 }
 
-Bool Data::VariItem::GetAsBool()
+Bool Data::VariItem::GetAsBool() const
 {
 	return this->GetAsI64() != 0;
 }
 
-void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb)
+void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -502,7 +502,7 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize)
+UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 {
 	switch (this->itemType)
 	{
@@ -567,7 +567,7 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize)
 	}
 }
 
-Text::String *Data::VariItem::GetAsNewString()
+Text::String *Data::VariItem::GetAsNewString() const
 {
 	Text::String *s;
 	switch (this->itemType)
@@ -648,7 +648,7 @@ Text::String *Data::VariItem::GetAsNewString()
 	}
 }
 
-Data::DateTime *Data::VariItem::GetAsNewDate()
+Data::DateTime *Data::VariItem::GetAsNewDate() const
 {
 	Data::DateTime *date;
 	if (this->itemType == ItemType::Date)
@@ -684,7 +684,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 	}
 }
 
-Data::Timestamp Data::VariItem::GetAsTimestamp()
+Data::Timestamp Data::VariItem::GetAsTimestamp() const
 {
 	if (this->itemType == ItemType::Date)
 	{
@@ -717,14 +717,14 @@ Data::Timestamp Data::VariItem::GetAsTimestamp()
 }
 
 
-Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr()
+Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr() const
 {
 	if (this->itemType != ItemType::ByteArr)
 		return 0;
 	return this->val.byteArr->Clone();
 }
 
-Math::Vector2D *Data::VariItem::GetAsNewVector()
+Math::Vector2D *Data::VariItem::GetAsNewVector() const
 {
 	if (this->itemType == ItemType::Vector)
 	{
@@ -743,7 +743,7 @@ Math::Vector2D *Data::VariItem::GetAsNewVector()
 	return 0;
 }
 
-Data::UUID *Data::VariItem::GetAsNewUUID()
+Data::UUID *Data::VariItem::GetAsNewUUID() const
 {
 	if (this->itemType != ItemType::UUID)
 		return 0;
@@ -774,7 +774,7 @@ Data::UUID *Data::VariItem::GetAndRemoveUUID()
 	return this->val.uuid;
 }
 
-void *Data::VariItem::GetAsUnk()
+void *Data::VariItem::GetAsUnk() const
 {
 	return (void*)this->val.str;
 }
@@ -1051,7 +1051,7 @@ void Data::VariItem::Set(VariItem *item)
 	}
 }
 
-Data::VariItem *Data::VariItem::Clone()
+Data::VariItem *Data::VariItem::Clone() const
 {
 	ItemValue ival;
 	switch (this->itemType)
@@ -1119,7 +1119,7 @@ Data::VariItem *Data::VariItem::Clone()
 	return NEW_CLASS_D(VariItem(this->itemType, ival));
 }
 
-void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
+void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Text::String *s;
 	UTF8Char sbuff[64];

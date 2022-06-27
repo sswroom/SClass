@@ -11,17 +11,17 @@ namespace IO
 	{
 	private:
 		IO::IStreamData *fd;
-		Data::ArrayListUInt64 *logPos;
-		Data::ArrayListUInt32 *logSize;
+		Data::ArrayListUInt64 logPos;
+		Data::ArrayListUInt32 logSize;
 		UInt8 *logBuff;
 
 	public:
 		UDPFileLog(IO::IStreamData *fd);
 		virtual ~UDPFileLog();
 
-		virtual UOSInt GetCount(IO::ILogHandler::LogLevel logLevel);
-		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak);
-		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb);
+		virtual UOSInt GetCount(IO::ILogHandler::LogLevel logLevel) const;
+		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const;
+		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const;
 	};
 }
 #endif

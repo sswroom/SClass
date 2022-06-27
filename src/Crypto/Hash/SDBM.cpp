@@ -17,12 +17,12 @@ Crypto::Hash::SDBM::~SDBM()
 {
 }
 
-UTF8Char *Crypto::Hash::SDBM::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::SDBM::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SDBM"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SDBM::Clone()
+Crypto::Hash::IHash *Crypto::Hash::SDBM::Clone() const
 {
 	Crypto::Hash::SDBM *sdbm;
 	NEW_CLASS(sdbm, Crypto::Hash::SDBM());
@@ -40,17 +40,17 @@ void Crypto::Hash::SDBM::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = SDBM_Calc(buff, buffSize, this->currVal);
 }
 
-void Crypto::Hash::SDBM::GetValue(UInt8 *buff)
+void Crypto::Hash::SDBM::GetValue(UInt8 *buff) const
 {
 	*(UInt32*)buff = this->currVal;
 }
 
-UOSInt Crypto::Hash::SDBM::GetBlockSize()
+UOSInt Crypto::Hash::SDBM::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::SDBM::GetResultSize()
+UOSInt Crypto::Hash::SDBM::GetResultSize() const
 {
 	return 4;
 }

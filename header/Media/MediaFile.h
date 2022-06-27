@@ -22,13 +22,13 @@ namespace Media
 		MediaFile(Text::CString name);
 		virtual ~MediaFile();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime); //-1 = fail
 		virtual Media::IMediaSource *GetStream(UOSInt index, Int32 *syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
-		Media::ChapterInfo *GetChapterInfo();
+		Media::ChapterInfo *GetChapterInfo() const;
 		void SetChapterInfo(Media::ChapterInfo *chapters, Bool releaseChapter);
 
 		Bool TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd);

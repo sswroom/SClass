@@ -14,15 +14,15 @@ namespace Crypto
 			X509PrivKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PrivKey();
 
-			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
+			virtual FileType GetFileType() const;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual ASN1Data *Clone() const;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 			
-			Crypto::Cert::X509File::KeyType GetKeyType();
-			Crypto::Cert::X509Key *CreateKey();
+			Crypto::Cert::X509File::KeyType GetKeyType() const;
+			Crypto::Cert::X509Key *CreateKey() const;
 
 			static X509PrivKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName);
 			static X509PrivKey *CreateFromKey(Crypto::Cert::X509Key *key);

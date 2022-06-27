@@ -7,7 +7,7 @@ namespace Sync
 	class MutexUsage
 	{
 	private:
-		Sync::Mutex *mut;
+		const Sync::Mutex *mut;
 		Bool used;
 	public:
 		MutexUsage()
@@ -16,7 +16,7 @@ namespace Sync
 			this->used = false;
 		}
 
-		MutexUsage(Sync::Mutex *mut)
+		MutexUsage(const Sync::Mutex *mut)
 		{
 			this->mut = mut;
 			this->used = false;
@@ -50,7 +50,7 @@ namespace Sync
 			}
 		}
 
-		void ReplaceMutex(Sync::Mutex *mut)
+		void ReplaceMutex(const Sync::Mutex *mut)
 		{
 			this->EndUse();
 			this->mut = mut;

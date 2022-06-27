@@ -8,12 +8,12 @@ namespace Data
 	{
 	protected:
 		T PutNode(BTreeUTF8Node<T> *node, Text::CString key, UInt32 hash, T val);
-		virtual UInt32 CalHash(const UTF8Char *key, UOSInt keyLen);
+		virtual UInt32 CalHash(const UTF8Char *key, UOSInt keyLen) const;
 	public:
 		ICaseBTreeUTF8Map();
 		virtual ~ICaseBTreeUTF8Map();
 
-		virtual T Get(Text::CString key);
+		virtual T Get(Text::CString key) const;
 		virtual T Remove(Text::CString key);
 	};
 
@@ -137,7 +137,7 @@ namespace Data
 
 	}
 
-	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key, UOSInt keyLen)
+	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key, UOSInt keyLen) const
 	{
 		UTF8Char sbuff[256];
 		UOSInt charCnt = (UOSInt)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
@@ -152,7 +152,7 @@ namespace Data
 	{
 	}
 
-	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CString key)
+	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CString key) const
 	{
 		UInt32 hash = CalHash(key.v, key.leng);
 		BTreeUTF8Node<T> *node = this->rootNode;

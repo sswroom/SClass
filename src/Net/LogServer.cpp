@@ -68,7 +68,7 @@ void __stdcall Net::LogServer::ClientData(Net::TCPClient *cli, void *userObj, vo
 		cliStatus->buffSize += size;
 	}
 
-	UOSInt sizeLeft = me->protoHdlr->ParseProtocol(cli, cliStatus, 0, cliStatus->buff, cliStatus->buffSize);
+	UOSInt sizeLeft = me->protoHdlr.ParseProtocol(cli, cliStatus, 0, cliStatus->buff, cliStatus->buffSize);
 	if (sizeLeft <= 0)
 	{
 		cliStatus->buffSize = 0;
@@ -93,8 +93,8 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
 		IPStatus *status;
-		Sync::MutexUsage mutUsage(this->ipMut);
-		status = this->ipMap->Get(ip);
+		Sync::MutexUsage mutUsage(&this->ipMut);
+		status = this->ipMap.Get(ip);
 		if (status)
 		{
 			mutUsage.EndUse();
@@ -112,14 +112,14 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
 		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
-		this->ipMap->Put(ip, status);
+		this->ipMap.Put(ip, status);
 		mutUsage.EndUse();
 		return status;
 	}
 	return 0;
 }
 
-Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog)
+Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);
@@ -127,9 +127,6 @@ Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString 
 	this->redirLog = redirLog;
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
-	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::UInt32Map<IPStatus*>());
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoLogCliHandler(this));
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
 }
@@ -138,10 +135,9 @@ Net::LogServer::~LogServer()
 {
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
-	DEL_CLASS(this->protoHdlr);
 	this->logPath->Release();
 	UOSInt i;
-	Data::ArrayList<IPStatus*> *ipList = this->ipMap->GetValues();
+	const Data::ArrayList<IPStatus*> *ipList = this->ipMap.GetValues();
 	IPStatus *status;
 	i = ipList->GetCount();
 	while (i-- > 0)
@@ -150,8 +146,6 @@ Net::LogServer::~LogServer()
 		DEL_CLASS(status->log);
 		MemFree(status);
 	}
-	DEL_CLASS(this->ipMap);
-	DEL_CLASS(this->ipMut);
 }
 
 Bool Net::LogServer::IsError()
@@ -176,11 +170,11 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 	switch (cmdType)
 	{
 	case 0: //KA
-		replySize = this->protoHdlr->BuildPacket(reply, 1, seqId, 0, 0, 0);
+		replySize = this->protoHdlr.BuildPacket(reply, 1, seqId, 0, 0, 0);
 		stm->Write(reply, replySize);
 		break;
 	case 2: //Log Message
-		replySize = this->protoHdlr->BuildPacket(reply, 3, seqId, cmd, 8, 0);
+		replySize = this->protoHdlr.BuildPacket(reply, 3, seqId, cmd, 8, 0);
 		stm->Write(reply, replySize);
 		if (this->redirLog)
 		{

@@ -14,12 +14,12 @@ namespace IO
 		CDXAData(IO::IStreamData *data, UInt64 ofst, UInt64 dataSize);
 		virtual ~CDXAData();
 
-		virtual UInt64 GetSectorCount();
-		virtual UOSInt GetBytesPerSector();
+		virtual UInt64 GetSectorCount() const;
+		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff);
-		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount);
- 		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize);
-		virtual UOSInt GetSeekCount();
+		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
+ 		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const;
+		virtual UOSInt GetSeekCount() const;
 	};
 }
 #endif

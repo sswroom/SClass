@@ -19,7 +19,7 @@ namespace Net
 			Text::String *chName;
 			Text::String *chDesc;
 			Bool chError;
-			Data::Int64Map<SNSItem *> *itemMap;
+			Data::Int64Map<SNSItem *> itemMap;
 
 		public:
 			SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId);

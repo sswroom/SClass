@@ -106,24 +106,24 @@ Media::FBSurface::~FBSurface()
 	MemFree(this->clsData);
 }
 
-Bool Media::FBSurface::IsError()
+Bool Media::FBSurface::IsError() const
 {
 	return this->clsData->fd < 0;
 }
 
-Media::Image *Media::FBSurface::Clone()
+Media::Image *Media::FBSurface::Clone() const
 {
 	Media::FBSurface *surface;
 	NEW_CLASS(surface, Media::FBSurface(this->clsData->hMon, this->info.color, this->info.hdpi, this->info.rotateType));
 	return surface;
 }
 
-Media::Image::ImageType Media::FBSurface::GetImageType()
+Media::Image::ImageType Media::FBSurface::GetImageType() const
 {
 	return Media::Image::IT_MONITORSURFACE;
 }
 
-void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;

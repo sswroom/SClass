@@ -51,24 +51,24 @@ Crypto::Cert::OpenSSLCert::~OpenSSLCert()
 	MemFree(this->clsData);
 }
 
-Bool Crypto::Cert::OpenSSLCert::GetNotBefore(Data::DateTime *dt)
+Bool Crypto::Cert::OpenSSLCert::GetNotBefore(Data::DateTime *dt) const
 {
 	return FromASN1_TIME(X509_get_notBefore(this->clsData->x509), dt);
 }
 
-Bool Crypto::Cert::OpenSSLCert::GetNotAfter(Data::DateTime *dt)
+Bool Crypto::Cert::OpenSSLCert::GetNotAfter(Data::DateTime *dt) const
 {
 	return FromASN1_TIME(X509_get_notAfter(this->clsData->x509), dt);
 }
 
-Bool Crypto::Cert::OpenSSLCert::IsSelfSigned()
+Bool Crypto::Cert::OpenSSLCert::IsSelfSigned() const
 {
 	X509_NAME *name = X509_get_subject_name(this->clsData->x509);
 	X509_NAME *issuer = X509_get_issuer_name(this->clsData->x509);
 	return X509_NAME_cmp(name, issuer) == 0;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert()
+Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 {
 	BIO *bio1;
 	BIO *bio2;
@@ -91,7 +91,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert()
 	return (Crypto::Cert::X509Cert*)pobjCert;
 }
 
-void Crypto::Cert::OpenSSLCert::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::OpenSSLCert::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	/////////////////////////////
 	Crypto::Cert::X509Cert *cert = this->CreateX509Cert();

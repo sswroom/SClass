@@ -15,7 +15,7 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
-IO::ParserType DB::ReadingDB::GetParserType()
+IO::ParserType DB::ReadingDB::GetParserType() const
 {
 	return IO::ParserType::ReadingDB;
 }

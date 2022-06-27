@@ -335,7 +335,7 @@ Net::DHCPServer::~DHCPServer()
 		DEL_CLASS(this->svr);
 		this->svr = 0;
 
-		Data::ArrayList<DeviceStatus*> *devList = this->devMap.GetValues();
+		const Data::ArrayList<DeviceStatus*> *devList = this->devMap.GetValues();
 		DeviceStatus *dev;
 		UOSInt i = devList->GetCount();
 		while (i-- > 0)
@@ -349,7 +349,7 @@ Net::DHCPServer::~DHCPServer()
 	}
 }
 
-Bool Net::DHCPServer::IsError()
+Bool Net::DHCPServer::IsError() const
 {
 	if (this->svr == 0)
 	{
@@ -358,17 +358,17 @@ Bool Net::DHCPServer::IsError()
 	return this->svr->IsError();
 }
 
-void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage)
+void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage) const
 {
 	mutUsage->ReplaceMutex(&this->devMut);
 }
 
-Data::ArrayList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList()
+const Data::ArrayList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList() const
 {
 	return this->devMap.GetValues();
 }
 
-UInt32 Net::DHCPServer::GetIPLeaseTime()
+UInt32 Net::DHCPServer::GetIPLeaseTime() const
 {
 	return this->ipLeaseTime;
 }

@@ -34,26 +34,26 @@ namespace Text
 			MailMessage();
 			virtual ~MailMessage();
 
-			virtual Text::CString GetClassName();
-			virtual IMIMEObj *Clone();
+			virtual Text::CString GetClassName() const;
+			virtual IMIMEObj *Clone() const;
 
-			Bool GetDate(Data::DateTime *dt);
-			UTF8Char *GetFromAddr(UTF8Char *sbuff);
-			UTF8Char *GetSubject(UTF8Char *sbuff);
-			UTF8Char *GetReplyTo(UTF8Char *sbuff);
-			UOSInt GetRecpList(Data::ArrayList<MailAddress*> *recpList);
-			void FreeRecpList(Data::ArrayList<MailAddress*> *recpList);
+			Bool GetDate(Data::DateTime *dt) const;
+			UTF8Char *GetFromAddr(UTF8Char *sbuff) const;
+			UTF8Char *GetSubject(UTF8Char *sbuff) const;
+			UTF8Char *GetReplyTo(UTF8Char *sbuff) const;
+			UOSInt GetRecpList(Data::ArrayList<MailAddress*> *recpList) const;
+			void FreeRecpList(Data::ArrayList<MailAddress*> *recpList) const;
 
-			Text::MIMEObj::TextMIMEObj *GetContentText();
-			Text::IMIMEObj *GetContentMajor();
-			Text::IMIMEObj *GetAttachment(OSInt index, Text::StringBuilderUTF8 *name);
+			Text::MIMEObj::TextMIMEObj *GetContentText() const;
+			Text::IMIMEObj *GetContentMajor() const;
+			Text::IMIMEObj *GetAttachment(OSInt index, Text::StringBuilderUTF8 *name) const;
 			
-			Text::IMIMEObj *GetRAWContent();
+			Text::IMIMEObj *GetRAWContent() const;
 
 			static MailMessage *ParseFile(IO::IStreamData *fd);
 
 		private:
-			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type);
+			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type) const;
 		};
 	}
 }

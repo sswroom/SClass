@@ -18,12 +18,12 @@ Crypto::Hash::SHA1_SHA1::~SHA1_SHA1()
 	DEL_CLASS(this->sha1);
 }
 
-UTF8Char *Crypto::Hash::SHA1_SHA1::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::SHA1_SHA1::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA1_SHA1 (MySQL)"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA1_SHA1::Clone()
+Crypto::Hash::IHash *Crypto::Hash::SHA1_SHA1::Clone() const
 {
 	Crypto::Hash::IHash *hash;
 	NEW_CLASS(hash, Crypto::Hash::SHA1_SHA1(this->sha1));
@@ -40,7 +40,7 @@ void Crypto::Hash::SHA1_SHA1::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->sha1->Calc(buff, buffSize);
 }
 
-void Crypto::Hash::SHA1_SHA1::GetValue(UInt8 *buff)
+void Crypto::Hash::SHA1_SHA1::GetValue(UInt8 *buff) const
 {
 	UInt8 hashBuff[32];
 	Crypto::Hash::SHA1 innerSha1;
@@ -49,12 +49,12 @@ void Crypto::Hash::SHA1_SHA1::GetValue(UInt8 *buff)
 	innerSha1.GetValue(buff);
 }
 
-UOSInt Crypto::Hash::SHA1_SHA1::GetBlockSize()
+UOSInt Crypto::Hash::SHA1_SHA1::GetBlockSize() const
 {
 	return this->sha1->GetBlockSize();
 }
 
-UOSInt Crypto::Hash::SHA1_SHA1::GetResultSize()
+UOSInt Crypto::Hash::SHA1_SHA1::GetResultSize() const
 {
 	return this->sha1->GetResultSize();
 }

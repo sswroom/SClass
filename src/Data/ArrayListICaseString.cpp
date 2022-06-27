@@ -11,7 +11,7 @@ Data::ArrayListICaseString::ArrayListICaseString(UOSInt capacity) : Data::ArrayL
 {
 }
 
-Data::ArrayList<Text::String*> *Data::ArrayListICaseString::Clone()
+Data::ArrayList<Text::String*> *Data::ArrayListICaseString::Clone() const
 {
 	Data::ArrayListICaseString *newArr;
 	NEW_CLASS(newArr, Data::ArrayListICaseString(this->capacity));
@@ -19,12 +19,12 @@ Data::ArrayList<Text::String*> *Data::ArrayListICaseString::Clone()
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseString::CompareItem(Text::String* obj1, Text::String* obj2)
+OSInt Data::ArrayListICaseString::CompareItem(Text::String* obj1, Text::String* obj2) const
 {
 	return obj1->CompareToICase(obj2);
 }
 
-OSInt Data::ArrayListICaseString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len)
+OSInt Data::ArrayListICaseString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const
 {
 	OSInt i;
 	OSInt j;

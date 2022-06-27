@@ -12,21 +12,21 @@ Math::Point3D::~Point3D()
 {
 }
 
-Math::Vector2D *Math::Point3D::Clone()
+Math::Vector2D *Math::Point3D::Clone() const
 {
 	Math::Point3D *pt;
 	NEW_CLASS(pt, Math::Point3D(this->srid, this->pos.x, this->pos.y, this->z));
 	return pt;
 }
 
-void Math::Point3D::GetCenter3D(Double *x, Double *y, Double *z)
+void Math::Point3D::GetCenter3D(Double *x, Double *y, Double *z) const
 {
 	*x = this->pos.x;
 	*y = this->pos.y;
 	*z = this->z;
 }
 
-Bool Math::Point3D::Support3D()
+Bool Math::Point3D::Support3D() const
 {
 	return true;
 }
@@ -36,7 +36,7 @@ void Math::Point3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, this->z, &this->pos.x, &this->pos.y, &this->z);
 }
 
-Bool Math::Point3D::Equals(Math::Vector2D *vec)
+Bool Math::Point3D::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0)
 		return false;

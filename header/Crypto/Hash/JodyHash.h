@@ -15,12 +15,12 @@ namespace Crypto
 			DJB2();
 			virtual ~DJB2();
 
-			virtual IHash *Clone();
+			virtual IHash *Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
-			virtual void GetValue(UInt8 *buff);
-			virtual UOSInt GetBlockSize();
-			virtual UOSInt GetResultSize();
+			virtual void GetValue(UInt8 *buff) const;
+			virtual UOSInt GetBlockSize() const;
+			virtual UOSInt GetResultSize() const;
 		};
 	}
 }

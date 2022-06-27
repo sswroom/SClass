@@ -44,7 +44,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName,
 
 Map::OruxDBLayer::~OruxDBLayer()
 {
-	Data::ArrayList<Map::OruxDBLayer::LayerInfo*> *layerList;
+	const Data::ArrayList<Map::OruxDBLayer::LayerInfo*> *layerList;
 	Map::OruxDBLayer::LayerInfo *lyr;
 	layerList = this->layerMap->GetValues();
 	UOSInt i;

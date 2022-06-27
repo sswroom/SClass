@@ -10,9 +10,9 @@ namespace Data
 		ArrayListStrW();
 		ArrayListStrW(OSInt Capacity);
 
-		virtual Data::ArrayList<const WChar*> *Clone();
-		virtual OSInt CompareItem(const WChar* obj1, const WChar* obj2);
-		const WChar *JoinNewStr();
+		virtual Data::ArrayList<const WChar*> *Clone() const;
+		virtual OSInt CompareItem(const WChar* obj1, const WChar* obj2) const;
+		const WChar *JoinNewStr() const;
 	};
 }
 #endif

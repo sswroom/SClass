@@ -18,13 +18,13 @@ namespace Crypto
 			SHA256();
 			virtual ~SHA256();
 
-			virtual UTF8Char *GetName(UTF8Char *sbuff);
-			virtual IHash *Clone();
+			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
+			virtual IHash *Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
-			virtual void GetValue(UInt8 *buff);
-			virtual UOSInt GetBlockSize();
-			virtual UOSInt GetResultSize();
+			virtual void GetValue(UInt8 *buff) const;
+			virtual UOSInt GetBlockSize() const;
+			virtual UOSInt GetResultSize() const;
 		};
 	}
 }

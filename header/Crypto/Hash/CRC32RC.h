@@ -23,16 +23,16 @@ namespace Crypto
 			CRC32RC();
 			virtual ~CRC32RC();
 
-			virtual UTF8Char *GetName(UTF8Char *sbuff);
-			virtual IHash *Clone();
+			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
+			virtual IHash *Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
-			virtual void GetValue(UInt8 *buff);
-			virtual UOSInt GetBlockSize();
-			virtual UOSInt GetResultSize();
-			UInt32 GetValueU32();
+			virtual void GetValue(UInt8 *buff) const;
+			virtual UOSInt GetBlockSize() const;
+			virtual UOSInt GetResultSize() const;
+			UInt32 GetValueU32() const;
 
-			UInt32 CalcDirect(const UInt8 *buff, UOSInt buffSize)
+			UInt32 CalcDirect(const UInt8 *buff, UOSInt buffSize) const
 			{
 				return ~CRC32R_Calc(buff, buffSize, this->crctab, 0xffffffff);
 			}

@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Data::ArrayList<BTDevice*> *devList;
+	const Data::ArrayList<BTDevice*> *devList;
 	BTDevice *dev;
 
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 {
 	UOSInt i;
-	Data::ArrayList<BTDevice*> *devList = this->devMap->GetValues();
+	const Data::ArrayList<BTDevice*> *devList = this->devMap->GetValues();
 	BTDevice *dev;
 	i = devList->GetCount();
 	while (i-- > 0)

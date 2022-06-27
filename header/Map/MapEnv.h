@@ -132,39 +132,39 @@ namespace Map
 
 	private:
 		UInt8 GetRandomColor();
-		UOSInt GetLayersInList(Data::ArrayList<Map::IMapDrawLayer*> *layers, Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType);
+		UOSInt GetLayersInList(Data::ArrayList<Map::IMapDrawLayer*> *layers, const Data::ArrayList<MapItem*> *list, Map::DrawLayerType lyrType) const;
 		void AddGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
 		MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
-		UInt32 GetBGColor();
-		UOSInt GetDefLineStyle();
+		UInt32 GetBGColor() const;
+		UOSInt GetDefLineStyle() const;
 		void SetDefLineStyle(UOSInt lineStyle);
-		UOSInt GetDefFontStyle();
+		UOSInt GetDefFontStyle() const;
 		void SetDefFontStyle(UOSInt fontStyle);
 
 		UOSInt AddLineStyle();
 		Bool SetLineStyleName(UOSInt index, Text::CString name);
-		UTF8Char *GetLineStyleName(UOSInt index, UTF8Char *buff);
+		UTF8Char *GetLineStyleName(UOSInt index, UTF8Char *buff) const;
 		Bool AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
 		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
 		Bool RemoveLineStyleLayer(UOSInt index, UOSInt layerId);
 		Bool RemoveLineStyle(UOSInt index);
-		UOSInt GetLineStyleCount();
-		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern);
-		UOSInt GetLineStyleLayerCnt(UOSInt index);
+		UOSInt GetLineStyleCount() const;
+		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern) const;
+		UOSInt GetLineStyleLayerCnt(UOSInt index) const;
 
 		//-1 = error
 		UOSInt AddFontStyle(Text::CString styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, Text::CString name);
-		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff);
+		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff) const;
 		Bool RemoveFontStyle(UOSInt index);
-		UOSInt GetFontStyleCount();
-		Bool GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor);
+		UOSInt GetFontStyleCount() const;
+		Bool GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor) const;
 		Bool ChgFontStyle(UOSInt index, Text::String *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
 		UOSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
@@ -174,43 +174,43 @@ namespace Map
 		void RemoveItem(GroupItem *group, UOSInt index);
 		void MoveItem(GroupItem *group, UOSInt fromIndex, UOSInt toIndex);
 		void MoveItem(GroupItem *fromGroup, UOSInt fromIndex, GroupItem *toGroup, UOSInt toIndex);
-		UOSInt GetItemCount(GroupItem *group);
-		MapItem *GetItem(GroupItem *group, UOSInt index);
-		Text::String *GetGroupName(GroupItem *group);
+		UOSInt GetItemCount(GroupItem *group) const;
+		MapItem *GetItem(GroupItem *group, UOSInt index) const;
+		Text::String *GetGroupName(GroupItem *group) const;
 		void SetGroupName(GroupItem *group, Text::CString name);
 		void SetGroupHide(GroupItem *group, Bool isHide);
-		Bool GetGroupHide(GroupItem *group);
-		Bool GetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index);
+		Bool GetGroupHide(GroupItem *group) const;
+		Bool GetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index) const;
 		Bool SetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index);
-		UOSInt GetNString();
+		UOSInt GetNString() const;
 		void SetNString(UOSInt nStr);
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);
 
-		UOSInt GetImageCnt();
-		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS);
+		UOSInt GetImageCnt() const;
+		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS) const;
 		OSInt AddImage(Text::CString fileName, Parser::ParserList *parserList); // -1 = fail
 		UOSInt AddImage(Text::CString fileName, Media::ImageList *imgList);
 		
-		UOSInt GetImageFileCnt();
-		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info);
-		UOSInt GetImageFileIndex(UOSInt index);
+		UOSInt GetImageFileCnt() const;
+		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info) const;
+		UOSInt GetImageFileIndex(UOSInt index) const;
 
-		UOSInt GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType);
+		UOSInt GetLayersOfType(Data::ArrayList<Map::IMapDrawLayer *> *layers, Map::DrawLayerType lyrType) const;
 		void AddUpdatedHandler(Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveUpdatedHandler(Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 
-		Int64 GetTimeEndTS(GroupItem *group);
-		Int64 GetTimeStartTS(GroupItem *group);
+		Int64 GetTimeEndTS(GroupItem *group) const;
+		Int64 GetTimeStartTS(GroupItem *group) const;
 		void SetCurrTimeTS(GroupItem *group, Int64 timeStamp);
 
-		Map::IMapDrawLayer *GetFirstLayer(GroupItem *group);
-		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::IMapDrawLayer *> *layers);
-		Bool GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds);
-		Map::MapView *CreateMapView(Math::Size2D<Double> scnSize);
-		Math::CoordinateSystem *GetCoordinateSystem();
-		UInt32 GetSRID();
+		Map::IMapDrawLayer *GetFirstLayer(GroupItem *group) const;
+		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::IMapDrawLayer *> *layers) const;
+		Bool GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds) const;
+		Map::MapView *CreateMapView(Math::Size2D<Double> scnSize) const;
+		Math::CoordinateSystem *GetCoordinateSystem() const;
+		UInt32 GetSRID() const;
 
-		void BeginUse(Sync::MutexUsage *mutUsage);
+		void BeginUse(Sync::MutexUsage *mutUsage) const;
 	};
 }
 #endif

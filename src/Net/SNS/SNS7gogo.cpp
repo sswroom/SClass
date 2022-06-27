@@ -9,7 +9,6 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
-	NEW_CLASS(this->itemMap, Data::Int64Map<SNSItem*>());
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -49,7 +48,7 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 		snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
 		s->Release();
 		s2->Release();
-		this->itemMap->Put(item->id, snsItem);
+		this->itemMap.Put(item->id, snsItem);
 	}
 	this->ctrl->FreeItems(&itemList);
 }
@@ -60,13 +59,12 @@ Net::SNS::SNS7gogo::~SNS7gogo()
 	DEL_CLASS(this->ctrl);
 	SDEL_STRING(this->chName);
 	SDEL_STRING(this->chDesc);
-	Data::ArrayList<SNSItem*> *itemList = this->itemMap->GetValues();
+	const Data::ArrayList<SNSItem*> *itemList = this->itemMap.GetValues();
 	i = itemList->GetCount();
 	while (i-- > 0)
 	{
 		FreeItem(itemList->GetItem(i));
 	}
-	DEL_CLASS(this->itemMap);
 }
 
 Bool Net::SNS::SNS7gogo::IsError()
@@ -99,7 +97,7 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap.GetValues());
 	return itemList->GetCount() - initCnt;
 }
 
@@ -123,7 +121,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	idList.AddAll(this->itemMap->GetKeys());
+	idList.AddAll(this->itemMap.GetKeys());
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();
@@ -151,7 +149,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 				snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
 				s->Release();
 				s2->Release();
-				this->itemMap->Put(item->id, snsItem);
+				this->itemMap.Put(item->id, snsItem);
 				changed = true;
 			}
 		}
@@ -160,7 +158,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap->Remove(idList.GetItem(i));
+			snsItem = this->itemMap.Remove(idList.GetItem(i));
 			FreeItem(snsItem);
 			changed = true;
 		}

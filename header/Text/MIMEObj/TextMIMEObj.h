@@ -21,13 +21,13 @@ namespace Text
 			TextMIMEObj(const WChar *txt, UInt32 codePage);
 			virtual ~TextMIMEObj();
 
-			virtual Text::CString GetClassName();
-			virtual Text::CString GetContentType();
-			virtual UOSInt WriteStream(IO::Stream *stm);
-			virtual IMIMEObj *Clone();
+			virtual Text::CString GetClassName() const;
+			virtual Text::CString GetContentType() const;
+			virtual UOSInt WriteStream(IO::Stream *stm) const;
+			virtual IMIMEObj *Clone() const;
 
-			void GetText(Text::StringBuilderUTF8 *sb);
-			UInt32 GetCodePage();
+			void GetText(Text::StringBuilderUTF8 *sb) const;
+			UInt32 GetCodePage() const;
 		};
 	}
 }

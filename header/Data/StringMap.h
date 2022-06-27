@@ -11,18 +11,18 @@ namespace Data
 	{
 	public:
 		StringMap();
-		StringMap(StringMap<T> *map);
+		StringMap(const StringMap<T> *map);
 		virtual ~StringMap();
 
 		virtual T Put(Text::String *key, T val);
 		T Put(Text::CString key, T val);
-		virtual T Get(Text::String *key);
-		T Get(Text::CString key);
+		virtual T Get(Text::String *key) const;
+		T Get(Text::CString key) const;
 		virtual T Remove(Text::String *key);
 		T Remove(Text::CString key);
-		virtual Text::String *GetKey(UOSInt index);
+		virtual Text::String *GetKey(UOSInt index) const;
 		virtual void Clear();
-		virtual StringMap<T> *Clone();
+		virtual StringMap<T> *Clone() const;
 	};
 
 
@@ -31,7 +31,7 @@ namespace Data
 		NEW_CLASS(this->keys, Data::ArrayListString());
 	}
 
-	template <class T> StringMap<T>::StringMap(StringMap<T> *map) : ArrayCmpMap<Text::String*, T>()
+	template <class T> StringMap<T>::StringMap(const StringMap<T> *map) : ArrayCmpMap<Text::String*, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
 		UOSInt i = 0;
@@ -90,7 +90,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Get(Text::String *key)
+	template <class T> T StringMap<T>::Get(Text::String *key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -104,7 +104,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Get(Text::CString key)
+	template <class T> T StringMap<T>::Get(Text::CString key) const
 	{
 		OSInt i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -148,7 +148,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Text::String *StringMap<T>::GetKey(UOSInt index)
+	template <class T> Text::String *StringMap<T>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
@@ -164,7 +164,7 @@ namespace Data
 		this->vals->Clear();
 	}
 
-	template <class T> StringMap<T> *StringMap<T>::Clone()
+	template <class T> StringMap<T> *StringMap<T>::Clone() const
 	{
 		return NEW_CLASS_D(StringMap<T>(this));
 	}

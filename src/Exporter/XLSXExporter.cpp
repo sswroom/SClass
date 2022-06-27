@@ -1526,7 +1526,7 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::Spr
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, Text::CString name)
+void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, const Text::SpreadSheet::CellStyle::BorderStyle *border, Text::CString name)
 {
 	sb->AppendUTF8Char('<');
 	sb->Append(name);

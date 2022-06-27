@@ -11,11 +11,11 @@ namespace Math
 		Mercator1SPProjectedCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, UnitType unit);
 		virtual ~Mercator1SPProjectedCoordinateSystem();
 
-		virtual CoordinateSystem *Clone();
-		virtual CoordinateSystemType GetCoordSysType();
+		virtual CoordinateSystem *Clone() const;
+		virtual CoordinateSystemType GetCoordSysType() const;
 
-		virtual void ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY);
-		virtual void FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY);
+		virtual void ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY) const;
+		virtual void FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY) const;
 	};
 }
 #endif

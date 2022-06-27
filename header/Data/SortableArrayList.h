@@ -10,9 +10,9 @@ namespace Data
 		SortableArrayList() : ArrayList<T>() {};
 		SortableArrayList(UOSInt capacity) : ArrayList<T>() {};
 
-		virtual OSInt CompareItem(T obj1, T obj2) = 0;
+		virtual OSInt CompareItem(T obj1, T obj2) const = 0;
 		UOSInt SortedInsert(T val);
-		OSInt SortedIndexOf(T val);
+		OSInt SortedIndexOf(T val) const;
 	};
 
 	template <class T> UOSInt Data::SortableArrayList<T>::SortedInsert(T val)
@@ -45,7 +45,7 @@ namespace Data
 		return (UOSInt)i;
 	}
 
-	template <class T> OSInt Data::SortableArrayList<T>::SortedIndexOf(T val)
+	template <class T> OSInt Data::SortableArrayList<T>::SortedIndexOf(T val) const
 	{
 		OSInt i;
 		OSInt j;

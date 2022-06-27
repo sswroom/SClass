@@ -11,11 +11,6 @@
 
 IO::EXEFile::EXEFile(Text::String *fileName) : IO::ParsedObject(fileName)
 {
-	NEW_CLASS(this->propNames, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->propValues, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->importList, Data::ArrayList<ImportInfo*>());
-	NEW_CLASS(this->exportList, Data::ArrayList<ExportInfo*>());
-	NEW_CLASS(this->resList, Data::ArrayList<ResourceInfo*>());
 	this->envDOS = 0;
 }
 
@@ -38,19 +33,17 @@ IO::EXEFile::~EXEFile()
 	}
 	UOSInt i;
 	UOSInt j;
-	i = this->propNames->GetCount();
+	i = this->propNames.GetCount();
 	while (i-- > 0)
 	{
-		this->propNames->GetItem(i)->Release();
-		this->propValues->GetItem(i)->Release();
+		this->propNames.GetItem(i)->Release();
+		this->propValues.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->propNames);
-	DEL_CLASS(this->propValues);
 
-	i = this->importList->GetCount();
+	i = this->importList.GetCount();
 	while (i-- > 0)
 	{
-		ImportInfo *imp = this->importList->GetItem(i);
+		ImportInfo *imp = this->importList.GetItem(i);
 		imp->moduleName->Release();
 		j = imp->funcs->GetCount();
 		while (j-- > 0)
@@ -60,29 +53,26 @@ IO::EXEFile::~EXEFile()
 		DEL_CLASS(imp->funcs);
 		MemFree(imp);
 	}
-	DEL_CLASS(this->importList);
 
-	i = this->exportList->GetCount();
+	i = this->exportList.GetCount();
 	while (i-- > 0)
 	{
-		ExportInfo *exp = this->exportList->GetItem(i);
+		ExportInfo *exp = this->exportList.GetItem(i);
 		exp->funcName->Release();
 		MemFree(exp);
 	}
-	DEL_CLASS(this->exportList);
 
-	i = this->resList->GetCount();
+	i = this->resList.GetCount();
 	while (i-- > 0)
 	{
-		ResourceInfo *res = this->resList->GetItem(i);
+		ResourceInfo *res = this->resList.GetItem(i);
 		res->name->Release();
 		MemFree((void*)res->data);
 		MemFree(res);
 	}
-	DEL_CLASS(this->resList);
 }
 
-IO::ParserType IO::EXEFile::GetParserType()
+IO::ParserType IO::EXEFile::GetParserType() const
 {
 	return IO::ParserType::EXEFile;
 }
@@ -91,24 +81,24 @@ void IO::EXEFile::AddProp(Text::CString name, Text::CString value)
 {
 	if (name.leng != 0 && value.leng != 0)
 	{
-		this->propNames->Add(Text::String::New(name));
-		this->propValues->Add(Text::String::New(value));
+		this->propNames.Add(Text::String::New(name));
+		this->propValues.Add(Text::String::New(value));
 	}
 }
 
-UOSInt IO::EXEFile::GetPropCount()
+UOSInt IO::EXEFile::GetPropCount() const
 {
-	return this->propNames->GetCount();
+	return this->propNames.GetCount();
 }
 
-Text::String *IO::EXEFile::GetPropName(UOSInt index)
+Text::String *IO::EXEFile::GetPropName(UOSInt index) const
 {
-	return this->propNames->GetItem(index);
+	return this->propNames.GetItem(index);
 }
 
-Text::String *IO::EXEFile::GetPropValue(UOSInt index)
+Text::String *IO::EXEFile::GetPropValue(UOSInt index) const
 {
-	return this->propValues->GetItem(index);
+	return this->propValues.GetItem(index);
 }
 
 UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
@@ -117,27 +107,27 @@ UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 	imp = MemAlloc(ImportInfo, 1);
 	NEW_CLASS(imp->funcs, Data::ArrayList<Text::String*>());
 	imp->moduleName = Text::String::New(moduleName.v, moduleName.leng);
-	return this->importList->Add(imp);
+	return this->importList.Add(imp);
 }
 
 void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CString funcName)
 {
 	ImportInfo *imp;
-	imp = this->importList->GetItem(modIndex);
+	imp = this->importList.GetItem(modIndex);
 	if (imp)
 	{
 		imp->funcs->Add(Text::String::New(funcName));
 	}
 }
 
-UOSInt IO::EXEFile::GetImportCount()
+UOSInt IO::EXEFile::GetImportCount() const
 {
-	return this->importList->GetCount();
+	return this->importList.GetCount();
 }
 
-Text::String *IO::EXEFile::GetImportName(UOSInt modIndex)
+Text::String *IO::EXEFile::GetImportName(UOSInt modIndex) const
 {
-	ImportInfo *imp = this->importList->GetItem(modIndex);
+	ImportInfo *imp = this->importList.GetItem(modIndex);
 	if (imp)
 	{
 		return imp->moduleName;
@@ -145,9 +135,9 @@ Text::String *IO::EXEFile::GetImportName(UOSInt modIndex)
 	return 0;
 }
 
-UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex)
+UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
 {
-	ImportInfo *imp = this->importList->GetItem(modIndex);
+	ImportInfo *imp = this->importList.GetItem(modIndex);
 	if (imp)
 	{
 		return imp->funcs->GetCount();
@@ -155,9 +145,9 @@ UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex)
 	return 0;
 }
 
-Text::String *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex)
+Text::String *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const
 {
-	ImportInfo *imp = this->importList->GetItem(modIndex);
+	ImportInfo *imp = this->importList.GetItem(modIndex);
 	if (imp)
 	{
 		return imp->funcs->GetItem(funcIndex);
@@ -169,17 +159,17 @@ void IO::EXEFile::AddExportFunc(Text::CString funcName)
 {
 	ExportInfo *exp = MemAlloc(ExportInfo, 1);
 	exp->funcName = Text::String::New(funcName.v, funcName.leng);
-	this->exportList->Add(exp);
+	this->exportList.Add(exp);
 }
 
-UOSInt IO::EXEFile::GetExportCount()
+UOSInt IO::EXEFile::GetExportCount() const
 {
-	return this->exportList->GetCount();
+	return this->exportList.GetCount();
 }
 
-Text::String *IO::EXEFile::GetExportName(UOSInt index)
+Text::String *IO::EXEFile::GetExportName(UOSInt index) const
 {
-	ExportInfo *exp = this->exportList->GetItem(index);
+	ExportInfo *exp = this->exportList.GetItem(index);
 	if (exp)
 	{
 		return exp->funcName;
@@ -188,7 +178,7 @@ Text::String *IO::EXEFile::GetExportName(UOSInt index)
 }
 
 
-Bool IO::EXEFile::HasDOS()
+Bool IO::EXEFile::HasDOS() const
 {
 	return this->envDOS != 0;
 }
@@ -207,7 +197,7 @@ void IO::EXEFile::AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b1
 	}
 }
 
-UInt8 *IO::EXEFile::GetDOSCodePtr(UOSInt *codeLen)
+UInt8 *IO::EXEFile::GetDOSCodePtr(UOSInt *codeLen) const
 {
 	if (this->envDOS == 0)
 		return 0;
@@ -222,14 +212,14 @@ void IO::EXEFile::SetDOSHasPSP(Bool hasPSP)
 	this->envDOS->b16HasPSP = hasPSP;
 }
 
-void IO::EXEFile::GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs)
+void IO::EXEFile::GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const
 {
 	if (this->envDOS == 0)
 		return;
 	MemCopyNO(regs, this->envDOS->b16Regs, sizeof(Manage::Dasm::DasmX86_16_Regs));
 }
 
-UInt16 IO::EXEFile::GetDOSCodeSegm()
+UInt16 IO::EXEFile::GetDOSCodeSegm() const
 {
 	if (this->envDOS == 0)
 		return 0;
@@ -245,17 +235,17 @@ void IO::EXEFile::AddResource(Text::CString name, const UInt8 *data, UOSInt data
 	res->dataSize = dataSize;
 	res->codePage = codePage;
 	res->rt = rt;
-	this->resList->Add(res);
+	this->resList.Add(res);
 }
 
-UOSInt IO::EXEFile::GetResourceCount()
+UOSInt IO::EXEFile::GetResourceCount() const
 {
-	return this->resList->GetCount();
+	return this->resList.GetCount();
 }
 
-const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index)
+const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index) const
 {
-	return this->resList->GetItem(index);
+	return this->resList.GetItem(index);
 }
 
 Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut)

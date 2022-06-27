@@ -338,7 +338,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.AppendC(UTF8STRC("sensor_list="));
 	me->devMut.LockRead();
-	Data::ArrayList<DeviceInfo*> *sensors = me->devMap.GetValues();
+	const Data::ArrayList<DeviceInfo*> *sensors = me->devMap.GetValues();
 	DeviceInfo *dev;
 	UOSInt i;
 	UOSInt j;
@@ -445,8 +445,8 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	UOSInt j;
 	UOSInt k;
 	UInt8 *dataBuff;
-	Data::ArrayList<UInt64> *keys;
-	Data::ArrayList<Int32> *vals;
+	const Data::ArrayList<UInt64> *keys;
+	const Data::ArrayList<Int32> *vals;
 	this->devMut.LockRead();
 	i = 0;
 	j = this->devHandlerMap.GetCount();
@@ -583,7 +583,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 	DEL_CLASS(this->snb);
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	Data::ArrayList<DeviceInfo*> *devList = this->devMap.GetValues();
+	const Data::ArrayList<DeviceInfo*> *devList = this->devMap.GetValues();
 	DeviceInfo *dev;
 	UOSInt i = devList->GetCount();
 	while (i-- > 0)

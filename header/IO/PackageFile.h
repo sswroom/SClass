@@ -74,49 +74,49 @@ namespace IO
 		Data::FastStringMap<PackFileItem *> *pkgFiles;
 		Data::Int32Map<const UTF8Char *> *infoMap;
 
-		PackageFile(PackageFile *pkg);
+		PackageFile(const PackageFile *pkg);
 	public:
 		PackageFile(Text::String *fileName);
 		PackageFile(Text::CString fileName);
 		virtual ~PackageFile();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		void AddData(IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Int64 modTimeTick);
 		void AddObject(IO::ParsedObject *pobj, Text::CString name, Int64 modTimeTick);
 		void AddCompData(IStreamData *fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, Int64 modTimeTick);
 		void AddPack(IO::PackageFile *pkg, Text::CString name, Int64 modTimeTick);
-		IO::PackageFile *GetPackFile(Text::CString name);
+		IO::PackageFile *GetPackFile(Text::CString name) const;
 		Bool UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
-		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name);
-		virtual PackObjectType GetPItemType(const PackFileItem *itemObj);
-		virtual IO::IStreamData *GetPItemStmData(const PackFileItem *itemObj); // need release
-		virtual IO::PackageFile *GetPItemPack(const PackFileItem *itemObj); // need release
+		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
+		virtual PackObjectType GetPItemType(const PackFileItem *itemObj) const;
+		virtual IO::IStreamData *GetPItemStmData(const PackFileItem *itemObj) const; // need release
+		virtual IO::PackageFile *GetPItemPack(const PackFileItem *itemObj) const; // need release
 
-		virtual UOSInt GetCount();
-		virtual PackObjectType GetItemType(UOSInt index);
-		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index);
-		virtual IO::IStreamData *GetItemStmData(UOSInt index); // need release
-		IO::IStreamData *GetItemStmData(const UTF8Char* name, UOSInt nameLen);
-		virtual IO::PackageFile *GetItemPack(UOSInt index); // need release
-		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
-		virtual Int64 GetItemModTimeTick(UOSInt index);
-		virtual UInt64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(Text::CString name);
-		virtual Bool IsCompressed(UOSInt index);
-		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
-		virtual PackageFile *Clone();
-		virtual Bool AllowWrite();
+		virtual UOSInt GetCount() const;
+		virtual PackObjectType GetItemType(UOSInt index) const;
+		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
+		virtual IO::IStreamData *GetItemStmData(UOSInt index) const; // need release
+		IO::IStreamData *GetItemStmData(const UTF8Char* name, UOSInt nameLen) const;
+		virtual IO::PackageFile *GetItemPack(UOSInt index) const; // need release
+		virtual IO::ParsedObject *GetItemPObj(UOSInt index) const; // no need release
+		virtual Int64 GetItemModTimeTick(UOSInt index) const;
+		virtual UInt64 GetItemSize(UOSInt index) const;
+		virtual UOSInt GetItemIndex(Text::CString name) const;
+		virtual Bool IsCompressed(UOSInt index) const;
+		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
+		virtual PackageFile *Clone() const;
+		virtual Bool AllowWrite() const;
 		virtual Bool CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
-		virtual IO::IStreamData *OpenStreamData(Text::CString fileName);
+		virtual IO::IStreamData *OpenStreamData(Text::CString fileName) const;
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
-		void GetInfoText(Text::StringBuilderUTF8 *sb);
+		void GetInfoText(Text::StringBuilderUTF8 *sb) const;
 		static Text::CString GetInfoTypeName(InfoType infoType);
 	};
 };

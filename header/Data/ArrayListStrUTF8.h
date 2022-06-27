@@ -10,9 +10,9 @@ namespace Data
 		ArrayListStrUTF8();
 		ArrayListStrUTF8(UOSInt capacity);
 
-		virtual Data::ArrayList<const UTF8Char*> *Clone();
-		virtual OSInt CompareItem(const UTF8Char* obj1, const UTF8Char* obj2);
-		const UTF8Char *JoinNewStr();
+		virtual Data::ArrayList<const UTF8Char*> *Clone() const;
+		virtual OSInt CompareItem(const UTF8Char* obj1, const UTF8Char* obj2) const;
+		const UTF8Char *JoinNewStr() const;
 	};
 }
 #endif

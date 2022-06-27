@@ -70,19 +70,19 @@ namespace Math
 	public:
 		virtual ~CoordinateSystem();
 
-		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) = 0;
-		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) = 0;
-		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) = 0;
-		virtual CoordinateSystem *Clone() = 0;
-		virtual CoordinateSystemType GetCoordSysType() = 0;
-		virtual Bool IsProjected() = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) = 0;
+		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual CoordinateSystem *Clone() const = 0;
+		virtual CoordinateSystemType GetCoordSysType() const = 0;
+		virtual Bool IsProjected() const = 0;
+		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
-		virtual Bool Equals(CoordinateSystem *csys);
-		Text::String *GetCSysName();
-		UInt32 GetSRID();
+		virtual Bool Equals(CoordinateSystem *csys) const;
+		Text::String *GetCSysName() const { return this->csysName; }
+		UInt32 GetSRID() const { return this->srid; }
 
 		static void ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
 		static void ConvertToCartesianCoord(Math::CoordinateSystem *srcCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);

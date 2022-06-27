@@ -138,13 +138,13 @@ Net::SSDPClient::~SSDPClient()
 {
 	DEL_CLASS(this->udp);
 	SDEL_STRING(this->userAgent);
-	Data::ArrayList<SSDPDevice*> *devList = this->devMap->GetValues();
-	LIST_FREE_FUNC(devList, SSDPDeviceFree);
+	const Data::ArrayList<SSDPDevice*> *devList = this->devMap->GetValues();
+	LIST_CALL_FUNC(devList, SSDPDeviceFree);
 	DEL_CLASS(this->devMap);
 	DEL_CLASS(this->mut);
 }
 
-Bool Net::SSDPClient::IsError()
+Bool Net::SSDPClient::IsError() const
 {
 	return this->udp->IsError();
 }
@@ -169,7 +169,7 @@ Bool Net::SSDPClient::Scan()
 	return this->udp->SendTo(&addr, 1900, sb.ToString(), sb.GetLength());
 }
 
-Data::ArrayList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage)
+const Data::ArrayList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut);
 	return this->devMap->GetValues();

@@ -29,12 +29,12 @@ Crypto::Hash::CRC16R::~CRC16R()
 	MemFree(crctab);
 }
 
-UTF8Char *Crypto::Hash::CRC16R::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::CRC16R::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (16-bit Reversed)"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::CRC16R::Clone()
+Crypto::Hash::IHash *Crypto::Hash::CRC16R::Clone() const
 {
 	Crypto::Hash::CRC16R *crc;
 	NEW_CLASS(crc, Crypto::Hash::CRC16R(this->polynomial));
@@ -51,17 +51,17 @@ void Crypto::Hash::CRC16R::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = CRC16R_Calc(buff, buffSize, this->crctab, this->currVal);;
 }
 
-void Crypto::Hash::CRC16R::GetValue(UInt8 *buff)
+void Crypto::Hash::CRC16R::GetValue(UInt8 *buff) const
 {
 	WriteMInt16(buff, ~currVal);
 }
 
-UOSInt Crypto::Hash::CRC16R::GetBlockSize()
+UOSInt Crypto::Hash::CRC16R::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC16R::GetResultSize()
+UOSInt Crypto::Hash::CRC16R::GetResultSize() const
 {
 	return 2;
 }

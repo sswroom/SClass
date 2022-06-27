@@ -36,12 +36,12 @@ UOSInt Crypto::Encrypt::XOREnc::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::XOREnc::GetEncBlockSize()
+UOSInt Crypto::Encrypt::XOREnc::GetEncBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Encrypt::XOREnc::GetDecBlockSize()
+UOSInt Crypto::Encrypt::XOREnc::GetDecBlockSize() const
 {
 	return 1;
 }

@@ -25,16 +25,16 @@ namespace DB
 		ColDef(Text::String *colName);
 		~ColDef();
 
-		Text::String *GetColName();
-		DB::DBUtil::ColType GetColType();
-		UOSInt GetColSize();
-		UOSInt GetColDP();
-		Bool IsNotNull();
-		Bool IsPK();
-		Bool IsAutoInc();
-		Text::String *GetDefVal();
-		Text::String *GetAttr();
-		Bool GetDefVal(DB::SQLBuilder *sql);
+		Text::String *GetColName() const;
+		DB::DBUtil::ColType GetColType() const;
+		UOSInt GetColSize() const;
+		UOSInt GetColDP() const;
+		Bool IsNotNull() const;
+		Bool IsPK() const;
+		Bool IsAutoInc() const;
+		Text::String *GetDefVal() const;
+		Text::String *GetAttr() const;
+		Bool GetDefVal(DB::SQLBuilder *sql) const;
 
 		void SetColName(const UTF8Char *colName);
 		void SetColName(Text::CString colName);
@@ -50,10 +50,10 @@ namespace DB
 		void SetAttr(Text::CString attr);
 		void SetAttr(Text::String *attr);
 
-		void Set(ColDef *colDef);
+		void Set(const ColDef *colDef);
 
-		UTF8Char *ToColTypeStr(UTF8Char *sbuff);
-		ColDef *Clone();
+		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
+		ColDef *Clone() const;
 	};
 }
 #endif

@@ -12,7 +12,7 @@ namespace Data
 		virtual ~SortableArrayListNative() {};
 
 		UOSInt SortedInsert(T val);
-		OSInt SortedIndexOf(T val);
+		OSInt SortedIndexOf(T val) const;
 	};
 
 	template <class T> UOSInt Data::SortableArrayListNative<T>::SortedInsert(T val)
@@ -45,7 +45,7 @@ namespace Data
 		return (UOSInt)i;
 	}
 
-	template <class T> OSInt Data::SortableArrayListNative<T>::SortedIndexOf(T val)
+	template <class T> OSInt Data::SortableArrayListNative<T>::SortedIndexOf(T val) const
 	{
 		OSInt i;
 		OSInt j;

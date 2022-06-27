@@ -85,14 +85,14 @@ Media::SharedImage::~SharedImage()
 	}
 }
 
-Media::SharedImage *Media::SharedImage::Clone()
+Media::SharedImage *Media::SharedImage::Clone() const
 {
 	Media::SharedImage *newImg;
 	NEW_CLASS(newImg, Media::SharedImage(this->imgStatus));
 	return newImg;
 }
 
-Media::StaticImage *Media::SharedImage::GetImage(UInt32 *imgTimeMS)
+Media::StaticImage *Media::SharedImage::GetImage(UInt32 *imgTimeMS) const
 {
 	UInt32 currDelay;
 	Media::StaticImage *img;
@@ -140,7 +140,7 @@ Media::StaticImage *Media::SharedImage::GetImage(UInt32 *imgTimeMS)
 	}
 }
 
-Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, UInt32 *imgTimeMS)
+Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, UInt32 *imgTimeMS) const
 {
 	if (this->imgStatus->prevList == 0)
 	{

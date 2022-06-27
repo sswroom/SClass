@@ -27,11 +27,11 @@ namespace Media
 		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::CString sourceName);
 		virtual ~LUT();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		void SetRemark(Text::String *remark);
 		void SetRemark(Text::CString remark);
-		Text::String *GetRemark();
+		Text::String *GetRemark() const;
 		UOSInt GetInputCh() const;
 		DataFormat GetFormat() const;
 		UOSInt GetInputLevel() const;
@@ -39,12 +39,12 @@ namespace Media
 
 		UInt8 *GetTablePtr();
 		const UInt8 *GetTablePtrRead() const;
-		void GetValueUInt8(UInt32 *inputVals, UInt8 *outVals);
-		void GetValueUInt16(UInt32 *inputVals, UInt16 *outVals);
-		void GetValueSingle(UInt32 *inputVals, Single *outVals);
+		void GetValueUInt8(UInt32 *inputVals, UInt8 *outVals) const;
+		void GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const;
+		void GetValueSingle(UInt32 *inputVals, Single *outVals) const;
 
 		LUT *Clone() const;
-		Bool Equals(Media::LUT *lut);
+		Bool Equals(Media::LUT *lut) const;
 	};
 }
 #endif

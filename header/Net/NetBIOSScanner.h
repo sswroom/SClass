@@ -29,8 +29,8 @@ namespace Net
 		typedef void (__stdcall *AnswerUpdated)(void *userObj, UInt32 sortableIP);
 	private:
 		Net::UDPServer *svr;
-		Sync::Mutex *ansMut;
-		Data::UInt32Map<NameAnswer*> *answers;
+		Sync::Mutex ansMut;
+		Data::UInt32Map<NameAnswer*> answers;
 		AnswerUpdated hdlr;
 		void *hdlrObj;
 
@@ -40,10 +40,10 @@ namespace Net
 		NetBIOSScanner(Net::SocketFactory *sockf);
 		~NetBIOSScanner();
 
-		Bool IsError();
+		Bool IsError() const;
 		void SendRequest(UInt32 ip);
 		void SetAnswerHandler(AnswerUpdated hdlr, void *userObj);
-		Data::ArrayList<NameAnswer*> *GetAnswers(Sync::MutexUsage *mutUsage);
+		const Data::ArrayList<NameAnswer*> *GetAnswers(Sync::MutexUsage *mutUsage) const;
 	};
 }
 #endif

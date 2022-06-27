@@ -218,7 +218,7 @@ void Text::String::Release()
 #endif
 }
 
-Text::String *Text::String::Clone()
+Text::String *Text::String::Clone() const
 {
 #if defined(MEMDEBUG)
 	return New(this->v, this->leng);
@@ -230,8 +230,8 @@ Text::String *Text::String::Clone()
 	#endif
 	return this;
 #else
-	this->useCnt++;
-	return this;
+	((Text::String*)this)->useCnt++;
+	return (Text::String*)this;
 #endif
 }
 

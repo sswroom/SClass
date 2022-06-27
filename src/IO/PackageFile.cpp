@@ -15,7 +15,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::PackageFile::PackageFile(PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj())
+IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj())
 {
 	this->items = pkg->items->Clone();
 	this->pkgFiles = NEW_CLASS_D(Data::FastStringMap<IO::PackFileItem*>(pkg->pkgFiles));
@@ -90,7 +90,7 @@ IO::PackageFile::~PackageFile()
 	DEL_CLASS(this->items);
 	DEL_CLASS(this->pkgFiles);
 	DEL_CLASS(this->namedItems);
-	Data::ArrayList<const UTF8Char *> *infoList = this->infoMap->GetValues();
+	const Data::ArrayList<const UTF8Char *> *infoList = this->infoMap->GetValues();
 	i = infoList->GetCount();
 	while (i-- > 0)
 	{
@@ -99,7 +99,7 @@ IO::PackageFile::~PackageFile()
 	DEL_CLASS(this->infoMap);
 }
 
-IO::ParserType IO::PackageFile::GetParserType()
+IO::ParserType IO::PackageFile::GetParserType() const
 {
 	return IO::ParserType::PackageFile;
 }
@@ -178,7 +178,7 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Int64 mo
 	this->namedItems->Put(item->name, item);
 }
 
-IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name)
+IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name) const
 {
 	IO::PackFileItem *item = this->pkgFiles->GetC(name);
 	if (item)
@@ -211,7 +211,7 @@ Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, 
 	return false;
 }
 
-const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name)
+const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name) const
 {
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
@@ -250,7 +250,7 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name)
 	return 0;
 }
 
-IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem *itemObj)
+IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem *itemObj) const
 {
 	if (itemObj == 0)
 	{
@@ -277,7 +277,7 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 	}
 }
 
-IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
+IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item) const
 {
 	if (item != 0)
 	{
@@ -382,7 +382,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 	}
 }
 
-IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item)
+IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item) const
 {
 	if (item != 0)
 	{
@@ -398,18 +398,18 @@ IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item)
 	}
 }
 
-UOSInt IO::PackageFile::GetCount()
+UOSInt IO::PackageFile::GetCount() const
 {
 	return this->items->GetCount();
 }
 
-IO::PackageFile::PackObjectType IO::PackageFile::GetItemType(UOSInt index)
+IO::PackageFile::PackObjectType IO::PackageFile::GetItemType(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	return GetPItemType(item);
 }
 
-UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index)
+UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item == 0)
@@ -436,13 +436,13 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index)
 	}
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmData(UOSInt index)
+IO::IStreamData *IO::PackageFile::GetItemStmData(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	return GetPItemStmData(item);
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name, UOSInt nameLen)
+IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name, UOSInt nameLen) const
 {
 	UOSInt index = GetItemIndex({name, nameLen});
 	if (index == INVALID_INDEX)
@@ -452,13 +452,13 @@ IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name, UOSInt na
 	return this->GetItemStmData(index);
 }
 
-IO::PackageFile *IO::PackageFile::GetItemPack(UOSInt index)
+IO::PackageFile *IO::PackageFile::GetItemPack(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	return GetPItemPack(item);
 }
 
-IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index)
+IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
@@ -478,7 +478,7 @@ IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index)
 	}
 }
 
-Int64 IO::PackageFile::GetItemModTimeTick(UOSInt index)
+Int64 IO::PackageFile::GetItemModTimeTick(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
@@ -488,7 +488,7 @@ Int64 IO::PackageFile::GetItemModTimeTick(UOSInt index)
 	return 0;
 }
 
-UInt64 IO::PackageFile::GetItemSize(UOSInt index)
+UInt64 IO::PackageFile::GetItemSize(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
@@ -509,7 +509,7 @@ UInt64 IO::PackageFile::GetItemSize(UOSInt index)
 	return 0;
 }
 
-UOSInt IO::PackageFile::GetItemIndex(Text::CString name)
+UOSInt IO::PackageFile::GetItemIndex(Text::CString name) const
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -540,7 +540,7 @@ UOSInt IO::PackageFile::GetItemIndex(Text::CString name)
 	return INVALID_INDEX;
 }
 
-Bool IO::PackageFile::IsCompressed(UOSInt index)
+Bool IO::PackageFile::IsCompressed(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0 && item->itemType == IO::PackFileItem::PIT_COMPRESSED)
@@ -550,7 +550,7 @@ Bool IO::PackageFile::IsCompressed(UOSInt index)
 	return false;
 }
 
-Data::Compress::Decompressor::CompressMethod IO::PackageFile::GetItemComp(UOSInt index)
+Data::Compress::Decompressor::CompressMethod IO::PackageFile::GetItemComp(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
@@ -571,12 +571,12 @@ Data::Compress::Decompressor::CompressMethod IO::PackageFile::GetItemComp(UOSInt
 	return Data::Compress::Decompressor::CM_UNKNOWN;
 }
 
-IO::PackageFile *IO::PackageFile::Clone()
+IO::PackageFile *IO::PackageFile::Clone() const
 {
 	return NEW_CLASS_D(PackageFile(this));
 }
 
-Bool IO::PackageFile::AllowWrite()
+Bool IO::PackageFile::AllowWrite() const
 {
 	return false;
 }
@@ -752,7 +752,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 	return false;
 }
 
-IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName)
+IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 {
 	if (fileName.IndexOf(':') != INVALID_INDEX)
 	{
@@ -767,7 +767,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName)
 	Text::StringBuilderUTF8 sb;
 	sb.Append(fileName);
 	sb.Replace('\\', '/');
-	IO::PackageFile *pf;
+	const IO::PackageFile *pf;
 	IO::PackageFile *pf2;
 	Bool needRel = false;
 	Bool found;
@@ -845,12 +845,12 @@ void IO::PackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 	}
 }
 
-void IO::PackageFile::GetInfoText(Text::StringBuilderUTF8 *sb)
+void IO::PackageFile::GetInfoText(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<Int32> *typeList = this->infoMap->GetKeys();
-	Data::ArrayList<const UTF8Char *> *valList = this->infoMap->GetValues();
+	const Data::ArrayList<Int32> *typeList = this->infoMap->GetKeys();
+	const Data::ArrayList<const UTF8Char *> *valList = this->infoMap->GetValues();
 	i = 0;
 	j = valList->GetCount();
 	while (i < j)

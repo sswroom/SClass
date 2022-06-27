@@ -10,16 +10,15 @@ Media::AudioFilter::SoundGenerator::SoundGenerator(IAudioSource *sourceAudio) : 
 {
 	this->sourceAudio = sourceAudio;
 	sourceAudio->GetFormat(&this->format);
-	NEW_CLASS(this->sndGenMap, Data::Int32Map<Media::AudioFilter::SoundGen::ISoundGen*>());
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 
 	NEW_CLASS(sndGen, Media::AudioFilter::SoundGen::BellSoundGen(this->format.frequency));
-	this->sndGenMap->Put(sndGen->GetSoundType(), sndGen);
+	this->sndGenMap.Put(sndGen->GetSoundType(), sndGen);
 }
 
 Media::AudioFilter::SoundGenerator::~SoundGenerator()
 {
-	Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap->GetValues();
+	const Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap.GetValues();
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt i;
 	i = sndGenList->GetCount();
@@ -28,7 +27,6 @@ Media::AudioFilter::SoundGenerator::~SoundGenerator()
 		sndGen = sndGenList->GetItem(i);
 		DEL_CLASS(sndGen);
 	}
-	DEL_CLASS(this->sndGenMap);
 }
 
 void Media::AudioFilter::SoundGenerator::GetFormat(AudioFormat *format)
@@ -41,7 +39,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 	if (this->sourceAudio == 0)
 		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
-	Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap->GetValues();
+	const Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap.GetValues();
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt sampleCnt = readSize / (this->format.align);
 	Double *sndBuff;
@@ -130,7 +128,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 
 Bool Media::AudioFilter::SoundGenerator::GenSound(Media::AudioFilter::SoundGen::ISoundGen::SoundType sndType, Double sampleVol)
 {
-	Media::AudioFilter::SoundGen::ISoundGen *sndGen = this->sndGenMap->Get(sndType);
+	Media::AudioFilter::SoundGen::ISoundGen *sndGen = this->sndGenMap.Get(sndType);
 	if (sndGen)
 	{
 		return sndGen->GenSound(sampleVol);

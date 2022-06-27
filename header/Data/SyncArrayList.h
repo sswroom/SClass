@@ -22,13 +22,13 @@ namespace Data
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
-		virtual UOSInt IndexOf(T val);
+		virtual UOSInt IndexOf(T val) const;
 		virtual void Clear();
 		T RemoveLast();
-		SyncArrayList *Clone();
+		SyncArrayList *Clone() const;
 
 		virtual UOSInt GetCount() const;
-		virtual UOSInt GetCapacity();
+		virtual UOSInt GetCapacity() const;
 
 		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
@@ -84,7 +84,7 @@ namespace Data
 		this->arr->Insert(index, val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayList<T>::IndexOf(T val)
+	template <class T> UOSInt Data::SyncArrayList<T>::IndexOf(T val) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr->IndexOf(val);
@@ -107,7 +107,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> Data::SyncArrayList<T> *Data::SyncArrayList<T>::Clone()
+	template <class T> Data::SyncArrayList<T> *Data::SyncArrayList<T>::Clone() const
 	{
 		Data::SyncArrayList<T> *newArr;
 		Sync::MutexUsage mutUsage(this->mut);
@@ -121,7 +121,7 @@ namespace Data
 		return this->arr->GetCount();
 	}
 
-	template <class T> UOSInt Data::SyncArrayList<T>::GetCapacity()
+	template <class T> UOSInt Data::SyncArrayList<T>::GetCapacity() const
 	{
 		return this->arr->GetCapacity();
 	}

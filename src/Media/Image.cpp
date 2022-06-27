@@ -217,7 +217,7 @@ void Media::Image::InitGrayPal()
 	}
 }
 
-UOSInt Media::Image::GetDataBpl()
+UOSInt Media::Image::GetDataBpl() const
 {
 	if (this->info.fourcc == *(UInt32*)"LRGB")
 	{
@@ -249,7 +249,7 @@ UOSInt Media::Image::GetDataBpl()
 		return ((this->info.storeWidth * this->info.storeBPP) >> 3);
 }
 
-Bool Media::Image::IsUpsideDown()
+Bool Media::Image::IsUpsideDown() const
 {
 	return false;
 }
@@ -261,22 +261,22 @@ void Media::Image::SetHotSpot(OSInt hotSpotX, OSInt hotSpotY)
 	this->hasHotSpot = true;
 }
 
-Bool Media::Image::HasHotSpot()
+Bool Media::Image::HasHotSpot() const
 {
 	return this->hasHotSpot;
 }
 
-OSInt Media::Image::GetHotSpotX()
+OSInt Media::Image::GetHotSpotX() const
 {
 	return this->hotSpotX;
 }
 
-OSInt Media::Image::GetHotSpotY()
+OSInt Media::Image::GetHotSpotY() const
 {
 	return this->hotSpotY;
 }
 
-Media::StaticImage *Media::Image::CreateStaticImage()
+Media::StaticImage *Media::Image::CreateStaticImage() const
 {
 	Media::StaticImage *outImg;
 	NEW_CLASS(outImg, Media::StaticImage(&this->info));
@@ -301,7 +301,7 @@ Media::StaticImage *Media::Image::CreateStaticImage()
 	return outImg;
 }
 
-Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area)
+Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) const
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(&this->info);
@@ -340,7 +340,7 @@ Media::EXIFData *Media::Image::SetEXIFData(Media::EXIFData *exif)
 	return oldExif;
 }
 
-void Media::Image::ToString(Text::StringBuilderUTF8 *sb)
+void Media::Image::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	this->info.ToString(sb);
 	if (this->HasHotSpot())

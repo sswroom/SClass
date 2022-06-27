@@ -18,29 +18,29 @@ Math::Point::~Point()
 {
 }
 
-Math::Vector2D::VectorType Math::Point::GetVectorType()
+Math::Vector2D::VectorType Math::Point::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Point;
 }
 
-Math::Coord2DDbl Math::Point::GetCenter()
+Math::Coord2DDbl Math::Point::GetCenter() const
 {
 	return this->pos;
 }
 
-Math::Vector2D *Math::Point::Clone()
+Math::Vector2D *Math::Point::Clone() const
 {
 	Math::Point *pt;
 	NEW_CLASS(pt, Math::Point(this->srid, this->pos));
 	return pt;
 }
 
-void Math::Point::GetBounds(Math::RectAreaDbl *bounds)
+void Math::Point::GetBounds(Math::RectAreaDbl *bounds) const
 {
 	*bounds = Math::RectAreaDbl(this->pos, this->pos);
 }
 
-Double Math::Point::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Double Math::Point::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	Math::Coord2DDbl diff = pt - this->pos;
 	if (nearPt)
@@ -61,7 +61,7 @@ void Math::Point::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSyst
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, 0, &this->pos.x, &this->pos.y, 0);
 }
 
-Bool Math::Point::Equals(Math::Vector2D *vec)
+Bool Math::Point::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0)
 		return false;

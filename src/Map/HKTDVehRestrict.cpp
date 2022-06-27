@@ -86,7 +86,7 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 	DEL_CLASS(this->csys);
 	DEL_CLASS(this->db);
 
-	Data::ArrayList<RouteInfo*> *routeList = this->routeMap->GetValues();
+	const Data::ArrayList<RouteInfo*> *routeList = this->routeMap->GetValues();
 	i = routeList->GetCount();
 	while (i-- > 0)
 	{

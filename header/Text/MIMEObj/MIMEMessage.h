@@ -23,21 +23,21 @@ namespace Text
 			MIMEMessage(Text::IMIMEObj *content);
 			virtual ~MIMEMessage();
 
-			virtual Text::CString GetClassName();
-			virtual Text::CString GetContentType();
-			virtual UOSInt WriteStream(IO::Stream *stm);
-			virtual IMIMEObj *Clone();
+			virtual Text::CString GetClassName() const;
+			virtual Text::CString GetContentType() const;
+			virtual UOSInt WriteStream(IO::Stream *stm) const;
+			virtual IMIMEObj *Clone() const;
 
 			void SetContent(Text::IMIMEObj *content);
-			Text::IMIMEObj *GetContent();
+			Text::IMIMEObj *GetContent() const;
 			void SetTransferData(const UInt8 *data, UOSInt dataSize);
 
 			void AddHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 			void AddHeader(Text::String *name, Text::String *value);
-			Text::String *GetHeader(const UTF8Char *name, UOSInt nameLen);
-			UOSInt GetHeaderCount();
-			Text::String *GetHeaderName(UOSInt index);
-			Text::String *GetHeaderValue(UOSInt index);
+			Text::String *GetHeader(const UTF8Char *name, UOSInt nameLen) const;
+			UOSInt GetHeaderCount() const;
+			Text::String *GetHeaderName(UOSInt index) const;
+			Text::String *GetHeaderValue(UOSInt index) const;
 
 			Bool ParseFromData(IO::IStreamData *fd);
 

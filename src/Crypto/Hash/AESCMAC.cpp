@@ -53,12 +53,12 @@ Crypto::Hash::AESCMAC::~AESCMAC()
 
 }
 
-UTF8Char *Crypto::Hash::AESCMAC::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::AESCMAC::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("AES-CMAC"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::AESCMAC::Clone()
+Crypto::Hash::IHash *Crypto::Hash::AESCMAC::Clone() const
 {
 	return NEW_CLASS_D(Crypto::Hash::AESCMAC(this->key));
 }
@@ -103,7 +103,7 @@ void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->buffSize = buffSize;
 }
 
-void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff)
+void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff) const
 {
 	UInt8 y[16];
 	UOSInt i;
@@ -138,12 +138,12 @@ void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff)
 	}
 }
 
-UOSInt Crypto::Hash::AESCMAC::GetBlockSize()
+UOSInt Crypto::Hash::AESCMAC::GetBlockSize() const
 {
 	return 16;
 }
 
-UOSInt Crypto::Hash::AESCMAC::GetResultSize()
+UOSInt Crypto::Hash::AESCMAC::GetResultSize() const
 {
 	return 16;
 }

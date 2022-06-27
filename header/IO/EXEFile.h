@@ -111,11 +111,11 @@ namespace IO
 			UOSInt dataSize;
 		} ResourceInfo;
 	private:
-		Data::ArrayList<Text::String *> *propNames;
-		Data::ArrayList<Text::String *> *propValues;
-		Data::ArrayList<ImportInfo*> *importList;
-		Data::ArrayList<ExportInfo*> *exportList;
-		Data::ArrayList<ResourceInfo*> *resList;
+		Data::ArrayList<Text::String *> propNames;
+		Data::ArrayList<Text::String *> propValues;
+		Data::ArrayList<ImportInfo*> importList;
+		Data::ArrayList<ExportInfo*> exportList;
+		Data::ArrayList<ResourceInfo*> resList;
 
 		ProgramEnvDOS *envDOS;
 
@@ -123,34 +123,34 @@ namespace IO
 		EXEFile(Text::String *fileName);
 		virtual ~EXEFile();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		void AddProp(Text::CString name, Text::CString value);
-		UOSInt GetPropCount();
-		Text::String *GetPropName(UOSInt index);
-		Text::String *GetPropValue(UOSInt index);
+		UOSInt GetPropCount() const;
+		Text::String *GetPropName(UOSInt index) const;
+		Text::String *GetPropValue(UOSInt index) const;
 
 		UOSInt AddImportModule(Text::CString moduleName);
 		void AddImportFunc(UOSInt modIndex, Text::CString funcName);
-		UOSInt GetImportCount();
-		Text::String *GetImportName(UOSInt modIndex);
-		UOSInt GetImportFuncCount(UOSInt modIndex);
-		Text::String *GetImportFunc(UOSInt modIndex, UOSInt funcIndex);
+		UOSInt GetImportCount() const;
+		Text::String *GetImportName(UOSInt modIndex) const;
+		UOSInt GetImportFuncCount(UOSInt modIndex) const;
+		Text::String *GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const;
 
 		void AddExportFunc(Text::CString funcName);
-		UOSInt GetExportCount();
-		Text::String *GetExportName(UOSInt index);
+		UOSInt GetExportCount() const;
+		Text::String *GetExportName(UOSInt index) const;
 
-		Bool HasDOS();
+		Bool HasDOS() const;
 		void AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);
-		UInt8 *GetDOSCodePtr(UOSInt *codeLen);
+		UInt8 *GetDOSCodePtr(UOSInt *codeLen) const;
 		void SetDOSHasPSP(Bool hasPSP);
-		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs);
-		UInt16 GetDOSCodeSegm();
+		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const;
+		UInt16 GetDOSCodeSegm() const;
 
 		void AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
-		UOSInt GetResourceCount();
-		const ResourceInfo *GetResource(UOSInt index);
+		UOSInt GetResourceCount() const;
+		const ResourceInfo *GetResource(UOSInt index) const;
 	public:
 		static Bool GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut);
 		static Text::CString GetResourceTypeName(ResourceType rt);

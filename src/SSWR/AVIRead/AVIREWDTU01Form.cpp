@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 		const Net::MACInfo::MACEntry *macEntry;
 		Sync::MutexUsage mutUsage(me->dataMut);
 		me->lvDevices->ClearItems();
-		Data::ArrayList<DeviceEntry*> *dataList = me->dataMap->GetValues();
+		const Data::ArrayList<DeviceEntry*> *dataList = me->dataMap->GetValues();
 		UOSInt i = 0;
 		UOSInt j = dataList->GetCount();
 		while (i < j)
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 {
 	DeviceEntry *entry;
-	Data::ArrayList<DeviceEntry*> *dataList = this->dataMap->GetValues();
+	const Data::ArrayList<DeviceEntry*> *dataList = this->dataMap->GetValues();
 	UOSInt i = dataList->GetCount();
 	while (i-- > 0)
 	{

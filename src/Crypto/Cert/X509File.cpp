@@ -2709,7 +2709,7 @@ Crypto::Cert::X509File::~X509File()
 {
 }
 
-Net::ASN1Data::ASN1Type Crypto::Cert::X509File::GetASN1Type()
+Net::ASN1Data::ASN1Type Crypto::Cert::X509File::GetASN1Type() const
 {
 	return ASN1Type::X509;
 }
@@ -2729,14 +2729,14 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509File::GetNewCert(UOSInt index)
 	return 0;
 }
 
-void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->Append(FileTypeGetName(this->GetFileType()));
 	sb->AppendC(UTF8STRC(": "));
 	this->ToShortName(sb);
 }
 
-Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key)
+Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key) const
 {
 	UOSInt itemOfst;
 	UOSInt dataSize;
@@ -2773,7 +2773,7 @@ Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X
 	return true;
 }
 
-Bool Crypto::Cert::X509File::GetSignedInfo(SignedInfo *signedInfo)
+Bool Crypto::Cert::X509File::GetSignedInfo(SignedInfo *signedInfo) const
 {
 	UOSInt itemLen;
 	UOSInt itemOfst;

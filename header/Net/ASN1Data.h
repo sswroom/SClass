@@ -21,14 +21,14 @@ namespace Net
 	public:
 		virtual ~ASN1Data();
 
-		virtual IO::ParserType GetParserType();
-		virtual ASN1Type GetASN1Type() = 0;
-		virtual ASN1Data *Clone() = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) = 0;
+		virtual IO::ParserType GetParserType() const;
+		virtual ASN1Type GetASN1Type() const = 0;
+		virtual ASN1Data *Clone() const = 0;
+		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
 
-		Bool ToASN1String(Text::StringBuilderUTF8 *sb);
-		const UInt8 *GetASN1Buff();
-		UOSInt GetASN1BuffSize();
+		Bool ToASN1String(Text::StringBuilderUTF8 *sb) const;
+		const UInt8 *GetASN1Buff() const;
+		UOSInt GetASN1BuffSize() const;
 
 		static void AppendInteger(Text::StringBuilderUTF8 *sb, const UInt8 *pdu, UOSInt len);
 	};

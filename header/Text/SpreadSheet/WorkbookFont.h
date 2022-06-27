@@ -37,16 +37,16 @@ namespace Text
 			WorkbookFont *SetColor(UInt32 color);
 			WorkbookFont *SetFamily(FontFamily family);
 
-			Text::String *GetName();
-			Double GetSize();
-			Bool IsBold();
-			Bool IsItalic();
-			Bool IsUnderline();
-			UInt32 GetColor();
-			FontFamily GetFamily();
+			Text::String *GetName() const;
+			Double GetSize() const;
+			Bool IsBold() const;
+			Bool IsItalic() const;
+			Bool IsUnderline() const;
+			UInt32 GetColor() const;
+			FontFamily GetFamily() const;
 
-			WorkbookFont *Clone();
-			Bool Equals(WorkbookFont *font);
+			WorkbookFont *Clone() const;
+			Bool Equals(WorkbookFont *font) const;
 		};
 	}
 }

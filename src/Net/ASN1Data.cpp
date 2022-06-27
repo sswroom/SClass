@@ -22,22 +22,22 @@ Net::ASN1Data::~ASN1Data()
 	MemFree(this->buff);
 }
 
-IO::ParserType Net::ASN1Data::GetParserType()
+IO::ParserType Net::ASN1Data::GetParserType() const
 {
 	return IO::ParserType::ASN1Data;
 }
 
-Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF8 *sb)
+Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF8 *sb) const
 {
 	return Net::ASN1Util::PDUToString(this->buff, this->buff + this->buffSize, sb, 0);
 }
 
-const UInt8 *Net::ASN1Data::GetASN1Buff()
+const UInt8 *Net::ASN1Data::GetASN1Buff() const
 {
 	return this->buff;
 }
 
-UOSInt Net::ASN1Data::GetASN1BuffSize()
+UOSInt Net::ASN1Data::GetASN1BuffSize() const
 {
 	return this->buffSize;
 }

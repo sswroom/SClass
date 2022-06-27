@@ -24,18 +24,18 @@ namespace Math
 
 			Path();
 			virtual ~Path();
-			Path *Clone();
+			Path *Clone() const;
 			Bool AddNode(PathNode *node, Double distance);
-			virtual Int32 CompareTo(Data::IComparable *obj);
+			virtual Int32 CompareTo(Data::IComparable *obj) const;
 		};
 
 	public:
 		ShortestPath(){};
 		virtual ~ShortestPath(){};
 
-		virtual Double CalNodeDistance(PathNode *node1, PathNode *node2) = 0;
-		virtual Bool PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode) = 0;
-		Path *GetShortestPath(PathNode *fromNode, PathNode *toNode);
+		virtual Double CalNodeDistance(PathNode *node1, PathNode *node2) const = 0;
+		virtual Bool PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode const) = 0;
+		Path *GetShortestPath(PathNode *fromNode, PathNode *toNode) const;
 	};
 }
 #endif

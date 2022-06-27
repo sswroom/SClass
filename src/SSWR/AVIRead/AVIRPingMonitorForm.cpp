@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->ipListUpdated)
 	{
-		Data::ArrayList<IPInfo*> *ipList;
+		const Data::ArrayList<IPInfo*> *ipList;
 		IPInfo *ipInfo;
 		UOSInt i;
 		UOSInt j;
@@ -349,7 +349,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->logger);
 
-	Data::ArrayList<IPInfo*> *ipList;
+	const Data::ArrayList<IPInfo*> *ipList;
 	IPInfo *ipInfo;
 	UOSInt i;
 	ipList = this->ipMap->GetValues();

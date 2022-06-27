@@ -739,7 +739,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 			MemFree(font);
 		}
 	}
-	Data::ArrayList<Text::String *> *formatList = status.formatMap.GetValues();
+	const Data::ArrayList<Text::String *> *formatList = status.formatMap.GetValues();
 	i = formatList->GetCount();
 	while (i-- > 0)
 	{

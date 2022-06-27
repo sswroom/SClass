@@ -41,7 +41,7 @@ Media::ImageList::~ImageList()
 	SDEL_TEXT(this->imgName);
 }
 
-IO::ParserType Media::ImageList::GetParserType()
+IO::ParserType Media::ImageList::GetParserType() const
 {
 	return IO::ParserType::ImageList;
 }
@@ -72,12 +72,12 @@ Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
 	return true;
 }
 
-UOSInt Media::ImageList::GetCount()
+UOSInt Media::ImageList::GetCount() const
 {
 	return this->imgList.GetCount();
 }
 
-Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay)
+Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay) const
 {
 	if (imageDelay)
 	{
@@ -86,7 +86,7 @@ Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay)
 	return this->imgList.GetItem(index);
 }
 
-Media::ImageList::ImageType Media::ImageList::GetImageType(UOSInt index)
+Media::ImageList::ImageType Media::ImageList::GetImageType(UOSInt index) const
 {
 	return this->imgTypeList.GetItem(index);
 }
@@ -153,12 +153,12 @@ void Media::ImageList::SetThermoImage(UOSInt thermoWidth, UOSInt thermoHeight, U
 	this->thermoType = thermoType;
 }
 
-Bool Media::ImageList::HasThermoImage()
+Bool Media::ImageList::HasThermoImage() const
 {
 	return this->thermoPtr != 0;
 }
 
-Double Media::ImageList::GetThermoValue(Double x, Double y)
+Double Media::ImageList::GetThermoValue(Double x, Double y) const
 {
 	if (this->thermoPtr == 0)
 	{
@@ -229,7 +229,7 @@ void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CS
 	this->valTypeStr.Add(valType);
 }
 
-Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
+Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -320,7 +320,7 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 	return found;
 }
 
-void Media::ImageList::ToString(Text::StringBuilderUTF8 *sb)
+void Media::ImageList::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Bool hasData = this->ToValueString(sb);
 	Media::Image *img;

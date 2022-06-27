@@ -193,7 +193,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	}
 	if (error)
 	{
-		Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord3 *> *>*recs = devRecs.GetValues();
+		const Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord3 *> *>*recs = devRecs.GetValues();
 		i = recs->GetCount();
 		while (i-- > 0)
 		{
@@ -211,7 +211,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 
 	Map::GPSTrack *track;
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, 0));
-	Data::SortableArrayListNative<Int32> *keys = devRecs.GetKeys();
+	const Data::SortableArrayListNative<Int32> *keys = devRecs.GetKeys();
 	i = keys->GetCount();
 	while (i-- > 0)
 	{

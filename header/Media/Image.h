@@ -32,21 +32,21 @@ namespace Media
 		Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSInt storeHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		virtual ~Image();
 
-		virtual Media::Image *Clone() = 0;
-		virtual Media::Image::ImageType GetImageType() = 0;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) = 0;
+		virtual Media::Image *Clone() const = 0;
+		virtual Media::Image::ImageType GetImageType() const = 0;
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const = 0;
 		void InitGrayPal();
-		UOSInt GetDataBpl();
-		Bool IsUpsideDown();
+		UOSInt GetDataBpl() const;
+		Bool IsUpsideDown() const;
 		void SetHotSpot(OSInt hotSpotX, OSInt hotSpotY);
-		Bool HasHotSpot();
-		OSInt GetHotSpotX();
-		OSInt GetHotSpotY();
+		Bool HasHotSpot() const;
+		OSInt GetHotSpotX() const;
+		OSInt GetHotSpotY() const;
 
-		Media::StaticImage *CreateStaticImage();
-		Media::StaticImage *CreateSubImage(Math::RectArea<OSInt> area);
+		Media::StaticImage *CreateStaticImage() const;
+		Media::StaticImage *CreateSubImage(Math::RectArea<OSInt> area) const;
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
-		void ToString(Text::StringBuilderUTF8 *sb);
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static Text::CString AlphaTypeGetName(AlphaType atype);
 	};

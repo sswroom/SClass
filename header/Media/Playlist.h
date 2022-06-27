@@ -19,7 +19,7 @@ namespace Media
 			Int32 timeEnd;
 		} PlaylistEntry;
 
-		Data::ArrayList<PlaylistEntry*> *entries;
+		Data::ArrayList<PlaylistEntry*> entries;
 		Parser::ParserList *parsers;
 		Media::IMediaPlayer *player;
 		Media::MediaFile *currFile;
@@ -31,18 +31,18 @@ namespace Media
 		Playlist(Text::CString sourceName, Parser::ParserList *parsers);
 		virtual ~Playlist();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 		Bool AddFile(Text::CString fileName);
 		Bool RemoveEntry(UOSInt index);
 		Bool AppendPlaylist(Media::Playlist *playlist);
 		void ClearFiles();
 
-		UOSInt GetCount();
-		Text::String *GetTitle(UOSInt index);
-		Text::String *GetArtist(UOSInt index);
-		Text::String *GetFileName(UOSInt index);
-		UInt32 GetTimeStart(UOSInt index);
-		Int32 GetTimeEnd(UOSInt index);
+		UOSInt GetCount() const;
+		Text::String *GetTitle(UOSInt index) const;
+		Text::String *GetArtist(UOSInt index) const;
+		Text::String *GetFileName(UOSInt index) const;
+		UInt32 GetTimeStart(UOSInt index) const;
+		Int32 GetTimeEnd(UOSInt index) const;
 
 		void SetPlayer(Media::IMediaPlayer *player);
 		Bool OpenItem(UOSInt index);

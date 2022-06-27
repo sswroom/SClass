@@ -74,7 +74,7 @@ namespace Text
 				BorderType borderType;
 				UInt32 borderColor;
 
-				Bool Equals(BorderStyle *style);
+				Bool Equals(const BorderStyle *style) const;
 			};
 		private:
 			UOSInt index;
@@ -99,9 +99,9 @@ namespace Text
 			CellStyle(UOSInt index);
 			~CellStyle();
 
-			CellStyle *Clone();
+			CellStyle *Clone() const;
 			void CopyFrom(CellStyle *style);
-			Bool Equals(CellStyle *style);
+			Bool Equals(CellStyle *style) const;
 
 			CellStyle *SetIndex(UOSInt index);
 			CellStyle *SetID(const UTF8Char *id);
@@ -117,19 +117,19 @@ namespace Text
 			CellStyle *SetDataFormat(Text::String *dataFormat);
 			CellStyle *SetDataFormat(Text::CString dataFormat);
 
-			UOSInt GetIndex();
-			const UTF8Char *GetID();
-			HAlignment GetHAlign();
-			VAlignment GetVAlign();
-			Bool GetWordWrap();
-			UInt32 GetFillColor();
-			FillPattern GetFillPattern();
-			WorkbookFont *GetFont();
-			BorderStyle *GetBorderLeft();
-			BorderStyle *GetBorderRight();
-			BorderStyle *GetBorderTop();
-			BorderStyle *GetBorderBottom();
-			Text::String *GetDataFormat();
+			UOSInt GetIndex() const;
+			const UTF8Char *GetID() const;
+			HAlignment GetHAlign() const;
+			VAlignment GetVAlign() const;
+			Bool GetWordWrap() const;
+			UInt32 GetFillColor() const;
+			FillPattern GetFillPattern() const;
+			WorkbookFont *GetFont() const;
+			const BorderStyle *GetBorderLeft() const;
+			const BorderStyle *GetBorderRight() const;
+			const BorderStyle *GetBorderTop() const;
+			const BorderStyle *GetBorderBottom() const;
+			Text::String *GetDataFormat() const;
 		};
 	}
 }

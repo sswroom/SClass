@@ -23,7 +23,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
 	Media::IMediaStream *mstm;
-	Data::ArrayList<Media::IMediaStream *> *stmList;
+	const Data::ArrayList<Media::IMediaStream *> *stmList;
 	Int32 lastFrameTime = 0;
 
 	me->playStarted = true;
@@ -386,7 +386,7 @@ UInt64 Media::MPGFile::GetBitRate()
 	{
 		UInt64 bitRate = this->vstm->GetBitRate();
 		UOSInt i;
-		Data::ArrayList<Media::IMediaStream*> *stms = this->dataStms->GetValues();
+		const Data::ArrayList<Media::IMediaStream*> *stms = this->dataStms->GetValues();
 		i = stms->GetCount();
 		while (i-- > 0)
 		{
@@ -814,7 +814,7 @@ Media::MPGFile::~MPGFile()
 	{
 		this->StopPlay();
 	}
-	Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
+	const Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
 	Media::IMediaStream *stm;
 	UOSInt i;
 	i = dataList->GetCount();

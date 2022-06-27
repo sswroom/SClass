@@ -222,17 +222,17 @@ Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 	}
 }
 
-Text::CString Text::MIMEObj::MultipartMIMEObj::GetClassName()
+Text::CString Text::MIMEObj::MultipartMIMEObj::GetClassName() const
 {
 	return CSTR("MultipartMIMEObj");
 }
 
-Text::CString Text::MIMEObj::MultipartMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::MultipartMIMEObj::GetContentType() const
 {
 	return {this->contentType->v, this->contentType->leng};
 }
 
-UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm) const
 {
 	UOSInt ret = 0;
 	UOSInt len;
@@ -270,7 +270,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 	return ret;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::Clone()
+Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::Clone() const
 {
 	MIMEMessage *part;
 	Text::MIMEObj::MultipartMIMEObj *obj;
@@ -288,7 +288,7 @@ Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::Clone()
 	return obj;
 }
 
-Text::String *Text::MIMEObj::MultipartMIMEObj::GetDefMsg()
+Text::String *Text::MIMEObj::MultipartMIMEObj::GetDefMsg() const
 {
 	return this->defMsg;
 }
@@ -317,7 +317,7 @@ Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(UOSInt partIndex, const UTF8
 	return true;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::GetPartContent(UOSInt partIndex)
+Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::GetPartContent(UOSInt partIndex) const
 {
 	MIMEMessage *part = this->parts.GetItem(partIndex);
 	if (part == 0)
@@ -325,12 +325,12 @@ Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::GetPartContent(UOSInt partIndex
 	return part->GetContent();
 }
 
-Text::MIMEObj::MIMEMessage *Text::MIMEObj::MultipartMIMEObj::GetPart(UOSInt partIndex)
+Text::MIMEObj::MIMEMessage *Text::MIMEObj::MultipartMIMEObj::GetPart(UOSInt partIndex) const
 {
 	return this->parts.GetItem(partIndex);
 }
 
-UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount()
+UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount() const
 {
 	return this->parts.GetCount();
 }

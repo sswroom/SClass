@@ -24,7 +24,7 @@ namespace DB
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str) = 0;
 		virtual void Reconnect() = 0;
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		virtual Bool IsFullConn(); //false = read only, true = DBConn
 

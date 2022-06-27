@@ -14,7 +14,7 @@ SSWR::VAMS::VAMSBTList::~VAMSBTList()
 {
 	DEL_CLASS(this->mut);
 	DEL_CLASS(this->kaMap);
-	Data::ArrayList<Data::FastStringMap<AvlBleItem*>*> *itemList = this->itemMap->GetValues();
+	const Data::ArrayList<Data::FastStringMap<AvlBleItem*>*> *itemList = this->itemMap->GetValues();
 	Data::FastStringMap<AvlBleItem*> *item;
 	AvlBleItem *bleItem;
 	UOSInt i = itemList->GetCount();

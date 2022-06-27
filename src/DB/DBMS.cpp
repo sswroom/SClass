@@ -1768,11 +1768,6 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 
 DB::DBMS::DBMS(Text::CString versionStr, IO::LogTool *log)
 {
-	NEW_CLASS(this->loginMap, Data::FastStringMap<DB::DBMS::LoginInfo*>());
-	NEW_CLASS(this->loginSHA1, Crypto::Hash::SHA1());
-	NEW_CLASS(this->loginMut, Sync::Mutex());
-	NEW_CLASS(this->sessMut, Sync::Mutex());
-	NEW_CLASS(this->sessMap, Data::Int32Map<DB::DBMS::SessionInfo*>());
 	this->versionStr = Text::String::New(versionStr);
 	this->log = log;
 }
@@ -1782,11 +1777,11 @@ DB::DBMS::~DBMS()
 	this->versionStr->Release();
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
-	UOSInt i = this->loginMap->GetCount();
+	UOSInt i = this->loginMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		login = this->loginMap->GetItem(i);
+		login = this->loginMap.GetItem(i);
 		j = login->userList->GetCount();
 		while (j-- > 0)
 		{
@@ -1797,19 +1792,14 @@ DB::DBMS::~DBMS()
 		login->login->Release();
 		MemFree(login);
 	}
-	DEL_CLASS(this->loginMap);
-	DEL_CLASS(this->loginSHA1);
-	DEL_CLASS(this->loginMut);
 
-	Data::ArrayList<DB::DBMS::SessionInfo*> *sessList;
-	sessList = this->sessMap->GetValues();
+	const Data::ArrayList<DB::DBMS::SessionInfo*> *sessList;
+	sessList = this->sessMap.GetValues();
 	i = sessList->GetCount();
 	while (i-- > 0)
 	{
 		this->SessDelete(sessList->GetItem(i));
 	}
-	DEL_CLASS(this->sessMap);
-	DEL_CLASS(this->sessMut);
 }
 
 Text::String *DB::DBMS::GetVersion()
@@ -1831,20 +1821,20 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CString userName, Text::CString passw
 	#if defined(VERBOSE)
 	printf("UserAdd %s/%s@%s\r\n", userName.v, password.v, host.v);
 	#endif
-	Sync::MutexUsage mutUsage(this->loginMut);
-	login = this->loginMap->GetC(userName);
+	Sync::MutexUsage mutUsage(&this->loginMut);
+	login = this->loginMap.GetC(userName);
 	if (login == 0)
 	{
 		login = MemAlloc(DB::DBMS::LoginInfo, 1);
 		login->login = Text::String::New(userName);
 		NEW_CLASS(login->userList, Data::ArrayList<DB::DBMS::UserInfo*>());
-		this->loginMap->PutC(userName, login);
+		this->loginMap.PutC(userName, login);
 
 		user = MemAlloc(DB::DBMS::UserInfo, 1);
 		user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
-		this->loginSHA1->Clear();
-		this->loginSHA1->Calc(password.v, password.leng);
-		this->loginSHA1->GetValue(user->pwdSha1);
+		this->loginSHA1.Clear();
+		this->loginSHA1.Calc(password.v, password.leng);
+		this->loginSHA1.GetValue(user->pwdSha1);
 		user->userId = userId;
 		login->userList->Add(user);
 		succ = true;
@@ -1866,9 +1856,9 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CString userName, Text::CString passw
 		{
 			user = MemAlloc(DB::DBMS::UserInfo, 1);
 			user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
-			this->loginSHA1->Clear();
-			this->loginSHA1->Calc(password.v, password.leng);
-			this->loginSHA1->GetValue(user->pwdSha1);
+			this->loginSHA1.Clear();
+			this->loginSHA1.Calc(password.v, password.leng);
+			this->loginSHA1.GetValue(user->pwdSha1);
 			user->userId = userId;
 			login->userList->Add(user);
 		}
@@ -1887,22 +1877,22 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 	#if defined(VERBOSE)
 	printf("mysql_native_password auth\r\n");
 	#endif
-	Sync::MutexUsage mutUsage(this->loginMut);
-	login = this->loginMap->GetC(userName);
+	Sync::MutexUsage mutUsage(&this->loginMut);
+	login = this->loginMap.GetC(userName);
 	if (login)
 	{
 		UOSInt i = login->userList->GetCount();
 		while (i-- > 0)
 		{
 			user = login->userList->GetItem(i);
-			this->loginSHA1->Clear();
-			this->loginSHA1->Calc(user->pwdSha1, 20);
-			this->loginSHA1->GetValue(hashBuff);
+			this->loginSHA1.Clear();
+			this->loginSHA1.Calc(user->pwdSha1, 20);
+			this->loginSHA1.GetValue(hashBuff);
 
-			this->loginSHA1->Clear();
-			this->loginSHA1->Calc(randomData, 20);
-			this->loginSHA1->Calc(hashBuff, 20);
-			this->loginSHA1->GetValue(hashBuff);
+			this->loginSHA1.Clear();
+			this->loginSHA1.Calc(randomData, 20);
+			this->loginSHA1.Calc(hashBuff, 20);
+			this->loginSHA1.GetValue(hashBuff);
 			
 			j = 0;
 			while (j < 20)
@@ -1930,8 +1920,8 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 			if (userId != 0)
 			{
 				DB::DBMS::SessionInfo *sess;
-				Sync::MutexUsage mutUsage(this->sessMut);
-				sess = this->sessMap->Get(sessId);
+				Sync::MutexUsage mutUsage(&this->sessMut);
+				sess = this->sessMap.Get(sessId);
 				if (sess == 0)
 				{
 					sess = MemAlloc(DB::DBMS::SessionInfo, 1);
@@ -1947,7 +1937,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 					}
 					MemCopyNO(&sess->params, param, sizeof(DB::DBMS::SessionParam));
 					NEW_CLASS(sess->userVars, Data::StringUTF8Map<Text::String*>());
-					this->sessMap->Put(sessId, sess);
+					this->sessMap.Put(sessId, sess);
 				}
 				sess->user = user;
 				mutUsage.EndUse();
@@ -3020,8 +3010,8 @@ void DB::DBMS::CloseReader(DB::DBReader *r)
 UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 {
 	DB::DBMS::SessionInfo *sess;
-	Sync::MutexUsage mutUsage(this->sessMut);
-	sess = this->sessMap->Get(sessId);
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	sess = this->sessMap.Get(sessId);
 	if (sess && sess->lastError)
 	{
 		msgBuff = sess->lastError->ConcatTo(msgBuff);
@@ -3033,8 +3023,8 @@ UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 DB::DBMS::SessionInfo *DB::DBMS::SessGet(Int32 sessId)
 {
 	DB::DBMS::SessionInfo *sess;
-	Sync::MutexUsage mutUsage(this->sessMut);
-	sess = this->sessMap->Get(sessId);
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	sess = this->sessMap.Get(sessId);
 	mutUsage.EndUse();
 	return sess;
 }
@@ -3046,8 +3036,8 @@ void DB::DBMS::SessEnd(Int32 sessId)
 	{
 		return;
 	}
-	Sync::MutexUsage mutUsage(this->sessMut);
-	sess = this->sessMap->Remove(sessId);
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	sess = this->sessMap.Remove(sessId);
 	mutUsage.EndUse();
 	if (sess)
 	{

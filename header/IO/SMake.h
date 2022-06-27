@@ -71,25 +71,25 @@ namespace IO
 		SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
-		Bool IsLoadFailed();
-		Bool GetErrorMsg(Text::StringBuilderUTF8 *sb);
+		Bool IsLoadFailed() const;
+		Bool GetErrorMsg(Text::StringBuilderUTF8 *sb) const;
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(Text::CString debugObj);
 		void SetThreadCnt(UOSInt threadCnt);
 
-		Data::ArrayList<ConfigItem*> *GetConfigList();
-		Bool HasProg(Text::CString progName);
+		const Data::ArrayList<ConfigItem*> *GetConfigList() const;
+		Bool HasProg(Text::CString progName) const;
 		Bool CompileProg(Text::CString progName, Bool asmListing);
 		Bool ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 
 		UOSInt GetProgList(Data::ArrayList<Text::String*> *progList); //No release
-		Bool IsProgGroup(Text::CString progName);
-		const ProgramItem *GetProgItem(Text::CString progName);
+		Bool IsProgGroup(Text::CString progName) const;
+		const ProgramItem *GetProgItem(Text::CString progName) const;
 	};
 }
 

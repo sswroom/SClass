@@ -56,9 +56,9 @@ namespace Net
 		SSDPClient(Net::SocketFactory *sockf, Text::CString userAgent);
 		~SSDPClient();
 
-		Bool IsError();
+		Bool IsError() const;
 		Bool Scan();
-		Data::ArrayList<SSDPDevice*> *GetDevices(Sync::MutexUsage *mutUsage);
+		const Data::ArrayList<SSDPDevice*> *GetDevices(Sync::MutexUsage *mutUsage) const;
 
 		static SSDPRoot *SSDPRootParse(Text::EncodingFactory *encFact, IO::Stream *stm);
 		static void SSDPRootFree(SSDPRoot *root);

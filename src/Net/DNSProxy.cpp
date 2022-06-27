@@ -687,7 +687,7 @@ Net::DNSProxy::~DNSProxy()
 	if (this->targetMap)
 	{
 		TargetInfo *target;
-		Data::ArrayList<TargetInfo*> *targetList = this->targetMap->GetValues();
+		const Data::ArrayList<TargetInfo*> *targetList = this->targetMap->GetValues();
 		i = targetList->GetCount();
 		while (i-- > 0)
 		{

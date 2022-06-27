@@ -32,58 +32,58 @@ namespace Data
 		{
 		}
 
-		Timestamp AddDay(OSInt val)
+		Timestamp AddDay(OSInt val) const
 		{
 			return Timestamp(this->ticks + val * 86400000LL, this->tzQhr);
 		}
 
-		Timestamp AddHour(OSInt val)
+		Timestamp AddHour(OSInt val) const
 		{
 			return Timestamp(this->ticks + val * 3600000LL, this->tzQhr);
 		}
 
-		Timestamp AddMinute(OSInt val)
+		Timestamp AddMinute(OSInt val) const
 		{
 			return Timestamp(this->ticks + val * 60000LL, this->tzQhr);
 		}
 
-		Timestamp AddSecond(OSInt val)
+		Timestamp AddSecond(OSInt val) const
 		{
 			return Timestamp(this->ticks + val * 1000LL, this->tzQhr);
 		}
 
-		Timestamp AddMS(OSInt val)
+		Timestamp AddMS(OSInt val) const
 		{
 			Int64 newTick = this->ticks + val;
 			return Timestamp(newTick, (nanosec % 1000000) + (UInt32)(newTick % 1000) * 1000000, this->tzQhr);
 		}
 
-		Timestamp ClearTime()
+		Timestamp ClearTime() const
 		{
 			return Timestamp(this->ticks - this->ticks % 86400000LL, this->tzQhr);
 		}
 
-		Int64 GetMSPassedDate()
+		Int64 GetMSPassedDate() const
 		{
 			return this->ticks % 86400000LL;
 		};
 
-		Int64 DiffMS(Timestamp ts)
+		Int64 DiffMS(Timestamp ts) const
 		{
 			return this->ticks - ts.ticks;
 		}
 
-		Int64 ToTicks()
+		Int64 ToTicks() const
 		{
 			return this->ticks;
 		}
 
-		Int64 ToDotNetTicks()
+		Int64 ToDotNetTicks() const
 		{
 			return this->ticks * 10000LL + 621355968000000000LL;
 		}
 
-		Int64 ToUnixTimestamp()
+		Int64 ToUnixTimestamp() const
 		{
 			return this->ticks / 1000LL;
 		}
@@ -105,39 +105,39 @@ namespace Data
 		void SetNTPTime(Int32 hiDword, Int32 loDword);
 		Int64 ToNTPTime();*/
 
-		Char *ToString(Char *buff)
+		Char *ToString(Char *buff) const
 		{
 			return (Char*)ToString((UTF8Char*)buff);
 		}
 
-		Char *ToString(Char *buff, const Char *pattern)
+		Char *ToString(Char *buff, const Char *pattern) const
 		{
 			return (Char*)ToString((UTF8Char*)buff, pattern);
 		}
 
-		UTF8Char *ToString(UTF8Char *buff)
+		UTF8Char *ToString(UTF8Char *buff) const
 		{
 			return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 		}
 
-		UTF8Char *ToString(UTF8Char *buff, const Char *pattern)
+		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			Data::DateTimeUtil::Ticks2TimeValue(this->ticks, &tval, this->tzQhr);
 			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, this->nanosec, (const UTF8Char*)pattern);
 		}
 		
-		Bool operator==(Timestamp dt)
+		Bool operator==(Timestamp dt) const
 		{
 			return this->ticks == dt.ticks;
 		}
 
-		Bool operator>(Timestamp dt)
+		Bool operator>(Timestamp dt) const
 		{
 			return this->ticks > dt.ticks;
 		}
 
-		Bool operator<(Timestamp dt)
+		Bool operator<(Timestamp dt) const
 		{
 			return this->ticks < dt.ticks;
 		}
@@ -157,22 +157,22 @@ namespace Data
 		Int32 DateCompare(Data::DateTime *dt);
 		Bool IsSameDay(Data::DateTime *dt);*/
 
-		Timestamp ToUTCTime()
+		Timestamp ToUTCTime() const
 		{
 			return Timestamp(this->ticks, 0);
 		}
 
-		Timestamp ToLocalTime()
+		Timestamp ToLocalTime() const
 		{
 			return Timestamp(this->ticks, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
-		Timestamp ConvertTimeZoneQHR(Int8 tzQhr)
+		Timestamp ConvertTimeZoneQHR(Int8 tzQhr) const
 		{
 			return Timestamp(this->ticks, tzQhr);
 		}
 
-		Timestamp SetTimeZoneQHR(Int8 tzQhr)
+		Timestamp SetTimeZoneQHR(Int8 tzQhr) const
 		{
 			if (this->tzQhr != tzQhr)
 			{
@@ -184,17 +184,17 @@ namespace Data
 			}
 		}
 
-		Int8 GetTimeZoneQHR()
+		Int8 GetTimeZoneQHR() const
 		{
 			return this->tzQhr;
 		}
 
-		Data::DateTimeUtil::Weekday GetWeekday()
+		Data::DateTimeUtil::Weekday GetWeekday() const
 		{
 			return Data::DateTimeUtil::Ticks2Weekday(this->ticks, this->tzQhr);
 		}
 
-		Bool SameDate(Data::Timestamp ts)
+		Bool SameDate(Data::Timestamp ts) const
 		{
 			return (this->ticks / 86400000) == (ts.ticks / 86400000);
 		}

@@ -17,21 +17,21 @@ namespace Math
 		PieArea(UInt32 srid, Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2);
 		virtual ~PieArea();
 
-		virtual VectorType GetVectorType();
-		virtual void GetCenter(Double *x, Double *y);
-		virtual Math::Vector2D *Clone();
-		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
-		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
+		virtual VectorType GetVectorType() const;
+		virtual void GetCenter(Double *x, Double *y) const;
+		virtual Math::Vector2D *Clone() const;
+		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY) const;
+		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY) const;
 		virtual Bool JoinVector(Math::Vector2D *vec);
-		virtual Bool Support3D();
+		virtual Bool Support3D() const;
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
-		virtual Bool Equals(Vector2D *vec);
+		virtual Bool Equals(Vector2D *vec) const;
 
-		Double GetCX();
-		Double GetCY();
-		Double GetR();
-		Double GetArcAngle1();
-		Double GetArcAngle2();
+		Double GetCX() const;
+		Double GetCY() const;
+		Double GetR() const;
+		Double GetArcAngle1() const;
+		Double GetArcAngle2() const;
 	};
 }
 #endif

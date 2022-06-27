@@ -140,7 +140,7 @@ Net::Email::FileEmailStore::FileEmailStore()
 
 Net::Email::FileEmailStore::~FileEmailStore()
 {
-	Data::ArrayList<FileInfo*> *fileList = this->fileMap.GetValues();
+	const Data::ArrayList<FileInfo*> *fileList = this->fileMap.GetValues();
 	FileInfo *file;
 	UOSInt i = fileList->GetCount();
 	UOSInt j;

@@ -24,12 +24,12 @@ namespace Media
 		UInt8 *data;
 	
 		StaticImage(UOSInt dispWidth, UOSInt dispHeight, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
-		StaticImage(Media::FrameInfo *imgInfo);
+		StaticImage(const Media::FrameInfo *imgInfo);
 		virtual ~StaticImage();
 
-		virtual Media::Image *Clone();
-		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
+		virtual Media::Image *Clone() const;
+		virtual Media::Image::ImageType GetImageType() const;
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const;
 
 		Bool To32bpp();
 		Bool To64bpp();
@@ -40,9 +40,9 @@ namespace Media
 		Bool MultiplyColor(UInt32 color);
 		Bool Resize(Media::IImgResizer *resizer, UOSInt newWidth, UOSInt newHeight);
 		Bool RotateImage(RotateType rtype);
-		Double CalcPSNR(Media::StaticImage *simg);
-		Double CalcAvgContrast(UOSInt *bgPxCnt);
-		Double CalcColorRate();
+		Double CalcPSNR(Media::StaticImage *simg) const;
+		Double CalcAvgContrast(UOSInt *bgPxCnt) const;
+		Double CalcColorRate() const;
 		UInt8 *CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);
 		Math::RectArea<UOSInt> CalcNearPixelRange(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);
 

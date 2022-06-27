@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				else if (cmdLines[i][1] == 'V')
 				{
 					smake.SetMessageWriter(&console);
-					Data::ArrayList<IO::SMake::ConfigItem*> *cfgList = smake.GetConfigList();
+					const Data::ArrayList<IO::SMake::ConfigItem*> *cfgList = smake.GetConfigList();
 					IO::SMake::ConfigItem *cfg;
 					Text::StringBuilderUTF8 sb;
 					j = 0;

@@ -1381,7 +1381,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<WebUser*> *userList = this->userMap->GetValues();
+	const Data::ArrayList<WebUser*> *userList = this->userMap->GetValues();
 	WebUser *user;
 	i = userList->GetCount();
 	while (i-- > 0)
@@ -1396,7 +1396,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	DEL_CLASS(this->userNameMap);
 	DEL_CLASS(this->userMut);
 
-	Data::ArrayList<DeviceInfo*> *devList = this->devMap->GetValues();
+	const Data::ArrayList<DeviceInfo*> *devList = this->devMap->GetValues();
 	DeviceInfo *dev;
 	DevRecord2 *rec;
 	i = devList->GetCount();
@@ -1426,7 +1426,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 		}
 		DEL_CLASS(dev->recToStore);
 
-		Data::ArrayList<DevRecord2*> *recList = dev->todayRecs->GetValues();
+		const Data::ArrayList<DevRecord2*> *recList = dev->todayRecs->GetValues();
 		j = recList->GetCount();
 		while (j-- > 0)
 		{
@@ -1444,7 +1444,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 		}
 		DEL_CLASS(dev->yesterdayRecs);
 
-		Data::ArrayList<IO::MemoryStream*> *cacheList = dev->imgCaches->GetValues();
+		const Data::ArrayList<IO::MemoryStream*> *cacheList = dev->imgCaches->GetValues();
 		IO::MemoryStream *mstm;
 		j = cacheList->GetCount();
 		while (j-- > 0)
@@ -2325,7 +2325,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserFreeLogin(LoginInfo *login)
 UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetDevices(Int32 userId, Int32 userType, Data::ArrayList<DeviceInfo*> *devList)
 {
 	UOSInt retCnt;
-	Data::ArrayList<DeviceInfo *> *devs;
+	const Data::ArrayList<DeviceInfo *> *devs;
 	DeviceInfo *dev;
 	UOSInt i;
 	UOSInt j;

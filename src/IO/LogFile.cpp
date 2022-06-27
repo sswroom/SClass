@@ -10,7 +10,7 @@ IO::LogFile::~LogFile()
 {
 }
 
-IO::ParserType IO::LogFile::GetParserType()
+IO::ParserType IO::LogFile::GetParserType() const
 {
 	return IO::ParserType::LogFile;
 }

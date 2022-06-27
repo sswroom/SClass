@@ -28,9 +28,9 @@ namespace Media
 		SharedImage(Media::ImageList *imgList, Bool genPreview);
 		~SharedImage();
 
-		SharedImage *Clone();
-		Media::StaticImage *GetImage(UInt32 *imgTimeMS);
-		Media::StaticImage *GetPrevImage(Double width, Double height, UInt32 *imgTimeMS);
+		SharedImage *Clone() const;
+		Media::StaticImage *GetImage(UInt32 *imgTimeMS) const;
+		Media::StaticImage *GetPrevImage(Double width, Double height, UInt32 *imgTimeMS) const;
 	};
 }
 #endif

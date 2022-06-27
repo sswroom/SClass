@@ -29,33 +29,33 @@ namespace Math
 		VectorImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 		virtual ~VectorImage();
 
-		virtual VectorType GetVectorType();
-		virtual Math::Coord2DDbl GetCenter();
-		virtual Math::Vector2D *Clone();
-		virtual void GetBounds(Math::RectAreaDbl *bounds);
-		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
+		virtual VectorType GetVectorType() const;
+		virtual Math::Coord2DDbl GetCenter() const;
+		virtual Math::Vector2D *Clone() const;
+		virtual void GetBounds(Math::RectAreaDbl *bounds) const;
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 		virtual Bool JoinVector(Math::Vector2D *vec);
-		virtual Bool Support3D();
+		virtual Bool Support3D() const;
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
-		virtual Bool Equals(Vector2D *vec);
+		virtual Bool Equals(Vector2D *vec) const;
 
-		Text::String *GetSourceAddr();
+		Text::String *GetSourceAddr() const;
 		void SetHeight(Double height);
-		Double GetHeight();
-		Int64 GetTimeStart();
-		Int64 GetTimeEnd();
+		Double GetHeight() const;
+		Int64 GetTimeStart() const;
+		Int64 GetTimeEnd() const;
 		void SetSrcAlpha(Double srcAlpha);
-		Bool HasSrcAlpha();
-		Double GetSrcAlpha();
+		Bool HasSrcAlpha() const;
+		Double GetSrcAlpha() const;
 		void SetZIndex(Int32 zIndex);
-		Bool HasZIndex();
-		Int32 GetZIndex();
-		void GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2);
-		void GetVectorSize(Double *sizeX, Double *sizeY);
-		Bool IsScnCoord();
+		Bool HasZIndex() const;
+		Int32 GetZIndex() const;
+		void GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2) const;
+		void GetVectorSize(Double *sizeX, Double *sizeY) const;
+		Bool IsScnCoord() const;
 		void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
-		Media::StaticImage *GetImage(UInt32 *imgTimeMS);
-		Media::StaticImage *GetImage(Double width, Double height, UInt32 *imgTimeMS);
+		Media::StaticImage *GetImage(UInt32 *imgTimeMS) const;
+		Media::StaticImage *GetImage(Double width, Double height, UInt32 *imgTimeMS) const;
 	};
 }
 #endif

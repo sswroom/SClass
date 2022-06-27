@@ -12,12 +12,12 @@ IO::CDXAData::~CDXAData()
 	DEL_CLASS(this->data);
 }
 
-UInt64 IO::CDXAData::GetSectorCount()
+UInt64 IO::CDXAData::GetSectorCount() const
 {
 	return this->data->GetDataSize() / 2352;
 }
 
-UOSInt IO::CDXAData::GetBytesPerSector()
+UOSInt IO::CDXAData::GetBytesPerSector() const
 {
 	return 2352;
 }
@@ -27,19 +27,19 @@ Bool IO::CDXAData::ReadSector(UInt64 sectorNum, UInt8 *sectorBuff)
 	return this->data->GetRealData(sectorNum * 2352LL, 2352, sectorBuff) == 2352;
 }
 
-IO::ISectorData *IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorCount)
+IO::ISectorData *IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
 	IO::ISectorData *data;
 	NEW_CLASS(data, IO::CDXAData(this->data, startSector * 2352, sectorCount * 2352));
 	return data;
 }
 
-IO::IStreamData *IO::CDXAData::GetStreamData(UInt64 startSector, UInt64 dataSize)
+IO::IStreamData *IO::CDXAData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
 {
 	return this->data->GetPartialData(startSector * 2352, dataSize);
 }
 
-UOSInt IO::CDXAData::GetSeekCount()
+UOSInt IO::CDXAData::GetSeekCount() const
 {
 	return this->data->GetSeekCount();
 }

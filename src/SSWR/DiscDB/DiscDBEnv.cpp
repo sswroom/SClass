@@ -246,7 +246,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	DEL_CLASS(this->discTypeMap);
 
 	DVDVideoInfo *dvdVideo;
-	Data::ArrayList<DVDVideoInfo*> *dvdVideoList = this->dvdVideoMap->GetValues();
+	const Data::ArrayList<DVDVideoInfo*> *dvdVideoList = this->dvdVideoMap->GetValues();
 	i = dvdVideoList->GetCount();
 	while (i-- > 0)
 	{

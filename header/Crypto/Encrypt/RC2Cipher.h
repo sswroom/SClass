@@ -19,8 +19,8 @@ namespace Crypto
 			Bool SetKey(const UInt8 *key, UOSInt keyLen);
 			Bool SetKey(const UInt8 *key, UOSInt keyLen, UOSInt effectiveBits);
 
-			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam); //return outSize
-			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam); //return outSize
+			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) const; //return outSize
+			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) const; //return outSize
 		};
 	}
 }

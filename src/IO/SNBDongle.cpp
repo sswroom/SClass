@@ -401,8 +401,8 @@ IO::SNBDongle::DeviceInfo *IO::SNBDongle::GetDevice(UInt64 devId)
 {
 	DeviceInfo *dev;
 	Bool upd = false;
-	this->devMut->LockWrite();
-	dev = this->devMap->Get(devId);
+	this->devMut.LockWrite();
+	dev = this->devMap.Get(devId);
 	if (dev == 0)
 	{
 		dev = MemAlloc(DeviceInfo, 1);
@@ -416,9 +416,9 @@ IO::SNBDongle::DeviceInfo *IO::SNBDongle::GetDevice(UInt64 devId)
 		dev->shortAddr = 0;
 		dev->versionMinor = 0;
 		dev->versionMajor = 0;
-		this->devMap->Put(devId, dev);
+		this->devMap.Put(devId, dev);
 	}
-	this->devMut->UnlockWrite();
+	this->devMut.UnlockWrite();
 	if (upd)
 	{
 		this->hdlr->DeviceAdded(devId);
@@ -434,16 +434,13 @@ IO::SNBDongle::SNBDongle(IO::Stream *stm, SNBHandler *hdlr)
 	this->dongleBaudRate = 0;
 	this->dongleId = 0;
 	NEW_CLASS(this->proto, IO::SNBProtocol(stm, OnProtocolRecv, this));
-	NEW_CLASS(this->devMap, Data::UInt64Map<DeviceInfo*>());
-	NEW_CLASS(this->devMut, Sync::RWMutex());
 }
 
 IO::SNBDongle::~SNBDongle()
 {
 	DEL_CLASS(this->proto);
-	DEL_CLASS(this->devMut);
 	DeviceInfo *dev;
-	Data::ArrayList<DeviceInfo*> *devList = this->devMap->GetValues();
+	const Data::ArrayList<DeviceInfo*> *devList = this->devMap.GetValues();
 	UOSInt i;
 	i = devList->GetCount();
 	while (i-- > 0)
@@ -451,7 +448,6 @@ IO::SNBDongle::~SNBDongle()
 		dev = devList->GetItem(i);
 		MemFree(dev);
 	}
-	DEL_CLASS(this->devMap);
 }
 
 void IO::SNBDongle::SetDevHandleType(UInt64 devId, HandleType handType)

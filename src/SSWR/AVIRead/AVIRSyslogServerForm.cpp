@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 	if (me->ipListUpd)
 	{
 		me->ipListUpd = false;
-		Data::ArrayList<UInt32> *ipList;
+		const Data::ArrayList<UInt32> *ipList;
 		Sync::MutexUsage mutUsage(me->ipMut);
 		ipList = me->ipMap->GetKeys();
 		me->lbClient->ClearItems();
@@ -176,7 +176,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 {
 	SDEL_CLASS(this->svr);
 
-	Data::ArrayList<IPLog*> *ipList = this->ipMap->GetValues();
+	const Data::ArrayList<IPLog*> *ipList = this->ipMap->GetValues();
 	IPLog *ipLog;
 	UOSInt i = ipList->GetCount();
 	UOSInt j;

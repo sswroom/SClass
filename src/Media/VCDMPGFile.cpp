@@ -418,7 +418,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 	{
 		this->StopPlay();
 	}
-	Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
+	const Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
 	Media::IMediaStream *stm;
 	UOSInt i;
 	i = dataList->GetCount();

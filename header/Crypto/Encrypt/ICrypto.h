@@ -13,8 +13,8 @@ namespace Crypto
 			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam) = 0; //outBuff = null to get the size
 			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam) = 0; //outBuff = null to get the size
 
-			virtual UOSInt GetEncBlockSize() = 0;
-			virtual UOSInt GetDecBlockSize() = 0;
+			virtual UOSInt GetEncBlockSize() const = 0;
+			virtual UOSInt GetDecBlockSize() const = 0;
 		};
 	}
 }

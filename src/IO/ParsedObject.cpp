@@ -79,16 +79,11 @@ IO::ParsedObject::~ParsedObject()
 	SDEL_STRING(this->sourceName);
 }
 
-UTF8Char *IO::ParsedObject::GetSourceName(UTF8Char *oriStr)
+UTF8Char *IO::ParsedObject::GetSourceName(UTF8Char *oriStr) const
 {
 	if (this->sourceName)
 		return this->sourceName->ConcatTo(oriStr);
 	return 0;
-}
-
-Text::String *IO::ParsedObject::GetSourceNameObj()
-{
-	return this->sourceName;
 }
 
 void IO::ParsedObject::SetSourceName(Text::String *sourceName)

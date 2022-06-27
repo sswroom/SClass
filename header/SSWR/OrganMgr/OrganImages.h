@@ -18,13 +18,13 @@ namespace SSWR
 			OrganImages(OrganImageItem *imgItem, const UTF8Char *srcImgDir);
 			virtual ~OrganImages();
 
-			OrganImageItem *GetImgItem();
-			const UTF8Char *GetSrcImgDir();
+			OrganImageItem *GetImgItem() const;
+			const UTF8Char *GetSrcImgDir() const;
 
-			virtual ItemType GetItemType();
-			virtual UTF8Char *GetItemName(UTF8Char *buff);
-			virtual UTF8Char *GetEngName(UTF8Char *buff);
-			virtual OrganGroupItem *Clone();
+			virtual ItemType GetItemType() const;
+			virtual UTF8Char *GetItemName(UTF8Char *buff) const;
+			virtual UTF8Char *GetEngName(UTF8Char *buff) const;
+			virtual OrganGroupItem *Clone() const;
 		};
 	}
 }

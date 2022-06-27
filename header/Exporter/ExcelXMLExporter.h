@@ -21,7 +21,7 @@ namespace Exporter
 		virtual Bool ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param);
 
 	private:
-		static void WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border);
+		static void WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, const Text::SpreadSheet::CellStyle::BorderStyle *border);
 	};
 }
 #endif

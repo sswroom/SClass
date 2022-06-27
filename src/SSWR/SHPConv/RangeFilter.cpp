@@ -14,7 +14,7 @@ SSWR::SHPConv::RangeFilter::~RangeFilter()
 {
 }
 
-Bool SSWR::SHPConv::RangeFilter::IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf)
+Bool SSWR::SHPConv::RangeFilter::IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) const
 {
 	if (this->right > left && this->left < right && this->bottom > top && this->top < bottom)
 	{
@@ -26,7 +26,7 @@ Bool SSWR::SHPConv::RangeFilter::IsValid(Double left, Double top, Double right, 
 	}
 }
 
-UTF8Char *SSWR::SHPConv::RangeFilter::ToString(UTF8Char *buff)
+UTF8Char *SSWR::SHPConv::RangeFilter::ToString(UTF8Char *buff) const
 {
 	if (this->compareType == 1)
 	{
@@ -38,7 +38,7 @@ UTF8Char *SSWR::SHPConv::RangeFilter::ToString(UTF8Char *buff)
 	}
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::RangeFilter::Clone()
+SSWR::SHPConv::MapFilter *SSWR::SHPConv::RangeFilter::Clone() const
 {
 	MapFilter *filter;
 	NEW_CLASS(filter, RangeFilter(this->left, this->top, this->right, this->bottom, this->compareType));

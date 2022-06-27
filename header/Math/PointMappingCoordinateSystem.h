@@ -16,17 +16,17 @@ namespace Math
 		virtual ~PointMappingCoordinateSystem();
 
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);
-		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt);
+		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt) const;
 
-		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit);
-		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit);
-		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit);
-		virtual CoordinateSystem *Clone();
-		virtual CoordinateSystemType GetCoordSysType();
-		virtual Bool IsProjected();
-		virtual void ToString(Text::StringBuilderUTF8 *sb);
+		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual CoordinateSystem *Clone() const;
+		virtual CoordinateSystemType GetCoordSysType() const;
+		virtual Bool IsProjected() const;
+		virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
-		virtual Bool Equals(CoordinateSystem *csys);
+		virtual Bool Equals(CoordinateSystem *csys) const;
 	};
 }
 #endif

@@ -37,7 +37,7 @@ namespace Net
 		~ICMPScanner();
 
 		Bool Scan(UInt32 ip);
-		Data::ArrayList<ScanResult*> *GetResults();
+		const Data::ArrayList<ScanResult*> *GetResults() const;
 		void ClearResults();
 	};
 }

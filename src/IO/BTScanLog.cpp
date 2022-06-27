@@ -11,20 +11,14 @@ void IO::BTScanLog::FreeDev(DevEntry* dev)
 
 IO::BTScanLog::BTScanLog(Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
-	NEW_CLASS(this->pubDevs, Data::UInt64Map<DevEntry*>());
-	NEW_CLASS(this->randDevs, Data::UInt64Map<DevEntry*>());
-	NEW_CLASS(this->logs, Data::ArrayList<LogEntry*>());
 }
 
 IO::BTScanLog::~BTScanLog()
 {
 	this->ClearList();
-	DEL_CLASS(this->pubDevs);
-	DEL_CLASS(this->randDevs);
-	DEL_CLASS(this->logs);
 }
 
-IO::ParserType IO::BTScanLog::GetParserType()
+IO::ParserType IO::BTScanLog::GetParserType() const
 {
 	return IO::ParserType::BTScanLog;
 }
@@ -36,15 +30,15 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	log->timeTicks = timeTicks;
 	log->rssi = rssi;
 	log->txPower = txPower;
-	this->logs->Add(log);
+	this->logs.Add(log);
 	DevEntry *dev;
 	if (addrType == AT_RANDOM)
 	{
-		dev = this->randDevs->Get(macInt);
+		dev = this->randDevs.Get(macInt);
 	}
 	else
 	{
-		dev = this->pubDevs->Get(macInt);
+		dev = this->pubDevs.Get(macInt);
 	}
 	if (dev == 0)
 	{
@@ -59,11 +53,11 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 		NEW_CLASS(dev->logs, Data::ArrayList<LogEntry*>());
 		if (addrType == AT_RANDOM)
 		{
-			this->randDevs->Put(macInt, dev);
+			this->randDevs.Put(macInt, dev);
 		}
 		else
 		{
-			this->pubDevs->Put(macInt, dev);
+			this->pubDevs.Put(macInt, dev);
 		}
 	}
 	if (name && dev->name == 0)
@@ -100,25 +94,25 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 
 void IO::BTScanLog::ClearList()
 {
-	LIST_FREE_FUNC(this->logs, MemFree);
-	Data::ArrayList<IO::BTScanLog::DevEntry*> *devList;
-	devList = this->GetPublicList();
-	LIST_FREE_FUNC(devList, this->FreeDev);
-	devList = this->GetRandomList();
-	LIST_FREE_FUNC(devList, this->FreeDev);
-	this->logs->Clear();
-	this->pubDevs->Clear();
-	this->randDevs->Clear();
+	LIST_FREE_FUNC(&this->logs, MemFree);
+	const Data::ArrayList<IO::BTScanLog::DevEntry*> *devList;
+	devList = this->pubDevs.GetValues();
+	LIST_CALL_FUNC(devList, this->FreeDev);
+	devList = this->randDevs.GetValues();
+	LIST_CALL_FUNC(devList, this->FreeDev);
+	this->logs.Clear();
+	this->pubDevs.Clear();
+	this->randDevs.Clear();
 }
 
-Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetPublicList()
+const Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetPublicList() const
 {
-	return this->pubDevs->GetValues();
+	return this->pubDevs.GetValues();
 }
 
-Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList()
+const Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList() const
 {
-	return this->randDevs->GetValues();
+	return this->randDevs.GetValues();
 }
 
 Text::CString IO::BTScanLog::RadioTypeGetName(RadioType radioType)

@@ -14,17 +14,17 @@ namespace Crypto
 			X509CertReq(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509CertReq();
 
-			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
+			virtual FileType GetFileType() const;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 			
-			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual ASN1Data *Clone() const;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
-			Bool GetNames(CertNames *names);
-			Bool GetExtensions(CertExtensions *ext);
-			Crypto::Cert::X509Key *GetNewPublicKey();
-			Bool GetKeyId(UInt8 *keyId);
+			Bool GetNames(CertNames *names) const;
+			Bool GetExtensions(CertExtensions *ext) const;
+			Crypto::Cert::X509Key *GetNewPublicKey() const;
+			Bool GetKeyId(UInt8 *keyId) const;
 		};
 	}
 }

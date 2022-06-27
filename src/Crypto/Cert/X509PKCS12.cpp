@@ -17,12 +17,12 @@ Crypto::Cert::X509PKCS12::~X509PKCS12()
 
 }
 
-Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS12::GetFileType()
+Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS12::GetFileType() const
 {
 	return FileType::PKCS12;
 }
 
-void Crypto::Cert::X509PKCS12::ToShortName(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PKCS12::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -48,19 +48,19 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone()
+Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone() const
 {
 	Crypto::Cert::X509PKCS12 *asn1;
 	NEW_CLASS(asn1, Crypto::Cert::X509PKCS12(this->GetSourceNameObj(), this->buff, this->buffSize));
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS12::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PKCS12::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	if (IsPFX(this->buff, this->buff + this->buffSize, "1"))
 	{

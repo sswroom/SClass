@@ -44,37 +44,37 @@ namespace SSWR
 			OrganImageItem(Int32 userId);
 			~OrganImageItem();
 
-			Int32 GetUserId();
+			Int32 GetUserId() const;
 			void SetDispName(Text::String *dispName);
 			void SetDispName(Text::CString dispName);
-			Text::String *GetDispName();
+			Text::String *GetDispName() const;
 			void SetIsCoverPhoto(Bool isCoverPhoto);
-			Bool GetIsCoverPhoto();
+			Bool GetIsCoverPhoto() const;
 			void SetPhotoDate(Int64 photoDate);
-			Int64 GetPhotoDate();
+			Int64 GetPhotoDate() const;
 		//	void SetPhotoLoc(const WChar *photoLoc);
 		//	const WChar *GetPhotoLoc();
 			void SetRotateType(RotateType rotateType);
-			RotateType GetRotateType();
+			RotateType GetRotateType() const;
 			void SetFullName(Text::String *fullName);
 			void SetFullName(Text::CString fullName);
-			Text::String *GetFullName();
+			Text::String *GetFullName() const;
 			void SetFileType(FileType fileType);
-			FileType GetFileType();
+			FileType GetFileType() const;
 			void SetSrcURL(Text::String *srcURL);
 			void SetSrcURL(Text::CString srcURL);
-			Text::String *GetSrcURL();
+			Text::String *GetSrcURL() const;
 			void SetImgURL(Text::String *imgURL);
 			void SetImgURL(Text::CString imgURL);
-			Text::String *GetImgURL();
+			Text::String *GetImgURL() const;
 			void SetUserFile(UserFileInfo *userFile);
-			UserFileInfo *GetUserFile();
+			UserFileInfo *GetUserFile() const;
 			void SetWebFile(WebFileInfo *webFile);
-			WebFileInfo *GetWebFile();
+			WebFileInfo *GetWebFile() const;
 
-			OrganImageItem *Clone();
+			OrganImageItem *Clone() const;
 
-			WChar *ToString(WChar *sbuff);
+			WChar *ToString(WChar *sbuff) const;
 		};
 	}
 }

@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	Record *rec;
 	Data::Int32Map<Record*> *gpsLogMap;
 	Data::Int32Map<Record*> *wpMap;
-	Data::ArrayList<Record*> *recList;
+	const Data::ArrayList<Record*> *recList;
 	Data::DateTime *dt;
 	UOSInt i;
 	UOSInt j;

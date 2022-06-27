@@ -21,22 +21,22 @@ namespace Manage
 
 		virtual ~ThreadContext() {};
 
-		virtual UOSInt GetRegisterCnt() = 0;
-		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) = 0;
-		virtual void ToString(Text::StringBuilderUTF8 *sb) = 0;
-		virtual ContextType GetType() = 0;
-		virtual UOSInt GetThreadId() = 0;
-		virtual UOSInt GetProcessId() = 0;
-		virtual UOSInt GetInstAddr() = 0;
-		virtual UOSInt GetStackAddr() = 0;
-		virtual UOSInt GetFrameAddr() = 0;
+		virtual UOSInt GetRegisterCnt() const = 0;
+		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const = 0;
+		virtual void ToString(Text::StringBuilderUTF8 *sb) const = 0;
+		virtual ContextType GetType() const = 0;
+		virtual UOSInt GetThreadId() const = 0;
+		virtual UOSInt GetProcessId() const = 0;
+		virtual UOSInt GetInstAddr() const = 0;
+		virtual UOSInt GetStackAddr() const = 0;
+		virtual UOSInt GetFrameAddr() const = 0;
 		virtual void SetInstAddr(UOSInt instAddr) = 0;
 		virtual void SetStackAddr(UOSInt stackAddr) = 0;
 		virtual void SetFrameAddr(UOSInt frameAddr) = 0;
-		virtual ThreadContext *Clone() = 0;
-		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) = 0;
+		virtual ThreadContext *Clone() const = 0;
+		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) const = 0;
 
-		virtual Manage::Dasm *CreateDasm() = 0;
+		virtual Manage::Dasm *CreateDasm() const = 0;
 	};
 }
 #endif

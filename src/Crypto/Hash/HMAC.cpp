@@ -55,12 +55,12 @@ Crypto::Hash::HMAC::~HMAC()
 	}
 }
 
-UTF8Char *Crypto::Hash::HMAC::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::HMAC::GetName(UTF8Char *sbuff) const
 {
 	return this->hashInner->GetName(Text::StrConcatC(sbuff, UTF8STRC("HMAC-")));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::HMAC::Clone()
+Crypto::Hash::IHash *Crypto::Hash::HMAC::Clone() const
 {
 	Crypto::Hash::IHash *hmac;
 	NEW_CLASS(hmac, Crypto::Hash::HMAC(this->hashInner, key, keySize));
@@ -78,7 +78,7 @@ void Crypto::Hash::HMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->hashInner->Calc(buff, buffSize);
 }
 
-void Crypto::Hash::HMAC::GetValue(UInt8 *buff)
+void Crypto::Hash::HMAC::GetValue(UInt8 *buff) const
 {
 	this->hashInner->GetValue(buff);
 	this->hashOuter->Clear();
@@ -87,12 +87,12 @@ void Crypto::Hash::HMAC::GetValue(UInt8 *buff)
 	this->hashOuter->GetValue(buff);
 }
 
-UOSInt Crypto::Hash::HMAC::GetBlockSize()
+UOSInt Crypto::Hash::HMAC::GetBlockSize() const
 {
 	return this->hashInner->GetBlockSize();
 }
 
-UOSInt Crypto::Hash::HMAC::GetResultSize()
+UOSInt Crypto::Hash::HMAC::GetResultSize() const
 {
 	return this->hashInner->GetResultSize();
 }

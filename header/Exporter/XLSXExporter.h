@@ -23,10 +23,10 @@ namespace Exporter
 
 		struct BorderInfo
 		{
-			Text::SpreadSheet::CellStyle::BorderStyle *left;
-			Text::SpreadSheet::CellStyle::BorderStyle *top;
-			Text::SpreadSheet::CellStyle::BorderStyle *right;
-			Text::SpreadSheet::CellStyle::BorderStyle *bottom;
+			const Text::SpreadSheet::CellStyle::BorderStyle *left;
+			const Text::SpreadSheet::CellStyle::BorderStyle *top;
+			const Text::SpreadSheet::CellStyle::BorderStyle *right;
+			const Text::SpreadSheet::CellStyle::BorderStyle *bottom;
 		};
 
 	public:
@@ -44,7 +44,7 @@ namespace Exporter
 		static void AppendShapeProp(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
 		static void AppendAxis(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
 		static void AppendSeries(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
-		static void AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, Text::CString name);
+		static void AppendBorder(Text::StringBuilderUTF8 *sb, const Text::SpreadSheet::CellStyle::BorderStyle *border, Text::CString name);
 
 		static Text::CString PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);

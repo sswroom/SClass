@@ -68,7 +68,7 @@ Math::EarthEllipsoid::~EarthEllipsoid()
 {
 }
 
-Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit)
+Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Double r;
 	Double rLat1;
@@ -102,7 +102,7 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	return d;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -132,7 +132,7 @@ Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Dista
 	return totalDist;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -173,29 +173,8 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	return totalDist;
 }
 
-Double Math::EarthEllipsoid::GetSemiMajorAxis()
-{
-	return this->semiMajorAxis;
-}
-
-Double Math::EarthEllipsoid::GetSemiMinorAxis()
-{
-	return this->semiMinorAxis;
-}
-
-Double Math::EarthEllipsoid::GetInverseFlattening()
-{
-	return this->inverseFlattening;
-}
-
-Double Math::EarthEllipsoid::GetEccentricity()
-{
-	return this->eccentricity;
-}
-
-
 // Vincenty's Formulae, Direct Method
-Double Math::EarthEllipsoid::CalLonByDist(Double lat, Double lon, Double distM)
+Double Math::EarthEllipsoid::CalLonByDist(Double lat, Double lon, Double distM) const
 {
 	Double rlat = lat * Math::PI / 180.0;
 	Double r = CalRadiusAtLat(lat);
@@ -203,26 +182,26 @@ Double Math::EarthEllipsoid::CalLonByDist(Double lat, Double lon, Double distM)
 	return lon + diff * 180.0 / Math::PI;
 }
 
-Double Math::EarthEllipsoid::CalLatByDist(Double lat, Double distM)
+Double Math::EarthEllipsoid::CalLatByDist(Double lat, Double distM) const
 {
 	Double r = CalRadiusAtLat(lat);
 	Double rlat = lat * Math::PI / 180.0;
 	return 180.0 / Math::PI * (rlat + (distM / r));
 }
 
-Double Math::EarthEllipsoid::CalRadiusAtLat(Double lat)
+Double Math::EarthEllipsoid::CalRadiusAtLat(Double lat) const
 {
 	Double rlat = lat * Math::PI / 180.0;
 	Double ec = Math_Cos(rlat) * this->eccentricity;
 	return this->semiMajorAxis / Math_Sqrt(1.0 - ec * ec);
 }
 
-Bool Math::EarthEllipsoid::Equals(Math::EarthEllipsoid *ellipsoid)
+Bool Math::EarthEllipsoid::Equals(Math::EarthEllipsoid *ellipsoid) const
 {
 	return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening;
 }
 
-Text::CString Math::EarthEllipsoid::GetName()
+Text::CString Math::EarthEllipsoid::GetName() const
 {
 	const EarthEllipsoidInfo *info = GetEarthInfo(this->eet);
 	if (info == 0)
@@ -248,14 +227,14 @@ void Math::EarthEllipsoid::operator=(const EarthEllipsoid *ellipsoid)
 	this->eet = ellipsoid->eet;
 }
 
-Math::EarthEllipsoid *Math::EarthEllipsoid::Clone()
+Math::EarthEllipsoid *Math::EarthEllipsoid::Clone() const
 {
 	Math::EarthEllipsoid *ellipsoid;
 	NEW_CLASS(ellipsoid, Math::EarthEllipsoid(this->semiMajorAxis, this->inverseFlattening, this->eet));
 	return ellipsoid;
 }
 
-void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z)
+void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z) const
 {
 	Double rLat = dLat * PI / 180.0;
 	Double rLon = dLon * PI / 180.0;
@@ -270,7 +249,7 @@ void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, 
 	*z = ((1 - e2) * v + h) * sLat;
 }
 
-void Math::EarthEllipsoid::FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h)
+void Math::EarthEllipsoid::FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h) const
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double rLon = Math_ArcTan2(y, x);

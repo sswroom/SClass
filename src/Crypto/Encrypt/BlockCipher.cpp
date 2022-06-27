@@ -211,12 +211,12 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 	}
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::GetEncBlockSize()
+UOSInt Crypto::Encrypt::BlockCipher::GetEncBlockSize() const
 {
 	return this->blockSize;
 }
 
-UOSInt Crypto::Encrypt::BlockCipher::GetDecBlockSize()
+UOSInt Crypto::Encrypt::BlockCipher::GetDecBlockSize() const
 {
 	return this->blockSize;
 }

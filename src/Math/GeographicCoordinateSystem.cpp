@@ -72,39 +72,39 @@ Math::GeographicCoordinateSystem::~GeographicCoordinateSystem()
 	DEL_CLASS(this->datum.spheroid.ellipsoid);
 }
 
-Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit)
+Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.lat, pos1.lon, pos2.lat, pos2.lon, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance(pl, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance3D(pl, unit);
 }
 
-Math::CoordinateSystem *Math::GeographicCoordinateSystem::Clone()
+Math::CoordinateSystem *Math::GeographicCoordinateSystem::Clone() const
 {
 	Math::CoordinateSystem *csys;
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
 	return csys;
 }
 
-Math::CoordinateSystem::CoordinateSystemType Math::GeographicCoordinateSystem::GetCoordSysType()
+Math::CoordinateSystem::CoordinateSystemType Math::GeographicCoordinateSystem::GetCoordSysType() const
 {
 	return Math::CoordinateSystem::CoordinateSystemType::Geographic;
 }
 
-Bool Math::GeographicCoordinateSystem::IsProjected()
+Bool Math::GeographicCoordinateSystem::IsProjected() const
 {
 	return false;
 }
 
-void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
+void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);
@@ -140,32 +140,27 @@ void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 	Text::SBAppendF64(sb, this->datum.spheroid.ellipsoid->GetInverseFlattening());
 }
 
-Math::EarthEllipsoid *Math::GeographicCoordinateSystem::GetEllipsoid()
-{
-	return this->datum.spheroid.ellipsoid;
-}
-
-const UTF8Char *Math::GeographicCoordinateSystem::GetDatumName()
+const UTF8Char *Math::GeographicCoordinateSystem::GetDatumName() const
 {
 	return (const UTF8Char*)this->datum.name;
 }
 
-const Math::GeographicCoordinateSystem::DatumData1 *Math::GeographicCoordinateSystem::GetDatum()
+const Math::GeographicCoordinateSystem::DatumData1 *Math::GeographicCoordinateSystem::GetDatum() const
 {
 	return &this->datum;
 }
 
-Math::CoordinateSystem::PrimemType Math::GeographicCoordinateSystem::GetPrimem()
+Math::CoordinateSystem::PrimemType Math::GeographicCoordinateSystem::GetPrimem() const
 {
 	return this->primem;
 }
 
-Math::CoordinateSystem::UnitType Math::GeographicCoordinateSystem::GetUnit()
+Math::CoordinateSystem::UnitType Math::GeographicCoordinateSystem::GetUnit() const
 {
 	return this->unit;
 }
 
-void Math::GeographicCoordinateSystem::ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z)
+void Math::GeographicCoordinateSystem::ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const
 {
 	Double tmpX;
 	Double tmpY;
@@ -189,7 +184,7 @@ void Math::GeographicCoordinateSystem::ToCartesianCoord(Double lat, Double lon, 
 	}
 }
 
-void Math::GeographicCoordinateSystem::FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h)
+void Math::GeographicCoordinateSystem::FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const
 {
 	Double tmpX;
 	Double tmpY;

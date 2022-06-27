@@ -23,12 +23,12 @@ Crypto::Hash::Adler32::~Adler32()
 {
 }
 
-UTF8Char *Crypto::Hash::Adler32::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::Adler32::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("Adler-32"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::Adler32::Clone()
+Crypto::Hash::IHash *Crypto::Hash::Adler32::Clone() const
 {
 	Crypto::Hash::Adler32 *adler32;
 	NEW_CLASS(adler32, Crypto::Hash::Adler32(this));
@@ -45,17 +45,17 @@ void Crypto::Hash::Adler32::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->abVal = Adler32_Calc(buff, buffSize, this->abVal);
 }
 
-void Crypto::Hash::Adler32::GetValue(UInt8 *buff)
+void Crypto::Hash::Adler32::GetValue(UInt8 *buff) const
 {
 	WriteMUInt32(buff, this->abVal);
 }
 
-UOSInt Crypto::Hash::Adler32::GetBlockSize()
+UOSInt Crypto::Hash::Adler32::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::Adler32::GetResultSize()
+UOSInt Crypto::Hash::Adler32::GetResultSize() const
 {
 	return 4;
 }

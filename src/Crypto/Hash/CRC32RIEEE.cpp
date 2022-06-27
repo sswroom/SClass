@@ -29,12 +29,12 @@ Crypto::Hash::CRC32RIEEE::~CRC32RIEEE()
 {
 }
 
-UTF8Char *Crypto::Hash::CRC32RIEEE::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::CRC32RIEEE::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC32 IEEE"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::CRC32RIEEE::Clone()
+Crypto::Hash::IHash *Crypto::Hash::CRC32RIEEE::Clone() const
 {
 	Crypto::Hash::CRC32RIEEE *crc;
 	NEW_CLASS(crc, Crypto::Hash::CRC32RIEEE());
@@ -52,22 +52,22 @@ void Crypto::Hash::CRC32RIEEE::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = CRC32R_Calc(buff, buffSize, crctab, this->currVal);
 }
 
-void Crypto::Hash::CRC32RIEEE::GetValue(UInt8 *buff)
+void Crypto::Hash::CRC32RIEEE::GetValue(UInt8 *buff) const
 {
 	WriteMUInt32(buff, ~currVal);
 }
 
-UOSInt Crypto::Hash::CRC32RIEEE::GetBlockSize()
+UOSInt Crypto::Hash::CRC32RIEEE::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC32RIEEE::GetResultSize()
+UOSInt Crypto::Hash::CRC32RIEEE::GetResultSize() const
 {
 	return 4;
 }
 
-UInt32 Crypto::Hash::CRC32RIEEE::GetValueU32()
+UInt32 Crypto::Hash::CRC32RIEEE::GetValueU32() const
 {
 	return ~this->currVal;
 }

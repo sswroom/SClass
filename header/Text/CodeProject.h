@@ -16,16 +16,16 @@ namespace Text
 		} ObjectType;
 
 		virtual ~CodeObject();
-		virtual ObjectType GetObjectType() = 0;
+		virtual ObjectType GetObjectType() const = 0;
 	};
 
 	class CodeFile : public CodeObject
 	{
 	public:
 		virtual ~CodeFile();
-		virtual ObjectType GetObjectType();
+		virtual ObjectType GetObjectType() const;
 
-		virtual Text::String *GetFileName() = 0;
+		virtual Text::String *GetFileName() const = 0;
 	};
 
 	class CodeContainer : public CodeObject
@@ -33,11 +33,11 @@ namespace Text
 	public:
 		virtual ~CodeContainer();
 
-		virtual ObjectType GetObjectType();
+		virtual ObjectType GetObjectType() const;
 
-		virtual Text::String *GetContainerName() = 0;
-		virtual UOSInt GetChildCount() = 0;
-		virtual CodeObject *GetChildObj(UOSInt index) = 0;
+		virtual Text::String *GetContainerName() const = 0;
+		virtual UOSInt GetChildCount() const = 0;
+		virtual CodeObject *GetChildObj(UOSInt index) const = 0;
 	};
 
 	class CodeProjectCfg : public IO::ConfigFile
@@ -48,7 +48,7 @@ namespace Text
 		CodeProjectCfg(Text::String *name);
 		virtual ~CodeProjectCfg();
 
-		Text::String *GetCfgName();
+		Text::String *GetCfgName() const;
 	};
 
 	class CodeProject : public IO::ParsedObject, public CodeContainer
@@ -59,17 +59,17 @@ namespace Text
 			PROJT_VSPROJECT
 		} ProjectType;
 	private:
-		Data::ArrayList<CodeProjectCfg*> *cfgList;
+		Data::ArrayList<CodeProjectCfg*> cfgList;
 	public:
 		CodeProject(Text::CString name);
 		virtual ~CodeProject();
 
 		void AddConfig(Text::CodeProjectCfg *cfg);
-		UOSInt GetConfigCnt();
-		CodeProjectCfg *GetConfig(UOSInt index);
+		UOSInt GetConfigCnt() const;
+		CodeProjectCfg *GetConfig(UOSInt index) const;
 
-		virtual ProjectType GetProjectType() = 0;
-		virtual IO::ParserType GetParserType();
+		virtual ProjectType GetProjectType() const = 0;
+		virtual IO::ParserType GetParserType() const;
 	};
 }
 #endif

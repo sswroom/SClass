@@ -11,7 +11,7 @@ Data::ArrayListUInt64::ArrayListUInt64(UOSInt capacity) : Data::SortableArrayLis
 {
 }
 
-Data::ArrayList<UInt64> *Data::ArrayListUInt64::Clone()
+Data::ArrayList<UInt64> *Data::ArrayListUInt64::Clone() const
 {
 	Data::ArrayListUInt64 *newArr;
 	NEW_CLASS(newArr, Data::ArrayListUInt64(this->capacity));
@@ -19,7 +19,7 @@ Data::ArrayList<UInt64> *Data::ArrayListUInt64::Clone()
 	return newArr;
 }
 
-void Data::ArrayListUInt64::AddRangeU32(UInt32 *arr, UOSInt cnt)
+void Data::ArrayListUInt64::AddRangeU32(const UInt32 *arr, UOSInt cnt)
 {
 	UOSInt i;
 	UOSInt j;
@@ -44,7 +44,7 @@ void Data::ArrayListUInt64::AddRangeU32(UInt32 *arr, UOSInt cnt)
 	this->objCnt += cnt;
 }
 
-void Data::ArrayListUInt64::AddRangeU32(Data::ArrayList<UInt32> *arr)
+void Data::ArrayListUInt64::AddRangeU32(const Data::ArrayList<UInt32> *arr)
 {
 	UOSInt i;
 	UOSInt j;

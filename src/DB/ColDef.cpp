@@ -34,52 +34,52 @@ DB::ColDef::~ColDef()
 	SDEL_STRING(this->attr);
 }
 
-Text::String *DB::ColDef::GetColName()
+Text::String *DB::ColDef::GetColName() const
 {
 	return this->colName;
 }
 
-DB::DBUtil::ColType DB::ColDef::GetColType()
+DB::DBUtil::ColType DB::ColDef::GetColType() const
 {
 	return this->colType;
 }
 
-UOSInt DB::ColDef::GetColSize()
+UOSInt DB::ColDef::GetColSize() const
 {
 	return this->colSize;
 }
 
-UOSInt DB::ColDef::GetColDP()
+UOSInt DB::ColDef::GetColDP() const
 {
 	return this->colDP;
 }
 
-Bool DB::ColDef::IsNotNull()
+Bool DB::ColDef::IsNotNull() const
 {
 	return this->notNull;
 }
 
-Bool DB::ColDef::IsPK()
+Bool DB::ColDef::IsPK() const
 {
 	return this->pk;
 }
 
-Bool DB::ColDef::IsAutoInc()
+Bool DB::ColDef::IsAutoInc() const
 {
 	return this->autoInc;
 }
 
-Text::String *DB::ColDef::GetDefVal()
+Text::String *DB::ColDef::GetDefVal() const
 {
 	return this->defVal;
 }
 
-Text::String *DB::ColDef::GetAttr()
+Text::String *DB::ColDef::GetAttr() const
 {
 	return this->attr;
 }
 
-Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql)
+Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql) const
 {
 	if (this->defVal == 0)
 		return false;
@@ -167,7 +167,7 @@ void DB::ColDef::SetAttr(Text::String *attr)
 	if (attr) this->attr = attr->Clone();
 }
 
-void DB::ColDef::Set(ColDef *colDef)
+void DB::ColDef::Set(const ColDef *colDef)
 {
 	this->SetColName(colDef->colName);
 	this->SetColType(colDef->colType);
@@ -180,12 +180,12 @@ void DB::ColDef::Set(ColDef *colDef)
 	this->SetAttr(colDef->attr);
 }
 
-UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff)
+UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff) const
 {
 	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize);
 }
 
-DB::ColDef *DB::ColDef::Clone()
+DB::ColDef *DB::ColDef::Clone() const
 {
 	DB::ColDef *newObj;
 	NEW_CLASS(newObj, DB::ColDef(this->colName));

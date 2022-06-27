@@ -18,12 +18,12 @@ Crypto::Cert::X509PubKey::~X509PubKey()
 
 }
 
-Crypto::Cert::X509File::FileType Crypto::Cert::X509PubKey::GetFileType()
+Crypto::Cert::X509File::FileType Crypto::Cert::X509PubKey::GetFileType() const
 {
 	return FileType::PublicKey;
 }
 
-void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
@@ -44,19 +44,19 @@ void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509PubKey::Clone()
+Net::ASN1Data *Crypto::Cert::X509PubKey::Clone() const
 {
 	Crypto::Cert::X509PubKey *asn1;
 	NEW_CLASS(asn1, Crypto::Cert::X509PubKey(this->GetSourceNameObj(), this->buff, this->buffSize));
 	return asn1;
 }
 
-void Crypto::Cert::X509PubKey::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PubKey::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	if (IsPublicKeyInfo(this->buff, this->buff + this->buffSize, "1"))
 	{
@@ -64,7 +64,7 @@ void Crypto::Cert::X509PubKey::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509PubKey::CreateKey()
+Crypto::Cert::X509Key *Crypto::Cert::X509PubKey::CreateKey() const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt keyTypeLen;

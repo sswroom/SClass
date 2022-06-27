@@ -13,18 +13,18 @@ namespace Crypto
 			X509CRL(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509CRL();
 
-			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
+			virtual FileType GetFileType() const;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 			
-			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual ASN1Data *Clone() const;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
-			Bool HasVersion();
-			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb);
-			Bool GetThisUpdate(Data::DateTime *dt);
-			Bool GetNextUpdate(Data::DateTime *dt);
-			Bool IsRevoked(Crypto::Cert::X509Cert *cert);
+			Bool HasVersion() const;
+			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb) const;
+			Bool GetThisUpdate(Data::DateTime *dt) const;
+			Bool GetNextUpdate(Data::DateTime *dt) const;
+			Bool IsRevoked(Crypto::Cert::X509Cert *cert) const;
 		};
 	}
 }

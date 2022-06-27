@@ -31,39 +31,39 @@ namespace SSWR
 			virtual ~OrganSpecies();
 
 			void SetSpeciesId(Int32 speciesId);
-			Int32 GetSpeciesId();
+			Int32 GetSpeciesId() const;
 			void SetCName(Text::CString cName);
-			Text::String *GetCName();
+			Text::String *GetCName() const;
 			void SetEName(Text::CString eName);
-			Text::String *GetEName();
+			Text::String *GetEName() const;
 			void SetSName(Text::CString sName);
-			Text::String *GetSName();
+			Text::String *GetSName() const;
 			void SetGroupId(Int32 groupId);
-			Int32 GetGroupId();
+			Int32 GetGroupId() const;
 			void SetDesc(Text::CString desc);
-			Text::String *GetDesc();
+			Text::String *GetDesc() const;
 			void SetDirName(Text::CString dirName);
-			Text::String *GetDirName();
+			Text::String *GetDirName() const;
 			void SetPhoto(Text::CString photo);
-			Text::String *GetPhoto();
+			Text::String *GetPhoto() const;
 			void SetIDKey(Text::CString idKey);
-			Text::String *GetIDKey();
+			Text::String *GetIDKey() const;
 			void SetFlags(Int32 flags);
-			Int32 GetFlags();
+			Int32 GetFlags() const;
 			void SetIsDefault(Bool isDefault);
-			Bool GetIsDefault();
+			Bool GetIsDefault() const;
 			void SetPhotoId(Int32 photoId);
-			Int32 GetPhotoId();
+			Int32 GetPhotoId() const;
 			void SetPhotoWId(Int32 photoWId);
-			Int32 GetPhotoWId();
+			Int32 GetPhotoWId() const;
 			void SetMapColor(UInt32 mapColor);
-			UInt32 GetMapColor();
+			UInt32 GetMapColor() const;
 
 
-			virtual ItemType GetItemType();
-			virtual UTF8Char *GetItemName(UTF8Char *buff);
-			virtual UTF8Char *GetEngName(UTF8Char *buff);
-			virtual OrganGroupItem *Clone();
+			virtual ItemType GetItemType() const;
+			virtual UTF8Char *GetItemName(UTF8Char *buff) const;
+			virtual UTF8Char *GetEngName(UTF8Char *buff) const;
+			virtual OrganGroupItem *Clone() const;
 		};
 	}
 }

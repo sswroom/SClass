@@ -67,29 +67,29 @@ namespace Media
 		ImageList(Text::CString name);
 		virtual ~ImageList();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		UOSInt AddImage(Media::Image *img, UInt32 imageDelay);
 		void ReplaceImage(UOSInt index, Media::Image *img);
 		Bool RemoveImage(UOSInt index, Bool toRelease);
-		UOSInt GetCount();
-		Media::Image *GetImage(UOSInt index, UInt32 *imageDelay);
-		ImageType GetImageType(UOSInt index);
+		UOSInt GetCount() const;
+		Media::Image *GetImage(UOSInt index, UInt32 *imageDelay) const;
+		ImageType GetImageType(UOSInt index) const;
 		void SetImageType(UOSInt index, ImageType imgType);
 		void ToStaticImage(UOSInt index);
 		void SetAuthor(const UTF8Char *name);
 		void SetImageName(const UTF8Char *imgName);
 
 		void SetThermoImage(UOSInt thermoWidth, UOSInt thermoHeight, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
-		Bool HasThermoImage();
-		Double GetThermoValue(Double x, Double y);
+		Bool HasThermoImage() const;
+		Double GetThermoValue(Double x, Double y) const;
 
 		void SetValueInt32(ValueType valType, Int32 val);
 		void SetValueInt64(ValueType valType, Int64 val);
 		void SetValueStr(ValueType valType, Text::CString val);
-		Bool ToValueString(Text::StringBuilderUTF8 *sb);
+		Bool ToValueString(Text::StringBuilderUTF8 *sb) const;
 
-		void ToString(Text::StringBuilderUTF8 *sb);
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 		static Text::CString GetValueTypeName(ValueType valType);
 	};
 }

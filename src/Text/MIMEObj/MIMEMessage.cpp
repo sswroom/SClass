@@ -38,18 +38,18 @@ Text::MIMEObj::MIMEMessage::~MIMEMessage()
 	}
 }
 
-Text::CString Text::MIMEObj::MIMEMessage::GetClassName()
+Text::CString Text::MIMEObj::MIMEMessage::GetClassName() const
 {
 	return CSTR("MIMEMessage");
 }
 
-Text::CString Text::MIMEObj::MIMEMessage::GetContentType()
+Text::CString Text::MIMEObj::MIMEMessage::GetContentType() const
 {
 	Text::String *contType = this->GetHeader(UTF8STRC("Content-Type"));
 	return STR_CSTR(contType);
 }
 
-UOSInt Text::MIMEObj::MIMEMessage::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::MIMEMessage::WriteStream(IO::Stream *stm) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -81,7 +81,7 @@ UOSInt Text::MIMEObj::MIMEMessage::WriteStream(IO::Stream *stm)
 	return i;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MIMEMessage::Clone()
+Text::IMIMEObj *Text::MIMEObj::MIMEMessage::Clone() const
 {
 	Text::MIMEObj::MIMEMessage *msg;
 	UOSInt i;
@@ -107,7 +107,7 @@ void Text::MIMEObj::MIMEMessage::SetContent(Text::IMIMEObj *content)
 	this->content = content;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MIMEMessage::GetContent()
+Text::IMIMEObj *Text::MIMEObj::MIMEMessage::GetContent() const
 {
 	return this->content;
 }
@@ -135,7 +135,7 @@ void Text::MIMEObj::MIMEMessage::AddHeader(Text::String *name, Text::String *val
 	this->headerValue.Add(value->Clone());
 }
 
-Text::String *Text::MIMEObj::MIMEMessage::GetHeader(const UTF8Char *name, UOSInt nameLen)
+Text::String *Text::MIMEObj::MIMEMessage::GetHeader(const UTF8Char *name, UOSInt nameLen) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -150,17 +150,17 @@ Text::String *Text::MIMEObj::MIMEMessage::GetHeader(const UTF8Char *name, UOSInt
 	return 0;
 }
 
-UOSInt Text::MIMEObj::MIMEMessage::GetHeaderCount()
+UOSInt Text::MIMEObj::MIMEMessage::GetHeaderCount() const
 {
 	return this->headerName.GetCount();
 }
 
-Text::String *Text::MIMEObj::MIMEMessage::GetHeaderName(UOSInt index)
+Text::String *Text::MIMEObj::MIMEMessage::GetHeaderName(UOSInt index) const
 {
 	return this->headerName.GetItem(index);
 }
 
-Text::String *Text::MIMEObj::MIMEMessage::GetHeaderValue(UOSInt index)
+Text::String *Text::MIMEObj::MIMEMessage::GetHeaderValue(UOSInt index) const
 {
 	return this->headerValue.GetItem(index);
 }

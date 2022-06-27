@@ -23,9 +23,9 @@ namespace IO
 		UInt16 tranId;
 		Bool threadRunning;
 		Bool threadToStop;
-		Manage::HiResClock *clk;
-		Sync::Mutex *stmMut;
-		Data::Int32Map<AddrResultCb*> *cbMap;
+		Manage::HiResClock clk;
+		Sync::Mutex stmMut;
+		Data::Int32Map<AddrResultCb*> cbMap;
 
 		static UInt32 __stdcall ThreadProc(void *userObj);
 	public:

@@ -19,22 +19,22 @@ namespace Math
 		GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
 		virtual ~GeographicCoordinateSystem();
 
-		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit);
-		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit);
-		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit);
-		virtual Math::CoordinateSystem *Clone();
-		virtual CoordinateSystemType GetCoordSysType();
-		virtual Bool IsProjected();
-		virtual void ToString(Text::StringBuilderUTF8 *sb);
+		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Math::CoordinateSystem *Clone() const;
+		virtual CoordinateSystemType GetCoordSysType() const;
+		virtual Bool IsProjected() const;
+		virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
-		Math::EarthEllipsoid *GetEllipsoid();
-		const UTF8Char *GetDatumName();
-		const DatumData1 *GetDatum();
-		PrimemType GetPrimem();
-		UnitType GetUnit();
+		Math::EarthEllipsoid *GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
+		const UTF8Char *GetDatumName() const;
+		const DatumData1 *GetDatum() const;
+		PrimemType GetPrimem() const;
+		UnitType GetUnit() const;
 
-		void ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z);
-		void FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h);
+		void ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const;
+		void FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const;
 	};
 }
 #endif

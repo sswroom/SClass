@@ -10,7 +10,7 @@ void __stdcall Media::Playlist::OnPBEnd(void *userObj)
 {
 	Media::Playlist *me = (Media::Playlist*)userObj;
 	Data::RandomOS random;
-	UOSInt i = (UInt32)random.NextInt15() % me->entries->GetCount();
+	UOSInt i = (UInt32)random.NextInt15() % me->entries.GetCount();
 	me->OpenItem(i);
 }
 
@@ -28,7 +28,6 @@ Media::Playlist::Playlist(Text::CString sourceName, Parser::ParserList *parsers)
 	this->player = 0;
 	this->currFile = 0;
 	this->playing = false;
-	NEW_CLASS(this->entries, Data::ArrayList<PlaylistEntry*>());
 }
 
 Media::Playlist::~Playlist()
@@ -41,15 +40,14 @@ Media::Playlist::~Playlist()
 	}
 	SDEL_CLASS(this->currFile);
 	UOSInt i;
-	i = this->entries->GetCount();
+	i = this->entries.GetCount();
 	while (i-- > 0)
 	{
-		FreeEntry(this->entries->GetItem(i));
+		FreeEntry(this->entries.GetItem(i));
 	}
-	DEL_CLASS(this->entries);
 }
 
-IO::ParserType Media::Playlist::GetParserType()
+IO::ParserType Media::Playlist::GetParserType() const
 {
 	return IO::ParserType::Playlist;
 }
@@ -102,7 +100,7 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 			}
 			ent->timeStart = chap->GetChapterTime(i);
 			ent->timeEnd = nextTime;
-			this->entries->Add(ent);
+			this->entries.Add(ent);
 
 			i++;
 		}
@@ -116,7 +114,7 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 		ent->artist = 0;
 		ent->timeStart = 0;
 		ent->timeEnd = -1;
-		this->entries->Add(ent);
+		this->entries.Add(ent);
 	}
 	DEL_CLASS(file);
 	return true;
@@ -124,7 +122,7 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 
 Bool Media::Playlist::RemoveEntry(UOSInt index)
 {
-	PlaylistEntry *ent = this->entries->RemoveAt(index);
+	PlaylistEntry *ent = this->entries.RemoveAt(index);
 	if (ent == 0)
 		return false;
 	FreeEntry(ent);
@@ -138,10 +136,10 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 	PlaylistEntry *ent;
 	PlaylistEntry *plent;
 	i = 0;
-	j = playlist->entries->GetCount();
+	j = playlist->entries.GetCount();
 	while (i < j)
 	{
-		plent = playlist->entries->GetItem(i);
+		plent = playlist->entries.GetItem(i);
 		ent = MemAlloc(PlaylistEntry, 1);
 		ent->fileName = plent->fileName->Clone();
 		ent->title = plent->title->Clone();
@@ -155,7 +153,7 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 		}
 		ent->timeStart = plent->timeStart;
 		ent->timeEnd = plent->timeEnd;
-		this->entries->Add(ent);
+		this->entries.Add(ent);
 		i++;
 	}
 	return true;
@@ -163,56 +161,56 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 
 void Media::Playlist::ClearFiles()
 {
-	UOSInt i = this->entries->GetCount();
+	UOSInt i = this->entries.GetCount();
 	PlaylistEntry *ent;
 	while (i-- > 0)
 	{
-		ent = this->entries->RemoveAt(i);
+		ent = this->entries.RemoveAt(i);
 		FreeEntry(ent);
 	}
-	this->entries->Clear();
+	this->entries.Clear();
 }
 
-UOSInt Media::Playlist::GetCount()
+UOSInt Media::Playlist::GetCount() const
 {
-	return this->entries->GetCount();
+	return this->entries.GetCount();
 }
 
-Text::String *Media::Playlist::GetTitle(UOSInt index)
+Text::String *Media::Playlist::GetTitle(UOSInt index) const
 {
-	PlaylistEntry *ent = this->entries->GetItem(index);
+	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
 	return ent->title;
 }
 
-Text::String *Media::Playlist::GetArtist(UOSInt index)
+Text::String *Media::Playlist::GetArtist(UOSInt index) const
 {
-	PlaylistEntry *ent = this->entries->GetItem(index);
+	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
 	return ent->artist;
 }
 
-Text::String *Media::Playlist::GetFileName(UOSInt index)
+Text::String *Media::Playlist::GetFileName(UOSInt index) const
 {
-	PlaylistEntry *ent = this->entries->GetItem(index);
+	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
 	return ent->fileName;
 }
 
-UInt32 Media::Playlist::GetTimeStart(UOSInt index)
+UInt32 Media::Playlist::GetTimeStart(UOSInt index) const
 {
-	PlaylistEntry *ent = this->entries->GetItem(index);
+	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
 	return ent->timeStart;
 }
 
-Int32 Media::Playlist::GetTimeEnd(UOSInt index)
+Int32 Media::Playlist::GetTimeEnd(UOSInt index) const
 {
-	PlaylistEntry *ent = this->entries->GetItem(index);
+	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
 		return 0;
 	return ent->timeEnd;
@@ -234,7 +232,7 @@ void Media::Playlist::SetPlayer(Media::IMediaPlayer *player)
 
 Bool Media::Playlist::OpenItem(UOSInt index)
 {
-	PlaylistEntry *ent = this->entries->GetItem(index);
+	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0 || this->player == 0)
 		return false;
 

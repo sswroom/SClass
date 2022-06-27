@@ -19,12 +19,12 @@ Crypto::Cert::X509Key::~X509Key()
 
 }
 
-Crypto::Cert::X509File::FileType Crypto::Cert::X509Key::GetFileType()
+Crypto::Cert::X509File::FileType Crypto::Cert::X509Key::GetFileType() const
 {
 	return FileType::Key;
 }
 
-void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 	sb->Append(KeyTypeGetName(this->keyType));
 	sb->AppendUTF8Char(' ');
@@ -32,7 +32,7 @@ void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC(" bits"));
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	if (this->keyType == KeyType::Unknown)
 	{
@@ -41,14 +41,14 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngin
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509Key::Clone()
+Net::ASN1Data *Crypto::Cert::X509Key::Clone() const
 {
 	Crypto::Cert::X509Key *asn1;
 	NEW_CLASS(asn1, Crypto::Cert::X509Key(this->GetSourceNameObj(), this->buff, this->buffSize, this->keyType));
 	return asn1;
 }
 
-void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Bool found = false;
 	if (this->keyType == KeyType::RSA)
@@ -230,17 +230,17 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType()
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType() const
 {
 	return this->keyType;
 }
 
-UOSInt Crypto::Cert::X509Key::GetKeySizeBits()
+UOSInt Crypto::Cert::X509Key::GetKeySizeBits() const
 {
 	return KeyGetLeng(this->buff, this->buff + this->buffSize, this->keyType);
 }
 
-Bool Crypto::Cert::X509Key::IsPrivateKey()
+Bool Crypto::Cert::X509Key::IsPrivateKey() const
 {
 	switch (this->keyType)
 	{
@@ -257,7 +257,7 @@ Bool Crypto::Cert::X509Key::IsPrivateKey()
 	}
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey()
+Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 {
 	if (this->keyType == KeyType::RSAPublic)
 	{
@@ -288,7 +288,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey()
 	}
 }
 
-Bool Crypto::Cert::X509Key::GetKeyId(UInt8 *keyId)
+Bool Crypto::Cert::X509Key::GetKeyId(UInt8 *keyId) const
 {
 	Crypto::Cert::X509Key *pubKey = this->CreatePublicKey();
 	if (pubKey)
@@ -302,7 +302,7 @@ Bool Crypto::Cert::X509Key::GetKeyId(UInt8 *keyId)
 	return false;
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
@@ -318,7 +318,7 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size)
 	}
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
@@ -334,43 +334,43 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size)
 	}
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPrivateExponent(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAPrivateExponent(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.4", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPrime1(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAPrime1(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.5", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPrime2(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAPrime2(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.6", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAExponent1(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAExponent1(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.7", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAExponent2(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSAExponent2(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.8", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.9", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size) const
 {
 	if (this->keyType == KeyType::ECDSA)
 	{
@@ -381,7 +381,7 @@ const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size)
 		return 0;
 	}
 }
-const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size)
+const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -428,7 +428,7 @@ const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size)
 	}
 }
 
-Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName()
+Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 {
 	if (this->keyType == KeyType::ECPublic)
 	{

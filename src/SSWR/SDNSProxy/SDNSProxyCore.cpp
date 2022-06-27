@@ -203,7 +203,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 {
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<ClientInfo*> *cliInfoList;
+	const Data::ArrayList<ClientInfo*> *cliInfoList;
 	ClientInfo *cli;
 	SDEL_CLASS(this->listener);
 	SDEL_CLASS(this->hdlr);

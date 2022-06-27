@@ -432,7 +432,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 			Text::UTF8Writer writer(&fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
-			Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
+			const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
 			i = 0;
 			j = wifiLogList->GetCount();
 			while (i < j)
@@ -540,7 +540,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 			Text::UTF8Writer writer(&fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
-			Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
+			const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = me->wifiLogMap->GetValues();
 			i = 0;
 			j = wifiLogList->GetCount();
 			while (i < j)
@@ -682,7 +682,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 	DEL_CLASS(this->wlan);
 	UOSInt i;
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus *bss;
-	Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus*> *bssList = this->bssMap->GetValues();
+	const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus*> *bssList = this->bssMap->GetValues();
 	i = bssList->GetCount();
 	while (i-- > 0)
 	{
@@ -692,7 +692,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 	}
 	DEL_CLASS(this->bssMap);
 
-	Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = this->wifiLogMap->GetValues();
+	const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog*> *wifiLogList = this->wifiLogMap->GetValues();
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog *wifiLog;
 	i = wifiLogList->GetCount();
 	while (i-- > 0)

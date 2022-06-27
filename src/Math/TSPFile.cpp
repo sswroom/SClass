@@ -113,24 +113,24 @@ void Math::TSPFile::Reconnect()
 {
 }
 
-UInt8 *Math::TSPFile::GetRowPtr(UOSInt row)
+UInt8 *Math::TSPFile::GetRowPtr(UOSInt row) const
 {
 	if (row >= this->rowCnt)
 		return 0;
 	return &this->ptBuff[this->rowSize * row];
 }
 
-UInt8 *Math::TSPFile::GetHdrPtr()
+UInt8 *Math::TSPFile::GetHdrPtr() const
 {
 	return this->hdrBuff;
 }
 
-UOSInt Math::TSPFile::GetRowCnt()
+UOSInt Math::TSPFile::GetRowCnt() const
 {
 	return this->rowCnt;
 }
 
-UOSInt Math::TSPFile::GetRowSize()
+UOSInt Math::TSPFile::GetRowSize() const
 {
 	return this->rowSize;
 }

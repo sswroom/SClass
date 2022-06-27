@@ -116,34 +116,34 @@ namespace Data
 			return this->itemType;
 		}
 
-		const ItemValue GetItemValue()
+		const ItemValue GetItemValue() const
 		{
 			return this->val;
 		}
 
-		Single GetAsF32();
-		Double GetAsF64();
-		Int8 GetAsI8();
-		UInt8 GetAsU8();
-		Int16 GetAsI16();
-		UInt16 GetAsU16();
-		Int32 GetAsI32();
-		UInt32 GetAsU32();
-		Int64 GetAsI64();
-		UInt64 GetAsU64();
-		Bool GetAsBool();
-		void GetAsString(Text::StringBuilderUTF8 *sb);
-		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize);
-		Text::String *GetAsNewString();
-		Data::DateTime *GetAsNewDate();
-		Data::Timestamp GetAsTimestamp();
-		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();
-		Math::Vector2D *GetAsNewVector();
-		Data::UUID *GetAsNewUUID();
+		Single GetAsF32() const;
+		Double GetAsF64() const;
+		Int8 GetAsI8() const;
+		UInt8 GetAsU8() const;
+		Int16 GetAsI16() const;
+		UInt16 GetAsU16() const;
+		Int32 GetAsI32() const;
+		UInt32 GetAsU32() const;
+		Int64 GetAsI64() const;
+		UInt64 GetAsU64() const;
+		Bool GetAsBool() const;
+		void GetAsString(Text::StringBuilderUTF8 *sb) const;
+		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize) const;
+		Text::String *GetAsNewString() const;
+		Data::DateTime *GetAsNewDate() const;
+		Data::Timestamp GetAsTimestamp() const;
+		Data::ReadonlyArray<UInt8> *GetAsNewByteArr() const;
+		Math::Vector2D *GetAsNewVector() const;
+		Data::UUID *GetAsNewUUID() const;
 		Data::ReadonlyArray<UInt8> *GetAndRemoveByteArr();
 		Math::Vector2D *GetAndRemoveVector();
 		Data::UUID *GetAndRemoveUUID();
-		void *GetAsUnk();
+		void *GetAsUnk() const;
 
 		void SetNull();
 		void SetStrSlow(const UTF8Char *str);
@@ -170,8 +170,8 @@ namespace Data
 		void SetUUIDDirect(Data::UUID *uuid);
 		void Set(VariItem *item);
 
-		VariItem *Clone();
-		void ToString(Text::StringBuilderUTF8 *sb);
+		VariItem *Clone() const;
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static VariItem *NewNull();
 		static VariItem *NewStrSlow(const UTF8Char *str);

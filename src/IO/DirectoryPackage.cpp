@@ -116,12 +116,12 @@ IO::DirectoryPackage::~DirectoryPackage()
 	this->dirName->Release();
 }
 
-UOSInt IO::DirectoryPackage::GetCount()
+UOSInt IO::DirectoryPackage::GetCount() const
 {
 	return this->files->GetCount();
 }
 
-IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index)
+IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) const
 {
 	Text::String *fileName = this->files->GetItem(index);
 	if (fileName == 0)
@@ -141,7 +141,7 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index)
 	}
 }
 
-UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index)
+UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 {
 	Text::String *fileName = this->files->GetItem(index);
 	UOSInt i;
@@ -151,7 +151,7 @@ UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index)
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
 
-IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index)
+IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index) const
 {
 	Text::String *fileName = this->files->GetItem(index);
 	if (fileName == 0)
@@ -169,7 +169,7 @@ IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index)
 	}
 }
 
-IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index)
+IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index) const
 {
 	Text::String *fileName = this->files->GetItem(index);
 	if (fileName == 0)
@@ -187,22 +187,22 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index)
 	}
 }
 
-IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index)
+IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index) const
 {
 	return GetItemPack(index);
 }
 
-Int64 IO::DirectoryPackage::GetItemModTimeTick(UOSInt index)
+Int64 IO::DirectoryPackage::GetItemModTimeTick(UOSInt index) const
 {
 	return this->fileTimes->GetItem(index);
 }
 
-UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index)
+UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index) const
 {
 	return this->fileSizes->GetItem(index);
 }
 
-UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name)
+UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name) const
 {
 	UOSInt j = this->files->GetCount();
 	UOSInt i;
@@ -221,24 +221,24 @@ UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name)
 	return INVALID_INDEX;
 }
 
-Bool IO::DirectoryPackage::IsCompressed(UOSInt index)
+Bool IO::DirectoryPackage::IsCompressed(UOSInt index) const
 {
 	return false;
 }
 
-Data::Compress::Decompressor::CompressMethod IO::DirectoryPackage::GetItemComp(UOSInt index)
+Data::Compress::Decompressor::CompressMethod IO::DirectoryPackage::GetItemComp(UOSInt index) const
 {
 	return Data::Compress::Decompressor::CM_UNCOMPRESSED;
 }
 
-IO::PackageFile *IO::DirectoryPackage::Clone()
+IO::PackageFile *IO::DirectoryPackage::Clone() const
 {
 	IO::DirectoryPackage *dpkg;
 	NEW_CLASS(dpkg, IO::DirectoryPackage(this->dirName));
 	return dpkg;
 }
 
-Bool IO::DirectoryPackage::AllowWrite()
+Bool IO::DirectoryPackage::AllowWrite() const
 {
 	return true;
 }

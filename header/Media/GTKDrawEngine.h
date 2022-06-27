@@ -93,22 +93,22 @@ namespace Media
 		GTKDrawImage(GTKDrawEngine *eng, void *surface, void *cr, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 bitCount, Media::AlphaType atype);
 		virtual ~GTKDrawImage();
 
-		virtual UOSInt GetWidth();
-		virtual UOSInt GetHeight();
-		virtual UInt32 GetBitCount();
-		virtual ColorProfile *GetColorProfile();
+		virtual UOSInt GetWidth() const;
+		virtual UOSInt GetHeight() const;
+		virtual UInt32 GetBitCount() const;
+		virtual ColorProfile *GetColorProfile() const;
 		virtual void SetColorProfile(const ColorProfile *color);
-		virtual Media::AlphaType GetAlphaType();
+		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
-		virtual Double GetHDPI();
-		virtual Double GetVDPI();
+		virtual Double GetHDPI() const;
+		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
 		virtual UInt8 *GetImgBits(Bool *upsideDown);
 		virtual void GetImgBitsEnd(Bool modified);
-		virtual UOSInt GetImgBpl();
-		virtual Media::EXIFData *GetEXIF();
-		virtual Media::PixelFormat GetPixelFormat();
+		virtual UOSInt GetImgBpl() const;
+		virtual Media::EXIFData *GetEXIF() const;
+		virtual Media::PixelFormat GetPixelFormat() const;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p); ////////////////////////////////////
 		virtual Bool DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p); ////////////////////////////////////
@@ -144,20 +144,20 @@ namespace Media
 		virtual void SetTextAlign(DrawEngine::DrawPos pos); ////////////////////////////////////
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY); ////////////////////////////////////
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY); ////////////////////////////////////
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown); ////////////////////////////////////
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const; ////////////////////////////////////
 
-		virtual Media::StaticImage *ToStaticImage(); ////////////////////////////////////
+		virtual Media::StaticImage *ToStaticImage() const; ////////////////////////////////////
 		virtual UOSInt SavePng(IO::SeekableStream *stm);
 		virtual UOSInt SaveGIF(IO::SeekableStream *stm); ////////////////////////////////////
 		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
 
-		virtual Media::Image *Clone(); ////////////////////////////////////
-		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown); ////////////////////////////////////
-		virtual Int32 GetPixel32(OSInt x, OSInt y); ////////////////////////////////////
+		virtual Media::Image *Clone() const; ////////////////////////////////////
+		virtual Media::Image::ImageType GetImageType() const;
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const; ////////////////////////////////////
+		virtual Int32 GetPixel32(OSInt x, OSInt y) const; ////////////////////////////////////
 
-		void *GetSurface();
-		void *GetCairo();
+		void *GetSurface() const;
+		void *GetCairo() const;
 	};
 }
 #endif

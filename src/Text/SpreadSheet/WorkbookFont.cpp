@@ -62,42 +62,42 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetFamily(Font
 	return this;
 }
 
-Text::String *Text::SpreadSheet::WorkbookFont::GetName()
+Text::String *Text::SpreadSheet::WorkbookFont::GetName() const
 {
 	return this->name;
 }
 
-Double Text::SpreadSheet::WorkbookFont::GetSize()
+Double Text::SpreadSheet::WorkbookFont::GetSize() const
 {
 	return this->size;
 }
 
-Bool Text::SpreadSheet::WorkbookFont::IsBold()
+Bool Text::SpreadSheet::WorkbookFont::IsBold() const
 {
 	return this->bold;
 }
 
-Bool Text::SpreadSheet::WorkbookFont::IsItalic()
+Bool Text::SpreadSheet::WorkbookFont::IsItalic() const
 {
 	return this->italic;
 }
 
-Bool Text::SpreadSheet::WorkbookFont::IsUnderline()
+Bool Text::SpreadSheet::WorkbookFont::IsUnderline() const
 {
 	return this->underline;
 }
 
-UInt32 Text::SpreadSheet::WorkbookFont::GetColor()
+UInt32 Text::SpreadSheet::WorkbookFont::GetColor() const
 {
 	return this->color;
 }
 
-Text::SpreadSheet::FontFamily Text::SpreadSheet::WorkbookFont::GetFamily()
+Text::SpreadSheet::FontFamily Text::SpreadSheet::WorkbookFont::GetFamily() const
 {
 	return this->family;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone()
+Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone() const
 {
 	Text::SpreadSheet::WorkbookFont *font;
 	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
@@ -111,7 +111,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone()
 	return font;
 }
 
-Bool Text::SpreadSheet::WorkbookFont::Equals(WorkbookFont *font)
+Bool Text::SpreadSheet::WorkbookFont::Equals(WorkbookFont *font) const
 {
 	if (this->name != font->name)
 	{

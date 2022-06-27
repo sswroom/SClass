@@ -12,17 +12,17 @@ Map::MapView::~MapView()
 {
 }
 
-Double Map::MapView::GetScnWidth()
+Double Map::MapView::GetScnWidth() const
 {
 	return this->scnSize.width;
 }
 
-Double Map::MapView::GetScnHeight()
+Double Map::MapView::GetScnHeight() const
 {
 	return this->scnSize.height;
 }
 
-Math::Size2D<Double> Map::MapView::GetScnSize()
+Math::Size2D<Double> Map::MapView::GetScnSize() const
 {
 	return this->scnSize;
 }
@@ -40,7 +40,7 @@ void Map::MapView::SetDestImage(Media::DrawImage *img)
 	}
 }
 
-void Map::MapView::ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints)
+void Map::MapView::ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const
 {
 	Int32 tmpV;
 	while (nParts-- > 0)

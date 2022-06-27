@@ -20,13 +20,13 @@ namespace Text
 			HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 codePage);
 			virtual ~HTMLMIMEObj();
 
-			virtual Text::CString GetClassName();
-			virtual Text::CString GetContentType();
-			virtual UOSInt WriteStream(IO::Stream *stm);
-			virtual IMIMEObj *Clone();
+			virtual Text::CString GetClassName() const;
+			virtual Text::CString GetContentType() const;
+			virtual UOSInt WriteStream(IO::Stream *stm) const;
+			virtual IMIMEObj *Clone() const;
 
-			void GetText(Text::StringBuilderUTF8 *sb);
-			Int32 GetCodePage();
+			void GetText(Text::StringBuilderUTF8 *sb) const;
+			Int32 GetCodePage() const;
 		};
 	}
 }

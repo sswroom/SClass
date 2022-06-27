@@ -30,24 +30,24 @@ Media::MemorySurface::~MemorySurface()
 	MemFreeA(this->buffPtr);
 }
 
-Bool Media::MemorySurface::IsError()
+Bool Media::MemorySurface::IsError() const
 {
 	return this->buffPtr == 0;
 }
 
-Media::Image *Media::MemorySurface::Clone()
+Media::Image *Media::MemorySurface::Clone() const
 {
 	Media::MemorySurface *surface;
 	NEW_CLASS(surface, Media::MemorySurface(this->info.dispWidth, this->info.dispHeight, this->info.storeBPP, this->info.color, this->info.hdpi));
 	return surface;
 }
 
-Media::Image::ImageType Media::MemorySurface::GetImageType()
+Media::Image::ImageType Media::MemorySurface::GetImageType() const
 {
 	return Media::Image::IT_MONITORSURFACE;
 }
 
-void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;

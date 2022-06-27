@@ -84,7 +84,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 			this->conn->CloseReader(r);
 
 			AddressComparator comparator;
-			Data::ArrayList<LCIDInfo*> *lcidList = this->lcidMap.GetValues();
+			const Data::ArrayList<LCIDInfo*> *lcidList = this->lcidMap.GetValues();
 			UOSInt i = lcidList->GetCount();
 			while (i-- > 0)
 			{
@@ -100,7 +100,7 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	UOSInt i = this->revGeos.GetCount();
 	UOSInt j;
 	LCIDInfo *lcid;
-	Data::ArrayList<LCIDInfo *> *lcidList;
+	const Data::ArrayList<LCIDInfo *> *lcidList;
 	while (i-- > 0)
 	{
 		Map::IReverseGeocoder *revGeo;

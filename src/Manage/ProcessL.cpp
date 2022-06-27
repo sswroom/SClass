@@ -396,7 +396,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UTF8Char *sarr[6];
 		UTF8Char *sarr2[2];
 		Data::Int32Map<ModuleInfoData*> dataMap;
-		Data::ArrayList<ModuleInfoData*> *dataList;
+		const Data::ArrayList<ModuleInfoData*> *dataList;
 		ModuleInfoData *data;
 		Manage::ModuleInfo *mod;
 		UOSInt ret = 0;

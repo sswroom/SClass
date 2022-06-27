@@ -311,22 +311,22 @@ Media::GTKDrawImage::~GTKDrawImage()
 	}
 }
 
-UOSInt Media::GTKDrawImage::GetWidth()
+UOSInt Media::GTKDrawImage::GetWidth() const
 {
 	return this->info.dispWidth;
 }
 
-UOSInt Media::GTKDrawImage::GetHeight()
+UOSInt Media::GTKDrawImage::GetHeight() const
 {
 	return this->info.dispHeight;
 }
 
-UInt32 Media::GTKDrawImage::GetBitCount()
+UInt32 Media::GTKDrawImage::GetBitCount() const
 {
 	return this->info.storeBPP;
 }
 
-Media::ColorProfile *Media::GTKDrawImage::GetColorProfile()
+Media::ColorProfile *Media::GTKDrawImage::GetColorProfile() const
 {
 	return this->info.color;
 }
@@ -336,7 +336,7 @@ void Media::GTKDrawImage::SetColorProfile(const ColorProfile *color)
 	this->info.color->Set(color);
 }
 
-Media::AlphaType Media::GTKDrawImage::GetAlphaType()
+Media::AlphaType Media::GTKDrawImage::GetAlphaType() const
 {
 	return this->info.atype;
 }
@@ -346,12 +346,12 @@ void Media::GTKDrawImage::SetAlphaType(Media::AlphaType atype)
 	this->info.atype = atype;
 }
 
-Double Media::GTKDrawImage::GetHDPI()
+Double Media::GTKDrawImage::GetHDPI() const
 {
 	return this->info.hdpi;
 }
 
-Double Media::GTKDrawImage::GetVDPI()
+Double Media::GTKDrawImage::GetVDPI() const
 {
 	return this->info.vdpi;
 }
@@ -381,17 +381,17 @@ void Media::GTKDrawImage::GetImgBitsEnd(Bool modified)
 	}
 }
 
-UOSInt Media::GTKDrawImage::GetImgBpl()
+UOSInt Media::GTKDrawImage::GetImgBpl() const
 {
 	return (this->info.storeWidth * this->info.storeBPP) >> 3;
 }
 
-Media::EXIFData *Media::GTKDrawImage::GetEXIF()
+Media::EXIFData *Media::GTKDrawImage::GetEXIF() const
 {
 	return this->exif;
 }
 
-Media::PixelFormat Media::GTKDrawImage::GetPixelFormat()
+Media::PixelFormat Media::GTKDrawImage::GetPixelFormat() const
 {
 	return this->info.pf;
 }
@@ -1029,7 +1029,7 @@ void Media::GTKDrawImage::GetStringBoundRot(Int32 *pos, Double centX, Double cen
 {
 }
 
-void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown)
+void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
 {
 	if (this->surface)
 	{
@@ -1052,7 +1052,7 @@ void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, U
 	}
 }
 
-Media::StaticImage *Media::GTKDrawImage::ToStaticImage()
+Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
 {
 	if (this->surface)
 	{
@@ -1147,32 +1147,32 @@ UOSInt Media::GTKDrawImage::SaveJPG(IO::SeekableStream *stm)
 #endif
 }
 
-Media::Image *Media::GTKDrawImage::Clone()
+Media::Image *Media::GTKDrawImage::Clone() const
 {
 	return 0;
 }
 
-Media::Image::ImageType Media::GTKDrawImage::GetImageType()
+Media::Image::ImageType Media::GTKDrawImage::GetImageType() const
 {
 	return Media::Image::IT_GUIIMAGE;
 }
 
-void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
 {
 	this->CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }
 
-Int32 Media::GTKDrawImage::GetPixel32(OSInt x, OSInt y)
+Int32 Media::GTKDrawImage::GetPixel32(OSInt x, OSInt y) const
 {
 	return 0;
 }
 
-void *Media::GTKDrawImage::GetSurface()
+void *Media::GTKDrawImage::GetSurface() const
 {
 	return this->surface;
 }
 
-void *Media::GTKDrawImage::GetCairo()
+void *Media::GTKDrawImage::GetCairo() const
 {
 	return this->cr;
 }

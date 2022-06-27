@@ -47,29 +47,29 @@ Text::MIMEObj::TextMIMEObj::~TextMIMEObj()
 	this->contType->Release();
 }
 
-Text::CString Text::MIMEObj::TextMIMEObj::GetClassName()
+Text::CString Text::MIMEObj::TextMIMEObj::GetClassName() const
 {
 	return CSTR("TextMIMEObj");
 }
 
-Text::CString Text::MIMEObj::TextMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::TextMIMEObj::GetContentType() const
 {
 	return this->contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(IO::Stream *stm) const
 {
 	return stm->Write(this->textBuff, this->buffSize);
 }
 
-Text::IMIMEObj *Text::MIMEObj::TextMIMEObj::Clone()
+Text::IMIMEObj *Text::MIMEObj::TextMIMEObj::Clone() const
 {
 	Text::MIMEObj::TextMIMEObj *txt;
 	NEW_CLASS(txt, Text::MIMEObj::TextMIMEObj(this->textBuff, this->buffSize, this->codePage));
 	return txt;
 }
 
-void Text::MIMEObj::TextMIMEObj::GetText(Text::StringBuilderUTF8 *sb)
+void Text::MIMEObj::TextMIMEObj::GetText(Text::StringBuilderUTF8 *sb) const
 {
 	Text::Encoding enc(this->codePage);
 	UOSInt strLen;
@@ -82,7 +82,7 @@ void Text::MIMEObj::TextMIMEObj::GetText(Text::StringBuilderUTF8 *sb)
 	MemFree(sbuff);
 }
 
-UInt32 Text::MIMEObj::TextMIMEObj::GetCodePage()
+UInt32 Text::MIMEObj::TextMIMEObj::GetCodePage() const
 {
 	return this->codePage;
 }

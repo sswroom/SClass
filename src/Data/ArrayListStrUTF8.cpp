@@ -11,7 +11,7 @@ Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayL
 {
 }
 
-Data::ArrayList<const UTF8Char*> *Data::ArrayListStrUTF8::Clone()
+Data::ArrayList<const UTF8Char*> *Data::ArrayListStrUTF8::Clone() const
 {
 	Data::ArrayListStrUTF8 *newArr;
 	NEW_CLASS(newArr, Data::ArrayListStrUTF8(this->capacity));
@@ -19,12 +19,12 @@ Data::ArrayList<const UTF8Char*> *Data::ArrayListStrUTF8::Clone()
 	return newArr;
 }
 
-OSInt Data::ArrayListStrUTF8::CompareItem(const UTF8Char* obj1, const UTF8Char* obj2)
+OSInt Data::ArrayListStrUTF8::CompareItem(const UTF8Char* obj1, const UTF8Char* obj2) const
 {
 	return Text::StrCompare(obj1, obj2);
 }
 
-const UTF8Char *Data::ArrayListStrUTF8::JoinNewStr()
+const UTF8Char *Data::ArrayListStrUTF8::JoinNewStr() const
 {
 	UOSInt j;
 	UOSInt k;

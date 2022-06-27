@@ -14,9 +14,9 @@ namespace Media
 		virtual ~MSFontRenderer();
 
 		Bool IsError();
-		virtual UTF32Char GetMinChar();
-		virtual UTF32Char GetMaxChar();
-		virtual Media::StaticImage *CreateImage(UTF32Char charCode, UOSInt targetWidth, UOSInt targetHeight);
+		virtual UTF32Char GetMinChar() const;
+		virtual UTF32Char GetMaxChar() const;
+		virtual Media::StaticImage *CreateImage(UTF32Char charCode, UOSInt targetWidth, UOSInt targetHeight) const;
 	};
 }
 #endif

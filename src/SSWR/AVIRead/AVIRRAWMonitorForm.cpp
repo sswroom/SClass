@@ -516,7 +516,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->pingIPListUpdated)
 	{
-		Data::ArrayList<PingIPInfo*> *pingIPList;
+		const Data::ArrayList<PingIPInfo*> *pingIPList;
 		PingIPInfo *pingIPInfo;
 		UOSInt i;
 		UOSInt j;
@@ -761,7 +761,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		if (listChg)
 		{
 			IPTranInfo *currSel = (IPTranInfo*)me->lbIPTran->GetSelectedItem();
-			Data::ArrayList<IPTranInfo*> *ipTrans = me->ipTranMap->GetValues();
+			const Data::ArrayList<IPTranInfo*> *ipTrans = me->ipTranMap->GetValues();
 			me->lbIPTran->ClearItems();
 			i = 0;
 			j = ipTrans->GetCount();
@@ -850,7 +850,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 		}
 
-		Data::ArrayList<Net::EthernetAnalyzer::MACStatus *> *macList;
+		const Data::ArrayList<Net::EthernetAnalyzer::MACStatus *> *macList;
 		Net::EthernetAnalyzer::MACStatus *mac;
 		const Net::MACInfo::MACEntry *entry;
 		UInt8 macBuff[8];
@@ -938,7 +938,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		const Net::MACInfo::MACEntry *macInfo;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseDHCP(&mutUsage);
-		Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
+		const Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
 		if (dhcpList->GetCount() != me->lvDHCP->GetCount())
 		{
 			Net::EthernetAnalyzer::DHCPInfo *currSel = (Net::EthernetAnalyzer::DHCPInfo*)me->lvDHCP->GetSelectedItem();
@@ -1471,7 +1471,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->logger);
 
-	Data::ArrayList<PingIPInfo*> *pingIPList;
+	const Data::ArrayList<PingIPInfo*> *pingIPList;
 	PingIPInfo *pingIPInfo;
 	UOSInt i;
 	pingIPList = this->pingIPMap->GetValues();
@@ -1486,7 +1486,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 	DEL_CLASS(this->pingIPMap);
 	DEL_CLASS(this->pingIPMut);
 
-	Data::ArrayList<IPTranInfo*> *ipTranList;
+	const Data::ArrayList<IPTranInfo*> *ipTranList;
 	IPTranInfo *ipTran;
 	ipTranList = this->ipTranMap->GetValues();
 	i = ipTranList->GetCount();

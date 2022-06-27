@@ -25,10 +25,10 @@ namespace Math
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
-		UInt8 *GetRowPtr(UOSInt row);
-		UInt8 *GetHdrPtr();
-		UOSInt GetRowCnt();
-		UOSInt GetRowSize();
+		UInt8 *GetRowPtr(UOSInt row) const;
+		UInt8 *GetHdrPtr() const;
+		UOSInt GetRowCnt() const;
+		UOSInt GetRowSize() const;
 	};
 
 	class TSPReader : public DB::DBReader

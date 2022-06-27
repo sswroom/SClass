@@ -108,7 +108,7 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap)
 {
 	IO::BTScanLog::ScanRecord3 *rec;
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList = devMap->GetValues();
+	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList = devMap->GetValues();
 	UOSInt i = recList->GetCount();
 	while (i-- > 0)
 	{
@@ -119,11 +119,11 @@ void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devM
 
 void IO::BTDevLog::ClearList()
 {
-	Data::ArrayList<DevEntry*> *logList;
+	const Data::ArrayList<DevEntry*> *logList;
 	logList = this->randDevs.GetValues();
-	LIST_FREE_FUNC(logList, this->FreeDev);
+	LIST_CALL_FUNC(logList, this->FreeDev);
 	logList = this->pubDevs.GetValues();
-	LIST_FREE_FUNC(logList, this->FreeDev);
+	LIST_CALL_FUNC(logList, this->FreeDev);
 	this->randDevs.Clear();
 	this->pubDevs.Clear();
 }
@@ -280,12 +280,12 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	return true;
 }
 
-Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList()
+const Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList() const
 {
 	return this->pubDevs.GetValues();
 }
 
-Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList()
+const Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList() const
 {
 	return this->randDevs.GetValues();
 }

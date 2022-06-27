@@ -413,7 +413,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 {
 	this->Close();
 	DEL_CLASS(this->prog);
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->devMap.GetValues();
+	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->devMap.GetValues();
 	LIST_CALL_FUNC(devList, DeviceFree);
 	SDEL_STRING(this->lastCmd);
 }

@@ -17,11 +17,11 @@ namespace Media
 		FBSurface(MonitorHandle *hMon, const Media::ColorProfile *color, Double dpi, Media::RotateType rotateType);
 		virtual ~FBSurface();
 
-		Bool IsError();
+		Bool IsError() const;
 		
-		virtual Media::Image *Clone();
-		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
+		virtual Media::Image *Clone() const;
+		virtual Media::Image::ImageType GetImageType() const;
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const;
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();

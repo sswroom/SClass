@@ -234,7 +234,7 @@ Bool Net::RTSPClient::SendData(UInt8 *buff, UOSInt buffSize)
 	return succ;
 }
 
-Net::RTSPClient::RTSPClient(Net::RTSPClient *cli)
+Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
 {
 	this->cliData = cli->cliData;
 	this->cliData->useCnt++;
@@ -622,7 +622,7 @@ Bool Net::RTSPClient::Deinit(Net::RTPCliChannel *rtpChannel)
 	return true;
 }
 
-Net::IRTPController *Net::RTSPClient::Clone()
+Net::IRTPController *Net::RTSPClient::Clone() const
 {
 	Net::RTSPClient *cli;
 	NEW_CLASS(cli, Net::RTSPClient(this));

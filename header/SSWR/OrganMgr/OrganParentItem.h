@@ -13,10 +13,10 @@ namespace SSWR
 			OrganParentItem();
 			virtual ~OrganParentItem();
 
-			virtual ItemType GetItemType();
-			virtual UTF8Char *GetItemName(UTF8Char *buff);
-			virtual UTF8Char *GetEngName(UTF8Char *buff);
-			virtual OrganGroupItem *Clone();
+			virtual ItemType GetItemType() const;
+			virtual UTF8Char *GetItemName(UTF8Char *buff) const;
+			virtual UTF8Char *GetEngName(UTF8Char *buff) const;
+			virtual OrganGroupItem *Clone() const;
 		};
 	}
 }

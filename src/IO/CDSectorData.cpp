@@ -25,12 +25,12 @@ IO::CDSectorData::~CDSectorData()
 	MemFree(this->sectorBuff);
 }
 
-UInt64 IO::CDSectorData::GetSectorCount()
+UInt64 IO::CDSectorData::GetSectorCount() const
 {
 	return this->data->GetSectorCount();
 }
 
-UOSInt IO::CDSectorData::GetBytesPerSector()
+UOSInt IO::CDSectorData::GetBytesPerSector() const
 {
 	return this->userDataSize;
 }
@@ -43,14 +43,14 @@ Bool IO::CDSectorData::ReadSector(UInt64 sectorNum, UInt8 *sectorBuff)
 	return true;
 }
 
-IO::ISectorData *IO::CDSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount)
+IO::ISectorData *IO::CDSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
 	IO::ISectorData *data;
 	NEW_CLASS(data, IO::CDSectorData(this->data, this->userOfst, this->userDataSize, startSector, sectorCount));
 	return data;
 }
 
-IO::IStreamData *IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize)
+IO::IStreamData *IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
 {
 	IO::IStreamData *data;
 	UInt64 sectorCnt = dataSize / this->userDataSize;
@@ -62,7 +62,7 @@ IO::IStreamData *IO::CDSectorData::GetStreamData(UInt64 startSector, UInt64 data
 	return data;
 }
 
-UOSInt IO::CDSectorData::GetSeekCount()
+UOSInt IO::CDSectorData::GetSeekCount() const
 {
 	return this->data->GetSeekCount();
 }

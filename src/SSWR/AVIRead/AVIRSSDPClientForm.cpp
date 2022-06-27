@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSDPClientForm *me = (SSWR::AVIRead::AVIRSSDPClientForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	Data::ArrayList<Net::SSDPClient::SSDPDevice*> *devList = me->ssdp->GetDevices(&mutUsage);
+	const Data::ArrayList<Net::SSDPClient::SSDPDevice*> *devList = me->ssdp->GetDevices(&mutUsage);
 	UInt8 sbuff[128];
 	UTF8Char *sptr;
 	if (devList->GetCount() != me->lbDevice->GetCount())

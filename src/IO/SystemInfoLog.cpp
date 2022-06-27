@@ -53,7 +53,7 @@ IO::SystemInfoLog::~SystemInfoLog()
 	SDEL_STRING(this->osVer);
 }
 
-IO::ParserType IO::SystemInfoLog::GetParserType()
+IO::ParserType IO::SystemInfoLog::GetParserType() const
 {
 	return ParserType::SystemInfoLog;
 }
@@ -64,7 +64,7 @@ void IO::SystemInfoLog::SetOSName(Text::CString osName)
 	this->osName = Text::String::NewOrNull(osName);
 }
 
-Text::String *IO::SystemInfoLog::GetOSName()
+Text::String *IO::SystemInfoLog::GetOSName() const
 {
 	return this->osName;
 }
@@ -75,7 +75,7 @@ void IO::SystemInfoLog::SetOSVer(Text::CString osVer)
 	this->osVer = Text::String::NewOrNull(osVer);
 }
 
-Text::String *IO::SystemInfoLog::GetOSVer()
+Text::String *IO::SystemInfoLog::GetOSVer() const
 {
 	return this->osVer;
 }
@@ -85,7 +85,7 @@ void IO::SystemInfoLog::SetOSLocale(UInt32 osLocale)
 	this->osLocale = osLocale;
 }
 
-UInt32 IO::SystemInfoLog::GetOSLocale()
+UInt32 IO::SystemInfoLog::GetOSLocale() const
 {
 	return this->osLocale;
 }
@@ -95,7 +95,7 @@ void IO::SystemInfoLog::SetArchitecture(UInt32 architecture)
 	this->architecture = architecture;
 }
 
-UInt32 IO::SystemInfoLog::GetArchitecture()
+UInt32 IO::SystemInfoLog::GetArchitecture() const
 {
 	return this->architecture;
 }
@@ -105,7 +105,7 @@ void IO::SystemInfoLog::SetProductType(UInt32 productType)
 	this->productType = productType;
 }
 
-UInt32 IO::SystemInfoLog::GetProductType()
+UInt32 IO::SystemInfoLog::GetProductType() const
 {
 	return this->productType;
 }
@@ -118,7 +118,7 @@ void IO::SystemInfoLog::AddServerRole(const UTF8Char *name, const UTF8Char *data
 	this->serverRoles->Add(role);
 }
 
-Data::ArrayList<IO::SystemInfoLog::ServerRole*> *IO::SystemInfoLog::GetServerRoles()
+const Data::ArrayList<IO::SystemInfoLog::ServerRole*> *IO::SystemInfoLog::GetServerRoles() const
 {
 	return this->serverRoles;
 }
@@ -133,7 +133,7 @@ void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId
 	this->deviceInfos->Add(dev);
 }
 
-Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *IO::SystemInfoLog::GetDeviceInfos()
+const Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *IO::SystemInfoLog::GetDeviceInfos() const
 {
 	return this->deviceInfos;
 }
@@ -152,7 +152,7 @@ void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize,
 	this->driverInfos->Add(driver);
 }
 
-Data::ArrayList<IO::SystemInfoLog::DriverInfo*> *IO::SystemInfoLog::GetDriverInfos()
+const Data::ArrayList<IO::SystemInfoLog::DriverInfo*> *IO::SystemInfoLog::GetDriverInfos() const
 {
 	return this->driverInfos;
 }

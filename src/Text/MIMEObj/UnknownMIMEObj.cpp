@@ -45,29 +45,29 @@ Text::MIMEObj::UnknownMIMEObj::~UnknownMIMEObj()
 	this->contType->Release();
 }
 
-Text::CString Text::MIMEObj::UnknownMIMEObj::GetClassName()
+Text::CString Text::MIMEObj::UnknownMIMEObj::GetClassName() const
 {
 	return CSTR("UnknownMIMEObj");
 }
 
-Text::CString Text::MIMEObj::UnknownMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::UnknownMIMEObj::GetContentType() const
 {
 	return this->contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)
+UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm) const
 {
 	return stm->Write(this->dataBuff, this->buffSize);
 }
 
-Text::IMIMEObj *Text::MIMEObj::UnknownMIMEObj::Clone()
+Text::IMIMEObj *Text::MIMEObj::UnknownMIMEObj::Clone() const
 {
 	Text::MIMEObj::UnknownMIMEObj *newObj;
 	NEW_CLASS(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->ToCString()));
 	return newObj;
 }
 
-const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(UOSInt *dataSize)
+const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(UOSInt *dataSize) const
 {
 	*dataSize = this->buffSize;
 	return this->dataBuff;

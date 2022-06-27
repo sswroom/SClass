@@ -89,15 +89,15 @@ namespace Text
 			CellData *GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
 			void FreeRowData(RowData *data);
 			void FreeCellData(CellData *data);
-			RowData *CloneRow(RowData *row, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
-			CellData *CloneCell(CellData *cell, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			RowData *CloneRow(RowData *row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			CellData *CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 			void FreeDrawing(WorksheetDrawing *drawing);
 		public:
 			Worksheet(Text::String *name);
 			Worksheet(Text::CString name);
 			~Worksheet();
 
-			Worksheet *Clone(IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			Worksheet *Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 
 			void SetOptions(UInt16 options);
 			UInt16 GetOptions();

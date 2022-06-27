@@ -9,10 +9,10 @@ namespace Data
 	{
 	public:
 		ICaseStringMap();
-		ICaseStringMap(ICaseStringMap<T> *map);
+		ICaseStringMap(const ICaseStringMap<T> *map);
 		virtual ~ICaseStringMap();
 
-		virtual StringMap<T> *Clone();
+		virtual StringMap<T> *Clone() const;
 	};
 
 
@@ -22,7 +22,7 @@ namespace Data
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
 	}
 
-	template <class T> ICaseStringMap<T>::ICaseStringMap(ICaseStringMap<T> *map) : StringMap<T>()
+	template <class T> ICaseStringMap<T>::ICaseStringMap(const ICaseStringMap<T> *map) : StringMap<T>()
 	{
 		DEL_CLASS(this->keys);
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
@@ -40,7 +40,7 @@ namespace Data
 	{
 	}
 
-	template <class T> StringMap<T> *ICaseStringMap<T>::Clone()
+	template <class T> StringMap<T> *ICaseStringMap<T>::Clone() const
 	{
 		return NEW_CLASS_D(ICaseStringMap<T>(this));
 	}

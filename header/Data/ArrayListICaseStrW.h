@@ -10,8 +10,8 @@ namespace Data
 		ArrayListICaseStrW();
 		ArrayListICaseStrW(OSInt Capacity);
 
-		virtual Data::ArrayList<const WChar*> *Clone();
-		virtual OSInt CompareItem(const WChar* obj1, const WChar* obj2);
+		virtual Data::ArrayList<const WChar*> *Clone() const;
+		virtual OSInt CompareItem(const WChar* obj1, const WChar* obj2) const;
 	};
 }
 #endif

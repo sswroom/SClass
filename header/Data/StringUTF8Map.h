@@ -14,9 +14,9 @@ namespace Data
 		virtual ~StringUTF8Map();
 
 		virtual T Put(const UTF8Char *key, T val);
-		virtual T Get(const UTF8Char *key);
+		virtual T Get(const UTF8Char *key) const;
 		virtual T Remove(const UTF8Char *key);
-		virtual const UTF8Char *GetKey(UOSInt index);
+		virtual const UTF8Char *GetKey(UOSInt index) const;
 		virtual void Clear();
 	};
 
@@ -54,7 +54,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringUTF8Map<T>::Get(const UTF8Char *key)
+	template <class T> T StringUTF8Map<T>::Get(const UTF8Char *key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -83,7 +83,7 @@ namespace Data
 		}
 	}
 
-	template <class T> const UTF8Char *StringUTF8Map<T>::GetKey(UOSInt index)
+	template <class T> const UTF8Char *StringUTF8Map<T>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}

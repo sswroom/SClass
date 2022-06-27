@@ -12,11 +12,11 @@ namespace Math
 		Point3D(UInt32 srid, Double x, Double y, Double z);
 		virtual ~Point3D();
 
-		virtual Math::Vector2D *Clone();
-		virtual void GetCenter3D(Double *x, Double *y, Double *z);
-		virtual Bool Support3D();
+		virtual Math::Vector2D *Clone() const;
+		virtual void GetCenter3D(Double *x, Double *y, Double *z) const;
+		virtual Bool Support3D() const;
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
-		virtual Bool Equals(Math::Vector2D *vec);
+		virtual Bool Equals(Math::Vector2D *vec) const;
 	};
 }
 #endif

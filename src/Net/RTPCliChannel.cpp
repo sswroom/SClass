@@ -375,7 +375,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 	if (--this->chData->useCnt == 0)
 	{
 		UOSInt i;
-		Data::ArrayList<Net::IRTPPLHandler*> *plHdlrs;
+		const Data::ArrayList<Net::IRTPPLHandler*> *plHdlrs;
 		Net::IRTPPLHandler *plHdlr;
 		this->StopPlay();
 		DEL_CLASS(this->chData->playEvt);

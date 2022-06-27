@@ -42,17 +42,17 @@ Bool Media::MSFontRenderer::IsError()
 	return this->fontBuff == 0;
 }
 
-UTF32Char Media::MSFontRenderer::GetMinChar()
+UTF32Char Media::MSFontRenderer::GetMinChar() const
 {
 	return this->fontBuff[95];
 }
 
-UTF32Char Media::MSFontRenderer::GetMaxChar()
+UTF32Char Media::MSFontRenderer::GetMaxChar() const
 {
 	return this->fontBuff[96];
 }
 
-Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, UOSInt targetWidth, UOSInt targetHeight)
+Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, UOSInt targetWidth, UOSInt targetHeight) const
 {
 	UInt32 ver = ReadUInt16(&this->fontBuff[0]);
 	UOSInt i;

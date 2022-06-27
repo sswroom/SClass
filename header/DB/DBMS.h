@@ -105,11 +105,11 @@ namespace DB
 
 		Text::String *versionStr;
 		IO::LogTool *log;
-		Sync::Mutex *loginMut;
-		Crypto::Hash::SHA1 *loginSHA1;
-		Data::FastStringMap<LoginInfo*> *loginMap;
-		Sync::Mutex *sessMut;
-		Data::Int32Map<SessionInfo*> *sessMap;
+		Sync::Mutex loginMut;
+		Crypto::Hash::SHA1 loginSHA1;
+		Data::FastStringMap<LoginInfo*> loginMap;
+		Sync::Mutex sessMut;
+		Data::Int32Map<SessionInfo*> sessMap;
 
 		static const UTF8Char *SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql);
 		static Bool StrLike(const UTF8Char *val, const UTF8Char *likeStr);

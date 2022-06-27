@@ -39,9 +39,9 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 
-			Data::ArrayList<AdapterInfo*> *adapters;
-			Sync::Mutex *arpMut;
-			Data::UInt32Map<IPMapInfo *> *arpMap;
+			Data::ArrayList<AdapterInfo*> adapters;
+			Sync::Mutex arpMut;
+			Data::UInt32Map<IPMapInfo *> arpMap;
 			Bool arpUpdated;
 
 			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj);

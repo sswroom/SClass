@@ -16,12 +16,12 @@ Text::MIMEObj::MailMessage::~MailMessage()
 {
 }
 
-Text::CString Text::MIMEObj::MailMessage::GetClassName()
+Text::CString Text::MIMEObj::MailMessage::GetClassName() const
 {
 	return CSTR("MailMessage");
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::Clone()
+Text::IMIMEObj *Text::MIMEObj::MailMessage::Clone() const
 {
 	Text::MIMEObj::MailMessage *msg;
 	UOSInt i;
@@ -41,7 +41,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::Clone()
 	return msg;
 }
 
-Bool Text::MIMEObj::MailMessage::GetDate(Data::DateTime *dt)
+Bool Text::MIMEObj::MailMessage::GetDate(Data::DateTime *dt) const
 {
 	Text::String *hdr = GetHeader(UTF8STRC("Date"));
 	if (hdr == 0)
@@ -50,7 +50,7 @@ Bool Text::MIMEObj::MailMessage::GetDate(Data::DateTime *dt)
 	return true;
 }
 
-UTF8Char *Text::MIMEObj::MailMessage::GetFromAddr(UTF8Char *sbuff)
+UTF8Char *Text::MIMEObj::MailMessage::GetFromAddr(UTF8Char *sbuff) const
 {
 	Text::String *hdr = GetHeader(UTF8STRC("From"));
 	if (hdr == 0)
@@ -58,7 +58,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetFromAddr(UTF8Char *sbuff)
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UTF8Char *Text::MIMEObj::MailMessage::GetSubject(UTF8Char *sbuff)
+UTF8Char *Text::MIMEObj::MailMessage::GetSubject(UTF8Char *sbuff) const
 {
 	Text::String *hdr = GetHeader(UTF8STRC("Subject"));
 	if (hdr == 0)
@@ -66,7 +66,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetSubject(UTF8Char *sbuff)
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff)
+UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff) const
 {
 	Text::String *hdr = GetHeader(UTF8STRC("Reply-To"));
 	if (hdr == 0)
@@ -74,7 +74,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff)
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UOSInt Text::MIMEObj::MailMessage::GetRecpList(Data::ArrayList<MailAddress*> *recpList)
+UOSInt Text::MIMEObj::MailMessage::GetRecpList(Data::ArrayList<MailAddress*> *recpList) const
 {
 	UOSInt i = 0;
 	Text::String *hdr = GetHeader(UTF8STRC("To"));
@@ -86,7 +86,7 @@ UOSInt Text::MIMEObj::MailMessage::GetRecpList(Data::ArrayList<MailAddress*> *re
 	return i;
 }
 
-void Text::MIMEObj::MailMessage::FreeRecpList(Data::ArrayList<MailAddress*> *recpList)
+void Text::MIMEObj::MailMessage::FreeRecpList(Data::ArrayList<MailAddress*> *recpList) const
 {
 	MailAddress *addr;
 	UOSInt i;
@@ -101,7 +101,7 @@ void Text::MIMEObj::MailMessage::FreeRecpList(Data::ArrayList<MailAddress*> *rec
 	}
 }
 
-Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText()
+Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText() const
 {
 	if (this->content == 0)
 		return 0;
@@ -127,7 +127,7 @@ Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText()
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor()
+Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor() const
 {
 	if (this->content == 0)
 		return 0;
@@ -157,7 +157,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor()
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::StringBuilderUTF8 *name)
+Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::StringBuilderUTF8 *name) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -228,7 +228,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetRAWContent()
+Text::IMIMEObj *Text::MIMEObj::MailMessage::GetRAWContent() const
 {
 	return this->content;
 }
@@ -245,7 +245,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 	return mail;
 }
 
-UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type)
+UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type) const
 {
 	UTF8Char *sbuff;
 	UTF8Char *sptr;

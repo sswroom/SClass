@@ -10,8 +10,8 @@ namespace Data
 		ArrayListStrC();
 		ArrayListStrC(UOSInt capacity);
 
-		virtual Data::ArrayList<const Char*> *Clone();
-		virtual OSInt CompareItem(const Char* obj1, const Char* obj2);
+		virtual Data::ArrayList<const Char*> *Clone() const;
+		virtual OSInt CompareItem(const Char* obj1, const Char* obj2) const;
 	};
 }
 #endif

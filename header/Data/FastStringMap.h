@@ -32,21 +32,21 @@ namespace Data
 
 		virtual UOSInt GetCount() const;
 		virtual T GetItem(UOSInt index) const;
-		Text::String *GetKey(UOSInt index);
-		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len);
-		OSInt IndexOf(Text::String *s);
-		OSInt IndexOfC(Text::CString s);
+		Text::String *GetKey(UOSInt index) const;
+		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
+		OSInt IndexOf(Text::String *s) const;
+		OSInt IndexOfC(Text::CString s) const;
 
 		virtual T Put(Text::String *key, T val);
 		T PutC(Text::CString key, T val);
-		virtual T Get(Text::String *key);
-		T GetC(Text::CString key);
+		virtual T Get(Text::String *key) const;
+		T GetC(Text::CString key) const;
 		virtual T Remove(Text::String *key);
 		T RemoveC(Text::CString key);
-		virtual Bool IsEmpty();
+		virtual Bool IsEmpty() const;
 		virtual void Clear();
 		
-		UInt32 CalcHash(const UTF8Char *s, UOSInt len);
+		UInt32 CalcHash(const UTF8Char *s, UOSInt len) const;
 	};
 
 	template <class T> void FastStringMap<T>::Insert(UOSInt index, UInt32 hash, Text::String *s, T val)
@@ -134,7 +134,7 @@ namespace Data
 		return this->items[index].val;
 	}
 
-	template <class T> Text::String *FastStringMap<T>::GetKey(UOSInt index)
+	template <class T> Text::String *FastStringMap<T>::GetKey(UOSInt index) const
 	{
 		if (index >= this->cnt)
 		{
@@ -143,7 +143,7 @@ namespace Data
 		return this->items[index].s;
 	}
 
-	template <class T> OSInt FastStringMap<T>::IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len)
+	template <class T> OSInt FastStringMap<T>::IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const
 	{
 		OSInt i;
 		OSInt j;
@@ -197,13 +197,13 @@ namespace Data
 		return -i - 1;
 	}
 
-	template <class T> OSInt FastStringMap<T>::IndexOf(Text::String *s)
+	template <class T> OSInt FastStringMap<T>::IndexOf(Text::String *s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s->v, s->leng);
 		return IndexOf(hash, s->v, s->leng);
 	}
 
-	template <class T> OSInt FastStringMap<T>::IndexOfC(Text::CString s)
+	template <class T> OSInt FastStringMap<T>::IndexOfC(Text::CString s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s.v, s.leng);
 		return IndexOf(hash, s.v, s.leng);
@@ -243,7 +243,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T FastStringMap<T>::Get(Text::String *key)
+	template <class T> T FastStringMap<T>::Get(Text::String *key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
@@ -254,7 +254,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T FastStringMap<T>::GetC(Text::CString key)
+	template <class T> T FastStringMap<T>::GetC(Text::CString key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
@@ -301,7 +301,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> Bool FastStringMap<T>::IsEmpty()
+	template <class T> Bool FastStringMap<T>::IsEmpty() const
 	{
 		return this->cnt == 0;
 	}
@@ -316,7 +316,7 @@ namespace Data
 		this->cnt = 0;
 	}
 
-	template <class T> UInt32 FastStringMap<T>::CalcHash(const UTF8Char *s, UOSInt len)
+	template <class T> UInt32 FastStringMap<T>::CalcHash(const UTF8Char *s, UOSInt len) const
 	{
 		return this->crc.CalcDirect(s, len);
 	}

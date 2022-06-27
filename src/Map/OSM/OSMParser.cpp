@@ -1367,7 +1367,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 			}
 		}
 	}
-	Data::ArrayList<OSMNodeInfo*> *nodeList;
+	const Data::ArrayList<OSMNodeInfo*> *nodeList;
 	nodeList = nodeMap.GetValues();
 	i = nodeList->GetCount();
 	while (i-- > 0)

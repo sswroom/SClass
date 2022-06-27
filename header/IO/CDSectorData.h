@@ -18,12 +18,12 @@ namespace IO
 		CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize);
 		virtual ~CDSectorData();
 
-		virtual UInt64 GetSectorCount();
-		virtual UOSInt GetBytesPerSector();
+		virtual UInt64 GetSectorCount() const;
+		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff);
-		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount);
-		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize);
-		virtual UOSInt GetSeekCount();
+		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
+		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const;
+		virtual UOSInt GetSeekCount() const;
 	};
 
 	class CDSectorStreamData : public IO::IStreamData

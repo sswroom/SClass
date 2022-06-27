@@ -11,10 +11,10 @@ namespace SSWR
 		public:
 			virtual ~MapFilter() {};
 
-			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) = 0;
-			virtual UTF8Char *ToString(UTF8Char *buff) = 0;
-			virtual MapFilter *Clone() = 0;
+			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) const = 0;
+			virtual UTF8Char *ToString(UTF8Char *buff) const = 0;
+			virtual MapFilter *Clone() const = 0;
 		};
-	};
-};
+	}
+}
 #endif

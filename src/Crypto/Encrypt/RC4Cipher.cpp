@@ -94,12 +94,12 @@ UOSInt Crypto::Encrypt::RC4Cipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, U
 	return inSize;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::GetEncBlockSize()
+UOSInt Crypto::Encrypt::RC4Cipher::GetEncBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Encrypt::RC4Cipher::GetDecBlockSize()
+UOSInt Crypto::Encrypt::RC4Cipher::GetDecBlockSize() const
 {
 	return 1;
 }

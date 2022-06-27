@@ -173,7 +173,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList;
+	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetPublicList(&mutUsage);
@@ -418,7 +418,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

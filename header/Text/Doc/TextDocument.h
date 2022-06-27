@@ -42,20 +42,20 @@ namespace Text
 			TextDocument(Text::CString name);
 			virtual ~TextDocument();
 
-			virtual IO::ParserType GetParserType();
+			virtual IO::ParserType GetParserType() const;
 
 			void SetDocumentName(Text::CString docName);
-			UTF8Char *GetDocumentName(UTF8Char *docName);
+			UTF8Char *GetDocumentName(UTF8Char *docName) const;
 			void SetTextColor(UInt32 textColor);
-			Bool GetTextColor(UInt32 *textColor);
+			Bool GetTextColor(UInt32 *textColor) const;
 			void SetBGColor(UInt32 bgColor);
-			Bool GetBGColor(UInt32 *bgColor);
+			Bool GetBGColor(UInt32 *bgColor) const;
 			void SetLinkColor(UInt32 linkColor);
-			Bool GetLinkColor(UInt32 *linkColor);
+			Bool GetLinkColor(UInt32 *linkColor) const;
 			void SetActiveLinkColor(UInt32 activeLinkColor);
-			Bool GetActiveLinkColor(UInt32 *activeLinkColor);
+			Bool GetActiveLinkColor(UInt32 *activeLinkColor) const;
 			void SetVisitedLinkColor(UInt32 visitedLinkColor);
-			Bool GetVisitedLinkColor(UInt32 *visitedLinkColor);
+			Bool GetVisitedLinkColor(UInt32 *visitedLinkColor) const;
 
 			virtual UOSInt Add(DocSection *section);
 			virtual UOSInt GetCount() const;

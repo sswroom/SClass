@@ -973,7 +973,7 @@ void Media::EXIFData::FreeItem(Media::EXIFData::EXIFItem *item)
 	MemFree(item);
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, Data::ArrayList<Media::EXIFData::EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst)
+void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ArrayList<Media::EXIFData::EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const
 {
 	UInt32 objCnt;
 	UOSInt i;
@@ -1160,7 +1160,7 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, Data::ArrayList<Media::EXIFData::E
 	*otherOfst = k;
 }
 
-void Media::EXIFData::GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst)
+void Media::EXIFData::GetExifBuffSize(const Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const
 {
 	UInt32 i = 6;
 	UInt32 j = 6;
@@ -1255,7 +1255,7 @@ Media::EXIFData::EXIFData(EXIFMaker exifMaker)
 
 Media::EXIFData::~EXIFData()
 {
-	Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
+	const Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
 	UOSInt i = items->GetCount();
 	while (i-- > 0)
 	{
@@ -1263,15 +1263,15 @@ Media::EXIFData::~EXIFData()
 	}
 }
 
-Media::EXIFData::EXIFMaker Media::EXIFData::GetEXIFMaker()
+Media::EXIFData::EXIFMaker Media::EXIFData::GetEXIFMaker() const
 {
 	return this->exifMaker;
 }
 
-Media::EXIFData *Media::EXIFData::Clone()
+Media::EXIFData *Media::EXIFData::Clone() const
 {
 	Media::EXIFData::EXIFItem *item;
-	Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
+	const Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
 	UOSInt i;
 	UOSInt j;
 	Media::EXIFData *newExif;
@@ -1534,9 +1534,9 @@ void Media::EXIFData::Remove(Int32 id)
 	}
 }
 
-UOSInt Media::EXIFData::GetExifIds(Data::ArrayList<Int32> *idArr)
+UOSInt Media::EXIFData::GetExifIds(Data::ArrayList<Int32> *idArr) const
 {
-	Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
+	const Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
 	UOSInt cnt = items->GetCount();
 	UOSInt i = 0;
 	while (i < cnt)
@@ -1547,7 +1547,7 @@ UOSInt Media::EXIFData::GetExifIds(Data::ArrayList<Int32> *idArr)
 	return cnt;
 }
 
-Media::EXIFData::EXIFType Media::EXIFData::GetExifType(Int32 id)
+Media::EXIFData::EXIFType Media::EXIFData::GetExifType(Int32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -1555,7 +1555,7 @@ Media::EXIFData::EXIFType Media::EXIFData::GetExifType(Int32 id)
 	return item->type;
 }
 
-UInt32 Media::EXIFData::GetExifCount(Int32 id)
+UInt32 Media::EXIFData::GetExifCount(Int32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -1563,12 +1563,12 @@ UInt32 Media::EXIFData::GetExifCount(Int32 id)
 	return item->cnt;
 }
 
-Media::EXIFData::EXIFItem *Media::EXIFData::GetExifItem(Int32 id)
+Media::EXIFData::EXIFItem *Media::EXIFData::GetExifItem(Int32 id) const
 {
 	return this->exifMap.Get(id);
 }
 
-UInt16 *Media::EXIFData::GetExifUInt16(Int32 id)
+UInt16 *Media::EXIFData::GetExifUInt16(Int32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -1585,7 +1585,7 @@ UInt16 *Media::EXIFData::GetExifUInt16(Int32 id)
 	}
 }
 
-UInt32 *Media::EXIFData::GetExifUInt32(Int32 id)
+UInt32 *Media::EXIFData::GetExifUInt32(Int32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -1602,7 +1602,7 @@ UInt32 *Media::EXIFData::GetExifUInt32(Int32 id)
 	}
 }
 
-Media::EXIFData *Media::EXIFData::GetExifSubexif(Int32 id)
+Media::EXIFData *Media::EXIFData::GetExifSubexif(Int32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -1612,7 +1612,7 @@ Media::EXIFData *Media::EXIFData::GetExifSubexif(Int32 id)
 	return (Media::EXIFData*)item->dataBuff;
 }
 
-UInt8 *Media::EXIFData::GetExifOther(Int32 id)
+UInt8 *Media::EXIFData::GetExifOther(Int32 id) const
 {
 	Media::EXIFData::EXIFItem *item = this->exifMap.Get(id);
 	if (item == 0)
@@ -1622,7 +1622,7 @@ UInt8 *Media::EXIFData::GetExifOther(Int32 id)
 	return (UInt8*)item->dataBuff;
 }
 
-Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
+Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt) const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1664,7 +1664,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 	return false;
 }
 
-Text::CString Media::EXIFData::GetPhotoMake()
+Text::CString Media::EXIFData::GetPhotoMake() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1680,7 +1680,7 @@ Text::CString Media::EXIFData::GetPhotoMake()
 	return CSTR_NULL;
 }
 
-Text::CString Media::EXIFData::GetPhotoModel()
+Text::CString Media::EXIFData::GetPhotoModel() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1706,7 +1706,7 @@ Text::CString Media::EXIFData::GetPhotoModel()
 	return CSTR_NULL;
 }
 
-Text::CString Media::EXIFData::GetPhotoLens()
+Text::CString Media::EXIFData::GetPhotoLens() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_CANON)
@@ -1732,7 +1732,7 @@ Text::CString Media::EXIFData::GetPhotoLens()
 	return CSTR_NULL;
 }
 
-Double Media::EXIFData::GetPhotoFNumber()
+Double Media::EXIFData::GetPhotoFNumber() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1757,7 +1757,7 @@ Double Media::EXIFData::GetPhotoFNumber()
 	return 0;
 }
 
-Double Media::EXIFData::GetPhotoExpTime()
+Double Media::EXIFData::GetPhotoExpTime() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1782,7 +1782,7 @@ Double Media::EXIFData::GetPhotoExpTime()
 	return 0;
 }
 
-UInt32 Media::EXIFData::GetPhotoISO()
+UInt32 Media::EXIFData::GetPhotoISO() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1810,7 +1810,7 @@ UInt32 Media::EXIFData::GetPhotoISO()
 	return 0;
 }
 
-Double Media::EXIFData::GetPhotoFocalLength()
+Double Media::EXIFData::GetPhotoFocalLength() const
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1835,7 +1835,7 @@ Double Media::EXIFData::GetPhotoFocalLength()
 	return 0;
 }
 
-Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick)
+Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick) const
 {
 	Media::EXIFData *subExif = this->GetExifSubexif(34853);
 	if (subExif)
@@ -2042,7 +2042,7 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 	return false;
 }
 
-Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const
 {
 	Media::EXIFData::EXIFItem *item;
 	Media::EXIFData::EXIFItem *item2;
@@ -2113,7 +2113,7 @@ Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Doubl
 	return false;
 }
 
-Media::EXIFData::RotateType Media::EXIFData::GetRotateType()
+Media::EXIFData::RotateType Media::EXIFData::GetRotateType() const
 {
 	Media::EXIFData::EXIFItem *item;
 	item = this->exifMap.Get(274);
@@ -2145,7 +2145,7 @@ Media::EXIFData::RotateType Media::EXIFData::GetRotateType()
 	return Media::EXIFData::RT_NONE;
 }
 
-Double Media::EXIFData::GetHDPI()
+Double Media::EXIFData::GetHDPI() const
 {
 	Media::EXIFData::EXIFItem *item;
 	item = this->exifMap.Get(282);
@@ -2161,7 +2161,7 @@ Double Media::EXIFData::GetHDPI()
 	return arr[0] / (Double)arr[1];
 }
 
-Double Media::EXIFData::GetVDPI()
+Double Media::EXIFData::GetVDPI() const
 {
 	Media::EXIFData::EXIFItem *item;
 	item = this->exifMap.Get(283);
@@ -2201,7 +2201,7 @@ void Media::EXIFData::SetHeight(UInt32 height)
 	}
 }
 
-Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix)
+Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix) const
 {
 	Data::ArrayList<Int32> exifIds;
 	Media::EXIFData::EXIFItem *exItem;
@@ -2713,7 +2713,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3644,7 +3644,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, T
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3707,7 +3707,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3993,24 +3993,24 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::C
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType)
+Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType) const
 {
 	sb->AppendC(UTF8STRC("0x"));
 	sb->AppendHex16(lensType);
 	return true;
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst)
+void Media::EXIFData::ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst) const
 {
 	ToExifBuff(buff, this->exifMap.GetValues(), startOfst, otherOfst);
 }
 
-void Media::EXIFData::GetExifBuffSize(UInt32 *size, UInt32 *endOfst)
+void Media::EXIFData::GetExifBuffSize(UInt32 *size, UInt32 *endOfst) const
 {
 	GetExifBuffSize(this->exifMap.GetValues(), size, endOfst);
 }
 
-Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffSize)
+Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const
 {
 	Media::EXIFData *ret = 0;
 	if (Text::StrEquals(buff, (const UTF8Char*)"Panasonic"))

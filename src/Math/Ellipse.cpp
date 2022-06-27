@@ -16,29 +16,29 @@ Math::Ellipse::~Ellipse()
 {
 }
 
-Math::Vector2D::VectorType Math::Ellipse::GetVectorType()
+Math::Vector2D::VectorType Math::Ellipse::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Ellipse;
 }
 
-Math::Coord2DDbl Math::Ellipse::GetCenter()
+Math::Coord2DDbl Math::Ellipse::GetCenter() const
 {
 	return Math::Coord2DDbl(this->tlx + (this->w * 0.5), this->tly + (this->h * 0.5));
 }
 
-Math::Vector2D *Math::Ellipse::Clone()
+Math::Vector2D *Math::Ellipse::Clone() const
 {
 	Math::Ellipse *ellipse;
 	NEW_CLASS(ellipse, Math::Ellipse(this->srid, this->tlx, this->tly, this->w, this->h));
 	return ellipse;
 }
 
-void Math::Ellipse::GetBounds(Math::RectAreaDbl *bounds)
+void Math::Ellipse::GetBounds(Math::RectAreaDbl *bounds) const
 {
 	*bounds = Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
 }
 
-Double Math::Ellipse::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Double Math::Ellipse::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	//////////////////////////////////////////////////////////
 	*nearPt = pt;
@@ -50,7 +50,7 @@ Bool Math::Ellipse::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::Ellipse::Support3D()
+Bool Math::Ellipse::Support3D() const
 {
 	return false;
 }
@@ -65,7 +65,7 @@ void Math::Ellipse::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 	this->h = y2 - this->tly;
 }
 
-Bool Math::Ellipse::Equals(Math::Vector2D *vec)
+Bool Math::Ellipse::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0 || vec->GetVectorType() != VectorType::Ellipse)
 	{

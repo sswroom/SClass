@@ -64,7 +64,7 @@ UI::GUIDragDataGTK::~GUIDragDataGTK()
 {
 	GUIDragDataGTK_currData = 0;
 	DEL_CLASS(this->targetMap);
-	Data::ArrayList<Text::String*> *targetList = this->targetText->GetValues();
+	const Data::ArrayList<Text::String*> *targetList = this->targetText->GetValues();
 	UOSInt i = targetList->GetCount();
 	while (i-- > 0)
 	{

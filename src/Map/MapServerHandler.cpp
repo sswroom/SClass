@@ -31,6 +31,7 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(Net::WebServer::IWebRequest 
 		}
 	}
 	sb.AppendUTF8Char(']');
+	resp->EnableWriteBuffer();
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("application/json"));
 	Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), sb.GetLength(), sb.ToString());
@@ -231,6 +232,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 		sb.AppendUTF8Char(']');
 		sb.AppendUTF8Char('}');
 	}
+	resp->EnableWriteBuffer();
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("application/json"));
 	Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), sb.GetLength(), sb.ToString());

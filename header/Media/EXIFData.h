@@ -101,13 +101,13 @@ namespace Media
 
 	private:
 		void FreeItem(EXIFItem *item);
-		void ToExifBuff(UInt8 *buff, Data::ArrayList<EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst);
-		void GetExifBuffSize(Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst);
+		void ToExifBuff(UInt8 *buff, const Data::ArrayList<EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const;
+		void GetExifBuffSize(const Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const;
 	public:
 		EXIFData(EXIFMaker exifMaker);
 		~EXIFData();
-		EXIFMaker GetEXIFMaker();
-		Media::EXIFData *Clone();
+		EXIFMaker GetEXIFMaker() const;
+		Media::EXIFData *Clone() const;
 		void AddBytes(Int32 id, UInt32 cnt, const UInt8 *buff);
 		void AddString(Int32 id, UInt32 cnt, const Char *buff);
 		void AddUInt16(Int32 id, UInt32 cnt, const UInt16 *buff);
@@ -119,40 +119,40 @@ namespace Media
 		void AddDouble(Int32 id, UInt32 cnt, const Double *buff);
 		void Remove(Int32 id);
 
-		UOSInt GetExifIds(Data::ArrayList<Int32> *idArr);
-		EXIFType GetExifType(Int32 id);
-		UInt32 GetExifCount(Int32 id);
-		EXIFItem *GetExifItem(Int32 id);
-		UInt16 *GetExifUInt16(Int32 id);
-		UInt32 *GetExifUInt32(Int32 id);
-		Media::EXIFData *GetExifSubexif(Int32 id);
-		UInt8 *GetExifOther(Int32 id);
+		UOSInt GetExifIds(Data::ArrayList<Int32> *idArr) const;
+		EXIFType GetExifType(Int32 id) const;
+		UInt32 GetExifCount(Int32 id) const;
+		EXIFItem *GetExifItem(Int32 id) const;
+		UInt16 *GetExifUInt16(Int32 id) const;
+		UInt32 *GetExifUInt32(Int32 id) const;
+		Media::EXIFData *GetExifSubexif(Int32 id) const;
+		UInt8 *GetExifOther(Int32 id) const;
 
-		Bool GetPhotoDate(Data::DateTime *dt);
-		Text::CString GetPhotoMake();
-		Text::CString GetPhotoModel();
-		Text::CString GetPhotoLens();
-		Double GetPhotoFNumber();
-		Double GetPhotoExpTime();
-		UInt32 GetPhotoISO();
-		Double GetPhotoFocalLength();
-		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick);
-		Bool GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY);
-		RotateType GetRotateType();
-		Double GetHDPI();
-		Double GetVDPI();
+		Bool GetPhotoDate(Data::DateTime *dt) const;
+		Text::CString GetPhotoMake() const;
+		Text::CString GetPhotoModel() const;
+		Text::CString GetPhotoLens() const;
+		Double GetPhotoFNumber() const;
+		Double GetPhotoExpTime() const;
+		UInt32 GetPhotoISO() const;
+		Double GetPhotoFocalLength() const;
+		Bool GetPhotoLocation(Double *lat, Double *lon, Double *altitude, Int64 *gpsTimeTick) const;
+		Bool GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Double *minX, Double *minY, Double *maxX, Double *maxY) const;
+		RotateType GetRotateType() const;
+		Double GetHDPI() const;
+		Double GetVDPI() const;
 		void SetWidth(UInt32 width);
 		void SetHeight(UInt32 height);
 
-		Bool ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix);
-		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType);
-		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst);
-		void GetExifBuffSize(UInt32 *size, UInt32 *endOfst);
+		Bool ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix) const;
+		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType) const;
+		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst) const;
+		void GetExifBuffSize(UInt32 *size, UInt32 *endOfst) const;
 
-		EXIFData *ParseMakerNote(const UInt8 *buff, UOSInt buffSize);
+		EXIFData *ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const;
 
 		static Text::CString GetEXIFMakerName(EXIFMaker exifMaker);
 		static Text::CString GetEXIFName(EXIFMaker exifMaker, Int32 id);

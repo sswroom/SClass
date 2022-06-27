@@ -12,7 +12,7 @@ Math::Vector2D::~Vector2D()
 
 }
 
-UInt32 Math::Vector2D::GetSRID()
+UInt32 Math::Vector2D::GetSRID() const
 {
 	return this->srid;
 }

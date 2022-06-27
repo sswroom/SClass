@@ -13,16 +13,16 @@ namespace Crypto
 			X509PKCS12(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PKCS12();
 
-			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
+			virtual FileType GetFileType() const;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
 			
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual ASN1Data *Clone() const;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 		};
 	}
 }

@@ -139,7 +139,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() = 0;
 		Text::String *GetName();
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 

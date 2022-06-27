@@ -12,9 +12,9 @@ Math::PointCollection::~PointCollection()
 
 }
 
-Math::Coord2DDbl Math::PointCollection::GetCenter()
+Math::Coord2DDbl Math::PointCollection::GetCenter() const
 {
-	Math::Coord2DDbl *points;
+	const Math::Coord2DDbl *points;
 	UOSInt nPoints;
 
 	Double maxX;
@@ -22,7 +22,7 @@ Math::Coord2DDbl Math::PointCollection::GetCenter()
 	Double minX;
 	Double minY;
 	Double v;
-	points = this->GetPointList(&nPoints);
+	points = this->GetPointListRead(&nPoints);
 	if (nPoints <= 0)
 	{
 		return Math::Coord2DDbl(0, 0);

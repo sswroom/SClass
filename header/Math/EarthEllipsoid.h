@@ -61,26 +61,26 @@ namespace Math
 		EarthEllipsoid();
 		~EarthEllipsoid();
 
-		Double CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit);
-		Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit);
-		Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit);
+		Double CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
 
-		Double GetSemiMajorAxis();
-		Double GetSemiMinorAxis();
-		Double GetInverseFlattening();
-		Double GetEccentricity();
-		Double CalLonByDist(Double dLat, Double dLon, Double distM);
-		Double CalLatByDist(Double dLat, Double distM);
-		Double CalRadiusAtLat(Double lat);
-		Bool Equals(EarthEllipsoid *ellipsoid);
-		Text::CString GetName();
+		Double GetSemiMajorAxis() { return this->semiMajorAxis; }
+		Double GetSemiMinorAxis() { return this->semiMajorAxis; }
+		Double GetInverseFlattening() { return this->inverseFlattening; }
+		Double GetEccentricity() { return this->eccentricity; }
+		Double CalLonByDist(Double dLat, Double dLon, Double distM) const;
+		Double CalLatByDist(Double dLat, Double distM) const;
+		Double CalRadiusAtLat(Double lat) const;
+		Bool Equals(EarthEllipsoid *ellipsoid) const;
+		Text::CString GetName() const;
 
 		void operator=(const EarthEllipsoid &ellipsoid);
 		void operator=(const EarthEllipsoid *ellipsoid);
-		EarthEllipsoid *Clone();
+		EarthEllipsoid *Clone() const;
 
-		void ToCartesianCoord(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z);
-		void FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h);
+		void ToCartesianCoord(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z) const;
+		void FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h) const;
 
 		static const EarthEllipsoidInfo *GetEarthInfo(EarthEllipsoidType eet);
 	};

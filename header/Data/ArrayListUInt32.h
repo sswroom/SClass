@@ -11,7 +11,7 @@ namespace Data
 		ArrayListUInt32(UOSInt capacity);
 		virtual ~ArrayListUInt32();
 
-		virtual ArrayList<UInt32> *Clone();
+		virtual ArrayList<UInt32> *Clone() const;
 	};
 }
 #endif

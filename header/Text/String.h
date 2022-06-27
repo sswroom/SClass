@@ -30,7 +30,7 @@ namespace Text
 		static String *NewEmpty();
 		static String *OrEmpty(Text::String *s);
 		void Release();
-		String *Clone();
+		String *Clone() const;
 
 		String *ToLower();
 	private:

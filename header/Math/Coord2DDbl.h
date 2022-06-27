@@ -46,44 +46,44 @@ namespace Math
 			return Coord2DDbl(lon, lat);
 		}
 
-		Double CalcLengTo(Coord2DDbl coord)
+		Double CalcLengTo(Coord2DDbl coord) const
 		{
 			Math::Coord2DDbl diff = *this - coord;
 			diff = diff * diff;
 			return Math_Sqrt(diff.x + diff.y);
 		}
 
-		Bool operator!=(Coord2DDbl v)
+		Bool operator!=(Coord2DDbl v) const
 		{
 			return (this->x != v.x) || (this->y != v.y);
 		}
 
-		Bool operator==(Coord2DDbl v)
+		Bool operator==(Coord2DDbl v) const
 		{
 			return (this->x == v.x) && (this->y == v.y);
 		}
 
-		Bool operator>=(Coord2DDbl v)
+		Bool operator>=(Coord2DDbl v) const
 		{
 			return (this->x >= v.x) && (this->y >= v.y);
 		}
 
-		Bool operator<(Coord2DDbl v)
+		Bool operator<(Coord2DDbl v) const
 		{
 			return (this->x < v.x) && (this->y < v.y);
 		}
 
-		Coord2DDbl Max(Coord2DDbl v)
+		Coord2DDbl Max(Coord2DDbl v) const
 		{
 			return PMAXPD(this->vals, v.vals);
 		}
 
-		Coord2DDbl Min(Coord2DDbl v)
+		Coord2DDbl Min(Coord2DDbl v) const
 		{
 			return PMINPD(this->vals, v.vals);
 		}
 
-		Coord2DDbl Abs()
+		Coord2DDbl Abs() const
 		{
 			return Math::Coord2DDbl((this->x < 0)?-x:x, (this->y < 0)?-y:y);
 		}
@@ -93,37 +93,37 @@ namespace Math
 			return PADDPD(this->vals, v.vals);
 		}
 
-		Coord2DDbl operator+(Double v)
+		Coord2DDbl operator+(Double v) const
 		{
 			return PADDPD(this->vals, PDoublex2SetA(v));
 		}
 
-		Coord2DDbl operator-(Coord2DDbl v)
+		Coord2DDbl operator-(Coord2DDbl v) const
 		{
 			return PSUBPD(this->vals, v.vals);
 		}
 
-		Coord2DDbl operator-(Double v)
+		Coord2DDbl operator-(Double v) const
 		{
 			return PSUBPD(this->vals, PDoublex2SetA(v));
 		}
 
-		Coord2DDbl operator*(Coord2DDbl v)
+		Coord2DDbl operator*(Coord2DDbl v) const
 		{
 			return PMULPD(this->vals, v.vals);
 		}
 
-		Coord2DDbl operator*(Double v)
+		Coord2DDbl operator*(Double v) const
 		{
 			return {this->x * v, this->y * v};
 		}
 
-		Coord2DDbl operator/(Coord2DDbl v)
+		Coord2DDbl operator/(Coord2DDbl v) const
 		{
 			return PDIVPD(this->vals, v.vals);
 		}
 
-		Coord2DDbl operator/(Double v)
+		Coord2DDbl operator/(Double v) const
 		{
 			return {this->x / v, this->y / v};
 		}
@@ -134,7 +134,7 @@ namespace Math
 			return *this;
 		}
 
-		Bool IsZero()
+		Bool IsZero() const
 		{
 			return this->x == 0 && this->y == 0;
 		}

@@ -18,12 +18,12 @@ Crypto::Cert::X509PrivKey::~X509PrivKey()
 
 }
 
-Crypto::Cert::X509File::FileType Crypto::Cert::X509PrivKey::GetFileType()
+Crypto::Cert::X509File::FileType Crypto::Cert::X509PrivKey::GetFileType() const
 {
 	return FileType::PrivateKey;
 }
 
-void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
@@ -44,19 +44,19 @@ void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PrivKey::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PrivKey::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509PrivKey::Clone()
+Net::ASN1Data *Crypto::Cert::X509PrivKey::Clone() const
 {
 	Crypto::Cert::X509PrivKey *asn1;
 	NEW_CLASS(asn1, Crypto::Cert::X509PrivKey(this->GetSourceNameObj(), this->buff, this->buffSize));
 	return asn1;
 }
 
-void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	if (IsPrivateKeyInfo(this->buff, this->buff + this->buffSize, "1"))
 	{
@@ -64,7 +64,7 @@ void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType()
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType() const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt keyTypeLen;
@@ -76,7 +76,7 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType()
 	return Crypto::Cert::X509File::KeyType::Unknown;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey()
+Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey() const
 {
 	KeyType keyType = GetKeyType();
 	if (keyType == KeyType::Unknown)

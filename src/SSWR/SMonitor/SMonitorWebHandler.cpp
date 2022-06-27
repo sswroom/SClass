@@ -1014,7 +1014,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 	if (dev->valUpdated)
 	{
-		Data::ArrayList<IO::MemoryStream *> *cacheList;
+		const Data::ArrayList<IO::MemoryStream *> *cacheList;
 		dev->mut->LockWrite();
 		dev->valUpdated = false;
 		cacheList = dev->imgCaches->GetValues();
@@ -1085,7 +1085,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		Data::ArrayListInt64 dateList;
 		Data::ArrayListDbl valList;
-		Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DevRecord2 *> *recList;
+		const Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DevRecord2 *> *recList;
 		SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
 		recList = dev->todayRecs->GetValues();
 		if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)

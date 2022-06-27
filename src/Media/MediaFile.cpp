@@ -38,7 +38,7 @@ Media::MediaFile::~MediaFile()
 	}
 }
 
-IO::ParserType Media::MediaFile::GetParserType()
+IO::ParserType Media::MediaFile::GetParserType() const
 {
 	return IO::ParserType::MediaFile;
 }
@@ -68,7 +68,7 @@ void Media::MediaFile::KeepStream(UOSInt index, Bool toKeep)
 	this->keepSources.SetItem(index, toKeep?1:0);
 }
 
-Media::ChapterInfo *Media::MediaFile::GetChapterInfo()
+Media::ChapterInfo *Media::MediaFile::GetChapterInfo() const
 {
 	return this->chapters;
 }

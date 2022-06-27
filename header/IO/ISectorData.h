@@ -11,14 +11,14 @@ namespace IO
 		ISectorData(Text::String *name) : IO::ParsedObject(name){};
 		virtual ~ISectorData(){};
 
-		virtual UInt64 GetSectorCount() = 0;
-		virtual UOSInt GetBytesPerSector() = 0;
+		virtual UInt64 GetSectorCount() const = 0;
+		virtual UOSInt GetBytesPerSector() const = 0;
 		virtual Bool ReadSector(UInt64 sectorNum, UInt8 *sectorBuff) = 0;
-		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) = 0;
-		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) = 0;
-		virtual UOSInt GetSeekCount() = 0;
+		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const = 0;
+		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) const = 0;
+		virtual UOSInt GetSeekCount() const = 0;
 
-		virtual IO::ParserType GetParserType() { return IO::ParserType::SectorData; };
+		virtual IO::ParserType GetParserType() const { return IO::ParserType::SectorData; };
 	};
 }
 #endif

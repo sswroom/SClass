@@ -206,7 +206,7 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	this->conn->UnuseObject();
 	LIST_FREE_STRING(this->colNames);
 	DEL_CLASS(this->colNames);
-	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
+	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
 	Math::Vector2D *vec;
 	i = vecList->GetCount();
 	while (i-- > 0)
@@ -245,8 +245,8 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
-	Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
+	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
+	const Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
 	Math::RectAreaDbl minMax;
 	Math::Vector2D *vec;
 	UOSInt i;
@@ -269,14 +269,14 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 
 Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax()
 {
-	Data::ArrayList<Int32> *objInd = this->objects->GetKeys();
+	const Data::ArrayList<Int32> *objInd = this->objects->GetKeys();
 	return objInd->GetItem(objInd->GetCount() - 1);
 }
 
 void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
-	Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
+	const Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
 	UOSInt i = nameList->GetCount();
 	UOSInt colCnt = this->colNames->GetCount();
 	UOSInt j;

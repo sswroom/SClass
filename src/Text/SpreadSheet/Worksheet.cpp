@@ -105,7 +105,7 @@ void Text::SpreadSheet::Worksheet::FreeCellData(Text::SpreadSheet::Worksheet::Ce
 	MemFree(data);
 }
 
-Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(RowData *row, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(RowData *row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
 	RowData *newRow;
 	CellData *cell;
@@ -133,7 +133,7 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(Ro
 	return newRow;
 }
 
-Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(CellData *cell, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
 	CellData *newCell;
 	newCell = MemAlloc(CellData, 1);
@@ -230,7 +230,7 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 	DEL_CLASS(this->drawings);	
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Worksheet::Clone(IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
 	UOSInt i;
 	UOSInt j;

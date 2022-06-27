@@ -13,7 +13,8 @@ namespace Math
 
 		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst) = 0;
 		virtual Math::Coord2DDbl *GetPointList(UOSInt *nPoint) = 0;
-		virtual Math::Coord2DDbl GetCenter();
+		virtual const Math::Coord2DDbl *GetPointListRead(UOSInt *nPoint) const = 0;
+		virtual Math::Coord2DDbl GetCenter() const;
 	};
 }
 #endif

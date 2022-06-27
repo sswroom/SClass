@@ -23,19 +23,19 @@ namespace IO
 		DirectoryPackage(Text::CString dirName);
 		virtual ~DirectoryPackage();
 
-		virtual UOSInt GetCount();
-		virtual PackObjectType GetItemType(UOSInt index);
-		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index);
-		virtual IO::IStreamData *GetItemStmData(UOSInt index); // need release
-		virtual IO::PackageFile *GetItemPack(UOSInt index); // need release
-		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
-		virtual Int64 GetItemModTimeTick(UOSInt index);
-		virtual UInt64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(Text::CString name);
-		virtual Bool IsCompressed(UOSInt index);
-		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
-		virtual PackageFile *Clone();
-		virtual Bool AllowWrite();
+		virtual UOSInt GetCount() const;
+		virtual PackObjectType GetItemType(UOSInt index) const;
+		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
+		virtual IO::IStreamData *GetItemStmData(UOSInt index) const; // need release
+		virtual IO::PackageFile *GetItemPack(UOSInt index) const; // need release
+		virtual IO::ParsedObject *GetItemPObj(UOSInt index) const; // no need release
+		virtual Int64 GetItemModTimeTick(UOSInt index) const;
+		virtual UInt64 GetItemSize(UOSInt index) const;
+		virtual UOSInt GetItemIndex(Text::CString name) const;
+		virtual Bool IsCompressed(UOSInt index) const;
+		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
+		virtual PackageFile *Clone() const;
+		virtual Bool AllowWrite() const;
 		virtual Bool CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);

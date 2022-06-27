@@ -43,11 +43,11 @@ namespace Net
 		DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, Data::ArrayList<UInt32> *dnsList);
 		~DHCPServer();
 
-		Bool IsError();
+		Bool IsError() const;
 
-		void UseStatus(Sync::MutexUsage *mutUsage);
-		Data::ArrayList<DeviceStatus*> *StatusGetList();
-		UInt32 GetIPLeaseTime();
+		void UseStatus(Sync::MutexUsage *mutUsage) const;
+		const Data::ArrayList<DeviceStatus*> *StatusGetList() const;
+		UInt32 GetIPLeaseTime() const;
 	};
 }
 #endif

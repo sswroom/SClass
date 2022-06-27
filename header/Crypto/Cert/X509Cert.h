@@ -14,33 +14,33 @@ namespace Crypto
 			X509Cert(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509Cert();
 
-			Bool GetSubjectCN(Text::StringBuilderUTF8 *sb);
-			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb);
+			Bool GetSubjectCN(Text::StringBuilderUTF8 *sb) const;
+			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb) const;
 			
-			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
+			virtual FileType GetFileType() const;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
 
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone();
-			virtual X509Cert *CreateX509Cert();
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual ASN1Data *Clone() const;
+			virtual X509Cert *CreateX509Cert() const;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
-			Bool GetIssuerNames(CertNames *names);
-			Bool GetSubjNames(CertNames *names);
-			Bool GetExtensions(CertExtensions *ext);
-			Crypto::Cert::X509Key *GetNewPublicKey();
-			Bool GetKeyId(UInt8 *keyId);
-			Bool GetNotBefore(Data::DateTime *dt);
-			Bool GetNotAfter(Data::DateTime *dt);
-			Bool DomainValid(Text::CString domain);
-			Bool IsSelfSigned();
+			Bool GetIssuerNames(CertNames *names) const;
+			Bool GetSubjNames(CertNames *names) const;
+			Bool GetExtensions(CertExtensions *ext) const;
+			Crypto::Cert::X509Key *GetNewPublicKey() const;
+			Bool GetKeyId(UInt8 *keyId) const;
+			Bool GetNotBefore(Data::DateTime *dt) const;
+			Bool GetNotAfter(Data::DateTime *dt) const;
+			Bool DomainValid(Text::CString domain) const;
+			Bool IsSelfSigned() const;
 
-			const UInt8 *GetIssuerNamesSeq(UOSInt *dataLen);
-			const UInt8 *GetSerialNumber(UOSInt *dataLen);
+			const UInt8 *GetIssuerNamesSeq(UOSInt *dataLen) const;
+			const UInt8 *GetSerialNumber(UOSInt *dataLen) const;
 		};
 	}
 }

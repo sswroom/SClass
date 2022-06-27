@@ -13,7 +13,7 @@ SSWR::SHPConv::ValueFilter::~ValueFilter()
 	this->value->Release();
 }
 
-Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf)
+Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf) const
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -32,7 +32,7 @@ Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, 
 	}
 }
 
-UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff)
+UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff) const
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
 	buff = Text::StrUOSInt(buff, this->colIndex);
@@ -58,7 +58,7 @@ UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff)
 	}
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::ValueFilter::Clone()
+SSWR::SHPConv::MapFilter *SSWR::SHPConv::ValueFilter::Clone() const
 {
 	MapFilter *filter;
 	NEW_CLASS(filter, ValueFilter(this->colIndex, this->value->ToCString(), this->compareType));

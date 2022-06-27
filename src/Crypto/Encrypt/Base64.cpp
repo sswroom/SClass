@@ -47,12 +47,12 @@ UOSInt Crypto::Encrypt::Base64::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt
 	return Base64_Decrypt(inBuff, inSize, outBuff, decParam);
 }
 
-UOSInt Crypto::Encrypt::Base64::GetEncBlockSize()
+UOSInt Crypto::Encrypt::Base64::GetEncBlockSize() const
 {
 	return 3;
 }
 
-UOSInt Crypto::Encrypt::Base64::GetDecBlockSize()
+UOSInt Crypto::Encrypt::Base64::GetDecBlockSize() const
 {
 	return 4;
 }

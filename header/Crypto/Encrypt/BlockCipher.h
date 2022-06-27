@@ -28,11 +28,11 @@ namespace Crypto
 
 			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam);
 			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam);
-			virtual UOSInt GetEncBlockSize();
-			virtual UOSInt GetDecBlockSize();
+			virtual UOSInt GetEncBlockSize() const;
+			virtual UOSInt GetDecBlockSize() const;
 
-			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) = 0; //return outSize
-			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) = 0; //return outSize
+			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) const = 0; //return outSize
+			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) const = 0; //return outSize
 
 			void SetChainMode(ChainMode cm);
 			void SetIV(const UInt8 *iv);

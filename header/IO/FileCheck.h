@@ -42,16 +42,16 @@ namespace IO
 		FileCheck(Text::CString name, CheckType chkType);
 		virtual ~FileCheck();
 
-		HashType GetHashType();
-		UOSInt GetHashSize();
-		CheckType GetCheckType();
-		UOSInt GetCount();
-		const UTF8Char *GetEntryName(UOSInt index);
-		Bool GetEntryHash(UOSInt index, UInt8 *hashVal);
+		HashType GetHashType() const;
+		UOSInt GetHashSize() const;
+		CheckType GetCheckType() const;
+		UOSInt GetCount() const;
+		const UTF8Char *GetEntryName(UOSInt index) const;
+		Bool GetEntryHash(UOSInt index, UInt8 *hashVal) const;
 		void AddEntry(Text::CString fileName, UInt8 *hashVal);
-		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal);
+		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal) const;
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 	};
 }
 #endif

@@ -12,7 +12,7 @@ void __stdcall IO::MODBUSController::ReadResult(void *userObj, UInt8 funcCode, c
 	{
 		MemCopyNO(me->reqResult, result, resultSize);
 		me->reqHasResult = true;
-		me->cbEvt->Set();
+		me->cbEvt.Set();
 	}
 }
 
@@ -22,17 +22,17 @@ void __stdcall IO::MODBUSController::SetResult(void *userObj, UInt8 funcCode, UI
 	if (me->reqResult && funcCode == me->reqFuncCode && me->reqSetStartAddr == startAddr)
 	{
 		me->reqHasResult = true;
-		me->cbEvt->Set();
+		me->cbEvt.Set();
 	}
 }
 
 Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize)
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	if (!this->devMap->Get(devAddr))
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	if (!this->devMap.Get(devAddr))
 	{
-		this->devMap->Put(devAddr, 1);
+		this->devMap.Put(devAddr, 1);
 		this->modbus->HandleReadResult(devAddr, ReadResult, SetResult, this);
 	}
 	mutUsage.EndUse();
@@ -44,9 +44,9 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqResult = resBuff;
 		this->reqFuncCode = 1;
 		this->reqResultSize = resSize;
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->ReadCoils(devAddr, (UInt16)(regAddr - 1), resSize);
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -59,9 +59,9 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqResult = resBuff;
 		this->reqFuncCode = 2;
 		this->reqResultSize = resSize;
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->ReadInputs(devAddr, (UInt16)(regAddr - 10001), resSize);
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -74,9 +74,9 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqResult = resBuff;
 		this->reqFuncCode = 4;
 		this->reqResultSize = resSize;
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->ReadInputRegisters(devAddr, (UInt16)(regAddr - 30001), (UInt16)(resSize >> 1));
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -89,9 +89,9 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqResult = resBuff;
 		this->reqFuncCode = 3;
 		this->reqResultSize = resSize;
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->ReadHoldingRegisters(devAddr, (UInt16)(regAddr - 40001), (UInt16)(resSize >> 1));
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -104,9 +104,9 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqResult = resBuff;
 		this->reqFuncCode = 4;
 		this->reqResultSize = resSize;
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->ReadInputRegisters(devAddr, (UInt16)(regAddr - 300001), (UInt16)(resSize >> 1));
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -119,9 +119,9 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 		this->reqResult = resBuff;
 		this->reqFuncCode = 3;
 		this->reqResultSize = resSize;
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->ReadHoldingRegisters(devAddr, (UInt16)(regAddr - 400001), (UInt16)(resSize >> 1));
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -136,10 +136,10 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *regBuff, UInt16 regSize)
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	if (!this->devMap->Get(devAddr))
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	if (!this->devMap.Get(devAddr))
 	{
-		this->devMap->Put(devAddr, 1);
+		this->devMap.Put(devAddr, 1);
 		this->modbus->HandleReadResult(devAddr, ReadResult, SetResult, this);
 	}
 	mutUsage.EndUse();
@@ -153,9 +153,9 @@ Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *r
 			this->reqResult = regBuff;
 			this->reqFuncCode = 5;
 			this->reqSetStartAddr = (UInt16)(regAddr - 1);
-			this->cbEvt->Clear();
+			this->cbEvt.Clear();
 			this->modbus->WriteCoil(devAddr, this->reqSetStartAddr, regBuff[0] != 0);
-			this->cbEvt->Wait(this->timeout);
+			this->cbEvt.Wait(this->timeout);
 			this->reqResult = 0;
 			succ = this->reqHasResult;
 			mutUsage.EndUse();
@@ -178,9 +178,9 @@ Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *r
 		this->reqResult = regBuff;
 		this->reqFuncCode = 6;
 		this->reqSetStartAddr = (UInt16)(regAddr - 40001);
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->WriteHoldingRegisters(devAddr, this->reqSetStartAddr, (UInt16)(regSize >> 1), regBuff);
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -197,9 +197,9 @@ Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *r
 		this->reqResult = regBuff;
 		this->reqFuncCode = 6;
 		this->reqSetStartAddr = (UInt16)(regAddr - 400001);
-		this->cbEvt->Clear();
+		this->cbEvt.Clear();
 		this->modbus->WriteHoldingRegisters(devAddr, this->reqSetStartAddr, (UInt16)(regSize >> 1), regBuff);
-		this->cbEvt->Wait(this->timeout);
+		this->cbEvt.Wait(this->timeout);
 		this->reqResult = 0;
 		succ = this->reqHasResult;
 		mutUsage.EndUse();
@@ -215,9 +215,6 @@ IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
 {
 	this->modbus = modbus;
 	this->timeout = 200;
-	NEW_CLASS(this->cbEvt, Sync::Event(true));
-	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::Int32Map<UInt8>());
 	this->reqResult = 0;
 	this->reqSetStartAddr = 0;
 	this->reqSetCount = 0;
@@ -225,15 +222,12 @@ IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
 
 IO::MODBUSController::~MODBUSController()
 {
-	Data::ArrayList<Int32> *devList = this->devMap->GetKeys();
+	const Data::ArrayList<Int32> *devList = this->devMap.GetKeys();
 	UOSInt i = devList->GetCount();
 	while (i-- > 0)
 	{
 		this->modbus->HandleReadResult((UInt8)devList->GetItem(i), 0, 0, 0);
 	}
-	DEL_CLASS(this->devMap);
-	DEL_CLASS(this->cbEvt);
-	DEL_CLASS(this->reqMut);
 }
 
 void IO::MODBUSController::SetTimeout(UOSInt timeout)

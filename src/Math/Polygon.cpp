@@ -21,7 +21,7 @@ Math::Polygon::~Polygon()
 	MemFree(this->ptOfstArr);
 }
 
-Math::Vector2D::VectorType Math::Polygon::GetVectorType()
+Math::Vector2D::VectorType Math::Polygon::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Polygon;
 }
@@ -38,7 +38,13 @@ Math::Coord2DDbl *Math::Polygon::GetPointList(UOSInt *nPoint)
 	return this->pointArr;
 }
 
-Math::Vector2D *Math::Polygon::Clone()
+const Math::Coord2DDbl *Math::Polygon::GetPointListRead(UOSInt *nPoint) const
+{
+	*nPoint = this->nPoint;
+	return this->pointArr;
+}
+
+Math::Vector2D *Math::Polygon::Clone() const
 {
 	Math::Polygon *pg;
 	NEW_CLASS(pg, Math::Polygon(this->srid, this->nPtOfst, this->nPoint));
@@ -47,7 +53,7 @@ Math::Vector2D *Math::Polygon::Clone()
 	return pg;
 }
 
-void Math::Polygon::GetBounds(Math::RectAreaDbl *bounds)
+void Math::Polygon::GetBounds(Math::RectAreaDbl *bounds) const
 {
 	UOSInt i = this->nPoint;
 	Math::Coord2DDbl min;
@@ -62,7 +68,7 @@ void Math::Polygon::GetBounds(Math::RectAreaDbl *bounds)
 	*bounds = Math::RectAreaDbl(min, max);
 }
 
-Double Math::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Double Math::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	if (InsideVector(pt))
 	{
@@ -224,7 +230,7 @@ void Math::Polygon::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 	}
 }
 
-Bool Math::Polygon::Equals(Math::Vector2D *vec)
+Bool Math::Polygon::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0)
 		return false;
@@ -267,7 +273,7 @@ Bool Math::Polygon::Equals(Math::Vector2D *vec)
 	}
 }
 
-Bool Math::Polygon::InsideVector(Math::Coord2DDbl coord)
+Bool Math::Polygon::InsideVector(Math::Coord2DDbl coord) const
 {
 	Double thisX;
 	Double thisY;
@@ -330,7 +336,7 @@ Bool Math::Polygon::InsideVector(Math::Coord2DDbl coord)
 	return (leftCnt & 1) != 0;
 }
 
-Bool Math::Polygon::HasJunction()
+Bool Math::Polygon::HasJunction() const
 {
 	UOSInt i;
 	UOSInt j;

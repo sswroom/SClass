@@ -55,13 +55,13 @@ void Data::UUID::SetValue(Text::CString str)
 	Text::StrHex2Bytes(&str.v[24], &this->data[10]);
 }
 
-UOSInt Data::UUID::GetValue(UInt8 *buff)
+UOSInt Data::UUID::GetValue(UInt8 *buff) const
 {
 	MemCopyNO(buff, this->data, 16);
 	return 16;
 }
 
-OSInt Data::UUID::CompareTo(UUID *uuid)
+OSInt Data::UUID::CompareTo(UUID *uuid) const
 {
 	UInt32 v1 = ReadUInt32(&this->data[0]);
 	UInt32 v2 = ReadUInt32(&uuid->data[0]);
@@ -118,7 +118,7 @@ OSInt Data::UUID::CompareTo(UUID *uuid)
 	return 0;
 }
 
-void Data::UUID::ToString(Text::StringBuilderUTF8 *sb)
+void Data::UUID::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->AppendHex32(ReadUInt32(&this->data[0]));
 	sb->AppendUTF8Char('-');
@@ -131,7 +131,7 @@ void Data::UUID::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendHexBuff(&this->data[10], 6, 0, Text::LineBreakType::None);
 }
 
-UTF8Char *Data::UUID::ToString(UTF8Char *sbuff)
+UTF8Char *Data::UUID::ToString(UTF8Char *sbuff) const
 {
 	sbuff = Text::StrHexVal32(sbuff, ReadUInt32(&this->data[0]));
 	*sbuff++ = '-';
@@ -145,12 +145,12 @@ UTF8Char *Data::UUID::ToString(UTF8Char *sbuff)
 	return sbuff;
 }
 
-Data::UUID *Data::UUID::Clone()
+Data::UUID *Data::UUID::Clone() const
 {
 	return NEW_CLASS_D(Data::UUID(this->data));	
 }
 
-Bool Data::UUID::Equals(UUID *uuid)
+Bool Data::UUID::Equals(UUID *uuid) const
 {
 	if (uuid == 0)
 		return false;

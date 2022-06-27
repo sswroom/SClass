@@ -26,12 +26,12 @@ namespace Math
 			return this->width * this->height;
 		}
 
-		Size2D<Double> ToDouble()
+		Size2D<Double> ToDouble() const
 		{
 			return Size2D<Double>((Double)this->width, (Double)this->height);
 		}
 
-		Math::Coord2DDbl ToCoord()
+		Math::Coord2DDbl ToCoord() const
 		{
 			return Math::Coord2DDbl((Double)this->width, (Double)this->height);
 		}

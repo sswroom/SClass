@@ -24,21 +24,21 @@ namespace Map
 		virtual void UpdateSize(Math::Size2D<Double> scnSize);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
-		virtual Math::Quadrilateral GetBounds();
-		virtual Math::RectAreaDbl GetVerticalRect();
-		virtual Double GetMapScale();
-		virtual Double GetViewScale();
-		virtual Math::Coord2DDbl GetCenter();
-		virtual Double GetHDPI();
-		virtual Double GetDDPI();
+		virtual Math::Quadrilateral GetBounds() const;
+		virtual Math::RectAreaDbl GetVerticalRect() const;
+		virtual Double GetMapScale() const;
+		virtual Double GetViewScale() const;
+		virtual Math::Coord2DDbl GetCenter() const;
+		virtual Double GetHDPI() const;
+		virtual Double GetDDPI() const;
 
-		virtual Bool InViewXY(Math::Coord2DDbl mapPos);
-		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst); // return inScreen
-		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst); // return inScreen
-		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst); // return inScreen
-		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos);
-		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos);
-		virtual Map::MapView *Clone();
+		virtual Bool InViewXY(Math::Coord2DDbl mapPos) const;
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const; // return inScreen
+		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
+		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const;
+		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const;
+		virtual Map::MapView *Clone() const;
 	};
 }
 #endif

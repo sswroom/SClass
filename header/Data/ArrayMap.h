@@ -16,18 +16,18 @@ namespace Data
 		virtual ~ArrayMap();
 
 		virtual V Put(T key, V val);
-		virtual V Get(T key);
+		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		T GetKey(UOSInt index);
-		void PutAll(ArrayMap<T,V> *map);
-		OSInt GetIndex(T key);
-		Bool ContainsKey(T key);
+		T GetKey(UOSInt index) const;
+		void PutAll(const ArrayMap<T,V> *map);
+		OSInt GetIndex(T key) const;
+		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		Data::ArrayList<V> *GetValues();
-		Data::SortableArrayListNative<T> *GetKeys();
-		UOSInt GetCount();
-		virtual Bool IsEmpty();
+		const Data::ArrayList<V> *GetValues() const;
+		const Data::SortableArrayListNative<T> *GetKeys() const;
+		UOSInt GetCount() const;
+		virtual Bool IsEmpty() const;
 		virtual V *ToArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
@@ -59,7 +59,7 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> V ArrayMap<T, V>::Get(T key)
+	template <class T, class V> V ArrayMap<T, V>::Get(T key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -88,15 +88,15 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> T ArrayMap<T, V>::GetKey(UOSInt index)
+	template <class T, class V> T ArrayMap<T, V>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
-	template <class T, class V> void ArrayMap<T, V>::PutAll(ArrayMap<T,V> *map)
+	template <class T, class V> void ArrayMap<T, V>::PutAll(const ArrayMap<T,V> *map)
 	{
-		Data::ArrayList<T> *tList = map->GetKeys();
-		Data::ArrayList<V> *vList = map->GetValues();
+		const Data::ArrayList<T> *tList = map->GetKeys();
+		const Data::ArrayList<V> *vList = map->GetValues();
 		UOSInt i;
 		UOSInt j;
 		i = 0;
@@ -108,12 +108,12 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> OSInt ArrayMap<T, V>::GetIndex(T key)
+	template <class T, class V> OSInt ArrayMap<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
 	}
 
-	template <class T, class V> Bool ArrayMap<T, V>::ContainsKey(T key)
+	template <class T, class V> Bool ArrayMap<T, V>::ContainsKey(T key) const
 	{
 		return this->keys->SortedIndexOf(key) >= 0;
 	}
@@ -125,22 +125,22 @@ namespace Data
 		this->vals.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> Data::ArrayList<V> *ArrayMap<T, V>::GetValues()
+	template <class T, class V> const Data::ArrayList<V> *ArrayMap<T, V>::GetValues() const
 	{
 		return &this->vals;
 	}
 
-	template <class T, class V> Data::SortableArrayListNative<T> *ArrayMap<T, V>::GetKeys()
+	template <class T, class V> const Data::SortableArrayListNative<T> *ArrayMap<T, V>::GetKeys() const
 	{
 		return this->keys;
 	}
 
-	template <class T, class V> UOSInt ArrayMap<T, V>::GetCount()
+	template <class T, class V> UOSInt ArrayMap<T, V>::GetCount() const
 	{
 		return this->vals.GetCount();
 	}
 
-	template <class T, class V> Bool ArrayMap<T, V>::IsEmpty()
+	template <class T, class V> Bool ArrayMap<T, V>::IsEmpty() const
 	{
 		return this->vals.GetCount() == 0;
 	}

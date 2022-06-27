@@ -321,14 +321,14 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 	return true;
 }
 
-Data::ArrayList<Net::ICMPScanner::ScanResult*> *Net::ICMPScanner::GetResults()
+const Data::ArrayList<Net::ICMPScanner::ScanResult*> *Net::ICMPScanner::GetResults() const
 {
 	return this->results.GetValues();
 }
 
 void Net::ICMPScanner::ClearResults()
 {
-	Data::ArrayList<ScanResult*> *resultList = this->results.GetValues();
+	const Data::ArrayList<ScanResult*> *resultList = this->results.GetValues();
 	ScanResult *result;
 	UOSInt i = resultList->GetCount();
 	while (i-- > 0)

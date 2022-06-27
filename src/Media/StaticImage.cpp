@@ -14,7 +14,7 @@ Media::StaticImage::StaticImage(UOSInt dispWidth, UOSInt dispHeight, UInt32 four
 	this->data = MemAllocA(UInt8, this->info.byteSize + 4);
 }
 
-Media::StaticImage::StaticImage(Media::FrameInfo *imgInfo) : Media::Image(imgInfo->dispWidth, imgInfo->dispHeight, imgInfo->storeWidth, imgInfo->storeHeight, imgInfo->fourcc, imgInfo->storeBPP, imgInfo->pf, imgInfo->byteSize, imgInfo->color, imgInfo->yuvType, imgInfo->atype, imgInfo->ycOfst)
+Media::StaticImage::StaticImage(const Media::FrameInfo *imgInfo) : Media::Image(imgInfo->dispWidth, imgInfo->dispHeight, imgInfo->storeWidth, imgInfo->storeHeight, imgInfo->fourcc, imgInfo->storeBPP, imgInfo->pf, imgInfo->byteSize, imgInfo->color, imgInfo->yuvType, imgInfo->atype, imgInfo->ycOfst)
 {
 	this->info.par2 = imgInfo->par2;
 	this->info.hdpi = imgInfo->hdpi;
@@ -29,7 +29,7 @@ Media::StaticImage::~StaticImage()
 	MemFreeA(data);
 }
 
-Media::Image *Media::StaticImage::Clone()
+Media::Image *Media::StaticImage::Clone() const
 {
 	Media::StaticImage *img;
 	NEW_CLASS(img, Media::StaticImage(&this->info));
@@ -49,12 +49,12 @@ Media::Image *Media::StaticImage::Clone()
 	return img;
 }
 
-Media::Image::ImageType Media::StaticImage::GetImageType()
+Media::Image::ImageType Media::StaticImage::GetImageType() const
 {
 	return Media::Image::IT_STATIC;
 }
 
-void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
 {
 	UOSInt srcBpl = this->GetDataBpl();
 	if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
@@ -1144,7 +1144,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 	return false;
 }
 
-Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
+Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg) const
 {
 //	printf("CalcPSNR\r\n");
 	if (simg->info.dispWidth != this->info.dispWidth)
@@ -1241,7 +1241,7 @@ Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
 	}
 }
 
-Double Media::StaticImage::CalcAvgContrast(UOSInt *bgPxCnt)
+Double Media::StaticImage::CalcAvgContrast(UOSInt *bgPxCnt) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -1296,7 +1296,7 @@ Double Media::StaticImage::CalcAvgContrast(UOSInt *bgPxCnt)
 	return 0;
 }
 
-Double Media::StaticImage::CalcColorRate()
+Double Media::StaticImage::CalcColorRate() const
 {
 	UOSInt i;
 	UOSInt j;

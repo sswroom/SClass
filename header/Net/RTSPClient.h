@@ -42,7 +42,7 @@ namespace Net
 		Bool WaitForReply();
 		Bool SendData(UInt8 *buff, UOSInt buffSize);
 
-		RTSPClient(RTSPClient *cli);
+		RTSPClient(const RTSPClient *cli);
 	public:
 		RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port);
 		~RTSPClient();
@@ -66,7 +66,7 @@ namespace Net
 		virtual Bool StopPlay(Net::RTPCliChannel *rtpChannel);
 		virtual Bool Deinit(Net::RTPCliChannel *rtpChannel);
 
-		virtual Net::IRTPController *Clone();
+		virtual Net::IRTPController *Clone() const;
 	};
 };
 #endif

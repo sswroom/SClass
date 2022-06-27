@@ -74,11 +74,11 @@ IO::RAWBTScanner::~RAWBTScanner()
 	this->Close();
 	SDEL_CLASS(this->clsData->btCtrl);
 	MemFree(this->clsData);
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList;
+	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList;
 	recList = this->pubRecMap.GetValues();
-	LIST_FREE_FUNC(recList, this->FreeRec);
+	LIST_CALL_FUNC(recList, this->FreeRec);
 	recList = this->randRecMap.GetValues();
-	LIST_FREE_FUNC(recList, this->FreeRec);
+	LIST_CALL_FUNC(recList, this->FreeRec);
 }
 
 Bool IO::RAWBTScanner::IsError()

@@ -480,8 +480,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 		Map::VectorLayer *lyr;
 		Map::DrawLayerType lyrType;
-		Data::ArrayList<Int32> *vecIdList;
-		Data::ArrayList<Math::Vector2D *> *vecList;
+		const Data::ArrayList<Int32> *vecIdList;
+		const Data::ArrayList<Math::Vector2D *> *vecList;
 		if (hasPt && !hasPL && !hasPG)
 		{
 			lyrType = Map::DRAW_LAYER_POINT3D;

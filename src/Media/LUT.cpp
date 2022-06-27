@@ -55,7 +55,7 @@ Media::LUT::~LUT()
 	SDEL_STRING(this->remark);
 }
 
-IO::ParserType Media::LUT::GetParserType()
+IO::ParserType Media::LUT::GetParserType() const
 {
 	return IO::ParserType::LUT;
 }
@@ -72,7 +72,7 @@ void Media::LUT::SetRemark(Text::CString remark)
 	this->remark = Text::String::NewOrNull(remark);
 }
 
-Text::String *Media::LUT::GetRemark()
+Text::String *Media::LUT::GetRemark() const
 {
 	return this->remark;
 }
@@ -107,7 +107,7 @@ const UInt8 *Media::LUT::GetTablePtrRead() const
 	return this->luTable;
 }
 
-void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals)
+void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals) const
 {
 	UOSInt indexBase = 1;
 	UOSInt index = 0;
@@ -166,7 +166,7 @@ void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals)
 	}
 }
 
-void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals)
+void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const
 {
 	UOSInt indexBase = 1;
 	UOSInt index = 0;
@@ -226,7 +226,7 @@ void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals)
 	}
 }
 
-void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals)
+void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals) const
 {
 	UOSInt indexBase = 1;
 	UOSInt index = 0;
@@ -310,7 +310,7 @@ Media::LUT *Media::LUT::Clone() const
 	return newLut;
 }
 
-Bool Media::LUT::Equals(Media::LUT *lut)
+Bool Media::LUT::Equals(Media::LUT *lut) const
 {
 	if (this->fmt != lut->fmt)
 		return false;

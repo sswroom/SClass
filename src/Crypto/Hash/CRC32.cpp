@@ -41,12 +41,12 @@ Crypto::Hash::CRC32::~CRC32()
 	MemFree(crctab);
 }
 
-UTF8Char *Crypto::Hash::CRC32::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::CRC32::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (32-bit)"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::CRC32::Clone()
+Crypto::Hash::IHash *Crypto::Hash::CRC32::Clone() const
 {
 	Crypto::Hash::CRC32 *crc;
 	NEW_CLASS(crc, Crypto::Hash::CRC32(this));
@@ -63,17 +63,17 @@ void Crypto::Hash::CRC32::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = CRC32_Calc(buff, buffSize, this->crctab, this->currVal);
 }
 
-void Crypto::Hash::CRC32::GetValue(UInt8 *buff)
+void Crypto::Hash::CRC32::GetValue(UInt8 *buff) const
 {
 	WriteMUInt32(buff, currVal);
 }
 
-UOSInt Crypto::Hash::CRC32::GetBlockSize()
+UOSInt Crypto::Hash::CRC32::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC32::GetResultSize()
+UOSInt Crypto::Hash::CRC32::GetResultSize() const
 {
 	return 4;
 }

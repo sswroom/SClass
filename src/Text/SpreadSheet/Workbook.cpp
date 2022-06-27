@@ -26,9 +26,6 @@ Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject(CSTR("Untitled"))
 	this->windowHeight = 0;
 	this->activeSheet = 0;
 
-	NEW_CLASS(this->sheets, Data::ArrayList<Text::SpreadSheet::Worksheet*>());
-	NEW_CLASS(this->styles, Data::ArrayList<Text::SpreadSheet::CellStyle*>());
-	NEW_CLASS(this->fonts, Data::ArrayList<Text::SpreadSheet::WorkbookFont*>());
 	MemCopyNO(this->palette, defPalette, sizeof(defPalette));
 
 	this->NewCellStyle(0, HAlignment::Unknown, VAlignment::Bottom, CSTR("general"));
@@ -43,27 +40,24 @@ Text::SpreadSheet::Workbook::~Workbook()
 	Text::SpreadSheet::Worksheet *ws;
 	Text::SpreadSheet::CellStyle *style;
 	Text::SpreadSheet::WorkbookFont *font;
-	UOSInt i = this->sheets->GetCount();
+	UOSInt i = this->sheets.GetCount();
 	while (i-- > 0)
 	{
-		ws = this->sheets->GetItem(i);
+		ws = this->sheets.GetItem(i);
 		DEL_CLASS(ws);
 	}
-	DEL_CLASS(this->sheets);
-	i = this->styles->GetCount();
+	i = this->styles.GetCount();
 	while (i-- > 0)
 	{
-		style = this->styles->GetItem(i);
+		style = this->styles.GetItem(i);
 		SDEL_CLASS(style);
 	}
-	DEL_CLASS(this->styles);
-	i = this->fonts->GetCount();
+	i = this->fonts.GetCount();
 	while (i-- > 0)
 	{
-		font = this->fonts->GetItem(i);
+		font = this->fonts.GetItem(i);
 		DEL_CLASS(font);
 	}
-	DEL_CLASS(this->fonts);
 
 	SDEL_TEXT(this->author);
 	SDEL_TEXT(this->lastAuthor);
@@ -72,12 +66,12 @@ Text::SpreadSheet::Workbook::~Workbook()
 	SDEL_CLASS(this->modifyTime);
 }
 
-IO::ParserType Text::SpreadSheet::Workbook::GetParserType()
+IO::ParserType Text::SpreadSheet::Workbook::GetParserType() const
 {
 	return IO::ParserType::Workbook;
 }
 
-Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone()
+Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 {
 	UOSInt i;
 	UOSInt j;
@@ -103,24 +97,24 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone()
 	MemCopyNO(newWB->palette, this->palette, sizeof(defPalette));
 
 	i = 0;
-	j = this->styles->GetCount();
+	j = this->styles.GetCount();
 	while (i < j)
 	{
-		newWB->styles->Add(this->styles->GetItem(i)->Clone());
+		newWB->styles.Add(this->styles.GetItem(i)->Clone());
 		i++;
 	}
 	i = 0;
-	j = this->sheets->GetCount();
+	j = this->sheets.GetCount();
 	while (i < j)
 	{
-		newWB->sheets->Add(this->sheets->GetItem(i)->Clone(this, newWB));
+		newWB->sheets.Add(this->sheets.GetItem(i)->Clone(this, newWB));
 		i++;
 	}
 	i = 0;
-	j = this->fonts->GetCount();
+	j = this->fonts.GetCount();
 	while (i < j)
 	{
-		newWB->fonts->Add(this->fonts->GetItem(i)->Clone());
+		newWB->fonts.Add(this->fonts.GetItem(i)->Clone());
 		i++;
 	}
 	return newWB;
@@ -129,10 +123,10 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone()
 void Text::SpreadSheet::Workbook::AddDefaultStyles()
 {
 	Text::SpreadSheet::CellStyle *style;
-	while (this->styles->GetCount() < 21)
+	while (this->styles.GetCount() < 21)
 	{
-		NEW_CLASS(style, Text::SpreadSheet::CellStyle(this->styles->GetCount()));
-		this->styles->Add(style);
+		NEW_CLASS(style, Text::SpreadSheet::CellStyle(this->styles.GetCount()));
+		this->styles.Add(style);
 	}
 }
 
@@ -207,37 +201,37 @@ void Text::SpreadSheet::Workbook::SetVersion(Double version)
 	this->version = version;
 }
 
-const UTF8Char *Text::SpreadSheet::Workbook::GetAuthor()
+const UTF8Char *Text::SpreadSheet::Workbook::GetAuthor() const
 {
 	return this->author;
 }
 
-const UTF8Char *Text::SpreadSheet::Workbook::GetLastAuthor()
+const UTF8Char *Text::SpreadSheet::Workbook::GetLastAuthor() const
 {
 	return this->lastAuthor;
 }
 
-const UTF8Char *Text::SpreadSheet::Workbook::GetCompany()
+const UTF8Char *Text::SpreadSheet::Workbook::GetCompany() const
 {
 	return this->company;
 }
 
-Data::DateTime *Text::SpreadSheet::Workbook::GetCreateTime()
+Data::DateTime *Text::SpreadSheet::Workbook::GetCreateTime() const
 {
 	return this->createTime;
 }
 
-Data::DateTime *Text::SpreadSheet::Workbook::GetModifyTime()
+Data::DateTime *Text::SpreadSheet::Workbook::GetModifyTime() const
 {
 	return this->modifyTime;
 }
 
-Double Text::SpreadSheet::Workbook::GetVersion()
+Double Text::SpreadSheet::Workbook::GetVersion() const
 {
 	return this->version;
 }
 
-Bool Text::SpreadSheet::Workbook::HasInfo()
+Bool Text::SpreadSheet::Workbook::HasInfo() const
 {
 	if (this->author)
 		return true;
@@ -311,9 +305,9 @@ Bool Text::SpreadSheet::Workbook::HasWindowInfo()
 
 Bool Text::SpreadSheet::Workbook::HasCellStyle()
 {
-	if (this->styles->GetCount() > 1)
+	if (this->styles.GetCount() > 1)
 		return true;
-	if (this->styles->GetItem(0))
+	if (this->styles.GetItem(0))
 		return true;
 	return false;
 }
@@ -321,47 +315,47 @@ Bool Text::SpreadSheet::Workbook::HasCellStyle()
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle()
 {
 	CellStyle *style;
-	NEW_CLASS(style, CellStyle(this->styles->GetCount()));
-	this->styles->Add(style);
+	NEW_CLASS(style, CellStyle(this->styles.GetCount()));
+	this->styles.Add(style);
 	return style;
 }
 
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
 {
 	CellStyle *style;
-	NEW_CLASS(style, CellStyle(this->styles->GetCount()));
+	NEW_CLASS(style, CellStyle(this->styles.GetCount()));
 	style->SetFont(font);
 	style->SetHAlign(halign);
 	style->SetVAlign(valign);
 	style->SetDataFormat(dataFormat);
-	this->styles->Add(style);
+	this->styles.Add(style);
 	return style;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetStyleCount()
+UOSInt Text::SpreadSheet::Workbook::GetStyleCount() const
 {
-	return this->styles->GetCount();
+	return this->styles.GetCount();
 }
 
-OSInt Text::SpreadSheet::Workbook::GetStyleIndex(CellStyle *style)
+OSInt Text::SpreadSheet::Workbook::GetStyleIndex(CellStyle *style) const
 {
-	UOSInt i = this->styles->GetCount();
+	UOSInt i = this->styles.GetCount();
 	while (i-- > 0)
 	{
-		if (this->styles->GetItem(i) == style)
+		if (this->styles.GetItem(i) == style)
 			return (OSInt)i;
 	}
 	return -1;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt Index)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt Index) const
 {
-	return this->styles->GetItem(Index);
+	return this->styles.GetItem(Index);
 }
 
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetDefaultStyle()
 {
-	Text::SpreadSheet::CellStyle *style = this->styles->GetItem(0);
+	Text::SpreadSheet::CellStyle *style = this->styles.GetItem(0);
 	return style;
 }
 
@@ -380,9 +374,9 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::SpreadSheet::Worksheet *ws;
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets->GetCount());
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets.GetCount());
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
-	this->sheets->Add(ws);
+	this->sheets.Add(ws);
 	return ws;
 }
 
@@ -390,7 +384,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::St
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
-	this->sheets->Add(ws);
+	this->sheets.Add(ws);
 	return ws;
 }
 
@@ -398,7 +392,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::CS
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
-	this->sheets->Add(ws);
+	this->sheets.Add(ws);
 	return ws;
 }
 
@@ -406,23 +400,23 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(UOSIn
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
-	this->sheets->Insert(index, ws);
+	this->sheets.Insert(index, ws);
 	return ws;
 }
 
 UOSInt Text::SpreadSheet::Workbook::GetCount()
 {
-	return this->sheets->GetCount();
+	return this->sheets.GetCount();
 }
 
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetItem(UOSInt index)
 {
-	return this->sheets->GetItem(index);
+	return this->sheets.GetItem(index);
 }
 
 void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 {
-	Text::SpreadSheet::Worksheet *ws = this->sheets->RemoveAt(index);
+	Text::SpreadSheet::Worksheet *ws = this->sheets.RemoveAt(index);
 	if (ws)
 	{
 		DEL_CLASS(ws);
@@ -431,20 +425,20 @@ void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 
 UOSInt Text::SpreadSheet::Workbook::GetFontCount()
 {
-	return this->fonts->GetCount();
+	return this->fonts.GetCount();
 }
 
 Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::GetFont(UOSInt index)
 {
-	return this->fonts->GetItem(index);
+	return this->fonts.GetItem(index);
 }
 
 UOSInt Text::SpreadSheet::Workbook::GetFontIndex(WorkbookFont *font)
 {
-	UOSInt i = this->fonts->GetCount();
+	UOSInt i = this->fonts.GetCount();
 	while (i-- > 0)
 	{
-		if (this->fonts->GetItem(i) == font)
+		if (this->fonts.GetItem(i) == font)
 		{
 			return i;
 		}
@@ -456,7 +450,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(Text::CStr
 {
 	Text::SpreadSheet::WorkbookFont *font;
 	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
-	this->fonts->Add(font);
+	this->fonts.Add(font);
 	return font->SetName(name)->SetSize(size)->SetBold(bold);
 }
 

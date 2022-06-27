@@ -11,7 +11,7 @@ Data::ArrayListInt64::ArrayListInt64(UOSInt capacity) : Data::SortableArrayListN
 {
 }
 
-Data::ArrayList<Int64> *Data::ArrayListInt64::Clone()
+Data::ArrayList<Int64> *Data::ArrayListInt64::Clone() const
 {
 	Data::ArrayListInt64 *newArr;
 	NEW_CLASS(newArr, Data::ArrayListInt64(this->capacity));
@@ -44,7 +44,7 @@ void Data::ArrayListInt64::AddRangeI32(Int32 *arr, UOSInt cnt)
 	this->objCnt += cnt;
 }
 
-void Data::ArrayListInt64::AddRangeI32(Data::ArrayList<Int32> *arr)
+void Data::ArrayListInt64::AddRangeI32(const Data::ArrayList<Int32> *arr)
 {
 	UOSInt i;
 	UOSInt j;

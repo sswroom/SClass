@@ -168,7 +168,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 		i++;
 	}
 
-	Data::ArrayList<IO::SMake::ConfigItem*> *configList = this->smake->GetConfigList();
+	const Data::ArrayList<IO::SMake::ConfigItem*> *configList = this->smake->GetConfigList();
 	IO::SMake::ConfigItem *config;
 	i = 0;
 	j = configList->GetCount();

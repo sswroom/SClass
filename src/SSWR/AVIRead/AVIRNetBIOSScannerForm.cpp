@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 		me->tableUpdated = false;
 		me->lvAnswers->ClearItems();
 		Sync::MutexUsage mutUsage;
-		Data::ArrayList<Net::NetBIOSScanner::NameAnswer*> *ansList = me->netbios->GetAnswers(&mutUsage);
+		const Data::ArrayList<Net::NetBIOSScanner::NameAnswer*> *ansList = me->netbios->GetAnswers(&mutUsage);
 		Net::NetBIOSScanner::NameAnswer *ans;
 		UOSInt i = 0;
 		UOSInt j = ansList->GetCount();

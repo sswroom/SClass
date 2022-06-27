@@ -26,18 +26,18 @@ namespace Data
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
-		virtual UOSInt IndexOf(T val);
+		virtual UOSInt IndexOf(T val) const;
 		virtual void Clear();
-		virtual ArrayList<T> *Clone();
+		virtual ArrayList<T> *Clone() const;
 
 		virtual UOSInt GetCount() const;
-		virtual UOSInt GetCapacity();
+		virtual UOSInt GetCapacity() const;
 		void EnsureCapacity(UOSInt capacity);
 
 		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
-		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt);
+		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
 		virtual T *GetArray(UOSInt *arraySize);
 		T Pop();
@@ -205,7 +205,7 @@ namespace Data
 		objCnt++;
 	}
 
-	template <class T> UOSInt ArrayList<T>::IndexOf(T val)
+	template <class T> UOSInt ArrayList<T>::IndexOf(T val) const
 	{
 		UOSInt i = objCnt;
 		while (i-- > 0)
@@ -224,7 +224,7 @@ namespace Data
 		this->objCnt = 0;
 	}
 
-	template <class T> ArrayList<T> *ArrayList<T>::Clone()
+	template <class T> ArrayList<T> *ArrayList<T>::Clone() const
 	{
 		ArrayList<T> *newArr = new ArrayList<T>(this->capacity);
 		newArr->AddAll(this);
@@ -236,7 +236,7 @@ namespace Data
 		return this->objCnt;
 	}
 
-	template <class T> UOSInt ArrayList<T>::GetCapacity()
+	template <class T> UOSInt ArrayList<T>::GetCapacity() const
 	{
 		return this->capacity;
 	}
@@ -285,7 +285,7 @@ namespace Data
 		MemCopyO(&this->arr[destIndex], &this->arr[srcIndex], count * sizeof(this->arr[0]));
 	}
 
-	template <class T> UOSInt ArrayList<T>::GetRange(T *outArr, UOSInt Index, UOSInt cnt)
+	template <class T> UOSInt ArrayList<T>::GetRange(T *outArr, UOSInt Index, UOSInt cnt) const
 	{
 		UOSInt startIndex = Index;
 		UOSInt endIndex = Index + cnt;

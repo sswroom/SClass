@@ -24,16 +24,16 @@ namespace DB
 		TableDef(Text::CString tableName);
 		~TableDef();
 
-		Text::String *GetDatabaseName();
-		Text::String *GetTableName();
-		Text::String *GetEngine();
-		Text::String *GetCharset();
-		const UTF8Char *GetAttr();
-		const UTF8Char *GetComments();
-		DB::DBUtil::ServerType GetSvrType();
-		UOSInt GetColCnt();
-		DB::ColDef *GetCol(UOSInt index);
-		DB::ColDef *GetSinglePKCol();
+		Text::String *GetDatabaseName() const;
+		Text::String *GetTableName() const;
+		Text::String *GetEngine() const;
+		Text::String *GetCharset() const;
+		const UTF8Char *GetAttr() const;
+		const UTF8Char *GetComments() const;
+		DB::DBUtil::ServerType GetSvrType() const;
+		UOSInt GetColCnt() const;
+		DB::ColDef *GetCol(UOSInt index) const;
+		DB::ColDef *GetSinglePKCol() const;
 
 		TableDef *AddCol(DB::ColDef *col);
 		TableDef *SetDatabaseName(Text::CString databaseName);
@@ -44,8 +44,8 @@ namespace DB
 		TableDef *SetComments(const UTF8Char *comments);
 		TableDef *SetSvrType(DB::DBUtil::ServerType svrType);
 		
-		TableDef *Clone();
-		Data::Class *CreateTableClass();
+		TableDef *Clone() const;
+		Data::Class *CreateTableClass() const;
 	};
 }
 #endif

@@ -43,8 +43,8 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				MemCopyNO(&macBuff[2], &buff[6], 6);
 				iMAC = ReadMInt64(macBuff);
 				ip = ReadMInt32(&buff[38]);
-				Sync::MutexUsage mutUsage(stat->me->adapterMut);
-				adapter = stat->me->adapterMap->Get(iMAC);
+				Sync::MutexUsage mutUsage(&stat->me->adapterMut);
+				adapter = stat->me->adapterMap.Get(iMAC);
 				if (adapter)
 				{
 					if (adapter->lastDetectTime + TIMEDETECTRANGE < reqTime)
@@ -74,7 +74,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					adapter->detectCnt = 1;
 					NEW_CLASS(adapter->targetIPMap, Data::Int32Map<Int64>());
 					adapter->targetIPMap->Put(ip, reqTime);
-					stat->me->adapterMap->Put(iMAC, adapter);
+					stat->me->adapterMap.Put(iMAC, adapter);
 				}
 				mutUsage.EndUse();
 			}
@@ -93,8 +93,8 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				MemCopyNO(&macBuff[2], &buff[0], 6);
 				iMAC = ReadMInt64(macBuff);
 				ip = ReadMInt32(&buff[28]);
-				Sync::MutexUsage mutUsage(stat->me->adapterMut);
-				adapter = stat->me->adapterMap->Get(iMAC);
+				Sync::MutexUsage mutUsage(&stat->me->adapterMut);
+				adapter = stat->me->adapterMap.Get(iMAC);
 				if (adapter)
 				{
 					if (adapter->lastDetectTime + TIMEDETECTRANGE < reqTime)
@@ -124,7 +124,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					adapter->detectCnt = 1;
 					NEW_CLASS(adapter->targetIPMap, Data::Int32Map<Int64>());
 					adapter->targetIPMap->Put(ip, reqTime);
-					stat->me->adapterMap->Put(iMAC, adapter);
+					stat->me->adapterMap.Put(iMAC, adapter);
 				}
 				mutUsage.EndUse();
 			}
@@ -144,8 +144,6 @@ Net::IPScanDetector::IPScanDetector(Net::SocketFactory *sockf, IPScanHandler hdl
 	this->hdlr = hdlr;
 	this->userData = userData;
 	this->ctrlEvt = 0;
-	NEW_CLASS(this->adapterMap, Data::Int64Map<Net::IPScanDetector::AdapterStatus*>());
-	NEW_CLASS(this->adapterMut, Sync::Mutex());
 	this->soc = this->sockf->CreateARPSocket();
 
 	if (this->soc)
@@ -237,7 +235,7 @@ Net::IPScanDetector::~IPScanDetector()
 		this->soc = 0;
 	}
 
-	Data::ArrayList<Net::IPScanDetector::AdapterStatus*> *adapterList = this->adapterMap->GetValues();
+	const Data::ArrayList<Net::IPScanDetector::AdapterStatus*> *adapterList = this->adapterMap.GetValues();
 	Net::IPScanDetector::AdapterStatus *adapter;
 	i = adapterList->GetCount();
 	while (i-- > 0)
@@ -246,7 +244,6 @@ Net::IPScanDetector::~IPScanDetector()
 		DEL_CLASS(adapter->targetIPMap);
 		MemFree(adapter);
 	}
-	DEL_CLASS(this->adapterMut);
 	SDEL_CLASS(this->ctrlEvt);
 }
 

@@ -14,12 +14,12 @@ namespace Text
 	public:
 		virtual ~IMIMEObj();
 
-		virtual Text::CString GetClassName() = 0;
-		virtual Text::CString GetContentType() = 0;
-		virtual UOSInt WriteStream(IO::Stream *stm) = 0;
-		virtual IMIMEObj *Clone() = 0;
+		virtual Text::CString GetClassName() const = 0;
+		virtual Text::CString GetContentType() const = 0;
+		virtual UOSInt WriteStream(IO::Stream *stm) const = 0;
+		virtual IMIMEObj *Clone() const = 0;
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		static Text::IMIMEObj *ParseFromData(IO::IStreamData *data, Text::CString contentType);
 		static Text::IMIMEObj *ParseFromFile(Text::CString fileName);

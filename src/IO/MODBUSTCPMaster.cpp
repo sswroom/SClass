@@ -52,7 +52,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 							case 4:
 								if (3 + buff[i + 8] == packetSize)
 								{
-									cb = me->cbMap->Get(buff[i + 6]);
+									cb = me->cbMap.Get(buff[i + 6]);
 									if (cb && cb->readFunc)
 									{
 										cb->readFunc(cb->userObj, buff[i + 7], &buff[i + 9], buff[i + 8]);
@@ -70,7 +70,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 							case 16:
 								if (packetSize == 6)
 								{
-									cb = me->cbMap->Get(buff[i + 6]);
+									cb = me->cbMap.Get(buff[i + 6]);
 									if (cb && cb->setFunc)
 									{
 										cb->setFunc(cb->userObj, buff[i + 7], ReadMUInt16(&buff[i + 8]), ReadMUInt16(&buff[i + 10]));
@@ -126,9 +126,6 @@ IO::MODBUSTCPMaster::MODBUSTCPMaster(IO::Stream *stm)
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->tranId = 0;
-	NEW_CLASS(this->cbMap, Data::Int32Map<AddrResultCb*>());
-	NEW_CLASS(this->clk, Manage::HiResClock());
-	NEW_CLASS(this->stmMut, Sync::Mutex());
 	if (this->stm)
 	{
 		Sync::Thread::Create(ThreadProc, this);
@@ -151,7 +148,7 @@ IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 			Sync::Thread::Sleep(10);
 		}
 	}
-	Data::ArrayList<AddrResultCb*> *cbList = this->cbMap->GetValues();
+	const Data::ArrayList<AddrResultCb*> *cbList = this->cbMap.GetValues();
 	AddrResultCb *cb;
 	i = cbList->GetCount();
 	while (i-- > 0)
@@ -159,10 +156,6 @@ IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 		cb = cbList->GetItem(i);
 		MemFree(cb);
 	}
-	DEL_CLASS(this->cbMap)
-
-	DEL_CLASS(this->stmMut);
-	DEL_CLASS(this->clk);
 }
 
 Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilCnt)
@@ -180,14 +173,14 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	WriteMInt16(&buff[10], coilCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -208,14 +201,14 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	WriteMInt16(&buff[10], inputCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -236,14 +229,14 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	WriteMInt16(&buff[10], regCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -264,14 +257,14 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	WriteMInt16(&buff[10], regCnt);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -299,14 +292,14 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 	}	
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -327,14 +320,14 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	WriteMInt16(&buff[10], val);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, 12);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -358,14 +351,14 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	MemCopyNO(&buff[13], val, (UOSInt)cnt * 2);
 	if (this->stm)
 	{
-		Sync::MutexUsage mutUsage(this->stmMut);
-		Double t = this->clk->GetTimeDiff();
+		Sync::MutexUsage mutUsage(&this->stmMut);
+		Double t = this->clk.GetTimeDiff();
 		if (t < CMDDELAY * 0.001)
 		{
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
 		this->stm->Write(buff, (UOSInt)cnt * 2 + 13);
-		this->clk->Start();
+		this->clk.Start();
 		mutUsage.EndUse();
 	}
 	return true;
@@ -373,7 +366,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 
 void IO::MODBUSTCPMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, void *userObj)
 {
-	AddrResultCb *cb = this->cbMap->Get(addr);
+	AddrResultCb *cb = this->cbMap.Get(addr);
 	if (cb)
 	{
 		cb->readFunc = readFunc;
@@ -386,6 +379,6 @@ void IO::MODBUSTCPMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, 
 		cb->readFunc = readFunc;
 		cb->setFunc = setFunc;
 		cb->userObj = userObj;
-		this->cbMap->Put(addr, cb);
+		this->cbMap.Put(addr, cb);
 	}
 }

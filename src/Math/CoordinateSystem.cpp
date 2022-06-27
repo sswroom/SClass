@@ -22,12 +22,12 @@ Math::CoordinateSystem::~CoordinateSystem()
 	this->csysName->Release();
 }
 
-IO::ParserType Math::CoordinateSystem::GetParserType()
+IO::ParserType Math::CoordinateSystem::GetParserType() const
 {
 	return IO::ParserType::CoordinateSystem;
 }
 
-Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys)
+Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys) const
 {
 	if (this == csys)
 		return true;
@@ -50,16 +50,6 @@ Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys)
 		Math::ProjectedCoordinateSystem *pcs2 = (Math::ProjectedCoordinateSystem*)csys;
 		return pcs1->SameProjection(pcs2);
 	}
-}
-
-Text::String *Math::CoordinateSystem::GetCSysName()
-{
-	return this->csysName;
-}
-
-UInt32 Math::CoordinateSystem::GetSRID()
-{
-	return this->srid;
 }
 
 void Math::CoordinateSystem::ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ)

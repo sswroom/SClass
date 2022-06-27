@@ -176,7 +176,7 @@ Text::String *Map::IMapDrawLayer::GetName()
 	}
 }
 
-IO::ParserType Map::IMapDrawLayer::GetParserType()
+IO::ParserType Map::IMapDrawLayer::GetParserType() const
 {
 	return IO::ParserType::MapLayer;
 }

@@ -18,12 +18,12 @@ Crypto::Cert::X509CRL::~X509CRL()
 
 }
 
-Crypto::Cert::X509File::FileType Crypto::Cert::X509CRL::GetFileType()
+Crypto::Cert::X509File::FileType Crypto::Cert::X509CRL::GetFileType() const
 {
 	return FileType::CRL;
 }
 
-void Crypto::Cert::X509CRL::ToShortName(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509CRL::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -42,7 +42,7 @@ void Crypto::Cert::X509CRL::ToShortName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	if (trustStore == 0)
 	{
@@ -100,14 +100,14 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(Net::SSLEngin
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509CRL::Clone()
+Net::ASN1Data *Crypto::Cert::X509CRL::Clone() const
 {
 	Crypto::Cert::X509CRL *asn1;
 	NEW_CLASS(asn1, Crypto::Cert::X509CRL(this->GetSourceNameObj(), this->buff, this->buffSize));
 	return asn1;
 }
 
-void Crypto::Cert::X509CRL::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509CRL::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	if (IsCertificateList(this->buff, this->buff + this->buffSize, "1"))
 	{
@@ -115,7 +115,7 @@ void Crypto::Cert::X509CRL::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Crypto::Cert::X509CRL::HasVersion()
+Bool Crypto::Cert::X509CRL::HasVersion() const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -126,7 +126,7 @@ Bool Crypto::Cert::X509CRL::HasVersion()
 	return false;
 }
 
-Bool Crypto::Cert::X509CRL::GetIssuerCN(Text::StringBuilderUTF8 *sb)
+Bool Crypto::Cert::X509CRL::GetIssuerCN(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -149,7 +149,7 @@ Bool Crypto::Cert::X509CRL::GetIssuerCN(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Crypto::Cert::X509CRL::GetThisUpdate(Data::DateTime *dt)
+Bool Crypto::Cert::X509CRL::GetThisUpdate(Data::DateTime *dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -172,7 +172,7 @@ Bool Crypto::Cert::X509CRL::GetThisUpdate(Data::DateTime *dt)
 	}
 }
 
-Bool Crypto::Cert::X509CRL::GetNextUpdate(Data::DateTime *dt)
+Bool Crypto::Cert::X509CRL::GetNextUpdate(Data::DateTime *dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -195,7 +195,7 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(Data::DateTime *dt)
 	}
 }
 
-Bool Crypto::Cert::X509CRL::IsRevoked(Crypto::Cert::X509Cert *cert)
+Bool Crypto::Cert::X509CRL::IsRevoked(Crypto::Cert::X509Cert *cert) const
 {
 	UOSInt snLen;
 	const UInt8 *sn = cert->GetSerialNumber(&snLen);

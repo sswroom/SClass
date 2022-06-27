@@ -18,12 +18,12 @@ Crypto::Hash::SHA512::~SHA512()
 {
 }
 
-UTF8Char *Crypto::Hash::SHA512::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::SHA512::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-512"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SHA512::Clone()
+Crypto::Hash::IHash *Crypto::Hash::SHA512::Clone() const
 {
 	Crypto::Hash::SHA512 *sha512;
 	NEW_CLASS(sha512, Crypto::Hash::SHA512());
@@ -86,7 +86,7 @@ void Crypto::Hash::SHA512::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::SHA512::GetValue(UInt8 *buff)
+void Crypto::Hash::SHA512::GetValue(UInt8 *buff) const
 {
 	UInt8 calBuff[128];
 	UInt64 intHash[8];
@@ -112,29 +112,28 @@ void Crypto::Hash::SHA512::GetValue(UInt8 *buff)
 		{
 			MemClear(&calBuff[i], 128 - i);
 		}
-		SHA512_CalcBlock(this->intermediateHash, calBuff);
+		SHA512_CalcBlock(intHash, calBuff);
 
 		MemClear(calBuff, 120);
 	}
 
 	UInt64 msgLeng = this->messageLength;
 	WriteMUInt64(&calBuff[120], msgLeng);
-	SHA512_CalcBlock(this->intermediateHash, calBuff);
+	SHA512_CalcBlock(intHash, calBuff);
 	i = 64;
 	while (i > 0)
 	{
 		i -= 8;
-		WriteMUInt64(&buff[i], this->intermediateHash[i >> 3]);
+		WriteMUInt64(&buff[i], intHash[i >> 3]);
 	}
-	MemCopyNO(this->intermediateHash, intHash, 64);
 }
 
-UOSInt Crypto::Hash::SHA512::GetBlockSize()
+UOSInt Crypto::Hash::SHA512::GetBlockSize() const
 {
 	return 128;
 }
 
-UOSInt Crypto::Hash::SHA512::GetResultSize()
+UOSInt Crypto::Hash::SHA512::GetResultSize() const
 {
 	return 64;
 }

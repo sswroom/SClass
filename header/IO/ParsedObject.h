@@ -51,9 +51,9 @@ namespace IO
 	public:
 		virtual ~ParsedObject();
 
-		virtual IO::ParserType GetParserType() = 0;
-		UTF8Char *GetSourceName(UTF8Char *oriStr);
-		Text::String *GetSourceNameObj();
+		virtual IO::ParserType GetParserType() const = 0;
+		UTF8Char *GetSourceName(UTF8Char *oriStr) const;
+		Text::String *GetSourceNameObj() const { return this->sourceName; }
 		void SetSourceName(Text::String *sourceName);
 		void SetSourceName(Text::CString sourceName);
 	};

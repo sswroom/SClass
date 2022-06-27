@@ -42,7 +42,7 @@ void Math::PointMappingCoordinateSystem::AddMappingPoint(Double mapX, Double map
 	this->mappingList->Add(ptItem);
 }
 
-Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl mapPt)
+Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl mapPt) const
 {
 	if (this->mappingList->GetCount() < 3)
 	{
@@ -103,7 +103,7 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl
 	return mapPt;
 }
 
-Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit)
+Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Coord2DDbl ptList[2];
 	ptList[0] = CalcBaseXY(pos1);
@@ -111,7 +111,7 @@ Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl
 	return this->baseCSys->CalSurfaceDistanceXY(ptList[0], ptList[1], unit);
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Polyline *tmpPl = (Math::Polyline*)pl->Clone();
 	Double ret;
@@ -126,7 +126,7 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Mat
 	return ret;
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Polyline3D *tmpPl = (Math::Polyline3D *)pl->Clone();
 	Double ret;
@@ -141,7 +141,7 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl,
 	return ret;
 }
 
-Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone()
+Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone() const
 {
 	Math::PointMappingCoordinateSystem *csys;
 	UOSInt i;
@@ -159,17 +159,17 @@ Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone()
 	return csys;
 }
 
-Math::CoordinateSystem::CoordinateSystemType Math::PointMappingCoordinateSystem::GetCoordSysType()
+Math::CoordinateSystem::CoordinateSystemType Math::PointMappingCoordinateSystem::GetCoordSysType() const
 {
 	return Math::CoordinateSystem::CoordinateSystemType::PointMapping;
 }
 
-Bool Math::PointMappingCoordinateSystem::IsProjected()
+Bool Math::PointMappingCoordinateSystem::IsProjected() const
 {
 	return this->baseCSys->IsProjected();
 }
 
-void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
+void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -198,7 +198,7 @@ void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 	this->baseCSys->ToString(sb);
 }
 
-Bool Math::PointMappingCoordinateSystem::Equals(CoordinateSystem *csys)
+Bool Math::PointMappingCoordinateSystem::Equals(CoordinateSystem *csys) const
 {
 	if (csys->GetCoordSysType() != Math::CoordinateSystem::CoordinateSystemType::PointMapping)
 	{

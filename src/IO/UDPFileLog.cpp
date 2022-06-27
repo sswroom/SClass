@@ -11,8 +11,6 @@ IO::UDPFileLog::UDPFileLog(IO::IStreamData *fd) : IO::UDPLog(fd->GetFullName())
 
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->logBuff = MemAlloc(UInt8, 65544);
-	NEW_CLASS(this->logPos, Data::ArrayListUInt64());
-	NEW_CLASS(this->logSize, Data::ArrayListUInt32());
 
 	UInt64 currPos;
 	UInt64 buffPos;
@@ -49,8 +47,8 @@ IO::UDPFileLog::UDPFileLog(IO::IStreamData *fd) : IO::UDPLog(fd->GetFullName())
 				if (packetSize + 8 + i > buffSize)
 					break;
 				
-				this->logPos->Add(buffPos + i);
-				this->logSize->Add(packetSize + 8);
+				this->logPos.Add(buffPos + i);
+				this->logSize.Add(packetSize + 8);
 
 				i += packetSize + 8;
 			}
@@ -80,15 +78,13 @@ IO::UDPFileLog::~UDPFileLog()
 {
 	MemFree(this->logBuff);
 	DEL_CLASS(this->fd);
-	DEL_CLASS(this->logPos);
-	DEL_CLASS(this->logSize);
 }
 
-UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel)
+UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel) const
 {
 	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
 	{
-		return this->logPos->GetCount() << 1;
+		return this->logPos.GetCount() << 1;
 	}
 /*	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
 	{
@@ -96,22 +92,22 @@ UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel)
 	}*/
 	else
 	{
-		return this->logPos->GetCount();
+		return this->logPos.GetCount();
 	}
 }
 
-Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak)
+Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
 {
 	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
 	{
-		if (index >= (this->logPos->GetCount() << 1))
+		if (index >= (this->logPos.GetCount() << 1))
 			return false;
 		if (index & 1)
 		{
 			index = index >> 1;
 
-			UInt64 pos = this->logPos->GetItem(index);
-			UInt32 size = this->logSize->GetItem(index);
+			UInt64 pos = this->logPos.GetItem(index);
+			UInt32 size = this->logSize.GetItem(index);
 			this->fd->GetRealData(pos, size, this->logBuff);
 			dt->SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
 			return ParseLog(&this->logBuff[8], size - 8, sb, false);
@@ -130,28 +126,28 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 	}*/
 	else
 	{
-		if (index >= this->logPos->GetCount())
+		if (index >= this->logPos.GetCount())
 			return false;
 	}
-	UInt64 pos = this->logPos->GetItem(index);
-	UInt32 size = this->logSize->GetItem(index);
+	UInt64 pos = this->logPos.GetItem(index);
+	UInt32 size = this->logSize.GetItem(index);
 	this->fd->GetRealData(pos, size, this->logBuff);
 	dt->SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
 	sb->AppendHexBuff(&this->logBuff[8], size - 8, ' ', lineBreak);
 	return true;
 }
 
-Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb)
+Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
 {
 	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
 	{
 		index = index >> 1;
 	}
-	if (index >= this->logPos->GetCount())
+	if (index >= this->logPos.GetCount())
 		return false;
 	Data::DateTime dt;
-	UInt64 pos = this->logPos->GetItem(index);
-	UInt32 size = this->logSize->GetItem(index);
+	UInt64 pos = this->logPos.GetItem(index);
+	UInt32 size = this->logSize.GetItem(index);
 	this->fd->GetRealData(pos, size, this->logBuff);
 	dt.SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
 	return this->ParseLog(&this->logBuff[8], size - 8, sb, true);

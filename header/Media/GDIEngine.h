@@ -115,22 +115,22 @@ namespace Media
 		GDIImage(GDIEngine *eng, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype);
 		virtual ~GDIImage();
 
-		virtual UOSInt GetWidth();
-		virtual UOSInt GetHeight();
-		virtual UInt32 GetBitCount();
-		virtual ColorProfile *GetColorProfile();
+		virtual UOSInt GetWidth() const;
+		virtual UOSInt GetHeight() const;
+		virtual UInt32 GetBitCount() const;
+		virtual ColorProfile *GetColorProfile() const;
 		virtual void SetColorProfile(const ColorProfile *color);
-		virtual Media::AlphaType GetAlphaType();
+		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
-		virtual Double GetHDPI();
-		virtual Double GetVDPI();
+		virtual Double GetHDPI() const;
+		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
-		virtual UInt8 *GetImgBits(Bool *revOrder);
-		virtual void GetImgBitsEnd(Bool modified);
-		virtual UOSInt GetImgBpl();
-		virtual Media::EXIFData *GetEXIF();
-		virtual Media::PixelFormat GetPixelFormat();
+		virtual UInt8 *GetImgBits(Bool *revOrder) const;
+		virtual void GetImgBitsEnd(Bool modified) const;
+		virtual UOSInt GetImgBpl() const;
+		virtual Media::EXIFData *GetEXIF() const;
+		virtual Media::PixelFormat GetPixelFormat() const;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p);
 		virtual Bool DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p);
@@ -183,8 +183,8 @@ namespace Media
 		virtual UOSInt SaveGIF(IO::SeekableStream *stm);
 		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
 
-		virtual Media::Image *Clone();
-		virtual Media::Image::ImageType GetImageType();
+		virtual Media::Image *Clone() const;
+		virtual Media::Image::ImageType GetImageType() const;
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
 
 		static void PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height);

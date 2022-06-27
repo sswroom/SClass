@@ -28,12 +28,12 @@ Crypto::Hash::CRC32RC::~CRC32RC()
 {
 }
 
-UTF8Char *Crypto::Hash::CRC32RC::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::CRC32RC::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC-32C"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::CRC32RC::Clone()
+Crypto::Hash::IHash *Crypto::Hash::CRC32RC::Clone() const
 {
 	Crypto::Hash::CRC32RC *crc;
 	NEW_CLASS(crc, Crypto::Hash::CRC32RC());
@@ -51,22 +51,22 @@ void Crypto::Hash::CRC32RC::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = CRC32R_Calc(buff, buffSize, crctab, this->currVal);
 }
 
-void Crypto::Hash::CRC32RC::GetValue(UInt8 *buff)
+void Crypto::Hash::CRC32RC::GetValue(UInt8 *buff) const
 {
 	WriteMUInt32(buff, ~currVal);
 }
 
-UOSInt Crypto::Hash::CRC32RC::GetBlockSize()
+UOSInt Crypto::Hash::CRC32RC::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::CRC32RC::GetResultSize()
+UOSInt Crypto::Hash::CRC32RC::GetResultSize() const
 {
 	return 4;
 }
 
-UInt32 Crypto::Hash::CRC32RC::GetValueU32()
+UInt32 Crypto::Hash::CRC32RC::GetValueU32() const
 {
 	return ~this->currVal;
 }

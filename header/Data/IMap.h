@@ -10,9 +10,9 @@ namespace Data
 		virtual ~IMap();
 
 		virtual V Put(T key, V val) = 0;
-		virtual V Get(T key) = 0;
+		virtual V Get(T key) const = 0;
 		virtual V Remove(T key) = 0;
-		virtual Bool IsEmpty() = 0;
+		virtual Bool IsEmpty() const = 0;
 		virtual void Clear() = 0;
 	};
 

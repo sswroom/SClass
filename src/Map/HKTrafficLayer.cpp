@@ -864,7 +864,7 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 Map::HKTrafficLayer::~HKTrafficLayer()
 {
 	UOSInt i;
-	Data::ArrayList<RoadInfo*> *roadList;
+	const Data::ArrayList<RoadInfo*> *roadList;
 	RoadInfo *road;
 
 	roadList = this->roadMap.GetValues();
@@ -879,7 +879,7 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 		MemFree(road);
 	}
 
-	Data::ArrayList<CenterlineInfo*> *lineList;
+	const Data::ArrayList<CenterlineInfo*> *lineList;
 	CenterlineInfo *lineInfo;
 	lineList = this->vecMap.GetValues();
 	i = lineList->GetCount();
@@ -1135,7 +1135,7 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 	UOSInt i;
 	UOSInt j;
 	RoadInfo *road;
-	Data::ArrayList<RoadInfo*> *roadList;
+	const Data::ArrayList<RoadInfo*> *roadList;
 	Sync::MutexUsage mutUsage(&this->roadMut);
 	roadList = this->roadMap.GetValues();
 	i = 0;
@@ -1165,7 +1165,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 	RoadInfo *road;
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<RoadInfo*> *roadList;
+	const Data::ArrayList<RoadInfo*> *roadList;
 	rect = rect.Reorder();
 	Sync::MutexUsage mutUsage(&this->roadMut);
 	roadList = this->roadMap.GetValues();
@@ -1189,7 +1189,7 @@ Int64 Map::HKTrafficLayer::GetObjectIdMax()
 {
 	Int64 ret = 0;
 	Sync::MutexUsage mutUsage(&this->roadMut);
-	Data::ArrayList<Int64> *keys = this->roadMap.GetKeys();
+	const Data::ArrayList<Int64> *keys = this->roadMap.GetKeys();
 	ret = keys->GetItem(keys->GetCount() - 1);
 	mutUsage.EndUse();
 	return ret;

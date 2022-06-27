@@ -332,7 +332,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 					style->GetBorderRight()->borderType != Text::SpreadSheet::BorderType::None ||
 					style->GetBorderBottom()->borderType != Text::SpreadSheet::BorderType::None)
 				{
-					Text::SpreadSheet::CellStyle::BorderStyle *border;
+					const Text::SpreadSheet::CellStyle::BorderStyle *border;
 					writer->WriteLineC(UTF8STRC("   <Borders>"));
 					border = style->GetBorderBottom();
 					if (border->borderType != Text::SpreadSheet::BorderType::None)
@@ -813,7 +813,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 	return true;
 }
 
-void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border)
+void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, const Text::SpreadSheet::CellStyle::BorderStyle *border)
 {
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;

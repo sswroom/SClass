@@ -15,19 +15,19 @@ Math::Mercator1SPProjectedCoordinateSystem::~Mercator1SPProjectedCoordinateSyste
 {
 }
 
-Math::CoordinateSystem *Math::Mercator1SPProjectedCoordinateSystem::Clone()
+Math::CoordinateSystem *Math::Mercator1SPProjectedCoordinateSystem::Clone() const
 {
 	Math::CoordinateSystem *csys;
 	NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
 	return csys;
 }
 
-Math::CoordinateSystem::CoordinateSystemType Math::Mercator1SPProjectedCoordinateSystem::GetCoordSysType()
+Math::CoordinateSystem::CoordinateSystemType Math::Mercator1SPProjectedCoordinateSystem::GetCoordSysType() const
 {
 	return Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
 }
 
-void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY)
+void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY) const
 {
 	Math::EarthEllipsoid *ellipsoid = this->gcs->GetEllipsoid();
 	Double rLon0 = this->centralMeridian * PI / 180;
@@ -36,7 +36,7 @@ void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinate(Double p
 	*geoY = (Math_ArcTan(Math_Exp((projY - this->falseNorthing) / a)) - Math::PI * 0.25) * 2 * 180.0 / Math::PI;
 }
 
-void Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY)
+void Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY) const
 {
 	Math::EarthEllipsoid *ellipsoid = this->gcs->GetEllipsoid();
 	Double rLat = geoY * Math::PI / 180.0;

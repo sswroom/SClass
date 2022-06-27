@@ -14,12 +14,12 @@ namespace Data
 		ReadonlyArray(const T *arr, UOSInt cnt);
 		~ReadonlyArray();
 
-		UOSInt GetCount();
-		const T *GetArray();
-		T GetItem(UOSInt index);
-		T operator [](UOSInt index);
-		ReadonlyArray<T> *Clone();
-		Bool Equals(ReadonlyArray<T> *arr2);
+		UOSInt GetCount() const;
+		const T *GetArray() const;
+		T GetItem(UOSInt index) const;
+		T operator [](UOSInt index) const;
+		ReadonlyArray<T> *Clone() const;
+		Bool Equals(ReadonlyArray<T> *arr2) const;
 	};
 
 	template <class T> ReadonlyArray<T>::ReadonlyArray(const T *arr, UOSInt cnt)
@@ -34,22 +34,22 @@ namespace Data
 		MemFree(this->arr);
 	}
 
-	template <class T> UOSInt ReadonlyArray<T>::GetCount()
+	template <class T> UOSInt ReadonlyArray<T>::GetCount() const
 	{
 		return this->cnt;
 	}
 
-	template <class T> const T *ReadonlyArray<T>::GetArray()
+	template <class T> const T *ReadonlyArray<T>::GetArray() const
 	{
 		return this->arr;
 	}
 
-	template <class T> T ReadonlyArray<T>::GetItem(UOSInt index)
+	template <class T> T ReadonlyArray<T>::GetItem(UOSInt index) const
 	{
 		return (*this)[index];
 	}
 	
-	template <class T> T ReadonlyArray<T>::operator [](UOSInt index)
+	template <class T> T ReadonlyArray<T>::operator [](UOSInt index) const
 	{
 		if (index >= this->cnt)
 		{
@@ -58,12 +58,12 @@ namespace Data
 		return this->arr[index];
 	}
 
-	template <class T> ReadonlyArray<T> *ReadonlyArray<T>::Clone()
+	template <class T> ReadonlyArray<T> *ReadonlyArray<T>::Clone() const
 	{
 		return NEW_CLASS_D(ReadonlyArray<T>(this->arr, this->cnt));
 	}
 
-	template <class T> Bool ReadonlyArray<T>::Equals(ReadonlyArray<T> *arr2)
+	template <class T> Bool ReadonlyArray<T>::Equals(ReadonlyArray<T> *arr2) const
 	{
 		if (arr2 == 0)
 		{

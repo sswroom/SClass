@@ -26,18 +26,18 @@ namespace Text
 			UOSInt activeSheet;
 			UInt32 palette[56];
 
-			Data::ArrayList<Worksheet*> *sheets;
-			Data::ArrayList<CellStyle*> *styles;
-			Data::ArrayList<WorkbookFont*> *fonts;
+			Data::ArrayList<Worksheet*> sheets;
+			Data::ArrayList<CellStyle*> styles;
+			Data::ArrayList<WorkbookFont*> fonts;
 
 			static const UInt32 defPalette[56];
 		public:
 			Workbook();
 			virtual ~Workbook();
 
-			virtual IO::ParserType GetParserType();
+			virtual IO::ParserType GetParserType() const;
 
-			Workbook *Clone();
+			Workbook *Clone() const;
 
 			void AddDefaultStyles();
 
@@ -47,13 +47,13 @@ namespace Text
 			void SetCreateTime(Data::DateTime *createTime);
 			void SetModifyTime(Data::DateTime *modifyTime);
 			void SetVersion(Double version);
-			const UTF8Char *GetAuthor();
-			const UTF8Char *GetLastAuthor();
-			const UTF8Char *GetCompany();
-			Data::DateTime *GetCreateTime();
-			Data::DateTime *GetModifyTime();
-			Double GetVersion();
-			Bool HasInfo();
+			const UTF8Char *GetAuthor() const;
+			const UTF8Char *GetLastAuthor() const;
+			const UTF8Char *GetCompany() const;
+			Data::DateTime *GetCreateTime() const;
+			Data::DateTime *GetModifyTime() const;
+			Double GetVersion() const;
+			Bool HasInfo() const;
 
 			void SetWindowTopX(Int32 windowTopX);
 			void SetWindowTopY(Int32 windowTopY);
@@ -70,9 +70,9 @@ namespace Text
 			Bool HasCellStyle();
 			CellStyle *NewCellStyle();
 			CellStyle *NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
-			UOSInt GetStyleCount();
-			virtual OSInt GetStyleIndex(CellStyle *style);
-			virtual CellStyle *GetStyle(UOSInt Index);
+			UOSInt GetStyleCount() const;
+			virtual OSInt GetStyleIndex(CellStyle *style) const;
+			virtual CellStyle *GetStyle(UOSInt Index) const;
 			CellStyle *GetDefaultStyle();
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);

@@ -1269,17 +1269,17 @@ IO::SMake::~SMake()
 	SDEL_STRING(this->debugObj);
 }
 
-IO::ParserType IO::SMake::GetParserType()
+IO::ParserType IO::SMake::GetParserType() const
 {
 	return ParserType::Smake;
 }
 
-Bool IO::SMake::IsLoadFailed()
+Bool IO::SMake::IsLoadFailed() const
 {
 	return this->errorMsg != 0;
 }
 
-Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF8 *sb)
+Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF8 *sb) const
 {
 	Bool ret;
 	Sync::MutexUsage mutUsage(&this->errorMsgMut);
@@ -1323,12 +1323,12 @@ void IO::SMake::SetThreadCnt(UOSInt threadCnt)
 	}
 }
 
-Data::ArrayList<IO::SMake::ConfigItem*> *IO::SMake::GetConfigList()
+const Data::ArrayList<IO::SMake::ConfigItem*> *IO::SMake::GetConfigList() const
 {
 	return this->cfgMap.GetValues();
 }
 
-Bool IO::SMake::HasProg(Text::CString progName)
+Bool IO::SMake::HasProg(Text::CString progName) const
 {
 	return this->progMap.GetC(progName) != 0;
 }
@@ -1420,7 +1420,7 @@ UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 	return ret;
 }
 
-Bool IO::SMake::IsProgGroup(Text::CString progName)
+Bool IO::SMake::IsProgGroup(Text::CString progName) const
 {
 	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName);
 	if (prog == 0)
@@ -1441,7 +1441,7 @@ Bool IO::SMake::IsProgGroup(Text::CString progName)
 	return true;
 }
 
-const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CString progName)
+const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CString progName) const
 {
 	return this->progMap.GetC(progName);
 }

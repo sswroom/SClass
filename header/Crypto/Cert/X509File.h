@@ -189,18 +189,18 @@ namespace Crypto
 		public:
 			virtual ~X509File();
 
-			virtual Net::ASN1Data::ASN1Type GetASN1Type();
-			virtual FileType GetFileType() = 0;
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb) = 0;
+			virtual Net::ASN1Data::ASN1Type GetASN1Type() const;
+			virtual FileType GetFileType() const = 0;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const = 0;
 
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) = 0;
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const = 0;
 
-			void ToShortString(Text::StringBuilderUTF8 *sb);
-			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);
-			Bool GetSignedInfo(SignedInfo *signedInfo);
+			void ToShortString(Text::StringBuilderUTF8 *sb) const;
+			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key) const;
+			Bool GetSignedInfo(SignedInfo *signedInfo) const;
 
 			static Crypto::Hash::HashType GetAlgHash(AlgType algType);
 			static Text::CString FileTypeGetName(FileType fileType);

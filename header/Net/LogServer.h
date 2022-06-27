@@ -33,11 +33,11 @@ namespace Net
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 		Text::String *logPath;
-		IO::ProtoHdlr::ProtoLogCliHandler *protoHdlr;
+		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;
 		IO::LogTool *log;
 		Bool redirLog;
-		Sync::Mutex *ipMut;
-		Data::UInt32Map<IPStatus*> *ipMap;
+		Sync::Mutex ipMut;
+		Data::UInt32Map<IPStatus*> ipMap;
 		ClientLogHandler logHdlr;
 		void *logHdlrObj;
 

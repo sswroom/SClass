@@ -9,8 +9,8 @@ namespace Text
 		class IStyleCtrl
 		{
 		public:
-			virtual OSInt GetStyleIndex(CellStyle *style) = 0;
-			virtual CellStyle *GetStyle(UOSInt index) = 0;
+			virtual OSInt GetStyleIndex(CellStyle *style) const = 0;
+			virtual CellStyle *GetStyle(UOSInt index) const = 0;
 		};
 	}
 }

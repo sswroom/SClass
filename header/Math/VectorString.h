@@ -19,20 +19,20 @@ namespace Math
 		VectorString(UInt32 srid, Text::CString s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
 		virtual ~VectorString();
 
-		virtual VectorType GetVectorType();
-		virtual Math::Coord2DDbl GetCenter();
-		virtual Math::Vector2D *Clone();
-		virtual void GetBounds(Math::RectAreaDbl *bounds);
-		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
+		virtual VectorType GetVectorType() const;
+		virtual Math::Coord2DDbl GetCenter() const;
+		virtual Math::Vector2D *Clone() const;
+		virtual void GetBounds(Math::RectAreaDbl *bounds) const;
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 		virtual Bool JoinVector(Math::Vector2D *vec);
-		virtual Bool Support3D();
+		virtual Bool Support3D() const;
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
-		virtual Bool Equals(Math::Vector2D *vec);
+		virtual Bool Equals(Math::Vector2D *vec) const;
 
-		Text::String *GetString();
-		Double GetAngleDegree();
-		Double GetBuffSize();
-		Media::DrawEngine::DrawPos GetTextAlign();
+		Text::String *GetString() const;
+		Double GetAngleDegree() const;
+		Double GetBuffSize() const;
+		Media::DrawEngine::DrawPos GetTextAlign() const;
 	};
 }
 #endif

@@ -26,7 +26,7 @@ void PingScan(UInt32 ip)
 	
 	if (scanner->Scan(ip))
 	{
-		Data::ArrayList<Net::ICMPScanner::ScanResult*> *results = scanner->GetResults();
+		const Data::ArrayList<Net::ICMPScanner::ScanResult*> *results = scanner->GetResults();
 		Net::ICMPScanner::ScanResult *result;
 		UOSInt i = 0;
 		UOSInt j = results->GetCount();

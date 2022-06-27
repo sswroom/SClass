@@ -5,7 +5,7 @@
 #include "Data/Sort/QuickBubbleSort.h"
 #include <stdlib.h>
 
-void Data::ArrayListDate::Init(OSInt Capacity)
+void Data::ArrayListDate::Init(UOSInt Capacity)
 {
 	objCnt = 0;
 	this->capacity = Capacity;
@@ -17,7 +17,7 @@ Data::ArrayListDate::ArrayListDate()
 	Init(40);
 }
 
-Data::ArrayListDate::ArrayListDate(OSInt Capacity)
+Data::ArrayListDate::ArrayListDate(UOSInt Capacity)
 {
 	Init(Capacity);
 }
@@ -28,13 +28,13 @@ Data::ArrayListDate::~ArrayListDate()
 	arr = 0;
 }
 
-OSInt Data::ArrayListDate::Add(Data::DateTime *Val)
+UOSInt Data::ArrayListDate::Add(Data::DateTime *Val)
 {
-	OSInt ret;
+	UOSInt ret;
 	if (objCnt == this->capacity)
 	{
 		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
-		OSInt i = this->capacity;
+		UOSInt i = this->capacity;
 		while (i-- > 0)
 		{
 			newArr[i] = arr[i];
@@ -47,10 +47,10 @@ OSInt Data::ArrayListDate::Add(Data::DateTime *Val)
 	return ret;
 }
 
-void Data::ArrayListDate::AddRange(ArrayListDate * arr)
+void Data::ArrayListDate::AddRange(const ArrayListDate * arr)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	while (objCnt + arr->GetCount() >= this->capacity)
 	{
 		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
@@ -72,10 +72,10 @@ void Data::ArrayListDate::AddRange(ArrayListDate * arr)
 	this->objCnt += arr->objCnt;
 }
 
-void Data::ArrayListDate::AddRange(Data::DateTime **arr, OSInt cnt)
+void Data::ArrayListDate::AddRange(const Data::DateTime **arr, UOSInt cnt)
 {
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	while (objCnt + cnt >= this->capacity)
 	{
 		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
@@ -97,12 +97,12 @@ void Data::ArrayListDate::AddRange(Data::DateTime **arr, OSInt cnt)
 	this->objCnt += cnt;
 }
 
-void Data::ArrayListDate::GetItem(OSInt Index, Data::DateTime *ValOut)
+void Data::ArrayListDate::GetItem(UOSInt Index, Data::DateTime *ValOut) const
 {
 	*ValOut = this->arr[Index];
 }
 
-void Data::ArrayListDate::SetItem(OSInt Index, Data::DateTime *Val)
+void Data::ArrayListDate::SetItem(UOSInt Index, Data::DateTime *Val)
 {
 	if (Index == objCnt)
 	{
@@ -128,24 +128,24 @@ void Data::ArrayListDate::Clear()
 	this->objCnt = 0;
 }
 
-Data::ArrayListDate *Data::ArrayListDate::Clone()
+Data::ArrayListDate *Data::ArrayListDate::Clone() const
 {
 	Data::ArrayListDate *newArr = new Data::ArrayListDate(this->capacity);
 	newArr->AddRange(this);
 	return newArr;
 }
 
-OSInt Data::ArrayListDate::GetCount()
+UOSInt Data::ArrayListDate::GetCount() const
 {
 	return this->objCnt;
 }
 
-OSInt Data::ArrayListDate::GetCapacity()
+UOSInt Data::ArrayListDate::GetCapacity() const
 {
 	return this->capacity;
 }
 
-void Data::ArrayListDate::RemoveAt(OSInt index)
+void Data::ArrayListDate::RemoveAt(UOSInt index)
 {
 	if (index >= objCnt)
 		return;
@@ -156,9 +156,9 @@ void Data::ArrayListDate::RemoveAt(OSInt index)
 	arr[--objCnt] = 0;
 }
 
-void Data::ArrayListDate::Insert(OSInt Index, Data::DateTime *Val)
+void Data::ArrayListDate::Insert(UOSInt Index, Data::DateTime *Val)
 {
-	OSInt j;
+	UOSInt j;
 	if (objCnt == this->capacity)
 	{
 		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
@@ -181,7 +181,7 @@ void Data::ArrayListDate::Insert(OSInt Index, Data::DateTime *Val)
 	arr[Index] = Val->ToTicks();
 }
 
-OSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
+UOSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
 {
 	OSInt i;
 	OSInt j;
@@ -212,7 +212,7 @@ OSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
 	if (objCnt == this->capacity)
 	{
 		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
-		k = this->objCnt;
+		k = (OSInt)this->objCnt;
 		while (k-- > 0)
 		{
 			newArr[k] = arr[k];
@@ -221,7 +221,7 @@ OSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
 		MemFree(arr);
 		arr = newArr;
 	}
-	j = objCnt;
+	j =(OSInt)objCnt;
 	while (j > i)
 	{
 		arr[j] = arr[j - 1];
@@ -229,10 +229,10 @@ OSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
 	}
 	objCnt++;
 	arr[i] = ts;
-	return i;
+	return (UOSInt)i;
 }
 
-OSInt Data::ArrayListDate::SortedIndexOf(Data::DateTime *Val)
+OSInt Data::ArrayListDate::SortedIndexOf(Data::DateTime *Val) const
 {
 	OSInt i;
 	OSInt j;
@@ -261,14 +261,14 @@ OSInt Data::ArrayListDate::SortedIndexOf(Data::DateTime *Val)
 	return -i - 1;
 }
 
-OSInt Data::ArrayListDate::IndexOf(Data::DateTime *Val)
+UOSInt Data::ArrayListDate::IndexOf(Data::DateTime *Val) const
 {
 	Int64 ts = Val->ToTicks();
-	OSInt i = objCnt;
+	UOSInt i = objCnt;
 	while (i-- > 0)
 		if (arr[i] == ts)
 			return i;
-	return -1;
+	return INVALID_INDEX;
 }
 
 void Data::ArrayListDate::Sort(Bool decending)

@@ -113,8 +113,8 @@ namespace IO
 		IO::SNBProtocol::ProtocolHandler protoHdlr;
 		void *protoObj;
 		SNBHandler *hdlr;
-		Data::UInt64Map<DeviceInfo*> *devMap;
-		Sync::RWMutex *devMut;
+		Data::UInt64Map<DeviceInfo*> devMap;
+		Sync::RWMutex devMut;
 		UInt64 dongleId;
 		UInt32 dongleBaudRate;
 

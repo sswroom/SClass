@@ -19,9 +19,9 @@ namespace Media
 		DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType);
 		virtual ~DDrawSurface();
 
-		virtual Media::Image *Clone();
-		virtual Media::Image::ImageType GetImageType();
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
+		virtual Media::Image *Clone() const;
+		virtual Media::Image::ImageType GetImageType() const;
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const;
 
 		virtual void WaitForVBlank();
 		virtual void *GetHandle();

@@ -104,7 +104,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = devMap->GetValues();
+	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = devMap->GetValues();
 	IO::BTScanLog::ScanRecord3 *dev;
 
 	j = 0;

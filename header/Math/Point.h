@@ -14,14 +14,14 @@ namespace Math
 		Point(UInt32 srid, Math::Coord2DDbl pos);
 		virtual ~Point();
 
-		virtual VectorType GetVectorType();
-		virtual Math::Coord2DDbl GetCenter();
-		virtual Math::Vector2D *Clone();
-		virtual void GetBounds(Math::RectAreaDbl *bounds);
-		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
+		virtual VectorType GetVectorType() const;
+		virtual Math::Coord2DDbl GetCenter() const;
+		virtual Math::Vector2D *Clone() const;
+		virtual void GetBounds(Math::RectAreaDbl *bounds) const;
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
-		virtual Bool Equals(Vector2D *vec);
+		virtual Bool Equals(Vector2D *vec) const;
 	};
 }
 #endif

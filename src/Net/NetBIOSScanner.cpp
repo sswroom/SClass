@@ -21,8 +21,8 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(const Net::SocketUtil::AddressIn
 		if (dataLen >= 7 + nName * 18)
 		{
 			NameAnswer *ans;
-			Sync::MutexUsage mutUsage(me->ansMut);
-			ans = me->answers->Get(sortableIP);
+			Sync::MutexUsage mutUsage(&me->ansMut);
+			ans = me->answers.Get(sortableIP);
 			if (ans == 0)
 			{
 				ans = MemAlloc(NameAnswer, 1);
@@ -31,7 +31,7 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(const Net::SocketUtil::AddressIn
 				ans->namesCnt = 0;
 				ans->ttl = ReadMUInt32(&buff[50]);
 				MemCopyNO(ans->unitId, &buff[57 + nName * 18], 6);
-				me->answers->Put(sortableIP, ans);
+				me->answers.Put(sortableIP, ans);
 			}
 			const UInt8 *namePtr = &buff[57];
 			NameEntry *ent;
@@ -70,8 +70,6 @@ void Net::NetBIOSScanner::FreeAnswer(NameAnswer *ans)
 Net::NetBIOSScanner::NetBIOSScanner(Net::SocketFactory *sockf)
 {
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, 0, CSTR_NULL, 2, false));
-	NEW_CLASS(this->ansMut, Sync::Mutex());
-	NEW_CLASS(this->answers, Data::UInt32Map<NameAnswer*>());
 	this->hdlr = 0;
 	this->hdlrObj = 0;
 	if (!this->svr->IsError())
@@ -83,13 +81,11 @@ Net::NetBIOSScanner::NetBIOSScanner(Net::SocketFactory *sockf)
 Net::NetBIOSScanner::~NetBIOSScanner()
 {
 	DEL_CLASS(this->svr);
-	DEL_CLASS(this->ansMut);
-	Data::ArrayList<NameAnswer*> *ansList = this->answers->GetValues();
-	LIST_FREE_FUNC(ansList, FreeAnswer);
-	DEL_CLASS(this->answers);
+	const Data::ArrayList<NameAnswer*> *ansList = this->answers.GetValues();
+	LIST_CALL_FUNC(ansList, FreeAnswer);
 }
 
-Bool Net::NetBIOSScanner::IsError()
+Bool Net::NetBIOSScanner::IsError() const
 {
 	return this->svr->IsError();
 }
@@ -120,8 +116,8 @@ void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, void *userObj)
 	this->hdlr = hdlr;
 }
 
-Data::ArrayList<Net::NetBIOSScanner::NameAnswer*> *Net::NetBIOSScanner::GetAnswers(Sync::MutexUsage *mutUsage)
+const Data::ArrayList<Net::NetBIOSScanner::NameAnswer*> *Net::NetBIOSScanner::GetAnswers(Sync::MutexUsage *mutUsage) const
 {
-	mutUsage->ReplaceMutex(this->ansMut);
-	return this->answers->GetValues();
+	mutUsage->ReplaceMutex(&this->ansMut);
+	return this->answers.GetValues();
 }

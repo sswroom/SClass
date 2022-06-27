@@ -23,11 +23,11 @@ namespace IO
 		IO::Stream *stm;
 		Bool threadRunning;
 		Bool threadToStop;
-		Manage::HiResClock *clk;
-		Sync::Mutex *stmMut;
+		Manage::HiResClock clk;
+		Sync::Mutex stmMut;
 		Crypto::Hash::CRC16R *crc;
-		Sync::Mutex *crcMut;
-		Data::Int32Map<AddrResultCb*> *cbMap;
+		Sync::Mutex crcMut;
+		Data::Int32Map<AddrResultCb*> cbMap;
 
 		static UInt32 __stdcall ThreadProc(void *userObj);
 		void CalcCRC(UInt8 *rtu, UOSInt rtuSize); // size include CRC

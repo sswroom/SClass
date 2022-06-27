@@ -14,12 +14,12 @@ Crypto::Hash::ExcelHash::~ExcelHash()
 {
 }
 
-UTF8Char *Crypto::Hash::ExcelHash::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::ExcelHash::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("Excel Hash"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::ExcelHash::Clone()
+Crypto::Hash::IHash *Crypto::Hash::ExcelHash::Clone() const
 {
 	Crypto::Hash::ExcelHash *hash;
 	NEW_CLASS(hash, Crypto::Hash::ExcelHash());
@@ -48,17 +48,17 @@ void Crypto::Hash::ExcelHash::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::ExcelHash::GetValue(UInt8 *buff)
+void Crypto::Hash::ExcelHash::GetValue(UInt8 *buff) const
 {
 	WriteMInt16(buff, this->currVal ^ 0xCE4B ^ this->charCnt);
 }
 
-UOSInt Crypto::Hash::ExcelHash::GetBlockSize()
+UOSInt Crypto::Hash::ExcelHash::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::ExcelHash::GetResultSize()
+UOSInt Crypto::Hash::ExcelHash::GetResultSize() const
 {
 	return 2;
 }

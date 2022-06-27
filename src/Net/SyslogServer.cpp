@@ -49,8 +49,8 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
 		Net::SyslogServer::IPStatus *status;
-		Sync::MutexUsage mutUsage(this->ipMut);
-		status = this->ipMap->Get(ip);
+		Sync::MutexUsage mutUsage(&this->ipMut);
+		status = this->ipMap.Get(ip);
 		if (status)
 		{
 			return status;
@@ -67,7 +67,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
 		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
-		this->ipMap->Put(ip, status);
+		this->ipMap.Put(ip, status);
 		return status;
 	}
 	return 0;
@@ -81,8 +81,6 @@ Net::SyslogServer::SyslogServer(Net::SocketFactory *sockf, UInt16 port, Text::CS
 	this->redirLog = redirLog;
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
-	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::UInt32Map<Net::SyslogServer::IPStatus*>());
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnUDPPacket, this, log, CSTR("UDP: "), 2, false));
 }
 
@@ -91,7 +89,7 @@ Net::SyslogServer::~SyslogServer()
 	DEL_CLASS(this->svr);
 	this->logPath->Release();
 	UOSInt i;
-	Data::ArrayList<Net::SyslogServer::IPStatus*> *ipList = this->ipMap->GetValues();
+	const Data::ArrayList<Net::SyslogServer::IPStatus*> *ipList = this->ipMap.GetValues();
 	IPStatus *status;
 	i = ipList->GetCount();
 	while (i-- > 0)
@@ -100,8 +98,6 @@ Net::SyslogServer::~SyslogServer()
 		DEL_CLASS(status->log);
 		MemFree(status);
 	}
-	DEL_CLASS(this->ipMap);
-	DEL_CLASS(this->ipMut);
 }
 
 Bool Net::SyslogServer::IsError()

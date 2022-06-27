@@ -14,7 +14,7 @@ Crypto::Cert::CurlCert::~CurlCert()
 
 }
 
-Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt)
+Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt) const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	UOSInt slen;
@@ -31,7 +31,7 @@ Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt)
 	return false;
 }
 
-Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt)
+Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt) const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	UOSInt slen;
@@ -48,7 +48,7 @@ Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt)
 	return false;
 }
 
-Bool Crypto::Cert::CurlCert::IsSelfSigned()
+Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 {
 	const Char *subj = 0;
 	const Char *issuer = 0;
@@ -72,7 +72,7 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned()
 	return false;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert()
+Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert() const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)
@@ -93,7 +93,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert()
 	return 0;
 }
 
-void Crypto::Cert::CurlCert::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::CurlCert::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)

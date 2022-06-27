@@ -121,12 +121,12 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-Data::ArrayList<IO::BTScanLog::ScanRecord3*> *IO::BTCapturer::GetPublicList(Sync::MutexUsage *mutUsage)
+const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *IO::BTCapturer::GetPublicList(Sync::MutexUsage *mutUsage) const
 {
 	return this->bt->GetPublicMap(mutUsage)->GetValues();
 }
 
-Data::ArrayList<IO::BTScanLog::ScanRecord3*> *IO::BTCapturer::GetRandomList(Sync::MutexUsage *mutUsage)
+const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *IO::BTCapturer::GetRandomList(Sync::MutexUsage *mutUsage) const
 {
 	return this->bt->GetRandomMap(mutUsage)->GetValues();
 }

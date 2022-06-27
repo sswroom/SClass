@@ -89,9 +89,9 @@ Bool Crypto::Encrypt::RC2Cipher::SetKey(const UInt8 *key, UOSInt keyLen, UOSInt 
 	return true;
 }
 
-UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam)
+UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *encParam) const
 {
-	UInt16 *xkey = this->xkeys;
+	const UInt16 *xkey = this->xkeys;
 	UInt16 x76;
 	UInt16 x54;
 	UInt16 x32;
@@ -136,13 +136,13 @@ UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *out
     return 8;
 }
 
-UOSInt Crypto::Encrypt::RC2Cipher::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam)
+UOSInt Crypto::Encrypt::RC2Cipher::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam) const
 {
     UInt16 x76;
 	UInt16 x54;
 	UInt16 x32;
 	UInt16 x10;
-    UInt16 *xkey = this->xkeys;
+    const UInt16 *xkey = this->xkeys;
     OSInt i;
 
     x10 = ReadUInt16(&inBlock[0]);

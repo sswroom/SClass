@@ -33,7 +33,7 @@ Math::ProjectedCoordinateSystem::~ProjectedCoordinateSystem()
 	SDEL_CLASS(this->gcs);
 }
 
-Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit)
+Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Coord2DDbl diff = pos2 - pos1;
 	diff = diff * diff;
@@ -45,7 +45,7 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl po
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -77,7 +77,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	return totalDist;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit)
+Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -117,12 +117,12 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	return totalDist;
 }
 
-Bool Math::ProjectedCoordinateSystem::IsProjected()
+Bool Math::ProjectedCoordinateSystem::IsProjected() const
 {
 	return true;
 }
 
-void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
+void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->AppendC(UTF8STRC("Projected File Name: "));
 	sb->Append(this->sourceName);
@@ -142,12 +142,7 @@ void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 	this->gcs->ToString(sb);
 }
 
-Math::GeographicCoordinateSystem *Math::ProjectedCoordinateSystem::GetGeographicCoordinateSystem()
-{
-	return this->gcs;
-}
-
-Bool Math::ProjectedCoordinateSystem::SameProjection(Math::ProjectedCoordinateSystem *csys)
+Bool Math::ProjectedCoordinateSystem::SameProjection(Math::ProjectedCoordinateSystem *csys) const
 {
 	if (this->falseEasting != csys->falseEasting)
 		return false;
@@ -160,34 +155,4 @@ Bool Math::ProjectedCoordinateSystem::SameProjection(Math::ProjectedCoordinateSy
 	if (this->scaleFactor != csys->scaleFactor)
 		return false;
 	return this->gcs->Equals(csys->gcs);
-}
-
-Double Math::ProjectedCoordinateSystem::GetLatitudeOfOrigin()
-{
-	return this->latitudeOfOrigin;
-}
-
-Double Math::ProjectedCoordinateSystem::GetCentralMeridian()
-{
-	return this->centralMeridian;
-}
-
-Double Math::ProjectedCoordinateSystem::GetScaleFactor()
-{
-	return this->scaleFactor;
-}
-
-Double Math::ProjectedCoordinateSystem::GetFalseEasting()
-{
-	return this->falseEasting;
-}
-
-Double Math::ProjectedCoordinateSystem::GetFalseNorthing()
-{
-	return this->falseNorthing;
-}
-
-Math::CoordinateSystem::UnitType Math::ProjectedCoordinateSystem::GetUnit()
-{
-	return this->unit;
 }

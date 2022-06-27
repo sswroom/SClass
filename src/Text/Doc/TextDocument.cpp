@@ -32,7 +32,7 @@ Text::Doc::TextDocument::~TextDocument()
 	SDEL_STRING(this->docName);
 }
 
-IO::ParserType Text::Doc::TextDocument::GetParserType()
+IO::ParserType Text::Doc::TextDocument::GetParserType() const
 {
 	return IO::ParserType::TextDocument;
 }
@@ -43,7 +43,7 @@ void Text::Doc::TextDocument::SetDocumentName(Text::CString docName)
 	this->docName = Text::String::New(docName);
 }
 
-UTF8Char *Text::Doc::TextDocument::GetDocumentName(UTF8Char *docName)
+UTF8Char *Text::Doc::TextDocument::GetDocumentName(UTF8Char *docName) const
 {
 	if (this->docName == 0)
 		return 0;
@@ -56,7 +56,7 @@ void Text::Doc::TextDocument::SetTextColor(UInt32 textColor)
 	this->pflags = (PropertiesFlags)(this->pflags | PF_TEXTCOLOR);
 }
 
-Bool Text::Doc::TextDocument::GetTextColor(UInt32 *textColor)
+Bool Text::Doc::TextDocument::GetTextColor(UInt32 *textColor) const
 {
 	if (this->pflags & PF_TEXTCOLOR)
 	{
@@ -75,7 +75,7 @@ void Text::Doc::TextDocument::SetBGColor(UInt32 bgColor)
 	this->pflags = (PropertiesFlags)(this->pflags | PF_BGCOLOR);
 }
 
-Bool Text::Doc::TextDocument::GetBGColor(UInt32 *bgColor)
+Bool Text::Doc::TextDocument::GetBGColor(UInt32 *bgColor) const
 {
 	if (this->pflags & PF_BGCOLOR)
 	{
@@ -94,7 +94,7 @@ void Text::Doc::TextDocument::SetLinkColor(UInt32 linkColor)
 	this->pflags = (PropertiesFlags)(this->pflags | PF_LINKCOLOR);
 }
 
-Bool Text::Doc::TextDocument::GetLinkColor(UInt32 *linkColor)
+Bool Text::Doc::TextDocument::GetLinkColor(UInt32 *linkColor) const
 {
 	if (this->pflags & PF_LINKCOLOR)
 	{
@@ -113,7 +113,7 @@ void Text::Doc::TextDocument::SetActiveLinkColor(UInt32 activeLinkColor)
 	this->pflags = (PropertiesFlags)(this->pflags | PF_ACTIVELINKCOLOR);
 }
 
-Bool Text::Doc::TextDocument::GetActiveLinkColor(UInt32 *activeLinkColor)
+Bool Text::Doc::TextDocument::GetActiveLinkColor(UInt32 *activeLinkColor) const
 {
 	if (this->pflags & PF_ACTIVELINKCOLOR)
 	{
@@ -132,7 +132,7 @@ void Text::Doc::TextDocument::SetVisitedLinkColor(UInt32 visitedLinkColor)
 	this->pflags = (PropertiesFlags)(this->pflags | PF_VISITEDLINKCOLOR);
 }
 
-Bool Text::Doc::TextDocument::GetVisitedLinkColor(UInt32 *visitedLinkColor)
+Bool Text::Doc::TextDocument::GetVisitedLinkColor(UInt32 *visitedLinkColor) const
 {
 	if (this->pflags & PF_VISITEDLINKCOLOR)
 	{

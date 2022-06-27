@@ -17,12 +17,12 @@ Crypto::Hash::FNV1a::~FNV1a()
 {
 }
 
-UTF8Char *Crypto::Hash::FNV1a::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::FNV1a::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("FNV1a"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::FNV1a::Clone()
+Crypto::Hash::IHash *Crypto::Hash::FNV1a::Clone() const
 {
 	Crypto::Hash::FNV1a *fnv1;
 	NEW_CLASS(fnv1, Crypto::Hash::FNV1a());
@@ -40,17 +40,17 @@ void Crypto::Hash::FNV1a::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = FNV1a_Calc(buff, buffSize, this->currVal);
 }
 
-void Crypto::Hash::FNV1a::GetValue(UInt8 *buff)
+void Crypto::Hash::FNV1a::GetValue(UInt8 *buff) const
 {
 	*(UInt32*)buff = this->currVal;
 }
 
-UOSInt Crypto::Hash::FNV1a::GetBlockSize()
+UOSInt Crypto::Hash::FNV1a::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::FNV1a::GetResultSize()
+UOSInt Crypto::Hash::FNV1a::GetResultSize() const
 {
 	return 4;
 }

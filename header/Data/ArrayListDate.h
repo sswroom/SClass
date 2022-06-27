@@ -8,31 +8,31 @@ namespace Data
 	{
 	private:
 		Int64 *arr;
-		OSInt objCnt;
-		OSInt capacity;
+		UOSInt objCnt;
+		UOSInt capacity;
 
-		void Init(OSInt Capacity);
+		void Init(UOSInt Capacity);
 	public:
 		ArrayListDate();
-		ArrayListDate(OSInt Capacity);
+		ArrayListDate(UOSInt Capacity);
 		~ArrayListDate();
 
-		OSInt Add(Data::DateTime *Val);
-		void AddRange(Data::ArrayListDate *arr);
-		void AddRange(Data::DateTime **arr, OSInt cnt);
-		void RemoveAt(OSInt Index);
-		void Insert(OSInt Index, Data::DateTime *Val);
-		OSInt SortedInsert(Data::DateTime *Val);
-		OSInt SortedIndexOf(Data::DateTime *Val);
-		OSInt IndexOf(Data::DateTime *Val);
+		UOSInt Add(Data::DateTime *Val);
+		void AddRange(const Data::ArrayListDate *arr);
+		void AddRange(const Data::DateTime **arr, UOSInt cnt);
+		void RemoveAt(UOSInt Index);
+		void Insert(UOSInt Index, Data::DateTime *Val);
+		UOSInt SortedInsert(Data::DateTime *Val);
+		OSInt SortedIndexOf(Data::DateTime *Val) const;
+		UOSInt IndexOf(Data::DateTime *Val) const;
 		void Clear();
-		ArrayListDate *Clone();
+		ArrayListDate *Clone() const;
 
-		OSInt GetCount();
-		OSInt GetCapacity();
+		UOSInt GetCount() const;
+		UOSInt GetCapacity() const;
 
-		void GetItem(OSInt Index, Data::DateTime *ValOut);
-		void SetItem(OSInt Index, Data::DateTime *Val);
+		void GetItem(UOSInt Index, Data::DateTime *ValOut) const;
+		void SetItem(UOSInt Index, Data::DateTime *Val);
 		void Sort(Bool decending);
 	};
 }

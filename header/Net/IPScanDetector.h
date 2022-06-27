@@ -34,8 +34,8 @@ namespace Net
 		Socket *soc;
 		IPScanHandler hdlr;
 		void *userData;
-		Data::Int64Map<AdapterStatus*> *adapterMap;
-		Sync::Mutex *adapterMut;
+		Data::Int64Map<AdapterStatus*> adapterMap;
+		Sync::Mutex adapterMut;
 
 		ThreadStat *threadStats;
 		UOSInt threadCnt;

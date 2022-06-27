@@ -23,13 +23,13 @@ namespace IO
 	private:
 		IO::MODBUSMaster *modbus;
 		UOSInt timeout;
-		Sync::Event *cbEvt;
-		Sync::Mutex *reqMut;
+		Sync::Event cbEvt;
+		Sync::Mutex reqMut;
 		UInt8 *reqResult;
 		UInt8 reqFuncCode;
 		UOSInt reqResultSize;
 		Bool reqHasResult;
-		Data::Int32Map<UInt8> *devMap;
+		Data::Int32Map<UInt8> devMap;
 
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;

@@ -141,7 +141,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
 	Int32 cateId;
 	UOSInt i;
@@ -293,8 +293,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 	FreeGroups();
 
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *pGroup;
@@ -577,7 +577,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		group = this->groupMap.Get(this->unorganizedGroupId);
 		if (group != 0)
 		{
-			Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
+			const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 			UOSInt i = userList->GetCount();
 			UOSInt j;
 			SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
@@ -646,10 +646,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*> *wfiles;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*> *wfiles;
 	UOSInt i;
 	UOSInt j;
 
@@ -685,8 +685,8 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeGroups()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	UOSInt i;
@@ -719,7 +719,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeGroup(GroupInfo *group)
 
 void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 	UOSInt i;
@@ -748,12 +748,12 @@ void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
-	Data::ArrayList<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*> *tripCateList;
-	Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripList;
+	const Data::ArrayList<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*> *tripCateList;
+	const Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripList;
 	SSWR::OrganMgr::OrganWebHandler::TripInfo *trip;
 	UOSInt i;
 	UOSInt j;
@@ -800,7 +800,7 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 
 void SSWR::OrganMgr::OrganWebHandler::ClearUsers()
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 	UOSInt i;
@@ -1984,7 +1984,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, In
 
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
 {
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap.GetValues();
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 	UOSInt nameLen = speciesName.leng;
@@ -3071,7 +3071,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
 		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
 		writer.WriteLineC(UTF8STRC("<tr><td>Category</td><td><select name=\"groupType\">"));
-		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *groupTypes = cate->groupTypes.GetValues();
+		const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *groupTypes = cate->groupTypes.GetValues();
 		SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *groupType;
 		i = 0;
 		j = groupTypes->GetCount();
@@ -3187,7 +3187,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 		SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
-		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*> *wfiles;
+		const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*> *wfiles;
 		SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
 		IO::ConfigFile *lang = me->LangGet(req);
 		Data::DateTime dt;
@@ -6822,7 +6822,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		UTF8Char *sptr;
 		SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
+		const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -7422,7 +7422,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
 
 	me->dataMut.LockRead();
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList = me->cateMap.GetValues();
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList = me->cateMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *firstCate = 0;
 	UOSInt i;
@@ -9526,10 +9526,10 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 {
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
-	Data::ArrayList<IO::ConfigFile*> *langList;
-	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::LocationInfo*> *locList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
+	const Data::ArrayList<IO::ConfigFile*> *langList;
+	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::LocationInfo*> *locList;
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
 	SSWR::OrganMgr::OrganWebHandler::LocationInfo *loc;
 	IO::ConfigFile *lang;

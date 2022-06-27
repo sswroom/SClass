@@ -13,11 +13,11 @@ namespace Data
 		virtual Bool Remove(T val) = 0;
 		virtual T RemoveAt(UOSInt index) = 0;
 		virtual void Insert(UOSInt index, T val) = 0;
-		virtual UOSInt IndexOf(T val) = 0; //INVALID_INDEX = not found
+		virtual UOSInt IndexOf(T val) const = 0; //INVALID_INDEX = not found
 		virtual void Clear() = 0;
 
 		virtual UOSInt GetCount() const = 0;
-		virtual UOSInt GetCapacity() = 0;
+		virtual UOSInt GetCapacity() const = 0;
 
 		virtual T GetItem(UOSInt index) const = 0;
 		virtual void SetItem(UOSInt index, T val) = 0;

@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		this->txtProductType->SetText(CSTRP(sbuff, sptr));
 	}
 
-	Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *devList = this->sysInfo->GetDeviceInfos();
+	const Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *devList = this->sysInfo->GetDeviceInfos();
 	IO::SystemInfoLog::DeviceInfo *dev;
 	UOSInt i = 0;
 	UOSInt j = devList->GetCount();
@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		i++;
 	}
 
-	Data::ArrayList<IO::SystemInfoLog::DriverInfo*> *driverList = this->sysInfo->GetDriverInfos();
+	const Data::ArrayList<IO::SystemInfoLog::DriverInfo*> *driverList = this->sysInfo->GetDriverInfos();
 	IO::SystemInfoLog::DriverInfo *driver;
 	i = 0;
 	j = driverList->GetCount();

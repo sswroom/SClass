@@ -17,12 +17,12 @@ Crypto::Hash::DJB2a::~DJB2a()
 {
 }
 
-UTF8Char *Crypto::Hash::DJB2a::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::DJB2a::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("DJB2a"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::DJB2a::Clone()
+Crypto::Hash::IHash *Crypto::Hash::DJB2a::Clone() const
 {
 	Crypto::Hash::DJB2a *djb2;
 	NEW_CLASS(djb2, Crypto::Hash::DJB2a());
@@ -40,17 +40,17 @@ void Crypto::Hash::DJB2a::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = DJB2a_Calc(buff, buffSize, this->currVal);
 }
 
-void Crypto::Hash::DJB2a::GetValue(UInt8 *buff)
+void Crypto::Hash::DJB2a::GetValue(UInt8 *buff) const
 {
 	*(UInt32*)buff = this->currVal;
 }
 
-UOSInt Crypto::Hash::DJB2a::GetBlockSize()
+UOSInt Crypto::Hash::DJB2a::GetBlockSize() const
 {
 	return 1;
 }
 
-UOSInt Crypto::Hash::DJB2a::GetResultSize()
+UOSInt Crypto::Hash::DJB2a::GetResultSize() const
 {
 	return 4;
 }

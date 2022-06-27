@@ -330,7 +330,7 @@ IO::FileCheck::~FileCheck()
 	MemFree(this->chkValues);
 }
 
-IO::FileCheck::HashType IO::FileCheck::GetHashType()
+IO::FileCheck::HashType IO::FileCheck::GetHashType() const
 {
 	if (this->chkType == IO::FileCheck::CheckType::CRC32)
 	{
@@ -342,27 +342,27 @@ IO::FileCheck::HashType IO::FileCheck::GetHashType()
 	}
 }
 
-UOSInt IO::FileCheck::GetHashSize()
+UOSInt IO::FileCheck::GetHashSize() const
 {
 	return this->hashSize;
 }
 
-IO::FileCheck::CheckType IO::FileCheck::GetCheckType()
+IO::FileCheck::CheckType IO::FileCheck::GetCheckType() const
 {
 	return this->chkType;
 }
 
-UOSInt IO::FileCheck::GetCount()
+UOSInt IO::FileCheck::GetCount() const
 {
 	return this->fileNames->GetCount();
 }
 
-const UTF8Char *IO::FileCheck::GetEntryName(UOSInt index)
+const UTF8Char *IO::FileCheck::GetEntryName(UOSInt index) const
 {
 	return this->fileNames->GetItem(index);
 }
 
-Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal)
+Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal) const
 {
 	if (index >= this->fileNames->GetCount())
 		return false;
@@ -384,14 +384,13 @@ void IO::FileCheck::AddEntry(Text::CString fileName, UInt8 *hashVal)
 	MemCopyNO(&this->chkValues[index * this->hashSize], hashVal, this->hashSize);
 }
 
-Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
+Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UOSInt i;
 	Crypto::Hash::IHash *hash;
-	IO::FileStream *fs;
 
 	const UTF8Char *fileName = this->fileNames->GetItem(index);
 	if (fileName == 0)
@@ -421,10 +420,9 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (hash == 0)
 		return false;
 
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptrEnd), IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
-	if (fs->IsError())
+	IO::FileStream fs(CSTRP(sbuff, sptrEnd), IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		DEL_CLASS(hash);
 		return false;
 	}
@@ -432,30 +430,27 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	{
 		Bool ret = false;
 		ReadSess readSess;
-		IO::ActiveStreamReader *reader;
 		UInt64 fileSize;
 		IO::ActiveStreamReader::BottleNeckType bnt;
 		readSess.hash = hash;
 		readSess.readSize = 0;
 		readSess.progress = 0;
-		fileSize = fs->GetLength();
+		fileSize = fs.GetLength();
 		readSess.fileSize = fileSize;
 		hash->Clear();
-		NEW_CLASS(reader, IO::ActiveStreamReader(CheckData, &readSess, fs, 1048576));
-		reader->ReadStream(&bnt);
+		IO::ActiveStreamReader reader(CheckData, &readSess, &fs, 1048576);
+		reader.ReadStream(&bnt);
 		if (fileSize == readSess.readSize)
 		{
 			hash->GetValue(hashVal);
 			ret = true;
 		}
-		DEL_CLASS(reader);
-		DEL_CLASS(fs);
 		DEL_CLASS(hash);
 		return ret;
 	}
 }
 
-IO::ParserType IO::FileCheck::GetParserType()
+IO::ParserType IO::FileCheck::GetParserType() const
 {
 	return IO::ParserType::FileCheck;
 }

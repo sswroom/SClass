@@ -18,12 +18,12 @@ Crypto::Cert::X509PKCS7::~X509PKCS7()
 
 }
 
-Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS7::GetFileType()
+Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS7::GetFileType() const
 {
 	return FileType::PKCS7;
 }
 
-void Crypto::Cert::X509PKCS7::ToShortName(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PKCS7::ToShortName(Text::StringBuilderUTF8 *sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -101,19 +101,19 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS7::GetNewCert(UOSInt index)
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore)
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-Net::ASN1Data *Crypto::Cert::X509PKCS7::Clone()
+Net::ASN1Data *Crypto::Cert::X509PKCS7::Clone() const
 {
 	Crypto::Cert::X509PKCS7 *asn1;
 	NEW_CLASS(asn1, Crypto::Cert::X509PKCS7(this->GetSourceNameObj(), this->buff, this->buffSize));
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	if (IsContentInfo(this->buff, this->buff + this->buffSize, "1"))
 	{
@@ -121,7 +121,7 @@ void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Crypto::Cert::X509PKCS7::IsSignData()
+Bool Crypto::Cert::X509PKCS7::IsSignData() const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -133,7 +133,7 @@ Bool Crypto::Cert::X509PKCS7::IsSignData()
 	return Net::ASN1Util::OIDEqualsText(itemPDU, itemLen, UTF8STRC("1.2.840.113549.1.7.2"));
 }
 
-Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType()
+Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType() const
 {
 	if (!this->IsSignData())
 	{
@@ -149,7 +149,7 @@ Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType()
 	return Crypto::Hash::HT_UNKNOWN;
 }
 
-const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize)
+const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -184,7 +184,7 @@ const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize)
 	return 0;
 }
 
-const UInt8 *Crypto::Cert::X509PKCS7::GetEncryptedDigest(UOSInt *signSize)
+const UInt8 *Crypto::Cert::X509PKCS7::GetEncryptedDigest(UOSInt *signSize) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;

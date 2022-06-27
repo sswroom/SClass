@@ -75,22 +75,22 @@ namespace Media
 	class DrawImage
 	{
 	public:
-		virtual UOSInt GetWidth() = 0;
-		virtual UOSInt GetHeight() = 0;
-		virtual UInt32 GetBitCount() = 0;
-		virtual ColorProfile *GetColorProfile() = 0;
+		virtual UOSInt GetWidth() const = 0;
+		virtual UOSInt GetHeight() const = 0;
+		virtual UInt32 GetBitCount() const = 0;
+		virtual ColorProfile *GetColorProfile() const = 0;
 		virtual void SetColorProfile(const ColorProfile *color) = 0;
-		virtual Media::AlphaType GetAlphaType() = 0;
+		virtual Media::AlphaType GetAlphaType() const = 0;
 		virtual void SetAlphaType(Media::AlphaType atype) = 0;
-		virtual Double GetHDPI() = 0;
-		virtual Double GetVDPI() = 0;
+		virtual Double GetHDPI() const = 0;
+		virtual Double GetVDPI() const = 0;
 		virtual void SetHDPI(Double dpi) = 0;
 		virtual void SetVDPI(Double dpi) = 0;
 		virtual UInt8 *GetImgBits(Bool *revOrder) = 0;
 		virtual void GetImgBitsEnd(Bool modified) = 0;
-		virtual UOSInt GetImgBpl() = 0;
-		virtual Media::EXIFData *GetEXIF() = 0;
-		virtual Media::PixelFormat GetPixelFormat() = 0;
+		virtual UOSInt GetImgBpl() const = 0;
+		virtual Media::EXIFData *GetEXIF() const = 0;
+		virtual Media::PixelFormat GetPixelFormat() const = 0;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p) = 0;
 		virtual Bool DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p) = 0;
@@ -126,13 +126,13 @@ namespace Media
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos) = 0;
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY) = 0;
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) = 0;
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const = 0;
 		
 		UInt32 GetPixel32(OSInt x, OSInt y);
 		void SetImageAlpha(UInt8 alpha);
 		void MulImageAlpha(Double val);
 
-		virtual Media::StaticImage *ToStaticImage() = 0;
+		virtual Media::StaticImage *ToStaticImage() const = 0;
 		virtual UOSInt SavePng(IO::SeekableStream *stm) = 0;
 		virtual UOSInt SaveGIF(IO::SeekableStream *stm) = 0;
 		virtual UOSInt SaveJPG(IO::SeekableStream *stm) = 0;

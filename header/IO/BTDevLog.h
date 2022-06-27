@@ -37,8 +37,8 @@ namespace IO
 		Bool LoadFile(Text::CString fileName);
 		Bool StoreFile(Text::CString fileName);
 
-		Data::ArrayList<IO::BTDevLog::DevEntry*> *GetPublicList();
-		Data::ArrayList<IO::BTDevLog::DevEntry*> *GetRandomList();
+		const Data::ArrayList<IO::BTDevLog::DevEntry*> *GetPublicList() const;
+		const Data::ArrayList<IO::BTDevLog::DevEntry*> *GetRandomList() const;
 	};
 }
 #endif

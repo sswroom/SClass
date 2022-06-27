@@ -335,19 +335,19 @@ Sync::Mutex::~Mutex()
 	Mutex_Destroy(&this->data);
 }
 
-void Sync::Mutex::Lock()
+void Sync::Mutex::Lock() const
 {
-	Mutex_Lock(&this->data);
+	Mutex_Lock((MutexData*)&this->data);
 }
 
-void Sync::Mutex::Unlock()
+void Sync::Mutex::Unlock() const
 {
-	Mutex_Unlock(&this->data);
+	Mutex_Unlock((MutexData*)&this->data);
 }
 
-Bool Sync::Mutex::TryLock()
+Bool Sync::Mutex::TryLock() const
 {
-	return Mutex_TryLock(&this->data);
+	return Mutex_TryLock((MutexData*)&this->data);
 }
 
 void Sync::Mutex::SetDebName(const UTF8Char *name)

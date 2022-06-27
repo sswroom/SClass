@@ -17,7 +17,7 @@ Text::IMIMEObj::~IMIMEObj()
 {
 }
 
-IO::ParserType Text::IMIMEObj::GetParserType()
+IO::ParserType Text::IMIMEObj::GetParserType() const
 {
 	return IO::ParserType::MIMEObject;
 }

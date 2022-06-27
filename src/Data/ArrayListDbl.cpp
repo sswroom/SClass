@@ -11,7 +11,7 @@ Data::ArrayListDbl::ArrayListDbl(UOSInt capacity) : Data::SortableArrayListNativ
 {
 }
 
-Data::ArrayList<Double> *Data::ArrayListDbl::Clone()
+Data::ArrayList<Double> *Data::ArrayListDbl::Clone() const
 {
 	Data::ArrayListDbl *newArr = new Data::ArrayListDbl(this->capacity);
 	newArr->AddAll(this);

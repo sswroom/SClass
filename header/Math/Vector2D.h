@@ -28,17 +28,17 @@ namespace Math
 		Vector2D(UInt32 srid);
 		virtual ~Vector2D();
 
-		virtual VectorType GetVectorType() = 0;
-		virtual Math::Coord2DDbl GetCenter() = 0;
-		virtual Math::Vector2D *Clone() = 0;
-		virtual void GetBounds(Math::RectAreaDbl *bounds) = 0;
-		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) = 0;
+		virtual VectorType GetVectorType() const = 0;
+		virtual Math::Coord2DDbl GetCenter() const = 0;
+		virtual Math::Vector2D *Clone() const = 0;
+		virtual void GetBounds(Math::RectAreaDbl *bounds) const = 0;
+		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const = 0;
 		virtual Bool JoinVector(Math::Vector2D *vec) = 0;
-		virtual Bool Support3D() { return false; };
+		virtual Bool Support3D() const { return false; };
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
-		virtual Bool Equals(Vector2D *vec) = 0;
+		virtual Bool Equals(Vector2D *vec) const = 0;
 
-		UInt32 GetSRID();
+		UInt32 GetSRID() const;
 		void SetSRID(UInt32 srid);
 	};
 }

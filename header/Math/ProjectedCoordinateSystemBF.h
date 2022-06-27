@@ -21,17 +21,17 @@ namespace Math
 		ProjectedCoordinateSystemBF(const WChar *name, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Double latAdj, Double lonAdj, Math::GeographicCoordinateSystemBF *gcs);
 		virtual ~ProjectedCoordinateSystemBF();
 
-		virtual void CalSurfaceDistanceXY(Math::BigFloat *x1, Math::BigFloat *y1, Math::BigFloat *x2, Math::BigFloat *y2, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit);
-		virtual void CalPLDistance(Math::Polyline *pl, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit);
-		virtual void CalPLDistance3D(Math::Polyline3D *pl, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit);
-		virtual CoordinateSystemBF *Clone();
-		virtual Math::CoordinateSystem::CoordinateSystemType GetCoordSysType();
+		virtual void CalSurfaceDistanceXY(Math::BigFloat *x1, Math::BigFloat *y1, Math::BigFloat *x2, Math::BigFloat *y2, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual void CalPLDistance(Math::Polyline *pl, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual void CalPLDistance3D(Math::Polyline3D *pl, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual CoordinateSystemBF *Clone() const;
+		virtual Math::CoordinateSystem::CoordinateSystemType GetCoordSysType() const;
 
-		Math::GeographicCoordinateSystemBF *GetGeographicCoordinateSystem();
-		void ToGeographicCoordinate(Math::BigFloat *projX, Math::BigFloat *projY, Math::BigFloat *geoX, Math::BigFloat *geoY);
-		void FromGeographicCoordinate(Math::BigFloat *geoX, Math::BigFloat *geoY, Math::BigFloat *projX, Math::BigFloat *projY);
-		void CalcM(Math::BigFloat *rLat, Math::BigFloat *mVal);
-		Bool SameProjection(Math::ProjectedCoordinateSystemBF *csys);
+		Math::GeographicCoordinateSystemBF *GetGeographicCoordinateSystem() const;
+		void ToGeographicCoordinate(Math::BigFloat *projX, Math::BigFloat *projY, Math::BigFloat *geoX, Math::BigFloat *geoY) const;
+		void FromGeographicCoordinate(Math::BigFloat *geoX, Math::BigFloat *geoY, Math::BigFloat *projX, Math::BigFloat *projY) const;
+		void CalcM(Math::BigFloat *rLat, Math::BigFloat *mVal) const;
+		Bool SameProjection(Math::ProjectedCoordinateSystemBF *csys) const;
 
 		static Math::ProjectedCoordinateSystemBF *CreateCoordinateSystem(Math::ProjectedCoordinateSystem::ProjCoordSysType pcst);
 	};

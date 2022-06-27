@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	Media::DrawEngine *deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
 	Media::DrawImage *dimg = deng->CreateImage32(sz.width, sz.height, Media::AT_NO_ALPHA);
-	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList = country->records->GetValues();
+	const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList = country->records->GetValues();
 	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
 	UOSInt i;
 	UOSInt j;
@@ -103,7 +103,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 {
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
 	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*> *countryList = this->countries.GetValues();
-	Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList;
+	const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord*> *recordList;
 	UOSInt i = countryList->GetCount();
 	UOSInt j;
 	while (i-- > 0)

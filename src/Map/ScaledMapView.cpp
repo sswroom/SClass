@@ -60,48 +60,48 @@ void Map::ScaledMapView::SetDPI(Double hdpi, Double ddpi)
 	}
 }
 
-Math::Quadrilateral Map::ScaledMapView::GetBounds()
+Math::Quadrilateral Map::ScaledMapView::GetBounds() const
 {
 	return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
 }
 
-Math::RectAreaDbl Map::ScaledMapView::GetVerticalRect()
+Math::RectAreaDbl Map::ScaledMapView::GetVerticalRect() const
 {
 	Math::Coord2DDbl sz = this->br - this->tl;
 	return Math::RectAreaDbl(this->tl.x, this->tl.y, sz.x, sz.y);
 }
 
-Double Map::ScaledMapView::GetMapScale()
+Double Map::ScaledMapView::GetMapScale() const
 {
 	return this->scale;
 }
 
-Double Map::ScaledMapView::GetViewScale()
+Double Map::ScaledMapView::GetViewScale() const
 {
 	return this->scale;
 }
 
-Math::Coord2DDbl Map::ScaledMapView::GetCenter()
+Math::Coord2DDbl Map::ScaledMapView::GetCenter() const
 {
 	return this->centMap;
 }
 
-Double Map::ScaledMapView::GetHDPI()
+Double Map::ScaledMapView::GetHDPI() const
 {
 	return this->hdpi;
 }
 
-Double Map::ScaledMapView::GetDDPI()
+Double Map::ScaledMapView::GetDDPI() const
 {
 	return this->ddpi;
 }
 
-Bool Map::ScaledMapView::InViewXY(Math::Coord2DDbl mapPos)
+Bool Map::ScaledMapView::InViewXY(Math::Coord2DDbl mapPos) const
 {
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst)
+Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -143,7 +143,7 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coor
 	return (imaxX >= 0) && (iminX < (OSInt)scnSize.width) && (imaxY >= 0) && (iminY < (OSInt)scnSize.height);
 }
 
-Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst)
+Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -209,7 +209,7 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coor
 	return (Doublex2GetLo(maxVal) >= 0) && (Doublex2GetLo(minVal) < scnSize.width) && (Doublex2GetHi(maxVal) >= 0) && (Doublex2GetHi(minVal) < scnSize.height);
 }
 
-Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst)
+Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -223,18 +223,18 @@ Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32
 	return ScaledMapView_IMapXYToScnXY(srcArr, destArr, nPoints, rRate, dleft, dbottom, mul.x, mul.y, ofst.x, ofst.y, (UOSInt)this->scnSize.width, (UOSInt)this->scnSize.height);
 }
 
-Math::Coord2DDbl Map::ScaledMapView::MapXYToScnXY(Math::Coord2DDbl mapPos)
+Math::Coord2DDbl Map::ScaledMapView::MapXYToScnXY(Math::Coord2DDbl mapPos) const
 {
 	return Math::Coord2DDbl(mapPos.x - this->tl.x, this->br.y - mapPos.y) * scnSize.ToCoord() / (this->br - this->tl);
 }
 
-Math::Coord2DDbl Map::ScaledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos)
+Math::Coord2DDbl Map::ScaledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
 {
 	Math::Coord2DDbl v = scnPos * (this->br - this->tl) / scnSize.ToCoord();
 	return Math::Coord2DDbl(this->tl.x + v.x, this->br.y - v.y);
 }
 
-Map::MapView *Map::ScaledMapView::Clone()
+Map::MapView *Map::ScaledMapView::Clone() const
 {
 	Map::ScaledMapView *view;
 	NEW_CLASS(view, Map::ScaledMapView(this->scnSize, this->centMap, this->scale));

@@ -19,13 +19,13 @@ namespace Crypto
 			OpenSSLCert(void *x509);
 			virtual ~OpenSSLCert();
 
-			Bool GetNotBefore(Data::DateTime *dt);
-			Bool GetNotAfter(Data::DateTime *dt);
-			Bool IsSelfSigned();
+			Bool GetNotBefore(Data::DateTime *dt) const;
+			Bool GetNotAfter(Data::DateTime *dt) const;
+			Bool IsSelfSigned() const;
 
-			virtual Crypto::Cert::X509Cert *CreateX509Cert();
+			virtual Crypto::Cert::X509Cert *CreateX509Cert() const;
 
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 		};
 	}
 }

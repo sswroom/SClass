@@ -12,7 +12,7 @@ Data::ArrayListCmp::ArrayListCmp(UOSInt capacity) : Data::SortableArrayList<Data
 {
 }
 
-Data::ArrayList<Data::IComparable*> *Data::ArrayListCmp::Clone()
+Data::ArrayList<Data::IComparable*> *Data::ArrayListCmp::Clone() const
 {
 	Data::ArrayListCmp *newArr;
 	NEW_CLASS(newArr, Data::ArrayListCmp(this->capacity));
@@ -20,7 +20,7 @@ Data::ArrayList<Data::IComparable*> *Data::ArrayListCmp::Clone()
 	return newArr;
 }
 
-OSInt Data::ArrayListCmp::CompareItem(Data::IComparable* obj1, Data::IComparable* obj2)
+OSInt Data::ArrayListCmp::CompareItem(Data::IComparable* obj1, Data::IComparable* obj2) const
 {
 	return obj1->CompareTo(obj2);
 }

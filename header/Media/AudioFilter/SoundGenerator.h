@@ -12,7 +12,7 @@ namespace Media
 		{
 		protected:
 			AudioFormat format;
-			Data::Int32Map<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenMap;
+			Data::Int32Map<Media::AudioFilter::SoundGen::ISoundGen*> sndGenMap;
 	
 		public:
 			SoundGenerator(IAudioSource *sourceAudio);

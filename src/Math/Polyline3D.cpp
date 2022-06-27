@@ -14,7 +14,7 @@ Math::Polyline3D::~Polyline3D()
 	MemFree(this->altitudes);
 }
 
-Math::Vector2D *Math::Polyline3D::Clone()
+Math::Vector2D *Math::Polyline3D::Clone() const
 {
 	Math::Polyline3D *pl;
 	NEW_CLASS(pl, Math::Polyline3D(this->srid, this->nPtOfst, this->nPoint));
@@ -24,7 +24,7 @@ Math::Vector2D *Math::Polyline3D::Clone()
 	return pl;
 }
 
-Bool Math::Polyline3D::Support3D()
+Bool Math::Polyline3D::Support3D() const
 {
 	return true;
 }
@@ -48,7 +48,7 @@ void Math::Polyline3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordinat
 	}
 }
 
-Bool Math::Polyline3D::Equals(Math::Vector2D *vec)
+Bool Math::Polyline3D::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0)
 		return false;

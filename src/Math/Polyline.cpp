@@ -39,7 +39,7 @@ Math::Polyline::~Polyline()
 	MemFree(this->ptOfstArr);
 }
 
-Math::Vector2D::VectorType Math::Polyline::GetVectorType()
+Math::Vector2D::VectorType Math::Polyline::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Polyline;
 }
@@ -56,7 +56,13 @@ Math::Coord2DDbl *Math::Polyline::GetPointList(UOSInt *nPoint)
 	return this->pointArr;
 }
 
-Math::Coord2DDbl Math::Polyline::GetCenter()
+const Math::Coord2DDbl *Math::Polyline::GetPointListRead(UOSInt *nPoint) const
+{
+	*nPoint = this->nPoint;
+	return this->pointArr;
+}
+
+Math::Coord2DDbl Math::Polyline::GetCenter() const
 {
 	Double maxLength = 0;
 	UOSInt maxId = 0;
@@ -118,7 +124,7 @@ Math::Coord2DDbl Math::Polyline::GetCenter()
 	return this->pointArr[0];
 }
 
-Math::Vector2D *Math::Polyline::Clone()
+Math::Vector2D *Math::Polyline::Clone() const
 {
 	Math::Polyline *pl;
 	NEW_CLASS(pl, Math::Polyline(this->srid, this->nPtOfst, this->nPoint));
@@ -129,7 +135,7 @@ Math::Vector2D *Math::Polyline::Clone()
 	return pl;
 }
 
-void Math::Polyline::GetBounds(Math::RectAreaDbl *bounds)
+void Math::Polyline::GetBounds(Math::RectAreaDbl *bounds) const
 {
 	UOSInt i = this->nPoint;
 	Math::Coord2DDbl min;
@@ -144,7 +150,7 @@ void Math::Polyline::GetBounds(Math::RectAreaDbl *bounds)
 	*bounds = Math::RectAreaDbl(min, max);
 }
 
-Double Math::Polyline::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Double Math::Polyline::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	UOSInt k;
 	UOSInt l;
@@ -293,7 +299,7 @@ void Math::Polyline::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateS
 	}
 }
 
-Bool Math::Polyline::Equals(Math::Vector2D *vec)
+Bool Math::Polyline::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0)
 		return false;
@@ -775,7 +781,7 @@ OSInt Math::Polyline::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord
 	return minId;
 }
 
-Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
+Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist) const
 {
 	if (this->nPoint < 2)
 		return 0;
@@ -915,12 +921,12 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 	return pg;
 }
 
-Bool Math::Polyline::HasColor()
+Bool Math::Polyline::HasColor() const
 {
 	return (this->flags & 1) != 0;
 }
 
-UInt32 Math::Polyline::GetColor()
+UInt32 Math::Polyline::GetColor() const
 {
 	return this->color;
 }

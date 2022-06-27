@@ -115,17 +115,17 @@ Math::VectorImage::~VectorImage()
 	SDEL_STRING(this->srcAddr);
 }
 
-Math::Vector2D::VectorType Math::VectorImage::GetVectorType()
+Math::Vector2D::VectorType Math::VectorImage::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Image;
 }
 
-Math::Coord2DDbl Math::VectorImage::GetCenter()
+Math::Coord2DDbl Math::VectorImage::GetCenter() const
 {
 	return (this->tl + this->br) * 0.5;
 }
 
-Math::Vector2D *Math::VectorImage::Clone()
+Math::Vector2D *Math::VectorImage::Clone() const
 {
 	Math::VectorImage *vimg;
 	if (this->scnCoord)
@@ -147,12 +147,12 @@ Math::Vector2D *Math::VectorImage::Clone()
 	return vimg;
 }
 
-void Math::VectorImage::GetBounds(Math::RectAreaDbl *bounds)
+void Math::VectorImage::GetBounds(Math::RectAreaDbl *bounds) const
 {
 	*bounds = Math::RectAreaDbl(this->tl, this->br);
 }
 
-Double Math::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Double Math::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	Math::Coord2DDbl near;
 	if (pt.x > br.x)
@@ -193,7 +193,7 @@ Bool Math::VectorImage::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::VectorImage::Support3D()
+Bool Math::VectorImage::Support3D() const
 {
 	return this->hasHeight;
 }
@@ -210,7 +210,7 @@ void Math::VectorImage::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordina
 	}
 }
 
-Bool Math::VectorImage::Equals(Vector2D *vec)
+Bool Math::VectorImage::Equals(Vector2D *vec) const
 {
 	if (vec == 0 || vec->GetVectorType() != VectorType::Image)
 	{
@@ -220,7 +220,7 @@ Bool Math::VectorImage::Equals(Vector2D *vec)
 	return false;
 }
 
-Text::String *Math::VectorImage::GetSourceAddr()
+Text::String *Math::VectorImage::GetSourceAddr() const
 {
 	return this->srcAddr;
 }
@@ -231,17 +231,17 @@ void Math::VectorImage::SetHeight(Double height)
 	this->height = height;
 }
 
-Double Math::VectorImage::GetHeight()
+Double Math::VectorImage::GetHeight() const
 {
 	return this->height;
 }
 
-Int64 Math::VectorImage::GetTimeStart()
+Int64 Math::VectorImage::GetTimeStart() const
 {
 	return this->timeStart;
 }
 
-Int64 Math::VectorImage::GetTimeEnd()
+Int64 Math::VectorImage::GetTimeEnd() const
 {
 	return this->timeEnd;
 }
@@ -251,12 +251,12 @@ void Math::VectorImage::SetSrcAlpha(Double srcAlpha)
 	this->srcAlpha = srcAlpha;
 }
 
-Bool Math::VectorImage::HasSrcAlpha()
+Bool Math::VectorImage::HasSrcAlpha() const
 {
 	return this->srcAlpha >= 0 && this->srcAlpha <=	1;
 }
 
-Double Math::VectorImage::GetSrcAlpha()
+Double Math::VectorImage::GetSrcAlpha() const
 {
 	return this->srcAlpha;
 }
@@ -267,17 +267,17 @@ void Math::VectorImage::SetZIndex(Int32 zIndex)
 	this->hasZIndex = true;
 }
 
-Bool Math::VectorImage::HasZIndex()
+Bool Math::VectorImage::HasZIndex() const
 {
 	return this->hasZIndex;
 }
 
-Int32 Math::VectorImage::GetZIndex()
+Int32 Math::VectorImage::GetZIndex() const
 {
 	return this->zIndex;
 }
 
-void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2)
+void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2) const
 {
 	Media::StaticImage *simg = this->img->GetImage(0);
 	Double scnX;
@@ -314,13 +314,13 @@ void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Doubl
 	*y2 = scnY + sizeY;
 }
 
-void Math::VectorImage::GetVectorSize(Double *sizeX, Double *sizeY)
+void Math::VectorImage::GetVectorSize(Double *sizeX, Double *sizeY) const
 {
 	*sizeX = this->size.x;
 	*sizeY = this->size.y;
 }
 
-Bool Math::VectorImage::IsScnCoord()
+Bool Math::VectorImage::IsScnCoord() const
 {
 	return this->scnCoord;
 }
@@ -333,12 +333,12 @@ void Math::VectorImage::SetBounds(Double minX, Double minY, Double maxX, Double 
 	this->br.y = maxY;
 }
 
-Media::StaticImage *Math::VectorImage::GetImage(UInt32 *imgTimeMS)
+Media::StaticImage *Math::VectorImage::GetImage(UInt32 *imgTimeMS) const
 {
 	return this->img->GetImage(imgTimeMS);
 }
 
-Media::StaticImage *Math::VectorImage::GetImage(Double width, Double height, UInt32 *imgTimeMS)
+Media::StaticImage *Math::VectorImage::GetImage(Double width, Double height, UInt32 *imgTimeMS) const
 {
 	if (width < 0)
 		width = -width;

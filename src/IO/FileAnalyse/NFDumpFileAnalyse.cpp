@@ -117,8 +117,8 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 	}
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(&this->packs, MemFree);
-	Data::ArrayList<UInt8*> *extList = this->extMap.GetValues();
-	LIST_FREE_FUNC(extList, MemFree);
+	const Data::ArrayList<UInt8*> *extList = this->extMap.GetValues();
+	LIST_CALL_FUNC(extList, MemFree);
 }
 
 Text::CString IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()

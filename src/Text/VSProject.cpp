@@ -18,7 +18,7 @@ Text::VSFile::~VSFile()
 	this->fileName->Release();
 }
 
-Text::String *Text::VSFile::GetFileName()
+Text::String *Text::VSFile::GetFileName() const
 {
 	return this->fileName;
 }
@@ -26,13 +26,11 @@ Text::String *Text::VSFile::GetFileName()
 Text::VSContainer::VSContainer(Text::String *contName)
 {
 	this->contName = contName->Clone();
-	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
 Text::VSContainer::VSContainer(Text::CString contName)
 {
 	this->contName = Text::String::New(contName);
-	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
 Text::VSContainer::~VSContainer()
@@ -40,13 +38,12 @@ Text::VSContainer::~VSContainer()
 	Text::CodeObject *child;
 	UOSInt i;
 	this->contName->Release();
-	i = this->childList->GetCount();
+	i = this->childList.GetCount();
 	while (i-- > 0)
 	{
-		child = this->childList->GetItem(i);
+		child = this->childList.GetItem(i);
 		DEL_CLASS(child);
 	}
-	DEL_CLASS(this->childList);
 }
 
 void Text::VSContainer::SetContainerName(Text::CString contName)
@@ -58,24 +55,24 @@ void Text::VSContainer::SetContainerName(Text::CString contName)
 	}
 }
 
-Text::String *Text::VSContainer::GetContainerName()
+Text::String *Text::VSContainer::GetContainerName() const
 {
 	return this->contName;
 }
 
-UOSInt Text::VSContainer::GetChildCount()
+UOSInt Text::VSContainer::GetChildCount() const
 {
-	return this->childList->GetCount();
+	return this->childList.GetCount();
 }
 
-Text::CodeObject *Text::VSContainer::GetChildObj(UOSInt index)
+Text::CodeObject *Text::VSContainer::GetChildObj(UOSInt index) const
 {
-	return this->childList->GetItem(index);
+	return this->childList.GetItem(index);
 }
 
 void Text::VSContainer::AddChild(Text::CodeObject *obj)
 {
-	this->childList->Add(obj);
+	this->childList.Add(obj);
 }
 
 Text::VSProject::VSProject(Text::CString name, VisualStudioVersion ver) : Text::CodeProject(name)
@@ -93,7 +90,6 @@ Text::VSProject::VSProject(Text::CString name, VisualStudioVersion ver) : Text::
 	}
 	this->ver = ver;
 	this->projName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
 Text::VSProject::~VSProject()
@@ -101,16 +97,15 @@ Text::VSProject::~VSProject()
 	UOSInt i;
 	Text::CodeObject *child;
 	SDEL_STRING(this->projName);
-	i = this->childList->GetCount();
+	i = this->childList.GetCount();
 	while (i-- > 0)
 	{
-		child = this->childList->GetItem(i);
+		child = this->childList.GetItem(i);
 		DEL_CLASS(child);
 	}
-	DEL_CLASS(this->childList);
 }
 
-Text::CodeProject::ProjectType Text::VSProject::GetProjectType()
+Text::CodeProject::ProjectType Text::VSProject::GetProjectType() const
 {
 	return Text::CodeProject::PROJT_VSPROJECT;
 }
@@ -133,27 +128,27 @@ void Text::VSProject::SetProjectName(Text::CString projName)
 	}
 }
 
-Text::String *Text::VSProject::GetContainerName()
+Text::String *Text::VSProject::GetContainerName() const
 {
 	return this->projName;
 }
 
-UOSInt Text::VSProject::GetChildCount()
+UOSInt Text::VSProject::GetChildCount() const
 {
-	return this->childList->GetCount();
+	return this->childList.GetCount();
 }
 
-Text::CodeObject *Text::VSProject::GetChildObj(UOSInt index)
+Text::CodeObject *Text::VSProject::GetChildObj(UOSInt index) const
 {
-	return this->childList->GetItem(index);
+	return this->childList.GetItem(index);
 }
 
 void Text::VSProject::AddChild(Text::CodeObject *obj)
 {
-	this->childList->Add(obj);
+	this->childList.Add(obj);
 }
 
-Text::VSProject::VisualStudioVersion Text::VSProject::GetVSVersion()
+Text::VSProject::VisualStudioVersion Text::VSProject::GetVSVersion() const
 {
 	return this->ver;
 }

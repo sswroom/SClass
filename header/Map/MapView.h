@@ -21,29 +21,29 @@ namespace Map
 		virtual void UpdateSize(Math::Size2D<Double> scnSize) = 0;
 		virtual void SetDPI(Double hdpi, Double ddpi) = 0;
 
-		virtual Math::Quadrilateral GetBounds() = 0;
-		virtual Math::RectAreaDbl GetVerticalRect() = 0;
-		virtual Double GetMapScale() = 0;
-		virtual Double GetViewScale() = 0;
-		virtual Math::Coord2DDbl GetCenter() = 0;
-		virtual Double GetHDPI() = 0;
-		virtual Double GetDDPI() = 0;
+		virtual Math::Quadrilateral GetBounds() const = 0;
+		virtual Math::RectAreaDbl GetVerticalRect() const = 0;
+		virtual Double GetMapScale() const = 0;
+		virtual Double GetViewScale() const = 0;
+		virtual Math::Coord2DDbl GetCenter() const = 0;
+		virtual Double GetHDPI() const = 0;
+		virtual Double GetDDPI() const = 0;
 
-		virtual Bool InViewXY(Math::Coord2DDbl mapPos) = 0;
-		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) = 0; // return inScreen
-		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) = 0; // return inScreen
-		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) = 0; // return inScreen
-		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) = 0;
-		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) = 0;
-		virtual Map::MapView *Clone() = 0;
+		virtual Bool InViewXY(Math::Coord2DDbl mapPos) const = 0;
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
+		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const = 0; // return inScreen
+		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
+		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const = 0;
+		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const = 0;
+		virtual Map::MapView *Clone() const = 0;
 
-		Double GetScnWidth();
-		Double GetScnHeight();
-		Math::Size2D<Double> GetScnSize();
+		Double GetScnWidth() const;
+		Double GetScnHeight() const;
+		Math::Size2D<Double> GetScnSize() const;
 		void SetVAngle(Double angleRad);
 
 		void SetDestImage(Media::DrawImage *img);
-		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints);
+		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const;
 		void SetViewBounds(Math::RectAreaDbl bounds);
 	};
 }

@@ -21,12 +21,12 @@ Crypto::Hash::RIPEMD160::~RIPEMD160()
 	MemFree(buff);
 }
 
-UTF8Char *Crypto::Hash::RIPEMD160::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::RIPEMD160::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("RIPEMD-160"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::RIPEMD160::Clone()
+Crypto::Hash::IHash *Crypto::Hash::RIPEMD160::Clone() const
 {
 	Crypto::Hash::RIPEMD160 *rmd160;
 	NEW_CLASS(rmd160, Crypto::Hash::RIPEMD160());
@@ -89,7 +89,7 @@ void Crypto::Hash::RIPEMD160::Calc(const UInt8 *buff, UOSInt buffSize)
 	h4 = keys[4];
 }
 
-void Crypto::Hash::RIPEMD160::GetValue(UInt8 *buff)
+void Crypto::Hash::RIPEMD160::GetValue(UInt8 *buff) const
 {
 	UInt8 calBuff[64];
 	*(UInt32*)&buff[0] = h0;
@@ -127,12 +127,12 @@ void Crypto::Hash::RIPEMD160::GetValue(UInt8 *buff)
 	}
 }
 
-UOSInt Crypto::Hash::RIPEMD160::GetBlockSize()
+UOSInt Crypto::Hash::RIPEMD160::GetBlockSize() const
 {
 	return 64;
 }
 
-UOSInt Crypto::Hash::RIPEMD160::GetResultSize()
+UOSInt Crypto::Hash::RIPEMD160::GetResultSize() const
 {
 	return 20;
 }

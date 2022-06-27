@@ -174,7 +174,7 @@ Map::FileGDBLayer::~FileGDBLayer()
 	{
 		this->colNames.RemoveAt(i)->Release();
 	}
-	Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
+	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
 	Math::Vector2D *vec;
 	i = vecList->GetCount();
 	while (i-- > 0)
@@ -212,8 +212,8 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
-	Data::SortableArrayListNative<Int32> *vecKeys = this->objects.GetKeys();
+	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
+	const Data::SortableArrayListNative<Int32> *vecKeys = this->objects.GetKeys();
 	Math::RectAreaDbl bounds;
 	Math::Vector2D *vec;
 	UOSInt i;
@@ -236,14 +236,14 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 
 Int64 Map::FileGDBLayer::GetObjectIdMax()
 {
-	Data::ArrayList<Int32> *objInd = this->objects.GetKeys();
+	const Data::ArrayList<Int32> *objInd = this->objects.GetKeys();
 	return objInd->GetItem(objInd->GetCount() - 1);
 }
 
 void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
-	Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
+	const Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
 	UOSInt i = nameList->GetCount();
 	UOSInt colCnt = this->colNames.GetCount();
 	UOSInt j;

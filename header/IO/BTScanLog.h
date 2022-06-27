@@ -82,23 +82,23 @@ namespace IO
 			Data::ArrayList<LogEntry*> *logs;
 		};
 	private:
-		Data::UInt64Map<DevEntry*> *pubDevs;
-		Data::UInt64Map<DevEntry*> *randDevs;
-		Data::ArrayList<LogEntry*> *logs;
+		Data::UInt64Map<DevEntry*> pubDevs;
+		Data::UInt64Map<DevEntry*> randDevs;
+		Data::ArrayList<LogEntry*> logs;
 
 		void FreeDev(DevEntry* dev);
 	public:
 		BTScanLog(Text::String *sourceName);
 		virtual ~BTScanLog();
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 
 		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
 		LogEntry *AddScanRec(const ScanRecord3 *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
-		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetPublicList();
-		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetRandomList();
+		const Data::ArrayList<IO::BTScanLog::DevEntry*> *GetPublicList() const;
+		const Data::ArrayList<IO::BTScanLog::DevEntry*> *GetRandomList() const;
 
 		static Text::CString RadioTypeGetName(RadioType radioType);
 		static Text::CString AddressTypeGetName(AddressType addrType);

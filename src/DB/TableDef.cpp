@@ -34,52 +34,52 @@ DB::TableDef::~TableDef()
 	this->cols = 0;
 }
 
-Text::String *DB::TableDef::GetDatabaseName()
+Text::String *DB::TableDef::GetDatabaseName() const
 {
 	return this->databaseName;
 }
 
-Text::String *DB::TableDef::GetTableName()
+Text::String *DB::TableDef::GetTableName() const
 {
 	return this->tableName;
 }
 
-Text::String *DB::TableDef::GetEngine()
+Text::String *DB::TableDef::GetEngine() const
 {
 	return this->engine;
 }
 
-Text::String *DB::TableDef::GetCharset()
+Text::String *DB::TableDef::GetCharset() const
 {
 	return this->charset;
 }
 
-const UTF8Char *DB::TableDef::GetAttr()
+const UTF8Char *DB::TableDef::GetAttr() const
 {
 	return this->attr;
 }
 
-const UTF8Char *DB::TableDef::GetComments()
+const UTF8Char *DB::TableDef::GetComments() const
 {
 	return this->comments;
 }
 
-DB::DBUtil::ServerType DB::TableDef::GetSvrType()
+DB::DBUtil::ServerType DB::TableDef::GetSvrType() const
 {
 	return this->svrType;
 }
 
-UOSInt DB::TableDef::GetColCnt()
+UOSInt DB::TableDef::GetColCnt() const
 {
 	return this->cols->GetCount();
 }
 
-DB::ColDef *DB::TableDef::GetCol(UOSInt index)
+DB::ColDef *DB::TableDef::GetCol(UOSInt index) const
 {
 	return this->cols->GetItem(index);
 }
 
-DB::ColDef *DB::TableDef::GetSinglePKCol()
+DB::ColDef *DB::TableDef::GetSinglePKCol() const
 {
 	DB::ColDef *retCol = 0;
 	DB::ColDef *col;
@@ -155,7 +155,7 @@ DB::TableDef *DB::TableDef::SetSvrType(DB::DBUtil::ServerType svrType)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::Clone()
+DB::TableDef *DB::TableDef::Clone() const
 {
 	DB::TableDef *newObj;
 	NEW_CLASS(newObj, DB::TableDef(this->tableName->ToCString()));
@@ -175,7 +175,7 @@ DB::TableDef *DB::TableDef::Clone()
 	return newObj;
 }
 
-Data::Class *DB::TableDef::CreateTableClass()
+Data::Class *DB::TableDef::CreateTableClass() const
 {
 	DB::DBClassBuilder builder;
 	UOSInt i;

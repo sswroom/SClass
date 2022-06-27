@@ -14,21 +14,21 @@ namespace Crypto
 			X509PKCS7(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PKCS7();
 
-			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
+			virtual FileType GetFileType() const;
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb) const;
 			
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore);
+			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const;
 
-			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF8 *sb);
+			virtual ASN1Data *Clone() const;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
-			Bool IsSignData();
-			Crypto::Hash::HashType GetDigestType();
-			const UInt8 *GetMessageDigest(UOSInt *digestSize);
-			const UInt8 *GetEncryptedDigest(UOSInt *encSize);
+			Bool IsSignData() const;
+			Crypto::Hash::HashType GetDigestType() const;
+			const UInt8 *GetMessageDigest(UOSInt *digestSize) const;
+			const UInt8 *GetEncryptedDigest(UOSInt *encSize) const;
 		};
 	}
 }

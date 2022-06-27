@@ -39,7 +39,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			Data::ArrayList<Int32> *methods = service->funcs.GetKeys();
+			const Data::ArrayList<Int32> *methods = service->funcs.GetKeys();
 			UOSInt i = 0;
 			UOSInt j = methods->GetCount();
 			while (i < j)

@@ -23,12 +23,12 @@ Crypto::Hash::MD5::~MD5()
 	MemFree(buff);
 }
 
-UTF8Char *Crypto::Hash::MD5::GetName(UTF8Char *sbuff)
+UTF8Char *Crypto::Hash::MD5::GetName(UTF8Char *sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("MD5"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::MD5::Clone()
+Crypto::Hash::IHash *Crypto::Hash::MD5::Clone() const
 {
 	Crypto::Hash::MD5 *md5;
 	NEW_CLASS(md5, Crypto::Hash::MD5());
@@ -82,7 +82,7 @@ void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::MD5::GetValue(UInt8 *buff)
+void Crypto::Hash::MD5::GetValue(UInt8 *buff) const
 {
 	UInt8 calBuff[64];
 	UInt32 v[4];
@@ -124,12 +124,12 @@ void Crypto::Hash::MD5::GetValue(UInt8 *buff)
 	WriteUInt32(&buff[12], v[3]);
 }
 
-UOSInt Crypto::Hash::MD5::GetBlockSize()
+UOSInt Crypto::Hash::MD5::GetBlockSize() const
 {
 	return 64;
 }
 
-UOSInt Crypto::Hash::MD5::GetResultSize()
+UOSInt Crypto::Hash::MD5::GetResultSize() const
 {
 	return 16;
 }

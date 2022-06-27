@@ -35,7 +35,7 @@ namespace Media
 		public:
 			~AUIPlugin();
 
-			AUIPlugin *Clone();
+			AUIPlugin *Clone() const;
 			UOSInt LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
 
 			Bool CloseInput(void *hand);

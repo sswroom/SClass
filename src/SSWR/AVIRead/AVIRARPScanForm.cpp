@@ -15,14 +15,14 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 {
 	SSWR::AVIRead::AVIRARPScanForm *me = (SSWR::AVIRead::AVIRARPScanForm *)userObj;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	Sync::MutexUsage mutUsage(me->arpMut);
-	ipInfo = me->arpMap->Get(ipAddr);
+	Sync::MutexUsage mutUsage(&me->arpMut);
+	ipInfo = me->arpMap.Get(ipAddr);
 	if (ipInfo == 0)
 	{
 		ipInfo = MemAlloc(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo, 1);
 		MemCopyNO(ipInfo->hwAddr, hwAddr, 6);
 		ipInfo->ipAddr = ipAddr;
-		me->arpMap->Put(ipInfo->ipAddr, ipInfo);
+		me->arpMap.Put(ipInfo->ipAddr, ipInfo);
 		me->arpUpdated = true;
 	}
 	mutUsage.EndUse();
@@ -75,10 +75,10 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 		else
 		{
 			buff[3] = 1;
-			Sync::MutexUsage mutUsage(me->arpMut);
+			Sync::MutexUsage mutUsage(&me->arpMut);
 			while (buff[3] < 255)
 			{
-				ipInfo = me->arpMap->Get(ReadNUInt32(buff));
+				ipInfo = me->arpMap.Get(ReadNUInt32(buff));
 				if (ipInfo == 0)
 				{
 					arp->MakeRequest(ReadNUInt32(buff));
@@ -102,8 +102,8 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 
 	const Net::MACInfo::MACEntry *macEntry;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	Sync::MutexUsage mutUsage(this->arpMut);
-	Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *> *arpList = this->arpMap->GetValues();
+	Sync::MutexUsage mutUsage(&this->arpMut);
+	const Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *> *arpList = this->arpMap.GetValues();
 	this->lvARP->ClearItems();
 	i = 0;
 	j = arpList->GetCount();
@@ -150,10 +150,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	this->lvARP->AddColumn(CSTR("HW Addr"), 150);
 	this->lvARP->AddColumn(CSTR("Vendor"), 300);
 
-	NEW_CLASS(this->arpMut, Sync::Mutex());
-	NEW_CLASS(this->arpMap, Data::UInt32Map<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*>());
 	this->arpUpdated = false;
-	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo*>());
 
 	UOSInt i;
 	UOSInt j;
@@ -173,7 +170,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 			ipInfo = MemAlloc(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo, 1);
 			ipInfo->ipAddr = arp->GetIPAddress();
 			arp->GetPhysicalAddr(ipInfo->hwAddr);
-			ipInfo = this->arpMap->Put(ipInfo->ipAddr, ipInfo);
+			ipInfo = this->arpMap.Put(ipInfo->ipAddr, ipInfo);
 			if (ipInfo)
 			{
 				MemFree(ipInfo);
@@ -217,7 +214,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 					adapter->ifName = Text::StrCopyNew(sbuff);
 					adapter->ipAddr = ip;
 					MemCopyNO(adapter->hwAddr, hwAddr, 6);
-					this->adapters->Add(adapter);
+					this->adapters.Add(adapter);
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					this->cboAdapter->AddItem(CSTRP(sbuff, sptr), adapter);
 				}
@@ -227,7 +224,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 		DEL_CLASS(connInfo);
 		i++;
 	}
-	if (this->adapters->GetCount() > 0)
+	if (this->adapters.GetCount() > 0)
 	{
 		this->cboAdapter->SetSelectedIndex(0);
 	}
@@ -240,25 +237,22 @@ SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 	UOSInt i;
 	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*> *ipList;
-	i = this->adapters->GetCount();
+	const Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*> *ipList;
+	i = this->adapters.GetCount();
 	while (i-- > 0)
 	{
-		adapter = this->adapters->GetItem(i);
+		adapter = this->adapters.GetItem(i);
 		Text::StrDelNew(adapter->ifName);
 		MemFree(adapter);
 	}
-	DEL_CLASS(this->adapters);
 
-	ipList = this->arpMap->GetValues();
+	ipList = this->arpMap.GetValues();
 	i = ipList->GetCount();
 	while (i-- > 0)
 	{
 		ipInfo = ipList->GetItem(i);
 		MemFree(ipInfo);
 	}
-	DEL_CLASS(this->arpMap);
-	DEL_CLASS(this->arpMut);
 }
 
 void SSWR::AVIRead::AVIRARPScanForm::OnMonitorChanged()
