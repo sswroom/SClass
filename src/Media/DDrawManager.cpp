@@ -51,7 +51,7 @@ void Media::DDrawManager::ReleaseAll()
 		this->clsData->defDD->Release();
 		this->clsData->defDD = 0;
 	}
-	Data::ArrayList<LPDIRECTDRAW7> *monList;
+	const Data::ArrayList<LPDIRECTDRAW7> *monList;
 	UOSInt i;
 	monList = this->clsData->monMap->GetValues();
 	i = monList->GetCount();

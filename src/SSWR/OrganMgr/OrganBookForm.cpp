@@ -31,7 +31,7 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, Org
 	return ret;
 }
 
-OSInt SSWR::OrganMgr::BookArrayList::CompareItem(OrganBook *book1, OrganBook *book2)
+OSInt SSWR::OrganMgr::BookArrayList::CompareItem(OrganBook *book1, OrganBook *book2) const
 {
 	return CompareBook(book1, book2);
 }
@@ -41,13 +41,13 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 	OrganBookForm *me = (OrganBookForm*)userObj;
 	Data::DateTime currTime(newDate->GetYear(), 1, 1, 0, 0, 0);
 	OSInt i = 0;
-	OSInt j = (OSInt)me->bookList->GetCount() - 1;
+	OSInt j = (OSInt)me->bookList.GetCount() - 1;
 	OSInt k;
 	OrganBook *book;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		book = me->bookList->GetItem((UOSInt)k);
+		book = me->bookList.GetItem((UOSInt)k);
 		if (book->GetPublishDate()->CompareTo(&currTime) >= 0)
 		{
 			j = k - 1;
@@ -57,12 +57,12 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 			i = k + 1;
 		}
 	}
-	if (i >= (OSInt)me->bookList->GetCount())
+	if (i >= (OSInt)me->bookList.GetCount())
 	{
-		if (me->bookList->GetCount() > 0)
+		if (me->bookList.GetCount() > 0)
 		{
-			me->lvBook->EnsureVisible(me->bookList->GetCount() - 1);
-			me->lvBook->SetSelectedIndex(me->bookList->GetCount() - 1);
+			me->lvBook->EnsureVisible(me->bookList.GetCount() - 1);
+			me->lvBook->SetSelectedIndex(me->bookList.GetCount() - 1);
 		}
 	}
 	else
@@ -74,8 +74,8 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 		if (rect[1] > j)
 		{
 			k = i + j / rect[3];
-			if (k >= (OSInt)me->bookList->GetCount())
-				k = (OSInt)me->bookList->GetCount() - 1;
+			if (k >= (OSInt)me->bookList.GetCount())
+				k = (OSInt)me->bookList.GetCount() - 1;
 		}
 		else
 		{
@@ -123,9 +123,9 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	}
 
 	me->changed = true;
-	me->bookList->Clear();
-	me->env->GetBooksAll(me->bookList);
-	me->bookList->Sort();
+	me->bookList.Clear();
+	me->env->GetBooksAll(&me->bookList);
+	me->bookList.Sort();
 	me->UpdateBookList();
 	me->txtBookAuthor->SetText(CSTR(""));
 	me->txtBookTitle->SetText(CSTR(""));
@@ -263,12 +263,12 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i = 0;
-	UOSInt j = this->bookList->GetCount();
+	UOSInt j = this->bookList.GetCount();
 	UOSInt k;
 	this->lvBook->ClearItems();
 	while (i < j)
 	{
-		book = this->bookList->GetItem(i);;
+		book = this->bookList.GetItem(i);;
 		sptr = book->GetPublishDate()->ToString(sbuff, "yyyy-MM");
 		k = this->lvBook->AddItem(CSTRP(sbuff, sptr), book);
 		this->lvBook->SetSubItem(k, 1, book->GetDispAuthor());
@@ -282,7 +282,6 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 {
 	this->env = env;
 	this->changed = false;
-	NEW_CLASS(this->bookList, BookArrayList());
 
 	this->SetText(this->env->GetLang(UTF8STRC("BookFormTitle")));
 	this->SetFont(0, 0, 10.5, false);
@@ -339,15 +338,14 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabRef")));
 	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabAuthor")));
 
-	this->env->GetBooksAll(this->bookList);
-	this->bookList->Sort();
+	this->env->GetBooksAll(&this->bookList);
+	this->bookList.Sort();
 	this->UpdateBookList();
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
 SSWR::OrganMgr::OrganBookForm::~OrganBookForm()
 {
-	DEL_CLASS(this->bookList);
 }
 
 void SSWR::OrganMgr::OrganBookForm::OnMonitorChanged()

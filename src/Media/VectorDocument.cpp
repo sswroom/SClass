@@ -63,7 +63,7 @@ Media::VectorGraph *Media::VectorDocument::AddGraph(Double width, Double height,
 	return graph;
 }
 
-Text::String *Media::VectorDocument::GetDocName()
+Text::String *Media::VectorDocument::GetDocName() const
 {
 	return this->docName;
 }
@@ -73,7 +73,7 @@ void Media::VectorDocument::SetCreateTime(Int64 createTimeTicks)
 	this->createTimeTicks = createTimeTicks;
 }
 
-Int64 Media::VectorDocument::GetCreateTime()
+Int64 Media::VectorDocument::GetCreateTime() const
 {
 	return this->createTimeTicks;
 }
@@ -83,7 +83,7 @@ void Media::VectorDocument::SetModifyTime(Int64 modTimeTicks)
 	this->modTimeTicks = modTimeTicks;
 }
 
-Int64 Media::VectorDocument::GetModifyTime()
+Int64 Media::VectorDocument::GetModifyTime() const
 {
 	return this->modTimeTicks;
 }
@@ -97,7 +97,7 @@ void Media::VectorDocument::SetAuthor(const UTF8Char *author)
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetAuthor()
+const UTF8Char *Media::VectorDocument::GetAuthor() const
 {
 	return this->author;
 }
@@ -111,7 +111,7 @@ void Media::VectorDocument::SetSubject(const UTF8Char *subject)
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetSubject()
+const UTF8Char *Media::VectorDocument::GetSubject() const
 {
 	return this->subject;
 }
@@ -125,7 +125,7 @@ void Media::VectorDocument::SetKeywords(const UTF8Char *keywords)
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetKeywords()
+const UTF8Char *Media::VectorDocument::GetKeywords() const
 {
 	return this->keywords;
 }
@@ -139,7 +139,7 @@ void Media::VectorDocument::SetCreator(const UTF8Char *creator)
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetCreator()
+const UTF8Char *Media::VectorDocument::GetCreator() const
 {
 	return this->creator;
 }
@@ -153,7 +153,7 @@ void Media::VectorDocument::SetProducer(const UTF8Char *producer)
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetProducer()
+const UTF8Char *Media::VectorDocument::GetProducer() const
 {
 	return this->producer;
 }
@@ -229,7 +229,7 @@ Bool Media::VectorDocument::EndPrint(IPrintDocument *doc)
 	return true;
 }
 
-IO::ParserType Media::VectorDocument::GetParserType()
+IO::ParserType Media::VectorDocument::GetParserType() const
 {
 	return IO::ParserType::VectorDocument;
 }

@@ -153,6 +153,7 @@ Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 @WinRTCore.o
 
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Win.cpp
+!-lcrypt32
 WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 !-lwinhttp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp

@@ -97,7 +97,7 @@ Media::AVIUtl::AUIPlugin::AUIPlugin()
 	this->plugin->useCnt = 1;
 }
 
-Media::AVIUtl::AUIPlugin::AUIPlugin(Media::AVIUtl::AUIPlugin *plugin)
+Media::AVIUtl::AUIPlugin::AUIPlugin(const Media::AVIUtl::AUIPlugin *plugin)
 {
 	this->plugin = plugin->plugin;
 	Sync::Interlocked::Increment(&this->plugin->useCnt);
@@ -112,7 +112,7 @@ Media::AVIUtl::AUIPlugin::~AUIPlugin()
 	}
 }
 
-Media::AVIUtl::AUIPlugin *Media::AVIUtl::AUIPlugin::Clone()
+Media::AVIUtl::AUIPlugin *Media::AVIUtl::AUIPlugin::Clone() const
 {
 	Media::AVIUtl::AUIPlugin *plugin;
 	NEW_CLASS(plugin, Media::AVIUtl::AUIPlugin(this));

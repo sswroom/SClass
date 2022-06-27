@@ -27,29 +27,29 @@ Math::VectorString::~VectorString()
 	this->s->Release();
 }
 
-Math::Vector2D::VectorType Math::VectorString::GetVectorType()
+Math::Vector2D::VectorType Math::VectorString::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::String;
 }
 
-Math::Coord2DDbl Math::VectorString::GetCenter()
+Math::Coord2DDbl Math::VectorString::GetCenter() const
 {
 	return this->pos;
 }
 
-Math::Vector2D *Math::VectorString::Clone()
+Math::Vector2D *Math::VectorString::Clone() const
 {
 	Math::VectorString *vstr;
 	NEW_CLASS(vstr, Math::VectorString(this->srid, this->s, this->pos, this->angleDegree, this->buffSize, this->align));
 	return vstr;
 }
 
-void Math::VectorString::GetBounds(Math::RectAreaDbl *bounds)
+void Math::VectorString::GetBounds(Math::RectAreaDbl *bounds) const
 {
 	*bounds = Math::RectAreaDbl(this->pos, this->pos);
 }
 
-Double Math::VectorString::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Double Math::VectorString::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	Math::Coord2DDbl diff = pt - this->pos;
 	*nearPt = this->pos;
@@ -62,7 +62,7 @@ Bool Math::VectorString::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::VectorString::Support3D()
+Bool Math::VectorString::Support3D() const
 {
 	return false;
 }
@@ -72,7 +72,7 @@ void Math::VectorString::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordin
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, 0, &this->pos.x, &this->pos.y, 0);
 }
 
-Bool Math::VectorString::Equals(Math::Vector2D *vec)
+Bool Math::VectorString::Equals(Math::Vector2D *vec) const
 {
 	if (vec == 0 || vec->GetVectorType() != VectorType::String)
 	{
@@ -87,22 +87,22 @@ Bool Math::VectorString::Equals(Math::Vector2D *vec)
 		this->s->Equals(vstr->s);
 }
 
-Text::String *Math::VectorString::GetString()
+Text::String *Math::VectorString::GetString() const
 {
 	return this->s;
 }
 
-Double Math::VectorString::GetAngleDegree()
+Double Math::VectorString::GetAngleDegree() const
 {
 	return this->angleDegree;
 }
 
-Double Math::VectorString::GetBuffSize()
+Double Math::VectorString::GetBuffSize() const
 {
 	return this->buffSize;
 }
 
-Media::DrawEngine::DrawPos Math::VectorString::GetTextAlign()
+Media::DrawEngine::DrawPos Math::VectorString::GetTextAlign() const
 {
 	return this->align;
 }

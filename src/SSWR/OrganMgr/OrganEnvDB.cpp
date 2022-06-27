@@ -680,7 +680,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 			i++;
 		}
 
-		Data::ArrayList<WebFileInfo*> *webFiles = spInfo->wfileMap.GetValues();
+		const Data::ArrayList<WebFileInfo*> *webFiles = spInfo->wfileMap.GetValues();
 		WebFileInfo *webFile;
 
 		i = 0;
@@ -4542,7 +4542,7 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr:
 
 void SSWR::OrganMgr::OrganEnvDB::Test()
 {
-	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
+	const Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
 	Data::Int32Map<OrganSpecies*> *speciesMap;
 	Data::ArrayListInt32 speciesList;
 	UserFileInfo *userFile;
@@ -4579,7 +4579,7 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 		}
 		i++;
 	}
-	Data::ArrayList<OrganSpecies*> *spList = speciesMap->GetValues();
+	const Data::ArrayList<OrganSpecies*> *spList = speciesMap->GetValues();
 	i = spList->GetCount();
 	while (i-- > 0)
 	{

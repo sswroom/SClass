@@ -31,7 +31,7 @@ namespace Media
 			PluginDetail *plugin;
 
 			AUIPlugin();
-			AUIPlugin(AUIPlugin *plugin);
+			AUIPlugin(const AUIPlugin *plugin);
 		public:
 			~AUIPlugin();
 

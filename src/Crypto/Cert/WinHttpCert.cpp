@@ -23,19 +23,19 @@ Crypto::Cert::WinHttpCert::~WinHttpCert()
 	MemFree(this->clsData);
 }
 
-Bool Crypto::Cert::WinHttpCert::GetNotBefore(Data::DateTime *dt)
+Bool Crypto::Cert::WinHttpCert::GetNotBefore(Data::DateTime *dt) const
 {
 	dt->SetValueFILETIME(&this->clsData->certInfo->ftStart);
 	return true;
 }
 
-Bool Crypto::Cert::WinHttpCert::GetNotAfter(Data::DateTime *dt)
+Bool Crypto::Cert::WinHttpCert::GetNotAfter(Data::DateTime *dt) const
 {
 	dt->SetValueFILETIME(&this->clsData->certInfo->ftExpiry);
 	return true;
 }
 
-Bool Crypto::Cert::WinHttpCert::IsSelfSigned()
+Bool Crypto::Cert::WinHttpCert::IsSelfSigned() const
 {
 	if (this->clsData->certInfo->lpszIssuerInfo == 0 || this->clsData->certInfo->lpszSubjectInfo == 0)
 	{
@@ -44,12 +44,12 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned()
 	return Text::StrEquals(this->clsData->certInfo->lpszSubjectInfo, this->clsData->certInfo->lpszIssuerInfo);
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::WinHttpCert::CreateX509Cert()
+Crypto::Cert::X509Cert *Crypto::Cert::WinHttpCert::CreateX509Cert() const
 {
 	return 0;
 }
 
-void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Data::DateTime dt;
 	sb->AppendC(UTF8STRC("Not Before: "));

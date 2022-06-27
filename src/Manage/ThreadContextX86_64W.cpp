@@ -21,13 +21,13 @@ Manage::ThreadContextX86_64::~ThreadContextX86_64()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextX86_64::GetRegisterCnt()
+UOSInt Manage::ThreadContextX86_64::GetRegisterCnt() const
 {
 	UOSInt cnt = 46;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	CONTEXT_TYPE *ctx = (CONTEXT_TYPE*)this->context;
 	switch (index)
@@ -221,7 +221,7 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 	}
 }
 
-void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF8 *sb)
+void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -269,32 +269,32 @@ void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextX86_64::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextX86_64::GetType() const
 {
 	return Manage::ThreadContext::CT_X86_64;
 }
 
-UOSInt Manage::ThreadContextX86_64::GetThreadId()
+UOSInt Manage::ThreadContextX86_64::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextX86_64::GetProcessId()
+UOSInt Manage::ThreadContextX86_64::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextX86_64::GetInstAddr()
+UOSInt Manage::ThreadContextX86_64::GetInstAddr() const
 {
 	return this->GetRIP();
 }
 
-UOSInt Manage::ThreadContextX86_64::GetStackAddr()
+UOSInt Manage::ThreadContextX86_64::GetStackAddr() const
 {
 	return this->GetRSP();
 }
 
-UOSInt Manage::ThreadContextX86_64::GetFrameAddr()
+UOSInt Manage::ThreadContextX86_64::GetFrameAddr() const
 {
 	return this->GetRBP();
 }
@@ -314,14 +314,14 @@ void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
 	((CONTEXT_TYPE*)this->context)->Rbp = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_64::Clone()
+Manage::ThreadContext *Manage::ThreadContextX86_64::Clone() const
 {
 	Manage::ThreadContextX86_64 *ret;
 	NEW_CLASS(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
 	return ret;
 }
 
-Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmX86_64::DasmX86_64_Regs *r = (Manage::DasmX86_64::DasmX86_64_Regs *)regs;
 	r->rax = ((CONTEXT_TYPE*)this->context)->Rax;
@@ -357,164 +357,164 @@ Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_64::CreateDasm()
+Manage::Dasm *Manage::ThreadContextX86_64::CreateDasm() const
 {
 	Manage::DasmX86_64 *dasm;
 	NEW_CLASS(dasm, Manage::DasmX86_64());
 	return dasm;
 }
 
-void *Manage::ThreadContextX86_64::GetContext()
+void *Manage::ThreadContextX86_64::GetContext() const
 {
 	return this->context;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRAX()
+UInt64 Manage::ThreadContextX86_64::GetRAX() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rax;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRDX()
+UInt64 Manage::ThreadContextX86_64::GetRDX() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rdx;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRCX()
+UInt64 Manage::ThreadContextX86_64::GetRCX() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rcx;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRBX()
+UInt64 Manage::ThreadContextX86_64::GetRBX() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rbx;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRSI()
+UInt64 Manage::ThreadContextX86_64::GetRSI() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rsi;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRDI()
+UInt64 Manage::ThreadContextX86_64::GetRDI() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rdi;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRSP()
+UInt64 Manage::ThreadContextX86_64::GetRSP() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rsp;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRBP()
+UInt64 Manage::ThreadContextX86_64::GetRBP() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rbp;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetRIP()
+UInt64 Manage::ThreadContextX86_64::GetRIP() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Rip;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR8()
+UInt64 Manage::ThreadContextX86_64::GetR8() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R8;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR9()
+UInt64 Manage::ThreadContextX86_64::GetR9() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R9;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR10()
+UInt64 Manage::ThreadContextX86_64::GetR10() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R10;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR11()
+UInt64 Manage::ThreadContextX86_64::GetR11() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R11;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR12()
+UInt64 Manage::ThreadContextX86_64::GetR12() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R12;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR13()
+UInt64 Manage::ThreadContextX86_64::GetR13() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R13;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR14()
+UInt64 Manage::ThreadContextX86_64::GetR14() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R14;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetR15()
+UInt64 Manage::ThreadContextX86_64::GetR15() const
 {
 	return ((CONTEXT_TYPE*)this->context)->R15;
 }
 
-UInt32 Manage::ThreadContextX86_64::GetEFLAGS()
+UInt32 Manage::ThreadContextX86_64::GetEFLAGS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->EFlags;
 }
 
-UInt16 Manage::ThreadContextX86_64::GetCS()
+UInt16 Manage::ThreadContextX86_64::GetCS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->SegCs;
 }
 
-UInt16 Manage::ThreadContextX86_64::GetSS()
+UInt16 Manage::ThreadContextX86_64::GetSS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->SegSs;
 }
 
-UInt16 Manage::ThreadContextX86_64::GetDS()
+UInt16 Manage::ThreadContextX86_64::GetDS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->SegDs;
 }
 
-UInt16 Manage::ThreadContextX86_64::GetES()
+UInt16 Manage::ThreadContextX86_64::GetES() const
 {
 	return ((CONTEXT_TYPE*)this->context)->SegEs;
 }
 
-UInt16 Manage::ThreadContextX86_64::GetFS()
+UInt16 Manage::ThreadContextX86_64::GetFS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->SegFs;
 }
 
-UInt16 Manage::ThreadContextX86_64::GetGS()
+UInt16 Manage::ThreadContextX86_64::GetGS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->SegGs;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetDR0()
+UInt64 Manage::ThreadContextX86_64::GetDR0() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Dr0;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetDR1()
+UInt64 Manage::ThreadContextX86_64::GetDR1() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Dr1;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetDR2()
+UInt64 Manage::ThreadContextX86_64::GetDR2() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Dr2;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetDR3()
+UInt64 Manage::ThreadContextX86_64::GetDR3() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Dr3;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetDR6()
+UInt64 Manage::ThreadContextX86_64::GetDR6() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Dr6;
 }
 
-UInt64 Manage::ThreadContextX86_64::GetDR7()
+UInt64 Manage::ThreadContextX86_64::GetDR7() const
 {
 	return ((CONTEXT_TYPE*)this->context)->Dr7;
 }

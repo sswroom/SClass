@@ -32,21 +32,21 @@ namespace Media
 		virtual ~VectorDocument();
 
 		Media::VectorGraph *AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
-		Text::String *GetDocName();
+		Text::String *GetDocName() const;
 		void SetCreateTime(Int64 createTimeTicks);
-		Int64 GetCreateTime();
+		Int64 GetCreateTime() const;
 		void SetModifyTime(Int64 modTimeTicks);
-		Int64 GetModifyTime();
+		Int64 GetModifyTime() const;
 		void SetAuthor(const UTF8Char *author);
-		const UTF8Char *GetAuthor();
+		const UTF8Char *GetAuthor() const;
 		void SetSubject(const UTF8Char *subject);
-		const UTF8Char *GetSubject();
+		const UTF8Char *GetSubject() const;
 		void SetKeywords(const UTF8Char *keywords);
-		const UTF8Char *GetKeywords();
+		const UTF8Char *GetKeywords() const;
 		void SetCreator(const UTF8Char *creator);
-		const UTF8Char *GetCreator();
+		const UTF8Char *GetCreator() const;
 		void SetProducer(const UTF8Char *producer);
-		const UTF8Char *GetProducer();
+		const UTF8Char *GetProducer() const;
 
 		virtual UOSInt GetCount() const;
 		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
@@ -55,7 +55,7 @@ namespace Media
 		virtual Bool PrintPage(Media::DrawImage *printPage); //return has more pages 
 		virtual Bool EndPrint(IPrintDocument *doc);
 
-		virtual IO::ParserType GetParserType();
+		virtual IO::ParserType GetParserType() const;
 	};
 }
 #endif

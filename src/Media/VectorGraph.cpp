@@ -218,27 +218,27 @@ Media::VectorGraph::~VectorGraph()
 	DEL_CLASS(this->colorProfile);
 }
 
-Math::Size2D<Double> Media::VectorGraph::GetSize()
+Math::Size2D<Double> Media::VectorGraph::GetSize() const
 {
 	return this->size;
 }
 
-UOSInt Media::VectorGraph::GetWidth()
+UOSInt Media::VectorGraph::GetWidth() const
 {
 	return (UOSInt)Double2Int32(this->size.width);
 }
 
-UOSInt Media::VectorGraph::GetHeight()
+UOSInt Media::VectorGraph::GetHeight() const
 {
 	return (UOSInt)Double2Int32(this->size.height);
 }
 
-UInt32 Media::VectorGraph::GetBitCount()
+UInt32 Media::VectorGraph::GetBitCount() const
 {
 	return 32;
 }
 
-Media::ColorProfile *Media::VectorGraph::GetColorProfile()
+Media::ColorProfile *Media::VectorGraph::GetColorProfile() const
 {
 	return this->colorProfile;
 }
@@ -248,7 +248,7 @@ void Media::VectorGraph::SetColorProfile(const Media::ColorProfile *color)
 	this->colorProfile->Set(color);
 }
 
-Media::AlphaType Media::VectorGraph::GetAlphaType()
+Media::AlphaType Media::VectorGraph::GetAlphaType() const
 {
 	return Media::AT_ALPHA;
 }
@@ -257,12 +257,12 @@ void Media::VectorGraph::SetAlphaType(Media::AlphaType atype)
 {
 }
 
-Double Media::VectorGraph::GetHDPI()
+Double Media::VectorGraph::GetHDPI() const
 {
 	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, this->unit, 1);
 }
 
-Double Media::VectorGraph::GetVDPI()
+Double Media::VectorGraph::GetVDPI() const
 {
 	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, this->unit, 1);
 }
@@ -284,17 +284,17 @@ void Media::VectorGraph::GetImgBitsEnd(Bool modified)
 {
 }
 
-Media::EXIFData *Media::VectorGraph::GetEXIF()
+Media::EXIFData *Media::VectorGraph::GetEXIF() const
 {
 	return 0;
 }
 
-Media::PixelFormat Media::VectorGraph::GetPixelFormat()
+Media::PixelFormat Media::VectorGraph::GetPixelFormat() const
 {
 	return Media::PF_UNKNOWN;
 }
 
-UOSInt Media::VectorGraph::GetImgBpl()
+UOSInt Media::VectorGraph::GetImgBpl() const
 {
 	return 0;
 }
@@ -706,11 +706,11 @@ void Media::VectorGraph::GetStringBoundRot(Int32 *pos, Double centX, Double cent
 	////////////////////////////////////////
 }
 
-void Media::VectorGraph::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown)
+void Media::VectorGraph::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
 {
 }
 
-Media::StaticImage *Media::VectorGraph::ToStaticImage()
+Media::StaticImage *Media::VectorGraph::ToStaticImage() const
 {
 	return 0;
 }
@@ -730,12 +730,12 @@ UOSInt Media::VectorGraph::SaveJPG(IO::SeekableStream *stm)
 	return 0;
 }
 
-Double Media::VectorGraph::GetVisibleWidthMM()
+Double Media::VectorGraph::GetVisibleWidthMM() const
 {
 	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.width);
 }
 
-Double Media::VectorGraph::GetVisibleHeightMM()
+Double Media::VectorGraph::GetVisibleHeightMM() const
 {
 	return Math::Unit::Distance::Convert(this->unit, Math::Unit::Distance::DU_MILLIMETER, this->size.height);
 }

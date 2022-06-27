@@ -131,7 +131,7 @@ SSWR::DataSync::SyncServer::~SyncServer()
 	DEL_CLASS(this->cliMgr);
 	UOSInt i;
 	ServerInfo *svrInfo;
-	Data::ArrayList<ServerInfo*> *svrList = this->svrMap.GetValues();
+	const Data::ArrayList<ServerInfo*> *svrList = this->svrMap.GetValues();
 	i = svrList->GetCount();
 	while (i-- > 0)
 	{

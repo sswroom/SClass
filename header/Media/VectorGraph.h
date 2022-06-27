@@ -92,23 +92,23 @@ namespace Media
 		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, Media::DrawEngine *refEng, Media::ColorProfile *colorProfile);
 		virtual ~VectorGraph();
 
-		Math::Size2D<Double> GetSize();
-		virtual UOSInt GetWidth();
-		virtual UOSInt GetHeight();
-		virtual UInt32 GetBitCount();
-		virtual ColorProfile *GetColorProfile();
+		Math::Size2D<Double> GetSize() const;
+		virtual UOSInt GetWidth() const;
+		virtual UOSInt GetHeight() const;
+		virtual UInt32 GetBitCount() const;
+		virtual ColorProfile *GetColorProfile() const;
 		virtual void SetColorProfile(const ColorProfile *color);
-		virtual Media::AlphaType GetAlphaType();
+		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
-		virtual Double GetHDPI();
-		virtual Double GetVDPI();
+		virtual Double GetHDPI() const;
+		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
 		virtual UInt8 *GetImgBits(Bool *revOrder);
 		virtual void GetImgBitsEnd(Bool modified);
-		virtual UOSInt GetImgBpl();
-		virtual Media::EXIFData *GetEXIF();
-		virtual Media::PixelFormat GetPixelFormat();
+		virtual UOSInt GetImgBpl() const;
+		virtual Media::EXIFData *GetEXIF() const;
+		virtual Media::PixelFormat GetPixelFormat() const;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p);
 		virtual Bool DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p);
@@ -144,15 +144,15 @@ namespace Media
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos);
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown);
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const;
 
-		virtual Media::StaticImage *ToStaticImage();
+		virtual Media::StaticImage *ToStaticImage() const;
 		virtual UOSInt SavePng(IO::SeekableStream *stm);
 		virtual UOSInt SaveGIF(IO::SeekableStream *stm);
 		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
 
-		Double GetVisibleWidthMM();
-		Double GetVisibleHeightMM();
+		Double GetVisibleWidthMM() const;
+		Double GetVisibleHeightMM() const;
 		void DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS);
 	};
 }

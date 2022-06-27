@@ -37,7 +37,7 @@ void SSWR::OrganMgr::OrganSpecies::SetSpeciesId(Int32 speciesId)
 	this->speciesId = speciesId;
 }
 
-Int32 SSWR::OrganMgr::OrganSpecies::GetSpeciesId()
+Int32 SSWR::OrganMgr::OrganSpecies::GetSpeciesId() const
 {
 	return this->speciesId;
 }
@@ -48,7 +48,7 @@ void SSWR::OrganMgr::OrganSpecies::SetCName(Text::CString cName)
 	this->cName = Text::String::NewOrNull(cName);
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetCName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetCName() const
 {
 	return this->cName;
 }
@@ -59,7 +59,7 @@ void SSWR::OrganMgr::OrganSpecies::SetEName(Text::CString eName)
 	this->eName = Text::String::NewOrNull(eName);
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetEName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetEName() const
 {
 	return this->eName;
 }
@@ -70,7 +70,7 @@ void SSWR::OrganMgr::OrganSpecies::SetSName(Text::CString sName)
 	this->sName = Text::String::NewOrNull(sName);
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetSName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetSName() const
 {
 	return this->sName;
 }
@@ -80,7 +80,7 @@ void SSWR::OrganMgr::OrganSpecies::SetGroupId(Int32 groupId)
 	this->groupId = groupId;
 }
 
-Int32 SSWR::OrganMgr::OrganSpecies::GetGroupId()
+Int32 SSWR::OrganMgr::OrganSpecies::GetGroupId() const
 {
 	return this->groupId;
 }
@@ -101,7 +101,7 @@ void SSWR::OrganMgr::OrganSpecies::SetDesc(Text::CString desc)
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetDesc()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetDesc() const
 {
 	return this->desc;
 }
@@ -122,7 +122,7 @@ void SSWR::OrganMgr::OrganSpecies::SetDirName(Text::CString dirName)
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetDirName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetDirName() const
 {
 	return this->dirName;
 }
@@ -143,7 +143,7 @@ void SSWR::OrganMgr::OrganSpecies::SetPhoto(Text::CString photo)
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetPhoto()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetPhoto() const
 {
 	return this->photo;
 }
@@ -164,7 +164,7 @@ void SSWR::OrganMgr::OrganSpecies::SetIDKey(Text::CString idKey)
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganSpecies::GetIDKey()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetIDKey() const
 {
 	return this->idKey;
 }
@@ -174,7 +174,7 @@ void SSWR::OrganMgr::OrganSpecies::SetFlags(Int32 flags)
 	this->flags = flags;
 }
 
-Int32 SSWR::OrganMgr::OrganSpecies::GetFlags()
+Int32 SSWR::OrganMgr::OrganSpecies::GetFlags() const
 {
 	return this->flags;
 }
@@ -184,7 +184,7 @@ void SSWR::OrganMgr::OrganSpecies::SetIsDefault(Bool isDefault)
 	this->isDefault = isDefault;
 }
 
-Bool SSWR::OrganMgr::OrganSpecies::GetIsDefault()
+Bool SSWR::OrganMgr::OrganSpecies::GetIsDefault() const
 {
 	return this->isDefault;
 }
@@ -194,7 +194,7 @@ void SSWR::OrganMgr::OrganSpecies::SetPhotoId(Int32 photoId)
 	this->photoId = photoId;
 }
 
-Int32 SSWR::OrganMgr::OrganSpecies::GetPhotoId()
+Int32 SSWR::OrganMgr::OrganSpecies::GetPhotoId() const
 {
 	return this->photoId;
 }
@@ -204,7 +204,7 @@ void SSWR::OrganMgr::OrganSpecies::SetPhotoWId(Int32 photoWId)
 	this->photoWId = photoWId;
 }
 
-Int32 SSWR::OrganMgr::OrganSpecies::GetPhotoWId()
+Int32 SSWR::OrganMgr::OrganSpecies::GetPhotoWId() const
 {
 	return this->photoWId;
 }
@@ -214,17 +214,17 @@ void SSWR::OrganMgr::OrganSpecies::SetMapColor(UInt32 mapColor)
 	this->mapColor = mapColor;
 }
 
-UInt32 SSWR::OrganMgr::OrganSpecies::GetMapColor()
+UInt32 SSWR::OrganMgr::OrganSpecies::GetMapColor() const
 {
 	return this->mapColor;
 }
 
-SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganSpecies::GetItemType()
+SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganSpecies::GetItemType() const
 {
 	return OrganGroupItem::IT_SPECIES;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff) const
 {
 	UTF8Char *sptr = buff;
 	if (this->isDefault)
@@ -247,12 +247,12 @@ UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff)
 	return sptr;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpecies::GetEngName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganSpecies::GetEngName(UTF8Char *buff) const
 {
 	return this->sName->ConcatTo(buff);
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganSpecies::Clone()
+SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganSpecies::Clone() const
 {
 	OrganSpecies *newItem;
 	NEW_CLASS(newItem, OrganSpecies());

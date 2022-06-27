@@ -186,9 +186,9 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	SpeciesInfo *species;
 	UserFileInfo *userFile;
 	WebUserInfo *webUser;
-	Data::ArrayList<SpeciesInfo*> *speciesList;
-	Data::ArrayList<UserFileInfo*> *userFileList;
-	Data::ArrayList<WebUserInfo*> *userList;
+	const Data::ArrayList<SpeciesInfo*> *speciesList;
+	const Data::ArrayList<UserFileInfo*> *userFileList;
+	const Data::ArrayList<WebUserInfo*> *userList;
 	speciesList = this->speciesMap.GetValues();
 	i = speciesList->GetCount();
 	while (i-- > 0)
@@ -378,7 +378,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 	UOSInt i;
 	UOSInt j;
 	WebFileInfo *webFile;
-	Data::ArrayList<WebFileInfo*> *webFiles = species->wfileMap.GetValues();
+	const Data::ArrayList<WebFileInfo*> *webFiles = species->wfileMap.GetValues();
 	i = 0;
 	j = webFiles->GetCount();
 	while (i < j)
@@ -405,7 +405,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks)
 {
-	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
+	const Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
 	UserFileInfo *userFile;
 	UOSInt initCnt = userFiles->GetCount();
 	UOSInt i;
@@ -769,7 +769,7 @@ void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Int32Map<Data::ArrayList<Orga
 {
 	OrganGroup *grp;
 	Data::ArrayList<OrganGroup*> *grps;
-	Data::ArrayList<Data::ArrayList<OrganGroup*>*> *grpsList;
+	const Data::ArrayList<Data::ArrayList<OrganGroup*>*> *grpsList;
 	UOSInt i;
 	UOSInt j;
 
@@ -793,7 +793,7 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Int32Map<Data::ArrayList<Or
 {
 	OrganSpecies *sp;
 	Data::ArrayList<OrganSpecies*> *sps;
-	Data::ArrayList<Data::ArrayList<OrganSpecies*>*> *spsList;
+	const Data::ArrayList<Data::ArrayList<OrganSpecies*>*> *spsList;
 	UOSInt i;
 	UOSInt j;
 

@@ -26,7 +26,7 @@ SSWR::OrganMgr::OrganImageItem::~OrganImageItem()
 	SDEL_STRING(this->imgURL);
 }
 
-Int32 SSWR::OrganMgr::OrganImageItem::GetUserId()
+Int32 SSWR::OrganMgr::OrganImageItem::GetUserId() const
 {
 	return this->userId;
 }
@@ -43,7 +43,7 @@ void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::CString dispName)
 	if (dispName.v) this->dispName = Text::String::New(dispName);
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName()
+Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName() const
 {
 	return this->dispName;
 }
@@ -53,7 +53,7 @@ void SSWR::OrganMgr::OrganImageItem::SetIsCoverPhoto(Bool isCoverPhoto)
 	this->isCoverPhoto = isCoverPhoto;
 }
 
-Bool SSWR::OrganMgr::OrganImageItem::GetIsCoverPhoto()
+Bool SSWR::OrganMgr::OrganImageItem::GetIsCoverPhoto() const
 {
 	return this->isCoverPhoto;
 }
@@ -63,7 +63,7 @@ void SSWR::OrganMgr::OrganImageItem::SetPhotoDate(Int64 photoDate)
 	this->photoDate = photoDate;
 }
 
-Int64 SSWR::OrganMgr::OrganImageItem::GetPhotoDate()
+Int64 SSWR::OrganMgr::OrganImageItem::GetPhotoDate() const
 {
 	return this->photoDate;
 }
@@ -73,7 +73,7 @@ void SSWR::OrganMgr::OrganImageItem::SetRotateType(RotateType rotateType)
 	this->rotateType = rotateType;
 }
 
-SSWR::OrganMgr::OrganImageItem::RotateType SSWR::OrganMgr::OrganImageItem::GetRotateType()
+SSWR::OrganMgr::OrganImageItem::RotateType SSWR::OrganMgr::OrganImageItem::GetRotateType() const
 {
 	return this->rotateType;
 }
@@ -90,7 +90,7 @@ void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::CString fullName)
 	if (fullName.v) this->fullName = Text::String::New(fullName);
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName()
+Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName() const
 {
 	return this->fullName;
 }
@@ -100,7 +100,7 @@ void SSWR::OrganMgr::OrganImageItem::SetFileType(FileType fileType)
 	this->fileType = fileType;
 }
 
-SSWR::OrganMgr::OrganImageItem::FileType SSWR::OrganMgr::OrganImageItem::GetFileType()
+SSWR::OrganMgr::OrganImageItem::FileType SSWR::OrganMgr::OrganImageItem::GetFileType() const
 {
 	return this->fileType;
 }
@@ -117,7 +117,7 @@ void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::CString srcURL)
 	if (srcURL.v) this->srcURL = Text::String::New(srcURL);
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL()
+Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL() const
 {
 	return this->srcURL;
 }
@@ -139,7 +139,7 @@ void SSWR::OrganMgr::OrganImageItem::SetUserFile(UserFileInfo *userFile)
 	this->userFile = userFile;
 }
 
-SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganImageItem::GetUserFile()
+SSWR::OrganMgr::UserFileInfo *SSWR::OrganMgr::OrganImageItem::GetUserFile() const
 {
 	return this->userFile;
 }
@@ -149,12 +149,12 @@ void SSWR::OrganMgr::OrganImageItem::SetWebFile(WebFileInfo *webFile)
 	this->webFile = webFile;
 }
 
-SSWR::OrganMgr::WebFileInfo *SSWR::OrganMgr::OrganImageItem::GetWebFile()
+SSWR::OrganMgr::WebFileInfo *SSWR::OrganMgr::OrganImageItem::GetWebFile() const
 {
 	return this->webFile;
 }
 
-SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImageItem::Clone()
+SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImageItem::Clone() const
 {
 	OrganImageItem *newItem;
 	NEW_CLASS(newItem, OrganImageItem(this->userId));
@@ -171,7 +171,7 @@ SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImageItem::Clone()
 	return newItem;
 }
 
-Text::String *SSWR::OrganMgr::OrganImageItem::GetImgURL()
+Text::String *SSWR::OrganMgr::OrganImageItem::GetImgURL() const
 {
 	return this->imgURL;
 }

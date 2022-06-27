@@ -737,22 +737,22 @@ Media::GDIImage::~GDIImage()
 {
 }
 
-UOSInt Media::GDIImage::GetWidth()
+UOSInt Media::GDIImage::GetWidth() const
 {
 	return this->width;
 }
 
-UOSInt Media::GDIImage::GetHeight()
+UOSInt Media::GDIImage::GetHeight() const
 {
 	return this->height;
 }
 
-UInt32 Media::GDIImage::GetBitCount()
+UInt32 Media::GDIImage::GetBitCount() const
 {
 	return this->bitCount;	
 }
 
-Media::ColorProfile *Media::GDIImage::GetColorProfile()
+Media::ColorProfile *Media::GDIImage::GetColorProfile() const
 {
 	return this->info.color;
 }
@@ -762,7 +762,7 @@ void Media::GDIImage::SetColorProfile(const Media::ColorProfile *color)
 	return this->info.color->Set(color);
 }
 
-Media::AlphaType Media::GDIImage::GetAlphaType()
+Media::AlphaType Media::GDIImage::GetAlphaType() const
 {
 	return this->info.atype;
 }
@@ -772,12 +772,12 @@ void Media::GDIImage::SetAlphaType(Media::AlphaType atype)
 	this->info.atype = atype;
 }
 
-Double Media::GDIImage::GetHDPI()
+Double Media::GDIImage::GetHDPI() const
 {
 	return this->info.hdpi;
 }
 
-Double Media::GDIImage::GetVDPI()
+Double Media::GDIImage::GetVDPI() const
 {
 	return this->info.vdpi;
 }
@@ -808,17 +808,17 @@ void Media::GDIImage::GetImgBitsEnd(Bool modified)
 {
 }
 
-UOSInt Media::GDIImage::GetImgBpl()
+UOSInt Media::GDIImage::GetImgBpl() const
 {
 	return this->GetDataBpl();
 }
 
-Media::EXIFData *Media::GDIImage::GetEXIF()
+Media::EXIFData *Media::GDIImage::GetEXIF() const
 {
 	return this->exif;
 }
 
-Media::PixelFormat Media::GDIImage::GetPixelFormat()
+Media::PixelFormat Media::GDIImage::GetPixelFormat() const
 {
 	return this->info.pf;
 }
@@ -2596,7 +2596,7 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 	}
 }
 
-void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSInt width, UOSInt height, Bool upsideDown)
+void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSInt width, UOSInt height, Bool upsideDown) const
 {
 	UInt8 *iptr = (UInt8*)imgPtr;
 	UInt8 *sptr = (UInt8*)this->bmpBits;
@@ -2651,7 +2651,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSI
 	}
 }
 
-Media::StaticImage *Media::GDIImage::ToStaticImage()
+Media::StaticImage *Media::GDIImage::ToStaticImage() const
 {
 	return CreateStaticImage();
 }
@@ -2810,17 +2810,17 @@ UOSInt Media::GDIImage::SaveJPG(IO::SeekableStream *stm)
 #endif
 }
 
-Media::Image *Media::GDIImage::Clone()
+Media::Image *Media::GDIImage::Clone() const
 {
 	return CreateStaticImage();
 }
 
-Media::Image::ImageType Media::GDIImage::GetImageType()
+Media::Image::ImageType Media::GDIImage::GetImageType() const
 {
 	return IT_GUIIMAGE;
 }
 
-void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
 {
 	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }

@@ -15,32 +15,32 @@ SSWR::OrganMgr::OrganImages::~OrganImages()
 	Text::StrDelNew(this->srcImgDir);
 }
 
-SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImages::GetImgItem()
+SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImages::GetImgItem() const
 {
 	return this->imgItem;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImages::GetSrcImgDir()
+const UTF8Char *SSWR::OrganMgr::OrganImages::GetSrcImgDir() const
 {
 	return this->srcImgDir;
 }
 
-SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganImages::GetItemType()
+SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganImages::GetItemType() const
 {
 	return OrganGroupItem::IT_IMAGE;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganImages::GetItemName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganImages::GetItemName(UTF8Char *buff) const
 {
 	return this->imgItem->GetDispName()->ConcatTo(buff);
 }
 
-UTF8Char *SSWR::OrganMgr::OrganImages::GetEngName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganImages::GetEngName(UTF8Char *buff) const
 {
 	return this->imgItem->GetDispName()->ConcatTo(buff);
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganImages::Clone()
+SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganImages::Clone() const
 {
 	OrganImages *newItem;
 	NEW_CLASS(newItem, OrganImages(this->imgItem, this->srcImgDir));

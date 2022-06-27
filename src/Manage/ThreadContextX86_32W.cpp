@@ -11,32 +11,32 @@
 
 #if defined(_WIN32_WCE) && !defined(_X86_)
 
-UInt32 Manage::ThreadContextX86_32::GetEAX()
+UInt32 Manage::ThreadContextX86_32::GetEAX() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEDX()
+UInt32 Manage::ThreadContextX86_32::GetEDX() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetECX()
+UInt32 Manage::ThreadContextX86_32::GetECX() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEBX()
+UInt32 Manage::ThreadContextX86_32::GetEBX() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetESI()
+UInt32 Manage::ThreadContextX86_32::GetESI() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEDI()
+UInt32 Manage::ThreadContextX86_32::GetEDI() const
 {
 	return 0;
 }
@@ -67,7 +67,7 @@ Manage::ThreadContextX86_32::~ThreadContextX86_32()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextX86_32::GetRegisterCnt()
+UOSInt Manage::ThreadContextX86_32::GetRegisterCnt() const
 {
 	UOSInt cnt = 33;
 	if (this->mmOfst >= 0)
@@ -81,7 +81,7 @@ UOSInt Manage::ThreadContextX86_32::GetRegisterCnt()
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextX86_32::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextX86_32::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	switch (index)
 	{
@@ -439,7 +439,7 @@ UTF8Char *Manage::ThreadContextX86_32::GetRegister(UOSInt index, UTF8Char *buff,
 	}
 }
 
-void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb)
+void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -487,32 +487,32 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType() const
 {
 	return Manage::ThreadContext::CT_X86_32;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetThreadId()
+UOSInt Manage::ThreadContextX86_32::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetProcessId()
+UOSInt Manage::ThreadContextX86_32::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetInstAddr()
+UOSInt Manage::ThreadContextX86_32::GetInstAddr() const
 {
 	return this->GetEIP();
 }
 
-UOSInt Manage::ThreadContextX86_32::GetStackAddr()
+UOSInt Manage::ThreadContextX86_32::GetStackAddr() const
 {
 	return this->GetESP();
 }
 
-UOSInt Manage::ThreadContextX86_32::GetFrameAddr()
+UOSInt Manage::ThreadContextX86_32::GetFrameAddr() const
 {
 	return this->GetEBP();
 }
@@ -544,14 +544,14 @@ void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
 #endif
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_32::Clone()
+Manage::ThreadContext *Manage::ThreadContextX86_32::Clone() const
 {
 	Manage::ThreadContextX86_32 *ret;
 	NEW_CLASS(ret, Manage::ThreadContextX86_32(this->procId, this->threadId, this->context));
 	return ret;
 }
 
-Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmX86_32::DasmX86_32_Regs *r = (Manage::DasmX86_32::DasmX86_32_Regs *)regs;
 #ifdef CONTEXT_VX86
@@ -617,19 +617,19 @@ Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_32::CreateDasm()
+Manage::Dasm *Manage::ThreadContextX86_32::CreateDasm() const
 {
 	Manage::DasmX86_32 *dasm;
 	NEW_CLASS(dasm, Manage::DasmX86_32());
 	return dasm;
 }
 
-void *Manage::ThreadContextX86_32::GetContext()
+void *Manage::ThreadContextX86_32::GetContext() const
 {
 	return this->context;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEAX()
+UInt32 Manage::ThreadContextX86_32::GetEAX() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rax;
@@ -638,7 +638,7 @@ UInt32 Manage::ThreadContextX86_32::GetEAX()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEDX()
+UInt32 Manage::ThreadContextX86_32::GetEDX() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rdx;
@@ -647,7 +647,7 @@ UInt32 Manage::ThreadContextX86_32::GetEDX()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetECX()
+UInt32 Manage::ThreadContextX86_32::GetECX() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rcx;
@@ -656,7 +656,7 @@ UInt32 Manage::ThreadContextX86_32::GetECX()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEBX()
+UInt32 Manage::ThreadContextX86_32::GetEBX() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rbx;
@@ -665,7 +665,7 @@ UInt32 Manage::ThreadContextX86_32::GetEBX()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetESI()
+UInt32 Manage::ThreadContextX86_32::GetESI() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rsi;
@@ -674,7 +674,7 @@ UInt32 Manage::ThreadContextX86_32::GetESI()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEDI()
+UInt32 Manage::ThreadContextX86_32::GetEDI() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rdi;
@@ -683,7 +683,7 @@ UInt32 Manage::ThreadContextX86_32::GetEDI()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetESP()
+UInt32 Manage::ThreadContextX86_32::GetESP() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rsp;
@@ -692,7 +692,7 @@ UInt32 Manage::ThreadContextX86_32::GetESP()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEBP()
+UInt32 Manage::ThreadContextX86_32::GetEBP() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rbp;
@@ -701,7 +701,7 @@ UInt32 Manage::ThreadContextX86_32::GetEBP()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEIP()
+UInt32 Manage::ThreadContextX86_32::GetEIP() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Rip;
@@ -710,42 +710,42 @@ UInt32 Manage::ThreadContextX86_32::GetEIP()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEFLAGS()
+UInt32 Manage::ThreadContextX86_32::GetEFLAGS() const
 {
 	return ((CONTEXT_TYPE*)this->context)->EFlags;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetCS()
+UInt16 Manage::ThreadContextX86_32::GetCS() const
 {
 	return (UInt16)((CONTEXT_TYPE*)this->context)->SegCs;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetSS()
+UInt16 Manage::ThreadContextX86_32::GetSS() const
 {
 	return (UInt16)((CONTEXT_TYPE*)this->context)->SegSs;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetDS()
+UInt16 Manage::ThreadContextX86_32::GetDS() const
 {
 	return (UInt16)((CONTEXT_TYPE*)this->context)->SegDs;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetES()
+UInt16 Manage::ThreadContextX86_32::GetES() const
 {
 	return (UInt16)((CONTEXT_TYPE*)this->context)->SegEs;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetFS()
+UInt16 Manage::ThreadContextX86_32::GetFS() const
 {
 	return (UInt16)((CONTEXT_TYPE*)this->context)->SegFs;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetGS()
+UInt16 Manage::ThreadContextX86_32::GetGS() const
 {
 	return (UInt16)((CONTEXT_TYPE*)this->context)->SegGs;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR0()
+UInt32 Manage::ThreadContextX86_32::GetDR0() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Dr0;
@@ -754,7 +754,7 @@ UInt32 Manage::ThreadContextX86_32::GetDR0()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR1()
+UInt32 Manage::ThreadContextX86_32::GetDR1() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Dr1;
@@ -763,7 +763,7 @@ UInt32 Manage::ThreadContextX86_32::GetDR1()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR2()
+UInt32 Manage::ThreadContextX86_32::GetDR2() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Dr2;
@@ -772,7 +772,7 @@ UInt32 Manage::ThreadContextX86_32::GetDR2()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR3()
+UInt32 Manage::ThreadContextX86_32::GetDR3() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Dr3;
@@ -781,7 +781,7 @@ UInt32 Manage::ThreadContextX86_32::GetDR3()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR6()
+UInt32 Manage::ThreadContextX86_32::GetDR6() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Dr6;
@@ -790,7 +790,7 @@ UInt32 Manage::ThreadContextX86_32::GetDR6()
 #endif
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR7()
+UInt32 Manage::ThreadContextX86_32::GetDR7() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt32)((CONTEXT_TYPE*)this->context)->Dr7;
@@ -799,7 +799,7 @@ UInt32 Manage::ThreadContextX86_32::GetDR7()
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST0(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST0(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 0) & 7)], 10);
@@ -808,7 +808,7 @@ void Manage::ThreadContextX86_32::GetST0(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST1(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST1(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 1) & 7)], 10);
@@ -817,7 +817,7 @@ void Manage::ThreadContextX86_32::GetST1(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST2(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST2(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 2) & 7)], 10);
@@ -826,7 +826,7 @@ void Manage::ThreadContextX86_32::GetST2(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST3(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST3(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 3) & 7)], 10);
@@ -835,7 +835,7 @@ void Manage::ThreadContextX86_32::GetST3(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST4(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST4(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 4) & 7)], 10);
@@ -844,7 +844,7 @@ void Manage::ThreadContextX86_32::GetST4(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST5(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST5(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 5) & 7)], 10);
@@ -853,7 +853,7 @@ void Manage::ThreadContextX86_32::GetST5(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST6(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST6(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 6) & 7)], 10);
@@ -862,7 +862,7 @@ void Manage::ThreadContextX86_32::GetST6(UInt8 *val)
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST7(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST7(UInt8 *val) const
 {
 #ifdef CONTEXT_VX86
 	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 7) & 7)], 10);
@@ -871,7 +871,7 @@ void Manage::ThreadContextX86_32::GetST7(UInt8 *val)
 #endif
 }
 
-UInt16 Manage::ThreadContextX86_32::GetCTRL()
+UInt16 Manage::ThreadContextX86_32::GetCTRL() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.ControlWord;
@@ -880,7 +880,7 @@ UInt16 Manage::ThreadContextX86_32::GetCTRL()
 #endif
 }
 
-UInt16 Manage::ThreadContextX86_32::GetSTAT()
+UInt16 Manage::ThreadContextX86_32::GetSTAT() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.StatusWord;
@@ -889,7 +889,7 @@ UInt16 Manage::ThreadContextX86_32::GetSTAT()
 #endif
 }
 
-UInt16 Manage::ThreadContextX86_32::GetTAG()
+UInt16 Manage::ThreadContextX86_32::GetTAG() const
 {
 #ifdef CONTEXT_VX86
 	return (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.TagWord;

@@ -26,7 +26,7 @@ namespace SSWR
 
 			void Sort();
 			static OSInt __stdcall CompareBook(OrganBook *book1, OrganBook *book2);
-			virtual OSInt CompareItem(OrganBook *book1, OrganBook *book2);
+			virtual OSInt CompareItem(OrganBook *book1, OrganBook *book2) const;
 		};
 
 		class OrganBookForm : public UI::GUIForm
@@ -56,7 +56,7 @@ namespace SSWR
 			UI::GUITabPage *tpBookRef;
 			UI::GUITabPage *tpBookAuthor;
 
-			BookArrayList *bookList;
+			BookArrayList bookList;
 			Bool changed;
 
 			static void __stdcall OnBookPublishChg(void *userObj, Data::DateTime *newDate);

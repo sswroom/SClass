@@ -69,17 +69,17 @@ Media::DDrawSurface::~DDrawSurface()
 	MemFree(this->clsData);
 }
 
-Media::Image *Media::DDrawSurface::Clone()
+Media::Image *Media::DDrawSurface::Clone() const
 {
 	return 0;
 }
 
-Media::Image::ImageType Media::DDrawSurface::GetImageType()
+Media::Image::ImageType Media::DDrawSurface::GetImageType() const
 {
 	return IT_MONITORSURFACE;
 }
 
-void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
 {
 	HRESULT res;
 	DDSURFACEDESC2 ddsd;

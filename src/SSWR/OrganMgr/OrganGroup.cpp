@@ -30,7 +30,7 @@ void SSWR::OrganMgr::OrganGroup::SetGroupId(Int32 groupId)
 	this->groupId = groupId;
 }
 
-Int32 SSWR::OrganMgr::OrganGroup::GetGroupId()
+Int32 SSWR::OrganMgr::OrganGroup::GetGroupId() const
 {
 	return this->groupId;
 }
@@ -41,7 +41,7 @@ void SSWR::OrganMgr::OrganGroup::SetCName(Text::CString cName)
 	this->cName = Text::String::NewOrNull(cName);
 }
 
-Text::String *SSWR::OrganMgr::OrganGroup::GetCName()
+Text::String *SSWR::OrganMgr::OrganGroup::GetCName() const
 {
 	return this->cName;
 }
@@ -52,7 +52,7 @@ void SSWR::OrganMgr::OrganGroup::SetEName(Text::CString eName)
 	this->eName = Text::String::NewOrNull(eName);
 }
 
-Text::String *SSWR::OrganMgr::OrganGroup::GetEName()
+Text::String *SSWR::OrganMgr::OrganGroup::GetEName() const
 {
 	return this->eName;
 }
@@ -62,7 +62,7 @@ void SSWR::OrganMgr::OrganGroup::SetGroupType(Int32 groupType)
 	this->groupType = groupType;
 }
 
-Int32 SSWR::OrganMgr::OrganGroup::GetGroupType()
+Int32 SSWR::OrganMgr::OrganGroup::GetGroupType() const
 {
 	return this->groupType;
 }
@@ -73,7 +73,7 @@ void SSWR::OrganMgr::OrganGroup::SetDesc(Text::CString desc)
 	this->desc = Text::String::NewOrNull(desc);
 }
 
-Text::String *SSWR::OrganMgr::OrganGroup::GetDesc()
+Text::String *SSWR::OrganMgr::OrganGroup::GetDesc() const
 {
 	return this->desc;
 }
@@ -83,7 +83,7 @@ void SSWR::OrganMgr::OrganGroup::SetPhotoGroup(Int32 photoGroup)
 	this->photoGroup = photoGroup;
 }
 
-Int32 SSWR::OrganMgr::OrganGroup::GetPhotoGroup()
+Int32 SSWR::OrganMgr::OrganGroup::GetPhotoGroup() const
 {
 	return this->photoGroup;
 }
@@ -93,7 +93,7 @@ void SSWR::OrganMgr::OrganGroup::SetPhotoSpecies(Int32 photoSpecies)
 	this->photoSpecies = photoSpecies;
 }
 
-Int32 SSWR::OrganMgr::OrganGroup::GetPhotoSpecies()
+Int32 SSWR::OrganMgr::OrganGroup::GetPhotoSpecies() const
 {
 	return this->photoSpecies;
 }
@@ -104,7 +104,7 @@ void SSWR::OrganMgr::OrganGroup::SetIDKey(Text::CString idKey)
 	this->idKey = Text::String::NewOrNull(idKey);
 }
 
-Text::String *SSWR::OrganMgr::OrganGroup::GetIDKey()
+Text::String *SSWR::OrganMgr::OrganGroup::GetIDKey() const
 {
 	return this->idKey;
 }
@@ -114,7 +114,7 @@ void SSWR::OrganMgr::OrganGroup::SetIsDefault(Bool isDefault)
 	this->isDefault = isDefault;
 }
 
-Bool SSWR::OrganMgr::OrganGroup::GetIsDefault()
+Bool SSWR::OrganMgr::OrganGroup::GetIsDefault() const
 {
 	return this->isDefault;
 }
@@ -124,17 +124,17 @@ void SSWR::OrganMgr::OrganGroup::SetAdminOnly(Bool isAdminOnly)
 	this->adminOnly = isAdminOnly;
 }
 
-Bool SSWR::OrganMgr::OrganGroup::GetAdminOnly()
+Bool SSWR::OrganMgr::OrganGroup::GetAdminOnly() const
 {
 	return this->adminOnly;
 }
 
-SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganGroup::GetItemType()
+SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganGroup::GetItemType() const
 {
 	return SSWR::OrganMgr::OrganGroupItem::IT_GROUP;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganGroup::GetItemName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganGroup::GetItemName(UTF8Char *buff) const
 {
 	UTF8Char *sptr = buff;
 	if (this->isDefault)
@@ -157,14 +157,14 @@ UTF8Char *SSWR::OrganMgr::OrganGroup::GetItemName(UTF8Char *buff)
 	return sptr;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganGroup::GetEngName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganGroup::GetEngName(UTF8Char *buff) const
 {
 	UTF8Char *sptr = buff;
 	sptr = this->eName->ConcatTo(sptr);
 	return sptr;
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganGroup::Clone()
+SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganGroup::Clone() const
 {
 	OrganGroup *newItem;
 	NEW_CLASS(newItem, OrganGroup());

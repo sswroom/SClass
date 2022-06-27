@@ -126,8 +126,8 @@ namespace Media
 		virtual Double GetVDPI() const;
 		virtual void SetHDPI(Double dpi);
 		virtual void SetVDPI(Double dpi);
-		virtual UInt8 *GetImgBits(Bool *revOrder) const;
-		virtual void GetImgBitsEnd(Bool modified) const;
+		virtual UInt8 *GetImgBits(Bool *revOrder);
+		virtual void GetImgBitsEnd(Bool modified);
 		virtual UOSInt GetImgBpl() const;
 		virtual Media::EXIFData *GetEXIF() const;
 		virtual Media::PixelFormat GetPixelFormat() const;
@@ -176,16 +176,16 @@ namespace Media
 		void GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
 		void GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);
-		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown);
+		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const;
 
-		virtual Media::StaticImage *ToStaticImage();
+		virtual Media::StaticImage *ToStaticImage() const;
 		virtual UOSInt SavePng(IO::SeekableStream *stm);
 		virtual UOSInt SaveGIF(IO::SeekableStream *stm);
 		virtual UOSInt SaveJPG(IO::SeekableStream *stm);
 
 		virtual Media::Image *Clone() const;
 		virtual Media::Image::ImageType GetImageType() const;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const;
 
 		static void PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height);
 		static void PolygonAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth);

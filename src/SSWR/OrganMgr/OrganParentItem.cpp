@@ -12,22 +12,22 @@ SSWR::OrganMgr::OrganParentItem::~OrganParentItem()
 {
 }
 
-SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganParentItem::GetItemType()
+SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganParentItem::GetItemType() const
 {
 	return OrganGroupItem::IT_PARENT;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganParentItem::GetItemName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganParentItem::GetItemName(UTF8Char *buff) const
 {
 	return Text::StrWChar_UTF8(buff, L"上移");
 }
 
-UTF8Char *SSWR::OrganMgr::OrganParentItem::GetEngName(UTF8Char *buff)
+UTF8Char *SSWR::OrganMgr::OrganParentItem::GetEngName(UTF8Char *buff) const
 {
 	return Text::StrConcatC(buff, UTF8STRC("Parent"));
 }
 
-SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganParentItem::Clone()
+SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganParentItem::Clone() const
 {
 	OrganParentItem *newItem;
 	NEW_CLASS(newItem, OrganParentItem());
