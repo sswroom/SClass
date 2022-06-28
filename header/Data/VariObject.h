@@ -24,9 +24,9 @@ namespace Data
 		VariObject(NameType nameType);
 		~VariObject();
 
-		NameType GetNameType();
-		Bool HasItem(const UTF8Char *name);
-		Data::VariItem *GetItem(const UTF8Char *name);
+		NameType GetNameType() const;
+		Bool HasItem(const UTF8Char *name) const;
+		Data::VariItem *GetItem(const UTF8Char *name) const;
 		void SetItemNull(const UTF8Char *name);
 		void SetItemStr(const UTF8Char *name, const UTF8Char *str);
 		void SetItemStr(const UTF8Char *name, Text::String *str);
@@ -49,8 +49,8 @@ namespace Data
 		void SetItemVectorDirect(const UTF8Char *name, Math::Vector2D *vec);
 		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);
 
-		void ToString(Text::StringBuilderUTF8 *sb);
-		Class *CreateClass();
+		void ToString(Text::StringBuilderUTF8 *sb) const;
+		Class *CreateClass() const;
 	};
 }
 #endif

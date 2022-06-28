@@ -595,16 +595,30 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 			obj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 			obj->pointArr[0] = vec->GetCenter();
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Vector2D::VectorType::Polygon || vec->GetVectorType() == Math::Vector2D::VectorType::Multipoint)
+		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
+		{
+			UInt32 *ptOfsts;
+			Math::Coord2DDbl *points;
+			UOSInt i;
+			Math::PointOfstCollection *pts = (Math::PointOfstCollection*)vec;
+			ptOfsts = pts->GetPtOfstList(&i);
+			obj->nPtOfst = (UInt32)i;
+			obj->ptOfstArr = MemAlloc(UInt32, i);
+			MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * i);
+			points = pts->GetPointList(&i);
+			obj->nPoint = (UInt32)i;
+			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);
+			MemCopyNO(obj->pointArr, points, i * 16);
+		}
+		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Multipoint)
 		{
 			UInt32 *ptOfsts;
 			Math::Coord2DDbl *points;
 			UOSInt i;
 			Math::PointCollection *pts = (Math::PointCollection*)vec;
-			ptOfsts = pts->GetPtOfstList(&i);
-			obj->nPtOfst = (UInt32)i;
-			obj->ptOfstArr = MemAlloc(UInt32, i);
-			MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * i);
+			obj->nPtOfst = (UInt32)1;
+			obj->ptOfstArr = MemAlloc(UInt32, 1);
+			obj->ptOfstArr[0] = 0;
 			points = pts->GetPointList(&i);
 			obj->nPoint = (UInt32)i;
 			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);

@@ -2084,6 +2084,8 @@ Math/PointCollection.h: ../../src/Math/PointCollection.cpp
 @PointCollection.o
 Math/PointMappingCoordinateSystem.h: ../../src/Math/PointMappingCoordinateSystem.cpp
 @PointMappingCoordinateSystem.o
+Math/PointOfstCollection.h: ../../src/Math/PointOfstCollection.cpp
+@PointOfstCollection.o
 Math/Polygon.h: ../../src/Math/Polygon.cpp
 @Polygon.o
 Math/Polyline.h: ../../src/Math/Polyline.cpp
@@ -4570,6 +4572,7 @@ Point.o: ../../src/Math/Point.cpp
 Point3D.o: ../../src/Math/Point3D.cpp
 PointCollection.o: ../../src/Math/PointCollection.cpp
 PointMappingCoordinateSystem.o: ../../src/Math/PointMappingCoordinateSystem.cpp
+PointOfstCollection.o: ../../src/Math/PointOfstCollection.cpp
 Polygon.o: ../../src/Math/Polygon.cpp
 Polyline.o: ../../src/Math/Polyline.cpp
 Polyline3D.o: ../../src/Math/Polyline3D.cpp

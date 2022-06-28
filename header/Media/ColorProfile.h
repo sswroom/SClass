@@ -141,11 +141,11 @@ namespace Media
 
 			void Set(const ColorPrimaries *primaries);
 			void SetColorType(ColorType colorType);
-			void GetWhitexy(Double *x, Double *y);
+			void GetWhitexy(Double *x, Double *y) const;
 			void GetConvMatrix(Math::Matrix3 *matrix) const;
 			void SetConvMatrix(Math::Matrix3 *matrix);
 
-			Bool Equals(const ColorPrimaries *primaries);
+			Bool Equals(const ColorPrimaries *primaries) const;
 
 			static void GetWhitePointXY(WhitePointType wpType, Double *x, Double *y);
 			static void GetWhitePointXY(Double colorTemp, Double *x, Double *y);
@@ -171,10 +171,10 @@ namespace Media
 
 		void Set(const ColorProfile *profile);
 		void SetCommonProfile(CommonProfileType cpt);
-		void RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z);
-		Int32 XYZToRGB32(Double a, Double X, Double Y, Double Z);
+		void RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z) const;
+		Int32 XYZToRGB32(Double a, Double X, Double Y, Double Z) const;
 		static void XYZWPTransform(WhitePointType srcWP, Double srcX, Double srcY, Double srcZ, WhitePointType destWP, Double *outX, Double *outY, Double *outZ);
-		Bool Equals(const ColorProfile *profile);
+		Bool Equals(const ColorProfile *profile) const;
 		Media::CS::TransferParam *GetRTranParam();
 		Media::CS::TransferParam *GetGTranParam();
 		Media::CS::TransferParam *GetBTranParam();
@@ -183,10 +183,10 @@ namespace Media
 		const Media::CS::TransferParam *GetBTranParamRead() const;
 		Media::ColorProfile::ColorPrimaries *GetPrimaries();
 		const Media::ColorProfile::ColorPrimaries *GetPrimariesRead() const;
-		void ToString(Text::StringBuilderUTF8 *sb);
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		void SetRAWICC(const UInt8 *iccData);
-		const UInt8 *GetRAWICC();
+		const UInt8 *GetRAWICC() const;
 
 		static Text::CString YUVTypeGetName(YUVType yuvType);
 		static Text::CString ColorTypeGetName(ColorType colorType);

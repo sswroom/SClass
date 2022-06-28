@@ -73,7 +73,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			Math::PointCollection *pg = (Math::PointCollection*)vec;
+			Math::PointOfstCollection *pg = (Math::PointOfstCollection*)vec;
 			json->ObjectBeginObject(name);
 			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
 			{

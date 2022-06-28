@@ -16,7 +16,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::MyFile::~MyFile()
 	this->fileName->Release();
 }
 
-Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF8 *sb)
+Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->Append(this->fileName);
 	sb->AppendC(UTF8STRC(" size="));
@@ -24,17 +24,17 @@ Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUT
 	return true;
 }
 
-Text::String *SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName()
+Text::String *SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName() const
 {
 	return this->fileName;
 }
 
-UInt64 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetSize()
+UInt64 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetSize() const
 {
 	return this->fileSize;
 }
 
-OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(Data::IComparable *obj)
+OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(Data::IComparable *obj) const
 {
 	UInt64 size = ((MyFile*)obj)->fileSize;
 	if (this->fileSize > size)

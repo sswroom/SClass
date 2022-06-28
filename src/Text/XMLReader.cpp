@@ -157,7 +157,7 @@ Text::XMLReader::~XMLReader()
 	SDEL_CLASS(this->enc);
 }
 
-void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb)
+void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->pathList.GetCount();
@@ -174,37 +174,37 @@ void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-UOSInt Text::XMLReader::GetPathLev()
+UOSInt Text::XMLReader::GetPathLev() const
 {
 	return this->pathList.GetCount();
 }
 
-Text::XMLNode::NodeType Text::XMLReader::GetNodeType()
+Text::XMLNode::NodeType Text::XMLReader::GetNodeType() const
 {
 	return this->nt;
 }
 
-Text::String *Text::XMLReader::GetNodeText()
+Text::String *Text::XMLReader::GetNodeText() const
 {
 	return this->nodeText;
 }
 
-Text::String *Text::XMLReader::GetNodeOriText()
+Text::String *Text::XMLReader::GetNodeOriText() const
 {
 	return this->nodeOriText;
 }
 
-UOSInt Text::XMLReader::GetAttribCount()
+UOSInt Text::XMLReader::GetAttribCount() const
 {
 	return this->attrList.GetCount();
 }
 
-Text::XMLAttrib *Text::XMLReader::GetAttrib(UOSInt index)
+Text::XMLAttrib *Text::XMLReader::GetAttrib(UOSInt index) const
 {
 	return this->attrList.GetItem(index);
 }
 
-Text::XMLAttrib *Text::XMLReader::GetAttrib(const UTF8Char *name, UOSInt nameLen)
+Text::XMLAttrib *Text::XMLReader::GetAttrib(const UTF8Char *name, UOSInt nameLen) const
 {
 	UOSInt i = this->attrList.GetCount();
 	Text::XMLAttrib *attr;
@@ -1578,22 +1578,22 @@ Bool Text::XMLReader::SkipElement()
 	}
 }
 
-Bool Text::XMLReader::IsElementEmpty()
+Bool Text::XMLReader::IsElementEmpty() const
 {
 	return this->nt == Text::XMLNode::NT_ELEMENT && this->emptyNode;
 }
 
-Bool Text::XMLReader::IsComplete()
+Bool Text::XMLReader::IsComplete() const
 {
 	return this->pathList.GetCount() == 0 && this->parseOfst == this->buffSize;	
 }
 
-OSInt Text::XMLReader::GetErrorCode()
+OSInt Text::XMLReader::GetErrorCode() const
 {
 	return this->parseError;
 }
 
-Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
+Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt i;
 	UOSInt j;

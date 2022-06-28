@@ -37,7 +37,7 @@ void Text::Encoding::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-UInt32 Text::Encoding::GetEncCodePage()
+UInt32 Text::Encoding::GetEncCodePage() const
 {
 	return this->codePage;
 }

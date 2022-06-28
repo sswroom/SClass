@@ -59,7 +59,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->buffSize = 0;
 	this->buffOfst = 0;
 	this->contEnc = 0;
-	this->timeOutMS = 5000;
+	this->timeOutMS = 120000;
 	this->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 }

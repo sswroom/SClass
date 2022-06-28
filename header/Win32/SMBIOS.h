@@ -86,18 +86,18 @@ namespace Win32
 		UOSInt smbiosBuffSize;
 		UInt8 *relPtr;
 
-		void GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType);
+		void GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType) const;
 	public:
 		SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr);
 		~SMBIOS();
 
-		UOSInt GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList);
-		void FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList);
+		UOSInt GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const;
+		void FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const;
 
-		UTF8Char *GetPlatformName(UTF8Char *buff);
-		UTF8Char *GetPlatformSN(UTF8Char *buff);
-		Int32 GetChassisType();
-		Bool ToString(Text::StringBuilderUTF8 *sb);
+		UTF8Char *GetPlatformName(UTF8Char *buff) const;
+		UTF8Char *GetPlatformSN(UTF8Char *buff) const;
+		Int32 GetChassisType() const;
+		Bool ToString(Text::StringBuilderUTF8 *sb) const;
 		static void GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family);
 		static void GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type);
 	};

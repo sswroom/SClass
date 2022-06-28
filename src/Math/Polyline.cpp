@@ -5,123 +5,25 @@
 #include "Math/Polyline.h"
 #include "Data/ArrayListDbl.h"
 
-Math::Polyline::Polyline(UInt32 srid, Math::Coord2DDbl *pointArr, UOSInt nPoint) : PointCollection(srid)
+Math::Polyline::Polyline(UInt32 srid, Math::Coord2DDbl *pointArr, UOSInt nPoint) : PointOfstCollection(srid, 1, nPoint, pointArr)
 {
-	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint << 1);
-	MemCopyNO(this->pointArr, pointArr, sizeof(Math::Coord2DDbl) * nPoint);
-	this->nPoint = nPoint;
-	this->nPtOfst = 1;
-	this->ptOfstArr = MemAlloc(UInt32, 1);
-	this->ptOfstArr[0] = 0;
 	this->flags = 0;
 	this->color = 0;
 }
 
-Math::Polyline::Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : PointCollection(srid)
+Math::Polyline::Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : PointOfstCollection(srid, nPtOfst, nPoint, 0)
 {
-	if (nPtOfst == 0)
-	{
-		nPtOfst = 1;
-	}
-	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
-	this->nPoint = nPoint;
-	MemClear(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
-	this->nPtOfst = nPtOfst;
-	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
-	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
 	this->flags = 0;
 	this->color = 0;
 }
 
 Math::Polyline::~Polyline()
 {
-	MemFreeA(this->pointArr);
-	MemFree(this->ptOfstArr);
 }
 
 Math::Vector2D::VectorType Math::Polyline::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Polyline;
-}
-
-UInt32 *Math::Polyline::GetPtOfstList(UOSInt *nPtOfst)
-{
-	*nPtOfst = this->nPtOfst;
-	return this->ptOfstArr;
-}
-
-Math::Coord2DDbl *Math::Polyline::GetPointList(UOSInt *nPoint)
-{
-	*nPoint = this->nPoint;
-	return this->pointArr;
-}
-
-const Math::Coord2DDbl *Math::Polyline::GetPointListRead(UOSInt *nPoint) const
-{
-	*nPoint = this->nPoint;
-	return this->pointArr;
-}
-
-Math::Coord2DDbl Math::Polyline::GetCenter() const
-{
-	Double maxLength = 0;
-	UOSInt maxId = 0;
-	Double currLength;
-	UOSInt i = this->nPoint - 1;
-	UOSInt j = this->nPtOfst;
-	UOSInt k;
-	Math::Coord2DDbl lastPt;
-	Math::Coord2DDbl thisPt;
-	while (j-- > 0)
-	{
-		lastPt = this->pointArr[i];
-		currLength = 0;
-		k = this->ptOfstArr[j];
-		while (i-- > k)
-		{
-			thisPt = this->pointArr[i];
-			currLength += Math_Sqrt((thisPt.x - lastPt.x) * (thisPt.x - lastPt.x) + (thisPt.y - lastPt.y) * (thisPt.y - lastPt.y));
-			lastPt = thisPt;
-		}
-		if (currLength > maxLength)
-		{
-			maxLength = currLength;
-			maxId = j;
-		}
-	}
-
-	if (maxLength == 0)
-	{
-		return this->pointArr[0];
-	}
-	i = this->ptOfstArr[maxId];
-	if ((UOSInt)maxId >= this->nPtOfst - 1)
-	{
-		j = this->nPoint;
-	}
-	else
-	{
-		j = this->ptOfstArr[maxId + 1];
-	}
-	maxLength = maxLength * 0.5;
-	lastPt = this->pointArr[i];
-	while (i < j)
-	{
-		i++;
-		thisPt = this->pointArr[i];
-		currLength = Math_Sqrt((thisPt.x - lastPt.x) * (thisPt.x - lastPt.x) + (thisPt.y - lastPt.y) * (thisPt.y - lastPt.y));
-		if (currLength >= maxLength)
-		{
-			return Math::Coord2DDbl(lastPt.x + (thisPt.x - lastPt.x) * maxLength / currLength,
-				lastPt.y + (thisPt.y - lastPt.y) * maxLength / currLength);
-		}
-		else
-		{
-			maxLength -= currLength;
-		}
-		lastPt = thisPt;
-	}
-	return this->pointArr[0];
 }
 
 Math::Vector2D *Math::Polyline::Clone() const
@@ -133,21 +35,6 @@ Math::Vector2D *Math::Polyline::Clone() const
 	pl->flags = this->flags;
 	pl->color = this->color;
 	return pl;
-}
-
-void Math::Polyline::GetBounds(Math::RectAreaDbl *bounds) const
-{
-	UOSInt i = this->nPoint;
-	Math::Coord2DDbl min;
-	Math::Coord2DDbl max;
-	min = max = this->pointArr[0];
-	while (i > 1)
-	{
-		i -= 1;
-		min = min.Min(this->pointArr[i]);
-		max = max.Max(this->pointArr[i]);
-	}
-	*bounds = Math::RectAreaDbl(min, max);
 }
 
 Double Math::Polyline::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
@@ -288,15 +175,6 @@ Bool Math::Polyline::JoinVector(Math::Vector2D *vec)
 	//////////////////////////////////
 	this->OptimizePolyline();
 	return true;
-}
-
-void Math::Polyline::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
-{
-	UOSInt i = this->nPoint;
-	while (i-- > 0)
-	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, 0, &this->pointArr[i].x, &this->pointArr[i].y, 0);
-	}
 }
 
 Bool Math::Polyline::Equals(Math::Vector2D *vec) const

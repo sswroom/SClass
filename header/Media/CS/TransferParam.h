@@ -61,7 +61,7 @@ namespace Media
 			Double GetGamma() const { return this->gamma; }
 			Media::LUT *GetLUT() { return this->lut; }
 			const Media::LUT *GetLUTRead() const { return this->lut; }
-			Bool Equals(const TransferParam *tran);
+			Bool Equals(const TransferParam *tran) const;
 		};
 
 		Text::CString TransferTypeGetName(Media::CS::TransferType ttype);

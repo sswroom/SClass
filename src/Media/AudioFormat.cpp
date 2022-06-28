@@ -97,7 +97,7 @@ void Media::AudioFormat::FromAudioFormat(Media::AudioFormat *fmt)
 	}
 }
 
-void Media::AudioFormat::ToString(Text::StringBuilderUTF8 *sb)
+void Media::AudioFormat::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->AppendC(UTF8STRC("Foramt Id = 0x"));
 	sb->AppendHex32V(this->formatId);

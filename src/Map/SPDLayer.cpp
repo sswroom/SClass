@@ -578,7 +578,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 
 	IO::FileStream *cip = (IO::FileStream*)session;
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
-	Math::PointCollection *ptColl = 0;
+	Math::PointOfstCollection *ptColl = 0;
 	UInt32 *ptOfsts;
 	Int32 *points;
 	UOSInt i;

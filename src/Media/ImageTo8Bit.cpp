@@ -31,7 +31,7 @@ namespace Media
 
 		}
 
-		virtual OSInt CompareTo(Data::IComparable *obj)
+		virtual OSInt CompareTo(Data::IComparable *obj) const
 		{
 			UOSInt cnt = ((Media::ColorStat*)obj)->count;
 			if (cnt > count)

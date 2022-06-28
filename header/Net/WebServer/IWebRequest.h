@@ -60,7 +60,7 @@ namespace Net
 			Bool GetQueryValueI64(Text::CString name, Int64 *val);
 			Bool GetQueryValueF64(Text::CString name, Double *val);
 			virtual Bool HasQuery(Text::CString name) = 0;
-			virtual Net::WebUtil::RequestMethod GetReqMethod() = 0;
+			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Text::String *GetHTTPFormStr(Text::CString name) = 0;
 			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize) = 0;
@@ -77,11 +77,11 @@ namespace Net
 			virtual Bool IsSecure() = 0;
 			virtual const UInt8 *GetReqData(UOSInt *dataSize) = 0;
 
-			Text::CString GetReqMethodStr();
-			Net::BrowserInfo::BrowserType GetBrowser();
-			Text::CString GetBrowserVer();
-			Manage::OSInfo::OSType GetOS();
-			Text::CString GetOSVer();
+			Text::CString GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }
+			Net::BrowserInfo::BrowserType GetBrowser() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowser; }
+			Text::CString GetBrowserVer() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowserVer; }
+			Manage::OSInfo::OSType GetOS() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqOS; }
+			Text::CString GetOSVer() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqOSVer; }
 
 			static Text::CString RequestProtocolGetName(RequestProtocol reqProto);
 		};

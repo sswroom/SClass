@@ -6,17 +6,11 @@ namespace Math
 {
 	class MultiPoint : public Math::PointCollection
 	{
-	private:
-		Double *points;
-		OSInt nPoints;
-		Int32 part;
 	public:
-		MultiPoint(OSInt nPoints);
+		MultiPoint(UInt32 srid, UOSInt nPoints);
 		virtual ~MultiPoint();
 
 		virtual VectorType GetVectorType();
-		virtual Int32 *GetPartList(OSInt *nParts);
-		virtual Double *GetPointList(OSInt *nPoints);
 	};
 }
 #endif

@@ -29,7 +29,7 @@ void DB::DBRow::FreeField(DB::DBRow::Field *field)
 	MemFree(field);
 }
 
-DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field)
+DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field) const
 {
 	switch (field->def->GetColType())
 	{
@@ -203,7 +203,7 @@ Bool DB::DBRow::SetFieldBinary(DB::DBRow::Field *field, const UInt8 *buff, UOSIn
 	return true;
 }
 
-Bool DB::DBRow::IsFieldNull(DB::DBRow::Field *field)
+Bool DB::DBRow::IsFieldNull(DB::DBRow::Field *field) const
 {
 	if (field->currentChanged)
 	{
@@ -215,7 +215,7 @@ Bool DB::DBRow::IsFieldNull(DB::DBRow::Field *field)
 	}
 }
 
-const UTF8Char *DB::DBRow::GetFieldStr(DB::DBRow::Field *field)
+const UTF8Char *DB::DBRow::GetFieldStr(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_STRING)
@@ -232,7 +232,7 @@ const UTF8Char *DB::DBRow::GetFieldStr(DB::DBRow::Field *field)
 	}	
 }
 
-Int64 DB::DBRow::GetFieldInt64(DB::DBRow::Field *field)
+Int64 DB::DBRow::GetFieldInt64(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_INT64)
@@ -249,7 +249,7 @@ Int64 DB::DBRow::GetFieldInt64(DB::DBRow::Field *field)
 	}
 }
 
-Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field)
+Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DOUBLE)
@@ -266,7 +266,7 @@ Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field)
 	}
 }
 
-Data::DateTime *DB::DBRow::GetFieldDate(DB::DBRow::Field *field)
+Data::DateTime *DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
@@ -283,7 +283,7 @@ Data::DateTime *DB::DBRow::GetFieldDate(DB::DBRow::Field *field)
 	}
 }
 
-Math::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field)
+Math::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
@@ -300,7 +300,7 @@ Math::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field)
 	}	
 }
 
-const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize)
+const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
@@ -431,7 +431,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 	return true;
 }
 
-DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName)
+DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field)
@@ -444,7 +444,7 @@ DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName)
 	}
 }
 
-DB::DBRow::DataType DB::DBRow::GetFieldDataType(const UTF8Char *fieldName)
+DB::DBRow::DataType DB::DBRow::GetFieldDataType(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field)
@@ -524,7 +524,7 @@ Bool DB::DBRow::SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOS
 	return this->SetFieldBinary(field, buff, buffSize);
 }
 
-Bool DB::DBRow::IsNull(const UTF8Char *fieldName)
+Bool DB::DBRow::IsNull(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -534,7 +534,7 @@ Bool DB::DBRow::IsNull(const UTF8Char *fieldName)
 	return this->IsFieldNull(field);
 }
 
-const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName)
+const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -544,7 +544,7 @@ const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName)
 	return this->GetFieldStr(field);
 }
 
-Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName)
+Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -554,7 +554,7 @@ Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName)
 	return this->GetFieldInt64(field);
 }
 
-Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName)
+Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -564,7 +564,7 @@ Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName)
 	return this->GetFieldDouble(field);
 }
 
-Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName)
+Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -574,7 +574,7 @@ Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName)
 	return this->GetFieldDate(field);
 }
 
-Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName)
+Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -584,7 +584,7 @@ Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName)
 	return this->GetFieldVector(field);
 }
 
-const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize)
+const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize) const
 {
 	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
 	if (field == 0)
@@ -690,7 +690,7 @@ void DB::DBRow::Rollback()
 	}
 }
 
-Bool DB::DBRow::GetSinglePKI64(Int64 *key)
+Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 {
 	Bool hasKey = false;
 	Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap->GetValues();
@@ -720,7 +720,7 @@ Bool DB::DBRow::GetSinglePKI64(Int64 *key)
 	return hasKey;
 }
 
-void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
+void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -820,7 +820,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendUTF8Char(']');
 }
 
-void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
+void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb) const
 {
 	Text::CString tableName = this->table->GetTableName()->ToCString();
 	UOSInt i = tableName.IndexOf('.');
@@ -867,7 +867,7 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName)
+void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName) const
 {
 	Bool nextCap = false;
 	UTF8Char c;

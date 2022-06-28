@@ -42,9 +42,9 @@ namespace IO
 			FrameDetail(UInt64 ofst, UInt64 size);
 			virtual ~FrameDetail();
 
-			UInt64 GetOffset();
-			UInt64 GetSize();
-			UOSInt GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList);
+			UInt64 GetOffset() const;
+			UInt64 GetSize() const;
+			UOSInt GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList) const;
 
 			virtual void AddHeader(Text::CString header);
 			virtual void AddField(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value);
@@ -53,7 +53,7 @@ namespace IO
 			virtual void AddText(UOSInt ofst, Text::CString name);
 			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 
-			void ToString(Text::StringBuilderUTF8 *sb);
+			void ToString(Text::StringBuilderUTF8 *sb) const;
 		};
 	}
 }

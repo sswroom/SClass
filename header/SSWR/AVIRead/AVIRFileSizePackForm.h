@@ -26,10 +26,10 @@ namespace SSWR
 				MyFile(Text::CString fileName, UInt64 fileSize);
 				virtual ~MyFile();
 
-				Bool ToString(Text::StringBuilderUTF8 *sb);
-				Text::String *GetName();
-				UInt64 GetSize();
-				virtual OSInt CompareTo(Data::IComparable *obj);
+				Bool ToString(Text::StringBuilderUTF8 *sb) const;
+				Text::String *GetName() const;
+				UInt64 GetSize() const;
+				virtual OSInt CompareTo(Data::IComparable *obj) const;
 			};
 
 		private:

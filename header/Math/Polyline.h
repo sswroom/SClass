@@ -5,13 +5,9 @@
 
 namespace Math
 {
-	class Polyline : public Math::PointCollection
+	class Polyline : public Math::PointOfstCollection
 	{
 	protected:
-		Math::Coord2DDbl *pointArr;
-		UOSInt nPoint;
-		UInt32 *ptOfstArr;
-		UOSInt nPtOfst;
 		Int32 flags;
 		UInt32 color;
 	public:
@@ -20,15 +16,9 @@ namespace Math
 		virtual ~Polyline();
 
 		virtual VectorType GetVectorType() const;
-		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst);
-		virtual Math::Coord2DDbl *GetPointList(UOSInt *nPoint);
-		virtual const Math::Coord2DDbl *GetPointListRead(UOSInt *nPoint) const;
-		virtual Math::Coord2DDbl GetCenter() const;
 		virtual Math::Vector2D *Clone() const;
-		virtual void GetBounds(Math::RectAreaDbl *bounds) const;
 		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 		virtual Bool JoinVector(Math::Vector2D *vec);
-		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec) const;
 
 		virtual Math::Polyline *SplitByPoint(Math::Coord2DDbl pt);

@@ -8,7 +8,7 @@ namespace Data
 	public:
 		typedef OSInt (__stdcall *CompareFunc)(void *obj1, void *obj2);
 	public:
-		virtual OSInt CompareTo(Data::IComparable *obj) = 0;
+		virtual OSInt CompareTo(Data::IComparable *obj) const = 0;
 	};
 }
 #endif

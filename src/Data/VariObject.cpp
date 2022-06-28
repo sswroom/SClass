@@ -33,17 +33,17 @@ Data::VariObject::~VariObject()
 	DEL_CLASS(this->items);
 }
 
-Data::VariObject::NameType Data::VariObject::GetNameType()
+Data::VariObject::NameType Data::VariObject::GetNameType() const
 {
 	return this->nameType;
 }
 
-Bool Data::VariObject::HasItem(const UTF8Char *name)
+Bool Data::VariObject::HasItem(const UTF8Char *name) const
 {
 	return this->items->Get(name) != 0;
 }
 
-Data::VariItem *Data::VariObject::GetItem(const UTF8Char *name)
+Data::VariItem *Data::VariObject::GetItem(const UTF8Char *name) const
 {
 	return this->items->Get(name);
 }
@@ -153,7 +153,7 @@ void Data::VariObject::SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid)
 	this->SetItem(name, Data::VariItem::NewUUIDDirect(uuid));
 }
 
-void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
+void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -195,7 +195,7 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendUTF8Char('}');
 }
 
-Data::Class *Data::VariObject::CreateClass()
+Data::Class *Data::VariObject::CreateClass() const
 {
 	Data::Class *cls;
 	OSInt currPos = 0;

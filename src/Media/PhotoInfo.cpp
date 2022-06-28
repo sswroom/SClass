@@ -178,12 +178,12 @@ Media::PhotoInfo::~PhotoInfo()
 		DEL_CLASS(this->photoDate);
 }
 
-Bool Media::PhotoInfo::HasInfo()
+Bool Media::PhotoInfo::HasInfo() const
 {
 	return this->succ;
 }
 
-Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt)
+Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt) const
 {
 	if (this->photoDate)
 	{
@@ -193,7 +193,7 @@ Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt)
 	return false;
 }
 
-void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb)
+void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

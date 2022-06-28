@@ -255,7 +255,7 @@ void Media::ColorProfile::ColorPrimaries::SetColorType(ColorType colorType)
 	}
 }
 
-void Media::ColorProfile::ColorPrimaries::GetWhitexy(Double *x, Double *y)
+void Media::ColorProfile::ColorPrimaries::GetWhitexy(Double *x, Double *y) const
 {
 	*x = this->wx;
 	*y = this->wy;
@@ -345,7 +345,7 @@ void Media::ColorProfile::ColorPrimaries::SetConvMatrix(Math::Matrix3 *matrix)
 	this->wx = X * this->wy;
 }
 
-Bool Media::ColorProfile::ColorPrimaries::Equals(const ColorPrimaries *primaries)
+Bool Media::ColorProfile::ColorPrimaries::Equals(const ColorPrimaries *primaries) const
 {
 	return this->rx == primaries->rx && this->ry == primaries->ry && this->gx == primaries->gx && this->gy == primaries->gy && this->bx == primaries->bx && this->by == primaries->by && this->wx == primaries->wx && this->wy == primaries->wy;
 }
@@ -687,7 +687,7 @@ void Media::ColorProfile::SetCommonProfile(Media::ColorProfile::CommonProfileTyp
 	}
 }
 
-void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z)
+void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z) const
 {
 	Math::Matrix3 matrix;
 	this->primaries.GetConvMatrix(&matrix);
@@ -704,7 +704,7 @@ void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z)
 	DEL_CLASS(btrant);
 }
 
-Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z)
+Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) const
 {
 	Math::Matrix3 matrix;
 	Double R;
@@ -777,7 +777,7 @@ void Media::ColorProfile::XYZWPTransform(WhitePointType srcWP, Double srcX, Doub
 	mat2.Multiply(srcX, srcY, srcZ, outX, outY, outZ);
 }
 
-Bool Media::ColorProfile::Equals(const ColorProfile *profile)
+Bool Media::ColorProfile::Equals(const ColorProfile *profile) const
 {
 	return this->primaries.Equals(&profile->primaries) && this->rtransfer.Equals(&profile->rtransfer) && this->gtransfer.Equals(&profile->gtransfer) && this->btransfer.Equals(&profile->btransfer);
 }
@@ -822,17 +822,17 @@ const Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimariesRead
 	return &this->primaries;
 }
 
-void Media::ColorProfile::ToString(Text::StringBuilderUTF8 *sb)
+void Media::ColorProfile::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->AppendC(UTF8STRC("-R Transfer: "));
-	sb->Append(Media::CS::TransferTypeGetName(this->GetRTranParam()->GetTranType()));
+	sb->Append(Media::CS::TransferTypeGetName(this->GetRTranParamRead()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-G Transfer: "));
-	sb->Append(Media::CS::TransferTypeGetName(this->GetGTranParam()->GetTranType()));
+	sb->Append(Media::CS::TransferTypeGetName(this->GetGTranParamRead()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-B Transfer: "));
-	sb->Append(Media::CS::TransferTypeGetName(this->GetBTranParam()->GetTranType()));
+	sb->Append(Media::CS::TransferTypeGetName(this->GetBTranParamRead()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-Gamma: "));
-	Text::SBAppendF64(sb, this->GetRTranParam()->GetGamma());
-	Media::ColorProfile::ColorPrimaries *primaries = this->GetPrimaries(); 
+	Text::SBAppendF64(sb, this->GetRTranParamRead()->GetGamma());
+	const Media::ColorProfile::ColorPrimaries *primaries = this->GetPrimariesRead(); 
 	sb->AppendC(UTF8STRC("\r\n-RGB Primary: "));
 	sb->Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 	sb->AppendC(UTF8STRC("\r\n-Red:   "));
@@ -882,7 +882,7 @@ void Media::ColorProfile::SetRAWICC(const UInt8 *iccData)
 	}
 }
 
-const UInt8 *Media::ColorProfile::GetRAWICC()
+const UInt8 *Media::ColorProfile::GetRAWICC() const
 {
 	return this->rawICC;
 }

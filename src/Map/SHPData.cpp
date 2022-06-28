@@ -314,11 +314,10 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 		return;
 	}
 
-	IO::StmData::FileData *dbfData;
-	NEW_CLASS(dbfData, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
-	if (dbfData->GetDataSize() > 0)
+	IO::StmData::FileData dbfData({sbuff, (UOSInt)(sptr - sbuff)}, false);
+	if (dbfData.GetDataSize() > 0)
 	{
-		NEW_CLASS(this->dbf, DB::DBFFile(dbfData, codePage));
+		NEW_CLASS(this->dbf, DB::DBFFile(&dbfData, codePage));
 		if (this->dbf->IsError())
 		{
 			DEL_CLASS(this->dbf);
@@ -339,7 +338,6 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 			this->SetNameCol(nameCol);
 		}
 	}
-	DEL_CLASS(dbfData);
 }
 
 Map::SHPData::~SHPData()

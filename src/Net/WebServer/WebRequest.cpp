@@ -449,7 +449,7 @@ Bool Net::WebServer::WebRequest::HasQuery(Text::CString name)
 	return sptr != 0;
 }
 
-Net::WebUtil::RequestMethod Net::WebServer::WebRequest::GetReqMethod()
+Net::WebUtil::RequestMethod Net::WebServer::WebRequest::GetReqMethod() const
 {
 	return this->reqMeth;
 }

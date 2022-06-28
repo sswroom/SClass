@@ -72,7 +72,7 @@ namespace Text
 		XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual ~XMLAttrib();
 
-		virtual Bool ToString(Text::StringBuilderUTF8 *sb);
+		virtual Bool ToString(Text::StringBuilderUTF8 *sb) const;
 	};
 
 

@@ -776,7 +776,7 @@ Math::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE || this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		Math::PointCollection *ptColl = 0;
+		Math::PointOfstCollection *ptColl = 0;
 		UInt32 *tmpPtOfsts;
 		Math::Coord2DDbl *tmpPoints;
 		UOSInt i;

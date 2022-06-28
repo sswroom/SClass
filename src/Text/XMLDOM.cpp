@@ -33,7 +33,7 @@ Text::XMLAttrib::~XMLAttrib()
 	SDEL_STRING(this->valueOri);
 }
 
-Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF8 *sb)
+Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->Append(this->name);
 	if (this->value)

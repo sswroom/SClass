@@ -67,8 +67,11 @@ void Math::MercatorProjectedCoordinateSystem::ToGeographicCoordinate(Double proj
 	Double ser12a = secLat / (5040 * v7) * (61 + 662 * tLat2 + 1320 * tLat4 + 720 * tLat4 * tLat2);
 
 	Double eDiff = projX - this->falseEasting;
-	Double outX = (this->centralMeridian * PI / 180.0) + ser10 * eDiff - ser11 * Math_Pow(eDiff, 3) + ser12 * Math_Pow(eDiff, 5) - ser12a * Math_Pow(eDiff, 7);
-	Double outY = rLatL - ser7 * Math_Pow(eDiff, 2) + ser8 * Math_Pow(eDiff, 4) - ser9 * Math_Pow(eDiff, 6);
+	Double eDiff2 = eDiff * eDiff;
+	Double eDiff4 = eDiff2 * eDiff2;
+	Double eDiff6 = eDiff4 * eDiff2;
+	Double outX = (this->centralMeridian * PI / 180.0) + ser10 * eDiff - ser11 * (eDiff2 * eDiff) + ser12 * (eDiff4 * eDiff) - ser12a * (eDiff6 * eDiff);
+	Double outY = rLatL - ser7 * eDiff2 + ser8 * eDiff4 - ser9 * eDiff6;
 
 	*geoX = (outX * 180.0 / PI);
 	*geoY = (outY * 180.0 / PI);

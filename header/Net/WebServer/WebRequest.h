@@ -61,7 +61,7 @@ namespace Net
 			virtual RequestProtocol GetProtocol();
 			virtual Text::String *GetQueryValue(Text::CString name);
 			virtual Bool HasQuery(Text::CString name);
-			virtual Net::WebUtil::RequestMethod GetReqMethod();
+			virtual Net::WebUtil::RequestMethod GetReqMethod() const;
 			virtual void ParseHTTPForm();
 			virtual Text::String *GetHTTPFormStr(Text::CString name);
 			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);

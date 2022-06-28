@@ -16,7 +16,7 @@ Map::WebImageLayer::ImageStat::~ImageStat()
 
 }
 
-OSInt Map::WebImageLayer::ImageStat::CompareTo(Data::IComparable *obj)
+OSInt Map::WebImageLayer::ImageStat::CompareTo(Data::IComparable *obj) const
 {
 	Map::WebImageLayer::ImageStat *stat = (Map::WebImageLayer::ImageStat*)obj;
 	if (this->zIndex > stat->zIndex)

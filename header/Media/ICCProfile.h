@@ -24,32 +24,32 @@ namespace Media
 	public:
 		~ICCProfile();
 
-		Int32 GetCMMType();
-		void GetProfileVer(UInt8 *majorVer, UInt8 *minorVer, UInt8 *bugFixVer);
-		Int32 GetProfileClass();
-		Int32 GetDataColorspace();
-		Int32 GetPCS();
-		void GetCreateTime(Data::DateTime *createTime);
-		Int32 GetPrimaryPlatform();
-		Int32 GetProfileFlag();
-		Int32 GetDeviceManufacturer();
-		Int32 GetDeviceModel();
-		Int32 GetDeviceAttrib();
-		Int32 GetDeviceAttrib2();
-		Int32 GetRenderingIntent();
-		void GetPCSIlluminant(CIEXYZ *xyz);
-		Int32 GetProfileCreator();
-		Int32 GetTagCount();
+		Int32 GetCMMType() const;
+		void GetProfileVer(UInt8 *majorVer, UInt8 *minorVer, UInt8 *bugFixVer) const;
+		Int32 GetProfileClass() const;
+		Int32 GetDataColorspace() const;
+		Int32 GetPCS() const;
+		void GetCreateTime(Data::DateTime *createTime) const;
+		Int32 GetPrimaryPlatform() const;
+		Int32 GetProfileFlag() const;
+		Int32 GetDeviceManufacturer() const;
+		Int32 GetDeviceModel() const;
+		Int32 GetDeviceAttrib() const;
+		Int32 GetDeviceAttrib2() const;
+		Int32 GetRenderingIntent() const;
+		void GetPCSIlluminant(CIEXYZ *xyz) const;
+		Int32 GetProfileCreator() const;
+		Int32 GetTagCount() const;
 
-		Media::LUT *CreateRLUT();
-		Media::LUT *CreateGLUT();
-		Media::LUT *CreateBLUT();
-		Bool GetRedTransferParam(Media::CS::TransferParam *param);
-		Bool GetGreenTransferParam(Media::CS::TransferParam *param);
-		Bool GetBlueTransferParam(Media::CS::TransferParam *param);
-		Bool GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color);
+		Media::LUT *CreateRLUT() const;
+		Media::LUT *CreateGLUT() const;
+		Media::LUT *CreateBLUT() const;
+		Bool GetRedTransferParam(Media::CS::TransferParam *param) const;
+		Bool GetGreenTransferParam(Media::CS::TransferParam *param) const;
+		Bool GetBlueTransferParam(Media::CS::TransferParam *param) const;
+		Bool GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color) const;
 
-		void ToString(Text::StringBuilderUTF8 *sb);
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static ICCProfile *Parse(const UInt8 *buff, UOSInt buffSize);
 

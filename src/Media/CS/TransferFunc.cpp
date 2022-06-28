@@ -140,7 +140,7 @@ void Media::CS::TransferParam::Set(const TransferParam *tran)
 	this->gamma = tran->gamma;
 }
 
-Bool Media::CS::TransferParam::Equals(const TransferParam *tran)
+Bool Media::CS::TransferParam::Equals(const TransferParam *tran) const
 {
 	if (this->tranType != tran->tranType)
 		return false;

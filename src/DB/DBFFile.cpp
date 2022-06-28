@@ -167,11 +167,20 @@ UTF8Char *DB::DBFFile::GetRecord(UTF8Char *buff, UOSInt row, UOSInt col)
 	if (col >= this->colCnt)
 		return 0;
 
-	UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
-	this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, cbuff);
-	UTF8Char *ret = this->enc.UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
-	MemFree(cbuff);
-	return ret;
+	if (this->enc.IsUTF8())
+	{
+		buff += this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, buff);
+		*buff = 0;
+		return buff;
+	}
+	else
+	{
+		UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
+		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, cbuff);
+		UTF8Char *ret = this->enc.UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
+		MemFree(cbuff);
+		return ret;
+	}
 }
 
 UOSInt DB::DBFFile::GetColCount()

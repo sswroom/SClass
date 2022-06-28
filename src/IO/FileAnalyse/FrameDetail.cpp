@@ -31,17 +31,17 @@ IO::FileAnalyse::FrameDetail::~FrameDetail()
 	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
 }
 
-UInt64 IO::FileAnalyse::FrameDetail::GetOffset()
+UInt64 IO::FileAnalyse::FrameDetail::GetOffset() const
 {
 	return this->ofst;
 }
 
-UInt64 IO::FileAnalyse::FrameDetail::GetSize()
+UInt64 IO::FileAnalyse::FrameDetail::GetSize() const
 {
 	return this->size;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList)
+UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -95,7 +95,7 @@ void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
 	this->AddFieldInfo(ofst, size, CSTR("Subframe"), CSTR_NULL, FT_SUBFRAME);
 }
 
-void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb)
+void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(this->ofst);

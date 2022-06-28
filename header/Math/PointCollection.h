@@ -7,14 +7,19 @@ namespace Math
 {
 	class PointCollection : public Math::Vector2D
 	{
+	protected:
+		Math::Coord2DDbl *pointArr;
+		UOSInt nPoint;
 	public:
-		PointCollection(UInt32 srid);
+		PointCollection(UInt32 srid, UOSInt nPoint, Math::Coord2DDbl *pointArr);
 		virtual ~PointCollection();
 
-		virtual UInt32 *GetPtOfstList(UOSInt *nPtOfst) = 0;
-		virtual Math::Coord2DDbl *GetPointList(UOSInt *nPoint) = 0;
-		virtual const Math::Coord2DDbl *GetPointListRead(UOSInt *nPoint) const = 0;
+		Math::Coord2DDbl *GetPointList(UOSInt *nPoint) { *nPoint = this->nPoint; return this->pointArr; }
+		const Math::Coord2DDbl *GetPointListRead(UOSInt *nPoint) const { *nPoint = this->nPoint; return this->pointArr; }
+
 		virtual Math::Coord2DDbl GetCenter() const;
+		virtual void GetBounds(Math::RectAreaDbl *bounds) const;
+		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 	};
 }
 #endif

@@ -27,10 +27,10 @@ namespace Media
 		PhotoInfo(IO::IStreamData *fd);
 		~PhotoInfo();
 
-		Bool HasInfo();
-		Bool GetPhotoDate(Data::DateTime *dt);
+		Bool HasInfo() const;
+		Bool GetPhotoDate(Data::DateTime *dt) const;
 
-		void ToString(Text::StringBuilderUTF8 *sb);
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 	};
 };
 #endif

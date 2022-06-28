@@ -39,12 +39,12 @@ void Crypto::Token::JWTParam::SetIssuer(Text::String *issuer)
 	this->iss = SCOPY_STRING(issuer);
 }
 
-Text::String *Crypto::Token::JWTParam::GetIssuer()
+Text::String *Crypto::Token::JWTParam::GetIssuer() const
 {
 	return this->iss;
 }
 
-Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen)
+Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen) const
 {
 	return this->iss == 0 || this->iss->Equals(issuer, issuerLen);
 }
@@ -55,7 +55,7 @@ void Crypto::Token::JWTParam::SetSubject(Text::String *subject)
 	this->sub = SCOPY_STRING(subject);
 }
 
-Text::String *Crypto::Token::JWTParam::GetSubject()
+Text::String *Crypto::Token::JWTParam::GetSubject() const
 {
 	return this->sub;
 }
@@ -66,7 +66,7 @@ void Crypto::Token::JWTParam::SetAudience(Text::String *audience)
 	this->aud = SCOPY_STRING(audience);
 }
 
-Text::String *Crypto::Token::JWTParam::GetAudience()
+Text::String *Crypto::Token::JWTParam::GetAudience() const
 {
 	return this->aud;
 }
@@ -76,7 +76,7 @@ void Crypto::Token::JWTParam::SetExpirationTime(Int64 t)
 	this->exp = t;
 }
 
-Int64 Crypto::Token::JWTParam::GetExpirationTime()
+Int64 Crypto::Token::JWTParam::GetExpirationTime() const
 {
 	return this->exp;
 }
@@ -86,7 +86,7 @@ void Crypto::Token::JWTParam::SetNotBefore(Int64 t)
 	this->nbf = t;
 }
 
-Int64 Crypto::Token::JWTParam::GetNotBefore()
+Int64 Crypto::Token::JWTParam::GetNotBefore() const
 {
 	return this->nbf;
 }
@@ -96,7 +96,7 @@ void Crypto::Token::JWTParam::SetIssuedAt(Int64 t)
 	this->iat = t;
 }
 
-Int64 Crypto::Token::JWTParam::GetIssuedAt()
+Int64 Crypto::Token::JWTParam::GetIssuedAt() const
 {
 	return this->iat;
 }
@@ -107,12 +107,12 @@ void Crypto::Token::JWTParam::SetJWTId(Text::String *id)
 	this->jti = SCOPY_STRING(id);
 }
 
-Text::String *Crypto::Token::JWTParam::GetJWTId()
+Text::String *Crypto::Token::JWTParam::GetJWTId() const
 {
 	return this->jti;
 }
 
-void Crypto::Token::JWTParam::ToString(Text::StringBuilderUTF8 *sb)
+void Crypto::Token::JWTParam::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Bool found = false;
 	sb->AppendC(UTF8STRC("Params ["));

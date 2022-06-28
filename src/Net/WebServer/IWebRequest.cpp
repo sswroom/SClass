@@ -328,46 +328,6 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CString name, UInt64 *
 	return s->ToUInt64(valOut);
 }
 
-Text::CString Net::WebServer::IWebRequest::GetReqMethodStr()
-{
-	return Net::WebUtil::RequestMethodGetName(GetReqMethod());
-}
-
-Net::BrowserInfo::BrowserType Net::WebServer::IWebRequest::GetBrowser()
-{
-	if (!this->uaParsed)
-		this->ParseUserAgent();
-	return this->reqBrowser;
-}
-
-Text::CString Net::WebServer::IWebRequest::GetBrowserVer()
-{
-	if (!this->uaParsed)
-		this->ParseUserAgent();
-	return this->reqBrowserVer;
-}
-
-/*const UTF8Char *Net::WebServer::IWebRequest::GetBrowserMod()
-{
-	if (!this->uaParsed)
-		this->ParseUserAgent();
-	return this->reqBrowserMod;
-}*/
-
-Manage::OSInfo::OSType Net::WebServer::IWebRequest::GetOS()
-{
-	if (!this->uaParsed)
-		this->ParseUserAgent();
-	return this->reqOS;
-}
-
-Text::CString Net::WebServer::IWebRequest::GetOSVer()
-{
-	if (!this->uaParsed)
-		this->ParseUserAgent();
-	return this->reqOSVer;
-}
-
 Text::CString Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)
 {
 	switch (reqProto)

@@ -5,43 +5,17 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Polygon.h"
 
-Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointCollection(srid)
+Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointOfstCollection(srid, nPtOfst, nPoint, 0)
 {
-	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
-	this->nPoint = nPoint;
-	MemClear(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
-	this->nPtOfst = nPtOfst;
-	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
-	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
 }
 
 Math::Polygon::~Polygon()
 {
-	MemFreeA(this->pointArr);
-	MemFree(this->ptOfstArr);
 }
 
 Math::Vector2D::VectorType Math::Polygon::GetVectorType() const
 {
 	return Math::Vector2D::VectorType::Polygon;
-}
-
-UInt32 *Math::Polygon::GetPtOfstList(UOSInt *nPtOfst)
-{
-	*nPtOfst = this->nPtOfst;
-	return this->ptOfstArr;
-}
-
-Math::Coord2DDbl *Math::Polygon::GetPointList(UOSInt *nPoint)
-{
-	*nPoint = this->nPoint;
-	return this->pointArr;
-}
-
-const Math::Coord2DDbl *Math::Polygon::GetPointListRead(UOSInt *nPoint) const
-{
-	*nPoint = this->nPoint;
-	return this->pointArr;
 }
 
 Math::Vector2D *Math::Polygon::Clone() const
@@ -51,21 +25,6 @@ Math::Vector2D *Math::Polygon::Clone() const
 	MemCopyNO(pg->pointArr, this->pointArr, sizeof(Double) * (this->nPoint << 1));
 	MemCopyNO(pg->ptOfstArr, this->ptOfstArr, sizeof(UInt32) * this->nPtOfst);
 	return pg;
-}
-
-void Math::Polygon::GetBounds(Math::RectAreaDbl *bounds) const
-{
-	UOSInt i = this->nPoint;
-	Math::Coord2DDbl min;
-	Math::Coord2DDbl max;
-	min = max = this->pointArr[0];
-	while (i > 1)
-	{
-		i -= 1;
-		min = min.Min(this->pointArr[i]);
-		max = max.Max(this->pointArr[i]);
-	}
-	*bounds = Math::RectAreaDbl(min, max);
 }
 
 Double Math::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
@@ -219,15 +178,6 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 	this->nPtOfst = nPtOfst;
 	this->nPoint = nPoint;
 	return true;
-}
-
-void Math::Polygon::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
-{
-	UOSInt i = this->nPoint;
-	while (i-- > 0)
-	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, 0, &this->pointArr[i].x, &this->pointArr[i].y, 0);
-	}
 }
 
 Bool Math::Polygon::Equals(Math::Vector2D *vec) const

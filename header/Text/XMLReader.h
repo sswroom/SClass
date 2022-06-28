@@ -45,22 +45,22 @@ namespace Text
 		XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, ParseMode mode);
 		~XMLReader();
 
-		void GetCurrPath(Text::StringBuilderUTF8 *sb);
-		UOSInt GetPathLev();
-		Text::XMLNode::NodeType GetNodeType();
-		Text::String *GetNodeText(); //TextNode = Value, ElementNode = Name
-		Text::String *GetNodeOriText();
-		UOSInt GetAttribCount();
-		Text::XMLAttrib *GetAttrib(UOSInt index);
-		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen);
+		void GetCurrPath(Text::StringBuilderUTF8 *sb) const;
+		UOSInt GetPathLev() const;
+		Text::XMLNode::NodeType GetNodeType() const;
+		Text::String *GetNodeText() const; //TextNode = Value, ElementNode = Name
+		Text::String *GetNodeOriText() const;
+		UOSInt GetAttribCount() const;
+		Text::XMLAttrib *GetAttrib(UOSInt index) const;
+		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen) const;
 
 		Bool ReadNext();
 		Bool ReadNodeText(Text::StringBuilderUTF8 *sb);
 		Bool SkipElement();
-		Bool IsElementEmpty();
-		Bool IsComplete();
-		OSInt GetErrorCode();
-		Bool ToString(Text::StringBuilderUTF8 *sb);
+		Bool IsElementEmpty() const;
+		Bool IsComplete() const;
+		OSInt GetErrorCode() const;
+		Bool ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static Bool XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb);
 	};

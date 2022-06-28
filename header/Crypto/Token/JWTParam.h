@@ -24,21 +24,21 @@ namespace Crypto
 
 			void Clear();
 			void SetIssuer(Text::String *issuer);
-			Text::String *GetIssuer();
-			Bool IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen);
+			Text::String *GetIssuer() const;
+			Bool IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen) const;
 			void SetSubject(Text::String *subject);
-			Text::String *GetSubject();
+			Text::String *GetSubject() const;
 			void SetAudience(Text::String *audience);
-			Text::String *GetAudience();
+			Text::String *GetAudience() const;
 			void SetExpirationTime(Int64 t);
-			Int64 GetExpirationTime();
+			Int64 GetExpirationTime() const;
 			void SetNotBefore(Int64 t);
-			Int64 GetNotBefore();
+			Int64 GetNotBefore() const;
 			void SetIssuedAt(Int64 t);
-			Int64 GetIssuedAt();
+			Int64 GetIssuedAt() const;
 			void SetJWTId(Text::String *id);
-			Text::String *GetJWTId();
-			void ToString(Text::StringBuilderUTF8 *sb);
+			Text::String *GetJWTId() const;
+			void ToString(Text::StringBuilderUTF8 *sb) const;
 		};
 	}
 }

@@ -908,7 +908,7 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 	}
 	else if (layerType == Map::DRAW_LAYER_POLYGON || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Math::PointCollection *ptColl = (Math::PointCollection*)vec;
+		Math::PointOfstCollection *ptColl = (Math::PointOfstCollection*)vec;
 		UInt32 *ptOfstArr;
 		Math::Coord2DDbl *ptArr;
 		UOSInt cnt;

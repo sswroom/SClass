@@ -1,15 +1,25 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/CoordinateSystem.h"
 #include "Math/PointCollection.h"
 
-Math::PointCollection::PointCollection(UInt32 srid) : Vector2D(srid)
+Math::PointCollection::PointCollection(UInt32 srid, UOSInt nPoint, Math::Coord2DDbl *pointArr) : Vector2D(srid)
 {
-
+	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
+	this->nPoint = nPoint;
+	if (pointArr)
+	{
+		MemCopyAC(this->pointArr, pointArr, nPoint * sizeof(Math::Coord2DDbl));
+	}
+	else
+	{
+		MemClear(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
+	}
 }
 
 Math::PointCollection::~PointCollection()
 {
-
+	MemFreeA(this->pointArr);
 }
 
 Math::Coord2DDbl Math::PointCollection::GetCenter() const
@@ -57,3 +67,28 @@ Math::Coord2DDbl Math::PointCollection::GetCenter() const
 		return Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5);
 	}
 }
+
+void Math::PointCollection::GetBounds(Math::RectAreaDbl *bounds) const
+{
+	UOSInt i = this->nPoint;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
+	min = max = this->pointArr[0];
+	while (i > 1)
+	{
+		i -= 1;
+		min = min.Min(this->pointArr[i]);
+		max = max.Max(this->pointArr[i]);
+	}
+	*bounds = Math::RectAreaDbl(min, max);
+}
+
+void Math::PointCollection::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+{
+	UOSInt i = this->nPoint;
+	while (i-- > 0)
+	{
+		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, 0, &this->pointArr[i].x, &this->pointArr[i].y, 0);
+	}
+}
+

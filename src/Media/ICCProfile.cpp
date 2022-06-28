@@ -212,89 +212,89 @@ Media::ICCProfile::~ICCProfile()
 	MemFree(this->iccBuff);
 }
 
-Int32 Media::ICCProfile::GetCMMType()
+Int32 Media::ICCProfile::GetCMMType() const
 {
 	return ReadMInt32(&this->iccBuff[4]);
 }
 
-void Media::ICCProfile::GetProfileVer(UInt8 *majorVer, UInt8 *minorVer, UInt8 *bugFixVer)
+void Media::ICCProfile::GetProfileVer(UInt8 *majorVer, UInt8 *minorVer, UInt8 *bugFixVer) const
 {
 	*majorVer = this->iccBuff[8];
 	*minorVer = (UInt8)(this->iccBuff[9] >> 4);
 	*bugFixVer = this->iccBuff[9] & 0xf;
 }
 
-Int32 Media::ICCProfile::GetProfileClass()
+Int32 Media::ICCProfile::GetProfileClass() const
 {
 	return ReadMInt32(&this->iccBuff[12]);
 }
 
-Int32 Media::ICCProfile::GetDataColorspace()
+Int32 Media::ICCProfile::GetDataColorspace() const
 {
 	return ReadMInt32(&this->iccBuff[16]);
 }
 
-Int32 Media::ICCProfile::GetPCS()
+Int32 Media::ICCProfile::GetPCS() const
 {
 	return ReadMInt32(&this->iccBuff[20]);
 }
 
-void Media::ICCProfile::GetCreateTime(Data::DateTime *createTime)
+void Media::ICCProfile::GetCreateTime(Data::DateTime *createTime) const
 {
 	ReadDateTimeNumber(&this->iccBuff[24], createTime);
 }
 
-Int32 Media::ICCProfile::GetPrimaryPlatform()
+Int32 Media::ICCProfile::GetPrimaryPlatform() const
 {
 	return ReadMInt32(&this->iccBuff[40]);
 }
 
-Int32 Media::ICCProfile::GetProfileFlag()
+Int32 Media::ICCProfile::GetProfileFlag() const
 {
 	return ReadMInt32(&this->iccBuff[44]);
 }
 
-Int32 Media::ICCProfile::GetDeviceManufacturer()
+Int32 Media::ICCProfile::GetDeviceManufacturer() const
 {
 	return ReadMInt32(&this->iccBuff[48]);
 }
 
-Int32 Media::ICCProfile::GetDeviceModel()
+Int32 Media::ICCProfile::GetDeviceModel() const
 {
 	return ReadMInt32(&this->iccBuff[52]);
 }
 
-Int32 Media::ICCProfile::GetDeviceAttrib()
+Int32 Media::ICCProfile::GetDeviceAttrib() const
 {
 	return ReadMInt32(&this->iccBuff[56]);
 }
 
-Int32 Media::ICCProfile::GetDeviceAttrib2()
+Int32 Media::ICCProfile::GetDeviceAttrib2() const
 {
 	return ReadMInt32(&this->iccBuff[60]);
 }
 
-Int32 Media::ICCProfile::GetRenderingIntent()
+Int32 Media::ICCProfile::GetRenderingIntent() const
 {
 	return ReadMInt32(&this->iccBuff[64]);
 }
 
-void Media::ICCProfile::GetPCSIlluminant(CIEXYZ *xyz)
+void Media::ICCProfile::GetPCSIlluminant(CIEXYZ *xyz) const
 {
 	ReadXYZNumber(&this->iccBuff[68], xyz);
 }
 
-Int32 Media::ICCProfile::GetProfileCreator()
+Int32 Media::ICCProfile::GetProfileCreator() const
 {
 	return ReadMInt32(&this->iccBuff[80]);
 }
 
-Int32 Media::ICCProfile::GetTagCount()
+Int32 Media::ICCProfile::GetTagCount() const
 {
 	return ReadMInt32(&this->iccBuff[128]);
 }
 
-Media::LUT *Media::ICCProfile::CreateRLUT()
+Media::LUT *Media::ICCProfile::CreateRLUT() const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -344,7 +344,7 @@ Media::LUT *Media::ICCProfile::CreateRLUT()
 	return 0;
 }
 
-Media::LUT *Media::ICCProfile::CreateGLUT()
+Media::LUT *Media::ICCProfile::CreateGLUT() const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -394,7 +394,7 @@ Media::LUT *Media::ICCProfile::CreateGLUT()
 	return 0;
 }
 
-Media::LUT *Media::ICCProfile::CreateBLUT()
+Media::LUT *Media::ICCProfile::CreateBLUT() const
 {
 	UInt32 cnt = ReadMUInt32(&this->iccBuff[128]);
 	UInt32 i = 0;
@@ -444,7 +444,7 @@ Media::LUT *Media::ICCProfile::CreateBLUT()
 	return 0;
 }
 
-Bool Media::ICCProfile::GetRedTransferParam(Media::CS::TransferParam *param)
+Bool Media::ICCProfile::GetRedTransferParam(Media::CS::TransferParam *param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -530,7 +530,7 @@ Bool Media::ICCProfile::GetRedTransferParam(Media::CS::TransferParam *param)
 	return false;
 }
 
-Bool Media::ICCProfile::GetGreenTransferParam(Media::CS::TransferParam *param)
+Bool Media::ICCProfile::GetGreenTransferParam(Media::CS::TransferParam *param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -616,7 +616,7 @@ Bool Media::ICCProfile::GetGreenTransferParam(Media::CS::TransferParam *param)
 	return false;
 }
 
-Bool Media::ICCProfile::GetBlueTransferParam(Media::CS::TransferParam *param)
+Bool Media::ICCProfile::GetBlueTransferParam(Media::CS::TransferParam *param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -702,7 +702,7 @@ Bool Media::ICCProfile::GetBlueTransferParam(Media::CS::TransferParam *param)
 	return false;
 }
 
-Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color)
+Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -832,7 +832,7 @@ Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *c
 	}
 }
 
-void Media::ICCProfile::ToString(Text::StringBuilderUTF8 *sb)
+void Media::ICCProfile::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UInt8 majorVer;
 	UInt8 minorVer;

@@ -5,7 +5,7 @@
 #include "Text/MyStringFloat.h"
 #include "Win32/SMBIOS.h"
 
-void Win32::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType)
+void Win32::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->smbiosBuffSize;
@@ -40,7 +40,7 @@ Win32::SMBIOS::~SMBIOS()
 	}
 }
 
-UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
+UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -143,7 +143,7 @@ UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 	return ret;
 }
 
-void Win32::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
+void Win32::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
 {
 	UOSInt i = memList->GetCount();
 	while (i-- > 0)
@@ -153,7 +153,7 @@ void Win32::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 	memList->Clear();
 }
 
-UTF8Char *Win32::SMBIOS::GetPlatformName(UTF8Char *buff)
+UTF8Char *Win32::SMBIOS::GetPlatformName(UTF8Char *buff) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -206,7 +206,7 @@ UTF8Char *Win32::SMBIOS::GetPlatformName(UTF8Char *buff)
 	return ret;
 }
 
-UTF8Char *Win32::SMBIOS::GetPlatformSN(UTF8Char *buff)
+UTF8Char *Win32::SMBIOS::GetPlatformSN(UTF8Char *buff) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -322,7 +322,7 @@ UTF8Char *Win32::SMBIOS::GetPlatformSN(UTF8Char *buff)
 	return ret;
 }
 
-Int32 Win32::SMBIOS::GetChassisType()
+Int32 Win32::SMBIOS::GetChassisType() const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -342,7 +342,7 @@ Int32 Win32::SMBIOS::GetChassisType()
 	return ret;
 }
 
-Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
+Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Text::CString carr[32];
 	const UInt8 *dataBuff;

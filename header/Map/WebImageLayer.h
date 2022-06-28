@@ -38,7 +38,7 @@ namespace Map
 
 		public:
 			virtual ~ImageStat();
-			virtual OSInt CompareTo(Data::IComparable *obj);
+			virtual OSInt CompareTo(Data::IComparable *obj) const;
 		};
 	private:
 		Net::WebBrowser *browser;

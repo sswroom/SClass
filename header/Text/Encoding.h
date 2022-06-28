@@ -14,8 +14,9 @@ namespace Text
 		~Encoding();
 		
 		void SetCodePage(UInt32 codePage);
-		UInt32 GetEncCodePage();
+		UInt32 GetEncCodePage() const;
 		UTF8Char *ToString(UTF8Char *buff);
+		Bool IsUTF8() const { return this->codePage == 65001; }
 
 		// bug if _WCHAR_SIZE != 2
 		UOSInt CountWChars(const UInt8 *bytes, UOSInt byteSize);

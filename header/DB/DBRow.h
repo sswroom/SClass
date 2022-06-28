@@ -46,7 +46,7 @@ namespace DB
 		Data::StringUTF8Map<Field*> *dataMap;
 
 		void FreeField(Field *field);
-		DataType GetDataType(Field *field);
+		DataType GetDataType(Field *field) const;
 
 		Bool SetFieldNull(Field *field);
 		Bool SetFieldStr(Field *field, const UTF8Char *strValue);
@@ -56,13 +56,13 @@ namespace DB
 		Bool SetFieldVector(Field *field, Math::Vector2D *vec);
 		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
 
-		Bool IsFieldNull(Field *field);
-		const UTF8Char *GetFieldStr(Field *field);
-		Int64 GetFieldInt64(Field *field);
-		Double GetFieldDouble(Field *field);
-		Data::DateTime *GetFieldDate(Field *field);
-		Math::Vector2D *GetFieldVector(Field *field);
-		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize);
+		Bool IsFieldNull(Field *field) const;
+		const UTF8Char *GetFieldStr(Field *field) const;
+		Int64 GetFieldInt64(Field *field) const;
+		Double GetFieldDouble(Field *field) const;
+		Data::DateTime *GetFieldDate(Field *field) const;
+		Math::Vector2D *GetFieldVector(Field *field) const;
+		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize) const;
 
 	public:
 		DBRow(TableDef *table);
@@ -70,8 +70,8 @@ namespace DB
 
 		Bool SetByReader(DB::DBReader *r, Bool commit);
 
-		DB::ColDef *GetFieldType(const UTF8Char *fieldName);
-		DataType GetFieldDataType(const UTF8Char *fieldName);
+		DB::ColDef *GetFieldType(const UTF8Char *fieldName) const;
+		DataType GetFieldDataType(const UTF8Char *fieldName) const;
 		Bool SetValueNull(const UTF8Char *fieldName);
 		Bool SetValueStr(const UTF8Char *fieldName, const UTF8Char *strValue);
 		Bool SetValueInt64(const UTF8Char *fieldName, Int64 intValue);
@@ -80,21 +80,21 @@ namespace DB
 		Bool SetValueVector(const UTF8Char *fieldName, Math::Vector2D *vec);
 		Bool SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOSInt buffSize);
 
-		Bool IsNull(const UTF8Char *fieldName);
-		const UTF8Char *GetValueStr(const UTF8Char *fieldName);
-		Int64 GetValueInt64(const UTF8Char *fieldName);
-		Double GetValueDouble(const UTF8Char *fieldName);
-		Data::DateTime *GetValueDate(const UTF8Char *fieldName);
-		Math::Vector2D *GetValueVector(const UTF8Char *fieldName);
-		const UInt8 *GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize);
+		Bool IsNull(const UTF8Char *fieldName) const;
+		const UTF8Char *GetValueStr(const UTF8Char *fieldName) const;
+		Int64 GetValueInt64(const UTF8Char *fieldName) const;
+		Double GetValueDouble(const UTF8Char *fieldName) const;
+		Data::DateTime *GetValueDate(const UTF8Char *fieldName) const;
+		Math::Vector2D *GetValueVector(const UTF8Char *fieldName) const;
+		const UInt8 *GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize) const;
 
 		void Commit();
 		void Rollback();
 
-		Bool GetSinglePKI64(Int64 *key);
-		void ToString(Text::StringBuilderUTF8 *sb);
-		void AppendTableName(Text::StringBuilderUTF8 *sb);
-		void AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName);
+		Bool GetSinglePKI64(Int64 *key) const;
+		void ToString(Text::StringBuilderUTF8 *sb) const;
+		void AppendTableName(Text::StringBuilderUTF8 *sb) const;
+		void AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName) const;
 
 		TableDef *GetTableDef();
 	};
