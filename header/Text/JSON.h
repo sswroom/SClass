@@ -191,6 +191,7 @@ namespace Text
 		Double GetObjectDouble(Text::CString name);
 		Int32 GetObjectInt32(Text::CString name);
 		Int64 GetObjectInt64(Text::CString name);
+		void RemoveObject(Text::CString name);
 	};
 
 	class JSONArray : public JSONBase
@@ -212,6 +213,7 @@ namespace Text
 		JSONBase *GetArrayValue(UOSInt index);
 		Double GetArrayDouble(UOSInt index);
 		UOSInt GetArrayLength();
+		void RemoveArrayItem(UOSInt index);
 	};
 
 	class JSONNull : public JSONBase

@@ -53,9 +53,18 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			Math::Vector2D *vec = me->lyr->GetNewVectorById(sess, id);
+			Math::RectAreaDbl bounds;
 			if (vec && csys && lyrCSys && !csys->Equals(lyrCSys))
 			{
+				Double z;
+				vec->GetBounds(&bounds);
+				Math::CoordinateSystem::ConvertXYZ(lyrCSys, csys, bounds.tl.x, bounds.tl.y, 0, &bounds.tl.x, &bounds.tl.y, &z);
+				Math::CoordinateSystem::ConvertXYZ(lyrCSys, csys, bounds.br.x, bounds.br.y, 0, &bounds.br.x, &bounds.br.y, &z);
 				vec->ConvCSys(lyrCSys, csys);
+			}
+			else if (vec)
+			{
+				vec->GetBounds(&bounds);
 			}
 			SDEL_CLASS(me->currVec);
 			if (vec)
@@ -66,6 +75,15 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				Text::StringBuilderUTF8 sb;
 				writer->ToText(&sb, me->currVec);
 				me->txtShape->SetText(sb.ToCString());
+
+				sptr = Text::StrDouble(sbuff, bounds.tl.x);
+				me->txtMinX->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, bounds.tl.y);
+				me->txtMinY->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, bounds.br.x);
+				me->txtMaxX->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, bounds.br.y);
+				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
 			}
 			me->navi->SetSelectedVector(vec);
 			me->lyr->ReleaseNameArr(nameArr);
@@ -123,6 +141,28 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtShape, UI::GUITextBox(ui, this->tpShape, CSTR(""), true));
 	this->txtShape->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtShape->SetReadOnly(true);
+
+	this->tpBounds = this->tcMain->AddTabPage(CSTR("Bounds"));
+	NEW_CLASS(this->lblMinX, UI::GUILabel(ui, this->tpBounds, CSTR("Min X")));
+	this->lblMinX->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtMinX, UI::GUITextBox(ui, this->tpBounds, CSTR("")));
+	this->txtMinX->SetRect(104, 4, 150, 23, false);
+	this->txtMinX->SetReadOnly(true);
+	NEW_CLASS(this->lblMinY, UI::GUILabel(ui, this->tpBounds, CSTR("Min Y")));
+	this->lblMinY->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtMinY, UI::GUITextBox(ui, this->tpBounds, CSTR("")));
+	this->txtMinY->SetRect(104, 28, 150, 23, false);
+	this->txtMinY->SetReadOnly(true);
+	NEW_CLASS(this->lblMaxX, UI::GUILabel(ui, this->tpBounds, CSTR("Max X")));
+	this->lblMaxX->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->txtMaxX, UI::GUITextBox(ui, this->tpBounds, CSTR("")));
+	this->txtMaxX->SetRect(104, 52, 150, 23, false);
+	this->txtMaxX->SetReadOnly(true);
+	NEW_CLASS(this->lblMaxY, UI::GUILabel(ui, this->tpBounds, CSTR("Max Y")));
+	this->lblMaxY->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->txtMaxY, UI::GUITextBox(ui, this->tpBounds, CSTR("")));
+	this->txtMaxY->SetRect(104, 76, 150, 23, false);
+	this->txtMaxY->SetReadOnly(true);
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

@@ -29,6 +29,10 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CString umime)
 		{
 			return true;
 		}
+		else if (mine2.Equals(UTF8STRC("octet-stream")))
+		{
+			return true;
+		}
 		else if (mine2.Equals(UTF8STRC("xhtml+xml")))
 		{
 			return true;

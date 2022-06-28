@@ -31,6 +31,16 @@ namespace SSWR
 			UI::GUIComboBox *cboShapeFmt;
 			UI::GUITextBox *txtShape;
 
+			UI::GUITabPage *tpBounds;
+			UI::GUILabel *lblMinX;
+			UI::GUITextBox *txtMinX;
+			UI::GUILabel *lblMinY;
+			UI::GUITextBox *txtMinY;
+			UI::GUILabel *lblMaxX;
+			UI::GUITextBox *txtMaxX;
+			UI::GUILabel *lblMaxY;
+			UI::GUITextBox *txtMaxY;
+
 			SSWR::AVIRead::AVIRCore *core;
 			IMapNavigator *navi;
 			Map::IMapDrawLayer *lyr;

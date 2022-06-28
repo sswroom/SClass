@@ -66,7 +66,7 @@ namespace Math
 		Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
 
 		Double GetSemiMajorAxis() { return this->semiMajorAxis; }
-		Double GetSemiMinorAxis() { return this->semiMajorAxis; }
+		Double GetSemiMinorAxis() { return this->semiMinorAxis; }
 		Double GetInverseFlattening() { return this->inverseFlattening; }
 		Double GetEccentricity() { return this->eccentricity; }
 		Double CalLonByDist(Double dLat, Double dLon, Double distM) const;

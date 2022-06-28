@@ -1240,6 +1240,15 @@ Int64 Text::JSONObject::GetObjectInt64(Text::CString name)
 	return baseObj->GetAsInt64();
 }
 
+void Text::JSONObject::RemoveObject(Text::CString name)
+{
+	Text::JSONBase *baseObj = this->objVals.RemoveC(name);
+	if (baseObj)
+	{
+		baseObj->EndUse();
+	}
+}
+
 Text::JSONArray::JSONArray()
 {
 }
@@ -1338,6 +1347,15 @@ Double Text::JSONArray::GetArrayDouble(UOSInt index)
 UOSInt Text::JSONArray::GetArrayLength()
 {
 	return this->arrVals.GetCount();
+}
+
+void Text::JSONArray::RemoveArrayItem(UOSInt index)
+{
+	Text::JSONBase *baseObj = this->arrVals.RemoveAt(index);
+	if (baseObj)
+	{
+		baseObj->EndUse();
+	}
 }
 
 Text::JSONNull::JSONNull()

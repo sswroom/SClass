@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/DirectoryPackage.h"
+#include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Map/IMapDrawLayer.h"
@@ -8,6 +9,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeoJSONWriter.h"
 #include "Net/WebServer/HTTPServerUtil.h"
+#include "Text/JSON.h"
 #include "Text/JSText.h"
 #include "Text/XML.h"
 
@@ -239,6 +241,276 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 	return true;
 }
 
+Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *myObj)
+{
+	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
+	Text::String *file = req->GetQueryValue(CSTR("file"));
+	Text::String *range = req->GetQueryValue(CSTR("range"));
+	Text::StringBuilderUTF8 sb;
+	if (file == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	Double x1;
+	Double y1;
+	Double x2;
+	Double y2;
+	if (range == 0)
+	{
+		x1 = -180;
+		y1 = -90;
+		x2 = 180;
+		y2 = 90;
+	}
+	else
+	{
+		Text::PString sarr[5];
+		UOSInt sarrCnt;
+		sb.Append(range);
+		sarrCnt = Text::StrSplitP(sarr, 5, sb, ',');
+		if (sarrCnt != 4)
+		{
+			resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+			return true;
+		}
+		if (!sarr[0].ToDouble(&x1) || !sarr[1].ToDouble(&y1) || !sarr[2].ToDouble(&x2) || !sarr[3].ToDouble(&y2))
+		{
+			resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+			return true;
+		}
+	}
+	if (me->cesiumScenePath == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		return true;
+	}
+	sb.ClearStr();
+	sb.Append(me->cesiumScenePath);
+	if (sb.ToString()[sb.GetLength() - 1] != IO::Path::PATH_SEPERATOR)
+	{
+		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+	}
+	sb.Append(file);
+	IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		return true;
+	}
+	IO::MemoryStream mstm(UTF8STRC("Map.MapServerHandler.CesiumDataFunc.mstm"));
+	fs.ReadToEnd(&mstm, 8192);
+	mstm.Write((const UInt8*)"", 1);
+
+	UOSInt buffSize;
+	UInt8 *buff = mstm.GetBuff(&buffSize);
+	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, buffSize));
+	if (json == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		return true;
+	}
+	if (json->GetType() == Text::JSONType::Object)
+	{
+		Text::JSONObject *jobj = (Text::JSONObject*)json;
+		Text::JSONBase *obj = jobj->GetObjectValue(CSTR("root"));
+		if (obj)
+		{
+			if (!me->InObjectRange(obj, x1, y1, x2, y2))
+			{
+				jobj->RemoveObject(CSTR("root"));
+			}
+			else
+			{
+				me->CheckObject(obj, x1, y1, x2, y2, file, &sb);
+			}
+		}
+	}
+	sb.ClearStr();
+	json->ToJSONString(&sb);
+	json->EndUse();
+
+	Data::DateTime dt;
+	dt.SetCurrTimeUTC();
+	dt.AddHour(1);
+	resp->EnableWriteBuffer();
+	resp->AddDefHeaders(req);
+	resp->AddCacheControl(-1);
+	resp->AddExpireTime(&dt);
+	resp->AddContentType(CSTR("application/json"));
+	Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), sb.GetLength(), sb.ToString());
+	return true;
+}
+
+Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *myObj)
+{
+	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
+	Text::String *file = req->GetQueryValue(CSTR("file"));
+	Text::StringBuilderUTF8 sb;
+	if (file == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	if (me->cesiumScenePath == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		return true;
+	}
+	sb.ClearStr();
+	sb.Append(me->cesiumScenePath);
+	if (sb.ToString()[sb.GetLength() - 1] != IO::Path::PATH_SEPERATOR)
+	{
+		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+	}
+	sb.Append(file);
+	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
+}
+
+void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb)
+{
+	if (obj->GetType() != Text::JSONType::Object)
+	{
+		return;
+	}
+	UOSInt i;
+	Text::String *s;
+	Text::JSONObject *jobj = (Text::JSONObject*)obj;
+	obj = jobj->GetObjectValue(CSTR("content"));
+	if (obj && obj->GetType() == Text::JSONType::Object)
+	{
+		Text::JSONObject *content = (Text::JSONObject*)obj;
+		obj = content->GetObjectValue(CSTR("url"));
+		if (obj && obj->GetType() == Text::JSONType::String)
+		{
+			Text::JSONString *url = (Text::JSONString*)obj;
+			s = url->GetValue();
+			if (s->EndsWith(UTF8STRC(".json")))
+			{
+				tmpSb->ClearStr();
+				tmpSb->AppendC(UTF8STRC("cesiumdata?file="));
+				i = fileName->LastIndexOf('/');
+				if (i != INVALID_INDEX)
+				{
+					tmpSb->AppendC(fileName->v, i + 1);
+				}
+				tmpSb->Append(s);
+				tmpSb->AppendC(UTF8STRC("&range="));
+				tmpSb->AppendDouble(x1);
+				tmpSb->AppendUTF8Char(',');
+				tmpSb->AppendDouble(y1);
+				tmpSb->AppendUTF8Char(',');
+				tmpSb->AppendDouble(x2);
+				tmpSb->AppendUTF8Char(',');
+				tmpSb->AppendDouble(y2);
+				content->SetObjectString(CSTR("url"), tmpSb->ToCString());
+			}
+			else if (s->EndsWith(UTF8STRC(".b3dm")))
+			{
+				tmpSb->ClearStr();
+				tmpSb->AppendC(UTF8STRC("cesiumb3dm?file="));
+				i = fileName->LastIndexOf('/');
+				if (i != INVALID_INDEX)
+				{
+					tmpSb->AppendC(fileName->v, i + 1);
+				}
+				tmpSb->Append(s);
+				content->SetObjectString(CSTR("url"), tmpSb->ToCString());
+			}
+		}
+	}
+
+	obj = jobj->GetObjectValue(CSTR("children"));
+	if (obj && obj->GetType() == Text::JSONType::Array)
+	{
+		Text::JSONArray *children = (Text::JSONArray*)obj;
+		i = children->GetArrayLength();
+		while (i-- > 0)
+		{
+			obj = children->GetArrayValue(i);
+			if (!this->InObjectRange(obj, x1, y1, x2, y2))
+			{
+				children->RemoveArrayItem(i);
+			}
+			else
+			{
+				this->CheckObject(obj, x1, y1, x2, y2, fileName, tmpSb);
+			}
+		}
+	}
+}
+
+Bool Map::MapServerHandler::InObjectRange(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2)
+{
+	if (obj->GetType() != Text::JSONType::Object)
+	{
+		return false;
+	}
+	Text::JSONObject *jobj = (Text::JSONObject*)obj;
+	obj = jobj->GetObjectValue(CSTR("boundingVolume"));
+	if (obj == 0)
+	{
+		return false;
+	}
+	jobj = (Text::JSONObject*)obj;
+	obj = jobj->GetObjectValue(CSTR("sphere"));
+	if (obj != 0)
+	{
+		return this->InSphereRange(obj, x1, y1, x2, y2);
+	}
+	return false;
+}
+
+Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Double y1, Double x2, Double y2)
+{
+	if (sphere->GetType() != Text::JSONType::Array || ((Text::JSONArray*)sphere)->GetArrayLength() != 4)
+	{
+		return false;
+	}
+	Text::JSONArray *arr = (Text::JSONArray*)sphere;
+	Double lat;
+	Double lon;
+	Double h;
+	Double radius = arr->GetArrayDouble(3);
+	this->wgs84->FromCartesianCoord(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2), &lat, &lon, &h);
+	if (x1 <= lon && x2 >= lon)
+	{
+	}
+	else if (x1 > lon)
+	{
+		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(x1, lat), Math::Unit::Distance::DU_METER) > radius)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(x2, lat), Math::Unit::Distance::DU_METER) > radius)
+		{
+			return false;
+		}
+	}
+
+	if (y1 <= lat && y2 >= lat)
+	{
+	}
+	else if (y1 > lat)
+	{
+		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(lon, y1), Math::Unit::Distance::DU_METER) > radius)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(lon, y2), Math::Unit::Distance::DU_METER) > radius)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void Map::MapServerHandler::AddLayer(Map::IMapDrawLayer *layer)
 {
 	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_MAP_LAYER_COLL)
@@ -262,8 +534,12 @@ void Map::MapServerHandler::AddLayer(Map::IMapDrawLayer *layer)
 Map::MapServerHandler::MapServerHandler(Parser::ParserList *parsers)
 {
 	this->parsers = parsers;
+	this->cesiumScenePath = 0;
+	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->AddService(CSTR("/getlayers"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayersFunc);
 	this->AddService(CSTR("/getlayerdata"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayerDataFunc);
+	this->AddService(CSTR("/cesiumdata"), Net::WebUtil::RequestMethod::HTTP_GET, CesiumDataFunc);
+	this->AddService(CSTR("/cesiumb3dm"), Net::WebUtil::RequestMethod::HTTP_GET, CesiumB3DMFunc);
 }
 
 Map::MapServerHandler::~MapServerHandler()
@@ -275,6 +551,8 @@ Map::MapServerHandler::~MapServerHandler()
 		pobj = this->assets.GetItem(i);
 		DEL_CLASS(pobj);
 	}
+	SDEL_STRING(this->cesiumScenePath);
+	DEL_CLASS(this->wgs84);
 }
 
 Bool Map::MapServerHandler::AddAsset(Text::CString filePath)
@@ -313,4 +591,10 @@ Bool Map::MapServerHandler::AddAsset(Text::CString filePath)
 		DEL_CLASS(pobj);
 		return false;
 	}
+}
+
+void Map::MapServerHandler::SetCesiumScenePath(Text::CString cesiumScenePath)
+{
+	SDEL_STRING(this->cesiumScenePath);
+	this->cesiumScenePath = Text::String::New(cesiumScenePath);
 }

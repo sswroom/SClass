@@ -47,7 +47,7 @@ namespace Net
 			{
 				if (cacheAge == -2)
 				{
-
+					return this->AddHeader(CSTR("Cache-Control"), CSTR("public"));
 				}
 				else if (cacheAge == -1)
 				{
