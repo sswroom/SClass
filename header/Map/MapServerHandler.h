@@ -17,6 +17,7 @@ namespace Map
 		Data::ArrayList<IO::ParsedObject*> assets;
 		Data::FastStringMap<Map::IMapDrawLayer*> layerMap;
 		Text::String *cesiumScenePath;
+		Double cesiumMinError;
 		Math::GeographicCoordinateSystem *wgs84;
 
 		static Bool __stdcall GetLayersFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
@@ -24,7 +25,7 @@ namespace Map
 		static Bool __stdcall CesiumDataFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		static Bool __stdcall CesiumB3DMFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 
-		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb);
+		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb);
 		Bool InObjectRange(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2);
 		Bool InSphereRange(Text::JSONBase *sphere, Double x1, Double y1, Double x2, Double y2);
 		void AddLayer(Map::IMapDrawLayer *layer);
@@ -34,6 +35,7 @@ namespace Map
 
 		Bool AddAsset(Text::CString filePath);
 		void SetCesiumScenePath(Text::CString cesiumScenePath);
+		void SetCesiumMinError(Double minError);
 	};
 }
 #endif

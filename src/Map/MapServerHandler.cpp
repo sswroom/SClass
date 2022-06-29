@@ -246,6 +246,11 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
 	Text::String *file = req->GetQueryValue(CSTR("file"));
 	Text::String *range = req->GetQueryValue(CSTR("range"));
+	Double minErr;
+	if (!req->GetQueryValueF64(CSTR("minErr"), &minErr))
+	{
+		minErr = me->cesiumMinError;
+	}
 	Text::StringBuilderUTF8 sb;
 	if (file == 0)
 	{
@@ -322,7 +327,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 			}
 			else
 			{
-				me->CheckObject(obj, x1, y1, x2, y2, file, &sb);
+				me->CheckObject(obj, x1, y1, x2, y2, minErr, file, &sb);
 			}
 		}
 	}
@@ -367,7 +372,7 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(Net::WebServer::IWebRequest
 	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
 }
 
-void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb)
+void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, Text::StringBuilderUTF8 *tmpSb)
 {
 	if (obj->GetType() != Text::JSONType::Object)
 	{
@@ -403,6 +408,8 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 				tmpSb->AppendDouble(x2);
 				tmpSb->AppendUTF8Char(',');
 				tmpSb->AppendDouble(y2);
+				tmpSb->AppendC(UTF8STRC("&minErr="));
+				tmpSb->AppendDouble(minErr);
 				content->SetObjectString(CSTR("url"), tmpSb->ToCString());
 			}
 			else if (s->EndsWith(UTF8STRC(".b3dm")))
@@ -417,6 +424,14 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 				tmpSb->Append(s);
 				content->SetObjectString(CSTR("url"), tmpSb->ToCString());
 			}
+		}
+	}
+	if (minErr != 0)
+	{
+		Double err = jobj->GetObjectDouble(CSTR("geometricError"));
+		if (err != 0 && err * 0.5 < minErr)
+		{
+			jobj->RemoveObject(CSTR("children"));
 		}
 	}
 
@@ -434,7 +449,7 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 			}
 			else
 			{
-				this->CheckObject(obj, x1, y1, x2, y2, fileName, tmpSb);
+				this->CheckObject(obj, x1, y1, x2, y2, minErr, fileName, tmpSb);
 			}
 		}
 	}
@@ -535,6 +550,7 @@ Map::MapServerHandler::MapServerHandler(Parser::ParserList *parsers)
 {
 	this->parsers = parsers;
 	this->cesiumScenePath = 0;
+	this->cesiumMinError = 0;
 	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->AddService(CSTR("/getlayers"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayersFunc);
 	this->AddService(CSTR("/getlayerdata"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayerDataFunc);
@@ -597,4 +613,9 @@ void Map::MapServerHandler::SetCesiumScenePath(Text::CString cesiumScenePath)
 {
 	SDEL_STRING(this->cesiumScenePath);
 	this->cesiumScenePath = Text::String::New(cesiumScenePath);
+}
+
+void Map::MapServerHandler::SetCesiumMinError(Double minError)
+{
+	this->cesiumMinError = minError;
 }
