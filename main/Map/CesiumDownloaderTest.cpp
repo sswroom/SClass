@@ -66,7 +66,6 @@ private:
 			i = tmpSb->LastIndexOf('/');
 			tmpSb->TrimToLength(i + 1);
 			tmpSb->Append(contURL);
-			printf("URL: %s\r\n", tmpSb->ToString());
 			stat->me->AddURL(tmpSb->ToCString());
 		}
 
@@ -367,30 +366,72 @@ public:
 		}
 		return ret;
 	}
+
+	void ClearStat()
+	{
+		UOSInt i = this->threadCount;
+		while (i-- > 0)
+		{
+			this->stats[i].reqCnt = 0;
+			this->stats[i].succCnt = 0;
+			this->stats[i].totalDownload = 0;
+			this->stats[i].totalUpload = 0;
+			this->stats[i].totalContentSize = 0;
+		}
+	}
 };
+
+void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString url)
+{
+	Manage::HiResClock clk;
+	downloader->AddURL(url);
+	downloader->WaitForIdle();
+	Double t = clk.GetTimeDiff();
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("URL: "));
+	sb.Append(url);
+	sb.AppendC(UTF8STRC("\r\nTotal Time used: "));
+	sb.AppendDouble(t);
+	sb.AppendC(UTF8STRC("\r\nTotal Request Count: "));
+	sb.AppendUOSInt(downloader->GetTotalReqCnt());
+	sb.AppendC(UTF8STRC("\r\nTotal Success Count: "));
+	sb.AppendUOSInt(downloader->GetTotalSuccCnt());
+	sb.AppendC(UTF8STRC("\r\nTotal Download: "));
+	sb.AppendU64(downloader->GetTotalDownloadSize());
+	sb.AppendC(UTF8STRC("\r\nTotal Upload: "));
+	sb.AppendU64(downloader->GetTotalUploadSize());
+	sb.AppendC(UTF8STRC("\r\nTotal Content Size: "));
+	sb.AppendU64(downloader->GetTotalContentSize());
+	console->WriteLineCStr(sb.ToCString());
+	downloader->ClearStat();
+}
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;
 	CesiumDownloader downloader(&sockf, 16);
-	Manage::HiResClock clk;
-	downloader.AddURL(CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
-	downloader.WaitForIdle();
-	Double t = clk.GetTimeDiff();
-	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("Total Time used: "));
-	sb.AppendDouble(t);
-	sb.AppendC(UTF8STRC("\r\nTotal Request Count: "));
-	sb.AppendUOSInt(downloader.GetTotalReqCnt());
-	sb.AppendC(UTF8STRC("\r\nTotal Success Count: "));
-	sb.AppendUOSInt(downloader.GetTotalSuccCnt());
-	sb.AppendC(UTF8STRC("\r\nTotal Download: "));
-	sb.AppendU64(downloader.GetTotalDownloadSize());
-	sb.AppendC(UTF8STRC("\r\nTotal Upload: "));
-	sb.AppendU64(downloader.GetTotalUploadSize());
-	sb.AppendC(UTF8STRC("\r\nTotal Content Size: "));
-	sb.AppendU64(downloader.GetTotalContentSize());
-	console.WriteLineCStr(sb.ToCString());
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.4"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.2"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.1"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.05"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.025"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.0125"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.00625"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.003125"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.0015625"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.8"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.4"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.2"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.1"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.05"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.025"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0125"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.00625"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.003125"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0015625"));
 	return 0;
 }
