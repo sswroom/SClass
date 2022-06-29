@@ -18,7 +18,7 @@ Math::MercatorProjectedCoordinateSystem::~MercatorProjectedCoordinateSystem()
 Math::CoordinateSystem *Math::MercatorProjectedCoordinateSystem::Clone() const
 {
 	Math::CoordinateSystem *csys;
- 	NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
+ 	NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->GetCentralMeridianDegree(), this->GetLatitudeOfOriginDegree(), this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
 	return csys;
 }
 
@@ -27,11 +27,11 @@ Math::CoordinateSystem::CoordinateSystemType Math::MercatorProjectedCoordinateSy
 	return Math::CoordinateSystem::CoordinateSystemType::MercatorProjected;
 }
 
-void Math::MercatorProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY) const
+void Math::MercatorProjectedCoordinateSystem::ToGeographicCoordinateRad(Double projX, Double projY, Double *geoX, Double *geoY) const
 {
 	Math::EarthEllipsoid *ellipsoid = this->gcs->GetEllipsoid();
 	Double aF = ellipsoid->GetSemiMajorAxis() * this->scaleFactor;
-	Double rLatL = (projY - this->falseNorthing) / aF + (this->latitudeOfOrigin * PI / 180.0);
+	Double rLatL = (projY - this->falseNorthing) / aF + this->rlatitudeOfOrigin;
 	Double rLastLat;
 	Double e = ellipsoid->GetEccentricity();
 	Double e2 = e * e;
@@ -70,19 +70,16 @@ void Math::MercatorProjectedCoordinateSystem::ToGeographicCoordinate(Double proj
 	Double eDiff2 = eDiff * eDiff;
 	Double eDiff4 = eDiff2 * eDiff2;
 	Double eDiff6 = eDiff4 * eDiff2;
-	Double outX = (this->centralMeridian * PI / 180.0) + ser10 * eDiff - ser11 * (eDiff2 * eDiff) + ser12 * (eDiff4 * eDiff) - ser12a * (eDiff6 * eDiff);
-	Double outY = rLatL - ser7 * eDiff2 + ser8 * eDiff4 - ser9 * eDiff6;
-
-	*geoX = (outX * 180.0 / PI);
-	*geoY = (outY * 180.0 / PI);
+	*geoX = this->rcentralMeridian + ser10 * eDiff - ser11 * (eDiff2 * eDiff) + ser12 * (eDiff4 * eDiff) - ser12a * (eDiff6 * eDiff);
+	*geoY = rLatL - ser7 * eDiff2 + ser8 * eDiff4 - ser9 * eDiff6;
 }
 
-void Math::MercatorProjectedCoordinateSystem::FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY) const
+void Math::MercatorProjectedCoordinateSystem::FromGeographicCoordinateRad(Double geoX, Double geoY, Double *projX, Double *projY) const
 {
 	Math::EarthEllipsoid *ellipsoid = this->gcs->GetEllipsoid();
-	Double rLat = geoY * PI / 180.0;
-	Double rLon = geoX * PI / 180.0;
-	Double rLon0 = this->centralMeridian * PI / 180;
+	Double rLat = geoY;
+	Double rLon = geoX;
+	Double rLon0 = this->rcentralMeridian;
 	Double sLat = Math_Sin(rLat);
 	Double a = ellipsoid->GetSemiMajorAxis();
 	Double e = ellipsoid->GetEccentricity();
@@ -122,7 +119,7 @@ Double Math::MercatorProjectedCoordinateSystem::CalcM(Double rLat) const
 	Double n = (a - b) / (a + b);
 	Double n2 = n * n;
 	Double n3 = n2 * n;
-	Double rLat0 = this->latitudeOfOrigin * PI / 180;
+	Double rLat0 = this->rlatitudeOfOrigin;
 	Double m;
 	m = (1 + n + 1.25 * n2 + 1.25 * n3) * (rLat - rLat0);
 	m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math_Sin(rLat - rLat0) * Math_Cos(rLat + rLat0);

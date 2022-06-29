@@ -177,28 +177,16 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 Double Math::EarthEllipsoid::CalLonByDist(Double lat, Double lon, Double distM) const
 {
 	Double rlat = lat * Math::PI / 180.0;
-	Double r = CalRadiusAtLat(lat);
+	Double r = CalRadiusAtRLat(rlat);
 	Double diff = Math_ArcTan2(Math_Sin(distM / r) * Math_Cos(rlat), Math_Cos(distM / r));
 	return lon + diff * 180.0 / Math::PI;
 }
 
 Double Math::EarthEllipsoid::CalLatByDist(Double lat, Double distM) const
 {
-	Double r = CalRadiusAtLat(lat);
 	Double rlat = lat * Math::PI / 180.0;
+	Double r = CalRadiusAtRLat(rlat);
 	return 180.0 / Math::PI * (rlat + (distM / r));
-}
-
-Double Math::EarthEllipsoid::CalRadiusAtLat(Double lat) const
-{
-	Double rlat = lat * Math::PI / 180.0;
-	Double ec = Math_Cos(rlat) * this->eccentricity;
-	return this->semiMajorAxis / Math_Sqrt(1.0 - ec * ec);
-}
-
-Bool Math::EarthEllipsoid::Equals(Math::EarthEllipsoid *ellipsoid) const
-{
-	return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening;
 }
 
 Text::CString Math::EarthEllipsoid::GetName() const
@@ -234,10 +222,8 @@ Math::EarthEllipsoid *Math::EarthEllipsoid::Clone() const
 	return ellipsoid;
 }
 
-void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z) const
+void Math::EarthEllipsoid::ToCartesianCoordRad(Double rLat, Double rLon, Double h, Double *x, Double *y, Double *z) const
 {
-	Double rLat = dLat * PI / 180.0;
-	Double rLon = dLon * PI / 180.0;
 	Double cLat = Math_Cos(rLat);
 	Double sLat = Math_Sin(rLat);
 	Double cLon = Math_Cos(rLon);
@@ -249,7 +235,7 @@ void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, 
 	*z = ((1 - e2) * v + h) * sLat;
 }
 
-void Math::EarthEllipsoid::FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h) const
+void Math::EarthEllipsoid::FromCartesianCoordRad(Double x, Double y, Double z, Double *outLat, Double *outLon, Double *h) const
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double rLon = Math_ArcTan2(y, x);
@@ -268,8 +254,8 @@ void Math::EarthEllipsoid::FromCartesianCoord(Double x, Double y, Double z, Doub
 			break;
 		rLat = thisLat;
 	}
-	*dLat = rLat * 180 / PI;
-	*dLon = rLon * 180 / PI;
+	*outLat = rLat;
+	*outLon = rLon;
 	*h = p / Math_Cos(rLat) - v;
 }
 

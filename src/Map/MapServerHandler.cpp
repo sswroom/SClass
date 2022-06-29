@@ -487,7 +487,7 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 	Double lon;
 	Double h;
 	Double radius = arr->GetArrayDouble(3);
-	this->wgs84->FromCartesianCoord(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2), &lat, &lon, &h);
+	this->wgs84->FromCartesianCoordDeg(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2), &lat, &lon, &h);
 	if (x1 <= lon && x2 >= lon)
 	{
 	}

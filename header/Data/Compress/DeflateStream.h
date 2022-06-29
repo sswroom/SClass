@@ -13,7 +13,7 @@ namespace Data
 			enum class CompLevel
 			{
 				Default,
-				MaxQuality,
+				MaxCompression,
 				MaxSpeed
 			};
 		private:

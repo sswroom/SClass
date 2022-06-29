@@ -14,8 +14,8 @@ namespace Math
 		virtual CoordinateSystem *Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 
-		virtual void ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY) const;
-		virtual void FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY) const;
+		virtual void ToGeographicCoordinateRad(Double projX, Double projY, Double *geoX, Double *geoY) const;
+		virtual void FromGeographicCoordinateRad(Double geoX, Double geoY, Double *projX, Double *projY) const;
 		Double CalcM(Double rLat) const;
 	};
 }

@@ -28,7 +28,7 @@ Data::Compress::DeflateStream::DeflateStream(IO::Stream *srcStm, UInt64 srcLeng,
 	int ilevel;
 	switch (level)
 	{
-	case CompLevel::MaxQuality:
+	case CompLevel::MaxCompression:
 		ilevel = MZ_BEST_COMPRESSION;
 		break;
 	case CompLevel::MaxSpeed:

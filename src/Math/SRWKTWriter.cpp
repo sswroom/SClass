@@ -47,11 +47,11 @@ UTF8Char *Math::SRWKTWriter::WriteCSys(Math::CoordinateSystem *csys, UTF8Char *b
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev + 1, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("PARAMETER[\"latitude_of_origin\","));
-		buff = Text::StrDouble(buff, pcsys->GetLatitudeOfOrigin());
+		buff = Text::StrDouble(buff, pcsys->GetLatitudeOfOriginDegree());
 		buff = Text::StrConcatC(buff, UTF8STRC("],"));
 		buff = WriteNextLine(buff, lev + 1, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("PARAMETER[\"central_meridian\","));
-		buff = Text::StrDouble(buff, pcsys->GetCentralMeridian());
+		buff = Text::StrDouble(buff, pcsys->GetCentralMeridianDegree());
 		buff = Text::StrConcatC(buff, UTF8STRC("],"));
 		buff = WriteNextLine(buff, lev + 1, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("PARAMETER[\"scale_factor\","));

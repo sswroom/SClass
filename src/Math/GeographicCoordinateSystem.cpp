@@ -160,12 +160,12 @@ Math::CoordinateSystem::UnitType Math::GeographicCoordinateSystem::GetUnit() con
 	return this->unit;
 }
 
-void Math::GeographicCoordinateSystem::ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const
+void Math::GeographicCoordinateSystem::ToCartesianCoordRad(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const
 {
 	Double tmpX;
 	Double tmpY;
 	Double tmpZ;
-	this->datum.spheroid.ellipsoid->ToCartesianCoord(lat, lon, h, &tmpX, &tmpY, &tmpZ);
+	this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lat, lon, h, &tmpX, &tmpY, &tmpZ);
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)
 	{
 		*x = tmpX + datum.cX;
@@ -184,7 +184,7 @@ void Math::GeographicCoordinateSystem::ToCartesianCoord(Double lat, Double lon, 
 	}
 }
 
-void Math::GeographicCoordinateSystem::FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const
+void Math::GeographicCoordinateSystem::FromCartesianCoordRad(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const
 {
 	Double tmpX;
 	Double tmpY;
@@ -205,5 +205,5 @@ void Math::GeographicCoordinateSystem::FromCartesianCoord(Double x, Double y, Do
 		tmpY = s * (-this->datum.zAngle * x +                      y + this->datum.xAngle * z) + this->datum.y0;
 		tmpZ = s * ( this->datum.yAngle * x - this->datum.xAngle * y +                      z) + this->datum.z0;
 	}
-	this->datum.spheroid.ellipsoid->FromCartesianCoord(tmpX, tmpY, tmpZ, lat, lon, h);
+	this->datum.spheroid.ellipsoid->FromCartesianCoordRad(tmpX, tmpY, tmpZ, lat, lon, h);
 }

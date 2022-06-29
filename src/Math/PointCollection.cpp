@@ -85,10 +85,6 @@ void Math::PointCollection::GetBounds(Math::RectAreaDbl *bounds) const
 
 void Math::PointCollection::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	UOSInt i = this->nPoint;
-	while (i-- > 0)
-	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, 0, &this->pointArr[i].x, &this->pointArr[i].y, 0);
-	}
+	Math::CoordinateSystem::ConvertXYArray(srcCSys, destCSys, this->pointArr, this->pointArr, this->nPoint);
 }
 

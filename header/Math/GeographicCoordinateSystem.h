@@ -33,8 +33,10 @@ namespace Math
 		PrimemType GetPrimem() const;
 		UnitType GetUnit() const;
 
-		void ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const;
-		void FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const;
+		void ToCartesianCoordRad(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const;
+		void FromCartesianCoordRad(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const;
+		void ToCartesianCoordDeg(Double dlat, Double dlon, Double h, Double *x, Double *y, Double *z) const { ToCartesianCoordRad(dlat * Math::PI / 180.0, dlon * Math::PI / 180.0, h, x, y, z); }
+		void FromCartesianCoordDeg(Double x, Double y, Double z, Double *dlat, Double *dlon, Double *h) const { FromCartesianCoordRad(x, y, z, dlat, dlon, h); *dlat = *dlat * 180.0 / Math::PI; *dlon = *dlon * 180.0 / Math::PI; }
 	};
 }
 #endif

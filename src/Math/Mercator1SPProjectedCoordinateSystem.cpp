@@ -18,7 +18,7 @@ Math::Mercator1SPProjectedCoordinateSystem::~Mercator1SPProjectedCoordinateSyste
 Math::CoordinateSystem *Math::Mercator1SPProjectedCoordinateSystem::Clone() const
 {
 	Math::CoordinateSystem *csys;
-	NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
+	NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->GetCentralMeridianDegree(), this->GetLatitudeOfOriginDegree(), this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
 	return csys;
 }
 
@@ -27,21 +27,21 @@ Math::CoordinateSystem::CoordinateSystemType Math::Mercator1SPProjectedCoordinat
 	return Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
 }
 
-void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY) const
+void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinateRad(Double projX, Double projY, Double *geoX, Double *geoY) const
 {
 	Math::EarthEllipsoid *ellipsoid = this->gcs->GetEllipsoid();
-	Double rLon0 = this->centralMeridian * PI / 180;
+	Double rLon0 = this->rcentralMeridian;
 	Double a = ellipsoid->GetSemiMajorAxis();
-	*geoX = ((projX - this->falseEasting) / a + rLon0) * 180.0 / Math::PI;
-	*geoY = (Math_ArcTan(Math_Exp((projY - this->falseNorthing) / a)) - Math::PI * 0.25) * 2 * 180.0 / Math::PI;
+	*geoX = ((projX - this->falseEasting) / a + rLon0);
+	*geoY = (Math_ArcTan(Math_Exp((projY - this->falseNorthing) / a)) - Math::PI * 0.25) * 2;
 }
 
-void Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY) const
+void Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinateRad(Double geoX, Double geoY, Double *projX, Double *projY) const
 {
 	Math::EarthEllipsoid *ellipsoid = this->gcs->GetEllipsoid();
-	Double rLat = geoY * Math::PI / 180.0;
-	Double rLon = geoX * Math::PI / 180.0;
-	Double rLon0 = this->centralMeridian * Math::PI / 180;
+	Double rLat = geoY;
+	Double rLon = geoX;
+	Double rLon0 = this->rcentralMeridian;
 	Double a = ellipsoid->GetSemiMajorAxis();
 	Double dlon = rLon - rLon0;
 	*projX = this->falseEasting + dlon * a;

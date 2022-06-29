@@ -6,23 +6,23 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
-	this->centralMeridian = centralMeridian;
-	this->latitudeOfOrigin = latitudeOfOrigin;
+	this->rcentralMeridian = dcentralMeridian * Math::PI / 180;
+	this->rlatitudeOfOrigin = dlatitudeOfOrigin * Math::PI / 180;
 	this->scaleFactor = scaleFactor;
 	this->gcs = gcs;
 	this->unit = unit;
 }
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
-	this->centralMeridian = centralMeridian;
-	this->latitudeOfOrigin = latitudeOfOrigin;
+	this->rcentralMeridian = dcentralMeridian * Math::PI / 180;
+	this->rlatitudeOfOrigin = dlatitudeOfOrigin * Math::PI / 180;
 	this->scaleFactor = scaleFactor;
 	this->gcs = gcs;
 	this->unit = unit;
@@ -133,9 +133,9 @@ void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) cons
 	sb->AppendC(UTF8STRC("\r\nFalse Northing: "));
 	Text::SBAppendF64(sb, this->falseNorthing);
 	sb->AppendC(UTF8STRC("\r\nCentral Meridian: "));
-	Text::SBAppendF64(sb, this->centralMeridian);
+	Text::SBAppendF64(sb, this->GetCentralMeridianDegree());
 	sb->AppendC(UTF8STRC("\r\nLatitude Of Origin: "));
-	Text::SBAppendF64(sb, this->latitudeOfOrigin);
+	Text::SBAppendF64(sb, this->GetLatitudeOfOriginDegree());
 	sb->AppendC(UTF8STRC("\r\nScale Factor: "));
 	Text::SBAppendF64(sb, this->scaleFactor);
 	sb->AppendC(UTF8STRC("\r\n"));
@@ -148,9 +148,9 @@ Bool Math::ProjectedCoordinateSystem::SameProjection(Math::ProjectedCoordinateSy
 		return false;
 	if (this->falseNorthing != csys->falseNorthing)
 		return false;
-	if (this->centralMeridian != csys->centralMeridian)
+	if (this->rcentralMeridian != csys->rcentralMeridian)
 		return false;
-	if (this->latitudeOfOrigin != csys->latitudeOfOrigin)
+	if (this->rlatitudeOfOrigin != csys->rlatitudeOfOrigin)
 		return false;
 	if (this->scaleFactor != csys->scaleFactor)
 		return false;

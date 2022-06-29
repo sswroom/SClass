@@ -57,7 +57,7 @@ void Math::CoordinateSystem::ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::
 	if (srcCoord->IsProjected())
 	{
 		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
-		pcs->ToGeographicCoordinate(srcX, srcY, &srcX, &srcY);
+		pcs->ToGeographicCoordinateDeg(srcX, srcY, &srcX, &srcY);
 		srcCoord = pcs->GetGeographicCoordinateSystem();
 	}
 	if (srcCoord->Equals(destCoord))
@@ -68,23 +68,106 @@ void Math::CoordinateSystem::ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::
 			*destZ = srcZ;
 		return;
 	}
-	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoord(srcY, srcX, srcZ, &srcX, &srcY, &srcZ);
+	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcY, srcX, srcZ, &srcX, &srcY, &srcZ);
 
 	if (destCoord->IsProjected())
 	{
 		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord;
 		Math::GeographicCoordinateSystem *gcs = pcs->GetGeographicCoordinateSystem();
-		gcs->FromCartesianCoord(srcX, srcY, srcZ, &srcY, &srcX, &srcZ);
-		pcs->FromGeographicCoordinate(srcX, srcY, destX, destY);
+		gcs->FromCartesianCoordRad(srcX, srcY, srcZ, &srcY, &srcX, &srcZ);
+		pcs->FromGeographicCoordinateRad(srcX, srcY, destX, destY);
 		if (destZ)
 			*destZ = srcZ;
 	}
 	else
 	{
 		Math::GeographicCoordinateSystem *gcs = (Math::GeographicCoordinateSystem*)destCoord;;
-		gcs->FromCartesianCoord(srcX, srcY, srcZ, destY, destX, &srcZ);
+		gcs->FromCartesianCoordDeg(srcX, srcY, srcZ, destY, destX, &srcZ);
 		if (destZ)
 			*destZ = srcZ;
+	}
+}
+
+void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
+{
+	UOSInt i;
+	Bool srcRad = false;
+	if (srcCoord->IsProjected())
+	{
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
+		i = nPoints;
+		while (i-- > 0)
+		{
+			pcs->ToGeographicCoordinateRad(srcArr[i].x, srcArr[i].y, &destArr[i].x, &destArr[i].y);
+		}
+		srcCoord = pcs->GetGeographicCoordinateSystem();
+		srcArr = destArr;
+		srcRad = true;
+	}
+	if (srcCoord->Equals(destCoord))
+	{
+		if (srcRad)
+		{
+			i = nPoints;
+			while (i-- > 0)
+			{
+				destArr[i].lat = srcArr[i].lat * 180.0 / Math::PI;
+				destArr[i].lon = srcArr[i].lon * 180.0 / Math::PI;
+			}
+		}
+		else if (srcArr != destArr)
+		{
+			MemCopyAC(destArr, srcArr, nPoints * sizeof(Math::Coord2DDbl));
+		}
+		return;
+	}
+	Double tmpZ;
+	if (destCoord->IsProjected())
+	{
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord;
+		Math::GeographicCoordinateSystem *gcs = pcs->GetGeographicCoordinateSystem();
+		if (srcRad)
+		{
+			i = nPoints;
+			while (i-- > 0)
+			{
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+				pcs->FromGeographicCoordinateRad(destArr[i].x, destArr[i].y, &destArr[i].x, &destArr[i].y);
+			}
+		}
+		else
+		{
+			i = nPoints;
+			while (i-- > 0)
+			{
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+				pcs->FromGeographicCoordinateRad(destArr[i].x, destArr[i].y, &destArr[i].x, &destArr[i].y);
+			}
+		}
+	}
+	else
+	{
+		Math::GeographicCoordinateSystem *gcs = (Math::GeographicCoordinateSystem*)destCoord;;
+		if (srcRad)
+		{
+			i = nPoints;
+			while (i-- > 0)
+			{
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+			}
+		}
+		else
+		{
+			i = nPoints;
+			while (i-- > 0)
+			{
+				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].lat, srcArr[i].lon, 0, &destArr[i].x, &destArr[i].y, &tmpZ);
+				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].lat, &destArr[i].lon, &tmpZ);
+			}
+		}
 	}
 }
 
@@ -93,8 +176,8 @@ void Math::CoordinateSystem::ConvertToCartesianCoord(Math::CoordinateSystem *src
 	if (srcCoord->IsProjected())
 	{
 		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
-		pcs->ToGeographicCoordinate(srcX, srcY, &srcX, &srcY);
+		pcs->ToGeographicCoordinateDeg(srcX, srcY, &srcX, &srcY);
 		srcCoord = pcs->GetGeographicCoordinateSystem();
 	}
-	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoord(srcY, srcX, srcZ, destX, destY, destZ);
+	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcY, srcX, srcZ, destX, destY, destZ);
 }

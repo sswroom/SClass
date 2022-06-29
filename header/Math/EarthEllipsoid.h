@@ -71,16 +71,19 @@ namespace Math
 		Double GetEccentricity() { return this->eccentricity; }
 		Double CalLonByDist(Double dLat, Double dLon, Double distM) const;
 		Double CalLatByDist(Double dLat, Double distM) const;
-		Double CalRadiusAtLat(Double lat) const;
-		Bool Equals(EarthEllipsoid *ellipsoid) const;
+		Double CalRadiusAtLat(Double lat) const { return CalRadiusAtRLat(lat * Math::PI / 180.0); }
+		Double CalRadiusAtRLat(Double rlat) const { Double ec = Math_Cos(rlat) * this->eccentricity; return this->semiMajorAxis / Math_Sqrt(1.0 - ec * ec); }
+		Bool Equals(EarthEllipsoid *ellipsoid) const { return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening; }
 		Text::CString GetName() const;
 
 		void operator=(const EarthEllipsoid &ellipsoid);
 		void operator=(const EarthEllipsoid *ellipsoid);
 		EarthEllipsoid *Clone() const;
 
-		void ToCartesianCoord(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z) const;
-		void FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h) const;
+		void ToCartesianCoordRad(Double rLat, Double rLon, Double h, Double *x, Double *y, Double *z) const;
+		void FromCartesianCoordRad(Double x, Double y, Double z, Double *rLat, Double *rLon, Double *h) const;
+		void ToCartesianCoordDeg(Double dLat, Double dLon, Double h, Double *x, Double *y, Double *z) const { ToCartesianCoordRad(dLat * Math::PI / 180.0, dLon * Math::PI / 180.0, h, x, y, z); }
+		void FromCartesianCoordDeg(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h) const { FromCartesianCoordRad(x, y, z, dLat, dLon, h); *dLat = *dLat * 180.0 / Math::PI; *dLon = *dLon * 180.0 / Math::PI; }
 
 		static const EarthEllipsoidInfo *GetEarthInfo(EarthEllipsoidType eet);
 	};

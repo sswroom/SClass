@@ -612,7 +612,6 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 		}
 		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Multipoint)
 		{
-			UInt32 *ptOfsts;
 			Math::Coord2DDbl *points;
 			UOSInt i;
 			Math::PointCollection *pts = (Math::PointCollection*)vec;

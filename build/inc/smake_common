@@ -112,6 +112,7 @@ nodeps:
 @ExecuteProcessTest
 @ExecuteProcess2
 @HiResClock
+@CesiumDownloader
 @MapSearchTest
 @OruxMapTest
 @LanczosFilterTest
@@ -395,6 +396,9 @@ HiResClock:
 @ConsoleStartup.o
 
 #Map
+CesiumDownloader:
+@CesiumDownloaderTest.o
+@ConsoleStartup.o
 MapSearchTest:
 @MapSearchTest.o
 @ConsoleStartup.o
@@ -961,6 +965,7 @@ ExceptionRecorderTest.o: ../../main/Manage/ExceptionRecorderTest.cpp
 ExecuteProcess.o: ../../main/Manage/ExecuteProcess.cpp
 ExecuteProcess2.o: ../../main/Manage/ExecuteProcess2.cpp
 HiResClockMain.o: ../../main/Manage/HiResClock.cpp
+CesiumDownloaderTest.o: ../../main/Map/CesiumDownloaderTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
