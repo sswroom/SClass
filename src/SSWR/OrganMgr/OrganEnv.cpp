@@ -621,7 +621,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime 
 			sb.AppendC(UTF8STRC("Trip not found at "));
 			sb.AppendDate(dt);
 			frm.SetText(sb.ToCString());
-			frm.SetTimes(&dt2, &dt3);
+			frm.SetTimes(dt, &dt2, &dt3);
 			frm.ShowDialog(ownerFrm);
 		}
 		tr = this->TripGet(userId, dt);

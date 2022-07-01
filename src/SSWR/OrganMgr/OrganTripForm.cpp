@@ -1,4 +1,5 @@
 ﻿#include "Stdafx.h"
+#include "IO/Registry.h"
 #include "SSWR/OrganMgr/OrganLocationForm.h"
 #include "SSWR/OrganMgr/OrganTripForm.h"
 #include "UI/MessageDialog.h"
@@ -128,6 +129,60 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 		Location *selVal = frm.GetSelVal();
 		me->locId = selVal->id;
 		me->txtLocation->SetText(selVal->cname->ToCString());
+		IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"OrganMgr");
+		if (reg)
+		{
+			reg->SetValue(L"TripLocationLast", me->locId);
+			IO::Registry::CloseRegistry(reg);
+		}
+	}
+}
+
+void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(void *userObj)
+{
+	OrganTripForm *me = (OrganTripForm*)userObj;
+	if (me->refTime.ticks != 0)
+	{
+		Data::DateTime dt(me->refTime.ticks, me->refTime.tzQhr);
+		UInt8 min = dt.GetMinute();
+		if (min < 15)
+		{
+			dt.SetValue(dt.GetYear(), dt.GetMonth(), dt.GetDay(), dt.GetHour() - 1, 30, 0, 0, dt.GetTimeZoneQHR());
+			me->dtpFrom->SetValue(&dt);
+			dt.AddHour(1);
+			me->dtpTo->SetValue(&dt);
+		}
+		else if (min < 45)
+		{
+			dt.SetValue(dt.GetYear(), dt.GetMonth(), dt.GetDay(), dt.GetHour(), 0, 0, 0, dt.GetTimeZoneQHR());
+			me->dtpFrom->SetValue(&dt);
+			dt.AddHour(1);
+			me->dtpTo->SetValue(&dt);
+		}
+		else
+		{
+			dt.SetValue(dt.GetYear(), dt.GetMonth(), dt.GetDay(), dt.GetHour(), 30, 0, 0, dt.GetTimeZoneQHR());
+			me->dtpFrom->SetValue(&dt);
+			dt.AddHour(1);
+			me->dtpTo->SetValue(&dt);
+		}
+	}
+}
+
+void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationLastClicked(void *userObj)
+{
+	OrganTripForm *me = (OrganTripForm*)userObj;
+	IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"OrganMgr");
+	if (reg)
+	{
+		Int32 locId = reg->GetValueI32(L"TripLocationLast");
+		IO::Registry::CloseRegistry(reg);
+		if (locId != 0)
+		{
+			SSWR::OrganMgr::Location *loc = me->env->LocationGet(locId);
+			me->locId = loc->id;
+			me->txtLocation->SetText(loc->cname->ToCString());
+		}
 	}
 }
 
@@ -137,6 +192,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->env = env;
 	this->locId = 0;
 	this->updating = false;
+	this->refTime = Data::Timestamp(0, 0);
 
 	this->SetText(this->env->GetLang(UTF8STRC("TripFormTitle")));
 
@@ -154,6 +210,9 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->lblTo->SetRect(0, 56, 72, 23, false);
 	NEW_CLASS(this->dtpTo, UI::GUIDateTimePicker(ui, this->pnlDetail, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpTo->SetRect(72, 56, 176, 23, false);
+	NEW_CLASS(this->btnDate1Hr, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripForm1Hr"))));
+	this->btnDate1Hr->SetRect(248, 56, 75, 23, false);
+	this->btnDate1Hr->HandleButtonClick(OnDate1HrClicked, this);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormLocation"))));
 	this->lblLocation->SetRect(0, 88, 72, 23, false);
 	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, CSTR("")));
@@ -162,6 +221,9 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormSelect"))));
 	this->btnLocation->SetRect(168, 88, 75, 23, false);
 	this->btnLocation->HandleButtonClick(OnLocationClicked, this);
+	NEW_CLASS(this->btnLocationLast, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormLastLoc"))));
+	this->btnLocationLast->SetRect(248, 88, 75, 23, false);
+	this->btnLocationLast->HandleButtonClick(OnLocationLastClicked, this);
 	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormAdd"))));
 	this->btnAdd->SetRect(72, 128, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
@@ -179,8 +241,9 @@ void SSWR::OrganMgr::OrganTripForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::OrganMgr::OrganTripForm::SetTimes(Data::DateTime *fromTime, Data::DateTime *toTime)
+void SSWR::OrganMgr::OrganTripForm::SetTimes(Data::DateTime *refTime, Data::DateTime *fromTime, Data::DateTime *toTime)
 {
+	this->refTime = Data::Timestamp(refTime->ToTicks(), refTime->GetTimeZoneQHR());
 	dtpFrom->SetValue(fromTime);
 	dtpTo->SetValue(toTime);
 }

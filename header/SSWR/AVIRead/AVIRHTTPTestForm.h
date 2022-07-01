@@ -31,12 +31,12 @@ namespace SSWR
 			} ThreadStatus;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Manage::HiResClock *clk;
+			Manage::HiResClock clk;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			ThreadStatus *threadStatus;
-			Sync::Mutex *connMut;
-			Data::ArrayList<Text::String *> *connURLs;
+			Sync::Mutex connMut;
+			Data::ArrayList<Text::String *> connURLs;
 			Net::WebUtil::RequestMethod method;
 			UInt32 postSize;
 			UOSInt connCurrIndex;
@@ -46,6 +46,7 @@ namespace SSWR
 			UInt32 connCnt;
 			UInt32 failCnt;
 			Bool kaConn;
+			Bool enableGZip;
 			Double t;
 
 			UI::GUIGroupBox *grpURL;
@@ -65,6 +66,7 @@ namespace SSWR
 			UI::GUILabel *lblPostSize;
 			UI::GUITextBox *txtPostSize;
 			UI::GUICheckBox *chkKAConn;
+			UI::GUICheckBox *chkGZip;
 			UI::GUIButton *btnStart;
 			UI::GUIGroupBox *grpStatus;
 			UI::GUILabel *lblConnLeftCnt;

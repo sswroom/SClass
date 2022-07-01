@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	}
 	me->StopThreads();
 	Text::StringBuilderUTF8 sb;
-	if (me->connURLs->GetCount() <= 0)
+	if (me->connURLs.GetCount() <= 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter at least 1 URL"), CSTR("Start"), me);
 		return;
@@ -42,6 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	me->kaConn = me->chkKAConn->IsChecked();
+	me->enableGZip = me->chkGZip->IsChecked();
 	if (me->cboMethod->GetSelectedIndex() == 1)
 	{
 		me->method = Net::WebUtil::RequestMethod::HTTP_POST;
@@ -67,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
 	me->threadStatus = MemAlloc(ThreadStatus, me->threadCnt);
-	me->clk->Start();
+	me->clk.Start();
 	i = me->threadCnt;
 	while (i-- > 0)
 	{
@@ -91,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	me->txtURL->GetText(&sb);
 	if (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://")))
 	{
-		me->connURLs->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+		me->connURLs.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		me->lbURL->AddItem(sb.ToCString(), 0);
 		me->txtURL->SetText(CSTR(""));
 	}
@@ -140,6 +141,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				break;
 			if (cli->Connect(url->ToCString(), status->me->method, &timeDNS, &timeConn, false))
 			{
+				if (status->me->enableGZip)
+				{
+					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
+				}
 				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
 				if (status->me->method == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
@@ -206,6 +211,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
+				if (status->me->enableGZip)
+				{
+					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
+				}
 				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
@@ -229,7 +238,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	cnt = Sync::Interlocked::Decrement(&status->me->threadCurrCnt);
 	if (cnt == 0)
 	{
-		status->me->t = status->me->clk->GetTimeDiff();
+		status->me->t = status->me->clk.GetTimeDiff();
 	}
 	return 0;
 }
@@ -282,10 +291,10 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 {
 	UOSInt i;
-	i = this->connURLs->GetCount();
+	i = this->connURLs.GetCount();
 	while (i-- > 0)
 	{
-		this->connURLs->RemoveAt(i)->Release();
+		this->connURLs.RemoveAt(i)->Release();
 	}
 	if (this->children.GetCount() > 0)
 	{
@@ -296,14 +305,14 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 Text::String *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 {
 	Text::String *url;
-	Sync::MutexUsage mutUsage(this->connMut);
+	Sync::MutexUsage mutUsage(&this->connMut);
 	if (this->connLeftCnt <= 0)
 	{
 		mutUsage.EndUse();
 		return 0;
 	}
-	url = this->connURLs->GetItem(this->connCurrIndex);
-	if ((++this->connCurrIndex) >= this->connURLs->GetCount())
+	url = this->connURLs.GetItem(this->connCurrIndex);
+	if ((++this->connCurrIndex) >= this->connURLs.GetCount())
 		this->connCurrIndex = 0;
 
 	this->connLeftCnt -= 1;
@@ -320,9 +329,6 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->sockf = core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->threadStatus = 0;
-	NEW_CLASS(this->connMut, Sync::Mutex());
-	NEW_CLASS(this->connURLs, Data::ArrayList<Text::String*>());
-	NEW_CLASS(this->clk, Manage::HiResClock());
 	this->connCurrIndex = 0;
 	this->connLeftCnt = 0;
 	this->threadCnt = 0;
@@ -331,6 +337,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->failCnt = 0;
 	this->t = 0;
 	this->kaConn = false;
+	this->enableGZip = false;
 	this->method = Net::WebUtil::RequestMethod::HTTP_GET;
 	this->postSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -388,6 +395,8 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->txtPostSize->SetRect(304, 52, 100, 23, false);
 	NEW_CLASS(this->chkKAConn, UI::GUICheckBox(ui, this->pnlRequest, CSTR("KA Conn"), false));
 	this->chkKAConn->SetRect(104, 76, 100, 23, false);
+	NEW_CLASS(this->chkGZip, UI::GUICheckBox(ui, this->pnlRequest, CSTR("GZip"), true));
+	this->chkGZip->SetRect(204, 76, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -421,9 +430,6 @@ SSWR::AVIRead::AVIRHTTPTestForm::~AVIRHTTPTestForm()
 {
 	this->StopThreads();
 	this->ClearURLs();
-	DEL_CLASS(this->connURLs);
-	DEL_CLASS(this->connMut);
-	DEL_CLASS(this->clk);
 	SDEL_CLASS(this->ssl);
 }
 

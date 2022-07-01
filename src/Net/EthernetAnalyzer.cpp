@@ -575,6 +575,10 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packe
 	Bool valid = true;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
+	if (etherType == packetSize)
+	{
+		return true;
+	}
 	Sync::MutexUsage mutUsage(&this->macMut);
 	UOSInt cnt;
 	mac = this->MACGet(srcMAC);

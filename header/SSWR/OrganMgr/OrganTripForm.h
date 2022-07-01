@@ -23,25 +23,30 @@ namespace SSWR
 			UI::GUILabel *lblLocation;
 			UI::GUIDateTimePicker *dtpFrom;
 			UI::GUIDateTimePicker *dtpTo;
+			UI::GUIButton *btnDate1Hr;
 			UI::GUITextBox *txtLocation;
 			UI::GUIButton *btnLocation;
+			UI::GUIButton *btnLocationLast;
 			UI::GUIButton *btnAdd;
 			UI::GUIListBox *lbTrips;
 			OrganEnv *env;
 			Int32 locId;
 			Bool updating;
+			Data::Timestamp refTime;
 			
 			void UpdateList();
 			static void __stdcall OnTripSelChg(void *userObj);
 			static void __stdcall OnAddClicked(void *userObj);
 			static void __stdcall OnLocationClicked(void *userObj);
+			static void __stdcall OnDate1HrClicked(void *userObj);
+			static void __stdcall OnLocationLastClicked(void *userObj);
 		public:
 			OrganTripForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env);
 			~OrganTripForm();
 
 			virtual void OnMonitorChanged();
 
-			void SetTimes(Data::DateTime *fromTime, Data::DateTime *toTime);
+			void SetTimes(Data::DateTime *refTime, Data::DateTime *fromTime, Data::DateTime *toTime);
 		};
 	}
 }

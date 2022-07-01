@@ -150,6 +150,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->vec = 0;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -187,6 +188,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->vec = 0;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -252,6 +254,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->vec = 0;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -289,6 +292,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->vec = 0;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -352,9 +356,12 @@ Map::SHPData::~SHPData()
 		UOSInt i = this->recs->GetCount();
 		while (i-- > 0)
 		{
-			void *obj;
+			RecHdr *obj;
 			if ((obj = this->recs->RemoveAt(i)) != 0)
+			{
+				SDEL_CLASS(obj->vec);
 				MemFree(obj);
+			}
 		}
 		DEL_CLASS(this->recs);
 		this->recs = 0;
@@ -629,9 +636,11 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
+		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pg, Math::Polygon(srid, rec->nPtOfst, rec->nPoint));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pg->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pg->GetPointList(&nPoint));
+		rec->vec = pg->Clone();
 		return pg;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
@@ -640,9 +649,11 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
+		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
+		rec->vec = pl->Clone();
 		return pl;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
@@ -651,10 +662,12 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
+		if (rec->vec) return rec->vec->Clone();
 		NEW_CLASS(pl, Math::Polyline3D(srid, rec->nPtOfst, rec->nPoint));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetAltitudeList(&nPoint));
+		rec->vec = pl->Clone();
 		return pl;
 	}
 	else
