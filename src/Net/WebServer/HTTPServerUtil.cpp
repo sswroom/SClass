@@ -37,7 +37,19 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CString umime)
 		{
 			return true;
 		}
+		else if (mine2.Equals(UTF8STRC("pdf")))
+		{
+			return true;
+		}
+		else if (mine2.Equals(UTF8STRC("vnd.ms-excel")))
+		{
+			return true;
+		}
 		else if (mine2.Equals(UTF8STRC("samlmetadata+xml")))
+		{
+			return true;
+		}
+		else if (mine2.Equals(UTF8STRC("gpx+xml")))
 		{
 			return true;
 		}

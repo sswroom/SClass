@@ -17,8 +17,8 @@
 #include <schnlsp.h>
 #include <bcrypt.h>
 
-#define VERBOSE_SVR
-#define VERBOSE_CLI
+//#define VERBOSE_SVR
+//#define VERBOSE_CLI
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 #include <stdio.h>
 #endif
