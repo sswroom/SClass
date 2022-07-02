@@ -8,7 +8,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-#define BUFFSIZE 2048
+#define BUFFSIZE 8192
 
 Data::Compress::DeflateStream::CompLevel Net::WebServer::HTTPServerUtil::compLevel = Data::Compress::DeflateStream::CompLevel::MaxSpeed;
 
@@ -108,6 +108,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					{
 						resp->AddHeader(CSTR("Content-Encoding"), CSTR("gzip"));
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
+						resp->EnableWriteBuffer();
 
 						compBuff[0] = 0x1F;
 						compBuff[1] = 0x8B;
@@ -143,6 +144,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					{
 						resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
+						resp->EnableWriteBuffer();
 
 						Data::Compress::DeflateStream dstm(fs, contLeng, 0, compLevel, true);
 						UOSInt readSize;
@@ -298,6 +300,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	}
 
 	sptr2 = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);
+	mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr2));
 
 	sizeLeft = fs.GetLength();
 	sb2.ClearStr();
@@ -386,7 +389,6 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(cacheAge);
 	resp->AddLastModified(&t);
-	mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr2));
 	resp->AddContentType(mime);
 	resp->AddHeader(CSTR("Accept-Ranges"), CSTR("bytes"));
 	if (sizeLeft <= 0)

@@ -3,7 +3,7 @@
 #include "Data/Compress/DeflateStream.h"
 #include "miniz.h"
 
-#define BUFFSIZE 4096
+#define BUFFSIZE 16384
 
 struct Data::Compress::DeflateStream::ClassData
 {

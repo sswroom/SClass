@@ -123,9 +123,12 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 		UOSInt i;
 		UOSInt j;
 		UOSInt sizeOut = 0;
+#ifdef SHOWDEBUG
+		printf("chunkSizeLeft = %d, buffSize = %d\r\n", (UInt32)chunkSizeLeft, (UInt32)buffSize);
+#endif
 		if (chunkSizeLeft > 0)
 		{
-			if (BUFFSIZE - 1 - this->buffSize > 0)
+			if (chunkSizeLeft > this->buffSize && BUFFSIZE - 1 - this->buffSize > 0)
 			{
 				if (this->cli == 0)
 				{
@@ -187,6 +190,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				}
 				MemCopyO(this->dataBuff, &this->dataBuff[this->chunkSizeLeft], this->buffSize - this->chunkSizeLeft);
 				this->buffSize -= this->chunkSizeLeft;
+				this->chunkSizeLeft = 0;
 			}
 			else if (size >= this->buffSize)
 			{
@@ -333,6 +337,9 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 			return 0;
 		}
 		this->chunkSizeLeft = j + 2;
+#ifdef SHOWDEBUG
+		printf("set chunkSizeLeft = %d\r\n", (UInt32)this->chunkSizeLeft);
+#endif
 		if (this->dataBuff[i + 2] == 13 && this->dataBuff[i + 3] == 10)
 		{
 			i += 4;

@@ -110,9 +110,9 @@ private:
 				cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 			}
 			cli->EndRequest(0, 0);
-			IO::MemoryStream *mstm;
 			UInt64 totalRead = 0;
 			UOSInt thisRead;
+			IO::MemoryStream *mstm;
 			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("CesiumDownloader.ProcURL.mstm")));
 			while ((thisRead = cli->Read(buff, 4096)) > 0)
 			{
@@ -201,13 +201,13 @@ private:
 	}
 
 public:
-	CesiumDownloader(Net::SocketFactory *sockf, UOSInt threadCount)
+	CesiumDownloader(Net::SocketFactory *sockf, UOSInt threadCount, Bool useComp)
 	{
 		this->sockf = sockf;
 		this->ssl = Net::SSLEngineFactory::Create(sockf, true);
 		this->threadCount = threadCount;
 		this->threadToStop = false;
-		this->useComp = true;
+		this->useComp = useComp;
 		this->stats = MemAlloc(ThreadStatus, this->threadCount);
 		UOSInt i = this->threadCount;
 		while (i-- > 0)
@@ -410,9 +410,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;
-	CesiumDownloader downloader(&sockf, 16);
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
+	CesiumDownloader downloader(&sockf, 16, true);
+//	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
+/*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.4"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.2"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.1"));
@@ -427,11 +427,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.4"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.2"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.1"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.05"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.05"));*/
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.025"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0125"));
+/*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0125"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.00625"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.003125"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0015625"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0015625"));*/
 	return 0;
 }

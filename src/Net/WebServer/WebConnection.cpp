@@ -14,9 +14,14 @@
 #include <stdio.h>
 #endif
 
+#define MAX_CHUNK_SIZE 8192
 #define IP_HEADER_SIZE 20
 #define TCP_HEADER_SIZE 20
 #define WRITE_BUFFER_SIZE ((1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE) * 4)
+#if WRITE_BUFFER_SIZE < MAX_CHUNK_SIZE
+#undef WRITE_BUFFER_SIZE
+#define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
+#endif
 
 Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
@@ -857,16 +862,16 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 		UOSInt retSize = 0;
 		UOSInt ohSize;
 		UOSInt writeSize;
-		UInt8 sbuff[2048 + 7];
+		UInt8 sbuff[MAX_CHUNK_SIZE + 10];
 		UTF8Char *sptr;
 		while (size > 0)
 		{
 			writeSize = size;
-			if (writeSize > 2048)
+			if (writeSize > MAX_CHUNK_SIZE)
 			{
-				writeSize = 2048;		
+				writeSize = MAX_CHUNK_SIZE;		
 			}
-			sptr = Text::StrConcatC(Text::StrHexVal32V(sbuff, (UInt32)size), UTF8STRC("\r\n"));
+			sptr = Text::StrConcatC(Text::StrHexVal32V(sbuff, (UInt32)writeSize), UTF8STRC("\r\n"));
 			ohSize = (UOSInt)(sptr - sbuff) + 2;
 			MemCopyNO(sptr, buff, writeSize);
 			buff += writeSize;

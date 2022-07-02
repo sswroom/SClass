@@ -39,6 +39,16 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 		this->cacheSize += size;
 		return size;
 	}
+	else if (size >= this->cacheSize)
+	{
+		if (this->cacheSize > 0)
+		{
+			this->outStm->Write(this->cacheBuff, this->cacheSize);
+			this->cacheSize = 0;
+		}
+		this->outStm->Write(buff, size);
+		return size;
+	}
 	
 	UOSInt ret = this->cacheBuffSize - this->cacheSize;
 	if (ret > 0)
