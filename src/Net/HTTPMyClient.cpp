@@ -314,15 +314,23 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 			}
 		}
 		this->dataBuff[i] = 0;
+#ifdef SHOWDEBUG
+		printf("Chunk size %s\r\n", this->dataBuff);
+#endif
 		j = Text::StrHex2UInt32C((Char*)this->dataBuff);
 		if (j == 0 && i == 1 && this->dataBuff[0] == '0')
 		{
 			i = 3;
-			this->buffSize -= 3;
+			if (this->buffSize >= 5 && this->dataBuff[3] == 13 && this->dataBuff[4] == 10)
+			{
+				i = 5;
+			}
+			this->buffSize -= i;
 			if (this->buffSize)
 			{
-				MemCopyO(this->dataBuff, &this->dataBuff[3], this->buffSize);
+				MemCopyO(this->dataBuff, &this->dataBuff[i], this->buffSize);
 			}
+			this->contLeng = 0;
 #ifdef SHOWDEBUG
 			printf("Return read size(7) = %d\r\n", 0);
 #endif
@@ -332,7 +340,9 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 		{
 			this->dataBuff[i] = 13;
 #ifdef SHOWDEBUG
-			printf("Return read size(8) = %d\r\n", 0);
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(this->dataBuff, i, ' ', Text::LineBreakType::None);
+			printf("Return read size(8) = %d, i = %d, (%s)\r\n", 0, (UInt32)i, sb.ToString());
 #endif
 			return 0;
 		}
@@ -340,14 +350,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 #ifdef SHOWDEBUG
 		printf("set chunkSizeLeft = %d\r\n", (UInt32)this->chunkSizeLeft);
 #endif
-		if (this->dataBuff[i + 2] == 13 && this->dataBuff[i + 3] == 10)
-		{
-			i += 4;
-		}
-		else
-		{
-			i += 2;
-		}
+		i += 2;
 		if (this->buffSize == i)
 		{
 			this->buffSize = 0;

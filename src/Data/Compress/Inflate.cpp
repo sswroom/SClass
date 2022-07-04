@@ -72,7 +72,7 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *s
 
 		stm.next_in = readBuff;
 		stm.avail_in = (unsigned int)srcSize;
-		int ret;
+		int ret = MZ_STREAM_END;
 		while (stm.avail_in > 0)
 		{
 			ret = mz_inflate(&stm, MZ_SYNC_FLUSH);
@@ -97,6 +97,25 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *s
 			}
 //			if (ret == MZ_STREAM_END)
 //				break;
+		}
+		while (!error && ret != MZ_STREAM_END)
+		{
+			ret = mz_inflate(&stm, MZ_FINISH);
+			if (stm.avail_out == 1048576)
+			{
+				error = true;
+				break;
+			}
+			else
+			{
+				if ((UOSInt)destStm->Write(writeBuff, 1048576 - stm.avail_out) != (1048576 - stm.avail_out))
+				{
+					error = true;
+					break;
+				}
+				stm.avail_out = 1048576;
+				stm.next_out = writeBuff;
+			}
 		}
 	}
 	mz_inflateEnd(&stm);

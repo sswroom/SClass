@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-//#define VERBOSE
+//f#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -650,6 +650,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		}
 		if (!this->respDataEnd && this->respTranEnc == 1)
 		{
+#if defined(VERBOSE)
+			printf("WebConn: chunked %d\r\n", 0);
+#endif
 			if (this->cstm)
 			{
 				this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
@@ -768,6 +771,9 @@ void Net::WebServer::WebConnection::ShutdownSend()
 {
 	if (!this->respDataEnd && this->respTranEnc == 1)
 	{
+#if defined(VERBOSE)
+		printf("WebConn: chunked %d\r\n", 0);
+#endif
 		if (this->cstm)
 		{
 			this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
@@ -872,6 +878,9 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 				writeSize = MAX_CHUNK_SIZE;		
 			}
 			sptr = Text::StrConcatC(Text::StrHexVal32V(sbuff, (UInt32)writeSize), UTF8STRC("\r\n"));
+#if defined(VERBOSE)
+			printf("WebConn: chunked %s", sbuff);
+#endif
 			ohSize = (UOSInt)(sptr - sbuff) + 2;
 			MemCopyNO(sptr, buff, writeSize);
 			buff += writeSize;

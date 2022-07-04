@@ -1,8 +1,11 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "Data/Comparator.h"
 #include "Data/SyncArrayList.h"
 #include "Data/Compress/Inflate.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/FileStream.h"
 #include "IO/StmData/MemoryData.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
@@ -15,6 +18,14 @@
 
 class CesiumDownloader
 {
+public:
+	struct FileEntry
+	{
+		Text::String *url;
+		UInt64 downloadSize;
+		UInt64 contentSize;
+	};
+
 private:
 	enum ThreadState
 	{
@@ -44,6 +55,8 @@ private:
 	ThreadStatus *stats;
 	Data::SyncArrayList<Text::String*> urlList;
 	Bool useComp;
+	Sync::Mutex filesMut;
+	Data::ArrayList<FileEntry*> filesList;
 
 	static void ParseJSONObj(ThreadStatus *stat, Text::String *url, Text::JSONBase *obj, Text::StringBuilderUTF8 *tmpSb)
 	{
@@ -148,6 +161,14 @@ private:
 				}
 			}
 			stat->totalContentSize += mstm->GetLength();
+			Sync::MutexUsage mutUsage(&stat->me->filesMut);
+			FileEntry *file = MemAlloc(FileEntry, 1);
+			file->url = url->Clone();
+			file->downloadSize = cli->GetTotalDownload();
+			file->contentSize = mstm->GetLength();
+			stat->me->filesList.Add(file);
+			mutUsage.EndUse();
+
 			if (cli->GetRespStatus() == 200)
 			{
 				stat->succCnt++;
@@ -274,6 +295,8 @@ public:
 		}
 		MemFree(this->stats);
 		SDEL_CLASS(this->ssl);
+
+		this->ClearFiles();
 	}
 
 	void AddURL(Text::CString url)
@@ -379,6 +402,33 @@ public:
 			this->stats[i].totalContentSize = 0;
 		}
 	}
+
+	void ClearFiles()
+	{
+		Sync::MutexUsage mutUsage(&this->filesMut);
+		UOSInt i = this->filesList.GetCount();
+		FileEntry *file;
+		while (i-- > 0)
+		{
+			file = this->filesList.GetItem(i);
+			file->url->Release();
+			MemFree(file);
+		}
+		this->filesList.Clear();
+	}
+
+	const Data::ArrayList<FileEntry*> *GetFilesList()
+	{
+		return &this->filesList;
+	}
+};
+
+class FilesComparator : public Data::Comparator<CesiumDownloader::FileEntry*>
+{
+	virtual OSInt Compare(CesiumDownloader::FileEntry *a, CesiumDownloader::FileEntry *b)
+	{
+		return a->url->CompareToFast(b->url->ToCString());
+	}
 };
 
 void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString url)
@@ -404,6 +454,29 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString ur
 	sb.AppendU64(downloader->GetTotalContentSize());
 	console->WriteLineCStr(sb.ToCString());
 	downloader->ClearStat();
+	FilesComparator comparator;
+	Data::ArrayList<CesiumDownloader::FileEntry*> filesList;
+	filesList.AddAll(downloader->GetFilesList());
+	Data::Sort::ArtificialQuickSort::Sort(&filesList, &comparator);
+	
+	IO::FileStream fs(CSTR("CesiumFiles.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	CesiumDownloader::FileEntry *file;
+	UOSInt i = 0;
+	UOSInt j = filesList.GetCount();
+	while (i < j)
+	{
+		file = filesList.GetItem(i);
+		sb.ClearStr();
+		sb.Append(file->url);
+		sb.AppendUTF8Char('\t');
+		sb.AppendU64(file->contentSize);
+		sb.AppendUTF8Char('\t');
+		sb.AppendU64(file->downloadSize);
+		sb.AppendC(UTF8STRC("\r\n"));
+		fs.Write(sb.ToString(), sb.GetLength());
+		i++;
+	}
+	downloader->ClearFiles();
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -411,8 +484,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;
 	CesiumDownloader downloader(&sockf, 16, true);
-//	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
-/*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
+/*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.4"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.2"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.1"));
@@ -421,15 +494,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.0125"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.00625"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.003125"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.0015625"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.0015625"));*/
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.8"));
+/*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.8"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.4"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.2"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.1"));
-	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.05"));*/
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.05"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.025"));
-/*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0125"));
+	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0125"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.00625"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.003125"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&minErr=0.0015625"));*/
