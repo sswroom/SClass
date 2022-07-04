@@ -77,7 +77,7 @@ void Crypto::Cert::X509Cert::ToShortName(Text::StringBuilderUTF8 *sb) const
 
 UOSInt Crypto::Cert::X509Cert::GetCertCount()
 {
-	return 0;
+	return 1;
 }
 
 Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
@@ -171,6 +171,8 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(Net::SSLEngi
 		return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 	}
 
+	Data::ArrayList<Text::CString> crlDistributionPoints;
+	this->GetCRLDistributionPoints(&crlDistributionPoints);
 	//////////////////////////
 	// CRL
 	return Crypto::Cert::X509File::ValidStatus::Valid;
@@ -439,6 +441,35 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned() const
 	Crypto::Cert::CertNames::FreeNames(&subjNames);
 	Crypto::Cert::CertNames::FreeNames(&issueNames);
 	return ret;
+}
+
+UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt len;
+	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+	if (pdu == 0)
+	{
+		return false;
+	}
+	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.8.1", &len, &itemType);
+		if (pdu)
+		{
+			return ExtensionsGetCRLDistributionPoints(pdu, pdu + len, crlDistributionPoints);
+		}
+	}
+	else
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.7.1", &len, &itemType);
+		if (pdu)
+		{
+			return ExtensionsGetCRLDistributionPoints(pdu, pdu + len, crlDistributionPoints);
+		}
+	}
+	return 0;
+
 }
 
 const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(UOSInt *dataLen) const

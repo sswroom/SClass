@@ -4,6 +4,7 @@
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509CRL.h"
 #include "Crypto/Cert/X509File.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Cert/X509PKCS7.h"
 #include "Crypto/Cert/X509PKCS12.h"
@@ -50,7 +51,7 @@ IO::ParserType Parser::FileParser::X509Parser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	UInt8 buff[8192];
+	UInt8 buff[10240];
 	UInt64 len = fd->GetDataSize();
 	if (len > sizeof(buff) || (targetType != IO::ParserType::Unknown && targetType != IO::ParserType::ASN1Data))
 	{
@@ -64,7 +65,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, Text::String *fileName)
 {
 	Crypto::Cert::X509File *ret = 0;
-	UInt8 dataBuff[6144];
+	UInt8 dataBuff[10240];
 	UOSInt dataLen;
 	UOSInt lbSize;
 	if (buff[buffSize - 2] == 13 && buff[buffSize - 1] == 10)
@@ -93,8 +94,37 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 		if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")) && Text::StrStartsWithC(&buff[buffSize - 25 - lbSize], 25 + lbSize, UTF8STRC("-----END CERTIFICATE-----")))
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+			UOSInt i = Text::StrIndexOfC(buff, buffSize, UTF8STRC("-----END CERTIFICATE-----"));
+			if (i == buffSize - 25 - lbSize)
+			{
+				dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
+				NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+			}
+			else
+			{
+				dataLen = b64.DecodeBin(&buff[27], i - 27, dataBuff);
+				Crypto::Cert::X509FileList *fileList;
+				Crypto::Cert::X509File *file;
+				NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+				NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+				ret = fileList;
+
+				buff += i + 25 + lbSize;
+				buffSize -= i + 25 + lbSize;
+				while (buffSize >= 25 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")))
+				{
+					i = Text::StrIndexOfC(buff, buffSize, UTF8STRC("-----END CERTIFICATE-----"));
+					if (i == INVALID_INDEX)
+					{
+						break;
+					}
+					dataLen = b64.DecodeBin(&buff[27], i - 27, dataBuff);
+					NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+					fileList->AddFile(file);
+					buff += i + 25 + lbSize;
+					buffSize -= i + 25 + lbSize;
+				}
+			}
 		}
 		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN RSA PRIVATE KEY-----")) && Text::StrStartsWithC(&buff[buffSize - 29 - lbSize], 29 + lbSize, UTF8STRC("-----END RSA PRIVATE KEY-----")))
 		{

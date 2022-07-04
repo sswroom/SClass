@@ -38,6 +38,7 @@ namespace Crypto
 			Bool GetNotAfter(Data::DateTime *dt) const;
 			Bool DomainValid(Text::CString domain) const;
 			Bool IsSelfSigned() const;
+			UOSInt GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const;
 
 			const UInt8 *GetIssuerNamesSeq(UOSInt *dataLen) const;
 			const UInt8 *GetSerialNumber(UOSInt *dataLen) const;

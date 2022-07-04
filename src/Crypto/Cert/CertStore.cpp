@@ -9,6 +9,11 @@ Crypto::Cert::CertStore::CertStore(Text::CString name)
 	this->storeName = Text::String::New(name);
 }
 
+Crypto::Cert::CertStore::CertStore(Text::String *name)
+{
+	this->storeName = name->Clone();
+}
+
 Crypto::Cert::CertStore::~CertStore()
 {
 	UOSInt i = this->certMap.GetCount();
@@ -19,6 +24,20 @@ Crypto::Cert::CertStore::~CertStore()
 		DEL_CLASS(cert);
 	}
 	this->storeName->Release();
+}
+
+Crypto::Cert::CertStore *Crypto::Cert::CertStore::Clone()
+{
+	Crypto::Cert::CertStore *newStore;
+	NEW_CLASS(newStore, Crypto::Cert::CertStore(this->storeName));
+	UOSInt i = 0;
+	UOSInt j = this->certMap.GetCount();
+	while (i < j)
+	{
+		newStore->certMap.Put(this->certMap.GetKey(i), (Crypto::Cert::X509Cert*)this->certMap.GetItem(i)->Clone());
+		i++;
+	}
+	return newStore;
 }
 
 Bool Crypto::Cert::CertStore::LoadDir(Text::CString certsDir)

@@ -2506,6 +2506,82 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 	return true;
 }
 
+UOSInt Crypto::Cert::X509File::ExtensionsGetCRLDistributionPoints(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints)
+{
+	UTF8Char sbuff[32];
+	UOSInt ret = 0;
+	const UInt8 *itemPDU;
+	const UInt8 *oidPDU;
+	const UInt8 *strPDU;
+	const UInt8 *subItemPDU;
+	UOSInt itemLen;
+	UOSInt oidLen;
+	UOSInt strLen;
+	UOSInt subItemLen;
+	Net::ASN1Util::ItemType itemType;
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt i = 0;
+	while (i < cnt)
+	{
+		i++;
+
+		Text::StrUOSInt(sbuff, i);
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, (const Char*)sbuff, &itemLen, &itemType)) != 0)
+		{
+			if (itemType == Net::ASN1Util::IT_SEQUENCE)
+			{
+				oidPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &oidLen, &itemType);
+				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID)
+				{
+					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &strLen, &itemType);
+					if (strPDU && itemType == Net::ASN1Util::IT_BOOLEAN)
+					{
+						strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "3", &strLen, &itemType);
+					}
+					if (strPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
+					{
+						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.31"))) //id-ce-cRLDistributionPoints
+						{
+							UOSInt j = 0;
+							UOSInt k = Net::ASN1Util::PDUCountItem(strPDU, strPDU + strLen, "1");
+							while (j < k)
+							{
+								j++;
+								Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.")), j);
+								subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, (const Char*)sbuff, &subItemLen, &itemType);
+								if (subItemPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
+								{
+									ret += DistributionPointAdd(subItemPDU, subItemPDU + subItemLen, crlDistributionPoints);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+UOSInt Crypto::Cert::X509File::DistributionPointAdd(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt itemLen;
+	const UInt8 *itemPDU;
+	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+		{
+			if ((itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType)) != 0 && itemType == Net::ASN1Util::IT_CHOICE_6)
+			{
+				crlDistributionPoints->Add(Text::CString(itemPDU, itemLen));
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGetNew(const UInt8 *pdu, const UInt8 *pduEnd)
 {
 	Net::ASN1Util::ItemType oidType;
@@ -2846,6 +2922,8 @@ Text::CString Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 		return CSTR("PKCS12");
 	case FileType::CRL:
 		return CSTR("CRL");
+	case FileType::FileList:
+		return CSTR("FileList");
 	default:
 		return CSTR("Unknown");
 	}

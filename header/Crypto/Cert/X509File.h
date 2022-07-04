@@ -57,7 +57,8 @@ namespace Crypto
 				PublicKey,
 				PKCS7,
 				PKCS12,
-				CRL
+				CRL,
+				FileList
 			};
 
 			enum class KeyType
@@ -176,6 +177,8 @@ namespace Crypto
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb);
 			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
 			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
+			static UOSInt ExtensionsGetCRLDistributionPoints(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
+			static UOSInt DistributionPointAdd(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
 			static Crypto::Cert::X509Key *PublicKeyGetNew(const UInt8 *pdu, const UInt8 *pduEnd);
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/Path.h"
@@ -126,6 +127,27 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, Text::St
 							SDEL_CLASS(me->key);
 							me->key = key;
 							me->UpdateKeyDetail();
+						}
+						DEL_CLASS(x509);
+						break;
+					case Crypto::Cert::X509File::FileType::FileList:
+						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0);
+						MemClear(&names, sizeof(names));
+						if (cert->GetSubjNames(&names))
+						{
+							SDEL_CLASS(me->caCert);
+							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone();
+							me->txtCACert->SetText(names.commonName->ToCString());
+							Crypto::Cert::CertNames::FreeNames(&names);
+							if (me->key)
+							{
+								if (!me->caCert->IsSignatureKey(me->ssl, me->key))
+								{
+									DEL_CLASS(me->key);
+									me->key = 0;
+									me->txtKey->SetText(CSTR("-"));
+								}
+							}
 						}
 						DEL_CLASS(x509);
 						break;

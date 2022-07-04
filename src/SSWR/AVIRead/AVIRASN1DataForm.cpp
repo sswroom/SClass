@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
@@ -8,12 +9,16 @@ enum MenuItem
 {
 	MNU_SAVE = 100,
 	MNU_CERT_0 = 500,
-	MNU_KEY_CREATE = 600
+	MNU_KEY_CREATE = 600,
+	MNU_CERT_EXT_KEY = 601
 };
 
 SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText(CSTR("ASN1 Data"));
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("ASN1 Data - "));
+	sb.Append(asn1->GetSourceNameObj());
+	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -58,6 +63,11 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			mnu2 = mnu->AddSubMenu(CSTR("Private Key"));
 			mnu2->AddItem(CSTR("Create Key"), MNU_KEY_CREATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		}
+		else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+		{
+			mnu2 = mnu->AddSubMenu(CSTR("Key"));
+			mnu2->AddItem(CSTR("Extract Key"), MNU_CERT_EXT_KEY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+		}
 	}
 	this->SetMenu(this->mnuMain);
 
@@ -80,7 +90,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtASN1, UI::GUITextBox(ui, this->tpASN1, CSTR(""), true));
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	Text::StringBuilderUTF8 sb;
+	sb.ClearStr();
 	this->asn1->ToString(&sb);
 	this->txtDesc->SetText(sb.ToCString());
 	sb.ClearStr();
@@ -93,6 +103,34 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
 		this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
 		SDEL_CLASS(ssl);
+
+		if (x509->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+		{
+			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509;
+			sb.ClearStr();
+			if (((Crypto::Cert::X509Cert*)fileList->GetFile(0))->GetSubjectCN(&sb))
+			{
+				this->tcMain->SetTabPageName(1, sb.ToCString());
+			}
+			UI::GUITabPage *tp;
+			UI::GUITextBox *txt;
+			Crypto::Cert::X509File *file;
+			UOSInt i = 1;
+			UOSInt j = fileList->GetFileCount();
+			while (i < j)
+			{
+				file = fileList->GetFile(i);
+				sb.ClearStr();
+				file->ToShortName(&sb);
+				tp = this->tcMain->AddTabPage(sb.ToCString());
+				sb.ClearStr();
+				file->ToASN1String(&sb);
+				NEW_CLASS(txt, UI::GUITextBox(ui, tp, sb.ToCString(), true));
+				txt->SetDockType(UI::GUIControl::DOCK_FILL);
+
+				i++;
+			}
+		}
 	}
 	else
 	{
@@ -120,6 +158,14 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_KEY_CREATE:
 		{
 			Crypto::Cert::X509Key *key = ((Crypto::Cert::X509PrivKey*)this->asn1)->CreateKey();
+			if (key)
+			{
+				this->core->OpenObject(key);
+			}
+		}
+	case MNU_CERT_EXT_KEY:
+		{
+			Crypto::Cert::X509Key *key = ((Crypto::Cert::X509Cert*)this->asn1)->GetNewPublicKey();
 			if (key)
 			{
 				this->core->OpenObject(key);

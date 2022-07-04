@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Exporter/PEMExporter.h"
 #include "IO/FileStream.h"
@@ -133,6 +134,19 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.AppendC(UTF8STRC("\n-----END PKCS7-----\n"));
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	case Crypto::Cert::X509File::FileType::FileList:
+	{
+		Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509;
+		UOSInt i = 0;
+		UOSInt j = fileList->GetFileCount();
+		while (i < j)
+		{
+			if (!ExportStream(stm, fileList->GetFile(i)))
+				return false;
+			i++;
+		}
+		return true;
+	}
 	case Crypto::Cert::X509File::FileType::PKCS12:
 	case Crypto::Cert::X509File::FileType::CRL:
 		break;

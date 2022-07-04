@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
 #include "Crypto/Cert/X509Cert.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "IO/StmData/FileData.h"
 #include "Net/SSLEngineFactory.h"
@@ -99,6 +100,26 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, Text::
 							SDEL_CLASS(me->key);
 							me->key = key;
 							me->UpdateKeyDetail();
+						}
+						DEL_CLASS(x509);
+						break;
+					case Crypto::Cert::X509File::FileType::FileList:
+						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0);
+						MemClear(&names, sizeof(names));
+						if (cert->GetSubjNames(&names))
+						{
+							me->UpdateNames(&names);
+							Crypto::Cert::CertNames::FreeNames(&names);
+						}
+						MemClear(&exts, sizeof(exts));
+						if (cert->GetExtensions(&exts))
+						{
+							me->UpdateExtensions(&exts);
+							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+						}
+						else
+						{
+							me->ClearExtensions();
 						}
 						DEL_CLASS(x509);
 						break;

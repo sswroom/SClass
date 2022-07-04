@@ -1165,6 +1165,8 @@ Crypto/Cert/X509CRL.h: ../../src/Crypto/Cert/X509CRL.cpp
 @X509CRL.o
 Crypto/Cert/X509File.h: ../../src/Crypto/Cert/X509File.cpp
 @X509File.o
+Crypto/Cert/X509FileList.h: ../../src/Crypto/Cert/X509FileList.cpp
+@X509FileList.o
 Crypto/Cert/X509Key.h: ../../src/Crypto/Cert/X509Key.cpp
 @X509Key.o
 Crypto/Cert/X509PKCS7.h: ../../src/Crypto/Cert/X509PKCS7.cpp
@@ -4157,6 +4159,7 @@ X509Cert.o: ../../src/Crypto/Cert/X509Cert.cpp
 X509CertReq.o: ../../src/Crypto/Cert/X509CertReq.cpp
 X509CRL.o: ../../src/Crypto/Cert/X509CRL.cpp
 X509File.o: ../../src/Crypto/Cert/X509File.cpp
+X509FileList.o: ../../src/Crypto/Cert/X509FileList.cpp
 X509Key.o: ../../src/Crypto/Cert/X509Key.cpp
 X509PKCS7.o: ../../src/Crypto/Cert/X509PKCS7.cpp
 X509PKCS12.o: ../../src/Crypto/Cert/X509PKCS12.cpp

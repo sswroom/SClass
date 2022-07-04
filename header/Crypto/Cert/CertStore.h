@@ -16,8 +16,10 @@ namespace Crypto
 			Text::String *storeName;
 		public:
 			CertStore(Text::CString name);
+			CertStore(Text::String *name);
 			virtual ~CertStore();
 
+			CertStore *Clone();
 			Bool LoadDir(Text::CString certsDir);
 			Bool LoadJavaCACerts(Text::CString jksPath);
 			void AddCert(Crypto::Cert::X509Cert *cert);
