@@ -1,9 +1,17 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PrivKey.h"
+#include "Crypto/Cert/X509PubKey.h"
+#include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
+#include "IO/Path.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/TextBinEnc/Base64Enc.h"
+#include "UI/MessageDialog.h"
+
+#include <stdio.h>
 
 enum MenuItem
 {
@@ -12,6 +20,200 @@ enum MenuItem
 	MNU_KEY_CREATE = 600,
 	MNU_CERT_EXT_KEY = 601
 };
+
+UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType)
+{
+	UOSInt i = cbo->AddItem(Crypto::Hash::HashTypeGetName(hashType), (void*)(OSInt)hashType);
+	if (hashType == targetType)
+		cbo->SetSelectedIndex(i);
+	return i;
+}
+
+void SSWR::AVIRead::AVIRASN1DataForm::AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType)
+{
+	AddHash(cbo, Crypto::Hash::HT_MD5, hashType);
+	AddHash(cbo, Crypto::Hash::HT_SHA1, hashType);
+	AddHash(cbo, Crypto::Hash::HT_SHA224, hashType);
+	AddHash(cbo, Crypto::Hash::HT_SHA256, hashType);
+	AddHash(cbo, Crypto::Hash::HT_SHA384, hashType);
+	AddHash(cbo, Crypto::Hash::HT_SHA512, hashType);
+}
+
+Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(Text::String *fileName)
+{
+	UInt8 fileCont[172];
+	UInt8 decCont[256];
+	UInt64 fileLen;
+	UOSInt decSize;
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	fileLen = fs.GetLength();
+	if (fileLen >= 172 && fileLen <= 174)
+	{
+		if (fs.Read(fileCont, (UOSInt)fileLen) == (UOSInt)fileLen)
+		{
+			Text::TextBinEnc::Base64Enc enc;
+			decSize = enc.DecodeBin(fileCont, (UOSInt)fileLen, decCont);
+			if (decSize == 128)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	UInt8 signBuff[256];
+	UOSInt signLen = 128;
+	UInt8 fileCont[256];
+	Text::StringBuilderUTF8 sb;
+	me->txtVerifySignature->GetText(&sb);
+	if (sb.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Signature"), CSTR("Verify Signature"), me);
+		return;
+	}
+	if (IO::Path::GetPathType(sb.ToCString()) == IO::Path::PathType::File)
+	{
+		IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		UInt64 fileLen = fs.GetLength();
+		Bool succ = false;
+		if (fileLen >= 172 && fileLen <= 174)
+		{
+			if (fs.Read(fileCont, (UOSInt)fileLen) == fileLen)
+			{
+				Text::TextBinEnc::Base64Enc enc;
+				signLen = enc.DecodeBin(fileCont, (UOSInt)fileLen, signBuff);
+				if (signLen == 128)
+				{
+					succ = true;
+				}
+			}
+		}
+		if (!succ)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid file format)"), CSTR("Verify Signature"), me);
+			return;
+		}
+	}
+	else if (sb.GetLength() == 172)
+	{
+		Text::TextBinEnc::Base64Enc enc;
+		signLen = enc.DecodeBin(sb.ToString(), 172, signBuff);
+		if (signLen != 128)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid base64 format)"), CSTR("Verify Signature"), me);
+			return;
+		}
+	}
+	else if (sb.GetLength() == 256)
+	{
+		if (Text::StrHex2Bytes(sb.ToString(), signBuff) != 128)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), me);
+			return;
+		}
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Unknown format)"), CSTR("Verify Signature"), me);
+		return;
+	}
+
+	sb.ClearStr();
+	me->txtVerifyPayloadFile->GetText(&sb);
+	if (sb.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Payload"), CSTR("Verify Signature"), me);
+		return;
+	}
+
+	IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Payload Invalid"), CSTR("Verify Signature"), me);
+		return;
+	}
+	IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRASN1DataForm.OnVerifyClicked.mstm"));
+	fs.ReadToEnd(&mstm, 65536);
+	Crypto::Cert::X509Key *key = me->GetNewKey();
+	if (key == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
+		return;
+	}
+	UOSInt buffSize;
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
+	if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)(OSInt)me->cboVerifyHash->GetSelectedItem(), mstm.GetBuff(&buffSize), mstm.GetLength(), signBuff, signLen))
+	{
+		me->txtVerifyStatus->SetText(CSTR("Valid"));
+	}
+	else
+	{
+		me->txtVerifyStatus->SetText(CSTR("Invalid"));
+	}
+	DEL_CLASS(ssl);
+	DEL_CLASS(key);
+}
+
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	UI::GUITabPage *tp = me->tcMain->GetSelectedPage();
+	UOSInt i;
+	Bool isSign;
+	if (tp == 0)
+	{
+		return;
+	}
+	if (tp == me->tpVerify)
+	{
+		i = 0;
+		while (i < nFiles)
+		{
+			isSign = FileIsSign(files[i]);
+			if (isSign)
+			{
+				me->txtVerifySignature->SetText(files[i]->ToCString());
+			}
+			else
+			{
+				me->txtVerifyPayloadFile->SetText(files[i]->ToCString());
+			}
+			i++;
+		}
+	}
+	else if (tp == me->tpSignature)
+	{
+		me->txtSignaturePayloadFile->SetText(files[0]->ToCString());
+	}
+}
+
+Crypto::Cert::X509Key *SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
+{
+	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)this->asn1;
+	switch (x509->GetFileType())
+	{
+	case Crypto::Cert::X509File::FileType::FileList:
+		return ((Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0))->GetNewPublicKey();
+	case Crypto::Cert::X509File::FileType::Cert:
+		return ((Crypto::Cert::X509Cert*)x509)->GetNewPublicKey();
+	case Crypto::Cert::X509File::FileType::Key:
+		return (Crypto::Cert::X509Key*)x509->Clone();
+	case Crypto::Cert::X509File::FileType::PrivateKey:
+		return ((Crypto::Cert::X509PrivKey*)x509)->CreateKey();
+	case Crypto::Cert::X509File::FileType::PublicKey:
+		return ((Crypto::Cert::X509PubKey*)x509)->CreateKey();
+	case Crypto::Cert::X509File::FileType::CertRequest:
+	case Crypto::Cert::X509File::FileType::PKCS7:
+	case Crypto::Cert::X509File::FileType::PKCS12:
+	case Crypto::Cert::X509File::FileType::CRL:
+	default:
+		return 0;
+	}
+}
 
 SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
 {
@@ -104,13 +306,25 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
 		SDEL_CLASS(ssl);
 
-		if (x509->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+		Bool canSignature = false;
+		Bool canVerify = false;
+		Crypto::Hash::HashType hashType = Crypto::Hash::HT_SHA256;
+		switch (x509->GetFileType())
+		{
+		case Crypto::Cert::X509File::FileType::FileList:
 		{
 			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509;
+			canVerify = true;
 			sb.ClearStr();
-			if (((Crypto::Cert::X509Cert*)fileList->GetFile(0))->GetSubjectCN(&sb))
+			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)fileList->GetFile(0);
+			if (cert->GetSubjectCN(&sb))
 			{
 				this->tcMain->SetTabPageName(1, sb.ToCString());
+			}
+			Crypto::Cert::X509File::SignedInfo signedInfo;
+			if (cert->GetSignedInfo(&signedInfo))
+			{
+				hashType = Crypto::Cert::X509File::GetAlgHash(signedInfo.algType);
 			}
 			UI::GUITabPage *tp;
 			UI::GUITextBox *txt;
@@ -130,7 +344,72 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 				i++;
 			}
+			break;
 		}
+		case Crypto::Cert::X509File::FileType::Cert:
+		{
+			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)x509;
+			canVerify = true;
+			Crypto::Cert::X509File::SignedInfo signedInfo;
+			if (cert->GetSignedInfo(&signedInfo))
+			{
+				hashType = Crypto::Cert::X509File::GetAlgHash(signedInfo.algType);
+			}
+			break;
+		}
+		case Crypto::Cert::X509File::FileType::Key:
+		case Crypto::Cert::X509File::FileType::PrivateKey:
+			canVerify = true;
+			canSignature = true;
+			break;
+		case Crypto::Cert::X509File::FileType::PublicKey:
+			canVerify = true;
+			break;
+		case Crypto::Cert::X509File::FileType::CertRequest:
+		case Crypto::Cert::X509File::FileType::PKCS7:
+		case Crypto::Cert::X509File::FileType::PKCS12:
+		case Crypto::Cert::X509File::FileType::CRL:
+			break;
+		}
+
+		if (canVerify)
+		{
+			this->tpVerify = this->tcMain->AddTabPage(CSTR("Verify"));
+			NEW_CLASS(this->lblVerifyHash, UI::GUILabel(ui, this->tpVerify, CSTR("Hash Type")));
+			this->lblVerifyHash->SetRect(4, 4, 100, 23, false);
+			NEW_CLASS(this->cboVerifyHash, UI::GUIComboBox(ui, this->tpVerify, false));
+			this->cboVerifyHash->SetRect(104, 4, 200, 23, false);
+			AddHashTypes(this->cboVerifyHash, hashType);
+			NEW_CLASS(this->lblVerifyPayloadFile, UI::GUILabel(ui, this->tpVerify, CSTR("Payload File")));
+			this->lblVerifyPayloadFile->SetRect(4, 28, 100, 23, false);
+			NEW_CLASS(this->txtVerifyPayloadFile, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
+			this->txtVerifyPayloadFile->SetRect(104, 28, 300, 23, false);
+			NEW_CLASS(this->lblVerifySignature, UI::GUILabel(ui, this->tpVerify, CSTR("Signature")));
+			this->lblVerifySignature->SetRect(4, 52, 100, 23, false);
+			NEW_CLASS(this->txtVerifySignature, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
+			this->txtVerifySignature->SetRect(104, 52, 300, 23, false);
+			NEW_CLASS(this->btnVerify, UI::GUIButton(ui, this->tpVerify, CSTR("Verify")));
+			this->btnVerify->SetRect(104, 76, 75, 23, false);
+			this->btnVerify->HandleButtonClick(OnVerifyClicked, this);
+			NEW_CLASS(this->lblVerifyStatus, UI::GUILabel(ui, this->tpVerify, CSTR("Status")));
+			this->lblVerifyStatus->SetRect(4, 100, 100, 23, false);
+			NEW_CLASS(this->txtVerifyStatus, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
+			this->txtVerifyStatus->SetRect(104, 100, 200, 23, false);
+			this->txtVerifyStatus->SetReadOnly(true);
+		}
+		if (canSignature)
+		{
+/*
+			UI::GUITabPage *tpSignature;
+			UI::GUILabel *lblSignatureHash;
+			UI::GUIComboBox *cboSignatureHash;
+			UI::GUILabel *lblSignaturePayloadFile;
+			UI::GUITextBox *txtSignaturePayloadFile;
+			UI::GUIButton *btnSignature;
+			UI::GUILabel *lblSiguatureValue;
+			UI::GUITextBox *txtSignatureValue;*/
+		}
+		this->HandleDropFiles(OnFileDrop, this);
 	}
 	else
 	{

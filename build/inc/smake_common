@@ -1248,7 +1248,8 @@ Crypto/Hash/HashStream.h: ../../src/Crypto/Hash/HashStream.cpp
 @HashStream.o
 Crypto/Hash/HMAC.h: ../../src/Crypto/Hash/HMAC.cpp
 @HMAC.o
-Crypto/Hash/IHash.h:
+Crypto/Hash/IHash.h: ../../src/Crypto/Hash/IHash.cpp
+@IHash.o
 Crypto/Hash/MD5.h: ../../src/Crypto/Hash/MD5.cpp
 @MD5.o
 @MD5_CPP.o
@@ -4199,6 +4200,7 @@ HashCalc.o: ../../src/Crypto/Hash/HashCalc.cpp
 HashCreator.o: ../../src/Crypto/Hash/HashCreator.cpp
 HashStream.o: ../../src/Crypto/Hash/HashStream.cpp
 HMAC.o: ../../src/Crypto/Hash/HMAC.cpp
+IHash.o: ../../src/Crypto/Hash/IHash.cpp
 MD5.o: ../../src/Crypto/Hash/MD5.cpp
 RIPEMD128.o: ../../src/Crypto/Hash/RIPEMD128.cpp
 RIPEMD128_CPP.o: ../../src/Crypto/Hash/RIPEMD128_CPP.cpp

@@ -227,6 +227,11 @@ UOSInt UI::GUITabControl::GetSelectedIndex()
 	return this->selIndex;
 }
 
+UI::GUITabPage *UI::GUITabControl::GetSelectedPage()
+{
+	return this->tabPages.GetItem(this->selIndex);
+}
+
 void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CString name)
 {
 	TCITEMW item;

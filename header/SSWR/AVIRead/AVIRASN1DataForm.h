@@ -2,6 +2,8 @@
 #define _SM_SSWR_AVIREAD_AVIRASN1DATAFORM
 #include "Net/ASN1Data.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
@@ -32,6 +34,32 @@ namespace SSWR
 			UI::GUITabPage *tpASN1;
 			UI::GUITextBox *txtASN1;
 
+			UI::GUITabPage *tpVerify;
+			UI::GUILabel *lblVerifyHash;
+			UI::GUIComboBox *cboVerifyHash;
+			UI::GUILabel *lblVerifyPayloadFile;
+			UI::GUITextBox *txtVerifyPayloadFile;
+			UI::GUILabel *lblVerifySignature;
+			UI::GUITextBox *txtVerifySignature;
+			UI::GUIButton *btnVerify;
+			UI::GUILabel *lblVerifyStatus;
+			UI::GUITextBox *txtVerifyStatus;
+
+			UI::GUITabPage *tpSignature;
+			UI::GUILabel *lblSignatureHash;
+			UI::GUIComboBox *cboSignatureHash;
+			UI::GUILabel *lblSignaturePayloadFile;
+			UI::GUITextBox *txtSignaturePayloadFile;
+			UI::GUIButton *btnSignature;
+			UI::GUILabel *lblSiguatureValue;
+			UI::GUITextBox *txtSignatureValue;
+
+			static UOSInt AddHash(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
+			static void AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType);
+			static Bool FileIsSign(Text::String *fileName);
+			static void __stdcall OnVerifyClicked(void *userObj);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			Crypto::Cert::X509Key *GetNewKey();
 		public:
 			AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1);
 			virtual ~AVIRASN1DataForm();

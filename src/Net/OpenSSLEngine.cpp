@@ -764,6 +764,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
     }
 	Bool succ = false;
 	int res = EVP_VerifyFinal(emc, signData, (UInt32)signLen, pkey);
+//	printf("res = %d, %s\r\n", res, ERR_error_string(ERR_get_error(), 0));
     if (res < 0) {
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);

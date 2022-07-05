@@ -2,6 +2,11 @@
 #include "MyMemory.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 const UInt8 Text::TextBinEnc::Base64Enc::decArr[] = {
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -363,7 +368,19 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt str
 					break;
 				}
 			}
+#if defined(VERBOSE)
+			else
+			{
+				printf("Unknown char %c (0x%x)\r\n", c, c);
+			}
+#endif
 		}
+#if defined(VERBOSE)
+		else
+		{
+			printf("Unknown char 0x%x\r\n", c);
+		}
+#endif
 	}
 	return decSize;
 }

@@ -1,5 +1,7 @@
 #ifndef _SM_CRYPTO_HASH_IHASH
 #define _SM_CRYPTO_HASH_IHASH
+#include "Text/CString.h"
+
 namespace Crypto
 {
 	namespace Hash
@@ -35,6 +37,8 @@ namespace Crypto
 			HT_FIRST = HT_ADLER32,
 			HT_LAST = HT_SHA1_SHA1
 		} HashType;
+
+		Text::CString HashTypeGetName(HashType hashType);
 
 		class IHash
 		{
