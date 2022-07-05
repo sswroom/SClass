@@ -30,6 +30,7 @@ namespace Map
 		Data::ArrayListDbl *ptX;
 		Data::ArrayListDbl *ptY;
 		Data::ArrayListDbl *ptZ;
+		Sync::Mutex *recsMut;
 		Data::ArrayList<RecHdr*> *recs;
 
 		Bool isPoint;

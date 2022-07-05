@@ -297,6 +297,10 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 	}
 	sb.Append(file);
+	if (IO::Path::PATH_SEPERATOR == '\\')
+	{
+		sb.Replace('/', '\\');
+	}
 	IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
@@ -369,6 +373,10 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(Net::WebServer::IWebRequest
 		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 	}
 	sb.Append(file);
+	if (IO::Path::PATH_SEPERATOR == '\\')
+	{
+		sb.Replace('/', '\\');
+	}
 	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
 }
 

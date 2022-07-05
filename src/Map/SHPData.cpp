@@ -9,6 +9,7 @@
 #include "Math/Polygon.h"
 #include "Math/Point.h"
 #include "Math/Point3D.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
@@ -28,6 +29,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	this->ptY = 0;
 	this->ptZ = 0;
 	this->recs = 0;
+	this->recsMut = 0;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->mapRate = 10000000.0;
 
@@ -135,6 +137,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
@@ -173,6 +176,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
@@ -239,6 +243,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE3D;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
@@ -277,6 +282,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
 		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, shpBuff) == 8)
 		{
 			currOfst += 8;
@@ -366,6 +372,7 @@ Map::SHPData::~SHPData()
 		DEL_CLASS(this->recs);
 		this->recs = 0;
 	}
+	SDEL_CLASS(this->recsMut);
 }
 
 Bool Map::SHPData::IsError()
@@ -633,6 +640,7 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
 	{
 		Math::Polygon *pg;
+		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
@@ -646,6 +654,7 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
 	{
 		Math::Polyline *pl;
+		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
@@ -659,6 +668,7 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
 		Math::Polyline3D *pl;
+		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
