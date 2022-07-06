@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_PAPERSIZE
 #define _SM_MEDIA_PAPERSIZE
+#include "Math/Size2D.h"
 
 namespace Media
 {
@@ -70,8 +71,7 @@ namespace Media
 		} PaperType;
 	private:
 		PaperType pType;
-		Double widthMM;
-		Double heightMM;
+		Math::Size2D<Double> sizeMM;
 
 	public:
 		PaperSize(PaperType pType);
@@ -79,6 +79,8 @@ namespace Media
 
 		Double GetWidthMM();
 		Double GetHeightMM();
+
+		static Math::Size2D<Double> PaperTypeGetSizeMM(PaperType paperType);
 	};
-};
+}
 #endif
