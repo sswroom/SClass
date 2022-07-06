@@ -91,7 +91,6 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	{
 		this->dateFormat = Text::StrCopyNew("yyyy-MM-dd HH:mm:ss\t");
 	}
-	NEW_CLASS(mut, Sync::Mutex());
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
 	this->closed = false;
@@ -155,16 +154,13 @@ IO::FileLog::~FileLog()
 
 	DEL_CLASS(fileStm);
 	fileStm = 0;
-
-	DEL_CLASS(mut);
-	mut = 0;
 }
 
 void IO::FileLog::LogClosed()
 {
 	if (!closed)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		log->Close();
 		mutUsage.EndUse();
 		closed = true;
@@ -172,7 +168,7 @@ void IO::FileLog::LogClosed()
 }
 void IO::FileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
 {
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	Bool newFile = false;
 	UTF8Char buff[256];
 	UTF8Char *sptr;

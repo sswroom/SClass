@@ -10,7 +10,7 @@ namespace IO
 	class FileLog : public ILogHandler
 	{
 	private:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		IO::ILogHandler::LogType logStyle;
 		IO::ILogHandler::LogGroup groupStyle;
 		Int32 lastVal;
