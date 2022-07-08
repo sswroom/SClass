@@ -63,10 +63,11 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	{0x06, 0x3C,  3, 100, 3500, 3900,  4,  8,   84,  22, 2013, 3, UTF8STRC("Intel Core i7-4771"), UTF8STRC("Intel i7-4771")},
 	{0x06, 0x3E,  4,  75, 2600, 3400,  8, 16,   95,  22, 2013, 3, UTF8STRC("Intel Xeon E5-2650 v2"), UTF8STRC("Intel E5-2650V2")},
 	{0x06, 0x3F,  2,  85, 2500, 3300, 12, 24,  120,  22, 2013, 3, UTF8STRC("Intel Xeon E5-2680 v3"), UTF8STRC("Intel E5-2680V3")},
-	{0x06, 0x4C,  3,  90, 1440, 1840,  4,  4,    2,  14, 2015, 2, UTF8STRC("Intel Atom x5-Z8300"), UTF8STRC("Intel x5-Z8300")},
-	{0x06, 0x4C,  4,  90, 1440, 1920,  4,  4,    2,  14, 2016, 1, UTF8STRC("Intel Atom x5-Z8350"), UTF8STRC("Intel x5-Z8300")},
+	{0x06, 0x4C,  3,  90, 1440, 1840,  4,  4,    2,  14, 2015, 2, UTF8STRC("Intel Atom x5-Z8300"), UTF8STRC("Intel Z8300")},
+	{0x06, 0x4C,  4,  90, 1440, 1920,  4,  4,    2,  14, 2016, 1, UTF8STRC("Intel Atom x5-Z8350"), UTF8STRC("Intel Z8300")},
 	{0x06, 0x4C,  4,  90, 1600, 2240,  4,  4,    6,  14, 2016, 1, UTF8STRC("Intel Celeron N3160"), UTF8STRC("Intel N3160")},
 	{0x06, 0x55,  4,   0, 2500, 2500, 24, 48,    0,  14, 2017, 1, UTF8STRC("Intel Xeon 8163"), UTF8STRC("Intel 8163")},
+	{0x06, 0x5C, 10, 110, 1600, 1800,  4,  4,  9.5,  14, 2016, 4, UTF8STRC("Intel Atom x5-E3940"), UTF8STRC("Intel E3940")},
 	{0x06, 0x7A,  1, 105, 1100, 2600,  2,  2,    6,  14, 2017, 4, UTF8STRC("Intel Celeron N4000"), UTF8STRC("Intel N4000")},
 	{0x06, 0x7A,  8, 105, 1100, 2600,  4,  4,    6,  14, 2019, 4, UTF8STRC("Intel Celeron N4120"), UTF8STRC("Intel N4120")},
 	{0x06, 0x8C,  1, 100, 2400, 4200,  4,  8,   28,  10, 2020, 3, UTF8STRC("Intel Core i5-1135G7"), UTF8STRC("Intel i5-1135G7")},
@@ -189,7 +190,7 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
 
 Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	//                                                                                                                                  [             clustor 1                ] [               clustor2               ] [                 clustor3             ]
-	//model              contextType                       brand                            name                             tdp   nm   Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D L2    L3     GPU
+	//model                        contextType                       brand                            name                             tdp   nm   Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D Type            cnt freq  max   L1I  L1D L2    L3     GPU
 	{UTF8STRC("88F3710"),          Manage::ThreadContext::CT_ARM64,  Manage::CPUVendor::CB_MARVELL,   "Armada 3710 88F3710",           0,    0,   "Cortex-A53",   1,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     0},
 	{UTF8STRC("88F3720"),          Manage::ThreadContext::CT_ARM64,  Manage::CPUVendor::CB_MARVELL,   "Armada 3720 88F3710",           0,    0,   "Cortex-A53",   1,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     0},
 	{UTF8STRC("88F5082"),          Manage::ThreadContext::CT_ARM,    Manage::CPUVendor::CB_MARVELL,   "Orion 88F5082",                 0,    0,   "88fr331",      1,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  0,    0,     0},
@@ -318,6 +319,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{UTF8STRC("Intel D425"),       Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Atom D425",                     10,   45,  "x86",          1,  1830, 1830, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     "GMA 3150"},
 	{UTF8STRC("Intel D510"),       Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Atom D510",                     13,   45,  "x86",          2,  1670, 1670, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 0,     "GMA 3150"},
 	{UTF8STRC("Intel D525"),       Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Atom D525",                     13,   45,  "x86",          2,  1830, 1830, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 0,     "GMA 3150"},
+	{UTF8STRC("Intel E3940"),      Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Atom x5-E3940",                 9.5,  14,  "x86",          4,  1600, 1800, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  2048, 0,     "HD Graphics 500"},
 	{UTF8STRC("Intel E5-1428LV2"), Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Xeon E5-1428L v2",              60,   22,  "x86 with HT",  6,  2200, 2700, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  2048, 15360, 0},
 	{UTF8STRC("Intel E5-1620V2"),  Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Xeon E5-1620 v2",               130,  22,  "x86 with HT",  4,  3700, 3900, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  2048, 10240, 0},
 	{UTF8STRC("Intel E5-1650V2"),  Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Xeon E5-1650 v2",               130,  22,  "x86 with HT",  6,  3500, 3900, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  2048, 12288, 0},
