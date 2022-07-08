@@ -145,6 +145,9 @@ ArrayListCmp.o: $(CLASSDIR)src/Data/ArrayListCmp.cpp
 ArrayListDbl.o: $(CLASSDIR)src/Data/ArrayListDbl.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+ArrayListICaseString.o: $(CLASSDIR)src/Data/ArrayListICaseString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 ArrayListICaseStrW.o: $(CLASSDIR)src/Data/ArrayListICaseStrW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
