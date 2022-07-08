@@ -1803,6 +1803,8 @@ IO/Device/SIM7000.h: ../../src/IO/Device/SIM7000.cpp
 @SIM7000.o
 IO/Device/SIM7000SocketFactory.h: ../../src/IO/Device/SIM7000SocketFactory.cpp
 @SIM7000SocketFactory.o
+IO/Device/TelitLE910.h: ../../src/IO/Device/TelitLE910.cpp
+@TelitLE910.o
 IO/Device/TH10SB.h: ../../src/IO/Device/TH10SB.cpp
 @TH10SB.o
 IO/FileAnalyse/DWGFileAnalyse.h: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
@@ -4449,6 +4451,7 @@ SDM120M.o: ../../src/IO/Device/SDM120M.cpp
 SHT20.o: ../../src/IO/Device/SHT20.cpp
 SIM7000.o: ../../src/IO/Device/SIM7000.cpp
 SIM7000SocketFactory.o: ../../src/IO/Device/SIM7000SocketFactory.cpp
+TelitLE910.o: ../../src/IO/Device/TelitLE910.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
