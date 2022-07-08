@@ -50,7 +50,7 @@ UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
 		{
 			tag = MemAlloc(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag, 1);
 			tag->ofst = ofst;
-			tag->size = tagHdr[2] + 5;
+			tag->size = (UOSInt)tagHdr[2] + 5;
 			tag->tagType = tagHdr[3];
 			me->tags.Add(tag);
 			ofst += tag->size;
@@ -258,7 +258,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 			dt.SetValue((UInt16)(2000 + tagData[currOfst + 1]), tagData[currOfst + 2], tagData[currOfst + 3], tagData[currOfst + 4], tagData[currOfst + 5], tagData[currOfst + 6], 0, 0);
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			frame->AddField(currOfst + 1, 6, CSTR("Date Time"), CSTRP(sbuff, sptr));
-			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), tagData[currOfst + 7] >> 4);
+			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), (UOSInt)tagData[currOfst + 7] >> 4);
 			frame->AddUInt(currOfst + 7, 1, CSTR("Quantity of positioning satellites"), tagData[currOfst + 7] & 15);
 			Double lat = ReadMUInt32(&tagData[currOfst + 8]) / 1800000.0;
 			Double lon = ReadMUInt32(&tagData[currOfst + 12]) / 1800000.0;

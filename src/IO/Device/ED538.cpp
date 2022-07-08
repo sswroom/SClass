@@ -16,7 +16,7 @@ Bool IO::Device::ED538::IsDIHighByCoil(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
-	return this->ReadCoil(diNum + 0x20);
+	return this->ReadCoil((UInt16)(diNum + 0x20));
 }
 
 Bool IO::Device::ED538::IsDIHighByInput(UInt16 diNum)
@@ -31,7 +31,7 @@ Bool IO::Device::ED538::IsDIHighByReg(UInt16 diNum)
 	if (diNum >= 8)
 		return false;
 	Int32 val;
-	if (!this->ReadInputI16(diNum + 0x20, &val))
+	if (!this->ReadInputI16((UInt16)(diNum + 0x20), &val))
 		return false;
 	return val != 0;
 }
@@ -60,7 +60,7 @@ Bool IO::Device::ED538::ClearDICount(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
-	return this->WriteDOutput(0x200 + diNum, true);
+	return this->WriteDOutput((UInt16)(0x200 + diNum), true);
 }
 
 Bool IO::Device::ED538::IsRelayHigh(UInt16 index)
@@ -81,7 +81,7 @@ Bool IO::Device::ED538::GetOutputOverloadFlag(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
-	return this->ReadDInput(0x400 + diNum);
+	return this->ReadDInput((UInt16)(0x400 + diNum));
 }
 
 void IO::Device::ED538::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)

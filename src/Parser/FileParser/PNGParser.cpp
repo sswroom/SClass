@@ -54,7 +54,7 @@ UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 			while (currX < maxX)
 			{
 				px = *srcData++;
-				lineStart[currX] = px >> 7;
+				lineStart[currX] = (UInt8)(px >> 7);
 				lineStart[currX + xAdd * 1] = (px >> 6) & 1;
 				lineStart[currX + xAdd * 2] = (px >> 5) & 1;
 				lineStart[currX + xAdd * 3] = (px >> 4) & 1;
@@ -77,7 +77,7 @@ UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 			while (currX < maxX)
 			{
 				px = *srcData++;
-				lineStart[currX] = px >> 6;
+				lineStart[currX] = (UInt8)(px >> 6);
 				lineStart[currX + xAdd * 1] = (px >> 4) & 3;
 				lineStart[currX + xAdd * 2] = (px >> 2) & 3;
 				lineStart[currX + xAdd * 3] = px & 3;
@@ -96,7 +96,7 @@ UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 			while (currX < maxX)
 			{
 				px = *srcData++;
-				lineStart[currX] = px >> 4;
+				lineStart[currX] = (UInt8)(px >> 4);
 				lineStart[currX + xAdd * 1] = px & 15;
 				currX += xAdd * 2;
 			}

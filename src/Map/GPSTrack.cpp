@@ -1167,7 +1167,11 @@ Bool Map::GPSDataReader::ReadNext()
 	while (i < j)
 	{
 		rec = this->gps->GetTrack(i, &k);
-		if (rowLeft < k)
+		if (rec == 0)
+		{
+			return false;
+		}
+		else if (rowLeft < k)
 		{
 			currRec = &rec[rowLeft];
 			return true;

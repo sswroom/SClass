@@ -37,7 +37,7 @@ namespace Crypto
 
 			UInt16 CalcDirect(const UInt8 *buff, UOSInt buffSize)
 			{
-				return ~CRC16R_Calc(buff, buffSize, this->crctab, 0xffff);
+				return (UInt16)~CRC16R_Calc(buff, buffSize, this->crctab, 0xffff);
 			}
 		};
 	}

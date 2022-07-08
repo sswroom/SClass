@@ -13,31 +13,31 @@ void Crypto::Hash::AESCMAC::GenSubKey()
 	i = 0;
 	while (i < 15)
 	{
-		this->k1[i] = (l[i] << 1) | (l[i + 1] >> 7);
+		this->k1[i] = (UInt8)((l[i] << 1) | (l[i + 1] >> 7));
 		i++;
 	}
 	if (l[0] & 0x80)
 	{
-		this->k1[15] = (l[15] << 1) ^ 0x87;
+		this->k1[15] = (UInt8)((l[15] << 1) ^ 0x87);
 	}
 	else
 	{
-		this->k1[15] = l[15] << 1;
+		this->k1[15] = (UInt8)(l[15] << 1);
 	}
 
 	i = 0;
 	while (i < 15)
 	{
-		this->k2[i] = (this->k1[i] << 1) | (this->k1[i + 1] >> 7);
+		this->k2[i] = (UInt8)((this->k1[i] << 1) | (this->k1[i + 1] >> 7));
 		i++;
 	}
 	if (this->k1[0] & 0x80)
 	{
-		this->k2[15] = (this->k1[15] << 1) ^ 0x87;
+		this->k2[15] = (UInt8)((this->k1[15] << 1) ^ 0x87);
 	}
 	else
 	{
-		this->k2[15] = this->k1[15] << 1;
+		this->k2[15] = (UInt8)(this->k1[15] << 1);
 	}
 }
 
