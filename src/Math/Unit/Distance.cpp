@@ -50,6 +50,8 @@ Double Math::Unit::Distance::GetUnitRatio(DistanceUnit unit)
 		return 0.0254 / 72.0;
 	case DU_PIXEL:
 		return 0.0254 / 96.0;
+	case DU_TWIP:
+		return 0.0254 / 1440.0;
 	}
 	return 1;
 }
@@ -102,6 +104,8 @@ Text::CString Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
 		return CSTR("pt");
 	case DU_PIXEL:
 		return CSTR("px");
+	case DU_TWIP:
+		return CSTR("twip");
 	}
 	return CSTR("");
 }
@@ -154,6 +158,8 @@ Text::CString Math::Unit::Distance::GetUnitName(DistanceUnit unit)
 		return CSTR("Point");
 	case DU_PIXEL:
 		return CSTR("Pixel");
+	case DU_TWIP:
+		return CSTR("Twentieth of an inch point");
 	}
 	return CSTR("");
 }
