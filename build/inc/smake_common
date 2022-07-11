@@ -1563,6 +1563,8 @@ Game/Sudoku/SudokuBoard.h: ../../src/Game/Sudoku/SudokuBoard.cpp
 
 IO/ActiveStreamReader.h: ../../src/IO/ActiveStreamReader.cpp
 @ActiveStreamReader.o
+IO/AdvantechASCIIChannel.h: ../../src/IO/AdvantechASCIIChannel.cpp
+@AdvantechASCIIChannel.o
 IO/AndroidDB.h: ../../src/IO/AndroidDB.cpp
 @AndroidDB.o
 IO/ATCommandChannel.h: ../../src/IO/ATCommandChannel.cpp
@@ -1763,6 +1765,8 @@ IO/WSConfigFile.h: ../../src/IO/WSConfigFile.cpp
 @WSConfigFile.o
 IO/ZIPBuilder.h: ../../src/IO/ZIPBuilder.cpp
 @ZIPBuilder.o
+IO/Device/ADAM4050.h: ../../src/IO/Device/ADAM4050.cpp
+@ADAM4050.o
 IO/Device/AM2315.h: ../../src/IO/Device/AM2315.cpp
 @AM2315.o
 IO/Device/AM2315GPIO.h: ../../src/IO/Device/AM2315GPIO.cpp
@@ -3234,6 +3238,8 @@ SSWR/AVIRead/AVIRAccessConnForm.h: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 @AVIRAccessConnForm.o
 SSWR/AVIRead/AVIRACMEClientForm.h: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
 @AVIRACMEClientForm.o
+SSWR/AVIRead/AVIRADAMForm.h: ../../src/SSWR/AVIRead/AVIRADAMForm.cpp
+@AVIRADAMForm.o
 SSWR/AVIRead/AVIRANPRForm.h: ../../src/SSWR/AVIRead/AVIRANPRForm.cpp
 @AVIRANPRForm.o
 SSWR/AVIRead/AVIRARPPingForm.h: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
@@ -4342,6 +4348,7 @@ XLSXExporter.o: ../../src/Exporter/XLSXExporter.cpp
 ZIPExporter.o: ../../src/Exporter/ZIPExporter.cpp
 SudokuBoard.o: ../../src/Game/Sudoku/SudokuBoard.cpp
 ActiveStreamReader.o: ../../src/IO/ActiveStreamReader.cpp
+AdvantechASCIIChannel.o: ../../src/IO/AdvantechASCIIChannel.cpp
 AndroidDB.o: ../../src/IO/AndroidDB.cpp
 ATCommandChannel.o: ../../src/IO/ATCommandChannel.cpp
 BitReaderLSB.o: ../../src/IO/BitReaderLSB.cpp
@@ -4430,6 +4437,7 @@ WriteCacheStream.o: ../../src/IO/WriteCacheStream.cpp
 WriterLogHandler.o: ../../src/IO/WriterLogHandler.cpp
 WSConfigFile.o: ../../src/IO/WSConfigFile.cpp
 ZIPBuilder.o: ../../src/IO/ZIPBuilder.cpp
+ADAM4050.o: ../../src/IO/Device/ADAM4050.cpp
 AM2315.o: ../../src/IO/Device/AM2315.cpp
 AM2315GPIO.o: ../../src/IO/Device/AM2315GPIO.cpp
 AMGU4241.o: ../../src/IO/Device/AMGU4241.cpp
@@ -5113,6 +5121,7 @@ AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
 AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
 AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 AVIRACMEClientForm.o: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
+AVIRADAMForm.o: ../../src/SSWR/AVIRead/AVIRADAMForm.cpp
 AVIRANPRForm.o: ../../src/SSWR/AVIRead/AVIRANPRForm.cpp
 AVIRARPPingForm.o: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 AVIRARPScanForm.o: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp

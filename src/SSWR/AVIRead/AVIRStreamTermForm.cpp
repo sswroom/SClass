@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 	SSWR::AVIRead::AVIRStreamTermForm *me = (SSWR::AVIRead::AVIRStreamTermForm *)userObj;
 	if (me->stm)
 	{
-		me->StopStream();
+		me->StopStream(true);
 	}
 	else
 	{
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnTimerTick(void *userObj)
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;
-		me->StopStream();
+		me->StopStream(true);
 	}
 	if (me->recvUpdated)
 	{
@@ -141,7 +141,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(me->recvMut);
+			Sync::MutexUsage mutUsage(&me->recvMut);
 			me->recvBuff->Write(buff, recvSize);
 			mutUsage.EndUse();
 			me->recvUpdated = true;
@@ -151,7 +151,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(void *userObj)
 	return 0;
 }
 
-void SSWR::AVIRead::AVIRStreamTermForm::StopStream()
+void SSWR::AVIRead::AVIRStreamTermForm::StopStream(Bool clearUI)
 {
 	if (this->stm)
 	{
@@ -164,8 +164,11 @@ void SSWR::AVIRead::AVIRStreamTermForm::StopStream()
 		this->threadToStop = false;
 		DEL_CLASS(this->stm);
 		this->stm = 0;
-		this->txtStream->SetText(CSTR("-"));
-		this->btnStream->SetText(CSTR("&Open"));
+		if (clearUI)
+		{
+			this->txtStream->SetText(CSTR("-"));
+			this->btnStream->SetText(CSTR("&Open"));
+		}
 		this->remoteClosed = false;
 	}
 }
@@ -175,7 +178,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(this->recvMut);
+	Sync::MutexUsage mutUsage(&this->recvMut);
 	buff = this->recvBuff->GetBuff(&buffSize);
 	UOSInt i = this->cboRecvType->GetSelectedIndex();
 	if (buffSize > 0)
@@ -265,7 +268,6 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->recvUpdated = false;
 	NEW_CLASS(this->recvBuff, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRStreamTermForm.recvBuff")));
 	NEW_CLASS(this->sendBuff, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRStreamTermForm.sendBuff")));
-	NEW_CLASS(this->recvMut, Sync::Mutex());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
@@ -336,10 +338,9 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRStreamTermForm::~AVIRStreamTermForm()
 {
-	StopStream();
+	StopStream(false);
 	DEL_CLASS(this->recvBuff);
 	DEL_CLASS(this->sendBuff);
-	DEL_CLASS(this->recvMut);
 }
 
 void SSWR::AVIRead::AVIRStreamTermForm::OnMonitorChanged()

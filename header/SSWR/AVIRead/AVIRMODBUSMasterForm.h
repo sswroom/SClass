@@ -120,7 +120,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 
 			static void __stdcall OnMODBUSEntry(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
-			void StopStream();
+			void StopStream(Bool clearUI);
 
 		public:
 			AVIRMODBUSMasterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

@@ -42,10 +42,9 @@ namespace IO
 				LF_DISTANCE = 0x80000
 			} LogFormat;
 		private:
-			Sync::Mutex *cmdMut;
-			Sync::Event *cmdEvt;
-
-			Data::SyncArrayList<Text::String *> *cmdWResults;
+			Sync::Mutex cmdMut;
+			Sync::Event cmdEvt;
+			Data::SyncArrayList<Text::String *> cmdWResults;
 
 			Text::String *firmwareRel;
 			Text::String *firmwareBuild;

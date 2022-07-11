@@ -22,22 +22,19 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 		}
 		else
 		{
-			this->cmdWResults->Add(Text::String::New(cmd, cmdLen));
-			this->cmdEvt->Set();
+			this->cmdWResults.Add(Text::String::New(cmd, cmdLen));
+			this->cmdEvt.Set();
 		}
 	}
 	else
 	{
-		this->cmdWResults->Add(Text::String::New(cmd, cmdLen));
-		this->cmdEvt->Set();
+		this->cmdWResults.Add(Text::String::New(cmd, cmdLen));
+		this->cmdEvt.Set();
 	}
 }
 
 IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
 {
-	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true));
-	NEW_CLASS(this->cmdWResults, Data::SyncArrayList<Text::String *>());
 	this->firmwareBuild = 0;
 	this->firmwareRel = 0;
 	this->productMode = 0;
@@ -47,10 +44,7 @@ IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(s
 IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
 {
 	this->stm->Close();
-	LIST_FREE_STRING(this->cmdWResults);
-	DEL_CLASS(this->cmdWResults);
-	DEL_CLASS(this->cmdEvt);
-	DEL_CLASS(this->cmdMut);
+	LIST_FREE_STRING(&this->cmdWResults);
 	SDEL_STRING(this->firmwareBuild);
 	SDEL_STRING(this->firmwareRel);
 	SDEL_STRING(this->productMode);
@@ -212,17 +206,17 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 	Text::String *resp = 0;
 	Text::String *cmdRes;
 	i = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), cbuff);
-	Sync::MutexUsage mutUsage(this->cmdMut);
+	Sync::MutexUsage mutUsage(&this->cmdMut);
 	this->stm->Write(cbuff, i);
 	
 	dt.SetCurrTimeUTC();
 	while (true)
 	{
-		this->cmdEvt->Wait(1000);
-		while (this->cmdWResults->GetCount() > 0)
+		this->cmdEvt.Wait(1000);
+		while (this->cmdWResults.GetCount() > 0)
 		{
 			dt.SetCurrTimeUTC();
-			cmdRes = this->cmdWResults->RemoveAt(0);
+			cmdRes = this->cmdWResults.RemoveAt(0);
 			if (cmdRes->StartsWith(UTF8STRC("$PMTK182,8")))
 			{
 				SDEL_STRING(data);
@@ -531,18 +525,18 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 	Data::DateTime dt2;
 	Text::String *cmdRes;
 
-	Sync::MutexUsage mutUsage(this->cmdMut);
+	Sync::MutexUsage mutUsage(&this->cmdMut);
 	this->stm->Write(cmdBuff, cmdSize);
 	Text::String *resultStr = 0;
 	
 	dt.SetCurrTimeUTC();
 	while (true)
 	{
-		this->cmdEvt->Wait(1000);
-		while (this->cmdWResults->GetCount() > 0)
+		this->cmdEvt.Wait(1000);
+		while (this->cmdWResults.GetCount() > 0)
 		{
 			dt.SetCurrTimeUTC();
-			cmdRes = this->cmdWResults->RemoveAt(0);
+			cmdRes = this->cmdWResults.RemoveAt(0);
 			if (cmdRes->StartsWith(resultStart, resultStartLen))
 			{
 				resultStr = cmdRes;

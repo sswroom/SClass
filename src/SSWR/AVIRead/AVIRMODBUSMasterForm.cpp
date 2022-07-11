@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
 	if (me->stm)
 	{
-		me->StopStream();
+		me->StopStream(true);
 	}
 	else
 	{
@@ -444,7 +444,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 	me->lvDevice->SetSubItem(entry->lvIndex, 3, CSTR("-"));
 }
 
-void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream()
+void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream(Bool clearUI)
 {
 	if (this->stm)
 	{
@@ -452,8 +452,11 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream()
 		DEL_CLASS(this->modbus);
 		DEL_CLASS(this->stm);
 		this->stm = 0;
-		this->txtStream->SetText(CSTR("-"));
-		this->btnStream->SetText(CSTR("&Open"));
+		if (clearUI)
+		{
+			this->txtStream->SetText(CSTR("-"));
+			this->btnStream->SetText(CSTR("&Open"));
+		}
 	}
 }
 
@@ -601,7 +604,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 
 SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 {
-	StopStream();
+	StopStream(false);
 	MODBUSEntry *entry;
 	UOSInt i = this->entryList->GetCount();
 	while (i-- > 0)

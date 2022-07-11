@@ -47,7 +47,7 @@ namespace SSWR
 
 			IO::MemoryStream *recvBuff;
 			IO::MemoryStream *sendBuff;
-			Sync::Mutex *recvMut;
+			Sync::Mutex recvMut;
 			Bool recvUpdated;
 
 			IO::Stream *stm;
@@ -63,7 +63,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static UInt32 __stdcall RecvThread(void *userObj);
 
-			void StopStream();
+			void StopStream(Bool clearUI);
 			void UpdateRecvDisp();
 			void UpdateSendDisp();
 

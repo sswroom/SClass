@@ -18,16 +18,16 @@ namespace IO
 	private:
 		IO::Stream *stm;
 		Bool stmRelease;
-		Sync::Mutex *cmdMut;
-		Sync::Event *cmdEvt;
+		Sync::Mutex cmdMut;
+		Sync::Event cmdEvt;
 		EventHandler evtHdlr;
 		void *evtHdlrObj;
 		CommandHandler cmdHdlr;
 		void *cmdHdlrObj;
 		IO::ILogger *log;
 
-		Data::ArrayList<Text::String *> *cmdResults;
-		Sync::Mutex *cmdResultMut;
+		Data::ArrayList<Text::String *> cmdResults;
+		Sync::Mutex cmdResultMut;
 
 		Bool threadRunning;
 		Bool threadToStop;

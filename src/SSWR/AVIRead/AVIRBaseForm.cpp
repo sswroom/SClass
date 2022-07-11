@@ -29,6 +29,7 @@
 #include "SSWR/AVIRead/AVIRAboutForm.h"
 #include "SSWR/AVIRead/AVIRAccelerometerForm.h"
 #include "SSWR/AVIRead/AVIRACMEClientForm.h"
+#include "SSWR/AVIRead/AVIRADAMForm.h"
 #include "SSWR/AVIRead/AVIRANPRForm.h"
 #include "SSWR/AVIRead/AVIRARPPingForm.h"
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
@@ -432,7 +433,8 @@ typedef enum
 	MNU_GLBVIEWER,
 	MNU_TRUSTSTORE,
 	MNU_JAVACACERTS,
-	MNU_WINDOWS_ERROR
+	MNU_WINDOWS_ERROR,
+	MNU_ADAM
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -802,6 +804,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Olympus Camera"), MNU_OLYMPUSCAMERA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("GoPro Camera"), MNU_GOPROCAMERA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("EasyWay EW-DTU01"), MNU_EW_DTU01, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Advantech ADAM"), MNU_ADAM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Help"));
 	mnu->AddItem(CSTR("&About..."), MNU_ABOUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2471,6 +2474,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRWindowsErrorForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRWindowsErrorForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_ADAM:
+		{
+			SSWR::AVIRead::AVIRADAMForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRADAMForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
