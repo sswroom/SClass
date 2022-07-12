@@ -36,6 +36,22 @@ namespace SSWR
 			UI::GUITextBox *txtModuleName;
 			UI::GUILabel *lblFirmware;
 			UI::GUITextBox *txtFirmware;
+			UI::GUILabel *lblDevAddress;
+			UI::GUITextBox *txtDevAddress;
+			UI::GUILabel *lblDevBaudRate;
+			UI::GUITextBox *txtDevBaudRate;
+			UI::GUILabel *lblInputType;
+			UI::GUITextBox *txtInputType;
+			UI::GUILabel *lblChecksum;
+			UI::GUITextBox *txtChecksum;
+			UI::GUILabel *lblModbusProtocol;
+			UI::GUITextBox *txtModbusProtocol;
+			UI::GUILabel *lblDataFormat;
+			UI::GUITextBox *txtDataFormat;
+			UI::GUILabel *lblIntegrationTime;
+			UI::GUITextBox *txtIntegrationTime;
+			UI::GUILabel *lblSlewRate;
+			UI::GUITextBox *txtSlewRate;
 			UI::GUIListView *lvData;
 
 		private:
