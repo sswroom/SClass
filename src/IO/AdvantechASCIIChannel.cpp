@@ -490,6 +490,231 @@ Bool IO::AdvantechASCIIChannel::ADAM4068GetStoredIO(UInt8 addr, Bool *firstRead,
 	return this->ADAM4060GetStoredIO(addr, firstRead, outputs, inputs);
 }
 
+Bool IO::AdvantechASCIIChannel::ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Bool frequency, BaudRate baudRate, Bool checksum, FreqGateTime freqGateTime)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	UInt8 flags;
+	*sptr++ = '%';
+	sptr = Text::StrHexByte(sptr, addr);
+	sptr = Text::StrHexByte(sptr, newAddr);
+	if (frequency)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("51"));
+	}
+	else
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("50"));
+	}
+	sptr = Text::StrHexByte(sptr, (UInt8)baudRate);
+	flags = (checksum?0x40:0) | ((freqGateTime == FGT_1S)?4:0);
+	sptr = Text::StrHexByte(sptr, flags);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080GetInputMode(UInt8 addr, UInt8 *inputMode)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = 'B';
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	{
+		*inputMode = (UInt8)(sbuff[3] - '0');
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080SetInputMode(UInt8 addr, UInt8 inputMode)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = 'B';
+	*sptr++ = (UInt8)('0' + inputMode);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080GetValue(UInt8 addr, UInt8 channel, UInt32 *value)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '#';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = (UInt8)('0' + channel);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	{
+		*value = Text::StrHex2UInt32C(&sbuff[1]);
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080SetGateMode(UInt8 addr, GateMode gateMode)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '#';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = 'A';
+	*sptr++ = (UInt8)('0' + (UInt8)gateMode);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080GetGateMode(UInt8 addr, GateMode *gateMode)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '#';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = 'A';
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	{
+		*gateMode = (GateMode)(sbuff[3] - '0');
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080SetMaxCounter(UInt8 addr, UInt8 channel, UInt32 maxCounter)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '3';
+	*sptr++ = (UInt8)('0' + channel);
+	sptr = Text::StrHexVal32(sptr, maxCounter);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080GetMaxCounter(UInt8 addr, UInt8 channel, UInt32 *maxCounter)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '3';
+	*sptr++ = (UInt8)('0' + channel);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 11)
+	{
+		*maxCounter = Text::StrHex2UInt32C(&sbuff[3]);
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080StartCounter(UInt8 addr, UInt8 channel)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '5';
+	*sptr++ = (UInt8)('0' + channel);
+	*sptr++ = '1';
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080StopCounter(UInt8 addr, UInt8 channel)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '5';
+	*sptr++ = (UInt8)('0' + channel);
+	*sptr++ = '0';
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080CounterIsStarted(UInt8 addr, UInt8 channel, Bool *started)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '5';
+	*sptr++ = (UInt8)('0' + channel);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	{
+		*started = (sbuff[3] == '1');
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080ClearCounter(UInt8 addr, UInt8 channel)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '6';
+	*sptr++ = (UInt8)('0' + channel);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	{
+		return true;
+	}
+	return false;
+}
+
+Bool IO::AdvantechASCIIChannel::ADAM4080CounterHasOverflow(UInt8 addr, UInt8 channel, Bool *overflow)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = sbuff;
+	*sptr++ = '$';
+	sptr = Text::StrHexByte(sptr, addr);
+	*sptr++ = '7';
+	*sptr++ = (UInt8)('0' + channel);
+	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	{
+		*overflow = (sbuff[3] == '1');
+		return true;
+	}
+	return false;
+}
+
 UInt32 IO::AdvantechASCIIChannel::BaudRateGetBps(BaudRate baudRate)
 {
 	switch (baudRate)

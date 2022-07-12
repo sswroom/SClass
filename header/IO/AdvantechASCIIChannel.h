@@ -114,6 +114,20 @@ namespace IO
 		SR_UNKNWON
 		};
 
+		enum FreqGateTime
+		{
+		FGT_100MS,
+		FGT_1S,
+		FGT_UNKNOWN
+		};
+
+		enum GateMode
+		{
+		GM_LOW,
+		GM_HIGH,
+		GM_DISABLE
+		};
+
 		struct ADAMConfig
 		{
 			UInt8 addr;
@@ -174,6 +188,20 @@ namespace IO
 		Bool ADAM4053GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
 		Bool ADAM4060GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
 		Bool ADAM4068GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
+
+		Bool ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Bool frequency, BaudRate baudRate, Bool checksum, FreqGateTime freqGateTime);
+		Bool ADAM4080GetInputMode(UInt8 addr, UInt8 *inputMode);
+		Bool ADAM4080SetInputMode(UInt8 addr, UInt8 inputMode);
+		Bool ADAM4080GetValue(UInt8 addr, UInt8 channel, UInt32 *value);
+		Bool ADAM4080SetGateMode(UInt8 addr, GateMode gateMode);
+		Bool ADAM4080GetGateMode(UInt8 addr, GateMode *gateMode);
+		Bool ADAM4080SetMaxCounter(UInt8 addr, UInt8 channel, UInt32 maxCounter);
+		Bool ADAM4080GetMaxCounter(UInt8 addr, UInt8 channel, UInt32 *maxCounter);
+		Bool ADAM4080StartCounter(UInt8 addr, UInt8 channel);
+		Bool ADAM4080StopCounter(UInt8 addr, UInt8 channel);
+		Bool ADAM4080CounterIsStarted(UInt8 addr, UInt8 channel, Bool *started);
+		Bool ADAM4080ClearCounter(UInt8 addr, UInt8 channel);
+		Bool ADAM4080CounterHasOverflow(UInt8 addr, UInt8 channel, Bool *overflow);
 
 		static UInt32 BaudRateGetBps(BaudRate baudRate);
 		static Text::CString DataFormatGetName(DataFormat dataFormat);
