@@ -77,8 +77,8 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 	}
 	if (!this->skipCertCheck)
 	{
-		X509 *cert = SSL_get_peer_certificate(ssl);
-		if (cert == 0)
+		stack_st_X509 *certs = SSL_get_peer_cert_chain(ssl);
+		if (certs == 0)
 		{
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
@@ -86,10 +86,10 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 				*err = ErrorType::CertNotFound;
 			return 0;
 		}
+		X509 *cert = sk_X509_value(certs, 0);
 		UInt8 certBuff[4096];
 		UInt8 *certPtr = certBuff;
 		Int32 certLen = i2d_X509(cert, &certPtr);
-		X509_free(cert);
 		if (certLen <= 0)
 		{
 			this->sockf->DestroySocket(s);

@@ -33,10 +33,12 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 	this->clsData->remoteCert = 0;
 	this->clsData->shutdown = false;
 
-	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
-	if (cert != 0)
+//	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
+	stack_st_X509 *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
+	if (certs != 0)
 	{
-		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::OpenSSLCert(cert));
+		
+		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::OpenSSLCert(sk_X509_value(certs, 0)));
 	}
 }
 
