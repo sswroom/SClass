@@ -225,7 +225,7 @@ Bool IO::AdvantechASCIIChannel::DigitalSetConfig(UInt8 addr, UInt8 newAddr, Baud
 	sptr = Text::StrHexByte(sptr, newAddr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("40"));
 	sptr = Text::StrHexByte(sptr, (UInt8)baudRate);
-	flags = (checksum?0x40:0) | (modbus?4:0);
+	flags = (UInt8)((checksum?0x40:0) | (modbus?4:0));
 	sptr = Text::StrHexByte(sptr, flags);
 	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
 	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
@@ -507,7 +507,7 @@ Bool IO::AdvantechASCIIChannel::ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Boo
 		sptr = Text::StrConcatC(sptr, UTF8STRC("50"));
 	}
 	sptr = Text::StrHexByte(sptr, (UInt8)baudRate);
-	flags = (checksum?0x40:0) | ((freqGateTime == FGT_1S)?4:0);
+	flags = (UInt8)((checksum?0x40:0) | ((freqGateTime == FGT_1S)?4:0));
 	sptr = Text::StrHexByte(sptr, flags);
 	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
 	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)

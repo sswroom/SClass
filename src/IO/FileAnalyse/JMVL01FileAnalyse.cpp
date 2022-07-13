@@ -59,7 +59,7 @@ UInt32 __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(void *userObj)
 		{
 			tag = MemAlloc(IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag, 1);
 			tag->ofst = ofst;
-			tag->size = ReadMUInt16(&tagHdr[2]) + 6;
+			tag->size = (UOSInt)ReadMUInt16(&tagHdr[2]) + 6;
 			tag->tagType = tagHdr[4];
 			me->tags.Add(tag);
 			ofst += tag->size;

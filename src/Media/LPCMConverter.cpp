@@ -18,8 +18,8 @@ UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChann
 		}
 		return srcSize;
 	}
-	UOSInt copySize = (bitPerSample >> 3) * (UOSInt)destNChannels;
-	UOSInt blockSize = (bitPerSample >> 3) * (UOSInt)srcNChannels;
+	UOSInt copySize = (UOSInt)(bitPerSample >> 3) * (UOSInt)destNChannels;
+	UOSInt blockSize = (UOSInt)(bitPerSample >> 3) * (UOSInt)srcNChannels;
 	const UInt8 *srcEnd = srcBuff + srcSize;
 	switch (blockSize)
 	{
