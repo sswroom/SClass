@@ -438,7 +438,7 @@ UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)
 		}
 		if (readCnt > 0)
 			break;
-		this->rdEvt->Wait(1);
+		this->rdEvt->Wait(10);
 	}
 	this->reading = false;
 	mutUsage.EndUse();
