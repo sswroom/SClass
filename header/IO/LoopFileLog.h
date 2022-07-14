@@ -11,7 +11,7 @@ namespace IO
 	class LoopFileLog : public ILogHandler
 	{
 	private:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		IO::ILogHandler::LogType logStyle;
 		Int32 nFiles;
 		Int32 lastVal;
@@ -28,5 +28,5 @@ namespace IO
 		virtual void LogClosed();
 		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
 	};
-};
+}
 #endif

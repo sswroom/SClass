@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileViewData.h"
+#include "Sync/MutexUsage.h"
 
 IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 {
@@ -16,13 +17,12 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 	}
 	else
 	{
-		fdh = MemAlloc(IO::StmData::FileViewData::FILEVIEWDATAHANDLE, 1);
+		NEW_CLASS(fdh, IO::StmData::FileViewData::FILEVIEWDATAHANDLE());
 		fdh->file = file;
 		dataLength = fdh->fileLength = file->GetLength();
 		fdh->currentOffset = 0;
 		fdh->objectCnt = 1;
 		fdh->fptr = (UInt8*)file->GetPointer();
-		NEW_CLASS(fdh->mut, Sync::Mutex());
 		dataOffset = 0;
 		const UTF8Char* name2;
 		const UTF8Char *name;
@@ -68,7 +68,7 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt
 {
 	if (fdh == 0)
 		return 0;
-	fdh->mut->Lock();
+	Sync::MutexUsage mutUsage(&fdh->mut);
 	UInt64 startOfst = dataOffset + offset;
 	UInt64 endOfst = startOfst + length;
 	if (startOfst < 0)
@@ -83,7 +83,6 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, UInt
 	}
 	MemCopyNO(buffer, &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
 	
-	fdh->mut->Unlock();
 	return (UOSInt)(endOfst - startOfst);
 }
 
@@ -143,8 +142,7 @@ void IO::StmData::FileViewData::Close()
 		{
 			DEL_CLASS(fdh->file);
 			MemFree(fdh->fullName);
-			DEL_CLASS(fdh->mut);
-			MemFree(fdh);
+			DEL_CLASS(fdh);
 		}
 	}
 	fdh = 0;

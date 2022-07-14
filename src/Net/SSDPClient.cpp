@@ -60,22 +60,21 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			
 			if (usn.leng > 0)
 			{
-				Sync::MutexUsage mutUsage(me->mut);
+				Sync::MutexUsage mutUsage(&me->mut);
 				UInt32 ip = ReadNUInt32(addr->addr);
-				SSDPDevice *dev = me->devMap->Get(ip);
+				SSDPDevice *dev = me->devMap.Get(ip);
 				SSDPService *svc;
 				if (dev == 0)
 				{
-					dev = MemAlloc(SSDPDevice, 1);
+					NEW_CLASS(dev, SSDPDevice());
 					dev->addr = *addr;
-					NEW_CLASS(dev->services, Data::ArrayList<SSDPService*>());
-					me->devMap->Put(ip, dev);
+					me->devMap.Put(ip, dev);
 				}
 				Bool found = false;
-				UOSInt i = dev->services->GetCount();
+				UOSInt i = dev->services.GetCount();
 				while (i-- > 0)
 				{
-					svc = dev->services->GetItem(i);
+					svc = dev->services.GetItem(i);
 					if (usn.Equals(svc->usn))
 					{
 						found = true;
@@ -100,7 +99,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 					svc->st = Text::String::NewOrNull(st);
 					svc->usn = Text::String::NewOrNull(usn);
 					svc->userAgent = Text::String::NewOrNull(userAgent);
-					dev->services->Add(svc);
+					dev->services.Add(svc);
 				}
 			}
 		}
@@ -120,15 +119,12 @@ void Net::SSDPClient::SSDPServiceFree(SSDPService *svc)
 
 void Net::SSDPClient::SSDPDeviceFree(SSDPDevice *dev)
 {
-	LIST_FREE_FUNC(dev->services, SSDPServiceFree);
-	DEL_CLASS(dev->services);
-	MemFree(dev);
+	LIST_FREE_FUNC(&dev->services, SSDPServiceFree);
+	DEL_CLASS(dev);
 }
 
 Net::SSDPClient::SSDPClient(Net::SocketFactory *sockf, Text::CString userAgent)
 {
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::UInt32Map<SSDPDevice*>());
 	this->userAgent = Text::String::NewOrNull(userAgent);
 	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnPacketRecv, this, 0, CSTR_NULL, 2, false));
 	this->udp->SetBroadcast(true);
@@ -138,10 +134,8 @@ Net::SSDPClient::~SSDPClient()
 {
 	DEL_CLASS(this->udp);
 	SDEL_STRING(this->userAgent);
-	const Data::ArrayList<SSDPDevice*> *devList = this->devMap->GetValues();
+	const Data::ArrayList<SSDPDevice*> *devList = this->devMap.GetValues();
 	LIST_CALL_FUNC(devList, SSDPDeviceFree);
-	DEL_CLASS(this->devMap);
-	DEL_CLASS(this->mut);
 }
 
 Bool Net::SSDPClient::IsError() const
@@ -171,8 +165,8 @@ Bool Net::SSDPClient::Scan()
 
 const Data::ArrayList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage) const
 {
-	mutUsage->ReplaceMutex(this->mut);
-	return this->devMap->GetValues();
+	mutUsage->ReplaceMutex(&this->mut);
+	return this->devMap.GetValues();
 }
 
 #define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(&sb); v = Text::String::New(sb.ToString(), sb.GetLength());

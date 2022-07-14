@@ -20,13 +20,14 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderW.h"
 
-Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
+Map::CIPLayer::CIPLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::FileStream *file;
 	IO::BufferedInputStream *bstm;
-	sptr = Text::StrConcat(fname, layerName);
+	sptr = layerName.ConcatTo(fname);
 	UInt32 i;
 	Int32 *currIds;
 	Int32 totalCnt = 0;
@@ -38,15 +39,14 @@ Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	this->blks = 0;
 	this->ids = 0;
 	this->maxTextSize = 0;
-	this->lastObjs = 0;
-	this->currObjs = 0;
 	this->lyrType = (Map::DrawLayerType)0;
-	this->layerName = Text::StrCopyNew(layerName);
+	this->layerName = Text::String::New(layerName);
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	NEW_CLASS(mut, Sync::Mutex());
+	NEW_CLASS(this->currObjs, Data::Int32Map<CIPFileObject*>());
+	NEW_CLASS(this->lastObjs, Data::Int32Map<CIPFileObject*>());
 
-	Text::StrConcatC(sptr, UTF8STRC(".blk"));
-	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
+	NEW_CLASS(file, IO::FileStream(CSTRP(fname, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
 	{
@@ -84,8 +84,8 @@ Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	DEL_CLASS(bstm);
 	DEL_CLASS(file);
 
-	Text::StrConcatC(sptr, UTF8STRC(".cix"));
-	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cix"));
+	NEW_CLASS(file, IO::FileStream(CSTRP(fname, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!file->IsError())
 	{
 		i = (Int32)file->GetLength();
@@ -98,8 +98,8 @@ Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	missFile = false;
 	if (!IsError())
 	{
-		Text::StrConcatC(sptr, UTF8STRC(".cip"));
-		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cip"));
+		NEW_CLASS(file, IO::FileStream(CSTRP(fname, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!file->IsError())
 		{
 			file->Read((UInt8*)&i, 4);
@@ -111,8 +111,8 @@ Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 		}
 		DEL_CLASS(file);
 
-		Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
+		NEW_CLASS(file, IO::FileStream(CSTRP(fname, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file->IsError())
 		{
@@ -177,21 +177,10 @@ Map::CIPLayer::~CIPLayer()
 		MemFree(blks);
 		blks = 0;
 	}
-	if (this->layerName)
-	{
-		Text::StrDelNew(this->layerName);
-		this->layerName = 0;
-	}
-	DEL_CLASS(mut);
-	if (this->lastObjs)
-	{
-		this->ReleaseFileObjs(this->lastObjs);
-		DEL_CLASS(this->lastObjs);
-	}
-	if (this->currObjs)
-	{
-		DEL_CLASS(this->currObjs);
-	}
+	SDEL_STRING(this->layerName);
+	this->ReleaseFileObjs(this->lastObjs);
+	DEL_CLASS(this->lastObjs);
+	DEL_CLASS(this->currObjs);
 }
 
 Bool Map::CIPLayer::IsError()
@@ -205,7 +194,7 @@ Bool Map::CIPLayer::IsError()
 	return false;
 }
 
-const UTF8Char *Map::CIPLayer::GetName()
+Text::String *Map::CIPLayer::GetName()
 {
 	return this->layerName;
 }
@@ -232,9 +221,9 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		IO::FileStream *cis;
-		sptr = Text::StrConcat(fileName, this->layerName);
+		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		k = 0;
 		while (k < this->nblks)
@@ -387,18 +376,18 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		UTF8Char *sptr;
 		IO::FileStream *fs = 0;
 		IO::SeekableStream *cis;
-		sptr = Text::StrConcat(fileName, this->layerName);
+		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		if (this->nblks > 500)
 		{
 //			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 //			NEW_CLASS(cis, IO::BufferedInputStream(fs, 8192));
 
-			NEW_CLASS(cis, IO::FileViewStream(fileName));
+			NEW_CLASS(cis, IO::FileViewStream(CSTRP(fileName, sptr)));
 		}
 		else
 		{
-			NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		}
 		
 		while (k < (OSInt)this->nblks)
@@ -526,11 +515,11 @@ Int64 Map::CIPLayer::GetObjectIdMax()
 void Map::CIPLayer::ReleaseNameArr(void *nameArr)
 {
 	Data::Int32Map<WChar*> *tmpMap = (Data::Int32Map<WChar*>*)nameArr;
-	Data::ArrayList<WChar*> *tmpArr = tmpMap->GetValues();
-	OSInt i = tmpArr->GetCount();
+	const Data::ArrayList<WChar*> *tmpArr = tmpMap->GetValues();
+	UOSInt i = tmpArr->GetCount();
 	while (i-- > 0)
 	{
-		MemFree(tmpArr->RemoveAt(i));
+		MemFree(tmpArr->GetItem(i));
 	}
 	DEL_CLASS(tmpMap);
 }
@@ -670,15 +659,12 @@ Map::CIPLayer::CIPFileObject *Map::CIPLayer::GetFileObject(void *session, Int32 
 	Map::CIPLayer::CIPFileObject *obj;
 	Int32 buff[2];
 
-	if (this->lastObjs)
+	obj = this->lastObjs->Get(id);
+	if (obj)
 	{
-		obj = this->lastObjs->Get(id);
-		if (obj)
-		{
-			this->lastObjs->Put(id, 0);
-			this->currObjs->Put(id, obj);
-			return obj;
-		}
+		this->lastObjs->Put(id, 0);
+		this->currObjs->Put(id, obj);
+		return obj;
 	}
 	obj = this->currObjs->Get(id);
 	if (obj)
@@ -711,9 +697,9 @@ Map::CIPLayer::CIPFileObject *Map::CIPLayer::GetFileObject(void *session, Int32 
 
 void Map::CIPLayer::ReleaseFileObjs(Data::Int32Map<Map::CIPLayer::CIPFileObject*> *objs)
 {
-	Data::ArrayList<Map::CIPLayer::CIPFileObject*> *objArr = objs->GetValues();
+	const Data::ArrayList<Map::CIPLayer::CIPFileObject*> *objArr = objs->GetValues();
 	Map::CIPLayer::CIPFileObject *obj;
-	OSInt i = objArr->GetCount();
+	UOSInt i = objArr->GetCount();
 	while (i-- > 0)
 	{
 		obj = objArr->GetItem(i);
@@ -738,14 +724,10 @@ void *Map::CIPLayer::BeginGetObject()
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
 	IO::SeekableStream *cip;
-	sptr = Text::StrConcat(fileName, this->layerName);
+	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
-	mut->Lock();
-	if (this->currObjs == 0)
-	{
-		NEW_CLASS(this->currObjs, Data::Int32Map<CIPFileObject*>());
-	}
-	NEW_CLASS(cip, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->mut.Lock();
+	NEW_CLASS(cip, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	//NEW_CLASS(cip, IO::FileViewStream(fileName));
 	return cip;
 }
@@ -755,14 +737,11 @@ void Map::CIPLayer::EndGetObject(void *session)
 	IO::SeekableStream *cip = (IO::SeekableStream*)session;
 	DEL_CLASS(cip);
 	Data::Int32Map<CIPFileObject*> *tmpObjs;
-	if (this->lastObjs)
-	{
-		this->ReleaseFileObjs(this->lastObjs);
-	}
+	this->ReleaseFileObjs(this->lastObjs);
 	tmpObjs = this->lastObjs;
 	this->lastObjs = this->currObjs;
 	this->currObjs = tmpObjs;
-	mut->Unlock();
+	this->mut.Unlock();
 }
 
 Map::DrawObjectL *Map::CIPLayer::GetObjectByIdN(void *session, Int64 id)
@@ -782,12 +761,12 @@ Map::DrawObjectL *Map::CIPLayer::GetObjectByIdN(void *session, Int64 id)
 		obj->ptOfstArr = MemAlloc(UInt32, fobj->nParts);
 		MemCopyNO(obj->ptOfstArr, fobj->parts, sizeof(UInt32) * fobj->nParts);
 	}
-	obj->pointArr = MemAlloc(Double, fobj->nPoints << 1);
-	OSInt i = fobj->nPoints << 1;
+	obj->pointArr = MemAllocA(Math::Coord2DDbl, fobj->nPoints);
+	OSInt i = fobj->nPoints;
 	Double r = 1 / 200000.0;
 	while (i-- > 0)
 	{
-		obj->pointArr[i] = fobj->points[i] * r;
+		obj->pointArr[i] = Math::Coord2DDbl(fobj->points[i * 2] * r, fobj->points[i * 2 + 1] * r);
 	}
 	return obj;
 }

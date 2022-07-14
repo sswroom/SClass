@@ -41,7 +41,7 @@ namespace SSWR
 			UI::GUIButton *btnStream2;
 			UI::GUIRealtimeLineChart *rlcStream2;
 
-			Sync::Mutex *mut1;
+			Sync::Mutex mut1;
 			IO::Stream *stm1;
 			IO::FileStream *stmLog1;
 			Bool thread1Running;
@@ -50,7 +50,7 @@ namespace SSWR
 			UInt64 stm1DataSize;
 			UInt64 stm1LastSize;
 
-			Sync::Mutex *mut2;
+			Sync::Mutex mut2;
 			IO::Stream *stm2;
 			IO::FileStream *stmLog2;
 			Bool thread2Running;

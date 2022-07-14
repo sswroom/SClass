@@ -5,16 +5,11 @@
 
 SSWR::VAMS::VAMSBTList::VAMSBTList()
 {
-	NEW_CLASS(this->itemMap, Data::Int32Map<Data::FastStringMap<AvlBleItem*>*>());
-	NEW_CLASS(this->kaMap, Data::Int32Map<Int64>());
-	NEW_CLASS(this->mut, Sync::Mutex());
 }
 
 SSWR::VAMS::VAMSBTList::~VAMSBTList()
 {
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->kaMap);
-	const Data::ArrayList<Data::FastStringMap<AvlBleItem*>*> *itemList = this->itemMap->GetValues();
+	const Data::ArrayList<Data::FastStringMap<AvlBleItem*>*> *itemList = this->itemMap.GetValues();
 	Data::FastStringMap<AvlBleItem*> *item;
 	AvlBleItem *bleItem;
 	UOSInt i = itemList->GetCount();
@@ -31,7 +26,6 @@ SSWR::VAMS::VAMSBTList::~VAMSBTList()
 		}
 		DEL_CLASS(item);
 	}
-	DEL_CLASS(this->itemMap);
 }
 
 void SSWR::VAMS::VAMSBTList::AddItem(Text::String *avlNo, Int32 progId, Int64 ts, Int16 rssi)
@@ -42,12 +36,12 @@ void SSWR::VAMS::VAMSBTList::AddItem(Text::String *avlNo, Int32 progId, Int64 ts
 	{
 		return;
 	}
-	Sync::MutexUsage mutUsage(this->mut);
-	Data::FastStringMap<AvlBleItem*> *progMap = this->itemMap->Get(progId);
+	Sync::MutexUsage mutUsage(&this->mut);
+	Data::FastStringMap<AvlBleItem*> *progMap = this->itemMap.Get(progId);
 	if (progMap == 0)
 	{
 		NEW_CLASS(progMap, Data::FastStringMap<AvlBleItem*>());
-		this->itemMap->Put(progId, progMap);
+		this->itemMap.Put(progId, progMap);
 	}
 	AvlBleItem *item = progMap->Get(avlNo);
 	if (item == 0)
@@ -71,8 +65,8 @@ UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(Data::ArrayList<AvlBleItem *> *item
 {
 	UOSInt ret = 0;
 	AvlBleItem *item;
-	Sync::MutexUsage mutUsage(this->mut);
-	Data::FastStringMap<AvlBleItem *> *progMap = this->itemMap->Get(progId);
+	Sync::MutexUsage mutUsage(&this->mut);
+	Data::FastStringMap<AvlBleItem *> *progMap = this->itemMap.Get(progId);
 	if (progMap == 0)
 	{
 		return 0;
@@ -100,25 +94,25 @@ void SSWR::VAMS::VAMSBTList::KARecv(Int32 progId)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(this->mut);
-	this->kaMap->Put(progId, dt.ToTicks());
+	Sync::MutexUsage mutUsage(&this->mut);
+	this->kaMap.Put(progId, dt.ToTicks());
 }
 
 Int64 SSWR::VAMS::VAMSBTList::GetLastKeepAlive(Int32 progId)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	return this->kaMap->Get(progId);
+	Sync::MutexUsage mutUsage(&this->mut);
+	return this->kaMap.Get(progId);
 }
 
 Bool SSWR::VAMS::VAMSBTList::HasProg(Int32 progId)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	return this->itemMap->ContainsKey(progId);
+	Sync::MutexUsage mutUsage(&this->mut);
+	return this->itemMap.ContainsKey(progId);
 }
 
 
 UOSInt SSWR::VAMS::VAMSBTList::GetProgList(Data::ArrayList<Int32> *progList)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	return progList->AddAll(this->itemMap->GetKeys());
+	Sync::MutexUsage mutUsage(&this->mut);
+	return progList->AddAll(this->itemMap.GetKeys());
 }

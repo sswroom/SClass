@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(const Net::SocketUtil
 	{
 		me->udp->SendTo(addr, port, buff, dataSize);
 	}
-	Sync::MutexUsage mutUsage(me->mut);
+	Sync::MutexUsage mutUsage(&me->mut);
 	me->recvCnt++;
 	me->recvSize += dataSize;
 	mutUsage.EndUse();
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 		sendFailCnt += me->threads[i].sentFailCnt;
 	}
 	dt.SetCurrTimeUTC();
-	diffMS = dt.DiffMS(me->lastTime);
+	diffMS = dt.DiffMS(&me->lastTime);
 	sptr = Text::StrUInt64(sbuff, thisRecvCnt);
 	me->txtRecvCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt64(sbuff, thisRecvSize);
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 	me->lastRecvSize = thisRecvSize;
 	me->lastSentSuccCnt = sendSuccCnt;
 	me->lastSentFailCnt = sendFailCnt;
-	me->lastTime->SetValue(&dt);
+	me->lastTime.SetValue(&dt);
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
@@ -172,7 +172,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
 	Net::SocketUtil::AddressInfo destAddr;
 	UInt16 destPort;
 	t->status = 1;
-	t->me->mainEvt->Set();
+	t->me->mainEvt.Set();
 	MemClear(buff, 32);
 	while (true)
 	{
@@ -206,7 +206,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
 		}
 	}
 	t->status = 0;
-	t->me->mainEvt->Set();
+	t->me->mainEvt.Set();
 	return 0;
 }
 
@@ -220,16 +220,13 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	this->sockf = core->GetSocketFactory();
 	this->udp = 0;
 	this->autoReply = false;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->recvCnt = 0;
 	this->recvSize = 0;
 	this->lastRecvCnt = 0;
 	this->lastRecvSize = 0;
 	this->lastSentFailCnt = 0;
 	this->lastSentSuccCnt = 0;
-	NEW_CLASS(this->lastTime, Data::DateTime());
-	this->lastTime->SetCurrTimeUTC();
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
+	this->lastTime.SetCurrTimeUTC();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpServer, UI::GUIGroupBox(ui, this, CSTR("Server")));
@@ -336,7 +333,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 		}
 		else
 		{
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 }
@@ -369,7 +366,7 @@ SSWR::AVIRead::AVIRUDPTestForm::~AVIRUDPTestForm()
 		}
 		else
 		{
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 	if (this->udp)
@@ -382,9 +379,6 @@ SSWR::AVIRead::AVIRUDPTestForm::~AVIRUDPTestForm()
 		DEL_CLASS(this->threads[i].evt);
 	}
 	MemFree(this->threads);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->mainEvt);
-	DEL_CLASS(this->lastTime);
 }
 
 void SSWR::AVIRead::AVIRUDPTestForm::OnMonitorChanged()

@@ -12,9 +12,8 @@ IO::VirtualIOPinMgr::VirtualIOPinMgr(UOSInt pinCnt)
 	i = 0;
 	while (i < pinCnt)
 	{
-		status = MemAlloc(PinStatus, 1);
+		NEW_CLASS(status, PinStatus());
 		status->pinNum = (UInt32)i;
-		NEW_CLASS(status->mut, Sync::Mutex());
 		status->useCnt = 1;
 		status->pullHigh = false;
 		status->outputCnt = 0;
@@ -32,14 +31,13 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 	while (i-- > 0)
 	{
 		status = this->pins[i];
-		Sync::MutexUsage mutUsage(status->mut);
+		Sync::MutexUsage mutUsage(&status->mut);
 		toRel = (status->useCnt-- <= 1);
 		mutUsage.EndUse();
 
 		if (toRel)
 		{
-			DEL_CLASS(status->mut);
-			MemFree(status);
+			DEL_CLASS(status);
 		}
 	}
 	MemFree(this->pins);
@@ -70,7 +68,7 @@ IO::VirtualIOPin::VirtualIOPin(IO::VirtualIOPinMgr::PinStatus *pinStatus)
 {
 	this->pinStatus = pinStatus;
 	this->isOutput = false;
-	Sync::MutexUsage mutUsage(this->pinStatus->mut);
+	Sync::MutexUsage mutUsage(&this->pinStatus->mut);
 	this->pinStatus->useCnt++;
 	mutUsage.EndUse();
 }
@@ -78,7 +76,7 @@ IO::VirtualIOPin::VirtualIOPin(IO::VirtualIOPinMgr::PinStatus *pinStatus)
 IO::VirtualIOPin::~VirtualIOPin()
 {
 	Bool isRel;
-	Sync::MutexUsage mutUsage(this->pinStatus->mut);
+	Sync::MutexUsage mutUsage(&this->pinStatus->mut);
 	isRel = (this->pinStatus->useCnt-- <= 1);
 	if (this->isOutput)
 	{
@@ -88,15 +86,14 @@ IO::VirtualIOPin::~VirtualIOPin()
 	mutUsage.EndUse();
 	if (isRel)
 	{
-		DEL_CLASS(this->pinStatus->mut);
-		MemFree(this->pinStatus);
+		DEL_CLASS(this->pinStatus);
 	}
 }
 
 Bool IO::VirtualIOPin::IsPinHigh()
 {
 	Bool ret;
-	Sync::MutexUsage mutUsage(this->pinStatus->mut);
+	Sync::MutexUsage mutUsage(&this->pinStatus->mut);
 	if (this->pinStatus->outputCnt > 0)
 	{
 		ret = this->pinStatus->outputHigh;
@@ -121,16 +118,14 @@ void IO::VirtualIOPin::SetPinOutput(Bool isOutput)
 		if (isOutput)
 		{
 			this->isOutput = true;
-			Sync::MutexUsage mutUsage(this->pinStatus->mut);
+			Sync::MutexUsage mutUsage(&this->pinStatus->mut);
 			this->pinStatus->outputCnt++;
-			mutUsage.EndUse();
 		}
 		else
 		{
 			this->isOutput = false;
-			Sync::MutexUsage mutUsage(this->pinStatus->mut);
+			Sync::MutexUsage mutUsage(&this->pinStatus->mut);
 			this->pinStatus->outputCnt--;
-			mutUsage.EndUse();
 		}
 	}
 }
@@ -139,9 +134,8 @@ void IO::VirtualIOPin::SetPinState(Bool isHigh)
 {
 	if (this->isOutput)
 	{
-		Sync::MutexUsage mutUsage(this->pinStatus->mut);
+		Sync::MutexUsage mutUsage(&this->pinStatus->mut);
 		this->pinStatus->outputHigh = isHigh;
-		mutUsage.EndUse();
 	}
 }
 

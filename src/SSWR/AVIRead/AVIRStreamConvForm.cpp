@@ -114,7 +114,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(void *userObj)
 			{
 				me->stmLog1->Write(buff, recvSize);
 			}
-			Sync::MutexUsage mutUsage(me->mut2);
+			Sync::MutexUsage mutUsage(&me->mut2);
 			if (me->stm2)
 			{
 				me->stm2->Write(buff, recvSize);
@@ -146,7 +146,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(void *userObj)
 			{
 				me->stmLog2->Write(buff, recvSize);
 			}
-			Sync::MutexUsage mutUsage(me->mut1);
+			Sync::MutexUsage mutUsage(&me->mut1);
 			if (me->stm1)
 			{
 				me->stm1->Write(buff, recvSize);
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 	if (this->stm1)
 	{
 		this->thread1ToStop = true;
-		Sync::MutexUsage mutUsage(this->mut1);
+		Sync::MutexUsage mutUsage(&this->mut1);
 		this->stm1->Close();
 		while (this->thread1Running)
 		{
@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 	if (this->stm2)
 	{
 		this->thread2ToStop = true;
-		Sync::MutexUsage mutUsage(this->mut2);
+		Sync::MutexUsage mutUsage(&this->mut2);
 		this->stm2->Close();
 		while (this->thread2Running)
 		{
@@ -218,8 +218,6 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->stmLog1 = 0;
 	this->stm2 = 0;
 	this->stmLog2 = 0;
-	NEW_CLASS(this->mut1, Sync::Mutex());
-	NEW_CLASS(this->mut2, Sync::Mutex());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpStream1, UI::GUIGroupBox(ui, this, CSTR("Stream 1")));
@@ -267,8 +265,6 @@ SSWR::AVIRead::AVIRStreamConvForm::~AVIRStreamConvForm()
 {
 	StopStream1();
 	StopStream2();
-	DEL_CLASS(this->mut1);
-	DEL_CLASS(this->mut2);
 }
 
 void SSWR::AVIRead::AVIRStreamConvForm::OnMonitorChanged()

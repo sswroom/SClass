@@ -35,18 +35,18 @@ namespace SSWR
 			Net::SocketFactory *sockf;
 			Net::UDPServer *udp;
 			Bool autoReply;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			UInt64 recvCnt;
 			UInt64 recvSize;
 			UInt64 lastRecvCnt;
 			UInt64 lastRecvSize;
 			UInt64 lastSentSuccCnt;
 			UInt64 lastSentFailCnt;
-			Data::DateTime *lastTime;
+			Data::DateTime lastTime;
 
 			UOSInt threadCnt;
 			ThreadStatus *threads;
-			Sync::Event *mainEvt;
+			Sync::Event mainEvt;
 
 			UI::GUIGroupBox *grpServer;
 			UI::GUILabel *lblServerPort;

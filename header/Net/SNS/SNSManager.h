@@ -17,12 +17,12 @@ namespace Net
 		class SNSManager : public Data::ReadingList<Net::SNS::SNSControl*>
 		{
 		private:
-			typedef struct
+			struct ChannelData
 			{
 				Net::SNS::SNSControl *ctrl;
-				Data::ArrayListString *currItems;
+				Data::ArrayListString currItems;
 				Int64 lastLoadTime;
-			} ChannelData;
+			};
 			
 		private:
 			Net::SocketFactory *sockf;
@@ -30,11 +30,11 @@ namespace Net
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
 			Text::String *dataPath;
-			Sync::Mutex *mut;
-			Data::ArrayList<ChannelData*> *channelList;
+			Sync::Mutex mut;
+			Data::ArrayList<ChannelData*> channelList;
 			Bool threadToStop;
 			Bool threadRunning;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 
 			Net::SNS::SNSControl *CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 			ChannelData *ChannelInit(Net::SNS::SNSControl *ctrl);

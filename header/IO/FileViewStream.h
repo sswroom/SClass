@@ -14,9 +14,10 @@ namespace IO
 		UInt8 *fptr;
 
 	public:
-		FileViewStream(const UTF8Char *fileName);
+		FileViewStream(Text::CString fileName);
 		virtual ~FileViewStream();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

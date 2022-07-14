@@ -15,14 +15,14 @@ namespace SSWR
 		class SyncServer : public IO::IProtocolHandler::DataListener
 		{
 		public:
-			typedef struct
+			struct ServerInfo
 			{
 				Int32 serverId;
 				const UTF8Char *serverName;
 				Net::TCPClient *cli;
 				Bool isLocal;
-				Sync::Mutex *mut;
-			} ServerInfo;
+				Sync::Mutex mut;
+			};
 
 			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, UOSInt dataSize);
 		private:

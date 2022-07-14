@@ -6,10 +6,10 @@
 
 Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWebRequest *req)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	UOSInt i = this->nextURL;
-	this->nextURL = (i + 1) % this->forwardAddrs->GetCount();
-	return this->forwardAddrs->GetItem(i);
+	this->nextURL = (i + 1) % this->forwardAddrs.GetCount();
+	return this->forwardAddrs.GetItem(i);
 }
 
 Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType)
@@ -19,20 +19,14 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf
 	this->fwdType = fwdType;
 	this->reqHdlr = 0;
 	this->reqHdlrObj = 0;
-	NEW_CLASS(this->forwardAddrs, Data::ArrayList<Text::String*>());
-	NEW_CLASS(this->injHeaders, Data::ArrayList<Text::String*>());
-	this->forwardAddrs->Add(Text::String::New(forwardURL));
+	this->forwardAddrs.Add(Text::String::New(forwardURL));
 	this->nextURL = 0;
-	NEW_CLASS(this->mut, Sync::Mutex());
 }
 
 Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 {
-	LIST_FREE_STRING(this->forwardAddrs);
-	DEL_CLASS(this->forwardAddrs);
-	LIST_FREE_FUNC(this->injHeaders, STR_REL);
-	DEL_CLASS(this->injHeaders);
-	DEL_CLASS(this->mut);
+	LIST_FREE_STRING(&this->forwardAddrs);
+	LIST_FREE_FUNC(&this->injHeaders, STR_REL);
 }
 
 Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
@@ -251,11 +245,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		i++;
 	}
 	i = 0;
-	j = this->injHeaders->GetCount();
+	j = this->injHeaders.GetCount();
 	while (i < j)
 	{
 		sbHeader.ClearStr();
-		sbHeader.Append(this->injHeaders->GetItem(i));
+		sbHeader.Append(this->injHeaders.GetItem(i));
 		if (Text::StrSplitP(sarr, 2, sbHeader, ':') == 2)
 		{
 			sarr[1].Trim();
@@ -287,18 +281,18 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 
 void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CString url)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	this->forwardAddrs->Add(Text::String::New(url));
+	Sync::MutexUsage mutUsage(&this->mut);
+	this->forwardAddrs.Add(Text::String::New(url));
 }
 
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
 {
-	this->injHeaders->Add(header->Clone());
+	this->injHeaders.Add(header->Clone());
 }
 
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::CString header)
 {
-	this->injHeaders->Add(Text::String::New(header));
+	this->injHeaders.Add(Text::String::New(header));
 }
 
 void Net::WebServer::HTTPForwardHandler::HandleForwardRequest(ReqHandler reqHdlr, void *userObj)

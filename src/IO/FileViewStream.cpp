@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "IO/FileViewStream.h"
 
-IO::FileViewStream::FileViewStream(const UTF8Char *fileName) : IO::SeekableStream(fileName)
+IO::FileViewStream::FileViewStream(Text::CString fileName) : IO::SeekableStream(fileName)
 {
-	NEW_CLASS(this->vfb, IO::ViewFileBuffer(fileName));
+	NEW_CLASS(this->vfb, IO::ViewFileBuffer(fileName.v));
 	this->length = this->vfb->GetLength();
 	this->currPos = 0;
 	this->fptr = this->vfb->GetPointer();
@@ -13,6 +13,11 @@ IO::FileViewStream::FileViewStream(const UTF8Char *fileName) : IO::SeekableStrea
 IO::FileViewStream::~FileViewStream()
 {
 	Close();
+}
+
+Bool IO::FileViewStream::IsDown()
+{
+	return this->vfb == 0 || this->fptr == 0;
 }
 
 UOSInt IO::FileViewStream::Read(UInt8 *buff, UOSInt size)

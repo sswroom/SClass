@@ -11,7 +11,7 @@ namespace IO
 		class FileViewData : public IO::IStreamData
 		{
 		private:
-			typedef struct
+			struct FILEVIEWDATAHANDLE
 			{
 				IO::ViewFileBuffer *file;
 				UInt64 fileLength;
@@ -20,9 +20,9 @@ namespace IO
 				Text::String *fullName;
 				UInt8 *fptr;
 
-				Sync::Mutex *mut;
+				Sync::Mutex mut;
 				Int32 objectCnt;
-			} FILEVIEWDATAHANDLE;
+			};
 
 		private:
 			FILEVIEWDATAHANDLE *fdh;

@@ -3,7 +3,6 @@
 #include "IO/TVCtrl/MDT701STVControl.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
-#define RECVBUFFSIZE 256
 
 UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 {
@@ -20,21 +19,21 @@ UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(me->mut);
-			if (me->recvSize >= RECVBUFFSIZE)
+			Sync::MutexUsage mutUsage(&me->mut);
+			if (me->recvSize >= MDT701STVCONTROL_RECVBUFFSIZE)
 			{
 			}
-			else if (me->recvSize + recvSize > RECVBUFFSIZE)
+			else if (me->recvSize + recvSize > MDT701STVCONTROL_RECVBUFFSIZE)
 			{
-				MemCopyNO(&me->recvBuff[me->recvSize], buff, RECVBUFFSIZE - me->recvSize);
-				me->recvSize = RECVBUFFSIZE;
-				me->recvEvt->Set();
+				MemCopyNO(&me->recvBuff[me->recvSize], buff, MDT701STVCONTROL_RECVBUFFSIZE - me->recvSize);
+				me->recvSize = MDT701STVCONTROL_RECVBUFFSIZE;
+				me->recvEvt.Set();
 			}
 			else
 			{
 				MemCopyNO(&me->recvBuff[me->recvSize], buff, recvSize);
 				me->recvSize += recvSize;
-				me->recvEvt->Set();
+				me->recvEvt.Set();
 			}
 			mutUsage.EndUse();
 		}
@@ -47,26 +46,26 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(this->nextTime) < 0)
+	if (dt.CompareTo(&this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime->DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(&dt);
 		Sync::Thread::Sleep((UInt32)timeDiff);
 	}
 	
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
 	this->stm->Write((const UInt8*)buff, buffSize);
-	this->nextTime->SetCurrTimeUTC();
+	this->nextTime.SetCurrTimeUTC();
 	while (true)
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(this->nextTime);
+		timeDiff = dt.DiffMS(&this->nextTime);
 		if (timeDiff >= (Int32)cmdTimeout || replySize <= this->recvSize)
 			break;
-		this->recvEvt->Wait(cmdTimeout);
+		this->recvEvt.Wait(cmdTimeout);
 	}
 	if (replySize <= this->recvSize)
 	{
@@ -92,12 +91,8 @@ IO::TVCtrl::MDT701STVControl::MDT701STVControl(IO::Stream *stm, Int32 monId)
 {
 	this->stm = stm;
 	this->monId = monId;
-	NEW_CLASS(this->nextTime, Data::DateTime());
-	this->nextTime->SetCurrTimeUTC();
+	this->nextTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->recvEvt, Sync::Event(true));
-	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = false;
 	this->recvToStop = false;
@@ -112,10 +107,6 @@ IO::TVCtrl::MDT701STVControl::~MDT701STVControl()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->nextTime);
-	DEL_CLASS(this->recvEvt);
-	DEL_CLASS(this->mut);
-	MemFree(this->recvBuff);
 }
 
 Bool IO::TVCtrl::MDT701STVControl::SendInstruction(CommandType ct)

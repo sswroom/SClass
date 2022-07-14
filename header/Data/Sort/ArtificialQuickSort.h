@@ -35,9 +35,9 @@ namespace Data
 		private:
 			UOSInt threadCnt;
 			ThreadStat *threads;
-			Sync::Event *mainEvt;
+			Sync::Event mainEvt;
 
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			void *arr;
 			ArrayType arrType;
 			OSInt *tasks;

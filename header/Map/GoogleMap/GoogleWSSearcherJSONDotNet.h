@@ -15,28 +15,29 @@ namespace Map
 		{
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			IO::Writer *errWriter;
-			Data::DateTime *lastSrchDate;
-			Sync::Mutex *mut;
+			Data::DateTime lastSrchDate;
+			Sync::Mutex mut;
 			Text::EncodingFactory *encFact;
 			Int32 lastIsError;
-			Int32 srchCnt;
+			UInt32 srchCnt;
 			const UTF8Char *gooCliId;
 			UInt8 *gooPrivKey;
-			OSInt gooPrivKeyLeng;
+			UOSInt gooPrivKeyLeng;
 			const UTF8Char *gooAPIKey;
 
 		public:
-			GoogleWSSearcherJSONDotNet(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherJSONDotNet(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherJSONDotNet();
 
 			void SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);
 			void SetGoogleAPIKey(const UTF8Char *gooAPIKey);
 
-			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw
-			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-			virtual Int32 GetSrchCnt();
+			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang); //lang = en-us, zh-cn, zh-tw
+			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+			virtual UInt32 GetSrchCnt();
 		};
 	}
 }

@@ -3,6 +3,7 @@
 #include "IO/MemoryStream.h"
 #include "Map/GoogleMap/GoogleWSSearcherXML.h"
 #include "Net/HTTPClient.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/Locale.h"
 #include "Text/MyStringFloat.h"
@@ -15,15 +16,11 @@ Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(Net::SocketFactory *soc
 	this->errWriter = errWriter;
 	this->encFact = encFact;
 	this->lastIsError = false;
-	NEW_CLASS(this->lastSrchDate, Data::DateTime());
-	NEW_CLASS(this->mut, Sync::Mutex());
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 }
 
 Map::GoogleMap::GoogleWSSearcherXML::~GoogleWSSearcherXML()
 {
-	DEL_CLASS(this->lastSrchDate);
-	DEL_CLASS(this->mut);
 }
 
 UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang)
@@ -32,13 +29,12 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	UTF8Char *sptr;
 	Data::DateTime currDt;
 	UInt8 databuff[2048];
-	IO::MemoryStream *mstm;
 	Int32 i;
 
-	this->mut->Lock();
+	Sync::MutexUsage mutUsage(&this->mut);
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = false;
-	if ((i = (Int32)currDt.DiffMS(this->lastSrchDate)) < 200)
+	if ((i = (Int32)currDt.DiffMS(&this->lastSrchDate)) < 200)
 	{
 		Sync::Thread::Sleep(200 - i);
 	}
@@ -59,15 +55,15 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 		}
 		Int32 status = cli->GetRespStatus();
 		UOSInt readSize;
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.GoogleMap.GoogleWSSearcherXML.SearchName.mstm")));
+		IO::MemoryStream mstm(UTF8STRC("Map.GoogleMap.GoogleWSSearcherXML.SearchName.mstm"));
 		while ((readSize = cli->Read(databuff, 2048)) > 0)
 		{
-			mstm->Write(databuff, readSize);
+			mstm.Write(databuff, readSize);
 		}
 		if (status == 200)
 		{
 			Text::StringBuilderUTF8 sb;
-			UInt8 *xmlBuff = mstm->GetBuff(&readSize);
+			UInt8 *xmlBuff = mstm.GetBuff(&readSize);
 			Text::XMLDocument doc;
 			if (doc.ParseBuff(this->encFact, xmlBuff, readSize))
 			{
@@ -127,16 +123,14 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 			*buff = 0;
 		}
-		DEL_CLASS(mstm);
 	}
 	else
 	{
 		*buff = 0;
 	}
 
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 	SDEL_CLASS(cli);
-	this->mut->Unlock();
 	return buff;
 }
 
@@ -154,7 +148,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UOSInt 
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(this->lastSrchDate) < 60000)
+		if (dt.DiffMS(&this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);

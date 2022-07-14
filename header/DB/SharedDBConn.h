@@ -10,8 +10,8 @@ namespace DB
 	{
 	private:
 		DB::DBConn *conn;
-		Sync::Mutex *mutConn;
-		Sync::Mutex *mutObj;
+		Sync::Mutex mutConn;
+		Sync::Mutex mutObj;
 		OSInt useCnt;
 
 	private:

@@ -29,7 +29,6 @@ void IO::LoopFileLog::SwapFiles()
 
 IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style)
 {
-	NEW_CLASS(mut, Sync::Mutex());
 	this->logStyle = style;
 	this->nFiles = nFiles;
 	this->closed = false;
@@ -84,18 +83,14 @@ IO::LoopFileLog::~LoopFileLog()
 
 	DEL_CLASS(fileStm);
 	fileStm = 0;
-
-	DEL_CLASS(mut);
-	mut = 0;
 }
 
 void IO::LoopFileLog::LogClosed()
 {
 	if (!closed)
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		log->Close();
-		mutUsage.EndUse();
 		closed = true;
 	}
 }
@@ -105,7 +100,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLe
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 
 	if (logStyle == ILogHandler::LOG_TYPE_PER_DAY)
 	{
@@ -166,5 +161,4 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLe
 		sb.Append(logMsg);
 		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}
-	mutUsage.EndUse();
 }

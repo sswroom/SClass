@@ -25,7 +25,7 @@ namespace Net
 		struct SSDPDevice
 		{
 			Net::SocketUtil::AddressInfo addr;
-			Data::ArrayList<SSDPService*> *services;
+			Data::ArrayList<SSDPService*> services;
 		};
 
 		struct SSDPRoot
@@ -45,8 +45,8 @@ namespace Net
 	private:
 		Net::UDPServer *udp;
 		Text::String *userAgent;
-		Sync::Mutex *mut;
-		Data::UInt32Map<SSDPDevice *> *devMap;
+		Sync::Mutex mut;
+		Data::UInt32Map<SSDPDevice *> devMap;
 
 		static void __stdcall OnPacketRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 

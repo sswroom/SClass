@@ -9,8 +9,8 @@ namespace Data
 	template <class T> class SyncArrayList : public List<T>
 	{
 	private:
-		Data::ArrayList<T> *arr;
-		Sync::Mutex *mut;
+		Data::ArrayList<T> arr;
+		Sync::Mutex mut;
 
 	public:
 		SyncArrayList();
@@ -38,71 +38,65 @@ namespace Data
 
 	template <class T> SyncArrayList<T>::SyncArrayList()
 	{
-		NEW_CLASS(arr, Data::ArrayList<T>());
-		NEW_CLASS(mut, Sync::Mutex());
 	}
 
-	template <class T> SyncArrayList<T>::SyncArrayList(UOSInt capacity)
+	template <class T> SyncArrayList<T>::SyncArrayList(UOSInt capacity) : arr(capacity)
 	{
-		NEW_CLASS(arr, Data::ArrayList<T>(capacity));
-		NEW_CLASS(mut, Sync::Mutex());
 	}
 
 	template <class T> SyncArrayList<T>::~SyncArrayList()
 	{
-		DEL_CLASS(arr);
-		DEL_CLASS(mut);
 	}
 
 	template <class T> UOSInt SyncArrayList<T>::Add(T val)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		return this->arr->Add(val);
+		Sync::MutexUsage mutUsage(&this->mut);
+		return this->arr.Add(val);
 	}
 
 	template <class T> UOSInt Data::SyncArrayList<T>::AddRange(T *arr, UOSInt cnt)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		return this->arr->AddRange(arr, cnt);
+		Sync::MutexUsage mutUsage(&this->mut);
+		return this->arr.AddRange(arr, cnt);
 	}
 
 	template <class T> Bool Data::SyncArrayList<T>::Remove(T val)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		return this->arr->Remove(val);
+		Sync::MutexUsage mutUsage(&this->mut);
+		return this->arr.Remove(val);
 	}
 
 	template <class T> T Data::SyncArrayList<T>::RemoveAt(UOSInt index)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		return this->arr->RemoveAt(index);
+		Sync::MutexUsage mutUsage(&this->mut);
+		return this->arr.RemoveAt(index);
 	}
 
 	template <class T> void Data::SyncArrayList<T>::Insert(UOSInt index, T val)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		this->arr->Insert(index, val);
+		Sync::MutexUsage mutUsage(&this->mut);
+		this->arr.Insert(index, val);
 	}
 
 	template <class T> UOSInt Data::SyncArrayList<T>::IndexOf(T val) const
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		return this->arr->IndexOf(val);
+		Sync::MutexUsage mutUsage(&this->mut);
+		return this->arr.IndexOf(val);
 	}
 
 	template <class T> void Data::SyncArrayList<T>::Clear()
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		this->arr->Clear();
+		Sync::MutexUsage mutUsage(&this->mut);
+		this->arr.Clear();
 	}
 
 	template <class T> T Data::SyncArrayList<T>::RemoveLast()
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		UOSInt i = this->arr->GetCount();
+		Sync::MutexUsage mutUsage(&this->mut);
+		UOSInt i = this->arr.GetCount();
 		if (i > 0)
 		{
-			return this->arr->RemoveAt(i - 1);
+			return this->arr.RemoveAt(i - 1);
 		}
 		return 0;
 	}
@@ -110,38 +104,38 @@ namespace Data
 	template <class T> Data::SyncArrayList<T> *Data::SyncArrayList<T>::Clone() const
 	{
 		Data::SyncArrayList<T> *newArr;
-		Sync::MutexUsage mutUsage(this->mut);
-		NEW_CLASS(newArr, Data::SyncArrayList<T>(arr->GetCapacity()));
-		newArr->arr->AddRange(arr);
+		Sync::MutexUsage mutUsage(&this->mut);
+		NEW_CLASS(newArr, Data::SyncArrayList<T>(this->arr.GetCapacity()));
+		newArr->arr.AddRange(&this->arr);
 		return newArr;
 	}
 
 	template <class T> UOSInt Data::SyncArrayList<T>::GetCount() const
 	{
-		return this->arr->GetCount();
+		return this->arr.GetCount();
 	}
 
 	template <class T> UOSInt Data::SyncArrayList<T>::GetCapacity() const
 	{
-		return this->arr->GetCapacity();
+		return this->arr.GetCapacity();
 	}
 
 	template <class T> T Data::SyncArrayList<T>::GetItem(UOSInt index) const
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		return this->arr->GetItem(index);
+		Sync::MutexUsage mutUsage(&this->mut);
+		return this->arr.GetItem(index);
 	}
 
 	template <class T> void Data::SyncArrayList<T>::SetItem(UOSInt index, T val)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
-		this->arr->SetItem(index, val);
+		Sync::MutexUsage mutUsage(&this->mut);
+		this->arr.SetItem(index, val);
 	}
 
 	template <class T> Data::ArrayList<T> *Data::SyncArrayList<T>::GetArrayList(Sync::MutexUsage *mutUsage)
 	{
-		mutUsage->ReplaceMutex(this->mut);
-		return this->arr;
+		mutUsage->ReplaceMutex(&this->mut);
+		return &this->arr;
 	}
 }
 #endif

@@ -24,12 +24,12 @@ namespace SSWR
 		class AVIRSNBDongleForm : public UI::GUIForm, public IO::SNBDongle::SNBHandler
 		{
 		private:
-			typedef struct
+			struct DeviceInfo
 			{
 				UInt64 devId;
 				UInt16 shortAddr;
 				IO::SNBDongle::HandleType handType;
-				Sync::RWMutex *mut;
+				Sync::RWMutex mut;
 				Bool readingChg;
 				Bool shortAddrChg;
 				IO::SNBDongle::SensorType sensorType;
@@ -37,7 +37,7 @@ namespace SSWR
 				UOSInt nReading;
 				Double readings[16];
 				IO::SNBDongle::ReadingType readingTypes[16];
-			} DeviceInfo;
+			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;

@@ -19,13 +19,13 @@ namespace IO
 			UInt64 size;
 		} FileInfo;
 	private:
-		Data::BTreeUTF8Map<FileInfo*> *fileMap;
+		Data::BTreeUTF8Map<FileInfo*> fileMap;
 		IO::SeekableStream *stm;
 		Bool writeMode;
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		Bool toRelease;
 		Bool pauseCommit;
-		IO::MemoryStream *mstm;
+		IO::MemoryStream mstm;
 		Int32 flags;
 		UInt64 currOfst;
 		Int32 customType;

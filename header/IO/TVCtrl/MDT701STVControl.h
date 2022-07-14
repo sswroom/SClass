@@ -5,6 +5,7 @@
 #include "IO/TVControl.h"
 #include "Sync/Mutex.h"
 
+#define MDT701STVCONTROL_RECVBUFFSIZE 256
 namespace IO
 {
 	namespace TVCtrl
@@ -14,14 +15,14 @@ namespace IO
 		private:
 			IO::Stream *stm;
 			Int32 monId;
-			Data::DateTime *nextTime;
+			Data::DateTime nextTime;
 
-			Sync::Mutex *mut;
-			UInt8 *recvBuff;
+			Sync::Mutex mut;
+			UInt8 recvBuff[MDT701STVCONTROL_RECVBUFFSIZE];
 			UOSInt recvSize;
 			Bool recvRunning;
 			Bool recvToStop;
-			Sync::Event *recvEvt;
+			Sync::Event recvEvt;
 
 			static UInt32 __stdcall RecvThread(void *userObj);
 			Bool SendBasicCommand(const Char *buff, UOSInt buffSize, const Char *cmdReply, UOSInt replySize, UInt32 cmdTimeout, UInt32 cmdInterval);

@@ -15,25 +15,25 @@ namespace Net
 	class LogClient : public IO::ILogHandler, public IO::IProtocolHandler::DataListener
 	{
 	private:
-		IO::ProtoHdlr::ProtoLogCliHandler *protoHdlr;
+		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;
 		Net::SocketFactory *sockf;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 
-		Sync::Mutex *mut;
-		Data::ArrayListInt64 *dateList;
-		Data::ArrayListString *msgList;
+		Sync::Mutex mut;
+		Data::ArrayListInt64 dateList;
+		Data::ArrayListString msgList;
 
 		Int64 lastSendTime;
-		Sync::Mutex *cliMut;
+		Sync::Mutex cliMut;
 		Net::TCPClient *cli;
 
 		Bool sendRunning;
 		Bool sendToStop;
-		Sync::Event *sendEvt;
+		Sync::Event sendEvt;
 		Bool recvRunning;
 		Bool recvToStop;
-		Sync::Event *recvEvt;
+		Sync::Event recvEvt;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
 		static UInt32 __stdcall SendThread(void *userObj);

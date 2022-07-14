@@ -12,7 +12,7 @@ namespace IO
 		class FileData : public IO::IStreamData
 		{
 		private:
-			typedef struct
+			struct FILEDATAHANDLE
 			{
 				IO::FileStream *file;
 				UInt64 fileLength;
@@ -23,9 +23,9 @@ namespace IO
 				Bool deleteOnClose;
 				UOSInt seekCnt;
 
-				Sync::Mutex *mut;
+				Sync::Mutex mut;
 				UInt32 objectCnt;
-			} FILEDATAHANDLE;
+			};
 
 			typedef struct
 			{

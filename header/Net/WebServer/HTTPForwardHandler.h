@@ -19,10 +19,10 @@ namespace Net
 
 			typedef void (__stdcall *ReqHandler)(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		private:
-			Data::ArrayList<Text::String *> *forwardAddrs;
-			Data::ArrayList<Text::String *> *injHeaders;
+			Data::ArrayList<Text::String *> forwardAddrs;
+			Data::ArrayList<Text::String *> injHeaders;
 			UOSInt nextURL;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			ForwardType fwdType;

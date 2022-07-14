@@ -44,12 +44,10 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::
 
 Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::SNSControl *ctrl)
 {
-	Net::SNS::SNSManager::ChannelData *channel = MemAlloc(Net::SNS::SNSManager::ChannelData, 1);
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
+	Net::SNS::SNSManager::ChannelData *channel;
+	NEW_CLASS(channel, Net::SNS::SNSManager::ChannelData());
 	channel->ctrl = ctrl;
-	channel->lastLoadTime = dt.ToTicks();
-	NEW_CLASS(channel->currItems, Data::ArrayListString());
+	channel->lastLoadTime = Data::DateTimeUtil::GetCurrTimeMillis();
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -69,7 +67,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	{
 		if (sb.GetLength() > 0)
 		{
-			channel->currItems->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
+			channel->currItems.SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 		}
 		sb.ClearStr();
 	}
@@ -320,10 +318,10 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(&fs);
 	UOSInt i = 0;
-	UOSInt j = channel->currItems->GetCount();
+	UOSInt j = channel->currItems.GetCount();
 	while (i < j)
 	{
-		Text::String *s = channel->currItems->GetItem(i);
+		Text::String *s = channel->currItems.GetItem(i);
 		writer.WriteLineC(s->v, s->leng);
 		i++;
 	}
@@ -336,7 +334,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	Bool updated = false;
 	channel->ctrl->GetCurrItems(&itemList);
 	Data::ArrayListString oldItems;
-	oldItems.AddAll(channel->currItems);
+	oldItems.AddAll(&channel->currItems);
 	UOSInt i;
 	UOSInt j;
 	OSInt si;
@@ -352,7 +350,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 		}
 		else
 		{
-			channel->currItems->SortedInsert(item->id->Clone());
+			channel->currItems.SortedInsert(item->id->Clone());
 			this->ChannelAddMessage(channel, item);
 			updated = true;
 		}
@@ -362,10 +360,10 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	i = oldItems.GetCount();
 	while (i-- > 0)
 	{
-		si = channel->currItems->SortedIndexOf(oldItems.GetItem(i));
+		si = channel->currItems.SortedIndexOf(oldItems.GetItem(i));
 		if (si >= 0)
 		{
-			channel->currItems->RemoveAt((UOSInt)si)->Release();
+			channel->currItems.RemoveAt((UOSInt)si)->Release();
 			updated = true;
 		}
 	}
@@ -387,42 +385,37 @@ void Net::SNS::SNSManager::ChannelReload(Net::SNS::SNSManager::ChannelData *chan
 UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 {
 	Net::SNS::SNSManager *me = (Net::SNS::SNSManager*)userObj;
-	Data::DateTime *dt;
 	Int64 t;
 	UOSInt i;
 	Int32 cnt;
 	Net::SNS::SNSManager::ChannelData *channel;
-	Data::Int32Map<Int32> *cntMap;
 	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(cntMap, Data::Int32Map<Int32>());
-	while (!me->threadToStop)
 	{
-		dt->SetCurrTimeUTC();
-		t = dt->ToTicks();
-		Sync::MutexUsage mutUsage(me->mut);
-		cntMap->Clear();
-		i = me->channelList->GetCount();
-		while (i-- > 0)
+		Data::Int32Map<Int32> cntMap;
+		while (!me->threadToStop)
 		{
-			channel = me->channelList->GetItem(i);
-			if (t - channel->lastLoadTime >= channel->ctrl->GetMinIntevalMS())
+			t = Data::DateTimeUtil::GetCurrTimeMillis();
+			Sync::MutexUsage mutUsage(&me->mut);
+			cntMap.Clear();
+			i = me->channelList.GetCount();
+			while (i-- > 0)
 			{
-				cnt = cntMap->Get((Int32)channel->ctrl->GetSNSType());
-				if (cnt < 5)
+				channel = me->channelList.GetItem(i);
+				if (t - channel->lastLoadTime >= channel->ctrl->GetMinIntevalMS())
 				{
-					dt->SetCurrTimeUTC();
-					channel->lastLoadTime = dt->ToTicks();
-					me->ChannelReload(channel);
-					cntMap->Put((Int32)channel->ctrl->GetSNSType(), cnt + 1);
+					cnt = cntMap.Get((Int32)channel->ctrl->GetSNSType());
+					if (cnt < 5)
+					{
+						channel->lastLoadTime = Data::DateTimeUtil::GetCurrTimeMillis();
+						me->ChannelReload(channel);
+						cntMap.Put((Int32)channel->ctrl->GetSNSType(), cnt + 1);
+					}
 				}
 			}
+			mutUsage.EndUse();
+			me->threadEvt.Wait(60000);
 		}
-		mutUsage.EndUse();
-		me->threadEvt->Wait(60000);
 	}
-	DEL_CLASS(cntMap);
-	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return 0;
 }
@@ -436,12 +429,9 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = Text::String::NewOrNull(userAgent);
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->channelList, Data::ArrayList<Net::SNS::SNSManager::ChannelData*>());
 
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	if (dataPath.leng > 0)
 	{
@@ -487,7 +477,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 						if (ctrl)
 						{
 							Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
-							this->channelList->Add(channel);
+							this->channelList.Add(channel);
 							this->ChannelUpdate(channel);
 						}
 					}
@@ -510,7 +500,7 @@ Net::SNS::SNSManager::~SNSManager()
 	UOSInt j;
 	Net::SNS::SNSManager::ChannelData *channel;
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(10);
@@ -518,21 +508,18 @@ Net::SNS::SNSManager::~SNSManager()
 
 	SDEL_STRING(this->userAgent);
 	this->dataPath->Release();
-	i = this->channelList->GetCount();
+	i = this->channelList.GetCount();
 	while (i-- > 0)
 	{
-		channel = this->channelList->GetItem(i);
+		channel = this->channelList.GetItem(i);
 		DEL_CLASS(channel->ctrl);
-		j = channel->currItems->GetCount();
+		j = channel->currItems.GetCount();
 		while (j-- > 0)
 		{
-			channel->currItems->GetItem(j)->Release();
+			channel->currItems.GetItem(j)->Release();
 		}
-		DEL_CLASS(channel->currItems);
-		MemFree(channel);
+		DEL_CLASS(channel);
 	}
-	DEL_CLASS(this->channelList);
-	DEL_CLASS(this->mut);
 }
 
 Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
@@ -541,10 +528,10 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	UTF8Char *sptr;
 	Net::SNS::SNSControl *ctrl;
 	UOSInt i = 0;
-	UOSInt j = this->channelList->GetCount();
+	UOSInt j = this->channelList.GetCount();
 	while (i < j)
 	{
-		ctrl = this->channelList->GetItem(i)->ctrl;
+		ctrl = this->channelList.GetItem(i)->ctrl;
 		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId.v, channelId.leng))
 		{
 			return 0;
@@ -572,8 +559,8 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 			writer.WriteLineC(s->v, s->leng);
 		}
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
-		Sync::MutexUsage mutUsage(mut);
-		this->channelList->Add(channel);
+		Sync::MutexUsage mutUsage(&this->mut);
+		this->channelList.Add(channel);
 		this->ChannelUpdate(channel);
 		mutUsage.EndUse();
 	}
@@ -582,15 +569,15 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 
 void Net::SNS::SNSManager::Use(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->mut);
+	mutUsage->ReplaceMutex(&this->mut);
 }
 
 UOSInt Net::SNS::SNSManager::GetCount() const
 {
-	return this->channelList->GetCount();
+	return this->channelList.GetCount();
 }
 
 Net::SNS::SNSControl *Net::SNS::SNSManager::GetItem(UOSInt index) const
 {
-	return this->channelList->GetItem(index)->ctrl;
+	return this->channelList.GetItem(index)->ctrl;
 }

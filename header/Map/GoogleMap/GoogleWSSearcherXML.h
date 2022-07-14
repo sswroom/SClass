@@ -17,8 +17,8 @@ namespace Map
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			IO::Writer *errWriter;
-			Data::DateTime *lastSrchDate;
-			Sync::Mutex *mut;
+			Data::DateTime lastSrchDate;
+			Sync::Mutex mut;
 			Text::EncodingFactory *encFact;
 			Bool lastIsError;
 			

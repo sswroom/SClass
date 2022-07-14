@@ -11,16 +11,16 @@ namespace IO
 		class ConcatStreamData : public IO::IStreamData
 		{
 		private:
-			typedef struct
+			struct CONCATDATABASE
 			{
-				Data::ArrayList<IO::IStreamData *> *dataList;
-				Data::ArrayListUInt64 *ofstList;
+				Data::ArrayList<IO::IStreamData *> dataList;
+				Data::ArrayListUInt64 ofstList;
 
 				UInt64 totalSize;
 				Text::String *fileName;
-				Sync::Mutex *mut;
+				Sync::Mutex mut;
 				UInt32 objectCnt;
-			} CONCATDATABASE;
+			};
 
 
 		private:

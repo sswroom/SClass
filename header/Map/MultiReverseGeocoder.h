@@ -10,16 +10,16 @@ namespace Map
 	class MultiReverseGeocoder : public Map::IReverseGeocoder
 	{
 	private:
-		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
+		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
 		UOSInt nextCoder;
 		IO::Writer *errWriter;
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 	public:
 		MultiReverseGeocoder(IO::Writer *errWriter);
 		virtual ~MultiReverseGeocoder();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
 	};
 }

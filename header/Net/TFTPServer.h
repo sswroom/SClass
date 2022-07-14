@@ -28,11 +28,11 @@ namespace Net
 		Net::UDPServer *svr;
 		Net::UDPServer *dataSvr;
 		Text::String *path;
-		Sync::Mutex *mut;
-		Data::UInt64Map<SessionInfo*> *sessMap;
+		Sync::Mutex mut;
+		Data::UInt64Map<SessionInfo*> sessMap;
 		Bool threadToStop;
 		Bool threadRunning;
-		Sync::Event *chkEvt;
+		Sync::Event chkEvt;
 
 		static void __stdcall OnCommandPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static void __stdcall OnDataPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);

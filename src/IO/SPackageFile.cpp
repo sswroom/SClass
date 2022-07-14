@@ -72,13 +72,13 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
 		sbuff[nameSize] = 0;
 		
-		file = this->fileMap->Get({sbuff, nameSize});
+		file = this->fileMap.Get({sbuff, nameSize});
 		if (file == 0)
 		{
 			file = MemAlloc(FileInfo, 1);
 			file->ofst = ReadUInt64(&dirBuff[i]);
 			file->size = ReadUInt64(&dirBuff[i + 8]);
-			this->fileMap->Put({sbuff, nameSize}, file);
+			this->fileMap.Put({sbuff, nameSize}, file);
 		}
 		i += 26 + nameSize;
 	}
@@ -184,12 +184,11 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	return succ;
 }
 
-IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease)
+IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease) : mstm(UTF8STRC("IO.SPackageFile.mstm"))
 {
 	UInt8 hdr[24];
 	this->stm = stm;
 	this->toRelease = toRelease;
-	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("IO.SPackageFile.mstm")));
 	this->currOfst = 24;
 	hdr[0] = 'S';
 	hdr[1] = 'm';
@@ -205,19 +204,16 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease)
 	this->writeMode = true;
 	this->flags = 2;
 	this->pauseCommit = false;
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->fileMap, Data::BTreeUTF8Map<FileInfo*>());
 	WriteInt64(&hdr[0], 0);
 	WriteInt64(&hdr[8], 0);
-	this->mstm->Write(hdr, 16);
+	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff)
+IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff) : mstm(UTF8STRC("IO.SPackageFile.mstm"))
 {
 	UInt8 hdr[32];
 	this->stm = stm;
 	this->toRelease = toRelease;
-	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("IO.SPackageFile.mstm")));
 	this->currOfst = 32 + customSize;
 	hdr[0] = 'S';
 	hdr[1] = 'm';
@@ -247,14 +243,12 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 cu
 	}
 	this->writeMode = true;
 	this->pauseCommit = false;
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->fileMap, Data::BTreeUTF8Map<FileInfo*>());
 	WriteInt64(&hdr[0], 0);
 	WriteInt64(&hdr[8], 0);
-	this->mstm->Write(hdr, 16);
+	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(Text::CString fileName)
+IO::SPackageFile::SPackageFile(Text::CString fileName) : mstm(UTF8STRC("IO.SPackageFile.mstm"))
 {
 	UInt8 hdr[24];
 	UInt64 flength;
@@ -265,8 +259,6 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 	this->customType = 0;
 	this->customSize = 0;
 	this->customBuff = 0;
-	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("IO.SPackageFile.mstm")));
-	NEW_CLASS(this->fileMap, Data::BTreeUTF8Map<FileInfo*>());
 	flength = this->stm->GetLength();
 	if (flength >= 16)
 	{
@@ -295,7 +287,7 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 					this->currOfst = 24;
 					WriteInt64(&hdr[0], 0);
 					WriteInt64(&hdr[8], 0);
-					this->mstm->Write(hdr, 16);
+					this->mstm.Write(hdr, 16);
 				}
 				else
 				{
@@ -311,7 +303,7 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 							this->stm->Read(this->customBuff, this->customSize);
 						}
 					}
-					this->mstm->Write(&hdr[8], 16);
+					this->mstm.Write(&hdr[8], 16);
 					this->ReadV2DirEnt(lastOfst, lastSize);
 					this->stm->SeekFromBeginning(this->currOfst);
 				}
@@ -326,7 +318,7 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 					this->stm->SeekFromBeginning(this->currOfst);
 					this->stm->Read(dirBuff, (UOSInt)dirSize);
 					this->stm->SeekFromBeginning(this->currOfst);
-					this->mstm->Write(dirBuff, (UOSInt)dirSize);
+					this->mstm.Write(dirBuff, (UOSInt)dirSize);
 
 					UOSInt i;
 					UOSInt nameSize;
@@ -338,13 +330,13 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 						MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
 						sbuff[nameSize] = 0;
 						
-						file = this->fileMap->Get({sbuff, nameSize});
+						file = this->fileMap.Get({sbuff, nameSize});
 						if (file == 0)
 						{
 							file = MemAlloc(FileInfo, 1);
 							file->ofst = ReadUInt64(&dirBuff[i]);
 							file->size = ReadUInt64(&dirBuff[i + 8]);
-							this->fileMap->Put({sbuff, nameSize}, file);
+							this->fileMap.Put({sbuff, nameSize}, file);
 						}
 						i += 26 + nameSize;
 					}
@@ -371,7 +363,7 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 			this->currOfst = 24;
 			WriteInt64(&hdr[0], 0);
 			WriteInt64(&hdr[8], 0);
-			this->mstm->Write(hdr, 16);
+			this->mstm.Write(hdr, 16);
 		}
 	}
 	else
@@ -388,11 +380,10 @@ IO::SPackageFile::SPackageFile(Text::CString fileName)
 		this->currOfst = 24;
 		WriteInt64(&hdr[0], 0);
 		WriteInt64(&hdr[8], 0);
-		this->mstm->Write(hdr, 16);
+		this->mstm.Write(hdr, 16);
 	}
 	this->writeMode = true;
 	this->pauseCommit = false;
-	NEW_CLASS(this->mut, Sync::Mutex());
 }
 
 IO::SPackageFile::~SPackageFile()
@@ -405,7 +396,7 @@ IO::SPackageFile::~SPackageFile()
 		this->writeMode = true;
 		this->stm->SeekFromBeginning(this->currOfst);
 	}
-	buff = this->mstm->GetBuff(&buffSize);
+	buff = this->mstm.GetBuff(&buffSize);
 	if (this->flags & 2)
 	{
 		if (buffSize > 16)
@@ -432,24 +423,21 @@ IO::SPackageFile::~SPackageFile()
 	{
 		DEL_CLASS(this->stm);
 	}
-	DEL_CLASS(this->mstm);
-	DEL_CLASS(this->mut);
 	if (this->customBuff)
 	{
 		MemFree(this->customBuff);
 		this->customBuff = 0;
 	}
-	if (!this->fileMap->IsEmpty())
+	if (!this->fileMap.IsEmpty())
 	{
 		UOSInt i;
-		IO::SPackageFile::FileInfo **fileArr = this->fileMap->ToArray(&i);
+		IO::SPackageFile::FileInfo **fileArr = this->fileMap.ToArray(&i);
 		while (i-- > 0)
 		{
 			MemFree(fileArr[i]);
 		}
 		MemFree(fileArr);
 	}
-	DEL_CLASS(this->fileMap);
 }
 
 Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Int64 modTimeTicks)
@@ -459,8 +447,8 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Int6
 	UOSInt writeSize;
 	Bool needCommit = false;
 
-	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileMap->Get(fileName) == 0)
+	Sync::MutexUsage mutUsage(&this->mut);
+	if (this->fileMap.Get(fileName) == 0)
 	{
 	}
 	else
@@ -518,12 +506,12 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Int6
 		FileInfo *file = MemAlloc(FileInfo, 1);
 		file->ofst = this->currOfst;
 		file->size = dataSize;
-		this->fileMap->Put(fileName, file);
+		this->fileMap.Put(fileName, file);
 
-		this->mstm->Write(dataBuff, 26 + fileName.leng);
+		this->mstm.Write(dataBuff, 26 + fileName.leng);
 		this->currOfst += dataSize;
 		succ = true;
-		if (mstm->GetLength() >= 65536)
+		if (this->mstm.GetLength() >= 65536)
 		{
 			needCommit = true;
 		}
@@ -544,8 +532,8 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;
-	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileMap->Get(fileName) == 0)
+	Sync::MutexUsage mutUsage(&this->mut);
+	if (this->fileMap.Get(fileName) == 0)
 	{
 	}
 	else
@@ -571,12 +559,12 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 		FileInfo *file = MemAlloc(FileInfo, 1);
 		file->ofst = this->currOfst;
 		file->size = fileSize;
-		this->fileMap->Put(fileName, file);
+		this->fileMap.Put(fileName, file);
 
-		this->mstm->Write(dataBuff, 26 + fileName.leng);
+		this->mstm.Write(dataBuff, 26 + fileName.leng);
 		this->currOfst += fileSize;
 		succ = true;
-		if (mstm->GetLength() >= 65536)
+		if (this->mstm.GetLength() >= 65536)
 		{
 			needCommit = true;
 		}
@@ -607,8 +595,8 @@ Bool IO::SPackageFile::Commit()
 	UInt8 *buff;
 	UInt8 hdr[16];
 	Bool succ = false;
-	Sync::MutexUsage mutUsage(this->mut);
-	buff = this->mstm->GetBuff(&buffSize);
+	Sync::MutexUsage mutUsage(&this->mut);
+	buff = this->mstm.GetBuff(&buffSize);
 	if (this->flags & 2)
 	{
 		if (buffSize > 16)
@@ -628,8 +616,8 @@ Bool IO::SPackageFile::Commit()
 				WriteUInt64(&hdr[8], buffSize);
 				this->stm->Write(hdr, 16);
 				this->writeMode = false;
-				this->mstm->Clear();
-				this->mstm->Write(hdr, 16);
+				this->mstm.Clear();
+				this->mstm.Write(hdr, 16);
 				this->currOfst += writeSize;
 				succ = true;
 			}
@@ -672,7 +660,7 @@ Bool IO::SPackageFile::OptimizeFile(Text::CString newFile)
 		NEW_CLASS(spkg, IO::SPackageFile(fs, true));
 	}
 	spkg->PauseCommit(true);
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->writeMode = false;
 	this->stm->SeekFromBeginning(0);
 	this->stm->Read(hdr, 24);
@@ -695,8 +683,8 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 IO::IStreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
 {
 	IO::IStreamData *fd = 0;
-	Sync::MutexUsage mutUsage(this->mut);
-	FileInfo *file = this->fileMap->Get(fileName);
+	Sync::MutexUsage mutUsage(&this->mut);
+	FileInfo *file = this->fileMap.Get(fileName);
 	if (file)
 	{
 		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)file->size);

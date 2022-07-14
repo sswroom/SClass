@@ -29,7 +29,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 			if (readSize == 0)
 			{
 				recvSize = 0;
-				Sync::MutexUsage mutUsage(me->cliMut);
+				Sync::MutexUsage mutUsage(&me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
 				mutUsage.EndUse();
@@ -37,7 +37,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 			else
 			{
 				recvSize += readSize;
-				readSize = me->protoHdlr->ParseProtocol(me->cli, me,0, recvBuff, recvSize);
+				readSize = me->protoHdlr.ParseProtocol(me->cli, me,0, recvBuff, recvSize);
 				if (readSize <= 0)
 				{
 					recvSize = 0;
@@ -51,13 +51,13 @@ UInt32 __stdcall Net::LogClient::RecvThread(void *userObj)
 		}
 		else
 		{
-			me->recvEvt->Wait(1000);
+			me->recvEvt.Wait(1000);
 		}
 	}
 
 	if (me->cli)
 	{
-		Sync::MutexUsage mutUsage(me->cliMut);
+		Sync::MutexUsage mutUsage(&me->cliMut);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
 		mutUsage.EndUse();
@@ -70,7 +70,6 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 {
 	Net::LogClient *me = (Net::LogClient*)userObj;
 	Net::TCPClient *cli;
-	Data::DateTime *currTime;
 	Int64 t;
 	Int64 msgTime;
 	Text::String *msg;
@@ -80,7 +79,6 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	UOSInt buffSize;
 
 	me->sendRunning = true;
-	NEW_CLASS(currTime, Data::DateTime())
 	while (!me->sendToStop)
 	{
 		if (me->cli == 0)
@@ -92,41 +90,39 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(me->cliMut);
+				Sync::MutexUsage mutUsage(&me->cliMut);
 				me->cli = cli;
 				mutUsage.EndUse();
-				currTime->SetCurrTimeUTC();
-				nextKATime = currTime->ToTicks();
+				nextKATime = Data::DateTimeUtil::GetCurrTimeMillis();
 			}
 		}
 
-		currTime->SetCurrTimeUTC();
-		t = currTime->ToTicks();
-		Sync::MutexUsage mutUsage(me->cliMut);
+		t = Data::DateTimeUtil::GetCurrTimeMillis();
+		Sync::MutexUsage mutUsage(&me->cliMut);
 		if (me->cli)
 		{
 			if (t >= nextKATime)
 			{
-				buffSize = me->protoHdlr->BuildPacket(kaBuff, 0, 0, 0, 0, 0);
+				buffSize = me->protoHdlr.BuildPacket(kaBuff, 0, 0, 0, 0, 0);
 				me->cli->Write(kaBuff, buffSize);
 				nextKATime = t + 60000;
 			}
 
 			if (t >= me->lastSendTime + 30000)
 			{
-				Sync::MutexUsage mutUsage(me->mut);
-				if (me->msgList->GetCount() > 0)
+				Sync::MutexUsage mutUsage(&me->mut);
+				if (me->msgList.GetCount() > 0)
 				{
 					UInt8 *buff1;
 					UInt8 *buff2;
-					msgTime = me->dateList->GetItem(0);
-					msg = me->msgList->GetItem(0);
+					msgTime = me->dateList.GetItem(0);
+					msg = me->msgList.GetItem(0);
 					msgLen = msg->leng;
 					buff1 = MemAlloc(UInt8, 8 + msgLen);
 					buff2 = MemAlloc(UInt8, 18 + msgLen);
 					WriteInt64(buff1, msgTime);
 					MemCopyNO(&buff1[8], msg->v, msgLen);
-					buffSize = me->protoHdlr->BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
+					buffSize = me->protoHdlr.BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
 					me->cli->Write(buff2, buffSize);
 					MemFree(buff1);
 					MemFree(buff2);
@@ -138,32 +134,24 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 		}
 		mutUsage.EndUse();
 		
-		me->sendEvt->Wait(1000);
+		me->sendEvt.Wait(1000);
 	}
-	DEL_CLASS(currTime);
 	me->sendRunning = false;
 	return 0;
 }
 
-Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->addr = *addr;
 	this->port = port;
 	this->cli = 0;
-	NEW_CLASS(this->cliMut, Sync::Mutex());
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoLogCliHandler(this));
 
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->dateList, Data::ArrayListInt64());
-	NEW_CLASS(this->msgList, Data::ArrayListString());
 	this->lastSendTime = 0;
 	this->sendRunning = false;
 	this->sendToStop = false;
-	NEW_CLASS(this->sendEvt, Sync::Event(true));
 	this->recvRunning = false;
 	this->recvToStop = false;
-	NEW_CLASS(this->recvEvt, Sync::Event(true));
 	Sync::Thread::Create(SendThread, this);
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->sendRunning || !this->recvRunning)
@@ -176,9 +164,9 @@ Net::LogClient::~LogClient()
 {
 	this->recvToStop = true;
 	this->sendToStop = true;
-	this->recvEvt->Set();
-	this->sendEvt->Set();
-	Sync::MutexUsage mutUsage(this->cliMut);
+	this->recvEvt.Set();
+	this->sendEvt.Set();
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
@@ -188,14 +176,7 @@ Net::LogClient::~LogClient()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->recvEvt);
-	DEL_CLASS(this->sendEvt);
-	LIST_FREE_STRING(this->msgList);
-	DEL_CLASS(this->msgList);
-	DEL_CLASS(this->dateList);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->protoHdlr);
-	DEL_CLASS(this->cliMut);
+	LIST_FREE_STRING(&this->msgList);
 }
 
 void Net::LogClient::LogClosed()
@@ -205,11 +186,11 @@ void Net::LogClient::LogClosed()
 
 void Net::LogClient::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	this->msgList->Add(Text::String::New(logMsg));
-	this->dateList->Add(time->ToTicks());
+	Sync::MutexUsage mutUsage(&this->mut);
+	this->msgList.Add(Text::String::New(logMsg));
+	this->dateList.Add(time->ToTicks());
 	mutUsage.EndUse();
-	this->sendEvt->Set();
+	this->sendEvt.Set();
 }
 
 void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
@@ -221,13 +202,13 @@ void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 	case 3: //Log Reply
 		{
 			Int64 msgTime = ReadInt64(cmd);
-			Sync::MutexUsage mutUsage(this->mut);
-			if (msgTime == this->dateList->GetItem(0))
+			Sync::MutexUsage mutUsage(&this->mut);
+			if (msgTime == this->dateList.GetItem(0))
 			{
-				this->dateList->RemoveAt(0);
-				this->msgList->RemoveAt(0)->Release();
+				this->dateList.RemoveAt(0);
+				this->msgList.RemoveAt(0)->Release();
 				this->lastSendTime = 0;
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			mutUsage.EndUse();
 		}

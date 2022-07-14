@@ -33,13 +33,13 @@ namespace SSWR
 				Int64 reqCount;
 			} HourInfo;
 
-			typedef struct
+			struct ClientInfo
 			{
 				UInt32 cliId;
 				Net::SocketUtil::AddressInfo addr;
-				Sync::Mutex *mut;
-				Data::ArrayList<HourInfo*> *hourInfos;
-			} ClientInfo;
+				Sync::Mutex mut;
+				Data::ArrayList<HourInfo*> hourInfos;
+			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			UI::GUITabControl *tcMain;
@@ -184,8 +184,8 @@ namespace SSWR
 			UI::GUIListBox *lbLog;
 			UI::GUITextBox *txtLog;
 
-			Sync::Mutex *cliInfoMut;
-			Data::UInt32Map<ClientInfo*> *cliInfos;
+			Sync::Mutex cliInfoMut;
+			Data::UInt32Map<ClientInfo*> cliInfos;
 			Bool cliChg;
 			UInt32 currServer;
 
@@ -195,8 +195,8 @@ namespace SSWR
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> v4sansList;
 			Net::DNSProxy::TargetInfo *currTarget;
 			Net::DNSProxy *proxy;
-			Net::WhoisHandler *whois;
-			IO::LogTool *log;
+			Net::WhoisHandler whois;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 
 			static void __stdcall OnTimerTick(void *userObj);

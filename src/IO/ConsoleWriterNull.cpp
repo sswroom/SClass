@@ -16,17 +16,7 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return false;
 }
 
-Bool IO::ConsoleWriter::WriteStr(const UTF8Char *str)
-{
-	return false;
-}
-
 Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
-{
-	return false;
-}
-
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str)
 {
 	return false;
 }

@@ -10,8 +10,8 @@ namespace DB
 	{
 	private:
 		DB::ReadingDB *db;
-		Sync::Mutex *mutDB;
-		Sync::Mutex *mutObj;
+		Sync::Mutex mutDB;
+		Sync::Mutex mutObj;
 		OSInt useCnt;
 
 	private:

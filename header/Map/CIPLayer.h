@@ -35,19 +35,19 @@ namespace Map
 		CIPBlock *blks;
 		Int32 maxTextSize;
 		Map::DrawLayerType lyrType;
-		const UTF8Char *layerName;
+		Text::String *layerName;
 		Int64 maxId;
 
 		Data::Int32Map<CIPFileObject*> *lastObjs;
 		Data::Int32Map<CIPFileObject*> *currObjs;
 
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 	public:
-		CIPLayer(const UTF8Char *layerName);
+		CIPLayer(Text::CString layerName);
 		virtual ~CIPLayer();
 
 		Bool IsError();
-		virtual const UTF8Char *GetName();
+		virtual Text::String *GetName();
 
 		virtual DrawLayerType GetLayerType();
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);

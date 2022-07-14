@@ -56,8 +56,8 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	}
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
-	Sync::MutexUsage mutUsage(me->mut);
-	sess = me->sessMap->Get(sessId);
+	Sync::MutexUsage mutUsage(&me->mut);
+	sess = me->sessMap.Get(sessId);
 	mutUsage.EndUse();
 	if (sess)
 	{
@@ -99,8 +99,8 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isLast = false;
 			sess->currBlock = 1;
 			sess->fileName = Text::String::New(sb.ToString(), sb.GetLength());
-			Sync::MutexUsage mutUsage(me->mut);
-			me->sessMap->Put(sess->sessId, sess);
+			Sync::MutexUsage mutUsage(&me->mut);
+			me->sessMap.Put(sess->sessId, sess);
 
 			UInt8 *packet = MemAlloc(UInt8, sess->blockSize + 4);
 			WriteMInt16(&packet[0], 3);
@@ -174,8 +174,8 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isLast = false;
 			sess->currBlock = 0;
 			sess->fileName = Text::String::New(sb.ToString(), sb.GetLength());
-			Sync::MutexUsage mutUsage(me->mut);
-			me->sessMap->Put(sess->sessId, sess);
+			Sync::MutexUsage mutUsage(&me->mut);
+			me->sessMap.Put(sess->sessId, sess);
 			mutUsage.EndUse();
 
 			WriteMInt16(&repBuff[0], 4);
@@ -212,8 +212,8 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 	SessionInfo *sess;
 	UInt8 repBuff[32];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(me->mut);
-	sess = me->sessMap->Get(sessId);
+	Sync::MutexUsage mutUsage(&me->mut);
+	sess = me->sessMap.Get(sessId);
 	if (sess == 0)
 	{
 		mutUsage.EndUse();
@@ -257,7 +257,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						sb.AppendP(repBuff, sptr);
 						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					}
-					me->sessMap->Remove(sess->sessId);
+					me->sessMap.Remove(sess->sessId);
 					me->ReleaseSess(sess);
 				}
 				WriteMInt16(&repBuff[0], 4);
@@ -288,7 +288,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						sb.AppendP(repBuff, sptr);
 						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					}
-					me->sessMap->Remove(sess->sessId);
+					me->sessMap.Remove(sess->sessId);
 					me->ReleaseSess(sess);
 				}
 				else
@@ -324,16 +324,16 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(me->mut);
+		Sync::MutexUsage mutUsage(&me->mut);
 		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-		sessList = me->sessMap->GetValues();
+		sessList = me->sessMap.GetValues();
 		i = sessList->GetCount();
 		while (i-- > 0)
 		{
 			sess = sessList->GetItem(i);
 			if (currTime - sess->lastSignalTime >= 10000)
 			{
-				me->sessMap->Remove(sess->sessId);
+				me->sessMap.Remove(sess->sessId);
 				if (sess->isWrite)
 				{
 					sess->stm->Close();
@@ -343,7 +343,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 			}
 		}
 		mutUsage.EndUse();
-		me->chkEvt->Wait(10000);
+		me->chkEvt.Wait(10000);
 	}
 	me->threadRunning = false;
 	return 0;
@@ -363,9 +363,6 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	this->dataSvr = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->chkEvt, Sync::Event(true));
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->sessMap, Data::UInt64Map<SessionInfo*>());
 	Text::StringBuilderUTF8 sb;
 	sb.Append(path);
 	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
@@ -398,7 +395,7 @@ Net::TFTPServer::~TFTPServer()
 	if (this->threadRunning)
 	{
 		this->threadToStop = true;
-		this->chkEvt->Set();
+		this->chkEvt.Set();
 		while (this->threadRunning)
 		{
 			Sync::Thread::Sleep(1);
@@ -406,14 +403,12 @@ Net::TFTPServer::~TFTPServer()
 	}
 	const Data::ArrayList<SessionInfo*> *sessList;
 	UOSInt i;
-	sessList = this->sessMap->GetValues();
+	sessList = this->sessMap.GetValues();
 	i = sessList->GetCount();
 	while (i-- > 0)
 	{
 		ReleaseSess(sessList->GetItem(i));
 	}
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->sessMap);
 	this->path->Release();
 }
 

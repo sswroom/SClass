@@ -10,7 +10,7 @@ void IO::StmData::FileData::ReopenFile()
 {
 	if (fdh == 0)
 		return;
-	Sync::MutexUsage mutUsage(fdh->mut);
+	Sync::MutexUsage mutUsage(&fdh->mut);
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fdh->filePath->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
@@ -63,14 +63,13 @@ IO::StmData::FileData::FileData(Text::String* fname, Bool deleteOnClose)
 	}
 	else
 	{
-		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
+		NEW_CLASS(fdh, IO::StmData::FileData::FILEDATAHANDLE());
 		fdh->file = fs;
 		fdh->filePath = fname->Clone();
 		dataLength = fdh->fileLength = fs->GetLength();
 		fdh->currentOffset = fs->GetPosition();
 		fdh->objectCnt = 1;
 		fdh->seekCnt = 0;
-		NEW_CLASS(fdh->mut, Sync::Mutex());
 		dataOffset = 0;
 		fdh->fullName = fdh->filePath->Clone();
 		fdh->fileName.v = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
@@ -93,14 +92,13 @@ IO::StmData::FileData::FileData(Text::CString fname, Bool deleteOnClose)
 	}
 	else
 	{
-		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
+		NEW_CLASS(fdh, IO::StmData::FileData::FILEDATAHANDLE());
 		fdh->file = fs;
 		fdh->filePath = Text::String::New(fname.v, fname.leng);
 		dataLength = fdh->fileLength = fs->GetLength();
 		fdh->currentOffset = fs->GetPosition();
 		fdh->objectCnt = 1;
 		fdh->seekCnt = 0;
-		NEW_CLASS(fdh->mut, Sync::Mutex());
 		dataOffset = 0;
 		fdh->fullName = fdh->filePath->Clone();
 		fdh->fileName.v = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
@@ -119,7 +117,7 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* b
 {
 	if (fdh == 0)
 		return 0;
-	Sync::MutexUsage mutUsage(fdh->mut);
+	Sync::MutexUsage mutUsage(&fdh->mut);
 	if (fdh->currentOffset != dataOffset + offset)
 	{
 		if ((fdh->currentOffset = fdh->file->SeekFromBeginning(dataOffset + offset)) != dataOffset + offset)
@@ -257,8 +255,7 @@ void IO::StmData::FileData::Close()
 			}
 			fdh->fullName->Release();
 			fdh->filePath->Release();
-			DEL_CLASS(fdh->mut);
-			MemFree(fdh);
+			DEL_CLASS(fdh);
 		}
 	}
 	fdh = 0;

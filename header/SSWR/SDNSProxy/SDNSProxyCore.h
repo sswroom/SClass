@@ -27,22 +27,22 @@ namespace SSWR
 				Int64 reqCount;
 			} HourInfo;
 
-			typedef struct
+			struct ClientInfo
 			{
 				UInt32 cliId;
 				Net::SocketUtil::AddressInfo addr;
-				Sync::Mutex *mut;
-				Data::ArrayList<HourInfo*> *hourInfos;
-			} ClientInfo;
+				Sync::Mutex mut;
+				Data::ArrayList<HourInfo*> hourInfos;
+			};
 
 		private:
 			IO::Writer *console;
 			Net::DNSProxy *proxy;
 			Net::SocketFactory *sockf;
 
-			Sync::Mutex *cliInfoMut;
-			Data::UInt32Map<ClientInfo*> *cliInfos;
-			IO::LogTool *log;
+			Sync::Mutex cliInfoMut;
+			Data::UInt32Map<ClientInfo*> cliInfos;
+			IO::LogTool log;
 			Net::WebServer::WebListener *listener;
 			SSWR::SDNSProxy::SDNSProxyWebHandler *hdlr;
 			

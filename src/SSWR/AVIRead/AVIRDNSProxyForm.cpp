@@ -111,8 +111,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		me->lbClientIP->ClearItems();
 		me->lvClient->ClearItems();
 
-		Sync::MutexUsage mutUsage(me->cliInfoMut);
-		cliList = me->cliInfos->GetValues();
+		Sync::MutexUsage mutUsage(&me->cliInfoMut);
+		cliList = me->cliInfos.GetValues();
 		i = 0;
 		j = cliList->GetCount();
 		while (i < j)
@@ -382,7 +382,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 	me->currTarget = target;
 	if (target)
 	{
-		Net::WhoisRecord *rec = me->whois->RequestIP(target->ip);
+		Net::WhoisRecord *rec = me->whois.RequestIP(target->ip);
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -631,11 +631,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		HourInfo *hInfo;
-		Sync::MutexUsage mutUsage(cli->mut);
-		i = cli->hourInfos->GetCount();
+		Sync::MutexUsage mutUsage(&cli->mut);
+		i = cli->hourInfos.GetCount();
 		while (i-- > 0)
 		{
-			hInfo = cli->hourInfos->GetItem(i);
+			hInfo = cli->hourInfos.GetItem(i);
 			sptr = Text::StrInt32(sbuff, hInfo->year);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("-"));
 			sptr = Text::StrInt32(sptr, hInfo->month);
@@ -708,37 +708,35 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
 	sb.AppendDouble(timeUsed);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 
 	ClientInfo *cli;
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
-	Sync::MutexUsage cimutUsage(me->cliInfoMut);
-	cli = me->cliInfos->Get(cliId);
+	Sync::MutexUsage cimutUsage(&me->cliInfoMut);
+	cli = me->cliInfos.Get(cliId);
 	if (cli == 0)
 	{
-		cli = MemAlloc(ClientInfo, 1);
+		NEW_CLASS(cli, ClientInfo());
 		cli->cliId = cliId;
 		cli->addr = *reqAddr;
-		NEW_CLASS(cli->mut, Sync::Mutex());
-		NEW_CLASS(cli->hourInfos, Data::ArrayList<HourInfo*>());
-		me->cliInfos->Put(cliId, cli);
+		me->cliInfos.Put(cliId, cli);
 		me->cliChg = true;
 	}
 	cimutUsage.EndUse();
 	Data::DateTime dt;
 	HourInfo *hInfo;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(cli->mut);
-	hInfo = cli->hourInfos->GetItem(0);
+	Sync::MutexUsage mutUsage(&cli->mut);
+	hInfo = cli->hourInfos.GetItem(0);
 	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{
 		hInfo->reqCount++;
 	}
 	else
 	{
-		if (cli->hourInfos->GetCount() >= 72)
+		if (cli->hourInfos.GetCount() >= 72)
 		{
-			hInfo = cli->hourInfos->RemoveAt(71);
+			hInfo = cli->hourInfos.RemoveAt(71);
 		}
 		else
 		{
@@ -749,7 +747,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 		hInfo->day = dt.GetDay();
 		hInfo->hour = dt.GetHour();
 		hInfo->reqCount = 1;
-		cli->hourInfos->Insert(0, hInfo);
+		cli->hourInfos.Insert(0, hInfo);
 	}
 	mutUsage.EndUse();
 }
@@ -794,7 +792,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 	
 }
 
-SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory())
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -1129,15 +1127,11 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lvClient->AddColumn(CSTR("Time"), 200);
 	this->lvClient->AddColumn(CSTR("Count"), 100);
 
-	NEW_CLASS(this->cliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->cliInfos, Data::UInt32Map<ClientInfo*>());
 	this->cliChg = false;
 
-	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 
-	NEW_CLASS(this->whois, Net::WhoisHandler(this->core->GetSocketFactory()));
 	NEW_CLASS(this->proxy, Net::DNSProxy(this->core->GetSocketFactory(), true));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
 	this->AddTimer(1000, OnTimerTick, this);
@@ -1159,24 +1153,19 @@ SSWR::AVIRead::AVIRDNSProxyForm::~AVIRDNSProxyForm()
 	Net::DNSClient::FreeAnswers(&this->v6ansList);
 	Net::DNSClient::FreeAnswers(&this->othansList);
 	Net::DNSClient::FreeAnswers(&this->v4sansList);
-	DEL_CLASS(this->cliInfoMut);
-	cliInfoList = this->cliInfos->GetValues();
+	cliInfoList = this->cliInfos.GetValues();
 	i = cliInfoList->GetCount();
 	while (i-- > 0)
 	{
 		cli = cliInfoList->GetItem(i);
-		j = cli->hourInfos->GetCount();
+		j = cli->hourInfos.GetCount();
 		while (j-- > 0)
 		{
-			MemFree(cli->hourInfos->GetItem(j));
+			MemFree(cli->hourInfos.GetItem(j));
 		}
-		DEL_CLASS(cli->hourInfos);
-		DEL_CLASS(cli->mut);
-		MemFree(cli);
+		DEL_CLASS(cli);
 	}
-	DEL_CLASS(this->cliInfos);
-	DEL_CLASS(this->whois);
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 }
 

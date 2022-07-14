@@ -39,7 +39,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientEvent(Net::TCPClient *cli, vo
 			me->svrMut.UnlockRead();
 			if (svr)
 			{
-				Sync::MutexUsage mutUsage(svr->mut);
+				Sync::MutexUsage mutUsage(&svr->mut);
 				if (svr->cli == cli)
 				{
 					svr->cli = 0;
@@ -81,8 +81,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	this->dataHdlr = dataHdlr;
 	this->dataObj = dataObj;
 	ServerInfo *svrInfo;
-	svrInfo = MemAlloc(ServerInfo, 1);
-	NEW_CLASS(svrInfo->mut, Sync::Mutex());
+	NEW_CLASS(svrInfo, ServerInfo());
 	svrInfo->serverId = serverId;
 	svrInfo->serverName = Text::StrCopyNewC(serverName.v, serverName.leng);
 	svrInfo->isLocal = true;
@@ -136,9 +135,8 @@ SSWR::DataSync::SyncServer::~SyncServer()
 	while (i-- > 0)
 	{
 		svrInfo = svrList->GetItem(i);
-		DEL_CLASS(svrInfo->mut);
 		Text::StrDelNew(svrInfo->serverName);
-		MemFree(svrInfo);
+		DEL_CLASS(svrInfo);
 	}
 	SyncClient *syncCli;
 	i = this->syncCliList.GetCount();
@@ -188,16 +186,15 @@ void SSWR::DataSync::SyncServer::DataParsed(IO::Stream *stm, void *stmObj, Int32
 				this->svrMut.UnlockRead();
 				if (svr)
 				{
-					Sync::MutexUsage mutUsage(svr->mut);
+					Sync::MutexUsage mutUsage(&svr->mut);
 					svr->cli = (Net::TCPClient*)stm;
 					mutUsage.EndUse();
 				}
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					svr = MemAlloc(ServerInfo, 1);
+					NEW_CLASS(svr, ServerInfo());
 					svr->serverId = serverId;
-					NEW_CLASS(svr->mut, Sync::Mutex());
 					sb.AppendC((const UTF8Char*)&cmd[5], cmd[4]);
 					svr->serverName = Text::StrCopyNew(sb.ToString());
 					svr->isLocal = false;

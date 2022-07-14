@@ -22,9 +22,7 @@ Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *s
 	this->encFact = encFact;
 	this->lastIsError = 0;
 	this->srchCnt = 0;
-	NEW_CLASS(this->lastSrchDate, Data::DateTime());
-	NEW_CLASS(this->mut, Sync::Mutex());
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 	this->gooCliId = 0;
 	this->gooPrivKey = 0;
 	this->gooPrivKeyLeng = 0;
@@ -33,8 +31,6 @@ Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *s
 
 Map::GoogleMap::GoogleWSSearcherJSON::~GoogleWSSearcherJSON()
 {
-	DEL_CLASS(this->lastSrchDate);
-	DEL_CLASS(this->mut);
 	SDEL_STRING(this->gooCliId);
 	if (this->gooPrivKey)
 	{
@@ -102,11 +98,11 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	UInt8 databuff[2048];
 	UOSInt readSize;
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
-	if ((i = (Int32)currDt.DiffMS(this->lastSrchDate)) < 200)
+	if ((i = (Int32)currDt.DiffMS(&this->lastSrchDate)) < 200)
 	{
 		if (i >= 0)
 		{
@@ -280,7 +276,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 	DEL_CLASS(cli);
 	mutUsage.EndUse();
 	return buff;
@@ -292,7 +288,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(this->lastSrchDate) < 60000)
+		if (dt.DiffMS(&this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
@@ -307,7 +303,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(this->lastSrchDate) < 60000)
+		if (dt.DiffMS(&this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);

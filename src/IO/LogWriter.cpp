@@ -1,19 +1,20 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
 #include "IO/LogWriter.h"
+#include "Sync/MutexUsage.h"
+#include "Text/MyString.h"
 
 void IO::LogWriter::CheckLines()
 {
-	if (sb->EndsWith('\r') || sb->EndsWith('\n'))
+	if (this->sb.EndsWith('\r') || this->sb.EndsWith('\n'))
 	{
-		sb->RemoveChars(1);
-		if (sb->EndsWith('\r') || sb->EndsWith('\n'))
+		this->sb.RemoveChars(1);
+		if (this->sb.EndsWith('\r') || this->sb.EndsWith('\n'))
 		{
-			sb->RemoveChars(1);
+			this->sb.RemoveChars(1);
 		}
-		this->log->LogMessage(sb->ToCString(), this->logLev);
-		sb->ClearStr();
+		this->log->LogMessage(this->sb.ToCString(), this->logLev);
+		this->sb.ClearStr();
 	}
 }
 
@@ -21,47 +22,42 @@ IO::LogWriter::LogWriter(IO::LogTool *log, IO::ILogHandler::LogLevel logLev)
 {
 	this->log = log;
 	this->logLev = logLev;
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->sb, Text::StringBuilderUTF8());
 }
 
 IO::LogWriter::~LogWriter()
 {
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->sb);
 }
 
 Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
-	this->mut->Lock();
-	sb->AppendC(str, nChar);
-	this->mut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(&this->mut);
+		this->sb.AppendC(str, nChar);
+	}
 	this->CheckLines();
 	return true;
 }
 
 Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
-	this->mut->Lock();
-	sb->AppendC(str, nChar);
+	Sync::MutexUsage mutUsage(&this->mut);
+	this->sb.AppendC(str, nChar);
 	this->CheckLines();
-	if (sb->GetLength() > 0)
+	if (this->sb.GetLength() > 0)
 	{
-		this->log->LogMessage(sb->ToCString(), this->logLev);
-		sb->ClearStr();
+		this->log->LogMessage(this->sb.ToCString(), this->logLev);
+		this->sb.ClearStr();
 	}
-	this->mut->Unlock();
 	return true;
 }
 
 Bool IO::LogWriter::WriteLine()
 {
-	this->mut->Lock();
-	if (sb->GetLength() > 0)
+	Sync::MutexUsage mutUsage(&this->mut);
+	if (this->sb.GetLength() > 0)
 	{
-		this->log->LogMessage(sb->ToCString(), this->logLev);
-		sb->ClearStr();
+		this->log->LogMessage(this->sb.ToCString(), this->logLev);
+		this->sb.ClearStr();
 	}
-	this->mut->Unlock();
 	return true;
 }

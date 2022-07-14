@@ -24,10 +24,10 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 
 			Int32 tmpVal;
-			Manage::HiResClock *clk;
-			Sync::Mutex *mut;
-			Sync::Event *threadEvt;
-			Sync::Event *mainEvt;
+			Manage::HiResClock clk;
+			Sync::Mutex mut;
+			Sync::Event threadEvt;
+			Sync::Event mainEvt;
 			Double t;
 
 			static UInt32 __stdcall TestThread(void *userObj);

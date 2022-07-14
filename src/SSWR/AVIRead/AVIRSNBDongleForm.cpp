@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			dev = devList.GetItem(i);
-			dev->mut->LockRead();
+			dev->mut.LockRead();
 			dev->readingChg = false;
 			
 			sptr = Text::StrUInt64(sbuff, dev->devId);
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 				me->lvDevice->SetSubItem(k, 3, CSTR("-"));
 				me->lvDevice->SetSubItem(k, 4, CSTR("-"));
 			}
-			dev->mut->UnlockRead();
+			dev->mut.UnlockRead();
 			i++;
 		}
 	}
@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			dev = devList.GetItem(i);
-			dev->mut->LockRead();
+			dev->mut.LockRead();
 			if (dev->shortAddrChg)
 			{
 				dev->shortAddrChg = false;
@@ -177,7 +177,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 				}
 				me->lvDevice->SetSubItem(i, 4, sb.ToCString());
 			}
-			dev->mut->UnlockRead();
+			dev->mut.UnlockRead();
 			i++;
 		}
 	}
@@ -589,8 +589,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 	while (i-- > 0)
 	{
 		dev = devList->GetItem(i);
-		DEL_CLASS(dev->mut);
-		MemFree(dev);
+		DEL_CLASS(dev);
 	}
 	SDEL_CLASS(this->ssl);
 }
@@ -607,10 +606,9 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 	dev = this->devMap.Get(devId);
 	if (dev == 0)
 	{
-		dev = MemAlloc(DeviceInfo, 1);
+		NEW_CLASS(dev, DeviceInfo());
 		dev->devId = devId;
 		dev->shortAddr = 0;
-		NEW_CLASS(dev->mut, Sync::RWMutex());
 		dev->handType = (IO::SNBDongle::HandleType)this->devHandlerMap.Get(devId);
 		dev->nReading = 0;
 		dev->readingChg = false;
@@ -637,7 +635,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle:
 		UOSInt i;
 		dt.SetCurrTimeUTC();
 
-		dev->mut->LockWrite();
+		dev->mut.LockWrite();
 		dev->readingChg = true;
 		dev->readingTime = dt.ToTicks();
 		dev->sensorType = sensorType;
@@ -649,7 +647,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle:
 			dev->readingTypes[i] = readingTypes[i];
 			i++;
 		}
-		dev->mut->UnlockWrite();
+		dev->mut.UnlockWrite();
 	}
 }
 
@@ -661,10 +659,10 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceUpdated(UInt64 devId, UInt16 shortA
 	this->devMut.UnlockRead();
 	if (dev)
 	{
-		dev->mut->LockWrite();
+		dev->mut.LockWrite();
 		dev->shortAddr = shortAddr;
 		dev->shortAddrChg = true;
-		dev->mut->UnlockWrite();
+		dev->mut.UnlockWrite();
 	}
 }
 

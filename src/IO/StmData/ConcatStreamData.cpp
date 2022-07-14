@@ -9,17 +9,13 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 	this->cdb = cdb;
 	this->dataOffset = dataOffset;
 	this->dataLength = dataLength;
-	Sync::MutexUsage mutUsage(this->cdb->mut);
+	Sync::MutexUsage mutUsage(&this->cdb->mut);
 	this->cdb->objectCnt++;
-	mutUsage.EndUse();
 }
 
 IO::StmData::ConcatStreamData::ConcatStreamData(Text::String *fileName)
 {
-	this->cdb = MemAlloc(CONCATDATABASE, 1);
-	NEW_CLASS(this->cdb->mut, Sync::Mutex());
-	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
-	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
+	NEW_CLASS(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = fileName->Clone();
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
@@ -29,10 +25,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(Text::String *fileName)
 
 IO::StmData::ConcatStreamData::ConcatStreamData(Text::CString fileName)
 {
-	this->cdb = MemAlloc(CONCATDATABASE, 1);
-	NEW_CLASS(this->cdb->mut, Sync::Mutex());
-	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
-	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
+	NEW_CLASS(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = Text::String::New(fileName);
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
@@ -43,24 +36,21 @@ IO::StmData::ConcatStreamData::ConcatStreamData(Text::CString fileName)
 IO::StmData::ConcatStreamData::~ConcatStreamData()
 {
 	UInt32 cnt;
-	Sync::MutexUsage mutUsage(this->cdb->mut);
+	Sync::MutexUsage mutUsage(&this->cdb->mut);
 	cnt = this->cdb->objectCnt--;
 	mutUsage.EndUse();
 	if (cnt == 1)
 	{
 		IO::IStreamData *data;
 		UOSInt i;
-		DEL_CLASS(this->cdb->ofstList);
-		DEL_CLASS(this->cdb->mut);
-		i = this->cdb->dataList->GetCount();
+		i = this->cdb->dataList.GetCount();
 		while (i-- > 0)
 		{
-			data = this->cdb->dataList->GetItem(i);
+			data = this->cdb->dataList.GetItem(i);
 			DEL_CLASS(data);
 		}
-		DEL_CLASS(this->cdb->dataList);
 		this->cdb->fileName->Release();
-		MemFree(this->cdb);
+		DEL_CLASS(this->cdb);
 	}
 }
 
@@ -84,7 +74,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	}
 	length = (UOSInt)(endOfst - offset);
 
-	si = this->cdb->ofstList->SortedIndexOf(offset);
+	si = this->cdb->ofstList.SortedIndexOf(offset);
 	if (si < 0)
 	{
 		i = (UOSInt)(~si - 1);
@@ -93,12 +83,12 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	{
 		i = (UOSInt)si;
 	}
-	startOfst = this->cdb->ofstList->GetItem(i);
+	startOfst = this->cdb->ofstList.GetItem(i);
 	offset -= startOfst;
-	j = this->cdb->dataList->GetCount();
+	j = this->cdb->dataList.GetCount();
 	while (i < j)
 	{
-		data = this->cdb->dataList->GetItem(i);
+		data = this->cdb->dataList.GetItem(i);
 		thisSize = data->GetDataSize() - offset;
 		if (thisSize > length)
 			thisSize = length;
@@ -182,10 +172,10 @@ UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 	UOSInt ret = 0;
 	IO::IStreamData *data;
 	UOSInt i;
-	i = this->cdb->dataList->GetCount();
+	i = this->cdb->dataList.GetCount();
 	while (i-- > 0)
 	{
-		data = this->cdb->dataList->GetItem(i);
+		data = this->cdb->dataList.GetItem(i);
 		ret += data->GetSeekCount();
 	}
 	return ret;
@@ -193,9 +183,9 @@ UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 
 void IO::StmData::ConcatStreamData::AddData(IO::IStreamData *data)
 {
-	Sync::MutexUsage mutUsage(this->cdb->mut);
-	this->cdb->dataList->Add(data);
-	this->cdb->ofstList->Add(this->cdb->totalSize);
+	Sync::MutexUsage mutUsage(&this->cdb->mut);
+	this->cdb->dataList.Add(data);
+	this->cdb->ofstList.Add(this->cdb->totalSize);
 	this->cdb->totalSize += data->GetDataSize();
 	mutUsage.EndUse();
 }

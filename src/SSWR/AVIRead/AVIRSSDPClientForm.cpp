@@ -41,10 +41,10 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(void *userObj)
 	}
 	Net::SSDPClient::SSDPService *svc;
 	UOSInt i = 0;
-	UOSInt j = dev->services->GetCount();
+	UOSInt j = dev->services.GetCount();
 	while (i < j)
 	{
-		svc = dev->services->GetItem(i);
+		svc = dev->services.GetItem(i);
 		me->lbService->AddItem(svc->st, svc);
 		i++;
 	}

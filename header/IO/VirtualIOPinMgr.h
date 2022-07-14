@@ -9,15 +9,15 @@ namespace IO
 	class VirtualIOPinMgr
 	{
 	public:
-		typedef struct
+		struct PinStatus
 		{
 			UInt32 pinNum;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			OSInt useCnt;
 			Bool pullHigh;
 			Int32 outputCnt;
 			Bool outputHigh;
-		} PinStatus;
+		};
 	private:
 		PinStatus **pins;
 		UOSInt pinCnt;

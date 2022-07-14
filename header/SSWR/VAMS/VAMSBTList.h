@@ -20,9 +20,9 @@ namespace SSWR
 				Int64 lastProcTS;
 			};
 		private:
-			Sync::Mutex *mut;
-			Data::Int32Map<Data::FastStringMap<AvlBleItem*>*> *itemMap;
-			Data::Int32Map<Int64> *kaMap;
+			Sync::Mutex mut;
+			Data::Int32Map<Data::FastStringMap<AvlBleItem*>*> itemMap;
+			Data::Int32Map<Int64> kaMap;
 
 		public:
 			VAMSBTList();

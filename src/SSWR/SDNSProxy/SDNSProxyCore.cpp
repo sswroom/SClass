@@ -21,22 +21,20 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
 	Text::SBAppendF64(&sb, timeUsed);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 
 	Data::DateTime dt;
 	ClientInfo *cli;
 	dt.SetCurrTimeUTC();
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
-	Sync::MutexUsage mutUsage(me->cliInfoMut);
-	cli = me->cliInfos->Get(cliId);
+	Sync::MutexUsage mutUsage(&me->cliInfoMut);
+	cli = me->cliInfos.Get(cliId);
 	if (cli == 0)
 	{
-		cli = MemAlloc(ClientInfo, 1);
+		NEW_CLASS(cli, ClientInfo());
 		cli->cliId = cliId;
 		cli->addr = *reqAddr;
-		NEW_CLASS(cli->mut, Sync::Mutex());
-		NEW_CLASS(cli->hourInfos, Data::ArrayList<HourInfo*>());
-		me->cliInfos->Put(cliId, cli);
+		me->cliInfos.Put(cliId, cli);
 	}
 
 	if (dt.GetHour() == me->lastHour && dt.GetMinute() == me->lastMinute)
@@ -53,17 +51,17 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 	mutUsage.EndUse();
 
 	HourInfo *hInfo;
-	mutUsage.ReplaceMutex(cli->mut);
-	hInfo = cli->hourInfos->GetItem(0);
+	mutUsage.ReplaceMutex(&cli->mut);
+	hInfo = cli->hourInfos.GetItem(0);
 	if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 	{
 		hInfo->reqCount++;
 	}
 	else
 	{
-		if (cli->hourInfos->GetCount() >= 72)
+		if (cli->hourInfos.GetCount() >= 72)
 		{
-			hInfo = cli->hourInfos->RemoveAt(71);
+			hInfo = cli->hourInfos.RemoveAt(71);
 		}
 		else
 		{
@@ -74,7 +72,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 		hInfo->day = dt.GetDay();
 		hInfo->hour = dt.GetHour();
 		hInfo->reqCount = 1;
-		cli->hourInfos->Insert(0, hInfo);
+		cli->hourInfos.Insert(0, hInfo);
 	}
 	mutUsage.EndUse();
 }
@@ -87,11 +85,6 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	this->lastMinute = 0;
 	this->lastCnt = 0;
 	this->currCnt = 0;
-
-	NEW_CLASS(this->cliInfoMut, Sync::Mutex());
-	NEW_CLASS(this->cliInfos, Data::UInt32Map<ClientInfo*>());
-
-	NEW_CLASS(this->log, IO::LogTool());
 
 	NEW_CLASS(this->proxy, Net::DNSProxy(this->sockf, true));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
@@ -147,7 +140,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		s = cfg->GetValue(CSTR("LogPath"));
 		if (s)
 		{
-			this->log->AddFileLog(s, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+			this->log.AddFileLog(s, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
 		s = cfg->GetValue(CSTR("DisableV6"));
@@ -179,7 +172,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		s = cfg->GetValue(CSTR("ManagePort"));
 		if (s && s->v[0] != 0 && s->ToUInt16(&managePort))
 		{
-			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
+			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, &this->log, this));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->hdlr, managePort, 60, 4, CSTR("SDNSProxy/1.0"), false, true));
 			if (this->listener->IsError())
 			{
@@ -209,23 +202,18 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 	SDEL_CLASS(this->hdlr);
 
 	DEL_CLASS(this->proxy);
-	DEL_CLASS(this->cliInfoMut);
-	cliInfoList = this->cliInfos->GetValues();
+	cliInfoList = this->cliInfos.GetValues();
 	i = cliInfoList->GetCount();
 	while (i-- > 0)
 	{
 		cli = cliInfoList->GetItem(i);
-		j = cli->hourInfos->GetCount();
+		j = cli->hourInfos.GetCount();
 		while (j-- > 0)
 		{
-			MemFree(cli->hourInfos->GetItem(j));
+			MemFree(cli->hourInfos.GetItem(j));
 		}
-		DEL_CLASS(cli->hourInfos);
-		DEL_CLASS(cli->mut);
-		MemFree(cli);
+		DEL_CLASS(cli);
 	}
-	DEL_CLASS(this->cliInfos);
-	DEL_CLASS(this->log);
 
 	DEL_CLASS(this->sockf);
 }
@@ -245,8 +233,8 @@ void SSWR::SDNSProxy::SDNSProxyCore::Run(Core::IProgControl *progCtrl)
 UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> *cliList)
 {
 	UOSInt initSize = cliList->GetCount();
-	Sync::MutexUsage mutUsage(this->cliInfoMut);
-	cliList->AddAll(this->cliInfos->GetValues());
+	Sync::MutexUsage mutUsage(&this->cliInfoMut);
+	cliList->AddAll(this->cliInfos.GetValues());
 	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;
 }

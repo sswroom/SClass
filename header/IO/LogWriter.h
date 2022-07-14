@@ -11,8 +11,8 @@ namespace IO
 	{
 	private:
 		IO::LogTool *log;
-		Text::StringBuilderUTF8 *sb;
-		Sync::Mutex *mut;
+		Text::StringBuilderUTF8 sb;
+		Sync::Mutex mut;
 		IO::ILogHandler::LogLevel logLev;
 
 		void CheckLines();
