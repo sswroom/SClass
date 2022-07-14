@@ -658,6 +658,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	Text::String *val;
 	Text::String *val2;
 	IO::GSMModemController::SMSMessage *msg;
+
 	if (j > 1)
 	{
 		val = this->cmdResults->GetItem(j - 1);
@@ -670,7 +671,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 				val = this->cmdResults->GetItem(i);
 				val2 = this->cmdResults->GetItem(i + 1);
 
-				if (val->Equals(UTF8STRC("+CMGL: ")))
+				if (val->StartsWith(UTF8STRC("+CMGL: ")))
 				{
 					Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
 					if (Text::StrSplit(sbuffs, 5, sbuff, ',') == 4)
@@ -703,7 +704,6 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 				///////////////////////////////////////
 				i += 2;
 			}
-			
 			ClearCmdResult();
 			mutUsage.EndUse();
 			return true;

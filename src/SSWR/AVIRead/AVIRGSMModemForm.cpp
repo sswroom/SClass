@@ -11,7 +11,6 @@
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 #include "UI/MessageDialog.h"
-#include "UI/GUITabPage.h"
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 {
@@ -275,6 +274,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	sptr = this->modem->SMSGetSMSC(sbuff);
 	this->txtSMSC->SetText(CSTRP(sbuff, sptr));
 	this->modem->SMSListMessages(&this->msgList, IO::GSMModemController::SMSS_ALL);
+
 	i = 0;
 	j = this->msgList.GetCount();
 	while (i < j)
@@ -313,6 +313,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->modem = modem;
 	this->channel = channel;
 	this->port = port;
+	this->channel->SetLogger(&this->log);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->signalQuality = IO::GSMModemController::RSSI_UNKNOWN;
@@ -421,6 +422,17 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvSMS->AddColumn(CSTR("Content"), 300);
 	this->lvSMS->SetFullRowSelect(true);
 
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog->SetRect(0, 0, 100, 23, false);
+	this->txtLog->SetReadOnly(true);
+	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	
+	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 200, false));
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+
 	this->AddTimer(1000, OnTimerTick, this);
 
 	this->toStop = false;
@@ -435,6 +447,8 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 {
 	this->toStop = true;
+	this->log.RemoveLogHandler(this->logger);
+	DEL_CLASS(this->logger);
 	this->modemEvt.Set();
 	this->port->Close();
 	this->channel->Close();

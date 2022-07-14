@@ -14,7 +14,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 		UOSInt curr;
 		UOSInt cnt;
 		UOSInt i;
-		Sync::MutexUsage mutUsage(me->mut);
+		Sync::MutexUsage mutUsage(&me->mut);
 		cnt = me->logCnt;
 		curr = me->logIndex - cnt;
 		if ((OSInt)curr < 0)
@@ -101,7 +101,6 @@ UI::ListBoxLogger::ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt ma
 	{
 		this->logArr[i] = 0;
 	}
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->tmr = frm->AddTimer(500, TimerTick, this);
 }
 
@@ -120,7 +119,6 @@ UI::ListBoxLogger::~ListBoxLogger()
 	MemFree(this->logArr);
 	MemFree(this->tmpLogArr);
 	SDEL_TEXT(this->timeFormat);
-	DEL_CLASS(this->mut);
 	
 }
 
@@ -133,7 +131,7 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, Text::CString logMsg, 
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->timeFormat)
 	{
 		sptr = logTime->ToString(sbuff, this->timeFormat);
@@ -160,7 +158,7 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, Text::CString logMsg, 
 
 void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	SDEL_TEXT(this->timeFormat);
 	this->timeFormat = Text::StrCopyNew(timeFormat);
 	mutUsage.EndUse();

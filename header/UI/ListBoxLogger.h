@@ -10,7 +10,7 @@ namespace UI
 	class ListBoxLogger : public IO::ILogHandler
 	{
 	private:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		UI::GUIListBox *lb;
 		UI::GUITimer *tmr;
 		UI::GUIForm *frm;

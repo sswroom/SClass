@@ -89,6 +89,7 @@ UTF8Char *DasmX86_64_ParseReg8(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Ch
 		return Text::StrConcatC(regName, UTF8STRC("R15B"));
 	default:
 		*regName = 0;
+		*regPtr = 0;
 		return regName;
 	}
 }

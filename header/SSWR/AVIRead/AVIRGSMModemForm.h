@@ -1,14 +1,18 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGSMMODEMFORM
 #define _SM_SSWR_AVIREAD_AVIRGSMMODEMFORM
 #include "IO/GSMModemController.h"
+#include "IO/LogTool.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
+#include "UI/ListBoxLogger.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 
 namespace SSWR
@@ -22,6 +26,8 @@ namespace SSWR
 			IO::GSMModemController *modem;
 			IO::ATCommandChannel *channel;
 			IO::Stream *port;
+			IO::LogTool log;
+			UI::ListBoxLogger *logger;
 
 			UI::GUITabControl *tcMain;
 			UI::GUITabPage *tpInfo;
@@ -55,6 +61,10 @@ namespace SSWR
 			UI::GUIButton *btnSMSDelete;
 			UI::GUIButton *btnSMSSaveAll;
 			UI::GUIListView *lvSMS;
+
+			UI::GUITabPage *tpLog;
+			UI::GUIListBox *lbLog;
+			UI::GUITextBox *txtLog;
 
 			Bool initStrs;
 			Text::String *initModemManu;
