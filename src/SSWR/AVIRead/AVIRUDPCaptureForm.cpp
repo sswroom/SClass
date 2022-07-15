@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
-		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
+		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, &me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
 		if (me->svr->IsError())
 		{
 			DEL_CLASS(me->svr);
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 		Data::DateTime dt;
 		OSInt i;
 		me->packetsChg = false;
-		Sync::MutexUsage mutUsage(me->packetMut);
+		Sync::MutexUsage mutUsage(&me->packetMut);
 		me->lbData->ClearItems();
 		i = me->packetCurr;
 		while (true)
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		i = (UOSInt)me->lbData->GetItem(i);
-		Sync::MutexUsage mutUsage(me->packetMut);
+		Sync::MutexUsage mutUsage(&me->packetMut);
 		sb.AppendC(UTF8STRC("Recv Time: "));
 		dt.SetTicks(me->packets[i].recvTime);
 		dt.ToLocalTime();
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(const Net::SocketU
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userData;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(me->packetMut);
+	Sync::MutexUsage mutUsage(&me->packetMut);
 	if (me->packets[me->packetCurr].buff)
 	{
 		MemFree(me->packets[me->packetCurr].buff);
@@ -195,8 +195,6 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->svr = 0;
-	NEW_CLASS(this->log, IO::LogTool());
-	NEW_CLASS(this->packetMut, Sync::Mutex());
 	this->packetsChg = false;
 	this->packetCurr = 0;
 	this->packets = MemAlloc(PacketInfo, PACKETCOUNT);
@@ -304,7 +302,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)"239.255.255.250");
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 	
 	this->AddTimer(1000, OnTimerTick, this);
 }
@@ -322,8 +320,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::~AVIRUDPCaptureForm()
 		}
 	}
 	MemFree(this->packets);
-	DEL_CLASS(this->packetMut);
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 }
 

@@ -152,13 +152,13 @@ void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userO
 
 Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
-	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
-	UOSInt i = this->cmdResults->GetCount();
+	Sync::MutexUsage mutUsage(&this->cmdMut);
+	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
+	UOSInt i = this->cmdResults.GetCount();
 	Text::String *val;
 	if (i > 1)
 	{
-		val = this->cmdResults->GetItem(i - 1);
+		val = this->cmdResults.GetItem(i - 1);
 		if (val->Equals(UTF8STRC("OK")) || val->Equals(UTF8STRC("NORMAL POWER DOWN")))
 		{
 			ClearCmdResult();

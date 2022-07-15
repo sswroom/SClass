@@ -11,12 +11,12 @@ namespace Net
 	private:
 		Net::UDPServer *svr;
 		Int32 reqId;
-		Sync::Mutex *mut;
-		Sync::Event *respEvt;
+		Sync::Mutex mut;
+		Sync::Event respEvt;
 		Bool hasResp;
 		Net::SNMPUtil::ErrorStatus respStatus;
 		Data::ArrayList<Net::SNMPUtil::BindingItem *> *respList;
-		Sync::Mutex *scanMut;
+		Sync::Mutex scanMut;
 		Data::ArrayList<Net::SocketUtil::AddressInfo *> *scanList;
 
 		static void __stdcall OnSNMPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);

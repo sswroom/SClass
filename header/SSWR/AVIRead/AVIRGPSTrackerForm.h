@@ -39,7 +39,7 @@ namespace SSWR
 
 			Map::GPSTrack::GPSRecord3 recCurr;
 			Map::GPSTrack *gpsTrk;
-			Sync::Mutex *recMut;
+			Sync::Mutex recMut;
 			Bool recUpdated;
 			UOSInt recSateCnt;
 			Map::ILocationService::SateStatus recSates[32];
@@ -48,12 +48,12 @@ namespace SSWR
 			Math::Coord2DDbl lastPos;
 			Double dist;
 			Bool lastDown;
-			Data::DateTime *lastUpdateTime;
+			Data::DateTime lastUpdateTime;
 			Bool dispOffClk;
 			Int64 dispOffTime;
 			Bool dispIsOff;
 
-			Sync::Mutex *nmeaMut;
+			Sync::Mutex nmeaMut;
 			Text::String **nmeaBuff;
 			UOSInt nmeaIndex;
 			Bool nmeaUpdated;

@@ -37,10 +37,10 @@ namespace SSWR
 
 		private:
 			Net::SocketFactory *sockf;
-			IO::LogTool *log;
+			IO::LogTool log;
 			Net::TCPServer *cliSvr;
 			Net::TCPClientMgr *cliMgr;
-			IO::ProtoHdlr::ProtoSMonHandler *protoHdlr;
+			IO::ProtoHdlr::ProtoSMonHandler protoHdlr;
 			Net::UDPServer *dataUDP;
 			Crypto::Hash::HashCalc *dataCRC;
 			Net::WebServer::WebListener *listener;
@@ -54,18 +54,18 @@ namespace SSWR
 			Sync::Mutex *dbMut;
 			Bool checkRunning;
 			Bool checkToStop;
-			Sync::Event *checkEvt;
+			Sync::Event checkEvt;
 			Int64 currDate;
-			Sync::RWMutex *dateMut;
+			Sync::RWMutex dateMut;
 
-			Sync::RWMutex *devMut;
-			Data::Int64Map<DeviceInfo*> *devMap;
-			Sync::RWMutex *userMut;
-			Data::Int32Map<WebUser*> *userMap;
-			Data::StringUTF8Map<WebUser*> *userNameMap;
+			Sync::RWMutex devMut;
+			Data::Int64Map<DeviceInfo*> devMap;
+			Sync::RWMutex userMut;
+			Data::Int32Map<WebUser*> userMap;
+			Data::StringUTF8Map<WebUser*> userNameMap;
 
-			IO::StringLogger *uaLog;
-			IO::StringLogger *refererLog;
+			IO::StringLogger uaLog;
+			IO::StringLogger refererLog;
 
 			static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);

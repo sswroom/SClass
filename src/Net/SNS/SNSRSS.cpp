@@ -8,10 +8,10 @@
 
 void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 {
-	Sync::MutexUsage(this->crcMut);
-	this->crc->Clear();
-	this->crc->Calc(buff, size);
-	this->crc->GetValue(hashVal);
+	Sync::MutexUsage(&this->crcMut);
+	this->crc.Clear();
+	this->crc.Calc(buff, size);
+	this->crc.GetValue(hashVal);
 }
 
 Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId)
@@ -23,9 +23,6 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 	this->channelId = Text::String::New(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
-	NEW_CLASS(this->itemMap, Data::FastStringMap<SNSItem*>());
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
-	NEW_CLASS(this->crcMut, Sync::Mutex());
 
 	Net::RSS *rss;
 	SNSItem *snsItem;
@@ -84,7 +81,7 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 		{
 			snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
 		}
-		this->itemMap->Put(item->guid, snsItem);
+		this->itemMap.Put(item->guid, snsItem);
 	}
 	DEL_CLASS(rss);
 }
@@ -95,19 +92,16 @@ Net::SNS::SNSRSS::~SNSRSS()
 	SDEL_STRING(this->userAgent);
 	SDEL_STRING(this->chName);
 	SDEL_STRING(this->chDesc);
-	i = this->itemMap->GetCount();
+	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->itemMap->GetItem(i));
+		FreeItem(this->itemMap.GetItem(i));
 	}
-	DEL_CLASS(this->itemMap);
-	DEL_CLASS(this->crc);
-	DEL_CLASS(this->crcMut);
 }
 
 Bool Net::SNS::SNSRSS::IsError()
 {
-	return this->itemMap->GetCount() <= 0;
+	return this->itemMap.GetCount() <= 0;
 }
 
 Net::SNS::SNSControl::SNSType Net::SNS::SNSRSS::GetSNSType()
@@ -137,7 +131,7 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNSRSS::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(this->itemMap);
+	itemList->AddAll(&this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
@@ -161,12 +155,12 @@ Bool Net::SNS::SNSRSS::Reload()
 	Data::ArrayListString idList;
 	Bool changed = false;
 	UOSInt i;
-	UOSInt j = this->itemMap->GetCount();
+	UOSInt j = this->itemMap.GetCount();
 	idList.EnsureCapacity(j);
 	i = 0;
 	while (i < j)
 	{
-		idList.Add(this->itemMap->GetKey(i));
+		idList.Add(this->itemMap.GetKey(i));
 		i++;
 	}
 
@@ -222,7 +216,7 @@ Bool Net::SNS::SNSRSS::Reload()
 				{
 					snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, item->description, item->link, item->imgURL, 0);
 				}
-				this->itemMap->Put(item->guid, snsItem);
+				this->itemMap.Put(item->guid, snsItem);
 				changed = true;
 			}
 		}
@@ -231,7 +225,7 @@ Bool Net::SNS::SNSRSS::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap->Remove(idList.GetItem(i));
+			snsItem = this->itemMap.Remove(idList.GetItem(i));
 			FreeItem(snsItem);
 			changed = true;
 		}

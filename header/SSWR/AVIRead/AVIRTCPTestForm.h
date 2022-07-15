@@ -33,7 +33,7 @@ namespace SSWR
 			ThreadStatus *threadStatus;
 			UInt32 svrIP;
 			UInt16 svrPort;
-			Sync::Mutex *connMut;
+			Sync::Mutex connMut;
 			UInt32 connLeftCnt;
 			UInt32 threadCnt;
 			UInt32 threadCurrCnt;

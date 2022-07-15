@@ -13,9 +13,9 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::UDPServer *svr;
 		IO::LogTool *log;
-		Sync::Event *readEvt;
+		Sync::Event readEvt;
 
-		Sync::Mutex *dataMut;
+		Sync::Mutex dataMut;
 		Net::SocketUtil::AddressInfo lastAddr;
 		UInt16 lastPort;
 		UInt8 *buff;

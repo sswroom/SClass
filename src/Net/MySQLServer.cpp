@@ -792,11 +792,11 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	data->userNameLen = 0;
 	data->database[0] = 0;
 	NEW_CLASS(data->attrMap, Data::StringUTF8Map<const UTF8Char*>());
-	Sync::MutexUsage mutUsage(me->randMut);
+	Sync::MutexUsage mutUsage(&me->randMut);
 	i = 0;
 	while (i < 20)
 	{
-		data->authPluginData[i] = (UInt8)(((UInt32)(me->rand->NextInt32()) % 0x5f) + 0x21);
+		data->authPluginData[i] = (UInt8)(((UInt32)(me->rand.NextInt32()) % 0x5f) + 0x21);
 		i++;
 	}
 	mutUsage.EndUse();
@@ -824,16 +824,12 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 }
 
 
-Net::MySQLServer::MySQLServer(Net::SocketFactory *sockf, UInt16 port, DB::DBMS *dbms)
+Net::MySQLServer::MySQLServer(Net::SocketFactory *sockf, UInt16 port, DB::DBMS *dbms) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
 {
 	this->sockf = sockf;
 	this->dbms = dbms;
 	this->log = dbms->GetLogTool();
 	this->connId = 0;
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
-	NEW_CLASS(this->rand, Data::RandomMT19937((UInt32)(dt.ToTicks() & 0xffffffff)));
-	NEW_CLASS(this->randMut, Sync::Mutex());
 
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::Thread::GetThreadCnt(), OnClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MySQL: ")));
@@ -855,8 +851,6 @@ Net::MySQLServer::~MySQLServer()
 		this->svr = 0;
 		this->cliMgr = 0;
 	}
-	DEL_CLASS(this->rand);
-	DEL_CLASS(this->randMut);
 	DEL_CLASS(this->dbms);
 }
 

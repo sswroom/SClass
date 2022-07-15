@@ -39,9 +39,9 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
 			Net::MQTTConn *client;
-			IO::LogTool *log;
-			Sync::Mutex *topicMut;
-			Data::StringMap<TopicStatus*> *topicMap;
+			IO::LogTool log;
+			Sync::Mutex topicMut;
+			Data::StringMap<TopicStatus*> topicMap;
 			Bool topicListChanged;
 			TopicStatus *currTopic;
 			Media::DrawImage *dispImg;

@@ -20,12 +20,12 @@ namespace Media
 			UInt8 *readBuff;
 			UOSInt readBuffSize;
 			UInt8 *writeBuff;
-			Sync::Mutex *readMut;
-			Sync::Mutex *writeMut;
+			Sync::Mutex readMut;
+			Sync::Mutex writeMut;
 			Bool writing;
 			Bool running;
 			Bool toStop;
-			Sync::Event *evt;
+			Sync::Event evt;
 
 			static UInt32 __stdcall CaptureThread(void *userObj);
 		public:

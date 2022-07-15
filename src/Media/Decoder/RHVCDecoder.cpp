@@ -59,7 +59,7 @@ UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBu
 
 void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Sync::MutexUsage mutUsage(this->frameMut);
+	Sync::MutexUsage mutUsage(&this->frameMut);
 
 	UInt8 *frameBuff = this->frameBuff;
 	UOSInt imgOfst = 0;
@@ -179,7 +179,6 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	this->firstFrame = true;
 	this->discontTime = true;
 
-	NEW_CLASS(this->frameMut, Sync::Mutex());
 	if (!sourceVideo->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &size))
 	{
 		this->sourceVideo = 0;
@@ -269,7 +268,6 @@ Media::Decoder::RHVCDecoder::~RHVCDecoder()
 	{
 		MemFreeA(this->frameBuff);
 	}
-	DEL_CLASS(this->frameMut);
 }
 
 Text::CString Media::Decoder::RHVCDecoder::GetFilterName()

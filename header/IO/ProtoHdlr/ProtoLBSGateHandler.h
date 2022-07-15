@@ -12,8 +12,8 @@ namespace IO
 		{
 		private:
 			IO::IProtocolHandler::DataListener *listener;
-			Sync::Mutex *crcMut;
-			Crypto::Hash::CRC32R *crc;
+			Sync::Mutex crcMut;
+			Crypto::Hash::CRC32R crc;
 
 		public:
 			ProtoLBSGateHandler(IO::IProtocolHandler::DataListener *listener);

@@ -21,10 +21,10 @@ namespace Map
 
 	private:
 		Net::TCPServerController *ctrl;
-		IO::ProtoHdlr::ProtoRevGeoHandler *protocol;
+		IO::ProtoHdlr::ProtoRevGeoHandler protocol;
 
-		Sync::Mutex *reqMut;
-		Sync::Event *reqEvt;
+		Sync::Mutex reqMut;
+		Sync::Event reqEvt;
 		UTF8Char *reqBuff;
 		UOSInt reqBuffSize;
 		Int32 reqLat;

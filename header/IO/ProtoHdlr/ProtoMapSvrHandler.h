@@ -12,8 +12,8 @@ namespace IO
 		{
 		private:
 			IO::IProtocolHandler::DataListener *listener;
-			Crypto::Hash::CRC32R *crc;
-			Sync::Mutex *crcMut;
+			Crypto::Hash::CRC32R crc;
+			Sync::Mutex crcMut;
 		private:
 			static UInt16 CalCheck(const UInt8 *buff, Int32 sz);
 		public:

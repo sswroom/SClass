@@ -7,8 +7,6 @@
 
 Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::Writer *errWriter)
 {
-	NEW_CLASS(revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
-	NEW_CLASS(mut, Sync::Mutex());
 	this->conn = db;
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
@@ -16,19 +14,17 @@ Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::Writer
 
 Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 {
-	UOSInt i = revGeos->GetCount();
+	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		Map::IReverseGeocoder *revGeo;
-		revGeo = revGeos->RemoveAt(i);
+		revGeo = this->revGeos.RemoveAt(i);
 		DEL_CLASS(revGeo);
 	}
-	DEL_CLASS(revGeos);
 	if (this->conn)
 	{
 		DEL_CLASS(this->conn);
 	}
-	DEL_CLASS(mut);
 }
 
 UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
@@ -43,7 +39,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	if (keyx == 0 && keyy == 0)
 		return 0;
 
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	DB::SQLBuilder sql(this->conn);
 	sql.AppendCmdC(CSTR("select address from addrdb where lcid = "));
 	sql.AppendInt32((Int32)lcid);
@@ -65,13 +61,13 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	}
 
 
-	UOSInt i = this->revGeos->GetCount();
+	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos->GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
-			this->nextCoder = (this->nextCoder + 1) % this->revGeos->GetCount();
+			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
 		else 
 		{
@@ -116,7 +112,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	Int32 keyx = Double2Int32(pos.lon * 5000);
 	Int32 keyy = Double2Int32(pos.lat * 5000);
 
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	DB::SQLBuilder sql(this->conn);
 	sql.AppendCmdC(CSTR("select address from addrdb where lcid = "));
 	sql.AppendInt32((Int32)lcid);
@@ -138,13 +134,13 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	}
 
 
-	UOSInt i = this->revGeos->GetCount();
+	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos->GetItem(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItem(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
-			this->nextCoder = (this->nextCoder + 1) % this->revGeos->GetCount();
+			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
 		else 
 		{
@@ -182,7 +178,7 @@ void Map::AssistedReverseGeocoder::AddReverseGeocoder(Map::IReverseGeocoder *rev
 {
 	if (this->conn)
 	{
-		this->revGeos->Add(revGeo);
+		this->revGeos.Add(revGeo);
 	}
 	else
 	{

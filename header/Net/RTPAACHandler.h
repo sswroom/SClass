@@ -34,7 +34,7 @@ namespace Net
 		Sync::Event *evt;
 		Sync::Event *dataEvt;
 
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		IO::MemoryStream *mstm;
 		UInt32 lastSeq;
 		Bool missSeq;

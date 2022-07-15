@@ -47,22 +47,22 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::WebServer::WebListener *listener;
 			Net::EthernetWebHandler *webHdlr;
 			Net::SocketMonitor *socMon;
 			Net::EthernetAnalyzer *analyzer;
-			Net::WhoisHandler *whois;
+			Net::WhoisHandler whois;
 			UInt32 adapterIP;
 			Bool adapterChanged;
 			Bool dataUpdated;
-			Sync::Mutex *pingIPMut;
-			Data::UInt32Map<PingIPInfo*> *pingIPMap;
+			Sync::Mutex pingIPMut;
+			Data::UInt32Map<PingIPInfo*> pingIPMap;
 			Bool pingIPListUpdated;
 			Bool pingIPContUpdated;
 			PingIPInfo *currPingIP;
-			Data::UInt32Map<IPTranInfo*> *ipTranMap;
+			Data::UInt32Map<IPTranInfo*> ipTranMap;
 			UOSInt ipTranCnt;
 
 			UI::GUIPanel *pnlControl;

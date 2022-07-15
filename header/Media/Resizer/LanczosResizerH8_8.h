@@ -39,7 +39,7 @@ namespace Media
 			UOSInt hnTap;
 			UOSInt vnTap;
 			UOSInt nThread;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			TaskParam *params;
 			Sync::ParallelTask *ptask;
 

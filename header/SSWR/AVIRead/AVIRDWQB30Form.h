@@ -56,7 +56,7 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			IO::CodeScanner *scanner;
-			Sync::Mutex *codeMut;
+			Sync::Mutex codeMut;
 			Text::String *newCode;
 			Bool codeUpdate;
 

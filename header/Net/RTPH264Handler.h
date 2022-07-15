@@ -15,11 +15,11 @@ namespace Net
 		void *cbData;
 
 		UInt32 frameNum;
-		Media::FrameInfo *frameInfo;
+		Media::FrameInfo frameInfo;
 		Int32 packetMode;
 
-		Sync::Mutex *mut;
-		IO::MemoryStream *mstm;
+		Sync::Mutex mut;
+		IO::MemoryStream mstm;
 		UInt32 lastSeq;
 		Bool missSeq;
 		UInt8 *sps;

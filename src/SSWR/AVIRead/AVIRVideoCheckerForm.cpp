@@ -27,8 +27,8 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 		file = MemAlloc(FileQueue, 1);
 		file->fileName = files[i]->Clone();
 		file->index = j;
-		Sync::MutexUsage mutUsage(me->fileMut);
-		me->fileList->Add(file);
+		Sync::MutexUsage mutUsage(&me->fileMut);
+		me->fileList.Add(file);
 		mutUsage.EndUse();
 		i++;
 	}
@@ -43,17 +43,17 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnCancelClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnAllowTimeSkipChange(void *userObj, Bool newVal)
 {
 	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
-	me->checker->SetAllowTimeSkip(newVal);
+	me->checker.SetAllowTimeSkip(newVal);
 }
 
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
-	while (me->updateList->GetCount() > 0)
+	while (me->updateList.GetCount() > 0)
 	{
 		UpdateQueue *update;
-		Sync::MutexUsage mutUsage(me->updateMut);
-		update = me->updateList->RemoveAt(me->updateList->GetCount() - 1);
+		Sync::MutexUsage mutUsage(&me->updateMut);
+		update = me->updateList.RemoveAt(me->updateList.GetCount() - 1);
 		mutUsage.EndUse();
 		if (update->status == 0)
 		{
@@ -83,58 +83,58 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
 	FileQueue *file;
 	UpdateQueue *update;
-	Manage::HiResClock *clk;
-	IO::StmData::FileData *fd;
 	Media::MediaFile *mediaFile;
 	me->threadRunning = true;
-	NEW_CLASS(clk, Manage::HiResClock());
-	while (!me->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(me->fileMut);
-		file = me->fileList->RemoveAt(0);
-		mutUsage.EndUse();
-		if (file)
+		Manage::HiResClock clk;
+		while (!me->threadToStop)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(file->fileName, false));
-			mediaFile = (Media::MediaFile*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
-			DEL_CLASS(fd);
-
-			update = MemAlloc(UpdateQueue, 1);
-			update->index = file->index;
-			update->t = 0;
-			update->status = -1;
-			if (mediaFile)
+			Sync::MutexUsage mutUsage(&me->fileMut);
+			file = me->fileList.RemoveAt(0);
+			mutUsage.EndUse();
+			if (file)
 			{
-				clk->Start();
-				if (me->checker->IsValid(mediaFile))
 				{
-					update->status = 0;
+					IO::StmData::FileData fd(file->fileName, false);
+					mediaFile = (Media::MediaFile*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::MediaFile);
+				}
+
+				update = MemAlloc(UpdateQueue, 1);
+				update->index = file->index;
+				update->t = 0;
+				update->status = -1;
+				if (mediaFile)
+				{
+					clk.Start();
+					if (me->checker.IsValid(mediaFile))
+					{
+						update->status = 0;
+					}
+					else
+					{
+						update->status = 1;
+					}
+					update->t = clk.GetTimeDiff();
+					DEL_CLASS(mediaFile);
 				}
 				else
 				{
-					update->status = 1;
+					update->status = 2;
 				}
-				update->t = clk->GetTimeDiff();
-				DEL_CLASS(mediaFile);
+
+				file->fileName->Release();
+				MemFree(file);
+
+				Sync::MutexUsage mutUsage(&me->updateMut);
+				me->updateList.Add(update);
+				mutUsage.EndUse();
 			}
 			else
 			{
-				update->status = 2;
+				me->threadEvt.Wait(1000);
 			}
-
-			file->fileName->Release();
-			MemFree(file);
-
-			Sync::MutexUsage mutUsage(me->updateMut);
-			me->updateList->Add(update);
-			mutUsage.EndUse();
-		}
-		else
-		{
-			me->threadEvt->Wait(1000);
 		}
 	}
-	DEL_CLASS(clk);
 	me->threadRunning = false;
 	return 0;
 }
@@ -143,20 +143,19 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 {
 	UOSInt i;
 	FileQueue *file;
-	Sync::MutexUsage mutUsage(this->fileMut);
-	i = this->fileList->GetCount();
+	Sync::MutexUsage mutUsage(&this->fileMut);
+	i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		file = this->fileList->RemoveAt(i);
+		file = this->fileList.RemoveAt(i);
 		this->lvFiles->SetSubItem(file->index, 1, CSTR("Cancelled"));
 
 		file->fileName->Release();
 		MemFree(file);
 	}
-	mutUsage.EndUse();
 }
 
-SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui), checker(false)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Video Checker"));
@@ -182,14 +181,8 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 
 	this->HandleDropFiles(OnFileHandler, this);
 
-	NEW_CLASS(this->fileList, Data::ArrayList<FileQueue*>());
-	NEW_CLASS(this->fileMut, Sync::Mutex());
-	NEW_CLASS(this->updateList, Data::ArrayList<UpdateQueue*>());
-	NEW_CLASS(this->updateMut, Sync::Mutex());
-	NEW_CLASS(this->checker, Media::VideoChecker(false));
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(ProcessThread, this);
 	this->AddTimer(1000, OnTimerTick, this);
@@ -198,24 +191,19 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRVideoCheckerForm::~AVIRVideoCheckerForm()
 {
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	this->CancelQueues();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(1);
 	}
-	UOSInt i = this->updateList->GetCount();
+	UOSInt i = this->updateList.GetCount();
 	UpdateQueue *update;
 	while (i-- > 0)
 	{
-		update = this->updateList->RemoveAt(i);
+		update = this->updateList.RemoveAt(i);
 		MemFree(update);
 	}
-	DEL_CLASS(this->updateMut);
-	DEL_CLASS(this->updateList);
-	DEL_CLASS(this->fileMut);
-	DEL_CLASS(this->fileList);
-	DEL_CLASS(this->checker);
 }
 
 void SSWR::AVIRead::AVIRVideoCheckerForm::OnMonitorChanged()

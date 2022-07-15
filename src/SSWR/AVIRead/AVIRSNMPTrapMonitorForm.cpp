@@ -83,24 +83,23 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 {
 	SSWR::AVIRead::AVIRSNMPTrapMonitorForm *me = (SSWR::AVIRead::AVIRSNMPTrapMonitorForm*)userObj;
 	UOSInt i = me->lbResults->GetCount();
-	UOSInt j = me->packetList->GetCount();
+	UOSInt j = me->packetList.GetCount();
 	SNMPPacket *packet;
 	if (i < j)
 	{
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		Sync::MutexUsage mutUsage(me->packetMut);
+		Sync::MutexUsage mutUsage(&me->packetMut);
 		while (i < j)
 		{
-			packet = me->packetList->GetItem(i);
+			packet = me->packetList.GetItem(i);
 			dt.SetTicks(packet->t);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			me->lbResults->AddItem(CSTRP(sbuff, sptr), packet);
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 }
 
@@ -117,9 +116,8 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 	MemCopyNO(&packet->trap, trap, sizeof(Net::SNMPUtil::TrapInfo));
 	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());
 	packet->itemList->AddAll(itemList);
-	Sync::MutexUsage mutUsage(me->packetMut);
-	me->packetList->Add(packet);
-	mutUsage.EndUse();
+	Sync::MutexUsage mutUsage(&me->packetMut);
+	me->packetList.Add(packet);
 	return true;
 }
 
@@ -129,8 +127,6 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	this->SetText(CSTR("SNMP Trap Monitor"));
 
 	this->core = core;
-	NEW_CLASS(this->packetMut, Sync::Mutex());
-	NEW_CLASS(this->packetList, Data::ArrayList<SNMPPacket*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, this, false));
@@ -215,11 +211,11 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::~AVIRSNMPTrapMonitorForm()
 {
 	DEL_CLASS(this->mon);
 	SNMPPacket *packet;
-	UOSInt i = this->packetList->GetCount();
+	UOSInt i = this->packetList.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		packet = this->packetList->GetItem(i);
+		packet = this->packetList.GetItem(i);
 		j = packet->itemList->GetCount();
 		while (j-- > 0)
 		{
@@ -228,8 +224,6 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::~AVIRSNMPTrapMonitorForm()
 		DEL_CLASS(packet->itemList);
 		MemFree(packet);
 	}
-	DEL_CLASS(this->packetMut);
-	DEL_CLASS(this->packetList);
 }
 
 void SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnMonitorChanged()

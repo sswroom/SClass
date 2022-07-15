@@ -67,7 +67,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			IO::PackageFile *packFile;
 
-			Sync::Mutex *statusFileMut;
+			Sync::Mutex statusFileMut;
 			Bool statusFileChg;
 			Text::String *statusFile;
 			UInt64 statusFileSize;
@@ -76,24 +76,24 @@ namespace SSWR
 			IO::ActiveStreamReader::BottleNeckType statusBNT;
 			IO::ActiveStreamReader::BottleNeckType statusDispBNT;
 
-			Sync::Mutex *fileMut;
-			Data::ArrayList<Text::String *> *fileNames;
-			Data::ArrayList<ActionType> *fileAction;
+			Sync::Mutex fileMut;
+			Data::ArrayList<Text::String *> fileNames;
+			Data::ArrayList<ActionType> fileAction;
 			Bool statusChg;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 
-			Sync::Mutex *readMut;
+			Sync::Mutex readMut;
 			UInt64 readTotal;
 			UInt64 readCurr;
 			UInt64 readLast;
 			Text::CString readCurrFile;
 			UInt64 readFileCnt;
-			Data::DateTime *readLastTimer;
-			Data::DateTime *readReadTime;
+			Data::DateTime readLastTimer;
+			Data::DateTime readReadTime;
 
-			Sync::Mutex *progMut;
+			Sync::Mutex progMut;
 			Text::String *progName;
 			UInt64 progStartCnt;
 			Bool progStarted;

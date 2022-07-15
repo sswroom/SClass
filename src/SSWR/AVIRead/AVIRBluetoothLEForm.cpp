@@ -71,8 +71,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	const Data::ArrayList<BTDevice*> *devList;
 	BTDevice *dev;
 
-	Sync::MutexUsage mutUsage(me->devMut);
-	devList = me->devMap->GetValues();
+	Sync::MutexUsage mutUsage(&me->devMut);
+	devList = me->devMap.GetValues();
 	i = 0;
 	j = devList->GetCount();
 	while (i < j)
@@ -113,8 +113,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	BTDevice *dev;
-	Sync::MutexUsage mutUsage(me->devMut);
-	dev = me->devMap->Get(mac);
+	Sync::MutexUsage mutUsage(&me->devMut);
+	dev = me->devMap.Get(mac);
 	if (dev)
 	{
 		dev->rssi = rssi;
@@ -147,15 +147,14 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 		}
 		dev->shown = false;
 		dev->updated = true;	
-		me->devMap->Put(mac, dev);
+		me->devMap.Put(mac, dev);
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 {
 	UOSInt i;
-	const Data::ArrayList<BTDevice*> *devList = this->devMap->GetValues();
+	const Data::ArrayList<BTDevice*> *devList = this->devMap.GetValues();
 	BTDevice *dev;
 	i = devList->GetCount();
 	while (i-- > 0)
@@ -164,7 +163,7 @@ void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 		SDEL_STRING(dev->name);
 		MemFree(dev);
 	}
-	this->devMap->Clear();
+	this->devMap.Clear();
 }
 
 SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -173,12 +172,8 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->SetText(CSTR("Bluetooth LE"));
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->btMgr, IO::BTManager());
-	NEW_CLASS(this->btList, Data::ArrayList<IO::BTController*>());
-	this->btMgr->CreateControllers(this->btList);
+	this->btMgr.CreateControllers(&this->btList);
 	this->btCtrl = 0;
-	NEW_CLASS(this->devMut, Sync::Mutex());
-	NEW_CLASS(this->devMap, Data::UInt64Map<BTDevice*>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -204,11 +199,11 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->lvDevices->AddColumn(CSTR("RSSI"), 60);
 
 	UOSInt i = 0;
-	UOSInt j = this->btList->GetCount();
+	UOSInt j = this->btList.GetCount();
 	IO::BTController *btCtrl;
 	while (i < j)
 	{
-		btCtrl = this->btList->GetItem(i);
+		btCtrl = this->btList.GetItem(i);
 		this->cboInterface->AddItem(btCtrl->GetName(), btCtrl);
 		i++;
 	}
@@ -229,18 +224,14 @@ SSWR::AVIRead::AVIRBluetoothLEForm::~AVIRBluetoothLEForm()
 		this->btCtrl = 0;
 	}
 
-	i = this->btList->GetCount();
+	i = this->btList.GetCount();
 	while (i-- > 0)
 	{
-		btCtrl = this->btList->GetItem(i);
+		btCtrl = this->btList.GetItem(i);
 		DEL_CLASS(btCtrl);
 	}
-	DEL_CLASS(this->btMgr);
-	DEL_CLASS(this->btList);
 
 	this->ClearDevices();
-	DEL_CLASS(this->devMap);
-	DEL_CLASS(this->devMut);
 }
 
 void SSWR::AVIRead::AVIRBluetoothLEForm::OnMonitorChanged()

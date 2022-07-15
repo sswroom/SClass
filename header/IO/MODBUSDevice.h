@@ -15,8 +15,8 @@ namespace IO
 		IO::MODBUSMaster *modbus;
 		UOSInt timeout;
 		UInt8 addr;
-		Sync::Event *cbEvt;
-		Sync::Mutex *reqMut;
+		Sync::Event cbEvt;
+		Sync::Mutex reqMut;
 		Double *reqDResult;
 		Int32 *reqIResult;
 		UInt8 *reqBResult;

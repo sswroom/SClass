@@ -16,20 +16,20 @@ namespace Map
 	{
 	private:
 		Map::IReverseGeocoder *revGeo;
-		IO::ProtoHdlr::ProtoRevGeoHandler *protocol;
+		IO::ProtoHdlr::ProtoRevGeoHandler protocol;
 		Net::SocketFactory *sockf;
 		IO::Writer *errWriter;
 		Text::String *host;
 		UInt16 port;
-		Sync::Mutex *cliMut;
+		Sync::Mutex cliMut;
 		Net::TCPClient *cli;
 		Bool cliRunning;
 		Bool cliToStop;
-		Sync::Event *monEvt;
+		Sync::Event monEvt;
 		Bool monRunning;
 		Bool monToStop;
-		Data::DateTime *lastKASent;
-		Data::DateTime *lastKARecv;
+		Data::DateTime lastKASent;
+		Data::DateTime lastKARecv;
 
 	private:
 		static UInt32 __stdcall ClientThread(void *userObj);

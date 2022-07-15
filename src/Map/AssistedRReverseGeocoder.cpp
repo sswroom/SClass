@@ -4,17 +4,18 @@
 #include "DB/ODBCConn.h"
 #include "Map/AssistedRReverseGeocoder.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 
-OSInt Map::AssistedRReverseGeocoder::GetLangIndex(Int32 lcid)
+OSInt Map::AssistedRReverseGeocoder::GetLangIndex(UInt32 lcid)
 {
 	OSInt i = 0;
-	OSInt j = this->langMaps->GetCount() - 1;
+	OSInt j = this->langMaps.GetCount() - 1;
 	OSInt k;
 	LangMap *langMap;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		langMap = this->langMaps->GetItem(k);
+		langMap = this->langMaps.GetItem(k);
 		if (langMap->lcid > lcid)
 		{
 			j = k - 1;
@@ -33,9 +34,6 @@ OSInt Map::AssistedRReverseGeocoder::GetLangIndex(Int32 lcid)
 
 Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(Text::CString dsn, Text::CString uid, Text::CString pwd, IO::LogTool *log, IO::Writer *errWriter)
 {
-	NEW_CLASS(revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
-	NEW_CLASS(mut, Sync::Mutex());
-	NEW_CLASS(langMaps, Data::ArrayList<LangMap*>());
 	this->conn = 0;
 	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, CSTR_NULL, log, CSTR("MAPDB: "));
 	this->errWriter = errWriter;
@@ -44,28 +42,25 @@ Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(Text::CString dsn, Text:
 
 Map::AssistedRReverseGeocoder::~AssistedRReverseGeocoder()
 {
-	OSInt i = revGeos->GetCount();
+	OSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
 		Map::IReverseGeocoder *revGeo;
-		revGeo = revGeos->RemoveAt(i);
+		revGeo = this->revGeos.RemoveAt(i);
 		DEL_CLASS(revGeo);
 	}
-	DEL_CLASS(revGeos);
-	i = langMaps->GetCount();
+	i = this->langMaps.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(langMaps->RemoveAt(i));
+		MemFree(this->langMaps.RemoveAt(i));
 	}
-	DEL_CLASS(langMaps);
 	if (this->conn)
 	{
 		DEL_CLASS(this->conn);
 	}
-	DEL_CLASS(mut);
 }
 
-UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	DB::SQLBuilder *sql;
 	DB::DBReader *r;
@@ -78,11 +73,11 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 	i = GetLangIndex(lcid);
 	if (i < 0)
 		return 0;
-	lang = this->langMaps->GetItem(i)->lang;
-	Int32 xind = Double2Int32(lon * 5000);
-	Int32 yind = Double2Int32(lat * 5000);
+	lang = this->langMaps.GetItem(i)->lang;
+	Int32 xind = Double2Int32(pos.lon * 5000);
+	Int32 yind = Double2Int32(pos.lat * 5000);
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(&this->mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
@@ -98,20 +93,19 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 			sptr = r->GetStr(0, buff, buffSize);
 			this->conn->CloseReader(r);
 			DEL_CLASS(sql);
-			mut->Unlock();
 			return sptr;
 		}
 		this->conn->CloseReader(r);
 	}
 
 
-	i = this->revGeos->GetCount();
+	i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos->GetItem(this->nextCoder)->SearchName(buff, buffSize, lat, lon, lcid);
+		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
-			this->nextCoder = (this->nextCoder + 1) % this->revGeos->GetCount();
+			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
 		else 
 		{
@@ -137,18 +131,16 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 		this->conn->ExecuteNonQuery(sql->ToCString());
 
 		DEL_CLASS(sql);
-		mut->Unlock();
 		return sptr;
 	}
 	else
 	{
 		DEL_CLASS(sql);
-		mut->Unlock();
 		return 0;
 	}
 }
 
-UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	DB::SQLBuilder *sql;
 	DB::DBReader *r;
@@ -161,11 +153,11 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 	i = GetLangIndex(lcid);
 	if (i < 0)
 		return 0;
-	lang = this->langMaps->GetItem(i)->lang;
-	Int32 xind = Double2Int32(lon * 5000);
-	Int32 yind = Double2Int32(lat * 5000);
+	lang = this->langMaps.GetItem(i)->lang;
+	Int32 xind = Double2Int32(pos.lon * 5000);
+	Int32 yind = Double2Int32(pos.lat * 5000);
 
-	mut->Lock();
+	Sync::MutexUsage mutUsage(&this->mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
 	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
@@ -181,20 +173,18 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 			sptr = r->GetStr(0, buff, buffSize);
 			this->conn->CloseReader(r);
 			DEL_CLASS(sql);
-			mut->Unlock();
 			return sptr;
 		}
 		this->conn->CloseReader(r);
 	}
 
-
-	i = this->revGeos->GetCount();
+	i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos->GetItem(this->nextCoder)->CacheName(buff, buffSize, lat, lon, lcid);
+		sptr = this->revGeos.GetItem(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
-			this->nextCoder = (this->nextCoder + 1) % this->revGeos->GetCount();
+			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
 		else 
 		{
@@ -220,13 +210,11 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 		this->conn->ExecuteNonQuery(sql->ToCString());
 
 		DEL_CLASS(sql);
-		mut->Unlock();
 		return sptr;
 	}
 	else
 	{
 		DEL_CLASS(sql);
-		mut->Unlock();
 		return 0;
 	}
 }
@@ -235,7 +223,7 @@ void Map::AssistedRReverseGeocoder::AddReverseGeocoder(Map::IReverseGeocoder *re
 {
 	if (this->conn)
 	{
-		this->revGeos->Add(revGeo);
+		this->revGeos.Add(revGeo);
 	}
 	else
 	{
@@ -251,7 +239,7 @@ void Map::AssistedRReverseGeocoder::AddLangMap(Int32 lcid, Int32 lang)
 		LangMap *langMap = MemAlloc(LangMap, 1);
 		langMap->lcid = lcid;
 		langMap->lang = lang;
-		this->langMaps->Insert(~index, langMap);
+		this->langMaps.Insert(~index, langMap);
 	}
 }
 

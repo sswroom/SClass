@@ -35,9 +35,9 @@ namespace IO
 				SocketState state;
 				UInt32 udpRIP;
 				UInt16 udpRPort;
-				Sync::Mutex *dataMut;
-				Data::SyncLinkedList *dataList;
-				Sync::Event *dataEvt;
+				Sync::Mutex dataMut;
+				Data::SyncLinkedList dataList;
+				Sync::Event dataEvt;
 			};
 			
 		private:

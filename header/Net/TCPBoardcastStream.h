@@ -14,8 +14,7 @@ namespace Net
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 		IO::LogTool *log;
-		Sync::Mutex *readMut;
-		Sync::Mutex *writeMut;
+		Sync::Mutex readMut;
 		UInt32 readCnt;
 		UInt8 *readBuff;
 		UOSInt readBuffPtr1;

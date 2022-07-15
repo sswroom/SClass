@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "Map/ReverseGeocoderClient.h"
 #include "Math/Math.h"
 #include "Net/TCPClient.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Sync/Thread.h"
@@ -20,7 +22,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 	{
 		if (me->cli == 0)
 		{
-			me->cliMut->Lock();
+			Sync::MutexUsage mutUsage(&me->cliMut);
 			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, me->host->ToCString(), me->port));
 			if (me->cli->IsConnectError())
 			{
@@ -29,27 +31,26 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 			}
 			else
 			{
-				me->lastKASent->SetCurrTimeUTC();
-				me->lastKARecv->SetCurrTimeUTC();
+				me->lastKASent.SetCurrTimeUTC();
+				me->lastKARecv.SetCurrTimeUTC();
 				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder connected"));
 			}
-			me->cliMut->Unlock();
 		}
 		if (me->cli)
 		{
 			readSize = me->cli->Read(&recvBuff[buffSize], 4096 - buffSize);
 			if (readSize <= 0)
 			{
-				me->cliMut->Lock();
+				Sync::MutexUsage mutUsage(&me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
-				me->cliMut->Unlock();
+				mutUsage.EndUse();
 				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder disconnected"));
 			}
 			else
 			{
 				buffSize += readSize;
-				readSize = me->protocol->ParseProtocol(me->cli, me, 0, recvBuff, buffSize);
+				readSize = me->protocol.ParseProtocol(me->cli, me, 0, recvBuff, buffSize);
 				if (readSize >= 4096 || readSize <= 0)
 				{
 					buffSize = 0;
@@ -66,13 +67,14 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 			Sync::Thread::Sleep(100);
 		}
 	}
-	me->cliMut->Lock();
-	if (me->cli)
 	{
-		DEL_CLASS(me->cli);
-		me->cli = 0;
+		Sync::MutexUsage mutUsage(&me->cliMut);
+		if (me->cli)
+		{
+			DEL_CLASS(me->cli);
+			me->cli = 0;
+		}
 	}
-	me->cliMut->Unlock();
 	MemFree(recvBuff);
 	me->cliRunning = false;
 	return 0;
@@ -87,34 +89,32 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 	while (!me->monToStop)
 	{
 		currTime.SetCurrTimeUTC();
-		if (currTime.DiffMS(me->lastKARecv) > 600000)
+		if (currTime.DiffMS(&me->lastKARecv) > 600000)
 		{
-			me->cliMut->Lock();
+			Sync::MutexUsage mutUsage(&me->cliMut);
 			if (me->cli)
 			{
 				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder timed out"));
 				me->cli->Close();
 			}
-			me->cliMut->Unlock();
 		}
-		else if (currTime.DiffMS(me->lastKASent) > 180000)
+		else if (currTime.DiffMS(&me->lastKASent) > 180000)
 		{
-			me->cliMut->Lock();
+			Sync::MutexUsage mutUsage(&me->cliMut);
 			if (me->cli)
 			{
-				me->cli->Write(kaBuff, me->protocol->BuildPacket(kaBuff, 4, 0, 0, 0, 0));
-				me->lastKASent->SetCurrTimeUTC();
+				me->cli->Write(kaBuff, me->protocol.BuildPacket(kaBuff, 4, 0, 0, 0, 0));
+				me->lastKASent.SetCurrTimeUTC();
 //				me->errWriter->WriteLineC(UTF8STRC("KA sent"));
 			}
-			me->cliMut->Unlock();
 		}
-		me->monEvt->Wait(1000);
+		me->monEvt.Wait(1000);
 	}
 	me->monRunning = false;
 	return 0;
 }
 
-Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter)
+Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter) : protocol(this)
 {
 	this->sockf = sockf;
 	this->host = Text::String::New(host);
@@ -126,13 +126,8 @@ Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, Tex
 	this->monRunning = false;
 	this->monToStop = false;
 	this->errWriter = errWriter;
-	NEW_CLASS(this->cliMut, Sync::Mutex());
-	NEW_CLASS(this->monEvt, Sync::Event(true));
-	NEW_CLASS(this->lastKASent, Data::DateTime());
-	NEW_CLASS(this->lastKARecv, Data::DateTime());
-	NEW_CLASS(this->protocol, IO::ProtoHdlr::ProtoRevGeoHandler(this));
-	this->lastKASent->SetCurrTimeUTC();
-	this->lastKARecv->SetCurrTimeUTC();
+	this->lastKASent.SetCurrTimeUTC();
+	this->lastKARecv.SetCurrTimeUTC();
 	Sync::Thread::Create(ClientThread, this);
 	Sync::Thread::Create(MonThread, this);
 }
@@ -141,7 +136,7 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 {
 	this->cliToStop = true;
 	this->monToStop = true;
-	this->monEvt->Set();
+	this->monEvt.Set();
 	if (this->cli)
 	{
 		this->cli->Close();
@@ -156,11 +151,6 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 		Sync::Thread::Sleep(10);
 	}
 	this->host->Release();
-	DEL_CLASS(this->monEvt);
-	DEL_CLASS(this->cliMut);
-	DEL_CLASS(this->lastKASent);
-	DEL_CLASS(this->lastKARecv);
-	DEL_CLASS(this->protocol);
 }
 
 void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
@@ -172,19 +162,19 @@ void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32
 	UTF8Char *sptr;
 	Double lat;
 	Double lon;
-	Int32 lcid;
+	UInt32 lcid;
 	OSInt strSize;
 
 	if (cmdType == 0)
 	{
-		lat = *(Int32*)&cmd[0] / 200000.0;
-		lon = *(Int32*)&cmd[4] / 200000.0;
-		lcid = *(Int32*)&cmd[8];
+		lat = ReadInt32(&cmd[0]) / 200000.0;
+		lon = ReadInt32(&cmd[4]) / 200000.0;
+		lcid = ReadUInt32(&cmd[8]);
 		sbuff[0] = 0;
-		sptr = me->revGeo->SearchName(sbuff, sizeof(sbuff), lat, lon, lcid);
-		*(Int32*)&buff[0] = Double2Int32(lat * 200000.0);
-		*(Int32*)&buff[4] = Double2Int32(lon * 200000.0);
-		*(Int32*)&buff[8] = lcid;
+		sptr = me->revGeo->SearchName(sbuff, sizeof(sbuff), Math::Coord2DDbl(lon, lat), lcid);
+		WriteInt32(&buff[0], Double2Int32(lat * 200000.0));
+		WriteInt32(&buff[4], Double2Int32(lon * 200000.0));
+		WriteUInt32(&buff[8], lcid);
 		if (sptr)
 			strSize = (UOSInt)(sptr - sbuff);
 		else
@@ -194,23 +184,23 @@ void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32
 			buff[12] = (UInt8)(0x80 | (strSize >> 8));
 			buff[13] = (UInt8)(strSize & 0xff);
 			Text::StrConcat(&buff[14], sbuff);
-			strSize = me->protocol->BuildPacket(buff2, 1, 0, buff, 14 + strSize, 0);
+			strSize = me->protocol.BuildPacket(buff2, 1, 0, buff, 14 + strSize, 0);
 		}
 		else
 		{
 			buff[12] = (UInt8)(strSize & 0xff);
 			Text::StrConcat(&buff[13], sbuff);
-			strSize = me->protocol->BuildPacket(buff2, 1, 0, buff, 13 + strSize, 0);
+			strSize = me->protocol.BuildPacket(buff2, 1, 0, buff, 13 + strSize, 0);
 		}
 		cli->Write(buff2, strSize);
 	}
 	else if (cmdType == 2)
 	{
-		lat = *(Int32*)&cmd[0] / 200000.0;
-		lon = *(Int32*)&cmd[4] / 200000.0;
-		lcid = *(Int32*)&cmd[8];
+		lat = ReadInt32(&cmd[0]) / 200000.0;
+		lon = ReadInt32(&cmd[4]) / 200000.0;
+		lcid = ReadUInt32(&cmd[8]);
 		sbuff[0] = 0;
-		sptr = me->revGeo->CacheName(sbuff, sizeof(sbuff), lat, lon, lcid);
+		sptr = me->revGeo->CacheName(sbuff, sizeof(sbuff), Math::Coord2DDbl(lon, lat), lcid);
 		if (sptr)
 			strSize = (UOSInt)(sptr - sbuff);
 		else
@@ -220,20 +210,20 @@ void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32
 			buff[12] = (UInt8)(0x80 | (strSize >> 8));
 			buff[13] = (UInt8)(strSize & 0xff);
 			Text::StrConcat(&buff[14], sbuff);
-			strSize = me->protocol->BuildPacket(buff2, 3, 0, buff, 14 + strSize, 0);
+			strSize = me->protocol.BuildPacket(buff2, 3, 0, buff, 14 + strSize, 0);
 		}
 		else
 		{
 			buff[12] = (UInt8)(strSize & 0xff);
 			Text::StrConcat(&buff[13], sbuff);
-			strSize = me->protocol->BuildPacket(buff2, 3, 0, buff, 13 + strSize, 0);
+			strSize = me->protocol.BuildPacket(buff2, 3, 0, buff, 13 + strSize, 0);
 		}
 		cli->Write(buff2, strSize);
 	}
 	else if (cmdType == 4)
 	{
 //		this->errWriter->WriteLineC(UTF8STRC("KA Received");
-		this->lastKARecv->SetCurrTimeUTC();
+		this->lastKARecv.SetCurrTimeUTC();
 	}
 }
 

@@ -14,7 +14,7 @@ namespace Media
 			protected:
 				UInt32 currSample;
 				Double sampleVol;
-				Sync::Mutex *soundMut;
+				Sync::Mutex soundMut;
 		
 			public:
 				BellSoundGen(UInt32 freq);

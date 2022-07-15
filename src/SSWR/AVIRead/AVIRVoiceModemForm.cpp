@@ -17,9 +17,8 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)
 	if (me->toneChg)
 	{
 		me->toneChg = false;
-		Sync::MutexUsage mutUsage(me->toneMut);
-		me->txtDialTones->SetText(me->toneSb->ToCString());
-		mutUsage.EndUse();
+		Sync::MutexUsage mutUsage(&me->toneMut);
+		me->txtDialTones->SetText(me->toneSb.ToCString());
 	}
 
 	if (me->hasEvt)
@@ -161,10 +160,9 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(void *userObj, UI
 	case 'C':
 	case 'D':
 		{
-			Sync::MutexUsage mutUsage(me->toneMut);
-			me->toneSb->AppendChar(evtType, 1);
+			Sync::MutexUsage mutUsage(&me->toneMut);
+			me->toneSb.AppendUTF8Char(evtType);
 			me->toneChg = true;
-			mutUsage.EndUse();
 		}
 		break;
 	}
@@ -182,8 +180,6 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->evtType = 0;
 	this->channel->SetEventHandler(OnModemEvent, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->toneMut, Sync::Mutex());
-	NEW_CLASS(this->toneSb, Text::StringBuilderUTF8());
 	this->toneChg = false;
 	this->isConnected = false;
 
@@ -265,8 +261,6 @@ SSWR::AVIRead::AVIRVoiceModemForm::~AVIRVoiceModemForm()
 	DEL_CLASS(this->modem);
 	DEL_CLASS(this->channel);
 	DEL_CLASS(this->port);
-	DEL_CLASS(this->toneMut);
-	DEL_CLASS(this->toneSb);
 }
 
 void SSWR::AVIRead::AVIRVoiceModemForm::OnMonitorChanged()

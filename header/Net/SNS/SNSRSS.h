@@ -22,9 +22,9 @@ namespace Net
 			Text::String *channelId;
 			Text::String *chName;
 			Text::String *chDesc;
-			Data::FastStringMap<SNSItem *> *itemMap;
-			Sync::Mutex *crcMut;
-			Crypto::Hash::CRC32R *crc;
+			Data::FastStringMap<SNSItem *> itemMap;
+			Sync::Mutex crcMut;
+			Crypto::Hash::CRC32R crc;
 
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
 		public:

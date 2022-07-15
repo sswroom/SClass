@@ -86,7 +86,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 				{
 					align = me->nChannels << 1;
 
-					Sync::MutexUsage mutUsage(me->calcMut);
+					Sync::MutexUsage mutUsage(&me->calcMut);
 					MemCopyNO(tmpBuff, me->calcBuff, me->sampleBuffSize);
 					mutUsage.EndUse();
 					
@@ -419,7 +419,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 					}
 				}
 			}
-			me->threadEvt->Wait(1000);
+			me->threadEvt.Wait(1000);
 		}
 		MemFree(avgData);
 		MemFree(tmpBuff);
@@ -430,12 +430,11 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 
 void Media::AudioFilter::DTMFDecoder::ResetStatus()
 {
-	Sync::MutexUsage mutUsage(this->sampleMut);
+	Sync::MutexUsage mutUsage(&this->sampleMut);
 	this->calcReady = false;
 	this->calcLeft = this->sampleCnt;
 	this->sampleOfst = 0;
 	this->currTone = 0;
-	mutUsage.EndUse();
 }
 
 Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc)
@@ -461,9 +460,6 @@ Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt
 	this->frequency = fmt.frequency;
 	this->toneChgHdlr = 0;
 	this->toneChgObj = 0;
-	NEW_CLASS(this->sampleMut, Sync::Mutex());
-	NEW_CLASS(this->calcMut, Sync::Mutex());
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->threadToStop = false;
 	this->threadRunning = false;
 	Sync::Thread::Create(CalcThread, this);
@@ -473,14 +469,11 @@ Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt
 Media::AudioFilter::DTMFDecoder::~DTMFDecoder()
 {
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->threadEvt);
-	DEL_CLASS(this->sampleMut);
-	DEL_CLASS(this->calcMut);
 	MemFree(this->sampleBuff);
 	MemFree(this->calcBuff);
 }
@@ -522,7 +515,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			sizeLeft -= thisSize;
 			this->sampleOfst += thisSize;
 		}
-		Sync::MutexUsage mutUsage(this->calcMut);
+		Sync::MutexUsage mutUsage(&this->calcMut);
 		MemCopyNO(this->calcBuff, &this->sampleBuff[this->sampleOfst], this->sampleBuffSize - this->sampleOfst);
 		if (this->sampleBuffSize > 0)
 		{
@@ -530,7 +523,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		}
 		this->calcReady = true;
 		mutUsage.EndUse();
-		this->threadEvt->Set();
+		this->threadEvt.Set();
 		this->calcLeft = this->calcInt;
 		samples = sizeLeft / this->align;
 	}

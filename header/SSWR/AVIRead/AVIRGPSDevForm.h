@@ -89,43 +89,43 @@ namespace SSWR
 			UI::GUIListView *lvAlert;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Sync::Mutex *cliMut;
+			Sync::Mutex cliMut;
 			Net::TCPClient *cli;
-			IO::ProtoHdlr::ProtoGPSDevInfoHandler *protoHdlr;
+			IO::ProtoHdlr::ProtoGPSDevInfoHandler protoHdlr;
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;
 			Bool dispConn;
 
-			Sync::Mutex *alertMut;
-			Data::ArrayList<Int32> *alertList;
+			Sync::Mutex alertMut;
+			Data::ArrayList<Int32> alertList;
 			Bool alertUpd;
 
-			Sync::Mutex *deviceMut;
-			Data::ArrayList<Int64> *deviceList;
+			Sync::Mutex deviceMut;
+			Data::ArrayList<Int64> deviceList;
 			Bool deviceUpd;
 
-			Sync::Mutex *userMut;
-			Data::ArrayList<Int32> *userList;
+			Sync::Mutex userMut;
+			Data::ArrayList<Int32> userList;
 			Bool userUpd;
 
 			Bool devContUpd;
-			Sync::Mutex *devContMut;
-			Data::ArrayList<Text::String*> *devConts;
+			Sync::Mutex devContMut;
+			Data::ArrayList<Text::String*> devConts;
 			UOSInt devContACnt;
 			DevAlert *devContAlerts;
 			UOSInt devContGCnt;
 			DevGuard *devContGuards;
 
 			Bool alertContUpd;
-			Sync::Mutex *alertContMut;
-			Data::ArrayList<Text::String*> *alertConts;
-			Data::ArrayList<Int64> *alertContDevs;
+			Sync::Mutex alertContMut;
+			Data::ArrayList<Text::String*> alertConts;
+			Data::ArrayList<Int64> alertContDevs;
 
 			Bool userContUpd;
-			Sync::Mutex *userContMut;
-			Data::ArrayList<Text::String*> *userConts;
-			Data::ArrayList<Int64> *userContDevs;
+			Sync::Mutex userContMut;
+			Data::ArrayList<Text::String*> userConts;
+			Data::ArrayList<Int64> userContDevs;
 
 			static UInt32 __stdcall ClientThread(void *userObj);
 			static void __stdcall OnConnClicked(void *userObj);

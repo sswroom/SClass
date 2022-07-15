@@ -3,8 +3,6 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
-#include "IO/StreamReader.h"
-#include "IO/StreamWriter.h"
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapGenerator.h"
 #include "Math/Math.h"
@@ -12,6 +10,8 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
+#include "Text/UTF8Reader.h"
+#include "Text/UTF8Writer.h"
 
 void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale)
 {
@@ -45,41 +45,37 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst)
 {
 	UTF8Char sbuff2[512];
-	IO::FileStream *sfs;
-	IO::StreamReader *reader;
 	UTF8Char *sptr;
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
 	while (true)
 	{
-		Sync::MutexUsage mutUsage(dbMut);
-		generating = this->dbGenList->SortedIndexOf(id) >= 0;
+		Sync::MutexUsage mutUsage(&this->dbMut);
+		generating = this->dbGenList.SortedIndexOf(id) >= 0;
 		mutUsage.EndUse();
 		if (!generating)
 			break;
-		dbEvt->Wait(10);
+		this->dbEvt.Wait(10);
 	}
 
 	sptr = GenFileName(sbuff2, x, y, scale, CSTR(".db"));
-	NEW_CLASS(sfs, IO::FileStream(CSTRP(sbuff2, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!sfs->IsError())
+	IO::FileStream sfs(CSTRP(sbuff2, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!sfs.IsError())
 	{
-		NEW_CLASS(reader, IO::StreamReader(sfs, 65001));
+		Text::UTF8Reader reader(&sfs);
 		sptr = Text::StrConcatC(sbuff2, UTF8STRC("3,"));
 		sptr = Text::StrInt32(sptr, xOfst);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrInt32(sptr, yOfst);
 		writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
 
-		while ((sptr = reader->ReadLine(sbuff2, 509)) != 0)
+		while ((sptr = reader.ReadLine(sbuff2, 509)) != 0)
 		{
-			sptr = reader->GetLastLineBreak(sptr);
+			sptr = reader.GetLastLineBreak(sptr);
 			writer->WriteStr(CSTRP(sbuff2, sptr));
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(sfs);
 }
 
 Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch)
@@ -93,19 +89,17 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
-	Sync::MutexUsage mutUsage(dbMut);
-	generating = this->dbGenList->SortedIndexOf(id) >= 0;
+	Sync::MutexUsage mutUsage(&this->dbMut);
+	generating = this->dbGenList.SortedIndexOf(id) >= 0;
 	if (generating)
 	{
-		mutUsage.EndUse();
 		return true;
 	}
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
-		mutUsage.EndUse();
 		return true;
 	}
-	this->dbGenList->SortedInsert(id);
+	this->dbGenList.SortedInsert(id);
 	mutUsage.EndUse();
 
 	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale);
@@ -121,8 +115,8 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
 	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
 	mutUsage.BeginUse();
-	this->dbGenList->RemoveAt((UOSInt)this->dbGenList->SortedIndexOf(id));
-	dbEvt->Set();
+	this->dbGenList.RemoveAt((UOSInt)this->dbGenList.SortedIndexOf(id));
+	this->dbEvt.Set();
 	mutUsage.EndUse();
 	geng->DeleteImage(dimg2);
 	return true;
@@ -136,18 +130,12 @@ Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEn
 	this->osSize = osSize;
 
 	this->tileDir = Text::StrCopyNew(tileDir);
-	NEW_CLASS(this->dbGenList, Data::ArrayListInt64());
-	NEW_CLASS(this->dbMut, Sync::Mutex());
-	NEW_CLASS(this->dbEvt, Sync::Event(true));
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
 }
 
 Map::TileMapGenerator::~TileMapGenerator()
 {
 	Text::StrDelNew(this->tileDir);
-	DEL_CLASS(this->dbGenList);
-	DEL_CLASS(this->dbEvt);
-	DEL_CLASS(this->dbMut);
 	DEL_CLASS(this->resizer);
 }
 
@@ -164,9 +152,6 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 {
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
-	IO::FileStream *dfs;
-	IO::MemoryStream *mstm;
-	IO::StreamWriter *writer;
 
 	Int32 x = (Int32)(tileId >> 32);
 	Int32 y = (Int32)(tileId & 0xffffffffLL);
@@ -180,17 +165,18 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	if (IO::Path::GetPathType(CSTRP(sbuff2, sptr)) == IO::Path::PathType::File)
 		return true;
 
-	NEW_CLASS(mstm, IO::MemoryStream(1048576, UTF8STRC("Map.TileMapGenerator.GenerateTile")));
-	NEW_CLASS(writer, IO::StreamWriter(mstm, 65001));
-	writer->WriteSignature();
+	IO::MemoryStream mstm(1048576, UTF8STRC("Map.TileMapGenerator.GenerateTile"));
+	{
+		Text::UTF8Writer writer(&mstm);
+		writer.WriteSignature();
 
-	AppendDBFile(writer, x, y, scale, 0, 0);
-	AppendDBFile(writer, x + 1, y, scale, (Int32)this->imgSize, 0);
-	AppendDBFile(writer, x - 1, y, scale, (Int32)-this->imgSize, 0);
-	AppendDBFile(writer, x, y + 1, scale, 0, (Int32)-this->imgSize);
-	AppendDBFile(writer, x, y - 1, scale, 0, (Int32)this->imgSize);
-	DEL_CLASS(writer);
-	mstm->SeekFromBeginning(0);
+		AppendDBFile(&writer, x, y, scale, 0, 0);
+		AppendDBFile(&writer, x + 1, y, scale, (Int32)this->imgSize, 0);
+		AppendDBFile(&writer, x - 1, y, scale, (Int32)-this->imgSize, 0);
+		AppendDBFile(&writer, x, y + 1, scale, 0, (Int32)-this->imgSize);
+		AppendDBFile(&writer, x, y - 1, scale, 0, (Int32)this->imgSize);
+	}
+	mstm.SeekFromBeginning(0);
 	
 	Media::DrawImage *dimg;
 	Media::DrawImage *dimg2;
@@ -199,7 +185,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	params.tileX = x;
 	params.tileY = y;
 	params.labelType = 2;
-	params.dbStream = mstm;
+	params.dbStream = &mstm;
 
 	Map::ScaledMapView view(Math::Size2D<Double>(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale);
 	InitMapView(&view, x, y, scale);
@@ -223,13 +209,12 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 		resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimg->GetImgBits(&revOrder), this->imgSize * 4, this->imgSize, this->imgSize);
 		geng->DeleteImage(dimg2);
 	}
-	DEL_CLASS(mstm);
 
-	NEW_CLASS(dfs, IO::FileStream(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	dimg->SavePng(dfs);
-	geng->DeleteImage(dimg);
-	DEL_CLASS(dfs);
-
+	{
+		IO::FileStream dfs(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		dimg->SavePng(&dfs);
+		geng->DeleteImage(dimg);
+	}
 	return true;
 }
 

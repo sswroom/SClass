@@ -17,15 +17,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	PingIPInfo *pingIPInfo;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(me->pingIPMut);
-	pingIPInfo = me->pingIPMap->Get(sortableIP);
+	Sync::MutexUsage mutUsage(&me->pingIPMut);
+	pingIPInfo = me->pingIPMap.Get(sortableIP);
 	if (pingIPInfo == 0)
 	{
 		Net::WhoisRecord *rec;
 		pingIPInfo = MemAlloc(PingIPInfo, 1);
 		pingIPInfo->ip = srcIP;
 		pingIPInfo->count = 0;
-		rec = me->whois->RequestIP(srcIP);
+		rec = me->whois.RequestIP(srcIP);
 		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
 		{
 			pingIPInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 		{
 			pingIPInfo->country = Text::String::New(UTF8STRC("Unk"));
 		}
-		me->pingIPMap->Put(sortableIP, pingIPInfo);
+		me->pingIPMap.Put(sortableIP, pingIPInfo);
 		me->pingIPListUpdated = true;
 	}
 	pingIPInfo->count++;
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	sb.AppendUOSInt(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
 	if (ipTran)
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois->RequestIP(ipTran->ip);
+		Net::WhoisRecord *rec = me->whois.RequestIP(ipTran->ip);
 		if (rec)
 		{
 			UOSInt i = 0;
@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 		me->txtPingIPCountry->SetText(me->currPingIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois->RequestIP(me->currPingIP->ip);
+		Net::WhoisRecord *rec = me->whois.RequestIP(me->currPingIP->ip);
 		if (rec)
 		{
 			UOSInt i = 0;
@@ -368,16 +368,16 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 	{
 		UOSInt i;
 		UOSInt j;
-		Sync::MutexUsage mutUsage(target->mut);
+		Sync::MutexUsage mutUsage(&target->mut);
 		i = 0;
-		j = target->addrList->GetCount();
+		j = target->addrList.GetCount();
 		while (i < j)
 		{
-			me->lbDNSTargetDomain->AddItem(target->addrList->GetItem(i), 0);
+			me->lbDNSTargetDomain->AddItem(target->addrList.GetItem(i), 0);
 			i++;
 		}
 		mutUsage.EndUse();
-		Net::WhoisRecord *rec = me->whois->RequestIP(target->ip);
+		Net::WhoisRecord *rec = me->whois.RequestIP(target->ip);
 		if (rec)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -459,12 +459,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 	me->lvDNSClient->ClearItems();
 	if (cli)
 	{
-		Sync::MutexUsage mutUsage(cli->mut);
+		Sync::MutexUsage mutUsage(&cli->mut);
 		i = 0;
-		j = cli->hourInfos->GetCount();
+		j = cli->hourInfos.GetCount();
 		while (i < j)
 		{
-			hourInfo = cli->hourInfos->GetItem(i);
+			hourInfo = cli->hourInfos.GetItem(i);
 			sptr = Text::StrInt32(sbuff, hourInfo->year);
 			*sptr++ = '-';
 			sptr = Text::StrInt32(sptr, hourInfo->month);
@@ -491,12 +491,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPLogSelChg(void *userObj)
 	me->lbIPLogVal->ClearItems();
 	if (ipLog)
 	{
-		Sync::MutexUsage mutUsage(ipLog->mut);
+		Sync::MutexUsage mutUsage(&ipLog->mut);
 		i = 0;
-		j = ipLog->logList->GetCount();
+		j = ipLog->logList.GetCount();
 		while (i < j)
 		{
-			me->lbIPLogVal->AddItem(ipLog->logList->GetItem(i), 0);
+			me->lbIPLogVal->AddItem(ipLog->logList.GetItem(i), 0);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -521,9 +521,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		me->pingIPListUpdated = false;
-		Sync::MutexUsage mutUsage(me->pingIPMut);
+		Sync::MutexUsage mutUsage(&me->pingIPMut);
 		me->lbPingIP->ClearItems();
-		pingIPList = me->pingIPMap->GetValues();
+		pingIPList = me->pingIPMap.GetValues();
 		i = 0;
 		j = pingIPList->GetCount();
 		while (i < j)
@@ -723,7 +723,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			status = ipTranList.GetItem(i);
 			if (status->srcIP == me->adapterIP)
 			{
-				ipTran = me->ipTranMap->Get(Net::SocketUtil::IPv4ToSortable(status->destIP));
+				ipTran = me->ipTranMap.Get(Net::SocketUtil::IPv4ToSortable(status->destIP));
 				if (ipTran)
 				{
 					ipTran->sendStatus = status;
@@ -735,12 +735,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 					ipTran->ip = status->destIP;
 					ipTran->recvStatus = 0;
 					ipTran->sendStatus = status;
-					me->ipTranMap->Put(Net::SocketUtil::IPv4ToSortable(ipTran->ip), ipTran);
+					me->ipTranMap.Put(Net::SocketUtil::IPv4ToSortable(ipTran->ip), ipTran);
 				}
 			}
 			else if (status->destIP == me->adapterIP)
 			{
-				ipTran = me->ipTranMap->Get(Net::SocketUtil::IPv4ToSortable(status->srcIP));
+				ipTran = me->ipTranMap.Get(Net::SocketUtil::IPv4ToSortable(status->srcIP));
 				if (ipTran)
 				{
 					ipTran->recvStatus = status;
@@ -752,7 +752,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 					ipTran->ip = status->srcIP;
 					ipTran->recvStatus = status;
 					ipTran->sendStatus = 0;
-					me->ipTranMap->Put(Net::SocketUtil::IPv4ToSortable(ipTran->ip), ipTran);
+					me->ipTranMap.Put(Net::SocketUtil::IPv4ToSortable(ipTran->ip), ipTran);
 				}
 			}
 			i++;
@@ -761,7 +761,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		if (listChg)
 		{
 			IPTranInfo *currSel = (IPTranInfo*)me->lbIPTran->GetSelectedItem();
-			const Data::ArrayList<IPTranInfo*> *ipTrans = me->ipTranMap->GetValues();
+			const Data::ArrayList<IPTranInfo*> *ipTrans = me->ipTranMap.GetValues();
 			me->lbIPTran->ClearItems();
 			i = 0;
 			j = ipTrans->GetCount();
@@ -970,7 +970,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			if (dhcp->updated)
 			{
 				Data::DateTime dt;
-				Sync::MutexUsage mutUsage(dhcp->mut);
+				Sync::MutexUsage mutUsage(&dhcp->mut);
 				dhcp->updated = false;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->ipAddr);
 				me->lvDHCP->SetSubItem(i, 2, CSTRP(sbuff, sptr));
@@ -1075,23 +1075,19 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 	me->txtDevice->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory())
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("RAW Monitor"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->listener = 0;
 	this->webHdlr = 0;
 	this->adapterIP = 0;
 	this->adapterChanged = false;
 	this->dataUpdated = true;
-	NEW_CLASS(this->pingIPMut, Sync::Mutex());
-	NEW_CLASS(this->pingIPMap, Data::UInt32Map<PingIPInfo*>());
-	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
 	if (analyzer)
 	{
 		this->analyzer = analyzer;
@@ -1100,7 +1096,6 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	{
 		NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));
 	}
-	NEW_CLASS(this->ipTranMap, Data::UInt32Map<IPTranInfo*>());
 	this->ipTranCnt = 0;
 	this->pingIPListUpdated = false;
 	this->pingIPContUpdated = false;
@@ -1419,7 +1414,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
@@ -1468,13 +1463,13 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 		this->listener = 0;
 		this->webHdlr = 0;
 	}
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 
 	const Data::ArrayList<PingIPInfo*> *pingIPList;
 	PingIPInfo *pingIPInfo;
 	UOSInt i;
-	pingIPList = this->pingIPMap->GetValues();
+	pingIPList = this->pingIPMap.GetValues();
 	i = pingIPList->GetCount();
 	while (i-- > 0)
 	{
@@ -1483,21 +1478,16 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 		SDEL_STRING(pingIPInfo->country);
 		MemFree(pingIPInfo);
 	}
-	DEL_CLASS(this->pingIPMap);
-	DEL_CLASS(this->pingIPMut);
 
 	const Data::ArrayList<IPTranInfo*> *ipTranList;
 	IPTranInfo *ipTran;
-	ipTranList = this->ipTranMap->GetValues();
+	ipTranList = this->ipTranMap.GetValues();
 	i = ipTranList->GetCount();
 	while (i-- > 0)
 	{
 		ipTran = ipTranList->GetItem(i);
 		MemFree(ipTran);
 	}
-	DEL_CLASS(this->ipTranMap);
-
-	DEL_CLASS(this->whois);
 	DEL_CLASS(this->analyzer);
 }
 

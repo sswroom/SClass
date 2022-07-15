@@ -140,14 +140,12 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		dnsCli = dnsCliInfoList->GetItem(i);
-		j = dnsCli->hourInfos->GetCount();
+		j = dnsCli->hourInfos.GetCount();
 		while (j-- > 0)
 		{
-			MemFree(dnsCli->hourInfos->GetItem(j));
+			MemFree(dnsCli->hourInfos.GetItem(j));
 		}
-		DEL_CLASS(dnsCli->hourInfos);
-		DEL_CLASS(dnsCli->mut);
-		MemFree(dnsCli);
+		DEL_CLASS(dnsCli);
 	}
 
 	Data::ArrayList<Net::EthernetAnalyzer::DNSRequestResult*> *dnsReqList;
@@ -157,8 +155,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		req = dnsReqList->GetItem(i);
-		DEL_CLASS(req->mut);
-		MemFree(req);
+		DEL_CLASS(req);
 	}
 
 	dnsReqList = this->dnsReqv6Map.GetValues();
@@ -166,8 +163,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		req = dnsReqList->GetItem(i);
-		DEL_CLASS(req->mut);
-		MemFree(req);
+		DEL_CLASS(req);
 	}
 
 	dnsReqList = this->dnsReqOthMap.GetValues();
@@ -175,8 +171,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		req = dnsReqList->GetItem(i);
-		DEL_CLASS(req->mut);
-		MemFree(req);
+		DEL_CLASS(req);
 	}
 	
 	Net::EthernetAnalyzer::DNSTargetInfo *target;
@@ -185,10 +180,8 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		target = dnsTargetList->GetItem(i);
-		DEL_CLASS(target->mut);
-		LIST_FREE_STRING(target->addrList);
-		DEL_CLASS(target->addrList);
-		MemFree(target);
+		LIST_FREE_STRING(&target->addrList);
+		DEL_CLASS(target);
 	}
 
 	Net::EthernetAnalyzer::IPLogInfo *ipLog;
@@ -197,14 +190,12 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		ipLog = ipLogList->GetItem(i);
-		j = ipLog->logList->GetCount();
+		j = ipLog->logList.GetCount();
 		while (j-- > 0)
 		{
-			ipLog->logList->GetItem(j)->Release();
+			ipLog->logList.GetItem(j)->Release();
 		}
-		DEL_CLASS(ipLog->mut);
-		DEL_CLASS(ipLog->logList);
-		MemFree(ipLog);
+		DEL_CLASS(ipLog);
 	}
 
 	DHCPInfo *dhcp;
@@ -215,8 +206,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		dhcp = dhcpList->GetItem(i);
 		SDEL_STRING(dhcp->vendorClass);
 		SDEL_STRING(dhcp->hostName);
-		DEL_CLASS(dhcp->mut);
-		MemFree(dhcp);
+		DEL_CLASS(dhcp);
 	}
 
 	LIST_FREE_FUNC(&this->mdnsList, Net::DNSClient::FreeAnswer);
@@ -298,7 +288,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CString req, Data::ArrayList<N
 	mutUsage.EndUse();
 	if (result)
 	{
-		Sync::MutexUsage mutUsage(result->mut);
+		Sync::MutexUsage mutUsage(&result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetTicks(result->reqTime);
 		*ttl = result->ttl;
@@ -332,7 +322,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CString req, Data::ArrayList<N
 	mutUsage.EndUse();
 	if (result)
 	{
-		Sync::MutexUsage mutUsage(result->mut);
+		Sync::MutexUsage mutUsage(&result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetTicks(result->reqTime);
 		*ttl = result->ttl;
@@ -366,7 +356,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<
 	mutUsage.EndUse();
 	if (result)
 	{
-		Sync::MutexUsage mutUsage(result->mut);
+		Sync::MutexUsage mutUsage(&result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetTicks(result->reqTime);
 		*ttl = result->ttl;
@@ -831,10 +821,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					Net::IPType itype = Net::SocketUtil::GetIPv4Type(ip->srcIP);
 					if (itype == Net::IPType::Local || itype == Net::IPType::Private)
 					{
-						ipLog = MemAlloc(IPLogInfo, 1);
+						NEW_CLASS(ipLog, IPLogInfo());
 						ipLog->ip = ip->srcIP;
-						NEW_CLASS(ipLog->mut, Sync::Mutex());
-						NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 						this->ipLogMap.Put(sortableIP, ipLog);
 					}
 				}
@@ -924,12 +912,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					sb.AppendU16(packet[8]);
 					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(ipDataSize);
-					Sync::MutexUsage mutUsage(ipLog->mut);
-					while (ipLog->logList->GetCount() >= IPLOGCNT)
+					Sync::MutexUsage mutUsage(&ipLog->mut);
+					while (ipLog->logList.GetCount() >= IPLOGCNT)
 					{
-						ipLog->logList->RemoveAt(0)->Release();
+						ipLog->logList.RemoveAt(0)->Release();
 					}
-					ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+					ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 					mutUsage.EndUse();
 				}
 
@@ -940,10 +928,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					Net::IPType itype = Net::SocketUtil::GetIPv4Type(ip->destIP);
 					if (itype == Net::IPType::Local || itype == Net::IPType::Private)
 					{
-						ipLog = MemAlloc(IPLogInfo, 1);
+						NEW_CLASS(ipLog, IPLogInfo());
 						ipLog->ip = ip->destIP;
-						NEW_CLASS(ipLog->mut, Sync::Mutex());
-						NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 						this->ipLogMap.Put(sortableIP, ipLog);
 					}
 				}
@@ -1033,12 +1019,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					sb.AppendU16(packet[8]);
 					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(ipDataSize);
-					Sync::MutexUsage mutUsage(ipLog->mut);
-					while (ipLog->logList->GetCount() >= IPLOGCNT)
+					Sync::MutexUsage mutUsage(&ipLog->mut);
+					while (ipLog->logList.GetCount() >= IPLOGCNT)
 					{
-						ipLog->logList->RemoveAt(0)->Release();
+						ipLog->logList.RemoveAt(0)->Release();
 					}
-					ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+					ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 					mutUsage.EndUse();
 				}
 				mutUsage.EndUse();
@@ -1101,7 +1087,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										req = this->dnsReqv4Map.Get(reqName);
 										if (req)
 										{
-											Sync::MutexUsage mutUsage(req->mut);
+											Sync::MutexUsage mutUsage(&req->mut);
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
@@ -1111,8 +1097,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										}
 										else
 										{
-											req = MemAlloc(DNSRequestResult, 1);
-											NEW_CLASS(req->mut, Sync::Mutex());
+											NEW_CLASS(req, DNSRequestResult());
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
@@ -1141,17 +1126,15 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 												dnsTarget = this->dnsTargetMap.Get(sortIP);
 												if (dnsTarget == 0)
 												{
-													dnsTarget = MemAlloc(DNSTargetInfo, 1);
+													NEW_CLASS(dnsTarget, DNSTargetInfo());
 													dnsTarget->ip = resIP;
-													NEW_CLASS(dnsTarget->mut, Sync::Mutex());
-													NEW_CLASS(dnsTarget->addrList, Data::ArrayListICaseString());
 													this->dnsTargetMap.Put(sortIP, dnsTarget);
 												}
-												Sync::MutexUsage mutUsage(dnsTarget->mut);
+												Sync::MutexUsage mutUsage(&dnsTarget->mut);
 												dnsTargetMutUsage.EndUse();
-												if (dnsTarget->addrList->SortedIndexOf(answer->name) < 0)
+												if (dnsTarget->addrList.SortedIndexOf(answer->name) < 0)
 												{
-													dnsTarget->addrList->SortedInsert(answer->name->Clone());
+													dnsTarget->addrList.SortedInsert(answer->name->Clone());
 												}
 												j = i;
 												while (j-- > 0)
@@ -1159,9 +1142,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 													answer = answers.GetItem(j);
 													if (answer->recType == 5)
 													{
-														if (dnsTarget->addrList->SortedIndexOf(answer->name) < 0)
+														if (dnsTarget->addrList.SortedIndexOf(answer->name) < 0)
 														{
-															dnsTarget->addrList->SortedInsert(answer->name->Clone());
+															dnsTarget->addrList.SortedInsert(answer->name->Clone());
 														}
 													}
 												}
@@ -1178,7 +1161,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										req = this->dnsReqv6Map.Get(reqName);
 										if (req)
 										{
-											Sync::MutexUsage mutUsage(req->mut);
+											Sync::MutexUsage mutUsage(&req->mut);
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
@@ -1188,8 +1171,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										}
 										else
 										{
-											req = MemAlloc(DNSRequestResult, 1);
-											NEW_CLASS(req->mut, Sync::Mutex());
+											NEW_CLASS(req, DNSRequestResult());
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
@@ -1208,7 +1190,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										req = this->dnsReqOthMap.Get(reqName);
 										if (req)
 										{
-											Sync::MutexUsage mutUsage(req->mut);
+											Sync::MutexUsage mutUsage(&req->mut);
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
@@ -1218,8 +1200,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										}
 										else
 										{
-											req = MemAlloc(DNSRequestResult, 1);
-											NEW_CLASS(req->mut, Sync::Mutex());
+											NEW_CLASS(req, DNSRequestResult());
 											req->status = 0;
 											req->recSize = ipDataSize - 8;
 											MemCopyNO(req->recBuff, &ipData[8], ipDataSize - 8);
@@ -1245,29 +1226,27 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							dnsCli = this->dnsCliInfos.Get(cliId);
 							if (dnsCli == 0)
 							{
-								dnsCli = MemAlloc(DNSClientInfo, 1);
+								NEW_CLASS(dnsCli, DNSClientInfo());
 								dnsCli->cliId = cliId;
 								dnsCli->addr.addrType = Net::AddrType::IPv4;
 								WriteMUInt32(dnsCli->addr.addr, cliId);
-								NEW_CLASS(dnsCli->mut, Sync::Mutex());
-								NEW_CLASS(dnsCli->hourInfos, Data::ArrayList<DNSCliHourInfo*>());
 								this->dnsCliInfos.Put(cliId, dnsCli);
 							}
 							dnsCliInfoMutUsage.EndUse();
 							Data::DateTime dt;
 							DNSCliHourInfo *hInfo;
 							dt.SetCurrTimeUTC();
-							Sync::MutexUsage mutUsage(dnsCli->mut);
-							hInfo = dnsCli->hourInfos->GetItem(0);
+							Sync::MutexUsage mutUsage(&dnsCli->mut);
+							hInfo = dnsCli->hourInfos.GetItem(0);
 							if (hInfo != 0 && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
 							{
 								hInfo->reqCount++;
 							}
 							else
 							{
-								if (dnsCli->hourInfos->GetCount() >= 72)
+								if (dnsCli->hourInfos.GetCount() >= 72)
 								{
-									hInfo = dnsCli->hourInfos->RemoveAt(71);
+									hInfo = dnsCli->hourInfos.RemoveAt(71);
 								}
 								else
 								{
@@ -1278,7 +1257,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 								hInfo->day = dt.GetDay();
 								hInfo->hour = dt.GetHour();
 								hInfo->reqCount = 1;
-								dnsCli->hourInfos->Insert(0, hInfo);
+								dnsCli->hourInfos.Insert(0, hInfo);
 							}
 							mutUsage.EndUse();
 						}
@@ -1304,10 +1283,20 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							dhcp = this->dhcpMap.Get(iMAC);
 							if (dhcp == 0)
 							{
-								dhcp = MemAlloc(DHCPInfo, 1);
-								MemClear(dhcp, sizeof(DHCPInfo));
+								NEW_CLASS(dhcp, DHCPInfo());
 								dhcp->iMAC = iMAC;
-								NEW_CLASS(dhcp->mut, Sync::Mutex());
+								dhcp->updated = false;
+								dhcp->ipAddrTime = 0;
+								dhcp->ipAddr = 0;
+								dhcp->ipAddrLease = 0;
+								dhcp->subnetMask = 0;
+								dhcp->gwAddr = 0;
+								dhcp->dhcpServer = 0;
+								dhcp->renewTime = 0;
+								dhcp->rebindTime = 0;
+								dhcp->router = 0;
+								dhcp->hostName = 0;
+								dhcp->vendorClass = 0;
 								this->dhcpMap.Put(iMAC, dhcp);
 							}
 							dhcpMutUsage.EndUse();
@@ -1316,7 +1305,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							UInt8 msgType = 0;
 							UInt8 t;
 							UInt8 len;
-							Sync::MutexUsage mutUsage(dhcp->mut);
+							Sync::MutexUsage mutUsage(&dhcp->mut);
 							dhcp->updated = true;
 							while (currPtr < endPtr)
 							{
@@ -1419,10 +1408,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									ipLog = this->ipLogMap.Get(sortableIP);
 									if (ipLog == 0)
 									{
-										ipLog = MemAlloc(IPLogInfo, 1);
+										NEW_CLASS(ipLog, IPLogInfo());
 										ipLog->ip = ip->srcIP;
-										NEW_CLASS(ipLog->mut, Sync::Mutex());
-										NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 										this->ipLogMap.Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
@@ -1434,12 +1421,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									sb.AppendC(UTF8STRC(" NTP request to "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
 									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-									Sync::MutexUsage mutUsage(ipLog->mut);
-									while (ipLog->logList->GetCount() >= IPLOGCNT)
+									Sync::MutexUsage mutUsage(&ipLog->mut);
+									while (ipLog->logList.GetCount() >= IPLOGCNT)
 									{
-										ipLog->logList->RemoveAt(0)->Release();
+										ipLog->logList.RemoveAt(0)->Release();
 									}
-									ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+									ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 									mutUsage.EndUse();
 								}
 							}
@@ -1454,10 +1441,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									ipLog = this->ipLogMap.Get(sortableIP);
 									if (ipLog == 0)
 									{
-										ipLog = MemAlloc(IPLogInfo, 1);
+										NEW_CLASS(ipLog, IPLogInfo());
 										ipLog->ip = ip->destIP;
-										NEW_CLASS(ipLog->mut, Sync::Mutex());
-										NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 										this->ipLogMap.Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
@@ -1473,12 +1458,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Net::NTPServer::ReadTime(&ipData[40], &dt);
 									sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-									Sync::MutexUsage mutUsage(ipLog->mut);
-									while (ipLog->logList->GetCount() >= IPLOGCNT)
+									Sync::MutexUsage mutUsage(&ipLog->mut);
+									while (ipLog->logList.GetCount() >= IPLOGCNT)
 									{
-										ipLog->logList->RemoveAt(0)->Release();
+										ipLog->logList.RemoveAt(0)->Release();
 									}
-									ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+									ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 									mutUsage.EndUse();
 								}
 							}
@@ -1637,10 +1622,8 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							ipLog = this->ipLogMap.Get(sortableIP);
 							if (ipLog == 0)
 							{
-								ipLog = MemAlloc(IPLogInfo, 1);
+								NEW_CLASS(ipLog, IPLogInfo());
 								ipLog->ip = ip->srcIP;
-								NEW_CLASS(ipLog->mut, Sync::Mutex());
-								NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 								this->ipLogMap.Put(sortableIP, ipLog);
 							}
 							ipLogMutUsage.EndUse();
@@ -1659,12 +1642,12 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								sb.AppendC(UTF8STRC(", method = "));
 								sb.AppendC(&ipData[8], i);
 							}
-							Sync::MutexUsage mutUsage(ipLog->mut);
-							while (ipLog->logList->GetCount() >= IPLOGCNT)
+							Sync::MutexUsage mutUsage(&ipLog->mut);
+							while (ipLog->logList.GetCount() >= IPLOGCNT)
 							{
-								ipLog->logList->RemoveAt(0)->Release();
+								ipLog->logList.RemoveAt(0)->Release();
 							}
-							ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+							ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 							mutUsage.EndUse();
 						}
 						valid = true;

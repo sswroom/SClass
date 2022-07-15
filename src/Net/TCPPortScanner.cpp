@@ -13,8 +13,8 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 	Sync::Interlocked::Increment(&me->threadCnt);
 	while (!me->threadToStop)
 	{
-		me->threadEvt->Wait(10000);
-		Sync::MutexUsage mutUsage(me->portMut);
+		me->threadEvt.Wait(10000);
+		Sync::MutexUsage mutUsage(&me->portMut);
 		addr = me->addr;
 		if (addr.addrType != Net::AddrType::Unknown)
 		{
@@ -77,13 +77,11 @@ Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt,
 	this->sockf = sockf;
 	this->portList = MemAlloc(UInt8, 65536);
 	MemClear(this->portList, 65536);
-	NEW_CLASS(this->portMut, Sync::Mutex());
 	this->addr.addrType = Net::AddrType::Unknown;
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;
 	this->threadCnt = 0;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	UOSInt i = threadCnt;
 	if (threadCnt <= 0)
 	{
@@ -98,13 +96,11 @@ Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt,
 Net::TCPPortScanner::~TCPPortScanner()
 {
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadCnt > 0)
 	{
 		Sync::Thread::Sleep(1);
 	}
-	DEL_CLASS(this->threadEvt);
-	DEL_CLASS(this->portMut);
 	MemFree(this->portList);
 }
 
@@ -112,7 +108,7 @@ void Net::TCPPortScanner::Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPo
 {
 	OSInt i;
 	OSInt j = maxPort + 1;
-	Sync::MutexUsage mutUsage(this->portMut);
+	Sync::MutexUsage mutUsage(&this->portMut);
 	this->addr = *addr;
 	i = 0;
 	while (i < j)
@@ -121,14 +117,14 @@ void Net::TCPPortScanner::Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPo
 		i++;
 	}
 	mutUsage.EndUse();
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 }
 
 Bool Net::TCPPortScanner::IsFinished()
 {
 	Bool ret = true;
 	UInt16 i = 0;
-	Sync::MutexUsage mutUsage(this->portMut);
+	Sync::MutexUsage mutUsage(&this->portMut);
 	while (i < 65535)
 	{
 		if ((this->portList[i] & 1) == 1)
@@ -150,7 +146,7 @@ UOSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
 {
 	UOSInt initCnt = portList->GetCount();
 	UInt16 i = 0;
-	Sync::MutexUsage mutUsage(this->portMut);
+	Sync::MutexUsage mutUsage(&this->portMut);
 	while (i < 65535)
 	{
 		if (this->portList[i] == 2)

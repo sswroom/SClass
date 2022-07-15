@@ -24,7 +24,6 @@ Media::AudioFilter::DynamicVolBooster::DynamicVolBooster(Media::IAudioSource *so
 	this->sourceAudio = 0;
 	this->soundBuff = 0;
 	this->bgLevel = 0.001;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	sourceAudio->GetFormat(&fmt);
 	if (fmt.formatId != 0x1)
 		return;
@@ -45,7 +44,6 @@ Media::AudioFilter::DynamicVolBooster::~DynamicVolBooster()
 		MemFree(this->soundBuff);
 		this->soundBuff = 0;
 	}
-	DEL_CLASS(this->mut);
 }
 
 void Media::AudioFilter::DynamicVolBooster::GetFormat(AudioFormat *format)
@@ -91,7 +89,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 	{
 		if (this->bitCount == 16)
 		{
-			Sync::MutexUsage mutUsage(this->mut);
+			Sync::MutexUsage mutUsage(&this->mut);
 			Double log32 = Math_Log10(this->bgLevel * 32768);
 			Double log32768 = Math_Log10(32768);
 			Int32 noiseVol = Double2Int32(this->bgLevel * 32768);
@@ -170,7 +168,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 		}
 		else if (this->bitCount == 8)
 		{
-			Sync::MutexUsage mutUsage(this->mut);
+			Sync::MutexUsage mutUsage(&this->mut);
 			Double log32 = Math_Log10(this->bgLevel * 128);
 			Double log32768 = Math_Log10(128);
 			Int32 noiseVol = Double2Int32(this->bgLevel * 128);
@@ -253,7 +251,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 
 void Media::AudioFilter::DynamicVolBooster::SetEnabled(Bool enabled)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->enabled = enabled;
 	if (this->enabled)
 		this->ResetStatus();
@@ -264,7 +262,7 @@ void Media::AudioFilter::DynamicVolBooster::SetBGLevel(Double bgLevel)
 {
 	if (bgLevel > 0)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		this->bgLevel = bgLevel;
 		mutUsage.EndUse();
 	}

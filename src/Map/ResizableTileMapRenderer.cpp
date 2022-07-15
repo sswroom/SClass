@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
-#include "Sync/Thread.h"
 #include "Data/ArrayListInt64.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Map/ResizableTileMapRenderer.h"
-#include <windows.h>
+#include "Math/Math.h"
+#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
 UInt32 __stdcall Map::ResizableTileMapRenderer::TaskThread(void *userObj)
 {
@@ -18,9 +18,10 @@ UInt32 __stdcall Map::ResizableTileMapRenderer::TaskThread(void *userObj)
 	{
 		while (!stat->toStop)
 		{
-			stat->me->taskMut->Lock();
-			cimg = (CachedImage*)stat->me->taskQueued->Get();
-			stat->me->taskMut->Unlock();
+			{
+				Sync::MutexUsage mutUsage(&stat->me->taskMut);
+				cimg = (CachedImage*)stat->me->taskQueued.Get();
+			}
 			if (cimg == 0)
 				break;
 
@@ -55,19 +56,18 @@ UInt32 __stdcall Map::ResizableTileMapRenderer::TaskThread(void *userObj)
 
 void Map::ResizableTileMapRenderer::AddTask(CachedImage *cimg)
 {
-	this->taskMut->Lock();
-	this->taskQueued->Put(cimg);
-	this->taskMut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(&this->taskMut);
+		this->taskQueued.Put(cimg);
+	}
 	this->threads[this->threadNext].evt->Set();
 	this->threadNext = (this->threadNext + 1) % this->threadCnt;
 }
 
 void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawImage *img, CachedImage *cimg)
 {
-	Double scnX;
-	Double scnY;
-	Double scnX2;
-	Double scnY2;
+	Math::Coord2DDbl scnPt;
+	Math::Coord2DDbl scnPt2;
 	Int32 iScnX;
 	Int32 iScnY;
 	Int32 iScnX2;
@@ -82,12 +82,12 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 	imgW = img->GetWidth();
 	imgH = img->GetHeight();
 
-	view->LatLonToScnXY(cimg->tly, cimg->tlx, &scnX, &scnY);
-	view->LatLonToScnXY(cimg->bry, cimg->brx, &scnX2, &scnY2);
-	iScnX = Math::Double2Int(scnX);
-	iScnY = Math::Double2Int(scnY);
-	iScnX2 = Math::Double2Int(scnX2);
-	iScnY2 = Math::Double2Int(scnY2);
+	scnPt = view->MapXYToScnXY(Math::Coord2DDbl(cimg->tlx, cimg->tly));
+	scnPt2 = view->MapXYToScnXY(Math::Coord2DDbl(cimg->brx, cimg->bry));
+	iScnX = Double2Int32(scnPt.x);
+	iScnY = Double2Int32(scnPt.y);
+	iScnX2 = Double2Int32(scnPt2.x);
+	iScnY2 = Double2Int32(scnPt2.y);
 	if (iScnX < iScnX2 && iScnY < iScnY2)
 	{
 		if (cimg->img)
@@ -108,33 +108,33 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 			}
 			else
 			{
-				cimgX2 = cimg->img->info->width;
-				cimgY2 = cimg->img->info->height;
+				cimgX2 = cimg->img->info.dispWidth;
+				cimgY2 = cimg->img->info.dispHeight;
 				cimgX = 0;
 				cimgY = 0;
 				if (iScnX < 0)
 				{
-					cimgX = MulDiv(cimgX2, -iScnX, (iScnX2 - iScnX));
+					cimgX = MulDiv32(cimgX2, -iScnX, (iScnX2 - iScnX));
 					iScnX = 0;
 				}
 				if (iScnY < 0)
 				{
-					cimgY = MulDiv(cimgY2, -iScnY, (iScnY2 - iScnY));
+					cimgY = MulDiv32(cimgY2, -iScnY, (iScnY2 - iScnY));
 					iScnY = 0;
 				}
 				if (iScnX2 > imgW)
 				{
-					cimgX2 = cimgX + MulDiv(cimgX2 - cimgX, imgW - iScnX, iScnX2 - iScnX);
+					cimgX2 = cimgX + MulDiv32(cimgX2 - cimgX, imgW - iScnX, iScnX2 - iScnX);
 					iScnX2 = imgW;
 				}
 				if (iScnY2 > imgH)
 				{
-					cimgY2 = cimgY + MulDiv(cimgY2 - cimgY, imgH - iScnY, iScnY2 - iScnY);
+					cimgY2 = cimgY + MulDiv32(cimgY2 - cimgY, imgH - iScnY, iScnY2 - iScnY);
 					iScnY2 = imgH;
 				}
 				if (cimgX == cimgX2)
 				{
-					if (cimgX2 >= cimg->img->info->width)
+					if (cimgX2 >= cimg->img->info.dispWidth)
 					{
 						cimgX = cimgX2 - 1;
 					}
@@ -145,7 +145,7 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 				}
 				if (cimgY == cimgY2)
 				{
-					if (cimgY2 >= cimg->img->info->height)
+					if (cimgY2 >= cimg->img->info.dispHeight)
 					{
 						cimgY = cimgY2 - 1;
 					}
@@ -194,28 +194,18 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 	}
 }
 
-Map::ResizableTileMapRenderer::ResizableTileMapRenderer(Media::DrawEngine *eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManager *colorMgr, Media::CS::TransferType outputRGBType, Double outputGamma)
+Map::ResizableTileMapRenderer::ResizableTileMapRenderer(Media::DrawEngine *eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor) : srcColor(Media::ColorProfile::CPT_SRGB), outputColor(outputColor)
 {
 	this->eng = eng;
 	this->map = map;
 	this->parsers = parsers;
-	this->colorMgr = colorMgr;
-	this->outputRGBType = outputRGBType;
-	this->outputGamma = outputGamma;
 	this->lastLevel = -1;
 	this->threadNext = 0;
 	this->updHdlr = 0;
 	this->updObj = 0;
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, Media::CS::TRANT_sRGB, outputRGBType, outputGamma, colorMgr));
-	NEW_CLASS(this->lastIds, Data::ArrayListInt64());
-	NEW_CLASS(this->lastImgs, Data::ArrayList<CachedImage*>());
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 4, &this->srcColor, &this->outputColor, sess, Media::AT_NO_ALPHA));
 
-	NEW_CLASS(this->idleImgs, Data::ArrayList<CachedImage*>());
-	NEW_CLASS(this->taskQueued, Data::LinkedList());
-	NEW_CLASS(this->taskEvt, Sync::Event(true, L"Map.ResizableTileMapRenderer.taskEvt"));
-	NEW_CLASS(this->taskMut, Sync::Mutex());
-
-	OSInt i;
+	UOSInt i;
 	this->threadCnt = this->map->GetConcurrentCount();
 	if (this->threadCnt <= 0)
 		this->threadCnt = 1;
@@ -226,7 +216,7 @@ Map::ResizableTileMapRenderer::ResizableTileMapRenderer(Media::DrawEngine *eng, 
 		this->threads[i].running = false;
 		this->threads[i].toStop = false;
 		this->threads[i].me = this;
-		NEW_CLASS(this->threads[i].evt, Sync::Event(true, L"Map.ResizableTileMapRenderer.threads.evt"));
+		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
 		Sync::Thread::Create(TaskThread, &this->threads[i]);
 	}
 }
@@ -269,64 +259,55 @@ Map::ResizableTileMapRenderer::~ResizableTileMapRenderer()
 	}
 	MemFree(this->threads);
 
-	i = this->lastImgs->GetCount();
+	i = this->lastImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->lastImgs->GetItem(i);
+		cimg = this->lastImgs.GetItem(i);
 		if (cimg->img)
 		{
 			DEL_CLASS(cimg->img);
 		}
 		MemFree(cimg);
 	}
-	i = this->idleImgs->GetCount();
+	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs->GetItem(i);
+		cimg = this->idleImgs.GetItem(i);
 		if (cimg->img)
 		{
 			DEL_CLASS(cimg->img);
 		}
 		MemFree(cimg);
 	}
-	DEL_CLASS(this->taskQueued);
-	DEL_CLASS(this->taskEvt);
-	DEL_CLASS(this->taskMut);
-	DEL_CLASS(this->idleImgs);
-	DEL_CLASS(this->lastImgs);
-	DEL_CLASS(this->lastIds);
 	DEL_CLASS(this->resizer);
 }
 
 void Map::ResizableTileMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view)
 {
 	CachedImage *cimg;
-	Data::ArrayListInt64 *cacheIds;
-	Data::ArrayList<CachedImage *> *cacheImgs;
 
-	Data::ArrayListInt64 *idList;
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	Media::ImageList *imgList;
-	NEW_CLASS(idList, Data::ArrayListInt64());
-	OSInt level = map->GetNearestLevel(view->GetScale());
+	Data::ArrayListInt64 idList;
+	UOSInt level = map->GetNearestLevel(view->GetMapScale());
 
-	NEW_CLASS(cacheIds, Data::ArrayListInt64());
-	NEW_CLASS(cacheImgs, Data::ArrayList<CachedImage*>());
+	Data::ArrayListInt64 cacheIds;
+	Data::ArrayList<CachedImage *> cacheImgs;
 	if (this->lastLevel == level)
 	{
-		cacheIds->AddRange(this->lastIds);
-		cacheImgs->AddRange(this->lastImgs);
-		this->lastIds->Clear();
-		this->lastImgs->Clear();
+		cacheIds.AddAll(&this->lastIds);
+		cacheImgs.AddAll(&this->lastImgs);
+		this->lastIds.Clear();
+		this->lastImgs.Clear();
 	}
 	else
 	{
-		j = this->lastImgs->GetCount();
+		j = this->lastImgs.GetCount();
 		while (j-- > 0)
 		{
-			cimg = this->lastImgs->GetItem(j);
+			cimg = this->lastImgs.GetItem(j);
 			if (cimg->isFinish)
 			{
 				if (cimg->img)
@@ -338,41 +319,35 @@ void Map::ResizableTileMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView 
 			else
 			{
 				cimg->isCancel = true;
-				this->idleImgs->Add(cimg);
+				this->idleImgs.Add(cimg);
 			}
 		}
-		this->lastIds->Clear();
-		this->lastImgs->Clear();
+		this->lastIds.Clear();
+		this->lastImgs.Clear();
 	}
 
 	Double bounds[4];
-	Double lat;
-	Double lon;
-	Double lat2;
-	Double lon2;
-	lon = view->GetLeftLon();
-	lat = view->GetTopLat();
-	lon2 = view->GetRightLon();
-	lat2 = view->GetBottomLat();
-	map->GetImageIDs(level, lon, lat, lon2, lat2, idList);
-	i = idList->GetCount();
+	Math::Quadrilateral bounds4;
+	bounds4 = view->GetBounds();
+	map->GetImageIDs(level, Math::RectAreaDbl(bounds4.tl, bounds4.br), &idList);
+	i = idList.GetCount();
 	while (i-- > 0)
 	{
-		j = cacheIds->SortedIndexOf(idList->GetItem(i));
+		j = cacheIds.SortedIndexOf(idList.GetItem(i));
 		if (j >= 0)
 		{
-			k = this->lastIds->SortedInsert(cacheIds->RemoveAt(j));
-			this->lastImgs->Insert(k, cimg = cacheImgs->RemoveAt(j));
+			k = this->lastIds.SortedInsert(cacheIds.RemoveAt(j));
+			this->lastImgs.Insert(k, cimg = cacheImgs.RemoveAt(j));
 
 			DrawImage(view, img, cimg);
 		}
 		else
 		{
-			imgList = this->map->LoadTileImage(level, idList->GetItem(i), this->parsers, bounds, true);
+			imgList = this->map->LoadTileImage(level, idList.GetItem(i), this->parsers, bounds, true);
 			if (imgList)
 			{
 				cimg = MemAlloc(CachedImage, 1);
-				cimg->imgId = idList->GetItem(i);
+				cimg->imgId = idList.GetItem(i);
 				cimg->tlx = bounds[0];
 				cimg->tly = bounds[1];
 				cimg->brx = bounds[2];
@@ -384,13 +359,13 @@ void Map::ResizableTileMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView 
 				DrawImage(view, img, cimg);
 				DEL_CLASS(imgList);
 
-				k = this->lastIds->SortedInsert(idList->GetItem(i));
-				this->lastImgs->Insert(k, cimg);
+				k = this->lastIds.SortedInsert(idList.GetItem(i));
+				this->lastImgs.Insert(k, cimg);
 			}
 			else
 			{
 				cimg = MemAlloc(CachedImage, 1);
-				cimg->imgId = idList->GetItem(i);
+				cimg->imgId = idList.GetItem(i);
 				cimg->tlx = bounds[0];
 				cimg->tly = bounds[1];
 				cimg->brx = bounds[2];
@@ -402,18 +377,17 @@ void Map::ResizableTileMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView 
 				AddTask(cimg);
 				DrawImage(view, img, cimg);
 
-				k = this->lastIds->SortedInsert(idList->GetItem(i));
-				this->lastImgs->Insert(k, cimg);
+				k = this->lastIds.SortedInsert(idList.GetItem(i));
+				this->lastImgs.Insert(k, cimg);
 			}
 		}
 	}
-	DEL_CLASS(idList);
 
 	lastLevel = level;
-	i = cacheImgs->GetCount();
+	i = cacheImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = cacheImgs->GetItem(i);
+		cimg = cacheImgs.GetItem(i);
 		if (cimg->isFinish)
 		{
 			if (cimg->img)
@@ -425,19 +399,17 @@ void Map::ResizableTileMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView 
 		else
 		{
 			cimg->isCancel = true;
-			this->idleImgs->Add(cimg);
+			this->idleImgs.Add(cimg);
 		}
 	}
-	DEL_CLASS(cacheIds);
-	DEL_CLASS(cacheImgs);
 
-	i = this->idleImgs->GetCount();
+	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs->GetItem(i);
+		cimg = this->idleImgs.GetItem(i);
 		if (cimg->isFinish)
 		{
-			this->idleImgs->RemoveAt(i);
+			this->idleImgs.RemoveAt(i);
 			if (cimg->img)
 			{
 				DEL_CLASS(cimg->img);

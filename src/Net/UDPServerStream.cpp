@@ -10,7 +10,7 @@
 void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	Net::UDPServerStream *me = (Net::UDPServerStream*)userData;
-	Sync::MutexUsage mutUsage(me->dataMut);
+	Sync::MutexUsage mutUsage(&me->dataMut);
 	me->lastAddr = *addr;
 	me->lastPort = port;
 	if (dataSize >= BUFFSIZE)
@@ -29,7 +29,7 @@ void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressI
 		MemCopyNO(&me->buff[me->buffSize], buff, dataSize);
 		me->buffSize += dataSize;
 	}
-	me->readEvt->Set();
+	me->readEvt.Set();
 }
 
 Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.UDPServerSream"))
@@ -40,8 +40,6 @@ Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO
 	this->lastPort = 0;
 	this->buffSize = 0;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->readEvt, Sync::Event(true));
-	NEW_CLASS(this->dataMut, Sync::Mutex());
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, OnUDPPacket, this, log, CSTR("UDPStm: "), 2, false));
 	if (this->svr->IsError())
 	{
@@ -53,8 +51,6 @@ Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO
 Net::UDPServerStream::~UDPServerStream()
 {
 	this->Close();
-	DEL_CLASS(this->dataMut);
-	DEL_CLASS(this->readEvt);
 	MemFree(this->buff);
 }
 
@@ -67,12 +63,12 @@ UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
 {
 	while (this->svr != 0 && this->buffSize == 0)
 	{
-		this->readEvt->Wait(10000);
+		this->readEvt.Wait(10000);
 	}
 	if (this->svr == 0 || this->buffSize == 0)
 		return 0;
 	UOSInt ret;
-	Sync::MutexUsage mutUsage(this->dataMut);
+	Sync::MutexUsage mutUsage(&this->dataMut);
 	if (this->buffSize > size)
 	{
 		MemCopyNO(buff, this->buff, size);
@@ -91,7 +87,7 @@ UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
 
 UOSInt Net::UDPServerStream::Write(const UInt8 *buff, UOSInt size)
 {
-	Sync::MutexUsage mutUsage(this->dataMut);
+	Sync::MutexUsage mutUsage(&this->dataMut);
 	if (this->lastAddr.addrType == Net::AddrType::Unknown)
 	{
 		return 0;
@@ -108,7 +104,7 @@ Int32 Net::UDPServerStream::Flush()
 void Net::UDPServerStream::Close()
 {
 	SDEL_CLASS(this->svr);
-	this->readEvt->Set();
+	this->readEvt.Set();
 }
 
 Bool Net::UDPServerStream::Recover()

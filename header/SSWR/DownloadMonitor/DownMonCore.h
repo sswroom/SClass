@@ -34,15 +34,15 @@ namespace SSWR
 				FS_ERROR
 			} FileStatus;
 
-			typedef struct
+			struct FileInfo
 			{
 				Int32 id;
 				Int32 webType;
 				Text::String *dbName;
 				Text::String *fileName;
 				FileStatus status;
-				Sync::Mutex *mut;
-			} FileInfo;
+				Sync::Mutex mut;
+			};
 
 			typedef void (__stdcall *FileEndHandler)(void *userObj, Int32 fileId, Int32 webType);
 		private:
@@ -50,7 +50,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Bool chkRunning;
 			Bool chkToStop;
-			Sync::Event *chkEvt;
+			Sync::Event chkEvt;
 			CheckStatus chkStatus;
 			FileEndHandler fileEndHdlr;
 			void *fileEndObj;
@@ -63,11 +63,11 @@ namespace SSWR
 			Text::String *firefoxPath;
 			Text::String *listFile;
 			Parser::ParserList *parsers;
-			Media::VideoChecker *checker;
+			Media::VideoChecker checker;
 
-			Sync::Mutex *fileMut;
-			Data::Int32Map<FileInfo*> *fileTypeMap;
-			Data::FastStringMap<FileInfo*> *fileNameMap;
+			Sync::Mutex fileMut;
+			Data::Int32Map<FileInfo*> fileTypeMap;
+			Data::FastStringMap<FileInfo*> fileNameMap;
 
 			Bool FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
 			Bool FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);

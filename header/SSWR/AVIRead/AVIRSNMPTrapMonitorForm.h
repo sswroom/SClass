@@ -28,8 +28,8 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SNMPTrapMonitor *mon;
-			Sync::Mutex *packetMut;
-			Data::ArrayList<SNMPPacket*> *packetList;
+			Sync::Mutex packetMut;
+			Data::ArrayList<SNMPPacket*> packetList;
 
 			UI::GUIListBox *lbResults;
 			UI::GUIHSplitter *hspResults;

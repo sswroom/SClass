@@ -20,10 +20,10 @@ namespace UI
 			UI::GUIForm *ownerFrm;
 			UI::GUITimer *tmr;
 			Text::String *videoFileName;
-			Media::Decoder::VideoDecoderFinder *vdecoders;
+			Media::Decoder::VideoDecoderFinder vdecoders;
 			Media::IVideoSource *decoder;
 			Media::IImgResizer *resizer;
-			Sync::Mutex *frameMut;
+			Sync::Mutex frameMut;
 			Media::DrawImage *frameImg;
 
 			static void __stdcall OnVideoFrame(void *userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH);

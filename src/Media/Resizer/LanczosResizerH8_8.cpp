@@ -931,7 +931,6 @@ Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTa
 	buffPtr = 0;
 	this->hTime = 0;
 	this->vTime = 0;
-	NEW_CLASS(mut, Sync::Mutex());
 }
 
 Media::Resizer::LanczosResizerH8_8::~LanczosResizerH8_8()
@@ -946,7 +945,6 @@ Media::Resizer::LanczosResizerH8_8::~LanczosResizerH8_8()
 		MemFreeA64(buffPtr);
 		buffPtr = 0;
 	}
-	DEL_CLASS(mut);
 }
 
 void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
@@ -968,7 +966,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 
 	if (siWidth != dwidth && siHeight != dheight)
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1037,7 +1035,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 	}
 	else if (siWidth != dwidth)
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -1080,7 +1078,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 	}
 	else if (siHeight != dheight)
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();

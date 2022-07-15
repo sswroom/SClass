@@ -1,12 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Sync/MutexUsage.h"
 #include "UI/GUIDObjArea.h"
 
 UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
 {
 	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
 	me->displayRunning = true;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	while (!me->displayToStop)
 	{
 		if (me->drawUpdated)
@@ -123,17 +124,17 @@ dtlop2:
 				}
 			}
 			me->drawUpdated = false;
-			me->processEvt->Set();
+			me->processEvt.Set();
 
 			me->DrawToScreen();
 		}
 		else
 		{
-			me->displayEvt->Wait(100);
+			me->displayEvt.Wait(100);
 		}
 	}
 	me->displayRunning = false;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	return 0;
 }
 
@@ -141,32 +142,32 @@ UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
 {
 	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
 	me->processRunning = true;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	while (!me->processToStop)
 	{
-		me->dobjMut->Lock();
+		Sync::MutexUsage mutUsage(&me->dobjMut);
 		if (!me->drawUpdated && me->dobjHdlr && me->currDrawImg)
 		{
 			Bool changed = me->dobjHdlr->Check(me->currDrawImg);
-			me->dobjMut->Unlock();
+			mutUsage.EndUse();
 			if (changed)
 			{
 				me->drawUpdated = true;
-				me->displayEvt->Set();
+				me->displayEvt.Set();
 			}
 			else
 			{
-				me->processEvt->Wait(10);
+				me->processEvt.Wait(10);
 			}
 		}
 		else
 		{
-			me->dobjMut->Unlock();
-			me->processEvt->Wait(100);
+			mutUsage.EndUse();
+			me->processEvt.Wait(100);
 		}
 	}
 	me->processRunning = false;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	return 0;
 }
 
@@ -174,16 +175,12 @@ UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::D
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
-	NEW_CLASS(this->dobjMut, Sync::Mutex());
 	this->dobjHdlr = 0;
 	this->drawUpdated = false;
 	this->displayToStop = false;
 	this->displayRunning = false;
-	NEW_CLASS(this->displayEvt, Sync::Event(true));
 	this->processToStop = false;
 	this->processRunning = false;
-	NEW_CLASS(this->processEvt, Sync::Event(true));
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->currDrawImg = 0;
 	Sync::Thread::Create(DisplayThread, this);
 	Sync::Thread::Create(ProcessThread, this);
@@ -197,21 +194,17 @@ UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::D
 UI::GUIDObjArea::~GUIDObjArea()
 {
 	this->processToStop = true;
-	this->processEvt->Set();
+	this->processEvt.Set();
 	this->displayToStop = true;
-	this->displayEvt->Set();
+	this->displayEvt.Set();
 	while (this->displayRunning)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	while (this->processRunning)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
-	DEL_CLASS(this->dobjMut);
-	DEL_CLASS(this->mainEvt);
-	DEL_CLASS(this->displayEvt);
-	DEL_CLASS(this->processEvt);
 	if (this->dobjHdlr)
 	{
 		DEL_CLASS(this->dobjHdlr);
@@ -225,7 +218,7 @@ UI::GUIDObjArea::~GUIDObjArea()
 
 void UI::GUIDObjArea::SetHandler(UI::DObj::DObjHandler *dobjHdlr)
 {
-	this->dobjMut->Lock();
+	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		DEL_CLASS(this->dobjHdlr);
@@ -235,7 +228,6 @@ void UI::GUIDObjArea::SetHandler(UI::DObj::DObjHandler *dobjHdlr)
 	{
 		this->dobjHdlr->SetColorSess(this->colorSess);
 	}
-	this->dobjMut->Unlock();
 }
 
 Text::CString UI::GUIDObjArea::GetObjectClass()
@@ -250,7 +242,7 @@ OSInt UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIDObjArea::OnSurfaceCreated()
 {
-	this->dobjMut->Lock();
+	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->currDrawImg)
 	{
 		this->deng->DeleteImage(this->currDrawImg);
@@ -258,7 +250,6 @@ void UI::GUIDObjArea::OnSurfaceCreated()
 	}
 	this->currDrawImg = this->deng->CreateImage32(this->surfaceW, this->surfaceH, Media::AT_NO_ALPHA);
 	this->drawUpdated = false;
-	this->dobjMut->Unlock();
 }
 
 void UI::GUIDObjArea::OnMouseWheel(OSInt x, OSInt y, Int32 amount)
@@ -267,32 +258,29 @@ void UI::GUIDObjArea::OnMouseWheel(OSInt x, OSInt y, Int32 amount)
 
 void UI::GUIDObjArea::OnMouseMove(OSInt x, OSInt y)
 {
-	this->dobjMut->Lock();
+	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		this->dobjHdlr->OnMouseMove(x, y);
 	}
-	this->dobjMut->Unlock();
 }
 
 void UI::GUIDObjArea::OnMouseDown(OSInt x, OSInt y, MouseButton button)
 {
-	this->dobjMut->Lock();
+	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		this->dobjHdlr->OnMouseDown(x, y, button);
 	}
-	this->dobjMut->Unlock();
 }
 
 void UI::GUIDObjArea::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 {
-	this->dobjMut->Lock();
+	Sync::MutexUsage mutUsage(&this->dobjMut);
 	if (this->dobjHdlr)
 	{
 		this->dobjHdlr->OnMouseUp(x, y, button);
 	}
-	this->dobjMut->Unlock();
 }
 
 void UI::GUIDObjArea::OnMouseDblClick(OSInt x, OSInt y, MouseButton button)

@@ -10,7 +10,7 @@ namespace Media
 {
 	namespace Resizer
 	{
-		class LanczosResizer8_C8 : public Media::IImgResizer, public Media::IColorHandler
+		class 	LanczosResizer8_C8 : public Media::IImgResizer, public Media::IColorHandler
 		{
 		private:
 			enum class FuncType

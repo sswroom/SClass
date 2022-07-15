@@ -40,8 +40,8 @@ namespace SSWR
 			Net::MQTTBroker *broker;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
-			Data::StringMap<TopicStatus*> *topicMap;
-			Sync::Mutex *topicMut;
+			Data::StringMap<TopicStatus*> topicMap;
+			Sync::Mutex topicMut;
 			Bool topicListUpdated;
 
 			UI::GUITabControl *tcMain;

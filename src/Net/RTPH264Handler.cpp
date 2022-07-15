@@ -9,7 +9,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
+Net::RTPH264Handler::RTPH264Handler(Int32 payloadType) : mstm(UTF8STRC("Net.RTPH264Handler.RTPH264Handler"))
 {
 	this->payloadType = payloadType;
 	this->cb = 0;
@@ -21,33 +21,27 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->sps = 0;
 	this->pps = 0;
 	this->firstFrame = false;
-	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("Net.RTPH264Handler.RTPH264Handler")));
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->frameInfo, Media::FrameInfo());
 
-	this->frameInfo->fourcc = *(UInt32*)"H264";
-	this->frameInfo->dispWidth = 0;
-	this->frameInfo->dispHeight = 0;
-	this->frameInfo->storeWidth = 0;
-	this->frameInfo->storeHeight = 0;
-	this->frameInfo->storeBPP = 0;
-	this->frameInfo->pf = Media::PF_UNKNOWN;
-	this->frameInfo->byteSize = 0;
-	this->frameInfo->par2 = 1;
-	this->frameInfo->hdpi = 96;
-	this->frameInfo->ftype = Media::FT_NON_INTERLACE;
-	this->frameInfo->atype = Media::AT_NO_ALPHA;
-	this->frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
-	this->frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
-	this->frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	this->frameInfo->rotateType = Media::RotateType::None;
+	this->frameInfo.fourcc = *(UInt32*)"H264";
+	this->frameInfo.dispWidth = 0;
+	this->frameInfo.dispHeight = 0;
+	this->frameInfo.storeWidth = 0;
+	this->frameInfo.storeHeight = 0;
+	this->frameInfo.storeBPP = 0;
+	this->frameInfo.pf = Media::PF_UNKNOWN;
+	this->frameInfo.byteSize = 0;
+	this->frameInfo.par2 = 1;
+	this->frameInfo.hdpi = 96;
+	this->frameInfo.ftype = Media::FT_NON_INTERLACE;
+	this->frameInfo.atype = Media::AT_NO_ALPHA;
+	this->frameInfo.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+	this->frameInfo.yuvType = Media::ColorProfile::YUVT_BT601;
+	this->frameInfo.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->frameInfo.rotateType = Media::RotateType::None;
 }
 
 Net::RTPH264Handler::~RTPH264Handler()
 {
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->mstm);
-	DEL_CLASS(this->frameInfo);
 	if (this->sps)
 	{
 		MemFree(this->sps);
@@ -62,7 +56,7 @@ Net::RTPH264Handler::~RTPH264Handler()
 void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
 {
 	UTF8Char sbuff[32];
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("ts: ")), ts), UTF8STRC("\r\n"));
 	IO::Console::PrintStrO(sbuff);
 
@@ -80,11 +74,11 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 	{
 	case 1:
 		missSeq = true;
-		mstm->Clear();
+		this->mstm.Clear();
 		WriteMInt32(tmpBuff, 1);
-		mstm->Write(tmpBuff,4);
-		mstm->Write(buff, dataSize);
-		frameBuff = mstm->GetBuff(&frameSize);
+		this->mstm.Write(tmpBuff,4);
+		this->mstm.Write(buff, dataSize);
+		frameBuff = this->mstm.GetBuff(&frameSize);
 		if (this->cb)
 		{
 			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, (Media::IVideoSource::FrameFlag)(this->firstFrame?Media::IVideoSource::FF_DISCONTTIME:0), Media::YCOFST_C_CENTER_LEFT);
@@ -93,26 +87,26 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		break;
 	case 5:
 		missSeq = true;
-		mstm->Clear();
+		this->mstm.Clear();
 		if (this->sps)
 		{
-			mstm->Write(this->sps, this->spsSize);
+			this->mstm.Write(this->sps, this->spsSize);
 		}
 		if (this->pps)
 		{
-			mstm->Write(this->pps, this->ppsSize);
+			this->mstm.Write(this->pps, this->ppsSize);
 		}
 		WriteMInt32(tmpBuff, 1);
-		mstm->Write(tmpBuff,4);
-		mstm->Write(buff, dataSize);
-		frameBuff = mstm->GetBuff(&frameSize);
+		this->mstm.Write(tmpBuff,4);
+		this->mstm.Write(buff, dataSize);
+		frameBuff = this->mstm.GetBuff(&frameSize);
 		if (this->cb)
 		{
 			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_I, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 		}
 		break;
 	case 24: //STAP-A
-		mstm->Clear();
+		this->mstm.Clear();
 		WriteMInt32(tmpBuff, 1);
 		i = 1;
 		while (i < dataSize - 2)
@@ -121,21 +115,21 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			switch (buff[i + 2] & 0x1f)
 			{
 			case 1:
-				mstm->Write(tmpBuff, 4);
-				mstm->Write(&buff[i + 2], frameSize);
+				this->mstm.Write(tmpBuff, 4);
+				this->mstm.Write(&buff[i + 2], frameSize);
 				this->isKey = false;
 				break;
 			case 5:
 				if (this->sps)
 				{
-					mstm->Write(this->sps, this->spsSize);
+					this->mstm.Write(this->sps, this->spsSize);
 				}
 				if (this->pps)
 				{
-					mstm->Write(this->pps, this->ppsSize);
+					this->mstm.Write(this->pps, this->ppsSize);
 				}
-				mstm->Write(tmpBuff, 4);
-				mstm->Write(&buff[i + 2], frameSize);
+				this->mstm.Write(tmpBuff, 4);
+				this->mstm.Write(&buff[i + 2], frameSize);
 				this->isKey = true;
 				break;
 			case 6:
@@ -147,7 +141,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			}
 			i += frameSize + 2;
 		}
-		frameBuff = mstm->GetBuff(&frameSize);
+		frameBuff = this->mstm.GetBuff(&frameSize);
 		if (this->cb)
 		{
 			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?Media::IVideoSource::FS_I:Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -157,17 +151,17 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		if (buff[1] & 0x80) //start
 		{
 			missSeq = false;
-			mstm->Clear();
+			this->mstm.Clear();
 			if ((buff[1] & 0x1f) == 5)
 			{
 				this->isKey = true;
 				if (this->sps)
 				{
-					mstm->Write(this->sps, this->spsSize);
+					this->mstm.Write(this->sps, this->spsSize);
 				}
 				if (this->pps)
 				{
-					mstm->Write(this->pps, this->ppsSize);
+					this->mstm.Write(this->pps, this->ppsSize);
 				}
 			}
 			else if ((buff[1] & 0x1f) == 1)
@@ -181,16 +175,16 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 
 			WriteMInt32(tmpBuff, 1);
 			tmpBuff[4] = (buff[0] & 0xe0) | (buff[1] & 0x1f);
-			mstm->Write(tmpBuff, 5);
+			this->mstm.Write(tmpBuff, 5);
 		}
-		mstm->Write(&buff[2], dataSize - 2);
+		this->mstm.Write(&buff[2], dataSize - 2);
 		if (buff[1] & 0x40) //end
 		{
 			if (!missSeq)
 			{
 				missSeq = true;
 
-				frameBuff = mstm->GetBuff(&frameSize);
+				frameBuff = this->mstm.GetBuff(&frameSize);
 				if (this->cb)
 				{
 					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?(Media::IVideoSource::FF_DISCONTTIME):Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -210,17 +204,17 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		if (buff[1] & 0x80)
 		{
 			missSeq = false;
-			mstm->Clear();
+			this->mstm.Clear();
 			if ((buff[1] & 0x1f) == 5)
 			{
 				this->isKey = true;
 				if (this->sps)
 				{
-					mstm->Write(this->sps, this->spsSize);
+					this->mstm.Write(this->sps, this->spsSize);
 				}
 				if (this->pps)
 				{
-					mstm->Write(this->pps, this->ppsSize);
+					this->mstm.Write(this->pps, this->ppsSize);
 				}
 			}
 			else
@@ -229,16 +223,16 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			}
 			WriteMInt32(tmpBuff, 1);
 			tmpBuff[4] = (buff[0] & 0xe0) | (buff[1] & 0x1f);
-			mstm->Write(tmpBuff, 5);
+			this->mstm.Write(tmpBuff, 5);
 		}
-		mstm->Write(&buff[4], dataSize - 4);
+		this->mstm.Write(&buff[4], dataSize - 4);
 		if (buff[1] & 0x40)
 		{
 			if (!missSeq)
 			{
 				missSeq = true;
 
-				frameBuff = mstm->GetBuff(&frameSize);
+				frameBuff = this->mstm.GetBuff(&frameSize);
 				if (this->cb)
 				{
 					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -297,7 +291,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 				this->sps = MemAlloc(UInt8, spsSize);
 				MemCopyNO(this->sps, buff, this->spsSize);
 				
-				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, 0);
+				Media::H264Parser::GetFrameInfo(buff, this->spsSize, &this->frameInfo, 0);
 
 				txtSize = (UOSInt)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
 				WriteMInt32(buff, 1);
@@ -336,9 +330,9 @@ Text::CString Net::RTPH264Handler::GetFilterName()
 
 Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
-	if (this->frameInfo->dispWidth == 0 || this->frameInfo->dispHeight == 0)
+	if (this->frameInfo.dispWidth == 0 || this->frameInfo.dispHeight == 0)
 		return false;
-	info->Set(this->frameInfo);
+	info->Set(&this->frameInfo);
 	*frameRateNorm = 30;
 	*frameRateDenorm = 1;
 	*maxFrameSize = 90000;

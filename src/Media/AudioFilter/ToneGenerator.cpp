@@ -232,131 +232,131 @@ Double Media::AudioFilter::ToneGenerator::GetToneFreq(ToneType tone)
 	return 440.0 * Math_Pow(2, v / 12.0);
 }
 
-const WChar *Media::AudioFilter::ToneGenerator::GetToneName(ToneType tone)
+Text::CString Media::AudioFilter::ToneGenerator::GetToneName(ToneType tone)
 {
 	switch (tone)
 	{
 	case TT_A1:
-		return L"A1";
+		return CSTR("A1");
 	case TT_A1S:
-		return L"A#1";
+		return CSTR("A#1");
 	case TT_B1:
-		return L"B1";
+		return CSTR("B1");
 	case TT_C1:
-		return L"C1";
+		return CSTR("C1");
 	case TT_C1S:
-		return L"C#1";
+		return CSTR("C#1");
 	case TT_D1:
-		return L"D1";
+		return CSTR("D1");
 	case TT_D1S:
-		return L"D#1";
+		return CSTR("D#1");
 	case TT_E1:
-		return L"E1";
+		return CSTR("E1");
 	case TT_F1:
-		return L"F1";
+		return CSTR("F1");
 	case TT_F1S:
-		return L"F#1";
+		return CSTR("F#1");
 	case TT_G1:
-		return L"G1";
+		return CSTR("G1");
 	case TT_G1S:
-		return L"G#1";
+		return CSTR("G#1");
 	case TT_A2:
-		return L"A2";
+		return CSTR("A2");
 	case TT_A2S:
-		return L"A#2";
+		return CSTR("A#2");
 	case TT_B2:
-		return L"B2";
+		return CSTR("B2");
 	case TT_C2:
-		return L"C2";
+		return CSTR("C2");
 	case TT_C2S:
-		return L"C#2";
+		return CSTR("C#2");
 	case TT_D2:
-		return L"D2";
+		return CSTR("D2");
 	case TT_D2S:
-		return L"D#2";
+		return CSTR("D#2");
 	case TT_E2:
-		return L"E2";
+		return CSTR("E2");
 	case TT_F2:
-		return L"F2";
+		return CSTR("F2");
 	case TT_F2S:
-		return L"F#2";
+		return CSTR("F#2");
 	case TT_G2:
-		return L"G2";
+		return CSTR("G2");
 	case TT_G2S:
-		return L"G#2";
+		return CSTR("G#2");
 	case TT_A3:
-		return L"A3";
+		return CSTR("A3");
 	case TT_A3S:
-		return L"A#3";
+		return CSTR("A#3");
 	case TT_B3:
-		return L"B3";
+		return CSTR("B3");
 	case TT_C3:
-		return L"C3";
+		return CSTR("C3");
 	case TT_C3S:
-		return L"C#3";
+		return CSTR("C#3");
 	case TT_D3:
-		return L"D3";
+		return CSTR("D3");
 	case TT_D3S:
-		return L"D#3";
+		return CSTR("D#3");
 	case TT_E3:
-		return L"E3";
+		return CSTR("E3");
 	case TT_F3:
-		return L"F3";
+		return CSTR("F3");
 	case TT_F3S:
-		return L"F#3";
+		return CSTR("F#3");
 	case TT_G3:
-		return L"G3";
+		return CSTR("G3");
 	case TT_G3S:
-		return L"G#3";
+		return CSTR("G#3");
 	case TT_A4:
-		return L"A4";
+		return CSTR("A4");
 	case TT_A4S:
-		return L"A#4";
+		return CSTR("A#4");
 	case TT_B4:
-		return L"B4";
+		return CSTR("B4");
 	case TT_C4:
-		return L"C4";
+		return CSTR("C4");
 	case TT_C4S:
-		return L"C#4";
+		return CSTR("C#4");
 	case TT_D4:
-		return L"D4";
+		return CSTR("D4");
 	case TT_D4S:
-		return L"D#4";
+		return CSTR("D#4");
 	case TT_E4:
-		return L"E4";
+		return CSTR("E4");
 	case TT_F4:
-		return L"F4";
+		return CSTR("F4");
 	case TT_F4S:
-		return L"F#4";
+		return CSTR("F#4");
 	case TT_G4:
-		return L"G4";
+		return CSTR("G4");
 	case TT_G4S:
-		return L"G#4";
+		return CSTR("G#4");
 	case TT_A5:
-		return L"A5";
+		return CSTR("A5");
 	case TT_A5S:
-		return L"A#5";
+		return CSTR("A#5");
 	case TT_B5:
-		return L"B5";
+		return CSTR("B5");
 	case TT_C5:
-		return L"C5";
+		return CSTR("C5");
 	case TT_C5S:
-		return L"C#5";
+		return CSTR("C#5");
 	case TT_D5:
-		return L"D5";
+		return CSTR("D5");
 	case TT_D5S:
-		return L"D#5";
+		return CSTR("D#5");
 	case TT_E5:
-		return L"E5";
+		return CSTR("E5");
 	case TT_F5:
-		return L"F5";
+		return CSTR("F5");
 	case TT_F5S:
-		return L"F#5";
+		return CSTR("F#5");
 	case TT_G5:
-		return L"G5";
+		return CSTR("G5");
 	case TT_G5S:
-		return L"G#5";
+		return CSTR("G#5");
 	default:
-		return L"Unknown";
+		return CSTR("Unknown");
 	}
 }

@@ -21,12 +21,12 @@ namespace Media
 			UOSInt sampleBuffSize;
 			UOSInt sampleOfst;
 			UOSInt sampleCnt;
-			Sync::Mutex *sampleMut;
+			Sync::Mutex sampleMut;
 			UOSInt calcLeft;
 			UOSInt calcInt;
 			UInt8 *calcBuff;
 			Bool calcReady;
-			Sync::Mutex *calcMut;
+			Sync::Mutex calcMut;
 			UInt32 nChannels;
 			UInt32 bitCount;
 			UInt32 align;
@@ -34,7 +34,7 @@ namespace Media
 
 			Bool threadToStop;
 			Bool threadRunning;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 
 		private:
 			static UInt32 __stdcall CalcThread(void *userObj);

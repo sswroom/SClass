@@ -1961,11 +1961,11 @@ Map/LayerTools.h: ../../src/Map/LayerTools.cpp
 @LayerTools.o
 Map/LeveledMapView.h: ../../src/Map/LeveledMapView.cpp
 @LeveledMapView.o
-Map/MapConfig.h:
 Map/MapConfig2.h: ../../src/Map/MapConfig2.cpp
 @MapConfig2.o
 Map/MapConfig2TGen.h: ../../src/Map/MapConfig2TGen.cpp
 @MapConfig2TGen.o
+Map/MapConfigBase.h:
 Map/MapEnv.h: ../../src/Map/MapEnv.cpp
 @MapEnv.o
 Map/MapLayerCollection.h: ../../src/Map/MapLayerCollection.cpp

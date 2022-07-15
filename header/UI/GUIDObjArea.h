@@ -15,15 +15,15 @@ namespace UI
 		Media::DrawImage *currDrawImg;
 		Media::ColorManagerSess *colorSess;
 		Bool drawUpdated;
-		Sync::Mutex *dobjMut;
+		Sync::Mutex dobjMut;
 		UI::DObj::DObjHandler *dobjHdlr;
 		Bool displayToStop;
 		Bool displayRunning;
-		Sync::Event *displayEvt;
+		Sync::Event displayEvt;
 		Bool processToStop;
 		Bool processRunning;
-		Sync::Event *processEvt;
-		Sync::Event *mainEvt;
+		Sync::Event processEvt;
+		Sync::Event mainEvt;
 
 		static UInt32 __stdcall DisplayThread(void *userObj);
 		static UInt32 __stdcall ProcessThread(void *userObj);

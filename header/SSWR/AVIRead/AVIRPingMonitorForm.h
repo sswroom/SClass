@@ -38,15 +38,15 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::WebServer::WebListener *listener;
 			Net::EthernetWebHandler *webHdlr;
 			Net::SocketMonitor *socMon;
-			Net::EthernetAnalyzer *analyzer;
-			Net::WhoisHandler *whois;
-			Sync::Mutex *ipMut;
-			Data::UInt32Map<IPInfo*> *ipMap;
+			Net::WhoisHandler whois;
+			Net::EthernetAnalyzer analyzer;
+			Sync::Mutex ipMut;
+			Data::UInt32Map<IPInfo*> ipMap;
 			Bool ipListUpdated;
 			Bool ipContUpdated;
 			IPInfo *currIP;

@@ -15,7 +15,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	HTTPDATAHANDLE *fdh = (HTTPDATAHANDLE*)userObj;
 	if (fdh->queue)
 	{
-		Sync::MutexUsage mutUsage(fdh->mut);
+		Sync::MutexUsage mutUsage(&fdh->mut);
 		fdh->cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		mutUsage.EndUse();
 	}
@@ -42,7 +42,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		{
 			if (fdh->queue)
 			{
-				Sync::MutexUsage mutUsage(fdh->mut);
+				Sync::MutexUsage mutUsage(&fdh->mut);
 				fdh->queue->EndRequest(fdh->cli);
 				fdh->cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				mutUsage.EndUse();
@@ -75,7 +75,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				readSize = fdh->cli->Read(buff, 2048);
 				if (readSize == 0)
 				{
-					Sync::MutexUsage mutUsage(fdh->mut);
+					Sync::MutexUsage mutUsage(&fdh->mut);
 					DEL_CLASS(fdh->file);
 					fdh->file = 0;
 					fdh->fileLength = 0;
@@ -83,7 +83,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					IO::Path::DeleteFile(fdh->localFile->v);
 					break;
 				}
-				Sync::MutexUsage mutUsage(fdh->mut);
+				Sync::MutexUsage mutUsage(&fdh->mut);
 				if (fdh->currentOffset != fdh->loadSize)
 				{
 					fdh->file->SeekFromBeginning(fdh->loadSize);
@@ -129,7 +129,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 						break;
 					}
 					
-					Sync::MutexUsage mutUsage(fdh->mut);
+					Sync::MutexUsage mutUsage(&fdh->mut);
 					if (fdh->currentOffset != fdh->loadSize)
 					{
 						fdh->file->SeekFromBeginning(fdh->loadSize);
@@ -149,7 +149,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			}
 		}
 	}
-	Sync::MutexUsage mutUsage(fdh->mut);
+	Sync::MutexUsage mutUsage(&fdh->mut);
 	if (fdh->queue)
 	{
 		fdh->queue->EndRequest(fdh->cli);
@@ -210,14 +210,13 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 		}
 		else
 		{
-			fdh = MemAlloc(Net::HTTPData::HTTPDATAHANDLE, 1);
+			NEW_CLASS(fdh, Net::HTTPData::HTTPDATAHANDLE());
 			fdh->file = fs;
 			dataOffset = 0;
 			dataLength = fdh->fileLength = fs->GetLength();
 			fdh->currentOffset = fs->GetPosition();
 			fdh->objectCnt = 1;
 			fdh->seekCnt = 0;
-			NEW_CLASS(fdh->mut, Sync::Mutex());
 			fdh->url = Text::String::New(url);
 			fdh->localFile = Text::String::New(localFile);
 			fdh->isLoading = false;
@@ -239,13 +238,12 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 	{
 		dataOffset = 0;
 		dataLength = (UOSInt)-1;
-		fdh = MemAlloc(Net::HTTPData::HTTPDATAHANDLE, 1);
+		NEW_CLASS(fdh, Net::HTTPData::HTTPDATAHANDLE());
 		fdh->file = 0;
 		fdh->fileLength = 0;
 		fdh->currentOffset = 0;
 		fdh->objectCnt = 1;
 		fdh->seekCnt = 0;
-		NEW_CLASS(fdh->mut, Sync::Mutex());
 		fdh->url = Text::String::New(url);
 		fdh->localFile = Text::String::New(localFile);
 		fdh->isLoading = true;
@@ -283,7 +281,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
 {
 	if (fdh == 0)
 		return 0;
-	Sync::MutexUsage mutUsage(fdh->mut);
+	Sync::MutexUsage mutUsage(&fdh->mut);
 	while (fdh->isLoading && (dataOffset + offset + length > fdh->loadSize))
 	{
 		mutUsage.EndUse();
@@ -350,7 +348,7 @@ void Net::HTTPData::SetFullName(Text::CString fullName)
 	if (fdh == 0 || fullName.leng == 0)
 		return;
 	UOSInt i;
-	Sync::MutexUsage mutUsage(fdh->mut);
+	Sync::MutexUsage mutUsage(&fdh->mut);
 	SDEL_STRING(fdh->url);
 	fdh->url = Text::String::New(fullName);
 	i = fdh->url->LastIndexOf('/');
@@ -403,7 +401,7 @@ void Net::HTTPData::Close()
 	{
 		if (--(fdh->objectCnt) == 0)
 		{
-			Sync::MutexUsage mutUsage(fdh->mut);
+			Sync::MutexUsage mutUsage(&fdh->mut);
 			if (fdh->isLoading)
 				fdh->cli->Close();
 			mutUsage.EndUse();
@@ -414,8 +412,7 @@ void Net::HTTPData::Close()
 			DEL_CLASS(fdh->file);
 			fdh->url->Release();
 			fdh->localFile->Release();
-			DEL_CLASS(fdh->mut);
-			MemFree(fdh);
+			DEL_CLASS(fdh);
 		}
 	}
 	fdh = 0;

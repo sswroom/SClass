@@ -258,11 +258,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, Text::CString code)
 {
 	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
-	Sync::MutexUsage mutUsage(me->codeMut);
+	Sync::MutexUsage mutUsage(&me->codeMut);
 	SDEL_STRING(me->newCode);
 	me->newCode = Text::String::New(code);
 	me->codeUpdate = true;
-	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
@@ -271,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 	if (me->codeUpdate)
 	{
 		me->codeUpdate = false;
-		Sync::MutexUsage mutUsage(me->codeMut);
+		Sync::MutexUsage mutUsage(&me->codeMut);
 		if (me->newCode)
 		{
 			me->txtScan->SetText(me->newCode->ToCString());
@@ -279,7 +278,6 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 			me->newCode->Release();
 			me->newCode = 0;
 		}
-		mutUsage.EndUse();
 	}
 }
 
@@ -292,7 +290,6 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->scanner = 0;
-	NEW_CLASS(this->codeMut, Sync::Mutex());
 	this->newCode = 0;
 	this->codeUpdate = false;
 	this->cmdCurr = IO::CodeScanner::DC_GET_READ_MODE;
@@ -381,7 +378,6 @@ SSWR::AVIRead::AVIRDWQB30Form::~AVIRDWQB30Form()
 {
 	SDEL_CLASS(this->scanner);
 	SDEL_STRING(this->newCode);
-	DEL_CLASS(this->codeMut);
 }
 
 void SSWR::AVIRead::AVIRDWQB30Form::OnMonitorChanged()

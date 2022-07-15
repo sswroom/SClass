@@ -42,22 +42,21 @@ namespace Map
 		Map::TileMap *map;
 		Parser::ParserList *parsers;
 		Media::IImgResizer *resizer;
-		Media::ColorManager *colorMgr;
-		Media::CS::TransferType outputRGBType;
-		Double outputGamma;
+		Media::ColorProfile srcColor;
+		Media::ColorProfile outputColor;
 
-		OSInt threadCnt;
+		UOSInt threadCnt;
 		ThreadStat *threads;
-		OSInt threadNext;
+		UOSInt threadNext;
 
 		OSInt lastLevel;
-		Data::ArrayListInt64 *lastIds;
-		Data::ArrayList<CachedImage *> *lastImgs;
-		Data::ArrayList<CachedImage *> *idleImgs;
+		Data::ArrayListInt64 lastIds;
+		Data::ArrayList<CachedImage *> lastImgs;
+		Data::ArrayList<CachedImage *> idleImgs;
 
-		Data::SyncLinkedList *taskQueued;
-		Sync::Event *taskEvt;
-		Sync::Mutex *taskMut;
+		Data::SyncLinkedList taskQueued;
+		Sync::Event taskEvt;
+		Sync::Mutex taskMut;
 		UpdatedHandler updHdlr;
 		void *updObj;
 
@@ -65,11 +64,11 @@ namespace Map
 		void AddTask(CachedImage *cimg);
 		void DrawImage(Map::MapView *view, Media::DrawImage *img, CachedImage *cimg);
 	public:
-		ResizableTileMapRenderer(Media::DrawEngine *eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManager *colorMgr, Media::CS::TransferType outputRGBType, Double outputGamma);
+		ResizableTileMapRenderer(Media::DrawEngine *eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor);
 		virtual ~ResizableTileMapRenderer();
 
 		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view);
 		virtual void SetUpdatedHandler(UpdatedHandler hdlr, void *userObj);
 	};
-};
+}
 #endif

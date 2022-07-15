@@ -21,21 +21,21 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::TCPClient *cli;
 		void *cliData;
-		Sync::Mutex *cliMut;
-		const WChar *cliAddr;
+		Sync::Mutex cliMut;
+		Net::SocketUtil::AddressInfo cliAddr;
 		UInt16 cliPort;
 		IO::IProtocolHandler *proto;
 		IProtoClientHandler *cliHdlr;
 
 		Bool threadRunning;
 		Bool threadToStop;
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 		Bool started;
 		Bool connected;
 
 		static UInt32 __stdcall ProtoThread(void *userObj);
 	public:
-		ProtoClient(Net::SocketFactory *sockf, const WChar *cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, IProtoClientHandler *cliHdlr);
+		ProtoClient(Net::SocketFactory *sockf, Text::CString cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, IProtoClientHandler *cliHdlr);
 		~ProtoClient();
 
 		void Start();

@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBCACHE
 #define _SM_DB_DBCACHE
-#include "Data/StringMap.h"
+#include "Data/ICaseStringMap.h"
 #include "DB/DBModel.h"
 #include "DB/DBRow.h"
 #include "DB/PageRequest.h"
@@ -20,8 +20,8 @@ namespace DB
 	private:
         DB::DBTool *db;
 		DB::DBModel *model;
-		Sync::Mutex *tableMut;
-		Data::StringMap<TableInfo*> *tableMap;
+		Sync::Mutex tableMut;
+		Data::ICaseStringMap<TableInfo*> tableMap;
 		UOSInt cacheCnt;
 
 		TableInfo *GetTableInfo(Text::CString tableName);

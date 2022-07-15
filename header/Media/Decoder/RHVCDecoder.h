@@ -12,7 +12,7 @@ namespace Media
 		{
 		private:
 			UOSInt maxFrameSize;
-			Sync::Mutex *frameMut;
+			Sync::Mutex frameMut;
 			UInt8 *frameBuff;
 			UOSInt frameSize;
 			Bool lastIsField;

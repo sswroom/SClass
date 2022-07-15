@@ -18,13 +18,13 @@ namespace IO
 
 			ScanHandler scanHdlr;
 			void *scanHdlrObj;
-			Sync::Mutex *reqMut;
-			Sync::Mutex *recvMut;
+			Sync::Mutex reqMut;
+			Sync::Mutex recvMut;
 			UInt8 *recvBuff;
 			UOSInt recvSize;
 			Bool recvRunning;
 			Bool recvToStop;
-			Sync::Event *recvEvt;
+			Sync::Event recvEvt;
 
 			static UInt32 __stdcall RecvThread(void *userObj);
 			Bool ScanModeStart();

@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Media/FrameInfo.h"
 #include "Media/DDrawRendererLR.h"
-#include "Media/Resizer/LanczosResizerLR_C8.h"
+#include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "IO/DebugWriter.h"
 #include "Text/MyString.h"
 
@@ -248,7 +248,7 @@ UInt32 __stdcall Media::DDrawRendererLR::FrameProcesser(void *obj)
 			while (me->frameProcStart != me->frameProcEnd)
 			{
 				me->frameProcMut->Lock();
-				me->csconv->Convert(me->frameSources[me->frameProcStart].frameData, me->frameRGBBuff, me->info.width, me->info.height, me->info.width * (me->info.bpp >> 3), me->info.width << 3);
+				me->csconv->Convert(me->frameSources[me->frameProcStart].frameData, me->frameRGBBuff, me->info.dispWidth, me->info.dispHeight, me->info.width * (me->info.bpp >> 3), me->info.width << 3);
 
 				if (!me->firstFrame)
 				{

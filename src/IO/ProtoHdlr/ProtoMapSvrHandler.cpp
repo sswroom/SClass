@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoMapSvrHandler.h"
+#include "Sync/MutexUsage.h"
 
 UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(const UInt8 *buff, Int32 sz)
 {
@@ -42,14 +43,10 @@ mcclop:
 IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(IO::IProtocolHandler::DataListener *listener)
 {
 	this->listener = listener;
-	NEW_CLASS(this->crcMut, Sync::Mutex());
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
 }
 
 IO::ProtoHdlr::ProtoMapSvrHandler::~ProtoMapSvrHandler()
 {
-	DEL_CLASS(this->crc);
-	DEL_CLASS(this->crcMut);
 }
 
 void *IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(IO::Stream *stm)
@@ -95,11 +92,11 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(IO::Stream *stm, void *s
 				if (packetSize > buffSize)
 					return buffSize;
 
-				this->crcMut->Lock();
-				this->crc->Clear();
-				this->crc->Calc(buff, packetSize - 2);
-				this->crc->GetValue((UInt8*)&crcVal);
-				this->crcMut->Unlock();
+				Sync::MutexUsage mutUsage(&this->crcMut);
+				this->crc.Clear();
+				this->crc.Calc(buff, packetSize - 2);
+				this->crc.GetValue((UInt8*)&crcVal);
+				mutUsage.EndUse();
 				if ((crcVal & 0xffff) == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, 0x10000 | *(UInt16*)&buff[4], 0, &buff[6], packetSize - 8);
@@ -134,11 +131,11 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 		UInt32 crcVal;
 		*(Int16*)buff = *(Int16*)"ma";
 
-		this->crcMut->Lock();
-		this->crc->Clear();
-		this->crc->Calc(buff, cmdSize + 6);
-		this->crc->GetValue((UInt8*)&crcVal);
-		this->crcMut->Unlock();
+		Sync::MutexUsage mutUsage(&this->crcMut);
+		this->crc.Clear();
+		this->crc.Calc(buff, cmdSize + 6);
+		this->crc.GetValue((UInt8*)&crcVal);
+		mutUsage.EndUse();
 		*(UInt16*)&buff[cmdSize + 6] = (UInt16)crcVal;
 	}
 	else

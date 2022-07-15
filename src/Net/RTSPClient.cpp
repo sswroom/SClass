@@ -1,8 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/MemoryStream.h"
-#include "IO/StreamReader.h"
-#include "IO/StreamWriter.h"
 #include "Manage/HiResClock.h"
 #include "Media/MediaFile.h"
 #include "Net/RTSPClient.h"
@@ -11,6 +9,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/URLString.h"
+#include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
 UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
@@ -26,172 +25,170 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 	UOSInt j;
 	UOSInt k;
 	Bool content;
-	IO::MemoryStream *mstm;
-	IO::StreamReader *reader;
 	
 	cliData->threadRunning = true;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.RTSPCLient.ControlThread")));
-	buffSize = 0;
-	content = false;
-	while (!cliData->threadToStop)
 	{
-		if (cliData->cli == 0)
+		IO::MemoryStream mstm(UTF8STRC("Net.RTSPCLient.ControlThread"));
+		buffSize = 0;
+		content = false;
+		while (!cliData->threadToStop)
 		{
-			Sync::MutexUsage mutUsage(cliData->cliMut);
-			NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port));
-			mutUsage.EndUse();
-		}
-		if (content)
-		{
-			thisSize = cliData->cli->Read(dataBuff, 2048);
-			if (thisSize == 0)
+			if (cliData->cli == 0)
 			{
-				Sync::MutexUsage mutUsage(cliData->cliMut);
-				DEL_CLASS(cliData->cli);
-				cliData->cli = 0;
-				mutUsage.EndUse();
-				continue;
+				Sync::MutexUsage mutUsage(&cliData->cliMut);
+				NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port));
 			}
-			if (cliData->reqReplySize > buffSize + thisSize)
+			if (content)
 			{
-				MemCopyNO(&cliData->reqReply[buffSize], dataBuff, thisSize);
-				buffSize += thisSize;
-				continue;
-			}
-			else
-			{
-				MemCopyNO(&cliData->reqReply[buffSize], dataBuff, cliData->reqReplySize - buffSize);
-				cliData->reqSuccess = true;
-				cliData->reqEvt->Set();
-				if (cliData->reqReplySize < buffSize + thisSize)
+				thisSize = cliData->cli->Read(dataBuff, 2048);
+				if (thisSize == 0)
 				{
-					MemCopyO(dataBuff, &dataBuff[cliData->reqReplySize - buffSize], thisSize - cliData->reqReplySize + buffSize);
+					Sync::MutexUsage mutUsage(&cliData->cliMut);
+					DEL_CLASS(cliData->cli);
+					cliData->cli = 0;
+					continue;
 				}
-				buffSize = thisSize - cliData->reqReplySize + buffSize;
-				content = false;
-			}
-			
-		}
-		else
-		{
-			thisSize = cliData->cli->Read(&dataBuff[buffSize], 2048 - buffSize);
-			if (thisSize == 0)
-			{
-				Sync::MutexUsage mutUsage(cliData->cliMut);
-				DEL_CLASS(cliData->cli);
-				cliData->cli = 0;
-				mutUsage.EndUse();
-				continue;
-			}
-			buffSize += thisSize;
-		}
-		Int32 val = *(Int32*)"\r\n\r\n";
-		i = 0;
-		j = buffSize - 4;
-		while (i <= j)
-		{
-			if (*(Int32*)&dataBuff[i] == val)
-			{
-				mstm->Clear();
-				mstm->Write(dataBuff, i + 4);
-				mstm->SeekFromBeginning(0);
-				NEW_CLASS(reader, IO::StreamReader(mstm, 65001));
-				sptr = reader->ReadLine(sbuff, 1021);
-				if (Text::StrSplit(sarr, 3, sbuff, ' ') != 3)
+				if (cliData->reqReplySize > buffSize + thisSize)
 				{
-					cliData->reqReplyStatus = 0;
-					cliData->reqSuccess = true;
-					cliData->reqEvt->Set();
-				}
-				else if (!Text::StrEquals(sarr[0], (const UTF8Char*)"RTSP/1.0"))
-				{
-					cliData->reqReplyStatus = 0;
-					cliData->reqSuccess = true;
-					cliData->reqEvt->Set();
+					MemCopyNO(&cliData->reqReply[buffSize], dataBuff, thisSize);
+					buffSize += thisSize;
+					continue;
 				}
 				else
 				{
-					cliData->reqReplyStatus = Text::StrToInt32(sarr[1]);
-					cliData->reqReplySize = 0;
-					while (true)
+					MemCopyNO(&cliData->reqReply[buffSize], dataBuff, cliData->reqReplySize - buffSize);
+					cliData->reqSuccess = true;
+					cliData->reqEvt.Set();
+					if (cliData->reqReplySize < buffSize + thisSize)
 					{
-						sptr = reader->ReadLine(sbuff, 1021);
-						if (sptr == 0 || sptr == sbuff)
-							break;
-						if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Content-Length: ")))
-						{
-							cliData->reqReplySize = Text::StrToUInt32(&sbuff[16]);
-						}
-						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Session: ")))
-						{
-							SDEL_STRING(cliData->reqStrs);
-							k = Text::StrIndexOfChar(&sbuff[9], ';');
-							if (k != INVALID_INDEX)
-							{
-								sbuff[9 + k] = 0;
-								sptr = &sbuff[9 + k];
-							}
-							cliData->reqStrs = Text::String::New(&sbuff[9], (UOSInt)(sptr - &sbuff[9]));
-						}
-						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Public: ")))
-						{
-							SDEL_STRING(cliData->reqStrs);
-							cliData->reqStrs = Text::String::New(&sbuff[8], (UOSInt)(sptr - &sbuff[8]));
-						}
+						MemCopyO(dataBuff, &dataBuff[cliData->reqReplySize - buffSize], thisSize - cliData->reqReplySize + buffSize);
 					}
-					if (cliData->reqReplySize == 0)
-					{
-						cliData->reqSuccess = true;
-						cliData->reqEvt->Set();
-					}
-					else
-					{
-						cliData->reqReply = MemAlloc(UInt8, cliData->reqReplySize);
-						content = true;
-					}
+					buffSize = thisSize - cliData->reqReplySize + buffSize;
+					content = false;
 				}
-				DEL_CLASS(reader);
-				if (i + 4 < buffSize)
-				{
-					MemCopyO(dataBuff, &dataBuff[i + 4], buffSize - i - 4);
-				}
-				buffSize -= i + 4;
-				if (cliData->reqReplySize > 0 && buffSize > 0)
-				{
-					if (cliData->reqReplySize > buffSize)
-					{
-						MemCopyNO(cliData->reqReply, dataBuff, buffSize);
-						break;
-					}
-					else
-					{
-						MemCopyNO(cliData->reqReply, dataBuff, cliData->reqReplySize);
-						cliData->reqSuccess = true;
-						cliData->reqEvt->Set();
-						if (cliData->reqReplySize < buffSize)
-						{
-							MemCopyO(dataBuff, &dataBuff[cliData->reqReplySize], buffSize - cliData->reqReplySize);
-
-						}
-						buffSize -= cliData->reqReplySize;
-						content = false;
-					}
-				}
-				i = 0;
-				j = buffSize - 4;
+				
 			}
 			else
 			{
-				i++;
+				thisSize = cliData->cli->Read(&dataBuff[buffSize], 2048 - buffSize);
+				if (thisSize == 0)
+				{
+					Sync::MutexUsage mutUsage(&cliData->cliMut);
+					DEL_CLASS(cliData->cli);
+					cliData->cli = 0;
+					continue;
+				}
+				buffSize += thisSize;
+			}
+			Int32 val = *(Int32*)"\r\n\r\n";
+			i = 0;
+			j = buffSize - 4;
+			while (i <= j)
+			{
+				if (*(Int32*)&dataBuff[i] == val)
+				{
+					mstm.Clear();
+					mstm.Write(dataBuff, i + 4);
+					mstm.SeekFromBeginning(0);
+					{
+						Text::UTF8Reader reader(&mstm);
+						sptr = reader.ReadLine(sbuff, 1021);
+						if (Text::StrSplit(sarr, 3, sbuff, ' ') != 3)
+						{
+							cliData->reqReplyStatus = 0;
+							cliData->reqSuccess = true;
+							cliData->reqEvt.Set();
+						}
+						else if (!Text::StrEquals(sarr[0], (const UTF8Char*)"RTSP/1.0"))
+						{
+							cliData->reqReplyStatus = 0;
+							cliData->reqSuccess = true;
+							cliData->reqEvt.Set();
+						}
+						else
+						{
+							cliData->reqReplyStatus = Text::StrToInt32(sarr[1]);
+							cliData->reqReplySize = 0;
+							while (true)
+							{
+								sptr = reader.ReadLine(sbuff, 1021);
+								if (sptr == 0 || sptr == sbuff)
+									break;
+								if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Content-Length: ")))
+								{
+									cliData->reqReplySize = Text::StrToUInt32(&sbuff[16]);
+								}
+								else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Session: ")))
+								{
+									SDEL_STRING(cliData->reqStrs);
+									k = Text::StrIndexOfChar(&sbuff[9], ';');
+									if (k != INVALID_INDEX)
+									{
+										sbuff[9 + k] = 0;
+										sptr = &sbuff[9 + k];
+									}
+									cliData->reqStrs = Text::String::New(&sbuff[9], (UOSInt)(sptr - &sbuff[9]));
+								}
+								else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Public: ")))
+								{
+									SDEL_STRING(cliData->reqStrs);
+									cliData->reqStrs = Text::String::New(&sbuff[8], (UOSInt)(sptr - &sbuff[8]));
+								}
+							}
+							if (cliData->reqReplySize == 0)
+							{
+								cliData->reqSuccess = true;
+								cliData->reqEvt.Set();
+							}
+							else
+							{
+								cliData->reqReply = MemAlloc(UInt8, cliData->reqReplySize);
+								content = true;
+							}
+						}
+					}
+
+					if (i + 4 < buffSize)
+					{
+						MemCopyO(dataBuff, &dataBuff[i + 4], buffSize - i - 4);
+					}
+					buffSize -= i + 4;
+					if (cliData->reqReplySize > 0 && buffSize > 0)
+					{
+						if (cliData->reqReplySize > buffSize)
+						{
+							MemCopyNO(cliData->reqReply, dataBuff, buffSize);
+							break;
+						}
+						else
+						{
+							MemCopyNO(cliData->reqReply, dataBuff, cliData->reqReplySize);
+							cliData->reqSuccess = true;
+							cliData->reqEvt.Set();
+							if (cliData->reqReplySize < buffSize)
+							{
+								MemCopyO(dataBuff, &dataBuff[cliData->reqReplySize], buffSize - cliData->reqReplySize);
+
+							}
+							buffSize -= cliData->reqReplySize;
+							content = false;
+						}
+					}
+					i = 0;
+					j = buffSize - 4;
+				}
+				else
+				{
+					i++;
+				}
 			}
 		}
+		if (cliData->cli)
+		{
+			DEL_CLASS(cliData->cli);
+			cliData->cli = 0;
+		}
 	}
-	if (cliData->cli)
-	{
-		DEL_CLASS(cliData->cli);
-		cliData->cli = 0;
-	}
-	DEL_CLASS(mstm);
 	cliData->threadRunning = false;
 	return 0;
 }
@@ -217,7 +214,7 @@ Bool Net::RTSPClient::WaitForReply()
 		return false;
 	while (!this->cliData->reqSuccess && clk.GetTimeDiff() < 10)
 	{
-		this->cliData->reqEvt->Wait(1000);
+		this->cliData->reqEvt.Wait(1000);
 	}
 	return this->cliData->reqSuccess;
 }
@@ -225,12 +222,11 @@ Bool Net::RTSPClient::WaitForReply()
 Bool Net::RTSPClient::SendData(UInt8 *buff, UOSInt buffSize)
 {
 	Bool succ = false;
-	Sync::MutexUsage mutUsage(this->cliData->cliMut);
+	Sync::MutexUsage mutUsage(&this->cliData->cliMut);
 	if (this->cliData->cli)
 	{
 		succ = this->cliData->cli->Write(buff, buffSize) == buffSize;
 	}
-	mutUsage.EndUse();
 	return succ;
 }
 
@@ -242,7 +238,7 @@ Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
 
 Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port)
 {
-	this->cliData = MemAlloc(ClientData, 1);
+	NEW_CLASS(this->cliData, ClientData());
 	this->cliData->useCnt = 1;
 	this->cliData->sockf = sockf;
 	this->cliData->nextSeq = 1;
@@ -254,9 +250,6 @@ Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt1
 	this->cliData->cli = 0;
 	this->cliData->host = Text::String::New(host);
 	this->cliData->port = port;
-	NEW_CLASS(this->cliData->cliMut, Sync::Mutex());
-	NEW_CLASS(this->cliData->reqEvt, Sync::Event(true));
-	NEW_CLASS(this->cliData->reqMut, Sync::Mutex());
 
 	Sync::Thread::Create(ControlThread, this->cliData);
 	while (!this->cliData->threadRunning)
@@ -270,7 +263,7 @@ Net::RTSPClient::~RTSPClient()
 	if (--this->cliData->useCnt == 0)
 	{
 		this->cliData->threadToStop = true;
-		Sync::MutexUsage mutUsage(this->cliData->cliMut);
+		Sync::MutexUsage mutUsage(&this->cliData->cliMut);
 		if (this->cliData->cli)
 		{
 			this->cliData->cli->Close();
@@ -282,10 +275,7 @@ Net::RTSPClient::~RTSPClient()
 		}
 		this->NextRequest();
 		this->cliData->host->Release();
-		DEL_CLASS(this->cliData->cliMut);
-		DEL_CLASS(this->cliData->reqMut);
-		DEL_CLASS(this->cliData->reqEvt);
-		MemFree(this->cliData);
+		DEL_CLASS(this->cliData);
 	}
 }
 
@@ -297,26 +287,26 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 	Text::PString sarr[10];
 	UOSInt i;
 	UOSInt buffSize;
-	IO::StreamWriter *writer;
-	IO::MemoryStream *stm;
 
-	Sync::MutexUsage mutUsage(this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.GetOptions")));
-	NEW_CLASS(writer, IO::StreamWriter(stm, 65001));
-	writer->WriteStrC(UTF8STRC("OPTIONS "));
-	writer->WriteStr(url);
-	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
-	writer->WriteStrC(UTF8STRC("CSeq: "));
-	sptr = Text::StrInt32(sbuff, reqId);
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("User-Agent: RTSPClient"));
-	writer->WriteLine();
-	DEL_CLASS(writer);
-	buff = stm->GetBuff(&buffSize);
-	this->SendData(buff, buffSize);
-	DEL_CLASS(stm);
+	{
+		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.GetOptions"));
+		{
+			Text::UTF8Writer writer(&stm);
+			writer.WriteStrC(UTF8STRC("OPTIONS "));
+			writer.WriteStr(url);
+			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
+			writer.WriteStrC(UTF8STRC("CSeq: "));
+			sptr = Text::StrInt32(sbuff, reqId);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("User-Agent: RTSPClient"));
+			writer.WriteLine();
+		}
+		buff = stm.GetBuff(&buffSize);
+		this->SendData(buff, buffSize);
+	}
 
 	Bool succ = this->WaitForReply();
 	Bool ret = false;
@@ -346,26 +336,26 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 	UTF8Char *sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
-	Text::UTF8Writer *writer;
-	IO::MemoryStream *stm;
 
-	Sync::MutexUsage mutUsage(this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.GetMediaInfo")));
-	NEW_CLASS(writer, Text::UTF8Writer(stm));
-	writer->WriteStrC(UTF8STRC("DESCRIBE "));
-	writer->WriteStr(url);
-	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
-	writer->WriteStrC(UTF8STRC("CSeq: "));
-	sptr = Text::StrInt32(sbuff, reqId);
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("Content-Type: application/sdp"));
-	writer->WriteLine();
-	DEL_CLASS(writer);
-	buff = stm->GetBuff(&buffSize);
-	this->SendData(buff, buffSize);
-	DEL_CLASS(stm);
+	{
+		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.GetMediaInfo"));
+		{
+			Text::UTF8Writer writer(&stm);
+			writer.WriteStrC(UTF8STRC("DESCRIBE "));
+			writer.WriteStr(url);
+			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
+			writer.WriteStrC(UTF8STRC("CSeq: "));
+			sptr = Text::StrInt32(sbuff, reqId);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLineC(UTF8STRC("Content-Type: application/sdp"));
+			writer.WriteLine();
+		}
+		buff = stm.GetBuff(&buffSize);
+		this->SendData(buff, buffSize);
+	}
 
 	Bool succ = this->WaitForReply();
 
@@ -384,28 +374,28 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	UTF8Char *sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
-	Text::UTF8Writer *writer;
-	IO::MemoryStream *stm;
 
-	Sync::MutexUsage mutUsage(this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.SetupRTP")));
-	NEW_CLASS(writer, Text::UTF8Writer(stm));
-	writer->WriteStrC(UTF8STRC("SETUP "));
-	writer->WriteStr(url);
-	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
-	writer->WriteStrC(UTF8STRC("CSeq: "));
-	sptr = Text::StrInt32(sbuff, reqId);
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteStrC(UTF8STRC("Transport: "));
-	sptr = rtpChannel->GetTransportDesc(sbuff);
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLine();
-	DEL_CLASS(writer);
-	buff = stm->GetBuff(&buffSize);
-	this->SendData(buff, buffSize);
-	DEL_CLASS(stm);
+	{
+		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.SetupRTP"));
+		{
+			Text::UTF8Writer writer(&stm);
+			writer.WriteStrC(UTF8STRC("SETUP "));
+			writer.WriteStr(url);
+			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
+			writer.WriteStrC(UTF8STRC("CSeq: "));
+			sptr = Text::StrInt32(sbuff, reqId);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("Transport: "));
+			sptr = rtpChannel->GetTransportDesc(sbuff);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLine();
+		}
+		buff = stm.GetBuff(&buffSize);
+		this->SendData(buff, buffSize);
+	}
 
 	Bool succ = this->WaitForReply();
 
@@ -441,10 +431,9 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CSt
 	{
 		Media::MediaFile *mediaFile;
 		NEW_CLASS(mediaFile, Media::MediaFile(url));
-		Data::ArrayList<Net::RTPCliChannel *> *chList;
+		Data::ArrayList<Net::RTPCliChannel *> chList;
 		Media::IVideoSource *vid;
 		Media::IAudioSource *aud;
-		NEW_CLASS(chList, Data::ArrayList<Net::RTPCliChannel*>());
 		i = 0;
 		j = sdp->GetMediaCount();
 		while (i < j)
@@ -455,17 +444,17 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CSt
 				Net::RTPCliChannel *rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli);
 				if (rtp)
 				{
-					chList->Add(rtp);
+					chList.Add(rtp);
 				}
 			}
 			i++;
 		}
 
 		i = 0;
-		j = chList->GetCount();
+		j = chList.GetCount();
 		while (i < j)
 		{
-			Net::RTPCliChannel *rtp = chList->GetItem(i);
+			Net::RTPCliChannel *rtp = chList.GetItem(i);
 			if (rtp->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 			{
 				k = 0;
@@ -486,13 +475,12 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CSt
 			i++;
 		}
 
-		i = chList->GetCount();
+		i = chList.GetCount();
 		while (i-- > 0)
 		{
-			Net::RTPCliChannel *rtp = chList->RemoveAt(i);
+			Net::RTPCliChannel *rtp = chList.RemoveAt(i);
 			DEL_CLASS(rtp);
 		}
-		DEL_CLASS(chList);
 		SDEL_CLASS(sdp);
 		DEL_CLASS(cli);
 
@@ -511,27 +499,27 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 	UTF8Char *sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
-	Text::UTF8Writer *writer;
-	IO::MemoryStream *stm;
 
-	Sync::MutexUsage mutUsage(this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.Play")));
-	NEW_CLASS(writer, Text::UTF8Writer(stm));
-	writer->WriteStrC(UTF8STRC("PLAY "));
-	writer->WriteStr(url);
-	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
-	writer->WriteStrC(UTF8STRC("CSeq: "));
-	sptr = Text::StrInt32(sbuff, reqId);
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteStrC(UTF8STRC("Session: "));
-	writer->WriteLine(sessId);
-	writer->WriteLine();
-	DEL_CLASS(writer);
-	buff = stm->GetBuff(&buffSize);
-	this->SendData(buff, buffSize);
-	DEL_CLASS(stm);
+	{
+		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.Play"));
+		{
+			Text::UTF8Writer writer(&stm);
+			writer.WriteStrC(UTF8STRC("PLAY "));
+			writer.WriteStr(url);
+			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
+			writer.WriteStrC(UTF8STRC("CSeq: "));
+			sptr = Text::StrInt32(sbuff, reqId);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("Session: "));
+			writer.WriteLine(sessId);
+			writer.WriteLine();
+		}
+		buff = stm.GetBuff(&buffSize);
+		this->SendData(buff, buffSize);
+	}
 
 	Bool succ = this->WaitForReply();
 	Bool ret = false;
@@ -550,27 +538,27 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 	UTF8Char *sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
-	Text::UTF8Writer *writer;
-	IO::MemoryStream *stm;
 
-	Sync::MutexUsage mutUsage(this->cliData->reqMut);
+	Sync::MutexUsage mutUsage(&this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.Close")));
-	NEW_CLASS(writer, Text::UTF8Writer(stm));
-	writer->WriteStrC(UTF8STRC("TEARDOWN "));
-	writer->WriteStr(url);
-	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
-	writer->WriteStrC(UTF8STRC("CSeq: "));
-	sptr = Text::StrInt32(sbuff, reqId);
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteStrC(UTF8STRC("Session: "));
-	writer->WriteLine(sessId);
-	writer->WriteLine();
-	DEL_CLASS(writer);
-	buff = stm->GetBuff(&buffSize);
-	this->SendData(buff, buffSize);
-	DEL_CLASS(stm);
+	{
+		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.Close"));
+		{
+			Text::UTF8Writer writer(&stm);
+			writer.WriteStrC(UTF8STRC("TEARDOWN "));
+			writer.WriteStr(url);
+			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
+			writer.WriteStrC(UTF8STRC("CSeq: "));
+			sptr = Text::StrInt32(sbuff, reqId);
+			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteStrC(UTF8STRC("Session: "));
+			writer.WriteLine(sessId);
+			writer.WriteLine();
+		}
+		buff = stm.GetBuff(&buffSize);
+		this->SendData(buff, buffSize);
+	}
 
 	Bool succ = this->WaitForReply();
 	Bool ret = false;

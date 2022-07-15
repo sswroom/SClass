@@ -38,8 +38,8 @@ namespace Media
 		FrameBuffer *surfaceBuff;
 		OSInt surfaceBuffStart;
 		OSInt surfaceBuffEnd;
-		Sync::Event *surfaceBuffEvent;
-		Sync::Mutex *surfaceBuffMut;
+		Sync::Event surfaceBuffEvent;
+		Sync::Mutex surfaceBuffMut;
 
 		void *hwnd;
 		Media::FrameInfo info;
@@ -71,7 +71,7 @@ namespace Media
 		Bool frameProcToStop;
 		OSInt frameProcStart;
 		OSInt frameProcEnd;
-		Sync::Event *frameProcEvent;
+		Sync::Event frameProcEvent;
 
 	private:
 		void GetDrawingRect(void *rc);

@@ -17,7 +17,7 @@ namespace Media
 		void *hdcScreen;
 		void *hpenBlack;
 		void *hbrushWhite;
-		Sync::Mutex *gdiMut;
+		Sync::Mutex gdiMut;
 #ifndef _WIN32_WCE
 		void *gdiplusStartupInput;
 		UInt32 gdiplusToken;

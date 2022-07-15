@@ -37,7 +37,7 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 
 		Bool found;
 		while (true)
 		{
-			this->mainEvt->Wait(1000);
+			this->mainEvt.Wait(1000);
 			found = false;
 			i = this->threadCnt;
 			while (i-- > 0)
@@ -81,7 +81,7 @@ void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt
 		Bool found;
 		while (true)
 		{
-			this->mainEvt->Wait(1000);
+			this->mainEvt.Wait(1000);
 			found = false;
 			i = this->threadCnt;
 			while (i-- > 0)
@@ -101,37 +101,39 @@ void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt
 UInt32 __stdcall Media::ABlend::AlphaBlend8_8::ProcessThread(void *userObj)
 {
 	ThreadStat *stat = (ThreadStat *)userObj;
-	stat->status = 1;
-	stat->me->mainEvt->Set();
-	while (true)
 	{
-		stat->evt->Wait(10000);
-		if (stat->status == 2)
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->status = 1;
+		stat->me->mainEvt.Set();
+		while (true)
 		{
-			break;
-		}
-		else if (stat->status == 4)
-		{
-			AlphaBlend8_8_DoBlend(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height);
-			stat->status = 1;
-			stat->me->mainEvt->Set();
-		}
-		else if (stat->status == 5)
-		{
-			AlphaBlend8_8_DoBlendPA(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height);
-			stat->status = 1;
-			stat->me->mainEvt->Set();
+			stat->evt->Wait(10000);
+			if (stat->status == 2)
+			{
+				break;
+			}
+			else if (stat->status == 4)
+			{
+				AlphaBlend8_8_DoBlend(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height);
+				stat->status = 1;
+				stat->me->mainEvt.Set();
+			}
+			else if (stat->status == 5)
+			{
+				AlphaBlend8_8_DoBlendPA(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height);
+				stat->status = 1;
+				stat->me->mainEvt.Set();
+			}
 		}
 	}
 	stat->status = 3;
-	stat->me->mainEvt->Set();
+	stat->me->mainEvt.Set();
 	return 0;
 }
 
 Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 {
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadCnt = Sync::Thread::GetThreadCnt();
 	if (this->threadCnt > 4)
 	{
@@ -142,14 +144,13 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 	while (i-- > 0)
 	{
 		this->stats[i].me = this;
-		NEW_CLASS(this->stats[i].evt, Sync::Event(true));
 		this->stats[i].status = 0;
 		Sync::Thread::Create(ProcessThread, &this->stats[i], 65536);
 	}
 	Bool found;
 	while (true)
 	{
-		this->mainEvt->Wait(1000);
+		this->mainEvt.Wait(1000);
 		found = false;
 		i = this->threadCnt;
 		while (i-- > 0)
@@ -176,7 +177,7 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 	}
 	while (true)
 	{
-		this->mainEvt->Wait(1000);
+		this->mainEvt.Wait(1000);
 		found = false;
 		i = this->threadCnt;
 		while (i-- > 0)
@@ -190,19 +191,12 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 		if (!found)
 			break;
 	}
-	i = this->threadCnt;
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->stats[i].evt);
-	}
 	MemFree(this->stats);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->mainEvt);
 }
 
 void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (srcAType == Media::AT_PREMUL_ALPHA)
 	{
 		this->MTBlendPA(dest, dbpl, src, sbpl, width, height);

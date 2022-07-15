@@ -12,12 +12,12 @@ namespace IO
 	{
 	private:
 		IO::Stream *stm;
-		IO::ProtoHdlr::ProtoCortexHandler *protoHdlr;
+		IO::ProtoHdlr::ProtoCortexHandler protoHdlr;
 
 		IO::Writer *errWriter;
 		
-		Sync::Mutex *sendMut;
-		Sync::Event *sendEvt;
+		Sync::Mutex sendMut;
+		Sync::Event sendEvt;
 		Int32 sendType;
 		Bool sendHasResult;
 		Int32 sendResult;

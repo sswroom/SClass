@@ -21,17 +21,17 @@ namespace SSWR
 			Double lastTime;
 			UInt64 lastRecvSize;
 			UInt64 lastSendSize;
-			Manage::HiResClock *clk;
+			Manage::HiResClock clk;
 			Net::TCPClient *cli;
-			Sync::Mutex *cliMut;
+			Sync::Mutex cliMut;
 			Bool connected;
 
 			Bool procRunning;
 			Bool recvRunning;
 			Bool toStop;
-			Sync::Event *mainEvt;
-			Sync::Event *recvEvt;
-			Sync::Event *procEvt;
+			Sync::Event mainEvt;
+			Sync::Event recvEvt;
+			Sync::Event procEvt;
 
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;

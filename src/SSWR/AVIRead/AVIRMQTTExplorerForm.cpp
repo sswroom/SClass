@@ -282,8 +282,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(me->topicMut);
-	topicList = me->topicMap->GetValues();
+	Sync::MutexUsage mutUsage(&me->topicMut);
+	topicList = me->topicMap.GetValues();
 	i = 0;
 	j = topicList->GetCount();
 	if (me->topicListChanged)
@@ -367,13 +367,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
-	Sync::MutexUsage mutUsage(me->topicMut);
-	topicSt = me->topicMap->Get(topic);
+	Sync::MutexUsage mutUsage(&me->topicMut);
+	topicSt = me->topicMap.Get(topic);
 	if (topicSt == 0)
 	{
 		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus, 1);
@@ -384,7 +384,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
-		me->topicMap->Put(topic, topicSt);
+		me->topicMap.Put(topic, topicSt);
 		me->topicListChanged = true;
 	}
 	else
@@ -502,7 +502,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
 	UOSInt i;
 	SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus *topicSt;
 	Data::ArrayList<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*> *topicList;
-	topicList = this->topicMap->GetValues();
+	topicList = this->topicMap.GetValues();
 	i = topicList->GetCount();
 	while (i-- > 0)
 	{
@@ -511,7 +511,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
 		MemFree(topicSt->currValue);
 		MemFree(topicSt);
 	}
-	this->topicMap->Clear();
+	this->topicMap.Clear();
 }
 
 SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -522,8 +522,6 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringMap<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>());
 	this->currTopic = 0;
 	this->dispImg = 0;
 	this->cliCert = 0;
@@ -600,7 +598,6 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtPubContent, UI::GUITextBox(ui, this->tpPublish, CSTR(""), true));
 	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->log, IO::LogTool());
 	this->client = 0;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
@@ -611,10 +608,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 {
 	this->ServerStop();
-	DEL_CLASS(this->topicMut);
 	this->ClearTopics();
-	DEL_CLASS(this->topicMap);
-	DEL_CLASS(this->log);
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
 	if (this->dispImg)

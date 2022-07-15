@@ -22,8 +22,8 @@ namespace IO
 	protected:
 		IO::ATCommandChannel *channel;
 		Bool needRelease;
-		Data::ArrayList<Text::String *> *cmdResults;
-		Sync::Mutex *cmdMut;
+		Data::ArrayList<Text::String *> cmdResults;
+		Sync::Mutex cmdMut;
 
 	protected:
 		void ClearCmdResult();

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Media/VFVideoStream.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -16,7 +17,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
 	UInt32 frameNum;
 	me->threadRunning = true;
 	frameNum = 0;
-	frameSize = me->info->storeWidth * me->info->storeHeight * (me->info->storeBPP >> 3);
+	frameSize = me->info.storeWidth * me->info.storeHeight * (me->info.storeBPP >> 3);
 	frameBuff = MemAlloc(UInt8, frameSize);
 	while (!me->threadToStop)
 	{
@@ -35,7 +36,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
 		}
 		else
 		{
-			me->threadEvt->Wait(1000);
+			me->threadEvt.Wait(1000);
 		}
 	}
 	MemFree(frameBuff);
@@ -46,9 +47,10 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(void *userObj)
 Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 {
 	this->mfile = mfile;
-	this->mfile->mut->Lock();
-	this->mfile->useCnt++;
-	this->mfile->mut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		this->mfile->useCnt++;
+	}
 	this->seeked = true;
 
 	VF_StreamInfo_Video vinfo;
@@ -58,20 +60,19 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->frameCnt = vinfo.dwLengthL;
 	this->frameRate = vinfo.dwRate;
 	this->frameRateScale = vinfo.dwScale;
-	NEW_CLASS(this->info, Media::FrameInfo());
-	this->info->storeWidth = vinfo.dwWidth;
-	this->info->storeHeight = vinfo.dwHeight;
-	this->info->dispWidth = this->info->storeWidth;
-	this->info->dispHeight = this->info->storeHeight;
-	this->info->fourcc = 0;
-	this->info->storeBPP = vinfo.dwBitCount;
-	this->info->pf = Media::PixelFormatGetDef(0, vinfo.dwBitCount);
-	this->info->byteSize = 0;
-	this->info->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
-	this->info->atype = Media::AT_NO_ALPHA;
-	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	this->info->hdpi = 96;
+	this->info.storeWidth = vinfo.dwWidth;
+	this->info.storeHeight = vinfo.dwHeight;
+	this->info.dispWidth = this->info.storeWidth;
+	this->info.dispHeight = this->info.storeHeight;
+	this->info.fourcc = 0;
+	this->info.storeBPP = vinfo.dwBitCount;
+	this->info.pf = Media::PixelFormatGetDef(0, vinfo.dwBitCount);
+	this->info.byteSize = 0;
+	this->info.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+	this->info.atype = Media::AT_NO_ALPHA;
+	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->info.hdpi = 96;
 	Bool isNTSC = false;
 	//Bool isPAL = false;
 	if (this->frameRateScale == 1001 && this->frameRate == 24000)
@@ -92,26 +93,25 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	}
 	if (isNTSC)
 	{
-		if ((this->info->dispWidth == 720 && this->info->dispHeight == 480) || (this->info->dispWidth == 704 && this->info->dispHeight == 480))
+		if ((this->info.dispWidth == 720 && this->info.dispHeight == 480) || (this->info.dispWidth == 704 && this->info.dispHeight == 480))
 		{
-			this->info->par2 = 1/1.097222222222222222222;
+			this->info.par2 = 1/1.097222222222222222222;
 		}
 		else
 		{
-			this->info->par2 = 1;
+			this->info.par2 = 1;
 		}
 	}
 	else
 	{
-		this->info->par2 = 1; ////////////////////////
+		this->info.par2 = 1; ////////////////////////
 	}
-	this->info->ftype = Media::FT_NON_INTERLACE;
+	this->info.ftype = Media::FT_NON_INTERLACE;
 
 	this->currFrameNum = 0;
 	this->playing = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->threadRunning)
 	{
@@ -121,26 +121,25 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 
 Media::VFVideoStream::~VFVideoStream()
 {
-	OSInt useCnt;
+	UOSInt useCnt;
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->threadEvt);
 
-	this->mfile->mut->Lock();
-	useCnt = --this->mfile->useCnt;
-	this->mfile->mut->Unlock();
-	DEL_CLASS(this->info);
+	{
+		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		useCnt = --this->mfile->useCnt;
+	}
 	if (useCnt == 0)
 	{
 		Text::StrDelNew(this->mfile->fileName);
 		VF_PluginFunc *funcs = (VF_PluginFunc*)this->mfile->plugin->funcs;
 		funcs->CloseFile(this->mfile->file);
 		this->mfile->vfpmgr->Release();
-		MemFree(this->mfile);
+		DEL_CLASS(this->mfile);
 	}
 }
 
@@ -156,8 +155,8 @@ Text::CString Media::VFVideoStream::GetFilterName()
 
 Bool Media::VFVideoStream::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
-	info->Set(this->info);
-	*maxFrameSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
+	info->Set(&this->info);
+	*maxFrameSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
 	*frameRateNorm = this->frameRate;
 	*frameRateDenorm = this->frameRateScale;
 	return true;
@@ -183,7 +182,7 @@ Bool Media::VFVideoStream::Start()
 	}
 	this->seeked = true;
 	this->playing = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	return true;
 }
 
@@ -231,7 +230,7 @@ Bool Media::VFVideoStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, 
 
 Bool Media::VFVideoStream::SetPreferFrameType(Media::FrameType ftype)
 {
-	this->info->ftype = ftype;
+	this->info.ftype = ftype;
 	return true;
 }
 
@@ -257,7 +256,7 @@ UInt32 Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
 void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
 {
 	UInt32 i;
-	UOSInt dataSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
+	UOSInt dataSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
 	i = 0;
 	while (i < this->frameCnt)
 	{
@@ -280,10 +279,10 @@ UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, 
 	rd.dwFrameNumberH = 0;
 	rd.dwFrameNumberL = this->currFrameNum;
 	rd.lpData = frameBuff;
-	rd.lPitch = (int)(this->info->storeWidth * (this->info->storeBPP >> 3));
+	rd.lPitch = (int)(this->info.storeWidth * (this->info.storeBPP >> 3));
 	funcs->ReadData(mfile->file, VF_STREAM_VIDEO, &rd);
 	*frameTime = MulDivU32(this->currFrameNum, this->frameRateScale * 1000, this->frameRate);
-	*ftype = this->info->ftype;
+	*ftype = this->info.ftype;
 	this->currFrameNum++;
-	return (UInt32)rd.lPitch * this->info->storeHeight;
+	return (UInt32)rd.lPitch * this->info.storeHeight;
 }

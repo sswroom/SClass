@@ -25,14 +25,12 @@ Ting Sound
 
 Media::AudioFilter::SoundGen::BellSoundGen::BellSoundGen(UInt32 freq) : Media::AudioFilter::SoundGen::ISoundGen(freq)
 {
-	NEW_CLASS(this->soundMut, Sync::Mutex());
 	this->sampleVol = 0;
 	this->currSample = 0;
 }
 
 Media::AudioFilter::SoundGen::BellSoundGen::~BellSoundGen()
 {
-	DEL_CLASS(this->soundMut)
 }
 
 void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt sampleCnt)
@@ -60,11 +58,10 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt
 	}
 
 
-	Sync::MutexUsage mutUsage(this->soundMut);
+	Sync::MutexUsage mutUsage(&this->soundMut);
 	norVol = this->sampleVol / paramCnt;
 	if (norVol <= 0)
 	{
-		mutUsage.EndUse();
 		return;
 	}
 
@@ -72,7 +69,6 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt
 	{
 		this->sampleVol = 0;
 		this->currSample = 0;
-		mutUsage.EndUse();
 		return;
 	}
 
@@ -93,7 +89,6 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt
 
 		i++;
 	}
-	mutUsage.EndUse();
 }
 
 Media::AudioFilter::SoundGen::ISoundGen::SoundType Media::AudioFilter::SoundGen::BellSoundGen::GetSoundType()
@@ -103,9 +98,8 @@ Media::AudioFilter::SoundGen::ISoundGen::SoundType Media::AudioFilter::SoundGen:
 
 Bool Media::AudioFilter::SoundGen::BellSoundGen::GenSound(Double sampleVol)
 {
-	Sync::MutexUsage mutUsage(this->soundMut);
+	Sync::MutexUsage mutUsage(&this->soundMut);
 	this->sampleVol = sampleVol;
 	this->currSample = 0;
-	mutUsage.EndUse();
 	return true;
 }

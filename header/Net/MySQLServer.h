@@ -28,8 +28,8 @@ namespace Net
 		DB::DBMS *dbms;
 		Net::TCPClientMgr *cliMgr;
 		Int32 connId;
-		Sync::Mutex *randMut;
-		Data::RandomMT19937 *rand;
+		Sync::Mutex randMut;
+		Data::RandomMT19937 rand;
 
 		static CharsetInfo charsets[];
 

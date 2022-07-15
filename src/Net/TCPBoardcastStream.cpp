@@ -61,7 +61,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		sb.AppendUOSInt(size);
 		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
-	Sync::MutexUsage mutUsage(me->readMut);
+	Sync::MutexUsage mutUsage(&me->readMut);
 	UOSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
 	if ((OSInt)readBuffSize < 0)
 	{
@@ -121,7 +121,6 @@ Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 po
 	this->log = log;
 	this->readCnt = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(600, ClientEvent, ClientData, this, 3, ClientTimeout));
-	NEW_CLASS(this->readMut, Sync::Mutex());
 	this->readBuff = MemAlloc(UInt8, 16384);
 	this->writeBuff = MemAlloc(UInt8, 2048);
 	this->readBuffPtr1 = 0;
@@ -143,7 +142,6 @@ Net::TCPBoardcastStream::~TCPBoardcastStream()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->readMut);
 	MemFree(this->readBuff);
 	MemFree(this->writeBuff);
 }
@@ -179,7 +177,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 		Sync::Thread::Sleep(10);
 	}
 	Sync::Interlocked::Decrement(&this->readCnt);
-	Sync::MutexUsage mutUsage(this->readMut);
+	Sync::MutexUsage mutUsage(&this->readMut);
 	if ((UOSInt)readBuffSize >= size)
 	{
 	}

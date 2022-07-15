@@ -42,7 +42,7 @@ namespace Map
 		Data::Int32Map<CIPFileObject*> *lastObjs;
 		Data::Int32Map<CIPFileObject*> *currObjs;
 
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 	public:
 		CIPLayer2(Text::CString layerName);
 		virtual ~CIPLayer2();

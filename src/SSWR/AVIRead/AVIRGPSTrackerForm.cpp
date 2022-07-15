@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
-	Sync::MutexUsage mutUsage(me->recMut);
+	Sync::MutexUsage mutUsage(&me->recMut);
 	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord3));
 	me->recSateCnt = sateCnt;
 	MemCopyNO(me->recSates, sates, sateCnt * sizeof(Map::ILocationService::SateStatus));
@@ -69,8 +69,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	}
 	if (me->recUpdated)
 	{
-		me->lastUpdateTime->SetCurrTimeUTC();
-		Sync::MutexUsage mutUsage(me->recMut);
+		me->lastUpdateTime.SetCurrTimeUTC();
+		Sync::MutexUsage mutUsage(&me->recMut);
 		dt.SetTicks(me->recCurr.utcTimeTicks);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
@@ -148,15 +148,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	else
 	{
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(me->lastUpdateTime) >= 20000)
+		if (dt.DiffMS(&me->lastUpdateTime) >= 20000)
 		{
-			me->lastUpdateTime->SetCurrTimeUTC();
+			me->lastUpdateTime.SetCurrTimeUTC();
 			me->locSvc->ErrorRecover();
 		}
 	}
 	if (me->nmeaUpdated)
 	{
-		Sync::MutexUsage nmeaMut(me->nmeaMut);
+		Sync::MutexUsage nmeaMut(&me->nmeaMut);
 		me->nmeaUpdated = false;
 		UOSInt i = me->nmeaIndex;
 		me->lbNMEA->ClearItems();
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(void *userObj, Bo
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
-	Sync::MutexUsage mutUsage(me->nmeaMut);
+	Sync::MutexUsage mutUsage(&me->nmeaMut);
 	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
 	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen);
 	me->nmeaIndex = (me->nmeaIndex + 1) & (NMEAMAXSIZE - 1);
@@ -284,7 +284,6 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->lastPos = Math::Coord2DDbl(0, 0);
 	this->dist = 0;
 	this->lastDown = true;
-	NEW_CLASS(this->nmeaMut, Sync::Mutex());
 	this->nmeaIndex = 0;
 	this->nmeaUpdated = false;
 	this->nmeaBuff = MemAlloc(Text::String*, NMEAMAXSIZE);
@@ -293,11 +292,9 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
 	this->dispIsOff = false;
-	NEW_CLASS(this->recMut, Sync::Mutex());
 	this->locSvc->RegisterLocationHandler(OnGPSUpdate, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lastUpdateTime, Data::DateTime());
-	this->lastUpdateTime->SetCurrTimeUTC();
+	this->lastUpdateTime.SetCurrTimeUTC();
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -490,13 +487,11 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 	{
 		this->mapNavi->HideMarker();
 	}
-	DEL_CLASS(this->lastUpdateTime);
 	if (this->relLocSvc)
 	{
 		DEL_CLASS(this->locSvc);
 		this->relLocSvc = false;
 	}
-	DEL_CLASS(this->recMut);
 	DEL_CLASS(this->wgs84);
 	UOSInt i = NMEAMAXSIZE;
 	while (i-- > 0)
@@ -504,7 +499,6 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 		SDEL_STRING(this->nmeaBuff[i]);
 	}
 	MemFree(this->nmeaBuff);
-	DEL_CLASS(this->nmeaMut);
 }
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::OnMonitorChanged()
@@ -523,7 +517,7 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::OnFocus()
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::SetGPSTrack(Map::GPSTrack *gpsTrk)
 {
-	Sync::MutexUsage mutUsage(this->recMut);
+	Sync::MutexUsage mutUsage(&this->recMut);
 	this->gpsTrk = gpsTrk;
 	mutUsage.EndUse();
 }

@@ -15,7 +15,7 @@ namespace Media
 			UInt32 soundBuffLeng;
 			UInt8 *soundBuff;
 			UInt32 soundBuffOfst;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Bool changed;
 		private:
 			void ResetStatus();

@@ -51,9 +51,9 @@ namespace Media
 		Bool playInit;
 		Bool playToStop;
 		Bool playEOF;
-		Sync::Event *playEvt;
-		Sync::Mutex *playMut;
-		Sync::Mutex *pbcMut;
+		Sync::Event playEvt;
+		Sync::Mutex playMut;
+		Sync::Mutex pbcMut;
 		FrameBuff *playBuff;
 		OSInt playBuffStart;
 		OSInt playBuffEnd;

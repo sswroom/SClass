@@ -7,7 +7,6 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#define RECVBUFFSIZE 256
 
 UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 {
@@ -24,21 +23,21 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(me->mut);
-			if (me->recvSize >= RECVBUFFSIZE)
+			Sync::MutexUsage mutUsage(&me->mut);
+			if (me->recvSize >= NECTVCONTROL_RECVBUFFSIZE)
 			{
 			}
-			else if (me->recvSize + recvSize > RECVBUFFSIZE)
+			else if (me->recvSize + recvSize > NECTVCONTROL_RECVBUFFSIZE)
 			{
-				MemCopyNO(&me->recvBuff[me->recvSize], buff, RECVBUFFSIZE - me->recvSize);
-				me->recvSize = RECVBUFFSIZE;
-				me->recvEvt->Set();
+				MemCopyNO(&me->recvBuff[me->recvSize], buff, NECTVCONTROL_RECVBUFFSIZE - me->recvSize);
+				me->recvSize = NECTVCONTROL_RECVBUFFSIZE;
+				me->recvEvt.Set();
 			}
 			else
 			{
 				MemCopyNO(&me->recvBuff[me->recvSize], buff, recvSize);
 				me->recvSize += recvSize;
-				me->recvEvt->Set();
+				me->recvEvt.Set();
 			}
 			mutUsage.EndUse();
 		}
@@ -55,9 +54,9 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 	UOSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(this->nextTime) < 0)
+	if (dt.CompareTo(&this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime->DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(&dt);
 		Sync::Thread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -90,19 +89,19 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 	buff[9 + cmdLen] = bcc;
 	buff[10 + cmdLen] = 13;
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
 
 	this->stm->Write(buff, 11 + cmdLen);
-	this->nextTime->SetCurrTimeUTC();
+	this->nextTime.SetCurrTimeUTC();
 	Bool found = false;
 	while (true)
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(this->nextTime);
+		timeDiff = dt.DiffMS(&this->nextTime);
 		if (timeDiff >= cmdTimeout)
 			break;
 		if (this->recvSize > 0)
@@ -120,9 +119,9 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply
 			if (found)
 				break;
 		}
-		this->recvEvt->Wait(100);
+		this->recvEvt.Wait(100);
 	}
-	this->nextTime->AddMS(600);
+	this->nextTime.AddMS(600);
 	if (found)
 	{
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
@@ -148,9 +147,9 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	OSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(this->nextTime) < 0)
+	if (dt.CompareTo(&this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime->DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(&dt);
 		Sync::Thread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -181,19 +180,19 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	buff[13] = bcc;
 	buff[14] = 13;
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
 
 	this->stm->Write(buff, 15);
-	this->nextTime->SetCurrTimeUTC();
+	this->nextTime.SetCurrTimeUTC();
 	Bool found = false;
 	while (true)
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(this->nextTime);
+		timeDiff = dt.DiffMS(&this->nextTime);
 		if (timeDiff >= cmdTimeout)
 			break;
 		if (this->recvSize > 0)
@@ -211,9 +210,9 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 			if (found)
 				break;
 		}
-		this->recvEvt->Wait(100);
+		this->recvEvt.Wait(100);
 	}
-	this->nextTime->AddMS(600);
+	this->nextTime.AddMS(600);
 	if (found)
 	{
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
@@ -243,9 +242,9 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	OSInt i;
 	UInt8 bcc;
 	dt.SetCurrTimeUTC();
-	if (dt.CompareTo(this->nextTime) < 0)
+	if (dt.CompareTo(&this->nextTime) < 0)
 	{
-		Int64 timeDiff = this->nextTime->DiffMS(&dt);
+		Int64 timeDiff = this->nextTime.DiffMS(&dt);
 		Sync::Thread::Sleep((UInt32)timeDiff);
 	}
 	
@@ -278,19 +277,19 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	buff[17] = bcc;
 	buff[18] = 13;
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
 
 	this->stm->Write(buff, 19);
-	this->nextTime->SetCurrTimeUTC();
+	this->nextTime.SetCurrTimeUTC();
 	Bool found = false;
 	while (true)
 	{
 		Int64 timeDiff;
 		dt.SetCurrTimeUTC();
-		timeDiff = dt.DiffMS(this->nextTime);
+		timeDiff = dt.DiffMS(&this->nextTime);
 		if (timeDiff >= cmdTimeout)
 			break;
 		if (this->recvSize > 0)
@@ -308,9 +307,9 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 			if (found)
 				break;
 		}
-		this->recvEvt->Wait(100);
+		this->recvEvt.Wait(100);
 	}
-	this->nextTime->AddMS(600);
+	this->nextTime.AddMS(600);
 	if (found)
 	{
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
@@ -330,12 +329,8 @@ IO::TVCtrl::NECTVControl::NECTVControl(IO::Stream *stm, Int32 monId)
 {
 	this->stm = stm;
 	this->monId = monId;
-	NEW_CLASS(this->nextTime, Data::DateTime());
-	this->nextTime->SetCurrTimeUTC();
+	this->nextTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->recvEvt, Sync::Event(true));
-	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = false;
 	this->recvToStop = false;
@@ -350,10 +345,6 @@ IO::TVCtrl::NECTVControl::~NECTVControl()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->nextTime);
-	DEL_CLASS(this->recvEvt);
-	DEL_CLASS(this->mut);
-	MemFree(this->recvBuff);
 }
 
 Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)

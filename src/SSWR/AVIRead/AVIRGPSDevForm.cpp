@@ -25,7 +25,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 
 			if (readSize == 0)
 			{
-				Sync::MutexUsage mutUsage(me->cliMut);
+				Sync::MutexUsage mutUsage(&me->cliMut);
 				SDEL_CLASS(me->cli);
 				mutUsage.EndUse();
 				recvBuffSize = 0;
@@ -33,7 +33,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(void *userObj)
 			else
 			{
 				recvBuffSize += readSize;
-				readSize = me->protoHdlr->ParseProtocol(me->cli, 0, me, recvBuff, recvBuffSize);
+				readSize = me->protoHdlr.ParseProtocol(me->cli, 0, me, recvBuff, recvBuffSize);
 				if (readSize == 0)
 				{
 					recvBuffSize = 0;
@@ -167,44 +167,42 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 	}
 	if (me->alertUpd)
 	{
-		Sync::MutexUsage mutUsage(me->alertMut);
+		Sync::MutexUsage mutUsage(&me->alertMut);
 		me->alertUpd = false;
 		me->lbAlert->ClearItems();
 		i = 0;
-		j = me->alertList->GetCount();
+		j = me->alertList.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrInt32(sbuff, me->alertList->GetItem(i));
+			sptr = Text::StrInt32(sbuff, me->alertList.GetItem(i));
 			me->lbAlert->AddItem(CSTRP(sbuff, sptr), 0);
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 	if (me->deviceUpd)
 	{
-		Sync::MutexUsage mutUsage(me->deviceMut);
+		Sync::MutexUsage mutUsage(&me->deviceMut);
 		me->deviceUpd = false;
 		me->lbDevice->ClearItems();
 		i = 0;
-		j = me->deviceList->GetCount();
+		j = me->deviceList.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrInt64(sbuff, me->deviceList->GetItem(i));
+			sptr = Text::StrInt64(sbuff, me->deviceList.GetItem(i));
 			me->lbDevice->AddItem(CSTRP(sbuff, sptr), 0);
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 	if (me->userUpd)
 	{
-		Sync::MutexUsage mutUsage(me->userMut);
+		Sync::MutexUsage mutUsage(&me->userMut);
 		me->userUpd = false;
 		me->lbUser->ClearItems();
 		i = 0;
-		j = me->userList->GetCount();
+		j = me->userList.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrInt32(sbuff, me->userList->GetItem(i));
+			sptr = Text::StrInt32(sbuff, me->userList.GetItem(i));
 			me->lbUser->AddItem(CSTRP(sbuff, sptr), 0);
 			i++;
 		}
@@ -214,14 +212,14 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		me->devContUpd = false;
-		Sync::MutexUsage mutUsage(me->devContMut);
+		Sync::MutexUsage mutUsage(&me->devContMut);
 		me->lvDevInfo->ClearItems();
 		i = 0;
-		j = me->devConts->GetCount();
+		j = me->devConts.GetCount();
 		while (i < j)
 		{
-			k = me->lvDevInfo->AddItem(me->devConts->GetItem(i), 0);
-			me->lvDevInfo->SetSubItem(k, 1, me->devConts->GetItem(i + 1));
+			k = me->lvDevInfo->AddItem(me->devConts.GetItem(i), 0);
+			me->lvDevInfo->SetSubItem(k, 1, me->devConts.GetItem(i + 1));
 			i += 2;
 		}
 		me->lvDevAlert->ClearItems();
@@ -277,56 +275,54 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 	if (me->alertContUpd)
 	{
 		me->alertContUpd = false;
-		Sync::MutexUsage mutUsage(me->alertContMut);
+		Sync::MutexUsage mutUsage(&me->alertContMut);
 		me->lvAlert->ClearItems();
 		i = 0;
-		j = me->alertConts->GetCount();
+		j = me->alertConts.GetCount();
 		while (i < j)
 		{
-			k = me->lvAlert->AddItem(me->alertConts->GetItem(i), 0);
-			me->lvAlert->SetSubItem(k, 1, me->alertConts->GetItem(i + 1));
+			k = me->lvAlert->AddItem(me->alertConts.GetItem(i), 0);
+			me->lvAlert->SetSubItem(k, 1, me->alertConts.GetItem(i + 1));
 			i += 2;
 		}
 		me->lbAlertDev->ClearItems();
 		i = 0;
-		j = me->alertContDevs->GetCount();
+		j = me->alertContDevs.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrInt64(sbuff, me->alertContDevs->GetItem(i));
+			sptr = Text::StrInt64(sbuff, me->alertContDevs.GetItem(i));
 			me->lbAlertDev->AddItem(CSTRP(sbuff, sptr), 0);;
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 	if (me->userContUpd)
 	{
 		me->userContUpd = false;
-		Sync::MutexUsage mutUsage(me->userContMut);
+		Sync::MutexUsage mutUsage(&me->userContMut);
 		me->lvUser->ClearItems();
 		i = 0;
-		j = me->userConts->GetCount();
+		j = me->userConts.GetCount();
 		while (i < j)
 		{
-			k = me->lvUser->AddItem(me->userConts->GetItem(i), 0);
-			me->lvUser->SetSubItem(k, 1, me->userConts->GetItem(i + 1));
+			k = me->lvUser->AddItem(me->userConts.GetItem(i), 0);
+			me->lvUser->SetSubItem(k, 1, me->userConts.GetItem(i + 1));
 			i += 2;
 		}
 		me->lbUserDev->ClearItems();
 		i = 0;
-		j = me->userContDevs->GetCount();
+		j = me->userContDevs.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrInt64(sbuff, me->userContDevs->GetItem(i));
+			sptr = Text::StrInt64(sbuff, me->userContDevs.GetItem(i));
 			me->lbUserDev->AddItem(CSTRP(sbuff, sptr), 0);;
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 {
-	Sync::MutexUsage mutUsage(this->cliMut);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Close();
@@ -345,13 +341,13 @@ void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->devContMut);
-	i = this->devConts->GetCount();
+	Sync::MutexUsage mutUsage(&this->devContMut);
+	i = this->devConts.GetCount();
 	while (i-- > 0)
 	{
-		this->devConts->GetItem(i)->Release();
+		this->devConts.GetItem(i)->Release();
 	}
-	this->devConts->Clear();
+	this->devConts.Clear();
 	if (this->devContAlerts)
 	{
 		MemFree(this->devContAlerts);
@@ -370,104 +366,96 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 void SSWR::AVIRead::AVIRGPSDevForm::ClearAlertConts()
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->alertContMut);
-	i = this->alertConts->GetCount();
+	Sync::MutexUsage mutUsage(&this->alertContMut);
+	i = this->alertConts.GetCount();
 	while (i-- > 0)
 	{
-		this->alertConts->GetItem(i)->Release();
+		this->alertConts.GetItem(i)->Release();
 	}
-	this->alertConts->Clear();
-	this->alertContDevs->Clear();
-	mutUsage.EndUse();
+	this->alertConts.Clear();
+	this->alertContDevs.Clear();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->userContMut);
-	i = this->userConts->GetCount();
+	Sync::MutexUsage mutUsage(&this->userContMut);
+	i = this->userConts.GetCount();
 	while (i-- > 0)
 	{
-		this->userConts->GetItem(i)->Release();
+		this->userConts.GetItem(i)->Release();
 	}
-	this->userConts->Clear();
-	this->userContDevs->Clear();
-	mutUsage.EndUse();
+	this->userConts.Clear();
+	this->userContDevs.Clear();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 {
 	UInt8 buff[12];
-	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(this->cliMut);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 0, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 {
 	UInt8 buff[12];
-	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 2, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(this->cliMut);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 2, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 {
 	UInt8 buff[12];
-	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 4, 0, 0, 0, 0);
-	Sync::MutexUsage mutUsage(this->cliMut);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 4, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevice(Int64 devId)
 {
 	UInt8 buff[20];
-	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 6, 0, (UInt8*)&devId, 8, 0);
-	Sync::MutexUsage mutUsage(this->cliMut);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 6, 0, (UInt8*)&devId, 8, 0);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlert(Int32 alertId)
 {
 	UInt8 buff[20];
-	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 8, 0, (UInt8*)&alertId, 4, 0);
-	Sync::MutexUsage mutUsage(this->cliMut);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 8, 0, (UInt8*)&alertId, 4, 0);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 {
 	UInt8 buff[20];
-	UOSInt cmdSize = this->protoHdlr->BuildPacket(buff, 10, 0, (UInt8*)&userId, 4, 0);
-	Sync::MutexUsage mutUsage(this->cliMut);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 10, 0, (UInt8*)&userId, 4, 0);
+	Sync::MutexUsage mutUsage(&this->cliMut);
 	if (this->cli)
 	{
 		this->cli->Write(buff, cmdSize);
 	}
-	mutUsage.EndUse();
 }
 
-SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), protoHdlr(this)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPSDev Viewer"));
@@ -475,33 +463,17 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->cli = 0;
-	NEW_CLASS(this->cliMut, Sync::Mutex());
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoGPSDevInfoHandler(this));
 
-	NEW_CLASS(this->alertMut, Sync::Mutex());
-	NEW_CLASS(this->alertList, Data::ArrayList<Int32>());
 	this->alertUpd = false;
-	NEW_CLASS(this->deviceMut, Sync::Mutex());
-	NEW_CLASS(this->deviceList, Data::ArrayList<Int64>());
 	this->deviceUpd = false;
-	NEW_CLASS(this->userMut, Sync::Mutex());
-	NEW_CLASS(this->userList, Data::ArrayList<Int32>());
 	this->userUpd = false;
 	this->devContUpd = false;
-	NEW_CLASS(this->devContMut, Sync::Mutex());
-	NEW_CLASS(this->devConts, Data::ArrayList<Text::String *>());
 	this->devContACnt = 0;
 	this->devContAlerts = 0;
 	this->devContGCnt = 0;
 	this->devContGuards = 0;
 	this->alertContUpd = false;
-	NEW_CLASS(this->alertContMut, Sync::Mutex());
-	NEW_CLASS(this->alertContDevs, Data::ArrayList<Int64>());
-	NEW_CLASS(this->alertConts, Data::ArrayList<Text::String*>());
 	this->userContUpd = false;
-	NEW_CLASS(this->userContMut, Sync::Mutex());
-	NEW_CLASS(this->userContDevs, Data::ArrayList<Int64>());
-	NEW_CLASS(this->userConts, Data::ArrayList<Text::String*>());
 
 	NEW_CLASS(this->pnlConn, UI::GUIPanel(ui, this));
 	this->pnlConn->SetRect(0, 0, 100, 56, false);
@@ -646,26 +618,10 @@ SSWR::AVIRead::AVIRGPSDevForm::~AVIRGPSDevForm()
 		Sync::Thread::Sleep(10);
 	}
 	DEL_CLASS(this->threadEvt);
-	DEL_CLASS(this->protoHdlr);
-	DEL_CLASS(this->cliMut);
 
 	this->ClearDevConts();
 	this->ClearAlertConts();
 	this->ClearUserConts();
-	DEL_CLASS(this->devConts);
-	DEL_CLASS(this->devContMut);
-	DEL_CLASS(this->alertList);
-	DEL_CLASS(this->alertMut);
-	DEL_CLASS(this->deviceList);
-	DEL_CLASS(this->deviceMut);
-	DEL_CLASS(this->userList);
-	DEL_CLASS(this->userMut);
-	DEL_CLASS(this->alertContMut);
-	DEL_CLASS(this->alertConts);
-	DEL_CLASS(this->alertContDevs);
-	DEL_CLASS(this->userContMut);
-	DEL_CLASS(this->userConts);
-	DEL_CLASS(this->userContDevs);
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::OnMonitorChanged()
@@ -684,16 +640,15 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			OSInt i;
 			if (cmdSize >= cnt * 4 + 4)
 			{
-				Sync::MutexUsage mutUsage(this->alertMut);
-				this->alertList->Clear();
+				Sync::MutexUsage mutUsage(&this->alertMut);
+				this->alertList.Clear();
 				i = 4;
 				while (cnt-- > 0)
 				{
-					this->alertList->Add(ReadInt32(&cmd[i]));
+					this->alertList.Add(ReadInt32(&cmd[i]));
 					i += 4;
 				}
 				this->alertUpd = true;
-				mutUsage.EndUse();
 			}
 		}
 		break;
@@ -704,12 +659,12 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			OSInt i;
 			if (cmdSize >= cnt * 8 + 4)
 			{
-				Sync::MutexUsage mutUsage(this->deviceMut);
-				this->deviceList->Clear();
+				Sync::MutexUsage mutUsage(&this->deviceMut);
+				this->deviceList.Clear();
 				i = 4;
 				while (cnt-- > 0)
 				{
-					this->deviceList->Add(ReadInt64(&cmd[i]));
+					this->deviceList.Add(ReadInt64(&cmd[i]));
 					i += 8;
 				}
 				this->deviceUpd = true;
@@ -724,12 +679,12 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			OSInt i;
 			if (cmdSize >= cnt * 4 + 4)
 			{
-				Sync::MutexUsage mutUsage(this->userMut);
-				this->userList->Clear();
+				Sync::MutexUsage mutUsage(&this->userMut);
+				this->userList.Clear();
 				i = 4;
 				while (cnt-- > 0)
 				{
-					this->userList->Add(ReadInt32(&cmd[i]));
+					this->userList.Add(ReadInt32(&cmd[i]));
 					i += 4;
 				}
 				this->userUpd = true;
@@ -750,61 +705,61 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			{
 				Data::DateTime dt;
 				this->ClearDevConts();
-				Sync::MutexUsage mutUsage(this->devContMut);
-				this->devConts->Add(Text::String::New(UTF8STRC("CompId")));
+				Sync::MutexUsage mutUsage(&this->devContMut);
+				this->devConts.Add(Text::String::New(UTF8STRC("CompId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[4]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("DevId")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("DevId")));
 				sptr = Text::StrInt64(sbuff, ReadInt64(&cmd[8]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("IP Time")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("IP Time")));
 				dt.SetTicks(ReadInt64(&cmd[16]));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("Last Signal Time")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("Last Signal Time")));
 				dt.SetTicks(ReadInt64(&cmd[24]));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("Last Loc Time")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("Last Loc Time")));
 				dt.SetTicks(ReadInt64(&cmd[32]));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("LastLat")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("LastLat")));
 				sptr = Text::StrDouble(sbuff, ReadDouble(&cmd[40]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("LastLon")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("LastLon")));
 				sptr = Text::StrDouble(sbuff, ReadDouble(&cmd[48]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("GuardDist")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("GuardDist")));
 				sptr = Text::StrDouble(sbuff, ReadDouble(&cmd[56]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("GuardFlags")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("GuardFlags")));
 				sptr = Text::StrHexVal32(sbuff, ReadUInt32(&cmd[64]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("GuardFlags2")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("GuardFlags2")));
 				sptr = Text::StrHexVal32(sbuff, ReadUInt32(&cmd[68]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("GuardFlags3")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("GuardFlags3")));
 				sptr = Text::StrHexVal32(sbuff, ReadUInt32(&cmd[72]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("GuardFlags4")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("GuardFlags4")));
 				sptr = Text::StrHexVal32(sbuff, ReadUInt32(&cmd[76]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("GuardFlags5")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("GuardFlags5")));
 				sptr = Text::StrHexVal32(sbuff, ReadUInt32(&cmd[80]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("DevPeriod")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("DevPeriod")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[84]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("Status3")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("Status3")));
 				sptr = Text::StrHexVal32(sbuff, ReadUInt32(&cmd[88]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("LastIP")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("LastIP")));
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadUInt32(&cmd[92]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->devConts->Add(Text::String::New(UTF8STRC("LastPort")));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(UTF8STRC("LastPort")));
 				sptr = Text::StrInt32(sbuff, ReadUInt16(&cmd[96]));
-				this->devConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->devConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 				i = startSize;
 				j = ReadUInt16(&cmd[i]);
@@ -812,8 +767,8 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				{
 					k = ReadUInt16(&cmd[i + 2 * j + 2]);
 					*(WChar*)&cmd[i + 2 * j + 2] = 0;
-					this->devConts->Add(Text::String::New(UTF8STRC("IMEI")));
-					this->devConts->Add(Text::String::NewNotNull((WChar*)&cmd[i + 2]));
+					this->devConts.Add(Text::String::New(UTF8STRC("IMEI")));
+					this->devConts.Add(Text::String::NewNotNull((WChar*)&cmd[i + 2]));
 					WriteInt16(&cmd[i + 2 * j + 2], (Int16)k);
 					i += j * 2 + 2;
 				}
@@ -898,72 +853,72 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			{
 				Data::DateTime dt;
 				this->ClearAlertConts();
-				Sync::MutexUsage mutUsage(this->alertContMut);
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertId")));
+				Sync::MutexUsage mutUsage(&this->alertContMut);
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[4]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertType")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertType")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[8]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("CompId")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("CompId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[12]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("WebUserId")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("WebUserId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[16]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTarget")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTarget")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[20]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTargetId")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTargetId")));
 				sptr = Text::StrInt64(sbuff, ReadInt64(&cmd[24]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("ZoneId")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("ZoneId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[32]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("Period")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("Period")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[36]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime0")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime0")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[40]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime1")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime1")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[44]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime2")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime2")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[48]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime3")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime3")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[52]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime4")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime4")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[56]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime5")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime5")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[60]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("AlertTime6")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("AlertTime6")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[64]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("CreateUserId")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("CreateUserId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[68]));
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("ModifyTime")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("ModifyTime")));
 				dt.SetTicks(ReadInt64(&cmd[72]));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("CreateTime")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("CreateTime")));
 				dt.SetTicks(ReadInt64(&cmd[80]));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("Found")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("Found")));
 				sptr = Text::StrInt32(sbuff, cmd[88]);
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("Enabled")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("Enabled")));
 				sptr = Text::StrInt32(sbuff, cmd[89]);
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->alertConts->Add(Text::String::New(UTF8STRC("ActionPopup")));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(UTF8STRC("ActionPopup")));
 				sptr = Text::StrInt32(sbuff, cmd[90]);
-				this->alertConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->alertConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 				i = startSize;
 				j = ReadUInt16(&cmd[i]);
@@ -971,8 +926,8 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 				{
 					k = ReadUInt16(&cmd[i + 2 * j + 2]);
 					*(WChar*)&cmd[i + 2 * j + 2] = 0;
-					this->alertConts->Add(Text::String::New(UTF8STRC("Name")));
-					this->alertConts->Add(Text::String::NewNotNull((WChar*)&cmd[i + 2]));
+					this->alertConts.Add(Text::String::New(UTF8STRC("Name")));
+					this->alertConts.Add(Text::String::NewNotNull((WChar*)&cmd[i + 2]));
 					WriteInt16(&cmd[i + 2 * j + 2], (Int16)k);
 					i += j * 2 + 2;
 				}
@@ -989,7 +944,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 						k = 0;
 						while (k < j)
 						{
-							this->alertContDevs->Add(ReadInt64(&cmd[i]));
+							this->alertContDevs.Add(ReadInt64(&cmd[i]));
 							i += 8;
 							k++;
 						}
@@ -1018,22 +973,22 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 			{
 				Data::DateTime dt;
 				this->ClearUserConts();
-				Sync::MutexUsage mutUsage(this->userContMut);
-				this->userConts->Add(Text::String::New(UTF8STRC("UserId")));
+				Sync::MutexUsage mutUsage(&this->userContMut);
+				this->userConts.Add(Text::String::New(UTF8STRC("UserId")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[4]));
-				this->userConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->userConts->Add(Text::String::New(UTF8STRC("UserType")));
+				this->userConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->userConts.Add(Text::String::New(UTF8STRC("UserType")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[8]));
-				this->userConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->userConts->Add(Text::String::New(UTF8STRC("TimeZone(M)")));
+				this->userConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->userConts.Add(Text::String::New(UTF8STRC("TimeZone(M)")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[12]));
-				this->userConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->userConts->Add(Text::String::New(UTF8STRC("LicDisplay")));
+				this->userConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->userConts.Add(Text::String::New(UTF8STRC("LicDisplay")));
 				sptr = Text::StrInt32(sbuff, ReadInt32(&cmd[16]));
-				this->userConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-				this->userConts->Add(Text::String::New(UTF8STRC("Updated")));
+				this->userConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->userConts.Add(Text::String::New(UTF8STRC("Updated")));
 				sptr = Text::StrInt32(sbuff, cmd[20]);
-				this->userConts->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				this->userConts.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 				i = startSize;
 				if (i + 2 <= cmdSize)
@@ -1045,7 +1000,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(IO::Stream *stm, void *stmObj, In
 						k = 0;
 						while (k < j)
 						{
-							this->userContDevs->Add(ReadInt64(&cmd[i]));
+							this->userContDevs.Add(ReadInt64(&cmd[i]));
 							i += 8;
 							k++;
 						}

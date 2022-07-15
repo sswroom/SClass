@@ -14,9 +14,9 @@ namespace Map
 		Media::DrawEngine *geng;
 		UOSInt osSize;
 
-		Data::ArrayListInt64 *dbGenList;
-		Sync::Mutex *dbMut;
-		Sync::Event *dbEvt;
+		Data::ArrayListInt64 dbGenList;
+		Sync::Mutex dbMut;
+		Sync::Event dbEvt;
 		Media::IImgResizer *resizer;
 
 	private:

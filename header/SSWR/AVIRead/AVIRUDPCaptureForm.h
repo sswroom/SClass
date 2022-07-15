@@ -65,14 +65,14 @@ namespace SSWR
 			UI::GUIListBox *lbMulticastCurr;
 
 			SSWR::AVIRead::AVIRCore *core;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Net::UDPServer *svr;
 
 			Bool packetsChg;
 			OSInt packetCurr;
 			PacketInfo *packets;
-			Sync::Mutex *packetMut;
+			Sync::Mutex packetMut;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);

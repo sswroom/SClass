@@ -94,8 +94,6 @@ namespace Media
 		protected:
 			AudioFormat format;
 			InstrumentType instType;
-			Sync::Mutex *toneMut;
-			Data::Int32Map<ToneStatus*> *toneMap;
 
 		public:
 			ToneGenerator(IAudioSource *sourceAudio);
@@ -108,7 +106,7 @@ namespace Media
 			void SetInstrument(InstrumentType instType);
 
 			static Double GetToneFreq(ToneType tone);
-			static const WChar *GetToneName(ToneType tone);
+			static Text::CString GetToneName(ToneType tone);
 		};
 	}
 }

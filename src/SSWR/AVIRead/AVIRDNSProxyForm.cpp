@@ -422,13 +422,13 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 			me->txtTargetName->SetText(CSTR(""));
 			me->txtTargetCountry->SetText(CSTR(""));
 		}
-		Sync::MutexUsage mutUsage(target->mut);
+		Sync::MutexUsage mutUsage(&target->mut);
 		me->lbTargetDomains->ClearItems();
 		i = 0;
-		j = target->addrList->GetCount();
+		j = target->addrList.GetCount();
 		while (i < j)
 		{
-			me->lbTargetDomains->AddItem(target->addrList->GetItem(i), 0);
+			me->lbTargetDomains->AddItem(target->addrList.GetItem(i), 0);
 			i++;
 		}
 		mutUsage.EndUse();

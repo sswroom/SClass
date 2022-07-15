@@ -12,9 +12,9 @@ namespace Win32
 	{
 	private:
 		winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher watcher = nullptr;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *pubDevMap;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *randDevMap;
-		Sync::Mutex *devMut;
+		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> pubDevMap;
+		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> randDevMap;
+		Sync::Mutex devMut;
 		RecordHandler recHdlr;
 		void *recHdlrObj;
 		void *handle;

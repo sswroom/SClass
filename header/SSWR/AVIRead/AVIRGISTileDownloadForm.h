@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRGISTileDownloadForm : public UI::GUIForm
 		{
 		private:
-			typedef struct
+			struct ThreadStat
 			{
 				AVIRGISTileDownloadForm *me;
 				Sync::Event *threadEvt;
@@ -28,7 +28,7 @@ namespace SSWR
 				IO::SPackageFile *spkg;
 				const UTF8Char *folderName;
 				Map::TileMap *tileMap;
-			} ThreadStat;
+			};
 		private:
 			UI::GUIButton *btnArea;
 			UI::GUIButton *btnSave;
@@ -49,7 +49,7 @@ namespace SSWR
 			Math::Coord2D<OSInt> downPos;
 
 			Int32 errCnt;
-			Sync::Event *mainEvt;
+			Sync::Event mainEvt;
 			Bool stopDownload;
 			UOSInt threadCnt;
 			ThreadStat *threadStat;

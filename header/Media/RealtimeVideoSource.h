@@ -10,29 +10,28 @@ namespace Media
 	{
 	private:
 		Media::IRealtimeVideoSource *capSrc;
-		Sync::Mutex *frameMut;
+		Sync::Mutex frameMut;
 		UInt8 *frameBuff;
 		Int32 frameSize;
 		UInt32 frameTime;
 		UInt32 frameNum;
 		Media::FrameType frameType;
 		Int32 lastFrameTime;
-		Int32 maxFrameSize;
+		UOSInt maxFrameSize;
 		Media::FrameInfo frameInfo;
-		Int32 frameRateNorm;
-		Int32 frameRateDenorm;
+		UInt32 frameRateNorm;
+		UInt32 frameRateDenorm;
 		Bool started;
 
 	private:
-		static void __stdcall FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UInt32 dataSize, Bool deltaFrame, void *userData, Media::FrameType frameType, Bool discontTime);
-
+		static void __stdcall FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 	public:
 		RealtimeVideoSource(Media::IRealtimeVideoSource *capSrc);
 		virtual ~RealtimeVideoSource();
 
-		virtual WChar *GetName(WChar *buff);
+		virtual UTF8Char *GetName(UTF8Char *buff);
 
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *rateNorm, Int32 *rateDenorm, Int32 *maxFrameSize);
+		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *rateNorm, UInt32 *rateDenorm, UOSInt *maxFrameSize);
 		virtual void Start();
 		virtual void Stop();
 		virtual Int32 GetStreamTime(); //ms, -1 = infinity
@@ -42,5 +41,5 @@ namespace Media
 
 		virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 	};
-};
+}
 #endif

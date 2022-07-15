@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	if (me->connected)
 	{
 		me->connected = false;
-		Sync::MutexUsage mutUsage(me->cliMut);
+		Sync::MutexUsage mutUsage(&me->cliMut);
 		if (me->cli)
 		{
 			me->cli->Close();
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	{
 		cli->SetNoDelay(true);
 		me->connected = true;
-		me->clk->Start();
+		me->clk.Start();
 		me->recvSize = 0;
 		me->sendSize = 0;
 		me->lastRecvSize = 0;
@@ -65,8 +65,8 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 		me->txtHost->SetReadOnly(true);
 		me->txtPort->SetReadOnly(true);
 		me->cli = cli;
-		me->procEvt->Set();
-		me->recvEvt->Set();
+		me->procEvt.Set();
+		me->recvEvt.Set();
 	}
 }
 
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(void *userObj)
 			me->txtHost->SetReadOnly(false);
 			me->txtPort->SetReadOnly(false);
 		}
-		Double currTime = me->clk->GetTimeDiff();
+		Double currTime = me->clk.GetTimeDiff();
 		UInt64 currRecvSize = me->recvSize;
 		UInt64 currSendSize = me->sendSize;
 		if (currTime > me->lastTime)
@@ -112,11 +112,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 	UOSInt sendSize;
 	UOSInt sendBuffSize = 9000;
 	me->procRunning = true;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	sendBuff = MemAlloc(UInt8, sendBuffSize);
 	while (!me->toStop)
 	{
-		Sync::MutexUsage mutUsage(me->cliMut);
+		Sync::MutexUsage mutUsage(&me->cliMut);
 		if (me->cli)
 		{
 			sendSize = me->cli->Write(sendBuff, sendBuffSize);
@@ -127,18 +127,18 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(void *userObj)
 			}
 			else
 			{
-				me->procEvt->Wait(1000);
+				me->procEvt.Wait(1000);
 			}
 		}
 		else
 		{
 			mutUsage.EndUse();
-			me->procEvt->Wait(1000);
+			me->procEvt.Wait(1000);
 		}
 	}
 	MemFree(sendBuff);
 	me->procRunning = false;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	return 0;
 }
 
@@ -148,7 +148,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 	UInt8 *recvBuff;
 	UOSInt recvSize;
 	me->recvRunning = true;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	recvBuff = MemAlloc(UInt8, 9000);
 	while (!me->toStop)
 	{
@@ -161,21 +161,21 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(me->cliMut);
+				Sync::MutexUsage mutUsage(&me->cliMut);
 				DEL_CLASS(me->cli);
 				me->cli = 0;
 				mutUsage.EndUse();
-				me->recvEvt->Wait(1000);
+				me->recvEvt.Wait(1000);
 			}
 		}
 		else
 		{
-			me->recvEvt->Wait(1000);
+			me->recvEvt.Wait(1000);
 		}
 	}
 	MemFree(recvBuff);
 	me->recvRunning = false;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	return 0;
 }
 
@@ -196,11 +196,6 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->toStop = false;
 	this->procRunning = false;
 	this->recvRunning = false;
-	NEW_CLASS(this->cliMut, Sync::Mutex());
-	NEW_CLASS(this->clk, Manage::HiResClock());
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
-	NEW_CLASS(this->recvEvt, Sync::Event(true));
-	NEW_CLASS(this->procEvt, Sync::Event(true));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
@@ -231,7 +226,7 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->recvRunning || !this->procRunning)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 }
 
@@ -244,13 +239,8 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::~AVIRTCPSpdCliForm()
 	this->toStop = true;
 	while (this->recvRunning || this->procRunning)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
-	DEL_CLASS(this->mainEvt);
-	DEL_CLASS(this->procEvt);
-	DEL_CLASS(this->recvEvt);
-	DEL_CLASS(this->cliMut);
-	DEL_CLASS(this->clk);
 }
 
 void SSWR::AVIRead::AVIRTCPSpdCliForm::OnMonitorChanged()

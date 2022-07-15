@@ -39,10 +39,10 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::MQTTConn *client;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
-			Sync::Mutex *topicMut;
-			Data::StringMap<TopicStatus*> *topicMap;
+			Sync::Mutex topicMut;
+			Data::StringMap<TopicStatus*> topicMap;
 			Bool topicListChanged;
 			TopicStatus *currTopic;
 			Media::DrawImage *dispImg;

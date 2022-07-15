@@ -12,11 +12,11 @@ namespace Map
 	class AssistedReverseGeocoder : public Map::IAssistedReverseGeocoder
 	{
 	private:
-		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
+		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
 		UOSInt nextCoder;
 		DB::DBTool *conn;
 		IO::Writer *errWriter;
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 	public:
 		AssistedReverseGeocoder(DB::DBTool *db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoder();

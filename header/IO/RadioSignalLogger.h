@@ -11,7 +11,7 @@ namespace IO
 	{
 	private:
 		IO::FileStream *fs;
-		Sync::Mutex *fsMut;
+		Sync::Mutex fsMut;
 		UInt64 wifiCnt;
 		UInt64 btCnt;
 		IO::BTCapturer *btCapture;

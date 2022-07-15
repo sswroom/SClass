@@ -18,9 +18,9 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Sync::Mutex *devMut;
-			Data::UInt64Map<UInt32> *randDevMap;
-			Data::UInt64Map<UInt32> *pubDevMap;
+			Sync::Mutex devMut;
+			Data::UInt64Map<UInt32> randDevMap;
+			Data::UInt64Map<UInt32> pubDevMap;
 			IO::BTScanner *bt;
 
 			UI::GUIPanel *pnlControl;

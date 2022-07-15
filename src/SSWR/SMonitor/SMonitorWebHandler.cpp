@@ -9,6 +9,7 @@
 #include "Media/StaticImage.h"
 #include "SSWR/SMonitor/SMonitorWebHandler.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"
+#include "Sync/RWMutexUsage.h"
 #include "Text/JSText.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -139,7 +140,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		while (i < j)
 		{
 			dev = devList.GetItem(i);
-			dev->mut->LockRead();
+			Sync::RWMutexUsage mutUsage(&dev->mut, false);
 			writer->WriteStrC(UTF8STRC("<tr><td>"));
 			if (dev->devName)
 			{
@@ -255,8 +256,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 					writer->WriteStrC(UTF8STRC("<br/>"));
 				}
 			}
-
-			dev->mut->UnlockRead();
+			mutUsage.EndUse();
 			writer->WriteLineC(UTF8STRC("</td></tr>"));
 			
 			i++;
@@ -419,7 +419,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	{
 		dev = devList.GetItem(i);
 		writer->WriteStrC(UTF8STRC("<tr><td>"));
-		dev->mut->LockRead();
+		Sync::RWMutexUsage mutUsage(&dev->mut, false);
 		if (dev->devName)
 		{
 			WriteHTMLText(writer, dev->devName);
@@ -519,7 +519,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		writer->WriteStrC(UTF8STRC("<a href=\"device?photo="));
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteStrC(UTF8STRC("\">Capture Photo</a>"));
-		dev->mut->UnlockRead();
+		mutUsage.EndUse();
 		writer->WriteLineC(UTF8STRC("</td></tr>"));
 		
 		i++;
@@ -618,7 +618,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	writer->WriteLineC(UTF8STRC("\">"));
 	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\">"));
 	writer->WriteStrC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"modify\"/>"));
-	dev->mut->LockRead();
+	Sync::RWMutexUsage mutUsage(&dev->mut, false);
 	writer->WriteStrC(UTF8STRC("<tr><td>Platform Name</td><td>"));
 	WriteHTMLText(writer, dev->platformName);
 	writer->WriteLineC(UTF8STRC("</td></tr>"));
@@ -646,7 +646,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	writer->WriteStrC(UTF8STRC("/><label for=\"removed\">Removed</label></td></tr>"));
 	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
 	writer->WriteLineC(UTF8STRC("</table></form>"));
-	dev->mut->UnlockRead();
+	mutUsage.EndUse();
 
 	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
 	writer->WriteLineC(UTF8STRC("</html>"));
@@ -751,7 +751,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	writer->WriteLineC(UTF8STRC("\">"));
 	writer->WriteStrC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"reading\"/>"));
 	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\">"));
-	dev->mut->LockRead();
+	Sync::RWMutexUsage mutUsage(&dev->mut, false);
 	j = dev->nReading;
 	i = 0;
 	while (i < j)
@@ -790,7 +790,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	}
 	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
 	writer->WriteLineC(UTF8STRC("</table></form>"));
-	dev->mut->UnlockRead();
+	mutUsage.EndUse();
 
 	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
 	writer->WriteLineC(UTF8STRC("</html>"));
@@ -895,7 +895,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	writer->WriteLineC(UTF8STRC("\">"));
 	writer->WriteStrC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"digitals\"/>"));
 	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\">"));
-	dev->mut->LockRead();
+	Sync::RWMutexUsage mutUsage(&dev->mut, false);
 	j = dev->ndigital;
 	i = 0;
 	while (i < j)
@@ -917,7 +917,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	}
 	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
 	writer->WriteLineC(UTF8STRC("</table></form>"));
-	dev->mut->UnlockRead();
+	mutUsage.EndUse();
 
 	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
 	writer->WriteLineC(UTF8STRC("</html>"));
@@ -1015,7 +1015,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	if (dev->valUpdated)
 	{
 		const Data::ArrayList<IO::MemoryStream *> *cacheList;
-		dev->mut->LockWrite();
+		Sync::RWMutexUsage mutUsage(&dev->mut, true);
 		dev->valUpdated = false;
 		cacheList = dev->imgCaches->GetValues();
 		i = cacheList->GetCount();
@@ -1025,10 +1025,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			DEL_CLASS(mstm);
 		}
 		dev->imgCaches->Clear();
-		dev->mut->UnlockWrite();
 	}
 	
-	dev->mut->LockRead();
+	Sync::RWMutexUsage mutUsage(&dev->mut, false);
 	mstm = dev->imgCaches->Get((sensorId << 16) + (readingId << 8) + (readingType));
 	if (mstm)
 	{
@@ -1038,7 +1037,6 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		resp->AddContentLength(buffSize);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->Write(buff, buffSize);
-		dev->mut->UnlockRead();
 		return true;
 	}
 
@@ -1442,7 +1440,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			dimg->DelFont(f);
 		}
 	}
-	dev->mut->UnlockRead();
+	mutUsage.EndUse();
 	
 	Exporter::GUIPNGExporter *exporter;
 	Media::ImageList *imgList;
@@ -1464,9 +1462,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 
-	dev->mut->LockWrite();
+	mutUsage.ReplaceMutex(&dev->mut, true);
 	mstm = dev->imgCaches->Put((sensorId << 16) + (readingId << 8) + (readingType), mstm);
-	dev->mut->UnlockWrite();
+	mutUsage.EndUse();
 	if (mstm)
 	{
 		DEL_CLASS(mstm);
@@ -1515,7 +1513,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 		sptr = Text::StrInt64(sbuff, dev->cliId);
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteLineC(UTF8STRC(";"));
-		dev->mut->LockRead();
+		Sync::RWMutexUsage mutUsage(&dev->mut, false);
 		writer->WriteStrC(UTF8STRC("cli.name = "));
 		if (dev->devName)
 		{
@@ -1556,7 +1554,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 			k++;
 		}
 		writer->WriteLineC(UTF8STRC("clients[cli.cliId] = cli;"));
-		dev->mut->UnlockRead();
+		mutUsage.EndUse();
 		i++;
 	}
 
@@ -1678,7 +1676,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	UOSInt readingIndex = (UOSInt)-1;
 	Int32 readingType = 0;
 	Data::LineChart *chart;
-	dev->mut->LockRead();
+	Sync::RWMutexUsage mutUsage(&dev->mut, false);
 	i = dev->nReading;
 	while (i-- > 0)
 	{
@@ -1689,7 +1687,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 			break;
 		}
 	}
-	dev->mut->UnlockRead();
+	mutUsage.EndUse();
 	if (readingIndex == (UOSInt)-1)
 	{
 		f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -1743,7 +1741,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 
 		Text::StringBuilderUTF8 sb;
-		dev->mut->LockRead();
+		Sync::RWMutexUsage mutUsage(&dev->mut, false);
 		if (dev->readingNames[readingIndex])
 		{
 			sb.AppendSlow(dev->readingNames[readingIndex]);
@@ -1758,7 +1756,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 				sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
 			}
 		}
-		dev->mut->UnlockRead();
+		mutUsage.EndUse();
 		Data::DateTime dt;
 		dt.SetTicks(startTime);
 		dt.ToLocalTime();
@@ -1943,10 +1941,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	{
 		user = userList.GetItem(i);
 		writer->WriteStrC(UTF8STRC("<tr><td>"));
-		user->mut->LockRead();
+		Sync::RWMutexUsage mutUsage(&user->mut, false);
 		sptr = Text::StrInt32(sbuff, user->userId);
 		WriteHTMLText(writer, user->userName);
-		user->mut->UnlockRead();
+		mutUsage.EndUse();
 		writer->WriteStrC(UTF8STRC("</td><td><a href=\"userreset?id="));
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteStrC(UTF8STRC("\">Reset Password</a>"));
@@ -2123,7 +2121,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	writer->WriteLineC(UTF8STRC("</td><td>"));
 	writer->WriteLineC(UTF8STRC("<h2>User Assign</h2>"));
 	writer->WriteStrC(UTF8STRC("User Name: "));
-	user->mut->LockRead();
+	Sync::RWMutexUsage userMutUsage(&user->mut, false);
 	WriteHTMLText(writer, user->userName);
 	writer->WriteLineC(UTF8STRC("<br/>"));
 	writer->WriteStrC(UTF8STRC("<form name=\"userassign\" method=\"POST\" action=\"userassign?id="));
@@ -2137,7 +2135,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	while (i < j)
 	{
 		dev = devList.GetItem(i);
-		dev->mut->LockRead();
+		Sync::RWMutexUsage devMutUsage(&dev->mut, false);
 		writer->WriteStrC(UTF8STRC("<input type=\"checkbox\" name=\"device\" id=\"device"));
 		sptr = Text::StrInt64(sbuff, dev->cliId);
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
@@ -2160,10 +2158,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 			WriteHTMLText(writer, dev->platformName);
 		}
 		writer->WriteStrC(UTF8STRC("</label><br/>"));
-		dev->mut->UnlockRead();
+		devMutUsage.EndUse();
 		i++;
 	}
-	user->mut->UnlockRead();
+	userMutUsage.EndUse();
 	writer->WriteLineC(UTF8STRC("<input type=\"submit\" />"));
 	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
 	writer->WriteLineC(UTF8STRC("</html>"));

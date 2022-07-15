@@ -17,7 +17,6 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 	this->logCnt = logCnt;
 	this->entries = MemAlloc(LogEntry, this->logCnt);
 	this->currEnt = 0;
-	NEW_CLASS(this->entMut, Sync::Mutex());
 	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
@@ -47,7 +46,6 @@ SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 		DEL_CLASS(this->entries[i].headerVal);
 	}
 	MemFree(this->entries);
-	DEL_CLASS(this->entMut);
 }
 
 void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
@@ -57,7 +55,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Sync::MutexUsage mutUsage(this->entMut);
+	Sync::MutexUsage mutUsage(&this->entMut);
 	i = this->currEnt;
 	this->currEnt++;
 	if (this->currEnt >= this->logCnt)
@@ -102,7 +100,7 @@ UOSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 
 void SSWR::AVIRead::AVIRHTTPLog::Use(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->entMut);
+	mutUsage->ReplaceMutex(&this->entMut);
 }
 
 void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex)

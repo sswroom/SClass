@@ -19,11 +19,11 @@ namespace Net
 		IO::LogTool *log;
 		Media::AudioFormat *format;
 		Bool started;
-		Sync::Mutex *readMut;
+		Sync::Mutex readMut;
 		Sync::Event *readEvt;
 		UInt8 *readBuff;
 		UOSInt readBuffSize;
-		Sync::Event *readBuffEvt;
+		Sync::Event readBuffEvt;
 		UOSInt sizeRead;
 		UInt32 lastSSRC;
 

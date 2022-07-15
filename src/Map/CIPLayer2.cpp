@@ -50,7 +50,6 @@ Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::IMapDrawLayer(layerNam
 	this->currObjs = 0;
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::String::New(fname, (UOSInt)(sptr - fname));
-	NEW_CLASS(mut, Sync::Mutex());
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
 	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -187,7 +186,6 @@ Map::CIPLayer2::~CIPLayer2()
 		this->layerName->Release();
 		this->layerName = 0;
 	}
-	DEL_CLASS(mut);
 	if (this->lastObjs)
 	{
 		this->ReleaseFileObjs(this->lastObjs);
@@ -701,7 +699,7 @@ void *Map::CIPLayer2::BeginGetObject()
 	IO::FileStream *cip;
 	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
-	mut->Lock();
+	this->mut.Lock();
 	if (this->currObjs == 0)
 	{
 		NEW_CLASS(this->currObjs, Data::Int32Map<Map::CIPLayer2::CIPFileObject*>());
@@ -722,7 +720,7 @@ void Map::CIPLayer2::EndGetObject(void *session)
 	tmpObjs = this->lastObjs;
 	this->lastObjs = this->currObjs;
 	this->currObjs = tmpObjs;
-	mut->Unlock();
+	this->mut.Unlock();
 }
 
 Map::DrawObjectL *Map::CIPLayer2::GetNewObjectById(void *session, Int64 id)

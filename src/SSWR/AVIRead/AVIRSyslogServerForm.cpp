@@ -66,14 +66,14 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(void *userObj, U
 {
 	SSWR::AVIRead::AVIRSyslogServerForm *me = (SSWR::AVIRead::AVIRSyslogServerForm*)userObj;
 	IPLog *ipLog;
-	Sync::MutexUsage mutUsage(me->ipMut);
-	ipLog = me->ipMap->Get(ip);
+	Sync::MutexUsage mutUsage(&me->ipMut);
+	ipLog = me->ipMap.Get(ip);
 	if (ipLog == 0)
 	{
 		ipLog = MemAlloc(IPLog, 1);
 		ipLog->ip = ip;
 		NEW_CLASS(ipLog->logMessage, Data::ArrayList<Text::String*>());
-		me->ipMap->Put(ip, ipLog);
+		me->ipMap.Put(ip, ipLog);
 		me->ipListUpd = true;
 	}
 
@@ -86,7 +86,6 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(void *userObj, U
 	{
 		me->msgListUpd = true;
 	}
-	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
@@ -100,8 +99,8 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 	{
 		me->ipListUpd = false;
 		const Data::ArrayList<UInt32> *ipList;
-		Sync::MutexUsage mutUsage(me->ipMut);
-		ipList = me->ipMap->GetKeys();
+		Sync::MutexUsage mutUsage(&me->ipMut);
+		ipList = me->ipMap.GetKeys();
 		me->lbClient->ClearItems();
 		i = 0;
 		j = ipList->GetCount();
@@ -111,15 +110,14 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ipList->GetItem(i));
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 	if (me->msgListUpd)
 	{
 		me->msgListUpd = false;
 		IPLog *ipLog;
-		Sync::MutexUsage mutUsage(me->ipMut);
+		Sync::MutexUsage mutUsage(&me->ipMut);
 		me->lbLog->ClearItems();
-		ipLog = me->ipMap->Get(me->currIP);
+		ipLog = me->ipMap.Get(me->currIP);
 		if (ipLog)
 		{
 			i = ipLog->logMessage->GetCount();
@@ -143,8 +141,6 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(UI::GUIClientControl *
 	this->currIP = 0;
 	this->ipListUpd = false;
 	this->msgListUpd = false;
-	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::UInt32Map<IPLog*>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -176,7 +172,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 {
 	SDEL_CLASS(this->svr);
 
-	const Data::ArrayList<IPLog*> *ipList = this->ipMap->GetValues();
+	const Data::ArrayList<IPLog*> *ipList = this->ipMap.GetValues();
 	IPLog *ipLog;
 	UOSInt i = ipList->GetCount();
 	UOSInt j;
@@ -191,8 +187,6 @@ SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 		DEL_CLASS(ipLog->logMessage);
 		MemFree(ipLog);
 	}
-	DEL_CLASS(this->ipMap);
-	DEL_CLASS(this->ipMut);
 }
 
 void SSWR::AVIRead::AVIRSyslogServerForm::OnMonitorChanged()

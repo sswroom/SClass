@@ -11,7 +11,6 @@ Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(IAudioSource *sourceAudio
 	this->sourceAudio = sourceAudio;
 	sourceAudio->GetFormat(&this->format);
 
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->SetVolume(1.0);
 	this->currSample = 0;
 	this->endSample = 0;
@@ -21,7 +20,6 @@ Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(IAudioSource *sourceAudio
 
 Media::AudioFilter::AudioSweepFilter::~AudioSweepFilter()
 {
-	SDEL_CLASS(this->mut);
 }
 
 void Media::AudioFilter::AudioSweepFilter::GetFormat(AudioFormat *format)
@@ -39,7 +37,7 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 	Double endFreq;
 	UInt32 currSample;
 	UInt32 endSample;
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	startFreq = this->startFreq;
 	endFreq = this->endFreq;
 	currSample = this->currSample;
@@ -104,7 +102,7 @@ void Media::AudioFilter::AudioSweepFilter::SetVolume(Double vol)
 
 Bool Media::AudioFilter::AudioSweepFilter::StartSweep(Double startFreq, Double endFreq, UInt32 timeSeconds)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->startFreq = startFreq;
 	this->endFreq = endFreq;
 	this->currSample = 0;

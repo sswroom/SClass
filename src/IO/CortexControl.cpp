@@ -4,6 +4,7 @@
 #include "IO/SerialPort.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -37,7 +38,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 				me->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			buffSize += recvSize;
-			recvSize = me->protoHdlr->ParseProtocol(me->stm, 0, 0, buff, buffSize);
+			recvSize = me->protoHdlr.ParseProtocol(me->stm, 0, 0, buff, buffSize);
 			if (recvSize <= 0)
 			{
 				buffSize = 0;
@@ -57,12 +58,9 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter)
+IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter) : protoHdlr(this)
 {
 	this->stm = 0;
-	this->protoHdlr = 0;
-	this->sendMut = 0;
-	this->sendEvt = 0;
 	this->recvRunning = false;
 	this->recvToStop = false;
 	this->errWriter = errWriter;
@@ -74,10 +72,6 @@ IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter)
 		this->stm = 0;
 		return;
 	}
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoCortexHandler(this));
-	NEW_CLASS(this->sendMut, Sync::Mutex());
-	NEW_CLASS(this->sendEvt, Sync::Event(true));
-
 	Sync::Thread::Create(RecvThread, this);
 }
 
@@ -92,9 +86,6 @@ IO::CortexControl::~CortexControl()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	SDEL_CLASS(this->sendEvt);
-	SDEL_CLASS(this->sendMut);
-	SDEL_CLASS(this->protoHdlr);
 	SDEL_CLASS(this->stm);
 }
 
@@ -114,7 +105,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x01: //CM_READ_DIO
@@ -122,14 +113,14 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = ((cmd[1] & 0x000F) << 8) | cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x02: //CM_WRITE_DIO
 			if (cmdSize >= 0)
 			{
 				this->sendHasResult = true;
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x03: //CM_ADC_READ_VIN
@@ -137,7 +128,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = (cmd[1] << 8) | cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x04: //CM_READ_EE
@@ -149,7 +140,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = (cmd[1] << 8) | cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x07: //CM_READ_ODO
@@ -157,14 +148,14 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = (cmd[1] << 8) | cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x08: //CM_RESET_ODO
 			if (cmdSize >= 0)
 			{
 				this->sendHasResult = true;
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x09: //CM_TEST
@@ -174,7 +165,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = (cmd[1] << 8) | cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x0b: //CM_GET_TEMP
@@ -182,7 +173,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = (cmd[1] << 8) | cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x0c: //CM_GET_KEY
@@ -190,28 +181,28 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 			{
 				this->sendHasResult = true;
 				this->sendResult = cmd[0];
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x0d: //CM_POWER_OFF
 			if (cmdSize >= 0)
 			{
 				this->sendHasResult = true;
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x0e: //CM_CODEC_POWER
 			if (cmdSize >= 0)
 			{
 				this->sendHasResult = true;
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		case 0x0f: //CM_WDT
 			if (cmdSize >= 0)
 			{
 				this->sendHasResult = true;
-				this->sendEvt->Set();
+				this->sendEvt.Set();
 			}
 			break;
 		}
@@ -229,8 +220,8 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 0, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 0;
 	this->sendHasResult = false;
 	clk.Start();
@@ -247,7 +238,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -255,7 +246,6 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		*minorVer = this->sendResult & 0xf;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -266,8 +256,8 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 1, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 1, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 1;
 	this->sendHasResult = false;
 	clk.Start();
@@ -284,14 +274,13 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		*dioValues = this->sendResult;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -305,8 +294,8 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 	Bool succ = false;
 	cmd[0] = (UInt8)(outVal & 0xff);
 	cmd[1] = (UInt8)(outMask & 0xff);
-	packetSize = this->protoHdlr->BuildPacket(buff, 2, 0, cmd, 2, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 2, 0, cmd, 2, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 2;
 	this->sendHasResult = false;
 	clk.Start();
@@ -323,13 +312,12 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -340,8 +328,8 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 3, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 3, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 3;
 	this->sendHasResult = false;
 	clk.Start();
@@ -358,14 +346,13 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		*voltage = this->sendResult;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -376,8 +363,8 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 6, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 6, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 6;
 	this->sendHasResult = false;
 	clk.Start();
@@ -394,14 +381,13 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		*voltage = this->sendResult;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -412,8 +398,8 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 7, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 7, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 7;
 	this->sendHasResult = false;
 	clk.Start();
@@ -430,14 +416,13 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		*odoCount = this->sendResult;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -448,8 +433,8 @@ Bool IO::CortexControl::ResetOdometerCounter()
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 8, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 8, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 8;
 	this->sendHasResult = false;
 	clk.Start();
@@ -466,13 +451,12 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -483,8 +467,8 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 10, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 10, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 10;
 	this->sendHasResult = false;
 	clk.Start();
@@ -501,14 +485,13 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		*brightness = this->sendResult;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -519,8 +502,8 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 11, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 11, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 11;
 	this->sendHasResult = false;
 	clk.Start();
@@ -537,14 +520,13 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		*temperature = this->sendResult;
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -555,8 +537,8 @@ Bool IO::CortexControl::PowerOff()
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 13, 0, 0, 0, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 13, 0, 0, 0, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 13;
 	this->sendHasResult = false;
 	clk.Start();
@@ -573,13 +555,12 @@ Bool IO::CortexControl::PowerOff()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -592,8 +573,8 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 	Double t;
 	Bool succ = false;
 	cmd = turnOn?1:0;
-	packetSize = this->protoHdlr->BuildPacket(buff, 14, 0, &cmd, 1, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 14, 0, &cmd, 1, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 14;
 	this->sendHasResult = false;
 	clk.Start();
@@ -610,13 +591,12 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }
 
@@ -627,8 +607,8 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 15, 0, &timeout, 1, 0);
-	this->sendMut->Lock();
+	packetSize = this->protoHdlr.BuildPacket(buff, 15, 0, &timeout, 1, 0);
+	Sync::MutexUsage mutUsage(&this->sendMut);
 	this->sendType = 15;
 	this->sendHasResult = false;
 	clk.Start();
@@ -645,12 +625,11 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
+		this->sendEvt.Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
 		succ = true;
 	}
-	this->sendMut->Unlock();
 	return succ;
 }

@@ -12,10 +12,10 @@ namespace Media
 	{
 	private:
 		Media::IStreamControl *pbc;
-		Media::AudioFormat *fmt;
+		Media::AudioFormat fmt;
 		Sync::Event *pbEvt;
 
-		Sync::Mutex *buffMut;
+		Sync::Mutex buffMut;
 		UInt8 *dataBuff;
 		UInt8 *dataBuff2;
 		UOSInt buffSize;

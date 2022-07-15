@@ -18,7 +18,7 @@ namespace Media
 			UInt32 frameRateNorm;
 			UInt32 frameRateDenorm;
 			UInt32 frameCnt;
-			Sync::Mutex *frameNumMut;
+			Sync::Mutex frameNumMut;
 			UInt32 currFrameNum;
 
 			FrameCallback playCb;
@@ -27,7 +27,7 @@ namespace Media
 			Bool playing;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 			
 			static UInt32 __stdcall PlayThread(void *userObj);
 			UOSInt GetMaxFrameSize();

@@ -21,7 +21,7 @@ namespace Media
 			UInt32 bitCount;
 			Bool enabled;
 			Double bgLevel;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 		private:
 			void ResetStatus();
 		public:

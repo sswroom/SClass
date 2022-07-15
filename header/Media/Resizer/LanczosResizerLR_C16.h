@@ -41,7 +41,7 @@ namespace Media
 			UOSInt hnTap;
 			UOSInt vnTap;
 			UOSInt nThread;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			TaskParam *params;
 			Sync::ParallelTask *ptask;
 
@@ -64,7 +64,7 @@ namespace Media
 			UOSInt buffH;
 			UInt8 *buffPtr;
 
-			Media::ColorProfile *destColor;
+			Media::ColorProfile destColor;
 			Media::ColorManagerSess *colorSess;
 			Double srcRefLuminance;
 			Bool rgbChanged;

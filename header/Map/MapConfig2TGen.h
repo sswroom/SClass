@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_MAPCONFIG2TGEN
 #define _SM_MAP_MAPCONFIG2TGEN
 #include "IO/Writer.h"
-#include "Map/MapConfig.h"
+#include "Map/MapConfigBase.h"
 #include "Map/MapLayerData.h"
 #include "Map/MapScheduler.h"
 #include "Media/IImgResizer.h"

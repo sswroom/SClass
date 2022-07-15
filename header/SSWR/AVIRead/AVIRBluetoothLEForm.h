@@ -30,11 +30,11 @@ namespace SSWR
 			
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			IO::BTManager *btMgr;
-			Data::ArrayList<IO::BTController *> *btList;
+			IO::BTManager btMgr;
+			Data::ArrayList<IO::BTController *> btList;
 			IO::BTController *btCtrl;
-			Sync::Mutex *devMut;
-			Data::UInt64Map<BTDevice*> *devMap;
+			Sync::Mutex devMut;
+			Data::UInt64Map<BTDevice*> devMap;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblInterface;

@@ -1,18 +1,15 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoLBSGateHandler.h"
+#include "Sync/MutexUsage.h"
 
 IO::ProtoHdlr::ProtoLBSGateHandler::ProtoLBSGateHandler(IO::IProtocolHandler::DataListener *listener)
 {
 	this->listener = listener;
-	NEW_CLASS(this->crcMut, Sync::Mutex());
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
 }
 
 IO::ProtoHdlr::ProtoLBSGateHandler::~ProtoLBSGateHandler()
 {
-	DEL_CLASS(this->crc);
-	DEL_CLASS(this->crcMut);
 }
 
 void *IO::ProtoHdlr::ProtoLBSGateHandler::CreateStreamData(IO::Stream *stm)
@@ -39,11 +36,11 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(IO::Stream *stm, void *
 				if (packetSize > buffSize)
 					return buffSize;
 
-				this->crcMut->Lock();
-				this->crc->Clear();
-				this->crc->Calc(buff, packetSize - 2);
-				this->crc->GetValue((UInt8*)&crcVal);
-				this->crcMut->Unlock();
+				Sync::MutexUsage mutUsage(&this->crcMut);
+				this->crc.Clear();
+				this->crc.Calc(buff, packetSize - 2);
+				this->crc.GetValue((UInt8*)&crcVal);
+				mutUsage.EndUse();
 				if ((crcVal & 0xffff) == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], 0, &buff[6], packetSize - 8);
@@ -73,10 +70,10 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UInt8 *buff, Int32 cmdTyp
 	{
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
-	this->crcMut->Lock();
-	this->crc->Clear();
-	this->crc->Calc(buff, cmdSize + 6);
-	this->crc->GetValue(&buff[cmdSize + 6]);
-	this->crcMut->Unlock();
+	Sync::MutexUsage mutUsage(&this->crcMut);
+	this->crc.Clear();
+	this->crc.Calc(buff, cmdSize + 6);
+	this->crc.GetValue(&buff[cmdSize + 6]);
+	mutUsage.EndUse();
 	return cmdSize + 8;
 }

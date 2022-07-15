@@ -37,10 +37,10 @@ namespace Media
 		private:
 			Int32 currId;
 			Int32 nTap;
-			Sync::Event *evtMain;
-			Sync::Mutex *mut;
+			Sync::Event evtMain;
+			Sync::Mutex mut;
 			LRTHREADSTAT *stats;
-			Int32 nThread;
+			UOSInt nThread;
 
 			Double hsSize;
 			Int32 hdSize;

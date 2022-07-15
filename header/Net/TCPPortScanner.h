@@ -14,12 +14,12 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::SocketUtil::AddressInfo addr;
 		UInt8 *portList;
-		Sync::Mutex *portMut;
+		Sync::Mutex portMut;
 		PortUpdatedHandler hdlr;
 		void *hdlrObj;
 		UOSInt threadCnt;
 		Bool threadToStop;
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 
 		static UInt32 __stdcall ScanThread(void *userObj);
 	public:

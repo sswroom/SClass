@@ -1,36 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include <math.h>
-#include <float.h>
-#include <windows.h>
+#include "Math/LanczosFilter.h"
 #include "Math/Math.h"
 #include "Media/IImgResizer.h"
 #include "Media/Resizer/LanczosResizer8_8.h"
 #include "Sync/Event.h"
+#include "Sync/Thread.h"
 #ifndef HAS_ASM32
 #include <mmintrin.h>
 #endif
-
-#define PI 3.141592653589793
-
-
-Double Media::Resizer::LanczosResizer8_8::lanczos3_weight(Double phase)
-{
-	Double ret;
-	
-	if(fabs(phase) < DBL_EPSILON)
-	{
-		return 1.0;
-	}
-
-	if ((fabs(phase) * 2) >= nTap){
-		return 0.0;
-	}
-
-	ret = sin(PI * phase) * sin(PI * phase / nTap * 2) / (PI * PI * phase * phase / nTap * 2);
-
-	return ret;
-}
 
 void Media::Resizer::LanczosResizer8_8::setup_interpolation_parameter(Double source_length, Int32 source_max_pos, Int32 result_length, PARAMETER *out, Int32 indexSep, Double offsetCorr)
 {
@@ -82,7 +60,7 @@ void Media::Resizer::LanczosResizer8_8::setup_decimation_parameter(Double source
 	Double  pos, phase;
 
 	out->length = result_length;
-	out->tap = Math::Double2Int((this->nTap * (source_length) + (result_length - 1)) / result_length);
+	out->tap = Double2Int32((this->nTap * (source_length) + (result_length - 1)) / result_length);
 
 	out->weight = MemAlloc(Int32, out->length * out->tap);
 	out->index = MemAlloc(Int32, out->length * out->tap);
@@ -1138,7 +1116,7 @@ void Media::Resizer::LanczosResizer8_8::mt_horizontal_filter(UInt8 *inPt, UInt8 
 	Bool fin;
 	while (i-- > 0)
 	{
-		currHeight = MulDiv(i, height, this->nThread);
+		currHeight = MulDiv32(i, height, this->nThread);
 		this->stats[i].inPt = inPt + currHeight * sstep;
 		this->stats[i].outPt = outPt + currHeight * dstep;
 		this->stats[i].width = width;
@@ -1167,7 +1145,7 @@ void Media::Resizer::LanczosResizer8_8::mt_horizontal_filter(UInt8 *inPt, UInt8 
 		}
 		if (fin)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
@@ -1179,7 +1157,7 @@ void Media::Resizer::LanczosResizer8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *o
 	Bool fin;
 	while (i-- > 0)
 	{
-		currHeight = MulDiv(i, height, this->nThread);
+		currHeight = MulDiv32(i, height, this->nThread);
 		this->stats[i].inPt = inPt;
 		this->stats[i].outPt = outPt + currHeight * dstep;
 		this->stats[i].width = width;
@@ -1208,7 +1186,7 @@ void Media::Resizer::LanczosResizer8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *o
 		}
 		if (fin)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
@@ -1219,7 +1197,7 @@ UInt32 Media::Resizer::LanczosResizer8_8::WorkerThread(void *obj)
 	LRTHREADSTAT *ts = &lr->stats[threadId];
 
 	ts->status = 1;
-	lr->evtMain->Set();
+	lr->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -1231,17 +1209,17 @@ UInt32 Media::Resizer::LanczosResizer8_8::WorkerThread(void *obj)
 		{
 			LanczosResizer8_8::horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep);
 			ts->status = 4;
-			lr->evtMain->Set();
+			lr->evtMain.Set();
 		}
 		else if (ts->status == 5)
 		{
 			LanczosResizer8_8::vertical_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep);
 			ts->status = 6;
-			lr->evtMain->Set();
+			lr->evtMain.Set();
 		}
 	}
 	lr->stats[threadId].status = 0;
-	lr->evtMain->Set();
+	lr->evtMain.Set();
 	return 0;
 }
 
@@ -1279,26 +1257,23 @@ Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::IImgRe
 {
 //	SYSTEM_INFO sysInfo;
 	Int32 i;
-	SYSTEM_INFO sysInfo;
 
-	GetSystemInfo(&sysInfo);
-	nThread = sysInfo.dwNumberOfProcessors;
+	nThread = Sync::Thread::GetThreadCnt();
 	if (nThread <= 0)
 		nThread = 1;
 
 	this->nTap = nTap << 1;
-	NEW_CLASS(evtMain, Sync::Event(L"Media.LanczosResizer8_8.evtMain"));
-	stats = (LRTHREADSTAT *)MemAlloc(LRTHREADSTAT, nThread);
+	stats = MemAlloc(LRTHREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event(L"Media.LanczosResizer8_8.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		currId = i;
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)WorkerThread, this, 0, 0);
+		Sync::Thread::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 
@@ -1348,14 +1323,13 @@ Media::Resizer::LanczosResizer8_8::~LanczosResizer8_8()
 		if (exited)
 			break;
 
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 	i = nThread;
 	while (i-- > 0)
 	{
 		DEL_CLASS(stats[i].evt);
 	}
-	DEL_CLASS(evtMain);
 	MemFree(stats);
 
 	DestoryHori();
@@ -1367,7 +1341,7 @@ Media::Resizer::LanczosResizer8_8::~LanczosResizer8_8()
 	}
 }
 
-void Media::Resizer::LanczosResizer8_8::Resize(UInt8 *src, Int32 sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, Int32 dbpl, Int32 dwidth, Int32 dheight)
+void Media::Resizer::LanczosResizer8_8::Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	PARAMETER prm;
 	Double w = xOfst + swidth;
@@ -1508,7 +1482,7 @@ dstslop:
 #else
 		while (sheight-- > 0)
 		{
-			MemCopy(dest, src, siWidth << 2);
+			MemCopyNO(dest, src, siWidth << 2);
 			dest += dbpl;
 			src += sbpl;
 		}
@@ -1520,7 +1494,7 @@ Bool Media::Resizer::LanczosResizer8_8::IsSupported(Media::FrameInfo *srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
-	if (srcInfo->bpp != 32)
+	if (srcInfo->storeBPP != 32)
 		return false;
 	return true;
 }
@@ -1529,22 +1503,22 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_8::ProcessToNewPartial(Media
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (!IsSupported(srcImage->info))
+	if (!IsSupported(&srcImage->info))
 		return 0;
 	Int32 targetWidth = this->targetWidth;
 	Int32 targetHeight = this->targetHeight;
 	if (targetWidth == 0)
 	{
-		targetWidth = srcImage->info->width;
+		targetWidth = srcImage->info.dispWidth;
 	}
 	if (targetHeight == 0)
 	{
-		targetHeight = srcImage->info->height;
+		targetHeight = srcImage->info.dispHeight;
 	}
-	CalOutputSize(srcImage->info, targetWidth, targetHeight, &destInfo, rar);
+	CalOutputSize(&srcImage->info, targetWidth, targetHeight, &destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + tlx * 4 + tly * srcImage->GetBpl(), srcImage->GetBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, img->GetBpl(), destInfo.width, destInfo.height);
+	Resize(srcImage->data + tlx * 4 + tly * srcImage->GetDataBpl(), srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, img->GetDataBpl(), destInfo.dispWidth, destInfo.dispHeight);
 	return img;
 }

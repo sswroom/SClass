@@ -54,41 +54,35 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(const Net::SocketU
 
 void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal)
 {
-	Sync::MutexUsage mutUsage(this->dataCRCMut);
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, size);
-	this->dataCRC->GetValue(crcVal);
+	Sync::MutexUsage mutUsage(&this->dataCRCMut);
+	this->dataCRC.Clear();
+	this->dataCRC.Calc(buff, size);
+	this->dataCRC.GetValue(crcVal);
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf)
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
 	this->port = 5100;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;
-	NEW_CLASS(this->dataCRC, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
-	NEW_CLASS(this->dataCRCMut, Sync::Mutex());
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, Text::String *hostName, UInt16 port)
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, Text::String *hostName, UInt16 port) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = hostName->Clone();
 	this->port = port;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;
-	NEW_CLASS(this->dataCRC, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
-	NEW_CLASS(this->dataCRCMut, Sync::Mutex());
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
 }
 
 SSWR::SMonitor::SMonitorRedir::~SMonitorRedir()
 {
 	DEL_CLASS(this->svr);
-	DEL_CLASS(this->dataCRC);
-	DEL_CLASS(this->dataCRCMut);
 	this->hostName->Release();
 }
 
@@ -166,10 +160,10 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	WriteInt64(&buff[4], cliId);
 	size = (UOSInt)(Text::StrConcatC(&buff[12], platform, nameLen) - buff);
 	UInt8 calcVal[2];
-	Sync::MutexUsage mutUsage(this->dataCRCMut);
-	this->dataCRC->Clear();
-	this->dataCRC->Calc(buff, size);
-	this->dataCRC->GetValue(calcVal);
+	Sync::MutexUsage mutUsage(&this->dataCRCMut);
+	this->dataCRC.Clear();
+	this->dataCRC.Calc(buff, size);
+	this->dataCRC.GetValue(calcVal);
 	mutUsage.EndUse();
 	buff[size] = calcVal[0] ^ 0x12;
 	buff[size + 1] = calcVal[1] ^ 0x34;

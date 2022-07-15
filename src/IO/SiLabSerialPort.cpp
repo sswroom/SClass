@@ -31,11 +31,7 @@ IO::SiLabSerialPort::SiLabSerialPort(void *handle, IO::SiLabDriver *driver) : IO
 {
 	this->driver = driver;
 	this->handle = handle;
-	this->rdEvt = 0;
-	this->rdMut = 0;
 	this->reading = 0;
-	NEW_CLASS(this->rdEvt, Sync::Event());
-	NEW_CLASS(this->rdMut, Sync::Mutex());
 }
 
 IO::SiLabSerialPort::~SiLabSerialPort()
@@ -47,22 +43,10 @@ IO::SiLabSerialPort::~SiLabSerialPort()
 		this->driver->SI_CancelIo(h);
 		this->driver->SI_Close(h);
 	}
-	if (this->rdEvt)
-		this->rdEvt->Set();
+	this->rdEvt.Set();
 	while (this->reading)
 	{
 		Sync::Thread::Sleep(10);
-	}
-
-	if (this->rdEvt)
-	{
-		DEL_CLASS(this->rdEvt);
-		this->rdEvt = 0;
-	}
-	if (this->rdMut)
-	{
-		DEL_CLASS(this->rdMut);
-		this->rdMut = 0;
 	}
 }
 
@@ -80,9 +64,9 @@ UOSInt IO::SiLabSerialPort::Read(UInt8 *buff, UOSInt size)
 	if (h == 0)
 		return 0;
 	
-	Sync::MutexUsage mutUsage(this->rdMut);
+	Sync::MutexUsage mutUsage(&this->rdMut);
 	OVERLAPPED ol;
-	ol.hEvent = this->rdEvt->hand;
+	ol.hEvent = this->rdEvt.hand;
 	ol.Internal = 0;
 	ol.InternalHigh = 0;
 	ol.Offset = 0;
@@ -235,10 +219,7 @@ void IO::SiLabSerialPort::Close()
 		this->driver->SI_CancelIo(h);
 		this->driver->SI_Close(h);
 	}
-	if (this->rdEvt)
-	{
-		this->rdEvt->Set();
-	}
+	this->rdEvt.Set();
 }
 
 Bool IO::SiLabSerialPort::Recover()

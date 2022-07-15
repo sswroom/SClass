@@ -7,14 +7,10 @@
 IO::ProtoHdlr::ProtoLogCliHandler::ProtoLogCliHandler(IO::IProtocolHandler::DataListener *listener)
 {
 	this->listener = listener;
-	NEW_CLASS(this->crcMut, Sync::Mutex());
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
 }
 
 IO::ProtoHdlr::ProtoLogCliHandler::~ProtoLogCliHandler()
 {
-	DEL_CLASS(this->crc);
-	DEL_CLASS(this->crcMut);
 }
 
 void *IO::ProtoHdlr::ProtoLogCliHandler::CreateStreamData(IO::Stream *stm)
@@ -41,10 +37,10 @@ UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(IO::Stream *stm, void *s
 				if (packetSize > buffSize)
 					return buffSize;
 
-				Sync::MutexUsage mutUsage(this->crcMut);
-				this->crc->Clear();
-				this->crc->Calc(buff, packetSize - 2);
-				this->crc->GetValue(crcVal);
+				Sync::MutexUsage mutUsage(&this->crcMut);
+				this->crc.Clear();
+				this->crc.Calc(buff, packetSize - 2);
+				this->crc.GetValue(crcVal);
 				mutUsage.EndUse();
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
 				{
@@ -76,10 +72,10 @@ UOSInt IO::ProtoHdlr::ProtoLogCliHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 		MemCopyNO(&buff[6], cmd, cmdSize);
 	}
 	UInt8 crcVal[4];
-	Sync::MutexUsage mutUsage(this->crcMut);
-	this->crc->Clear();
-	this->crc->Calc(buff, cmdSize + 6);
-	this->crc->GetValue(crcVal);
+	Sync::MutexUsage mutUsage(&this->crcMut);
+	this->crc.Clear();
+	this->crc.Calc(buff, cmdSize + 6);
+	this->crc.GetValue(crcVal);
 	mutUsage.EndUse();
 	WriteInt16(&buff[cmdSize + 6], ReadMInt32(crcVal));
 	return cmdSize + 8;

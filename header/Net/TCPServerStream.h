@@ -13,9 +13,9 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::TCPServer *svr;
 		IO::LogTool *log;
-		Sync::Mutex *readMut;
-		Sync::Mutex *connMut;
-		Sync::Event *readEvt;
+		Sync::Mutex readMut;
+		Sync::Mutex connMut;
+		Sync::Event readEvt;
 		Net::TCPClient *currCli;
 
 		static void __stdcall ConnHandler(Socket *s, void *userObj);

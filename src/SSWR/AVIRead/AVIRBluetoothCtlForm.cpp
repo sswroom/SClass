@@ -71,26 +71,26 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	Sync::MutexUsage mutUsage;
-	UOSInt i = me->UpdateList(me->bt->GetPublicMap(&mutUsage), me->pubDevMap, 0);
-	me->UpdateList(me->bt->GetRandomMap(&mutUsage), me->randDevMap, i);
+	UOSInt i = me->UpdateList(me->bt->GetPublicMap(&mutUsage), &me->pubDevMap, 0);
+	me->UpdateList(me->bt->GetRandomMap(&mutUsage), &me->randDevMap, i);
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
-	Sync::MutexUsage mutUsage(me->devMut);
+	Sync::MutexUsage mutUsage(&me->devMut);
 	if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		if (me->randDevMap->GetIndex(dev->macInt) >= 0)
+		if (me->randDevMap.GetIndex(dev->macInt) >= 0)
 		{
-			me->randDevMap->Put(dev->macInt, 1);
+			me->randDevMap.Put(dev->macInt, 1);
 		}
 	}
 	else
 	{
-		if (me->pubDevMap->GetIndex(dev->macInt) >= 0)
+		if (me->pubDevMap.GetIndex(dev->macInt) >= 0)
 		{
-			me->pubDevMap->Put(dev->macInt, 1);
+			me->pubDevMap.Put(dev->macInt, 1);
 		}
 	}
 }
@@ -113,7 +113,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 	{
 		dev = devList->GetItem(j);
 		i = j + baseIndex;
-		Sync::MutexUsage devMutUsage(this->devMut);
+		Sync::MutexUsage devMutUsage(&this->devMut);
 		if (statusMap->GetIndex(dev->macInt) < 0)
 		{
 			sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
@@ -193,9 +193,6 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->bt = IO::BTScanner::CreateScanner();
-	NEW_CLASS(this->devMut, Sync::Mutex());
-	NEW_CLASS(this->randDevMap, Data::UInt64Map<UInt32>());
-	NEW_CLASS(this->pubDevMap, Data::UInt64Map<UInt32>());
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -244,9 +241,6 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::~AVIRBluetoothCtlForm()
 
 		DEL_CLASS(this->bt);
 	}
-	DEL_CLASS(this->randDevMap);
-	DEL_CLASS(this->pubDevMap);
-	DEL_CLASS(this->devMut);
 }
 
 void SSWR::AVIRead::AVIRBluetoothCtlForm::OnMonitorChanged()

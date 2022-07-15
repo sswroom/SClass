@@ -19,7 +19,7 @@ namespace Media
 			Double freq2Step;
 			Double vol;
 
-			Sync::Mutex *tonesMut;
+			Sync::Mutex tonesMut;
 			UInt32 tonesSignalSamples;
 			UInt32 tonesBreakSamples;
 			Double tonesVol;

@@ -14,9 +14,9 @@ namespace UI
 		{
 		protected:
 			Media::ColorManagerSess *colorSess;
-			Sync::Mutex *objMut;
-			Sync::Mutex *updMut;
-			Data::ArrayList<DirectObject*> *objList;
+			Sync::Mutex objMut;
+			Sync::Mutex updMut;
+			Data::ArrayList<DirectObject*> objList;
 			Bool shown;
 			DirectObject *moveObj;
 			DirectObject *downObj;

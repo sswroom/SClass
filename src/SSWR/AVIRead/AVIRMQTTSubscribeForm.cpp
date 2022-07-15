@@ -194,8 +194,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 	TopicStatus *topicSt;
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(me->topicMut);
-	topicList = me->topicMap->GetValues();
+	Sync::MutexUsage mutUsage(&me->topicMut);
+	topicList = me->topicMap.GetValues();
 	i = 0;
 	j = topicList->GetCount();
 	if (me->topicListChanged)
@@ -259,13 +259,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	TopicStatus *topicSt;
-	Sync::MutexUsage mutUsage(me->topicMut);
-	topicSt = me->topicMap->Get(topic);
+	Sync::MutexUsage mutUsage(&me->topicMut);
+	topicSt = me->topicMap.Get(topic);
 	if (topicSt == 0)
 	{
 		topicSt = MemAlloc(TopicStatus, 1);
@@ -276,7 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
-		me->topicMap->Put(topic, topicSt);
+		me->topicMap.Put(topic, topicSt);
 		me->topicListChanged = true;
 	}
 	else
@@ -396,8 +396,6 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringMap<TopicStatus*>());
 	this->currTopic = 0;
 	this->dispImg = 0;
 
@@ -473,10 +471,9 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 	this->client = 0;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
@@ -490,8 +487,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	UOSInt i;
 	TopicStatus *topicSt;
 	Data::ArrayList<TopicStatus*> *topicList;
-	DEL_CLASS(this->topicMut);
-	topicList = this->topicMap->GetValues();
+	topicList = this->topicMap.GetValues();
 	i = topicList->GetCount();
 	while (i-- > 0)
 	{
@@ -500,8 +496,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 		MemFree(topicSt->currValue);
 		MemFree(topicSt);
 	}
-	DEL_CLASS(this->topicMap);
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 	if (this->dispImg)
 	{

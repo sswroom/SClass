@@ -39,9 +39,9 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 			Net::MQTTStaticClient *cli;
-			Sync::Mutex *dataMut;
+			Sync::Mutex dataMut;
 			Bool dataChg;
-			Data::UInt64Map<DeviceEntry*> *dataMap;
+			Data::UInt64Map<DeviceEntry*> dataMap;
 
 			static void __stdcall OnMQTTMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize);
 			static void __stdcall OnConnectClicked(void *userObj);

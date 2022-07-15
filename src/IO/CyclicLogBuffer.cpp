@@ -8,7 +8,6 @@ IO::CyclicLogBuffer::CyclicLogBuffer(UOSInt buffSize)
 	this->logBuff = MemAlloc(UTF8Char*, this->buffSize);
 	this->logLeng = MemAlloc(UOSInt, this->buffSize);
 	this->logInd = 0;
-	NEW_CLASS(this->logMut, Sync::Mutex());
 	MemClear(this->logBuff, sizeof(UTF8Char*) * this->buffSize);
 }
 
@@ -25,7 +24,6 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 	}
 	MemFree(this->logBuff);
 	MemFree(this->logLeng);
-	DEL_CLASS(this->logMut);
 }
 
 void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev)
@@ -35,7 +33,7 @@ void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, Text::CString logMsg
 	*sptr++ = '\t';
 	sptr = logMsg.ConcatTo(sptr);
 
-	Sync::MutexUsage mutUsage(this->logMut);
+	Sync::MutexUsage mutUsage(&this->logMut);
 	if (this->logBuff[this->logInd])
 	{
 		MemFree(this->logBuff[this->logInd]);
@@ -55,7 +53,7 @@ void IO::CyclicLogBuffer::LogClosed()
 
 void IO::CyclicLogBuffer::GetLogs(Text::StringBuilderUTF8 *sb, Text::CString seperator)
 {
-	Sync::MutexUsage mutUsage(this->logMut);
+	Sync::MutexUsage mutUsage(&this->logMut);
 	UOSInt i = this->logInd;
 	while (i-- > 0)
 	{

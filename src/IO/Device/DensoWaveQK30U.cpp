@@ -28,7 +28,7 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 		}
 		else
 		{
-			Sync::MutexUsage mutUsage(me->recvMut);
+			Sync::MutexUsage mutUsage(&me->recvMut);
 			if (me->recvSize >= RECVBUFFSIZE)
 			{
 			}
@@ -36,13 +36,13 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 			{
 				MemCopyNO(&me->recvBuff[me->recvSize], buff, RECVBUFFSIZE - me->recvSize);
 				me->recvSize = RECVBUFFSIZE;
-				me->recvEvt->Set();
+				me->recvEvt.Set();
 			}
 			else
 			{
 				MemCopyNO(&me->recvBuff[me->recvSize], buff, recvSize);
 				me->recvSize += recvSize;
-				me->recvEvt->Set();
+				me->recvEvt.Set();
 			}
 			if (me->currMode == IO::Device::DensoWaveQK30U::MT_SCAN)
 			{
@@ -91,18 +91,16 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(void *userObj)
 Bool IO::Device::DensoWaveQK30U::ScanModeStart()
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(this->reqMut);
+	Sync::MutexUsage mutUsage(&this->reqMut);
 	succ = this->stm->Write((UInt8*)"R\r", 2) == 2;
-	mutUsage.EndUse();
 	return succ;
 }
 
 Bool IO::Device::DensoWaveQK30U::ScanModeEnd()
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(this->reqMut);
+	Sync::MutexUsage mutUsage(&this->reqMut);
 	succ = this->stm->Write((UInt8*)"Z\r", 2) == 2;
-	mutUsage.EndUse();
 	return succ;
 }
 
@@ -165,7 +163,7 @@ Bool IO::Device::DensoWaveQK30U::WaitForReply(UInt32 timeToWait)
 		{
 			return false;
 		}
-		this->recvEvt->Wait(timeToWait - (UInt32)t);
+		this->recvEvt.Wait(timeToWait - (UInt32)t);
 	}
 }
 
@@ -201,15 +199,15 @@ Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(UInt32 timeToWait, Int32 *retVa
 		{
 			return false;
 		}
-		this->recvEvt->Wait(timeToWait - (UInt32)t);
+		this->recvEvt.Wait(timeToWait - (UInt32)t);
 	}
 }
 
 Int32 IO::Device::DensoWaveQK30U::ReadCommand(const Char *cmdStr, UOSInt cmdLen)
 {
 	Int32 result;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	Sync::MutexUsage recvMutUsage(this->recvMut);
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage recvMutUsage(&this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
 	if (this->stm->Write((const UInt8*)cmdStr, cmdLen) == cmdLen)
@@ -230,8 +228,8 @@ Int32 IO::Device::DensoWaveQK30U::ReadCommand(const Char *cmdStr, UOSInt cmdLen)
 Bool IO::Device::DensoWaveQK30U::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 {
 	Bool succ = false;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	Sync::MutexUsage recvMutUsage(this->recvMut);
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage recvMutUsage(&this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
 	if (this->stm->Write((UInt8*)cmdStr, cmdLen) == cmdLen)
@@ -250,9 +248,6 @@ IO::Device::DensoWaveQK30U::DensoWaveQK30U(IO::Stream *stm) : IO::CodeScanner(CS
 	this->stm = stm;
 	this->scanDelay = 1000;
 
-	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->recvMut, Sync::Mutex());
-	NEW_CLASS(this->recvEvt, Sync::Event(true));
 	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = true;
@@ -275,9 +270,6 @@ IO::Device::DensoWaveQK30U::~DensoWaveQK30U()
 		Sync::Thread::Sleep(10);
 	}
 //	DEL_CLASS(this->nextTime);
-	DEL_CLASS(this->recvEvt);
-	DEL_CLASS(this->recvMut);
-	DEL_CLASS(this->reqMut);
 	MemFree(this->recvBuff);
 	DEL_CLASS(this->stm);
 }
@@ -290,7 +282,7 @@ void IO::Device::DensoWaveQK30U::SetCurrMode(ModeType currMode)
 	if (currMode == IO::Device::DensoWaveQK30U::MT_SCAN)
 	{
 		this->currMode = currMode;
-		Sync::MutexUsage mutUsage(this->recvMut);
+		Sync::MutexUsage mutUsage(&this->recvMut);
 		this->recvSize = 0;
 		mutUsage.EndUse();
 		this->ScanModeStart();
@@ -305,8 +297,8 @@ void IO::Device::DensoWaveQK30U::SetCurrMode(ModeType currMode)
 Bool IO::Device::DensoWaveQK30U::SoftReset()
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	Sync::MutexUsage recvMutUsage(this->recvMut);
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage recvMutUsage(&this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
 	succ = this->stm->Write((UInt8*)"RESET\r", 6) == 6;
@@ -321,8 +313,8 @@ Bool IO::Device::DensoWaveQK30U::SoftReset()
 Bool IO::Device::DensoWaveQK30U::ResetDefault()
 {
 	Bool succ;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	Sync::MutexUsage recvMutUsage(this->recvMut);
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	Sync::MutexUsage recvMutUsage(&this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
 	succ = this->stm->Write((UInt8*)"DEFAULT\r", 8) == 8;

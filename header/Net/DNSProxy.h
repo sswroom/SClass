@@ -17,12 +17,12 @@ namespace Net
 			NS_CUSTOM
 		};
 
-		typedef struct
+		struct TargetInfo
 		{
 			UInt32 ip;
-			Sync::Mutex *mut;
-			Data::ArrayListICaseString *addrList;
-		} TargetInfo;
+			Sync::Mutex mut;
+			Data::ArrayListICaseString addrList;
+		};
 
 	private:
 		typedef struct

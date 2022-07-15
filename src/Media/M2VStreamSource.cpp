@@ -189,7 +189,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 					this->debugMut->Unlock();
 				}
 #endif
-				Sync::MutexUsage mutUsage(this->playMut);
+				Sync::MutexUsage mutUsage(&this->playMut);
 				this->playBuff[this->playBuffEnd].frame = MemAlloc(UInt8, frameSize);
 				this->playBuff[this->playBuffEnd].frameNum = this->frameNum;
 				this->playBuff[this->playBuffEnd].frameSize = frameSize;
@@ -198,7 +198,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 				MemCopyNO(this->playBuff[this->playBuffEnd].frame, &this->frameBuff[frameStart], frameSize);
 
 				this->playBuffEnd = nextIndex;
-				this->playEvt->Set();
+				this->playEvt.Set();
 				mutUsage.EndUse();
 				break;
 			}
@@ -211,7 +211,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 
 void Media::M2VStreamSource::ClearPlayBuff()
 {
-	Sync::MutexUsage mutUsage(this->playMut);
+	Sync::MutexUsage mutUsage(&this->playMut);
 	while (this->playBuffStart != this->playBuffEnd)
 	{
 		MemFree(this->playBuff[this->playBuffStart].frame);
@@ -232,7 +232,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 	me->playing = true;
 	while (!me->playToStop)
 	{
-		Sync::MutexUsage mutUsage(me->playMut);
+		Sync::MutexUsage mutUsage(&me->playMut);
 		if (me->playBuffStart == me->playBuffEnd)
 		{
 			mutUsage.EndUse();
@@ -240,7 +240,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 			{
 				break;
 			}
-			me->playEvt->Wait(1000);
+			me->playEvt.Wait(1000);
 		}
 		else
 		{
@@ -443,9 +443,6 @@ Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 
 	this->playing = false;
 	this->playToStop = false;
-	NEW_CLASS(this->playEvt, Sync::Event(true));
-	NEW_CLASS(this->playMut, Sync::Mutex());
-	NEW_CLASS(this->pbcMut, Sync::Mutex());
 	playBuff = MemAlloc(FrameBuff, PLAYBUFFSIZE);
 	playBuffStart = 0;
 	playBuffEnd = 0;
@@ -457,9 +454,6 @@ Media::M2VStreamSource::~M2VStreamSource()
 
 	this->ClearPlayBuff();
 	MemFree(this->frameBuff);
-	DEL_CLASS(this->playEvt);
-	DEL_CLASS(this->playMut);
-	DEL_CLASS(this->pbcMut);
 	MemFree(playBuff);
 	DEL_CLASS(this->info);
 #ifdef _DEBUG
@@ -514,7 +508,7 @@ Bool Media::M2VStreamSource::Start()
 		this->debugMut->Unlock();
 	}
 #endif
-	Sync::MutexUsage mutUsage(this->pbcMut);
+	Sync::MutexUsage mutUsage(&this->pbcMut);
 	this->playToStop = false;
 	this->playInit = false;
 	this->playEOF = false;
@@ -533,13 +527,13 @@ void Media::M2VStreamSource::Stop()
 	if (this->playing)
 	{
 		this->playToStop = true;
-		this->playEvt->Set();
+		this->playEvt.Set();
 		while (this->playing)
 		{
 			Sync::Thread::Sleep(10);
 		}
 	}
-	Sync::MutexUsage mutUsage(this->pbcMut);
+	Sync::MutexUsage mutUsage(&this->pbcMut);
 	this->pbc->StopVideo();
 	this->playToStop = false;
 	this->frameCb = 0;

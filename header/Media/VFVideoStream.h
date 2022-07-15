@@ -11,7 +11,7 @@ namespace Media
 	private:
 		Media::VFMediaFile *mfile;
 		
-		Media::FrameInfo *info;
+		Media::FrameInfo info;
 		UInt32 frameRate;
 		UInt32 frameRateScale;
 		UInt32 frameCnt;
@@ -24,7 +24,7 @@ namespace Media
 		void *frameCbObj;
 		Bool threadRunning;
 		Bool threadToStop;
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 
 		static UInt32 __stdcall PlayThread(void *userObj);
 	public:

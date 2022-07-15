@@ -48,14 +48,14 @@ namespace SSWR
 				ReadingInfo readings[SMONITORCORE_DEVREADINGCNT];
 			} DevRecord2;
 
-			typedef struct
+			struct DeviceInfo
 			{
 				Int64 cliId;
 				Text::String *platformName;
 				Text::String *cpuName;
 				Int32 flags; //0: allow anonymous
 				Int64 lastKATime;
-				Sync::RWMutex *mut;
+				Sync::RWMutex mut;
 				Text::String *devName;
 				IO::Stream *stm;
 				Net::SocketUtil::AddressInfo udpAddr;
@@ -86,17 +86,17 @@ namespace SSWR
 				Data::Int64Map<DevRecord2*> *yesterdayRecs;
 				Data::Int32Map<IO::MemoryStream*> *imgCaches;
 				Bool valUpdated;
-			} DeviceInfo;
+			};
 
-			typedef struct
+			struct WebUser
 			{
 				Int32 userId;
 				Int32 userType; //0 = anonymous, 1 = admin, 2 = user
-				Sync::RWMutex *mut;
+				Sync::RWMutex mut;
 				const UTF8Char *userName;
 				UInt8 md5Pwd[16];
 				Data::Int64Map<DeviceInfo*> *devMap;
-			} WebUser;
+			};
 
 		public:
 			virtual Media::DrawEngine *GetDrawEngine() = 0;

@@ -18,11 +18,11 @@ namespace SSWR
 		class AVIRLogServerForm : public UI::GUIForm
 		{
 		private:
-			typedef struct
+			struct IPLog
 			{
 				UInt32 ip;
-				Data::ArrayList<Text::String*> *logMessage;
-			} IPLog;
+				Data::ArrayList<Text::String*> logMessage;
+			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::LogServer *svr;
@@ -39,8 +39,8 @@ namespace SSWR
 			UInt32 currIP;
 			Bool ipListUpd;
 			Bool msgListUpd;
-			Sync::Mutex *ipMut;
-			Data::UInt32Map<IPLog*> *ipMap;
+			Sync::Mutex ipMut;
+			Data::UInt32Map<IPLog*> ipMap;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

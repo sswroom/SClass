@@ -53,13 +53,13 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::TCPClient *cli;
 		
-		Sync::Mutex *reqMut;
-		Data::UInt32Map<ReqStatus*> *reqMap;
+		Sync::Mutex reqMut;
+		Data::UInt32Map<ReqStatus*> reqMap;
 
-		Sync::Mutex *msgIdMut;
+		Sync::Mutex msgIdMut;
 		UInt32 lastMsgId;
 
-		Sync::Event *respEvt;
+		Sync::Event respEvt;
 		Bool recvRunning;
 		Bool recvToStop;
 

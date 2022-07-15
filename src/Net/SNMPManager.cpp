@@ -18,9 +18,6 @@ void Net::SNMPManager::FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*>
 
 Net::SNMPManager::SNMPManager(Net::SocketFactory *sockf)
 {
-	NEW_CLASS(this->agentMut, Sync::Mutex());
-	NEW_CLASS(this->agentList, Data::ArrayList<AgentInfo*>());
-	NEW_CLASS(this->ipv4Agents, Data::UInt32Map<AgentInfo*>());
 	NEW_CLASS(this->cli, Net::SNMPClient(sockf));
 }
 
@@ -31,10 +28,10 @@ Net::SNMPManager::~SNMPManager()
 	AgentInfo *agent;
 	ReadingInfo *reading;
 	DEL_CLASS(this->cli);
-	i = this->agentList->GetCount();
+	i = this->agentList.GetCount();
 	while (i-- > 0)
 	{
-		agent = this->agentList->GetItem(i);
+		agent = this->agentList.GetItem(i);
 		SDEL_STRING(agent->community);
 		SDEL_STRING(agent->descr);
 		SDEL_STRING(agent->name);
@@ -53,9 +50,6 @@ Net::SNMPManager::~SNMPManager()
 		SDEL_STRING(agent->cpuName);
 		MemFree(agent);
 	}
-	DEL_CLASS(this->agentMut);
-	DEL_CLASS(this->agentList);
-	DEL_CLASS(this->ipv4Agents);
 }
 
 Bool Net::SNMPManager::IsError()
@@ -65,7 +59,7 @@ Bool Net::SNMPManager::IsError()
 
 void Net::SNMPManager::UpdateValues()
 {
-	UOSInt i = this->agentList->GetCount();
+	UOSInt i = this->agentList.GetCount();
 	UOSInt j;
 	AgentInfo *agent;
 	ReadingInfo *reading;
@@ -76,7 +70,7 @@ void Net::SNMPManager::UpdateValues()
 	Net::SNMPUtil::ErrorStatus err;
 	while (i-- > 0)
 	{
-		agent = this->agentList->GetItem(i);
+		agent = this->agentList.GetItem(i);
 		j = agent->readingList->GetCount();
 		while (j-- > 0)
 		{
@@ -103,10 +97,9 @@ void Net::SNMPManager::UpdateValues()
 UOSInt Net::SNMPManager::GetAgentList(Data::ArrayList<AgentInfo*> *agentList)
 {
 	UOSInt ret;
-	Sync::MutexUsage mutUsage(this->agentMut);
-	ret = this->agentList->GetCount();
-	agentList->AddAll(this->agentList);
-	mutUsage.EndUse();
+	Sync::MutexUsage mutUsage(&this->agentMut);
+	ret = this->agentList.GetCount();
+	agentList->AddAll(&this->agentList);
 	return ret;
 }
 
@@ -122,7 +115,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		UInt32 ipv4 = ReadMUInt32(addr->addr);
-		if (this->ipv4Agents->Get(ipv4))
+		if (this->ipv4Agents.Get(ipv4))
 		{
 			return 0;
 		}
@@ -147,14 +140,13 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			agent->cpuName = 0;
 			MemClear(agent->mac, 6);
 			NEW_CLASS(agent->readingList, Data::ArrayList<ReadingInfo*>());
-			Sync::MutexUsage mutUsage(this->agentMut);
-			this->agentList->Add(agent);
+			Sync::MutexUsage mutUsage(&this->agentMut);
+			this->agentList.Add(agent);
 			if (addr->addrType == Net::AddrType::IPv4)
 			{
 				UInt32 ipv4 = ReadMUInt32(addr->addr);
-				this->ipv4Agents->Put(ipv4, agent);
+				this->ipv4Agents.Put(ipv4, agent);
 			}
-			mutUsage.EndUse();
 		}
 	}
 	FreeAllItems(&itemList);

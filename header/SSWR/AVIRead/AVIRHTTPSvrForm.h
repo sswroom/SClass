@@ -36,7 +36,7 @@ namespace SSWR
 			UOSInt logCnt;
 			LogEntry *entries;
 			UOSInt currEnt;
-			Sync::Mutex *entMut;
+			Sync::Mutex entMut;
 
 		public:
 			AVIRHTTPLog(UOSInt logCnt);

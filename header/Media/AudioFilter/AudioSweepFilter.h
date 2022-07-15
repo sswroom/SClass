@@ -11,7 +11,7 @@ namespace Media
 		{
 		protected:
 			AudioFormat format;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Double vol;
 			UInt32 currSample;
 			UInt32 endSample;

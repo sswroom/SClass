@@ -37,7 +37,7 @@ namespace Crypto
 			Bool threadToStop;
 			const UInt8 *keyLimit;
 			UInt8 keyFirst;
-			Sync::Mutex *keyMut;
+			Sync::Mutex keyMut;
 			UTF8Char keyBuff[64];
 			UInt8 hashBuff[64];
 			UOSInt maxLeng;

@@ -7,7 +7,7 @@
 
 void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	UOSInt i = this->soundBuffLeng;
 	while (i-- > 0)
 	{
@@ -29,7 +29,6 @@ Media::AudioFilter::AudioLevelMeter::AudioLevelMeter(Media::IAudioSource *source
 	Media::AudioFormat fmt;
 	this->soundBuff = 0;
 	this->status = 0;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	sourceAudio->GetFormat(&fmt);
 	if (fmt.formatId != 0x1)
 		return;
@@ -54,7 +53,6 @@ Media::AudioFilter::AudioLevelMeter::~AudioLevelMeter()
 		MemFree(this->status);
 		this->status = 0;
 	}
-	DEL_CLASS(this->mut);
 }
 
 UInt32 Media::AudioFilter::AudioLevelMeter::SeekToTime(UInt32 time)
@@ -77,7 +75,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 	{
 		UOSInt i = 0;
 		UOSInt j;
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
 		while (i < blkSize)
@@ -112,7 +110,7 @@ UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(UInt8 *buff, UOSInt blkSiz
 	{
 		UOSInt i = 0;
 		UOSInt j;
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		UInt32 k = this->soundBuffOfst;
 		Int32 v;
 		while (i < blkSize)
@@ -152,7 +150,7 @@ Double Media::AudioFilter::AudioLevelMeter::GetLevel(UOSInt channel)
 	Int32 v;
 	if (channel >= this->nChannel)
 		return 0;
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->status[channel].levelChanged)
 	{
 		this->status[channel].levelChanged = false;

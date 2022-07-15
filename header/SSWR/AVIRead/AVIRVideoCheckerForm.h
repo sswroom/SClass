@@ -36,14 +36,14 @@ namespace SSWR
 			UI::GUICheckBox *chkAllowTimeSkip;
 			UI::GUIListView *lvFiles;
 
-			Data::ArrayList<FileQueue*> *fileList;
-			Sync::Mutex *fileMut;
-			Data::ArrayList<UpdateQueue*> *updateList;
-			Sync::Mutex *updateMut;
-			Media::VideoChecker *checker;
+			Data::ArrayList<FileQueue*> fileList;
+			Sync::Mutex fileMut;
+			Data::ArrayList<UpdateQueue*> updateList;
+			Sync::Mutex updateMut;
+			Media::VideoChecker checker;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 
 			static void __stdcall OnFileHandler(void *userObj, Text::String **files, UOSInt nFilesj);
 			static void __stdcall OnCancelClicked(void *userObj);

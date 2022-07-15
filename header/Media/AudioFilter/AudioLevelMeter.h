@@ -23,7 +23,7 @@ namespace Media
 			Int32 *soundBuff;
 			UInt32 soundBuffOfst;
 			ChannelStatus *status;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 		private:
 			void ResetStatus();
 		public:

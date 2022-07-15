@@ -12,7 +12,7 @@ namespace Net
 	class HTTPData : public IO::IStreamData
 	{
 	private:
-		typedef struct
+		struct HTTPDATAHANDLE
 		{
 			IO::FileStream *file;
 			UInt64 fileLength;
@@ -28,10 +28,10 @@ namespace Net
 			Net::HTTPQueue *queue;
 			UInt64 loadSize;
 			Bool isLoading;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Sync::Event *evtTmp;
 			Int32 objectCnt;
-		} HTTPDATAHANDLE;
+		};
 
 
 	private:

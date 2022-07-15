@@ -12,19 +12,19 @@ namespace Net
 	class RTSPClient : public IRTPController
 	{
 	private:
-		typedef struct
+		struct ClientData
 		{
 			Int32 useCnt;
 
 			Net::SocketFactory *sockf;
 			Net::TCPClient *cli;
-			Sync::Mutex *cliMut;
+			Sync::Mutex cliMut;
 			Text::String *host;
 			UInt16 port;
 			Int32 nextSeq;
 
-			Sync::Event *reqEvt;
-			Sync::Mutex *reqMut;
+			Sync::Event reqEvt;
+			Sync::Mutex reqMut;
 			UInt8 *reqReply;
 			UOSInt reqReplySize;
 			Int32 reqReplyStatus;
@@ -33,7 +33,7 @@ namespace Net
 
 			Bool threadRunning;
 			Bool threadToStop;
-		} ClientData;
+		};
 	private:
 		ClientData *cliData;
 

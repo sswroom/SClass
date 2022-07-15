@@ -293,7 +293,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 				}
 				if (found)
 					break;
-				this->mainEvt->Wait(100);
+				this->mainEvt.Wait(100);
 			}
 			if (err != this->errCnt)
 			{
@@ -322,7 +322,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		}
 		if (!found)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 }
 
@@ -343,10 +343,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 	this->txtError->SetText(CSTR("0"));
 	this->stopDownload = false;
 
-	IO::SPackageFile *spkg;
-	Sync::Mutex *spkgMut;
-	NEW_CLASS(spkg, IO::SPackageFile(fileName));
-	NEW_CLASS(spkgMut, Sync::Mutex());
+	Sync::Mutex spkgMut;
+	IO::SPackageFile spkg(fileName);
 	
 	currLyr = 0;
 	while (currLyr < lyrCnt)
@@ -374,8 +372,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 					{
 						this->threadStat[j].lyrId = currLyr;
 						this->threadStat[j].imageId = imgIdList.GetItem(i);
-						this->threadStat[j].spkg = spkg;
-						this->threadStat[j].pkgMut = spkgMut;
+						this->threadStat[j].spkg = &spkg;
+						this->threadStat[j].pkgMut = &spkgMut;
 						this->threadStat[j].folderName = 0;
 						this->threadStat[j].threadStat = 2;
 						this->threadStat[j].threadEvt->Set();
@@ -386,7 +384,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 				}
 				if (found)
 					break;
-				this->mainEvt->Wait(100);
+				this->mainEvt.Wait(100);
 			}
 			if (err != this->errCnt)
 			{
@@ -415,10 +413,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 		}
 		if (!found)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
-	DEL_CLASS(spkgMut);
-	DEL_CLASS(spkg);
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userObj)
@@ -438,7 +434,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	{
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
-		stat->me->mainEvt->Set();
+		stat->me->mainEvt.Set();
 		while (true)
 		{
 			if (stat->threadStat == 2)
@@ -515,7 +511,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 					Sync::Interlocked::Increment(&stat->me->errCnt);
 				}
 				stat->threadStat = 1;
-				stat->me->mainEvt->Set();
+				stat->me->mainEvt.Set();
 			}
 			else if (stat->threadStat == 3)
 			{
@@ -588,7 +584,6 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	{
 		this->threadCnt = 1;
 	}
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadStat = MemAlloc(ThreadStat, this->threadCnt);
 	i = 0;
 	while (i < this->threadCnt)
@@ -620,7 +615,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 		}
 		if (running)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 }
 
@@ -651,7 +646,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::~AVIRGISTileDownloadForm()
 		}
 		if (!running)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -659,7 +654,6 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::~AVIRGISTileDownloadForm()
 		DEL_CLASS(this->threadStat[i].threadEvt);
 	}
 	MemFree(this->threadStat);
-	DEL_CLASS(this->mainEvt);
 }
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::OnMonitorChanged()

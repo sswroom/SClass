@@ -7,8 +7,8 @@
 DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 {
 	DB::DBCache::TableInfo *table;
-	Sync::MutexUsage mutUsage(this->tableMut);
-	table = this->tableMap->Get(tableName);
+	Sync::MutexUsage mutUsage(&this->tableMut);
+	table = this->tableMap.Get(tableName);
 	mutUsage.EndUse();
 	if (table)
 		return table;
@@ -34,7 +34,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 		this->db->CloseReader(r);
 	}
 	mutUsage.BeginUse();
-	DB::DBCache::TableInfo *oldTable = this->tableMap->Put(table->tableName, table);
+	DB::DBCache::TableInfo *oldTable = this->tableMap.Put(table->tableName, table);
 	mutUsage.EndUse();
 	if (oldTable)
 	{
@@ -48,8 +48,8 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 {
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->tableMut);
-	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap->GetValues();
+	Sync::MutexUsage mutUsage(&this->tableMut);
+	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)
 	{
@@ -69,13 +69,11 @@ DB::DBCache::DBCache(DB::DBModel *model, DB::DBTool *db)
 	this->model = model;
 	this->db = db;
 	this->cacheCnt = 4000;
-	NEW_CLASS(this->tableMut, Sync::Mutex());
-	NEW_CLASS(this->tableMap, Data::ICaseStringMap<DB::DBCache::TableInfo*>());
 }
 
 DB::DBCache::~DBCache()
 {
-	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap->GetValues();
+	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
 	DB::DBCache::TableInfo *table;
 	UOSInt i = tableList->GetCount();
 	while (i-- > 0)
@@ -84,8 +82,6 @@ DB::DBCache::~DBCache()
 		table->tableName->Release();
 		MemFree(table);
 	}
-	DEL_CLASS(this->tableMap);
-	DEL_CLASS(this->tableMut);
 }
 
 OSInt DB::DBCache::GetRowCount(Text::CString tableName)

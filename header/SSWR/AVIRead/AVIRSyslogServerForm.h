@@ -40,8 +40,8 @@ namespace SSWR
 			UInt32 currIP;
 			Bool ipListUpd;
 			Bool msgListUpd;
-			Sync::Mutex *ipMut;
-			Data::UInt32Map<IPLog*> *ipMap;
+			Sync::Mutex ipMut;
+			Data::UInt32Map<IPLog*> ipMap;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

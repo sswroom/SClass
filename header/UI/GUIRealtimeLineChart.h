@@ -25,7 +25,7 @@ namespace UI
 		Bool chartMaxChg;
 		Double chartMax;
 		Double chartMin;
-		Sync::Mutex *chartMut;
+		Sync::Mutex chartMut;
 		void *clsData;
 
 	public:

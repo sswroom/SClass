@@ -13,8 +13,8 @@ namespace IO
 	private:
 		SiLabDriver *driver;
 		void *handle;
-		Sync::Event *rdEvt;
-		Sync::Mutex *rdMut;
+		Sync::Event rdEvt;
+		Sync::Mutex rdMut;
 		Bool reading;
 
 	public:

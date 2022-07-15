@@ -42,9 +42,9 @@ namespace Net
 		
 	private:
 		Net::SNMPClient *cli;
-		Sync::Mutex *agentMut;
-		Data::ArrayList<AgentInfo *> *agentList;
-		Data::UInt32Map<AgentInfo*> *ipv4Agents;
+		Sync::Mutex agentMut;
+		Data::ArrayList<AgentInfo *> agentList;
+		Data::UInt32Map<AgentInfo*> ipv4Agents;
 
 		static void FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
 	public:

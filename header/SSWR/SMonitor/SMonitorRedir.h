@@ -18,8 +18,8 @@ namespace SSWR
 			Net::UDPServer *svr;
 			Text::String *hostName;
 			UInt16 port;
-			Crypto::Hash::CRC16 *dataCRC;
-			Sync::Mutex *dataCRCMut;
+			Crypto::Hash::CRC16 dataCRC;
+			Sync::Mutex dataCRCMut;
 			RecordReplyHandler recReplyHdlr;
 			void *recReplyObj;
 

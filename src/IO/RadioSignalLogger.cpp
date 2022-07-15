@@ -11,7 +11,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		Data::DateTime dt;
-		Sync::MutexUsage mutUsage(me->fsMut);
+		Sync::MutexUsage mutUsage(&me->fsMut);
 		Text::StringBuilderUTF8 sb;
 		dt.SetTicks(scanTime);
 		dt.ToLocalTime();
@@ -37,7 +37,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		Data::DateTime dt;
-		Sync::MutexUsage mutUsage(me->fsMut);
+		Sync::MutexUsage mutUsage(&me->fsMut);
 		Text::StringBuilderUTF8 sb;
 		dt.SetTicks(dev->lastSeenTime);
 		dt.ToLocalTime();
@@ -76,7 +76,6 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 IO::RadioSignalLogger::RadioSignalLogger()
 {
 	this->fs = 0;
-	this->fsMut = 0;
 	this->wifiCapture = 0;
 	this->btCapture = 0;
 	this->wifiCnt = 0;
@@ -98,10 +97,6 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	{
 		DEL_CLASS(this->fs);
 		this->fs = 0;
-	}
-	else
-	{
-		NEW_CLASS(this->fsMut, Sync::Mutex());
 	}
 }
 
@@ -152,8 +147,6 @@ void IO::RadioSignalLogger::Stop()
 		}
 		DEL_CLASS(this->fs);
 		this->fs = 0;
-		DEL_CLASS(this->fsMut);
-		this->fsMut = 0;
 	}
 }
 

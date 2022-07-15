@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 	}
 	if (jsonObj->GetType() == Text::JSONType::Array)
 	{
-		Sync::MutexUsage mutUsage(me->dataMut);
+		Sync::MutexUsage mutUsage(&me->dataMut);
 		me->dataChg = true;
 		me->DataClear();
 		arr = (Text::JSONArray*)jsonObj;
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 					macBuff[1] = 0;
 					macInt = ReadMUInt64(macBuff);
 					irssi = rssi->ToInt32();
-					entry = me->dataMap->Get(macInt);
+					entry = me->dataMap.Get(macInt);
 					if (entry)
 					{
 						if (entry->name == 0)
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 						entry->rssi = irssi;
 						entry->name = SCOPY_STRING(name);
 						entry->remark = 0;
-						me->dataMap->Put(macInt, entry);
+						me->dataMap.Put(macInt, entry);
 					}
 				}
 			}
@@ -131,9 +131,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 	{
 		DeviceEntry *entry;
 		const Net::MACInfo::MACEntry *macEntry;
-		Sync::MutexUsage mutUsage(me->dataMut);
+		Sync::MutexUsage mutUsage(&me->dataMut);
 		me->lvDevices->ClearItems();
-		const Data::ArrayList<DeviceEntry*> *dataList = me->dataMap->GetValues();
+		const Data::ArrayList<DeviceEntry*> *dataList = me->dataMap.GetValues();
 		UOSInt i = 0;
 		UOSInt j = dataList->GetCount();
 		while (i < j)
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 {
 	DeviceEntry *entry;
-	const Data::ArrayList<DeviceEntry*> *dataList = this->dataMap->GetValues();
+	const Data::ArrayList<DeviceEntry*> *dataList = this->dataMap.GetValues();
 	UOSInt i = dataList->GetCount();
 	while (i-- > 0)
 	{
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 		SDEL_STRING(entry->remark);
 		MemFree(entry);
 	}
-	this->dataMap->Clear();
+	this->dataMap.Clear();
 }
 
 SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -187,9 +187,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI
 
 	this->core = core;
 	this->cli = 0;
-	NEW_CLASS(this->dataMut, Sync::Mutex());
 	this->dataChg = false;
-	NEW_CLASS(this->dataMap, Data::UInt64Map<DeviceEntry*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlMQTT, UI::GUIPanel(ui, this));
@@ -223,9 +221,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI
 SSWR::AVIRead::AVIREWDTU01Form::~AVIREWDTU01Form()
 {
 	SDEL_CLASS(this->cli);
-	DEL_CLASS(this->dataMut);
 	this->DataClear();
-	DEL_CLASS(this->dataMap);
 }
 
 void SSWR::AVIRead::AVIREWDTU01Form::OnMonitorChanged()

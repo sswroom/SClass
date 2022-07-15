@@ -27,7 +27,7 @@ namespace SSWR
 			IO::LogTool *log;
 			Net::WebServer::EGaugeHandler *dirHdlr;
 			UI::ListBoxLogger *logger;
-			Sync::Mutex *reqMut;
+			Sync::Mutex reqMut;
 			Text::String *reqLast;
 			Bool reqUpdated;
 

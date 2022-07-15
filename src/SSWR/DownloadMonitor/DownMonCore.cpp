@@ -124,7 +124,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CString fileName)
 
 	if (mediaFile)
 	{
-		valid = this->checker->IsValid(mediaFile);
+		valid = this->checker.IsValid(mediaFile);
 		DEL_CLASS(mediaFile);
 	}
 	return valid;
@@ -469,26 +469,21 @@ UInt32 __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(void *userObj)
 	{
 		me->ProcessDir(me->downPath, me->succPath, me->errPath);
 
-		me->chkEvt->Wait(10000);
+		me->chkEvt.Wait(10000);
 	}
 	me->chkRunning = false;
 	return 0;
 }
 
-SSWR::DownloadMonitor::DownMonCore::DownMonCore()
+SSWR::DownloadMonitor::DownMonCore::DownMonCore() : checker(false)
 {
 	this->chkRunning = false;
 	this->chkToStop = false;
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->chkEvt, Sync::Event(true));
 	this->chkStatus = CS_IDLE;
-	NEW_CLASS(this->fileMut, Sync::Mutex());
-	NEW_CLASS(this->fileTypeMap, Data::Int32Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
-	NEW_CLASS(this->fileNameMap, Data::FastStringMap<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
 
 	NEW_CLASS(this->parsers, Parser::FullParserList());
-	NEW_CLASS(this->checker, Media::VideoChecker(false));
 	
 	this->downPath = 0;
 	this->succPath = 0;
@@ -534,27 +529,22 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 {
 	this->chkToStop = true;
-	this->chkEvt->Set();
+	this->chkEvt.Set();
 	while (this->chkRunning)
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->checker);
 	DEL_CLASS(this->parsers);
-	DEL_CLASS(this->chkEvt);
 
 	const Data::ArrayList<SSWR::DownloadMonitor::DownMonCore::FileInfo *> *fileList;
 	UOSInt i;
-	fileList = this->fileTypeMap->GetValues();
+	fileList = this->fileTypeMap.GetValues();
 	i = fileList->GetCount();
 	while (i-- > 0)
 	{
 		this->FileFree(fileList->GetItem(i));
 	}
 
-	DEL_CLASS(this->fileNameMap);
-	DEL_CLASS(this->fileTypeMap);
-	DEL_CLASS(this->fileMut);
 	SDEL_CLASS(this->ssl);
 	DEL_CLASS(this->sockf);
 }
@@ -594,22 +584,21 @@ void SSWR::DownloadMonitor::DownMonCore::FileFree(SSWR::DownloadMonitor::DownMon
 {
 	file->dbName->Release();
 	file->fileName->Release();
-	DEL_CLASS(file->mut);
-	MemFree(file);
+	DEL_CLASS(file);
 }
 
 Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, Text::String *dbName)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	Text::StringBuilderUTF8 sb;
-	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileTypeMap->Get((webType << 24) | id);
+	Sync::MutexUsage mutUsage(&this->fileMut);
+	file = this->fileTypeMap.Get((webType << 24) | id);
 	if (file)
 	{
 		return false;
 	}
 
-	file = MemAlloc(SSWR::DownloadMonitor::DownMonCore::FileInfo, 1);
+	NEW_CLASS(file, SSWR::DownloadMonitor::DownMonCore::FileInfo());
 	file->id = id;
 	file->webType = webType;
 	file->dbName = dbName->Clone();
@@ -617,21 +606,20 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, Text::
 	sb.AppendC(UTF8STRC(".mp4"));
 	file->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	file->status = FS_NORMAL;
-	NEW_CLASS(file->mut, Sync::Mutex());
 
-	this->fileTypeMap->Put((file->webType << 24) | file->id, file);
-	this->fileNameMap->Put(file->fileName, file);
+	this->fileTypeMap.Put((file->webType << 24) | file->id, file);
+	this->fileNameMap.Put(file->fileName, file);
 	return true;
 }
 
 SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	mutUsage->ReplaceMutex(this->fileMut);
-	file = this->fileTypeMap->Get((webType << 24) | id);
+	mutUsage->ReplaceMutex(&this->fileMut);
+	file = this->fileTypeMap.Get((webType << 24) | id);
 	if (file != 0 && mutUsage != 0)
 	{
-		mutUsage->ReplaceMutex(file->mut);
+		mutUsage->ReplaceMutex(&file->mut);
 	}
 	return file;
 }
@@ -640,8 +628,8 @@ Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CString fileName, 
 {
 	Int32 id = 0;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileNameMap->GetC(fileName);
+	Sync::MutexUsage mutUsage(&this->fileMut);
+	file = this->fileNameMap.GetC(fileName);
 	if (file)
 	{
 		id = file->id;
@@ -654,13 +642,13 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 {
 	Bool ret = false;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileTypeMap->Remove((webType << 24) | id);
+	Sync::MutexUsage mutUsage(&this->fileMut);
+	file = this->fileTypeMap.Remove((webType << 24) | id);
 	if (file)
 	{
-		if (this->fileNameMap->Get(file->fileName) == file)
+		if (this->fileNameMap.Get(file->fileName) == file)
 		{
-			this->fileNameMap->Remove(file->fileName);
+			this->fileNameMap.Remove(file->fileName);
 		}
 		this->FileFree(file);
 		ret = true;
@@ -672,8 +660,8 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 {
 	Bool ret = false;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
-	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileTypeMap->Get((webType << 24) | id);
+	Sync::MutexUsage mutUsage(&this->fileMut);
+	file = this->fileTypeMap.Get((webType << 24) | id);
 	if (file)
 	{
 		Win32::Clipboard::SetString(formHand, file->fileName->ToCString());
@@ -699,8 +687,8 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 
 Int32 SSWR::DownloadMonitor::DownMonCore::FileGetMaxId(Int32 webType)
 {
-	OSInt i = this->fileTypeMap->GetKeys()->SortedIndexOf((webType << 24) | 0xffffff);
-	Int32 id = this->fileTypeMap->GetKey((UOSInt)(~i - 1));
+	OSInt i = this->fileTypeMap.GetKeys()->SortedIndexOf((webType << 24) | 0xffffff);
+	Int32 id = this->fileTypeMap.GetKey((UOSInt)(~i - 1));
 	if ((id >> 24) == webType)
 	{
 		return id & 0xffffff;

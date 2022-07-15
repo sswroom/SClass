@@ -27,7 +27,7 @@ namespace Map
 		UOSInt maxTextSize;
 		Int64 maxId;
 		Map::DrawLayerType lyrType;
-		Sync::Mutex *mut;
+//		Sync::Mutex mut;
 		const UTF8Char *layerName;
 
 	public:

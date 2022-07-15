@@ -18,15 +18,15 @@ namespace Media
 		const WChar *searchPattern;
 	} VFPluginFile;
 
-	typedef struct
+	struct VFMediaFile
 	{
 		Media::VFPManager *vfpmgr;
 		Media::VFPluginFile *plugin;
 		UInt32 file;
 		const WChar *fileName;
 		UInt32 useCnt;
-		Sync::Mutex *mut;
-	} VFMediaFile;
+		Sync::Mutex mut;
+	};
 
 	class VFPManager
 	{

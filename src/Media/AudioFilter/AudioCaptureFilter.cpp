@@ -14,10 +14,10 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 	me->running = true;
 	while (!me->toStop)
 	{
-		Sync::MutexUsage writeMutUsage(me->writeMut);
+		Sync::MutexUsage writeMutUsage(&me->writeMut);
 		while (me->readBuffSize > 0)
 		{
-			Sync::MutexUsage readMutUsage(me->readMut);
+			Sync::MutexUsage readMutUsage(&me->readMut);
 			tmpBuff = me->writeBuff;
 			me->writeBuff = me->readBuff;
 			me->readBuff = tmpBuff;
@@ -34,7 +34,7 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 		}
 		writeMutUsage.EndUse();
 		
-		me->evt->Wait(1000);
+		me->evt.Wait(1000);
 	}
 	me->running = false;
 	return 0;
@@ -42,9 +42,6 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 
 Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(Media::IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
-	NEW_CLASS(this->readMut, Sync::Mutex());
-	NEW_CLASS(this->writeMut, Sync::Mutex());
-	NEW_CLASS(this->evt, Sync::Event(true));
 	this->sourceAudio = sourceAudio;
 	this->waveStm = 0;
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -60,14 +57,11 @@ Media::AudioFilter::AudioCaptureFilter::~AudioCaptureFilter()
 {
 	StopCapture();
 	this->toStop = true;
-	this->evt->Set();
+	this->evt.Set();
 	while (this->running)
 	{
 		Sync::Thread::Sleep(10);
 	}
-	DEL_CLASS(this->writeMut);
-	DEL_CLASS(this->readMut);
-	DEL_CLASS(this->evt);
 	MemFree(this->readBuff);
 	MemFree(this->writeBuff);
 }
@@ -87,7 +81,7 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(UInt8 *buff, UOSInt blk
 		return 0;
 
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
-	Sync::MutexUsage mutUsage(this->readMut);
+	Sync::MutexUsage mutUsage(&this->readMut);
 	if (this->writing)
 	{
 		if (this->readBuffSize >= BUFFSIZE)
@@ -97,16 +91,15 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(UInt8 *buff, UOSInt blk
 		{
 			MemCopyNO(&this->readBuff[this->readBuffSize], buff, BUFFSIZE - this->readBuffSize);
 			this->readBuffSize = BUFFSIZE;
-			this->evt->Set();
+			this->evt.Set();
 		}
 		else
 		{
 			MemCopyNO(&this->readBuff[this->readBuffSize], buff, blkSize);
 			this->readBuffSize += blkSize;
-			this->evt->Set();
+			this->evt.Set();
 		}
 	}
-	mutUsage.EndUse();
 	return readSize;
 }
 
@@ -133,7 +126,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName
 	WriteUInt16(&buff[68], (UInt16)format.align);
 	WriteUInt16(&buff[70], format.bitpersample);
 	WriteUInt16(&buff[72], (UInt16)format.extraSize);
-	Sync::MutexUsage mutUsage(this->writeMut);
+	Sync::MutexUsage mutUsage(&this->writeMut);
 	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->waveStm->Write(buff, 74);
 	if (format.extraSize > 0)
@@ -150,7 +143,6 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName
 	this->waveStm->Write(buff, 8);
 	this->dataSize = 0;
 	this->fileSize = this->dataOfst - 4;
-	mutUsage.EndUse();
 	this->writing = true;
 	return true;
 }
@@ -158,7 +150,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName
 void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 {
 	this->writing = false;
-	Sync::MutexUsage mutUsage(this->writeMut);
+	Sync::MutexUsage mutUsage(&this->writeMut);
 	if (this->waveStm)
 	{
 		if (this->fileSize >= 0x100000000LL)
@@ -187,5 +179,4 @@ void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 		DEL_CLASS(this->waveStm);
 		this->waveStm = 0;
 	}
-	mutUsage.EndUse();
 }

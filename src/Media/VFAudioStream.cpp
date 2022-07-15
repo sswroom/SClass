@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Media/VFAudioStream.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
@@ -8,9 +9,10 @@
 Media::VFAudioStream::VFAudioStream(Media::VFMediaFile *mfile)
 {
 	this->mfile = mfile;
-	this->mfile->mut->Lock();
-	this->mfile->useCnt++;
-	this->mfile->mut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		this->mfile->useCnt++;
+	}
 
 	VF_StreamInfo_Audio ainfo;
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
@@ -34,16 +36,17 @@ Media::VFAudioStream::VFAudioStream(Media::VFMediaFile *mfile)
 Media::VFAudioStream::~VFAudioStream()
 {
 	UOSInt useCnt;
-	this->mfile->mut->Lock();
-	useCnt = --this->mfile->useCnt;
-	this->mfile->mut->Unlock();
+	{
+		Sync::MutexUsage mutUsage(&this->mfile->mut);
+		useCnt = --this->mfile->useCnt;
+	}
 	if (useCnt == 0)
 	{
 		Text::StrDelNew(this->mfile->fileName);
 		VF_PluginFunc *funcs = (VF_PluginFunc*)this->mfile->plugin->funcs;
 		funcs->CloseFile(this->mfile->file);
 		this->mfile->vfpmgr->Release();
-		MemFree(this->mfile);
+		DEL_CLASS(this->mfile);
 	}
 }
 

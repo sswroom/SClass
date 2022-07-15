@@ -79,24 +79,22 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
 	if (me->reqUpdated)
 	{
-		Sync::MutexUsage mutUsage(me->reqMut);
+		Sync::MutexUsage mutUsage(&me->reqMut);
 		me->reqUpdated = false;
 		me->txtReqText->SetText(me->reqLast->ToCString());
-		mutUsage.EndUse();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, const UInt8 *data, UOSInt dataSize)
 {
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
-	Sync::MutexUsage mutUsage(me->reqMut);
+	Sync::MutexUsage mutUsage(&me->reqMut);
 	if (me->reqLast)
 	{
 		me->reqLast->Release();
 	}
 	me->reqLast = Text::String::New(data, dataSize);
 	me->reqUpdated = true;
-	mutUsage.EndUse();
 }
 
 SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -108,7 +106,6 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 	this->log = 0;
 	this->dirHdlr = 0;
 	this->logger = 0;
-	NEW_CLASS(this->reqMut, Sync::Mutex());
 	this->reqLast = 0;
 	this->reqUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -155,7 +152,6 @@ SSWR::AVIRead::AVIReGaugeSvrForm::~AVIReGaugeSvrForm()
 		this->reqLast->Release();
 		this->reqLast = 0;
 	}
-	DEL_CLASS(this->reqMut);
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);
 }

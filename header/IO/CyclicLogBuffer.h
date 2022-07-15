@@ -10,7 +10,7 @@ namespace IO
 	class CyclicLogBuffer : public IO::ILogHandler
 	{
 	private:
-		Sync::Mutex *logMut;
+		Sync::Mutex logMut;
 		UTF8Char **logBuff;
 		UOSInt *logLeng;
 		UOSInt logInd;

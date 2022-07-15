@@ -628,16 +628,16 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 			sb.AppendC(UTF8STRC("</h3>\r\n"));
 
 			target = targetList.GetItem((UOSInt)targetIndex);
-			Sync::MutexUsage mutUsage(target->mut);
+			Sync::MutexUsage mutUsage(&target->mut);
 			i = 0;
-			j = target->addrList->GetCount();
+			j = target->addrList.GetCount();
 			while (i < j)
 			{
 				if (i > 0)
 				{
 					sb.AppendC(UTF8STRC("<br/>\r\n"));
 				}
-				sb.Append(target->addrList->GetItem(i));
+				sb.Append(target->addrList.GetItem(i));
 				i++;
 			}
 			mutUsage.EndUse();
@@ -716,12 +716,12 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &dnsCli->addr);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("<br/><table border=\"1\"><tr><td>Time</td><td>Count</td></tr>"));
-			Sync::MutexUsage mutUsage(dnsCli->mut);
+			Sync::MutexUsage mutUsage(&dnsCli->mut);
 			i = 0;
-			j = dnsCli->hourInfos->GetCount();
+			j = dnsCli->hourInfos.GetCount();
 			while (i < j)
 			{
-				hourInfo = dnsCli->hourInfos->GetItem(i);
+				hourInfo = dnsCli->hourInfos.GetItem(i);
 				sb.AppendC(UTF8STRC("<tr><td>"));
 				sb.AppendI32(hourInfo->year);
 				sb.AppendC(UTF8STRC("-"));
@@ -796,7 +796,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		while (i < j)
 		{
 			dhcp = dhcpList->GetItem(i);
-			Sync::MutexUsage mutUsage(dhcp->mut);
+			Sync::MutexUsage mutUsage(&dhcp->mut);
 			sb.AppendC(UTF8STRC("<tr><td>"));
 			WriteMUInt64(sbuff, dhcp->iMAC);
 			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
@@ -926,13 +926,13 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 			ipLog = ipLogList->GetItem((UOSInt)ipLogInd);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
 			sb.AppendP(sbuff, sptr);
-			Sync::MutexUsage mutUsage(ipLog->mut);
+			Sync::MutexUsage mutUsage(&ipLog->mut);
 			i = 0;
-			j = ipLog->logList->GetCount();
+			j = ipLog->logList.GetCount();
 			while (i < j)
 			{
 				sb.AppendC(UTF8STRC("<br/>"));
-				sb.Append(ipLog->logList->GetItem(i));
+				sb.Append(ipLog->logList.GetItem(i));
 				i++;
 			}
 			mutUsage.EndUse();

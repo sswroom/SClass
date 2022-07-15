@@ -110,8 +110,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(me->topicMut);
-	topicList = me->topicMap->GetValues();
+	Sync::MutexUsage mutUsage(&me->topicMut);
+	topicList = me->topicMap.GetValues();
 	i = 0;
 	j = topicList->GetCount();
 	if (me->topicListUpdated)
@@ -163,8 +163,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, T
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Sync::MutexUsage mutUsage(me->topicMut);
-	topicSt = me->topicMap->Get(topic);
+	Sync::MutexUsage mutUsage(&me->topicMut);
+	topicSt = me->topicMap.Get(topic);
 	if (topicSt)
 	{
 		if (topicSt->msgSize != msgSize)
@@ -186,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, T
 		topicSt->updated = true;
 		MemCopyNO(topicSt->message, message, msgSize);
 		topicSt->updateTime = dt.ToTicks();
-		me->topicMap->Put(topic, topicSt);
+		me->topicMap.Put(topic, topicSt);
 		me->topicListUpdated = true;
 	}
 	mutUsage.EndUse();
@@ -211,8 +211,6 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
-	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringMap<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>());
 	this->topicListUpdated = false;
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -267,7 +265,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	this->ServerStop();
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->logger);
-	Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList = this->topicMap->GetValues();
+	Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList = this->topicMap.GetValues();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
 	UOSInt i = topicList->GetCount();
 	while (i-- > 0)
@@ -277,8 +275,6 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 		MemFree(topic->message);
 		MemFree(topic);
 	}
-	DEL_CLASS(this->topicMap);
-	DEL_CLASS(this->topicMut);
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);

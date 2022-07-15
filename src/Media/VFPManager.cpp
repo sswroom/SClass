@@ -95,7 +95,8 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 				if (funcs->GetFileInfo(fhand, &finfo) == VF_OK)
 				{
 					UOSInt outCnt = 0;
-					VFMediaFile *mfile = MemAlloc(VFMediaFile, 1);
+					VFMediaFile *mfile;
+					NEW_CLASS(mfile, VFMediaFile());
 					mfile->vfpmgr = this;
 					mfile->plugin = plugin;
 					mfile->file = fhand;
@@ -103,7 +104,6 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 					mfile->useCnt = 0;
 					Sync::Interlocked::Increment(&this->useCnt);
 
-					NEW_CLASS(mfile->mut, Sync::Mutex());
 					if (finfo.dwHasStreams & VF_STREAM_VIDEO)
 					{
 						VFVideoStream *vfs;
@@ -120,10 +120,9 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 					}
 					if (mfile->useCnt == 0)
 					{
-						DEL_CLASS(mfile->mut);
 						funcs->CloseFile(fhand);
 						Text::StrDelNew(mfile->fileName);
-						MemFree(mfile);
+						DEL_CLASS(mfile);
 						Sync::Interlocked::Decrement(&this->useCnt);
 						MemFree(cFile);
 						return 0;

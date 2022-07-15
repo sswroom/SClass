@@ -54,11 +54,11 @@ namespace Net
 		IO::LogTool *log;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
-		IO::ProtoHdlr::ProtoMQTTHandler *protoHdlr;
-		Sync::Mutex *topicMut;
-		Data::FastStringMap<TopicInfo*> *topicMap;
-		Sync::Mutex *subscribeMut;
-		Data::ArrayList<SubscribeInfo*> *subscribeList;
+		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
+		Sync::Mutex topicMut;
+		Data::FastStringMap<TopicInfo*> topicMap;
+		Sync::Mutex subscribeMut;
+		Data::ArrayList<SubscribeInfo*> subscribeList;
 		Int64 infoTotalRecv;
 		UInt64 infoTotalSent;
 		Int64 infoCliDisconn;
@@ -71,7 +71,7 @@ namespace Net
 		Int64 infoStartTime;
 		Bool sysInfoRunning;
 		Bool sysInfoToStop;
-		Sync::Event *sysInfoEvt;
+		Sync::Event sysInfoEvt;
 
 		ConnectHandler connHdlr;
 		void *connObj;

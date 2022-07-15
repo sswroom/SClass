@@ -11,7 +11,6 @@ Media::AudioFilter::DTMFGenerator::DTMFGenerator(IAudioSource *sourceAudio) : Me
 	this->sourceAudio = sourceAudio;
 	sourceAudio->GetFormat(&this->format);
 
-	NEW_CLASS(this->tonesMut, Sync::Mutex());
 	this->tonesSignalSamples = 0;
 	this->tonesBreakSamples = 0;
 	this->tonesVol = 0;
@@ -24,7 +23,6 @@ Media::AudioFilter::DTMFGenerator::DTMFGenerator(IAudioSource *sourceAudio) : Me
 
 Media::AudioFilter::DTMFGenerator::~DTMFGenerator()
 {
-	SDEL_CLASS(this->tonesMut);
 	SDEL_STRING(this->tonesVals);
 }
 
@@ -66,7 +64,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			}
 		}
 
-		Sync::MutexUsage mutUsage(this->tonesMut);
+		Sync::MutexUsage mutUsage(&this->tonesMut);
 		if (this->tonesVals)
 		{
 			UOSInt sampleCnt = readSize / this->format.align;
@@ -357,13 +355,12 @@ Bool Media::AudioFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 break
 		sptr++;
 	}
 
-	Sync::MutexUsage mutUsage(this->tonesMut);
+	Sync::MutexUsage mutUsage(&this->tonesMut);
 	SDEL_STRING(this->tonesVals);
 	this->tonesVals = Text::String::New(tones, (UOSInt)(sptr - tones));
 	this->tonesSignalSamples = this->format.frequency * signalTime / 1000;
 	this->tonesBreakSamples = this->format.frequency * breakTime / 1000;
 	this->tonesVol = vol;
 	this->tonesCurrSample = 0;
-	mutUsage.EndUse();
 	return true;
 }

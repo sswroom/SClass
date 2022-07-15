@@ -24,7 +24,7 @@ namespace Net
 			UOSInt dataSize;
 		} PacketBuff;
 
-		typedef struct
+		struct ChannelData
 		{
 			Int32 useCnt;
 
@@ -35,14 +35,14 @@ namespace Net
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
-			Data::Int32Map<Net::IRTPPLHandler *> *payloadMap;
+			Data::Int32Map<Net::IRTPPLHandler *> payloadMap;
 			Media::MediaType mediaType;
 			Net::SocketFactory *sockf;
 
 			UOSInt threadCnt;
 			UOSInt buffCnt;
 
-			Sync::Mutex *packMut;
+			Sync::Mutex packMut;
 			PacketBuff *packBuff; 
 			UOSInt packCnt;
 
@@ -50,8 +50,8 @@ namespace Net
 
 			Bool playing;
 			Bool playToStop;
-			Sync::Event *playEvt;
-		} ChannelData;
+			Sync::Event playEvt;
+		};
 
 	private:
 		ChannelData *chData;

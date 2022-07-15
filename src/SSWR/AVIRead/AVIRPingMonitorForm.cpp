@@ -14,15 +14,15 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	IPInfo *ipInfo;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Sync::MutexUsage mutUsage(me->ipMut);
-	ipInfo = me->ipMap->Get(sortableIP);
+	Sync::MutexUsage mutUsage(&me->ipMut);
+	ipInfo = me->ipMap.Get(sortableIP);
 	if (ipInfo == 0)
 	{
 		Net::WhoisRecord *rec;
 		ipInfo = MemAlloc(IPInfo, 1);
 		ipInfo->ip = srcIP;
 		ipInfo->count = 0;
-		rec = me->whois->RequestIP(srcIP);
+		rec = me->whois.RequestIP(srcIP);
 		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
 		{
 			ipInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 		{
 			ipInfo->country = Text::String::New(UTF8STRC("Unk"));
 		}
-		me->ipMap->Put(sortableIP, ipInfo);
+		me->ipMap.Put(sortableIP, ipInfo);
 		me->ipListUpdated = true;
 	}
 	ipInfo->count++;
@@ -59,13 +59,13 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	sb.AppendUOSInt(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)
 {
 	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userData;
-	me->analyzer->PacketIPv4(rawData, packetSize, 0, 0);
+	me->analyzer.PacketIPv4(rawData, packetSize, 0, 0);
 }
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("Ping Monitor"), me);
 		return;
 	}
-	NEW_CLASS(me->webHdlr, Net::EthernetWebHandler(me->analyzer));
+	NEW_CLASS(me->webHdlr, Net::EthernetWebHandler(&me->analyzer));
 	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, me->webHdlr, port, 60, 3, CSTR("PingMonitor/1.0"), false, true));
 	if (me->listener->IsError())
 	{
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 		me->txtIPCountry->SetText(me->currIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois->RequestIP(me->currIP->ip);
+		Net::WhoisRecord *rec = me->whois.RequestIP(me->currIP->ip);
 		if (rec)
 		{
 			UOSInt i = 0;
@@ -197,9 +197,9 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		me->ipListUpdated = false;
-		Sync::MutexUsage mutUsage(me->ipMut);
+		Sync::MutexUsage mutUsage(&me->ipMut);
 		me->lbIP->ClearItems();
-		ipList = me->ipMap->GetValues();
+		ipList = me->ipMap.GetValues();
 		i = 0;
 		j = ipList->GetCount();
 		while (i < j)
@@ -217,25 +217,20 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory()), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Ping Monitor"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->listener = 0;
 	this->webHdlr = 0;
-	NEW_CLASS(this->ipMut, Sync::Mutex());
-	NEW_CLASS(this->ipMap, Data::UInt32Map<IPInfo*>());
-	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
-	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor")));
 	this->ipListUpdated = false;
 	this->ipContUpdated = false;
 	this->currIP = 0;
-	this->analyzer->HandlePingv4Request(OnPingPacket, this);
+	this->analyzer.HandlePingv4Request(OnPingPacket, this);
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
@@ -296,7 +291,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
@@ -346,13 +341,13 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 		this->listener = 0;
 		this->webHdlr = 0;
 	}
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 
 	const Data::ArrayList<IPInfo*> *ipList;
 	IPInfo *ipInfo;
 	UOSInt i;
-	ipList = this->ipMap->GetValues();
+	ipList = this->ipMap.GetValues();
 	i = ipList->GetCount();
 	while (i-- > 0)
 	{
@@ -361,11 +356,6 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 		SDEL_STRING(ipInfo->country);
 		MemFree(ipInfo);
 	}
-
-	DEL_CLASS(this->ipMap);
-	DEL_CLASS(this->ipMut);
-	DEL_CLASS(this->whois);
-	DEL_CLASS(this->analyzer);
 }
 
 void SSWR::AVIRead::AVIRPingMonitorForm::OnMonitorChanged()

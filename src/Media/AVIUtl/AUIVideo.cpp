@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Media/AVIUtl/AUIVideo.h"
 #include "Sync/Interlocked.h"
+#include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include <windows.h>
 
@@ -19,10 +20,10 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
 	{
 		if (me->playing)
 		{
-			me->frameNumMut->Lock();
+			Sync::MutexUsage mutUsage(&me->frameNumMut);
 			thisFrameNum = me->currFrameNum;
 			me->currFrameNum++;
-			me->frameNumMut->Unlock();
+			mutUsage.EndUse();
 			if (thisFrameNum >= me->frameCnt)
 			{
 				me->playing = false;
@@ -36,7 +37,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(void *userObj)
 		}
 		else
 		{
-			me->threadEvt->Wait(10000);
+			me->threadEvt.Wait(10000);
 		}
 	}
 	MemFree(frameBuff);
@@ -75,8 +76,6 @@ Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUt
 	this->threadToStop = false;
 	this->playCb = 0;
 	this->playCbData = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
-	NEW_CLASS(this->frameNumMut, Sync::Mutex());
 
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->threadRunning)
@@ -89,7 +88,7 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 {
 	this->Stop();
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::Thread::Sleep(10);
@@ -101,9 +100,6 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 		MemFree(this->input);
 	}
 	DEL_CLASS(this->plugin);
-	DEL_CLASS(this->frameInfo);
-	DEL_CLASS(this->threadEvt);
-	DEL_CLASS(this->frameNumMut);
 }
 
 UTF8Char *Media::AVIUtl::AUIVideo::GetSourceName(UTF8Char *buff)
@@ -140,16 +136,15 @@ Bool Media::AVIUtl::AUIVideo::Start()
 	if (this->playing)
 		return false;
 	this->playing = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	return true;
 }
 
 void Media::AVIUtl::AUIVideo::Stop()
 {
 	this->playing = false;
-	this->frameNumMut->Lock();
+	Sync::MutexUsage mutUsage(&this->frameNumMut);
 	this->currFrameNum = 0;
-	this->frameNumMut->Unlock();
 }
 
 Bool Media::AVIUtl::AUIVideo::IsRunning()
@@ -169,12 +164,11 @@ Bool Media::AVIUtl::AUIVideo::CanSeek()
 
 UInt32 Media::AVIUtl::AUIVideo::SeekToTime(UInt32 time)
 {
-	this->frameNumMut->Lock();
+	Sync::MutexUsage mutUsage(&this->frameNumMut);
 	this->currFrameNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
 	if (this->currFrameNum > this->frameCnt)
 		this->currFrameNum = this->frameCnt;
 	UInt32 t = MulDivU32(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);
-	this->frameNumMut->Unlock();
 	return t;
 }
 

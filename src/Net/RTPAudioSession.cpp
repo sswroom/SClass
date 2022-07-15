@@ -1,9 +1,10 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
 #include "Data/ByteTool.h"
 #include "Data/RandomOS.h"
-#include "Sync/Thread.h"
 #include "Net/RTPAudioSession.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
+#include "Text/MyString.h"
 
 void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
@@ -36,7 +37,7 @@ void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo 
 			MemCopyNO(me->readBuff, &buff[12], dataSize - 12);
 			me->readBuff = 0;
 			me->sizeRead = dataSize - 12;
-			me->readBuffEvt->Set();
+			me->readBuffEvt.Set();
 		}
 	}
 }
@@ -44,41 +45,39 @@ void __stdcall Net::RTPAudioSession::UDPData(const Net::SocketUtil::AddressInfo 
 UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 {
 	UInt8 buff[512];
-	Sync::Event *evt;
 	OSInt readSize;
 	Int32 seqId;
 	Int32 ts;
-	Data::RandomOS *random;
 
 	Net::RTPAudioSession *me = (Net::RTPAudioSession*)userObj;
 	me->outRunning = true;
-	NEW_CLASS(random, Data::RandomOS());
-	NEW_CLASS(evt, Sync::Event(true));
-	seqId = random->NextInt30() & 0xffff;
-	ts = 0;
-	me->outAudio->Start(evt, 160);
-	while (!me->outToStop)
 	{
-		evt->Wait(1000);
-		if (me->outToStop)
-			break;
-		readSize = me->outAudio->ReadBlock(&buff[12], 160);
-		if (readSize == 160)
+		Sync::Event evt;
+		Data::RandomOS random;
+		seqId = random.NextInt30() & 0xffff;
+		ts = 0;
+		me->outAudio->Start(&evt, 160);
+		while (!me->outToStop)
 		{
-			buff[0] = 0x80;
-			buff[1] = 0;
-			WriteMInt16(&buff[2], seqId);
-			WriteMInt32(&buff[4], ts);
-			WriteMInt32(&buff[8], me->outSSRC);
-			me->svr->SendTo(&me->outAddr, me->outPort, buff, 172);
-			
-			seqId++;
-			ts += 160;
+			evt.Wait(1000);
+			if (me->outToStop)
+				break;
+			readSize = me->outAudio->ReadBlock(&buff[12], 160);
+			if (readSize == 160)
+			{
+				buff[0] = 0x80;
+				buff[1] = 0;
+				WriteMInt16(&buff[2], seqId);
+				WriteMInt32(&buff[4], ts);
+				WriteMInt32(&buff[8], me->outSSRC);
+				me->svr->SendTo(&me->outAddr, me->outPort, buff, 172);
+				
+				seqId++;
+				ts += 160;
+			}
 		}
+		me->outAudio->Stop();
 	}
-	me->outAudio->Stop();
-	DEL_CLASS(evt);
-	DEL_CLASS(random);
 	me->outRunning = false;
 	return 0;
 }
@@ -93,8 +92,6 @@ Net::RTPAudioSession::RTPAudioSession(Net::SocketFactory *sockf, const Char *ip,
 	this->lastSSRC = 0;
 	this->readBuff = 0;
 	this->outRunning = false;
-	NEW_CLASS(this->readMut, Sync::Mutex());
-	NEW_CLASS(this->readBuffEvt, Sync::Event(true));
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, UDPData, this, log, 0, Sync::Thread::GetThreadCnt(), false));
 	if (this->svr->IsError())
 	{
@@ -111,8 +108,6 @@ Net::RTPAudioSession::~RTPAudioSession()
 	{
 		DEL_CLASS(svr);
 	}
-	DEL_CLASS(this->readMut);
-	DEL_CLASS(this->readBuffEvt);
 	if (this->format)
 	{
 		DEL_CLASS(this->format);
@@ -220,7 +215,7 @@ void Net::RTPAudioSession::Stop()
 	{
 		started = false;
 		this->sizeRead = -1;
-		this->readBuffEvt->Set();
+		this->readBuffEvt.Set();
 	}
 }
 
@@ -229,17 +224,16 @@ UOSInt Net::RTPAudioSession::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	if (!started)
 		return 0;
 	UOSInt retSize;
-	this->readMut->Lock();
+	Sync::MutexUsage mutUsage(&this->readMut);
 	this->sizeRead = 0;
 	this->readBuffSize = blkSize;
 	this->readBuff = buff;
 	while (this->sizeRead == 0)
 	{
-		this->readBuffEvt->Wait(100);
+		this->readBuffEvt.Wait(100);
 	}
 	retSize = this->sizeRead;
 	this->readBuff = 0;
-	this->readMut->Unlock();
 	return retSize;
 }
 

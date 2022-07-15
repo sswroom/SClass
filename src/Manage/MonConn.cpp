@@ -165,12 +165,12 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 						if (cmdType & 0x8000)
 						{
 							UInt8 *lastCmd;
-							if (me->cmdList->GetCount())
+							if (me->cmdList.GetCount())
 							{
-								lastCmd = (UInt8*)me->cmdList->GetItem(0);
+								lastCmd = me->cmdList.GetItem(0);
 								if ((cmdType & 0x7fff) == ReadUInt16(&lastCmd[4]) && cmdSeq == ReadUInt16(&lastCmd[6]))
 								{
-									MemFree(me->cmdList->RemoveAt(0));
+									MemFree(me->cmdList.RemoveAt(0));
 									me->requesting = false;
 									me->connTEvt->Set();
 
@@ -229,7 +229,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 	{
 		if (me->ToStop)
 		{
-			if (me->cmdList->GetCount() == 0)
+			if (me->cmdList.GetCount() == 0)
 				break;
 		}
 
@@ -239,25 +239,25 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 			currTime.SetCurrTimeUTC();
 			if (me->requesting)
 			{
-				if (currTime.DiffMS(me->lastReqTime) > 60000)//3000
+				if (currTime.DiffMS(&me->lastReqTime) > 60000)//3000
 				{
 					me->requesting = false;
 				}
 			}
 			else
 			{
-				if (currTime.DiffMS(me->lastKATime) > 60000)
+				if (currTime.DiffMS(&me->lastKATime) > 60000)
 				{
 					UOSInt procId = Manage::Process::GetCurrProcId();
 					me->AddCommand((UInt8*)&procId, 4, 5);
-					me->lastKATime->SetCurrTimeUTC();
+					me->lastKATime.SetCurrTimeUTC();
 				}
 
-				if (me->cmdList->GetCount())
+				if (me->cmdList.GetCount())
 				{
-					data = me->cmdList->GetItem(0);
+					data = me->cmdList.GetItem(0);
 					me->requesting = true;
-					me->lastReqTime->SetCurrTimeUTC();
+					me->lastReqTime.SetCurrTimeUTC();
 					me->cli->Write(data, ReadUInt16(&data[2]));
 				}
 			}
@@ -278,10 +278,10 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 {
 	UInt8 *buff = MemAlloc(UInt8, dataSize + 10);
-	Sync::MutexUsage mutUsage(cmdSeqMut);
+	Sync::MutexUsage mutUsage(&this->cmdSeqMut);
 	Manage::MonConn::BuildPacket(buff, data, dataSize, cmdType, cmdSeq++);
 	mutUsage.EndUse();
-	cmdList->Add(buff);
+	this->cmdList.Add(buff);
 	connTEvt->Set();
 }
 
@@ -289,11 +289,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;
-	NEW_CLASS(lastReqTime, Data::DateTime());
-	NEW_CLASS(cmdList, Data::SyncArrayList<UInt8*>());
-	NEW_CLASS(cmdSeqMut, Sync::Mutex());
-	NEW_CLASS(lastKATime, Data::DateTime());
-	lastKATime->SetCurrTimeUTC();
+	this->lastKATime.SetCurrTimeUTC();
 	this->msgWriter = msgWriter;
 	this->userObj = userObj;
 	this->hdlr = hdlr;
@@ -312,13 +308,13 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 #endif
 
 	sptr = IO::Path::GetTempFile(buff, UTF8STRC("SvrMonitor.dat"));
-	IO::FileStream *file;
-	NEW_CLASS(file, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!file->IsError())
 	{
-		file->Read((UInt8*)&this->port, 2);
+		IO::FileStream file(CSTRP(buff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!file.IsError())
+		{
+			file.Read((UInt8*)&this->port, 2);
+		}
 	}
-	DEL_CLASS(file);
 	if (this->port)
 	{
 		NEW_CLASS(this->connREvt, Sync::Event());
@@ -361,15 +357,11 @@ Manage::MonConn::~MonConn()
 		DEL_CLASS(this->connTEvt);
 		this->connTEvt = 0;
 	}
-	DEL_CLASS(cmdSeqMut);
-	UOSInt i = cmdList->GetCount();
+	UOSInt i = this->cmdList.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(cmdList->RemoveAt(i));
+		MemFree(this->cmdList.RemoveAt(i));
 	}
-	DEL_CLASS(lastKATime);
-	DEL_CLASS(cmdList);
-	DEL_CLASS(lastReqTime);
 }
 
 Bool Manage::MonConn::IsError()

@@ -74,43 +74,43 @@ namespace Net
 			UInt64 reqCount;
 		} DNSCliHourInfo;
 
-		typedef struct
+		struct DNSClientInfo
 		{
 			UInt32 cliId;
 			Net::SocketUtil::AddressInfo addr;
-			Sync::Mutex *mut;
-			Data::ArrayList<DNSCliHourInfo*> *hourInfos;
-		} DNSClientInfo;
+			Sync::Mutex mut;
+			Data::ArrayList<DNSCliHourInfo*> hourInfos;
+		};
 
-		typedef struct
+		struct DNSRequestResult
 		{
 			UInt8 recBuff[512];
 			UOSInt recSize;
 			Int64 reqTime;
 			UInt32 ttl;
 			Int32 status; //0 = normal, 1 = blocked
-			Sync::Mutex *mut;
-		} DNSRequestResult;
+			Sync::Mutex mut;
+		};
 
-		typedef struct
+		struct DNSTargetInfo
 		{
 			UInt32 ip;
-			Sync::Mutex *mut;
-			Data::ArrayListICaseString *addrList;
-		} DNSTargetInfo;
+			Sync::Mutex mut;
+			Data::ArrayListICaseString addrList;
+		};
 
-		typedef struct
+		struct IPLogInfo
 		{
 			UInt32 ip;
-			Sync::Mutex *mut;
-			Data::ArrayList<Text::String*> *logList;
-		} IPLogInfo;
+			Sync::Mutex mut;
+			Data::ArrayList<Text::String*> logList;
+		};
 
-		typedef struct
+		struct DHCPInfo
 		{
 			UInt64 iMAC;
 			Bool updated;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Int64 ipAddrTime;
 			UInt32 ipAddr;
 			UInt32 ipAddrLease;
@@ -123,7 +123,7 @@ namespace Net
 			UInt32 dns[4];
 			Text::String *hostName;
 			Text::String *vendorClass;
-		} DHCPInfo;
+		};
 		
 	private:
 		AnalyzeType atype;

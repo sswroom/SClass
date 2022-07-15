@@ -1,25 +1,23 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Thread.h"
 #include "Media/RealtimeVideoSource.h"
-#include <windows.h>
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 
-void __stdcall Media::RealtimeVideoSource::FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UInt32 dataSize, Bool deltaFrame, void *userData, Media::FrameType frameType, Bool discontTime)
+void __stdcall Media::RealtimeVideoSource::FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::RealtimeVideoSource *me = (Media::RealtimeVideoSource*)userData;
-	me->frameMut->Lock();
+	Sync::MutexUsage mutUsage(&me->frameMut);
 	me->frameTime = frameTime;
 	me->frameNum = frameNum;
-	MemCopy(me->frameBuff, imgData, dataSize);
+	MemCopyNO(me->frameBuff, imgData[0], dataSize);
 	me->frameSize = dataSize;
 	me->frameType = frameType;
-	me->frameMut->Unlock();
 }
 
 Media::RealtimeVideoSource::RealtimeVideoSource(Media::IRealtimeVideoSource *capSrc)
 {
 	this->capSrc = capSrc;
-	NEW_CLASS(this->frameMut, Sync::Mutex());
 	capSrc->GetVideoInfo(&this->frameInfo, &this->frameRateNorm, &this->frameRateDenorm, &this->maxFrameSize);
 	this->frameBuff = MemAlloc(UInt8, this->maxFrameSize);
 	this->frameSize = 0;
@@ -36,22 +34,18 @@ Media::RealtimeVideoSource::~RealtimeVideoSource()
 	{
 		DEL_CLASS(this->capSrc);
 	}
-	if (this->frameMut)
-	{
-		DEL_CLASS(this->frameMut);
-	}
 	if (this->frameBuff)
 	{
 		MemFree(this->frameBuff);
 	}
 }
 
-WChar *Media::RealtimeVideoSource::GetName(WChar *buff)
+UTF8Char *Media::RealtimeVideoSource::GetName(UTF8Char *buff)
 {
-	return this->capSrc->GetName(buff);
+	return this->capSrc->GetSourceName(buff);
 }
 
-Bool Media::RealtimeVideoSource::GetVideoInfo(Media::FrameInfo *info, Int32 *rateNorm, Int32 *rateDenorm, Int32 *maxFrameSize)
+Bool Media::RealtimeVideoSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *rateNorm, UInt32 *rateDenorm, UOSInt *maxFrameSize)
 {
 	return this->capSrc->GetVideoInfo(info, rateNorm, rateDenorm, maxFrameSize);
 }
@@ -64,7 +58,8 @@ void Media::RealtimeVideoSource::Start()
 	this->frameType = Media::FT_NON_INTERLACE;
 	this->frameTime = -1;
 	this->started = true;
-	if (!this->capSrc->Start(FrameCB, this))
+	this->capSrc->Init(FrameCB, 0, this);
+	if (!this->capSrc->Start())
 	{
 		this->started = false;
 	}
@@ -111,12 +106,11 @@ OSInt Media::RealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTi
 		return 0;
 	}
 	OSInt frameSize;
-	this->frameMut->Lock();
+	Sync::MutexUsage mutUsage(&this->frameMut);
 	frameSize = this->frameSize;
 	this->lastFrameTime = this->frameTime;
-	MemCopy(frameBuff, this->frameBuff, frameSize);
+	MemCopyNO(frameBuff, this->frameBuff, frameSize);
 	*frameTime = this->frameTime;
 	*ftype = this->frameType;
-	this->frameMut->Unlock();
 	return frameSize;
 }

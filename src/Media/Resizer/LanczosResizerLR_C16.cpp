@@ -234,7 +234,7 @@ void Media::Resizer::LanczosResizerLR_C16::UpdateRGBTable()
 		this->rgbTable = MemAlloc(UInt8, 65536 * 6);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_RGB16(this->rgbTable, this->destColor, 14, this->srcRefLuminance);
+	lutGen.GenLRGB_RGB16(this->rgbTable, &this->destColor, 14, this->srcRefLuminance);
 }
 
 void __stdcall Media::Resizer::LanczosResizerLR_C16::DoTask(void *obj)
@@ -285,7 +285,7 @@ void Media::Resizer::LanczosResizerLR_C16::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType)
+Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType), destColor(destColor)
 {
 	UOSInt i;
 	nThread = Sync::Thread::GetThreadCnt();
@@ -297,7 +297,6 @@ Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt 
 	this->hnTap = hnTap << 1;
 	this->vnTap = vnTap << 1;
 	this->rgbChanged = true;
-	NEW_CLASS(this->destColor, Media::ColorProfile(destColor));
 	if (colorSess)
 	{
 		this->colorSess = colorSess;
@@ -337,7 +336,6 @@ Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt 
 	buffW = 0;
 	buffH = 0;
 	buffPtr = 0;
-	NEW_CLASS(mut, Sync::Mutex());
 }
 
 Media::Resizer::LanczosResizerLR_C16::~LanczosResizerLR_C16()
@@ -360,8 +358,6 @@ Media::Resizer::LanczosResizerLR_C16::~LanczosResizerLR_C16()
 	{
 		MemFree(this->rgbTable);
 	}
-	DEL_CLASS(this->destColor);
-	DEL_CLASS(mut);
 }
 
 void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
@@ -396,7 +392,7 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 
 	if (swidth != UOSInt2Double(dwidth) && sheight != UOSInt2Double(dheight))
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -455,7 +451,7 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 	}
 	else if (swidth != UOSInt2Double(dwidth))
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
 		{
 			DestoryHori();
@@ -492,7 +488,7 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 	}
 	else if (sheight != UOSInt2Double(dheight))
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
 		{
 			DestoryVert();
@@ -529,7 +525,7 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(UInt8 *src, OSInt sbpl, Double
 	}
 	else
 	{
-		Sync::MutexUsage mutUsage(mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		mt_collapse(src, dest, siWidth, dheight, (OSInt)siWidth << 3, dbpl);
 		mutUsage.EndUse();
 
@@ -579,11 +575,11 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(Me
 	destInfo.storeBPP = 16;
 	destInfo.pf = Media::PF_LE_R5G6B5;
 	destInfo.color->GetPrimaries()->Set(srcImage->info.color->GetPrimaries());
-	if (this->destColor->GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destColor->GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
+	if (this->destColor.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destColor.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
-		destInfo.color->GetRTranParam()->Set(this->destColor->GetRTranParam());
-		destInfo.color->GetGTranParam()->Set(this->destColor->GetGTranParam());
-		destInfo.color->GetBTranParam()->Set(this->destColor->GetBTranParam());
+		destInfo.color->GetRTranParam()->Set(this->destColor.GetRTranParam());
+		destInfo.color->GetGTranParam()->Set(this->destColor.GetGTranParam());
+		destInfo.color->GetBTranParam()->Set(this->destColor.GetBTranParam());
 	}
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;

@@ -24,12 +24,12 @@ namespace Manage
 		static void ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData);
 
 	private:
-		Data::SyncArrayList<UInt8*> *cmdList;
+		Data::SyncArrayList<UInt8*> cmdList;
 		EventHandler hdlr;
 		Bool ConnRRunning;
 		Bool ConnTRunning;
 		Bool ToStop;
-		Sync::Mutex *cmdSeqMut;
+		Sync::Mutex cmdSeqMut;
 		UInt16 cmdSeq;
 		UInt16 port;
 		Int32 svrMonConn;
@@ -40,8 +40,8 @@ namespace Manage
 		Sync::Event *connREvt;
 		Sync::Event *connTEvt;
 		Bool requesting;
-		Data::DateTime *lastReqTime;
-		Data::DateTime *lastKATime;
+		Data::DateTime lastReqTime;
+		Data::DateTime lastKATime;
 		void *userObj;
 		IO::Writer *msgWriter;
 

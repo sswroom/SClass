@@ -76,7 +76,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(void *userObj)
 	status->threadRunning = true;
 	while (!status->threadToStop)
 	{
-		Sync::MutexUsage mutUsage(status->me->connMut);
+		Sync::MutexUsage mutUsage(&status->me->connMut);
 		if (status->me->connLeftCnt <= 0)
 		{
 			mutUsage.EndUse();
@@ -173,7 +173,6 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, UI
 	this->threadStatus = 0;
 	this->svrIP = 0;
 	this->svrPort = 0;
-	NEW_CLASS(this->connMut, Sync::Mutex());
 	this->connLeftCnt = 0;
 	this->threadCnt = 0;
 	this->threadCurrCnt = 0;
@@ -234,7 +233,6 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, UI
 SSWR::AVIRead::AVIRTCPTestForm::~AVIRTCPTestForm()
 {
 	this->StopThreads();
-	DEL_CLASS(this->connMut);
 }
 
 void SSWR::AVIRead::AVIRTCPTestForm::OnMonitorChanged()

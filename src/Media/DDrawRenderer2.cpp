@@ -1,12 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Event.h"
-#include "Sync/Thread.h"
+#include "IO/DebugWriter.h"
 #include "Math/Math.h"
 #include "Media/FrameInfo.h"
 #include "Media/DDrawRenderer2.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
-#include "IO/DebugWriter.h"
+#include "Sync/Event.h"
+#include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 #include "Text/MyString.h"
 
 #include <windows.h>
@@ -181,7 +182,7 @@ void Media::DDrawRenderer2::PutNextSurface(OSInt index)
 	if (index != this->surfaceBuffEnd)
 		return;
 	this->surfaceBuffEnd = (this->surfaceBuffEnd + 1) % FRAMEBUFFSIZE;
-	this->surfaceBuffEvent->Set();
+	this->surfaceBuffEvent.Set();
 }
 
 UInt32 __stdcall Media::DDrawRenderer2::ScnUpdater(void *obj)
@@ -190,7 +191,7 @@ UInt32 __stdcall Media::DDrawRenderer2::ScnUpdater(void *obj)
 	me->scnUpdRunning = true;
 	while (!me->scnUpdToStop)
 	{
-		me->surfaceBuffEvent->Wait(1);
+		me->surfaceBuffEvent.Wait(1);
 		if (me->scnUpdToStop)
 			break;
 		if (me->rendering)
@@ -199,10 +200,9 @@ UInt32 __stdcall Media::DDrawRenderer2::ScnUpdater(void *obj)
 			{
 				if (me->clk->GetCurrTime() > me->surfaceBuff[me->surfaceBuffStart].frameTime)
 				{
-					me->surfaceBuffMut->Lock();
+					Sync::MutexUsage mutUsage(&me->surfaceBuffMut);
 					if (me->surfaceBuff[me->surfaceBuffStart].surface == 0)
 					{
-						me->surfaceBuffMut->Unlock();
 						break;
 					}
 					LPDIRECTDRAWSURFACE7 surface = (LPDIRECTDRAWSURFACE7)me->surfaceBuff[me->surfaceBuffStart].surface;
@@ -217,7 +217,6 @@ UInt32 __stdcall Media::DDrawRenderer2::ScnUpdater(void *obj)
 					HRESULT res = primarySurface->Blt(&rcArea, surface, &rc, 0, 0);
 
 					me->surfaceBuffStart = (me->surfaceBuffStart + 1) % FRAMEBUFFSIZE;
-					me->surfaceBuffMut->Unlock();
 				}
 				else
 				{
@@ -240,14 +239,14 @@ UInt32 __stdcall Media::DDrawRenderer2::FrameProcesser(void *obj)
 	me->frameProcRunning = true;
 	while (!me->frameProcToStop)
 	{
-		me->frameProcEvent->Wait(10);
+		me->frameProcEvent.Wait(10);
 		if (me->frameProcToStop)
 			break;
 		if (me->rendering)
 		{
 			while (me->frameProcStart != me->frameProcEnd)
 			{
-				me->csconv->Convert(me->frameSources[me->frameProcStart].frameData, me->frameRGBBuff, me->info.width, me->info.height, me->info.width * (me->info.bpp >> 3), me->info.width << 2);
+				me->csconv->ConvertV2(&me->frameSources[me->frameProcStart].frameData, me->frameRGBBuff, me->info.dispWidth, me->info.dispHeight, me->info.storeWidth, me->info.storeHeight, me->info.storeWidth << 2, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 
 				if (!me->firstFrame)
 				{
@@ -264,7 +263,7 @@ UInt32 __stdcall Media::DDrawRenderer2::FrameProcesser(void *obj)
 					ZeroMemory(&ddsd, sizeof(ddsd));
 					ddsd.dwSize = sizeof(ddsd);
 
-					me->surfaceBuffMut->Lock();
+					Sync::MutexUsage mutUsage(&me->surfaceBuffMut);
 					surface = (LPDIRECTDRAWSURFACE7)me->surfaceBuff[i].surface;
 					if (surface)
 					{
@@ -286,64 +285,63 @@ UInt32 __stdcall Media::DDrawRenderer2::FrameProcesser(void *obj)
 							destPtr = (UInt8*)ddsd.lpSurface;
 							if (me->frameSources[me->frameProcStart].ftype == Media::FT_NON_INTERLACE)
 							{
-								srcW = me->info.width;
-								srcH = me->info.height;
+								srcW = me->info.dispWidth;
+								srcH = me->info.dispHeight;
 								srcPtr = me->frameRGBBuff;
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_FIELD_TF)
 							{
-								srcW = me->info.width;
-								srcH = me->info.height << 1;
+								srcW = me->info.dispWidth;
+								srcH = me->info.dispHeight << 1;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.width, me->info.width << 2);
+								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispWidth, me->info.storeWidth << 2);
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_FIELD_BF)
 							{
-								srcW = me->info.width;
-								srcH = me->info.height << 1;
+								srcW = me->info.dispWidth;
+								srcH = me->info.dispHeight << 1;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 1, me->info.width, me->info.width << 2);
+								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 1, me->info.dispWidth, me->info.storeWidth << 2);
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_TFF)
 							{
-								srcW = me->info.width;
-								srcH = me->info.height;
+								srcW = me->info.dispWidth;
+								srcH = me->info.dispHeight;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.width, me->info.width << 2);
+								me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispWidth, me->info.storeWidth << 2);
 							}
 							else if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_BFF)
 							{
-								srcW = me->info.width;
-								srcH = me->info.height;
+								srcW = me->info.dispWidth;
+								srcH = me->info.dispHeight;
 								srcPtr = me->frameDIBuff;
-								me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.width << 2), me->frameDIBuff, 1, me->info.width, me->info.width << 2);
+								me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.storeWidth << 2), me->frameDIBuff, 1, me->info.dispWidth, me->info.storeWidth << 2);
 							}
 							else
 							{
-								srcW = me->info.width;
-								srcH = me->info.height;
+								srcW = me->info.dispWidth;
+								srcH = me->info.dispHeight;
 								srcPtr = me->frameRGBBuff;
 							}
 
-							if (srcW * me->info.par * outH > outW * (Double)srcH)
+							if (srcW * me->info.par2 * outH > outW * (Double)srcH)
 							{
 								destW = outW;
-								destH = Math::Double2Int(outW / me->info.par * srcH / srcW);
+								destH = Double2Int32(outW / me->info.par2 * srcH / srcW);
 								destPtr = destPtr + ddsd.lPitch * ((outH - destH) >> 1);
 							}
 							else
 							{
-								destW = Math::Double2Int(outH * me->info.par * srcW / srcH);
+								destW = Double2Int32(outH * me->info.par2 * srcW / srcH);
 								destH = outH;
 								destPtr = destPtr + ((outW - destW) >> 1) * 4;
 							}
 
-							me->resizer->Resize(srcPtr, me->info.width << 2, me->info.width, me->info.height, 0, 0, destPtr, ddsd.lPitch, destW, destH);
+							me->resizer->Resize(srcPtr, me->info.storeWidth << 2, me->info.dispWidth, me->info.dispHeight, 0, 0, destPtr, ddsd.lPitch, destW, destH);
 							surface->Unlock(0);
 
 							me->PutNextSurface(i);
-							me->surfaceBuffMut->Unlock();
-
+							mutUsage.EndUse();
 
 							if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_TFF || me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_BFF)
 							{
@@ -352,20 +350,20 @@ UInt32 __stdcall Media::DDrawRenderer2::FrameProcesser(void *obj)
 								{
 									if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_TFF)
 									{
-										srcW = me->info.width;
-										srcH = me->info.height;
+										srcW = me->info.dispWidth;
+										srcH = me->info.dispHeight;
 										srcPtr = me->frameDIBuff;
-										me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.width << 2), me->frameDIBuff, 1, me->info.width, me->info.width << 2);
+										me->deinterlace->Deinterlace(me->frameRGBBuff + (me->info.storeWidth << 2), me->frameDIBuff, 1, me->info.dispWidth, me->info.storeWidth << 2);
 									}
 									else if (me->frameSources[me->frameProcStart].ftype == Media::FT_INTERLACED_BFF)
 									{
-										srcW = me->info.width;
-										srcH = me->info.height;
+										srcW = me->info.dispWidth;
+										srcH = me->info.dispHeight;
 										srcPtr = me->frameDIBuff;
-										me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.width, me->info.width << 2);
+										me->deinterlace->Deinterlace(me->frameRGBBuff, me->frameDIBuff, 0, me->info.dispWidth, me->info.storeWidth << 2);
 									}
 
-									me->surfaceBuffMut->Lock();
+									mutUsage.BeginUse();
 									surface = (LPDIRECTDRAWSURFACE7)me->surfaceBuff[i].surface;
 									if (surface)
 									{
@@ -373,33 +371,29 @@ UInt32 __stdcall Media::DDrawRenderer2::FrameProcesser(void *obj)
 										{
 											destPtr = (UInt8*)ddsd.lpSurface;
 
-											if (srcW * me->info.par * outH > outW * (Double)srcH)
+											if (srcW * me->info.par2 * outH > outW * (Double)srcH)
 											{
 												destW = outW;
-												destH = Math::Double2Int(outW / me->info.par * srcH / srcW);
+												destH = Double2Int32(outW / me->info.par2 * srcH / srcW);
 												destPtr = destPtr + ddsd.lPitch * ((outH - destH) >> 1);
 											}
 											else
 											{
-												destW = Math::Double2Int(outH * me->info.par * srcW / srcH);
+												destW = Double2Int32(outH * me->info.par2 * srcW / srcH);
 												destH = outH;
 												destPtr = destPtr + ((outW - destW) >> 1) * 4;
 											}
 
-											me->resizer->Resize(srcPtr, me->info.width << 2, me->info.width, me->info.height, 0, 0, destPtr, ddsd.lPitch, destW, destH);
+											me->resizer->Resize(srcPtr, me->info.storeWidth << 2, me->info.dispWidth, me->info.dispHeight, 0, 0, destPtr, ddsd.lPitch, destW, destH);
 											surface->Unlock(0);
 
 											me->PutNextSurface(i);
 										}
 									}
-									me->surfaceBuffMut->Unlock();
+									mutUsage.EndUse();
 								}
 							}
 						}
-					}
-					else
-					{
-						me->surfaceBuffMut->Unlock();
 					}
 				}
 
@@ -438,7 +432,7 @@ Media::DDrawRenderer2::DDrawRenderer2(void *hwnd, Media::ColorManager *colorMgr)
 	this->scnUpdToStop = false;
 	this->frameProcRunning = false;
 	this->frameProcToStop = false;
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
 	NEW_CLASS(this->deinterlace, Media::Deinterlace8(10, 10));
 	this->surfaceBuff = MemAlloc(FrameBuffer, FRAMEBUFFSIZE);
 	this->surfaceBuffStart = 0;
@@ -456,9 +450,6 @@ Media::DDrawRenderer2::DDrawRenderer2(void *hwnd, Media::ColorManager *colorMgr)
 	{
 		this->frameSources[i].frameData = 0;
 	}
-	NEW_CLASS(this->surfaceBuffEvent, Sync::Event(L"Media.DDrawRenderer2.surfaceBuffEvt"));
-	NEW_CLASS(this->surfaceBuffMut, Sync::Mutex());
-	NEW_CLASS(this->frameProcEvent, Sync::Event(L"Media.DDrawRenderer2.frameProcEvent"));
 
 	LPDIRECTDRAW7 lpDD;
 	if (DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL ) != DD_OK )
@@ -501,8 +492,8 @@ Media::DDrawRenderer2::~DDrawRenderer2()
 	}
 	this->scnUpdToStop = true;
 	this->frameProcToStop = true;
-	this->surfaceBuffEvent->Set();
-	this->frameProcEvent->Set();
+	this->surfaceBuffEvent.Set();
+	this->frameProcEvent.Set();
 	while (this->scnUpdRunning)
 	{
 		Sync::Thread::Sleep(10);
@@ -515,9 +506,6 @@ Media::DDrawRenderer2::~DDrawRenderer2()
 	this->ReleaseSubSurface();
 	MemFree(this->surfaceBuff);
 	MemFree(this->frameSources);
-	DEL_CLASS(this->surfaceBuffEvent);
-	DEL_CLASS(this->surfaceBuffMut);
-	DEL_CLASS(this->frameProcEvent);
 
 	if (clipper)
 	{
@@ -535,10 +523,9 @@ Media::DDrawRenderer2::~DDrawRenderer2()
 
 void Media::DDrawRenderer2::OnSizeChanged()
 {
-	this->surfaceBuffMut->Lock();
+	Sync::MutexUsage mutUsage(&this->surfaceBuffMut);
 	this->ReleaseSubSurface();
 	this->CreateSubSurface();
-	this->surfaceBuffMut->Unlock();
 }
 
 void Media::DDrawRenderer2::StartRender(Media::RefClock *clk, Bool realtimeMode)
@@ -568,8 +555,8 @@ void Media::DDrawRenderer2::ChangeFrameFormat(Media::FrameInfo *info)
 	{
 		MemFree(this->frameDIBuff);
 	}
-	MemCopy(&this->info, info, sizeof(Media::FrameInfo));
-	this->csconv = Media::CS::CSConverter::NewConverter(info->fourcc, info->bpp, info->rgbType, 0, 32, Media::CS::TRANT_DISPLAY, this->info.rgbGamma, this->info.yuvType, this->colorMgr);
+	MemCopyNO(&this->info, info, sizeof(Media::FrameInfo));
+	this->csconv = Media::CS::CSConverter::NewConverter(info->fourcc, info->storeBPP, info->pf, 0, 32, Media::CS::TRANT_VDISPLAY, this->info.rgbGamma, this->info.yuvType, this->colorMgr);
 	if (this->csconv == 0)
 	{
 		this->frameSrcSize = 0;
@@ -578,20 +565,20 @@ void Media::DDrawRenderer2::ChangeFrameFormat(Media::FrameInfo *info)
 	}
 	else
 	{
-		this->frameSrcSize = this->csconv->GetSrcFrameSize(info->width, info->height);
+		this->frameSrcSize = this->csconv->GetSrcFrameSize(info->dispWidth, info->dispHeight);
 		this->CreateFrameSrcBuff();
-		this->frameRGBSize = this->csconv->GetDestFrameSize(info->width, info->height);
+		this->frameRGBSize = this->csconv->GetDestFrameSize(info->dispWidth, info->dispHeight);
 		this->frameRGBBuff = MemAlloc(UInt8, frameRGBSize);
 	}
 	if (info->ftype == Media::FT_FIELD_TF || info->ftype == Media::FT_FIELD_BF)
 	{
 		this->frameDIBuff = MemAlloc(UInt8, frameRGBSize << 1);
-		this->deinterlace->Reinit(this->info.height, this->info.width << 2);
+		this->deinterlace->Reinit(this->info.dispWidth, this->info.storeWidth << 2);
 	}
 	else
 	{
 		this->frameDIBuff = MemAlloc(UInt8, frameRGBSize);
-		this->deinterlace->Reinit(this->info.height >> 1, this->info.width << 3);
+		this->deinterlace->Reinit(this->info.dispHeight >> 1, this->info.storeWidth << 3);
 	}
 }
 
@@ -601,11 +588,11 @@ void Media::DDrawRenderer2::AddFrame(const UInt8 *frameData, Int32 frameTime, Me
 	{
 		Sync::Thread::Sleep(10);
 	}
-	MemCopy(this->frameSources[this->frameProcEnd].frameData, frameData, this->frameSrcSize);
+	MemCopyNO(this->frameSources[this->frameProcEnd].frameData, frameData, this->frameSrcSize);
 	this->frameSources[this->frameProcEnd].frameTime = frameTime;
 	this->frameSources[this->frameProcEnd].ftype = ftype;
 	this->frameProcEnd = (this->frameProcEnd + 1) % FRAMESRCSIZE;
-	this->frameProcEvent->Set();
+	this->frameProcEvent.Set();
 }
 
 void Media::DDrawRenderer2::RenderFrame()

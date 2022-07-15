@@ -35,6 +35,7 @@
 extern "C" 
 {
 #include <libavcodec/avcodec.h>
+#include <libavutil/channel_layout.h>
 }
 
 #if !defined(__MINGW32__) && defined(__GNUC__)

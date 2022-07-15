@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Sync/MutexUsage.h"
 #include "UI/DObj/DirectObject.h"
 #include "UI/DObj/DObjHandler.h"
 
@@ -11,9 +12,6 @@ UI::DObj::DObjHandler::DObjHandler(Media::DrawEngine *deng)
 	this->shown = false;
 	this->deng = deng;
 	this->colorSess = 0;
-	NEW_CLASS(this->objList, Data::ArrayList<DirectObject*>());
-	NEW_CLASS(this->objMut, Sync::Mutex());
-	NEW_CLASS(this->updMut, Sync::Mutex());
 	this->moveObj = 0;
 	this->downObj = 0;
 }
@@ -22,16 +20,13 @@ UI::DObj::DObjHandler::~DObjHandler()
 {
 	UOSInt i;
 	DirectObject *obj;
-	i = this->objList->GetCount();
+	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
-		obj = this->objList->GetItem(i);
+		obj = this->objList.GetItem(i);
 		DEL_CLASS(obj);
 	}
-	this->objList->Clear();
-	DEL_CLASS(this->updMut);
-	DEL_CLASS(this->objMut);
-	DEL_CLASS(this->objList);
+	this->objList.Clear();
 }
 
 void UI::DObj::DObjHandler::SetColorSess(Media::ColorManagerSess *colorSess)
@@ -43,27 +38,26 @@ void UI::DObj::DObjHandler::ClearObjects()
 {
 	UOSInt i;
 	DirectObject *obj;
-	this->objMut->Lock();
-	i = this->objList->GetCount();
+	Sync::MutexUsage mutUsage(&this->objMut);
+	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
-		obj = this->objList->GetItem(i);
+		obj = this->objList.GetItem(i);
 		DEL_CLASS(obj);
 	}
-	this->objList->Clear();
+	this->objList.Clear();
 	this->shown = false;
 	this->downObj = 0;
 	this->moveObj = 0;
-	this->objMut->Unlock();
+	mutUsage.EndUse();
 	this->OnObjectClear();
 }
 
 void UI::DObj::DObjHandler::AddObject(DirectObject *obj)
 {
-	this->objMut->Lock();
-	this->objList->Add(obj);
+	Sync::MutexUsage mutUsage(&this->objMut);
+	this->objList.Add(obj);
 	this->shown = false;
-	this->objMut->Unlock();
 }
 
 Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
@@ -71,66 +65,63 @@ Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
 	Bool isChanged = !this->shown;
 	UOSInt i;
 	DirectObject *obj;
-	this->objMut->Lock();
-	i = this->objList->GetCount();
+	Sync::MutexUsage mutUsage(&this->objMut);
+	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
-		obj = this->objList->GetItem(i);
+		obj = this->objList.GetItem(i);
 		if (obj->IsChanged())
 		{
 			isChanged = true;
 		}
 	}
-	this->objMut->Unlock();
+	mutUsage.EndUse();
 	if (isChanged)
 	{
 		this->DrawAll(dimg);
 	}
-	this->objMut->Lock();
-	i = this->objList->GetCount();
+	mutUsage.BeginUse();
+	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
-		obj = this->objList->GetItem(i);
+		obj = this->objList.GetItem(i);
 		if (obj->DoEvents())
 		{
-			this->objMut->Unlock();
 			return isChanged;
 		}
 	}
-	this->objMut->Unlock();
 	return isChanged;
 }
 
 void UI::DObj::DObjHandler::DrawAll(Media::DrawImage *dimg)
 {
 	this->shown = true;
-	this->updMut->Lock();
+	Sync::MutexUsage updMutUsage(&this->updMut);
 	this->DrawBkg(dimg);
 
 	UOSInt i;
 	UOSInt j;
 	DirectObject *obj;
-	this->objMut->Lock();
+	Sync::MutexUsage mutUsage(&this->objMut);
 	i = 0;
-	j = this->objList->GetCount();
+	j = this->objList.GetCount();
 	while (i < j)
 	{
-		obj = this->objList->GetItem(i);
+		obj = this->objList.GetItem(i);
 		obj->DrawObject(dimg);
 		i++;
 	}
-	this->objMut->Unlock();
-	this->updMut->Unlock();
+	mutUsage.EndUse();
 }
 
 void UI::DObj::DObjHandler::BeginUpdate()
 {
-	this->updMut->Lock();
+	this->updMut.Lock();
 }
 
 void UI::DObj::DObjHandler::EndUpdate()
 {
-	this->updMut->Unlock();
+	this->updMut.Unlock();
 }
 
 void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseButton button)
@@ -139,11 +130,11 @@ void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 	{
 		UOSInt i;
 		DirectObject *obj;
-		this->objMut->Lock();
-		i = this->objList->GetCount();
+		Sync::MutexUsage mutUsage(&this->objMut);
+		i = this->objList.GetCount();
 		while (i-- > 0)
 		{
-			obj = this->objList->GetItem(i);
+			obj = this->objList.GetItem(i);
 			if (obj->IsObject(x, y))
 			{
 				this->downObj = obj;
@@ -151,7 +142,6 @@ void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 				break;
 			}
 		}
-		this->objMut->Unlock();
 	}
 }
 
@@ -159,7 +149,7 @@ void UI::DObj::DObjHandler::OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
-		this->objMut->Lock();
+		Sync::MutexUsage mutUsage(&this->objMut);
 		if (this->downObj != 0)
 		{
 			this->downObj->OnMouseUp();
@@ -169,7 +159,6 @@ void UI::DObj::DObjHandler::OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseBut
 			}
 			this->downObj = 0;
 		}
-		this->objMut->Unlock();
 	}
 }
 
@@ -179,11 +168,11 @@ void UI::DObj::DObjHandler::OnMouseMove(OSInt x, OSInt y)
 	
 	UOSInt i;
 	DirectObject *obj;
-	this->objMut->Lock();
-	i = this->objList->GetCount();
+	Sync::MutexUsage mutUsage(&this->objMut);
+	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
-		obj = this->objList->GetItem(i);
+		obj = this->objList.GetItem(i);
 		if (obj->IsObject(x, y))
 		{
 			mouseObj = obj;
@@ -202,5 +191,4 @@ void UI::DObj::DObjHandler::OnMouseMove(OSInt x, OSInt y)
 //			this->pb->Cursor = System::Windows::Forms::Cursors::Arrow;
 		}
 	}
-	this->objMut->Unlock();
 }

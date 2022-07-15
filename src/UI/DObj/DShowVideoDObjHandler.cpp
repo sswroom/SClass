@@ -2,6 +2,7 @@
 #include "Media/DrawEngine.h"
 //#include "Media/DShow/DShowGraph.h"
 //#include "Media/DShow/DShowManager.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "UI/GUIForm.h"
 #include "UI/DObj/DirectObject.h"
@@ -30,7 +31,7 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(void *userObj, UInt
 	UInt8 *bptr = dimg->GetImgBits(&revOrder);
 	if (bptr)
 	{
-		me->frameMut->Lock();
+		Sync::MutexUsage mutUsage(&me->frameMut);
 		if (revOrder)
 		{
 			me->resizer->Resize(frameBuff, frameW << 2, frameW, frameH, 0, 0, bptr + (Int32)(me->videoH - ((me->videoH - outH) >> 1)) * dbpl - dbpl + (((me->videoW - outW) >> 1) << 2), -dbpl, outW, outH);
@@ -39,7 +40,6 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(void *userObj, UInt
 		{
 			me->resizer->Resize(frameBuff, frameW << 2, frameW, frameH, 0, 0, bptr + (Int32)((me->videoH - outH) >> 1) * dbpl + (((me->videoW - outW) >> 1) << 2), dbpl, outW, outH);
 		}
-		me->frameMut->Unlock();
 	}
 	me->shown = false;
 }
@@ -67,9 +67,8 @@ void UI::DObj::DShowVideoDObjHandler::DrawVideo(Media::DrawImage *dimg)
 {
 	if (this->frameImg)
 	{
-		this->frameMut->Lock();
+		Sync::MutexUsage mutUsage(&this->frameMut);
 		dimg->DrawImagePt(this->frameImg, this->videoX, this->videoY);
-		this->frameMut->Unlock();
 	}
 }
 
@@ -82,8 +81,6 @@ UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(UI::GUIForm *ownerFrm, Me
 	this->ownerFrm = ownerFrm;
 	this->videoFileName = Text::String::New(videoFileName);
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
-	NEW_CLASS(this->vdecoders, Media::Decoder::VideoDecoderFinder());
-	NEW_CLASS(this->frameMut, Sync::Mutex());
 	this->frameImg = this->deng->CreateImage32(videoW, videoH, Media::AT_NO_ALPHA);
 //	Media::GDIImage *dimg = (Media::GDIImage*)this->frameImg;
 //	dimg->info->atype = Media::AT_NO_ALPHA;
@@ -105,6 +102,5 @@ UI::DObj::DShowVideoDObjHandler::~DShowVideoDObjHandler()
 //	DEL_CLASS(this->dshowMgr);
 	DEL_CLASS(this->resizer);
 	this->deng->DeleteImage(this->frameImg);
-	DEL_CLASS(this->frameMut);
 	this->videoFileName->Release();
 }

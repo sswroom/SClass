@@ -43,7 +43,6 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName,
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::StrCopyNew(fname);
-	NEW_CLASS(this->mut, Sync::Mutex());
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spb"));
 	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -148,7 +147,6 @@ Map::SPDLayer::~SPDLayer()
 		Text::StrDelNew(this->layerName);
 		this->layerName = 0;
 	}
-	DEL_CLASS(mut);
 }
 
 Bool Map::SPDLayer::IsError()

@@ -78,7 +78,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	img->DrawRect(0, 0, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
-	Sync::MutexUsage mutUsage(this->chartMut);
+	Sync::MutexUsage mutUsage(&this->chartMut);
 	if (this->chartMaxChg)
 	{
 		this->chartMaxChg = false;
@@ -211,7 +211,6 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(UI::GUICore *ui, UI::GUIClientCon
 	this->chartMax = 0;
 	this->chartMin = 0;
 	this->chartMaxChg = false;
-	NEW_CLASS(this->chartMut, Sync::Mutex());
 	ClearChart();
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
@@ -236,7 +235,6 @@ UI::GUIRealtimeLineChart::~GUIRealtimeLineChart()
 	{
 		Deinit(((UI::GUICoreWin*)this->ui)->GetHInst());
 	}
-	DEL_CLASS(this->chartMut);
 	MemFree(this->chartVal);
 	SDEL_TEXT(this->unit);
 	MemFree(this->lineColor);
@@ -254,7 +252,7 @@ OSInt UI::GUIRealtimeLineChart::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 {
-	Sync::MutexUsage mutUsage(this->chartMut);
+	Sync::MutexUsage mutUsage(&this->chartMut);
 	UOSInt ofst = this->chartOfst * this->lineCnt;
 	UOSInt i = 0;
 	while (i < lineCnt)
@@ -270,7 +268,6 @@ void UI::GUIRealtimeLineChart::AddSample(Double *samples)
 	}
 
 	this->chartOfst = (this->chartOfst + 1) % this->sampleCnt;
-	mutUsage.EndUse();
 	this->valueChanged = true;
 }
 
@@ -307,7 +304,7 @@ void UI::GUIRealtimeLineChart::ClearChart()
 {
 	UOSInt i;
 	UOSInt j;
-	Sync::MutexUsage mutUsage(this->chartMut);
+	Sync::MutexUsage mutUsage(&this->chartMut);
 	i = 0;
 	j = this->lineCnt * this->sampleCnt;
 	while (i < j)
@@ -320,5 +317,4 @@ void UI::GUIRealtimeLineChart::ClearChart()
 	this->chartMaxChg = false;
 	this->chartOfst = 0;
 	this->valueChanged = true;
-	mutUsage.EndUse();
 }

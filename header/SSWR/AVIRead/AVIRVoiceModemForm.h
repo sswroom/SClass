@@ -44,8 +44,8 @@ namespace SSWR
 			UI::GUILabel *lblDialTones;
 			UI::GUITextBox *txtDialTones;
 
-			Sync::Mutex *toneMut;
-			Text::StringBuilderUTF8 *toneSb;
+			Sync::Mutex toneMut;
+			Text::StringBuilderUTF8 toneSb;
 			Bool toneChg;
 
 			Bool isConnected;

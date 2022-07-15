@@ -52,7 +52,6 @@ Net::RTPAACHandler::RTPAACHandler(Int32 payloadType, UInt32 freq, UInt32 nChanne
 	this->config = 0;
 	this->buffSize = 0;
 	this->buff = MemAlloc(UInt8, 1048576);
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->dataEvt = 0;
 }
 
@@ -60,7 +59,6 @@ Net::RTPAACHandler::~RTPAACHandler()
 {
 	this->Stop();
 	MemFree(this->buff);
-	DEL_CLASS(this->mut);
 }
 
 void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
@@ -79,7 +77,7 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 	UOSInt i = 0;
 	UInt32 thisSize;
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	switch (this->aacm)
 	{
 	case AACM_AAC_HBR:
@@ -261,7 +259,7 @@ UOSInt Net::RTPAACHandler::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	{
 		this->dataEvt->Wait(1000);
 	}
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->buffSize <= 0)
 	{
 		mutUsage.EndUse();
