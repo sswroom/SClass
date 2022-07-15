@@ -49,18 +49,16 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(&this->tableMut);
-	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
+	const Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)
 	{
 		table = tableList->GetItem(i);
 		if (table->def == tableDef)
 		{
-			mutUsage.EndUse();
 			return table;
 		}
 	}
-	mutUsage.EndUse();
 	return 0;
 }
 
@@ -73,7 +71,7 @@ DB::DBCache::DBCache(DB::DBModel *model, DB::DBTool *db)
 
 DB::DBCache::~DBCache()
 {
-	Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
+	const Data::ArrayList<DB::DBCache::TableInfo*> *tableList = this->tableMap.GetValues();
 	DB::DBCache::TableInfo *table;
 	UOSInt i = tableList->GetCount();
 	while (i-- > 0)

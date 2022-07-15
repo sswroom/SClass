@@ -16,7 +16,7 @@ namespace Data
 			Field
 		};
 	private:
-		Data::StringUTF8Map<Data::VariItem*> *items;
+		Data::StringUTF8Map<Data::VariItem*> items;
 		NameType nameType;
 
 		void SetItem(const UTF8Char *name, Data::VariItem *item);

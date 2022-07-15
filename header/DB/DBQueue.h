@@ -68,7 +68,7 @@ namespace DB
 		class SQLGroup : public IDBCmd
 		{
 		public:
-			Data::ArrayList<Text::String*> *strs;
+			Data::ArrayList<Text::String*> strs;
 			DBReadHdlr hdlr;
 			Int32 progId;
 			void *userData;

@@ -27,7 +27,7 @@ public:
 
 	virtual Bool ReadNext()
 	{
-		this->row = data->valList->GetItem(this->index);
+		this->row = data->valList.GetItem(this->index);
 		if (this->row)
 		{
 			this->index++;
@@ -38,7 +38,7 @@ public:
 
 	virtual UOSInt ColCount()
 	{
-		return this->data->colList->GetCount();
+		return this->data->colList.GetCount();
 	}
 
 	virtual OSInt GetRowChanged()
@@ -50,7 +50,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -61,7 +61,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -72,7 +72,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -83,7 +83,7 @@ public:
 	{
 		if (this->row == 0)
 			return false;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return false;
 		if (this->row[colIndex] == 0)
 			return false;
@@ -95,7 +95,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -106,7 +106,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -117,7 +117,7 @@ public:
 	{
 		if (this->row == 0)
 			return DET_NULL;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return DET_NULL;
 		if (this->row[colIndex] == 0)
 			return DET_NULL;
@@ -128,7 +128,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -139,7 +139,7 @@ public:
 	{
 		if (this->row == 0)
 			return false;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return false;
 		if (this->row[colIndex] == 0)
 			return false;
@@ -154,7 +154,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -165,7 +165,7 @@ public:
 	{
 		if (this->row == 0)
 			return 0;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
@@ -188,7 +188,7 @@ public:
 	{
 		if (this->row == 0)
 			return true;
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return true;
 		if (this->row[colIndex] == 0)
 			return true;
@@ -197,7 +197,7 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		const UTF8Char *name = this->data->colList->GetItem(colIndex);
+		const UTF8Char *name = this->data->colList.GetItem(colIndex);
 		if (name)
 		{
 			return Text::StrConcat(buff, name);
@@ -207,7 +207,7 @@ public:
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
 	{
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 			return DB::DBUtil::CT_Unknown;
 		if (colSize)
 		{
@@ -218,12 +218,12 @@ public:
 
 	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	{
-		if (colIndex >= this->data->colList->GetCount())
+		if (colIndex >= this->data->colList.GetCount())
 		{
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
 			return false;
 		}
-		colDef->SetColName(this->data->colList->GetItem(colIndex));
+		colDef->SetColName(this->data->colList.GetItem(colIndex));
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
 		colDef->SetAttr(CSTR_NULL);
@@ -238,7 +238,6 @@ public:
 
 DB::TextDB::TextDB(Text::CString sourceName) : DB::ReadingDB(sourceName)
 {
-	NEW_CLASS(this->dbMap, Data::StringMap<DBData*>());
 	this->currDB = 0;
 }
 
@@ -247,40 +246,37 @@ DB::TextDB::~TextDB()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayList<DBData*> *dbList = this->dbMap->GetValues();
+	const Data::ArrayList<DBData*> *dbList = this->dbMap.GetValues();
 	DBData *data;
 	Text::String **vals;
 	k = dbList->GetCount();
 	while (k-- > 0)
 	{
 		data = dbList->GetItem(k);
-		i = data->valList->GetCount();
+		i = data->valList.GetCount();
 		while (i-- > 0)
 		{
-			vals = data->valList->GetItem(i);
-			j = data->colList->GetCount();
+			vals = data->valList.GetItem(i);
+			j = data->colList.GetCount();
 			while (j-- > 0)
 			{
 				SDEL_STRING(vals[j]);
 			}
 			MemFree(vals);
 		}
-		i = data->colList->GetCount();
+		i = data->colList.GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(data->colList->GetItem(i));
+			Text::StrDelNew(data->colList.GetItem(i));
 		}
-		DEL_CLASS(data->colList);
-		DEL_CLASS(data->valList);
 		data->name->Release();
-		MemFree(data);
+		DEL_CLASS(data);
 	}
-	DEL_CLASS(this->dbMap);
 }
 
 UOSInt DB::TextDB::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
-	Data::ArrayList<Text::String*> *keys = this->dbMap->GetKeys();
+	Data::ArrayList<Text::String*> *keys = this->dbMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -296,9 +292,9 @@ DB::DBReader *DB::TextDB::QueryTableData(Text::CString tableName, Data::ArrayLis
 	DBData *data;
 	if (tableName.v == 0)
 	{
-		if (this->dbMap->GetCount() == 1)
+		if (this->dbMap.GetCount() == 1)
 		{
-			data = this->dbMap->GetValues()->GetItem(0);
+			data = this->dbMap.GetValues()->GetItem(0);
 		}
 		else
 		{
@@ -307,7 +303,7 @@ DB::DBReader *DB::TextDB::QueryTableData(Text::CString tableName, Data::ArrayLis
 	}
 	else
 	{
-		data = this->dbMap->Get(tableName);
+		data = this->dbMap.Get(tableName);
 	}
 	if (data == 0)
 	{
@@ -336,23 +332,21 @@ void DB::TextDB::Reconnect()
 
 Bool DB::TextDB::AddTable(Text::CString tableName, Data::ArrayList<const UTF8Char*> *colList)
 {
-	DBData *data = this->dbMap->Get(tableName);
+	DBData *data = this->dbMap.Get(tableName);
 	if (data)
 		return false;
 	UOSInt i;
 	UOSInt j;
-	data = MemAlloc(DBData, 1);
+	NEW_CLASS(data, DBData());
 	data->name = Text::String::New(tableName);
-	NEW_CLASS(data->colList, Data::ArrayList<const UTF8Char*>());
 	i = 0;
 	j = colList->GetCount();
 	while (i < j)
 	{
-		data->colList->Add(Text::StrCopyNew(colList->GetItem(i)));
+		data->colList.Add(Text::StrCopyNew(colList->GetItem(i)));
 		i++;
 	}
-	NEW_CLASS(data->valList, Data::ArrayList<Text::String**>());
-	this->dbMap->Put(tableName, data);
+	this->dbMap.Put(tableName, data);
 	this->currDB = data;
 	return true;
 }
@@ -361,7 +355,7 @@ Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
 {
 	if (this->currDB == 0)
 		return false;
-	if (this->currDB->colList->GetCount() != valList->GetCount())
+	if (this->currDB->colList.GetCount() != valList->GetCount())
 	{
 		return false;
 	}
@@ -375,6 +369,6 @@ Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
 		vals[i] = Text::String::NewOrNullSlow(csptr);
 		i++;
 	}
-	this->currDB->valList->Add(vals);
+	this->currDB->valList.Add(vals);
 	return true;
 }

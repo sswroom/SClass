@@ -212,13 +212,11 @@ Data::QueryConditions::CompareCondition Data::QueryConditions::Int32Condition::G
 
 Data::QueryConditions::Int32InCondition::Int32InCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *val) : FieldCondition(fieldName, nameLen)
 {
-	NEW_CLASS(this->vals, Data::ArrayList<Int32>());
-	this->vals->AddAll(val);
+	this->vals.AddAll(val);
 }
 
 Data::QueryConditions::Int32InCondition::~Int32InCondition()
 {
-	DEL_CLASS(this->vals);
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::Int32InCondition::GetType()
@@ -228,7 +226,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::Int32InCondition::Ge
 
 Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
-	if (this->vals->GetCount() > maxDBItem)
+	if (this->vals.GetCount() > maxDBItem)
 	{
 		return false;
 	}
@@ -239,7 +237,7 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderU
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
-		Text::StringTool::Int32Join(sb, this->vals, CSTR(", "));
+		Text::StringTool::Int32Join(sb, &this->vals, CSTR(", "));
 		sb->AppendC(UTF8STRC(")"));
 		return true;
 	}
@@ -293,10 +291,10 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 	default:
 		return false;
 	}
-	UOSInt i = this->vals->GetCount();
+	UOSInt i = this->vals.GetCount();
 	while (i-- > 0)
 	{
-		if (iVal == this->vals->GetItem(i))
+		if (iVal == this->vals.GetItem(i))
 		{
 			return true;
 		}
@@ -398,20 +396,18 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 
 Data::QueryConditions::StringInCondition::StringInCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName, nameLen)
 {
-	NEW_CLASS(this->vals, Data::ArrayList<const UTF8Char*>());
 	UOSInt i = 0;
 	UOSInt j = val->GetCount();
 	while (i < j)
 	{
-		this->vals->Add(Text::StrCopyNew(val->GetItem(i)));
+		this->vals.Add(Text::StrCopyNew(val->GetItem(i)));
 		i++;
 	}
 }
 
 Data::QueryConditions::StringInCondition::~StringInCondition()
 {
-	LIST_FREE_FUNC(this->vals, Text::StrDelNew);
-	DEL_CLASS(this->vals);
+	LIST_FREE_FUNC(&this->vals, Text::StrDelNew);
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::StringInCondition::GetType()
@@ -421,7 +417,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringInCondition::G
 
 Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
-	if (this->vals->GetCount() > maxDBItem || this->vals->GetCount() == 0)
+	if (this->vals.GetCount() > maxDBItem || this->vals.GetCount() == 0)
 	{
 		return false;
 	}
@@ -438,17 +434,17 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilder
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
 		i = 0;
-		j = this->vals->GetCount();
+		j = this->vals.GetCount();
 		while (i < j)
 		{
 			if (i > 0)
 			{
 				sb->AppendC(UTF8STRC(", "));
 			}
-			thisSize = DB::DBUtil::SDBStrUTF8Leng(this->vals->GetItem(i), svrType);
+			thisSize = DB::DBUtil::SDBStrUTF8Leng(this->vals.GetItem(i), svrType);
 			if (thisSize < 512)
 			{
-				sptr = DB::DBUtil::SDBStrUTF8(sbuff, this->vals->GetItem(i), svrType);
+				sptr = DB::DBUtil::SDBStrUTF8(sbuff, this->vals.GetItem(i), svrType);
 				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			else
@@ -462,7 +458,7 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilder
 					}
 					sptrTmp = MemAlloc(UTF8Char, thisSize + 1);
 				}
-				sptr = DB::DBUtil::SDBStrUTF8(sptrTmp, this->vals->GetItem(i), svrType);
+				sptr = DB::DBUtil::SDBStrUTF8(sptrTmp, this->vals.GetItem(i), svrType);
 				sb->AppendC(sptrTmp, (UOSInt)(sptr - sptrTmp));
 			}
 			i++;
@@ -485,10 +481,10 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 	{
 	case Data::VariItem::ItemType::Str:
 		csptr = item->GetItemValue().str->v;
-		i = this->vals->GetCount();
+		i = this->vals.GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(csptr, this->vals->GetItem(i)))
+			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
 			{
 				return true;
 			}
@@ -496,10 +492,10 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 		return false;
 	case Data::VariItem::ItemType::CStr:
 		csptr = item->GetItemValue().cstr.v;
-		i = this->vals->GetCount();
+		i = this->vals.GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(csptr, this->vals->GetItem(i)))
+			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
 			{
 				return true;
 			}
@@ -896,23 +892,21 @@ void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<Text::Stri
 
 Data::QueryConditions::QueryConditions()
 {
-	NEW_CLASS(this->conditionList, Data::ArrayList<Condition*>());
 }
 
 Data::QueryConditions::~QueryConditions()
 {
-	LIST_FREE_FUNC(this->conditionList, DEL_CLASS);
-	DEL_CLASS(this->conditionList);
+	LIST_FREE_FUNC(&this->conditionList, DEL_CLASS);
 }
 
 Bool Data::QueryConditions::IsValid(Data::VariObject *obj)
 {
-	return ObjectValid(obj, this->conditionList);
+	return ObjectValid(obj, &this->conditionList);
 }
 
 Bool Data::QueryConditions::IsValid(Data::ObjectGetter *getter)
 {
-	return ObjectValid(getter, this->conditionList);
+	return ObjectValid(getter, &this->conditionList);
 }
 
 Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
@@ -920,10 +914,10 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 	Text::StringBuilderUTF8 sbTmp;
 	Bool hasOr = false;
 	UOSInt i = 0;
-	UOSInt j = this->conditionList->GetCount();
+	UOSInt j = this->conditionList.GetCount();
 	while (i < j)
 	{
-		Condition *condition = this->conditionList->GetItem(i);
+		Condition *condition = this->conditionList.GetItem(i);
 		if (condition->GetType() == ConditionType::Or)
 		{
 			hasOr = true;
@@ -936,10 +930,10 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 	{
 		UOSInt splitType = 1;
 		i = 0;
-		j = this->conditionList->GetCount();
+		j = this->conditionList.GetCount();
 		while (i < j)
 		{
-			Condition *condition = this->conditionList->GetItem(i);
+			Condition *condition = this->conditionList.GetItem(i);
 			if (condition->GetType() == ConditionType::Or)
 			{
 				if (splitType != 0)
@@ -989,10 +983,10 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 	{
 		Bool hasCond = false;
 		i = 0;
-		j = this->conditionList->GetCount();
+		j = this->conditionList.GetCount();
 		while (i < j)
 		{
-			Condition *condition = this->conditionList->GetItem(i);
+			Condition *condition = this->conditionList.GetItem(i);
 			sbTmp.ClearStr();
 			if (!condition->ToWhereClause(&sbTmp, svrType, tzQhr, maxDBItem))
 			{
@@ -1015,99 +1009,99 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 
 UOSInt Data::QueryConditions::GetCount()
 {
-	return this->conditionList->GetCount();
+	return this->conditionList.GetCount();
 }
 
 Data::QueryConditions::Condition *Data::QueryConditions::GetItem(UOSInt index)
 {
-	return this->conditionList->GetItem(index);
+	return this->conditionList.GetItem(index);
 }
 
 Data::ArrayList<Data::QueryConditions::Condition*> *Data::QueryConditions::GetList()
 {
-	return this->conditionList;
+	return &this->conditionList;
 }
 
 void Data::QueryConditions::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	UOSInt i = 0;
-	UOSInt j = this->conditionList->GetCount();
+	UOSInt j = this->conditionList.GetCount();
 	while (i < j)
 	{
-		this->conditionList->GetItem(i)->GetFieldList(fieldList);
+		this->conditionList.GetItem(i)->GetFieldList(fieldList);
 		i++;
 	}
 }
 
 Data::QueryConditions *Data::QueryConditions::TimeBetween(const UTF8Char *fieldName, UOSInt nameLen, Int64 t1, Int64 t2)
 {
-	this->conditionList->Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, nameLen, t1, t2)));
+	this->conditionList.Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, nameLen, t1, t2)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::Or()
 {
-	this->conditionList->Add(NEW_CLASS_D(OrCondition()));
+	this->conditionList.Add(NEW_CLASS_D(OrCondition()));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::InnerCond(QueryConditions *cond)
 {
-	this->conditionList->Add(NEW_CLASS_D(InnerCondition(cond)));
+	this->conditionList.Add(NEW_CLASS_D(InnerCondition(cond)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::Int32Equals(const UTF8Char *fieldName, UOSInt nameLen, Int32 val)
 {
-	this->conditionList->Add(NEW_CLASS_D(Int32Condition(fieldName, nameLen, val, CompareCondition::Equal)));
+	this->conditionList.Add(NEW_CLASS_D(Int32Condition(fieldName, nameLen, val, CompareCondition::Equal)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::Int32In(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *vals)
 {
-	this->conditionList->Add(NEW_CLASS_D(Int32InCondition(fieldName, nameLen, vals)));
+	this->conditionList.Add(NEW_CLASS_D(Int32InCondition(fieldName, nameLen, vals)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::DoubleGE(const UTF8Char *fieldName, UOSInt nameLen, Double val)
 {
-	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, nameLen, val, CompareCondition::GreaterOrEqual)));
+	this->conditionList.Add(NEW_CLASS_D(DoubleCondition(fieldName, nameLen, val, CompareCondition::GreaterOrEqual)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::DoubleLE(const UTF8Char *fieldName, UOSInt nameLen, Double val)
 {
-	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, nameLen, val, CompareCondition::GreaterOrEqual)));
+	this->conditionList.Add(NEW_CLASS_D(DoubleCondition(fieldName, nameLen, val, CompareCondition::GreaterOrEqual)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::StrIn(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *vals)
 {
-	this->conditionList->Add(NEW_CLASS_D(StringInCondition(fieldName, nameLen, vals)));
+	this->conditionList.Add(NEW_CLASS_D(StringInCondition(fieldName, nameLen, vals)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::StrContains(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val)
 {
-	this->conditionList->Add(NEW_CLASS_D(StringContainsCondition(fieldName, nameLen, val)));
+	this->conditionList.Add(NEW_CLASS_D(StringContainsCondition(fieldName, nameLen, val)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::StrEquals(const UTF8Char *fieldName, UOSInt nameLen, Text::CString val)
 {
-	this->conditionList->Add(NEW_CLASS_D(StringEqualsCondition(fieldName, nameLen, val)));
+	this->conditionList.Add(NEW_CLASS_D(StringEqualsCondition(fieldName, nameLen, val)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::BoolEquals(const UTF8Char *fieldName, UOSInt nameLen, Bool val)
 {
-	this->conditionList->Add(NEW_CLASS_D(BooleanCondition(fieldName, nameLen, val)));
+	this->conditionList.Add(NEW_CLASS_D(BooleanCondition(fieldName, nameLen, val)));
 	return this;
 }
 
 Data::QueryConditions *Data::QueryConditions::NotNull(const UTF8Char* fieldName, UOSInt nameLen)
 {
-	this->conditionList->Add(NEW_CLASS_D(NotNullCondition(fieldName, nameLen)));
+	this->conditionList.Add(NEW_CLASS_D(NotNullCondition(fieldName, nameLen)));
 	return this;
 }
 

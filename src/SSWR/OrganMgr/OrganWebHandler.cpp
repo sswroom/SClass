@@ -4183,7 +4183,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		Data::StringMap<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> spMap;
 		me->GetGroupSpecies(group, &spMap, env.user);
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> speciesTmp;
-		Data::ReadingList<SpeciesInfo*> *spList;
+		const Data::ReadingList<SpeciesInfo*> *spList;
 		spList = spMap.GetValues();
 		if (imageOnly)
 		{
@@ -8739,7 +8739,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocatorText(IO::Writer *writer, SSWR:
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::ReadingList<SSWR::OrganMgr::OrganWebHandler::GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect)
+void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, const Data::ReadingList<SSWR::OrganMgr::OrganWebHandler::GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect)
 {
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	Text::String *s;
@@ -8933,7 +8933,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect)
+void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect)
 {
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	Text::String *s;

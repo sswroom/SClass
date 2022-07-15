@@ -18,7 +18,7 @@ namespace DB
 		const UTF8Char *comments;
 		DB::DBUtil::ServerType svrType;
 
-		Data::ArrayList<ColDef*> *cols;
+		Data::ArrayList<ColDef*> cols;
 
 	public:
 		TableDef(Text::CString tableName);

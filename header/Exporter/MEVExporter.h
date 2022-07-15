@@ -12,12 +12,12 @@ namespace Exporter
 	class MEVExporter : public IO::FileExporter
 	{
 	private:
-		typedef struct
+		struct MEVStrRecord
 		{
 			UInt8 *strBytes;
 			UInt32 byteSize;
-			Data::ArrayListUInt32 *ofstList;
-		} MEVStrRecord;
+			Data::ArrayListUInt32 ofstList;
+		};
 
 	public:
 		MEVExporter();

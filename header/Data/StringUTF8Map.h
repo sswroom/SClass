@@ -42,14 +42,14 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			T oldVal = this->vals->GetItem((UOSInt)i);
-            this->vals->SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UOSInt)i);
+            this->vals.SetItem((UOSInt)i, val);
 			return oldVal;
 		}
 		else
 		{
 			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(key));
-			this->vals->Insert((UOSInt)~i, val);
+			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
@@ -60,7 +60,7 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem((UOSInt)i);
+			return this->vals.GetItem((UOSInt)i);
 		}
 		else
 		{
@@ -75,7 +75,7 @@ namespace Data
 		if (i >= 0)
 		{
 			Text::StrDelNew(this->keys->RemoveAt((UOSInt)i));
-			return this->vals->RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
 		{
@@ -96,7 +96,7 @@ namespace Data
 		{
 			Text::StrDelNew(this->keys->RemoveAt(i));
 		}
-		this->vals->Clear();
+		this->vals.Clear();
 	}
 }
 

@@ -4,19 +4,18 @@
 
 void Data::VariObject::SetItem(const UTF8Char *name, Data::VariItem *item)
 {
-	item = this->items->Put(name, item);
+	item = this->items.Put(name, item);
 	SDEL_CLASS(item);
 }
 
 Data::VariObject::VariObject(NameType nameType)
 {
-	NEW_CLASS(this->items, Data::StringUTF8Map<Data::VariItem*>());
 	this->nameType = nameType;
 }
 
 Data::VariObject::~VariObject()
 {
-	Data::ArrayList<Data::VariItem*> *itemList = this->items->GetValues();
+	const Data::ArrayList<Data::VariItem*> *itemList = this->items.GetValues();
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
@@ -30,7 +29,6 @@ Data::VariObject::~VariObject()
 		DEL_CLASS(itemArr[i]);
 	}
 	MemFree(itemArr);*/
-	DEL_CLASS(this->items);
 }
 
 Data::VariObject::NameType Data::VariObject::GetNameType() const
@@ -40,12 +38,12 @@ Data::VariObject::NameType Data::VariObject::GetNameType() const
 
 Bool Data::VariObject::HasItem(const UTF8Char *name) const
 {
-	return this->items->Get(name) != 0;
+	return this->items.Get(name) != 0;
 }
 
 Data::VariItem *Data::VariObject::GetItem(const UTF8Char *name) const
 {
-	return this->items->Get(name);
+	return this->items.Get(name);
 }
 
 void Data::VariObject::SetItemNull(const UTF8Char *name)
@@ -158,8 +156,8 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb) const
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sb->AppendUTF8Char('{');
-	Data::ArrayList<const UTF8Char*> *keys = this->items->GetKeys();
-	Data::ArrayList<VariItem*> *values = this->items->GetValues();
+	Data::ArrayList<const UTF8Char*> *keys = this->items.GetKeys();
+	const Data::ArrayList<VariItem*> *values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -200,8 +198,8 @@ Data::Class *Data::VariObject::CreateClass() const
 	Data::Class *cls;
 	OSInt currPos = 0;
 	NEW_CLASS(cls, Data::Class(0));
-	Data::ArrayList<const UTF8Char*> *keys = this->items->GetKeys();
-	Data::ArrayList<VariItem*> *values = this->items->GetValues();
+	Data::ArrayList<const UTF8Char*> *keys = this->items.GetKeys();
+	const Data::ArrayList<VariItem*> *values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

@@ -1230,7 +1230,7 @@ IO::SMake::~SMake()
 	UOSInt i;
 	UOSInt j;
 	IO::SMake::ConfigItem *cfg;
-	Data::ArrayList<IO::SMake::ConfigItem *> *cfgList = this->cfgMap.GetValues();
+	const Data::ArrayList<IO::SMake::ConfigItem *> *cfgList = this->cfgMap.GetValues();
 	i = cfgList->GetCount();
 	while (i-- > 0)
 	{

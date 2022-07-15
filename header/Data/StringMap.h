@@ -39,7 +39,7 @@ namespace Data
 		while (i < j)
 		{
 			this->keys->Add(map->keys->GetItem(i)->Clone());
-			this->vals->Add(map->vals->GetItem(i));
+			this->vals.Add(map->vals.GetItem(i));
 			i++;
 		}
 	}
@@ -60,14 +60,14 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			T oldVal = this->vals->GetItem((UOSInt)i);
-            this->vals->SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UOSInt)i);
+            this->vals.SetItem((UOSInt)i, val);
 			return oldVal;
 		}
 		else
 		{
 			this->keys->Insert((UOSInt)~i, key->Clone());
-			this->vals->Insert((UOSInt)~i, val);
+			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
@@ -78,14 +78,14 @@ namespace Data
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			T oldVal = this->vals->GetItem((UOSInt)i);
-            this->vals->SetItem((UOSInt)i, val);
+			T oldVal = this->vals.GetItem((UOSInt)i);
+            this->vals.SetItem((UOSInt)i, val);
 			return oldVal;
 		}
 		else
 		{
 			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
-			this->vals->Insert((UOSInt)~i, val);
+			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
@@ -96,7 +96,7 @@ namespace Data
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem((UOSInt)i);
+			return this->vals.GetItem((UOSInt)i);
 		}
 		else
 		{
@@ -110,7 +110,7 @@ namespace Data
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			return this->vals->GetItem((UOSInt)i);
+			return this->vals.GetItem((UOSInt)i);
 		}
 		else
 		{
@@ -125,7 +125,7 @@ namespace Data
 		if (i >= 0)
 		{
 			this->keys->RemoveAt((UOSInt)i)->Release();
-			return this->vals->RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
 		{
@@ -140,7 +140,7 @@ namespace Data
 		if (i >= 0)
 		{
 			this->keys->RemoveAt((UOSInt)i)->Release();
-			return this->vals->RemoveAt((UOSInt)i);
+			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
 		{
@@ -161,7 +161,7 @@ namespace Data
 		{
 			this->keys->RemoveAt(i)->Release();
 		}
-		this->vals->Clear();
+		this->vals.Clear();
 	}
 
 	template <class T> StringMap<T> *StringMap<T>::Clone() const

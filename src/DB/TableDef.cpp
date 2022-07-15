@@ -13,7 +13,6 @@ DB::TableDef::TableDef(Text::CString tableName)
 	this->attr = 0;
 	this->comments = 0;
 	this->svrType = DB::DBUtil::ServerType::Unknown;
-	NEW_CLASS(this->cols, Data::ArrayList<DB::ColDef*>());
 }
 
 DB::TableDef::~TableDef()
@@ -25,13 +24,11 @@ DB::TableDef::~TableDef()
 	SDEL_STRING(this->charset);
 	SDEL_TEXT(this->attr);
 	SDEL_TEXT(this->comments);
-	i = this->cols->GetCount();
+	i = this->cols.GetCount();
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->cols->RemoveAt(i));
+		DEL_CLASS(this->cols.RemoveAt(i));
 	}
-	DEL_CLASS(this->cols);
-	this->cols = 0;
 }
 
 Text::String *DB::TableDef::GetDatabaseName() const
@@ -71,12 +68,12 @@ DB::DBUtil::ServerType DB::TableDef::GetSvrType() const
 
 UOSInt DB::TableDef::GetColCnt() const
 {
-	return this->cols->GetCount();
+	return this->cols.GetCount();
 }
 
 DB::ColDef *DB::TableDef::GetCol(UOSInt index) const
 {
-	return this->cols->GetItem(index);
+	return this->cols.GetItem(index);
 }
 
 DB::ColDef *DB::TableDef::GetSinglePKCol() const
@@ -84,10 +81,10 @@ DB::ColDef *DB::TableDef::GetSinglePKCol() const
 	DB::ColDef *retCol = 0;
 	DB::ColDef *col;
 	UOSInt i = 0;
-	UOSInt j = this->cols->GetCount();
+	UOSInt j = this->cols.GetCount();
 	while (i < j)
 	{
-		col = this->cols->GetItem(i);
+		col = this->cols.GetItem(i);
 		if (col->IsPK())
 		{
 			if (retCol != 0)
@@ -103,7 +100,7 @@ DB::ColDef *DB::TableDef::GetSinglePKCol() const
 
 DB::TableDef *DB::TableDef::AddCol(DB::ColDef *col)
 {
-	this->cols->Add(col);
+	this->cols.Add(col);
 	return this;
 }
 
@@ -166,10 +163,10 @@ DB::TableDef *DB::TableDef::Clone() const
 	newObj->SetComments(this->comments);
 	newObj->SetSvrType(this->svrType);
 	UOSInt i = 0;
-	UOSInt j = this->cols->GetCount();
+	UOSInt j = this->cols.GetCount();
 	while (i < j)
 	{
-		newObj->AddCol(this->cols->GetItem(i)->Clone());
+		newObj->AddCol(this->cols.GetItem(i)->Clone());
 		i++;
 	}
 	return newObj;
@@ -181,10 +178,10 @@ Data::Class *DB::TableDef::CreateTableClass() const
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->cols->GetCount();
+	j = this->cols.GetCount();
 	while (i < j)
 	{
-		DB::ColDef *col = this->cols->GetItem(i);
+		DB::ColDef *col = this->cols.GetItem(i);
 		builder.AddItem(col->GetColName()->v, col->GetColType());
 		i++;
 	}

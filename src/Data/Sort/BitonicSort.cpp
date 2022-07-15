@@ -30,7 +30,7 @@ void Data::Sort::BitonicSort::DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n
 		task1.m = m >> 1;
 		task1.arrType = AT_INT32;
 		task1.notifyEvt = stat->evt;
-		stat->me->tasks->Add(&task1);
+		stat->me->tasks.Add(&task1);
 		if (stat->nextThread && ((ThreadStat*)stat->nextThread)->state == 2)
 		{
 			((ThreadStat*)stat->nextThread)->evt->Set();
@@ -52,7 +52,7 @@ void Data::Sort::BitonicSort::DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n
 			task2.m = m;
 			task2.arrType = AT_INT32;
 			task2.notifyEvt = stat->evt;
-			stat->me->tasks->Add(&task2);
+			stat->me->tasks.Add(&task2);
 			while (task1.arr != 0 || task2.arr != 0)
 			{
 				if (!stat->me->DoTask(stat))
@@ -117,7 +117,7 @@ void Data::Sort::BitonicSort::DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt
 		task1.m = m >> 1;
 		task1.arrType = AT_UINT32;
 		task1.notifyEvt = stat->evt;
-		stat->me->tasks->Add(&task1);
+		stat->me->tasks.Add(&task1);
 		if (stat->nextThread && ((ThreadStat*)stat->nextThread)->state == 2)
 		{
 			((ThreadStat*)stat->nextThread)->evt->Set();
@@ -139,7 +139,7 @@ void Data::Sort::BitonicSort::DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt
 			task2.m = m;
 			task2.arrType = AT_UINT32;
 			task2.notifyEvt = stat->evt;
-			stat->me->tasks->Add(&task2);
+			stat->me->tasks.Add(&task2);
 			while (task1.arr != 0 || task2.arr != 0)
 			{
 				if (!stat->me->DoTask(stat))
@@ -182,7 +182,7 @@ void Data::Sort::BitonicSort::DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt
 Bool Data::Sort::BitonicSort::DoTask(ThreadStat *stat)
 {
 	TaskInfo *task = 0;
-	task = this->tasks->RemoveLast();
+	task = this->tasks.RemoveLast();
 	if (task)
 	{
 		if (task->arrType == AT_INT32)
@@ -232,7 +232,7 @@ void Data::Sort::BitonicSort::SortInnerInt32(Int32 *arr, OSInt n, Bool dir, OSIn
 	task.m = pw2;
 	task.arrType = AT_INT32;
 	task.notifyEvt = this->mainThread.evt;
-	this->tasks->Add(&task);
+	this->tasks.Add(&task);
 	ThreadStat *nextThread = (ThreadStat*)this->mainThread.nextThread;
 	while (nextThread)
 	{
@@ -273,7 +273,7 @@ void Data::Sort::BitonicSort::SortInnerUInt32(UInt32 *arr, OSInt n, Bool dir, OS
 	task.m = pw2;
 	task.arrType = AT_UINT32;
 	task.notifyEvt = this->mainThread.evt;
-	this->tasks->Add(&task);
+	this->tasks.Add(&task);
 	ThreadStat *nextThread = (ThreadStat*)this->mainThread.nextThread;
 	while (nextThread)
 	{
@@ -311,7 +311,6 @@ UInt32 __stdcall Data::Sort::BitonicSort::ProcessThread(void *userObj)
 Data::Sort::BitonicSort::BitonicSort()
 {
 	this->threadCnt = Sync::Thread::GetThreadCnt();
-	NEW_CLASS(this->tasks, Data::SyncArrayList<TaskInfo*>());
 	this->threads = MemAlloc(ThreadStat, this->threadCnt);
 	mainThread.me = this;
 	mainThread.toStop = false;
@@ -381,7 +380,6 @@ Data::Sort::BitonicSort::~BitonicSort()
 	}
 	MemFree(this->threads);
 	DEL_CLASS(mainThread.evt);
-	DEL_CLASS(this->tasks);
 }
 
 void Data::Sort::BitonicSort::SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)

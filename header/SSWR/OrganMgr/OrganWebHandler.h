@@ -363,8 +363,8 @@ namespace SSWR
 			void WriteFooter(IO::Writer *writer);
 			void WriteLocator(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
 			void WriteLocatorText(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
-			void WriteGroupTable(IO::Writer *writer, Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect);
-			void WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect);
+			void WriteGroupTable(IO::Writer *writer, const Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect);
+			void WriteSpeciesTable(IO::Writer *writer, const Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect);
 			void WritePickObjs(IO::Writer *writer, RequestEnv *env, const UTF8Char *url);
 
 			static Bool __stdcall OnSessionDel(Net::WebServer::IWebSession* sess, void *userObj);

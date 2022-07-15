@@ -95,7 +95,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 
 void Net::HTTPQueue::Clear()
 {
-	Data::ArrayList<DomainStatus*> *statusList;
+	const Data::ArrayList<DomainStatus*> *statusList;
 	DomainStatus *status;
 	UOSInt i;
 

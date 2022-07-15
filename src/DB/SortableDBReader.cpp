@@ -7,10 +7,10 @@
 
 Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 {
-	Data::VariObject *obj = this->objList->GetItem(this->currIndex);
+	Data::VariObject *obj = this->objList.GetItem(this->currIndex);
 	if (obj == 0)
 		return 0;
-	return obj->GetItem(this->cols->GetItem(colIndex)->GetColName()->v);
+	return obj->GetItem(this->cols.GetItem(colIndex)->GetColName()->v);
 }
 
 DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
@@ -30,15 +30,13 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableNam
 			return;
 		}
 
-		NEW_CLASS(this->cols, Data::ArrayList<ColDef*>());
-		NEW_CLASS(this->objList, Data::ArrayList<Data::VariObject*>());
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
 		{
 			if (r->GetColDef(i, &colDef))
 			{
-				this->cols->Add(colDef.Clone());
+				this->cols.Add(colDef.Clone());
 			}
 			i++;
 		}
@@ -49,7 +47,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableNam
 			{
 				if (condition == 0 || condition->IsValid(obj))
 				{
-					this->objList->Add(obj);
+					this->objList.Add(obj);
 				}
 				else
 				{
@@ -93,8 +91,6 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableNam
 			return;
 		}
 
-		NEW_CLASS(this->cols, Data::ArrayList<ColDef*>());
-		NEW_CLASS(this->objList, Data::ArrayList<Data::VariObject*>());
 		Data::StringMap<DB::ColDef*> tmpCols;
 		i = 0;
 		j = r->ColCount();
@@ -113,7 +109,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableNam
 			{
 				if (condition == 0 || condition->IsValid(obj))
 				{
-					this->objList->Add(obj);
+					this->objList.Add(obj);
 				}
 				else
 				{
@@ -131,12 +127,12 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableNam
 			col = tmpCols.Get(colNames->GetItem(i));
 			if (col)
 			{
-				this->cols->Add(col->Clone());
+				this->cols.Add(col->Clone());
 			}
 			i++;
 		}
 
-		Data::ArrayList<DB::ColDef *> *colList = tmpCols.GetValues();
+		const Data::ArrayList<DB::ColDef *> *colList = tmpCols.GetValues();
 		i = colList->GetCount();
 		while (i-- > 0)
 		{
@@ -148,37 +144,37 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableNam
 	if (ordering.leng > 0)
 	{
 		Data::FieldComparator comparator(ordering);
-		Data::Sort::ArtificialQuickSort::Sort(this->objList->GetArray(&i), &comparator, 0, (OSInt)this->objList->GetCount() - 1);
+		Data::Sort::ArtificialQuickSort::Sort(this->objList.GetArray(&i), &comparator, 0, (OSInt)this->objList.GetCount() - 1);
 	}
 	if (dataOfst > 0)
 	{
-		if (dataOfst >= this->objList->GetCount())
+		if (dataOfst >= this->objList.GetCount())
 		{
-			dataOfst = this->objList->GetCount();
+			dataOfst = this->objList.GetCount();
 			while (dataOfst-- > 0)
 			{
-				obj = this->objList->GetItem(dataOfst);
+				obj = this->objList.GetItem(dataOfst);
 				DEL_CLASS(obj);
 			}
-			this->objList->Clear();
+			this->objList.Clear();
 		}
 		else
 		{
 			i = dataOfst;
 			while (i-- > 0)
 			{
-				obj = this->objList->GetItem(i);
+				obj = this->objList.GetItem(i);
 				DEL_CLASS(obj);
 			}
-			this->objList->RemoveRange(0, dataOfst);
+			this->objList.RemoveRange(0, dataOfst);
 		}
 	}
-	if (maxCnt != 0 && maxCnt < this->objList->GetCount())
+	if (maxCnt != 0 && maxCnt < this->objList.GetCount())
 	{
-		i = this->objList->GetCount();
+		i = this->objList.GetCount();
 		while (i-- > maxCnt)
 		{
-			obj = this->objList->RemoveAt(i);
+			obj = this->objList.RemoveAt(i);
 			DEL_CLASS(obj);
 		}
 	}
@@ -189,40 +185,28 @@ DB::SortableDBReader::~SortableDBReader()
 	UOSInt i;
 	Data::VariObject *obj;
 	DB::ColDef *col;
-	if (this->objList)
+	i = this->objList.GetCount();
+	while (i-- > 0)
 	{
-		i = this->objList->GetCount();
-		while (i-- > 0)
-		{
-			obj = this->objList->GetItem(i);
-			DEL_CLASS(obj);
-		}
-		DEL_CLASS(this->objList);
+		obj = this->objList.GetItem(i);
+		DEL_CLASS(obj);
 	}
-	if (this->cols)
+	i = this->cols.GetCount();
+	while (i-- > 0)
 	{
-		i = this->cols->GetCount();
-		while (i-- > 0)
-		{
-			col = this->cols->GetItem(i);
-			DEL_CLASS(col);
-		}
-		DEL_CLASS(this->cols);
+		col = this->cols.GetItem(i);
+		DEL_CLASS(col);
 	}
 }
 
 Bool DB::SortableDBReader::ReadNext()
 {
-	if (this->objList == 0 || this->cols == 0)
-	{
-		return false;
-	}
-	if (this->currIndex == this->objList->GetCount())
+	if (this->currIndex == this->objList.GetCount())
 	{
 		return false;
 	}
 	this->currIndex++;
-	if (this->currIndex == this->objList->GetCount())
+	if (this->currIndex == this->objList.GetCount())
 	{
 		return false;
 	}
@@ -231,11 +215,7 @@ Bool DB::SortableDBReader::ReadNext()
 
 UOSInt DB::SortableDBReader::ColCount()
 {
-	if (this->cols)
-	{
-		return this->cols->GetCount();
-	}
-	return 0;
+	return this->cols.GetCount();
 }
 
 OSInt DB::SortableDBReader::GetRowChanged()
@@ -508,7 +488,7 @@ Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
 
 UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	DB::ColDef *col = this->cols->GetItem(colIndex);
+	DB::ColDef *col = this->cols.GetItem(colIndex);
 	if (col)
 	{
 		Text::String *colName = col->GetColName();
@@ -519,7 +499,7 @@ UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 
 DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 {
-	DB::ColDef *col = this->cols->GetItem(colIndex);
+	DB::ColDef *col = this->cols.GetItem(colIndex);
 	if (col)
 	{
 		return col->GetColType();
@@ -529,7 +509,7 @@ DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, UOSInt *co
 
 Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	DB::ColDef *c = this->cols->GetItem(colIndex);
+	DB::ColDef *c = this->cols.GetItem(colIndex);
 	if (c == 0)
 	{
 		return false;

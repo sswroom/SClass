@@ -31,7 +31,7 @@ namespace Data
 		while (i < j)
 		{
 			this->keys->Add(map->keys->GetItem(i)->Clone());
-			this->vals->Add(map->vals->GetItem(i));
+			this->vals.Add(map->vals.GetItem(i));
 			i++;
 		}
 	}

@@ -12,13 +12,11 @@ void Data::Class::FreeFieldInfo(FieldInfo *field)
 Data::Class::Class(void *refObj)
 {
 	this->refObj = refObj;
-	NEW_CLASS(this->fields, Data::ArrayList<FieldInfo*>());
 }
 
 Data::Class::~Class()
 {
-	LIST_FREE_FUNC(this->fields, FreeFieldInfo);
-	DEL_CLASS(this->fields);
+	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
 }
 
 UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType)
@@ -27,7 +25,7 @@ UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::Ite
 	field->name = Text::String::New(name);
 	field->ofst = ofst;
 	field->itemType = itemType;
-	this->fields->Add(field);
+	this->fields.Add(field);
 	return Data::VariItem::GetItemSize(itemType);
 }
 
@@ -113,12 +111,12 @@ Bool Data::Class::AddField(Text::CString name, Data::UUID **val)
 
 UOSInt Data::Class::GetFieldCount()
 {
-	return this->fields->GetCount();
+	return this->fields.GetCount();
 }
 
 Text::String *Data::Class::GetFieldName(UOSInt index)
 {
-	FieldInfo *field = this->fields->GetItem(index);
+	FieldInfo *field = this->fields.GetItem(index);
 	if (field)
 	{
 		return field->name;
@@ -128,7 +126,7 @@ Text::String *Data::Class::GetFieldName(UOSInt index)
 
 Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 {
-	FieldInfo *field = this->fields->GetItem(index);
+	FieldInfo *field = this->fields.GetItem(index);
 	if (field)
 	{
 		return field->itemType;
@@ -138,7 +136,7 @@ Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 
 Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 {
-	FieldInfo *field = this->fields->GetItem(index);
+	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0)
 	{
 		return 0;
@@ -149,7 +147,7 @@ Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 
 Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
 {
-	FieldInfo *field = this->fields->GetItem(index);
+	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0)
 	{
 		return false;
@@ -161,7 +159,7 @@ Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
 
 Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 {
-	FieldInfo *field = this->fields->GetItem(index);
+	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0 || item == 0)
 	{
 		return false;
@@ -173,7 +171,7 @@ Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 
 Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *item)
 {
-	FieldInfo *field = this->fields->GetItem(index);
+	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0 || item == 0)
 	{
 		return false;
@@ -185,11 +183,11 @@ Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *ite
 
 Bool Data::Class::Equals(void *obj1, void *obj2)
 {
-	UOSInt i = this->fields->GetCount();
+	UOSInt i = this->fields.GetCount();
 	FieldInfo *field;
 	while (i-- > 0)
 	{
-		field = this->fields->GetItem(i);
+		field = this->fields.GetItem(i);
 		void *valPtr1 = (void*)(field->ofst + (OSInt)obj1);
 		void *valPtr2 = (void*)(field->ofst + (OSInt)obj2);
 		if (!Data::VariItem::PtrEquals(valPtr1, valPtr2, field->itemType))
@@ -210,7 +208,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("private:\r\n"));
-	Data::ArrayList<FieldInfo *> *fieldList = this->fields;
+	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
 	FieldInfo *field;
 	UOSInt i;
 	UOSInt j;
@@ -278,7 +276,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	{
 		clsPrefix = Text::String::NewEmpty();
 	}
-	Data::ArrayList<FieldInfo *> *fieldList = this->fields;
+	Data::ArrayList<FieldInfo *> *fieldList = &this->fields;
 	FieldInfo *field;
 	UOSInt i;
 	UOSInt j;

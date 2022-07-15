@@ -10,8 +10,8 @@ namespace DB
 	{
 	private:
 		UOSInt currIndex;
-		Data::ArrayList<Data::VariObject*> *objList;
-		Data::ArrayList<DB::ColDef *> *cols;
+		Data::ArrayList<Data::VariObject*> objList;
+		Data::ArrayList<DB::ColDef *> cols;
 
 		Data::VariItem *GetItem(UOSInt colIndex);
 	public:

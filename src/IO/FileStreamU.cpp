@@ -21,21 +21,21 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 #endif
 	mode_t opmode = S_IRUSR | S_IWUSR;
 
-	if (mode == FileMode::Create)
+	if (mode == FileMode::ReadOnly)
+	{
+		flags |= O_RDONLY;
+	}
+	else if (mode == FileMode::Create)
 	{
 		flags |= O_CREAT|O_RDWR|O_TRUNC;
-	}
-	else if (mode == FileMode::CreateWrite)
-	{
-		flags |= O_CREAT|O_WRONLY;
 	}
 	else if (mode == FileMode::Append)
 	{
 		flags |= O_CREAT|O_RDWR;
 	}
-	else if (mode == FileMode::ReadOnly)
+	else if (mode == FileMode::CreateWrite)
 	{
-		flags |= O_RDONLY;
+		flags |= O_CREAT|O_WRONLY;
 	}
 	else if (mode == FileMode::ReadWriteExisting)
 	{

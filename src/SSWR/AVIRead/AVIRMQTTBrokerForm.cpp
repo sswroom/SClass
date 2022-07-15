@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 				ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
 				SDEL_CLASS(issuerCert);
 			}
-			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true));
+			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, &me->log, true));
 			if (me->broker->IsError())
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
-	Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList;
+	const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList;
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -252,10 +252,9 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 	this->broker = 0;
 	this->AddTimer(1000, OnTimerTick, this);
 }
@@ -263,9 +262,9 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 {
 	this->ServerStop();
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList = this->topicMap.GetValues();
+	const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*> *topicList = this->topicMap.GetValues();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
 	UOSInt i = topicList->GetCount();
 	while (i-- > 0)

@@ -41,10 +41,9 @@ DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 prog
 {
 	UOSInt i = 0;
 	UOSInt j = strs->GetCount();
-	NEW_CLASS(this->strs, Data::ArrayList<Text::String*>());
 	while (i < j)
 	{
-		this->strs->Add(strs->GetItem(i)->Clone());
+		this->strs.Add(strs->GetItem(i)->Clone());
 		i++;
 	}
 	this->hdlr = hdlr;
@@ -55,8 +54,7 @@ DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 prog
 
 DB::DBQueue::SQLGroup::~SQLGroup()
 {
-	LIST_FREE_STRING(this->strs);
-	DEL_CLASS(this->strs);
+	LIST_FREE_STRING(&this->strs);
 }
 
 DB::DBQueue::CmdType DB::DBQueue::SQLGroup::GetCmdType()
@@ -688,9 +686,9 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 							if (grp->hdlr == 0)
 							{
 								i = 3;
-								while (k < grp->strs->GetCount())
+								while (k < grp->strs.GetCount())
 								{
-									s = grp->strs->GetItem(k);
+									s = grp->strs.GetItem(k);
 									if (me->db->ExecuteNonQuery(s->ToCString()) == -2)
 									{
 										i -= 1;
@@ -713,9 +711,9 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 							{
 								DB::DBReader *rdr = 0;
 								i = 3;
-								while (k < grp->strs->GetCount())
+								while (k < grp->strs.GetCount())
 								{
-									s = grp->strs->GetItem(k);
+									s = grp->strs.GetItem(k);
 									rdr = me->db->ExecuteReader(s->ToCString());
 									if (rdr == 0)
 									{
@@ -730,7 +728,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 									else
 									{
 										k += 1;
-										if (k < grp->strs->GetCount())
+										if (k < grp->strs.GetCount())
 										{
 											me->db->CloseReader(rdr);
 										}

@@ -334,6 +334,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 //	printf("Request URL: %s\r\n", urlSb.ToString());
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+	cli->SetTimeout(5000);
 	if (hasTime)
 	{
 		sptr = Net::WebUtil::Date2Str(sbuff, &dt);

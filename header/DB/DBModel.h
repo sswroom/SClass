@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBMODEL
 #define _SM_DB_DBMODEL
-#include "Data/StringMap.h"
+#include "Data/ICaseStringMap.h"
 #include "DB/DBTool.h"
 #include "DB/TableDef.h"
 
@@ -9,8 +9,8 @@ namespace DB
 	class DBModel
 	{
 	private:
-		Data::ArrayList<TableDef*> *tables;
-		Data::StringMap<TableDef*> *tableMap;
+		Data::ArrayList<TableDef*> tables;
+		Data::ICaseStringMap<TableDef*> tableMap;
 
 	public:
 		DBModel();

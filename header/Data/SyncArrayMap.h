@@ -11,7 +11,7 @@ namespace Data
 	{
 	protected:
 		Data::SortableArrayList<T> *keys;
-		Data::ArrayList<V> *vals;
+		Data::ArrayList<V> vals;
 		Sync::Mutex mut;
 
 	public:
@@ -36,43 +36,39 @@ namespace Data
 
 	template <class T, class V> SyncArrayMap<T, V>::SyncArrayMap() : IMap<T, V>()
 	{
-		NEW_CLASS(this->mut, Sync::Mutex());
-		NEW_CLASS(this->vals, Data::ArrayList<V>());
 	}
 
 	template <class T, class V> SyncArrayMap<T, V>::~SyncArrayMap()
 	{
-		DEL_CLASS(this->vals);
-		DEL_CLASS(this->mut);
 	}
 
 	template <class T, class V> V SyncArrayMap<T, V>::Put(T key, V val)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			V oldVal = this->vals->GetItem(i);
-            this->vals->SetItem(i, val);
+			V oldVal = this->vals.GetItem(i);
+            this->vals.SetItem(i, val);
 			return oldVal;
 		}
 		else
 		{
 			this->keys->Insert(~i, key);
-			this->vals->Insert(~i, val);
+			this->vals.Insert(~i, val);
 			return 0;
 		}
 	}
 
 	template <class T, class V> V SyncArrayMap<T, V>::Get(T key)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			return this->vals->GetItem(i);
+			return this->vals.GetItem(i);
 		}
 		else
 		{
@@ -82,13 +78,13 @@ namespace Data
 
 	template <class T, class V> V SyncArrayMap<T, V>::Remove(T key)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
 			this->keys->RemoveAt(i);
-			return this->vals->RemoveAt(i);
+			return this->vals.RemoveAt(i);
 		}
 		else
 		{
@@ -98,7 +94,7 @@ namespace Data
 
 	template <class T, class V> T SyncArrayMap<T, V>::GetKey(UOSInt index)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		return this->keys->GetItem(index);
 	}
 
@@ -106,9 +102,9 @@ namespace Data
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		Data::ArrayList<T> *tList = map->GetKeys();
-		Data::ArrayList<V> *vList = map->GetValues();
-		OSInt i;
-		OSInt j;
+		const Data::ArrayList<V> *vList = map->GetValues();
+		UOSInt i;
+		UOSInt j;
 		i = 0;
 		j = tList->GetCount();
 		while (i < j)
@@ -120,37 +116,37 @@ namespace Data
 
 	template <class T, class V> OSInt SyncArrayMap<T, V>::GetIndex(T key)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		return this->keys->SortedIndexOf(key);
 	}
 
 	template <class T, class V> UOSInt SyncArrayMap<T, V>::GetValues(Data::ArrayList<V> *values)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		return values->AddRange(this->vals);
 	}
 
 	template <class T, class V> UOSInt SyncArrayMap<T, V>::GetKeys(Data::ArrayList<T> *keys)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		return keys->AddRange(this->keys);
 	}
 
 	template <class T, class V> UOSInt SyncArrayMap<T, V>::GetCount()
 	{
-		return this->vals->GetCount();
+		return this->vals.GetCount();
 	}
 
 	template <class T, class V> Bool SyncArrayMap<T, V>::IsEmpty()
 	{
-		return this->vals->GetCount() == 0;
+		return this->vals.GetCount() == 0;
 	}
 
 	template <class T, class V> V *SyncArrayMap<T, V>::ToArray(UOSInt *objCnt)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		UOSInt cnt;
-		V *arr = this->vals->GetArray(&cnt);
+		V *arr = this->vals.GetArray(&cnt);
 		V *outArr = MemAlloc(V, cnt);
 		MemCopyNO(outArr, arr, sizeof(V) * cnt);
 		*objCnt = cnt;
@@ -159,9 +155,9 @@ namespace Data
 
 	template <class T, class V> void SyncArrayMap<T, V>::Clear()
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		this->keys->Clear();
-		this->vals->Clear();
+		this->vals.Clear();
 	}
 }
 

@@ -23,7 +23,6 @@ void DB::SQLiteFile::Init()
 	this->delOnClose = false;
 	this->lastErrMsg = 0;
 	db = 0;
-	NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
 	sqlite3_initialize();
 	ret = sqlite3_open_v2((const Char*)fileName->v, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
 	
@@ -38,7 +37,7 @@ void DB::SQLiteFile::Init()
 			{
 				sb.ClearStr();
 				r->GetStr(0, &sb);
-				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
+				this->tableNames.Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
 			}
 			this->CloseReader(r);
 		}
@@ -74,12 +73,11 @@ DB::SQLiteFile::~SQLiteFile()
 		this->db = 0;
 	}
 	sqlite3_shutdown();
-	i = this->tableNames->GetCount();
+	i = this->tableNames.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->tableNames->GetItem(i).v);
+		Text::StrDelNew(this->tableNames.GetItem(i).v);
 	}
-	DEL_CLASS(this->tableNames);
 	if (this->delOnClose)
 	{
 		IO::Path::DeleteFile(this->fileName->v);
@@ -240,8 +238,8 @@ void DB::SQLiteFile::Rollback(void *tran)
 
 UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
-	names->AddAll(this->tableNames);
-	return this->tableNames->GetCount();
+	names->AddAll(&this->tableNames);
+	return this->tableNames.GetCount();
 }
 
 DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)

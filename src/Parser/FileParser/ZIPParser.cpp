@@ -341,7 +341,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 			break;
 		}
 	}
-	Data::ArrayList<ZIPInfoEntry*> *zipInfoList = zipInfos.GetValues();
+	const Data::ArrayList<ZIPInfoEntry*> *zipInfoList = zipInfos.GetValues();
 	UOSInt ui = zipInfoList->GetCount();
 	while (ui-- > 0)
 	{

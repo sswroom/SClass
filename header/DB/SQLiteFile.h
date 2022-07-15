@@ -14,7 +14,7 @@ namespace DB
 	private:
 		Text::String *fileName;
 		void *db;
-		Data::ArrayList<Text::CString> *tableNames;
+		Data::ArrayList<Text::CString> tableNames;
 		Bool delOnClose;
 		Text::String *lastErrMsg;
 

@@ -5,8 +5,6 @@
 
 Data::FieldComparator::FieldComparator(Text::CString compareConds)
 {
-	NEW_CLASS(this->fieldNames, Data::ArrayList<Text::String*>());
-	NEW_CLASS(this->dirs, Data::ArrayList<Int8>());
 	if (compareConds.leng == 0)
 	{
 		return;
@@ -30,27 +28,25 @@ Data::FieldComparator::FieldComparator(Text::CString compareConds)
 			sarr[0].RemoveChars(5);
 			dir = (Int8)-1;
 		}
-		this->fieldNames->Add(Text::String::New(sarr[0].v, sarr[0].leng));
-		this->dirs->Add(dir);
+		this->fieldNames.Add(Text::String::New(sarr[0].v, sarr[0].leng));
+		this->dirs.Add(dir);
 	}
 }
 
 Data::FieldComparator::~FieldComparator()
 {
-	LIST_FREE_STRING(this->fieldNames);
-	DEL_CLASS(this->fieldNames);
-	DEL_CLASS(this->dirs);
+	LIST_FREE_STRING(&this->fieldNames);
 }
 
 OSInt Data::FieldComparator::Compare(VariObject *a, VariObject *b)
 {
 	UOSInt i = 0;
-	UOSInt j = this->fieldNames->GetCount();
+	UOSInt j = this->fieldNames.GetCount();
 	OSInt k;
 	while (i < j)
 	{
-		Text::String *fieldName = this->fieldNames->GetItem(i);
-		k = Compare(a->GetItem(fieldName->v), b->GetItem(fieldName->v)) * this->dirs->GetItem(i);
+		Text::String *fieldName = this->fieldNames.GetItem(i);
+		k = Compare(a->GetItem(fieldName->v), b->GetItem(fieldName->v)) * this->dirs.GetItem(i);
 		if (k != 0)
 		{
 			return k;
@@ -62,28 +58,28 @@ OSInt Data::FieldComparator::Compare(VariObject *a, VariObject *b)
 
 Bool Data::FieldComparator::IsValid()
 {
-	return this->fieldNames->GetCount() > 0;
+	return this->fieldNames.GetCount() > 0;
 }
 
 Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType)
 {
-	if (this->fieldNames->GetCount() == 0)
+	if (this->fieldNames.GetCount() == 0)
 	{
 		return false;
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i = 0;
-	UOSInt j = this->fieldNames->GetCount();
+	UOSInt j = this->fieldNames.GetCount();
 	while (i < j)
 	{
 		if (i > 0)
 		{
 			sb->AppendC(UTF8STRC(", "));
 		}
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames->GetItem(i)->v, svrType);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames.GetItem(i)->v, svrType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		if (this->dirs->GetItem(i) == -1)
+		if (this->dirs.GetItem(i) == -1)
 		{
 			sb->AppendC(UTF8STRC(" desc"));
 		}

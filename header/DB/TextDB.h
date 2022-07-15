@@ -9,15 +9,15 @@ namespace DB
 	class TextDB : public DB::ReadingDB
 	{
 	public:
-		typedef struct
+		struct DBData
 		{
 			Text::String *name;
-			Data::ArrayList<const UTF8Char *> *colList;
-			Data::ArrayList<Text::String **> *valList;
-		} DBData;
+			Data::ArrayList<const UTF8Char *> colList;
+			Data::ArrayList<Text::String **> valList;
+		};
 
 	private:
-		Data::StringMap<DBData*> *dbMap;
+		Data::StringMap<DBData*> dbMap;
 		DBData *currDB;
 	public:
 		TextDB(Text::CString sourceName);

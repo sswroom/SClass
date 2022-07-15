@@ -14,70 +14,142 @@ Media::RGBLUTGen::~RGBLUTGen()
 {
 }
 
-void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, Media::ColorProfile *srcProfile, Int32 nBitLRGB)
+void Media::RGBLUTGen::SetSrcTrans(Media::CS::TransferParam *rTran, Media::CS::TransferParam *gTran, Media::CS::TransferParam *bTran, Media::ColorProfile *srcProfile)
 {
-	const Media::IColorHandler::RGBPARAM2 *rgbParam;
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	Media::CS::TransferType tranType = srcProfile->GetRTranParam()->GetTranType();
+	if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
 	{
 		if (this->colorSess == 0)
 		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		}
 		else
 		{
-			rgbParam = this->colorSess->GetRGBParam();
-			NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
+			const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+			rTran->Set(rgbParam->monProfile.GetRTranParamRead());
+			gTran->Set(rgbParam->monProfile.GetGTranParamRead());
+			bTran->Set(rgbParam->monProfile.GetBTranParamRead());
 		}
 	}
-	else if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	else if (tranType == Media::CS::TRANT_VUNKNOWN)
 	{
 		if (this->colorSess == 0)
 		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		}
 		else
 		{
 			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
+			rTran->Set(defProfile->GetRTranParam());
+			gTran->Set(defProfile->GetGTranParam());
+			bTran->Set(defProfile->GetBTranParam());
 		}
 	}
-	else if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (tranType == Media::CS::TRANT_PUNKNOWN)
 	{
 		if (this->colorSess == 0)
 		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
+			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		}
 		else
 		{
 			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
+			rTran->Set(defProfile->GetRTranParam());
+			gTran->Set(defProfile->GetGTranParam());
+			bTran->Set(defProfile->GetBTranParam());
 		}
 	}
 	else
 	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(srcProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(srcProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(srcProfile->GetBTranParam()));
+		rTran->Set(srcProfile->GetRTranParam());
+		gTran->Set(srcProfile->GetGTranParam());
+		bTran->Set(srcProfile->GetBTranParam());
 	}
+}
+
+Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(Media::CS::TransferParam *rTran, Media::CS::TransferParam *gTran, Media::CS::TransferParam *bTran, Media::ColorProfile *destProfile)
+{
+	Media::CS::TransferType tranType = destProfile->GetRTranParam()->GetTranType();
+
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
+	{
+		tranType = Media::CS::TRANT_sRGB;
+		rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+		gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+		bTran->Set(Media::CS::TRANT_sRGB, 2.2);
+	}
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
+	{
+		tranType = Media::CS::TRANT_sRGB;
+		rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+		gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+		bTran->Set(Media::CS::TRANT_sRGB, 2.2);
+	}
+	else if (tranType == Media::CS::TRANT_VUNKNOWN)
+	{
+		if (this->colorSess == 0)
+		{
+			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
+		}
+		else
+		{
+			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
+			rTran->Set(defProfile->GetRTranParam());
+			gTran->Set(defProfile->GetGTranParam());
+			bTran->Set(defProfile->GetBTranParam());
+		}
+	}
+	else if (tranType == Media::CS::TRANT_PUNKNOWN)
+	{
+		if (this->colorSess == 0)
+		{
+			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
+			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
+		}
+		else
+		{
+			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
+			rTran->Set(defProfile->GetRTranParam());
+			gTran->Set(defProfile->GetGTranParam());
+			bTran->Set(defProfile->GetBTranParam());
+		}
+	}
+	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
+	{
+		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		rTran->Set(rgbParam->monProfile.GetRTranParamRead());
+		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
+		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
+	}
+	else
+	{
+		rTran->Set(destProfile->GetRTranParam());
+		gTran->Set(destProfile->GetGTranParam());
+		bTran->Set(destProfile->GetBTranParam());
+	}
+	return tranType;
+}
+
+void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, Media::ColorProfile *srcProfile, Int32 nBitLRGB)
+{
+	const Media::IColorHandler::RGBPARAM2 *rgbParam;
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	this->SetSrcTrans(&rTran, &gTran, &bTran, srcProfile);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 	UOSInt i;
 	i = 256;
 	while (i-- > 0)
@@ -89,75 +161,19 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, Media::ColorProfile *srcPr
 	DEL_CLASS(irFunc);
 	DEL_CLASS(igFunc);
 	DEL_CLASS(ibFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcProfile, Media::ColorProfile::ColorPrimaries *destPrimaries, Int32 nBitLRGB)
 {
 	const Media::IColorHandler::RGBPARAM2 *rgbParam;
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			rgbParam = this->colorSess->GetRGBParam();
-			NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-		}
-	}
-	else if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(srcProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(srcProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(srcProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	this->SetSrcTrans(&rTran, &gTran, &bTran, srcProfile);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 
 	Math::Matrix3 mat1;
 	Math::Matrix3 mat2;
@@ -248,75 +264,19 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcP
 	DEL_CLASS(irFunc);
 	DEL_CLASS(igFunc);
 	DEL_CLASS(ibFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcProfile, Media::ColorProfile::ColorPrimaries *destPrimaries, Int32 nBitLRGB)
 {
 	const Media::IColorHandler::RGBPARAM2 *rgbParam;
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			rgbParam = this->colorSess->GetRGBParam();
-			NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-		}
-	}
-	else if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(srcProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(srcProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(srcProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	this->SetSrcTrans(&rTran, &gTran, &bTran, srcProfile);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 
 	Math::Matrix3 mat1;
 	Math::Matrix3 mat2;
@@ -411,9 +371,6 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcP
 	DEL_CLASS(ibFunc);
 	DEL_CLASS(igFunc);
 	DEL_CLASS(irFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -432,70 +389,10 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destP
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	Media::CS::TransferType tranType = destProfile->GetRTranParam()->GetTranType();
-
-	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
-	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
-		NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(destProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(destProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(destProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	Media::CS::TransferType tranType = this->SetDestTrans(&rTran, &gTran, &bTran, destProfile);
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
@@ -564,11 +461,11 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destP
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
+	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
@@ -602,9 +499,6 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destP
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
 	DEL_CLASS(fbFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, Media::ColorProfile *destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -623,70 +517,10 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, Media::ColorProfile *destP
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	Media::CS::TransferType tranType = destProfile->GetRTranParam()->GetTranType();
-
-	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
-	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
-		NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(destProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(destProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(destProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	Media::CS::TransferType tranType = this->SetDestTrans(&rTran, &gTran, &bTran, destProfile);
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
@@ -755,9 +589,9 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, Media::ColorProfile *destP
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -802,9 +636,6 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, Media::ColorProfile *destP
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
 	DEL_CLASS(fbFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile *destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -823,70 +654,10 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile 
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	Media::CS::TransferType tranType = destProfile->GetRTranParam()->GetTranType();
-
-	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
-	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
-		NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(destProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(destProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(destProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	Media::CS::TransferType tranType = this->SetDestTrans(&rTran, &gTran, &bTran, destProfile);
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
@@ -955,9 +726,9 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile 
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -1002,9 +773,6 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile 
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
 	DEL_CLASS(fbFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile *destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -1023,70 +791,10 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	Media::CS::TransferType tranType = destProfile->GetRTranParam()->GetTranType();
-
-	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
-	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
-		NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(destProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(destProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(destProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	Media::CS::TransferType tranType = this->SetDestTrans(&rTran, &gTran, &bTran, destProfile);
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
@@ -1155,9 +863,9 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -1208,9 +916,6 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
 	DEL_CLASS(fbFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }
 
 void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, Media::ColorProfile *destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -1229,70 +934,10 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, Media::ColorProfile *d
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferParam *rTran;
-	Media::CS::TransferParam *gTran;
-	Media::CS::TransferParam *bTran;
-	Media::CS::TransferType tranType = destProfile->GetRTranParam()->GetTranType();
-
-	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
-	{
-		tranType = Media::CS::TRANT_sRGB;
-		NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-	}
-	else if (tranType == Media::CS::TRANT_VUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefVProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_PUNKNOWN)
-	{
-		if (this->colorSess == 0)
-		{
-			NEW_CLASS(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-			NEW_CLASS(bTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
-		}
-		else
-		{
-			Media::ColorProfile *defProfile = this->colorSess->GetDefPProfile();
-			NEW_CLASS(rTran, Media::CS::TransferParam(defProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(defProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(defProfile->GetBTranParam()));
-		}
-	}
-	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
-	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
-		NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
-	}
-	else
-	{
-		NEW_CLASS(rTran, Media::CS::TransferParam(destProfile->GetRTranParam()));
-		NEW_CLASS(gTran, Media::CS::TransferParam(destProfile->GetGTranParam()));
-		NEW_CLASS(bTran, Media::CS::TransferParam(destProfile->GetBTranParam()));
-	}
+	Media::CS::TransferParam rTran;
+	Media::CS::TransferParam gTran;
+	Media::CS::TransferParam bTran;
+	Media::CS::TransferType tranType = this->SetDestTrans(&rTran, &gTran, &bTran, destProfile);
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
@@ -1361,9 +1006,9 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, Media::ColorProfile *d
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(&rTran);
+	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(&gTran);
+	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(&bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -1414,7 +1059,4 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, Media::ColorProfile *d
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
 	DEL_CLASS(fbFunc);
-	DEL_CLASS(rTran);
-	DEL_CLASS(gTran);
-	DEL_CLASS(bTran);
 }

@@ -54,20 +54,17 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UOSInt l;
 	OSInt si;
 	UInt32 stmPos;
-	Data::ArrayListICaseString *dirArr;
-	Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr;
 	UInt8 buff[256];
 	Map::MapEnv::ImageInfo imgInfo;
 	Exporter::MEVExporter::MEVStrRecord *strRec;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::String *tmpStr;
-	Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*> *tmpArr;
+	const Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*> *tmpArr;
+	Data::ArrayListICaseString dirArr;
+	Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> strArr;
 
-	NEW_CLASS(strArr, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*>());
-	NEW_CLASS(dirArr, Data::ArrayListICaseString());
-
-	GetMapDirs(env, dirArr, 0);
+	GetMapDirs(env, &dirArr, 0);
 	i = env->GetImageFileCnt();
 	while (i-- > 0)
 	{
@@ -77,10 +74,10 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		if (j != INVALID_INDEX)
 		{
 			sbuff[j] = 0;
-			si = dirArr->SortedIndexOfPtr(sbuff, j);
+			si = dirArr.SortedIndexOfPtr(sbuff, j);
 			if (si < 0)
 			{
-				dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, j));
+				dirArr.Insert((UOSInt)~si, Text::String::New(sbuff, j));
 			}
 		}
 	}
@@ -98,8 +95,8 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	WriteUInt32(&buff[12], env->GetBGColor());
 	WriteUInt32(&buff[16], (UInt32)env->GetNString());
 	*(Int32*)&buff[20] = 0;
-	*(UInt32*)&buff[24] = AddString(strArr, fileName.v, fileName.leng, 20);
-	*(Int32*)&buff[28] = (Int32)dirArr->GetCount();
+	*(UInt32*)&buff[24] = AddString(&strArr, fileName.v, fileName.leng, 20);
+	*(Int32*)&buff[28] = (Int32)dirArr.GetCount();
 	*(Int32*)&buff[32] = (Int32)env->GetImageFileCnt();
 	*(Int32*)&buff[36] = (Int32)env->GetFontStyleCount();
 	*(Int32*)&buff[40] = (Int32)env->GetLineStyleCount();
@@ -110,12 +107,12 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	stm->Write(buff, 56);
 	stmPos = 56;
 	i = 0;
-	j = dirArr->GetCount();
+	j = dirArr.GetCount();
 	while (i < j)
 	{
-		tmpStr = dirArr->GetItem(i);
+		tmpStr = dirArr.GetItem(i);
 		*(Int32*)&buff[0] = 0;
-		*(UInt32*)&buff[4] = AddString(strArr, tmpStr, stmPos);
+		*(UInt32*)&buff[4] = AddString(&strArr, tmpStr, stmPos);
 
 		stm->Write(buff, 8);
 		stmPos += 8;
@@ -132,9 +129,9 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
-		WriteUInt32(&buff[4], AddString(strArr, &sbuff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
+		WriteUInt32(&buff[4], AddString(&strArr, &sbuff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
 		sbuff[k] = 0;
-		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOfPtr(sbuff, k);
+		*(Int32*)&buff[8] = (Int32)dirArr.SortedIndexOfPtr(sbuff, k);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
 
 		stm->Write(buff, 16);
@@ -160,14 +157,14 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		*(Int32*)&buff[0] = 0;
 		if (sptr)
 		{
-			WriteUInt32(&buff[4], AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos));
+			WriteUInt32(&buff[4], AddString(&strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos));
 		}
 		else
 		{
 			*(Int32*)&buff[4] = 0;
 		}
 		*(Int32*)&buff[8] = 0;
-		WriteUInt32(&buff[12], AddString(strArr, fontName, stmPos + 8));
+		WriteUInt32(&buff[12], AddString(&strArr, fontName, stmPos + 8));
 		*(Int32*)&buff[16] = Double2Int32(fontSize / 0.75);
 		*(Int32*)&buff[20] = bold?1:0;
 		WriteUInt32(&buff[24], fontColor);
@@ -188,7 +185,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		*(Int32*)&buff[0] = 0;
 		if (sptr)
 		{
-			*(UInt32*)&buff[4] = AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos);
+			*(UInt32*)&buff[4] = AddString(&strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos);
 		}
 		else
 		{
@@ -226,9 +223,9 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i++;
 	}
 
-	WriteGroupItems(env, 0, &stmPos, stm, strArr, dirArr);
+	WriteGroupItems(env, 0, &stmPos, stm, &strArr, &dirArr);
 
-	tmpArr = strArr->GetValues();
+	tmpArr = strArr.GetValues();
 	j = tmpArr->GetCount();
 	i = 0;
 	while (i < j)
@@ -236,10 +233,10 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		strRec = tmpArr->GetItem(i);
 
 		stm->Write(strRec->strBytes, strRec->byteSize);
-		k = strRec->ofstList->GetCount();
+		k = strRec->ofstList.GetCount();
 		while (k-- > 0)
 		{
-			stm->SeekFromBeginning(strRec->ofstList->GetItem(k));
+			stm->SeekFromBeginning(strRec->ofstList.GetItem(k));
 			stm->Write((UInt8*)&stmPos, 4);
 		}
 		stmPos += strRec->byteSize;
@@ -248,19 +245,16 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i++;
 	}
 
-	LIST_FREE_STRING(dirArr);
-	DEL_CLASS(dirArr);
+	LIST_FREE_STRING(&dirArr);
 
-	tmpArr = strArr->GetValues();
+	tmpArr = strArr.GetValues();
 	i = tmpArr->GetCount();
 	while (i-- > 0)
 	{
 		strRec = tmpArr->GetItem(i);
-		DEL_CLASS(strRec->ofstList);
 		MemFree(strRec->strBytes);
-		MemFree(strRec);
+		DEL_CLASS(strRec);
 	}
-	DEL_CLASS(strArr);
 	return true;
 }
 
@@ -307,14 +301,13 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 	MEVStrRecord *strRec = strArr->Get(strVal);
 	if (strRec == 0)
 	{
-		strRec = MemAlloc(MEVStrRecord, 1);
+		NEW_CLASS(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)strVal->leng;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
-		NEW_CLASS(strRec->ofstList, Data::ArrayListUInt32());
 		MemCopyNO(strRec->strBytes, strVal, strRec->byteSize);
 		strArr->Put(strVal, strRec);
 	}
-	strRec->ofstList->Add(fileOfst);
+	strRec->ofstList.Add(fileOfst);
 	return strRec->byteSize;
 }
 
@@ -323,14 +316,13 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 	MEVStrRecord *strRec = strArr->Get({strVal, strLen});
 	if (strRec == 0)
 	{
-		strRec = MemAlloc(MEVStrRecord, 1);
+		NEW_CLASS(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)strLen;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
-		NEW_CLASS(strRec->ofstList, Data::ArrayListUInt32());
 		MemCopyNO(strRec->strBytes, strVal, strRec->byteSize);
 		strArr->Put({strVal, strLen}, strRec);
 	}
-	strRec->ofstList->Add(fileOfst);
+	strRec->ofstList.Add(fileOfst);
 	return strRec->byteSize;
 }
 

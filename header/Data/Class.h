@@ -17,7 +17,7 @@ namespace Data
 		};
 	private:
 		void *refObj;
-		Data::ArrayList<FieldInfo *> *fields;
+		Data::ArrayList<FieldInfo *> fields;
 
 		void FreeFieldInfo(FieldInfo *field);
 	public:

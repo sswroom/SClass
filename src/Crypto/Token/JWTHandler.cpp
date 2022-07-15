@@ -253,8 +253,8 @@ void Crypto::Token::JWTHandler::FreeResult(Data::StringMap<Text::String*> *resul
 {
 	if (result)
 	{
-		Data::ArrayList<Text::String*>* vals = result->GetValues();
-		LIST_FREE_STRING(vals);
+		const Data::ArrayList<Text::String*>* vals = result->GetValues();
+		LIST_FREE_STRING_NO_CLEAR(vals);
 		DEL_CLASS(result);
 	}
 }

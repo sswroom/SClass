@@ -38,7 +38,7 @@ namespace SSWR
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 			Net::MQTTBroker *broker;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			Data::StringMap<TopicStatus*> topicMap;
 			Sync::Mutex topicMut;

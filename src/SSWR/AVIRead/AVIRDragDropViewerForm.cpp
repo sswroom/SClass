@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj
 
 void SSWR::AVIRead::AVIRDragDropViewerForm::ClearDrops()
 {
-	Data::ArrayList<const UTF8Char*> *dropList = this->dropMap->GetValues();
+	const Data::ArrayList<const UTF8Char*> *dropList = this->dropMap->GetValues();
 	UOSInt i;
 	const UTF8Char *dropMsg;
 	i = dropList->GetCount();

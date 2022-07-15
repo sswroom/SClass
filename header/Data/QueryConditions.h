@@ -101,7 +101,7 @@ namespace Data
 		class Int32InCondition : public FieldCondition
 		{
 		private:
-			Data::ArrayList<Int32> *vals;
+			Data::ArrayList<Int32> vals;
 
 		public:
 			Int32InCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *val);
@@ -130,7 +130,7 @@ namespace Data
 		class StringInCondition : public FieldCondition
 		{
 		private:
-			Data::ArrayList<const UTF8Char*> *vals;
+			Data::ArrayList<const UTF8Char*> vals;
 
 		public:
 			StringInCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *val);
@@ -226,7 +226,7 @@ namespace Data
 		};
 
 	private:
-		Data::ArrayList<Condition*> *conditionList;
+		Data::ArrayList<Condition*> conditionList;
 	public:
 		QueryConditions();
 		~QueryConditions();

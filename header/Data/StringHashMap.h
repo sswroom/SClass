@@ -26,7 +26,7 @@ namespace Data
 	template <class T> class StringHashMap : public IMap<Text::String*, T>
 	{
 	protected:
-		Crypto::Hash::CRC32RC *crc;
+		Crypto::Hash::CRC32RC crc;
 		HashNodeLayer<T> *rootNode;
 
 	protected:
@@ -79,18 +79,16 @@ namespace Data
 
 	template <class T> UInt32 StringHashMap<T>::CalHash(Text::String *key)
 	{
-		return this->crc->CalcDirect(key->v, key->leng);
+		return this->crc.CalcDirect(key->v, key->leng);
 	}
 
 	template <class T> StringHashMap<T>::StringHashMap()
 	{
-		NEW_CLASS(this->crc, Crypto::Hash::CRC32RC());
 		this->rootNode = 0;
 	}
 
 	template <class T> StringHashMap<T>::~StringHashMap()
 	{
-		DEL_CLASS(this->crc);
 		HashNodeLayer<T> *node;
 		HashNodeLayer<T> *nextNode = this->rootNode;
 		if (nextNode)

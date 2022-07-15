@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 {
 	this->ClearChildren();
 	DEL_CLASS(this->camera);
-	Data::ArrayList<Media::ImageList*> *previewList = this->previewMap.GetValues();
+	const Data::ArrayList<Media::ImageList*> *previewList = this->previewMap.GetValues();
 	UOSInt i = previewList->GetCount();
 	Media::ImageList *previewImg;
 	while (i-- > 0)

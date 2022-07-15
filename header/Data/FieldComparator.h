@@ -11,8 +11,8 @@ namespace Data
 	class FieldComparator : public Comparator<Data::VariObject*>
 	{
 	private:
-		Data::ArrayList<Text::String*> *fieldNames;
-		Data::ArrayList<Int8> *dirs;
+		Data::ArrayList<Text::String*> fieldNames;
+		Data::ArrayList<Int8> dirs;
 	public:
 		FieldComparator(Text::CString compareConds);
 		virtual ~FieldComparator();

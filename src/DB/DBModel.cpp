@@ -5,15 +5,11 @@
 
 DB::DBModel::DBModel()
 {
-	NEW_CLASS(this->tableMap, Data::ICaseStringMap<TableDef*>());
-	NEW_CLASS(this->tables, Data::ArrayList<TableDef*>());
 }
 
 DB::DBModel::~DBModel()
 {
-	DEL_CLASS(this->tableMap);
-	LIST_FREE_FUNC(this->tables, DEL_CLASS);
-	DEL_CLASS(this->tables);
+	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
 Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
@@ -36,7 +32,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
 		if (table)
 		{
 			table->SetDatabaseName(dbName);
-			this->tables->Add(table);
+			this->tables.Add(table);
 			sb.ClearStr();
 			if (dbName.v)
 			{
@@ -45,9 +41,9 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
 			}
 			tableName = table->GetTableName();
 			sb.Append(tableName);
-			this->tableMap->Put(sb.ToCString(), table);
+			this->tableMap.Put(sb.ToCString(), table);
 			j = tableName->IndexOf('.');
-			this->tableMap->Put(tableName->ToCString().Substring(j + 1), table);
+			this->tableMap.Put(tableName->ToCString().Substring(j + 1), table);
 		}
 	}
 	db->ReleaseTableNames(&tableNames);
@@ -56,12 +52,12 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
 
 DB::TableDef *DB::DBModel::GetTable(Text::CString tableName)
 {
-	return this->tableMap->Get(tableName);
+	return this->tableMap.Get(tableName);
 }
 
 UOSInt DB::DBModel::GetTableNames(Data::ArrayList<Text::CString> *tableNames)
 {
-	Data::ArrayList<Text::String*> *keys = this->tableMap->GetKeys();
+	Data::ArrayList<Text::String*> *keys = this->tableMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

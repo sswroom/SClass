@@ -649,7 +649,7 @@ Net::DNSProxy::~DNSProxy()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cli);
 
-	Data::ArrayList<RequestResult*> *reqList;
+	const Data::ArrayList<RequestResult*> *reqList;
 	RequestResult *req;
 	UOSInt i;
 	reqList = this->reqv4Map.GetValues();
@@ -780,7 +780,7 @@ UOSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
 UOSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<Text::String *> *reqList, UInt32 ip, UInt32 mask)
 {
 	Data::ArrayList<Text::String *> *keys;
-	Data::ArrayList<RequestResult*> *results;
+	const Data::ArrayList<RequestResult*> *results;
 	Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 	Net::DNSClient::RequestAnswer *ans;
 	RequestResult *result;
@@ -968,7 +968,7 @@ Bool Net::DNSProxy::AddBlackList(Text::CString blackList)
 	UOSInt i;
 	RequestResult *req;
 	Text::String *reqName;
-	Data::ArrayList<RequestResult*> *reqList;
+	const Data::ArrayList<RequestResult*> *reqList;
 	Data::ArrayList<Text::String *> *reqNames;
 	Sync::MutexUsage reqv4MutUsage(&this->reqv4Mut);
 	reqList = this->reqv4Map.GetValues();

@@ -13,6 +13,9 @@ namespace Media
 		RGBLUTGen(Media::ColorSess *colorSess);
 		~RGBLUTGen();
 
+		void SetSrcTrans(Media::CS::TransferParam *rTran, Media::CS::TransferParam *gTran, Media::CS::TransferParam *bTran, Media::ColorProfile *srcProfile);
+		Media::CS::TransferType SetDestTrans(Media::CS::TransferParam *rTran, Media::CS::TransferParam *gTran, Media::CS::TransferParam *bTran, Media::ColorProfile *destProfile);
+
 		void GenRGB8_LRGB(UInt16 *rgbTable, Media::ColorProfile *srcProfile, Int32 nBitLRGB); //1536 bytes (RGB * 512)
 		void GenRGBA8_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcProfile, Media::ColorProfile::ColorPrimaries *destPrimaries, Int32 nBitLRGB); //8192 bytes (rgba * 2048)
 		void GenRGB16_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcProfile, Media::ColorProfile::ColorPrimaries *destPrimaries, Int32 nBitLRGB); //2097152 bytes

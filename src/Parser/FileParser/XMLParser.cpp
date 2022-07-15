@@ -185,7 +185,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		}*/
 		Map::IMapDrawLayer *lyr = ParseKMLContainer(&reader, &styles, fileName, parsers, browser, pkgFile);
 
-		Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
+		const Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 		KMLStyle *style;
 /*		UOSInt i;
 		UOSInt j;

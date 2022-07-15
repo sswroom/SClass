@@ -41,7 +41,7 @@ namespace Data
 			UOSInt threadCnt;
 			ThreadStat *threads;
 			ThreadStat mainThread;
-			Data::SyncArrayList<TaskInfo*> *tasks;
+			Data::SyncArrayList<TaskInfo*> tasks;
 
 			static void DoMergeInt32(ThreadStat *stat, Int32 *arr, OSInt n, Bool dir, OSInt m);
 			static void DoMergeUInt32(ThreadStat *stat, UInt32 *arr, OSInt n, Bool dir, OSInt m);

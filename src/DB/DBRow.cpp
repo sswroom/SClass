@@ -332,7 +332,6 @@ const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize
 DB::DBRow::DBRow(TableDef *table)
 {
 	this->table = table;
-	NEW_CLASS(this->dataMap, Data::StringUTF8Map<DB::DBRow::Field*>());
 	DB::ColDef *col;
 	DB::DBRow::Field *field;
 	UOSInt i = 0;
@@ -347,16 +346,15 @@ DB::DBRow::DBRow(TableDef *table)
 		field->currentChanged = false;
 		field->committedNull = true;
 		field->committedData.iVal = 0;
-		this->dataMap->Put(field->def->GetColName()->v, field);
+		this->dataMap.Put(field->def->GetColName()->v, field);
 		i++;
 	}
 }
 
 DB::DBRow::~DBRow()
 {
-	Data::ArrayList<Field*> *fieldList = this->dataMap->GetValues();
-	LIST_FREE_FUNC(fieldList, this->FreeField);
-	DEL_CLASS(this->dataMap);
+	const Data::ArrayList<Field*> *fieldList = this->dataMap.GetValues();
+	LIST_CALL_FUNC(fieldList, this->FreeField);
 }
 
 Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
@@ -369,7 +367,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 	while (i < j)
 	{
 		col = this->table->GetCol(i);
-		field = this->dataMap->Get(col->GetColName()->v);
+		field = this->dataMap.Get(col->GetColName()->v);
 		if (field == 0)
 		{
 			return false;
@@ -433,7 +431,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 
 DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field)
 	{
 		return field->def;
@@ -446,7 +444,7 @@ DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName) const
 
 DB::DBRow::DataType DB::DBRow::GetFieldDataType(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field)
 	{
 		return this->GetDataType(field);
@@ -456,7 +454,7 @@ DB::DBRow::DataType DB::DBRow::GetFieldDataType(const UTF8Char *fieldName) const
 
 Bool DB::DBRow::SetValueNull(const UTF8Char *fieldName)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -466,7 +464,7 @@ Bool DB::DBRow::SetValueNull(const UTF8Char *fieldName)
 
 Bool DB::DBRow::SetValueStr(const UTF8Char *fieldName, const UTF8Char *strValue)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -476,7 +474,7 @@ Bool DB::DBRow::SetValueStr(const UTF8Char *fieldName, const UTF8Char *strValue)
 
 Bool DB::DBRow::SetValueInt64(const UTF8Char *fieldName, Int64 intValue)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -486,7 +484,7 @@ Bool DB::DBRow::SetValueInt64(const UTF8Char *fieldName, Int64 intValue)
 
 Bool DB::DBRow::SetValueDouble(const UTF8Char *fieldName, Double dblValue)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -496,7 +494,7 @@ Bool DB::DBRow::SetValueDouble(const UTF8Char *fieldName, Double dblValue)
 
 Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, Data::DateTime *dt)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -506,7 +504,7 @@ Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, Data::DateTime *dt)
 
 Bool DB::DBRow::SetValueVector(const UTF8Char *fieldName, Math::Vector2D *vec)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -516,7 +514,7 @@ Bool DB::DBRow::SetValueVector(const UTF8Char *fieldName, Math::Vector2D *vec)
 
 Bool DB::DBRow::SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOSInt buffSize)
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
@@ -526,7 +524,7 @@ Bool DB::DBRow::SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOS
 
 Bool DB::DBRow::IsNull(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return true;
@@ -536,7 +534,7 @@ Bool DB::DBRow::IsNull(const UTF8Char *fieldName) const
 
 const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return 0;
@@ -546,7 +544,7 @@ const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName) const
 
 Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return 0;
@@ -556,7 +554,7 @@ Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName) const
 
 Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return 0;
@@ -566,7 +564,7 @@ Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName) const
 
 Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return 0;
@@ -576,7 +574,7 @@ Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
 
 Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return 0;
@@ -586,7 +584,7 @@ Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName) const
 
 const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize) const
 {
-	DB::DBRow::Field *field = this->dataMap->Get(fieldName);
+	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return 0;
@@ -596,7 +594,7 @@ const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSi
 
 void DB::DBRow::Commit()
 {
-	Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap->GetValues();
+	const Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -650,7 +648,7 @@ void DB::DBRow::Commit()
 
 void DB::DBRow::Rollback()
 {
-	Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap->GetValues();
+	const Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -693,7 +691,7 @@ void DB::DBRow::Rollback()
 Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 {
 	Bool hasKey = false;
-	Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap->GetValues();
+	const Data::ArrayList<DB::DBRow::Field*> *fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -739,7 +737,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
 	while (i < j)
 	{
 		col = this->table->GetCol(i);
-		field = this->dataMap->Get(col->GetColName()->v);
+		field = this->dataMap.Get(col->GetColName()->v);
 		if (field)
 		{
 			if (i > 0)

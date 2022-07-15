@@ -43,7 +43,7 @@ namespace DB
 		};
 	private:
 		TableDef *table;
-		Data::StringUTF8Map<Field*> *dataMap;
+		Data::StringUTF8Map<Field*> dataMap;
 
 		void FreeField(Field *field);
 		DataType GetDataType(Field *field) const;

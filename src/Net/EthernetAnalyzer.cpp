@@ -148,7 +148,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		DEL_CLASS(dnsCli);
 	}
 
-	Data::ArrayList<Net::EthernetAnalyzer::DNSRequestResult*> *dnsReqList;
+	const Data::ArrayList<Net::EthernetAnalyzer::DNSRequestResult*> *dnsReqList;
 	Net::EthernetAnalyzer::DNSRequestResult *req;
 	dnsReqList = this->dnsReqv4Map.GetValues();
 	i = dnsReqList->GetCount();

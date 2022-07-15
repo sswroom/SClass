@@ -11,7 +11,7 @@ Map::MapManager::MapManager()
 
 Map::MapManager::~MapManager()
 {
-	Data::ArrayList<Map::MapManager::MapLayerInfo*> *arr = this->layerArr.GetValues();
+	const Data::ArrayList<Map::MapManager::MapLayerInfo*> *arr = this->layerArr.GetValues();
 	UOSInt i = arr->GetCount();
 	while (i-- > 0)
 	{
@@ -59,7 +59,7 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::P
 
 void Map::MapManager::ClearMap(Map::MapEnv *env)
 {
-	Data::ArrayList<Map::MapManager::MapLayerInfo *> *infoArr = this->layerArr.GetValues();
+	const Data::ArrayList<Map::MapManager::MapLayerInfo *> *infoArr = this->layerArr.GetValues();
 	UOSInt i = infoArr->GetCount();
 	UOSInt j;
 	Map::MapManager::MapLayerInfo *info;
