@@ -11,7 +11,8 @@
 #include "Net/WebServer/WebServiceHandler.h"
 #include "Parser/FileParser/X509Parser.h"
 
-#define PORTNUM 4321
+#define PORTNUM 443
+#define TO_STRING(a) #a
 
 Net::SSLEngine *ssl;
 Bool initSucc;
@@ -42,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char *sptr2;
 	UTF8Char *sptr3;
 	UTF8Char *sptr4;
-	UTF8Char *sptr5;
+	UTF8Char *sptr5 = 0;
 	IO::ConsoleWriter console;
 	Net::OSSocketFactory sockf(true);
 	initSucc = false;
@@ -76,8 +77,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						}
 						else
 						{
-							*sptr5++ = ':';
-							sptr5 = Text::StrUInt16(sptr5, PORTNUM);
+							if (PORTNUM != 443)
+							{
+								*sptr5++ = ':';
+								sptr5 = Text::StrUInt16(sptr5, PORTNUM);
+							}
 							initSucc = true;
 						}
 					}
@@ -123,11 +127,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Net::WebServer::WebListener listener(&sockf, ssl, logHdlr, PORTNUM, 120, 4, CSTR("ADFSTest/1.0"), false, true);
 		if (listener.IsError())
 		{
-			console.WriteLineC(UTF8STRC("Error in listening to port 4321"));
+			console.WriteLineC(UTF8STRC("Error in listening to port " TO_STRING(PORTNUM)));
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Listening to port 4321 (https)"));
+			console.WriteLineC(UTF8STRC("Listening to port " TO_STRING(PORTNUM) " (https)"));
 			progCtrl->WaitForExit(progCtrl);
 			console.WriteLineC(UTF8STRC("Server stopping"));
 		}
