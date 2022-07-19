@@ -854,6 +854,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	IO::SMake::ConfigItem *asmCfg = this->cfgMap.Get(CSTR("ASM"));
 	IO::SMake::ConfigItem *asmflagsCfg = this->cfgMap.Get(CSTR("ASMFLAGS"));
 	IO::SMake::ConfigItem *cflagsCfg = this->cfgMap.Get(CSTR("CFLAGS"));
+	IO::SMake::ConfigItem *cppflagsCfg = this->cfgMap.Get(CSTR("CPPFLAGS"));
 	IO::SMake::ConfigItem *libsCfg = this->cfgMap.Get(CSTR("LIBS"));
 	Data::DateTime dt1;
 	Data::DateTime dt2;
@@ -976,6 +977,11 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				if (cflagsCfg)
 				{
 					sb.Append(cflagsCfg->value);
+					sb.AppendUTF8Char(' ');
+				}
+				if (cppflagsCfg)
+				{
+					sb.Append(cppflagsCfg->value);
 					sb.AppendUTF8Char(' ');
 				}
 				if (subProg->compileCfg)

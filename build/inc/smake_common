@@ -4096,6 +4096,14 @@ adl_sdk.h:
 adl_structures.h:
 miniz.h: ../../ThirdParty/miniz/miniz.c
 @miniz.o
+miniz_common.h:
+miniz_export.h:
+miniz_tdef.h: ../../ThirdParty/miniz/miniz_tdef.c
+@miniz_tdef.o
+miniz_tinfl.h: ../../ThirdParty/miniz/miniz_tinfl.c
+@miniz_tinfl.o
+miniz_zip.h: ../../ThirdParty/miniz/miniz_zip.c
+@miniz_zip.o
 
 UI/GUIDObjArea.h: ../../src/UI/GUIDObjArea.cpp
 @GUIDObjArea.o
@@ -5563,5 +5571,8 @@ TextSearchForm.o: ../../src/UtilUI/TextSearchForm.cpp
 TextViewerForm.o: ../../src/UtilUI/TextViewerForm.cpp
 SMBIOS.o: ../../src/Win32/SMBIOS.cpp
 miniz.o: ../../ThirdParty/miniz/miniz.c
+miniz_tdef.o: ../../ThirdParty/miniz/miniz_tdef.c
+miniz_tinfl.o: ../../ThirdParty/miniz/miniz_tinfl.c
+miniz_zip.o: ../../ThirdParty/miniz/miniz_zip.c
 
 include ../../../*/SMake.cfg
