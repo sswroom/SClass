@@ -12,7 +12,8 @@
 #include "Parser/FileParser/X509Parser.h"
 
 #define PORTNUM 443
-#define TO_STRING(a) #a
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
 
 Net::SSLEngine *ssl;
 Bool initSucc;
@@ -127,11 +128,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Net::WebServer::WebListener listener(&sockf, ssl, logHdlr, PORTNUM, 120, 4, CSTR("ADFSTest/1.0"), false, true);
 		if (listener.IsError())
 		{
-			console.WriteLineC(UTF8STRC("Error in listening to port " TO_STRING(PORTNUM)));
+			console.WriteLineC(UTF8STRC("Error in listening to port " STR(PORTNUM)));
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Listening to port " TO_STRING(PORTNUM) " (https)"));
+			console.WriteLineC(UTF8STRC("Listening to port " STR(PORTNUM) " (https)"));
 			progCtrl->WaitForExit(progCtrl);
 			console.WriteLineC(UTF8STRC("Server stopping"));
 		}
