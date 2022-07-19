@@ -48,7 +48,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 Manage::EnvironmentVar::~EnvironmentVar()
 {
 	UOSInt i;
-	Data::ArrayList<const UTF8Char*> *nameList = this->names.GetValues();
+	const Data::ArrayList<const UTF8Char*> *nameList = this->names.GetValues();
 	i = nameList->GetCount();
 	while (i-- > 0)
 	{

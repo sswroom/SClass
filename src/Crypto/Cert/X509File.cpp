@@ -2327,9 +2327,49 @@ Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd,
 	return false;
 }
 
+UTF8Char *Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, UTF8Char *sbuff)
+{
+	Char cbuff[12];
+	const UInt8 *itemPDU;
+	const UInt8 *oidPDU;
+	const UInt8 *strPDU;
+	UOSInt itemLen;
+	UOSInt oidLen;
+	Net::ASN1Util::ItemType itemType;
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt i = 0;
+	while (i < cnt)
+	{
+		i++;
+
+		Text::StrConcat(Text::StrUOSInt(cbuff, i), ".1");
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, cbuff, &itemLen, &itemType)) != 0)
+		{
+			if (itemType == Net::ASN1Util::IT_SEQUENCE)
+			{
+				oidPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &oidLen, &itemType);
+				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID && Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, oidText, oidTextLen))
+				{
+					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &oidLen, &itemType);
+					if (strPDU)
+					{
+						return Text::StrConcatC(sbuff, strPDU, oidLen);
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 Bool Crypto::Cert::X509File::NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb)
 {
 	return NameGetByOID(pdu, pduEnd, UTF8STRC("2.5.4.3"), sb);
+}
+
+UTF8Char *Crypto::Cert::X509File::NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, UTF8Char *sbuff)
+{
+	return NameGetByOID(pdu, pduEnd, UTF8STRC("2.5.4.3"), sbuff);
 }
 
 Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names)

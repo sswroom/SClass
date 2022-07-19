@@ -3,8 +3,8 @@
 #include "IO/MinizZIP.h"
 #include "IO/Path.h"
 #include "Text/MyString.h"
-#define _fseeki64 fseek
-#define _ftelli64 ftell
+//#define _fseeki64 fseek
+//#define _ftelli64 ftell
 #include "miniz.h"
 
 Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)

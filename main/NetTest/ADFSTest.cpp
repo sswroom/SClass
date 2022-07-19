@@ -2,17 +2,18 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
+#include "IO/StmData/FileData.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebServer/PrintLogWebHandler.h"
 #include "Net/WebServer/SAMLHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebServiceHandler.h"
+#include "Parser/FileParser/X509Parser.h"
 
-IO::ConsoleWriter *console;
-Net::SocketFactory *sockf;
+#define PORTNUM 4321
+
 Net::SSLEngine *ssl;
-Net::WebServer::WebListener *listener;
 Bool initSucc;
 Net::WebServer::PrintLogWebHandler *logHdlr;
 
@@ -34,12 +35,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff1[512];
 	UTF8Char sbuff2[512];
+	UTF8Char sbuff3[512];
+	UTF8Char sbuff4[512];
+	UTF8Char sbuff5[512];
 	UTF8Char *sptr1;
 	UTF8Char *sptr2;
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+	UTF8Char *sptr3;
+	UTF8Char *sptr4;
+	UTF8Char *sptr5;
+	IO::ConsoleWriter console;
+	Net::OSSocketFactory sockf(true);
 	initSucc = false;
-	ssl = Net::SSLEngineFactory::Create(sockf, false);
+	ssl = Net::SSLEngineFactory::Create(&sockf, false);
+	sptr3 = IO::Path::GetProcessFileName(sbuff3);
+	sptr3 = IO::Path::AppendPath(sbuff3, sptr3, CSTR("SAMLCert.crt"));
+	sptr4 = IO::Path::GetProcessFileName(sbuff4);
+	sptr4 = IO::Path::AppendPath(sbuff4, sptr4, CSTR("SAMLCert.key"));
 	if (ssl)
 	{
 		sptr1 = IO::Path::GetProcessFileName(sbuff1);
@@ -48,48 +59,81 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sptr2 = IO::Path::AppendPath(sbuff2, sptr2, CSTR("ADFSCert.key"));
 		if (ssl->SetServerCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
 		{
-			initSucc = true;
+			Parser::FileParser::X509Parser parser;
+			IO::ParsedObject *pobj = parser.ParseFilePath(CSTRP(sbuff1, sptr1));
+			if (pobj)
+			{
+				if (pobj->GetParserType() == IO::ParserType::ASN1Data)
+				{
+					Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+					if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509 && ((Crypto::Cert::X509File*)asn1)->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+					{
+						Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)asn1;
+						sptr5 = cert->GetSubjectCN(sbuff5);
+						if (sptr5 == 0)
+						{
+							console.WriteLineC(UTF8STRC("Error in getting CN from ADFSCert.crt"));
+						}
+						else
+						{
+							*sptr5++ = ':';
+							sptr5 = Text::StrUInt16(sptr5, PORTNUM);
+							initSucc = true;
+						}
+					}
+					else
+					{
+						console.WriteLineC(UTF8STRC("ADFSCert.crt is not a cert file"));
+					}
+				}
+				else
+				{
+					console.WriteLineC(UTF8STRC("ADFSCert.crt is not a cert file"));
+				}
+				DEL_CLASS(pobj);
+			}
+			else
+			{
+				console.WriteLineC(UTF8STRC("Error in parsing ADFSCert.crt"));
+			}
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Error in loading ADFSCert.crt/ADFSCert.key file"));
+			console.WriteLineC(UTF8STRC("Error in loading ADFSCert.crt/ADFSCert.key file"));
 		}
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in initializing SSL Engine"));
+		console.WriteLineC(UTF8STRC("Error in initializing SSL Engine"));
 	}
 	if (initSucc)
 	{
 		MyADFSService *svcHdlr;
 		Net::WebServer::SAMLHandler *samlHdlr;
 		Net::WebServer::SAMLConfig cfg;
-		cfg.serverHost = CSTR("samltest.simontest.local:4321");
+		cfg.serverHost = CSTRP(sbuff5, sptr5);
 		cfg.metadataPath = CSTR("/saml/metadata");
 		cfg.logoutPath = CSTR("/saml/SingleLogout");
 		cfg.ssoPath = CSTR("/saml/SSO");
-		cfg.signCertPath = CSTR("/home/sswroom/Progs/Temp/saml_token.crt");
-		cfg.signKeyPath = CSTR("/home/sswroom/Progs/Temp/saml_token.key");
+		cfg.signCertPath = CSTRP(sbuff3, sptr3);
+		cfg.signKeyPath = CSTRP(sbuff4, sptr4);
 		NEW_CLASS(svcHdlr, MyADFSService());
 		NEW_CLASS(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, svcHdlr));
-		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, console));
-		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, ssl, logHdlr, 4321, 120, 4, CSTR("ADFSTest/1.0"), false, true));
-		if (listener->IsError())
+		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, &console));
+		Net::WebServer::WebListener listener(&sockf, ssl, logHdlr, PORTNUM, 120, 4, CSTR("ADFSTest/1.0"), false, true);
+		if (listener.IsError())
 		{
-			console->WriteLineC(UTF8STRC("Error in listening to port 4321"));
+			console.WriteLineC(UTF8STRC("Error in listening to port 4321"));
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Listening to port 4321 (https)"));
+			console.WriteLineC(UTF8STRC("Listening to port 4321 (https)"));
 			progCtrl->WaitForExit(progCtrl);
-			console->WriteLineC(UTF8STRC("Server stopping"));
+			console.WriteLineC(UTF8STRC("Server stopping"));
 		}
 		logHdlr->Release();
 		svcHdlr->Release();
-		DEL_CLASS(listener);
 	}
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
-	DEL_CLASS(console);
 	return 0;
 }

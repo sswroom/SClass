@@ -42,6 +42,29 @@ Bool Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF8 *sb) const
 	}
 }
 
+UTF8Char *Crypto::Cert::X509Cert::GetSubjectCN(UTF8Char *sbuff) const
+{
+	UOSInt len = 0;
+	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
+	const UInt8 *tmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff, this->buff + this->buffSize, "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.6", &len, &itemType);
+	}
+	else
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.5", &len, &itemType);
+	}
+	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	{
+		return NameGetCN(tmpBuff, tmpBuff + len, sbuff);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 Bool Crypto::Cert::X509Cert::GetIssuerCN(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt len = 0;

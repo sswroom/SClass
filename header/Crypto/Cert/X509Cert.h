@@ -15,6 +15,7 @@ namespace Crypto
 			virtual ~X509Cert();
 
 			Bool GetSubjectCN(Text::StringBuilderUTF8 *sb) const;
+			UTF8Char *GetSubjectCN(UTF8Char *sbuff) const;
 			Bool GetIssuerCN(Text::StringBuilderUTF8 *sb) const;
 			
 			virtual FileType GetFileType() const;

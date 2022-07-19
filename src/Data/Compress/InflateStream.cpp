@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/Compress/InflateStream.h"
-#define _fseeki64 fseek
-#define _ftelli64 ftell
+//#define _fseeki64 fseek
+//#define _ftelli64 ftell
 #include "miniz.h"
 
 #define BUFFSIZE 1048576

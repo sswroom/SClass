@@ -74,7 +74,7 @@ UOSInt IO::SiLabSerialPort::Read(UInt8 *buff, UOSInt size)
 	this->reading = true;
 	this->driver->SI_Read(h, buff, (UInt32)size, &readCnt, &ol);
 #if defined(_WIN32) && !defined(_WIN32_WCE)
-	this->rdEvt->Wait();
+	this->rdEvt.Wait();
 	if (this->handle == 0)
 	{
 		this->reading = false;
