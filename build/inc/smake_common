@@ -115,6 +115,7 @@ nodeps:
 @CesiumDownloader
 @MapSearchTest
 @OruxMapTest
+@BigIntTest
 @LanczosFilterTest
 @DrawRotTest
 @GUIExportJPG
@@ -407,6 +408,9 @@ OruxMapTest:
 @ConsoleStartup.o
 
 #Math
+BigIntTest:
+@BigIntTest.o
+@ConsoleStartup.o
 LanczosFilterTest:
 @LanczosFilterTest.o
 @ConsoleStartup.o
@@ -968,6 +972,7 @@ HiResClockMain.o: ../../main/Manage/HiResClock.cpp
 CesiumDownloaderTest.o: ../../main/Map/CesiumDownloaderTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
+BigIntTest.o: ../../main/Math/BigIntTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp
 MCU_Distance.o: ../../main/MCU/MCU_Distance.cpp
@@ -2048,6 +2053,8 @@ Map/OSM/OSMParser.h: ../../src/Map/OSM/OSMParser.cpp
 Map/OSM/OSMTileMap.h: ../../src/Map/OSM/OSMTileMap.cpp
 @OSMTileMap.o
 
+Math/BigIntLSB.h: ../../src/Math/BigIntLSB.cpp
+@BigIntLSB.o
 Math/CesiumEntityWriter.h: ../../src/Math/CesiumEntityWriter.cpp
 @CesiumEntityWriter.o
 Math/ComplexNumber.h: ../../src/Math/ComplexNumber.cpp
@@ -4071,6 +4078,8 @@ Text/TextBinEnc/FormEncoding.h: ../../src/Text/TextBinEnc/FormEncoding.cpp
 @FormEncoding.o
 Text/TextBinEnc/HexTextBinEnc.h: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
 @HexTextBinEnc.o
+Text/TextBinEnc/IntegerMSBEnc.h: ../../src/Text/TextBinEnc/IntegerMSBEnc.cpp
+@IntegerMSBEnc.o
 Text/TextBinEnc/ITextBinEnc.h:
 Text/TextBinEnc/Punycode.h: ../../src/Text/TextBinEnc/Punycode.cpp
 @Punycode.o
@@ -4577,6 +4586,7 @@ OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp
 OSMParser.o: ../../src/Map/OSM/OSMParser.cpp
 OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
+BigIntLSB.o: ../../src/Math/BigIntLSB.cpp
 CesiumEntityWriter.o: ../../src/Math/CesiumEntityWriter.cpp
 ComplexNumber.o: ../../src/Math/ComplexNumber.cpp
 CoordinateSystem.o: ../../src/Math/CoordinateSystem.cpp
@@ -5534,6 +5544,7 @@ CPPByteArrBinEnc.o: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp
 CPPTextBinEnc.o: ../../src/Text/TextBinEnc/CPPTextBinEnc.cpp
 FormEncoding.o: ../../src/Text/TextBinEnc/FormEncoding.cpp
 HexTextBinEnc.o: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
+IntegerMSBEnc.o: ../../src/Text/TextBinEnc/IntegerMSBEnc.cpp
 Punycode.o: ../../src/Text/TextBinEnc/Punycode.cpp
 QuotedPrintableEnc.o: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
 Radix64Enc.o: ../../src/Text/TextBinEnc/Radix64Enc.cpp

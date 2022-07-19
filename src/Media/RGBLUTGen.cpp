@@ -141,7 +141,6 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(Media::CS::TransferParam 
 
 void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, Media::ColorProfile *srcProfile, Int32 nBitLRGB)
 {
-	const Media::IColorHandler::RGBPARAM2 *rgbParam;
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;

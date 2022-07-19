@@ -230,6 +230,17 @@ Int64 __inline BSWAP64(Int64 v)
 	}
 }
 
+UInt64 __inline BSWAP64(UInt64 v)
+{
+	_asm
+	{
+		mov eax,dword ptr [v + 4]
+		mov edx,dword ptr [v]
+		bswap eax
+		bswap edx
+	}
+}
+
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
 {
 	_asm
@@ -292,6 +303,28 @@ Int64 __inline BSWAP64(Int64 v)
 #define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
 #define BSWAPU32(v) __builtin_bswap32(v)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
+#define BSWAPU64(v) __builtin_bswap64(v)
+#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+
+__inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+{
+    __asm__(
+        "mulq %3	\n\t"
+        : "=&a"(x), "=&d"(y)
+        : "0"(x), "1"(y)
+        : "cc"
+    );
+
+    *hi = y;
+    return x;
+}
+
+__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+{
+	unsigned __int128 v = (lo | (((unsigned __int128)hi) << 64));
+	*reminder = (UOSInt)(v % divider);
+    return (UOSInt)(v / divider);
+}
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
 {
@@ -316,6 +349,15 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
 #define BSWAPU32(v) __builtin_bswap32(v)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
+#define BSWAPU64(v) __builtin_bswap64(v)
+#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+
+UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+{
+	UInt64 v = ((UInt64)x * (UInt64)y);
+	*hi = (UOSInt)(v >> 32);
+	return (UInt32)v;
+}
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
 {
@@ -343,30 +385,39 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAP32(v) (Int32)_byteswap_ulong((UInt32)(v))
 #define BSWAPU32(v) _byteswap_ulong(v)
 #define BSWAP64(v) (Int64)_byteswap_uint64((UInt64)(v))
+#define BSWAPU64(v) _byteswap_uint64(v)
+#define MyMUL_UOS(x, y, hi) _mul128(x, y, hi)
+#define MyDIV_UOS(lo, hi, divider, reminder) _div128(hi, lo, divider, reminder)
 #elif defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
 #define BSWAP32(x) OSSwapInt32(x)
 #define BSWAPU32(x) OSSwapInt32(x)
 #define BSWAP64(x) OSSwapInt64(x)
+#define BSWAPU64(x) OSSwapInt64(x)
 #elif defined(__sun) || defined(sun)
 #include <sys/byteorder.h>
 #define BSWAP32(x) BSWAP_32(x)
 #define BSWAPU32(x) BSWAP_32(x)
 #define BSWAP64(x) BSWAP_64(x)
+#define BSWAPU64(x) BSWAP_64(x)
 #elif defined(__FreeBSD__)
 #include <sys/endian.h>
 #define BSWAP32(x) bswap32(x)
 #define BSWAPU32(x) bswap32(x)
 #define BSWAP64(x) bswap64(x)
+#define BSWAPU64(x) bswap64(x)
 #elif defined(__OpenBSD__)
 #include <sys/types.h>
 #define BSWAP32(x) swap32(x)
 #define BSWAPU32(x) swap32(x)
 #define BSWAP64(x) swap64(x)
+#define BSWAPU64(x) swap64(x)
 #elif defined(__GNUC__)
 #define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
 #define BSWAPU32(v) __builtin_bswap32(v)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
+#define BSWAPU64(v) __builtin_bswap64(v)
+#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
 #else
 #define BSWAP32(x) \
     ((Int32)( (( (UInt32)x          ) << 24) | \

@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "MyMmeory.h"
+#include "Stdafx.h"
+#include "MyMemory.h"
 #include "Data/ByteTool.h"
 
 #if _WCHAR_SIZE == 2
@@ -8,7 +8,7 @@
 #define BigInt_ToString BigInt_ToStringW32
 #endif
 
-extern "C" void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, Int32 valSize)
+extern "C" void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, UOSInt valSize)
 {
 	srcBuff += valSize;
 	while (valSize-- > 0)
@@ -17,10 +17,10 @@ extern "C" void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, Int32 val
 	}
 }
 
-extern "C" void BigInt_Neg(UInt8 *valBuff, Int32 valSize)
+extern "C" void BigInt_Neg(UInt8 *valBuff, UOSInt valSize)
 {
 	UInt8 *valPtr = valBuff;
-	OSInt i = valSize >> 2;
+	UOSInt i = valSize >> 2;
 	while (i-- > 0)
 	{
 		*(Int32*)valPtr = ~*(Int32*)valPtr;
@@ -28,7 +28,7 @@ extern "C" void BigInt_Neg(UInt8 *valBuff, Int32 valSize)
 	}
 
 #if IS_BYTEORDER_LE
-	valPtr = valArr;
+	valPtr = valBuff;
 	i = valSize >> 2;
 	while (i-- > 0)
 	{
@@ -37,7 +37,7 @@ extern "C" void BigInt_Neg(UInt8 *valBuff, Int32 valSize)
 		valPtr += 4;
 	}
 #else
-	valPtr = valArr + valSize;
+	valPtr = valBuff + valSize;
 	i = valSize >> 2;
 	while (i-- > 0)
 	{
@@ -48,7 +48,7 @@ extern "C" void BigInt_Neg(UInt8 *valBuff, Int32 valSize)
 #endif
 }
 
-extern "C" void BigInt_EqualI32(UInt8 *valBuff, Int32 valSize, Int32 val)
+extern "C" void BigInt_EqualI32(UInt8 *valBuff, Int32 valSize, UOSInt val)
 {
 	*(Int32*)valBuff = val;
 	Int32 t = val >> 31;
@@ -60,7 +60,7 @@ extern "C" void BigInt_EqualI32(UInt8 *valBuff, Int32 valSize, Int32 val)
 	}
 }
 
-extern "C" WChar *BigInt_ToString(WChar *buff, const UInt8 *valArr, UInt8 *tmpArr, Int32 valSize)
+extern "C" WChar *BigInt_ToString(WChar *buff, const UInt8 *valArr, UInt8 *tmpArr, UOSInt valSize)
 {
 	////////////////////////////////////
 	return buff;

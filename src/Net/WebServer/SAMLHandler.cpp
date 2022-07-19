@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-// https://<host>/adfs/ls/idpinitiatesignon.aspx
+// https://<host>/adfs/ls/idpinitiatedsignon.aspx
 // https://<host>/FederationMetadata/2007-06/FederationMetadata.xml
 
 Net::WebServer::SAMLHandler::~SAMLHandler()

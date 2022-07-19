@@ -7,6 +7,7 @@
 #include "Text/TextBinEnc/CPPTextBinEnc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
+#include "Text/TextBinEnc/IntegerMSBEnc.h"
 #include "Text/TextBinEnc/Punycode.h"
 #include "Text/TextBinEnc/QuotedPrintableEnc.h"
 #include "Text/TextBinEnc/TextBinEncList.h"
@@ -47,6 +48,8 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 	NEW_CLASS(enc, Text::TextBinEnc::URIEncoding());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::Punycode());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::IntegerMSBEnc());
 	this->encList->Add(enc);
 }
 
