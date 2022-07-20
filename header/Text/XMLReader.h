@@ -36,6 +36,7 @@ namespace Text
 		Text::String *nodeText;
 		Text::String *nodeOriText;
 		Bool emptyNode;
+		Text::StringBuilderUTF8 sbTmp;
 
 		void FreeCurrent();
 		Bool IsHTMLSkip();

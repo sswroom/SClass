@@ -48,30 +48,6 @@ Text::String *Text::String::NewOrNull(Text::CString str)
 	return s;
 }
 
-Text::String *Text::String::New(Text::CString str)
-{
-	if (str.leng == 0) return NewEmpty();
-	Text::String *s = (Text::String*)MAlloc(str.leng + sizeof(String));
-	s->v = s->vbuff;
-	s->leng = str.leng;
-	s->useCnt = 1;
-	MemCopyNO(s->v, str.v, str.leng);
-	s->v[str.leng] = 0;
-	return s;
-}
-
-Text::String *Text::String::New(const UTF8Char *str, UOSInt len)
-{
-	if (len == 0) return NewEmpty();
-	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
-	s->v = s->vbuff;
-	s->leng = len;
-	s->useCnt = 1;
-	MemCopyNO(s->v, str, len);
-	s->v[len] = 0;
-	return s;
-}
-
 Text::String *Text::String::NewP(const UTF8Char *str, const UTF8Char *strEnd)
 {
 	if (strEnd == 0 || strEnd == str) return NewEmpty();
@@ -82,16 +58,6 @@ Text::String *Text::String::NewP(const UTF8Char *str, const UTF8Char *strEnd)
 	s->useCnt = 1;
 	MemCopyNO(s->v, str, len);
 	s->v[len] = 0;
-	return s;
-}
-
-Text::String *Text::String::New(UOSInt len)
-{
-	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
-	s->v = s->vbuff;
-	s->leng = len;
-	s->useCnt = 1;
-	s->v[0] = 0;
 	return s;
 }
 

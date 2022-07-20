@@ -13,7 +13,7 @@ Math::PointCollection::PointCollection(UInt32 srid, UOSInt nPoint, Math::Coord2D
 	}
 	else
 	{
-		MemClear(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
+		MemClearAC(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	}
 }
 

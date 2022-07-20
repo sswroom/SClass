@@ -73,7 +73,7 @@ namespace Data
 		if (objCnt == this->capacity)
 		{
 			T *newArr = MemAllocA(T, this->capacity * 2);
-			MemCopyNO(newArr, arr, this->objCnt * sizeof(T));
+			MemCopyAC(newArr, arr, this->objCnt * sizeof(T));
 			this->capacity = this->capacity << 1;
 			MemFreeA(arr);
 			arr = newArr;
@@ -94,7 +94,7 @@ namespace Data
 			T *newArr = MemAllocA(T, this->capacity);
 			if (objCnt > 0)
 			{
-				MemCopyNO(newArr, this->arr, objCnt * sizeof(T));
+				MemCopyAC(newArr, this->arr, objCnt * sizeof(T));
 			}
 			MemFreeA(this->arr);
 			this->arr = newArr;
@@ -120,7 +120,7 @@ namespace Data
 			T *newArr = MemAllocA(T, this->capacity);
 			if (objCnt > 0)
 			{
-				MemCopyNO(newArr, this->arr, objCnt * sizeof(T));
+				MemCopyAC(newArr, this->arr, objCnt * sizeof(T));
 			}
 			MemFreeA(this->arr);
 			this->arr = newArr;
@@ -181,7 +181,7 @@ namespace Data
 			T *newArr = MemAllocA(T, this->capacity * 2);
 			if (Index > 0)
 			{
-				MemCopyNO(newArr, this->arr, Index * sizeof(T));
+				MemCopyAC(newArr, this->arr, Index * sizeof(T));
 			}
 			newArr[Index] = Val;
 			if (Index < this->objCnt)
@@ -251,7 +251,7 @@ namespace Data
 			}
 
 			T *newArr = MemAllocA(T, this->capacity);
-			MemCopyNO(newArr, this->arr, this->objCnt * sizeof(T));
+			MemCopyAC(newArr, this->arr, this->objCnt * sizeof(T));
 			MemFreeA(this->arr);
 			this->arr = newArr;
 		}

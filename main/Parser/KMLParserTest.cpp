@@ -9,6 +9,8 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	Text::CString path = CSTR("/home/sswroom/Progs/Temp/Lantau Island.kml");
+//	Text::CString path = CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml");
 	IO::ParsedObject *pobj;
 	Manage::HiResClock clk;
 	IO::ParserType pt;
@@ -18,7 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Parser::FullParserList parsers;
 	parsers.SetEncFactory(&encFact);
 	{
-		IO::StmData::FileData fd(CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml"), false);
+		IO::StmData::FileData fd(path, false);
 		clk.Start();
 		pobj = parsers.ParseFile(&fd, &pt);
 		t = clk.GetTimeDiff();
