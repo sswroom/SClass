@@ -359,6 +359,13 @@ UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 	return (UInt32)v;
 }
 
+__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+{
+	UInt64 v = (lo | (((UInt64)hi) << 32));
+	*reminder = (UOSInt)(v % divider);
+    return (UOSInt)(v / divider);
+}
+
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
 {
 	return (Int32)(((Int64)x * (Int64)y) / z);
@@ -417,7 +424,47 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAPU32(v) __builtin_bswap32(v)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 #define BSWAPU64(v) __builtin_bswap64(v)
+#if __GNUC__ >= 5
 #define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#else
+Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+{
+	v1 += v2;
+	*outPtr = v1;
+	return v1 < v2;
+}
+#endif
+
+#if _OSINT_SIZE == 64
+__inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+{
+	unsigned __int128 v = (x * (unsigned __int128)y);
+    *hi = (UOSInt)(y >> 64);
+    return (UOSInt)v;
+}
+
+__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+{
+	unsigned __int128 v = (lo | (((unsigned __int128)hi) << 64));
+	*reminder = (UOSInt)(v % divider);
+    return (UOSInt)(v / divider);
+}
+#else
+UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+{
+	UInt64 v = ((UInt64)x * (UInt64)y);
+	*hi = (UOSInt)(v >> 32);
+	return (UInt32)v;
+}
+
+__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder)
+{
+	UInt64 v = (lo | (((UInt64)hi) << 32));
+	*reminder = (UOSInt)(v % divider);
+    return (UOSInt)(v / divider);
+}
+#endif
+
 #else
 #define BSWAP32(x) \
     ((Int32)( (( (UInt32)x          ) << 24) | \

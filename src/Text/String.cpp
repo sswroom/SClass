@@ -224,11 +224,11 @@ Text::String *Text::String::Clone() const
 	return New(this->v, this->leng);
 #elif defined(THREADSAFE)
 	#if _OSINT_SIZE == 64
-	Interlocked_IncrementU64(&this->useCnt);
+	Interlocked_IncrementU64(&((Text::String*)this)->useCnt);
 	#else
-	Interlocked_IncrementU32(&this->useCnt);
+	Interlocked_IncrementU32(&((Text::String*)this)->useCnt);
 	#endif
-	return this;
+	return (Text::String*)this;
 #else
 	((Text::String*)this)->useCnt++;
 	return (Text::String*)this;

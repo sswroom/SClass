@@ -465,6 +465,64 @@ void Math::BigIntLSB::FromBytesMSB(const UInt8 *valBuff, UOSInt buffLen)
 	}
 }
 
+UOSInt Math::BigIntLSB::GetOccupiedSize() const
+{
+	UOSInt size = this->valSize;
+	const UInt8 *valArr = (const UInt8*)this->valArr;
+	if (valArr[size - 1] & 0x80)
+	{
+		while (size > 0)
+		{
+			if (valArr[size - 1] != 0xff)
+			{
+				break;
+			}
+			size--;
+		}
+		if (size > 0 && (valArr[size - 1] & 0x80) == 0)
+		{
+			return size + 1;
+		}
+		else
+		{
+			return size;
+		}
+	}
+	else
+	{
+		while (size > 0)
+		{
+			if (valArr[size - 1] != 0)
+			{
+				return size;
+			}
+			size--;
+		}
+		return size;
+	}
+}
+
+UOSInt Math::BigIntLSB::GetStoreSize() const
+{
+	return this->valSize;
+}
+
+UOSInt Math::BigIntLSB::GetBytesMSB(UInt8 *byteBuff, Bool occupiedOnly) const
+{
+	UOSInt size;
+	if (occupiedOnly)
+		size = this->GetOccupiedSize();
+	else
+		size = this->valSize;
+	UOSInt i = size;
+	const UInt8 *valArr = (const UInt8*)this->valArr;
+	while (i-- > 0)
+	{
+		*byteBuff++ = valArr[i];
+	}
+	return size;
+}
+
 Bool Math::BigIntLSB::EqualsToUI32(UInt32 val)
 {
 	UOSInt i = (this->valSize >> 2) - 1;

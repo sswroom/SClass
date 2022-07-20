@@ -22,12 +22,14 @@ UOSInt Text::TextBinEnc::IntegerMSBEnc::EncodeBin(Text::StringBuilderUTF8 *sb, c
 
 UOSInt Text::TextBinEnc::IntegerMSBEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
-	return 0;
+	Math::BigIntLSB bint(strLen / 2 + 1, Text::CString(str, strLen));
+	return bint.GetOccupiedSize();
 }
 
 UOSInt Text::TextBinEnc::IntegerMSBEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
 {
-	return 0;
+	Math::BigIntLSB bint(strLen / 2 + 1, Text::CString(str, strLen));
+	return bint.GetBytesMSB(dataBuff, true);
 }
 
 Text::CString Text::TextBinEnc::IntegerMSBEnc::GetName()

@@ -25,6 +25,9 @@ namespace Math
 		void ByteSwap();
 		void SetRandom(Data::Random *rnd);
 		void FromBytesMSB(const UInt8 *valBuff, UOSInt buffLen);
+		UOSInt GetOccupiedSize() const;
+		UOSInt GetStoreSize() const;
+		UOSInt GetBytesMSB(UInt8 *byteBuff, Bool occupiedOnly) const;
 
 		Bool EqualsToUI32(UInt32 val);
 		Bool EqualsToI32(Int32 val);
@@ -48,7 +51,6 @@ namespace Math
 		BigIntLSB *operator |=(const BigIntLSB *val);
 		BigIntLSB *operator *=(UInt32 val);
 		BigIntLSB *operator /=(UInt32 val);
-
 
 		UTF8Char *ToString(UTF8Char *buff) const;
 		UTF8Char *ToHex(UTF8Char *buff);
