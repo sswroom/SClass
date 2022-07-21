@@ -741,7 +741,10 @@ Bool Text::XMLReader::ReadNext()
 										if (cp && !this->stmEnc)
 										{
 											SDEL_CLASS(this->enc);
-											NEW_CLASS(this->enc, Text::Encoding(cp));
+											if (cp != 65001)
+											{
+												NEW_CLASS(this->enc, Text::Encoding(cp));
+											}
 										}
 										break;
 									}

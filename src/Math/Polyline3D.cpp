@@ -5,13 +5,13 @@
 
 Math::Polyline3D::Polyline3D(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::Polyline(srid, nPtOfst, nPoint)
 {
-	this->altitudes = MemAlloc(Double, nPoint);
-	MemClear(this->altitudes, sizeof(Double) * nPoint);
+	this->altitudes = MemAllocA(Double, nPoint);
+	MemClearAC(this->altitudes, sizeof(Double) * nPoint);
 }
 
 Math::Polyline3D::~Polyline3D()
 {
-	MemFree(this->altitudes);
+	MemFreeA(this->altitudes);
 }
 
 Math::Vector2D *Math::Polyline3D::Clone() const
@@ -19,8 +19,8 @@ Math::Vector2D *Math::Polyline3D::Clone() const
 	Math::Polyline3D *pl;
 	NEW_CLASS(pl, Math::Polyline3D(this->srid, this->nPtOfst, this->nPoint));
 	MemCopyNO(pl->ptOfstArr, this->ptOfstArr, sizeof(Int32) * nPtOfst);
-	MemCopyNO(pl->pointArr, this->pointArr, sizeof(Double) * (nPoint << 1));
-	MemCopyNO(pl->altitudes, this->altitudes, sizeof(Double) * nPoint);
+	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Double) * (nPoint << 1));
+	MemCopyAC(pl->altitudes, this->altitudes, sizeof(Double) * nPoint);
 	return pl;
 }
 

@@ -1964,7 +1964,6 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 
 Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 {
-	Double r = 0.0;
 	Bool neg = false;
 	UTF8Char c;
 	if (*str1 == '-')
@@ -1972,6 +1971,44 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 		neg = true;
 		++str1;
 	}
+#if _OSINT_SIZE == 64
+	Double r;
+	Int64 ir = 0;
+	while (true)
+	{
+		c = *str1++;
+		if (c < '0' || c > '9')
+			break;
+		ir = ir * 10 + (c - '0');
+	}
+	if (c == '.')
+	{
+		Double fmul = 1;
+        while (true)
+		{
+			c = *str1++;
+			if (c < '0' || c > '9')
+				break;
+			fmul *= 0.1;
+			ir = ir * 10 + (c - '0');
+        }
+		r = (Double)ir * fmul;
+    }
+	else if (c == 0)
+	{
+		if (neg)
+		{
+			*outVal = -(Double)ir;
+			return true;
+		}
+		else
+		{
+			*outVal = (Double)ir;
+			return true;
+		}
+	}
+#else
+	Double r = 0.0;
 	while (true)
 	{
 		c = *str1++;
@@ -1995,15 +2032,12 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 	{
 		if (neg)
 		{
-			*outVal = -r;
-			return true;
+			r = -r;
 		}
-		else
-		{
-			*outVal = r;
-			return true;
-		}
+		*outVal = r;
+		return true;
 	}
+#endif
 	else
 	{
 		return false;
@@ -2239,9 +2273,12 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 	}
     if (neg)
 	{
-        r = -r;
+        *outVal = -r;
     }
-	*outVal = r;
+	else
+	{
+		*outVal = r;
+	}
 	return true;
 }
 

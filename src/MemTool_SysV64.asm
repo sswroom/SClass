@@ -548,10 +548,10 @@ _MemCopyAC_AMDAVX:
 	shr r9,7
 	ALIGN 16
 memcopyacavxlop5f:
-	vmovups xmm0,[rsi]
-	vmovups xmm1,[rsi+32]
-	vmovups xmm2,[rsi+64]
-	vmovups xmm3,[rsi+96]
+	vmovups ymm0,[rsi]
+	vmovups ymm1,[rsi+32]
+	vmovups ymm2,[rsi+64]
+	vmovups ymm3,[rsi+96]
 	vmovaps [rdi],ymm0
 	vmovaps [rdi+32],ymm1
 	vmovaps [rdi+64],ymm2
