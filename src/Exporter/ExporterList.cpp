@@ -35,6 +35,7 @@
 #include "Exporter/SQLiteExporter.h"
 #include "Exporter/TIFFExporter.h"
 #include "Exporter/WAVExporter.h"
+#include "Exporter/WebPExporter.h"
 #include "Exporter/ZIPExporter.h"
 
 Exporter::ExporterList::ExporterList()
@@ -106,6 +107,8 @@ Exporter::ExporterList::ExporterList()
 	NEW_CLASS(exporter, Exporter::SHA1Exporter());
 	this->exporters->Add(exporter);
 	NEW_CLASS(exporter, Exporter::SFVExporter());
+	this->exporters->Add(exporter);
+	NEW_CLASS(exporter, Exporter::WebPExporter());
 	this->exporters->Add(exporter);
 
 	NEW_CLASS(exporter, Exporter::GUIJPGExporter());

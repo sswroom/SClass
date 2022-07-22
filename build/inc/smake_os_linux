@@ -15,6 +15,9 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
 @PostgreSQLConn.o
 
+Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter.cpp
+@WebPExporter.o
+
 IO/BTController.h: ../../src/IO/BTControllerL.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerL.cpp
@@ -129,6 +132,9 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
 $`pkg-config --cflags libpq`
 !`pkg-config --libs libpq`
+WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
+!-lwebp
+!-lwebpmux
 BTController.o: ../../src/IO/BTControllerL.cpp
 !-lbluetooth
 BTManager.o: ../../src/IO/BTManagerL.cpp

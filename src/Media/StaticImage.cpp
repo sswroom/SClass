@@ -124,11 +124,18 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 			UInt8 *srcBuff = this->data;
 			UOSInt lineSize = (width * this->info.storeBPP + 7) >> 3;
 			srcBuff = srcBuff + (((UOSInt)left * this->info.storeBPP) >> 3) + (UOSInt)top * srcBpl;
-			while (height-- > 0)
+			if (lineSize == srcBpl && lineSize == destBpl)
 			{
-				MemCopyNANC(destBuff, srcBuff, lineSize);
-				srcBuff += srcBpl;
-				destBuff += destBpl;
+				MemCopyNANC(destBuff, srcBuff, lineSize * height);
+			}
+			else
+			{
+				while (height-- > 0)
+				{
+					MemCopyNANC(destBuff, srcBuff, lineSize);
+					srcBuff += srcBpl;
+					destBuff += destBpl;
+				}
 			}
 		}
 	}
