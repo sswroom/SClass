@@ -127,6 +127,7 @@ nodeps:
 @PrinterTest
 #@RASPStillCaptureTest
 @VideoCaptureTest
+@WebPParserTest
 @MemCopyTest
 @MemFill
 @ACMETest
@@ -474,6 +475,9 @@ VideoCaptureTest:
 @ConsoleStartup.o
 VideoCheck:
 @VideoCheckMain.o
+@ConsoleStartup.o
+WebPParserTest:
+@WebPParserTest.o
 @ConsoleStartup.o
 
 #Memory
@@ -994,6 +998,7 @@ RASPStillCaptureTest.o: ../../main/Media/RASPStillCaptureTest.cpp
 VideoCaptureTest.o: ../../main/Media/VideoCaptureTest.cpp
 VideoCheckMain.o: ../../main/Media/VideoCheckMain.cpp
 !-lavformat
+WebPParserTest.o: ../../main/Media/WebPParserTest.cpp
 MemCopyTest.o: ../../main/Memory/MemCopyTest.cpp
 MemFillTest.o: ../../main/Memory/MemFill.cpp
 ACMETest.o: ../../main/NetTest/ACMETest.cpp

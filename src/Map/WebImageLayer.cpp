@@ -8,6 +8,7 @@
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/RWMutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
@@ -73,13 +74,12 @@ Map::WebImageLayer::ImageStat *Map::WebImageLayer::GetImageStat(Int32 id)
 {
 	OSInt ind;
 	Map::WebImageLayer::ImageStat *stat = 0;
-	this->loadedMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->loadedMut, false);
 	ind = this->GetImageStatIndex(id);
 	if (ind >= 0)
 	{
 		stat = this->loadedList.GetItem((UOSInt)ind);
 	}
-	this->loadedMut.UnlockRead();
 	return stat;
 }
 
@@ -131,9 +131,9 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 				simg->MultiplyAlpha(stat->alpha);
 			}
 			NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
-			this->loadedMut.LockWrite();
+			Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, true);
 			this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
-			this->loadedMut.UnlockWrite();
+			loadedMutUsage.EndUse();
 
 			Sync::MutexUsage mutUsage(&this->updMut);
 			UOSInt i = this->updHdlrs.GetCount();
@@ -190,9 +190,9 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 						simg->MultiplyAlpha(stat->alpha);
 					}
 					NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
-					me->loadedMut.LockWrite();
+					Sync::RWMutexUsage loadedMutUsage(&me->loadedMut, true);
 					me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
-					me->loadedMut.UnlockWrite();
+					loadedMutUsage.EndUse();
 
 					Sync::MutexUsage mutUsage(&me->updMut);
 					UOSInt j = me->updHdlrs.GetCount();
@@ -308,7 +308,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 	oldTime = this->currTime;
 	this->currTime = timeStamp;
 
-	this->loadedMut.LockRead();
+	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
 	i = this->loadedList.GetCount();
 	while (i-- > 0)
 	{
@@ -335,7 +335,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 			break;
 		}
 	}
-	this->loadedMut.UnlockRead();
+	loadedMutUsage.EndUse();
 
 	if (changed)
 	{
@@ -371,9 +371,9 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **
 	ImageStat *stat;
 	ImageStat **imgArr;
 	Data::ArrayList<ImageStat *> imgList;
-	this->loadedMut.LockRead();
+	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
 	imgList.AddAll(&this->loadedList);
-	this->loadedMut.UnlockRead();
+	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArray(&retCnt);
 	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
@@ -404,7 +404,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void 
 
 	rect = rect.Reorder();
 
-	this->loadedMut.LockRead();
+	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
 	i = 0;
 	retCnt = this->loadedList.GetCount();
 	while (i < retCnt)
@@ -455,7 +455,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void 
 
 		i++;
 	}
-	this->loadedMut.UnlockRead();
+	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArray(&retCnt);
 	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
@@ -473,13 +473,12 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void 
 Int64 Map::WebImageLayer::GetObjectIdMax()
 {
 	Int64 maxId = -1;
-	this->loadedMut.LockRead();
+	Sync::RWMutexUsage loadedMutUsage(&this->loadedMut, false);
 	Map::WebImageLayer::ImageStat *stat = this->loadedList.GetItem(this->loadedList.GetCount() - 1);
 	if (stat)
 	{
 		maxId = stat->id;
 	}
-	this->loadedMut.UnlockRead();
 	return maxId;
 }
 

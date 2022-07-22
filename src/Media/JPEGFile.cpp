@@ -124,11 +124,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagBuff[14], j - 14);
 				if (icc)
 				{
-					icc->GetRedTransferParam(img->info.color->GetRTranParam());
-					icc->GetGreenTransferParam(img->info.color->GetGTranParam());
-					icc->GetBlueTransferParam(img->info.color->GetBTranParam());
-					icc->GetColorPrimaries(img->info.color->GetPrimaries());
-					img->info.color->SetRAWICC(&tagBuff[14]);
+					icc->SetToColorProfile(img->info.color);
 					DEL_CLASS(icc);
 				}
 			}

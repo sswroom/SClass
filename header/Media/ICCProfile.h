@@ -49,6 +49,7 @@ namespace Media
 		Bool GetBlueTransferParam(Media::CS::TransferParam *param) const;
 		Bool GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color) const;
 
+		Bool SetToColorProfile(Media::ColorProfile *colorProfile);
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static ICCProfile *Parse(const UInt8 *buff, UOSInt buffSize);

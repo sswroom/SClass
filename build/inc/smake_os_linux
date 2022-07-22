@@ -100,6 +100,8 @@ Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
 
 Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
 @JP2Parser.o
+Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
+@WebPParser.o
 
 Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 @Thread.o
@@ -205,5 +207,8 @@ WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
 !-lopenjp2
+WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
+!-lwebp
+!-lwebpdemux
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

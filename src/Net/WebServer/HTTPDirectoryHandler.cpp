@@ -11,6 +11,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/RWMutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -427,9 +428,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.ToString()[i + 1] = 0;
 		}
 		PackageInfo *package;
-		this->packageMut->LockRead();
+		Sync::RWMutexUsage packageMutUsage(this->packageMut, false);
 		package = this->packageMap->GetC(sb.ToCString().Substring(1));
-		this->packageMut->UnlockRead();
+		packageMutUsage.EndUse();
 		if (package)
 		{
 			if (i == INVALID_INDEX)
@@ -822,7 +823,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						PackageInfo *package;
 						UOSInt i;
 						UOSInt j;
-						this->packageMut->LockRead();
+						Sync::RWMutexUsage packageMutUsage(this->packageMut, false);
 						i = 0;
 						j = this->packageMap->GetCount();
 						while (i < j)
@@ -848,7 +849,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							
 							i++;
 						}
-						this->packageMut->UnlockRead();
 					}
 				}
 
@@ -1333,7 +1333,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	NEW_CLASS(this->packageMut, Sync::RWMutex());
-	this->packageMut->LockWrite();
+	Sync::RWMutexUsage packageMutUsage(this->packageMut, true);
 	NEW_CLASS(this->packageMap, Data::FastStringMap<PackageInfo*>());
 	sptr = this->rootDir->ConcatTo(sbuff);
 	if (sptr[-1] == '/' || sptr[-1] == '\\')
@@ -1379,8 +1379,6 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 		}
 		IO::Path::FindFileClose(sess);
 	}
-
-	this->packageMut->UnlockWrite();
 }
 
 void Net::WebServer::HTTPDirectoryHandler::EnableStats()

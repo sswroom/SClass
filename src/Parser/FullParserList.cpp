@@ -101,6 +101,7 @@
 #include "Parser/FileParser/UDPParser.h"
 #include "Parser/FileParser/VFPParser.h"
 #include "Parser/FileParser/WAVParser.h"
+#include "Parser/FileParser/WebPParser.h"
 #include "Parser/FileParser/WPTParser.h"
 #include "Parser/FileParser/X13Parser.h"
 #include "Parser/FileParser/X509Parser.h"
@@ -245,6 +246,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::X509Parser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::JP2Parser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::WebPParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);

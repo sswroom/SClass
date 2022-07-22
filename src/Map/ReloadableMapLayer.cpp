@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/ReloadableMapLayer.h"
+#include "Sync/RWMutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
@@ -9,13 +10,12 @@ void __stdcall Map::ReloadableMapLayer::InnerUpdated(void *userObj)
 {
 	Map::ReloadableMapLayer *me = (Map::ReloadableMapLayer*)userObj;
 	UOSInt i;
-	me->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&me->innerLayerMut, false);
 	i = me->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		me->updHdlrs.GetItem(i)(me->updObjs.GetItem(i));
 	}
-	me->innerLayerMut.UnlockRead();
 }
 
 Map::ReloadableMapLayer::ReloadableMapLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::IMapDrawLayer(fileName, 0, layerName)
@@ -45,7 +45,7 @@ Map::ReloadableMapLayer::~ReloadableMapLayer()
 void Map::ReloadableMapLayer::SetCurrScale(Double scale)
 {
 	UOSInt i;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	this->currScale = scale;
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
@@ -56,13 +56,12 @@ void Map::ReloadableMapLayer::SetCurrScale(Double scale)
 			innerLayer->innerLayer->SetCurrScale(scale);
 		}
 	}
-	this->innerLayerMut.UnlockRead();
 }
 
 void Map::ReloadableMapLayer::SetCurrTimeTS(Int64 timeStamp)
 {
 	UOSInt i;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	this->currTime = timeStamp;
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
@@ -73,7 +72,6 @@ void Map::ReloadableMapLayer::SetCurrTimeTS(Int64 timeStamp)
 			innerLayer->innerLayer->SetCurrTimeTS(timeStamp);
 		}
 	}
-	this->innerLayerMut.UnlockRead();
 }
 
 Int64 Map::ReloadableMapLayer::GetTimeStartTS()
@@ -82,7 +80,7 @@ Int64 Map::ReloadableMapLayer::GetTimeStartTS()
 	Int64 timeStart = 0;
 	Int64 v;
 	UOSInt i;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
 	{
@@ -104,7 +102,6 @@ Int64 Map::ReloadableMapLayer::GetTimeStartTS()
 			}
 		}
 	}
-	this->innerLayerMut.UnlockRead();
 	return timeStart;
 }
 
@@ -114,7 +111,7 @@ Int64 Map::ReloadableMapLayer::GetTimeEndTS()
 	Int64 timeEnd = 0;
 	Int64 v;
 	UOSInt i;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
 	{
@@ -136,7 +133,6 @@ Int64 Map::ReloadableMapLayer::GetTimeEndTS()
 			}
 		}
 	}
-	this->innerLayerMut.UnlockRead();
 	return timeEnd;
 }
 
@@ -155,7 +151,7 @@ UOSInt Map::ReloadableMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	Int64 maxId;
 	UOSInt ret = 0;
 	Data::ArrayListInt64 tmpArr;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = 0;
 	j = this->innerLayers.GetCount();
 	while (i < j)
@@ -177,8 +173,6 @@ UOSInt Map::ReloadableMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 		}
 		i++;
 	}
-
-	this->innerLayerMut.UnlockRead();
 	return ret;
 }
 
@@ -192,7 +186,7 @@ UOSInt Map::ReloadableMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 	Int64 maxId;
 	UOSInt ret = 0;
 	Data::ArrayListInt64 tmpArr;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = 0;
 	j = this->innerLayers.GetCount();
 	while (i < j)
@@ -214,8 +208,6 @@ UOSInt Map::ReloadableMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void 
 		}
 		i++;
 	}
-
-	this->innerLayerMut.UnlockRead();
 	return ret;
 }
 
@@ -229,7 +221,7 @@ UOSInt Map::ReloadableMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	Int64 maxId;
 	UOSInt ret = 0;
 	Data::ArrayListInt64 tmpArr;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = 0;
 	j = this->innerLayers.GetCount();
 	while (i < j)
@@ -251,8 +243,6 @@ UOSInt Map::ReloadableMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		}
 		i++;
 	}
-
-	this->innerLayerMut.UnlockRead();
 	return ret;
 }
 
@@ -261,7 +251,7 @@ Int64 Map::ReloadableMapLayer::GetObjectIdMax()
 	UOSInt i;
 	Int64 currId = 0;
 	Int64 maxId;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
 	{
@@ -272,7 +262,6 @@ Int64 Map::ReloadableMapLayer::GetObjectIdMax()
 			currId += maxId + 1;
 		}
 	}
-	this->innerLayerMut.UnlockRead();
 	return currId - 1;
 }
 void Map::ReloadableMapLayer::ReleaseNameArr(void *nameArr)
@@ -288,6 +277,7 @@ UTF8Char *Map::ReloadableMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, vo
 	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = 0;
 	j = this->innerLayers.GetCount();
 	while (i < j)
@@ -338,7 +328,7 @@ Bool Map::ReloadableMapLayer::GetBounds(Math::RectAreaDbl *bounds)
 	UOSInt i;
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
 	{
@@ -362,7 +352,6 @@ Bool Map::ReloadableMapLayer::GetBounds(Math::RectAreaDbl *bounds)
 			}
 		}
 	}
-	this->innerLayerMut.UnlockRead();
 	if (isFirst)
 	{
 		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
@@ -413,7 +402,7 @@ Map::DrawObjectL *Map::ReloadableMapLayer::GetNewObjectById(void *session, Int64
 	Int64 maxId;
 	Map::DrawObjectL *dobj = 0;
 	i = 0;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	j = this->innerLayers.GetCount();
 	while (i < j)
 	{
@@ -433,7 +422,6 @@ Map::DrawObjectL *Map::ReloadableMapLayer::GetNewObjectById(void *session, Int64
 		}
 		i++;
 	}
-	this->innerLayerMut.UnlockRead();
 	return dobj;
 }
 
@@ -445,7 +433,7 @@ Math::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *session, Int64 i
 	Int64 maxId;
 	Math::Vector2D *vec = 0;
 	i = 0;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	j = this->innerLayers.GetCount();
 	while (i < j)
 	{
@@ -465,7 +453,6 @@ Math::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *session, Int64 i
 		}
 		i++;
 	}
-	this->innerLayerMut.UnlockRead();
 	return vec;
 }
 
@@ -495,7 +482,7 @@ Math::CoordinateSystem *Map::ReloadableMapLayer::GetCoordinateSystem()
 {
 	Math::CoordinateSystem *csys = 0;
 	UOSInt i;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
 	{
@@ -510,14 +497,13 @@ Math::CoordinateSystem *Map::ReloadableMapLayer::GetCoordinateSystem()
 	}
 	if (csys == 0)
 		csys = this->csys;
-	this->innerLayerMut.UnlockRead();
 	return csys;
 }
 
 void Map::ReloadableMapLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
 	UOSInt i;
-	this->innerLayerMut.LockWrite();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, true);
 	i = this->innerLayers.GetCount();
 	while (i-- > 0)
 	{
@@ -529,14 +515,13 @@ void Map::ReloadableMapLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 	}
 	SDEL_CLASS(this->csys);
 	this->csys = csys;
-	this->innerLayerMut.UnlockWrite();
 }
 
 void Map::ReloadableMapLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
 	InnerLayerInfo *innerLayer;
-	this->innerLayerMut.LockWrite();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, true);
 	this->updHdlrs.Add(hdlr);
 	this->updObjs.Add(obj);
 	i = this->innerLayers.GetCount();
@@ -548,7 +533,6 @@ void Map::ReloadableMapLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 			innerLayer->innerLayer->AddUpdatedHandler(hdlr, obj);
 		}
 	}
-	this->innerLayerMut.UnlockWrite();
 }
 
 void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
@@ -556,7 +540,7 @@ void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 	UOSInt i;
 	InnerLayerInfo *innerLayer;
 	Bool chg = false;
-	this->innerLayerMut.LockWrite();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, true);
 	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
@@ -579,7 +563,6 @@ void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 			}
 		}
 	}
-	this->innerLayerMut.UnlockWrite();
 }
 
 void Map::ReloadableMapLayer::AddInnerLayer(Text::CString name, Text::CString url, Int32 seconds)
@@ -602,9 +585,9 @@ void Map::ReloadableMapLayer::AddInnerLayer(Text::CString name, Text::CString ur
 		innerLayer->layerName = 0;
 	}
 	innerLayer->reloadInterval = seconds;
-	this->innerLayerMut.LockWrite();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, true);
 	this->innerLayers.Add(innerLayer);
-	this->innerLayerMut.UnlockWrite();
+	mutUsage.EndUse();
 	this->Reload();
 }
 
@@ -624,13 +607,13 @@ void Map::ReloadableMapLayer::SetReloadURL(const WChar *url)
 {
 	if (url == 0)
 		return;
-	this->innerLayerMut.Lock();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	if (this->url)
 	{
 		Text::StrDelNew(this->url);
 	}
 	this->url = Text::StrCopyNew(url);
-	this->innerLayerMut.Unlock();
+	mutUsage.EndUse();
 	this->Reload();
 }
 
@@ -642,20 +625,20 @@ void Map::ReloadableMapLayer::SetReloadInterval(Int32 seconds)
 void Map::ReloadableMapLayer::Reload()
 {
 	UOSInt i;
-	this->innerLayerMut.LockRead();
+	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	i = this->innerLayers.GetCount();
-	this->innerLayerMut.UnlockRead();
+	mutUsage.EndUse();
 	while (i-- > 0)
 	{
         IO::IStreamData *data = 0;
 		InnerLayerInfo *innerLayer;
-		this->innerLayerMut.LockRead();
+		mutUsage.BeginUse(false);
 		innerLayer = this->innerLayers.GetItem(i);
 		if (innerLayer->innerLayer == 0 || innerLayer->reloadInterval != 0)
 		{
 			data = this->browser->GetData(innerLayer->url->ToCString(), innerLayer->reloadInterval != 0, 0);
 		}
-		this->innerLayerMut.UnlockRead();
+		mutUsage.EndUse();
 		if (data)
 		{
 			while (data->IsLoading())
@@ -670,7 +653,7 @@ void Map::ReloadableMapLayer::Reload()
 				if (pt == IO::ParserType::MapLayer)
 				{
 					UOSInt j;
-					this->innerLayerMut.LockWrite();
+					mutUsage.BeginUse(true);
 					SDEL_CLASS(innerLayer->innerLayer);
 					innerLayer->innerLayer = (Map::IMapDrawLayer*)pobj;
 					innerLayer->innerLayerType = innerLayer->innerLayer->GetLayerType();
@@ -680,6 +663,7 @@ void Map::ReloadableMapLayer::Reload()
 					{
 						innerLayer->innerLayer->AddUpdatedHandler(this->updHdlrs.GetItem(j), this->updObjs.GetItem(j));
 					}
+					mutUsage.EndUse();
 					this->innerLayerMut.UnlockWrite();
 					if (this->innerLayerType != innerLayer->innerLayerType)
 					{
@@ -696,13 +680,13 @@ void Map::ReloadableMapLayer::Reload()
 						}
 					}
 
-					this->innerLayerMut.LockRead();
+					mutUsage.BeginUse(false);
 					j = this->updHdlrs.GetCount();
 					while (j-- > 0)
 					{
 						this->updHdlrs.GetItem(j)(this->updObjs.GetItem(j));
 					}
-					this->innerLayerMut.UnlockRead();
+					mutUsage.EndUse();
 				}
 				else
 				{

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/GPSNMEA.h"
 #include "Math/Math.h"
+#include "Sync/RWMutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -284,13 +285,13 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 					break;
 				case ParseStatus::NewRecord:
 					{
-						me->hdlrMut.LockRead();
+						Sync::RWMutexUsage mutUsage(&me->hdlrMut, false);
 						UOSInt i = me->hdlrList.GetCount();
 						while (i-- > 0)
 						{
 							me->hdlrList.GetItem(i)(me->hdlrObjs.GetItem(i), &record, sateRec.sateCnt, sateRec.sates);
 						}
-						me->hdlrMut.UnlockRead();
+						mutUsage.EndUse();
 						MemClear(&record, sizeof(record));
 						sateRec.sateCnt = 0;
 						break;
@@ -349,15 +350,14 @@ Bool IO::GPSNMEA::IsDown()
 
 void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
-	this->hdlrMut.LockWrite();
+	Sync::RWMutexUsage mutUsage(&this->hdlrMut, true);
 	this->hdlrList.Add(hdlr);
 	this->hdlrObjs.Add(userObj);
-	this->hdlrMut.UnlockWrite();
 }
 
 void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
-	this->hdlrMut.LockWrite();
+	Sync::RWMutexUsage mutUsage(&this->hdlrMut, true);
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
 	{
@@ -368,7 +368,6 @@ void IO::GPSNMEA::UnregisterLocationHandler(LocationHandler hdlr, void *userObj)
 			break;
 		}
 	}
-	this->hdlrMut.UnlockWrite();
 }
 
 void IO::GPSNMEA::ErrorRecover()

@@ -9,6 +9,7 @@
 #include "Media/ICCProfile.h"
 #include "Media/MonitorInfo.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/RWMutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #if defined(_WIN32) || defined(WIN64)
@@ -951,20 +952,14 @@ void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 
 const Media::IColorHandler::YUVPARAM *Media::ColorManagerSess::GetYUVParam()
 {
-	const Media::IColorHandler::YUVPARAM *yuvParam;
-	this->mut.LockRead();
-	yuvParam = this->monColor->GetYUVParam();
-	this->mut.UnlockRead();
-	return yuvParam;
+	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	return this->monColor->GetYUVParam();
 }
 
 const Media::IColorHandler::RGBPARAM2 *Media::ColorManagerSess::GetRGBParam()
 {
-	const Media::IColorHandler::RGBPARAM2 *rgbParam;
-	this->mut.LockRead();
-	rgbParam = this->monColor->GetRGBParam();
-	this->mut.UnlockRead();
-	return rgbParam;
+	Sync::RWMutexUsage mutUsage(&this->mut, false);
+	return this->monColor->GetRGBParam();
 }
 
 Media::ColorProfile *Media::ColorManagerSess::GetDefVProfile()

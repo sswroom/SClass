@@ -167,9 +167,8 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 						sb.AppendC(UTF8STRC("Add to Play buff "));
 						sb.AppendI32((this->thisFrameTime + fieldAdd));
 						sb.AppendC(UTF8STRC(" skipped"));
-						this->debugMut->Lock();
+						Sync::MutexUsage debugMutUsage(this->debugMut);
 						this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
-						this->debugMut->Unlock();
 					}
 #endif
 					break;
@@ -184,9 +183,8 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("Add to Play buff "));
 					sb.AppendI32((this->thisFrameTime + fieldAdd));
-					this->debugMut->Lock();
+					Sync::MutexUsage debugMutUsage(this->debugMut);
 					this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
-					this->debugMut->Unlock();
 				}
 #endif
 				Sync::MutexUsage mutUsage(&this->playMut);
@@ -385,9 +383,8 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Output frame "));
 				sb.AppendU32(frameTime);
-				me->debugMut->Lock();
+				Sync::MutexUsage debugMutUsage(this->debugMut);
 				me->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
-				me->debugMut->Unlock();
 			}
 #endif
 			me->frameCb(frameTime, frameNum, &frameBuff, frameSize, fs, me->frameCbData, ft, (frameNum == 0)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -503,9 +500,8 @@ Bool Media::M2VStreamSource::Start()
 #ifdef _DEBUG
 	if (this->debugLog)
 	{
-		this->debugMut->Lock();
+		Sync::MutexUsage debugMutUsage(this->debugMut);
 		this->debugLog->WriteLineC(UTF8STRC("Start"));
-		this->debugMut->Unlock();
 	}
 #endif
 	Sync::MutexUsage mutUsage(&this->pbcMut);
@@ -650,9 +646,8 @@ void Media::M2VStreamSource::SetStreamTime(UInt32 time)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Set Stream Time "));
 		sb.AppendU32(time);
-		this->debugMut->Lock();
+		Sync::MutexUsage debugMutUsage(this->debugMut);
 		this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
-		this->debugMut->Unlock();
 	}
 #endif
 	this->syncFrameTime = time;
@@ -678,9 +673,8 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("WriteFrameStream "));
 		sb.AppendOSInt(buffSize);
-		this->debugMut->Lock();
+		Sync::MutexUsage debugMutUsage(this->debugMut);
 		this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
-		this->debugMut->Unlock();
 	}
 #endif
 

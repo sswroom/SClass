@@ -832,6 +832,19 @@ Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *c
 	}
 }
 
+Bool Media::ICCProfile::SetToColorProfile(Media::ColorProfile *colorProfile)
+{
+	if (this->GetRedTransferParam(colorProfile->GetRTranParam()) &&
+		this->GetGreenTransferParam(colorProfile->GetGTranParam()) &&
+		this->GetBlueTransferParam(colorProfile->GetBTranParam()) &&
+		this->GetColorPrimaries(colorProfile->GetPrimaries()))
+	{
+		colorProfile->SetRAWICC(this->iccBuff);
+		return true;	
+	}
+	return false;
+}
+
 void Media::ICCProfile::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UInt8 majorVer;
