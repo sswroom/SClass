@@ -15,6 +15,9 @@ DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
 
+Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter.cpp
+@WebPExporter.o
+
 IO/BTController.h: ../../src/IO/BTControllerNull.cpp
 @BTController.o
 IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
@@ -78,6 +81,8 @@ Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
 
 Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
 @JP2Parser.o
+Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
+@WebPParser.o
 
 Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 @Thread.o
@@ -92,6 +97,9 @@ MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
+!-lwebp
+!-lwebpmux
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
 BTScanner.o: ../../src/IO/BTScannerNull.cpp
@@ -126,5 +134,8 @@ WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
 !-lopenjp2
+WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
+!-lwebp
+!-lwebpdemux
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

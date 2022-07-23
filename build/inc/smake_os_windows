@@ -17,6 +17,9 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
 
+Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter_Null.cpp
+@WebPExporter.o
+
 IO/AMDGPUControl.h: ../../src/IO/AMDGPUControl.cpp
 @AMDGPUControl.o
 IO/AMDGPUManager.h: ../../src/IO/AMDGPUManager.cpp
@@ -138,6 +141,8 @@ Net/WLANWindowsInterface.h: ../../src/Net/WLANWindowsInterface.cpp
 
 Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 @JP2Parser.o
+Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser_Null.cpp
+@WebPParser.o
 
 Sync/Thread.h: ../../src/Sync/ThreadW.cpp
 @Thread.o
@@ -164,6 +169,7 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc32
 !-lodbccp32
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp
 $-I ../../ThirdParty/adl
 AMDGPUManager.o: ../../src/IO/AMDGPUManager.cpp
@@ -232,6 +238,7 @@ WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
+WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
 ServiceControl.o: ../../src/Win32/ServiceControl.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp
