@@ -119,6 +119,7 @@ nodeps:
 @LanczosFilterTest
 @DrawRotTest
 @GUIExportJPG
+@HEIFParserTest
 @ImageCopy
 @ImageResize
 @MonitorInfoTest
@@ -448,6 +449,9 @@ DrawRotTest:
 @ConsoleStartup.o
 GUIExportJPG:
 @GUIExportJPG.o
+@ConsoleStartup.o
+HEIFParserTest:
+@HEIFParserTest.o
 @ConsoleStartup.o
 ImageCopy:
 @ImageCopyTest.o
@@ -988,6 +992,7 @@ MCU_SIM7000.o: ../../main/MCU/MCU_SIM7000.cpp
 AudioDeviceTest.o: ../../main/Media/AudioDeviceTest.cpp
 DrawRotTest.o: ../../main/Media/DrawRotTest.cpp
 GUIExportJPG.o: ../../main/Media/GUIExportJPG.cpp
+HEIFParserTest.o: ../../main/Media/HEIFParserTest.cpp
 ImageCopyTest.o: ../../main/Media/ImageCopyTest.cpp
 ImageResizeMain.o: ../../main/Media/ImageResizeMain.cpp
 MonitorInfoTest.o: ../../main/Media/MonitorInfoTest.cpp

@@ -32,6 +32,7 @@
 #include "Parser/FileParser/GLOCParser.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Parser/FileParser/GZIPParser.h"
+#include "Parser/FileParser/HEIFParser.h"
 #include "Parser/FileParser/HTRecParser.h"
 #include "Parser/FileParser/ICOParser.h"
 #include "Parser/FileParser/ID3Parser.h"
@@ -248,6 +249,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::JP2Parser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::WebPParser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::HEIFParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);

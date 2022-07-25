@@ -16,3 +16,4 @@ libopenjp2-7-dev
 libsoxr-dev
 libtesseract-dev
 libwebp-dev
+libheif-dev
