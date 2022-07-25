@@ -46,7 +46,18 @@ extern "C"
 #define FFMPEGDecoder_av_frame_alloc avcodec_alloc_frame
 #define FFMPEGDecoder_av_frame_free avcodec_free_frame
 #endif
+#if VERSION_FROM(58, 133, 100)
+static void FFMPEGDecoder_av_init_packet(AVPacket *pkt)
+{
+    memset(pkt, 0, sizeof(*pkt));
+
+    pkt->pts             = AV_NOPTS_VALUE;
+    pkt->dts             = AV_NOPTS_VALUE;
+    pkt->pos             = -1;
+}
+#else
 #define FFMPEGDecoder_av_init_packet av_init_packet
+#endif
 #if VERSION_FROM(58, 10, 100)
 void FFMPEGDecoder_avcodec_register_all()
 {

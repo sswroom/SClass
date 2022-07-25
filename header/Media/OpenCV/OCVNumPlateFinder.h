@@ -17,14 +17,14 @@ namespace Media
 
 			typedef void (__stdcall *PossibleAreaFunc)(void *userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double tileAngle, Double area, PlateSize psize);
 		private:
-			Double maxTileAngle;
+			Double maxTiltAngle;
 			Double minArea;
 			Double maxArea;
 		public:
 			OCVNumPlateFinder();
 			~OCVNumPlateFinder();
 			
-			void SetMaxTileAngle(Double maxTileAngleDegree);
+			void SetMaxTiltAngle(Double maxTiltAngleDegree);
 			void SetAreaRange(Double minArea, Double maxArea);
 			void Find(Media::OpenCV::OCVFrame *frame, PossibleAreaFunc func, void *userObj);
 		};

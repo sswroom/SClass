@@ -12,7 +12,7 @@
 
 Media::OpenCV::OCVNumPlateFinder::OCVNumPlateFinder()
 {
-	this->maxTileAngle = 30;
+	this->maxTiltAngle = 30;
 	this->minArea = 2000;
 	this->maxArea = 20000;
 }
@@ -21,9 +21,9 @@ Media::OpenCV::OCVNumPlateFinder::~OCVNumPlateFinder()
 {
 }
 
-void Media::OpenCV::OCVNumPlateFinder::SetMaxTileAngle(Double maxTileAngleDegree)
+void Media::OpenCV::OCVNumPlateFinder::SetMaxTiltAngle(Double maxTiltAngleDegree)
 {
-	this->maxTileAngle = maxTileAngleDegree;
+	this->maxTiltAngle = maxTiltAngleDegree;
 }
 
 void Media::OpenCV::OCVNumPlateFinder::SetAreaRange(Double minArea, Double maxArea)
@@ -48,10 +48,10 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 	Double peri;
 	std::vector<cv::Point> poly;
 	cv::Scalar col(160);
-	Double v1 = 90 - this->maxTileAngle;
-	Double v2 = 90 + this->maxTileAngle;
-	Double v3 = 270 - this->maxTileAngle;
-	Double v4 = 270 + this->maxTileAngle;
+	Double v1 = 90 - this->maxTiltAngle;
+	Double v2 = 90 + this->maxTiltAngle;
+	Double v3 = 270 - this->maxTiltAngle;
+	Double v4 = 270 + this->maxTiltAngle;
 	Double epsilon = 0.018; //0.018
 	while (i < j)
 	{
@@ -110,9 +110,9 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					{
 						tiltAngle = -tiltAngle;
 					}
-					if (maxTileAngle < tiltAngle)
+					if (maxTiltAngle < tiltAngle)
 					{
-						maxTileAngle = tiltAngle;
+						maxTiltAngle = tiltAngle;
 					}
 				}
 				PlateSize pSize = PlateSize::SingleRow;
@@ -153,7 +153,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(Media::OpenCV::OCVFrame *frame, Poss
 					rect[1] = Math::Coord2D<UOSInt>((UOSInt)poly[1].x, (UOSInt)poly[1].y);
 					rect[2] = Math::Coord2D<UOSInt>((UOSInt)poly[2].x, (UOSInt)poly[2].y);
 					rect[3] = Math::Coord2D<UOSInt>((UOSInt)poly[3].x, (UOSInt)poly[3].y);
-					func(userObj, &filteredFrame, rect, maxTileAngle, area, pSize);
+					func(userObj, &filteredFrame, rect, maxTiltAngle, area, pSize);
 				}
 			}
 		}

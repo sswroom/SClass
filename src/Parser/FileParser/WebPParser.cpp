@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFile(IO::IStreamData *fd,
 	{
 		do
 		{
-			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data, simg->GetDataBpl() * simg->info.dispHeight, simg->GetDataBpl());
+			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data, simg->GetDataBpl() * simg->info.dispHeight, (int)simg->GetDataBpl());
 		} while (WebPDemuxNextFrame(&iter));
 		WebPDemuxReleaseIterator(&iter);
 	}

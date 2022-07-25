@@ -741,10 +741,10 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 
 const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
 {
-	Bool isGlobal = false;
+//	Bool isGlobal = false;
 	if (Text::StrStartsWithICaseC(varName, nameLen, UTF8STRC("GLOBAL.")))
 	{
-		isGlobal = true;
+//		isGlobal = true;
 		varName += 7;
 		nameLen -= 7;
 	}
