@@ -17,6 +17,7 @@
 #include "Exporter/GUIPNGExporter.h"
 #include "Exporter/GUITIFExporter.h"
 #include "Exporter/GPXExporter.h"
+#include "Exporter/HEIFExporter.h"
 #include "Exporter/ICOExporter.h"
 #include "Exporter/KMLExporter.h"
 #include "Exporter/MapCSVExporter.h"
@@ -109,6 +110,8 @@ Exporter::ExporterList::ExporterList()
 	NEW_CLASS(exporter, Exporter::SFVExporter());
 	this->exporters->Add(exporter);
 	NEW_CLASS(exporter, Exporter::WebPExporter());
+	this->exporters->Add(exporter);
+	NEW_CLASS(exporter, Exporter::HEIFExporter());
 	this->exporters->Add(exporter);
 
 	NEW_CLASS(exporter, Exporter::GUIJPGExporter());
