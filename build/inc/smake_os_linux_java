@@ -15,6 +15,8 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
 @PostgreSQLConn.o
 
+Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
+@HEIFExporter.o
 Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter.cpp
 @WebPExporter.o
 
@@ -87,6 +89,8 @@ Net/WLANLinuxInterface.h: ../../src/Net/WLANLinuxInterface.cpp
 Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
 @WLANLinuxMTKInterface.o
 
+Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser.cpp
+@HEIFParser.o
 Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
 @JP2Parser.o
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
@@ -118,6 +122,8 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
 $`pkg-config --cflags libpq`
 !`pkg-config --libs libpq`
+HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
+!-lheif
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
 !-lwebp
 !-lwebpmux
@@ -175,6 +181,8 @@ SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
+HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
+!-lheif
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
 !-lopenjp2
 WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp

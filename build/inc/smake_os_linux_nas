@@ -12,6 +12,8 @@ DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
 
+Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter_Null.cpp
+@HEIFExporter.o
 Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter_Null.cpp
 @WebPExporter.o
 
@@ -82,6 +84,8 @@ Net/WLANLinuxInterface.h: ../../src/Net/WLANLinuxInterface.cpp
 Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
 @WLANLinuxMTKInterface.o
 
+Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser_Null.cpp
+@HEIFParser.o
 Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 @JP2Parser.o
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser_Null.cpp
@@ -98,6 +102,7 @@ MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
@@ -131,6 +136,7 @@ SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
+HEIFParser.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp

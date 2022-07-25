@@ -17,6 +17,8 @@ DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
 
+Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter_Null.cpp
+@HEIFExporter.o
 Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter_Null.cpp
 @WebPExporter.o
 
@@ -139,6 +141,8 @@ Net/WLANWindowsCore.h: ../../src/Net/WLANWindowsCore.cpp
 Net/WLANWindowsInterface.h: ../../src/Net/WLANWindowsInterface.cpp
 @WLANWindowsInterface.o
 
+Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser_Null.cpp
+@HEIFParser.o
 Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 @JP2Parser.o
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser_Null.cpp
@@ -169,6 +173,7 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc32
 !-lodbccp32
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp
 $-I ../../ThirdParty/adl
@@ -237,6 +242,7 @@ WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
+HEIFParser.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
