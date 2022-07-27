@@ -175,22 +175,22 @@ Bool IO::ED516Sim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
 	}
 	else if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->diValues[0] << 15) |
-			(this->diValues[1] << 14) |
-			(this->diValues[2] << 13) |
-			(this->diValues[3] << 12) |
-			(this->diValues[4] << 11) |
-			(this->diValues[5] << 10) |
-			(this->diValues[6] << 9) |
-			(this->diValues[7] << 8) |
-			(this->diValues[8] << 7) |
-			(this->diValues[9] << 6) |
-			(this->diValues[10] << 5) |
-			(this->diValues[11] << 4) |
-			(this->diValues[12] << 3) |
-			(this->diValues[13] << 2) |
-			(this->diValues[14] << 1) |
-			(this->diValues[15] << 0));
+		*value = (UInt16)((this->diValues[0] << 0) |
+			(this->diValues[1] << 1) |
+			(this->diValues[2] << 2) |
+			(this->diValues[3] << 3) |
+			(this->diValues[4] << 4) |
+			(this->diValues[5] << 5) |
+			(this->diValues[6] << 6) |
+			(this->diValues[7] << 7) |
+			(this->diValues[8] << 8) |
+			(this->diValues[9] << 9) |
+			(this->diValues[10] << 10) |
+			(this->diValues[11] << 11) |
+			(this->diValues[12] << 12) |
+			(this->diValues[13] << 13) |
+			(this->diValues[14] << 14) |
+			(this->diValues[15] << 15));
 		return true;
 	}
 	return false;

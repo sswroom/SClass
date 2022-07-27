@@ -165,14 +165,14 @@ Bool IO::ED588Sim::ReadHoldingRegister(UInt16 regAddr, UInt16 *value)
 	}
 	else if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->relays[0] << 15) |
-			(this->relays[1] << 14) |
-			(this->relays[2] << 13) |
-			(this->relays[3] << 12) |
-			(this->relays[4] << 11) |
-			(this->relays[5] << 10) |
-			(this->relays[6] << 9) |
-			(this->relays[7] << 8));
+		*value = (UInt16)((this->relays[0] << 0) |
+			(this->relays[1] << 1) |
+			(this->relays[2] << 2) |
+			(this->relays[3] << 3) |
+			(this->relays[4] << 4) |
+			(this->relays[5] << 5) |
+			(this->relays[6] << 6) |
+			(this->relays[7] << 7));
 		return true;
 	}
 	return false;
@@ -187,14 +187,14 @@ Bool IO::ED588Sim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
 	}
 	else if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->diValues[0] << 15) |
-			(this->diValues[1] << 14) |
-			(this->diValues[2] << 13) |
-			(this->diValues[3] << 12) |
-			(this->diValues[4] << 11) |
-			(this->diValues[5] << 10) |
-			(this->diValues[6] << 9) |
-			(this->diValues[7] << 8));
+		*value = (UInt16)((this->diValues[0] << 0) |
+			(this->diValues[1] << 1) |
+			(this->diValues[2] << 2) |
+			(this->diValues[3] << 3) |
+			(this->diValues[4] << 4) |
+			(this->diValues[5] << 5) |
+			(this->diValues[6] << 6) |
+			(this->diValues[7] << 7));
 		return true;
 	}
 	return false;
@@ -219,14 +219,14 @@ Bool IO::ED588Sim::WriteHoldingRegister(UInt16 regAddr, UInt16 val)
 {
 	if (regAddr == 0x20)
 	{
-		this->relays[0] = (val & 0x8000) != 0;
-		this->relays[1] = (val & 0x4000) != 0;
-		this->relays[2] = (val & 0x2000) != 0;
-		this->relays[3] = (val & 0x1000) != 0;
-		this->relays[4] = (val & 0x0800) != 0;
-		this->relays[5] = (val & 0x0400) != 0;
-		this->relays[6] = (val & 0x0200) != 0;
-		this->relays[7] = (val & 0x0100) != 0;
+		this->relays[0] = (val & 0x0001) != 0;
+		this->relays[1] = (val & 0x0002) != 0;
+		this->relays[2] = (val & 0x0004) != 0;
+		this->relays[3] = (val & 0x0008) != 0;
+		this->relays[4] = (val & 0x0010) != 0;
+		this->relays[5] = (val & 0x0020) != 0;
+		this->relays[6] = (val & 0x0040) != 0;
+		this->relays[7] = (val & 0x0080) != 0;
 		return true;
 	}
 	return false;

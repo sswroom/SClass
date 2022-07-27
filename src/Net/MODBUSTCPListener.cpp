@@ -55,7 +55,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						UInt8 byteSize = (UInt8)((nCoil + 7) >> 3);
 						WriteMUInt16(&retBuff[0], tranId);
 						WriteMUInt16(&retBuff[2], 0);
-						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 1));
+						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 3));
 						retBuff[6] = addr;
 						retBuff[7] = 1;
 						retBuff[8] = byteSize;
@@ -71,11 +71,11 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 							}
 							if (i & 7)
 							{
-								retBuff[j] = (UInt8)(retBuff[j] | (bVal << (7 - (i & 7))));
+								retBuff[j] = (UInt8)(retBuff[j] | (bVal << (i & 7)));
 							}
 							else
 							{
-								retBuff[j] = bVal << 7;
+								retBuff[j] = bVal;
 							}
 							i++;
 							if ((i & 7) == 0)
@@ -100,7 +100,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						UInt8 byteSize = (UInt8)((nInputs + 7) >> 3);
 						WriteMUInt16(&retBuff[0], tranId);
 						WriteMUInt16(&retBuff[2], 0);
-						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 1));
+						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 3));
 						retBuff[6] = addr;
 						retBuff[7] = 2;
 						retBuff[8] = byteSize;
@@ -116,11 +116,11 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 							}
 							if (i & 7)
 							{
-								retBuff[j] = (UInt8)(retBuff[j] | (bVal << (7 - (i & 7))));
+								retBuff[j] = (UInt8)(retBuff[j] | (bVal << (i & 7)));
 							}
 							else
 							{
-								retBuff[j] = bVal << 7;
+								retBuff[j] = bVal;
 							}
 							i++;
 							if ((i & 7) == 0)
@@ -145,7 +145,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						UInt8 byteSize = (UInt8)(nReg << 1);
 						WriteMUInt16(&retBuff[0], tranId);
 						WriteMUInt16(&retBuff[2], 0);
-						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 1));
+						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 3));
 						retBuff[6] = addr;
 						retBuff[7] = 3;
 						retBuff[8] = byteSize;
@@ -178,7 +178,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						UInt8 byteSize = (UInt8)(nReg << 1);
 						WriteMUInt16(&retBuff[0], tranId);
 						WriteMUInt16(&retBuff[2], 0);
-						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 1));
+						WriteMUInt16(&retBuff[4], (UInt16)(byteSize + 3));
 						retBuff[6] = addr;
 						retBuff[7] = 4;
 						retBuff[8] = byteSize;
