@@ -1627,6 +1627,14 @@ IO/DeviceDB.h: ../../src/IO/DeviceDB.cpp
 @DeviceDB.o
 IO/DirectoryPackage.h: ../../src/IO/DirectoryPackage.cpp
 @DirectoryPackage.o
+IO/ED516Sim.h: ../../src/IO/ED516Sim.cpp
+@ED516Sim.o
+IO/ED527Sim.h: ../../src/IO/ED527Sim.cpp
+@ED527Sim.o
+IO/ED538Sim.h: ../../src/IO/ED538Sim.cpp
+@ED538Sim.o
+IO/ED588Sim.h: ../../src/IO/ED588Sim.cpp
+@ED588Sim.o
 IO/EXEFile.h: ../../src/IO/EXEFile.cpp
 @EXEFile.o
 IO/FileCheck.h: ../../src/IO/FileCheck.cpp
@@ -1690,6 +1698,7 @@ IO/MODBUSController.h: ../../src/IO/MODBUSController.cpp
 @MODBUSController.o
 IO/MODBUSDevice.h: ../../src/IO/MODBUSDevice.cpp
 @MODBUSDevice.o
+IO/MODBUSDevSim.h:
 IO/MODBUSMaster.h:
 IO/MODBUSRTUMaster.h: ../../src/IO/MODBUSRTUMaster.cpp
 @MODBUSRTUMaster.o
@@ -1711,6 +1720,8 @@ IO/PackageFile.h: ../../src/IO/PackageFile.cpp
 @PackageFile.o
 IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
+IO/PrintMODBUSDevSim.h: ../../src/IO/PrintMODBUSDevSim.cpp
+@PrintMODBUSDevSim.o
 IO/RadioSignalLogger.h: ../../src/IO/RadioSignalLogger.cpp
 @RadioSignalLogger.o
 IO/RAWMonitor.h: ../../src/IO/RAWMonitor.cpp
@@ -2792,6 +2803,8 @@ Net/MIBReader.h: ../../src/Net/MIBReader.cpp
 @MIBReader.o
 Net/MIME.h: ../../src/Net/MIME.cpp
 @MIME.o
+Net/MODBUSTCPListener.h: ../../src/Net/MODBUSTCPListener.cpp
+@MODBUSTCPListener.o
 Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
 @MQTTBroker.o
 Net/MQTTClient.h:
@@ -3547,6 +3560,8 @@ SSWR/AVIRead/AVIRMIMEViewerForm.h: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
 @AVIRMIMEViewerForm.o
 SSWR/AVIRead/AVIRMODBUSMasterForm.h: ../../src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
 @AVIRMODBUSMasterForm.o
+SSWR/AVIRead/AVIRMODBUSTCPSimForm.h: ../../src/SSWR/AVIRead/AVIRMODBUSTCPSimForm.cpp
+@AVIRMODBUSTCPSimForm.o
 SSWR/AVIRead/AVIRMQTTBrokerForm.h: ../../src/SSWR/AVIRead/AVIRMQTTBrokerForm.cpp
 @AVIRMQTTBrokerForm.o
 SSWR/AVIRead/AVIRMQTTExplorerForm.h: ../../src/SSWR/AVIRead/AVIRMQTTExplorerForm.cpp
@@ -4396,6 +4411,10 @@ CortexControl.o: ../../src/IO/CortexControl.cpp
 CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
 DeviceDB.o: ../../src/IO/DeviceDB.cpp
 DirectoryPackage.o: ../../src/IO/DirectoryPackage.cpp
+ED516Sim.o: ../../src/IO/ED516Sim.cpp
+ED527Sim.o: ../../src/IO/ED527Sim.cpp
+ED538Sim.o: ../../src/IO/ED538Sim.cpp
+ED588Sim.o: ../../src/IO/ED588Sim.cpp
 EXEFile.o: ../../src/IO/EXEFile.cpp
 FileCheck.o: ../../src/IO/FileCheck.cpp
 FileExporter.o: ../../src/IO/FileExporter.cpp
@@ -4432,6 +4451,7 @@ NullWriter.o: ../../src/IO/NullWriter.cpp
 OneWireGPIO.o: ../../src/IO/OneWireGPIO.cpp
 PackageFile.o: ../../src/IO/PackageFile.cpp
 ParsedObject.o: ../../src/IO/ParsedObject.cpp
+PrintMODBUSDevSim.o: ../../src/IO/PrintMODBUSDevSim.cpp
 RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp
 RAWMonitor.o: ../../src/IO/RAWMonitor.cpp
 RS232GPIO.o: ../../src/IO/RS232GPIO.cpp
@@ -4919,6 +4939,7 @@ MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MIBReader.o: ../../src/Net/MIBReader.cpp
 MIME.o: ../../src/Net/MIME.cpp
+MODBUSTCPListener.o: ../../src/Net/MODBUSTCPListener.cpp
 MQTTBroker.o: ../../src/Net/MQTTBroker.cpp
 MQTTConn.o: ../../src/Net/MQTTConn.cpp
 MQTTFailoverClient.o: ../../src/Net/MQTTFailoverClient.cpp
@@ -5293,6 +5314,7 @@ AVIRMACManagerForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
 AVIRMediaForm.o: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
 AVIRMIMEViewerForm.o: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
 AVIRMODBUSMasterForm.o: ../../src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
+AVIRMODBUSTCPSimForm.o: ../../src/SSWR/AVIRead/AVIRMODBUSTCPSimForm.cpp
 AVIRMQTTBrokerForm.o: ../../src/SSWR/AVIRead/AVIRMQTTBrokerForm.cpp
 AVIRMQTTExplorerForm.o: ../../src/SSWR/AVIRead/AVIRMQTTExplorerForm.cpp
 AVIRMQTTPublishForm.o: ../../src/SSWR/AVIRead/AVIRMQTTPublishForm.cpp

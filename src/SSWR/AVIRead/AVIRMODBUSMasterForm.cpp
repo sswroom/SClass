@@ -266,14 +266,14 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 		UTF8Char *sptr;
 		MODBUSEntry *entry;
 		UOSInt i = 0;
-		UOSInt j = me->entryList->GetCount();
+		UOSInt j = me->entryList.GetCount();
 		while (i < j)
 		{
 			Single f32Val;
 			Int32 i32Val;
 			UInt16 u16Val;
 			UInt8 u8Val;
-			entry = me->entryList->GetItem(i);
+			entry = me->entryList.GetItem(i);
 			switch (entry->dt)
 			{
 			case IO::MODBUSController::DT_F32:
@@ -437,7 +437,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 	sptr = Text::StrUInt16(sbuff, devAddr);
 	entry->lvIndex = me->lvDevice->AddItem(CSTRP(sbuff, sptr), entry);
 	entry->val = 0;
-	me->entryList->Add(entry);
+	me->entryList.Add(entry);
 	sptr = Text::StrUInt16(sbuff, (UInt16)regAddr);
 	me->lvDevice->SetSubItem(entry->lvIndex, 1, CSTRP(sbuff, sptr));
 	me->lvDevice->SetSubItem(entry->lvIndex, 2, name);
@@ -467,7 +467,6 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	
 	this->core = core;
 	this->stm = 0;
-	NEW_CLASS(this->entryList, Data::ArrayList<MODBUSEntry*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
@@ -606,14 +605,13 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 {
 	StopStream(false);
 	MODBUSEntry *entry;
-	UOSInt i = this->entryList->GetCount();
+	UOSInt i = this->entryList.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->entryList->GetItem(i);
+		entry = this->entryList.GetItem(i);
 		entry->name->Release();
 		MemFree(entry);
 	}
-	DEL_CLASS(this->entryList);
 }
 
 void SSWR::AVIRead::AVIRMODBUSMasterForm::OnMonitorChanged()

@@ -1,11 +1,11 @@
 #ifndef _SM_NET_TCPCLIENTMGR
 #define _SM_NET_TCPCLIENTMGR
-#include "Data/DateTime.h"
-#include "Sync/Mutex.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListUInt64.h"
+#include "Data/DateTime.h"
 #include "Data/SyncCircularBuff.h"
 #include "Net/TCPClient.h"
+#include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 
 #define TCP_BUFF_SIZE 16384

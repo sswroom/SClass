@@ -103,7 +103,7 @@ void IO::Device::ED538::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, voi
 	dataHdlr(userObj, CSTR("Din 6 Count"), addr, 40007, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
 	dataHdlr(userObj, CSTR("Din 7 Count"), addr, 40008, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
 	dataHdlr(userObj, CSTR("RL0"),         addr, 00001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("RL1"),         addr, 00001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("RL2"),         addr, 00001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("RL3"),         addr, 00001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL1"),         addr, 00002, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL2"),         addr, 00003, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL3"),         addr, 00004, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
 }

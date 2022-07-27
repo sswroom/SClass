@@ -1,9 +1,9 @@
 #ifndef _SM_NET_TCPCLIENT
 #define _SM_NET_TCPCLIENT
+#include "IO/Stream.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "IO/Stream.h"
 
 namespace Net
 {

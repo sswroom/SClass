@@ -53,7 +53,7 @@ namespace SSWR
 			IO::Stream *stm;
 			IO::MODBUSMaster *modbus;
 			IO::MODBUSController *modbusCtrl;
-			Data::ArrayList<MODBUSEntry*> *entryList;
+			Data::ArrayList<MODBUSEntry*> entryList;
 
 			UI::GUIGroupBox *grpStream;
 			UI::GUILabel *lblStream;

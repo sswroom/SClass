@@ -1,4 +1,3 @@
-//require ws2_32.lib iphlpapi.lib dnsapi.lib
 #ifndef _SM_NET_SOCKETFACTORY
 #define _SM_NET_SOCKETFACTORY
 #include "Data/ArrayList.h"

@@ -122,6 +122,7 @@
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "SSWR/AVIRead/AVIRMACManagerForm.h"
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
+#include "SSWR/AVIRead/AVIRMODBUSTCPSimForm.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
 #include "SSWR/AVIRead/AVIRMQTTExplorerForm.h"
 #include "SSWR/AVIRead/AVIRMQTTPublishForm.h"
@@ -434,7 +435,8 @@ typedef enum
 	MNU_TRUSTSTORE,
 	MNU_JAVACACERTS,
 	MNU_WINDOWS_ERROR,
-	MNU_ADAM
+	MNU_ADAM,
+	MNU_MODBUS_TCPSIM
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -798,6 +800,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("&GSM Modem"), MNU_GSM_MODEM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Voice Modem"), MNU_VOICEMODEM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("MODBUS Master"), MNU_MODBUSMASTER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("MODBUS TCP Simulator"), MNU_MODBUS_TCPSIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("G&PS Tracker"), MNU_GPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Camera Control"));
 	mnu2->AddItem(CSTR("Any Camera"), MNU_CAMERACONTROLANY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2481,6 +2484,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRADAMForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRADAMForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_MODBUS_TCPSIM:
+		{
+			SSWR::AVIRead::AVIRMODBUSTCPSimForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRMODBUSTCPSimForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
