@@ -91,6 +91,7 @@ nodeps:
 @GPSGPIOTest
 @GSMModemTest
 @JavaClassTest
+@MODBUSDevSim
 @MODBUSTest
 @NoiseSensorTest
 @QQZMSerialCameraTest
@@ -331,6 +332,9 @@ GSMModemTest:
 @ConsoleStartup.o
 JavaClassTest:
 @JavaClassTest.o
+@ConsoleStartup.o
+MODBUSDevSim:
+@MODBUSDevSimMain.o
 @ConsoleStartup.o
 MODBUSTest:
 @MODBUSTest.o
@@ -956,6 +960,7 @@ GPIOServer.o: ../../main/IO/GPIOServer.cpp
 GPSGPIOTest.o: ../../main/IO/GPSGPIOTest.cpp
 GSMModemTest.o: ../../main/IO/GSMModemTest.cpp
 JavaClassTest.o: ../../main/IO/JavaClassTest.cpp
+MODBUSDevSimMain.o: ../../main/IO/MODBUSDevSimMain.cpp
 MODBUSTest.o: ../../main/IO/MODBUSTest.cpp
 NoiseSensorTest.o: ../../main/IO/NoiseSensorTest.cpp
 QQZMSerialCameraTest.o: ../../main/IO/QQZMSerialCameraTest.cpp
@@ -2995,6 +3000,8 @@ Net/WebServer/MemoryWebSession.h: ../../src/Net/WebServer/MemoryWebSession.cpp
 @MemoryWebSession.o
 Net/WebServer/MemoryWebSessionManager.h: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
 @MemoryWebSessionManager.o
+Net/WebServer/MODBUSDevSimHandler.h: ../../src/Net/WebServer/MODBUSDevSimHandler.cpp
+@MODBUSDevSimHandler.o
 Net/WebServer/OAuth2Handler.h: ../../src/Net/WebServer/OAuth2Handler.cpp
 @OAuth2Handler.o
 Net/WebServer/PrintLogWebHandler.h: ../../src/Net/WebServer/PrintLogWebHandler.cpp
@@ -5034,6 +5041,7 @@ IWebResponse.o: ../../src/Net/WebServer/IWebResponse.cpp
 IWebSessionManager.o: ../../src/Net/WebServer/IWebSessionManager.cpp
 MemoryWebSession.o: ../../src/Net/WebServer/MemoryWebSession.cpp
 MemoryWebSessionManager.o: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
+MODBUSDevSimHandler.o: ../../src/Net/WebServer/MODBUSDevSimHandler.cpp
 OAuth2Handler.o: ../../src/Net/WebServer/OAuth2Handler.cpp
 PrintLogWebHandler.o: ../../src/Net/WebServer/PrintLogWebHandler.cpp
 PrintLogWebResponse.o: ../../src/Net/WebServer/PrintLogWebResponse.cpp
