@@ -1,31 +1,31 @@
 #include "Stdafx.h"
-#include "IO/Device/ED538.h"
+#include "IO/Device/ED588.h"
 #include "Math/Math.h"
 #include "Math/Unit/Count.h"
 
-IO::Device::ED538::ED538(IO::MODBUSMaster *modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::ED588::ED588(IO::MODBUSMaster *modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 
-IO::Device::ED538::~ED538()
+IO::Device::ED588::~ED588()
 {
 }
 
-Bool IO::Device::ED538::IsDIHighByCoil(UInt16 diNum)
+Bool IO::Device::ED588::IsDIHighByCoil(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
 	return this->ReadCoil((UInt16)(diNum + 0x20));
 }
 
-Bool IO::Device::ED538::IsDIHighByInput(UInt16 diNum)
+Bool IO::Device::ED588::IsDIHighByInput(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
 	return this->ReadDInput(diNum);
 }
 
-Bool IO::Device::ED538::IsDIHighByReg(UInt16 diNum)
+Bool IO::Device::ED588::IsDIHighByReg(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
@@ -35,7 +35,7 @@ Bool IO::Device::ED538::IsDIHighByReg(UInt16 diNum)
 	return val != 0;
 }
 
-UInt16 IO::Device::ED538::GetDICountByReg(UInt16 diNum)
+UInt16 IO::Device::ED588::GetDICountByReg(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return 0;
@@ -45,14 +45,14 @@ UInt16 IO::Device::ED538::GetDICountByReg(UInt16 diNum)
 	return (UInt16)val;
 }
 
-Bool IO::Device::ED538::GetDICountByReg(UInt16 diNum, Int32 *val)
+Bool IO::Device::ED588::GetDICountByReg(UInt16 diNum, Int32 *val)
 {
 	if (diNum >= 8)
 		return false;
 	return this->ReadInputI16(diNum, val);
 }
 
-UInt16 IO::Device::ED538::GetDICountByHolding(UInt16 diNum)
+UInt16 IO::Device::ED588::GetDICountByHolding(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return 0;
@@ -62,35 +62,35 @@ UInt16 IO::Device::ED538::GetDICountByHolding(UInt16 diNum)
 	return (UInt16)val;
 }
 
-Bool IO::Device::ED538::ClearDICount(UInt16 diNum)
+Bool IO::Device::ED588::ClearDICount(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
 	return this->WriteDOutput((UInt16)(0x200 + diNum), true);
 }
 
-Bool IO::Device::ED538::IsRelayHigh(UInt16 index)
+Bool IO::Device::ED588::IsRelayHigh(UInt16 index)
 {
-	if (index >= 4)
+	if (index >= 8)
 		return false;
 	return this->ReadCoil(index);
 }
 
-Bool IO::Device::ED538::SetRelayState(UInt16 index, Bool isHigh)
+Bool IO::Device::ED588::SetRelayState(UInt16 index, Bool isHigh)
 {
-	if (index >= 4)
+	if (index >= 8)
 		return false;
 	return this->WriteDOutput(index, isHigh);
 }
 
-Bool IO::Device::ED538::GetOutputOverloadFlag(UInt16 diNum)
+Bool IO::Device::ED588::GetOutputOverloadFlag(UInt16 diNum)
 {
 	if (diNum >= 8)
 		return false;
 	return this->ReadDInput((UInt16)(0x400 + diNum));
 }
 
-void IO::Device::ED538::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
+void IO::Device::ED588::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
 {
 	dataHdlr(userObj, CSTR("Din 0"),       addr, 10001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
 	dataHdlr(userObj, CSTR("Din 1"),       addr, 10002, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
@@ -112,4 +112,8 @@ void IO::Device::ED538::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, voi
 	dataHdlr(userObj, CSTR("RL1"),         addr,     2, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
 	dataHdlr(userObj, CSTR("RL2"),         addr,     3, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
 	dataHdlr(userObj, CSTR("RL3"),         addr,     4, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL4"),         addr,     5, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL5"),         addr,     6, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL6"),         addr,     7, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("RL7"),         addr,     8, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
 }

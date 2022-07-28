@@ -30,10 +30,13 @@ namespace SSWR
 			{
 				DT_SDM120,
 				DT_AMGU4241,
+				DT_ED516,
+				DT_ED527,
 				DT_ED538,
+				DT_ED588,
 
 				DT_FIRST = DT_SDM120,
-				DT_LAST = DT_ED538
+				DT_LAST = DT_ED588
 			} DeviceType;
 
 			typedef struct

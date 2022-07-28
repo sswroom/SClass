@@ -3,7 +3,10 @@
 #include "IO/MODBUSTCPMaster.h"
 #include "IO/SerialPort.h"
 #include "IO/Device/AMGU4241.h"
+#include "IO/Device/ED516.h"
+#include "IO/Device/ED527.h"
 #include "IO/Device/ED538.h"
+#include "IO/Device/ED588.h"
 #include "IO/Device/SDM120M.h"
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
 #include "Sync/Thread.h"
@@ -250,8 +253,17 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(void *use
 		case DT_AMGU4241:
 			IO::Device::AMGU4241::GetDataEntries(devAddr, OnMODBUSEntry, me);
 			break;
+		case DT_ED516:
+			IO::Device::ED516::GetDataEntries(devAddr, OnMODBUSEntry, me);
+			break;
+		case DT_ED527:
+			IO::Device::ED527::GetDataEntries(devAddr, OnMODBUSEntry, me);
+			break;
 		case DT_ED538:
 			IO::Device::ED538::GetDataEntries(devAddr, OnMODBUSEntry, me);
+			break;
+		case DT_ED588:
+			IO::Device::ED588::GetDataEntries(devAddr, OnMODBUSEntry, me);
 			break;
 		}
 	}
@@ -627,8 +639,14 @@ Text::CString SSWR::AVIRead::AVIRMODBUSMasterForm::DeviceTypeGetName(DeviceType 
 		return CSTR("SDM120");
 	case DT_AMGU4241:
 		return CSTR("AMGU4241");
+	case DT_ED516:
+		return CSTR("ED516");
+	case DT_ED527:
+		return CSTR("ED527");
 	case DT_ED538:
 		return CSTR("ED538");
+	case DT_ED588:
+		return CSTR("ED588");
 	default:
 		return CSTR("Unknown");
 	}
