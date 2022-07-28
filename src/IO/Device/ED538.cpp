@@ -46,6 +46,13 @@ UInt16 IO::Device::ED538::GetDICountByReg(UInt16 diNum)
 	return (UInt16)val;
 }
 
+Bool IO::Device::ED538::GetDICountByReg(UInt16 diNum, Int32 *val)
+{
+	if (diNum >= 8)
+		return false;
+	return this->ReadInputI16(diNum, val);
+}
+
 UInt16 IO::Device::ED538::GetDICountByHolding(UInt16 diNum)
 {
 	if (diNum >= 8)
