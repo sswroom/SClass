@@ -33,14 +33,12 @@ void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Ch
 	WriteMUInt32(&hashBuff[20], tmpBuff[5]);
 }
 
-Crypto::Hash::Bcrypt::Bcrypt()
+Crypto::Hash::Bcrypt::Bcrypt() : radix64("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 {
-	NEW_CLASS(this->radix64, Text::TextBinEnc::Radix64Enc("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
 }
 
 Crypto::Hash::Bcrypt::~Bcrypt()
 {
-	DEL_CLASS(this->radix64);
 }
 
 Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const UTF8Char *password, UOSInt pwdLen)
@@ -56,7 +54,6 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 	sarrCnt = Text::StrSplitP(sarr, 4, {hashBuff, hashLen - 1}, '$');
 	if (sarrCnt != 3)
 	{
-		MemFree(hashBuff);
 		return false;
 	}
 	if (sarr[0].v[0] == '2' && sarr[2].leng == 53)
@@ -64,8 +61,8 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 		UInt8 salt[16];
 		UInt8 hashCTxt[24];
 		UInt8 myCTxt[24];
-		this->radix64->DecodeBin(sarr[2].v, 22, salt);
-		this->radix64->DecodeBin(sarr[2].v + 22, 31, hashCTxt);
+		this->radix64.DecodeBin(sarr[2].v, 22, salt);
+		this->radix64.DecodeBin(sarr[2].v + 22, 31, hashCTxt);
 		this->CalcHash(Text::StrToUInt32(sarr[1].v), salt, password, pwdLen, myCTxt);
 		return Data::BinTool::Equals(hashCTxt, myCTxt, 23);
 	}
@@ -102,8 +99,8 @@ Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF8 *sb, UInt32 cost, con
 	sb->AppendU32(cost);
 	sb->AppendUTF8Char('$');
 	UInt8 hashCTxt[24];
-	this->radix64->EncodeBin(sb, salt, 16);
+	this->radix64.EncodeBin(sb, salt, 16);
 	this->CalcHash(cost, salt, password, pwdLen, hashCTxt);
-	this->radix64->EncodeBin(sb, hashCTxt, 23);
+	this->radix64.EncodeBin(sb, hashCTxt, 23);
 	return true;
 }

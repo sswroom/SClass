@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/BatchHashValidator.h"
+#include "Crypto/Hash/BcryptValidator.h"
 #include "Crypto/Hash/BruteForceAttack.h"
 #include "Crypto/Hash/HashCreator.h"
 #include "Crypto/Hash/IHash.h"
@@ -19,8 +21,6 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt32 minLeng;
 	UInt32 maxLeng;
-	UInt8 hashBuff[64];
-	UOSInt hashSize;
 	if (me->bforce)
 	{
 		DEL_CLASS(me->bforce);
@@ -42,26 +42,42 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtHashValue->GetText(&sb);
-	hashSize = sb.Hex2Bytes(hashBuff);
-	hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboHashType->GetSelectedItem());
-	if (hash == 0)
+	Crypto::Hash::HashValidator *validator = 0;
+	OSInt hashType = (OSInt)me->cboHashType->GetSelectedItem();
+	if (hashType < 1000)
+	{
+		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)hashType);
+		if (hash == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
+			return;
+		}
+		NEW_CLASS(validator, Crypto::Hash::BatchHashValidator(hash, true));
+	}
+	else if (hashType == 1000)
+	{
+		NEW_CLASS(validator, Crypto::Hash::BcryptValidator());
+	}
+	else
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 		return;
 	}
-	if (hash->GetResultSize() != hashSize)
-	{
-		DEL_CLASS(hash);
-		UI::MessageDialog::ShowDialog(CSTR("Hash value length does not match with Hash Type"), CSTR("Brute Force"), me);
-		return;
-	}
 	Crypto::Hash::BruteForceAttack *bforce;
-	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(hash, true, (Crypto::Hash::BruteForceAttack::CharEncoding)(OSInt)me->cboEncoding->GetSelectedItem()));
+	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)(OSInt)me->cboEncoding->GetSelectedItem()));
 	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)(OSInt)me->cboCharType->GetSelectedItem());
-	me->txtStatus->SetText(CSTR("Processing"));
-	me->bforce = bforce;
 	me->lastCnt = 0;
-	bforce->Start(hashBuff, minLeng, maxLeng);
+	me->lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	if (!bforce->Start(sb.ToString(), sb.GetLength(), minLeng, maxLeng))
+	{
+		DEL_CLASS(bforce);
+		UI::MessageDialog::ShowDialog(CSTR("Hash value is not valid for this Hash Type"), CSTR("Brute Force"), me);
+	}
+	else
+	{
+		me->txtStatus->SetText(CSTR("Processing"));
+		me->bforce = bforce;
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
@@ -74,9 +90,11 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
 		if (me->bforce->IsProcessing())
 		{
 			UInt64 thisCnt = me->bforce->GetTestCnt();
+			Int64 thisTime = Data::DateTimeUtil::GetCurrTimeMillis();
 			
-			sptr = me->bforce->GetCurrKey(Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), thisCnt - me->lastCnt), UTF8STRC(", key=")));
+			sptr = me->bforce->GetCurrKey(Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), (Int64)(thisCnt - me->lastCnt) * 1000 / (thisTime - me->lastTime)), UTF8STRC(", key=")));
 			me->lastCnt = thisCnt;
+			me->lastTime = thisTime;
 			me->txtStatus->SetText(CSTRP(sbuff, sptr));
 		}
 		else
@@ -105,6 +123,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->bforce = 0;
 	this->lastCnt = 0;
+	this->lastTime = 0;
 
 	OSInt i;
 	OSInt j;
@@ -126,6 +145,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 		DEL_CLASS(hash);
 		i++;
 	}
+	this->cboHashType->AddItem(CSTR("Bcrypt"), (void*)1000);
 	this->cboHashType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, CSTR("Hash Value")));
 	this->lblHashValue->SetRect(4, 28, 100, 23, false);

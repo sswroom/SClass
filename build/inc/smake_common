@@ -1224,8 +1224,12 @@ Crypto/Hash/Adler32.h: ../../src/Crypto/Hash/Adler32.cpp
 @Adler32_CPP.o
 Crypto/Hash/AESCMAC.h: ../../src/Crypto/Hash/AESCMAC.cpp
 @AESCMAC.o
+Crypto/Hash/BatchHashValidator.h: ../../src/Crypto/Hash/BatchHashValidator.cpp
+@BatchHashValidator.o
 Crypto/Hash/Bcrypt.h: ../../src/Crypto/Hash/Bcrypt.cpp
 @Bcrypt.o
+Crypto/Hash/BcryptValidator.h: ../../src/Crypto/Hash/BcryptValidator.cpp
+@BcryptValidator.o
 Crypto/Hash/BruteForceAttack.h: ../../src/Crypto/Hash/BruteForceAttack.cpp
 @BruteForceAttack.o
 Crypto/Hash/CRC16.h: ../../src/Crypto/Hash/CRC16.cpp
@@ -1266,6 +1270,7 @@ Crypto/Hash/HashCreator.h: ../../src/Crypto/Hash/HashCreator.cpp
 @HashCreator.o
 Crypto/Hash/HashStream.h: ../../src/Crypto/Hash/HashStream.cpp
 @HashStream.o
+Crypto/Hash/HashValidator.h:
 Crypto/Hash/HMAC.h: ../../src/Crypto/Hash/HMAC.cpp
 @HMAC.o
 Crypto/Hash/IHash.h: ../../src/Crypto/Hash/IHash.cpp
@@ -4240,7 +4245,9 @@ XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
 Adler32_CPP.o: ../../src/Crypto/Hash/Adler32_CPP.cpp
 AESCMAC.o: ../../src/Crypto/Hash/AESCMAC.cpp
+BatchHashValidator.o: ../../src/Crypto/Hash/BatchHashValidator.cpp
 Bcrypt.o: ../../src/Crypto/Hash/Bcrypt.cpp
+BcryptValidator.o: ../../src/Crypto/Hash/BcryptValidator.cpp
 BruteForceAttack.o: ../../src/Crypto/Hash/BruteForceAttack.cpp
 CRC16.o: ../../src/Crypto/Hash/CRC16.cpp
 CRC16R.o: ../../src/Crypto/Hash/CRC16R.cpp

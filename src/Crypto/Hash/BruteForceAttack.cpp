@@ -47,39 +47,22 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(void *userObj)
 	UInt8 keyBuff[256];
 	UTF8Char result[64];
 	UOSInt keySize;
-	UOSInt hashSize;
-	Crypto::Hash::IHash *hash;
-	Bool eq;
-	UOSInt i;
+	Crypto::Hash::HashValidatorSess *sess;
 	Sync::Interlocked::Increment(&me->threadCnt);
-	hash = me->hash->Clone();
-	hashSize = hash->GetResultSize();
+	sess = me->validator->CreateSess();;
 	while (!me->threadToStop)
 	{
 		keySize = me->GetNextKey(keyBuff, result);
 		if (keySize <= 0)
 			break;
 	
-		hash->Clear();
-		hash->Calc(keyBuff, keySize);
-		hash->GetValue(keyBuff);
-		eq = true;
-		i = hashSize;
-		while (i-- > 0)
-		{
-			if (keyBuff[i] != me->hashBuff[i])
-			{
-				eq = false;
-				break;
-			}
-		}
-		if (eq)
+		if (me->validator->IsMatch(sess, keyBuff, keySize))
 		{
 			Text::StrConcat(me->resultBuff, result);
 			break;
 		}
 	}
-	DEL_CLASS(hash);
+	me->validator->DeleteSess(sess);
 	Sync::Interlocked::Decrement((OSInt*)&me->threadCnt);
 	return 0;
 }
@@ -169,10 +152,9 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resu
 	return ret;
 }
 
-Crypto::Hash::BruteForceAttack::BruteForceAttack(Crypto::Hash::IHash *hash, Bool toRelease, CharEncoding ce)
+Crypto::Hash::BruteForceAttack::BruteForceAttack(Crypto::Hash::HashValidator *validator, CharEncoding ce)
 {
-	this->hash = hash;
-	this->toRelease = toRelease;
+	this->validator = validator;
 	this->ce = ce;
 	this->charLimit = CL_ASCII;
 	this->resultBuff[0] = 0;
@@ -188,11 +170,7 @@ Crypto::Hash::BruteForceAttack::~BruteForceAttack()
 	{
 		Sync::Thread::Sleep(1);
 	}
-	if (this->toRelease)
-	{
-		DEL_CLASS(this->hash);
-		this->hash = 0;
-	}
+	DEL_CLASS(this->validator);
 }
 
 void Crypto::Hash::BruteForceAttack::SetCharLimit(CharLimit charLimit)
@@ -242,13 +220,14 @@ UTF8Char *Crypto::Hash::BruteForceAttack::GetResult(UTF8Char *resultBuff)
 	return 0;
 }
 
-Bool Crypto::Hash::BruteForceAttack::Start(const UInt8 *hashValue, UOSInt minLeng, UOSInt maxLeng)
+Bool Crypto::Hash::BruteForceAttack::Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng)
 {
 	if (this->threadCnt > 0)
 	{
 		return false;
 	}
-	MemCopyNO(this->hashBuff, hashValue, this->hash->GetResultSize());
+	if (!this->validator->SetHash(hashStr, hashLen))
+		return false;
 	this->maxLeng = maxLeng;
 	switch (this->charLimit)
 	{

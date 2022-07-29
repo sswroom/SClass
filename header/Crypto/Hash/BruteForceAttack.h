@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_HASH_BRUTEFORCEATTACK
 #define _SM_CRYPTO_HASH_BRUTEFORCEATTACK
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashValidator.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
 
@@ -28,8 +28,7 @@ namespace Crypto
 				CE_UTF32LE
 			} CharEncoding;
 		private:
-			Crypto::Hash::IHash *hash;
-			Bool toRelease;
+			Crypto::Hash::HashValidator *validator;
 			CharEncoding ce;
 			CharLimit charLimit;
 			UTF8Char resultBuff[64];
@@ -46,7 +45,7 @@ namespace Crypto
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			UOSInt GetNextKey(UInt8 *keyBuff, UTF8Char *resultBuff);
 		public:
-			BruteForceAttack(Crypto::Hash::IHash *hash, Bool toRelease, CharEncoding ce);
+			BruteForceAttack(Crypto::Hash::HashValidator *validator, CharEncoding ce);
 			~BruteForceAttack();
 
 			void SetCharLimit(CharLimit charLimit);
@@ -55,7 +54,7 @@ namespace Crypto
 			UTF8Char *GetCurrKey(UTF8Char *key);
 			UInt64 GetTestCnt();
 			UTF8Char *GetResult(UTF8Char *resultBuff);
-			Bool Start(const UInt8 *hashValue, UOSInt minLeng, UOSInt maxLeng);
+			Bool Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
 
 			static Text::CString CharLimitGetName(CharLimit charLimit);
 		};

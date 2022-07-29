@@ -18,7 +18,7 @@ UInt32 Sync::Interlocked::Increment(UInt32 *val)
 
 UInt64 Sync::Interlocked::Increment(UInt64 *val)
 {
-	return Interlocked_DecrementU64(val);
+	return Interlocked_IncrementU64(val);
 }
 
 Int32 Sync::Interlocked::Decrement(Int32 *val)

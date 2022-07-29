@@ -11,7 +11,7 @@ namespace Crypto
 		class Bcrypt
 		{
 		private:
-			Text::TextBinEnc::Radix64Enc *radix64;
+			Text::TextBinEnc::Radix64Enc radix64;
 
 			void CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen, UInt8 *hashBuff);
 		public:
