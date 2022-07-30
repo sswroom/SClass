@@ -24,6 +24,7 @@ namespace Crypto
 			void EncryptInt(EncryptParam *param) const;
 			void DecryptInt(EncryptParam *param) const;
 
+			void InitPassword(const UInt8 *password, UOSInt pwdLen);
 			void Init();
 			void Key(const UInt8 *password, UOSInt pwdLen);
 			void ExpandKey(const UInt8 *salt, const UInt8 *password, UOSInt pwdLen);

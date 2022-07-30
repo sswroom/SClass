@@ -336,9 +336,94 @@ void Crypto::Encrypt::Blowfish::DecryptInt(EncryptParam *param) const
 	param->xr = Xl;
 }
 
-void Crypto::Encrypt::Blowfish::Init()
+void Crypto::Encrypt::Blowfish::InitPassword(const UInt8 *password, UOSInt pwdLen)
 {
 	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UInt32 data;
+	if (pwdLen < 4)
+	{
+		j = 0;
+		i = 0;
+		while (i < N + 2)
+		{
+			data = 0x00000000;
+			k = 0;
+			while (k < 4)
+			{
+				data = (data << 8) | password[j];
+				j = j + 1;
+				if (j >= pwdLen)
+					j = 0;
+				k++;
+			}
+			this->p[i] = this->p[i] ^ data;
+			i++;
+		}
+	}
+	else if (pwdLen & 3)
+	{
+		j = 0;
+		i = 0;
+		while (i < N + 2)
+		{
+			if (j + 4 > pwdLen)
+			{
+				data = 0x00000000;
+				k = 0;
+				while (k < 4)
+				{
+					data = (data << 8) | password[j];
+					j = j + 1;
+					if (j >= pwdLen)
+						j = 0;
+					k++;
+				}
+				this->p[i] = this->p[i] ^ data;
+			}
+			else
+			{
+				data = ReadMUInt32(&password[j]);
+				this->p[i] = this->p[i] ^ data;
+				j += 4;
+				if (j >= pwdLen)
+					j = 0;
+			}
+			i++;
+		}
+	}
+	else if (pwdLen == 4)
+	{
+		data = ReadMUInt32(password);
+		i = 0;
+		while (i < N + 2)
+		{
+			this->p[i] = this->p[i] ^ data;
+			i++;
+		}
+	}
+	else
+	{
+		j = 0;
+		i = 0;
+		while (i < N + 2)
+		{
+			data = ReadMUInt32(&password[j]);
+			j += 4;
+			if (j >= pwdLen)
+				j = 0;
+			this->p[i] = this->p[i] ^ data;
+			i++;
+		}
+	}
+}
+
+void Crypto::Encrypt::Blowfish::Init()
+{
+	MemCopyNO(&this->s[0][0], this->origS, 1024 * sizeof(UInt32));
+	MemCopyNO(this->p, this->origP, (N + 2) * sizeof(UInt32));
+/*	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 
@@ -362,46 +447,46 @@ void Crypto::Encrypt::Blowfish::Init()
 	{
 		this->p[i] = origP[i];
 		i++;
-	}
+	}*/
 }
 
 void Crypto::Encrypt::Blowfish::Key(const UInt8 *password, UOSInt pwdLen)
 {
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
-	UInt32 data;
 
-	j = 0;
-	i = 0;
-	while (i < N + 2)
-	{
-		data = 0x00000000;
-		k = 0;
-		while (k < 4)
-		{
-			data = (data << 8) | password[j];
-			j = j + 1;
-			if (j >= pwdLen)
-				j = 0;
-			k++;
-		}
-		this->p[i] = this->p[i] ^ data;
-		i++;
-	}
+	this->InitPassword(password, pwdLen);
 
 	EncryptParam param;
 	param.xl = 0;
 	param.xr = 0;
-	i = 0;
-	while (i < N + 2)
-	{
-		this->EncryptInt(&param);
-		this->p[i] = param.xl;
-		this->p[i + 1] = param.xr;
-
-		i += 2;
-	}
+	this->EncryptInt(&param);
+	this->p[0] = param.xl;
+	this->p[1] = param.xr;
+	this->EncryptInt(&param);
+	this->p[2] = param.xl;
+	this->p[3] = param.xr;
+	this->EncryptInt(&param);
+	this->p[4] = param.xl;
+	this->p[5] = param.xr;
+	this->EncryptInt(&param);
+	this->p[6] = param.xl;
+	this->p[7] = param.xr;
+	this->EncryptInt(&param);
+	this->p[8] = param.xl;
+	this->p[9] = param.xr;
+	this->EncryptInt(&param);
+	this->p[10] = param.xl;
+	this->p[11] = param.xr;
+	this->EncryptInt(&param);
+	this->p[12] = param.xl;
+	this->p[13] = param.xr;
+	this->EncryptInt(&param);
+	this->p[14] = param.xl;
+	this->p[15] = param.xr;
+	this->EncryptInt(&param);
+	this->p[16] = param.xl;
+	this->p[17] = param.xr;
 
 	i = 0;
 	while (i < 4)
@@ -422,41 +507,40 @@ void Crypto::Encrypt::Blowfish::ExpandKey(const UInt8 *salt, const UInt8 *passwo
 {
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
-	UInt32 data;
-
-	j = 0;
-	i = 0;
-	while (i < N + 2)
-	{
-		data = 0x00000000;
-		k = 0;
-		while (k < 4)
-		{
-			data = (data << 8) | password[j];
-			j = j + 1;
-			if (j >= pwdLen)
-				j = 0;
-			k++;
-		}
-		this->p[i] = this->p[i] ^ data;
-		i++;
-	}
+	this->InitPassword(password, pwdLen);
 
 	EncryptParam param;
 	param.xl = 0;
 	param.xr = 0;
 	if (salt == 0)
 	{
-		i = 0;
-		while (i < N + 2)
-		{
-			this->EncryptInt(&param);
-			this->p[i] = param.xl;
-			this->p[i + 1] = param.xr;
-
-			i += 2;
-		}
+		this->EncryptInt(&param);
+		this->p[0] = param.xl;
+		this->p[1] = param.xr;
+		this->EncryptInt(&param);
+		this->p[2] = param.xl;
+		this->p[3] = param.xr;
+		this->EncryptInt(&param);
+		this->p[4] = param.xl;
+		this->p[5] = param.xr;
+		this->EncryptInt(&param);
+		this->p[6] = param.xl;
+		this->p[7] = param.xr;
+		this->EncryptInt(&param);
+		this->p[8] = param.xl;
+		this->p[9] = param.xr;
+		this->EncryptInt(&param);
+		this->p[10] = param.xl;
+		this->p[11] = param.xr;
+		this->EncryptInt(&param);
+		this->p[12] = param.xl;
+		this->p[13] = param.xr;
+		this->EncryptInt(&param);
+		this->p[14] = param.xl;
+		this->p[15] = param.xr;
+		this->EncryptInt(&param);
+		this->p[16] = param.xl;
+		this->p[17] = param.xr;
 
 		i = 0;
 		while (i < 4)
@@ -479,26 +563,51 @@ void Crypto::Encrypt::Blowfish::ExpandKey(const UInt8 *salt, const UInt8 *passwo
 		UInt32 salt8 = ReadMUInt32(&salt[8]);
 		UInt32 salt12 = ReadMUInt32(&salt[12]);
 
-		i = 0;
-		while (i < N + 2)
-		{
-			if (i & 2)
-			{
-				param.xl = param.xl ^ salt8;
-				param.xr = param.xr ^ salt12;
-			}
-			else
-			{
-				param.xl = param.xl ^ salt0;
-				param.xr = param.xr ^ salt4;
-			}
-
-			this->EncryptInt(&param);
-			this->p[i] = param.xl;
-			this->p[i + 1] = param.xr;
-
-			i += 2;
-		}
+		param.xl = param.xl ^ salt0;
+		param.xr = param.xr ^ salt4;
+		this->EncryptInt(&param);
+		this->p[0] = param.xl;
+		this->p[1] = param.xr;
+		param.xl = param.xl ^ salt8;
+		param.xr = param.xr ^ salt12;
+		this->EncryptInt(&param);
+		this->p[2] = param.xl;
+		this->p[3] = param.xr;
+		param.xl = param.xl ^ salt0;
+		param.xr = param.xr ^ salt4;
+		this->EncryptInt(&param);
+		this->p[4] = param.xl;
+		this->p[5] = param.xr;
+		param.xl = param.xl ^ salt8;
+		param.xr = param.xr ^ salt12;
+		this->EncryptInt(&param);
+		this->p[6] = param.xl;
+		this->p[7] = param.xr;
+		param.xl = param.xl ^ salt0;
+		param.xr = param.xr ^ salt4;
+		this->EncryptInt(&param);
+		this->p[8] = param.xl;
+		this->p[9] = param.xr;
+		param.xl = param.xl ^ salt8;
+		param.xr = param.xr ^ salt12;
+		this->EncryptInt(&param);
+		this->p[10] = param.xl;
+		this->p[11] = param.xr;
+		param.xl = param.xl ^ salt0;
+		param.xr = param.xr ^ salt4;
+		this->EncryptInt(&param);
+		this->p[12] = param.xl;
+		this->p[13] = param.xr;
+		param.xl = param.xl ^ salt8;
+		param.xr = param.xr ^ salt12;
+		this->EncryptInt(&param);
+		this->p[14] = param.xl;
+		this->p[15] = param.xr;
+		param.xl = param.xl ^ salt0;
+		param.xr = param.xr ^ salt4;
+		this->EncryptInt(&param);
+		this->p[16] = param.xl;
+		this->p[17] = param.xr;
 
 		i = 0;
 		while (i < 4)
