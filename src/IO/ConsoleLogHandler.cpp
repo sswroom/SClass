@@ -10,7 +10,7 @@ IO::ConsoleLogHandler::~ConsoleLogHandler()
 {
 }
 
-void IO::ConsoleLogHandler::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
+void IO::ConsoleLogHandler::LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -20,31 +20,31 @@ void IO::ConsoleLogHandler::LogAdded(Data::DateTime *logTime, const UTF8Char *lo
 	if (logLev == IO::ILogHandler::LOG_LEVEL_RAW)
 	{
 		this->console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLACK);
-		this->console->WriteLineC(logMsg, msgLen);
+		this->console->WriteLineCStr(logMsg);
 	}
 	else if (logLev == IO::ILogHandler::LOG_LEVEL_COMMAND)
 	{
 		this->console->SetTextColor(IO::ConsoleWriter::CC_GREEN, IO::ConsoleWriter::CC_BLACK);
-		this->console->WriteLineC(logMsg, msgLen);
+		this->console->WriteLineCStr(logMsg);
 	}
 	else if (logLev == IO::ILogHandler::LOG_LEVEL_ACTION)
 	{
 		this->console->SetTextColor(IO::ConsoleWriter::CC_YELLOW, IO::ConsoleWriter::CC_BLACK);
-		this->console->WriteLineC(logMsg, msgLen);
+		this->console->WriteLineCStr(logMsg);
 	}
 	else if (logLev == IO::ILogHandler::LOG_LEVEL_ERROR)
 	{
 		this->console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
-		this->console->WriteLineC(logMsg, msgLen);
+		this->console->WriteLineCStr(logMsg);
 	}
 	else if (logLev == IO::ILogHandler::LOG_LEVEL_ERR_DETAIL)
 	{
 		this->console->SetTextColor(IO::ConsoleWriter::CC_BLACK, IO::ConsoleWriter::CC_DARK_RED);
-		this->console->WriteLineC(logMsg, msgLen);
+		this->console->WriteLineCStr(logMsg);
 	}
 	else
 	{
-		this->console->WriteLineC(logMsg, msgLen);
+		this->console->WriteLineCStr(logMsg);
 	}
 }
 

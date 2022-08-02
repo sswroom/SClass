@@ -1,20 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
 #include "IO/FileStream.h"
-#include "IO/Path.h"
 #include "IO/UnixConfigFile.h"
-#include "Sync/Event.h"
-#include "Text/MyString.h"
-
-IO::ConfigFile *IO::UnixConfigFile::ParseAppProp()
-{
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("application.properties"));
-	return Parse(CSTRP(sbuff, sptr));
-}
 
 IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)
 {

@@ -1690,6 +1690,8 @@ IO/ISectorData.h:
 IO/IStreamData.h:
 IO/JavaClass.h: ../../src/IO/JavaClass.cpp
 @JavaClass.o
+IO/JavaProperties.h: ../../src/IO/JavaProperties.cpp
+@JavaProperties.o
 IO/LogFile.h: ../../src/IO/LogFile.cpp
 @LogFile.o
 IO/LogTool.h: ../../src/IO/LogTool.cpp
@@ -2987,6 +2989,8 @@ Net/SNS/SNSRSS.h: ../../src/Net/SNS/SNSRSS.cpp
 @SNSRSS.o
 Net/SNS/SNSTwitter.h: ../../src/Net/SNS/SNSTwitter.cpp
 @SNSTwitter.o
+Net/Spring/SpringBootApplication.h: ../../src/Net/Spring/SpringBootApplication.cpp
+@SpringBootApplication.o
 Net/WebServer/CapturerWebHandler.h: ../../src/Net/WebServer/CapturerWebHandler.cpp
 @CapturerWebHandler.o
 Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
@@ -4451,6 +4455,7 @@ IniFile.o: ../../src/IO/IniFile.cpp
 IOPinCapture.o: ../../src/IO/IOPinCapture.cpp
 IOTool.o: ../../src/IO/IOTool.cpp
 JavaClass.o: ../../src/IO/JavaClass.cpp
+JavaProperties.o: ../../src/IO/JavaProperties.cpp
 LogFile.o: ../../src/IO/LogFile.cpp
 LogTool.o: ../../src/IO/LogTool.cpp
 LogWriter.o: ../../src/IO/LogWriter.cpp
@@ -5046,6 +5051,7 @@ SNSInstagram.o: ../../src/Net/SNS/SNSInstagram.cpp
 SNSManager.o: ../../src/Net/SNS/SNSManager.cpp
 SNSRSS.o: ../../src/Net/SNS/SNSRSS.cpp
 SNSTwitter.o: ../../src/Net/SNS/SNSTwitter.cpp
+SpringBootApplication.o: ../../src/Net/Spring/SpringBootApplication.cpp
 CapturerWebHandler.o: ../../src/Net/WebServer/CapturerWebHandler.cpp
 EGaugeHandler.o: ../../src/Net/WebServer/EGaugeHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
