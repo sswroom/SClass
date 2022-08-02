@@ -3,6 +3,13 @@
 Classes in C++ for building cross-platform applications.
 See [SClassDemo](http://github.com/sswroom/SClassDemo) for sample usage
 
+You need to generate ThirdParty files after getting file from git:
+cd SClass
+git submodule update --init
+cd ThirdParty/miniz
+cmake .
+
+
 It uses 'smake' as the build system. smake can be compiled as follows:
 
 In linux (x64)

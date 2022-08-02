@@ -1306,6 +1306,11 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, Text::CStri
 	sql.AppendInt32(speciesId);
 	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
+		if (!species->sciName->Equals(sciName.v, sciName.leng))
+		{
+			this->spNameMap.Remove(species->sciName);
+			this->spNameMap.PutC(sciName, species);
+		}
 		SDEL_STRING(species->engName);
 		species->engName = Text::String::NewOrNull(engName);
 		SDEL_STRING(species->chiName);
