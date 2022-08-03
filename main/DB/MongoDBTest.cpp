@@ -23,7 +23,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DB::MongoDB::BuildURL(&sb, username, password, serverhost, serverport);
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
-	Data::ArrayList<Text::CString> tableList;
+	Data::ArrayList<Text::String*> tableList;
 	Data::ArrayList<Text::String*> dbList;
 	UOSInt i;
 	UOSInt j;
@@ -49,14 +49,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	console->WriteLine();
 	console->WriteLineC(UTF8STRC("Table List:"));
-	mongoDB->GetTableNames(&tableList);
+	mongoDB->QueryTableNames(CSTR_NULL, &tableList);
 	i = 0;
 	j = tableList.GetCount();
 	while (i < j)
 	{
-		console->WriteLineCStr(tableList.GetItem(i));
+		console->WriteLineCStr(tableList.GetItem(i)->ToCString());
 		i++;
 	}
+	LIST_FREE_STRING(&tableList);
 
 	DEL_CLASS(mongoDB);
 	DEL_CLASS(log);

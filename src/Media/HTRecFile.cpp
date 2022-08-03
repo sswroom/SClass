@@ -676,21 +676,21 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	if (this->recBuff == 0)
+	if (this->recBuff == 0 || schemaName.leng != 0)
 	{
 		return 0;
 	}
 	else
 	{
-		names->Add(CSTR("Setting"));
-		names->Add(CSTR("Records"));
+		names->Add(Text::String::New(UTF8STRC("Setting")));
+		names->Add(Text::String::New(UTF8STRC("Records")));
 		return 2;
 	}
 }
 
-DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{

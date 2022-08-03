@@ -55,10 +55,10 @@ namespace SSWR
 
 			void UpdateDatabaseList();
 			void UpdateTableList();
-			void UpdateTableData(Text::String *tableName);
+			void UpdateTableData(Text::CString schemaName, Text::String *tableName);
 			void UpdateResult(DB::DBReader *r);
 
-			Data::Class *CreateTableClass(Text::CString tableName);
+			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 		public:
 			AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRDBManagerForm();

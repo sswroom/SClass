@@ -458,20 +458,6 @@ void DB::PostgreSQLConn::Connect()
 	}
 }
 
-void DB::PostgreSQLConn::ClearTableNames()
-{
-	if (this->tableNames)
-	{
-		UOSInt i = this->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			this->tableNames->GetItem(i)->Release();
-		}
-		DEL_CLASS(this->tableNames);
-		this->tableNames = 0;
-	}
-}
-
 DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DBConn(server)
 {
 	this->clsData = MemAlloc(ClassData, 1);
@@ -483,7 +469,6 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::Stri
 	this->database = database->Clone();
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
-	this->tableNames = 0;
 	this->Connect();
 }
 
@@ -498,7 +483,6 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CStr
 	this->database = Text::String::New(database);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
-	this->tableNames = 0;
 	this->Connect();
 }
 
@@ -541,7 +525,6 @@ void DB::PostgreSQLConn::Close()
 {
 	if (this->clsData->conn)
 	{
-		this->ClearTableNames();
 		PQfinish(this->clsData->conn);
 		this->clsData->conn = 0;
 #if defined(VERBOSE)
@@ -656,36 +639,45 @@ void DB::PostgreSQLConn::Rollback(void *tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::PostgreSQLConn::QuerySchemaNames(Data::ArrayList<Text::String*> *names)
 {
-	if (this->tableNames == 0)
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
+	if (r)
 	{
-		NEW_CLASS(this->tableNames, Data::ArrayList<Text::String*>());
-		DB::DBReader *r = this->ExecuteReader(CSTR("select tablename from pg_catalog.pg_tables where schemaname = 'public'"));
-		if (r)
+		while (r->ReadNext())
 		{
-			while (r->ReadNext())
-			{
-				this->tableNames->Add(r->GetNewStr(0));
-			}
-			this->CloseReader(r);
+			names->Add(r->GetNewStr(0));
 		}
+		this->CloseReader(r);
 	}
-	UOSInt i = 0;
-	UOSInt j = this->tableNames->GetCount();
-	while (i < j)
+	return names->GetCount() - initCnt;
+}
+		
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
+{
+	if (schemaName.leng == 0)
+		schemaName = CSTR("public");
+	DB::SQLBuilder sql(DB::DBUtil::ServerType::PostgreSQL, this->tzQhr);
+	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
+	sql.AppendStrC(schemaName);
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *r = this->ExecuteReader(sql.ToCString());
+	if (r)
 	{
-		names->Add(this->tableNames->GetItem(i)->ToCString());
-		i++;
+		while (r->ReadNext())
+		{
+			names->Add(r->GetNewStr(0));
+		}
+		this->CloseReader(r);
 	}
-	return j;
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -710,22 +702,14 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString tableName, Data::
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	i = 0;
-	while (true)
+	if (schemaName.leng > 0)
 	{
-		j = Text::StrIndexOfChar(&tableName.v[i], '.');
-		if (j == INVALID_INDEX)
-		{
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName.v[i], DB::DBUtil::ServerType::PostgreSQL);
-			sb.AppendP(sbuff, sptr);
-			break;
-		}
-		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UOSInt)j);
-		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::PostgreSQL);
-		sb.AppendP(sptr + 1, sptr2);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::ServerType::PostgreSQL);
+		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
-		i += j + 1;
 	}
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::PostgreSQL);
+		sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));

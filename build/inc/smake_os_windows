@@ -63,6 +63,10 @@ IO/ServiceManager.h: ../../src/IO/ServiceManagerW.cpp
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
+Manage/Computer.h: ../../src/Manage/ComputerW.cpp
+@Computer.o
+Manage/ComputerUser.h: ../../src/Manage/ComputerUserW.cpp
+@ComputerUser.o
 Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverW.cpp
 @SymbolResolver.o
 Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoW.cpp
@@ -199,6 +203,8 @@ SensorUnknownWin.o: ../../src/IO/SensorUnknownWin.cpp
 SensorWin.o: ../../src/IO/SensorWin.cpp
 ServiceManager.o: ../../src/IO/ServiceManagerW.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
+Computer.o: ../../src/Manage/ComputerW.cpp
+ComputerUser.o: ../../src/Manage/ComputerUserW.cpp
 SymbolResolver.o: ../../src/Manage/SymbolResolverW.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoW.cpp
 ASIOOutRenderer.o: ../../src/Media/ASIOOutRenderer.cpp

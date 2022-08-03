@@ -7,20 +7,6 @@ void DB::PostgreSQLConn::Connect()
 {
 }
 
-void DB::PostgreSQLConn::ClearTableNames()
-{
-	if (this->tableNames)
-	{
-		UOSInt i = this->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			this->tableNames->GetItem(i)->Release();
-		}
-		DEL_CLASS(this->tableNames);
-		this->tableNames = 0;
-	}
-}
-
 DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DBConn(server)
 {
 	this->clsData = 0;
@@ -31,7 +17,6 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::String *server, UInt16 port, Text::Stri
 	this->database = database->Clone();
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
-	this->tableNames = 0;
 	this->Connect();
 }
 
@@ -45,7 +30,6 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CStr
 	this->database = Text::String::New(database);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
-	this->tableNames = 0;
 	this->Connect();
 }
 
@@ -151,29 +135,24 @@ void DB::PostgreSQLConn::Rollback(void *tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	if (this->tableNames == 0)
+	if (schemaName.leng == 0)
+		schemaName = CSTR("public");
+	DB::SQLBuilder sql(DB::DBUtil::ServerType::PostgreSQL, this->tzQhr);
+	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
+	sql.AppendStrC(schemaName);
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *r = this->ExecuteReader(sql.ToCString());
+	if (r)
 	{
-		NEW_CLASS(this->tableNames, Data::ArrayList<Text::String*>());
-		DB::DBReader *r = this->ExecuteReader(CSTR("select tablename from pg_catalog.pg_tables where schemaname = 'public'"));
-		if (r)
+		while (r->ReadNext())
 		{
-			while (r->ReadNext())
-			{
-				this->tableNames->Add(r->GetNewStr(0));
-			}
-			this->CloseReader(r);
+			names->Add(r->GetNewStr(0));
 		}
+		this->CloseReader(r);
 	}
-	UOSInt i = 0;
-	UOSInt j = this->tableNames->GetCount();
-	while (i < j)
-	{
-		names->Add(this->tableNames->GetItem(i)->ToCString());
-		i++;
-	}
-	return j;
+	return names->GetCount() - initCnt;
 }
 
 DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)

@@ -12,23 +12,23 @@ DB::DBModel::~DBModel()
 	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
-Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
+Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CString schemaName)
 {
 	if (dbName.v && !db->ChangeDatabase(dbName.v))
 	{
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Text::CString> tableNames;
+	Data::ArrayList<Text::String*> tableNames;
 	DB::TableDef *table;
 	Text::String *tableName;
 	UOSInt i;
 	UOSInt j;
-	db->QueryTableNames(&tableNames);
+	db->QueryTableNames(schemaName, &tableNames);
 	i = tableNames.GetCount();
 	while (i-- > 0)
 	{
-		table = db->GetTableDef(tableNames.GetItem(i));
+		table = db->GetTableDef(schemaName, tableNames.GetItem(i)->ToCString());
 		if (table)
 		{
 			table->SetDatabaseName(dbName);
@@ -46,7 +46,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
 			this->tableMap.Put(tableName->ToCString().Substring(j + 1), table);
 		}
 	}
-	db->ReleaseTableNames(&tableNames);
+	LIST_FREE_STRING(&tableNames);
 	return true;
 }
 

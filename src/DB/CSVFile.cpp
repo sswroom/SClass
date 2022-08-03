@@ -43,13 +43,15 @@ DB::CSVFile::~CSVFile()
 	this->fileName->Release();
 }
 
-UOSInt DB::CSVFile::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	names->Add(CSTR("CSVFile"));
+	if (schemaName.leng != 0)
+		return 0;
+	names->Add(Text::String::New(UTF8STRC("CSVFile")));
 	return 1;
 }
 
-DB::DBReader *DB::CSVFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->stm)
 	{

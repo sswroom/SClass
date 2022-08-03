@@ -1334,6 +1334,8 @@ Data/ArrayListInt64.h: ../../src/Data/ArrayListInt64.cpp
 @ArrayListInt64.o
 Data/ArrayListStrC.h: ../../src/Data/ArrayListStrC.cpp
 @ArrayListStrC.o
+Data/ArrayListStrFast.h: ../../src/Data/ArrayListStrFast.cpp
+@ArrayListStrFast.o
 Data/ArrayListString.h: ../../src/Data/ArrayListString.cpp
 @ArrayListString.o
 Data/ArrayListStrUTF8.h: ../../src/Data/ArrayListStrUTF8.cpp
@@ -4025,6 +4027,7 @@ Text/StringBuilderUTF32.h: ../../src/Text/StringBuilderUTF32.cpp
 Text/StringBuilderW.h:
 Text/StringBuilderWriter.h: ../../src/Text/StringBuilderWriter.cpp
 @StringBuilderWriter.o
+Text/StringComparatorFast.h:
 Text/StringTool.h: ../../src/Text/StringTool.cpp
 @StringTool.o
 Text/StringUtil.h: ../../src/Text/StringUtil.cpp
@@ -4301,6 +4304,7 @@ ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
 ArrayListInt32.o: ../../src/Data/ArrayListInt32.cpp
 ArrayListInt64.o: ../../src/Data/ArrayListInt64.cpp
 ArrayListStrC.o: ../../src/Data/ArrayListStrC.cpp
+ArrayListStrFast.o: ../../src/Data/ArrayListStrFast.cpp
 ArrayListStrW.o: ../../src/Data/ArrayListStrW.cpp
 ArrayListString.o: ../../src/Data/ArrayListString.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp

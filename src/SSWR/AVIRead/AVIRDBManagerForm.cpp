@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	Text::String *tableName = me->lbTable->GetSelectedItemTextNew();
-	me->UpdateTableData(tableName);
+	me->UpdateTableData(CSTR_NULL, tableName);
 	SDEL_STRING(tableName);
 }
 
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseClicked(void *userObj
 		{
 			if (me->currDB->ChangeDatabase(dbName->v))
 			{
-				me->UpdateTableData(0);
+				me->UpdateTableData(CSTR_NULL, 0);
 				me->UpdateTableList();
 			}
 			dbName->Release();
@@ -119,10 +119,10 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	{
 		return;
 	}
-	Text::CString tableName;
-	Data::ArrayList<Text::CString> tableNames;
+	Text::String *tableName;
+	Data::ArrayList<Text::String*> tableNames;
 	UOSInt i = 0;
-	UOSInt j = this->currDB->QueryTableNames(&tableNames);
+	UOSInt j = this->currDB->QueryTableNames(CSTR_NULL, &tableNames);
 	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
 	while (i < j)
 	{
@@ -130,10 +130,10 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
-	this->currDB->ReleaseTableNames(&tableNames);
+	LIST_FREE_STRING(&tableNames);
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName, Text::String *tableName)
 {
 	this->lvTable->ClearItems();
 	this->lvTableResult->ClearItems();
@@ -146,9 +146,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 	UTF8Char *sptr;
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
-	tabDef = this->currDB->GetTableDef(STR_CSTR(tableName));
+	tabDef = this->currDB->GetTableDef(schemaName, STR_CSTR(tableName));
 
-	r = this->currDB->QueryTableData(STR_CSTR(tableName), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+	r = this->currDB->QueryTableData(schemaName, STR_CSTR(tableName), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	if (r)
 	{
 		this->UpdateResult(r);
@@ -294,11 +294,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
-Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString tableName)
+Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)
 {
 	if (this->currDB)
 	{
-		DB::TableDef *tab = this->currDB->GetTableDef(tableName);
+		DB::TableDef *tab = this->currDB->GetTableDef(CSTR_NULL, tableName);
 		if (tab)
 		{
 			Data::Class *cls = tab->CreateTableClass();
@@ -306,7 +306,7 @@ Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString ta
 			return cls;
 		}
 
-		DB::DBReader *r = this->currDB->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = this->currDB->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Data::Class *cls = r->CreateClass();
@@ -516,7 +516,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(&sb, tableName, this->currDB);
+			DB::JavaDBUtil::ToJavaEntity(&sb, 0, tableName, this->currDB);
 			tableName->Release();
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
@@ -524,7 +524,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_HEADER:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
+			Data::Class *cls = this->CreateTableClass(CSTR_NULL, CSTRP(sbuff, sptr));
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -541,7 +541,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_SOURCE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
+			Data::Class *cls = this->CreateTableClass(CSTR_NULL, CSTRP(sbuff, sptr));
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};

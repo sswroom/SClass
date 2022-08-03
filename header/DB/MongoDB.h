@@ -16,15 +16,14 @@ namespace DB
 	private:
 		void *client;
 		Text::String *database;
-		Data::ArrayList<Text::CString> *tableNames;
 		IO::LogTool *log;
 		Text::String *errorMsg;
 	public:
 		MongoDB(Text::CString url, Text::CString database, IO::LogTool *log);
 		virtual ~MongoDB();
 		
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
-		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();

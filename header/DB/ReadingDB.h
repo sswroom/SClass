@@ -18,8 +18,9 @@ namespace DB
 		ReadingDB(Text::CString sourceName);
 		virtual ~ReadingDB();
 
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names) = 0; // no need to release
-		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
+		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names) = 0;
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
 		virtual void CloseReader(DBReader *r) = 0;
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str) = 0;
 		virtual void Reconnect() = 0;

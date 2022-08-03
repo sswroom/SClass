@@ -10,12 +10,12 @@ namespace Exporter
 	class DBCSVExporter : public IO::FileExporter
 	{
 	private:
-		typedef struct
+		struct DBParam
 		{
 			DB::ReadingDB *db;
 			UOSInt tableIndex;
-			Data::ArrayList<Text::CString> *names;
-		} DBParam;
+			Data::ArrayList<Text::String*> names;
+		};
 
 	private:
 		UInt32 codePage;

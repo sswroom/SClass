@@ -340,7 +340,6 @@ DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(
 	connHand = 0;
 	envHand = 0;
 	lastStmtHand = 0;
-	this->tableNames = 0;
 	this->log = log;
 	this->connErr = CE_NOT_CONNECT;
 	this->lastErrorMsg = 0;
@@ -361,7 +360,6 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 	connHand = 0;
 	envHand = 0;
 	lastStmtHand = 0;
-	this->tableNames = 0;
 	this->log = log;
 	this->connErr = CE_NOT_CONNECT;
 	this->lastErrorMsg = 0;
@@ -383,7 +381,6 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->tableNames = 0;
 	this->connStr = 0;
 	this->connHand = 0;
 	this->connErr = CE_NOT_CONNECT;
@@ -403,7 +400,6 @@ DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, 
 DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->tableNames = 0;
 	this->connStr = 0;
 	this->connHand = 0;
 	this->connErr = CE_NOT_CONNECT;
@@ -429,16 +425,6 @@ DB::ODBCConn::~ODBCConn()
 	SDEL_STRING(this->schema);
 	SDEL_STRING(this->lastErrorMsg);
 	SDEL_STRING(this->connStr);
-	if (this->tableNames)
-	{
-		UOSInt i = this->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			this->tableNames->GetItem(i)->Release();
-		}
-		DEL_CLASS(this->tableNames);
-		this->tableNames = 0;
-	}
 }
 
 DB::DBUtil::ServerType DB::ODBCConn::GetSvrType()
@@ -916,7 +902,7 @@ UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
 }
 
-DB::DBReader *DB::ODBCConn::GetTablesInfo()
+DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
 	if (this->connHand == 0)
 	{
@@ -952,53 +938,39 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo()
 	return r;
 }
 
-UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	if (this->tableNames)
-	{
-	}
-	else
-	{
-		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 //		ShowTablesCmd(sbuff);
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
-		DB::DBReader *rdr = this->GetTablesInfo();
-		NEW_CLASS(this->tableNames, Data::ArrayList<Text::String *>());
-		if (rdr)
-		{
-			sbuff[0] = 0;
-			while (rdr->ReadNext())
-			{
-				sptr = rdr->GetStr(2, sbuff, sizeof(sbuff));
-				if (sptr == 0)
-				{
-					sptr = sbuff;
-				}
-				if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("~sq_")))
-				{
-
-				}
-				else
-				{
-					this->tableNames->Add(Text::String::NewP(sbuff, sptr));
-				}
-			}
-			this->CloseReader(rdr);
-		}
-	}
-	UOSInt i = 0;
-	UOSInt j = this->tableNames->GetCount();
-	while (i < j)
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *rdr = this->GetTablesInfo(schemaName);
+	if (rdr)
 	{
-		names->Add(this->tableNames->GetItem(i)->ToCString());
-		i++;
+		sbuff[0] = 0;
+		while (rdr->ReadNext())
+		{
+			sptr = rdr->GetStr(2, sbuff, sizeof(sbuff));
+			if (sptr == 0)
+			{
+				sptr = sbuff;
+			}
+			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("~sq_")))
+			{
+
+			}
+			else
+			{
+				names->Add(Text::String::NewP(sbuff, sptr));
+			}
+		}
+		this->CloseReader(rdr);
 	}
-	//names->AddRange(this->tableNames);
-	return this->tableNames->GetCount();
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1036,22 +1008,14 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString name, Data::ArrayList<T
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	i = 0;
-	while (true)
+	if (schemaName.leng > 0)
 	{
-		j = Text::StrIndexOfChar(&name.v[i], '.');
-		if (j == INVALID_INDEX)
-		{
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, &name.v[i], this->svrType);
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			break;
-		}
-		sptr = Text::StrConcatC(sbuff, &name.v[i], (UOSInt)j);
-		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, this->svrType);
-		sb.AppendC(sptr + 1, (UOSInt)(sptr2 - sptr - 1));
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, this->svrType);
+		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
-		i += j + 1;
 	}
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, this->svrType);
+	sb.AppendP(sbuff, sptr);
 	if (this->svrType == DB::DBUtil::ServerType::SQLite || this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (maxCnt > 0)

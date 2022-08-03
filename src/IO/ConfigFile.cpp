@@ -1,6 +1,24 @@
 #include "Stdafx.h"
 #include "IO/ConfigFile.h"
 
+void IO::ConfigFile::MergeCate(Data::FastStringMap<Text::String *> *myCate, Data::FastStringMap<Text::String *> *cateToMerge)
+{
+	Text::String *name;
+	Text::String *value;
+	UOSInt i = 0;
+	UOSInt j = cateToMerge->GetCount();
+	while (i < j)
+	{
+		name = cateToMerge->GetKey(i);
+		value = myCate->Put(name, cateToMerge->GetItem(i)->Clone());
+		if (value)
+		{
+			value->Release();
+		}
+		i++;
+	}
+}
+
 IO::ConfigFile::ConfigFile()
 {
 }
@@ -218,4 +236,20 @@ IO::ConfigFile *IO::ConfigFile::CloneCate(Text::CString category)
 		i++;
 	}
 	return cfg;
+}
+
+void IO::ConfigFile::MergeConfig(IO::ConfigFile *cfg)
+{
+	UOSInt i = cfg->cfgVals.GetCount();
+	Data::FastStringMap<Text::String*> *cate;
+	while (i-- > 0)
+	{
+		cate = this->cfgVals.Get(cfg->cfgVals.GetKey(i));
+		if (cate == 0)
+		{
+			NEW_CLASS(cate, Data::FastStringMap<Text::String*>());
+			this->cfgVals.Put(cfg->cfgVals.GetKey(i), cate);
+		}
+		this->MergeCate(cate, cfg->cfgVals.GetItem(i));
+	}
 }

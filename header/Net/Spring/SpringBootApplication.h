@@ -16,8 +16,9 @@ namespace Net
 			IO::ConsoleWriter console;
 			IO::ConsoleLogHandler consoleLog;
 			IO::LogTool log;
+			Text::String *activeProfile;
 		public:
-			SpringBootApplication();
+			SpringBootApplication(Text::CString appName);
 			virtual ~SpringBootApplication();
 		};
 	}

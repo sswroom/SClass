@@ -635,10 +635,12 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	mutUsage.EndUse();
 }
 
-UOSInt Map::GPSTrack::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	names->Add(this->sourceName->ToCString());
-	names->Add(CSTR("GPSData"));
+	if (schemaName.leng != 0)
+		return 0;
+	names->Add(this->sourceName->Clone());
+	names->Add(Text::String::New(UTF8STRC("GPSData")));
 	return 2;
 }
 

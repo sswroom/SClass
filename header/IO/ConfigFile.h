@@ -10,6 +10,7 @@ namespace IO
 	private:
 		Data::FastStringMap<Data::FastStringMap<Text::String *>*> cfgVals;
 
+		void MergeCate(Data::FastStringMap<Text::String *> *myCate, Data::FastStringMap<Text::String *> *cateToMerge);
 	public:
 		ConfigFile();
 		virtual ~ConfigFile();
@@ -27,6 +28,8 @@ namespace IO
 		UOSInt GetKeys(Text::CString category, Data::ArrayList<Text::String *> *keyList);
 		Bool HasCategory(Text::CString category);
 		IO::ConfigFile *CloneCate(Text::CString category);
+
+		void MergeConfig(IO::ConfigFile *cfg);
 	};
 }
 #endif

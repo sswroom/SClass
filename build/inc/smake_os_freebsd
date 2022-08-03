@@ -41,6 +41,12 @@ IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
+Manage/Computer.h: ../../src/Manage/ComputerL.cpp
+@Computer.o
+Manage/ComputerUser.h: ../../src/Manage/ComputerUserL.cpp
+@ComputerUser.o
+Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverL.cpp
+@SymbolResolver.o
 Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 @ThreadInfo.o
 
@@ -127,6 +133,8 @@ SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
 SerialPort.o: ../../src/IO/SerialPortL.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
+Computer.o: ../../src/Manage/ComputerL.cpp
+ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
 SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 !-lexecinfo
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp

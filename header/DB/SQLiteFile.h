@@ -14,7 +14,7 @@ namespace DB
 	private:
 		Text::String *fileName;
 		void *db;
-		Data::ArrayList<Text::CString> tableNames;
+//		Data::ArrayList<Text::CString> tableNames;
 		Bool delOnClose;
 		Text::String *lastErrMsg;
 
@@ -41,8 +41,8 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
-		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();

@@ -79,10 +79,10 @@ namespace DB
 
 		UInt32 GetDataCnt();
 
-		DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		UOSInt QueryTableNames(Data::ArrayList<Text::CString> *arr);
-		void ReleaseTableNames(Data::ArrayList<Text::CString> *arr);
-		DB::TableDef *GetTableDef(Text::CString tableName);
+		DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String *> *arr);
+		UOSInt QuerySchemaNames(Data::ArrayList<Text::String *> *arr);
+		DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 
 		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
 		void ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);

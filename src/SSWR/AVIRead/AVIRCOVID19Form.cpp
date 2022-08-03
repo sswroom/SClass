@@ -142,7 +142,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	this->ClearRecords();
 	{
 		DB::CSVFile csv(stm, 65001);
-		DB::DBReader *r = csv.QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 		if (r == 0)
 		{
 			return false;

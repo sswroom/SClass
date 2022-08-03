@@ -50,7 +50,6 @@ DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *
 	this->pwd = SCOPY_STRING(pwd);
 	this->database = SCOPY_STRING(database);
 	this->log = log;
-	this->tableNames = 0;
 	Connect();
 }
 
@@ -66,7 +65,6 @@ DB::MySQLConn::MySQLConn(Text::CString server, Text::CString uid, Text::CString 
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
-	this->tableNames = 0;
 	Connect();
 }
 
@@ -82,7 +80,6 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
-	this->tableNames = 0;
 	Connect();
 }
 
@@ -93,15 +90,6 @@ DB::MySQLConn::~MySQLConn()
 	SDEL_STRING(this->database);
 	SDEL_STRING(this->uid);
 	SDEL_STRING(this->pwd);
-	if (this->tableNames)
-	{
-		UOSInt i = this->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			Text::StrDelNew(this->tableNames->GetItem(i).v);
-		}
-		DEL_CLASS(this->tableNames);
-	}
 	if (Sync::Interlocked::Decrement(&useCnt) == 0)
 	{
 		mysql_library_end();
@@ -281,40 +269,32 @@ void DB::MySQLConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	if (this->tableNames)
+	if (schemaName.leng != 0)
+		return 0;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	UOSInt len;
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *rdr = this->ExecuteReader(CSTR("show tables"));
+	if (rdr)
 	{
-		names->AddAll(this->tableNames);
-		return this->tableNames->GetCount();
-	}
-	else
-	{
-		UTF8Char sbuff[256];
-		UTF8Char *sptr;
-		UOSInt len;
-		DB::DBReader *rdr = this->ExecuteReader(CSTR("show tables"));
-		NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
-		if (rdr)
+		while (rdr->ReadNext())
 		{
-			while (rdr->ReadNext())
-			{
-				sptr = rdr->GetStr(0, sbuff, sizeof(sbuff));
-				len = (UOSInt)(sptr - sbuff);
-				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sbuff, len), len));
-			}
-			this->CloseReader(rdr);
+			sptr = rdr->GetStr(0, sbuff, sizeof(sbuff));
+			len = (UOSInt)(sptr - sbuff);
+			names->Add(Text::String::New(sbuff, len));
 		}
-		names->AddAll(this->tableNames);
-		return this->tableNames->GetCount();
+		this->CloseReader(rdr);
 	}
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -337,22 +317,14 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString tableName, Data::Array
 		sb.AppendUTF8Char('*');
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	i = 0;
-	while (true)
+	if (schemaName.leng > 0)
 	{
-		j = Text::StrIndexOfChar(&tableName.v[i], '.');
-		if (j == INVALID_INDEX)
-		{
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName.v[i], DB::DBUtil::ServerType::MySQL);
-			sb.AppendP(sbuff, sptr);
-			break;
-		}
-		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UOSInt)j);
-		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
-		sb.AppendP(sptr + 1, sptr2);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::ServerType::MySQL);
+		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
-		i += j + 1;
 	}
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::MySQL);
+	sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));

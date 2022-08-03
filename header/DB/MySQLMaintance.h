@@ -16,7 +16,7 @@ namespace DB
 		~MySQLMaintance();
 
 		void RepairSchema(const UTF8Char *schema, Text::StringBuilderUTF8 *sb);
-		void RepairTable(Text::CString tableName, Text::StringBuilderUTF8 *sb);
+		void RepairTable(Text::String *tableName, Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

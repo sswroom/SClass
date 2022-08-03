@@ -66,7 +66,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	DB::ReadingDB *srcDB;
 	DB::DBReader *r;
 	DB::ColDef *colDef;
-	Data::ArrayList<Text::CString> tables;
+	Data::ArrayList<Text::String*> tables;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -78,15 +78,15 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	DB::SQLBuilder sql(mdb);
 	Text::StringBuilderUTF8 sb;
 	srcDB = (DB::ReadingDB *)pobj;
-	srcDB->GetTableNames(&tables);
+	srcDB->QueryTableNames(CSTR_NULL, &tables);
 	i = 0;
 	j = tables.GetCount();
 	while (i < j)
 	{
-		r = srcDB->QueryTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
+		r = srcDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
-			DB::TableDef tabDef(tables.GetItem(i));
+			DB::TableDef tabDef(tables.GetItem(i)->ToCString());
 			k = 0;
 			l = r->ColCount();
 			while (k < l)
@@ -97,7 +97,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				k++;
 			}
 			sql.Clear();
-			mdb->GenCreateTableCmd(&sql, tables.GetItem(i), &tabDef);
+			mdb->GenCreateTableCmd(&sql, tables.GetItem(i)->ToCString(), &tabDef);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;
@@ -114,7 +114,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			while (r->ReadNext())
 			{
 				sql.Clear();
-				mdb->GenInsertCmd(&sql, tables.GetItem(i), r);
+				mdb->GenInsertCmd(&sql, tables.GetItem(i)->ToCString(), r);
 				if (mdb->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
@@ -127,7 +127,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		}
 		i++;
 	}
-
+	LIST_FREE_STRING(&tables);
 	DEL_CLASS(mdb);
 	return succ;
 #endif

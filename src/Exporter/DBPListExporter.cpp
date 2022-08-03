@@ -53,7 +53,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 		return false;
 	}
 
-	Text::CString name = CSTR_NULL;
+	Text::String *name = 0;
 	if (param)
 	{
 		DBParam *dbParam = (DBParam*)param;
@@ -61,7 +61,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 	}
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
 	DB::DBReader *r;
-	r = db->QueryTableData(name, 0, 0, 0, CSTR_NULL, 0);
+	r = db->QueryTableData(CSTR_NULL, STR_CSTR(name), 0, 0, 0, CSTR_NULL, 0);
 	if (r == 0)
 	{
 		return false;
@@ -176,8 +176,8 @@ void *Exporter::DBPListExporter::CreateParam(IO::ParsedObject *pobj)
 {
 	DBParam *param = MemAlloc(DBParam, 1);
 	param->db = (DB::ReadingDB *)pobj;
-	NEW_CLASS(param->names, Data::ArrayList<Text::CString>());
-	param->db->GetTableNames(param->names);
+	NEW_CLASS(param->names, Data::ArrayList<Text::String*>());
+	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
 	return param;
 }
@@ -185,6 +185,7 @@ void *Exporter::DBPListExporter::CreateParam(IO::ParsedObject *pobj)
 void Exporter::DBPListExporter::DeleteParam(void *param)
 {
 	DBParam *dbParam = (DBParam*)param;
+	LIST_FREE_STRING(dbParam->names);
 	DEL_CLASS(dbParam->names);
 	MemFree(dbParam);
 }
@@ -250,10 +251,10 @@ UTF8Char *Exporter::DBPListExporter::GetParamSelItems(void *param, UOSInt index,
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		Text::CString name = dbParam->names->GetItem(itemIndex);
-		if (name.v)
+		Text::String *name = dbParam->names->GetItem(itemIndex);
+		if (name)
 		{
-			return name.ConcatTo(buff);
+			return name->ConcatTo(buff);
 		}
 		return 0;
 	}

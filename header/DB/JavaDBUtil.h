@@ -19,7 +19,7 @@ namespace DB
 		
 	public:
 		static DB::DBTool *OpenJDBC(Text::String *url, Text::String *username, Text::String *password, IO::LogTool *log, Net::SocketFactory *sockf);
-		static Bool ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tableName, DB::ReadingDBTool *db);
+		static Bool ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *schemaName, Text::String *tableName, DB::ReadingDBTool *db);
 	};
 }
 #endif

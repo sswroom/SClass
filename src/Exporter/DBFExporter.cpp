@@ -29,11 +29,10 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 	}
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
-	Data::ArrayList<Text::CString> *tableNames;
-	NEW_CLASS(tableNames, Data::ArrayList<Text::CString>());
-	conn->GetTableNames(tableNames);
-	tableCnt = tableNames->GetCount();
-	DEL_CLASS(tableNames);
+	Data::ArrayList<Text::String*> tableNames;
+	conn->QueryTableNames(CSTR_NULL, &tableNames);
+	tableCnt = tableNames.GetCount();
+	LIST_FREE_STRING(&tableNames);
 	if (tableCnt == 1)
 		return IO::FileExporter::SupportType::NormalStream;
 	return IO::FileExporter::SupportType::NotSupported;
@@ -64,21 +63,22 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UTF8Char sbuff[1024];
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
-	Data::ArrayList<Text::CString> *tableNames;
-	NEW_CLASS(tableNames, Data::ArrayList<Text::CString>());
-	conn->GetTableNames(tableNames);
-	tableCnt = tableNames->GetCount();
+	Data::ArrayList<Text::String*> tableNames;
+	conn->QueryTableNames(CSTR_NULL, &tableNames);
+	tableCnt = tableNames.GetCount();
 	if (tableCnt != 1)
 	{
-		DEL_CLASS(tableNames);
+		LIST_FREE_STRING(&tableNames);
 		return false;
 	}
-	Text::CString tableName = tableNames->GetItem(0);
-	DEL_CLASS(tableNames);
+	Text::String *tableName = tableNames.GetItem(0);
 
-	DB::DBReader *r = conn->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = conn->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+	tableName->Release();
 	if (r == 0)
+	{
 		return false;
+	}
 	UOSInt nCol;
 
 	Text::String **colNames;

@@ -24,10 +24,7 @@ namespace DB
 		IO::LogTool *log;
 		Int8 tzQhr;
 
-		Data::ArrayList<Text::String*> *tableNames;
-
 		void Connect();
-		void ClearTableNames();
 
 	public:
 		PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
@@ -51,8 +48,9 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
-		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
 		Text::String *GetConnServer();

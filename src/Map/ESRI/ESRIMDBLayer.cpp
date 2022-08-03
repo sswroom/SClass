@@ -11,7 +11,7 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
-	DB::DBReader *r = this->currDB->QueryTableData(this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
@@ -80,7 +80,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
-	DB::DBReader *r = this->currDB->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		UOSInt i;
@@ -382,19 +382,21 @@ void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 {
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	names->Add(this->tableName->ToCString());
+	if (schemaName.leng != 0)
+		return 0;
+	names->Add(this->tableName->Clone());
 	return 1;
 }
 
-DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->QueryTableData(name, columnNames, ofst, maxCnt, ordering, condition);
+	DB::DBReader *rdr = this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::ESRI::ESRIMDBReader *r;

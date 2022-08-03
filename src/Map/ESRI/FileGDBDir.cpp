@@ -29,19 +29,19 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
-UOSInt Map::ESRI::FileGDBDir::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->tables.GetCount();
 	while (i < j)
 	{
-		names->Add(this->tables.GetItem(i)->GetName()->ToCString());
+		names->Add(this->tables.GetItem(i)->GetName()->Clone());
 		i++;
 	}
 	return j;
 }
 
-DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
@@ -54,7 +54,7 @@ DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString tableName, Dat
 	}
 	else
 	{
-		return NEW_CLASS_D(DB::SortableDBReader(this, tableName, columnNames, ofst, maxCnt, ordering, condition));
+		return NEW_CLASS_D(DB::SortableDBReader(this, schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition));
 	}
 }
 

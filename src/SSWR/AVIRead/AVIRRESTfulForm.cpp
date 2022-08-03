@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 	this->dbConn->GetConnName(&sb);
 	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
 	NEW_CLASS(this->dbModel, DB::DBModel());
-	this->dbModel->LoadDatabase(this->db, 0);
+	this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);
 	NEW_CLASS(this->dbCache, DB::DBCache(this->dbModel, this->db));
 	this->txtDatabase->SetText(sb.ToCString());
 }

@@ -704,14 +704,14 @@ void Map::SHPData::ReleaseObject(void *session, DrawObjectL *obj)
 	MemFree(obj);
 }*/
 
-UOSInt Map::SHPData::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	return this->dbf->GetTableNames(names);
+	return this->dbf->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::SHPData::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::SHPData::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	return this->dbf->QueryTableData(tableName, columNames, ofst, maxCnt, ordering, condition);
+	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
 }
 
 void Map::SHPData::CloseReader(DB::DBReader *r)

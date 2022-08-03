@@ -77,20 +77,20 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 
-	Data::ArrayList<Text::CString> tableNames;
-	Data::ArrayList<Text::CString> shpTables;
+	Data::ArrayList<Text::String*> tableNames;
+	Data::ArrayList<Text::String*> shpTables;
 	DB::ColDef colDef(CSTR(""));
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	mdb->GetTableNames(&tableNames);
+	mdb->QueryTableNames(CSTR_NULL, &tableNames);
 	
 	Bool hasSpRef = false;
 	UOSInt i = tableNames.GetCount();
 	while (i-- > 0)
 	{
-		Text::CString tableName = tableNames.GetItem(i);
-		DB::DBReader *rdr = mdb->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
-		if (tableName.v && tableName.EqualsICase(UTF8STRC("GDB_SpatialRefs")))
+		Text::String *tableName = tableNames.GetItem(i);
+		DB::DBReader *rdr = mdb->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+		if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
 		{
 			hasSpRef = true;
 		}
@@ -134,7 +134,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 
 		if (hasSpRef)
 		{
-			DB::DBReader *rdr = mdb->QueryTableData(CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0);
+			DB::DBReader *rdr = mdb->QueryTableData(CSTR_NULL, CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0);
 			if (rdr)
 			{
 				if (rdr->ColCount() >= 2)
@@ -163,7 +163,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		i = shpTables.GetCount();
 		while (i-- > 0)
 		{
-			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables.GetItem(i)));
+			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables.GetItem(i)->ToCString()));
 			
 			if (csys)
 			{
@@ -174,6 +174,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		}
 		SDEL_CLASS(csys);
 		conn->UnuseObject();
+		LIST_FREE_STRING(&tableNames);
 		if (lyrColl->GetCount() == 1)
 		{
 			Map::IMapDrawLayer *lyr = lyrColl->GetItem(0);
@@ -188,6 +189,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else
 	{
+		LIST_FREE_STRING(&tableNames);
 		return mdb;
 	}
 #else

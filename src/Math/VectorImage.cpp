@@ -216,7 +216,7 @@ Bool Math::VectorImage::Equals(Vector2D *vec) const
 	{
 		return false;
 	}
-	Math::VectorImage *img = (Math::VectorImage*)vec;
+//	Math::VectorImage *img = (Math::VectorImage*)vec;
 	return false;
 }
 

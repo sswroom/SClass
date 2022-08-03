@@ -41,7 +41,7 @@ IO::ParsedObject *Parser::ObjParser::DBMapParser::ParseObject(IO::ParsedObject *
 		return 0;
 	///////////////////////////
 /*	Map::MapLayerCollection *layerColl;
-	Data::ArrayList<const WChar *> tableNames;
+	Data::ArrayList<Text::String *> tableNames;
 	OSInt i;
 	OSInt j;
 	OSInt k;
@@ -53,12 +53,12 @@ IO::ParsedObject *Parser::ObjParser::DBMapParser::ParseObject(IO::ParsedObject *
 	
 	NEW_CLASS(layerColl, Map::MapLayerCollection(pobj->GetSourceNameObj()));
 	db = (DB::ReadingDB*)pobj;
-	db->GetTableNames(&tableNames);
+	db->QueryTableNames(CSTR_NULL, &tableNames);
 	i = 0;
 	j = tableNames.GetCount();
 	while (i < j)
 	{
-		r = db->QueryTableData(tableNames.GetItem(i);
+		r = db->QueryTableData(tableNames.GetItem(i)->ToCString());
 		if (r)
 		{
 			xCol = -1;
@@ -86,6 +86,7 @@ IO::ParsedObject *Parser::ObjParser::DBMapParser::ParseObject(IO::ParsedObject *
 			db->CloseReader(r);
 		}
 	}
+	LIST_FREE_STRING(&tableNames);
 
 	if (layerColl->GetCount() > 0)
 	{

@@ -40,7 +40,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
 	db = (DB::ReadingDB*)pobj;
-	r = db->QueryTableData(CSTR("IT_TGVLib"), 0, 0, 0, CSTR_NULL, 0);
+	r = db->QueryTableData(CSTR_NULL, CSTR("IT_TGVLib"), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		valid = true;
@@ -66,16 +66,13 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 
 	Map::GPSTrack *trk = 0;
 	Record *rec;
-	Data::Int32Map<Record*> *gpsLogMap;
-	Data::Int32Map<Record*> *wpMap;
+	Data::Int32Map<Record*> gpsLogMap;
+	Data::Int32Map<Record*> wpMap;
 	const Data::ArrayList<Record*> *recList;
-	Data::DateTime *dt;
+	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(gpsLogMap, Data::Int32Map<Record*>());
-	NEW_CLASS(wpMap, Data::Int32Map<Record*>());
-	r = db->QueryTableData(CSTR("GPSLog"), 0, 0, 0, CSTR_NULL, 0);
+	r = db->QueryTableData(CSTR_NULL, CSTR("GPSLog"), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Int32 id;
@@ -90,7 +87,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 			times[1] = r->GetInt32(2);
 			speed = r->GetDbl(4) / 1.852;
 			t = *(Int64*)times / 10000000LL - 11644473600LL;
-			rec = gpsLogMap->Get(id);
+			rec = gpsLogMap.Get(id);
 			if (rec)
 			{
 				valid = false;
@@ -106,7 +103,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 				rec->latitude = 0;
 				rec->longitude = 0;
 				rec->altitude = 0;
-				gpsLogMap->Put(rec->gpsLogId, rec);
+				gpsLogMap.Put(rec->gpsLogId, rec);
 			}
 		}
 		db->CloseReader(r);
@@ -116,7 +113,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 		valid = false;
 	}
 	
-	r = db->QueryTableData(CSTR("WP"), 0, 0, 0, CSTR_NULL, 0);
+	r = db->QueryTableData(CSTR_NULL, CSTR("WP"), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Int32 id;
@@ -131,7 +128,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 			lon = r->GetDbl(8);
 			lat = r->GetDbl(9);
 			alt = r->GetDbl(10);
-			rec = gpsLogMap->Get(gpsLogId);
+			rec = gpsLogMap.Get(gpsLogId);
 			if (rec == 0)
 			{
 				valid = false;
@@ -146,7 +143,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 			rec->latitude = lat;
 			rec->longitude = lon;
 			rec->altitude = alt;
-			wpMap->Put(rec->wpId, rec);
+			wpMap.Put(rec->wpId, rec);
 		}
 		db->CloseReader(r);
 	}
@@ -157,7 +154,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 
 	if (valid)
 	{
-		r = db->QueryTableData(CSTR("Line"), 0, 0, 0, CSTR_NULL, 0);
+		r = db->QueryTableData(CSTR_NULL, CSTR("Line"), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Map::GPSTrack::GPSRecord3 gpsRec;
@@ -170,7 +167,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 				j = (UOSInt)r->GetInt32(10);
 				while (i <= j)
 				{
-					rec = wpMap->Get((Int32)i);
+					rec = wpMap.Get((Int32)i);
 					if (rec)
 					{
 						gpsRec.utcTimeTicks = rec->time * 1000LL;
@@ -198,14 +195,11 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 		}
 	}
 
-	recList = gpsLogMap->GetValues();
+	recList = gpsLogMap.GetValues();
 	i = recList->GetCount();
 	while (i-- > 0)
 	{
 		MemFree(recList->GetItem(i));
 	}
-	DEL_CLASS(wpMap);
-	DEL_CLASS(gpsLogMap);
-	DEL_CLASS(dt);
 	return trk;
 }

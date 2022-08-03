@@ -7,8 +7,8 @@
 #include "DB/DBReader.h"
 #include "DB/JavaDBUtil.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/JavaProperties.h"
 #include "IO/Path.h"
-#include "IO/UnixConfigFile.h"
 #include "Net/OSSocketFactory.h"
 #include "Text/String.h"
 
@@ -763,7 +763,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);
-	IO::ConfigFile *cfg = IO::UnixConfigFile::ParseAppProp();
+	IO::ConfigFile *cfg = IO::JavaProperties::ParseAppProp();
 	Text::StringBuilderUTF8 sb;
 	if (cfg)
 	{
@@ -782,7 +782,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Data::ArrayList<LamppostData*> dataList2;
 			Data::NamedClass<LamppostData> *cls = LamppostData().CreateClass();
 			LamppostData *data;
-			DB::DBReader *r = db->QueryTableData(CSTR("dbo.lamppost_data"), 0, 0, 0, CSTR_NULL, 0);
+			DB::DBReader *r = db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, CSTR_NULL, 0);
 			if (r)
 			{
 				r->ReadAll(&dataList, cls);

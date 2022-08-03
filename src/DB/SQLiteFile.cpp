@@ -30,17 +30,6 @@ void DB::SQLiteFile::Init()
 	{
 		Text::StringBuilderUTF8 sb;
 		this->db = db;
-		DB::DBReader *r = ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"));
-		if (r)
-		{
-			while (r->ReadNext())
-			{
-				sb.ClearStr();
-				r->GetStr(0, &sb);
-				this->tableNames.Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
-			}
-			this->CloseReader(r);
-		}
 	}
 	else
 	{
@@ -66,18 +55,12 @@ DB::SQLiteFile::SQLiteFile(Text::CString fileName) : DB::DBConn(fileName)
 
 DB::SQLiteFile::~SQLiteFile()
 {
-	UOSInt i;
 	if (this->db)
 	{
 		sqlite3_close((sqlite3*)this->db);
 		this->db = 0;
 	}
 	sqlite3_shutdown();
-	i = this->tableNames.GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->tableNames.GetItem(i).v);
-	}
 	if (this->delOnClose)
 	{
 		IO::Path::DeleteFile(this->fileName->v);
@@ -236,13 +219,25 @@ void DB::SQLiteFile::Rollback(void *tran)
 	ExecuteNonQuery(CSTR("end"));
 }
 
-UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	names->AddAll(&this->tableNames);
-	return this->tableNames.GetCount();
+	if (schemaName.leng > 0)
+		return 0;
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *r = ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"));
+	if (r)
+	{
+		Text::StringBuilderUTF8 sb;
+		while (r->ReadNext())
+		{
+			names->Add(r->GetNewStrB(0, &sb, true));
+		}
+		this->CloseReader(r);
+	}
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select * from "));

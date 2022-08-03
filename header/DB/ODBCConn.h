@@ -41,7 +41,6 @@ namespace DB
 		Bool enableDebug;
 		Bool forceTz;
 		Int8 tzQhr;
-		Data::ArrayList<Text::String *> *tableNames;
 
 	private:
 		void PrintError();
@@ -81,9 +80,9 @@ namespace DB
 		void SetTraceFile(const WChar *fileName);
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
-		DBReader *GetTablesInfo();
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
-		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		DBReader *GetTablesInfo(Text::CString schemaName);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);

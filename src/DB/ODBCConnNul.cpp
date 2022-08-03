@@ -37,7 +37,6 @@ DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(
 	connHand = 0;
 	envHand = 0;
 	lastStmtHand = 0;
-	this->tableNames = 0;
 	this->log = log;
 	this->connErr = CE_NOT_CONNECT;
 	this->lastErrorMsg = 0;
@@ -57,7 +56,6 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 	this->connHand = 0;
 	this->envHand = 0;
 	this->lastStmtHand = 0;
-	this->tableNames = 0;
 	this->log = log;
 	this->connStr = 0;
 	this->dsn = 0;
@@ -71,7 +69,6 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogT
 DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->tableNames = 0;
 	this->connStr = 0;
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
@@ -86,7 +83,6 @@ DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, 
 DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
-	this->tableNames = 0;
 	this->connStr = 0;
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
@@ -132,17 +128,6 @@ DB::ODBCConn::~ODBCConn()
 	SDEL_STRING(this->uid);
 	SDEL_STRING(this->pwd);
 	SDEL_STRING(this->connStr);
-	if (this->tableNames)
-	{
-		OSInt i = this->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			this->tableNames->GetItem(i)->Release();
-		}
-		DEL_CLASS(this->tableNames);
-		this->tableNames = 0;
-	}
-
 }
 
 DB::DBUtil::ServerType DB::ODBCConn::GetSvrType()
@@ -266,13 +251,13 @@ UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::GetTablesInfo()
+DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
 }
 
-UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	return 0;
 }

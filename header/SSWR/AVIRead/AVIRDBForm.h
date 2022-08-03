@@ -26,6 +26,8 @@ namespace SSWR
 			UI::GUIVSplitter *vspDB;
 			UI::GUIListView *lvResult;
 
+			UI::GUIListBox *lbSchema;
+			UI::GUIHSplitter *hspSchema;
 			UI::GUIListBox *lbTable;
 			UI::GUIHSplitter *hspTable;
 			UI::GUIListView *lvTable;
@@ -33,20 +35,22 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<const UTF8Char*> *dbNames;
+			Data::ArrayList<const UTF8Char*> dbNames;
 			DB::ReadingDB *db;
 			Bool needRelease;
 			DB::ReadingDBTool *dbt;
-			IO::LogTool *log;
+			IO::LogTool log;
 
+			static void __stdcall OnSchemaSelChg(void *userObj);
 			static void __stdcall OnTableSelChg(void *userObj);
 
 			void UpdateResult(DB::DBReader *r);
-			Data::Class *CreateTableClass(Text::CString name);
+			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 		public:
 			AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease);
 			virtual ~AVIRDBForm();
 
+			void UpdateSchemas();
 			void UpdateTables();
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();

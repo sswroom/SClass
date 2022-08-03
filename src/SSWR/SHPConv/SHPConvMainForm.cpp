@@ -248,7 +248,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Tex
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
 		DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
-		r = dbf.QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+		r = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			while (r->ReadNext())
@@ -391,7 +391,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
-			dbfr = dbf.QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 			StrRecord *strRec;
 
 //			tmpWriter = New IO.StreamWriter(sourceFile.Substring(0, sourceFile.LastIndexOf(".")) + ".txt")
@@ -799,7 +799,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text:
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			DB::DBFFile dbf(&fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
-			dbfr = dbf.QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 
 			StrRecord *strRec;
 

@@ -14,7 +14,6 @@ Int32 Win32::WMIQuery::securityCnt = 0;
 void Win32::WMIQuery::InitQuery(const WChar *ns)
 {
 	this->pService = 0;
-	this->tabNames = 0;
 	this->lastDataError = DE_NO_ERROR;
 	HRESULT ci = CoInitialize(NULL);
 	HRESULT hr;
@@ -65,15 +64,6 @@ Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
 Win32::WMIQuery::~WMIQuery()
 {
 	this->Close();
-	if (this->tabNames)
-	{
-		UOSInt i = this->tabNames->GetCount();
-		while (i-- > 0)
-		{
-			this->tabNames->GetItem(i)->Release();
-		}
-		DEL_CLASS(this->tabNames);
-	}
 	SDEL_TEXT(this->ns);
 }
 
@@ -180,70 +170,52 @@ void Win32::WMIQuery::Rollback(void *tran)
 {
 }
 
-UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
+	if (schemaName.leng != 0)
+		return 0;
 	if (this->pService == 0)
 	{
 		return 0;
 	}
-	if (this->tabNames == 0)
+	UOSInt initCnt = names->GetCount();
+	IEnumWbemClassObject *pEnum;
+	HRESULT hr = ((IWbemServices *)this->pService)->CreateClassEnum(0, WBEM_FLAG_DEEP | WBEM_FLAG_RETURN_IMMEDIATELY, 0, &pEnum);
+	if (SUCCEEDED(hr))
 	{
-		IEnumWbemClassObject *pEnum;
-		NEW_CLASS(this->tabNames, Data::ArrayListString());
-		HRESULT hr = ((IWbemServices *)this->pService)->CreateClassEnum(0, WBEM_FLAG_DEEP | WBEM_FLAG_RETURN_IMMEDIATELY, 0, &pEnum);
-		if (SUCCEEDED(hr))
+		IWbemClassObject *pObject;
+		ULONG returned;
+		while (true)
 		{
-			IWbemClassObject *pObject;
-			ULONG returned;
-			while (true)
+			hr = pEnum->Next(WBEM_INFINITE, 1, &pObject, &returned);
+			if (SUCCEEDED(hr))
 			{
-				hr = pEnum->Next(WBEM_INFINITE, 1, &pObject, &returned);
-				if (SUCCEEDED(hr))
-				{
-					if (returned == 0)
-						break;
-
-					VARIANT v;
-					VariantInit(&v);
-					if (SUCCEEDED(pObject->Get(L"__CLASS", 0, &v, 0, 0)))
-					{
-						BSTR bs = V_BSTR(&v);
-						this->tabNames->SortedInsert(Text::String::NewNotNull(bs));
-					}
-					VariantClear(&v);
-					pObject->Release();
-				}
-				else
-				{
+				if (returned == 0)
 					break;
-				}
-			}
-			pEnum->Release();
-		}
-	}
 
-	UOSInt i = 0;
-	UOSInt j = this->tabNames->GetCount();
-	while (i < j)
-	{
-		names->Add(this->tabNames->GetItem(i)->ToCString());
-		i++;
+				VARIANT v;
+				VariantInit(&v);
+				if (SUCCEEDED(pObject->Get(L"__CLASS", 0, &v, 0, 0)))
+				{
+					BSTR bs = V_BSTR(&v);
+					names->Add(Text::String::NewNotNull(bs));
+				}
+				VariantClear(&v);
+				pObject->Release();
+			}
+			else
+			{
+				break;
+			}
+		}
+		pEnum->Release();
 	}
-	return j;
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
-	if (this->tabNames == 0)
-	{
-		Data::ArrayList<Text::CString> names;
-		this->GetTableNames(&names);
-	}
-	if (this->tabNames->SortedIndexOfPtr(tableName.v, tableName.leng) < 0)
-	{
-		return 0;
-	}
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);
 	return this->ExecuteReaderW(wbuff);
 }

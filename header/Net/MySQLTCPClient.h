@@ -44,8 +44,6 @@ namespace Net
 		UInt16 connStatus;
 		Text::String *lastError;
 		
-		Data::ArrayList<Text::CString> *tableNames;
-
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
 		UOSInt cmdSeqNum;
@@ -79,8 +77,8 @@ namespace Net
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		Bool ChangeSchema(const UTF8Char *schemaName);
 
 		Bool IsError();

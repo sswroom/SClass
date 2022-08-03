@@ -81,20 +81,22 @@ DB::DBFFile::~DBFFile()
 	}
 }
 
-UOSInt DB::DBFFile::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
+	if (schemaName.leng != 0)
+		return 0;
 	if (this->name)
 	{
-		names->Add(this->name->ToCString());
+		names->Add(this->name->Clone());
 	}
 	else
 	{
-		names->Add(CSTR("DBF"));
+		names->Add(Text::String::New(UTF8STRC("DBF")));
 	}
 	return 1;
 }
 
-DB::DBReader *DB::DBFFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (cols)
 	{

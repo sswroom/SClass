@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 
 	UOSInt colCount;
 	ColInfo *colInfos;
-	DB::DBReader *reader = me->db->QueryTableData(me->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *reader = me->db->QueryTableData(STR_CSTR(me->schemaName), me->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting database data"), CSTR("Error"), me);
@@ -287,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *use
 	}
 }
 
-SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString tableName) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Line Chart"));
 	this->SetFont(0, 0, 8.25, false);
@@ -296,6 +296,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->db = db;
 	this->strTypes = 0;
 	this->tableName = Text::String::New(tableName);
+	this->schemaName = Text::String::NewOrNull(schemaName);
 	NEW_CLASS(this->yCols, Data::ArrayList<UInt32>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -343,7 +344,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lbYAxis, UI::GUIListBox(ui, this->grpYAxis, false));
 	this->lbYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	DB::DBReader *reader = this->db->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *reader = this->db->QueryTableData(STR_CSTR(this->schemaName), tableName, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 	}
@@ -393,6 +394,7 @@ SSWR::AVIRead::AVIRLineChartForm::~AVIRLineChartForm()
 {
 	DEL_CLASS(this->yCols);
 	this->tableName->Release();
+	SDEL_STRING(this->schemaName);
 	if (this->strTypes)
 	{
 		MemFree(this->strTypes);

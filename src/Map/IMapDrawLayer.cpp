@@ -127,13 +127,15 @@ void Map::IMapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::IMapDrawLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::IMapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	names->Add(this->sourceName->ToCString());
+	if (schemaName.leng != 0)
+		return 0;
+	names->Add(this->sourceName->Clone());
 	return 1;
 }
 
-DB::DBReader *Map::IMapDrawLayer::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::IMapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	NEW_CLASS(r, Map::MapLayerReader(this));

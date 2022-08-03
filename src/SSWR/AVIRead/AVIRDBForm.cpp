@@ -21,29 +21,37 @@ typedef enum
 	MNU_DATABASE_START = 1000
 } MenuEvent;
 
+void __stdcall SSWR::AVIRead::AVIRDBForm::OnSchemaSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
+	me->UpdateTables();
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
+	Text::String *schemaName = me->lbSchema->GetSelectedItemTextNew();
 	sptr = me->lbTable->GetSelectedItemText(sbuff);
 
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
 	if (me->dbt)
 	{
-		tabDef = me->dbt->GetTableDef(CSTRP(sbuff, sptr));
+		tabDef = me->dbt->GetTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		r = me->db->QueryTableData(CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		r = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	}
 	else
 	{
-		r = me->db->QueryTableData(CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		r = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 		if (r)
 		{
 			tabDef = r->GenTableDef(CSTRP(sbuff, sptr));
 		}
 	}
+	SDEL_STRING(schemaName);
 	if (r)
 	{
 		me->UpdateResult(r);
@@ -190,11 +198,11 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
-Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString name)
+Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)
 {
 	if (this->dbt)
 	{
-		DB::TableDef *tab = this->dbt->GetTableDef(name);
+		DB::TableDef *tab = this->dbt->GetTableDef(schemaName, tableName);
 		if (tab)
 		{
 			Data::Class *cls = tab->CreateTableClass();
@@ -202,7 +210,7 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString name)
 			return cls;
 		}
 	}
-	DB::DBReader *r = this->db->QueryTableData(name, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::Class *cls = r->CreateClass();
@@ -221,13 +229,12 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	this->SetText(CSTRP(sbuff, sptr));
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->log, IO::LogTool());
 	this->db = db;
 	this->needRelease = needRelease;
 	this->dbt = 0;
 	if (db->IsFullConn())
 	{
-		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, this->log, CSTR("DB: ")));
+		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, &this->log, CSTR("DB: ")));
 	}
 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
@@ -241,8 +248,13 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	this->lvResult->SetFullRowSelect(true);
 	this->lvResult->SetShowGrid(true);
 
+	NEW_CLASS(this->lbSchema, UI::GUIListBox(ui, this->tpTable, false));
+	this->lbSchema->SetRect(0, 0, 150, 100, false);
+	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
+	NEW_CLASS(this->hspSchema, UI::GUIHSplitter(ui, this->tpTable, 3, false));
 	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->tpTable, false));
-	this->lbTable->SetRect(0, 0, 200, 100, false);
+	this->lbTable->SetRect(0, 0, 150, 100, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	NEW_CLASS(this->hspTable, UI::GUIHSplitter(ui, this->tpTable, 3, false));
@@ -267,69 +279,96 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	mnu->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	NEW_CLASS(this->dbNames, Data::ArrayList<const UTF8Char*>());
-	if (this->dbt && this->dbt->GetDatabaseNames(this->dbNames) > 0)
+	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
 	{
 		UOSInt i = 0;
-		UOSInt j = this->dbNames->GetCount();
+		UOSInt j = this->dbNames.GetCount();
 		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
 		while (i < j)
 		{
-			const UTF8Char *dbName = this->dbNames->GetItem(i);
+			const UTF8Char *dbName = this->dbNames.GetItem(i);
 			mnu->AddItem({dbName, Text::StrCharCnt(dbName)}, (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			i++;
 		}
 	}
 	this->SetMenu(this->mnuMain);
 
-	this->UpdateTables();
+	this->UpdateSchemas();
 }
 
 SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 {
 	if (this->dbt)
 	{
-		this->dbt->ReleaseDatabaseNames(this->dbNames);
+		this->dbt->ReleaseDatabaseNames(&this->dbNames);
 		DEL_CLASS(this->dbt);
 	}
 	else if (this->needRelease)
 	{
 		DEL_CLASS(this->db);
 	}
-	DEL_CLASS(this->dbNames);
-	DEL_CLASS(this->log);
+}
+
+void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
+{
+	Data::ArrayList<Text::String*> schemaNames;
+	UOSInt i;
+	UOSInt j;
+
+	this->lbSchema->ClearItems();
+	if (this->dbt)
+	{
+		this->dbt->QuerySchemaNames(&schemaNames);
+	}
+	else
+	{
+		this->db->QuerySchemaNames(&schemaNames);
+	}
+	if (schemaNames.GetCount() == 0)
+	{
+		this->lbSchema->AddItem(CSTR(""), 0);
+	}
+	i = 0;
+	j = schemaNames.GetCount();
+	while (i < j)
+	{
+		Text::String *schemaName = schemaNames.GetItem(i);
+		this->lbSchema->AddItem(schemaName, 0);
+		i++;
+	}
+
+	LIST_FREE_STRING(&schemaNames);
+	this->lbSchema->SetSelectedIndex(0);
 }
 
 void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
-	Data::ArrayList<Text::CString> *tableNames;
+	Text::StringBuilderUTF8 sb;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Data::ArrayList<Text::String*> tableNames;
 	UOSInt i;
 	UOSInt j;
 
 	this->lbTable->ClearItems();
-	NEW_CLASS(tableNames, Data::ArrayList<Text::CString>());
 	if (this->dbt)
 	{
-		this->dbt->QueryTableNames(tableNames);
+		this->dbt->QueryTableNames(STR_CSTR(schemaName), &tableNames);
 	}
 	else
 	{
-		this->db->GetTableNames(tableNames);
+		this->db->QueryTableNames(STR_CSTR(schemaName), &tableNames);
 	}
+	SDEL_STRING(schemaName);
 	i = 0;
-	j = tableNames->GetCount();
+	j = tableNames.GetCount();
 	while (i < j)
 	{
-		Text::CString tableName = tableNames->GetItem(i);
+		Text::String *tableName = tableNames.GetItem(i);
 		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
 
-	if (this->dbt)
-	{
-		this->dbt->ReleaseTableNames(tableNames);
-	}
-	DEL_CLASS(tableNames);
+	LIST_FREE_STRING(&tableNames);
 }
 
 void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
@@ -339,7 +378,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	if (cmdId >= MNU_DATABASE_START)
 	{
-		if (this->dbt->ChangeDatabase(this->dbNames->GetItem((UOSInt)cmdId - MNU_DATABASE_START)))
+		if (this->dbt->ChangeDatabase(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START)))
 		{
 			this->UpdateTables();
 		}
@@ -355,7 +394,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Data::IChart *chart = 0;
 			{
-				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, CSTRP(sbuff, sptr));
+				Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+				SDEL_STRING(schemaName);
 				if (frm.ShowDialog(this) == DR_OK)
 				{
 					chart = frm.GetChart();
@@ -372,7 +413,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_HEADER:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Data::Class *cls = this->CreateTableClass(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			SDEL_STRING(schemaName);
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -389,7 +432,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_SOURCE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Data::Class *cls = this->CreateTableClass(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			SDEL_STRING(schemaName);
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -405,10 +450,12 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_JAVA:
 		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(&sb, tableName, this->dbt);
+			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, this->dbt);
 			tableName->Release();
+			SDEL_STRING(schemaName);
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
 		break;

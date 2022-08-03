@@ -35,23 +35,18 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	}
 
 	Data::ArrayListInt64 *objIds;
-	Data::ArrayListStrUTF8 *names;
-	Data::ArrayListICaseStrUTF8 *nameIndex;
-	Data::ArrayList<DB::DBUtil::ColType> *colTypeArr;
-	Data::ArrayList<UOSInt> *nameSizes;
-	Data::ArrayList<UOSInt> *nameDPs;
+	Data::ArrayListStrUTF8 names;
+	Data::ArrayListICaseStrUTF8 nameIndex;
+	Data::ArrayList<DB::DBUtil::ColType> colTypeArr;
+	Data::ArrayList<UOSInt> nameSizes;
+	Data::ArrayList<UOSInt> nameDPs;
 	DB::ColDef colDef(CSTR_NULL);
-	NEW_CLASS(names, Data::ArrayListStrUTF8());
-	NEW_CLASS(nameIndex, Data::ArrayListICaseStrUTF8());
-	NEW_CLASS(nameSizes, Data::ArrayList<UOSInt>());
-	NEW_CLASS(nameDPs, Data::ArrayList<UOSInt>());
-	NEW_CLASS(colTypeArr, Data::ArrayList<DB::DBUtil::ColType>());
 
 	i = 0;
 	while (i < layerCnt)
 	{
 		lyr = layers->GetItem(i);
-		DB::DBReader *r = lyr->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 
 		k = r->ColCount();
 		j = 0;
@@ -59,22 +54,22 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 		{
 			lyr->GetColumnName(sbuff, j);
 			r->GetColDef(j, &colDef);
-			si = nameIndex->SortedIndexOf(sbuff);
+			si = nameIndex.SortedIndexOf(sbuff);
 			if (si >= 0)
 			{
-				if (nameSizes->GetItem(i) < colDef.GetColSize())
+				if (nameSizes.GetItem(i) < colDef.GetColSize())
 				{
-					nameSizes->SetItem(i, colDef.GetColSize());
+					nameSizes.SetItem(i, colDef.GetColSize());
 				}
 			}
 			else
 			{
 				const UTF8Char *name = Text::StrCopyNew(sbuff);
-				nameIndex->Insert((UOSInt)~si, name);
-				nameSizes->Insert((UOSInt)~si, colDef.GetColSize());
-				nameDPs->Insert((UOSInt)~si, colDef.GetColDP());
-				colTypeArr->Insert((UOSInt)~si, colDef.GetColType());
-				names->Add(name);
+				nameIndex.Insert((UOSInt)~si, name);
+				nameSizes.Insert((UOSInt)~si, colDef.GetColSize());
+				nameDPs.Insert((UOSInt)~si, colDef.GetColDP());
+				colTypeArr.Insert((UOSInt)~si, colDef.GetColType());
+				names.Add(name);
 			}
 			j++;
 		}
@@ -89,20 +84,20 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	UOSInt *colSizes;
 	UOSInt *colDPs;
 	UOSInt nameCol = lyr->GetNameCol();
-	i = names->GetCount();
+	i = names.GetCount();
 	namesArr = MemAlloc(const UTF8Char *, i);
 	colTypes = MemAlloc(DB::DBUtil::ColType, i);
 	colSizes = MemAlloc(UOSInt, i);
 	colDPs = MemAlloc(UOSInt, i);
 	while (i-- > 0)
 	{
-		namesArr[i] = names->GetItem(i);
-		si = nameIndex->SortedIndexOf(namesArr[i]);
-		colTypes[i] = colTypeArr->GetItem((UOSInt)si);
-		colSizes[i] = nameSizes->GetItem((UOSInt)si);
-		colDPs[i] = nameDPs->GetItem((UOSInt)si);
+		namesArr[i] = names.GetItem(i);
+		si = nameIndex.SortedIndexOf(namesArr[i]);
+		colTypes[i] = colTypeArr.GetItem((UOSInt)si);
+		colSizes[i] = nameSizes.GetItem((UOSInt)si);
+		colDPs[i] = nameDPs.GetItem((UOSInt)si);
 	}
-	NEW_CLASS(newLyr, Map::VectorLayer(lyrType, sourceName, names->GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
+	NEW_CLASS(newLyr, Map::VectorLayer(lyrType, sourceName, names.GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
 	MemFree(colTypes);
 	MemFree(colSizes);
 
@@ -117,10 +112,10 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 		while (j < k)
 		{
 			lyr->GetColumnName(sbuff, j);
-			l = names->GetCount();
+			l = names.GetCount();
 			while (l-- > 0)
 			{
-				if (Text::StrCompareICase(names->GetItem(l), sbuff) == 0)
+				if (Text::StrCompareICase(names.GetItem(l), sbuff) == 0)
 				{
 					colDPs[j] = l;
 					break;
@@ -129,7 +124,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 			j++;
 		}
 
-		l = names->GetCount();
+		l = names.GetCount();
 		while (l-- > 0)
 		{
 			namesArr[l] = 0;
@@ -144,7 +139,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 		objIds->Clear();
 		sess = lyr->BeginGetObject();
 		lyr->GetAllObjectIds(objIds, &lyrNameArr);
-		l = nameDPs->GetCount();
+		l = nameDPs.GetCount();
 		while (l-- > 0)
 		{
 			id = objIds->GetItem(l);
@@ -173,15 +168,10 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	MemFree(namesArr);
 	DEL_CLASS(objIds);
 
-	DEL_CLASS(colTypeArr);
-	DEL_CLASS(nameIndex);
-	DEL_CLASS(nameSizes);
-	DEL_CLASS(nameDPs);
-	i = names->GetCount();
+	i = names.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(names->GetItem(i));
+		Text::StrDelNew(names.GetItem(i));
 	}
-	DEL_CLASS(names);
 	return newLyr;
 }

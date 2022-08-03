@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayListCStrFast.h"
+#include "Data/ArrayListStrFast.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Parser/FileParser/SQLiteParser.h"
-#include "Text/CStringComparatorFast.h"
 #include "Text/MyString.h"
+#include "Text/StringComparatorFast.h"
 
 #include <stdio.h>
 
@@ -112,17 +112,22 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 
 IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 {
-	Data::ArrayListCStrFast tableNames;
-	conn->GetTableNames(&tableNames);
-	Text::CStringComparatorFast comparator;
+	Data::ArrayListStrFast tableNames;
+	conn->QueryTableNames(CSTR_NULL, &tableNames);
+	Text::StringComparatorFast comparator;
 	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &comparator);
-	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0) return conn;
-	if (tableNames.SortedIndexOf(CSTR("gpkg_contents")) < 0) return conn;
-	if (tableNames.SortedIndexOf(CSTR("gpkg_ogr_contents")) < 0) return conn;
-	if (tableNames.SortedIndexOf(CSTR("gpkg_geometry_columns")) < 0) return conn;
-	if (tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix_set")) < 0) return conn;
-	if (tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0) return conn;
-	if (tableNames.SortedIndexOf(CSTR("layers")) < 0) return conn;
+	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0 ||
+		tableNames.SortedIndexOf(CSTR("gpkg_contents")) < 0 ||
+		tableNames.SortedIndexOf(CSTR("gpkg_ogr_contents")) < 0 ||
+		tableNames.SortedIndexOf(CSTR("gpkg_geometry_columns")) < 0 ||
+		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix_set")) < 0 ||
+		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0 ||
+		tableNames.SortedIndexOf(CSTR("layers")) < 0)
+	{
+		LIST_FREE_STRING(&tableNames);
+		return conn;
+	}
 	printf("Valid GeoPackage file\r\n");
+	LIST_FREE_STRING(&tableNames);
 	return conn;
 }

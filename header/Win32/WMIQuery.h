@@ -11,7 +11,6 @@ namespace Win32
 	private:
 		const WChar *ns;
 		void *pService;
-		Data::ArrayListString *tabNames;
 		static Int32 securityCnt;
 
 		void InitQuery(const WChar *ns);
@@ -38,8 +37,8 @@ namespace Win32
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *reader);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();

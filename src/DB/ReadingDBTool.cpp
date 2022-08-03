@@ -537,11 +537,16 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
-		logMsg.AppendC(UTF8STRC("GetTableData: "));
+		logMsg.AppendC(UTF8STRC("QueryTableData: "));
+		if (schemaName.leng > 0)
+		{
+			logMsg.Append(schemaName);
+			logMsg.AppendUTF8Char('.');
+		}
 		logMsg.Append(tableName);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -554,7 +559,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString tableName, Data::A
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	DB::DBReader *r = this->db->QueryTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
+	DB::DBReader *r = this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (r)
 	{
 		Data::DateTime t3;
@@ -613,12 +618,22 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString tableName, Data::A
 	}
 }
 
-UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
+UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *arr)
 {
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		UOSInt ret = 0;
-		DB::DBReader *r = this->ExecuteReader(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE'"));
+		DB::SQLBuilder sql(DB::DBUtil::ServerType::MSSQL, this->GetTzQhr());
+		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
+		if (schemaName.v == 0)
+		{
+			sql.AppendStrC(CSTR("dbo"));
+		}
+		else
+		{
+			sql.AppendStrC(schemaName);
+		}
+		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -631,7 +646,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 				}
 				if (r->GetStr(1, &sb))
 				{
-					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -641,6 +656,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
+		if (schemaName.leng != 0)
+			return 0;
 		DB::DBReader *r = this->ExecuteReader(CSTR("show tables"));
 		if (r)
 		{
@@ -651,7 +668,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -665,6 +682,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
+		if (schemaName.leng != 0)
+			return 0;
 		DB::DBReader *r = this->ExecuteReader(CSTR("select name from sqlite_master where type = 'table'"));
 		if (r)
 		{
@@ -675,7 +694,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -689,6 +708,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
+		if (schemaName.leng != 0)
+			return 0;
 		DB::DBReader *r = this->ExecuteReader(CSTR("select name, type from MSysObjects where type = 1"));
 		if (r)
 		{
@@ -700,7 +721,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 				//Int32 type = r->GetInt32(1);
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -714,31 +735,47 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 	}
 	else
 	{
-		Data::ArrayList<Text::CString> tables;
-		Text::CString tableName;
-		this->db->GetTableNames(&tables);
-		UOSInt i = 0;
-		UOSInt j = tables.GetCount();
-		while (i < j)
-		{
-			tableName = tables.GetItem(i);
-			arr->Add(Text::CString(Text::StrCopyNewC(tableName.v, tableName.leng), tableName.leng));
-			i++;
-		}
-		return j;
+		return this->db->QueryTableNames(schemaName, arr);
 	}
 }
 
-void DB::ReadingDBTool::ReleaseTableNames(Data::ArrayList<Text::CString> *arr)
+UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 {
-	UOSInt i = arr->GetCount();
-	while (i-- > 0)
+	if (this->svrType == DB::DBUtil::ServerType::PostgreSQL)
 	{
-		Text::StrDelNew(arr->RemoveAt(i).v);
+		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
+		if (r)
+		{
+			UOSInt ret = 0;
+			Text::StringBuilderUTF8 sb;
+			while (r->ReadNext())
+			{
+				sb.ClearStr();
+				if (r->GetStr(0, &sb))
+				{
+					arr->Add(Text::String::New(sb.ToCString()));
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	{
+		return 0;
+	}
+	else
+	{
+		return 0;
 	}
 }
 
-DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
+DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UTF8Char buff[256];
 	UTF8Char *ptr;
@@ -992,11 +1029,14 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, data_type, character_maximum_length from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
-		if (this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
+		sql.AppendCmdC(CSTR(" and table_schema = "));
+		if (schemaName.leng == 0)
 		{
-			sql.AppendCmdC(CSTR(" and table_schema in ("));
-			sql.AppendStr(((DB::PostgreSQLConn*)this->db)->GetConnDB());
-			sql.AppendCmdC(CSTR(", 'public')"));
+			sql.AppendStrC(CSTR("public"));
+		}
+		else
+		{
+			sql.AppendStrC(schemaName);
 		}
 		sql.AppendCmdC(CSTR(" order by ordinal_position"));
 		DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());

@@ -41,6 +41,10 @@ IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
+Manage/Computer.h: ../../src/Manage/ComputerL.cpp
+@Computer.o
+Manage/ComputerUser.h: ../../src/Manage/ComputerUserL.cpp
+@ComputerUser.o
 Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverL.cpp
 @SymbolResolver.o
 Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
@@ -122,6 +126,8 @@ OS.o: ../../src/IO/OSDarwin.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
+Computer.o: ../../src/Manage/ComputerL.cpp
+ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
 SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread

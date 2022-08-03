@@ -11,7 +11,7 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
-	DB::DBReader *r = this->currDB->QueryTableData(tableName->ToCString(), 0, 0, 0, 0, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0);
 	if (r)
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
@@ -75,7 +75,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	DB::DBReader *r = this->currDB->QueryTableData(tableName, 0, 0, 0, 0, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		UOSInt i;
@@ -352,19 +352,21 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	names->Add(this->tableName->ToCString());
+	if (schemaName.leng != 0)
+		return 0;
+	names->Add(this->tableName->Clone());
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseDB(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->QueryTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
+	DB::DBReader *rdr = this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::FileGDBLReader *r;

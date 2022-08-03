@@ -16,7 +16,7 @@ namespace DB
 		DBModel();
 		~DBModel();
 
-		Bool LoadDatabase(DB::DBTool *db, Text::CString dbName);
+		Bool LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CString schemaName);
 		TableDef *GetTable(Text::CString tableName);
 		UOSInt GetTableNames(Data::ArrayList<Text::CString> *tableNames);
 	};

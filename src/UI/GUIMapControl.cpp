@@ -504,7 +504,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 		}
 		else if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::Ellipse)
 		{
-			Math::Ellipse *circle = (Math::Ellipse*)this->selVec;
+//			Math::Ellipse *circle = (Math::Ellipse*)this->selVec;
 /*			BITMAPINFOHEADER bmih;
 			bmih.biSize = sizeof(bmih);
 			bmih.biWidth = (LONG)this->currWidth;
@@ -569,7 +569,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 		}
 		else if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::PieArea)
 		{
-			Math::PieArea *pie = (Math::PieArea*)this->selVec;
+//			Math::PieArea *pie = (Math::PieArea*)this->selVec;
 /*			BITMAPINFOHEADER bmih;
 			bmih.biSize = sizeof(bmih);
 			bmih.biWidth = (LONG)this->currWidth;

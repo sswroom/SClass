@@ -51,7 +51,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 	}
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 	{
-		DB::DBReader *r = fgdb->QueryTableData(CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Data::ArrayList<Text::String*> layers;

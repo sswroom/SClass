@@ -12,12 +12,12 @@ DB::MongoDB::~MongoDB()
 {
 }
 
-UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::MongoDB::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }

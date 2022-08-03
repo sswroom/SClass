@@ -3096,13 +3096,13 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddDataFile(const UTF8Char *fileName)
 		else if (t == IO::ParserType::ReadingDB)
 		{
 			DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-			Data::ArrayList<const UTF8Char *> tables;
-			db->GetTableNames(&tables);
+			Data::ArrayList<Text::String *> tables;
+			db->QueryTableNames(CSTR_NULL, &tables);
 			if (tables.GetCount() == 2)
 			{
-				if (Text::StrEquals(tables.GetItem(0), (const UTF8Char*)"Setting") && Text::StrEquals(tables.GetItem(1), (const UTF8Char*)"Records"))
+				if (tables.GetItem(0)->Equals(UTF8STRC("Setting")) && tables.GetItem(1)->Equals(UTF8STRC("Records")))
 				{
-					DB::DBReader *reader = db->QueryTableData((const UTF8Char*)"Records", 0, 0, 0, 0, 0);
+					DB::DBReader *reader = db->QueryTableData(CSTR("Records"), 0, 0, 0, 0, 0);
 					Bool found = false;
 					if (reader)
 					{
@@ -3124,6 +3124,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddDataFile(const UTF8Char *fileName)
 					}
 				}
 			}
+			LIST_FREE_STRING(&tables);
 		}
 		DEL_CLASS(pobj);
 	}

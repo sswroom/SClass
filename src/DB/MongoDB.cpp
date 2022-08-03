@@ -29,7 +29,6 @@ DB::MongoDB::MongoDB(Text::CString url, Text::CString database, IO::LogTool *log
 	}
 	client = mongoc_client_new((const Char*)url.v);
 	this->client = client;
-	this->tableNames = 0;
 	if (database.v)
 	{
 		this->database = Text::String::New(database);
@@ -47,57 +46,42 @@ DB::MongoDB::~MongoDB()
 		mongoc_client_destroy((mongoc_client_t*)this->client);
 	}
 	SDEL_STRING(this->database);
-	if (this->tableNames)
-	{
-		UOSInt i;
-		i = this->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			Text::StrDelNew(this->tableNames->GetItem(i).v);
-		}
-		DEL_CLASS(this->tableNames);
-	}
 	if (Sync::Interlocked::Decrement(&initCnt) == 0)
 	{
 		mongoc_cleanup();
 	}
 }
 
-UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	if (this->database == 0 || this->client == 0)
+	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
 		return 0;
-	if (this->tableNames == 0)
+
+	UOSInt initCnt = names->GetCount();
+	bson_error_t error;
+	mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v);
+	char **strv;
+	strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
+	SDEL_STRING(this->errorMsg);
+	if (strv == 0)
 	{
-		bson_error_t error;
-		NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
-		mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v);
-		char **strv;
-		strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
-		SDEL_STRING(this->errorMsg);
-		if (strv == 0)
-		{
-			this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
-		}
-		else
-		{
-			UOSInt len;
-			OSInt i = 0;
-			while (strv[i])
-			{
-				len = Text::StrCharCnt(strv[i]);
-				this->tableNames->Add(Text::CString(Text::StrCopyNewC((const UTF8Char*)strv[i], len), len));
-				i++;
-			}
-			bson_strfreev(strv);
-		}		
-		mongoc_database_destroy(db);
+		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 	}
-	names->AddAll(this->tableNames);
-	return this->tableNames->GetCount();
+	else
+	{
+		OSInt i = 0;
+		while (strv[i])
+		{
+			names->Add(Text::String::NewNotNullSlow((const UTF8Char*)strv[i]));
+			i++;
+		}
+		bson_strfreev(strv);
+	}		
+	mongoc_database_destroy(db);
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::MongoDB::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->database && this->client)
 	{

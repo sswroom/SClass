@@ -274,20 +274,20 @@ DB::TextDB::~TextDB()
 	}
 }
 
-UOSInt DB::TextDB::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	Data::ArrayList<Text::String*> *keys = this->dbMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
 	{
-		names->Add(keys->GetItem(i)->ToCString());
+		names->Add(keys->GetItem(i)->Clone());
 		i++;
 	}
 	return j;
 }
 
-DB::DBReader *DB::TextDB::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
 	if (tableName.v == 0)

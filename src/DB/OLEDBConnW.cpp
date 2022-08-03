@@ -49,7 +49,6 @@ struct DB::OLEDBConn::ClassData
 	IDBInitialize *pIDBInitialize;
 	IDBCreateSession *pSession;
 	ITransactionLocal *pITransactionLocal;
-	Data::ArrayList<Text::String *> *tableNames;
 };
 
 struct DB::OLEDBReader::ClassData
@@ -82,7 +81,6 @@ DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
 	data->pSession = 0;
 	data->pITransactionLocal = 0;
 	data->connStr = 0;
-	data->tableNames = 0;
 }
 
 void DB::OLEDBConn::Init(const WChar *connStr)
@@ -173,7 +171,6 @@ DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn(CS
 	data->pSession = 0;
 	data->pITransactionLocal = 0;
 	data->connStr = 0;
-	data->tableNames = 0;
 	this->Init(connStr);
 }
 
@@ -204,16 +201,6 @@ DB::OLEDBConn::~OLEDBConn()
 	if (data->ci == S_OK)
 	{
 		CoUninitialize();
-	}
-	if (data->tableNames)
-	{
-		UOSInt i = data->tableNames->GetCount();
-		while (i-- > 0)
-		{
-			data->tableNames->GetItem(i)->Release();
-		}
-		DEL_CLASS(data->tableNames);
-		data->tableNames = 0;
 	}
 	SDEL_TEXT(data->connStr);
 	MemFree(data);
@@ -477,74 +464,63 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
+	if (schemaName.leng != 0)
+		return 0;
 	ClassData *data = this->clsData;
-	if (data->tableNames)
-	{
-	}
-	else
-	{
-		HRESULT hr;
-		UTF8Char sbuff[256];
-		UTF8Char *sptr;
-		IDBSchemaRowset *pIDBSchemaRowset;
-		IRowset *pIRowset;
-		NEW_CLASS(data->tableNames, Data::ArrayList<Text::String*>());
+	UOSInt initCnt = names->GetCount();
+	HRESULT hr;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	IDBSchemaRowset *pIDBSchemaRowset;
+	IRowset *pIRowset;
 
-		hr = data->pSession->CreateSession(0, IID_IDBSchemaRowset, (IUnknown**)&pIDBSchemaRowset);
+	hr = data->pSession->CreateSession(0, IID_IDBSchemaRowset, (IUnknown**)&pIDBSchemaRowset);
+	if (SUCCEEDED(hr))
+	{
+		VARIANT rgRestrictions[CRESTRICTIONS_DBSCHEMA_TABLES];
+		UOSInt i = CRESTRICTIONS_DBSCHEMA_TABLES;
+		while (i-- > 0)
+		{
+			VariantInit(&rgRestrictions[i]);
+		}
+		rgRestrictions[3].vt = VT_BSTR;
+		rgRestrictions[3].bstrVal = SysAllocString(OLESTR("TABLE"));
+		hr = pIDBSchemaRowset->GetRowset(NULL, DBSCHEMA_TABLES, CRESTRICTIONS_DBSCHEMA_TABLES, rgRestrictions, IID_IRowset, 0, NULL, (IUnknown**)&pIRowset);
+		VariantClear(&rgRestrictions[3]);
 		if (SUCCEEDED(hr))
 		{
-			VARIANT rgRestrictions[CRESTRICTIONS_DBSCHEMA_TABLES];
-			UOSInt i = CRESTRICTIONS_DBSCHEMA_TABLES;
+			UOSInt tableNameCol = 3;
+			DB::OLEDBReader *rdr;
+			NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1));
+			i = rdr->ColCount();
 			while (i-- > 0)
 			{
-				VariantInit(&rgRestrictions[i]);
+				if (rdr->GetName(i, sbuff))
+				{
+					if (Text::StrEquals(sbuff, (const UTF8Char*)"TABLE_NAME"))
+					{
+						tableNameCol = i;
+						break;
+					}
+				}
 			}
-			rgRestrictions[3].vt = VT_BSTR;
-			rgRestrictions[3].bstrVal = SysAllocString(OLESTR("TABLE"));
-			hr = pIDBSchemaRowset->GetRowset(NULL, DBSCHEMA_TABLES, CRESTRICTIONS_DBSCHEMA_TABLES, rgRestrictions, IID_IRowset, 0, NULL, (IUnknown**)&pIRowset);
-			VariantClear(&rgRestrictions[3]);
-			if (SUCCEEDED(hr))
+			while (rdr->ReadNext())
 			{
-				UOSInt tableNameCol = 3;
-				DB::OLEDBReader *rdr;
-				NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1));
-				i = rdr->ColCount();
-				while (i-- > 0)
+				if ((sptr = rdr->GetStr(tableNameCol, sbuff, sizeof(sbuff))) != 0)
 				{
-					if (rdr->GetName(i, sbuff))
-					{
-						if (Text::StrEquals(sbuff, (const UTF8Char*)"TABLE_NAME"))
-						{
-							tableNameCol = i;
-							break;
-						}
-					}
+					names->Add(Text::String::NewP(sbuff, sptr));
 				}
-				while (rdr->ReadNext())
-				{
-					if ((sptr = rdr->GetStr(tableNameCol, sbuff, sizeof(sbuff))) != 0)
-					{
-						data->tableNames->Add(Text::String::NewP(sbuff, sptr));
-					}
-				}
-				DEL_CLASS(rdr);
 			}
-			pIDBSchemaRowset->Release();
+			DEL_CLASS(rdr);
 		}
+		pIDBSchemaRowset->Release();
 	}
-	UOSInt i = 0;
-	UOSInt j = data->tableNames->GetCount();
-	while (i < j)
-	{
-		names->Add(data->tableNames->GetItem(i)->ToCString());
-		i++;
-	}
-	return data->tableNames->GetCount();
+	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
 	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));

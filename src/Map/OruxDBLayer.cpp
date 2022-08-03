@@ -351,14 +351,14 @@ void Map::OruxDBLayer::ReleaseObject(void *session, DrawObjectL *obj)
 {
 }
 
-UOSInt Map::OruxDBLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
+UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
-	return this->db->GetTableNames(names);
+	return this->db->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	return this->db->QueryTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
+	return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
 void Map::OruxDBLayer::CloseReader(DB::DBReader *r)

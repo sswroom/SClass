@@ -15,6 +15,11 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
+UOSInt DB::ReadingDB::QuerySchemaNames(Data::ArrayList<Text::String*> *names)
+{
+	return 0;
+}
+
 IO::ParserType DB::ReadingDB::GetParserType() const
 {
 	return IO::ParserType::ReadingDB;

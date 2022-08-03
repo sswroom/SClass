@@ -216,7 +216,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 	return 0;
 }
 
-Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tableName, DB::ReadingDBTool *db)
+Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *schemaName, Text::String *tableName, DB::ReadingDBTool *db)
 {
 	Text::StringBuilderUTF8 sbConstrHdr;
 	Text::StringBuilderUTF8 sbConstrItem;
@@ -224,39 +224,27 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	Text::StringBuilderUTF8 sbEquals;
 	Text::StringBuilderUTF8 sbHashCode;
 	Text::StringBuilderUTF8 sbFieldOrder;
-	UOSInt i;
-	const UTF8Char *csptr;
 	sb->AppendC(UTF8STRC("@Entity\r\n"));
 	sb->AppendC(UTF8STRC("@Table(name="));
-	i = tableName->IndexOf('.');
-	Text::JSText::ToJSTextDQuote(sb, &tableName->v[i + 1]);
-	if (i != INVALID_INDEX)
+	Text::JSText::ToJSTextDQuote(sb, tableName->v);
+	if (schemaName)
 	{
-		csptr = Text::StrCopyNewC(tableName->v, i);
 		sb->AppendC(UTF8STRC(", schema="));
-		Text::JSText::ToJSTextDQuote(sb, csptr);
-		Text::StrDelNew(csptr);
+		Text::JSText::ToJSTextDQuote(sb, schemaName->v);
 	}
 	sb->AppendC(UTF8STRC(")\r\n"));
 	sb->AppendC(UTF8STRC("public class "));
 	Text::String *clsName;
-	if (Text::StrHasUpperCase(&tableName->v[i + 1]))
+	if (Text::StrHasUpperCase(tableName->v))
 	{
-		clsName = Text::String::New(&tableName->v[i + 1], tableName->leng - i - 1);
+		clsName = Text::String::New(tableName->v, tableName->leng);
 		Text::StrToLowerC(clsName->v, clsName->v, clsName->leng);
 		Text::JavaText::ToJavaName(sb, clsName->v, true);
 		clsName->Release();
 	}
 	else
 	{
-		if (i != INVALID_INDEX)
-		{
-			clsName = Text::String::New(&tableName->v[i + 1], tableName->leng - i - 1);
-		}
-		else
-		{
-			clsName = tableName->Clone();
-		}
+		clsName = tableName->Clone();
 	}
 	Text::JavaText::ToJavaName(sb, clsName->v, true);
 	sb->AppendC(UTF8STRC("\r\n"));
@@ -305,7 +293,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
 
 	sb->AppendC(UTF8STRC("{\r\n"));
-	DB::TableDef *tableDef = db->GetTableDef(tableName->ToCString());
+	DB::TableDef *tableDef = db->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
 	Text::String *colName;
 	if (tableDef)
 	{
@@ -331,7 +319,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	}
 	else
 	{
-		DB::DBReader *r = db->QueryTableData(tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			DB::ColDef colDef(CSTR(""));
