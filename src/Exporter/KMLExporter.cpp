@@ -6,8 +6,8 @@
 #include "Map/IMapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
-#include "Math/Polyline3D.h"
+#include "Math/PointZ.h"
+#include "Math/Polyline.h"
 #include "Math/Polygon.h"
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Math/VectorImage.h"
@@ -159,17 +159,15 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 			{
-				Math::Coord2DDbl coord;
+				Math::Point *pt = (Math::Point*)vec;
+				Math::Coord2DDbl coord = pt->GetCenter();
 				Double z;
-				if (vec->Support3D())
+				if (pt->HasZ())
 				{
-					Math::Point3D *pt = (Math::Point3D*)vec;
-					pt->GetCenter3D(&coord.x, &coord.y, &z);
+					z = ((Math::PointZ*)pt)->GetZ();
 				}
 				else
 				{
-					Math::Point *pt = (Math::Point*)vec;
-					coord = pt->GetCenter();
 					z = 0;
 				}
 
@@ -217,9 +215,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					Double x;
 					Double y;
 					Double z;
-					if (vec->Support3D())
+					if (vec->HasZ())
 					{
-						Double *alts = ((Math::Polyline3D*)pl)->GetAltitudeList(&nPoints);
+						Double *alts = pl->GetZList(&nPoints);
 						k = 0;
 						while (k < nPoints)
 						{
@@ -260,9 +258,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				}
 				else
 				{
-					if (vec->Support3D())
+					if (vec->HasZ())
 					{
-						Double *alts = ((Math::Polyline3D*)pl)->GetAltitudeList(&nPoints);
+						Double *alts = pl->GetZList(&nPoints);
 						k = 0;
 						while (k < nPoints)
 						{
@@ -541,7 +539,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					Text::SBAppendF64(&sb, bounds.tl.x);
 					sb.AppendC(UTF8STRC("</west>"));
 					sb.AppendC(UTF8STRC("</LatLonBox>"));
-					if (img->Support3D())
+					if (img->HasZ())
 					{
 						sb.AppendC(UTF8STRC("<altitude>"));
 						Text::SBAppendF64(&sb, img->GetHeight());

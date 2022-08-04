@@ -82,7 +82,7 @@ Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math:
 	return this->datum.spheroid.ellipsoid->CalPLDistance(pl, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance3D(pl, unit);
 }

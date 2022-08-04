@@ -12,6 +12,7 @@ namespace DB
 	private:
 		Text::String *colName;
 		DB::DBUtil::ColType colType;
+		Text::String *nativeType;
 		UOSInt colSize;
 		UOSInt colDP;
 		Bool notNull;
@@ -27,6 +28,7 @@ namespace DB
 
 		Text::String *GetColName() const;
 		DB::DBUtil::ColType GetColType() const;
+		Text::String *GetNativeType() const;
 		UOSInt GetColSize() const;
 		UOSInt GetColDP() const;
 		Bool IsNotNull() const;
@@ -40,6 +42,8 @@ namespace DB
 		void SetColName(Text::CString colName);
 		void SetColName(Text::String *colName);
 		void SetColType(DB::DBUtil::ColType colType);
+		void SetNativeType(Text::String *nativeType);
+		void SetNativeType(Text::CString nativeType);
 		void SetColSize(UOSInt colSize);
 		void SetColDP(UOSInt colDP);
 		void SetNotNull(Bool notNull);

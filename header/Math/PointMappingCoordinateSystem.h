@@ -20,7 +20,7 @@ namespace Math
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual CoordinateSystem *Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;

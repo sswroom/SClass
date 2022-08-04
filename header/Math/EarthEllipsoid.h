@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_EARTHELLIPSOID
 #define _SM_MATH_EARTHELLIPSOID
-#include "Math/Polyline3D.h"
+#include "Math/Polyline.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
 
@@ -63,7 +63,7 @@ namespace Math
 
 		Double CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit) const;
 		Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 
 		Double GetSemiMajorAxis() { return this->semiMajorAxis; }
 		Double GetSemiMinorAxis() { return this->semiMinorAxis; }

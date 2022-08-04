@@ -77,7 +77,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	return totalDist;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -87,7 +87,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
-	alts = pl->GetAltitudeList(&nAlts);
+	alts = pl->GetZList(&nAlts);
 	UOSInt i = nPtOfst;
 	UOSInt j = nPoint;
 	UOSInt k;

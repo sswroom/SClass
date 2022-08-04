@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "DB/PostgreSQLConn.h"
 #include "Math/Point.h"
+#include "Math/WKBReader.h"
 #include "Text/MyStringW.h"
 #include <libpq-fe.h>
 
@@ -17,13 +18,15 @@ struct DB::PostgreSQLConn::ClassData
 class PostgreSQLReader : public DB::DBReader
 {
 private:
+	Int8 tzQhr;
 	PGresult *res;
 	int ncol;
 	int nrow;
 	int currrow;
 public:
-	PostgreSQLReader(PGresult *res) : DBReader()
+	PostgreSQLReader(PGresult *res, Int8 tzQhr) : DBReader()
 	{
+		this->tzQhr = tzQhr;
 		this->res = res;
 		this->currrow = -1;
 		this->ncol = PQnfields(this->res);
@@ -221,11 +224,17 @@ public:
 			item->SetBool(PQgetvalue(this->res, this->currrow, (int)colIndex)[0] == 't');
 			return true;
 		case 19: //name
+		case 24: //regproc
 		case 25: //text
+		case 194: //pg_node_tree
+		case 1009: //_text
+		case 1034: //_aclitem
 		case 1042: //bpchar
 		case 1043: //varchar
+		case 2277: //anyarray
 		case 3802: //jsonb ///////////////////////////////////
 		case 16468: //hstore ////////////////////////////////
+		case 34012: //citext
 			item->SetStrSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			return true;
 		case 20: //int8
@@ -237,13 +246,26 @@ public:
 		case 23: //int4
 			item->SetI32(Text::StrToInt32(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
+		case 26: //oid
+		case 28: //xid
+			item->SetI32(Text::StrToInt32(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			return true;
+		case 18: //char
+			item->SetU8((UInt8)(PQgetvalue(this->res, this->currrow, (int)colIndex)[0]));
+			return true;
+		case 700: //float4
+			item->SetF32((Single)Text::StrToDouble(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			return true;
 		case 701: //float8
 		case 1700: //numeric
 			item->SetF64(Text::StrToDouble(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
+		case 1082: //date
+		case 1114: //timestamp
 		case 1184: //timestamptz
 		{
 			Data::DateTime dt;
+			dt.SetTimeZoneQHR(this->tzQhr);
 			dt.SetValue(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			item->SetDate(&dt);
 			return true;
@@ -253,6 +275,34 @@ public:
 			Data::UUID *uuid;
 			NEW_CLASS(uuid, Data::UUID(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex))));
 			item->SetUUIDDirect(uuid);
+			return true;
+		}
+		case 1002: //_char
+		{
+			Text::StringBuilderUTF8 arr;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			if (sb.ToString()[0] != '{' || !sb.EndsWith('}'))
+			{
+				return false;
+			}
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sb.RemoveChars(1);
+			sarr[1] = sb.Substring(1);
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+				if (sarr[0].leng == 1)
+				{
+					arr.AppendUTF8Char(sarr[0].v[0]);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			item->SetStr(arr.ToString(), arr.GetLength());
 			return true;
 		}
 		case 1005: //_int2
@@ -282,6 +332,36 @@ public:
 				}
 			}
 			Int16 *bytes = arr.GetArray(&scnt);
+			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
+			return true;
+		}
+		case 1028: //_oid
+		{
+			Data::ArrayList<Int32> arr;
+			Int32 v;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			if (sb.ToString()[0] != '{' || !sb.EndsWith('}'))
+			{
+				return false;
+			}
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sb.RemoveChars(1);
+			sarr[1] = sb.Substring(1);
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+				if (sarr[0].ToInt32(&v))
+				{
+					arr.Add(v);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			Int32 *bytes = arr.GetArray(&scnt);
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -315,6 +395,36 @@ public:
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
+		case 1021: //_float4
+		{
+			Data::ArrayList<Single> arr;
+			Double dv;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			if (sb.ToString()[0] != '{' || !sb.EndsWith('}'))
+			{
+				return false;
+			}
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sb.RemoveChars(1);
+			sarr[1] = sb.Substring(1);
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+				if (sarr[0].ToDouble(&dv))
+				{
+					arr.Add((Single)dv);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			Single *bytes = arr.GetArray(&scnt);
+			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(Single));
+			return true;
+		}
 		case 600: //point
 		{
 			Text::StringBuilderUTF8 sb;
@@ -332,6 +442,78 @@ public:
 			Math::Point *pt;
 			NEW_CLASS(pt, Math::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
 			item->SetVectorDirect(pt);
+			return true;
+		}
+		case 34122: //geometry
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+/*			if (sb.ToString()[0] != '(' || !sb.EndsWith(')'))
+			{
+				return false;
+			}*/
+			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
+			UOSInt wkbLen = sb.Hex2Bytes(wkb);
+			Math::WKBReader reader(0);
+			Math::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
+			if (vec)
+			{
+				item->SetVectorDirect(vec);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		case 22: //int2vector
+		{
+			Data::ArrayList<Int16> arr;
+			Int16 v;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sarr[1] = sb;
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ' ');
+				if (sarr[0].ToInt16(&v))
+				{
+					arr.Add(v);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			Int16 *bytes = arr.GetArray(&scnt);
+			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
+			return true;
+		}
+		case 30: //oidvector
+		{
+			Data::ArrayList<Int32> arr;
+			Int32 v;
+			Text::StringBuilderUTF8 sb;
+			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+			Text::PString sarr[2];
+			UOSInt scnt;
+			sarr[1] = sb;
+			while (true)
+			{
+				scnt = Text::StrSplitP(sarr, 2, sarr[1], ' ');
+				if (sarr[0].ToInt32(&v))
+				{
+					arr.Add(v);
+				}
+				if (scnt != 2)
+				{
+					break;
+				}
+			}
+			Int32 *bytes = arr.GetArray(&scnt);
+			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
 		case 17: //bytea
@@ -582,7 +764,7 @@ DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
 		PQclear(res);
 		return 0;
 	}
-	return NEW_CLASS_D(PostgreSQLReader(res));
+	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr));
 }
 
 void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
@@ -806,40 +988,86 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	{
 	case 16: //bool
 		return DB::DBUtil::CT_Bool;
-	case 17: //binary
+	case 17: //bytea
 		return DB::DBUtil::CT_Binary;
+	case 18: //char
+		return DB::DBUtil::CT_Char;
 	case 19: //name
 		return DB::DBUtil::CT_VarChar;
 	case 20: //int8
 		return DB::DBUtil::CT_Int64;
 	case 21: //int2
 		return DB::DBUtil::CT_Int16;
+	case 22: //int2vector
+		return DB::DBUtil::CT_Binary;
 	case 23: //int4
 		return DB::DBUtil::CT_Int32;
+	case 24: //regproc
+		return DB::DBUtil::CT_VarChar;
 	case 25: //text
+		return DB::DBUtil::CT_VarChar;
+	case 26: //oid
+		return DB::DBUtil::CT_Int32;
+	case 28: //xid
+		return DB::DBUtil::CT_Int32;
+	case 30: //oidvector
+		return DB::DBUtil::CT_Binary;
+	case 194: //pg_node_tree
 		return DB::DBUtil::CT_VarChar;
 	case 600: //point
 		return DB::DBUtil::CT_Vector;
+	case 700: //float4
+		return DB::DBUtil::CT_Float;
 	case 701: //float8
 		return DB::DBUtil::CT_Double;
+	case 1002: //_char
+		return DB::DBUtil::CT_VarChar;
 	case 1005: //_int2
 		return DB::DBUtil::CT_Binary;
+	case 1009: //_text
+		return DB::DBUtil::CT_VarChar;
 	case 1016: //_int8
 		return DB::DBUtil::CT_Binary;
+	case 1021: //_float4
+		return DB::DBUtil::CT_Binary;
+	case 1028: //_oid
+		return DB::DBUtil::CT_Binary;
+	case 1034: //_aclitem
+		return DB::DBUtil::CT_VarChar;
 	case 1042: //bpchar
 		return DB::DBUtil::CT_Char;
 	case 1043: //varchar
 		return DB::DBUtil::CT_VarChar;
+	case 1082: //date
+		return DB::DBUtil::CT_DateTime;
+	case 1114: //timestamp
+		return DB::DBUtil::CT_DateTime2;
 	case 1184: //timestamptz
 		return DB::DBUtil::CT_DateTime2;
 	case 1700: //numeric
 		return DB::DBUtil::CT_Double;
+	case 2277: //anyarray
+		return DB::DBUtil::CT_VarChar;
 	case 2950: //uuid
 		return DB::DBUtil::CT_UUID;
+	case 3220: //pg_lsn  ////////////////////////////////
+		return DB::DBUtil::CT_VarChar;
+	case 3361: //pg_ndistinct  ////////////////////////////////
+		return DB::DBUtil::CT_VarChar;
+	case 3402: //pg_dependencies  ////////////////////////////////
+		return DB::DBUtil::CT_VarChar;
 	case 3802: //jsonb ////////////////////////////////
+		return DB::DBUtil::CT_VarChar;
+	case 5017: //pg_mcv_list  ////////////////////////////////
+		return DB::DBUtil::CT_VarChar;
+	case 12028: //_pg_statistic  ////////////////////////////////
 		return DB::DBUtil::CT_VarChar;
 	case 16468: //hstore ////////////////////////////////
 		return DB::DBUtil::CT_VarChar;
+	case 34012: //citext
+		return DB::DBUtil::CT_VarChar;
+	case 34122: //geometry
+		return DB::DBUtil::CT_Vector;
 	default:
 #if defined(VERBOSE)
 		printf("PostgreSQL: Unknown type %d\r\n", dbType);

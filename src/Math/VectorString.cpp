@@ -62,7 +62,7 @@ Bool Math::VectorString::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::VectorString::Support3D() const
+Bool Math::VectorString::HasZ() const
 {
 	return false;
 }

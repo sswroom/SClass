@@ -3,7 +3,7 @@
 #include "IO/ParsedObject.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/EarthEllipsoid.h"
-#include "Math/Polyline3D.h"
+#include "Math/Polyline.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
@@ -72,7 +72,7 @@ namespace Math
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const = 0;
 		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual Double CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual Double CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
 		virtual CoordinateSystem *Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const = 0;

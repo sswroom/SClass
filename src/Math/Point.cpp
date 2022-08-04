@@ -69,7 +69,7 @@ Bool Math::Point::Equals(Math::Vector2D *vec) const
 	{
 		return false;
 	}
-	if (vec->GetVectorType() == VectorType::Point && !vec->Support3D())
+	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ())
 	{
 		Math::Point *pt = (Math::Point*)vec;
 		return Data::DataComparer::NearlyEquals(this->pos.x, pt->pos.x) && Data::DataComparer::NearlyEquals(this->pos.y, pt->pos.y);

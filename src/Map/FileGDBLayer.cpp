@@ -3,8 +3,6 @@
 #include "Map/FileGDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
-#include "Math/Polyline3D.h"
 
 Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 {

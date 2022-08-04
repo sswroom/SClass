@@ -2135,23 +2135,28 @@ Math/MercatorProjectedCoordinateSystem.h: ../../src/Math/MercatorProjectedCoordi
 @MercatorProjectedCoordinateSystem.o
 Math/MSGeography.h: ../../src/Math/MSGeography.cpp
 @MSGeography.o
+Math/MultiGeometry.h:
+Math/MultiPolygon.h: ../../src/Math/MultiPolygon.cpp
+@MultiPolygon.o
 Math/PieArea.h:
 Math/Point.h: ../../src/Math/Point.cpp
 @Point.o
-Math/Point3D.h: ../../src/Math/Point3D.cpp
-@Point3D.o
 Math/PointCollection.h: ../../src/Math/PointCollection.cpp
 @PointCollection.o
+Math/PointM.h: ../../src/Math/PointM.cpp
+@PointM.o
 Math/PointMappingCoordinateSystem.h: ../../src/Math/PointMappingCoordinateSystem.cpp
 @PointMappingCoordinateSystem.o
 Math/PointOfstCollection.h: ../../src/Math/PointOfstCollection.cpp
 @PointOfstCollection.o
+Math/PointZ.h: ../../src/Math/PointZ.cpp
+@PointZ.o
+Math/PointZM.h: ../../src/Math/PointZM.cpp
+@PointZM.o
 Math/Polygon.h: ../../src/Math/Polygon.cpp
 @Polygon.o
 Math/Polyline.h: ../../src/Math/Polyline.cpp
 @Polyline.o
-Math/Polyline3D.h: ../../src/Math/Polyline3D.cpp
-@Polyline3D.o
 Math/ProjectedCoordinateSystem.h: ../../src/Math/ProjectedCoordinateSystem.cpp
 @ProjectedCoordinateSystem.o
 Math/Quadrilateral.h: ../../src/Math/Quadrilateral.cpp
@@ -4666,14 +4671,16 @@ Matrix3.o: ../../src/Math/Matrix3.cpp
 MercatorProjectedCoordinateSystem.o: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
 Mercator1SPProjectedCoordinateSystem.o: ../../src/Math/Mercator1SPProjectedCoordinateSystem.cpp
 MSGeography.o: ../../src/Math/MSGeography.cpp
+MultiPolygon.o: ../../src/Math/MultiPolygon.cpp
 Point.o: ../../src/Math/Point.cpp
-Point3D.o: ../../src/Math/Point3D.cpp
 PointCollection.o: ../../src/Math/PointCollection.cpp
+PointM.o: ../../src/Math/PointM.cpp
 PointMappingCoordinateSystem.o: ../../src/Math/PointMappingCoordinateSystem.cpp
 PointOfstCollection.o: ../../src/Math/PointOfstCollection.cpp
+PointZ.o: ../../src/Math/PointZ.cpp
+PointZM.o: ../../src/Math/PointZM.cpp
 Polygon.o: ../../src/Math/Polygon.cpp
 Polyline.o: ../../src/Math/Polyline.cpp
-Polyline3D.o: ../../src/Math/Polyline3D.cpp
 ProjectedCoordinateSystem.o: ../../src/Math/ProjectedCoordinateSystem.cpp
 Quadrilateral.o: ../../src/Math/Quadrilateral.cpp
 SRESRIWKTWriter.o: ../../src/Math/SRESRIWKTWriter.cpp

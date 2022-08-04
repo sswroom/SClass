@@ -63,7 +63,7 @@ namespace Math
 		WKBReader(UInt32 srid);
 		~WKBReader();
 
-		Math::Vector2D *ParseWKB(const UInt8 *wkb, UOSInt wkbLen);
+		Math::Vector2D *ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSInt *sizeUsed);
 	};
 }
 #endif

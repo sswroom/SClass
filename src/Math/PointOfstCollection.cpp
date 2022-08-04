@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/CoordinateSystem.h"
 #include "Math/PointOfstCollection.h"
 
-Math::PointOfstCollection::PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Math::Coord2DDbl *pointArr) : Math::PointCollection(srid, nPoint, pointArr)
+Math::PointOfstCollection::PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM) : Math::PointCollection(srid, nPoint, pointArr)
 {
 	if (nPtOfst == 0)
 	{
@@ -11,11 +12,37 @@ Math::PointOfstCollection::PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSI
 	this->nPtOfst = nPtOfst;
 	this->ptOfstArr = MemAlloc(UInt32, nPtOfst);
 	MemClear(this->ptOfstArr, sizeof(UInt32) * nPtOfst);
+	if (hasZ)
+	{
+		this->zArr = MemAllocA(Double, nPoint);
+	}
+	else
+	{
+		this->zArr = 0;
+	}
+	if (hasM)
+	{
+		this->mArr = MemAllocA(Double, nPoint);
+	}
+	else
+	{
+		this->mArr = 0;
+	}
 }
 
 Math::PointOfstCollection::~PointOfstCollection()
 {
 	MemFree(this->ptOfstArr);
+	if (this->zArr)
+	{
+		MemFreeA(this->zArr);
+		this->zArr = 0;
+	}
+	if (this->mArr)
+	{
+		MemFreeA(this->mArr);
+		this->mArr = 0;
+	}
 }
 
 Math::Coord2DDbl Math::PointOfstCollection::GetCenter() const
@@ -78,4 +105,110 @@ Math::Coord2DDbl Math::PointOfstCollection::GetCenter() const
 		lastPt = thisPt;
 	}
 	return this->pointArr[0];
+}
+
+void Math::PointOfstCollection::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+{
+	if (this->zArr)
+	{
+		UOSInt i = this->nPoint;
+		while (i-- > 0)
+		{
+			Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, this->zArr[i], &this->pointArr[i].x, &this->pointArr[i].y, &this->zArr[i]);
+		}
+	}
+	else
+	{
+		Math::CoordinateSystem::ConvertXYArray(srcCSys, destCSys, this->pointArr, this->pointArr, this->nPoint);
+	}
+}
+
+Bool Math::PointOfstCollection::Equals(Math::Vector2D *vec) const
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
+	{
+		Math::PointOfstCollection *pl = (Math::PointOfstCollection*)vec;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
+		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
+		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		Double *valArr;
+		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
+		{
+			return false;
+		}
+		UOSInt i = nPtOfst;
+		while (i-- > 0)
+		{
+			if (ptOfst[i] != this->ptOfstArr[i])
+			{
+				return false;
+			}
+		}
+		i = nPoint;
+		while (i-- > 0)
+		{
+			if (ptList[i] != this->pointArr[i])
+			{
+				return false;
+			}
+		}
+		if (this->zArr)
+		{
+			valArr = pl->zArr;
+			i = nPoint;
+			while (i-- > 0)
+			{
+				if (valArr[i] != this->zArr[i])
+				{
+					return false;
+				}
+			}
+		}
+		if (this->mArr)
+		{
+			valArr = pl->mArr;
+			i = nPoint;
+			while (i-- > 0)
+			{
+				if (valArr[i] != this->mArr[i])
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+Bool Math::PointOfstCollection::HasZ() const
+{
+	return this->zArr != 0;
+}
+
+Double *Math::PointOfstCollection::GetZList(UOSInt *nPoint)
+{
+	*nPoint = this->nPoint;
+	return this->zArr;
+}
+
+Bool Math::PointOfstCollection::HasM() const
+{
+	return this->mArr != 0;
+}
+
+Double *Math::PointOfstCollection::GetMList(UOSInt *nPoint)
+{
+	*nPoint = this->nPoint;
+	return this->mArr;
 }

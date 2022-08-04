@@ -129,6 +129,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 		}
 		break;
 	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::Multipolygon:
 	case Math::Vector2D::VectorType::Image:
 	case Math::Vector2D::VectorType::String:
 	case Math::Vector2D::VectorType::Ellipse:

@@ -615,7 +615,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		NEW_CLASS(ptColl, Math::Polyline(4326, (UInt32)buff[1], (UInt32)buff[2]));
+		NEW_CLASS(ptColl, Math::Polyline(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
@@ -628,7 +628,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		NEW_CLASS(ptColl, Math::Polygon(4326, (UInt32)buff[1], (UInt32)buff[2]));
+		NEW_CLASS(ptColl, Math::Polygon(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		

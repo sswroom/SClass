@@ -402,9 +402,9 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();
 		Math::Polyline *pl = (Math::Polyline*)this->track->GetNewVectorById(0, (Int64)this->currTrackId);
 		Double dist;
-		if (pl->Support3D())
+		if (pl->HasZ())
 		{
-			dist = coord->CalPLDistance3D((Math::Polyline3D*)pl, Math::Unit::Distance::DU_METER);
+			dist = coord->CalPLDistance3D(pl, Math::Unit::Distance::DU_METER);
 		}
 		else
 		{

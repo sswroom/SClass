@@ -50,7 +50,7 @@ Bool Math::Ellipse::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::Ellipse::Support3D() const
+Bool Math::Ellipse::HasZ() const
 {
 	return false;
 }

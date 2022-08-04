@@ -8,7 +8,7 @@
 #include "Math/Polyline.h"
 #include "Math/Polygon.h"
 #include "Math/Point.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
@@ -629,12 +629,12 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		Math::Point3D *pt;
+		Math::PointZ *pt;
 		if (id < 0 || (UInt64)id >= this->ptX->GetCount())
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Point3D(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::PointZ(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
@@ -645,7 +645,7 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
-		NEW_CLASS(pg, Math::Polygon(srid, rec->nPtOfst, rec->nPoint));
+		NEW_CLASS(pg, Math::Polygon(srid, rec->nPtOfst, rec->nPoint, false, false));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pg->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pg->GetPointList(&nPoint));
 		rec->vec = pg->Clone();
@@ -659,7 +659,7 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
-		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint));
+		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint, false, false));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		rec->vec = pl->Clone();
@@ -667,16 +667,16 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Math::Polyline3D *pl;
+		Math::Polyline *pl;
 		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
-		NEW_CLASS(pl, Math::Polyline3D(srid, rec->nPtOfst, rec->nPoint));
+		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint, true, false));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetAltitudeList(&nPoint));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetZList(&nPoint));
 		rec->vec = pl->Clone();
 		return pl;
 	}

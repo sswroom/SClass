@@ -232,6 +232,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 									break;
 								}
 								col->SetColType(colType);
+								col->SetNativeType(sb.ToCString());
 								col->SetColSize(colSize);
 								sql = ParseNextWord(sql, &sb, svrType);
 							}

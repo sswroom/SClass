@@ -60,7 +60,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -420,7 +420,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = mapPos.y;
@@ -442,7 +442,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = mapPos.y;
@@ -463,7 +463,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -485,7 +485,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -506,7 +506,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -528,7 +528,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPos.x;
 		ptList[0].y = me->imgMax.y;
@@ -549,7 +549,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPos.x;
 		ptList[0].y = me->imgMax.y;
@@ -571,7 +571,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0] = mapPos;
 		ptList[1].x = me->imgMax.x;
@@ -592,7 +592,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x + pt2.x - pt1.x;
 		ptList[0].y = me->imgMax.y + pt2.y - pt1.y;

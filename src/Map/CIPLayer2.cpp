@@ -780,11 +780,11 @@ Math::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 		UOSInt i;
 		if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 		{
-			NEW_CLASS(ptColl, Math::Polyline(4326, fobj->nPtOfst, fobj->nPoint));
+			NEW_CLASS(ptColl, Math::Polyline(4326, fobj->nPtOfst, fobj->nPoint, false, false));
 		}
 		else
 		{
-			NEW_CLASS(ptColl, Math::Polygon(4326, fobj->nPtOfst, fobj->nPoint));
+			NEW_CLASS(ptColl, Math::Polygon(4326, fobj->nPtOfst, fobj->nPoint, false, false));
 		}
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
 		MemCopyNO(tmpPtOfsts, fobj->ptOfstArr, fobj->nPtOfst * sizeof(UInt32));

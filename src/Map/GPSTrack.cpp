@@ -5,8 +5,8 @@
 #include "Map/GPSTrack.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
-#include "Math/Polyline3D.h"
+#include "Math/PointZ.h"
+#include "Math/Polyline.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -479,12 +479,12 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			lastAlt = 0;
 			if (this->hasAltitude)
 			{
-				Math::Polyline3D *pl;
+				Math::Polyline *pl;
 
-				NEW_CLASS(pl, Math::Polyline3D(4326, 1, j = this->currRecs.GetCount()));
+				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs.GetCount(), true, false));
 				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
-				altList = pl->GetAltitudeList(&j);
+				altList = pl->GetZList(&j);
 				i = 0;
 				while (i < j)
 				{
@@ -508,7 +508,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			else
 			{
 				Math::Polyline *pl;
-				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs.GetCount()));
+				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs.GetCount(), false, false));
 				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				i = 0;
@@ -545,12 +545,12 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 		track = this->currTracks.GetItem((UOSInt)id);
 		if (this->hasAltitude)
 		{
-			Math::Polyline3D *pl;
+			Math::Polyline *pl;
 
-			NEW_CLASS(pl, Math::Polyline3D(4326, 1, track->nRecords));
+			NEW_CLASS(pl, Math::Polyline(4326, 1, track->nRecords, true, false));
 			pl->GetPtOfstList(&i)[0] = 0;
 			ptPtr = pl->GetPointList(&j);
-			altList = pl->GetAltitudeList(&j);
+			altList = pl->GetZList(&j);
 			i = 0;
 			while (i < j)
 			{
@@ -574,7 +574,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 		{
 			Math::Polyline *pl;
 
-			NEW_CLASS(pl, Math::Polyline(4326, 1, track->nRecords));
+			NEW_CLASS(pl, Math::Polyline(4326, 1, track->nRecords, false, false));
 			pl->GetPtOfstList(&i)[0] = 0;
 			ptPtr = pl->GetPointList(&j);
 			i = 0;
@@ -1443,7 +1443,7 @@ Math::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
 	Math::Point *pt;
 	if (this->gps->GetHasAltitude())
 	{
-		NEW_CLASS(pt, Math::Point3D(4326, this->currRec->pos.x, this->currRec->pos.y, this->currRec->altitude));
+		NEW_CLASS(pt, Math::PointZ(4326, this->currRec->pos.x, this->currRec->pos.y, this->currRec->altitude));
 	}
 	else
 	{

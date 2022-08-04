@@ -19,7 +19,8 @@ namespace Math
 			Image,
 			String,
 			Ellipse,
-			PieArea
+			PieArea,
+			Multipolygon
 		};
 
 	protected:
@@ -34,7 +35,8 @@ namespace Math
 		virtual void GetBounds(Math::RectAreaDbl *bounds) const = 0;
 		virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const = 0;
 		virtual Bool JoinVector(Math::Vector2D *vec) = 0;
-		virtual Bool Support3D() const { return false; };
+		virtual Bool HasZ() const { return false; };
+		virtual Bool HasM() const { return false; };
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
 		virtual Bool Equals(Vector2D *vec) const = 0;
 

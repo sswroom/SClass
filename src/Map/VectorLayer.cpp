@@ -669,7 +669,7 @@ Bool Map::VectorLayer::VectorValid(Math::Vector2D *vec)
 			return false;
 		break;
 	case Map::DRAW_LAYER_POINT3D:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->Support3D())
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->HasZ())
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYLINE:
@@ -677,7 +677,7 @@ Bool Map::VectorLayer::VectorValid(Math::Vector2D *vec)
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYLINE3D:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->Support3D())
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->HasZ())
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYGON:

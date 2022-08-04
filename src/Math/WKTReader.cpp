@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Point.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Math/WKTReader.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -108,8 +108,8 @@ Math::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		if (wkt[0] == ')' && wkt[1] == 0)
 		{
-			Math::Point3D *pt;
-			NEW_CLASS(pt, Math::Point3D(this->srid, x, y, z));
+			Math::PointZ *pt;
+			NEW_CLASS(pt, Math::PointZ(this->srid, x, y, z));
 			return pt;
 		}
 		return 0;

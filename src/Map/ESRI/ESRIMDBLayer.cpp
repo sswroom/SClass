@@ -3,8 +3,8 @@
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
-#include "Math/Polyline3D.h"
+#include "Math/PointZ.h"
+#include "Math/Polyline.h"
 
 Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
@@ -150,7 +150,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 					Math::Vector2D::VectorType vt = vec->GetVectorType();
 					if (vt == Math::Vector2D::VectorType::Point)
 					{
-						if (vec->Support3D())
+						if (vec->HasZ())
 						{
 							this->layerType = Map::DRAW_LAYER_POINT3D;
 						}
@@ -161,7 +161,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 					}
 					else if (vt == Math::Vector2D::VectorType::Polyline)
 					{
-						if (vec->Support3D())
+						if (vec->HasZ())
 						{
 							this->layerType = Map::DRAW_LAYER_POLYLINE3D;
 						}

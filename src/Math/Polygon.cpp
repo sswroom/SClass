@@ -5,7 +5,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Polygon.h"
 
-Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint) : Math::PointOfstCollection(srid, nPtOfst, nPoint, 0)
+Math::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Bool hasZ, Bool hasM) : Math::PointOfstCollection(srid, nPtOfst, nPoint, 0, hasZ, hasM)
 {
 }
 
@@ -21,9 +21,17 @@ Math::Vector2D::VectorType Math::Polygon::GetVectorType() const
 Math::Vector2D *Math::Polygon::Clone() const
 {
 	Math::Polygon *pg;
-	NEW_CLASS(pg, Math::Polygon(this->srid, this->nPtOfst, this->nPoint));
-	MemCopyNO(pg->pointArr, this->pointArr, sizeof(Double) * (this->nPoint << 1));
-	MemCopyNO(pg->ptOfstArr, this->ptOfstArr, sizeof(UInt32) * this->nPtOfst);
+	NEW_CLASS(pg, Math::Polygon(this->srid, this->nPtOfst, this->nPoint, this->HasZ(), this->HasM()));
+	MemCopyNO(pg->ptOfstArr, this->ptOfstArr, sizeof(Int32) * this->nPtOfst);
+	MemCopyAC(pg->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
+	if (this->zArr)
+	{	
+		MemCopyAC(pg->zArr, this->zArr, sizeof(Double) * nPoint);
+	}
+	if (this->mArr)
+	{	
+		MemCopyAC(pg->mArr, this->mArr, sizeof(Double) * nPoint);
+	}
 	return pg;
 }
 
@@ -178,49 +186,6 @@ Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 	this->nPtOfst = nPtOfst;
 	this->nPoint = nPoint;
 	return true;
-}
-
-Bool Math::Polygon::Equals(Math::Vector2D *vec) const
-{
-	if (vec == 0)
-		return false;
-	if (vec->GetSRID() != this->srid)
-	{
-		return false;
-	}
-	if (vec->GetVectorType() == VectorType::Polygon && !vec->Support3D())
-	{
-		Math::Polygon *pg = (Math::Polygon*)vec;
-		UOSInt nPtOfst;
-		UOSInt nPoint;
-		UInt32 *ptOfst = pg->GetPtOfstList(&nPtOfst);
-		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoint);
-		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
-		{
-			return false;
-		}
-		UOSInt i = nPtOfst;
-		while (i-- > 0)
-		{
-			if (ptOfst[i] != this->ptOfstArr[i])
-			{
-				return false;
-			}
-		}
-		i = nPoint << 1;
-		while (i-- > 0)
-		{
-			if (ptList[i] != this->pointArr[i])
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 Bool Math::Polygon::InsideVector(Math::Coord2DDbl coord) const
@@ -405,6 +370,8 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	UOSInt j;
 	Math::Polygon *tmpPG;
 	Math::Coord2DDbl *points;
+	Double *zArr;
+	Double *mArr;
 	UOSInt nPoints;
 	Data::ArrayListDbl *junctionX;
 	Data::ArrayListDbl *junctionY;
@@ -429,9 +396,19 @@ void Math::Polygon::SplitByJunction(Data::ArrayList<Math::Polygon*> *results)
 	{
 		this->nPtOfst--;
 		j = this->ptOfstArr[this->nPtOfst];
-		NEW_CLASS(tmpPG, Math::Polygon(this->srid, 1, i - j));
+		NEW_CLASS(tmpPG, Math::Polygon(this->srid, 1, i - j, this->zArr != 0, this->mArr != 0));
 		points = tmpPG->GetPointList(&nPoints);
-		MemCopyNO(points, &this->pointArr[(j << 1)], sizeof(Double) * (i - j) << 1);
+		MemCopyAC(points, &this->pointArr[(j << 1)], sizeof(Double) * (i - j) << 1);
+		if (this->zArr)
+		{
+			zArr = tmpPG->GetZList(&nPoints);
+			MemCopyAC(zArr, &this->zArr[(j << 1)], sizeof(Double) * (i - j));
+		}
+		if (this->mArr)
+		{
+			mArr = tmpPG->GetMList(&nPoints);
+			MemCopyAC(mArr, &this->mArr[(j << 1)], sizeof(Double) * (i - j));
+		}
 		tmpPG->SplitByJunction(results);
 		
 		this->nPoint = j;

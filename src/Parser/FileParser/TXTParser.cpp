@@ -9,9 +9,9 @@
 #include "Map/MapManager.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Math/Polygon.h"
-#include "Math/Polyline3D.h"
+#include "Math/Polyline.h"
 #include "Parser/FileParser/TXTParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -360,8 +360,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Data::Int32Map<Bool> vecUsed;
 		Int32 currId = 0;
 		Math::Polygon *pg;
-		Math::Polyline3D *pl;
-		Math::Point3D *pt;
+		Math::Polyline *pl;
+		Math::PointZ *pt;
 		Math::Vector2D *vec;
 		Math::Coord2DDbl *ptList;
 		Double *hList;
@@ -383,13 +383,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						else if (j == 1)
 						{
 							hasPt = true;
-							NEW_CLASS(pt, Math::Point3D(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+							NEW_CLASS(pt, Math::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
 							vecMap.Put(currId, pt);
 						}
 						else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 						{
 							hasPG = true;
-							NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1));
+							NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1, false, false));
 							ptList = pg->GetPointList(&k);
 							k = 0;
 							while (k < j - 1)
@@ -403,9 +403,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						else
 						{
 							hasPL = true;
-							NEW_CLASS(pl, Math::Polyline3D(srid, 1, j));
+							NEW_CLASS(pl, Math::Polyline(srid, 1, j, true, false));
 							ptList = pl->GetPointList(&k);
-							hList = pl->GetAltitudeList(&k);
+							hList = pl->GetZList(&k);
 							k = 0;
 							while (k < j)
 							{
@@ -440,13 +440,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (j == 1)
 			{
 				hasPt = true;
-				NEW_CLASS(pt, Math::Point3D(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+				NEW_CLASS(pt, Math::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
 				vecMap.Put(currId, pt);
 			}
 			else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 			{
 				hasPG = true;
-				NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1));
+				NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1, false, false));
 				ptList = pg->GetPointList(&k);
 				k = 0;
 				while (k < j - 1)
@@ -460,9 +460,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else
 			{
 				hasPL = true;
-				NEW_CLASS(pl, Math::Polyline3D(srid, 1, j));
+				NEW_CLASS(pl, Math::Polyline(srid, 1, j, true, false));
 				ptList = pl->GetPointList(&k);
-				hList = pl->GetAltitudeList(&k);
+				hList = pl->GetZList(&k);
 				k = 0;
 				while (k < j)
 				{

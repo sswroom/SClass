@@ -7,6 +7,7 @@
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/CharUtil.h"
+#include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
 #define MAX_ROW_CNT 1000
@@ -32,8 +33,14 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
-	Text::String *schemaName = me->lbSchema->GetSelectedItemTextNew();
 	sptr = me->lbTable->GetSelectedItemText(sbuff);
+	if (sptr == 0)
+	{
+		me->lvTable->ClearItems();
+		return;
+	}
+	Text::String *schemaName = me->lbSchema->GetSelectedItemTextNew();
+	
 
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
@@ -58,6 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 
 		me->lvTable->ClearItems();
 		DB::ColDef *col;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -71,13 +79,16 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
-				me->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
-				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
+				s = col->GetNativeType();
+				if (s)
+					me->lvTable->SetSubItem(k, 2, s->ToCString());
+				me->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				me->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
+				me->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
-					me->lvTable->SetSubItem(k, 5, col->GetDefVal());
+					me->lvTable->SetSubItem(k, 6, col->GetDefVal());
 				if (col->GetAttr())
-					me->lvTable->SetSubItem(k, 6, col->GetAttr());
+					me->lvTable->SetSubItem(k, 7, col->GetAttr());
 
 				i++;
 			}
@@ -95,13 +106,16 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
-				me->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
-				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
+				s = col->GetNativeType();
+				if (s)
+					me->lvTable->SetSubItem(k, 2, s->ToCString());
+				me->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				me->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
+				me->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
-					me->lvTable->SetSubItem(k, 5, col->GetDefVal());
+					me->lvTable->SetSubItem(k, 6, col->GetDefVal());
 				if (col->GetAttr())
-					me->lvTable->SetSubItem(k, 6, col->GetAttr());
+					me->lvTable->SetSubItem(k, 7, col->GetAttr());
 
 				i++;
 			}
@@ -115,6 +129,28 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		if (tabDef)
 		{
 			DEL_CLASS(tabDef);
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtSQL->GetText(&sb);
+	if (sb.GetLength() > 0)
+	{
+		DB::DBReader *r = me->dbt->ExecuteReader(sb.ToCString());
+		if (r)
+		{
+			me->UpdateResult(r);
+			me->dbt->CloseReader(r);
+		}
+		else
+		{
+			sb.ClearStr();
+			me->dbt->GetLastErrorMsg(&sb);
+			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Database"), me);
 		}
 	}
 }
@@ -240,14 +276,13 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
 	this->tcDB->SetRect(0, 0, 100, 400, false);
 	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->tpTable = this->tcDB->AddTabPage(CSTR("Tables"));
-//	this->tpSQL = this->tcDB->AddTabPage(L"SQL");
 	NEW_CLASS(this->vspDB, UI::GUIVSplitter(ui, this, 3, false));
 	NEW_CLASS(this->lvResult, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetFullRowSelect(true);
 	this->lvResult->SetShowGrid(true);
 
+	this->tpTable = this->tcDB->AddTabPage(CSTR("Tables"));
 	NEW_CLASS(this->lbSchema, UI::GUIListBox(ui, this->tpTable, false));
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -258,16 +293,30 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	NEW_CLASS(this->hspTable, UI::GUIHSplitter(ui, this->tpTable, 3, false));
-	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 7));
+	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->AddColumn(CSTR("Name"), 200);
 	this->lvTable->AddColumn(CSTR("Type"), 100);
-	this->lvTable->AddColumn(CSTR("Null?"), 100);
+	this->lvTable->AddColumn(CSTR("NType"), 100);
+	this->lvTable->AddColumn(CSTR("Null?"), 50);
 	this->lvTable->AddColumn(CSTR("PK?"), 30);
 	this->lvTable->AddColumn(CSTR("Auto_Inc"), 100);
 	this->lvTable->AddColumn(CSTR("Default Val"), 100);
 	this->lvTable->AddColumn(CSTR("Attribute"), 100);
+
+	if (this->dbt)
+	{
+		this->tpSQL = this->tcDB->AddTabPage(CSTR("SQL"));
+		NEW_CLASS(this->pnlSQLCtrl, UI::GUIPanel(ui, this->tpSQL));
+		this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
+		this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+		NEW_CLASS(this->btnSQL, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));
+		this->btnSQL->SetRect(4, 4, 75, 23, false);
+		this->btnSQL->HandleButtonClick(OnSQLClicked, this);
+		NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->tpSQL, CSTR(""), true));
+		this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
+	}
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());

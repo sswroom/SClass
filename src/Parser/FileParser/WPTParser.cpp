@@ -5,7 +5,7 @@
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Parser/FileParser/WPTParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -43,7 +43,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *sptr;
 	UTF8Char *tmpArr[16];
 	Map::VectorLayer *lyr = 0;
-	Math::Point3D *pt;
+	Math::PointZ *pt;
 	Bool valid;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("WPT")))
@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)
 			{
-				NEW_CLASS(pt, Math::Point3D(4326, Text::StrToDouble(tmpArr[3]), Text::StrToDouble(tmpArr[2]), Text::StrToDouble(tmpArr[14]) / 3.2808333333333333333333333333333));
+				NEW_CLASS(pt, Math::PointZ(4326, Text::StrToDouble(tmpArr[3]), Text::StrToDouble(tmpArr[2]), Text::StrToDouble(tmpArr[14]) / 3.2808333333333333333333333333333));
 				cols[0] = tmpArr[1];
 				cols[1] = tmpArr[10];
 				lyr->AddVector(pt, (const UTF8Char**)cols);

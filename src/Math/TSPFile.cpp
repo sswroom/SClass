@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Math/TSPFile.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -444,8 +444,8 @@ Math::Vector2D *Math::TSPReader::GetVector(UOSInt colIndex)
 		return 0;
 	if (colIndex != 1)
 		return 0;
-	Math::Point3D *pt;
-	NEW_CLASS(pt, Math::Point3D(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
+	Math::PointZ *pt;
+	NEW_CLASS(pt, Math::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
 	return pt;
 }
 

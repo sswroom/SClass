@@ -6,7 +6,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Map/IMapDrawLayer.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Math/Polyline.h"
 #include "Math/Polygon.h"
 #include "Math/SRESRIWKTWriter.h"
@@ -141,15 +141,15 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	}
 	else if (layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		Math::Point3D *pt;
+		Math::PointZ *pt;
 		Math::Coord2DDbl coord;
 		Double z;
 		ilayerType = 11;
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Point3D*)layer->GetNewVectorById(sess, objIds->GetItem(i));
-			pt->GetCenter3D(&coord.x, &coord.y, &z);
+			pt = (Math::PointZ*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pt->GetPos3D(&coord.x, &coord.y, &z);
 			if (i == 0)
 			{
 				min = max = coord;
@@ -251,7 +251,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		ilayerType = 13;
 
 		UOSInt j;
-		Math::Polyline3D *pl;
+		Math::Polyline *pl;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -264,11 +264,11 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Polyline3D*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pl->GetBounds(&box);
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
-			alts = pl->GetAltitudeList(&nPoint);
+			alts = pl->GetZList(&nPoint);
 			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 			WriteUInt32(&nvals[4], (UInt32)nPoint);
 

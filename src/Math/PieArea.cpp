@@ -58,7 +58,7 @@ Bool Math::PieArea::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::PieArea::Support3D()
+Bool Math::PieArea::HasZ()
 {
 	return false;
 }

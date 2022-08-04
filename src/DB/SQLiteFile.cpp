@@ -345,7 +345,7 @@ Math::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOSInt buffSi
 		srsId = ReadMUInt32(&buff[4]);
 	}
 	Math::WKBReader reader(srsId);
-	return reader.ParseWKB(buff + ofst, buffSize - ofst);
+	return reader.ParseWKB(buff + ofst, buffSize - ofst, 0);
 }
 
 DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix)

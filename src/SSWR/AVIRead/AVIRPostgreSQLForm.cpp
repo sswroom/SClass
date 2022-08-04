@@ -62,11 +62,11 @@ SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(UI::GUIClientControl *pare
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->lblUID, UI::GUILabel(ui, this, CSTR("User Name")));
 	this->lblUID->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, this, CSTR("postgre")));
+	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, this, CSTR("postgres")));
 	this->txtUID->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPWD->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, CSTR("postgres")));
 	this->txtPWD->SetRect(104, 76, 200, 23, false);
 	this->txtPWD->SetPasswordChar('*');
 	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this, CSTR("Database")));

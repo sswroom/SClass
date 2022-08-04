@@ -11,6 +11,7 @@
 #include "UI/GUIPanel.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
+#include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
 
 namespace SSWR
@@ -21,16 +22,20 @@ namespace SSWR
 		{
 		private:
 			UI::GUITabControl *tcDB;
-			UI::GUITabPage *tpTable;
-			UI::GUITabPage *tpSQL;
 			UI::GUIVSplitter *vspDB;
 			UI::GUIListView *lvResult;
 
+			UI::GUITabPage *tpTable;
 			UI::GUIListBox *lbSchema;
 			UI::GUIHSplitter *hspSchema;
 			UI::GUIListBox *lbTable;
 			UI::GUIHSplitter *hspTable;
 			UI::GUIListView *lvTable;
+
+			UI::GUITabPage *tpSQL;
+			UI::GUIPanel *pnlSQLCtrl;
+			UI::GUIButton *btnSQL;
+			UI::GUITextBox *txtSQL;
 
 			UI::GUIMainMenu *mnuMain;
 
@@ -43,6 +48,7 @@ namespace SSWR
 
 			static void __stdcall OnSchemaSelChg(void *userObj);
 			static void __stdcall OnTableSelChg(void *userObj);
+			static void __stdcall OnSQLClicked(void *userObj);
 
 			void UpdateResult(DB::DBReader *r);
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);

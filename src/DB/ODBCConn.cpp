@@ -974,7 +974,6 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStri
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;

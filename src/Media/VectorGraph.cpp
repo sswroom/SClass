@@ -306,7 +306,7 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, Dr
 	pt[1] = Math::Coord2DDbl(x2, y2);
 	Math::Polyline *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Polyline(this->srid, pt, 2));
+	NEW_CLASS(pl, Math::Polyline(this->srid, pt, 2, false, false));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (Media::VectorGraph::VectorPenStyle*)p;
 	style->brush = 0;
@@ -322,7 +322,7 @@ Bool Media::VectorGraph::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
 	Math::Polyline *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Polyline(this->srid, (Math::Coord2DDbl*)dPoints, nPoints));
+	NEW_CLASS(pl, Math::Polyline(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, false, false));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;
@@ -349,7 +349,7 @@ Bool Media::VectorGraph::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, 
 {
 	Math::Polyline *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Polyline(this->srid, points, nPoints));
+	NEW_CLASS(pl, Math::Polyline(this->srid, points, nPoints, false, false));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;

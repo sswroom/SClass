@@ -881,6 +881,7 @@ Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Vector2D::Vect
 	case Math::Vector2D::VectorType::Image:
 		return Map::DRAW_LAYER_IMAGE;
 	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::Multipolygon:
 	case Math::Vector2D::VectorType::String:
 	case Math::Vector2D::VectorType::Ellipse:
 	case Math::Vector2D::VectorType::PieArea:

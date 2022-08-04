@@ -4,7 +4,8 @@
 #include "DB/ColDef.h"
 #include "Map/ESRI/FileGDBReader.h"
 #include "Math/Math.h"
-#include "Math/Point3D.h"
+#include "Math/PointM.h"
+#include "Math/PointZM.h"
 #include "Math/WKTWriter.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -718,6 +719,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	Double x;
 	Double y;
 	Double z = 0;
+	Double m = 0;
 	UInt64 v;
 	UInt32 srid;
 /*
@@ -753,24 +755,39 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 		if (this->tableInfo->geometryFlags & 0x40)
 		{
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
-			//m = UInt64_Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+			m = UInt64_Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 		}
 		srid = 0;
 		if (this->tableInfo->csys)
 		{
 			srid = this->tableInfo->csys->GetSRID();
 		}
-		if (this->tableInfo->geometryType & 0x80)
+		switch (this->tableInfo->geometryType & 0xC0)
 		{
-			Math::Point3D *pt;
-			NEW_CLASS(pt, Math::Point3D(srid, x, y, z));
-			return pt;
-		}
-		else
-		{
-			Math::Point *pt;
-			NEW_CLASS(pt, Math::Point(srid, x, y));
-			return pt;
+		case 0:
+			{
+				Math::Point *pt;
+				NEW_CLASS(pt, Math::Point(srid, x, y));
+				return pt;
+			}
+		case 0x40:
+			{
+				Math::PointM *pt;
+				NEW_CLASS(pt, Math::PointM(srid, x, y, m));
+				return pt;
+			}
+		case 0x80:
+			{
+				Math::PointZ *pt;
+				NEW_CLASS(pt, Math::PointZ(srid, x, y, z));
+				return pt;
+			}
+		case 0xC0:
+			{
+				Math::PointZM *pt;
+				NEW_CLASS(pt, Math::PointZM(srid, x, y, z, m));
+				return pt;
+			}
 		}
 		break;
 	case 3: //SHPT_ARC
@@ -800,19 +817,13 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			UOSInt i;
 			UInt32 *parts;
 			Math::Coord2DDbl *points;
-			Double *altitiudes = 0;
-			if (this->tableInfo->geometryFlags & 0x80)
-			{
-				NEW_CLASS(pl, Math::Polyline3D(srid, (UOSInt)nParts, (UOSInt)nPoints));
-				altitiudes = ((Math::Polyline3D*)pl)->GetAltitudeList(&i);
-			}
-			else
-			{
-				NEW_CLASS(pl, Math::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints));
-
-			}
+			Double *zArr;
+			Double *mArr;
+			NEW_CLASS(pl, Math::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
 			parts = pl->GetPtOfstList(&i);
 			points = pl->GetPointList(&i);
+			zArr = pl->GetZList(&i);
+			mArr = pl->GetMList(&i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -848,7 +859,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx -= iv;
 					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-					altitiudes[i] = z;
+					zArr[i] = z;
 					i++;
 				}
 			}
@@ -860,7 +871,8 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx -= iv;
-					//m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					mArr[i] = m;
 					i++;
 				}
 			}
@@ -891,10 +903,12 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			{
 				srid = this->tableInfo->csys->GetSRID();
 			}
-			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
+			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
 			UOSInt i;
 			UInt32 *parts = pg->GetPtOfstList(&i);
 			Math::Coord2DDbl *points = pg->GetPointList(&i);
+			Double *zArr = pg->GetZList(&i);
+			Double *mArr = pg->GetMList(&i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -930,6 +944,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx += iv;
 					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+					zArr[i] = z;
 					i++;
 				}
 			}
@@ -941,7 +956,8 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx += iv;
-					//m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					mArr[i] = m;
 					i++;
 				}
 			}
@@ -977,19 +993,13 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			}
 			UInt32 *parts;
 			Math::Coord2DDbl *points;
-			Double *altitiudes = 0;
-			if (geometryType & 0x80000000)
-			{
-				NEW_CLASS(pl, Math::Polyline3D(srid, (UOSInt)nParts, (UOSInt)nPoints));
-				altitiudes = ((Math::Polyline3D*)pl)->GetAltitudeList(&i);
-			}
-			else
-			{
-				NEW_CLASS(pl, Math::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints));
-
-			}
+			Double *zArr;
+			Double *mArr;
+			NEW_CLASS(pl, Math::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
 			parts = pl->GetPtOfstList(&i);
 			points = pl->GetPointList(&i);
+			zArr = pl->GetZList(&i);
+			mArr = pl->GetMList(&i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1038,7 +1048,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 						dx -= iv;
 						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-						altitiudes[j] = z;
+						zArr[j] = z;
 						j++;
 					}
 				}
@@ -1050,7 +1060,9 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 						dx -= iv;
-						//m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						mArr[j] = m;
+						j++;
 					}
 				}
 				i++;
@@ -1087,17 +1099,13 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			}
 			UInt32 *parts;
 			Math::Coord2DDbl *points;
-			if (geometryType & 0x80000000)
-			{
-				NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
-			}
-			else
-			{
-				NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints));
-
-			}
+			Double *zArr;
+			Double *mArr;
+			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
 			parts = pg->GetPtOfstList(&i);
 			points = pg->GetPointList(&i);
+			zArr = pg->GetZList(&i);
+			mArr = pg->GetMList(&i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1145,8 +1153,8 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 						dx += iv;
-//						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-//						altitiudes[j] = z;
+						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+						zArr[j] = z;
 						j++;
 					}
 				}
@@ -1158,7 +1166,9 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 						dx += iv;
-						//m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						mArr[j] = m;
+						j++;
 					}
 				}
 				i++;

@@ -1323,7 +1323,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
 						Math::Polygon *pg;
-						NEW_CLASS(pg, Math::Polygon(4326, 1, latList.GetCount()));
+						NEW_CLASS(pg, Math::Polygon(4326, 1, latList.GetCount(), false, false));
 						Math::Coord2DDbl *points = pg->GetPointList(&i);
 						while (i-- > 0)
 						{
@@ -1344,7 +1344,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
 						Math::Polyline *pl;
-						NEW_CLASS(pl, Math::Polyline(4326, 1, latList.GetCount()));
+						NEW_CLASS(pl, Math::Polyline(4326, 1, latList.GetCount(), false, false));
 						Math::Coord2DDbl *points = pl->GetPointList(&i);
 						while (i-- > 0)
 						{

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Point3D.h"
+#include "Math/PointZ.h"
 #include "Math/Polygon.h"
 #include "Math/Polyline.h"
 #include "Math/CesiumEntityWriter.h"
@@ -39,13 +39,13 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 	{
 	case Math::Vector2D::VectorType::Point:
 		sb->AppendC(UTF8STRC("{\r\n"));
-		if (vec->Support3D())
+		if (vec->HasZ())
 		{
-			Math::Point3D *pt = (Math::Point3D*)vec;
+			Math::PointZ *pt = (Math::PointZ*)vec;
 			Double x;
 			Double y;
 			Double z;
-			pt->GetCenter3D(&x, &y, &z);
+			pt->GetPos3D(&x, &y, &z);
 			sb->AppendC(UTF8STRC("position: Cesium.Cartesian3.fromDegrees("));
 			sb->AppendDouble(x);
 			sb->AppendC(UTF8STRC(", "));
@@ -116,6 +116,7 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 		}
 		return true;
 	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::Multipolygon:
 	case Math::Vector2D::VectorType::Image:
 	case Math::Vector2D::VectorType::String:
 	case Math::Vector2D::VectorType::Ellipse:

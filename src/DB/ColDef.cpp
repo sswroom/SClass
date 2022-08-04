@@ -7,6 +7,7 @@ DB::ColDef::ColDef(Text::CString colName)
 {
 	this->colName = Text::String::NewOrNull(colName);
 	this->colType = DB::DBUtil::CT_Unknown;
+	this->nativeType = 0;
 	this->colSize = 0;
 	this->notNull = false;
 	this->pk = false;
@@ -19,6 +20,7 @@ DB::ColDef::ColDef(Text::String *colName)
 {
 	this->colName = SCOPY_STRING(colName);
 	this->colType = DB::DBUtil::CT_Unknown;
+	this->nativeType = 0;
 	this->colSize = 0;
 	this->notNull = false;
 	this->pk = false;
@@ -30,6 +32,7 @@ DB::ColDef::ColDef(Text::String *colName)
 DB::ColDef::~ColDef()
 {
 	SDEL_STRING(this->colName);
+	SDEL_STRING(this->nativeType);
 	SDEL_STRING(this->defVal);
 	SDEL_STRING(this->attr);
 }
@@ -42,6 +45,11 @@ Text::String *DB::ColDef::GetColName() const
 DB::DBUtil::ColType DB::ColDef::GetColType() const
 {
 	return this->colType;
+}
+
+Text::String *DB::ColDef::GetNativeType() const
+{
+	return this->nativeType;
 }
 
 UOSInt DB::ColDef::GetColSize() const
@@ -118,6 +126,18 @@ void DB::ColDef::SetColType(DB::DBUtil::ColType colType)
 	this->colType = colType;
 }
 
+void DB::ColDef::SetNativeType(Text::String *nativeType)
+{
+	SDEL_STRING(this->nativeType);
+	this->nativeType = SCOPY_STRING(nativeType);
+}
+
+void DB::ColDef::SetNativeType(Text::CString nativeType)
+{
+	SDEL_STRING(this->nativeType);
+	this->nativeType = Text::String::NewOrNull(nativeType);
+}
+
 void DB::ColDef::SetColSize(UOSInt colSize)
 {
 	this->colSize = colSize;
@@ -171,6 +191,7 @@ void DB::ColDef::Set(const ColDef *colDef)
 {
 	this->SetColName(colDef->colName);
 	this->SetColType(colDef->colType);
+	this->SetNativeType(colDef->nativeType);
 	this->SetColSize(colDef->colSize);
 	this->SetColDP(colDef->colDP);
 	this->SetNotNull(colDef->notNull);

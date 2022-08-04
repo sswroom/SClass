@@ -23,7 +23,7 @@ namespace Math
 		virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY) const;
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY) const;
 		virtual Bool JoinVector(Math::Vector2D *vec);
-		virtual Bool Support3D() const;
+		virtual Bool HasZ() const;
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec) const;
 

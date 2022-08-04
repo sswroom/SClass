@@ -126,9 +126,9 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Mat
 	return ret;
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	Math::Polyline3D *tmpPl = (Math::Polyline3D *)pl->Clone();
+	Math::Polyline *tmpPl = (Math::Polyline *)pl->Clone();
 	Double ret;
 	UOSInt i;
 	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);

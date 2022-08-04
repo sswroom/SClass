@@ -866,8 +866,9 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				{
 					col->SetAttr(CSTR_NULL);
 				}
-				r->GetStr(1, buff, sizeof(buff));
+				ptr = r->GetStr(1, buff, sizeof(buff));
 				UOSInt colSize;
+				col->SetNativeType(CSTRP(buff, ptr));
 				col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, &colSize));
 				col->SetColSize(colSize);
 				if (col->GetColType() == DB::DBUtil::CT_DateTime2)
@@ -941,12 +942,14 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				}
 			}
 			col->SetColSize((UOSInt)r->GetInt32(6));
-			r->GetStr(5, buff, sizeof(buff));
-			if (Text::StrEndsWith(buff, (const UTF8Char*)" identity"))
+			ptr = r->GetStr(5, buff, sizeof(buff));
+			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
 			{
 				col->SetAutoInc(true);
-				buff[Text::StrCharCnt(buff) - 9] = 0;
+				ptr -= 9;
+				*ptr = 0;
 			}
+			col->SetNativeType(CSTRP(buff, ptr));
 			col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, 0));
 			tab->AddCol(col);
 		}
@@ -1027,7 +1030,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 	case DB::DBUtil::ServerType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
-		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, data_type, character_maximum_length from information_schema.columns where table_name="));
+		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
 		sql.AppendCmdC(CSTR(" and table_schema = "));
 		if (schemaName.leng == 0)
@@ -1062,39 +1065,64 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 			s = r->GetNewStr(3);
 			if (s)
 			{
+				col->SetNativeType(s);
 				//////////////////////////
 				if (s->Equals(UTF8STRC("name")))
 				{
 					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1024);
 				}
-				else if (s->Equals(UTF8STRC("bigint")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int64);
-				}
-				else if (s->Equals(UTF8STRC("timestamp with time zone")))
+				else if (s->Equals(UTF8STRC("timestamptz")))
 				{
 					col->SetColType(DB::DBUtil::CT_DateTime2);
 				}
-				else if (s->Equals(UTF8STRC("character")))
+				else if (s->Equals(UTF8STRC("timestamp")))
+				{
+					col->SetColType(DB::DBUtil::CT_DateTime2);
+				}
+				else if (s->Equals(UTF8STRC("date")))
+				{
+					col->SetColType(DB::DBUtil::CT_DateTime);
+				}
+				else if (s->Equals(UTF8STRC("char")))
+				{
+					col->SetColType(DB::DBUtil::CT_Char);
+					col->SetColSize(1);
+				}
+				else if (s->Equals(UTF8STRC("bpchar")))
 				{
 					col->SetColType(DB::DBUtil::CT_Char);
 				}
-				else if (s->Equals(UTF8STRC("character varying")))
+				else if (s->Equals(UTF8STRC("varchar")))
 				{
 					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(0x10000000);
 				}
-				else if (s->Equals(UTF8STRC("boolean")))
+				else if (s->Equals(UTF8STRC("_char")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("bool")))
 				{
 					col->SetColType(DB::DBUtil::CT_Bool);
 				}
-				else if (s->Equals(UTF8STRC("integer")))
+				else if (s->Equals(UTF8STRC("int2")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int16);
+				}
+				else if (s->Equals(UTF8STRC("int4")))
 				{
 					col->SetColType(DB::DBUtil::CT_Int32);
+				}
+				else if (s->Equals(UTF8STRC("int8")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int64);
 				}
 				else if (s->Equals(UTF8STRC("text")))
 				{
 					col->SetColType(DB::DBUtil::CT_VarChar);
-					col->SetColSize(1048576);
+					col->SetColSize(0x10000000);
 				}
 				else if (s->Equals(UTF8STRC("uuid")))
 				{
@@ -1103,6 +1131,27 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				else if (s->Equals(UTF8STRC("bytea")))
 				{
 					col->SetColType(DB::DBUtil::CT_Binary);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("_oid")))
+				{
+					col->SetColType(DB::DBUtil::CT_Binary);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("_int2")))
+				{
+					col->SetColType(DB::DBUtil::CT_Binary);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("oidvector")))
+				{
+					col->SetColType(DB::DBUtil::CT_Binary);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("int2vector")))
+				{
+					col->SetColType(DB::DBUtil::CT_Binary);
+					col->SetColSize(1048576);
 				}
 				else if (s->Equals(UTF8STRC("jsonb"))) //////////////////////////////////
 				{
@@ -1117,25 +1166,90 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				{
 					col->SetColType(DB::DBUtil::CT_Vector);
 				}
-				else if (s->Equals(UTF8STRC("double precision")))
+				else if (s->Equals(UTF8STRC("float4")))
+				{
+					col->SetColType(DB::DBUtil::CT_Float);
+				}
+				else if (s->Equals(UTF8STRC("float8")))
 				{
 					col->SetColType(DB::DBUtil::CT_Double);
 				}
-				else if (s->Equals(UTF8STRC("smallint")))
+				else if (s->Equals(UTF8STRC("geometry")))
 				{
-					col->SetColType(DB::DBUtil::CT_Int16);
+					col->SetColType(DB::DBUtil::CT_Vector);
 				}
-				else if (s->Equals(UTF8STRC("USER-DEFINED")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarChar);
-				}
-				else if (s->Equals(UTF8STRC("ARRAY")))
+				else if (s->Equals(UTF8STRC("_float4")))
 				{
 					col->SetColType(DB::DBUtil::CT_Binary);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("oid")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int32);
+				}
+				else if (s->Equals(UTF8STRC("xid")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int32);
+				}
+				else if (s->Equals(UTF8STRC("regproc")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(256);
+				}
+				else if (s->Equals(UTF8STRC("anyarray")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("pg_node_tree")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("_aclitem")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("_text")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(0x10000000);
+				}
+				else if (s->Equals(UTF8STRC("citext")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(0x10000000);
+				}
+/*				else if (s->Equals(UTF8STRC("pg_ndistinct")))////////////////////
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("pg_dependencies")))////////////////////
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("pg_lsn")))////////////////////
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}
+				else if (s->Equals(UTF8STRC("pg_mcv_list")))////////////////////
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
+				}*/
+				else if (s->Equals(UTF8STRC("_pg_statistic")))
+				{
+					col->SetColType(DB::DBUtil::CT_VarChar);
+					col->SetColSize(1048576);
 				}
 				else
 				{
 					printf("ReadingDBTool.GetTableDef: PSQL Unknown type: %s\r\n", s->v);
+					col->SetColType(DB::DBUtil::CT_Unknown);
 				}
 				s->Release();
 			}

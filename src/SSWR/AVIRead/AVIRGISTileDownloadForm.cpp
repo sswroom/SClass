@@ -45,7 +45,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 		me->sel2 = mapPt2;
 
 		Math::Polygon *pg;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->sel1.x;
@@ -86,7 +86,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 		}
 
 		Math::Polygon *pg;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5));
+		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPt1.x;

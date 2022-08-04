@@ -274,10 +274,10 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				{
 					if (hasZ)
 					{
-						Math::Polyline3D *pl;
+						Math::Polyline *pl;
 						Math::Coord2DDbl *ptArr;
 						Double *altArr;
-						NEW_CLASS(pl, Math::Polyline3D(srid, 1, zList.GetCount()));
+						NEW_CLASS(pl, Math::Polyline(srid, 1, zList.GetCount(), true, false));
 						ptArr = pl->GetPointList(&i);
 						i = 0;
 						j = ptList.GetCount() >> 1;
@@ -287,7 +287,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 							ptArr[i].y = ptList.GetItem((i << 1) + 1);
 							i++;
 						}
-						altArr = pl->GetAltitudeList(&i);
+						altArr = pl->GetZList(&i);
 						i = 0;
 						j = zList.GetCount();
 						while (i < j)
@@ -302,7 +302,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 						Double *ptArr;
 						ptArr = ptList.GetArray(&i);
 						Math::Polyline *pl;
-						NEW_CLASS(pl, Math::Polyline(srid, (Math::Coord2DDbl*)ptArr, i >> 1));
+						NEW_CLASS(pl, Math::Polyline(srid, (Math::Coord2DDbl*)ptArr, i >> 1, false, false));
 						return pl;
 					}
 				}
@@ -374,7 +374,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				{
 					Math::Coord2DDbl *ptArr;
 					Math::Polygon *pg;
-					NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
+					NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, false, false));
 					UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 					i = 0;
 					while (i < j)
@@ -463,7 +463,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 					{
 						Math::Coord2DDbl *ptArr;
 						Math::Polygon *pg;
-						NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1));
+						NEW_CLASS(pg, Math::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, false, false));
 						UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 						i = 0;
 						while (i < j)

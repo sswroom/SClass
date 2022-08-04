@@ -61,7 +61,7 @@ Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char
 	if (isX)
 		return 0;
 	j = pointList.GetCount() >> 1;
-	NEW_CLASS(pl, Math::Polyline(4326, 1, j));
+	NEW_CLASS(pl, Math::Polyline(4326, 1, j, false, false));
 	ptList = pl->GetPointList(&i);
 	i = 0;
 	while (i < j)

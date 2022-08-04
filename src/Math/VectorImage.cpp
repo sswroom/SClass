@@ -193,7 +193,7 @@ Bool Math::VectorImage::JoinVector(Math::Vector2D *vec)
 	return false;
 }
 
-Bool Math::VectorImage::Support3D() const
+Bool Math::VectorImage::HasZ() const
 {
 	return this->hasHeight;
 }

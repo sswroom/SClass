@@ -10,7 +10,6 @@
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Math/Point3D.h"
 #include "Math/Polyline.h"
 #include "Math/Polygon.h"
 #include "Text/Locale.h"

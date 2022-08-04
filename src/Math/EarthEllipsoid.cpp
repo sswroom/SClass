@@ -132,7 +132,7 @@ Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Dista
 	return totalDist;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -142,7 +142,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(&nPtOfst);
 	points = pl->GetPointList(&nPoint);
-	alts = pl->GetAltitudeList(&nAlts);
+	alts = pl->GetZList(&nAlts);
 	UOSInt i = nPtOfst;
 	UOSInt j = nPoint;
 	UOSInt k;

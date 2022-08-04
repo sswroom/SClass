@@ -1,16 +1,18 @@
-#ifndef _SM_MATH_MULTIPOINt
+#ifndef _SM_MATH_MULTIPOINT
 #define _SM_MATH_MULTIPOINT
-#include "Math/PointCollection.h"
+#include "Math/MultiGeometry.h"
+#include "Math/Point.h"
 
 namespace Math
 {
-	class MultiPoint : public Math::PointCollection
+	class MultiPoint : public Math::MultiGeometry<Math::Point>
 	{
 	public:
-		MultiPoint(UInt32 srid, UOSInt nPoints);
+		MultiPoint(UInt32 srid);
 		virtual ~MultiPoint();
 
-		virtual VectorType GetVectorType();
+		virtual VectorType GetVectorType() const;
+		virtual Math::Vector2D *Clone() const;
 	};
 }
 #endif
