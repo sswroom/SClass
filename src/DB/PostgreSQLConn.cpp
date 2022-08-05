@@ -760,7 +760,7 @@ DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
 	printf("PostgreSQL: ExecuteReader: %s\r\n", sql.v);
 	printf("PostgreSQL: ExecuteReader result = %d (%s)\r\n", status, ExecStatusTypeGetName(status).v);
 #endif
-	if (status != PGRES_TUPLES_OK)
+	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
 		PQclear(res);
 		return 0;
@@ -947,6 +947,25 @@ Text::String *DB::PostgreSQLConn::GetConnUID()
 Text::String *DB::PostgreSQLConn::GetConnPWD()
 {
 	return this->pwd;
+}
+
+Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
+{
+	Text::String *oldDB = this->database;
+	this->database = Text::String::New(databaseName);
+	this->Reconnect();
+	if (this->clsData->conn)
+	{
+		oldDB->Release();
+		return true;
+	}
+	else
+	{
+		this->database->Release();
+		this->database = oldDB;
+		this->Reconnect();
+		return false;
+	}
 }
 
 Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)

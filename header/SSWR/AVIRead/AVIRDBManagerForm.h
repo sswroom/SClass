@@ -36,6 +36,8 @@ namespace SSWR
 
 			UI::GUITabPage *tpTable;
 			UI::GUIPanel *pnlTable;
+			UI::GUIListBox *lbSchema;
+			UI::GUIHSplitter *hspSchema;
 			UI::GUIListBox *lbTable;
 			UI::GUIHSplitter *hspTable;
 			UI::GUIListView *lvTable;
@@ -43,17 +45,19 @@ namespace SSWR
 			UI::GUIListView *lvTableResult;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<DB::DBTool*> *dbList;
-			IO::LogTool *log;
+			Data::ArrayList<DB::DBTool*> dbList;
+			IO::LogTool log;
 			DB::DBTool *currDB;
 
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnSchemaSelChg(void *userObj);
 			static void __stdcall OnTableSelChg(void *userObj);
 			static Bool __stdcall OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnDatabaseClicked(void *userObj);
 
 			void UpdateDatabaseList();
+			void UpdateSchemaList();
 			void UpdateTableList();
 			void UpdateTableData(Text::CString schemaName, Text::String *tableName);
 			void UpdateResult(DB::DBReader *r);

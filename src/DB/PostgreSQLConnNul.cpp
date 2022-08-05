@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "DB/PostgreSQLConn.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Text/MyStringW.h"
 
 void DB::PostgreSQLConn::Connect()
@@ -155,7 +155,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -251,6 +251,11 @@ Text::String *DB::PostgreSQLConn::GetConnUID()
 Text::String *DB::PostgreSQLConn::GetConnPWD()
 {
 	return this->pwd;
+}
+
+Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
+{
+	return false;
 }
 
 Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)

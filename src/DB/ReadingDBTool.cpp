@@ -1275,7 +1275,9 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 
 UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr)
 {
-	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	switch (this->svrType)
+	{
+	case DB::DBUtil::ServerType::MSSQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases"));
 		if (r)
@@ -1287,7 +1289,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNew(sb.ToString()));
+					arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 					ret++;
 				}
 			}
@@ -1299,7 +1301,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	case DB::DBUtil::ServerType::MySQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("show databases"));
 		if (r)
@@ -1311,7 +1313,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNew(sb.ToString()));
+					arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 					ret++;
 				}
 			}
@@ -1322,9 +1324,8 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 		{
 			return 0;
 		}
-
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
+	case DB::DBUtil::ServerType::SQLite:
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::String *name = this->db->GetSourceNameObj();
@@ -1335,11 +1336,40 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 		{
 			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
-		arr->Add(Text::StrCopyNew(sb.ToString()));
+		arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 		return 1;
 	}
-	else
+	case DB::DBUtil::ServerType::PostgreSQL:
 	{
+		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT datname FROM pg_database"));
+		if (r)
+		{
+			UOSInt ret = 0;
+			Text::StringBuilderUTF8 sb;
+			while (r->ReadNext())
+			{
+				sb.ClearStr();
+				if (r->GetStr(0, &sb))
+				{
+					arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::MDBTools:
+	default:
 		return 0;
 	}
 }
@@ -1375,6 +1405,29 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
+		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
+		if (r)
+		{
+			OSInt rowChg = r->GetRowChanged();
+			this->CloseReader(r);
+			return rowChg >= -1;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (this->svrType == DB::DBUtil::ServerType::PostgreSQL)
+	{
+		if (this->db && this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
+		{
+			return ((DB::PostgreSQLConn*)this->db)->ChangeDatabase(Text::CString::FromPtr(databaseName));
+		}
+		else
+		{
+			return false;
+		}
+		UTF8Char *sptr = this->DBStrUTF8(Text::StrConcatC(sbuff, UTF8STRC("SET search_path = ")), databaseName);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
 		if (r)
 		{

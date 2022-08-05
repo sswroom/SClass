@@ -58,6 +58,7 @@ namespace DB
 		Text::String *GetConnDB();
 		Text::String *GetConnUID();
 		Text::String *GetConnPWD();
+		Bool ChangeDatabase(Text::CString databaseName);
 
 		static Text::CString ExecStatusTypeGetName(OSInt status);
 		static DB::DBUtil::ColType DBType2ColType(UInt32 dbType);

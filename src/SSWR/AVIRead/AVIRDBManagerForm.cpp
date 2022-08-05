@@ -11,6 +11,7 @@
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
 #include "SSWR/AVIRead/AVIRODBCDSNForm.h"
 #include "SSWR/AVIRead/AVIRODBCStrForm.h"
+#include "SSWR/AVIRead/AVIRPostgreSQLForm.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
@@ -26,6 +27,7 @@ typedef enum
 	MNU_CONN_MYSQL,
 	MNU_CONN_MSSQL,
 	MNU_CONN_ACCESS,
+	MNU_CONN_POSTGRESQL,
 
 	MNU_CONN_REMOVE,
 	MNU_CONN_COPY_STR,
@@ -40,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	me->currDB = (DB::DBTool*)me->lbConn->GetSelectedItem();
 	me->UpdateDatabaseList();
-	me->UpdateTableList();
+	me->UpdateSchemaList();
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
@@ -54,11 +56,19 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, M
 	return false;
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	me->UpdateTableList();
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	Text::String *tableName = me->lbTable->GetSelectedItemTextNew();
-	me->UpdateTableData(CSTR_NULL, tableName);
+	Text::String *schemaName = me->lbSchema->GetSelectedItemTextNew();
+	me->UpdateTableData(STR_CSTR(schemaName), tableName);
+	SDEL_STRING(schemaName);
 	SDEL_STRING(tableName);
 }
 
@@ -84,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseClicked(void *userObj
 			if (me->currDB->ChangeDatabase(dbName->v))
 			{
 				me->UpdateTableData(CSTR_NULL, 0);
-				me->UpdateTableList();
+				me->UpdateSchemaList();
 			}
 			dbName->Release();
 		}
@@ -112,6 +122,35 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	this->currDB->ReleaseDatabaseNames(&dbNames);
 }
 
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
+{
+	this->lbSchema->ClearItems();
+	if (this->currDB == 0)
+	{
+		return;
+	}
+	Data::ArrayList<Text::String*> schemaNames;
+	UOSInt i;
+	UOSInt j;
+
+	this->currDB->QuerySchemaNames(&schemaNames);
+	if (schemaNames.GetCount() == 0)
+	{
+		this->lbSchema->AddItem(CSTR(""), 0);
+	}
+	i = 0;
+	j = schemaNames.GetCount();
+	while (i < j)
+	{
+		Text::String *schemaName = schemaNames.GetItem(i);
+		this->lbSchema->AddItem(schemaName, 0);
+		i++;
+	}
+
+	LIST_FREE_STRING(&schemaNames);
+	this->lbSchema->SetSelectedIndex(0);
+}
+
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 {
 	this->lbTable->ClearItems();
@@ -119,10 +158,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	{
 		return;
 	}
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName;
 	Data::ArrayList<Text::String*> tableNames;
 	UOSInt i = 0;
-	UOSInt j = this->currDB->QueryTableNames(CSTR_NULL, &tableNames);
+	UOSInt j = this->currDB->QueryTableNames(STR_CSTR(schemaName), &tableNames);
+	SDEL_STRING(schemaName);
 	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
 	while (i < j)
 	{
@@ -144,6 +185,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	Text::String *s;
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
 	tabDef = this->currDB->GetTableDef(schemaName, STR_CSTR(tableName));
@@ -167,13 +209,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
-				this->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
-				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
+				s = col->GetNativeType();
+				if (s)
+					this->lvTable->SetSubItem(k, 2, s);
+				this->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				this->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
+				this->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
-					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
+					this->lvTable->SetSubItem(k, 6, col->GetDefVal());
 				if (col->GetAttr())
-					this->lvTable->SetSubItem(k, 6, col->GetAttr());
+					this->lvTable->SetSubItem(k, 7, col->GetAttr());
 
 				i++;
 			}
@@ -191,13 +236,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
-				this->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
-				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
+				s = col->GetNativeType();
+				if (s)
+					this->lvTable->SetSubItem(k, 2, s);
+				this->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				this->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
+				this->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
-					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
+					this->lvTable->SetSubItem(k, 6, col->GetDefVal());
 				if (col->GetAttr())
-					this->lvTable->SetSubItem(k, 6, col->GetAttr());
+					this->lvTable->SetSubItem(k, 7, col->GetAttr());
 
 				i++;
 			}
@@ -323,9 +371,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->SetText(CSTR("Database Manager"));
 	this->core = core;
 	this->currDB = 0;
-	NEW_CLASS(this->dbList, Data::ArrayList<DB::DBTool*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->log, IO::LogTool());
 
 	NEW_CLASS(this->lbConn, UI::GUIListBox(ui, this, false));
 	this->lbConn->SetRect(0, 0, 150, 23, false);
@@ -350,18 +396,24 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
 	this->pnlTable->SetRect(0, 0, 100, 250, false);
 	this->pnlTable->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->lbSchema, UI::GUIListBox(ui, this->pnlTable, false));
+	this->lbSchema->SetRect(0, 0, 150, 100, false);
+	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
+	NEW_CLASS(this->hspSchema, UI::GUIHSplitter(ui, this->pnlTable, 3, false));
 	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->pnlTable, false));
 	this->lbTable->SetRect(0, 0, 150, 23, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	this->lbTable->HandleRightClicked(OnTableRClicked, this);
 	NEW_CLASS(this->hspTable, UI::GUIHSplitter(ui, this->pnlTable, 3, false));
-	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->pnlTable, UI::GUIListView::LVSTYLE_TABLE, 7));
+	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->pnlTable, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);
 	this->lvTable->AddColumn(CSTR("Name"), 200);
 	this->lvTable->AddColumn(CSTR("Type"), 100);
+	this->lvTable->AddColumn(CSTR("NType"), 100);
 	this->lvTable->AddColumn(CSTR("Null?"), 100);
 	this->lvTable->AddColumn(CSTR("PK?"), 30);
 	this->lvTable->AddColumn(CSTR("Auto_Inc"), 100);
@@ -383,6 +435,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu2->AddItem(CSTR("MySQL TCP"), MNU_CONN_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SQL Server"), MNU_CONN_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Access File"), MNU_CONN_ACCESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("PostgreSQL"), MNU_CONN_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->mnuConn, UI::GUIPopupMenu());
@@ -393,15 +446,15 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->mnuTable->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Source"), MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	if (DB::DBManager::RestoreConn(DBCONNFILE, this->dbList, this->log, this->core->GetSocketFactory()))
+	if (DB::DBManager::RestoreConn(DBCONNFILE, &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;
 		DB::DBTool *db;
 		UOSInt i = 0;
-		UOSInt j = this->dbList->GetCount();
+		UOSInt j = this->dbList.GetCount();
 		while (i < j)
 		{
-			db = this->dbList->GetItem(i);
+			db = this->dbList.GetItem(i);
 			sb.ClearStr();
 			db->GetConn()->GetConnName(&sb);
 			this->lbConn->AddItem(sb.ToCString(), db);
@@ -419,16 +472,14 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 {
 	DEL_CLASS(this->mnuTable);
 	DEL_CLASS(this->mnuConn);
-	DB::DBManager::StoreConn(DBCONNFILE, this->dbList);
-	UOSInt i = this->dbList->GetCount();
+	DB::DBManager::StoreConn(DBCONNFILE, &this->dbList);
+	UOSInt i = this->dbList.GetCount();
 	DB::DBTool *db;
 	while (i-- > 0)
 	{
-		db = this->dbList->GetItem(i);
+		db = this->dbList.GetItem(i);
 		DEL_CLASS(db);
 	}
-	DEL_CLASS(this->dbList);
-	DEL_CLASS(this->log);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
@@ -483,12 +534,21 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			}
 		}
 		break;
+	case MNU_CONN_POSTGRESQL:
+		{
+			SSWR::AVIRead::AVIRPostgreSQLForm dlg(0, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				this->ConnAdd(dlg.GetDBConn());
+			}
+		}
+		break;
 	case MNU_CONN_REMOVE:
 		{
 			UOSInt i = this->lbConn->GetSelectedIndex();
 			if (i != INVALID_INDEX)
 			{
-				DB::DBTool *db = this->dbList->RemoveAt(i);
+				DB::DBTool *db = this->dbList.RemoveAt(i);
 				DEL_CLASS(db);
 				this->lbConn->RemoveItem(i);
 			}
@@ -566,8 +626,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(DB::DBConn *conn)
 {
 	DB::DBTool *db;
-	NEW_CLASS(db, DB::DBTool(conn, true, this->log, CSTR("DB: ")));
-	this->dbList->Add(db);
+	NEW_CLASS(db, DB::DBTool(conn, true, &this->log, CSTR("DB: ")));
+	this->dbList.Add(db);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(&sb);
 	this->lbConn->AddItem(sb.ToCString(), db);
