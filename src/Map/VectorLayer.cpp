@@ -610,7 +610,7 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);
 			MemCopyNO(obj->pointArr, points, i * 16);
 		}
-		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Multipoint)
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::MultiPoint)
 		{
 			Math::Coord2DDbl *points;
 			UOSInt i;

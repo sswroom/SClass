@@ -16,14 +16,27 @@ namespace Math
 			{
 				Unknown,
 				Point,
-				Multipoint,
-				Polyline,
+				LineString,
 				Polygon,
+				MultiPoint,
+				Polyline, //MultiLineString
+				MultiPolygon,
+				GeometryCollection,
+				CircularString,
+				CompoundCurve,
+				CurvePolygon,
+				MultiCurve,
+				MultiSurface,
+				Curve,
+				Surface,
+				PolyhedralSurface,
+				Tin,
+				Triangle,
+
 				Image,
 				String,
 				Ellipse,
-				PieArea,
-				Multipolygon
+				PieArea
 			};
 
 		protected:

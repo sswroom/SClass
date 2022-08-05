@@ -221,8 +221,20 @@ Bool Math::GeoJSONWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Ve
 			}
 		}
 		break;
-	case Math::Geometry::Vector2D::VectorType::Multipoint:
-	case Math::Geometry::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+	case Math::Geometry::Vector2D::VectorType::CircularString:
+	case Math::Geometry::Vector2D::VectorType::LineString:
+	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+	case Math::Geometry::Vector2D::VectorType::Curve:
+	case Math::Geometry::Vector2D::VectorType::Surface:
+	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+	case Math::Geometry::Vector2D::VectorType::Tin:
+	case Math::Geometry::Vector2D::VectorType::Triangle:
 	case Math::Geometry::Vector2D::VectorType::Image:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
@@ -433,8 +445,20 @@ Bool Math::GeoJSONWriter::ToGeometry(Text::StringBuilderUTF8 *sb, Math::Geometry
 			}
 		}
 		return true;
-	case Math::Geometry::Vector2D::VectorType::Multipoint:
-	case Math::Geometry::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+	case Math::Geometry::Vector2D::VectorType::CircularString:
+	case Math::Geometry::Vector2D::VectorType::LineString:
+	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+	case Math::Geometry::Vector2D::VectorType::Curve:
+	case Math::Geometry::Vector2D::VectorType::Surface:
+	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+	case Math::Geometry::Vector2D::VectorType::Tin:
+	case Math::Geometry::Vector2D::VectorType::Triangle:
 	case Math::Geometry::Vector2D::VectorType::Image:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:

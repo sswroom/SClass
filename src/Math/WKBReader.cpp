@@ -2,7 +2,12 @@
 #include "Data/ArrayListA.h"
 #include "Data/ByteTool.h"
 #include "Math/WKBReader.h"
+#include "Math/Geometry/CircularString.h"
+#include "Math/Geometry/CurvePolygon.h"
+#include "Math/Geometry/CompoundCurve.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Polygon.h"
@@ -156,9 +161,9 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 16 > wkbLen))
 				return 0;
-			Math::Geometry::Polyline *pl;
+			Math::Geometry::LineString *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, false, false));
+			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, false));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			i = 0;
 			while (i < numPoints)
@@ -183,9 +188,9 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
 				return 0;
-			Math::Geometry::Polyline *pl;
+			Math::Geometry::LineString *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, true, false));
+			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, false));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			Double *zArr = pl->GetZList(&i);
 			i = 0;
@@ -212,9 +217,9 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
 				return 0;
-			Math::Geometry::Polyline *pl;
+			Math::Geometry::LineString *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, false, true));
+			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, true));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			Double *mArr = pl->GetMList(&i);
 			i = 0;
@@ -241,9 +246,9 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 32 > wkbLen))
 				return 0;
-			Math::Geometry::Polyline *pl;
+			Math::Geometry::LineString *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, true, true));
+			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, true));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			Double *zArr = pl->GetZList(&i);
 			Double *mArr = pl->GetMList(&i);
@@ -535,6 +540,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				}
 				else if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
 				{
+					printf("WKBMultipolygon: wrong type: %d\r\n", (Int32)vec->GetVectorType());
 					DEL_CLASS(vec);
 					DEL_CLASS(mpg);
 					return 0;
@@ -552,73 +558,318 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			}
 			return mpg;
 		}
-	case 1009: //CurvePolylineZ
+	case 8: //CircularString
 		if (wkbLen < ofst + 4)
 			return 0;
 		else
 		{
-			UInt32 numParts = readUInt32(&wkb[ofst]);
+			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
-			UOSInt i;
-			UOSInt j;
-			Data::ArrayListA<Math::Coord2DDbl> points;
-			Data::ArrayList<Double> altitudes;
-			if (numParts < 1)
-			{
+			if (numPoints < 2 || (ofst + numPoints * 16 > wkbLen))
 				return 0;
-			}
-			UInt32 *parts = MemAlloc(UInt32, numParts);
+			Math::Geometry::CircularString *pl;
+			UOSInt i;
+			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, false));
+			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			i = 0;
-			while (i < numParts)
+			while (i < numPoints)
 			{
-				if (ofst + 9 > wkbLen || wkb[ofst] != wkb[0] || readUInt32(&wkb[ofst + 1]) != 1002)
-				{
-					MemFree(parts);
-					return 0;
-				}
-				UInt32 numPoints = readUInt32(&wkb[ofst + 5]);
-				ofst += 9;
-				if (ofst + numPoints * 24 > wkbLen)
-				{
-					MemFree(parts);
-					return 0;
-				}
-				parts[i] = (UInt32)points.GetCount();
-				j = 0;
-				while (j < numPoints)
-				{
-					points.Add(Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
-					altitudes.Add(readDouble(&wkb[ofst + 16]));
-					ofst += 24;
-					j++;
-				}
+				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+				ofst += 16;
 				i++;
 			}
-			Math::Geometry::Polyline *pl;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, numParts, points.GetCount(), true, false));
-			UInt32 *ptOfsts = pl->GetPtOfstList(&j);
-			Math::Coord2DDbl *pointArr = pl->GetPointList(&i);
-			Double *zArr = pl->GetZList(&i);
-			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.GetArray(&j), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(zArr, altitudes.GetArray(&j), sizeof(Double) * altitudes.GetCount());
-			MemFree(parts);
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst;
 			}
 			return pl;
 		}
-	case 1010: //CurvePolygonZ
+	case 1008: //CircularStringZ
+	case 0x80000008:
+		if (wkbLen < ofst + 4)
+			return 0;
+		else
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(wkb, wkbLen, ' ', Text::LineBreakType::CRLF);
-			printf("CurvePolygonZ:\r\n%s\r\n", sb.ToString());
-			break;
+			UInt32 numPoints = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
+				return 0;
+			Math::Geometry::CircularString *pl;
+			UOSInt i;
+			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, false));
+			Math::Coord2DDbl *points = pl->GetPointList(&i);
+			Double *zArr = pl->GetZList(&i);
+			i = 0;
+			while (i < numPoints)
+			{
+				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+				zArr[i] = readDouble(&wkb[ofst + 16]);
+				ofst += 24;
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return pl;
+		}
+	case 2008: //CircularStringM
+	case 0x40000008:
+		if (wkbLen < 9)
+			return 0;
+		else
+		{
+			UInt32 numPoints = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
+				return 0;
+			Math::Geometry::CircularString *pl;
+			UOSInt i;
+			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, true));
+			Math::Coord2DDbl *points = pl->GetPointList(&i);
+			Double *mArr = pl->GetMList(&i);
+			i = 0;
+			while (i < numPoints)
+			{
+				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+				mArr[i] = readDouble(&wkb[ofst + 16]);
+				ofst += 24;
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return pl;
+		}
+	case 3008: //CircularStringZM
+	case 0xC0000008:
+		if (wkbLen < 9)
+			return 0;
+		else
+		{
+			UInt32 numPoints = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			if (numPoints < 2 || (ofst + numPoints * 32 > wkbLen))
+				return 0;
+			Math::Geometry::CircularString *pl;
+			UOSInt i;
+			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, true));
+			Math::Coord2DDbl *points = pl->GetPointList(&i);
+			Double *zArr = pl->GetZList(&i);
+			Double *mArr = pl->GetMList(&i);
+			i = 0;
+			while (i < numPoints)
+			{
+				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+				zArr[i] = readDouble(&wkb[ofst + 16]);
+				mArr[i] = readDouble(&wkb[ofst + 24]);
+				ofst += 32;
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return pl;
+		}
+	case 9: //CompoundCurve
+	case 1009: //CompoundCurveZ
+	case 2009: //CompoundCurveM
+	case 3009: //CompoundCurveZM
+	case 0x80000009:
+	case 0x40000009:
+	case 0xC0000009:
+		if (wkbLen < ofst + 4)
+			return 0;
+		else
+		{
+			UInt32 nPolyline = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			UOSInt thisSize;
+			UOSInt i;
+			Math::Geometry::Vector2D *vec;
+			Math::Geometry::CompoundCurve *cpl;
+			Bool hasZ;
+			Bool hasM;
+			if (geomType & 0xC0000000)
+			{
+				hasZ = (geomType & 0x80000000) != 0;
+				hasM = (geomType & 0x40000000) != 0;
+			}
+			else
+			{
+				UInt32 t = geomType / 1000;
+				hasZ = (t & 1) != 0;
+				hasM = (t & 2) != 0;
+			}
+			NEW_CLASS(cpl, Math::Geometry::CompoundCurve(srid, hasZ, hasM));
+			i = 0;
+			while (i < nPolyline)
+			{
+				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
+				if (vec == 0)
+				{
+					DEL_CLASS(cpl);
+					return 0;
+				}
+				else
+				{
+					Math::Geometry::Vector2D::VectorType t = vec->GetVectorType();
+					if (t == Math::Geometry::Vector2D::VectorType::CircularString || t == Math::Geometry::Vector2D::VectorType::LineString)
+					{
+						cpl->AddGeometry((Math::Geometry::LineString*)vec);
+						ofst += thisSize;
+					}
+					else
+					{
+						printf("WKBCurvePolyline: wrong type: %d\r\n", (Int32)vec->GetVectorType());
+						DEL_CLASS(vec);
+						DEL_CLASS(cpl);
+						return 0;
+					}
+				}
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return cpl;
+		}
+	case 10: //CurvePolygon
+	case 1010: //CurvePolygonZ
+	case 2010: //CurvePolygonM
+	case 3010: //CurvePolygonZM
+	case 0x8000000A:
+	case 0x4000000A:
+	case 0xC000000A:
+		if (wkbLen < ofst + 4)
+			return 0;
+		else
+		{
+			UInt32 nCPolyline = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			UOSInt thisSize;
+			UOSInt i;
+			Math::Geometry::Vector2D *vec;
+			Math::Geometry::CurvePolygon *cpg;
+			Bool hasZ;
+			Bool hasM;
+			if (geomType & 0xC0000000)
+			{
+				hasZ = (geomType & 0x80000000) != 0;
+				hasM = (geomType & 0x40000000) != 0;
+			}
+			else
+			{
+				UInt32 t = geomType / 1000;
+				hasZ = (t & 1) != 0;
+				hasM = (t & 2) != 0;
+			}
+			NEW_CLASS(cpg, Math::Geometry::CurvePolygon(srid, hasZ, hasM));
+			i = 0;
+			while (i < nCPolyline)
+			{
+				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
+				if (vec == 0)
+				{
+					DEL_CLASS(cpg);
+					return 0;
+				}
+				else
+				{
+					Math::Geometry::Vector2D::VectorType t = vec->GetVectorType();
+					if (t == Math::Geometry::Vector2D::VectorType::CircularString || t == Math::Geometry::Vector2D::VectorType::CompoundCurve || t == Math::Geometry::Vector2D::VectorType::LineString)
+					{
+						cpg->AddGeometry(vec);
+						ofst += thisSize;
+					}
+					else
+					{
+						printf("WKBCurvePolygon: wrong type: %d\r\n", (Int32)vec->GetVectorType());
+						DEL_CLASS(vec);
+						DEL_CLASS(cpg);
+						return 0;
+					}
+				}
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return cpg;
+		}
+	case 12: //MultiSurface
+	case 1012: //MultiSurfaceZ
+	case 2012: //MultiSurfaceM
+	case 3012: //MultiSurfaceZM
+	case 0x8000000C:
+	case 0x4000000C:
+	case 0xC000000C:
+		if (wkbLen < ofst + 4)
+			return 0;
+		else
+		{
+			UInt32 nCPolyline = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			UOSInt thisSize;
+			UOSInt i;
+			Math::Geometry::Vector2D *vec;
+			Math::Geometry::MultiSurface *cpg;
+			Bool hasZ;
+			Bool hasM;
+			if (geomType & 0xC0000000)
+			{
+				hasZ = (geomType & 0x80000000) != 0;
+				hasM = (geomType & 0x40000000) != 0;
+			}
+			else
+			{
+				UInt32 t = geomType / 1000;
+				hasZ = (t & 1) != 0;
+				hasM = (t & 2) != 0;
+			}
+			NEW_CLASS(cpg, Math::Geometry::MultiSurface(srid, hasZ, hasM));
+			i = 0;
+			while (i < nCPolyline)
+			{
+				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
+				if (vec == 0)
+				{
+					DEL_CLASS(cpg);
+					return 0;
+				}
+				else
+				{
+					Math::Geometry::Vector2D::VectorType t = vec->GetVectorType();
+					if (t == Math::Geometry::Vector2D::VectorType::CurvePolygon || t == Math::Geometry::Vector2D::VectorType::Polygon)
+					{
+						cpg->AddGeometry(vec);
+						ofst += thisSize;
+					}
+					else
+					{
+						printf("WKBMultiSurface: wrong type: %d\r\n", (Int32)vec->GetVectorType());
+						DEL_CLASS(vec);
+						DEL_CLASS(cpg);
+						return 0;
+					}
+				}
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return cpg;
 		}
 	default:
 		{
-			printf("WKBReader: Unsupported type: %d\r\n", geomType);
+			Text::StringBuilderUTF8 sb;
+			sb.AppendHexBuff(wkb, wkbLen, ' ', Text::LineBreakType::CRLF);
+			printf("WKBReader: Unsupported type: %d\r\n%s\r\n", geomType, sb.ToString());
 		}
 		break;
 	}

@@ -12,7 +12,7 @@ Math::Geometry::MultiPolygon::~MultiPolygon()
 
 Math::Geometry::Vector2D::VectorType Math::Geometry::MultiPolygon::GetVectorType() const
 {
-	return Math::Geometry::Vector2D::VectorType::Multipolygon;
+	return Math::Geometry::Vector2D::VectorType::MultiPolygon;
 }
 
 Math::Geometry::Vector2D *Math::Geometry::MultiPolygon::Clone() const

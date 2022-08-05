@@ -2162,11 +2162,21 @@ Math/WKTReader.h: ../../src/Math/WKTReader.cpp
 @WKTReader.o
 Math/WKTWriter.h: ../../src/Math/WKTWriter.cpp
 @WKTWriter.o
+Math/Geometry/CircularString.h: ../../src/Math/Geometry/CircularString.cpp
+@CircularString.o
+Math/Geometry/CompoundCurve.h: ../../src/Math/Geometry/CompoundCurve.cpp
+@CompoundCurve.o
+Math/Geometry/CurvePolygon.h: ../../src/Math/Geometry/CurvePolygon.cpp
+@CurvePolygon.o
 Math/Geometry/Ellipse.h: ../../src/Math/Geometry/Ellipse.cpp
 @Ellipse.o
+Math/Geometry/LineString.h: ../../src/Math/Geometry/LineString.cpp
+@LineString.o
 Math/Geometry/MultiGeometry.h:
 Math/Geometry/MultiPolygon.h: ../../src/Math/Geometry/MultiPolygon.cpp
 @MultiPolygon.o
+Math/Geometry/MultiSurface.h: ../../src/Math/Geometry/MultiSurface.cpp
+@MultiSurface.o
 Math/Geometry/PieArea.h:
 Math/Geometry/Point.h: ../../src/Math/Geometry/Point.cpp
 @Point.o
@@ -4682,8 +4692,13 @@ VectorTextWriterList.o: ../../src/Math/VectorTextWriterList.cpp
 WKBReader.o: ../../src/Math/WKBReader.cpp
 WKTReader.o: ../../src/Math/WKTReader.cpp
 WKTWriter.o: ../../src/Math/WKTWriter.cpp
+CircularString.o: ../../src/Math/Geometry/CircularString.cpp
+CompoundCurve.o: ../../src/Math/Geometry/CompoundCurve.cpp
+CurvePolygon.o: ../../src/Math/Geometry/CurvePolygon.cpp
 Ellipse.o: ../../src/Math/Geometry/Ellipse.cpp
+LineString.o: ../../src/Math/Geometry/LineString.cpp
 MultiPolygon.o: ../../src/Math/Geometry/MultiPolygon.cpp
+MultiSurface.o: ../../src/Math/Geometry/MultiSurface.cpp
 Point.o: ../../src/Math/Geometry/Point.cpp
 PointCollection.o: ../../src/Math/Geometry/PointCollection.cpp
 PointM.o: ../../src/Math/Geometry/PointM.cpp

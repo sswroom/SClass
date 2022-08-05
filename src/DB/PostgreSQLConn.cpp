@@ -456,6 +456,7 @@ public:
 			UOSInt wkbLen = sb.Hex2Bytes(wkb);
 			Math::WKBReader reader(0);
 			Math::Geometry::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
+			MemFree(wkb);
 			if (vec)
 			{
 				item->SetVectorDirect(vec);
@@ -769,7 +770,8 @@ DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
 
 void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
 {
-
+	PostgreSQLReader *reader = (PostgreSQLReader*)r;
+	DEL_CLASS(reader);
 }
 
 void DB::PostgreSQLConn::GetErrorMsg(Text::StringBuilderUTF8 *str)

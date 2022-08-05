@@ -14,6 +14,76 @@ void Math::WKTWriter::SetLastError(Text::CString lastError)
 	this->lastError = Text::String::New(lastError);
 }
 
+void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geometry::LineString *pl)
+{
+	sb->AppendUTF8Char('(');
+	UOSInt nPoint;
+	Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+	Double *zArr = pl->GetZList(&nPoint);
+	Double *mArr = pl->GetMList(&nPoint);
+	UOSInt i;
+	if (zArr || mArr)
+	{
+		if (zArr && mArr)
+		{
+			i = 0;
+			while (i < nPoint)
+			{
+				if (i > 0) sb->AppendUTF8Char(',');
+				sb->AppendDouble(pointList[i].x);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[i].y);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(zArr[i]);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(mArr[i]);
+				i++;
+			}
+		}
+		else if (mArr)
+		{
+			i = 0;
+			while (i < nPoint)
+			{
+				if (i > 0) sb->AppendUTF8Char(',');
+				sb->AppendDouble(pointList[i].x);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[i].y);
+				sb->AppendC(UTF8STRC(" NULL "));
+				sb->AppendDouble(mArr[i]);
+				i++;
+			}
+		}
+		else
+		{
+			i = 0;
+			while (i < nPoint)
+			{
+				if (i > 0) sb->AppendUTF8Char(',');
+				sb->AppendDouble(pointList[i].x);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(pointList[i].y);
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(zArr[i]);
+				i++;
+			}
+		}
+	}
+	else
+	{
+		i = 0;
+		while (i < nPoint)
+		{
+			if (i > 0) sb->AppendUTF8Char(',');
+			sb->AppendDouble(pointList[i].x);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[i].y);
+			i++;
+		}
+	}
+	sb->AppendUTF8Char(')');
+}
+
 void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg)
 {
 	UOSInt nPtOfst;
@@ -160,6 +230,82 @@ void Math::WKTWriter::AppendPolyline3D(Text::StringBuilderUTF8 *sb, Math::Geomet
 	sb->AppendUTF8Char(')');
 }
 
+void Math::WKTWriter::AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geometry::CompoundCurve *cc)
+{
+	sb->AppendUTF8Char('(');
+	Math::Geometry::LineString *pl;
+	UOSInt i = 0;
+	UOSInt j = cc->GetCount();
+	while (i < j)
+	{
+		if (i > 0) sb->AppendUTF8Char(',');
+		pl = cc->GetItem(i);
+		if (pl->GetVectorType() == Math::Geometry::Vector2D::VectorType::CircularString)
+		{
+			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
+		}
+		AppendLineString(sb, pl);
+		i++;
+	}
+	sb->AppendUTF8Char(')');
+}
+
+void Math::WKTWriter::AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::CurvePolygon *cpg)
+{
+	sb->AppendUTF8Char('(');
+	Math::Geometry::Vector2D *geometry;
+	UOSInt i = 0;
+	UOSInt j = cpg->GetCount();
+	while (i < j)
+	{
+		if (i > 0) sb->AppendUTF8Char(',');
+		geometry = cpg->GetItem(i);
+		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
+		if (t == Math::Geometry::Vector2D::VectorType::LineString)
+		{
+			AppendLineString(sb, (Math::Geometry::LineString*)geometry);
+		}
+		else if (t == Math::Geometry::Vector2D::VectorType::CircularString)
+		{
+			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
+			AppendLineString(sb, (Math::Geometry::LineString*)geometry);
+		}
+		else if (t == Math::Geometry::Vector2D::VectorType::CompoundCurve)
+		{
+			sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
+			AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)geometry);
+		}
+		i++;
+	}
+	sb->AppendUTF8Char(')');
+}
+
+void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geometry::MultiSurface *ms)
+{
+	sb->AppendUTF8Char('(');
+	Math::Geometry::Vector2D *geometry;
+	UOSInt i = 0;
+	UOSInt j = ms->GetCount();
+	while (i < j)
+	{
+		if (i > 0) sb->AppendUTF8Char(',');
+		geometry = ms->GetItem(i);
+		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
+		if (t == Math::Geometry::Vector2D::VectorType::CurvePolygon)
+		{
+			sb->AppendC(UTF8STRC("CURVEPOLYGON"));
+			AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)geometry);
+		}
+		else if (t == Math::Geometry::Vector2D::VectorType::Polygon)
+		{
+			sb->AppendC(UTF8STRC("POLYGON"));
+			AppendPolygon(sb, (Math::Geometry::Polygon*)geometry);
+		}
+		i++;
+	}
+	sb->AppendUTF8Char(')');
+}
+
 Math::WKTWriter::WKTWriter()
 {
 	this->lastError = 0;
@@ -220,7 +366,6 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			if (pl->HasZ())
 			{
-				sb->AppendUTF8Char('Z');
 				AppendPolyline3D(sb, pl);
 			}
 			else
@@ -229,7 +374,7 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			}
 		}
 		return true;
-	case Math::Geometry::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
 		sb->AppendC(UTF8STRC("MULTIPOLYGON"));
 		{
 			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
@@ -248,7 +393,34 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			sb->AppendUTF8Char(')');
 		}
 		return true;
-	case Math::Geometry::Vector2D::VectorType::Multipoint:
+	case Math::Geometry::Vector2D::VectorType::LineString:
+		sb->AppendC(UTF8STRC("LINESTRING"));
+		AppendLineString(sb, (Math::Geometry::LineString*)vec);
+		return true;
+	case Math::Geometry::Vector2D::VectorType::CircularString:
+		sb->AppendC(UTF8STRC("CIRCULARSTRING"));
+		AppendLineString(sb, (Math::Geometry::LineString*)vec);
+		return true;
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+		sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
+		AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)vec);
+		return true;
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+		sb->AppendC(UTF8STRC("CURVEPOLYGON"));
+		AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)vec);
+		return true;
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+		sb->AppendC(UTF8STRC("MULTISURFACE"));
+		AppendMultiSurface(sb, (Math::Geometry::MultiSurface*)vec);
+		return true;
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+	case Math::Geometry::Vector2D::VectorType::Curve:
+	case Math::Geometry::Vector2D::VectorType::Surface:
+	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+	case Math::Geometry::Vector2D::VectorType::Tin:
+	case Math::Geometry::Vector2D::VectorType::Triangle:
 	case Math::Geometry::Vector2D::VectorType::Image:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:

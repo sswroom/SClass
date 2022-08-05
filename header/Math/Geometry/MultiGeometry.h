@@ -32,7 +32,7 @@ namespace Math
 				}
 			}
 
-			void AddGeometry(T *geometry)
+			virtual void AddGeometry(T *geometry)
 			{
 				this->geometries.Add(geometry);
 			}
