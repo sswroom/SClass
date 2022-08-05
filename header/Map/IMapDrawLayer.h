@@ -8,9 +8,9 @@
 #include "IO/ParsedObject.h"
 #include "Map/IMapSearchLayer.h"
 #include "Map/MapView.h"
-#include "Math/RectArea.h"
-#include "Math/Vector2D.h"
 #include "Math/GeographicCoordinateSystem.h"
+#include "Math/RectArea.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Media/SharedImage.h"
 #include "Text/SearchIndexer.h"
 
@@ -123,7 +123,7 @@ namespace Map
 		virtual void *BeginGetObject() = 0;
 		virtual void EndGetObject(void *session) = 0;
 		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id) = 0;
-		virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id) = 0;
+		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id) = 0;
 		virtual void ReleaseObject(void *session, DrawObjectL *obj) = 0;
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
@@ -158,7 +158,7 @@ namespace Map
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
 		UOSInt SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(Data::ArrayListString *strArr);
-		Math::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex);
+		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();
@@ -175,8 +175,8 @@ namespace Map
 		Bool IsLabelVisible();
 		void SetLabelVisible(Bool labelVisible);
 
-		static Map::DrawLayerType VectorType2LayerType(Math::Vector2D::VectorType vtype);
-		static Map::DrawObjectL *Vector2DrawObject(Int64 id, Math::Vector2D *vec, Map::DrawLayerType layerType);
+		static Map::DrawLayerType VectorType2LayerType(Math::Geometry::Vector2D::VectorType vtype);
+		static Map::DrawObjectL *Vector2DrawObject(Int64 id, Math::Geometry::Vector2D *vec, Map::DrawLayerType layerType);
 	};
 
 	class MapLayerReader : public DB::DBReader
@@ -207,7 +207,7 @@ namespace Map
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
-		virtual Math::Vector2D *GetVector(UOSInt colIndex);
+		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
 
 		virtual Bool IsNull(UOSInt colIndex);

@@ -2,7 +2,7 @@
 #include "Map/HKTDVehRestrict.h"
 #include "Map/VectorLayer.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Text/MyStringFloat.h"
 
 Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *db)
@@ -22,7 +22,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 		UOSInt j;
 		OSInt idCol = -1;
 		RouteInfo *route;
-		Math::Vector2D *vec;
+		Math::Geometry::Vector2D *vec;
 
 		routeLyr->GetAllObjectIds(&idArr, &nameArr);
 		colCnt = routeLyr->GetColumnCnt();
@@ -51,11 +51,11 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 					vec = routeLyr->GetNewVectorById(sess, idArr.GetItem(i));
 					if (vec)
 					{
-						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
+						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 						{
 							route = MemAlloc(RouteInfo, 1);
 							route->routeId = Text::StrToInt32(sbuff);
-							route->pl = (Math::Polyline*)vec;
+							route->pl = (Math::Geometry::Polyline*)vec;
 							route = this->routeMap->Put(route->routeId, route);
 							if (route)
 							{
@@ -163,7 +163,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
 				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
 				RouteInfo *route;
-				Math::Point *pt;
+				Math::Geometry::Point *pt;
 				Double ptX;
 				Double ptY;
 				Double dist;
@@ -209,7 +209,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 					strs[1] = Text::StrInt32(sbuff2, vrId) + 1;
 					Text::StrDouble(strs[1], maxWeight);
 					strs[2] = sbuff;
-					NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), ptX, ptY));
+					NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), ptX, ptY));
 					lyr->AddVector(pt, (const UTF8Char**)strs);
 				}
 			}

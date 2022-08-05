@@ -302,7 +302,7 @@ void DB::SQLiteReader::UpdateColTypes()
 	}
 }
 
-Math::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOSInt buffSize)
+Math::Geometry::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize < 8 || buff[0] != 'G' || buff[1] != 'P')
 	{
@@ -475,7 +475,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 			const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt, (int)colIndex);
 			if (data)
 			{
-				Math::Vector2D *vec = DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len);
+				Math::Geometry::Vector2D *vec = DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len);
 				if (vec)
 				{
 					Math::WKTWriter wkt;
@@ -547,7 +547,7 @@ UOSInt DB::SQLiteReader::GetBinarySize(UOSInt colIndex)
 	return (UOSInt)sqlite3_column_bytes((sqlite3_stmt*)this->hStmt, (int)colIndex);
 }
 
-Math::Vector2D *DB::SQLiteReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::SQLiteReader::GetVector(UOSInt colIndex)
 {
 	UOSInt leng = GetBinarySize(colIndex);
 	if (leng > 0)

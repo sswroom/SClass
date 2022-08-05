@@ -111,9 +111,9 @@ Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl
 	return this->baseCSys->CalSurfaceDistanceXY(ptList[0], ptList[1], unit);
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	Math::Polyline *tmpPl = (Math::Polyline*)pl->Clone();
+	Math::Geometry::Polyline *tmpPl = (Math::Geometry::Polyline*)pl->Clone();
 	Double ret;
 	UOSInt i;
 	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);
@@ -126,9 +126,9 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Polyline *pl, Mat
 	return ret;
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	Math::Polyline *tmpPl = (Math::Polyline *)pl->Clone();
+	Math::Geometry::Polyline *tmpPl = (Math::Geometry::Polyline *)pl->Clone();
 	Double ret;
 	UOSInt i;
 	Math::Coord2DDbl *ptList = tmpPl->GetPointList(&i);

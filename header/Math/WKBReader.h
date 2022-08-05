@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_WKBREADER
 #define _SM_MATH_WKBREADER
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 
 namespace Math
 {
@@ -63,7 +63,7 @@ namespace Math
 		WKBReader(UInt32 srid);
 		~WKBReader();
 
-		Math::Vector2D *ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSInt *sizeUsed);
+		Math::Geometry::Vector2D *ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSInt *sizeUsed);
 	};
 }
 #endif

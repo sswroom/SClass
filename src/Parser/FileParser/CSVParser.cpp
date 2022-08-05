@@ -7,7 +7,7 @@
 #include "Map/GPSTrack.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Parser/FileParser/CSVParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -291,7 +291,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	else if (latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
-		Math::Point *pt;
+		Math::Geometry::Point *pt;
 		UOSInt i;
 		UOSInt nameCol = 0;
 
@@ -313,7 +313,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
-				NEW_CLASS(pt, Math::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
+				NEW_CLASS(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
 				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
 			}
 		}		

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/VectorImage.h"
 #include "SSWR/AVIRead/AVIRGISEditImageForm.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -24,7 +24,7 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	UTF8Char *sptr;
 	Math::RectAreaDbl bounds;
 	void *sess = this->lyr->BeginGetObject();
-	Math::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
+	Math::Geometry::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
 	if (vec)
 	{
 		vec->GetBounds(&bounds);
@@ -57,10 +57,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(void *userObj, M
 	me->downType = me->CalcDownType(scnPos);
 	if (me->downType != 0)
 	{
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -98,7 +98,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (pt1.y > me->imgMin.y)
@@ -131,7 +131,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (pt1.y > me->imgMin.y)
@@ -171,7 +171,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			pt1.y = me->imgMin.y;
@@ -204,7 +204,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (pt1.y < me->imgMax.y)
@@ -244,7 +244,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (pt1.y < me->imgMax.y)
@@ -277,7 +277,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (pt1.y < me->imgMax.y)
@@ -317,7 +317,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			pt1.y = me->imgMin.y;
@@ -350,7 +350,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (pt1.y > me->imgMin.y)
@@ -389,7 +389,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
+		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			img->SetBounds(me->imgMin.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y, me->imgMax.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y);
@@ -417,10 +417,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = mapPos.y;
@@ -439,10 +439,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = mapPos.y;
@@ -460,10 +460,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -482,10 +482,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -503,10 +503,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x;
 		ptList[0].y = me->imgMax.y;
@@ -525,10 +525,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPos.x;
 		ptList[0].y = me->imgMax.y;
@@ -546,10 +546,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPos.x;
 		ptList[0].y = me->imgMax.y;
@@ -568,10 +568,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0] = mapPos;
 		ptList[1].x = me->imgMax.x;
@@ -589,10 +589,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(void *userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(Math::Coord2D<OSInt>(0, 0));
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->imgMin.x + pt2.x - pt1.x;
 		ptList[0].y = me->imgMax.y + pt2.y - pt1.y;

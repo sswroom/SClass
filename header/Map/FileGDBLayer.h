@@ -12,7 +12,7 @@ namespace Map
 	{
 	private:
 		DB::SharedReadingDB *conn;
-		Data::Int32Map<Math::Vector2D*> objects;
+		Data::Int32Map<Math::Geometry::Vector2D*> objects;
 		DB::ReadingDB *currDB;
 		DB::ReadingDB *lastDB;
 		Map::DrawLayerType layerType;
@@ -46,7 +46,7 @@ namespace Map
 		virtual void *BeginGetObject();
 		virtual void EndGetObject(void *session);
 		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id);
-		virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id);
+		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
@@ -85,7 +85,7 @@ namespace Map
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
-		virtual Math::Vector2D *GetVector(UOSInt colIndex);
+		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
 
 		virtual Bool IsNull(UOSInt colIndex);

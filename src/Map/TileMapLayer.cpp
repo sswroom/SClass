@@ -6,7 +6,7 @@
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -453,10 +453,10 @@ Map::DrawObjectL *Map::TileMapLayer::GetNewObjectById(void *session, Int64 id)
 	return 0;
 }
 
-Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 {
 	CachedImage *cimg;
-	Math::VectorImage *vimg;
+	Math::Geometry::VectorImage *vimg;
 	OSInt i;
 	UOSInt k;
 	Media::ImageList *imgList;
@@ -472,7 +472,7 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 		if (cimg->img == 0)
 			return 0;
 		sptr = this->tileMap->GetImageURL(sbuff, cimg->level, cimg->imgId);
-		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 
@@ -498,7 +498,7 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 		mutUsage.EndUse();
 
 		sptr = this->tileMap->GetImageURL(sbuff, level, id);
-		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 	else

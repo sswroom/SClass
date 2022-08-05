@@ -1596,7 +1596,7 @@ UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return *valLen;
 }
 
-Math::Vector2D *DB::OLEDBReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::OLEDBReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

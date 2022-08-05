@@ -4,7 +4,7 @@
 #include "Data/Class.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 namespace DB
@@ -72,8 +72,8 @@ namespace DB
 		static UOSInt SDBBoolLeng(Bool val, ServerType svrType);
 		static UTF8Char *SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, ServerType svrType);
 		static UOSInt SDBBinLeng(const UInt8 *buff, UOSInt size, ServerType svrType);
-		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, ServerType svrType);
-		static UOSInt SDBVectorLeng(Math::Vector2D *vec, ServerType svrType);
+		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, ServerType svrType);
+		static UOSInt SDBVectorLeng(Math::Geometry::Vector2D *vec, ServerType svrType);
 		static UTF8Char *SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, ServerType svrType);
 		static UOSInt SDBColUTF8Leng(const UTF8Char *colName, ServerType svrType);
 		static UTF8Char *SDBColW(UTF8Char *sqlstr, const WChar *colName, ServerType svrType);

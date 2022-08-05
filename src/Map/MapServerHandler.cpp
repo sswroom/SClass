@@ -87,7 +87,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 				while (i < j)
 				{
 					objId = objIds.GetItem(i);
-					Math::Vector2D *vec = layer->GetNewVectorById(sess, objId);
+					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objId);
 					if (vec)
 					{
 						if (i > 0)
@@ -120,9 +120,9 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 							k++;
 						}
 						sb.AppendC(UTF8STRC("\","));
-						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
+						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
-							Math::Polygon *pg = (Math::Polygon*)vec;
+							Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 							sb.AppendC(UTF8STRC("\"polygon\":{\"carr\":["));
 							k = 0;
 							Math::Coord2DDbl *pointList = pg->GetPointList(&l);
@@ -216,7 +216,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 						k++;
 					}
 					sb.AppendC(UTF8STRC("},\"geometry\":"));
-					Math::Vector2D *vec = layer->GetNewVectorById(sess, objId);
+					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objId);
 					if (vec && needConv)
 					{
 						vec->ConvCSys(csys, wgs84);

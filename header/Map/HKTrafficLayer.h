@@ -31,7 +31,7 @@ namespace Map
 			Int64 objId;
 			Int32 fromId;
 			Int32 toId;
-			Math::Vector2D *vec;
+			Math::Geometry::Vector2D *vec;
 			SaturationLevel lev;
 			Int32 spd;
 			Double minX;
@@ -44,7 +44,7 @@ namespace Map
 		{
 			Int32 fromId;
 			Int32 toId;
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 		} CenterlineInfo;
 	private:
 		static const NodeInfo nodeTable[];
@@ -90,7 +90,7 @@ namespace Map
 		virtual void *BeginGetObject();
 		virtual void EndGetObject(void *session);
 		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id);
-		virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id);
+		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
 
 		virtual ObjectClass GetObjectClass();

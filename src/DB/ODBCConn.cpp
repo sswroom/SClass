@@ -7,8 +7,8 @@
 #include "DB/DBTool.h"
 #include "Math/Math.h"
 #include "Math/MSGeography.h"
-#include "Math/Point.h"
 #include "Math/WKTWriter.h"
+#include "Math/Geometry/Point.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -1742,7 +1742,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				//Math::WKTWriter::GenerateWKT();
@@ -1800,7 +1800,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 		return false;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				Math::WKTWriter wkt;
@@ -1863,7 +1863,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -1917,7 +1917,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -2139,7 +2139,7 @@ UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
 		return 0;

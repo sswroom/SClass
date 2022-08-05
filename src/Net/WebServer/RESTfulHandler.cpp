@@ -3,8 +3,8 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "DB/SQLBuilder.h"
-#include "Math/Point.h"
-#include "Math/Polygon.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polygon.h"
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Text/JSONBuilder.h"
 
@@ -59,12 +59,12 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 	}
 }
 
-void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Vector2D *vec)
+void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Geometry::Vector2D *vec)
 {
 	switch (vec->GetVectorType())
 	{
-	case Math::Vector2D::VectorType::Polygon:
-	case Math::Vector2D::VectorType::Polyline:
+	case Math::Geometry::Vector2D::VectorType::Polygon:
+	case Math::Geometry::Vector2D::VectorType::Polyline:
 		{
 			UOSInt nPtOfst;
 			UInt32 *ptOfsts;
@@ -73,9 +73,9 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			Math::PointOfstCollection *pg = (Math::PointOfstCollection*)vec;
+			Math::Geometry::PointOfstCollection *pg = (Math::Geometry::PointOfstCollection*)vec;
 			json->ObjectBeginObject(name);
-			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
+			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 			{
 				json->ObjectAddStr(CSTR("type"), CSTR("Polygon"));
 			}
@@ -114,10 +114,10 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			json->ObjectEnd();
 		}
 		break;
-	case Math::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::Point:
 		{
 			Math::Coord2DDbl coord;
-			Math::Point *pt = (Math::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			json->ObjectBeginObject(name);
 			json->ObjectAddStr(CSTR("type"), CSTR("Point"));
 			json->ObjectBeginArray(CSTR("coordinates"));
@@ -128,13 +128,13 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			json->ObjectEnd();
 		}
 		break;
-	case Math::Vector2D::VectorType::Multipoint:
-	case Math::Vector2D::VectorType::Multipolygon:
-	case Math::Vector2D::VectorType::Image:
-	case Math::Vector2D::VectorType::String:
-	case Math::Vector2D::VectorType::Ellipse:
-	case Math::Vector2D::VectorType::PieArea:
-	case Math::Vector2D::VectorType::Unknown:
+	case Math::Geometry::Vector2D::VectorType::Multipoint:
+	case Math::Geometry::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::String:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:
 		json->ObjectAddStr(name, CSTR("?"));
 		break;

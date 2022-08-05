@@ -5,7 +5,7 @@
 #include "Data/StringMap.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace DB
@@ -59,7 +59,7 @@ namespace DB
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff) = 0;
-		virtual Math::Vector2D *GetVector(UOSInt colIndex) = 0;
+		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex) = 0;
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid) = 0;
 		virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item);
 

@@ -21,8 +21,8 @@ namespace Math
 		virtual ~ProjectedCoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual CoordinateSystem *Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const;

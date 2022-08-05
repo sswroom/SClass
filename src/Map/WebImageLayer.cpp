@@ -4,7 +4,7 @@
 #include "DB/ColDef.h"
 #include "IO/StmData/BufferedStreamData.h"
 #include "Map/WebImageLayer.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Sync/MutexUsage.h"
@@ -565,13 +565,13 @@ Map::DrawObjectL *Map::WebImageLayer::GetNewObjectById(void *session, Int64 id)
 	return 0;
 }
 
-Math::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, Int64 id)
 {
 	ImageStat *stat = this->GetImageStat((Int32)id);
 	if (stat)
 	{
-		Math::VectorImage *img;
-		NEW_CLASS(img, Math::VectorImage(this->csys->GetSRID(), stat->simg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url, stat->timeStart, stat->timeEnd));
+		Math::Geometry::VectorImage *img;
+		NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), stat->simg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url, stat->timeStart, stat->timeEnd));
 		if (stat->hasAltitude)
 		{
 			img->SetHeight(stat->altitude);

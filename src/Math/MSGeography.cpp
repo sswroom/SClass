@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Math/MSGeography.h"
-#include "Math/Point.h"
-#include "Math/Polygon.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polygon.h"
 
 // https://sqlprotocoldoc.blob.core.windows.net/productionsqlarchives/MS-SSCLRT/%5bMS-SSCLRT%5d.pdf
 
-Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, UInt32 *srIdOut)
+Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buffSize, UInt32 *srIdOut)
 {
 	if (buffSize < 6)
 	{
@@ -26,8 +26,8 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buff
 			{
 				return 0;
 			}
-			Math::Point *pt;
-			NEW_CLASS(pt, Math::Point(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14])));
+			Math::Geometry::Point *pt;
+			NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14])));
 			return pt;
 		}
 		else if (buffPtr[5] == 4) //Polygon 2D
@@ -69,10 +69,10 @@ Math::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UOSInt buff
 			}
 			if (shapePtr[8] == 3)
 			{
-				Math::Polygon *pg;
+				Math::Geometry::Polygon *pg;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pg, Math::Polygon(srid, 1, nPoints, false, false));
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, nPoints, false, false));
 				Math::Coord2DDbl *points = pg->GetPointList(&j);
 				i = 0;
 				while (i < j)

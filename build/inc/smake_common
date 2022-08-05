@@ -2108,8 +2108,6 @@ Math/CoordinateSystemManager.h: ../../src/Math/CoordinateSystemManager.cpp
 @CoordinateSystemManager.o
 Math/EarthEllipsoid.h: ../../src/Math/EarthEllipsoid.cpp
 @EarthEllipsoid.o
-Math/Ellipse.h: ../../src/Math/Ellipse.cpp
-@Ellipse.o
 Math/FFT.h: ../../src/Math/FFT.cpp
 @FFT.o
 Math/FFTCalc.h: ../../src/Math/FFTCalc.cpp
@@ -2119,8 +2117,8 @@ Math/GeographicCoordinateSystem.h: ../../src/Math/GeographicCoordinateSystem.cpp
 @GeographicCoordinateSystem.o
 Math/GeoJSONWriter.h: ../../src/Math/GeoJSONWriter.cpp
 @GeoJSONWriter.o
-Math/Geometry.h: ../../src/Math/Geometry.cpp
-@Geometry.o
+Math/GeometryTool.h: ../../src/Math/GeometryTool.cpp
+@GeometryTool.o
 Math/LanczosFilter.h: ../../src/Math/LanczosFilter.cpp
 @LanczosFilter.o
 Math/LithiumBattery.h:
@@ -2135,28 +2133,8 @@ Math/MercatorProjectedCoordinateSystem.h: ../../src/Math/MercatorProjectedCoordi
 @MercatorProjectedCoordinateSystem.o
 Math/MSGeography.h: ../../src/Math/MSGeography.cpp
 @MSGeography.o
-Math/MultiGeometry.h:
-Math/MultiPolygon.h: ../../src/Math/MultiPolygon.cpp
-@MultiPolygon.o
-Math/PieArea.h:
-Math/Point.h: ../../src/Math/Point.cpp
-@Point.o
-Math/PointCollection.h: ../../src/Math/PointCollection.cpp
-@PointCollection.o
-Math/PointM.h: ../../src/Math/PointM.cpp
-@PointM.o
 Math/PointMappingCoordinateSystem.h: ../../src/Math/PointMappingCoordinateSystem.cpp
 @PointMappingCoordinateSystem.o
-Math/PointOfstCollection.h: ../../src/Math/PointOfstCollection.cpp
-@PointOfstCollection.o
-Math/PointZ.h: ../../src/Math/PointZ.cpp
-@PointZ.o
-Math/PointZM.h: ../../src/Math/PointZM.cpp
-@PointZM.o
-Math/Polygon.h: ../../src/Math/Polygon.cpp
-@Polygon.o
-Math/Polyline.h: ../../src/Math/Polyline.cpp
-@Polyline.o
 Math/ProjectedCoordinateSystem.h: ../../src/Math/ProjectedCoordinateSystem.cpp
 @ProjectedCoordinateSystem.o
 Math/Quadrilateral.h: ../../src/Math/Quadrilateral.cpp
@@ -2175,12 +2153,6 @@ Math/TSPFile.h: ../../src/Math/TSPFile.cpp
 @TSPFile.o
 Math/UTMGridConvertDbl.h: ../../src/Math/UTMGridConvertDbl.cpp
 @UTMGridConvertDbl.o
-Math/Vector2D.h: ../../src/Math/Vector2D.cpp
-@Vector2D.o
-Math/VectorImage.h: ../../src/Math/VectorImage.cpp
-@VectorImage.o
-Math/VectorString.h: ../../src/Math/VectorString.cpp
-@VectorString.o
 Math/VectorTextWriter.h:
 Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
 @VectorTextWriterList.o
@@ -2190,6 +2162,34 @@ Math/WKTReader.h: ../../src/Math/WKTReader.cpp
 @WKTReader.o
 Math/WKTWriter.h: ../../src/Math/WKTWriter.cpp
 @WKTWriter.o
+Math/Geometry/Ellipse.h: ../../src/Math/Geometry/Ellipse.cpp
+@Ellipse.o
+Math/Geometry/MultiGeometry.h:
+Math/Geometry/MultiPolygon.h: ../../src/Math/Geometry/MultiPolygon.cpp
+@MultiPolygon.o
+Math/Geometry/PieArea.h:
+Math/Geometry/Point.h: ../../src/Math/Geometry/Point.cpp
+@Point.o
+Math/Geometry/PointCollection.h: ../../src/Math/Geometry/PointCollection.cpp
+@PointCollection.o
+Math/Geometry/PointM.h: ../../src/Math/Geometry/PointM.cpp
+@PointM.o
+Math/Geometry/PointOfstCollection.h: ../../src/Math/Geometry/PointOfstCollection.cpp
+@PointOfstCollection.o
+Math/Geometry/PointZ.h: ../../src/Math/Geometry/PointZ.cpp
+@PointZ.o
+Math/Geometry/PointZM.h: ../../src/Math/Geometry/PointZM.cpp
+@PointZM.o
+Math/Geometry/Polygon.h: ../../src/Math/Geometry/Polygon.cpp
+@Polygon.o
+Math/Geometry/Polyline.h: ../../src/Math/Geometry/Polyline.cpp
+@Polyline.o
+Math/Geometry/Vector2D.h: ../../src/Math/Geometry/Vector2D.cpp
+@Vector2D.o
+Math/Geometry/VectorImage.h: ../../src/Math/Geometry/VectorImage.cpp
+@VectorImage.o
+Math/Geometry/VectorString.h: ../../src/Math/Geometry/VectorString.cpp
+@VectorString.o
 Math/Unit/Acceleration.h: ../../src/Math/Unit/Acceleration.cpp
 @Acceleration.o
 Math/Unit/Angle.h: ../../src/Math/Unit/Angle.cpp
@@ -4659,28 +4659,18 @@ ComplexNumber.o: ../../src/Math/ComplexNumber.cpp
 CoordinateSystem.o: ../../src/Math/CoordinateSystem.cpp
 CoordinateSystemManager.o: ../../src/Math/CoordinateSystemManager.cpp
 EarthEllipsoid.o: ../../src/Math/EarthEllipsoid.cpp
-Ellipse.o: ../../src/Math/Ellipse.cpp
 FFT.o: ../../src/Math/FFT.cpp
 FFTCalc.o: ../../src/Math/FFTCalc.cpp
 GeographicCoordinateSystem.o: ../../src/Math/GeographicCoordinateSystem.cpp
 GeoJSONWriter.o: ../../src/Math/GeoJSONWriter.cpp
-Geometry.o: ../../src/Math/Geometry.cpp
+GeometryTool.o: ../../src/Math/GeometryTool.cpp
 LanczosFilter.o: ../../src/Math/LanczosFilter.cpp
 Math.o: ../../src/Math/Math.cpp
 Matrix3.o: ../../src/Math/Matrix3.cpp
 MercatorProjectedCoordinateSystem.o: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
 Mercator1SPProjectedCoordinateSystem.o: ../../src/Math/Mercator1SPProjectedCoordinateSystem.cpp
 MSGeography.o: ../../src/Math/MSGeography.cpp
-MultiPolygon.o: ../../src/Math/MultiPolygon.cpp
-Point.o: ../../src/Math/Point.cpp
-PointCollection.o: ../../src/Math/PointCollection.cpp
-PointM.o: ../../src/Math/PointM.cpp
 PointMappingCoordinateSystem.o: ../../src/Math/PointMappingCoordinateSystem.cpp
-PointOfstCollection.o: ../../src/Math/PointOfstCollection.cpp
-PointZ.o: ../../src/Math/PointZ.cpp
-PointZM.o: ../../src/Math/PointZM.cpp
-Polygon.o: ../../src/Math/Polygon.cpp
-Polyline.o: ../../src/Math/Polyline.cpp
 ProjectedCoordinateSystem.o: ../../src/Math/ProjectedCoordinateSystem.cpp
 Quadrilateral.o: ../../src/Math/Quadrilateral.cpp
 SRESRIWKTWriter.o: ../../src/Math/SRESRIWKTWriter.cpp
@@ -4688,13 +4678,23 @@ SROGCWKTWriter.o: ../../src/Math/SROGCWKTWriter.cpp
 SRWKTWriter.o: ../../src/Math/SRWKTWriter.cpp
 TSPFile.o: ../../src/Math/TSPFile.cpp
 UTMGridConvertDbl.o: ../../src/Math/UTMGridConvertDbl.cpp
-Vector2D.o: ../../src/Math/Vector2D.cpp
-VectorImage.o: ../../src/Math/VectorImage.cpp
-VectorString.o: ../../src/Math/VectorString.cpp
 VectorTextWriterList.o: ../../src/Math/VectorTextWriterList.cpp
 WKBReader.o: ../../src/Math/WKBReader.cpp
 WKTReader.o: ../../src/Math/WKTReader.cpp
 WKTWriter.o: ../../src/Math/WKTWriter.cpp
+Ellipse.o: ../../src/Math/Geometry/Ellipse.cpp
+MultiPolygon.o: ../../src/Math/Geometry/MultiPolygon.cpp
+Point.o: ../../src/Math/Geometry/Point.cpp
+PointCollection.o: ../../src/Math/Geometry/PointCollection.cpp
+PointM.o: ../../src/Math/Geometry/PointM.cpp
+PointOfstCollection.o: ../../src/Math/Geometry/PointOfstCollection.cpp
+PointZ.o: ../../src/Math/Geometry/PointZ.cpp
+PointZM.o: ../../src/Math/Geometry/PointZM.cpp
+Polygon.o: ../../src/Math/Geometry/Polygon.cpp
+Polyline.o: ../../src/Math/Geometry/Polyline.cpp
+Vector2D.o: ../../src/Math/Geometry/Vector2D.cpp
+VectorImage.o: ../../src/Math/Geometry/VectorImage.cpp
+VectorString.o: ../../src/Math/Geometry/VectorString.cpp
 Acceleration.o: ../../src/Math/Unit/Acceleration.cpp
 Angle.o: ../../src/Math/Unit/Angle.cpp
 ApparentPower.o: ../../src/Math/Unit/ApparentPower.cpp

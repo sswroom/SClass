@@ -37,7 +37,7 @@ namespace SSWR
 			virtual void *BeginGetObject();
 			virtual void EndGetObject(void *session);
 			virtual Map::DrawObjectL *GetNewObjectById(void *session, Int64 id);
-			virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id);
+			virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
 			virtual void ReleaseObject(void *session, Map::DrawObjectL *obj);
 
 			virtual ObjectClass GetObjectClass();

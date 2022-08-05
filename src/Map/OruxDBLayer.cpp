@@ -10,7 +10,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Math/Math.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 
 Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
@@ -285,7 +285,7 @@ Map::DrawObjectL *Map::OruxDBLayer::GetNewObjectById(void *session, Int64 id)
 	return 0;
 }
 
-Math::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 {
 	if (this->db == 0)
 		return 0;
@@ -322,7 +322,7 @@ Math::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 	if (imgList)
 	{
 		Media::SharedImage *shImg;
-		Math::VectorImage *vimg;
+		Math::Geometry::VectorImage *vimg;
 		Double x1;
 		Double y1;
 		Double y2;
@@ -337,7 +337,7 @@ Math::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 		y1 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 		n = Math::PI - 2.0 * Math::PI * projY2;
 		y2 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
-		NEW_CLASS(vimg, Math::VectorImage(4326, shImg, Math::Coord2DDbl(x1, y2), Math::Coord2DDbl(x1 + (lyr->mapMax.x - lyr->mapMin.x) / lyr->max.x, y1), false, CSTR_NULL, 0, 0));
+		NEW_CLASS(vimg, Math::Geometry::VectorImage(4326, shImg, Math::Coord2DDbl(x1, y2), Math::Coord2DDbl(x1 + (lyr->mapMax.x - lyr->mapMin.x) / lyr->max.x, y1), false, CSTR_NULL, 0, 0));
 		DEL_CLASS(shImg);
 		return vimg;
 	}

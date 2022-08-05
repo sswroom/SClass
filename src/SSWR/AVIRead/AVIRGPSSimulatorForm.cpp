@@ -4,7 +4,6 @@
 #include "IO/Path.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Polygon.h"
 #include "SSWR/AVIRead/AVIRGPSSimulatorForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"

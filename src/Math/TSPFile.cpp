@@ -3,8 +3,8 @@
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "Math/Math.h"
-#include "Math/PointZ.h"
 #include "Math/TSPFile.h"
+#include "Math/Geometry/PointZ.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -438,14 +438,14 @@ UOSInt Math::TSPReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *Math::TSPReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Math::TSPReader::GetVector(UOSInt colIndex)
 {
 	if (this->currRowPtr == 0)
 		return 0;
 	if (colIndex != 1)
 		return 0;
-	Math::PointZ *pt;
-	NEW_CLASS(pt, Math::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
+	Math::Geometry::PointZ *pt;
+	NEW_CLASS(pt, Math::Geometry::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
 	return pt;
 }
 
@@ -693,7 +693,7 @@ UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *Math::TSPHReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Math::TSPHReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

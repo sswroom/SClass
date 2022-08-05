@@ -12,7 +12,7 @@ namespace Map
 		typedef struct
 		{
 			Int32 routeId;
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 		} RouteInfo;
 	private:
 		DB::DBTool *db;

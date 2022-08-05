@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 		Text::String *s = me->lbResults->GetItemTextNew(i);
 
 		sess = me->layer->BeginGetObject();
-		Math::Vector2D *vec = me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s->v, me->strIndex);
+		Math::Geometry::Vector2D *vec = me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s->v, me->strIndex);
 		me->layer->EndGetObject(sess);
 
 		if (vec)

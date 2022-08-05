@@ -77,12 +77,12 @@ Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl p
 	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.lat, pos1.lon, pos2.lat, pos2.lon, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance(pl, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance3D(pl, unit);
 }

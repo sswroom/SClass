@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
 SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
@@ -167,13 +167,13 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetNewObjectById(void *sessio
 	return dobj;
 }
 
-Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
-	Math::Point *pt;
-	NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), ufile->lon, ufile->lat));
+	Math::Geometry::Point *pt;
+	NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), ufile->lon, ufile->lat));
 	return pt;
 }
 

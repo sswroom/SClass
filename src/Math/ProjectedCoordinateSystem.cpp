@@ -45,7 +45,7 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl po
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -77,7 +77,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::
 	return totalDist;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;

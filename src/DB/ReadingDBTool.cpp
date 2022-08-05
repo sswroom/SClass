@@ -15,7 +15,7 @@
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Event.h"

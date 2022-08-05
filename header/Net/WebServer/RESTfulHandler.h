@@ -16,7 +16,7 @@ namespace Net
 			Bool noLinks;
 
 			void BuildJSON(Text::JSONBuilder *json, DB::DBRow *row);
-			void AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Vector2D *vec);
+			void AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Geometry::Vector2D *vec);
 		public:
 			RESTfulHandler(DB::DBCache *dbCache);
 

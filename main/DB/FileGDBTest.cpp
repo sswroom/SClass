@@ -58,7 +58,7 @@ private:
 	Int16 rotation;
 	Text::String* routeno;
 	Text::String* secondSt;
-	Math::Vector2D* shape;
+	Math::Geometry::Vector2D* shape;
 	Text::String* shielded;
 	Text::String* solarLtg;
 	Text::String* specMate;
@@ -160,8 +160,8 @@ public:
 	void SetRouteno(Text::String* routeno);
 	Text::String* GetSecondSt();
 	void SetSecondSt(Text::String* secondSt);
-	Math::Vector2D* GetShape();
-	void SetShape(Math::Vector2D* shape);
+	Math::Geometry::Vector2D* GetShape();
+	void SetShape(Math::Geometry::Vector2D* shape);
 	Text::String* GetShielded();
 	void SetShielded(Text::String* shielded);
 	Text::String* GetSolarLtg();
@@ -745,12 +745,12 @@ void Lamppost::SetSecondSt(Text::String* secondSt)
 	this->secondSt = secondSt?secondSt->Clone():0;
 }
 
-Math::Vector2D* Lamppost::GetShape()
+Math::Geometry::Vector2D* Lamppost::GetShape()
 {
 	return this->shape;
 }
 
-void Lamppost::SetShape(Math::Vector2D* shape)
+void Lamppost::SetShape(Math::Geometry::Vector2D* shape)
 {
 	SDEL_CLASS(this->shape);
 	this->shape = shape?shape->Clone():0;

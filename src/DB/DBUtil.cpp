@@ -3,8 +3,8 @@
 #include "Data/ByteTool.h"
 #include "DB/DBUtil.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
 #include "Math/WKTWriter.h"
+#include "Math/Geometry/Point.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -1358,7 +1358,7 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::DBUtil::Server
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUtil::ServerType svrType)
+UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::DBUtil::ServerType svrType)
 {
 	if (vec == 0)
 	{
@@ -1366,9 +1366,9 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUti
 	}
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
+		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
-			Math::Point *pt = (Math::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			UInt8 buff[22];
 			WriteUInt32(buff, vec->GetSRID());
 			buff[4] = 1;
@@ -1407,7 +1407,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUti
 	}
 }
 
-UOSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::ServerType svrType)
 {
 	if (vec == 0)
 	{
@@ -1415,7 +1415,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svr
 	}
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
+		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
 			return SDBBinLeng(0, 22, svrType);
 		}

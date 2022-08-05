@@ -16,9 +16,9 @@
 #include "Map/OSM/OSMParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Polygon.h"
-#include "Math/Polyline.h"
-#include "Math/PointZ.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/PointZ.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -740,7 +740,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl xPts;
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
-															Math::PointZ *pt;
+															Math::Geometry::PointZ *pt;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
@@ -771,7 +771,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 																		if (xPts.GetCount() == 1)
 																		{
-																			NEW_CLASS(pt, Math::PointZ(srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
+																			NEW_CLASS(pt, Math::Geometry::PointZ(srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
 																			lyr->AddVector(pt, scols);
 																		}
 																	}
@@ -842,7 +842,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl xPts;
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
-															Math::Polygon *pg;
+															Math::Geometry::Polygon *pg;
 															Math::Coord2DDbl *ptList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
@@ -904,7 +904,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 																									if (xPts.GetCount() > 0)
 																									{
-																										NEW_CLASS(pg, Math::Polygon(srid, 1, xPts.GetCount(), false, false));
+																										NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
 																										ptList = pg->GetPointList(&i);
 																										while (i-- > 0)
 																										{
@@ -1000,7 +1000,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl xPts;
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
-															Math::Polyline *pl;
+															Math::Geometry::Polyline *pl;
 															Math::Coord2DDbl *ptList;
 															Double *hList;
 															scols = valList.GetArray(&i);
@@ -1033,7 +1033,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 																		if (xPts.GetCount() > 0)
 																		{
-																			NEW_CLASS(pl, Math::Polyline(srid, 1, xPts.GetCount(), true, false));
+																			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, xPts.GetCount(), true, false));
 																			ptList = pl->GetPointList(&i);
 																			hList = pl->GetZList(&i);
 																			while (i-- > 0)
@@ -1108,7 +1108,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl xPts;
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
-															Math::Polygon *pg;
+															Math::Geometry::Polygon *pg;
 															Math::Coord2DDbl *ptList;
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
@@ -1173,7 +1173,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 																									if (xPts.GetCount() > 0)
 																									{
-																										NEW_CLASS(pg, Math::Polygon(srid, 1, xPts.GetCount(), false, false));
+																										NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
 																										ptList = pg->GetPointList(&i);
 																										while (i-- > 0)
 																										{
@@ -3163,13 +3163,13 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						}
 						if (coord.GetCount() > 0)
 						{
-							Math::Polyline *pl;
+							Math::Geometry::Polyline *pl;
 							UOSInt nPoints;
 							Math::Coord2DDbl *ptArr;
 							Double *altArr;
 							UOSInt j;
 
-							NEW_CLASS(pl, Math::Polyline(4326, 1, altList.GetCount(), true, false));
+							NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, altList.GetCount(), true, false));
 							pl->GetPtOfstList(&nPoints)[0] = 0;
 							altArr = pl->GetZList(&nPoints);
 							ptArr = pl->GetPointList(&nPoints);
@@ -3229,19 +3229,19 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						i = Text::StrSplitTrim(sarr, 4, sb.ToString(), ',');
 						if (i == 3)
 						{
-							Math::PointZ *pt;
+							Math::Geometry::PointZ *pt;
 							x = Text::StrToDouble(sarr[0]);
 							y = Text::StrToDouble(sarr[1]);
 							z = Text::StrToDouble(sarr[2]);
-							NEW_CLASS(pt, Math::PointZ(4326, x, y, z));
+							NEW_CLASS(pt, Math::Geometry::PointZ(4326, x, y, z));
 							lyr->AddVector(pt, &lyrNameSb);
 						}
 						else if (i == 2)
 						{
-							Math::PointZ *pt;
+							Math::Geometry::PointZ *pt;
 							x = Text::StrToDouble(sarr[0]);
 							y = Text::StrToDouble(sarr[1]);
-							NEW_CLASS(pt, Math::PointZ(4326, x, y, 0));
+							NEW_CLASS(pt, Math::Geometry::PointZ(4326, x, y, 0));
 							lyr->AddVector(pt, &lyrNameSb);
 						}
 					}
@@ -3334,7 +3334,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				}
 				if (coord.GetCount() > 0)
 				{
-					Math::Polygon *pg;
+					Math::Geometry::Polygon *pg;
 					UOSInt nPoints;
 					Math::Coord2DDbl *ptArr;
 					UInt32 *ptList;
@@ -3342,7 +3342,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 					if (altList.GetCount() > 0)
 					{
-						NEW_CLASS(pg, Math::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1, false, false));
+						NEW_CLASS(pg, Math::Geometry::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1, false, false));
 						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
 						ptList[1] = (UInt32)(coord.GetCount() >> 1);
@@ -3353,7 +3353,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					}
 					else
 					{
-						NEW_CLASS(pg, Math::Polygon(4326, 1, coord.GetCount() >> 1, false, false));
+						NEW_CLASS(pg, Math::Geometry::Polygon(4326, 1, coord.GetCount() >> 1, false, false));
 						ptList = pg->GetPtOfstList(&nPoints);
 						ptList[0] = 0;
 						ptArr = pg->GetPointList(&nPoints);

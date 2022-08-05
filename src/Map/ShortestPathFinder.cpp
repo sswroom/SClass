@@ -238,7 +238,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 
 	UTF8Char sbuff[256];
 	Data::ArrayListInt64 idList;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	Math::Polyline *pl;
 	NodeInfo *fromNode;
 	NodeInfo *toNode;
@@ -264,7 +264,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 		vec = layer->GetNewVectorById(sess, idList.GetItem(i));
 		if (vec)
 		{
-			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
+			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 			{
 				pl = (Math::Polyline *)vec;
 				points = pl->GetPointList(&nPoints);

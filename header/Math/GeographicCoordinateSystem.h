@@ -20,8 +20,8 @@ namespace Math
 		virtual ~GeographicCoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual Math::CoordinateSystem *Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;

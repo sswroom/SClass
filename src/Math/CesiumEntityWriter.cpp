@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/PointZ.h"
-#include "Math/Polygon.h"
-#include "Math/Polyline.h"
 #include "Math/CesiumEntityWriter.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -28,7 +28,7 @@ Text::CString Math::CesiumEntityWriter::GetWriterName()
 	return CSTR("Cesium Entity");
 }
 
-Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
+Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0)
 	{
@@ -37,11 +37,11 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 	}
 	switch (vec->GetVectorType())
 	{
-	case Math::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::Point:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		if (vec->HasZ())
 		{
-			Math::PointZ *pt = (Math::PointZ*)vec;
+			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
 			Double x;
 			Double y;
 			Double z;
@@ -56,7 +56,7 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 		}
 		else
 		{
-			Math::Point *pt = (Math::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
 			sb->AppendC(UTF8STRC("position: Cesium.Cartesian3.fromDegrees("));
@@ -67,10 +67,10 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 		}
 		sb->AppendC(UTF8STRC("\r\n}"));
 		return true;
-	case Math::Vector2D::VectorType::Polygon:
+	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
-			Math::Polygon *pg = (Math::Polygon*)vec;
+			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
 			UOSInt k;
@@ -91,10 +91,10 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 			sb->AppendUTF8Char('}');
 		}
 		return true;
-	case Math::Vector2D::VectorType::Polyline:
+	case Math::Geometry::Vector2D::VectorType::Polyline:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
-			Math::Polyline *pl = (Math::Polyline*)vec;
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
 			UOSInt k;
@@ -115,13 +115,13 @@ Bool Math::CesiumEntityWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2
 			sb->AppendUTF8Char('}');
 		}
 		return true;
-	case Math::Vector2D::VectorType::Multipoint:
-	case Math::Vector2D::VectorType::Multipolygon:
-	case Math::Vector2D::VectorType::Image:
-	case Math::Vector2D::VectorType::String:
-	case Math::Vector2D::VectorType::Ellipse:
-	case Math::Vector2D::VectorType::PieArea:
-	case Math::Vector2D::VectorType::Unknown:
+	case Math::Geometry::Vector2D::VectorType::Multipoint:
+	case Math::Geometry::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::String:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:
 		this->SetLastError(CSTR("Unsupported vector type"));
 		return false;

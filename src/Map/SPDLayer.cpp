@@ -10,9 +10,9 @@
 #include "Map/SPDLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
-#include "Math/Polygon.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
@@ -570,13 +570,13 @@ Map::DrawObjectL *Map::SPDLayer::GetNewObjectById(void *session, Int64 id)
 	return obj;
 }
 
-Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Int32 buff[3];
 
 	IO::FileStream *cip = (IO::FileStream*)session;
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
-	Math::PointOfstCollection *ptColl = 0;
+	Math::Geometry::PointOfstCollection *ptColl = 0;
 	UInt32 *ptOfsts;
 	Int32 *points;
 	UOSInt i;
@@ -601,8 +601,8 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
-		Math::Point *pt;
-		NEW_CLASS(pt, Math::Point(4326, points[0] / 200000.0, points[1] / 200000.0));
+		Math::Geometry::Point *pt;
+		NEW_CLASS(pt, Math::Geometry::Point(4326, points[0] / 200000.0, points[1] / 200000.0));
 		if (ptOfsts)
 		{
 			MemFree(ptOfsts);
@@ -615,7 +615,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		NEW_CLASS(ptColl, Math::Polyline(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
+		NEW_CLASS(ptColl, Math::Geometry::Polyline(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		
@@ -628,7 +628,7 @@ Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		NEW_CLASS(ptColl, Math::Polygon(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
+		NEW_CLASS(ptColl, Math::Geometry::Polygon(4326, (UInt32)buff[1], (UInt32)buff[2], false, false));
 		tmpPtOfsts = ptColl->GetPtOfstList(&i);
 		MemCopyNO(tmpPtOfsts, ptOfsts, (UInt32)buff[1] << 2);
 		

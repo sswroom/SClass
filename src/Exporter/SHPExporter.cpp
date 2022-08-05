@@ -6,9 +6,9 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Map/IMapDrawLayer.h"
-#include "Math/PointZ.h"
-#include "Math/Polyline.h"
-#include "Math/Polygon.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/Polygon.h"
 #include "Math/SRESRIWKTWriter.h"
 #include "Text/MyString.h"
 
@@ -105,13 +105,13 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
-		Math::Point *pt;
+		Math::Geometry::Point *pt;
 		Math::Coord2DDbl coord;
 		ilayerType = 1;
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Point*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pt = (Math::Geometry::Point*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			coord = pt->GetCenter();
 			if (i == 0)
 			{
@@ -141,14 +141,14 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	}
 	else if (layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		Math::PointZ *pt;
+		Math::Geometry::PointZ *pt;
 		Math::Coord2DDbl coord;
 		Double z;
 		ilayerType = 11;
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::PointZ*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pt = (Math::Geometry::PointZ*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pt->GetPos3D(&coord.x, &coord.y, &z);
 			if (i == 0)
 			{
@@ -191,7 +191,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	{
 		ilayerType = 3;
 
-		Math::Polyline *pl;
+		Math::Geometry::Polyline *pl;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -203,7 +203,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		while (i < recCnt)
 		{
 			Int64 objId = objIds->GetItem(i);
-			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objId);
+			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objId);
 			if (pl)
 			{
 				pl->GetBounds(&box);
@@ -251,7 +251,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		ilayerType = 13;
 
 		UOSInt j;
-		Math::Polyline *pl;
+		Math::Geometry::Polyline *pl;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -264,7 +264,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pl->GetBounds(&box);
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
@@ -328,7 +328,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	{
 		ilayerType = 5;
 
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -339,7 +339,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pg = (Math::Polygon*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pg = (Math::Geometry::Polygon*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pg->GetBounds(&box);
 			ptOfsts = pg->GetPtOfstList(&nPtOfst);
 			points = pg->GetPointList(&nPoint);

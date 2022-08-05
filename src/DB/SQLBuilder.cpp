@@ -98,7 +98,7 @@ void DB::SQLBuilder::AppendBool(Bool val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBBool(this->sb.GetEndPtr(), val, this->svrType));
 }
 
-void DB::SQLBuilder::AppendVector(Math::Vector2D *vec)
+void DB::SQLBuilder::AppendVector(Math::Geometry::Vector2D *vec)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBVectorLeng(vec, this->svrType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBVector(this->sb.GetEndPtr(), vec, this->svrType));

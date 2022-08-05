@@ -174,7 +174,7 @@ public:
 		return len;
 	}
 
-	virtual Math::Vector2D *GetVector(UOSInt colIndex)
+	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 	{
 		return 0;
 	}

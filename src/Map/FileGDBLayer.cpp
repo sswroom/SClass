@@ -126,7 +126,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 		while (r->ReadNext())
 		{
 			Int32 objId;
-			Math::Vector2D *vec;
+			Math::Geometry::Vector2D *vec;
 			Math::RectAreaDbl bounds;
 
 			objId = r->GetInt32(this->objIdCol);
@@ -172,8 +172,8 @@ Map::FileGDBLayer::~FileGDBLayer()
 	{
 		this->colNames.RemoveAt(i)->Release();
 	}
-	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
-	Math::Vector2D *vec;
+	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects.GetValues();
+	Math::Geometry::Vector2D *vec;
 	i = vecList->GetCount();
 	while (i-- > 0)
 	{
@@ -210,10 +210,10 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects.GetValues();
+	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects.GetValues();
 	const Data::SortableArrayListNative<Int32> *vecKeys = this->objects.GetKeys();
 	Math::RectAreaDbl bounds;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -323,13 +323,13 @@ void Map::FileGDBLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *Map::FileGDBLayer::GetNewObjectById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->objects.Get((Int32)id);
+	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	return Vector2DrawObject(id, vec, this->layerType);
 }
 
-Math::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->objects.Get((Int32)id);
+	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
 		return vec->Clone();
 	return 0;
@@ -484,7 +484,7 @@ UOSInt Map::FileGDBLReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Math::Vector2D *Map::FileGDBLReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Map::FileGDBLReader::GetVector(UOSInt colIndex)
 {
 	return this->r->GetVector(colIndex);
 }

@@ -4,7 +4,7 @@
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Text/MyStringFloat.h"
 
 #define OSMTYPECNT 80
@@ -661,8 +661,8 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 								}
 								NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 							}
-							Math::Point *pt;
-							NEW_CLASS(pt, Math::Point(4326, lon, lat));
+							Math::Geometry::Point *pt;
+							NEW_CLASS(pt, Math::Geometry::Point(4326, lon, lat));
 							layers[elemType - 1]->AddVector(pt, names);
 						}
 						SDEL_STRING(names[0]);
@@ -1322,8 +1322,8 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							}
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
-						Math::Polygon *pg;
-						NEW_CLASS(pg, Math::Polygon(4326, 1, latList.GetCount(), false, false));
+						Math::Geometry::Polygon *pg;
+						NEW_CLASS(pg, Math::Geometry::Polygon(4326, 1, latList.GetCount(), false, false));
 						Math::Coord2DDbl *points = pg->GetPointList(&i);
 						while (i-- > 0)
 						{
@@ -1343,8 +1343,8 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							}
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
-						Math::Polyline *pl;
-						NEW_CLASS(pl, Math::Polyline(4326, 1, latList.GetCount(), false, false));
+						Math::Geometry::Polyline *pl;
+						NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, latList.GetCount(), false, false));
 						Math::Coord2DDbl *points = pl->GetPointList(&i);
 						while (i-- > 0)
 						{

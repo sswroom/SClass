@@ -1,7 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_JSONPARSER
 #define _SM_PARSER_FILEPARSER_JSONPARSER
 #include "IO/FileParser.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Text/JSON.h"
 
 namespace Parser
@@ -19,7 +19,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			static Math::Vector2D *ParseGeomJSON(Text::JSONObject *obj, UInt32 srid);
+			static Math::Geometry::Vector2D *ParseGeomJSON(Text::JSONObject *obj, UInt32 srid);
 		};
 	}
 }

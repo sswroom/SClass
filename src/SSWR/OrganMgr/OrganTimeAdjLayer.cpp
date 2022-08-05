@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
 SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
@@ -137,12 +137,12 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewObjectById(void *sess
 	return dobj;
 }
 
-Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
-	Math::Point *pt;
+	Math::Geometry::Point *pt;
 	Math::Coord2DDbl pos;
 	Data::DateTime dt;
 	dt.SetTicks(ufile->fileTimeTicks);
@@ -151,7 +151,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *sessio
 		dt.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
 	this->gpsTrk->GetPosByTime(&dt, &pos);
-	NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), pos));
+	NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), pos));
 	return pt;
 }
 

@@ -119,7 +119,7 @@ namespace SSWR
 			virtual void ShowMarker(Math::Coord2DDbl pos);
 			virtual void ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit);
 			virtual void HideMarker();
-			virtual void SetSelectedVector(Math::Vector2D *vec);
+			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec);
 			virtual void RedrawMap();
 			virtual Math::CoordinateSystem *GetCoordinateSystem();
 

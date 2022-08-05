@@ -6,11 +6,11 @@
 #include "Map/IMapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/PointZ.h"
-#include "Math/Polyline.h"
-#include "Math/Polygon.h"
 #include "Math/ProjectedCoordinateSystem.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Text/XML.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -109,7 +109,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	Data::ArrayListInt64 *ids;
 	void *nameArr;
 	void *sess;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	Math::CoordinateSystem *srcCsys = layer->GetCoordinateSystem();
@@ -157,14 +157,14 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			{
 
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
+			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 			{
-				Math::Point *pt = (Math::Point*)vec;
+				Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 				Math::Coord2DDbl coord = pt->GetCenter();
 				Double z;
 				if (pt->HasZ())
 				{
-					z = ((Math::PointZ*)pt)->GetZ();
+					z = ((Math::Geometry::PointZ*)pt)->GetZ();
 				}
 				else
 				{
@@ -194,10 +194,10 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sptr = Text::StrConcatC(sptr, UTF8STRC("</Placemark>"));
 				writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
+			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 			{
 				UOSInt nPoints;
-				Math::Polyline *pl = (Math::Polyline*)vec;
+				Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
 				{
 					sptr = Text::StrInt64(sbuff, currId);
@@ -300,11 +300,11 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
+			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 			{
 				UOSInt nPoints;
 				UOSInt nParts;
-				Math::Polygon *pg = (Math::Polygon*)vec;
+				Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
 				{
 					sptr = Text::StrInt64(sbuff, currId);
@@ -374,9 +374,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.AppendC(UTF8STRC("</Placemark>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
+			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Image)
 			{
-				Math::VectorImage *img = (Math::VectorImage*)vec;
+				Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)vec;
 				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
 				{
 					sptr = Text::StrInt64(sbuff, currId);

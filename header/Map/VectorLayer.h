@@ -22,13 +22,13 @@ namespace Map
 		UOSInt strCnt;
 		UOSInt *maxStrLen;
 		UOSInt *thisStrLen;
-		Data::ArrayList<Math::Vector2D*> vectorList;
+		Data::ArrayList<Math::Geometry::Vector2D*> vectorList;
 		Data::ArrayList<const UTF8Char **> strList;
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;
 		ColInfo *cols;
 		Double mapRate;
-		Math::Vector2D::VectorType mixedType;
+		Math::Geometry::Vector2D::VectorType mixedType;
 
 	private:
 		const UTF8Char **CopyStrs(const UTF8Char **strs);
@@ -60,17 +60,17 @@ namespace Map
 		virtual void *BeginGetObject();
 		virtual void EndGetObject(void *session);
 		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id);
-		virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id);
+		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
 
 		virtual ObjectClass GetObjectClass();
-		Bool VectorValid(Math::Vector2D *vec);
-		Bool AddVector(Math::Vector2D *vec, Text::String **strs);
-		Bool AddVector(Math::Vector2D *vec, Text::PString *strs);
-		Bool AddVector(Math::Vector2D *vec, const UTF8Char **strs);
+		Bool VectorValid(Math::Geometry::Vector2D *vec);
+		Bool AddVector(Math::Geometry::Vector2D *vec, Text::String **strs);
+		Bool AddVector(Math::Geometry::Vector2D *vec, Text::PString *strs);
+		Bool AddVector(Math::Geometry::Vector2D *vec, const UTF8Char **strs);
 		Bool SplitPolyline(Math::Coord2DDbl pt);
 		void OptimizePolylinePath();
-		void ReplaceVector(Int64 id, Math::Vector2D *vec);
+		void ReplaceVector(Int64 id, Math::Geometry::Vector2D *vec);
 		void ConvCoordinateSystem(Math::CoordinateSystem *csys);
 	};
 }

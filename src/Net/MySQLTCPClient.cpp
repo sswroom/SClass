@@ -296,7 +296,7 @@ public:
 		return 0;
 	}
 
-	virtual Math::Vector2D *GetVector(UOSInt colIndex)
+	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 	{
 		/////////////////////////////
 		return 0;
@@ -804,7 +804,7 @@ public:
 		return len;
 	}
 
-	virtual Math::Vector2D *GetVector(UOSInt colIndex)
+	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))

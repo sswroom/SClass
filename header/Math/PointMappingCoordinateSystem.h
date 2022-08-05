@@ -19,8 +19,8 @@ namespace Math
 		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt) const;
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual CoordinateSystem *Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;

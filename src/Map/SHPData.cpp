@@ -5,10 +5,10 @@
 #include "Map/SHPData.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/Polyline.h"
-#include "Math/Polygon.h"
-#include "Math/Point.h"
-#include "Math/PointZ.h"
+#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/PointZ.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
@@ -607,7 +607,7 @@ Map::DrawObjectL *Map::SHPData::GetNewObjectById(void *session, Int64 id)
 	}
 }
 
-Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 {
 	Map::SHPData::RecHdr *rec;
 	UOSInt nPoint;
@@ -619,33 +619,33 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	}
 	if (this->layerType == Map::DRAW_LAYER_POINT)
 	{
-		Math::Point *pt;
+		Math::Geometry::Point *pt;
 		if (id < 0 || (UInt64)id >= this->ptX->GetCount())
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Point(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		Math::PointZ *pt;
+		Math::Geometry::PointZ *pt;
 		if (id < 0 || (UInt64)id >= this->ptX->GetCount())
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::PointZ(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
 	{
-		Math::Polygon *pg;
+		Math::Geometry::Polygon *pg;
 		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
-		NEW_CLASS(pg, Math::Polygon(srid, rec->nPtOfst, rec->nPoint, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(srid, rec->nPtOfst, rec->nPoint, false, false));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pg->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pg->GetPointList(&nPoint));
 		rec->vec = pg->Clone();
@@ -653,13 +653,13 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
 	{
-		Math::Polyline *pl;
+		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
-		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint, false, false));
+		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, false, false));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		rec->vec = pl->Clone();
@@ -667,13 +667,13 @@ Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Math::Polyline *pl;
+		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(this->recsMut);
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone();
-		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint, true, false));
+		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, true, false));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetZList(&nPoint));

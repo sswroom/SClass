@@ -651,7 +651,7 @@ UOSInt DB::MySQLReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return this->lengs[colIndex];
 }
 
-Math::Vector2D *DB::MySQLReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::MySQLReader::GetVector(UOSInt colIndex)
 {
 	if (this->row == 0)
 		return 0;

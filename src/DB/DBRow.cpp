@@ -159,7 +159,7 @@ Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::DateTime *dt)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Math::Vector2D *vec)
+Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Math::Geometry::Vector2D *vec)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
@@ -283,7 +283,7 @@ Data::DateTime *DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
 	}
 }
 
-Math::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field) const
+Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
@@ -392,7 +392,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 				break;
 			case DT_VECTOR:
 				{
-					Math::Vector2D *vec = r->GetVector(i);
+					Math::Geometry::Vector2D *vec = r->GetVector(i);
 					this->SetFieldVector(field, vec);
 					SDEL_CLASS(vec);
 				}
@@ -502,7 +502,7 @@ Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, Data::DateTime *dt)
 	return this->SetFieldDate(field, dt);
 }
 
-Bool DB::DBRow::SetValueVector(const UTF8Char *fieldName, Math::Vector2D *vec)
+Bool DB::DBRow::SetValueVector(const UTF8Char *fieldName, Math::Geometry::Vector2D *vec)
 {
 	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
@@ -572,7 +572,7 @@ Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
 	return this->GetFieldDate(field);
 }
 
-Math::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName) const
+Math::Geometry::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
@@ -726,7 +726,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
 	DB::DBRow::Field *field;
 	const UInt8 *buff;
 	Math::WKTWriter wkt;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	DataType dtype;
 	UOSInt i = 0;
 	UOSInt j = this->table->GetColCnt();

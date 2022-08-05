@@ -16,7 +16,7 @@
 #include "Map/MapConfig2.h"
 #include "Map/CIPLayer2.h"
 #include "Math/Math.h"
-#include "Math/Geometry.h"
+#include "Math/GeometryTool.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
 #include "Media/IImgResizer.h"
@@ -2934,9 +2934,9 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 
 			Math::Coord2DDbl *tmpPts;
 			tmpPts = MemAllocA(Math::Coord2DDbl, nPoint << 1);
-			outPtCnt = Math::Geometry::BoundPolygonY(points, nPoint, tmpPts, top, bottom, {0, 0});
+			outPtCnt = Math::GeometryTool::BoundPolygonY(points, nPoint, tmpPts, top, bottom, {0, 0});
 			outPts = MemAllocA(Math::Coord2DDbl, nPoint << 1);
-			outPtCnt = Math::Geometry::BoundPolygonX(tmpPts, outPtCnt, outPts, left, right, {0, 0});
+			outPtCnt = Math::GeometryTool::BoundPolygonX(tmpPts, outPtCnt, outPts, left, right, {0, 0});
 			MemFreeA(tmpPts);
 
 			i = 0;

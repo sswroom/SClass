@@ -3,8 +3,8 @@
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/PointZ.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polyline.h"
 
 Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
@@ -66,7 +66,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	UOSInt currSize;
 	conn->UseObject();
 	this->conn = conn;
-	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
+	NEW_CLASS(this->objects, Data::Int32Map<Math::Geometry::Vector2D*>());
 	NEW_CLASS(this->colNames, Data::ArrayListString());
 	this->tableName = Text::String::New(tableName);
 	this->currDB = 0;
@@ -114,7 +114,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 		while (r->ReadNext())
 		{
 			Int32 objId;
-			Math::Vector2D *vec;
+			Math::Geometry::Vector2D *vec;
 
 			currSize = r->GetBinarySize(this->shapeCol);
 			if (currSize > buffSize)
@@ -147,8 +147,8 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
 				{
-					Math::Vector2D::VectorType vt = vec->GetVectorType();
-					if (vt == Math::Vector2D::VectorType::Point)
+					Math::Geometry::Vector2D::VectorType vt = vec->GetVectorType();
+					if (vt == Math::Geometry::Vector2D::VectorType::Point)
 					{
 						if (vec->HasZ())
 						{
@@ -159,7 +159,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 							this->layerType = Map::DRAW_LAYER_POINT;
 						}
 					}
-					else if (vt == Math::Vector2D::VectorType::Polyline)
+					else if (vt == Math::Geometry::Vector2D::VectorType::Polyline)
 					{
 						if (vec->HasZ())
 						{
@@ -170,7 +170,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 							this->layerType = Map::DRAW_LAYER_POLYLINE;
 						}
 					}
-					else if (vt == Math::Vector2D::VectorType::Polygon)
+					else if (vt == Math::Geometry::Vector2D::VectorType::Polygon)
 					{
 						this->layerType = Map::DRAW_LAYER_POLYGON;
 					}
@@ -206,8 +206,8 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	this->conn->UnuseObject();
 	LIST_FREE_STRING(this->colNames);
 	DEL_CLASS(this->colNames);
-	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
-	Math::Vector2D *vec;
+	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects->GetValues();
+	Math::Geometry::Vector2D *vec;
 	i = vecList->GetCount();
 	while (i-- > 0)
 	{
@@ -245,10 +245,10 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	const Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
+	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects->GetValues();
 	const Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
 	Math::RectAreaDbl minMax;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -355,13 +355,13 @@ void Map::ESRI::ESRIMDBLayer::EndGetObject(void *session)
 
 Map::DrawObjectL *Map::ESRI::ESRIMDBLayer::GetNewObjectById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->objects->Get((Int32)id);
+	Math::Geometry::Vector2D *vec = this->objects->Get((Int32)id);
 	return Vector2DrawObject(id, vec, this->layerType);
 }
 
-Math::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->objects->Get((Int32)id);
+	Math::Geometry::Vector2D *vec = this->objects->Get((Int32)id);
 	if (vec)
 		return vec->Clone();
 	return 0;
@@ -516,7 +516,7 @@ UOSInt Map::ESRI::ESRIMDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Math::Vector2D *Map::ESRI::ESRIMDBReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Map::ESRI::ESRIMDBReader::GetVector(UOSInt colIndex)
 {
 	return this->r->GetVector(colIndex);
 }

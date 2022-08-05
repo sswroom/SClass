@@ -219,7 +219,7 @@ void SSWR::MapReplay::MapReplayForm::AddLayer(Map::IMapDrawLayer *layer)
 	this->UpdateList();
 }
 
-void SSWR::MapReplay::MapReplayForm::SetSelectedVector(Math::Vector2D *vec)
+void SSWR::MapReplay::MapReplayForm::SetSelectedVector(Math::Geometry::Vector2D *vec)
 {
 	this->map->SetSelectedVector(vec);
 }

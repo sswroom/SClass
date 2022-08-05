@@ -10,7 +10,7 @@
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
@@ -437,7 +437,7 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::
 		}
 		else
 		{
-			Math::Vector2D *vec;
+			Math::Geometry::Vector2D *vec;
 			UInt8 *binBuff;
 			UOSInt colSize;
 			colType = r->GetColType(i, &colSize);

@@ -4,8 +4,8 @@
 #include "IO/MemoryStream.h"
 #include "Map/HKTrafficLayer.h"
 #include "Map/VectorLayer.h"
-#include "Math/Point.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/Point.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
 #include "Sync/MutexUsage.h"
@@ -954,10 +954,10 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 				if (fromId != 0 && toId != 0)
 				{
 					id = (((Int64)fromId) << 32) | (UInt32)toId;
-					Math::Vector2D *vec = roadLayer->GetNewVectorById(sess, idArr.GetItem(i));
+					Math::Geometry::Vector2D *vec = roadLayer->GetNewVectorById(sess, idArr.GetItem(i));
 					if (vec)
 					{
-						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
+						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 						{
 							vec->GetBounds(&minMax);
 							if (isFirst)
@@ -983,7 +983,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 							lineInfo = MemAlloc(CenterlineInfo, 1);
 							lineInfo->fromId = fromId;
 							lineInfo->toId = toId;
-							lineInfo->pl = (Math::Polyline*)vec;
+							lineInfo->pl = (Math::Geometry::Polyline*)vec;
 							lineInfo = this->vecMap.Put(id, lineInfo);
 							if (lineInfo)
 							{
@@ -1257,7 +1257,7 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
 	road = this->roadMap.Get(id);
 	if (road && road->vec)
 	{
-		Math::Polyline *pl = (Math::Polyline*)road->vec;
+		Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)road->vec;
 		UOSInt cnt;
 		UInt32 *ptOfsts = pl->GetPtOfstList(&cnt);
 		obj = MemAlloc(Map::DrawObjectL, 1);
@@ -1295,10 +1295,10 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
 	return obj;
 }
 
-Math::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
 {
 	RoadInfo *road;
-	Math::Vector2D *vec = 0;
+	Math::Geometry::Vector2D *vec = 0;
 	Sync::MutexUsage mutUsage(&this->roadMut);
 	road = this->roadMap.Get(id);
 	if (road && road->vec)
@@ -1306,15 +1306,15 @@ Math::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
 		vec = road->vec->Clone();
 		if (road->lev == Map::HKTrafficLayer::SL_GOOD)
 		{
-			((Math::Polyline*)vec)->SetColor(0xff00ff00);
+			((Math::Geometry::Polyline*)vec)->SetColor(0xff00ff00);
 		}
 		else if (road->lev == Map::HKTrafficLayer::SL_AVERAGE)
 		{
-			((Math::Polyline*)vec)->SetColor(0xffffff00);
+			((Math::Geometry::Polyline*)vec)->SetColor(0xffffff00);
 		}
 		else if (road->lev == Map::HKTrafficLayer::SL_BAD)
 		{
-			((Math::Polyline*)vec)->SetColor(0xffff0000);
+			((Math::Geometry::Polyline*)vec)->SetColor(0xffff0000);
 		}
 	}
 	mutUsage.EndUse();
@@ -1341,13 +1341,13 @@ Map::IMapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	UTF8Char sbuff[32];
 	const UTF8Char *sptr = sbuff;
 	const UTF8Char *col = (const UTF8Char*)"id";
-	Math::Point *pt;
+	Math::Geometry::Point *pt;
 	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80), 0, CSTR("HKTrafficNode")));
 	OSInt i = 0;
 	OSInt j = sizeof(nodeTable) / sizeof(nodeTable[0]);
 	while (i < j)
 	{
-		NEW_CLASS(pt, Math::Point(2326, nodeTable[i].x, nodeTable[i].y));
+		NEW_CLASS(pt, Math::Geometry::Point(2326, nodeTable[i].x, nodeTable[i].y));
 		Text::StrInt32(sbuff, nodeTable[i].id);
 		layer->AddVector(pt, &sptr);
 		i++;

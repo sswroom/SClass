@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/PostgreSQLConn.h"
-#include "Math/Point.h"
 #include "Math/WKBReader.h"
+#include "Math/Geometry/Point.h"
 #include "Text/MyStringW.h"
 #include <libpq-fe.h>
 
@@ -188,7 +188,7 @@ public:
 		return 0;
 	}
 
-	virtual Math::Vector2D *GetVector(UOSInt colIndex)
+	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, &item);
@@ -439,8 +439,8 @@ public:
 			{
 				return false;
 			}
-			Math::Point *pt;
-			NEW_CLASS(pt, Math::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
+			Math::Geometry::Point *pt;
+			NEW_CLASS(pt, Math::Geometry::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
 			item->SetVectorDirect(pt);
 			return true;
 		}
@@ -455,7 +455,7 @@ public:
 			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
 			UOSInt wkbLen = sb.Hex2Bytes(wkb);
 			Math::WKBReader reader(0);
-			Math::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
+			Math::Geometry::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
 			if (vec)
 			{
 				item->SetVectorDirect(vec);

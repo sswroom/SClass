@@ -9,9 +9,9 @@
 #include "Map/MapManager.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/PointZ.h"
-#include "Math/Polygon.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Parser/FileParser/TXTParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -356,13 +356,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Data::ArrayListDbl ptX;
 		Data::ArrayListDbl ptY;
 		Data::ArrayListDbl ptZ;
-		Data::Int32Map<Math::Vector2D *> vecMap;
+		Data::Int32Map<Math::Geometry::Vector2D *> vecMap;
 		Data::Int32Map<Bool> vecUsed;
 		Int32 currId = 0;
-		Math::Polygon *pg;
-		Math::Polyline *pl;
-		Math::PointZ *pt;
-		Math::Vector2D *vec;
+		Math::Geometry::Polygon *pg;
+		Math::Geometry::Polyline *pl;
+		Math::Geometry::PointZ *pt;
+		Math::Geometry::Vector2D *vec;
 		Math::Coord2DDbl *ptList;
 		Double *hList;
 
@@ -383,13 +383,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						else if (j == 1)
 						{
 							hasPt = true;
-							NEW_CLASS(pt, Math::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+							NEW_CLASS(pt, Math::Geometry::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
 							vecMap.Put(currId, pt);
 						}
 						else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 						{
 							hasPG = true;
-							NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1, false, false));
+							NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, j - 1, false, false));
 							ptList = pg->GetPointList(&k);
 							k = 0;
 							while (k < j - 1)
@@ -403,7 +403,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						else
 						{
 							hasPL = true;
-							NEW_CLASS(pl, Math::Polyline(srid, 1, j, true, false));
+							NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, j, true, false));
 							ptList = pl->GetPointList(&k);
 							hList = pl->GetZList(&k);
 							k = 0;
@@ -440,13 +440,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (j == 1)
 			{
 				hasPt = true;
-				NEW_CLASS(pt, Math::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+				NEW_CLASS(pt, Math::Geometry::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
 				vecMap.Put(currId, pt);
 			}
 			else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 			{
 				hasPG = true;
-				NEW_CLASS(pg, Math::Polygon(srid, 1, j - 1, false, false));
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, j - 1, false, false));
 				ptList = pg->GetPointList(&k);
 				k = 0;
 				while (k < j - 1)
@@ -460,7 +460,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else
 			{
 				hasPL = true;
-				NEW_CLASS(pl, Math::Polyline(srid, 1, j, true, false));
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, j, true, false));
 				ptList = pl->GetPointList(&k);
 				hList = pl->GetZList(&k);
 				k = 0;
@@ -481,7 +481,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Map::VectorLayer *lyr;
 		Map::DrawLayerType lyrType;
 		const Data::ArrayList<Int32> *vecIdList;
-		const Data::ArrayList<Math::Vector2D *> *vecList;
+		const Data::ArrayList<Math::Geometry::Vector2D *> *vecList;
 		if (hasPt && !hasPL && !hasPG)
 		{
 			lyrType = Map::DRAW_LAYER_POINT3D;

@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/MultiPolygon.h"
-#include "Math/PointZ.h"
-#include "Math/Polygon.h"
-#include "Math/Polyline.h"
 #include "Math/WKTWriter.h"
+#include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -14,7 +14,7 @@ void Math::WKTWriter::SetLastError(Text::CString lastError)
 	this->lastError = Text::String::New(lastError);
 }
 
-void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Polygon *pg)
+void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg)
 {
 	UOSInt nPtOfst;
 	UOSInt nPoint;
@@ -61,7 +61,7 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Polygon *
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Polyline *pl)
+void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -108,7 +108,7 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Polyline
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline3D(Text::StringBuilderUTF8 *sb, Math::Polyline *pl)
+void Math::WKTWriter::AppendPolyline3D(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -175,7 +175,7 @@ Text::CString Math::WKTWriter::GetWriterName()
 	return CSTR("Well Known Text (WKT)");
 }
 
-Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
+Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0)
 	{
@@ -184,11 +184,11 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 	}
 	switch (vec->GetVectorType())
 	{
-	case Math::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::Point:
 		sb->AppendC(UTF8STRC("POINT("));
 		if (vec->HasZ())
 		{
-			Math::PointZ *pt = (Math::PointZ*)vec;
+			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
 			Double x;
 			Double y;
 			Double z;
@@ -201,7 +201,7 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 		}
 		else
 		{
-			Math::Point *pt = (Math::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
 			sb->AppendDouble(coord.x);
@@ -210,14 +210,14 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 		}
 		sb->AppendC(UTF8STRC(")"));
 		return true;
-	case Math::Vector2D::VectorType::Polygon:
+	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("POLYGON"));
-		AppendPolygon(sb, (Math::Polygon*)vec);
+		AppendPolygon(sb, (Math::Geometry::Polygon*)vec);
 		return true;
-	case Math::Vector2D::VectorType::Polyline:
+	case Math::Geometry::Vector2D::VectorType::Polyline:
 		sb->AppendC(UTF8STRC("POLYLINE"));
 		{
-			Math::Polyline *pl = (Math::Polyline*)vec;
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			if (pl->HasZ())
 			{
 				sb->AppendUTF8Char('Z');
@@ -229,10 +229,10 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 			}
 		}
 		return true;
-	case Math::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::Multipolygon:
 		sb->AppendC(UTF8STRC("MULTIPOLYGON"));
 		{
-			Math::MultiPolygon *mpg = (Math::MultiPolygon*)vec;
+			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
 			UOSInt i = 0;
 			UOSInt j = mpg->GetCount();
 			sb->AppendUTF8Char('(');
@@ -248,12 +248,12 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 			sb->AppendUTF8Char(')');
 		}
 		return true;
-	case Math::Vector2D::VectorType::Multipoint:
-	case Math::Vector2D::VectorType::Image:
-	case Math::Vector2D::VectorType::String:
-	case Math::Vector2D::VectorType::Ellipse:
-	case Math::Vector2D::VectorType::PieArea:
-	case Math::Vector2D::VectorType::Unknown:
+	case Math::Geometry::Vector2D::VectorType::Multipoint:
+	case Math::Geometry::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::String:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:
 		sb->AppendC(UTF8STRC("Unsupported vector type"));
 		this->SetLastError(CSTR("Unsupported vector type"));

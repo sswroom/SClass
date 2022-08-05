@@ -726,7 +726,7 @@ UOSInt DB::DBFReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return this->cols[colIndex].colSize;
 }
 
-Math::Vector2D *DB::DBFReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::DBFReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

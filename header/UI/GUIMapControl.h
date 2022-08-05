@@ -2,7 +2,7 @@
 #define _SM_UI_GUIMAPCONTROL
 #include "Map/DrawMapRenderer.h"
 #include "Map/MapView.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Media/ColorManager.h"
 #include "Media/DrawEngine.h"
 #include "Sync/Mutex.h"
@@ -49,7 +49,7 @@ namespace UI
 		Double markerDir;
 		Bool markerHasDir;
 		Bool showMarker;
-		Math::Vector2D *selVec;
+		Math::Geometry::Vector2D *selVec;
 
 		Data::ArrayList<ScaleChangedHandler> scaleChgHdlrs;
 		Data::ArrayList<void *> scaleChgObjs;
@@ -115,7 +115,7 @@ namespace UI
 		void ShowMarkerMapXY(Math::Coord2DDbl mapPos);
 		void ShowMarkerMapXYDir(Math::Coord2DDbl mapPos, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();
-		void SetSelectedVector(Math::Vector2D *vec);
+		void SetSelectedVector(Math::Geometry::Vector2D *vec);
 		void SetVAngle(Double angleRad);
 
 		void HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj);

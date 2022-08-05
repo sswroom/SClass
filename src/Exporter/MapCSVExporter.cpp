@@ -5,7 +5,7 @@
 #include "IO/BufferedOutputStream.h"
 #include "IO/StreamWriter.h"
 #include "Map/GPSTrack.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -171,7 +171,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		j = objIds->GetCount();
 		while (i < j)
 		{
-			Math::Polyline *pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			points = pl->GetPointList(&l);
 			k = 0;
 			while (k < l)

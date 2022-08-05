@@ -28,7 +28,7 @@ namespace DB
 			Data::DateTime *dt;
 			const UTF8Char *str;
 			Double dVal;
-			Math::Vector2D *vec;
+			Math::Geometry::Vector2D *vec;
 			UInt8 *bin;
 		};
 
@@ -53,7 +53,7 @@ namespace DB
 		Bool SetFieldInt64(Field *field, Int64 intValue);
 		Bool SetFieldDouble(Field *field, Double dblValue);
 		Bool SetFieldDate(Field *field, Data::DateTime *dt);
-		Bool SetFieldVector(Field *field, Math::Vector2D *vec);
+		Bool SetFieldVector(Field *field, Math::Geometry::Vector2D *vec);
 		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
 
 		Bool IsFieldNull(Field *field) const;
@@ -61,7 +61,7 @@ namespace DB
 		Int64 GetFieldInt64(Field *field) const;
 		Double GetFieldDouble(Field *field) const;
 		Data::DateTime *GetFieldDate(Field *field) const;
-		Math::Vector2D *GetFieldVector(Field *field) const;
+		Math::Geometry::Vector2D *GetFieldVector(Field *field) const;
 		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize) const;
 
 	public:
@@ -77,7 +77,7 @@ namespace DB
 		Bool SetValueInt64(const UTF8Char *fieldName, Int64 intValue);
 		Bool SetValueDouble(const UTF8Char *fieldName, Double dblValue);
 		Bool SetValueDate(const UTF8Char *fieldName, Data::DateTime *dt);
-		Bool SetValueVector(const UTF8Char *fieldName, Math::Vector2D *vec);
+		Bool SetValueVector(const UTF8Char *fieldName, Math::Geometry::Vector2D *vec);
 		Bool SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOSInt buffSize);
 
 		Bool IsNull(const UTF8Char *fieldName) const;
@@ -85,7 +85,7 @@ namespace DB
 		Int64 GetValueInt64(const UTF8Char *fieldName) const;
 		Double GetValueDouble(const UTF8Char *fieldName) const;
 		Data::DateTime *GetValueDate(const UTF8Char *fieldName) const;
-		Math::Vector2D *GetValueVector(const UTF8Char *fieldName) const;
+		Math::Geometry::Vector2D *GetValueVector(const UTF8Char *fieldName) const;
 		const UInt8 *GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize) const;
 
 		void Commit();

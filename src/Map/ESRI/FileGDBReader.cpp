@@ -4,9 +4,9 @@
 #include "DB/ColDef.h"
 #include "Map/ESRI/FileGDBReader.h"
 #include "Math/Math.h"
-#include "Math/PointM.h"
-#include "Math/PointZM.h"
 #include "Math/WKTWriter.h"
+#include "Math/Geometry/PointM.h"
+#include "Math/Geometry/PointZM.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/XLSUtil.h"
@@ -417,7 +417,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *
 		return true;
 	case 7:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				Math::WKTWriter writer;
@@ -493,7 +493,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		return Text::String::NewP(sbuff, sptr);
 	case 7:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -695,7 +695,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData == 0)
@@ -766,26 +766,26 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 		{
 		case 0:
 			{
-				Math::Point *pt;
-				NEW_CLASS(pt, Math::Point(srid, x, y));
+				Math::Geometry::Point *pt;
+				NEW_CLASS(pt, Math::Geometry::Point(srid, x, y));
 				return pt;
 			}
 		case 0x40:
 			{
-				Math::PointM *pt;
-				NEW_CLASS(pt, Math::PointM(srid, x, y, m));
+				Math::Geometry::PointM *pt;
+				NEW_CLASS(pt, Math::Geometry::PointM(srid, x, y, m));
 				return pt;
 			}
 		case 0x80:
 			{
-				Math::PointZ *pt;
-				NEW_CLASS(pt, Math::PointZ(srid, x, y, z));
+				Math::Geometry::PointZ *pt;
+				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x, y, z));
 				return pt;
 			}
 		case 0xC0:
 			{
-				Math::PointZM *pt;
-				NEW_CLASS(pt, Math::PointZM(srid, x, y, z, m));
+				Math::Geometry::PointZM *pt;
+				NEW_CLASS(pt, Math::Geometry::PointZM(srid, x, y, z, m));
 				return pt;
 			}
 		}
@@ -808,7 +808,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			srid = 0;
 			if (this->tableInfo->csys)
 			{
@@ -819,7 +819,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pl, Math::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
 			parts = pl->GetPtOfstList(&i);
 			points = pl->GetPointList(&i);
 			zArr = pl->GetZList(&i);
@@ -897,13 +897,13 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
-			Math::Polygon *pg;
+			Math::Geometry::Polygon *pg;
 			srid = 0;
 			if (this->tableInfo->csys)
 			{
 				srid = this->tableInfo->csys->GetSRID();
 			}
-			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
 			UOSInt i;
 			UInt32 *parts = pg->GetPtOfstList(&i);
 			Math::Coord2DDbl *points = pg->GetPointList(&i);
@@ -984,7 +984,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			srid = 0;
 			UOSInt i;
 			if (this->tableInfo->csys)
@@ -995,7 +995,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pl, Math::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
 			parts = pl->GetPtOfstList(&i);
 			points = pl->GetPointList(&i);
 			zArr = pl->GetZList(&i);
@@ -1090,7 +1090,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
-			Math::Polygon *pg;
+			Math::Geometry::Polygon *pg;
 			srid = 0;
 			UOSInt i;
 			if (this->tableInfo->csys)
@@ -1101,7 +1101,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pg, Math::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
 			parts = pg->GetPtOfstList(&i);
 			points = pg->GetPointList(&i);
 			zArr = pg->GetZList(&i);
@@ -1256,7 +1256,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item
 		return true;
 	case 7:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				item->SetVectorDirect(vec);
@@ -1355,7 +1355,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		return Data::VariItem::NewI32(this->objectId);
 	case 7:
 		{
-			Math::Vector2D *vec = this->GetVector(colIndex);
+			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
 				Data::VariItem *item = Data::VariItem::NewVector(vec);

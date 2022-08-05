@@ -6,7 +6,7 @@
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "DB/ColDef.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Map/CIPLayer2.h"
 #include "Map/IMapDrawLayer.h"
 #include "Map/ProjectedMapView.h"
@@ -286,8 +286,8 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::
 		if (thisId != lastId)
 		{
 			lastId = thisId;
-			Math::Polygon *pg;
-			pg = (Math::Polygon*)this->GetNewVectorById(sess, thisId);
+			Math::Geometry::Polygon *pg;
+			pg = (Math::Geometry::Polygon*)this->GetNewVectorById(sess, thisId);
 			if (pg)
 			{
 				if (pg->InsideVector(coord))
@@ -485,7 +485,7 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Math::Coord2DDbl pt,
 
 	while (i-- > 0)
 	{
-		Math::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
+		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
 		if (vec)
 		{
 			dist = vec->CalSqrDistance(pt, &currPt);
@@ -533,7 +533,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 
 	while (i-- > 0)
 	{
-		Math::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
+		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
 		dist = vec->CalSqrDistance(pt, &currPt);
 		if (dist <= sqrMaxDist)
 		{
@@ -593,7 +593,7 @@ Map::VectorLayer *Map::IMapDrawLayer::CreateEditableLayer()
 	const UTF8Char **sptrs;
 	Map::VectorLayer *lyr;
 	Data::ArrayListInt64 *objIds;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	void *nameArr;
 	void *sess;
 	UOSInt i;
@@ -749,11 +749,11 @@ void Map::IMapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
 	LIST_FREE_STRING(strArr);
 }
 
-Math::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex)
+Math::Geometry::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex)
 {
 	UTF8Char sbuff[256];
 	Data::ArrayListInt64 *objIds;
-	Math::Vector2D *vec = 0;
+	Math::Geometry::Vector2D *vec = 0;
 
 	NEW_CLASS(objIds, Data::ArrayListInt64());
 	srchInd->SearchString(objIds, srchStr, 10000);
@@ -772,7 +772,7 @@ Math::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd,
 			}
 			else
 			{
-				Math::Vector2D *tmpVec = this->GetNewVectorById(session, objIds->GetItem(i));
+				Math::Geometry::Vector2D *tmpVec = this->GetNewVectorById(session, objIds->GetItem(i));
 				vec->JoinVector(tmpVec);
 				DEL_CLASS(tmpVec);
 			}
@@ -868,34 +868,34 @@ void Map::IMapDrawLayer::SetLabelVisible(Bool labelVisible)
 	}
 }
 
-Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Vector2D::VectorType vtype)
+Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Geometry::Vector2D::VectorType vtype)
 {
 	switch (vtype)
 	{
-	case Math::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::Point:
 		return Map::DRAW_LAYER_POINT;
-	case Math::Vector2D::VectorType::Polygon:
+	case Math::Geometry::Vector2D::VectorType::Polygon:
 		return Map::DRAW_LAYER_POLYGON;
-	case Math::Vector2D::VectorType::Polyline:
+	case Math::Geometry::Vector2D::VectorType::Polyline:
 		return Map::DRAW_LAYER_POLYLINE;
-	case Math::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::Image:
 		return Map::DRAW_LAYER_IMAGE;
-	case Math::Vector2D::VectorType::Multipoint:
-	case Math::Vector2D::VectorType::Multipolygon:
-	case Math::Vector2D::VectorType::String:
-	case Math::Vector2D::VectorType::Ellipse:
-	case Math::Vector2D::VectorType::PieArea:
-	case Math::Vector2D::VectorType::Unknown:
+	case Math::Geometry::Vector2D::VectorType::Multipoint:
+	case Math::Geometry::Vector2D::VectorType::Multipolygon:
+	case Math::Geometry::Vector2D::VectorType::String:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:
 		return Map::DRAW_LAYER_UNKNOWN;
 	}
 }
 
-Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D *vec, Map::DrawLayerType layerType)
+Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Geometry::Vector2D *vec, Map::DrawLayerType layerType)
 {
-	if (layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Vector2D::VectorType::Point)
+	if (layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 	{
-		Math::Point *pt = (Math::Point*)vec;
+		Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 		Map::DrawObjectL *dobj;
 		dobj = MemAlloc(Map::DrawObjectL, 1);
 		dobj->objId = id;
@@ -911,7 +911,7 @@ Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D
 	}
 	else if (layerType == Map::DRAW_LAYER_POLYGON || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Math::PointOfstCollection *ptColl = (Math::PointOfstCollection*)vec;
+		Math::Geometry::PointOfstCollection *ptColl = (Math::Geometry::PointOfstCollection*)vec;
 		UInt32 *ptOfstArr;
 		Math::Coord2DDbl *ptArr;
 		UOSInt cnt;
@@ -1075,14 +1075,14 @@ UOSInt Map::MapLayerReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return 0;
 	if ((UOSInt)this->currIndex >= this->objIds->GetCount() || this->currIndex < 0)
 		return 0;
 	void *sess = this->layer->BeginGetObject();
-	Math::Vector2D *vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
+	Math::Geometry::Vector2D *vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);
 	return vec;
 

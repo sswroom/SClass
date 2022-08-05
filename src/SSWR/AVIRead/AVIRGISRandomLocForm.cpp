@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/RandomMT19937.h"
-#include "Math/Polygon.h"
+#include "Math/Geometry/Polygon.h"
 #include "SSWR/AVIRead/AVIRGISRandomLocForm.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -41,8 +41,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 		me->selPt1 = mapPt1;
 		me->selPt2 = mapPt2;
 
-		Math::Polygon *pg;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		Math::Geometry::Polygon *pg;
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0] = me->selPt1;
@@ -81,8 +81,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 			mapPt2.y = tmpV;
 		}
 
-		Math::Polygon *pg;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		Math::Geometry::Polygon *pg;
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0] = mapPt1;

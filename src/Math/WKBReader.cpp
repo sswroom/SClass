@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "Data/ArrayListA.h"
 #include "Data/ByteTool.h"
-#include "Math/MultiPolygon.h"
-#include "Math/PointZ.h"
-#include "Math/Polyline.h"
-#include "Math/Polygon.h"
 #include "Math/WKBReader.h"
+#include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/Polygon.h"
 
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
@@ -40,7 +40,7 @@ Math::WKBReader::~WKBReader()
 
 }
 
-Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSInt *sizeUsed)
+Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSInt *sizeUsed)
 {
 	if (wkbLen < 5)
 	{
@@ -97,8 +97,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			return 0;
 		else
 		{
-			Math::Point *pt;
-			NEW_CLASS(pt, Math::Point(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
+			Math::Geometry::Point *pt;
+			NEW_CLASS(pt, Math::Geometry::Point(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst + 16;
@@ -111,8 +111,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			return 0;
 		else
 		{
-			Math::PointZ *pt;
-			NEW_CLASS(pt, Math::PointZ(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]), readDouble(&wkb[ofst + 16])));
+			Math::Geometry::PointZ *pt;
+			NEW_CLASS(pt, Math::Geometry::PointZ(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]), readDouble(&wkb[ofst + 16])));
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst + 24;
@@ -125,8 +125,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			return 0;
 		else
 		{
-			Math::Point *pt;
-			NEW_CLASS(pt, Math::Point(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
+			Math::Geometry::Point *pt;
+			NEW_CLASS(pt, Math::Geometry::Point(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst + 24;
@@ -139,8 +139,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			return 0;
 		else
 		{
-			Math::PointZ *pt;
-			NEW_CLASS(pt, Math::PointZ(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]), readDouble(&wkb[ofst + 16])));
+			Math::Geometry::PointZ *pt;
+			NEW_CLASS(pt, Math::Geometry::PointZ(srid, readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]), readDouble(&wkb[ofst + 16])));
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst + 32;
@@ -156,9 +156,9 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 16 > wkbLen))
 				return 0;
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Polyline(srid, 1, numPoints, false, false));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, false, false));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			i = 0;
 			while (i < numPoints)
@@ -183,9 +183,9 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
 				return 0;
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Polyline(srid, 1, numPoints, true, false));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, true, false));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			Double *zArr = pl->GetZList(&i);
 			i = 0;
@@ -212,9 +212,9 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
 				return 0;
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Polyline(srid, 1, numPoints, false, true));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, false, true));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			Double *mArr = pl->GetMList(&i);
 			i = 0;
@@ -241,9 +241,9 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 32 > wkbLen))
 				return 0;
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			UOSInt i;
-			NEW_CLASS(pl, Math::Polyline(srid, 1, numPoints, true, true));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, numPoints, true, true));
 			Math::Coord2DDbl *points = pl->GetPointList(&i);
 			Double *zArr = pl->GetZList(&i);
 			Double *mArr = pl->GetMList(&i);
@@ -302,8 +302,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 				}
 				i++;
 			}
-			Math::Polygon *pg;
-			NEW_CLASS(pg, Math::Polygon(srid, numParts, points.GetCount(), false, false));
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), false, false));
 			UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(&i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
@@ -358,8 +358,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 				}
 				i++;
 			}
-			Math::Polygon *pg;
-			NEW_CLASS(pg, Math::Polygon(srid, numParts, points.GetCount(), true, false));
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), true, false));
 			UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(&i);
 			Double *zArr = pg->GetZList(&i);
@@ -416,8 +416,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 				}
 				i++;
 			}
-			Math::Polygon *pg;
-			NEW_CLASS(pg, Math::Polygon(srid, numParts, points.GetCount(), false, true));
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), false, true));
 			UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(&i);
 			Double *mArr = pg->GetMList(&i);
@@ -476,8 +476,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 				}
 				i++;
 			}
-			Math::Polygon *pg;
-			NEW_CLASS(pg, Math::Polygon(srid, numParts, points.GetCount(), true, true));
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), true, true));
 			UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(&i);
 			Double *zArr = pg->GetZList(&i);
@@ -495,8 +495,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 		}
 	case 6: //MultiPolygon
 	case 1006: //MultiPolygonZ
-	case 2006: //MultiPolygonZ
-	case 3006: //MultiPolygonZ
+	case 2006: //MultiPolygonM
+	case 3006: //MultiPolygonZM
 	case 0x80000006:
 	case 0x40000006:
 	case 0xC0000006:
@@ -508,9 +508,22 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			Math::Vector2D *vec;
-			Math::MultiPolygon *mpg;
-			NEW_CLASS(mpg, Math::MultiPolygon(srid));
+			Math::Geometry::Vector2D *vec;
+			Math::Geometry::MultiPolygon *mpg;
+			Bool hasZ;
+			Bool hasM;
+			if (geomType & 0xC0000000)
+			{
+				hasZ = (geomType & 0x80000000) != 0;
+				hasM = (geomType & 0x40000000) != 0;
+			}
+			else
+			{
+				UInt32 t = geomType / 1000;
+				hasZ = (t & 1) != 0;
+				hasM = (t & 2) != 0;
+			}
+			NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, hasZ, hasM));
 			i = 0;
 			while (i < nPolygon)
 			{
@@ -520,7 +533,7 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 					DEL_CLASS(mpg);
 					return 0;
 				}
-				else if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
+				else if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
 				{
 					DEL_CLASS(vec);
 					DEL_CLASS(mpg);
@@ -528,7 +541,7 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 				}
 				else
 				{
-					mpg->AddGeometry((Math::Polygon*)vec);
+					mpg->AddGeometry((Math::Geometry::Polygon*)vec);
 					ofst += thisSize;
 				}
 				i++;
@@ -581,8 +594,8 @@ Math::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, UOSIn
 				}
 				i++;
 			}
-			Math::Polyline *pl;
-			NEW_CLASS(pl, Math::Polyline(srid, numParts, points.GetCount(), true, false));
+			Math::Geometry::Polyline *pl;
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, numParts, points.GetCount(), true, false));
 			UInt32 *ptOfsts = pl->GetPtOfstList(&j);
 			Math::Coord2DDbl *pointArr = pl->GetPointList(&i);
 			Double *zArr = pl->GetZList(&i);

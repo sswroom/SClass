@@ -444,7 +444,7 @@ UOSInt DB::SortableDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *DB::SortableDBReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::SortableDBReader::GetVector(UOSInt colIndex)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::Vector)

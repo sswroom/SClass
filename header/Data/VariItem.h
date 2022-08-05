@@ -4,7 +4,7 @@
 #include "Data/Timestamp.h"
 #include "Data/ReadonlyArray.h"
 #include "Data/UUID.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -53,7 +53,7 @@ namespace Data
 			UInt64 u64;
 			Bool boolean;
 			Data::ReadonlyArray<UInt8> *byteArr;
-			Math::Vector2D *vector;
+			Math::Geometry::Vector2D *vector;
 			Data::UUID *uuid;
 			struct { const UTF8Char *v; UOSInt leng; } cstr;
 			UInt8 buff[16];
@@ -138,10 +138,10 @@ namespace Data
 		Data::DateTime *GetAsNewDate() const;
 		Data::Timestamp GetAsTimestamp() const;
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr() const;
-		Math::Vector2D *GetAsNewVector() const;
+		Math::Geometry::Vector2D *GetAsNewVector() const;
 		Data::UUID *GetAsNewUUID() const;
 		Data::ReadonlyArray<UInt8> *GetAndRemoveByteArr();
-		Math::Vector2D *GetAndRemoveVector();
+		Math::Geometry::Vector2D *GetAndRemoveVector();
 		Data::UUID *GetAndRemoveUUID();
 		void *GetAsUnk() const;
 
@@ -164,9 +164,9 @@ namespace Data
 		void SetBool(Bool val);
 		void SetByteArr(const UInt8 *arr, UOSInt cnt);
 		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
-		void SetVector(Math::Vector2D *vec);
+		void SetVector(Math::Geometry::Vector2D *vec);
 		void SetUUID(Data::UUID *uuid);
-		void SetVectorDirect(Math::Vector2D *vec);
+		void SetVectorDirect(Math::Geometry::Vector2D *vec);
 		void SetUUIDDirect(Data::UUID *uuid);
 		void Set(VariItem *item);
 
@@ -191,10 +191,10 @@ namespace Data
 		static VariItem *NewBool(Bool val);
 		static VariItem *NewByteArr(const UInt8 *arr, UOSInt cnt);
 		static VariItem *NewByteArr(Data::ReadonlyArray<UInt8> *arr);
-		static VariItem *NewVector(Math::Vector2D *vec);
+		static VariItem *NewVector(Math::Geometry::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
 		static VariItem *NewDateDirect(Data::DateTime *dt);
-		static VariItem *NewVectorDirect(Math::Vector2D *vec);
+		static VariItem *NewVectorDirect(Math::Geometry::Vector2D *vec);
 		static VariItem *NewUUIDDirect(Data::UUID *uuid);
 		static VariItem *NewFromPtr(void *ptr, ItemType itemType);
 		

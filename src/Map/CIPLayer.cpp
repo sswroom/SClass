@@ -771,7 +771,7 @@ Map::DrawObjectL *Map::CIPLayer::GetObjectByIdN(void *session, Int64 id)
 	return obj;
 }
 
-Math::Vector2D *Map::CIPLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::CIPLayer::GetNewVectorById(void *session, Int64 id)
 {
 	return 0;
 }

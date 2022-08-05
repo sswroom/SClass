@@ -51,8 +51,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(void *userObj,
 				Double dist = me->csys->CalSurfaceDistanceXY(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
 				me->dispDist = dist;
 				me->UpdateDistDisp();
-				Math::Polyline *pl;
-				NEW_CLASS(pl, Math::Polyline(me->csys->GetSRID(), pts, 2, false, false));
+				Math::Geometry::Polyline *pl;
+				NEW_CLASS(pl, Math::Geometry::Polyline(me->csys->GetSRID(), pts, 2, false, false));
 				me->navi->SetSelectedVector(pl);
 				me->lastMapPos = Math::Coord2DDbl(0, 0);
 			}
@@ -81,11 +81,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj,
 
 		if (me->radTypePath->IsSelected())
 		{
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			Math::Coord2DDbl *pts;
 			UOSInt i;
 			UOSInt j;
-			NEW_CLASS(pl, Math::Polyline(me->csys->GetSRID(), 1, (me->ptList->GetCount() >> 1) + 1, false, false));
+			NEW_CLASS(pl, Math::Geometry::Polyline(me->csys->GetSRID(), 1, (me->ptList->GetCount() >> 1) + 1, false, false));
 			pts = pl->GetPointList(&j);
 			i = 0;
 			j = me->ptList->GetCount() >> 1;
@@ -100,11 +100,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj,
 		}
 		else
 		{
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 			Math::Coord2DDbl pts[2];
 			pts[0] = mapPt;
 			pts[1] = me->lastMapPos;
-			NEW_CLASS(pl, Math::Polyline(me->csys->GetSRID(), pts, 2, false, false));
+			NEW_CLASS(pl, Math::Geometry::Polyline(me->csys->GetSRID(), pts, 2, false, false));
 			me->navi->SetSelectedVector(pl);
 		}
 	}

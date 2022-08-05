@@ -12,7 +12,7 @@
 #include "Math/Math.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/UTMGridConvertDbl.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 				Math::Coord2DDbl pt2;
 				Map::VectorLayer *lyr;
 				Media::SharedImage *simg;
-				Math::VectorImage *vimg;
+				Math::Geometry::VectorImage *vimg;
 				Media::Image *stimg;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
-				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i], 0, 0));
+				NEW_CLASS(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i], 0, 0));
 				DEL_CLASS(simg);
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
@@ -1601,7 +1601,7 @@ void SSWR::AVIRead::AVIRGISForm::HideMarker()
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Math::Vector2D *vec)
+void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Math::Geometry::Vector2D *vec)
 {
 	this->mapCtrl->SetSelectedVector(vec);
 }

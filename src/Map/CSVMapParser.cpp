@@ -2,7 +2,7 @@
 #include "IO/StreamReader.h"
 #include "Map/CSVMapParser.h"
 #include "Map/VectorLayer.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
 Map::IMapDrawLayer *Map::CSVMapParser::ParseAsPoint(IO::Stream *stm, UInt32 codePage, Text::CString layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, Math::CoordinateSystem *csys)
@@ -53,7 +53,7 @@ Map::IMapDrawLayer *Map::CSVMapParser::ParseAsPoint(IO::Stream *stm, UInt32 code
 	if (latIndex != INVALID_INDEX && lonIndex != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
-		Math::Point *pt;
+		Math::Geometry::Point *pt;
 		UOSInt i;
 
 		tmpcArr2 = MemAlloc(const UTF8Char*, totalCnt + 1);
@@ -69,7 +69,7 @@ Map::IMapDrawLayer *Map::CSVMapParser::ParseAsPoint(IO::Stream *stm, UInt32 code
 		{
 			if (totalCnt == Text::StrCSVSplit(tmpUArr2, totalCnt + 1, sbuff))
 			{
-				NEW_CLASS(pt, Math::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonIndex]), Text::StrToDouble(tmpUArr2[latIndex])));
+				NEW_CLASS(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonIndex]), Text::StrToDouble(tmpUArr2[latIndex])));
 				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
 			}
 		}		

@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Point.h"
-#include "Math/PointZ.h"
 #include "Math/WKTReader.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/PointZ.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -62,7 +62,7 @@ Math::WKTReader::~WKTReader()
 	SDEL_TEXT(this->lastError);
 }
 
-Math::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
+Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 {
 	if (Text::StrStartsWith(wkt, (const UTF8Char*)"POINT"))
 	{
@@ -92,8 +92,8 @@ Math::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		if (wkt[0] == ')' && wkt[1] == 0)
 		{
-			Math::Point *pt;
-			NEW_CLASS(pt, Math::Point(this->srid, x, y));
+			Math::Geometry::Point *pt;
+			NEW_CLASS(pt, Math::Geometry::Point(this->srid, x, y));
 			return pt;
 		}
 		else if (wkt[0] != ' ')
@@ -108,8 +108,8 @@ Math::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		if (wkt[0] == ')' && wkt[1] == 0)
 		{
-			Math::PointZ *pt;
-			NEW_CLASS(pt, Math::PointZ(this->srid, x, y, z));
+			Math::Geometry::PointZ *pt;
+			NEW_CLASS(pt, Math::Geometry::PointZ(this->srid, x, y, z));
 			return pt;
 		}
 		return 0;

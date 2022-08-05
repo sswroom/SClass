@@ -154,7 +154,7 @@ OSInt Data::DataComparer::Compare(const UInt8 *val1, UOSInt cnt1, const UInt8 *v
 	}
 }
 
-OSInt Data::DataComparer::Compare(Math::Vector2D *val1, Math::Vector2D *val2)
+OSInt Data::DataComparer::Compare(Math::Geometry::Vector2D *val1, Math::Geometry::Vector2D *val2)
 {
 	OSInt v1 = (OSInt)val1;
 	OSInt v2 = (OSInt)val2;

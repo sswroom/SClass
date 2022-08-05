@@ -45,7 +45,7 @@ namespace SSWR
 			IMapNavigator *navi;
 			Map::IMapDrawLayer *lyr;
 			Math::Coord2D<OSInt> downPos;
-			Math::Vector2D *currVec;
+			Math::Geometry::Vector2D *currVec;
 			Math::VectorTextWriterList writerList;
 
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);

@@ -409,14 +409,14 @@ Map::DrawObjectL *Map::MapLayerCollection::GetNewObjectById(void *session, Int64
 	return dobj;
 }
 
-Math::Vector2D *Map::MapLayerCollection::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt k;
 	UOSInt l;
 	Int64 currId = 0;
 	Int64 maxId;
 	Map::IMapDrawLayer *lyr;
-	Math::Vector2D *vec = 0;
+	Math::Geometry::Vector2D *vec = 0;
 	Sync::RWMutexUsage mutUsage(&this->mut, false);
 	k = 0;
 	l = this->layerList.GetCount();

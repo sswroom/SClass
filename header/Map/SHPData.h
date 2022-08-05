@@ -17,7 +17,7 @@ namespace Map
 			Double y1;
 			Double x2;
 			Double y2;
-			Math::Vector2D *vec;
+			Math::Geometry::Vector2D *vec;
 			UInt32 nPoint;
 			UInt32 nPtOfst;
 			UInt32 ofst;
@@ -62,7 +62,7 @@ namespace Map
 		virtual void *BeginGetObject();
 		virtual void EndGetObject(void *session);
 		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id);
-		virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id);
+		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names); // no need to release

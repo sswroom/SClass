@@ -99,7 +99,7 @@ Bool Data::Class::AddField(Text::CString name, Data::ReadonlyArray<UInt8> **val)
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Math::Vector2D **val)
+Bool Data::Class::AddField(Text::CString name, Math::Geometry::Vector2D **val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector) != 0;
 }

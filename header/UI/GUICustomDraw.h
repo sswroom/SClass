@@ -3,7 +3,7 @@
 #include "IO/Library.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/MapView.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Media/ColorManager.h"
 #include "Media/DrawEngine.h"
 #include "Sync/Mutex.h"

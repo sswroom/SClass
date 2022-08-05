@@ -722,7 +722,7 @@ UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
 {
 	return 0;
 }

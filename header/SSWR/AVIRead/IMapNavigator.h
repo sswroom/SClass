@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_IMAPNAVIGATOR
 #include "Map/IMapDrawLayer.h"
 #include "Math/Coord2DDbl.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "UI/GUIControl.h"
 
 namespace SSWR
@@ -21,7 +21,7 @@ namespace SSWR
 			virtual void ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit) = 0;
 			virtual void HideMarker() = 0;
 			virtual void AddLayer(Map::IMapDrawLayer *layer) = 0;
-			virtual void SetSelectedVector(Math::Vector2D *vec) = 0;
+			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec) = 0;
 			virtual void RedrawMap() = 0;
 			virtual Math::CoordinateSystem *GetCoordinateSystem() = 0;
 

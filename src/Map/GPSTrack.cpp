@@ -5,8 +5,8 @@
 #include "Map/GPSTrack.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/PointZ.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polyline.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -454,7 +454,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	}
 }
 
-Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;
@@ -479,9 +479,9 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			lastAlt = 0;
 			if (this->hasAltitude)
 			{
-				Math::Polyline *pl;
+				Math::Geometry::Polyline *pl;
 
-				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs.GetCount(), true, false));
+				NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, j = this->currRecs.GetCount(), true, false));
 				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				altList = pl->GetZList(&j);
@@ -507,8 +507,8 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			}
 			else
 			{
-				Math::Polyline *pl;
-				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs.GetCount(), false, false));
+				Math::Geometry::Polyline *pl;
+				NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, j = this->currRecs.GetCount(), false, false));
 				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				i = 0;
@@ -545,9 +545,9 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 		track = this->currTracks.GetItem((UOSInt)id);
 		if (this->hasAltitude)
 		{
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 
-			NEW_CLASS(pl, Math::Polyline(4326, 1, track->nRecords, true, false));
+			NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, track->nRecords, true, false));
 			pl->GetPtOfstList(&i)[0] = 0;
 			ptPtr = pl->GetPointList(&j);
 			altList = pl->GetZList(&j);
@@ -572,9 +572,9 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 		}
 		else
 		{
-			Math::Polyline *pl;
+			Math::Geometry::Polyline *pl;
 
-			NEW_CLASS(pl, Math::Polyline(4326, 1, track->nRecords, false, false));
+			NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, track->nRecords, false, false));
 			pl->GetPtOfstList(&i)[0] = 0;
 			ptPtr = pl->GetPointList(&j);
 			i = 0;
@@ -1434,20 +1434,20 @@ UOSInt Map::GPSDataReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	return 0;
 }
 
-Math::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
+Math::Geometry::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
 {
 	if (this->currRec == 0)
 		return 0;
 	if (colIndex != 1)
 		return 0;
-	Math::Point *pt;
+	Math::Geometry::Point *pt;
 	if (this->gps->GetHasAltitude())
 	{
-		NEW_CLASS(pt, Math::PointZ(4326, this->currRec->pos.x, this->currRec->pos.y, this->currRec->altitude));
+		NEW_CLASS(pt, Math::Geometry::PointZ(4326, this->currRec->pos.x, this->currRec->pos.y, this->currRec->altitude));
 	}
 	else
 	{
-		NEW_CLASS(pt, Math::Point(4326, this->currRec->pos.x, this->currRec->pos.y));
+		NEW_CLASS(pt, Math::Geometry::Point(4326, this->currRec->pos.x, this->currRec->pos.y));
 	}
 	return pt;
 }

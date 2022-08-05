@@ -39,7 +39,7 @@ namespace Data
 		Bool AddField(Text::CString name, Data::DateTime **val);
 		Bool AddField(Text::CString name, Bool *val);
 		Bool AddField(Text::CString name, Data::ReadonlyArray<UInt8> **val);
-		Bool AddField(Text::CString name, Math::Vector2D **val);
+		Bool AddField(Text::CString name, Math::Geometry::Vector2D **val);
 		Bool AddField(Text::CString name, Data::UUID **val);
 
 		UOSInt GetFieldCount();

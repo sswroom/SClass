@@ -62,7 +62,7 @@ namespace DB
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
-		virtual Math::Vector2D *GetVector(UOSInt colIndex);
+		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
 
 //		virtual WChar *GetName(OSInt colIndex);

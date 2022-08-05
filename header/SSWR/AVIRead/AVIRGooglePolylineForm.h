@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGOOGLEPOLYLINEFORM
 #define _SM_SSWR_AVIREAD_AVIRGOOGLEPOLYLINEFORM
-#include "Math/Polyline.h"
+#include "Math/Geometry/Polyline.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -20,7 +20,7 @@ namespace SSWR
 			UI::GUITextBox *txtPolylineText;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
-			Math::Polyline *polyline;
+			Math::Geometry::Polyline *polyline;
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
@@ -30,8 +30,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Math::Polyline *GetPolyline();
+			Math::Geometry::Polyline *GetPolyline();
 		};
-	};
-};
+	}
+}
 #endif

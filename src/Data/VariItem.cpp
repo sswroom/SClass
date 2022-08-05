@@ -724,7 +724,7 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr() const
 	return this->val.byteArr->Clone();
 }
 
-Math::Vector2D *Data::VariItem::GetAsNewVector() const
+Math::Geometry::Vector2D *Data::VariItem::GetAsNewVector() const
 {
 	if (this->itemType == ItemType::Vector)
 	{
@@ -758,7 +758,7 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAndRemoveByteArr()
 	return this->val.byteArr;
 }
 
-Math::Vector2D *Data::VariItem::GetAndRemoveVector()
+Math::Geometry::Vector2D *Data::VariItem::GetAndRemoveVector()
 {
 	if (this->itemType != ItemType::Vector)
 		return 0;
@@ -955,7 +955,7 @@ void Data::VariItem::SetByteArr(Data::ReadonlyArray<UInt8> *arr)
 	this->itemType = ItemType::ByteArr;
 }
 
-void Data::VariItem::SetVector(Math::Vector2D *vec)
+void Data::VariItem::SetVector(Math::Geometry::Vector2D *vec)
 {
 	this->FreeItem();
 	this->val.vector = vec->Clone();
@@ -969,7 +969,7 @@ void Data::VariItem::SetUUID(Data::UUID *uuid)
 	this->itemType = ItemType::UUID;
 }
 
-void Data::VariItem::SetVectorDirect(Math::Vector2D *vec)
+void Data::VariItem::SetVectorDirect(Math::Geometry::Vector2D *vec)
 {
 	this->FreeItem();
 	this->val.vector = vec;
@@ -1373,7 +1373,7 @@ Data::VariItem *Data::VariItem::NewByteArr(Data::ReadonlyArray<UInt8> *arr)
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewVector(Math::Vector2D *vec)
+Data::VariItem *Data::VariItem::NewVector(Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0) return NewNull();
 	ItemValue ival;
@@ -1403,7 +1403,7 @@ Data::VariItem *Data::VariItem::NewDateDirect(Data::DateTime *dt)
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewVectorDirect(Math::Vector2D *vec)
+Data::VariItem *Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0) return NewNull();
 	ItemValue ival;
@@ -1460,7 +1460,7 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 	case ItemType::ByteArr:
 		return NewByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
 	case ItemType::Vector:
-		return NewVector(*(Math::Vector2D**)ptr);
+		return NewVector(*(Math::Geometry::Vector2D**)ptr);
 	case ItemType::UUID:
 		return NewUUID(*(Data::UUID**)ptr);
 	case ItemType::Unknown:
@@ -1525,7 +1525,7 @@ void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemTy
 		item->SetByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
 		return;
 	case ItemType::Vector:
-		item->SetVector(*(Math::Vector2D**)ptr);
+		item->SetVector(*(Math::Geometry::Vector2D**)ptr);
 		return;
 	case ItemType::UUID:
 		item->SetUUID(*(Data::UUID**)ptr);
@@ -1630,7 +1630,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 		*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
 		break;
 	case ItemType::Vector:
-		*(Math::Vector2D**)ptr = item->GetAsNewVector();
+		*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector();
 		break;
 	case ItemType::UUID:
 		*(Data::UUID**)ptr = item->GetAsNewUUID();
@@ -1746,11 +1746,11 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 	case ItemType::Vector:
 		if (item->GetItemType() == ItemType::Vector)
 		{
-			*(Math::Vector2D**)ptr = item->GetAndRemoveVector();
+			*(Math::Geometry::Vector2D**)ptr = item->GetAndRemoveVector();
 		}
 		else
 		{
-			*(Math::Vector2D**)ptr = item->GetAsNewVector();
+			*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector();
 		}
 		break;
 	case ItemType::UUID:
@@ -1850,8 +1850,8 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		}
 	case ItemType::Vector:
 		{
-			Math::Vector2D *val1 = *(Math::Vector2D**)ptr1;
-			Math::Vector2D *val2 = *(Math::Vector2D**)ptr2;
+			Math::Geometry::Vector2D *val1 = *(Math::Geometry::Vector2D**)ptr1;
+			Math::Geometry::Vector2D *val2 = *(Math::Geometry::Vector2D**)ptr2;
 			if (val1 == val2)
 			{
 				return true;

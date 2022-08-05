@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Map/GoogleMap/GoogleMapsUtil.h"
 
-Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char *polylineText)
+Math::Geometry::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char *polylineText)
 {
 	Data::ArrayList<Int32> pointList;
 	Int32 lastX;
@@ -11,7 +11,7 @@ Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char
 	Int32 v2;
 	UTF8Char c;
 	Bool isX;
-	Math::Polyline *pl;
+	Math::Geometry::Polyline *pl;
 	UOSInt i;
 	UOSInt j;
 	Math::Coord2DDbl *ptList;
@@ -61,7 +61,7 @@ Math::Polyline *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char
 	if (isX)
 		return 0;
 	j = pointList.GetCount() >> 1;
-	NEW_CLASS(pl, Math::Polyline(4326, 1, j, false, false));
+	NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, j, false, false));
 	ptList = pl->GetPointList(&i);
 	i = 0;
 	while (i < j)

@@ -3,8 +3,8 @@
 #include "DB/ColDef.h"
 #include "Map/VectorLayer.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 
 const UTF8Char **Map::VectorLayer::CopyStrs(const UTF8Char **strs)
@@ -184,7 +184,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Vector2D::VectorType::Unknown;
+	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -213,7 +213,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Vector2D::VectorType::Unknown;
+	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -242,7 +242,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Vector2D::VectorType::Unknown;
+	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -274,7 +274,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Vector2D::VectorType::Unknown;
+	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -358,19 +358,19 @@ void Map::VectorLayer::SetMixedType(DrawLayerType mixedType)
 {
 	if (mixedType == Map::DRAW_LAYER_POLYLINE || mixedType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		this->mixedType = Math::Vector2D::VectorType::Polyline;
+		this->mixedType = Math::Geometry::Vector2D::VectorType::Polyline;
 	}
 	else if (mixedType == Map::DRAW_LAYER_POLYGON)
 	{
-		this->mixedType = Math::Vector2D::VectorType::Polygon;
+		this->mixedType = Math::Geometry::Vector2D::VectorType::Polygon;
 	}
 	else if (mixedType == Map::DRAW_LAYER_POINT || mixedType == Map::DRAW_LAYER_POINT3D)
 	{
-		this->mixedType = Math::Vector2D::VectorType::Point;
+		this->mixedType = Math::Geometry::Vector2D::VectorType::Point;
 	}
 	else
 	{
-		this->mixedType = Math::Vector2D::VectorType::Unknown;
+		this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
 	}
 }
 
@@ -380,7 +380,7 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 	UOSInt j = this->vectorList.GetCount();
 	if (this->layerType == Map::DRAW_LAYER_MIXED)
 	{
-		Math::Vector2D *vec;
+		Math::Geometry::Vector2D *vec;
 		UOSInt ret = 0;
 		while (i < j)
 		{
@@ -414,7 +414,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 {
 	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
-	Math::Vector2D *vec;
+	Math::Geometry::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
 	if (this->layerType == Map::DRAW_LAYER_MIXED)
@@ -582,12 +582,12 @@ void Map::VectorLayer::EndGetObject(void *session)
 Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 {
 	Map::DrawObjectL *obj;
-	Math::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
+	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
 	if (vec)
 	{
 		obj = MemAlloc(Map::DrawObjectL, 1);
 		obj->objId = id;
-		if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
+		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
 			obj->nPtOfst = 0;
 			obj->ptOfstArr = 0;
@@ -595,12 +595,12 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 			obj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
 			obj->pointArr[0] = vec->GetCenter();
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
 			UInt32 *ptOfsts;
 			Math::Coord2DDbl *points;
 			UOSInt i;
-			Math::PointOfstCollection *pts = (Math::PointOfstCollection*)vec;
+			Math::Geometry::PointOfstCollection *pts = (Math::Geometry::PointOfstCollection*)vec;
 			ptOfsts = pts->GetPtOfstList(&i);
 			obj->nPtOfst = (UInt32)i;
 			obj->ptOfstArr = MemAlloc(UInt32, i);
@@ -610,11 +610,11 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);
 			MemCopyNO(obj->pointArr, points, i * 16);
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Multipoint)
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Multipoint)
 		{
 			Math::Coord2DDbl *points;
 			UOSInt i;
-			Math::PointCollection *pts = (Math::PointCollection*)vec;
+			Math::Geometry::PointCollection *pts = (Math::Geometry::PointCollection*)vec;
 			obj->nPtOfst = (UInt32)1;
 			obj->ptOfstArr = MemAlloc(UInt32, 1);
 			obj->ptOfstArr[0] = 0;
@@ -633,9 +633,9 @@ Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 	}
 }
 
-Math::Vector2D *Map::VectorLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(void *session, Int64 id)
 {
-	Math::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
+	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
 	if (vec)
 	{
 		return vec->Clone();
@@ -660,32 +660,32 @@ Map::IMapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
 	return Map::IMapDrawLayer::OC_VECTOR_LAYER;
 }
 
-Bool Map::VectorLayer::VectorValid(Math::Vector2D *vec)
+Bool Map::VectorLayer::VectorValid(Math::Geometry::Vector2D *vec)
 {
 	switch (this->layerType)
 	{
 	case Map::DRAW_LAYER_POINT:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point)
+		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Point)
 			return false;
 		break;
 	case Map::DRAW_LAYER_POINT3D:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->HasZ())
+		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Point || !vec->HasZ())
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYLINE:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline)
+		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polyline)
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYLINE3D:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->HasZ())
+		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polyline || !vec->HasZ())
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYGON:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
+		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
 			return false;
 		break;
 	case Map::DRAW_LAYER_IMAGE:
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Image)
+		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Image)
 			return false;
 		break;
 	case Map::DRAW_LAYER_MIXED:
@@ -697,7 +697,7 @@ Bool Map::VectorLayer::VectorValid(Math::Vector2D *vec)
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
+Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::String **strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -743,7 +743,7 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::PString *strs)
+Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::PString *strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -789,7 +789,7 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::PString *strs)
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, const UTF8Char **strs)
+Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, const UTF8Char **strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -845,8 +845,8 @@ Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 	if (objId < 0)
 		return false;
 
-	Math::Polyline *pl = (Math::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-	Math::Polyline *pl2;
+	Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+	Math::Geometry::Polyline *pl2;
 	if ((pl2 = pl->SplitByPoint(pt)) != 0)
 	{
 		this->vectorList.Add(pl2);
@@ -861,7 +861,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	if (this->layerType != Map::DRAW_LAYER_POLYLINE)
 		return;
 	const UTF8Char **tmpStr;
-	Math::Polyline *tmpPL;
+	Math::Geometry::Polyline *tmpPL;
 
 	Math::Coord2DDbl pt;
 	Math::Coord2DDbl nearPt;
@@ -887,7 +887,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 		while (i-- > 0)
 		{
 			tmpStr = this->strList.RemoveAt(i);
-			tmpPL = (Math::Polyline*)this->vectorList.RemoveAt(i);
+			tmpPL = (Math::Geometry::Polyline*)this->vectorList.RemoveAt(i);
 
 			points = tmpPL->GetPointList(&nPoints);
 			pt = *points;
@@ -900,8 +900,8 @@ void Map::VectorLayer::OptimizePolylinePath()
 				niy = (Int32)(nearPt.y * 200000.0);
 				if (ix == nix && iy == niy)
 				{
-					Math::Polyline *pl = (Math::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-					Math::Polyline *pl2;
+					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+					Math::Geometry::Polyline *pl2;
 					if ((pl2 = pl->SplitByPoint(pt)) != 0)
 					{
 						this->vectorList.Add(pl2);
@@ -921,8 +921,8 @@ void Map::VectorLayer::OptimizePolylinePath()
 				niy = (Int32)(nearPt.y * 200000.0);
 				if (ix == nix && iy == niy)
 				{
-					Math::Polyline *pl = (Math::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-					Math::Polyline *pl2;
+					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+					Math::Geometry::Polyline *pl2;
 					if ((pl2 = pl->SplitByPoint(pt)) != 0)
 					{
 						this->vectorList.Add(pl2);
@@ -949,7 +949,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	}*/
 }
 
-void Map::VectorLayer::ReplaceVector(Int64 id, Math::Vector2D *vec)
+void Map::VectorLayer::ReplaceVector(Int64 id, Math::Geometry::Vector2D *vec)
 {
 	if (this->vectorList.GetCount() <= (UInt64)id)
 	{
@@ -957,7 +957,7 @@ void Map::VectorLayer::ReplaceVector(Int64 id, Math::Vector2D *vec)
 	}
 	else
 	{
-		Math::Vector2D *v = this->vectorList.GetItem((UOSInt)id);
+		Math::Geometry::Vector2D *v = this->vectorList.GetItem((UOSInt)id);
 		this->vectorList.SetItem((UOSInt)id, vec);
 		DEL_CLASS(v);
 	}
@@ -973,7 +973,7 @@ void Map::VectorLayer::ConvCoordinateSystem(Math::CoordinateSystem *csys)
 	}
 	else
 	{
-		Math::Vector2D *v;
+		Math::Geometry::Vector2D *v;
 		UOSInt i;
 		i = this->vectorList.GetCount();
 		while (i-- > 0)

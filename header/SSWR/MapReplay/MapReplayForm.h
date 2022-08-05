@@ -54,7 +54,7 @@ namespace SSWR
 			virtual void ShowMarker(Double lat, Double lon);
 			virtual void HideMarker();
 			virtual void AddLayer(Map::IMapDrawLayer *layer);
-			virtual void SetSelectedVector(Math::Vector2D *vec);
+			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec);
 
 			virtual void SetKMapEnv(const WChar *kmapIP, Int32 kmapPort, Int32 lcid);
 			virtual Bool HasKMap();

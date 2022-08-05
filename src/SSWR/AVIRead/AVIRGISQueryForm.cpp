@@ -52,7 +52,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
-			Math::Vector2D *vec = me->lyr->GetNewVectorById(sess, id);
+			Math::Geometry::Vector2D *vec = me->lyr->GetNewVectorById(sess, id);
 			Math::RectAreaDbl bounds;
 			if (vec && csys && lyrCSys && !csys->Equals(lyrCSys))
 			{

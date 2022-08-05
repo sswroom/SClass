@@ -425,13 +425,13 @@ Map::DrawObjectL *Map::ReloadableMapLayer::GetNewObjectById(void *session, Int64
 	return dobj;
 }
 
-Math::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
-	Math::Vector2D *vec = 0;
+	Math::Geometry::Vector2D *vec = 0;
 	i = 0;
 	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
 	j = this->innerLayers.GetCount();

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Math/Polygon.h"
+#include "Math/Geometry/Polygon.h"
 #include "SSWR/AVIRead/AVIRGISTileDownloadForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/Thread.h"
@@ -44,8 +44,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 		me->sel1 = mapPt1;
 		me->sel2 = mapPt2;
 
-		Math::Polygon *pg;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		Math::Geometry::Polygon *pg;
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = me->sel1.x;
@@ -85,8 +85,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 			mapPt2.y = tmpV;
 		}
 
-		Math::Polygon *pg;
-		NEW_CLASS(pg, Math::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		Math::Geometry::Polygon *pg;
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
 		UOSInt nPoints;
 		Math::Coord2DDbl *ptList = pg->GetPointList(&nPoints);
 		ptList[0].x = mapPt1.x;

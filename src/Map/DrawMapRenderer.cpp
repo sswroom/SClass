@@ -3,8 +3,8 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Map/DrawMapRenderer.h"
 #include "Math/Math.h"
-#include "Math/Geometry.h"
-#include "Math/VectorImage.h"
+#include "Math/GeometryTool.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Text/MyString.h"
 
@@ -500,9 +500,9 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 
 			Math::Coord2DDbl *tmpPts;
 			tmpPts = MemAllocA(Math::Coord2DDbl, nPoints << 1);
-			outPtCnt = Math::Geometry::BoundPolygonY(points, nPoints, tmpPts, top, bottom, {0, 0});
+			outPtCnt = Math::GeometryTool::BoundPolygonY(points, nPoints, tmpPts, top, bottom, {0, 0});
 			outPts = MemAllocA(Math::Coord2DDbl, nPoints << 1);
-			outPtCnt = Math::Geometry::BoundPolygonX(tmpPts, outPtCnt, outPts, left, right, {0, 0});
+			outPtCnt = Math::GeometryTool::BoundPolygonX(tmpPts, outPtCnt, outPts, left, right, {0, 0});
 			MemFreeA(tmpPts);
 
 			i = 0;
@@ -1257,8 +1257,8 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 OSInt Map::DrawMapRenderer::VImgCompare(void *obj1, void *obj2)
 {
-	Math::VectorImage *vimg1 = (Math::VectorImage*)obj1;
-	Math::VectorImage *vimg2 = (Math::VectorImage*)obj2;
+	Math::Geometry::VectorImage *vimg1 = (Math::Geometry::VectorImage*)obj1;
+	Math::Geometry::VectorImage *vimg2 = (Math::Geometry::VectorImage*)obj2;
 	Bool type1 = vimg1->IsScnCoord();
 	Bool type2 = vimg2->IsScnCoord();
 	if (type1 != type2)
@@ -2072,7 +2072,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 				}
 				else if (layerType == Map::DRAW_LAYER_POLYGON)
 				{
-					pts = Math::Geometry::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr);
+					pts = Math::GeometryTool::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr);
 					if (denv->view->InViewXY(pts))
 					{
 						pts = denv->view->MapXYToScnXY(pts);
@@ -2116,8 +2116,8 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 
 void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer)
 {
-	Math::Vector2D *vec;
-	Math::VectorImage *vimg;
+	Math::Geometry::Vector2D *vec;
+	Math::Geometry::VectorImage *vimg;
 	UOSInt i;
 	UOSInt j;
 	Math::CoordinateSystem *coord = layer->GetCoordinateSystem();
@@ -2145,7 +2145,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	{
 		layer->GetObjectIdsMapXY(&arri, 0, Math::RectAreaDbl(tl, br), false);
 	}
-	Data::ArrayList<Math::VectorImage *> imgList;
+	Data::ArrayList<Math::Geometry::VectorImage *> imgList;
 	sess = layer->BeginGetObject();
 	i = 0;
 	j = arri.GetCount();
@@ -2154,9 +2154,9 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 		vec = layer->GetNewVectorById(sess, arri.GetItem(i));
 		if (vec)
 		{
-			if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
+			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Image)
 			{
-				imgList.Add((Math::VectorImage*)vec);
+				imgList.Add((Math::Geometry::VectorImage*)vec);
 			}
 			else
 			{

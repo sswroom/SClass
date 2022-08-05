@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_GOOGLEMAP_GOOGLEMAPSUTIL
 #define _SM_MAP_GOOGLEMAP_GOOGLEMAPSUTIL
-#include "Math/Polyline.h"
+#include "Math/Geometry/Polyline.h"
 
 namespace Map
 {
@@ -9,7 +9,7 @@ namespace Map
 		class GoogleMapsUtil
 		{
 		public:
-			static Math::Polyline *ParsePolylineText(const UTF8Char *polylineText);
+			static Math::Geometry::Polyline *ParsePolylineText(const UTF8Char *polylineText);
 		};
 	}
 }

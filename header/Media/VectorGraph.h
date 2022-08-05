@@ -2,7 +2,7 @@
 #define _SM_MEDIA_VECTORGRAPH
 #include "Data/ArrayList.h"
 #include "Math/Size2D.h"
-#include "Math/Vector2D.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Math/Unit/Distance.h"
 #include "Media/DrawEngine.h"
 
@@ -85,7 +85,7 @@ namespace Media
 		Data::ArrayList<VectorBrushStyle*> *brushStyles;
 
 		Data::ArrayList<VectorStyles*> *itemStyle;
-		Data::ArrayList<Math::Vector2D *> *items;
+		Data::ArrayList<Math::Geometry::Vector2D *> *items;
 		Media::DrawEngine::DrawPos align;
 		
 	public:
