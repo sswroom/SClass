@@ -30,11 +30,9 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 		}
 		return true;
 	case DB::DBUtil::CT_DateTime:
-	case DB::DBUtil::CT_DateTime2:
+	case DB::DBUtil::CT_Date:
 	{
-		Data::DateTime dt;
-		this->GetDate(colIndex, &dt);
-		item->SetDate(&dt);
+		item->SetDate(this->GetTimestamp(colIndex));
 		return true;
 	}
 	case DB::DBUtil::CT_Double:
@@ -147,9 +145,8 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 				s->Release();
 				break;
 			case DB::DBUtil::CT_DateTime:
-			case DB::DBUtil::CT_DateTime2:
-				this->GetDate(i, &dt);
-				obj->SetItemDate(sbuff, &dt);
+			case DB::DBUtil::CT_Date:
+				obj->SetItemTS(sbuff, this->GetTimestamp(i));
 				break;
 			case DB::DBUtil::CT_Double:
 				obj->SetItemF64(sbuff, this->GetDbl(i));

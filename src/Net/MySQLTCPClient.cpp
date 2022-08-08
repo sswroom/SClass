@@ -226,28 +226,21 @@ public:
 		return this->currRow[colIndex]->ConcatToS(buff, buffSize);
 	}
 
-	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
+	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
 		if (this->currRow == 0)
 		{
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
 		if (colIndex >= this->colCount)
 		{
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
 		if (this->currRow[colIndex] == 0)
 		{
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
-		if (outVal->SetValue(this->currRow[colIndex]->ToCString()))
-		{
-			return DET_OK;
-		}
-		else
-		{
-			return DET_ERROR;
-		}
+		return Data::Timestamp(this->currRow[colIndex]->ToCString(), 0);
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)
@@ -709,50 +702,68 @@ public:
 		return item.GetAsStringS(buff, buffSize);
 	}
 
-	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
+	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
 		if (this->currRow == 0)
 		{
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
 		if (colIndex >= this->colCount)
 		{
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
 		RowColumn *col = &this->currRow->cols[colIndex];
 		if (col->isNull)
 		{
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
 		if (this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATE ||
 			this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATETIME ||
 			this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP)
 		{
+			Data::DateTimeUtil::TimeValue tval;
+			UInt32 microsec;
 			switch (col->len)
 			{
 			case 0:
-				outVal->SetTicks(0);
-				return DET_OK;
+				return Data::Timestamp(0, 0);
 			case 4:
-				outVal->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3], 0, 0, 0, 0, 0);
-				return DET_OK;
+				tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
+				tval.month = this->currRow->rowBuff[col->ofst + 2];
+				tval.day = this->currRow->rowBuff[col->ofst + 3];
+				tval.hour = 0;
+				tval.minute = 0;
+				tval.second = 0;
+				tval.ms = 0;
+				return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
 			case 7:
-				outVal->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
-					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], 0, 0);
-				return DET_OK;
+				tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
+				tval.month = this->currRow->rowBuff[col->ofst + 2];
+				tval.day = this->currRow->rowBuff[col->ofst + 3];
+				tval.hour = this->currRow->rowBuff[col->ofst + 4];
+				tval.minute = this->currRow->rowBuff[col->ofst + 5];
+				tval.second = this->currRow->rowBuff[col->ofst + 6];
+				tval.ms = 0;
+				return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
 			case 11:
-				outVal->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
-					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], (UInt16)(ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]) / 1000), 0);
-				return DET_OK;
+				tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
+				tval.month = this->currRow->rowBuff[col->ofst + 2];
+				tval.day = this->currRow->rowBuff[col->ofst + 3];
+				tval.hour = this->currRow->rowBuff[col->ofst + 4];
+				tval.minute = this->currRow->rowBuff[col->ofst + 5];
+				tval.second = this->currRow->rowBuff[col->ofst + 6];
+				microsec = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
+				tval.ms = (UInt16)(microsec / 1000);
+				return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), microsec * 1000, 0);
 			default:
 				//////////////////////////////////////
 				printf("Unknown binary date format\r\n");
-				return DET_ERROR;
+			return Data::Timestamp(0, 0);
 			}
 		}
 		else
 		{
-			return DET_ERROR;
+			return Data::Timestamp(0, 0);
 		}
 	}
 

@@ -27,6 +27,133 @@ typedef struct
 Int8 Data::DateTimeUtil::localTzQhr = 0;
 Bool Data::DateTimeUtil::localTzValid = false;
 
+
+void Data::DateTimeUtil::TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs)
+{
+	UInt32 vals[3];
+	vals[0] = 0;
+	vals[1] = 0;
+	vals[2] = 0;
+	Text::StrToUInt32(dateStrs[0].v, &vals[0]);
+	Text::StrToUInt32(dateStrs[1].v, &vals[1]);
+	Text::StrToUInt32(dateStrs[2].v, &vals[2]);
+	if (vals[0] > 100)
+	{
+		t->year = (UInt16)vals[0];
+		t->month = (UInt8)vals[1];
+		t->day = (UInt8)vals[2];
+	}
+	else if (vals[2] > 100)
+	{
+		t->year = (UInt16)vals[2];
+		if (vals[0] > 12)
+		{
+			t->month = (UInt8)vals[1];
+			t->day = (UInt8)vals[0];
+		}
+		else
+		{
+			t->month = (UInt8)vals[0];
+			t->day = (UInt8)vals[1];
+		}
+	}
+	else
+	{
+		if (vals[1] > 12)
+		{
+			t->year = (UInt16)(((t->year / 100) * 100U) + vals[2]);
+			t->month = (UInt8)vals[0];
+			t->day = (UInt8)vals[1];
+		}
+		else
+		{
+			t->year = (UInt16)(((t->year / 100) * 100U) + vals[0]);
+			t->month = (UInt8)vals[1];
+			t->day = (UInt8)vals[2];
+		}
+	}
+}
+
+void Data::DateTimeUtil::TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs, UInt32 *nanosec)
+{
+	Text::PString strs[2];
+	UOSInt valTmp;
+
+	t->hour = (UInt8)Text::StrToUInt32(timeStrs[0].v);
+	t->minute = (UInt8)Text::StrToUInt32(timeStrs[1].v);
+	valTmp = Text::StrSplitP(strs, 2, timeStrs[2], '.');
+	if (valTmp == 1)
+	{
+		t->second = (UInt8)Text::StrToUInt32(strs[0].v);
+		t->ms = 0;
+		if (nanosec)
+			*nanosec = 0;
+	}
+	else
+	{
+		t->second = (UInt8)Text::StrToUInt32(strs[0].v);
+		valTmp = strs[1].leng;
+		if (nanosec)
+		{
+			switch (strs[1].leng)
+			{
+			case 0:
+				*nanosec = 0;
+				break;
+			case 1:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 100000000;
+				break;
+			case 2:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 10000000;
+				break;
+			case 3:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 1000000;
+				break;
+			case 4:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 100000;
+				break;
+			case 5:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 10000;
+				break;
+			case 6:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 1000;
+				break;
+			case 7:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 100;
+				break;
+			case 8:
+				*nanosec = Text::StrToUInt32(strs[1].v) * 10;
+				break;
+			default:
+				strs[1].v[9] = 0;
+				*nanosec = Text::StrToUInt32(strs[1].v);
+				break;
+			}
+		}
+		if (valTmp == 1)
+		{
+			t->ms = (UInt16)(Text::StrToUInt32(strs[1].v) * 100);
+		}
+		else if (valTmp == 2)
+		{
+			t->ms = (UInt16)(Text::StrToUInt32(strs[1].v) * 10);
+		}
+		else if (valTmp == 3)
+		{
+			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
+		}
+		else if (valTmp > 3)
+		{
+			strs[1].v[3] = 0;
+			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
+		}
+		else
+		{
+			t->ms = 0;
+		}
+	}
+}
+
 Int64 Data::DateTimeUtil::TimeValue2Ticks(TimeValue *t, Int8 tzQhr)
 {
 	Int32 totalDays;
@@ -964,6 +1091,327 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 	}
 	*sbuff = 0;
 	return sbuff;
+}
+
+Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval, Int8 *tzQhr, UInt32 *nanosec)
+{
+	UTF8Char buff[32];
+	Text::PString strs2[5];
+	Text::PString strs[3];
+	UOSInt nStrs;
+	Bool succ = true;
+	if (dateStr.v[3] == ',' && Text::StrIndexOfChar(&dateStr.v[4], ',') == INVALID_INDEX)
+	{
+		dateStr = dateStr.Substring(4);
+		while (dateStr.v[0] == ' ')
+			dateStr = dateStr.Substring(1);
+	}
+	dateStr.ConcatTo(buff);
+	nStrs = Text::StrSplitTrimP(strs2, 5, {buff, dateStr.leng}, ' ');
+	if (nStrs == 1)
+	{
+		nStrs = Text::StrSplitP(strs2, 3, {buff, dateStr.leng}, 'T');
+	}
+	if (nStrs == 2)
+	{
+		Bool dateSucc = true;
+		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
+		{
+			TimeValueSetDate(tval, strs);
+		}
+		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
+		{
+			TimeValueSetDate(tval, strs);
+		}
+		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
+		{
+			TimeValueSetDate(tval, strs);
+		}
+		else
+		{
+			Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
+			if (nanosec)
+			{
+				*nanosec = (UInt32)tval->ms * 1000000;
+			}
+			dateSucc = false;
+		}
+		UOSInt i = strs2[1].IndexOf('-');
+		if (i == INVALID_INDEX)
+		{
+			i = strs2[1].IndexOf('+');
+		}
+		if (i != INVALID_INDEX)
+		{
+			UTF8Char c = strs2[1].v[i];
+			strs2[1].v[i] = 0;
+			UOSInt tzlen = strs2[1].leng - i - 1;
+			if (tzlen == 5)
+			{
+				UInt32 min = Text::StrToUInt32(&strs2[1].v[i + 4]);
+				if (strs2[1].v[i + 3] == ':')
+				{
+					strs2[1].v[i + 3] = 0;
+				}
+				else
+				{
+					strs2[1].v[i + 4] = 0;
+				}
+				min = min + Text::StrToUInt32(&strs2[1].v[i + 1]) * 60;
+				if (c == '-')
+				{
+					*tzQhr = (Int8)(-(Int32)min / 15);
+				}
+				else
+				{
+					*tzQhr = (Int8)(min / 15);
+				}
+			}
+			else if (tzlen == 2)
+			{
+				if (c == '-')
+				{
+					*tzQhr = (Int8)-(Text::StrToInt32(&strs2[1].v[i + 1]) * 4);
+				}
+				else
+				{
+					*tzQhr = (Int8)(Text::StrToUInt32(&strs2[1].v[i + 1]) * 4);
+				}
+			}
+			strs2[1].leng = i;
+		}
+		if (Text::StrSplitP(strs, 3, strs2[1], ':') == 3)
+		{
+			if (strs[2].v[strs[2].leng - 1] == 'Z')
+			{
+				strs[2].v[strs[2].leng - 1] = 0;
+				strs[2].leng -= 1;
+			}
+			TimeValueSetTime(tval, strs, nanosec);
+		}
+		else
+		{
+			tval->hour = 0;
+			tval->minute = 0;
+			tval->second = 0;
+			tval->ms = 0;
+			if (nanosec)
+			{
+				*nanosec = 0;
+			}
+			if (!dateSucc)
+			{
+				succ = false;
+			}
+		}
+	}
+	else if (nStrs == 1)
+	{
+		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
+		{
+			TimeValueSetDate(tval, strs);
+			tval->hour = 0;
+			tval->minute = 0;
+			tval->second = 0;
+			tval->ms = 0;
+		}
+		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
+		{
+			TimeValueSetDate(tval, strs);
+			tval->hour = 0;
+			tval->minute = 0;
+			tval->second = 0;
+			tval->ms = 0;
+		}
+		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
+		{
+			Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
+			if (nanosec)
+				*nanosec = (UInt32)tval->ms * 1000000;
+			TimeValueSetTime(tval, strs, nanosec);
+		}
+		else
+		{
+			succ = false;
+		}
+	}
+	else if (nStrs == 4 || (nStrs == 5 && (strs2[4].v[0] == '-' || strs2[4].v[0] == '+' || strs2[4].Equals(UTF8STRC("GMT")))))
+	{
+		UOSInt len1 = strs2[0].leng;
+		UOSInt len2 = strs2[1].leng;
+		UOSInt len3 = strs2[2].leng;
+		UOSInt len4 = strs2[3].leng;
+		UTF8Char *timeStr = strs2[3].v;
+		UOSInt timeStrLen = strs2[3].leng;
+		if (len1 == 3 && len2 <= 2 && len3 == 4)
+		{
+			Text::StrToUInt16(strs2[2].v, &tval->year);
+			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].v, strs2[0].leng);
+			tval->day = Text::StrToUInt8(strs2[1].v);
+		}
+		else if (len1 <= 2 && len2 == 3 && len3 == 4)
+		{
+			Text::StrToUInt16(strs2[2].v, &tval->year);
+			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[1].v, strs2[1].leng);
+			tval->day = Text::StrToUInt8(strs2[0].v);
+		}
+		else if (len1 == 3 && len2 <= 2 && len4 == 4)
+		{
+			Text::StrToUInt16(strs2[3].v, &tval->year);
+			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].v, strs2[0].leng);
+			tval->day = Text::StrToUInt8(strs2[1].v);
+			timeStr = strs2[2].v;
+			timeStrLen = strs2[2].leng;
+		}
+		else
+		{
+			succ = false;
+		}
+		if (Text::StrSplitP(strs, 3, {timeStr, timeStrLen}, ':') == 3)
+		{
+			TimeValueSetTime(tval, strs, nanosec);
+		}
+		else
+		{
+			succ = false;
+		}
+		
+		if (nStrs == 5)
+		{
+			if (strs2[4].Equals(UTF8STRC("GMT")))
+			{
+				*tzQhr = 0;
+			}
+			else if (strs2[4].leng == 5)
+			{
+				Int32 min = (Int32)Text::StrToUInt32(&strs2[4].v[3]);
+				if (strs2[4].v[2] == ':')
+				{
+					strs2[4].v[2] = 0;
+				}
+				else
+				{
+					strs2[4].v[3] = 0;
+				}
+				min = min + Text::StrToInt32(&strs2[4].v[1]) * 60;
+				if (strs2[4].v[0] == '-')
+				{
+					*tzQhr = (Int8)(-min / 15);
+				}
+				else
+				{
+					*tzQhr = (Int8)(min / 15);
+				}
+			}
+		}
+	}
+	else
+	{
+		tval->year = 1970;
+		tval->month = 1;
+		tval->day = 1;
+		tval->hour = 0;
+		tval->minute = 0;
+		tval->second = 0;
+		tval->ms = 0;
+		*tzQhr = 0;
+
+		UOSInt j = 0;
+		UOSInt i;
+		UOSInt splitCnt;
+		while (true)
+		{
+			if ((splitCnt = Text::StrSplitP(strs, 3, strs2[j], ':')) == 3)
+			{
+				TimeValueSetTime(tval, strs, nanosec);
+			}
+			else
+			{
+				if (splitCnt == 2)
+				{
+					strs[1].v[-1] = ':';
+				}
+				if (strs2[j].v[0] == '-')
+				{
+					if (Text::StrSplitP(strs, 3, strs2[j], ':') == 2)
+					{
+						*tzQhr = (Int8)(-(Int32)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15)));
+					}
+					else if (strs2[j].leng == 5)
+					{
+						*tzQhr = (Int8)(Text::StrToUInt32(&strs2[j].v[3]) / 15);
+						strs2[j].v[3] = 0;
+						*tzQhr = (Int8)(-(*tzQhr + (Int32)(Text::StrToUInt32(&strs2[j].v[1]) << 2)));
+					}
+				}
+				else if (strs2[j].v[0] == '+')
+				{
+					if (Text::StrSplitP(strs, 3, strs2[j], ':') == 2)
+					{
+						*tzQhr = (Int8)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15));
+					}
+					else if (strs2[j].leng == 5)
+					{
+						*tzQhr = (Int8)(Text::StrToUInt32(&strs2[j].v[3]) / 15);
+						strs2[j].v[3] = 0;
+						*tzQhr = (Int8)(*tzQhr + (Int32)(Text::StrToUInt32(&strs2[j].v[1]) << 2));
+					}
+				}
+				else
+				{
+					i = Text::StrIndexOfChar(strs2[j].v, '/');
+					if (i != INVALID_INDEX && i > 0)
+					{
+						if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
+						{
+							TimeValueSetDate(tval, strs);
+						}
+					}
+					else if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
+					{
+						TimeValueSetDate(tval, strs);
+					}
+					else if (strs2[j].Equals(UTF8STRC("HKT")))
+					{
+						*tzQhr = 32;
+					}
+					else
+					{
+						i = Text::StrToUInt32(strs2[j].v);
+						if (i <= 0)
+						{
+							i = Data::DateTimeUtil::ParseMonthStr(strs2[j].v, strs2[j].leng);
+							if (i > 0)
+							{
+								tval->month = (UInt8)i;
+							}
+						}
+						else if (i > 100)
+						{
+							tval->year = (UInt16)i;
+						}
+						else
+						{
+							tval->day = (UInt8)i;
+						}
+					}
+				}
+			}
+			if (j == 0)
+			{
+				j = 1;
+			}
+			else if (nStrs == 1)
+			{
+				break;
+			}
+			else
+			{
+				nStrs = Text::StrSplitP(&strs2[1], 2, strs2[2], ' ');
+			}
+		}
+	}
+	return succ;
 }
 
 Bool Data::DateTimeUtil::IsYearLeap(UInt16 year)

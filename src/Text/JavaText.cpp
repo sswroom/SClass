@@ -99,7 +99,7 @@ Text::CString Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool 
 	case DB::DBUtil::CT_UUID:
 		return CSTR("String");
 	case DB::DBUtil::CT_DateTime:
-	case DB::DBUtil::CT_DateTime2:
+	case DB::DBUtil::CT_Date:
 		return CSTR("Timestamp");
 	case DB::DBUtil::CT_Binary:
 		return CSTR("byte[]");

@@ -1254,6 +1254,15 @@ Data::VariItem *Data::VariItem::NewDate(Data::DateTime *dt)
 	return item;
 }
 
+Data::VariItem *Data::VariItem::NewTS(Data::Timestamp ts)
+{
+	ItemValue ival;
+	ival.date = ts;
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::Date, ival));
+	return item;
+}
+
 Data::VariItem *Data::VariItem::NewF32(Single val)
 {
 	ItemValue ival;

@@ -6,12 +6,7 @@
 void DB::DBRow::FreeField(DB::DBRow::Field *field)
 {
 	DataType dtype = GetDataType(field);
-	if (dtype == DT_DATETIME)
-	{
-		SDEL_CLASS(field->committedData.dt);
-		SDEL_CLASS(field->currentData.dt);
-	}
-	else if (dtype == DT_STRING)
+	if (dtype == DT_STRING)
 	{
 		SDEL_TEXT(field->committedData.str);
 		SDEL_TEXT(field->currentData.str);
@@ -33,7 +28,7 @@ DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field) const
 {
 	switch (field->def->GetColType())
 	{
-	case DB::DBUtil::CT_DateTime2:
+	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 		return DT_DATETIME;
 	case DB::DBUtil::CT_Char:
@@ -69,9 +64,6 @@ Bool DB::DBRow::SetFieldNull(DB::DBRow::Field *field)
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	switch (dtype)
 	{
-	case DT_DATETIME:
-		SDEL_CLASS(field->currentData.dt);
-		break;
 	case DT_STRING:
 		SDEL_TEXT(field->currentData.str);
 		break;
@@ -81,6 +73,7 @@ Bool DB::DBRow::SetFieldNull(DB::DBRow::Field *field)
 	case DT_BINARY:
 		SMEMFREE(field->currentData.bin);
 		break;
+	case DT_DATETIME:
 	case DT_INT64:
 	case DT_DOUBLE:
 	case DT_UNKNOWN:
@@ -131,7 +124,7 @@ Bool DB::DBRow::SetFieldDouble(DB::DBRow::Field *field, Double dblValue)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::DateTime *dt)
+Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::Timestamp ts)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
@@ -139,21 +132,13 @@ Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::DateTime *dt)
 		return false;
 	}
 	field->currentChanged = true;
-	if (dt == 0)
+	if (ts.ticks == 0)
 	{
-		SDEL_CLASS(field->currentData.dt);
 		field->currentNull = true;
 	}
 	else
 	{
-		if (field->currentData.dt)
-		{
-			field->currentData.dt->SetValue(dt);
-		}
-		else
-		{
-			NEW_CLASS(field->currentData.dt, Data::DateTime(dt));
-		}
+		field->currentData.ts = ts;
 		field->currentNull = false;
 	}
 	return true;
@@ -266,20 +251,20 @@ Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field) const
 	}
 }
 
-Data::DateTime *DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
+Data::Timestamp DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
 	{
-		return 0;
+		return Data::Timestamp(0, 0);
 	}
 	if (field->currentChanged)
 	{
-		return field->currentData.dt;
+		return field->currentData.ts;
 	}
 	else
 	{
-		return field->committedData.dt;
+		return field->committedData.ts;
 	}
 }
 
@@ -361,7 +346,6 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 {
 	DB::ColDef *col;
 	DB::DBRow::Field *field;
-	Data::DateTime dt;
 	UOSInt i = 0;
 	UOSInt j = this->table->GetColCnt();
 	while (i < j)
@@ -411,10 +395,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 				this->SetFieldDouble(field, r->GetDbl(i));
 				break;
 			case DT_DATETIME:
-				if (r->GetDate(i, &dt) == DB::DBReader::DET_OK)
-				{
-					this->SetFieldDate(field, &dt);
-				}
+				this->SetFieldDate(field, r->GetTimestamp(i));
 				break;
 			case DT_UNKNOWN:
 				break;
@@ -492,14 +473,14 @@ Bool DB::DBRow::SetValueDouble(const UTF8Char *fieldName, Double dblValue)
 	return this->SetFieldDouble(field, dblValue);
 }
 
-Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, Data::DateTime *dt)
+Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, Data::Timestamp ts)
 {
 	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
 		return false;
 	}
-	return this->SetFieldDate(field, dt);
+	return this->SetFieldDate(field, ts);
 }
 
 Bool DB::DBRow::SetValueVector(const UTF8Char *fieldName, Math::Geometry::Vector2D *vec)
@@ -562,12 +543,12 @@ Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName) const
 	return this->GetFieldDouble(field);
 }
 
-Data::DateTime *DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
+Data::Timestamp DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
 {
 	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
-		return 0;
+		return Data::Timestamp(0, 0);
 	}
 	return this->GetFieldDate(field);
 }
@@ -616,9 +597,9 @@ void DB::DBRow::Commit()
 				field->currentData.vec = 0;
 				break;
 			case DT_DATETIME:
-				SDEL_CLASS(field->committedData.dt);
-				field->committedData.dt = field->currentData.dt;
-				field->currentData.dt = 0;
+				field->committedData.ts = field->currentData.ts;
+				field->currentData.ts.ticks = 0;
+				field->currentData.ts.nanosec = 0;
 				break;
 			case DT_INT64:
 				field->committedData.iVal = field->currentData.iVal;
@@ -666,7 +647,8 @@ void DB::DBRow::Rollback()
 				SDEL_CLASS(field->currentData.vec);
 				break;
 			case DT_DATETIME:
-				SDEL_CLASS(field->currentData.dt);
+				field->currentData.ts.ticks = 0;
+				field->currentData.ts.nanosec = 0;
 				break;
 			case DT_BINARY:
 				SMEMFREE(field->currentData.bin);
@@ -756,7 +738,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
 				switch (dtype)
 				{
 				case DT_DATETIME:
-					sptr = this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzzz");
+					sptr = this->GetFieldDate(field).ToString(sbuff);
 					sb->AppendUTF8Char('\"');
 					sb->AppendP(sbuff, sptr);
 					sb->AppendUTF8Char('\"');

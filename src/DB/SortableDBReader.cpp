@@ -353,22 +353,16 @@ UTF8Char *DB::SortableDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt b
 	return 0;
 }
 
-DB::DBReader::DateErrType DB::SortableDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::Date)
 	{
-		Data::Timestamp ts = item->GetItemValue().date;
-		outVal->SetValue(ts.ticks, ts.tzQhr);
-		return DB::DBReader::DET_OK;
-	}
-	else if (item && item->GetItemType() == Data::VariItem::ItemType::Null)
-	{
-		return DB::DBReader::DET_NULL;
+		return item->GetItemValue().date;
 	}
 	else
 	{
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	}
 }
 

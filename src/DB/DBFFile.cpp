@@ -218,7 +218,7 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
 	}
 	if (cols[colIndex].type == 'D')
 	{
-		return DB::DBUtil::CT_DateTime;
+		return DB::DBUtil::CT_Date;
 	}
 	else if (cols[colIndex].type == 'T')
 	{
@@ -635,37 +635,38 @@ UTF8Char *DB::DBFReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize
 	}
 }
 
-DB::DBReader::DateErrType DB::DBFReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 {
 	if (!this->recordExist)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	if (colIndex >= this->colCnt)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	if (this->cols[colIndex].type != 'D')
 	{
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	}
 	Char buff[5];
 	Char *currPtr = (Char*)&this->recordData[this->cols[colIndex].colOfst];
-	UInt16 year;
-	Int32 month;
-	Int32 day;
+	Data::DateTimeUtil::TimeValue tval;
+	tval.hour = 0;
+	tval.minute = 0;
+	tval.second = 0;
+	tval.ms = 0;
 	buff[0] = currPtr[0];
 	buff[1] = currPtr[1];
 	buff[2] = currPtr[2];
 	buff[3] = currPtr[3];
 	buff[4] = 0;
-	Text::StrToUInt16S(buff, &year, 0);
+	Text::StrToUInt16S(buff, &tval.year, 0);
 	buff[0] = currPtr[4];
 	buff[1] = currPtr[5];
 	buff[2] = 0;
-	month = Text::StrToInt32(buff);
+	tval.month = Text::StrToUInt8(buff);
 	buff[0] = currPtr[6];
 	buff[1] = currPtr[7];
 	buff[2] = 0;
-	day = Text::StrToInt32(buff);
-	outVal->SetValue(year, month, day, 0, 0, 0, 0);
-	return DB::DBReader::DET_OK;
+	tval.day = Text::StrToUInt8(buff);
+	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 }
 
 Double DB::DBFReader::GetDbl(UOSInt colIndex)

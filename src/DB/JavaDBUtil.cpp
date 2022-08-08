@@ -121,7 +121,7 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF8 *sb, DB::ColDef *c
 		case DB::DBUtil::CT_NChar:
 		case DB::DBUtil::CT_UUID:
 		case DB::DBUtil::CT_DateTime:
-		case DB::DBUtil::CT_DateTime2:
+		case DB::DBUtil::CT_Date:
 		case DB::DBUtil::CT_Binary:
 		case DB::DBUtil::CT_Vector:
 		case DB::DBUtil::CT_Unknown:

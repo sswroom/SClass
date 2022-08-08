@@ -26,14 +26,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			disc = MemAlloc(BurntDiscInfo, 1);
 			disc->discId = r->GetNewStr(0);
 			disc->discTypeId = r->GetNewStr(1);
-			if (r->GetDate(2, &dt) == DB::DBReader::DET_OK)
-			{
-				disc->burntDate = dt.ToTicks();
-			}
-			else
-			{
-				disc->burntDate = 0;
-			}
+			disc->burntDate = r->GetTimestamp(2).ticks;
 			disc->status = r->GetInt32(3);
 			disc = this->discMap->Put(disc->discId, disc);
 			if (disc)

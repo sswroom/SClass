@@ -27,6 +27,22 @@ namespace Data
 			this->nanosec = nanosec;
 			this->tzQhr = tzQhr;
 		};
+
+		Timestamp(Text::CString dateStr, Int8 defTzQhr)
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			this->tzQhr = defTzQhr;
+			this->nanosec = 0;
+			if (!Data::DateTimeUtil::String2TimeValue(dateStr, &tval, &this->tzQhr, &this->nanosec))
+			{
+				this->nanosec = 0;
+				this->ticks = 0;
+			}
+			else
+			{
+				this->ticks = Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr);
+			}
+		}
 		
 		~Timestamp()
 		{
@@ -117,7 +133,22 @@ namespace Data
 
 		UTF8Char *ToString(UTF8Char *buff) const
 		{
-			return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+			if (this->nanosec == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss zzzz");
+			}
+			else if (this->nanosec % 1000000 == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+			}
+			else if (this->nanosec % 1000 == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff zzzz");
+			}
+			else
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff zzzz");
+			}
 		}
 
 		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const

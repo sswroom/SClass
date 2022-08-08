@@ -33,7 +33,7 @@ namespace DB
 			CT_Int32,
 			CT_VarChar,
 			CT_Char,
-			CT_DateTime, //acc = 1/333s
+			CT_DateTime,
 			CT_Double,
 			CT_Float,
 			CT_Bool,
@@ -46,8 +46,8 @@ namespace DB
 			CT_Vector,
 			CT_NVarChar,
 			CT_NChar,
-			CT_DateTime2, //acc = 0.1ms
-			CT_UUID
+			CT_UUID,
+			CT_Date
 		} ColType;
 
 		static UTF8Char *SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str, ServerType svrType);
@@ -64,6 +64,8 @@ namespace DB
 		static UOSInt SDBUInt64Leng(UInt64 val, ServerType svrType);
 		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, ServerType svrType, Int8 tzQhr);
 		static UOSInt SDBDateLeng(Data::DateTime *dat, ServerType svrType);
+		static UTF8Char *SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, ServerType svrType, Int8 tzQhr);
+		static UOSInt SDBTSLeng(Data::Timestamp ts, ServerType svrType);
 		static UTF8Char *SDBDbl(UTF8Char *sqlstr, Double val, ServerType svrType);
 		static UOSInt SDBDblLeng(Double val, ServerType svrType);
 		static UTF8Char *SDBSng(UTF8Char *sqlstr, Single val, ServerType svrType);

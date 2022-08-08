@@ -215,13 +215,10 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 		}
 		else if (colIndex == 1)
 		{
-			Data::DateTime dt;
 			switch (nextRow - 1)
 			{
 			case 0:
-				this->file->GetDownloadTime(&dt);
-				dt.ToLocalTime();
-				return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
+				return this->file->GetDownloadTime().ToString(buff, "yyyy-MM-dd HH:mm:ss");
 			case 1:
 				return Text::StrInt32(buff, this->file->GetAddress());
 			case 2:
@@ -230,9 +227,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 			case 3:
 				return this->file->GetTestName(buff);
 			case 4:
-				this->file->GetSettingTime(&dt);
-				dt.ToLocalTime();
-				return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
+				return this->file->GetSettingTime().ToString(buff, "yyyy-MM-dd HH:mm:ss");
 			case 5:
 				return Text::StrUOSInt(buff, this->file->GetTotalRec());
 			case 6:
@@ -258,9 +253,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 				return buff;
 				//return Text::StrConcat(buff, L"Alarm Mode");
 			case 14:
-				this->file->GetStartTime(&dt);
-				dt.ToLocalTime();
-				return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
+				return this->file->GetStartTime().ToString(buff, "yyyy-MM-dd HH:mm:ss");
 			case 15:
 				return Text::StrUOSInt(buff, this->file->GetRecCount());
 			case 16:
@@ -285,9 +278,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 		}
 		else if (colIndex == 1)
 		{
-			Data::DateTime dt;
-			GetDate(colIndex, &dt);
-			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
+			return GetTimestamp(colIndex).ToString(buff, "yyyy-MM-dd HH:mm:ss");
 		}
 		else if (colIndex == 2)
 		{
@@ -304,7 +295,7 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 	}
 }
 
-DB::DBReader::DateErrType Media::HTRecFile::HTRecReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UOSInt colIndex)
 {
 	UOSInt currRow = this->nextRow - 1;
 	if (this->setting)
@@ -313,36 +304,32 @@ DB::DBReader::DateErrType Media::HTRecFile::HTRecReader::GetDate(UOSInt colIndex
 		{
 			if (currRow == 0)
 			{
-				this->file->GetDownloadTime(outVal);
-				return DB::DBReader::DET_OK;
+				return this->file->GetDownloadTime();
 			}
 			else if (currRow == 4)
 			{
-				this->file->GetSettingTime(outVal);
-				return DB::DBReader::DET_OK;
+				return this->file->GetSettingTime();
 			}
 			else if (currRow == 14)
 			{
-				this->file->GetStartTime(outVal);
-				return DB::DBReader::DET_OK;
+				return this->file->GetStartTime();
 			}
 		}
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	}
 	else
 	{
 		if (currRow >= this->recCount)
-			return DB::DBReader::DET_ERROR;
+			return Data::Timestamp(0, 0);
 		if (colIndex == 1)
 		{
-			this->file->GetAdjStartTime(outVal);
-			outVal->AddMS((OSInt)currRow * this->file->GetAdjRecInterval());
-			outVal->ToLocalTime();
-			return DB::DBReader::DET_OK;
+			Data::Timestamp ts = this->file->GetAdjStartTime();
+			ts.ticks += (OSInt)currRow * this->file->GetAdjRecInterval();
+			return ts;
 		}
 		else
 		{
-			return DB::DBReader::DET_ERROR;
+			return Data::Timestamp(0, 0);
 		}
 	}
 }
@@ -480,7 +467,7 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, U
 			*colSize = 11;
 			return DB::DBUtil::CT_Int32;
 		case 1:
-			*colSize = 19;
+			*colSize = 0;
 			return DB::DBUtil::CT_DateTime;
 		case 2:
 			*colSize = 32;
@@ -532,7 +519,7 @@ Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDe
 		case 1:
 			colDef->SetColName(GetName(colIndex));
 			colDef->SetColType(DB::DBUtil::CT_DateTime);
-			colDef->SetColSize(19);
+			colDef->SetColSize(0);
 			colDef->SetColDP(0);
 			return true;
 		case 2:
@@ -584,9 +571,9 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
 Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->GetFullName())
 {
 	UInt8 buff[96];
-	this->time1 = 0;
-	this->time2 = 0;
-	this->time3 = 0;
+	this->time1TS = 0;
+	this->time2TS = 0;
+	this->time3TS = 0;
 	this->recBuff = 0;
 	this->serialNo = 0;
 	this->testName = 0;
@@ -604,11 +591,7 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 	UTF8Char sbuff[37];
 	const WChar *wptr;
 	UTF8Char *dptr;
-	NEW_CLASS(this->time1, Data::DateTime());
-	NEW_CLASS(this->time2, Data::DateTime());
-	NEW_CLASS(this->time3, Data::DateTime());
-	NEW_CLASS(this->adjStTime, Data::DateTime());
-	this->time1->SetUnixTimestamp(ReadUInt32(&buff[0x04])); //Server Recv Time
+	this->time1TS = ReadUInt32(&buff[0x04]); //Server Recv Time
 	this->address = buff[8];
 	Text::StrConcatC(sbuff, &buff[9], 10);
 	this->serialNo = Text::StrCopyNew(sbuff);
@@ -637,25 +620,21 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 	this->tempAlarmH = ReadUInt16(&buff[0x43]) - 400;
 	this->rhAlarmL = ReadUInt16(&buff[0x45]);
 	this->rhAlarmH = ReadUInt16(&buff[0x47]);
-	this->time2->SetUnixTimestamp(ReadUInt32(&buff[0x4a])); //Setting Time
-	this->time3->SetUnixTimestamp(ReadUInt32(&buff[0x4f])); //Start Time
+	this->time2TS = ReadUInt32(&buff[0x4a]); //Setting Time
+	this->time3TS = ReadUInt32(&buff[0x4f]); //Start Time
 	this->recCount = recCnt;
 	
-	Data::DateTime tmp;
-	tmp.SetValue(this->time3);
-	tmp.AddSecond((OSInt)(this->recCount * this->recInterval));
-	if (tmp.CompareTo(this->time1) > 0)
+	if (this->time3TS + (Int64)(this->recCount * this->recInterval) > this->time1TS)
 	{
-		Int64 tick1 = this->time2->ToTicks();
-		Int64 tick2 = tmp.ToTicks() - tick1;
-		tick1 = this->time1->ToTicks() - tick1;
+		Int64 tick1 = this->time2TS * 1000;
+		Int64 tick2 = this->time3TS + (Int64)(this->recCount * this->recInterval) * 1000 - tick1;
+		tick1 = this->time1TS * 1000 - tick1;
 		this->adjRecInterval = (UInt32)(recInterval * 1000 * (UInt64)tick1 / (UInt64)tick2); 
-		this->adjStTime->SetValue(this->time1);
-		this->adjStTime->AddMS(-(OSInt)this->recCount * this->adjRecInterval);
+		this->adjStTimeTicks = this->time1TS * 1000 - (OSInt)this->recCount * this->adjRecInterval;
 	}
 	else
 	{
-		this->adjStTime->SetValue(this->time3);
+		this->adjStTimeTicks = this->time3TS * 1000;
 		this->adjRecInterval = this->recInterval * 1000;
 	}
 	this->recBuff = MemAlloc(UInt8, recCnt * 3);
@@ -664,9 +643,6 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 
 Media::HTRecFile::~HTRecFile()
 {
-	SDEL_CLASS(this->time1);
-	SDEL_CLASS(this->time2);
-	SDEL_CLASS(this->time3);
 	if (this->recBuff)
 	{
 		MemFree(this->recBuff);
@@ -721,17 +697,9 @@ void Media::HTRecFile::Reconnect()
 {
 }
 
-Bool Media::HTRecFile::GetDownloadTime(Data::DateTime *t)
+Data::Timestamp Media::HTRecFile::GetDownloadTime()
 {
-	if (this->time1)
-	{
-		t->SetValue(this->time1);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return Data::Timestamp(this->time1TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Int32 Media::HTRecFile::GetAddress()
@@ -739,17 +707,9 @@ Int32 Media::HTRecFile::GetAddress()
 	return this->address;
 }
 
-Bool Media::HTRecFile::GetSettingTime(Data::DateTime *t)
+Data::Timestamp Media::HTRecFile::GetSettingTime()
 {
-	if (this->time2)
-	{
-		t->SetValue(this->time2);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return Data::Timestamp(this->time2TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 UOSInt Media::HTRecFile::GetTotalRec()
@@ -782,17 +742,9 @@ Double Media::HTRecFile::GetHumiAlarmH()
 	return this->rhAlarmH * 0.1;
 }
 
-Bool Media::HTRecFile::GetStartTime(Data::DateTime *t)
+Data::Timestamp Media::HTRecFile::GetStartTime()
 {
-	if (this->time3)
-	{
-		t->SetValue(this->time3);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return Data::Timestamp(this->time3TS * 1000, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 UOSInt Media::HTRecFile::GetRecCount()
@@ -810,17 +762,9 @@ UTF8Char *Media::HTRecFile::GetTestName(UTF8Char *sbuff)
 	return Text::StrConcat(sbuff, this->testName);
 }
 
-Bool Media::HTRecFile::GetAdjStartTime(Data::DateTime *t)
+Data::Timestamp Media::HTRecFile::GetAdjStartTime()
 {
-	if (this->adjStTime)
-	{
-		t->SetValue(this->adjStTime);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return Data::Timestamp(this->adjStTimeTicks, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 UInt32 Media::HTRecFile::GetAdjRecInterval()

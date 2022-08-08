@@ -523,13 +523,12 @@ UTF8Char *DB::SQLiteReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 		return Text::StrConcatS(buff, outp, buffSize);
 }
 
-DB::DBReader::DateErrType DB::SQLiteReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::SQLiteReader::GetTimestamp(UOSInt colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!GetStr(colIndex, &sb))
-		return DB::DBReader::DET_NULL;
-	outVal->SetValue(sb.ToCString());
-	return DB::DBReader::DET_OK;
+		return Data::Timestamp(0, 0);
+	return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Double DB::SQLiteReader::GetDbl(UOSInt colIndex)

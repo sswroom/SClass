@@ -353,16 +353,15 @@ UTF8Char *Math::TSPReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 	return 0;
 }
 
-DB::DBReader::DateErrType Math::TSPReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
 {
 	if (this->currRowPtr == 0)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	if (colIndex == 2)
 	{
-		outVal->SetTicks(ReadInt64(&this->currRowPtr[48]));
-		return DB::DBReader::DET_OK;
+		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), 0, Data::DateTimeUtil::GetLocalTzQhr());
 	}
-	return DB::DBReader::DET_ERROR;
+	return Data::Timestamp(0, 0);
 }
 
 Double Math::TSPReader::GetDbl(UOSInt colIndex)
@@ -659,9 +658,9 @@ UTF8Char *Math::TSPHReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 	return Text::StrDouble(buff, GetDbl(colIndex));
 }
 
-DB::DBReader::DateErrType Math::TSPHReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Math::TSPHReader::GetTimestamp(UOSInt colIndex)
 {
-	return DB::DBReader::DET_ERROR;
+	return Data::Timestamp(0, 0);
 }
 
 Double Math::TSPHReader::GetDbl(UOSInt colIndex)

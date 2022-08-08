@@ -294,7 +294,7 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	case 1043: //varchar
 		return DB::DBUtil::CT_VarChar;
 	case 1184: //timestamptz
-		return DB::DBUtil::CT_DateTime2;
+		return DB::DBUtil::CT_DateTime;
 	case 1700: //numeric
 		return DB::DBUtil::CT_Double;
 	case 2950: //uuid

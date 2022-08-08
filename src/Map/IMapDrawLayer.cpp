@@ -1048,15 +1048,14 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 	return this->layer->GetString(buff, buffSize, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
-DB::DBReader::DateErrType Map::MapLayerReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (colIndex <= 0)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	outVal->SetValue(CSTRP(sbuff, sptr));
-	return DB::DBReader::DET_OK;
+	return Data::Timestamp(CSTRP(sbuff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Double Map::MapLayerReader::GetDbl(UOSInt colIndex)

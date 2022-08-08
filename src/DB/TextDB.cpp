@@ -113,15 +113,16 @@ public:
 		return Text::StrConcatS(buff, this->row[colIndex]->v, buffSize);
 	}
 
-	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
+	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
 		if (this->row == 0)
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		if (colIndex >= this->data->colList.GetCount())
-			return DET_NULL;
+			return Data::Timestamp(0, 0);
 		if (this->row[colIndex] == 0)
-			return DET_NULL;
-		return outVal->SetValue(this->row[colIndex]->ToCString())?DET_OK:DET_ERROR;
+			return Data::Timestamp(0, 0);
+
+		return Data::Timestamp(this->row[colIndex]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)

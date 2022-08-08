@@ -383,8 +383,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 			book->title = r->GetNewStrB(1, &sb, false);
 			book->author = r->GetNewStrB(2, &sb, false);
 			book->press = r->GetNewStrB(3, &sb, false);
-			r->GetDate(4, &dt);
-			book->publishDate = dt.ToTicks();
+			book->publishDate = r->GetTimestamp(4).ticks;
 			book->url = r->GetNewStrB(5, &sb, false);
 
 			this->bookMap.Put(book->id, book);
@@ -460,7 +459,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 	{
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
-		Data::DateTime dt;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -478,14 +476,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->id = r->GetInt32(0);
 				userFile->fileType = r->GetInt32(1);
 				userFile->oriFileName = r->GetNewStrB(2, &sb, false);
-				r->GetDate(3, &dt);
-				userFile->fileTimeTicks = dt.ToTicks();
+				userFile->fileTimeTicks = r->GetTimestamp(3).ticks;
 				userFile->lat = r->GetDbl(4);
 				userFile->lon = r->GetDbl(5);
 				userFile->webuserId = userId;
 				userFile->speciesId = r->GetInt32(7);
-				r->GetDate(8, &dt);
-				userFile->captureTimeTicks = dt.ToTicks();
+				userFile->captureTimeTicks = r->GetTimestamp(8).ticks;
 				userFile->dataFileName = r->GetNewStrB(9, &sb, false);
 				userFile->crcVal = (UInt32)r->GetInt32(10);
 				userFile->rotType = r->GetInt32(11);
@@ -535,14 +531,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		Int64 fromDate;
 		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
 		SSWR::OrganMgr::OrganWebHandler::TripInfo *trip;
-		Data::DateTime dt;
 		user = 0;
 		while (r->ReadNext())
 		{
 			userId = r->GetInt32(4);
 			cateId = r->GetInt32(3);
-			r->GetDate(0, &dt);
-			fromDate = dt.ToTicks();
+			fromDate = r->GetTimestamp(0).ticks;
 			if (user == 0 || user->id != userId)
 			{
 				user = this->userMap.Get(userId);
@@ -560,8 +554,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				{
 					trip = MemAlloc(SSWR::OrganMgr::OrganWebHandler::TripInfo, 1);
 					trip->fromDate = fromDate;
-					r->GetDate(1, &dt);
-					trip->toDate = dt.ToTicks();
+					trip->toDate = r->GetTimestamp(1).ticks;
 					trip->cateId = cateId;
 					trip->locId = r->GetInt32(2);
 					tripCate->Put(fromDate, trip);

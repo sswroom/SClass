@@ -685,13 +685,12 @@ UTF8Char *DB::CSVReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize
 	}
 }
 
-DB::DBReader::DateErrType DB::CSVReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::CSVReader::GetTimestamp(UOSInt colIndex)
 {
 	UTF8Char buff[60];
 	UTF8Char *sptr;
 	sptr = this->GetStr(colIndex, buff, sizeof(buff));
-	outVal->SetValue(CSTRP(buff, sptr));
-	return DB::DBReader::DET_OK;
+	return Data::Timestamp(CSTRP(buff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Double DB::CSVReader::GetDbl(UOSInt colIndex)

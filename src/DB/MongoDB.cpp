@@ -291,9 +291,9 @@ UTF8Char *DB::MongoDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buff
 	}
 }
 
-DB::DBReader::DateErrType DB::MongoDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::MongoDBReader::GetTimestamp(UOSInt colIndex)
 {
-	return DB::DBReader::DET_ERROR;
+	return Data::Timestamp(0, 0);
 }
 
 Double DB::MongoDBReader::GetDbl(UOSInt colIndex)

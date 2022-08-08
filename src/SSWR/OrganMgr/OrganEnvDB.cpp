@@ -146,10 +146,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			dataFile = MemAlloc(DataFileInfo, 1);
 			dataFile->id = r->GetInt32(0);
 			dataFile->fileType = r->GetInt32(1);
-			r->GetDate(2, &dt);
-			dataFile->startTimeTicks = dt.ToTicks();
-			r->GetDate(3, &dt);
-			dataFile->endTimeTicks = dt.ToTicks();
+			dataFile->startTimeTicks = r->GetTimestamp(2).ticks;
+			dataFile->endTimeTicks = r->GetTimestamp(3).ticks;
 			dataFile->oriFileName = r->GetNewStr(4);
 			dataFile->fileName = r->GetNewStr(5);
 			dataFile->webUserId = r->GetInt32(6);
@@ -182,14 +180,12 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile->id = r->GetInt32(0);
 			userFile->fileType = r->GetInt32(1);
 			userFile->oriFileName = r->GetNewStr(2);
-			r->GetDate(3, &dt);
-			userFile->fileTimeTicks = dt.ToTicks();
+			userFile->fileTimeTicks = r->GetTimestamp(3).ticks;
 			userFile->lat = r->GetDbl(4);
 			userFile->lon = r->GetDbl(5);
 			userFile->webuserId = r->GetInt32(6);
 			userFile->speciesId = r->GetInt32(7);
-			r->GetDate(8, &dt);
-			userFile->captureTimeTicks = dt.ToTicks();
+			userFile->captureTimeTicks = r->GetTimestamp(8).ticks;
 			userFile->dataFileName = r->GetNewStr(9);
 			userFile->crcVal = (UInt32)r->GetInt32(10);
 			userFile->rotType = r->GetInt32(11);
@@ -3162,9 +3158,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 							if (!found)
 							{
 								found = true;
-								reader->GetDate(1, &startDT);
+								reader->GetAsDate(1, &startDT);
 							}
-							reader->GetDate(1, &endDT);
+							reader->GetAsDate(1, &endDT);
 						}
 						db->CloseReader(reader);
 					}
@@ -3624,8 +3620,8 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 
 		while (r->ReadNext())
 		{
-			r->GetDate(0, &dt);
-			r->GetDate(1, &dt2);
+			r->GetAsDate(0, &dt);
+			r->GetAsDate(1, &dt2);
 			NEW_CLASS(t, Trip(&dt, &dt2, r->GetInt32(2)));
 			this->trips.Add(t);
 		}
@@ -3790,7 +3786,7 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 		sb.ClearStr();
 		r->GetStr(3, &sb);
 		book->SetPress(&sb);
-		r->GetDate(4, &dt);
+		r->GetAsDate(4, &dt);
 		book->SetPublishDate(&dt);
 		book->SetGroupId(r->GetInt32(5));
 		sb.ClearStr();
@@ -5064,7 +5060,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			Int32 fileType = r->GetInt32(0);
 			sb.AppendI32(userId);
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-			r->GetDate(1, &dt);
+			r->GetAsDate(1, &dt);
 			sptr2End = dt.ToString(sptr2, "yyyyMM");
 			sb.AppendP(sptr2, sptr2End);
 			sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());

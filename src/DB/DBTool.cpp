@@ -447,9 +447,8 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::
 				sql->AppendBool(r->GetBool(i));
 				break;
 			case DB::DBUtil::CT_DateTime:
-			case DB::DBUtil::CT_DateTime2:
-				r->GetDate(i, &dt);
-				sql->AppendDate(&dt);
+			case DB::DBUtil::CT_Date:
+				sql->AppendTS(r->GetTimestamp(i));
 				break;
 			case DB::DBUtil::CT_Int64:
 				sql->AppendInt64(r->GetInt64(i));

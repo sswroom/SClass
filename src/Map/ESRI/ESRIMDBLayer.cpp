@@ -491,9 +491,9 @@ UTF8Char *Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSI
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff, buffSize);
 }
 
-DB::DBReader::DateErrType Map::ESRI::ESRIMDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Map::ESRI::ESRIMDBReader::GetTimestamp(UOSInt colIndex)
 {
-	return this->r->GetDate((colIndex > 0)?(colIndex + 1):colIndex, outVal);
+	return this->r->GetTimestamp((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
 Double Map::ESRI::ESRIMDBReader::GetDbl(UOSInt colIndex)

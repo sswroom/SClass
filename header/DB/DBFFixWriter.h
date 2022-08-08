@@ -34,6 +34,7 @@ namespace DB
 		void AddRecord(const UTF8Char **rowValues);
 
 		Bool SetColumn(UOSInt index, Data::DateTime *val);
+		Bool SetColumn(UOSInt index, Data::Timestamp val);
 		Bool SetColumn(UOSInt index, Double val);
 		Bool SetColumn(UOSInt index, Int16 val);
 		Bool SetColumn(UOSInt index, Int32 val);

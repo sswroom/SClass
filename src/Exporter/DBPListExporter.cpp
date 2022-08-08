@@ -74,7 +74,6 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 	UOSInt colCnt;
 	UOSInt i;
 	UOSInt colSize;
-	Data::DateTime dt;
 
 	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
 
@@ -105,9 +104,11 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 			switch (ct)
 			{
 			case DB::DBUtil::CT_DateTime:
-			case DB::DBUtil::CT_DateTime2:
-				r->GetDate(i, &dt);
-				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd HH:mm:ss"), UTF8STRC("</string>"));
+				sptr = Text::StrConcatC(r->GetTimestamp(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd HH:mm:ss"), UTF8STRC("</string>"));
+				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				break;
+			case DB::DBUtil::CT_Date:
+				sptr = Text::StrConcatC(r->GetTimestamp(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd"), UTF8STRC("</string>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Double:

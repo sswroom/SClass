@@ -31,6 +31,7 @@ namespace Data
 		void SetItemStr(const UTF8Char *name, const UTF8Char *str);
 		void SetItemStr(const UTF8Char *name, Text::String *str);
 		void SetItemDate(const UTF8Char *name, Data::DateTime *dt);
+		void SetItemTS(const UTF8Char *name, Data::Timestamp ts);
 		void SetItemF32(const UTF8Char *name, Single val);
 		void SetItemF64(const UTF8Char *name, Double val);
 		void SetItemI8(const UTF8Char *name, Int8 val);

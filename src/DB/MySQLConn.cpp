@@ -582,21 +582,20 @@ UTF8Char *DB::MySQLReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 	}
 }
 
-DB::DBReader::DateErrType DB::MySQLReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
 {
 	if (this->row == 0)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	if (colIndex >= this->colCount)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
-		outVal->SetValue(Text::CString::FromPtr(s));
-		return DB::DBReader::DET_OK;
+		return Data::Timestamp(Text::CString::FromPtr(s), 0);
 	}
 	else
 	{
-		return DB::DBReader::DET_NULL;
+		return Data::Timestamp(0, 0);
 	}
 }
 

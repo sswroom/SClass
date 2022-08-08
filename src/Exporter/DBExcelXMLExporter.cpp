@@ -62,7 +62,6 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CSt
 	UOSInt colCnt;
 	UOSInt i;
 	UOSInt j;
-	Data::DateTime dt;
 
 
 	Text::Encoding enc(this->codePage);
@@ -127,10 +126,9 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CSt
 					DB::DBUtil::ColType ct = r->GetColType(i, &colSize);
 					switch (ct)
 					{
-					case DB::DBUtil::CT_DateTime2:
+					case DB::DBUtil::CT_Date:
 					case DB::DBUtil::CT_DateTime:
-						r->GetDate(i, &dt);
-						sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"DateTime\">")), "yyyy-MM-ddTHH:mm:ss.fff"), UTF8STRC("</Data></Cell>"));
+						sptr = Text::StrConcatC(r->GetTimestamp(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"DateTime\">")), "yyyy-MM-ddTHH:mm:ss.fff"), UTF8STRC("</Data></Cell>"));
 						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					case DB::DBUtil::CT_Double:

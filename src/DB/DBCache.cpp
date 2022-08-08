@@ -164,7 +164,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	case DB::DBUtil::CT_Bool:
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
-	case DB::DBUtil::CT_DateTime2:
+	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Binary:
 	case DB::DBUtil::CT_Vector:

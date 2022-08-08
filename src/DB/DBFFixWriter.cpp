@@ -200,6 +200,20 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::DateTime *val)
 	return true;
 }
 
+Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::Timestamp val)
+{
+	UTF8Char sbuff[10];
+	UInt8 outBuff[10];
+	if (index >= this->colCnt)
+		return false;
+	if (this->columns[index].colType != DB::DBUtil::CT_DateTime)
+		return false;
+	val.ToString(sbuff, "yyyyMMdd");
+	enc->UTF8ToBytesC(outBuff, sbuff, 8);
+	MemCopyNO(&this->rec[this->columns[index].colOfst], outBuff, 8);
+	return true;
+}
+
 Bool DB::DBFFixWriter::SetColumn(UOSInt index, Double val)
 {
 	if (index >= this->colCnt)

@@ -1278,10 +1278,8 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 		return 0;
 	if (colIndex == 0)
 	{
-		Data::DateTime dt;
 		UTF8Char sbuff[32];
-		GetDate(0, &dt);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		GetTimestamp(0).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	}
 	else if (colIndex == 1)
@@ -1324,9 +1322,7 @@ UTF8Char *Map::GPSDataReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buf
 		return 0;
 	if (colIndex == 0)
 	{
-		Data::DateTime dt;
-		GetDate(0, &dt);
-		return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
+		return GetTimestamp(0).ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 	}
 	else if (colIndex == 1)
 	{
@@ -1339,17 +1335,15 @@ UTF8Char *Map::GPSDataReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buf
 	return 0;
 }
 
-DB::DBReader::DateErrType Map::GPSDataReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Map::GPSDataReader::GetTimestamp(UOSInt colIndex)
 {
 	if (this->currRec == 0)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	if (colIndex == 0)
 	{
-		outVal->SetTicks(this->currRec->utcTimeTicks);
-		outVal->ToLocalTime();
-		return DB::DBReader::DET_OK;
+		return Data::Timestamp(this->currRec->utcTimeTicks, Data::DateTimeUtil::GetLocalTzQhr());
 	}
-	return DB::DBReader::DET_ERROR;
+	return Data::Timestamp(0, 0);
 }
 
 Double Map::GPSDataReader::GetDbl(UOSInt colIndex)

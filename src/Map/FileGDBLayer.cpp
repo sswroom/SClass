@@ -459,9 +459,9 @@ UTF8Char *Map::FileGDBLReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff, buffSize);
 }
 
-DB::DBReader::DateErrType Map::FileGDBLReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Map::FileGDBLReader::GetTimestamp(UOSInt colIndex)
 {
-	return this->r->GetDate((colIndex > 0)?(colIndex + 1):colIndex, outVal);
+	return this->r->GetTimestamp((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
 Double Map::FileGDBLReader::GetDbl(UOSInt colIndex)

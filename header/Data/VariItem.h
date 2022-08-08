@@ -178,6 +178,7 @@ namespace Data
 		static VariItem *NewStr(Text::CString str);
 		static VariItem *NewStr(Text::String *str);
 		static VariItem *NewDate(Data::DateTime *dt);
+		static VariItem *NewTS(Data::Timestamp ts);
 		static VariItem *NewF32(Single val);
 		static VariItem *NewF64(Double val);
 		static VariItem *NewI8(Int8 val);

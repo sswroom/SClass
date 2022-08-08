@@ -34,6 +34,7 @@ namespace DB
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 		void AppendDate(Data::DateTime *val);
+		void AppendTS(Data::Timestamp val);
 		void AppendDbl(Double val);
 		void AppendBool(Bool val);
 		void AppendVector(Math::Geometry::Vector2D *vec);

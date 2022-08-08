@@ -151,8 +151,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			}
 			else if (colTypes[i] == DB::DBUtil::CT_DateTime)
 			{
-				r->GetDate(i, &dt);
-				writer->SetColumn(i, &dt);
+				writer->SetColumn(i, r->GetTimestamp(i));
 			}
 			else
 			{

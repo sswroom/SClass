@@ -129,20 +129,18 @@ public:
 		return item.GetAsStringS(buff, buffSize);
 	}
 
-	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
+	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
 		{
-			return DateErrType::DET_ERROR;
+			return Data::Timestamp(0, 0);
 		}
 		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
-			return DateErrType::DET_NULL;
+			return Data::Timestamp(0, 0);
 		}
-		Data::Timestamp ts = item.GetAsTimestamp();
-		outVal->SetValue(ts.ticks, ts.tzQhr);
-		return DateErrType::DET_OK;
+		return item.GetAsTimestamp();
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)
@@ -264,10 +262,7 @@ public:
 		case 1114: //timestamp
 		case 1184: //timestamptz
 		{
-			Data::DateTime dt;
-			dt.SetTimeZoneQHR(this->tzQhr);
-			dt.SetValue(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)));
-			item->SetDate(&dt);
+			item->SetDate(Data::Timestamp(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)), this->tzQhr));
 			return true;
 		}
 		case 2950: //uuid
@@ -1060,11 +1055,11 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	case 1043: //varchar
 		return DB::DBUtil::CT_VarChar;
 	case 1082: //date
-		return DB::DBUtil::CT_DateTime;
+		return DB::DBUtil::CT_Date;
 	case 1114: //timestamp
-		return DB::DBUtil::CT_DateTime2;
+		return DB::DBUtil::CT_DateTime;
 	case 1184: //timestamptz
-		return DB::DBUtil::CT_DateTime2;
+		return DB::DBUtil::CT_DateTime;
 	case 1700: //numeric
 		return DB::DBUtil::CT_Double;
 	case 2277: //anyarray

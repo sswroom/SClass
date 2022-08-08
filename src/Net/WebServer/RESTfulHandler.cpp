@@ -12,7 +12,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 {
 	Text::StringBuilderUTF8 sb;
 	DB::ColDef *col;
-	Data::DateTime *dt;
+	Data::Timestamp ts;
 	UTF8Char sbuff[64];
 	DB::DBRow::DataType dtype;
 	DB::TableDef *table = row->GetTableDef();
@@ -36,10 +36,10 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 			json->ObjectAddInt64(sb.ToCString(), row->GetValueInt64(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_DATETIME:
-			dt = row->GetValueDate(col->GetColName()->v);
-			if (dt)
+			ts = row->GetValueDate(col->GetColName()->v);
+			if (ts.ticks)
 			{
-				dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
+				ts.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
 				json->ObjectAddStrUTF8(sb.ToCString(), sbuff);
 			}
 			else

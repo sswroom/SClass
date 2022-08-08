@@ -95,8 +95,8 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		case DB::DBUtil::CT_DateTime:
 			return Net::MySQLUtil::MYSQL_TYPE_DATETIME;
-		case DB::DBUtil::CT_DateTime2:
-			return Net::MySQLUtil::MYSQL_TYPE_DATETIME2;
+		case DB::DBUtil::CT_Date:
+			return Net::MySQLUtil::MYSQL_TYPE_DATE;
 		case DB::DBUtil::CT_Double:
 			return Net::MySQLUtil::MYSQL_TYPE_DOUBLE;
 		case DB::DBUtil::CT_Float:
@@ -156,7 +156,7 @@ DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType 
 		case Net::MySQLUtil::MYSQL_TYPE_INT24:
 			return DB::DBUtil::CT_Int32;
 		case Net::MySQLUtil::MYSQL_TYPE_DATE:
-			return DB::DBUtil::CT_DateTime;
+			return DB::DBUtil::CT_Date;
 		case Net::MySQLUtil::MYSQL_TYPE_TIME:
 			return DB::DBUtil::CT_DateTime;
 		case Net::MySQLUtil::MYSQL_TYPE_DATETIME:

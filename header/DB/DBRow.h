@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBROW
 #define _SM_DB_DBROW
-#include "Data/DateTime.h"
 #include "Data/StringUTF8Map.h"
+#include "Data/Timestamp.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
 
@@ -25,7 +25,7 @@ namespace DB
 		union FieldData
 		{
 			Int64 iVal;
-			Data::DateTime *dt;
+			Data::Timestamp ts;
 			const UTF8Char *str;
 			Double dVal;
 			Math::Geometry::Vector2D *vec;
@@ -52,7 +52,7 @@ namespace DB
 		Bool SetFieldStr(Field *field, const UTF8Char *strValue);
 		Bool SetFieldInt64(Field *field, Int64 intValue);
 		Bool SetFieldDouble(Field *field, Double dblValue);
-		Bool SetFieldDate(Field *field, Data::DateTime *dt);
+		Bool SetFieldDate(Field *field, Data::Timestamp ts);
 		Bool SetFieldVector(Field *field, Math::Geometry::Vector2D *vec);
 		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
 
@@ -60,7 +60,7 @@ namespace DB
 		const UTF8Char *GetFieldStr(Field *field) const;
 		Int64 GetFieldInt64(Field *field) const;
 		Double GetFieldDouble(Field *field) const;
-		Data::DateTime *GetFieldDate(Field *field) const;
+		Data::Timestamp GetFieldDate(Field *field) const;
 		Math::Geometry::Vector2D *GetFieldVector(Field *field) const;
 		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize) const;
 
@@ -76,7 +76,7 @@ namespace DB
 		Bool SetValueStr(const UTF8Char *fieldName, const UTF8Char *strValue);
 		Bool SetValueInt64(const UTF8Char *fieldName, Int64 intValue);
 		Bool SetValueDouble(const UTF8Char *fieldName, Double dblValue);
-		Bool SetValueDate(const UTF8Char *fieldName, Data::DateTime *dt);
+		Bool SetValueDate(const UTF8Char *fieldName, Data::Timestamp ts);
 		Bool SetValueVector(const UTF8Char *fieldName, Math::Geometry::Vector2D *vec);
 		Bool SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOSInt buffSize);
 
@@ -84,7 +84,7 @@ namespace DB
 		const UTF8Char *GetValueStr(const UTF8Char *fieldName) const;
 		Int64 GetValueInt64(const UTF8Char *fieldName) const;
 		Double GetValueDouble(const UTF8Char *fieldName) const;
-		Data::DateTime *GetValueDate(const UTF8Char *fieldName) const;
+		Data::Timestamp GetValueDate(const UTF8Char *fieldName) const;
 		Math::Geometry::Vector2D *GetValueVector(const UTF8Char *fieldName) const;
 		const UInt8 *GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize) const;
 

@@ -871,7 +871,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				col->SetNativeType(CSTRP(buff, ptr));
 				col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, &colSize));
 				col->SetColSize(colSize);
-				if (col->GetColType() == DB::DBUtil::CT_DateTime2)
+				if (col->GetColType() == DB::DBUtil::CT_DateTime)
 				{
 					if (col->IsNotNull())
 					{
@@ -1074,11 +1074,13 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				}
 				else if (s->Equals(UTF8STRC("timestamptz")))
 				{
-					col->SetColType(DB::DBUtil::CT_DateTime2);
+					col->SetColSize(6);
+					col->SetColType(DB::DBUtil::CT_DateTime);
 				}
 				else if (s->Equals(UTF8STRC("timestamp")))
 				{
-					col->SetColType(DB::DBUtil::CT_DateTime2);
+					col->SetColSize(6);
+					col->SetColType(DB::DBUtil::CT_DateTime);
 				}
 				else if (s->Equals(UTF8STRC("date")))
 				{

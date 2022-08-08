@@ -47,14 +47,24 @@ namespace DB
 				return 0;
 		}
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
-		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal) = 0;
-		Int64 GetTicks(UOSInt colIndex, Data::DateTime *tmpBuff)
+		virtual Data::Timestamp GetTimestamp(UOSInt colIndex) = 0;
+
+		DateErrType GetAsDate(UOSInt colIndex, Data::DateTime *outVal)
 		{
-			if (GetDate(colIndex, tmpBuff) == DET_OK)
-				return tmpBuff->ToTicks();
-			else
-				return 0;
+			if (IsNull(colIndex))
+				return DET_NULL;
+			Data::Timestamp ts = GetTimestamp(colIndex);
+			if (ts.ticks == 0)
+				return DET_ERROR;
+			outVal->SetValue(ts.ticks, ts.tzQhr);
+			return DET_OK;
 		}
+
+		Int64 GetTicks(UOSInt colIndex)
+		{
+			return GetTimestamp(colIndex).ticks;
+		}
+
 		virtual Double GetDbl(UOSInt colIndex) = 0;
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;

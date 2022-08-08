@@ -185,7 +185,6 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 			return false;
 		}
 
-		Data::DateTime dt;
 		Int64 t;
 		while (r->ReadNext())
 		{
@@ -202,8 +201,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 				NEW_CLASS(country->records, Data::Int64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
 				this->countries.Put(country->isoCode, country);
 			}
-			r->GetDate(colDate, &dt);
-			t = dt.ToTicks();
+			t = r->GetTimestamp(colDate).ticks;
 			if (country->records->Get(t) == 0)
 			{
 				record = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::DailyRecord, 1);

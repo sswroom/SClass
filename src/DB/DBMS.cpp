@@ -233,19 +233,16 @@ namespace DB
 			return Text::StrConcatS(buff, row[colIndex]->v, buffSize);
 		}
 
-		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
+		virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
-				return DET_ERROR;
+				return Data::Timestamp(0, 0);
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0)
-				return DET_ERROR;
+				return Data::Timestamp(0, 0);
 			if (row[colIndex] == 0)
-				return DET_NULL;
-			if (outVal->SetValue(row[colIndex]->ToCString()))
-				return DET_OK;
-			else
-				return DET_ERROR;
+				return Data::Timestamp(0, 0);
+			return Data::Timestamp(row[colIndex]->ToCString(), 0);
 		}
 
 		virtual Double GetDbl(UOSInt colIndex)

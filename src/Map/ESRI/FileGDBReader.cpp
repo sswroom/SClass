@@ -536,29 +536,28 @@ UTF8Char *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSI
 	return 0;
 }
 
-DB::DBReader::DateErrType Map::ESRI::FileGDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData == 0)
 	{
-		return DET_ERROR;
+		return Data::Timestamp(0, 0);
 	}
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
 	if (field == 0)
 	{
-		return DET_ERROR;
+		return Data::Timestamp(0, 0);
 	}
 	else if (this->fieldNull[fieldIndex])
 	{
-		return DET_NULL;
+		return Data::Timestamp(0, 0);
 	}
 	switch (field->fieldType)
 	{
 	case 5:
-		Text::XLSUtil::Number2Date(outVal, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-		return DET_OK;
+		return Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	}
-	return DET_ERROR;
+	return Data::Timestamp(0, 0);
 }
 
 Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)

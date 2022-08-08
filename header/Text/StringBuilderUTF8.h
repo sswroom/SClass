@@ -2,6 +2,7 @@
 #define _SM_TEXT_STRINGBUILDERUTF8
 #include "MyMemory.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Text/LineBreakType.h"
 #include "Text/PString.h"
 
@@ -176,6 +177,31 @@ namespace Text
 		{
 			this->AllocLeng(19);
 			this->leng = (UOSInt)(dt->ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendTS(Data::Timestamp ts)
+		{
+			if (ts.nanosec == 0)
+			{
+				this->AllocLeng(19);
+				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);
+			}
+			else if (ts.nanosec % 1000000 == 0)
+			{
+				this->AllocLeng(23);
+				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.fff") - this->v);
+			}
+			else if (ts.nanosec % 1000 == 0)
+			{
+				this->AllocLeng(26);
+				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.ffffff") - this->v);
+			}
+			else
+			{
+				this->AllocLeng(29);
+				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.fffffffff") - this->v);
+			}
 			return this;
 		}
 

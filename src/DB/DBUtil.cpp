@@ -1225,8 +1225,116 @@ UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::ServerType svrTy
 	{
 		return 31;
 	}
+	else if (svrType == DB::DBUtil::ServerType::MySQL)
+	{
+		return 25;
+	}
 	else
 	{
+		return 21;
+	}
+}
+
+UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, ServerType svrType, Int8 tzQhr)
+{
+	UTF8Char *sptr;
+	if (ts.ticks == 0)
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+	if (svrType == DB::DBUtil::ServerType::Access)
+	{
+		ts.tzQhr = 0;
+		sptr = sqlstr;
+		*sptr++ = '#';
+		sptr = ts.ToString(sptr, "dd/MM/yyyy HH:mm:ss");
+		*sptr++ = '#';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::MSSQL)
+	{
+		ts.tzQhr = tzQhr;
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::SQLite)
+	{
+		ts.tzQhr = 0;
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::Oracle)
+	{
+		ts.tzQhr = 0;
+		sptr = sqlstr;
+		sptr = Text::StrConcatC(sptr, UTF8STRC("TIMESTAMP '"));
+		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffffff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::MySQL)
+	{
+		ts.tzQhr = 0;
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::PostgreSQL)
+	{
+		ts.tzQhr = 0;
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else
+	{
+		ts.tzQhr = 0;
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+}
+
+UOSInt DB::DBUtil::SDBTSLeng(Data::Timestamp ts, ServerType svrType)
+{
+	if (ts.ticks == 0)
+		return 4;
+	switch (svrType)
+	{
+	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::ServerType::MDBTools:
+		return 21;
+	case DB::DBUtil::ServerType::MSSQL:
+		return 29;
+	case DB::DBUtil::ServerType::Oracle:
+		return 41;
+	case DB::DBUtil::ServerType::SQLite:
+		return 25;
+	case DB::DBUtil::ServerType::MySQL:
+		return 28;
+	case DB::DBUtil::ServerType::PostgreSQL:
+		return 28;
+	default:
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::Unknown:
 		return 21;
 	}
 }
@@ -1704,13 +1812,47 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetime")))
 		{
-			*colSize = 8;
-			return DB::DBUtil::CT_DateTime2;
+			if (typeName[8] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[9]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[9]);
+				}
+			}
+			else
+			{
+				*colSize = 0;
+			}
+			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("timestamp")))
 		{
-			*colSize = 8;
-			return DB::DBUtil::CT_DateTime2;
+			if (typeName[9] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[10]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[10]);
+				}
+			}
+			else
+			{
+				*colSize = 0;
+			}
+			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("double")))
 		{
@@ -1779,11 +1921,31 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("datetime")))
 		{
+			*colSize = 3;
 			return DB::DBUtil::CT_DateTime;
 		}
-		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("datetime2")))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetime2")))
 		{
-			return DB::DBUtil::CT_DateTime2;
+			if (typeName[9] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[10]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[10]);
+				}
+			}
+			else
+			{
+				*colSize = 7;
+			}
+			*colSize = 7;
+			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("float")))
 		{
@@ -1823,7 +1985,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("date")))
 		{
-			return DB::DBUtil::CT_DateTime;
+			return DB::DBUtil::CT_Date;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("sysname")))
 		{
@@ -1878,7 +2040,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DATETIME")))
 		{
-			*colSize = 16;
+			*colSize = 3;
 			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BLOB")))
@@ -1945,9 +2107,7 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	case DB::DBUtil::CT_NChar:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("NCHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_DateTime:
-		return Text::StrConcatC(sbuff, UTF8STRC("DATETIME"));
-	case DB::DBUtil::CT_DateTime2:
-		return Text::StrConcatC(sbuff, UTF8STRC("DATETIME2"));
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DATETIME(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Double:
 		return Text::StrConcatC(sbuff, UTF8STRC("DOUBLE"));
 	case DB::DBUtil::CT_Float:
@@ -1970,6 +2130,8 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 		return Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY"));
 	case DB::DBUtil::CT_UUID:
 		return Text::StrConcatC(sbuff, UTF8STRC("UUID"));
+	case DB::DBUtil::CT_Date:
+		return Text::StrConcatC(sbuff, UTF8STRC("DATE"));
 	case DB::DBUtil::CT_Unknown:
 	default:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UNKNOWN(")), colSize), UTF8STRC(")"));

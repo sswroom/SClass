@@ -32,7 +32,7 @@ namespace Media
 			virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb);
 			virtual Text::String *GetNewStr(UOSInt colIndex);
 			virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
-			virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal);
+			virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 			virtual Double GetDbl(UOSInt colIndex);
 			virtual Bool GetBool(UOSInt colIndex);
 			virtual UOSInt GetBinarySize(UOSInt colIndex);
@@ -48,7 +48,7 @@ namespace Media
 			Text::CString GetName(UOSInt colIndex);
 		};
 	private:
-		Data::DateTime *time1;
+		Int64 time1TS;
 		const UTF8Char *serialNo;
 		const UTF8Char *testName;
 		Int32 address;
@@ -58,11 +58,11 @@ namespace Media
 		Int32 tempAlarmH;
 		Int32 rhAlarmL;
 		Int32 rhAlarmH;
-		Data::DateTime *time2;
-		Data::DateTime *time3;
+		Int64 time2TS;
+		Int64 time3TS;
 		UOSInt recCount;
 		UInt8 *recBuff;
-		Data::DateTime *adjStTime;
+		Int64 adjStTimeTicks;
 		UInt32 adjRecInterval;
 
 	public:
@@ -75,20 +75,20 @@ namespace Media
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
-		Bool GetDownloadTime(Data::DateTime *t);
+		Data::Timestamp GetDownloadTime();
 		Int32 GetAddress();
-		Bool GetSettingTime(Data::DateTime *t);
+		Data::Timestamp GetSettingTime();
 		UOSInt GetTotalRec();
 		UInt32 GetRecInterval();
 		Double GetTempAlarmL();
 		Double GetTempAlarmH();
 		Double GetHumiAlarmL();
 		Double GetHumiAlarmH();
-		Bool GetStartTime(Data::DateTime *t);
+		Data::Timestamp GetStartTime();
 		UOSInt GetRecCount();
 		UTF8Char *GetSerialNo(UTF8Char *sbuff);
 		UTF8Char *GetTestName(UTF8Char *sbuff);
-		Bool GetAdjStartTime(Data::DateTime *t);
+		Data::Timestamp GetAdjStartTime();
 		UInt32 GetAdjRecInterval();
 		const UInt8 *GetRecBuff();
 	};

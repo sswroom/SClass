@@ -31,8 +31,6 @@ namespace Data
 	private:
 		Data::DateTimeUtil::TimeValue *GetTimeValue();
 
-		static void SetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs);
-		static void SetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs);
 		void FixValues();
 	public:
 		DateTime();

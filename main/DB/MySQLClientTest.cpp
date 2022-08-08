@@ -465,14 +465,11 @@ void TempTest(Net::SocketFactory *sockf, IO::Writer *console)
 		{
 			UTF8Char sbuff[64];
 			UTF8Char *sptr;
-			Data::DateTime dt;
 			while (r->ReadNext())
 			{
-				r->GetDate(1, &dt);
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sptr = r->GetTimestamp(1).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-				r->GetDate(2, &dt);
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sptr = r->GetTimestamp(2).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			db->CloseReader(r);
