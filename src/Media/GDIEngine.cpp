@@ -6,7 +6,7 @@
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
-#include "Math/Geometry.h"
+#include "Math/GeometryTool.h"
 #include "Media/DrawEngine.h"
 #include "Media/GDIEngine.h"
 #include "Media/ImageCopyC.h"
@@ -2566,7 +2566,7 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 	{
 		pts[8] = centX;
 		pts[9] = centY - sz[1] * 0.5;
-		Math::Geometry::RotateACW(pts, pts, 5, centX, centY, angleDegree * Math::PI / 180.0);
+		Math::GeometryTool::RotateACW(pts, pts, 5, centX, centY, angleDegree * Math::PI / 180.0);
 		pos[0] = Double2Int32(pts[0]);
 		pos[1] = Double2Int32(pts[1]);
 		pos[2] = Double2Int32(pts[2]);
@@ -2580,7 +2580,7 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 	}
 	else
 	{
-		Math::Geometry::RotateACW(pts, pts, 4, centX, centY, angleDegree * Math::PI / 180.0);
+		Math::GeometryTool::RotateACW(pts, pts, 4, centX, centY, angleDegree * Math::PI / 180.0);
 		pos[0] = Double2Int32(pts[0]);
 		pos[1] = Double2Int32(pts[1]);
 		pos[2] = Double2Int32(pts[2]);
@@ -2870,13 +2870,13 @@ void Media::GDIImage::PolygonAccel(void *hdc, Int32 *points, UOSInt nPoints, OSI
 		return;
 	}
 
-	ptCnt = Math::Geometry::BoundPolygonY(points, nPoints, pointsTmp, -penWidth, height + penWidth, 0, 0);
+	ptCnt = Math::GeometryTool::BoundPolygonY(points, nPoints, pointsTmp, -penWidth, height + penWidth, 0, 0);
 	if (ptCnt > 0)
 	{
 		pointsTmp2 = MemAlloc(Int32, ptCnt << 2);
 //		Polygon((HDC)hdc, (POINT*)pointsTmp, ptCnt);
 
-		ptCnt2 = Math::Geometry::BoundPolygonX(pointsTmp, ptCnt, pointsTmp2, -penWidth, width + penWidth, ofstX, ofstY);
+		ptCnt2 = Math::GeometryTool::BoundPolygonX(pointsTmp, ptCnt, pointsTmp2, -penWidth, width + penWidth, ofstX, ofstY);
 
 		if (ptCnt2 > 0)
 		{
@@ -2932,10 +2932,10 @@ void Media::GDIImage::PolyPolygonAccel(void *hdc, Int32 *points, UInt32 *pointCn
 			pointsTmp3 = MemAlloc(Int32, (pointsTmp3Size = nPoints) << 2);
 		}
 
-		ptCnt = Math::Geometry::BoundPolygonY(points, nPoints, pointsTmp3, -penWidth, height + penWidth, 0, 0);
+		ptCnt = Math::GeometryTool::BoundPolygonY(points, nPoints, pointsTmp3, -penWidth, height + penWidth, 0, 0);
 		if (ptCnt > 0)
 		{
-			ptCnt2 = Math::Geometry::BoundPolygonX(pointsTmp3, ptCnt, currPoints, -penWidth, width + penWidth, ofstX, ofstY);
+			ptCnt2 = Math::GeometryTool::BoundPolygonX(pointsTmp3, ptCnt, currPoints, -penWidth, width + penWidth, ofstX, ofstY);
 			if (ptCnt2 > 0)
 			{
 				pointsTmp2[nParts++] = (Int32)ptCnt2;

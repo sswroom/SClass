@@ -7,7 +7,7 @@
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
-#include "Math/VectorImage.h"
+#include "Math/Geometry/VectorImage.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
 #include "Media/JPEGFile.h"
@@ -275,7 +275,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		if (img->exif && img->exif->GetGeoBounds(img->info.dispWidth, img->info.dispHeight, &srid, &min.x, &min.y, &max.x, &max.y))
 		{
 			Map::VectorLayer *lyr;
-			Math::VectorImage *vimg;
+			Math::Geometry::VectorImage *vimg;
 			Media::SharedImage *simg;
 			if (srid == 0)
 			{
@@ -286,7 +286,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			img->To32bpp();
 			
 			NEW_CLASS(simg, Media::SharedImage(imgList, true));
-			NEW_CLASS(vimg, Math::VectorImage(srid, simg, min, max, false, fd->GetFullName(), 0, 0));
+			NEW_CLASS(vimg, Math::Geometry::VectorImage(srid, simg, min, max, false, fd->GetFullName(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
 			DEL_CLASS(simg);
 			
@@ -346,14 +346,14 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 				if (valid && rotX == 0 && rotY == 0)
 				{
 					Map::VectorLayer *lyr;
-					Math::VectorImage *vimg;
+					Math::Geometry::VectorImage *vimg;
 					Media::SharedImage *simg;
 					
 					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispHeight) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispWidth) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName(), 0, 0));
+					NEW_CLASS(vimg, Math::Geometry::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispHeight) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispWidth) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
 					DEL_CLASS(simg);
 					

@@ -1442,44 +1442,63 @@ UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 	}
 }
 
-DB::DBReader::DateErrType DB::OLEDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*status == DBSTATUS_S_ISNULL)
 	{
-		return DB::DBReader::DET_NULL;
+		return Data::Timestamp(0, 0);
 	}
+	Data::DateTimeUtil::TimeValue tval;
 	switch (data->dbColInfo[colIndex].wType)
 	{
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			outVal->SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
-			return DB::DBReader::DET_OK;
+			tval.year = ReadUInt16(val);
+			tval.month = (UInt8)ReadUInt16(&val[2]);
+			tval.day = (UInt8)ReadUInt16(&val[4]);
+			tval.hour = 0;
+			tval.minute = 0;
+			tval.second = 0;
+			tval.ms = 0;
+			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
 		}
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	case DBTYPE_DBTIME:
 		if (*valLen == 6)
 		{
-			outVal->SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
-			return DB::DBReader::DET_OK;
+			tval.year = 1970;
+			tval.month = 1;
+			tval.day = 1;
+			tval.hour = (UInt8)ReadUInt16(val);
+			tval.minute = (UInt8)ReadUInt16(&val[2]);
+			tval.second = (UInt8)ReadUInt16(&val[4]);
+			tval.ms = 0;
+			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
 		}
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	case DBTYPE_DBTIMESTAMP:
 		if (*valLen == 16)
 		{
-			outVal->SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
-			return DB::DBReader::DET_OK;
+			tval.year = ReadUInt16(val);
+			tval.month = (UInt8)ReadUInt16(&val[2]);
+			tval.day = (UInt8)ReadUInt16(&val[4]);
+			tval.hour = (UInt8)ReadUInt16(&val[6]);
+			tval.minute = (UInt8)ReadUInt16(&val[8]);
+			tval.second = (UInt8)ReadUInt16(&val[10]);
+			tval.ms = ReadUInt16(&val[12]);
+			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
 		}
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	case DBTYPE_NULL:
 	default:
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 	}
 }
 

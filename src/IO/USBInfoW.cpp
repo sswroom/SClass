@@ -86,7 +86,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	UTF8Char *sptr2End;
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
-	DB::DBReader *r = qry.QueryTableData(CSTR("CIM_LogicalDevice"), 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = qry.QueryTableData(CSTR_NULL, CSTR("CIM_LogicalDevice"), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		UOSInt descCol = INVALID_INDEX;

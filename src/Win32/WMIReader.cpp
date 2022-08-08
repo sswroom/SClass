@@ -635,13 +635,13 @@ UTF8Char *Win32::WMIReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 	return buff;
 }
 
-DB::DBReader::DateErrType Win32::WMIReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
+Data::Timestamp Win32::WMIReader::GetTimestamp(UOSInt colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
-		return DB::DBReader::DET_ERROR;
+		return Data::Timestamp(0, 0);
 
-	DB::DBReader::DateErrType ret = DB::DBReader::DET_ERROR;
+	Data::Timestamp ret = Data::Timestamp(0, 0);
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -651,20 +651,15 @@ DB::DBReader::DateErrType Win32::WMIReader::GetDate(UOSInt colIndex, Data::DateT
 	{
 		if (V_VT(&v) == VT_NULL)
 		{
-			ret = DB::DBReader::DET_NULL;
 		}
 		else
 		{
 			switch (t)
 			{
 			case CIM_EMPTY:
-				ret = DB::DBReader::DET_NULL;
 				break;
 			case CIM_DATETIME:
-				{
-					outVal->SetValueVariTime(V_DATE(&v));
-					ret = DB::DBReader::DET_OK;
-				}
+				ret = Data::Timestamp::FromVariTime(V_DATE(&v));
 				break;
 			}
 		}

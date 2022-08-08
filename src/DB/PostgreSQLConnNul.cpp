@@ -135,6 +135,21 @@ void DB::PostgreSQLConn::Rollback(void *tran)
 	}
 }
 
+UOSInt DB::PostgreSQLConn::QuerySchemaNames(Data::ArrayList<Text::String*> *names)
+{
+	UOSInt initCnt = names->GetCount();
+	DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
+	if (r)
+	{
+		while (r->ReadNext())
+		{
+			names->Add(r->GetNewStr(0));
+		}
+		this->CloseReader(r);
+	}
+	return names->GetCount() - initCnt;
+}
+
 UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {
 	if (schemaName.leng == 0)

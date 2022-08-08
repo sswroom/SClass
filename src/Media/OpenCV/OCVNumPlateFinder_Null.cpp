@@ -3,7 +3,7 @@
 #include "Media/OpenCV/OCVNumPlateFinder.h"
 Media::OpenCV::OCVNumPlateFinder::OCVNumPlateFinder()
 {
-	this->maxTileAngle = 30;
+	this->maxTiltAngle = 30;
 	this->minArea = 2000;
 	this->maxArea = 20000;
 }
@@ -12,9 +12,9 @@ Media::OpenCV::OCVNumPlateFinder::~OCVNumPlateFinder()
 {
 }
 
-void Media::OpenCV::OCVNumPlateFinder::SetMaxTileAngle(Double maxTileAngleDegree)
+void Media::OpenCV::OCVNumPlateFinder::SetMaxTiltAngle(Double maxTiltAngleDegree)
 {
-	this->maxTileAngle = maxTileAngleDegree;
+	this->maxTiltAngle = maxTiltAngleDegree;
 }
 
 void Media::OpenCV::OCVNumPlateFinder::SetAreaRange(Double minArea, Double maxArea)

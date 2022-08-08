@@ -243,6 +243,15 @@ namespace Data
 			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
 			return Timestamp(ticks, nanosec, 0);
 		}
+
+		static Timestamp FromVariTime(Double variTime)
+		{
+			Int32 days = (Int32)variTime;
+			Int8 tz = Data::DateTimeUtil::GetLocalTzQhr();
+			Double ds = (variTime - days);
+			OSInt s = Double2OSInt(ds * 86400);
+			return Data::Timestamp((days - 25569) * 86400000LL + Double2OSInt(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000), tz);
+		}
 	};
 }
 #endif
