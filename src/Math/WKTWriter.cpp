@@ -2,7 +2,8 @@
 #include "MyMemory.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/MultiPolygon.h"
-#include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/PointM.h"
+#include "Math/Geometry/PointZM.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
@@ -344,6 +345,11 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			sb->AppendDouble(y);
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(z);
+			if (vec->HasM())
+			{
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(((Math::Geometry::PointZM*)pt)->GetM());
+			}
 		}
 		else
 		{
@@ -353,6 +359,11 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			sb->AppendDouble(coord.x);
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(coord.y);
+			if (vec->HasM())
+			{
+				sb->AppendC(UTF8STRC(" NULL "));
+				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM());
+			}
 		}
 		sb->AppendC(UTF8STRC(")"));
 		return true;
@@ -361,7 +372,7 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 		AppendPolygon(sb, (Math::Geometry::Polygon*)vec);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
-		sb->AppendC(UTF8STRC("POLYLINE"));
+		sb->AppendC(UTF8STRC("MULTILINESTRING"));
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			if (pl->HasZ())
