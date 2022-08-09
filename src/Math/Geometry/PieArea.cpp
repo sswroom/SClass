@@ -2,105 +2,99 @@
 #include "MyMemory.h"
 #include "Math/CoordinateSystem.h"
 #include "Math/Math.h"
-#include "Math/PieArea.h"
+#include "Math/Geometry/PieArea.h"
 
-Math::PieArea::PieArea(UInt32 srid, Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2) : Math::Geometry::Vector2D(srid)
+Math::Geometry::PieArea::PieArea(UInt32 srid, Math::Coord2DDbl center, Double r, Double arcAngle1, Double arcAngle2) : Math::Geometry::Vector2D(srid)
 {
-	this->cx = cx;
-	this->cy = cy;
+	this->center = center;
 	this->r = r;
 	this->arcAngle1 = arcAngle1;
 	this->arcAngle2 = arcAngle2;
 }
 
-Math::PieArea::~PieArea()
+Math::Geometry::PieArea::~PieArea()
 {
 }
 
-Math::Geometry::Vector2D::VectorType Math::PieArea::GetVectorType()
+Math::Geometry::Vector2D::VectorType Math::Geometry::PieArea::GetVectorType() const
 {
 	return Math::Geometry::Vector2D::VectorType::PieArea;
 }
 
-void Math::PieArea::GetCenter(Double *x, Double *y)
+Math::Coord2DDbl Math::Geometry::PieArea::GetCenter() const
 {
 	Double a = (this->arcAngle1 + this->arcAngle2) * 0.5;
-	*x = this->cx + r * Math_Sin(a) * 0.5;
-	*y = this->cy - r * Math_Cos(a) * 0.5;
+	return Math::Coord2DDbl(this->center.x + r * Math_Sin(a) * 0.5, this->center.y - r * Math_Cos(a) * 0.5);
 }
 
-Math::Geometry::Vector2D *Math::PieArea::Clone()
+Math::Geometry::Vector2D *Math::Geometry::PieArea::Clone() const
 {
-	Math::PieArea *pie;
-	NEW_CLASS(pie, Math::PieArea(this->srid, this->cx, this->cy, this->r, this->arcAngle1, this->arcAngle2));
+	Math::Geometry::PieArea *pie;
+	NEW_CLASS(pie, Math::Geometry::PieArea(this->srid, this->center, this->r, this->arcAngle1, this->arcAngle2));
 	return pie;
 }
 
-void Math::PieArea::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+void Math::Geometry::PieArea::GetBounds(Math::RectAreaDbl* bounds) const
 {
 	//////////////////////////////////////////////////////////
-	*minX = this->cx - this->r;
-	*minY = this->cy - this->r;
-	*maxX = this->cx + this->r;
-	*maxY = this->cy + this->r;
+	bounds->tl = this->center - this->r;
+	bounds->br = this->center + this->r;
 }
 
-Double Math::PieArea::CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY)
+Double Math::Geometry::PieArea::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl* nearPt) const
 {
 	//////////////////////////////////////////////////////////
-	*nearPtX = x;
-	*nearPtY = y;
+	*nearPt = pt;
 	return 0;
 }
 
-Bool Math::PieArea::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::PieArea::JoinVector(Math::Geometry::Vector2D *vec)
 {
 	return false;
 }
 
-Bool Math::PieArea::HasZ()
+Bool Math::Geometry::PieArea::HasZ() const
 {
 	return false;
 }
 
-void Math::PieArea::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+void Math::Geometry::PieArea::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->cx, this->cy, 0, &this->cx, &this->cy, 0);
+	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->center.x, this->center.y, 0, &this->center.x, &this->center.y, 0);
 }
 
-Bool Math::PieArea::Equals(Vector2D *vec)
+Bool Math::Geometry::PieArea::Equals(Vector2D *vec) const
 {
 	if (vec == 0 || vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
 		return false;
-	Math::PieArea *pa = (Math::PieArea*)vec;
-	return this->cx == pa->cx &&
-		this->cy == pa->cy &&
+	Math::Geometry::PieArea *pa = (Math::Geometry::PieArea*)vec;
+	return this->center == pa->center &&
 		this->r == pa->r &&
 		this->arcAngle1 == pa->arcAngle1 &&
 		this->arcAngle2 == pa->arcAngle2;
 }
 
-Double Math::PieArea::GetCX()
+Double Math::Geometry::PieArea::GetCX() const
 {
-	return this->cx;
+	return this->center.x;
 }
 
-Double Math::PieArea::GetCY()
+Double Math::Geometry::PieArea::GetCY() const
 {
-	return this->cy;
+	return this->center.y;
 }
 
-Double Math::PieArea::GetR()
+Double Math::Geometry::PieArea::GetR() const
 {
 	return this->r;
 }
 
-Double Math::PieArea::GetArcAngle1()
+Double Math::Geometry::PieArea::GetArcAngle1() const
 {
 	return this->arcAngle1;
 }
 
-Double Math::PieArea::GetArcAngle2()
+Double Math::Geometry::PieArea::GetArcAngle2() const
 {
 	return this->arcAngle2;
 }

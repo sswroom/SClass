@@ -1371,7 +1371,7 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 	{
 		Double sz[2];
 		GetTextSize(f, str, src - str - 1, sz);
-		Media::GDIImage *tmpImg = (Media::GDIImage*)this->eng->CreateImage32((Int32)sz[0] + 1, (Int32)sz[1] + 1, Media::AT_NO_ALPHA);
+		Media::GDIImage *tmpImg = (Media::GDIImage*)this->eng->CreateImage32((OSInt)sz[0] + 1, (OSInt)sz[1] + 1, Media::AT_NO_ALPHA);
 		Media::DrawBrush *b2 = tmpImg->NewBrushARGB(0xffffffff);
 		tmpImg->DrawStringW(0, 0, str, f, b2);
 		tmpImg->DelBrush(b2);
@@ -2912,7 +2912,7 @@ void Media::GDIImage::PolyPolygonAccel(void *hdc, Int32 *points, UInt32 *pointCn
 	{
 		totalPoints += pointCnt[i];
 	}
-	pointsTmp = MemAlloc(Int32, totalPoints << 2);
+	pointsTmp = MemAlloc(Int32, (UOSInt)totalPoints << 2);
 	pointsTmp2 = MemAlloc(Int32, nPointCnt);
 	pointsTmp3 = 0;
 	pointsTmp3Size = 0;

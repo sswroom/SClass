@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "Math/BigIntLSB.h"
 #include "Text/MyString.h"
-#include "Data/ByteTool.h"
 
 void BigIntLSB_Neg(UOSInt *valBuff, UOSInt valSize)
 {

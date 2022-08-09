@@ -1130,18 +1130,18 @@ DB::DBReader::DateErrType Map::GPSTrackReader::GetDate(UOSInt colIndex, Data::Da
 {
 	UOSInt id = (UOSInt)this->currIndex;
 	if (colIndex != 1 && colIndex != 2)
-		return DB::DBReader::DET_ERROR;
+		return DB::DBReader::DateErrType::Error;
 	if (colIndex == 2)
 	{
 		if (this->gps->GetTrackStartTime(id, outVal))
-			return DB::DBReader::DET_OK;
+			return DB::DBReader::DateErrType::Ok;
 	}
 	else if (colIndex == 3)
 	{
 		if (this->gps->GetTrackEndTime(id, outVal))
-			return DB::DBReader::DET_OK;
+			return DB::DBReader::DateErrType::Ok;
 	}
-	return DB::DBReader::DET_ERROR;
+	return DB::DBReader::DateErrType::Error;
 }
 
 Map::GPSDataReader::GPSDataReader(Map::GPSTrack *gps)

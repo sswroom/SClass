@@ -263,10 +263,10 @@ Win32::WindowsBTScanner::WindowsBTScanner()
 Win32::WindowsBTScanner::~WindowsBTScanner()
 {
 	this->Close();
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->pubDevMap->GetValues();
-	LIST_FREE_FUNC(devList, DeviceFree);
+	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->pubDevMap.GetValues();
+	LIST_CALL_FUNC(devList, DeviceFree);
 	devList = this->randDevMap.GetValues();
-	LIST_FREE_FUNC(devList, DeviceFree);
+	LIST_CALL_FUNC(devList, DeviceFree);
 }
 
 void Win32::WindowsBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userObj)

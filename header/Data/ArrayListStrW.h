@@ -8,7 +8,7 @@ namespace Data
 	{
 	public:
 		ArrayListStrW();
-		ArrayListStrW(OSInt Capacity);
+		ArrayListStrW(UOSInt Capacity);
 
 		virtual Data::ArrayList<const WChar*> *Clone() const;
 		virtual OSInt CompareItem(const WChar* obj1, const WChar* obj2) const;

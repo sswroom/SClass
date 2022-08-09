@@ -44,9 +44,8 @@ namespace Media
 			}
 		};
 
-		class RGBPARAM2
+		struct RGBPARAM2
 		{
-		public:
 			Double MonRBright;
 			Double MonRContr;
 			Double MonRGamma;
@@ -68,14 +67,6 @@ namespace Media
 			Media::ColorProfile monProfile;
 			Media::ColorProfile::CommonProfileType monProfileType;
 			Double monLuminance;
-
-			RGBPARAM2()
-			{
-			}
-
-			~RGBPARAM2()
-			{
-			}
 
 			void SetDefault()
 			{

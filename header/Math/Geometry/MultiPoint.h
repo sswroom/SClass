@@ -10,7 +10,7 @@ namespace Math
 		class MultiPoint : public MultiGeometry<Point>
 		{
 		public:
-			MultiPoint(UInt32 srid);
+			MultiPoint(UInt32 srid, Bool hasZ, Bool hasM);
 			virtual ~MultiPoint();
 
 			virtual VectorType GetVectorType() const;

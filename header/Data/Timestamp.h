@@ -44,9 +44,7 @@ namespace Data
 			}
 		}
 		
-		~Timestamp()
-		{
-		}
+		~Timestamp() = default;
 
 		Timestamp AddDay(OSInt val) const
 		{

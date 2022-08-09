@@ -15,12 +15,12 @@ namespace DB
 	class DBReader
 	{
 	public:
-		typedef enum
+		enum class DateErrType
 		{
-			DET_OK = 0,
-			DET_NULL = 1,
-			DET_ERROR = 2
-		} DateErrType;
+			Ok = 0,
+			Null = 1,
+			Error = 2
+		};
 
 	protected:
 		DBReader(){};
@@ -52,12 +52,12 @@ namespace DB
 		DateErrType GetAsDate(UOSInt colIndex, Data::DateTime *outVal)
 		{
 			if (IsNull(colIndex))
-				return DET_NULL;
+				return DateErrType::Null;
 			Data::Timestamp ts = GetTimestamp(colIndex);
 			if (ts.ticks == 0)
-				return DET_ERROR;
+				return DateErrType::Error;
 			outVal->SetValue(ts.ticks, ts.tzQhr);
-			return DET_OK;
+			return DateErrType::Ok;
 		}
 
 		Int64 GetTicks(UOSInt colIndex)

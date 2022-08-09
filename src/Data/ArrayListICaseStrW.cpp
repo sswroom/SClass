@@ -8,11 +8,11 @@ Data::ArrayListICaseStrW::ArrayListICaseStrW() : Data::ArrayListStrW()
 {
 }
 
-Data::ArrayListICaseStrW::ArrayListICaseStrW(OSInt Capacity) : Data::ArrayListStrW(Capacity)
+Data::ArrayListICaseStrW::ArrayListICaseStrW(UOSInt Capacity) : Data::ArrayListStrW(Capacity)
 {
 }
 
-Data::ArrayList<const WChar*> *Data::ArrayListICaseStrW::Clone()
+Data::ArrayList<const WChar*> *Data::ArrayListICaseStrW::Clone() const
 {
 	Data::ArrayListICaseStrW *newArr;
 	NEW_CLASS(newArr, Data::ArrayListICaseStrW(this->capacity));
@@ -20,7 +20,7 @@ Data::ArrayList<const WChar*> *Data::ArrayListICaseStrW::Clone()
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseStrW::CompareItem(const WChar* obj1, const WChar* obj2)
+OSInt Data::ArrayListICaseStrW::CompareItem(const WChar* obj1, const WChar* obj2) const
 {
 	return Text::StrCompareICase(obj1, obj2);
 }

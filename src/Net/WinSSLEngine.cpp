@@ -661,7 +661,7 @@ Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE 
 		return false;
 	}
 	Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
-	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff(), privKey->GetASN1BuffSize(), 0)) != 0)
+	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff(), (DWORD)privKey->GetASN1BuffSize(), 0)) != 0)
     {
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: NCryptImportKey failed: 0x%x\r\n", (UInt32)status);
@@ -1745,7 +1745,7 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 		i++;
 		j--;
 	}
-	if (!CryptVerifySignatureW(hHash, mySignData, signLen, hKey, 0, 0))
+	if (!CryptVerifySignatureW(hHash, mySignData, (DWORD)signLen, hKey, 0, 0))
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 errCode = GetLastError();

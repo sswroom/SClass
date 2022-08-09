@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, Text::St
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile(files[i]->ToCString()))
+		if (me->OpenFile(files[i]->ToCString(), IO::ParserType::MediaFile))
 			return;
 		i++;
 	}

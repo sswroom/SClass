@@ -393,8 +393,13 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAPU32(v) _byteswap_ulong(v)
 #define BSWAP64(v) (Int64)_byteswap_uint64((UInt64)(v))
 #define BSWAPU64(v) _byteswap_uint64(v)
-#define MyMUL_UOS(x, y, hi) _mul128(x, y, hi)
-#define MyDIV_UOS(lo, hi, divider, reminder) _div128(hi, lo, divider, reminder)
+#if _OSINT_SIZE == 64
+#define MyADC_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out);
+#define MyMUL_UOS(x, y, hi) _umul128(x, y, hi)
+#define MyDIV_UOS(lo, hi, divider, reminder) _udiv128(hi, lo, divider, reminder)
+#else
+#define MyADC_UOS(v1, v2, out) _addcarry_u32(0, v1, v2, out);
+#endif
 #elif defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
 #define BSWAP32(x) OSSwapInt32(x)

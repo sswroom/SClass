@@ -145,6 +145,17 @@ namespace SSWR
 			static void __stdcall OnTopMostChg(void *userObj, Bool newState);
 			static void __stdcall OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen);
 		public:
+#if defined(_MSC_VER)
+			void* operator new(size_t i)
+			{
+				return MAllocA64(i);
+			}
+
+			void operator delete(void* p)
+			{
+				MemFreeA(p);
+			}
+#endif
 			AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();
 
@@ -156,6 +167,6 @@ namespace SSWR
 
 			void DispOffFocusLost();
 		};
-	};
-};
+	}
+}
 #endif

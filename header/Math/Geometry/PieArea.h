@@ -9,21 +9,20 @@ namespace Math
 		class PieArea : public Vector2D
 		{
 		private:
-			Double cx;
-			Double cy;
+			Math::Coord2DDbl center;
 			Double r;
 			Double arcAngle1;
 			Double arcAngle2;
 			
 		public:
-			PieArea(UInt32 srid, Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2);
+			PieArea(UInt32 srid, Math::Coord2DDbl center, Double r, Double arcAngle1, Double arcAngle2);
 			virtual ~PieArea();
 
 			virtual VectorType GetVectorType() const;
-			virtual void GetCenter(Double *x, Double *y) const;
+			virtual Math::Coord2DDbl GetCenter() const;
 			virtual Vector2D *Clone() const;
-			virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY) const;
-			virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY) const;
+			virtual void GetBounds(Math::RectAreaDbl* bounds) const;
+			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl* nearPt) const;
 			virtual Bool JoinVector(Vector2D *vec);
 			virtual Bool HasZ() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
