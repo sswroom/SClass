@@ -646,6 +646,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb.ClearStr();
 			sb.AppendC(sb2.ToString(), sb2.GetLength());
 			sptr = sb.ToString();
+			sptrLen = sb.GetLength();
 			UInt64 sizeLeft;
 			Text::String *hdrVal;
 
