@@ -149,6 +149,30 @@ namespace Data
 			}
 		}
 
+		UTF8Char *ToStringNoZone(UTF8Char *buff) const
+		{
+			if ((this->ticks % 86400000) == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd");
+			}
+			else if (this->nanosec == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss");
+			}
+			else if (this->nanosec % 1000000 == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+			}
+			else if (this->nanosec % 1000 == 0)
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff");
+			}
+			else
+			{
+				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff");
+			}
+		}
+
 		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;

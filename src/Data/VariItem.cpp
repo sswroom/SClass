@@ -480,7 +480,7 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb) const
 		sb->AppendC(this->val.cstr.v, this->val.cstr.leng);
 		return;
 	case ItemType::Date:
-		sptr = this->val.date.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sptr = this->val.date.ToStringNoZone(sbuff);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		break;
 	case ItemType::ByteArr:

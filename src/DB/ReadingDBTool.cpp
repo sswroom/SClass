@@ -625,7 +625,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 		UOSInt ret = 0;
 		DB::SQLBuilder sql(DB::DBUtil::ServerType::MSSQL, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
-		if (schemaName.v == 0)
+		if (schemaName.leng == 0)
 		{
 			sql.AppendStrC(CSTR("dbo"));
 		}
@@ -640,10 +640,6 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			while (r->ReadNext())
 			{
 				sb.ClearStr();
-				if (r->GetStr(0, &sb))
-				{
-					sb.AppendUTF8Char('.');
-				}
 				if (r->GetStr(1, &sb))
 				{
 					arr->Add(Text::String::New(sb.ToCString()));
@@ -747,13 +743,13 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 		if (r)
 		{
 			UOSInt ret = 0;
-			Text::StringBuilderUTF8 sb;
+			Text::String *s;
 			while (r->ReadNext())
 			{
-				sb.ClearStr();
-				if (r->GetStr(0, &sb))
+				s = r->GetNewStr(0);
+				if (s)
 				{
-					arr->Add(Text::String::New(sb.ToCString()));
+					arr->Add(s);
 					ret++;
 				}
 			}
@@ -767,6 +763,27 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
+		DB::DBReader *r = this->ExecuteReader(CSTR("select s.name from sys.schemas s"));
+		if (r)
+		{
+			UOSInt ret = 0;
+			Text::String *s;
+			while (r->ReadNext())
+			{
+				s = r->GetNewStr(0);
+				if (s)
+				{
+					arr->Add(s);
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
 		return 0;
 	}
 	else
@@ -892,20 +909,12 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 	{
 		Int32 i = 4;
 		DB::DBReader *r = 0;
-		UOSInt ind;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
-		ind = tableName.IndexOf('.');
-		if (ind != INVALID_INDEX)
+		ptr = this->DBStrUTF8(ptr, tableName.v);
+		if (schemaName.leng != 0)
 		{
-			ptr = this->DBStrUTF8(ptr, &tableName.v[ind + 1]);
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", "));
-			const UTF8Char *tmpPtr = Text::StrCopyNewC(tableName.v, (UOSInt)ind);
-			ptr = this->DBStrUTF8(ptr, tmpPtr);
-			Text::StrDelNew(tmpPtr);
-		}
-		else
-		{
-			ptr = this->DBStrUTF8(ptr, tableName.v);
+			ptr = this->DBStrUTF8(ptr, schemaName.v);
 		}
 		while (i-- > 0 && r == 0)
 		{
@@ -941,7 +950,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 					col->SetDefVal(CSTRP(buff, ptr));
 				}
 			}
-			col->SetColSize((UOSInt)r->GetInt32(6));
+			UOSInt colSize = (UOSInt)r->GetInt32(6);
 			ptr = r->GetStr(5, buff, sizeof(buff));
 			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
 			{
@@ -950,7 +959,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				*ptr = 0;
 			}
 			col->SetNativeType(CSTRP(buff, ptr));
-			col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, 0));
+			col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, &colSize));
+			col->SetColSize(colSize);
 			tab->AddCol(col);
 		}
 		this->CloseReader(r);
@@ -1084,7 +1094,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				}
 				else if (s->Equals(UTF8STRC("date")))
 				{
-					col->SetColType(DB::DBUtil::CT_DateTime);
+					col->SetColType(DB::DBUtil::CT_Date);
 				}
 				else if (s->Equals(UTF8STRC("char")))
 				{

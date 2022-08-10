@@ -1902,7 +1902,6 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	}
 	else if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		*colSize = 0;
 		if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varchar")))
 		{
 			return DB::DBUtil::CT_VarChar;
