@@ -95,7 +95,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	regSize.Insert(regKey.SortedInsert((const UTF8Char*)"xmm7"), 16);
 
 	this->txtIntelAsm->GetText(&srcSb);
-	lineStart = srcSb.ToString();
+	lineStart = srcSb.v;
 	lineEnd = srcSb.GetEndPtr();
 
 	while (true)

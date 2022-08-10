@@ -19,16 +19,19 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	UOSInt size;
 	switch (this->GetColType(colIndex, &size))
 	{
-	case DB::DBUtil::CT_VarChar:
-	case DB::DBUtil::CT_Char:
-	case DB::DBUtil::CT_NVarChar:
-	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_UTF8Char:
+	case DB::DBUtil::CT_UTF16Char:
+	case DB::DBUtil::CT_UTF32Char:
+	case DB::DBUtil::CT_VarUTF8Char:
+	case DB::DBUtil::CT_VarUTF16Char:
+	case DB::DBUtil::CT_VarUTF32Char:
 		{
 			Text::String *s;
 			item->SetStr(s = this->GetNewStr(colIndex));
 			s->Release();
 		}
 		return true;
+	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
 	{
@@ -137,13 +140,16 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			ctype = this->GetColType(i, &size);
 			switch (ctype)
 			{
-			case DB::DBUtil::CT_VarChar:
-			case DB::DBUtil::CT_Char:
-			case DB::DBUtil::CT_NVarChar:
-			case DB::DBUtil::CT_NChar:
+			case DB::DBUtil::CT_UTF8Char:
+			case DB::DBUtil::CT_UTF16Char:
+			case DB::DBUtil::CT_UTF32Char:
+			case DB::DBUtil::CT_VarUTF8Char:
+			case DB::DBUtil::CT_VarUTF16Char:
+			case DB::DBUtil::CT_VarUTF32Char:
 				obj->SetItemStr(sbuff, s = this->GetNewStr(i));
 				s->Release();
 				break;
+			case DB::DBUtil::CT_DateTimeTZ:
 			case DB::DBUtil::CT_DateTime:
 			case DB::DBUtil::CT_Date:
 				obj->SetItemTS(sbuff, this->GetTimestamp(i));

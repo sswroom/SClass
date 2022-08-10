@@ -29,25 +29,28 @@ namespace DB
 		typedef enum
 		{
 			CT_Unknown,
-			CT_UInt32,
-			CT_Int32,
-			CT_VarChar,
-			CT_Char,
+			CT_UTF8Char,
+			CT_UTF16Char,
+			CT_UTF32Char,
+			CT_VarUTF8Char,
+			CT_VarUTF16Char,
+			CT_VarUTF32Char,
+			CT_Date,
 			CT_DateTime,
+			CT_DateTimeTZ,
 			CT_Double,
 			CT_Float,
 			CT_Bool,
 			CT_Byte,
 			CT_Int16,
+			CT_Int32,
 			CT_Int64,
 			CT_UInt16,
+			CT_UInt32,
 			CT_UInt64,
 			CT_Binary,
 			CT_Vector,
-			CT_NVarChar,
-			CT_NChar,
-			CT_UUID,
-			CT_Date
+			CT_UUID
 		} ColType;
 
 		static UTF8Char *SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str, ServerType svrType);

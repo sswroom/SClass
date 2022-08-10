@@ -102,7 +102,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		this->sbLine->Trim();
 		this->currOfst = 0;
 	}
-	UTF8Char *sptr = this->sbLine->ToString();
+	UTF8Char *sptr = this->sbLine->v;
 	while (Text::CharUtil::IsWS(&sptr[this->currOfst]))
 	{
 		this->currOfst++;
@@ -120,7 +120,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 				{
 					return false;
 				}
-				sptr = this->sbLine->ToString();
+				sptr = this->sbLine->v;
 			}
 			else if (sptr[i] == '{')
 			{
@@ -203,7 +203,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 				{
 					return false;
 				}
-				sptr = this->sbLine->ToString();
+				sptr = this->sbLine->v;
 			}
 			else if (sptr[i] == '(')
 			{
@@ -245,7 +245,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 			{
 				return false;
 			}
-			sptr = this->sbLine->ToString();
+			sptr = this->sbLine->v;
 		}
 		sb->AppendC(&sptr[this->currOfst], i + 2);
 		this->currOfst += i + 2;

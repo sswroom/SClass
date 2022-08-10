@@ -115,7 +115,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		if (r)
 		{
 			sql.Clear();
-			destDB->GenCreateTableCmd(&sql, tables.GetItem(i)->ToCString(), tabDef);
+			destDB->GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), tabDef);
 			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 				{

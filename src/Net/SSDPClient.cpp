@@ -22,8 +22,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			sb.AppendC(buff, dataSize);
 			Text::PString sarr[2];
 			UOSInt lineCnt;
-			sarr[1].v = sb.ToString();
-			sarr[1].leng = sb.GetLength();
+			sarr[1] = sb;
 			while (true)
 			{
 				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1]);

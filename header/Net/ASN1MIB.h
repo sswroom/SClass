@@ -49,7 +49,7 @@ namespace Net
 		Bool ApplyImports(Text::StringBuilderUTF8 *errMessage);
 		Bool LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply);
 
-		static void RemoveSpace(UTF8Char *s);
+		static void RemoveSpace(Text::PString *s);
 		static Bool IsType(const UTF8Char *s);
 		static Bool IsKnownType(Text::CString s);
 		static Bool IsUnknownType(Text::CString s);

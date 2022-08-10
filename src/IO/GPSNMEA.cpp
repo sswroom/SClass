@@ -425,7 +425,7 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 		{
 			break;
 		}
-		ps = ParseNMEALine(sb.ToString(), sb.GetLength(), &record, &sateRec);
+		ps = ParseNMEALine(sb.v, sb.GetLength(), &record, &sateRec);
 		if (ps == ParseStatus::NewRecord)
 		{
 			trk->AddRecord(&record);

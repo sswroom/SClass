@@ -578,7 +578,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 			sb.ClearStr();
 			if (!reader.ReadLine(&sb, 4096))
 				break;
-			if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.ToString(), ',') == 2)
+			if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.v, ',') == 2)
 			{
 				dateStr = sbuff;
 				dateStrEnd = Text::StrConcat(dateStr, sarr[0]);
@@ -1350,7 +1350,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				sb.ClearStr();
 				if (!reader->ReadLine(&sb, 4096))
 					break;
-				sptr = sb.ToString();
+				sptr = sb.v;
 				i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC("=\""));
 				if (i != INVALID_INDEX)
 				{

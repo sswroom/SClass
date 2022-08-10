@@ -110,7 +110,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 					{
 						objCol = (OSInt)j;
 					}
-					else if (colDef.GetColName()->EqualsICase(UTF8STRC("SHAPE")) && (colDef.GetColType() == DB::DBUtil::CT_Binary || colDef.GetColType() == DB::DBUtil::CT_VarChar))
+					else if (colDef.GetColName()->EqualsICase(UTF8STRC("SHAPE")) && (colDef.GetColType() == DB::DBUtil::CT_Binary || colDef.GetColType() == DB::DBUtil::CT_VarUTF8Char))
 					{
 						shapeCol = (OSInt)j;
 					}
@@ -145,7 +145,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, &sb);
-							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.ToString(), sb.GetLength(), 0);
+							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
 							if (csys)
 							{
 								srid = csys->GetSRID();

@@ -534,7 +534,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 											nextEndIndex = BranketEnd(&currObj->typeVal->v[brkEndIndex], 0);
 										}
-										RemoveSpace((UTF8Char*)currObj->typeVal);
+										RemoveSpace(currObj->typeVal);
 									}
 									else if (Text::StrStartsWith(sptr, (const UTF8Char*)"WITH SYNTAX") || Text::StrStartsWith(sptr, (const UTF8Char*)"WITH COMPONENTS"))
 									{
@@ -556,7 +556,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 												nextEndIndex = BranketEnd(&currObj->typeVal->v[brkEndIndex], 0);
 											}
-											RemoveSpace((UTF8Char*)currObj->typeVal);
+											RemoveSpace(currObj->typeVal);
 										}
 										else
 										{
@@ -576,11 +576,11 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									else
 									{
 										
-										RemoveSpace((UTF8Char*)currObj->typeVal);
+										RemoveSpace(currObj->typeVal);
 										sb.ClearStr();
 										if (reader->PeekWord(&sb))
 										{
-											RemoveSpace(sb.ToString());
+											RemoveSpace(&sb);
 											if (sb.Equals(UTF8STRC("WITH")))
 											{
 												sb.ClearStr();
@@ -602,7 +602,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													sbTmp.AppendC(sb.ToString(), sb.GetLength());
 													currObj->typeVal->Release();
 													currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
-													RemoveSpace((UTF8Char*)currObj->typeVal);
+													RemoveSpace(currObj->typeVal);
 												}
 												else
 												{
@@ -625,10 +625,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													reader->NextWord(&sb);
 													currObj->typeVal->Release();
 													currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
-													RemoveSpace((UTF8Char*)currObj->typeVal);
+													RemoveSpace(currObj->typeVal);
 													sb.ClearStr();
 													reader->PeekWord(&sb);
-													RemoveSpace(sb.ToString());
+													RemoveSpace(&sb);
 												}
 											}
 										}
@@ -1864,24 +1864,25 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8
 	return succ;
 }
 
-void Net::ASN1MIB::RemoveSpace(UTF8Char *s)
+void Net::ASN1MIB::RemoveSpace(Text::PString *s)
 {
-	if (s)
+	if (s && s->v)
 	{
-		UOSInt strLen = Text::StrCharCnt(s);
+		UTF8Char *str = s->v;
+		UOSInt strLen = s->leng;
 		UOSInt wsCnt = 0;
 		while (strLen-- > 0)
 		{
-			if (s[strLen] == '\r' || s[strLen] == '\n' || s[strLen] == '\t' || s[strLen] == ' ')
+			if (str[strLen] == '\r' || str[strLen] == '\n' || str[strLen] == '\t' || str[strLen] == ' ')
 			{
-				s[strLen] = ' ';
+				str[strLen] = ' ';
 				wsCnt++;
 			}
 			else if (wsCnt > 0)
 			{
 				if (wsCnt > 1)
 				{
-					Text::StrLTrim(&s[strLen + 2]);
+					s->leng = (UOSInt)(Text::StrLTrim(&str[strLen + 2]) - str);
 				}
 				wsCnt = 0;
 			}

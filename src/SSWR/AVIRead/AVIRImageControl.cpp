@@ -124,7 +124,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 			Text::UTF8Reader reader(&fs);
 			while (reader.ReadLine(&sb, 4096))
 			{
-				sptr3 = sb.ToString();
+				sptr3 = sb.v;
 				colCnt = Text::StrSplit(sarr, 11, sptr3, '\t');
 				if (colCnt == 5)
 				{

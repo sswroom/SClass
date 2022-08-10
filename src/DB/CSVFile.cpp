@@ -814,7 +814,7 @@ DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 {
 	if (colIndex >= nHdr)
 		return DB::DBUtil::CT_Unknown;
-	return DB::DBUtil::CT_VarChar;
+	return DB::DBUtil::CT_VarUTF8Char;
 }
 
 Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
@@ -822,7 +822,7 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	if (colIndex >= nHdr)
 		return false;
 	colDef->SetColName(this->hdrs[colIndex].ToCString());
-	colDef->SetColType(DB::DBUtil::CT_VarChar);
+	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(256);
 	colDef->SetColDP(0);
 	colDef->SetNotNull(true);

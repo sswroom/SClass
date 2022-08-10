@@ -40,7 +40,7 @@ namespace DB
 		Int64 GetLastIdentity64();
 		DB::DBConn *GetConn();
 		
-		Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::TableDef *tabDef);
+		static Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef);
 		Bool GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);

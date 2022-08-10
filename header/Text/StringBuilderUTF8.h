@@ -473,17 +473,17 @@ namespace Text
 			this->v[0] = 0;
 		}
 
-		UTF8Char *ToString()
+		const UTF8Char *ToString() const
 		{
 			return this->v;
 		}
 
-		UOSInt GetLength()
+		UOSInt GetLength() const
 		{
 			return this->leng;
 		}
 
-		UOSInt GetCharCnt()
+		UOSInt GetCharCnt() const
 		{
 			return this->leng;
 		}

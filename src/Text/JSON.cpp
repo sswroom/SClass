@@ -42,7 +42,7 @@ Text::JSONBase *Text::JSONBase::GetValue(const UTF8Char *path, UOSInt pathLen)
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(path, pathLen);
-	UTF8Char *sptr = sb.ToString();
+	UTF8Char *sptr = sb.v;
 	UTF8Char *sptrEnd = sb.GetEndPtr();
 	UOSInt dotIndex;
 	UOSInt brkIndex;

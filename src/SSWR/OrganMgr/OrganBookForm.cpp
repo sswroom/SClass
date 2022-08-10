@@ -150,7 +150,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 		UOSInt i = 1;
 		UOSInt j;
 		UOSInt k;
-		UTF8Char *chars = sb.ToString();
+		const UTF8Char *chars = sb.ToString();
 		Bool found = false;
 		j = sb.GetLength();
 		while (i < j)

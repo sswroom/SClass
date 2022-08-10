@@ -97,7 +97,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				k++;
 			}
 			sql.Clear();
-			mdb->GenCreateTableCmd(&sql, tables.GetItem(i)->ToCString(), &tabDef);
+			mdb->GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), &tabDef);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;

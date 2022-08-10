@@ -290,8 +290,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 			sb.AppendC(hdr->v + 21, hdr->leng - 21);
 			Text::PString sarr[2];
 			UOSInt j;
-			sarr[1].v = sb.ToString();
-			sarr[1].leng = sb.GetLength();
+			sarr[1] = sb;
 			while (true)
 			{
 				j = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
@@ -384,7 +383,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 	me->lvReqData->ClearItems();
 	if (sb.GetCharCnt() > 0)
 	{
-		UTF8Char *sptr = sb.ToString();
+		UTF8Char *sptr = sb.v;
 		UTF8Char *sbuffEnd;
 		UOSInt spInd;
 		UOSInt eqInd;

@@ -401,7 +401,7 @@ DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, UOSInt *co
 		return DB::DBUtil::CT_UInt32;
 	case 2:
 		if (colSize) *colSize = 512;
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	return DB::DBUtil::CT_Unknown;
 }

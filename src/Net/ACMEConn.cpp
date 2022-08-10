@@ -521,8 +521,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	Bool found = false;
 	sb.AppendC(UTF8STRC("{\"identifiers\":["));
 	sbNames.AppendC(domainNames, namesLen);
-	sarr[1].v = sbNames.ToString();
-	sarr[1].leng = sbNames.GetLength();
+	sarr[1] = sbNames;
 	i = 2;
 	while (i == 2)
 	{

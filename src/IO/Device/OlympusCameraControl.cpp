@@ -116,7 +116,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 			{
 				break;
 			}
-			if (Text::StrSplit(sarr, 7, sb.ToString(), ',') == 6)
+			if (Text::StrSplit(sarr, 7, sb.v, ',') == 6)
 			{
 				file = MemAlloc(IO::Device::OlympusCameraControl::FileInfo, 1);
 				Text::StrConcat(file->fileName, sarr[1]);
@@ -170,7 +170,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 		{
 			break;
 		}
-		if (Text::StrSplit(sarr, 11, sb.ToString(), ',') == 10)
+		if (Text::StrSplit(sarr, 11, sb.v, ',') == 10)
 		{
 			if (Text::StrCharCnt(sarr[6]) == 8 && Text::StrCharCnt(sarr[7]) == 6)
 			{
@@ -219,7 +219,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 		{
 			break;
 		}
-		if (Text::StrSplit(sarr, 11, sb.ToString(), ',') == 10)
+		if (Text::StrSplit(sarr, 11, sb.v, ',') == 10)
 		{
 			if (Text::StrCharCnt(sarr[6]) == 8 && Text::StrCharCnt(sarr[7]) == 6)
 			{

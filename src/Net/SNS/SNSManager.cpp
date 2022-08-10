@@ -172,8 +172,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 
 		sb.ClearStr();
 		sb.Append(item->imgURL);
-		sarr[1].v = sb.ToString();
-		sarr[1].leng = sb.GetLength();
+		sarr[1] = sb;
 		while (true)
 		{
 			j = Text::StrSplitP(sarr, 2, sarr[1], ' ');
@@ -244,8 +243,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		{
 			sb.ClearStr();
 			sb.Append(item->videoURL);
-			sarr[1].v = sb.ToString();
-			sarr[1].leng = sb.GetLength();
+			sarr[1] = sb;
 			while (true)
 			{
 				j = Text::StrSplitP(sarr, 2, sarr[1], ' ');

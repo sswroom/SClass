@@ -4740,7 +4740,7 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF8 *sb
 					sbTmp.AppendUTF8Char(c);
 				}
 			}
-			UTF8Char *sptr = sbTmp.ToString();
+			UTF8Char *sptr = sbTmp.v;
 			UOSInt sptrLen = sbTmp.GetLength();
 			UOSInt i;
 			if (subcls != INVALID_INDEX)

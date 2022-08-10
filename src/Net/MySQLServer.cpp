@@ -646,7 +646,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 										flags |= 1024;
 									}
 									WriteInt32(&sptr[7], flags);
-									if (colType == DB::DBUtil::CT_VarChar || colType == DB::DBUtil::CT_Double || colType == DB::DBUtil::CT_Float)
+									if (colType == DB::DBUtil::CT_VarUTF8Char || colType == DB::DBUtil::CT_VarUTF16Char || colType == DB::DBUtil::CT_VarUTF32Char || colType == DB::DBUtil::CT_Double || colType == DB::DBUtil::CT_Float)
 									{
 										digits = 31;
 									}

@@ -523,7 +523,7 @@ DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, UOSInt *col
 	}
 	else
 	{
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	
 }
@@ -547,7 +547,7 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	else
 	{
 		colDef->SetColName(this->colNames[colIndex]);
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetColSize(this->maxStrLen[colIndex]);
 		colDef->SetColDP(0);
 		colDef->SetAttr(CSTR_NULL);

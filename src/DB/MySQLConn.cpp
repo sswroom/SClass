@@ -793,7 +793,7 @@ DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSIn
 	case MYSQL_TYPE_NEWDATE:
 		return DB::DBUtil::CT_DateTime;
 	case MYSQL_TYPE_VARCHAR:
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	case MYSQL_TYPE_BIT:
 		return DB::DBUtil::CT_Bool;
 	case MYSQL_TYPE_NEWDECIMAL:
@@ -809,7 +809,7 @@ DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSIn
 		}
 		else
 		{
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 	case MYSQL_TYPE_MEDIUM_BLOB:
 		if (flags & BINARY_FLAG)
@@ -818,7 +818,7 @@ DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSIn
 		}
 		else
 		{
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 	case MYSQL_TYPE_LONG_BLOB:
 		if (flags & BINARY_FLAG)
@@ -827,7 +827,7 @@ DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSIn
 		}
 		else
 		{
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 	case MYSQL_TYPE_BLOB:
 		if (flags & BINARY_FLAG)
@@ -836,12 +836,12 @@ DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSIn
 		}
 		else
 		{
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 	case MYSQL_TYPE_VAR_STRING:
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	case MYSQL_TYPE_STRING:
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	case MYSQL_TYPE_GEOMETRY:
 		return DB::DBUtil::CT_Unknown;
 	default:

@@ -110,8 +110,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j;
-	sarr[1].v = sb.ToString();
-	sarr[1].leng = sb.GetLength();
+	sarr[1] = sb;
 	while (true)
 	{
 		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
@@ -183,8 +182,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 		Text::StringBuilderUTF8 sb;
 		if (clipboard.GetDataText(fmtId, &sb))
 		{
-			sarr[1].v = sb.ToString();
-			sarr[1].leng = sb.GetLength();
+			sarr[1] = sb;
 			while (true)
 			{
 				i = Text::StrSplitLineP(sarr, 2, sarr[1]);
@@ -513,8 +511,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						if (ctrl->GetVideoName(id, &sb2))
 						{
 							printf("Name of id %d updated\r\n", id);
-							sarr[1].v = sb2.ToString();
-							sarr[1].leng = sb2.GetLength();
+							sarr[1] = sb2;
 							updated = true;
 						}
 					}

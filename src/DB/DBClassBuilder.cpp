@@ -19,12 +19,15 @@ void DB::DBClassBuilder::AddItem(const UTF8Char *colName, DB::DBUtil::ColType co
 	sptr = DB::DBUtil::DB2FieldName(sbuff, colName);
 	switch (colType)
 	{
-	case DB::DBUtil::CT_VarChar:
-	case DB::DBUtil::CT_Char:
-	case DB::DBUtil::CT_NVarChar:
-	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_VarUTF8Char:
+	case DB::DBUtil::CT_VarUTF16Char:
+	case DB::DBUtil::CT_VarUTF32Char:
+	case DB::DBUtil::CT_UTF8Char:
+	case DB::DBUtil::CT_UTF16Char:
+	case DB::DBUtil::CT_UTF32Char:
 		currPos += (OSInt)cls->AddField(CSTRP(sbuff, sptr), currPos, Data::VariItem::ItemType::Str);
 		break;
+	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
 		currPos += (OSInt)cls->AddField(CSTRP(sbuff, sptr), currPos, Data::VariItem::ItemType::Date);

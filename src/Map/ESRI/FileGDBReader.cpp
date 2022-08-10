@@ -1422,7 +1422,7 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, UOSInt
 		case 3:
 			return DB::DBUtil::CT_Double;
 		case 4:
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		case 5:
 			return DB::DBUtil::CT_DateTime;
 		case 6:
@@ -1438,7 +1438,7 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, UOSInt
 		case 11:
 			return DB::DBUtil::CT_UUID;
 		case 12:
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		default:
 			return DB::DBUtil::CT_Unknown;
 		}

@@ -570,7 +570,7 @@ void Map::ReloadableMapLayer::AddInnerLayer(Text::CString name, Text::CString ur
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->GetSourceNameObj());
 	sb.AllocLeng(url.leng);
-	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), sb.GetEndPtr(), url));
+	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.v, sb.GetEndPtr(), url));
 	InnerLayerInfo *innerLayer;
 	innerLayer = MemAlloc(InnerLayerInfo, 1);
 	innerLayer->innerLayer = 0;

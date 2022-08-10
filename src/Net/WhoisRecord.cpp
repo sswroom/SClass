@@ -39,7 +39,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 			UTF8Char *sptr;
 			sb.AppendC(&item[8], itemLen - 8);
 			sb.Trim();
-			sptr = sb.ToString();
+			sptr = sb.v;
 			i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC(" - "));
 			if (i == INVALID_INDEX)
 			{
@@ -75,7 +75,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 			UTF8Char *sptr;
 			sb.AppendC(&item[9], itemLen - 9);
 			sb.Trim();
-			sptr = sb.ToString();
+			sptr = sb.v;
 			i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC(" - "));
 			if (i == INVALID_INDEX)
 			{

@@ -475,7 +475,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 		}
 		else if (sb.StartsWith(UTF8STRC("multipart/form-data")))
 		{
-			UTF8Char *sptr = sb.ToString();
+			UTF8Char *sptr = sb.v;
 			UOSInt i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC("boundary="));
 			if (i != INVALID_INDEX)
 			{

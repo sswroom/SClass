@@ -395,8 +395,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 		UOSInt i;
 		UOSInt j;
 		Bool desc;
-		sarr[1].v = sb.ToString();
-		sarr[1].leng = sb.GetLength();
+		sarr[1] = sb;
 		while (true)
 		{
 			i = Text::StrSplitP(sarr, 2, sarr[1], Net::WebServer::IWebRequest::PARAM_SEPERATOR);

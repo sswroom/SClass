@@ -387,7 +387,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, const UTF8Char *val)
 	UInt8 buff[512];
 	if (index >= this->colCnt)
 		return false;
-	if (this->columns[index].colType != DB::DBUtil::CT_Char && this->columns[index].colType != DB::DBUtil::CT_VarChar)
+	if (this->columns[index].colType != DB::DBUtil::CT_UTF8Char && this->columns[index].colType != DB::DBUtil::CT_VarUTF8Char)
 		return false;
 	UOSInt i;
 	i = enc->UTF8ToBytes(buff, val);

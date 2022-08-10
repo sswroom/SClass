@@ -25,7 +25,7 @@ namespace Text
 			this->leng = leng;
 		}
 
-		Text::CString ToCString()
+		Text::CString ToCString() const
 		{
 			return {this->v, this->leng};
 		}

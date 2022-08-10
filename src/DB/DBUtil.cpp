@@ -1747,7 +1747,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			{
 				*colSize = 0;
 			}
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
 		{
@@ -1769,7 +1769,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			{
 				*colSize = 0;
 			}
-			return DB::DBUtil::CT_Char;
+			return DB::DBUtil::CT_UTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("bigint")))
 		{
@@ -1832,6 +1832,28 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			}
 			return DB::DBUtil::CT_DateTime;
 		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetimeoffset")))
+		{
+			if (typeName[14] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[15]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[15]);
+				}
+			}
+			else
+			{
+				*colSize = 0;
+			}
+			return DB::DBUtil::CT_DateTimeTZ;
+		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("timestamp")))
 		{
 			if (typeName[9] == '(')
@@ -1867,12 +1889,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("longtext")))
 		{
 			*colSize = 0xffffffff;
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("text")))
 		{
 			*colSize = 65535;
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1) unsigned")))
 		{
@@ -1904,15 +1926,15 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	{
 		if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varchar")))
 		{
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("text")))
 		{
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
 		{
-			return DB::DBUtil::CT_Char;
+			return DB::DBUtil::CT_UTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("int")))
 		{
@@ -1964,15 +1986,15 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nvarchar")))
 		{
-			return DB::DBUtil::CT_NVarChar;
+			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("ntext")))
 		{
-			return DB::DBUtil::CT_NVarChar;
+			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nchar")))
 		{
-			return DB::DBUtil::CT_NChar;
+			return DB::DBUtil::CT_UTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("numeric")))
 		{
@@ -1989,7 +2011,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("sysname")))
 		{
 			*colSize = 128;
-			return DB::DBUtil::CT_NVarChar;
+			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varbinary")))
 		{
@@ -2050,12 +2072,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("TEXT")))
 		{
 			*colSize = 2147483647;
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("VARCHAR")))
 		{
 			*colSize = 2147483647;
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POINT")))
 		{
@@ -2097,16 +2119,24 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 		return Text::StrConcatC(sbuff, UTF8STRC("UNSIGNED INTEGER"));
 	case DB::DBUtil::CT_Int32:
 		return Text::StrConcatC(sbuff, UTF8STRC("INTEGER"));
-	case DB::DBUtil::CT_VarChar:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARCHAR(")), colSize), UTF8STRC(")"));
-	case DB::DBUtil::CT_Char:
+	case DB::DBUtil::CT_UTF8Char:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("CHAR(")), colSize), UTF8STRC(")"));
-	case DB::DBUtil::CT_NVarChar:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("NVARCHAR(")), colSize), UTF8STRC(")"));
-	case DB::DBUtil::CT_NChar:
-		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("NCHAR(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_UTF16Char:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UTF16CHAR(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_UTF32Char:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UTF32CHAR(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_VarUTF8Char:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARCHAR(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_VarUTF16Char:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARUTF16CHAR(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_VarUTF32Char:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARUTF32CHAR(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_Date:
+		return Text::StrConcatC(sbuff, UTF8STRC("DATE"));
 	case DB::DBUtil::CT_DateTime:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DATETIME(")), colSize), UTF8STRC(")"));
+	case DB::DBUtil::CT_DateTimeTZ:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DATETIMETZ(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Double:
 		return Text::StrConcatC(sbuff, UTF8STRC("DOUBLE"));
 	case DB::DBUtil::CT_Float:
@@ -2129,8 +2159,6 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 		return Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY"));
 	case DB::DBUtil::CT_UUID:
 		return Text::StrConcatC(sbuff, UTF8STRC("UUID"));
-	case DB::DBUtil::CT_Date:
-		return Text::StrConcatC(sbuff, UTF8STRC("DATE"));
 	case DB::DBUtil::CT_Unknown:
 	default:
 		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UNKNOWN(")), colSize), UTF8STRC(")"));

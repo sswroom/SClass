@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 			me->txtDialStatus->SetText(CSTR("Dial num too long"));
 			return;
 		}
-		sptr = sb.ToString();
+		sptr = sb.v;
 		cptr = phoneBuff;
 		while (true)
 		{

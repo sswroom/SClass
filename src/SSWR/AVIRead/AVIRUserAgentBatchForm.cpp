@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(void *user
 	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(&sb);
-	me->UpdateByText(sb.ToString(), sb.GetLength());
+	me->UpdateByText(sb);
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *userObj)
@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 	Win32::Clipboard::GetString(me->GetHandle(), &sb);
 	if (sb.GetLength() > 0)
 	{
-		me->UpdateByText(sb.ToString(), sb.GetLength());
+		me->UpdateByText(sb);
 	}
 	else
 	{
@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 	}
 }
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt txtLen)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 {
 	Data::ArrayListString uaList;
 	UOSInt i;
@@ -153,8 +153,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 		}
 		i++;
 	}
-	sarr[1].v = txt;
-	sarr[1].leng = txtLen;
+	sarr[1] = txt;
 	while (true)
 	{
 		i = Text::StrSplitLineP(sarr, 2, sarr[1]);

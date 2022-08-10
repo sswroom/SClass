@@ -896,7 +896,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			sb.ClearStr();
 			if (r->GetStr(26, &sb))
 			{
-				sarr[1] = sb.ToString();
+				sarr[1] = sb.v;
 				i = 0;
 				while (true)
 				{
@@ -910,7 +910,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			sb.ClearStr();
 			if (r->GetStr(27, &sb))
 			{
-				sarr[1] = sb.ToString();
+				sarr[1] = sb.v;
 				i = 0;
 				while (true)
 				{
@@ -1932,7 +1932,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[2];
 			sb.AppendSlow(readings);
-			sarr[1] = sb.ToString();
+			sarr[1] = sb.v;
 			i = 0;
 			while (true)
 			{
@@ -1984,7 +1984,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[2];
 			sb.AppendSlow(digitals);
-			sarr[1] = sb.ToString();
+			sarr[1] = sb.v;
 			i = 0;
 			while (true)
 			{

@@ -453,10 +453,10 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, U
 		{
 		case 0:
 			*colSize = 32;
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		case 1:
 			*colSize = 32;
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 	}
 	else
@@ -493,13 +493,13 @@ Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDe
 		{
 		case 0:
 			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_VarChar);
+			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 			colDef->SetColSize(32);
 			colDef->SetColDP(0);
 			return true;
 		case 1:
 			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_VarChar);
+			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 			colDef->SetColSize(32);
 			colDef->SetColDP(0);
 			return true;

@@ -92,13 +92,16 @@ Text::CString Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool 
 		{
 			return CSTR("Double");
 		}
-	case DB::DBUtil::CT_VarChar:
-	case DB::DBUtil::CT_Char:
-	case DB::DBUtil::CT_NVarChar:
-	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_UTF8Char:
+	case DB::DBUtil::CT_UTF16Char:
+	case DB::DBUtil::CT_UTF32Char:
+	case DB::DBUtil::CT_VarUTF8Char:
+	case DB::DBUtil::CT_VarUTF16Char:
+	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
 		return CSTR("String");
 	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_Date:
 		return CSTR("Timestamp");
 	case DB::DBUtil::CT_Binary:

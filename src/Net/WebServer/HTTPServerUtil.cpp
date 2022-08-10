@@ -337,7 +337,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			resp->Write(sbuff, 0);
 			return true;
 		}
-		sptr = sb2.ToString();
+		sptr = sb2.v;
 		sptr[i] = 0;
 		if (!Text::StrToUInt64(&sptr[6], &start))
 		{

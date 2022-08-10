@@ -436,7 +436,7 @@ DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 		{
 			*colSize = this->maxTextSize;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else
 	{
@@ -455,7 +455,7 @@ Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColName(CSTR("NAME"));
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
-	colDef->SetColType(DB::DBUtil::CT_VarChar);
+	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);

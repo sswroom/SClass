@@ -1120,7 +1120,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 			sb.ClearStr();
 			while (reader.ReadLine(&sb, 512))
 			{
-				i = Text::StrSplitWS(sarr, 4, sb.ToString());
+				i = Text::StrSplitWS(sarr, 4, sb.v);
 				if (i == 4)
 				{
 					ip = Text::StrHex2UInt32C(sarr[1]);
@@ -1232,7 +1232,7 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 					break;
 				}
 				sb.Trim();
-				if (Text::StrSplitWS(sarr, 5, sb.ToString()) == 5)
+				if (Text::StrSplitWS(sarr, 5, sb.v) == 5)
 				{
 					port = MemAlloc(Net::SocketFactory::PortInfo, 1);
 					port->protoType = protoType;
@@ -1334,7 +1334,7 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 					break;
 				}
 				sb.Trim();
-				if (Text::StrSplitWS(sarr, 5, sb.ToString()) == 5)
+				if (Text::StrSplitWS(sarr, 5, sb.v) == 5)
 				{
 					port = MemAlloc(Net::SocketFactory::PortInfo2, 1);
 					port->protoType = protoType;
@@ -1437,7 +1437,7 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 					break;
 				}
 				sb.Trim();
-				if (Text::StrSplitWS(sarr, 5, sb.ToString()) == 5)
+				if (Text::StrSplitWS(sarr, 5, sb.v) == 5)
 				{
 					port = MemAlloc(Net::SocketFactory::PortInfo2, 1);
 					port->protoType = protoType;

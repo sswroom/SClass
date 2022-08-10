@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall OnParseClicked(void *userObj);
 			static void __stdcall OnUpdateClicked(void *userObj);
 			static void __stdcall OnUpdateCBClicked(void *userObj);
-			void UpdateByText(UTF8Char *txt, UOSInt txtLen);
+			void UpdateByText(Text::PString txt);
 		public:
 			AVIRUserAgentBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRUserAgentBatchForm();

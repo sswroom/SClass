@@ -89,10 +89,20 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_LONG;
 		case DB::DBUtil::CT_Int32:
 			return Net::MySQLUtil::MYSQL_TYPE_LONG;
-		case DB::DBUtil::CT_VarChar:
+		case DB::DBUtil::CT_UTF8Char:
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
-		case DB::DBUtil::CT_Char:
+		case DB::DBUtil::CT_UTF16Char:
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_UTF32Char:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_VarUTF8Char:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_VarUTF16Char:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_VarUTF32Char:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_DateTimeTZ:
+			return Net::MySQLUtil::MYSQL_TYPE_DATETIME;
 		case DB::DBUtil::CT_DateTime:
 			return Net::MySQLUtil::MYSQL_TYPE_DATETIME;
 		case DB::DBUtil::CT_Date:
@@ -117,11 +127,7 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_BLOB;
 		case DB::DBUtil::CT_Vector:
 			return Net::MySQLUtil::MYSQL_TYPE_GEOMETRY;
-		case DB::DBUtil::CT_NVarChar:
-			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		case DB::DBUtil::CT_UUID:
-			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
-		case DB::DBUtil::CT_NChar:
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		case DB::DBUtil::CT_Unknown:
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
@@ -166,7 +172,7 @@ DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType 
 		case Net::MySQLUtil::MYSQL_TYPE_NEWDATE:
 			return DB::DBUtil::CT_DateTime;
 		case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		case Net::MySQLUtil::MYSQL_TYPE_BIT:
 			return DB::DBUtil::CT_Bool;
 		case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP2:
@@ -190,9 +196,9 @@ DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType 
 		case Net::MySQLUtil::MYSQL_TYPE_BLOB:
 			return DB::DBUtil::CT_Binary;
 		case Net::MySQLUtil::MYSQL_TYPE_VAR_STRING:
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		case Net::MySQLUtil::MYSQL_TYPE_STRING:
-			return DB::DBUtil::CT_VarChar;
+			return DB::DBUtil::CT_VarUTF8Char;
 		case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
 			return DB::DBUtil::CT_Vector;
 		default:

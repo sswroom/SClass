@@ -46,10 +46,11 @@ namespace DB
 		void AppendTrim(Text::CString val);
 
 		void Clear();
-		const UTF8Char *ToString();
-		UOSInt GetLength();
-		Text::CString ToCString();
-		Text::String *ToNewString();
+		const UTF8Char *ToString() const;
+		UOSInt GetLength() const;
+		Text::CString ToCString() const;
+		Text::String *ToNewString() const;
+		DB::DBUtil::ServerType GetServerType() const;
 	};
 }
 #endif

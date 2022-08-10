@@ -6,6 +6,7 @@
 #include "DB/JavaDBUtil.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
+#include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
@@ -28,13 +29,17 @@ typedef enum
 	MNU_CONN_MSSQL,
 	MNU_CONN_ACCESS,
 	MNU_CONN_POSTGRESQL,
+	MNU_TOOL_COPY_TABLES,
 
 	MNU_CONN_REMOVE,
 	MNU_CONN_COPY_STR,
 
 	MNU_TABLE_JAVA,
 	MNU_TABLE_CPP_HEADER,
-	MNU_TABLE_CPP_SOURCE
+	MNU_TABLE_CPP_SOURCE,
+	MNU_TABLE_CREATE_MYSQL,
+	MNU_TABLE_CREATE_MSSQL,
+	MNU_TABLE_CREATE_POSTGRESQL
 } MenuEvent;
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
@@ -365,6 +370,33 @@ Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString sc
 	return 0;
 }
 
+void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::ServerType svrType)
+{
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	DB::SQLBuilder sql(svrType, 0);
+	DB::TableDef *tabDef = this->currDB->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
+	if (tabDef)
+	{
+		if (!DB::DBTool::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
+		}
+		else
+		{
+			Win32::Clipboard::SetString(this->GetHandle(), sql.ToCString());
+		}
+		DEL_CLASS(tabDef);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
+	}
+	tableName->Release();
+	schemaName->Release();
+
+}
+
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -436,6 +468,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu2->AddItem(CSTR("SQL Server"), MNU_CONN_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Access File"), MNU_CONN_ACCESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("PostgreSQL"), MNU_CONN_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Tool"));
+	mnu->AddItem(CSTR("Copy Tables"), MNU_TOOL_COPY_TABLES, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->mnuConn, UI::GUIPopupMenu());
@@ -446,6 +480,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->mnuTable->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Source"), MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuTable->AddSubMenu(CSTR("Copy as Create SQL"));
+	mnu->AddItem(CSTR("MySQL"), MNU_TABLE_CREATE_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_CREATE_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_CREATE_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (DB::DBManager::RestoreConn(DBCONNFILE, &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -543,6 +581,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			}
 		}
 		break;
+	case MNU_TOOL_COPY_TABLES:
+		{
+			SSWR::AVIRead::AVIRDBCopyTablesForm dlg(0, this->ui, this->core, &this->dbList);
+			dlg.ShowDialog(this);
+		}
+		break;
 	case MNU_CONN_REMOVE:
 		{
 			UOSInt i = this->lbConn->GetSelectedIndex();
@@ -574,10 +618,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_JAVA:
 		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(&sb, 0, tableName, this->currDB);
+			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, this->currDB);
 			tableName->Release();
+			schemaName->Release();
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
 		break;
@@ -614,6 +660,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				DEL_CLASS(cls);
 			}
 		}
+		break;
+	case MNU_TABLE_CREATE_MYSQL:
+		this->CopyTableCreate(DB::DBUtil::ServerType::MySQL);
+		break;
+	case MNU_TABLE_CREATE_MSSQL:
+		this->CopyTableCreate(DB::DBUtil::ServerType::MSSQL);
+		break;
+	case MNU_TABLE_CREATE_POSTGRESQL:
+		this->CopyTableCreate(DB::DBUtil::ServerType::PostgreSQL);
 		break;
 	}
 }

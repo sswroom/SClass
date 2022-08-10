@@ -108,7 +108,7 @@ DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colInd
 		{
 			*colSize = 256;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	return DB::DBUtil::CT_Unknown;
 }
@@ -120,7 +120,7 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *
 		colDef->SetColName(CSTR("Descript"));
 		colDef->SetColDP(0);
 		colDef->SetColSize(256);
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		return true;
 	}
 	return false;

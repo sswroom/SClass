@@ -133,14 +133,14 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					}
 					else
 					{
-						sb1.ToString()[i] = 0;
+						sb1.v[i] = 0;
 						dt.SetValue(sb1.ToCString());
 						t1 = dt.ToTicks();
-						sb1.ToString()[i] = '\t';
-						sb2.ToString()[j] = 0;
+						sb1.v[i] = '\t';
+						sb2.v[j] = 0;
 						dt.SetValue(sb2.ToCString());
 						t2 = dt.ToTicks();
-						sb2.ToString()[j] = '\t';
+						sb2.v[j] = '\t';
 						if (t1 == 0)
 						{
 							is2 = false;

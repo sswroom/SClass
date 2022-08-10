@@ -165,22 +165,27 @@ void DB::SQLBuilder::Clear()
 	this->sb.ClearStr();
 }
 
-const UTF8Char *DB::SQLBuilder::ToString()
+const UTF8Char *DB::SQLBuilder::ToString() const
 {
 	return this->sb.ToString();
 }
 
-UOSInt DB::SQLBuilder::GetLength()
+UOSInt DB::SQLBuilder::GetLength() const
 {
 	return this->sb.GetLength();
 }
 
-Text::CString DB::SQLBuilder::ToCString()
+Text::CString DB::SQLBuilder::ToCString() const
 {
 	return this->sb.ToCString();
 }
 
-Text::String *DB::SQLBuilder::ToNewString()
+Text::String *DB::SQLBuilder::ToNewString() const
 {
 	return Text::String::New(this->sb.ToString(), this->sb.GetLength());
+}
+
+DB::DBUtil::ServerType DB::SQLBuilder::GetServerType() const
+{
+	return this->svrType;
 }

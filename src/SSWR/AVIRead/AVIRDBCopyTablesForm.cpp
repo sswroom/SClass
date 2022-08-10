@@ -1,0 +1,189 @@
+#include "Stdafx.h"
+#include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
+#include "UI/MessageDialog.h"
+
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	DB::DBTool *db = (DB::DBTool*)me->cboSourceDB->GetSelectedItem();
+	if (db)
+	{
+		Data::ArrayList<Text::String*> schemaNames;
+		Text::String *s;
+		db->QuerySchemaNames(&schemaNames);
+		me->cboSourceSchema->ClearItems();
+		UOSInt i = 0;
+		UOSInt j = schemaNames.GetCount();
+		if (j > 0)
+		{
+			while (i < j)
+			{
+				s = schemaNames.GetItem(i);
+				me->cboSourceSchema->AddItem(s, 0);
+				s->Release();
+				i++;
+			}
+		}
+		else
+		{
+			me->cboSourceSchema->AddItem(CSTR(""), 0);
+		}
+		me->cboSourceSchema->SetSelectedIndex(0);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	DB::DBTool *db = (DB::DBTool*)me->cboSourceDB->GetSelectedItem();
+	if (db == 0)
+		return;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = me->cboSourceSchema->GetSelectedItemText(sbuff);
+	if (sptr == 0)
+		return;
+	Data::ArrayList<Text::String*> tableNames;
+	db->QueryTableNames(CSTRP(sbuff, sptr), &tableNames);
+	if (tableNames.GetCount() == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Tables not found"), CSTR("Copy Tables"), me);
+	}
+	else
+	{
+		me->dataConn = db;
+		SDEL_STRING(me->dataSchema);
+		LIST_FREE_STRING(&me->dataTables);
+		me->dataSchema = Text::String::NewP(sbuff, sptr);
+		me->dataTables.AddAll(&tableNames);
+		me->lvData->ClearItems();
+		UOSInt i = 0;
+		UOSInt j = tableNames.GetCount();
+		while (i < j)
+		{
+			me->lvData->AddItem(tableNames.GetItem(i), 0);
+			i++;
+		}
+		me->tcMain->SetSelectedIndex(1);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	DB::DBTool *db = (DB::DBTool*)me->cboDestDB->GetSelectedItem();
+	if (db)
+	{
+		Data::ArrayList<Text::String*> schemaNames;
+		Text::String *s;
+		db->QuerySchemaNames(&schemaNames);
+		me->cboDestSchema->ClearItems();
+		UOSInt i = 0;
+		UOSInt j = schemaNames.GetCount();
+		if (j > 0)
+		{
+			while (i < j)
+			{
+				s = schemaNames.GetItem(i);
+				me->cboDestSchema->AddItem(s, 0);
+				s->Release();
+				i++;
+			}
+		}
+		else
+		{
+			me->cboDestSchema->AddItem(CSTR(""), 0);
+		}
+		me->cboDestSchema->SetSelectedIndex(0);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
+{
+
+}
+
+SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<DB::DBTool*> *dbList) : UI::GUIForm(parent, 1024, 768, ui)
+{
+	this->SetFont(0, 0, 8.25, false);
+	this->SetText(CSTR("Copy Tables"));
+	this->core = core;
+	this->dbList = dbList;
+	this->dataSchema = 0;
+	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+
+
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
+	NEW_CLASS(this->lblSourceDB, UI::GUILabel(ui, this->tpSource, CSTR("Connection")));
+	this->lblSourceDB->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->cboSourceDB, UI::GUIComboBox(ui, this->tpSource, false));
+	this->cboSourceDB->SetRect(104, 4, 400, 23, false);
+	this->cboSourceDB->HandleSelectionChange(OnSourceDBChg, this);
+	NEW_CLASS(this->lblSourceSchema, UI::GUILabel(ui, this->tpSource, CSTR("Schema")));
+	this->lblSourceSchema->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->cboSourceSchema, UI::GUIComboBox(ui, this->tpSource, false));
+	this->cboSourceSchema->SetRect(104, 28, 200, 23, false);
+	NEW_CLASS(this->btnSourceSelect, UI::GUIButton(ui, this->tpSource, CSTR("Select")));
+	this->btnSourceSelect->SetRect(104, 52, 75, 23, false);
+	this->btnSourceSelect->HandleButtonClick(OnSourceSelectClicked, this);	
+
+	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
+	NEW_CLASS(this->grpDest, UI::GUIGroupBox(ui, this->tpData, CSTR("Destination")));
+	this->grpDest->SetRect(0, 0, 100, 130, false);
+	this->grpDest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lvData, UI::GUIListView(ui, this->tpData, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvData->SetFullRowSelect(true);
+	this->lvData->SetShowGrid(true);
+	this->lvData->AddColumn(CSTR("Table"), 100);
+	this->lvData->AddColumn(CSTR("Status"), 400);
+	NEW_CLASS(this->lblDestDB, UI::GUILabel(ui, this->grpDest, CSTR("Connection")));
+	this->lblDestDB->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->cboDestDB, UI::GUIComboBox(ui, this->grpDest, false));
+	this->cboDestDB->SetRect(104, 4, 400, 23, false);
+	this->cboDestDB->HandleSelectionChange(OnDestDBChg, this);
+	NEW_CLASS(this->lblDestSchema, UI::GUILabel(ui, this->grpDest, CSTR("Schema")));
+	this->lblDestSchema->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->cboDestSchema, UI::GUIComboBox(ui, this->grpDest, false));
+	this->cboDestSchema->SetRect(104, 28, 200, 23, false);
+	NEW_CLASS(this->lblDestOptions, UI::GUILabel(ui, this->grpDest, CSTR("Options")));
+	this->lblDestOptions->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->chkDestCopyData, UI::GUICheckBox(ui, this->grpDest, CSTR("Copy Data"), true));
+	this->chkDestCopyData->SetRect(104, 52, 100, 23, false);
+	NEW_CLASS(this->btnCopy, UI::GUIButton(ui, this->grpDest, CSTR("Copy")));
+	this->btnCopy->SetRect(104, 76, 75, 23, false);
+	this->btnCopy->HandleButtonClick(OnCopyClicked, this);
+
+	Text::StringBuilderUTF8 sb;
+	DB::DBTool *db;
+	UOSInt i = 0;
+	UOSInt j = this->dbList->GetCount();
+	while (i < j)
+	{
+		db = this->dbList->GetItem(i);
+		sb.ClearStr();
+		db->GetConn()->GetConnName(&sb);
+		this->cboSourceDB->AddItem(sb.ToCString(), db);
+		this->cboDestDB->AddItem(sb.ToCString(), db);
+		i++;
+	}
+	if (j > 0)
+	{
+		this->cboSourceDB->SetSelectedIndex(0);
+		this->cboDestDB->SetSelectedIndex(0);
+	}
+}
+
+SSWR::AVIRead::AVIRDBCopyTablesForm::~AVIRDBCopyTablesForm()
+{
+	SDEL_STRING(this->dataSchema);
+	LIST_FREE_STRING(&this->dataTables);
+}
+
+void SSWR::AVIRead::AVIRDBCopyTablesForm::OnMonitorChanged()
+{
+	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}

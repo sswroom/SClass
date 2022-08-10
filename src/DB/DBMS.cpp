@@ -85,7 +85,7 @@ namespace DB
 				i = 0;
 				while (i < this->colCount)
 				{
-					this->colTypes[i] = DB::DBUtil::CT_VarChar;
+					this->colTypes[i] = DB::DBUtil::CT_VarUTF8Char;
 					this->colNames[i] = 0;
 					i++;
 				}
@@ -947,12 +947,12 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8C
 	}
 	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("character_set_server")))
 	{
-		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 		return;
 	}
 	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("collation_server")))
 	{
-		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 		return;
 	}
 	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("lower_case_table_names")))
@@ -967,20 +967,20 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8C
 	}
 	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("sql_mode")))
 	{
-		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 		return;
 	}
 	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("system_time_zone")))
 	{
-		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 		return;
 	}
 	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("time_zone")))
 	{
-		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 		return;
 	}
-	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 }
 
 Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val)
@@ -1056,8 +1056,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		Text::PString sarr[2];
 		UOSInt i;
 		sb.Append(val);
-		sarr[1].v = sb.ToString();
-		sarr[1].leng = sb.GetLength();
+		sarr[1] = sb;
 		i = 2;
 		while (i == 2)
 		{
@@ -1172,7 +1171,7 @@ void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8
 		colName = CSTRP(sbuff, sptr);
 	}
 
-	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
+	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 }
 
 Bool DB::DBMS::UserVarSet(DB::DBMS::SessionInfo *sess, const UTF8Char *varName, Text::String *val)
@@ -1292,7 +1291,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				{
 					*valPtr = val;
 					if (reader)
-						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarChar);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
@@ -1363,7 +1362,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				{
 					*valPtr = val;
 					if (reader)
-						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarChar);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
@@ -2884,8 +2883,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				Text::String *row[2];
 				Text::StringBuilderUTF8 sb;
 				NEW_CLASS(reader, DB::DBMSReader(2, -1));
-				reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarChar);
-				reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarChar);
+				reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarUTF8Char);
+				reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarUTF8Char);
 				i = 0;
 				j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 				while (i < j)
@@ -2923,8 +2922,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						Text::String *row[2];
 						Text::StringBuilderUTF8 sb;
 						NEW_CLASS(reader, DB::DBMSReader(2, -1));
-						reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarChar);
-						reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarChar);
+						reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarUTF8Char);
+						reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarUTF8Char);
 						i = 0;
 						j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 						while (i < j)

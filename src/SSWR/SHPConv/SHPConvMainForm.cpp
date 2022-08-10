@@ -1236,13 +1236,13 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CString labelStr, Data:
 			dbCols->Add(Text::StrCopyNew(sb.ToString()));
 			break;
 		}
-		sb.ToString()[i] = 0;
+		sb.v[i] = 0;
 		dbCols->Add(Text::StrCopyNew(sb.ToString()));
 		sb.SetSubstr((UOSInt)i + 3);
 		i = sb.IndexOf(UTF8STRC("%>"));
 		if (i != INVALID_INDEX)
 		{
-			sb.ToString()[i] = 0;
+			sb.v[i] = 0;
 		}
 		c = sb.ToString()[0];
 		if (c == '@')

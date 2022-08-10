@@ -30,11 +30,14 @@ DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field) const
 	{
 	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTimeTZ:
 		return DT_DATETIME;
-	case DB::DBUtil::CT_Char:
-	case DB::DBUtil::CT_NChar:
-	case DB::DBUtil::CT_NVarChar:
-	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UTF8Char:
+	case DB::DBUtil::CT_UTF16Char:
+	case DB::DBUtil::CT_UTF32Char:
+	case DB::DBUtil::CT_VarUTF8Char:
+	case DB::DBUtil::CT_VarUTF16Char:
+	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
 		return DT_STRING;
 	case DB::DBUtil::CT_Bool:

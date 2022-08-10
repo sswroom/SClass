@@ -340,7 +340,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
-	UTF8Char *sptr = sb->ToString();
+	UTF8Char *sptr = sb->v;
 	UOSInt i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
 	if (GetPathType({sptr, sb->GetLength()}) == PathType::File && i != INVALID_INDEX)
 	{
@@ -624,7 +624,7 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	str->Release();
 	sb.AllocLeng(512);
 	Char cbuff[512];
-	UTF8Char *sptr = sb.ToString();
+	UTF8Char *sptr = sb.v;
 	int status;
 	UOSInt i;
 	UOSInt j;

@@ -103,6 +103,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 			DB::DBUtil::ColType ct = r->GetColType(i, &colSize);
 			switch (ct)
 			{
+			case DB::DBUtil::CT_DateTimeTZ:
 			case DB::DBUtil::CT_DateTime:
 				sptr = Text::StrConcatC(r->GetTimestamp(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd HH:mm:ss"), UTF8STRC("</string>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
@@ -133,10 +134,12 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 			case DB::DBUtil::CT_Binary:
 			case DB::DBUtil::CT_Vector:
 
-			case DB::DBUtil::CT_NVarChar:
-			case DB::DBUtil::CT_NChar:
-			case DB::DBUtil::CT_VarChar:
-			case DB::DBUtil::CT_Char:
+			case DB::DBUtil::CT_UTF8Char:
+			case DB::DBUtil::CT_UTF16Char:
+			case DB::DBUtil::CT_UTF32Char:
+			case DB::DBUtil::CT_VarUTF8Char:
+			case DB::DBUtil::CT_VarUTF16Char:
+			case DB::DBUtil::CT_VarUTF32Char:
 			case DB::DBUtil::CT_Unknown:
 			case DB::DBUtil::CT_UUID:
 			default:

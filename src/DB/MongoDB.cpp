@@ -354,7 +354,7 @@ DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, UOSInt *colSi
 {
 	if (colIndex != 0)
 		return DB::DBUtil::CT_Unknown;
-	return DB::DBUtil::CT_VarChar;
+	return DB::DBUtil::CT_VarUTF8Char;
 }
 
 Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
@@ -362,7 +362,7 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	if (colIndex != 0)
 		return false;
 	colDef->SetColName(CSTR("Data"));
-	colDef->SetColType(DB::DBUtil::CT_VarChar);
+	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);
 	colDef->SetDefVal(CSTR_NULL);

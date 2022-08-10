@@ -214,7 +214,7 @@ public:
 		{
 			*colSize = 256;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 
 	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
@@ -226,7 +226,7 @@ public:
 		}
 		colDef->SetColName(this->data->colList.GetItem(colIndex));
 		colDef->SetColSize(256);
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetAttr(CSTR_NULL);
 		colDef->SetColDP(0);
 		colDef->SetDefVal(CSTR_NULL);

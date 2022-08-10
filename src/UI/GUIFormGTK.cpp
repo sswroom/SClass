@@ -39,8 +39,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	sarr[1].v = sb.ToString();
-	sarr[1].leng = sb.GetLength();
+	sarr[1] = sb;
 	while (true)
 	{
 		i = Text::StrSplitP(sarr, 2, sarr[1], '\n');

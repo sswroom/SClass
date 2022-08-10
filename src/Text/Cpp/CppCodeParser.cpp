@@ -850,7 +850,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 		{
 			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB->ToString());
 			fileStatus->lineBuffSB->AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
-			wordStart = fileStatus->lineBuffSB->ToString() + j;
+			wordStart = fileStatus->lineBuffSB->v + j;
 		}
 		else
 		{
@@ -861,7 +861,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 	{
 		fileStatus->lineBuffSB->AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
 	}
-	sptr = fileStatus->lineBuffSB->ToString() + i;
+	sptr = fileStatus->lineBuffSB->v + i;
 	if (fileStatus->currMode == Text::Cpp::CppParseStatus::PM_DEFINE)
 	{
 		lineStart = false;

@@ -872,8 +872,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						Bool firstPhoto = me->lbImage->GetCount() == 0;
 						SDEL_STRING(me->initSelImg);
 						Text::PString sarr[2];
-						sarr[1].v = sb.ToString();
-						sarr[1].leng = sb.GetLength();
+						sarr[1] = sb;
 						printf("HDROP: %s\r\n", sb.ToString());
 						j = 2;
 						while (j == 2)
@@ -1054,15 +1053,15 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userOb
 			UTF8Char c;
 			Bool found = false;
 			sb.Trim();
-			sptr = sb.ToString();
+			sptr = sb.v;
 			c = *sptr;
 			if (c >= 256)
 			{
-				chiPtr = sb.ToString();
+				chiPtr = sb.v;
 			}
 			else if (c >= 'A' && c <= 'Z')
 			{
-				sciPtr = sb.ToString();
+				sciPtr = sb.v;
 			}
 			else
 			{
@@ -3376,7 +3375,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 				{
 					if (data->GetDataText(fmtSURL, &sb))
 					{
-						IO::MemoryStream mstm(sb.ToString(), sb.GetLength(), UTF8STRC("MainForm.Drop"));
+						IO::MemoryStream mstm(sb.v, sb.GetLength(), UTF8STRC("MainForm.Drop"));
 						Text::UTF8Reader reader(&mstm);
 						while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 						{
@@ -3438,8 +3437,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 					if (data->GetDataText(fmtHDrop, &sb))
 					{
 						Text::PString sarr[2];
-						sarr[1].v = sb.ToString();
-						sarr[1].leng = sb.GetLength();
+						sarr[1] = sb;
 						printf("HDROP: %s\r\n", sb.ToString());
 						j = 2;
 						while (j == 2)

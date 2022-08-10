@@ -101,7 +101,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 {
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
 	const UTF8Char *colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};
-	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarChar};
+	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
 	UOSInt colSize[] = {11, 32, 255};
 	UOSInt colDP[] = {0, 10, 0};
 	Map::VectorLayer *lyr = 0;

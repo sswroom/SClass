@@ -1068,7 +1068,7 @@ void Map::HKTrafficLayer::ReloadData()
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);
-									if (Text::StrSplit(sarr, 2, sb.ToString(), '-') == 2)
+									if (Text::StrSplit(sarr, 2, sb.v, '-') == 2)
 									{
 										fromId = Text::StrToInt32(sarr[0]);
 										toId = Text::StrToInt32(sarr[1]);

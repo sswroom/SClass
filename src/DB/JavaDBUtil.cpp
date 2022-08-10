@@ -115,13 +115,16 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF8 *sb, DB::ColDef *c
 		case DB::DBUtil::CT_Float:
 			isObj = false;
 			break;
-		case DB::DBUtil::CT_VarChar:
-		case DB::DBUtil::CT_Char:
-		case DB::DBUtil::CT_NVarChar:
-		case DB::DBUtil::CT_NChar:
+		case DB::DBUtil::CT_UTF8Char:
+		case DB::DBUtil::CT_UTF16Char:
+		case DB::DBUtil::CT_UTF32Char:
+		case DB::DBUtil::CT_VarUTF8Char:
+		case DB::DBUtil::CT_VarUTF16Char:
+		case DB::DBUtil::CT_VarUTF32Char:
 		case DB::DBUtil::CT_UUID:
-		case DB::DBUtil::CT_DateTime:
 		case DB::DBUtil::CT_Date:
+		case DB::DBUtil::CT_DateTime:
+		case DB::DBUtil::CT_DateTimeTZ:
 		case DB::DBUtil::CT_Binary:
 		case DB::DBUtil::CT_Vector:
 		case DB::DBUtil::CT_Unknown:
@@ -192,8 +195,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 		UInt16 port = 1433;
 		const UTF8Char *dbName = 0;
 		sb.AppendC(&url->v[17], url->leng - 17);
-		sarr[1].v = sb.ToString();
-		sarr[1].leng = sb.GetLength();
+		sarr[1] = sb;
 		scnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 		scnt2 = Text::StrSplitP(sarr2, 2, sarr[0], ':');
 		if (scnt2 == 2)

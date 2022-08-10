@@ -210,7 +210,7 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
 		{
 			*colSize = 0;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	if (colSize)
 	{
@@ -257,11 +257,11 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
 	}
 	else if (cols[colIndex].type == 'M')
 	{
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else if (cols[colIndex].type == 'C')
 	{
-		return DB::DBUtil::CT_Char;
+		return DB::DBUtil::CT_UTF8Char;
 	}
 	else if (cols[colIndex].type == 'F')
 	{
@@ -275,7 +275,7 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
 	{
 		return DB::DBUtil::CT_Int32;
 	}
-	return DB::DBUtil::CT_VarChar;
+	return DB::DBUtil::CT_VarUTF8Char;
 }
 
 Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)

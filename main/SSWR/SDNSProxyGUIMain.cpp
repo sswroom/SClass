@@ -39,8 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Data::ArrayList<UInt32> dnsList;
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
-			sarr[1].v = sb.ToString();
-			sarr[1].leng = sb.GetLength();
+			sarr[1] = sb;
 			while (true)
 			{
 				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
@@ -66,8 +65,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
-			sarr[1].v = sb.ToString();
-			sarr[1].leng = sb.GetLength();
+			sarr[1] = sb;
 			while (true)
 			{
 				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');

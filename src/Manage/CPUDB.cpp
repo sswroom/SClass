@@ -988,7 +988,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 		i = Text::StrIndexOfChar(sbSysType.ToString() + 17, ' ');
 		if (i != INVALID_INDEX)
 		{
-			sbSysType.ToString()[17 + i] = 0;
+			sbSysType.v[17 + i] = 0;
 		}
 //		wprintf(L"Qualcomm Atheros: %ls\r\n", sbSysType.ToString() + 17);
 		cpu = GetCPUSpec(sbSysType.ToCString().Substring(17));

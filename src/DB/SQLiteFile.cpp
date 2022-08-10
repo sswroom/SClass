@@ -284,7 +284,7 @@ void DB::SQLiteReader::UpdateColTypes()
 			}
 			else if (colType == SQLITE_TEXT)
 			{
-				this->colTypes[i] = DB::DBUtil::CT_VarChar;
+				this->colTypes[i] = DB::DBUtil::CT_VarUTF8Char;
 			}
 			else if (colType == SQLITE_BLOB)
 			{
@@ -624,11 +624,11 @@ DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 			*colSize = 8;
 		return DB::DBUtil::CT_Double;
 	}
-	else if (colType == DB::DBUtil::CT_VarChar)
+	else if (colType == DB::DBUtil::CT_VarUTF8Char)
 	{
 		if (colSize)
 			*colSize = GetBinarySize(colIndex);
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else if (colType == DB::DBUtil::CT_Binary)
 	{

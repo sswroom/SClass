@@ -163,16 +163,22 @@ DB::DBConn *DB::DBTool::GetConn()
 	return (DB::DBConn*)this->db;
 }
 
-Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::TableDef *tabDef)
+Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef)
 {
+	DB::DBUtil::ServerType svrType = sql->GetServerType();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	DB::ColDef *col;
 	sql->AppendCmdC(CSTR("create table "));
+	if (schemaName.leng > 0)
+	{
+		sql->AppendCol(schemaName.v);
+		sql->AppendCmdC(CSTR("."));
+	}
 	sql->AppendCol(tableName.v);
 	sql->AppendCmdC(CSTR(" ("));
-	if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
+	if (svrType == DB::DBUtil::ServerType::Access || svrType == DB::DBUtil::ServerType::MDBTools)
 	{
 		j = tabDef->GetColCnt();
 		i = 0;
@@ -183,10 +189,10 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName,
 				sql->AppendCmdC(CSTR(", "));
 			}
 			col = tabDef->GetCol(i++);
-			this->AppendColDef(this->svrType, sql, col);
+			AppendColDef(svrType, sql, col);
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
+	else if (svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		Bool hasAutoInc = false;
 		j = tabDef->GetColCnt();
@@ -194,7 +200,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName,
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
-			this->AppendColDef(this->svrType, sql, col);
+			AppendColDef(svrType, sql, col);
 			if (col->IsAutoInc())
 			{
 				hasAutoInc = true;
@@ -233,7 +239,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName,
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
-			this->AppendColDef(this->svrType, sql, col);
+			AppendColDef(svrType, sql, col);
 			if (i < j)
 			{
 				sql->AppendCmdC(CSTR(", "));
@@ -259,7 +265,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString tableName,
 		sql->AppendCmdC(CSTR(")"));
 	}
 	sql->AppendCmdC(CSTR(")"));
-	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (tabDef->GetEngine())
 		{
@@ -446,6 +452,7 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::
 			case DB::DBUtil::CT_Bool:
 				sql->AppendBool(r->GetBool(i));
 				break;
+			case DB::DBUtil::CT_DateTimeTZ:
 			case DB::DBUtil::CT_DateTime:
 			case DB::DBUtil::CT_Date:
 				sql->AppendTS(r->GetTimestamp(i));
@@ -488,10 +495,12 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::
 					MemFree(binBuff);
 				}
 				break;
-			case DB::DBUtil::CT_VarChar:
-			case DB::DBUtil::CT_Char:
-			case DB::DBUtil::CT_NVarChar:
-			case DB::DBUtil::CT_NChar:
+			case DB::DBUtil::CT_UTF8Char:
+			case DB::DBUtil::CT_UTF16Char:
+			case DB::DBUtil::CT_UTF32Char:
+			case DB::DBUtil::CT_VarUTF8Char:
+			case DB::DBUtil::CT_VarUTF16Char:
+			case DB::DBUtil::CT_VarUTF32Char:
 			case DB::DBUtil::CT_UUID:
 			case DB::DBUtil::CT_Unknown:
 			default:

@@ -117,7 +117,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				sb.Append(reqOutput);
 				UTF8Char *sarr[3];
 				UOSInt i;
-				i = Text::StrSplit(sarr, 3, sb.ToString(), ',');
+				i = Text::StrSplit(sarr, 3, sb.v, ',');
 				if (i == 2)
 				{
 					me->core->DeviceSetOutput(idevId, Text::StrToUInt32(sarr[0]), Text::StrToInt32(sarr[1]) != 0);
@@ -2085,7 +2085,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 			Int64 cliId;
 			Bool valid = true;
 			sb.Append(devicestr);
-			sarr[1] = sb.ToString();
+			sarr[1] = sb.v;
 			while (true)
 			{
 				i = Text::StrSplit(sarr, 2, sarr[1], ',');

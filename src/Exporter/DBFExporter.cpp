@@ -128,7 +128,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = nCol;
 		while (i-- > 0)
 		{
-			if (colTypes[i] == DB::DBUtil::CT_Char || colTypes[i] == DB::DBUtil::CT_VarChar)
+			if (colTypes[i] == DB::DBUtil::CT_UTF8Char || colTypes[i] == DB::DBUtil::CT_VarUTF8Char)
 			{
 				r->GetStr(i, sbuff, sizeof(sbuff));
 				writer->SetColumn(i, sbuff);

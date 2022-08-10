@@ -754,7 +754,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																	{
 																		sb.ClearStr();
 																		reader.ReadNodeText(&sb);
-																		sarr[3] = sb.ToString();
+																		sarr[3] = sb.v;
 																		while (true)
 																		{
 																			i = Text::StrSplit(sarr, 4, sarr[3], ' ');
@@ -887,7 +887,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																								{
 																									sb.ClearStr();
 																									reader.ReadNodeText(&sb);
-																									sarr[3] = sb.ToString();
+																									sarr[3] = sb.v;
 																									while (true)
 																									{
 																										i = Text::StrSplit(sarr, 4, sarr[3], ' ');
@@ -1016,7 +1016,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																	{
 																		sb.ClearStr();
 																		reader.ReadNodeText(&sb);
-																		sarr[3] = sb.ToString();
+																		sarr[3] = sb.v;
 																		while (true)
 																		{
 																			i = Text::StrSplit(sarr, 4, sarr[3], ' ');
@@ -1158,7 +1158,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																								{
 																									sb.ClearStr();
 																									reader.ReadNodeText(&sb);
-																									sarr[1] = sb.ToString();
+																									sarr[1] = sb.v;
 																									while (true)
 																									{
 																										i = Text::StrSplit(sarr, 2, sarr[1], ' ');
@@ -3011,7 +3011,7 @@ void Parser::FileParser::XMLParser::ParseCoordinates(Text::XMLReader *reader, Da
 			{
 				Text::StringBuilderUTF8 sb;
 				reader->ReadNodeText(&sb);
-				sptr = sb.ToString();
+				sptr = sb.v;
 				while (true)
 				{
 					while ((c = *sptr) != 0)
@@ -3097,7 +3097,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 			{
 				Map::VectorLayer *lyr;
 				const UTF8Char *cols = (const UTF8Char*)"Name";
-				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
+				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarUTF8Char;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
@@ -3121,7 +3121,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 						sb.ClearStr();
 						reader->ReadNodeText(&sb);
-						sptr = sb.ToString();
+						sptr = sb.v;
 						while (true)
 						{
 							while ((c = *sptr) != 0)
@@ -3205,7 +3205,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 			{
 				Map::VectorLayer *lyr;
 				const UTF8Char *cols = (const UTF8Char*)"Name";
-				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
+				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarUTF8Char;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
@@ -3226,7 +3226,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						Double z;
 						UOSInt i;
 						UTF8Char *sarr[4];
-						i = Text::StrSplitTrim(sarr, 4, sb.ToString(), ',');
+						i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
 						if (i == 3)
 						{
 							Math::Geometry::PointZ *pt;
@@ -3303,7 +3303,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 			{
 				Map::VectorLayer *lyr;
 				const UTF8Char *cols = (const UTF8Char*)"Name";
-				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
+				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarUTF8Char;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
 				Data::ArrayListDbl coord;

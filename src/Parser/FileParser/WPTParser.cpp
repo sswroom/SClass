@@ -73,7 +73,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 	if (valid)
 	{
 		const UTF8Char *colNames[] = {(const UTF8Char*)"Name", (const UTF8Char*)"Description"};
-		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarChar, DB::DBUtil::CT_VarChar};
+		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarUTF8Char, DB::DBUtil::CT_VarUTF8Char};
 		UOSInt colSizes[] = {14, 40};
 		UOSInt colDPs[] = {0, 0};
 		reader->ReadLine(sbuff, 1024);

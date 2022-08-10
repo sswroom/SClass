@@ -146,7 +146,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 
 	sb2.ClearStr();
 	sb2.Append(req->GetRequestURI());
-	sptr = sb2.ToString();
+	sptr = sb2.v;
 	i = Text::StrIndexOfCharC(sptr, sb2.GetLength(), '?');
 	if (i != INVALID_INDEX)
 	{
@@ -425,7 +425,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
 		if (i != INVALID_INDEX)
 		{
-			sb.ToString()[i + 1] = 0;
+			sb.v[i + 1] = 0;
 		}
 		PackageInfo *package;
 		Sync::RWMutexUsage packageMutUsage(this->packageMut, false);
@@ -439,7 +439,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				return true;
 			}
 			
-			sptr = &sb.ToString()[i + 2];
+			sptr = &sb.v[i + 2];
 			if (sptr[0] == 0)
 			{
 				ResponsePackageFile(req, resp, subReq, package->packageFile);
@@ -606,7 +606,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	const UTF8Char *reqTarget = subReq.v;
 	sb.AppendC(reqTarget, subReq.leng);
-	sptr = sb.ToString();
+	sptr = sb.v;
 	sptrLen = sb.GetLength();
 	UTF8Char *sptr2 = 0;
 	i = Text::StrIndexOfCharC(sptr, sptrLen, '?');
@@ -645,7 +645,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		{
 			sb.ClearStr();
 			sb.AppendC(sb2.ToString(), sb2.GetLength());
-			sptr = sb.ToString();
+			sptr = sb.v;
 			sptrLen = sb.GetLength();
 			UInt64 sizeLeft;
 			Text::String *hdrVal;
@@ -1098,8 +1098,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				sb2.TrimToLength(i);
 			}
 			i = sb2.LastIndexOf('/');
-			sptr2 = sb2.ToString() + i + 1;
-			sb2.ToString()[i] = 0;
+			sptr2 = sb2.v + i + 1;
+			sb2.v[i] = 0;
 			Sync::MutexUsage mutUsage(this->statMut);
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
 			if (sb2.ToString()[0] == 0)
@@ -1173,7 +1173,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				resp->Write(buff, 0);
 				return true;
 			}
-			sptr = sb2.ToString();
+			sptr = sb2.v;
 			sptr[i] = 0;
 			if (!Text::StrToInt64(&sptr[6], &start))
 			{

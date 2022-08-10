@@ -378,7 +378,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 //				this->cboXAxis->AddItem(colDef.GetColName(), (void*)i);
 //				this->cboYAxis->AddItem(colDef.GetColName(), (void*)i);
 			}
-			else if (colDef.GetColType() == DB::DBUtil::CT_VarChar)
+			else if (colDef.GetColType() == DB::DBUtil::CT_VarUTF8Char)
 			{
 				this->lbStrCols->AddItem(colDef.GetColName(), (void*)i);
 			}

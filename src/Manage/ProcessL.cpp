@@ -409,7 +409,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 			sb.ClearStr();
 			while (reader.ReadLine(&sb, 512))
 			{
-				ret = Text::StrSplitTrim(sarr, 6, sb.ToString(), ' ');
+				ret = Text::StrSplitTrim(sarr, 6, sb.v, ' ');
 				if (ret == 6)
 				{
 					Int32 inode = Text::StrToInt32(sarr[4]);
@@ -517,7 +517,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	if (reader.ReadLine(&sb, 512))
 	{
 		UTF8Char *sarr[8];
-		if (Text::StrSplit(sarr, 8, sb.ToString(), ' ') == 7)
+		if (Text::StrSplit(sarr, 8, sb.v, ' ') == 7)
 		{
 			UOSInt wsSize = (UOSInt)Text::StrToUInt64(sarr[1]);
 			succ = true;
@@ -560,7 +560,7 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 	if (reader.ReadLine(&sb, 512))
 	{
 		UTF8Char *sarr[24];
-		if (Text::StrSplit(sarr, 24, sb.ToString(), ' ') >= 23)
+		if (Text::StrSplit(sarr, 24, sb.v, ' ') >= 23)
 		{
 			succ = true;
 			if (createTime)

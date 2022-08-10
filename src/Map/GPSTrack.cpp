@@ -264,7 +264,7 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 		{
 			*colSize = 256;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else if (colIndex == 1)
 	{
@@ -272,7 +272,7 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 		{
 			*colSize = 41;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else if (colIndex == 2 || colIndex == 3)
 	{
@@ -300,7 +300,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColName(CSTR("Name"));
 		colDef->SetColSize(256);
 		colDef->SetColDP(0);
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
@@ -311,7 +311,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColName(CSTR("Time Range"));
 		colDef->SetColSize(41);
 		colDef->SetColDP(0);
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);

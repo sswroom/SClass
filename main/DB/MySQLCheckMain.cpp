@@ -130,7 +130,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(mysql, DB::MySQLMaintance(cli, true));
 			sb.ClearStr();
 			sb.Append(mysqlSchemas);
-			sarr[1] = sb.ToString();
+			sarr[1] = sb.v;
 			while (true)
 			{
 				i = Text::StrSplit(sarr, 2, sarr[1], ',');

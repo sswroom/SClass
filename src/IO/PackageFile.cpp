@@ -776,7 +776,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 	j = sb.IndexOf('/');
 	while (j != INVALID_INDEX)
 	{
-		sb.ToString()[j] = 0;
+		sb.v[j] = 0;
 		found = false;
 		i = pf->GetCount();
 		while (i-- > 0)

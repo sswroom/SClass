@@ -521,7 +521,7 @@ DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, UOSInt *c
 		{
 			*colSize = 256;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	return DB::DBUtil::CT_Unknown;
 }
@@ -531,7 +531,7 @@ Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	if (colIndex == 0)
 	{
 		colDef->SetColName(CSTR("Name"));
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetColSize(256);
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);

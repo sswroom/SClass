@@ -256,8 +256,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		UOSInt cnt;
 		sb.AppendC(connStr + 6, connStrLen - 6);
 		Text::PString sarr[2];
-		sarr[1].v = sb.ToString();
-		sarr[1].leng = sb.GetLength();
+		sarr[1] = sb;
 		while (true)
 		{
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
@@ -352,8 +351,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		UOSInt cnt;
 		sb.AppendC(connStr + 9, connStrLen - 9);
 		Text::PString sarr[2];
-		sarr[1].v = sb.ToString();
-		sarr[1].leng = sb.GetLength();
+		sarr[1] = sb;
 		while (true)
 		{
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
