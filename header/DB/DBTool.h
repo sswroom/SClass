@@ -41,10 +41,10 @@ namespace DB
 		DB::DBConn *GetConn();
 		
 		static Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef);
+		static Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r);
 		Bool GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);
-		Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::DBReader *r);
 		UTF8Char *GenInsertCmd(UTF8Char *sqlstr, Text::CString tableName, DB::DBReader *r);
 	};
 }

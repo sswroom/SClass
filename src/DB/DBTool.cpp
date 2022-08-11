@@ -247,8 +247,6 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName
 		}
 		i = 0;
 		k = 0;
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendCmdC(CSTR("PRIMARY KEY ("));
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
@@ -258,11 +256,19 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName
 				{
 					sql->AppendCmdC(CSTR(", "));
 				}
+				else
+				{
+					sql->AppendCmdC(CSTR(", "));
+					sql->AppendCmdC(CSTR("PRIMARY KEY ("));
+				}
 				sql->AppendCol(col->GetColName()->v);
 				k++;
 			}
 		}
-		sql->AppendCmdC(CSTR(")"));
+		if (k > 0)
+		{
+			sql->AppendCmdC(CSTR(")"));
+		}
 	}
 	sql->AppendCmdC(CSTR(")"));
 	if (svrType == DB::DBUtil::ServerType::MySQL)
@@ -278,6 +284,127 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName
 			sql->AppendCmdC(tabDef->GetCharset()->ToCString());
 		}
 	}
+	return true;
+}
+
+Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r)
+{
+	UTF8Char tmpBuff[256];
+	DB::DBUtil::ColType colType;
+	UOSInt i;
+	UOSInt j;
+
+	Text::StringBuilderUTF8 sb;
+	Data::DateTime dt;
+
+	sql->AppendCmdC(CSTR("insert into "));
+	if (schemaName.leng > 0)
+	{
+		sql->AppendCol(schemaName.v);
+		sql->AppendCmdC(CSTR("."));
+	}
+	sql->AppendCol(tableName.v);
+	sql->AppendCmdC(CSTR(" ("));
+	j = r->ColCount();
+	i = 1;
+	r->GetName(0, tmpBuff);
+	sql->AppendCol(tmpBuff);
+	while (i < j)
+	{
+		r->GetName(i, tmpBuff);
+		sql->AppendCmdC(CSTR(", "));
+		sql->AppendCol(tmpBuff);
+		i++;
+	}
+	sql->AppendCmdC(CSTR(") values ("));
+	i = 0;
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sql->AppendCmdC(CSTR(", "));
+		}
+		if (r->IsNull(i))
+		{
+			sql->AppendCmdC(CSTR("NULL"));
+		}
+		else
+		{
+			Math::Geometry::Vector2D *vec;
+			UInt8 *binBuff;
+			UOSInt colSize;
+			colType = r->GetColType(i, &colSize);
+			switch (colType)
+			{
+			case DB::DBUtil::CT_Bool:
+				sql->AppendBool(r->GetBool(i));
+				break;
+			case DB::DBUtil::CT_DateTimeTZ:
+			case DB::DBUtil::CT_DateTime:
+			case DB::DBUtil::CT_Date:
+				sql->AppendTS(r->GetTimestamp(i));
+				break;
+			case DB::DBUtil::CT_Int64:
+				sql->AppendInt64(r->GetInt64(i));
+				break;
+			case DB::DBUtil::CT_Int32:
+			case DB::DBUtil::CT_Int16:
+				sql->AppendInt32(r->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_UInt64:
+				sql->AppendUInt64((UInt64)r->GetInt64(i));
+				break;
+			case DB::DBUtil::CT_UInt32:
+			case DB::DBUtil::CT_UInt16:
+			case DB::DBUtil::CT_Byte:
+				sql->AppendUInt32((UInt32)r->GetInt32(i));
+				break;
+			case DB::DBUtil::CT_Double:
+			case DB::DBUtil::CT_Float:
+				sql->AppendDbl(r->GetDbl(i));
+				break;
+			case DB::DBUtil::CT_Vector:
+				vec = r->GetVector(i);
+				sql->AppendVector(vec);
+				SDEL_CLASS(vec);
+				break;
+			case DB::DBUtil::CT_Binary:
+				if (r->IsNull(i))
+				{
+					sql->AppendStrUTF8(0);
+				}
+				else
+				{
+					UOSInt sz = r->GetBinarySize(i);
+					binBuff = MemAlloc(UInt8, sz);
+					r->GetBinary(i, binBuff);
+					sql->AppendBinary(binBuff, sz);
+					MemFree(binBuff);
+				}
+				break;
+			case DB::DBUtil::CT_UUID:
+/*			{
+				Data::UUID uuid;
+				r->GetUUID(i, &uuid);
+				sql->AppendUUID(&uuid);
+			}*/
+			case DB::DBUtil::CT_UTF8Char:
+			case DB::DBUtil::CT_UTF16Char:
+			case DB::DBUtil::CT_UTF32Char:
+			case DB::DBUtil::CT_VarUTF8Char:
+			case DB::DBUtil::CT_VarUTF16Char:
+			case DB::DBUtil::CT_VarUTF32Char:
+			case DB::DBUtil::CT_Unknown:
+			default:
+				sb.ClearStr();
+				r->GetStr(i, &sb);
+				sql->AppendStrC(sb.ToCString());
+				break;
+			}
+		}
+		i++;
+	}
+	sql->AppendCmdC(CSTR(")"));
 	return true;
 }
 
@@ -403,117 +530,6 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 		}
 	}
 	return status;
-}
-
-Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString tableName, DB::DBReader *r)
-{
-	UTF8Char tmpBuff[256];
-	DB::DBUtil::ColType colType;
-	UOSInt i;
-	UOSInt j;
-
-	Text::StringBuilderUTF8 sb;
-	Data::DateTime dt;
-
-	sql->AppendCmdC(CSTR("insert into "));
-	sql->AppendCol(tableName.v);
-	sql->AppendCmdC(CSTR(" ("));
-	j = r->ColCount();
-	i = 1;
-	r->GetName(0, tmpBuff);
-	sql->AppendCol(tmpBuff);
-	while (i < j)
-	{
-		r->GetName(i, tmpBuff);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendCol(tmpBuff);
-		i++;
-	}
-	sql->AppendCmdC(CSTR(") values ("));
-	i = 0;
-	while (i < j)
-	{
-		if (i > 0)
-		{
-			sql->AppendCmdC(CSTR(", "));
-		}
-		if (r->IsNull(i))
-		{
-			sql->AppendCmdC(CSTR("NULL"));
-		}
-		else
-		{
-			Math::Geometry::Vector2D *vec;
-			UInt8 *binBuff;
-			UOSInt colSize;
-			colType = r->GetColType(i, &colSize);
-			switch (colType)
-			{
-			case DB::DBUtil::CT_Bool:
-				sql->AppendBool(r->GetBool(i));
-				break;
-			case DB::DBUtil::CT_DateTimeTZ:
-			case DB::DBUtil::CT_DateTime:
-			case DB::DBUtil::CT_Date:
-				sql->AppendTS(r->GetTimestamp(i));
-				break;
-			case DB::DBUtil::CT_Int64:
-				sql->AppendInt64(r->GetInt64(i));
-				break;
-			case DB::DBUtil::CT_Int32:
-			case DB::DBUtil::CT_Int16:
-				sql->AppendInt32(r->GetInt32(i));
-				break;
-			case DB::DBUtil::CT_UInt64:
-				sql->AppendUInt64((UInt64)r->GetInt64(i));
-				break;
-			case DB::DBUtil::CT_UInt32:
-			case DB::DBUtil::CT_UInt16:
-			case DB::DBUtil::CT_Byte:
-				sql->AppendUInt32((UInt32)r->GetInt32(i));
-				break;
-			case DB::DBUtil::CT_Double:
-			case DB::DBUtil::CT_Float:
-				sql->AppendDbl(r->GetDbl(i));
-				break;
-			case DB::DBUtil::CT_Vector:
-				vec = r->GetVector(i);
-				sql->AppendVector(vec);
-				SDEL_CLASS(vec);
-				break;
-			case DB::DBUtil::CT_Binary:
-				if (r->IsNull(i))
-				{
-					sql->AppendStrUTF8(0);
-				}
-				else
-				{
-					UOSInt sz = r->GetBinarySize(i);
-					binBuff = MemAlloc(UInt8, sz);
-					r->GetBinary(i, binBuff);
-					sql->AppendBinary(binBuff, sz);
-					MemFree(binBuff);
-				}
-				break;
-			case DB::DBUtil::CT_UTF8Char:
-			case DB::DBUtil::CT_UTF16Char:
-			case DB::DBUtil::CT_UTF32Char:
-			case DB::DBUtil::CT_VarUTF8Char:
-			case DB::DBUtil::CT_VarUTF16Char:
-			case DB::DBUtil::CT_VarUTF32Char:
-			case DB::DBUtil::CT_UUID:
-			case DB::DBUtil::CT_Unknown:
-			default:
-				sb.ClearStr();
-				r->GetStr(i, &sb);
-				sql->AppendStrC(sb.ToCString());
-				break;
-			}
-		}
-		i++;
-	}
-	sql->AppendCmdC(CSTR(")"));
-	return true;
 }
 
 UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, Text::CString tableName, DB::DBReader *r)

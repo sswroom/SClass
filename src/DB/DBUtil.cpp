@@ -10,6 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 
 UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, ServerType svrType)
 {
@@ -314,6 +315,68 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, ServerTy
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::PostgreSQL)
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		while ((c = *val++) != 0)
+		{
+			if (c == '\'')
+			{
+				*sptr++ = '\'';
+				*sptr++ = '\'';
+			}
+			else if ((c & 0x80) == 0)
+			{
+				*sptr++ = c;
+			}
+			else
+			{
+				if ((c & 0xe0) == 0xc0)
+				{
+					*sptr++ = c;
+					*sptr++ = *val++;
+				}
+				else if ((c & 0xf0) == 0xe0)
+				{
+					*sptr++ = c;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+				}
+				else if ((c & 0xf8) == 0xf0)
+				{
+					*sptr++ = c;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+				}
+				else if ((c & 0xfc) == 0xf8)
+				{
+					*sptr++ = c;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+				}
+				else if ((c & 0xfe) == 0xfc)
+				{
+					*sptr++ = c;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+					*sptr++ = *val++;
+				}
+				else
+				{
+					*sptr++ = '?';
+				}
+			}
+		}
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;		
 	}
 	else
 	{
@@ -623,6 +686,54 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::DBUtil::ServerType sv
 		leng += 3;
 		return leng;
 	}
+	else if (svrType == DB::DBUtil::ServerType::PostgreSQL)
+	{
+		while ((c = *val++) != 0)
+		{
+			if (c == '\'')
+			{
+				leng += 2;
+			}
+			else if ((c & 0x80) == 0)
+			{
+				leng += 1;
+			}
+			else
+			{
+				if ((c & 0xe0) == 0xc0)
+				{
+					val += 1;
+					leng += 2;
+				}
+				else if ((c & 0xf0) == 0xe0)
+				{
+					val += 2;
+					leng += 3;
+				}
+				else if ((c & 0xf8) == 0xf0)
+				{
+					val += 3;
+					leng += 4;
+				}
+				else if ((c & 0xfc) == 0xf8)
+				{
+					val += 4;
+					leng += 5;
+				}
+				else if ((c & 0xfe) == 0xfc)
+				{
+					val += 5;
+					leng += 6;
+				}
+				else
+				{
+					leng += 1;
+				}
+			}
+		}
+		leng += 2;
+		return leng;
+	}
 	else
 	{
 		while ((c = *val++) != 0)
@@ -799,6 +910,31 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 		return sptr;
 	}
 	else if (svrType == DB::DBUtil::ServerType::Access)
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		while (true)
+		{
+			val = Text::StrReadChar(val, &c);
+			if (c == 0)
+			{
+				break;
+			}
+			if (c == '\'')
+			{
+				*sptr++ = '\'';
+				*sptr++ = '\'';
+			}
+			else
+			{
+				sptr = Text::StrWriteChar(sptr, c);
+			}
+		}
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (svrType == DB::DBUtil::ServerType::PostgreSQL)
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
@@ -1497,7 +1633,25 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(&sb, vec))
 		{
-			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("geometry::STGeomFromText('"));
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("GeomFromText('"));
+			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
+			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
+			return sqlstr;
+		}
+		else
+		{
+			return sqlstr;
+		}
+	}
+	else if (svrType == DB::DBUtil::ServerType::PostgreSQL)
+	{
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		if (writer.ToText(&sb, vec))
+		{
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
 			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
 			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
@@ -1538,7 +1692,24 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::DBUtil::Serv
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(&sb, vec))
 		{
-			UOSInt ret = 30 + sb.GetLength();
+			UOSInt ret = 18 + sb.GetLength();
+			sb.ClearStr();
+			sb.AppendU32(vec->GetSRID());
+			ret += sb.GetLength();
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (svrType == DB::DBUtil::ServerType::PostgreSQL)
+	{
+		Math::WKTWriter writer;
+		Text::StringBuilderUTF8 sb;
+		if (writer.ToText(&sb, vec))
+		{
+			UOSInt ret = 21 + sb.GetLength();
 			sb.ClearStr();
 			sb.AppendU32(vec->GetSRID());
 			ret += sb.GetLength();
@@ -1559,8 +1730,9 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 {
 	UTF8Char *sptr;
 	UTF8Char c;
-	if (svrType == DB::DBUtil::ServerType::MySQL)
+	switch (svrType)
 	{
+	case DB::DBUtil::ServerType::MySQL:
 		sptr = sqlstr;
 		*sptr++ = '`';
 		while ((c = *colName++) != 0)
@@ -1578,9 +1750,8 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr++ = '`';
 		*sptr = 0;
 		return sptr;
-	}
-	else if (svrType == DB::DBUtil::ServerType::MSSQL || svrType == DB::DBUtil::ServerType::Access)
-	{
+	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::ServerType::Access:
 		sptr = sqlstr;
 		*sptr++ = '[';
 		while ((c = *colName++) != 0)
@@ -1604,9 +1775,7 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr++ = ']';
 		*sptr = 0;
 		return sptr;
-	}
-	else if (svrType == DB::DBUtil::ServerType::MDBTools)
-	{
+	case DB::DBUtil::ServerType::MDBTools:
 		sptr = sqlstr;
 		*sptr++ = '"';
 		while ((c = *colName++) != 0)
@@ -1624,9 +1793,44 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 		*sptr++ = '"';
 		*sptr = 0;
 		return sptr;
-	}
-	else
-	{
+	case DB::DBUtil::ServerType::PostgreSQL:
+		sptr = sqlstr;
+		if (Text::StringTool::IsNonASCII(colName))
+		{
+			UTF32Char c;
+			*sptr++ = 'U';
+			*sptr++ = '&';
+			*sptr++ = '\"';
+			while (true)
+			{
+				colName = Text::StrReadChar(colName, &c);
+				if (c == 0)
+					break;
+				else if (c < 0x80)
+					*sptr++ = (UTF8Char)c;
+				else
+				{
+					*sptr++ = '\\';
+					sptr = Text::StrHexVal16(sptr, (UInt16)c);
+				}
+			}
+			*sptr++ = '\"';
+			*sptr = 0;
+		}
+		else
+		{
+			*sptr++ = '\"';
+			sptr = Text::StrConcat(sptr, colName);
+			*sptr++ = '\"';
+			*sptr = 0;
+		}
+		return sptr;
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::ServerType::WBEM:
+	default:
 		return Text::StrConcat(sqlstr, colName);
 	}
 }
@@ -1635,8 +1839,9 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::ServerTyp
 {
 	UOSInt leng = 0;
 	UTF8Char c;
-	if (svrType == DB::DBUtil::ServerType::MySQL)
+	switch (svrType)
 	{
+	case DB::DBUtil::ServerType::MySQL:
 		while ((c = *colName++) != 0)
 		{
 			if (c == '`')
@@ -1650,9 +1855,8 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::ServerTyp
 		}
 		leng += 2;
 		return leng;
-	}
-	else if (svrType == DB::DBUtil::ServerType::MSSQL || svrType == DB::DBUtil::ServerType::Access)
-	{
+	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::ServerType::Access:
 		while ((c = *colName++) != 0)
 		{
 			if (c == ']')
@@ -1666,9 +1870,51 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::ServerTyp
 		}
 		leng += 2;
 		return leng;
-	}
-	else
-	{
+	case DB::DBUtil::ServerType::MDBTools:
+		while ((c = *colName++) != 0)
+		{
+			if (c == '\"')
+			{
+				leng += 2;
+			}
+			else
+			{
+				leng += 1;
+			}
+		}
+		leng += 2;
+		return leng;
+	case DB::DBUtil::ServerType::PostgreSQL:
+		if (Text::StringTool::IsNonASCII(colName))
+		{
+			UTF32Char c;
+			leng += 4;
+			while (true)
+			{
+				colName = Text::StrReadChar(colName, &c);
+				if (c == 0)
+					break;
+				else if (c < 0x80)
+					leng++;
+				else
+				{
+					leng += 5;
+				}
+			}
+			return leng;
+		}
+		else
+		{
+			leng += 2;
+			leng += Text::StrCharCnt(colName);
+			return leng;
+		}
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::ServerType::WBEM:
+	default:
 		return Text::StrCharCnt(colName);
 	}
 }
@@ -1747,7 +1993,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			{
 				*colSize = 0;
 			}
-			return DB::DBUtil::CT_VarUTF8Char;
+			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
 		{
@@ -1769,7 +2015,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			{
 				*colSize = 0;
 			}
-			return DB::DBUtil::CT_UTF8Char;
+			return DB::DBUtil::CT_UTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("bigint")))
 		{
@@ -1889,12 +2135,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("longtext")))
 		{
 			*colSize = 0xffffffff;
-			return DB::DBUtil::CT_VarUTF8Char;
+			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("text")))
 		{
 			*colSize = 65535;
-			return DB::DBUtil::CT_VarUTF8Char;
+			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1) unsigned")))
 		{
@@ -1915,6 +2161,15 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			*colSize = 1;
 			return DB::DBUtil::CT_Bool;
+		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("geometry")))
+		{
+			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("blob")))
+		{
+			*colSize = 0xffffffff;
+			return DB::DBUtil::CT_Binary;
 		}
 		else
 		{
@@ -2013,6 +2268,10 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			*colSize = 128;
 			return DB::DBUtil::CT_VarUTF16Char;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("binary")))
+		{
+			return DB::DBUtil::CT_Binary;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varbinary")))
 		{
 			return DB::DBUtil::CT_Binary;
@@ -2021,6 +2280,15 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			*colSize = 0x7fffffff;
 			return DB::DBUtil::CT_Binary;
+		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("uniqueidentifier")))
+		{
+			return DB::DBUtil::CT_UUID;
+		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("xml")))
+		{
+			*colSize = 1073741823;
+			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else
 		{

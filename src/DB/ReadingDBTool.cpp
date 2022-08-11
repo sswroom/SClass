@@ -1136,6 +1136,21 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				{
 					col->SetColType(DB::DBUtil::CT_Int64);
 				}
+				else if (s->Equals(UTF8STRC("smallserial")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int16);
+					col->SetAutoInc(true);
+				}
+				else if (s->Equals(UTF8STRC("serial")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int32);
+					col->SetAutoInc(true);
+				}
+				else if (s->Equals(UTF8STRC("bigserial")))
+				{
+					col->SetColType(DB::DBUtil::CT_Int64);
+					col->SetAutoInc(true);
+				}
 				else if (s->Equals(UTF8STRC("text")))
 				{
 					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
@@ -1480,7 +1495,7 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
-	AppendColType(svrType, sql, col->GetColType(), col->GetColSize());
+	AppendColType(svrType, sql, col->GetColType(), col->GetColSize(), col->IsAutoInc());
 	if (col->IsNotNull())
 	{
 		sql->AppendCmdC(CSTR(" NOT NULL"));
@@ -1526,7 +1541,7 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 	}
 }
 
-void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize)
+void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc)
 {
 	switch (svrType)
 	{
@@ -1540,12 +1555,12 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			break;
 		case DB::DBUtil::CT_UTF16Char:
 			sql->AppendCmdC(CSTR("CHAR("));
-			sql->AppendUInt32((UInt32)(colSize * 3));
+			sql->AppendUInt32((UInt32)colSize);
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_UTF32Char:
 			sql->AppendCmdC(CSTR("CHAR("));
-			sql->AppendUInt32((UInt32)(colSize * 4));
+			sql->AppendUInt32((UInt32)colSize);
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_VarUTF8Char:
@@ -1553,7 +1568,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			{
 				sql->AppendCmdC(CSTR("LONGTEXT"));
 			}
-			else if (colSize == 65535)
+			else if (colSize >= 16384)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
@@ -1569,14 +1584,14 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			{
 				sql->AppendCmdC(CSTR("LONGTEXT"));
 			}
-			else if (colSize == 65535)
+			else if (colSize >= 16384)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
 			else
 			{
 				sql->AppendCmdC(CSTR("VARCHAR("));
-				sql->AppendUInt32((UInt32)(colSize * 3));
+				sql->AppendUInt32((UInt32)colSize);
 				sql->AppendCmdC(CSTR(")"));
 			}
 			break;
@@ -1585,14 +1600,14 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			{
 				sql->AppendCmdC(CSTR("LONGTEXT"));
 			}
-			else if (colSize == 65535)
+			else if (colSize >= 16384)
 			{
 				sql->AppendCmdC(CSTR("TEXT"));
 			}
 			else
 			{
 				sql->AppendCmdC(CSTR("VARCHAR("));
-				sql->AppendUInt32((UInt32)(colSize * 4));
+				sql->AppendUInt32((UInt32)colSize);
 				sql->AppendCmdC(CSTR(")"));
 			}
 			break;
@@ -1643,14 +1658,23 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			sql->AppendCmdC(CSTR("BIGINT UNSIGNED"));
 			break;
 		case DB::DBUtil::CT_Binary:
-			sql->AppendCmdC(CSTR("VARBINARY("));
-			sql->AppendUInt32((UInt32)colSize);
-			sql->AppendCmdC(CSTR(")"));
+			if (colSize >= 16384)
+			{
+				sql->AppendCmdC(CSTR("BLOB"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("VARBINARY("));
+				sql->AppendUInt32((UInt32)colSize);
+				sql->AppendCmdC(CSTR(")"));
+			}
 			break;
 		case DB::DBUtil::CT_Vector:
 			sql->AppendCmdC(CSTR("GEOMETRY"));
 			break;
 		case DB::DBUtil::CT_UUID:
+			sql->AppendCmdC(CSTR("VARCHAR(36)"));
+			break;
 		case DB::DBUtil::CT_Unknown:
 		default:
 			////////////////////////////////////////////////////////
@@ -2028,7 +2052,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_VarUTF8Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize > 10485760)
 			{
 				sql->AppendCmdC(CSTR("text"));
 			}
@@ -2040,7 +2064,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF16Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize > 10485760)
 			{
 				sql->AppendCmdC(CSTR("text"));
 			}
@@ -2052,7 +2076,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF32Char:
-			if (colSize == (UOSInt)-1)
+			if (colSize > 10485760)
 			{
 				sql->AppendCmdC(CSTR("text"));
 			}
@@ -2068,12 +2092,26 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			break;
 		case DB::DBUtil::CT_DateTime:
 			sql->AppendCmdC(CSTR("timestamp("));
-			sql->AppendUInt32((UInt32)colSize);
+			if (colSize > 6)
+			{
+				sql->AppendUInt32(6);
+			}
+			else
+			{
+				sql->AppendUInt32((UInt32)colSize);
+			}
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_DateTimeTZ:
 			sql->AppendCmdC(CSTR("timestamptz("));
-			sql->AppendUInt32((UInt32)colSize);
+			if (colSize > 6)
+			{
+				sql->AppendUInt32(6);
+			}
+			else
+			{
+				sql->AppendUInt32((UInt32)colSize);
+			}
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_Double:
@@ -2089,22 +2127,64 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			sql->AppendCmdC(CSTR("smallint"));
 			break;
 		case DB::DBUtil::CT_Int16:
-			sql->AppendCmdC(CSTR("smallint"));
+			if (autoInc)
+			{
+				sql->AppendCmdC(CSTR("smallserial"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("smallint"));
+			}
 			break;
 		case DB::DBUtil::CT_Int32:
-			sql->AppendCmdC(CSTR("integer"));
+			if (autoInc)
+			{
+				sql->AppendCmdC(CSTR("serial"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("integer"));
+			}
 			break;
 		case DB::DBUtil::CT_Int64:
-			sql->AppendCmdC(CSTR("bigint"));
+			if (autoInc)
+			{
+				sql->AppendCmdC(CSTR("bigserial"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("bigint"));
+			}
 			break;
 		case DB::DBUtil::CT_UInt16:
-			sql->AppendCmdC(CSTR("smallint"));
+			if (autoInc)
+			{
+				sql->AppendCmdC(CSTR("smallserial"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("smallint"));
+			}
 			break;
 		case DB::DBUtil::CT_UInt32:
-			sql->AppendCmdC(CSTR("integer"));
+			if (autoInc)
+			{
+				sql->AppendCmdC(CSTR("serial"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("integer"));
+			}
 			break;
 		case DB::DBUtil::CT_UInt64:
-			sql->AppendCmdC(CSTR("bigint"));
+			if (autoInc)
+			{
+				sql->AppendCmdC(CSTR("bigserial"));
+			}
+			else
+			{
+				sql->AppendCmdC(CSTR("bigint"));
+			}
 			break;
 		case DB::DBUtil::CT_Binary:
 			sql->AppendCmdC(CSTR("bytea"));

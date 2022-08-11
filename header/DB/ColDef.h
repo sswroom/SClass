@@ -21,6 +21,7 @@ namespace DB
 		Text::String *defVal;
 		Text::String *attr;
 
+		static void AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal);
 	public:
 		ColDef(Text::CString colName);
 		ColDef(Text::String *colName);

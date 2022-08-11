@@ -23,6 +23,13 @@ namespace Net
 			BinaryExecuting,
 			BinaryResultReady
 		};
+
+		enum class ClientMode
+		{
+			Handshake,
+			Authen,
+			Data
+		};
 	private:
 		Net::SocketFactory *sockf;
 		Net::SocketUtil::AddressInfo addr;
@@ -34,7 +41,7 @@ namespace Net
 		Text::String *userName;
 		Text::String *password;
 		Text::String *database;
-		Int32 mode;
+		ClientMode mode;
 		Text::String *svrVer;
 		UInt32 connId;
 		UInt8 authPluginData[20];
@@ -52,6 +59,9 @@ namespace Net
 
 		static UInt32 __stdcall RecvThread(void *userObj);
 		void SetLastError(Text::CString errMsg);
+
+		void SendExecuteStmt(UInt32 stmtId);
+		void SendStmtClose(UInt32 stmtId);
 	public:
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database);
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);

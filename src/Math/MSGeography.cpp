@@ -36,7 +36,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			UInt32 nFigures;
 			UInt32 nShapes;
 			const UInt8 *pointPtr;
-			//const UInt8 *figurePtr;
+			const UInt8 *figurePtr;
 			const UInt8 *shapePtr;
 			UOSInt ind;
 			if (buffSize < 10)
@@ -51,7 +51,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				return 0;
 			}
 			nFigures = ReadUInt32(&buffPtr[ind]);
-			//figurePtr = &buffPtr[ind + 4];
+			figurePtr = &buffPtr[ind + 4];
 			ind += 4 + nFigures * 5;
 			if (buffSize < ind + 4)
 			{
@@ -72,13 +72,23 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				Math::Geometry::Polygon *pg;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, nPoints, false, false));
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, false, false));
 				Math::Coord2DDbl *points = pg->GetPointList(&j);
 				i = 0;
 				while (i < j)
 				{
 					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
 					i++;
+				}
+				if (nFigures > 1)
+				{
+					UInt32 *ofstList = pg->GetPtOfstList(&j);
+					i = 0;
+					while (i < j)
+					{
+						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						i++;
+					}
 				}
 				return pg;
 			}

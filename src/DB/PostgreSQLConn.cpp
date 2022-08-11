@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include <libpq-fe.h>
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -728,12 +728,12 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CString sql)
 		return -2;
 	}
 	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v);
+	ExecStatusType status = PQresultStatus(res);
 #if defined(VERBOSE)
 	printf("PostgreSQL: ExecuteNonQuery: %s\r\n", sql.v);
-	ExecStatusType status = PQresultStatus(res);
 	printf("PostgreSQL: ExecuteNonQuery status = %d (%s)\r\n", status, ExecStatusTypeGetName(status).v);
 #endif
-	if (status != PGRES_TUPLES_OK)
+	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
 		PQclear(res);
 		return -2;
@@ -743,7 +743,10 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CString sql)
 #if defined(VERBOSE)
 	printf("PostgreSQL: ExecuteNonQuery row changed = %s\r\n", val);
 #endif
-	////////////////////////////
+	if (val)
+	{
+		Text::StrToOSInt(val, &ret);
+	}
 	PQclear(res);
 	return ret;
 }

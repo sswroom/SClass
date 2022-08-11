@@ -3,6 +3,66 @@
 #include "Text/MyString.h"
 #include "DB/ColDef.h"
 
+void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal)
+{
+	if (defVal.StartsWith(UTF8STRC("b'")))
+	{
+		sql->AppendBool(defVal.Equals(UTF8STRC("b'1'")));
+	}
+	else if (defVal.Equals(UTF8STRC("CONVERT([datetime2](3),getutcdate())")))
+	{
+		switch (sql->GetServerType())
+		{
+		case DB::DBUtil::ServerType::MSSQL:
+			sql->AppendStrC(CSTR("CONVERT([datetime2](3),getutcdate())"));
+			break;
+		case DB::DBUtil::ServerType::PostgreSQL:
+			sql->AppendCmdC(CSTR("(localtimestamp(3) at time zone 'utc')"));
+			break;
+		case DB::DBUtil::ServerType::MySQL:
+			sql->AppendCmdC(CSTR("utc_timestamp(3)"));
+			break;
+		case DB::DBUtil::ServerType::Access:
+		case DB::DBUtil::ServerType::MDBTools:
+		case DB::DBUtil::ServerType::Oracle:
+		case DB::DBUtil::ServerType::SQLite:
+		case DB::DBUtil::ServerType::Text:
+		case DB::DBUtil::ServerType::Unknown:
+		case DB::DBUtil::ServerType::WBEM:
+		default:
+			sql->AppendStrC(CSTR("utcnow(3)"));
+			break;
+		}
+	}
+	else if (defVal.Equals(UTF8STRC("getdate()")))
+	{
+		switch (sql->GetServerType())
+		{
+		case DB::DBUtil::ServerType::MSSQL:
+			sql->AppendStrC(CSTR("getdate()"));
+			break;
+		case DB::DBUtil::ServerType::MySQL:
+			sql->AppendCmdC(CSTR("now(6)"));
+			break;
+		case DB::DBUtil::ServerType::PostgreSQL:
+		case DB::DBUtil::ServerType::Access:
+		case DB::DBUtil::ServerType::MDBTools:
+		case DB::DBUtil::ServerType::Oracle:
+		case DB::DBUtil::ServerType::SQLite:
+		case DB::DBUtil::ServerType::Text:
+		case DB::DBUtil::ServerType::Unknown:
+		case DB::DBUtil::ServerType::WBEM:
+		default:
+			sql->AppendStrC(CSTR("now()"));
+			break;
+		}
+	}
+	else
+	{
+		sql->AppendStrC(defVal);
+	}
+}
+
 DB::ColDef::ColDef(Text::CString colName)
 {
 	this->colName = Text::String::NewOrNull(colName);
@@ -91,13 +151,20 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql) const
 {
 	if (this->defVal == 0)
 		return false;
-	if (this->defVal->StartsWith(UTF8STRC("b'")))
+	if (this->defVal->v[0] == '(' && this->defVal->EndsWith(')'))
 	{
-		sql->AppendBool(this->defVal->Equals(UTF8STRC("b'1'")));
+		Text::StringBuilderUTF8 sb;
+		sb.Append(this->defVal);
+		while (sb.v[0] == '(' && sb.EndsWith(')'))
+		{
+			sb.SetSubstr(1);
+			sb.RemoveChars(1);
+		}
+		AppendDefVal(sql, sb.ToCString());
 	}
 	else
 	{
-		sql->AppendStr(this->defVal);
+		AppendDefVal(sql, this->defVal->ToCString());
 	}
 	return true;
 }

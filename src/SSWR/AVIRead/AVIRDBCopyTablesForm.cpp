@@ -2,6 +2,11 @@
 #include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
 #include "UI/MessageDialog.h"
 
+#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
@@ -100,7 +105,111 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 {
-
+	SSWR::AVIRead::AVIRDBCopyTablesForm *me = (SSWR::AVIRead::AVIRDBCopyTablesForm*)userObj;
+	if (me->dataConn == 0)
+	{
+		return;
+	}
+	DB::DBTool *destDB = (DB::DBTool *)me->cboDestDB->GetSelectedItem();
+	if (destDB == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Please select a destination DB first"), CSTR("Copy Tables"), me);
+		return;
+	}
+	UTF8Char destSchema[512];
+	UTF8Char *destSchemaEnd = me->cboDestSchema->GetSelectedItemText(destSchema);
+	if (destSchemaEnd == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Please select a destination Schema first"), CSTR("Copy Tables"), me);
+		return;
+	}
+	Bool createTable = me->chkDestCreateTable->IsChecked();
+	Bool copyData = me->chkDestCopyData->IsChecked();
+	DB::SQLBuilder sql(destDB);
+	Text::StringBuilderUTF8 sb;
+	DB::TableDef *tabDef;
+	Text::String *tableName;
+	DB::DBReader *r;
+	UOSInt i = 0;
+	UOSInt j = me->dataTables.GetCount();
+	while (i < j)
+	{
+		Bool succ = true;
+		tableName = me->dataTables.GetItem(i);
+		if (succ && createTable)
+		{
+			tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
+			if (tabDef == 0)
+			{
+				me->lvData->SetSubItem(i, 1, CSTR("Error in getting table definition"));
+				succ = false;
+			}
+			else
+			{
+				sql.Clear();
+				if (!DB::DBTool::GenCreateTableCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef))
+				{
+					me->lvData->SetSubItem(i, 1, CSTR("Error in generating create command"));
+					succ = false;
+				}
+				else if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
+				{
+					sb.ClearStr();
+					destDB->GetLastErrorMsg(&sb);
+					me->lvData->SetSubItem(i, 1, sb.ToCString());
+					succ = false;
+				}
+				else
+				{
+					me->lvData->SetSubItem(i, 1, CSTR("Table created"));
+				}
+				DEL_CLASS(tabDef);
+			}
+		}
+		if (succ && copyData)
+		{
+			UOSInt rowCopied = 0;
+			r = me->dataConn->QueryTableData(STR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0);
+			if (r)
+			{
+				while (r->ReadNext())
+				{
+					sql.Clear();
+					DB::DBTool::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
+					if (destDB->ExecuteNonQuery(sql.ToCString()) != 1)
+					{
+#if defined(VERBOSE)
+						printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString());
+#endif
+						sb.ClearStr();
+						destDB->GetLastErrorMsg(&sb);
+						me->lvData->SetSubItem(i, 1, sb.ToCString());
+						succ = false;
+						break;
+					}
+					else
+					{
+						rowCopied++;
+					}
+				}
+				me->dataConn->CloseReader(r);
+				if (succ)
+				{
+					sb.ClearStr();
+					sb.AppendUOSInt(rowCopied);
+					sb.AppendC(UTF8STRC(" rows copied"));
+					me->lvData->SetSubItem(i, 1, sb.ToCString());
+				}
+			}
+			else
+			{
+				sb.ClearStr();
+				me->dataConn->GetLastErrorMsg(&sb);
+				me->lvData->SetSubItem(i, 1, sb.ToCString());
+			}
+		}
+		i++;
+	}
 }
 
 SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::ArrayList<DB::DBTool*> *dbList) : UI::GUIForm(parent, 1024, 768, ui)
@@ -151,8 +260,10 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->cboDestSchema->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblDestOptions, UI::GUILabel(ui, this->grpDest, CSTR("Options")));
 	this->lblDestOptions->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->chkDestCreateTable, UI::GUICheckBox(ui, this->grpDest, CSTR("Create Table"), true));
+	this->chkDestCreateTable->SetRect(104, 52, 100, 23, false);
 	NEW_CLASS(this->chkDestCopyData, UI::GUICheckBox(ui, this->grpDest, CSTR("Copy Data"), true));
-	this->chkDestCopyData->SetRect(104, 52, 100, 23, false);
+	this->chkDestCopyData->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->btnCopy, UI::GUIButton(ui, this->grpDest, CSTR("Copy")));
 	this->btnCopy->SetRect(104, 76, 75, 23, false);
 	this->btnCopy->HandleButtonClick(OnCopyClicked, this);

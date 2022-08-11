@@ -1434,6 +1434,10 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 								{
+									if (len == -4) //SQL_NO_TOTAL
+									{
+										len = (SQLLEN)Text::StrCharCnt(sptr) * 2;
+									}
 									cnt = Text::StrUTF16_UTF8CntC(sptr, (UOSInt)len >> 1);
 									sb->AllocLeng(cnt);
 									endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), sptr, (UOSInt)len >> 1);

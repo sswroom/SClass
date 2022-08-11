@@ -5,6 +5,7 @@
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
 #include "IO/OS.h"
+#include "Math/WKBReader.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/MySQLUtil.h"
 #include "Net/SocketUtil.h"
@@ -15,7 +16,7 @@
 #include "Text/MyStringW.h"
 
 #define CLIVERSION "1.0.0"
-#define BUFFSIZE 65536
+#define INITBUFFSIZE 65536
 #define ROWBUFFCNT 4
 
 #include <stdio.h>
@@ -983,9 +984,31 @@ public:
 			item->SetNull();
 			return true;
 
+		case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
+			if (col->len > 4)
+			{
+				Math::WKBReader wkb(ReadUInt32(&this->currRow->rowBuff[col->ofst]));
+				Math::Geometry::Vector2D *vec = wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0);
+				if (vec)
+				{
+					item->SetVectorDirect(vec);
+					return true;
+				}
+				else
+				{
+					printf("Unknown binary geometry format\r\n");
+					item->SetNull();
+					return true;
+				}
+			}
+			else
+			{
+				printf("Unknown binary geometry format\r\n");
+				item->SetNull();
+				return true;
+			}
 		case Net::MySQLUtil::MYSQL_TYPE_ENUM:
 		case Net::MySQLUtil::MYSQL_TYPE_SET:
-		case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
 		case Net::MySQLUtil::MYSQL_TYPE_BIT:
 		case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
 		case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
@@ -1315,6 +1338,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 {
 	Net::MySQLTCPClient *me = (Net::MySQLTCPClient*)userObj;
 	UInt8 *buff;
+	UOSInt buffCapacity = INITBUFFSIZE;
 	UOSInt buffSize;
 	UOSInt readSize;
 	UTF8Char sbuff[512];
@@ -1331,12 +1355,17 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	#if defined(VERBOSE)
 		Text::StringBuilderUTF8 sb;
 	#endif
-		buff = MemAlloc(UInt8, BUFFSIZE);
+		buff = MemAlloc(UInt8, buffCapacity);
 		while (true)
 		{
-			readSize = me->cli->Read(&buff[buffSize], BUFFSIZE - buffSize);
+			readSize = me->cli->Read(&buff[buffSize], buffCapacity - buffSize);
 			if (readSize <= 0)
+			{
+	#if defined(VERBOSE)
+				printf("MySQLTCP %d Disconnected, buffSize = %d\r\n", me->cli->GetLocalPort(), (UInt32)buffSize);
+	#endif
 				break;
+			}
 	#if defined(VERBOSE)
 			sb.ClearStr();
 			sb.AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
@@ -1344,7 +1373,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	#endif
 			buffSize += readSize;
 
-			if (me->mode == 0)
+			if (me->mode == ClientMode::Handshake)
 			{
 				readSize = buffSize;
 				if (buffSize >= 10)
@@ -1386,7 +1415,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									me->connId = ReadUInt32(&buff[packetSize - 9]);
 									MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 									me->authPluginDataSize = 8;
-									me->mode = 1;
+									me->mode = ClientMode::Authen;
 									////////////////////////////////
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d Server ver = %s\r\n", me->cli->GetLocalPort(), me->svrVer->v);
@@ -1467,7 +1496,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										printf("MySQLTCP %d auth plugin data = %s\r\n", me->cli->GetLocalPort(), sb.ToString());
 	#endif
 									}
-									me->mode = 1;
+									me->mode = ClientMode::Authen;
 
 									if (me->authPluginDataSize == 20)
 									{
@@ -1549,7 +1578,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d protocol version 10 invalid\r\n", me->cli->GetLocalPort());
 	#endif
-									me->mode = 1;
+									me->mode = ClientMode::Authen;
 									////////////////////////////////
 									readSize = 0;
 									me->cli->Close();
@@ -1567,7 +1596,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 					}
 				}
 			}
-			else if (me->mode == 1)
+			else if (me->mode == ClientMode::Authen)
 			{
 				if (buffSize < 4)
 				{
@@ -1590,7 +1619,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						}
 						else if (buff[4] == 0)
 						{
-							me->mode = 2;
+							me->mode = ClientMode::Data;
 	#if defined(VERBOSE)
 							printf("MySQLTCP %d login success\r\n", me->cli->GetLocalPort());
 	#endif
@@ -1616,7 +1645,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 					}
 				}
 			}
-			else if (me->mode == 2)
+			else if (me->mode == ClientMode::Data)
 			{
 				UInt32 packetSize;
 				UInt64 val;
@@ -1624,6 +1653,17 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 				while (readSize + 4 <= buffSize)
 				{
 					packetSize = ReadUInt24(&buff[readSize]);
+					if (4 + packetSize > buffCapacity)
+					{
+						while (4 + packetSize > buffCapacity)
+						{
+							buffCapacity <<= 1;
+						}
+						UInt8 *newBuff = MemAlloc(UInt8, buffCapacity);
+						MemCopyNO(newBuff, buff, buffSize);
+						MemFree(buff);
+						buff = newBuff;
+					}
 					if (readSize + 4 + packetSize > buffSize)
 					{
 						break;
@@ -1639,11 +1679,21 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								{
 									UInt32 stmtId = ReadUInt32(&buff[readSize + 5]);
 									((MySQLTCPBinaryReader*)me->cmdReader)->SetStmtId(stmtId);
-	#if defined(VERBOSE)
 									UInt16 numColumns = ReadUInt16(&buff[readSize + 9]);
+#if defined(VERBOSE)
 									UInt16 numParams = ReadUInt16(&buff[readSize + 11]);
 									printf("MySQLTCP %d COM_STMT_PREPARE OK, stmt id = %d, num_columns = %d, num_params = %d\r\n", me->cli->GetLocalPort(), stmtId, numColumns, numParams);
-	#endif
+#endif
+									if (numColumns == 0)
+									{
+										me->SendExecuteStmt(stmtId);
+#if defined(VERBOSE)
+										printf("MySQLTCP %d No columns found, execute statment id %d\r\n", me->cli->GetLocalPort(), stmtId);
+#endif
+										me->cmdResultType = CmdResultType::BinaryExecuting;
+										me->cmdEvt.Set();
+
+									}
 								}
 								else if (buff[readSize + 4] == 0xFF) //ERR
 								{
@@ -1702,6 +1752,15 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d COM_STMT_EXECUTE executed, column cnt = %lld\r\n", me->cli->GetLocalPort(), val);
 	#endif
+									if (val == 0)
+									{
+										((MySQLTCPBinaryReader*)me->cmdReader)->SetRowChanged(-1);
+										((MySQLTCPBinaryReader*)me->cmdReader)->EndCols();
+										me->SendStmtClose(((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
+										me->cmdResultType = CmdResultType::ResultEnd;
+										((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+										me->cmdEvt.Set();
+									}
 								}
 							}
 							else
@@ -1759,14 +1818,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							case CmdResultType::ProcessingBinary:
 							{
 								UInt32 stmtId = ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId();
-								me->cmdSeqNum = 1;
-								WriteUInt32(&sbuff[0], 10);
-								sbuff[3] = 0;
-								sbuff[4] = 0x17;
-								WriteUInt32(&sbuff[5], stmtId);
-								sbuff[9] = 0;
-								WriteUInt32(&sbuff[10], 1);
-								me->cli->Write(sbuff, 14);
+								me->SendExecuteStmt(stmtId);
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d EOF found, execute statment id %d\r\n", me->cli->GetLocalPort(), stmtId);
 	#endif
@@ -1780,16 +1832,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								me->cmdEvt.Set();
 								break;
 							case CmdResultType::BinaryResultReady:
-								WriteUInt32(&sbuff[0], 5);
-								sbuff[3] = 0;
-								sbuff[4] = 0x19; //COM_STMT_CLOSE
-								WriteUInt32(&sbuff[5], ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
-								me->cli->Write(sbuff, 9);
-
+								me->SendStmtClose(((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
 								me->cmdResultType = CmdResultType::ResultEnd;
 								((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
 								me->cmdEvt.Set();
-
 								break;
 							case CmdResultType::ResultEnd:
 							case CmdResultType::ResultReady:
@@ -1876,7 +1922,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 			else
 			{
 	#if defined(VERBOSE)	
-				printf("MySQLTCP %d End Conn: end data\r\n", me->cli->GetLocalPort());
+				printf("MySQLTCP %d End Conn: end data %d\r\n", me->cli->GetLocalPort(), (Int32)me->cmdResultType);
 	#endif
 				((MySQLTCPReader*)me->cmdReader)->EndData();
 			}
@@ -1910,6 +1956,29 @@ void Net::MySQLTCPClient::SetLastError(Text::CString errMsg)
 #endif
 }
 
+void Net::MySQLTCPClient::SendExecuteStmt(UInt32 stmtId)
+{
+	UInt8 sbuff[14];
+	this->cmdSeqNum = 1;
+	WriteUInt32(&sbuff[0], 10);
+	sbuff[3] = 0;
+	sbuff[4] = 0x17;
+	WriteUInt32(&sbuff[5], stmtId);
+	sbuff[9] = 0;
+	WriteUInt32(&sbuff[10], 1);
+	this->cli->Write(sbuff, 14);
+}
+
+void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
+{
+	UInt8 sbuff[9];
+	WriteUInt32(&sbuff[0], 5);
+	sbuff[3] = 0;
+	sbuff[4] = 0x19; //COM_STMT_CLOSE
+	WriteUInt32(&sbuff[5], stmtId);
+	this->cli->Write(sbuff, 9);
+}
+
 Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
@@ -1917,7 +1986,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->recvStarted = false;
 	this->addr = *addr;
 	this->port = port;
-	this->mode = 0;
+	this->mode = ClientMode::Handshake;
 	this->svrVer = 0;
 	this->connId = 0;
 	this->authPluginDataSize = 0;
@@ -1940,7 +2009,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->recvStarted = false;
 	this->addr = *addr;
 	this->port = port;
-	this->mode = 0;
+	this->mode = ClientMode::Handshake;
 	this->svrVer = 0;
 	this->connId = 0;
 	this->authPluginDataSize = 0;
@@ -2014,6 +2083,9 @@ void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF8 *sb)
 
 void Net::MySQLTCPClient::Close()
 {
+#if defined(VERBOSE)
+	printf("MySQLTCP %d User close\r\n", this->cli->GetLocalPort());
+#endif
 	this->cli->Close();
 }
 
@@ -2056,7 +2128,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 		this->lastDataError = DE_CONN_ERROR;
 		return 0;
 	}
-	while (this->mode != 2)
+	while (this->mode != ClientMode::Data)
 	{
 		if (this->cli == 0 || !this->recvRunning)
 		{
@@ -2110,7 +2182,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 		this->lastDataError = DE_CONN_ERROR;
 		return 0;
 	}
-	while (this->mode != 2)
+	while (this->mode != ClientMode::Data)
 	{
 		if (this->cli == 0 || !this->recvRunning)
 		{
@@ -2208,7 +2280,7 @@ void Net::MySQLTCPClient::Reconnect()
 	}
 	this->recvRunning = false;
 	this->recvStarted = false;
-	this->mode = 0;
+	this->mode = ClientMode::Handshake;
 	SDEL_STRING(this->svrVer);
 	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port));
 	if (this->cli->IsConnectError())
@@ -2358,7 +2430,7 @@ Bool Net::MySQLTCPClient::IsError()
 
 Bool Net::MySQLTCPClient::ServerInfoRecv()
 {
-	return this->mode >= 1;
+	return this->mode >= ClientMode::Authen;
 }
 
 Text::String *Net::MySQLTCPClient::GetServerVer()
