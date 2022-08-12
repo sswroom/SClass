@@ -284,40 +284,86 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	{
 	case 16: //bool
 		return DB::DBUtil::CT_Bool;
-	case 17: //binary
+	case 17: //bytea
 		return DB::DBUtil::CT_Binary;
+	case 18: //char
+		return DB::DBUtil::CT_UTF32Char;
 	case 19: //name
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 20: //int8
 		return DB::DBUtil::CT_Int64;
 	case 21: //int2
 		return DB::DBUtil::CT_Int16;
+	case 22: //int2vector
+		return DB::DBUtil::CT_Binary;
 	case 23: //int4
 		return DB::DBUtil::CT_Int32;
+	case 24: //regproc
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 25: //text
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 26: //oid
+		return DB::DBUtil::CT_Int32;
+	case 28: //xid
+		return DB::DBUtil::CT_Int32;
+	case 30: //oidvector
+		return DB::DBUtil::CT_Binary;
+	case 194: //pg_node_tree
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 600: //point
 		return DB::DBUtil::CT_Vector;
+	case 700: //float4
+		return DB::DBUtil::CT_Float;
 	case 701: //float8
 		return DB::DBUtil::CT_Double;
+	case 1002: //_char
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 1005: //_int2
 		return DB::DBUtil::CT_Binary;
+	case 1009: //_text
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 1016: //_int8
 		return DB::DBUtil::CT_Binary;
+	case 1021: //_float4
+		return DB::DBUtil::CT_Binary;
+	case 1028: //_oid
+		return DB::DBUtil::CT_Binary;
+	case 1034: //_aclitem
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 1042: //bpchar
-		return DB::DBUtil::CT_Char;
+		return DB::DBUtil::CT_UTF32Char;
 	case 1043: //varchar
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 1082: //date
+		return DB::DBUtil::CT_Date;
+	case 1114: //timestamp
+		return DB::DBUtil::CT_DateTime;
 	case 1184: //timestamptz
 		return DB::DBUtil::CT_DateTime;
 	case 1700: //numeric
 		return DB::DBUtil::CT_Double;
+	case 2277: //anyarray
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 2950: //uuid
 		return DB::DBUtil::CT_UUID;
+	case 3220: //pg_lsn  ////////////////////////////////
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 3361: //pg_ndistinct  ////////////////////////////////
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 3402: //pg_dependencies  ////////////////////////////////
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 3802: //jsonb ////////////////////////////////
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 5017: //pg_mcv_list  ////////////////////////////////
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 12028: //_pg_statistic  ////////////////////////////////
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 16468: //hstore ////////////////////////////////
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 34012: //citext
+		return DB::DBUtil::CT_VarUTF32Char;
+	case 34122: //geometry
+		return DB::DBUtil::CT_Vector;
 	default:
 #if defined(VERBOSE)
 		printf("PostgreSQL: Unknown type %d\r\n", dbType);

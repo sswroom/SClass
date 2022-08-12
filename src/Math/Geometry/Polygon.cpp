@@ -398,16 +398,16 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 		j = this->ptOfstArr[this->nPtOfst];
 		NEW_CLASS(tmpPG, Math::Geometry::Polygon(this->srid, 1, i - j, this->zArr != 0, this->mArr != 0));
 		points = tmpPG->GetPointList(&nPoints);
-		MemCopyAC(points, &this->pointArr[(j << 1)], sizeof(Double) * (i - j) << 1);
+		MemCopyAC(points, &this->pointArr[j], sizeof(Math::Coord2DDbl) * (i - j));
 		if (this->zArr)
 		{
 			zArr = tmpPG->GetZList(&nPoints);
-			MemCopyAC(zArr, &this->zArr[(j << 1)], sizeof(Double) * (i - j));
+			MemCopyAC(zArr, &this->zArr[j], sizeof(Double) * (i - j));
 		}
 		if (this->mArr)
 		{
 			mArr = tmpPG->GetMList(&nPoints);
-			MemCopyAC(mArr, &this->mArr[(j << 1)], sizeof(Double) * (i - j));
+			MemCopyAC(mArr, &this->mArr[j], sizeof(Double) * (i - j));
 		}
 		tmpPG->SplitByJunction(results);
 		

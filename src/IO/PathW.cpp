@@ -656,7 +656,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
-	UTF8Char *path = sb->ToString();
+	UTF8Char *path = sb->v;
 	UTF8Char *pathEnd = sb->GetEndPtr();
 	if (path[0] == '\\' && path[1] == '\\')
 	{

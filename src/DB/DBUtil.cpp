@@ -2078,28 +2078,6 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			}
 			return DB::DBUtil::CT_DateTime;
 		}
-		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetimeoffset")))
-		{
-			if (typeName[14] == '(')
-			{
-				i = Text::StrIndexOfChar(typeName, ')');
-				if (i != INVALID_INDEX)
-				{
-					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[15]);
-					typeName[i] = ')';
-				}
-				else
-				{
-					*colSize = Text::StrToUInt32(&typeName[15]);
-				}
-			}
-			else
-			{
-				*colSize = 0;
-			}
-			return DB::DBUtil::CT_DateTimeTZ;
-		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("timestamp")))
 		{
 			if (typeName[9] == '(')
@@ -2185,6 +2163,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("text")))
 		{
+			*colSize = 0x7FFFFFFF;
 			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
@@ -2223,6 +2202,28 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			*colSize = 7;
 			return DB::DBUtil::CT_DateTime;
 		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetimeoffset")))
+		{
+			if (typeName[14] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[15]);
+					typeName[i] = ')';
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[15]);
+				}
+			}
+			else
+			{
+				*colSize = 7;
+			}
+			return DB::DBUtil::CT_DateTimeTZ;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("float")))
 		{
 			return DB::DBUtil::CT_Double;
@@ -2237,7 +2238,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("smallint")))
 		{
-			return DB::DBUtil::CT_Int64;
+			return DB::DBUtil::CT_Int16;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nvarchar")))
 		{
@@ -2245,6 +2246,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("ntext")))
 		{
+			*colSize = 0x3FFFFFFF;
 			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nchar")))
@@ -2288,7 +2290,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("xml")))
 		{
 			*colSize = 1073741823;
-			return DB::DBUtil::CT_VarUTF8Char;
+			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else
 		{
