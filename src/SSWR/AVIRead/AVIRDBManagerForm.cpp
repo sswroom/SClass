@@ -16,6 +16,7 @@
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
+#include "UtilUI/TextInputDialog.h"
 #include "Win32/Clipboard.h"
 
 #define MAX_ROW_CNT 1000
@@ -33,6 +34,9 @@ typedef enum
 
 	MNU_CONN_REMOVE,
 	MNU_CONN_COPY_STR,
+
+	MNU_SCHEMA_NEW,
+	MNU_SCHEMA_DELETE,
 
 	MNU_TABLE_JAVA,
 	MNU_TABLE_CPP_HEADER,
@@ -67,6 +71,17 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(void *userObj)
 	me->UpdateTableList();
 }
 
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	UOSInt i = me->lbSchema->GetSelectedIndex();
+	if (i != INVALID_INDEX)
+	{
+		me->mnuSchema->ShowMenu(me->lbSchema, scnPos);
+	}
+	return false;
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
@@ -88,7 +103,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, 
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	if (me->currDB)
@@ -102,6 +117,66 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseClicked(void *userObj
 				me->UpdateSchemaList();
 			}
 			dbName->Release();
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (me->currDB)
+	{
+		Text::String *dbName = me->lbDatabase->GetSelectedItemTextNew();
+		if (dbName)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Are you sure to delete database "));
+			sb.Append(dbName);
+			sb.AppendC(UTF8STRC("? This process cannot be undo."));
+			if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), me))
+			{
+				if (me->currDB->DeleteDatabase(dbName->ToCString()))
+				{
+					me->UpdateDatabaseList();
+				}
+				else
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Error in deleting database "));
+					sb.Append(dbName);
+					sb.AppendC(UTF8STRC(": "));
+					me->currDB->GetLastErrorMsg(&sb);
+					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+				}
+			}
+			dbName->Release();
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (me->currDB)
+	{
+		UtilUI::TextInputDialog dlg(0, me->ui, me->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter database name to create"));
+		if (dlg.ShowDialog(me))
+		{
+			Text::StringBuilderUTF8 sb;
+			if (dlg.GetInputString(&sb))
+			{
+				if (me->currDB->CreateDatabase(sb.ToCString()))
+				{
+					me->UpdateDatabaseList();
+				}
+				else
+				{
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Error in creating database: "));
+					me->currDB->GetLastErrorMsg(&sb);
+					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+				}
+			}
 		}
 	}
 }
@@ -414,15 +489,19 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
-
 	this->tpDatabase = this->tcMain->AddTabPage(CSTR("Database"));
 	NEW_CLASS(this->lbDatabase, UI::GUIListBox(ui, this->tpDatabase, false));
 	this->lbDatabase->SetRect(0, 0, 150, 23, false);
 	this->lbDatabase->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnDatabase, UI::GUIButton(ui, this->tpDatabase, CSTR("Change")));
-	this->btnDatabase->SetRect(154, 4, 75, 23, false);
-	this->btnDatabase->HandleButtonClick(OnDatabaseClicked, this);
+	NEW_CLASS(this->btnDatabaseChange, UI::GUIButton(ui, this->tpDatabase, CSTR("Change")));
+	this->btnDatabaseChange->SetRect(154, 4, 75, 23, false);
+	this->btnDatabaseChange->HandleButtonClick(OnDatabaseChangeClicked, this);
+	NEW_CLASS(this->btnDatabaseDelete, UI::GUIButton(ui, this->tpDatabase, CSTR("Delete")));
+	this->btnDatabaseDelete->SetRect(154, 28, 75, 23, false);
+	this->btnDatabaseDelete->HandleButtonClick(OnDatabaseDeleteClicked, this);
+	NEW_CLASS(this->btnDatabaseNew, UI::GUIButton(ui, this->tpDatabase, CSTR("New")));
+	this->btnDatabaseNew->SetRect(154, 52, 75, 23, false);
+	this->btnDatabaseNew->HandleButtonClick(OnDatabaseNewClicked, this);
 
 	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
 	NEW_CLASS(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
@@ -432,6 +511,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
+	this->lbSchema->HandleRightClicked(OnSchemaRClicked, this);
 	NEW_CLASS(this->hspSchema, UI::GUIHSplitter(ui, this->pnlTable, 3, false));
 	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->pnlTable, false));
 	this->lbTable->SetRect(0, 0, 150, 23, false);
@@ -476,6 +556,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->mnuConn->AddItem(CSTR("Remove"), MNU_CONN_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuConn->AddItem(CSTR("Copy Conn String"), MNU_CONN_COPY_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
+	NEW_CLASS(this->mnuSchema, UI::GUIPopupMenu());
+	this->mnuSchema->AddItem(CSTR("New"), MNU_SCHEMA_NEW, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuSchema->AddItem(CSTR("Delete"), MNU_SCHEMA_DELETE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+
 	NEW_CLASS(this->mnuTable, UI::GUIPopupMenu());
 	this->mnuTable->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Copy as C++ Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -509,6 +593,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 {
 	DEL_CLASS(this->mnuTable);
+	DEL_CLASS(this->mnuSchema);
 	DEL_CLASS(this->mnuConn);
 	DB::DBManager::StoreConn(DBCONNFILE, &this->dbList);
 	UOSInt i = this->dbList.GetCount();
@@ -613,6 +698,63 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				{
 					UI::MessageDialog::ShowDialog(CSTR("This connection is not supported"), CSTR("DB Manager"), this);
 				}
+			}
+		}
+		break;
+	case MNU_SCHEMA_NEW:
+		if (this->currDB)
+		{
+			UtilUI::TextInputDialog dlg(0, this->ui, this->core->GetMonitorMgr(), CSTR("DB Manager"), CSTR("Please enter schema name to create"));
+			if (dlg.ShowDialog(this))
+			{
+				Text::StringBuilderUTF8 sb;
+				if (dlg.GetInputString(&sb))
+				{
+					if (this->currDB->CreateSchema(sb.ToCString()))
+					{
+						this->UpdateSchemaList();
+					}
+					else
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("Error in creating schema: "));
+						this->currDB->GetLastErrorMsg(&sb);
+						UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+					}
+				}
+			}
+		}
+		break;
+	case MNU_SCHEMA_DELETE:
+		if (this->currDB)
+		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			if (schemaName)
+			{
+				if (schemaName->leng > 0)
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("Are you sure to delete schema "));
+					sb.Append(schemaName);
+					sb.AppendC(UTF8STRC("? This process cannot be undo."));
+					if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), this))
+					{
+						if (this->currDB->DeleteSchema(schemaName->ToCString()))
+						{
+							this->UpdateSchemaList();
+						}
+						else
+						{
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("Error in deleting schema "));
+							sb.Append(schemaName);
+							sb.AppendC(UTF8STRC(": "));
+							this->currDB->GetLastErrorMsg(&sb);
+							UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+						}
+					}
+				}
+				schemaName->Release();
 			}
 		}
 		break;

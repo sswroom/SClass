@@ -170,14 +170,19 @@ Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 		lbl = gtk_text_buffer_get_text(buff, &startIter, &endIter, TRUE);
 		sb->AppendSlow((const UTF8Char*)lbl);
 		g_free((gchar*)lbl);
+		return true;
 	}
 	else
 	{
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->clsData->widget);
 		lbl = gtk_entry_buffer_get_text(buff);
+		if (lbl == 0)
+		{
+			return false;
+		}
 		sb->AppendSlow((const UTF8Char*)lbl);
+		return true;
 	}
-	return true;
 }
 
 Text::CString UI::GUITextBox::GetObjectClass()

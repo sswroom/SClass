@@ -21,6 +21,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIPopupMenu *mnuTable;
+			UI::GUIPopupMenu *mnuSchema;
 			UI::GUIPopupMenu *mnuConn;
 			UI::GUIMainMenu *mnuMain;
 
@@ -28,11 +29,11 @@ namespace SSWR
 			UI::GUIHSplitter *hspConn;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpDetail;
-
 			UI::GUITabPage *tpDatabase;
 			UI::GUIListBox *lbDatabase;
-			UI::GUIButton *btnDatabase;
+			UI::GUIButton *btnDatabaseChange;
+			UI::GUIButton *btnDatabaseDelete;
+			UI::GUIButton *btnDatabaseNew;
 
 			UI::GUITabPage *tpTable;
 			UI::GUIPanel *pnlTable;
@@ -52,9 +53,12 @@ namespace SSWR
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnSchemaSelChg(void *userObj);
+			static Bool __stdcall OnSchemaRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(void *userObj);
 			static Bool __stdcall OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnDatabaseClicked(void *userObj);
+			static void __stdcall OnDatabaseChangeClicked(void *userObj);
+			static void __stdcall OnDatabaseDeleteClicked(void *userObj);
+			static void __stdcall OnDatabaseNewClicked(void *userObj);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();

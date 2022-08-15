@@ -892,7 +892,7 @@ DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 		return DB::DBUtil::CT_Bool;
 	case CIM_STRING:
 		*colSize = 1024;
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF16Char;
 	case CIM_DATETIME:
 		return DB::DBUtil::CT_DateTime;
 	}
@@ -959,7 +959,7 @@ Bool Win32::WMIReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColSize(1);
 		return true;
 	case CIM_STRING:
-		colDef->SetColType(DB::DBUtil::CT_VarChar);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF16Char);
 		colDef->SetColSize(1024);
 		return true;
 	case CIM_DATETIME:

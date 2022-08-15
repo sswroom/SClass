@@ -163,6 +163,110 @@ DB::DBConn *DB::DBTool::GetConn()
 	return (DB::DBConn*)this->db;
 }
 
+Bool DB::DBTool::CreateDatabase(Text::CString databaseName)
+{
+	switch (this->svrType)
+	{
+	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::ServerType::MySQL:
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::ServerType::MDBTools:
+	case DB::DBUtil::ServerType::PostgreSQL:
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		GenCreateDatabaseCmd(&sql, databaseName);
+		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
+	}
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::Unknown:
+	default:
+		this->lastErrMsg.ClearStr();
+		this->lastErrMsg.AppendC(UTF8STRC("Create database is not supported"));
+		return false;
+	}
+}
+
+Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
+{
+	switch (this->svrType)
+	{
+	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::ServerType::MySQL:
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::ServerType::MDBTools:
+	case DB::DBUtil::ServerType::PostgreSQL:
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		GenDeleteDatabaseCmd(&sql, databaseName);
+		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
+	}
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::Unknown:
+	default:
+		this->lastErrMsg.ClearStr();
+		this->lastErrMsg.AppendC(UTF8STRC("Delete database is not supported"));
+		return false;
+	}
+}
+
+Bool DB::DBTool::CreateSchema(Text::CString schemaName)
+{
+	switch (this->svrType)
+	{
+	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::ServerType::PostgreSQL:
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		GenCreateSchemaCmd(&sql, schemaName);
+		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
+	}
+	case DB::DBUtil::ServerType::MySQL:
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::ServerType::MDBTools:
+	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::Unknown:
+	default:
+		this->lastErrMsg.ClearStr();
+		this->lastErrMsg.AppendC(UTF8STRC("Delete schema is not supported"));
+		return false;
+	}
+}
+
+Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
+{
+	switch (this->svrType)
+	{
+	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::ServerType::PostgreSQL:
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		GenDeleteSchemaCmd(&sql, schemaName);
+		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
+	}
+	case DB::DBUtil::ServerType::MySQL:
+	case DB::DBUtil::ServerType::Oracle:
+	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::ServerType::MDBTools:
+	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::ServerType::Text:
+	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::ServerType::Unknown:
+	default:
+		this->lastErrMsg.ClearStr();
+		this->lastErrMsg.AppendC(UTF8STRC("Delete schema is not supported"));
+		return false;
+	}
+}
+
 Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef)
 {
 	DB::DBUtil::ServerType svrType = sql->GetServerType();
@@ -405,6 +509,34 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Tex
 		i++;
 	}
 	sql->AppendCmdC(CSTR(")"));
+	return true;
+}
+
+Bool DB::DBTool::GenCreateDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName)
+{
+	sql->AppendCmdC(CSTR("CREATE DATABASE "));
+	sql->AppendCol(databaseName.v);
+	return true;
+}
+
+Bool DB::DBTool::GenDeleteDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName)
+{
+	sql->AppendCmdC(CSTR("DROP DATABASE "));
+	sql->AppendCol(databaseName.v);
+	return true;
+}
+
+Bool DB::DBTool::GenCreateSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName)
+{
+	sql->AppendCmdC(CSTR("CREATE SCHEMA "));
+	sql->AppendCol(schemaName.v);
+	return true;
+}
+
+Bool DB::DBTool::GenDeleteSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName)
+{
+	sql->AppendCmdC(CSTR("DROP SCHEMA "));
+	sql->AppendCol(schemaName.v);
 	return true;
 }
 

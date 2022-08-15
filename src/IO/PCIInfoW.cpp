@@ -107,10 +107,10 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 				r->GetStr(devIdCol, &sb);
 				if (sb.StartsWith(UTF8STRC("PCI\\VEN_")))
 				{
-					sb.ToString()[12] = 0;
-					sb.ToString()[21] = 0;
-					clsData.vendorId = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 8) & 0xffff);
-					clsData.productId = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
+					sb.v[12] = 0;
+					sb.v[21] = 0;
+					clsData.vendorId = (UInt16)(Text::StrHex2Int16C(sb.ToString() + 8) & 0xffff);
+					clsData.productId = (UInt16)(Text::StrHex2Int16C(sb.ToString() + 17) & 0xffff);
 					id = (UInt32)(clsData.vendorId << 16) | clsData.productId;
 					if (existList.SortedIndexOf(id) < 0)
 					{

@@ -115,10 +115,10 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 				r->GetStr(devIdCol, &sb);
 				if (sb.StartsWith(UTF8STRC("USB\\VID_")))
 				{
-					sb.ToString()[12] = 0;
-					sb.ToString()[21] = 0;
-					clsData.idVendor = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 8) & 0xffff);
-					clsData.idProduct = (UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
+					sb.v[12] = 0;
+					sb.v[21] = 0;
+					clsData.idVendor = (UInt16)(Text::StrHex2Int16C(sb.ToString() + 8) & 0xffff);
+					clsData.idProduct = (UInt16)(Text::StrHex2Int16C(sb.ToString() + 17) & 0xffff);
 					clsData.bcdDevice = 0xffff;//(UInt16)(Text::StrHex2Int32C(sb.ToString() + 17) & 0xffff);
 					id = (UInt32)(clsData.idVendor << 16) | clsData.idProduct;
 					if (existList.SortedIndexOf(id) < 0)

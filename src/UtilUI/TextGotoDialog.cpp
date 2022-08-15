@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
 #include "UtilUI/TextGotoDialog.h"
 
 void __stdcall UtilUI::TextGotoDialog::OnOKClicked(void *userObj)

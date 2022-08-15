@@ -4230,6 +4230,8 @@ UtilUI/ColorDialog.h: ../../src/UtilUI/ColorDialog.cpp
 @ColorDialog.o
 UtilUI/TextGotoDialog.h: ../../src/UtilUI/TextGotoDialog.cpp
 @TextGotoDialog.o
+UtilUI/TextInputDialog.h: ../../src/UtilUI/TextInputDialog.cpp
+@TextInputDialog.o
 UtilUI/TextSearchForm.h: ../../src/UtilUI/TextSearchForm.cpp
 @TextSearchForm.o
 UtilUI/TextViewerForm.h: ../../src/UtilUI/TextViewerForm.cpp
@@ -5669,6 +5671,7 @@ RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp
+TextInputDialog.o: ../../src/UtilUI/TextInputDialog.cpp
 TextSearchForm.o: ../../src/UtilUI/TextSearchForm.cpp
 TextViewerForm.o: ../../src/UtilUI/TextViewerForm.cpp
 SMBIOS.o: ../../src/Win32/SMBIOS.cpp

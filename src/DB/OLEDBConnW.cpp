@@ -1718,14 +1718,14 @@ DB::DBUtil::ColType DB::OLEDBReader::DBType2ColType(UInt16 dbType)
 	case DBTYPE_DATE:
 		return DB::DBUtil::CT_DateTime;
 	case DBTYPE_BSTR:
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF16Char;
 	case DBTYPE_BOOL:
 		return DB::DBUtil::CT_Bool;
 	case DBTYPE_BYTES:
 		return DB::DBUtil::CT_Byte;
 	case DBTYPE_STR:
 	case DBTYPE_WSTR:
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF16Char;
 	case DBTYPE_VARIANT:
 	case DBTYPE_IUNKNOWN:
 	case DBTYPE_DECIMAL:

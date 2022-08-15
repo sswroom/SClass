@@ -39,9 +39,17 @@ namespace DB
 		Int32 GetLastIdentity32();
 		Int64 GetLastIdentity64();
 		DB::DBConn *GetConn();
+		Bool CreateDatabase(Text::CString databaseName);
+		Bool DeleteDatabase(Text::CString databaseName);
+		Bool CreateSchema(Text::CString schemaName);
+		Bool DeleteSchema(Text::CString schemaName);
 		
 		static Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef);
 		static Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r);
+		static Bool GenCreateDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName);
+		static Bool GenDeleteDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName);
+		static Bool GenCreateSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName);
+		static Bool GenDeleteSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName);
 		Bool GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);
