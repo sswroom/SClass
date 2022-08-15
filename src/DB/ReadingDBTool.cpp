@@ -4,6 +4,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
+#include "Data/FastStringMap.h"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/PostgreSQLConn.h"
@@ -1057,6 +1058,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 		{
 			return 0;
 		}
+		Data::FastStringMap<DB::ColDef*> colMap;
 		DB::TableDef *tab;
 		DB::ColDef *col;
 		Text::String *s;
@@ -1290,8 +1292,42 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 				col->SetColSize((UOSInt)r->GetInt32(sizeCol));
 			}
 			tab->AddCol(col);
+			colMap.Put(col->GetColName(), col);
 		}
 		this->db->CloseReader(r);
+
+		sql.Clear();
+		sql.AppendCmdC(CSTR("SELECT a.attname FROM pg_index i JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE i.indrelid = "));
+		if (schemaName.leng > 0)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append(schemaName);
+			sb.AppendUTF8Char('.');
+			sb.Append(tableName);
+			sql.AppendStrC(sb.ToCString());
+		}
+		else
+		{
+			sql.AppendStrC(tableName);
+		}
+		sql.AppendCmdC(CSTR("::regclass AND i.indisprimary"));
+		r = this->db->ExecuteReader(sql.ToCString());
+		if (r)
+		{
+			while (r->ReadNext())
+			{
+				ptr = r->GetStr(0, buff, 256);
+				if (ptr)
+				{
+					col = colMap.GetC(CSTRP(buff, ptr));
+					if (col)
+					{
+						col->SetPK(true);
+					}
+				}
+			}
+			this->db->CloseReader(r);
+		}
 		return tab;
 	}
 	case DB::DBUtil::ServerType::Text:

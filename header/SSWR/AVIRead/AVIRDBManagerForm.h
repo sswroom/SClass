@@ -7,6 +7,7 @@
 #include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIMainMenu.h"
+#include "UI/GUIMapControl.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIPopupMenu.h"
 #include "UI/GUITabControl.h"
@@ -45,10 +46,32 @@ namespace SSWR
 			UI::GUIVSplitter *vspTable;
 			UI::GUIListView *lvTableResult;
 
+			UI::GUITabPage *tpSQL;
+			UI::GUIPanel *pnlSQL;
+			UI::GUIPanel *pnlSQLCtrl;
+			UI::GUIButton *btnSQLExec;
+			UI::GUITextBox *txtSQL;
+			UI::GUIVSplitter *vspSQL;
+			UI::GUIListView *lvSQLResult;
+
+			UI::GUITabPage *tpMap;
+			UI::GUIPanel *pnlMap;
+			UI::GUIHSplitter *hspMap;
+			UI::GUIMapControl *mapMain;
+			UI::GUIPanel *pnlMapTable;
+			UI::GUIVSplitter *vspMapRecord;
+			UI::GUIListView *lvMapRecord;
+			UI::GUIListBox *lbMapSchema;
+			UI::GUIHSplitter *hspMapTable;
+			UI::GUIListBox *lbMapTable;
+
 			SSWR::AVIRead::AVIRCore *core;
 			Data::ArrayList<DB::DBTool*> dbList;
+			Net::SSLEngine *ssl;
 			IO::LogTool log;
 			DB::DBTool *currDB;
+			Media::ColorManagerSess *colorSess;
+			Map::MapEnv *mapEnv;
 
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
@@ -56,15 +79,19 @@ namespace SSWR
 			static Bool __stdcall OnSchemaRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(void *userObj);
 			static Bool __stdcall OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnMapSchemaSelChg(void *userObj);
 			static void __stdcall OnDatabaseChangeClicked(void *userObj);
 			static void __stdcall OnDatabaseDeleteClicked(void *userObj);
 			static void __stdcall OnDatabaseNewClicked(void *userObj);
+			static void __stdcall OnSQLExecClicked(void *userObj);
+			static void __stdcall OnLayerUpdated(void *userObj);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();
 			void UpdateTableList();
+			void UpdateMapTableList();
 			void UpdateTableData(Text::CString schemaName, Text::String *tableName);
-			void UpdateResult(DB::DBReader *r);
+			static void UpdateResult(DB::DBReader *r, UI::GUIListView *lv);
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 			void CopyTableCreate(DB::DBUtil::ServerType svrType);

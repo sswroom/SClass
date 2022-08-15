@@ -56,10 +56,14 @@ public:
 
 	virtual OSInt GetRowChanged()
 	{
-#if defined(VERBOSE)
 		char *rowChg = PQcmdTuples(this->res);
+#if defined(VERBOSE)
 		printf("PostgreSQL: Row changed = %s\r\n", rowChg);
 #endif
+		if (rowChg && rowChg[0] != 0)
+		{
+			return Text::StrToOSInt(rowChg);
+		}
 		////////////////////////////
 		return 0;
 	}

@@ -354,24 +354,9 @@ Map::DrawLayerType Map::VectorLayer::GetLayerType()
 	return this->layerType;
 }
 
-void Map::VectorLayer::SetMixedType(DrawLayerType mixedType)
+void Map::VectorLayer::SetMixedType(Math::Geometry::Vector2D::VectorType mixedType)
 {
-	if (mixedType == Map::DRAW_LAYER_POLYLINE || mixedType == Map::DRAW_LAYER_POLYLINE3D)
-	{
-		this->mixedType = Math::Geometry::Vector2D::VectorType::Polyline;
-	}
-	else if (mixedType == Map::DRAW_LAYER_POLYGON)
-	{
-		this->mixedType = Math::Geometry::Vector2D::VectorType::Polygon;
-	}
-	else if (mixedType == Map::DRAW_LAYER_POINT || mixedType == Map::DRAW_LAYER_POINT3D)
-	{
-		this->mixedType = Math::Geometry::Vector2D::VectorType::Point;
-	}
-	else
-	{
-		this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
-	}
+	this->mixedType = mixedType;
 }
 
 UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)

@@ -17,7 +17,7 @@ void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal)
 			sql->AppendStrC(CSTR("CONVERT([datetime2](3),getutcdate())"));
 			break;
 		case DB::DBUtil::ServerType::PostgreSQL:
-			sql->AppendCmdC(CSTR("(localtimestamp(3) at time zone 'utc')"));
+			sql->AppendCmdC(CSTR("(current_timestamp(3) at time zone 'utc')"));
 			break;
 		case DB::DBUtil::ServerType::MySQL:
 			sql->AppendCmdC(CSTR("utc_timestamp(3)"));

@@ -4,7 +4,10 @@
 #include "DB/ColDef.h"
 #include "DB/DBManager.h"
 #include "DB/JavaDBUtil.h"
+#include "Map/BaseMapLayer.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
@@ -103,6 +106,12 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, 
 	return false;
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapSchemaSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	me->UpdateMapTableList();
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
@@ -181,6 +190,50 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *user
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (me->currDB)
+	{
+		Text::StringBuilderUTF8 sb;
+		me->txtSQL->GetText(&sb);
+		if (sb.GetLength() > 0)
+		{
+			DB::DBReader *r = me->currDB->ExecuteReader(sb.ToCString());
+			if (r)
+			{
+				if (r->ColCount() == 0)
+				{
+					me->lvSQLResult->ClearAll();
+					me->lvSQLResult->ChangeColumnCnt(1);
+					me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
+					sb.ClearStr();
+					sb.AppendOSInt(r->GetRowChanged());
+					me->lvSQLResult->AddItem(sb.ToCString(), 0);
+				}
+				else
+				{
+					UpdateResult(r, me->lvSQLResult);
+				}
+				me->currDB->CloseReader(r);
+			}
+			else
+			{
+				sb.ClearStr();
+				me->currDB->GetLastErrorMsg(&sb);
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+			}
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnLayerUpdated(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	me->mapMain->UpdateMap();
+	me->mapMain->Redraw();
+}
+
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 {
 	this->lbDatabase->ClearItems();
@@ -205,6 +258,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 {
 	this->lbSchema->ClearItems();
+	this->lbMapSchema->ClearItems();
 	if (this->currDB == 0)
 	{
 		return;
@@ -217,6 +271,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 	if (schemaNames.GetCount() == 0)
 	{
 		this->lbSchema->AddItem(CSTR(""), 0);
+		this->lbMapSchema->AddItem(CSTR(""), 0);
 	}
 	i = 0;
 	j = schemaNames.GetCount();
@@ -224,11 +279,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 	{
 		Text::String *schemaName = schemaNames.GetItem(i);
 		this->lbSchema->AddItem(schemaName, 0);
+		this->lbMapSchema->AddItem(schemaName, 0);
 		i++;
 	}
 
 	LIST_FREE_STRING(&schemaNames);
 	this->lbSchema->SetSelectedIndex(0);
+	this->lbMapSchema->SetSelectedIndex(0);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
@@ -254,6 +311,29 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	LIST_FREE_STRING(&tableNames);
 }
 
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
+{
+	this->lbMapTable->ClearItems();
+	if (this->currDB == 0)
+	{
+		return;
+	}
+	Text::String *schemaName = this->lbMapSchema->GetSelectedItemTextNew();
+	Text::String *tableName;
+	Data::ArrayList<Text::String*> tableNames;
+	UOSInt i = 0;
+	UOSInt j = this->currDB->QueryTableNames(STR_CSTR(schemaName), &tableNames);
+	SDEL_STRING(schemaName);
+	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
+	while (i < j)
+	{
+		tableName = tableNames.GetItem(i);
+		this->lbMapTable->AddItem(tableName, 0);
+		i++;
+	}
+	LIST_FREE_STRING(&tableNames);
+}
+
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName, Text::String *tableName)
 {
 	this->lvTable->ClearItems();
@@ -273,7 +353,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	r = this->currDB->QueryTableData(schemaName, STR_CSTR(tableName), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	if (r)
 	{
-		this->UpdateResult(r);
+		UpdateResult(r, this->lvTableResult);
 
 		DB::ColDef *col;
 		UOSInt i;
@@ -343,31 +423,31 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	}
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r, UI::GUIListView *lv)
 {
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt *colSize;
 
-	this->lvTableResult->ClearAll();
+	lv->ClearAll();
 
 	Text::StringBuilderUTF8 sb;
 	{
 		DB::ColDef col(CSTR(""));
 		j = r->ColCount();
-		this->lvTableResult->ChangeColumnCnt(j);
+		lv->ChangeColumnCnt(j);
 		i = 0;
 		colSize = MemAlloc(UOSInt, j);
 		while (i < j)
 		{
 			if (r->GetColDef(i, &col))
 			{
-				this->lvTableResult->AddColumn(col.GetColName(), 100);
+				lv->AddColumn(col.GetColName(), 100);
 			}
 			else
 			{
-				this->lvTableResult->AddColumn(CSTR("Unnamed"), 100);
+				lv->AddColumn(CSTR("Unnamed"), 100);
 			}
 			colSize[i] = 0;
 			i++;
@@ -382,12 +462,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 		r->GetStr(0, &sb);
 		if (sb.GetLength() > colSize[0])
 			colSize[0] = sb.GetLength();
-		k = this->lvTableResult->AddItem(sb.ToCString(), 0);
+		k = lv->AddItem(sb.ToCString(), 0);
 		while (i < j)
 		{
 			sb.ClearStr();
 			r->GetStr(i, &sb);
-			this->lvTableResult->SetSubItem(k, i, sb.ToCString());
+			lv->SetSubItem(k, i, sb.ToCString());
 
 			if (sb.GetLength() > colSize[i])
 				colSize[i] = sb.GetLength();
@@ -408,14 +488,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	Double h;
 	if (k > 0)
 	{
-		this->lvTableResult->GetSize(&w, &h);
+		lv->GetSize(&w, &h);
 		w -= 20 + UOSInt2Double(j) * 6;
 		if (w < 0)
 			w = 0;
 		i = 0;
 		while (i < j)
 		{
-			this->lvTableResult->SetColumnWidth(i, (UOSInt2Double(colSize[i]) * w / UOSInt2Double(k) + 6));
+			lv->SetColumnWidth(i, (UOSInt2Double(colSize[i]) * w / UOSInt2Double(k) + 6));
 			i++;
 		}
 	}
@@ -477,7 +557,13 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Database Manager"));
 	this->core = core;
+	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), true);
 	this->currDB = 0;
+	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
+	Map::IMapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
+	this->mapEnv->AddLayer(0, layer, true);
+	layer->AddUpdatedHandler(OnLayerUpdated, this);
+	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lbConn, UI::GUIListBox(ui, this, false));
@@ -537,6 +623,49 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvTableResult->SetFullRowSelect(true);
 	this->lvTableResult->SetShowGrid(true);
 
+	this->tpSQL = this->tcMain->AddTabPage(CSTR("SQL"));
+	NEW_CLASS(this->pnlSQL, UI::GUIPanel(ui, this->tpSQL));
+	this->pnlSQL->SetRect(0, 0, 100, 152, false);
+	this->pnlSQL->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->pnlSQLCtrl, UI::GUIPanel(ui, this->pnlSQL));
+	this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
+	this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->btnSQLExec, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));
+	this->btnSQLExec->SetRect(4, 4, 75, 23, false);
+	this->btnSQLExec->HandleButtonClick(OnSQLExecClicked, this);
+	NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->pnlSQL, CSTR(""), true));
+	this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
+	NEW_CLASS(this->vspSQL, UI::GUIVSplitter(ui, this->tpSQL, 3, false));
+	NEW_CLASS(this->lvSQLResult, UI::GUIListView(ui, this->tpSQL, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvSQLResult->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSQLResult->SetFullRowSelect(true);
+	this->lvSQLResult->SetShowGrid(true);
+
+	this->tpMap = this->tcMain->AddTabPage(CSTR("Map"));
+	NEW_CLASS(this->pnlMap, UI::GUIPanel(ui, this->tpMap));
+	this->pnlMap->SetRect(0, 0, 200, 23, false);
+	this->pnlMap->SetDockType(UI::GUIControl::DOCK_LEFT);
+	NEW_CLASS(this->hspMap, UI::GUIHSplitter(ui, this->tpMap, 3, false));
+	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, this->tpMap, this->core->GetDrawEngine(), this->mapEnv, this->colorSess));
+	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	NEW_CLASS(this->pnlMapTable, UI::GUIPanel(ui, this->pnlMap));
+	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
+	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->vspMapRecord, UI::GUIVSplitter(ui, this->pnlMap, 3, false));
+	NEW_CLASS(this->lvMapRecord, UI::GUIListView(ui, this->pnlMap, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvMapRecord->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMapRecord->SetFullRowSelect(true);
+	this->lvMapRecord->SetShowGrid(true);
+	this->lvMapRecord->AddColumn(CSTR("Name"), 100);
+	this->lvMapRecord->AddColumn(CSTR("Value"), 100);
+	NEW_CLASS(this->lbMapSchema, UI::GUIListBox(ui, this->pnlMapTable, false));
+	this->lbMapSchema->SetRect(0, 0, 100, 23, false);
+	this->lbMapSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbMapSchema->HandleSelectionChange(OnMapSchemaSelChg, this);
+	NEW_CLASS(this->hspMapTable, UI::GUIHSplitter(ui, this->pnlMapTable, 3, false));
+	NEW_CLASS(this->lbMapTable, UI::GUIListBox(ui, this->pnlMapTable, false));
+	this->lbMapTable->SetDockType(UI::GUIControl::DOCK_FILL);
+
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
@@ -592,9 +721,12 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 
 SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 {
+	this->ClearChildren();
 	DEL_CLASS(this->mnuTable);
 	DEL_CLASS(this->mnuSchema);
 	DEL_CLASS(this->mnuConn);
+	DEL_CLASS(this->mapEnv);
+	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 	DB::DBManager::StoreConn(DBCONNFILE, &this->dbList);
 	UOSInt i = this->dbList.GetCount();
 	DB::DBTool *db;
@@ -603,6 +735,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 		db = this->dbList.GetItem(i);
 		DEL_CLASS(db);
 	}
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)

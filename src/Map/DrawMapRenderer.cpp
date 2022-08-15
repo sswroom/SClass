@@ -1334,11 +1334,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								DrawPLLayer(denv, layer.layer, layer.lineStyle, layer.lineThick, layer.lineColor);
+								DrawShapesPolyline(denv, layer.layer, layer.lineStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								DrawPLLayer(denv, layer.layer, (UOSInt)-1, layer.lineThick, layer.lineColor);
+								DrawShapesPolyline(denv, layer.layer, (UOSInt)-1, layer.lineThick, layer.lineColor);
 							}
 
 						}
@@ -1368,11 +1368,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								DrawPGLayer(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+								DrawShapesPolygon(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								DrawPGLayer(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+								DrawShapesPolygon(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
@@ -1398,7 +1398,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 					else if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 					{
 						if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
-							DrawPTLayer(denv, layer.layer, layer.imgIndex);
+							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{
 							Media::Image *pimg = 0;
@@ -1469,29 +1469,29 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
-								DrawPLLayer(denv, layer.layer, layer.lineStyle, layer.lineThick, layer.lineColor);
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
-								DrawPGLayer(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
+								DrawShapesPolyline(denv, layer.layer, layer.lineStyle, layer.lineThick, layer.lineColor);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
+								DrawShapesPolygon(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
-								DrawPLLayer(denv, layer.layer, (UOSInt)-1, layer.lineThick, layer.lineColor);
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
-								DrawPGLayer(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
+								DrawShapesPolyline(denv, layer.layer, (UOSInt)-1, layer.lineThick, layer.lineColor);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
+								DrawShapesPolygon(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{
 							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
 							{
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
 									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
 								}
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
 									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON, layer.fontType);
@@ -1504,9 +1504,9 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
-								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
+								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON, layer.fontType);
 							}
 						}
@@ -1524,7 +1524,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1662,7 +1662,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 }
 
-void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1781,7 +1781,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 }
 
-void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex)
+void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex)
 {
 	Data::ArrayListInt64 arri;
 	Map::DrawObjectL *dobj;

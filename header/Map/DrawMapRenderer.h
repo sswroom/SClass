@@ -87,9 +87,9 @@ namespace Map
 		static OSInt __stdcall VImgCompare(void *obj1, void *obj2);
 	private:
 		void DrawLayers(DrawEnv *denv, Map::MapEnv::GroupItem *group);
-		void DrawPLLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor);
-		void DrawPGLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);
-		void DrawPTLayer(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex);
+		void DrawShapesPolyline(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor);
+		void DrawShapesPolygon(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);
+		void DrawShapesPoint(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex);
 		void DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType, Map::MapEnv::FontType fontType);
 		void DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer);
 		void DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha);
