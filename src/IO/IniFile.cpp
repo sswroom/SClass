@@ -91,7 +91,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 				}
 				else
 				{
-					Text::StrTrim(value);
+					valueEnd = Text::StrTrim(value);
 					cfg->SetValue(CSTRP(cate, cateEnd), CSTRP(name, nameEnd), CSTRP(value, valueEnd));
 				}
 			}
