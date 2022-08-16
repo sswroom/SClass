@@ -6,7 +6,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/Geometry/PointZ.h"
-#include "Math/Geometry/Polyline.h"
+#include "Math/Geometry/LineString.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -365,95 +365,6 @@ void Map::GPSTrack::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
-{
-	Map::DrawObjectL *outObj;
-	UOSInt i;
-	UOSInt j;
-	Math::Coord2DDbl lastPos;
-	Math::Coord2DDbl *ptPtr;
-	if (id < 0)
-		return 0;
-	Sync::MutexUsage mutUsage(&this->recMut);
-	if ((UInt64)id > this->currTracks.GetCount())
-	{
-		mutUsage.EndUse();
-		return 0;
-	}
-	else if ((UInt64)id == this->currTracks.GetCount())
-	{
-		if (this->currTimes.GetCount() > 0)
-		{
-			Map::GPSTrack::GPSRecord3 *rec;
-			lastPos = Math::Coord2DDbl(0, 0);
-			outObj = MemAlloc(Map::DrawObjectL, 1);
-			outObj->objId = id;
-			outObj->nPtOfst = 1;
-			outObj->nPoint = (UInt32)(j = this->currRecs.GetCount());
-			outObj->ptOfstArr = MemAlloc(UInt32, 1);
-			outObj->pointArr = MemAllocA(Math::Coord2DDbl, outObj->nPoint);
-			outObj->ptOfstArr[0] = 0;
-			ptPtr = outObj->pointArr;
-			i = 0;
-			while (i < j)
-			{
-				rec = this->currRecs.GetItem(i);
-				if (rec->pos.IsZero())
-				{
-					ptPtr[0] = lastPos;
-				}
-				else
-				{
-					lastPos = ptPtr[0] = rec->pos;
-				}
-				ptPtr += 1;
-				i++;
-			}
-			outObj->flags = 0;
-			outObj->lineColor = 0;
-			mutUsage.EndUse();
-			return outObj;
-		}
-		else
-		{
-			mutUsage.EndUse();
-			return 0;
-		}
-	}
-	else
-	{
-		Map::GPSTrack::TrackRecord *track;
-		lastPos = Math::Coord2DDbl(0, 0);
-		track = this->currTracks.GetItem((UOSInt)id);
-		outObj = MemAlloc(Map::DrawObjectL, 1);
-		outObj->objId = id;
-		outObj->nPtOfst = 1;
-		outObj->nPoint = (UInt32)(j = track->nRecords);
-		outObj->ptOfstArr = MemAlloc(UInt32, 1);
-		outObj->pointArr = MemAllocA(Math::Coord2DDbl, outObj->nPoint);
-		outObj->ptOfstArr[0] = 0;
-		ptPtr = outObj->pointArr;
-		i = 0;
-		while (i < j)
-		{
-			if (track->records[i].pos.IsZero())
-			{
-				*ptPtr = lastPos;
-			}
-			else
-			{
-				lastPos = *ptPtr = track->records[i].pos;
-			}
-			ptPtr += 1;
-			i++;
-		}
-		outObj->flags = 0;
-		outObj->lineColor = 0;
-		mutUsage.EndUse();
-		return outObj;
-	}
-}
-
 Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
@@ -479,10 +390,9 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 i
 			lastAlt = 0;
 			if (this->hasAltitude)
 			{
-				Math::Geometry::Polyline *pl;
+				Math::Geometry::LineString *pl;
 
-				NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, j = this->currRecs.GetCount(), true, false));
-				pl->GetPtOfstList(&i)[0] = 0;
+				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), true, false));
 				ptPtr = pl->GetPointList(&j);
 				altList = pl->GetZList(&j);
 				i = 0;
@@ -507,9 +417,8 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 i
 			}
 			else
 			{
-				Math::Geometry::Polyline *pl;
-				NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, j = this->currRecs.GetCount(), false, false));
-				pl->GetPtOfstList(&i)[0] = 0;
+				Math::Geometry::LineString *pl;
+				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), false, false));
 				ptPtr = pl->GetPointList(&j);
 				i = 0;
 				while (i < j)
@@ -545,10 +454,9 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 i
 		track = this->currTracks.GetItem((UOSInt)id);
 		if (this->hasAltitude)
 		{
-			Math::Geometry::Polyline *pl;
+			Math::Geometry::LineString *pl;
 
-			NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, track->nRecords, true, false));
-			pl->GetPtOfstList(&i)[0] = 0;
+			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, true, false));
 			ptPtr = pl->GetPointList(&j);
 			altList = pl->GetZList(&j);
 			i = 0;
@@ -572,10 +480,9 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 i
 		}
 		else
 		{
-			Math::Geometry::Polyline *pl;
+			Math::Geometry::LineString *pl;
 
-			NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, track->nRecords, false, false));
-			pl->GetPtOfstList(&i)[0] = 0;
+			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, false, false));
 			ptPtr = pl->GetPointList(&j);
 			i = 0;
 			while (i < j)
@@ -596,20 +503,6 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 i
 		}
 	}
 }
-
-void Map::GPSTrack::ReleaseObject(void *session, DrawObjectL *obj)
-{
-	MemFree(obj->ptOfstArr);
-	MemFreeA(obj->pointArr);
-	MemFree(obj);
-}
-
-/*void Map::GPSTrack::ReleaseObject(void *session, DrawObjectDbl *obj)
-{
-	MemFree(obj->parts);
-	MemFree(obj->points);
-	MemFree(obj);
-}*/
 
 void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {

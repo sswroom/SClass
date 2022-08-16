@@ -112,31 +112,6 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(void *session)
 
 }
 
-Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewObjectById(void *session, Int64 id)
-{
-	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
-	if (ufile == 0)
-		return 0;
-	Map::DrawObjectL *dobj;
-
-	dobj = MemAlloc(Map::DrawObjectL, 1);
-	dobj->nPtOfst = 0;
-	dobj->nPoint = 1;
-	dobj->objId = id;
-	dobj->ptOfstArr = 0;
-	dobj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
-	Data::DateTime dt;
-	dt.SetTicks(ufile->fileTimeTicks);
-	if (ufile->camera)
-	{
-		dt.AddSecond(this->cameraMap->Get(ufile->camera));
-	}
-	this->gpsTrk->GetPosByTime(&dt, &dobj->pointArr[0]);
-	dobj->flags = 0;
-	dobj->lineColor = 0;
-	return dobj;
-}
-
 Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
@@ -153,12 +128,6 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(vo
 	this->gpsTrk->GetPosByTime(&dt, &pos);
 	NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), pos));
 	return pt;
-}
-
-void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	MemFreeA(obj->pointArr);
-	MemFree(obj);
 }
 
 Map::IMapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass()

@@ -542,71 +542,6 @@ void Map::SHPData::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::SHPData::GetNewObjectById(void *session, Int64 id)
-{
-	Map::DrawObjectL *obj;
-	Map::SHPData::RecHdr *rec;
-
-	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
-	{
-		if (id < 0 || (UInt64)id >= this->ptX->GetCount())
-		{
-			return 0;
-		}
-		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->nPtOfst = 0;
-		obj->nPoint = 1;
-		obj->objId = id;
-		obj->ptOfstArr = 0;
-		obj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
-		obj->pointArr[0].x = (this->ptX->GetItem((UOSInt)id));
-		obj->pointArr[0].y = (this->ptY->GetItem((UOSInt)id));
-		obj->flags = 0;
-		obj->lineColor = 0;
-		return obj;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE)
-	{
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
-		if (rec == 0)
-			return 0;
-
-		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->nPtOfst = rec->nPtOfst;
-		obj->nPoint = rec->nPoint;
-		obj->objId = id;
-		obj->ptOfstArr = MemAlloc(UInt32, rec->nPtOfst);
-		obj->pointArr = MemAllocA(Math::Coord2DDbl, rec->nPoint);
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)obj->ptOfstArr);
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)obj->pointArr);
-		obj->flags = 0;
-		obj->lineColor = 0;
-		return obj;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
-	{
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
-		if (rec == 0)
-			return 0;
-
-		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->nPtOfst = rec->nPtOfst;
-		obj->nPoint = rec->nPoint;
-		obj->objId = id;
-		obj->ptOfstArr = MemAlloc(UInt32, rec->nPtOfst);
-		obj->pointArr = MemAllocA(Math::Coord2DDbl, rec->nPoint);
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)obj->ptOfstArr);
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)obj->pointArr);
-		obj->flags = 0;
-		obj->lineColor = 0;
-		return obj;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
 Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 {
 	Map::SHPData::RecHdr *rec;
@@ -685,24 +620,6 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id
 		return 0;
 	}
 }
-
-void Map::SHPData::ReleaseObject(void *session, DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFreeA(obj->pointArr);
-	MemFree(obj);
-}
-
-/*void Map::SHPData::ReleaseObject(void *session, DrawObjectDbl *obj)
-{
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
-	MemFree(obj);
-}*/
 
 UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)
 {

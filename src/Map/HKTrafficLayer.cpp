@@ -1249,52 +1249,6 @@ void Map::HKTrafficLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
-{
-	RoadInfo *road;
-	Map::DrawObjectL *obj = 0;
-	Sync::MutexUsage mutUsage(&this->roadMut);
-	road = this->roadMap.Get(id);
-	if (road && road->vec)
-	{
-		Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)road->vec;
-		UOSInt cnt;
-		UInt32 *ptOfsts = pl->GetPtOfstList(&cnt);
-		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->objId = id;
-		obj->nPtOfst = (UInt32)cnt;
-		obj->ptOfstArr = MemAlloc(UInt32, cnt);
-		MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * cnt);
-		Math::Coord2DDbl *points = pl->GetPointList(&cnt);
-		obj->nPoint = (UInt32)cnt;
-		obj->pointArr = MemAllocA(Math::Coord2DDbl, cnt);
-		if (road->lev == Map::HKTrafficLayer::SL_GOOD)
-		{
-			obj->flags = 1;
-			obj->lineColor = 0xff00ff00;
-		}
-		else if (road->lev == Map::HKTrafficLayer::SL_AVERAGE)
-		{
-			obj->flags = 1;
-			obj->lineColor = 0xffCCCC00;
-		}
-		else if (road->lev == Map::HKTrafficLayer::SL_BAD)
-		{
-			obj->flags = 1;
-			obj->lineColor = 0xffff0000;
-		}
-		else
-		{
-			obj->flags = 0;
-			obj->lineColor = 0;
-		}
-		
-		MemCopyNO(obj->pointArr, points, sizeof(Math::Coord2DDbl) * cnt);
-	}
-	mutUsage.EndUse();
-	return obj;
-}
-
 Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
 {
 	RoadInfo *road;
@@ -1319,15 +1273,6 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, I
 	}
 	mutUsage.EndUse();
 	return vec;
-}
-
-void Map::HKTrafficLayer::ReleaseObject(void *session, DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFreeA(obj->pointArr);
-	MemFree(obj);
 }
 
 Map::IMapDrawLayer::ObjectClass Map::HKTrafficLayer::GetObjectClass()

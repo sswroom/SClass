@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
+#include "Math/Geometry/LineString.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -400,16 +401,18 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	if (recs)
 	{
 		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();
-		Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->track->GetNewVectorById(0, (Int64)this->currTrackId);
+		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)this->track->GetNewVectorById(0, (Int64)this->currTrackId);
 		Double dist;
+		Math::Geometry::Polyline *pl2 = pl->CreatePolyline();
 		if (pl->HasZ())
 		{
-			dist = coord->CalPLDistance3D(pl, Math::Unit::Distance::DU_METER);
+			dist = coord->CalPLDistance3D(pl2, Math::Unit::Distance::DU_METER);
 		}
 		else
 		{
-			dist = coord->CalPLDistance(pl, Math::Unit::Distance::DU_METER);
+			dist = coord->CalPLDistance(pl2, Math::Unit::Distance::DU_METER);
 		}
+		DEL_CLASS(pl2);
 		DEL_CLASS(pl);
 		sptr = Text::StrConcatC(Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("Distance: ")), dist, "0.0"), UTF8STRC(" m"));
 		this->lblDist->SetText(CSTRP(sbuff, sptr));

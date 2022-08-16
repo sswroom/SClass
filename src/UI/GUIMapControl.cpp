@@ -5,6 +5,7 @@
 #include "Math/Math.h"
 #include "Math/Geometry/Ellipse.h"
 #include "Math/Geometry/PieArea.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
@@ -450,7 +451,20 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 	}
 	if (this->selVec)
 	{
-		if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
+		Math::Geometry::Vector2D::VectorType vecType = this->selVec->GetVectorType();
+		if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
+		{
+			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)this->selVec;
+			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+			UOSInt nPoint;
+			Math::Coord2DDbl *points = pl->GetPointList(&nPoint);
+			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+			img->DrawPolyline(dpoints, nPoint, p);
+			MemFreeA(dpoints);
+			img->DelPen(p);
+		}
+		else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);

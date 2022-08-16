@@ -448,11 +448,6 @@ void Map::TileMapLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::TileMapLayer::GetNewObjectById(void *session, Int64 id)
-{
-	return 0;
-}
-
 Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 {
 	CachedImage *cimg;
@@ -520,10 +515,6 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 
 		return 0;
 	}
-}
-
-void Map::TileMapLayer::ReleaseObject(void *session, DrawObjectL *obj)
-{
 }
 
 Map::IMapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass()

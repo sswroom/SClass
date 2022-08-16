@@ -30,27 +30,6 @@ namespace Map
 		DRAW_LAYER_MIXED = 101
 	} DrawLayerType;
 
-	typedef struct
-	{
-		Int64 objId;
-		UInt32 nPtOfst;
-		UInt32 nPoint;
-		UInt32 *ptOfstArr;
-		Math::Coord2DDbl *pointArr;
-		Int32 flags; //bit0 = has Line color
-		UInt32 lineColor;
-	} DrawObjectL;
-
-/*	typedef struct
-	{
-		Int32 objId;
-		Int32 nParts;
-		Int32 nPoints;
-		Int32 *parts;
-		Int32 *ipoints;
-		Double *points;
-	} DrawObjectDbl;*/
-
 	class IMapDrawLayer : public DB::ReadingDB, public Map::IMapSearchLayer
 	{
 	public:
@@ -123,9 +102,7 @@ namespace Map
 
 		virtual void *BeginGetObject() = 0;
 		virtual void EndGetObject(void *session) = 0;
-		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id) = 0;
 		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id) = 0;
-		virtual void ReleaseObject(void *session, DrawObjectL *obj) = 0;
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
@@ -177,7 +154,6 @@ namespace Map
 		void SetLabelVisible(Bool labelVisible);
 
 		static Map::DrawLayerType VectorType2LayerType(Math::Geometry::Vector2D::VectorType vtype);
-		static Map::DrawObjectL *Vector2DrawObject(Int64 id, Math::Geometry::Vector2D *vec, Map::DrawLayerType layerType);
 	};
 
 	class MapLayerReader : public DB::DBReader

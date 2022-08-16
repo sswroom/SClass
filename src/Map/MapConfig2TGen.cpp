@@ -16,6 +16,7 @@
 #include "Map/MapView.h"
 #include "Map/MapConfig2TGen.h"
 #include "Map/CIPLayer2.h"
+#include "Math/GeometryTool.h"
 #include "Math/Math.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
@@ -2417,7 +2418,7 @@ Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(Text::CString name, Data::
 void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, Media::DrawEngine *eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
 	Data::ArrayListInt64 *arri;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	UOSInt imgW;
 	UOSInt imgH;
 	UOSInt i;
@@ -2429,7 +2430,7 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 	void *session;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyrs->lyr, Map::MapScheduler::MSDT_POINTS, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyrs->lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	NEW_CLASS(arri, Data::ArrayListInt64());
@@ -2460,7 +2461,7 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 		imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
 		imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
 #ifndef NOSCH
-		sch->SetDrawType(lyrs->lyr, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, UOSInt2Double(dimg->GetWidth()) * 0.5, UOSInt2Double(dimg->GetHeight()) * 0.5, isLayerEmpty);
+		sch->SetDrawType(lyrs->lyr, 0, 0, dimg, UOSInt2Double(dimg->GetWidth()) * 0.5, UOSInt2Double(dimg->GetHeight()) * 0.5, isLayerEmpty);
 #endif
 	}
 	else
@@ -2473,7 +2474,7 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 	i = arri->GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri->GetItem(i))) != 0)
+		if ((vec = lyrs->lyr->GetNewVectorById(session, arri->GetItem(i))) != 0)
 		{
 #ifdef NOSCH
 			j = dobj->nPoints;
@@ -2487,7 +2488,7 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 			}
 			lyrs->lyr->ReleaseObject(session, dobj);
 #else
-			sch->Draw(dobj);
+			sch->Draw(vec);
 #endif
 		}
 	}
@@ -2506,10 +2507,8 @@ void Map::MapConfig2TGen::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs,
 void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UOSInt maxLabels, UOSInt *labelCnt, Bool *isLayerEmpty)
 {
 	void *arr;
-	Data::ArrayListInt64 *arri;
 	UOSInt i;
-	UInt32 j;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
@@ -2536,97 +2535,170 @@ void Map::MapConfig2TGen::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs,
 		imgHeight = 0;
 	}
 
-	NEW_CLASS(arri, Data::ArrayListInt64());
+	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
 	Double tmpSize = rect.GetWidth() * 1.5;
-	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, Math::RectAreaDbl(rect.tl - tmpSize, rect.br + tmpSize), false);
+	lyrs->lyr->GetObjectIdsMapXY(&arri, &arr, Math::RectAreaDbl(rect.tl - tmpSize, rect.br + tmpSize), false);
 	session = lyrs->lyr->BeginGetObject();
-	i = arri->GetCount();
+	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri->GetItem(i))) != 0)
+		if ((vec = lyrs->lyr->GetNewVectorById(session, arri.GetItem(i))) != 0)
 		{
 			if (lyrs->bkColor & SFLG_SMART)
 			{
-				UInt32 k;
-				UInt32 maxSize;
-				UInt32 maxPos;
-				maxSize = dobj->nPoint - (maxPos = dobj->ptOfstArr[dobj->nPtOfst - 1]);
-				k = dobj->nPtOfst;
-				while (k-- > 1)
+				switch (vec->GetVectorType())
 				{
-					if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
-						maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
-				}
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-				if (AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI(), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI())))
+				case Math::Geometry::Vector2D::VectorType::Point:
 				{
-					lyrs->lyr->ReleaseObject(session, dobj);
+					Math::Coord2DDbl pt = vec->GetCenter();
+					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), 1, &pt, lyrs->priority, Map::DRAW_LAYER_POINT, lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					break;
 				}
-				else
+				case Math::Geometry::Vector2D::VectorType::Polyline:
+				case Math::Geometry::Vector2D::VectorType::Polygon:	
 				{
-					lyrs->lyr->ReleaseObject(session, dobj);
+					Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
+					UOSInt k;
+					UInt32 maxSize;
+					UInt32 maxPos;
+					UOSInt nPtOfst;
+					UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+					maxSize = (UInt32)nPoint - (maxPos = ptOfstArr[nPtOfst - 1]);
+					k = nPtOfst;
+					while (k-- > 1)
+					{
+						if ((ptOfstArr[k] - ptOfstArr[k - 1]) > maxSize)
+							maxSize = (ptOfstArr[k] - (maxPos = ptOfstArr[k - 1]));
+					}
+					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					break;
 				}
-			}
-			else if (lyrs->lyr->GetLayerType() == 3)
-			{
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-				if (dobj->nPoint & 1)
-				{
-					UOSInt k = dobj->nPoint >> 1;
-					pts = dobj->pointArr[k];
-
-					scaleW = dobj->pointArr[k + 1].x - dobj->pointArr[k - 1].x;
-					scaleH = dobj->pointArr[k + 1].y - dobj->pointArr[k - 1].y;
+				case Math::Geometry::Vector2D::VectorType::LineString:
+				case Math::Geometry::Vector2D::VectorType::MultiPoint:
+				case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+				case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+				case Math::Geometry::Vector2D::VectorType::CircularString:
+				case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+				case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+				case Math::Geometry::Vector2D::VectorType::MultiCurve:
+				case Math::Geometry::Vector2D::VectorType::MultiSurface:
+				case Math::Geometry::Vector2D::VectorType::Curve:
+				case Math::Geometry::Vector2D::VectorType::Surface:
+				case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+				case Math::Geometry::Vector2D::VectorType::Tin:
+				case Math::Geometry::Vector2D::VectorType::Triangle:
+				case Math::Geometry::Vector2D::VectorType::Image:
+				case Math::Geometry::Vector2D::VectorType::String:
+				case Math::Geometry::Vector2D::VectorType::Ellipse:
+				case Math::Geometry::Vector2D::VectorType::PieArea:
+				case Math::Geometry::Vector2D::VectorType::Unknown:
+				default:
+					break;
 				}
-				else
-				{
-					UOSInt k = dobj->nPoint >> 1;
-					pts = (dobj->pointArr[k - 1] + dobj->pointArr[k]) * 0.5;
-
-					scaleW = dobj->pointArr[k].x - dobj->pointArr[k - 1].x;
-					scaleH = dobj->pointArr[k].y - dobj->pointArr[k - 1].y;
-				}
-
-				if ((lyrs->bkColor & SFLG_ROTATE) == 0)
-					scaleW = scaleH = 0;
-				Math::Coord2DDbl szThis;
-				GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], scaleW, scaleH);
-				pts = view->MapXYToScnXY(pts);
-				if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
-				{
-					DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
-				}
-				lyrs->lyr->ReleaseObject(session, dobj);
+				DEL_CLASS(vec);
 			}
 			else
 			{
-				Math::Coord2DDbl lastPt = {0, 0};
-				Math::Coord2DDbl *pointPos = dobj->pointArr;
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-
-				j = dobj->nPoint;
-				while (j--)
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+				switch (vec->GetVectorType())
 				{
-					lastPt += *pointPos;
-					pointPos++;
-				}
-
-				pts = (lastPt / dobj->nPoint);
-				Math::Coord2DDbl szThis;
-				GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], 0, 0);
-				pts = view->MapXYToScnXY(pts);
-				if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+				case Math::Geometry::Vector2D::VectorType::Polyline:
 				{
-					DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+					if (nPoint & 1)
+					{
+						UOSInt l = nPoint >> 1;
+						pts = pointArr[l];
+
+						scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
+						scaleH = pointArr[l + 1].y - pointArr[l - 1].y;
+					}
+					else
+					{
+						UOSInt l = nPoint >> 1;
+						pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
+						pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
+
+						scaleW = pointArr[l].x - pointArr[l - 1].x;
+						scaleH = pointArr[l].y - pointArr[l - 1].y;
+					}
+
+
+					if ((lyrs->bkColor & SFLG_ROTATE) == 0)
+						scaleW = scaleH = 0;
+					Math::Coord2DDbl szThis;
+					GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], scaleW, scaleH);
+					pts = view->MapXYToScnXY(pts);
+					if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+					{
+						DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					}
+					break;
 				}
-				lyrs->lyr->ReleaseObject(session, dobj);
+				case Math::Geometry::Vector2D::VectorType::Polygon:
+				{
+					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+					UOSInt nPtOfst;
+					UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+					pts = Math::GeometryTool::GetPolygonCenter(nPtOfst, nPoint, ptOfstArr, pointArr);
+					Math::Coord2DDbl szThis;
+					GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], 0, 0);
+					pts = view->MapXYToScnXY(pts);
+					if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+					{
+						DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					}
+					break;
+				}
+				case Math::Geometry::Vector2D::VectorType::Point:
+				{
+					pts = vec->GetCenter();
+					Math::Coord2DDbl szThis;
+					GetCharsSize(img, &szThis, CSTRP(sptr, sptrEnd), fonts[lyrs->style], 0, 0);
+					pts = view->MapXYToScnXY(pts);
+					if ((pts.x + (szThis.x * 0.5)) >= 0 && (pts.y + (szThis.y * 0.5)) >= 0 && (pts.x - (szThis.x * 0.5)) <= UOSInt2Double(view->GetScnWidth()) && (pts.y - (szThis.y * 0.5)) <= UOSInt2Double(view->GetScnHeight()))
+					{
+						DrawChars(img, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					}
+					break;
+				}
+				case Math::Geometry::Vector2D::VectorType::LineString:
+				case Math::Geometry::Vector2D::VectorType::MultiPoint:
+				case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+				case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+				case Math::Geometry::Vector2D::VectorType::CircularString:
+				case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+				case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+				case Math::Geometry::Vector2D::VectorType::MultiCurve:
+				case Math::Geometry::Vector2D::VectorType::MultiSurface:
+				case Math::Geometry::Vector2D::VectorType::Curve:
+				case Math::Geometry::Vector2D::VectorType::Surface:
+				case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+				case Math::Geometry::Vector2D::VectorType::Tin:
+				case Math::Geometry::Vector2D::VectorType::Triangle:
+				case Math::Geometry::Vector2D::VectorType::Image:
+				case Math::Geometry::Vector2D::VectorType::String:
+				case Math::Geometry::Vector2D::VectorType::Ellipse:
+				case Math::Geometry::Vector2D::VectorType::PieArea:
+				case Math::Geometry::Vector2D::VectorType::Unknown:
+				default:
+					break;
+				}
+				DEL_CLASS(vec);
 			}
 		}
 	}
 	lyrs->lyr->EndGetObject(session);
 	lyrs->lyr->ReleaseNameArr(arr);
-	DEL_CLASS(arri);
 }
 
 UOSInt Map::MapConfig2TGen::NewLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority)
@@ -4700,7 +4772,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 	Data::ArrayList<MapFontStyle*> *fontArr;
 	Map::IMapDrawLayer *lyr;
 	Map::MapLayerStyle *lyrs;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	Map::MapFontStyle *fnt;
 	Map::MapFontStyle *fnt2;
 	Media::DrawBrush *brush;
@@ -4831,7 +4903,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						Data::ArrayList *drawArr;
 						NEW_CLASS(drawArr, Data::ArrayList());
 #else
-						mapSch->SetDrawType(lyr, Map::MapScheduler::MSDT_POLYGON, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), 0, 0, 0, isLayerEmpty);
+						mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), 0, 0, 0, isLayerEmpty);
 #endif
 
 						session = lyr->BeginGetObject();
@@ -4842,10 +4914,10 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 							if (thisId != lastId)
 							{
 								lastId = thisId;
-								if ((dobj = lyr->GetNewObjectById(session, thisId)) != 0)
+								if ((vec = lyr->GetNewVectorById(session, thisId)) != 0)
 								{
 #ifndef NOSCH
-									mapSch->Draw(dobj);
+									mapSch->Draw(vec);
 #else
 									if (view->LatLonToScnXY(dobj->points, dobj->points, dobj->nPoints, 0, 0))
 										*isLayerEmpty = false;
@@ -4937,7 +5009,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						Data::ArrayList *drawArr;
 						NEW_CLASS(drawArr, Data::ArrayList());
 #else
-						mapSch->SetDrawType(lyr, Map::MapScheduler::MSDT_POLYLINE, pen = CreatePen(img, lyrs->style, 0), 0, 0, 0, 0, isLayerEmpty);
+						mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), 0, 0, 0, 0, isLayerEmpty);
 #endif
 
 						session = lyr->BeginGetObject();
@@ -4948,10 +5020,10 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 							if (thisId != lastId)
 							{
 								lastId = thisId;
-								if ((dobj = lyr->GetNewObjectById(session, thisId)) != 0)
+								if ((vec = lyr->GetNewVectorById(session, thisId)) != 0)
 								{
 #ifndef NOSCH
-									mapSch->Draw(dobj);
+									mapSch->Draw(vec);
 #else
 									if (view->LatLonToScnXY(dobj->points, dobj->points, dobj->nPoints, 0, 0))
 										*isLayerEmpty = false;

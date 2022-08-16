@@ -9,9 +9,9 @@
 #include "Map/MapManager.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
-#include "Math/Geometry/Polyline.h"
 #include "Parser/FileParser/TXTParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -360,7 +360,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Data::Int32Map<Bool> vecUsed;
 		Int32 currId = 0;
 		Math::Geometry::Polygon *pg;
-		Math::Geometry::Polyline *pl;
+		Math::Geometry::LineString *pl;
 		Math::Geometry::PointZ *pt;
 		Math::Geometry::Vector2D *vec;
 		Math::Coord2DDbl *ptList;
@@ -403,7 +403,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 						else
 						{
 							hasPL = true;
-							NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, j, true, false));
+							NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
 							ptList = pl->GetPointList(&k);
 							hList = pl->GetZList(&k);
 							k = 0;
@@ -460,7 +460,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else
 			{
 				hasPL = true;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, j, true, false));
+				NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
 				ptList = pl->GetPointList(&k);
 				hList = pl->GetZList(&k);
 				k = 0;

@@ -530,46 +530,6 @@ void Map::SPDLayer::EndGetObject(void *session)
 //	this->mut->Unlock();
 }
 
-Map::DrawObjectL *Map::SPDLayer::GetNewObjectById(void *session, Int64 id)
-{
-	IO::FileStream *cip = (IO::FileStream*)session;
-
-	Int32 objBuff[2];
-	UInt32 ofst = this->ofsts[2 + (id << 1)];
-	Map::DrawObjectL *obj;
-	cip->SeekFromBeginning(ofst);
-	cip->Read((UInt8*)objBuff, 8);
-	obj = MemAlloc(Map::DrawObjectL, 1);
-	obj->objId = objBuff[0];
-	obj->nPtOfst = (UInt32)objBuff[1];
-	if (obj->nPtOfst > 0)
-	{
-		obj->ptOfstArr = MemAlloc(UInt32, obj->nPtOfst);
-		cip->Read((UInt8*)obj->ptOfstArr, sizeof(UInt32) * obj->nPtOfst);
-	}
-	else
-	{
-		obj->ptOfstArr = 0;
-	}
-	cip->Read((UInt8*)&obj->nPoint, 4);
-	UOSInt j = obj->nPoint;
-	obj->pointArr = MemAllocA(Math::Coord2DDbl, j);
-	Int32 *tmpArr = MemAlloc(Int32, j * 2);
-	Double r = 1 / 200000.0;
-	UOSInt i = 0;
-	cip->Read((UInt8*)tmpArr, obj->nPoint * 8);
-	while (i < j)
-	{
-		obj->pointArr[i].x = tmpArr[i << 1] * r;
-		obj->pointArr[i].y = tmpArr[(i << 1) + 1] * r;
-		i++;
-	}
-	MemFree(tmpArr);
-	obj->flags = 0;
-	obj->lineColor = 0;
-	return obj;
-}
-
 Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Int32 buff[3];
@@ -647,26 +607,6 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 i
 	MemFree(points);
 	return ptColl;
 }
-
-void Map::SPDLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFreeA(obj->pointArr);
-	MemFree(obj);
-}
-
-/*void Map::SPDLayer::ReleaseObject(void *session, DrawObjectDbl *obj)
-{
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->ipoints)
-		MemFree(obj->ipoints);
-	if (obj->points)
-		MemFree(obj->points);
-	MemFree(obj);
-}*/
 
 Map::IMapDrawLayer::ObjectClass Map::SPDLayer::GetObjectClass()
 {

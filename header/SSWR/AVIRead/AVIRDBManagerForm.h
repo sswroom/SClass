@@ -12,6 +12,7 @@
 #include "UI/GUIPopupMenu.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
+#include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
 
 namespace SSWR

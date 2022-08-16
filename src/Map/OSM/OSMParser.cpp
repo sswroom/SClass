@@ -4,6 +4,7 @@
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
 #include "Text/MyStringFloat.h"
 
@@ -1343,8 +1344,8 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							}
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
-						Math::Geometry::Polyline *pl;
-						NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, latList.GetCount(), false, false));
+						Math::Geometry::LineString *pl;
+						NEW_CLASS(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));
 						Math::Coord2DDbl *points = pl->GetPointList(&i);
 						while (i-- > 0)
 						{

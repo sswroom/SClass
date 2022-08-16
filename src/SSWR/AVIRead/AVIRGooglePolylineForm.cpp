@@ -52,7 +52,7 @@ void SSWR::AVIRead::AVIRGooglePolylineForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Math::Geometry::Polyline *SSWR::AVIRead::AVIRGooglePolylineForm::GetPolyline()
+Math::Geometry::LineString *SSWR::AVIRead::AVIRGooglePolylineForm::GetPolyline()
 {
 	return this->polyline;
 }

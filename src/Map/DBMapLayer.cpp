@@ -91,17 +91,7 @@ void Map::DBMapLayer::EndGetObject(void *session)
 
 }
 
-Map::DrawObjectL *Map::DBMapLayer::GetNewObjectById(void *session, Int64 id)
-{
-
-}
-
 Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(void *session, Int64 id)
-{
-
-}
-
-void Map::DBMapLayer::ReleaseObject(void *session, DrawObjectL *obj)
 {
 
 }

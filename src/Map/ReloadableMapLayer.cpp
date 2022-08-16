@@ -394,37 +394,6 @@ void Map::ReloadableMapLayer::EndGetObject(void *session)
 	this->innerLayerMut.UnlockRead();
 }
 
-Map::DrawObjectL *Map::ReloadableMapLayer::GetNewObjectById(void *session, Int64 id)
-{
-	UOSInt i;
-	UOSInt j;
-	Int64 currId = 0;
-	Int64 maxId;
-	Map::DrawObjectL *dobj = 0;
-	i = 0;
-	Sync::RWMutexUsage mutUsage(&this->innerLayerMut, false);
-	j = this->innerLayers.GetCount();
-	while (i < j)
-	{
-		InnerLayerInfo *innerLayer = this->innerLayers.GetItem(i);
-		if (innerLayer->innerLayer)
-		{
-			maxId = innerLayer->innerLayer->GetObjectIdMax();
-			if (id >= currId && id <= currId + maxId)
-			{
-				dobj = innerLayer->innerLayer->GetNewObjectById(session, id - currId);
-				break;
-			}
-			else
-			{
-				currId += maxId + 1;
-			}
-		}
-		i++;
-	}
-	return dobj;
-}
-
 Math::Geometry::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
@@ -454,15 +423,6 @@ Math::Geometry::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *sessio
 		i++;
 	}
 	return vec;
-}
-
-void Map::ReloadableMapLayer::ReleaseObject(void *session, DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFree(obj->pointArr);
-	MemFree(obj);
 }
 
 UOSInt Map::ReloadableMapLayer::GetNameCol()

@@ -27,10 +27,8 @@ namespace Map
 
 		virtual void *BeginGetObject();
 		virtual void EndGetObject(void *session);
-		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
-		virtual void ReleaseObject(void *session, DrawObjectL *obj);
-
+		
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names);
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *r);

@@ -124,8 +124,8 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	layer->GetAllObjectIds(objIds, &nameArr);
 	sess = layer->BeginGetObject();
 
-	*(Int32*)&buff[0] = (Int32)objIds->GetCount();
-	*(Int32*)&buff[4] = iLayerType;
+	WriteUInt32(&buff[0], (UInt32)objIds->GetCount());
+	WriteInt32(&buff[4], iLayerType);
 	stm->Write(buff, 8);
 	cix->Write(buff, 4);
 
@@ -133,58 +133,79 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	recCnt = objIds->GetCount();
 	while (i < recCnt)
 	{
-		Map::DrawObjectL *dobj;
-		dobj = layer->GetNewObjectById(sess, objIds->GetItem(i));
+		Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objIds->GetItem(i));
 
-		*(Int32*)&buff[0] = (Int32)i;
-		*(Int32*)&buff[4] = (Int32)stmPos;
+		WriteUInt32(&buff[0], (UInt32)i);
+		WriteUInt32(&buff[4], (UInt32)stmPos);
 		cix->Write(buff, 8);
 
-		if (dobj->nPtOfst == 0)
+		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
-			*(Int32*)&buff[4] = 1;
-			*(Int32*)&buff[8] = 0;
+			WriteUInt32(&buff[4], 1);
+			WriteUInt32(&buff[8], 0);
 			stm->Write(buff, 12);
 			stmPos += 12;
+
+			Math::Coord2DDbl center = vec->GetCenter();
+			WriteUInt32(&buff[0], 1);
+			WriteInt32(&buff[4], Double2Int32(center.x * 200000.0));
+			WriteInt32(&buff[8], Double2Int32(center.y * 200000.0));
+			stm->Write(buff, 4);
+			stm->Write(&buff[4], 8);
+			stmPos += 8 + 4;
+
+			maxX = minX = ReadInt32(&buff[4]);
+			maxY = minY = ReadInt32(&buff[8]);
+
+			left = minX / p->scale;
+			right = maxX / p->scale;
+			top = minY / p->scale;
+			bottom = maxY / p->scale;
 		}
 		else
 		{
-			WriteUInt32(&buff[4], dobj->nPtOfst);
+			Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
+			UOSInt nPtOfst;
+			UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+			WriteUInt32(&buff[4], (UInt32)nPtOfst);
 			stm->Write(buff, 8);
-			stm->Write((UInt8*)dobj->ptOfstArr, dobj->nPtOfst * 4);
-			stmPos += 8 + dobj->nPtOfst * 4;
-		}
-		Int32 *ptArr = MemAlloc(Int32, dobj->nPoint << 1);
-		j = dobj->nPoint;
-		while (j-- > 0)
-		{
-			ptArr[j << 1] = Double2Int32(dobj->pointArr[j].x * 200000.0);
-			ptArr[(j << 1) + 1] = Double2Int32(dobj->pointArr[j].y * 200000.0);
-		}
-		stm->Write((UInt8*)&dobj->nPoint, 4);
-		stm->Write((UInt8*)ptArr, 8 * dobj->nPoint);
-		stmPos += 8 * dobj->nPoint + 4;
+			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
+			stmPos += 8 + nPtOfst * 4;
 
-		maxX = minX = ptArr[0];
-		maxY = minY = ptArr[1];
-		j = dobj->nPoint;
-		while (j-- > 0)
-		{
-			if (minX > ptArr[j << 1])
-				minX = ptArr[j << 1];
-			if (maxX < ptArr[j << 1])
-				maxX = ptArr[j << 1];
-			if (minY > ptArr[(j << 1) + 1])
-				minY = ptArr[(j << 1) + 1];
-			if (maxY < ptArr[(j << 1) + 1])
-				maxY = ptArr[(j << 1) + 1];
-		}
+			UOSInt nPoint;
+			Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+			Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
+			j = nPoint;
+			while (j-- > 0)
+			{
+				ptArr[j << 1] = Double2Int32(pointArr[j].x * 200000.0);
+				ptArr[(j << 1) + 1] = Double2Int32(pointArr[j].y * 200000.0);
+			}
+			stm->Write((UInt8*)&nPoint, 4);
+			stm->Write((UInt8*)ptArr, 8 * nPoint);
+			stmPos += 8 * nPoint + 4;
 
-        left = minX / p->scale;
-		right = maxX / p->scale;
-		top = minY / p->scale;
-		bottom = maxY / p->scale;
-		MemFree(ptArr);
+			maxX = minX = ptArr[0];
+			maxY = minY = ptArr[1];
+			j = nPoint;
+			while (j-- > 0)
+			{
+				if (minX > ptArr[j << 1])
+					minX = ptArr[j << 1];
+				if (maxX < ptArr[j << 1])
+					maxX = ptArr[j << 1];
+				if (minY > ptArr[(j << 1) + 1])
+					minY = ptArr[(j << 1) + 1];
+				if (maxY < ptArr[(j << 1) + 1])
+					maxY = ptArr[(j << 1) + 1];
+			}
+
+			left = minX / p->scale;
+			right = maxX / p->scale;
+			top = minY / p->scale;
+			bottom = maxY / p->scale;
+			MemFree(ptArr);
+		}
 
 		{
 			OSInt j;
@@ -266,9 +287,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				j++;
 			}
 		}
-
-
-		layer->ReleaseObject(sess, dobj);
+		DEL_CLASS(vec);
 
 		i++;
 	}

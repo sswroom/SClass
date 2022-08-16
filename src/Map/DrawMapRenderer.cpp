@@ -8,6 +8,8 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+
 #define IsDoorNum(a) Text::StrIsInt32(a.v)
 #define LBLMINDIST 150
 
@@ -1528,13 +1530,12 @@ void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *den
 {
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
 	void *session;
 	Media::DrawPen *p;
 	Int64 lastId;
 	Int64 thisId;
 	UOSInt layerId = 0;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
 
@@ -1566,7 +1567,7 @@ void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *den
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			//pen = CreatePen(img, lyrs->style, 0, osSize);
-			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1578,14 +1579,10 @@ void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *den
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
+					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
 					{
-						k = dobj->nPoint;
-						while (k-- > 0)
-						{
-							Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[k].x, dobj->pointArr[k].y, 0, &dobj->pointArr[k].x, &dobj->pointArr[k].y, 0);
-						}
-						this->mapSch.Draw(dobj);
+						vec->ConvCSys(lyrCSys, envCSys);
+						this->mapSch.Draw(vec);
 					}
 				}
 				i++;
@@ -1628,7 +1625,7 @@ void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *den
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			//pen = CreatePen(img, lyrs->style, 0, osSize);
-			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1640,9 +1637,9 @@ void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *den
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
+					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
 					{
-						this->mapSch.Draw(dobj);
+						this->mapSch.Draw(vec);
 					}
 				}
 				i++;
@@ -1665,14 +1662,13 @@ void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *den
 void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
-	UOSInt j;
 	void *session;
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	Int64 lastId;
 	Int64 thisId;
 	UOSInt layerId = 0;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
 	denv->idArr.Clear();
@@ -1697,7 +1693,7 @@ void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1707,14 +1703,10 @@ void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
+					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
 					{
-						j = dobj->nPoint;
-						while (j-- > 0)
-						{
-							Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[j].x, dobj->pointArr[j].y, 0, &dobj->pointArr[j].x, &dobj->pointArr[j].y, 0);
-						}
-						this->mapSch.Draw(dobj);
+						vec->ConvCSys(lyrCSys, envCSys);
+						this->mapSch.Draw(vec);
 					}
 				}
 			}
@@ -1750,7 +1742,7 @@ void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1760,9 +1752,9 @@ void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
+					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
 					{
-						this->mapSch.Draw(dobj);
+						this->mapSch.Draw(vec);
 					}
 				}
 			}
@@ -1784,9 +1776,8 @@ void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv
 void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt imgIndex)
 {
 	Data::ArrayListInt64 arri;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	UOSInt i;
-	UOSInt k;
 	void *session;
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
@@ -1872,21 +1863,17 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 			dimg = this->eng->ConvImage(img);
 		}
 
-		this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
+		this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
 		this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
 		session = layer->BeginGetObject();
 
 		i = arri.GetCount();
 		while (i-- > 0)
 		{
-			if ((dobj = layer->GetNewObjectById(session, arri.GetItem(i))) != 0)
+			if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
 			{
-				k = dobj->nPoint;
-				while (k-- > 0)
-				{
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[k].x, dobj->pointArr[k].y, 0, &dobj->pointArr[k].x, &dobj->pointArr[k].y, 0);
-				}
-				this->mapSch.Draw(dobj);
+				vec->ConvCSys(lyrCSys, envCSys);
+				this->mapSch.Draw(vec);
 			}
 		}
 
@@ -1934,16 +1921,16 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 			dimg = this->eng->ConvImage(img);
 		}
 
-		this->mapSch.SetDrawType(layer, Map::MapScheduler::MSDT_POINTS, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
+		this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
 		this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
 		session = layer->BeginGetObject();
 
 		i = arri.GetCount();
 		while (i-- > 0)
 		{
-			if ((dobj = layer->GetNewObjectById(session, arri.GetItem(i))) != 0)
+			if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
 			{
-				this->mapSch.Draw(dobj);
+				this->mapSch.Draw(vec);
 			}
 		}
 
@@ -1958,9 +1945,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	void *arr;
 	Data::ArrayListInt64 arri;
 	UOSInt i;
-	UInt32 j;
-	UOSInt k;
-	Map::DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
@@ -1989,18 +1974,14 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = layer->GetNewObjectById(session, arri.GetItem(i))) != 0)
+		if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
 		{
 			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), labelCol);
 			if (sptrEnd)
 			{
 				if (csysConv)
 				{
-					k = dobj->nPoint;
-					while (k-- > 0)
-					{
-						Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[k].x, dobj->pointArr[k].y, 0, &dobj->pointArr[k].x, &dobj->pointArr[k].y, 0);
-					}
+					vec->ConvCSys(lyrCSys, envCSys);
 				}
 				if (flags & Map::MapEnv::SFLG_TRIM)
 				{
@@ -2013,100 +1994,151 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 
 				if (flags & Map::MapEnv::SFLG_SMART)
 				{
-					UInt32 k;
-					UInt32 maxSize;
-					UInt32 maxPos;
-					if (dobj->nPtOfst == 0)
+					switch (vec->GetVectorType())
 					{
-						maxSize = dobj->nPoint;
-						maxPos = 0;
+					case Math::Geometry::Vector2D::VectorType::Point:
+					{
+						Math::Coord2DDbl pt = vec->GetCenter();
+						AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), 1, &pt, priority, Map::DRAW_LAYER_POINT, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						break;
 					}
-					else
+					case Math::Geometry::Vector2D::VectorType::Polyline:
+					case Math::Geometry::Vector2D::VectorType::Polygon:	
 					{
-						maxSize = dobj->nPoint - (maxPos = dobj->ptOfstArr[dobj->nPtOfst - 1]);
-						k = dobj->nPtOfst;
+						Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
+						UOSInt k;
+						UInt32 maxSize;
+						UInt32 maxPos;
+						UOSInt nPtOfst;
+						UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+						UOSInt nPoint;
+						Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+						maxSize = (UInt32)nPoint - (maxPos = ptOfstArr[nPtOfst - 1]);
+						k = nPtOfst;
 						while (k-- > 1)
 						{
-							if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
-								maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
+							if ((ptOfstArr[k] - ptOfstArr[k - 1]) > maxSize)
+								maxSize = (ptOfstArr[k] - (maxPos = ptOfstArr[k - 1]));
 						}
+						AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						break;
 					}
-					if (AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType))
-					{
-						layer->ReleaseObject(session, dobj);
+					case Math::Geometry::Vector2D::VectorType::LineString:
+					case Math::Geometry::Vector2D::VectorType::MultiPoint:
+					case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+					case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+					case Math::Geometry::Vector2D::VectorType::CircularString:
+					case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+					case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+					case Math::Geometry::Vector2D::VectorType::MultiCurve:
+					case Math::Geometry::Vector2D::VectorType::MultiSurface:
+					case Math::Geometry::Vector2D::VectorType::Curve:
+					case Math::Geometry::Vector2D::VectorType::Surface:
+					case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+					case Math::Geometry::Vector2D::VectorType::Tin:
+					case Math::Geometry::Vector2D::VectorType::Triangle:
+					case Math::Geometry::Vector2D::VectorType::Image:
+					case Math::Geometry::Vector2D::VectorType::String:
+					case Math::Geometry::Vector2D::VectorType::Ellipse:
+					case Math::Geometry::Vector2D::VectorType::PieArea:
+					case Math::Geometry::Vector2D::VectorType::Unknown:
+					default:
+						printf("DrawMapRenderer.DrawLabelSmart: Unknown vector type\r\n");
+						break;
 					}
-					else
-					{
-						layer->ReleaseObject(session, dobj);
-					}
-				}
-				else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
-				{
-					if (dobj->nPoint & 1)
-					{
-						UOSInt l = dobj->nPoint >> 1;
-						pts = dobj->pointArr[l];
-
-						scaleW = dobj->pointArr[l + 1].x - dobj->pointArr[l - 1].x;
-						scaleH = dobj->pointArr[l + 1].y - dobj->pointArr[l - 1].y;
-					}
-					else
-					{
-						UOSInt l = dobj->nPoint >> 1;
-						pts.x = (dobj->pointArr[l - 1].x + dobj->pointArr[l].x) * 0.5;
-						pts.y = (dobj->pointArr[l - 1].y + dobj->pointArr[l].y) * 0.5;
-
-						scaleW = dobj->pointArr[l].x - dobj->pointArr[l - 1].x;
-						scaleH = dobj->pointArr[l].y - dobj->pointArr[l - 1].y;
-					}
-
-					if (denv->view->InViewXY(pts))
-					{
-						pts = denv->view->MapXYToScnXY(pts);
-
-						if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
-							scaleW = scaleH = 0;
-						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
-					}
-					layer->ReleaseObject(session, dobj);
-				}
-				else if (layerType == Map::DRAW_LAYER_POLYGON)
-				{
-					pts = Math::GeometryTool::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr);
-					if (denv->view->InViewXY(pts))
-					{
-						pts = denv->view->MapXYToScnXY(pts);
-						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
-					}
-					layer->ReleaseObject(session, dobj);
+					DEL_CLASS(vec);
 				}
 				else
 				{
-					Double lastPtX = 0;
-					Double lastPtY = 0;
-					Math::Coord2DDbl *pointPos = dobj->pointArr;
-
-					j = dobj->nPoint;
-					while (j--)
+					switch (vec->GetVectorType())
 					{
-						lastPtX += pointPos->x;
-						lastPtY += pointPos->y;
-						pointPos++;
-					}
-
-					pts.x = (lastPtX / dobj->nPoint);
-					pts.y = (lastPtY / dobj->nPoint);
-					if (denv->view->InViewXY(pts))
+					case Math::Geometry::Vector2D::VectorType::Polyline:
 					{
-						pts = denv->view->MapXYToScnXY(pts);
-						DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+						UOSInt nPoint;
+						Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+						if (nPoint & 1)
+						{
+							UOSInt l = nPoint >> 1;
+							pts = pointArr[l];
+
+							scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
+							scaleH = pointArr[l + 1].y - pointArr[l - 1].y;
+						}
+						else
+						{
+							UOSInt l = nPoint >> 1;
+							pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
+							pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
+
+							scaleW = pointArr[l].x - pointArr[l - 1].x;
+							scaleH = pointArr[l].y - pointArr[l - 1].y;
+						}
+
+						if (denv->view->InViewXY(pts))
+						{
+							pts = denv->view->MapXYToScnXY(pts);
+
+							if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
+								scaleW = scaleH = 0;
+							DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+						}
+						break;
 					}
-					layer->ReleaseObject(session, dobj);
+					case Math::Geometry::Vector2D::VectorType::Polygon:
+					{
+						Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+						UOSInt nPoint;
+						Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+						UOSInt nPtOfst;
+						UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+						pts = Math::GeometryTool::GetPolygonCenter(nPtOfst, nPoint, ptOfstArr, pointArr);
+						if (denv->view->InViewXY(pts))
+						{
+							pts = denv->view->MapXYToScnXY(pts);
+							DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+						}
+						break;
+					}
+					case Math::Geometry::Vector2D::VectorType::Point:
+					{
+						pts = vec->GetCenter();
+						if (denv->view->InViewXY(pts))
+						{
+							pts = denv->view->MapXYToScnXY(pts);
+							DrawChars(denv, CSTRP(sptr, sptrEnd), pts.x, pts.y, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+						}
+						break;
+					}
+					case Math::Geometry::Vector2D::VectorType::LineString:
+					case Math::Geometry::Vector2D::VectorType::MultiPoint:
+					case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+					case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+					case Math::Geometry::Vector2D::VectorType::CircularString:
+					case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+					case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+					case Math::Geometry::Vector2D::VectorType::MultiCurve:
+					case Math::Geometry::Vector2D::VectorType::MultiSurface:
+					case Math::Geometry::Vector2D::VectorType::Curve:
+					case Math::Geometry::Vector2D::VectorType::Surface:
+					case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+					case Math::Geometry::Vector2D::VectorType::Tin:
+					case Math::Geometry::Vector2D::VectorType::Triangle:
+					case Math::Geometry::Vector2D::VectorType::Image:
+					case Math::Geometry::Vector2D::VectorType::String:
+					case Math::Geometry::Vector2D::VectorType::Ellipse:
+					case Math::Geometry::Vector2D::VectorType::PieArea:
+					case Math::Geometry::Vector2D::VectorType::Unknown:
+					default:
+						printf("DrawMapRenderer.DrawLabel: Unknown vector type\r\n");
+						break;
+					}
+					DEL_CLASS(vec);
 				}
 			}
 			else
 			{
-				layer->ReleaseObject(session, dobj);
+				DEL_CLASS(vec);
 			}
 		}
 	}

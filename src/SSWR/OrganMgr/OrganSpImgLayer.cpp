@@ -147,26 +147,6 @@ void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(void *session)
 
 }
 
-Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetNewObjectById(void *session, Int64 id)
-{
-	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
-	if (ufile == 0)
-		return 0;
-	Map::DrawObjectL *dobj;
-
-	dobj = MemAlloc(Map::DrawObjectL, 1);
-	dobj->nPtOfst = 0;
-	dobj->nPoint = 1;
-	dobj->objId = id;
-	dobj->ptOfstArr = 0;
-	dobj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
-	dobj->pointArr[0].x = ufile->lon;
-	dobj->pointArr[0].y = ufile->lat;
-	dobj->flags = 0;
-	dobj->lineColor = 0;
-	return dobj;
-}
-
 Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
@@ -175,12 +155,6 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void
 	Math::Geometry::Point *pt;
 	NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), ufile->lon, ufile->lat));
 	return pt;
-}
-
-void SSWR::OrganMgr::OrganSpImgLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	MemFreeA(obj->pointArr);
-	MemFree(obj);
 }
 
 Map::IMapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass()

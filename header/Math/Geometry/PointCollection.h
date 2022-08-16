@@ -13,7 +13,7 @@ namespace Math
 			Math::Coord2DDbl *pointArr;
 			UOSInt nPoint;
 		public:
-			PointCollection(UInt32 srid, UOSInt nPoint, Math::Coord2DDbl *pointArr);
+			PointCollection(UInt32 srid, UOSInt nPoint, const Math::Coord2DDbl *pointArr);
 			virtual ~PointCollection();
 
 			Math::Coord2DDbl *GetPointList(UOSInt *nPoint) { *nPoint = this->nPoint; return this->pointArr; }

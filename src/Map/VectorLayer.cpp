@@ -564,60 +564,6 @@ void Map::VectorLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
-{
-	Map::DrawObjectL *obj;
-	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
-	if (vec)
-	{
-		obj = MemAlloc(Map::DrawObjectL, 1);
-		obj->objId = id;
-		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
-		{
-			obj->nPtOfst = 0;
-			obj->ptOfstArr = 0;
-			obj->nPoint = 1;
-			obj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
-			obj->pointArr[0] = vec->GetCenter();
-		}
-		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
-		{
-			UInt32 *ptOfsts;
-			Math::Coord2DDbl *points;
-			UOSInt i;
-			Math::Geometry::PointOfstCollection *pts = (Math::Geometry::PointOfstCollection*)vec;
-			ptOfsts = pts->GetPtOfstList(&i);
-			obj->nPtOfst = (UInt32)i;
-			obj->ptOfstArr = MemAlloc(UInt32, i);
-			MemCopyNO(obj->ptOfstArr, ptOfsts, sizeof(UInt32) * i);
-			points = pts->GetPointList(&i);
-			obj->nPoint = (UInt32)i;
-			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);
-			MemCopyNO(obj->pointArr, points, i * 16);
-		}
-		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::MultiPoint)
-		{
-			Math::Coord2DDbl *points;
-			UOSInt i;
-			Math::Geometry::PointCollection *pts = (Math::Geometry::PointCollection*)vec;
-			obj->nPtOfst = (UInt32)1;
-			obj->ptOfstArr = MemAlloc(UInt32, 1);
-			obj->ptOfstArr[0] = 0;
-			points = pts->GetPointList(&i);
-			obj->nPoint = (UInt32)i;
-			obj->pointArr = MemAllocA(Math::Coord2DDbl, i);
-			MemCopyNO(obj->pointArr, points, i * 16);
-		}
-		obj->flags = 0;
-		obj->lineColor = 0;
-		return obj;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
 Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
@@ -631,15 +577,6 @@ Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(void *session, Int6
 	}
 }
 
-void Map::VectorLayer::ReleaseObject(void *session, DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFreeA(obj->pointArr);
-	MemFree(obj);
-}
-
 Map::IMapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
 {
 	return Map::IMapDrawLayer::OC_VECTOR_LAYER;
@@ -647,30 +584,37 @@ Map::IMapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
 
 Bool Map::VectorLayer::VectorValid(Math::Geometry::Vector2D *vec)
 {
+	Math::Geometry::Vector2D::VectorType vecType;
 	switch (this->layerType)
 	{
 	case Map::DRAW_LAYER_POINT:
-		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Point)
+		vecType = vec->GetVectorType();
+		if (vecType != Math::Geometry::Vector2D::VectorType::Point)
 			return false;
 		break;
 	case Map::DRAW_LAYER_POINT3D:
-		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Point || !vec->HasZ())
+		vecType = vec->GetVectorType();
+		if (vecType != Math::Geometry::Vector2D::VectorType::Point || !vec->HasZ())
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYLINE:
-		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polyline)
+		vecType = vec->GetVectorType();
+		if (vecType != Math::Geometry::Vector2D::VectorType::Polyline && vecType != Math::Geometry::Vector2D::VectorType::LineString)
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYLINE3D:
-		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polyline || !vec->HasZ())
+		vecType = vec->GetVectorType();
+		if ((vecType != Math::Geometry::Vector2D::VectorType::Polyline && vecType != Math::Geometry::Vector2D::VectorType::LineString) || !vec->HasZ())
 			return false;
 		break;
 	case Map::DRAW_LAYER_POLYGON:
-		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
+		vecType = vec->GetVectorType();
+		if (vecType != Math::Geometry::Vector2D::VectorType::Polygon)
 			return false;
 		break;
 	case Map::DRAW_LAYER_IMAGE:
-		if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Image)
+		vecType = vec->GetVectorType();
+		if (vecType != Math::Geometry::Vector2D::VectorType::Image)
 			return false;
 		break;
 	case Map::DRAW_LAYER_MIXED:

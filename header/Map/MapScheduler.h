@@ -1,23 +1,23 @@
 #ifndef _SM_MAP_MAPSCHEDULER
 #define _SM_MAP_MAPSCHEDULER
-#include "Sync/Mutex.h"
-#include "Sync/Event.h"
 #include "Data/ArrayList.h"
-#include "Media/DrawEngine.h"
-#include "Map/MapView.h"
 #include "Map/IMapDrawLayer.h"
+#include "Map/MapView.h"
+#include "Math/Geometry/Point.h"
+#include "Math/Geometry/Vector2D.h"
+#include "Media/DrawEngine.h"
+#include "Sync/Event.h"
+#include "Sync/Mutex.h"
 
 namespace Map
 {
 	class MapScheduler
 	{
 	public:
-		enum DrawType
+		enum class ThreadState
 		{
-			MSDT_POINTS,
-			MSDT_POLYLINE,
-			MSDT_POLYGON,
-			MSDT_CLEAR
+			Clearing,
+			Drawing
 		};
 
 	protected:
@@ -29,13 +29,13 @@ namespace Map
 		Media::DrawImage *ico;
 		Double icoSpotX;
 		Double icoSpotY;
-		DrawType dt;
+		ThreadState dt;
 		Math::RectAreaDbl *objBounds;
 		UOSInt *objCnt;
 		UOSInt maxCnt;
 
 		Sync::Mutex taskMut;
-		Data::ArrayList<Map::DrawObjectL *> tasks;
+		Data::ArrayList<Math::Geometry::Vector2D *> tasks;
 		Bool toStop;
 		Sync::Event taskEvt;
 		Sync::Event finishEvt;
@@ -48,15 +48,15 @@ namespace Map
 		static UInt32 __stdcall MapThread(void *obj);
 
 	protected:
-		virtual void DrawPoints(Map::DrawObjectL *dobj);
+		virtual void DrawPoints(Math::Geometry::Point *pt);
 	public:
 		MapScheduler();
 		virtual ~MapScheduler();
 
 		void SetMapView(Map::MapView *map, Media::DrawImage *img);
-		void SetDrawType(Map::IMapDrawLayer *lyr, DrawType dt, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
+		void SetDrawType(Map::IMapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
 		void SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt);
-		void Draw(Map::DrawObjectL *obj);
+		void Draw(Math::Geometry::Vector2D *vec);
 		void DrawNextType(Media::DrawPen *p, Media::DrawBrush *b);
 		void WaitForFinish();
 	};

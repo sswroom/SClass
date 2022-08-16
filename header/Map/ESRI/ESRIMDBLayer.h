@@ -50,9 +50,7 @@ namespace Map
 
 			virtual void *BeginGetObject();
 			virtual void EndGetObject(void *session);
-			virtual DrawObjectL *GetNewObjectById(void *session, Int64 id);
 			virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
-			virtual void ReleaseObject(void *session, DrawObjectL *obj);
 			virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 			virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 

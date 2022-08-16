@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListA.h"
 #include "Data/ByteTool.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/LineString.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/JSONParser.h"
@@ -202,7 +204,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;
-				Data::ArrayList<Double> ptList;
+				Data::ArrayListA<Double> ptList;
 				Data::ArrayList<Double> zList;
 				Bool hasZ = false;
 				Text::JSONArray *pt;
@@ -274,10 +276,10 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 				{
 					if (hasZ)
 					{
-						Math::Geometry::Polyline *pl;
+						Math::Geometry::LineString *pl;
 						Math::Coord2DDbl *ptArr;
 						Double *altArr;
-						NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, zList.GetCount(), true, false));
+						NEW_CLASS(pl, Math::Geometry::LineString(srid, zList.GetCount(), true, false));
 						ptArr = pl->GetPointList(&i);
 						i = 0;
 						j = ptList.GetCount() >> 1;
@@ -301,8 +303,8 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 					{
 						Double *ptArr;
 						ptArr = ptList.GetArray(&i);
-						Math::Geometry::Polyline *pl;
-						NEW_CLASS(pl, Math::Geometry::Polyline(srid, (Math::Coord2DDbl*)ptArr, i >> 1, false, false));
+						Math::Geometry::LineString *pl;
+						NEW_CLASS(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, false, false));
 						return pl;
 					}
 				}

@@ -560,11 +560,6 @@ void Map::WebImageLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::WebImageLayer::GetNewObjectById(void *session, Int64 id)
-{
-	return 0;
-}
-
 Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, Int64 id)
 {
 	ImageStat *stat = this->GetImageStat((Int32)id);
@@ -587,10 +582,6 @@ Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, In
 	{
 		return 0;
 	}
-}
-
-void Map::WebImageLayer::ReleaseObject(void *session, DrawObjectL *obj)
-{
 }
 
 Map::IMapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass()

@@ -2,8 +2,11 @@
 #include "MyMemory.h"
 #include "Map/MapScheduler.h"
 #include "Math/Math.h"
+#include "Math/Geometry/LineString.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
+
+#include <stdio.h>
 
 UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 {
@@ -15,19 +18,19 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 	me->threadRunning = true;
 	while (!me->toStop)
 	{
-		Map::DrawObjectL *dobj;
-		if (me->dt == Map::MapScheduler::MSDT_CLEAR)
+		Math::Geometry::Vector2D *vec;
+		if (me->dt == ThreadState::Clearing)
 		{
 			Sync::MutexUsage mutUsage(&me->taskMut);
 			j = me->tasks.GetCount();
 			while (j-- > 0)
 			{
-				dobj = me->tasks.GetItem(j);
-				me->lyr->ReleaseObject(0, dobj);
+				vec = me->tasks.GetItem(j);
+				DEL_CLASS(vec);
 			}
 			me->tasks.Clear();
 			i = 0;
-			me->dt = Map::MapScheduler::MSDT_POINTS;
+			me->dt = ThreadState::Drawing;
 			mutUsage.EndUse();
 			me->finishEvt.Set();
 		}
@@ -39,8 +42,8 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				j = me->tasks.GetCount();
 				if (i < j)
 				{
-					dobj = me->tasks.GetItem(i);
-					if (dobj)
+					vec = me->tasks.GetItem(i);
+					if (vec)
 					{
 						mutUsage.EndUse();
 						i++;
@@ -61,64 +64,113 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					break;
 				}
 
-				if (me->dt == Map::MapScheduler::MSDT_POINTS)
+				switch (vec->GetVectorType())
 				{
-					me->DrawPoints(dobj);
-				}
-				else if (me->dt == Map::MapScheduler::MSDT_POLYLINE)
+				case Math::Geometry::Vector2D::VectorType::Point:
+					me->DrawPoints((Math::Geometry::Point*)vec);
+					break;
+				case Math::Geometry::Vector2D::VectorType::Polyline:
 				{
-					UInt32 k;
-					UInt32 l;
+					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
+					UOSInt nPtOfst;
+					UInt32 *ptOfstArr = pl->GetPtOfstList(&nPtOfst);
+					UOSInt k;
+					UOSInt l;
 					if (me->isFirst)
 					{
-						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
+						if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
 							*me->isLayerEmpty = false;
 					}
 
-					if (dobj->flags & 1)
+					if (pl->HasColor())
 					{
-						Media::DrawPen *p = me->img->NewPenARGB(dobj->lineColor, me->p->GetThick(), 0 ,0);
-						k = dobj->nPtOfst;
+						Media::DrawPen *p = me->img->NewPenARGB(pl->GetColor(), me->p->GetThick(), 0 ,0);
+						k = nPtOfst;
 						l = 1;
 						while (l < k)
 						{
-							me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[l - 1] << 1], dobj->ptOfstArr[l] - dobj->ptOfstArr[l - 1], p);
+							me->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], p);
 							l++;
 						}
-						me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k - 1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], p);
+						me->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], p);
 						me->img->DelPen(p);
 					}
 					else
 					{
-						k = dobj->nPtOfst;
+						k = nPtOfst;
 						l = 1;
 						while (l < k)
 						{
-							me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[l - 1] << 1], dobj->ptOfstArr[l] - dobj->ptOfstArr[l - 1], me->p);
+							me->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], me->p);
 							l++;
 						}
-						me->img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k - 1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], me->p);
+						me->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], me->p);
 					}
+					break;
 				}
-				else if (me->dt == Map::MapScheduler::MSDT_POLYGON)
+				case Math::Geometry::Vector2D::VectorType::LineString:
 				{
+					Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr = pl->GetPointList(&nPoint);
 					if (me->isFirst)
 					{
-						UInt32 k;
-						UInt32 l;
-						if (me->map->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
+						if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
 							*me->isLayerEmpty = false;
-						k = dobj->nPtOfst;
+					}
+
+					me->img->DrawPolyline(pointArr, nPoint, me->p);
+					break;
+				}
+				case Math::Geometry::Vector2D::VectorType::Polygon:
+				{
+					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+					UOSInt nPtOfst;
+					UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+					if (me->isFirst)
+					{
+						UOSInt k;
+						UOSInt l;
+
+						if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+							*me->isLayerEmpty = false;
+						k = nPtOfst;
 						l = 1;
 						while (l < k)
 						{
-							dobj->ptOfstArr[l - 1] = dobj->ptOfstArr[l] - dobj->ptOfstArr[l - 1];
+							ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
 							l++;
 						}
-						dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
+						ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
 					}
 
-					me->img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, me->p, me->b);
+					me->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, me->p, me->b);
+					break;
+				}
+				case Math::Geometry::Vector2D::VectorType::MultiPoint:
+				case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+				case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+				case Math::Geometry::Vector2D::VectorType::CircularString:
+				case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+				case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+				case Math::Geometry::Vector2D::VectorType::MultiCurve:
+				case Math::Geometry::Vector2D::VectorType::MultiSurface:
+				case Math::Geometry::Vector2D::VectorType::Curve:
+				case Math::Geometry::Vector2D::VectorType::Surface:
+				case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+				case Math::Geometry::Vector2D::VectorType::Tin:
+				case Math::Geometry::Vector2D::VectorType::Triangle:
+				case Math::Geometry::Vector2D::VectorType::Image:
+				case Math::Geometry::Vector2D::VectorType::String:
+				case Math::Geometry::Vector2D::VectorType::Ellipse:
+				case Math::Geometry::Vector2D::VectorType::PieArea:
+				case Math::Geometry::Vector2D::VectorType::Unknown:
+					printf("MapScheduler: unsupported type\r\n");
+					break;
 				}
 			}
 		}
@@ -129,9 +181,8 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 	return 0;
 }
 
-void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
+void Map::MapScheduler::DrawPoints(Math::Geometry::Point *pt)
 {
-	UOSInt j;
 	Math::RectAreaDbl *objPtr = &this->objBounds[*this->objCnt];
 	Math::Coord2DDbl pts;
 	Double imgW;
@@ -143,26 +194,22 @@ void Map::MapScheduler::DrawPoints(Map::DrawObjectL *dobj)
 	Double spotY = this->icoSpotY * scale;
 	imgW = UOSInt2Double(this->ico->GetWidth()) * scale;
 	imgH = UOSInt2Double(this->ico->GetHeight()) * scale;
-	j = dobj->nPoint;
-	while (j-- > 0)
+	pts = this->map->MapXYToScnXY(pt->GetCenter());
+	*this->isLayerEmpty = false;
+	if (*this->objCnt >= this->maxCnt)
 	{
-		if (this->map->MapXYToScnXY(&dobj->pointArr[j], &pts, 1, Math::Coord2DDbl(0, 0)))
-			*this->isLayerEmpty = false;
-		if (*this->objCnt >= this->maxCnt)
-		{
-			--(*this->objCnt);
-			objPtr -= 4;
-		}
-		objPtr->tl.x = pts.x - spotX;
-		objPtr->tl.y = pts.y - spotY;
-		objPtr->br.x = objPtr->tl.x + imgW;
-		objPtr->br.y = objPtr->tl.y + imgH;
-		if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
-		{
-			this->img->DrawImagePt(this->ico, objPtr->tl.x, objPtr->tl.y);
-			objPtr += 1;
-			++*(this->objCnt);
-		}
+		--(*this->objCnt);
+		objPtr -= 4;
+	}
+	objPtr->tl.x = pts.x - spotX;
+	objPtr->tl.y = pts.y - spotY;
+	objPtr->br.x = objPtr->tl.x + imgW;
+	objPtr->br.y = objPtr->tl.y + imgH;
+	if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
+	{
+		this->img->DrawImagePt(this->ico, objPtr->tl.x, objPtr->tl.y);
+		objPtr += 1;
+		++*(this->objCnt);
 	}
 }
 
@@ -174,7 +221,7 @@ Map::MapScheduler::MapScheduler()
 	this->p = 0;
 	this->b = 0;
 	this->ico = 0;
-	this->dt = Map::MapScheduler::MSDT_POINTS;
+	this->dt = ThreadState::Drawing;
 	this->toStop = false;
 	this->threadRunning = false;
 	this->taskFinish = true;
@@ -198,9 +245,9 @@ void Map::MapScheduler::SetMapView(Map::MapView *map, Media::DrawImage *img)
 	this->img = img;
 }
 
-void Map::MapScheduler::SetDrawType(Map::IMapDrawLayer *lyr, DrawType dt, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
+void Map::MapScheduler::SetDrawType(Map::IMapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
 {
-	while (this->dt == Map::MapScheduler::MSDT_CLEAR)
+	while (this->dt == ThreadState::Clearing)
 	{
 		this->finishEvt.Wait();
 	}
@@ -222,11 +269,11 @@ void Map::MapScheduler::SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt
 	this->maxCnt = maxCnt;
 }
 
-void Map::MapScheduler::Draw(Map::DrawObjectL *obj)
+void Map::MapScheduler::Draw(Math::Geometry::Vector2D *vec)
 {
 	Sync::MutexUsage mutUsage(&this->taskMut);
 	this->taskFinish = false;
-	this->tasks.Add(obj);
+	this->tasks.Add(vec);
 	mutUsage.EndUse();
 	this->taskEvt.Set();
 }
@@ -273,6 +320,6 @@ void Map::MapScheduler::WaitForFinish()
 		this->img->DelPen(this->p);
 		this->p = 0;
 	}
-	this->dt = Map::MapScheduler::MSDT_CLEAR;
+	this->dt = ThreadState::Clearing;
 	this->taskEvt.Set();
 }

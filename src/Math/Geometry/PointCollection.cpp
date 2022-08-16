@@ -3,7 +3,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Geometry/PointCollection.h"
 
-Math::Geometry::PointCollection::PointCollection(UInt32 srid, UOSInt nPoint, Math::Coord2DDbl *pointArr) : Vector2D(srid)
+Math::Geometry::PointCollection::PointCollection(UInt32 srid, UOSInt nPoint, const Math::Coord2DDbl *pointArr) : Vector2D(srid)
 {
 	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;

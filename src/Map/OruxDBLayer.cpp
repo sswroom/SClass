@@ -280,11 +280,6 @@ void Map::OruxDBLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::OruxDBLayer::GetNewObjectById(void *session, Int64 id)
-{
-	return 0;
-}
-
 Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 {
 	if (this->db == 0)
@@ -345,10 +340,6 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int6
 	{
 		return 0;
 	}
-}
-
-void Map::OruxDBLayer::ReleaseObject(void *session, DrawObjectL *obj)
-{
 }
 
 UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names)

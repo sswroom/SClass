@@ -25,6 +25,26 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 }
 
+Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM) : PointCollection(srid, nPoint, pointArr)
+{
+	if (hasZ)
+	{
+		this->zArr = MemAllocA(Double, nPoint);
+	}
+	else
+	{
+		this->zArr = 0;
+	}
+	if (hasM)
+	{
+		this->mArr = MemAllocA(Double, nPoint);
+	}
+	else
+	{
+		this->mArr = 0;
+	}
+}
+
 Math::Geometry::LineString::~LineString()
 {
 	if (this->zArr)
@@ -743,4 +763,21 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 		i++;
 	}
 	return pg;
+}
+
+Math::Geometry::Polyline *Math::Geometry::LineString::CreatePolyline() const
+{
+	Math::Geometry::Polyline *pl;
+	NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, this->pointArr, this->nPoint, this->zArr != 0, this->mArr != 0));
+	if (this->zArr)
+	{
+		UOSInt nPoint;
+		MemCopyNO(pl->GetZList(&nPoint), this->zArr, sizeof(Double) * this->nPoint);
+	}
+	if (this->mArr)
+	{
+		UOSInt nPoint;
+		MemCopyNO(pl->GetMList(&nPoint), this->mArr, sizeof(Double) * this->nPoint);
+	}
+	return pl;
 }

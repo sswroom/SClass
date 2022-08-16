@@ -13,6 +13,7 @@
 #include "Map/CIPLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Math/Geometry/Point.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
@@ -215,8 +216,8 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 	if (nameArr)
 	{
 		Text::Encoding enc(65001);
-		Data::Int32Map<WChar*> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32Map<WChar*>());
+		Data::Int32Map<UTF16Char*> *tmpArr;
+		NEW_CLASS(tmpArr, Data::Int32Map<UTF16Char*>());
 		*nameArr = tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
@@ -228,7 +229,7 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 		k = 0;
 		while (k < this->nblks)
 		{
-			WChar *strTmp;
+			UTF16Char *strTmp;
 			UInt8 buff[5];
 			cis->SeekFromBeginning(this->blks[k].sofst);
 			i = this->blks[k].objCnt;
@@ -239,17 +240,17 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 				{
 					if (buff[4])
 					{
-						strTmp = MemAlloc(WChar, (buff[4] >> 1) + 1);
+						strTmp = MemAlloc(UTF16Char, (buff[4] >> 1) + 1);
 						cis->Read((UInt8*)strTmp, buff[4]);
 						strTmp[buff[4] >> 1] = 0;
 						tmpArr->Put(*(Int32*)buff, strTmp);
-						textSize = Text::StrWChar_UTF8Cnt(strTmp);
+						textSize = Text::StrUTF16_UTF8Cnt(strTmp);
 						if (textSize > this->maxTextSize)
 							maxTextSize = (Int32)textSize;
 					}
 					else
 					{
-						strTmp = MemAlloc(WChar, 1);
+						strTmp = MemAlloc(UTF16Char, 1);
 						strTmp[0] = 0;
 						tmpArr->Put(*(Int32*)buff, strTmp);
 					}
@@ -570,7 +571,7 @@ DB::DBUtil::ColType Map::CIPLayer::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 		{
 			*colSize = this->maxTextSize;
 		}
-		return DB::DBUtil::CT_VarChar;
+		return DB::DBUtil::CT_VarUTF16Char;
 	}
 	else
 	{
@@ -589,7 +590,7 @@ Bool Map::CIPLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColName(CSTR("NAME"));
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
-	colDef->SetColType(DB::DBUtil::CT_VarChar);
+	colDef->SetColType(DB::DBUtil::CT_VarUTF16Char);
 	colDef->SetDefVal((Text::String*)0);
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
@@ -744,45 +745,47 @@ void Map::CIPLayer::EndGetObject(void *session)
 	this->mut.Unlock();
 }
 
-Map::DrawObjectL *Map::CIPLayer::GetObjectByIdN(void *session, Int64 id)
+Math::Geometry::Vector2D *Map::CIPLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Map::CIPLayer::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
 	if (fobj == 0)
 	{
 		return 0;
 	}
-	Map::DrawObjectL *obj;
-	obj = MemAlloc(Map::DrawObjectL, 1);
-	obj->objId = fobj->id;
-	obj->nPtOfst = fobj->nParts;
-	obj->nPoint = fobj->nPoints;
+	Math::Geometry::PointOfstCollection *ptOfst;
+	Double r = 1 / 200000.0;
+	if (this->lyrType == Map::DRAW_LAYER_POINT || this->lyrType == Map::DRAW_LAYER_POINT3D)
+	{
+		Math::Geometry::Point *pt;
+		NEW_CLASS(pt, Math::Geometry::Point(4326, fobj->points[0] * r, fobj->points[1] * r));
+		return pt;
+	}
+	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE3D || this->lyrType == Map::DRAW_LAYER_POLYLINE)
+	{
+		NEW_CLASS(ptOfst, Math::Geometry::Polyline(4326, (UOSInt)fobj->nParts, (UOSInt)fobj->nPoints, false, false));
+	}
+	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
+	{
+		NEW_CLASS(ptOfst, Math::Geometry::Polygon(4326, (UOSInt)fobj->nParts, (UOSInt)fobj->nPoints, false, false));
+	}
+	else
+	{
+		return 0;
+	}
 	if (fobj->parts)
 	{
-		obj->ptOfstArr = MemAlloc(UInt32, fobj->nParts);
-		MemCopyNO(obj->ptOfstArr, fobj->parts, sizeof(UInt32) * fobj->nParts);
+		UOSInt nPtOfst;
+		UInt32 *ptOfstArr = ptOfst->GetPtOfstList(&nPtOfst);
+		MemCopyNO(ptOfstArr, fobj->parts, sizeof(UInt32) * fobj->nParts);
 	}
-	obj->pointArr = MemAllocA(Math::Coord2DDbl, fobj->nPoints);
-	OSInt i = fobj->nPoints;
-	Double r = 1 / 200000.0;
+	UOSInt nPoint;
+	Math::Coord2DDbl *pointArr = ptOfst->GetPointList(&nPoint);
+	UOSInt i = nPoint;
 	while (i-- > 0)
 	{
-		obj->pointArr[i] = Math::Coord2DDbl(fobj->points[i * 2] * r, fobj->points[i * 2 + 1] * r);
+		pointArr[i] = Math::Coord2DDbl(fobj->points[i * 2] * r, fobj->points[i * 2 + 1] * r);
 	}
-	return obj;
-}
-
-Math::Geometry::Vector2D *Map::CIPLayer::GetNewVectorById(void *session, Int64 id)
-{
-	return 0;
-}
-
-void Map::CIPLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFree(obj->pointArr);
-	MemFree(obj);
+	return ptOfst;
 }
 
 Map::IMapDrawLayer::ObjectClass Map::CIPLayer::GetObjectClass()

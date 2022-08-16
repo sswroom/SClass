@@ -380,35 +380,6 @@ void Map::MapLayerCollection::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::MapLayerCollection::GetNewObjectById(void *session, Int64 id)
-{
-	UOSInt k;
-	UOSInt l;
-	Int64 currId = 0;
-	Int64 maxId;
-	Map::IMapDrawLayer *lyr;
-	Map::DrawObjectL *dobj = 0;
-	Sync::RWMutexUsage mutUsage(&this->mut, false);
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
-	{
-		lyr = this->layerList.GetItem(k);
-		maxId = lyr->GetObjectIdMax();
-		if (id >= currId && id <= currId + maxId)
-		{
-			dobj = lyr->GetNewObjectById(session, id - currId);
-			break;
-		}
-		else
-		{
-			currId += maxId + 1;
-		}
-		k++;
-	}
-	return dobj;
-}
-
 Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt k;
@@ -436,15 +407,6 @@ Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(void *sessio
 		k++;
 	}
 	return vec;
-}
-
-void Map::MapLayerCollection::ReleaseObject(void *session, DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFree(obj->pointArr);
-	MemFree(obj);
 }
 
 void Map::MapLayerCollection::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

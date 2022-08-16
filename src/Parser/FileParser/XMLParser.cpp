@@ -16,8 +16,8 @@
 #include "Map/OSM/OSMParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Polygon.h"
-#include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/PointZ.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
@@ -1000,7 +1000,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl xPts;
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
-															Math::Geometry::Polyline *pl;
+															Math::Geometry::LineString *pl;
 															Math::Coord2DDbl *ptList;
 															Double *hList;
 															scols = valList.GetArray(&i);
@@ -1033,7 +1033,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 																		if (xPts.GetCount() > 0)
 																		{
-																			NEW_CLASS(pl, Math::Geometry::Polyline(srid, 1, xPts.GetCount(), true, false));
+																			NEW_CLASS(pl, Math::Geometry::LineString(srid, xPts.GetCount(), true, false));
 																			ptList = pl->GetPointList(&i);
 																			hList = pl->GetZList(&i);
 																			while (i-- > 0)
@@ -3163,14 +3163,13 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						}
 						if (coord.GetCount() > 0)
 						{
-							Math::Geometry::Polyline *pl;
+							Math::Geometry::LineString *pl;
 							UOSInt nPoints;
 							Math::Coord2DDbl *ptArr;
 							Double *altArr;
 							UOSInt j;
 
-							NEW_CLASS(pl, Math::Geometry::Polyline(4326, 1, altList.GetCount(), true, false));
-							pl->GetPtOfstList(&nPoints)[0] = 0;
+							NEW_CLASS(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
 							altArr = pl->GetZList(&nPoints);
 							ptArr = pl->GetPointList(&nPoints);
 							i = altList.GetCount();

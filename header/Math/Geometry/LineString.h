@@ -2,6 +2,7 @@
 #define _SM_MATH_GEOMETRY_LINESTRING
 #include "Math/Coord2DDbl.h"
 #include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/PointCollection.h"
 
 namespace Math
@@ -15,6 +16,7 @@ namespace Math
 			Double *mArr;
 		public:
 			LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM);
+			LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM);
 			virtual ~LineString();
 
 			virtual VectorType GetVectorType() const;
@@ -32,6 +34,7 @@ namespace Math
 			OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt, Double *calZ, Double *calM);
 
 			Math::Geometry::Polygon *CreatePolygonByDist(Double dist) const;
+			Math::Geometry::Polyline *CreatePolyline() const;
 		};
 	}
 }

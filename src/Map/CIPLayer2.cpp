@@ -723,38 +723,6 @@ void Map::CIPLayer2::EndGetObject(void *session)
 	this->mut.Unlock();
 }
 
-Map::DrawObjectL *Map::CIPLayer2::GetNewObjectById(void *session, Int64 id)
-{
-	Map::CIPLayer2::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
-	if (fobj == 0)
-	{
-		return 0;
-	}
-	Map::DrawObjectL *obj;
-	obj = MemAlloc(Map::DrawObjectL, 1);
-	obj->objId = fobj->id;
-	obj->nPtOfst = fobj->nPtOfst;
-	obj->nPoint = fobj->nPoint;
-	if (fobj->ptOfstArr)
-	{
-		obj->ptOfstArr = MemAlloc(UInt32, fobj->nPtOfst);
-		MemCopyNO(obj->ptOfstArr, fobj->ptOfstArr, sizeof(Int32) * fobj->nPtOfst);
-	}
-	obj->pointArr = MemAllocA(Math::Coord2DDbl, fobj->nPoint);
-	Double r = 1 / 200000.0;
-	UOSInt i = 0;
-	UOSInt j = fobj->nPoint;
-	while (i < j)
-	{
-		obj->pointArr[i].x = fobj->pointArr[(i << 1)] * r;
-		obj->pointArr[i].y = fobj->pointArr[(i << 1) + 1] * r;
-		i++;
-	}
-	obj->flags = 0;
-	obj->lineColor = 0;
-	return obj;
-}
-
 Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 {
 	Map::CIPLayer2::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
@@ -798,15 +766,6 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 
 		return ptColl;
 	}
 	return 0;
-}
-
-void Map::CIPLayer2::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	if (obj->ptOfstArr)
-		MemFree(obj->ptOfstArr);
-	if (obj->pointArr)
-		MemFreeA(obj->pointArr);
-	MemFree(obj);
 }
 
 Map::IMapDrawLayer::ObjectClass Map::CIPLayer2::GetObjectClass()

@@ -406,25 +406,25 @@ Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, D
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GTKDrawImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p)
 {
 	printf("GTK: Draw PolylineI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolygonI(Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	printf("GTK: Draw PolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	printf("GTK: Draw PolyPolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	if (nPoints >= 2)
@@ -446,7 +446,7 @@ Bool Media::GTKDrawImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints,
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -489,7 +489,7 @@ Bool Media::GTKDrawImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, 
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	GTKDrawPen *pen = (GTKDrawPen*)p;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;

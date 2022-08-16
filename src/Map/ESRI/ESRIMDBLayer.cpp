@@ -353,25 +353,12 @@ void Map::ESRI::ESRIMDBLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::ESRI::ESRIMDBLayer::GetNewObjectById(void *session, Int64 id)
-{
-	Math::Geometry::Vector2D *vec = this->objects->Get((Int32)id);
-	return Vector2DrawObject(id, vec, this->layerType);
-}
-
 Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->objects->Get((Int32)id);
 	if (vec)
 		return vec->Clone();
 	return 0;
-}
-
-void Map::ESRI::ESRIMDBLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	MemFree(obj->ptOfstArr);
-	MemFree(obj->pointArr);
-	MemFree(obj);
 }
 
 void Map::ESRI::ESRIMDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

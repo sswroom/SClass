@@ -321,25 +321,14 @@ void Map::FileGDBLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::FileGDBLayer::GetNewObjectById(void *session, Int64 id)
-{
-	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
-	return Vector2DrawObject(id, vec, this->layerType);
-}
-
 Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
+	{
 		return vec->Clone();
+	}
 	return 0;
-}
-
-void Map::FileGDBLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
-{
-	MemFree(obj->ptOfstArr);
-	MemFreeA(obj->pointArr);
-	MemFree(obj);
 }
 
 void Map::FileGDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

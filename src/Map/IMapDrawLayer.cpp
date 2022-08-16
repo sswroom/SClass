@@ -267,7 +267,8 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::
 {
 	UTF8Char *retVal = 0;
 
-	if (this->GetLayerType() != DRAW_LAYER_POLYGON)
+	Map::DrawLayerType layerType = this->GetLayerType();
+	if (layerType != DRAW_LAYER_POLYGON && layerType != DRAW_LAYER_MIXED)
 		return retVal;
 
 	void *sess = BeginGetObject();
@@ -286,21 +287,24 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::
 		if (thisId != lastId)
 		{
 			lastId = thisId;
-			Math::Geometry::Polygon *pg;
-			pg = (Math::Geometry::Polygon*)this->GetNewVectorById(sess, thisId);
-			if (pg)
+			Math::Geometry::Vector2D *vec = this->GetNewVectorById(sess, thisId);
+			if (vec)
 			{
-				if (pg->InsideVector(coord))
+				if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
-					retVal = this->GetString(buff, buffSize, names, lastId, strIndex);
-					if (buff != retVal)
+					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					if (pg->InsideVector(coord))
 					{
-						*outCoord = coord;
-						DEL_CLASS(pg);
-						break;
+						retVal = this->GetString(buff, buffSize, names, lastId, strIndex);
+						if (buff != retVal)
+						{
+							*outCoord = coord;
+							DEL_CLASS(vec);
+							break;
+						}
 					}
 				}
-				DEL_CLASS(pg);
+				DEL_CLASS(vec);
 			}
 		}
 	}
@@ -315,147 +319,53 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::
 {
 	UTF8Char *retVal = 0;
 	UTF8Char *tmpBuff;
-
-	if (this->GetLayerType() != DRAW_LAYER_POLYLINE && this->GetLayerType() != DRAW_LAYER_POINT)
+	Map::DrawLayerType layerType = this->GetLayerType();
+	if (layerType != DRAW_LAYER_POLYLINE && layerType != DRAW_LAYER_POINT && layerType != DRAW_LAYER_MIXED && layerType != DRAW_LAYER_POINT3D && layerType != DRAW_LAYER_POLYLINE3D)
 		return retVal;
 
 	void *sess = BeginGetObject();
 	tmpBuff = MemAlloc(UTF8Char, buffSize);
 	void *names;
-	Data::ArrayListInt64 *arr;
+	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	Int64 thisId;
 	UOSInt i;
-	DrawObjectL *dobj;
+	Math::Geometry::Vector2D *vec;
+	Math::Coord2DDbl nearPt;
+	Double thisDist;
 	Double dist = 1000.0;
-	NEW_CLASS(arr, Data::ArrayListInt64());
 	Int32 blkSize = this->CalBlockSize();
 
 	Int32 xBlk = Double2Int32(coord.x * 200000.0 / blkSize);
 	Int32 yBlk = Double2Int32(coord.y * 200000.0 / blkSize);
-	GetObjectIds(arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
+	GetObjectIds(&arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
 	lastId = -1;
-	i = arr->GetCount();
+	i = arr.GetCount();
 	while (i-- > 0)
 	{
-		thisId = arr->GetItem(i);
+		thisId = arr.GetItem(i);
 		if (thisId != lastId)
 		{
 			lastId = thisId;
-			dobj = this->GetNewObjectById(sess, thisId);
+			vec = this->GetNewVectorById(sess, thisId);
 			UTF8Char *sptr = this->GetString(tmpBuff, buffSize, names, thisId, strIndex);
 			if (sptr && sptr != tmpBuff)
 			{
-				UInt32 k;
-				UInt32 l;
-				UInt32 m;
-				UInt32 *ptOfstArr;
-				Math::Coord2DDbl *pointArr;
-				Int32 currFound;
-
-				ptOfstArr = dobj->ptOfstArr;
-				pointArr = dobj->pointArr;
-
-				k = dobj->nPtOfst;
-				l = dobj->nPoint;
-
-				currFound = 0;
-				Double calBase;
-				Math::Coord2DDbl calDiff;
-				Math::Coord2DDbl calSqDiff;
-				Double calX;
-				Double calY;
-				Double calD;
-				Double calPtX;
-				Double calPtY;
-
-				while (k--)
+				thisDist = vec->CalSqrDistance(coord, &nearPt);
+				if (thisDist < dist)
 				{
-					m = ptOfstArr[k];
-					l--;
-					while (l-- > m)
-					{
-						calDiff = pointArr[l] - pointArr[l + 1];
-
-						if (calDiff.y == 0)
-						{
-							calX = coord.x;
-						}
-						else
-						{
-							calSqDiff = calDiff * calDiff;
-							calX = (calBase = calSqDiff.x) * coord.x;
-							calBase += calSqDiff.y;
-							calX += calSqDiff.y * pointArr[l].x;
-							calX += (coord.y - pointArr[l].y) * calDiff.y * calDiff.x;
-							calX /= calBase;
-						}
-
-						if (calDiff.x == 0)
-						{
-							calY = coord.y;
-						}
-						else
-						{
-							calY = ((calX - pointArr[l].x) * calDiff.y / calDiff.x) + pointArr[l].y;
-						}
-
-						if (calDiff.x < 0)
-						{
-							if (pointArr[l].x > calX)
-								continue;
-							if (pointArr[l + 1].x < calX)
-								continue;
-						}
-						else
-						{
-							if (pointArr[l].x < calX)
-								continue;
-							if (pointArr[l + 1].x > calX)
-								continue;
-						}
-
-						if (calDiff.y < 0)
-						{
-							if (pointArr[l].y > calY)
-								continue;
-							if (pointArr[l + 1].y < calY)
-								continue;
-						}
-						else
-						{
-							if (pointArr[l].y < calY)
-								continue;
-							if (pointArr[l + 1].y > calY)
-								continue;
-						}
-
-						calDiff = coord - Math::Coord2DDbl(Math::Coord2DDbl(calX, calY));
-						calSqDiff = calDiff * calDiff;
-						calD = (calSqDiff.x + calSqDiff.y);
-						if (calD < dist)
-						{
-							currFound = 1;
-							dist = calD;
-							calPtX = calX;
-							calPtY = calY;
-						}
-					}
-				}
-				if (currFound)
-				{
+					dist = thisDist;
 					retVal = Text::StrConcat(buff, tmpBuff);
 					if (outCoord)
 					{
-						*outCoord = Math::Coord2DDbl(calPtX, calPtY);
+						*outCoord = nearPt;
 					}
 				}
 			}
-			this->ReleaseObject(sess, dobj);
+			DEL_CLASS(vec);
 		}
 	}
 
-	DEL_CLASS(arr);
 	ReleaseNameArr(names);
 	EndGetObject(sess);
 	MemFree(tmpBuff);
@@ -900,54 +810,6 @@ Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Geometry::Vect
 	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:
 		return Map::DRAW_LAYER_UNKNOWN;
-	}
-}
-
-Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Geometry::Vector2D *vec, Map::DrawLayerType layerType)
-{
-	if (layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
-	{
-		Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
-		Map::DrawObjectL *dobj;
-		dobj = MemAlloc(Map::DrawObjectL, 1);
-		dobj->objId = id;
-		dobj->nPtOfst = 1;
-		dobj->nPoint = 1;
-		dobj->ptOfstArr = MemAlloc(UInt32, 1);
-		dobj->ptOfstArr[0] = 0;
-		dobj->pointArr = MemAllocA(Math::Coord2DDbl, 1);
-		dobj->pointArr[0] = pt->GetCenter();
-		dobj->flags = 0;
-		dobj->lineColor = 0;
-		return dobj;
-	}
-	else if (layerType == Map::DRAW_LAYER_POLYGON || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
-	{
-		Math::Geometry::PointOfstCollection *ptColl = (Math::Geometry::PointOfstCollection*)vec;
-		UInt32 *ptOfstArr;
-		Math::Coord2DDbl *ptArr;
-		UOSInt cnt;
-
-		Map::DrawObjectL *dobj;
-		dobj = MemAlloc(Map::DrawObjectL, 1);
-		dobj->objId = id;
-
-		ptOfstArr = ptColl->GetPtOfstList(&cnt);
-		dobj->nPtOfst = (UInt32)cnt;
-		dobj->ptOfstArr = MemAlloc(UInt32, cnt);
-		MemCopyNO(dobj->ptOfstArr, ptOfstArr, sizeof(UInt32) * cnt);
-
-		ptArr = ptColl->GetPointList(&cnt);
-		dobj->nPoint = (UInt32)cnt;
-		dobj->pointArr = MemAllocA(Math::Coord2DDbl, cnt);
-		MemCopyNO(dobj->pointArr, ptArr, cnt * sizeof(Math::Coord2DDbl));
-		dobj->flags = 0;
-		dobj->lineColor = 0;
-		return dobj;
-	}
-	else
-	{
-		return 0;
 	}
 }
 
