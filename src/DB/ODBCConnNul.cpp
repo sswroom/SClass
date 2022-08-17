@@ -6,7 +6,7 @@
 #include "DB/ODBCConn.h"
 #include "DB/DBTool.h"
 #include "Math/Math.h"
-#include "Math/Point.h"
+#include "Math/Geometry/Point.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -262,7 +262,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayList<T
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
