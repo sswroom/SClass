@@ -87,7 +87,7 @@ Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
 
 Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser.cpp
 @HEIFParser.o
-Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
+Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 @JP2Parser.o
 Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
 @WebPParser.o
@@ -146,8 +146,7 @@ WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
 !-lheif
-JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
-!-lopenjp2
+JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
 !-lwebp
 !-lwebpdemux
