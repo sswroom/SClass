@@ -444,7 +444,7 @@ Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 __inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 {
 	unsigned __int128 v = (x * (unsigned __int128)y);
-    *hi = (UOSInt)(y >> 64);
+    *hi = (UOSInt)(v >> 64);
     return (UOSInt)v;
 }
 

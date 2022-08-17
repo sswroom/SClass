@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
 #define _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
 #include "DB/DBTool.h"
+#include "Map/DBMapLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -73,6 +74,7 @@ namespace SSWR
 			DB::DBTool *currDB;
 			Media::ColorManagerSess *colorSess;
 			Map::MapEnv *mapEnv;
+			Map::DBMapLayer *dbLayer;
 
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
@@ -81,6 +83,7 @@ namespace SSWR
 			static void __stdcall OnTableSelChg(void *userObj);
 			static Bool __stdcall OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnMapSchemaSelChg(void *userObj);
+			static void __stdcall OnMapTableSelChg(void *userObj);
 			static void __stdcall OnDatabaseChangeClicked(void *userObj);
 			static void __stdcall OnDatabaseDeleteClicked(void *userObj);
 			static void __stdcall OnDatabaseNewClicked(void *userObj);

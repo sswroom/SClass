@@ -54,6 +54,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 
 	Text::String *thisUrl;
 	Sync::MutexUsage urlMutUsage(&this->urlMut);
+	if (this->urls.GetCount() == 0)
+	{
+		return 0;
+	}
 	thisUrl = this->urls.GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
 	urlMutUsage.EndUse();
@@ -131,7 +135,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 
 Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	this->urls.Add(Text::String::New(url));
+	if (url.leng > 0)
+	{
+		this->urls.Add(Text::String::New(url));
+	}
 	this->urlNext = 0;
 	this->ioMut = 0;
 	this->cacheDir = Text::String::New(cacheDir);

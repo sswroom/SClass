@@ -547,7 +547,7 @@ IO::Path::PathType IO::Path::GetPathType(Text::CString path)
 	int status = lstat64((const Char*)path.v, &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path, &s);
+	int status = lstat((const Char*)path.v, &s);
 #endif
 	if (status != 0)
 	{

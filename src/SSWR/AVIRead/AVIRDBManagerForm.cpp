@@ -112,6 +112,24 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapSchemaSelChg(void *userObj
 	me->UpdateMapTableList();
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (me->currDB == 0)
+	{
+		return;
+	}
+	Text::String *schemaName = me->lbMapSchema->GetSelectedItemTextNew();
+	Text::String *tableName = me->lbMapTable->GetSelectedItemTextNew();
+	if (schemaName && tableName)
+	{
+		me->dbLayer->SetDatabase(me->currDB, schemaName->ToCString(), tableName->ToCString());
+		OnLayerUpdated(me);
+	}
+	SDEL_STRING(schemaName);
+	SDEL_STRING(tableName);
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
@@ -562,6 +580,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
 	Map::IMapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
 	this->mapEnv->AddLayer(0, layer, true);
+	NEW_CLASS(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
+	this->mapEnv->AddLayer(0, this->dbLayer, true);
 	layer->AddUpdatedHandler(OnLayerUpdated, this);
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -665,6 +685,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->hspMapTable, UI::GUIHSplitter(ui, this->pnlMapTable, 3, false));
 	NEW_CLASS(this->lbMapTable, UI::GUIListBox(ui, this->pnlMapTable, false));
 	this->lbMapTable->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbMapTable->HandleSelectionChange(OnMapTableSelChg, this);
 
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;

@@ -1,5 +1,7 @@
 #ifndef _SM_MAP_DBMAPLAYER
 #define _SM_MAP_DBMAPLAYER
+#include "Data/Int64Map.h"
+#include "DB/DBTool.h"
 #include "Map/IMapDrawLayer.h"
 
 namespace Map
@@ -7,11 +9,26 @@ namespace Map
 	class DBMapLayer : public Map::IMapDrawLayer
 	{
 	private:
+		DB::DBTool *db;
+		Text::String *schema;
+		Text::String *table;
+		Math::Coord2DDbl min;
+		Math::Coord2DDbl max;
+		UOSInt idCol;
+		UOSInt vecCol;
+		DB::TableDef *tabDef;
+		Data::Int64Map<Math::Geometry::Vector2D*> vecMap;
+		Math::Geometry::Vector2D::VectorType mixedType;
+		Bool pointType;
+
+		void ClearDB();
+	public:
 		DBMapLayer(Text::String *layerName);
+		DBMapLayer(Text::CString layerName);
 		virtual ~DBMapLayer();
 
 		virtual DrawLayerType GetLayerType();
-		virtual void SetMixedType(Math::Geometry::Vector2D::VectorType mixedType);
+		virtual void SetMixedType(Bool pointType);
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
 		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
@@ -36,6 +53,8 @@ namespace Map
 		virtual void Reconnect();
 
 		virtual ObjectClass GetObjectClass();
+
+		Bool SetDatabase(DB::DBTool *db, Text::CString schemaName, Text::CString tableName);
 	};
 }
 #endif

@@ -58,6 +58,8 @@ namespace Math
 
 			UInt32 GetSRID() const;
 			void SetSRID(UInt32 srid);
+
+			static Bool VectorTypeIsPoint(VectorType vecType);
 		};
 	}
 }

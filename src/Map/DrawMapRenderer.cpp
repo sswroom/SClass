@@ -1336,11 +1336,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								DrawShapesPolyline(denv, layer.layer, layer.lineStyle, layer.lineThick, layer.lineColor);
+								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								DrawShapesPolyline(denv, layer.layer, (UOSInt)-1, layer.lineThick, layer.lineColor);
+								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 
 						}
@@ -1350,7 +1350,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							{
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
@@ -1360,7 +1360,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 							}
 						}
 					}
@@ -1370,11 +1370,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								DrawShapesPolygon(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								DrawShapesPolygon(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
@@ -1383,7 +1383,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							{
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
@@ -1393,7 +1393,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 							}
 						}
 					}
@@ -1439,11 +1439,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								{
 									if (pimg)
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layerType, layer.fontType);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
 									}
 									else
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 									}
 								}
 							}
@@ -1456,11 +1456,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								denv->layerFontColor.Add(b);
 								if (pimg)
 								{
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layerType, layer.fontType);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
 								}
 								else
 								{
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
 						}
@@ -1471,32 +1471,23 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
-								DrawShapesPolyline(denv, layer.layer, layer.lineStyle, layer.lineThick, layer.lineColor);
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
-								DrawShapesPolygon(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
+								layer.layer->SetMixedType(false);
+								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
-								DrawShapesPolyline(denv, layer.layer, (UOSInt)-1, layer.lineThick, layer.lineColor);
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
-								DrawShapesPolygon(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
+								layer.layer->SetMixedType(false);
+								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{
 							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
 							{
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
+								layer.layer->SetMixedType(false);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
-								}
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
-								if (layer.fontStyle < denv->fontStyleCnt)
-								{
-									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON, layer.fontType);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
@@ -1506,10 +1497,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polyline);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
-								layer.layer->SetMixedType(Math::Geometry::Vector2D::VectorType::Polygon);
-								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYGON, layer.fontType);
+								layer.layer->SetMixedType(false);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 							}
 						}
 					}
@@ -1526,140 +1515,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawShapesPolyline(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UOSInt lineThick, UInt32 lineColor)
-{
-	UOSInt i;
-	UOSInt j;
-	void *session;
-	Media::DrawPen *p;
-	Int64 lastId;
-	Int64 thisId;
-	UOSInt layerId = 0;
-	Math::Geometry::Vector2D *vec;
-	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
-	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
-
-	denv->idArr.Clear();
-	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
-	{
-		Math::Coord2DDbl tl;
-		Math::Coord2DDbl br;
-		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-		tl = rect.tl;
-		br = rect.br;
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
-		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, br.x, br.y, 0, &br.x, &br.y, 0);
-		layer->GetObjectIdsMapXY(&denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
-
-		if ((i = denv->idArr.GetCount()) > 0)
-		{
-			UInt32 color;
-			UOSInt thick;
-			UInt8 *pattern;
-			UOSInt npattern;
-			Bool found;
-			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
-			if (!found)
-			{
-				thick = lineThick;
-				color = lineColor;
-				npattern = 0;
-			}
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-			//pen = CreatePen(img, lyrs->style, 0, osSize);
-			this->mapSch.SetDrawType(layer, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
-
-			session = layer->BeginGetObject();
-			lastId = -1;
-			j = i;
-			i = 0;
-			while (i < j)
-			{
-				thisId = denv->idArr.GetItem(i);
-				if (thisId != lastId)
-				{
-					lastId = thisId;
-					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
-					{
-						vec->ConvCSys(lyrCSys, envCSys);
-						this->mapSch.Draw(vec);
-					}
-				}
-				i++;
-			}
-			layer->EndGetObject(session);
-
-			if (found)
-			{
-				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
-				{
-					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					this->mapSch.DrawNextType(p, 0);
-				}
-			}
-			this->mapSch.WaitForFinish();
-		}
-	}
-	else
-	{
-		Math::Coord2DDbl tl;
-		Math::Coord2DDbl br;
-		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
-		tl = rect.tl;
-		br = rect.GetBR();
-		layer->GetObjectIdsMapXY(&denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
-
-		if ((i = denv->idArr.GetCount()) > 0)
-		{
-			UInt32 color;
-			UOSInt thick;
-			UInt8 *pattern;
-			UOSInt npattern;
-			Bool found;
-			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
-			if (!found)
-			{
-				thick = lineThick;
-				color = lineColor;
-				npattern = 0;
-			}
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-			//pen = CreatePen(img, lyrs->style, 0, osSize);
-			this->mapSch.SetDrawType(layer, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
-
-			session = layer->BeginGetObject();
-			lastId = -1;
-			j = i;
-			i = 0;
-			while (i < j)
-			{
-				thisId = denv->idArr.GetItem(i);
-				if (thisId != lastId)
-				{
-					lastId = thisId;
-					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
-					{
-						this->mapSch.Draw(vec);
-					}
-				}
-				i++;
-			}
-			layer->EndGetObject(session);
-
-			if (found)
-			{
-				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
-				{
-					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					this->mapSch.DrawNextType(p, 0);
-				}
-			}
-			this->mapSch.WaitForFinish();
-		}
-	}
-}
-
-void Map::DrawMapRenderer::DrawShapesPolygon(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	void *session;
@@ -1940,7 +1796,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 	}
 }
 
-void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::DrawLayerType layerType, Map::MapEnv::FontType fontType)
+void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
 {
 	void *arr;
 	Data::ArrayListInt64 arri;
@@ -2020,7 +1876,14 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 							if ((ptOfstArr[k] - ptOfstArr[k - 1]) > maxSize)
 								maxSize = (ptOfstArr[k] - (maxPos = ptOfstArr[k - 1]));
 						}
-						AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
+						{
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						}
+						else
+						{
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						}
 						break;
 					}
 					case Math::Geometry::Vector2D::VectorType::LineString:

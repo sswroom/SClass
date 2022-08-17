@@ -184,7 +184,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
+	this->pointType = false;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -213,7 +213,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
+	this->pointType = false;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -242,7 +242,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
+	this->pointType = false;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -274,7 +274,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Geometry::Vector2D::VectorType::Unknown;
+	this->pointType = false;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -354,9 +354,9 @@ Map::DrawLayerType Map::VectorLayer::GetLayerType()
 	return this->layerType;
 }
 
-void Map::VectorLayer::SetMixedType(Math::Geometry::Vector2D::VectorType mixedType)
+void Map::VectorLayer::SetMixedType(Bool pointType)
 {
-	this->mixedType = mixedType;
+	this->pointType = pointType;
 }
 
 UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
@@ -370,7 +370,7 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **na
 		while (i < j)
 		{
 			vec = this->vectorList.GetItem(i);
-			if (vec->GetVectorType() == this->mixedType)
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
 			{
 				outArr->Add((OSInt)i);
 				ret++;
@@ -409,7 +409,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 		while (i < j)
 		{
 			vec = this->vectorList.GetItem(i);
-			if (vec->GetVectorType() == this->mixedType)
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
 			{
 				vec->GetBounds(&vBounds);
 				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)

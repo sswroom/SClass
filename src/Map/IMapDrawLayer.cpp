@@ -115,7 +115,7 @@ Map::MapView *Map::IMapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
 	return view;
 }
 
-void Map::IMapDrawLayer::SetMixedType(Math::Geometry::Vector2D::VectorType mixedType)
+void Map::IMapDrawLayer::SetMixedType(Bool pointType)
 {
 }
 

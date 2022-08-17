@@ -28,7 +28,7 @@ namespace Map
 		Math::Coord2DDbl max;
 		ColInfo *cols;
 		Double mapRate;
-		Math::Geometry::Vector2D::VectorType mixedType;
+		Bool pointType;
 
 	private:
 		const UTF8Char **CopyStrs(const UTF8Char **strs);
@@ -43,7 +43,7 @@ namespace Map
 		virtual ~VectorLayer();
 
 		virtual DrawLayerType GetLayerType();
-		virtual void SetMixedType(Math::Geometry::Vector2D::VectorType mixedType);
+		virtual void SetMixedType(Bool pointType);
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
 		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
