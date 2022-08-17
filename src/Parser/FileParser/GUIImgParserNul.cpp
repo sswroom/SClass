@@ -5,7 +5,6 @@
 #include "IO/StreamDataStream.h"
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
-#include "Math/VectorImage.h"
 #include "Media/ImageCopy.h"
 #include "Media/ImageList.h"
 #include "Media/JPEGFile.h"
