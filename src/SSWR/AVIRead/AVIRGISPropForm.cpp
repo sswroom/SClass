@@ -427,7 +427,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->fontColor = setting.fontColor;
 		this->imgIndex = setting.imgIndex;
 		Map::DrawLayerType layerType = setting.layer->GetLayerType();
-		if (layerType == Map::DRAW_LAYER_POINT)
+		if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 		{
 			UInt32 imgDurMS;
 			this->pbLineStyle->SetVisible(false);
@@ -439,7 +439,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 				this->pbIcon->SetImage(this->env->GetImage(this->imgIndex, &imgDurMS));
 			}
 		}
-		else if (layerType == Map::DRAW_LAYER_POLYLINE)
+		else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 		{
 			this->pbFillStyle->SetVisible(false);
 			this->lblFillStyle->SetEnabled(false);

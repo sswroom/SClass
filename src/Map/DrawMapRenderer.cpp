@@ -1547,6 +1547,12 @@ void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::
 			UOSInt npattern;
 			Bool found;
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
+			if (!found)
+			{
+				thick = lineThick;
+				color = lineColor;
+				npattern = 0;
+			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
 			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
@@ -1596,6 +1602,12 @@ void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::
 			UOSInt npattern;
 			Bool found;
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
+			if (!found)
+			{
+				thick = lineThick;
+				color = lineColor;
+				npattern = 0;
+			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
 			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
