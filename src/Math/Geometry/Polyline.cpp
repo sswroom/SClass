@@ -5,7 +5,7 @@
 #include "Math/Geometry/Polyline.h"
 #include "Data/ArrayListDbl.h"
 
-Math::Geometry::Polyline::Polyline(UInt32 srid, Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM) : PointOfstCollection(srid, 1, nPoint, pointArr, hasZ, hasM)
+Math::Geometry::Polyline::Polyline(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM) : PointOfstCollection(srid, 1, nPoint, pointArr, hasZ, hasM)
 {
 	this->flags = 0;
 	this->color = 0;

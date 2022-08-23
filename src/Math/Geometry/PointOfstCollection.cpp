@@ -3,7 +3,7 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Geometry/PointOfstCollection.h"
 
-Math::Geometry::PointOfstCollection::PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM) : Math::Geometry::PointCollection(srid, nPoint, pointArr)
+Math::Geometry::PointOfstCollection::PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, const Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM) : Math::Geometry::PointCollection(srid, nPoint, pointArr)
 {
 	if (nPtOfst == 0)
 	{

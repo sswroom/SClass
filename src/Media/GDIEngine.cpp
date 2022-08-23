@@ -836,7 +836,7 @@ Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawP
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p)
 {
 	if (this->currPen != p)
 	{
@@ -850,7 +850,7 @@ Bool Media::GDIImage::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p)
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolygonI(Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	if (p)
 	{
@@ -896,7 +896,7 @@ Bool Media::GDIImage::DrawPolygonI(Int32 *points, UOSInt nPoints, DrawPen *p, Dr
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	UOSInt i;
 	UInt32 j;
@@ -924,7 +924,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 
 	if (b == 0)
 	{
-		Int32 *pts = points;
+		const Int32 *pts = points;
 		if (p)
 		{
 			i = 0;
@@ -1082,7 +1082,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1097,7 +1097,7 @@ Bool Media::GDIImage::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, Dra
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1112,7 +1112,7 @@ Bool Media::GDIImage::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, Draw
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GDIImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	UOSInt i = 0;
 	UOSInt j = nPointCnt;
@@ -2823,11 +2823,11 @@ void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSIn
 	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }
 
-void Media::GDIImage::PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height)
+void Media::GDIImage::PolylineAccel(void *hdc, const Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height)
 {
 	Bool thisInScn;
 	Bool lastInScn;
-	Int32 *ptStart = 0;
+	const Int32 *ptStart = 0;
 	UInt32 i;
 	lastInScn = (points[0] >= 0) && (points[0] < width) && (points[1] >= 0) && (points[1] < height);
 	if (lastInScn)
@@ -2857,7 +2857,7 @@ void Media::GDIImage::PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OS
 	}
 }
 
-void Media::GDIImage::PolygonAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth)
+void Media::GDIImage::PolygonAccel(void *hdc, const Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth)
 {
 	//////////////////////////////////////////
 	Int32 *pointsTmp = MemAlloc(Int32, nPoints << 2);
@@ -2893,7 +2893,7 @@ void Media::GDIImage::PolygonAccel(void *hdc, Int32 *points, UOSInt nPoints, OSI
 	MemFree(pointsTmp);
 }
 
-void Media::GDIImage::PolyPolygonAccel(void *hdc, Int32 *points, UInt32 *pointCnt, UOSInt nPointCnt, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth)
+void Media::GDIImage::PolyPolygonAccel(void *hdc, const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth)
 {
 	Int32 *pointsTmp;
 	Int32 *pointsTmp2;
