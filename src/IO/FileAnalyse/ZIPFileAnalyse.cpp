@@ -5,6 +5,8 @@
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
+#include <stdio.h>
+
 Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetTagName(UInt32 tagType)
 {
 	switch (tagType)
@@ -99,13 +101,156 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[64];
+	UInt8 z64eocdl[20];
+	UInt8 z64eocd[56];
 	UInt32 recType;
+	UInt32 compSize;
+	UInt32 uncompSize;
+	UInt16 fnameLen;
+	UInt16 extraLen;
+	UInt16 commentLen;
+	UOSInt i = 0;
 	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *rec;
 	me->threadRunning = true;
 	me->threadStarted = true;
 	ofst = 0;
 	dataSize = me->fd->GetDataSize();
+	if (me->fd->GetRealData(dataSize - 22, 22, recHdr) == 22)
+	{
+		recType = ReadMUInt32(recHdr);
+		if (recType == 0x504B0506)
+		{
+			UInt32 sizeOfDir = ReadUInt32(&recHdr[12]);
+			UInt32 ofstOfDir = ReadUInt32(&recHdr[16]);
+			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
+			{
+				me->fd->GetRealData(dataSize - 42, 20, z64eocdl);
+
+				if (ReadMUInt32(z64eocdl) == 0x504B0607)
+				{
+					UInt64 z64eocdOfst = ReadUInt64(&z64eocdl[8]);
+					me->fd->GetRealData(z64eocdOfst, 56, z64eocd);
+					if (ReadMUInt32(z64eocd) == 0x504B0606)
+					{
+						UInt64 cdSize = ReadUInt64(&z64eocd[40]);
+						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
+						UInt8 *cdBuff;
+						if (cdSize <= 1048576)
+						{
+							cdBuff = MemAlloc(UInt8, cdSize);
+							me->fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
+							////////////////////////////////////////
+							MemFree(cdBuff);
+						}
+						else
+						{
+							cdBuff = MemAlloc(UInt8, 1048576);
+							me->fd->GetRealData(cdOfst, 1048576, cdBuff);
+							////////////////////////////////////////
+							MemFree(cdBuff);
+						}
+						
+						rec = MemAlloc(ZIPRecord, 1);
+						rec->tagType = 0x504B0606;
+						rec->ofst = z64eocdOfst;
+						rec->size = 56;
+						me->tags.Add(rec);
+
+						rec = MemAlloc(ZIPRecord, 1);
+						rec->tagType = 0x504B0607;
+						rec->ofst = dataSize - 42;
+						rec->size = 20;
+						me->tags.Add(rec);
+
+						commentLen = ReadUInt16(&recHdr[20]);
+						rec = MemAlloc(ZIPRecord, 1);
+						rec->tagType = 0x504B0506;
+						rec->ofst = dataSize - 22;
+						rec->size = 22 + (UOSInt)commentLen;
+						me->tags.Add(rec);
+
+						me->threadRunning = false;
+						return 0;
+					}
+				}
+			}
+			else
+			{
+				UInt8 *centDir = MemAlloc(UInt8, sizeOfDir);
+				if (me->fd->GetRealData(ofstOfDir, sizeOfDir, centDir) == sizeOfDir)
+				{
+					i = 0;
+					while (i < sizeOfDir)
+					{
+						recType = ReadMUInt32(&centDir[i]);
+						if (recType != 0x504B0102)
+						{
+							break;
+						}
+						compSize = ReadUInt32(&centDir[i + 20]);
+//						uncompSize = ReadUInt32(&recHdr[i + 24]);
+						fnameLen = ReadUInt16(&centDir[i + 28]);
+						extraLen = ReadUInt16(&centDir[i + 30]);
+						commentLen = ReadUInt16(&centDir[i + 32]);
+						ofst = ReadUInt32(&centDir[i + 42]);
+
+						rec = MemAlloc(ZIPRecord, 1);
+						rec->tagType = 0x504B0304;
+						rec->ofst = ofst;
+						rec->size = 30 + (UOSInt)fnameLen + extraLen;
+						me->tags.Add(rec);
+
+						rec = MemAlloc(ZIPRecord, 1);
+						rec->tagType = 0;
+						rec->ofst = ofst + 30 + fnameLen + extraLen;
+						rec->size = compSize;
+						me->tags.Add(rec);
+
+						i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+					}
+
+					i = 0;
+					while (i < sizeOfDir)
+					{
+						recType = ReadMUInt32(&centDir[i]);
+						if (recType != 0x504B0102)
+						{
+							break;
+						}
+						fnameLen = ReadUInt16(&centDir[i + 28]);
+						extraLen = ReadUInt16(&centDir[i + 30]);
+						commentLen = ReadUInt16(&centDir[i + 32]);
+
+						rec = MemAlloc(ZIPRecord, 1);
+						rec->tagType = recType;
+						rec->ofst = ofstOfDir + i;
+						rec->size = 46 + (UOSInt)fnameLen + extraLen + commentLen;
+						me->tags.Add(rec);
+
+						i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+					}
+					MemFree(centDir);
+
+					commentLen = ReadUInt16(&recHdr[20]);
+					rec = MemAlloc(ZIPRecord, 1);
+					rec->tagType = 0x504B0506;
+					rec->ofst = dataSize - 22;
+					rec->size = 22 + (UOSInt)commentLen;
+					me->tags.Add(rec);
+
+					me->threadRunning = false;
+					return 0;
+				}
+				else
+				{
+					MemFree(centDir);
+				}
+			}
+		}
+	}
 	
+	printf("ZIPFileAnalyse: Scanning\r\n");
+	ofst = 0;
 	while (ofst < dataSize - 12 && !me->threadToStop)
 	{
 		if (me->fd->GetRealData(ofst, 64, recHdr) < 12)
@@ -114,10 +259,10 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 		recType = ReadMUInt32(recHdr);
 		if (recType == 0x504B0304)
 		{
-			UInt32 compSize = ReadUInt32(&recHdr[18]);
-			UInt32 uncompSize = ReadUInt32(&recHdr[22]);
-			UInt16 fnameLen = ReadUInt16(&recHdr[26]);
-			UInt16 extraLen = ReadUInt16(&recHdr[28]);
+			compSize = ReadUInt32(&recHdr[18]);
+			uncompSize = ReadUInt32(&recHdr[22]);
+			fnameLen = ReadUInt16(&recHdr[26]);
+			extraLen = ReadUInt16(&recHdr[28]);
 			if (compSize == 0xFFFFFFFF || uncompSize == 0xFFFFFFFF)
 			{
 				break;
@@ -140,11 +285,11 @@ UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
 		}
 		else if (recType == 0x504B0102)
 		{
-			UInt32 compSize = ReadUInt32(&recHdr[20]);
-			UInt32 uncompSize = ReadUInt32(&recHdr[24]);
-			UInt16 fnameLen = ReadUInt16(&recHdr[28]);
-			UInt16 extraLen = ReadUInt16(&recHdr[30]);
-			UInt16 commentLen = ReadUInt16(&recHdr[32]);
+			compSize = ReadUInt32(&recHdr[20]);
+			uncompSize = ReadUInt32(&recHdr[24]);
+			fnameLen = ReadUInt16(&recHdr[28]);
+			extraLen = ReadUInt16(&recHdr[30]);
+			commentLen = ReadUInt16(&recHdr[32]);
 			if (compSize == 0xFFFFFFFF || uncompSize == 0xFFFFFFFF)
 			{
 				break;
@@ -351,11 +496,27 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(10, 2, CSTR("Total number of central directory records"), ReadUInt16(&tagData[10]));
 		frame->AddUInt(12, 4, CSTR("Size of central directory"), ReadUInt32(&tagData[12]));
 		frame->AddUInt(16, 4, CSTR("Offset of start of central directory"), ReadUInt32(&tagData[16]));
-		frame->AddUInt(20, 2, CSTR("Comment length"), commentLen = ReadUInt16(&tagData[32]));
+		frame->AddUInt(20, 2, CSTR("Comment length"), commentLen = ReadUInt16(&tagData[20]));
 		if (commentLen)
 		{
 			frame->AddStrC(22, commentLen, CSTR("Comment"), &tagData[22]);
 		}
+		break;
+	case 0x504B0606:
+		frame->AddUInt64(4, CSTR("Size of zip64 end of central directory record"), ReadUInt64(&tagData[4]));
+		frame->AddUInt(12, 2, CSTR("Version made by"), ReadUInt16(&tagData[12]));
+		frame->AddUInt(14, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[14]));
+		frame->AddUInt(16, 4, CSTR("Number of this disk"), ReadUInt32(&tagData[16]));
+		frame->AddUInt(20, 4, CSTR("Number of the disk with the start of the central directory"), ReadUInt32(&tagData[20]));
+		frame->AddUInt64(24, CSTR("Total number of entries in the central directory on this disk"), ReadUInt64(&tagData[24]));
+		frame->AddUInt64(32, CSTR("Total number of entries in the central directory"), ReadUInt64(&tagData[32]));
+		frame->AddUInt64(40, CSTR("Size of the central directory"), ReadUInt64(&tagData[40]));
+		frame->AddUInt64(48, CSTR("Offset of start of central directory with respect to the starting disk number"), ReadUInt64(&tagData[48]));
+		break;
+	case 0x504B0607:
+		frame->AddUInt(4, 4, CSTR("Number of the disk with the start of the zip64 end of central directory"), ReadUInt32(&tagData[4]));
+		frame->AddUInt64(8, CSTR("Relative offset of the zip64 end of central directory record"), ReadUInt64(&tagData[8]));
+		frame->AddUInt(16, 4, CSTR("Total number of disks"), ReadUInt32(&tagData[16]));
 		break;
 	}
 	MemFree(tagData);
