@@ -14,7 +14,7 @@ namespace Math
 			Double *zArr;
 			Double *mArr;
 		public:
-			PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM);
+			PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, const Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM);
 			virtual ~PointOfstCollection();
 
 			UInt32 *GetPtOfstList(UOSInt *nPtOfst) { *nPtOfst = this->nPtOfst; return this->ptOfstArr; }

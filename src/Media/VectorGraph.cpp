@@ -316,7 +316,7 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, Dr
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p)
+Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p)
 {
 	Double *dPoints = MemAlloc(Double, nPoints * 2);
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
@@ -333,19 +333,19 @@ Bool Media::VectorGraph::DrawPolylineI(Int32 *points, UOSInt nPoints, DrawPen *p
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygonI(Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
+Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
 	Math::Geometry::Polyline *pl;
 	VectorStyles *style;
@@ -359,13 +359,13 @@ Bool Media::VectorGraph::DrawPolyline(Math::Coord2DDbl *points, UOSInt nPoints, 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygon(Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygon(Math::Coord2DDbl *points, UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::VectorGraph::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, DrawBrush *b)
 {
 	/////////////////////////////////
 	return false;

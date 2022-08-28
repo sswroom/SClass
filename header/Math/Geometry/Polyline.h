@@ -13,7 +13,7 @@ namespace Math
 			Int32 flags;
 			UInt32 color;
 		public:
-			Polyline(UInt32 srid, Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM);
+			Polyline(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM);
 			Polyline(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Bool hasZ, Bool hasM);
 			virtual ~Polyline();
 

@@ -38,7 +38,7 @@ void Math::GeometryTool::RotateACW(Double *ptOut, Double *ptIn, UOSInt nPoint, D
 	}
 }
 
-UOSInt Math::GeometryTool::BoundPolygonY(Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minY, OSInt maxY, OSInt ofstX, OSInt ofstY)
+UOSInt Math::GeometryTool::BoundPolygonY(const Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minY, OSInt maxY, OSInt ofstX, OSInt ofstY)
 {
 	Int32 *pointsCurr = pointOut;
 	OSInt lastX;
@@ -171,7 +171,7 @@ UOSInt Math::GeometryTool::BoundPolygonY(Int32 *points, UOSInt nPoints, Int32 *p
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonX(Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minX, OSInt maxX, OSInt ofstX, OSInt ofstY)
+UOSInt Math::GeometryTool::BoundPolygonX(const Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minX, OSInt maxX, OSInt ofstX, OSInt ofstY)
 {
 	Int32 *pointsCurr = pointOut;
 	Int32 lastX;
@@ -304,7 +304,7 @@ UOSInt Math::GeometryTool::BoundPolygonX(Int32 *points, UOSInt nPoints, Int32 *p
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonY(Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
+UOSInt Math::GeometryTool::BoundPolygonY(const Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
 {
 	Math::Coord2DDbl *pointsCurr = pointOut;
 	Math::Coord2DDbl lastPt;
@@ -423,7 +423,7 @@ UOSInt Math::GeometryTool::BoundPolygonY(Math::Coord2DDbl *points, UOSInt nPoint
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonX(Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
+UOSInt Math::GeometryTool::BoundPolygonX(const Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
 {
 	Math::Coord2DDbl *pointsCurr = pointOut;
 	Math::Coord2DDbl lastPt;
