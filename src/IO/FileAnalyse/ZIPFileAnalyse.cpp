@@ -1,0 +1,378 @@
+#include "Stdafx.h"
+#include "Data/ByteTool.h"
+#include "IO/FileAnalyse/ZIPFileAnalyse.h"
+#include "Sync/Thread.h"
+#include "Text/Encoding.h"
+#include "Text/StringBuilderUTF8.h"
+
+Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetTagName(UInt32 tagType)
+{
+	switch (tagType)
+	{
+	case 0:
+		return CSTR("File Data");
+	case 0x504B0102:
+		return CSTR("Central directory file header");
+	case 0x504B0304:
+		return CSTR("Local File Header");
+	case 0x504B0505:
+		return CSTR("Signature Header");
+	case 0x504B0506:
+		return CSTR("End of central directory record");
+	case 0x504B0606:
+		return CSTR("Zip64 End of central directory record");
+	case 0x504B0607:
+		return CSTR("Zip64 end of central directory locator");
+	case 0x504B0708:
+		return CSTR("Data Descriptor");
+	}
+	return CSTR_NULL;
+}
+
+Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetCompName(UInt16 comp)
+{
+	switch (comp)
+	{
+	case 0:
+		return CSTR("Store");
+	case 1:
+		return CSTR("Shrunk");
+	case 2:
+		return CSTR("Reduced with compression factor 1");
+	case 3:
+		return CSTR("Reduced with compression factor 2");
+	case 4:
+		return CSTR("Reduced with compression factor 3");
+	case 5:
+		return CSTR("Reduced with compression factor 4");
+	case 6:
+		return CSTR("Imploded");
+	case 7:
+		return CSTR("Tokenizing compression algorithm");
+	case 8:
+		return CSTR("Deflate");
+	case 9:
+		return CSTR("Deflate64");
+	case 10:
+		return CSTR("PKWARE Data Compression Library Imploding");
+	case 11:
+		return CSTR("Reserved by PKWARE");
+	case 12:
+		return CSTR("BZIP2 algorithm");
+	case 13:
+		return CSTR("Reserved by PKWARE");
+	case 14:
+		return CSTR("LZMA");
+	case 15:
+		return CSTR("Reserved by PKWARE");
+	case 16:
+		return CSTR("IBM z/OS CMPSC Compression");
+	case 17:
+		return CSTR("Reserved by PKWARE");
+	case 18:
+		return CSTR("IBM TERSE");
+	case 19:
+		return CSTR("IBM LZ77 z Architecture");
+	case 20:
+		return CSTR("deprecated");
+	case 93:
+		return CSTR("Zstandard (zstd)");
+	case 94:
+		return CSTR("MP3");
+	case 95:
+		return CSTR("XZ");
+	case 96:
+		return CSTR("JPEG variant");
+	case 97:
+		return CSTR("WavPack");
+	case 98:
+		return CSTR("PPMd version I, Rev 1");
+	case 99:
+		return CSTR("AE-x encryption marker");
+	}
+	return CSTR_NULL;
+}
+
+UInt32 __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(void *userObj)
+{
+	IO::FileAnalyse::ZIPFileAnalyse *me = (IO::FileAnalyse::ZIPFileAnalyse*)userObj;
+	UInt64 dataSize;
+	UInt64 ofst;
+	UInt8 recHdr[64];
+	UInt32 recType;
+	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *rec;
+	me->threadRunning = true;
+	me->threadStarted = true;
+	ofst = 0;
+	dataSize = me->fd->GetDataSize();
+	
+	while (ofst < dataSize - 12 && !me->threadToStop)
+	{
+		if (me->fd->GetRealData(ofst, 64, recHdr) < 12)
+			break;
+		
+		recType = ReadMUInt32(recHdr);
+		if (recType == 0x504B0304)
+		{
+			UInt32 compSize = ReadUInt32(&recHdr[18]);
+			UInt32 uncompSize = ReadUInt32(&recHdr[22]);
+			UInt16 fnameLen = ReadUInt16(&recHdr[26]);
+			UInt16 extraLen = ReadUInt16(&recHdr[28]);
+			if (compSize == 0xFFFFFFFF || uncompSize == 0xFFFFFFFF)
+			{
+				break;
+			}
+			else
+			{
+				rec = MemAlloc(ZIPRecord, 1);
+				rec->tagType = recType;
+				rec->ofst = ofst;
+				rec->size = 30 + (UOSInt)fnameLen + extraLen;
+				me->tags.Add(rec);
+
+				rec = MemAlloc(ZIPRecord, 1);
+				rec->tagType = 0;
+				rec->ofst = ofst + 30 + fnameLen + extraLen;
+				rec->size = compSize;
+				me->tags.Add(rec);
+				ofst += 30 + (UOSInt)fnameLen + extraLen + compSize;
+			}
+		}
+		else if (recType == 0x504B0102)
+		{
+			UInt32 compSize = ReadUInt32(&recHdr[20]);
+			UInt32 uncompSize = ReadUInt32(&recHdr[24]);
+			UInt16 fnameLen = ReadUInt16(&recHdr[28]);
+			UInt16 extraLen = ReadUInt16(&recHdr[30]);
+			UInt16 commentLen = ReadUInt16(&recHdr[32]);
+			if (compSize == 0xFFFFFFFF || uncompSize == 0xFFFFFFFF)
+			{
+				break;
+			}
+			else
+			{
+				rec = MemAlloc(ZIPRecord, 1);
+				rec->tagType = recType;
+				rec->ofst = ofst;
+				rec->size = 46 + (UOSInt)fnameLen + extraLen + commentLen;
+				me->tags.Add(rec);
+				ofst += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+			}
+		}
+		else if (recType == 0x504B0506)
+		{
+			UInt16 commentLen = ReadUInt16(&recHdr[20]);
+			rec = MemAlloc(ZIPRecord, 1);
+			rec->tagType = recType;
+			rec->ofst = ofst;
+			rec->size = 22 + (UOSInt)commentLen;
+			me->tags.Add(rec);
+			ofst += 22 + (UOSInt)commentLen;
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	me->threadRunning = false;
+	return 0;
+}
+
+IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(IO::IStreamData *fd)
+{
+	UInt8 buff[256];
+	this->fd = 0;
+	this->threadRunning = false;
+	this->pauseParsing = false;
+	this->threadToStop = false;
+	this->threadStarted = false;
+	UInt64 fileLength = fd->GetDataSize();
+	fd->GetRealData(fileLength - 22, 22, buff);
+	if (ReadMInt32(buff) != 0x504B0506)
+	{
+		return;
+	}
+	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+
+	Sync::Thread::Create(ParseThread, this);
+	while (!this->threadStarted)
+	{
+		Sync::Thread::Sleep(10);
+	}
+}
+
+IO::FileAnalyse::ZIPFileAnalyse::~ZIPFileAnalyse()
+{
+	if (this->threadRunning)
+	{
+		this->threadToStop = true;
+		while (this->threadRunning)
+		{
+			Sync::Thread::Sleep(10);
+		}
+	}
+
+	SDEL_CLASS(this->fd);
+	LIST_FREE_FUNC(&this->tags, MemFree);
+}
+
+Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetFormatName()
+{
+	return CSTR("ZIP");
+}
+
+UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameCount()
+{
+	return this->tags.GetCount();
+}
+
+Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
+{
+	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *tag = this->tags.GetItem(index);
+	Text::CString name;
+	if (tag == 0)
+		return false;
+	sb->AppendU64(tag->ofst);
+	sb->AppendC(UTF8STRC(": Type=0x"));
+	sb->AppendHex32(tag->tagType);
+	name = GetTagName(tag->tagType);
+	if (name.v)
+	{
+		sb->AppendC(UTF8STRC(" ("));
+		sb->Append(name);
+		sb->AppendC(UTF8STRC(")"));
+	}
+	sb->AppendC(UTF8STRC(", size="));
+	sb->AppendUOSInt(tag->size);
+	return true;
+}
+
+
+UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameIndex(UInt64 ofst)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tags.GetCount() - 1;
+	OSInt k;
+	ZIPRecord *pack;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		pack = this->tags.GetItem((UOSInt)k);
+		if (ofst < pack->ofst)
+		{
+			j = k - 1;
+		}
+		else if (ofst >= pack->ofst + pack->size)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return (UOSInt)k;
+		}
+	}
+	return INVALID_INDEX;
+}
+
+IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UOSInt index)
+{
+	IO::FileAnalyse::FrameDetail *frame;
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	UInt8 *tagData;
+	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *tag = this->tags.GetItem(index);
+	if (tag == 0)
+		return 0;
+	
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
+	frame->AddHeader(CSTRP(sbuff, sptr));
+
+	if (tag->tagType == 0)
+	{
+		frame->AddField(0, tag->size, CSTR("File Data"), CSTR(""));
+		return frame;
+	}
+	UInt16 fnameLen;
+	UInt16 extraLen;
+	UInt16 commentLen;
+	UOSInt i;
+	tagData = MemAlloc(UInt8, tag->size);
+	this->fd->GetRealData(tag->ofst, tag->size, tagData);
+	frame->AddField(0, 4, CSTR("Record Type"), GetTagName(tag->tagType));
+	switch (tag->tagType)
+	{
+	case 0x504B0304:
+		frame->AddUInt(4, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[4]));
+		frame->AddHex16(6, CSTR("General purpose bit flag"), ReadUInt16(&tagData[6]));
+		frame->AddUIntName(8, 2, CSTR("Compression method"), ReadUInt16(&tagData[8]), GetCompName(ReadUInt16(&tagData[8])));
+		frame->AddUInt(10, 2, CSTR("File last modification time"), ReadUInt16(&tagData[10]));
+		frame->AddUInt(12, 2, CSTR("File last modification date"), ReadUInt16(&tagData[12]));
+		frame->AddHex32(14, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[14]));
+		frame->AddUInt(18, 4, CSTR("Compressed size"), ReadUInt32(&tagData[18]));
+		frame->AddUInt(22, 4, CSTR("Uncompressed size"), ReadUInt32(&tagData[22]));
+		frame->AddUInt(26, 2, CSTR("File name length"), ReadUInt16(&tagData[26]));
+		frame->AddUInt(28, 2, CSTR("Extra field length"), ReadUInt16(&tagData[28]));
+		frame->AddStrC(30, ReadUInt16(&tagData[26]), CSTR("File name"), &tagData[30]);
+		break;
+	case 0x504B0102:
+		frame->AddUInt(4, 2, CSTR("Version made by"), ReadUInt16(&tagData[4]));
+		frame->AddUInt(6, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[6]));
+		frame->AddHex16(8, CSTR("General purpose bit flag"), ReadUInt16(&tagData[8]));
+		frame->AddUIntName(10, 2, CSTR("Compression method"), ReadUInt16(&tagData[10]), GetCompName(ReadUInt16(&tagData[10])));
+		frame->AddUInt(12, 2, CSTR("File last modification time"), ReadUInt16(&tagData[12]));
+		frame->AddUInt(14, 2, CSTR("File last modification date"), ReadUInt16(&tagData[14]));
+		frame->AddHex32(16, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[16]));
+		frame->AddUInt(20, 4, CSTR("Compressed size"), ReadUInt32(&tagData[20]));
+		frame->AddUInt(24, 4, CSTR("Uncompressed size"), ReadUInt32(&tagData[24]));
+		frame->AddUInt(28, 2, CSTR("File name length"), fnameLen = ReadUInt16(&tagData[28]));
+		frame->AddUInt(30, 2, CSTR("Extra field length"), extraLen = ReadUInt16(&tagData[30]));
+		frame->AddUInt(32, 2, CSTR("File comment length"), commentLen = ReadUInt16(&tagData[32]));
+		frame->AddUInt(34, 2, CSTR("Disk number where file starts"), ReadUInt16(&tagData[34]));
+		frame->AddHex16(36, CSTR("Internal file attributes"), ReadUInt16(&tagData[36]));
+		frame->AddHex32(38, CSTR("External file attributes"), ReadUInt32(&tagData[38]));
+		frame->AddUInt(42, 4, CSTR("Relative offset of local file header"), ReadUInt32(&tagData[42]));
+		frame->AddStrC(46, fnameLen, CSTR("File name"), &tagData[46]);
+		i = 46 + fnameLen;
+		if (extraLen)
+		{
+			i += extraLen;
+		}
+		if (commentLen)
+		{
+			frame->AddStrC(i, commentLen, CSTR("File comment"), &tagData[i]);
+		}
+		break;
+	case 0x504B0506:
+		frame->AddUInt(4, 2, CSTR("Number of this disk"), ReadUInt16(&tagData[4]));
+		frame->AddUInt(6, 2, CSTR("Disk where central directory starts"), ReadUInt16(&tagData[6]));
+		frame->AddUInt(8, 2, CSTR("Number of central directory records on this disk"), ReadUInt16(&tagData[8]));
+		frame->AddUInt(10, 2, CSTR("Total number of central directory records"), ReadUInt16(&tagData[10]));
+		frame->AddUInt(12, 4, CSTR("Size of central directory"), ReadUInt32(&tagData[12]));
+		frame->AddUInt(16, 4, CSTR("Offset of start of central directory"), ReadUInt32(&tagData[16]));
+		frame->AddUInt(20, 2, CSTR("Comment length"), commentLen = ReadUInt16(&tagData[32]));
+		if (commentLen)
+		{
+			frame->AddStrC(22, commentLen, CSTR("Comment"), &tagData[22]);
+		}
+		break;
+	}
+	MemFree(tagData);
+	return frame;
+}
+
+Bool IO::FileAnalyse::ZIPFileAnalyse::IsError()
+{
+	return this->fd == 0;
+}
+
+Bool IO::FileAnalyse::ZIPFileAnalyse::IsParsing()
+{
+	return this->threadRunning;
+}
+
+Bool IO::FileAnalyse::ZIPFileAnalyse::TrimPadding(Text::CString outputFile)
+{
+	return false;
+}

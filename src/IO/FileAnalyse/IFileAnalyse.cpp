@@ -20,6 +20,7 @@
 #include "IO/FileAnalyse/SHPFileAnalyse.h"
 #include "IO/FileAnalyse/SPKFileAnalyse.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
+#include "IO/FileAnalyse/ZIPFileAnalyse.h"
 
 IO::FileAnalyse::IFileAnalyse::~IFileAnalyse()
 {
@@ -123,6 +124,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::SHPFileAnalyse(fd));
 	}
+	else if (ReadMInt32(buff) == 0x504B0304)
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
+	}
 
 	if (analyse && analyse->IsError())
 	{
@@ -149,4 +154,6 @@ void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::IFileSelector *selector)
 	selector->AddFilter(CSTR("*.rar"), CSTR("RAR file"));
 	selector->AddFilter(CSTR("*.spk"), CSTR("SPackage file"));
 	selector->AddFilter(CSTR("*.dwg"), CSTR("AutoCAD Drawing file"));
+	selector->AddFilter(CSTR("*.zip"), CSTR("ZIP file"));
+	selector->AddFilter(CSTR("*.jar"), CSTR("JAR file"));
 }

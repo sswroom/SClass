@@ -1901,6 +1901,8 @@ IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 @TSFileAnalyse.o
+IO/FileAnalyse/ZIPFileAnalyse.h: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
+@ZIPFileAnalyse.o
 IO/ProgCtrl/BluetoothCtlProgCtrl.h: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
 @BluetoothCtlProgCtrl.o
 IO/ProtoDec/IProtocolDecoder.h:
@@ -4581,6 +4583,7 @@ SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 SHPFileAnalyse.o: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
+ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
 JTT808ProtocolDecoder.o: ../../src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
 ProtoDecList.o: ../../src/IO/ProtoDec/ProtoDecList.cpp
