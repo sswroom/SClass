@@ -30,6 +30,8 @@ namespace IO
 
 			static Text::CString GetTagName(UInt32 tagType);
 			static Text::CString GetCompName(UInt16 comp);
+			UOSInt ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
+			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			ZIPFileAnalyse(IO::IStreamData *fd);

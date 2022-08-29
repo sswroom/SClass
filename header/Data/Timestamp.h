@@ -94,7 +94,7 @@ namespace Data
 
 		Int64 ToDotNetTicks() const
 		{
-			return this->ticks * 10000LL + 621355968000000000LL;
+			return this->ticks * 10000LL + 621355968000000000LL + (this->nanosec / 100) % 10000;
 		}
 
 		Int64 ToUnixTimestamp() const
@@ -104,7 +104,8 @@ namespace Data
 
 		static Timestamp FromDotNetTicks(Int64 ticks, Int8 tzQhr)
 		{
-			return Timestamp(ticks / 10000LL - 62135596800000LL, tzQhr);
+			ticks -= 621355968000000000LL;
+			return Timestamp(ticks / 10000LL, (UInt32)(ticks % 10000000) * 100, tzQhr);
 		}
 
 		static Timestamp FromUnixTimestamp(Int64 ts)
