@@ -1260,6 +1260,15 @@ private:
 
 	Sync::Event *readEvt;
 
+	OSInt GetChannelCnt()
+	{
+#if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
+		return this->frame->ch_layout.nb_channels;
+#else
+		return this->frame->channels;
+#endif
+	}
+
 public:
 	FFMPEGADecoder(IAudioSource *sourceAudio)
 	{
@@ -1314,12 +1323,24 @@ public:
 		switch (fmt.nChannels)
 		{
 		case 1:
+#if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
+			////////////////////////////////
 			this->ctx->request_channel_layout = AV_CH_LAYOUT_MONO;
 			this->ctx->channel_layout = AV_CH_LAYOUT_MONO;
+#else
+			this->ctx->request_channel_layout = AV_CH_LAYOUT_MONO;
+			this->ctx->channel_layout = AV_CH_LAYOUT_MONO;
+#endif
 			break;
 		case 2:
+#if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
+			////////////////////////////////
 			this->ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
 			this->ctx->channel_layout = AV_CH_LAYOUT_STEREO;
+#else
+			this->ctx->request_channel_layout = AV_CH_LAYOUT_STEREO;
+			this->ctx->channel_layout = AV_CH_LAYOUT_STEREO;
+#endif
 			break;
 		default:
 			return;
@@ -1327,7 +1348,11 @@ public:
 		this->frame = FFMPEGDecoder_av_frame_alloc();
 		this->ctx->bit_rate = fmt.bitRate;
 		this->ctx->sample_rate = (int)fmt.frequency;
+#if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
+		this->ctx->ch_layout.nb_channels = fmt.nChannels;
+#else
 		this->ctx->channels = fmt.nChannels;
+#endif
 		this->ctx->flags2 = AV_CODEC_FLAG2_CHUNKS;
 		if (fmt.formatId != 1 && fmt.extraSize > 0)
 		{
@@ -1596,7 +1621,7 @@ public:
 							MemFree(this->frameBuff);
 							this->frameBuff = tmpBuff;
 						}
-						if (this->frame->channels == 1)
+						if (this->GetChannelCnt() == 1)
 						{
 							MemCopyNO(&this->frameBuff[this->frameBuffSize], dataPtr, dataSize);
 						}
@@ -1604,7 +1629,7 @@ public:
 						{
 							UInt8 *arr[8];
 							UInt8 *outBuff = &this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->frame->channels;
+							OSInt ch = this->GetChannelCnt();
 							OSInt ind = 0;
 							OSInt sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
@@ -1627,7 +1652,7 @@ public:
 						{
 							Int16 *arr[8];
 							Int16 *outBuff = (Int16*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->frame->channels;
+							OSInt ch = this->GetChannelCnt();
 							OSInt ind = 0;
 							OSInt sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
@@ -1650,7 +1675,7 @@ public:
 						{
 							Int32 *arr[8];
 							Int32 *outBuff = (Int32*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->frame->channels;
+							OSInt ch = this->GetChannelCnt();
 							OSInt ind = 0;
 							OSInt sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
@@ -1673,7 +1698,7 @@ public:
 						{
 							Single *arr[8];
 							Single *outBuff = (Single*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->frame->channels;
+							OSInt ch = this->GetChannelCnt();
 							OSInt ind = 0;
 							OSInt sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
@@ -1696,7 +1721,7 @@ public:
 						{
 							Double *arr[8];
 							Double *outBuff = (Double*)&this->frameBuff[this->frameBuffSize];
-							OSInt ch = this->frame->channels;
+							OSInt ch = this->GetChannelCnt();
 							OSInt ind = 0;
 							OSInt sampleLeft = this->frame->nb_samples;
 							while (ind < ch)
