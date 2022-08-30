@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double t2;
 	UOSInt cnt = 10000;
 	UOSInt i;
-	UOSInt res;
+	UOSInt res = 0;
 	UOSInt res2;
 	Text::StringBuilderUTF8 sb;
 	

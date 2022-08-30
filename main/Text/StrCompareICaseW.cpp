@@ -13,8 +13,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double spd1;
 	Double spd2;
 	UOSInt i;
-	OSInt val;
-	OSInt val2;
+	OSInt val = 0;
+	OSInt val2 = 0;
 	Manage::HiResClock *clk;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;

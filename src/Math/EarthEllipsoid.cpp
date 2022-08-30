@@ -243,7 +243,7 @@ void Math::EarthEllipsoid::FromCartesianCoordRad(Double x, Double y, Double z, D
 	Double rLat = Math_ArcTan2(z, p * (1 - e2));
 	Double sLat;
 	Double thisLat;
-	Double v;
+	Double v = 0;
 	OSInt i = 10;
 	while (i-- > 0)
 	{

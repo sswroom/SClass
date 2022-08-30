@@ -15,7 +15,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::HiResClock clk;
 	Double t;
 	UOSInt i = 10000000;
-	UOSInt res;
+	UOSInt res = 0;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	
