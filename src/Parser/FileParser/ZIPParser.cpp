@@ -9,6 +9,8 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+
 Parser::FileParser::ZIPParser::ZIPParser()
 {
 	this->codePage = 65001;
@@ -73,6 +75,11 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UInt8 buff[512];
+	UInt8 recHdr[64];
+	UInt8 z64eocdl[20];
+	UInt8 z64eocd[56];
+	UInt64 ofst;
+	UInt32 recType;
 	UOSInt i;
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
@@ -89,264 +96,361 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	Data::StringUTF8Map<UInt64> ofsts;
-	Data::StringUTF8Map<ZIPInfoEntry*> zipInfos;
-	ZIPInfoEntry *zipInfo;
-	ZIPInfoEntry *zipInfo2;
+	UOSInt ui;
+	Bool parseFile = true;
 	dt.ToLocalTime();
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 
-	fd->GetRealData(fileSize - 22, 22, buff);
-	if (ReadInt32(buff) == 0x06054b50)
+	if (fd->GetRealData(fileSize - 22, 22, recHdr) == 22)
 	{
-		currOfst = ReadUInt32(&buff[16]);
-		if (currOfst > 0 && currOfst < fileSize - 6)
+		recType = ReadMUInt32(recHdr);
+		if (recType == 0x504B0506)
 		{
-			while (true)
+			UInt32 sizeOfDir = ReadUInt32(&recHdr[12]);
+			UInt32 ofstOfDir = ReadUInt32(&recHdr[16]);
+			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
-				if (currOfst >= fileSize)
-				{
-					break;
-				}
-				fd->GetRealData(currOfst, 512, buff);
-				if (ReadInt32(buff) == 0x08074b50)
-				{
-					currOfst += 16;
-				}
-				else if (ReadInt32(buff) == 0x02014b50)
-				{
-					UInt16 flags = ReadUInt16(&buff[8]);
-					zipInfo = MemAlloc(ZIPInfoEntry, 1);
-					zipInfo->crc = ReadInt32(&buff[16]);
-					zipInfo->compSize = ReadUInt32(&buff[20]);
-					zipInfo->decSize = ReadUInt32(&buff[24]);
-					zipInfo->fnameSize = ReadUInt16(&buff[28]);
-					zipInfo->extraSize = ReadUInt16(&buff[30]);
-					zipInfo->commentSize = ReadUInt16(&buff[32]);
-					if (flags & 0x800)
-					{
-						Text::StrConcatC(sbuff, &buff[46], zipInfo->fnameSize);
-					}
-					else
-					{
-						enc.UTF8FromBytes(sbuff, &buff[46], zipInfo->fnameSize, 0);
-					}
-					zipInfo2 = zipInfos.Put(sbuff, zipInfo);
-					if (zipInfo2)
-					{
-						MemFree(zipInfo2);
-					}
-					currOfst += 46 + zipInfo->fnameSize + zipInfo->extraSize + zipInfo->commentSize;
-				}
-				else if (ReadInt32(buff) == 0x06054b50)
-				{
-					break;
-				}
-				else
-				{
-					break;
-				}
-			}
-		}
-	}
+				fd->GetRealData(fileSize - 42, 20, z64eocdl);
 
-	currOfst = 0;
-	while (true)
-	{
-		if (currOfst >= fileSize)
-		{
-			DEL_CLASS(pf);
-			return 0;
-		}
-		fd->GetRealData(currOfst, 512, buff);
-		if (ReadInt32(buff) == 0x04034b50)
-		{
-			UInt32 fnameSize = ReadUInt16(&buff[26]);
-			UInt32 extraSize = ReadUInt16(&buff[28]);
-			UInt32 compMeth = ReadUInt16(&buff[8]);
-			UInt64 dataSize = ReadUInt32(&buff[18]);
-//			UInt64 decompSize = ReadUInt32(&buff[22]);
-			UInt16 modTime = ReadUInt16(&buff[10]);
-			UInt16 modDate = ReadUInt16(&buff[12]);
-			dt.SetMSDOSTime(modDate, modTime);
-			OSInt extraStart = 30 + fnameSize;
-			OSInt extraEnd = extraStart + extraSize;
-			UInt16 extraHdr;
-			UInt16 extraData;
-			while (extraStart < extraEnd)
-			{
-				extraHdr = ReadUInt16(&buff[extraStart]);
-				extraData = ReadUInt16(&buff[extraStart + 2]);
-				if (extraHdr == 0x5455)
+				if (ReadMUInt32(z64eocdl) == 0x504B0607)
 				{
-					dt.SetUnixTimestamp(ReadUInt32(&buff[extraStart + 5]));
-				}
-				else if (extraHdr == 1)
-				{
-					if (extraData >= 16)
+					UInt64 z64eocdOfst = ReadUInt64(&z64eocdl[8]);
+					fd->GetRealData(z64eocdOfst, 56, z64eocd);
+					if (ReadMUInt32(z64eocd) == 0x504B0606)
 					{
-						dataSize = ReadUInt64(&buff[extraStart + 4]);
-//						decompSize = ReadUInt64(&buff[extraStart + 12]);
-					}
-				}
-				else
-				{
-					modDate = 0;
-				}
-				extraStart += extraData + 4;
-			}
-			if (buff[30 + fnameSize - 1] == '/')
-			{
-				sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize - 1, 0);
-				zipInfo = zipInfos.Get(sbuff);
-				if (zipInfo && (zipInfo->compSize != 0xffffffff))
-				{
-					dataSize = zipInfo->compSize;
-				}
-				pf2 = pf;
-				sptr = sbuff;
-				sb.ClearStr();
-				sb.Append(fd->GetFullName());
-				while (true)
-				{
-					i = Text::StrIndexOfChar(sptr, '/');
-					if (i != INVALID_INDEX)
-					{
-						sptr[i] = 0;
-						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb.AppendC(sptr, i);
-						pf3 = pf2->GetPackFile({sptr, i});
-						if (pf3 == 0)
+						UInt64 cdSize = ReadUInt64(&z64eocd[40]);
+						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
+						UInt8 *cdBuff;
+						if (cdSize <= 1048576)
 						{
-							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, {sptr, i}, dt.ToTicks());
+							cdBuff = MemAlloc(UInt8, (UOSInt)cdSize);
+							fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
+							ParseCentDir(pf, &enc, fd, cdBuff, (UOSInt)cdSize, cdOfst);
+							MemFree(cdBuff);
 						}
-						pf2 = pf3;
-						sptr = &sptr[i + 1];
-					}
-					else
-					{
-						sb.AppendC(UTF8STRC("\\"));
-						sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-						pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
-						if (pf3 == 0)
+						else
 						{
-							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), dt.ToTicks());
+							cdBuff = MemAlloc(UInt8, 1048576);
+							UOSInt buffSize = 0;
+							ofst = 0;
+							while (ofst < cdSize)
+							{
+								if (1048576 < cdSize - ofst)
+								{
+									i = fd->GetRealData(cdOfst + ofst + buffSize, 1048576 - buffSize, &cdBuff[buffSize]);
+									buffSize += i;
+								}
+								else
+								{
+									i = fd->GetRealData(cdOfst + ofst + buffSize, (UOSInt)(cdSize - ofst), &cdBuff[buffSize]);
+									buffSize += i;
+								}
+								if (i == 0)
+								{
+									break;
+								}
+								i = ParseCentDir(pf, &enc, fd, cdBuff, buffSize, cdOfst + ofst);
+								if (i == 0)
+								{
+									break;
+								}
+								if (i == buffSize)
+								{
+									ofst += i;
+									buffSize = 0;
+								}
+								else
+								{
+									ofst += i;
+									MemCopyO(cdBuff, &cdBuff[i], buffSize - i);
+									buffSize -= i;
+								}
+							}
+							MemFree(cdBuff);
 						}
-						break;
+
+						parseFile = false;
 					}
 				}
-				currOfst += 30 + fnameSize + extraSize + dataSize;
 			}
 			else
 			{
-				IO::PackFileItem::CompressInfo compInfo;
-				sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize, 0);
-				ofsts.Put(sbuff, currOfst + 30 + fnameSize + extraSize);
-				zipInfo = zipInfos.Get(sbuff);
-				if (zipInfo && (zipInfo->compSize != 0xffffffff))
+				UInt8 *centDir = MemAlloc(UInt8, sizeOfDir);
+				if (fd->GetRealData(ofstOfDir, sizeOfDir, centDir) == sizeOfDir)
 				{
-					dataSize = zipInfo->compSize;
+					ParseCentDir(pf, &enc, fd, centDir, sizeOfDir, 0);
+					MemFree(centDir);
+
+					parseFile = false;
 				}
-				pf2 = pf;
-				sptr = sbuff;
-				sb.ClearStr();
-				sb.Append(fd->GetFullName());
+				else
+				{
+					MemFree(centDir);
+				}
+			}
+		}
+	}
+
+	if (parseFile)
+	{
+		ZIPInfoEntry *zipInfo;
+		ZIPInfoEntry *zipInfo2;
+		Data::StringUTF8Map<ZIPInfoEntry*> zipInfos;
+
+		printf("ZIPParser: Scan file\r\n");
+		fd->GetRealData(fileSize - 22, 22, buff);
+		if (ReadInt32(buff) == 0x06054b50)
+		{
+			currOfst = ReadUInt32(&buff[16]);
+			if (currOfst > 0 && currOfst < fileSize - 6)
+			{
 				while (true)
 				{
-					i = Text::StrIndexOfChar(sptr, '/');
-					if (i != INVALID_INDEX)
+					if (currOfst >= fileSize)
 					{
-						sptr[i] = 0;
-						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb.AppendC(sptr, i);
-						pf3 = pf2->GetPackFile({sptr, i});
-						if (pf3 == 0)
+						break;
+					}
+					fd->GetRealData(currOfst, 512, buff);
+					if (ReadInt32(buff) == 0x08074b50)
+					{
+						currOfst += 16;
+					}
+					else if (ReadInt32(buff) == 0x02014b50)
+					{
+						UInt16 flags = ReadUInt16(&buff[8]);
+						zipInfo = MemAlloc(ZIPInfoEntry, 1);
+						zipInfo->crc = ReadInt32(&buff[16]);
+						zipInfo->compSize = ReadUInt32(&buff[20]);
+						zipInfo->decSize = ReadUInt32(&buff[24]);
+						zipInfo->fnameSize = ReadUInt16(&buff[28]);
+						zipInfo->extraSize = ReadUInt16(&buff[30]);
+						zipInfo->commentSize = ReadUInt16(&buff[32]);
+						if (flags & 0x800)
 						{
-							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, {sptr, i}, dt.ToTicks());
+							Text::StrConcatC(sbuff, &buff[46], zipInfo->fnameSize);
 						}
-						pf2 = pf3;
-						sptr = &sptr[i + 1];
+						else
+						{
+							enc.UTF8FromBytes(sbuff, &buff[46], zipInfo->fnameSize, 0);
+						}
+						zipInfo2 = zipInfos.Put(sbuff, zipInfo);
+						if (zipInfo2)
+						{
+							MemFree(zipInfo2);
+						}
+						currOfst += 46 + zipInfo->fnameSize + zipInfo->extraSize + zipInfo->commentSize;
+					}
+					else if (ReadInt32(buff) == 0x06054b50)
+					{
+						break;
 					}
 					else
 					{
 						break;
 					}
 				}
+			}
+		}
 
-				if (compMeth == 0)
+		currOfst = 0;
+		while (true)
+		{
+			if (currOfst >= fileSize)
+			{
+				DEL_CLASS(pf);
+				return 0;
+			}
+			fd->GetRealData(currOfst, 512, buff);
+			if (ReadInt32(buff) == 0x04034b50)
+			{
+				UInt32 fnameSize = ReadUInt16(&buff[26]);
+				UInt32 extraSize = ReadUInt16(&buff[28]);
+				UInt32 compMeth = ReadUInt16(&buff[8]);
+				UInt64 dataSize = ReadUInt32(&buff[18]);
+	//			UInt64 decompSize = ReadUInt32(&buff[22]);
+				UInt16 modTime = ReadUInt16(&buff[10]);
+				UInt16 modDate = ReadUInt16(&buff[12]);
+				dt.SetMSDOSTime(modDate, modTime);
+				OSInt extraStart = 30 + fnameSize;
+				OSInt extraEnd = extraStart + extraSize;
+				UInt16 extraHdr;
+				UInt16 extraData;
+				while (extraStart < extraEnd)
 				{
-					pf2->AddData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, CSTRP(sptr, sptrEnd), dt.ToTicks());
-				}
-				else
-				{
-					compInfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
-					if (zipInfo)
+					extraHdr = ReadUInt16(&buff[extraStart]);
+					extraData = ReadUInt16(&buff[extraStart + 2]);
+					if (extraHdr == 0x5455)
 					{
-						WriteMInt32(compInfo.checkBytes, zipInfo->crc);
-						compInfo.compExtras = 0;
-						compInfo.compExtraSize = 0;
-						compInfo.compFlags = 0;
-						if (compMeth == 8)
+						dt.SetUnixTimestamp(ReadUInt32(&buff[extraStart + 5]));
+					}
+					else if (extraHdr == 1)
+					{
+						if (extraData >= 16)
 						{
-							compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
+							dataSize = ReadUInt64(&buff[extraStart + 4]);
+	//						decompSize = ReadUInt64(&buff[extraStart + 12]);
 						}
-						else
-						{
-							compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
-						}
-						compInfo.decSize = zipInfo->decSize;
 					}
 					else
 					{
-						WriteMInt32(compInfo.checkBytes, ReadInt32(&buff[14]));
-						compInfo.compExtras = 0;
-						compInfo.compExtraSize = 0;
-						compInfo.compFlags = 0;
-						if (compMeth == 8)
+						modDate = 0;
+					}
+					extraStart += extraData + 4;
+				}
+				if (buff[30 + fnameSize - 1] == '/')
+				{
+					sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize - 1, 0);
+					zipInfo = zipInfos.Get(sbuff);
+					if (zipInfo && (zipInfo->compSize != 0xffffffff))
+					{
+						dataSize = zipInfo->compSize;
+					}
+					pf2 = pf;
+					sptr = sbuff;
+					sb.ClearStr();
+					sb.Append(fd->GetFullName());
+					while (true)
+					{
+						i = Text::StrIndexOfChar(sptr, '/');
+						if (i != INVALID_INDEX)
 						{
-							compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
+							sptr[i] = 0;
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendC(sptr, i);
+							pf3 = pf2->GetPackFile({sptr, i});
+							if (pf3 == 0)
+							{
+								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
+								pf2->AddPack(pf3, {sptr, i}, dt.ToTicks());
+							}
+							pf2 = pf3;
+							sptr = &sptr[i + 1];
 						}
 						else
 						{
-							compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
+							sb.AppendC(UTF8STRC("\\"));
+							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
+							pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
+							if (pf3 == 0)
+							{
+								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
+								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), dt.ToTicks());
+							}
+							break;
 						}
-						compInfo.decSize = ReadUInt32(&buff[22]);
 					}
-					pf2->AddCompData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, &compInfo, CSTRP(sptr, sptrEnd), dt.ToTicks());
+					currOfst += 30 + fnameSize + extraSize + dataSize;
 				}
-				currOfst += 30 + fnameSize + extraSize + dataSize;
+				else
+				{
+					IO::PackFileItem::CompressInfo compInfo;
+					sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize, 0);
+					ofsts.Put(sbuff, currOfst + 30 + fnameSize + extraSize);
+					zipInfo = zipInfos.Get(sbuff);
+					if (zipInfo && (zipInfo->compSize != 0xffffffff))
+					{
+						dataSize = zipInfo->compSize;
+					}
+					pf2 = pf;
+					sptr = sbuff;
+					sb.ClearStr();
+					sb.Append(fd->GetFullName());
+					while (true)
+					{
+						i = Text::StrIndexOfChar(sptr, '/');
+						if (i != INVALID_INDEX)
+						{
+							sptr[i] = 0;
+							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+							sb.AppendC(sptr, i);
+							pf3 = pf2->GetPackFile({sptr, i});
+							if (pf3 == 0)
+							{
+								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
+								pf2->AddPack(pf3, {sptr, i}, dt.ToTicks());
+							}
+							pf2 = pf3;
+							sptr = &sptr[i + 1];
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					if (compMeth == 0)
+					{
+						pf2->AddData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, CSTRP(sptr, sptrEnd), dt.ToTicks());
+					}
+					else
+					{
+						compInfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
+						if (zipInfo)
+						{
+							WriteMInt32(compInfo.checkBytes, zipInfo->crc);
+							compInfo.compExtras = 0;
+							compInfo.compExtraSize = 0;
+							compInfo.compFlags = 0;
+							if (compMeth == 8)
+							{
+								compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
+							}
+							else
+							{
+								compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
+							}
+							compInfo.decSize = zipInfo->decSize;
+						}
+						else
+						{
+							WriteMInt32(compInfo.checkBytes, ReadInt32(&buff[14]));
+							compInfo.compExtras = 0;
+							compInfo.compExtraSize = 0;
+							compInfo.compFlags = 0;
+							if (compMeth == 8)
+							{
+								compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
+							}
+							else
+							{
+								compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
+							}
+							compInfo.decSize = ReadUInt32(&buff[22]);
+						}
+						pf2->AddCompData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, &compInfo, CSTRP(sptr, sptrEnd), dt.ToTicks());
+					}
+					currOfst += 30 + fnameSize + extraSize + dataSize;
+				}
+			}
+			else if (ReadInt32(buff) == 0x02014b50)
+			{
+				UInt32 fnameSize = ReadUInt16(&buff[28]);
+				UInt32 extraSize = ReadUInt16(&buff[30]);
+				UInt32 commentSize = ReadUInt16(&buff[32]);
+	//			UInt32 dataSize = ReadUInt32(&buff[20]);
+				currOfst += 46 + fnameSize + extraSize + commentSize;
+			}
+			else if (ReadInt32(buff) == 0x06054b50)
+			{
+				break;
+			}
+			else if (ReadInt32(buff) == 0x08074b50)
+			{
+				currOfst += 16;
+			}
+			else
+			{
+				currOfst = 0;
+				break;
 			}
 		}
-		else if (ReadInt32(buff) == 0x02014b50)
+		const Data::ArrayList<ZIPInfoEntry*> *zipInfoList = zipInfos.GetValues();
+		ui = zipInfoList->GetCount();
+		while (ui-- > 0)
 		{
-			UInt32 fnameSize = ReadUInt16(&buff[28]);
-			UInt32 extraSize = ReadUInt16(&buff[30]);
-			UInt32 commentSize = ReadUInt16(&buff[32]);
-//			UInt32 dataSize = ReadUInt32(&buff[20]);
-			currOfst += 46 + fnameSize + extraSize + commentSize;
+			zipInfo = zipInfoList->GetItem(ui);
+			MemFree(zipInfo);
 		}
-		else if (ReadInt32(buff) == 0x06054b50)
-		{
-			break;
-		}
-		else if (ReadInt32(buff) == 0x08074b50)
-		{
-			currOfst += 16;
-		}
-		else
-		{
-			currOfst = 0;
-			break;
-		}
-	}
-	const Data::ArrayList<ZIPInfoEntry*> *zipInfoList = zipInfos.GetValues();
-	UOSInt ui = zipInfoList->GetCount();
-	while (ui-- > 0)
-	{
-		zipInfo = zipInfoList->GetItem(ui);
-		MemFree(zipInfo);
 	}
 
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
@@ -379,4 +483,182 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		}
 	}
 	return pf;
+}
+
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::IStreamData *fd, const UInt8 *buff, UOSInt buffSize, UInt64 ofst)
+{
+	Data::DateTime dt;
+	IO::PackageFile *pf2;
+	IO::PackageFile *pf3;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
+	UInt16 flags;
+	UInt16 compMeth;
+	UInt64 compSize;
+	UInt64 uncompSize;
+	UInt16 fnameLen;
+	UInt16 extraLen;
+	UInt16 commentLen;
+	UInt32 recType;
+	UOSInt i;
+	UOSInt j;
+	i = 0;
+	while (i < buffSize)
+	{
+		if (i + 46 > buffSize)
+		{
+			return i;
+		}
+		recType = ReadMUInt32(&buff[i]);
+		if (recType != 0x504B0102)
+		{
+			break;
+		}
+		flags = ReadUInt16(&buff[i + 8]);
+		compMeth = ReadUInt16(&buff[i + 10]);
+		compSize = ReadUInt32(&buff[i + 20]);
+		uncompSize = ReadUInt32(&buff[i + 24]);
+		fnameLen = ReadUInt16(&buff[i + 28]);
+		extraLen = ReadUInt16(&buff[i + 30]);
+		commentLen = ReadUInt16(&buff[i + 32]);
+		ofst = ReadUInt32(&buff[i + 42]);
+		dt.SetMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]));
+
+		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buffSize)
+		{
+			return i;
+		}
+		if (extraLen > 0)
+		{
+			const UInt8 *extraBuff = &buff[i + 46 + (UOSInt)fnameLen];
+			j = 0;
+			UInt16 extraTag;
+			UInt16 extraSize;
+			while (j + 4 <= extraLen)
+			{
+				extraTag = ReadUInt16(&extraBuff[j]);
+				extraSize = ReadUInt16(&extraBuff[j + 2]);
+				if (extraTag == 1)
+				{
+					const UInt8 *zip64Info = &extraBuff[j + 4];
+					if (uncompSize == 0xffffffff)
+					{
+						uncompSize = ReadUInt64(zip64Info);
+						zip64Info += 8;
+					}
+					if (compSize == 0xffffffff)
+					{
+						compSize = ReadUInt64(zip64Info);
+						zip64Info += 8;
+					}
+					if (ofst == 0xffffffff)
+					{
+						ofst = ReadUInt64(zip64Info);
+						zip64Info += 8;
+					}
+				}
+				else if (extraTag == 0x5455)
+				{
+					dt.SetUnixTimestamp(ReadUInt32(&extraBuff[j + 5]));
+				}
+				j += 4 + extraSize;
+			}
+		}
+		if (flags & 0x800)
+		{
+			sptrEnd = Text::StrConcatC(sbuff, &buff[i + 46], fnameLen);
+		}
+		else
+		{
+			sptrEnd = enc->UTF8FromBytes(sbuff, &buff[i + 46], fnameLen, 0);
+		}
+		if (sptrEnd[-1] == '/')
+		{
+			sptrEnd--;
+			*sptrEnd = 0;
+			pf2 = pf;
+			sptr = sbuff;
+			while (true)
+			{
+				j = Text::StrIndexOfChar(sptr, '/');
+				if (j != INVALID_INDEX)
+				{
+					sptr[j] = 0;
+					pf3 = pf2->GetPackFile({sptr, j});
+					if (pf3 == 0)
+					{
+						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
+						pf2->AddPack(pf3, {sptr, j}, dt.ToTicks());
+					}
+					pf2 = pf3;
+					sptr[j] = '/';
+					sptr = &sptr[j + 1];
+				}
+				else
+				{
+					pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
+					if (pf3 == 0)
+					{
+						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, sptrEnd)));
+						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), dt.ToTicks());
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			IO::PackFileItem::CompressInfo compInfo;
+			pf2 = pf;
+			sptr = sbuff;
+			while (true)
+			{
+				j = Text::StrIndexOfChar(sptr, '/');
+				if (j != INVALID_INDEX)
+				{
+					sptr[j] = 0;
+					pf3 = pf2->GetPackFile({sptr, j});
+					if (pf3 == 0)
+					{
+						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
+						pf2->AddPack(pf3, {sptr, j}, dt.ToTicks());
+					}
+					pf2 = pf3;
+					sptr[j] = '/';
+					sptr = &sptr[j + 1];
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if (compMeth == 0)
+			{
+				pf2->AddData(fd, ofst + 30 + fnameLen, compSize, CSTRP(sptr, sptrEnd), dt.ToTicks());
+			}
+			else
+			{
+				compInfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
+				WriteMInt32(compInfo.checkBytes, ReadInt32(&buff[i + 16]));
+				compInfo.compExtras = 0;
+				compInfo.compExtraSize = 0;
+				compInfo.compFlags = 0;
+				if (compMeth == 8)
+				{
+					compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
+				}
+				else
+				{
+					compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
+				}
+				compInfo.decSize = uncompSize;
+				pf2->AddCompData(fd, ofst + 30 + fnameLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), dt.ToTicks());
+			}
+		}
+
+		i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
+	}
+	return i;
 }

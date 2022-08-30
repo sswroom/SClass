@@ -1,6 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_ZIPPARSER
 #define _SM_PARSER_FILEPARSER_ZIPPARSER
 #include "IO/FileParser.h"
+#include "IO/PackageFile.h"
 
 namespace Parser
 {
@@ -23,6 +24,9 @@ namespace Parser
 			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+
+		private:
+			static UOSInt ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, IO::IStreamData *fd, const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 		};
 	}
 }

@@ -701,9 +701,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 						k += 4;
 						if (ntfsTag == 1 && ntfsSize == 24)
 						{
-							frame->AddUInt64(k, CSTR("File last modification time"), ReadInt64(&tagData[k]));
-							frame->AddUInt64(k + 8, CSTR("File last access time"), ReadInt64(&tagData[k + 8]));
-							frame->AddUInt64(k + 16, CSTR("File creation time"), ReadInt64(&tagData[k + 16]));
+							frame->AddUInt64(k, CSTR("File last modification time"), ReadUInt64(&tagData[k]));
+							frame->AddUInt64(k + 8, CSTR("File last access time"), ReadUInt64(&tagData[k + 8]));
+							frame->AddUInt64(k + 16, CSTR("File creation time"), ReadUInt64(&tagData[k + 16]));
 						}
 						k += ntfsSize;
 					}

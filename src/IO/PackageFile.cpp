@@ -488,6 +488,16 @@ Int64 IO::PackageFile::GetItemModTimeTick(UOSInt index) const
 	return 0;
 }
 
+UInt64 IO::PackageFile::GetItemStoreSize(UOSInt index) const
+{
+	IO::PackFileItem *item = this->items->GetItem(index);
+	if (item != 0)
+	{
+		return item->fd->GetDataSize();
+	}
+	return 0;
+}
+
 UInt64 IO::PackageFile::GetItemSize(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);

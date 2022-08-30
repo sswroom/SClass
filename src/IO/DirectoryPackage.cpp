@@ -197,6 +197,11 @@ Int64 IO::DirectoryPackage::GetItemModTimeTick(UOSInt index) const
 	return this->fileTimes->GetItem(index);
 }
 
+UInt64 IO::DirectoryPackage::GetItemStoreSize(UOSInt index) const
+{
+	return this->fileSizes->GetItem(index);
+}
+
 UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index) const
 {
 	return this->fileSizes->GetItem(index);

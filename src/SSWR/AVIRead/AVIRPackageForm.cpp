@@ -428,20 +428,22 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 			maxWidth = w;
 
 		dt.SetTicks(packFile->GetItemModTimeTick(i));
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		this->lvFiles->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		this->lvFiles->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 		if (pot == IO::PackageFile::POT_STREAMDATA)
 		{
 			this->lvFiles->SetSubItem(k, 1, CSTR("File"));
-			sptr = Text::StrUInt64(sbuff, packFile->GetItemSize(i));
+			sptr = Text::StrUInt64(sbuff, packFile->GetItemStoreSize(i));
 			this->lvFiles->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, packFile->GetItemSize(i));
+			this->lvFiles->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			if (packFile->IsCompressed(i))
 			{
-				this->lvFiles->SetSubItem(k, 4, Data::Compress::Decompressor::GetCompMethName(packFile->GetItemComp(i)));
+				this->lvFiles->SetSubItem(k, 5, Data::Compress::Decompressor::GetCompMethName(packFile->GetItemComp(i)));
 			}
 			else
 			{
-				this->lvFiles->SetSubItem(k, 4, CSTR("Uncompressed"));
+				this->lvFiles->SetSubItem(k, 5, CSTR("Uncompressed"));
 			}
 		}
 		else if (pot == IO::PackageFile::POT_PACKAGEFILE)
@@ -509,11 +511,12 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 
 
 	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn(CSTR("Item Name"), 150);
 	this->lvFiles->AddColumn(CSTR("Type"), 80);
-	this->lvFiles->AddColumn(CSTR("Size"), 100);
+	this->lvFiles->AddColumn(CSTR("Store Size"), 100);
+	this->lvFiles->AddColumn(CSTR("File Size"), 100);
 	this->lvFiles->AddColumn(CSTR("Modify Time"), 150);
 	this->lvFiles->AddColumn(CSTR("Compression"), 100);
 

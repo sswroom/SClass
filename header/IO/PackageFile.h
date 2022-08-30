@@ -102,6 +102,7 @@ namespace IO
 		virtual IO::PackageFile *GetItemPack(UOSInt index) const; // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index) const; // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index) const;
+		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;
 		virtual Bool IsCompressed(UOSInt index) const;
