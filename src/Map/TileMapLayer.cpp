@@ -151,7 +151,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 
 	this->lastLevel = (UOSInt)-1;
 	this->threadNext = 0;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = tileMap->GetCoordinateSystem()->Clone();
 
 	UOSInt i;
 	this->threadCnt = this->tileMap->GetConcurrentCount();
@@ -285,12 +285,12 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::MapView *view;
-	if (this->tileMap->GetProjectionType() == Map::TileMap::PT_MERCATOR)
+	if (this->tileMap->IsMercatorProj())
 	{
 		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetLevelCount(), this->tileMap->GetTileSize()));
 		return view;
 	}
-	else if (this->tileMap->GetProjectionType() == Map::TileMap::PT_WGS84)
+	else
 	{
 		Data::ArrayListDbl scales;
 		UOSInt i = 0;
@@ -301,11 +301,6 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
 			i++;
 		}
 		NEW_CLASS(view, Map::LeveledMapView(scnSize, 22.4, 114.2, &scales));
-		return view;
-	}
-	else
-	{
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000));
 		return view;
 	}
 }

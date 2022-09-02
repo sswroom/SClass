@@ -7,6 +7,7 @@
 #include "IO/StmData/FileData.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
+#include "Math/CoordinateSystemManager.h"
 
 /*Map::OSM::OSMLocalTileMap::OSMLocalTileMap(const WChar *tileDir)
 {
@@ -141,6 +142,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	this->tileHeight = 256;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 
 	UInt32 minXBlk;
 	UInt32 maxXBlk;
@@ -270,6 +272,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 {
 	DEL_CLASS(this->pkgFile);
+	DEL_CLASS(this->csys);
 }
 
 Text::CString Map::OSM::OSMLocalTileMap::GetName()
@@ -319,9 +322,14 @@ Bool Map::OSM::OSMLocalTileMap::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::TileMap::ProjectionType Map::OSM::OSMLocalTileMap::GetProjectionType()
+Math::CoordinateSystem *Map::OSM::OSMLocalTileMap::GetCoordinateSystem()
 {
-	return Map::TileMap::PT_MERCATOR;
+	return this->csys;
+}
+
+Bool Map::OSM::OSMLocalTileMap::IsMercatorProj()
+{
+	return true;
 }
 
 UOSInt Map::OSM::OSMLocalTileMap::GetTileSize()

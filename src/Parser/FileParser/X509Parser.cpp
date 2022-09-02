@@ -68,13 +68,41 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	UInt8 dataBuff[10240];
 	UOSInt dataLen;
 	UOSInt lbSize;
-	if (buff[buffSize - 2] == 13 && buff[buffSize - 1] == 10)
+	if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
 	{
-		lbSize = 2;
+		buff += 3;
+		buffSize -= 3;
 	}
-	else if (buff[buffSize - 1] == 10)
+	if (Text::StrStartsWithC(buff, 5, UTF8STRC("-----")))
 	{
-		lbSize = 1;
+		if (buff[buffSize - 2] == 13 && buff[buffSize - 1] == 10)
+		{
+			lbSize = 2;
+		}
+		else if (buff[buffSize - 1] == 10)
+		{
+			lbSize = 1;
+		}
+		else
+		{
+			UOSInt i = Text::StrIndexOfC(&buff[5], buffSize - 5, UTF8STRC("-----"));
+			if (i == INVALID_INDEX)
+			{
+				return 0;
+			}
+			if (buff[i + 10] == 13 && buff[i + 11] == 10)
+			{
+				lbSize = 2;
+			}
+			else if (buff[i + 10] == 10)
+			{
+				lbSize = 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
 	}
 	else if (buff[0] == 0x30)
 	{
@@ -84,20 +112,20 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	{
 		return 0;
 	}
-	if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
-	{
-		buff += 3;
-		buffSize -= 3;
-	}
 	if (lbSize != 0)
 	{
-		if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")) && Text::StrStartsWithC(&buff[buffSize - 25 - lbSize], 25 + lbSize, UTF8STRC("-----END CERTIFICATE-----")))
+		if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")) && (Text::StrStartsWithC(&buff[buffSize - 25 - lbSize], 25 + lbSize, UTF8STRC("-----END CERTIFICATE-----")) || Text::StrStartsWithC(&buff[buffSize - 25], 25, UTF8STRC("-----END CERTIFICATE-----"))))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			UOSInt i = Text::StrIndexOfC(buff, buffSize, UTF8STRC("-----END CERTIFICATE-----"));
 			if (i == buffSize - 25 - lbSize)
 			{
 				dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
+				NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+			}
+			else if (i == buffSize - 25)
+			{
+				dataLen = b64.DecodeBin(&buff[27], buffSize - 52, dataBuff);
 				NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
 			}
 			else

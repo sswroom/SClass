@@ -29,6 +29,7 @@ namespace Map
 
 			UOSInt tileWidth;
 			UOSInt tileHeight;
+			Math::CoordinateSystem *csys;
 
 			Text::String *GetNextURL();
 		public:
@@ -50,7 +51,8 @@ namespace Map
 			virtual UOSInt GetNearestLevel(Double scale);
 			virtual UOSInt GetConcurrentCount();
 			virtual Bool GetBounds(Math::RectAreaDbl *bounds);
-			virtual ProjectionType GetProjectionType();
+			virtual Math::CoordinateSystem *GetCoordinateSystem();
+			virtual Bool IsMercatorProj();
 			virtual UOSInt GetTileSize();
 
 			virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids);

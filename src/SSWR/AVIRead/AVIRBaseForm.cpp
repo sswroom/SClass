@@ -191,6 +191,7 @@
 #include "SSWR/AVIRead/AVIRTimedCaptureForm.h"
 #include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
 #include "SSWR/AVIRead/AVIRTimeTestForm.h"
+#include "SSWR/AVIRead/AVIRTMSForm.h"
 #include "SSWR/AVIRead/AVIRTraceRouteForm.h"
 #include "SSWR/AVIRead/AVIRTrustStoreForm.h"
 #include "SSWR/AVIRead/AVIRTVControlForm.h"
@@ -436,7 +437,8 @@ typedef enum
 	MNU_JAVACACERTS,
 	MNU_WINDOWS_ERROR,
 	MNU_ADAM,
-	MNU_MODBUS_TCPSIM
+	MNU_MODBUS_TCPSIM,
+	MNU_TMS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -765,6 +767,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("OSM Cache Server"), MNU_OSM_CACHE_SERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SHPConv"), MNU_SHPCONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("SMBIOS"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2492,6 +2495,15 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRMODBUSTCPSimForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRMODBUSTCPSimForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_TMS:
+		{
+			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this))
+			{
+				
+			}
 		}
 		break;
 	}

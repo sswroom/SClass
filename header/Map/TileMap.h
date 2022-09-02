@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_TILEMAP
 #define _SM_MAP_TILEMAP
 #include "Data/ArrayList.h"
+#include "Math/CoordinateSystem.h"
 #include "Media/ImageList.h"
 #include "Parser/ParserList.h"
 #include "Text/CString.h"
@@ -10,11 +11,6 @@ namespace Map
 	class TileMap
 	{
 	public:
-		typedef enum
-		{
-			PT_WGS84,
-			PT_MERCATOR
-		} ProjectionType;
 		typedef enum
 		{
 			IT_PNG,
@@ -27,7 +23,8 @@ namespace Map
 			TT_OSM,
 			TT_OSMLOCAL,
 			TT_ESRI,
-			TT_GOOGLE
+			TT_GOOGLE,
+			TT_TMS
 		} TileType;
 	public:
 		virtual ~TileMap() {};
@@ -40,7 +37,8 @@ namespace Map
 		virtual UOSInt GetNearestLevel(Double scale) = 0;
 		virtual UOSInt GetConcurrentCount() = 0;
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds) = 0;
-		virtual ProjectionType GetProjectionType() = 0;
+		virtual Math::CoordinateSystem *GetCoordinateSystem() = 0;
+		virtual Bool IsMercatorProj() = 0;
 		virtual UOSInt GetTileSize() = 0;
 
 		virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids) = 0;

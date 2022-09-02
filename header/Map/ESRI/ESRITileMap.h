@@ -21,6 +21,7 @@ namespace Map
 			Math::Coord2DDbl min;
 			Math::Coord2DDbl max;
 			Bool isMercatorProj;
+			Math::CoordinateSystem *csys;
 
 			UOSInt tileWidth;
 			UOSInt tileHeight;
@@ -38,7 +39,8 @@ namespace Map
 			virtual UOSInt GetNearestLevel(Double scale);
 			virtual UOSInt GetConcurrentCount();
 			virtual Bool GetBounds(Math::RectAreaDbl *bounds);
-			virtual ProjectionType GetProjectionType();
+			virtual Math::CoordinateSystem *GetCoordinateSystem();
+			virtual Bool IsMercatorProj();
 			virtual UOSInt GetTileSize();
 
 			virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids);

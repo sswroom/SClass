@@ -2065,6 +2065,8 @@ Map/TileMapGenerator.h: ../../src/Map/TileMapGenerator.cpp
 @TileMapGenerator.o
 Map/TileMapLayer.h: ../../src/Map/TileMapLayer.cpp
 @TileMapLayer.o
+Map/TileMapServiceSource.h: ../../src/Map/TileMapServiceSource.cpp
+@TileMapServiceSource.o
 Map/VectorLayer.h: ../../src/Map/VectorLayer.cpp
 @VectorLayer.o
 Map/WebImageLayer.h: ../../src/Map/WebImageLayer.cpp
@@ -3769,6 +3771,8 @@ SSWR/AVIRead/AVIRTimedFileCopyForm.h: ../../src/SSWR/AVIRead/AVIRTimedFileCopyFo
 @AVIRTimedFileCopyForm.o
 SSWR/AVIRead/AVIRTimeTestForm.h: ../../src/SSWR/AVIRead/AVIRTimeTestForm.cpp
 @AVIRTimeTestForm.o
+SSWR/AVIRead/AVIRTMSForm.h: ../../src/SSWR/AVIRead/AVIRTMSForm.cpp
+@AVIRTMSForm.o
 SSWR/AVIRead/AVIRTraceRouteForm.h: ../../src/SSWR/AVIRead/AVIRTraceRouteForm.cpp
 @AVIRTraceRouteForm.o
 SSWR/AVIRead/AVIRTrustStoreForm.h: ../../src/SSWR/AVIRead/AVIRTrustStoreForm.cpp
@@ -4657,6 +4661,7 @@ SHPUtil.o: ../../src/Map/SHPUtil.cpp
 SPDLayer.o: ../../src/Map/SPDLayer.cpp
 TileMapGenerator.o: ../../src/Map/TileMapGenerator.cpp
 TileMapLayer.o: ../../src/Map/TileMapLayer.cpp
+TileMapServiceSource.o: ../../src/Map/TileMapServiceSource.cpp
 VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 ESRIMDBLayer.o: ../../src/Map/ESRI/ESRIMDBLayer.cpp
@@ -5463,6 +5468,7 @@ AVIRThreadSpeedForm.o: ../../src/SSWR/AVIRead/AVIRThreadSpeedForm.cpp
 AVIRTimedCaptureForm.o: ../../src/SSWR/AVIRead/AVIRTimedCaptureForm.cpp
 AVIRTimedFileCopyForm.o: ../../src/SSWR/AVIRead/AVIRTimedFileCopyForm.cpp
 AVIRTimeTestForm.o: ../../src/SSWR/AVIRead/AVIRTimeTestForm.cpp
+AVIRTMSForm.o: ../../src/SSWR/AVIRead/AVIRTMSForm.cpp
 AVIRTraceRouteForm.o: ../../src/SSWR/AVIRead/AVIRTraceRouteForm.cpp
 AVIRTrustStoreForm.o: ../../src/SSWR/AVIRead/AVIRTrustStoreForm.cpp
 AVIRTVControlForm.o: ../../src/SSWR/AVIRead/AVIRTVControlForm.cpp

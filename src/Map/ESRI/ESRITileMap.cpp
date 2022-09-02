@@ -1,14 +1,15 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
-#include "Text/Encoding.h"
-#include "Text/JSON.h"
 #include "Math/Math.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Net/HTTPClient.h"
 #include "Map/ESRI/ESRITileMap.h"
+#include "Math/CoordinateSystemManager.h"
+#include "Net/HTTPClient.h"
+#include "Text/Encoding.h"
+#include "Text/JSON.h"
+#include "Text/MyString.h"
 
 Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
@@ -27,6 +28,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, N
 	this->tileWidth = 0;
 	this->tileHeight = 0;
 	this->isMercatorProj = false;
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 
 	IO::MemoryStream *mstm;
 	sptr = Text::StrConcatC(url->ConcatTo(sbuff), UTF8STRC("?f=json"));
@@ -84,7 +86,16 @@ Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, N
 				if (o != 0 && o->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *spRef = (Text::JSONObject*)o;
-					this->isMercatorProj = spRef->GetObjectInt32(CSTR("wkid")) == 102100;
+					UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
+					if (wkid == 102100)
+					{
+						this->isMercatorProj = true;
+					}
+					else
+					{
+						SDEL_CLASS(this->csys);
+						this->csys = Math::CoordinateSystemManager::SRCreateCSys(wkid);
+					}
 				}
 
 				o = jobj->GetObjectValue(CSTR("tileInfo"));
@@ -235,16 +246,14 @@ Bool Map::ESRI::ESRITileMap::GetBounds(Math::RectAreaDbl *bounds)
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::TileMap::ProjectionType Map::ESRI::ESRITileMap::GetProjectionType()
+Math::CoordinateSystem *Map::ESRI::ESRITileMap::GetCoordinateSystem()
 {
-	if (this->isMercatorProj)
-	{
-		return Map::TileMap::PT_MERCATOR;
-	}
-	else
-	{
-		return Map::TileMap::PT_WGS84;
-	}
+	return this->csys;
+}
+
+Bool Map::ESRI::ESRITileMap::IsMercatorProj()
+{
+	return this->isMercatorProj;
 }
 
 UOSInt Map::ESRI::ESRITileMap::GetTileSize()

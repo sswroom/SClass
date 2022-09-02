@@ -6,6 +6,7 @@
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Map/OSM/OSMTileMap.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
@@ -29,6 +30,7 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, Text::CString cacheDir, UOSI
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->maxLevel = maxLevel;
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
 Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
@@ -42,6 +44,7 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSI
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->maxLevel = maxLevel;
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
 Map::OSM::OSMTileMap::~OSMTileMap()
@@ -54,6 +57,7 @@ Map::OSM::OSMTileMap::~OSMTileMap()
 	}
 	SDEL_STRING(this->cacheDir);
 	SDEL_CLASS(this->spkg);
+	SDEL_CLASS(this->csys);
 }
 
 void Map::OSM::OSMTileMap::AddAlternateURL(Text::CString url)
@@ -143,9 +147,14 @@ Bool Map::OSM::OSMTileMap::GetBounds(Math::RectAreaDbl *bounds)
 	return true;
 }
 
-Map::TileMap::ProjectionType Map::OSM::OSMTileMap::GetProjectionType()
+Math::CoordinateSystem *Map::OSM::OSMTileMap::GetCoordinateSystem()
 {
-	return Map::TileMap::PT_MERCATOR;
+	return this->csys;
+}
+
+Bool Map::OSM::OSMTileMap::IsMercatorProj()
+{
+	return true;
 }
 
 UOSInt Map::OSM::OSMTileMap::GetTileSize()

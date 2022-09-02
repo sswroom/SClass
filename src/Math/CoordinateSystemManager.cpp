@@ -377,6 +377,9 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgI
 		}
 		return csys;
 	}
+#if defined(VERBOSE)
+	printf("Unsupported SRID:%d\r\n", epsgId);
+#endif
 	return 0;
 }
 
