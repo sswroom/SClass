@@ -39,6 +39,7 @@
 #include "SSWR/AVIRead/AVIRASN1ParseForm.h"
 #include "SSWR/AVIRead/AVIRAudioFilterForm.h"
 #include "SSWR/AVIRead/AVIRBaseForm.h"
+#include "SSWR/AVIRead/AVIRBatchRenameForm.h"
 #include "SSWR/AVIRead/AVIRBCryptForm.h"
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
@@ -438,7 +439,8 @@ typedef enum
 	MNU_WINDOWS_ERROR,
 	MNU_ADAM,
 	MNU_MODBUS_TCPSIM,
-	MNU_TMS
+	MNU_TMS,
+	MNU_BATCH_RENAME
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -615,12 +617,13 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Line Counter"), MNU_LINECOUNTER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("XML Walk"), MNU_XMLWALK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Well Format"), MNU_WELLFORMAT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Batch Rename"), MNU_BATCH_RENAME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Log Merge"), MNU_LOGMERGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Log Backup"), MNU_LOG_BACKUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Log Extract"), MNU_LOGEXTRACT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timed File Copy"), MNU_TIMED_FILE_COPY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-
+	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &CodePage"), MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Set &Monitor Color"), MNU_SET_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2504,6 +2507,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			{
 				
 			}
+		}
+		break;
+	case MNU_BATCH_RENAME:
+		{
+			SSWR::AVIRead::AVIRBatchRenameForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRBatchRenameForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
 		}
 		break;
 	}

@@ -3335,6 +3335,8 @@ SSWR/AVIRead/AVIRAudioViewerForm.h: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.c
 @AVIRAudioViewerForm.o
 SSWR/AVIRead/AVIRBaseForm.h: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
 @AVIRBaseForm.o
+SSWR/AVIRead/AVIRBatchRenameForm.h: ../../src/SSWR/AVIRead/AVIRBatchRenameForm.cpp
+@AVIRBatchRenameForm.o
 SSWR/AVIRead/AVIRBCryptForm.h: ../../src/SSWR/AVIRead/AVIRBCryptForm.cpp
 @AVIRBCryptForm.o
 SSWR/AVIRead/AVIRBenchmarkForm.h: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
@@ -5250,6 +5252,7 @@ AVIRASN1ParseForm.o: ../../src/SSWR/AVIRead/AVIRASN1ParseForm.cpp
 AVIRAudioFilterForm.o: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 AVIRAudioViewerForm.o: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
 AVIRBaseForm.o: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
+AVIRBatchRenameForm.o: ../../src/SSWR/AVIRead/AVIRBatchRenameForm.cpp
 AVIRBCryptForm.o: ../../src/SSWR/AVIRead/AVIRBCryptForm.cpp
 AVIRBenchmarkForm.o: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
 AVIRBluetoothCtlForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
