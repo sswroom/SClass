@@ -183,17 +183,60 @@ namespace Data
 		
 		Bool operator==(Timestamp dt) const
 		{
-			return this->ticks == dt.ticks;
+			return this->ticks == dt.ticks && this->nanosec == dt.nanosec;
+		}
+
+		Bool operator!=(Timestamp dt) const
+		{
+			return this->ticks != dt.ticks || this->nanosec != dt.nanosec;
+		}
+
+		Bool operator>=(Timestamp dt) const
+		{
+			if (this->ticks < dt.ticks)
+				return false;
+			else if (this->ticks > dt.ticks)
+				return true;
+			else if (this->nanosec < dt.nanosec)
+				return false;
+			else
+				return true;
+		}
+
+		Bool operator<=(Timestamp dt) const
+		{
+			if (this->ticks > dt.ticks)
+				return false;
+			else if (this->ticks < dt.ticks)
+				return true;
+			else if (this->nanosec > dt.nanosec)
+				return false;
+			else
+				return true;
 		}
 
 		Bool operator>(Timestamp dt) const
 		{
-			return this->ticks > dt.ticks;
+			if (this->ticks < dt.ticks)
+				return false;
+			else if (this->ticks > dt.ticks)
+				return true;
+			else if (this->nanosec <= dt.nanosec)
+				return false;
+			else
+				return true;
 		}
 
 		Bool operator<(Timestamp dt) const
 		{
-			return this->ticks < dt.ticks;
+			if (this->ticks > dt.ticks)
+				return false;
+			else if (this->ticks < dt.ticks)
+				return true;
+			else if (this->nanosec >= dt.nanosec)
+				return false;
+			else
+				return true;
 		}
 
 		OSInt CompareTo(const Timestamp& ts) const
@@ -201,6 +244,10 @@ namespace Data
 			if (this->ticks > ts.ticks)
 				return 1;
 			else if (this->ticks < ts.ticks)
+				return -1;
+			else if (this->nanosec > ts.nanosec)
+				return 1;
+			else if (this->nanosec < ts.nanosec)
 				return -1;
 			else
 				return 0;
