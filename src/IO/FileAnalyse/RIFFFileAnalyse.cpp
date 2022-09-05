@@ -656,6 +656,20 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 
 		MemFree(packBuff);
 	}
+	else if (pack->packType == *(Int32*)"VP8X")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		frame->AddBool(8, CSTR("ICC profile"), (packBuff[0] & 0x20));
+		frame->AddBool(8, CSTR("Alpha"), (packBuff[0] & 0x10));
+		frame->AddBool(8, CSTR("Exif metadata"), (packBuff[0] & 0x8));
+		frame->AddBool(8, CSTR("XMP metadata"), (packBuff[0] & 0x4));
+		frame->AddBool(8, CSTR("Animation"), (packBuff[0] & 0x2));
+		frame->AddUInt(9, 3, CSTR("Reserved"), ReadUInt24(&packBuff[1]));
+		frame->AddUInt(12, 3, CSTR("Canvas Width Minus One"), ReadUInt24(&packBuff[4]));
+		frame->AddUInt(15, 3, CSTR("Canvas Height Minus One"), ReadUInt24(&packBuff[7]));
+		MemFree(packBuff);
+	}
 	else if (pack->subPackType != 0)
 	{
 		frame->AddSubframe(12, pack->packSize - 12);

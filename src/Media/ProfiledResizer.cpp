@@ -7,6 +7,7 @@
 #include "Media/Batch/BatchSaveJPEGSize.h"
 #include "Media/Batch/BatchSavePNG.h"
 #include "Media/Batch/BatchSaveTIFF.h"
+#include "Media/Batch/BatchSaveWebP.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -31,8 +32,6 @@ Media::ProfiledResizer::ProfiledResizer(Parser::ParserList *parsers, Media::Colo
 	NEW_CLASS(limiter, Media::Batch::BatchLimiter(bresizer));
 	NEW_CLASS(conv, Media::Batch::BatchToLRGB(&srcProfile, &destProfile, limiter));
 	NEW_CLASS(loader, Media::Batch::BatchLoader(parsers, conv));
-
-	NEW_CLASS(profiles, Data::ArrayList<ResizeProfile*>());
 }
 
 Media::ProfiledResizer::~ProfiledResizer()
@@ -43,12 +42,11 @@ Media::ProfiledResizer::~ProfiledResizer()
 		Sync::Thread::Sleep(100);
 	}
 
-	i = profiles->GetCount();
+	i = this->profiles.GetCount();
 	while (i-- > 0)
 	{
-		ReleaseProfile(this->profiles->GetItem(i));
+		ReleaseProfile(this->profiles.GetItem(i));
 	}
-	DEL_CLASS(this->profiles);
 	DEL_CLASS(this->loader);
 	DEL_CLASS(this->conv);
 	DEL_CLASS(this->limiter);
@@ -60,7 +58,7 @@ Media::ProfiledResizer::~ProfiledResizer()
 
 UOSInt Media::ProfiledResizer::GetProfileCount()
 {
-	return this->profiles->GetCount();
+	return this->profiles.GetCount();
 }
 
 UOSInt Media::ProfiledResizer::GetCurrProfileIndex()
@@ -70,12 +68,12 @@ UOSInt Media::ProfiledResizer::GetCurrProfileIndex()
 
 const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetCurrProfile()
 {
-	return this->profiles->GetItem(this->currProfile);
+	return this->profiles.GetItem(this->currProfile);
 }
 
 void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 {
-	if (index >= this->profiles->GetCount())
+	if (index >= this->profiles.GetCount())
 		return;
 	if (index == this->currProfile)
 		return;
@@ -85,7 +83,7 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 		Sync::Thread::Sleep(100);
 	}
 	this->currProfile = index;
-	const ResizeProfile *profile = this->profiles->GetItem(index);
+	const ResizeProfile *profile = this->profiles.GetItem(index);
 	bresizer->ClearTargetSizes();
 	if (profile->sizeType == ST_MAXSIZE)
 	{
@@ -117,12 +115,16 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 	{
 		NEW_CLASS(this->saver, Media::Batch::BatchSavePNG());
 	}
+	else if (profile->outType == OT_WEBPQUALITY)
+	{
+		NEW_CLASS(this->saver, Media::Batch::BatchSaveWebP(profile->outParam));
+	}
 	this->watermarker->SetHandler(this->saver);
 }
 
 const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetProfile(UOSInt index)
 {
-	return this->profiles->GetItem(index);
+	return this->profiles.GetItem(index);
 }
 
 Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType)
@@ -146,6 +148,11 @@ Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString
 	{
 		
 	}
+	else if (outType == OT_WEBPQUALITY)
+	{
+		if (outParam > 100)
+			return false;
+	}
 	else
 	{
 		return false;
@@ -167,13 +174,13 @@ Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString
 	{
 		profile->watermark = 0;
 	}
-	this->profiles->Add(profile);
+	this->profiles.Add(profile);
 	return true;
 }
 
 Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 {
-	if (index >= this->profiles->GetCount())
+	if (index >= this->profiles.GetCount())
 		return false;
 	if (index == this->currProfile)
 	{
@@ -182,21 +189,21 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 			Sync::Thread::Sleep(100);
 		}
 	}
-	ReleaseProfile(this->profiles->RemoveAt(index));
+	ReleaseProfile(this->profiles.RemoveAt(index));
 	if (index < this->currProfile)
 	{
 		this->currProfile--;
 	}
 	else if (index == this->currProfile)
 	{
-		if (this->profiles->GetCount() == 0)
+		if (this->profiles.GetCount() == 0)
 		{
 			this->currProfile = (UOSInt)-1;
 			bresizer->ClearTargetSizes();
 		}
-		else if (this->profiles->GetCount() <= this->currProfile)
+		else if (this->profiles.GetCount() <= this->currProfile)
 		{
-			SetCurrentProfile(this->profiles->GetCount() - 1);
+			SetCurrentProfile(this->profiles.GetCount() - 1);
 		}
 		else
 		{
@@ -235,10 +242,10 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 
 	Text::UTF8Writer writer(&fs);
 	i = 0;
-	j = this->profiles->GetCount();
+	j = this->profiles.GetCount();
 	while (i < j)
 	{
-		profile = this->profiles->GetItem(i);
+		profile = this->profiles.GetItem(i);
 		cols[0] = profile->profileName->v;
 		cols[1] = profile->suffix->v;
 		cols[2] = sbuff2;
@@ -303,10 +310,10 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
 
 		this->currProfile = (UOSInt)-1;
 		bresizer->ClearTargetSizes();
-		i = profiles->GetCount();
+		i = this->profiles.GetCount();
 		while (i-- > 0)
 		{
-			ReleaseProfile(this->profiles->RemoveAt(i));
+			ReleaseProfile(this->profiles.RemoveAt(i));
 		}
 
 		while (r->ReadNext())

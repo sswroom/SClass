@@ -74,6 +74,21 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		}
 		MemFree(buff);
 	}
+	else if (img->info.pf == Media::PF_R8G8B8)
+	{
+		UOSInt bpl = img->GetDataBpl();
+		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
+		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false);
+		if (quality < 0)
+		{
+			vp8len = WebPEncodeLosslessRGB(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
+		}
+		else
+		{
+			vp8len = WebPEncodeRGB(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, (float)quality, &vp8);
+		}
+		MemFree(buff);
+	}
 	else if (img->info.pf == Media::PF_B8G8R8A8)
 	{
 		UOSInt bpl = img->GetDataBpl();
@@ -94,18 +109,15 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		Media::StaticImage *simg = img->CreateStaticImage();
 		simg->To32bpp();
 		UOSInt bpl = simg->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * simg->info.dispHeight);
-		img->GetImageData(buff, 0, 0, simg->info.dispWidth, simg->info.dispHeight, bpl, false);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessBGRA(buff, (int)simg->info.dispWidth, (int)simg->info.dispHeight, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessBGRA(simg->data, (int)simg->info.dispWidth, (int)simg->info.dispHeight, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGRA(buff, (int)simg->info.dispWidth, (int)simg->info.dispHeight, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeBGRA(simg->data, (int)simg->info.dispWidth, (int)simg->info.dispHeight, (int)bpl, (float)quality, &vp8);
 		}
 		DEL_CLASS(simg);
-		MemFree(buff);
 	}
 	if (vp8)
 	{

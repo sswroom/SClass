@@ -63,17 +63,24 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		sizeType = Media::ProfiledResizer::ST_MAXSIZE;
 		me->txtWidth->GetText(sbuff2);
-		targetSizeX = Text::StrToUInt32(sbuff2);
-		if (targetSizeX <= 0)
+		if (!Text::StrToUInt32(sbuff2, &targetSizeX))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter max width"), CSTR("Error"), me);
 			return;
 		}
 		me->txtHeight->GetText(sbuff2);
-		targetSizeY = Text::StrToUInt32(sbuff2);
-		if (targetSizeY <= 0)
+		if (!Text::StrToUInt32(sbuff2, &targetSizeY))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter max height"), CSTR("Error"), me);
+			return;
+		}
+		if (targetSizeX == 0 && targetSizeY == 0)
+		{
+
+		}
+		else if (targetSizeX == 0 || targetSizeY == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Max width and max height cannot be zero"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -132,6 +139,17 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		outType = Media::ProfiledResizer::OT_PNG;
 		outParam = 0;
+	}
+	else if (me->radWEBPQ->IsSelected())
+	{
+		outType = Media::ProfiledResizer::OT_WEBPQUALITY;
+		me->txtWEBPQuality->GetText(sbuff2);
+		outParam = Text::StrToUInt32(sbuff2);
+		if (outParam <= 0 || outParam > 100)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter quality"), CSTR("Error"), me);
+			return;
+		}
 	}
 	else
 	{
@@ -293,9 +311,13 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->radJPEGSize->Select();
 	NEW_CLASS(this->radPNG, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("PNG"), false));
 	this->radPNG->SetRect(0, 197, 120, 19, false);
+	NEW_CLASS(this->radWEBPQ, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("WEBP (% Quality)"), false))
+	this->radWEBPQ->SetRect(0, 216, 120, 19, false);
+	NEW_CLASS(this->txtWEBPQuality, UI::GUITextBox(ui, this->pnlProfile2, CSTR("100")));
+	this->txtWEBPQuality->SetRect(120, 216, 60, 19, false);
 
 	NEW_CLASS(this->btnProfileAdd, UI::GUIButton(ui, this->pnlProfile2, CSTR("&Add")));
-	this->btnProfileAdd->SetRect(50, 203, 100, 22, false);
+	this->btnProfileAdd->SetRect(15, 235, 100, 22, false);
 	this->btnProfileAdd->HandleButtonClick(OnClickedAddProfile, this);
 
 	this->HandleDropFiles(OnFileDrop, this);

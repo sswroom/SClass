@@ -2487,6 +2487,8 @@ Media/Batch/BatchSavePNG.h: ../../src/Media/Batch/BatchSavePNG.cpp
 @BatchSavePNG.o
 Media/Batch/BatchSaveTIFF.h: ../../src/Media/Batch/BatchSaveTIFF.cpp
 @BatchSaveTIFF.o
+Media/Batch/BatchSaveWebP.h: ../../src/Media/Batch/BatchSaveWebP.cpp
+@BatchSaveWebP.o
 Media/Batch/BatchToLRGB.h: ../../src/Media/Batch/BatchToLRGB.cpp
 @BatchToLRGB.o
 Media/Batch/BatchWatermarker.h: ../../src/Media/Batch/BatchWatermarker.cpp
@@ -4850,6 +4852,7 @@ BatchSaveJPEG.o: ../../src/Media/Batch/BatchSaveJPEG.cpp
 BatchSaveJPEGSize.o: ../../src/Media/Batch/BatchSaveJPEGSize.cpp
 BatchSavePNG.o: ../../src/Media/Batch/BatchSavePNG.cpp
 BatchSaveTIFF.o: ../../src/Media/Batch/BatchSaveTIFF.cpp
+BatchSaveWebP.o: ../../src/Media/Batch/BatchSaveWebP.cpp
 BatchToLRGB.o: ../../src/Media/Batch/BatchToLRGB.cpp
 BatchWatermarker.o: ../../src/Media/Batch/BatchWatermarker.cpp
 AC3BlockParser.o: ../../src/Media/BlockParser/AC3BlockParser.cpp

@@ -49,8 +49,10 @@ namespace SSWR
 			UI::GUIRadioButton *radJPEGQ;
 			UI::GUIRadioButton *radJPEGSize;
 			UI::GUIRadioButton *radPNG;
+			UI::GUIRadioButton *radWEBPQ;
 			UI::GUITextBox *txtJPEGQuality;
 			UI::GUITextBox *txtJPEGSize;
+			UI::GUITextBox *txtWEBPQuality;
 			UI::GUIButton *btnProfileAdd;
 
 			SSWR::AVIRead::AVIRCore *core;

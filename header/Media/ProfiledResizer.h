@@ -18,7 +18,8 @@ namespace Media
 			OT_TIFF,
 			OT_JPEGSIZE,
 			OT_JPEGQUALITY,
-			OT_PNG
+			OT_PNG,
+			OT_WEBPQUALITY
 		} OutputType;
 
 		typedef enum
@@ -40,7 +41,7 @@ namespace Media
 		} ResizeProfile;
 
 	private:
-		Data::ArrayList<ResizeProfile *> *profiles;
+		Data::ArrayList<ResizeProfile *> profiles;
 		UOSInt currProfile;
 		Parser::ParserList *parsers;
 
