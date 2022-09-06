@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_ICCPROFILE
 #define _SM_MEDIA_ICCPROFILE
 #include "Data/DateTime.h"
+#include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Media/FrameInfo.h"
 #include "Media/LUT.h"
 #include "Media/CS/TransferFunc.h"
@@ -53,6 +54,7 @@ namespace Media
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static ICCProfile *Parse(const UInt8 *buff, UOSInt buffSize);
+		static Bool ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
 
 		static void ReadDateTimeNumber(const UInt8 *buff, Data::DateTime *dt);
 		static void ReadXYZNumber(const UInt8 *buff, CIEXYZ *xyz);
@@ -78,6 +80,9 @@ namespace Media
 
 		static ICCProfile *NewSRGBProfile();
 		static const UInt8 *GetSRGBICCData();
+
+		static void FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *xyzBuff);
+		static void FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *buff, UInt32 leng);
 	};
 }
 #endif

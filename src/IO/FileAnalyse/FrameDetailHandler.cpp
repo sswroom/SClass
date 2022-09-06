@@ -201,6 +201,24 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex16Name(UOSInt frameOfst, Text::C
 	this->AddField(frameOfst, 2, name, sb.ToCString());
 }
 
+void IO::FileAnalyse::FrameDetailHandler::AddHex32Name(UOSInt frameOfst, Text::CString name, UInt32 v, Text::CString vName)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("0x"));
+	sb.AppendHex32(v);
+	if (vName.v)
+	{
+		sb.AppendC(UTF8STRC(" ("));
+		sb.Append(vName);
+		sb.AppendUTF8Char(')');
+	}
+	else
+	{
+		sb.AppendC(UTF8STRC(" (Unkonwn)"));
+	}
+	this->AddField(frameOfst, 4, name, sb.ToCString());
+}
+
 void IO::FileAnalyse::FrameDetailHandler::AddStrC(UOSInt frameOfst, UOSInt size, Text::CString name, const UTF8Char *vBuff)
 {
 	Text::String *s = Text::String::New(vBuff, size);

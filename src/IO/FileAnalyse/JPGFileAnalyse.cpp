@@ -876,14 +876,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		frame->AddStrC(4, i + 1, CSTR("Identifier"), &tagData[4]);
 		if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("ICC_PROFILE")))
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
+			Media::ICCProfile::ParseFrame(frame, 18, &tagData[18], tag->size - 18);
+/*			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
 			if (icc)
 			{
 				Text::StringBuilderUTF8 sb;
 				icc->ToString(&sb);
 				frame->AddText(18, sb.ToCString());
 				DEL_CLASS(icc);
-			}
+			}*/
 		}
 		MemFree(tagData);
 	}

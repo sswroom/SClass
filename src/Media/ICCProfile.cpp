@@ -944,6 +944,84 @@ Media::ICCProfile *Media::ICCProfile::Parse(const UInt8 *buff, UOSInt buffSize)
 	return profile;
 }
 
+Bool Media::ICCProfile::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	if (ReadMUInt32(buff) != buffSize)
+		return false;
+	if (ReadMInt32(&buff[36]) != 0x61637370)
+		return false;
+
+	Data::DateTime dt;
+	frame->AddUInt(ofst, 4, CSTR("ICC Size"), buffSize);
+	frame->AddHex32Name(ofst + 4, CSTR("Preferred CMM Type"), ReadMUInt32(&buff[4]), GetNameCMMType(ReadMInt32(&buff[4])));
+	frame->AddUInt(ofst + 8, 1, CSTR("Major Version"), buff[8]);
+	frame->AddUInt(ofst + 9, 1, CSTR("Minor Version"), buff[9] >> 4);
+	frame->AddUInt(ofst + 9, 1, CSTR("Bug Fix Version"), buff[9] & 15);
+	frame->AddUInt(ofst + 10, 1, CSTR("Subclass Major Version"), buff[10]);
+	frame->AddUInt(ofst + 11, 1, CSTR("Subclass Minor Version"), buff[11]);
+	frame->AddHex32Name(ofst + 12, CSTR("Profile/Device class"), ReadMUInt32(&buff[12]), GetNameProfileClass(ReadMInt32(&buff[12])));
+	frame->AddHex32Name(ofst + 16, CSTR("Data colour space"), ReadMUInt32(&buff[16]), GetNameDataColorspace(ReadMInt32(&buff[16])));
+	frame->AddHex32Name(ofst + 20, CSTR("PCS (profile connection space)"), ReadMUInt32(&buff[20]), GetNameDataColorspace(ReadMInt32(&buff[20])));
+	ReadDateTimeNumber(&buff[24], &dt);
+	sptr = dt.ToString(sbuff);
+	frame->AddField(ofst + 24, 12, CSTR("Create Time"), CSTRP(sbuff, sptr));
+	frame->AddStrC(ofst + 36, 4, CSTR("Profile file signature"), &buff[36]);
+	frame->AddHex32Name(ofst + 40, CSTR("Primary Platform"), ReadMUInt32(&buff[40]), GetNamePrimaryPlatform(ReadMInt32(&buff[40])));
+	UInt32 flags = ReadMUInt32(&buff[44]);
+	frame->AddHex32(ofst + 44, CSTR("Profile flags"), flags);
+	frame->AddBool(ofst + 47, CSTR("Embedded profile"), (UInt8)(flags & 1));
+	frame->AddBool(ofst + 47, CSTR("Profile cannot be used independently of the embedded colour data"), (UInt8)(flags & 2));
+	frame->AddBool(ofst + 47, CSTR("MCS channels in this profile shall be a subset of the MCS channels in the profile it is connected to"), (UInt8)(flags & 4));
+	frame->AddHex32Name(ofst + 48, CSTR("Device manufacturer"), ReadMUInt32(&buff[48]), GetNameDeviceManufacturer(ReadMInt32(&buff[48])));
+	frame->AddHex32Name(ofst + 52, CSTR("Device model"), ReadMUInt32(&buff[52]), GetNameDeviceModel(ReadMInt32(&buff[52])));
+	frame->AddHex64(ofst + 56, CSTR("Device attributes"), ReadMUInt64(&buff[56]));
+	frame->AddBool(ofst + 63, CSTR("Transparency"), buff[63] & 1);
+	frame->AddBool(ofst + 63, CSTR("Matte"), buff[63] & 2);
+	frame->AddBool(ofst + 63, CSTR("Media Negative"), buff[63] & 4);
+	frame->AddBool(ofst + 63, CSTR("Color Media White"), buff[63] & 8);
+	frame->AddBool(ofst + 63, CSTR("Non-paper-based"), buff[63] & 16);
+	frame->AddBool(ofst + 63, CSTR("Textured"), buff[63] & 32);
+	frame->AddBool(ofst + 63, CSTR("Non-isotropic"), buff[63] & 64);
+	frame->AddBool(ofst + 63, CSTR("Self-luminous"), buff[63] & 128);
+	frame->AddUInt(ofst + 64, 4, CSTR("Rendering intent"), ReadMUInt32(&buff[64]));
+	FrameAddXYZNumber(frame, ofst + 68, CSTR("PCS illuminant"), &buff[68]);
+	frame->AddHex32Name(ofst + 80, CSTR("Profile creator"), ReadMUInt32(&buff[80]), GetNameDeviceManufacturer(ReadMInt32(&buff[80])));
+	frame->AddHexBuff(ofst + 84, 16, CSTR("Profile ID"), &buff[84], ' ', false);
+	frame->AddHex32(ofst + 100, CSTR("Spectral PCS"), ReadMUInt32(&buff[100]));
+	frame->AddUInt(ofst + 104, 2, CSTR("Spectral PCS start wavelength (S)"), ReadMUInt16(&buff[104]));
+	frame->AddUInt(ofst + 106, 2, CSTR("Spectral PCS end wavelength (E)"), ReadMUInt16(&buff[106]));
+	frame->AddUInt(ofst + 108, 2, CSTR("Spectral PCS number of steps (n)"), ReadMUInt16(&buff[108]));
+	frame->AddUInt(ofst + 110, 2, CSTR("Bi-Spectral PCS start wavelength (S)"), ReadMUInt16(&buff[110]));
+	frame->AddUInt(ofst + 112, 2, CSTR("Bi-Spectral PCS end wavelength (E)"), ReadMUInt16(&buff[112]));
+	frame->AddUInt(ofst + 114, 2, CSTR("Bi-Spectral PCS number of steps (n)"), ReadMUInt16(&buff[114]));
+	frame->AddHex32(ofst + 116, CSTR("MCS"), ReadMUInt32(&buff[116]));
+	frame->AddHex32(ofst + 120, CSTR("Profile/device sub-class"), ReadMUInt32(&buff[120]));
+	frame->AddHex32(ofst + 124, CSTR("Reserved"), ReadMUInt32(&buff[124]));
+	UInt32 cnt = ReadMUInt32(&buff[128]);
+	frame->AddUInt(ofst + 128, 4, CSTR("Tag count"), cnt);
+	UInt32 i = 0;
+	while (i < cnt)
+	{
+		Int32 tagSign;
+		UInt32 tagOfst;
+		UInt32 tagLeng;
+		Text::CString tagName;
+		tagSign = ReadMInt32(&buff[132 + 12 * i]);
+		tagOfst = ReadMUInt32(&buff[136 + 12 * i]);
+		tagLeng = ReadMUInt32(&buff[140 + 12 * i]);
+		tagName = GetNameTag(tagSign);
+		frame->AddHex32Name(ofst + 132 + 12 * i, CSTR("Tag signature"), (UInt32)tagSign, tagName);
+		frame->AddUInt(ofst + 136 + 12 * i, 4, CSTR("Offset to beginning of tag data element"), tagOfst);
+		frame->AddUInt(ofst + 140 + 12 * i, 4, CSTR("Size of tag data element"), tagLeng);
+
+		FrameDispTagType(frame, ofst + tagOfst, tagName, &buff[tagOfst], tagLeng);
+		i++;
+	}
+	return true;
+}
+
 void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, Data::DateTime *dt)
 {
 	dt->SetValue(ReadMUInt16(&buff[0]), (UInt8)ReadMUInt16(&buff[2]), (UInt8)ReadMUInt16(&buff[4]), (UInt8)ReadMUInt16(&buff[6]), (UInt8)ReadMUInt16(&buff[8]), (UInt8)ReadMUInt16(&buff[10]), 0);
@@ -1650,4 +1728,300 @@ Media::ICCProfile *Media::ICCProfile::NewSRGBProfile()
 const UInt8 *Media::ICCProfile::GetSRGBICCData()
 {
 	return srgbICC;
+}
+
+void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *xyzBuff)
+{
+	Media::ICCProfile::CIEXYZ xyz;
+	ReadXYZNumber(xyzBuff, &xyz);
+	Text::StringBuilderUTF8 sb;
+	GetDispCIEXYZ(&sb, &xyz);
+	frame->AddField(ofst, 12, fieldName, sb.ToCString());
+}
+
+
+void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *buff, UInt32 leng)
+{
+	Int32 typ = ReadMInt32(buff);
+	Int32 nCh;
+	Int32 val;
+	CIEXYZ xyz;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	Media::CS::TransferType tt;
+	Double gamma;
+	switch(typ)
+	{
+	case 0:
+		frame->AddField(ofst, leng, fieldName, CSTR("(not used)"));
+		break;
+	case 0x6368726D:
+		{
+			nCh = ReadMInt16(&buff[8]);
+			val = ReadMInt16(&buff[10]);
+			Text::StringBuilderUTF8 sb;
+			sb.AppendI32(val);
+			sb.AppendC(UTF8STRC(" {"));
+			val = 0;
+			while (val < nCh)
+			{
+				if (val > 0)
+				{
+					sb.AppendC(UTF8STRC(", "));
+				}
+				sb.AppendC(UTF8STRC("("));
+				Text::SBAppendF64(&sb, ReadU16Fixed16Number(&buff[val * 8 + 12]));
+				sb.AppendC(UTF8STRC(", "));
+				Text::SBAppendF64(&sb, ReadU16Fixed16Number(&buff[val * 8 + 16]));
+				sb.AppendC(UTF8STRC(")"));
+				val++;
+			}
+			sb.AppendC(UTF8STRC("}"));
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x74657874: //textType
+		{
+			if (buff[leng - 1])
+			{
+				frame->AddStrC(ofst + 8, leng - 8, fieldName, &buff[8]);
+			}
+			else
+			{
+				frame->AddStrS(ofst + 8, leng - 8, fieldName, &buff[8]);
+			}
+		}
+		break;
+	case 0x58595A20: //XYZType
+		{
+			val = 8;
+			nCh = 0;
+			Text::StringBuilderUTF8 sb;
+			while ((UInt32)val <= leng - 12)
+			{
+				if (nCh)
+					sb.AppendC(UTF8STRC("  "));
+				ReadXYZNumber(&buff[val], &xyz);
+				GetDispCIEXYZ(&sb, &xyz);
+				val += 12;
+				nCh++;
+			}
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x76696577: //viewingConditionsTag
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Illuminant: {"));
+			ReadXYZNumber(&buff[8], &xyz);
+			GetDispCIEXYZ(&sb, &xyz);
+
+			sb.AppendC(UTF8STRC("}, Surround: {"));
+			ReadXYZNumber(&buff[20], &xyz);
+			GetDispCIEXYZ(&sb, &xyz);
+			sb.AppendC(UTF8STRC("}, Illuminant type = "));
+			sb.AppendI32(ReadMInt32(&buff[32]));
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x6D656173: //measurementType
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Standard observer = "));
+			sb.Append(GetNameStandardObserver(ReadMInt32(&buff[8])));
+			sb.AppendC(UTF8STRC(", Measurement backing: {"));
+			ReadXYZNumber(&buff[12], &xyz);
+			GetDispCIEXYZ(&sb, &xyz);
+			sb.AppendC(UTF8STRC("}, Measurement geometry = "));
+			sb.AppendI32(ReadMInt32(&buff[24]));
+			sb.AppendC(UTF8STRC(", Measurement flare = "));
+			sb.AppendI32(ReadMInt32(&buff[28]));
+			sb.AppendC(UTF8STRC(", Standard illuminent = "));
+			sb.Append(GetNameStandardIlluminent(ReadMInt32(&buff[32])));
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x64657363: //desc
+		{
+			val = ReadMInt32(&buff[8]);
+			frame->AddUInt(ofst + 8, 4, CSTR("Desc Leng"), (UInt32)val);
+			if (buff[12 + val - 1])
+			{
+				frame->AddStrC(ofst + 12, (UInt32)val, fieldName, (const UTF8Char*)&buff[12]);
+			}
+			else
+			{
+				frame->AddStrS(ofst + 12, (UInt32)val, fieldName, (const UTF8Char*)&buff[12]);
+			}
+		}
+		break;
+	case 0x73696720: //signatureType
+		frame->AddHex32(ofst + 8, fieldName, ReadMUInt32(&buff[8]));
+		break;
+	case 0x63757276: //curveType
+		{
+			val = ReadMInt32(&buff[8]);
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Curve: "));
+			if (val > 1)
+			{
+				sb.AppendI32(val);
+				sb.AppendC(UTF8STRC(" entries, "));
+				sb.AppendC(UTF8STRC("Closed to "));
+			}
+			tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], &gamma);
+			sb.Append(Media::CS::TransferTypeGetName(tt));
+			if (tt == Media::CS::TRANT_GAMMA)
+			{
+				sb.AppendC(UTF8STRC(", gamma = "));
+				Text::SBAppendF64(&sb, gamma);
+			}
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x70617261: //parametricCurveType
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("CurveType: "));
+			sb.AppendI16(ReadMInt16(&buff[8]));
+			Double g;
+			Double a;
+			Double b;
+			Double c;
+			Double d;
+			Double e;
+			Double f;
+
+			switch (ReadMInt16(&buff[8]))
+			{
+			case 0:
+				g = ReadS15Fixed16Number(&buff[12]);
+				sb.AppendC(UTF8STRC(" Y = X ^ "));
+				Text::SBAppendF64(&sb, g);
+				break;
+			case 1:
+				g = ReadS15Fixed16Number(&buff[12]);
+				a = ReadS15Fixed16Number(&buff[16]);
+				b = ReadS15Fixed16Number(&buff[20]);
+				break;
+			case 2:
+				g = ReadS15Fixed16Number(&buff[12]);
+				a = ReadS15Fixed16Number(&buff[16]);
+				b = ReadS15Fixed16Number(&buff[20]);
+				c = ReadS15Fixed16Number(&buff[24]);
+				break;
+			case 3:
+				g = ReadS15Fixed16Number(&buff[12]);
+				a = ReadS15Fixed16Number(&buff[16]);
+				b = ReadS15Fixed16Number(&buff[20]);
+				c = ReadS15Fixed16Number(&buff[24]);
+				d = ReadS15Fixed16Number(&buff[28]);
+				sb.AppendC(UTF8STRC(" if (X >= "));
+				Text::SBAppendF64(&sb, d);
+				sb.AppendC(UTF8STRC(") Y = ("));
+				Text::SBAppendF64(&sb, a);
+				sb.AppendC(UTF8STRC(" * X + "));
+				Text::SBAppendF64(&sb, b);
+				sb.AppendC(UTF8STRC(") ^ "));
+				Text::SBAppendF64(&sb, g);
+				sb.AppendC(UTF8STRC(" else Y = "));
+				Text::SBAppendF64(&sb, c);
+				sb.AppendC(UTF8STRC(" * X"));
+				break;
+			case 4:
+				g = ReadS15Fixed16Number(&buff[12]);
+				a = ReadS15Fixed16Number(&buff[16]);
+				b = ReadS15Fixed16Number(&buff[20]);
+				c = ReadS15Fixed16Number(&buff[24]);
+				d = ReadS15Fixed16Number(&buff[28]);
+				e = ReadS15Fixed16Number(&buff[32]);
+				f = ReadS15Fixed16Number(&buff[36]);
+				sb.AppendC(UTF8STRC(" if (X >= "));
+				Text::SBAppendF64(&sb, d);
+				sb.AppendC(UTF8STRC(") Y = ("));
+				Text::SBAppendF64(&sb, a);
+				sb.AppendC(UTF8STRC(" * X + "));
+				Text::SBAppendF64(&sb, b);
+				sb.AppendC(UTF8STRC(") ^ "));
+				Text::SBAppendF64(&sb, g);
+				sb.AppendC(UTF8STRC(" + "));
+				Text::SBAppendF64(&sb, e);
+				sb.AppendC(UTF8STRC(" else Y = "));
+				Text::SBAppendF64(&sb, c);
+				sb.AppendC(UTF8STRC(" * X + "));
+				Text::SBAppendF64(&sb, f);
+				break;
+			default:
+				break;
+			}
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x6d667431: //lut8Type
+		frame->AddField(ofst, leng, fieldName, CSTR("LUT8"));
+		break;
+	case 0x6d667432: //lut16Type
+		frame->AddField(ofst, leng, fieldName, CSTR("LUT16"));
+		break;
+	case 0x75693332: //uInt32ArrayType
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("uInt32 Array ("));
+			sb.AppendU32((leng - 8) >> 2);
+			sb.AppendC(UTF8STRC(")"));
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x75693038: //uInt8ArrayType
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("uInt8 Array ("));
+			sb.AppendU32((leng - 8));
+			sb.AppendC(UTF8STRC(")"));
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x73663332: //s15Fixed16ArrayType
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("s15Fixed16 Array ("));
+			sb.AppendU32((leng - 8) >> 2);
+			sb.AppendC(UTF8STRC(")"));
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x6D6C7563: //multiLocalizedUnicodeType
+		{
+			Text::StringBuilderUTF8 sb;
+			Text::Encoding enc(1201);
+			OSInt i;
+			OSInt j;
+			i = ReadMInt32(&buff[8]);
+			j = 16;
+			while (i-- > 0)
+			{
+				sptr = enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMUInt32(&buff[j + 4]), 0);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+				if (i > 0)
+				{
+					sb.AppendC(UTF8STRC(", "));
+				}
+				j += 12;
+			}
+			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+		}
+		break;
+	case 0x6d6d6f64:
+		frame->AddField(ofst, leng, fieldName, CSTR("Unknown (mmod)"));
+		break;
+	case 0x6D414220:
+		frame->AddField(ofst, leng, fieldName, CSTR("lutAToBType"));
+		break;
+	case 0x6D424120:
+		frame->AddField(ofst, leng, fieldName, CSTR("lutBToAType"));
+		break;
+	default:
+		frame->AddField(ofst, leng, fieldName, CSTR("Unknown"));
+		break;
+	}
 }
