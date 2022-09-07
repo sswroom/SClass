@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/RIFFFileAnalyse.h"
+#include "Media/EXIFData.h"
+#include "Media/ICCProfile.h"
 #include "Sync/Thread.h"
 
 void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
@@ -669,6 +671,17 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 		frame->AddUInt(12, 3, CSTR("Canvas Width Minus One"), ReadUInt24(&packBuff[4]));
 		frame->AddUInt(15, 3, CSTR("Canvas Height Minus One"), ReadUInt24(&packBuff[7]));
 		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"ICCP")
+	{
+		packBuff = MemAlloc(UInt8, pack->packSize - 8);
+		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		Media::ICCProfile::ParseFrame(frame, 8, packBuff, pack->packSize - 8);
+		MemFree(packBuff);
+	}
+	else if (pack->packType == *(Int32*)"EXIF")
+	{
+		Media::EXIFData::ParseEXIFFrame(frame, 8, fd, pack->fileOfst + 8);
 	}
 	else if (pack->subPackType != 0)
 	{

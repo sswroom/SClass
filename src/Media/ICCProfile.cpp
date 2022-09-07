@@ -1742,7 +1742,7 @@ void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *f
 
 void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *buff, UInt32 leng)
 {
-	Int32 typ = ReadMInt32(buff);
+	UInt32 typ = ReadMUInt32(buff);
 	Int32 nCh;
 	Int32 val;
 	CIEXYZ xyz;
@@ -1750,10 +1750,12 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 	UTF8Char *sptr;
 	Media::CS::TransferType tt;
 	Double gamma;
+	frame->AddStrC(ofst, 4, CSTR("Tag Type"), buff);
+	frame->AddUInt(ofst + 4, 4, CSTR("Reserved"), ReadMUInt32(&buff[4]));
 	switch(typ)
 	{
 	case 0:
-		frame->AddField(ofst, leng, fieldName, CSTR("(not used)"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("(not used)"));
 		break;
 	case 0x6368726D:
 		{
@@ -1777,7 +1779,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				val++;
 			}
 			sb.AppendC(UTF8STRC("}"));
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x74657874: //textType
@@ -1806,7 +1808,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				val += 12;
 				nCh++;
 			}
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x76696577: //viewingConditionsTag
@@ -1821,7 +1823,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			GetDispCIEXYZ(&sb, &xyz);
 			sb.AppendC(UTF8STRC("}, Illuminant type = "));
 			sb.AppendI32(ReadMInt32(&buff[32]));
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x6D656173: //measurementType
@@ -1838,7 +1840,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			sb.AppendI32(ReadMInt32(&buff[28]));
 			sb.AppendC(UTF8STRC(", Standard illuminent = "));
 			sb.Append(GetNameStandardIlluminent(ReadMInt32(&buff[32])));
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x64657363: //desc
@@ -1876,7 +1878,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 				sb.AppendC(UTF8STRC(", gamma = "));
 				Text::SBAppendF64(&sb, gamma);
 			}
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x70617261: //parametricCurveType
@@ -1954,14 +1956,14 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			default:
 				break;
 			}
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x6d667431: //lut8Type
-		frame->AddField(ofst, leng, fieldName, CSTR("LUT8"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("LUT8"));
 		break;
 	case 0x6d667432: //lut16Type
-		frame->AddField(ofst, leng, fieldName, CSTR("LUT16"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("LUT16"));
 		break;
 	case 0x75693332: //uInt32ArrayType
 		{
@@ -1969,7 +1971,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			sb.AppendC(UTF8STRC("uInt32 Array ("));
 			sb.AppendU32((leng - 8) >> 2);
 			sb.AppendC(UTF8STRC(")"));
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x75693038: //uInt8ArrayType
@@ -1978,7 +1980,7 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			sb.AppendC(UTF8STRC("uInt8 Array ("));
 			sb.AppendU32((leng - 8));
 			sb.AppendC(UTF8STRC(")"));
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst + 8, leng - 8, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x73663332: //s15Fixed16ArrayType
@@ -1987,41 +1989,68 @@ void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *fr
 			sb.AppendC(UTF8STRC("s15Fixed16 Array ("));
 			sb.AppendU32((leng - 8) >> 2);
 			sb.AppendC(UTF8STRC(")"));
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
+			frame->AddField(ofst, 4, fieldName, sb.ToCString());
+
+			UOSInt i = 8;
+			UOSInt j = 0;
+			while (i < leng)
+			{
+				sb.ClearStr();
+				sb.Append(fieldName);
+				sb.AppendUTF8Char('[');
+				sb.AppendUOSInt(j);
+				sb.AppendUTF8Char(']');
+
+				sptr = Text::StrDouble(sbuff, ReadS15Fixed16Number(&buff[i]));
+				frame->AddField(ofst + i, 4, sb.ToCString(), CSTRP(sbuff, sptr));
+				i += 4;
+				j++;
+			}
 		}
 		break;
 	case 0x6D6C7563: //multiLocalizedUnicodeType
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::Encoding enc(1201);
-			OSInt i;
-			OSInt j;
-			i = ReadMInt32(&buff[8]);
+			UOSInt i;
+			UInt32 cnt;
+			UOSInt j;
+			UOSInt strOfst;
+			UOSInt strLen;
+			cnt = ReadMUInt32(&buff[8]);
+			frame->AddUInt(ofst + 8, 4, CSTR("Number of records (n)"), cnt);
+			frame->AddUInt(ofst + 12, 4, CSTR("Record Size"), ReadMUInt32(&buff[12]));
+			i = 0;
 			j = 16;
-			while (i-- > 0)
+			while (i < cnt)
 			{
-				sptr = enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMUInt32(&buff[j + 4]), 0);
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				if (i > 0)
-				{
-					sb.AppendC(UTF8STRC(", "));
-				}
+				frame->AddStrC(ofst + j, 2, CSTR("Record Language Code"), &buff[j]);
+				frame->AddStrC(ofst + j + 2, 2, CSTR("Record Country Code"), &buff[j + 2]);
+				frame->AddUInt(ofst + j + 4, 4, CSTR("Record String Length"), strLen = ReadMUInt32(&buff[j + 4]));
+				frame->AddUInt(ofst + j + 8, 4, CSTR("Record String Offset"), strOfst = ReadMUInt32(&buff[j + 8]));
+				sptr = enc.UTF8FromBytes(sbuff, &buff[strOfst], strLen, 0);
+				sb.ClearStr();
+				sb.Append(fieldName);
+				sb.AppendUTF8Char('[');
+				sb.AppendUOSInt(i);
+				sb.AppendUTF8Char(']');
+				frame->AddField(ofst + strOfst, strLen, sb.ToCString(), CSTRP(sbuff, sptr));
 				j += 12;
+				i++;
 			}
-			frame->AddField(ofst, leng, fieldName, sb.ToCString());
 		}
 		break;
 	case 0x6d6d6f64:
-		frame->AddField(ofst, leng, fieldName, CSTR("Unknown (mmod)"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("Unknown (mmod)"));
 		break;
 	case 0x6D414220:
-		frame->AddField(ofst, leng, fieldName, CSTR("lutAToBType"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("lutAToBType"));
 		break;
 	case 0x6D424120:
-		frame->AddField(ofst, leng, fieldName, CSTR("lutBToAType"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("lutBToAType"));
 		break;
 	default:
-		frame->AddField(ofst, leng, fieldName, CSTR("Unknown"));
+		frame->AddField(ofst + 8, leng - 8, fieldName, CSTR("Unknown"));
 		break;
 	}
 }

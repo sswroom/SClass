@@ -10,11 +10,11 @@
 void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buffOfst, Media::EXIFData *exif)
 {
 	UInt64 currOfst = buffOfst;
-	Data::ArrayListInt32 ids;
+	Data::ArrayListUInt32 ids;
 	UOSInt i;
 	UOSInt j;
 	UInt8 *ifd;
-	Int32 exifId;
+	UInt32 exifId;
 	Media::EXIFData::EXIFItem *exifItem;
 	exif->GetExifIds(&ids);
 	i = 0;
@@ -660,13 +660,13 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		}
 
 		UInt64 ifdOfst = currOfst;
-		Data::ArrayListInt32 ids;
+		Data::ArrayListUInt32 ids;
 		UOSInt k;
 		UOSInt l;
 		UInt8 *ifd;
 		UInt64 stripOfst = 0;
 		UInt64 stripCntOfst = 0;
-		Int32 exifId;
+		UInt32 exifId;
 		Media::EXIFData::EXIFItem *exifItem;
 		ids.Clear();
 		newExif->GetExifIds(&ids);

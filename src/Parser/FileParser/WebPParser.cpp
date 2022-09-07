@@ -99,7 +99,44 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFile(IO::IStreamData *fd,
 	if (flags & EXIF_FLAG)
 	{
 		WebPDemuxGetChunk(demux, "EXIF", 1, &chunk_iter);
-		//Media::EXIFData *exif = Media::EXIFData::ParseIFD()
+		const UInt8 *buff = chunk_iter.chunk.bytes;
+		Bool succ = true;
+		Media::EXIFData::RInt32Func readInt32;
+		Media::EXIFData::RInt16Func readInt16;
+		if (*(Int16*)&buff[0] == *(Int16*)"II")
+		{
+			readInt32 = Media::EXIFData::TReadInt32;
+			readInt16 = Media::EXIFData::TReadInt16;
+		}
+		else if (*(Int16*)&buff[0] == *(Int16*)"MM")
+		{
+			readInt32 = Media::EXIFData::TReadMInt32;
+			readInt16 = Media::EXIFData::TReadMInt16;
+		}
+		else
+		{
+			succ = false;
+		}
+		if (succ)
+		{
+			if (readInt16(&buff[2]) != 42)
+			{
+				succ = false;
+			}
+			if (readInt32(&buff[4]) != 8)
+			{
+				succ = false;
+			}
+		}
+		if (succ)
+		{
+			if (simg->exif)
+			{
+				DEL_CLASS(simg->exif);
+			}
+			UInt32 nextOfst;
+			simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, readInt32, readInt16, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
+		}
 		WebPDemuxReleaseChunkIterator(&chunk_iter);
 	}
 	if (flags & XMP_FLAG)
@@ -109,6 +146,17 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFile(IO::IStreamData *fd,
 	}
 	WebPDemuxDelete(demux);
 	MemFree(fileData);
+
+	if (simg->exif)
+	{
+		Double hdpi = simg->exif->GetHDPI();
+		Double vdpi = simg->exif->GetVDPI();
+		if (hdpi != 0 && vdpi != 0)
+		{
+			simg->info.hdpi = hdpi;
+			simg->info.vdpi = vdpi;
+		}
+	}
 
 	Media::ImageList *imgList;
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));

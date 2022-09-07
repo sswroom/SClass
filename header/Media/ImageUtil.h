@@ -30,6 +30,7 @@ extern "C"
 	void ImageUtil_ConvB5G6R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvB8G8R8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvR8G8B8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
+	void ImageUtil_ConvARGB32_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvR8G8B8A8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvR8G8B8N8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvARGB48_32(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);

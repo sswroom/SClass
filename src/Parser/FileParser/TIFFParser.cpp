@@ -1626,7 +1626,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 	return imgList;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUInt(Media::EXIFData *exif, Int32 id)
+UInt32 Parser::FileParser::TIFFParser::GetUInt(Media::EXIFData *exif, UInt32 id)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
@@ -1640,7 +1640,7 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt(Media::EXIFData *exif, Int32 id)
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUInt0(Media::EXIFData *exif, Int32 id)
+UInt32 Parser::FileParser::TIFFParser::GetUInt0(Media::EXIFData *exif, UInt32 id)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
@@ -1652,7 +1652,7 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(Media::EXIFData *exif, Int32 id)
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUIntSum(Media::EXIFData *exif, Int32 id, UOSInt *nChannels)
+UInt32 Parser::FileParser::TIFFParser::GetUIntSum(Media::EXIFData *exif, UInt32 id, UOSInt *nChannels)
 {
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)

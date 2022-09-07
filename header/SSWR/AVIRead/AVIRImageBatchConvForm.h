@@ -19,6 +19,9 @@ namespace SSWR
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
 			UI::GUIButton *btnBrowse;
+			UI::GUILabel *lblOutFormat;
+			UI::GUIRadioButton *radFormatJPG;
+			UI::GUIRadioButton *radFormatWebP;
 			UI::GUILabel *lblQuality;
 			UI::GUITextBox *txtQuality;
 			UI::GUICheckBox *chkSubdir;

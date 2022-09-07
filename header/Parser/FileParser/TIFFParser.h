@@ -22,9 +22,9 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
 		private:
-			static UInt32 GetUInt(Media::EXIFData *exif, Int32 id);
-			static UInt32 GetUInt0(Media::EXIFData *exif, Int32 id);
-			static UInt32 GetUIntSum(Media::EXIFData *exif, Int32 id, UOSInt *nChannels);
+			static UInt32 GetUInt(Media::EXIFData *exif, UInt32 id);
+			static UInt32 GetUInt0(Media::EXIFData *exif, UInt32 id);
+			static UInt32 GetUIntSum(Media::EXIFData *exif, UInt32 id, UOSInt *nChannels);
 		};
 	}
 }

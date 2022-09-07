@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Exporter/GUIJPGExporter.h"
+#include "Exporter/WebPExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -56,11 +57,22 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 
-	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.tif"));
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	void *param;
 	IO::Path::FindFileSession *sess;
 	Bool succ = true;
-	Exporter::GUIJPGExporter exporter;
+	IO::FileExporter *exporter;
+	Text::CString ext;
+	if (me->radFormatWebP->IsSelected())
+	{
+		NEW_CLASS(exporter, Exporter::WebPExporter());
+		ext = CSTR("webp");
+	}
+	else
+	{
+		NEW_CLASS(exporter, Exporter::GUIJPGExporter());
+		ext = CSTR("jpg");
+	}
 	IO::Path::PathType pt;
 	Media::ImageList *imgList;
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -81,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		}
 		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
-			if (pt == IO::Path::PathType::File)
+			if (pt == IO::Path::PathType::File && !Text::StrEndsWithICaseC(sptr, (UOSInt)(sptrEnd - sptr), ext.v, ext.leng))
 			{
 				{
 					IO::StmData::FileData fd({sbuff, (UOSInt)(sptrEnd - sbuff)}, false);
@@ -91,16 +103,16 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 				{
 					imgList->ToStaticImage(0);
 					((Media::StaticImage*)imgList->GetImage(0, 0))->To32bpp();
-					param = exporter.CreateParam(imgList);
+					param = exporter->CreateParam(imgList);
 					Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
-					sptr2End = IO::Path::ReplaceExt(sptr2, UTF8STRC("jpg"));
+					sptr2End = IO::Path::ReplaceExt(sptr2, ext.v, ext.leng);
 					if (param)
 					{
-						exporter.SetParamInt32(param, 0, quality);
+						exporter->SetParamInt32(param, 0, quality);
 					}
 					{
 						IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (!exporter.ExportFile(&fs, CSTRP(sbuff2, sptr2End), imgList, param))
+						if (!exporter->ExportFile(&fs, CSTRP(sbuff2, sptr2End), imgList, param))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Error in converting to "));
@@ -115,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 
 					if (param)
 					{
-						exporter.DeleteParam(param);
+						exporter->DeleteParam(param);
 					}
 					DEL_CLASS(imgList);
 				}
@@ -138,6 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		}
 		IO::Path::FindFileClose(sess);
 	}
+	DEL_CLASS(exporter);
 }
 
 SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 184, ui)
@@ -156,16 +169,22 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("&Browse")));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
+	NEW_CLASS(this->lblOutFormat, UI::GUILabel(ui, this, CSTR("Output Format")));
+	this->lblOutFormat->SetRect(0, 24, 100, 23, false);
+	NEW_CLASS(this->radFormatJPG, UI::GUIRadioButton(ui, this, CSTR("JPEG"), true));
+	this->radFormatJPG->SetRect(100, 24, 100, 23, false);
+	NEW_CLASS(this->radFormatWebP, UI::GUIRadioButton(ui, this, CSTR("WebP"), false));
+	this->radFormatWebP->SetRect(100, 48, 100, 23, false);
 	NEW_CLASS(this->lblQuality, UI::GUILabel(ui, this, CSTR("Quality")));
-	this->lblQuality->SetRect(0, 24, 100, 23, false);
+	this->lblQuality->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, this, CSTR("100")));
-	this->txtQuality->SetRect(100, 24, 100, 23, false);
+	this->txtQuality->SetRect(100, 72, 100, 23, false);
 	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, this, CSTR("Subdir"), true));
-	this->chkSubdir->SetRect(0, 48, 100, 23, false);
+	this->chkSubdir->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, this, CSTR("JPEG")));
-	this->txtSubdir->SetRect(100, 48, 100, 23, false);
+	this->txtSubdir->SetRect(100, 96, 100, 23, false);
 	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, CSTR("&Convert")));
-	this->btnConvert->SetRect(100, 72, 75, 23, false);
+	this->btnConvert->SetRect(100, 120, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 }
 

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Exporter/WebPExporter.h"
 #include "Media/ImageList.h"
+#include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 #include <webp/encode.h>
@@ -94,13 +95,30 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
 		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false);
-		if (quality < 0)
+		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
-			vp8len = WebPEncodeLosslessBGRA(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
+			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispWidth * img->info.dispHeight * 3);
+			ImageUtil_ConvARGB32_B8G8R8(buff, imgBuff, img->info.dispWidth, img->info.dispHeight, (OSInt)bpl, (OSInt)img->info.dispWidth * 3);
+			if (quality < 0)
+			{
+				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.dispWidth * 3, &vp8);
+			}
+			else
+			{
+				vp8len = WebPEncodeBGR(imgBuff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.dispWidth * 3, (float)quality, &vp8);
+			}
+			MemFree(imgBuff);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGRA(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, (float)quality, &vp8);
+			if (quality < 0)
+			{
+				vp8len = WebPEncodeLosslessBGRA(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
+			}
+			else
+			{
+				vp8len = WebPEncodeBGRA(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, (float)quality, &vp8);
+			}
 		}
 		MemFree(buff);
 	}
@@ -132,6 +150,27 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			data.bytes = icc;
 			data.size = (size_t)ReadUInt32(icc);
 			WebPMuxSetChunk(mux, "ICCP", &data, 0);
+		}
+		if (img->exif)
+		{
+			UInt32 exifSize;
+			UInt32 endOfst;
+			UInt32 k;
+			UInt32 l;
+			UInt8 *exifBuff;
+			img->exif->GetExifBuffSize(&exifSize, &endOfst);
+			exifBuff = MemAlloc(UInt8, exifSize + 8);
+			WriteInt16(&exifBuff[0], ReadInt16((const UInt8*)"II"));
+			WriteInt16(&exifBuff[2], 42);
+			WriteInt32(&exifBuff[4], 8);
+			k = 8;
+			l = endOfst + 8;
+			img->exif->ToExifBuff(exifBuff, &k, &l);
+
+			data.bytes = exifBuff;
+			data.size = (size_t)exifSize + 8;
+			WebPMuxSetChunk(mux, "EXIF", &data, 1);
+			MemFree(exifBuff);
 		}
 		WebPMuxAssemble(mux, &data);
 		WebPMuxDelete(mux);

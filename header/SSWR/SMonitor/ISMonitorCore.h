@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_SMONITOR_ISMONITORCORE
 #define _SM_SSWR_SMONITOR_ISMONITORCORE
 #include "Data/ArrayList.h"
+#include "Data/Int32Map.h"
 #include "Data/Int64Map.h"
 #include "IO/MemoryStream.h"
 #include "Media/DrawEngine.h"
