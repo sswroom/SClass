@@ -2302,8 +2302,6 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 	UOSInt k;
 	UInt32 v;
 
-	UOSInt oriLen = sb->GetLength();
-
 	sb->AppendC(UTF8STRC("EXIF Content:"));
 	this->GetExifIds(&exifIds);
 	i = 0;
@@ -4231,6 +4229,7 @@ Text::CString Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt3
 			infos = nikon3Infos;
 			cnt = sizeof(nikon3Infos) / sizeof(nikon3Infos[0]);
 			break;
+		case EM_STANDARD:
 		default:
 			infos = defInfos;
 			cnt = sizeof(defInfos) / sizeof(defInfos[0]);

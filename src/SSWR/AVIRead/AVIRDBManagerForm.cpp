@@ -130,6 +130,68 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 	SDEL_STRING(tableName);
 }
 
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (button == MBTN_LEFT)
+	{
+		me->mapDownPos = scnPos;
+	}
+	return false;
+}
+
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	if (button == MBTN_LEFT)
+	{
+		if (me->mapDownPos == scnPos)
+		{
+			void *sess;
+			Int64 id;
+			UOSInt i;
+			UOSInt j;
+			UTF8Char sbuff[512];
+			UTF8Char *sptr;
+			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
+			Math::CoordinateSystem *csys = me->mapEnv->GetCoordinateSystem();
+			Math::CoordinateSystem *lyrCSys = me->dbLayer->GetCoordinateSystem();
+			Double tmp;
+			if (csys && lyrCSys && !csys->Equals(lyrCSys))
+			{
+				Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt.x, mapPt.y, 0, &mapPt.x, &mapPt.y, &tmp);
+			}
+			sess = me->dbLayer->BeginGetObject();
+			id = me->dbLayer->GetNearestObjectId(sess, mapPt, &mapPt);
+			me->lvMapRecord->ClearItems();
+			if (id == -1)
+			{
+			}
+			else
+			{
+				Data::ArrayListInt64 arr;
+				void *nameArr;
+				me->dbLayer->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
+				i = 0;
+				j = me->dbLayer->GetColumnCnt();
+				while (i < j)
+				{
+					sptr = me->dbLayer->GetColumnName(sbuff, i);
+					me->lvMapRecord->AddItem(CSTRP(sbuff, sptr), 0);
+					sbuff[0] = 0;
+					sptr = me->dbLayer->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
+					me->lvMapRecord->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+					i++;
+				}
+				me->dbLayer->ReleaseNameArr(nameArr);
+			}
+			me->dbLayer->EndGetObject(sess);
+			return false;
+		}
+	}
+	return false;
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
@@ -581,7 +643,11 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	Map::IMapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
 	this->mapEnv->AddLayer(0, layer, true);
 	NEW_CLASS(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
-	this->mapEnv->AddLayer(0, this->dbLayer, true);
+	UOSInt i = this->mapEnv->AddLayer(0, this->dbLayer, true);
+	Map::MapEnv::LayerItem settings;
+	this->mapEnv->GetLayerProp(&settings, 0, i);
+	settings.fillStyle = 0xc0ff905b;
+	this->mapEnv->SetLayerProp(&settings, 0, i);
 	layer->AddUpdatedHandler(OnLayerUpdated, this);
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -668,6 +734,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->hspMap, UI::GUIHSplitter(ui, this->tpMap, 3, false));
 	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, this->tpMap, this->core->GetDrawEngine(), this->mapEnv, this->colorSess));
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->mapMain->HandleMouseDown(OnMapMouseDown, this);
+	this->mapMain->HandleMouseUp(OnMapMouseUp, this);
 	NEW_CLASS(this->pnlMapTable, UI::GUIPanel(ui, this->pnlMap));
 	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
 	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);

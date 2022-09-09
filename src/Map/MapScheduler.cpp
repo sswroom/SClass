@@ -183,33 +183,43 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 
 void Map::MapScheduler::DrawPoints(Math::Geometry::Point *pt)
 {
-	Math::RectAreaDbl *objPtr = &this->objBounds[*this->objCnt];
-	Math::Coord2DDbl pts;
-	Double imgW;
-	Double imgH;
-	Double scale = this->img->GetHDPI() / this->ico->GetHDPI();
-	Double scnW = this->map->GetScnWidth();
-	Double scnH = this->map->GetScnHeight();
-	Double spotX = this->icoSpotX * scale;
-	Double spotY = this->icoSpotY * scale;
-	imgW = UOSInt2Double(this->ico->GetWidth()) * scale;
-	imgH = UOSInt2Double(this->ico->GetHeight()) * scale;
-	pts = this->map->MapXYToScnXY(pt->GetCenter());
-	*this->isLayerEmpty = false;
-	if (*this->objCnt >= this->maxCnt)
+	if (this->ico)
 	{
-		--(*this->objCnt);
-		objPtr -= 4;
+		Math::RectAreaDbl *objPtr = &this->objBounds[*this->objCnt];
+		Math::Coord2DDbl pts;
+		Double imgW;
+		Double imgH;
+		Double scale = this->img->GetHDPI() / this->ico->GetHDPI();
+		Double scnW = this->map->GetScnWidth();
+		Double scnH = this->map->GetScnHeight();
+		Double spotX = this->icoSpotX * scale;
+		Double spotY = this->icoSpotY * scale;
+		imgW = UOSInt2Double(this->ico->GetWidth()) * scale;
+		imgH = UOSInt2Double(this->ico->GetHeight()) * scale;
+		pts = this->map->MapXYToScnXY(pt->GetCenter());
+		*this->isLayerEmpty = false;
+		if (*this->objCnt >= this->maxCnt)
+		{
+			--(*this->objCnt);
+			objPtr -= 4;
+		}
+		objPtr->tl.x = pts.x - spotX;
+		objPtr->tl.y = pts.y - spotY;
+		objPtr->br.x = objPtr->tl.x + imgW;
+		objPtr->br.y = objPtr->tl.y + imgH;
+		if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
+		{
+			this->img->DrawImagePt(this->ico, objPtr->tl.x, objPtr->tl.y);
+			objPtr += 1;
+			++*(this->objCnt);
+		}
 	}
-	objPtr->tl.x = pts.x - spotX;
-	objPtr->tl.y = pts.y - spotY;
-	objPtr->br.x = objPtr->tl.x + imgW;
-	objPtr->br.y = objPtr->tl.y + imgH;
-	if (objPtr->tl.x < scnW && objPtr->tl.y < scnH && objPtr->br.x >= 0 && objPtr->br.y >= 0)
+	else
 	{
-		this->img->DrawImagePt(this->ico, objPtr->tl.x, objPtr->tl.y);
-		objPtr += 1;
-		++*(this->objCnt);
+		Math::Coord2DDbl pts;
+		pts = this->map->MapXYToScnXY(pt->GetCenter());
+		Double scale = this->img->GetHDPI() / 72;
+		this->img->DrawRect(pts.x - 6 * scale, pts.y - 6 * scale, 13 * scale, 13 * scale, 0, this->b);
 	}
 }
 

@@ -22,6 +22,7 @@ namespace Map
 		Bool pointType;
 
 		void ClearDB();
+		void *InitNameArr();
 	public:
 		DBMapLayer(Text::String *layerName);
 		DBMapLayer(Text::CString layerName);

@@ -75,6 +75,7 @@ namespace SSWR
 			Media::ColorManagerSess *colorSess;
 			Map::MapEnv *mapEnv;
 			Map::DBMapLayer *dbLayer;
+			Math::Coord2D<OSInt> mapDownPos;
 
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
@@ -84,6 +85,8 @@ namespace SSWR
 			static Bool __stdcall OnTableRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnMapSchemaSelChg(void *userObj);
 			static void __stdcall OnMapTableSelChg(void *userObj);
+			static Bool __stdcall OnMapMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static Bool __stdcall OnMapMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static void __stdcall OnDatabaseChangeClicked(void *userObj);
 			static void __stdcall OnDatabaseDeleteClicked(void *userObj);
 			static void __stdcall OnDatabaseNewClicked(void *userObj);

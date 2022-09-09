@@ -1,5 +1,12 @@
 #include "Stdafx.h"
 #include "Map/DBMapLayer.h"
+#include "Math/CoordinateSystemManager.h"
+
+struct DBMapLayer_NameArr
+{
+	Int64 currId;
+	Text::String **names;
+};
 
 void Map::DBMapLayer::ClearDB()
 {
@@ -19,6 +26,24 @@ void Map::DBMapLayer::ClearDB()
 		DEL_CLASS(vec);
 	}
 	this->vecMap.Clear();
+}
+
+void *Map::DBMapLayer::InitNameArr()
+{
+	if (this->tabDef)
+	{
+		UOSInt i;
+		DBMapLayer_NameArr *nameArr = MemAlloc(DBMapLayer_NameArr, 1);
+		nameArr->currId = 0;
+		i = this->tabDef->GetColCnt();
+		nameArr->names = MemAlloc(Text::String*, i);
+		while (i-- > 0)
+		{
+			nameArr->names[i] = 0;
+		}
+		return nameArr;
+	}
+	return 0;
 }
 
 Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
@@ -61,19 +86,28 @@ void Map::DBMapLayer::SetMixedType(Bool pointType)
 UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
 	UOSInt initCnt = outArr->GetCount();
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->vecMap.GetValues();
-	Math::Geometry::Vector2D *vec;
-	UOSInt i = 0;
-	UOSInt j = vecList->GetCount();
-	while (i < j)
+	if (this->pointType)
 	{
-		vec = vecList->GetItem(i);
-		if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
+		const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->vecMap.GetValues();
+		Math::Geometry::Vector2D *vec;
+		UOSInt i = 0;
+		UOSInt j = vecList->GetCount();
+		while (i < j)
 		{
-			outArr->Add(this->vecMap.GetKey(i));
+			vec = vecList->GetItem(i);
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
+			{
+				outArr->Add(this->vecMap.GetKey(i));
+			}
+			i++;
 		}
-		i++;
 	}
+	else
+	{
+		outArr->AddAll(this->vecMap.GetKeys());
+	}
+	if (nameArr)
+		*nameArr = InitNameArr();
 	return outArr->GetCount() - initCnt;
 }
 
@@ -90,19 +124,37 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **n
 	Math::RectAreaDbl bounds;
 	UOSInt i = 0;
 	UOSInt j = vecList->GetCount();
-	while (i < j)
+	if (this->pointType)
 	{
-		vec = vecList->GetItem(i);
-		if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
+		while (i < j)
 		{
+			vec = vecList->GetItem(i);
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
+			{
+				vec->GetBounds(&bounds);
+				if (bounds.OverlapOrTouch(rect))
+				{
+					outArr->Add(this->vecMap.GetKey(i));
+				}
+			}
+			i++;
+		}
+	}
+	else
+	{
+		while (i < j)
+		{
+			vec = vecList->GetItem(i);
 			vec->GetBounds(&bounds);
 			if (bounds.OverlapOrTouch(rect))
 			{
 				outArr->Add(this->vecMap.GetKey(i));
 			}
+			i++;
 		}
-		i++;
 	}
+	if (nameArr)
+		*nameArr = InitNameArr();
 	return outArr->GetCount() - initCnt;
 }
 
@@ -113,13 +165,60 @@ Int64 Map::DBMapLayer::GetObjectIdMax()
 
 void Map::DBMapLayer::ReleaseNameArr(void *nameArr)
 {
-
+	if (nameArr)
+	{
+		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
+		UOSInt i = this->tabDef->GetColCnt();
+		while (i-- > 0)
+		{
+			SDEL_STRING(narr->names[i]);
+		}
+		MemFree(narr->names);
+		MemFree(nameArr);
+	}
 }
 
 UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
+	if (nameArr)
+	{
+		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
+		UOSInt colCnt = this->tabDef->GetColCnt();
+		if (strIndex >= colCnt)
+		{
+			return 0;
+		}
+		if (narr->currId != id)
+		{
+			Data::QueryConditions cond;
+			DB::ColDef *idCol = this->tabDef->GetCol(this->idCol);
+			cond.Int64Equals(idCol->GetColName()->ToCString(), id);
+			DB::DBReader *r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+			if (r)
+			{
+				if (r->ReadNext())
+				{
+					UOSInt i = 0;
+					while (i < colCnt)
+					{
+						SDEL_STRING(narr->names[i]);
+						narr->names[i] = r->GetNewStr(i);
+						i++;
+					}
+					narr->currId = id;
+				}
+				db->CloseReader(r);
+			}
+		}
+		if (narr->currId == id)
+		{
+			if (narr->names[strIndex])
+			{
+				return narr->names[strIndex]->ConcatToS(buff, buffSize);
+			}
+		}
+	}
 	return 0;
-	////////////////////////////////////
 }
 
 UOSInt Map::DBMapLayer::GetColumnCnt()
@@ -299,6 +398,8 @@ Bool Map::DBMapLayer::SetDatabase(DB::DBTool *db, Text::CString schemaName, Text
 	Int64 id;
 	Math::RectAreaDbl bounds;
 	Math::Geometry::Vector2D *vec;
+	UInt32 layerSrid = 0;
+	UInt32 vecSrid;
 	while (r->ReadNext())
 	{
 		id = r->GetInt64(this->idCol);
@@ -316,10 +417,28 @@ Bool Map::DBMapLayer::SetDatabase(DB::DBTool *db, Text::CString schemaName, Text
 				this->min = this->min.Min(bounds.tl);
 				this->max = this->max.Max(bounds.br);
 			}
+			vecSrid = vec->GetSRID();
+			if (vecSrid != 0 && layerSrid != vecSrid)
+			{
+				layerSrid = vecSrid;
+			}
 			vec = this->vecMap.Put(id, vec);
 			SDEL_CLASS(vec);
 		}
 	}
 	this->db->CloseReader(r);
+
+	if (layerSrid != 0)
+	{
+		if (this->csys != 0 && this->csys->GetSRID() != layerSrid)
+		{
+			DEL_CLASS(this->csys);
+			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
+		}
+		else if (this->csys == 0)
+		{
+			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
+		}
+	} 
 	return this->vecMap.GetCount() > 0;
 }
