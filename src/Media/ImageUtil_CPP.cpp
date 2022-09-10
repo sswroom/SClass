@@ -113,7 +113,7 @@ extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, UOSInt w, UOSInt h, U
 	{
 		if (pixelPtr[0] != 0)
 		{
-			*(Int32*)pixelPtr = col;
+			*(UInt32*)pixelPtr = col;
 		}
 		pixelPtr += 4;
 	}
@@ -127,7 +127,7 @@ extern "C" void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, UOSInt w, UOSInt h, 
 	{
 		if (pixelPtr[0] != 0)
 		{
-			*(Int32*)pixelPtr = col;
+			*(UInt32*)pixelPtr = col;
 		}
 		pixelPtr += 4;
 	}
@@ -419,7 +419,7 @@ extern "C" void ImageUtil_ImageColorFill32(UInt8 *pixelPtr, OSInt w, OSInt h, OS
 	}
 }
 
-extern "C" void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, Int32 col)
+extern "C" void ImageUtil_ImageColorBlend32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 col)
 {
 	UInt32 a = (col >> 24);
 	UInt32 cMul = 255 - a;
@@ -569,10 +569,10 @@ extern "C" void ImageUtil_ImageColorMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSI
 		cnt = w;
 		while (cnt-- > 0)
 		{
-			tmpPtr[0] = (tmpPtr[0] * b) >> 16;
-			tmpPtr[1] = (tmpPtr[1] * g) >> 16;
-			tmpPtr[2] = (tmpPtr[2] * r) >> 16;
-			tmpPtr[3] = (tmpPtr[3] * a) >> 16;
+			tmpPtr[0] = (UInt8)((tmpPtr[0] * b) >> 16);
+			tmpPtr[1] = (UInt8)((tmpPtr[1] * g) >> 16);
+			tmpPtr[2] = (UInt8)((tmpPtr[2] * r) >> 16);
+			tmpPtr[3] = (UInt8)((tmpPtr[3] * a) >> 16);
 			tmpPtr += 4;
 		}
 		pixelPtr += bpl;
@@ -998,11 +998,11 @@ extern "C" void ImageUtil_ConvB5G5R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 		{
 			v = ReadUInt16(srcPtr);
 			cv = v & 0x1f;
-			destPtr[0] = (cv << 3) | (cv >> 2);
+			destPtr[0] = (UInt8)((cv << 3) | (cv >> 2));
 			cv = (v >> 5) & 0x1f;
-			destPtr[1] = (cv << 3) | (cv >> 2);
-			cv = v >> 10;
-			destPtr[2] = (cv << 3) | (cv >> 2);
+			destPtr[1] = (UInt8)((cv << 3) | (cv >> 2));
+			cv = (UInt8)(v >> 10);
+			destPtr[2] = (UInt8)((cv << 3) | (cv >> 2));
 			destPtr[3] = 0xff;
 			srcPtr += 2;
 			destPtr += 4;
@@ -1026,11 +1026,11 @@ extern "C" void ImageUtil_ConvB5G6R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 		{
 			v = ReadUInt16(srcPtr);
 			cv = v & 0x1f;
-			destPtr[0] = (cv << 3) | (cv >> 2);
+			destPtr[0] = (UInt8)((cv << 3) | (cv >> 2));
 			cv = (v >> 5) & 0x3f;
-			destPtr[1] = (cv << 2) | (cv >> 4);
-			cv = v >> 11;
-			destPtr[2] = (cv << 3) | (cv >> 2);
+			destPtr[1] = (UInt8)((cv << 2) | (cv >> 4));
+			cv = (UInt8)(v >> 11);
+			destPtr[2] = (UInt8)((cv << 3) | (cv >> 2));
 			destPtr[3] = 0xff;
 			srcPtr += 2;
 			destPtr += 4;
@@ -1212,9 +1212,9 @@ extern "C" void ImageUtil_ConvA2B10G10R10_32(const UInt8 *srcPtr, UInt8 *destPtr
 			r = v & 0x3ff;
 			g = (v >> 10) & 0x3ff;
 			b = (v >> 20) & 0x3ff;
-			a = (v >> 30) & 3;
-			a = (a << 2) | a;
-			a = (a << 4) | a;
+			a = (UInt16)((v >> 30) & 3);
+			a = (UInt16)((a << 2) | a);
+			a = (UInt16)((a << 4) | a);
 			destPtr[0] = (UInt8)(b >> 2);
 			destPtr[1] = (UInt8)(g >> 2);
 			destPtr[2] = (UInt8)(r >> 2);
@@ -2187,14 +2187,14 @@ extern "C" void ImageUtil_ConvB5G5R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 		{
 			v = ReadUInt16(srcPtr);
 			cv = v & 0x1f;
-			destPtr[0] = (cv << 6) | (cv << 1) | (cv >> 4);
-			destPtr[1] = (cv << 3) | (cv >> 2);
+			destPtr[0] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
+			destPtr[1] = (UInt8)((cv << 3) | (cv >> 2));
 			cv = (v >> 5) & 0x1f;
-			destPtr[2] = (cv << 6) | (cv << 1) | (cv >> 4);
-			destPtr[3] = (cv << 3) | (cv >> 2);
-			cv = v >> 10;
-			destPtr[4] = (cv << 6) | (cv << 1) | (cv >> 4);
-			destPtr[5] = (cv << 3) | (cv >> 2);
+			destPtr[2] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
+			destPtr[3] = (UInt8)((cv << 3) | (cv >> 2));
+			cv = (UInt8)(v >> 10);
+			destPtr[4] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
+			destPtr[5] = (UInt8)((cv << 3) | (cv >> 2));
 			destPtr[6] = 0xff;
 			destPtr[7] = 0xff;
 			srcPtr += 2;
@@ -2219,14 +2219,14 @@ extern "C" void ImageUtil_ConvB5G6R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 		{
 			v = ReadUInt16(srcPtr);
 			cv = v & 0x1f;
-			destPtr[0] = (cv << 6) | (cv << 1) | (cv >> 4);
-			destPtr[1] = (cv << 3) | (cv >> 2);
+			destPtr[0] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
+			destPtr[1] = (UInt8)((cv << 3) | (cv >> 2));
 			cv = (v >> 5) & 0x3f;
-			destPtr[2] = (cv << 4) | (cv >> 2);
-			destPtr[3] = (cv << 2) | (cv >> 4);
-			cv = v >> 11;
-			destPtr[4] = (cv << 6) | (cv << 1) | (cv >> 4);
-			destPtr[5] = (cv << 3) | (cv >> 2);
+			destPtr[2] = (UInt8)((cv << 4) | (cv >> 2));
+			destPtr[3] = (UInt8)((cv << 2) | (cv >> 4));
+			cv = (UInt8)(v >> 11);
+			destPtr[4] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
+			destPtr[5] = (UInt8)((cv << 3) | (cv >> 2));
 			destPtr[6] = 0xff;
 			destPtr[7] = 0xff;
 			srcPtr += 2;
@@ -2757,11 +2757,11 @@ extern "C" void ImageUtil_ConvW8A8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, O
 		i = w;
 		while (i-- > 0)
 		{
-			v = (((UInt16)srcPtr[0]) << 8) | srcPtr[0];
+			v = (UInt16)((((UInt16)srcPtr[0]) << 8) | srcPtr[0]);
 			WriteInt16(&destPtr[0], v);
 			WriteInt16(&destPtr[2], v);
 			WriteInt16(&destPtr[4], v);
-			v = (((UInt16)srcPtr[1]) << 8) | srcPtr[1];
+			v = (UInt16)((((UInt16)srcPtr[1]) << 8) | srcPtr[1]);
 			WriteInt16(&destPtr[6], v);
 			srcPtr += 2;
 			destPtr += 8;
