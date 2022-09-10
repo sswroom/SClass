@@ -539,7 +539,7 @@ extern "C" void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSI
 		cnt = w;
 		while (cnt-- > 0)
 		{
-			tmpPtr[3] = (tmpPtr[3] * a) >> 16;
+			tmpPtr[3] = (UInt8)((tmpPtr[3] * a) >> 16);
 			tmpPtr += 4;
 		}
 		pixelPtr += bpl;
@@ -2386,13 +2386,13 @@ extern "C" void ImageUtil_ConvA2B10G10R10_64(const UInt8 *srcPtr, UInt8 *destPtr
 			r = v & 0x3ff;
 			g = (v >> 10) & 0x3ff;
 			b = (v >> 20) & 0x3ff;
-			a = (v >> 30) & 3;
-			r = (r << 6) | (r >> 4);
-			g = (g << 6) | (g >> 4);
-			b = (b << 6) | (b >> 4);
-			a = (a << 2) | a;
-			a = (a << 4) | a;
-			a = (a << 8) | a;
+			a = (UInt16)((v >> 30) & 3);
+			r = (UInt16)((r << 6) | (r >> 4));
+			g = (UInt16)((g << 6) | (g >> 4));
+			b = (UInt16)((b << 6) | (b >> 4));
+			a = (UInt16)((a << 2) | a);
+			a = (UInt16)((a << 4) | a);
+			a = (UInt16)((a << 8) | a);
 			WriteInt16(&destPtr[0], b);
 			WriteInt16(&destPtr[2], g);
 			WriteInt16(&destPtr[4], r);
