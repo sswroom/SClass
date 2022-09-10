@@ -701,57 +701,57 @@ const WChar *Text::JSText::FromNewJSText(const WChar *s)
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (Int32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (Int32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (Int32)(c - 0x57);
 				}
 
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (Int32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (Int32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (Int32)(c - 0x57);
 				}
 
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (Int32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (Int32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (Int32)(c - 0x57);
 				}
 
 				c = *srcPtr++;
 				if (c >= '0' && c <= '9')
 				{
-					v = (v << 4) | (c - 0x30);
+					v = (v << 4) | (Int32)(c - 0x30);
 				}
 				else if (c >= 'A' && c <= 'F')
 				{
-					v = (v << 4) | (c - 0x37);
+					v = (v << 4) | (Int32)(c - 0x37);
 				}
 				else if (c >= 'a' && c <= 'f')
 				{
-					v = (v << 4) | (c - 0x57);
+					v = (v << 4) | (Int32)(c - 0x57);
 				}
 				*destPtr++ = (WChar)v;
 				break;
