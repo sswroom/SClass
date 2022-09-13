@@ -18,9 +18,11 @@ namespace Map
 		};
 	private:
 		Math::RectAreaDbl bounds;
+		Math::Coord2DDbl origin;
 		UOSInt tileWidth;
 		UOSInt tileHeight;
 		Text::EncodingFactory *encFact;
+		Text::String *tileExt;
 		Text::String *tmsURL;
 		Text::String *title;
 		Net::SocketFactory *sockf;

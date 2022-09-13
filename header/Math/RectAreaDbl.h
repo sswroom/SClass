@@ -101,6 +101,27 @@ namespace Math
 			return rect.tl.x <= this->br.x && rect.br.x >= this->tl.x && rect.tl.y <= this->br.y && rect.br.y >= this->tl.y;	
 		}
 
+		Math::RectAreaDbl OverlapArea(Math::RectAreaDbl area) const
+		{
+			if (area.tl.x <= this->tl.x)
+			{
+				area.tl.x = this->tl.x;
+			}
+			if (area.tl.y <= this->tl.y)
+			{
+				area.tl.y = this->tl.y;
+			}
+			if (area.br.x >= this->br.x)
+			{
+				area.br.x = this->br.x;
+			}
+			if (area.br.y >= this->br.y)
+			{
+				area.br.y = this->br.y;
+			}
+			return area;
+		}
+
 		static void GetRectArea(RectAreaDbl *area, Coord2DDbl *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;
