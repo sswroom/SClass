@@ -7,6 +7,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/ProjectedCoordinateSystem.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Polygon.h"
@@ -37,27 +38,28 @@ IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(IO::Parse
 		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
-	if (layer->GetLayerType() == Map::DRAW_LAYER_POINT)
+	Map::DrawLayerType layerType = layer->GetLayerType();
+	if (layerType == Map::DRAW_LAYER_POINT)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYLINE)
+	else if (layerType == Map::DRAW_LAYER_POLYLINE)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (layer->GetLayerType() == Map::DRAW_LAYER_POINT3D)
+	else if (layerType == Map::DRAW_LAYER_POINT3D)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYLINE3D)
+	else if (layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYGON)
+	else if (layerType == Map::DRAW_LAYER_POLYGON)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (layer->GetLayerType() == Map::DRAW_LAYER_IMAGE && layer->GetObjectClass() != Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
+	else if (layerType == Map::DRAW_LAYER_IMAGE && layer->GetObjectClass() != Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
@@ -157,398 +159,508 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			{
 
 			}
-			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
+			else
 			{
-				Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
-				Math::Coord2DDbl coord = pt->GetCenter();
-				Double z;
-				if (pt->HasZ())
+				Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
+				if (vecType == Math::Geometry::Vector2D::VectorType::Point)
 				{
-					z = ((Math::Geometry::PointZ*)pt)->GetZ();
-				}
-				else
-				{
-					z = 0;
-				}
-
-				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)
-				{
-					Text::StrInt64(sbuff, currId);
-				}
-				if (needConv)
-				{
-					Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, coord.x, coord.y, z, &coord.x, &coord.y, &z);
-				}
-
-				sptr = Text::StrConcatC(sbuff2, UTF8STRC("<Placemark>"));
-				sptr = Text::StrConcatC(sptr, UTF8STRC("<name>"));
-				sptr = Text::XML::ToXMLText(sptr, sbuff);
-				sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
-				sptr = Text::StrConcatC(sptr, UTF8STRC("<Point><coordinates>"));
-				sptr = Text::StrDouble(sptr, coord.x);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-				sptr = Text::StrDouble(sptr, coord.y);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-				sptr = Text::StrDouble(sptr, z);
-				sptr = Text::StrConcatC(sptr, UTF8STRC("</coordinates></Point>"));
-				sptr = Text::StrConcatC(sptr, UTF8STRC("</Placemark>"));
-				writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
-			}
-			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
-			{
-				UOSInt nPoints;
-				Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
-				{
-					sptr = Text::StrInt64(sbuff, currId);
-				}
-
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<Placemark><name>"));
-				sptr = Text::XML::ToXMLText(sbuff2, sbuff);
-				sb.AppendP(sbuff2, sptr);
-				sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
-
-				Math::Coord2DDbl *points = pl->GetPointList(&nPoints);
-				if (needConv)
-				{
-					Double x;
-					Double y;
+					Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+					Math::Coord2DDbl coord = pt->GetCenter();
 					Double z;
-					if (vec->HasZ())
+					if (pt->HasZ())
 					{
-						Double *alts = pl->GetZList(&nPoints);
-						k = 0;
-						while (k < nPoints)
-						{
-							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, alts[k], &x, &y, &z);
-
-							sptr = sbuff2;
-							sptr = Text::StrDouble(sptr, x);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, y);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, z);
-							*sptr++ = ' ';
-							*sptr = 0;
-
-							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-							k++;
-						}
+						z = ((Math::Geometry::PointZ*)pt)->GetZ();
 					}
 					else
 					{
-						k = 0;
-						while (k < nPoints)
-						{
-							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
-							sptr = sbuff2;
-							sptr = Text::StrDouble(sptr, x);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, y);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, z);
-							*sptr++ = ' ';
-							*sptr = 0;
-
-							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-							k++;
-						}
+						z = 0;
 					}
-				}
-				else
-				{
-					if (vec->HasZ())
+
+					if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)
 					{
-						Double *alts = pl->GetZList(&nPoints);
-						k = 0;
-						while (k < nPoints)
-						{
-							sptr = sbuff2;
-							sptr = Text::StrDouble(sptr, points[k].x);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, points[k].y);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, alts[k]);
-							*sptr++ = ' ';
-							*sptr = 0;
-
-							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-							k++;
-						}
+						Text::StrInt64(sbuff, currId);
 					}
-					else
-					{
-						k = 0;
-						while (k < nPoints)
-						{
-							sptr = sbuff2;
-							sptr = Text::StrDouble(sptr, points[k].x);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, points[k].y);
-							*sptr++ = ',';
-							sptr = Text::StrDouble(sptr, defHeight);
-							*sptr++ = ' ';
-							*sptr = 0;
-
-							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-							k++;
-						}
-					}
-				}
-
-				sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-			}
-			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
-			{
-				UOSInt nPoints;
-				UOSInt nParts;
-				Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
-				{
-					sptr = Text::StrInt64(sbuff, currId);
-				}
-
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<Placemark>"));
-				sb.AppendC(UTF8STRC("<name>"));
-				sptr = Text::XML::ToXMLText(sbuff2, sbuff);
-				sb.AppendP(sbuff2, sptr);
-				sb.AppendC(UTF8STRC("</name>"));
-				sb.AppendC(UTF8STRC("<Polygon>"));
-				sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
-				sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
-
-				Math::Coord2DDbl *points = pg->GetPointList(&nPoints);
-				UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
-
-				if (needConv)
-				{
-					Double x;
-					Double y;
-					Double z;
-					k = nPoints;
-					l = nParts;
-					while (l-- > 0)
-					{
-						sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
-						while (k-- > ptOfsts[l])
-						{
-							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
-							sptr = Text::StrDouble(sbuff2, x);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-							sptr = Text::StrDouble(sptr, y);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-							sptr = Text::StrDouble(sptr, z);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-						}
-						k++;
-						sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
-					}
-				}
-				else
-				{
-					k = nPoints;
-					l = nParts;
-					while (l-- > 0)
-					{
-						sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
-						while (k-- > ptOfsts[l])
-						{
-							sptr = Text::StrDouble(sbuff2, points[k].x);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-							sptr = Text::StrDouble(sptr, points[k].y);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-							sptr = Text::StrDouble(sptr, defHeight);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-						}
-						k++;
-						sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
-					}
-				}
-
-				sb.AppendC(UTF8STRC("</Polygon>"));
-				sb.AppendC(UTF8STRC("</Placemark>"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
-			}
-			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Image)
-			{
-				Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)vec;
-				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
-				{
-					sptr = Text::StrInt64(sbuff, currId);
-				}
-
-				Math::RectAreaDbl bounds;
-				Int64 timeStart;
-				Int64 timeEnd;
-				if (img->IsScnCoord())
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("<ScreenOverlay>"));
-					sb.AppendC(UTF8STRC("<name>"));
-					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
-					sb.AppendP(sbuff2, sptr);
-					sb.AppendC(UTF8STRC("</name>"));
-					timeStart = img->GetTimeStart();
-					timeEnd = img->GetTimeEnd();
-					if (timeStart != 0 && timeEnd != 0)
-					{
-						Data::DateTime dt;
-						dt.ToUTCTime();
-						dt.SetUnixTimestamp(timeStart);
-						sb.AppendC(UTF8STRC("<TimeStamp><when>"));
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("T"));
-						sptr = dt.ToString(sbuff, "HH:mm");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
-
-						sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("T"));
-						sptr = dt.ToString(sbuff, "HH:mm:ss");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("Z</begin>"));
-						dt.SetUnixTimestamp(timeEnd);
-						sb.AppendC(UTF8STRC("<end>"));
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("T"));
-						sptr = dt.ToString(sbuff, "HH:mm:ss");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
-					}
-					if (img->HasSrcAlpha())
-					{
-						sb.AppendC(UTF8STRC("<color>"));
-						sb.AppendHex32(((UInt32)Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
-						sb.AppendC(UTF8STRC("</color>"));
-					}
-					if (img->HasZIndex())
-					{
-						sb.AppendC(UTF8STRC("<drawOrder>"));
-						sb.AppendI32(img->GetZIndex());
-						sb.AppendC(UTF8STRC("</drawOrder>"));
-					}
-					sb.AppendC(UTF8STRC("<Icon><href>"));
-					//////////////////////////////////////////////////////
-					sb.Append(img->GetSourceAddr());
-					sb.AppendC(UTF8STRC("</href></Icon>"));
-
-					img->GetBounds(&bounds);
-					sb.AppendC(UTF8STRC("<overlayXY x=\""));
-					Text::SBAppendF64(&sb, bounds.br.x);
-					sb.AppendC(UTF8STRC("\" y=\""));
-					Text::SBAppendF64(&sb, bounds.br.y);
-					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
-
-					sb.AppendC(UTF8STRC("<screenXY x=\""));
-					Text::SBAppendF64(&sb, bounds.tl.x);
-					sb.AppendC(UTF8STRC("\" y=\""));
-					Text::SBAppendF64(&sb, bounds.tl.y);
-					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
-
-					img->GetVectorSize(&bounds.tl.x, &bounds.tl.x);
-					sb.AppendC(UTF8STRC("<size x=\""));
-					Text::SBAppendF64(&sb, bounds.tl.x);
-					sb.AppendC(UTF8STRC("\" y=\""));
-					Text::SBAppendF64(&sb, bounds.tl.y);
-					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
-
-					sb.AppendC(UTF8STRC("</ScreenOverlay>"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
-				}
-				else
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("<GroundOverlay>"));
-					sb.AppendC(UTF8STRC("<name>"));
-					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
-					sb.AppendP(sbuff2, sptr);
-					sb.AppendC(UTF8STRC("</name>"));
-					timeStart = img->GetTimeStart();
-					timeEnd = img->GetTimeEnd();
-					if (timeStart != 0 && timeEnd != 0)
-					{
-						Data::DateTime dt;
-						dt.ToUTCTime();
-						dt.SetUnixTimestamp(timeStart);
-						sb.AppendC(UTF8STRC("<TimeStamp><when>"));
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("T"));
-						sptr = dt.ToString(sbuff, "HH:mm");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
-
-						sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("T"));
-						sptr = dt.ToString(sbuff, "HH:mm:ss");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("Z</begin>"));
-						dt.SetUnixTimestamp(timeEnd);
-						sb.AppendC(UTF8STRC("<end>"));
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("T"));
-						sptr = dt.ToString(sbuff, "HH:mm:ss");
-						sb.AppendP(sbuff, sptr);
-						sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
-					}
-					if (img->HasSrcAlpha())
-					{
-						sb.AppendC(UTF8STRC("<color>"));
-						sb.AppendHex32(((UInt32)Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
-						sb.AppendC(UTF8STRC("</color>"));
-					}
-					if (img->HasZIndex())
-					{
-						sb.AppendC(UTF8STRC("<drawOrder>"));
-						sb.AppendI32(img->GetZIndex());
-						sb.AppendC(UTF8STRC("</drawOrder>"));
-					}
-					sb.AppendC(UTF8STRC("<Icon><href>"));
-					///////////////////////////////////////////////////////
-					sb.Append(img->GetSourceAddr());
-					sb.AppendC(UTF8STRC("</href></Icon>"));
-					sb.AppendC(UTF8STRC("<LatLonBox>"));
-
-					img->GetBounds(&bounds);
 					if (needConv)
 					{
-						Double z;
-						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.tl.x, bounds.tl.y, defHeight, &bounds.tl.x, &bounds.tl.y, &z);
-						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.br.x, bounds.br.y, defHeight, &bounds.br.x, &bounds.br.y, &z);
-					}
-					sb.AppendC(UTF8STRC("<north>"));
-					Text::SBAppendF64(&sb, bounds.br.y);
-					sb.AppendC(UTF8STRC("</north><south>"));
-					Text::SBAppendF64(&sb, bounds.tl.y);
-					sb.AppendC(UTF8STRC("</south>"));
-					sb.AppendC(UTF8STRC("<east>"));
-					Text::SBAppendF64(&sb, bounds.br.x);
-					sb.AppendC(UTF8STRC("</east><west>"));
-					Text::SBAppendF64(&sb, bounds.tl.x);
-					sb.AppendC(UTF8STRC("</west>"));
-					sb.AppendC(UTF8STRC("</LatLonBox>"));
-					if (img->HasZ())
-					{
-						sb.AppendC(UTF8STRC("<altitude>"));
-						Text::SBAppendF64(&sb, img->GetHeight());
-						sb.AppendC(UTF8STRC("</altitude>"));
-						sb.AppendC(UTF8STRC("<altitudeMode>clampToGround</altitudeMode>"));
+						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, coord.x, coord.y, z, &coord.x, &coord.y, &z);
 					}
 
-					sb.AppendC(UTF8STRC("</GroundOverlay>"));
+					sptr = Text::StrConcatC(sbuff2, UTF8STRC("<Placemark>"));
+					sptr = Text::StrConcatC(sptr, UTF8STRC("<name>"));
+					sptr = Text::XML::ToXMLText(sptr, sbuff);
+					sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
+					sptr = Text::StrConcatC(sptr, UTF8STRC("<Point><coordinates>"));
+					sptr = Text::StrDouble(sptr, coord.x);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+					sptr = Text::StrDouble(sptr, coord.y);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+					sptr = Text::StrDouble(sptr, z);
+					sptr = Text::StrConcatC(sptr, UTF8STRC("</coordinates></Point>"));
+					sptr = Text::StrConcatC(sptr, UTF8STRC("</Placemark>"));
+					writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
+				}
+				else if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
+				{
+					UOSInt nPoints;
+					Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
+					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					{
+						sptr = Text::StrInt64(sbuff, currId);
+					}
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<Placemark><name>"));
+					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+					sb.AppendP(sbuff2, sptr);
+					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
+
+					Math::Coord2DDbl *points = pl->GetPointList(&nPoints);
+					if (needConv)
+					{
+						Double x;
+						Double y;
+						Double z;
+						if (vec->HasZ())
+						{
+							Double *alts = pl->GetZList(&nPoints);
+							k = 0;
+							while (k < nPoints)
+							{
+								Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, alts[k], &x, &y, &z);
+
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, z);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+						else
+						{
+							k = 0;
+							while (k < nPoints)
+							{
+								Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, z);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+					}
+					else
+					{
+						if (vec->HasZ())
+						{
+							Double *alts = pl->GetZList(&nPoints);
+							k = 0;
+							while (k < nPoints)
+							{
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, points[k].x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, points[k].y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, alts[k]);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+						else
+						{
+							k = 0;
+							while (k < nPoints)
+							{
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, points[k].x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, points[k].y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, defHeight);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+					}
+
+					sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
+					writer->WriteLineC(sb.ToString(), sb.GetLength());					
+				}
+				else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
+				{
+					UOSInt nPoints;
+					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					{
+						sptr = Text::StrInt64(sbuff, currId);
+					}
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<Placemark><name>"));
+					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+					sb.AppendP(sbuff2, sptr);
+					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
+
+					Math::Coord2DDbl *points = pl->GetPointList(&nPoints);
+					if (needConv)
+					{
+						Double x;
+						Double y;
+						Double z;
+						if (vec->HasZ())
+						{
+							Double *alts = pl->GetZList(&nPoints);
+							k = 0;
+							while (k < nPoints)
+							{
+								Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, alts[k], &x, &y, &z);
+
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, z);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+						else
+						{
+							k = 0;
+							while (k < nPoints)
+							{
+								Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, z);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+					}
+					else
+					{
+						if (vec->HasZ())
+						{
+							Double *alts = pl->GetZList(&nPoints);
+							k = 0;
+							while (k < nPoints)
+							{
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, points[k].x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, points[k].y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, alts[k]);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+						else
+						{
+							k = 0;
+							while (k < nPoints)
+							{
+								sptr = sbuff2;
+								sptr = Text::StrDouble(sptr, points[k].x);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, points[k].y);
+								*sptr++ = ',';
+								sptr = Text::StrDouble(sptr, defHeight);
+								*sptr++ = ' ';
+								*sptr = 0;
+
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
+							}
+						}
+					}
+
+					sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
+				}
+				else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
+				{
+					UOSInt nPoints;
+					UOSInt nParts;
+					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					{
+						sptr = Text::StrInt64(sbuff, currId);
+					}
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<Placemark>"));
+					sb.AppendC(UTF8STRC("<name>"));
+					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+					sb.AppendP(sbuff2, sptr);
+					sb.AppendC(UTF8STRC("</name>"));
+					sb.AppendC(UTF8STRC("<Polygon>"));
+					sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
+					sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
+
+					Math::Coord2DDbl *points = pg->GetPointList(&nPoints);
+					UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
+
+					if (needConv)
+					{
+						Double x;
+						Double y;
+						Double z;
+						k = nPoints;
+						l = nParts;
+						while (l-- > 0)
+						{
+							sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
+							while (k-- > ptOfsts[l])
+							{
+								Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k].x, points[k].y, defHeight, &x, &y, &z);
+								sptr = Text::StrDouble(sbuff2, x);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+								sptr = Text::StrDouble(sptr, y);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+								sptr = Text::StrDouble(sptr, z);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+							}
+							k++;
+							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
+						}
+					}
+					else
+					{
+						k = nPoints;
+						l = nParts;
+						while (l-- > 0)
+						{
+							sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
+							while (k-- > ptOfsts[l])
+							{
+								sptr = Text::StrDouble(sbuff2, points[k].x);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+								sptr = Text::StrDouble(sptr, points[k].y);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+								sptr = Text::StrDouble(sptr, defHeight);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
+								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+							}
+							k++;
+							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
+						}
+					}
+
+					sb.AppendC(UTF8STRC("</Polygon>"));
+					sb.AppendC(UTF8STRC("</Placemark>"));
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
+				}
+				else if (vecType == Math::Geometry::Vector2D::VectorType::Image)
+				{
+					Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)vec;
+					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					{
+						sptr = Text::StrInt64(sbuff, currId);
+					}
+
+					Math::RectAreaDbl bounds;
+					Int64 timeStart;
+					Int64 timeEnd;
+					if (img->IsScnCoord())
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("<ScreenOverlay>"));
+						sb.AppendC(UTF8STRC("<name>"));
+						sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+						sb.AppendP(sbuff2, sptr);
+						sb.AppendC(UTF8STRC("</name>"));
+						timeStart = img->GetTimeStart();
+						timeEnd = img->GetTimeEnd();
+						if (timeStart != 0 && timeEnd != 0)
+						{
+							Data::DateTime dt;
+							dt.ToUTCTime();
+							dt.SetUnixTimestamp(timeStart);
+							sb.AppendC(UTF8STRC("<TimeStamp><when>"));
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("T"));
+							sptr = dt.ToString(sbuff, "HH:mm");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
+
+							sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("T"));
+							sptr = dt.ToString(sbuff, "HH:mm:ss");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("Z</begin>"));
+							dt.SetUnixTimestamp(timeEnd);
+							sb.AppendC(UTF8STRC("<end>"));
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("T"));
+							sptr = dt.ToString(sbuff, "HH:mm:ss");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
+						}
+						if (img->HasSrcAlpha())
+						{
+							sb.AppendC(UTF8STRC("<color>"));
+							sb.AppendHex32(((UInt32)Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
+							sb.AppendC(UTF8STRC("</color>"));
+						}
+						if (img->HasZIndex())
+						{
+							sb.AppendC(UTF8STRC("<drawOrder>"));
+							sb.AppendI32(img->GetZIndex());
+							sb.AppendC(UTF8STRC("</drawOrder>"));
+						}
+						sb.AppendC(UTF8STRC("<Icon><href>"));
+						//////////////////////////////////////////////////////
+						sb.Append(img->GetSourceAddr());
+						sb.AppendC(UTF8STRC("</href></Icon>"));
+
+						img->GetBounds(&bounds);
+						sb.AppendC(UTF8STRC("<overlayXY x=\""));
+						Text::SBAppendF64(&sb, bounds.br.x);
+						sb.AppendC(UTF8STRC("\" y=\""));
+						Text::SBAppendF64(&sb, bounds.br.y);
+						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
+
+						sb.AppendC(UTF8STRC("<screenXY x=\""));
+						Text::SBAppendF64(&sb, bounds.tl.x);
+						sb.AppendC(UTF8STRC("\" y=\""));
+						Text::SBAppendF64(&sb, bounds.tl.y);
+						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
+
+						img->GetVectorSize(&bounds.tl.x, &bounds.tl.x);
+						sb.AppendC(UTF8STRC("<size x=\""));
+						Text::SBAppendF64(&sb, bounds.tl.x);
+						sb.AppendC(UTF8STRC("\" y=\""));
+						Text::SBAppendF64(&sb, bounds.tl.y);
+						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
+
+						sb.AppendC(UTF8STRC("</ScreenOverlay>"));
+						writer->WriteLineC(sb.ToString(), sb.GetLength());
+					}
+					else
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("<GroundOverlay>"));
+						sb.AppendC(UTF8STRC("<name>"));
+						sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+						sb.AppendP(sbuff2, sptr);
+						sb.AppendC(UTF8STRC("</name>"));
+						timeStart = img->GetTimeStart();
+						timeEnd = img->GetTimeEnd();
+						if (timeStart != 0 && timeEnd != 0)
+						{
+							Data::DateTime dt;
+							dt.ToUTCTime();
+							dt.SetUnixTimestamp(timeStart);
+							sb.AppendC(UTF8STRC("<TimeStamp><when>"));
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("T"));
+							sptr = dt.ToString(sbuff, "HH:mm");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
+
+							sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("T"));
+							sptr = dt.ToString(sbuff, "HH:mm:ss");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("Z</begin>"));
+							dt.SetUnixTimestamp(timeEnd);
+							sb.AppendC(UTF8STRC("<end>"));
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("T"));
+							sptr = dt.ToString(sbuff, "HH:mm:ss");
+							sb.AppendP(sbuff, sptr);
+							sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
+						}
+						if (img->HasSrcAlpha())
+						{
+							sb.AppendC(UTF8STRC("<color>"));
+							sb.AppendHex32(((UInt32)Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
+							sb.AppendC(UTF8STRC("</color>"));
+						}
+						if (img->HasZIndex())
+						{
+							sb.AppendC(UTF8STRC("<drawOrder>"));
+							sb.AppendI32(img->GetZIndex());
+							sb.AppendC(UTF8STRC("</drawOrder>"));
+						}
+						sb.AppendC(UTF8STRC("<Icon><href>"));
+						///////////////////////////////////////////////////////
+						sb.Append(img->GetSourceAddr());
+						sb.AppendC(UTF8STRC("</href></Icon>"));
+						sb.AppendC(UTF8STRC("<LatLonBox>"));
+
+						img->GetBounds(&bounds);
+						if (needConv)
+						{
+							Double z;
+							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.tl.x, bounds.tl.y, defHeight, &bounds.tl.x, &bounds.tl.y, &z);
+							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, bounds.br.x, bounds.br.y, defHeight, &bounds.br.x, &bounds.br.y, &z);
+						}
+						sb.AppendC(UTF8STRC("<north>"));
+						Text::SBAppendF64(&sb, bounds.br.y);
+						sb.AppendC(UTF8STRC("</north><south>"));
+						Text::SBAppendF64(&sb, bounds.tl.y);
+						sb.AppendC(UTF8STRC("</south>"));
+						sb.AppendC(UTF8STRC("<east>"));
+						Text::SBAppendF64(&sb, bounds.br.x);
+						sb.AppendC(UTF8STRC("</east><west>"));
+						Text::SBAppendF64(&sb, bounds.tl.x);
+						sb.AppendC(UTF8STRC("</west>"));
+						sb.AppendC(UTF8STRC("</LatLonBox>"));
+						if (img->HasZ())
+						{
+							sb.AppendC(UTF8STRC("<altitude>"));
+							Text::SBAppendF64(&sb, img->GetHeight());
+							sb.AppendC(UTF8STRC("</altitude>"));
+							sb.AppendC(UTF8STRC("<altitudeMode>clampToGround</altitudeMode>"));
+						}
+
+						sb.AppendC(UTF8STRC("</GroundOverlay>"));
+						writer->WriteLineC(sb.ToString(), sb.GetLength());
+					}
 				}
 			}
 			SDEL_CLASS(vec);

@@ -533,7 +533,7 @@ typedef float64x2_t Doublex2;
 struct Doublex2
 {
 	Double vals[2];
-};
+} __attribute__((aligned (16)));
 
 Doublex2 FORCEINLINE PDoublex2SetA(Double val)
 {

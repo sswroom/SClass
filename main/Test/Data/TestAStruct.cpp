@@ -12,6 +12,8 @@ ASTRUCT AlignedStruct
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	printf("sizeof(Math::Coord2DDbl) = %d\r\n", sizeof(Math::Coord2DDbl));
+	printf("sizeof(AlignedStruct) = %d\r\n", sizeof(AlignedStruct));
 	if (sizeof(Math::Coord2DDbl) != 16)
 	{
 		return 1;

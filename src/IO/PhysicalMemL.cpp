@@ -41,7 +41,7 @@ IO::PhysicalMem::PhysicalMem(OSInt addr, OSInt size)
 	if (PhysicalMem_status->fd >= 0)
 	{
 		OSInt addrRet = addr & (size - 1);
-		void *m = mmap(0, size, PROT_READ|PROT_WRITE, MAP_SHARED, PhysicalMem_status->fd, addr - addrRet);
+		void *m = mmap(0, (size_t)size, PROT_READ|PROT_WRITE, MAP_SHARED, PhysicalMem_status->fd, addr - addrRet);
 		if (m != MAP_FAILED)
 		{
 			clsData = MemAlloc(ClassData, 1);
@@ -66,7 +66,7 @@ IO::PhysicalMem::~PhysicalMem()
 {
 	if (this->clsData)
 	{
-		munmap(this->clsData->map, this->clsData->size);
+		munmap(this->clsData->map, (size_t)this->clsData->size);
 		MemFree(this->clsData);
 		this->clsData = 0;
 	}
