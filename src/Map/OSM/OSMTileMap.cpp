@@ -222,7 +222,7 @@ UOSInt Map::OSM::OSMTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, D
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
+Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	UOSInt readSize;
 	//WChar filePath[512];
@@ -246,10 +246,8 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	Double x2 = TileX2Lon(imgX + 1, level);
 	Double y2 = TileY2Lat(imgY + 1, level);
 
-	boundsXY[0] = x1;
-	boundsXY[1] = y1;
-	boundsXY[2] = x2;
-	boundsXY[3] = y2;
+	bounds->tl = Math::Coord2DDbl(x1, y1);
+	bounds->br = Math::Coord2DDbl(x2, y2);
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
@@ -451,7 +449,7 @@ UTF8Char *Map::OSM::OSMTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64
 	return sptr;
 }
 
-IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	UOSInt readSize;
 	UTF8Char filePathU[512];
@@ -473,10 +471,8 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	Double x2 = TileX2Lon(imgX + 1, level);
 	Double y2 = TileY2Lat(imgY + 1, level);
 
-	boundsXY[0] = x1;
-	boundsXY[1] = y1;
-	boundsXY[2] = x2;
-	boundsXY[3] = y2;
+	bounds->tl = Math::Coord2DDbl(x1, y1);
+	bounds->br = Math::Coord2DDbl(x2, y2);
 	if (x1 > 180 || y1 < -90)
 		return 0;
 

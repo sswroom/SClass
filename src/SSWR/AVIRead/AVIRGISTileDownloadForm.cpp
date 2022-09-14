@@ -426,7 +426,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	Int32 blockX;
 	Int32 blockY;
 	IO::IStreamData *fd;
-	Double bounds[4];
+	Math::RectAreaDbl bounds;
 	UInt64 fileSize;
 	OSInt j;
 
@@ -443,7 +443,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 				j = 3;
 				while (fd == 0 && j-- > 0)
 				{
-					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, bounds, false, &blockX, &blockY, &it);
+					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, &bounds, false, &blockX, &blockY, &it);
 				}
 				if (fd)
 				{

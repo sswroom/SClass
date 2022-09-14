@@ -389,14 +389,14 @@ UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
+Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	Int32 blockX;
 	Int32 blockY;
 	ImageType it;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj;
-	fd = this->LoadTileImageData(level, imgId, boundsXY, localOnly, &blockX, &blockY, &it);
+	fd = this->LoadTileImageData(level, imgId, bounds, localOnly, &blockX, &blockY, &it);
 	if (fd)
 	{
 		IO::ParserType pt;
@@ -482,7 +482,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 }
 */
 
-IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -496,10 +496,8 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	Double x2 = Map::OSM::OSMTileMap::TileX2Lon(imgX + 1, level);
 	Double y2 = Map::OSM::OSMTileMap::TileY2Lat(imgY + 1, level);
 
-	boundsXY[0] = x1;
-	boundsXY[1] = y1;
-	boundsXY[2] = x2;
-	boundsXY[3] = y2;
+	bounds->tl = Math::Coord2DDbl(x1, y1);
+	bounds->br = Math::Coord2DDbl(x2, y2);
 	if (x1 > 180 || y1 < -90)
 		return 0;
 

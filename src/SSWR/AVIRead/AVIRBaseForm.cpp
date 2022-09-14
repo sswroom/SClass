@@ -2505,7 +2505,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core);
 			if (frm.ShowDialog(this))
 			{
-				
+				Map::TileMap *tile = frm.GetTileMap();
+				Map::TileMapLayer *layer;
+				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+				this->core->OpenObject(layer);
 			}
 		}
 		break;

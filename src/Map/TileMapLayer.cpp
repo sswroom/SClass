@@ -14,7 +14,7 @@
 
 UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 {
-	Double bounds[4];
+	Math::RectAreaDbl bounds;
 	Media::ImageList *imgList;
 	CachedImage *cimg;
 	ThreadStat *stat = (ThreadStat*)userObj;
@@ -39,7 +39,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 				}
 				else
 				{
-					imgList = stat->me->tileMap->LoadTileImage(cimg->level, cimg->imgId, stat->me->parsers, bounds, false);
+					imgList = stat->me->tileMap->LoadTileImage(cimg->level, cimg->imgId, stat->me->parsers, &bounds, false);
 					if (imgList)
 					{
 						NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
@@ -300,7 +300,10 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2D<Double> scnSize)
 			scales.Add(this->tileMap->GetLevelScale(i));
 			i++;
 		}
-		NEW_CLASS(view, Map::LeveledMapView(scnSize, 22.4, 114.2, &scales));
+		Math::RectAreaDbl bounds;
+		this->tileMap->GetBounds(&bounds);
+		Math::CoordinateSystem *csys = this->tileMap->GetCoordinateSystem();
+		NEW_CLASS(view, Map::LeveledMapView(csys && csys->IsProjected(), scnSize, bounds.GetCenter(), &scales));
 		return view;
 	}
 }
@@ -450,7 +453,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 	OSInt i;
 	UOSInt k;
 	Media::ImageList *imgList;
-	Double bounds[4];
+	Math::RectAreaDbl bounds;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -470,13 +473,13 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 	{
 		return 0;
 	}
-	imgList = this->tileMap->LoadTileImage(level, id, this->parsers, bounds, true);
+	imgList = this->tileMap->LoadTileImage(level, id, this->parsers, &bounds, true);
 	if (imgList)
 	{
 		cimg = MemAllocA(CachedImage, 1);
 		cimg->imgId = id;
-		cimg->tl = Math::Coord2DDbl(bounds[0], bounds[1]);
-		cimg->br = Math::Coord2DDbl(bounds[2], bounds[3]);
+		cimg->tl = bounds.tl;
+		cimg->br = bounds.br;
 		cimg->level = level;
 		cimg->isFinish = true;
 		cimg->isCancel = false;
@@ -495,8 +498,8 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 	{
 		cimg = MemAllocA(CachedImage, 1);
 		cimg->imgId = id;
-		cimg->tl = Math::Coord2DDbl(bounds[0], bounds[1]);
-		cimg->br = Math::Coord2DDbl(bounds[2], bounds[3]);
+		cimg->tl = bounds.tl;;
+		cimg->br = bounds.br;
 		cimg->level = level;
 		cimg->isFinish = false;
 		cimg->isCancel = false;

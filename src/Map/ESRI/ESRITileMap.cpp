@@ -367,7 +367,7 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect,
 	}
 }
 
-Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
+Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
@@ -388,10 +388,8 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		Double x2 = TileX2Lon(imgX + 1, level);
 		Double y2 = TileY2Lat(imgY + 1, level);
 
-		boundsXY[0] = x1;
-		boundsXY[1] = y1;
-		boundsXY[2] = x2;
-		boundsXY[3] = y2;
+		bounds->tl = Math::Coord2DDbl(x1, y1);
+		bounds->br = Math::Coord2DDbl(x2, y2);
 		if (x1 > 180 || y1 < -90)
 			return 0;
 	}
@@ -408,10 +406,8 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
 			return 0;
 
-		boundsXY[0] = x1;
-		boundsXY[1] = y1;
-		boundsXY[2] = x2;
-		boundsXY[3] = y2;
+		bounds->tl = Math::Coord2DDbl(x1, y1);
+		bounds->br = Math::Coord2DDbl(x2, y2);
 	}
 
 	sptr = this->cacheDir->ConcatTo(filePath);
@@ -494,7 +490,7 @@ UTF8Char *Map::ESRI::ESRITileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int
 	return sptr;
 }
 
-IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
@@ -515,10 +511,8 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		Double x2 = TileX2Lon(imgX + 1, level);
 		Double y2 = TileY2Lat(imgY + 1, level);
 
-		boundsXY[0] = x1;
-		boundsXY[1] = y1;
-		boundsXY[2] = x2;
-		boundsXY[3] = y2;
+		bounds->tl = Math::Coord2DDbl(x1, y1);
+		bounds->br = Math::Coord2DDbl(x2, y2);
 		if (x1 > 180 || y1 < -90)
 			return 0;
 	}
@@ -535,10 +529,8 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
 			return 0;
 
-		boundsXY[0] = x1;
-		boundsXY[1] = y1;
-		boundsXY[2] = x2;
-		boundsXY[3] = y2;
+		bounds->tl = Math::Coord2DDbl(x1, y1);
+		bounds->br = Math::Coord2DDbl(x2, y2);
 	}
 
 	sptr = this->cacheDir->ConcatTo(filePath);

@@ -43,30 +43,30 @@ Math::CoordinateSystemManager::GeogcsSRInfo Math::CoordinateSystemManager::geogc
 };
 
 Math::CoordinateSystemManager::ProjcsSRInfo Math::CoordinateSystemManager::projcsSRID[] = {
-//	{srid, geogcsSRID, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, unit};
-	{2000, 4600, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Anguilla 1957 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2001, 4601, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Antigua 1943 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2002, 4602, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Dominica 1945 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2003, 4603, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Grenada 1953 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2326, 4611, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Hong Kong 1980 Grid System"), 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, Math::CoordinateSystem::UT_METRE},
-	{3857, 4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("WGS 84 / Pseudo-Mercator"), 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
-
+//	{srid,   geogcsSRID, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, unit};
+	{2000,   4600, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Anguilla 1957 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2001,   4601, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Antigua 1943 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2002,   4602, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Dominica 1945 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2003,   4603, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Grenada 1953 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2326,   4611, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Hong Kong 1980 Grid System"), 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, Math::CoordinateSystem::UT_METRE},
+	{3857,   4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("WGS 84 / Pseudo-Mercator"), 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
+	{900913, 4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("Google_Maps_Global_Mercator"), 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
 };
 
 Math::CoordinateSystemManager::SpatialRefInfo Math::CoordinateSystemManager::srInfoList[] = {
-//	{id, csysType, projName};
+//	{id,     csysType, projName};
 	{2000,   SRT_PROJCS, OT_EPSG,  "Anguilla 1957 / British West Indies Grid"},
 	{2001,   SRT_PROJCS, OT_EPSG,  "Antigua 1943 / British West Indies Grid"},
 	{2002,   SRT_PROJCS, OT_EPSG,  "Dominica 1945 / British West Indies Grid"},
 	{2003,   SRT_PROJCS, OT_EPSG,  "Grenada 1953 / British West IndMath::CoordinateSystem::CoordinateSystemType::GEOGRAPHICruger CM 114E"},
-	{2326,   SRT_PROJCS, OT_EPSG,  "Hong Kong 1980 Grid System"},
-	{3857,   SRT_PROJCS, OT_EPSG,  "WGS 84 / Pseudo-Mercator"},
-	{4326,   SRT_GEOGCS, OT_EPSG,  "WGS 84"},
-	{4600,   SRT_GEOGCS, OT_EPSG,  "Anguilla 1957"},
-	{4601,   SRT_GEOGCS, OT_EPSG,  "Antigua 1943"},
-	{4602,   SRT_GEOGCS, OT_EPSG,  "Dominica 1945"},
-	{4603,   SRT_GEOGCS, OT_EPSG,  "Grenada 1953"},
-	{4611,   SRT_GEOGCS, OT_EPSG,  "Hong Kong 1980"},
+	{2326,   SRT_PROJCS, OT_EPSG,  "Hong Kong 1980 Grid System", 113.76, 22.13, 114.51, 22.58},
+	{3857,   SRT_PROJCS, OT_EPSG,  "WGS 84 / Pseudo-Mercator", -180.0, -85.05113, -180.0, -85.05113},
+	{4326,   SRT_GEOGCS, OT_EPSG,  "WGS 84", -180.0, -90.0, 180.0, 90.0},
+	{4600,   SRT_GEOGCS, OT_EPSG,  "Anguilla 1957", -63.22, 18.11, -62.92, 18.33},
+	{4601,   SRT_GEOGCS, OT_EPSG,  "Antigua 1943", -61.95, 16.94, -61.61, 17.22},
+	{4602,   SRT_GEOGCS, OT_EPSG,  "Dominica 1945", -61.55, 15.14, -61.2, 15.69},
+	{4603,   SRT_GEOGCS, OT_EPSG,  "Grenada 1953", -61.84, 11.94, -61.54, 12.29},
+	{4611,   SRT_GEOGCS, OT_EPSG,  "Hong Kong 1980", 113.76, 22.13, 114.51, 22.58},
 	{6326,   SRT_DATUM,  OT_EPSG,  "WGS_1984"},
 	{6600,   SRT_DATUM,  OT_EPSG,  "Anguilla_1957"},
 	{6601,   SRT_DATUM,  OT_EPSG,  "Antigua_1943"},
@@ -78,6 +78,7 @@ Math::CoordinateSystemManager::SpatialRefInfo Math::CoordinateSystemManager::srI
 	{8901,   SRT_PRIMEM, OT_EPSG,  "Greenwich"},
 	{9001,   SRT_UNIT,   OT_EPSG,  "metre"},
 	{9122,   SRT_UNIT,   OT_EPSG,  "degree"},
+	{900913, SRT_PROJCS, OT_EPSG,  "Google Maps Global Mercator", -180.0, -85.05113, -180.0, -85.05113},
 };
 
 Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumList[] = {

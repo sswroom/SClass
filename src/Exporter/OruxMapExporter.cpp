@@ -102,7 +102,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 	Double minLon;
 	Double maxLat;
 	Double maxLon;
-	Double boundsXY[4];
+	Math::RectAreaDbl bounds;
 	Bool succ;
 	i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(fileName2, &fileName.v[i + 1], fileName.leng - i - 1);
@@ -252,7 +252,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 					j = imgIds.GetCount();
 					while (j-- > 0)
 					{
-						fd = osm->LoadTileImageData(level, imgIds.GetItem(j), boundsXY, true, &x, &y, &it);
+						fd = osm->LoadTileImageData(level, imgIds.GetItem(j), &bounds, true, &x, &y, &it);
 						if (fd)
 						{
 							UOSInt imgSize = (UOSInt)fd->GetDataSize();

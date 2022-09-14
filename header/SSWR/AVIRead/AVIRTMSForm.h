@@ -19,16 +19,20 @@ namespace SSWR
 			UI::GUIButton *btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
+			UI::GUIButton *btnOK;
 
 			SSWR::AVIRead::AVIRCore *core;
 			Map::TileMapServiceSource *tms;
 
 			static void __stdcall OnLoadClicked(void *userObj);
+			static void __stdcall OnOKClicked(void *userObj);
 		public:
 			AVIRTMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTMSForm();
 
 			virtual void OnMonitorChanged();
+
+			Map::TileMap *GetTileMap();
 		};
 	}
 }

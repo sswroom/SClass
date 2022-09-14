@@ -14,6 +14,7 @@ namespace Map
 		Double hdpi;
 		Double ddpi;
 		UInt32 level;
+		Bool projected;
 
 		Data::ArrayListDbl *scales;
 
@@ -21,7 +22,7 @@ namespace Map
 		void UpdateVals();
 
 	public:
-		LeveledMapView(Math::Size2D<Double> scnSize, Double centLat, Double centLon, Data::ArrayListDbl *scales);
+		LeveledMapView(Bool projected, Math::Size2D<Double> scnSize, Math::Coord2DDbl center, Data::ArrayListDbl *scales);
 		virtual ~LeveledMapView();
 
 		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);

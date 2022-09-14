@@ -1,4 +1,7 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/CRC32RC.h"
+#include "IO/Path.h"
+#include "IO/StmData/FileData.h"
 #include "Map/TileMapServiceSource.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Unit/Distance.h"
@@ -66,12 +69,26 @@ void Map::TileMapServiceSource::LoadXML()
 						{
 							SDEL_CLASS(this->csys);
 							this->csys = Math::CoordinateSystemManager::CreateFromName(sb.ToCString());
-#if defined(VERBOSE)
 							if (this->csys)
 							{
+#if defined(VERBOSE)
 								printf("SRID = %d\r\n", this->csys->GetSRID());
-							}
 #endif
+								const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
+								if (srInfo)
+								{
+									Double x;
+									Double y;
+									Double z;
+									Math::CoordinateSystem *wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+									Math::CoordinateSystem::ConvertXYZ(wgs84, this->csys, srInfo->minXGeo, srInfo->minYGeo, 0, &x, &y, &z);
+									this->csysOrigin = Math::Coord2DDbl(x, y);
+									DEL_CLASS(wgs84);
+#if defined(VERBOSE)
+									printf("SR Origin = (%lf, %lf)\r\n", this->csysOrigin.x, this->csysOrigin.y);
+#endif
+								}
+							}
 						}
 					}
 					else if (s->Equals(UTF8STRC("BoundingBox")))
@@ -181,6 +198,14 @@ void Map::TileMapServiceSource::LoadXML()
 							{
 								SDEL_STRING(this->tileExt);
 								this->tileExt = attr->value->Clone();
+								if (this->tileExt->Equals(UTF8STRC("jpg")))
+								{
+									this->imgType = IT_JPG;
+								}
+								else
+								{
+									this->imgType = IT_PNG;
+								}
 #if defined(VERBOSE)
 								printf("tileExt = %s\r\n", this->tileExt->v);
 #endif
@@ -258,17 +283,41 @@ void Map::TileMapServiceSource::LoadXML()
 	DEL_CLASS(cli);
 }
 
+Double Map::TileMapServiceSource::CalcScaleDiv()
+{
+	if (this->csys == 0 || this->csys->IsProjected())
+	{
+		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 1);
+	}
+	else
+	{
+		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 0.000005);
+	}
+}
+
 Map::TileMapServiceSource::TileMapServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString tmsURL)
 {
+	this->cacheDir = 0;
 	this->sockf = sockf;
 	this->encFact = encFact;
 	this->tmsURL = Text::String::New(tmsURL);
+	this->origin = Math::Coord2DDbl(0, 0);
+	this->csysOrigin = Math::Coord2DDbl(0, 0);
 	this->title = 0;
 	this->tileExt = 0;
 	this->csys = 0;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
+	this->imgType = IT_PNG;
 	this->LoadXML();
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("tms"));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
+	Crypto::Hash::CRC32RC crc;
+	sptr = Text::StrHexVal32(sptr, crc.CalcDirect(tmsURL.v, tmsURL.leng));
+	this->cacheDir = Text::String::NewP(sbuff, sptr);
 }
 
 Map::TileMapServiceSource::~TileMapServiceSource()
@@ -276,6 +325,8 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 	this->tmsURL->Release();
 	SDEL_STRING(this->title);
 	SDEL_STRING(this->tileExt);
+	SDEL_STRING(this->cacheDir);
+	SDEL_CLASS(this->csys);
 	TileLayer *layer;
 	UOSInt i = this->layers.GetCount();
 	while (i-- > 0)
@@ -313,13 +364,35 @@ Double Map::TileMapServiceSource::GetLevelScale(UOSInt level)
 	{
 		return 0;
 	}
-	return layer->unitPerPixel / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 1);
+	Double scaleDiv = CalcScaleDiv();
+	return layer->unitPerPixel / scaleDiv;
 }
 
 UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale)
 {
-	//////////////////////////
-	return 0;
+	Double minDiff = 1.0E+100;
+	UOSInt minLevel = 0;
+	UOSInt i = this->layers.GetCount();
+	TileLayer *layer;
+	Double layerScale;
+	Double thisDiff;
+	Double scaleDiv = CalcScaleDiv();
+	while (i-- > 0)
+	{
+		layer = this->layers.GetItem(i);
+		layerScale = layer->unitPerPixel / scaleDiv;
+		thisDiff = Math_Ln(scale / layerScale);
+		if (thisDiff < 0)
+		{
+			thisDiff = -thisDiff;
+		}
+		if (thisDiff < minDiff)
+		{
+			minDiff = thisDiff;
+			minLevel = i;
+		}
+	}
+	return minLevel;
 }
 
 UOSInt Map::TileMapServiceSource::GetConcurrentCount()
@@ -358,10 +431,10 @@ UOSInt Map::TileMapServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 	
 	rect = rect.OverlapArea(this->bounds);
 	UOSInt ret = 0;
-	Int32 minX = (rect.tl.x - this->origin.x) / (layer->unitPerPixel * this->tileWidth);
-	Int32 maxX = (rect.br.x - this->origin.x) / (layer->unitPerPixel * this->tileWidth);
-	Int32 minY = (rect.tl.y - this->origin.y) / (layer->unitPerPixel * this->tileHeight);
-	Int32 maxY = (rect.tl.y - this->origin.y) / (layer->unitPerPixel * this->tileHeight);
+	Int32 minX = (Int32)((rect.tl.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
+	Int32 maxX = (Int32)((rect.br.x - this->csysOrigin.x) / (layer->unitPerPixel * UOSInt2Double(this->tileWidth)));
+	Int32 minY = (Int32)((rect.tl.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
+	Int32 maxY = (Int32)((rect.br.y - this->csysOrigin.y) / (layer->unitPerPixel * UOSInt2Double(this->tileHeight)));
 	Int32 i = minY;
 	Int32 j;
 	while (i <= maxY)
@@ -379,9 +452,28 @@ UOSInt Map::TileMapServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 	return ret;
 }
 
-Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Double *boundsXY, Bool localOnly)
+Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
-	///////////////////////////////////////
+	Int32 blockX;
+	Int32 blockY;
+	ImageType it;
+	IO::IStreamData *fd;
+	IO::ParsedObject *pobj;
+	fd = this->LoadTileImageData(level, imgId, bounds, localOnly, &blockX, &blockY, &it);
+	if (fd)
+	{
+		IO::ParserType pt;
+		pobj = parsers->ParseFile(fd, &pt);
+		DEL_CLASS(fd);
+		if (pobj)
+		{
+			if (pt == IO::ParserType::ImageList)
+			{
+				return (Media::ImageList*)pobj;
+			}
+			DEL_CLASS(pobj);
+		}
+	}
 	return 0;
 }
 
@@ -404,8 +496,158 @@ UTF8Char *Map::TileMapServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 	return 0;
 }
 
-IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
-	///////////////////////////////////////
+	UOSInt readSize;
+	UTF8Char filePathU[512];
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	Text::StringBuilderUTF8 urlSb;
+	UTF8Char *sptru = filePathU;
+	Bool hasTime = false;
+	Data::DateTime dt;
+	Data::DateTime currTime;
+	Net::HTTPClient *cli;
+	IO::IStreamData *fd;
+	TileLayer *layer = this->layers.GetItem(level);
+	if (layer == 0)
+		return 0;
+	Int32 imgX = (Int32)(imgId >> 32);
+	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
+	Double x1 = imgX * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
+	Double y1 = imgY * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
+	Double x2 = (imgX + 1) * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
+	Double y2 = (imgY + 1) * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
+
+	bounds->tl = Math::Coord2DDbl(x1, y1);
+	bounds->br = Math::Coord2DDbl(x2, y2);
+	if (!this->bounds.OverlapOrTouch(*bounds))
+		return 0;
+
+#if defined(VERBOSE)
+	printf("Loading Tile %d %d %d\r\n", (UInt32)level, imgX, imgY);
+#endif
+
+	if (this->cacheDir)
+	{
+		sptru = this->cacheDir->ConcatTo(filePathU);
+		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
+			*sptru++ = IO::Path::PATH_SEPERATOR;
+		sptru = Text::StrUOSInt(sptru, level);
+		*sptru++ = IO::Path::PATH_SEPERATOR;
+		sptru = Text::StrInt32(sptru, imgX);
+		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
+		*sptru++ = IO::Path::PATH_SEPERATOR;
+		sptru = Text::StrInt32(sptru, imgY);
+		*sptru++ = '.';
+		sptru = this->tileExt->ConcatTo(sptru);
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		if (fd->GetDataSize() > 0)
+		{
+			currTime.SetCurrTimeUTC();
+			currTime.AddDay(-7);
+			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
+			if (dt.CompareTo(&currTime) > 0)
+			{
+				if (blockX)
+					*blockX = imgX;
+				if (blockY)
+					*blockY = imgY;
+				if (it)
+					*it = this->imgType;
+				return fd;
+			}
+			else
+			{
+				hasTime = true;
+			}
+		}
+		DEL_CLASS(fd);
+	}
+
+	if (localOnly)
+		return 0;
+
+	urlSb.ClearStr();
+	urlSb.Append(layer->url);
+	urlSb.AppendUTF8Char('/');
+	urlSb.AppendI32(imgX);
+	urlSb.AppendUTF8Char('/');
+	urlSb.AppendI32(imgY);
+	urlSb.AppendUTF8Char('.');
+	urlSb.Append(this->tileExt);
+
+	cli = Net::HTTPClient::CreateClient(this->sockf, 0, CSTR("TileMapService/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+	if (hasTime)
+	{
+		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
+		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
+	}
+	if (cli->GetRespStatus() == 304)
+	{
+		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		dt.SetCurrTimeUTC();
+		fs.SetFileTimes(&dt, 0, 0);
+	}
+	else
+	{
+		UInt64 contLeng = cli->GetContentLength();
+		UOSInt currPos = 0;
+		UInt8 *imgBuff;
+		if (contLeng > 0 && contLeng <= 10485760)
+		{
+			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
+			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
+			{
+				currPos += readSize;
+				if (currPos >= contLeng)
+				{
+					break;
+				}
+			}
+			if (currPos >= contLeng)
+			{
+				if (this->cacheDir)
+				{
+					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+					fs.Write(imgBuff, (UOSInt)contLeng);
+					if (cli->GetLastModified(&dt))
+					{
+						currTime.SetCurrTimeUTC();
+						fs.SetFileTimes(&currTime, 0, &dt);
+					}
+					else
+					{
+						currTime.SetCurrTimeUTC();
+						fs.SetFileTimes(&currTime, 0, 0);
+					}
+				}
+			}
+			MemFree(imgBuff);
+		}
+
+	}
+	DEL_CLASS(cli);
+
+	fd = 0;
+	if (this->cacheDir)
+	{
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+	}
+	if (fd)
+	{
+		if (fd->GetDataSize() > 0)
+		{
+			if (blockX)
+				*blockX = imgX;
+			if (blockY)
+				*blockY = imgY;
+			if (it)
+				*it = IT_PNG;
+			return fd;
+		}
+		DEL_CLASS(fd);
+	}
 	return 0;
 }

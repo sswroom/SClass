@@ -6,19 +6,28 @@
 void Map::LeveledMapView::UpdateVals()
 {
 	Double scale = this->scales->GetItem(this->level);
-	Math::Coord2DDbl diff = this->scnSize.ToCoord() * (0.00025 * scale / (this->hdpi * 72.0 / 96) * 2.54 / 10000.0);
+	Math::Coord2DDbl diff;
+	if (this->projected)
+	{
+		diff = this->scnSize.ToCoord() * (0.5 * scale / (this->hdpi * 72.0 / 96) * 0.0254);
+	}
+	else
+	{
+		diff = this->scnSize.ToCoord() * (0.00025 * scale / (this->hdpi * 72.0 / 96) * 0.000254);
+	}
 
 	this->tl = this->centMap - diff;
 	this->br = this->centMap + diff;
 }
 
-Map::LeveledMapView::LeveledMapView(Math::Size2D<Double> scnSize, Double centLat, Double centLon, Data::ArrayListDbl *scales) : Map::MapView(scnSize)
+Map::LeveledMapView::LeveledMapView(Bool projected, Math::Size2D<Double> scnSize, Math::Coord2DDbl center, Data::ArrayListDbl *scales) : Map::MapView(scnSize)
 {
+	this->projected = projected;
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
 	NEW_CLASS(this->scales, Data::ArrayListDbl());
 	this->scales->AddAll(scales);
-	ChangeViewXY(scnSize, Math::Coord2DDbl(centLon, centLat), Double2Int32(this->scales->GetItem(this->scales->GetCount() >> 1)));
+	ChangeViewXY(scnSize, center, Double2Int32(this->scales->GetItem(this->scales->GetCount() >> 1)));
 }
 
 Map::LeveledMapView::~LeveledMapView()
@@ -259,6 +268,6 @@ Math::Coord2DDbl Map::LeveledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) cons
 Map::MapView *Map::LeveledMapView::Clone() const
 {
 	Map::LeveledMapView *view;
-	NEW_CLASS(view, Map::LeveledMapView(this->scnSize, this->centMap.y, this->centMap.x, this->scales));
+	NEW_CLASS(view, Map::LeveledMapView(this->projected, this->scnSize, this->centMap, this->scales));
 	return view;
 }

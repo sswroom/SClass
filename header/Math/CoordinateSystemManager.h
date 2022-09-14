@@ -119,6 +119,10 @@ namespace Math
 			SpatialReferenceType srType;
 			OrgType org;
 			const Char *name;
+			Double minXGeo;
+			Double minYGeo;
+			Double maxXGeo;
+			Double maxYGeo;
 		} SpatialRefInfo;
 
 		typedef struct

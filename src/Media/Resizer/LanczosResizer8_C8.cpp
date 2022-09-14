@@ -924,6 +924,9 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 	if (h > 0)
 		siHeight++;
 
+	if (siWidth < (OSInt)this->hnTap || siHeight < (OSInt)this->vnTap)
+		return;
+
 	if (this->rgbChanged)
 	{
 		this->rgbChanged = false;

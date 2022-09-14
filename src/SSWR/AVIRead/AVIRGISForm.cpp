@@ -44,6 +44,8 @@
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
+#include <stdio.h>
+
 typedef enum
 {
 	MNU_SAVE = 101,

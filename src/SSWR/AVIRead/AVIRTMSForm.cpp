@@ -19,6 +19,15 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRTMSForm::OnOKClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRTMSForm *me = (SSWR::AVIRead::AVIRTMSForm *)userObj;
+	if (me->tms && !me->tms->IsError())
+	{
+		me->SetDialogResult(UI::GUIForm::DR_OK);
+	}
+}
+
 SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->core = core;
@@ -40,6 +49,9 @@ SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(UI::GUIClientControl *parent, UI::GUICor
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetRect(104, 52, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	this->btnOK->SetRect(104, 76, 75, 23, false);
+	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }
 
 SSWR::AVIRead::AVIRTMSForm::~AVIRTMSForm()
@@ -50,4 +62,11 @@ SSWR::AVIRead::AVIRTMSForm::~AVIRTMSForm()
 void SSWR::AVIRead::AVIRTMSForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+Map::TileMap *SSWR::AVIRead::AVIRTMSForm::GetTileMap()
+{
+	Map::TileMap *tile = this->tms;
+	this->tms = 0;
+	return tile;
 }
