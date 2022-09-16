@@ -473,7 +473,7 @@ UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(Data::ArrayList<Text::CS
 	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
 	if (pdu == 0)
 	{
-		return false;
+		return 0;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{

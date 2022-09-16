@@ -68,6 +68,7 @@ namespace SSWR
 			static void __stdcall OnRadicalChg(void *userObj);
 			static void __stdcall OnRelatedAddChg(void *userObj);
 			static void __stdcall OnRelatedGoClicked(void *userObj);
+			static void __stdcall OnFormClosed(void *userObj, UI::GUIForm *frm);
 
 			Bool SaveChar();
 			void UpdateChar(UInt32 charCode);

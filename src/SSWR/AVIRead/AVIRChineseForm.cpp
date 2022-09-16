@@ -154,6 +154,12 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedGoClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRChineseForm::OnFormClosed(void *userObj, UI::GUIForm *frm)
+{
+	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm*)userObj;
+	me->SaveChar();
+}
+
 Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 {
 	if (this->currChar == 0)
@@ -472,11 +478,12 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 	this->lblPronun4->SetRect(0, 168, 100, 23, false);
 	NEW_CLASS(this->txtPronun4, UI::GUITextBox(ui, this->grpCharInfo, CSTR("")));
 	this->txtPronun4->SetRect(100, 168, 100, 23, false);
+
+	this->HandleFormClosed(OnFormClosed, this);
 }
 
 SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 {
-	this->SaveChar();
 	if (this->charImg)
 	{
 		this->deng->DeleteImage(this->charImg);
