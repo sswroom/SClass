@@ -20,7 +20,7 @@ namespace Math
 			virtual Math::Coord2DDbl GetCenter() const;
 			virtual Vector2D *Clone() const;
 			virtual void GetBounds(Math::RectAreaDbl *bounds) const;
-			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 			virtual Bool JoinVector(Vector2D *vec);
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;

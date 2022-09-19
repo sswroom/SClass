@@ -77,6 +77,33 @@ namespace Math
 				}
 			}
 
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+			{
+				UOSInt j = this->geometries.GetCount();
+				if (j == 0)
+				{
+					*nearPt = Math::Coord2DDbl(0, 0);
+					return 1000000000;
+				}
+				Math::Coord2DDbl minPt;
+				Double minDist = this->geometries.GetItem(0)->CalBoundarySqrDistance(pt, &minPt);
+				Math::Coord2DDbl thisPt;
+				Double thisDist;
+				UOSInt i = 1;
+				while (i < j)
+				{
+					thisDist = this->geometries.GetItem(i)->CalBoundarySqrDistance(pt, &thisPt);
+					if (minDist > thisDist)
+					{
+						minDist = thisDist;
+						minPt = thisPt;
+					}
+					i++;
+				}
+				*nearPt = minPt;
+				return minDist;
+			}
+
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 			{
 				UOSInt j = this->geometries.GetCount();

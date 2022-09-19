@@ -74,7 +74,7 @@ Math::Geometry::Vector2D *Math::Geometry::LineString::Clone() const
 	return pl;
 }
 
-Double Math::Geometry::LineString::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	UOSInt l;
 	Math::Coord2DDbl *points;

@@ -38,7 +38,7 @@ void Math::Geometry::Ellipse::GetBounds(Math::RectAreaDbl *bounds) const
 	*bounds = Math::RectAreaDbl(this->tlx, this->tly, this->w, this->h);
 }
 
-Double Math::Geometry::Ellipse::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	//////////////////////////////////////////////////////////
 	*nearPt = pt;

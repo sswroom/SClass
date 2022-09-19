@@ -45,7 +45,7 @@ Math::Geometry::Vector2D *Math::Geometry::Polyline::Clone() const
 	return pl;
 }
 
-Double Math::Geometry::Polyline::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Polyline::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	UOSInt k;
 	UOSInt l;

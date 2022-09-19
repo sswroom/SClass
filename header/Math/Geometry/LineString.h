@@ -21,7 +21,7 @@ namespace Math
 
 			virtual VectorType GetVectorType() const;
 			virtual Math::Geometry::Vector2D *Clone() const;
-			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 			virtual Bool JoinVector(Math::Geometry::Vector2D *vec);
 			virtual Bool HasZ() const;
 			virtual Bool HasM() const;

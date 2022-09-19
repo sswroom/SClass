@@ -93,6 +93,25 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 	return false;
 }
 
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos)
+{
+	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	if (me->currVec)
+	{
+		Math::CoordinateSystem *csys = me->navi->GetCoordinateSystem();
+		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
+		Math::Coord2DDbl nearPos = mapPos;
+		me->currVec->CalBoundarySqrDistance(mapPos, &nearPos);
+		Double d = csys->CalSurfaceDistanceXY(mapPos, nearPos, Math::Unit::Distance::DU_METER);
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		sptr = Text::StrDouble(sbuff, d);
+		me->txtDist->SetText(CSTRP(sbuff, sptr));
+	}
+	return false;
+}
+
+
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
@@ -164,6 +183,13 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->txtMaxY->SetRect(104, 76, 150, 23, false);
 	this->txtMaxY->SetReadOnly(true);
 
+	this->tpDist = this->tcMain->AddTabPage(CSTR("Distance"));
+	NEW_CLASS(this->lblDist, UI::GUILabel(ui, this->tpDist, CSTR("Dist to boundaries")));
+	this->lblDist->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->txtDist, UI::GUITextBox(ui, this->tpDist, CSTR("")));
+	this->txtDist->SetReadOnly(true);
+	this->txtDist->SetRect(104, 4, 150, 23, false);
+
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i = 0;
@@ -191,6 +217,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->cboShapeFmt->SetSelectedIndex(0);
 	this->navi->HandleMapMouseDown(OnMouseDown, this);
 	this->navi->HandleMapMouseUp(OnMouseUp, this);
+	this->navi->HandleMapMouseMove(OnMouseMove, this);
 }
 
 SSWR::AVIRead::AVIRGISQueryForm::~AVIRGISQueryForm()

@@ -19,6 +19,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
+			static IO::ParsedObject *ParseJSON(Text::JSONBase *fileJSON, Text::String *sourceName, Text::CString layerName);
 			static Math::Geometry::Vector2D *ParseGeomJSON(Text::JSONObject *obj, UInt32 srid);
 		};
 	}

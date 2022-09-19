@@ -152,6 +152,83 @@ void Math::Geometry::VectorImage::GetBounds(Math::RectAreaDbl *bounds) const
 	*bounds = Math::RectAreaDbl(this->tl, this->br);
 }
 
+Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+{
+	Bool hCenter = false;
+	Bool vCenter = false;
+	Math::Coord2DDbl near;
+	if (pt.x > br.x)
+	{
+		near.x = br.x;
+	}
+	else if (pt.x < tl.x)
+	{
+		near.x = tl.x;
+	}
+	else
+	{
+		near.x = pt.x;
+		hCenter = true;
+	}
+	if (pt.y > br.y)
+	{
+		near.y = br.y;
+	}
+	else if (pt.y < tl.y)
+	{
+		near.y = tl.y;
+	}
+	else
+	{
+		near.y = pt.y;
+		vCenter = true;
+	}
+	if (hCenter && vCenter)
+	{
+		Double d[4];
+		d[0] = pt.x - tl.x;
+		d[1] = pt.y - tl.y;
+		d[2] = br.x - pt.x;
+		d[3] = br.y - pt.y;
+		UOSInt minIndex = 0;
+		if (d[minIndex] > d[1])
+		{
+			minIndex = 1;
+		}
+		if (d[minIndex] > d[2])
+		{
+			minIndex = 2;
+		}
+		if (d[minIndex] > d[3])
+		{
+			minIndex = 3;
+		}
+		switch (minIndex)
+		{
+		case 0:
+			near = Math::Coord2DDbl(tl.x, pt.y);
+			break;
+		case 1:
+			near = Math::Coord2DDbl(pt.x, tl.y);
+			break;
+		case 2:
+			near = Math::Coord2DDbl(br.x, pt.y);
+			break;
+		case 3:
+		default:
+			near = Math::Coord2DDbl(pt.x, br.y);
+			break;
+		}
+	}
+	if (nearPt)
+	{
+		*nearPt = near;
+	}
+	near = pt - near;
+	near = near * near;
+	return near.x + near.y;
+}
+
 Double Math::Geometry::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
 	Math::Coord2DDbl near;

@@ -35,17 +35,8 @@ Math::Geometry::Vector2D *Math::Geometry::Polygon::Clone() const
 	return pg;
 }
 
-Double Math::Geometry::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
-	if (InsideVector(pt))
-	{
-		if (nearPt)
-		{
-			*nearPt = pt;
-		}
-		return 0;
-	}
-
 	UOSInt k;
 	UOSInt l;
 	UInt32 m;
@@ -154,6 +145,19 @@ Double Math::Geometry::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2
 		*nearPt = calPtOut;
 	}
 	return dist;
+}
+
+Double Math::Geometry::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+{
+	if (InsideVector(pt))
+	{
+		if (nearPt)
+		{
+			*nearPt = pt;
+		}
+		return 0;
+	}
+	return CalBoundarySqrDistance(pt, nearPt);
 }
 
 Bool Math::Geometry::Polygon::JoinVector(Math::Geometry::Vector2D *vec)

@@ -50,6 +50,7 @@ Math::CoordinateSystemManager::ProjcsSRInfo Math::CoordinateSystemManager::projc
 	{2003,   4603, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Grenada 1953 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
 	{2326,   4611, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Hong Kong 1980 Grid System"), 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, Math::CoordinateSystem::UT_METRE},
 	{3857,   4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("WGS 84 / Pseudo-Mercator"), 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
+	{102140, 4611, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Hong Kong 1980 Grid System"), 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, Math::CoordinateSystem::UT_METRE},
 	{900913, 4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("Google_Maps_Global_Mercator"), 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
 };
 
@@ -78,6 +79,7 @@ Math::CoordinateSystemManager::SpatialRefInfo Math::CoordinateSystemManager::srI
 	{8901,   SRT_PRIMEM, OT_EPSG,  "Greenwich"},
 	{9001,   SRT_UNIT,   OT_EPSG,  "metre"},
 	{9122,   SRT_UNIT,   OT_EPSG,  "degree"},
+	{102140, SRT_PROJCS, OT_EPSG,  "Hong Kong 1980 Grid System", 113.76, 22.13, 114.51, 22.58},
 	{900913, SRT_PROJCS, OT_EPSG,  "Google Maps Global Mercator", -180.0, -85.05113, -180.0, -85.05113},
 };
 

@@ -61,13 +61,21 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(Text::CString(fileBuff, buffSize));
 	MemFree(fileBuff);
 
-	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
 	if (fileJSON == 0)
 	{
 		return 0;
 	}
 
+	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName());
+	fileJSON->EndUse();
+	return pobj;
+}
+
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, Text::String *sourceName, Text::CString layerName)
+{
+	UInt32 srid = 0;
+	IO::ParsedObject *pobj = 0;
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
@@ -97,9 +105,9 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Map::VectorLayer *lyr = 0;
-				const UTF8Char *tabHdrs[10];
-				Text::String *tabCols[10];
-				Text::String *tabVals[10];
+				const UTF8Char *tabHdrs[32];
+				Text::String *tabCols[32];
+				Text::String *tabVals[32];
 				UOSInt colCnt;
 				Text::JSONArray *features = (Text::JSONArray*)jbase;
 				UOSInt i;
@@ -130,8 +138,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 						vec = ParseGeomJSON((Text::JSONObject*)featGeom, srid);
 						if (vec)
 						{
-							Text::String *s = Text::String::New(fd->GetShortName());
-							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, fd->GetFullName(), colCnt, tabHdrs, csys, 0, s));
+							Text::String *s = Text::String::New(layerName);
+							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, csys, 0, s));
 							s->Release();
 							DEL_CLASS(vec);
 						}
@@ -188,7 +196,6 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 			}
 		}
 	}
-	fileJSON->EndUse();
 	return pobj;
 }
 

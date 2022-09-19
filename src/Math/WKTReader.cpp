@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayList.h"
 #include "Math/WKTReader.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polygon.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -113,6 +115,98 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			return pt;
 		}
 		return 0;
+	}
+	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"POLYGON"))
+	{
+		Data::ArrayList<Double> ptList;
+		Data::ArrayList<UInt32> ptOfstList;
+		Double x;
+		Double y;
+		Double z;
+		wkt += 7;
+		while (*wkt == ' ')
+		{
+			wkt++;
+		}
+		if (*wkt != '(')
+		{
+			return 0;
+		}
+		while (*++wkt == ' ');
+		while (true)
+		{
+			if (*wkt != '(')
+			{
+				return 0;
+			}
+			wkt++;
+			ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
+			while (true)
+			{
+				wkt = NextDouble(wkt, &x);
+				if (wkt == 0 || *wkt != ' ')
+				{
+					return 0;
+				}
+				while (*++wkt == ' ');
+				wkt = NextDouble(wkt, &y);
+				if (wkt == 0)
+				{
+					return 0;
+				}
+				while (*wkt == ' ')
+				{
+					while (*++wkt == ' ');
+					wkt = NextDouble(wkt, &z);
+					if (wkt == 0)
+					{
+						return 0;
+					}
+				}
+				ptList.Add(x);
+				ptList.Add(y);
+				if (*wkt == ')')
+				{
+					wkt++;
+					break;
+				}
+				else if (*wkt == ',')
+				{
+					wkt++;
+					continue;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			if (*wkt == ',')
+			{
+				wkt++;
+				continue;
+			}
+			else if (*wkt == ')')
+			{
+				wkt++;
+				break;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		if (*wkt != 0)
+		{
+			return 0;
+		}
+		Math::Geometry::Polygon *pg;
+		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, false, false));
+		UOSInt i;
+		UInt32 *ptOfstArr = pg->GetPtOfstList(&i);
+		MemCopyNO(ptOfstArr, ptOfstList.GetArray(&i), ptOfstList.GetCount() * sizeof(UInt32));
+		Math::Coord2DDbl *ptArr = pg->GetPointList(&i);
+		MemCopyNO(ptArr, ptList.GetArray(&i), ptList.GetCount() * sizeof(Double));
+		return pg;
 	}
 	return 0;
 }

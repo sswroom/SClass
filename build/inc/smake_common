@@ -114,6 +114,7 @@ nodeps:
 @ExecuteProcess2
 @HiResClock
 @CesiumDownloader
+@GISDistTest
 @MapSearchTest
 @OruxMapTest
 @BigIntTest
@@ -405,6 +406,9 @@ HiResClock:
 #Map
 CesiumDownloader:
 @CesiumDownloaderTest.o
+@ConsoleStartup.o
+GISDistTest:
+@GISDistTest.o
 @ConsoleStartup.o
 MapSearchTest:
 @MapSearchTest.o
@@ -983,6 +987,7 @@ ExecuteProcess.o: ../../main/Manage/ExecuteProcess.cpp
 ExecuteProcess2.o: ../../main/Manage/ExecuteProcess2.cpp
 HiResClockMain.o: ../../main/Manage/HiResClock.cpp
 CesiumDownloaderTest.o: ../../main/Map/CesiumDownloaderTest.cpp
+GISDistTest.o: ../../main/Map/GISDistTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 BigIntTest.o: ../../main/Math/BigIntTest.cpp
