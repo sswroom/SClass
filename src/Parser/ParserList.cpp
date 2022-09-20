@@ -207,7 +207,7 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::Par
 	{
 		if (pt == t)
 			return pobj;
-		pobj2 = this->ParseObject(pobj, &pt);
+		pobj2 = this->ParseObjectType(pobj, &pt, t);
 		DEL_CLASS(pobj);
 		pobj = pobj2;
 	}
@@ -216,6 +216,11 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::Par
 
 IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::ParserType *t)
 {
+	return ParseObjectType(pobj, t, IO::ParserType::Unknown);
+}
+
+IO::ParsedObject *Parser::ParserList::ParseObjectType(IO::ParsedObject *pobj, IO::ParserType *t, IO::ParserType targetType)
+{
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();
 	IO::IObjectParser *parser;
@@ -223,7 +228,7 @@ IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::Pa
 	while (i < j)
 	{
 		parser = this->objPArr.GetItem(i);
-		if ((result = parser->ParseObject(pobj, 0, IO::ParserType::Unknown)) != 0)
+		if ((result = parser->ParseObject(pobj, 0, targetType)) != 0)
 		{
 			if (t)
 			{

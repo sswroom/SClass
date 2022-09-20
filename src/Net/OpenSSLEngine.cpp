@@ -816,3 +816,91 @@ UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, c
 	EVP_PKEY_free(pkey);
 	return (UOSInt)outlen;
 }
+
+UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen)
+{
+	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
+	{
+		return RSAPublicDecrypt(key, decData, payload, payloadLen);
+	}
+	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
+	if (pkey == 0)
+	{
+		return 0;
+	}
+	EVP_PKEY_CTX *ctx;
+	ctx = EVP_PKEY_CTX_new(pkey, 0);
+	if (!ctx)
+	{
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	if (EVP_PKEY_decrypt_init(ctx) <= 0)
+	{
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) //RSA_PKCS1_OAEP_PADDING
+	{
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	size_t outlen = 512;
+	int ret = EVP_PKEY_decrypt(ctx, decData, &outlen, payload, payloadLen);
+	if (ret <= 0)
+	{
+		printf("EVP_PKEY_decrypt returns %d\r\n", ret);
+		ERR_print_errors_fp(stdout);
+
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	EVP_PKEY_CTX_free(ctx);
+	EVP_PKEY_free(pkey);
+	return (UOSInt)outlen;
+}
+
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen)
+{
+	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
+	if (pkey == 0)
+	{
+		return 0;
+	}
+	EVP_PKEY_CTX *ctx;
+	ctx = EVP_PKEY_CTX_new(pkey, 0);
+	if (!ctx)
+	{
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	if (EVP_PKEY_verify_recover_init(ctx) <= 0)
+	{
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) //RSA_PKCS1_OAEP_PADDING
+	{
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	size_t outlen = 512;
+	int ret = EVP_PKEY_verify_recover(ctx, decData, &outlen, payload, payloadLen);
+	if (ret <= 0)
+	{
+		printf("EVP_PKEY_verify_recover returns %d\r\n", ret);
+		ERR_print_errors_fp(stdout);
+
+		EVP_PKEY_CTX_free(ctx);
+		EVP_PKEY_free(pkey);
+		return 0;
+	}
+	EVP_PKEY_CTX_free(ctx);
+	EVP_PKEY_free(pkey);
+	return (UOSInt)outlen;
+}

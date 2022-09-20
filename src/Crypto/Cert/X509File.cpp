@@ -2729,15 +2729,6 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UIn
 	return KeyType::Unknown;
 }
 
-Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid, UOSInt oidLen)
-{
-	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.1")))
-	{
-		return Crypto::Hash::HT_SHA256;
-	}
-	return Crypto::Hash::HT_UNKNOWN;
-}
-
 Crypto::Cert::X509File::ECName Crypto::Cert::X509File::ECNameFromOID(const UInt8 *oid, UOSInt oidLen)
 {
 	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.10045.3.1.7")))
@@ -2911,6 +2902,27 @@ Bool Crypto::Cert::X509File::GetSignedInfo(SignedInfo *signedInfo) const
 	}
 	signedInfo->signature = itemPDU + 1;
 	signedInfo->signSize = itemLen - 1;
+	return true;
+}
+
+Bool Crypto::Cert::X509File::ParseDigestType(DigestInfo *digestInfo, const UInt8 *pdu, const UInt8 *pduEnd)
+{
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *itemPDU;
+	itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1.1.1", &itemLen, &itemType);
+	if (itemPDU == 0 || itemType != Net::ASN1Util::IT_OID)
+	{
+		return false;
+	}
+	digestInfo->hashType = HashTypeFromOID(itemPDU, itemLen);
+	itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1.2", &itemLen, &itemType);
+	if (itemPDU == 0 || itemType != Net::ASN1Util::IT_OCTET_STRING)
+	{
+		return false;
+	}
+	digestInfo->hashVal = itemPDU;
+	digestInfo->hashLen = itemLen;
 	return true;
 }
 
@@ -3093,4 +3105,29 @@ Text::CString Crypto::Cert::X509File::ValidStatusGetDesc(ValidStatus validStatus
 		return CSTR("Unknown");
 	}
 
+}
+
+Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid, UOSInt oidLen)
+{
+	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.1")))
+	{
+		return Crypto::Hash::HT_SHA256;
+	}
+	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.2")))
+	{
+		return Crypto::Hash::HT_SHA384;
+	}
+	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.3")))
+	{
+		return Crypto::Hash::HT_SHA512;
+	}
+	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.4")))
+	{
+		return Crypto::Hash::HT_SHA224;
+	}
+	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.3.14.3.2.26")))
+	{
+		return Crypto::Hash::HT_SHA1;
+	}
+	return Crypto::Hash::HT_UNKNOWN;
 }

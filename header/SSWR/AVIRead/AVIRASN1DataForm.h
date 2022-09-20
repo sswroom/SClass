@@ -42,6 +42,7 @@ namespace SSWR
 			UI::GUILabel *lblVerifySignature;
 			UI::GUITextBox *txtVerifySignature;
 			UI::GUIButton *btnVerify;
+			UI::GUIButton *btnVerifySignInfo;
 			UI::GUILabel *lblVerifyStatus;
 			UI::GUITextBox *txtVerifyStatus;
 
@@ -58,7 +59,9 @@ namespace SSWR
 			static void AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType);
 			static Bool FileIsSign(Text::String *fileName);
 			static void __stdcall OnVerifyClicked(void *userObj);
+			static void __stdcall OnVerifySignInfoClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
+			UOSInt ParseSignature(Text::PString *s, UInt8 *sign);
 			Crypto::Cert::X509Key *GetNewKey();
 		public:
 			AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1);

@@ -27,6 +27,13 @@ namespace Crypto
 			static void FreeNames(CertNames *names);
 		};
 
+		struct DigestInfo
+		{
+			Crypto::Hash::HashType hashType;
+			const UInt8 *hashVal;
+			UOSInt hashLen;
+		};
+
 		struct CertExtensions
 		{
 			Data::ArrayList<Text::String *> *subjectAltName;
@@ -185,7 +192,6 @@ namespace Crypto
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
-			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
 			static ECName ECNameFromOID(const UInt8 *oid, UOSInt oidLen);
 			static Bool AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType);
 
@@ -207,6 +213,7 @@ namespace Crypto
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key) const;
 			Bool GetSignedInfo(SignedInfo *signedInfo) const;
 
+			static Bool ParseDigestType(DigestInfo *digestInfo, const UInt8 *pdu, const UInt8 *pduEnd);
 			static Crypto::Hash::HashType GetAlgHash(AlgType algType);
 			static Text::CString FileTypeGetName(FileType fileType);
 			static Text::CString KeyTypeGetName(KeyType keyType);
@@ -215,6 +222,7 @@ namespace Crypto
 			static Text::CString ECNameGetOID(ECName ecName);
 			static Text::CString ValidStatusGetName(ValidStatus validStatus);
 			static Text::CString ValidStatusGetDesc(ValidStatus validStatus);
+			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
 		};
 	}
 }

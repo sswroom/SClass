@@ -160,6 +160,7 @@ namespace Text
 	FORCEINLINE UInt16 StrHex2UInt16C(const UTF8Char *str) { return (UInt16)StrHex2Int16C(str); }
 	UInt8 StrHex2UInt8C(const UTF8Char *str);
 	UOSInt StrHex2Bytes(const UTF8Char *str, UInt8 *buff);
+	UOSInt StrHex2BytesS(const UTF8Char *str, UInt8 *buff, UTF8Char seperator);
 #ifdef HAS_INT64
 	Int64 StrOct2Int64(const UTF8Char *str);
 #endif

@@ -1031,7 +1031,16 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					{
 						IO::DirectoryPackage *dp;
 						NEW_CLASS(dp, IO::DirectoryPackage(fname));
-						this->core->OpenObject(dp);	
+						IO::ParsedObject *pobj = this->core->GetParserList()->ParseObjectType(dp, 0, dlg.GetParserType());
+						if (pobj)
+						{
+							DEL_CLASS(dp);
+							this->core->OpenObject(pobj);	
+						}
+						else
+						{
+							this->core->OpenObject(dp);	
+						}
 					}
 					else
 					{

@@ -2052,6 +2052,11 @@ UInt8 Text::StrHex2UInt8C(const UTF8Char *str)
 
 UOSInt Text::StrHex2Bytes(const UTF8Char *str, UInt8 *buff)
 {
+	return StrHex2BytesS(str, buff, ' ');
+}
+
+UOSInt Text::StrHex2BytesS(const UTF8Char *str, UInt8 *buff, UTF8Char seperator)
+{
 	UOSInt outVal = 0;
 	UInt8 tmpVal;
 	UTF8Char c;
@@ -2072,7 +2077,7 @@ UOSInt Text::StrHex2Bytes(const UTF8Char *str, UInt8 *buff)
 		{
 			tmpVal = (UInt8)((c - 0x57) << 4);
 		}
-		else if (c == ' ')
+		else if (c == seperator)
 		{
 			continue;
 		}

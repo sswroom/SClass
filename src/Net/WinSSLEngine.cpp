@@ -1769,3 +1769,8 @@ UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, co
 {
 	return 0;
 }
+
+UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen)
+{
+	return 0;
+}

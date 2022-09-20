@@ -36,6 +36,7 @@ namespace Parser
 		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::ParserType *t);
 		IO::ParsedObject *ParseFileType(IO::IStreamData *fd, IO::ParserType t);
 		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParserType *t);
+		IO::ParsedObject *ParseObjectType(IO::ParsedObject *pobj, IO::ParserType *t, IO::ParserType targetType);
 	};
 }
 #endif
