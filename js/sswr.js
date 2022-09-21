@@ -102,6 +102,56 @@ sswr.math.geometry.Vector2D = function(srid)
 	this.srid = srid;
 }
 
+sswr.math.geometry.MultiGeometry = function(srid)
+{
+	sswr.math.geometry.Vector2D.call(this, srid);
+	this.coordinates = new Array();
+}
+sswr.math.geometry.MultiGeometry.prototype = Object.create(sswr.math.geometry.Vector2D.prototype);
+
+sswr.math.geometry.MultiGeometry.prototype.calBoundaryPoint = function(x, y)
+{
+	var minObj = null;
+	var thisObj;
+	var i = this.coordinates.length;
+	while (i-- > 0)
+	{
+		thisObj = this.coordinates[i].calBoundaryPoint(x, y);
+		if (minObj == null || minObj.dist > thisObj.dist)
+		{
+			minObj = thisObj;
+		}
+	}
+	return minObj;
+}
+
+sswr.math.geometry.MultiGeometry.prototype.insideVector = function(x, y)
+{
+	var i = this.coordinates.length;
+	while (i-- > 0)
+	{
+		if (this.coordinates[i].insideVector(x, y))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+sswr.math.geometry.MultiPolygon = function(srid, coordinates)
+{
+	sswr.math.geometry.MultiGeometry.call(this, srid);
+	this.type = "MultiPolygon";
+	var i = 0;
+	var j = coordinates.length;
+	while (i < j)
+	{
+		this.coordinates.push(new sswr.math.geometry.Polygon(srid, coordinates[i]));
+		i++;
+	}
+}
+sswr.math.geometry.MultiPolygon.prototype = Object.create(sswr.math.geometry.MultiGeometry.prototype);
+
 sswr.math.geometry.Polygon = function(srid, coordinates)
 {
 	sswr.math.geometry.Vector2D.call(this, srid);
@@ -230,6 +280,7 @@ sswr.math.geometry.Polygon.prototype.calBoundaryPoint = function(x, y)
 	var ret = new Object();
 	ret.x = calPtOutX;
 	ret.y = calPtOutY;
+	ret.dist = dist;
 	return ret;
 }
 
@@ -746,6 +797,14 @@ sswr.math.GeoJSON.parseGeometry = function(srid, geometry)
 	if (geometry.type == "Polygon")
 	{
 		return new sswr.math.geometry.Polygon(srid, geometry.coordinates);
+	}
+	else if (geometry.type = "MultiPolygon")
+	{
+		return new sswr.math.geometry.MultiPolygon(srid, geometry.coordinates);
+	}
+	else
+	{
+		console.log("GeoJSON.parseGeometry: unknown type "+geometry.type);
 	}
 	return null;
 }

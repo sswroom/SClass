@@ -190,10 +190,18 @@ UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *name
 		}
 		if (narr->currId != id)
 		{
-			Data::QueryConditions cond;
-			DB::ColDef *idCol = this->tabDef->GetCol(this->idCol);
-			cond.Int64Equals(idCol->GetColName()->ToCString(), id);
-			DB::DBReader *r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+			DB::DBReader *r;
+			if (this->idCol != INVALID_INDEX)
+			{
+				Data::QueryConditions cond;
+				DB::ColDef *idCol = this->tabDef->GetCol(this->idCol);
+				cond.Int64Equals(idCol->GetColName()->ToCString(), id);
+				r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+			}
+			else
+			{
+				r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, (UOSInt)(id - 1), 1, 0, 0);
+			}
 			if (r)
 			{
 				if (r->ReadNext())
@@ -385,7 +393,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::DBTool *db, Text::CString schemaName, Text
 		i++;
 	}
 
-	if (this->idCol == INVALID_INDEX || this->vecCol == INVALID_INDEX)
+	if (this->vecCol == INVALID_INDEX)
 	{
 		return false;
 	}
@@ -395,6 +403,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::DBTool *db, Text::CString schemaName, Text
 	{
 		return false;
 	}
+	Int64 index = 0;
 	Int64 id;
 	Math::RectAreaDbl bounds;
 	Math::Geometry::Vector2D *vec;
@@ -402,7 +411,15 @@ Bool Map::DBMapLayer::SetDatabase(DB::DBTool *db, Text::CString schemaName, Text
 	UInt32 vecSrid;
 	while (r->ReadNext())
 	{
-		id = r->GetInt64(this->idCol);
+		index++;
+		if (this->idCol == INVALID_INDEX)
+		{
+			id = index;
+		}
+		else
+		{
+			id = r->GetInt64(this->idCol);
+		}
 		vec = r->GetVector(this->vecCol);
 		if (vec != 0)
 		{
