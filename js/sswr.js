@@ -233,6 +233,69 @@ sswr.math.geometry.Polygon.prototype.calBoundaryPoint = function(x, y)
 	return ret;
 }
 
+sswr.math.geometry.Polygon.prototype.insideVector = function(x, y)
+{
+	var thisX;
+	var thisY;
+	var lastX;
+	var lastY;
+	var j;
+	var k;
+	var l;
+	var leftCnt = 0;
+	var tmpX;
+	var points;
+
+	k = this.coordinates.length;
+
+	while (k--)
+	{
+		points = this.coordinates[k];
+
+		lastX = points[0][0];
+		lastY = points[0][1];
+		l = points.length;
+		while (l-- > 0)
+		{
+			thisX = points[l][0];
+			thisY = points[l][1];
+			j = 0;
+			if (lastY > y)
+				j += 1;
+			if (thisY > y)
+				j += 1;
+
+			if (j == 1)
+			{
+				tmpX = lastX - (lastX - thisX) * (lastY - y) / (lastY - thisY);
+				if (tmpX == x)
+				{
+					return true;
+				}
+				else if (tmpX < x)
+					leftCnt++;
+			}
+			else if (thisY == y && lastY == y)
+			{
+				if ((thisX >= x && lastX <= x) || (lastX >= x && thisX <= x))
+				{
+					return true;
+				}
+			}
+			else if (thisY == y && thisX == x)
+			{
+				return true;
+			}
+
+			lastX = thisX;
+			lastY = thisY;
+		}
+		l++;
+	}
+
+	return (leftCnt & 1) != 0;	
+}
+
 sswr.math.unit = new Object();
 sswr.math.unit.Angle = new Object();
 sswr.math.unit.Angle.AngleUnit = {

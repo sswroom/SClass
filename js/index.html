@@ -5,7 +5,9 @@
 			function burialSiteReceived(result)
 			{
 				var pg = sswr.math.GeoJSON.parseGeometry(4326, result.features[0].geometry);
-				console.log("Distance = "+sswr.map.calcDistance(4326, pg, 114.22122894202, 22.362089455590));
+				var x = 114.22122894202;
+				var y = 22.362089455590;
+				console.log("Distance = "+sswr.map.calcDistance(4326, pg, x, y) + ", "+pg.insideVector(x, y));
 			}
 
 			function test()
