@@ -1,0 +1,20 @@
+<html>
+	<head><title>Testing</title>
+		<script src="sswr.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function burialSiteReceived(result)
+			{
+				var pg = sswr.math.GeoJSON.parseGeometry(4326, result.features[0].geometry);
+				console.log("Distance = "+sswr.map.calcDistance(4326, pg, 114.22122894202, 22.362089455590));
+			}
+
+			function test()
+			{
+				sswr.web.loadJSON('http://192.168.1.113:8765/geoserver/main/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=main%3Ahad_burial_site&outputFormat=application%2Fjson&CQL_FILTER=site_code=%27ST-10%27', burialSiteReceived);
+			}
+		</script>
+	</head>
+	<body onload="test()">
+
+	</body>
+</html>
