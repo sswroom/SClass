@@ -27,11 +27,12 @@ sswr.data.toObjectString = function(o, lev)
 		nextLev = 1;
 	}
 	var t = typeof o;
+	var out;
+	var name;
 	if (sswr.data.isArray(o))
 	{
-		var out = new Array();
+		out = new Array();
 		out.push("[");
-		var name;
 		for (name in o)
 		{
 			out.push(sswr.data.toObjectString(o[name], nextLev));
@@ -43,9 +44,8 @@ sswr.data.toObjectString = function(o, lev)
 	}
 	else if (t == "object")
 	{
-		var out = new Array();
+		out = new Array();
 		out.push("{");
-		var name;
 		for (name in o)
 		{
 			out.push(sswr.text.toJSText(name));
@@ -164,7 +164,6 @@ sswr.math.geometry.Polygon.prototype.calBoundaryPoint = function(x, y)
 {
 	var k;
 	var l;
-	var m;
 
 	k = this.coordinates.length;
 	var points;

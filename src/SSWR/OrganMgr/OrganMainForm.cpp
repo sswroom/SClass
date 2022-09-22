@@ -2481,6 +2481,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(lyr, OrganSpImgLayer());
 	NEW_CLASS(stimg, Media::StaticImage(7, 7, 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);

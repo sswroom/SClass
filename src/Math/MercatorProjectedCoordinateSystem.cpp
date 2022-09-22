@@ -36,7 +36,8 @@ void Math::MercatorProjectedCoordinateSystem::ToGeographicCoordinateRad(Double p
 	Double e = ellipsoid->GetEccentricity();
 	Double e2 = e * e;
 	Double tmpV;
-	while (true)
+	UOSInt i = 20;
+	while (i-- > 0)
 	{
 		tmpV = projY - this->falseNorthing - this->CalcM(rLatL);
 		rLastLat = rLatL;

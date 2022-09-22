@@ -152,8 +152,10 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void
 	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
+	UInt32 srid = 0;
+	if (this->csys) srid = this->csys->GetSRID();
 	Math::Geometry::Point *pt;
-	NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), ufile->lon, ufile->lat));
+	NEW_CLASS(pt, Math::Geometry::Point(0, ufile->lon, ufile->lat));
 	return pt;
 }
 
