@@ -217,6 +217,7 @@
 #include "SSWR/AVIRead/AVIRWifiScanForm.h"
 #include "SSWR/AVIRead/AVIRWindowsErrorForm.h"
 #include "SSWR/AVIRead/AVIRWMIForm.h"
+#include "SSWR/AVIRead/AVIRWMTSForm.h"
 #include "SSWR/AVIRead/AVIRWOLForm.h"
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
 #include "SSWR/SHPConv/SHPConvMainForm.h"
@@ -440,7 +441,8 @@ typedef enum
 	MNU_ADAM,
 	MNU_MODBUS_TCPSIM,
 	MNU_TMS,
-	MNU_BATCH_RENAME
+	MNU_BATCH_RENAME,
+	MNU_WMTS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -771,6 +773,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("SHPConv"), MNU_SHPCONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("SMBIOS"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2526,6 +2529,18 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRBatchRenameForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBatchRenameForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_WMTS:
+		{
+			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this))
+			{
+				Map::TileMap *tile = frm.GetTileMap();
+				Map::TileMapLayer *layer;
+				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+				this->core->OpenObject(layer);
+			}
 		}
 		break;
 	}

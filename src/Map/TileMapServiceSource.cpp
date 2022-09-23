@@ -33,8 +33,8 @@ void Map::TileMapServiceSource::LoadXML()
 				if (reader.GetNodeText()->Equals(UTF8STRC("TileMap")))
 				{
 					valid = true;
-					break;
 				}
+				break;
 			}
 		}
 
