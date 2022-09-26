@@ -19,7 +19,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	connStr.AppendC(UTF8STRC("Driver={"));
 	connStr.Append(driverName);
 	connStr.AppendC(UTF8STRC("}"));
-	if (driverName->Equals(UTF8STRC("ODBC Driver 17 for SQL Server")))
+	if (driverName->StartsWith(UTF8STRC("ODBC Driver ")) && driverName->EndsWith(UTF8STRC(" for SQL Server")))
 	{
 		connStr.AppendC(UTF8STRC(";server=tcp:"));
 		connStr.AppendSlow(serverHost);
@@ -35,7 +35,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	}
 	connStr.AppendC(UTF8STRC(";database="));
 	connStr.AppendSlow(database);
-	if (driverName->Equals(UTF8STRC("ODBC Driver 17 for SQL Server")))
+	if (driverName->StartsWith(UTF8STRC("ODBC Driver ")) && driverName->EndsWith(UTF8STRC(" for SQL Server")))
 	{
 		if (userName)
 		{
