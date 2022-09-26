@@ -117,6 +117,7 @@ nodeps:
 @GISDistTest
 @MapSearchTest
 @OruxMapTest
+@SpeedLimitTest
 @BigIntTest
 @LanczosFilterTest
 @DrawRotTest
@@ -415,6 +416,9 @@ MapSearchTest:
 @ConsoleStartup.o
 OruxMapTest:
 @OruxMapTest.o
+@ConsoleStartup.o
+SpeedLimitTest:
+@SpeedLimitTest.o
 @ConsoleStartup.o
 
 #Math
@@ -990,6 +994,7 @@ CesiumDownloaderTest.o: ../../main/Map/CesiumDownloaderTest.cpp
 GISDistTest.o: ../../main/Map/GISDistTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
+SpeedLimitTest.o: ../../main/Map/SpeedLimitTest.cpp
 BigIntTest.o: ../../main/Math/BigIntTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp
@@ -2001,6 +2006,8 @@ Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
 @FileGDBLayer.o
 Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
 @GPSTrack.o
+Map/HKSpeedLimit.h: ../../src/Map/HKSpeedLimit.cpp
+@HKSpeedLimit.o
 Map/HKTDVehRestrict.h: ../../src/Map/HKTDVehRestrict.cpp
 @HKTDVehRestrict.o
 Map/HKTrafficLayer.h: ../../src/Map/HKTrafficLayer.cpp
@@ -4644,6 +4651,7 @@ DBMapLayer.o: ../../src/Map/DBMapLayer.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
+HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
 ILocationService.o: ../../src/Map/ILocationService.cpp

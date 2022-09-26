@@ -1,9 +1,11 @@
 #include "Stdafx.h"
 #include "DB/CSVFile.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/ProjectedCoordinateSystem.h"
+#include "Media/ImageList.h"
 #include "SSWR/AVIRead/AVIRCoordConvForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -11,13 +13,14 @@
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
+#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, Bool newValue)
 {
 	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
 	if (me->inited)
 	{
-		me->ClearItems();
+		me->ClearItems(true);
 		if (newValue)
 		{
 			me->FillCoordGeo(me->cboSrc);
@@ -32,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcCboChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
-	me->ClearItems();
+	me->ClearItems(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestRadChanged(void *userObj, Bool newValue)
@@ -89,7 +92,48 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
-	me->ClearItems();
+	me->ClearItems(true);
+}
+
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	UOSInt i = 0;
+	UOSInt j = me->lvCoord->GetCount();
+	if (j == 0)
+	{
+		me->txtStatus->SetText(CSTR("No items found"));
+	}
+	Text::StringBuilderUTF8 sb;
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb.AppendC(UTF8STRC("\r\n"));
+		}
+		me->lvCoord->GetSubItem(i, 0, &sb);
+		sb.AppendUTF8Char('\t');
+		me->lvCoord->GetSubItem(i, 1, &sb);
+		sb.AppendUTF8Char('\t');
+		me->lvCoord->GetSubItem(i, 2, &sb);
+		sb.AppendUTF8Char('\t');
+		me->lvCoord->GetSubItem(i, 3, &sb);
+		sb.AppendUTF8Char('\t');
+		me->lvCoord->GetSubItem(i, 4, &sb);
+		sb.AppendUTF8Char('\t');
+		me->lvCoord->GetSubItem(i, 5, &sb);
+		sb.AppendUTF8Char('\t');
+		me->lvCoord->GetSubItem(i, 6, &sb);
+		i++;
+	}
+	if (Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
+	{
+		me->txtStatus->SetText(CSTR("All items copied"));
+	}
+	else
+	{
+		me->txtStatus->SetText(CSTR("Error in copying items"));
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj)
@@ -299,7 +343,80 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	DEL_CLASS(db);
 }
 
-void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(void *userObj, UOSInt itemIndex)
+{
+	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
+	me->lvCoord->GetSubItem(itemIndex, 0, &sb);
+	sb2.Append(&sb);
+	sb.AppendUTF8Char('\t');
+	me->lvCoord->GetSubItem(itemIndex, 1, &sb);
+	sb.AppendUTF8Char('\t');
+	me->lvCoord->GetSubItem(itemIndex, 2, &sb);
+	sb.AppendUTF8Char('\t');
+	me->lvCoord->GetSubItem(itemIndex, 3, &sb);
+	sb.AppendUTF8Char('\t');
+	me->lvCoord->GetSubItem(itemIndex, 4, &sb);
+	sb.AppendUTF8Char('\t');
+	me->lvCoord->GetSubItem(itemIndex, 5, &sb);
+	sb.AppendUTF8Char('\t');
+	me->lvCoord->GetSubItem(itemIndex, 6, &sb);
+	sb2.AppendC(UTF8STRC(" copied"));
+	if (Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
+	{
+		me->txtStatus->SetText(sb2.ToCString());
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
+	Parser::ParserList *parsers = me->core->GetParserList();
+	Bool listUpdated = false;
+	Text::StringBuilderUTF8 sb;
+	Double lat;
+	Double lon;
+	Double altitude;
+	Int64 gpsTimeTick;
+	UOSInt i = 0;
+	UOSInt j;
+	while (i < nFiles)
+	{
+		IO::StmData::FileData fd(files[i], false);
+		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
+		if (imgList)
+		{
+			Media::Image *img = imgList->GetImage(0, 0);
+			if (img && img->exif && img->exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
+			{
+				sb.ClearStr();
+				sb.Append(imgList->GetSourceNameObj());
+				j = sb.LastIndexOf(IO::Path::PATH_SEPERATOR);
+				if (j == INVALID_INDEX)
+				{
+					me->nameList.Add(imgList->GetSourceNameObj()->Clone());
+				}
+				else
+				{
+					me->nameList.Add(Text::String::New(sb.ToCString().Substring(j + 1)));
+				}
+				me->xList.Add(lon);
+				me->yList.Add(lat);
+				me->zList.Add(altitude);
+				listUpdated = true;
+			}
+			DEL_CLASS(imgList);
+		}
+		i++;
+	}
+	if (listUpdated)
+	{
+		me->UpdateList();
+	}
+}
+
+void SSWR::AVIRead::AVIRCoordConvForm::ClearItems(Bool updateList)
 {
 	UOSInt i;
 	i = this->nameList.GetCount();
@@ -311,7 +428,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
 	this->xList.Clear();
 	this->yList.Clear();
 	this->zList.Clear();
-	this->UpdateList();
+	if (updateList) this->UpdateList();
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
@@ -477,7 +594,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->lblNorthing->SetRect(375, 0, 75, 23, false);
 	NEW_CLASS(this->txtNorthing, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtNorthing->SetRect(450, 0, 100, 23, false);
-	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, this->pnlCoord, CSTR("Northing")));
+	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, this->pnlCoord, CSTR("Height")));
 	this->lblHeight->SetRect(550, 0, 75, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtHeight->SetRect(625, 0, 75, 23, false);
@@ -487,6 +604,13 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnClear, UI::GUIButton(ui, this->pnlCoord, CSTR("Clear")));
 	this->btnClear->SetRect(780, 0, 75, 23, false);
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
+	NEW_CLASS(this->btnCopyAll, UI::GUIButton(ui, this->pnlCoord, CSTR("Copy All")));
+	this->btnCopyAll->SetRect(860, 0, 75, 23, false);
+	this->btnCopyAll->HandleButtonClick(OnCopyAllClicked, this);
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
+	this->txtStatus->SetRect(0, 0, 100, 23, false);
+	this->txtStatus->SetReadOnly(true);
+	this->txtStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lvCoord, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvCoord->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCoord->AddColumn(CSTR("Name"), 100);
@@ -498,6 +622,8 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->lvCoord->AddColumn(CSTR("DestZ"), 100);
 	this->lvCoord->SetShowGrid(true);
 	this->lvCoord->SetFullRowSelect(true);
+	this->lvCoord->HandleDblClk(OnCoordDblClk, this);
+	this->HandleDropFiles(OnFileDrop, this);
 
 	this->inited = true;
 	this->FillCoordProj(this->cboSrc);
@@ -506,7 +632,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 
 SSWR::AVIRead::AVIRCoordConvForm::~AVIRCoordConvForm()
 {
-	this->ClearItems();
+	this->ClearItems(false);
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::OnMonitorChanged()

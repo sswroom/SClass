@@ -2060,6 +2060,13 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 					val = -val;
 				}
 			}
+			else if (item1->type == Media::EXIFData::ET_UINT16 && item1->cnt == 1)
+			{
+				if ((item1->value & 0xffff) == 1)
+				{
+					val = -val;
+				}
+			}
 			else
 			{
 				succ = false;
@@ -2127,7 +2134,10 @@ Bool Media::EXIFData::GetPhotoLocation(Double *lat, Double *lon, Double *altitud
 		}
 		else
 		{
-			succ = false;
+			if (gpsTimeTick)
+			{
+				*gpsTimeTick = 0;
+			}
 		}
 		return succ;
 	}
@@ -2801,6 +2811,19 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 		}
 
 		i++;
+	}
+	Double lat;
+	Double lon;
+	Double altitude;
+	Int64 gpsTimeTick;
+	if (this->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
+	{
+		sb->AppendC(UTF8STRC("\r\nGPS Location: "));
+		sb->AppendDouble(lat);
+		sb->AppendC(UTF8STRC(", "));
+		sb->AppendDouble(lon);
+		sb->AppendC(UTF8STRC(", "));
+		sb->AppendDouble(altitude);
 	}
 	return true;
 }

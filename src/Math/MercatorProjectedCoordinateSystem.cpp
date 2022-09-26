@@ -46,10 +46,11 @@ void Math::MercatorProjectedCoordinateSystem::ToGeographicCoordinateRad(Double p
 			break;
 	}
 	Double sLat = Math_Sin(rLatL);
-	Double tLat = Math_Tan(rLatL);
+	Double cLat = Math_Cos(rLatL);
+	Double secLat = 1 / cLat;
+	Double tLat = sLat * secLat; //Math_Tan(rLatL);
 	Double tLat2 = tLat * tLat;
 	Double tLat4 = tLat2 * tLat2;
-	Double secLat = 1 / Math_Cos(rLatL);
 	Double tmp = 1 - e2 * sLat * sLat;
 	Double v = aF / Math_Sqrt(tmp);
 	Double v2 = v * v;
@@ -82,6 +83,8 @@ void Math::MercatorProjectedCoordinateSystem::FromGeographicCoordinateRad(Double
 	Double rLon = geoX;
 	Double rLon0 = this->rcentralMeridian;
 	Double sLat = Math_Sin(rLat);
+	Double cLat = Math_Cos(rLat);
+	Double tLat = sLat / cLat; //Math_Tan(rLat);
 	Double a = ellipsoid->GetSemiMajorAxis();
 	Double e = ellipsoid->GetEccentricity();
 	Double e2 = e * e;
@@ -90,8 +93,6 @@ void Math::MercatorProjectedCoordinateSystem::FromGeographicCoordinateRad(Double
 	Double p = v * (1 - e2) / tmp;
 	Double nb2 = v / p - 1;
 	Double m = this->CalcM(rLat);
-	Double cLat = Math_Cos(rLat);
-	Double tLat = Math_Tan(rLat);
 	Double tLat2 = tLat * tLat;
 	Double tLat4 = tLat2 * tLat2;
 	Double cLat3 = cLat * cLat * cLat;

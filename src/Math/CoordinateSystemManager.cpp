@@ -93,7 +93,7 @@ Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumLis
 	{0,     0,     UTF8STRC("Grenada_1953"), 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
 	{0,     0,     UTF8STRC("CGCS2000"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
 	{0,     0,     UTF8STRC("HONGKONG"), 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     UTF8STRC("Hong_Kong_1980"), 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
+	{6611,  7022,  UTF8STRC("Hong_Kong_1980"), 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
 	{0,     0,     UTF8STRC("Macau_2009"), -2361554.788, 5417536.177, 2391608.926, -202.865, -303.990, -155.873, -34.079, 76.126, 32.660, 6.096, Math::Unit::Angle::AU_ARCSECOND},
 	{0,     0,     UTF8STRC("Montserrat_1958"), 0, 0, 0, 174, 159, 365, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
 	{0,     0,     UTF8STRC("St_Kitts_1955"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},

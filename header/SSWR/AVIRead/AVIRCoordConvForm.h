@@ -40,7 +40,9 @@ namespace SSWR
 			UI::GUITextBox *txtHeight;
 			UI::GUIButton *btnAdd;
 			UI::GUIButton *btnClear;
+			UI::GUIButton *btnCopyAll;
 			UI::GUIListView *lvCoord;
+			UI::GUITextBox *txtStatus;
 
 			SSWR::AVIRead::AVIRCore *core;
 			Data::ArrayList<Text::String *> nameList;
@@ -55,9 +57,12 @@ namespace SSWR
 			static void __stdcall OnDestCboChanged(void *userObj);
 			static void __stdcall OnAddClicked(void *userObj);
 			static void __stdcall OnClearClicked(void *userObj);
+			static void __stdcall OnCopyAllClicked(void *userObj);
 			static void __stdcall OnConvFileClicked(void *userObj);
+			static void __stdcall OnCoordDblClk(void *userObj, UOSInt itemIndex);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 
-			void ClearItems();
+			void ClearItems(Bool updateList);
 			void UpdateList();
 			void FillCoordGeo(UI::GUIComboBox *cbo);
 			void FillCoordProj(UI::GUIComboBox *cbo);
