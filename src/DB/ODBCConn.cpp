@@ -18,6 +18,7 @@
 
 #if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 #include <windows.h>
+#include "IO/Registry.h"
 #else
 #include "IO/IniFile.h"
 #endif
@@ -1079,7 +1080,19 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
-	return 0;
+	WChar wbuff[512];
+	IO::Registry* reg = IO::Registry::OpenLocalSoftware(L"ODBC\\ODBCINST.INI\\ODBC Drivers");
+	UOSInt i = 0;
+	if (reg)
+	{
+		while (reg->GetName(wbuff, i))
+		{
+			driverList->Add(Text::String::NewNotNull(wbuff));
+			i++;
+		}
+		IO::Registry::CloseRegistry(reg);
+	}
+	return i;
 #else
 	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
 	if (cfg)

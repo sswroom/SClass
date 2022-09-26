@@ -104,17 +104,7 @@ Text::String *DB::MSSQLConn::GetDriverNameNew()
 	while (i < j)
 	{
 		driver = driverList.GetItem(i);
-		if (driver->Equals(UTF8STRC("ODBC Driver 17 for SQL Server")))
-		{
-			SDEL_STRING(driverName);
-			driverName = driver;
-		}
-		else if (driver->Equals(UTF8STRC("ODBC Driver 13 for SQL Server")))
-		{
-			SDEL_STRING(driverName);
-			driverName = driver;
-		}
-		else if (driver->Equals(UTF8STRC("ODBC Driver 11 for SQL Server")))
+		if (driver->StartsWith(UTF8STRC("ODBC Driver ")) && driver->EndsWith(UTF8STRC(" for SQL Server"))) //ODBC Driver 17 for SQL Server
 		{
 			SDEL_STRING(driverName);
 			driverName = driver;

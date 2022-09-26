@@ -41,7 +41,7 @@ void Math::Geometry::PieArea::GetBounds(Math::RectAreaDbl* bounds) const
 	bounds->br = this->center + this->r;
 }
 
-Double Math::Geometry::PieArea::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl* nearPt) const
+Double Math::Geometry::PieArea::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl* nearPt) const
 {
 	//////////////////////////////////////////////////////////
 	*nearPt = pt;

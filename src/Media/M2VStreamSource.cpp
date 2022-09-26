@@ -383,7 +383,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Output frame "));
 				sb.AppendU32(frameTime);
-				Sync::MutexUsage debugMutUsage(this->debugMut);
+				Sync::MutexUsage debugMutUsage(me->debugMut);
 				me->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 #endif
