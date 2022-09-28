@@ -28,7 +28,7 @@ void Map::TileMapServiceSource::LoadXML()
 		Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				if (reader.GetNodeText()->Equals(UTF8STRC("TileMap")))
 				{
@@ -47,7 +47,7 @@ void Map::TileMapServiceSource::LoadXML()
 			UOSInt i;
 			while (reader.ReadNext())
 			{
-				if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+				if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 				{
 					s = reader.GetNodeText();
 					if (s->Equals(UTF8STRC("Title")))
@@ -218,7 +218,7 @@ void Map::TileMapServiceSource::LoadXML()
 						while (reader.ReadNext())
 						{
 							nt = reader.GetNodeType();
-							if (nt == Text::XMLNode::NT_ELEMENT)
+							if (nt == Text::XMLNode::NodeType::Element)
 							{
 								if (reader.GetNodeText()->Equals(UTF8STRC("TileSet")))
 								{
@@ -266,7 +266,7 @@ void Map::TileMapServiceSource::LoadXML()
 								}
 								reader.SkipElement();
 							}
-							else if (nt == Text::XMLNode::NT_ELEMENTEND)
+							else if (nt == Text::XMLNode::NodeType::ElementEnd)
 							{
 								break;
 							}

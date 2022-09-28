@@ -37,6 +37,7 @@
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "SSWR/AVIRead/AVIRTMSForm.h"
+#include "SSWR/AVIRead/AVIRWMTSForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -86,6 +87,7 @@ typedef enum
 	MNU_GOOGLE_POLYLINE,
 	MNU_OPEN_FILE,
 	MNU_TMS,
+	MNU_WMTS,
 	MNU_HKO_RADAR_64,
 	MNU_HKO_RADAR_128,
 	MNU_HKO_RADAR_256,
@@ -713,7 +715,8 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu2->AddItem(CSTR("From &File"), MNU_MTK_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("From Google Polyline String"), MNU_GOOGLE_POLYLINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("From &File"), MNU_OPEN_FILE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
-	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
+	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HKO"));
 	UI::GUIMenu *mnu3 = mnu2->AddSubMenu(CSTR("Radar"));
@@ -1459,6 +1462,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->AddLayer(layer);
 			}
+			break;
+		}
+	case MNU_WMTS:
+		{
+			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				Map::TileMap *tileMap = frm.GetTileMap();
+				Map::TileMapLayer *layer;
+				NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+				this->AddLayer(layer);
+			}
+			break;
 		}
 	}
 }

@@ -49,7 +49,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("main")) && reader->GetAttribCount() == 2)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("main")) && reader->GetAttribCount() == 2)
 		{
 			attr = reader->GetAttrib((UOSInt)0);
 			if (attr && attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("main-content")))
@@ -57,7 +57,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 				UOSInt pathLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("a")) && reader->GetAttribCount() == 4)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("a")) && reader->GetAttribCount() == 4)
 					{
 						attr = reader->GetAttrib((UOSInt)0);
 						attr1 = reader->GetAttrib(1);
@@ -119,7 +119,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("div")))
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("div")))
 		{
 			attr = reader->GetAttrib((UOSInt)0);
 			if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-des")))
@@ -132,7 +132,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 				UOSInt pullLeftLev = 0;
 				while (reader->ReadNext() && reader->GetPathLev() > pathLev)
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->Equals(UTF8STRC("h6")))
 						{
@@ -225,7 +225,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (!found && reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("button")) && reader->GetAttribCount() > 0)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("button")) && reader->GetAttribCount() > 0)
 		{
 			attr = reader->GetAttrib((UOSInt)0);
 			if (attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("ddb")))
@@ -268,7 +268,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (!found && reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("div")) && reader->GetAttribCount() > 0)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("div")) && reader->GetAttribCount() > 0)
 		{
 			attr = reader->GetAttrib((UOSInt)0);
 			if (attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-title")))
@@ -276,7 +276,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 				UOSInt initLev = reader->GetPathLev();
 				while (reader->ReadNext() && reader->GetPathLev() > initLev)
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("h2")))
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("h2")))
 					{
 						found = reader->ReadNodeText(name);
 						break;

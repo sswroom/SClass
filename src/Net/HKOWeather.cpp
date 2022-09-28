@@ -101,7 +101,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 		while (i-- > 0)
 		{
 			n2 = n->GetChild(i);
-			if (n2->GetNodeType() == Text::XMLNode::NT_CDATA)
+			if (n2->GetNodeType() == Text::XMLNode::NodeType::CData)
 			{
 				signal = String2Signal(n2->value);
 

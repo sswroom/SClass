@@ -3411,6 +3411,39 @@ UOSInt Text::StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8C
 	return cnt;
 }
 
+UTF8Char *Text::StrReplaceC(UTF8Char *str1, UTF8Char *strEnd, const UTF8Char *replaceFrom, UOSInt replaceFromLen, const UTF8Char *replaceTo, UOSInt replaceToLen)
+{
+	UOSInt cnt;
+	UOSInt charLen = (UOSInt)(strEnd - str1);
+	UTF8Char *sptr;
+	sptr = strEnd;
+	if (replaceFromLen == 0)
+		return 0;
+
+	cnt = 0;
+	sptr -= replaceFromLen;
+	while (sptr >= str1)
+	{
+		if (Text::StrStartsWithC(sptr, (UOSInt)(strEnd - sptr), replaceFrom, replaceFromLen))
+		{
+			if (replaceFromLen != replaceToLen)
+			{
+				MemCopyO(&sptr[replaceToLen], &sptr[replaceFromLen], (charLen - (UOSInt)(sptr - str1) - replaceFromLen + 1) * sizeof(UTF8Char));
+				strEnd = strEnd + replaceToLen - replaceFromLen;
+			}
+			MemCopyNO(sptr, replaceTo, replaceToLen * sizeof(UTF8Char));
+			sptr -= replaceFromLen;
+			cnt++;
+			charLen = charLen + replaceToLen - replaceFromLen;
+		}
+		else
+		{
+			sptr -= 1;
+		}
+	}
+	return strEnd;
+}
+
 UOSInt Text::StrReplaceICase(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo)
 {
 	UOSInt cnt;

@@ -21,7 +21,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 		bnt = me->bnt;
 		if (bnt && me->reading)
 		{
-			*bnt = IO::ActiveStreamReader::BNT_READ;
+			*bnt = IO::ActiveStreamReader::BottleNeckType::Read;
 		}
 		me->fullEvt.Wait(1000);
 	}
@@ -79,7 +79,7 @@ void IO::ActiveStreamReader::ReadStream(IO::ActiveStreamReader::BottleNeckType *
 		{
 			if (bnt)
 			{
-				*bnt = IO::ActiveStreamReader::BNT_WRITE;
+				*bnt = IO::ActiveStreamReader::BottleNeckType::Write;
 			}
 			this->emptyEvt.Wait(1000);
 		}

@@ -245,6 +245,7 @@ namespace Text
 	Bool StrIsInt32(const UTF8Char *str1);
 	UOSInt StrReplace(UTF8Char *str1, UTF8Char oriC, UTF8Char destC);
 	UOSInt StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo);
+	UTF8Char *StrReplaceC(UTF8Char *str1, UTF8Char *sptrEnd, const UTF8Char *replaceFrom, UOSInt replaceFromLen, const UTF8Char *replaceTo, UOSInt replaceToLen);
 	UOSInt StrReplaceICase(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo);
 	UTF8Char *StrToCSVRec(UTF8Char *oriStr, const UTF8Char *str1);
 	const UTF8Char *StrToNewCSVRec(const UTF8Char *str1);

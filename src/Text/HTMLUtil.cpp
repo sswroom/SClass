@@ -22,7 +22,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 	{
 		toWrite = true;
 		thisNT = reader->GetNodeType();
-		if (thisNT == Text::XMLNode::NT_TEXT)
+		if (thisNT == Text::XMLNode::NodeType::Text)
 		{
 			toWrite = false;
 			s = reader->GetNodeOriText();
@@ -50,24 +50,24 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 		}
 		if (toWrite)
 		{
-			if (thisNT == Text::XMLNode::NT_TEXT && elementType == 1) //Style
+			if (thisNT == Text::XMLNode::NodeType::Text && elementType == 1) //Style
 			{
 				s = reader->GetNodeText();
 				CSSWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
 			}
-			else if (thisNT == Text::XMLNode::NT_TEXT && elementType == 2) //JavaScript
+			else if (thisNT == Text::XMLNode::NodeType::Text && elementType == 2) //JavaScript
 			{
 				s = reader->GetNodeText();
 				Text::JSText::JSWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			else if (thisNT == Text::XMLNode::NT_TEXT && elementType == 3) //JSON
+			else if (thisNT == Text::XMLNode::NodeType::Text && elementType == 3) //JSON
 			{
 				s = reader->GetNodeText();
 				Text::JSText::JSONWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			else if (thisNT == Text::XMLNode::NT_TEXT)
+			else if (thisNT == Text::XMLNode::NodeType::Text)
 			{
 				s = reader->GetNodeOriText();
 				if (s == 0)
@@ -118,7 +118,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 			}
 
 			elementType = 0;
-			if (thisNT == Text::XMLNode::NT_ELEMENT)
+			if (thisNT == Text::XMLNode::NodeType::Element)
 			{
 				s = reader->GetNodeText();
 				if (s->EqualsICase(UTF8STRC("style")))
@@ -247,7 +247,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	while (reader->ReadNext())
 	{
 		nt = reader->GetNodeType();
-		if (nt == Text::XMLNode::NT_TEXT)
+		if (nt == Text::XMLNode::NodeType::Text)
 		{
 			if (lastType == 0)
 			{
@@ -303,7 +303,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 				}
 			}
 		}
-		else if (nt == Text::XMLNode::NT_ELEMENT)
+		else if (nt == Text::XMLNode::NodeType::Element)
 		{
 			s = reader->GetNodeText();
 			if (s->EqualsICase(UTF8STRC("SCRIPT")))

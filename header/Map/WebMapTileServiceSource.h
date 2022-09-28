@@ -12,31 +12,66 @@ namespace Map
 	class WebMapTileServiceSource : public Map::TileMap
 	{
 	private:
-		struct TileSet
+		enum ResourceType
 		{
-			Double unitPerPixel;
-			UOSInt order;
+			Unknown,
+			Tile,
+			FeatureInfo	
+		};
+
+		struct TileMatrix
+		{
+			Text::String *id;
+			Int32 minRow;
+			Int32 maxRow;
+			Int32 minCol;
+			Int32 maxCol;
+		};
+
+		struct ResourceURL
+		{
+			Text::String *templateURL;
+			ResourceType resourceType;
+			Text::String *format;
+			Map::TileMap::ImageType imgType;
 		};
 
 		struct TileMatrixSet
 		{
-			Text::String *id;
-			UOSInt tileWidth;
-			UOSInt tileHeight;
 			Math::RectAreaDbl bounds;
-			Math::Coord2DDbl origin;
-			Math::Coord2DDbl csysOrigin;
-			ImageType imgType;
-			Text::String *tileExt;
+			Text::String *id;
 			Math::CoordinateSystem *csys;
-			Text::String *url;
-			Data::ArrayList<TileSet*> tileSets;
+			Data::ArrayList<TileMatrix*> tiles;
+		};
+
+		struct TileMatrixDef
+		{
+			Math::Coord2DDbl origin;
+			Text::String *id;
+			Double scaleDenom;
+			Double unitPerPixel;
+			UInt32 tileWidth;
+			UInt32 tileHeight;
+			UInt32 matrixWidth;
+			UInt32 matrixHeight;
+		};
+
+		struct TileMatrixDefSet
+		{
+			Text::String *id;
+			Math::CoordinateSystem *csys;
+			Data::ArrayList<TileMatrixDef*> tiles;
 		};
 
 		struct TileLayer
 		{
+			Math::RectAreaDbl wgs84Bounds;
+			Text::String *title;
 			Text::String *id;
+			Data::ArrayList<Text::String*> format;
+			Data::ArrayList<Text::String*> infoFormat;
 			Data::ArrayList<TileMatrixSet*> tileMatrixes;
+			Data::ArrayList<ResourceURL*> resourceURLs;
 		};
 	private:
 		Text::EncodingFactory *encFact;
@@ -45,14 +80,24 @@ namespace Map
 		Net::SocketFactory *sockf;
 		Data::FastStringMap<TileLayer*> layers;
 		TileLayer *currLayer;
-		TileMatrixSet *currMatrix;
+		TileMatrixSet *currSet;
+		TileMatrixDefSet *currDef;
+		ResourceURL *currResource;
+		Math::CoordinateSystem *wgs84;
+		Data::FastStringMap<TileMatrixDefSet*> matrixDef;
 
 		void LoadXML();
 		void ReadLayer(Text::XMLReader *reader);
+		TileMatrixSet *ReadTileMatrixSetLink(Text::XMLReader *reader);
+		TileMatrixDefSet *ReadTileMatrixSet(Text::XMLReader *reader);
 		Double CalcScaleDiv();
-		TileSet *GetTileSet(UOSInt level);
+		TileMatrix *GetTileMatrix(UOSInt level);
 		void ReleaseLayer(TileLayer *layer);
-		void ReleaseTileMatrix(TileMatrixSet *tileMatrix);
+		void ReleaseTileMatrix(TileMatrix *tileMatrix);
+		void ReleaseTileMatrixSet(TileMatrixSet *set);
+		void ReleaseTileMatrixDef(TileMatrixDef *tileMatrix);
+		void ReleaseTileMatrixDefSet(TileMatrixDefSet *set);
+		void ReleaseResourceURL(ResourceURL *resourceURL);
 	public:
 		WebMapTileServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString wmtsURL);
 		virtual ~WebMapTileServiceSource();
@@ -73,6 +118,14 @@ namespace Map
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);
 		virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
 		virtual IO::IStreamData *LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it);
+
+		Bool SetLayer(UOSInt index);
+		Bool SetMatrixSet(UOSInt index);
+		Bool SetResourceType(UOSInt index);
+		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *layerNames);
+		UOSInt GetMatrixSetNames(Data::ArrayList<Text::String*> *matrixSetNames);
+		UOSInt GetResourceTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);
+		static Text::CString GetExt(Map::TileMap::ImageType imgType);
 	};
 }
 #endif

@@ -45,7 +45,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	while (i < j)
 	{
 		Text::XMLNode *node = itemNode->GetChild(i);
-		if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		if (node->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (node->name->EqualsICase(UTF8STRC("title")))
 			{
@@ -182,7 +182,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 				while (k-- > 0)
 				{
 					node2 = node->GetChild(k);
-					if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (node2->name->Equals(UTF8STRC("media:description")))
 						{
@@ -283,20 +283,20 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 	while (i-- > 0)
 	{
 		Text::XMLNode *node = doc.GetChild(i);
-		if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && node->name->EqualsICase(UTF8STRC("RSS")))
+		if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name->EqualsICase(UTF8STRC("RSS")))
 		{
 			UOSInt j = node->GetChildCnt();
 			while (j-- > 0)
 			{
 				Text::XMLNode *node2 = node->GetChild(j);
-				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase(UTF8STRC("Channel")))
+				if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("Channel")))
 				{
 					UOSInt k = 0;
 					UOSInt l = node2->GetChildCnt();
 					while (k < l)
 					{
 						Text::XMLNode *node3 = node2->GetChild(k);
-						if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						if (node3->GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (node3->name->EqualsICase(UTF8STRC("title")))
 							{
@@ -388,21 +388,21 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 				}
 			}
 		}
-		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && node->name->EqualsICase(UTF8STRC("rdf:RDF")))
+		else if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name->EqualsICase(UTF8STRC("rdf:RDF")))
 		{
 			UOSInt j = node->GetChildCnt();
 			UOSInt i2 = 0;
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
-				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase(UTF8STRC("Channel")))
+				if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("Channel")))
 				{
 					UOSInt k = 0;
 					UOSInt l = node2->GetChildCnt();
 					while (k < l)
 					{
 						Text::XMLNode *node3 = node2->GetChild(k);
-						if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						if (node3->GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (node3->name->EqualsICase(UTF8STRC("title")))
 							{
@@ -479,7 +479,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 						k++;
 					}
 				}
-				else if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase(UTF8STRC("item")))
+				else if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("item")))
 				{
 					RSSItem *itm;
 					NEW_CLASS(itm, Net::RSSItem(node2));
@@ -495,7 +495,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 				i2++;
 			}
 		}
-		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && node->name->EqualsICase(UTF8STRC("feed")))
+		else if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name->EqualsICase(UTF8STRC("feed")))
 		{
 			Text::XMLAttrib *attr;
 			UOSInt j = node->GetChildCnt();
@@ -503,7 +503,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
-				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+				if (node2->GetNodeType() == Text::XMLNode::NodeType::Element)
 				{
 					if (node2->name->EqualsICase(UTF8STRC("title")))
 					{
@@ -572,7 +572,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 						while (k < l)
 						{
 							node3 = node2->GetChild(k);
-							if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && node3->name->Equals(UTF8STRC("name")))
+							if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name->Equals(UTF8STRC("name")))
 							{
 								sb.ClearStr();
 								node3->GetInnerText(&sb);

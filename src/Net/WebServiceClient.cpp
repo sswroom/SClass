@@ -174,13 +174,13 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 						while (i-- > 0)
 						{
 							node1 = doc->GetChild(i);
-							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->Equals(UTF8STRC("soap:Envelope")))
+							if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->Equals(UTF8STRC("soap:Envelope")))
 							{
 								i = node1->GetChildCnt();
 								while (i-- > 0)
 								{
 									node2 = node1->GetChild(i);
-									if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(UTF8STRC("soap:Body")))
+									if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(UTF8STRC("soap:Body")))
 									{
 										node1 = node2;
 										sptr = Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Response"));
@@ -188,7 +188,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 										while (i-- > 0)
 										{
 											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 											{
 												node1 = node2;
 												sptr = Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Result"));
@@ -196,7 +196,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 												while (i-- > 0)
 												{
 													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(&sb);
@@ -314,13 +314,13 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 						while (i-- > 0)
 						{
 							node1 = doc->GetChild(i);
-							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->EndsWithICase(UTF8STRC(":Envelope")))
+							if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->EndsWithICase(UTF8STRC(":Envelope")))
 							{
 								i = node1->GetChildCnt();
 								while (i-- > 0)
 								{
 									node2 = node1->GetChild(i);
-									if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EndsWithICase(UTF8STRC(":Body")))
+									if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EndsWithICase(UTF8STRC(":Body")))
 									{
 										node1 = node2;
 										sptr = Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Response"));
@@ -328,7 +328,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 										while (i-- > 0)
 										{
 											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+											if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 											{
 												node1 = node2;
 												sptr = Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Result"));
@@ -336,7 +336,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 												while (i-- > 0)
 												{
 													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+													if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(&sb);

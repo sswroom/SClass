@@ -10,12 +10,12 @@ namespace IO
 	class ActiveStreamReader
 	{
 	public:
-		typedef enum
+		enum class BottleNeckType
 		{
-			BNT_UNKNOWN,
-			BNT_READ,
-			BNT_WRITE
-		} BottleNeckType;
+			Unknown,
+			Read,
+			Write
+		};
 
 		typedef void (__stdcall *DataHdlr)(const UInt8 *buff, UOSInt buffSize, void *userData);
 		typedef struct

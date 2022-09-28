@@ -102,11 +102,11 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 	}
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->Equals(UTF8STRC("node")))
 			{
@@ -150,11 +150,11 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 						Text::String *vName;
 						while (reader->ReadNext())
 						{
-							if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+							if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 							{
 								break;
 							}
-							else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("tag")))
+							else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("tag")))
 							{
 								kName = 0;
 								vName = 0;
@@ -646,7 +646,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 								}
 								reader->SkipElement();
 							}
-							else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+							else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 							{
 								reader->SkipElement();
 							}
@@ -688,11 +688,11 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 				lonList.Clear();
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->Equals(UTF8STRC("nd")))
 						{

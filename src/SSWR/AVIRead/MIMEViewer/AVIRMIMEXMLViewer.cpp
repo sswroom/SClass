@@ -30,7 +30,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	NEW_CLASS(reader, Text::XMLReader(core->GetEncFactory(), mstm, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_DOCUMENT)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Document)
 		{
 			if (sbCont.GetLength() > 0)
 			{
@@ -69,7 +69,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			this->lvXML->SetSubItem(i, 1, sbCont.ToCString());
 			sbCont.ClearStr();
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			if (sbCont.GetLength() == 0 && reader->GetPathLev() > 0)
 			{
@@ -84,7 +84,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			this->lvXML->SetSubItem(i, 1, sbCont.ToCString());
 			sbCont.ClearStr();
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_TEXT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Text)
 		{
 			sb.ClearStr();
 			sb.Append(reader->GetNodeText());
@@ -100,7 +100,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				}
 			}
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (sbCont.GetLength() > 0)
 			{

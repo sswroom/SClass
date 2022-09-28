@@ -149,7 +149,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		{
 			return 0;
 		}
-		if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			break;
 		}
@@ -163,11 +163,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 		while (reader->ReadNext())
 		{
-			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 			{
 				break;
 			}
-			else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				if (reader->GetNodeText()->EqualsICase(UTF8STRC("DOCUMENT") || reader->GetNodeText()->EqualsICase(UTF8STRC("FOLDER"))
 				{
@@ -249,11 +249,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		shortName = &fileName.v[i + 1];
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 			{
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				if (reader.GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 				{
@@ -262,22 +262,22 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 					track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
 					while (reader.ReadNext())
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader.GetNodeText()->Equals(UTF8STRC("trkseg")))
 							{
 								track->NewTrack();
 								while (reader.ReadNext())
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										if (reader.GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
 										{
@@ -319,7 +319,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 						while (k < size)
 						{
 							node1 = nodeResult[j]->GetChild(k);
-							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+							if (node1->GetNodeType() == Text::XMLNode::NodeType::Element)
 							{
 								if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("RTEPT")))
 								{
@@ -381,7 +381,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		}
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				DEL_CLASS(lyr)
 				lyr = 0;
@@ -399,19 +399,19 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Map::OruxDBLayer *lyr = 0;
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 			{
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
+			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
 			{
 				while (reader.ReadNext())
 				{
-					if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader.GetNodeText()->Equals(UTF8STRC("OruxTracker")))
 						{
@@ -419,11 +419,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							{
 								while (reader.ReadNext())
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("MapCalibration")))
 									{
 										UInt32 layerId = (UInt32)-1;
 										UInt32 maxX = 0;
@@ -452,11 +452,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 										while (reader.ReadNext())
 										{
-											if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+											if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 											{
 												break;
 											}
-											else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+											else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 											{
 												if (reader.GetNodeText()->Equals(UTF8STRC("MapChunks")))
 												{
@@ -523,7 +523,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											lyr->AddLayer(layerId, mapXMin, mapYMin, mapXMax, mapYMax, maxX, maxY, tileSize);
 										}
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										reader.SkipElement();
 									}
@@ -561,7 +561,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				reader.SkipElement();
 			}
@@ -606,11 +606,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			i = 0;
 			while (reader.ReadNext())
 			{
-				if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+				if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 				{
 					break;
 				}
-				else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+				else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 				{
 					if (reader.GetNodeText()->Equals(UTF8STRC("Configurations")))
 					{
@@ -656,31 +656,31 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UTF8Char *sarr2[3];
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 			{
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				if (reader.GetNodeText()->Equals(UTF8STRC("gml:featureMember")))
 				{
 					while (reader.ReadNext())
 					{
 						nodeType = reader.GetNodeType();
-						if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+						if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (nodeType == Text::XMLNode::NT_ELEMENT)
+						else if (nodeType == Text::XMLNode::NodeType::Element)
 						{
 							while (reader.ReadNext())
 							{
 								nodeType = reader.GetNodeType();
-								if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+								if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (nodeType == Text::XMLNode::NT_ELEMENT)
+								else if (nodeType == Text::XMLNode::NodeType::Element)
 								{
 									nodeText = reader.GetNodeText();
 									if (nodeText->StartsWith(UTF8STRC("fme:")))
@@ -704,11 +704,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											layerType = Map::DRAW_LAYER_POINT3D;
 											while (reader.ReadNext())
 											{
-												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 												{
 													break;
 												}
-												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 												{
 													if (reader.GetNodeText()->Equals(UTF8STRC("gml:Point")))
 													{
@@ -744,11 +744,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
-																if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																{
 																	break;
 																}
-																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																{
 																	if (reader.GetNodeText()->Equals(UTF8STRC("gml:pos")))
 																	{
@@ -806,11 +806,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											layerType = Map::DRAW_LAYER_POLYGON;
 											while (reader.ReadNext())
 											{
-												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 												{
 													break;
 												}
-												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 												{
 													if (reader.GetNodeText()->Equals(UTF8STRC("gml:Surface")))
 													{
@@ -847,43 +847,43 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
-																if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																{
 																	break;
 																}
-																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:patches")))
+																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:patches")))
 																{
 																	while (reader.ReadNext())
 																	{
-																		if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																		if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																		{
 																			break;
 																		}
-																		else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
+																		else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
 																		{
 																			while (reader.ReadNext())
 																			{
-																				if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																				if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																				{
 																					break;
 																				}
-																				else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:exterior")))
+																				else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:exterior")))
 																				{
 																					while (reader.ReadNext())
 																					{
-																						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																						{
 																							break;
 																						}
-																						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
 																						{
 																							while (reader.ReadNext())
 																							{
-																								if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																								if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																								{
 																									break;
 																								}
-																								else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
+																								else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
 																								{
 																									sb.ClearStr();
 																									reader.ReadNodeText(&sb);
@@ -914,31 +914,31 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																										lyr->AddVector(pg, scols);
 																									}
 																								}
-																								else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																								else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																								{
 																									reader.SkipElement();
 																								}
 																							}
 																						}
-																						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																						{
 																							reader.SkipElement();
 																						}
 																					}
 																				}
-																				else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																				else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																				{
 																					reader.SkipElement();
 																				}
 																			}
 																		}
-																		else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																		else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																		{
 																			reader.SkipElement();
 																		}
 																	}
 																}
-																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																{
 																	reader.SkipElement();
 																}
@@ -964,11 +964,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											layerType = Map::DRAW_LAYER_POLYLINE3D;
 											while (reader.ReadNext())
 											{
-												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 												{
 													break;
 												}
-												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 												{
 													if (reader.GetNodeText()->Equals(UTF8STRC("gml:LineString")))
 													{
@@ -1006,11 +1006,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															scols = valList.GetArray(&i);
 															while (reader.ReadNext())
 															{
-																if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																{
 																	break;
 																}
-																else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 																{
 																	if (reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
 																	{
@@ -1072,11 +1072,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											layerType = Map::DRAW_LAYER_POLYGON;
 											while (reader.ReadNext())
 											{
-												if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 												{
 													break;
 												}
-												else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 												{
 													if (reader.GetNodeText()->Equals(UTF8STRC("gml:MultiPolygon")))
 													{
@@ -1114,47 +1114,47 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															while (reader.ReadNext())
 															{
 																nodeType = reader.GetNodeType();
-																if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																{
 																	break;
 																}
-																else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
+																else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
 																{
 																	while (reader.ReadNext())
 																	{
 																		nodeType = reader.GetNodeType();
-																		if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																		if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																		{
 																			break;
 																		}
-																		else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
+																		else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
 																		{
 																			while (reader.ReadNext())
 																			{
 																				nodeType = reader.GetNodeType();
-																				if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																				if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																				{
 																					break;
 																				}
-																				else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
+																				else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
 																				{
 																					while (reader.ReadNext())
 																					{
 																						nodeType = reader.GetNodeType();
-																						if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																						if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																						{
 																							break;
 																						}
-																						else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																						else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
 																						{
 																							while (reader.ReadNext())
 																							{
 																								nodeType = reader.GetNodeType();
-																								if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																								if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																								{
 																									break;
 																								}
-																								else if (nodeType == Text::XMLNode::NT_ELEMENT && reader.GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
+																								else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
 																								{
 																									sb.ClearStr();
 																									reader.ReadNodeText(&sb);
@@ -1183,31 +1183,31 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																										lyr->AddVector(pg, scols);
 																									}
 																								}
-																								else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																								else if (nodeType == Text::XMLNode::NodeType::Element)
 																								{
 																									reader.SkipElement();
 																								}
 																							}
 																						}
-																						else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																						else if (nodeType == Text::XMLNode::NodeType::Element)
 																						{
 																							reader.SkipElement();
 																						}
 																					}
 																				}
-																				else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																				else if (nodeType == Text::XMLNode::NodeType::Element)
 																				{
 																					reader.SkipElement();
 																				}
 																			}
 																		}
-																		else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																		else if (nodeType == Text::XMLNode::NodeType::Element)
 																		{
 																			reader.SkipElement();
 																		}
 																	}
 																}
-																else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																else if (nodeType == Text::XMLNode::NodeType::Element)
 																{
 																	reader.SkipElement();
 																}
@@ -1286,11 +1286,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 			{
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrStartsWith(reader.GetNodeText()->v + 4, sbTableName.ToString()) && Text::StrEquals(reader.GetNodeText()->v + 4 + sbTableName.GetLength(), (const UTF8Char*)"-table"))
 				{
@@ -1304,18 +1304,18 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 					Bool succ = false;
 					while (reader.ReadNext())
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							succ = true;
 							break;
 						}
-						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")) && Text::StrEquals(reader.GetNodeText()->v + 4, sbTableName.ToString()))
 							{
 								while (reader.ReadNext())
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										if (nameList.GetCount() > 0)
 										{
@@ -1368,7 +1368,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										}
 										break;
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										if (reader.GetNodeText()->StartsWith(UTF8STRC("fme:")))
 										{
@@ -1426,21 +1426,21 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
 		while (reader.ReadNext())
 		{
-			if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 			{
 				break;
 			}
-			else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
 				if (reader.GetNodeText()->Equals(UTF8STRC("SYSTEM")))
 				{
 					while (reader.ReadNext())
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader.GetNodeText()->Equals(UTF8STRC("OSNAME")))
 							{
@@ -1489,11 +1489,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				{
 					while (reader.ReadNext())
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader.GetNodeText()->Equals(UTF8STRC("REG_VALUE")))
 							{
@@ -1501,11 +1501,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								const UTF8Char *roleData = 0;
 								while (reader.ReadNext())
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										if (reader.GetNodeText()->Equals(UTF8STRC("NAME")))
 										{
@@ -1549,11 +1549,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				{
 					while (reader.ReadNext())
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader.GetNodeText()->Equals(UTF8STRC("DEVICE")))
 							{
@@ -1563,11 +1563,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								const UTF8Char *driver = 0;
 								while (reader.ReadNext())
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										if (reader.GetNodeText()->Equals(UTF8STRC("DESCRIPTION")))
 										{
@@ -1631,11 +1631,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				{
 					while (reader.ReadNext())
 					{
-						if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader.GetNodeText()->Equals(UTF8STRC("DRIVER")))
 							{
@@ -1649,11 +1649,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								UInt32 altitude = 0;
 								while (reader.ReadNext())
 								{
-									if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										if (reader.GetNodeText()->Equals(UTF8STRC("FILENAME")))
 										{
@@ -1788,11 +1788,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->EqualsICase(UTF8STRC("NetworkLink")))
 			{
@@ -1806,11 +1806,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				
 					while (reader->ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 							{
@@ -1823,11 +1823,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 							{
 								while (reader->ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+									if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+									else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 									{
 										if (reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 										{
@@ -1897,21 +1897,21 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINESTYLE")))
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 									{
@@ -1939,11 +1939,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 									{
@@ -1956,11 +1956,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										while (reader->ReadNext())
 										{
-											if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+											if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 											{
 												break;
 											}
-											else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
+											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 											{
 												sb.ClearStr();
 												reader->ReadNodeText(&sb);
@@ -1970,7 +1970,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 													style->iconURL = Text::String::New(sb.ToString(), sb.GetLength());
 												}
 											}
-											else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 											{
 												reader->SkipElement();
 											}
@@ -2006,11 +2006,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
@@ -2018,7 +2018,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									style->fillColor = (style->fillColor & 0xff00ff00) | ((style->fillColor & 0xff) << 16) | ((style->fillColor & 0xff0000) >> 16);
 									style->flags |= 4;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									reader->SkipElement();
 								}
@@ -2070,20 +2070,20 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("PAIR")))
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("PAIR")))
 					{
 						Bool isNormal = false;
 						while (reader->ReadNext())
 						{
-							if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+							if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 							{
 								break;
 							}
-							else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+							else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 							{
 								if (reader->GetNodeText()->EqualsICase(UTF8STRC("KEY")))
 								{
@@ -2130,7 +2130,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 							}
 						}
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						reader->SkipElement();
 					}
@@ -2182,11 +2182,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 						{
@@ -2211,18 +2211,18 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
 									sbuffEnd = imgLyr->GetSourceName(sbuff);
 									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									reader->SkipElement();
 								}
@@ -2232,11 +2232,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									if (reader->GetNodeText()->EqualsICase(UTF8STRC("BEGIN")))
 									{
@@ -2351,11 +2351,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				sbuffEnd = sbuff;
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 						{
@@ -2380,18 +2380,18 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
 									sbuffEnd = imgLyr->GetSourceName(sbuff);
 									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									reader->SkipElement();
 								}
@@ -2401,11 +2401,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									if (reader->GetNodeText()->EqualsICase(UTF8STRC("BEGIN")))
 									{
@@ -2432,11 +2432,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 								{
 									if (reader->GetNodeText()->EqualsICase(UTF8STRC("NORTH")))
 									{
@@ -2518,16 +2518,16 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 			{
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_TEXT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Text)
 					{
 						containerNameSb.ClearStr();
 						containerNameSb.Append(reader->GetNodeText());
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						reader->SkipElement();
 					}
@@ -2572,21 +2572,21 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 	Bool lastTrack = false;
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:MULTITRACK")))
 			{
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:TRACK")))
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:TRACK")))
 					{
 						Text::StringBuilderUTF8 sb;
 						UTF8Char sbuff[256];
@@ -2598,11 +2598,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 						while (reader->ReadNext())
 						{
-							if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+							if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 							{
 								break;
 							}
-							else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+							else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 							{
 								if (reader->GetNodeText()->EqualsICase(UTF8STRC("WHEN")))
 								{
@@ -2675,19 +2675,19 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 									Map::GPSTrack::GPSRecord3 *recs = lyr->GetTrack(0, &recCnt);
 									while (reader->ReadNext())
 									{
-										if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+										if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 										{
 											break;
 										}
-										else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("SCHEMADATA")))
+										else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("SCHEMADATA")))
 										{
 											while (reader->ReadNext())
 											{
-												if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 												{
 													break;
 												}
-												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:SIMPLEARRAYDATA")))
+												else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:SIMPLEARRAYDATA")))
 												{
 													Text::XMLAttrib *attr;
 													Text::StringBuilderUTF8 sb;
@@ -2705,11 +2705,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																j = 0;
 																while (reader->ReadNext())
 																{
-																	if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																	if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																	{
 																		break;
 																	}
-																	else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
+																	else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
 																	{
 																		sb.ClearStr();
 																		reader->ReadNodeText(&sb);
@@ -2719,7 +2719,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																		}
 																		j++;
 																	}
-																	else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																	else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 																	{
 																		reader->SkipElement();
 																	}
@@ -2730,11 +2730,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																j = 0;
 																while (reader->ReadNext())
 																{
-																	if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																	if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																	{
 																		break;
 																	}
-																	else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
+																	else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
 																	{
 																		sb.ClearStr();
 																		reader->ReadNodeText(&sb);
@@ -2744,7 +2744,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																		}
 																		j++;
 																	}
-																	else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																	else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 																	{
 																		reader->SkipElement();
 																	}
@@ -2755,11 +2755,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																j = 0;
 																while (reader->ReadNext())
 																{
-																	if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+																	if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																	{
 																		break;
 																	}
-																	else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
+																	else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("GX:VALUE")))
 																	{
 																		sb.ClearStr();
 																		reader->ReadNodeText(&sb);
@@ -2770,7 +2770,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																		}
 																		j++;
 																	}
-																	else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+																	else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 																	{
 																		reader->SkipElement();
 																	}
@@ -2789,13 +2789,13 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 														reader->SkipElement();
 													}
 												}
-												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 												{
 													reader->SkipElement();
 												}
 											}
 										}
-										else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+										else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 										{
 											reader->SkipElement();
 										}
@@ -2864,7 +2864,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 						lastTrack = true;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						reader->SkipElement();
 					}
@@ -2879,11 +2879,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 				}
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("WHEN")))
 						{
@@ -2997,11 +2997,11 @@ void Parser::FileParser::XMLParser::ParseCoordinates(Text::XMLReader *reader, Da
 
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINEARRING")))
 			{
@@ -3073,11 +3073,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 	Data::ArrayList<Map::IMapDrawLayer*> layers;
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
 			{
@@ -3104,11 +3104,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
 					{
 						Data::ArrayListA<Math::Coord2DDbl> coord;
 						Data::ArrayListDbl altList;
@@ -3178,7 +3178,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							lyr->AddVector(pl, &lyrNameSb);
 						}
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						reader->SkipElement();
 					}
@@ -3211,11 +3211,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				lyr->SetLabelVisible(true);
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
 					{
 						sb.ClearStr();
 						reader->ReadNodeText(&sb);
@@ -3244,7 +3244,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							lyr->AddVector(pt, &lyrNameSb);
 						}
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						reader->SkipElement();
 					}
@@ -3311,11 +3311,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->EqualsICase(UTF8STRC("OUTERBOUNDARYIS")))
 						{
@@ -3447,11 +3447,11 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 			succ = false;
 			break;
 		}
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->EqualsICase(UTF8STRC("ELE")))
 			{
@@ -3501,11 +3501,11 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(Text::XMLReader *reader, Tex
 	Text::XMLAttrib *attr;
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			return true;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->Equals(UTF8STRC("Filter")))
 			{
@@ -3574,11 +3574,11 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Tex
 	Text::String *cfgName;
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 		{
 			return true;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->Equals(UTF8STRC("Configuration")))
 			{
@@ -3603,11 +3603,11 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Tex
 						{
 							return false;
 						}
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 						{
 							if (reader->GetNodeText()->Equals(UTF8STRC("Tool")))
 							{

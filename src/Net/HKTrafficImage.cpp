@@ -33,14 +33,14 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 		while (i-- > 0)
 		{
 			node1 = doc.GetChild(i);
-			if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->EqualsICase(UTF8STRC("image-list")))
+			if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->EqualsICase(UTF8STRC("image-list")))
 			{
 				j = 0;
 				k = node1->GetChildCnt();
 				while (j < k)
 				{
 					node2 = node1->GetChild(j);
-					if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase(UTF8STRC("image")))
+					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("image")))
 					{
 						sbKey.ClearStr();
 						sbRegion.ClearStr();
@@ -52,7 +52,7 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 						while (l-- > 0)
 						{
 							node3 = node2->GetChild(l);
-							if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+							if (node3->GetNodeType() == Text::XMLNode::NodeType::Element)
 							{
 								if (node3->name->EqualsICase(UTF8STRC("key")))
 								{

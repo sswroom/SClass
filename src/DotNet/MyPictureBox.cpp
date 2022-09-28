@@ -198,7 +198,7 @@ DotNet::MyPictureBox::MyPictureBox(System::Windows::Forms::Control *formCtrl, Do
 	this->imgBuff = 0;
 	this->currImage = 0;
 	this->csconv = 0;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(3, Media::CS::TRANT_UNKNOWN, Media::CS::TRANT_DISPLAY, 2.2, this->dnColorMgr->GetColorMgr()));
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(3, Media::CS::TRANodeType::Unknown, Media::CS::TRANT_DISPLAY, 2.2, this->dnColorMgr->GetColorMgr()));
 
 	LPDIRECTDRAW7 lpDD;
 	if (DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL ) != DD_OK )
@@ -268,7 +268,7 @@ void DotNet::MyPictureBox::SetImage(Media::Image *currImage)
 	}
 	if (this->currImage)
 	{
-		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info->fourcc, this->currImage->info->bpp, this->currImage->info->rgbType, 0, 32, Media::CS::TRANT_UNKNOWN, this->currImage->info->rgbGamma, this->currImage->info->yuvType, this->dnColorMgr->GetColorMgr());
+		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info->fourcc, this->currImage->info->bpp, this->currImage->info->rgbType, 0, 32, Media::CS::TRANodeType::Unknown, this->currImage->info->rgbGamma, this->currImage->info->yuvType, this->dnColorMgr->GetColorMgr());
 		if (this->csconv)
 		{
 			if (this->currImage->pal)

@@ -14,17 +14,17 @@ namespace Text
 	class XMLNode
 	{
 	public:
-		enum NodeType
+		enum class NodeType
 		{
-			NT_UNKNOWN,
-			NT_ELEMENT,
-			NT_TEXT,
-			NT_DOCUMENT,
-			NT_COMMENT,
-			NT_ATTRIBUTE,
-			NT_CDATA,
-			NT_ELEMENTEND,
-			NT_DOCTYPE
+			Unknown,
+			Element,
+			Text,
+			Document,
+			Comment,
+			Attribute,
+			CData,
+			ElementEnd,
+			DocType
 		};
 	public:
 		Text::String *name;

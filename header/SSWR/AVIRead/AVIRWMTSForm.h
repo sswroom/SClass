@@ -3,6 +3,7 @@
 #include "Map/WebMapTileServiceSource.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUITextBox.h"
@@ -19,6 +20,12 @@ namespace SSWR
 			UI::GUIButton *btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
+			UI::GUILabel *lblLayer;
+			UI::GUIComboBox *cboLayer;
+			UI::GUILabel *lblMatrixSet;
+			UI::GUIComboBox *cboMatrixSet;
+			UI::GUILabel *lblResourceType;
+			UI::GUIComboBox *cboResourceType;
 			UI::GUIButton *btnOK;
 
 			SSWR::AVIRead::AVIRCore *core;
@@ -26,6 +33,9 @@ namespace SSWR
 
 			static void __stdcall OnLoadClicked(void *userObj);
 			static void __stdcall OnOKClicked(void *userObj);
+			static void __stdcall OnLayerSelChg(void *userObj);
+			static void __stdcall OnMatrixSetSelChg(void *userObj);
+			static void __stdcall OnResourceTypeSelChg(void *userObj);
 		public:
 			AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWMTSForm();

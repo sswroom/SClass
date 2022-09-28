@@ -177,7 +177,7 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory 
 	Text::StringBuilderUTF8 sb;
 	while (reader.ReadNext())
 	{
-		if (reader.GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			sb.ClearStr();
 			reader.GetCurrPath(&sb);

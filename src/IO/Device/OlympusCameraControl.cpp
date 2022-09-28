@@ -23,17 +23,17 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->Equals(UTF8STRC("oishare")))
 			{
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->Equals(UTF8STRC("version")))
 						{
@@ -401,17 +401,17 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF8 *sb)
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+		if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (reader->GetNodeText()->Equals(UTF8STRC("caminfo")))
 			{
 				while (reader->ReadNext())
 				{
-					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+					if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 					{
 						break;
 					}
-					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (reader->GetNodeText()->Equals(UTF8STRC("model")))
 						{

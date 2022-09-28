@@ -340,15 +340,15 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	if (me->statusDispBNT != me->statusBNT)
 	{
 		me->statusDispBNT = me->statusBNT;
-		if (me->statusDispBNT == IO::ActiveStreamReader::BNT_UNKNOWN)
+		if (me->statusDispBNT == IO::ActiveStreamReader::BottleNeckType::Unknown)
 		{
 			me->pnlStatusBNT->SetBGColor(0xffc0c0c0);
 		}
-		else if (me->statusDispBNT == IO::ActiveStreamReader::BNT_READ)
+		else if (me->statusDispBNT == IO::ActiveStreamReader::BottleNeckType::Read)
 		{
 			me->pnlStatusBNT->SetBGColor(0xff60ff60);
 		}
-		else if (me->statusDispBNT == IO::ActiveStreamReader::BNT_WRITE)
+		else if (me->statusDispBNT == IO::ActiveStreamReader::BottleNeckType::Write)
 		{
 			me->pnlStatusBNT->SetBGColor(0xffff4040);
 		}
@@ -493,8 +493,8 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->statusFileSize = 0;
 	this->statusDispSize = (UOSInt)-1;
 	this->statusDispSpd = -1;
-	this->statusBNT = IO::ActiveStreamReader::BNT_UNKNOWN;
-	this->statusDispBNT = IO::ActiveStreamReader::BNT_UNKNOWN;
+	this->statusBNT = IO::ActiveStreamReader::BottleNeckType::Unknown;
+	this->statusDispBNT = IO::ActiveStreamReader::BottleNeckType::Unknown;
 	this->progName = 0;
 	this->progStarted = false;
 	this->progUpdated = false;
