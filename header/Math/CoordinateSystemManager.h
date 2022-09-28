@@ -81,6 +81,7 @@ namespace Math
 			UOSInt nameLen;
 			Math::CoordinateSystem::PrimemType primem;
 			Math::CoordinateSystem::UnitType unit;
+			Double unitScale;
 		} GeogcsSRInfo;
 
 		typedef struct

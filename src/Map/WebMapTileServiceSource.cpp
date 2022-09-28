@@ -573,16 +573,33 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 	}
 	if (set->id && set->tiles.GetCount() > 0)
 	{
+		UOSInt i = 0;
+		UOSInt j = set->tiles.GetCount();
+		Double unitPerPixel;
 		if (!set->csys->IsProjected())
 		{
 			Double tmp;
-			UOSInt i = set->tiles.GetCount();
-			while (i-- > 0)
+			unitPerPixel = 0.703125;
+			while (i < j)
 			{
 				TileMatrixDef *tile = set->tiles.GetItem(i);
 				tmp = tile->origin.x;
 				tile->origin.x = tile->origin.y;
 				tile->origin.y = tmp;
+				tile->unitPerPixel = unitPerPixel;
+				unitPerPixel *= 0.5;
+				i++;
+			}
+		}
+		else
+		{
+			unitPerPixel = 156543.03390625;
+			while (i < j)
+			{
+				TileMatrixDef *tile = set->tiles.GetItem(i);
+				tile->unitPerPixel = unitPerPixel;
+				unitPerPixel *= 0.5;
+				i++;
 			}
 		}
 		return set;

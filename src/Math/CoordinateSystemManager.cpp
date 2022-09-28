@@ -34,12 +34,12 @@ Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumSRI
 
 Math::CoordinateSystemManager::GeogcsSRInfo Math::CoordinateSystemManager::geogcsSRID[] = {
 //	{srid,  datum, name,    primem,   unit},
-	{4326,  6326,  UTF8STRC("WGS 84"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4600,  6600,  UTF8STRC("Anguilla 1957"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4601,  6601,  UTF8STRC("Antigua 1943"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4602,  6602,  UTF8STRC("Dominica 1945"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4603,  6603,  UTF8STRC("Grenada 1953"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4611,  6611,  UTF8STRC("Hong Kong 1980"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4326,  6326,  UTF8STRC("WGS 84"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
+	{4600,  6600,  UTF8STRC("Anguilla 1957"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
+	{4601,  6601,  UTF8STRC("Antigua 1943"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
+	{4602,  6602,  UTF8STRC("Dominica 1945"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
+	{4603,  6603,  UTF8STRC("Grenada 1953"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
+	{4611,  6611,  UTF8STRC("Hong Kong 1980"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE, 0.0174532925199433},
 };
 
 Math::CoordinateSystemManager::ProjcsSRInfo Math::CoordinateSystemManager::projcsSRID[] = {
