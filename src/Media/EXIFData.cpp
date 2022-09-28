@@ -970,6 +970,51 @@ Media::EXIFData::EXIFInfo Media::EXIFData::nikon3Infos[] = {
 	{3614, CSTR("CaptureOutput")}
 };
 
+Media::EXIFData::EXIFInfo Media::EXIFData::sanyo1Infos[] = {
+	{0x0000, CSTR("Unknown")},
+	{0x0001, CSTR("Version")},
+	{0x0088, CSTR("Thumbnail Offset")},
+	{0x0089, CSTR("Thumbnail Length")},
+	{0x00FF, CSTR("Makernote Offset")},
+	{0x0100, CSTR("Jpeg Thumbnail")},
+	{0x0200, CSTR("Special Mode")},
+	{0x0201, CSTR("Jpeg Quality")},
+	{0x0202, CSTR("Macro")},
+	{0x0203, CSTR("Sanyo-1-0x0203")},
+	{0x0204, CSTR("Digital Zoom")},
+	{0x0207, CSTR("Software Version")},
+	{0x0208, CSTR("Picture Info")},
+	{0x0209, CSTR("Camera ID")},
+	{0x020E, CSTR("Sequential Shot Method")},
+	{0x020F, CSTR("Wide Range")},
+	{0x0210, CSTR("Color Adjustment Mode")},
+	{0x0211, CSTR("Sanyo-1-0x0211")},
+	{0x0212, CSTR("Sanyo-1-0x0212")},
+	{0x0213, CSTR("Quick Shot")},
+	{0x0214, CSTR("Self Timer")},
+	{0x0215, CSTR("Sanyo-1-0x0215")},
+	{0x0216, CSTR("Voice Memo")},
+	{0x0217, CSTR("Record Shutter Release")},
+	{0x0218, CSTR("Flicker Reduce")},
+	{0x0219, CSTR("Optical Zoom")},
+	{0x021A, CSTR("Sanyo-1-0x021a")},
+	{0x021B, CSTR("Digital Zoom")},
+	{0x021C, CSTR("Sanyo-1-0x021c")},
+	{0x021D, CSTR("Light Source Special")},
+	{0x021E, CSTR("Resaved")},
+	{0x021F, CSTR("Scene Select")},
+	{0x0220, CSTR("Sanyo-1-0x0220")},
+	{0x0221, CSTR("Sanyo-1-0x0221")},
+	{0x0222, CSTR("Sanyo-1-0x0222")},
+	{0x0223, CSTR("Manual Focal Distance")},
+	{0x0224, CSTR("Sequential Shot Interval")},
+	{0x0225, CSTR("Flash Mode")},
+	{0x0226, CSTR("Sanyo-1-0x0226")},
+	{0x0300, CSTR("Sanyo-1-0x0300")},
+	{0x0E00, CSTR("Print IM Data")},
+	{0x0F00, CSTR("Data Dump")}
+};
+
 Int32 Media::EXIFData::TReadInt32(const UInt8 *pVal)
 {
 	return ReadInt32(pVal);
@@ -4137,7 +4182,7 @@ Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffS
 	{
 		if (buff[8] == 'I' && buff[9] == 'I')
 		{
-			ret = ParseIFD(&buff[12], buffSize - 12, Media::EXIFData::TReadInt32, Media::EXIFData::TReadInt16, 0, Media::EXIFData::EM_OLYMPUS, 0);
+			ret = ParseIFD(&buff[12], buffSize - 12, Media::EXIFData::TReadInt32, Media::EXIFData::TReadInt16, 0, Media::EXIFData::EM_OLYMPUS, &buff[8]);
 			return ret;
 		}
 	}
@@ -4160,6 +4205,11 @@ Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffS
 	else if (Text::StrEquals(buff, (const UTF8Char*)"QVC"))
 	{
 		ret = ParseIFD(&buff[6], buffSize - 6, Media::EXIFData::TReadMInt32, Media::EXIFData::TReadMInt16, 0, Media::EXIFData::EM_CASIO2, 0);
+		return ret;
+	}
+	else if (Text::StrEquals(buff, (const UTF8Char*)"SANYO"))
+	{
+		ret = ParseIFD(&buff[8], buffSize - 8, Media::EXIFData::TReadInt32, Media::EXIFData::TReadInt16, 0, Media::EXIFData::EM_SANYO, 0);
 		return ret;
 	}
 	else
@@ -4205,6 +4255,8 @@ Text::CString Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)
 		return CSTR("FLIR");
 	case Media::EXIFData::EM_NIKON3:
 		return CSTR("Nikon Type 3");
+	case Media::EXIFData::EM_SANYO:
+		return CSTR("Sanyo Type 1");
 	case Media::EXIFData::EM_STANDARD:
 	default:
 		return CSTR("Standard");
@@ -4251,6 +4303,10 @@ Text::CString Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt3
 		case EM_NIKON3:
 			infos = nikon3Infos;
 			cnt = sizeof(nikon3Infos) / sizeof(nikon3Infos[0]);
+			break;
+		case EM_SANYO:
+			infos = sanyo1Infos;
+			cnt = sizeof(sanyo1Infos) / sizeof(sanyo1Infos[0]);
 			break;
 		case EM_STANDARD:
 		default:
@@ -4530,7 +4586,7 @@ Media::EXIFData *Media::EXIFData::ParseIFD(const UInt8 *buff, UOSInt buffSize, R
 			ifdOfst += 12;
 			i++;
 		}
-		basePtr = &buff[(UInt32)ifdCnt * 12 + 2 + 4 - readBase];
+		basePtr = &buff[(Int32)ifdCnt * 12 + 2 + 4 - (Int32)readBase];
 	}
 
 	ifdOfst = 0;

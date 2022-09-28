@@ -58,7 +58,8 @@ namespace Media
 			EM_CASIO1,
 			EM_CASIO2,
 			EM_FLIR,
-			EM_NIKON3
+			EM_NIKON3,
+			EM_SANYO
 		} EXIFMaker;
 
 	public:
@@ -99,6 +100,7 @@ namespace Media
 		static EXIFInfo casio2Infos[];
 		static EXIFInfo flirInfos[];
 		static EXIFInfo nikon3Infos[];
+		static EXIFInfo sanyo1Infos[];
 		Data::UInt32Map<EXIFItem*> exifMap;
 		EXIFMaker exifMaker;
 
