@@ -324,14 +324,17 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;
 				Data::ArrayList<Double> ptList;
+				Data::ArrayList<Double> altList;
 				Data::ArrayList<UInt32> partList;
 				Bool hasData = false;
+				Bool hasAlt = false;
 				Text::JSONArray *ptArr;
 				Text::JSONArray *pt;
 				UOSInt i = 0;
 				UOSInt j = coord->GetArrayLength();
 				UOSInt k;
 				UOSInt l;
+				UOSInt arrLen;
 				while (i < j)
 				{
 					jbase = coord->GetArrayValue(i);
@@ -347,7 +350,8 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 							if (jbase && jbase->GetType() == Text::JSONType::Array)
 							{
 								pt = (Text::JSONArray*)jbase;
-								if (pt->GetArrayLength() == 2)
+								arrLen = pt->GetArrayLength();
+								if (arrLen >= 2)
 								{
 									if (!hasData)
 									{
@@ -372,6 +376,16 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 									{
 										ptList.Add(0);
 									}
+
+									if (arrLen >= 3 && (jbase = pt->GetArrayValue(2)) != 0 && jbase->GetType() == Text::JSONType::Number)
+									{
+										altList.Add(((Text::JSONNumber*)jbase)->GetValue());
+										hasAlt = true;
+									}
+									else
+									{
+										altList.Add(0.0);
+									}
 								}
 							}
 							k++;
@@ -383,7 +397,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 				{
 					Math::Coord2DDbl *ptArr;
 					Math::Geometry::Polygon *pg;
-					NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, false, false));
+					NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasAlt, false));
 					UInt32 *ptOfsts = pg->GetPtOfstList(&j);
 					i = 0;
 					while (i < j)
@@ -398,6 +412,16 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 						ptArr[i].x = ptList.GetItem((i << 1));
 						ptArr[i].y = ptList.GetItem((i << 1) + 1);
 						i++;
+					}
+					if (hasAlt)
+					{
+						Double *altArr = pg->GetZList(&j);
+						i = 0;
+						while (i < j)
+						{
+							altArr[i] = altList.GetItem(i);
+							i++;
+						}
 					}
 					return pg;
 				}

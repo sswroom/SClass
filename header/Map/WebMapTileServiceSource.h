@@ -78,11 +78,13 @@ namespace Map
 		Text::String *wmtsURL;
 		Text::String *cacheDir;
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		Data::FastStringMap<TileLayer*> layers;
 		TileLayer *currLayer;
 		TileMatrixSet *currSet;
 		TileMatrixDefSet *currDef;
 		ResourceURL *currResource;
+		ResourceURL *currResourceInfo;
 		Math::CoordinateSystem *wgs84;
 		Data::FastStringMap<TileMatrixDefSet*> matrixDef;
 
@@ -91,7 +93,7 @@ namespace Map
 		TileMatrixSet *ReadTileMatrixSetLink(Text::XMLReader *reader);
 		TileMatrixDefSet *ReadTileMatrixSet(Text::XMLReader *reader);
 		Double CalcScaleDiv();
-		TileMatrix *GetTileMatrix(UOSInt level);
+		TileMatrix *GetTileMatrix(UOSInt level) const;
 		void ReleaseLayer(TileLayer *layer);
 		void ReleaseTileMatrix(TileMatrix *tileMatrix);
 		void ReleaseTileMatrixSet(TileMatrixSet *set);
@@ -99,7 +101,7 @@ namespace Map
 		void ReleaseTileMatrixDefSet(TileMatrixDefSet *set);
 		void ReleaseResourceURL(ResourceURL *resourceURL);
 	public:
-		WebMapTileServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString wmtsURL);
+		WebMapTileServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL);
 		virtual ~WebMapTileServiceSource();
 
 		virtual Text::CString GetName();
@@ -113,6 +115,8 @@ namespace Map
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
 		virtual Bool IsMercatorProj();
 		virtual UOSInt GetTileSize();
+		virtual Bool CanQuery() const;
+		virtual Math::Geometry::Vector2D *QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const;
 
 		virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids);
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);
@@ -121,10 +125,12 @@ namespace Map
 
 		Bool SetLayer(UOSInt index);
 		Bool SetMatrixSet(UOSInt index);
-		Bool SetResourceType(UOSInt index);
+		Bool SetResourceTileType(UOSInt index);
+		Bool SetResourceInfoType(UOSInt index);
 		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *layerNames);
 		UOSInt GetMatrixSetNames(Data::ArrayList<Text::String*> *matrixSetNames);
-		UOSInt GetResourceTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);
+		UOSInt GetResourceTileTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);
+		UOSInt GetResourceInfoTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);
 		static Text::CString GetExt(Map::TileMap::ImageType imgType);
 	};
 }

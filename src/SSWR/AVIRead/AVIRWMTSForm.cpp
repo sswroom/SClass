@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWMTSURL->GetText(&sb);
 	SDEL_CLASS(me->wmts);
-	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetSocketFactory(), me->core->GetEncFactory(), sb.ToCString()));
+	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetSocketFactory(), 0, me->core->GetEncFactory(), sb.ToCString()));
 	if (me->wmts->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
@@ -63,16 +63,30 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(void *userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wmts->GetResourceTypeNames(&nameList);
-		me->cboResourceType->ClearItems();
+		j = me->wmts->GetResourceTileTypeNames(&nameList);
+		me->cboResourceTileType->ClearItems();
 		while (i < j)
 		{
-			me->cboResourceType->AddItem(nameList.GetItem(i), 0);
+			me->cboResourceTileType->AddItem(nameList.GetItem(i), 0);
 			i++;
 		}
 		if (j > 0)
 		{
-			me->cboResourceType->SetSelectedIndex(0);
+			me->cboResourceTileType->SetSelectedIndex(0);
+		}
+
+		nameList.Clear();
+		i = 0;
+		j = me->wmts->GetResourceInfoTypeNames(&nameList);
+		me->cboResourceInfoType->ClearItems();
+		while (i < j)
+		{
+			me->cboResourceInfoType->AddItem(nameList.GetItem(i), 0);
+			i++;
+		}
+		if (j > 0)
+		{
+			me->cboResourceInfoType->SetSelectedIndex(0);
 		}
 	}
 }
@@ -86,12 +100,21 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnMatrixSetSelChg(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceTypeSelChg(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceTileTypeSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
 	if (me->wmts && !me->wmts->IsError())
 	{
-		me->wmts->SetResourceType(me->cboResourceType->GetSelectedIndex());
+		me->wmts->SetResourceTileType(me->cboResourceTileType->GetSelectedIndex());
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceInfoTypeSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRWMTSForm *me = (SSWR::AVIRead::AVIRWMTSForm *)userObj;
+	if (me->wmts && !me->wmts->IsError())
+	{
+		me->wmts->SetResourceInfoType(me->cboResourceInfoType->GetSelectedIndex());
 	}
 }
 
@@ -126,13 +149,18 @@ SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->cboMatrixSet, UI::GUIComboBox(ui, this, false));
 	this->cboMatrixSet->SetRect(104, 100, 200, 23, false);
 	this->cboMatrixSet->HandleSelectionChange(OnMatrixSetSelChg, this);
-	NEW_CLASS(this->lblResourceType, UI::GUILabel(ui, this, CSTR("Resource Type")));
-	this->lblResourceType->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->cboResourceType, UI::GUIComboBox(ui, this, false));
-	this->cboResourceType->SetRect(104, 124, 200, 23, false);
-	this->cboResourceType->HandleSelectionChange(OnResourceTypeSelChg, this);
+	NEW_CLASS(this->lblResourceTileType, UI::GUILabel(ui, this, CSTR("Tile Type")));
+	this->lblResourceTileType->SetRect(4, 124, 100, 23, false);
+	NEW_CLASS(this->cboResourceTileType, UI::GUIComboBox(ui, this, false));
+	this->cboResourceTileType->SetRect(104, 124, 200, 23, false);
+	this->cboResourceTileType->HandleSelectionChange(OnResourceTileTypeSelChg, this);
+	NEW_CLASS(this->lblResourceInfoType, UI::GUILabel(ui, this, CSTR("Info Type")));
+	this->lblResourceInfoType->SetRect(4, 148, 100, 23, false);
+	NEW_CLASS(this->cboResourceInfoType, UI::GUIComboBox(ui, this, false));
+	this->cboResourceInfoType->SetRect(104, 148, 200, 23, false);
+	this->cboResourceInfoType->HandleSelectionChange(OnResourceInfoTypeSelChg, this);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
-	this->btnOK->SetRect(104, 148, 75, 23, false);
+	this->btnOK->SetRect(104, 172, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }
 

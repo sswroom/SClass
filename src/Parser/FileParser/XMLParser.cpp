@@ -648,7 +648,6 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		Text::StringBuilderUTF8 sb;
 		Map::VectorLayer *lyr = 0;
 		Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
-		Text::String **scols;
 		const UTF8Char **ccols;
 		UOSInt i;
 		Text::XMLAttrib *attr;
@@ -662,7 +661,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			}
 			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
-				if (reader.GetNodeText()->Equals(UTF8STRC("gml:featureMember")))
+				if (reader.GetNodeText()->Equals(UTF8STRC("gml:featureMember")) || reader.GetNodeText()->Equals(UTF8STRC("gml:featureMembers")))
 				{
 					while (reader.ReadNext())
 					{
@@ -673,6 +672,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 						}
 						else if (nodeType == Text::XMLNode::NodeType::Element)
 						{
+							Math::Geometry::Vector2D *vec = 0;
+
 							while (reader.ReadNext())
 							{
 								nodeType = reader.GetNodeType();
@@ -683,21 +684,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								else if (nodeType == Text::XMLNode::NodeType::Element)
 								{
 									nodeText = reader.GetNodeText();
-									if (nodeText->StartsWith(UTF8STRC("fme:")))
-									{
-										nameList.Add(Text::StrCopyNew(reader.GetNodeText()->v + 4));
-										sb.ClearStr();
-										reader.ReadNodeText(&sb);
-										if (sb.GetLength() > 0)
-										{
-											valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
-										}
-										else
-										{
-											valList.Add(0);
-										}
-									}
-									else if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
+									if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
 									{
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D)
 										{
@@ -729,62 +716,49 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																}
 															}
 														}
-														if (lyr == 0)
+														Data::ArrayListDbl xPts;
+														Data::ArrayListDbl yPts;
+														Data::ArrayListDbl zPts;
+														Math::Geometry::PointZ *pt;
+														while (reader.ReadNext())
 														{
-															colCnt = nameList.GetCount();
-															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
-														}
-														if (colCnt == valList.GetCount())
-														{
-															Data::ArrayListDbl xPts;
-															Data::ArrayListDbl yPts;
-															Data::ArrayListDbl zPts;
-															Math::Geometry::PointZ *pt;
-															scols = valList.GetArray(&i);
-															while (reader.ReadNext())
+															if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 															{
-																if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																break;
+															}
+															else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+															{
+																if (reader.GetNodeText()->Equals(UTF8STRC("gml:pos")))
 																{
-																	break;
-																}
-																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-																{
-																	if (reader.GetNodeText()->Equals(UTF8STRC("gml:pos")))
+																	sb.ClearStr();
+																	reader.ReadNodeText(&sb);
+																	sarr[3] = sb.v;
+																	while (true)
 																	{
-																		sb.ClearStr();
-																		reader.ReadNodeText(&sb);
-																		sarr[3] = sb.v;
-																		while (true)
+																		i = Text::StrSplit(sarr, 4, sarr[3], ' ');
+																		if (i < 3)
 																		{
-																			i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-																			if (i < 3)
-																			{
-																				break;
-																			}
-																			xPts.Add(Text::StrToDouble(sarr[1]));
-																			yPts.Add(Text::StrToDouble(sarr[0]));
-																			zPts.Add(Text::StrToDouble(sarr[2]));
-																			if (i < 4)
-																				break;
+																			break;
 																		}
+																		xPts.Add(Text::StrToDouble(sarr[1]));
+																		yPts.Add(Text::StrToDouble(sarr[0]));
+																		zPts.Add(Text::StrToDouble(sarr[2]));
+																		if (i < 4)
+																			break;
+																	}
 
-																		if (xPts.GetCount() == 1)
-																		{
-																			NEW_CLASS(pt, Math::Geometry::PointZ(srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
-																			lyr->AddVector(pt, scols);
-																		}
-																	}
-																	else
+																	if (xPts.GetCount() == 1)
 																	{
-																		reader.SkipElement();
+																		NEW_CLASS(pt, Math::Geometry::PointZ(srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
+																		SDEL_CLASS(vec);
+																		vec = pt;
 																	}
+																}
+																else
+																{
+																	reader.SkipElement();
 																}
 															}
-														}
-														else
-														{
-															reader.SkipElement();
 														}
 													}
 													else
@@ -831,122 +805,109 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																}
 															}
 														}
-														if (lyr == 0)
+														Data::ArrayListDbl xPts;
+														Data::ArrayListDbl yPts;
+														Data::ArrayListDbl zPts;
+														Math::Geometry::Polygon *pg;
+														Math::Coord2DDbl *ptList;
+														while (reader.ReadNext())
 														{
-															colCnt = nameList.GetCount();
-															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
-														}
-														if (colCnt == valList.GetCount())
-														{
-															Data::ArrayListDbl xPts;
-															Data::ArrayListDbl yPts;
-															Data::ArrayListDbl zPts;
-															Math::Geometry::Polygon *pg;
-															Math::Coord2DDbl *ptList;
-															scols = valList.GetArray(&i);
-															while (reader.ReadNext())
+															if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 															{
-																if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																break;
+															}
+															else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:patches")))
+															{
+																while (reader.ReadNext())
 																{
-																	break;
-																}
-																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:patches")))
-																{
-																	while (reader.ReadNext())
+																	if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																	{
-																		if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																		break;
+																	}
+																	else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
+																	{
+																		while (reader.ReadNext())
 																		{
-																			break;
-																		}
-																		else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
-																		{
-																			while (reader.ReadNext())
+																			if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																			{
-																				if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																				break;
+																			}
+																			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:exterior")))
+																			{
+																				while (reader.ReadNext())
 																				{
-																					break;
-																				}
-																				else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:exterior")))
-																				{
-																					while (reader.ReadNext())
+																					if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																					{
-																						if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																						break;
+																					}
+																					else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																					{
+																						while (reader.ReadNext())
 																						{
-																							break;
-																						}
-																						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
-																						{
-																							while (reader.ReadNext())
+																							if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 																							{
-																								if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																								break;
+																							}
+																							else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
+																							{
+																								sb.ClearStr();
+																								reader.ReadNodeText(&sb);
+																								sarr[3] = sb.v;
+																								while (true)
 																								{
-																									break;
-																								}
-																								else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
-																								{
-																									sb.ClearStr();
-																									reader.ReadNodeText(&sb);
-																									sarr[3] = sb.v;
-																									while (true)
+																									i = Text::StrSplit(sarr, 4, sarr[3], ' ');
+																									if (i < 3)
 																									{
-																										i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-																										if (i < 3)
-																										{
-																											break;
-																										}
-																										xPts.Add(Text::StrToDouble(sarr[1]));
-																										yPts.Add(Text::StrToDouble(sarr[0]));
-																										zPts.Add(Text::StrToDouble(sarr[2]));
-																										if (i < 4)
-																											break;
+																										break;
 																									}
+																									xPts.Add(Text::StrToDouble(sarr[1]));
+																									yPts.Add(Text::StrToDouble(sarr[0]));
+																									zPts.Add(Text::StrToDouble(sarr[2]));
+																									if (i < 4)
+																										break;
+																								}
 
-																									if (xPts.GetCount() > 0)
-																									{
-																										NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
-																										ptList = pg->GetPointList(&i);
-																										while (i-- > 0)
-																										{
-																											ptList[i].x = xPts.GetItem(i);
-																											ptList[i].y = yPts.GetItem(i);
-																										}
-																										lyr->AddVector(pg, scols);
-																									}
-																								}
-																								else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+																								if (xPts.GetCount() > 0)
 																								{
-																									reader.SkipElement();
+																									NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
+																									ptList = pg->GetPointList(&i);
+																									while (i-- > 0)
+																									{
+																										ptList[i].x = xPts.GetItem(i);
+																										ptList[i].y = yPts.GetItem(i);
+																									}
+																									SDEL_CLASS(vec);
+																									vec = pg;
 																								}
 																							}
-																						}
-																						else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-																						{
-																							reader.SkipElement();
+																							else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+																							{
+																								reader.SkipElement();
+																							}
 																						}
 																					}
-																				}
-																				else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-																				{
-																					reader.SkipElement();
+																					else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+																					{
+																						reader.SkipElement();
+																					}
 																				}
 																			}
-																		}
-																		else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-																		{
-																			reader.SkipElement();
+																			else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+																			{
+																				reader.SkipElement();
+																			}
 																		}
 																	}
-																}
-																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-																{
-																	reader.SkipElement();
+																	else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+																	{
+																		reader.SkipElement();
+																	}
 																}
 															}
-														}
-														else
-														{
-															reader.SkipElement();
+															else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+															{
+																reader.SkipElement();
+															}
 														}
 													}
 													else
@@ -989,72 +950,59 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																}
 															}
 														}
-														if (lyr == 0)
+														Data::ArrayListDbl xPts;
+														Data::ArrayListDbl yPts;
+														Data::ArrayListDbl zPts;
+														Math::Geometry::LineString *pl;
+														Math::Coord2DDbl *ptList;
+														Double *hList;
+														while (reader.ReadNext())
 														{
-															colCnt = nameList.GetCount();
-															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
-														}
-														if (colCnt == valList.GetCount())
-														{
-															Data::ArrayListDbl xPts;
-															Data::ArrayListDbl yPts;
-															Data::ArrayListDbl zPts;
-															Math::Geometry::LineString *pl;
-															Math::Coord2DDbl *ptList;
-															Double *hList;
-															scols = valList.GetArray(&i);
-															while (reader.ReadNext())
+															if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
 															{
-																if (reader.GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+																break;
+															}
+															else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
+															{
+																if (reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
 																{
-																	break;
-																}
-																else if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
-																{
-																	if (reader.GetNodeText()->Equals(UTF8STRC("gml:posList")))
+																	sb.ClearStr();
+																	reader.ReadNodeText(&sb);
+																	sarr[3] = sb.v;
+																	while (true)
 																	{
-																		sb.ClearStr();
-																		reader.ReadNodeText(&sb);
-																		sarr[3] = sb.v;
-																		while (true)
+																		i = Text::StrSplit(sarr, 4, sarr[3], ' ');
+																		if (i < 3)
 																		{
-																			i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-																			if (i < 3)
-																			{
-																				break;
-																			}
-																			xPts.Add(Text::StrToDouble(sarr[1]));
-																			yPts.Add(Text::StrToDouble(sarr[0]));
-																			zPts.Add(Text::StrToDouble(sarr[2]));
-																			if (i < 4)
-																				break;
+																			break;
 																		}
+																		xPts.Add(Text::StrToDouble(sarr[1]));
+																		yPts.Add(Text::StrToDouble(sarr[0]));
+																		zPts.Add(Text::StrToDouble(sarr[2]));
+																		if (i < 4)
+																			break;
+																	}
 
-																		if (xPts.GetCount() > 0)
-																		{
-																			NEW_CLASS(pl, Math::Geometry::LineString(srid, xPts.GetCount(), true, false));
-																			ptList = pl->GetPointList(&i);
-																			hList = pl->GetZList(&i);
-																			while (i-- > 0)
-																			{
-																				hList[i] = zPts.GetItem(i);
-																				ptList[i].x = xPts.GetItem(i);
-																				ptList[i].y = yPts.GetItem(i);
-																			}
-																			lyr->AddVector(pl, scols);
-																		}
-																	}
-																	else
+																	if (xPts.GetCount() > 0)
 																	{
-																		reader.SkipElement();
+																		NEW_CLASS(pl, Math::Geometry::LineString(srid, xPts.GetCount(), true, false));
+																		ptList = pl->GetPointList(&i);
+																		hList = pl->GetZList(&i);
+																		while (i-- > 0)
+																		{
+																			hList[i] = zPts.GetItem(i);
+																			ptList[i].x = xPts.GetItem(i);
+																			ptList[i].y = yPts.GetItem(i);
+																		}
+																		SDEL_CLASS(vec);
+																		vec = pl;
 																	}
+																}
+																else
+																{
+																	reader.SkipElement();
 																}
 															}
-														}
-														else
-														{
-															reader.SkipElement();
 														}
 													}
 													else
@@ -1065,7 +1013,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											}
 										}
 									}
-									else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")))
+									else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")) || nodeText->EndsWith(UTF8STRC(":geom")))
 									{
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
 										{
@@ -1097,125 +1045,250 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																}
 															}
 														}
-														if (lyr == 0)
+														Data::ArrayListDbl xPts;
+														Data::ArrayListDbl yPts;
+														Data::ArrayListDbl zPts;
+														Math::Geometry::Polygon *pg;
+														Math::Coord2DDbl *ptList;
+														while (reader.ReadNext())
 														{
-															colCnt = nameList.GetCount();
-															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
-														}
-														if (colCnt == valList.GetCount())
-														{
-															Data::ArrayListDbl xPts;
-															Data::ArrayListDbl yPts;
-															Data::ArrayListDbl zPts;
-															Math::Geometry::Polygon *pg;
-															Math::Coord2DDbl *ptList;
-															scols = valList.GetArray(&i);
-															while (reader.ReadNext())
+															nodeType = reader.GetNodeType();
+															if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 															{
-																nodeType = reader.GetNodeType();
-																if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																break;
+															}
+															else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
+															{
+																while (reader.ReadNext())
 																{
-																	break;
-																}
-																else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
-																{
-																	while (reader.ReadNext())
+																	nodeType = reader.GetNodeType();
+																	if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																	{
-																		nodeType = reader.GetNodeType();
-																		if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																		break;
+																	}
+																	else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
+																	{
+																		while (reader.ReadNext())
 																		{
-																			break;
-																		}
-																		else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
-																		{
-																			while (reader.ReadNext())
+																			nodeType = reader.GetNodeType();
+																			if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																			{
-																				nodeType = reader.GetNodeType();
-																				if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																				break;
+																			}
+																			else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
+																			{
+																				while (reader.ReadNext())
 																				{
-																					break;
-																				}
-																				else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
-																				{
-																					while (reader.ReadNext())
+																					nodeType = reader.GetNodeType();
+																					if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																					{
-																						nodeType = reader.GetNodeType();
-																						if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																						break;
+																					}
+																					else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																					{
+																						while (reader.ReadNext())
 																						{
-																							break;
-																						}
-																						else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
-																						{
-																							while (reader.ReadNext())
+																							nodeType = reader.GetNodeType();
+																							if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 																							{
-																								nodeType = reader.GetNodeType();
-																								if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																								break;
+																							}
+																							else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
+																							{
+																								sb.ClearStr();
+																								reader.ReadNodeText(&sb);
+																								sarr[1] = sb.v;
+																								while (true)
 																								{
-																									break;
-																								}
-																								else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
-																								{
-																									sb.ClearStr();
-																									reader.ReadNodeText(&sb);
-																									sarr[1] = sb.v;
-																									while (true)
+																									i = Text::StrSplit(sarr, 2, sarr[1], ' ');
+																									if (Text::StrSplit(sarr2, 3, sarr[0], ',') == 2)
 																									{
-																										i = Text::StrSplit(sarr, 2, sarr[1], ' ');
-																										if (Text::StrSplit(sarr2, 3, sarr[0], ',') == 2)
-																										{
-																											xPts.Add(Text::StrToDouble(sarr2[0]));
-																											yPts.Add(Text::StrToDouble(sarr2[1]));
-																										}
-																										if (i != 2)
-																											break;
+																										xPts.Add(Text::StrToDouble(sarr2[0]));
+																										yPts.Add(Text::StrToDouble(sarr2[1]));
 																									}
+																									if (i != 2)
+																										break;
+																								}
 
-																									if (xPts.GetCount() > 0)
-																									{
-																										NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
-																										ptList = pg->GetPointList(&i);
-																										while (i-- > 0)
-																										{
-																											ptList[i].x = xPts.GetItem(i);
-																											ptList[i].y = yPts.GetItem(i);
-																										}
-																										lyr->AddVector(pg, scols);
-																									}
-																								}
-																								else if (nodeType == Text::XMLNode::NodeType::Element)
+																								if (xPts.GetCount() > 0)
 																								{
-																									reader.SkipElement();
+																									NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
+																									ptList = pg->GetPointList(&i);
+																									while (i-- > 0)
+																									{
+																										ptList[i].x = xPts.GetItem(i);
+																										ptList[i].y = yPts.GetItem(i);
+																									}
+																									SDEL_CLASS(vec);
+																									vec = pg;
 																								}
 																							}
-																						}
-																						else if (nodeType == Text::XMLNode::NodeType::Element)
-																						{
-																							reader.SkipElement();
+																							else if (nodeType == Text::XMLNode::NodeType::Element)
+																							{
+																								reader.SkipElement();
+																							}
 																						}
 																					}
+																					else if (nodeType == Text::XMLNode::NodeType::Element)
+																					{
+																						reader.SkipElement();
+																					}
 																				}
-																				else if (nodeType == Text::XMLNode::NodeType::Element)
+																			}
+																			else if (nodeType == Text::XMLNode::NodeType::Element)
+																			{
+																				reader.SkipElement();
+																			}
+																		}
+																	}
+																	else if (nodeType == Text::XMLNode::NodeType::Element)
+																	{
+																		reader.SkipElement();
+																	}
+																}
+															}
+															else if (nodeType == Text::XMLNode::NodeType::Element)
+															{
+																reader.SkipElement();
+															}
+														}
+													}
+													else if (reader.GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
+													{
+														UOSInt dimension = 0;
+														i = reader.GetAttribCount();
+														while (i-- > 0)
+														{
+															attr = reader.GetAttrib(i);
+															if (attr->name->Equals(UTF8STRC("srsName")) && csys == 0)
+															{
+																csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
+																if (csys)
+																{
+																	srid = csys->GetSRID();
+																}
+															}
+															else if (attr->name->Equals(UTF8STRC("srsDimension")))
+															{
+																dimension = attr->value->ToUOSInt();
+															}
+														}
+														Data::ArrayListDbl xPts;
+														Data::ArrayListDbl yPts;
+														Data::ArrayListDbl zPts;
+														Math::Geometry::Polygon *pg;
+														Math::Coord2DDbl *ptList;
+														while (reader.ReadNext())
+														{
+															nodeType = reader.GetNodeType();
+															if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+															{
+																break;
+															}
+															else if (nodeType == Text::XMLNode::NodeType::Element && (reader.GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")) || reader.GetNodeText()->Equals(UTF8STRC("gml:exterior"))))
+															{
+																while (reader.ReadNext())
+																{
+																	nodeType = reader.GetNodeType();
+																	if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																	{
+																		break;
+																	}
+																	else if (nodeType == Text::XMLNode::NodeType::Element && reader.GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																	{
+																		while (reader.ReadNext())
+																		{
+																			nodeType = reader.GetNodeType();
+																			if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+																			{
+																				break;
+																			}
+																			else if (nodeType == Text::XMLNode::NodeType::Element)
+																			{
+																				if (reader.GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
+																				{
+																					sb.ClearStr();
+																					reader.ReadNodeText(&sb);
+																					sarr[1] = sb.v;
+																					while (true)
+																					{
+																						i = Text::StrSplit(sarr, 2, sarr[1], ' ');
+																						if (Text::StrSplit(sarr2, 3, sarr[0], ',') >= 2)
+																						{
+																							xPts.Add(Text::StrToDouble(sarr2[0]));
+																							yPts.Add(Text::StrToDouble(sarr2[1]));
+																						}
+																						if (i != 2)
+																							break;
+																					}
+
+																					if (xPts.GetCount() > 0)
+																					{
+																						NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount(), false, false));
+																						ptList = pg->GetPointList(&i);
+																						while (i-- > 0)
+																						{
+																							ptList[i].x = xPts.GetItem(i);
+																							ptList[i].y = yPts.GetItem(i);
+																						}
+																						SDEL_CLASS(vec);
+																						vec = pg;
+																					}
+																				}
+																				else if (reader.GetNodeText()->Equals(UTF8STRC("gml:posList")) && dimension != 0)
+																				{
+																					sb.ClearStr();
+																					reader.ReadNodeText(&sb);
+																					sarr[1] = sb.v;
+																					while (true)
+																					{
+																						i = Text::StrSplit(sarr, 2, sarr[1], ' ');
+																						xPts.Add(Text::StrToDouble(sarr[0]));
+																						if (i != 2)
+																							break;
+																					}
+
+																					if (xPts.GetCount() > 0 && (xPts.GetCount() % dimension) == 0)
+																					{
+																						NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, xPts.GetCount() / dimension, dimension > 2, false));
+																						UOSInt j;
+																						UOSInt k;
+																						Double *zList = pg->GetZList(&j);
+																						ptList = pg->GetPointList(&j);
+																						i = 0;
+																						k = 0;
+																						while (i < j)
+																						{
+																							ptList[i].x = xPts.GetItem(k);
+																							ptList[i].y = xPts.GetItem(k + 1);
+																							if (dimension > 2)
+																							{
+																								zList[i] = xPts.GetItem(k + 2);
+																							}
+																							k += dimension;
+																							i++;
+																						}
+																						SDEL_CLASS(vec);
+																						vec = pg;
+																					}
+																				}
+																				else
 																				{
 																					reader.SkipElement();
 																				}
 																			}
 																		}
-																		else if (nodeType == Text::XMLNode::NodeType::Element)
-																		{
-																			reader.SkipElement();
-																		}
+																	}
+																	else if (nodeType == Text::XMLNode::NodeType::Element)
+																	{
+																		reader.SkipElement();
 																	}
 																}
-																else if (nodeType == Text::XMLNode::NodeType::Element)
-																{
-																	reader.SkipElement();
-																}
 															}
-														}
-														else
-														{
-															reader.SkipElement();
+															else if (nodeType == Text::XMLNode::NodeType::Element)
+															{
+																reader.SkipElement();
+															}
 														}
 													}
 													else
@@ -1228,10 +1301,49 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									}
 									else
 									{
-										reader.SkipElement();
+										UOSInt i = nodeText->IndexOf(':');
+										if (i != INVALID_INDEX)
+										{
+											nameList.Add(Text::StrCopyNew(reader.GetNodeText()->v + i + 1));
+											sb.ClearStr();
+											reader.ReadNodeText(&sb);
+											if (sb.GetLength() > 0)
+											{
+												valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
+											}
+											else
+											{
+												valList.Add(0);
+											}
+										}
+										else 
+										{
+											reader.SkipElement();
+										}
 									}
 								}
 							}
+							if (vec)
+							{
+								if (lyr == 0)
+								{
+									colCnt = nameList.GetCount();
+									ccols = nameList.GetArray(&i);
+									NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
+								}
+
+								if (colCnt == valList.GetCount())
+								{
+									Text::String **scols;
+									scols = valList.GetArray(&i);
+									lyr->AddVector(vec, scols);
+								}
+								else
+								{
+									DEL_CLASS(vec);
+								}
+							}
+
 							i = nameList.GetCount();
 							while (i-- > 0)
 							{

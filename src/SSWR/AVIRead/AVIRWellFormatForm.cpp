@@ -13,6 +13,7 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::IFileSelector *selector)
 	selector->AddFilter(CSTR("*.html"), CSTR("HTML File"));
 	selector->AddFilter(CSTR("*.htm"), CSTR("HTML File"));
 	selector->AddFilter(CSTR("*.xml"), CSTR("XML File"));
+	selector->AddFilter(CSTR("*.gml"), CSTR("GML File"));
 }
 
 Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF8 *output)
@@ -44,7 +45,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSI
 			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), &fs, 0, output);
 		}
 	}
-	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".xml")))
+	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".xml")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".gml")))
 	{
 		IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();

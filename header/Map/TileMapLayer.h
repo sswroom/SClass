@@ -84,6 +84,9 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass();
 
+		virtual Bool CanQuery();
+		virtual Math::Geometry::Vector2D *QueryInfo(Math::Coord2DDbl coord, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
+
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		Bool IsCaching(UOSInt level, Int64 imgId);

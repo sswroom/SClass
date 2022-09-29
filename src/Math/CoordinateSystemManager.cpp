@@ -456,6 +456,11 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStr
 		UInt32 epsgId = Text::StrToUInt32(&name.v[22]);
 		return SRCreateCSys(epsgId);
 	}
+	else if (name.StartsWith(UTF8STRC("http://www.opengis.net/gml/srs/epsg.xml#")))
+	{
+		UInt32 epsgId = Text::StrToUInt32(&name.v[40]);
+		return SRCreateCSys(epsgId);
+	}
 	else if (name.Equals(UTF8STRC("urn:ogc:def:crs:OGC:1.3:CRS84")))
 	{
 		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84).v);

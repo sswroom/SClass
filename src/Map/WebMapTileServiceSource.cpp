@@ -1,11 +1,16 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32RC.h"
+#include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Map/WebMapTileServiceSource.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/Point.h"
 #include "Math/Unit/Distance.h"
 #include "Net/HTTPClient.h"
+#include "Parser/FileParser/JSONParser.h"
+#include "Parser/FileParser/XMLParser.h"
+#include "Text/JSON.h"
 #include "Text/XMLReader.h"
 
 //#define VERBOSE
@@ -18,7 +23,7 @@ void Map::WebMapTileServiceSource::LoadXML()
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->wmtsURL);
 	sb.AppendC(UTF8STRC("?REQUEST=GetCapabilities"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli == 0)
 		return;
 	if (cli->IsError())
@@ -623,7 +628,7 @@ Double Map::WebMapTileServiceSource::CalcScaleDiv()
 	}
 }
 
-Map::WebMapTileServiceSource::TileMatrix *Map::WebMapTileServiceSource::GetTileMatrix(UOSInt level)
+Map::WebMapTileServiceSource::TileMatrix *Map::WebMapTileServiceSource::GetTileMatrix(UOSInt level) const
 {
 	if (this->currSet == 0)
 		return 0;
@@ -702,15 +707,17 @@ void Map::WebMapTileServiceSource::ReleaseResourceURL(ResourceURL *resourceURL)
 	MemFree(resourceURL);
 }
 
-Map::WebMapTileServiceSource::WebMapTileServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString wmtsURL)
+Map::WebMapTileServiceSource::WebMapTileServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL)
 {
 	this->cacheDir = 0;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	this->wmtsURL = Text::String::New(wmtsURL);
 	this->currLayer = 0;
 	this->currDef = 0;
 	this->currResource = 0;
+	this->currResourceInfo = 0;
 	this->currSet = 0;
 	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->LoadXML();
@@ -847,6 +854,184 @@ UOSInt Map::WebMapTileServiceSource::GetTileSize()
 	{
 		return 0;
 	}
+}
+
+Bool Map::WebMapTileServiceSource::CanQuery() const
+{
+	return this->currResourceInfo != 0;
+}
+
+Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
+{
+	if (this->currResourceInfo == 0)
+		return 0;
+
+	TileMatrix *tileMatrix = this->GetTileMatrix(level);
+	if (tileMatrix == 0)
+	{
+		return 0;
+	}
+	TileMatrixDef *tileMatrixDef = this->currDef->tiles.GetItem(level);
+
+	UTF8Char tmpBuff[1024];
+	UTF8Char *tmpPtr;
+
+	Int32 pxX = (Int32)((coord.x - tileMatrixDef->origin.x) / tileMatrixDef->unitPerPixel);
+	Int32 pxY = (Int32)((tileMatrixDef->origin.y - coord.y) / tileMatrixDef->unitPerPixel);
+	Int32 imgX = pxX / (Int32)tileMatrixDef->tileWidth;
+	Int32 imgY = pxY / (Int32)tileMatrixDef->tileHeight;
+	Int32 tileX = pxX % (Int32)tileMatrixDef->tileWidth;
+	Int32 tileY = pxY % (Int32)tileMatrixDef->tileHeight;
+
+	Text::StringBuilderUTF8 urlSb;
+	urlSb.Append(this->currResourceInfo->templateURL);
+	tmpPtr = Text::StrInt32(tmpBuff, imgX);
+	urlSb.ReplaceStr(UTF8STRC("{TileCol}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
+	tmpPtr = Text::StrInt32(tmpBuff, imgY);
+	urlSb.ReplaceStr(UTF8STRC("{TileRow}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
+	tmpPtr = Text::StrInt32(tmpBuff, tileX);
+	urlSb.ReplaceStr(UTF8STRC("{I}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
+	tmpPtr = Text::StrInt32(tmpBuff, tileY);
+	urlSb.ReplaceStr(UTF8STRC("{J}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
+	urlSb.ReplaceStr(UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
+	urlSb.ReplaceStr(UTF8STRC("{TileMatrixSet}"), this->currSet->id->v, this->currSet->id->leng);
+	urlSb.ReplaceStr(UTF8STRC("{style}"), UTF8STRC(""));
+
+#if defined(VERBOSE)
+	printf("Info URL: %s\r\n", urlSb.ToString());
+#endif
+
+	Text::StringBuilderUTF8 sb;
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+	UOSInt readSize;
+	while ((readSize = cli->Read(tmpBuff, 1024)) > 0)
+	{
+		sb.AppendC(tmpBuff, readSize);
+	}
+	DEL_CLASS(cli);
+
+	if (this->currResourceInfo->format->Equals(UTF8STRC("text/plain")))
+	{
+		Text::PString lineArr[2];
+		Text::PString sarr[2];
+		UOSInt lineCnt;
+		lineArr[1] = sb;
+		while (true)
+		{
+			lineCnt = Text::StrSplitLineP(lineArr, 2, lineArr[1]);
+			if (Text::StrSplitTrimP(sarr, 2, lineArr[0], '=') == 2)
+			{
+				nameList->Add(Text::String::New(sarr[0].ToCString()));
+				valueList->Add(Text::String::New(sarr[1].ToCString()));
+			}
+
+			if (lineCnt != 2)
+				break;
+		}
+		return NEW_CLASS_D(Math::Geometry::Point(this->currDef->csys->GetSRID(), coord));
+	}
+	else if (this->currResourceInfo->format->Equals(UTF8STRC("application/json")))
+	{
+		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
+		if (json)
+		{
+			UInt32 srid = this->currDef->csys->GetSRID();
+			if (json->GetType() == Text::JSONType::Object)
+			{
+				Text::String *crsName = json->GetString(UTF8STRC("crs.properties.name"));
+				if (crsName)
+				{
+					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
+					if (csys)
+					{
+						srid = csys->GetSRID();
+						DEL_CLASS(csys);
+					}
+				}
+			}
+			Text::JSONBase *feature = json->GetValue(UTF8STRC("features[0]"));
+			if (feature)
+			{
+				Text::JSONBase *geometry = feature->GetValue(UTF8STRC("geometry"));
+				if (geometry && geometry->GetType() == Text::JSONType::Object)
+				{
+					Math::Geometry::Vector2D *vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
+					if (vec)
+					{
+						Text::JSONBase *properties = feature->GetValue(UTF8STRC("properties"));
+						if (properties && properties->GetType() == Text::JSONType::Object)
+						{
+							Data::ArrayList<Text::String*> names;
+							Text::String *name;
+							Text::StringBuilderUTF8 sb;
+							Text::JSONObject *obj = (Text::JSONObject*)properties;
+							obj->GetObjectNames(&names);
+							UOSInt i = 0;
+							UOSInt j = names.GetCount();
+							while (i < j)
+							{
+								name = names.GetItem(i);
+								nameList->Add(name->Clone());
+								sb.ClearStr();
+								obj->GetValue(name->v, name->leng)->ToString(&sb);
+								valueList->Add(Text::String::New(sb.ToCString()));
+								i++;
+							}
+						}
+						json->EndUse();
+						return vec;
+					}
+				}
+			}
+			json->EndUse();
+		}
+	}
+	else if (this->currResourceInfo->format->StartsWith(UTF8STRC("application/vnd.ogc.gml")) || this->currResourceInfo->format->Equals(UTF8STRC("text/xml")))
+	{
+		IO::MemoryStream mstm((UInt8*)sb.ToString(), sb.GetLength(), UTF8STRC("Map.WebMapTileServiceSource.QueryInfo.mstm"));
+		IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(encFact, &mstm, CSTR("Temp.gml"), 0, 0, 0);
+		if (pobj)
+		{
+			if (pobj->GetParserType() == IO::ParserType::MapLayer)
+			{
+				Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
+				void *nameArr = 0;
+				Data::ArrayListInt64 idArr;
+				layer->GetAllObjectIds(&idArr, &nameArr);
+				if (idArr.GetCount() == 1)
+				{
+					void *sess = layer->BeginGetObject();
+					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, idArr.GetItem(0));
+					if (vec)
+					{
+						UOSInt i = 0;
+						UOSInt j = layer->GetColumnCnt();
+						while (i < j)
+						{
+							tmpPtr = layer->GetColumnName(tmpBuff, i);
+							nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
+							tmpPtr = layer->GetString(tmpBuff, sizeof(tmpBuff), nameArr, idArr.GetItem(0), i);
+							valueList->Add(Text::String::NewP(tmpBuff, tmpPtr));
+							i++;
+						}
+						layer->ReleaseNameArr(nameArr);
+						DEL_CLASS(pobj);
+						return vec;
+					}
+				}
+				layer->ReleaseNameArr(nameArr);
+			}
+			DEL_CLASS(pobj);
+		}
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("%s\r\n", sb.ToString());
+#endif
+	}
+	return 0;
 }
 
 UOSInt Map::WebMapTileServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
@@ -1021,7 +1206,7 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 	printf("URL: %s\r\n", urlSb.ToString());
 #endif
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, 0, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
@@ -1103,7 +1288,8 @@ Bool Map::WebMapTileServiceSource::SetLayer(UOSInt index)
 		return false;
 	}
 	this->currLayer = this->layers.GetItem(index);
-	this->SetResourceType(0);
+	this->SetResourceTileType(0);
+	this->SetResourceInfoType(0);
 	this->SetMatrixSet(0);
 	return true;
 }
@@ -1119,7 +1305,7 @@ Bool Map::WebMapTileServiceSource::SetMatrixSet(UOSInt index)
 	return true;
 }
 
-Bool Map::WebMapTileServiceSource::SetResourceType(UOSInt index)
+Bool Map::WebMapTileServiceSource::SetResourceTileType(UOSInt index)
 {
 	if (this->currLayer == 0)
 		return false;
@@ -1143,6 +1329,32 @@ Bool Map::WebMapTileServiceSource::SetResourceType(UOSInt index)
 	}
 	return false;
 }
+
+Bool Map::WebMapTileServiceSource::SetResourceInfoType(UOSInt index)
+{
+	if (this->currLayer == 0)
+		return false;
+	this->currResourceInfo = 0;
+	ResourceURL *resource;
+	UOSInt i = 0;
+	UOSInt j = this->currLayer->resourceURLs.GetCount();
+	while (i < j)
+	{
+		resource = this->currLayer->resourceURLs.GetItem(i);
+		if (resource->resourceType == ResourceType::FeatureInfo)
+		{
+			if (index == 0)
+			{
+				this->currResourceInfo = resource;
+				return true;
+			}
+			index--;
+		}
+		i++;
+	}
+	return false;
+}
+
 UOSInt Map::WebMapTileServiceSource::GetLayerNames(Data::ArrayList<Text::String*> *layerNames)
 {
 	UOSInt i = 0;
@@ -1171,7 +1383,7 @@ UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayList<Text::Str
 	return j;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetResourceTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames)
+UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames)
 {
 	if (this->currLayer == 0)
 		return 0;
@@ -1183,6 +1395,26 @@ UOSInt Map::WebMapTileServiceSource::GetResourceTypeNames(Data::ArrayList<Text::
 	{
 		resource = this->currLayer->resourceURLs.GetItem(i);
 		if (resource->resourceType == ResourceType::Tile)
+		{
+			resourceTypeNames->Add(resource->format);
+		}
+		i++;
+	}
+	return resourceTypeNames->GetCount() - initCnt;
+}
+
+UOSInt Map::WebMapTileServiceSource::GetResourceInfoTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames)
+{
+	if (this->currLayer == 0)
+		return 0;
+	ResourceURL *resource;
+	UOSInt i = 0;
+	UOSInt j = this->currLayer->resourceURLs.GetCount();
+	UOSInt initCnt = resourceTypeNames->GetCount();
+	while (i < j)
+	{
+		resource = this->currLayer->resourceURLs.GetItem(i);
+		if (resource->resourceType == ResourceType::FeatureInfo)
 		{
 			resourceTypeNames->Add(resource->format);
 		}

@@ -24,8 +24,10 @@ namespace SSWR
 			UI::GUIComboBox *cboLayer;
 			UI::GUILabel *lblMatrixSet;
 			UI::GUIComboBox *cboMatrixSet;
-			UI::GUILabel *lblResourceType;
-			UI::GUIComboBox *cboResourceType;
+			UI::GUILabel *lblResourceTileType;
+			UI::GUIComboBox *cboResourceTileType;
+			UI::GUILabel *lblResourceInfoType;
+			UI::GUIComboBox *cboResourceInfoType;
 			UI::GUIButton *btnOK;
 
 			SSWR::AVIRead::AVIRCore *core;
@@ -35,7 +37,8 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnLayerSelChg(void *userObj);
 			static void __stdcall OnMatrixSetSelChg(void *userObj);
-			static void __stdcall OnResourceTypeSelChg(void *userObj);
+			static void __stdcall OnResourceTileTypeSelChg(void *userObj);
+			static void __stdcall OnResourceInfoTypeSelChg(void *userObj);
 		public:
 			AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRWMTSForm();

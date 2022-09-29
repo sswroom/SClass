@@ -520,6 +520,17 @@ Map::IMapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass()
 	return Map::IMapDrawLayer::OC_TILE_MAP_LAYER;
 }
 
+Bool Map::TileMapLayer::CanQuery()
+{
+	return this->tileMap->CanQuery();
+}
+
+Math::Geometry::Vector2D *Map::TileMapLayer::QueryInfo(Math::Coord2DDbl coord, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+{
+	UOSInt level = this->tileMap->GetNearestLevel(scale);
+	return this->tileMap->QueryInfo(coord, level, nameList, valueList);
+}
+
 void Map::TileMapLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
 {
 	Sync::MutexUsage mutUsage(&this->updMut);

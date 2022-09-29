@@ -51,11 +51,14 @@ namespace SSWR
 			Math::Coord2D<OSInt> downPos;
 			Math::Geometry::Vector2D *currVec;
 			Math::VectorTextWriterList writerList;
+			Bool layerNames;
 
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnShapeFmtChanged(void *userObj);
+
+			void ShowLayerNames();
 		public:
 			AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::IMapDrawLayer *lyr, IMapNavigator *navi);
 			virtual ~AVIRGISQueryForm();

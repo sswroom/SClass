@@ -372,6 +372,16 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::
 	return retVal;
 }
 
+Bool Map::IMapDrawLayer::CanQuery()
+{
+	return false;
+}
+
+Math::Geometry::Vector2D *Map::IMapDrawLayer::QueryInfo(Math::Coord2DDbl coord, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+{
+	return 0;
+}
+
 Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
 	Data::ArrayListInt64 *objIds;

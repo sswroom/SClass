@@ -810,6 +810,11 @@ Bool Text::JSONNumber::Identical(Text::JSONBase *obj)
 	return ((Text::JSONNumber*)obj)->GetValue() == this->val;
 }
 
+void Text::JSONNumber::ToString(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendDouble(this->val);
+}
+
 Double Text::JSONNumber::GetValue()
 {
 	return this->val;
@@ -846,6 +851,11 @@ Bool Text::JSONInt32::Identical(Text::JSONBase *obj)
 	return ((Text::JSONInt32*)obj)->GetValue() == this->val;
 }
 
+void Text::JSONInt32::ToString(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendI32(this->val);
+}
+
 Int32 Text::JSONInt32::GetValue()
 {
 	return this->val;
@@ -880,6 +890,11 @@ Bool Text::JSONInt64::Identical(Text::JSONBase *obj)
 	if (obj->GetType() != Text::JSONType::INT64)
 		return false;
 	return ((Text::JSONInt64*)obj)->GetValue() == this->val;
+}
+
+void Text::JSONInt64::ToString(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendI64(this->val);
 }
 
 Int64 Text::JSONInt64::GetValue()
@@ -988,6 +1003,18 @@ Bool Text::JSONString::Identical(Text::JSONBase *obj)
 	}
 }
 
+void Text::JSONString::ToString(Text::StringBuilderUTF8 *sb)
+{
+	if (this->val)
+	{
+		sb->Append(this->val);
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("null"));
+	}
+}
+
 Text::String *Text::JSONString::GetValue()
 {
 	return this->val;
@@ -1032,6 +1059,11 @@ Bool Text::JSONBool::Identical(Text::JSONBase *obj)
 	if (obj->GetType() != Text::JSONType::BOOL)
 		return false;
 	return ((Text::JSONBool*)obj)->GetValue() == val;
+}
+
+void Text::JSONBool::ToString(Text::StringBuilderUTF8 *sb)
+{
+	this->ToJSONString(sb);
 }
 
 Bool Text::JSONBool::GetValue()
@@ -1098,6 +1130,11 @@ Bool Text::JSONObject::Equals(Text::CString s)
 Bool Text::JSONObject::Identical(Text::JSONBase *obj)
 {
 	return this == obj;
+}
+
+void Text::JSONObject::ToString(Text::StringBuilderUTF8 *sb)
+{
+	this->ToJSONString(sb);
 }
 
 void Text::JSONObject::SetObjectValue(Text::CString name, Text::JSONBase *val)
@@ -1304,6 +1341,11 @@ Bool Text::JSONArray::Identical(Text::JSONBase *obj)
 	return this == obj;
 }
 
+void Text::JSONArray::ToString(Text::StringBuilderUTF8 *sb)
+{
+	this->ToJSONString(sb);
+}
+
 void Text::JSONArray::SetArrayValue(UOSInt index, Text::JSONBase *val)
 {
 	if (val)
@@ -1384,6 +1426,11 @@ Bool Text::JSONNull::Equals(Text::CString s)
 Bool Text::JSONNull::Identical(Text::JSONBase *obj)
 {
 	return obj->GetType() == Text::JSONType::Null;
+}
+
+void Text::JSONNull::ToString(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendC(UTF8STRC("null"));
 }
 
 Text::CString Text::JSONTypeGetName(JSONType t)

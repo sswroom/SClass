@@ -18,6 +18,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		void *sess;
 		Int64 id;
 		UOSInt i;
+		UOSInt j;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
@@ -28,8 +29,74 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		{
 			Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt.x, mapPt.y, 0, &mapPt.x, &mapPt.y, &tmp);
 		}
+		if (me->lyr->CanQuery())
+		{
+			Data::ArrayList<Text::String*> nameList;
+			Data::ArrayList<Text::String*> valueList;
+			Math::Geometry::Vector2D *vec = me->lyr->QueryInfo(mapPt, &nameList, &valueList);
+			if (vec)
+			{
+				Text::String *name;
+				Text::String *value;
+				me->lvInfo->ClearItems();
+				i = 0;
+				j = nameList.GetCount();
+				while (i < j)
+				{
+					name = nameList.GetItem(i);
+					value = valueList.GetItem(i);
+					me->lvInfo->AddItem(name, 0);
+					if (value)
+					{
+						me->lvInfo->SetSubItem(i, 1, value);
+						value->Release();
+					}
+					name->Release();
+					i++;
+				}
+
+				Math::RectAreaDbl bounds;
+				if (csys && lyrCSys && !csys->Equals(lyrCSys))
+				{
+					Double z;
+					vec->GetBounds(&bounds);
+					Math::CoordinateSystem::ConvertXYZ(lyrCSys, csys, bounds.tl.x, bounds.tl.y, 0, &bounds.tl.x, &bounds.tl.y, &z);
+					Math::CoordinateSystem::ConvertXYZ(lyrCSys, csys, bounds.br.x, bounds.br.y, 0, &bounds.br.x, &bounds.br.y, &z);
+					vec->ConvCSys(lyrCSys, csys);
+				}
+				else
+				{
+					vec->GetBounds(&bounds);
+				}
+				SDEL_CLASS(me->currVec);
+				me->currVec = vec->Clone();
+
+				Math::VectorTextWriter *writer = (Math::VectorTextWriter*)me->cboShapeFmt->GetSelectedItem();
+				Text::StringBuilderUTF8 sb;
+				writer->ToText(&sb, me->currVec);
+				me->txtShape->SetText(sb.ToCString());
+
+				sptr = Text::StrDouble(sbuff, bounds.tl.x);
+				me->txtMinX->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, bounds.tl.y);
+				me->txtMinY->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, bounds.br.x);
+				me->txtMaxX->SetText(CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, bounds.br.y);
+				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
+
+				me->navi->SetSelectedVector(vec);
+				me->layerNames = false;
+				return false;
+			}
+		}
 		sess = me->lyr->BeginGetObject();
 		id = me->lyr->GetNearestObjectId(sess, mapPt, &mapPt);
+		if (!me->layerNames)
+		{
+			me->layerNames = true;
+			me->ShowLayerNames();
+		}
 		if (id == -1)
 		{
 			i = me->lyr->GetColumnCnt();
@@ -124,6 +191,26 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
 	}
 }
 
+void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
+{
+	this->lvInfo->ClearItems();
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	UOSInt i = 0;
+	UOSInt j = this->lyr->GetColumnCnt();
+	while (i < j)
+	{
+		sbuff[0] = 0;
+		sptr = this->lyr->GetColumnName(sbuff, i);
+		if (sptr == 0)
+		{
+			sptr = sbuff;
+		}
+		this->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
+		i++;
+	}
+}
+
 SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::IMapDrawLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
@@ -132,6 +219,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->lyr = lyr;
 	this->navi = navi;
 	this->currVec = 0;
+	this->layerNames = true;
 	sb.AppendC(UTF8STRC("Query - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
@@ -190,24 +278,10 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->txtDist->SetReadOnly(true);
 	this->txtDist->SetRect(104, 4, 150, 23, false);
 
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	UOSInt i = 0;
-	UOSInt j = this->lyr->GetColumnCnt();
-	while (i < j)
-	{
-		sbuff[0] = 0;
-		sptr = this->lyr->GetColumnName(sbuff, i);
-		if (sptr == 0)
-		{
-			sptr = sbuff;
-		}
-		this->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
-		i++;
-	}
+	this->ShowLayerNames();
 
-	i = 0;
-	j = this->writerList.GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->writerList.GetCount();
 	while (i < j)
 	{
 		Math::VectorTextWriter *writer = this->writerList.GetItem(i);
