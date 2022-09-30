@@ -3,6 +3,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Map/TileMapUtil.h"
 #include "Map/WebMapTileServiceSource.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
@@ -616,18 +617,6 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 	}
 }
 
-Double Map::WebMapTileServiceSource::CalcScaleDiv()
-{
-	if (this->currSet == 0 || this->currSet->csys == 0 || this->currSet->csys->IsProjected())
-	{
-		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 1);
-	}
-	else
-	{
-		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 0.000005);
-	}
-}
-
 Map::WebMapTileServiceSource::TileMatrix *Map::WebMapTileServiceSource::GetTileMatrix(UOSInt level) const
 {
 	if (this->currSet == 0)
@@ -779,7 +768,7 @@ Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level)
 	{
 		return 0;
 	}
-	Double scaleDiv = CalcScaleDiv();
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->currDef->csys);
 	return tileMatrixDef->unitPerPixel / scaleDiv;
 }
 
@@ -793,7 +782,7 @@ UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale)
 	TileMatrixDef *tileMatrixDef;
 	Double layerScale;
 	Double thisDiff;
-	Double scaleDiv = CalcScaleDiv();
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->currSet->csys);
 	while (i-- > 0)
 	{
 		tileMatrixDef = this->currDef->tiles.GetItem(i);

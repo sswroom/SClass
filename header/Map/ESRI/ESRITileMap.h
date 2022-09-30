@@ -20,7 +20,6 @@ namespace Map
 			Math::Coord2DDbl ori;
 			Math::Coord2DDbl min;
 			Math::Coord2DDbl max;
-			Bool isMercatorProj;
 			Math::CoordinateSystem *csys;
 
 			UOSInt tileWidth;
@@ -47,15 +46,6 @@ namespace Map
 			virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);
 			virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
 			virtual IO::IStreamData *LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it);
-
-			static Int32 Lon2TileX(Double lon, UOSInt level);
-			static Int32 Lat2TileY(Double lat, UOSInt level);
-			static Double TileX2Lon(Int32 x, UOSInt level);
-			static Double TileY2Lat(Int32 y, UOSInt level);
-			static Double WebMercatorX2Lon(Double x);
-			static Double WebMercatorY2Lat(Double y);
-			static Double Lon2WebMercatorX(Double lon);
-			static Double Lat2WebMercatorY(Double lat);
 		};
 	}
 }

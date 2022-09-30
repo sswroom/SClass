@@ -4,12 +4,17 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Map/TileMapUtil.h"
 #include "Map/ESRI/ESRITileMap.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"
 #include "Text/Encoding.h"
 #include "Text/JSON.h"
 #include "Text/MyString.h"
+
+///////////////////////////////////
+// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
+///////////////////////////////////
 
 Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
@@ -27,22 +32,20 @@ Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, N
 	this->ori = Math::Coord2DDbl(0, 0);
 	this->tileWidth = 0;
 	this->tileHeight = 0;
-	this->isMercatorProj = false;
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 
-	IO::MemoryStream *mstm;
 	sptr = Text::StrConcatC(url->ConcatTo(sbuff), UTF8STRC("?f=json"));
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap")));
+	IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap"));
 	while ((readSize = cli->Read(buff, 2048)) > 0)
 	{
-		mstm->Write(buff, readSize);
+		mstm.Write(buff, readSize);
 	}
 	codePage = cli->GetContentCodePage();
 	DEL_CLASS(cli);
 
 
-	UInt8 *jsonBuff = mstm->GetBuff(&readSize);
+	UInt8 *jsonBuff = mstm.GetBuff(&readSize);
 	if (jsonBuff && readSize > 0)
 	{
 		Text::Encoding enc(codePage);
@@ -87,15 +90,15 @@ Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, N
 				{
 					Text::JSONObject *spRef = (Text::JSONObject*)o;
 					UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
-					if (wkid == 102100)
+/*					if (wkid == 102100)
 					{
 						this->isMercatorProj = true;
 					}
 					else
-					{
+					{*/
 						SDEL_CLASS(this->csys);
 						this->csys = Math::CoordinateSystemManager::SRCreateCSys(wkid);
-					}
+//					}
 				}
 
 				o = jobj->GetObjectValue(CSTR("tileInfo"));
@@ -140,7 +143,6 @@ Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, N
 		
 		MemFree(jsonStr);
 	}
-	DEL_CLASS(mstm);
 }
 
 Map::ESRI::ESRITileMap::~ESRITileMap()
@@ -176,73 +178,47 @@ UOSInt Map::ESRI::ESRITileMap::GetLevelCount()
 
 Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 {
-	if (this->isMercatorProj)
-	{
-		return 204094080000.0 / UOSInt2Double(this->tileWidth) / (1 << index);
-	}
-	else
-	{
-		Double level = this->levels.GetItem(index);
-		if (level == 0)
-			return 0;
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
+	Double level = this->levels.GetItem(index);
+	if (level == 0)
+		return 0;
 
-		return level * 566928000.0;
-	}
+	return level / scaleDiv;
 }
 
 UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 {
-	if (this->isMercatorProj)
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
+	Double ldiff;
+	Double minDiff;
+	UOSInt minInd;
+	UOSInt i;
+	Double logResol = Math_Log10(scale * scaleDiv);
+	minInd = 0;
+	minDiff = 100000.0;
+	i = this->levels.GetCount();
+	while (i-- > 0)
 	{
-		Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
-		if (level < 0)
-			level = 0;
-		else if (level >= (Int32)GetLevelCount())
-			level = (Int32)GetLevelCount() - 1;
-		return (UOSInt)level;
-	}
-	else
-	{
-		Double ldiff;
-		Double minDiff;
-		UOSInt minInd;
-		UOSInt i;
-		Double logResol = Math_Log10(scale / 566928000.0);
-		minInd = 0;
-		minDiff = 100000.0;
-		i = this->levels.GetCount();
-		while (i-- > 0)
+		ldiff = Math_Log10(this->levels.GetItem(i)) - logResol;
+		if (ldiff < 0)
+			ldiff = -ldiff;
+		if (ldiff < minDiff)
 		{
-			ldiff = Math_Log10(this->levels.GetItem(i)) - logResol;
-			if (ldiff < 0)
-				ldiff = -ldiff;
-			if (ldiff < minDiff)
-			{
-				minDiff = ldiff;
-				minInd = i;
-			}
+			minDiff = ldiff;
+			minInd = i;
 		}
-		return minInd;
 	}
+	return minInd;
 }
 
 UOSInt Map::ESRI::ESRITileMap::GetConcurrentCount()
 {
-	return 2;
+	return 1;
 }
 
 Bool Map::ESRI::ESRITileMap::GetBounds(Math::RectAreaDbl *bounds)
 {
-	if (this->isMercatorProj)
-	{
-		*bounds = Math::RectAreaDbl(
-			Math::Coord2DDbl(WebMercatorX2Lon(this->min.x), WebMercatorY2Lat(this->min.y)),
-			Math::Coord2DDbl(WebMercatorX2Lon(this->max.x), WebMercatorY2Lat(this->max.y)));
-	}
-	else
-	{
-		*bounds = Math::RectAreaDbl(this->min, this->max);
-	}
+	*bounds = Math::RectAreaDbl(this->min, this->max);
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
@@ -253,7 +229,7 @@ Math::CoordinateSystem *Map::ESRI::ESRITileMap::GetCoordinateSystem()
 
 Bool Map::ESRI::ESRITileMap::IsMercatorProj()
 {
-	return this->isMercatorProj;
+	return false;
 }
 
 UOSInt Map::ESRI::ESRITileMap::GetTileSize()
@@ -263,108 +239,46 @@ UOSInt Map::ESRI::ESRITileMap::GetTileSize()
 
 UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
 {
-	if (this->isMercatorProj)
-	{
-		Int32 i;
-		Int32 j;
-		Double max = 85.051128779806592377796715521925;
-		if (rect.tl.y < -max)
-			rect.tl.y = -max;
-		else if (rect.tl.y > max)
-			rect.tl.y = max;
-		if (rect.br.y < -max)
-			rect.br.y = -max;
-		else if (rect.br.y > max)
-			rect.br.y = max;
-		
-		if (rect.tl.x == rect.br.x)
-			return 0;
-		if (rect.tl.y == rect.br.y)
-			return 0;
-		Int32 pixX1 = Lon2TileX(rect.tl.x, level);
-		Int32 pixX2 = Lon2TileX(rect.br.x, level);
-		Int32 pixY1 = Lat2TileY(rect.tl.y, level);
-		Int32 pixY2 = Lat2TileY(rect.br.y, level);
-		if (pixX1 > pixX2)
-		{
-			i = pixX1;
-			pixX1 = pixX2;
-			pixX2 = i;
-		}
-		if (pixY1 > pixY2)
-		{
-			i = pixY1;
-			pixY1 = pixY2;
-			pixY2 = i;
-		}
-		if (pixX1 < 0)
-			pixX1 = 0;
-		if (pixY1 < 0)
-			pixY1 = 0;
-		if (pixX2 < 0)
-			pixX2 = 0;
-		if (pixY2 < 0)
-			pixY2 = 0;
-		if (pixX2 >= (1 << level))
-		{
-			pixX2 = (1 << level) - 1;
-		}
-		i = pixY1;
-		while (i <= pixY2)
-		{
-			j = pixX1;
-			while (j <= pixX2)
-			{
-				ids->Add((((Int64)(UInt32)j) << 32) | (UInt32)i);
-				j++;
-			}
-			i++;
-		}
-		return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
-	}
-	else
-	{
-		Double resol = this->levels.GetItem(level);
-		Int32 i;
-		Int32 j;
-		if (resol == 0)
-			return 0;
-		rect.tl = rect.tl.Min(this->max).Max(this->min);
-		rect.br = rect.br.Min(this->max).Max(this->min);
+	Double resol = this->levels.GetItem(level);
+	Int32 i;
+	Int32 j;
+	if (resol == 0)
+		return 0;
+	rect.tl = rect.tl.Min(this->max).Max(this->min);
+	rect.br = rect.br.Min(this->max).Max(this->min);
 
-		if (rect.tl.x == rect.br.x)
-			return 0;
-		if (rect.tl.y == rect.br.y)
-			return 0;
-		Int32 pixX1 = (Int32)((rect.tl.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
-		Int32 pixX2 = (Int32)((rect.br.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
-		Int32 pixY1 = (Int32)((this->ori.y - rect.tl.y) / resol / UOSInt2Double(this->tileHeight));
-		Int32 pixY2 = (Int32)((this->ori.y - rect.br.y) / resol / UOSInt2Double(this->tileHeight));
-		if (pixX1 > pixX2)
-		{
-			i = pixX1;
-			pixX1 = pixX2;
-			pixX2 = i;
-		}
-		if (pixY1 > pixY2)
-		{
-			i = pixY1;
-			pixY1 = pixY2;
-			pixY2 = i;
-		}
-		i = pixY1;
-		while (i <= pixY2)
-		{
-			j = pixX1;
-			while (j <= pixX2)
-			{
-				ids->Add((((Int64)(UInt32)j) << 32) | (UInt32)i);
-				j++;
-			}
-			i++;
-		}
-		return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
+	if (rect.tl.x == rect.br.x)
+		return 0;
+	if (rect.tl.y == rect.br.y)
+		return 0;
+	Int32 pixX1 = (Int32)((rect.tl.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
+	Int32 pixX2 = (Int32)((rect.br.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
+	Int32 pixY1 = (Int32)((this->ori.y - rect.tl.y) / resol / UOSInt2Double(this->tileHeight));
+	Int32 pixY2 = (Int32)((this->ori.y - rect.br.y) / resol / UOSInt2Double(this->tileHeight));
+	if (pixX1 > pixX2)
+	{
+		i = pixX1;
+		pixX1 = pixX2;
+		pixX2 = i;
 	}
+	if (pixY1 > pixY2)
+	{
+		i = pixY1;
+		pixY1 = pixY2;
+		pixY2 = i;
+	}
+	i = pixY1;
+	while (i <= pixY2)
+	{
+		j = pixX1;
+		while (j <= pixX2)
+		{
+			ids->Add((((Int64)(UInt32)j) << 32) | (UInt32)i);
+			j++;
+		}
+		i++;
+	}
+	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
 Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
@@ -379,36 +293,19 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	IO::ParsedObject *pobj;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	if (this->isMercatorProj)
-	{
-		if (level < 0 || level >= this->levels.GetCount())
-			return 0;
-		Double x1 = TileX2Lon(imgX, level);
-		Double y1 = TileY2Lat(imgY, level);
-		Double x2 = TileX2Lon(imgX + 1, level);
-		Double y2 = TileY2Lat(imgY + 1, level);
+	Double resol = this->levels.GetItem(level);
+	if (resol == 0)
+		return 0;
+	Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
+	Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
+	Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
+	Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
 
-		bounds->tl = Math::Coord2DDbl(x1, y1);
-		bounds->br = Math::Coord2DDbl(x2, y2);
-		if (x1 > 180 || y1 < -90)
-			return 0;
-	}
-	else
-	{
-		Double resol = this->levels.GetItem(level);
-		if (resol == 0)
-			return 0;
-		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
-		Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
-		Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
-		Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
+	if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
+		return 0;
 
-		if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
-			return 0;
-
-		bounds->tl = Math::Coord2DDbl(x1, y1);
-		bounds->br = Math::Coord2DDbl(x2, y2);
-	}
+	bounds->tl = Math::Coord2DDbl(x1, y1);
+	bounds->br = Math::Coord2DDbl(x2, y2);
 
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -502,36 +399,19 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	IO::StmData::FileData *fd;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	if (this->isMercatorProj)
-	{
-		if (level < 0 || level >= this->levels.GetCount())
-			return 0;
-		Double x1 = TileX2Lon(imgX, level);
-		Double y1 = TileY2Lat(imgY, level);
-		Double x2 = TileX2Lon(imgX + 1, level);
-		Double y2 = TileY2Lat(imgY + 1, level);
+	Double resol = this->levels.GetItem(level);
+	if (resol == 0)
+		return 0;
+	Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
+	Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
+	Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
+	Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
 
-		bounds->tl = Math::Coord2DDbl(x1, y1);
-		bounds->br = Math::Coord2DDbl(x2, y2);
-		if (x1 > 180 || y1 < -90)
-			return 0;
-	}
-	else
-	{
-		Double resol = this->levels.GetItem(level);
-		if (resol == 0)
-			return 0;
-		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
-		Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
-		Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
-		Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
+	if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
+		return 0;
 
-		if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
-			return 0;
-
-		bounds->tl = Math::Coord2DDbl(x1, y1);
-		bounds->br = Math::Coord2DDbl(x2, y2);
-	}
+	bounds->tl = Math::Coord2DDbl(x1, y1);
+	bounds->br = Math::Coord2DDbl(x2, y2);
 
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -589,49 +469,4 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	}
 	DEL_CLASS(fd);
 	return 0;
-}
-
-Int32 Map::ESRI::ESRITileMap::Lon2TileX(Double lon, UOSInt level)
-{
-	return (Int32)((lon + 180.0) / 360.0 * (1 << level)); 
-}
-
-Int32 Map::ESRI::ESRITileMap::Lat2TileY(Double lat, UOSInt level)
-{
-	return (Int32)((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
-}
-
-Double Map::ESRI::ESRITileMap::TileX2Lon(Int32 x, UOSInt level)
-{
-	return x * 360.0 / (1 << level) - 180;
-}
-
-Double Map::ESRI::ESRITileMap::TileY2Lat(Int32 y, UOSInt level)
-{
-	Double n = Math::PI - 2.0 * Math::PI * y / (1 << level);
-	return 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
-}
-
-Double Map::ESRI::ESRITileMap::WebMercatorX2Lon(Double x)
-{
-	x = x / 6378137.0;
-	Double w2 = x * 57.295779513082323;
-	Double w3 = Math_Fix((x + 180.0) / 360.0);
-	return w2 - (w3 * 360.0);
-}
-
-Double Map::ESRI::ESRITileMap::WebMercatorY2Lat(Double y)
-{
-	return (1.5707963267948966 - (2.0 * Math_ArcTan(Math_Exp((-1.0 * y) / 6378137.0)))) * 57.295779513082323;
-}
-
-Double Map::ESRI::ESRITileMap::Lon2WebMercatorX(Double lon)
-{
-	return 6378137.0 * lon * 0.017453292519943295;
-}
-
-Double Map::ESRI::ESRITileMap::Lat2WebMercatorY(Double lat)
-{
-	Double a = lat * 0.017453292519943295;
-	return 3189068.5 * Math_Log10((1.0 + Math_Sin(a)) / (1.0 - Math_Sin(a)));
 }

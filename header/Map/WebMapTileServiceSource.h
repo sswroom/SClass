@@ -92,7 +92,6 @@ namespace Map
 		void ReadLayer(Text::XMLReader *reader);
 		TileMatrixSet *ReadTileMatrixSetLink(Text::XMLReader *reader);
 		TileMatrixDefSet *ReadTileMatrixSet(Text::XMLReader *reader);
-		Double CalcScaleDiv();
 		TileMatrix *GetTileMatrix(UOSInt level) const;
 		void ReleaseLayer(TileLayer *layer);
 		void ReleaseTileMatrix(TileMatrix *tileMatrix);

@@ -12,24 +12,24 @@
 
 SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvrs[] = {
 //	http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer
-	{UTF8STRC("World Imagery"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer")},
-	{UTF8STRC("World Street Map"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer")},
-	{UTF8STRC("World Topographic Map"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer")},
-	{UTF8STRC("World Shaded Relief"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer")},
-	{UTF8STRC("World Physical Map"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer")},
-	{UTF8STRC("World Terrain Map"), UTF8STRC("http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer")},
-	{UTF8STRC("USA Topographic Maps"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer")},
-	{UTF8STRC("Ocean Basemap"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer")},
-	{UTF8STRC("World Light Gray Base"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer")},
-	{UTF8STRC("World Light Gray Reference"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer")},
-	{UTF8STRC("National Geographic World Map"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer")},
-	{UTF8STRC("World Boundaries and Places"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer")},
-	{UTF8STRC("World Boundaries and Places Alternate"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer")},
-	{UTF8STRC("World Reference Overlay"), UTF8STRC("http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer")},
-	{UTF8STRC("World Transportation"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer")},
-	{UTF8STRC("DeLorme World Basemap"), UTF8STRC("http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer")},
-	{UTF8STRC("World Navigation Charts"), UTF8STRC("http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/World_Navigation_Charts/MapServer")},
-	{UTF8STRC("Soil Survey Map"), UTF8STRC("http://server.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer")}
+	{UTF8STRC("World Imagery"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer")},
+	{UTF8STRC("World Street Map"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer")},
+	{UTF8STRC("World Topographic Map"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer")},
+	{UTF8STRC("World Shaded Relief"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer")},
+	{UTF8STRC("World Physical Map"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer")},
+	{UTF8STRC("World Terrain Map"), UTF8STRC("https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer")},
+	{UTF8STRC("USA Topographic Maps"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer")},
+	{UTF8STRC("Ocean Basemap"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer")},
+	{UTF8STRC("World Light Gray Base"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer")},
+	{UTF8STRC("World Light Gray Reference"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer")},
+	{UTF8STRC("National Geographic World Map"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer")},
+	{UTF8STRC("World Boundaries and Places"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer")},
+	{UTF8STRC("World Boundaries and Places Alternate"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer")},
+	{UTF8STRC("World Reference Overlay"), UTF8STRC("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer")},
+	{UTF8STRC("World Transportation"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer")},
+	{UTF8STRC("DeLorme World Basemap"), UTF8STRC("https://server.arcgisonline.com/ArcGIS/rest/services/Specialty/DeLorme_World_Base_Map/MapServer")},
+	{UTF8STRC("World Navigation Charts"), UTF8STRC("https://services.arcgisonline.com/ArcGIS/rest/services/Specialty/World_Navigation_Charts/MapServer")},
+	{UTF8STRC("Soil Survey Map"), UTF8STRC("https://server.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer")}
 };
 
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)

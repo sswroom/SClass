@@ -3,6 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Map/TileMapServiceSource.h"
+#include "Map/TileMapUtil.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Unit/Distance.h"
 #include "Net/HTTPClient.h"
@@ -283,18 +284,6 @@ void Map::TileMapServiceSource::LoadXML()
 	DEL_CLASS(cli);
 }
 
-Double Map::TileMapServiceSource::CalcScaleDiv()
-{
-	if (this->csys == 0 || this->csys->IsProjected())
-	{
-		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 1);
-	}
-	else
-	{
-		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 0.000005);
-	}
-}
-
 Map::TileMapServiceSource::TileMapServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString tmsURL)
 {
 	this->cacheDir = 0;
@@ -364,7 +353,7 @@ Double Map::TileMapServiceSource::GetLevelScale(UOSInt level)
 	{
 		return 0;
 	}
-	Double scaleDiv = CalcScaleDiv();
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
 	return layer->unitPerPixel / scaleDiv;
 }
 
@@ -376,7 +365,7 @@ UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale)
 	TileLayer *layer;
 	Double layerScale;
 	Double thisDiff;
-	Double scaleDiv = CalcScaleDiv();
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
 	while (i-- > 0)
 	{
 		layer = this->layers.GetItem(i);

@@ -33,7 +33,6 @@ namespace Map
 		Math::CoordinateSystem *csys;
 
 		void LoadXML();
-		Double CalcScaleDiv();
 	public:
 		TileMapServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();

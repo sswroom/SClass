@@ -2079,6 +2079,8 @@ Map/TileMapLayer.h: ../../src/Map/TileMapLayer.cpp
 @TileMapLayer.o
 Map/TileMapServiceSource.h: ../../src/Map/TileMapServiceSource.cpp
 @TileMapServiceSource.o
+Map/TileMapUtil.h: ../../src/Map/TileMapUtil.cpp
+@TileMapUtil.o
 Map/VectorLayer.h: ../../src/Map/VectorLayer.cpp
 @VectorLayer.o
 Map/WebImageLayer.h: ../../src/Map/WebImageLayer.cpp
@@ -4683,6 +4685,7 @@ SPDLayer.o: ../../src/Map/SPDLayer.cpp
 TileMapGenerator.o: ../../src/Map/TileMapGenerator.cpp
 TileMapLayer.o: ../../src/Map/TileMapLayer.cpp
 TileMapServiceSource.o: ../../src/Map/TileMapServiceSource.cpp
+TileMapUtil.o: ../../src/Map/TileMapUtil.cpp
 VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 WebMapTileServiceSource.o: ../../src/Map/WebMapTileServiceSource.cpp
