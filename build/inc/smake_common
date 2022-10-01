@@ -2087,6 +2087,8 @@ Map/WebImageLayer.h: ../../src/Map/WebImageLayer.cpp
 @WebImageLayer.o
 Map/WebMapTileServiceSource.h: ../../src/Map/WebMapTileServiceSource.cpp
 @WebMapTileServiceSource.o
+Map/ESRI/ESRIMapServer.h: ../../src/Map/ESRI/ESRIMapServer.cpp
+@ESRIMapServer.o
 Map/ESRI/ESRIMDBLayer.h: ../../src/Map/ESRI/ESRIMDBLayer.cpp
 @ESRIMDBLayer.o
 Map/ESRI/ESRITileMap.h: ../../src/Map/ESRI/ESRITileMap.cpp
@@ -4689,6 +4691,7 @@ TileMapUtil.o: ../../src/Map/TileMapUtil.cpp
 VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 WebMapTileServiceSource.o: ../../src/Map/WebMapTileServiceSource.cpp
+ESRIMapServer.o: ../../src/Map/ESRI/ESRIMapServer.cpp
 ESRIMDBLayer.o: ../../src/Map/ESRI/ESRIMDBLayer.cpp
 ESRITileMap.o: ../../src/Map/ESRI/ESRITileMap.cpp
 FileGDBDir.o: ../../src/Map/ESRI/FileGDBDir.cpp

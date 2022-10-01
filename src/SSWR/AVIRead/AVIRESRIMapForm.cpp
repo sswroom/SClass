@@ -35,13 +35,14 @@ SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvr
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRESRIMapForm *me = (SSWR::AVIRead::AVIRESRIMapForm*)userObj;
+	Map::ESRI::ESRIMapServer *esriMap = 0;
 	if (me->radPredefine->IsSelected())
 	{
 		UOSInt i = me->cboPredefine->GetSelectedIndex();
 		MapServer *v = (MapServer*)me->cboPredefine->GetItem(i);
 		if (v)
 		{
-			me->url = Text::String::New(v->url, v->urlLen);
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CString(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl));
 		}
 		else
 		{
@@ -60,9 +61,15 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 		}
 		else
 		{
-			me->url = Text::String::NewP(sbuff, sptr);
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetSocketFactory(), me->ssl));
 		}
 	}
+	if (esriMap->IsError())
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in loading server info"), CSTR("ESRI Map"), me);
+		return;
+	}
+	me->esriMap = esriMap;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -78,14 +85,15 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(void *userObj)
 	me->radOther->Select();
 }
 
-SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 120, ui)
+SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText(CSTR("Add ESRI Map"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->url = 0;
+	this->ssl = ssl;
+	this->esriMap = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, this, CSTR("Predefine"), true));
@@ -122,7 +130,6 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRESRIMapForm::~AVIRESRIMapForm()
 {
-	SDEL_STRING(this->url);
 }
 
 void SSWR::AVIRead::AVIRESRIMapForm::OnMonitorChanged()
@@ -130,7 +137,7 @@ void SSWR::AVIRead::AVIRESRIMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::String *SSWR::AVIRead::AVIRESRIMapForm::GetSelectedURL()
+Map::ESRI::ESRIMapServer *SSWR::AVIRead::AVIRESRIMapForm::GetSelectedMap()
 {
-	return this->url;
+	return this->esriMap;
 }

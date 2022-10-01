@@ -1,154 +1,28 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "IO/FileStream.h"
-#include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Map/TileMapUtil.h"
 #include "Map/ESRI/ESRITileMap.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Net/HTTPClient.h"
-#include "Text/Encoding.h"
-#include "Text/JSON.h"
 #include "Text/MyString.h"
 
-///////////////////////////////////
-// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
-///////////////////////////////////
-
-Map::ESRI::ESRITileMap::ESRITileMap(Text::String *url, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CString cacheDir)
 {
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UInt8 buff[2048];
-	UOSInt readSize;
-	UInt32 codePage;
-	this->url = url->Clone();
+	this->esriMap = esriMap;
+	this->toRelease = toRelease;
 	this->cacheDir = Text::String::New(cacheDir);
-	this->sockf = sockf;
-	this->ssl = ssl;
-	this->min = Math::Coord2DDbl(0, 0);
-	this->max = Math::Coord2DDbl(0, 0);
-	this->ori = Math::Coord2DDbl(0, 0);
-	this->tileWidth = 0;
-	this->tileHeight = 0;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-
-	sptr = Text::StrConcatC(url->ConcatTo(sbuff), UTF8STRC("?f=json"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap"));
-	while ((readSize = cli->Read(buff, 2048)) > 0)
-	{
-		mstm.Write(buff, readSize);
-	}
-	codePage = cli->GetContentCodePage();
-	DEL_CLASS(cli);
-
-
-	UInt8 *jsonBuff = mstm.GetBuff(&readSize);
-	if (jsonBuff && readSize > 0)
-	{
-		Text::Encoding enc(codePage);
-		UOSInt charsCnt;
-		UTF8Char *jsonStr;
-		charsCnt = enc.CountUTF8Chars(jsonBuff, readSize);
-		jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
-		enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
-		
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(jsonStr, charsCnt));
-		if (json)
-		{
-			if (json->GetType() == Text::JSONType::Object)
-			{
-				Text::JSONObject *jobj = (Text::JSONObject*)json;
-				Text::JSONBase *o = jobj->GetObjectValue(CSTR("initialExtent"));
-				Text::JSONBase *v;
-				Text::JSONObject *vobj;
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
-				{
-					Text::JSONObject *ext = (Text::JSONObject*)o;
-					this->min.x = ext->GetObjectDouble(CSTR("xmin"));
-					this->min.y = ext->GetObjectDouble(CSTR("ymin"));
-					this->max.x = ext->GetObjectDouble(CSTR("xmax"));
-					this->max.y = ext->GetObjectDouble(CSTR("ymax"));
-				}
-				else
-				{
-					o = jobj->GetObjectValue(CSTR("fullExtent"));
-					if (o != 0 && o->GetType() == Text::JSONType::Object)
-					{
-						Text::JSONObject *ext = (Text::JSONObject*)o;
-						this->min.x = ext->GetObjectDouble(CSTR("xmin"));
-						this->min.y = ext->GetObjectDouble(CSTR("ymin"));
-						this->max.x = ext->GetObjectDouble(CSTR("xmax"));
-						this->max.y = ext->GetObjectDouble(CSTR("ymax"));
-					}
-				}
-
-				o = jobj->GetObjectValue(CSTR("spatialReference"));
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
-				{
-					Text::JSONObject *spRef = (Text::JSONObject*)o;
-					UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
-/*					if (wkid == 102100)
-					{
-						this->isMercatorProj = true;
-					}
-					else
-					{*/
-						SDEL_CLASS(this->csys);
-						this->csys = Math::CoordinateSystemManager::SRCreateCSys(wkid);
-//					}
-				}
-
-				o = jobj->GetObjectValue(CSTR("tileInfo"));
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
-				{
-					Text::JSONObject *tinfo = (Text::JSONObject*)o;
-					this->tileHeight = (UOSInt)tinfo->GetObjectInt32(CSTR("rows"));
-					this->tileWidth = (UOSInt)tinfo->GetObjectInt32(CSTR("cols"));
-					v = tinfo->GetObjectValue(CSTR("origin"));
-					if (v != 0 && v->GetType() == Text::JSONType::Object)
-					{
-						Text::JSONObject *origin = (Text::JSONObject*)v;
-						this->ori.x = origin->GetObjectDouble(CSTR("x"));
-						this->ori.y = origin->GetObjectDouble(CSTR("y"));
-					}
-					v = tinfo->GetObjectValue(CSTR("lods"));
-					if (v != 0 && v->GetType() == Text::JSONType::Array)
-					{
-						Text::JSONArray *levs = (Text::JSONArray*)v;
-						UOSInt i;
-						UOSInt j;
-						i = 0;
-						j = levs->GetArrayLength();
-						while (i < j)
-						{
-							v = levs->GetArrayValue(i);
-							if (v != 0 && v->GetType() == Text::JSONType::Object)
-							{
-								vobj = (Text::JSONObject*)v;
-								Double lev = vobj->GetObjectDouble(CSTR("resolution"));
-								if (lev != 0)
-									this->levels.Add(lev);
-							}
-							i++;
-						}
-					}
-				}
-			}
-		
-			json->EndUse();
-		}
-		
-		MemFree(jsonStr);
-	}
 }
 
 Map::ESRI::ESRITileMap::~ESRITileMap()
 {
-	SDEL_STRING(this->url);
 	SDEL_STRING(this->cacheDir);
+	if (this->toRelease)
+	{
+		DEL_CLASS(this->esriMap);
+		this->esriMap = 0;
+		this->toRelease = false;
+	}
 }
 
 Text::CString Map::ESRI::ESRITileMap::GetName()
@@ -158,11 +32,7 @@ Text::CString Map::ESRI::ESRITileMap::GetName()
 
 Bool Map::ESRI::ESRITileMap::IsError()
 {
-	if (this->min.x == this->max.x || this->min.y == this->max.y)
-		return true;
-	if (this->tileWidth == 0 || this->tileHeight == 0)
-		return true;
-	return false;
+	return this->esriMap->IsError() || !this->esriMap->HasTile();
 }
 
 Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType()
@@ -172,14 +42,14 @@ Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType()
 
 UOSInt Map::ESRI::ESRITileMap::GetLevelCount()
 {
-	return this->levels.GetCount();
+	return this->esriMap->TileGetLevelCount();
 }
 
 
 Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 {
-	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
-	Double level = this->levels.GetItem(index);
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->esriMap->GetCoordinateSystem());
+	Double level = this->esriMap->TileGetLevelResolution(index);
 	if (level == 0)
 		return 0;
 
@@ -188,7 +58,7 @@ Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 
 UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 {
-	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
+	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->esriMap->GetCoordinateSystem());
 	Double ldiff;
 	Double minDiff;
 	UOSInt minInd;
@@ -196,10 +66,10 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 	Double logResol = Math_Log10(scale * scaleDiv);
 	minInd = 0;
 	minDiff = 100000.0;
-	i = this->levels.GetCount();
+	i = this->esriMap->TileGetLevelCount();
 	while (i-- > 0)
 	{
-		ldiff = Math_Log10(this->levels.GetItem(i)) - logResol;
+		ldiff = Math_Log10(this->esriMap->TileGetLevelResolution(i)) - logResol;
 		if (ldiff < 0)
 			ldiff = -ldiff;
 		if (ldiff < minDiff)
@@ -218,13 +88,13 @@ UOSInt Map::ESRI::ESRITileMap::GetConcurrentCount()
 
 Bool Map::ESRI::ESRITileMap::GetBounds(Math::RectAreaDbl *bounds)
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
-	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
+	*bounds = this->esriMap->GetBounds();
+	return bounds->tl.x != 0 || bounds->tl.y != 0 || bounds->br.x != 0 || bounds->br.y != 0;
 }
 
 Math::CoordinateSystem *Map::ESRI::ESRITileMap::GetCoordinateSystem()
 {
-	return this->csys;
+	return this->esriMap->GetCoordinateSystem();
 }
 
 Bool Map::ESRI::ESRITileMap::IsMercatorProj()
@@ -234,27 +104,41 @@ Bool Map::ESRI::ESRITileMap::IsMercatorProj()
 
 UOSInt Map::ESRI::ESRITileMap::GetTileSize()
 {
-	return this->tileWidth;
+	return this->esriMap->TileGetWidth();
+}
+
+Bool Map::ESRI::ESRITileMap::CanQuery() const
+{
+	return true;
+}
+
+Math::Geometry::Vector2D *Map::ESRI::ESRITileMap::QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
+{
+	return this->esriMap->Identify(coord, nameList, valueList);
 }
 
 UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
 {
-	Double resol = this->levels.GetItem(level);
+	Double resol = this->esriMap->TileGetLevelResolution(level);
 	Int32 i;
 	Int32 j;
 	if (resol == 0)
 		return 0;
-	rect.tl = rect.tl.Min(this->max).Max(this->min);
-	rect.br = rect.br.Min(this->max).Max(this->min);
+	Math::RectAreaDbl bounds = this->esriMap->GetBounds();
+	rect.tl = rect.tl.Min(bounds.br).Max(bounds.tl);
+	rect.br = rect.br.Min(bounds.br).Max(bounds.tl);
 
 	if (rect.tl.x == rect.br.x)
 		return 0;
 	if (rect.tl.y == rect.br.y)
 		return 0;
-	Int32 pixX1 = (Int32)((rect.tl.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
-	Int32 pixX2 = (Int32)((rect.br.x - this->ori.x) / resol / UOSInt2Double(this->tileWidth));
-	Int32 pixY1 = (Int32)((this->ori.y - rect.tl.y) / resol / UOSInt2Double(this->tileHeight));
-	Int32 pixY2 = (Int32)((this->ori.y - rect.br.y) / resol / UOSInt2Double(this->tileHeight));
+	UOSInt tileWidth = this->esriMap->TileGetWidth();
+	UOSInt tileHeight = this->esriMap->TileGetHeight();
+	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
+	Int32 pixX1 = (Int32)((rect.tl.x - origin.x) / resol / UOSInt2Double(tileWidth));
+	Int32 pixX2 = (Int32)((rect.br.x - origin.x) / resol / UOSInt2Double(tileWidth));
+	Int32 pixY1 = (Int32)((origin.y - rect.tl.y) / resol / UOSInt2Double(tileHeight));
+	Int32 pixY2 = (Int32)((origin.y - rect.br.y) / resol / UOSInt2Double(tileHeight));
 	if (pixX1 > pixX2)
 	{
 		i = pixX1;
@@ -283,29 +167,28 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect,
 
 Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
-	UInt8 dataBuff[2048];
-	UOSInt readSize;
 	UTF8Char filePath[512];
-	UTF8Char url[512];
 	UTF8Char *sptr;
 	UTF8Char *filePathEnd;
-	Net::HTTPClient *cli;
 	IO::ParsedObject *pobj;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double resol = this->levels.GetItem(level);
+	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
 		return 0;
-	Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
-	Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
-	Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
-	Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
-
-	if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
-		return 0;
+	UOSInt tileWidth = this->esriMap->TileGetWidth();
+	UOSInt tileHeight = this->esriMap->TileGetHeight();
+	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
+	Double x1 = imgX * UOSInt2Double(tileWidth) * resol + origin.x;
+	Double y1 = origin.y - imgY * UOSInt2Double(tileHeight) * resol;
+	Double x2 = x1 + UOSInt2Double(tileWidth) * resol;
+	Double y2 = y1 - UOSInt2Double(tileHeight) * resol;
 
 	bounds->tl = Math::Coord2DDbl(x1, y1);
 	bounds->br = Math::Coord2DDbl(x2, y2);
+	if (!bounds->OverlapOrTouch(this->esriMap->GetBounds()))
+		return 0;
+
 
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -337,24 +220,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	if (localOnly)
 		return 0;
 
-	sptr = this->url->ConcatTo(url);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
-	sptr = Text::StrInt32(sptr, (Int32)level);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgX);
-
-	{
-		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-		IO::FileStream fs({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
-		{
-			fs.Write(dataBuff, readSize);
-		}
-		DEL_CLASS(cli);
-	}
-
+	this->esriMap->TileLoadToFile(CSTRP(filePath, filePathEnd), level, imgX, imgY);
 	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
 	if (fd.GetDataSize() > 0)
 	{
@@ -374,44 +240,33 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 
 UTF8Char *Map::ESRI::ESRITileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
 {
-	UTF8Char *sptr;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	sptr = this->url->ConcatTo(sbuff);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
-	sptr = Text::StrUOSInt(sptr, level);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgX);
-	return sptr;
+	return this->esriMap->TileGetURL(sbuff, level, imgX, imgY);
 }
 
 IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
-	UInt8 dataBuff[2048];
-	UOSInt readSize;
 	UTF8Char filePath[512];
-	UTF8Char url[512];
 	UTF8Char *sptr;
-	Net::HTTPClient *cli;
-	IO::FileStream *fs;
 	IO::StmData::FileData *fd;
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double resol = this->levels.GetItem(level);
+	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
 		return 0;
-	Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->ori.x;
-	Double y1 = this->ori.y - imgY * UOSInt2Double(this->tileHeight) * resol;
-	Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
-	Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
-
-	if (x1 > this->max.x || x2 < this->min.x || y1 < min.y || y2 > max.y)
-		return 0;
+	UOSInt tileWidth = this->esriMap->TileGetWidth();
+	UOSInt tileHeight = this->esriMap->TileGetHeight();
+	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
+	Double x1 = imgX * UOSInt2Double(tileWidth) * resol + origin.x;
+	Double y1 = origin.y - imgY * UOSInt2Double(tileHeight) * resol;
+	Double x2 = x1 + UOSInt2Double(tileWidth) * resol;
+	Double y2 = y1 - UOSInt2Double(tileHeight) * resol;
 
 	bounds->tl = Math::Coord2DDbl(x1, y1);
 	bounds->br = Math::Coord2DDbl(x2, y2);
+	if (!bounds->OverlapOrTouch(this->esriMap->GetBounds()))
+		return 0;
 
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -439,23 +294,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	if (localOnly)
 		return 0;
 
-	sptr = this->url->ConcatTo(url);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
-	sptr = Text::StrInt32(sptr, (Int32)level);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgX);
-
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(sptr - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
-	{
-		fs->Write(dataBuff, readSize);
-	}
-	DEL_CLASS(cli);
-	DEL_CLASS(fs);
-
+	this->esriMap->TileLoadToFile(CSTRP(filePath, sptr), level, imgX, imgY);
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{

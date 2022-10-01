@@ -2,6 +2,7 @@
 #define _SM_MAP_ESRI_ESRITILEMAP
 #include "Data/ArrayListDbl.h"
 #include "Map/TileMap.h"
+#include "Map/ESRI/ESRIMapServer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Text/String.h"
@@ -13,21 +14,12 @@ namespace Map
 		class ESRITileMap : public Map::TileMap
 		{
 		private:
-			Text::String *url;
 			Text::String *cacheDir;
-			Net::SocketFactory *sockf;
-			Net::SSLEngine *ssl;
-			Math::Coord2DDbl ori;
-			Math::Coord2DDbl min;
-			Math::Coord2DDbl max;
-			Math::CoordinateSystem *csys;
-
-			UOSInt tileWidth;
-			UOSInt tileHeight;
-			Data::ArrayListDbl levels;
+			Map::ESRI::ESRIMapServer *esriMap;
+			Bool toRelease;
 
 		public:
-			ESRITileMap(Text::String *url, Text::CString cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CString cacheDir);
 			virtual ~ESRITileMap();
 
 			virtual Text::CString GetName();
@@ -41,6 +33,8 @@ namespace Map
 			virtual Math::CoordinateSystem *GetCoordinateSystem();
 			virtual Bool IsMercatorProj();
 			virtual UOSInt GetTileSize();
+			virtual Bool CanQuery() const;
+			virtual Math::Geometry::Vector2D *QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const;
 
 			virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids);
 			virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);

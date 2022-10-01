@@ -44,8 +44,8 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 
 Net::OpenSSLClient::~OpenSSLClient()
 {
-	SSL_free(this->clsData->ssl);
 	SDEL_CLASS(this->clsData->remoteCert);
+	SSL_free(this->clsData->ssl);
 	MemFree(this->clsData);
 }
 

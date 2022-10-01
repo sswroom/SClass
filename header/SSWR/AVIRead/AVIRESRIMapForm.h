@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRESRIMAPFORM
 #define _SM_SSWR_AVIREAD_AVIRESRIMAPFORM
+#include "Map/ESRI/ESRIMapServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/GUIButton.h"
@@ -25,6 +26,7 @@ namespace SSWR
 		private:
 			static MapServer mapSvrs[];
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 
 			UI::GUIRadioButton *radPredefine;
 			UI::GUIRadioButton *radOther;
@@ -32,18 +34,17 @@ namespace SSWR
 			UI::GUITextBox *txtOther;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
-			Text::String *url;
-
+			Map::ESRI::ESRIMapServer *esriMap;
 
 			static void __stdcall OKClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);
 			static void __stdcall OnOtherChanged(void *userObj);
 		public:
-			AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRESRIMapForm();
 
 			virtual void OnMonitorChanged();
-			Text::String *GetSelectedURL();
+			Map::ESRI::ESRIMapServer *GetSelectedMap();
 		};
 	}
 }

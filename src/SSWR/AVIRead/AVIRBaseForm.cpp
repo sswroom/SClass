@@ -982,23 +982,32 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_ESRI_MAP:
 		{
-			SSWR::AVIRead::AVIRESRIMapForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRESRIMapForm dlg(0, this->ui, this->core, this->ssl);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
 				Map::ESRI::ESRITileMap *map;
 				UInt8 crcVal[4];
-				Text::String *url = dlg.GetSelectedURL();
-				crc.Calc((UInt8*)url->v, url->leng);
-				crc.GetValue(crcVal);
-				sptr = IO::Path::GetProcessFileName(sbuff);
-				sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
-				sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
-				*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
-				*sptr = 0;
-				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, CSTRP(sbuff, sptr), this->core->GetSocketFactory(), this->ssl));
-				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
-				this->core->OpenObject(mapLyr);
+				Map::ESRI::ESRIMapServer *esriMap = dlg.GetSelectedMap();
+				if (esriMap->HasTile())
+				{
+					Text::String *url = esriMap->GetURL();
+					crc.Calc((UInt8*)url->v, url->leng);
+					crc.GetValue(crcVal);
+					sptr = IO::Path::GetProcessFileName(sbuff);
+					sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
+					sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
+					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
+					*sptr = 0;
+					NEW_CLASS(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
+					NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
+					this->core->OpenObject(mapLyr);
+				}
+				else
+				{
+					DEL_CLASS(esriMap);
+					UI::MessageDialog::ShowDialog(CSTR("Support Tile Map only"), CSTR("AVIRead"), this);
+				}
 			}
 		}
 		break;
