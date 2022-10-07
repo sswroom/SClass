@@ -2004,6 +2004,8 @@ Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
 @DrawMapRenderer.o
 Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
 @FileGDBLayer.o
+Map/GMLXML.h: ../../src/Map/GMLXML.cpp
+@GMLXML.o
 Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
 @GPSTrack.o
 Map/HKSpeedLimit.h: ../../src/Map/HKSpeedLimit.cpp
@@ -2019,6 +2021,8 @@ Map/IMapDrawLayer.h: ../../src/Map/IMapDrawLayer.cpp
 @IMapDrawLayer.o
 Map/IMapSearchLayer.h:
 Map/IReverseGeocoder.h:
+Map/KMLXML.h: ../../src/Map/KMLXML.cpp
+@KMLXML.o
 Map/LayerTools.h: ../../src/Map/LayerTools.cpp
 @LayerTools.o
 Map/LeveledMapView.h: ../../src/Map/LeveledMapView.cpp
@@ -4654,12 +4658,14 @@ CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
 DBMapLayer.o: ../../src/Map/DBMapLayer.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
+GMLXML.o: ../../src/Map/GMLXML.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
 HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
 ILocationService.o: ../../src/Map/ILocationService.cpp
 IMapDrawLayer.o: ../../src/Map/IMapDrawLayer.cpp
+KMLXML.o: ../../src/Map/KMLXML.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp
 MapConfig2.o: ../../src/Map/MapConfig2.cpp

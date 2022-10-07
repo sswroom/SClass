@@ -15,20 +15,6 @@ namespace Parser
 		class XMLParser : public IO::FileParser
 		{
 		private:
-			typedef struct
-			{
-				UInt32 lineColor;
-				UInt32 lineWidth;
-				Text::String *iconURL;
-				Int32 iconSpotX;
-				Int32 iconSpotY;
-				UInt32 iconColor;
-				UInt32 fillColor;
-				Int32 flags;
-				Media::SharedImage *img;
-			} KMLStyle;
-
-		private:
 			UInt32 codePage;
 			Text::EncodingFactory *encFact;
 			Parser::ParserList *parsers;
@@ -48,10 +34,6 @@ namespace Parser
 
 			static IO::ParsedObject *ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 		private:
-			static Map::IMapDrawLayer *ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-			static void ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles);
-			static void ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList);
-			static Map::IMapDrawLayer *ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
 			static Bool ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord3 *rec);
 			static Bool ParseVSProjFile(Text::XMLReader *reader, Text::VSProjContainer *container);
 			static Bool ParseVSConfFile(Text::XMLReader *reader, Text::CodeProject *proj);

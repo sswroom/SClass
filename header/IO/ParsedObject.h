@@ -35,8 +35,9 @@ namespace IO
 		ASN1Data,
 		BTScanLog,
 		SystemInfoLog,
+		JasperReport,
 
-		LastType = SystemInfoLog
+		LastType = JasperReport
 	};
 
 	Text::CString ParserTypeGetName(ParserType pt);

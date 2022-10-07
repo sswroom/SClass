@@ -58,6 +58,8 @@ Text::CString IO::ParserTypeGetName(ParserType pt)
 		return CSTR("BTScanLog");
 	case ParserType::SystemInfoLog:
 		return CSTR("SystemInfoLog");
+	case ParserType::JasperReport:
+		return CSTR("JasperReport");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");
