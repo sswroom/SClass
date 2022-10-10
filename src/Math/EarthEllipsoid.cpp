@@ -186,7 +186,9 @@ Double Math::EarthEllipsoid::CalLatByDist(Double lat, Double distM) const
 {
 	Double rlat = lat * Math::PI / 180.0;
 	Double r = CalRadiusAtRLat(rlat);
-	return 180.0 / Math::PI * (rlat + (distM / r));
+	Double rlat2 = rlat + (distM / r);
+	Double r2 = CalRadiusAtRLat(rlat2);
+	return 180.0 / Math::PI * (rlat + (distM / ((r + r2) * 0.5)));
 }
 
 Text::CString Math::EarthEllipsoid::GetName() const

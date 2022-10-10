@@ -42,6 +42,7 @@ namespace Math
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;
+			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 
 			Text::String *GetSourceAddr() const;
 			void SetHeight(Double height);

@@ -199,6 +199,19 @@ namespace Math
 				}
 				return ret;
 			}
+
+			virtual Bool InsideVector(Math::Coord2DDbl coord) const
+			{
+				UOSInt i = 0;
+				UOSInt j = this->GetCount();
+				while (i < j)
+				{
+					if (this->GetItem(i)->InsideVector(coord))
+						return true;
+					i++;
+				}
+				return false;
+			}
 		};
 	}
 }

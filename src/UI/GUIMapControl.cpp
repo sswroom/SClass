@@ -16,6 +16,8 @@
 #include "UI/GUIMapControl.h"
 #include "UI/MessageDialog.h"
 
+#include <stdio.h>
+
 void __stdcall UI::GUIMapControl::ImageUpdated(void *userObj)
 {
 	UI::GUIMapControl *me = (UI::GUIMapControl*)userObj;
@@ -521,7 +523,9 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			Math::Geometry::Ellipse *circle = (Math::Geometry::Ellipse*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
-			img->DrawEllipse(circle->GetLeft(), circle->GetTop(), circle->GetWidth(), circle->GetHeight(), p, b);
+			Math::Coord2DDbl bl = view->MapXYToScnXY(circle->GetTL());
+			Math::Coord2DDbl tr = view->MapXYToScnXY(circle->GetBR());
+			img->DrawEllipse(bl.x + ofst.x, tr.y + ofst.y, tr.x - bl.x, bl.y - tr.y, p, b);
 			img->DelPen(p);
 			img->DelBrush(b);
 		}
@@ -620,26 +624,26 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			if (vimg->IsScnCoord())
 			{
 				vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &bounds.tl.x, &bounds.tl.y, &bounds.br.x, &bounds.br.y);
-				pts[0] = bounds.tl;
-				pts[1].x = bounds.tl.x;
-				pts[1].y = bounds.br.y;
-				pts[2] = bounds.br;
-				pts[3].x = bounds.br.x;
-				pts[3].y = bounds.tl.y;
-				pts[4] = bounds.tl;
+				pts[0] = bounds.tl + ofst;
+				pts[1].x = bounds.tl.x + ofst.x;
+				pts[1].y = bounds.br.y + ofst.y;
+				pts[2] = bounds.br + ofst;
+				pts[3].x = bounds.br.x + ofst.x;
+				pts[3].y = bounds.tl.y + ofst.y;
+				pts[4] = bounds.tl + ofst;
 			}
 			else
 			{
 				vimg->GetBounds(&bounds);
 				Math::Coord2DDbl pt1 = view->MapXYToScnXY(bounds.tl);
 				Math::Coord2DDbl pt2 = view->MapXYToScnXY(bounds.br);
-				pts[0] = pt1;
-				pts[1].x = pt1.x;
-				pts[1].y = pt2.y;
-				pts[2] = pt2;
-				pts[3].x = pt2.x;
-				pts[3].y = pt1.y;
-				pts[4] = pt1;
+				pts[0] = pt1 + ofst;
+				pts[1].x = pt1.x + ofst.x;
+				pts[1].y = pt2.y + ofst.y;
+				pts[2] = pt2 + ofst;
+				pts[3].x = pt2.x + ofst.x;
+				pts[3].y = pt1.y + ofst.y;
+				pts[4] = pt1 + ofst;
 			}
 			nPoints = 5;
 			img->DrawPolyPolygon(pts, &nPoints, 1, p, b);

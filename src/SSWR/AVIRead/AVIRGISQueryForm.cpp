@@ -86,7 +86,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
 
 				SDEL_CLASS(me->currVec);
-/*				if (lyrCSys)
+				if (lyrCSys)
 				{
 					Math::Coord2DDbl center = vec->GetDistanceCenter();
 					Double dist = Math::GeometryTool::CalcMaxDistanceFromPoint(center, vec, Math::Unit::Distance::DU_METER);
@@ -105,9 +105,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					vec = me->currVec->Clone();
 				}
 				else
-				{*/
+				{
 					me->currVec = vec->Clone();
-//				}
+				}
 
 				me->navi->SetSelectedVector(vec);
 				me->layerNames = false;
@@ -198,6 +198,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 		UTF8Char *sptr;
 		sptr = Text::StrDouble(sbuff, d);
 		me->txtDist->SetText(CSTRP(sbuff, sptr));
+		if (me->currVec->InsideVector(mapPos))
+		{
+			me->txtInside->SetText(CSTR("Inside"));
+		}
+		else
+		{
+			me->txtInside->SetText(CSTR("Outside"));
+		}
 	}
 	return false;
 }
@@ -301,6 +309,11 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtDist, UI::GUITextBox(ui, this->tpDist, CSTR("")));
 	this->txtDist->SetReadOnly(true);
 	this->txtDist->SetRect(104, 4, 150, 23, false);
+	NEW_CLASS(this->lblInside, UI::GUILabel(ui, this->tpDist, CSTR("Inside Vector")));
+	this->lblInside->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->txtInside, UI::GUITextBox(ui, this->tpDist, CSTR("")));
+	this->txtInside->SetReadOnly(true);
+	this->txtInside->SetRect(104, 28, 150, 23, false);
 
 	this->ShowLayerNames();
 

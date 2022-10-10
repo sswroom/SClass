@@ -44,6 +44,8 @@ namespace SSWR
 			UI::GUITabPage *tpDist;
 			UI::GUILabel *lblDist;
 			UI::GUITextBox *txtDist;
+			UI::GUILabel *lblInside;
+			UI::GUITextBox *txtInside;
 
 			SSWR::AVIRead::AVIRCore *core;
 			IMapNavigator *navi;

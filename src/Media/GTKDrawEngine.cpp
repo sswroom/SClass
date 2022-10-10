@@ -569,7 +569,7 @@ Bool Media::GTKDrawImage::DrawEllipse(Double tlx, Double tly, Double w, Double h
 	cairo_translate(cr, tlx + w * 0.5, tly + h * 0.5);
 	cairo_scale(cr, 1, h / w);
 	cairo_translate(cr, -tlx - w * 0.5, -tly - h * 0.5);
-	cairo_arc(cr, tlx + w * 0.5, tly + h * 0.5, w, 0, 2 * Math::PI);
+	cairo_arc(cr, tlx + w * 0.5, tly + h * 0.5, w * 0.5, 0, 2 * Math::PI);
 	cairo_close_path(cr);
 	if (pen && brush)
 	{

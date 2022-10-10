@@ -126,6 +126,8 @@ namespace Map
 		Bool SetMatrixSet(UOSInt index);
 		Bool SetResourceTileType(UOSInt index);
 		Bool SetResourceInfoType(UOSInt index);
+		Bool SetResourceInfoType(Text::CString name);
+		UOSInt GetResourceInfoType();
 		UOSInt GetLayerNames(Data::ArrayList<Text::String*> *layerNames);
 		UOSInt GetMatrixSetNames(Data::ArrayList<Text::String*> *matrixSetNames);
 		UOSInt GetResourceTileTypeNames(Data::ArrayList<Text::String*> *resourceTypeNames);

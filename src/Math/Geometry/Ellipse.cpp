@@ -40,11 +40,11 @@ void Math::Geometry::Ellipse::GetBounds(Math::RectAreaDbl *bounds) const
 
 Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
-	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx - this->w * 0.5, this->tly + this->h * 0.5);
-	Double ang = Math_ArcTan2(pt.y - cent.y, pt.x - cent.x);
+	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);
+	Double ang = Math_ArcTan2((pt.y - cent.y) * this->w / this->h, pt.x - cent.x);
 	Double sVal = Math_Sin(ang);
 	Double cVal = Math_Cos(ang);
-	*nearPt = Math::Coord2DDbl(cent.x + cVal * this->w * 0.5, cent.y - sVal * this->h * 0.5);
+	*nearPt = Math::Coord2DDbl(cent.x + cVal * this->w * 0.5, cent.y + sVal * this->h * 0.5);
 	return ang * 180 / Math::PI;
 }
 
@@ -90,6 +90,24 @@ UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl
 	coordList->Add(Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h));
 	coordList->Add(Math::Coord2DDbl(this->tlx, this->tly + this->h * 0.5));
 	return 4;
+}
+
+Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
+{
+	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);
+	Double yDiff = (coord.y - cent.y) * this->w / this->h;
+	Double xDiff = (coord.x - cent.x);
+	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff) <= this->w * 0.5;
+}
+
+Math::Coord2DDbl Math::Geometry::Ellipse::GetTL()
+{
+	return Math::Coord2DDbl(this->tlx, this->tly);
+}
+
+Math::Coord2DDbl Math::Geometry::Ellipse::GetBR()
+{
+	return Math::Coord2DDbl(this->tlx + this->w, this->tly + this->h);
 }
 
 Double Math::Geometry::Ellipse::GetLeft()

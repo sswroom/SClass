@@ -14,7 +14,20 @@ Math::Geometry::Vector2D::~Vector2D()
 
 Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
+	if (this->InsideVector(pt))
+	{
+		if (nearPt)
+		{
+			*nearPt = pt;
+		}
+		return 0;
+	}
 	return this->CalBoundarySqrDistance(pt, nearPt);
+}
+
+Bool Math::Geometry::Vector2D::InsideVector(Math::Coord2DDbl coord) const
+{
+	return false;
 }
 
 UInt32 Math::Geometry::Vector2D::GetSRID() const

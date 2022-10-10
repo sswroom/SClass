@@ -1279,6 +1279,7 @@ Bool Map::WebMapTileServiceSource::SetLayer(UOSInt index)
 	this->currLayer = this->layers.GetItem(index);
 	this->SetResourceTileType(0);
 	this->SetResourceInfoType(0);
+	this->SetResourceInfoType(CSTR("application/json"));
 	this->SetMatrixSet(0);
 	return true;
 }
@@ -1342,6 +1343,53 @@ Bool Map::WebMapTileServiceSource::SetResourceInfoType(UOSInt index)
 		i++;
 	}
 	return false;
+}
+
+Bool Map::WebMapTileServiceSource::SetResourceInfoType(Text::CString name)
+{
+	if (this->currLayer == 0)
+		return false;
+	this->currResourceInfo = 0;
+	ResourceURL *resource;
+	UOSInt i = 0;
+	UOSInt j = this->currLayer->resourceURLs.GetCount();
+	while (i < j)
+	{
+		resource = this->currLayer->resourceURLs.GetItem(i);
+		if (resource->resourceType == ResourceType::FeatureInfo && resource->format->Equals(name.v, name.leng))
+		{
+			this->currResourceInfo = resource;
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+
+UOSInt Map::WebMapTileServiceSource::GetResourceInfoType()
+{
+	if (this->currLayer == 0)
+		return INVALID_INDEX;
+	if (this->currResourceInfo == 0)
+		return INVALID_INDEX;
+	UOSInt index = 0;
+	ResourceURL *resource;
+	UOSInt i = 0;
+	UOSInt j = this->currLayer->resourceURLs.GetCount();
+	while (i < j)
+	{
+		resource = this->currLayer->resourceURLs.GetItem(i);
+		if (resource->resourceType == ResourceType::FeatureInfo)
+		{
+			if (resource == this->currResourceInfo)
+			{
+				return index;
+			}
+			index++;
+		}
+		i++;
+	}
+	return INVALID_INDEX;
 }
 
 UOSInt Map::WebMapTileServiceSource::GetLayerNames(Data::ArrayList<Text::String*> *layerNames)

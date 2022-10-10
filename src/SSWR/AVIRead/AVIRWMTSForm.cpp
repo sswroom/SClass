@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(void *userObj)
 		}
 		if (j > 0)
 		{
-			me->cboResourceInfoType->SetSelectedIndex(0);
+			me->cboResourceInfoType->SetSelectedIndex(me->wmts->GetResourceInfoType());
 		}
 	}
 }

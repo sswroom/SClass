@@ -147,19 +147,6 @@ Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math
 	return dist;
 }
 
-Double Math::Geometry::Polygon::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
-{
-	if (InsideVector(pt))
-	{
-		if (nearPt)
-		{
-			*nearPt = pt;
-		}
-		return 0;
-	}
-	return CalBoundarySqrDistance(pt, nearPt);
-}
-
 Bool Math::Geometry::Polygon::JoinVector(Math::Geometry::Vector2D *vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
