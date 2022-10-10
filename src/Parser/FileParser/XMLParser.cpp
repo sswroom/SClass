@@ -12,6 +12,7 @@
 #include "Map/OSM/OSMParser.h"
 #include "Math/Math.h"
 #include "Media/StaticImage.h"
+#include "Media/Jasper/JasperXML.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -1062,6 +1063,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			}
 		}
 		return sysInfo;
+	}
+	else if (nodeText->Equals(UTF8STRC("jasperReport")))
+	{
+		return Media::Jasper::JasperXML::ParseJasperReport(&reader, fileName);
 	}
 	return 0;
 }

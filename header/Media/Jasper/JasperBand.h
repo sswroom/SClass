@@ -22,6 +22,7 @@ namespace Media
 			Text::String *GetSplitType() const;
 			Bool HasHeight() const;
 			UOSInt GetHeight() const;
+			void AddElement(JasperElement *element);
 
 			UOSInt GetCount() const;
 			JasperElement *GetElement(UOSInt index) const;

@@ -45,6 +45,11 @@ UOSInt Media::Jasper::JasperBand::GetHeight() const
 	return this->height;
 }
 
+void Media::Jasper::JasperBand::AddElement(JasperElement *element)
+{
+	this->elements.Add(element);
+}
+
 UOSInt Media::Jasper::JasperBand::GetCount() const
 {
 	return this->elements.GetCount();

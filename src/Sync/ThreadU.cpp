@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <wchar.h>
+#include <stdio.h>
 
 #if defined(__FreeBSD__)
 #include <sys/types.h>
@@ -67,7 +67,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj)
 		}
 		else
 		{
-			wprintf(L"Error in creating thread: %d\r\n", ret);
+			printf("Error in creating thread: %d\r\n", ret);
 			break;
 		}
 	}
@@ -84,6 +84,7 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 thread
 {
 	pthread_t tid;
 	pthread_attr_t attr;
+	UInt32 thisThreadSize = threadSize;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	pthread_attr_setstacksize(&attr, threadSize);
@@ -98,9 +99,19 @@ UInt32 Sync::Thread::Create(Sync::ThreadProc tProc, void *userObj, UInt32 thread
 		{
 			Sync::Thread::Sleep(100);
 		}
+		else if (ret == 22)
+		{
+			if (thisThreadSize >= 1048576)
+			{
+				printf("Error in creating thread: %d with stack size %d\r\n", ret, threadSize);
+				break;
+			}
+			thisThreadSize *= 2;
+			pthread_attr_setstacksize(&attr, thisThreadSize);
+		}
 		else
 		{
-			wprintf(L"Error in creating thread: %d\r\n", ret);
+			printf("Error in creating thread: %d with stack size %d\r\n", ret, threadSize);
 			break;
 		}
 	}
