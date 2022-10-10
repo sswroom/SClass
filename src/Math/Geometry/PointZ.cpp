@@ -39,6 +39,7 @@ Bool Math::Geometry::PointZ::HasZ() const
 void Math::Geometry::PointZ::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, this->z, &this->pos.x, &this->pos.y, &this->z);
+	this->srid = destCSys->GetSRID();
 }
 
 Bool Math::Geometry::PointZ::Equals(Math::Geometry::Vector2D *vec) const

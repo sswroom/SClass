@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Math/GeometryTool.h"
+#include "Math/Geometry/Ellipse.h"
 #include "SSWR/AVIRead/AVIRGISQueryForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -68,12 +70,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				{
 					vec->GetBounds(&bounds);
 				}
-				SDEL_CLASS(me->currVec);
-				me->currVec = vec->Clone();
 
 				Math::VectorTextWriter *writer = (Math::VectorTextWriter*)me->cboShapeFmt->GetSelectedItem();
 				Text::StringBuilderUTF8 sb;
-				writer->ToText(&sb, me->currVec);
+				writer->ToText(&sb, vec);
 				me->txtShape->SetText(sb.ToCString());
 
 				sptr = Text::StrDouble(sbuff, bounds.tl.x);
@@ -84,6 +84,30 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->txtMaxX->SetText(CSTRP(sbuff, sptr));
 				sptr = Text::StrDouble(sbuff, bounds.br.y);
 				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
+
+				SDEL_CLASS(me->currVec);
+/*				if (lyrCSys)
+				{
+					Math::Coord2DDbl center = vec->GetDistanceCenter();
+					Double dist = Math::GeometryTool::CalcMaxDistanceFromPoint(center, vec, Math::Unit::Distance::DU_METER);
+					if (lyrCSys->IsProjected())
+					{
+						NEW_CLASS(me->currVec, Math::Geometry::Ellipse(lyrCSys->GetSRID(), center.x - dist, center.y - dist, dist * 2, dist * 2));
+					}
+					else
+					{
+						Math::EarthEllipsoid *ellipsoid = ((Math::GeographicCoordinateSystem*)lyrCSys)->GetEllipsoid();
+						Double x1 = ellipsoid->CalLonByDist(center.lat, center.lon, -dist);
+						Double y1 = ellipsoid->CalLatByDist(center.lat, -dist);
+						NEW_CLASS(me->currVec, Math::Geometry::Ellipse(lyrCSys->GetSRID(), x1, y1, (center.x - x1) * 2, (center.y - y1) * 2));
+					}
+					DEL_CLASS(vec);
+					vec = me->currVec->Clone();
+				}
+				else
+				{*/
+					me->currVec = vec->Clone();
+//				}
 
 				me->navi->SetSelectedVector(vec);
 				me->layerNames = false;

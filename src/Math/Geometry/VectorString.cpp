@@ -70,6 +70,7 @@ Bool Math::Geometry::VectorString::HasZ() const
 void Math::Geometry::VectorString::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, 0, &this->pos.x, &this->pos.y, 0);
+	this->srid = destCSys->GetSRID();
 }
 
 Bool Math::Geometry::VectorString::Equals(Math::Geometry::Vector2D *vec) const
@@ -85,6 +86,12 @@ Bool Math::Geometry::VectorString::Equals(Math::Geometry::Vector2D *vec) const
 		this->angleDegree == vstr->angleDegree &&
 		this->buffSize == vstr->buffSize &&
 		this->s->Equals(vstr->s);
+}
+
+UOSInt Math::Geometry::VectorString::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+{
+	coordList->Add(this->pos);
+	return 1;
 }
 
 Text::String *Math::Geometry::VectorString::GetString() const

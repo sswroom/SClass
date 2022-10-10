@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_VECTOR2D
 #define _SM_MATH_GEOMETRY_VECTOR2D
+#include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/RectAreaDbl.h"
 
@@ -56,9 +57,12 @@ namespace Math
 			virtual Bool HasM() const { return false; };
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
 			virtual Bool Equals(Vector2D *vec) const = 0;
+			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const = 0;
 
 			UInt32 GetSRID() const;
 			void SetSRID(UInt32 srid);
+			Math::Coord2DDbl GetCentroid() const;
+			Math::Coord2DDbl GetDistanceCenter() const;
 
 			static Bool VectorTypeIsPoint(VectorType vecType);
 		};

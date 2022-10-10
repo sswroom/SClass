@@ -116,10 +116,12 @@ void Math::Geometry::PointOfstCollection::ConvCSys(Math::CoordinateSystem *srcCS
 		{
 			Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, this->zArr[i], &this->pointArr[i].x, &this->pointArr[i].y, &this->zArr[i]);
 		}
+		this->srid = destCSys->GetSRID();
 	}
 	else
 	{
 		Math::CoordinateSystem::ConvertXYArray(srcCSys, destCSys, this->pointArr, this->pointArr, this->nPoint);
+		this->srid = destCSys->GetSRID();
 	}
 }
 

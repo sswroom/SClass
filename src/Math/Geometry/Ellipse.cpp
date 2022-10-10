@@ -40,9 +40,12 @@ void Math::Geometry::Ellipse::GetBounds(Math::RectAreaDbl *bounds) const
 
 Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
 {
-	//////////////////////////////////////////////////////////
-	*nearPt = pt;
-	return 0;
+	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx - this->w * 0.5, this->tly + this->h * 0.5);
+	Double ang = Math_ArcTan2(pt.y - cent.y, pt.x - cent.x);
+	Double sVal = Math_Sin(ang);
+	Double cVal = Math_Cos(ang);
+	*nearPt = Math::Coord2DDbl(cent.x + cVal * this->w * 0.5, cent.y - sVal * this->h * 0.5);
+	return ang * 180 / Math::PI;
 }
 
 Bool Math::Geometry::Ellipse::JoinVector(Math::Geometry::Vector2D *vec)
@@ -63,6 +66,7 @@ void Math::Geometry::Ellipse::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Co
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, x2, y2, 0, &x2, &y2, 0);
 	this->w = x2 - this->tlx;
 	this->h = y2 - this->tly;
+	this->srid = destCSys->GetSRID();
 }
 
 Bool Math::Geometry::Ellipse::Equals(Math::Geometry::Vector2D *vec) const
@@ -77,4 +81,33 @@ Bool Math::Geometry::Ellipse::Equals(Math::Geometry::Vector2D *vec) const
 		this->h == ellipse->h &&
 		this->tlx == ellipse->tlx &&
 		this->tly == ellipse->tly;
+}
+
+UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+{
+	coordList->Add(Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly));
+	coordList->Add(Math::Coord2DDbl(this->tlx + this->w, this->tly + this->h * 0.5));
+	coordList->Add(Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h));
+	coordList->Add(Math::Coord2DDbl(this->tlx, this->tly + this->h * 0.5));
+	return 4;
+}
+
+Double Math::Geometry::Ellipse::GetLeft()
+{
+	return this->tlx;
+}
+
+Double Math::Geometry::Ellipse::GetTop()
+{
+	return this->tly;
+}
+
+Double Math::Geometry::Ellipse::GetWidth()
+{
+	return this->w;
+}
+
+Double Math::Geometry::Ellipse::GetHeight()
+{
+	return this->h;
 }

@@ -22,6 +22,7 @@ namespace Math
 			virtual Math::Coord2DDbl GetCenter() const;
 			virtual void GetBounds(Math::RectAreaDbl *bounds) const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;
 		};
 	}
 }

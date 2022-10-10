@@ -284,6 +284,7 @@ void Math::Geometry::VectorImage::ConvCSys(Math::CoordinateSystem *srcCSys, Math
 	{
 		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
 		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+		this->srid = destCSys->GetSRID();
 	}
 }
 
@@ -295,6 +296,25 @@ Bool Math::Geometry::VectorImage::Equals(Vector2D *vec) const
 	}
 //	Math::VectorImage *img = (Math::VectorImage*)vec;
 	return false;
+}
+
+UOSInt Math::Geometry::VectorImage::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+{
+	if (this->scnCoord)
+	{
+		coordList->Add(this->tl);
+		coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x, this->tl.y));
+		coordList->Add(this->tl + this->size);
+		coordList->Add(Math::Coord2DDbl(this->tl.x, this->tl.y + this->size.y));
+	}
+	else
+	{
+		coordList->Add(this->tl);
+		coordList->Add(Math::Coord2DDbl(this->br.x, this->tl.y));
+		coordList->Add(this->br);
+		coordList->Add(Math::Coord2DDbl(this->tl.x, this->br.y));
+	}
+	return 4;
 }
 
 Text::String *Math::Geometry::VectorImage::GetSourceAddr() const

@@ -86,5 +86,10 @@ void Math::Geometry::PointCollection::GetBounds(Math::RectAreaDbl *bounds) const
 void Math::Geometry::PointCollection::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYArray(srcCSys, destCSys, this->pointArr, this->pointArr, this->nPoint);
+	this->srid = destCSys->GetSRID();
 }
 
+UOSInt Math::Geometry::PointCollection::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+{
+	return coordList->AddRange(this->pointArr, this->nPoint);
+}

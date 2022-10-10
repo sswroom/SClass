@@ -3,6 +3,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/IComparable.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
 #include "Math/Math.h"
 
@@ -954,4 +955,33 @@ Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoi
 		i += 2;
 	}
 	return Math::Coord2DDbl(0, 0);
+}
+
+Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::Geometry::Vector2D *vec, Math::Unit::Distance::DistanceUnit unit)
+{
+	Double maxDist = -1;
+	Math::Coord2DDbl maxPt = pt;
+	Double thisDist;
+	Data::ArrayListA<Math::Coord2DDbl> coords;
+	UOSInt i = vec->GetCoordinates(&coords);
+	while (i-- > 0)
+	{
+		thisDist = coords.GetItem(i).CalcLengTo(pt);
+		if (thisDist > maxDist)
+		{
+			maxDist = thisDist;
+			maxPt = coords.GetItem(i);
+		}
+	}
+	Math::CoordinateSystem *csys = Math::CoordinateSystemManager::SRCreateCSys(vec->GetSRID());
+	if (csys)
+	{
+		thisDist = csys->CalSurfaceDistanceXY(pt, maxPt, unit);
+		DEL_CLASS(csys);
+		return thisDist;
+	}
+	else
+	{
+		return maxDist;
+	}
 }

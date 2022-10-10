@@ -1,6 +1,8 @@
 #ifndef _SM_MATH_GEOMETRYTOOL
 #define _SM_MATH_GEOMETRYTOOL
 #include "Math/Coord2D.h"
+#include "Math/Geometry/Vector2D.h"
+#include "Math/Unit/Distance.h"
 
 namespace Math
 {
@@ -20,6 +22,7 @@ namespace Math
 		static Double SphereDistDeg(Double lat1, Double lon1, Double lat2, Double lon2, Double radius);
 		static void GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Int32 *points, Int32 *outPtX, Int32 *outPtY);
 		static Math::Coord2DDbl GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2DDbl *points);
+		static Double CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::Geometry::Vector2D *vec, Math::Unit::Distance::DistanceUnit unit);
 	};
 }
 #endif

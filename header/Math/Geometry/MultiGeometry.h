@@ -2,6 +2,7 @@
 #define _SM_MATH_GEOMETRY_MULTIGEOMETRY
 #include "Data/ArrayList.h"
 #include "Math/Coord2DDbl.h"
+#include "Math/CoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
 
 namespace Math
@@ -165,6 +166,7 @@ namespace Math
 				{
 					this->GetItem(i)->ConvCSys(srcCSys, destCSys);
 				}
+				this->srid = destCSys->GetSRID();
 			}
 
 			virtual Bool Equals(Vector2D *vec) const
@@ -183,6 +185,19 @@ namespace Math
 						return false;
 				}
 				return true;
+			}
+
+			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+			{
+				UOSInt ret = 0;
+				UOSInt i = 0;
+				UOSInt j = this->GetCount();
+				while (i < j)
+				{
+					ret += this->GetItem(i)->GetCoordinates(coordList);
+					i++;
+				}
+				return ret;
 			}
 		};
 	}

@@ -61,6 +61,7 @@ Bool Math::Geometry::PieArea::HasZ() const
 void Math::Geometry::PieArea::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->center.x, this->center.y, 0, &this->center.x, &this->center.y, 0);
+	this->srid = destCSys->GetSRID();
 }
 
 Bool Math::Geometry::PieArea::Equals(Vector2D *vec) const
@@ -72,6 +73,14 @@ Bool Math::Geometry::PieArea::Equals(Vector2D *vec) const
 		this->r == pa->r &&
 		this->arcAngle1 == pa->arcAngle1 &&
 		this->arcAngle2 == pa->arcAngle2;
+}
+
+UOSInt Math::Geometry::PieArea::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+{
+	coordList->Add(this->center);
+	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle1) * r, this->center.y + Math_Sin(this->arcAngle1) * r));
+	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle2) * r, this->center.y + Math_Sin(this->arcAngle2) * r));
+	return 3;
 }
 
 Double Math::Geometry::PieArea::GetCX() const

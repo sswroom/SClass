@@ -518,68 +518,12 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 		}
 		else if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Ellipse)
 		{
-//			Math::Ellipse *circle = (Math::Ellipse*)this->selVec;
-/*			BITMAPINFOHEADER bmih;
-			bmih.biSize = sizeof(bmih);
-			bmih.biWidth = (LONG)this->currWidth;
-			bmih.biHeight = (LONG)this->currHeight;
-			bmih.biPlanes = 1;
-			bmih.biBitCount = 32;
-			bmih.biCompression = BI_RGB;
-			bmih.biSizeImage = 0;
-			bmih.biXPelsPerMeter = 300;
-			bmih.biYPelsPerMeter = 300;
-			bmih.biClrUsed = 0;
-			bmih.biClrImportant = 0;
-			void *pbits;
-			HDC hdcBmp = CreateCompatibleDC(hdc);
-			HBITMAP hBmp = CreateDIBSection(hdcBmp, (BITMAPINFO*)&bmih, 0, &pbits, 0, 0);
-			if (hBmp)
-			{
-				MemClear(pbits, this->currWidth * this->currHeight * 4);
-				SelectObject(hdcBmp, hBmp);
-
-				Double x1;
-				Double y1;
-				Double x2;
-				Double y2;
-				circle->GetBounds(&x1, &y1, &x2, &y2);
-				view->MapXYToScnXY(x1, y1, &x1, &y1);
-				view->MapXYToScnXY(x2, y2, &x2, &y2);
-
-				HBRUSH hbr = CreateSolidBrush(0xffffff);
-				SelectObject(hdcBmp, hbr);
-				Ellipse(hdcBmp, Double2Int32(x1 + xOfst), Double2Int32(y1 + yOfst), Double2Int32(x2 + xOfst), Double2Int32(y2 + yOfst));
-				DeleteObject(hbr);
-
-
-				UInt32 *ptr = (UInt32*)pbits;
-				OSInt cnt = this->currWidth * this->currHeight;
-				while (cnt-- > 0)
-				{
-					if (*ptr)
-					{
-						*ptr = 0x403f0000;
-					}
-					ptr++;
-				}
-				BLENDFUNCTION bf;
-				bf.BlendOp = 0;
-				bf.BlendFlags = 0;
-				bf.SourceConstantAlpha = 255;
-				bf.AlphaFormat = AC_SRC_ALPHA;
-				AlphaBlend(hdc, 0, 0, (int)this->currWidth, (int)this->currHeight, hdcBmp, 0, 0, (int)this->currWidth, (int)this->currHeight, bf);
-
-				HPEN p = CreatePen(PS_SOLID, 3, 0x0000ff);
-				HGDIOBJ lastPen = SelectObject(hdc, p);
-				SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
-				Ellipse(hdc, Double2Int32(x1 + xOfst), Double2Int32(y1 + yOfst), Double2Int32(x2 + xOfst), Double2Int32(y2 + yOfst));
-				SelectObject(hdc, lastPen);
-				DeleteObject(p);
-
-				DeleteObject(hBmp);
-			}
-			DeleteDC(hdcBmp);*/
+			Math::Geometry::Ellipse *circle = (Math::Geometry::Ellipse*)this->selVec;
+			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
+			img->DrawEllipse(circle->GetLeft(), circle->GetTop(), circle->GetWidth(), circle->GetHeight(), p, b);
+			img->DelPen(p);
+			img->DelBrush(b);
 		}
 		else if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::PieArea)
 		{

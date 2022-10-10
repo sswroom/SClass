@@ -59,6 +59,7 @@ Bool Math::Geometry::Point::JoinVector(Math::Geometry::Vector2D *vec)
 void Math::Geometry::Point::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, 0, &this->pos.x, &this->pos.y, 0);
+	this->srid = destCSys->GetSRID();
 }
 
 Bool Math::Geometry::Point::Equals(Math::Geometry::Vector2D *vec) const
@@ -78,4 +79,10 @@ Bool Math::Geometry::Point::Equals(Math::Geometry::Vector2D *vec) const
 	{
 		return false;
 	}
+}
+
+UOSInt Math::Geometry::Point::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+{
+	coordList->Add(this->pos);
+	return 1;
 }

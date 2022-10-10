@@ -176,7 +176,6 @@ namespace Math
 		static Math::CoordinateSystem *CreateFromName(Text::CString name);
 		static Math::CoordinateSystem *ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
 
-		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(UInt32 srid);
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, Text::CString name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 

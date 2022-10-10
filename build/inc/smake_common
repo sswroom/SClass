@@ -2743,6 +2743,8 @@ Media/Jasper/JasperBand.h: ../../src/Media/Jasper/JasperBand.cpp
 Media/Jasper/JasperElement.h:
 Media/Jasper/JasperReport.h: ../../src/Media/Jasper/JasperReport.cpp
 @JasperReport.o
+Media/Jasper/JasperReportElement.h: ../../src/Media/Jasper/JasperReportElement.cpp
+@JasperReportElement.o
 Media/Jasper/JasperXML.h: ../../src/Media/Jasper/JasperXML.cpp
 @JasperXML.o
 Media/Resizer/DeintResizerLR_C32.h: ../../src/Media/Resizer/DeintResizerLR_C32.cpp
@@ -4993,6 +4995,7 @@ LinesImageGen.o: ../../src/Media/ImageGen/LinesImageGen.cpp
 RingsImageGen.o: ../../src/Media/ImageGen/RingsImageGen.cpp
 JasperBand.o: ../../src/Media/Jasper/JasperBand.cpp
 JasperReport.o: ../../src/Media/Jasper/JasperReport.cpp
+JasperReportElement.o: ../../src/Media/Jasper/JasperReportElement.cpp
 JasperXML.o: ../../src/Media/Jasper/JasperXML.cpp
 DeintResizerLR_C32.o: ../../src/Media/Resizer/DeintResizerLR_C32.cpp
 DeintResizerLR_C32_8.o: ../../src/Media/Resizer/DeintResizerLR_C32_8.cpp

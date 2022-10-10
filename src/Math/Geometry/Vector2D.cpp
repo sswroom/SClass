@@ -27,6 +27,23 @@ void Math::Geometry::Vector2D::SetSRID(UInt32 srid)
 	this->srid = srid;
 }
 
+Math::Coord2DDbl Math::Geometry::Vector2D::GetCentroid() const
+{
+	Math::Coord2DDbl sum = Math::Coord2DDbl(0, 0);
+	Data::ArrayListA<Math::Coord2DDbl> coordList;
+	UOSInt i = this->GetCoordinates(&coordList);
+	while (i-- > 0)
+	{
+		sum += coordList.GetItem(i);
+	}
+	return sum / UOSInt2Double(coordList.GetCount());
+}
+
+Math::Coord2DDbl Math::Geometry::Vector2D::GetDistanceCenter() const
+{
+	return GetCentroid();
+}
+
 Bool Math::Geometry::Vector2D::VectorTypeIsPoint(VectorType vecType)
 {
 	return vecType == VectorType::Point || vecType == VectorType::MultiPoint;
