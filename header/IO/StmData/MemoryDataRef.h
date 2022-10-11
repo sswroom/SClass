@@ -1,28 +1,20 @@
-#ifndef _SM_IO_STMDATA_MEMORYDATA2
-#define _SM_IO_STMDATA_MEMORYDATA2
+#ifndef _SM_IO_STMDATA_MEMORYDATAREF
+#define _SM_IO_STMDATA_MEMORYDATAREF
 #include "IO/IStreamData.h"
 
 namespace IO
 {
 	namespace StmData
 	{
-		class MemoryData2 : public IO::IStreamData
+		class MemoryDataRef : public IO::IStreamData
 		{
 		private:
-			typedef struct
-			{
-				UInt8 *data;
-				UOSInt dataLength;
-				Int32 useCnt;
-			} MemoryStats;
-			MemoryStats *stat;
 			const UInt8 *data;
 			UOSInt dataLength;
 
-			MemoryData2(MemoryStats *stat, const UInt8 *data, UOSInt dataLength);
 		public:
-			MemoryData2(const UInt8 *data, UOSInt dataLength);
-			virtual ~MemoryData2();
+			MemoryDataRef(const UInt8 *data, UOSInt dataLength);
+			virtual ~MemoryDataRef();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
 			virtual Text::String *GetFullName();

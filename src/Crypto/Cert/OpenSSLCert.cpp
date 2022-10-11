@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/OpenSSLCert.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Parser/FileParser/X509Parser.h"
 #include <openssl/ssl.h>
 
@@ -74,7 +74,6 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	BIO *bio2;
 	UInt8 buff[4096];
 	Int32 readSize;
-	IO::StmData::MemoryData *mdata;
 	Crypto::Cert::X509File *pobjCert = 0;
 	BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 	PEM_write_bio_X509(bio1, this->clsData->x509);
@@ -82,9 +81,8 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	if (readSize > 0)
 	{
 		Parser::FileParser::X509Parser parser;
-		NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-		pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
-		DEL_CLASS(mdata);
+		IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
+		pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
 	}
 	BIO_free(bio1);
 	BIO_free(bio2);

@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/SPackageFile.h"
-#include "IO/StmData/MemoryData2.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -691,7 +691,7 @@ IO::IStreamData *IO::SPackageFile::CreateStreamData(Text::CString fileName)
 		this->writeMode = false;
 		this->stm->SeekFromBeginning(file->ofst);
 		this->stm->Read(fileBuff, (UOSInt)file->size);
-		NEW_CLASS(fd, IO::StmData::MemoryData2(fileBuff, (UOSInt)file->size));
+		NEW_CLASS(fd, IO::StmData::MemoryDataCopy(fileBuff, (UOSInt)file->size));
 		MemFree(fileBuff);
 	}
 	mutUsage.EndUse();

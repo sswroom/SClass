@@ -5,7 +5,6 @@
 #include "IO/ParsedObject.h"
 #include "IO/StmData/FileData.h"
 #include "Map/MapEnv.h"
-#include "Map/ProjectedMapView.h"
 #include "Map/ScaledMapView.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Text/MyString.h"
@@ -1456,19 +1455,19 @@ Map::MapView *Map::MapEnv::CreateMapView(Math::Size2D<Double> scnSize) const
 	else if (csys == 0)
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000, false));
 		return view;
 	}
 	else if (csys->IsProjected())
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ProjectedMapView(scnSize, Math::Coord2DDbl(835000, 820000), 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(835000, 820000), 10000, true));
 		return view;
 	}
 	else
 	{
 		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000, true));
 		return view;
 	}
 }

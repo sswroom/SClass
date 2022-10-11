@@ -7,7 +7,6 @@
 #include "IO/MemoryStream.h"
 #include "IO/ModemController.h"
 #include "IO/Path.h"
-#include "IO/StmData/MemoryData2.h"
 #include "Math/Math.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"

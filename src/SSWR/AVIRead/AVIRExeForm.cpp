@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
-#include "IO/StmData/MemoryData2.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Media/BitmapUtil.h"
 #include "Media/ImageList.h"
 #include "Parser/FileParser/FNTParser.h"
@@ -290,10 +290,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
 		}
 		else if (res->rt == IO::EXEFile::RT_ICON || res->rt == IO::EXEFile::RT_CURSOR)
 		{
-			IO::StmData::MemoryData2 *fd;
-			NEW_CLASS(fd, IO::StmData::MemoryData2(res->data, res->dataSize));
-			me->core->LoadData(fd, 0);
-			DEL_CLASS(fd);
+			IO::StmData::MemoryDataCopy fd(res->data, res->dataSize);
+			me->core->LoadData(&fd, 0);
 		}
 		else if (res->rt == IO::EXEFile::RT_FONT)
 		{

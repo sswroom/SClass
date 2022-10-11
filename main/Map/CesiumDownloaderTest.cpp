@@ -6,7 +6,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -146,7 +146,7 @@ private:
 						IO::MemoryStream *mstm2;
 						Data::Compress::Inflate inflate(false);
 						thisRead = 10;
-						IO::StmData::MemoryData mdata(&respData[thisRead], respSize - thisRead - 8);
+						IO::StmData::MemoryDataRef mdata(&respData[thisRead], respSize - thisRead - 8);
 						NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4]), UTF8STRC("CesiumDownloader.ProcURL.mstm2")));
 						if (inflate.Decompress(mstm2, &mdata))
 						{

@@ -9,8 +9,9 @@ extern "C"
 	Bool ScaledMapView_IMapXYToScnXY(const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Double rRate, Double dleft, Double dbottom, Double xmul, Double ymul, Int32 ofstX, Int32 ofstY, UOSInt scnWidth, UOSInt scnHeight);
 }
 
-Map::ScaledMapView::ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale) : Map::MapView(scnSize)
+Map::ScaledMapView::ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale, Bool projected) : Map::MapView(scnSize)
 {
+	this->projected = projected;
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
 	ChangeViewXY(scnSize, centMap, scale);
@@ -29,7 +30,15 @@ void Map::ScaledMapView::ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2
 		scale = 100000000;
 	this->scale = scale;
 
-	Math::Coord2DDbl diff = scnSize.ToCoord() * (0.00025 * scale / (this->hdpi * 72.0 / 96.0) * 2.54 / 10000.0);
+	Math::Coord2DDbl diff;
+	if (projected)
+	{
+		diff = scnSize.ToCoord() * (0.5 * scale / (this->hdpi * 72.0 / 96.0) * 0.0254);
+	}
+	else
+	{
+		diff = scnSize.ToCoord() * (0.0000025 * scale / (this->hdpi * 72.0 / 96.0) * 0.0254);
+	}
 	this->tl = centMap - diff;
 	this->br = centMap + diff;
 	this->scnSize = scnSize;
@@ -237,6 +246,21 @@ Math::Coord2DDbl Map::ScaledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
 Map::MapView *Map::ScaledMapView::Clone() const
 {
 	Map::ScaledMapView *view;
-	NEW_CLASS(view, Map::ScaledMapView(this->scnSize, this->centMap, this->scale));
+	NEW_CLASS(view, Map::ScaledMapView(this->scnSize, this->centMap, this->scale, this->projected));
+	view->SetDPI(this->hdpi, this->ddpi);
 	return view;
+}
+
+Double Map::ScaledMapView::CalcScale(Math::RectAreaDbl bounds, Math::Size2D<Double> scnSize, Double dpi, Bool projected)
+{
+	Math::Coord2DDbl diff = bounds.GetSize();
+	if (projected)
+	{
+		diff = diff / 0.0254 * (dpi * 72.0 / 96.0) / scnSize.ToCoord() / 1.0;
+	}
+	else
+	{
+		diff =  diff / 0.0254 * (dpi * 72.0 / 96.0) / scnSize.ToCoord() / 0.000005;
+	}
+	return (diff.x + diff.y) * 0.5;
 }

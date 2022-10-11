@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/StmData/MemoryData2.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Sync/Interlocked.h"
 
-IO::StmData::MemoryData2::MemoryData2(MemoryStats *stat, const UInt8 *data, UOSInt dataLength)
+IO::StmData::MemoryDataCopy::MemoryDataCopy(MemoryStats *stat, const UInt8 *data, UOSInt dataLength)
 {
 	this->stat = stat;
 	Sync::Interlocked::Increment(&stat->useCnt);
@@ -11,7 +11,7 @@ IO::StmData::MemoryData2::MemoryData2(MemoryStats *stat, const UInt8 *data, UOSI
 	this->dataLength = dataLength;
 }
 
-IO::StmData::MemoryData2::MemoryData2(const UInt8 *data, UOSInt dataLength)
+IO::StmData::MemoryDataCopy::MemoryDataCopy(const UInt8 *data, UOSInt dataLength)
 {
 	this->stat = MemAlloc(MemoryStats, 1);
 	this->stat->data = MemAlloc(UInt8, dataLength);
@@ -22,7 +22,7 @@ IO::StmData::MemoryData2::MemoryData2(const UInt8 *data, UOSInt dataLength)
 	this->dataLength = dataLength;
 }
 
-IO::StmData::MemoryData2::~MemoryData2()
+IO::StmData::MemoryDataCopy::~MemoryDataCopy()
 {
 	if (Sync::Interlocked::Decrement(&this->stat->useCnt) == 0)
 	{
@@ -31,7 +31,7 @@ IO::StmData::MemoryData2::~MemoryData2()
 	}
 }
 
-UOSInt IO::StmData::MemoryData2::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
+UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer)
 {
 	if (offset >= this->dataLength)
 	{
@@ -48,53 +48,53 @@ UOSInt IO::StmData::MemoryData2::GetRealData(UInt64 offset, UOSInt length, UInt8
 	return length;
 }
 
-Text::String *IO::StmData::MemoryData2::GetFullName()
+Text::String *IO::StmData::MemoryDataCopy::GetFullName()
 {
 	return Text::String::NewEmpty();
 }
 
-Text::CString IO::StmData::MemoryData2::GetShortName()
+Text::CString IO::StmData::MemoryDataCopy::GetShortName()
 {
 	return CSTR("Memory2");
 }
 
-UInt64 IO::StmData::MemoryData2::GetDataSize()
+UInt64 IO::StmData::MemoryDataCopy::GetDataSize()
 {
 	return this->dataLength;
 }
 
-const UInt8 *IO::StmData::MemoryData2::GetPointer()
+const UInt8 *IO::StmData::MemoryDataCopy::GetPointer()
 {
 	return this->data;
 }
 
-IO::IStreamData *IO::StmData::MemoryData2::GetPartialData(UInt64 offset, UInt64 length)
+IO::IStreamData *IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
 {
-	IO::StmData::MemoryData2 *data;
+	IO::StmData::MemoryDataCopy *data;
 	if (offset >= this->dataLength)
 	{
-		NEW_CLASS(data, IO::StmData::MemoryData2(this->stat, this->data, 0));
+		NEW_CLASS(data, IO::StmData::MemoryDataCopy(this->stat, this->data, 0));
 		return data;
 	}
 	if (offset + length > this->dataLength)
 	{
 		length = this->dataLength - offset;
 	}
-	NEW_CLASS(data, IO::StmData::MemoryData2(this->stat, &this->data[offset], (UOSInt)length));
+	NEW_CLASS(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[offset], (UOSInt)length));
 	return data;
 }
 
-Bool IO::StmData::MemoryData2::IsFullFile()
+Bool IO::StmData::MemoryDataCopy::IsFullFile()
 {
 	return false;
 }
 
-Bool IO::StmData::MemoryData2::IsLoading()
+Bool IO::StmData::MemoryDataCopy::IsLoading()
 {
 	return false;
 }
 
-UOSInt IO::StmData::MemoryData2::GetSeekCount()
+UOSInt IO::StmData::MemoryDataCopy::GetSeekCount()
 {
 	return 0;
 }

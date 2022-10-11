@@ -1310,6 +1310,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 {
 	Map::MapEnv::LayerItem layer;
 	Map::MapEnv::MapItem *item;
+
 	Sync::MutexUsage mutUsage(0);
 	denv->env->BeginUse(&mutUsage);
 	UOSInt i = 0;
@@ -1330,6 +1331,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 				if (layer.minScale <= scale && layer.maxScale >= scale)
 				{
 					Map::DrawLayerType layerType = layer.layer->GetLayerType();
+					layer.layer->SetDispSize(denv->dispSize, denv->img->GetHDPI());
 					if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 					{
 						if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
@@ -3682,6 +3684,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	denv.fontStyleCnt = env->GetFontStyleCount();
 	denv.fontStyles = MemAlloc(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
 	denv.imgDurMS = 0;
+	denv.dispSize = Math::Size2D<Double>(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()));
 	i = denv.fontStyleCnt;
 	while (i-- > 0)
 	{

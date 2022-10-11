@@ -14,7 +14,7 @@
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "IO/StmData/FileData.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Map/IMapDrawLayer.h"
 #include "Math/Math.h"
 #include "Media/FrequencyGraph.h"
@@ -1384,7 +1384,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		fileTime.ToLocalTime();
 
 		{
-			IO::StmData::MemoryData md(fileCont, fileSize);
+			IO::StmData::MemoryDataRef md(fileCont, fileSize);
 			pobj = this->parsers.ParseFile(&md, &t);
 		}
 		if (pobj)
@@ -6171,7 +6171,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 /*
 		Media::ImageList *imgList;
 		{
-			IO::StmData::MemoryData fd(fileCont, fileSize);
+			IO::StmData::MemoryDataRef fd(fileCont, fileSize);
 			me->parserMut->Lock();
 			imgList = (Media::ImageList*)me->parsers->ParseFileType(&fd, IO::ParserType::ImageList);
 			me->parserMut->Unlock();

@@ -16,6 +16,7 @@
 #include "IO/StmData/BufferedStreamData.h"
 #include "IO/StmData/FileData.h"
 #include "Map/BaseMapLayer.h"
+#include "Map/DrawMapServiceLayer.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -986,11 +987,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
-				Map::ESRI::ESRITileMap *map;
 				UInt8 crcVal[4];
 				Map::ESRI::ESRIMapServer *esriMap = dlg.GetSelectedMap();
 				if (esriMap->HasTile())
 				{
+					Map::ESRI::ESRITileMap *map;
 					Text::String *url = esriMap->GetURL();
 					crc.Calc((UInt8*)url->v, url->leng);
 					crc.GetValue(crcVal);
@@ -1005,8 +1006,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					DEL_CLASS(esriMap);
-					UI::MessageDialog::ShowDialog(CSTR("Support Tile Map only"), CSTR("AVIRead"), this);
+					NEW_CLASS(mapLyr, Map::DrawMapServiceLayer(esriMap));
+					this->core->OpenObject(mapLyr);
 				}
 			}
 		}

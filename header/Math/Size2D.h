@@ -26,6 +26,16 @@ namespace Math
 			return this->width * this->height;
 		}
 
+		Bool operator==(Size2D<T> size) const
+		{
+			return this->width == size.width && this->height == size.height;
+		}
+
+		Bool operator!=(Size2D<T> size) const
+		{
+			return this->width != size.width || this->height != size.height;
+		}
+
 		Size2D<Double> ToDouble() const
 		{
 			return Size2D<Double>((Double)this->width, (Double)this->height);

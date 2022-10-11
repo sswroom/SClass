@@ -4,7 +4,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "IO/StmData/MemoryData2.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Net/HTTPData.h"
 #include "Net/MIME.h"
 #include "Net/WebBrowser.h"
@@ -118,7 +118,7 @@ IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, U
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DATA")))
 	{
-		IO::StmData::MemoryData2 *fd;
+		IO::StmData::MemoryDataCopy *fd;
 		const UTF8Char *urlPtr;
 		WChar c;
 		const UTF8Char *urlEnd = url.v + url.leng;
@@ -172,7 +172,7 @@ IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, U
 			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));
 			binTemp = MemAlloc(UInt8, binSize);
 			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp);
-			NEW_CLASS(fd, IO::StmData::MemoryData2(binTemp, binSize));
+			NEW_CLASS(fd, IO::StmData::MemoryDataCopy(binTemp, binSize));
 			MemFree(binTemp);
 			MemFree(strTemp);
 			return fd;

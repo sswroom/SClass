@@ -1,9 +1,11 @@
 #include "Stdafx.h"
 #include "Data/ArrayListA.h"
 #include "IO/FileStream.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Map/ESRI/ESRIMapServer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"
+#include "Parser/FileParser/PNGParser.h"
 #include "Text/Encoding.h"
 #include "Text/JSON.h"
 
@@ -14,6 +16,8 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 	UInt8 buff[2048];
 	UOSInt readSize;
 	UInt32 codePage;
+	UOSInt i;
+	UOSInt j;
 	this->url = Text::String::New(url);
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -26,6 +30,23 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 	this->supportQuery = false;
 	this->supportData = false;
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+
+	sptr = url.ConcatTo(sbuff);
+	if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("/MapServer")))
+	{
+		sptr -= 10;
+		*sptr = 0;
+	}
+	i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("/services/"));
+	if (i != INVALID_INDEX)
+	{
+		this->name = Text::String::NewP(&sbuff[i + 10], sptr);
+	}
+	else
+	{
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
+		this->name = Text::String::NewP(&sbuff[i + 1], sptr);
+	}
 
 	sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -58,6 +79,17 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 				Text::JSONBase *o = jobj->GetObjectValue(CSTR("initialExtent"));
 				Text::JSONBase *v;
 				Text::JSONObject *vobj;
+				Bool hasInit = false;
+				if (o != 0 && o->GetType() == Text::JSONType::Object)
+				{
+					Text::JSONObject *ext = (Text::JSONObject*)o;
+					this->initBounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
+					this->initBounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
+					this->initBounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
+					this->initBounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+					hasInit = true;
+				}
+				o = jobj->GetObjectValue(CSTR("fullExtent"));
 				if (o != 0 && o->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *ext = (Text::JSONObject*)o;
@@ -65,17 +97,21 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 					this->bounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
 					this->bounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
 					this->bounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+					if (!hasInit)
+					{
+						this->initBounds = this->bounds;
+					}
 				}
 				else
 				{
-					o = jobj->GetObjectValue(CSTR("fullExtent"));
-					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					if (hasInit)
 					{
-						Text::JSONObject *ext = (Text::JSONObject*)o;
-						this->bounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
-						this->bounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
-						this->bounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
-						this->bounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+						this->bounds = this->initBounds;
+					}
+					else
+					{
+						this->bounds = Math::RectAreaDbl(-180, -90, 360, 180);
+						this->initBounds = this->bounds;
 					}
 				}
 
@@ -129,8 +165,6 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 					if (v != 0 && v->GetType() == Text::JSONType::Array)
 					{
 						Text::JSONArray *levs = (Text::JSONArray*)v;
-						UOSInt i;
-						UOSInt j;
 						i = 0;
 						j = levs->GetArrayLength();
 						while (i < j)
@@ -160,6 +194,7 @@ Map::ESRI::ESRIMapServer::~ESRIMapServer()
 {
 	SDEL_STRING(this->url);
 	SDEL_CLASS(this->csys);
+	SDEL_STRING(this->name);
 }
 
 Bool Map::ESRI::ESRIMapServer::IsError() const
@@ -177,11 +212,6 @@ Bool Map::ESRI::ESRIMapServer::HasTile() const
 Text::String *Map::ESRI::ESRIMapServer::GetURL() const
 {
 	return this->url;
-}
-
-Math::CoordinateSystem *Map::ESRI::ESRIMapServer::GetCoordinateSystem() const
-{
-	return this->csys;
 }
 
 Math::RectAreaDbl Map::ESRI::ESRIMapServer::GetBounds() const
@@ -274,6 +304,51 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt lev
 
 Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::Identify(Math::Coord2DDbl pt, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
+	Math::RectAreaDbl bounds;
+	UInt32 width = 640;
+	UInt32 height = 480;
+	Math::Coord2DDbl size = Math::Coord2DDbl(width, height);
+	if (this->csys == 0 || this->csys->IsProjected())
+	{
+		bounds.tl = pt - size * 0.5;
+		bounds.br = pt + size * 0.5;
+	}
+	else
+	{
+		bounds.tl = pt - size * 0.0000025;
+		bounds.br = pt + size * 0.0000025;
+	}
+	return this->QueryInfo(pt, bounds, width, height, 96, nameList, valueList);
+}
+
+Text::String *Map::ESRI::ESRIMapServer::GetName() const
+{
+	return this->name;
+}
+
+Math::CoordinateSystem *Map::ESRI::ESRIMapServer::GetCoordinateSystem() const
+{
+	return this->csys;
+}
+
+Math::RectAreaDbl Map::ESRI::ESRIMapServer::GetInitBounds() const
+{
+	return this->initBounds;
+}
+
+Bool Map::ESRI::ESRIMapServer::GetBounds(Math::RectAreaDbl *bounds) const
+{
+	*bounds = this->bounds;
+	return true;
+}
+
+Bool Map::ESRI::ESRIMapServer::CanQuery() const
+{
+	return true;
+}
+
+Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::QueryInfo(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+{
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
 	UTF8Char *sptr;
@@ -281,38 +356,31 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::Identify(Math::Coord2DDbl pt
 	UOSInt readSize;
 	sptr = this->url->ConcatTo(url);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/identify?geometryType=esriGeometryPoint&geometry="));
-	sptr = Text::StrDouble(sptr, pt.x);
+	sptr = Text::StrDouble(sptr, coord.x);
 	*sptr++ = ',';
-	sptr = Text::StrDouble(sptr, pt.y);
+	sptr = Text::StrDouble(sptr, coord.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&tolerance=0&mapExtent="));
-	if (this->csys == 0 || this->csys->IsProjected())
-	{
-		sptr = Text::StrDouble(sptr, pt.x - 320);
-		*sptr++ = ',';
-		sptr = Text::StrDouble(sptr, pt.y - 240);
-		*sptr++ = ',';
-		sptr = Text::StrDouble(sptr, pt.x + 320);
-		*sptr++ = ',';
-		sptr = Text::StrDouble(sptr, pt.y + 240);
-	}
-	else
-	{
-		sptr = Text::StrDouble(sptr, pt.x - 320 * 0.000005);
-		*sptr++ = ',';
-		sptr = Text::StrDouble(sptr, pt.y - 240 * 0.000005);
-		*sptr++ = ',';
-		sptr = Text::StrDouble(sptr, pt.x + 320 * 0.000005);
-		*sptr++ = ',';
-		sptr = Text::StrDouble(sptr, pt.y + 240 * 0.000005);
-	}
-	sptr = Text::StrConcatC(sptr, UTF8STRC("&imageDisplay=640,480,96&f=json"));
+	sptr = Text::StrDouble(sptr, bounds.tl.x);
+	*sptr++ = ',';
+	sptr = Text::StrDouble(sptr, bounds.tl.y);
+	*sptr++ = ',';
+	sptr = Text::StrDouble(sptr, bounds.br.x);
+	*sptr++ = ',';
+	sptr = Text::StrDouble(sptr, bounds.br.y);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&imageDisplay="));
+	sptr = Text::StrUInt32(sptr, width);
+	*sptr++ = ',';
+	sptr = Text::StrUInt32(sptr, height);
+	*sptr++ = ',';
+	sptr = Text::StrInt32(sptr, Double2Int32(dpi));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=json"));
 
 	Math::Geometry::Vector2D *ret = 0;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.Identify"));
+		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.QueryInfo"));
 		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 		{
 			mstm.Write(dataBuff, readSize);
@@ -358,6 +426,63 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::Identify(Math::Coord2DDbl pt
 			}
 			json->EndUse();
 		}
+	}
+	DEL_CLASS(cli);
+	return ret;
+}
+
+Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl)
+{
+	UTF8Char url[1024];
+	UTF8Char *sptr;
+	UInt8 dataBuff[2048];
+	UOSInt readSize;
+	UInt32 srid = 0;
+	if (this->csys)
+	{
+		srid = this->csys->GetSRID();
+	}
+	sptr = this->url->ConcatTo(url);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/export?dpi="));
+	sptr = Text::StrDouble(sptr, dpi);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&transparent=true&format=png8&bbox="));
+	sptr = Text::StrDouble(sptr, bounds.tl.x);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
+	sptr = Text::StrDouble(sptr, bounds.tl.y);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
+	sptr = Text::StrDouble(sptr, bounds.br.x);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
+	sptr = Text::StrDouble(sptr, bounds.br.y);
+	if (srid != 0)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&bboxSR="));
+		sptr = Text::StrUInt32(sptr, srid);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&imageSR="));
+		sptr = Text::StrUInt32(sptr, srid);
+	}
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&size="));
+	sptr = Text::StrUOSInt(sptr, width);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
+	sptr = Text::StrUOSInt(sptr, height);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=image"));
+
+	if (sbUrl)
+		sbUrl->AppendC(url, (UOSInt)(sptr - url));
+
+	Media::ImageList *ret = 0;
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
+	if (succ)
+	{
+		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.DrawMap"));
+		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		{
+			mstm.Write(dataBuff, readSize);
+		}
+		Parser::FileParser::PNGParser parser;
+		UOSInt size;
+		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(&size), mstm.GetLength());
+		ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
 	}
 	DEL_CLASS(cli);
 	return ret;

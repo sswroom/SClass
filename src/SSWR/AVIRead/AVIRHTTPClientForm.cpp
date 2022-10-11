@@ -2,7 +2,7 @@
 #include "Data/Compress/Inflate.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
@@ -352,7 +352,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 		UInt8 *buff = me->respData->GetBuff(&buffSize);
 		Text::IMIMEObj *mimeObj;
 		{
-			IO::StmData::MemoryData md(buff, buffSize);
+			IO::StmData::MemoryDataRef md(buff, buffSize);
 			Text::CString contType;
 			if (me->respContType)
 			{
@@ -682,7 +682,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							IO::MemoryStream *mstm2;
 							Data::Compress::Inflate inflate(false);
 							i = 10;
-							IO::StmData::MemoryData mdata(&respData[i], respSize - i - 8);
+							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
 							NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4]), UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.respData")));
 							if (inflate.Decompress(mstm2, &mdata))
 							{

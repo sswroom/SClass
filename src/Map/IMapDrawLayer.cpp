@@ -9,7 +9,6 @@
 #include "Math/Geometry/Point.h"
 #include "Map/CIPLayer2.h"
 #include "Map/IMapDrawLayer.h"
-#include "Map/ProjectedMapView.h"
 #include "Map/ScaledMapView.h"
 #include "Map/SPDLayer.h"
 #include "Map/VectorLayer.h"
@@ -104,19 +103,24 @@ Map::MapView *Map::IMapDrawLayer::CreateMapView(Math::Size2D<Double> scnSize)
 	Map::MapView *view;
 	Math::RectAreaDbl minMax;
 	this->GetBounds(&minMax);
-	if (minMax.br.x > 1000)
+	if (this->csys)
 	{
-		NEW_CLASS(view, Map::ProjectedMapView(scnSize, minMax.GetCenter(), 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
 	}
 	else
 	{
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000));
+		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, minMax.br.x > 1000));
 	}
 	return view;
 }
 
 void Map::IMapDrawLayer::SetMixedType(Bool pointType)
 {
+}
+
+void Map::IMapDrawLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
+{
+
 }
 
 void Map::IMapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

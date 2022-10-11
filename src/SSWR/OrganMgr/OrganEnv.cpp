@@ -11,7 +11,6 @@
 #include "IO/Path.h"
 #include "IO/StreamRecorder.h"
 #include "IO/StmData/FileData.h"
-#include "IO/StmData/MemoryData.h"
 #include "Map/GPSTrack.h"
 #include "Media/DrawEngineFactory.h"
 #include "Media/FrequencyGraph.h"

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListString.h"
 #include "Data/FastStringMap.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Text/MailBase64Stream.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -99,7 +99,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
 				j = b64.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
-				IO::StmData::MemoryData mdata(tmpBuff, j);
+				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
 				obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
 				MemFree(tmpBuff);
 			}
@@ -109,13 +109,13 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
 				j = qpenc.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
-				IO::StmData::MemoryData mdata(tmpBuff, j);
+				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
 				obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
 				MemFree(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("7bit")))
 			{
-				IO::StmData::MemoryData mdata(&buff[lineStart], buffSize - lineStart);
+				IO::StmData::MemoryDataRef mdata(&buff[lineStart], buffSize - lineStart);
 				obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
 			}
 			else
@@ -126,7 +126,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		}
 		else
 		{
-			IO::StmData::MemoryData mdata(&buff[lineStart], buffSize - lineStart);
+			IO::StmData::MemoryDataRef mdata(&buff[lineStart], buffSize - lineStart);
 			obj = Text::IMIMEObj::ParseFromData(&mdata, contType->ToCString());
 		}
 

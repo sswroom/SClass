@@ -7,6 +7,7 @@ namespace Map
 	class ScaledMapView : public MapView
 	{
 	private:
+		Bool projected;
 		Math::Coord2DDbl centMap;
 		Double hdpi;
 		Double ddpi;
@@ -15,7 +16,7 @@ namespace Map
 		Math::Coord2DDbl br;
 
 	public:
-		ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
+		ScaledMapView(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale, Bool projected);
 		virtual ~ScaledMapView();
 
 		virtual void ChangeViewXY(Math::Size2D<Double> scnSize, Math::Coord2DDbl centMap, Double scale);
@@ -39,6 +40,8 @@ namespace Map
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const;
 		virtual Map::MapView *Clone() const;
+
+		static Double CalcScale(Math::RectAreaDbl bounds, Math::Size2D<Double> scnSize, Double dpi, Bool projected);
 	};
 }
 #endif

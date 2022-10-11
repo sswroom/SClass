@@ -14,7 +14,7 @@
 #include "IO/Path.h"
 #include "IO/StreamRecorder.h"
 #include "IO/StmData/FileData.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Map/GPSTrack.h"
 #include "Media/FrequencyGraph.h"
 #include "Media/JPEGFile.h"
@@ -1509,7 +1509,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		fileTime.ToLocalTime();
 
 		{
-			IO::StmData::MemoryData md(readBuff, readSize);
+			IO::StmData::MemoryDataRef md(readBuff, readSize);
 			pobj = this->parsers.ParseFile(&md, &t);
 		}
 		if (pobj)

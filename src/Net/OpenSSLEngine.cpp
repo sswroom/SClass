@@ -2,7 +2,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Data/DateTime.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Net/OpenSSLClient.h"
 #include "Net/OpenSSLCore.h"
 #include "Net/OpenSSLEngine.h"
@@ -452,7 +452,6 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		UInt8 buff[4096];
 		Crypto::Cert::X509File *pobjKey = 0;
 		Crypto::Cert::X509Cert *pobjCert = 0;
-		IO::StmData::MemoryData *mdata;
 		Parser::FileParser::X509Parser parser;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
@@ -460,17 +459,15 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
-			DEL_CLASS(mdata);
+			IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
+			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
 		}
 		PEM_write_bio_X509(bio1, cert);
 		readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjCert = (Crypto::Cert::X509Cert*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
-			DEL_CLASS(mdata);
+			IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
+			pobjCert = (Crypto::Cert::X509Cert*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
 		}
 		BIO_free(bio1);
 		BIO_free(bio2);
@@ -510,7 +507,6 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		BIO *bio2;
 		UInt8 buff[4096];
 		Crypto::Cert::X509File *pobjKey = 0;
-		IO::StmData::MemoryData *mdata;
 		Parser::FileParser::X509Parser parser;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
@@ -518,13 +514,12 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
+			IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
+			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
 			if (pobjKey)
 			{
 				pobjKey->SetSourceName(CSTR("RSAKey.key"));
 			}
-			DEL_CLASS(mdata);
 		}
 		BIO_free(bio1);
 		BIO_free(bio2);

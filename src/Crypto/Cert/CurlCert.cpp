@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CurlCert.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Parser/FileParser/X509Parser.h"
 #include <curl/curl.h>
 
@@ -80,12 +80,10 @@ Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert() const
 		if (Text::StrStartsWith(slist->data, "Cert:"))
 		{
 			Crypto::Cert::X509File *pobjCert;
-			IO::StmData::MemoryData *mdata;
 			UOSInt len = Text::StrCharCnt(slist->data);
 			Parser::FileParser::X509Parser parser;
-			NEW_CLASS(mdata, IO::StmData::MemoryData((const UInt8*)slist->data + 5, (UOSInt)len - 5));
-			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
-			DEL_CLASS(mdata);
+			IO::StmData::MemoryDataRef mdata((const UInt8*)slist->data + 5, (UOSInt)len - 5);
+			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
 			return (Crypto::Cert::X509Cert*)pobjCert;
 		}
 		slist = slist->next;

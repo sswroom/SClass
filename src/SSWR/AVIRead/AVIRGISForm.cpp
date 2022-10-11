@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/CRC32.h"
+#include "Crypto/Hash/CRC32R.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/Path.h"
 #include "IO/SerialPort.h"
@@ -7,7 +9,9 @@
 #include "IO/StmData/FileData.h"
 #include "Map/CSVMapParser.h"
 #include "Map/DrawMapRenderer.h"
+#include "Map/DrawMapServiceLayer.h"
 #include "Map/VectorLayer.h"
+#include "Map/ESRI/ESRITileMap.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/Math.h"
 #include "Math/CoordinateSystemManager.h"
@@ -17,6 +21,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
+#include "SSWR/AVIRead/AVIRESRIMapForm.h"
 #include "SSWR/AVIRead/AVIRGISCombineForm.h"
 #include "SSWR/AVIRead/AVIRGISCSysForm.h"
 #include "SSWR/AVIRead/AVIRGISDistanceForm.h"
@@ -88,6 +93,7 @@ typedef enum
 	MNU_OPEN_FILE,
 	MNU_TMS,
 	MNU_WMTS,
+	MNU_ESRI_MAP,
 	MNU_HKO_RADAR_64,
 	MNU_HKO_RADAR_128,
 	MNU_HKO_RADAR_256,
@@ -717,6 +723,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu->AddItem(CSTR("From &File"), MNU_OPEN_FILE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("ESRI MapServer"), MNU_ESRI_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HKO"));
 	UI::GUIMenu *mnu3 = mnu2->AddSubMenu(CSTR("Radar"));
@@ -818,8 +825,10 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 
 void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 {
-	UTF8Char sbuff[32];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char sbuff2[32];
+	UTF8Char *sptr2;
 	switch (cmdId)
 	{
 	case MNU_SAVE:
@@ -1473,6 +1482,38 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				Map::TileMapLayer *layer;
 				NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->AddLayer(layer);
+			}
+			break;
+		}
+	case MNU_ESRI_MAP:
+		{
+			SSWR::AVIRead::AVIRESRIMapForm frm(0, this->ui, this->core, this->ssl);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
+				UInt8 crcVal[4];
+				Map::ESRI::ESRIMapServer *esriMap = frm.GetSelectedMap();
+				Map::IMapDrawLayer *mapLyr;
+				if (esriMap->HasTile())
+				{
+					Map::ESRI::ESRITileMap *map;
+					Text::String *url = esriMap->GetURL();
+					crc.Calc((UInt8*)url->v, url->leng);
+					crc.GetValue(crcVal);
+					sptr = IO::Path::GetProcessFileName(sbuff);
+					sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
+					sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
+					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
+					*sptr = 0;
+					NEW_CLASS(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
+					NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
+					this->AddLayer(mapLyr);
+				}
+				else
+				{
+					NEW_CLASS(mapLyr, Map::DrawMapServiceLayer(esriMap));
+					this->AddLayer(mapLyr);
+				}
 			}
 			break;
 		}

@@ -1,20 +1,28 @@
-#ifndef _SM_IO_STMDATA_MEMORYDATA
-#define _SM_IO_STMDATA_MEMORYDATA
+#ifndef _SM_IO_STMDATA_MEMORYDATACOPY
+#define _SM_IO_STMDATA_MEMORYDATACOPY
 #include "IO/IStreamData.h"
 
 namespace IO
 {
 	namespace StmData
 	{
-		class MemoryData : public IO::IStreamData
+		class MemoryDataCopy : public IO::IStreamData
 		{
 		private:
+			typedef struct
+			{
+				UInt8 *data;
+				UOSInt dataLength;
+				Int32 useCnt;
+			} MemoryStats;
+			MemoryStats *stat;
 			const UInt8 *data;
 			UOSInt dataLength;
 
+			MemoryDataCopy(MemoryStats *stat, const UInt8 *data, UOSInt dataLength);
 		public:
-			MemoryData(const UInt8 *data, UOSInt dataLength);
-			virtual ~MemoryData();
+			MemoryDataCopy(const UInt8 *data, UOSInt dataLength);
+			virtual ~MemoryDataCopy();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
 			virtual Text::String *GetFullName();

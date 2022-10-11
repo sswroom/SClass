@@ -70,6 +70,7 @@ namespace Map
 			OC_ORUX_DB_LAYER,
 			OC_HKTRAFFIC_LAYER,
 			OC_DB_MAP_LAYER,
+			OC_DRAW_MAP_SERVICE_LAYER,
 			OC_OTHER
 		} ObjectClass;
 
@@ -99,6 +100,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
 		virtual UInt32 GetCodePage() = 0;
 		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
+		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
 
 		virtual void *BeginGetObject() = 0;
 		virtual void EndGetObject(void *session) = 0;

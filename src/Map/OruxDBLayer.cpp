@@ -3,7 +3,7 @@
 #include "DB/SQLBuilder.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Map/MercatorMapView.h"
 #include "Map/OruxDBLayer.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -307,10 +307,8 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int6
 		UOSInt size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
-		IO::StmData::MemoryData *fd;
-		NEW_CLASS(fd, IO::StmData::MemoryData(buff, size));
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
-		DEL_CLASS(fd);
+		IO::StmData::MemoryDataRef fd(buff, size);
+		imgList = (Media::ImageList*)this->parsers->ParseFileType(&fd, IO::ParserType::ImageList);
 		MemFree(buff);
 	}
 	this->db->CloseReader(r);

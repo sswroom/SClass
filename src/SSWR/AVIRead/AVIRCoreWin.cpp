@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/MemoryStream.h"
-#include "IO/StmData/MemoryData2.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			buff = mstm->GetBuff(&thisSize);
 			if (thisSize > 0)
 			{
-				IO::StmData::MemoryData2 data(buff, thisSize);
+				IO::StmData::MemoryDataCopy data(buff, thisSize);
 				DEL_CLASS(mstm);
 				this->LoadData(&data, 0);
 			}

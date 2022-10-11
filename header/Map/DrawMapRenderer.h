@@ -61,6 +61,7 @@ namespace Map
 			UOSInt fontStyleCnt;
 			DrawFontStyle *fontStyles;
 			UInt32 imgDurMS;
+			Math::Size2D<Double> dispSize;
 
 			Data::ArrayListInt64 idArr;
 			Data::ArrayList<Media::DrawFont*> layerFont;

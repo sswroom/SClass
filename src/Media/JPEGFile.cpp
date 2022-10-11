@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/MemoryStream.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Media/JPEGFile.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
@@ -162,12 +162,12 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 
 					if (tagBuff[blkOfst] == 3) // JPG
 					{
-						IO::StmData::MemoryData *mfd;
 						Media::ImageList *innerImgList;
 						Media::Image *innerImg;
-						NEW_CLASS(mfd, IO::StmData::MemoryData(&tagBuff[blkOfst + 32], blkSize - 32));
-						innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
-						DEL_CLASS(mfd);
+						{
+							IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
+							innerImgList = (Media::ImageList*)parsers->ParseFileType(&mfd, IO::ParserType::ImageList);
+						}
 						if (innerImgList)
 						{
 							k = innerImgList->GetCount();
@@ -191,13 +191,13 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 						}
 						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47)
 						{
-							IO::StmData::MemoryData *mfd;
 							Media::ImageList *innerImgList;
 							Media::Image *innerImg;
 							Media::StaticImage *stImg;
-							NEW_CLASS(mfd, IO::StmData::MemoryData(&tagBuff[blkOfst + 32], blkSize - 32));
-							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
-							DEL_CLASS(mfd);
+							{
+								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
+								innerImgList = (Media::ImageList*)parsers->ParseFileType(&mfd, IO::ParserType::ImageList);
+							}
 							if (innerImgList)
 							{
 								k = innerImgList->GetCount();

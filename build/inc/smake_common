@@ -1956,10 +1956,10 @@ IO/StmData/ConcatStreamData.h: ../../src/IO/StmData/ConcatStreamData.cpp
 @ConcatStreamData.o
 IO/StmData/FileData.h: ../../src/IO/StmData/FileData.cpp
 @FileData.o
-IO/StmData/MemoryData.h: ../../src/IO/StmData/MemoryData.cpp
-@MemoryData.o
-IO/StmData/MemoryData2.h: ../../src/IO/StmData/MemoryData2.cpp
-@MemoryData2.o
+IO/StmData/MemoryDataCopy.h: ../../src/IO/StmData/MemoryDataCopy.cpp
+@MemoryDataCopy.o
+IO/StmData/MemoryDataRef.h: ../../src/IO/StmData/MemoryDataRef.cpp
+@MemoryDataRef.o
 IO/TVCtrl/MDT701STVControl.h: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 @MDT701STVControl.o
 IO/TVCtrl/NECTVControl.h: ../../src/IO/TVCtrl/NECTVControl.cpp
@@ -2002,6 +2002,9 @@ Map/DBMapLayer.h: ../../src/Map/DBMapLayer.cpp
 @DBMapLayer.o
 Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
 @DrawMapRenderer.o
+Map/DrawMapService.h:
+Map/DrawMapServiceLayer.h: ../../src/Map/DrawMapServiceLayer.cpp
+@DrawMapServiceLayer.o
 Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
 @FileGDBLayer.o
 Map/GMLXML.h: ../../src/Map/GMLXML.cpp
@@ -2055,8 +2058,6 @@ Map/MercatorMapView.h: ../../src/Map/MercatorMapView.cpp
 @MercatorMapView.o
 Map/OruxDBLayer.h: ../../src/Map/OruxDBLayer.cpp
 @OruxDBLayer.o
-Map/ProjectedMapView.h: ../../src/Map/ProjectedMapView.cpp
-@ProjectedMapView.o
 Map/ReloadableMapLayer.h: ../../src/Map/ReloadableMapLayer.cpp
 @ReloadableMapLayer.o
 Map/ReverseGeocoderServer.h: ../../src/Map/ReverseGeocoderServer.cpp
@@ -4646,8 +4647,8 @@ BlockStreamData.o: ../../src/IO/StmData/BlockStreamData.cpp
 BufferedStreamData.o: ../../src/IO/StmData/BufferedStreamData.cpp
 ConcatStreamData.o: ../../src/IO/StmData/ConcatStreamData.cpp
 FileData.o: ../../src/IO/StmData/FileData.cpp
-MemoryData.o: ../../src/IO/StmData/MemoryData.cpp
-MemoryData2.o: ../../src/IO/StmData/MemoryData2.cpp
+MemoryDataCopy.o: ../../src/IO/StmData/MemoryDataCopy.cpp
+MemoryDataRef.o: ../../src/IO/StmData/MemoryDataRef.cpp
 MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 AddressResolver.o: ../../src/Manage/AddressResolver.cpp
@@ -4666,6 +4667,7 @@ CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
 DBMapLayer.o: ../../src/Map/DBMapLayer.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
+DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GMLXML.o: ../../src/Map/GMLXML.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
@@ -4690,7 +4692,6 @@ MapServerHandler.o: ../../src/Map/MapServerHandler.cpp
 MapView.o: ../../src/Map/MapView.cpp
 MercatorMapView.o: ../../src/Map/MercatorMapView.cpp
 OruxDBLayer.o: ../../src/Map/OruxDBLayer.cpp
-ProjectedMapView.o: ../../src/Map/ProjectedMapView.cpp
 ReloadableMapLayer.o: ../../src/Map/ReloadableMapLayer.cpp
 RevGeoCfg.o: ../../src/Map/RevGeoCfg.cpp
 RevGeoDir.o: ../../src/Map/RevGeoDir.cpp

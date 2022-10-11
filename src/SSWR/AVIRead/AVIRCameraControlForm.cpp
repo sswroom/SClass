@@ -3,7 +3,7 @@
 #include "IO/GPSNMEA.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
-#include "IO/StmData/MemoryData.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRCameraControlForm.h"
 #include "Text/MyString.h"
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 				UOSInt size;
 				UInt8 *buff = mstm.GetBuff(&size);
 				{
-					IO::StmData::MemoryData fd(buff, size);
+					IO::StmData::MemoryDataRef fd(buff, size);
 					pobj = me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
 				}
 				if (pobj)
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(void *userObj
 		UOSInt size;
 		UInt8 *buff = mstm.GetBuff(&size);
 		{
-			IO::StmData::MemoryData fd(buff, size);
+			IO::StmData::MemoryDataRef fd(buff, size);
 			previewImg = (Media::ImageList*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
 		}
 		if (previewImg)
