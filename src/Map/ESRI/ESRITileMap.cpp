@@ -12,6 +12,9 @@ Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRe
 	this->esriMap = esriMap;
 	this->toRelease = toRelease;
 	this->cacheDir = Text::String::New(cacheDir);
+	this->dispBounds = this->esriMap->GetInitBounds();
+	this->dispSize = Math::Size2D<Double>(640, 480);
+	this->dispDPI = 96.0;
 }
 
 Map::ESRI::ESRITileMap::~ESRITileMap()
@@ -114,7 +117,13 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 
 Math::Geometry::Vector2D *Map::ESRI::ESRITileMap::QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
-	return this->esriMap->Identify(coord, nameList, valueList);
+	return this->esriMap->QueryInfo(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, nameList, valueList);
+}
+
+void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2D<Double> size, Double dpi)
+{
+	this->dispSize = size;
+	this->dispDPI = dpi;
 }
 
 UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
@@ -132,6 +141,7 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect,
 		return 0;
 	if (rect.tl.y == rect.br.y)
 		return 0;
+	this->dispBounds = rect;
 	UOSInt tileWidth = this->esriMap->TileGetWidth();
 	UOSInt tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();

@@ -9,6 +9,8 @@
 #include "Text/Encoding.h"
 #include "Text/JSON.h"
 
+#include <stdio.h>
+
 Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	UTF8Char sbuff[512];
@@ -359,7 +361,10 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::QueryInfo(Math::Coord2DDbl c
 	sptr = Text::StrDouble(sptr, coord.x);
 	*sptr++ = ',';
 	sptr = Text::StrDouble(sptr, coord.y);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("&tolerance=0&mapExtent="));
+	Double tolerance = 5 * dpi / 96.0;
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&tolerance="));
+	sptr = Text::StrInt32(sptr, Double2Int32(tolerance));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&mapExtent="));
 	sptr = Text::StrDouble(sptr, bounds.tl.x);
 	*sptr++ = ',';
 	sptr = Text::StrDouble(sptr, bounds.tl.y);
@@ -421,6 +426,10 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::QueryInfo(Math::Coord2DDbl c
 								i++;
 							}
 						}
+					}
+					else
+					{
+						printf("ESRIMapServer: URL: %s\r\n", url);
 					}
 				}
 			}
@@ -550,6 +559,60 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 				return pg;
 			}
 		}
+	}
+	else if (geometryType->Equals(UTF8STRC("esriGeometryPolyline")))
+	{
+		o = geometry->GetValue(UTF8STRC("paths"));
+		if (o && o->GetType() == Text::JSONType::Array)
+		{
+			Data::ArrayList<UInt32> ptOfstArr;
+			Data::ArrayListA<Math::Coord2DDbl> ptArr;
+			Text::JSONArray *paths = (Text::JSONArray*)o;
+			UOSInt i = 0;
+			UOSInt j = paths->GetArrayLength();
+			while (i < j)
+			{
+				o = paths->GetArrayValue(i);
+				if (o->GetType() == Text::JSONType::Array)
+				{
+					Text::JSONArray *path = (Text::JSONArray*)o;
+					ptOfstArr.Add((UInt32)ptArr.GetCount());
+					UOSInt k = 0;
+					UOSInt l = path->GetArrayLength();
+					while (k < l)
+					{
+						o = path->GetArrayValue(k);
+						if (o && o->GetType() == Text::JSONType::Array)
+						{
+							Text::JSONArray *pt = (Text::JSONArray*)o;
+							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDouble(0), pt->GetArrayDouble(1)));
+						}
+						k++;
+					}
+				}
+				i++;
+			}
+			if (ptArr.GetCount() > 0)
+			{
+				Math::Geometry::Polyline *pl;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid, ptOfstArr.GetCount(), ptArr.GetCount(), false, false));
+				UInt32 *ptOfstList = pl->GetPtOfstList(&i);
+				while (i-- > 0)
+				{
+					ptOfstList[i] = ptOfstArr.GetItem(i);
+				}
+				Math::Coord2DDbl *ptList = pl->GetPointList(&i);
+				while (i-- > 0)
+				{
+					ptList[i] = ptArr.GetItem(i);
+				}
+				return pl;
+			}
+		}
+	}
+	else
+	{
+		printf("ESRIMapServer: Unknown geometryType: %s\r\n", geometryType->v);
 	}
 	///////////////////////////////////	
 	return 0;

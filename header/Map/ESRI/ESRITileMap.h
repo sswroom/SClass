@@ -17,6 +17,9 @@ namespace Map
 			Text::String *cacheDir;
 			Map::ESRI::ESRIMapServer *esriMap;
 			Bool toRelease;
+			Math::RectAreaDbl dispBounds;
+			Math::Size2D<Double> dispSize;
+			Double dispDPI;
 
 		public:
 			ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CString cacheDir);
@@ -35,6 +38,7 @@ namespace Map
 			virtual UOSInt GetTileSize();
 			virtual Bool CanQuery() const;
 			virtual Math::Geometry::Vector2D *QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const;
+			virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
 
 			virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids);
 			virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);

@@ -2,6 +2,7 @@
 #define _SM_MAP_TILEMAP
 #include "Data/ArrayList.h"
 #include "Math/CoordinateSystem.h"
+#include "Math/Size2D.h"
 #include "Media/ImageList.h"
 #include "Parser/ParserList.h"
 #include "Text/CString.h"
@@ -43,6 +44,7 @@ namespace Map
 		virtual UOSInt GetTileSize() = 0;
 		virtual Bool CanQuery() const { return false; };
 		virtual Math::Geometry::Vector2D *QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const { return 0; };
+		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi) {};
 
 		virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids) = 0;
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly) = 0;

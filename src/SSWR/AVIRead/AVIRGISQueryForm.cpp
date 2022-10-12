@@ -86,7 +86,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
 
 				SDEL_CLASS(me->currVec);
-				if (lyrCSys)
+/*				if (lyrCSys)
 				{
 					Math::Coord2DDbl center = vec->GetDistanceCenter();
 					Double dist = Math::GeometryTool::CalcMaxDistanceFromPoint(center, vec, Math::Unit::Distance::DU_METER);
@@ -105,9 +105,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					vec = me->currVec->Clone();
 				}
 				else
-				{
+				{*/
 					me->currVec = vec->Clone();
-				}
+//				}
 
 				me->navi->SetSelectedVector(vec);
 				me->layerNames = false;
