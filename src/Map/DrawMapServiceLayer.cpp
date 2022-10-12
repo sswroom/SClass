@@ -50,7 +50,20 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 					}
 					else
 					{
-						DEL_CLASS(imgList);
+						SDEL_CLASS(me->lastImage);
+						SDEL_STRING(me->lastImageURL);
+						me->lastId = thisId;
+						me->lastBounds = bounds;
+						me->lastSize = size;
+						me->lastDPI = dpi;
+						NEW_CLASS(me->lastImage, Media::SharedImage(imgList, false));
+						me->lastImageURL = Text::String::New(sb.ToCString());
+						mutUsage.ReplaceMutex(&me->updMut);
+						UOSInt i = me->updHdlrs.GetCount();
+						while (i-- > 0)
+						{
+							me->updHdlrs.GetItem(i)(me->updObjs.GetItem(i));
+						}
 					}
 				}
 			}
@@ -63,8 +76,19 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(void *userObj)
 
 void Map::DrawMapServiceLayer::ClearDisp()
 {
-	SDEL_CLASS(this->dispImage);
-	SDEL_STRING(this->dispImageURL);
+	if (this->dispImage)
+	{
+		SDEL_CLASS(this->lastImage);
+		SDEL_STRING(this->lastImageURL);
+		this->lastBounds = this->dispBounds;
+		this->lastSize = this->dispSize;
+		this->lastDPI = this->dispDPI;
+		this->lastId = this->dispId;
+		this->lastImage = this->dispImage;
+		this->lastImageURL = this->dispImageURL;
+		this->dispImage = 0;
+		this->dispImageURL = 0;
+	}
 }
 
 Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) : Map::IMapDrawLayer(mapService->GetName(), 0, 0)
@@ -77,6 +101,12 @@ Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) :
 	this->dispId = 0;
 	this->dispImage = 0;
 	this->dispImageURL = 0;
+	this->lastBounds = this->dispBounds;
+	this->lastSize = this->dispSize;
+	this->lastDPI = this->dispDPI;
+	this->lastId = 0;
+	this->lastImage = 0;
+	this->lastImageURL = 0;
 
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -101,6 +131,8 @@ Map::DrawMapServiceLayer::~DrawMapServiceLayer()
 		Sync::Thread::Sleep(1);
 	}
 	this->ClearDisp();
+	SDEL_CLASS(this->lastImage);
+	SDEL_STRING(this->lastImageURL);
 	DEL_CLASS(this->mapService);
 }
 
@@ -140,6 +172,11 @@ UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr,
 			outArr->Add(this->dispId);
 			return 1;
 		}
+		else if (this->lastImage)
+		{
+			outArr->Add(this->lastId);
+			return 1;
+		}
 		else
 		{
 			return 0;
@@ -150,6 +187,11 @@ UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr,
 		this->ClearDisp();
 		this->dispBounds = rect;
 		this->dispId++;
+		if (this->lastImage)
+		{
+			outArr->Add(this->lastId);
+			return 1;
+		}
 		return 0;
 	}
 }
@@ -258,6 +300,12 @@ Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(void *sessi
 	{
 		Math::Geometry::Vector2D *vec;
 		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->dispImage, this->dispBounds.tl, this->dispBounds.br, false, this->dispImageURL, 0, 0));
+		return vec;
+	}
+	else if (this->lastId == id && this->lastImage)
+	{
+		Math::Geometry::Vector2D *vec;
+		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), this->lastImage, this->lastBounds.tl, this->lastBounds.br, false, this->lastImageURL, 0, 0));
 		return vec;
 	}
 	return 0;

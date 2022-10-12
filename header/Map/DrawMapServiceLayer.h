@@ -24,6 +24,12 @@ namespace Map
 		Int64 dispId;
 		Media::SharedImage *dispImage;
 		Text::String *dispImageURL;
+		Math::RectAreaDbl lastBounds;
+		Math::Size2D<Double> lastSize;
+		Double lastDPI;
+		Int64 lastId;
+		Media::SharedImage *lastImage;
+		Text::String *lastImageURL;
 
 		Sync::Mutex updMut;
 		Data::ArrayList<UpdatedHandler> updHdlrs;

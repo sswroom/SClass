@@ -4,6 +4,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Map/ESRI/ESRIMapServer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/PointZ.h"
 #include "Net/HTTPClient.h"
 #include "Parser/FileParser/PNGParser.h"
 #include "Text/Encoding.h"
@@ -608,6 +609,25 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 				}
 				return pl;
 			}
+		}
+	}
+	else if (geometryType->Equals(UTF8STRC("esriGeometryPoint")))
+	{
+		Text::JSONBase *x = geometry->GetValue(UTF8STRC("x"));
+		Text::JSONBase *y = geometry->GetValue(UTF8STRC("y"));
+		Text::JSONBase *z = geometry->GetValue(UTF8STRC("z"));
+		if (x && y && x->GetType() == Text::JSONType::Number && y->GetType() == Text::JSONType::Number)
+		{
+			Math::Geometry::Point *pt;
+			if (z && z->GetType() == Text::JSONType::Number)
+			{
+				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x->GetAsDouble(), y->GetAsDouble(), z->GetAsDouble()));
+			}
+			else
+			{
+				NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(x->GetAsDouble(), y->GetAsDouble())));
+			}
+			return pt;
 		}
 	}
 	else

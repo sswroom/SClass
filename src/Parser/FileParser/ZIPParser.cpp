@@ -562,7 +562,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 				{
 					dt.SetUnixTimestamp(ReadUInt32(&extraBuff[j + 5]));
 				}
-				j += 4 + extraSize;
+				j += 4 + (UOSInt)extraSize;
 			}
 		}
 		if (flags & 0x800)

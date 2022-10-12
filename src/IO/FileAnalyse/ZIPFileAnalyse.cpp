@@ -157,7 +157,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(const UInt8 *buff, UOSInt b
 						zip64Info += 8;
 					}
 				}
-				j += 4 + extraSize;
+				j += 4 + (UOSInt)extraSize;
 			}
 		}
 		rec = MemAlloc(ZIPRecord, 1);
@@ -651,7 +651,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 			frame->AddUInt(42, 4, CSTR("Relative offset of local file header"), ofst);
 		}
 		frame->AddStrC(46, fnameLen, CSTR("File name"), &tagData[46]);
-		i = 46 + fnameLen;
+		i = 46 + (UOSInt)fnameLen;
 		if (extraLen)
 		{
 			UInt16 extraTag;

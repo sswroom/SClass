@@ -957,7 +957,7 @@ Bool Media::ICCProfile::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, U
 	frame->AddUInt(ofst, 4, CSTR("ICC Size"), buffSize);
 	frame->AddHex32Name(ofst + 4, CSTR("Preferred CMM Type"), ReadMUInt32(&buff[4]), GetNameCMMType(ReadMInt32(&buff[4])));
 	frame->AddUInt(ofst + 8, 1, CSTR("Major Version"), buff[8]);
-	frame->AddUInt(ofst + 9, 1, CSTR("Minor Version"), buff[9] >> 4);
+	frame->AddUInt(ofst + 9, 1, CSTR("Minor Version"), (UOSInt)buff[9] >> 4);
 	frame->AddUInt(ofst + 9, 1, CSTR("Bug Fix Version"), buff[9] & 15);
 	frame->AddUInt(ofst + 10, 1, CSTR("Subclass Major Version"), buff[10]);
 	frame->AddUInt(ofst + 11, 1, CSTR("Subclass Minor Version"), buff[11]);

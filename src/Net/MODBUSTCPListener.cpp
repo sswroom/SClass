@@ -85,7 +85,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
-							cli->Write(retBuff, byteSize + 9);
+							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
 				}
@@ -130,7 +130,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
-							cli->Write(retBuff, byteSize + 9);
+							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
 				}
@@ -163,7 +163,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
-							cli->Write(retBuff, byteSize + 9);
+							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
 				}
@@ -196,7 +196,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
-							cli->Write(retBuff, byteSize + 9);
+							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
 				}
