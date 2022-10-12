@@ -93,14 +93,7 @@ UTF8Char *Math::SRWKTWriter::WriteDatum(const Math::CoordinateSystem::DatumData1
 	buff = Text::StrConcatC(buff, datum->name, datum->nameLen);
 	buff = Text::StrConcatC(buff, UTF8STRC("\","));
 	buff = WriteNextLine(buff, lev + 1, lbt);
-	buff = Text::StrConcatC(buff, UTF8STRC("SPHEROID[\""));
-	buff = Text::StrConcatC(buff, datum->spheroid.name, datum->spheroid.nameLen);
-	buff = Text::StrConcatC(buff, UTF8STRC("\","));
-	buff = Text::StrDouble(buff, datum->spheroid.ellipsoid->GetSemiMajorAxis());
-	buff = Text::StrConcatC(buff, UTF8STRC(","));
-	buff = Text::StrDouble(buff, datum->spheroid.ellipsoid->GetInverseFlattening());
-	buff = this->WriteSRID(buff, datum->spheroid.srid, lev + 2, lbt);
-	buff = Text::StrConcatC(buff, UTF8STRC("]"));
+	buff = this->WriteSpheroid(&datum->spheroid, buff, lev + 1, lbt);
 	if (datum->cX != 0 || datum->cY != 0 || datum->cZ != 0 || datum->xAngle != 0 || datum->yAngle != 0 || datum->zAngle != 0 || datum->scale != 0)
 	{
 		*buff++ = ',';
@@ -120,6 +113,19 @@ UTF8Char *Math::SRWKTWriter::WriteDatum(const Math::CoordinateSystem::DatumData1
 		buff = Text::StrConcatC(buff, UTF8STRC("]"));
 	}
 	buff = this->WriteSRID(buff, datum->srid, lev + 1, lbt);
+	buff = Text::StrConcatC(buff, UTF8STRC("]"));
+	return buff;
+}
+
+UTF8Char *Math::SRWKTWriter::WriteSpheroid(const Math::CoordinateSystem::SpheroidData *spheroid, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+{
+	buff = Text::StrConcatC(buff, UTF8STRC("SPHEROID[\""));
+	buff = Text::StrConcatC(buff, spheroid->name, spheroid->nameLen);
+	buff = Text::StrConcatC(buff, UTF8STRC("\","));
+	buff = Text::StrDouble(buff, spheroid->ellipsoid->GetSemiMajorAxis());
+	buff = Text::StrConcatC(buff, UTF8STRC(","));
+	buff = Text::StrDouble(buff, spheroid->ellipsoid->GetInverseFlattening());
+	buff = this->WriteSRID(buff, spheroid->srid, lev + 1, lbt);
 	buff = Text::StrConcatC(buff, UTF8STRC("]"));
 	return buff;
 }

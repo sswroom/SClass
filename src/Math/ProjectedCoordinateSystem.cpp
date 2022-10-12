@@ -128,6 +128,8 @@ void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) cons
 	sb->Append(this->sourceName);
 	sb->AppendC(UTF8STRC("\r\nProjected Name: "));
 	sb->Append(this->csysName);
+	sb->AppendC(UTF8STRC("\r\nProjection Type: "));
+	sb->Append(CoordinateSystemTypeGetName(this->GetCoordSysType()));
 	sb->AppendC(UTF8STRC("\r\nFalse Easting: "));
 	Text::SBAppendF64(sb, this->falseEasting);
 	sb->AppendC(UTF8STRC("\r\nFalse Northing: "));

@@ -112,37 +112,13 @@ void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb) con
 	sb->AppendU32(this->srid);
 	sb->AppendC(UTF8STRC("\r\nGeographic Name: "));
 	sb->Append(this->csysName);
-	sb->AppendC(UTF8STRC("\r\nDatum Name: "));
-	sb->AppendC(this->datum.name, this->datum.nameLen);
-	sb->AppendC(UTF8STRC("\r\nRotate Center: "));
-	Text::SBAppendF64(sb, this->datum.x0);
-	sb->AppendC(UTF8STRC(", "));
-	Text::SBAppendF64(sb, this->datum.y0);
-	sb->AppendC(UTF8STRC(", "));
-	Text::SBAppendF64(sb, this->datum.z0);
-	sb->AppendC(UTF8STRC("\r\nShifting: "));
-	Text::SBAppendF64(sb, this->datum.cX);
-	sb->AppendC(UTF8STRC(", "));
-	Text::SBAppendF64(sb, this->datum.cY);
-	sb->AppendC(UTF8STRC(", "));
-	Text::SBAppendF64(sb, this->datum.cZ);
-	sb->AppendC(UTF8STRC("\r\nRotation: "));
-	Text::SBAppendF64(sb, this->datum.xAngle);
-	sb->AppendC(UTF8STRC(", "));
-	Text::SBAppendF64(sb, this->datum.yAngle);
-	sb->AppendC(UTF8STRC(", "));
-	Text::SBAppendF64(sb, this->datum.zAngle);
-	sb->AppendC(UTF8STRC("\r\nScale Factor: "));
-	Text::SBAppendF64(sb, this->datum.scale);
-	sb->AppendC(UTF8STRC("\r\nSemi-Major Axis: "));
-	Text::SBAppendF64(sb, this->datum.spheroid.ellipsoid->GetSemiMajorAxis());
-	sb->AppendC(UTF8STRC("\r\nInverse Flattening: "));
-	Text::SBAppendF64(sb, this->datum.spheroid.ellipsoid->GetInverseFlattening());
+	sb->AppendC(UTF8STRC("\r\n"));
+	DatumData1ToString(&this->datum, sb);
 }
 
-const UTF8Char *Math::GeographicCoordinateSystem::GetDatumName() const
+Text::CString Math::GeographicCoordinateSystem::GetDatumName() const
 {
-	return (const UTF8Char*)this->datum.name;
+	return Text::CString(this->datum.name, this->datum.nameLen);
 }
 
 const Math::GeographicCoordinateSystem::DatumData1 *Math::GeographicCoordinateSystem::GetDatum() const

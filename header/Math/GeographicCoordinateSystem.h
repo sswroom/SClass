@@ -28,7 +28,7 @@ namespace Math
 		virtual void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		Math::EarthEllipsoid *GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
-		const UTF8Char *GetDatumName() const;
+		Text::CString GetDatumName() const;
 		const DatumData1 *GetDatum() const;
 		PrimemType GetPrimem() const;
 		UnitType GetUnit() const;

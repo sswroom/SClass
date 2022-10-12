@@ -3,6 +3,7 @@
 #include "Math/Geometry/Polyline.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Math
 {
@@ -65,16 +66,17 @@ namespace Math
 		Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 		Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
 
-		Double GetSemiMajorAxis() { return this->semiMajorAxis; }
-		Double GetSemiMinorAxis() { return this->semiMinorAxis; }
-		Double GetInverseFlattening() { return this->inverseFlattening; }
-		Double GetEccentricity() { return this->eccentricity; }
+		Double GetSemiMajorAxis() const { return this->semiMajorAxis; }
+		Double GetSemiMinorAxis() const { return this->semiMinorAxis; }
+		Double GetInverseFlattening() const { return this->inverseFlattening; }
+		Double GetEccentricity() const { return this->eccentricity; }
 		Double CalLonByDist(Double dLat, Double dLon, Double distM) const;
 		Double CalLatByDist(Double dLat, Double distM) const;
 		Double CalRadiusAtLat(Double lat) const { return CalRadiusAtRLat(lat * Math::PI / 180.0); }
 		Double CalRadiusAtRLat(Double rlat) const { Double ec = Math_Cos(rlat) * this->eccentricity; return this->semiMajorAxis / Math_Sqrt(1.0 - ec * ec); }
 		Bool Equals(EarthEllipsoid *ellipsoid) const { return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening; }
 		Text::CString GetName() const;
+		void ToString(Text::StringBuilderUTF8 *sb) const;
 
 		void operator=(const EarthEllipsoid &ellipsoid);
 		void operator=(const EarthEllipsoid *ellipsoid);

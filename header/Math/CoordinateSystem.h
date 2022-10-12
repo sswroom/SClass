@@ -87,6 +87,8 @@ namespace Math
 		static void ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
 		static void ConvertXYArray(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
 		static void ConvertToCartesianCoord(Math::CoordinateSystem *srcCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
+		static void DatumData1ToString(const DatumData1 *datum, Text::StringBuilderUTF8 *sb);
+		static Text::CString CoordinateSystemTypeGetName(CoordinateSystemType csysType);
 	};
 }
 #endif

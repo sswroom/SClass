@@ -199,6 +199,14 @@ Text::CString Math::EarthEllipsoid::GetName() const
 	return info->name;
 }
 
+void Math::EarthEllipsoid::ToString(Text::StringBuilderUTF8 *sb) const
+{
+	sb->AppendC(UTF8STRC("Semi-Major Axis: "));
+	Text::SBAppendF64(sb, this->GetSemiMajorAxis());
+	sb->AppendC(UTF8STRC("\r\nInverse Flattening: "));
+	Text::SBAppendF64(sb, this->GetInverseFlattening());
+}
+
 void Math::EarthEllipsoid::operator=(const EarthEllipsoid &ellipsoid)
 {
 	this->semiMajorAxis = ellipsoid.semiMajorAxis;

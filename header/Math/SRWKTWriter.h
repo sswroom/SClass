@@ -13,6 +13,7 @@ namespace Math
 
 		UTF8Char *WriteCSys(Math::CoordinateSystem *csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
 		UTF8Char *WriteDatum(const Math::CoordinateSystem::DatumData1 *datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
+		UTF8Char *WriteSpheroid(const Math::CoordinateSystem::SpheroidData *spheroid, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
 		UTF8Char *WriteNextLine(UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
 		virtual UTF8Char *WriteSRID(UTF8Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt) = 0;
 		virtual UTF8Char *WritePrimem(UTF8Char *buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt) = 0;

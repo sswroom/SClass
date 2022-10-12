@@ -181,3 +181,52 @@ void Math::CoordinateSystem::ConvertToCartesianCoord(Math::CoordinateSystem *src
 	}
 	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcY, srcX, srcZ, destX, destY, destZ);
 }
+
+void Math::CoordinateSystem::DatumData1ToString(const DatumData1 *datum, Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendC(UTF8STRC("Datum Name: "));
+	sb->AppendC(datum->name, datum->nameLen);
+	sb->AppendC(UTF8STRC("\r\nRotate Center: "));
+	Text::SBAppendF64(sb, datum->x0);
+	sb->AppendC(UTF8STRC(", "));
+	Text::SBAppendF64(sb, datum->y0);
+	sb->AppendC(UTF8STRC(", "));
+	Text::SBAppendF64(sb, datum->z0);
+	sb->AppendC(UTF8STRC("\r\nShifting: "));
+	Text::SBAppendF64(sb, datum->cX);
+	sb->AppendC(UTF8STRC(", "));
+	Text::SBAppendF64(sb, datum->cY);
+	sb->AppendC(UTF8STRC(", "));
+	Text::SBAppendF64(sb, datum->cZ);
+	sb->AppendC(UTF8STRC("\r\nRotation: "));
+	Text::SBAppendF64(sb, datum->xAngle);
+	sb->AppendC(UTF8STRC(", "));
+	Text::SBAppendF64(sb, datum->yAngle);
+	sb->AppendC(UTF8STRC(", "));
+	Text::SBAppendF64(sb, datum->zAngle);
+	sb->AppendC(UTF8STRC(" ("));
+	sb->Append(Math::Unit::Angle::GetUnitName(datum->aunit));
+	sb->AppendC(UTF8STRC(")\r\nScale Factor: "));
+	Text::SBAppendF64(sb, datum->scale);
+	sb->AppendC(UTF8STRC("\r\n"));
+	datum->spheroid.ellipsoid->ToString(sb);
+}
+
+Text::CString Math::CoordinateSystem::CoordinateSystemTypeGetName(CoordinateSystemType csysType)
+{
+	switch (csysType)
+	{
+	case CoordinateSystemType::Geographic:
+		return CSTR("Geographic");
+	case CoordinateSystemType::MercatorProjected:
+		return CSTR("Transverse Mercator");
+	case CoordinateSystemType::Mercator1SPProjected:
+		return CSTR("Mercator 1SP");
+	case CoordinateSystemType::PointMapping:
+		return CSTR("Point Mapping");
+	case CoordinateSystemType::GausskrugerProjected:
+		return CSTR("Gauss-Kruger");
+	default:
+		return CSTR("Unknown");
+	}
+}

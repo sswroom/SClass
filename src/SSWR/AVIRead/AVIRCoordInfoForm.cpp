@@ -80,6 +80,78 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 			return;
 		}
 	}
+	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_DATUM)
+	{
+		const Math::CoordinateSystemManager::DatumInfo *datumInfo = Math::CoordinateSystemManager::SRGetDatum(srinfo->srid);
+		if (datumInfo)
+		{
+			const Math::CoordinateSystemManager::SpheroidInfo *spheroid = Math::CoordinateSystemManager::SRGetSpheroid(datumInfo->spheroid);
+			if (spheroid)
+			{
+				Text::StringBuilderUTF8 sb;
+				Math::CoordinateSystem::DatumData1 datum;
+				Math::EarthEllipsoid ee(spheroid->eet);
+				Math::CoordinateSystemManager::FillDatumData(&datum, datumInfo, Text::CString::FromPtr((const UTF8Char*)srinfo->name), &ee, spheroid);
+				Math::SROGCWKTWriter wkt;
+				sptr = wkt.WriteDatum(&datum, sbuff, 0, Text::LineBreakType::CRLF);
+				this->txtWKT->SetText(CSTRP(sbuff, sptr));
+				Math::CoordinateSystem::DatumData1ToString(&datum, &sb);
+				this->txtDisp->SetText(sb.ToCString());
+				return;
+			}
+		}
+	}
+	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_SPHERO)
+	{
+		const Math::CoordinateSystemManager::SpheroidInfo *spheroid = Math::CoordinateSystemManager::SRGetSpheroid(srinfo->srid);
+		if (spheroid)
+		{
+			Text::StringBuilderUTF8 sb;
+			Math::CoordinateSystem::SpheroidData data;
+			Math::EarthEllipsoid ee(spheroid->eet);
+			data.name = spheroid->name;
+			data.nameLen = spheroid->nameLen;
+			data.srid = spheroid->srid;
+			data.ellipsoid = &ee;
+			Math::SROGCWKTWriter wkt;
+			sptr = wkt.WriteSpheroid(&data, sbuff, 0, Text::LineBreakType::CRLF);
+			this->txtWKT->SetText(CSTRP(sbuff, sptr));
+			ee.ToString(&sb);
+			this->txtDisp->SetText(sb.ToCString());
+			return;
+		}
+	}
+	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_PRIMEM)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("PRIMEM[\""));
+		sb.AppendSlow((const UTF8Char*)srinfo->name);
+		sb.AppendC(UTF8STRC("\",0,AUTHORITY[\"EPSG\",\""));
+		sb.AppendU32(srinfo->srid);
+		sb.AppendC(UTF8STRC("\"]]"));
+		this->txtWKT->SetText(sb.ToCString());
+		this->txtDisp->SetText(sb.ToCString());
+		return;
+	}
+	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_UNIT)
+	{
+		switch (srinfo->srid)
+		{
+		case 9001:
+			this->txtWKT->SetText(CSTR("UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]]"));
+			this->txtDisp->SetText(CSTR("Unit: metre\r\nMeter Ratio: 1"));
+			break;
+		case 9122:
+			this->txtWKT->SetText(CSTR("UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]]"));
+			this->txtDisp->SetText(CSTR("Unit: degree\r\nMeter Ratio: 0.01745329251994328"));
+			break;
+		default:
+			this->txtWKT->SetText(CSTR(""));
+			this->txtDisp->SetText(CSTR(""));
+			break;
+		}
+		return;
+	}
 	this->txtWKT->SetText(CSTR(""));
 	this->txtDisp->SetText(CSTR(""));
 }
