@@ -4175,6 +4175,8 @@ Text/SpreadSheet/Worksheet.h: ../../src/Text/SpreadSheet/Worksheet.cpp
 @Worksheet.o
 Text/TextBinEnc/ANSITextBinEnc.h: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
 @ANSITextBinEnc.o
+Text/TextBinEnc/ASCII85Enc.h: ../../src/Text/TextBinEnc/ASCII85Enc.cpp
+@ASCII85Enc.o
 Text/TextBinEnc/ASN1OIDBinEnc.h: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
 @ASN1OIDBinEnc.o
 Text/TextBinEnc/Base32Enc.h: ../../src/Text/TextBinEnc/Base32Enc.cpp
@@ -5692,6 +5694,7 @@ WorkbookDataSource.o: ../../src/Text/SpreadSheet/WorkbookDataSource.cpp
 WorkbookFont.o: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 Worksheet.o: ../../src/Text/SpreadSheet/Worksheet.cpp
 ANSITextBinEnc.o: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
+ASCII85Enc.o: ../../src/Text/TextBinEnc/ASCII85Enc.cpp
 ASN1OIDBinEnc.o: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
 Base32Enc.o: ../../src/Text/TextBinEnc/Base32Enc.cpp
 Base64Enc.o: ../../src/Text/TextBinEnc/Base64Enc.cpp

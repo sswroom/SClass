@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/TextBinEnc/ANSITextBinEnc.h"
+#include "Text/TextBinEnc/ASCII85Enc.h"
 #include "Text/TextBinEnc/ASN1OIDBinEnc.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/CPPByteArrBinEnc.h"
@@ -50,6 +51,8 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 	NEW_CLASS(enc, Text::TextBinEnc::Punycode());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::IntegerMSBEnc());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::ASCII85Enc());
 	this->encList->Add(enc);
 }
 

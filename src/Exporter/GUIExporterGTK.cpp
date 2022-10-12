@@ -34,7 +34,9 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	case Media::PF_B8G8R8:
 		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_R8G8B8:
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_R8G8B8A8:
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_PAL_1:
 	case Media::PF_PAL_2:
 	case Media::PF_PAL_4:
@@ -109,14 +111,24 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_B8G8R8:
-		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
-		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
-		ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 32);
+		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 3);
+		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 3);
+		ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 24);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
+		*relBuff = tmpBuff;
+		return pixBuf;
+	case Media::PF_R8G8B8:
+		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 3);
+		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 3);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_R8G8B8A8:
-	case Media::PF_R8G8B8:
+		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
+		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth << 2, 0, 0);
+		*relBuff = tmpBuff;
+		return pixBuf;
 	case Media::PF_PAL_1:
 	case Media::PF_PAL_2:
 	case Media::PF_PAL_4:
