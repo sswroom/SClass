@@ -43,7 +43,7 @@ namespace Map
 		virtual Bool IsMercatorProj() = 0;
 		virtual UOSInt GetTileSize() = 0;
 		virtual Bool CanQuery() const { return false; };
-		virtual Math::Geometry::Vector2D *QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const { return 0; };
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi) {};
 
 		virtual UOSInt GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids) = 0;

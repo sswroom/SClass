@@ -321,9 +321,9 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 	return this->mapService->CanQuery();
 }
 
-Math::Geometry::Vector2D *Map::DrawMapServiceLayer::QueryInfo(Math::Coord2DDbl coord, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
-	return this->mapService->QueryInfo(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, nameList, valueList);
+	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
 
 void Map::DrawMapServiceLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)

@@ -381,9 +381,9 @@ Bool Map::IMapDrawLayer::CanQuery()
 	return false;
 }
 
-Math::Geometry::Vector2D *Map::IMapDrawLayer::QueryInfo(Math::Coord2DDbl coord, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::IMapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
-	return 0;
+	return false;
 }
 
 Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)

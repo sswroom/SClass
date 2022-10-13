@@ -4,8 +4,9 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Ellipse.h"
-#include "Math/Geometry/PieArea.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/PieArea.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
@@ -451,12 +452,15 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 		}
 		img->DelPen(p);
 	}
-	if (this->selVec)
+	UOSInt i = 0;
+	UOSInt j = this->selVecList.GetCount();
+	while (i < j)
 	{
-		Math::Geometry::Vector2D::VectorType vecType = this->selVec->GetVectorType();
+		Math::Geometry::Vector2D *vec = this->selVecList.GetItem(i);
+		Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 		if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)this->selVec;
+			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			UOSInt nPoint;
 			Math::Coord2DDbl *points = pl->GetPointList(&nPoint);
@@ -468,7 +472,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 		}
 		else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->selVec;
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			UOSInt nPoint;
 			UOSInt nPtOfst;
@@ -492,9 +496,9 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 
 			img->DelPen(p);
 		}
-		else if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
+		else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
-			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)this->selVec;
+			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			UOSInt nPoint;
@@ -518,9 +522,40 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			img->DelPen(p);
 			img->DelBrush(b);
 		}
-		else if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Ellipse)
+		else if (vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
 		{
-			Math::Geometry::Ellipse *circle = (Math::Geometry::Ellipse*)this->selVec;
+			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
+			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
+			UOSInt npg = mpg->GetCount();
+			UOSInt nPoint;
+			UOSInt nPtOfst;
+			while (npg-- > 0)
+			{
+				Math::Geometry::Polygon *pg = mpg->GetItem(npg);
+				Math::Coord2DDbl *points = pg->GetPointList(&nPoint);
+				UInt32 *ptOfsts = pg->GetPtOfstList(&nPtOfst);
+				Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+				UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
+				view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+
+				UOSInt i = nPtOfst;
+				while (i-- > 0)
+				{
+					myPtCnts[i] = (UInt32)nPoint - ptOfsts[i];
+					nPoint = ptOfsts[i];
+				}
+
+				img->DrawPolyPolygon(dpoints, myPtCnts, nPtOfst, p, b);
+				MemFreeA(dpoints);
+				MemFree(myPtCnts);
+			}
+			img->DelPen(p);
+			img->DelBrush(b);
+		}
+		else if (vecType == Math::Geometry::Vector2D::VectorType::Ellipse)
+		{
+			Math::Geometry::Ellipse *circle = (Math::Geometry::Ellipse*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			Math::Coord2DDbl bl = view->MapXYToScnXY(circle->GetTL());
@@ -529,7 +564,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			img->DelPen(p);
 			img->DelBrush(b);
 		}
-		else if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::PieArea)
+		else if (vecType == Math::Geometry::Vector2D::VectorType::PieArea)
 		{
 //			Math::PieArea *pie = (Math::PieArea*)this->selVec;
 /*			BITMAPINFOHEADER bmih;
@@ -612,9 +647,9 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			}
 			DeleteDC(hdcBmp);*/
 		}
-		else if (this->selVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Image)
+		else if (vecType == Math::Geometry::Vector2D::VectorType::Image)
 		{
-			Math::Geometry::VectorImage *vimg = (Math::Geometry::VectorImage*)this->selVec;
+			Math::Geometry::VectorImage *vimg = (Math::Geometry::VectorImage*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
 			UInt32 nPoints;
@@ -650,7 +685,20 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Math::Coord2DDbl o
 			img->DelPen(p);
 			img->DelBrush(b);
 		}
+		i++;
 	}
+}
+
+void UI::GUIMapControl::ReleaseSelVecList()
+{
+	UOSInt i = this->selVecList.GetCount();
+	Math::Geometry::Vector2D *vec;
+	while (i-- > 0)
+	{
+		vec = this->selVecList.GetItem(i);
+		DEL_CLASS(vec);
+	}
+	this->selVecList.Clear();
 }
 
 UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
@@ -681,7 +729,6 @@ UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 	this->markerPos = Math::Coord2DDbl(0, 0);
 	this->showMarker = false;
-	this->selVec = 0;
 	this->renderer = renderer;
 	this->pauseUpdate = false;
 	this->releaseRenderer = false;
@@ -722,7 +769,6 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 
 	this->markerPos = Math::Coord2DDbl(0, 0);
 	this->showMarker = false;
-	this->selVec = 0;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, &color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->releaseRenderer = true;
@@ -749,11 +795,7 @@ UI::GUIMapControl::~GUIMapControl()
 	{
 		this->eng->DeleteImage(this->bgImg);
 	}
-	if (this->selVec)
-	{
-		DEL_CLASS(this->selVec);
-		this->selVec = 0;
-	}
+	this->ReleaseSelVecList();
 	if (this->renderer)
 	{
 		this->renderer->SetUpdatedHandler(0, 0);
@@ -1014,12 +1056,18 @@ void UI::GUIMapControl::HideMarker()
 
 void UI::GUIMapControl::SetSelectedVector(Math::Geometry::Vector2D *vec)
 {
-	if (this->selVec)
+	this->ReleaseSelVecList();
+	if (vec)
 	{
-		DEL_CLASS(this->selVec);
-		this->selVec = 0;
+		this->selVecList.Add(vec);
 	}
-	this->selVec = vec;
+	this->Redraw();
+}
+
+void UI::GUIMapControl::SetSelectedVectors(Data::ArrayList<Math::Geometry::Vector2D*> *vecList)
+{
+	this->ReleaseSelVecList();
+	this->selVecList.AddAll(vecList);
 	this->Redraw();
 }
 

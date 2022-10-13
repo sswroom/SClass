@@ -115,9 +115,9 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 	return true;
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRITileMap::QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
+Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
-	return this->esriMap->QueryInfo(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, nameList, valueList);
+	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.width), (UInt32)Double2Int32(this->dispSize.height), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
 
 void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2D<Double> size, Double dpi)

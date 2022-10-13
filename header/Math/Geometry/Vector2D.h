@@ -3,6 +3,7 @@
 #include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/RectAreaDbl.h"
+#include "Text/CString.h"
 
 namespace Math
 {
@@ -66,6 +67,7 @@ namespace Math
 			Math::Coord2DDbl GetDistanceCenter() const;
 
 			static Bool VectorTypeIsPoint(VectorType vecType);
+			static Text::CString VectorTypeGetName(VectorType vecType);
 		};
 	}
 }

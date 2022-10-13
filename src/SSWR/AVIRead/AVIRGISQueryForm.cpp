@@ -31,85 +31,34 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		{
 			Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt.x, mapPt.y, 0, &mapPt.x, &mapPt.y, &tmp);
 		}
+		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
 		{
-			Data::ArrayList<Text::String*> nameList;
-			Data::ArrayList<Text::String*> valueList;
-			Math::Geometry::Vector2D *vec = me->lyr->QueryInfo(mapPt, &nameList, &valueList);
-			if (vec)
+			if (me->lyr->QueryInfos(mapPt, &me->queryVecList, &me->queryValueOfstList, &me->queryNameList, &me->queryValueList) && me->queryVecList.GetCount() > 0)
 			{
-				Text::String *name;
-				Text::String *value;
-				me->lvInfo->ClearItems();
+				Math::Geometry::Vector2D *vec;
+				me->cboObj->ClearItems();
 				i = 0;
-				j = nameList.GetCount();
+				j = me->queryVecList.GetCount();
 				while (i < j)
 				{
-					name = nameList.GetItem(i);
-					value = valueList.GetItem(i);
-					me->lvInfo->AddItem(name, 0);
-					if (value)
-					{
-						me->lvInfo->SetSubItem(i, 1, value);
-						value->Release();
-					}
-					name->Release();
+					vec = me->queryVecList.GetItem(i);
+					me->cboObj->AddItem(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()), 0);
 					i++;
 				}
+				me->cboObj->SetSelectedIndex(0);
+				me->SetQueryItem(0);
 
-				Math::RectAreaDbl bounds;
 				if (csys && lyrCSys && !csys->Equals(lyrCSys))
 				{
-					Double z;
-					vec->GetBounds(&bounds);
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, csys, bounds.tl.x, bounds.tl.y, 0, &bounds.tl.x, &bounds.tl.y, &z);
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, csys, bounds.br.x, bounds.br.y, 0, &bounds.br.x, &bounds.br.y, &z);
-					vec->ConvCSys(lyrCSys, csys);
-				}
-				else
-				{
-					vec->GetBounds(&bounds);
-				}
-
-				Math::VectorTextWriter *writer = (Math::VectorTextWriter*)me->cboShapeFmt->GetSelectedItem();
-				Text::StringBuilderUTF8 sb;
-				writer->ToText(&sb, vec);
-				me->txtShape->SetText(sb.ToCString());
-
-				sptr = Text::StrDouble(sbuff, bounds.tl.x);
-				me->txtMinX->SetText(CSTRP(sbuff, sptr));
-				sptr = Text::StrDouble(sbuff, bounds.tl.y);
-				me->txtMinY->SetText(CSTRP(sbuff, sptr));
-				sptr = Text::StrDouble(sbuff, bounds.br.x);
-				me->txtMaxX->SetText(CSTRP(sbuff, sptr));
-				sptr = Text::StrDouble(sbuff, bounds.br.y);
-				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
-
-				SDEL_CLASS(me->currVec);
-/*				if (lyrCSys)
-				{
-					Math::Coord2DDbl center = vec->GetDistanceCenter();
-					Double dist = Math::GeometryTool::CalcMaxDistanceFromPoint(center, vec, Math::Unit::Distance::DU_METER);
-					if (lyrCSys->IsProjected())
+					i = me->queryVecList.GetCount();
+					while (i-- > 0)
 					{
-						NEW_CLASS(me->currVec, Math::Geometry::Ellipse(lyrCSys->GetSRID(), center.x - dist, center.y - dist, dist * 2, dist * 2));
+						me->queryVecList.GetItem(i)->ConvCSys(lyrCSys, csys);
 					}
-					else
-					{
-						Math::EarthEllipsoid *ellipsoid = ((Math::GeographicCoordinateSystem*)lyrCSys)->GetEllipsoid();
-						Double x1 = ellipsoid->CalLonByDist(center.lat, center.lon, -dist);
-						Double y1 = ellipsoid->CalLatByDist(center.lat, -dist);
-						NEW_CLASS(me->currVec, Math::Geometry::Ellipse(lyrCSys->GetSRID(), x1, y1, (center.x - x1) * 2, (center.y - y1) * 2));
-					}
-					DEL_CLASS(vec);
-					vec = me->currVec->Clone();
 				}
-				else
-				{*/
-					me->currVec = vec->Clone();
-//				}
 
-				me->navi->SetSelectedVector(vec);
+				me->navi->SetSelectedVectors(&me->queryVecList);
 				me->layerNames = false;
 				return false;
 			}
@@ -121,6 +70,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			me->layerNames = true;
 			me->ShowLayerNames();
 		}
+		me->cboObj->ClearItems();
 		if (id == -1)
 		{
 			i = me->lyr->GetColumnCnt();
@@ -175,6 +125,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->txtMaxX->SetText(CSTRP(sbuff, sptr));
 				sptr = Text::StrDouble(sbuff, bounds.br.y);
 				me->txtMaxY->SetText(CSTRP(sbuff, sptr));
+				me->cboObj->AddItem(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()), 0);
+				me->cboObj->SetSelectedIndex(0);
 			}
 			me->navi->SetSelectedVector(vec);
 			me->lyr->ReleaseNameArr(nameArr);
@@ -223,6 +175,19 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
+	if (!me->layerNames)
+	{
+		UOSInt index = me->cboObj->GetSelectedIndex();
+		if (index != INVALID_INDEX)
+		{
+			me->SetQueryItem(index);
+		}
+	}
+}
+
 void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 {
 	this->lvInfo->ClearItems();
@@ -243,6 +208,68 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 	}
 }
 
+void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
+{
+	Text::String *value;
+	UOSInt i = this->queryNameList.GetCount();
+	while (i-- > 0)
+	{
+		this->queryNameList.GetItem(i)->Release();
+		value = this->queryValueList.GetItem(i);
+		SDEL_STRING(value);
+	}
+	this->queryNameList.Clear();
+	this->queryValueList.Clear();
+	this->queryValueOfstList.Clear();
+	this->queryVecList.Clear();
+}
+
+void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
+{
+	Math::Geometry::Vector2D *vec = this->queryVecList.GetItem(index)->Clone();
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	Text::String *name;
+	Text::String *value;
+	this->lvInfo->ClearItems();
+	UOSInt i = this->queryValueOfstList.GetItem(index);
+	UOSInt j = this->queryValueOfstList.GetItem(index + 1);
+	UOSInt k;
+	if (j == 0)
+		j = this->queryNameList.GetCount();
+	while (i < j)
+	{
+		name = this->queryNameList.GetItem(i);
+		value = this->queryValueList.GetItem(i);
+		k = this->lvInfo->AddItem(name, 0);
+		if (value)
+		{
+			this->lvInfo->SetSubItem(k, 1, value);
+		}
+		i++;
+	}
+
+	Math::RectAreaDbl bounds;
+	vec->GetBounds(&bounds);
+
+	Math::VectorTextWriter *writer = (Math::VectorTextWriter*)this->cboShapeFmt->GetSelectedItem();
+	Text::StringBuilderUTF8 sb;
+	writer->ToText(&sb, vec);
+	this->txtShape->SetText(sb.ToCString());
+
+	sptr = Text::StrDouble(sbuff, bounds.tl.x);
+	this->txtMinX->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, bounds.tl.y);
+	this->txtMinY->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, bounds.br.x);
+	this->txtMaxX->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, bounds.br.y);
+	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
+
+	SDEL_CLASS(this->currVec);
+	this->currVec = vec;
+}
+
 SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::IMapDrawLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
@@ -257,6 +284,12 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
+	NEW_CLASS(this->pnlObj, UI::GUIPanel(ui, this));
+	this->pnlObj->SetRect(0, 0, 100, 31, false);
+	this->pnlObj->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->cboObj, UI::GUIComboBox(ui, this->pnlObj, false));
+	this->cboObj->SetRect(4, 4, 200, 23, false);
+	this->cboObj->HandleSelectionChange(OnObjSelChg, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -333,6 +366,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRGISQueryForm::~AVIRGISQueryForm()
 {
+	this->ClearQueryResults();
 	this->navi->UnhandleMapMouse(this);
 	SDEL_CLASS(this->currVec);
 }

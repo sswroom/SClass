@@ -22,6 +22,7 @@ namespace SSWR
 			virtual void HideMarker() = 0;
 			virtual void AddLayer(Map::IMapDrawLayer *layer) = 0;
 			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec) = 0;
+			virtual void SetSelectedVectors(Data::ArrayList<Math::Geometry::Vector2D*> *vecList) = 0;
 			virtual void RedrawMap() = 0;
 			virtual Math::CoordinateSystem *GetCoordinateSystem() = 0;
 

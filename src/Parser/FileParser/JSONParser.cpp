@@ -5,11 +5,14 @@
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/JSONParser.h"
 #include "Text/Encoding.h"
 #include "Text/JSON.h"
+
+#include <stdio.h>
 
 Parser::FileParser::JSONParser::JSONParser()
 {
@@ -430,92 +433,111 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 		else if (sType->Equals(UTF8STRC("MultiPolygon")))
 		{
 			jbase = obj->GetObjectValue(CSTR("coordinates"));
-			if (jbase && jbase->GetType() == Text::JSONType::Array && ((Text::JSONArray*)jbase)->GetArrayLength() == 1)
+			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
-				jbase = ((Text::JSONArray*)jbase)->GetArrayValue(0);
-				if (jbase && jbase->GetType() == Text::JSONType::Array)
+				Math::Geometry::MultiPolygon *mpg = 0;
+				Text::JSONArray *pgCoords = (Text::JSONArray*)jbase;
+				UOSInt pgIndex = 0;
+				UOSInt pgCnt = pgCoords->GetArrayLength();
+				while (pgIndex < pgCnt)
 				{
-					Text::JSONArray *coord = (Text::JSONArray*)jbase;
-					Data::ArrayList<Double> ptList;
-					Data::ArrayList<UInt32> partList;
-					Bool hasData = false;
-					Text::JSONArray *ptArr;
-					Text::JSONArray *pt;
-					UOSInt i = 0;
-					UOSInt j = coord->GetArrayLength();
-					UOSInt k;
-					UOSInt l;
-					while (i < j)
+					jbase = pgCoords->GetArrayValue(pgIndex);
+					if (jbase && jbase->GetType() == Text::JSONType::Array)
 					{
-						jbase = coord->GetArrayValue(i);
-						if (jbase && jbase->GetType() == Text::JSONType::Array)
+						Text::JSONArray *coord = (Text::JSONArray*)jbase;
+						Data::ArrayList<Double> ptList;
+						Data::ArrayList<Double> altList;
+						Data::ArrayList<UInt32> partList;
+						Bool hasData = false;
+						Text::JSONArray *ptArr;
+						Text::JSONArray *pt;
+						UOSInt i = 0;
+						UOSInt j = coord->GetArrayLength();
+						UOSInt k;
+						UOSInt l;
+						UOSInt nVal;
+						while (i < j)
 						{
-							ptArr = (Text::JSONArray*)jbase;
-							hasData = false;
-							k = 0;
-							l = ptArr->GetArrayLength();
-							while (k < l)
+							jbase = coord->GetArrayValue(i);
+							if (jbase && jbase->GetType() == Text::JSONType::Array)
 							{
-								jbase = ptArr->GetArrayValue(k);
-								if (jbase && jbase->GetType() == Text::JSONType::Array)
+								ptArr = (Text::JSONArray*)jbase;
+								hasData = false;
+								k = 0;
+								l = ptArr->GetArrayLength();
+								while (k < l)
 								{
-									pt = (Text::JSONArray*)jbase;
-									if (pt->GetArrayLength() == 2)
+									jbase = ptArr->GetArrayValue(k);
+									if (jbase && jbase->GetType() == Text::JSONType::Array)
 									{
-										if (!hasData)
+										pt = (Text::JSONArray*)jbase;
+										nVal = pt->GetArrayLength();
+										if (nVal >= 2)
 										{
-											hasData = true;
-											partList.Add((UInt32)ptList.GetCount() >> 1);
-										}
-										jbase = pt->GetArrayValue(0);
-										if (jbase && jbase->GetType() == Text::JSONType::Number)
-										{
-											ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
-										}
-										else
-										{
-											ptList.Add(0);
-										}
-										jbase = pt->GetArrayValue(1);
-										if (jbase && jbase->GetType() == Text::JSONType::Number)
-										{
-											ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
-										}
-										else
-										{
-											ptList.Add(0);
+											if (!hasData)
+											{
+												hasData = true;
+												partList.Add((UInt32)ptList.GetCount() >> 1);
+											}
+											ptList.Add(pt->GetArrayDouble(0));
+											ptList.Add(pt->GetArrayDouble(1));
+											if (nVal >= 3)
+											{
+												altList.Add(pt->GetArrayDouble(2));
+											}
 										}
 									}
+									k++;
 								}
-								k++;
 							}
-						}
-						i++;
-					}
-					if (ptList.GetCount() >= 4)
-					{
-						Math::Coord2DDbl *ptArr;
-						Math::Geometry::Polygon *pg;
-						NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, false, false));
-						UInt32 *ptOfsts = pg->GetPtOfstList(&j);
-						i = 0;
-						while (i < j)
-						{
-							ptOfsts[i] = partList.GetItem(i);
 							i++;
 						}
-						ptArr = pg->GetPointList(&j);
-						i = 0;
-						while (i < j)
+						if (ptList.GetCount() >= 4)
 						{
-							ptArr[i].x = ptList.GetItem((i << 1));
-							ptArr[i].y = ptList.GetItem((i << 1) + 1);
-							i++;
+							Math::Coord2DDbl *ptArr;
+							Math::Geometry::Polygon *pg;
+							Bool hasZ = ptList.GetCount() == altList.GetCount() * 2;
+							NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasZ, false));
+							UInt32 *ptOfsts = pg->GetPtOfstList(&j);
+							i = 0;
+							while (i < j)
+							{
+								ptOfsts[i] = partList.GetItem(i);
+								i++;
+							}
+							ptArr = pg->GetPointList(&j);
+							i = 0;
+							while (i < j)
+							{
+								ptArr[i].x = ptList.GetItem((i << 1));
+								ptArr[i].y = ptList.GetItem((i << 1) + 1);
+								i++;
+							}
+							if (hasZ)
+							{
+								Double *altArr = pg->GetZList(&j);
+								i = 0;
+								while (i < j)
+								{
+									altArr[i] = altList.GetItem(i);
+									i++;
+								}
+							}
+							if (mpg == 0)
+							{
+								NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, hasZ, false));
+							}
+							mpg->AddGeometry(pg);
 						}
-						return pg;
 					}
+					pgIndex++;
 				}
+				return mpg;
 			}
+		}
+		else
+		{
+			printf("JSONParser: GeoJSON unknown type: %s\r\n", sType->v);
 		}
 	}
 	return 0;

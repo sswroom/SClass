@@ -61,3 +61,55 @@ Bool Math::Geometry::Vector2D::VectorTypeIsPoint(VectorType vecType)
 {
 	return vecType == VectorType::Point || vecType == VectorType::MultiPoint;
 }
+
+Text::CString Math::Geometry::Vector2D::VectorTypeGetName(VectorType vecType)
+{
+	switch (vecType)
+	{
+	case VectorType::Point:
+		return CSTR("Point");
+	case VectorType::LineString:
+		return CSTR("LineString");
+	case VectorType::Polygon:
+		return CSTR("Polygon");
+	case VectorType::MultiPoint:
+		return CSTR("MultiPoint");
+	case VectorType::Polyline: //MultiLineString
+		return CSTR("MultiLineString");
+	case VectorType::MultiPolygon:
+		return CSTR("MultiPolygon");
+	case VectorType::GeometryCollection:
+		return CSTR("GeometryCollection");
+	case VectorType::CircularString:
+		return CSTR("CircularString");
+	case VectorType::CompoundCurve:
+		return CSTR("CompoundCurve");
+	case VectorType::CurvePolygon:
+		return CSTR("CurvePolygon");
+	case VectorType::MultiCurve:
+		return CSTR("MultiCurve");
+	case VectorType::MultiSurface:
+		return CSTR("MultiSurface");
+	case VectorType::Curve:
+		return CSTR("Curve");
+	case VectorType::Surface:
+		return CSTR("Surface");
+	case VectorType::PolyhedralSurface:
+		return CSTR("PolyhedralSurface");
+	case VectorType::Tin:
+		return CSTR("Tin");
+	case VectorType::Triangle:
+		return CSTR("Triangle");
+	case VectorType::Image:
+		return CSTR("Image");
+	case VectorType::String:
+		return CSTR("String");
+	case VectorType::Ellipse:
+		return CSTR("Ellipse");
+	case VectorType::PieArea:
+		return CSTR("PieArea");
+	case VectorType::Unknown:
+	default:
+		return CSTR("Unknown");
+	}
+}

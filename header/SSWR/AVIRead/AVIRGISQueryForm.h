@@ -20,6 +20,8 @@ namespace SSWR
 		class AVIRGISQueryForm : public UI::GUIForm
 		{
 		private:
+			UI::GUIPanel *pnlObj;
+			UI::GUIComboBox *cboObj;
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpInfo;
@@ -55,12 +57,20 @@ namespace SSWR
 			Math::VectorTextWriterList writerList;
 			Bool layerNames;
 
+			Data::ArrayList<Math::Geometry::Vector2D*> queryVecList;
+			Data::ArrayList<UOSInt> queryValueOfstList;
+			Data::ArrayList<Text::String*> queryNameList;
+			Data::ArrayList<Text::String*> queryValueList;
+
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnShapeFmtChanged(void *userObj);
+			static void __stdcall OnObjSelChg(void *userObj);
 
 			void ShowLayerNames();
+			void ClearQueryResults();
+			void SetQueryItem(UOSInt index);
 		public:
 			AVIRGISQueryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::IMapDrawLayer *lyr, IMapNavigator *navi);
 			virtual ~AVIRGISQueryForm();

@@ -249,6 +249,18 @@ void Map::WebMapTileServiceSource::ReadLayer(Text::XMLReader *reader)
 					{
 						resource->resourceType = ResourceType::Unknown;
 					}
+					if (resource->format->Equals(UTF8STRC("image/png")))
+					{
+						resource->imgType = Map::TileMap::ImageType::IT_PNG;
+					}
+					else if (resource->format->Equals(UTF8STRC("image/jpeg")))
+					{
+						resource->imgType = Map::TileMap::ImageType::IT_JPG;
+					}
+					else
+					{
+						resource->imgType = Map::TileMap::ImageType::IT_PNG;
+					}
 					layer->resourceURLs.Add(resource);
 				}
 				reader->SkipElement();
@@ -850,15 +862,15 @@ Bool Map::WebMapTileServiceSource::CanQuery() const
 	return this->currResourceInfo != 0;
 }
 
-Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
+Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
 	if (this->currResourceInfo == 0)
-		return 0;
+		return false;
 
 	TileMatrix *tileMatrix = this->GetTileMatrix(level);
 	if (tileMatrix == 0)
 	{
-		return 0;
+		return false;
 	}
 	TileMatrixDef *tileMatrixDef = this->currDef->tiles.GetItem(level);
 
@@ -890,6 +902,7 @@ Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DD
 	printf("Info URL: %s\r\n", urlSb.ToString());
 #endif
 
+	Math::Geometry::Vector2D *vec;
 	Text::StringBuilderUTF8 sb;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -906,6 +919,7 @@ Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DD
 		Text::PString sarr[2];
 		UOSInt lineCnt;
 		lineArr[1] = sb;
+		valueOfstList->Add(0);
 		while (true)
 		{
 			lineCnt = Text::StrSplitLineP(lineArr, 2, lineArr[1]);
@@ -918,7 +932,10 @@ Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DD
 			if (lineCnt != 2)
 				break;
 		}
-		return NEW_CLASS_D(Math::Geometry::Point(this->currDef->csys->GetSRID(), coord));
+
+		NEW_CLASS(vec, Math::Geometry::Point(this->currDef->csys->GetSRID(), coord));
+		vecList->Add(vec);
+		return true;
 	}
 	else if (this->currResourceInfo->format->Equals(UTF8STRC("application/json")))
 	{
@@ -939,39 +956,49 @@ Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DD
 					}
 				}
 			}
-			Text::JSONBase *feature = json->GetValue(UTF8STRC("features[0]"));
-			if (feature)
+			Text::JSONBase *featuresObj = json->GetValue(UTF8STRC("features"));
+			if (featuresObj && featuresObj->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONBase *geometry = feature->GetValue(UTF8STRC("geometry"));
-				if (geometry && geometry->GetType() == Text::JSONType::Object)
+				Text::JSONArray *features = (Text::JSONArray*)featuresObj;
+				UOSInt i = 0;
+				UOSInt j = features->GetArrayLength();
+				while (i < j)
 				{
-					Math::Geometry::Vector2D *vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
-					if (vec)
+					Text::JSONBase *feature = features->GetArrayValue(i);
+					Text::JSONBase *geometry = feature->GetValue(UTF8STRC("geometry"));
+					if (geometry && geometry->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONBase *properties = feature->GetValue(UTF8STRC("properties"));
-						if (properties && properties->GetType() == Text::JSONType::Object)
+						Math::Geometry::Vector2D *vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
+						if (vec)
 						{
-							Data::ArrayList<Text::String*> names;
-							Text::String *name;
-							Text::StringBuilderUTF8 sb;
-							Text::JSONObject *obj = (Text::JSONObject*)properties;
-							obj->GetObjectNames(&names);
-							UOSInt i = 0;
-							UOSInt j = names.GetCount();
-							while (i < j)
+							valueOfstList->Add(nameList->GetCount());
+							Text::JSONBase *properties = feature->GetValue(UTF8STRC("properties"));
+							if (properties && properties->GetType() == Text::JSONType::Object)
 							{
-								name = names.GetItem(i);
-								nameList->Add(name->Clone());
-								sb.ClearStr();
-								obj->GetValue(name->v, name->leng)->ToString(&sb);
-								valueList->Add(Text::String::New(sb.ToCString()));
-								i++;
+								Data::ArrayList<Text::String*> names;
+								Text::String *name;
+								Text::StringBuilderUTF8 sb;
+								Text::JSONObject *obj = (Text::JSONObject*)properties;
+								obj->GetObjectNames(&names);
+								UOSInt k = 0;
+								UOSInt l = names.GetCount();
+								while (k < l)
+								{
+									name = names.GetItem(k);
+									nameList->Add(name->Clone());
+									sb.ClearStr();
+									obj->GetValue(name->v, name->leng)->ToString(&sb);
+									valueList->Add(Text::String::New(sb.ToCString()));
+									k++;
+								}
 							}
+							vecList->Add(vec);
 						}
-						json->EndUse();
-						return vec;
 					}
+					i++;
 				}
+				json->EndUse();
+				return vecList->GetCount() > 0;
 			}
 			json->EndUse();
 		}
@@ -988,26 +1015,33 @@ Math::Geometry::Vector2D *Map::WebMapTileServiceSource::QueryInfo(Math::Coord2DD
 				void *nameArr = 0;
 				Data::ArrayListInt64 idArr;
 				layer->GetAllObjectIds(&idArr, &nameArr);
-				if (idArr.GetCount() == 1)
+				if (idArr.GetCount() > 0)
 				{
 					void *sess = layer->BeginGetObject();
-					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, idArr.GetItem(0));
-					if (vec)
+					UOSInt i = 0;
+					UOSInt j = idArr.GetCount();
+					while (i < j)
 					{
-						UOSInt i = 0;
-						UOSInt j = layer->GetColumnCnt();
-						while (i < j)
+						Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, idArr.GetItem(0));
+						if (vec)
 						{
-							tmpPtr = layer->GetColumnName(tmpBuff, i);
-							nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
-							tmpPtr = layer->GetString(tmpBuff, sizeof(tmpBuff), nameArr, idArr.GetItem(0), i);
-							valueList->Add(Text::String::NewP(tmpBuff, tmpPtr));
-							i++;
+							valueOfstList->Add(nameList->GetCount());
+							UOSInt k = 0;
+							UOSInt l = layer->GetColumnCnt();
+							while (k < l)
+							{
+								tmpPtr = layer->GetColumnName(tmpBuff, k);
+								nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
+								tmpPtr = layer->GetString(tmpBuff, sizeof(tmpBuff), nameArr, idArr.GetItem(0), k);
+								valueList->Add(Text::String::NewP(tmpBuff, tmpPtr));
+								k++;
+							}
+							vecList->Add(vec);
 						}
-						layer->ReleaseNameArr(nameArr);
-						DEL_CLASS(pobj);
-						return vec;
 					}
+					layer->ReleaseNameArr(nameArr);
+					DEL_CLASS(pobj);
+					return vecList->GetCount() > 0;
 				}
 				layer->ReleaseNameArr(nameArr);
 			}

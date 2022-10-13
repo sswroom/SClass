@@ -1680,6 +1680,11 @@ void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Math::Geometry::Vector2D *vec
 	this->mapCtrl->SetSelectedVector(vec);
 }
 
+void SSWR::AVIRead::AVIRGISForm::SetSelectedVectors(Data::ArrayList<Math::Geometry::Vector2D*> *vecList)
+{
+	this->mapCtrl->SetSelectedVectors(vecList);
+}
+
 void SSWR::AVIRead::AVIRGISForm::RedrawMap()
 {
 	if (!this->pauseUpdate)

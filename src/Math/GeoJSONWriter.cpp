@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/GeoJSONWriter.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
@@ -221,8 +222,86 @@ Bool Math::GeoJSONWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Ve
 			}
 		}
 		break;
-	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+		sb->AppendC(UTF8STRC("\t\"geometry\": {\r\n"));
+		sb->AppendC(UTF8STRC("\t\t\"type\": \"MultiPolygon\",\r\n"));
+		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
+		{
+			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
+			UOSInt pgIndex = 0;
+			UOSInt pgCnt = mpg->GetCount();
+			while (pgIndex < pgCnt)
+			{
+				if (pgIndex == 0)
+				{
+					sb->AppendC(UTF8STRC("\t\t\t[\r\n"));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC(",\r\n\t\t\t[\r\n"));
+				}
+				Math::Geometry::Polygon *pg = mpg->GetItem(pgIndex);
+				UOSInt nPtOfst;
+				UOSInt nPoint;
+				UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
+				Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+				Math::Coord2DDbl initPt;
+				UOSInt i = 0;
+				UOSInt j = 0;
+				UOSInt k;
+				while (i < nPtOfst)
+				{
+					if (i == 0)
+					{
+						sb->AppendC(UTF8STRC("\t\t\t\t[\r\n"));
+					}
+					else
+					{
+						sb->AppendC(UTF8STRC(",\r\n\t\t\t\t[\r\n"));
+					}
+					if (i + 1 == nPtOfst)
+					{
+						k = nPoint;
+					}
+					else
+					{
+						k = ptOfstList[i + 1];
+					}
+					sb->AppendC(UTF8STRC("\t\t\t\t\t["));
+					sb->AppendDouble(pointList[j].x);
+					sb->AppendC(UTF8STRC(", "));
+					sb->AppendDouble(pointList[j].y);
+					sb->AppendUTF8Char(']');
+					initPt = pointList[j];
+					j++;
+					while (j < k)
+					{
+						sb->AppendC(UTF8STRC(",\r\n\t\t\t\t\t["));
+						sb->AppendDouble(pointList[j].x);
+						sb->AppendC(UTF8STRC(", "));
+						sb->AppendDouble(pointList[j].y);
+						sb->AppendUTF8Char(']');
+						j++;
+					}
+					if (pointList[k - 1] != initPt)
+					{
+						sb->AppendC(UTF8STRC(",\r\n\t\t\t\t\t["));
+						sb->AppendDouble(initPt.x);
+						sb->AppendC(UTF8STRC(", "));
+						sb->AppendDouble(initPt.y);
+						sb->AppendUTF8Char(']');
+					}
+					sb->AppendC(UTF8STRC("\r\n\t\t\t\t]"));
+					i++;
+				}
+				sb->AppendC(UTF8STRC("\r\n\t\t\t]"));
+				pgIndex++;
+			}
+			sb->AppendC(UTF8STRC("\r\n\t\t]\r\n"));
+			sb->AppendC(UTF8STRC("\t}"));
+		}
+		break;
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 	case Math::Geometry::Vector2D::VectorType::CircularString:

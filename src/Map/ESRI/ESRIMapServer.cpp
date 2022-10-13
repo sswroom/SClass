@@ -305,25 +305,6 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CString fileName, UOSInt lev
 	return succ;
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::Identify(Math::Coord2DDbl pt, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
-{
-	Math::RectAreaDbl bounds;
-	UInt32 width = 640;
-	UInt32 height = 480;
-	Math::Coord2DDbl size = Math::Coord2DDbl(width, height);
-	if (this->csys == 0 || this->csys->IsProjected())
-	{
-		bounds.tl = pt - size * 0.5;
-		bounds.br = pt + size * 0.5;
-	}
-	else
-	{
-		bounds.tl = pt - size * 0.0000025;
-		bounds.br = pt + size * 0.0000025;
-	}
-	return this->QueryInfo(pt, bounds, width, height, 96, nameList, valueList);
-}
-
 Text::String *Map::ESRI::ESRIMapServer::GetName() const
 {
 	return this->name;
@@ -350,7 +331,7 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::QueryInfo(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
@@ -381,10 +362,9 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::QueryInfo(Math::Coord2DDbl c
 	sptr = Text::StrInt32(sptr, Double2Int32(dpi));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=json"));
 
-	Math::Geometry::Vector2D *ret = 0;
+	Bool succ = false;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
-	if (succ)
+	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.QueryInfo"));
 		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
@@ -397,48 +377,64 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::QueryInfo(Math::Coord2DDbl c
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, readSize - 1));
 		if (json)
 		{
-			Text::JSONBase *o = json->GetValue(UTF8STRC("results[0]"));
-			if (o && o->GetType() == Text::JSONType::Object)
+			Text::JSONBase *o = json->GetValue(UTF8STRC("results"));
+			if (o && o->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONObject *result = (Text::JSONObject*)o;
-				Text::String *geometryType = result->GetString(UTF8STRC("geometryType"));
-				if (geometryType)
+				Math::Geometry::Vector2D *vec;
+				Text::JSONArray *results = (Text::JSONArray*)o;
+				succ = true;
+				UOSInt i = 0;
+				UOSInt j = results->GetArrayLength();
+				while (i < j)
 				{
-					ret = ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")));
-					if (ret)
+					o = results->GetArrayValue(i);
+					if (o && o->GetType() == Text::JSONType::Object)
 					{
-						o = result->GetObjectValue(CSTR("attributes"));
-						if (o && o->GetType() == Text::JSONType::Object)
+						Text::JSONObject *result = (Text::JSONObject*)o;
+						Text::String *geometryType = result->GetString(UTF8STRC("geometryType"));
+						if (geometryType)
 						{
-							Text::JSONObject *attr = (Text::JSONObject*)o;
-							Data::ArrayList<Text::String*> attNames;
-							Text::String *name;
-							Text::StringBuilderUTF8 sb;
-							attr->GetObjectNames(&attNames);
-							UOSInt i = 0;
-							UOSInt j = attNames.GetCount();
-							while (i < j)
+							vec = ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")));
+							if (vec)
 							{
-								name = attNames.GetItem(i);
-								sb.ClearStr();
-								attr->GetObjectValue(name->ToCString())->ToString(&sb);
-								nameList->Add(name->Clone());
-								valueList->Add(Text::String::New(sb.ToCString()));
-								i++;
+								valueOfstList->Add(nameList->GetCount());
+								o = result->GetObjectValue(CSTR("attributes"));
+								if (o && o->GetType() == Text::JSONType::Object)
+								{
+									Text::JSONObject *attr = (Text::JSONObject*)o;
+									Data::ArrayList<Text::String*> attNames;
+									Text::String *name;
+									Text::StringBuilderUTF8 sb;
+									attr->GetObjectNames(&attNames);
+									UOSInt k = 0;
+									UOSInt l = attNames.GetCount();
+									while (k < l)
+									{
+										name = attNames.GetItem(k);
+										sb.ClearStr();
+										attr->GetObjectValue(name->ToCString())->ToString(&sb);
+										nameList->Add(name->Clone());
+										valueList->Add(Text::String::New(sb.ToCString()));
+										k++;
+									}
+								}
+								vecList->Add(vec);
+							}
+							else
+							{
+								printf("ESRIMapServer: URL: %s\r\n", url);
 							}
 						}
 					}
-					else
-					{
-						printf("ESRIMapServer: URL: %s\r\n", url);
-					}
+					i++;
 				}
 			}
 			json->EndUse();
 		}
+		succ = vecList->GetCount() > 0;
 	}
 	DEL_CLASS(cli);
-	return ret;
+	return succ;
 }
 
 Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl)
