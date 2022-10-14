@@ -2090,6 +2090,8 @@ Map/VectorLayer.h: ../../src/Map/VectorLayer.cpp
 @VectorLayer.o
 Map/WebImageLayer.h: ../../src/Map/WebImageLayer.cpp
 @WebImageLayer.o
+Map/WebMapService.h: ../../src/Map/WebMapService.cpp
+@WebMapService.o
 Map/WebMapTileServiceSource.h: ../../src/Map/WebMapTileServiceSource.cpp
 @WebMapTileServiceSource.o
 Map/ESRI/ESRIMapServer.h: ../../src/Map/ESRI/ESRIMapServer.cpp
@@ -3859,6 +3861,8 @@ SSWR/AVIRead/AVIRWindowsErrorForm.h: ../../src/SSWR/AVIRead/AVIRWindowsErrorForm
 @AVIRWindowsErrorForm.o
 SSWR/AVIRead/AVIRWMIForm.h: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 @AVIRWMIForm.o
+SSWR/AVIRead/AVIRWMSForm.h: ../../src/SSWR/AVIRead/AVIRWMSForm.cpp
+@AVIRWMSForm.o
 SSWR/AVIRead/AVIRWMTSForm.h: ../../src/SSWR/AVIRead/AVIRWMTSForm.cpp
 @AVIRWMTSForm.o
 SSWR/AVIRead/AVIRWOLForm.h: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
@@ -4708,6 +4712,7 @@ TileMapServiceSource.o: ../../src/Map/TileMapServiceSource.cpp
 TileMapUtil.o: ../../src/Map/TileMapUtil.cpp
 VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
+WebMapService.o: ../../src/Map/WebMapService.cpp
 WebMapTileServiceSource.o: ../../src/Map/WebMapTileServiceSource.cpp
 ESRIMapServer.o: ../../src/Map/ESRI/ESRIMapServer.cpp
 ESRIMDBLayer.o: ../../src/Map/ESRI/ESRIMDBLayer.cpp
@@ -5546,6 +5551,7 @@ AVIRWiFiLogManagerForm.o: ../../src/SSWR/AVIRead/AVIRWiFiLogManagerForm.cpp
 AVIRWifiScanForm.o: ../../src/SSWR/AVIRead/AVIRWifiScanForm.cpp
 AVIRWindowsErrorForm.o: ../../src/SSWR/AVIRead/AVIRWindowsErrorForm.cpp
 AVIRWMIForm.o: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
+AVIRWMSForm.o: ../../src/SSWR/AVIRead/AVIRWMSForm.cpp
 AVIRWMTSForm.o: ../../src/SSWR/AVIRead/AVIRWMTSForm.cpp
 AVIRWOLForm.o: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
 AVIRXMLWalkForm.o: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp

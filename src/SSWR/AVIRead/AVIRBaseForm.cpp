@@ -218,6 +218,7 @@
 #include "SSWR/AVIRead/AVIRWifiScanForm.h"
 #include "SSWR/AVIRead/AVIRWindowsErrorForm.h"
 #include "SSWR/AVIRead/AVIRWMIForm.h"
+#include "SSWR/AVIRead/AVIRWMSForm.h"
 #include "SSWR/AVIRead/AVIRWMTSForm.h"
 #include "SSWR/AVIRead/AVIRWOLForm.h"
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
@@ -443,7 +444,8 @@ typedef enum
 	MNU_MODBUS_TCPSIM,
 	MNU_TMS,
 	MNU_BATCH_RENAME,
-	MNU_WMTS
+	MNU_WMTS,
+	MNU_WMS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -769,6 +771,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 //	mnu2->AddItem(CSTR("OSM Cache Server Test"), MNU_TEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Web Map Service"), MNU_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Coord Converter"), MNU_COORD_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Coordinate System Info"), MNU_COORD_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2549,6 +2552,18 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				Map::TileMap *tile = frm.GetTileMap();
 				Map::TileMapLayer *layer;
 				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+				this->core->OpenObject(layer);
+			}
+		}
+		break;
+	case MNU_WMS:
+		{
+			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this))
+			{
+				Map::DrawMapService *mapService = frm.GetDrawMapService();
+				Map::DrawMapServiceLayer *layer;
+				NEW_CLASS(layer, Map::DrawMapServiceLayer(mapService));
 				this->core->OpenObject(layer);
 			}
 		}

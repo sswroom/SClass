@@ -1390,10 +1390,9 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, ServerType svr
 	{
 		ts.tzQhr = tzQhr;
 		sptr = sqlstr;
-		*sptr++ = '\'';
+		sptr = Text::StrConcatC(sptr, UTF8STRC("CAST('"));
 		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffff");
-		*sptr++ = '\'';
-		*sptr = 0;
+		sptr = Text::StrConcatC(sptr, UTF8STRC("' as datetime2(7))"));
 		return sptr;
 	}
 	else if (svrType == DB::DBUtil::ServerType::SQLite)
@@ -1458,7 +1457,7 @@ UOSInt DB::DBUtil::SDBTSLeng(Data::Timestamp ts, ServerType svrType)
 	case DB::DBUtil::ServerType::MDBTools:
 		return 21;
 	case DB::DBUtil::ServerType::MSSQL:
-		return 29;
+		return 51;
 	case DB::DBUtil::ServerType::Oracle:
 		return 41;
 	case DB::DBUtil::ServerType::SQLite:

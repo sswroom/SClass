@@ -138,6 +138,11 @@ namespace Math
 		{
 			return this->x == 0 && this->y == 0;
 		}
+
+		Coord2DDbl SwapXY() const
+		{
+			return Coord2DDbl(this->y, this->x);
+		}
 	};
 }
 #endif
