@@ -549,8 +549,10 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (!isEqual)
 						{
-							this->parseError = 50;
-							return false;
+							Text::XMLAttrib *attr;
+							NEW_CLASS(attr, Text::XMLAttrib(UTF8STRC("body"), 0, 0));
+							this->attrList.Add(attr);
+							isEqual = true;
 						}
 						isQuote = '"';
 					}
@@ -558,8 +560,10 @@ Bool Text::XMLReader::ReadNext()
 					{
 						if (!isEqual)
 						{
-							this->parseError = 51;
-							return false;
+							Text::XMLAttrib *attr;
+							NEW_CLASS(attr, Text::XMLAttrib(UTF8STRC("body"), 0, 0));
+							this->attrList.Add(attr);
+							isEqual = true;
 						}
 						isQuote = '\'';
 					}
@@ -1599,7 +1603,7 @@ Bool Text::XMLReader::IsComplete() const
 	return this->pathList.GetCount() == 0 && this->parseOfst == this->buffSize;	
 }
 
-OSInt Text::XMLReader::GetErrorCode() const
+UOSInt Text::XMLReader::GetErrorCode() const
 {
 	return this->parseError;
 }

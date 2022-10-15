@@ -61,7 +61,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in parsing the file, code = "));
-		sb.AppendOSInt(reader.GetErrorCode());
+		sb.AppendUOSInt(reader.GetErrorCode());
 		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("XML Walk"), this);
 	}
 }

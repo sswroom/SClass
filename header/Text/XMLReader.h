@@ -27,7 +27,7 @@ namespace Text
 		UInt8 *rawBuff;
 		UOSInt rawBuffSize;
 		UOSInt parseOfst;
-		OSInt parseError; //Max = 52
+		UOSInt parseError; //Max = 52
 		ParseMode mode;
 
 		Data::ArrayList<Text::XMLAttrib *> attrList;
@@ -60,7 +60,7 @@ namespace Text
 		Bool SkipElement();
 		Bool IsElementEmpty() const;
 		Bool IsComplete() const;
-		OSInt GetErrorCode() const;
+		UOSInt GetErrorCode() const;
 		Bool ToString(Text::StringBuilderUTF8 *sb) const;
 
 		static Bool XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb);

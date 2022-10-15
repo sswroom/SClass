@@ -17,6 +17,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblWMSURL;
 			UI::GUITextBox *txtWMSURL;
+			UI::GUILabel *lblWMSVersion;
+			UI::GUIComboBox *cboWMSVersion;
 			UI::GUIButton *btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;

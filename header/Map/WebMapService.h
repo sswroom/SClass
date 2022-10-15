@@ -25,6 +25,14 @@ namespace Map
 			Text::String *title;
 			Bool queryable;
 		};
+	public:
+		enum class Version
+		{
+			ANY,
+			V1_1_1,
+			V1_3_0,
+			V1_1_1_TILED
+		};
 	private:
 		Text::EncodingFactory *encFact;
 		Text::String *wmsURL;
@@ -42,12 +50,12 @@ namespace Map
 		LayerCRS *currCRS;
 		Math::CoordinateSystem *csys;
 
-		void LoadXML();
+		void LoadXML(Version version);
 		void LoadXMLRequest(Text::XMLReader *reader);
 		void LoadXMLLayers(Text::XMLReader *reader);
 
 	public:
-		WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL);
+		WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version);
 		virtual ~WebMapService();
 
 		virtual Text::String *GetName() const;

@@ -16,11 +16,26 @@
 // http://192.168.1.148:8080/geoserver/ows
 // http://127.0.0.1:8080/geoserver/ows
 
-void Map::WebMapService::LoadXML()
+void Map::WebMapService::LoadXML(Version version)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->wmsURL);
-	sb.AppendC(UTF8STRC("?SERVICE=WMS&REQUEST=GetCapabilities"));
+	switch (version)
+	{
+	case Version::V1_1_1:
+		sb.AppendC(UTF8STRC("?SERVICE=WMS&version=1.1.1&REQUEST=GetCapabilities"));
+		break;
+	case Version::V1_1_1_TILED:
+		sb.AppendC(UTF8STRC("?SERVICE=WMS&version=1.1.1&REQUEST=GetCapabilities&tiled=true"));
+		break;
+	case Version::V1_3_0:
+		sb.AppendC(UTF8STRC("?SERVICE=WMS&version=1.3.0&REQUEST=GetCapabilities"));
+		break;
+	case Version::ANY:
+	default:
+		sb.AppendC(UTF8STRC("?SERVICE=WMS&REQUEST=GetCapabilities"));
+		break;
+	}
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli == 0)
 		return;
@@ -90,6 +105,10 @@ void Map::WebMapService::LoadXML()
 									{
 										this->LoadXMLLayers(&reader);
 									}
+									else if (nodeName->Equals(UTF8STRC("UserDefinedSymbolization")))
+									{
+										reader.SkipElement();
+									}
 									else
 									{
 										printf("WMS: Unknown element in Capability: %s\r\n", nodeName->v);
@@ -108,6 +127,11 @@ void Map::WebMapService::LoadXML()
 			}
 			break;
 		}
+	}
+	UOSInt errCode = reader.GetErrorCode();
+	if (errCode != 0)
+	{
+		printf("WMS: XML Parse error: code = %d\r\n", (UInt32)errCode);
 	}
 	this->SetLayer(0);
 }
@@ -191,6 +215,18 @@ void Map::WebMapService::LoadXMLRequest(Text::XMLReader *reader)
 						}
 					}
 				}
+				reader->SkipElement();
+			}
+			else if (nodeName->Equals(UTF8STRC("DescribeLayer")))
+			{
+				reader->SkipElement();
+			}
+			else if (nodeName->Equals(UTF8STRC("GetLegendGraphic")))
+			{
+				reader->SkipElement();
+			}
+			else if (nodeName->Equals(UTF8STRC("GetStyles")))
+			{
 				reader->SkipElement();
 			}
 			else
@@ -302,7 +338,7 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 							reader->SkipElement();
 							if (crs->name)
 							{
-								if (crs->name->Equals(UTF8STRC("EPSG:4326")))
+								if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version->Equals(UTF8STRC("1.3.0")))
 								{
 									crs->bounds.tl = crs->bounds.tl.SwapXY();
 									crs->bounds.br = crs->bounds.br.SwapXY();
@@ -352,7 +388,7 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 	}
 }
 
-Map::WebMapService::WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL)
+Map::WebMapService::WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -364,7 +400,7 @@ Map::WebMapService::WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl
 	this->currCRS = 0;
 	this->layer = 0;
 	this->csys = 0;
-	this->LoadXML();
+	this->LoadXML(version);
 }
 
 Map::WebMapService::~WebMapService()
@@ -453,11 +489,10 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		bounds.br = bounds.br.SwapXY();
 	}
 	Text::StringBuilderUTF8 sb;
-	if (this->version->Equals(UTF8STRC("1.1.0")))
+	if (this->version->Equals(UTF8STRC("1.1.1")))
 	{
-		// http://127.0.0.1:8080/geoserver/Dev/wms?service=WMS&version=1.1.0&request=GetMap&layers=Dev%3Athreed_burial_poly&bbox=113.9587574553149%2C22.34255390361735%2C114.1047088037185%2C22.3992408177216&width=768&height=330&srs=EPSG%3A4326&styles=&format=image%2Fpng
 		sb.Append(this->wmsURL);
-		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.0&request=GetMap&layers="));
+		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetFeatureInfo&layers="));
 		Text::TextBinEnc::FormEncoding::FormEncode(&sb, layer->name->v, layer->name->leng);
 		sb.AppendC(UTF8STRC("&bbox="));
 		sb.AppendDouble(bounds.tl.x);
@@ -473,8 +508,17 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&srs="));
 		Text::TextBinEnc::FormEncoding::FormEncode(&sb, this->currCRS->name->v, this->currCRS->name->leng);
-		sb.AppendC(UTF8STRC("&styles="));
-		return false;
+		sb.AppendC(UTF8STRC("&styles=&format="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, imgFormat->v, imgFormat->leng);
+		sb.AppendC(UTF8STRC("&QUERY_LAYERS="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, layer->name->v, layer->name->leng);
+		sb.AppendC(UTF8STRC("&INFO_FORMAT="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, infoFormat->v, infoFormat->leng);
+		sb.AppendC(UTF8STRC("&FEATURE_COUNT=5"));
+		sb.AppendC(UTF8STRC("&X="));
+		sb.AppendI32(Double2Int32(x));
+		sb.AppendC(UTF8STRC("&Y="));
+		sb.AppendI32(Double2Int32(y));
 	}
 	else if (this->version->Equals(UTF8STRC("1.3.0")))
 	{
@@ -511,7 +555,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	{
 		return false;
 	}
-	//printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+	printf("WebMapService: Query URL: %s\r\n", sb.ToString());
 
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
@@ -560,11 +604,11 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		bounds.tl = bounds.tl.SwapXY();
 		bounds.br = bounds.br.SwapXY();
 	}
-	if (this->version->Equals(UTF8STRC("1.1.0")))
+	if (this->version->Equals(UTF8STRC("1.1.1")))
 	{
 		// http://127.0.0.1:8080/geoserver/Dev/wms?service=WMS&version=1.1.0&request=GetMap&layers=Dev%3Athreed_burial_poly&bbox=113.9587574553149%2C22.34255390361735%2C114.1047088037185%2C22.3992408177216&width=768&height=330&srs=EPSG%3A4326&styles=&format=image%2Fpng
 		sb.Append(this->wmsURL);
-		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.0&request=GetMap&layers="));
+		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetMap&layers="));
 		Text::TextBinEnc::FormEncoding::FormEncode(&sb, layer->name->v, layer->name->leng);
 		sb.AppendC(UTF8STRC("&bbox="));
 		sb.AppendDouble(bounds.tl.x);

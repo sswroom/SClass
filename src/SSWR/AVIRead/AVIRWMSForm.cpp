@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWMSURL->GetText(&sb);
 	SDEL_CLASS(me->wms);
-	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetSocketFactory(), 0, me->core->GetEncFactory(), sb.ToCString()));
+	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetSocketFactory(), 0, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)(OSInt)me->cboWMSVersion->GetSelectedItem()));
 	if (me->wms->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
@@ -131,36 +131,45 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lblWMSURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtWMSURL, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWMSURL->SetRect(104, 4, 500, 23, false);
+	NEW_CLASS(this->lblWMSVersion, UI::GUILabel(ui, this, CSTR("Version")));
+	this->lblWMSVersion->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->cboWMSVersion, UI::GUIComboBox(ui, this, false));
+	this->cboWMSVersion->SetRect(104, 28, 100, 23, false);
+	this->cboWMSVersion->AddItem(CSTR("Any"), (void*)Map::WebMapService::Version::ANY);
+	this->cboWMSVersion->AddItem(CSTR("1.3.0"), (void*)Map::WebMapService::Version::V1_3_0);
+	this->cboWMSVersion->AddItem(CSTR("1.1.1"), (void*)Map::WebMapService::Version::V1_1_1);
+	this->cboWMSVersion->AddItem(CSTR("1.1.1 Tiled"), (void*)Map::WebMapService::Version::V1_1_1_TILED);
+	this->cboWMSVersion->SetSelectedIndex(0);
 	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, this, CSTR("Load")));
-	this->btnLoad->SetRect(104, 28, 75, 23, false);
+	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
-	this->lblStatus->SetRect(4, 52, 100, 23, false);
+	this->lblStatus->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtStatus->SetRect(104, 52, 100, 23, false);
+	this->txtStatus->SetRect(104, 76, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->lblLayer, UI::GUILabel(ui, this, CSTR("Layer")));
-	this->lblLayer->SetRect(4, 76, 100, 23, false);
+	this->lblLayer->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->cboLayer, UI::GUIComboBox(ui, this, false));
-	this->cboLayer->SetRect(104, 76, 200, 23, false);
+	this->cboLayer->SetRect(104, 100, 200, 23, false);
 	this->cboLayer->HandleSelectionChange(OnLayerSelChg, this);
 	NEW_CLASS(this->lblLayerCRS, UI::GUILabel(ui, this, CSTR("CRS")));
-	this->lblLayerCRS->SetRect(4, 100, 100, 23, false);
+	this->lblLayerCRS->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->cboLayerCRS, UI::GUIComboBox(ui, this, false));
-	this->cboLayerCRS->SetRect(104, 100, 200, 23, false);
+	this->cboLayerCRS->SetRect(104, 124, 200, 23, false);
 	this->cboLayerCRS->HandleSelectionChange(OnLayerCRSSelChg, this);
 	NEW_CLASS(this->lblMapImageType, UI::GUILabel(ui, this, CSTR("Map Image Type")));
-	this->lblMapImageType->SetRect(4, 124, 100, 23, false);
+	this->lblMapImageType->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->cboMapImageType, UI::GUIComboBox(ui, this, false));
-	this->cboMapImageType->SetRect(104, 124, 200, 23, false);
+	this->cboMapImageType->SetRect(104, 148, 200, 23, false);
 	this->cboMapImageType->HandleSelectionChange(OnMapImageTypeSelChg, this);
 	NEW_CLASS(this->lblInfoType, UI::GUILabel(ui, this, CSTR("Info Type")));
-	this->lblInfoType->SetRect(4, 148, 100, 23, false);
+	this->lblInfoType->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->cboInfoType, UI::GUIComboBox(ui, this, false));
-	this->cboInfoType->SetRect(104, 148, 200, 23, false);
+	this->cboInfoType->SetRect(104, 172, 200, 23, false);
 	this->cboInfoType->HandleSelectionChange(OnInfoTypeSelChg, this);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
-	this->btnOK->SetRect(104, 172, 75, 23, false);
+	this->btnOK->SetRect(104, 196, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }
 
