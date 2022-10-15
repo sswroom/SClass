@@ -609,7 +609,7 @@ Bool Map::VectorLayer::VectorValid(Math::Geometry::Vector2D *vec)
 		break;
 	case Map::DRAW_LAYER_POLYGON:
 		vecType = vec->GetVectorType();
-		if (vecType != Math::Geometry::Vector2D::VectorType::Polygon)
+		if (vecType != Math::Geometry::Vector2D::VectorType::Polygon && vecType != Math::Geometry::Vector2D::VectorType::MultiPolygon)
 			return false;
 		break;
 	case Map::DRAW_LAYER_IMAGE:

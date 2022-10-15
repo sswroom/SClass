@@ -3,6 +3,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Map/OWSFeatureParser.h"
 #include "Map/TileMapUtil.h"
 #include "Map/WebMapTileServiceSource.h"
 #include "Math/CoordinateSystemManager.h"
@@ -902,7 +903,6 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 	printf("Info URL: %s\r\n", urlSb.ToString());
 #endif
 
-	Math::Geometry::Vector2D *vec;
 	Text::StringBuilderUTF8 sb;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -915,138 +915,15 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 
 	if (this->currResourceInfo->format->Equals(UTF8STRC("text/plain")))
 	{
-		Text::PString lineArr[2];
-		Text::PString sarr[2];
-		UOSInt lineCnt;
-		lineArr[1] = sb;
-		valueOfstList->Add(0);
-		while (true)
-		{
-			lineCnt = Text::StrSplitLineP(lineArr, 2, lineArr[1]);
-			if (Text::StrSplitTrimP(sarr, 2, lineArr[0], '=') == 2)
-			{
-				nameList->Add(Text::String::New(sarr[0].ToCString()));
-				valueList->Add(Text::String::New(sarr[1].ToCString()));
-			}
-
-			if (lineCnt != 2)
-				break;
-		}
-
-		NEW_CLASS(vec, Math::Geometry::Point(this->currDef->csys->GetSRID(), coord));
-		vecList->Add(vec);
-		return true;
+		return Map::OWSFeatureParser::ParseText(sb, this->currDef->csys->GetSRID(), coord, vecList, valueOfstList, nameList, valueList);
 	}
 	else if (this->currResourceInfo->format->Equals(UTF8STRC("application/json")))
 	{
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
-		if (json)
-		{
-			UInt32 srid = this->currDef->csys->GetSRID();
-			if (json->GetType() == Text::JSONType::Object)
-			{
-				Text::String *crsName = json->GetString(UTF8STRC("crs.properties.name"));
-				if (crsName)
-				{
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
-					if (csys)
-					{
-						srid = csys->GetSRID();
-						DEL_CLASS(csys);
-					}
-				}
-			}
-			Text::JSONBase *featuresObj = json->GetValue(UTF8STRC("features"));
-			if (featuresObj && featuresObj->GetType() == Text::JSONType::Array)
-			{
-				Text::JSONArray *features = (Text::JSONArray*)featuresObj;
-				UOSInt i = 0;
-				UOSInt j = features->GetArrayLength();
-				while (i < j)
-				{
-					Text::JSONBase *feature = features->GetArrayValue(i);
-					Text::JSONBase *geometry = feature->GetValue(UTF8STRC("geometry"));
-					if (geometry && geometry->GetType() == Text::JSONType::Object)
-					{
-						Math::Geometry::Vector2D *vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
-						if (vec)
-						{
-							valueOfstList->Add(nameList->GetCount());
-							Text::JSONBase *properties = feature->GetValue(UTF8STRC("properties"));
-							if (properties && properties->GetType() == Text::JSONType::Object)
-							{
-								Data::ArrayList<Text::String*> names;
-								Text::String *name;
-								Text::StringBuilderUTF8 sb;
-								Text::JSONObject *obj = (Text::JSONObject*)properties;
-								obj->GetObjectNames(&names);
-								UOSInt k = 0;
-								UOSInt l = names.GetCount();
-								while (k < l)
-								{
-									name = names.GetItem(k);
-									nameList->Add(name->Clone());
-									sb.ClearStr();
-									obj->GetValue(name->v, name->leng)->ToString(&sb);
-									valueList->Add(Text::String::New(sb.ToCString()));
-									k++;
-								}
-							}
-							vecList->Add(vec);
-						}
-					}
-					i++;
-				}
-				json->EndUse();
-				return vecList->GetCount() > 0;
-			}
-			json->EndUse();
-		}
+		return Map::OWSFeatureParser::ParseJSON(sb.ToCString(), this->currDef->csys->GetSRID(), vecList, valueOfstList, nameList, valueList);
 	}
 	else if (this->currResourceInfo->format->StartsWith(UTF8STRC("application/vnd.ogc.gml")) || this->currResourceInfo->format->Equals(UTF8STRC("text/xml")))
 	{
-		IO::MemoryStream mstm((UInt8*)sb.ToString(), sb.GetLength(), UTF8STRC("Map.WebMapTileServiceSource.QueryInfo.mstm"));
-		IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(encFact, &mstm, CSTR("Temp.gml"), 0, 0, 0);
-		if (pobj)
-		{
-			if (pobj->GetParserType() == IO::ParserType::MapLayer)
-			{
-				Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
-				void *nameArr = 0;
-				Data::ArrayListInt64 idArr;
-				layer->GetAllObjectIds(&idArr, &nameArr);
-				if (idArr.GetCount() > 0)
-				{
-					void *sess = layer->BeginGetObject();
-					UOSInt i = 0;
-					UOSInt j = idArr.GetCount();
-					while (i < j)
-					{
-						Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, idArr.GetItem(0));
-						if (vec)
-						{
-							valueOfstList->Add(nameList->GetCount());
-							UOSInt k = 0;
-							UOSInt l = layer->GetColumnCnt();
-							while (k < l)
-							{
-								tmpPtr = layer->GetColumnName(tmpBuff, k);
-								nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
-								tmpPtr = layer->GetString(tmpBuff, sizeof(tmpBuff), nameArr, idArr.GetItem(0), k);
-								valueList->Add(Text::String::NewP(tmpBuff, tmpPtr));
-								k++;
-							}
-							vecList->Add(vec);
-						}
-					}
-					layer->ReleaseNameArr(nameArr);
-					DEL_CLASS(pobj);
-					return vecList->GetCount() > 0;
-				}
-				layer->ReleaseNameArr(nameArr);
-			}
-			DEL_CLASS(pobj);
-		}
+		return Map::OWSFeatureParser::ParseGML(sb.ToCString(), this->currDef->csys->GetSRID(), false, this->encFact, vecList, valueOfstList, nameList, valueList);
 	}
 	else
 	{
@@ -1054,7 +931,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 		printf("%s\r\n", sb.ToString());
 #endif
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::WebMapTileServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)

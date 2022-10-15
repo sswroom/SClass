@@ -86,3 +86,8 @@ UOSInt Math::Geometry::Point::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> 
 	coordList->Add(this->pos);
 	return 1;
 }
+
+void Math::Geometry::Point::SwapXY()
+{
+	this->pos = this->pos.SwapXY();
+}

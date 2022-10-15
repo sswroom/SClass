@@ -92,6 +92,16 @@ UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl
 	return 4;
 }
 
+void Math::Geometry::Ellipse::SwapXY()
+{
+	Double tmp = this->tlx;
+	this->tlx = this->tly;
+	this->tly = tmp;
+	tmp = this->w;
+	this->w = this->h;
+	this->h = tmp;
+}
+
 Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
 {
 	Math::Coord2DDbl cent = Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly + this->h * 0.5);

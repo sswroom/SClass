@@ -2,7 +2,7 @@
 #define _SM_MAP_PATHSEARCHER
 #include "Map/IMapDrawLayer.h"
 #include "Math/ShortestPath.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/Polyline.h"
 
 namespace Map
 {
@@ -36,7 +36,7 @@ namespace Map
 		virtual Bool PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode);
 		Math::ShortestPath::PathNode *GetNearestNode(Double x, Double y);
 		Bool IsError();
-		static Math::Polyline *ToPolyline(Math::ShortestPath::Path *path);
+		static Math::Geometry::Polyline *ToPolyline(Math::ShortestPath::Path *path);
 	};
 };
 #endif

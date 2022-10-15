@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/PathSearcher.h"
-#include "Math/Geometry.h"
+#include "Math/GeometryTool.h"
 #include "Math/Math.h"
 
 Map::PathSearcher::PointNode::PointNode(Double x, Double y, Int32 ix, Int32 iy)
@@ -84,12 +84,12 @@ Map::PathSearcher::PathSearcher(Map::IMapDrawLayer *layer, Double minAngleRad)
 
 	Data::ArrayListInt64 *objIds;
 	void *nameArr;
-	Math::Polyline *pl;
+	Math::Geometry::Polyline *pl;
 	void *sess;
-	OSInt i;
-	OSInt j;
-	OSInt k;
-	OSInt l;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
 	PointNode *lastNode;
 	PointNode *currNode;
 
@@ -101,20 +101,20 @@ Map::PathSearcher::PathSearcher(Map::IMapDrawLayer *layer, Double minAngleRad)
 	i = objIds->GetCount();
 	while (i-- > 0)
 	{
-		pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+		pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 		if (pl)
 		{
-			Double *points;
-			Int32 *parts;
+			Math::Coord2DDbl *points;
+			UInt32 *parts;
 			points = pl->GetPointList(&k);
-			parts = pl->GetPartList(&j);
+			parts = pl->GetPtOfstList(&j);
 			while (j-- > 0)
 			{
 				lastNode = 0;
 				l = parts[j];
 				while (k-- > l)
 				{
-					currNode = GetNode(points[(k << 1)], points[(k << 1) + 1], true);
+					currNode = GetNode(points[k].x, points[k].y, true);
 					if (lastNode)
 					{
 						lastNode->nearNodes->Add(currNode);
@@ -205,12 +205,12 @@ Math::ShortestPath::PathNode *Map::PathSearcher::GetNearestNode(Double x, Double
 	if (i <= 0)
 		return 0;
 	minNode = (Map::PathSearcher::PointNode*)this->nodes->GetItem(0);
-	minDistance = Math::Geometry::SphereDistDeg(y, x, minNode->y, minNode->x, Math::Geometry::RADIUS_METER_EARTH_WGS1984);
+	minDistance = Math::GeometryTool::SphereDistDeg(y, x, minNode->y, minNode->x, Math::GeometryTool::RADIUS_METER_EARTH_WGS1984);
 
 	while (i-- > 0)
 	{
 		node = (Map::PathSearcher::PointNode*)this->nodes->GetItem(i);
-		distance = Math::Geometry::SphereDistDeg(y, x, node->y, node->x, Math::Geometry::RADIUS_METER_EARTH_WGS1984);
+		distance = Math::GeometryTool::SphereDistDeg(y, x, node->y, node->x, Math::GeometryTool::RADIUS_METER_EARTH_WGS1984);
 		if (distance < minDistance)
 		{
 			minDistance = distance;
@@ -225,18 +225,18 @@ Bool Map::PathSearcher::IsError()
 	return this->nodes == 0;
 }
 
-Math::Polyline *Map::PathSearcher::ToPolyline(Math::ShortestPath::Path *path)
+Math::Geometry::Polyline *Map::PathSearcher::ToPolyline(Math::ShortestPath::Path *path)
 {
-	Math::Polyline *pl;
+	Math::Geometry::Polyline *pl;
 	Map::PathSearcher::PointNode *n;
 
 	if (path == 0)
 		return 0;
 
-	Double *points;
-	OSInt i;
-	NEW_CLASS(pl, Math::Polyline(1, path->nodes->GetCount()));
-	pl->GetPartList(&i)[0] = 0;
+	Math::Coord2DDbl *points;
+	UOSInt i;
+	NEW_CLASS(pl, Math::Geometry::Polyline(0, 1, path->nodes->GetCount(), false, false));
+	pl->GetPtOfstList(&i)[0] = 0;
 	points = pl->GetPointList(&i);
 
 	i = 0;
@@ -244,8 +244,8 @@ Math::Polyline *Map::PathSearcher::ToPolyline(Math::ShortestPath::Path *path)
 	while (i < j)
 	{
 		n = (Map::PathSearcher::PointNode*)path->nodes->GetItem(i);
-		points[(i << 1) + 0] = n->x;
-		points[(i << 1) + 1] = n->y;
+		points[i].x = n->x;
+		points[i].y = n->y;
 		i++;
 	}
 	return pl;

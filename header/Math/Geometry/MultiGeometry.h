@@ -200,6 +200,15 @@ namespace Math
 				return ret;
 			}
 
+			virtual void SwapXY()
+			{
+				UOSInt i = this->GetCount();
+				while (i-- > 0)
+				{
+					this->GetItem(i)->SwapXY();
+				}
+			}
+
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const
 			{
 				UOSInt i = 0;

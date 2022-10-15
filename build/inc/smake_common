@@ -2058,6 +2058,8 @@ Map/MercatorMapView.h: ../../src/Map/MercatorMapView.cpp
 @MercatorMapView.o
 Map/OruxDBLayer.h: ../../src/Map/OruxDBLayer.cpp
 @OruxDBLayer.o
+Map/OWSFeatureParser.h: ../../src/Map/OWSFeatureParser.cpp
+@OWSFeatureParser.o
 Map/ReloadableMapLayer.h: ../../src/Map/ReloadableMapLayer.cpp
 @ReloadableMapLayer.o
 Map/ReverseGeocoderServer.h: ../../src/Map/ReverseGeocoderServer.cpp
@@ -4698,6 +4700,7 @@ MapServerHandler.o: ../../src/Map/MapServerHandler.cpp
 MapView.o: ../../src/Map/MapView.cpp
 MercatorMapView.o: ../../src/Map/MercatorMapView.cpp
 OruxDBLayer.o: ../../src/Map/OruxDBLayer.cpp
+OWSFeatureParser.o: ../../src/Map/OWSFeatureParser.cpp
 ReloadableMapLayer.o: ../../src/Map/ReloadableMapLayer.cpp
 RevGeoCfg.o: ../../src/Map/RevGeoCfg.cpp
 RevGeoDir.o: ../../src/Map/RevGeoDir.cpp

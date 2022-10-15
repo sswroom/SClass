@@ -93,3 +93,12 @@ UOSInt Math::Geometry::PointCollection::GetCoordinates(Data::ArrayListA<Math::Co
 {
 	return coordList->AddRange(this->pointArr, this->nPoint);
 }
+
+void Math::Geometry::PointCollection::SwapXY()
+{
+	UOSInt i = this->nPoint;
+	while (i-- > 0)
+	{
+		this->pointArr[i] = this->pointArr[i].SwapXY();
+	}
+}

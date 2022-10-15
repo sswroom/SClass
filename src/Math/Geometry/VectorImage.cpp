@@ -317,6 +317,13 @@ UOSInt Math::Geometry::VectorImage::GetCoordinates(Data::ArrayListA<Math::Coord2
 	return 4;
 }
 
+void Math::Geometry::VectorImage::SwapXY()
+{
+	this->tl = this->tl.SwapXY();
+	this->br = this->br.SwapXY();
+	this->size = this->size.SwapXY();
+}
+
 Bool Math::Geometry::VectorImage::InsideVector(Math::Coord2DDbl coord) const
 {
 	return this->tl.x <= coord.x && this->tl.y <= coord.y && this->br.x > coord.x && this->br.y > coord.y;

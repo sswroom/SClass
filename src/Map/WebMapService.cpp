@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryDataRef.h"
+#include "Map/OWSFeatureParser.h"
 #include "Map/WebMapService.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"
@@ -438,8 +439,112 @@ Bool Map::WebMapService::CanQuery() const
 Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	LayerInfo *layer = this->layers.GetItem(this->layer);
-	if (layer == 0)
+	Text::String *imgFormat = this->mapImageTypeNames.GetItem(this->mapImageType);
+	Text::String *infoFormat = this->infoTypeNames.GetItem(this->infoType);
+	if (layer == 0 || !layer->queryable || infoFormat == 0 || imgFormat == 0)
 		return false;
+
+	Double x = (coord.x - bounds.tl.x) * width / bounds.GetWidth();
+	Double y = (bounds.br.y - coord.y) * height / bounds.GetHeight();
+
+	if (this->currCRS->swapXY)
+	{
+		bounds.tl = bounds.tl.SwapXY();
+		bounds.br = bounds.br.SwapXY();
+	}
+	Text::StringBuilderUTF8 sb;
+	if (this->version->Equals(UTF8STRC("1.1.0")))
+	{
+		// http://127.0.0.1:8080/geoserver/Dev/wms?service=WMS&version=1.1.0&request=GetMap&layers=Dev%3Athreed_burial_poly&bbox=113.9587574553149%2C22.34255390361735%2C114.1047088037185%2C22.3992408177216&width=768&height=330&srs=EPSG%3A4326&styles=&format=image%2Fpng
+		sb.Append(this->wmsURL);
+		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.0&request=GetMap&layers="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, layer->name->v, layer->name->leng);
+		sb.AppendC(UTF8STRC("&bbox="));
+		sb.AppendDouble(bounds.tl.x);
+		sb.AppendC(UTF8STRC("%2C"));
+		sb.AppendDouble(bounds.tl.y);
+		sb.AppendC(UTF8STRC("%2C"));
+		sb.AppendDouble(bounds.br.x);
+		sb.AppendC(UTF8STRC("%2C"));
+		sb.AppendDouble(bounds.br.y);
+		sb.AppendC(UTF8STRC("&width="));
+		sb.AppendU32(width);
+		sb.AppendC(UTF8STRC("&height="));
+		sb.AppendU32(height);
+		sb.AppendC(UTF8STRC("&srs="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, this->currCRS->name->v, this->currCRS->name->leng);
+		sb.AppendC(UTF8STRC("&styles="));
+		return false;
+	}
+	else if (this->version->Equals(UTF8STRC("1.3.0")))
+	{
+		sb.Append(this->wmsURL);
+		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetFeatureInfo&layers="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, layer->name->v, layer->name->leng);
+		sb.AppendC(UTF8STRC("&bbox="));
+		sb.AppendDouble(bounds.tl.x);
+		sb.AppendC(UTF8STRC("%2C"));
+		sb.AppendDouble(bounds.tl.y);
+		sb.AppendC(UTF8STRC("%2C"));
+		sb.AppendDouble(bounds.br.x);
+		sb.AppendC(UTF8STRC("%2C"));
+		sb.AppendDouble(bounds.br.y);
+		sb.AppendC(UTF8STRC("&width="));
+		sb.AppendU32(width);
+		sb.AppendC(UTF8STRC("&height="));
+		sb.AppendU32(height);
+		sb.AppendC(UTF8STRC("&CRS="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, this->currCRS->name->v, this->currCRS->name->leng);
+		sb.AppendC(UTF8STRC("&styles=&format="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, imgFormat->v, imgFormat->leng);
+		sb.AppendC(UTF8STRC("&QUERY_LAYERS="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, layer->name->v, layer->name->leng);
+		sb.AppendC(UTF8STRC("&INFO_FORMAT="));
+		Text::TextBinEnc::FormEncoding::FormEncode(&sb, infoFormat->v, infoFormat->leng);
+		sb.AppendC(UTF8STRC("&FEATURE_COUNT=5"));
+		sb.AppendC(UTF8STRC("&I="));
+		sb.AppendI32(Double2Int32(x));
+		sb.AppendC(UTF8STRC("&J="));
+		sb.AppendI32(Double2Int32(y));
+	}
+	else
+	{
+		return false;
+	}
+	//printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+
+	UInt8 dataBuff[2048];
+	UOSInt readSize;
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+	{
+		Text::StringBuilderUTF8 sbData;
+		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
+		{
+			sbData.AppendC(dataBuff, readSize);
+		}
+		DEL_CLASS(cli);
+
+		if (infoFormat->Equals(UTF8STRC("application/json")))
+		{
+			return Map::OWSFeatureParser::ParseJSON(sbData.ToCString(), this->csys->GetSRID(), vecList, valueOfstList, nameList, valueList);
+		}
+		else if (infoFormat->StartsWith(UTF8STRC("application/vnd.ogc.gml")) || infoFormat->StartsWith(UTF8STRC("text/xml")))
+		{
+			return Map::OWSFeatureParser::ParseGML(sbData.ToCString(), this->csys->GetSRID(), this->currCRS->swapXY, this->encFact, vecList, valueOfstList, nameList, valueList);
+		}
+		else if (infoFormat->Equals(UTF8STRC("text/plain")))
+		{
+			return Map::OWSFeatureParser::ParseText(sbData, this->csys->GetSRID(), coord, vecList, valueOfstList, nameList, valueList);
+		}
+		else
+		{
+			printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+			printf("%s\r\n", sbData.ToString());
+		}
+		return false;
+	}
+	DEL_CLASS(cli);
 	return false;
 }
 
