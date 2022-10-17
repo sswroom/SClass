@@ -42,6 +42,7 @@
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "SSWR/AVIRead/AVIRTMSForm.h"
+#include "SSWR/AVIRead/AVIRWFSForm.h"
 #include "SSWR/AVIRead/AVIRWMSForm.h"
 #include "SSWR/AVIRead/AVIRWMTSForm.h"
 #include "Text/MyString.h"
@@ -95,6 +96,7 @@ typedef enum
 	MNU_TMS,
 	MNU_WMTS,
 	MNU_WMS,
+	MNU_WFS,
 	MNU_ESRI_MAP,
 	MNU_HKO_RADAR_64,
 	MNU_HKO_RADAR_128,
@@ -726,6 +728,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Service"), MNU_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Web Feature Service"), MNU_WFS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("ESRI MapServer"), MNU_ESRI_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HKO"));
@@ -1497,6 +1500,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				Map::DrawMapServiceLayer *layer;
 				NEW_CLASS(layer, Map::DrawMapServiceLayer(mapService));
 				this->AddLayer(layer);
+			}
+			break;
+		}
+	case MNU_WFS:
+		{
+			SSWR::AVIRead::AVIRWFSForm frm(0, this->ui, this->core);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				Map::IMapDrawLayer *layer = frm.LoadLayer();
+				if (layer)
+				{
+					this->AddLayer(layer);
+				}
 			}
 			break;
 		}

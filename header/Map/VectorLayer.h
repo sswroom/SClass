@@ -70,6 +70,7 @@ namespace Map
 		void OptimizePolylinePath();
 		void ReplaceVector(Int64 id, Math::Geometry::Vector2D *vec);
 		void ConvCoordinateSystem(Math::CoordinateSystem *csys);
+		void SwapXY();
 	};
 }
 #endif

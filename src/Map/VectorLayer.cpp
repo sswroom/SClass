@@ -919,3 +919,14 @@ void Map::VectorLayer::ConvCoordinateSystem(Math::CoordinateSystem *csys)
 		this->csys = csys;
 	}
 }
+
+void Map::VectorLayer::SwapXY()
+{
+	UOSInt i = this->vectorList.GetCount();
+	while (i-- > 0)
+	{
+		this->vectorList.GetItem(i)->SwapXY();
+	}
+	this->min = this->min.SwapXY();
+	this->max = this->max.SwapXY();
+}

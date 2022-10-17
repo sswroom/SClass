@@ -81,6 +81,8 @@ namespace Net
 		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(Text::CString url);
 		static void PrepareSSL(Net::SSLEngine *ssl);
+		static Bool LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize);
+		static Bool LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize);
 	};
 }
 #endif

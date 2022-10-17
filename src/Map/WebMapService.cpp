@@ -36,17 +36,9 @@ void Map::WebMapService::LoadXML(Version version)
 		sb.AppendC(UTF8STRC("?SERVICE=WMS&REQUEST=GetCapabilities"));
 		break;
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	if (cli == 0)
-		return;
-	UInt8 buff[2048];
-	UOSInt readSize;
 	IO::MemoryStream mstm(UTF8STRC("Map.WebMapService.LoadXML.mstm"));
-	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
-	{
-		mstm.Write(buff, readSize);
-	}
-	DEL_CLASS(cli);
+	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), &mstm, 1048576))
+		return;
 	mstm.SeekFromBeginning(0);
 	Text::XMLReader reader(this->encFact, &mstm, Text::XMLReader::PM_XML);
 	while (reader.ReadNext())
@@ -555,7 +547,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	{
 		return false;
 	}
-	printf("WebMapService: Query URL: %s\r\n", sb.ToString());
+	//printf("WebMapService: Query URL: %s\r\n", sb.ToString());
 
 	UInt8 dataBuff[2048];
 	UOSInt readSize;

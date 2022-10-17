@@ -2090,6 +2090,8 @@ Map/TileMapUtil.h: ../../src/Map/TileMapUtil.cpp
 @TileMapUtil.o
 Map/VectorLayer.h: ../../src/Map/VectorLayer.cpp
 @VectorLayer.o
+Map/WebFeatureService.h: ../../src/Map/WebFeatureService.cpp
+@WebFeatureService.o
 Map/WebImageLayer.h: ../../src/Map/WebImageLayer.cpp
 @WebImageLayer.o
 Map/WebMapService.h: ../../src/Map/WebMapService.cpp
@@ -3847,6 +3849,8 @@ SSWR/AVIRead/AVIRWebSiteTwitterForm.h: ../../src/SSWR/AVIRead/AVIRWebSiteTwitter
 @AVIRWebSiteTwitterForm.o
 SSWR/AVIRead/AVIRWellFormatForm.h: ../../src/SSWR/AVIRead/AVIRWellFormatForm.cpp
 @AVIRWellFormatForm.o
+SSWR/AVIRead/AVIRWFSForm.h: ../../src/SSWR/AVIRead/AVIRWFSForm.cpp
+@AVIRWFSForm.o
 SSWR/AVIRead/AVIRWHOISClientForm.h: ../../src/SSWR/AVIRead/AVIRWHOISClientForm.cpp
 @AVIRWHOISClientForm.o
 SSWR/AVIRead/AVIRWIADevForm.h: ../../src/SSWR/AVIRead/AVIRWIADevForm.cpp
@@ -4714,6 +4718,7 @@ TileMapLayer.o: ../../src/Map/TileMapLayer.cpp
 TileMapServiceSource.o: ../../src/Map/TileMapServiceSource.cpp
 TileMapUtil.o: ../../src/Map/TileMapUtil.cpp
 VectorLayer.o: ../../src/Map/VectorLayer.cpp
+WebFeatureService.o: ../../src/Map/WebFeatureService.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 WebMapService.o: ../../src/Map/WebMapService.cpp
 WebMapTileServiceSource.o: ../../src/Map/WebMapTileServiceSource.cpp
@@ -5546,6 +5551,7 @@ AVIRWebSite48IdolForm.o: ../../src/SSWR/AVIRead/AVIRWebSite48IdolForm.cpp
 AVIRWebSiteInstagramForm.o: ../../src/SSWR/AVIRead/AVIRWebSiteInstagramForm.cpp
 AVIRWebSiteTwitterForm.o: ../../src/SSWR/AVIRead/AVIRWebSiteTwitterForm.cpp
 AVIRWellFormatForm.o: ../../src/SSWR/AVIRead/AVIRWellFormatForm.cpp
+AVIRWFSForm.o: ../../src/SSWR/AVIRead/AVIRWFSForm.cpp
 AVIRWHOISClientForm.o: ../../src/SSWR/AVIRead/AVIRWHOISClientForm.cpp
 AVIRWIADevForm.o: ../../src/SSWR/AVIRead/AVIRWIADevForm.cpp
 AVIRWifiCaptureForm.o: ../../src/SSWR/AVIRead/AVIRWifiCaptureForm.cpp

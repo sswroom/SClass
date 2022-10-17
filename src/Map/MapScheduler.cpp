@@ -3,6 +3,7 @@
 #include "Map/MapScheduler.h"
 #include "Math/Math.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
@@ -151,8 +152,39 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					me->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, me->p, me->b);
 					break;
 				}
-				case Math::Geometry::Vector2D::VectorType::MultiPoint:
 				case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+				{
+					Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
+					UOSInt pgInd = mpg->GetCount();
+					while (pgInd-- > 0)
+					{
+						Math::Geometry::Polygon *pg = mpg->GetItem(pgInd);
+						UOSInt nPoint;
+						Math::Coord2DDbl *pointArr = pg->GetPointList(&nPoint);
+						UOSInt nPtOfst;
+						UInt32 *ptOfstArr = pg->GetPtOfstList(&nPtOfst);
+						if (me->isFirst)
+						{
+							UOSInt k;
+							UOSInt l;
+
+							if (me->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+								*me->isLayerEmpty = false;
+							k = nPtOfst;
+							l = 1;
+							while (l < k)
+							{
+								ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
+								l++;
+							}
+							ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
+						}
+
+						me->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, me->p, me->b);
+					}
+					break;
+				}
+				case Math::Geometry::Vector2D::VectorType::MultiPoint:
 				case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 				case Math::Geometry::Vector2D::VectorType::CircularString:
 				case Math::Geometry::Vector2D::VectorType::CompoundCurve:
@@ -169,7 +201,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				case Math::Geometry::Vector2D::VectorType::Ellipse:
 				case Math::Geometry::Vector2D::VectorType::PieArea:
 				case Math::Geometry::Vector2D::VectorType::Unknown:
-					printf("MapScheduler: unsupported type\r\n");
+					printf("MapScheduler: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
 					break;
 				}
 			}

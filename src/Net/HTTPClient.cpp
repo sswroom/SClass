@@ -328,3 +328,55 @@ Bool Net::HTTPClient::IsHTTPURL(Text::CString url)
 void Net::HTTPClient::PrepareSSL(Net::SSLEngine *ssl)
 {
 }
+
+Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, IO::Stream *stm, UInt64 maxSize)
+{
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli == 0)
+		return false;
+	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
+	{
+		DEL_CLASS(cli);
+		return false;
+	}
+	UInt8 buff[2048];
+	UOSInt readSize;
+	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
+	{
+		if (readSize > maxSize)
+		{
+			DEL_CLASS(cli);
+			return false;
+		}
+		stm->Write(buff, readSize);
+		maxSize -= readSize;
+	}
+	DEL_CLASS(cli);
+	return true;
+}
+
+Bool Net::HTTPClient::LoadContent(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Text::StringBuilderUTF8 *sb, UInt64 maxSize)
+{
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli == 0)
+		return false;
+	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
+	{
+		DEL_CLASS(cli);
+		return false;
+	}
+	UInt8 buff[2048];
+	UOSInt readSize;
+	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
+	{
+		if (readSize > maxSize)
+		{
+			DEL_CLASS(cli);
+			return false;
+		}
+		sb->AppendC(buff, readSize);
+		maxSize -= readSize;
+	}
+	DEL_CLASS(cli);
+	return true;
+}
