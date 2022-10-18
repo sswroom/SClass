@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IChart.h"
+#include "Data/Chart.h"
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Data::IChart::IChart()
+Data::Chart::Chart()
 {
 	this->title = 0;
 	this->xAxisName = 0;
@@ -17,7 +17,7 @@ Data::IChart::IChart()
 	this->minDblVal = 0.01;
 }
 
-Data::IChart::~IChart()
+Data::Chart::~Chart()
 {
 	SDEL_STRING(this->title);
 	SDEL_STRING(this->xAxisName);
@@ -28,18 +28,18 @@ Data::IChart::~IChart()
 	SDEL_STRING(this->dblFormat);
 }
 
-void Data::IChart::SetTitle(Text::CString title)
+void Data::Chart::SetTitle(Text::CString title)
 {
 	SDEL_STRING(this->title);
 	this->title = Text::String::NewOrNull(title);
 }
 
-Text::String *Data::IChart::GetTitle()
+Text::String *Data::Chart::GetTitle() const
 {
 	return this->title;
 }
 
-void Data::IChart::SetDateFormat(Text::CString format)
+void Data::Chart::SetDateFormat(Text::CString format)
 {
 	if (this->dateFormat)
 	{
@@ -48,12 +48,12 @@ void Data::IChart::SetDateFormat(Text::CString format)
 	this->dateFormat = Text::String::New(format);
 }
 
-Text::String *Data::IChart::GetDateFormat()
+Text::String *Data::Chart::GetDateFormat() const
 {
 	return this->dateFormat;
 }
 
-void Data::IChart::SetTimeFormat(Text::CString format)
+void Data::Chart::SetTimeFormat(Text::CString format)
 {
 	SDEL_STRING(this->timeFormat);
 	if (format.leng > 0)
@@ -62,12 +62,12 @@ void Data::IChart::SetTimeFormat(Text::CString format)
 	}
 }
 
-Text::String *Data::IChart::GetTimeFormat()
+Text::String *Data::Chart::GetTimeFormat() const
 {
 	return this->timeFormat;
 }
 
-void Data::IChart::SetDblFormat(Text::CString format)
+void Data::Chart::SetDblFormat(Text::CString format)
 {
 	if (this->dblFormat)
 	{
@@ -90,34 +90,34 @@ void Data::IChart::SetDblFormat(Text::CString format)
 	}
 }
 
-Text::String *Data::IChart::GetDblFormat()
+Text::String *Data::Chart::GetDblFormat() const
 {
 	return this->dblFormat;
 }
 
-void Data::IChart::SetXAxisName(Text::CString xAxisName)
+void Data::Chart::SetXAxisName(Text::CString xAxisName)
 {
 	SDEL_STRING(this->xAxisName);
 	this->xAxisName = Text::String::NewOrNull(xAxisName);
 }
 
-Text::String *Data::IChart::GetXAxisName()
+Text::String *Data::Chart::GetXAxisName() const
 {
 	return this->xAxisName;
 }
 
-void Data::IChart::SetYAxisName(Text::CString yAxisName)
+void Data::Chart::SetYAxisName(Text::CString yAxisName)
 {
 	SDEL_STRING(this->yAxisName);
 	this->yAxisName = Text::String::NewOrNull(yAxisName);
 }
 
-Text::String *Data::IChart::GetYAxisName()
+Text::String *Data::Chart::GetYAxisName() const
 {
 	return this->yAxisName;
 }
 
-UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
+UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
@@ -173,7 +173,7 @@ UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayL
 	return retCnt;
 }
 
-UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
+UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
@@ -228,7 +228,7 @@ UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayL
 	return retCnt;
 }
 
-UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
+UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];

@@ -1,11 +1,11 @@
 #ifndef _SM_DATA_ARRAYMAP
 #define _SM_DATA_ARRAYMAP
-#include "Data/IMap.h"
+#include "Data/ListMap.h"
 #include "Data/SortableArrayListNative.h"
 
 namespace Data
 {
-	template <class T, class V> class ArrayMap : public IMap<T, V>
+	template <class T, class V> class ArrayMap : public ListMap<T, V>
 	{
 	protected:
 		Data::SortableArrayListNative<T> *keys;
@@ -18,22 +18,22 @@ namespace Data
 		virtual V Put(T key, V val);
 		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		T GetKey(UOSInt index) const;
-		void PutAll(const ArrayMap<T,V> *map);
+		virtual T GetKey(UOSInt index) const;
 		OSInt GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
 		const Data::ArrayList<V> *GetValues() const;
 		const Data::SortableArrayListNative<T> *GetKeys() const;
-		UOSInt GetCount() const;
+		virtual UOSInt GetCount() const;
+		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
 		virtual V *ToArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
 
 
-	template <class T, class V> ArrayMap<T, V>::ArrayMap() : IMap<T, V>()
+	template <class T, class V> ArrayMap<T, V>::ArrayMap() : ListMap<T, V>()
 	{
 	}
 
@@ -93,21 +93,6 @@ namespace Data
 		return this->keys->GetItem(index);
 	}
 
-	template <class T, class V> void ArrayMap<T, V>::PutAll(const ArrayMap<T,V> *map)
-	{
-		const Data::ArrayList<T> *tList = map->GetKeys();
-		const Data::ArrayList<V> *vList = map->GetValues();
-		UOSInt i;
-		UOSInt j;
-		i = 0;
-		j = tList->GetCount();
-		while (i < j)
-		{
-			this->Put(tList->GetItem(i), vList->GetItem(i));
-			i++;
-		}
-	}
-
 	template <class T, class V> OSInt ArrayMap<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
@@ -138,6 +123,11 @@ namespace Data
 	template <class T, class V> UOSInt ArrayMap<T, V>::GetCount() const
 	{
 		return this->vals.GetCount();
+	}
+
+	template <class T, class V> V ArrayMap<T, V>::GetItem(UOSInt index) const
+	{
+		return this->vals.GetItem(index);
 	}
 
 	template <class T, class V> Bool ArrayMap<T, V>::IsEmpty() const

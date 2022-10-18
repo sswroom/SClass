@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 	me->core->GetDrawEngine()->DeleteImage(gimg);
 }
 
-SSWR::AVIRead::AVIRChartForm::AVIRChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::IChart *chart) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRChartForm::AVIRChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::Chart *chart) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Chart Form"));
 	this->SetFont(0, 0, 8.25, false);

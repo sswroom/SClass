@@ -2,7 +2,7 @@
 #define _SM_DATA_BTREEWMAP
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "Data/IMap.h"
+#include "Data/DataMap.h"
 #include "Crypto/Hash/CRC32R.h"
 
 namespace Data
@@ -11,15 +11,15 @@ namespace Data
 	{
 		Int32 nodeCnt;
 		Int32 maxLev;
-		BTreeNode<T> *parNode;
-		BTreeNode<T> *leftNode;
-		BTreeNode<T> *rightNode;
+		BTreeWNode<T> *parNode;
+		BTreeWNode<T> *leftNode;
+		BTreeWNode<T> *rightNode;
 		T nodeVal;
 		UInt32 nodeHash;
 		WChar nodeStr[1];
 	};
 
-	template <class T> class BTreeWMap : public IMap<const WChar*, T>
+	template <class T> class BTreeWMap : public DataMap<const WChar*, T>
 	{
 	protected:
 		Crypto::Hash::CRC32R *crc;

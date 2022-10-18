@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/IChart.h"
+#include "Data/Chart.h"
 #include "Math/FFT.h"
 #include "Math/Math.h"
 #include "Media/FrequencyGraph.h"
@@ -50,7 +50,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		retImg = eng->CreateImage32(32, 32, Media::AT_NO_ALPHA);
 		f = retImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
+		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
 		yAxis = 0;
 		j = chartLabels.GetCount();
 		while (j-- > 0)
@@ -67,7 +67,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
 		xAxis = 0;
 		j = chartLabels.GetCount();
 		while (j-- > 0)
@@ -256,7 +256,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
+		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{
@@ -271,7 +271,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{

@@ -19,7 +19,7 @@ void Map::HKSpeedLimit::FreeIndex()
 	UOSInt i = this->indexMap.GetCount();
 	while (i-- > 0)
 	{
-		index = this->indexMap.GetValue(i);
+		index = this->indexMap.GetItem(i);
 		DEL_CLASS(index);
 	}
 	this->indexMap.Clear();
@@ -43,7 +43,7 @@ void Map::HKSpeedLimit::BuildIndex()
 	{
 		while (i-- > 0)
 		{
-			route = this->routeMap.GetValue(i);
+			route = this->routeMap.GetItem(i);
 			minX = (Int32)(route->bounds.tl.x / PROJECTMuL);
 			minY = (Int32)(route->bounds.tl.y / PROJECTMuL);
 			maxX = (Int32)(route->bounds.br.x / PROJECTMuL);
@@ -72,7 +72,7 @@ void Map::HKSpeedLimit::BuildIndex()
 	{
 		while (i-- > 0)
 		{
-			route = this->routeMap.GetValue(i);
+			route = this->routeMap.GetItem(i);
 			minX = (Int32)(route->bounds.tl.x * LATLONMUL);
 			minY = (Int32)(route->bounds.tl.y * LATLONMUL);
 			maxX = (Int32)(route->bounds.br.x * LATLONMUL);
@@ -204,11 +204,11 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 			Math::RectAreaDbl bounds;
 			i = this->routeMap.GetCount();
 			i--;
-			route = this->routeMap.GetValue(i);
+			route = this->routeMap.GetItem(i);
 			bounds = route->bounds;
 			while (i-- > 0)
 			{
-				route = this->routeMap.GetValue(i);
+				route = this->routeMap.GetItem(i);
 				bounds = bounds.MergeArea(route->bounds);
 			}
 			this->bounds = bounds;
@@ -223,7 +223,7 @@ Map::HKSpeedLimit::~HKSpeedLimit()
 	DEL_CLASS(this->dataCsys);
 	SDEL_CLASS(this->reqCsys);
 	UOSInt i = this->routeMap.GetCount();
-	while (i-- > 0) FreeRoute(this->routeMap.GetValue(i));
+	while (i-- > 0) FreeRoute(this->routeMap.GetItem(i));
 	this->FreeIndex();
 }
 

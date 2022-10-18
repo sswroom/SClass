@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_REPORTBUILDER
 #define _SM_TEXT_REPORTBUILDER
-#include "Data/IChart.h"
+#include "Data/Chart.h"
 #include "Media/VectorDocument.h"
 #include "Text/String.h"
 #include "Text/SpreadSheet/Workbook.h"
@@ -57,10 +57,10 @@ namespace Text
 		Data::ArrayList<Data::ArrayList<ColIcon*>*> icons;
 		Double *colWidthPts;
 		ColType *colTypes;
-		Data::IChart *chart;
+		Data::Chart *chart;
 		Bool paperHori;
 
-		static Text::SpreadSheet::AxisType FromChartDataType(Data::IChart::DataType dataType);
+		static Text::SpreadSheet::AxisType FromChartDataType(Data::Chart::DataType dataType);
 	public:
 		ReportBuilder(Text::CString name, UOSInt colCount, const UTF8Char **columns);
 		~ReportBuilder();
@@ -68,7 +68,7 @@ namespace Text
 		void SetFontName(Text::String *fontName);
 		void SetFontName(Text::CString fontName);
 		void SetPaperHori(Bool paperHori);
-		void AddChart(Data::IChart *chart);
+		void AddChart(Data::Chart *chart);
 		void AddPreHeader(Text::CString name, Text::CString val);
 		void AddHeader(Text::CString name, Text::CString val);
 		void AddTableContent(const UTF8Char **content);

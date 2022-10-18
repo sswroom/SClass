@@ -897,7 +897,7 @@ void SSWR::OrganMgr::OrganWebHandler::CalcGroupCount(SSWR::OrganMgr::OrganWebHan
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::GetGroupSpecies(SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, Data::IMap<Text::String*, SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spMap, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user)
+void SSWR::OrganMgr::OrganWebHandler::GetGroupSpecies(SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, Data::DataMap<Text::String*, SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spMap, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user)
 {
 	UOSInt i;
 	UOSInt j;

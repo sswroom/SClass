@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32RC.h"
 #include "Data/ByteTool.h"
-#include "Data/IMap.h"
+#include "Data/DataMap.h"
 #include "Text/CString.h"
 #include "Text/MyString.h"
 
@@ -22,7 +22,7 @@ namespace Data
 		UTF8Char nodeKey[1];
 	};
 
-	template <class T> class BTreeUTF8Map : public IMap<Text::CString, T>
+	template <class T> class BTreeUTF8Map : public DataMap<Text::CString, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC *crc;
@@ -369,7 +369,7 @@ namespace Data
 		FillNameArr(arr, node->rightNode);
 	}
 
-	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : IMap<Text::CString, T>()
+	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : DataMap<Text::CString, T>()
 	{
 		rootNode = 0;
 		NEW_CLASS(crc, Crypto::Hash::CRC32RC());

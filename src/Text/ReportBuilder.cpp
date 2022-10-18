@@ -8,15 +8,15 @@
 #include "Text/ReportBuilder.h"
 #include "Text/StringBuilderUTF8.h"
 
-Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::IChart::DataType dataType)
+Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::DataType dataType)
 {
 	switch (dataType)
 	{
-	case Data::IChart::DataType::DateTicks:
+	case Data::Chart::DataType::DateTicks:
 		return Text::SpreadSheet::AxisType::Date;
-	case Data::IChart::DataType::None:
-	case Data::IChart::DataType::DOUBLE:
-	case Data::IChart::DataType::Integer:
+	case Data::Chart::DataType::None:
+	case Data::Chart::DataType::DOUBLE:
+	case Data::Chart::DataType::Integer:
 		return Text::SpreadSheet::AxisType::Numeric;
 	default:
 		return Text::SpreadSheet::AxisType::Numeric;
@@ -142,7 +142,7 @@ void Text::ReportBuilder::SetPaperHori(Bool paperHori)
 	this->paperHori = paperHori;
 }
 
-void Text::ReportBuilder::AddChart(Data::IChart *chart)
+void Text::ReportBuilder::AddChart(Data::Chart *chart)
 {
 	SDEL_CLASS(this->chart);
 	this->chart = chart;
@@ -521,7 +521,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			UOSInt colCount;
 			switch (chart->GetXAxisType())
 			{
-			case Data::IChart::DataType::DateTicks:
+			case Data::Chart::DataType::DateTicks:
 			{
 				if (dateStyle == 0)
 				{
@@ -546,7 +546,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
-			case Data::IChart::DataType::DOUBLE:
+			case Data::Chart::DataType::DOUBLE:
 			{
 				if (dblStyle == 0)
 				{
@@ -568,7 +568,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
-			case Data::IChart::DataType::Integer:
+			case Data::Chart::DataType::Integer:
 			{
 				if (intStyle == 0)
 				{
@@ -583,7 +583,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
-			case Data::IChart::DataType::None:
+			case Data::Chart::DataType::None:
 				colCount = 0;
 				break;
 			}
@@ -594,7 +594,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				dataSheet->SetCellString(1 + i, 0, strStyle, chart->GetYName(i));
 				switch (chart->GetYType(i))
 				{
-				case Data::IChart::DataType::DateTicks:
+				case Data::Chart::DataType::DateTicks:
 				{
 					if (dateStyle == 0)
 					{
@@ -619,7 +619,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					}
 					break;
 				}
-				case Data::IChart::DataType::DOUBLE:
+				case Data::Chart::DataType::DOUBLE:
 				{
 					if (dblStyle == 0)
 					{
@@ -641,7 +641,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					}
 					break;
 				}
-				case Data::IChart::DataType::Integer:
+				case Data::Chart::DataType::Integer:
 				{
 					if (intStyle == 0)
 					{
@@ -656,7 +656,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					}
 					break;
 				}
-				case Data::IChart::DataType::None:
+				case Data::Chart::DataType::None:
 					colCount = 0;
 					break;				
 				}

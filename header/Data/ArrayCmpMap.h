@@ -1,11 +1,11 @@
 #ifndef _SM_DATA_ARRAYCMPMAP
 #define _SM_DATA_ARRAYCMPMAP
-#include "Data/IMap.h"
+#include "Data/ListMap.h"
 #include "Data/SortableArrayList.h"
 
 namespace Data
 {
-	template <class T, class V> class ArrayCmpMap : public IMap<T, V>
+	template <class T, class V> class ArrayCmpMap : public ListMap<T, V>
 	{
 	protected:
 		Data::SortableArrayList<T> *keys;
@@ -18,22 +18,22 @@ namespace Data
 		virtual V Put(T key, V val);
 		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		T GetKey(UOSInt index) const;
-		void PutAll(ArrayCmpMap<T,V> *map);
+		virtual T GetKey(UOSInt index) const;
 		OSInt GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
 		const Data::ArrayList<V> *GetValues() const;
 		Data::SortableArrayList<T> *GetKeys() const;
-		UOSInt GetCount() const;
+		virtual UOSInt GetCount() const;
+		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
 		virtual V *ToArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
 
 
-	template <class T, class V> ArrayCmpMap<T, V>::ArrayCmpMap() : IMap<T, V>()
+	template <class T, class V> ArrayCmpMap<T, V>::ArrayCmpMap() : ListMap<T, V>()
 	{
 	}
 
@@ -93,21 +93,6 @@ namespace Data
 		return this->keys->GetItem(index);
 	}
 
-	template <class T, class V> void ArrayCmpMap<T, V>::PutAll(ArrayCmpMap<T,V> *map)
-	{
-		Data::ArrayList<T> *tList = map->GetKeys();
-		Data::ArrayList<V> *vList = map->GetValues();
-		UOSInt i;
-		UOSInt j;
-		i = 0;
-		j = tList->GetCount();
-		while (i < j)
-		{
-			this->Put(tList->GetItem(i), vList->GetItem(i));
-			i++;
-		}
-	}
-
 	template <class T, class V> OSInt ArrayCmpMap<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
@@ -138,6 +123,11 @@ namespace Data
 	template <class T, class V> UOSInt ArrayCmpMap<T, V>::GetCount() const
 	{
 		return this->vals.GetCount();
+	}
+
+	template <class T, class V> V ArrayCmpMap<T, V>::GetItem(UOSInt index) const
+	{
+		return this->vals.GetItem(index);
 	}
 
 	template <class T, class V> Bool ArrayCmpMap<T, V>::IsEmpty() const

@@ -2,14 +2,14 @@
 #define _SM_DATA_FASTSTRINGMAP
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32RC.h"
-#include "Data/IMap.h"
+#include "Data/ListMap.h"
 #include "Data/ReadingList.h"
 #include "Text/MyString.h"
 #include "Text/String.h"
 
 namespace Data
 {
-	template <class T> class FastStringMap : public IMap<Text::String*, T>, public ReadingList<T>
+	template <class T> class FastStringMap : public ListMap<Text::String*, T>
 	{
 	private:
 		struct StringItem
@@ -32,7 +32,7 @@ namespace Data
 
 		virtual UOSInt GetCount() const;
 		virtual T GetItem(UOSInt index) const;
-		Text::String *GetKey(UOSInt index) const;
+		virtual Text::String *GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
 		OSInt IndexOf(Text::String *s) const;
 		OSInt IndexOfC(Text::CString s) const;

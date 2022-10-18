@@ -400,7 +400,7 @@ SSWR::AVIRead::AVIRLineChartForm::~AVIRLineChartForm()
 	}
 }
 
-Data::IChart *SSWR::AVIRead::AVIRLineChartForm::GetChart()
+Data::Chart *SSWR::AVIRead::AVIRLineChartForm::GetChart()
 {
 	return this->chart;
 }

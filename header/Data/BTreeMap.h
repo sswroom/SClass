@@ -2,7 +2,7 @@
 #define _SM_DATA_BTREEMAP
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32RC.h"
-#include "Data/IMap.h"
+#include "Data/DataMap.h"
 #include "Text/MyString.h"
 #include "Text/String.h"
 
@@ -20,7 +20,7 @@ namespace Data
 		UInt32 nodeHash;
 	};
 
-	template <class T> class BTreeMap : public IMap<Text::String*, T>
+	template <class T> class BTreeMap : public DataMap<Text::String*, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC crc;
@@ -379,7 +379,7 @@ namespace Data
 		FillNameArr(arr, node->rightNode);
 	}
 
-	template <class T> BTreeMap<T>::BTreeMap() : IMap<Text::String*, T>()
+	template <class T> BTreeMap<T>::BTreeMap() : DataMap<Text::String*, T>()
 	{
 		rootNode = 0;
 	}

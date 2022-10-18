@@ -3,13 +3,13 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
 #include "Data/DateTime.h"
-#include "Data/IChart.h"
+#include "Data/Chart.h"
 #include "Data/RandomOS.h"
 
 namespace Data
 {
 	
-	class LineChart : public Data::IChart
+	class LineChart : public Data::Chart
 	{
 	public:
 		typedef enum
@@ -37,13 +37,13 @@ namespace Data
 		public:
 			Text::String *name;
 			void *data;
-			Data::IChart::DataType dataType;
+			Data::Chart::DataType dataType;
 			UInt32 lineColor;
 			UOSInt dataCnt;
 			Data::LineChart::LineStyle lineStyle;
 
-			ChartData(Text::String *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
-			ChartData(Text::CString name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
+			ChartData(Text::String *name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
+			ChartData(Text::CString name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
 			~ChartData();
 		};
 
@@ -122,21 +122,21 @@ namespace Data
 		void SetYRangeDbl(Double yVal);
 //		void SetStyle(Data::LineChart::LineStyle style);
 		virtual void SetTitle(Text::CString title);
-		virtual DataType GetXAxisType();
-		virtual UOSInt GetXDataCount();
-		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt);
-		virtual Double *GetXDouble(UOSInt index, UOSInt *cnt);
-		virtual Int32 *GetXInt32(UOSInt index, UOSInt *cnt);
-		virtual UOSInt GetYDataCount();
-		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt);
-		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt);
-		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt);
-		virtual Text::String *GetYName(UOSInt index);
-		virtual DataType GetYType(UOSInt index);
+		virtual DataType GetXAxisType() const;
+		virtual UOSInt GetXDataCount() const;
+		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt) const;
+		virtual Double *GetXDouble(UOSInt index, UOSInt *cnt) const;
+		virtual Int32 *GetXInt32(UOSInt index, UOSInt *cnt) const;
+		virtual UOSInt GetYDataCount() const;
+		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt) const;
+		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt) const;
+		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt) const;
+		virtual Text::String *GetYName(UOSInt index) const;
+		virtual DataType GetYType(UOSInt index) const;
 
-		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height);
-		virtual UOSInt GetLegendCount();
-		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index);
+		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height) const;
+		virtual UOSInt GetLegendCount() const;
+		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index) const;
 
 	};
 }

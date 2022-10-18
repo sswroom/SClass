@@ -2,7 +2,7 @@
 #define _SM_DATA_STRINGHASHMAP
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32RC.h"
-#include "Data/IMap.h"
+#include "Data/DataMap.h"
 #include "Text/String.h"
 
 namespace Data
@@ -23,7 +23,7 @@ namespace Data
 		HashNodeItem<T> items[1];
 	};
 
-	template <class T> class StringHashMap : public IMap<Text::String*, T>
+	template <class T> class StringHashMap : public DataMap<Text::String*, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC crc;

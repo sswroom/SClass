@@ -295,7 +295,7 @@ namespace SSWR
 			void WebFilePrevUpdated(WebFileInfo *userFile);
 
 			void CalcGroupCount(GroupInfo *group);
-			void GetGroupSpecies(GroupInfo *group, Data::IMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
+			void GetGroupSpecies(GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
 			void SearchInGroup(GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user);
 			Bool GroupIsAdmin(GroupInfo *group);
 			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);

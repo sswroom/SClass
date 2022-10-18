@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_FASTMAP
 #define _SM_DATA_FASTMAP
-#include "Data/IMap.h"
+#include "Data/ListMap.h"
 
 namespace Data
 {
@@ -28,7 +28,7 @@ namespace Data
 		}
 	};
 
-	template <class T, class V> class FastMap : public IMap<T, V>
+	template <class T, class V> class FastMap : public ListMap<T, V>
 	{
 	protected:
 		Data::ArrayList<FastMapItem<T, V>> values;
@@ -40,21 +40,20 @@ namespace Data
 		virtual V Put(T key, V val);
 		virtual V Get(T key) const;
 		virtual V Remove(T key);
-		void PutAll(const FastMap<T,V> *map);
 		OSInt GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		UOSInt GetCount() const;
-		T GetKey(UOSInt index) const;
-		V GetValue(UOSInt index) const;
+		virtual UOSInt GetCount() const;
+		virtual T GetKey(UOSInt index) const;
+		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
 		virtual V *ToArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
 
 
-	template <class T, class V> FastMap<T, V>::FastMap() : IMap<T, V>()
+	template <class T, class V> FastMap<T, V>::FastMap() : ListMap<T, V>()
 	{
 	}
 
@@ -107,19 +106,6 @@ namespace Data
 		}
 	}
 
-	template <class T, class V> void FastMap<T, V>::PutAll(const FastMap<T,V> *map)
-	{
-		UOSInt i;
-		UOSInt j;
-		i = 0;
-		j = map->GetCount();
-		while (i < j)
-		{
-			this->Put(map->GetKey(i), map->GetValue(i));
-			i++;
-		}
-	}
-
 	template <class T, class V> OSInt FastMap<T, V>::GetIndex(T key) const
 	{
 		OSInt i;
@@ -169,7 +155,7 @@ namespace Data
 		return this->values.GetItem(index).key;
 	}
 
-	template <class T, class V> V FastMap<T, V>::GetValue(UOSInt index) const
+	template <class T, class V> V FastMap<T, V>::GetItem(UOSInt index) const
 	{
 		return this->values.GetItem(index).value;
 	}

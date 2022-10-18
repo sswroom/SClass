@@ -1,13 +1,13 @@
-#ifndef _SM_DATA_IMAP
-#define _SM_DATA_IMAP
+#ifndef _SM_DATA_DATAMAP
+#define _SM_DATA_DATAMAP
 
 namespace Data
 {
-	template <class T, class V> class IMap
+	template <class T, class V> class DataMap
 	{
 	public:
-		IMap();
-		virtual ~IMap();
+		DataMap();
+		virtual ~DataMap();
 
 		virtual V Put(T key, V val) = 0;
 		virtual V Get(T key) const = 0;
@@ -17,11 +17,11 @@ namespace Data
 	};
 
 
-	template <class T, class V> IMap<T, V>::IMap()
+	template <class T, class V> DataMap<T, V>::DataMap()
 	{
 	}
 
-	template <class T, class V> IMap<T, V>::~IMap()
+	template <class T, class V> DataMap<T, V>::~DataMap()
 	{
 	}
 }
