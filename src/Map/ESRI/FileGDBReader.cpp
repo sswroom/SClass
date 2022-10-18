@@ -328,6 +328,15 @@ Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
 		return (Int32)ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
 		return this->objectId;
+	case 4:
+	case 12:
+		{
+			UInt64 v;
+			Text::StringBuilderUTF8 sb;
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			return sb.ToInt32();
+		}
 	}
 	return 0;
 }
@@ -358,6 +367,15 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 		return (Int64)ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
 		return this->objectId;
+	case 4:
+	case 12:
+		{
+			UInt64 v;
+			Text::StringBuilderUTF8 sb;
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			return sb.ToInt64();
+		}
 	}
 	return 0;
 }
@@ -556,6 +574,15 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 	{
 	case 5:
 		return Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+	case 4:
+	case 12:
+		{
+			UInt64 v;
+			Text::StringBuilderUTF8 sb;
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			return Data::Timestamp::FromStr(sb.ToCString());
+		}
 	}
 	return Data::Timestamp(0, 0);
 }
@@ -586,6 +613,15 @@ Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)
 		return ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
 		return this->objectId;
+	case 4:
+	case 12:
+		{
+			UInt64 v;
+			Text::StringBuilderUTF8 sb;
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			return sb.ToDouble();
+		}
 	}
 	return 0;
 }

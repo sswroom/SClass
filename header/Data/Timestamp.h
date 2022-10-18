@@ -322,6 +322,21 @@ namespace Data
 			OSInt s = Double2OSInt(ds * 86400);
 			return Data::Timestamp((days - 25569) * 86400000LL + Double2OSInt(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000), tz);
 		}
+
+		static Timestamp FromStr(Text::CString s)
+		{
+			Data::DateTimeUtil::TimeValue tv;
+			Int8 tzQhr;
+			UInt32 nanosec;
+			if (Data::DateTimeUtil::String2TimeValue(s, &tv, &tzQhr, &nanosec))
+			{
+				return Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tv, tzQhr), nanosec, tzQhr);
+			}
+			else
+			{
+				return Timestamp(0, 0);
+			}
+		}
 	};
 }
 #endif

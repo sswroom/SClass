@@ -104,25 +104,28 @@ Map::IMapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 			}
 			else
 			{
-				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
 				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
-				Math::Geometry::Vector2D *vec = r->GetVector((UOSInt)shapeCol);
-				sbuff[0] = 0;
-				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
+				if (maxWeight != 0)
+				{
+					Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
+					Math::Geometry::Vector2D *vec = r->GetVector((UOSInt)shapeCol);
+					sbuff[0] = 0;
+					r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
 
-				strs[0] = sbuff2;
-				strs[1] = Text::StrInt32(sbuff2, vrId) + 1;
-				UInt32 iMaxWeight = (UInt32)maxWeight;
-				if (maxWeight - iMaxWeight < 0.1)
-				{
-					Text::StrUInt32(strs[1], iMaxWeight);
+					strs[0] = sbuff2;
+					strs[1] = Text::StrInt32(sbuff2, vrId) + 1;
+					UInt32 iMaxWeight = (UInt32)maxWeight;
+					if (maxWeight - iMaxWeight < 0.1)
+					{
+						Text::StrUInt32(strs[1], iMaxWeight);
+					}
+					else
+					{
+						Text::StrDouble(strs[1], maxWeight);
+					}
+					strs[2] = sbuff;
+					lyr->AddVector(vec, (const UTF8Char**)strs);
 				}
-				else
-				{
-					Text::StrDouble(strs[1], maxWeight);
-				}
-				strs[2] = sbuff;
-				lyr->AddVector(vec, (const UTF8Char**)strs);
 			}
 		}
 
