@@ -856,7 +856,7 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 	this->minY = 0;
 	this->maxX = 0;
 	this->maxY = 0;
-	this->url = Text::String::New(UTF8STRC("http://resource.data.one.gov.hk/td/speedmap.xml"));
+	this->url = Text::String::New(UTF8STRC("https://resource.data.one.gov.hk/td/speedmap.xml"));
 	
 	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80));
 }

@@ -1,10 +1,7 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "DB/DBReader.h"
-#include "IO/DirectoryPackage.h"
 #include "Map/HKSpeedLimit.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Parser/ObjParser/FileGDB2Parser.h"
 
 #define PROJECTMuL 1000.0
 #define LATLONMUL 40
@@ -112,18 +109,16 @@ void Map::HKSpeedLimit::AppendRouteIds(Data::ArrayList<Int32> *routeList, Int32 
 	}
 }
 
-Map::HKSpeedLimit::HKSpeedLimit(Text::CString fgdbPath)
+Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 {
-	IO::DirectoryPackage pkg(fgdbPath);
-	Parser::ObjParser::FileGDB2Parser parser;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	RouteInfo *route;
 	UOSInt i;
-	this->dataCsys = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+	this->dataCsys = roadNetwork->CreateCoordinateSystem();
 	this->reqCsys = 0;
-	this->fgdb = (DB::ReadingDB*)parser.ParseObject(&pkg, 0, IO::ParserType::ReadingDB);
-	if (this->fgdb)
+	DB::ReadingDB *fgdb = roadNetwork->GetDB();
+	if (fgdb)
 	{
 		DB::DBReader *r = fgdb->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
@@ -225,7 +220,6 @@ Map::HKSpeedLimit::HKSpeedLimit(Text::CString fgdbPath)
 
 Map::HKSpeedLimit::~HKSpeedLimit()
 {
-	SDEL_CLASS(this->fgdb);
 	DEL_CLASS(this->dataCsys);
 	SDEL_CLASS(this->reqCsys);
 	UOSInt i = this->routeMap.GetCount();
@@ -359,15 +353,4 @@ void Map::HKSpeedLimit::SetReqCoordinateSystem(Math::CoordinateSystem *csys)
 		this->reqCsys = csys->Clone();
 	}
 
-}
-
-
-Text::CString Map::HKSpeedLimit::GetDownloadURL()
-{
-	return CSTR("https://static.data.gov.hk/td/road-network-v2/RdNet_IRNP.gdb.zip");
-}
-
-Text::CString Map::HKSpeedLimit::GetDefFileName()
-{
-	return CSTR("RdNet_IRNP.gdb");
 }

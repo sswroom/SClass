@@ -48,7 +48,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 	{
 		ofst = -(OSInt)currY;
 		i = 0;
-		j = this->imgList->GetCount();
+		j = this->imgList.GetCount();
 		while (i < j)
 		{
 			if (ofst + (OSInt)this->iconHeight + ICONPADDING > 0)
@@ -59,7 +59,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 					img->DrawRect(0, OSInt2Double(ofst), UOSInt2Double(w), UOSInt2Double(this->iconHeight + ICONPADDING), 0, b);
 					img->DelBrush(b);
 				}
-				gimg = this->imgList->GetItem(i);
+				gimg = this->imgList.GetItem(i);
 				x = (OSInt)(w - gimg->GetWidth()) >> 1;
 				y = (OSInt)((this->iconHeight + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
 				gimg->SetHDPI(img->GetHDPI());
@@ -79,7 +79,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 		iconPerRow = w / (this->iconWidth + ICONPADDING);
 		ofst = -(OSInt)currY;
 		i = 0;
-		j = this->imgList->GetCount();
+		j = this->imgList.GetCount();
 		while (i < j)
 		{
 			if (ofst + (OSInt)this->iconHeight + ICONPADDING > 0)
@@ -93,7 +93,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 						img->DrawRect(UOSInt2Double((this->iconWidth + ICONPADDING) * k), OSInt2Double(ofst), UOSInt2Double(this->iconWidth + ICONPADDING), UOSInt2Double(this->iconHeight + ICONPADDING), 0, b);
 						img->DelBrush(b);
 					}
-					gimg = this->imgList->GetItem(i + k);
+					gimg = this->imgList.GetItem(i + k);
 					x = (Int32)(((this->iconWidth + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconWidth + ICONPADDING) * k);
 					y = (Int32)((OSInt)((this->iconHeight + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
 					gimg->SetHDPI(img->GetHDPI());
@@ -144,7 +144,7 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Int32 x, Int32 y)
 	if (sz.width <= this->iconWidth + ICONPADDING)
 	{
 		index = ((UInt32)y + currY) / (this->iconHeight + ICONPADDING);
-		if (index >= this->imgList->GetCount())
+		if (index >= this->imgList.GetCount())
 			return INVALID_INDEX;
 		return index;
 	}
@@ -154,7 +154,7 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Int32 x, Int32 y)
 		if (x >= (OSInt)(iconPerRow * (this->iconWidth + ICONPADDING)))
 			return INVALID_INDEX;
 		index = ((UInt32)y + currY) / (this->iconHeight + ICONPADDING) * iconPerRow + (UInt32)x / (this->iconWidth + ICONPADDING);
-		if (index >= this->imgList->GetCount())
+		if (index >= this->imgList.GetCount())
 			return INVALID_INDEX;
 		return index;
 	}
@@ -166,7 +166,7 @@ void UI::GUIPictureList::Add(Media::Image *img)
 	Media::StaticImage *nsimg = this->resizer->ProcessToNew(simg);
 	if (nsimg)
 	{
-		this->imgList->Add(this->deng->ConvImage(nsimg));
+		this->imgList.Add(this->deng->ConvImage(nsimg));
 		DEL_CLASS(nsimg);
 	}
 	DEL_CLASS(simg);
@@ -174,12 +174,12 @@ void UI::GUIPictureList::Add(Media::Image *img)
 
 UOSInt UI::GUIPictureList::GetCount()
 {
-	return this->imgList->GetCount();
+	return this->imgList.GetCount();
 }
 
 void UI::GUIPictureList::RemoveAt(UOSInt index)
 {
-	Media::DrawImage *img = this->imgList->RemoveAt(index);
+	Media::DrawImage *img = this->imgList.RemoveAt(index);
 	if (img)
 	{
 		this->deng->DeleteImage(img);
@@ -188,10 +188,10 @@ void UI::GUIPictureList::RemoveAt(UOSInt index)
 
 void UI::GUIPictureList::Clear()
 {
-	UOSInt i = this->imgList->GetCount();
+	UOSInt i = this->imgList.GetCount();
 	while (i-- > 0)
 	{
-		Media::DrawImage *img = this->imgList->RemoveAt(i);
+		Media::DrawImage *img = this->imgList.RemoveAt(i);
 		this->deng->DeleteImage(img);
 	}
 }
@@ -203,7 +203,7 @@ UOSInt UI::GUIPictureList::GetSelectedIndex()
 
 void UI::GUIPictureList::SetSelectedIndex(UOSInt index)
 {
-	if (index == INVALID_INDEX || index < this->imgList->GetCount())
+	if (index == INVALID_INDEX || index < this->imgList.GetCount())
 	{
 		this->selectedIndex = index;
 	}

@@ -1340,7 +1340,7 @@ exppalop2:
 ;88 rgbTable
 
 	align 16
-LanczosResizer8_C8_collapse
+LanczosResizer8_C8_collapse:
 	push rbp
 	push rbx
 	push rsi

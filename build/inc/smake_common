@@ -2012,6 +2012,8 @@ Map/GMLXML.h: ../../src/Map/GMLXML.cpp
 @GMLXML.o
 Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
 @GPSTrack.o
+Map/HKRoadNetwork2.h: ../../src/Map/HKRoadNetwork2.cpp
+@HKRoadNetwork2.o
 Map/HKSpeedLimit.h: ../../src/Map/HKSpeedLimit.cpp
 @HKSpeedLimit.o
 Map/HKTDVehRestrict.h: ../../src/Map/HKTDVehRestrict.cpp
@@ -4684,6 +4686,7 @@ DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GMLXML.o: ../../src/Map/GMLXML.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
+HKRoadNetwork2.o: ../../src/Map/HKRoadNetwork2.cpp
 HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp

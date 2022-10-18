@@ -15,7 +15,7 @@ namespace UI
 	{
 	private:
 		static Int32 useCnt;
-		Data::ArrayList<Media::DrawImage *> *imgList;
+		Data::ArrayList<Media::DrawImage *> imgList;
 		UOSInt selectedIndex;
 		Media::IImgResizer *resizer;
 		UOSInt iconWidth;

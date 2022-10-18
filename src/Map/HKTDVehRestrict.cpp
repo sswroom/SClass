@@ -207,7 +207,15 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 					}
 					strs[0] = sbuff2;
 					strs[1] = Text::StrInt32(sbuff2, vrId) + 1;
-					Text::StrDouble(strs[1], maxWeight);
+					UInt32 iMaxWeight = (UInt32)maxWeight;
+					if (maxWeight - iMaxWeight < 0.1)
+					{
+						Text::StrUInt32(strs[1], iMaxWeight);
+					}
+					else
+					{
+						Text::StrDouble(strs[1], maxWeight);
+					}
 					strs[2] = sbuff;
 					NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), ptX, ptY));
 					lyr->AddVector(pt, (const UTF8Char**)strs);
