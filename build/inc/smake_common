@@ -1370,6 +1370,7 @@ Data/DateTime.h: ../../src/Data/DateTime.cpp
 @DateTime.o
 Data/DateTimeUtil.h: ../../src/Data/DateTimeUtil.cpp
 @DateTimeUtil.o
+Data/FastMap.h:
 Data/FastStringMap.h:
 Data/FieldComparator.h: ../../src/Data/FieldComparator.cpp
 @FieldComparator.o

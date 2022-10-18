@@ -6,23 +6,23 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 
+#define PROJECTMuL 1000.0
 #define LATLONMUL 40
 #include <stdio.h>
 
 void Map::HKSpeedLimit::FreeRoute(RouteInfo *route)
 {
-	SDEL_CLASS(route->vec);
+	SDEL_CLASS(route->vecOri);
 	DEL_CLASS(route);
 }
 
 void Map::HKSpeedLimit::FreeIndex()
 {
 	Data::ArrayList<Int32> *index;
-	const Data::ArrayList<Data::ArrayList<Int32>*> *indexList = this->indexMap.GetValues();
-	UOSInt i = indexList->GetCount();
+	UOSInt i = this->indexMap.GetCount();
 	while (i-- > 0)
 	{
-		index = indexList->GetItem(i);
+		index = this->indexMap.GetValue(i);
 		DEL_CLASS(index);
 	}
 	this->indexMap.Clear();
@@ -30,7 +30,6 @@ void Map::HKSpeedLimit::FreeIndex()
 
 void Map::HKSpeedLimit::BuildIndex()
 {
-	const Data::ArrayList<RouteInfo*> *routeList = this->routeMap.GetValues();
 	RouteInfo *route;
 	UOSInt i;
 	Data::ArrayList<Int32> *index;
@@ -42,16 +41,16 @@ void Map::HKSpeedLimit::BuildIndex()
 	Int32 maxY;
 	Int64 key;
 	this->FreeIndex();
-	i = routeList->GetCount();
+	i = this->routeMap.GetCount();
 	if (this->bounds.br.x > 180 || this->bounds.br.y > 90 || this->bounds.tl.x < -180 || this->bounds.tl.y < -90)
 	{
 		while (i-- > 0)
 		{
-			route = routeList->GetItem(i);
-			minX = (Int32)(route->bounds.tl.x / 5000.0);
-			minY = (Int32)(route->bounds.tl.y / 5000.0);
-			maxX = (Int32)(route->bounds.br.x / 5000.0);
-			maxY = (Int32)(route->bounds.br.y / 5000.0);
+			route = this->routeMap.GetValue(i);
+			minX = (Int32)(route->bounds.tl.x / PROJECTMuL);
+			minY = (Int32)(route->bounds.tl.y / PROJECTMuL);
+			maxX = (Int32)(route->bounds.br.x / PROJECTMuL);
+			maxY = (Int32)(route->bounds.br.y / PROJECTMuL);
 			x = minX;
 			while (x <= maxX)
 			{
@@ -76,7 +75,7 @@ void Map::HKSpeedLimit::BuildIndex()
 	{
 		while (i-- > 0)
 		{
-			route = routeList->GetItem(i);
+			route = this->routeMap.GetValue(i);
 			minX = (Int32)(route->bounds.tl.x * LATLONMUL);
 			minY = (Int32)(route->bounds.tl.y * LATLONMUL);
 			maxX = (Int32)(route->bounds.br.x * LATLONMUL);
@@ -121,7 +120,8 @@ Map::HKSpeedLimit::HKSpeedLimit(Text::CString fgdbPath)
 	UTF8Char *sptr;
 	RouteInfo *route;
 	UOSInt i;
-	this->csys = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+	this->dataCsys = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+	this->reqCsys = 0;
 	this->fgdb = (DB::ReadingDB*)parser.ParseObject(&pkg, 0, IO::ParserType::ReadingDB);
 	if (this->fgdb)
 	{
@@ -156,8 +156,8 @@ Map::HKSpeedLimit::HKSpeedLimit(Text::CString fgdbPath)
 					route->objectId = r->GetInt32(objIdCol);
 					route->routeId = r->GetInt32(routeIdCol);
 					route->speedLimit = 50;
-					route->vec = r->GetVector(shapeCol);
-					route->vec->GetBounds(&route->bounds);
+					route->vecOri = r->GetVector(shapeCol);
+					route->vecOri->GetBounds(&route->bounds);
 					route = this->routeMap.Put(route->routeId, route);
 					if (route)
 					{
@@ -206,15 +206,14 @@ Map::HKSpeedLimit::HKSpeedLimit(Text::CString fgdbPath)
 				fgdb->CloseReader(r);
 			}
 
-			const Data::ArrayList<RouteInfo*> *routeList = this->routeMap.GetValues();
 			Math::RectAreaDbl bounds;
 			i = this->routeMap.GetCount();
 			i--;
-			route = routeList->GetItem(i);
+			route = this->routeMap.GetValue(i);
 			bounds = route->bounds;
 			while (i-- > 0)
 			{
-				route = routeList->GetItem(i);
+				route = this->routeMap.GetValue(i);
 				bounds = bounds.MergeArea(route->bounds);
 			}
 			this->bounds = bounds;
@@ -227,15 +226,19 @@ Map::HKSpeedLimit::HKSpeedLimit(Text::CString fgdbPath)
 Map::HKSpeedLimit::~HKSpeedLimit()
 {
 	SDEL_CLASS(this->fgdb);
-	DEL_CLASS(this->csys);
-	const Data::ArrayList<RouteInfo*> *routeList = this->routeMap.GetValues();
-	UOSInt i = routeList->GetCount();
-	while (i-- > 0) FreeRoute(routeList->GetItem(i));
+	DEL_CLASS(this->dataCsys);
+	SDEL_CLASS(this->reqCsys);
+	UOSInt i = this->routeMap.GetCount();
+	while (i-- > 0) FreeRoute(this->routeMap.GetValue(i));
 	this->FreeIndex();
 }
 
 const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coord2DDbl pt)
 {
+	if (this->reqCsys && !this->reqCsys->Equals(this->dataCsys))
+	{
+		pt = Math::CoordinateSystem::Convert(this->reqCsys, this->dataCsys, pt);
+	}
 	Data::ArrayList<Int32> routeList;
 	UOSInt i;
 	RouteInfo *route;
@@ -248,8 +251,8 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 	Int32 yInd;
 	if (this->bounds.br.x > 180 || this->bounds.br.y > 90 || this->bounds.tl.x < -180 || this->bounds.tl.y < -90)
 	{
-		xInd = (Int32)(pt.x / 5000.0);
-		yInd = (Int32)(pt.y / 5000.0);
+		xInd = (Int32)(pt.x / PROJECTMuL);
+		yInd = (Int32)(pt.y / PROJECTMuL);
 	}
 	else
 	{
@@ -276,7 +279,7 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 			route = this->routeMap.Get(routeId);
 			if (route)
 			{
-				thisDist = route->vec->CalSqrDistance(pt, 0);
+				thisDist = route->vecOri->CalSqrDistance(pt, 0);
 				if (thisDist < minDist)
 				{
 					minDist = thisDist;
@@ -289,26 +292,73 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 	return this->routeMap.Get(minRouteId);
 }
 
-void Map::HKSpeedLimit::ConvertCoordinateSystem(Math::CoordinateSystem *csys)
+Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 {
-	if (csys && !this->csys->Equals(csys))
+	Int32 speedLimit = 50;
+	Double distComp = maxDistM * maxDistM;
+
+	if (this->reqCsys && !this->reqCsys->Equals(this->dataCsys))
 	{
-		Double tmp;
-		RouteInfo *route;
-		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->bounds.tl.x, this->bounds.tl.y, 0, &this->bounds.tl.x, &this->bounds.tl.y, &tmp);
-		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->bounds.br.x, this->bounds.br.y, 0, &this->bounds.br.x, &this->bounds.br.y, &tmp);
-		const Data::ArrayList<RouteInfo*> *routeList = this->routeMap.GetValues();
-		UOSInt i = routeList->GetCount();
-		while (i-- > 0)
-		{
-			route = routeList->GetItem(i);
-			route->vec->ConvCSys(this->csys, csys);
-			route->vec->GetBounds(&route->bounds);
-		}
-		DEL_CLASS(this->csys);
-		this->csys = csys->Clone();
-		this->BuildIndex();
+		pt = Math::CoordinateSystem::Convert(this->reqCsys, this->dataCsys, pt);
 	}
+	Data::ArrayList<Int32> routeList;
+	UOSInt i;
+	RouteInfo *route;
+	Double thisDist;
+	Int32 lastRouteId = -1;
+	Int32 routeId;
+	Int32 xInd;
+	Int32 yInd;
+	if (this->bounds.br.x > 180 || this->bounds.br.y > 90 || this->bounds.tl.x < -180 || this->bounds.tl.y < -90)
+	{
+		xInd = (Int32)(pt.x / PROJECTMuL);
+		yInd = (Int32)(pt.y / PROJECTMuL);
+	}
+	else
+	{
+		xInd = (Int32)(pt.x * LATLONMUL);
+		yInd = (Int32)(pt.y * LATLONMUL);
+	}
+	AppendRouteIds(&routeList, xInd - 1, yInd - 1);
+	AppendRouteIds(&routeList, xInd + 0, yInd - 1);
+	AppendRouteIds(&routeList, xInd + 1, yInd - 1);
+	AppendRouteIds(&routeList, xInd - 1, yInd + 0);
+	AppendRouteIds(&routeList, xInd + 0, yInd + 0);
+	AppendRouteIds(&routeList, xInd + 1, yInd + 0);
+	AppendRouteIds(&routeList, xInd - 1, yInd + 1);
+	AppendRouteIds(&routeList, xInd + 0, yInd + 1);
+	AppendRouteIds(&routeList, xInd + 1, yInd + 1);
+	ArtificialQuickSort_SortInt32(routeList.GetArray(&i), 0, (OSInt)routeList.GetCount() - 1);
+	i = routeList.GetCount();
+	while (i-- > 0)
+	{
+		routeId = routeList.GetItem(i);
+		if (routeId != lastRouteId)
+		{
+			lastRouteId = routeId;
+			route = this->routeMap.Get(routeId);
+			if (route && route->speedLimit > speedLimit)
+			{
+				thisDist = route->vecOri->CalSqrDistance(pt, 0);
+				if (thisDist <= distComp)
+				{
+					speedLimit = route->speedLimit;
+				}
+			}
+		}
+	}
+
+	return speedLimit;
+}
+
+void Map::HKSpeedLimit::SetReqCoordinateSystem(Math::CoordinateSystem *csys)
+{
+	if (csys && (this->reqCsys == 0 || !this->reqCsys->Equals(csys)))
+	{
+		SDEL_CLASS(this->reqCsys);
+		this->reqCsys = csys->Clone();
+	}
+
 }
 
 

@@ -52,6 +52,14 @@ Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys) const
 	}
 }
 
+Math::Coord2DDbl Math::CoordinateSystem::Convert(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Math::Coord2DDbl coord)
+{
+	Double x;
+	Double y;
+	ConvertXYZ(srcCoord, destCoord, coord.x, coord.y, 0, &x, &y, 0);
+	return Math::Coord2DDbl(x, y);
+}
+
 void Math::CoordinateSystem::ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ)
 {
 	if (srcCoord->IsProjected())

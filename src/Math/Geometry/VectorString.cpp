@@ -94,6 +94,11 @@ UOSInt Math::Geometry::VectorString::GetCoordinates(Data::ArrayListA<Math::Coord
 	return 1;
 }
 
+void Math::Geometry::VectorString::SwapXY()
+{
+	this->pos = this->pos.SwapXY();
+}
+
 Text::String *Math::Geometry::VectorString::GetString() const
 {
 	return this->s;

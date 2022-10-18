@@ -1,7 +1,6 @@
 #ifndef _SM_MAP_HKSPEEDLIMIT
 #define _SM_MAP_HKSPEEDLIMIT
-#include "Data/Int32Map.h"
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "DB/ReadingDB.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Text/CString.h"
@@ -17,14 +16,15 @@ namespace Map
 			Int32 objectId;
 			Int32 routeId;
 			Int32 speedLimit;
-			Math::Geometry::Vector2D *vec;
+			Math::Geometry::Vector2D *vecOri;
 		};
 	private:
 		DB::ReadingDB *fgdb;
-		Math::CoordinateSystem *csys;
-		Data::Int32Map<RouteInfo*> routeMap;
+		Math::CoordinateSystem *dataCsys;
+		Math::CoordinateSystem *reqCsys;
+		Data::FastMap<Int32, RouteInfo*> routeMap;
 		Math::RectAreaDbl bounds;
-		Data::Int64Map<Data::ArrayList<Int32>*> indexMap;
+		Data::FastMap<Int64, Data::ArrayList<Int32>*> indexMap;
 
 		static void FreeRoute(RouteInfo *route);
 		void FreeIndex();
@@ -35,7 +35,8 @@ namespace Map
 		~HKSpeedLimit();
 
 		const RouteInfo *GetNearestRoute(Math::Coord2DDbl pt);
-		void ConvertCoordinateSystem(Math::CoordinateSystem *csys);
+		Int32 GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM);
+		void SetReqCoordinateSystem(Math::CoordinateSystem *csys);
 
 		static Text::CString GetDownloadURL();
 		static Text::CString GetDefFileName();

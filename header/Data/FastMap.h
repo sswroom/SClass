@@ -1,0 +1,200 @@
+#ifndef _SM_DATA_FASTMAP
+#define _SM_DATA_FASTMAP
+#include "Data/IMap.h"
+
+namespace Data
+{
+	template <class T, class V> struct FastMapItem
+	{
+	public:
+		T key;
+		V value;
+	
+		FastMapItem(T key, V value)
+		{
+			this->key = key;
+			this->value = value;
+		}
+
+		FastMapItem(T key)
+		{
+			this->key = key;
+			this->value = 0;
+		}
+
+		Bool operator==(FastMapItem<T,V> index)
+		{
+			return this->key == index.key;
+		}
+	};
+
+	template <class T, class V> class FastMap : public IMap<T, V>
+	{
+	protected:
+		Data::ArrayList<FastMapItem<T, V>> values;
+
+	public:
+		FastMap();
+		virtual ~FastMap();
+
+		virtual V Put(T key, V val);
+		virtual V Get(T key) const;
+		virtual V Remove(T key);
+		void PutAll(const FastMap<T,V> *map);
+		OSInt GetIndex(T key) const;
+		Bool ContainsKey(T key) const;
+
+		void AllocSize(UOSInt cnt);
+		UOSInt GetCount() const;
+		T GetKey(UOSInt index) const;
+		V GetValue(UOSInt index) const;
+		virtual Bool IsEmpty() const;
+		virtual V *ToArray(UOSInt *objCnt);
+		virtual void Clear();
+	};
+
+
+	template <class T, class V> FastMap<T, V>::FastMap() : IMap<T, V>()
+	{
+	}
+
+	template <class T, class V> FastMap<T, V>::~FastMap()
+	{
+	}
+
+	template <class T, class V> V FastMap<T, V>::Put(T key, V val)
+	{
+		OSInt i;
+		i = this->GetIndex(key);
+		if (i >= 0)
+		{
+			V oldVal = this->values.GetItem((UOSInt)i).value;
+            this->values.SetItem((UOSInt)i, FastMapItem<T,V>(key, val));
+			return oldVal;
+		}
+		else
+		{
+			this->values.Insert((UOSInt)~i, FastMapItem<T,V>(key, val));
+			return 0;
+		}
+	}
+
+	template <class T, class V> V FastMap<T, V>::Get(T key) const
+	{
+		OSInt i;
+		i = this->GetIndex(key);
+		if (i >= 0)
+		{
+			return this->values.GetItem((UOSInt)i).value;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	template <class T, class V> V FastMap<T, V>::Remove(T key)
+	{
+		OSInt i;
+		i = this->GetIndex(key);
+		if (i >= 0)
+		{
+			return this->values.RemoveAt((UOSInt)i).value;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	template <class T, class V> void FastMap<T, V>::PutAll(const FastMap<T,V> *map)
+	{
+		UOSInt i;
+		UOSInt j;
+		i = 0;
+		j = map->GetCount();
+		while (i < j)
+		{
+			this->Put(map->GetKey(i), map->GetValue(i));
+			i++;
+		}
+	}
+
+	template <class T, class V> OSInt FastMap<T, V>::GetIndex(T key) const
+	{
+		OSInt i;
+		OSInt j;
+		OSInt k;
+		T l;
+		i = 0;
+		j = (OSInt)this->values.GetCount() - 1;
+		while (i <= j)
+		{
+			k = (i + j) >> 1;
+			l = this->values.GetItem((UOSInt)k).key;
+			if (l > key)
+			{
+				j = k - 1;
+			}
+			else if (l < key)
+			{
+				i = k + 1;
+			}
+			else
+			{
+				return k;
+			}
+		}
+		return -i - 1;
+	}
+
+	template <class T, class V> Bool FastMap<T, V>::ContainsKey(T key) const
+	{
+		return this->GetIndex(key) >= 0;
+	}
+
+	template <class T, class V> void FastMap<T, V>::AllocSize(UOSInt cnt)
+	{
+		UOSInt newSize = this->values.GetCount() + cnt;
+		this->values.EnsureCapacity(newSize);
+	}
+
+	template <class T, class V> UOSInt FastMap<T, V>::GetCount() const
+	{
+		return this->values.GetCount();
+	}
+
+	template <class T, class V> T FastMap<T, V>::GetKey(UOSInt index) const
+	{
+		return this->values.GetItem(index).key;
+	}
+
+	template <class T, class V> V FastMap<T, V>::GetValue(UOSInt index) const
+	{
+		return this->values.GetItem(index).value;
+	}
+
+	template <class T, class V> Bool FastMap<T, V>::IsEmpty() const
+	{
+		return this->values.GetCount() == 0;
+	}
+
+	template <class T, class V> V *FastMap<T, V>::ToArray(UOSInt *objCnt)
+	{
+		UOSInt cnt = this->values.GetCount();
+		V *outArr = MemAlloc(V, cnt);
+		*objCnt = cnt;
+		while (cnt-- > 0)
+		{
+			outArr[cnt] = this->values.GetItem(cnt).value;
+		}
+		return outArr;
+	}
+
+	template <class T, class V> void FastMap<T, V>::Clear()
+	{
+		this->values.Clear();
+	}
+}
+
+#endif
