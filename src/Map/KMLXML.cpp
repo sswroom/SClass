@@ -4,7 +4,7 @@
 #include "Data/ICaseStringMap.h"
 #include "Map/KMLXML.h"
 #include "Map/MapLayerCollection.h"
-#include "Map/ReloadableMapLayer.h"
+#include "Map/NetworkLinkLayer.h"
 #include "Map/VectorLayer.h"
 #include "Map/WebImageLayer.h"
 #include "Math/CoordinateSystemManager.h"
@@ -121,21 +121,25 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+		Text::XMLNode::NodeType nodeType = reader->GetNodeType();
+		if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 		{
 			break;
 		}
-		else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+		else if (nodeType == Text::XMLNode::NodeType::Element)
 		{
-			if (reader->GetNodeText()->EqualsICase(UTF8STRC("NetworkLink")))
+			Text::String *nodeName = reader->GetNodeText();
+			if (nodeName->EqualsICase(UTF8STRC("NetworkLink")))
 			{
 				if (parsers && browser)
 				{
-					Map::ReloadableMapLayer *lyr;
+					Map::NetworkLinkLayer *lyr;
 					Text::String *layerName = 0;
 					Text::String *url = 0;
+					Text::String *viewFormat = 0;
+					Map::NetworkLinkLayer::RefreshMode mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 					Int32 interval = 0;
-					NEW_CLASS(lyr, Map::ReloadableMapLayer(sourceName, parsers, browser, CSTR_NULL));
+					NEW_CLASS(lyr, Map::NetworkLinkLayer(sourceName, parsers, browser, CSTR_NULL));
 				
 					while (reader->ReadNext())
 					{
@@ -149,6 +153,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
+								lyr->SetLayerName(sb.ToCString());
 								SDEL_STRING(layerName);
 								layerName = Text::String::New(sb.ToCString());
 							}
@@ -174,6 +179,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 											sb.ClearStr();
 											reader->ReadNodeText(&sb);
 											interval = sb.ToInt32();
+											mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 										}
 										else
 										{
@@ -192,7 +198,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 
 					if (url)
 					{
-						lyr->AddInnerLayer(STR_CSTR(layerName), STR_CSTR(url), interval);
+						lyr->AddLink(STR_CSTR(layerName), STR_CSTR(url), STR_CSTR(viewFormat), mode, interval);
 					}
 
 					SDEL_STRING(layerName);
@@ -204,7 +210,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					reader->SkipElement();
 				}
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("STYLE")))
+			else if (nodeName->EqualsICase(UTF8STRC("STYLE")))
 			{
 				Text::String *styleId = 0;
 				style = MemAlloc(KMLStyle, 1);
@@ -377,7 +383,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					style = 0;
 				}
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("STYLEMAP")))
+			else if (nodeName->EqualsICase(UTF8STRC("STYLEMAP")))
 			{
 				Text::String *styleId = 0;
 				style = MemAlloc(KMLStyle, 1);
@@ -482,7 +488,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					style = 0;
 				}
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("PLACEMARK")))
+			else if (nodeName->EqualsICase(UTF8STRC("PLACEMARK")))
 			{
 				lyr = ParseKMLPlacemarkLyr(reader, styles, sourceName, parsers, browser, basePF);
 				if (lyr)
@@ -490,7 +496,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					layers.Add(lyr);
 				}
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("SCREENOVERLAY")))
+			else if (nodeName->EqualsICase(UTF8STRC("SCREENOVERLAY")))
 			{
 				if (imgLyr == 0)
 				{
@@ -662,7 +668,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 				}
 				SDEL_STRING(name);
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GROUNDOVERLAY")))
+			else if (nodeName->EqualsICase(UTF8STRC("GROUNDOVERLAY")))
 			{
 				if (imgLyr == 0)
 				{
@@ -831,7 +837,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 				}
 				SDEL_STRING(name);
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("FOLDER")))
+			else if (nodeName->EqualsICase(UTF8STRC("FOLDER")))
 			{
 				lyr = ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF);
 				if (lyr)
@@ -839,7 +845,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					layers.Add(lyr);
 				}
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("DOCUMENT")))
+			else if (nodeName->EqualsICase(UTF8STRC("DOCUMENT")))
 			{
 				lyr = ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF);
 				if (lyr)
@@ -847,7 +853,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					layers.Add(lyr);
 				}
 			}
-			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
+			else if (nodeName->EqualsICase(UTF8STRC("NAME")))
 			{
 				while (reader->ReadNext())
 				{

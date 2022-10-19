@@ -2056,12 +2056,12 @@ Map/MapView.h: ../../src/Map/MapView.cpp
 @MapView.o
 Map/MercatorMapView.h: ../../src/Map/MercatorMapView.cpp
 @MercatorMapView.o
+Map/NetworkLinkLayer.h: ../../src/Map/NetworkLinkLayer.cpp
+@NetworkLinkLayer.o
 Map/OruxDBLayer.h: ../../src/Map/OruxDBLayer.cpp
 @OruxDBLayer.o
 Map/OWSFeatureParser.h: ../../src/Map/OWSFeatureParser.cpp
 @OWSFeatureParser.o
-Map/ReloadableMapLayer.h: ../../src/Map/ReloadableMapLayer.cpp
-@ReloadableMapLayer.o
 Map/ReverseGeocoderServer.h: ../../src/Map/ReverseGeocoderServer.cpp
 @ReverseGeocoderServer.o
 Map/RevGeoCfg.h: ../../src/Map/RevGeoCfg.cpp
@@ -4704,9 +4704,9 @@ MapSearchManager.o: ../../src/Map/MapSearchManager.cpp
 MapServerHandler.o: ../../src/Map/MapServerHandler.cpp
 MapView.o: ../../src/Map/MapView.cpp
 MercatorMapView.o: ../../src/Map/MercatorMapView.cpp
+NetworkLinkLayer.o: ../../src/Map/NetworkLinkLayer.cpp
 OruxDBLayer.o: ../../src/Map/OruxDBLayer.cpp
 OWSFeatureParser.o: ../../src/Map/OWSFeatureParser.cpp
-ReloadableMapLayer.o: ../../src/Map/ReloadableMapLayer.cpp
 RevGeoCfg.o: ../../src/Map/RevGeoCfg.cpp
 RevGeoDir.o: ../../src/Map/RevGeoDir.cpp
 ReverseGeocoderServer.o: ../../src/Map/ReverseGeocoderServer.cpp

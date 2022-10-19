@@ -159,7 +159,7 @@ UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, v
 
 UOSInt Map::DrawMapServiceLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
+	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
 UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)

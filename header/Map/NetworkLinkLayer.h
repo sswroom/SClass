@@ -1,5 +1,5 @@
-#ifndef _SM_MAP_RELOADABLEMAPLAYER
-#define _SM_MAP_RELOADABLEMAPLAYER
+#ifndef _SM_MAP_NETWORKLINKLAYER
+#define _SM_MAP_NETWORKLINKLAYER
 #include "Map/IMapDrawLayer.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
@@ -8,23 +8,33 @@
 
 namespace Map
 {
-	class ReloadableMapLayer : public Map::IMapDrawLayer
+	class NetworkLinkLayer : public Map::IMapDrawLayer
 	{
+	public:
+		enum class RefreshMode
+		{
+			OnInterval,
+			OnStop,
+			OnRequest
+		};
 	private:
 		typedef struct
 		{
 			Text::String *layerName;
 			Text::String *url;
+			Text::String *viewFormat;
+			RefreshMode mode;
+			Int32 reloadInterval;
 			Map::IMapDrawLayer *innerLayer;
 			Map::DrawLayerType innerLayerType;
-			Int32 reloadInterval;
+			Data::Timestamp lastUpdated;
 			void *sess;
-		} InnerLayerInfo;
+		} LinkInfo;
 	private:
 		Net::WebBrowser *browser;
 		Parser::ParserList *parsers;
-		Sync::RWMutex innerLayerMut;
-		Data::ArrayList<InnerLayerInfo*> innerLayers;
+		Sync::RWMutex linkMut;
+		Data::ArrayList<LinkInfo*> links;
 		Map::DrawLayerType innerLayerType;
 
 		Double currScale;
@@ -32,10 +42,16 @@ namespace Map
 		Data::ArrayList<UpdatedHandler> updHdlrs;
 		Data::ArrayList<void *> updObjs;
 
+		Sync::Mutex dispMut;
+		Math::Size2D<Double> dispSize;
+		Double dispDPI;
+		Math::RectAreaDbl dispRect;
+
 		static void __stdcall InnerUpdated(void *userObj);
+		void LoadLink(LinkInfo *link);
 	public:
-		ReloadableMapLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
-		virtual ~ReloadableMapLayer();
+		NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
+		virtual ~NetworkLinkLayer();
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);
@@ -55,6 +71,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual UInt32 GetCodePage();
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
 
 		virtual void *BeginGetObject();
 		virtual void EndGetObject(void *session);
@@ -69,10 +86,7 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		void AddInnerLayer(Text::CString name, Text::CString url, Int32 seconds);
-//		void SetLayerName(const WChar *name);
-//		void SetReloadURL(const WChar *url);
-//		void SetReloadInterval(Int32 seconds);
+		void AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds);
 		void Reload();
 	};
 }
