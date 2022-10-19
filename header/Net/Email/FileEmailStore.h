@@ -1,6 +1,6 @@
 #ifndef _SM_NET_EMAIL_FILEEMAILSTORE
 #define _SM_NET_EMAIL_FILEEMAILSTORE
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "Net/Email/EmailStore.h"
 
 namespace Net
@@ -18,7 +18,7 @@ namespace Net
 				const UTF8Char *uid;
 			};
 		private:
-			Data::Int64Map<FileInfo*> fileMap;
+			Data::FastMap<Int64, FileInfo*> fileMap;
 			Sync::Mutex fileMut;
 			Int64 currId;
 			Sync::Mutex currIdMut;

@@ -222,11 +222,10 @@ IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
 
 IO::MODBUSController::~MODBUSController()
 {
-	const Data::ArrayList<Int32> *devList = this->devMap.GetKeys();
-	UOSInt i = devList->GetCount();
+	UOSInt i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		this->modbus->HandleReadResult((UInt8)devList->GetItem(i), 0, 0, 0);
+		this->modbus->HandleReadResult(this->devMap.GetKey(i), 0, 0, 0);
 	}
 }
 

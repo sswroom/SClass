@@ -30,10 +30,10 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 			UInt16 opcode = ReadMUInt16(&buff[20]);
 			if (opcode == 1) //Request
 			{
-				Int32 ip;
+				UInt32 ip;
 				Int64 reqTime;
 				Int64 lastTime;
-				Int64 iMAC;
+				UInt64 iMAC;
 				Net::IPScanDetector::AdapterStatus *adapter;
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
@@ -41,8 +41,8 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				macBuff[0] = 0;
 				macBuff[1] = 0;
 				MemCopyNO(&macBuff[2], &buff[6], 6);
-				iMAC = ReadMInt64(macBuff);
-				ip = ReadMInt32(&buff[38]);
+				iMAC = ReadMUInt64(macBuff);
+				ip = ReadMUInt32(&buff[38]);
 				Sync::MutexUsage mutUsage(&stat->me->adapterMut);
 				adapter = stat->me->adapterMap.Get(iMAC);
 				if (adapter)
@@ -53,7 +53,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					}
 					else
 					{
-						lastTime = adapter->targetIPMap->Get(ip);
+						lastTime = adapter->targetIPMap.Get(ip);
 						if (lastTime == 0 || lastTime + TIMEDETECTRANGE < reqTime)
 						{
 							adapter->detectCnt++;
@@ -63,27 +63,26 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 							}
 						}
 					}
-					adapter->targetIPMap->Put(ip, reqTime);
+					adapter->targetIPMap.Put(ip, reqTime);
 					adapter->lastDetectTime = reqTime;
 				}
 				else
 				{
-					adapter = MemAlloc(Net::IPScanDetector::AdapterStatus, 1);
+					NEW_CLASS(adapter, Net::IPScanDetector::AdapterStatus());
 					adapter->iMAC = iMAC;
 					adapter->lastDetectTime = reqTime;
 					adapter->detectCnt = 1;
-					NEW_CLASS(adapter->targetIPMap, Data::Int32Map<Int64>());
-					adapter->targetIPMap->Put(ip, reqTime);
+					adapter->targetIPMap.Put(ip, reqTime);
 					stat->me->adapterMap.Put(iMAC, adapter);
 				}
 				mutUsage.EndUse();
 			}
 			else if (opcode == 2) //Reply
 			{
-				Int32 ip;
+				UInt32 ip;
 				Int64 reqTime;
 				Int64 lastTime;
-				Int64 iMAC;
+				UInt64 iMAC;
 				Net::IPScanDetector::AdapterStatus *adapter;
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
@@ -91,8 +90,8 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 				macBuff[0] = 0;
 				macBuff[1] = 0;
 				MemCopyNO(&macBuff[2], &buff[0], 6);
-				iMAC = ReadMInt64(macBuff);
-				ip = ReadMInt32(&buff[28]);
+				iMAC = ReadMUInt64(macBuff);
+				ip = ReadMUInt32(&buff[28]);
 				Sync::MutexUsage mutUsage(&stat->me->adapterMut);
 				adapter = stat->me->adapterMap.Get(iMAC);
 				if (adapter)
@@ -103,7 +102,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 					}
 					else
 					{
-						lastTime = adapter->targetIPMap->Get(ip);
+						lastTime = adapter->targetIPMap.Get(ip);
 						if (lastTime == 0 || lastTime + TIMEDETECTRANGE < reqTime)
 						{
 							adapter->detectCnt++;
@@ -113,17 +112,16 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(void *obj)
 							}
 						}
 					}
-					adapter->targetIPMap->Put(ip, reqTime);
+					adapter->targetIPMap.Put(ip, reqTime);
 					adapter->lastDetectTime = reqTime;
 				}
 				else
 				{
-					adapter = MemAlloc(Net::IPScanDetector::AdapterStatus, 1);
+					NEW_CLASS(adapter, Net::IPScanDetector::AdapterStatus());
 					adapter->iMAC = iMAC;
 					adapter->lastDetectTime = reqTime;
 					adapter->detectCnt = 1;
-					NEW_CLASS(adapter->targetIPMap, Data::Int32Map<Int64>());
-					adapter->targetIPMap->Put(ip, reqTime);
+					adapter->targetIPMap.Put(ip, reqTime);
 					stat->me->adapterMap.Put(iMAC, adapter);
 				}
 				mutUsage.EndUse();
@@ -235,14 +233,12 @@ Net::IPScanDetector::~IPScanDetector()
 		this->soc = 0;
 	}
 
-	const Data::ArrayList<Net::IPScanDetector::AdapterStatus*> *adapterList = this->adapterMap.GetValues();
 	Net::IPScanDetector::AdapterStatus *adapter;
-	i = adapterList->GetCount();
+	i = this->adapterMap.GetCount();
 	while (i-- > 0)
 	{
-		adapter = adapterList->GetItem(i);
-		DEL_CLASS(adapter->targetIPMap);
-		MemFree(adapter);
+		adapter = this->adapterMap.GetItem(i);
+		DEL_CLASS(adapter);
 	}
 	SDEL_CLASS(this->ctrlEvt);
 }

@@ -133,8 +133,7 @@ Net::SSDPClient::~SSDPClient()
 {
 	DEL_CLASS(this->udp);
 	SDEL_STRING(this->userAgent);
-	const Data::ArrayList<SSDPDevice*> *devList = this->devMap.GetValues();
-	LIST_CALL_FUNC(devList, SSDPDeviceFree);
+	LIST_CALL_FUNC(&this->devMap, SSDPDeviceFree);
 }
 
 Bool Net::SSDPClient::IsError() const
@@ -162,10 +161,10 @@ Bool Net::SSDPClient::Scan()
 	return this->udp->SendTo(&addr, 1900, sb.ToString(), sb.GetLength());
 }
 
-const Data::ArrayList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage) const
+const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync::MutexUsage *mutUsage) const
 {
 	mutUsage->ReplaceMutex(&this->mut);
-	return this->devMap.GetValues();
+	return &this->devMap;
 }
 
 #define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(&sb); v = Text::String::New(sb.ToString(), sb.GetLength());

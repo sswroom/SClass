@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANMAINFORM
 #define _SM_SSWR_ORGANMGR_ORGANMAINFORM
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/TileMap.h"
 #include "Map/TileMapLayer.h"
@@ -149,7 +149,7 @@ namespace SSWR
 			Map::TileMapLayer *mapTileLyr;
 			Map::TileMap *mapTile;
 			Bool mapUpdated;
-			Data::UInt32Map<OrganSpImgLayer*> mapImgLyrs;
+			Data::FastMap<UInt32, OrganSpImgLayer*> mapImgLyrs;
 			UOSInt imgFontStyle;
 
 			Text::String *initSelObj;

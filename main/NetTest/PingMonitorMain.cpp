@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/ByteTool.h"
-#include "Data/Int64Map.h"
 #if defined(DEBUGCON)
 #include "IO/DebugWriter.h"
 #else

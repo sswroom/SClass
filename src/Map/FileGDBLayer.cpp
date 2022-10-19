@@ -4,7 +4,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 
-Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
+Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
@@ -12,13 +12,13 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0);
 	if (r)
 	{
-		Data::Int32Map<const UTF8Char **> *nameArr;
+		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
 		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32Map<const UTF8Char **>());
+		NEW_CLASS(nameArr, Data::Int32FastMap<const UTF8Char **>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
@@ -172,12 +172,11 @@ Map::FileGDBLayer::~FileGDBLayer()
 	{
 		this->colNames.RemoveAt(i)->Release();
 	}
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects.GetValues();
 	Math::Geometry::Vector2D *vec;
-	i = vecList->GetCount();
+	i = this->objects.GetCount();
 	while (i-- > 0)
 	{
-		vec = vecList->GetItem(i);
+		vec = this->objects.GetItem(i);
 		DEL_CLASS(vec);
 	}
 	this->tableName->Release();
@@ -194,8 +193,14 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **n
 	{
 		*nameArr = ReadNameArr();
 	}
-	outArr->AddRangeI32(this->objects.GetKeys());
-	return this->objects.GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->objects.GetCount();
+	while (i < j)
+	{
+		outArr->Add(this->objects.GetKey(i));
+		i++;
+	}
+	return j;
 }
 
 UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
@@ -210,21 +215,19 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects.GetValues();
-	const Data::SortableArrayListNative<Int32> *vecKeys = this->objects.GetKeys();
 	Math::RectAreaDbl bounds;
 	Math::Geometry::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = vecList->GetCount();
+	j = this->objects.GetCount();
 	while (i < j)
 	{
-		vec = vecList->GetItem(i);
+		vec = this->objects.GetItem(i);
 		vec->GetBounds(&bounds);
 		if (rect.OverlapOrTouch(bounds))
 		{
-			outArr->Add(vecKeys->GetItem(i));
+			outArr->Add(this->objects.GetKey(i));
 			cnt++;
 		}
 		i++;
@@ -234,21 +237,19 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 
 Int64 Map::FileGDBLayer::GetObjectIdMax()
 {
-	const Data::ArrayList<Int32> *objInd = this->objects.GetKeys();
-	return objInd->GetItem(objInd->GetCount() - 1);
+	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
 void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
 {
-	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
-	const Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
-	UOSInt i = nameList->GetCount();
+	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
+	UOSInt i = names->GetCount();
 	UOSInt colCnt = this->colNames.GetCount();
 	UOSInt j;
 	const UTF8Char **nameStrs;
 	while (i-- > 0)
 	{
-		nameStrs = nameList->GetItem(i);
+		nameStrs = names->GetItem(i);
 		j = colCnt;
 		while (j-- > 0)
 		{
@@ -262,7 +263,7 @@ void Map::FileGDBLayer::ReleaseNameArr(void *nameArr)
 
 UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
+	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	if (names == 0)
 		return 0;
 	const UTF8Char **nameStrs = names->Get((Int32)id);

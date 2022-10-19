@@ -1,7 +1,6 @@
 #ifndef _SM_NET_IPSCANDETECTOR
 #define _SM_NET_IPSCANDETECTOR
-#include "Data/Int32Map.h"
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -21,20 +20,20 @@ namespace Net
 			Bool toStop;
 		} ThreadStat;
 
-		typedef struct
+		struct AdapterStatus
 		{
-			Int64 iMAC;
+			UInt64 iMAC;
 			Int64 lastDetectTime;
 			OSInt detectCnt;
-			Data::Int32Map<Int64> *targetIPMap;
-		} AdapterStatus;
+			Data::FastMap<UInt32, Int64> targetIPMap;
+		};
 
 	private:
 		Net::SocketFactory *sockf;
 		Socket *soc;
 		IPScanHandler hdlr;
 		void *userData;
-		Data::Int64Map<AdapterStatus*> adapterMap;
+		Data::FastMap<UInt64, AdapterStatus*> adapterMap;
 		Sync::Mutex adapterMut;
 
 		ThreadStat *threadStats;

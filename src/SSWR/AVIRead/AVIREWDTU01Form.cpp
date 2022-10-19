@@ -133,12 +133,11 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 		const Net::MACInfo::MACEntry *macEntry;
 		Sync::MutexUsage mutUsage(&me->dataMut);
 		me->lvDevices->ClearItems();
-		const Data::ArrayList<DeviceEntry*> *dataList = me->dataMap.GetValues();
 		UOSInt i = 0;
-		UOSInt j = dataList->GetCount();
+		UOSInt j = me->dataMap.GetCount();
 		while (i < j)
 		{
-			entry = dataList->GetItem(i);
+			entry = me->dataMap.GetItem(i);
 			sptr = Text::StrHexBytes(sbuff, entry->mac, 6, ':');
 			me->lvDevices->AddItem(CSTRP(sbuff, sptr), entry);
 			if (entry->name)
@@ -168,11 +167,10 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 {
 	DeviceEntry *entry;
-	const Data::ArrayList<DeviceEntry*> *dataList = this->dataMap.GetValues();
-	UOSInt i = dataList->GetCount();
+	UOSInt i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
-		entry = dataList->GetItem(i);
+		entry = this->dataMap.GetItem(i);
 		SDEL_STRING(entry->name);
 		SDEL_STRING(entry->remark);
 		MemFree(entry);

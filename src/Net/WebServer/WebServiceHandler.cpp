@@ -39,16 +39,15 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			const Data::ArrayList<Int32> *methods = service->funcs.GetKeys();
 			UOSInt i = 0;
-			UOSInt j = methods->GetCount();
+			UOSInt j = service->funcs.GetCount();
 			while (i < j)
 			{
 				if (i > 0)
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)methods->GetItem(i));
+				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)service->funcs.GetKey(i));
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}

@@ -58,11 +58,11 @@ namespace SSWR
 			Bool adapterChanged;
 			Bool dataUpdated;
 			Sync::Mutex pingIPMut;
-			Data::UInt32Map<PingIPInfo*> pingIPMap;
+			Data::FastMap<UInt32, PingIPInfo*> pingIPMap;
 			Bool pingIPListUpdated;
 			Bool pingIPContUpdated;
 			PingIPInfo *currPingIP;
-			Data::UInt32Map<IPTranInfo*> ipTranMap;
+			Data::FastMap<UInt32, IPTranInfo*> ipTranMap;
 			UOSInt ipTranCnt;
 
 			UI::GUIPanel *pnlControl;

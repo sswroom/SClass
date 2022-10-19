@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_MPGFILE
 #define _SM_MEDIA_MPGFILE
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/IStreamData.h"
 #include "Media/IAudioSource.h"
 #include "Media/IMediaStream.h"
@@ -19,8 +19,8 @@ namespace Media
 		UInt64 fleng;
 		UInt32 startTime;
 		Media::M2VStreamSource *vstm;
-		Data::Int32Map<Media::IMediaStream*> *dataStms;
-		Data::ArrayList<Media::IAudioSource*> *audStms;
+		Data::FastMap<Int32, Media::IMediaStream*> dataStms;
+		Data::ArrayList<Media::IAudioSource*> audStms;
 		Int32 mpgVer;
 
 		Int32 playing;

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ORUXDBLAYER
 #define _SM_MAP_ORUXDBLAYER
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "DB/DBConn.h"
 #include "Map/IMapDrawLayer.h"
 #include "Parser/ParserList.h"
@@ -21,7 +21,7 @@ namespace Map
 		} LayerInfo;
 	private:
 		Parser::ParserList *parsers;
-		Data::UInt32Map<LayerInfo*> *layerMap;
+		Data::FastMap<UInt32, LayerInfo*> layerMap;
 		UInt32 currLayer;
 		UInt32 tileSize;
 		DB::DBConn *db;

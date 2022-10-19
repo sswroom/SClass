@@ -134,7 +134,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	NEW_CLASS(this->dvdTypeMap, Data::FastStringMap<DVDTypeInfo*>());
 	NEW_CLASS(this->cateMap, Data::FastStringMap<CategoryInfo*>());
 	NEW_CLASS(this->discTypeMap, Data::FastStringMap<DiscTypeInfo*>());
-	NEW_CLASS(this->dvdVideoMap, Data::Int32Map<DVDVideoInfo*>());
+	NEW_CLASS(this->dvdVideoMap, Data::Int32FastMap<DVDVideoInfo*>());
 
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
@@ -239,11 +239,10 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	DEL_CLASS(this->discTypeMap);
 
 	DVDVideoInfo *dvdVideo;
-	const Data::ArrayList<DVDVideoInfo*> *dvdVideoList = this->dvdVideoMap->GetValues();
-	i = dvdVideoList->GetCount();
+	i = this->dvdVideoMap->GetCount();
 	while (i-- > 0)
 	{
-		dvdVideo = dvdVideoList->GetItem(i);
+		dvdVideo = this->dvdVideoMap->GetItem(i);
 		dvdVideo->anime->Release();
 		SDEL_STRING(dvdVideo->series);
 		SDEL_STRING(dvdVideo->volume);
@@ -529,7 +528,7 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList)
 {
-	dvdVideoList->AddAll(this->dvdVideoMap->GetValues());
+	dvdVideoList->AddAll(this->dvdVideoMap);
 	return this->dvdVideoMap->GetCount();
 }
 

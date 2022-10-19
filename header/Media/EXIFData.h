@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_EXIFDATA
 #define _SM_MEDIA_EXIFDATA
 #include "Data/DateTime.h"
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/CString.h"
@@ -101,13 +101,13 @@ namespace Media
 		static EXIFInfo flirInfos[];
 		static EXIFInfo nikon3Infos[];
 		static EXIFInfo sanyo1Infos[];
-		Data::UInt32Map<EXIFItem*> exifMap;
+		Data::FastMap<UInt32, EXIFItem*> exifMap;
 		EXIFMaker exifMaker;
 
 	private:
 		void FreeItem(EXIFItem *item);
-		void ToExifBuff(UInt8 *buff, const Data::ArrayList<EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const;
-		void GetExifBuffSize(const Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const;
+		void ToExifBuff(UInt8 *buff, const Data::ReadingList<EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const;
+		void GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const;
 	public:
 		EXIFData(EXIFMaker exifMaker);
 		~EXIFData();

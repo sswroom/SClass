@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_XLSPARSER
 #define _SM_PARSER_FILEPARSER_XLSPARSER
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/FileParser.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -37,7 +37,7 @@ namespace Parser
 				Data::ArrayList<Text::String *> sst;
 				Data::ArrayList<WorksheetStatus*> wsList;
 				Data::ArrayList<FontInfo *> fontList;
-				Data::Int32Map<Text::String *> formatMap;
+				Data::FastMap<Int32, Text::String *> formatMap;
 				UInt32 palette[56];
 			};
 

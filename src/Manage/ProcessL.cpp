@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Manage/Process.h"
@@ -395,8 +395,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UTF8Char *sptr;
 		UTF8Char *sarr[6];
 		UTF8Char *sarr2[2];
-		Data::Int32Map<ModuleInfoData*> dataMap;
-		const Data::ArrayList<ModuleInfoData*> *dataList;
+		Data::FastMap<Int32, ModuleInfoData*> dataMap;
 		ModuleInfoData *data;
 		Manage::ModuleInfo *mod;
 		UOSInt ret = 0;
@@ -439,12 +438,11 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 			}
 		}
 
-		dataList = dataMap.GetValues();
 		i = 0;
-		ret = dataList->GetCount();
+		ret = dataMap.GetCount();
 		while (i < ret)
 		{
-			data = dataList->GetItem(i);
+			data = dataMap.GetItem(i);
 
 			NEW_CLASS(mod, Manage::ModuleInfo(0, data));
 			modList->Add(mod);

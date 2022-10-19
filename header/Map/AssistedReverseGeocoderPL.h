@@ -3,8 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/BTreeMap.h"
 #include "Data/Comparator.h"
-#include "Data/Int32Map.h"
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
@@ -42,7 +41,7 @@ namespace Map
 		DB::DBTool *conn;
 		IO::Writer *errWriter;
 		Data::BTreeMap<Text::String *> strMap;
-		Data::UInt32Map<LCIDInfo *> lcidMap;
+		Data::FastMap<UInt32, LCIDInfo *> lcidMap;
 		Sync::Mutex mut;
 	public:
 		AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter);

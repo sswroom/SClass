@@ -23,7 +23,6 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
 	Media::IMediaStream *mstm;
-	const Data::ArrayList<Media::IMediaStream *> *stmList;
 	Int32 lastFrameTime = 0;
 
 	me->playStarted = true;
@@ -57,11 +56,10 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 				{
 					endFound = true;
 					me->vstm->EndFrameStream();
-					stmList = me->dataStms->GetValues();
-					j = stmList->GetCount();
+					j = me->dataStms.GetCount();
 					while (j-- > 0)
 					{
-						mstm = stmList->GetItem(j);
+						mstm = me->dataStms.GetItem(j);
 						mstm->EndFrameStream();
 					}
 
@@ -148,7 +146,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 						dts = (((Int64)(me->readBuff[i + 14] & 0xe)) << 29) | (me->readBuff[i + 15] << 22) | ((me->readBuff[i + 16] & 0xfe) << 14) | (me->readBuff[i + 17] << 7) | (me->readBuff[i + 18] >> 1);
 					}
 					UInt8 stmType = me->readBuff[i + 9 + stmHdrSize];
-					mstm = me->dataStms->Get(stmType);
+					mstm = me->dataStms.Get(stmType);
 					if (mstm)
 					{
 						if (firstAudio && dts != 0)
@@ -253,7 +251,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 						}
 					}
 					UInt8 stmType = me->readBuff[i + 3] & 0x1f;
-					mstm = me->dataStms->Get(stmType);
+					mstm = me->dataStms.Get(stmType);
 					if (mstm)
 					{
 						if (firstAudio && dts != 0)
@@ -386,11 +384,10 @@ UInt64 Media::MPGFile::GetBitRate()
 	{
 		UInt64 bitRate = this->vstm->GetBitRate();
 		UOSInt i;
-		const Data::ArrayList<Media::IMediaStream*> *stms = this->dataStms->GetValues();
-		i = stms->GetCount();
+		i = this->dataStms.GetCount();
 		while (i-- > 0)
 		{
-			bitRate += stms->GetItem(i)->GetBitRate();
+			bitRate += this->dataStms.GetItem(i)->GetBitRate();
 		}
 		return bitRate;
 	}
@@ -429,8 +426,6 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 	this->playToStop = false;
 	this->startTime = 0;
 	this->vstm = 0;
-	NEW_CLASS(this->dataStms, Data::Int32Map<Media::IMediaStream*>());
-	NEW_CLASS(this->audStms, Data::ArrayList<Media::IAudioSource*>());
 
 	if (stmData->GetRealData(0, 128, this->readBuff) != 128)
 		return;
@@ -570,7 +565,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 				{
 					if (this->readBuff[j + 10 + stmHdrSize] > 0)
 					{
-						Media::IMediaStream *mstm = this->dataStms->Get(stmType);
+						Media::IMediaStream *mstm = this->dataStms.Get(stmType);
 						if (mstm == 0)
 						{
 							Media::AudioFormat fmt;
@@ -597,8 +592,8 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 							fmt.extraSize = 0;
 							fmt.extra = 0;
 							NEW_CLASS(mstm, Media::VOBLPCMStreamSource(this, &fmt));
-							this->dataStms->Put(stmType, mstm);
-							this->audStms->Add((Media::VOBLPCMStreamSource*)mstm);
+							this->dataStms.Put(stmType, mstm);
+							this->audStms.Add((Media::VOBLPCMStreamSource*)mstm);
 						}
 					}
 					else
@@ -609,12 +604,12 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 				{
 					if (this->readBuff[10 + stmHdrSize] > 0)
 					{
-						Media::VOBAC3StreamSource *mstm = (Media::VOBAC3StreamSource*)this->dataStms->Get(stmType);
+						Media::VOBAC3StreamSource *mstm = (Media::VOBAC3StreamSource*)this->dataStms.Get(stmType);
 						if (mstm == 0)
 						{
 							NEW_CLASS(mstm, Media::VOBAC3StreamSource(this));
-							this->dataStms->Put(stmType, mstm);
-							this->audStms->Add(mstm);
+							this->dataStms.Put(stmType, mstm);
+							this->audStms.Add(mstm);
 						}
 						if (!mstm->IsReady())
 						{
@@ -690,7 +685,7 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 
 
 				Int32 stmId = this->readBuff[3] & 0x1f;
-				Media::IMediaStream *mstm = this->dataStms->Get(stmId);
+				Media::IMediaStream *mstm = this->dataStms.Get(stmId);
 				if (mstm == 0)
 				{
 					UInt32 v = ReadMUInt32(&this->readBuff[j]);
@@ -715,12 +710,12 @@ Media::MPGFile::MPGFile(IO::IStreamData *stmData) : Media::MediaFile(stmData->Ge
 					}
 					else if (this->readBuff[j] == 0xff && ((this->readBuff[j + 1] & 0xfe) == 0xfc || (this->readBuff[j + 1] & 0xfe) == 0xfa))
 					{
-						Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms->Get(stmId);
+						Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms.Get(stmId);
 						if (mstm == 0)
 						{
 							NEW_CLASS(mstm, Media::MPAStreamSource(this));
-							this->dataStms->Put(stmId, mstm);
-							this->audStms->Add(mstm);
+							this->dataStms.Put(stmId, mstm);
+							this->audStms.Add(mstm);
 						}
 						if (!mstm->IsReady())
 						{
@@ -814,17 +809,14 @@ Media::MPGFile::~MPGFile()
 	{
 		this->StopPlay();
 	}
-	const Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
 	Media::IMediaStream *stm;
 	UOSInt i;
-	i = dataList->GetCount();
+	i = this->dataStms.GetCount();
 	while (i-- > 0)
 	{
-		stm = dataList->GetItem(i);
+		stm = this->dataStms.GetItem(i);
 		DEL_CLASS(stm);
 	}
-	DEL_CLASS(this->dataStms);
-	DEL_CLASS(this->audStms);
 	SDEL_CLASS(this->vstm);
 	DEL_CLASS(this->stmData);
 	MemFree(this->readBuff);
@@ -841,7 +833,7 @@ Media::IMediaSource *Media::MPGFile::GetStream(UOSInt index, Int32 *syncTime)
 		*syncTime = 0;
 	if (index == 0)
 		return this->vstm;
-	return this->audStms->GetItem(index - 1);
+	return this->audStms.GetItem(index - 1);
 }
 
 void Media::MPGFile::KeepStream(UOSInt index, Bool toKeep)

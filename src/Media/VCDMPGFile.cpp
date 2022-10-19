@@ -123,7 +123,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
 					{
 					}
 					UInt8 stmType = me->readBuff[currOfst + 3] & 0x1f;
-					mstm = me->dataStms->Get(stmType);
+					mstm = me->dataStms.Get(stmType);
 					if (mstm)
 					{
 						if (firstAudio && dts != 0)
@@ -241,9 +241,6 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 
 	this->fleng = endSector - startSector;
 	this->vstm = 0;
 
-	NEW_CLASS(this->dataStms, Data::Int32Map<Media::IMediaStream*>());
-	NEW_CLASS(this->audStms, Data::ArrayList<Media::IAudioSource*>());
-
 	Bool succ;
 	UOSInt currSector = 0;
 	UOSInt currOfst;
@@ -253,7 +250,7 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 
 //	Int32 muxRate;
 	while (true)
 	{
-		if (currSector >= 75 && this->vstm && this->dataStms->GetCount() > 0)
+		if (currSector >= 75 && this->vstm && this->dataStms.GetCount() > 0)
 		{
 			break;
 		}
@@ -324,18 +321,18 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 
 					}
 
 					Int32 stmId = this->readBuff[currOfst + 3] & 0x1f;
-					Media::IMediaStream *mstm = this->dataStms->Get(stmId);
+					Media::IMediaStream *mstm = this->dataStms.Get(stmId);
 					if (mstm == 0)
 					{
 //						Int32 v = ReadMInt32(&this->readBuff[j]);
 						if (this->readBuff[j] == 0xff && ((this->readBuff[j + 1] & 0xfe) == 0xfc || (this->readBuff[j + 1] & 0xfe) == 0xfa))
 						{
-							Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms->Get(stmId);
+							Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms.Get(stmId);
 							if (mstm == 0)
 							{
 								NEW_CLASS(mstm, Media::MPAStreamSource(this));
-								this->dataStms->Put(stmId, mstm);
-								this->audStms->Add(mstm);
+								this->dataStms.Put(stmId, mstm);
+								this->audStms.Add(mstm);
 							}
 							if (!mstm->IsReady())
 							{
@@ -418,17 +415,14 @@ Media::VCDMPGFile::~VCDMPGFile()
 	{
 		this->StopPlay();
 	}
-	const Data::ArrayList<Media::IMediaStream*> *dataList = this->dataStms->GetValues();
 	Media::IMediaStream *stm;
 	UOSInt i;
-	i = dataList->GetCount();
+	i = this->dataStms.GetCount();
 	while (i-- > 0)
 	{
-		stm = dataList->GetItem(i);
+		stm = this->dataStms.GetItem(i);
 		DEL_CLASS(stm);
 	}
-	DEL_CLASS(this->dataStms);
-	DEL_CLASS(this->audStms);
 	SDEL_CLASS(this->vstm);
 	DEL_CLASS(this->data);
 	MemFree(this->readBuff);
@@ -441,14 +435,14 @@ UOSInt Media::VCDMPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
 
 Media::IMediaSource *Media::VCDMPGFile::GetStream(UOSInt index, Int32 *syncTime)
 {
-	if (index > this->audStms->GetCount())
+	if (index > this->audStms.GetCount())
 		return 0;
 	if (syncTime)
 		*syncTime = 0;
 	if (index == 0)
 		return this->vstm;
 	else
-		return this->audStms->GetItem(index - 1);
+		return this->audStms.GetItem(index - 1);
 }
 
 void Media::VCDMPGFile::KeepStream(UOSInt index, Bool toKeep)

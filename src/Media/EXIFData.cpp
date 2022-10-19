@@ -1110,7 +1110,7 @@ void Media::EXIFData::FreeItem(Media::EXIFData::EXIFItem *item)
 	MemFree(item);
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ArrayList<Media::EXIFData::EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const
+void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ReadingList<Media::EXIFData::EXIFItem*> *exifList, UInt32 *startOfst, UInt32 *otherOfst) const
 {
 	UInt32 objCnt;
 	UOSInt i;
@@ -1297,7 +1297,7 @@ void Media::EXIFData::ToExifBuff(UInt8 *buff, const Data::ArrayList<Media::EXIFD
 	*otherOfst = k;
 }
 
-void Media::EXIFData::GetExifBuffSize(const Data::ArrayList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const
+void Media::EXIFData::GetExifBuffSize(const Data::ReadingList<EXIFItem*> *exifList, UInt32 *size, UInt32 *endOfst) const
 {
 	UInt32 i = 6;
 	UInt32 j = 6;
@@ -1392,11 +1392,10 @@ Media::EXIFData::EXIFData(EXIFMaker exifMaker)
 
 Media::EXIFData::~EXIFData()
 {
-	const Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
-	UOSInt i = items->GetCount();
+	UOSInt i = this->exifMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(items->GetItem(i));
+		FreeItem(this->exifMap.GetItem(i));
 	}
 }
 
@@ -1408,16 +1407,15 @@ Media::EXIFData::EXIFMaker Media::EXIFData::GetEXIFMaker() const
 Media::EXIFData *Media::EXIFData::Clone() const
 {
 	Media::EXIFData::EXIFItem *item;
-	const Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
 	UOSInt i;
 	UOSInt j;
 	Media::EXIFData *newExif;
 	NEW_CLASS(newExif, Media::EXIFData(this->exifMaker));
 	i = 0;
-	j = items->GetCount();
+	j = this->exifMap.GetCount();
 	while (i < j)
 	{
-		item = items->GetItem(i);
+		item = this->exifMap.GetItem(i);
 		switch (item->type)
 		{
 		case ET_BYTES:
@@ -1673,12 +1671,11 @@ void Media::EXIFData::Remove(UInt32 id)
 
 UOSInt Media::EXIFData::GetExifIds(Data::ArrayList<UInt32> *idArr) const
 {
-	const Data::ArrayList<EXIFItem*> *items = this->exifMap.GetValues();
-	UOSInt cnt = items->GetCount();
+	UOSInt cnt = this->exifMap.GetCount();
 	UOSInt i = 0;
 	while (i < cnt)
 	{
-		idArr->Add(items->GetItem(i)->id);
+		idArr->Add(this->exifMap.GetItem(i)->id);
 		i++;
 	}
 	return cnt;
@@ -4162,12 +4159,12 @@ Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 
 
 void Media::EXIFData::ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst) const
 {
-	ToExifBuff(buff, this->exifMap.GetValues(), startOfst, otherOfst);
+	ToExifBuff(buff, &this->exifMap, startOfst, otherOfst);
 }
 
 void Media::EXIFData::GetExifBuffSize(UInt32 *size, UInt32 *endOfst) const
 {
-	GetExifBuffSize(this->exifMap.GetValues(), size, endOfst);
+	GetExifBuffSize(&this->exifMap, size, endOfst);
 }
 
 Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const

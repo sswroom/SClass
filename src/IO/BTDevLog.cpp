@@ -105,25 +105,21 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 	return log;
 }
 
-void IO::BTDevLog::AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap)
+void IO::BTDevLog::AppendList(Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *devMap)
 {
 	IO::BTScanLog::ScanRecord3 *rec;
-	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList = devMap->GetValues();
-	UOSInt i = recList->GetCount();
+	UOSInt i = devMap->GetCount();
 	while (i-- > 0)
 	{
-		rec = recList->GetItem(i);
+		rec = devMap->GetItem(i);
 		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company, rec->advType);
 	}
 }
 
 void IO::BTDevLog::ClearList()
 {
-	const Data::ArrayList<DevEntry*> *logList;
-	logList = this->randDevs.GetValues();
-	LIST_CALL_FUNC(logList, this->FreeDev);
-	logList = this->pubDevs.GetValues();
-	LIST_CALL_FUNC(logList, this->FreeDev);
+	LIST_CALL_FUNC(&this->randDevs, this->FreeDev);
+	LIST_CALL_FUNC(&this->pubDevs, this->FreeDev);
 	this->randDevs.Clear();
 	this->pubDevs.Clear();
 }
@@ -223,8 +219,8 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	}
 	Text::UTF8Writer writer(&fs);
 	Data::ArrayList<DevEntry*> logList;
-	logList.AddAll(this->pubDevs.GetValues());
-	logList.AddAll(this->randDevs.GetValues());
+	logList.AddAll(&this->pubDevs);
+	logList.AddAll(&this->randDevs);
 	DevEntry *log;
 	UOSInt i = 0;
 	UOSInt j = logList.GetCount();
@@ -280,12 +276,12 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 	return true;
 }
 
-const Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList() const
+const Data::ReadingList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetPublicList() const
 {
-	return this->pubDevs.GetValues();
+	return &this->pubDevs;
 }
 
-const Data::ArrayList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList() const
+const Data::ReadingList<IO::BTDevLog::DevEntry*> *IO::BTDevLog::GetRandomList() const
 {
-	return this->randDevs.GetValues();
+	return &this->randDevs;
 }

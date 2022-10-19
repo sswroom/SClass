@@ -676,14 +676,13 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 			i++;
 		}
 
-		const Data::ArrayList<WebFileInfo*> *webFiles = spInfo->wfileMap.GetValues();
 		WebFileInfo *webFile;
 
 		i = 0;
-		j = webFiles->GetCount();
+		j = spInfo->wfileMap.GetCount();
 		while (i < j)
 		{
-			webFile = webFiles->GetItem(i);
+			webFile = spInfo->wfileMap.GetItem(i);
 
 			NEW_CLASS(imgItem, OrganImageItem(0));
 			sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("web\\")), webFile->id), UTF8STRC(".jpg"));
@@ -4409,14 +4408,14 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	this->db->CloseReader(r);
 }
 
-Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvDB::GetGroupTree()
+Data::FastMap<Int32, Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::OrganEnvDB::GetGroupTree()
 {
 	Data::ArrayList<OrganGroup*> *grps;
-	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
+	Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree;
 	DB::DBReader *r;
 	Int32 parId;
 
-	NEW_CLASS(grpTree, Data::Int32Map<Data::ArrayList<OrganGroup*>*>());
+	NEW_CLASS(grpTree, Data::Int32FastMap<Data::ArrayList<OrganGroup*>*>());
 
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
@@ -4472,14 +4471,14 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::O
 	return grpTree;
 }
 
-Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr::OrganEnvDB::GetSpeciesTree()
+Data::FastMap<Int32, Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr::OrganEnvDB::GetSpeciesTree()
 {
 	Data::ArrayList<OrganSpecies*> *sps;
-	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
+	Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree;
 	DB::DBReader *r;
 	Int32 parId;
 
-	NEW_CLASS(spTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*>());
+	NEW_CLASS(spTree, Data::Int32FastMap<Data::ArrayList<OrganSpecies*>*>());
 
 	DB::SQLBuilder sql(this->db);
 	Text::StringBuilderUTF8 sb;
@@ -4539,19 +4538,18 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr:
 
 void SSWR::OrganMgr::OrganEnvDB::Test()
 {
-	const Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
-	Data::Int32Map<OrganSpecies*> *speciesMap;
+	Data::FastMap<Int32, OrganSpecies*> *speciesMap;
 	Data::ArrayListInt32 speciesList;
 	UserFileInfo *userFile;
 	OrganSpecies *species;
 	Data::DateTime dt;
 	Trip *tr;
-	NEW_CLASS(speciesMap, Data::Int32Map<OrganSpecies*>());
+	NEW_CLASS(speciesMap, Data::Int32FastMap<OrganSpecies*>());
 	UOSInt i = 0;
-	UOSInt j = userFileList->GetCount();
+	UOSInt j = this->userFileMap.GetCount();
 	while (i < j)
 	{
-		userFile = userFileList->GetItem(i);
+		userFile = this->userFileMap.GetItem(i);
 		if (userFile->location == 0)
 		{
 			species = speciesMap->Get(userFile->speciesId);
@@ -4576,11 +4574,10 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 		}
 		i++;
 	}
-	const Data::ArrayList<OrganSpecies*> *spList = speciesMap->GetValues();
-	i = spList->GetCount();
+	i = speciesMap->GetCount();
 	while (i-- > 0)
 	{
-		species = spList->GetItem(i);
+		species = speciesMap->GetItem(i);
 		DEL_CLASS(species);
 	}
 	DEL_CLASS(speciesMap);

@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 		me->scanner->Scan(ip);
 
 		me->lvIP->ClearItems();
-		const Data::ArrayList<Net::ICMPScanner::ScanResult*> *resultList = me->scanner->GetResults();
+		const Data::ReadingList<Net::ICMPScanner::ScanResult*> *resultList = me->scanner->GetResults();
 		i = 0;
 		j = resultList->GetCount();
 		while (i < j)

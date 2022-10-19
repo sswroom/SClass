@@ -16,7 +16,6 @@
 Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
-	NEW_CLASS(this->layerMap, Data::UInt32Map<Map::OruxDBLayer::LayerInfo*>());
 	this->currLayer = (UInt32)-1;
 	this->tileSize = 1;
 	UTF8Char sbuff[512];
@@ -44,17 +43,14 @@ Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName,
 
 Map::OruxDBLayer::~OruxDBLayer()
 {
-	const Data::ArrayList<Map::OruxDBLayer::LayerInfo*> *layerList;
 	Map::OruxDBLayer::LayerInfo *lyr;
-	layerList = this->layerMap->GetValues();
 	UOSInt i;
-	i = layerList->GetCount();
+	i = this->layerMap.GetCount();
 	while (i-- > 0)
 	{
-		lyr = layerList->GetItem(i);
+		lyr = this->layerMap.GetItem(i);
 		MemFreeA(lyr);
 	}
-	DEL_CLASS(this->layerMap);
 	SDEL_CLASS(this->db);
 }
 
@@ -65,7 +61,7 @@ Bool Map::OruxDBLayer::IsError()
 
 void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(layerId);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(layerId);
 	if (lyr == 0)
 	{
 		this->tileSize = tileSize;
@@ -79,7 +75,7 @@ void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, 
 		lyr->projYMax = (1.0 - Math_Ln( Math_Tan(mapYMax * Math::PI / 180.0) + 1.0 / Math_Cos(mapYMax * Math::PI / 180.0)) / Math::PI) / 2.0;
 		lyr->max.x = maxX;
 		lyr->max.y = maxY;
-		this->layerMap->Put(layerId, lyr);
+		this->layerMap.Put(layerId, lyr);
 		if (this->currLayer == (UInt32)-1 || this->currLayer < layerId)
 		{
 			this->currLayer = layerId;
@@ -89,8 +85,8 @@ void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, 
 
 void Map::OruxDBLayer::SetCurrLayer(UInt32 level)
 {
-	if (level >= this->layerMap->GetCount())
-		level = (UInt32)this->layerMap->GetCount() - 1;
+	if (level >= this->layerMap.GetCount())
+		level = (UInt32)this->layerMap.GetCount() - 1;
 	this->currLayer = level;
 }
 
@@ -99,18 +95,18 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / this->tileSize) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
-	else if ((UInt32)level >= this->layerMap->GetCount())
-		level = (Int32)this->layerMap->GetCount() - 1;
+	else if ((UInt32)level >= this->layerMap.GetCount())
+		level = (Int32)this->layerMap.GetCount() - 1;
 	this->currLayer = (UInt32)level;
 }
 
 Map::MapView *Map::OruxDBLayer::CreateMapView(Math::Size2D<Double> scnSize)
 {
 	Map::MapView *view;
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, (lyr->mapMax + lyr->mapMin) * 0.5, this->layerMap->GetCount(), this->tileSize));
+		NEW_CLASS(view, Map::MercatorMapView(scnSize, (lyr->mapMax + lyr->mapMin) * 0.5, this->layerMap.GetCount(), this->tileSize));
 		return view;
 	}
 	else
@@ -127,7 +123,7 @@ Map::DrawLayerType Map::OruxDBLayer::GetLayerType()
 
 UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
 		UInt32 i;
@@ -165,7 +161,7 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 	Int32 i;
 	Int32 j;
 	Math::Coord2DDbl diff;
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
 		rect = rect.Reorder();
@@ -211,7 +207,7 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **
 
 Int64 Map::OruxDBLayer::GetObjectIdMax()
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
 		return (((Int64)lyr->max.x - 1) << 32) | (UInt32)(lyr->max.y - 1);
@@ -258,7 +254,7 @@ UInt32 Map::OruxDBLayer::GetCodePage()
 
 Bool Map::OruxDBLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
 		*bounds = Math::RectAreaDbl(lyr->mapMin, lyr->mapMax);
@@ -284,7 +280,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int6
 {
 	if (this->db == 0)
 		return 0;
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr == 0)
 		return 0;
 	DB::SQLBuilder sql(DB::DBUtil::ServerType::SQLite, 0);
@@ -372,7 +368,7 @@ Map::IMapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass()
 
 Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *tileX, Int32 *tileY, Int64 *modTimeTicks)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
+	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr == 0)
 		return false;
 	DB::SQLBuilder sql(DB::DBUtil::ServerType::SQLite, 0);

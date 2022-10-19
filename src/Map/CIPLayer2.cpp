@@ -2,7 +2,6 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/Int32Map.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "DB/ColDef.h"
 #include "IO/BufferedInputStream.h"
@@ -222,8 +221,8 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 	
 	if (nameArr)
 	{
-		Data::Int32Map<UTF16Char*> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32Map<UTF16Char*>());
+		Data::FastMap<Int32, UTF16Char*> *tmpArr;
+		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
 		*nameArr = tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
@@ -371,8 +370,8 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 	l = 0;
 	if (nameArr)
 	{
-		Data::Int32Map<UTF16Char*> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32Map<UTF16Char*>());
+		Data::FastMap<Int32, UTF16Char*> *tmpArr;
+		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
 		*nameArr = tmpArr;
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
@@ -490,19 +489,18 @@ Int64 Map::CIPLayer2::GetObjectIdMax()
 
 void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
 {
-	Data::Int32Map<UTF16Char*> *tmpMap = (Data::Int32Map<UTF16Char*>*)nameArr;
-	const Data::ArrayList<UTF16Char*> *tmpArr = tmpMap->GetValues();
-	UOSInt i = tmpArr->GetCount();
+	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
+	UOSInt i = tmpMap->GetCount();
 	while (i-- > 0)
 	{
-		MemFree(tmpArr->GetItem(i));
+		MemFree(tmpMap->GetItem(i));
 	}
 	DEL_CLASS(tmpMap);
 }
 
 UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::Int32Map<UTF16Char*> *tmpMap = (Data::Int32Map<UTF16Char*>*)nameArr;
+	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
 	if (strIndex != 0)
 	{
 		*buff = 0;
@@ -668,14 +666,13 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	return obj;
 }
 
-void Map::CIPLayer2::ReleaseFileObjs(Data::Int32Map<Map::CIPLayer2::CIPFileObject*> *objs)
+void Map::CIPLayer2::ReleaseFileObjs(Data::FastMap<Int32, Map::CIPLayer2::CIPFileObject*> *objs)
 {
-	const Data::ArrayList<Map::CIPLayer2::CIPFileObject*> *objArr = objs->GetValues();
 	Map::CIPLayer2::CIPFileObject *obj;
-	UOSInt i = objArr->GetCount();
+	UOSInt i = objs->GetCount();
 	while (i-- > 0)
 	{
-		obj = objArr->GetItem(i);
+		obj = objs->GetItem(i);
 		if (obj)
 		{
 			if (obj->ptOfstArr)
@@ -702,7 +699,7 @@ void *Map::CIPLayer2::BeginGetObject()
 	this->mut.Lock();
 	if (this->currObjs == 0)
 	{
-		NEW_CLASS(this->currObjs, Data::Int32Map<Map::CIPLayer2::CIPFileObject*>());
+		NEW_CLASS(this->currObjs, Data::Int32FastMap<Map::CIPLayer2::CIPFileObject*>());
 	}
 	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	return cip;
@@ -712,7 +709,7 @@ void Map::CIPLayer2::EndGetObject(void *session)
 {
 	IO::FileStream *cip = (IO::FileStream*)session;
 	DEL_CLASS(cip);
-	Data::Int32Map<Map::CIPLayer2::CIPFileObject*> *tmpObjs;
+	Data::FastMap<Int32, Map::CIPLayer2::CIPFileObject*> *tmpObjs;
 	if (this->lastObjs)
 	{
 		this->ReleaseFileObjs(this->lastObjs);

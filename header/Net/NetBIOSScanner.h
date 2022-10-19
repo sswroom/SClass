@@ -1,6 +1,6 @@
 #ifndef _SM_NET_NETBIOSSCANNER
 #define _SM_NET_NETBIOSSCANNER
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
@@ -30,7 +30,7 @@ namespace Net
 	private:
 		Net::UDPServer *svr;
 		Sync::Mutex ansMut;
-		Data::UInt32Map<NameAnswer*> answers;
+		Data::FastMap<UInt32, NameAnswer*> answers;
 		AnswerUpdated hdlr;
 		void *hdlrObj;
 
@@ -43,7 +43,7 @@ namespace Net
 		Bool IsError() const;
 		void SendRequest(UInt32 ip);
 		void SetAnswerHandler(AnswerUpdated hdlr, void *userObj);
-		const Data::ArrayList<NameAnswer*> *GetAnswers(Sync::MutexUsage *mutUsage) const;
+		const Data::ReadingList<NameAnswer*> *GetAnswers(Sync::MutexUsage *mutUsage) const;
 	};
 }
 #endif

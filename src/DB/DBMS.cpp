@@ -1789,12 +1789,10 @@ DB::DBMS::~DBMS()
 		MemFree(login);
 	}
 
-	const Data::ArrayList<DB::DBMS::SessionInfo*> *sessList;
-	sessList = this->sessMap.GetValues();
-	i = sessList->GetCount();
+	i = this->sessMap.GetCount();
 	while (i-- > 0)
 	{
-		this->SessDelete(sessList->GetItem(i));
+		this->SessDelete(this->sessMap.GetItem(i));
 	}
 }
 

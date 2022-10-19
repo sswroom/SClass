@@ -1,10 +1,7 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
+#include "Data/FastMap.h"
 #include "Data/ICaseStringMap.h"
-#include "Data/Int32Map.h"
-#include "Data/Int64Map.h"
-#include "Data/UInt32Map.h"
-#include "Data/UInt64Map.h"
 #include "IO/Writer.h"
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
@@ -128,11 +125,11 @@ namespace Net
 	private:
 		AnalyzeType atype;
 		Sync::Mutex ipTranMut;
-		Data::Int64Map<IPTranStatus*> ipTranMap;
+		Data::FastMap<Int64, IPTranStatus*> ipTranMap;
 		Sync::Mutex macMut;
-		Data::UInt64Map<MACStatus*> macMap;
+		Data::FastMap<UInt64, MACStatus*> macMap;
 		Sync::Mutex dnsCliInfoMut;
-		Data::UInt32Map<DNSClientInfo*> dnsCliInfos;
+		Data::FastMap<UInt32, DNSClientInfo*> dnsCliInfos;
 		Sync::Mutex dnsReqv4Mut;
 		Data::ICaseStringMap<DNSRequestResult*> dnsReqv4Map;
 		Sync::Mutex dnsReqv6Mut;
@@ -140,11 +137,11 @@ namespace Net
 		Sync::Mutex dnsReqOthMut;
 		Data::ICaseStringMap<DNSRequestResult*> dnsReqOthMap;
 		Sync::Mutex dnsTargetMut;
-		Data::UInt32Map<DNSTargetInfo*> dnsTargetMap;
+		Data::FastMap<UInt32, DNSTargetInfo*> dnsTargetMap;
 		Sync::Mutex ipLogMut;
-		Data::UInt32Map<IPLogInfo*> ipLogMap;
+		Data::FastMap<UInt32, IPLogInfo*> ipLogMap;
 		Sync::Mutex dhcpMut;
-		Data::UInt64Map<DHCPInfo*> dhcpMap;
+		Data::FastMap<UInt64, DHCPInfo*> dhcpMap;
 		Sync::Mutex mdnsMut;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> mdnsList;
 
@@ -170,12 +167,12 @@ namespace Net
 		UInt64 GetPacketCnt() const;
 		UInt64 GetPacketTotalSize() const;
 		void UseIPTran(Sync::MutexUsage *mutUsage);
-		const Data::ArrayList<IPTranStatus*> *IPTranGetList() const;
+		const Data::ReadingList<IPTranStatus*> *IPTranGetList() const;
 		UOSInt IPTranGetCount() const;
 		void UseMAC(Sync::MutexUsage *mutUsage);
-		const Data::ArrayList<MACStatus*> *MACGetList() const;
+		const Data::ReadingList<MACStatus*> *MACGetList() const;
 		void UseDNSCli(Sync::MutexUsage *mutUsage);
-		const Data::ArrayList<DNSClientInfo*> *DNSCliGetList() const;
+		const Data::ReadingList<DNSClientInfo*> *DNSCliGetList() const;
 		UOSInt DNSCliGetCount();
 		UOSInt DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqv4GetCount();
@@ -191,9 +188,9 @@ namespace Net
 		UOSInt MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList); //no need release
 		UOSInt MDNSGetCount();
 		void UseDHCP(Sync::MutexUsage *mutUsage);
-		const Data::ArrayList<DHCPInfo*> *DHCPGetList() const;
+		const Data::ReadingList<DHCPInfo*> *DHCPGetList() const;
 		void UseIPLog(Sync::MutexUsage *mutUsage);
-		const Data::ArrayList<IPLogInfo*> *IPLogGetList() const;
+		const Data::ReadingList<IPLogInfo*> *IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 
 		Bool PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize); //Return valid

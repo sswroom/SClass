@@ -185,7 +185,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 
 			Sync::Mutex cliInfoMut;
-			Data::UInt32Map<ClientInfo*> cliInfos;
+			Data::FastMap<UInt32, ClientInfo*> cliInfos;
 			Bool cliChg;
 			UInt32 currServer;
 

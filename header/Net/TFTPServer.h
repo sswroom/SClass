@@ -1,6 +1,6 @@
 #ifndef _SM_NET_TFTPSERVER
 #define _SM_NET_TFTPSERVER
-#include "Data/UInt64Map.h"
+#include "Data/FastMap.h"
 #include "IO/LogTool.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
@@ -29,7 +29,7 @@ namespace Net
 		Net::UDPServer *dataSvr;
 		Text::String *path;
 		Sync::Mutex mut;
-		Data::UInt64Map<SessionInfo*> sessMap;
+		Data::FastMap<UInt64, SessionInfo*> sessMap;
 		Bool threadToStop;
 		Bool threadRunning;
 		Sync::Event chkEvt;

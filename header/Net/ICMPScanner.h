@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ICMPSCANNER
 #define _SM_NET_ICMPSCANNER
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Manage/HiResClock.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Mutex.h"
@@ -20,7 +20,7 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Sync::Mutex resultMut;
-		Data::UInt32Map<ScanResult*> results;
+		Data::FastMap<UInt32, ScanResult*> results;
 		Manage::HiResClock *clk;
 		Socket *soc;
 		Bool threadRunning;
@@ -37,7 +37,7 @@ namespace Net
 		~ICMPScanner();
 
 		Bool Scan(UInt32 ip);
-		const Data::ArrayList<ScanResult*> *GetResults() const;
+		const Data::ReadingList<ScanResult*> *GetResults() const;
 		void ClearResults();
 	};
 }

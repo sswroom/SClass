@@ -9,7 +9,6 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 {
 	this->db = db;
 	this->csys = routeLyr->GetCoordinateSystem()->Clone();
-	NEW_CLASS(this->routeMap, Data::Int32Map<RouteInfo*>());
 	void *sess = routeLyr->BeginGetObject();
 	if (sess)
 	{
@@ -56,7 +55,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 							route = MemAlloc(RouteInfo, 1);
 							route->routeId = Text::StrToInt32(sbuff);
 							route->pl = (Math::Geometry::Polyline*)vec;
-							route = this->routeMap->Put(route->routeId, route);
+							route = this->routeMap.Put(route->routeId, route);
 							if (route)
 							{
 								DEL_CLASS(route->pl);
@@ -86,15 +85,13 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 	DEL_CLASS(this->csys);
 	DEL_CLASS(this->db);
 
-	const Data::ArrayList<RouteInfo*> *routeList = this->routeMap->GetValues();
-	i = routeList->GetCount();
+	i = this->routeMap.GetCount();
 	while (i-- > 0)
 	{
-		route = routeList->GetItem(i);
+		route = this->routeMap.GetItem(i);
 		DEL_CLASS(route->pl);
 		MemFree(route);
 	}
-	DEL_CLASS(this->routeMap);
 }
 
 Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
@@ -172,7 +169,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				sbuff[0] = 0;
 				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
 
-				route = this->routeMap->Get(roadRouteId);
+				route = this->routeMap.Get(roadRouteId);
 				if (route)
 				{
 					Math::Coord2DDbl *points = route->pl->GetPointList(&j);

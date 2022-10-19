@@ -2453,13 +2453,12 @@ void SSWR::OrganMgr::OrganMainForm::GoToDir(OrganGroup *grp, Int32 parentId)
 
 void SSWR::OrganMgr::OrganMainForm::ClearImgLayers()
 {
-	const Data::ArrayList<OrganSpImgLayer*> *lyrs = this->mapImgLyrs.GetValues();
 	UOSInt i;
 	OrganSpImgLayer *lyr;
-	i = lyrs->GetCount();
+	i = this->mapImgLyrs.GetCount();
 	while (i-- > 0)
 	{
-		lyr = lyrs->GetItem(i);
+		lyr = this->mapImgLyrs.GetItem(i);
 		lyr->ClearItems();
 	}
 }

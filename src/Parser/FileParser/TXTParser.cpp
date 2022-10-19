@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "IO/StreamDataStream.h"
@@ -357,8 +357,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Data::ArrayListDbl ptX;
 		Data::ArrayListDbl ptY;
 		Data::ArrayListDbl ptZ;
-		Data::Int32Map<Math::Geometry::Vector2D *> vecMap;
-		Data::Int32Map<Bool> vecUsed;
+		Data::FastMap<Int32, Math::Geometry::Vector2D *> vecMap;
+		Data::FastMap<Int32, Bool> vecUsed;
 		Int32 currId = 0;
 		Math::Geometry::Polygon *pg;
 		Math::Geometry::LineString *pl;
@@ -481,8 +481,6 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 		Map::VectorLayer *lyr;
 		Map::DrawLayerType lyrType;
-		const Data::ArrayList<Int32> *vecIdList;
-		const Data::ArrayList<Math::Geometry::Vector2D *> *vecList;
 		if (hasPt && !hasPL && !hasPG)
 		{
 			lyrType = Map::DRAW_LAYER_POINT3D;
@@ -519,15 +517,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				}
 			}
 		}
-		vecIdList = vecMap.GetKeys();
-		vecList = vecMap.GetValues();
-		i = vecList->GetCount();
+		i = vecMap.GetCount();
 		while (i-- > 0)
 		{
-			currId = vecIdList->GetItem(i);
+			currId = vecMap.GetKey(i);
 			if (!vecUsed.Get(currId))
 			{
-				vec = vecList->GetItem(i);
+				vec = vecMap.GetItem(i);
 				DEL_CLASS(vec);
 			}
 		}

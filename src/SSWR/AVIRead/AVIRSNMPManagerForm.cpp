@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 			Int64 cliId;
 			UOSInt l;
 			Net::SNMPManager::ReadingInfo *reading;
-			Data::UInt32Map<UInt16> readingMap;
+			Data::FastMap<UInt32, UInt16> readingMap;
 			UInt16 currId;
 			me->SendAgentValues(&agentList);
 			Sync::Thread::Sleep(100);

@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_FASTMAP
 #define _SM_DATA_FASTMAP
+#include "Data/ArrayList.h"
 #include "Data/ListMap.h"
 
 namespace Data
@@ -44,6 +45,7 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
+		UOSInt AddKeysTo(List<T> *list);
 		virtual UOSInt GetCount() const;
 		virtual T GetKey(UOSInt index) const;
 		virtual V GetItem(UOSInt index) const;
@@ -145,6 +147,18 @@ namespace Data
 		this->values.EnsureCapacity(newSize);
 	}
 
+	template <class T, class V> UOSInt FastMap<T, V>::AddKeysTo(List<T> *list)
+	{
+		UOSInt i = 0;
+		UOSInt j = this->values.GetCount();
+		while (i < j)
+		{
+			list->Add(this->values.GetItem(i).key);
+			i++;
+		}
+		return j;
+	}
+
 	template <class T, class V> UOSInt FastMap<T, V>::GetCount() const
 	{
 		return this->values.GetCount();
@@ -181,6 +195,26 @@ namespace Data
 	{
 		this->values.Clear();
 	}
+
+	template <class V> class Int32FastMap : public FastMap<Int32, V>
+	{
+
+	};
+
+	template <class V> class UInt32FastMap : public FastMap<UInt32, V>
+	{
+
+	};
+
+	template <class V> class Int64FastMap : public FastMap<Int64, V>
+	{
+
+	};
+
+	template <class V> class UInt64FastMap : public FastMap<UInt64, V>
+	{
+
+	};
 }
 
 #endif

@@ -283,12 +283,11 @@ Net::MODBUSTCPListener::~MODBUSTCPListener()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 
-	const Data::ArrayList<IO::MODBUSDevSim*> *devList = this->devMap.GetValues();
-	UOSInt i = devList->GetCount();
+	UOSInt i = this->devMap.GetCount();
 	IO::MODBUSDevSim *dev;
 	while (i-- > 0)
 	{
-		dev = devList->GetItem(i);
+		dev = this->devMap.GetItem(i);
 		DEL_CLASS(dev);
 	}
 }
@@ -312,7 +311,7 @@ UOSInt Net::MODBUSTCPListener::GetDeviceCount()
 
 IO::MODBUSDevSim *Net::MODBUSTCPListener::GetDevice(UOSInt index)
 {
-	return this->devMap.GetValues()->GetItem(index);
+	return this->devMap.GetItem(index);
 }
 
 UInt32 Net::MODBUSTCPListener::GetDeviceAddr(UOSInt index)

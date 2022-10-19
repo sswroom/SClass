@@ -624,7 +624,7 @@ Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
 	if (analyzeTarget)
 	{
 		NEW_CLASS(this->targetMut, Sync::Mutex());
-		NEW_CLASS(this->targetMap, Data::UInt32Map<TargetInfo*>());
+		NEW_CLASS(this->targetMap, Data::UInt32FastMap<TargetInfo*>());
 		this->targetUpdated = true;
 	}
 	else
@@ -685,11 +685,10 @@ Net::DNSProxy::~DNSProxy()
 	if (this->targetMap)
 	{
 		TargetInfo *target;
-		const Data::ArrayList<TargetInfo*> *targetList = this->targetMap->GetValues();
-		i = targetList->GetCount();
+		i = this->targetMap->GetCount();
 		while (i-- > 0)
 		{
-			target = targetList->GetItem(i);
+			target = this->targetMap->GetItem(i);
 			LIST_FREE_STRING(&target->addrList);
 			DEL_CLASS(target);
 		}
@@ -772,7 +771,7 @@ UOSInt Net::DNSProxy::GetTargetList(Data::ArrayList<TargetInfo*> *targetList)
 	if (this->targetMap == 0)
 		return 0;
 	Sync::MutexUsage mutUsage(this->targetMut);
-	targetList->AddAll(this->targetMap->GetValues());
+	targetList->AddAll(this->targetMap);
 	mutUsage.EndUse();
 	return targetList->GetCount();
 }

@@ -15,10 +15,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj())
+IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj()), pkgFiles(pkg->pkgFiles)
 {
 	this->items = pkg->items->Clone();
-	this->pkgFiles = NEW_CLASS_D(Data::FastStringMap<IO::PackFileItem*>(pkg->pkgFiles));
 	this->namedItems = pkg->namedItems->Clone();
 	IO::PackFileItem *item;
 	UOSInt i;
@@ -31,13 +30,11 @@ IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->Get
 		Sync::Interlocked::Increment(&item->useCnt);
 		i++;
 	}
-	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
 
 IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
-	NEW_CLASS(this->pkgFiles, Data::FastStringMap<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
@@ -46,13 +43,11 @@ IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName
 	{
 		NEW_CLASS(this->namedItems, Data::StringMap<PackFileItem*>());
 	}
-	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
 
 IO::PackageFile::PackageFile(Text::CString fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
-	NEW_CLASS(this->pkgFiles, Data::FastStringMap<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
@@ -61,7 +56,6 @@ IO::PackageFile::PackageFile(Text::CString fileName) : IO::ParsedObject(fileName
 	{
 		NEW_CLASS(this->namedItems, Data::StringMap<PackFileItem*>());
 	}
-	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
 
 IO::PackageFile::~PackageFile()
@@ -88,15 +82,12 @@ IO::PackageFile::~PackageFile()
 		}
 	}
 	DEL_CLASS(this->items);
-	DEL_CLASS(this->pkgFiles);
 	DEL_CLASS(this->namedItems);
-	const Data::ArrayList<const UTF8Char *> *infoList = this->infoMap->GetValues();
-	i = infoList->GetCount();
+	i = this->infoMap.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(infoList->GetItem(i));
+		Text::StrDelNew(this->infoMap.GetItem(i));
 	}
-	DEL_CLASS(this->infoMap);
 }
 
 IO::ParserType IO::PackageFile::GetParserType() const
@@ -174,13 +165,13 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Int64 mo
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->pkgFiles->Put(item->name, item);
+	this->pkgFiles.Put(item->name, item);
 	this->namedItems->Put(item->name, item);
 }
 
 IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name) const
 {
-	IO::PackFileItem *item = this->pkgFiles->GetC(name);
+	IO::PackFileItem *item = this->pkgFiles.GetC(name);
 	if (item)
 		return (IO::PackageFile*)item->pobj;
 	return 0;
@@ -848,7 +839,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 
 void IO::PackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 {
-	const UTF8Char *csptr = this->infoMap->Put(infoType, Text::StrCopyNew(val));
+	const UTF8Char *csptr = this->infoMap.Put(infoType, Text::StrCopyNew(val));
 	if (csptr)
 	{
 		Text::StrDelNew(csptr);
@@ -859,19 +850,17 @@ void IO::PackageFile::GetInfoText(Text::StringBuilderUTF8 *sb) const
 {
 	UOSInt i;
 	UOSInt j;
-	const Data::ArrayList<Int32> *typeList = this->infoMap->GetKeys();
-	const Data::ArrayList<const UTF8Char *> *valList = this->infoMap->GetValues();
 	i = 0;
-	j = valList->GetCount();
+	j = this->infoMap.GetCount();
 	while (i < j)
 	{
 		if (i > 0)
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
-		sb->Append(GetInfoTypeName((InfoType)typeList->GetItem(i)));
+		sb->Append(GetInfoTypeName((InfoType)this->infoMap.GetKey(i)));
 		sb->AppendC(UTF8STRC(": "));
-		sb->AppendSlow(valList->GetItem(i));
+		sb->AppendSlow(this->infoMap.GetItem(i));
 		i++;
 	}
 }

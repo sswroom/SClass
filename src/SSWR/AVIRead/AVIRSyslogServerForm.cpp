@@ -98,16 +98,14 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 	if (me->ipListUpd)
 	{
 		me->ipListUpd = false;
-		const Data::ArrayList<UInt32> *ipList;
 		Sync::MutexUsage mutUsage(&me->ipMut);
-		ipList = me->ipMap.GetKeys();
 		me->lbClient->ClearItems();
 		i = 0;
-		j = ipList->GetCount();
+		j = me->ipMap.GetCount();
 		while (i < j)
 		{
-			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipList->GetItem(i));
-			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ipList->GetItem(i));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, me->ipMap.GetKey(i));
+			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)me->ipMap.GetItem(i));
 			i++;
 		}
 	}
@@ -172,13 +170,12 @@ SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 {
 	SDEL_CLASS(this->svr);
 
-	const Data::ArrayList<IPLog*> *ipList = this->ipMap.GetValues();
 	IPLog *ipLog;
-	UOSInt i = ipList->GetCount();
+	UOSInt i = this->ipMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		ipLog = ipList->GetItem(i);
+		ipLog = this->ipMap.GetItem(i);
 		j = ipLog->logMessage->GetCount();
 		while (j-- > 0)
 		{

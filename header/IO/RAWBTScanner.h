@@ -10,8 +10,8 @@ namespace IO
 		struct ClassData;
 		
 		struct ClassData *clsData;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> pubRecMap;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> randRecMap;
+		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> pubRecMap;
+		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> randRecMap;
 		Sync::Mutex recMut;
 
 		static __stdcall UInt32 RecvThread(void *userObj);
@@ -29,8 +29,8 @@ namespace IO
 		virtual void Close();
 		virtual Bool SetScanMode(ScanMode scanMode);
 
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage);
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage);
+		virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage);
+		virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage);
 
 		void OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt packetSize);
 	};

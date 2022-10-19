@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SSDPCLIENT
 #define _SM_NET_SSDPCLIENT
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Net/UDPServer.h"
 #include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"
@@ -46,7 +46,7 @@ namespace Net
 		Net::UDPServer *udp;
 		Text::String *userAgent;
 		Sync::Mutex mut;
-		Data::UInt32Map<SSDPDevice *> devMap;
+		Data::FastMap<UInt32, SSDPDevice *> devMap;
 
 		static void __stdcall OnPacketRecv(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
@@ -58,7 +58,7 @@ namespace Net
 
 		Bool IsError() const;
 		Bool Scan();
-		const Data::ArrayList<SSDPDevice*> *GetDevices(Sync::MutexUsage *mutUsage) const;
+		const Data::ReadingList<SSDPDevice*> *GetDevices(Sync::MutexUsage *mutUsage) const;
 
 		static SSDPRoot *SSDPRootParse(Text::EncodingFactory *encFact, IO::Stream *stm);
 		static void SSDPRootFree(SSDPRoot *root);

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListInt64.h"
 #include "Net/SNS/SNS7gogo.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -59,11 +60,10 @@ Net::SNS::SNS7gogo::~SNS7gogo()
 	DEL_CLASS(this->ctrl);
 	SDEL_STRING(this->chName);
 	SDEL_STRING(this->chDesc);
-	const Data::ArrayList<SNSItem*> *itemList = this->itemMap.GetValues();
-	i = itemList->GetCount();
+	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(itemList->GetItem(i));
+		FreeItem(this->itemMap.GetItem(i));
 	}
 }
 
@@ -97,7 +97,7 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(this->itemMap.GetValues());
+	itemList->AddAll(&this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
@@ -121,8 +121,8 @@ Bool Net::SNS::SNS7gogo::Reload()
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	idList.AddAll(this->itemMap.GetKeys());
-
+	this->itemMap.AddKeysTo(&idList);
+	
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();
 	if (i > 0)

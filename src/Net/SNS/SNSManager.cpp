@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListString.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/HTTPClient.h"
@@ -389,7 +389,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	Net::SNS::SNSManager::ChannelData *channel;
 	me->threadRunning = true;
 	{
-		Data::Int32Map<Int32> cntMap;
+		Data::FastMap<Int32, Int32> cntMap;
 		while (!me->threadToStop)
 		{
 			t = Data::DateTimeUtil::GetCurrTimeMillis();

@@ -413,8 +413,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 {
 	this->Close();
 	DEL_CLASS(this->prog);
-	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->devMap.GetValues();
-	LIST_CALL_FUNC(devList, DeviceFree);
+	LIST_CALL_FUNC(&this->devMap, DeviceFree);
 	SDEL_STRING(this->lastCmd);
 }
 
@@ -495,13 +494,13 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 	return this->cmdReady;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->devMut);
 	return &this->devMap;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->devMut);
 	return &this->devMap;

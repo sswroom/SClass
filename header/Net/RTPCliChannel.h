@@ -1,11 +1,11 @@
 #ifndef _SM_NET_RTPCLICHANNEL
 #define _SM_NET_RTPCLICHANNEL
-#include "Net/UDPServer.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "Media/IAudioSource.h"
 #include "Media/IMediaSource.h"
 #include "Media/IVideoSource.h"
 #include "Net/IRTPController.h"
+#include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
 
 namespace Net
@@ -35,7 +35,7 @@ namespace Net
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
-			Data::Int32Map<Net::IRTPPLHandler *> payloadMap;
+			Data::FastMap<Int32, Net::IRTPPLHandler *> payloadMap;
 			Media::MediaType mediaType;
 			Net::SocketFactory *sockf;
 

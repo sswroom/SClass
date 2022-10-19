@@ -69,14 +69,14 @@ namespace Net
 		Bool reqothUpdated;
 
 		Sync::Mutex *targetMut;
-		Data::UInt32Map<TargetInfo*> *targetMap;
+		Data::FastMap<UInt32, TargetInfo*> *targetMap;
 		Bool targetUpdated;
 
 		Sync::Mutex lastIdMut;
 		UInt32 lastId;
 
 		Sync::Mutex cliReqMut;
-		Data::UInt32Map<CliRequestStatus*> cliReqMap;
+		Data::FastMap<UInt32, CliRequestStatus*> cliReqMap;
 
 		Sync::Mutex hdlrMut;
 		Data::ArrayList<DNSProxyRequest> hdlrList;

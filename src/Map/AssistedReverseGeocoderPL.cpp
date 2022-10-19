@@ -84,11 +84,10 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 			this->conn->CloseReader(r);
 
 			AddressComparator comparator;
-			const Data::ArrayList<LCIDInfo*> *lcidList = this->lcidMap.GetValues();
-			UOSInt i = lcidList->GetCount();
+			UOSInt i = this->lcidMap.GetCount();
 			while (i-- > 0)
 			{
-				Data::Sort::ArtificialQuickSort::Sort(lcidList->GetItem(i)->mainList, &comparator);
+				Data::Sort::ArtificialQuickSort::Sort(this->lcidMap.GetItem(i)->mainList, &comparator);
 			}
 		}
 		printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
@@ -100,7 +99,6 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	UOSInt i = this->revGeos.GetCount();
 	UOSInt j;
 	LCIDInfo *lcid;
-	const Data::ArrayList<LCIDInfo *> *lcidList;
 	while (i-- > 0)
 	{
 		Map::IReverseGeocoder *revGeo;
@@ -119,11 +117,10 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 		i++;
 	}
 	MemFree(strArr);
-	lcidList = this->lcidMap.GetValues();
-	i = lcidList->GetCount();
+	i = this->lcidMap.GetCount();
 	while (i-- > 0)
 	{
-		lcid = lcidList->GetItem(i);
+		lcid = this->lcidMap.GetItem(i);
 		j = lcid->mainList->GetCount();
 		while (j-- > 0)
 		{

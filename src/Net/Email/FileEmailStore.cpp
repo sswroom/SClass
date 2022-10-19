@@ -140,13 +140,12 @@ Net::Email::FileEmailStore::FileEmailStore()
 
 Net::Email::FileEmailStore::~FileEmailStore()
 {
-	const Data::ArrayList<FileInfo*> *fileList = this->fileMap.GetValues();
 	FileInfo *file;
-	UOSInt i = fileList->GetCount();
+	UOSInt i = this->fileMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		file = fileList->GetItem(i);
+		file = this->fileMap.GetItem(i);
 		file->fileName->Release();
 		Text::StrDelNew(file->uid);
 		j = file->rcptList.GetCount();

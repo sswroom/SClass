@@ -2,7 +2,7 @@
 #define _SM_IO_PACKAGEFILE
 #include "Crypto/Hash/IHash.h"
 #include "Data/ArrayList.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringMap.h"
 #include "Data/Compress/Decompressor.h"
@@ -71,8 +71,8 @@ namespace IO
 	private:
 		Data::ArrayList<PackFileItem *> *items;
 		Data::StringMap<PackFileItem *> *namedItems;
-		Data::FastStringMap<PackFileItem *> *pkgFiles;
-		Data::Int32Map<const UTF8Char *> *infoMap;
+		Data::FastStringMap<PackFileItem *> pkgFiles;
+		Data::FastMap<Int32, const UTF8Char *> infoMap;
 
 		PackageFile(const PackageFile *pkg);
 	public:

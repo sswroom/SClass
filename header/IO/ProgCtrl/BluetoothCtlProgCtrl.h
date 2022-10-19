@@ -1,7 +1,7 @@
 #ifndef _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #define _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #include "Data/ArrayListUInt32.h"
-#include "Data/UInt64Map.h"
+#include "Data/FastMap.h"
 #include "IO/BTScanner.h"
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"
@@ -17,8 +17,8 @@ namespace IO
 		private:
 			Manage::ProcessExecution *prog;
 			Sync::Mutex devMut;
-			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> devMap;
-			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> randDevMap;
+			Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> devMap;
+			Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> randDevMap;
 			Sync::Mutex lastCmdMut;
 			Text::String *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
@@ -46,8 +46,8 @@ namespace IO
 			virtual void Close();
 			virtual Bool SetScanMode(ScanMode scanMode);
 
-			virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage);
-			virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage);
+			virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage);
+			virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage);
 
 			Bool WaitForCmdReady();
 		};

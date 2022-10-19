@@ -95,24 +95,21 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 void IO::BTScanLog::ClearList()
 {
 	LIST_FREE_FUNC(&this->logs, MemFree);
-	const Data::ArrayList<IO::BTScanLog::DevEntry*> *devList;
-	devList = this->pubDevs.GetValues();
-	LIST_CALL_FUNC(devList, this->FreeDev);
-	devList = this->randDevs.GetValues();
-	LIST_CALL_FUNC(devList, this->FreeDev);
+	LIST_CALL_FUNC(&this->pubDevs, this->FreeDev);
+	LIST_CALL_FUNC(&this->randDevs, this->FreeDev);
 	this->logs.Clear();
 	this->pubDevs.Clear();
 	this->randDevs.Clear();
 }
 
-const Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetPublicList() const
+const Data::ReadingList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetPublicList() const
 {
-	return this->pubDevs.GetValues();
+	return &this->pubDevs;
 }
 
-const Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList() const
+const Data::ReadingList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList() const
 {
-	return this->randDevs.GetValues();
+	return &this->randDevs;
 }
 
 Text::CString IO::BTScanLog::RadioTypeGetName(RadioType radioType)

@@ -89,12 +89,11 @@ Net::SyslogServer::~SyslogServer()
 	DEL_CLASS(this->svr);
 	this->logPath->Release();
 	UOSInt i;
-	const Data::ArrayList<Net::SyslogServer::IPStatus*> *ipList = this->ipMap.GetValues();
 	IPStatus *status;
-	i = ipList->GetCount();
+	i = this->ipMap.GetCount();
 	while (i-- > 0)
 	{
-		status = ipList->GetItem(i);
+		status = this->ipMap.GetItem(i);
 		DEL_CLASS(status->log);
 		MemFree(status);
 	}

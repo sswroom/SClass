@@ -1,6 +1,5 @@
 #ifndef _SM_MEDIA_DDRAWMANAGER
 #define _SM_MEDIA_DDRAWMANAGER
-#include "Data/Int64Map.h"
 #include "Media/ColorManager.h"
 #include "Media/MonitorMgr.h"
 #include "Media/MonitorSurfaceMgr.h"

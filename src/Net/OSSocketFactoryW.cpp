@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/Path.h"
 #include "Manage/Process.h"
 #include "Net/ConnectionInfo.h"
@@ -32,7 +32,7 @@
 struct Net::OSSocketFactory::ClassData
 {
 	Sync::Mutex *socMut;
-	Data::Int32Map<UInt8> *acceptedSoc;
+	Data::FastMap<Int32, UInt8> *acceptedSoc;
 };
 
 Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS)
@@ -44,7 +44,7 @@ Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS
 	this->icmpHand = 0;
 	this->clsData = MemAlloc(ClassData, 1);
 	NEW_CLASS(this->clsData->socMut, Sync::Mutex());
-	NEW_CLASS(this->clsData->acceptedSoc, Data::Int32Map<UInt8>());
+	NEW_CLASS(this->clsData->acceptedSoc, Data::Int32FastMap<UInt8>());
 }
 
 Net::OSSocketFactory::~OSSocketFactory()

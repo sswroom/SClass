@@ -15,7 +15,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 #include "Text/UTF8Writer.h"
-#include <wchar.h>
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(Net::WebServer::IWebSession* sess, void *userObj)
 {
@@ -1014,21 +1013,19 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 	if (dev->valUpdated)
 	{
-		const Data::ArrayList<IO::MemoryStream *> *cacheList;
 		Sync::RWMutexUsage mutUsage(&dev->mut, true);
 		dev->valUpdated = false;
-		cacheList = dev->imgCaches->GetValues();
-		i = cacheList->GetCount();
+		i = dev->imgCaches.GetCount();
 		while (i-- > 0)
 		{
-			mstm = cacheList->GetItem(i);
+			mstm = dev->imgCaches.GetItem(i);
 			DEL_CLASS(mstm);
 		}
-		dev->imgCaches->Clear();
+		dev->imgCaches.Clear();
 	}
 	
 	Sync::RWMutexUsage mutUsage(&dev->mut, false);
-	mstm = dev->imgCaches->Get((sensorId << 16) + (readingId << 8) + (readingType));
+	mstm = dev->imgCaches.Get((sensorId << 16) + (readingId << 8) + (readingType));
 	if (mstm)
 	{
 		buff = mstm->GetBuff(&buffSize);
@@ -1083,9 +1080,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		Data::ArrayListInt64 dateList;
 		Data::ArrayListDbl valList;
-		const Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DevRecord2 *> *recList;
 		SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
-		recList = dev->todayRecs->GetValues();
 		if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 		{
 			UOSInt treadingIndex = (UOSInt)-1;
@@ -1106,10 +1101,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			}
 
 			i = 0;
-			j = recList->GetCount();
+			j = dev->todayRecs.GetCount();
 			while (i < j)
 			{
-				rec = recList->GetItem(i);
+				rec = dev->todayRecs.GetItem(i);
 				hasTemp = false;
 				hasRH = false;
 				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
@@ -1164,10 +1159,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		else
 		{
 			i = 0;
-			j = recList->GetCount();
+			j = dev->todayRecs.GetCount();
 			while (i < j)
 			{
-				rec = recList->GetItem(i);
+				rec = dev->todayRecs.GetItem(i);
 				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
 				{
 					if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
@@ -1243,7 +1238,6 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			Data::ArrayListInt64 dateList2;
 			Data::ArrayListDbl valList2;
 			maxTime = dateList.GetItem(dateList.GetCount() - 1);
-			recList = dev->yesterdayRecs->GetValues();
 			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
 				UOSInt treadingIndex = (UOSInt)-1;
@@ -1264,10 +1258,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				}
 
 				i = 0;
-				j = recList->GetCount();
+				j = dev->yesterdayRecs.GetCount();
 				while (i < j)
 				{
-					rec = recList->GetItem(i);
+					rec = dev->yesterdayRecs.GetItem(i);
 					hasTemp = false;
 					hasRH = false;
 					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
@@ -1348,10 +1342,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			else
 			{
 				i = 0;
-				j = recList->GetCount();
+				j = dev->yesterdayRecs.GetCount();
 				while (i < j)
 				{
-					rec = recList->GetItem(i);
+					rec = dev->yesterdayRecs.GetItem(i);
 					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
 					{
 						if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
@@ -1463,7 +1457,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	resp->Write(buff, buffSize);
 
 	mutUsage.ReplaceMutex(&dev->mut, true);
-	mstm = dev->imgCaches->Put((sensorId << 16) + (readingId << 8) + (readingType), mstm);
+	mstm = dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), mstm);
 	mutUsage.EndUse();
 	if (mstm)
 	{
@@ -2142,7 +2136,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		writer->WriteStrC(UTF8STRC("\" value=\""));
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteStrC(UTF8STRC("\""));
-		if (user->devMap->Get(dev->cliId))
+		if (user->devMap.Get(dev->cliId))
 		{
 			writer->WriteStrC(UTF8STRC(" checked"));
 		}

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHCTLFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHCTLFORM
-#include "Data/UInt64Map.h"
+#include "Data/FastMap.h"
 #include "IO/BTScanner.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -19,8 +19,8 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Sync::Mutex devMut;
-			Data::UInt64Map<UInt32> randDevMap;
-			Data::UInt64Map<UInt32> pubDevMap;
+			Data::FastMap<UInt64, UInt32> randDevMap;
+			Data::FastMap<UInt64, UInt32> pubDevMap;
 			IO::BTScanner *bt;
 
 			UI::GUIPanel *pnlControl;
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnDevicesDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDeviceUpdated(IO::BTScanLog::ScanRecord3 *dev, IO::BTScanner::UpdateType updateType, void *userObj);
-			UOSInt UpdateList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap, Data::UInt64Map<UInt32> *statusMap, UOSInt baseIndex);
+			UOSInt UpdateList(Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex);
 		public:
 			AVIRBluetoothCtlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRBluetoothCtlForm();

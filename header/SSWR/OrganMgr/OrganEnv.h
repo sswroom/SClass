@@ -110,7 +110,7 @@ namespace SSWR
 		public:
 			Int32 id;
 			Data::ArrayList<UserFileInfo*> files;
-			Data::Int32Map<WebFileInfo*> wfileMap;
+			Data::FastMap<Int32, WebFileInfo*> wfileMap;
 		};
 
 		typedef struct
@@ -188,9 +188,9 @@ namespace SSWR
 			Data::ArrayList<OrganBook*> *bookObjs;
 			Data::ArrayList<DataFileInfo*> dataFiles;
 			Int32 userId;
-			Data::Int32Map<SpeciesInfo*> speciesMap;
-			Data::Int32Map<UserFileInfo*> userFileMap;
-			Data::Int32Map<WebUserInfo*> userMap;
+			Data::FastMap<Int32, SpeciesInfo*> speciesMap;
+			Data::FastMap<Int32, UserFileInfo*> userFileMap;
+			Data::FastMap<Int32, WebUserInfo*> userMap;
 
 			Data::ArrayList<Trip*> trips;
 			Data::ArrayList<Location*> locs;
@@ -323,14 +323,14 @@ namespace SSWR
 		public:
 			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);
 		private:
-			virtual Data::Int32Map<Data::ArrayList<OrganGroup*>*> *GetGroupTree() = 0;
-			void FreeGroupTree(Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree);
-			virtual Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *GetSpeciesTree() = 0;
-			void FreeSpeciesTree(Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree);
+			virtual Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *GetGroupTree() = 0;
+			void FreeGroupTree(Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree);
+			virtual Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *GetSpeciesTree() = 0;
+			void FreeSpeciesTree(Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree);
 
 			void ExportBeginPage(IO::Writer *writer, const UTF8Char *title);
 			void ExportEndPage(IO::Writer *writer);
-			void ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
+			void ExportGroup(OrganGroup *grp, Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree, Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
 			Bool ExportSpecies(OrganSpecies *sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, Bool *hasMyPhoto);////////////////////
 		public:
 			virtual void Test() = 0;

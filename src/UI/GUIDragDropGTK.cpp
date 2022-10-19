@@ -22,7 +22,7 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 	this->context = context;
 	this->time = time;
 	NEW_CLASS(this->targetMap, Data::StringUTF8Map<OSInt>());
-	NEW_CLASS(this->targetText, Data::Int32Map<Text::String *>());
+	NEW_CLASS(this->targetText, Data::Int32FastMap<Text::String *>());
 	GUIDragDataGTK_currData = this;
 
 	UTF8Char sbuff[128];
@@ -64,11 +64,10 @@ UI::GUIDragDataGTK::~GUIDragDataGTK()
 {
 	GUIDragDataGTK_currData = 0;
 	DEL_CLASS(this->targetMap);
-	const Data::ArrayList<Text::String*> *targetList = this->targetText->GetValues();
-	UOSInt i = targetList->GetCount();
+	UOSInt i = this->targetText->GetCount();
 	while (i-- > 0)
 	{
-		targetList->GetItem(i)->Release();
+		this->targetText->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->targetText);
 }

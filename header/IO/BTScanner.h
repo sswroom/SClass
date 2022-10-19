@@ -1,7 +1,5 @@
 #ifndef _SM_IO_BTSCANNER
 #define _SM_IO_BTSCANNER
-#include "Data/ArrayListUInt32.h"
-#include "Data/UInt64Map.h"
 #include "IO/BTScanLog.h"
 #include "Sync/MutexUsage.h"
 
@@ -39,8 +37,8 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage) = 0;
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage) = 0;
+		virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage) = 0;
 
 		static BTScanner *CreateScanner();
 	};

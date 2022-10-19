@@ -9,14 +9,13 @@ SSWR::VAMS::VAMSBTList::VAMSBTList()
 
 SSWR::VAMS::VAMSBTList::~VAMSBTList()
 {
-	const Data::ArrayList<Data::FastStringMap<AvlBleItem*>*> *itemList = this->itemMap.GetValues();
 	Data::FastStringMap<AvlBleItem*> *item;
 	AvlBleItem *bleItem;
-	UOSInt i = itemList->GetCount();
+	UOSInt i = this->itemMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		item = itemList->GetItem(i);
+		item = this->itemMap.GetItem(i);
 		j = item->GetCount();
 		while (j-- > 0)
 		{
@@ -114,5 +113,5 @@ Bool SSWR::VAMS::VAMSBTList::HasProg(Int32 progId)
 UOSInt SSWR::VAMS::VAMSBTList::GetProgList(Data::ArrayList<Int32> *progList)
 {
 	Sync::MutexUsage mutUsage(&this->mut);
-	return progList->AddAll(this->itemMap.GetKeys());
+	return this->itemMap.AddKeysTo(progList);
 }

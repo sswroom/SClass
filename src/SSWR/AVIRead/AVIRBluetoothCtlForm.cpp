@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(IO::BTScanLo
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap, Data::UInt64Map<UInt32> *statusMap, UOSInt baseIndex)
+UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -104,14 +104,13 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
-	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = devMap->GetValues();
 	IO::BTScanLog::ScanRecord3 *dev;
 
 	j = 0;
-	k = devList->GetCount();
+	k = devMap->GetCount();
 	while (j < k)
 	{
-		dev = devList->GetItem(j);
+		dev = devMap->GetItem(j);
 		i = j + baseIndex;
 		Sync::MutexUsage devMutUsage(&this->devMut);
 		if (statusMap->GetIndex(dev->macInt) < 0)

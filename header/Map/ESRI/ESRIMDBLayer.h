@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_ESRIMDBLAYER
 #define _SM_MAP_ESRI_ESRIMDBLAYER
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
 #include "Map/IMapDrawLayer.h"
@@ -14,11 +14,11 @@ namespace Map
 		{
 		private:
 			DB::SharedDBConn *conn;
-			Data::Int32Map<Math::Geometry::Vector2D*> *objects;
+			Data::FastMap<Int32, Math::Geometry::Vector2D*> objects;
 			DB::DBConn *currDB;
 			DB::DBConn *lastDB;
 			Map::DrawLayerType layerType;
-			Data::ArrayListString *colNames;
+			Data::ArrayListString colNames;
 			Math::Coord2DDbl min;
 			Math::Coord2DDbl max;
 			UOSInt objIdCol;
@@ -26,7 +26,7 @@ namespace Map
 			Text::String *tableName;
 
 		private:
-			Data::Int32Map<const UTF8Char **> *ReadNameArr();
+			Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 
 			void Init(DB::SharedDBConn *conn, UInt32 srid, Text::CString tableName);
 		public:

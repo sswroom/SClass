@@ -18,13 +18,12 @@ Media::AudioFilter::SoundGenerator::SoundGenerator(IAudioSource *sourceAudio) : 
 
 Media::AudioFilter::SoundGenerator::~SoundGenerator()
 {
-	const Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap.GetValues();
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt i;
-	i = sndGenList->GetCount();
+	i = this->sndGenMap.GetCount();
 	while (i-- > 0)
 	{
-		sndGen = sndGenList->GetItem(i);
+		sndGen = this->sndGenMap.GetItem(i);
 		DEL_CLASS(sndGen);
 	}
 }
@@ -39,12 +38,11 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 	if (this->sourceAudio == 0)
 		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff, blkSize);
-	const Data::ArrayList<Media::AudioFilter::SoundGen::ISoundGen*> *sndGenList = this->sndGenMap.GetValues();
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt sampleCnt = readSize / (this->format.align);
 	Double *sndBuff;
 	UOSInt i;
-	i = sndGenList->GetCount();
+	i = this->sndGenMap.GetCount();
 	if (i <= 0)
 	{
 		return readSize;
@@ -53,7 +51,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 	MemClear(sndBuff, sizeof(Double) * sampleCnt);
 	while (i-- > 0)
 	{
-		sndGen = sndGenList->GetItem(i);
+		sndGen = this->sndGenMap.GetItem(i);
 		sndGen->GenSignals(sndBuff, sampleCnt);
 	}
 	if (this->format.bitpersample == 16)

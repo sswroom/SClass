@@ -592,12 +592,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 			Text::UTF8Writer writer(&fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
-			const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = me->wifiLogMap.GetValues();
 			i = 0;
-			j = wifiLogList->GetCount();
+			j = me->wifiLogMap.GetCount();
 			while (i < j)
 			{
-				wifiLog = wifiLogList->GetItem(i);
+				wifiLog = me->wifiLogMap.GetItem(i);
 				sb.ClearStr();
 				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
 				sb.AppendC(UTF8STRC("\t"));
@@ -695,12 +694,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 			Text::UTF8Writer writer(&fs);
 			writer.WriteSignature();
 			SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
-			const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = me->wifiLogMap.GetValues();
 			i = 0;
-			j = wifiLogList->GetCount();
+			j = me->wifiLogMap.GetCount();
 			while (i < j)
 			{
-				wifiLog = wifiLogList->GetItem(i);
+				wifiLog = me->wifiLogMap.GetItem(i);
 				MemCopyNO(&macBuff[2], wifiLog->mac, 6);
 				macBuff[0] = 0;
 				macBuff[1] = 0;
@@ -973,21 +971,19 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 	DEL_CLASS(this->wlan);
 	UOSInt i;
 	BSSStatus *bss;
-	const Data::ArrayList<BSSStatus*> *bssList = this->bssMap.GetValues();
-	i = bssList->GetCount();
+	i = this->bssMap.GetCount();
 	while (i-- > 0)
 	{
-		bss = bssList->GetItem(i);
+		bss = this->bssMap.GetItem(i);
 		SDEL_STRING(bss->ssid);
 		MemFree(bss);
 	}
 
-	const Data::ArrayList<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog*> *wifiLogList = this->wifiLogMap.GetValues();
 	SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog *wifiLog;
-	i = wifiLogList->GetCount();
+	i = this->wifiLogMap.GetCount();
 	while (i-- > 0)
 	{
-		wifiLog = wifiLogList->GetItem(i);
+		wifiLog = this->wifiLogMap.GetItem(i);
 		wifiLog->ssid->Release();
 		SDEL_STRING(wifiLog->manuf);
 		SDEL_STRING(wifiLog->model);

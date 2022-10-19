@@ -1,7 +1,7 @@
 #ifndef _SM_IO_MODBUSRTUMASTER
 #define _SM_IO_MODBUSRTUMASTER
 #include "Crypto/Hash/CRC16R.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/MODBUSMaster.h"
 #include "IO/Stream.h"
 #include "Manage/HiResClock.h"
@@ -27,7 +27,7 @@ namespace IO
 		Sync::Mutex stmMut;
 		Crypto::Hash::CRC16R *crc;
 		Sync::Mutex crcMut;
-		Data::Int32Map<AddrResultCb*> cbMap;
+		Data::FastMap<Int32, AddrResultCb*> cbMap;
 
 		static UInt32 __stdcall ThreadProc(void *userObj);
 		void CalcCRC(UInt8 *rtu, UOSInt rtuSize); // size include CRC

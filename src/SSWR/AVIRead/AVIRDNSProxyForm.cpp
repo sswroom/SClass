@@ -106,18 +106,16 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		ClientInfo *cli;
 		UOSInt i;
 		UOSInt j;
-		const Data::ArrayList<ClientInfo*> *cliList;
 		me->cliChg = false;
 		me->lbClientIP->ClearItems();
 		me->lvClient->ClearItems();
 
 		Sync::MutexUsage mutUsage(&me->cliInfoMut);
-		cliList = me->cliInfos.GetValues();
 		i = 0;
-		j = cliList->GetCount();
+		j = me->cliInfos.GetCount();
 		while (i < j)
 		{
-			cli = cliList->GetItem(i);
+			cli = me->cliInfos.GetItem(i);
 			Net::SocketUtil::GetAddrName(wbuff, &cli->addr);
 			me->lbClientIP->AddItem(wbuff, cli);
 			i++;
@@ -1146,18 +1144,16 @@ SSWR::AVIRead::AVIRDNSProxyForm::~AVIRDNSProxyForm()
 {
 	UOSInt i;
 	UOSInt j;
-	const Data::ArrayList<ClientInfo*> *cliInfoList;
 	ClientInfo *cli;
 	DEL_CLASS(this->proxy);
 	Net::DNSClient::FreeAnswers(&this->v4ansList);
 	Net::DNSClient::FreeAnswers(&this->v6ansList);
 	Net::DNSClient::FreeAnswers(&this->othansList);
 	Net::DNSClient::FreeAnswers(&this->v4sansList);
-	cliInfoList = this->cliInfos.GetValues();
-	i = cliInfoList->GetCount();
+	i = this->cliInfos.GetCount();
 	while (i-- > 0)
 	{
-		cli = cliInfoList->GetItem(i);
+		cli = this->cliInfos.GetItem(i);
 		j = cli->hourInfos.GetCount();
 		while (j-- > 0)
 		{

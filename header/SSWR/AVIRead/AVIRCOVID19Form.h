@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #define _SM_SSWR_AVIREAD_AVIRCOVID19FORM
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "Data/StringMap.h"
 #include "Net/SSLEngine.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -30,7 +30,7 @@ namespace SSWR
 				Text::String *isoCode;
 				Text::String *name;
 				Double population;
-				Data::Int64Map<DailyRecord*> *records;
+				Data::FastMap<Int64, DailyRecord*> *records;
 			} CountryInfo;
 		private:
 			SSWR::AVIRead::AVIRCore *core;

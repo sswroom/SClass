@@ -2,9 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANWEBHANDLER
 #include "Data/ArrayListDbl.h"
 #include "Data/Comparator.h"
-#include "Data/Int32Map.h"
-#include "Data/Int64Map.h"
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Data/RandomOS.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
@@ -139,7 +137,7 @@ namespace SSWR
 				Int32 userType;
 				Data::ArrayListInt64 userFileIndex;
 				Data::ArrayList<UserFileInfo*> userFileObj;
-				Data::Int32Map<Data::Int64Map<TripInfo*>*> tripCates;
+				Data::FastMap<Int32, Data::FastMap<Int64, TripInfo*>*> tripCates;
 				Int32 unorganSpId;
 			} WebUserInfo;
 
@@ -164,7 +162,7 @@ namespace SSWR
 
 				Data::ArrayList<BookSpInfo*> books;
 				Data::ArrayList<UserFileInfo*> files;
-				Data::Int32Map<WebFileInfo*> wfiles;
+				Data::FastMap<Int32, WebFileInfo*> wfiles;
 			};
 
 			class GroupInfo
@@ -204,7 +202,7 @@ namespace SSWR
 				Text::String *dirName;
 				Text::String *srcDir;
 				Int32 flags;
-				Data::Int32Map<GroupTypeInfo *> groupTypes;
+				Data::FastMap<Int32, GroupTypeInfo *> groupTypes;
 				Data::ArrayList<GroupInfo*> groups;
 			};
 
@@ -264,18 +262,18 @@ namespace SSWR
 			Net::WebServer::HTTPDirectoryHandler *mapDirHdlr;
 
 			Data::FastStringMap<CategoryInfo*> cateSMap;
-			Data::Int32Map<CategoryInfo*> cateMap;
+			Data::FastMap<Int32, CategoryInfo*> cateMap;
 
 			Sync::RWMutex dataMut;
-			Data::Int32Map<SpeciesInfo*> spMap;
+			Data::FastMap<Int32, SpeciesInfo*> spMap;
 			Data::FastStringMap<SpeciesInfo*> spNameMap;
-			Data::Int32Map<GroupInfo*> groupMap;
-			Data::Int32Map<BookInfo*> bookMap;
-			Data::Int32Map<WebUserInfo*> userMap;
+			Data::FastMap<Int32, GroupInfo*> groupMap;
+			Data::FastMap<Int32, BookInfo*> bookMap;
+			Data::FastMap<Int32, WebUserInfo*> userMap;
 			Data::FastStringMap<WebUserInfo*> userNameMap;
-			Data::Int32Map<UserFileInfo*> userFileMap;
-			Data::UInt32Map<IO::ConfigFile*> langMap;
-			Data::Int32Map<LocationInfo*> locMap;
+			Data::FastMap<Int32, UserFileInfo*> userFileMap;
+			Data::FastMap<UInt32, IO::ConfigFile*> langMap;
+			Data::FastMap<Int32, LocationInfo*> locMap;
 			Text::Locale locale;
 
 			void LoadLangs();

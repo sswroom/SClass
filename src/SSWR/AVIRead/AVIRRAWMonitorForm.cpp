@@ -516,19 +516,17 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->pingIPListUpdated)
 	{
-		const Data::ArrayList<PingIPInfo*> *pingIPList;
 		PingIPInfo *pingIPInfo;
 		UOSInt i;
 		UOSInt j;
 		me->pingIPListUpdated = false;
 		Sync::MutexUsage mutUsage(&me->pingIPMut);
 		me->lbPingIP->ClearItems();
-		pingIPList = me->pingIPMap.GetValues();
 		i = 0;
-		j = pingIPList->GetCount();
+		j = me->pingIPMap.GetCount();
 		while (i < j)
 		{
-			pingIPInfo = pingIPList->GetItem(i);
+			pingIPInfo = me->pingIPMap.GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pingIPInfo->ip);
 			me->lbPingIP->AddItem(CSTRP(sbuff, sptr), pingIPInfo);
 			if (pingIPInfo == me->currPingIP)
@@ -761,13 +759,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		if (listChg)
 		{
 			IPTranInfo *currSel = (IPTranInfo*)me->lbIPTran->GetSelectedItem();
-			const Data::ArrayList<IPTranInfo*> *ipTrans = me->ipTranMap.GetValues();
 			me->lbIPTran->ClearItems();
 			i = 0;
-			j = ipTrans->GetCount();
+			j = me->ipTranMap.GetCount();
 			while (i < j)
 			{
-				ipTran = ipTrans->GetItem(i);
+				ipTran = me->ipTranMap.GetItem(i);
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipTran->ip);
 				me->lbIPTran->AddItem(CSTRP(sbuff, sptr), ipTran);
 				if (currSel == ipTran)
@@ -850,7 +847,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 		}
 
-		const Data::ArrayList<Net::EthernetAnalyzer::MACStatus *> *macList;
+		const Data::ReadingList<Net::EthernetAnalyzer::MACStatus *> *macList;
 		Net::EthernetAnalyzer::MACStatus *mac;
 		const Net::MACInfo::MACEntry *entry;
 		UInt8 macBuff[8];
@@ -938,7 +935,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		const Net::MACInfo::MACEntry *macInfo;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseDHCP(&mutUsage);
-		const Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
+		const Data::ReadingList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList = me->analyzer->DHCPGetList();
 		if (dhcpList->GetCount() != me->lvDHCP->GetCount())
 		{
 			Net::EthernetAnalyzer::DHCPInfo *currSel = (Net::EthernetAnalyzer::DHCPInfo*)me->lvDHCP->GetSelectedItem();
@@ -1466,26 +1463,22 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 
-	const Data::ArrayList<PingIPInfo*> *pingIPList;
 	PingIPInfo *pingIPInfo;
 	UOSInt i;
-	pingIPList = this->pingIPMap.GetValues();
-	i = pingIPList->GetCount();
+	i = this->pingIPMap.GetCount();
 	while (i-- > 0)
 	{
-		pingIPInfo = pingIPList->GetItem(i);
+		pingIPInfo = this->pingIPMap.GetItem(i);
 		SDEL_STRING(pingIPInfo->name);
 		SDEL_STRING(pingIPInfo->country);
 		MemFree(pingIPInfo);
 	}
 
-	const Data::ArrayList<IPTranInfo*> *ipTranList;
 	IPTranInfo *ipTran;
-	ipTranList = this->ipTranMap.GetValues();
-	i = ipTranList->GetCount();
+	i = this->ipTranMap.GetCount();
 	while (i-- > 0)
 	{
-		ipTran = ipTranList->GetItem(i);
+		ipTran = this->ipTranMap.GetItem(i);
 		MemFree(ipTran);
 	}
 	DEL_CLASS(this->analyzer);

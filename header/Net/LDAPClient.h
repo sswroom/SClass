@@ -1,6 +1,6 @@
 #ifndef _SM_NET_LDAPCLIENT
 #define _SM_NET_LDAPCLIENT
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
@@ -54,7 +54,7 @@ namespace Net
 		Net::TCPClient *cli;
 		
 		Sync::Mutex reqMut;
-		Data::UInt32Map<ReqStatus*> reqMap;
+		Data::FastMap<UInt32, ReqStatus*> reqMap;
 
 		Sync::Mutex msgIdMut;
 		UInt32 lastMsgId;

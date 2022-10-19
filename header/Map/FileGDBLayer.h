@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_FILEGDBLAYER
 #define _SM_MAP_FILEGDBLAYER
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "DB/SharedReadingDB.h"
 #include "Map/IMapDrawLayer.h"
 #include "Text/String.h"
@@ -12,7 +12,7 @@ namespace Map
 	{
 	private:
 		DB::SharedReadingDB *conn;
-		Data::Int32Map<Math::Geometry::Vector2D*> objects;
+		Data::FastMap<Int32, Math::Geometry::Vector2D*> objects;
 		DB::ReadingDB *currDB;
 		DB::ReadingDB *lastDB;
 		Map::DrawLayerType layerType;
@@ -24,7 +24,7 @@ namespace Map
 		Text::String *tableName;
 
 	private:
-		Data::Int32Map<const UTF8Char **> *ReadNameArr();
+		Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 	public:
 		FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName);
 		virtual ~FileGDBLayer();

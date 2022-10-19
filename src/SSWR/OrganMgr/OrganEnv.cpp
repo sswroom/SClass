@@ -185,28 +185,22 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	SpeciesInfo *species;
 	UserFileInfo *userFile;
 	WebUserInfo *webUser;
-	const Data::ArrayList<SpeciesInfo*> *speciesList;
-	const Data::ArrayList<UserFileInfo*> *userFileList;
-	const Data::ArrayList<WebUserInfo*> *userList;
-	speciesList = this->speciesMap.GetValues();
-	i = speciesList->GetCount();
+	i = this->speciesMap.GetCount();
 	while (i-- > 0)
 	{
-		species = speciesList->GetItem(i);
+		species = this->speciesMap.GetItem(i);
 		this->ReleaseSpecies(species);
 	}
-	userFileList = this->userFileMap.GetValues();
-	i = userFileList->GetCount();
+	i = this->userFileMap.GetCount();
 	while (i-- > 0)
 	{
-		userFile = userFileList->GetItem(i);
+		userFile = this->userFileMap.GetItem(i);
 		this->ReleaseUserFile(userFile);
 	}
-	userList = this->userMap.GetValues();
-	i = userList->GetCount();
+	i = this->userMap.GetCount();
 	while (i-- > 0)
 	{
-		webUser = userList->GetItem(i);
+		webUser = this->userMap.GetItem(i);
 		DEL_CLASS(webUser->gpsFileIndex);
 		DEL_CLASS(webUser->gpsFileObj);
 		DEL_CLASS(webUser->userFileIndex);
@@ -377,12 +371,11 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 	UOSInt i;
 	UOSInt j;
 	WebFileInfo *webFile;
-	const Data::ArrayList<WebFileInfo*> *webFiles = species->wfileMap.GetValues();
 	i = 0;
-	j = webFiles->GetCount();
+	j = species->wfileMap.GetCount();
 	while (i < j)
 	{
-		webFile = webFiles->GetItem(i);
+		webFile = species->wfileMap.GetItem(i);
 		webFile->location->Release();
 		webFile->imgUrl->Release();
 		webFile->srcUrl->Release();
@@ -404,16 +397,15 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks)
 {
-	const Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap.GetValues();
 	UserFileInfo *userFile;
 	UOSInt initCnt = userFiles->GetCount();
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = userFileList->GetCount();
+	j = this->userFileMap.GetCount();
 	while (i < j)
 	{
-		userFile = userFileList->GetItem(i);
+		userFile = this->userFileMap.GetItem(i);
 		if (userFile->webuserId == this->userId && userFile->fileTimeTicks >= fromTimeTicks && userFile->fileTimeTicks <= toTimeTicks)
 		{
 			userFiles->Add(userFile);
@@ -703,8 +695,8 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	UOSInt i;
 	UOSInt j;
 	Text::String *s;
-	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
-	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
+	Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree;
+	Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree;
 	Data::ArrayList<OrganGroup*> *grps;
 
 	Text::StringBuilderUTF8 sb;
@@ -764,19 +756,17 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	*speciesCnt = speciesParsed;
 }
 
-void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree)
+void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree)
 {
 	OrganGroup *grp;
 	Data::ArrayList<OrganGroup*> *grps;
-	const Data::ArrayList<Data::ArrayList<OrganGroup*>*> *grpsList;
 	UOSInt i;
 	UOSInt j;
 
-	grpsList = grpTree->GetValues();
-	i = grpsList->GetCount();
+	i = grpTree->GetCount();
 	while (i-- > 0)
 	{
-		grps = grpsList->GetItem(i);
+		grps = grpTree->GetItem(i);
 		j = grps->GetCount();
 		while (j-- > 0)
 		{
@@ -788,19 +778,17 @@ void SSWR::OrganMgr::OrganEnv::FreeGroupTree(Data::Int32Map<Data::ArrayList<Orga
 	DEL_CLASS(grpTree);
 }
 
-void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree)
+void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree)
 {
 	OrganSpecies *sp;
 	Data::ArrayList<OrganSpecies*> *sps;
-	const Data::ArrayList<Data::ArrayList<OrganSpecies*>*> *spsList;
 	UOSInt i;
 	UOSInt j;
 
-	spsList = spTree->GetValues();
-	i = spsList->GetCount();
+	i = spTree->GetCount();
 	while (i-- > 0)
 	{
-		sps = spsList->GetItem(i);
+		sps = spTree->GetItem(i);
 		j = sps->GetCount();
 		while (j-- > 0)
 		{
@@ -837,7 +825,7 @@ void SSWR::OrganMgr::OrganEnv::ExportEndPage(IO::Writer *writer)
 	writer->WriteLineC(UTF8STRC("</HTML>"));
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree, Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt)
+void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32, Data::ArrayList<OrganGroup*>*> *grpTree, Data::FastMap<Int32, Data::ArrayList<OrganSpecies*>*> *spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt)
 {
 	UOSInt totalPhoto = 0;
 	UOSInt totalSpecies = 0;

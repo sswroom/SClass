@@ -4,7 +4,7 @@
 #include "Data/ArrayListICaseString.h"
 #include "Data/ArrayListString.h"
 #include "Data/ByteTool.h"
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
 #include "Exporter/GUIJPGExporter.h"
@@ -141,7 +141,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
 	Int32 cateId;
 	UOSInt i;
@@ -177,11 +176,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 			}
 			else
 			{
-				grpTypeList = cate->groupTypes.GetValues();
-				i = grpTypeList->GetCount();
+				i = cate->groupTypes.GetCount();
 				while (i-- > 0)
 				{
-					grpType = grpTypeList->GetItem(i);
+					grpType = cate->groupTypes.GetItem(i);
 					grpType->chiName->Release();
 					grpType->engName->Release();
 					MemFree(grpType);
@@ -250,7 +248,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 
 		SpeciesSciNameComparator comparator;
 		Data::ArrayList<SpeciesInfo*> speciesList(this->spMap.GetCount());
-		speciesList.AddAll(this->spMap.GetValues());
+		speciesList.AddAll(&this->spMap);
 		Data::Sort::ArtificialQuickSort::Sort(&speciesList, &comparator);
 		UOSInt i = 0;
 		UOSInt j = speciesList.GetCount();
@@ -293,8 +291,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 	FreeGroups();
 
 	Text::StringBuilderUTF8 sb;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *pGroup;
@@ -326,11 +322,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 		}
 		this->db->CloseReader(r);
 
-		spList = this->spMap.GetValues();
-		i = spList->GetCount();
+		i = this->spMap.GetCount();
 		while (i-- > 0)
 		{
-			sp = spList->GetItem(i);
+			sp = this->spMap.GetItem(i);
 			group = this->groupMap.Get(sp->groupId);
 			if (group)
 			{
@@ -338,11 +333,10 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 			}
 		}
 
-		groupList = this->groupMap.GetValues();
-		i = groupList->GetCount();
+		i = this->groupMap.GetCount();
 		while (i-- > 0)
 		{
-			group = groupList->GetItem(i);
+			group = this->groupMap.GetItem(i);
 			if (group->parentId)
 			{
 				pGroup = this->groupMap.Get(group->parentId);
@@ -504,7 +498,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 
 		UserFileTimeComparator comparator;
 		Data::ArrayList<UserFileInfo*> userFileList(this->userFileMap.GetCount());
-		userFileList.AddAll(this->userFileMap.GetValues());
+		userFileList.AddAll(&this->userFileMap);
 		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
 		i = 0;
 		j = userFileList.GetCount();
@@ -529,7 +523,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 	{
 		Int32 cateId;
 		Int64 fromDate;
-		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
+		Data::FastMap<Int64, SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
 		SSWR::OrganMgr::OrganWebHandler::TripInfo *trip;
 		user = 0;
 		while (r->ReadNext())
@@ -546,7 +540,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				tripCate = user->tripCates.Get(cateId);
 				if (tripCate == 0)
 				{
-					NEW_CLASS(tripCate, Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>());
+					NEW_CLASS(tripCate, Data::Int64FastMap<SSWR::OrganMgr::OrganWebHandler::TripInfo*>());
 					user->tripCates.Put(cateId, tripCate);
 				}
 				trip = tripCate->Get(fromDate);
@@ -570,13 +564,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		group = this->groupMap.Get(this->unorganizedGroupId);
 		if (group != 0)
 		{
-			const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
-			UOSInt i = userList->GetCount();
+			UOSInt i = this->userMap.GetCount();
 			UOSInt j;
 			SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
 			while (i-- > 0)
 			{
-				user = userList->GetItem(i);
+				user = this->userMap.GetItem(i);
 				if (user->unorganSpId == 0)
 				{
 					Text::StringBuilderUTF8 sbSName;
@@ -639,18 +632,15 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 {
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *spList;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*> *wfiles;
 	UOSInt i;
 	UOSInt j;
 
-	spList = this->spMap.GetValues();
-	i = spList->GetCount();
+	i = this->spMap.GetCount();
 	while (i-- > 0)
 	{
-		sp = spList->GetItem(i);
+		sp = this->spMap.GetItem(i);
 		sp->engName->Release();
 		sp->chiName->Release();
 		sp->sciName->Release();
@@ -660,11 +650,10 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 		sp->idKey->Release();
 		SDEL_STRING(sp->poiImg);
 
-		wfiles = sp->wfiles.GetValues();
-		j = wfiles->GetCount();
+		j = sp->wfiles.GetCount();
 		while (j-- > 0)
 		{
-			wfile = wfiles->GetItem(j);
+			wfile = sp->wfiles.GetItem(j);
 			wfile->imgUrl->Release();
 			wfile->srcUrl->Release();
 			wfile->location->Release();
@@ -678,24 +667,20 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeGroups()
 {
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupList;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	UOSInt i;
-	cateList = this->cateMap.GetValues();
-	i = cateList->GetCount();
+	i = this->cateMap.GetCount();
 	while (i-- > 0)
 	{
-		cate = cateList->GetItem(i);
+		cate = this->cateMap.GetItem(i);
 		cate->groups.Clear();
 	}
 
-	groupList = this->groupMap.GetValues();
-	i = groupList->GetCount();
+	i = this->groupMap.GetCount();
 	while (i-- > 0)
 	{
-		group = groupList->GetItem(i);
+		group = this->groupMap.GetItem(i);
 		FreeGroup(group);
 	}
 	this->groupMap.Clear();
@@ -712,17 +697,15 @@ void SSWR::OrganMgr::OrganWebHandler::FreeGroup(GroupInfo *group)
 
 void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 {
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 	UOSInt i;
 	UOSInt j;
 
-	bookList = this->bookMap.GetValues();
-	i = bookList->GetCount();
+	i = this->bookMap.GetCount();
 	while (i-- > 0)
 	{
-		book = bookList->GetItem(i);
+		book = this->bookMap.GetItem(i);
 		book->title->Release();
 		book->author->Release();
 		book->press->Release();
@@ -741,20 +724,17 @@ void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 {
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
-	const Data::ArrayList<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*> *tripCateList;
-	const Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripList;
+	const Data::FastMap<Int64, SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate;
 	SSWR::OrganMgr::OrganWebHandler::TripInfo *trip;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	i = userList->GetCount();
+	i = this->userMap.GetCount();
 	while (i-- > 0)
 	{
-		user = userList->GetItem(i);
+		user = this->userMap.GetItem(i);
 		user->userName->Release();
 		user->watermark->Release();
 		SDEL_STRING(user->pwd);
@@ -770,16 +750,14 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 			MemFree(userFile);
 		}
 
-		tripCateList = user->tripCates.GetValues();
-		j = tripCateList->GetCount();
+		j = user->tripCates.GetCount();
 		while (j-- > 0)
 		{
-			tripCate = tripCateList->GetItem(j);
-			tripList = tripCate->GetValues();
-			k = tripList->GetCount();
+			tripCate = user->tripCates.GetItem(j);
+			k = tripCate->GetCount();
 			while (k-- > 0)
 			{
-				trip = tripList->GetItem(k);
+				trip = tripCate->GetItem(k);
 				MemFree(trip);
 			}
 			DEL_CLASS(tripCate);
@@ -793,15 +771,14 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 
 void SSWR::OrganMgr::OrganWebHandler::ClearUsers()
 {
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*> *userList = this->userMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 	UOSInt i;
 	UOSInt j;
-	i = userList->GetCount();
+	i = this->userMap.GetCount();
 	while (i-- > 0)
 	{
-		user = userList->GetItem(i);
+		user = this->userMap.GetItem(i);
 
 		j = user->userFileObj.GetCount();
 		while (j-- > 0)
@@ -1982,16 +1959,15 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, In
 
 Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
 {
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 	UOSInt nameLen = speciesName.leng;
 	UOSInt i = 0;
-	UOSInt j = bookList->GetCount();
+	UOSInt j = this->bookMap.GetCount();
 	UOSInt k;
 	while (i < j)
 	{
-		book = bookList->GetItem(i);
+		book = this->bookMap.GetItem(i);
 		k = book->species.GetCount();
 		while (k-- > 0)
 		{
@@ -3069,13 +3045,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
 		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
 		writer.WriteLineC(UTF8STRC("<tr><td>Category</td><td><select name=\"groupType\">"));
-		const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *groupTypes = cate->groupTypes.GetValues();
 		SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *groupType;
 		i = 0;
-		j = groupTypes->GetCount();
+		j = cate->groupTypes.GetCount();
 		while (i < j)
 		{
-			groupType = groupTypes->GetItem(i);
+			groupType = cate->groupTypes.GetItem(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<option value=\""));
 			sb.AppendI32(groupType->id);
@@ -3185,7 +3160,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 		SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
-		const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*> *wfiles;
 		SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
 		IO::ConfigFile *lang = me->LangGet(req);
 		Data::DateTime dt;
@@ -3644,12 +3618,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				i++;
 			}
 
-			wfiles = species->wfiles.GetValues();
 			i = 0;
-			j = wfiles->GetCount();
+			j = species->wfiles.GetCount();
 			while (i < j)
 			{
-				wfile = wfiles->GetItem(i);
+				wfile = species->wfiles.GetItem(i);
 				if (currColumn == 0)
 				{
 					writer.WriteLineC(UTF8STRC("<tr>"));
@@ -4455,7 +4428,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				}
 				else if (species->wfiles.GetCount() != 0)
 				{
-					wfile = species->wfiles.GetValues()->GetItem(0);
+					wfile = species->wfiles.GetItem(0);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photodetail.html?id="));
 					sb.AppendI32(species->speciesId);
@@ -6814,13 +6787,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
 		Text::String *s;
-		Data::Int64Map<BookInfo*> sortBookMap;
+		Data::FastMap<Int64, BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-		const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -6856,22 +6828,20 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		writer.WriteLineC(UTF8STRC("<td>Publish Date</td>"));
 		writer.WriteLineC(UTF8STRC("</tr>"));
 
-		bookList = me->bookMap.GetValues();
 		i = 0;
-		j = bookList->GetCount();
+		j = me->bookMap.GetCount();
 		while (i < j)
 		{
-			book = bookList->GetItem(i);
+			book = me->bookMap.GetItem(i);
 			sortBookMap.Put(book->publishDate, book);
 			i++;
 		}
 
-		bookList = sortBookMap.GetValues();
 		i = 0;
-		j = bookList->GetCount();
+		j = sortBookMap.GetCount();
 		while (i < j)
 		{
-			book = bookList->GetItem(i);
+			book = sortBookMap.GetItem(i);
 
 			writer.WriteLineC(UTF8STRC("<tr>"));
 			writer.WriteStrC(UTF8STRC("<td><a href=\"book.html?id="));
@@ -6949,7 +6919,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
-		Data::Int64Map<BookInfo*> sortBookMap;
+		Data::FastMap<Int64, BookInfo*> sortBookMap;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -7420,7 +7390,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
 
 	me->dataMut.LockRead();
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList = me->cateMap.GetValues();
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *firstCate = 0;
 	UOSInt i;
@@ -7429,10 +7398,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	Text::StringBuilderUTF8 sb;
 	Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 	i = 0;
-	j = cateList->GetCount();
+	j = me->cateMap.GetCount();
 	while (i < j)
 	{
-		cate = cateList->GetItem(i);
+		cate = me->cateMap.GetItem(i);
 		if ((cate->flags & 1) == 0 || !notAdmin)
 		{
 			writer.WriteStrC(UTF8STRC("<a href="));
@@ -9408,7 +9377,7 @@ IO::ConfigFile *SSWR::OrganMgr::OrganWebHandler::LangGet(Net::WebServer::IWebReq
 	lang = this->langMap.Get(0x409);
 	if (lang)
 		return lang;
-	return this->langMap.GetValues()->GetItem(0);
+	return this->langMap.GetItem(0);
 }
 
 Text::CString SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen)
@@ -9524,10 +9493,6 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 {
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*> *cateList;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo*> *grpTypeList;
-	const Data::ArrayList<IO::ConfigFile*> *langList;
-	const Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::LocationInfo*> *locList;
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
 	SSWR::OrganMgr::OrganWebHandler::LocationInfo *loc;
 	IO::ConfigFile *lang;
@@ -9546,20 +9511,18 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 	FreeBooks();
 	FreeUsers();
 
-	cateList = this->cateMap.GetValues();
-	i = cateList->GetCount();
+	i = this->cateMap.GetCount();
 	while (i-- > 0)
 	{
-		cate = cateList->GetItem(i);
+		cate = this->cateMap.GetItem(i);
 		cate->chiName->Release();
 		cate->dirName->Release();
 		cate->srcDir->Release();
 
-		grpTypeList = cate->groupTypes.GetValues();
-		j = grpTypeList->GetCount();
+		j = cate->groupTypes.GetCount();
 		while (j-- > 0)
 		{
-			grpType = grpTypeList->GetItem(j);
+			grpType = cate->groupTypes.GetItem(j);
 			grpType->chiName->Release();
 			grpType->engName->Release();
 			MemFree(grpType);
@@ -9568,19 +9531,17 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 		DEL_CLASS(cate);
 	}
 
-	langList = this->langMap.GetValues();
-	i = langList->GetCount();
+	i = this->langMap.GetCount();
 	while (i-- > 0)
 	{
-		lang = langList->GetItem(i);
+		lang = this->langMap.GetItem(i);
 		DEL_CLASS(lang);
 	}
 
-	locList = this->locMap.GetValues();
-	i = locList->GetCount();
+	i = this->locMap.GetCount();
 	while (i-- > 0)
 	{
-		loc = locList->GetItem(i);
+		loc = this->locMap.GetItem(i);
 		SDEL_STRING(loc->cname);
 		SDEL_STRING(loc->ename);
 		MemFree(loc);

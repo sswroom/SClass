@@ -864,14 +864,11 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 Map::HKTrafficLayer::~HKTrafficLayer()
 {
 	UOSInt i;
-	const Data::ArrayList<RoadInfo*> *roadList;
 	RoadInfo *road;
-
-	roadList = this->roadMap.GetValues();
-	i = roadList->GetCount();
+	i = this->roadMap.GetCount();
 	while (i-- > 0)
 	{
-		road = roadList->GetItem(i);
+		road = this->roadMap.GetItem(i);
 		if (road->vec)
 		{
 			DEL_CLASS(road->vec);
@@ -879,13 +876,11 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 		MemFree(road);
 	}
 
-	const Data::ArrayList<CenterlineInfo*> *lineList;
 	CenterlineInfo *lineInfo;
-	lineList = this->vecMap.GetValues();
-	i = lineList->GetCount();
+	i = this->vecMap.GetCount();
 	while (i-- > 0)
 	{
-		lineInfo = lineList->GetItem(i);
+		lineInfo = this->vecMap.GetItem(i);
 		DEL_CLASS(lineInfo->pl);
 		MemFree(lineInfo);
 	}
@@ -1135,14 +1130,12 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 	UOSInt i;
 	UOSInt j;
 	RoadInfo *road;
-	const Data::ArrayList<RoadInfo*> *roadList;
 	Sync::MutexUsage mutUsage(&this->roadMut);
-	roadList = this->roadMap.GetValues();
 	i = 0;
-	j = roadList->GetCount();
+	j = this->roadMap.GetCount();
 	while (i < j)
 	{
-		road = roadList->GetItem(i);
+		road = this->roadMap.GetItem(i);
 		if (road->vec)
 		{
 			outArr->Add(road->objId);
@@ -1165,15 +1158,13 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 	RoadInfo *road;
 	UOSInt i;
 	UOSInt j;
-	const Data::ArrayList<RoadInfo*> *roadList;
 	rect = rect.Reorder();
 	Sync::MutexUsage mutUsage(&this->roadMut);
-	roadList = this->roadMap.GetValues();
 	i = 0;
-	j = roadList->GetCount();
+	j = this->roadMap.GetCount();
 	while (i < j)
 	{
-		road = roadList->GetItem(i);
+		road = this->roadMap.GetItem(i);
 		if (road->vec && road->minX <= rect.br.x && road->maxX >= rect.tl.x && road->minY <= rect.br.y && road->maxY >= rect.tl.y)
 		{
 			outArr->Add(road->objId);
@@ -1187,12 +1178,8 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 
 Int64 Map::HKTrafficLayer::GetObjectIdMax()
 {
-	Int64 ret = 0;
 	Sync::MutexUsage mutUsage(&this->roadMut);
-	const Data::ArrayList<Int64> *keys = this->roadMap.GetKeys();
-	ret = keys->GetItem(keys->GetCount() - 1);
-	mutUsage.EndUse();
-	return ret;
+	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
 void Map::HKTrafficLayer::ReleaseNameArr(void *nameArr)

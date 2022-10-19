@@ -1,7 +1,7 @@
 #ifndef _SM_IO_BTSCANLOG
 #define _SM_IO_BTSCANLOG
 #include "Data/ArrayListUInt32.h"
-#include "Data/UInt64Map.h"
+#include "Data/FastMap.h"
 #include "IO/ParsedObject.h"
 #include "Text/String.h"
 
@@ -82,8 +82,8 @@ namespace IO
 			Data::ArrayList<LogEntry*> *logs;
 		};
 	private:
-		Data::UInt64Map<DevEntry*> pubDevs;
-		Data::UInt64Map<DevEntry*> randDevs;
+		Data::FastMap<UInt64, DevEntry*> pubDevs;
+		Data::FastMap<UInt64, DevEntry*> randDevs;
 		Data::ArrayList<LogEntry*> logs;
 
 		void FreeDev(DevEntry* dev);
@@ -97,8 +97,8 @@ namespace IO
 		LogEntry *AddScanRec(const ScanRecord3 *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();
-		const Data::ArrayList<IO::BTScanLog::DevEntry*> *GetPublicList() const;
-		const Data::ArrayList<IO::BTScanLog::DevEntry*> *GetRandomList() const;
+		const Data::ReadingList<IO::BTScanLog::DevEntry*> *GetPublicList() const;
+		const Data::ReadingList<IO::BTScanLog::DevEntry*> *GetRandomList() const;
 
 		static Text::CString RadioTypeGetName(RadioType radioType);
 		static Text::CString AddressTypeGetName(AddressType addrType);

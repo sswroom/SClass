@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/Path.h"
 #include "Text/MyString.h"
 #include "Map/GPSTrack.h"
@@ -97,7 +97,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	{
 		return 0;
 	}
-	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord3*>*> devRecs;
+	Data::FastMap<Int32, Data::ArrayList<Map::GPSTrack::GPSRecord3*>*> devRecs;
 	currPos += buffSize;
 	while (true)
 	{
@@ -193,11 +193,10 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	}
 	if (error)
 	{
-		const Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord3 *> *>*recs = devRecs.GetValues();
-		i = recs->GetCount();
+		i = devRecs.GetCount();
 		while (i-- > 0)
 		{
-			currDev = recs->GetItem(i);
+			currDev = devRecs.GetItem(i);
 			j = currDev->GetCount();
 			while (j-- > 0)
 			{
@@ -211,11 +210,10 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 
 	Map::GPSTrack *track;
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, 0));
-	const Data::SortableArrayListNative<Int32> *keys = devRecs.GetKeys();
-	i = keys->GetCount();
+	i = devRecs.GetCount();
 	while (i-- > 0)
 	{
-		devId = keys->GetItem(i);
+		devId = devRecs.GetKey(i);
 		sptr = Text::StrInt32(sbuff, devId);
 		track->SetTrackName(CSTRP(sbuff, sptr));
 

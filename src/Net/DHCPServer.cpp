@@ -335,12 +335,11 @@ Net::DHCPServer::~DHCPServer()
 		DEL_CLASS(this->svr);
 		this->svr = 0;
 
-		const Data::ArrayList<DeviceStatus*> *devList = this->devMap.GetValues();
 		DeviceStatus *dev;
-		UOSInt i = devList->GetCount();
+		UOSInt i = this->devMap.GetCount();
 		while (i-- > 0)
 		{
-			dev = devList->GetItem(i);
+			dev = this->devMap.GetItem(i);
 			SDEL_STRING(dev->hostName);
 			SDEL_STRING(dev->vendorClass);
 			MemFree(dev);
@@ -363,9 +362,9 @@ void Net::DHCPServer::UseStatus(Sync::MutexUsage *mutUsage) const
 	mutUsage->ReplaceMutex(&this->devMut);
 }
 
-const Data::ArrayList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList() const
+const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList() const
 {
-	return this->devMap.GetValues();
+	return &this->devMap;
 }
 
 UInt32 Net::DHCPServer::GetIPLeaseTime() const

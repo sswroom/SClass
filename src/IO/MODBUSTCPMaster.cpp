@@ -148,12 +148,11 @@ IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 			Sync::Thread::Sleep(10);
 		}
 	}
-	const Data::ArrayList<AddrResultCb*> *cbList = this->cbMap.GetValues();
 	AddrResultCb *cb;
-	i = cbList->GetCount();
+	i = this->cbMap.GetCount();
 	while (i-- > 0)
 	{
-		cb = cbList->GetItem(i);
+		cb = this->cbMap.GetItem(i);
 		MemFree(cb);
 	}
 }

@@ -49,7 +49,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 	{
 		UOSInt i;
 		UOSInt j;
-		const Data::ArrayList<Net::EthernetAnalyzer::MACStatus*> *macList;
+		const Data::ReadingList<Net::EthernetAnalyzer::MACStatus*> *macList;
 		Net::EthernetAnalyzer::MACStatus *mac;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
@@ -175,7 +175,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 	{
 		UOSInt i;
 		UOSInt j;
-		const Data::ArrayList<Net::EthernetAnalyzer::IPTranStatus*> *ipTranList;
+		const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*> *ipTranList;
 		Net::EthernetAnalyzer::IPTranStatus *ipTran;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(&sb);
@@ -669,7 +669,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		UOSInt j;
 		OSInt dnsCliInd = -1;
 		UInt32 qryVal = 0;
-		const Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> *dnsCliList;
+		const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*> *dnsCliList;
 		Net::EthernetAnalyzer::DNSClientInfo *dnsCli;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(&sb);
@@ -765,7 +765,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		const Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList;
+		const Data::ReadingList<Net::EthernetAnalyzer::DHCPInfo*> *dhcpList;
 		Net::EthernetAnalyzer::DHCPInfo *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
@@ -881,7 +881,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		UOSInt j;
 		OSInt ipLogInd = -1;
 		UInt32 qryVal = 0;
-		const Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> *ipLogList;
+		const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*> *ipLogList;
 		Net::EthernetAnalyzer::IPLogInfo *ipLog;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(&sb);

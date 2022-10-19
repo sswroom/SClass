@@ -17,12 +17,11 @@ void Map::DBMapLayer::ClearDB()
 	this->vecCol = INVALID_INDEX;
 	SDEL_CLASS(this->tabDef);
 
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecArr = this->vecMap.GetValues();
 	Math::Geometry::Vector2D *vec;
-	UOSInt i = vecArr->GetCount();
+	UOSInt i = this->vecMap.GetCount();
 	while (i-- > 0)
 	{
-		vec = vecArr->GetItem(i);
+		vec = this->vecMap.GetItem(i);
 		DEL_CLASS(vec);
 	}
 	this->vecMap.Clear();
@@ -88,13 +87,12 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nam
 	UOSInt initCnt = outArr->GetCount();
 	if (this->pointType)
 	{
-		const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->vecMap.GetValues();
 		Math::Geometry::Vector2D *vec;
 		UOSInt i = 0;
-		UOSInt j = vecList->GetCount();
+		UOSInt j = this->vecMap.GetCount();
 		while (i < j)
 		{
-			vec = vecList->GetItem(i);
+			vec = this->vecMap.GetItem(i);
 			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
 			{
 				outArr->Add(this->vecMap.GetKey(i));
@@ -104,7 +102,7 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nam
 	}
 	else
 	{
-		outArr->AddAll(this->vecMap.GetKeys());
+		this->vecMap.AddKeysTo(outArr);
 	}
 	if (nameArr)
 		*nameArr = InitNameArr();
@@ -118,17 +116,16 @@ UOSInt Map::DBMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameAr
 
 UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->vecMap.GetValues();
 	UOSInt initCnt = outArr->GetCount();
 	Math::Geometry::Vector2D *vec;
 	Math::RectAreaDbl bounds;
 	UOSInt i = 0;
-	UOSInt j = vecList->GetCount();
+	UOSInt j = this->vecMap.GetCount();
 	if (this->pointType)
 	{
 		while (i < j)
 		{
-			vec = vecList->GetItem(i);
+			vec = this->vecMap.GetItem(i);
 			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
 			{
 				vec->GetBounds(&bounds);
@@ -144,7 +141,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **n
 	{
 		while (i < j)
 		{
-			vec = vecList->GetItem(i);
+			vec = this->vecMap.GetItem(i);
 			vec->GetBounds(&bounds);
 			if (bounds.OverlapOrTouch(rect))
 			{

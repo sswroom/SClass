@@ -318,7 +318,6 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 {
 	Net::TFTPServer *me = (Net::TFTPServer*)userObj;
 	SessionInfo *sess;
-	const Data::ArrayList<SessionInfo*> *sessList;
 	UOSInt i;
 	Int64 currTime;
 	me->threadRunning = true;
@@ -326,11 +325,10 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 	{
 		Sync::MutexUsage mutUsage(&me->mut);
 		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-		sessList = me->sessMap.GetValues();
-		i = sessList->GetCount();
+		i = me->sessMap.GetCount();
 		while (i-- > 0)
 		{
-			sess = sessList->GetItem(i);
+			sess = me->sessMap.GetItem(i);
 			if (currTime - sess->lastSignalTime >= 10000)
 			{
 				me->sessMap.Remove(sess->sessId);
@@ -401,13 +399,11 @@ Net::TFTPServer::~TFTPServer()
 			Sync::Thread::Sleep(1);
 		}
 	}
-	const Data::ArrayList<SessionInfo*> *sessList;
 	UOSInt i;
-	sessList = this->sessMap.GetValues();
-	i = sessList->GetCount();
+	i = this->sessMap.GetCount();
 	while (i-- > 0)
 	{
-		ReleaseSess(sessList->GetItem(i));
+		ReleaseSess(this->sessMap.GetItem(i));
 	}
 	this->path->Release();
 }

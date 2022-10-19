@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"
@@ -19,7 +19,7 @@ typedef struct
 
 Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader, Text::CString fileName)
 {
-	Data::Int64Map<OSMNodeInfo*> nodeMap;
+	Data::FastMap<Int64, OSMNodeInfo*> nodeMap;
 	OSMNodeInfo *node;
 	Data::ArrayList<Double> latList;
 	Data::ArrayList<Double> lonList;
@@ -1368,12 +1368,10 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 			}
 		}
 	}
-	const Data::ArrayList<OSMNodeInfo*> *nodeList;
-	nodeList = nodeMap.GetValues();
-	i = nodeList->GetCount();
+	i = nodeMap.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(nodeList->GetItem(i));
+		MemFree(nodeMap.GetItem(i));
 	}
 	Map::MapLayerCollection *layerList;
 	NEW_CLASS(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));

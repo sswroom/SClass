@@ -1,6 +1,5 @@
 #ifndef _SM_MEDIA_AUDIOFILTER_TONEGENERATOR
 #define _SM_MEDIA_AUDIOFILTER_TONEGENERATOR
-#include "Data/Int32Map.h"
 #include "Media/IAudioFilter.h"
 #include "Sync/Mutex.h"
 

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNMPMANAGER
 #define _SM_NET_SNMPMANAGER
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "Net/SNMPClient.h"
 #include "SSWR/SMonitor/ISMonitorCore.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"
@@ -44,7 +44,7 @@ namespace Net
 		Net::SNMPClient *cli;
 		Sync::Mutex agentMut;
 		Data::ArrayList<AgentInfo *> agentList;
-		Data::UInt32Map<AgentInfo*> ipv4Agents;
+		Data::FastMap<UInt32, AgentInfo*> ipv4Agents;
 
 		static void FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
 	public:

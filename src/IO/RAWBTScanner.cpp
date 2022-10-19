@@ -74,11 +74,8 @@ IO::RAWBTScanner::~RAWBTScanner()
 	this->Close();
 	SDEL_CLASS(this->clsData->btCtrl);
 	MemFree(this->clsData);
-	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *recList;
-	recList = this->pubRecMap.GetValues();
-	LIST_CALL_FUNC(recList, this->FreeRec);
-	recList = this->randRecMap.GetValues();
-	LIST_CALL_FUNC(recList, this->FreeRec);
+	LIST_CALL_FUNC(&this->pubRecMap, this->FreeRec);
+	LIST_CALL_FUNC(&this->randRecMap, this->FreeRec);
 }
 
 Bool IO::RAWBTScanner::IsError()
@@ -160,13 +157,13 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->recMut);
 	return &this->pubRecMap;	
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *IO::RAWBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->recMut);
 	return &this->randRecMap;	

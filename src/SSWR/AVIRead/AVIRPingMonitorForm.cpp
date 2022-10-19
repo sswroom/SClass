@@ -192,19 +192,17 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->ipListUpdated)
 	{
-		const Data::ArrayList<IPInfo*> *ipList;
 		IPInfo *ipInfo;
 		UOSInt i;
 		UOSInt j;
 		me->ipListUpdated = false;
 		Sync::MutexUsage mutUsage(&me->ipMut);
 		me->lbIP->ClearItems();
-		ipList = me->ipMap.GetValues();
 		i = 0;
-		j = ipList->GetCount();
+		j = me->ipMap.GetCount();
 		while (i < j)
 		{
-			ipInfo = ipList->GetItem(i);
+			ipInfo = me->ipMap.GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ip);
 			me->lbIP->AddItem(CSTRP(sbuff, sptr), ipInfo);
 			if (ipInfo == me->currIP)
@@ -344,14 +342,12 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
 
-	const Data::ArrayList<IPInfo*> *ipList;
 	IPInfo *ipInfo;
 	UOSInt i;
-	ipList = this->ipMap.GetValues();
-	i = ipList->GetCount();
+	i = this->ipMap.GetCount();
 	while (i-- > 0)
 	{
-		ipInfo = ipList->GetItem(i);
+		ipInfo = this->ipMap.GetItem(i);
 		SDEL_STRING(ipInfo->name);
 		SDEL_STRING(ipInfo->country);
 		MemFree(ipInfo);

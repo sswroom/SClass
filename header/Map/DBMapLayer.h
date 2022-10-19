@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_DBMAPLAYER
 #define _SM_MAP_DBMAPLAYER
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "DB/DBTool.h"
 #include "Map/IMapDrawLayer.h"
 
@@ -17,7 +17,7 @@ namespace Map
 		UOSInt idCol;
 		UOSInt vecCol;
 		DB::TableDef *tabDef;
-		Data::Int64Map<Math::Geometry::Vector2D*> vecMap;
+		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
 		Math::Geometry::Vector2D::VectorType mixedType;
 		Bool pointType;
 

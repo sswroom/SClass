@@ -371,7 +371,6 @@ Net::RTPCliChannel::~RTPCliChannel()
 	if (--this->chData->useCnt == 0)
 	{
 		UOSInt i;
-		const Data::ArrayList<Net::IRTPPLHandler*> *plHdlrs;
 		Net::IRTPPLHandler *plHdlr;
 		this->StopPlay();
 
@@ -379,11 +378,10 @@ Net::RTPCliChannel::~RTPCliChannel()
 		SDEL_CLASS(this->chData->rtcpUDP);
 		SDEL_STRING(this->chData->controlURL);
 
-		plHdlrs = this->chData->payloadMap.GetValues();
-		i = plHdlrs->GetCount();
+		i = this->chData->payloadMap.GetCount();
 		while (i-- > 0)
 		{
-			plHdlr = plHdlrs->GetItem(i);
+			plHdlr = this->chData->payloadMap.GetItem(i);
 			DEL_CLASS(plHdlr);
 		}
 		i = this->chData->buffCnt;
@@ -434,7 +432,7 @@ Media::IVideoSource *Net::RTPCliChannel::GetVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
-	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetValues()->GetItem(index);
+	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
 }
 
 Media::IAudioSource *Net::RTPCliChannel::GetAudio(UOSInt index)
@@ -448,7 +446,7 @@ Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
-	Net::RTPVPLHandler *hdlr = (Net::RTPVPLHandler*)this->chData->payloadMap.GetValues()->GetItem(index);
+	Net::RTPVPLHandler *hdlr = (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
 	if (hdlr == 0)
 	{
 		return 0;
@@ -464,7 +462,7 @@ Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
-	Net::RTPAPLHandler *hdlr = (Net::RTPAPLHandler*)this->chData->payloadMap.GetValues()->GetItem(index);
+	Net::RTPAPLHandler *hdlr = (Net::RTPAPLHandler*)this->chData->payloadMap.GetItem(index);
 	if (hdlr == 0)
 	{
 		return 0;

@@ -81,8 +81,7 @@ Net::NetBIOSScanner::NetBIOSScanner(Net::SocketFactory *sockf)
 Net::NetBIOSScanner::~NetBIOSScanner()
 {
 	DEL_CLASS(this->svr);
-	const Data::ArrayList<NameAnswer*> *ansList = this->answers.GetValues();
-	LIST_CALL_FUNC(ansList, FreeAnswer);
+	LIST_CALL_FUNC(&this->answers, FreeAnswer);
 }
 
 Bool Net::NetBIOSScanner::IsError() const
@@ -116,8 +115,8 @@ void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, void *userObj)
 	this->hdlr = hdlr;
 }
 
-const Data::ArrayList<Net::NetBIOSScanner::NameAnswer*> *Net::NetBIOSScanner::GetAnswers(Sync::MutexUsage *mutUsage) const
+const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*> *Net::NetBIOSScanner::GetAnswers(Sync::MutexUsage *mutUsage) const
 {
 	mutUsage->ReplaceMutex(&this->ansMut);
-	return this->answers.GetValues();
+	return &this->answers;
 }

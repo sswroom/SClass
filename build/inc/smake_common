@@ -1381,8 +1381,6 @@ Data/ICaseBTreeUTF8Map.h:
 Data/ICaseStringMap.h:
 Data/ICaseStringUTF8Map.h:
 Data/IComparable.h:
-Data/Int32Map.h:
-Data/Int64Map.h:
 Data/LineChart.h: ../../src/Data/LineChart.cpp
 @LineChart.o
 Data/List.h:
@@ -1411,8 +1409,6 @@ Data/SyncCircularBuff.h:
 Data/SyncLinkedList.h: ../../src/Data/SyncLinkedList.cpp
 @SyncLinkedList.o
 Data/Timestamp.h:
-Data/UInt32Map.h:
-Data/UInt64Map.h:
 Data/Usable.h:
 Data/Usage.h: ../../src/Data/Usage.cpp
 @Usage.o

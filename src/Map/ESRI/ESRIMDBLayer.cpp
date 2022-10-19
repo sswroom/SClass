@@ -6,7 +6,7 @@
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 
-Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
+Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
@@ -14,13 +14,13 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
-		Data::Int32Map<const UTF8Char **> *nameArr;
+		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
-		UOSInt colCnt = this->colNames->GetCount();
+		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32Map<const UTF8Char **>());
+		NEW_CLASS(nameArr, Data::Int32FastMap<const UTF8Char **>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
@@ -66,8 +66,6 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	UOSInt currSize;
 	conn->UseObject();
 	this->conn = conn;
-	NEW_CLASS(this->objects, Data::Int32Map<Math::Geometry::Vector2D*>());
-	NEW_CLASS(this->colNames, Data::ArrayListString());
 	this->tableName = Text::String::New(tableName);
 	this->currDB = 0;
 	this->lastDB = 0;
@@ -99,13 +97,13 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 			{
 				this->objIdCol = i;
 			}
-			this->colNames->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			this->colNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 			i++;
 		}
-		j = this->colNames->GetCount();
+		j = this->colNames.GetCount();
 		while (j-- > 0)
 		{
-			if (this->colNames->GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
+			if (this->colNames.GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
 			{
 				nameCol = j;
 			}
@@ -132,7 +130,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 			if (vec)
 			{
 				Math::RectAreaDbl thisBounds;
-				this->objects->Put(objId, vec);
+				this->objects.Put(objId, vec);
 				vec->GetBounds(&thisBounds);
 				if (this->min.x == 0 && this->min.y == 0 && this->max.x == 0 && this->max.y == 0)
 				{
@@ -204,17 +202,14 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	UOSInt i;
 
 	this->conn->UnuseObject();
-	LIST_FREE_STRING(this->colNames);
-	DEL_CLASS(this->colNames);
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects->GetValues();
+	LIST_FREE_STRING(&this->colNames);
 	Math::Geometry::Vector2D *vec;
-	i = vecList->GetCount();
+	i = this->objects.GetCount();
 	while (i-- > 0)
 	{
-		vec = vecList->GetItem(i);
+		vec = this->objects.GetItem(i);
 		DEL_CLASS(vec);
 	}
-	DEL_CLASS(this->objects);
 	this->tableName->Release();
 }
 
@@ -229,8 +224,14 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, vo
 	{
 		*nameArr = ReadNameArr();
 	}
-	outArr->AddRangeI32(this->objects->GetKeys());
-	return this->objects->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->objects.GetCount();
+	while (i < j)
+	{
+		outArr->Add(this->objects.GetKey(i));
+		i++;
+	}
+	return j;
 }
 
 UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
@@ -245,21 +246,19 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		*nameArr = ReadNameArr();
 	}
 	UOSInt cnt = 0;
-	const Data::ArrayList<Math::Geometry::Vector2D*> *vecList = this->objects->GetValues();
-	const Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
 	Math::RectAreaDbl minMax;
 	Math::Geometry::Vector2D *vec;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = vecList->GetCount();
+	j = this->objects.GetCount();
 	while (i < j)
 	{
-		vec = vecList->GetItem(i);
+		vec = this->objects.GetItem(i);
 		vec->GetBounds(&minMax);
 		if (rect.OverlapOrTouch(minMax))
 		{
-			outArr->Add(vecKeys->GetItem(i));
+			outArr->Add(this->objects.GetKey(i));
 			cnt++;
 		}
 		i++;
@@ -269,21 +268,19 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 
 Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax()
 {
-	const Data::ArrayList<Int32> *objInd = this->objects->GetKeys();
-	return objInd->GetItem(objInd->GetCount() - 1);
+	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
 void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 {
-	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
-	const Data::ArrayList<const UTF8Char **> *nameList = names->GetValues();
-	UOSInt i = nameList->GetCount();
-	UOSInt colCnt = this->colNames->GetCount();
+	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
+	UOSInt i = names->GetCount();
+	UOSInt colCnt = this->colNames.GetCount();
 	UOSInt j;
 	const UTF8Char **nameStrs;
 	while (i-- > 0)
 	{
-		nameStrs = nameList->GetItem(i);
+		nameStrs = names->GetItem(i);
 		j = colCnt;
 		while (j-- > 0)
 		{
@@ -297,7 +294,7 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(void *nameArr)
 
 UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::Int32Map<const UTF8Char **> *names = (Data::Int32Map<const UTF8Char **> *)nameArr;
+	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	if (names == 0)
 		return 0;
 	const UTF8Char **nameStrs = names->Get((Int32)id);
@@ -310,12 +307,12 @@ UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, vo
 
 UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt()
 {
-	return this->colNames->GetCount();
+	return this->colNames.GetCount();
 }
 
 UTF8Char *Map::ESRI::ESRIMDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	Text::String *colName = this->colNames->GetItem(colIndex);
+	Text::String *colName = this->colNames.GetItem(colIndex);
 	if (colName)
 	{
 		return colName->ConcatTo(buff);
@@ -355,7 +352,7 @@ void Map::ESRI::ESRIMDBLayer::EndGetObject(void *session)
 
 Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(void *session, Int64 id)
 {
-	Math::Geometry::Vector2D *vec = this->objects->Get((Int32)id);
+	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
 		return vec->Clone();
 	return 0;

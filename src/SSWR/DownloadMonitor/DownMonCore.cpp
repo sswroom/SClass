@@ -536,13 +536,11 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 	}
 	DEL_CLASS(this->parsers);
 
-	const Data::ArrayList<SSWR::DownloadMonitor::DownMonCore::FileInfo *> *fileList;
 	UOSInt i;
-	fileList = this->fileTypeMap.GetValues();
-	i = fileList->GetCount();
+	i = this->fileTypeMap.GetCount();
 	while (i-- > 0)
 	{
-		this->FileFree(fileList->GetItem(i));
+		this->FileFree(this->fileTypeMap.GetItem(i));
 	}
 
 	SDEL_CLASS(this->ssl);
@@ -687,7 +685,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 
 Int32 SSWR::DownloadMonitor::DownMonCore::FileGetMaxId(Int32 webType)
 {
-	OSInt i = this->fileTypeMap.GetKeys()->SortedIndexOf((webType << 24) | 0xffffff);
+	OSInt i = this->fileTypeMap.GetIndex((webType << 24) | 0xffffff);
 	Int32 id = this->fileTypeMap.GetKey((UOSInt)(~i - 1));
 	if ((id >> 24) == webType)
 	{

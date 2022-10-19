@@ -130,11 +130,10 @@ SSWR::DataSync::SyncServer::~SyncServer()
 	DEL_CLASS(this->cliMgr);
 	UOSInt i;
 	ServerInfo *svrInfo;
-	const Data::ArrayList<ServerInfo*> *svrList = this->svrMap.GetValues();
-	i = svrList->GetCount();
+	i = this->svrMap.GetCount();
 	while (i-- > 0)
 	{
-		svrInfo = svrList->GetItem(i);
+		svrInfo = this->svrMap.GetItem(i);
 		Text::StrDelNew(svrInfo->serverName);
 		DEL_CLASS(svrInfo);
 	}
@@ -155,7 +154,7 @@ Bool SSWR::DataSync::SyncServer::IsError()
 UOSInt SSWR::DataSync::SyncServer::GetServerList(Data::ArrayList<ServerInfo*> *svrList)
 {
 	UOSInt i = svrList->GetCount();
-	svrList->AddAll(this->svrMap.GetValues());
+	svrList->AddAll(&this->svrMap);
 	return svrList->GetCount() - i;
 }
 

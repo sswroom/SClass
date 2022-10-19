@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "DB/ReadingDB.h"
 #include "Map/GPSTrack.h"
 #include "Parser/ObjParser/DBITParser.h"
@@ -67,9 +67,8 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 
 	Map::GPSTrack *trk = 0;
 	Record *rec;
-	Data::Int32Map<Record*> gpsLogMap;
-	Data::Int32Map<Record*> wpMap;
-	const Data::ArrayList<Record*> *recList;
+	Data::FastMap<Int32, Record*> gpsLogMap;
+	Data::FastMap<Int32, Record*> wpMap;
 	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
@@ -196,11 +195,10 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 		}
 	}
 
-	recList = gpsLogMap.GetValues();
-	i = recList->GetCount();
+	i = gpsLogMap.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(recList->GetItem(i));
+		MemFree(gpsLogMap.GetItem(i));
 	}
 	return trk;
 }

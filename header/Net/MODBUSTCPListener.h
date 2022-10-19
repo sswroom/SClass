@@ -1,6 +1,6 @@
 #ifndef _SM_NET_MODBUSTCPLISTENER
 #define _SM_NET_MODBUSTCPLISTENER
-#include "Data/UInt32Map.h"
+#include "Data/FastMap.h"
 #include "IO/MODBUSDevSim.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClientMgr.h"
@@ -16,7 +16,7 @@ namespace Net
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 		Sync::Mutex devMut;
-		Data::UInt32Map<IO::MODBUSDevSim*> devMap;
+		Data::FastMap<UInt32, IO::MODBUSDevSim*> devMap;
 
 		static void __stdcall OnClientConn(Socket *s, void *userObj);
 		static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);

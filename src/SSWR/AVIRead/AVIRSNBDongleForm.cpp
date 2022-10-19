@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	if (me->devChg)
 	{
 		me->devMut.LockRead();
-		devList.AddAll(me->devMap.GetValues());
+		devList.AddAll(&me->devMap);
 		me->devChg = false;
 		me->devMut.UnlockRead();
 
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	else
 	{
 		me->devMut.LockRead();
-		devList.AddAll(me->devMap.GetValues());
+		devList.AddAll(&me->devMap);
 		me->devMut.UnlockRead();
 
 		i = 0;
@@ -338,21 +338,20 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.AppendC(UTF8STRC("sensor_list="));
 	me->devMut.LockRead();
-	const Data::ArrayList<DeviceInfo*> *sensors = me->devMap.GetValues();
 	DeviceInfo *dev;
 	UOSInt i;
 	UOSInt j;
-	if (sensors->GetCount() == 0)
+	if (me->devMap.GetCount() == 0)
 	{
 		me->devMut.UnlockRead();
 		UI::MessageDialog::ShowDialog(CSTR("No devices found"), CSTR("Error"), me);
 		return;
 	}
 	i = 0;
-	j = sensors->GetCount();
+	j = me->devMap.GetCount();
 	while (i < j)
 	{
-		dev = sensors->GetItem(i);
+		dev = me->devMap.GetItem(i);
 		if (dev->readingTime == 0 || dev->nReading == 0)
 		{
 			me->devMut.UnlockRead();
@@ -445,19 +444,15 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	UOSInt j;
 	UOSInt k;
 	UInt8 *dataBuff;
-	const Data::ArrayList<UInt64> *keys;
-	const Data::ArrayList<Int32> *vals;
 	this->devMut.LockRead();
 	i = 0;
 	j = this->devHandlerMap.GetCount();
 	k = 0;
 	dataBuff = MemAlloc(UInt8, j * 12);
-	keys = this->devHandlerMap.GetKeys();
-	vals = this->devHandlerMap.GetValues();
 	while (i < j)
 	{
-		WriteUInt64(&dataBuff[k], keys->GetItem(i));
-		WriteInt32(&dataBuff[k + 8], vals->GetItem(i));
+		WriteUInt64(&dataBuff[k], this->devHandlerMap.GetKey(i));
+		WriteInt32(&dataBuff[k + 8], this->devHandlerMap.GetItem(i));
 		i++;
 		k += 12;
 	}
@@ -583,12 +578,11 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 	DEL_CLASS(this->snb);
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	const Data::ArrayList<DeviceInfo*> *devList = this->devMap.GetValues();
 	DeviceInfo *dev;
-	UOSInt i = devList->GetCount();
+	UOSInt i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		dev = devList->GetItem(i);
+		dev = this->devMap.GetItem(i);
 		DEL_CLASS(dev);
 	}
 	SDEL_CLASS(this->ssl);

@@ -194,17 +194,15 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 {
 	UOSInt i;
 	UOSInt j;
-	const Data::ArrayList<ClientInfo*> *cliInfoList;
 	ClientInfo *cli;
 	SDEL_CLASS(this->listener);
 	SDEL_CLASS(this->hdlr);
 
 	DEL_CLASS(this->proxy);
-	cliInfoList = this->cliInfos.GetValues();
-	i = cliInfoList->GetCount();
+	i = this->cliInfos.GetCount();
 	while (i-- > 0)
 	{
-		cli = cliInfoList->GetItem(i);
+		cli = this->cliInfos.GetItem(i);
 		j = cli->hourInfos.GetCount();
 		while (j-- > 0)
 		{
@@ -232,7 +230,7 @@ UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(Data::ArrayList<SSWR::SDNSP
 {
 	UOSInt initSize = cliList->GetCount();
 	Sync::MutexUsage mutUsage(&this->cliInfoMut);
-	cliList->AddAll(this->cliInfos.GetValues());
+	cliList->AddAll(&this->cliInfos);
 	mutUsage.EndUse();
 	return cliList->GetCount() - initSize;
 }

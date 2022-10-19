@@ -107,12 +107,11 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 {
 	UOSInt i;
 	UOSInt j;
-	const Data::ArrayList<MACStatus*> *macList = this->macMap.GetValues();
 	MACStatus *mac;
-	i = macList->GetCount();
+	i = this->macMap.GetCount();
 	while (i-- > 0)
 	{
-		mac = macList->GetItem(i);
+		mac = this->macMap.GetItem(i);
 		SDEL_STRING(mac->name);
 		j = 16;
 		while (j-- > 0)
@@ -123,23 +122,19 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		MemFree(mac);
 	}
 
-	const Data::ArrayList<IPTranStatus*> *ipTranList;
 	IPTranStatus *ipTran;
-	ipTranList = this->ipTranMap.GetValues();
-	i = ipTranList->GetCount();
+	i = this->ipTranMap.GetCount();
 	while (i-- > 0)
 	{
-		ipTran = ipTranList->GetItem(i);
+		ipTran = this->ipTranMap.GetItem(i);
 		MemFree(ipTran);
 	}
 
-	const Data::ArrayList<DNSClientInfo*> *dnsCliInfoList;
 	DNSClientInfo *dnsCli;
-	dnsCliInfoList = this->dnsCliInfos.GetValues();
-	i = dnsCliInfoList->GetCount();
+	i = this->dnsCliInfos.GetCount();
 	while (i-- > 0)
 	{
-		dnsCli = dnsCliInfoList->GetItem(i);
+		dnsCli = this->dnsCliInfos.GetItem(i);
 		j = dnsCli->hourInfos.GetCount();
 		while (j-- > 0)
 		{
@@ -175,21 +170,19 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	}
 	
 	Net::EthernetAnalyzer::DNSTargetInfo *target;
-	const Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo*> *dnsTargetList = this->dnsTargetMap.GetValues();
-	i = dnsTargetList->GetCount();
+	i = this->dnsTargetMap.GetCount();
 	while (i-- > 0)
 	{
-		target = dnsTargetList->GetItem(i);
+		target = this->dnsTargetMap.GetItem(i);
 		LIST_FREE_STRING(&target->addrList);
 		DEL_CLASS(target);
 	}
 
 	Net::EthernetAnalyzer::IPLogInfo *ipLog;
-	const Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> *ipLogList = this->ipLogMap.GetValues();
-	i = ipLogList->GetCount();
+	i = this->ipLogMap.GetCount();
 	while (i-- > 0)
 	{
-		ipLog = ipLogList->GetItem(i);
+		ipLog = this->ipLogMap.GetItem(i);
 		j = ipLog->logList.GetCount();
 		while (j-- > 0)
 		{
@@ -199,11 +192,10 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	}
 
 	DHCPInfo *dhcp;
-	const Data::ArrayList<DHCPInfo*> *dhcpList = this->dhcpMap.GetValues();
-	i = dhcpList->GetCount();
+	i = this->dhcpMap.GetCount();
 	while (i-- > 0)
 	{
-		dhcp = dhcpList->GetItem(i);
+		dhcp = this->dhcpMap.GetItem(i);
 		SDEL_STRING(dhcp->vendorClass);
 		SDEL_STRING(dhcp->hostName);
 		DEL_CLASS(dhcp);
@@ -232,9 +224,9 @@ void Net::EthernetAnalyzer::UseIPTran(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->ipTranMut);
 }
 
-const Data::ArrayList<Net::EthernetAnalyzer::IPTranStatus*> *Net::EthernetAnalyzer::IPTranGetList() const
+const Data::ReadingList<Net::EthernetAnalyzer::IPTranStatus*> *Net::EthernetAnalyzer::IPTranGetList() const
 {
-	return this->ipTranMap.GetValues();
+	return &this->ipTranMap;
 }
 
 UOSInt Net::EthernetAnalyzer::IPTranGetCount() const
@@ -247,9 +239,9 @@ void Net::EthernetAnalyzer::UseMAC(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->macMut);
 }
 
-const Data::ArrayList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyzer::MACGetList() const
+const Data::ReadingList<Net::EthernetAnalyzer::MACStatus*> *Net::EthernetAnalyzer::MACGetList() const
 {
-	return this->macMap.GetValues();
+	return &this->macMap;
 }
 
 void Net::EthernetAnalyzer::UseDNSCli(Sync::MutexUsage *mutUsage)
@@ -257,9 +249,9 @@ void Net::EthernetAnalyzer::UseDNSCli(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->dnsCliInfoMut);
 }
 
-const Data::ArrayList<Net::EthernetAnalyzer::DNSClientInfo*> *Net::EthernetAnalyzer::DNSCliGetList() const
+const Data::ReadingList<Net::EthernetAnalyzer::DNSClientInfo*> *Net::EthernetAnalyzer::DNSCliGetList() const
 {
-	return this->dnsCliInfos.GetValues();
+	return &this->dnsCliInfos;
 }
 
 UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
@@ -372,7 +364,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<
 UOSInt Net::EthernetAnalyzer::DNSTargetGetList(Data::ArrayList<Net::EthernetAnalyzer::DNSTargetInfo *> *targetList)
 {
 	Sync::MutexUsage mutUsage(&this->dnsTargetMut);
-	targetList->AddAll(this->dnsTargetMap.GetValues());
+	targetList->AddAll(&this->dnsTargetMap);
 	mutUsage.EndUse();
 	return targetList->GetCount();
 }
@@ -399,9 +391,9 @@ void Net::EthernetAnalyzer::UseDHCP(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->dhcpMut);
 }
 
-const Data::ArrayList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer::DHCPGetList() const
+const Data::ReadingList<Net::EthernetAnalyzer::DHCPInfo*> *Net::EthernetAnalyzer::DHCPGetList() const
 {
-	return this->dhcpMap.GetValues();
+	return &this->dhcpMap;
 }
 
 void Net::EthernetAnalyzer::UseIPLog(Sync::MutexUsage *mutUsage)
@@ -409,9 +401,9 @@ void Net::EthernetAnalyzer::UseIPLog(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->ipLogMut);
 }
 
-const Data::ArrayList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyzer::IPLogGetList() const
+const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyzer::IPLogGetList() const
 {
-	return this->ipLogMap.GetValues();
+	return &this->ipLogMap;
 }
 
 UOSInt Net::EthernetAnalyzer::IPLogGetCount() const

@@ -103,13 +103,12 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	const Net::MACInfo::MACEntry *macEntry;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
 	Sync::MutexUsage mutUsage(&this->arpMut);
-	const Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *> *arpList = this->arpMap.GetValues();
 	this->lvARP->ClearItems();
 	i = 0;
-	j = arpList->GetCount();
+	j = this->arpMap.GetCount();
 	while (i < j)
 	{
-		ipInfo = arpList->GetItem(i);
+		ipInfo = this->arpMap.GetItem(i);
 		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ipAddr);
 		k = this->lvARP->AddItem(CSTRP(sbuff, sptr), ipInfo);
 		sptr = Text::StrHexBytes(sbuff, ipInfo->hwAddr, 6, ':');
@@ -237,7 +236,6 @@ SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 	UOSInt i;
 	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
-	const Data::ArrayList<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*> *ipList;
 	i = this->adapters.GetCount();
 	while (i-- > 0)
 	{
@@ -246,11 +244,10 @@ SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 		MemFree(adapter);
 	}
 
-	ipList = this->arpMap.GetValues();
-	i = ipList->GetCount();
+	i = this->arpMap.GetCount();
 	while (i-- > 0)
 	{
-		ipInfo = ipList->GetItem(i);
+		ipInfo = this->arpMap.GetItem(i);
 		MemFree(ipInfo);
 	}
 }

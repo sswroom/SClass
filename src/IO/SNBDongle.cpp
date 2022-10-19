@@ -440,12 +440,11 @@ IO::SNBDongle::~SNBDongle()
 {
 	DEL_CLASS(this->proto);
 	DeviceInfo *dev;
-	const Data::ArrayList<DeviceInfo*> *devList = this->devMap.GetValues();
 	UOSInt i;
-	i = devList->GetCount();
+	i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		dev = devList->GetItem(i);
+		dev = this->devMap.GetItem(i);
 		MemFree(dev);
 	}
 }

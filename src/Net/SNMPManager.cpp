@@ -908,7 +908,7 @@ void Net::SNMPManager::Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMo
 {
 	*cliId = Agent2CliId(agent);
 
-	Data::UInt32Map<Int32> readingIdMap;
+	Data::FastMap<UInt32, Int32> readingIdMap;
 	Int32 currId;
 	ReadingInfo *reading;
 	Data::DateTime dt;

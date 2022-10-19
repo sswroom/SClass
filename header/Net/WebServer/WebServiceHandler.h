@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #define _SM_NET_WEBSERVER_WEBSERVICEHANDLER
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
@@ -16,7 +16,7 @@ namespace Net
 			typedef struct
 			{
 				Text::String *svcPath;
-				Data::Int32Map<ServiceFunc> funcs;
+				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
 			Data::FastStringMap<ServiceInfo *> services;

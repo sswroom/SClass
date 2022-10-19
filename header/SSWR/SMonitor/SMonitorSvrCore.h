@@ -1,8 +1,7 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #define _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #include "Crypto/Hash/HashCalc.h"
-#include "Data/Int32Map.h"
-#include "Data/Int64Map.h"
+#include "Data/FastMap.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
 #include "IO/Writer.h"
@@ -59,9 +58,9 @@ namespace SSWR
 			Sync::RWMutex dateMut;
 
 			Sync::RWMutex devMut;
-			Data::Int64Map<DeviceInfo*> devMap;
+			Data::FastMap<Int64, DeviceInfo*> devMap;
 			Sync::RWMutex userMut;
-			Data::Int32Map<WebUser*> userMap;
+			Data::FastMap<Int32, WebUser*> userMap;
 			Data::StringUTF8Map<WebUser*> userNameMap;
 
 			IO::StringLogger uaLog;

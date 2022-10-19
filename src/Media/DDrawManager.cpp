@@ -6,7 +6,7 @@
 
 struct Media::DDrawManager::ClassData
 {
-	Data::Int64Map<LPDIRECTDRAW7> *monMap;
+	Data::FastMap<OSInt, LPDIRECTDRAW7> monMap;
 	LPDIRECTDRAW7 defDD;
 	Media::MonitorMgr *monMgr;
 	Media::ColorManager *colorMgr;
@@ -21,7 +21,7 @@ Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc,
 	{
 		return 1;
 	}
-	if (me->clsData->monMap->Get((OSInt)hMonitor) != 0)
+	if (me->clsData->monMap.Get((OSInt)hMonitor) != 0)
 	{
 		return 1;
 	}
@@ -37,7 +37,7 @@ Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc,
 		}
 		else
 		{
-			me->clsData->monMap->Put((OSInt)hMonitor, lpDD);
+			me->clsData->monMap.Put((OSInt)hMonitor, lpDD);
 		}
 	}
 
@@ -51,21 +51,18 @@ void Media::DDrawManager::ReleaseAll()
 		this->clsData->defDD->Release();
 		this->clsData->defDD = 0;
 	}
-	const Data::ArrayList<LPDIRECTDRAW7> *monList;
 	UOSInt i;
-	monList = this->clsData->monMap->GetValues();
-	i = monList->GetCount();
+	i = this->clsData->monMap.GetCount();
 	while (i-- > 0)
 	{
-		monList->GetItem(i)->Release();
+		this->clsData->monMap.GetItem(i)->Release();
 	}
-	this->clsData->monMap->Clear();
+	this->clsData->monMap.Clear();
 }
 
 Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
 {
-	this->clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(this->clsData->monMap, Data::Int64Map<LPDIRECTDRAW7>());
+	NEW_CLASS(this->clsData, ClassData());
 	this->clsData->defDD = 0;
 	this->clsData->monMgr = 0;
 	this->clsData->colorMgr = 0;
@@ -75,8 +72,7 @@ Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager
 
 Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
-	this->clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(this->clsData->monMap, Data::Int64Map<LPDIRECTDRAW7>());
+	NEW_CLASS(this->clsData, ClassData());
 	this->clsData->defDD = 0;
 	this->clsData->monMgr = monMgr;
 	this->clsData->colorMgr = colorMgr;
@@ -87,8 +83,7 @@ Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager
 Media::DDrawManager::~DDrawManager()
 {
 	this->ReleaseAll();
-	DEL_CLASS(this->clsData->monMap);
-	MemFree(this->clsData);
+	DEL_CLASS(this->clsData);
 }
 
 Bool Media::DDrawManager::IsError()
@@ -99,7 +94,7 @@ Bool Media::DDrawManager::IsError()
 void *Media::DDrawManager::GetDD7(MonitorHandle *hMonitor)
 {
 	this->RecheckMonitor();
-	LPDIRECTDRAW7 ret = this->clsData->monMap->Get((OSInt)hMonitor);
+	LPDIRECTDRAW7 ret = this->clsData->monMap.Get((OSInt)hMonitor);
 	if (ret)
 		return ret;
 	return this->clsData->defDD;
@@ -107,7 +102,7 @@ void *Media::DDrawManager::GetDD7(MonitorHandle *hMonitor)
 
 void Media::DDrawManager::ReleaseDD7(MonitorHandle *hMonitor)
 {
-	LPDIRECTDRAW7 ret = this->clsData->monMap->Remove((OSInt)hMonitor);
+	LPDIRECTDRAW7 ret = this->clsData->monMap.Remove((OSInt)hMonitor);
 	if (ret)
 	{
 		ret->Release();

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListInt64.h"
 #include "Net/SNS/SNSTwitter.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -58,11 +59,10 @@ Net::SNS::SNSTwitter::~SNSTwitter()
 	DEL_CLASS(this->ctrl);
 	SDEL_STRING(this->chName);
 	SDEL_STRING(this->chDesc);
-	const Data::ArrayList<SNSItem*> *itemList = this->itemMap.GetValues();
-	i = itemList->GetCount();
+	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(itemList->GetItem(i));
+		FreeItem(this->itemMap.GetItem(i));
 	}
 }
 
@@ -95,9 +95,7 @@ UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 
 UOSInt Net::SNS::SNSTwitter::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
-	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(this->itemMap.GetValues());
-	return itemList->GetCount() - initCnt;
+	return itemList->AddAll(&this->itemMap);
 }
 
 UTF8Char *Net::SNS::SNSTwitter::GetItemShortId(UTF8Char *buff, SNSItem *item)
@@ -120,7 +118,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	idList.AddAll(this->itemMap.GetKeys());
+	this->itemMap.AddKeysTo(&idList);
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();

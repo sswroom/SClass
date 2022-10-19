@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_VAMS_VAMSBTLIST
 #define _SM_SSWR_VAMS_VAMSBTLIST
+#include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
-#include "Data/Int32Map.h"
 #include "Sync/Mutex.h"
 
 namespace SSWR
@@ -21,8 +21,8 @@ namespace SSWR
 			};
 		private:
 			Sync::Mutex mut;
-			Data::Int32Map<Data::FastStringMap<AvlBleItem*>*> itemMap;
-			Data::Int32Map<Int64> kaMap;
+			Data::FastMap<Int32, Data::FastStringMap<AvlBleItem*>*> itemMap;
+			Data::FastMap<Int32, Int64> kaMap;
 
 		public:
 			VAMSBTList();

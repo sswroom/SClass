@@ -1,6 +1,6 @@
 #ifndef _SM_IO_MODBUSCONTROLLER
 #define _SM_IO_MODBUSCONTROLLER
-#include "Data/Int32Map.h"
+#include "Data/FastMap.h"
 #include "IO/MODBUSMaster.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -29,7 +29,7 @@ namespace IO
 		UInt8 reqFuncCode;
 		UOSInt reqResultSize;
 		Bool reqHasResult;
-		Data::Int32Map<UInt8> devMap;
+		Data::FastMap<UInt8, UInt8> devMap;
 
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
