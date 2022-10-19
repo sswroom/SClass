@@ -18,7 +18,7 @@ namespace Map
 			OnRequest
 		};
 	private:
-		typedef struct
+		struct LinkInfo
 		{
 			Text::String *layerName;
 			Text::String *url;
@@ -29,7 +29,7 @@ namespace Map
 			Map::DrawLayerType innerLayerType;
 			Data::Timestamp lastUpdated;
 			void *sess;
-		} LinkInfo;
+		};
 	private:
 		Net::WebBrowser *browser;
 		Parser::ParserList *parsers;
@@ -46,8 +46,18 @@ namespace Map
 		Math::Size2D<Double> dispSize;
 		Double dispDPI;
 		Math::RectAreaDbl dispRect;
+		Int64 dispTime;
+
+		Bool hasBounds;
+		Math::RectAreaDbl bounds;
+
+		Sync::Event ctrlEvt;
+		Bool ctrlRunning;
+		Bool ctrlToStop;
 
 		static void __stdcall InnerUpdated(void *userObj);
+		static UInt32 __stdcall ControlThread(void *userObj);
+		void CheckLinks(Bool manualRequest);
 		void LoadLink(LinkInfo *link);
 	public:
 		NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
@@ -86,7 +96,8 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		void AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds);
+		UOSInt AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds);
+		void SetBounds(Math::RectAreaDbl bounds);
 		void Reload();
 	};
 }

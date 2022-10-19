@@ -525,6 +525,7 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *
 		Map::IMapDrawLayer *layer;
 		UOSInt i;
 		UOSInt j;
+		UOSInt k;
 		Data::ArrayList<Map::IMapDrawLayer*> layers;
 		i = 0;
 		j = layerColl->GetCount();
@@ -542,6 +543,11 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *
 		while (i < j)
 		{
 			layer = layers.GetItem(i);
+			k = layerColl->GetUpdatedHandlerCnt();
+			while (k-- > 0)
+			{
+				layer->AddUpdatedHandler(layerColl->GetUpdatedHandler(k), layerColl->GetUpdatedObject(k));
+			}
 			this->AddLayer(grp, layer, needRelease);
 			i++;
 		}

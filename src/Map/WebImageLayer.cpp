@@ -12,6 +12,11 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 Map::WebImageLayer::ImageStat::~ImageStat()
 {
 
@@ -85,6 +90,9 @@ Map::WebImageLayer::ImageStat *Map::WebImageLayer::GetImageStat(Int32 id)
 
 void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 {
+#if defined(VERBOSE)
+	printf("WebImageLayer: loading %s\r\n", stat->url->v);
+#endif
 	stat->data = this->browser->GetData(stat->url->ToCString(), false, 0);
 	if (stat->data == 0)
 	{

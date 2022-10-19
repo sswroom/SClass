@@ -143,13 +143,15 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 				
 					while (reader->ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+						nodeType = reader->GetNodeType();
+						if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+						else if (nodeType == Text::XMLNode::NodeType::Element)
 						{
-							if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
+							nodeName = reader->GetNodeText();
+							if (nodeName->EqualsICase(UTF8STRC("NAME")))
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
@@ -157,29 +159,149 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 								SDEL_STRING(layerName);
 								layerName = Text::String::New(sb.ToCString());
 							}
-							else if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINK")))
+							else if (nodeName->Equals(UTF8STRC("Link")))
 							{
 								while (reader->ReadNext())
 								{
-									if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
+									nodeType = reader->GetNodeType();
+									if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 									{
 										break;
 									}
-									else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
+									else if (nodeType == Text::XMLNode::NodeType::Element)
 									{
-										if (reader->GetNodeText()->EqualsICase(UTF8STRC("HREF")))
+										nodeName = reader->GetNodeText();
+										if (nodeName->Equals(UTF8STRC("href")))
 										{
 											sb.ClearStr();
 											reader->ReadNodeText(&sb);
 											SDEL_STRING(url);
 											url = Text::String::New(sb.ToCString());
 										}
-										else if (reader->GetNodeText()->EqualsICase(UTF8STRC("REFRESHINTERVAL")))
+										else if (nodeName->Equals(UTF8STRC("refreshInterval")))
 										{
 											sb.ClearStr();
 											reader->ReadNodeText(&sb);
 											interval = sb.ToInt32();
 											mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
+										}
+										else if (nodeName->Equals(UTF8STRC("refreshMode")))
+										{
+											sb.ClearStr();
+											reader->ReadNodeText(&sb);
+											if (sb.Equals(UTF8STRC("onInterval")))
+											{
+												mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
+											}
+											else if (sb.Equals(UTF8STRC("onChange")))
+											{
+											}
+											else if (sb.Equals(UTF8STRC("onExpire")))
+											{
+											}
+										}
+										else if (nodeName->EqualsICase(UTF8STRC("viewRefreshMode")))
+										{
+											sb.ClearStr();
+											reader->ReadNodeText(&sb);
+											if (sb.Equals(UTF8STRC("never")))
+											{
+											}
+											else if (sb.Equals(UTF8STRC("onStop")))
+											{
+												mode = Map::NetworkLinkLayer::RefreshMode::OnStop;
+											}
+											else if (sb.Equals(UTF8STRC("onRequest")))
+											{
+												mode = Map::NetworkLinkLayer::RefreshMode::OnRequest;
+											}
+											else if (sb.Equals(UTF8STRC("onRegion")))
+											{
+
+											}
+										}
+										else if (nodeName->Equals(UTF8STRC("viewRefreshTime")))
+										{
+											sb.ClearStr();
+											reader->ReadNodeText(&sb);
+											interval = sb.ToInt32();
+											mode = Map::NetworkLinkLayer::RefreshMode::OnStop;
+										}
+										else if (nodeName->Equals(UTF8STRC("viewFormat")))
+										{
+											sb.ClearStr();
+											reader->ReadNodeText(&sb);
+											sb.TrimWSCRLF();
+											SDEL_STRING(viewFormat);
+											viewFormat = Text::String::New(sb.ToCString());
+										}
+										else
+										{
+											reader->SkipElement();
+										}
+										
+									}
+								}
+							}
+							else if (nodeName->Equals(UTF8STRC("Region")))
+							{
+								while (reader->ReadNext())
+								{
+									nodeType = reader->GetNodeType();
+									if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+									{
+										break;
+									}
+									else if (nodeType == Text::XMLNode::NodeType::Element)
+									{
+										nodeName = reader->GetNodeText();
+										if (nodeName->Equals(UTF8STRC("LatLonBox")))
+										{
+											Double north = 0;
+											Double south = 0;
+											Double east = 0;
+											Double west = 0;
+											while (reader->ReadNext())
+											{
+												nodeType = reader->GetNodeType();
+												if (nodeType == Text::XMLNode::NodeType::ElementEnd)
+												{
+													break;
+												}
+												else if (nodeType == Text::XMLNode::NodeType::Element)
+												{
+													nodeName = reader->GetNodeText();
+													if (nodeName->Equals(UTF8STRC("north")))
+													{
+														sb.ClearStr();
+														reader->ReadNodeText(&sb);
+														north = sb.ToDouble();
+													}
+													else if (nodeName->Equals(UTF8STRC("south")))
+													{
+														sb.ClearStr();
+														reader->ReadNodeText(&sb);
+														south = sb.ToDouble();
+													}
+													else if (nodeName->Equals(UTF8STRC("east")))
+													{
+														sb.ClearStr();
+														reader->ReadNodeText(&sb);
+														east = sb.ToDouble();
+													}
+													else if (nodeName->Equals(UTF8STRC("west")))
+													{
+														sb.ClearStr();
+														reader->ReadNodeText(&sb);
+														west = sb.ToDouble();
+													}
+													else
+													{
+														reader->SkipElement();
+													}
+												}
+											}
+											lyr->SetBounds(Math::RectAreaDbl(Math::Coord2DDbl(west, south), Math::Coord2DDbl(east, north)));
 										}
 										else
 										{
@@ -202,6 +324,7 @@ Map::IMapDrawLayer *Map::KMLXML::ParseKMLContainer(Text::XMLReader *reader, Data
 					}
 
 					SDEL_STRING(layerName);
+					SDEL_STRING(viewFormat);
 					SDEL_STRING(url);
 					layers.Add(lyr);
 				}

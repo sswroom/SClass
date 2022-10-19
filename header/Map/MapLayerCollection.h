@@ -57,6 +57,9 @@ namespace Map
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		void ReleaseAll();
+		UOSInt GetUpdatedHandlerCnt() const;
+		UpdatedHandler GetUpdatedHandler(UOSInt index) const;
+		void *GetUpdatedObject(UOSInt index) const;
 	};
 }
 #endif

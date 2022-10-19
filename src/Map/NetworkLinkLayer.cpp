@@ -7,6 +7,11 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 void __stdcall Map::NetworkLinkLayer::InnerUpdated(void *userObj)
 {
 	Map::NetworkLinkLayer *me = (Map::NetworkLinkLayer*)userObj;
@@ -19,12 +24,99 @@ void __stdcall Map::NetworkLinkLayer::InnerUpdated(void *userObj)
 	}
 }
 
+UInt32 __stdcall Map::NetworkLinkLayer::ControlThread(void *userObj)
+{
+	Map::NetworkLinkLayer *me = (Map::NetworkLinkLayer*)userObj;
+	me->ctrlRunning = true;
+	while (!me->ctrlToStop)
+	{
+		me->CheckLinks(false);
+		me->ctrlEvt.Wait(1000);
+	}
+	me->ctrlRunning = false;
+	return 0;
+}
+
+void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
+{
+	UOSInt i;
+	Data::Timestamp currTime = Data::Timestamp::UtcNow();
+	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
+	i = this->links.GetCount();
+	mutUsage.EndUse();
+	while (i-- > 0)
+	{
+		LinkInfo *link;
+		mutUsage.BeginUse(false);
+		link = this->links.GetItem(i);
+		mutUsage.EndUse();
+
+		if (link->lastUpdated.ticks == 0)
+		{
+			this->LoadLink(link);
+		}
+		else
+		{
+			switch (link->mode)
+			{
+			case RefreshMode::OnRequest:
+				if (manualRequest)
+				{
+					this->LoadLink(link);
+				}
+				break;
+			case RefreshMode::OnInterval:
+				if (link->reloadInterval != 0 && currTime.DiffMS(link->lastUpdated) >= link->reloadInterval * 1000)
+				{
+					this->LoadLink(link);
+				}
+				break;
+			case RefreshMode::OnStop:
+				if (this->dispTime > link->lastUpdated.ticks && (currTime.ticks - this->dispTime) >= link->reloadInterval * 1000)
+				{
+					this->LoadLink(link);
+				}
+				break;
+			}
+		}
+	}
+}
+
 void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 {
 	IO::IStreamData *data = 0;
-	if (link->innerLayer == 0 || link->reloadInterval != 0)
+	if (link->viewFormat == 0)
 	{
-		data = this->browser->GetData(link->url->ToCString(), link->reloadInterval != 0, 0);
+#if defined(VERBOSE)
+		printf("NetworkLnkLayer: Loading URL: %s\r\n", link->url->v);
+#endif
+		data = this->browser->GetData(link->url->ToCString(), true, 0);
+	}
+	else
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		Text::StringBuilderUTF8 sb;
+		sb.Append(link->url);
+		sb.AppendUTF8Char('?');
+		sb.Append(link->viewFormat);
+		Sync::MutexUsage dispMutUsage(&this->dispMut);
+		sptr = Text::StrDouble(sbuff, this->dispRect.tl.x);
+		sb.ReplaceStr(UTF8STRC("[bboxWest]"), sbuff, (UOSInt)(sptr - sbuff));
+		sptr = Text::StrDouble(sbuff, this->dispRect.tl.y);
+		sb.ReplaceStr(UTF8STRC("[bboxSouth]"), sbuff, (UOSInt)(sptr - sbuff));
+		sptr = Text::StrDouble(sbuff, this->dispRect.br.x);
+		sb.ReplaceStr(UTF8STRC("[bboxEast]"), sbuff, (UOSInt)(sptr - sbuff));
+		sptr = Text::StrDouble(sbuff, this->dispRect.br.y);
+		sb.ReplaceStr(UTF8STRC("[bboxNorth]"), sbuff, (UOSInt)(sptr - sbuff));
+		sptr = Text::StrInt32(sbuff, Double2Int32(this->dispSize.width));
+		sb.ReplaceStr(UTF8STRC("[horizPixels]"), sbuff, (UOSInt)(sptr - sbuff));
+		sptr = Text::StrInt32(sbuff, Double2Int32(this->dispSize.height));
+		sb.ReplaceStr(UTF8STRC("[vertPixels]"), sbuff, (UOSInt)(sptr - sbuff));
+#if defined(VERBOSE)
+		printf("NetworkLnkLayer: Loading URL: %s\r\n", sb.ToString());
+#endif
+		data = this->browser->GetData(sb.ToCString(), true, 0);
 	}
 	if (data)
 	{
@@ -32,55 +124,54 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		{
 			Sync::Thread::Sleep(10);
 		}
-		IO::ParserType pt;
-		IO::ParsedObject *pobj = this->parsers->ParseFile(data, &pt);
+#if defined(VERBOSE)
+		printf("NetworkLnkLayer: Data size: %lld\r\n", data->GetDataSize());
+#endif
+		link->lastUpdated = Data::Timestamp::UtcNow();
+		IO::ParsedObject *pobj = this->parsers->ParseFileType(data, IO::ParserType::MapLayer);
 		DEL_CLASS(data);
 		if (pobj)
 		{
-			if (pt == IO::ParserType::MapLayer)
+			UOSInt j;
+			Sync::RWMutexUsage mutUsage(&this->linkMut, true);
+			SDEL_CLASS(link->innerLayer);
+			link->innerLayer = (Map::IMapDrawLayer*)pobj;
+			link->innerLayerType = link->innerLayer->GetLayerType();
+			link->innerLayer->AddUpdatedHandler(InnerUpdated, this);
+			j = this->updHdlrs.GetCount();
+			while (j-- > 0)
 			{
-				UOSInt j;
-				Sync::RWMutexUsage mutUsage(&this->linkMut, true);
-				SDEL_CLASS(link->innerLayer);
-				link->innerLayer = (Map::IMapDrawLayer*)pobj;
-				link->innerLayerType = link->innerLayer->GetLayerType();
-				link->innerLayer->AddUpdatedHandler(InnerUpdated, this);
-				j = this->updHdlrs.GetCount();
-				while (j-- > 0)
+				link->innerLayer->AddUpdatedHandler(this->updHdlrs.GetItem(j), this->updObjs.GetItem(j));
+			}
+			mutUsage.EndUse();
+			if (this->innerLayerType != link->innerLayerType)
+			{
+				if (this->innerLayerType == Map::DRAW_LAYER_UNKNOWN)
 				{
-					link->innerLayer->AddUpdatedHandler(this->updHdlrs.GetItem(j), this->updObjs.GetItem(j));
+					this->innerLayerType = link->innerLayerType;
 				}
-				mutUsage.EndUse();
-				if (this->innerLayerType != link->innerLayerType)
+				else if (link->innerLayerType == Map::DRAW_LAYER_UNKNOWN || link->innerLayerType == this->innerLayerType)
 				{
-					if (this->innerLayerType == Map::DRAW_LAYER_UNKNOWN)
-					{
-						this->innerLayerType = link->innerLayerType;
-					}
-					else if (link->innerLayerType == Map::DRAW_LAYER_UNKNOWN || link->innerLayerType == this->innerLayerType)
-					{
-					}
-					else
-					{
-						this->innerLayerType = Map::DRAW_LAYER_MIXED;
-					}
 				}
+				else
+				{
+					this->innerLayerType = Map::DRAW_LAYER_MIXED;
+				}
+			}
 
-				mutUsage.BeginUse(false);
-				j = this->updHdlrs.GetCount();
-				while (j-- > 0)
-				{
-					this->updHdlrs.GetItem(j)(this->updObjs.GetItem(j));
-				}
-				mutUsage.EndUse();
-			}
-			else
+			mutUsage.BeginUse(false);
+			j = this->updHdlrs.GetCount();
+			while (j-- > 0)
 			{
-				DEL_CLASS(pobj);
+				this->updHdlrs.GetItem(j)(this->updObjs.GetItem(j));
 			}
+			mutUsage.EndUse();
 		}
 	}
-
+	else
+	{
+		link->lastUpdated = Data::Timestamp::UtcNow();
+	}
 }
 
 Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::IMapDrawLayer(fileName, 0, layerName)
@@ -93,10 +184,26 @@ Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserLi
 	this->dispSize = Math::Size2D<Double>(640, 480);
 	this->dispDPI = 96.0;
 	this->dispRect = Math::RectAreaDbl(0, 0, 0, 0);
+	this->dispTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	this->hasBounds = false;
+
+	this->ctrlRunning = false;
+	this->ctrlToStop = false;
+	Sync::Thread::Create(ControlThread, this);
+	while (!this->ctrlRunning)
+	{
+		Sync::Thread::Sleep(10);
+	}
 }
 
 Map::NetworkLinkLayer::~NetworkLinkLayer()
 {
+	this->ctrlToStop = true;
+	this->ctrlEvt.Set();
+	while (this->ctrlRunning)
+	{
+		Sync::Thread::Sleep(10);
+	}
 	UOSInt i;
 	LinkInfo *link;
 	i = this->links.GetCount();
@@ -107,7 +214,7 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 		SDEL_STRING(link->url);
 		SDEL_STRING(link->viewFormat);
 		SDEL_STRING(link->layerName);
-		MemFree(link);
+		DEL_CLASS(link);
 	}
 }
 
@@ -207,6 +314,8 @@ Int64 Map::NetworkLinkLayer::GetTimeEndTS()
 
 Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType()
 {
+	if (this->innerLayerType == Map::DRAW_LAYER_UNKNOWN)
+		return Map::DRAW_LAYER_MIXED;
 	return this->innerLayerType;
 }
 
@@ -249,7 +358,15 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **
 {
 	{
 		Sync::MutexUsage mutUsage(&this->dispMut);
-		this->dispRect = rect.ToDouble() / mapRate;	
+		Math::RectAreaDbl newRect = rect.ToDouble() / mapRate;
+		if (this->dispRect != newRect)
+		{
+			this->dispRect = newRect;
+			this->dispTime = Data::DateTimeUtil::GetCurrTimeMillis();
+#if defined(VERBOSE)
+			printf("NetworkLnkLayer: Update dispRect\r\n");
+#endif
+		}
 	}
 	UOSInt i;
 	UOSInt j;
@@ -288,7 +405,14 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, vo
 {
 	{
 		Sync::MutexUsage mutUsage(&this->dispMut);
-		this->dispRect = rect;	
+		if (this->dispRect != rect)
+		{
+			this->dispRect = rect;
+			this->dispTime = Data::DateTimeUtil::GetCurrTimeMillis();
+#if defined(VERBOSE)
+			printf("NetworkLnkLayer: Update dispRect\r\n");
+#endif
+		}
 	}
 	UOSInt i;
 	UOSInt j;
@@ -401,6 +525,11 @@ UInt32 Map::NetworkLinkLayer::GetCodePage()
 
 Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 {
+	if (this->hasBounds)
+	{
+		*bounds = this->bounds;
+		return true;
+	}
 	Bool isFirst = true;
 	UOSInt i;
 	Math::RectAreaDbl minMax;
@@ -423,8 +552,7 @@ Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 			{
 				if (link->innerLayer->GetBounds(&thisBounds))
 				{
-					minMax.tl = minMax.tl.Min(thisBounds.tl);
-					minMax.br = minMax.br.Max(thisBounds.br);
+					minMax = minMax.MergeArea(thisBounds);
 				}
 			}
 		}
@@ -446,6 +574,9 @@ void Map::NetworkLinkLayer::SetDispSize(Math::Size2D<Double> size, Double dpi)
 	Sync::MutexUsage mutUsage(&this->dispMut);
 	this->dispSize = size;
 	this->dispDPI = dpi;
+#if defined(VERBOSE)
+	printf("NetworkLnkLayer: Update dispSize\r\n");
+#endif
 }
 
 void *Map::NetworkLinkLayer::BeginGetObject()
@@ -609,14 +740,14 @@ void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	}
 }
 
-void Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds)
+UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->GetSourceNameObj());
 	sb.AllocLeng(url.leng);
 	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.v, sb.GetEndPtr(), url));
 	LinkInfo *link;
-	link = MemAlloc(LinkInfo, 1);
+	NEW_CLASS(link, LinkInfo());
 	link->innerLayer = 0;
 	link->innerLayerType = Map::DRAW_LAYER_UNKNOWN;
 	link->url = Text::String::New(sb.ToCString());
@@ -625,24 +756,24 @@ void Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CString url, Text:
 	link->mode = mode;
 	link->reloadInterval = seconds;
 	link->lastUpdated = Data::Timestamp(0, 0);
+	if (mode == RefreshMode::OnStop)
+	{
+		link->lastUpdated = Data::Timestamp::UtcNow();
+	}
 	Sync::RWMutexUsage mutUsage(&this->linkMut, true);
-	this->links.Add(link);
+	UOSInt ret = this->links.Add(link);
 	mutUsage.EndUse();
-	this->Reload();
+	this->ctrlEvt.Set();
+	return ret;
+}
+
+void Map::NetworkLinkLayer::SetBounds(Math::RectAreaDbl bounds)
+{
+	this->bounds = bounds;
+	this->hasBounds = true;
 }
 
 void Map::NetworkLinkLayer::Reload()
 {
-	UOSInt i;
-	Sync::RWMutexUsage mutUsage(&this->linkMut, false);
-	i = this->links.GetCount();
-	mutUsage.EndUse();
-	while (i-- > 0)
-	{
-		LinkInfo *link;
-		mutUsage.BeginUse(false);
-		link = this->links.GetItem(i);
-		mutUsage.EndUse();
-		this->LoadLink(link);
-	}
+	this->CheckLinks(true);
 }

@@ -475,3 +475,18 @@ void Map::MapLayerCollection::ReleaseAll()
 		DEL_CLASS(lyr);
 	}
 }
+
+UOSInt Map::MapLayerCollection::GetUpdatedHandlerCnt() const
+{
+	return this->updHdlrs.GetCount();
+}
+
+Map::IMapDrawLayer::UpdatedHandler Map::MapLayerCollection::GetUpdatedHandler(UOSInt index) const
+{
+	return this->updHdlrs.GetItem(index);
+}
+
+void *Map::MapLayerCollection::GetUpdatedObject(UOSInt index) const
+{
+	return this->updObjs.GetItem(index);
+}

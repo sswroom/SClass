@@ -3100,10 +3100,10 @@ UTF8Char *Text::StrTrimWSCRLFC(UTF8Char* str1, UOSInt len1)
 	}
 	UTF8Char *sptr;
 	UTF8Char c;
-	if (str1[0] == ' ' || str1[0] == '\t' || str1[0] == '\r' || str1[0] == '\n')
+	if (len1 > 0 && (str1[0] == ' ' || str1[0] == '\t' || str1[0] == '\r' || str1[0] == '\n'))
 	{
 		sptr = str1 + 1;
-		while ((c = *sptr) == ' ' || c == '\t' || str1[0] == '\r' || str1[0] == '\n')
+		while ((c = *sptr) == ' ' || c == '\t' || c == '\r' || c == '\n')
 			sptr++;
 		len1 -= (UOSInt)(sptr - str1);
 		MemCopyO(str1, sptr, len1 + 1);

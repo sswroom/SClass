@@ -91,6 +91,11 @@ namespace Math
 			return this->tl == v.tl && this->br == v.br;
 		}
 
+		Bool operator!=(Math::RectAreaDbl v)
+		{
+			return this->tl != v.tl || this->br != v.br;
+		}
+
 		Math::RectAreaDbl operator*(Double v)
 		{
 			return Math::RectAreaDbl(this->tl * v, this->br * v);
@@ -129,23 +134,7 @@ namespace Math
 		
 		Math::RectAreaDbl MergeArea(Math::RectAreaDbl area) const
 		{
-			if (area.tl.x > this->tl.x)
-			{
-				area.tl.x = this->tl.x;
-			}
-			if (area.tl.y > this->tl.y)
-			{
-				area.tl.y = this->tl.y;
-			}
-			if (area.br.x < this->br.x)
-			{
-				area.br.x = this->br.x;
-			}
-			if (area.br.y < this->br.y)
-			{
-				area.br.y = this->br.y;
-			}
-			return area;
+			return Math::RectAreaDbl(this->tl.Min(area.tl), this->br.Max(area.br));
 		}
 
 		static void GetRectArea(RectAreaDbl *area, Coord2DDbl *points, UOSInt nPoints)

@@ -13,6 +13,11 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
 {
 	UTF8Char buff[512];
@@ -104,6 +109,9 @@ IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, U
 	{
 		Net::HTTPData *data;
 		sptr = GetLocalFileName(sbuff, url.v, url.leng);
+#if defined(VERBOSE)
+		printf("WebBrowser: Loading HTTPS: %s\r\n", url.v);
+#endif
 		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
