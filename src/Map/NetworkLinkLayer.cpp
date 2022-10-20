@@ -7,7 +7,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
