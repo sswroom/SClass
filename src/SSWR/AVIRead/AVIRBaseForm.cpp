@@ -18,9 +18,10 @@
 #include "Map/BaseMapLayer.h"
 #include "Map/DrawMapServiceLayer.h"
 #include "Map/TileMapLayer.h"
+#include "Map/ESRI/ESRITileMap.h"
+#include "Map/GoogleMap/GoogleTileMap.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Map/ESRI/ESRITileMap.h"
 #include "Media/ImageList.h"
 #include "Media/MediaFile.h"
 #include "Media/Playlist.h"
@@ -445,7 +446,11 @@ typedef enum
 	MNU_TMS,
 	MNU_BATCH_RENAME,
 	MNU_WMTS,
-	MNU_WMS
+	MNU_WMS,
+	MNU_GOOGLE_TILE_MAP,
+	MNU_GOOGLE_TILE_TRAIN,
+	MNU_GOOGLE_TILE_SATELITE,
+	MNU_GOOGLE_TILE_HYBRID
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -772,6 +777,11 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Tile Map Service"), MNU_TMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Service"), MNU_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Google Tile Map"));
+	mnu2->AddItem(CSTR("Map"), MNU_GOOGLE_TILE_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Map"), MNU_GOOGLE_TILE_TRAIN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Map"), MNU_GOOGLE_TILE_SATELITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Map"), MNU_GOOGLE_TILE_HYBRID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Coord Converter"), MNU_COORD_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Coordinate System Info"), MNU_COORD_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2567,6 +2577,18 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				this->core->OpenObject(layer);
 			}
 		}
+		break;
+	case MNU_GOOGLE_TILE_MAP:
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_MAP, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		break;
+	case MNU_GOOGLE_TILE_TRAIN:
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_TRAIN, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		break;
+	case MNU_GOOGLE_TILE_SATELITE:
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_SATELITE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		break;
+	case MNU_GOOGLE_TILE_HYBRID:
+		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_HYBRID, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
 		break;
 	}
 }

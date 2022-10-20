@@ -2,6 +2,7 @@
 #include "IO/Path.h"
 #include "Map/BaseMapLayer.h"
 #include "Map/TileMapLayer.h"
+#include "Map/GoogleMap/GoogleTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
 
 UOSInt Map::BaseMapLayer::GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes)
@@ -15,6 +16,10 @@ UOSInt Map::BaseMapLayer::GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTyp
 	layerTypes->Add(BLT_OSM_TRANSP_DARK);
 	layerTypes->Add(BLT_OSM_SPINAL);
 	layerTypes->Add(BLT_OSM_MAPQUEST);
+	layerTypes->Add(BLT_GMAP_MAP);
+	layerTypes->Add(BLT_GMAP_TRAIN);
+	layerTypes->Add(BLT_GMAP_HYBRID);
+	layerTypes->Add(BLT_GMAP_SATELITE);
 	return layerTypes->GetCount() - initCnt;
 }
 
@@ -38,6 +43,14 @@ Text::CString Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 		return CSTR("Spinal Map");
 	case BLT_OSM_MAPQUEST:
 		return CSTR("MapQuest");
+	case BLT_GMAP_MAP:
+		return CSTR("Google Map");
+	case BLT_GMAP_TRAIN:
+		return CSTR("Google Map Terrain");
+	case BLT_GMAP_HYBRID:
+		return CSTR("Google Map Hybrid");
+	case BLT_GMAP_SATELITE:
+		return CSTR("Google Map Satelite");
 	default:
 		return CSTR("Unknown");
 	}
@@ -114,6 +127,30 @@ Map::IMapDrawLayer *Map::BaseMapLayer::CreateLayer(BaseLayerType blt, Net::Socke
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
+		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
+		return lyr;
+	case BLT_GMAP_MAP:
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMap"));
+		NEW_CLASS(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_MAP, sockf, ssl));
+		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
+		return lyr;
+	case BLT_GMAP_TRAIN:
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMapTrain"));
+		NEW_CLASS(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_TRAIN, sockf, ssl));
+		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
+		return lyr;
+	case BLT_GMAP_HYBRID:
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMapHybrid"));
+		NEW_CLASS(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_HYBRID, sockf, ssl));
+		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
+		return lyr;
+	case BLT_GMAP_SATELITE:
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMapSatelite"));
+		NEW_CLASS(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_SATELITE, sockf, ssl));
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	default:

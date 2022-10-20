@@ -2056,6 +2056,8 @@ Map/MapView.h: ../../src/Map/MapView.cpp
 @MapView.o
 Map/MercatorMapView.h: ../../src/Map/MercatorMapView.cpp
 @MercatorMapView.o
+Map/MercatorTileMap.h: ../../src/Map/MercatorTileMap.cpp
+@MercatorTileMap.o
 Map/NetworkLinkLayer.h: ../../src/Map/NetworkLinkLayer.cpp
 @NetworkLinkLayer.o
 Map/OruxDBLayer.h: ../../src/Map/OruxDBLayer.cpp
@@ -2118,6 +2120,8 @@ Map/GoogleMap/GoogleSearcher.h: ../../src/Map/GoogleMap/GoogleSearcher.cpp
 @GoogleSearcher.o
 Map/GoogleMap/GoogleStaticMap.h: ../../src/Map/GoogleMap/GoogleStaticMap.cpp
 @GoogleStaticMap.o
+Map/GoogleMap/GoogleTileMap.h: ../../src/Map/GoogleMap/GoogleTileMap.cpp
+@GoogleTileMap.o
 Map/GoogleMap/GoogleWSSearcherJSON.h: ../../src/Map/GoogleMap/GoogleWSSearcherJSON.cpp
 @GoogleWSSearcherJSON.o
 Map/OSM/OSMCacheHandler.h: ../../src/Map/OSM/OSMCacheHandler.cpp
@@ -4704,6 +4708,7 @@ MapSearchManager.o: ../../src/Map/MapSearchManager.cpp
 MapServerHandler.o: ../../src/Map/MapServerHandler.cpp
 MapView.o: ../../src/Map/MapView.cpp
 MercatorMapView.o: ../../src/Map/MercatorMapView.cpp
+MercatorTileMap.o: ../../src/Map/MercatorTileMap.cpp
 NetworkLinkLayer.o: ../../src/Map/NetworkLinkLayer.cpp
 OruxDBLayer.o: ../../src/Map/OruxDBLayer.cpp
 OWSFeatureParser.o: ../../src/Map/OWSFeatureParser.cpp
@@ -4733,6 +4738,7 @@ FileGDBUtil.o: ../../src/Map/ESRI/FileGDBUtil.cpp
 GoogleMapsUtil.o: ../../src/Map/GoogleMap/GoogleMapsUtil.cpp
 GoogleSearcher.o: ../../src/Map/GoogleMap/GoogleSearcher.cpp
 GoogleStaticMap.o: ../../src/Map/GoogleMap/GoogleStaticMap.cpp
+GoogleTileMap.o: ../../src/Map/GoogleMap/GoogleTileMap.cpp
 GoogleWSSearcherJSON.o: ../../src/Map/GoogleMap/GoogleWSSearcherJSON.cpp
 OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp

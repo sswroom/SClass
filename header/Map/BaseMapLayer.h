@@ -21,7 +21,11 @@ namespace Map
 			BLT_OSM_OUTDOORS,
 			BLT_OSM_TRANSP_DARK,
 			BLT_OSM_SPINAL,
-			BLT_OSM_MAPQUEST
+			BLT_OSM_MAPQUEST,
+			BLT_GMAP_MAP,
+			BLT_GMAP_TRAIN,
+			BLT_GMAP_HYBRID,
+			BLT_GMAP_SATELITE
 		} BaseLayerType;
 	public:
 		static UOSInt GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes);
