@@ -44,6 +44,7 @@
 #include "SSWR/AVIRead/AVIRBatchRenameForm.h"
 #include "SSWR/AVIRead/AVIRBCryptForm.h"
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
+#include "SSWR/AVIRead/AVIRBingMapsForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothForm.h"
 #include "SSWR/AVIRead/AVIRBluetoothLEForm.h"
@@ -160,6 +161,7 @@
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "SSWR/AVIRead/AVIRProxyServerForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
+#include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 #include "SSWR/AVIRead/AVIRRESTfulForm.h"
 #include "SSWR/AVIRead/AVIRRSSReaderForm.h"
 #include "SSWR/AVIRead/AVIRSDCardForm.h"
@@ -450,7 +452,9 @@ typedef enum
 	MNU_WMTS,
 	MNU_WMS,
 	MNU_GOOGLE_TILE,
-	MNU_CUSTOM_TILE
+	MNU_CUSTOM_TILE,
+	MNU_REGIONAL_MAP,
+	MNU_BING_MAPS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -778,6 +782,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Web Map Tile Service"), MNU_WMTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Map Service"), MNU_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Custom Tile Map"), MNU_CUSTOM_TILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Regional Map Source"), MNU_REGIONAL_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Bing Maps"), MNU_BING_MAPS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Google Tile Map"), MNU_GOOGLE_TILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Coord Converter"), MNU_COORD_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2587,6 +2593,27 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CUSTOM_TILE:
 		{
 			SSWR::AVIRead::AVIRCustomTileMapForm frm(0, this->ui, this->core, this->ssl);
+			if (frm.ShowDialog(this))
+			{
+				Map::TileMap *tile = frm.GetTileMap();
+				Map::TileMapLayer *layer;
+				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+				this->core->OpenObject(layer);
+			}
+		}
+		break;
+	case MNU_REGIONAL_MAP:
+		{
+			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl);
+			if (frm.ShowDialog(this))
+			{
+				this->core->OpenObject(frm.GetMapLayer());
+			}
+		}
+		break;
+	case MNU_BING_MAPS:
+		{
+			SSWR::AVIRead::AVIRBingMapsForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
 				Map::TileMap *tile = frm.GetTileMap();

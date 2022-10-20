@@ -32,6 +32,7 @@ namespace Map
 		Net::SSLEngine *ssl;
 		Data::ArrayList<TileLayer*> layers;
 		Math::CoordinateSystem *csys;
+		UOSInt concurrCnt;
 
 		void LoadXML();
 	public:
@@ -54,6 +55,8 @@ namespace Map
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);
 		virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
 		virtual IO::IStreamData *LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it);
+
+		void SetConcurrentCount(UOSInt concurrCnt);
 	};
 }
 #endif

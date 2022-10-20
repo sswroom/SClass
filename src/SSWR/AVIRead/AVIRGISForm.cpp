@@ -40,6 +40,7 @@
 #include "SSWR/AVIRead/AVIRGooglePolylineForm.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
+#include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "SSWR/AVIRead/AVIRTMSForm.h"
 #include "SSWR/AVIRead/AVIRWFSForm.h"
@@ -98,6 +99,7 @@ typedef enum
 	MNU_WMS,
 	MNU_WFS,
 	MNU_ESRI_MAP,
+	MNU_REGIONAL_MAP,
 	MNU_HKO_RADAR_64,
 	MNU_HKO_RADAR_128,
 	MNU_HKO_RADAR_256,
@@ -730,6 +732,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu->AddItem(CSTR("Web Map Service"), MNU_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Web Feature Service"), MNU_WFS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("ESRI MapServer"), MNU_ESRI_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Regional Map Source"), MNU_REGIONAL_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HKO"));
 	UI::GUIMenu *mnu3 = mnu2->AddSubMenu(CSTR("Radar"));
@@ -1544,6 +1547,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					NEW_CLASS(mapLyr, Map::DrawMapServiceLayer(esriMap));
 					this->AddLayer(mapLyr);
+				}
+			}
+			break;
+		}
+	case MNU_REGIONAL_MAP:
+		{
+			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl);
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				Map::IMapDrawLayer *layer = frm.GetMapLayer();
+				if (layer)
+				{
+					this->AddLayer(layer);
 				}
 			}
 			break;

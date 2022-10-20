@@ -221,6 +221,7 @@ namespace Text
 		void AddArrayValue(Text::JSONBase *val);
 		JSONBase *GetArrayValue(UOSInt index);
 		Double GetArrayDouble(UOSInt index);
+		Text::String *GetArrayString(UOSInt index);
 		UOSInt GetArrayLength();
 		void RemoveArrayItem(UOSInt index);
 	};

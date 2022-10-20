@@ -1992,6 +1992,8 @@ Map/AssistedReverseGeocoderPL.h: ../../src/Map/AssistedReverseGeocoderPL.cpp
 @AssistedReverseGeocoderPL.o
 Map/BaseMapLayer.h: ../../src/Map/BaseMapLayer.cpp
 @BaseMapLayer.o
+Map/BingMapsTile.h: ../../src/Map/BingMapsTile.cpp
+@BingMapsTile.o
 Map/CIPLayer2.h: ../../src/Map/CIPLayer2.cpp
 @CIPLayer2.o
 Map/CSVMapParser.h: ../../src/Map/CSVMapParser.cpp
@@ -2066,6 +2068,8 @@ Map/OruxDBLayer.h: ../../src/Map/OruxDBLayer.cpp
 @OruxDBLayer.o
 Map/OWSFeatureParser.h: ../../src/Map/OWSFeatureParser.cpp
 @OWSFeatureParser.o
+Map/RegionalMapSource.h: ../../src/Map/RegionalMapSource.cpp
+@RegionalMapSource.o
 Map/ReverseGeocoderServer.h: ../../src/Map/ReverseGeocoderServer.cpp
 @ReverseGeocoderServer.o
 Map/RevGeoCfg.h: ../../src/Map/RevGeoCfg.cpp
@@ -3387,6 +3391,8 @@ SSWR/AVIRead/AVIRBCryptForm.h: ../../src/SSWR/AVIRead/AVIRBCryptForm.cpp
 @AVIRBCryptForm.o
 SSWR/AVIRead/AVIRBenchmarkForm.h: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
 @AVIRBenchmarkForm.o
+SSWR/AVIRead/AVIRBingMapsForm.h: ../../src/SSWR/AVIRead/AVIRBingMapsForm.cpp
+@AVIRBingMapsForm.o
 SSWR/AVIRead/AVIRBluetoothCtlForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
 @AVIRBluetoothCtlForm.o
 SSWR/AVIRead/AVIRBluetoothForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
@@ -3729,6 +3735,8 @@ SSWR/AVIRead/AVIRProxyServerForm.h: ../../src/SSWR/AVIRead/AVIRProxyServerForm.c
 @AVIRProxyServerForm.o
 SSWR/AVIRead/AVIRRAWMonitorForm.h: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
 @AVIRRAWMonitorForm.o
+SSWR/AVIRead/AVIRRegionalMapForm.h: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
+@AVIRRegionalMapForm.o
 SSWR/AVIRead/AVIRRESTfulForm.h: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
 @AVIRRESTfulForm.o
 SSWR/AVIRead/AVIRRSSItemForm.h: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
@@ -4685,6 +4693,7 @@ OSInfo.o: ../../src/Manage/OSInfo.cpp
 AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
 AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
+BingMapsTile.o: ../../src/Map/BingMapsTile.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
 CustomTileMap.o: ../../src/Map/CustomTileMap.cpp
@@ -4719,6 +4728,7 @@ MercatorTileMap.o: ../../src/Map/MercatorTileMap.cpp
 NetworkLinkLayer.o: ../../src/Map/NetworkLinkLayer.cpp
 OruxDBLayer.o: ../../src/Map/OruxDBLayer.cpp
 OWSFeatureParser.o: ../../src/Map/OWSFeatureParser.cpp
+RegionalMapSource.o: ../../src/Map/RegionalMapSource.cpp
 RevGeoCfg.o: ../../src/Map/RevGeoCfg.cpp
 RevGeoDir.o: ../../src/Map/RevGeoDir.cpp
 ReverseGeocoderServer.o: ../../src/Map/ReverseGeocoderServer.cpp
@@ -5331,6 +5341,7 @@ AVIRBaseForm.o: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
 AVIRBatchRenameForm.o: ../../src/SSWR/AVIRead/AVIRBatchRenameForm.cpp
 AVIRBCryptForm.o: ../../src/SSWR/AVIRead/AVIRBCryptForm.cpp
 AVIRBenchmarkForm.o: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
+AVIRBingMapsForm.o: ../../src/SSWR/AVIRead/AVIRBingMapsForm.cpp
 AVIRBluetoothCtlForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
 AVIRBluetoothForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
 AVIRBluetoothLEForm.o: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
@@ -5502,6 +5513,7 @@ AVIRProfiledResizerForm.o: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
 AVIRProtoDecForm.o: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
 AVIRProxyServerForm.o: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp
 AVIRRAWMonitorForm.o: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
+AVIRRegionalMapForm.o: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
 AVIRRESTfulForm.o: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
 AVIRRSSItemForm.o: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
 AVIRRSSReaderForm.o: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp

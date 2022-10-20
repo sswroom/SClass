@@ -459,9 +459,9 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		while (ui-- > 0)
 		{
 			sptr = pf->GetItemName(sbuff, ui);
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("doc.kml")) && pf->GetItemType(ui) == IO::PackageFile::POT_STREAMDATA)
+			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::POT_STREAMDATA)
 			{
-				IO::IStreamData *stmData = pf->GetItemStmData((UOSInt)0);
+				IO::IStreamData *stmData = pf->GetItemStmData(ui);
 				Parser::FileParser::XMLParser xmlParser;
 				xmlParser.SetParserList(this->parsers);
 				xmlParser.SetEncFactory(this->encFact);

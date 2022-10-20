@@ -1016,7 +1016,6 @@ UTF8Char *Map::WebMapTileServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt leve
 
 IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
-	UOSInt readSize;
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1113,49 +1112,34 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
-	if (cli->GetRespStatus() == 304)
+	Net::WebStatus::StatusCode status = cli->GetRespStatus();
+	if (status == 304)
 	{
 		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
 		fs.SetFileTimes(&dt, 0, 0);
 	}
-	else
+	else if (status >= 200 && status < 300)
 	{
-		UInt64 contLeng = cli->GetContentLength();
-		UOSInt currPos = 0;
-		UInt8 *imgBuff;
-		if (contLeng > 0 && contLeng <= 10485760)
+		IO::MemoryStream mstm(UTF8STRC("Map.WebMapTileServiceSource.LoadTileImageData.mstm"));
+		if (cli->ReadAllContent(&mstm, 16384, 10485760))
 		{
-			imgBuff = MemAlloc(UInt8, (UOSInt)contLeng);
-			while ((readSize = cli->Read(&imgBuff[currPos], (UOSInt)contLeng - currPos)) > 0)
+			if (this->cacheDir)
 			{
-				currPos += readSize;
-				if (currPos >= contLeng)
+				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				fs.Write(mstm.GetBuff(), mstm.GetLength());
+				if (cli->GetLastModified(&dt))
 				{
-					break;
+					currTime.SetCurrTimeUTC();
+					fs.SetFileTimes(&currTime, 0, &dt);
+				}
+				else
+				{
+					currTime.SetCurrTimeUTC();
+					fs.SetFileTimes(&currTime, 0, 0);
 				}
 			}
-			if (currPos >= contLeng)
-			{
-				if (this->cacheDir)
-				{
-					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					fs.Write(imgBuff, (UOSInt)contLeng);
-					if (cli->GetLastModified(&dt))
-					{
-						currTime.SetCurrTimeUTC();
-						fs.SetFileTimes(&currTime, 0, &dt);
-					}
-					else
-					{
-						currTime.SetCurrTimeUTC();
-						fs.SetFileTimes(&currTime, 0, 0);
-					}
-				}
-			}
-			MemFree(imgBuff);
 		}
-
 	}
 	DEL_CLASS(cli);
 

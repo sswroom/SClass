@@ -27,7 +27,8 @@ namespace Map
 			TT_GOOGLE,
 			TT_TMS,
 			TT_WMTS,
-			TT_CUSTOM
+			TT_CUSTOM,
+			TT_BING
 		} TileType;
 	public:
 		virtual ~TileMap() {};

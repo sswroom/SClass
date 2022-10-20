@@ -54,6 +54,11 @@ IO::MemoryStream::~MemoryStream()
 	Text::StrDelNew(this->dbg);
 }
 
+UInt8 *IO::MemoryStream::GetBuff()
+{
+	return this->memPtr;
+}
+
 UInt8 *IO::MemoryStream::GetBuff(UOSInt *buffSize)
 {
 	*buffSize = currSize;

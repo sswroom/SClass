@@ -108,24 +108,26 @@ UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 
 UTF8Char *Net::HTTPClient::GetRespHeader(Text::CString name, UTF8Char *valueBuff)
 {
-	UTF8Char buff[256];
-	UTF8Char *s2;
-	Text::String *s;
-	UOSInt i;
-	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
-	i = this->headers.GetCount();
-	while (i-- > 0)
+	Text::CString v = GetRespHeader(name);
+	if (v.v)
 	{
-		s = this->headers.GetItem(i);
-		if (s->StartsWith(buff, (UOSInt)(s2 - buff)))
-		{
-			return Text::StrConcatC(valueBuff, &s->v[s2 - buff], s->leng - (UOSInt)(s2 - buff));
-		}
+		return v.ConcatTo(valueBuff);
 	}
 	return 0;
 }
 
 Bool Net::HTTPClient::GetRespHeader(Text::CString name, Text::StringBuilderUTF8 *sb)
+{
+	Text::CString v = GetRespHeader(name);
+	if (v.v)
+	{
+		sb->Append(v);
+		return true;
+	}
+	return false;
+}
+
+Text::CString Net::HTTPClient::GetRespHeader(Text::CString name)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
@@ -138,11 +140,10 @@ Bool Net::HTTPClient::GetRespHeader(Text::CString name, Text::StringBuilderUTF8 
 		s = this->headers.GetItem(i);
 		if (s->StartsWithICase(buff, (UOSInt)(s2 - buff)))
 		{
-			sb->AppendC(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff));
-			return true;
+			return Text::CString(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff));
 		}
 	}
-	return false;
+	return CSTR_NULL;
 }
 
 Text::String *Net::HTTPClient::GetRespHeader(UOSInt index)
@@ -207,6 +208,11 @@ Bool Net::HTTPClient::GetServerDate(Data::DateTime *dt)
 	return false;
 }
 
+Text::CString Net::HTTPClient::GetTransferEncoding()
+{
+	return this->GetRespHeader(CSTR("Transfer-Encoding"));
+}
+
 Text::String *Net::HTTPClient::GetURL()
 {
 	return this->url;
@@ -236,6 +242,50 @@ UInt64 Net::HTTPClient::GetTotalUpload()
 UInt64 Net::HTTPClient::GetTotalDownload()
 {
 	return this->totalDownload;
+}
+
+Bool Net::HTTPClient::ReadAllContent(IO::Stream *outStm, UOSInt buffSize, UInt64 maxSize)
+{
+	UInt64 contLeng = this->GetContentLength();
+	UOSInt currPos = 0;
+	UOSInt readSize;
+	if (contLeng > 0 && contLeng <= maxSize)
+	{
+		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+		while ((readSize = this->Read(readBuff, buffSize)) > 0)
+		{
+			outStm->Write(readBuff, readSize);
+			currPos += readSize;
+			if (currPos >= contLeng)
+			{
+				break;
+			}
+		}
+		MemFree(readBuff);
+		return currPos >= contLeng;
+	}
+	else
+	{
+		Text::CString tranEnc = this->GetTransferEncoding();
+		if (tranEnc.Equals(UTF8STRC("chunked")))
+		{
+			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+			while ((readSize = this->Read(readBuff, buffSize)) > 0)
+			{
+				outStm->Write(readBuff, readSize);
+				currPos += readSize;
+				if (currPos > maxSize)
+				{
+					MemFree(readBuff);
+					return false;
+				}
+			}
+			MemFree(readBuff);
+			return true;
+		}
+		return false;
+	}
+	return false;
 }
 
 const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()

@@ -1386,6 +1386,16 @@ Double Text::JSONArray::GetArrayDouble(UOSInt index)
 	return baseObj->GetAsDouble();
 }
 
+Text::String *Text::JSONArray::GetArrayString(UOSInt index)
+{
+	Text::JSONBase *baseObj = this->arrVals.GetItem(index);
+	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
+	{
+		return 0;
+	}
+	return ((Text::JSONString*)baseObj)->GetValue();
+}
+
 UOSInt Text::JSONArray::GetArrayLength()
 {
 	return this->arrVals.GetCount();

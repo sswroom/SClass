@@ -7,7 +7,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -97,6 +97,13 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		Text::StringBuilderUTF8 sb;
+		Double width = this->dispSize.width;
+		Double height = this->dispSize.height;
+		if (this->dispDPI > 96.0)
+		{
+			width = width * 96.0 / this->dispDPI;
+			height = height * 96.0 / this->dispDPI;
+		}
 		sb.Append(link->url);
 		sb.AppendUTF8Char('?');
 		sb.Append(link->viewFormat);
@@ -109,9 +116,9 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		sb.ReplaceStr(UTF8STRC("[bboxEast]"), sbuff, (UOSInt)(sptr - sbuff));
 		sptr = Text::StrDouble(sbuff, this->dispRect.br.y);
 		sb.ReplaceStr(UTF8STRC("[bboxNorth]"), sbuff, (UOSInt)(sptr - sbuff));
-		sptr = Text::StrInt32(sbuff, Double2Int32(this->dispSize.width));
+		sptr = Text::StrInt32(sbuff, Double2Int32(width));
 		sb.ReplaceStr(UTF8STRC("[horizPixels]"), sbuff, (UOSInt)(sptr - sbuff));
-		sptr = Text::StrInt32(sbuff, Double2Int32(this->dispSize.height));
+		sptr = Text::StrInt32(sbuff, Double2Int32(height));
 		sb.ReplaceStr(UTF8STRC("[vertPixels]"), sbuff, (UOSInt)(sptr - sbuff));
 #if defined(VERBOSE)
 		printf("NetworkLnkLayer: Loading URL: %s\r\n", sb.ToString());

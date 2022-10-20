@@ -18,6 +18,7 @@ namespace IO
 		MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen);
 		virtual ~MemoryStream();
 
+		UInt8 *GetBuff();
 		UInt8 *GetBuff(UOSInt *buffSize);
 
 		virtual Bool IsDown();

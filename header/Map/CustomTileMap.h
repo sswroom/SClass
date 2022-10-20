@@ -10,6 +10,7 @@ namespace Map
 		Text::String *url;
 		Text::String *name;
 		UOSInt concurrCnt;
+		Math::RectAreaDbl bounds;
 
 	public:
 		CustomTileMap(Text::CString url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
@@ -18,7 +19,11 @@ namespace Map
 		virtual Text::CString GetName();
 		virtual TileType GetTileType();
 		virtual UOSInt GetConcurrentCount();
+		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
 		virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
+
+		void SetBounds(Math::RectAreaDbl bounds);
+		void SetName(Text::CString name);
 	};
 }
 #endif

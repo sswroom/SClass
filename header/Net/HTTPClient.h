@@ -62,11 +62,13 @@ namespace Net
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(Text::CString name, UTF8Char *valueBuff);
 		Bool GetRespHeader(Text::CString name, Text::StringBuilderUTF8 *sb);
+		Text::CString GetRespHeader(Text::CString name);
 		Text::String *GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(Data::DateTime *dt);
 		Bool GetServerDate(Data::DateTime *dt);
+		Text::CString GetTransferEncoding();
 
 		Text::String *GetURL();
 		Net::WebStatus::StatusCode GetRespStatus();
@@ -75,6 +77,7 @@ namespace Net
 		UOSInt GetHdrLen();
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
+		Bool ReadAllContent(IO::Stream *outStm, UOSInt buffSize, UInt64 maxSize);
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
