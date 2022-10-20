@@ -16,6 +16,7 @@ Parser::FileParser::ZIPParser::ZIPParser()
 	this->codePage = 65001;
 	this->parsers = 0;
 	this->encFact = 0;
+	this->browser = 0;
 }
 
 Parser::FileParser::ZIPParser::~ZIPParser()
@@ -30,6 +31,11 @@ Int32 Parser::FileParser::ZIPParser::GetName()
 void Parser::FileParser::ZIPParser::SetCodePage(UInt32 codePage)
 {
 	this->codePage = codePage;
+}
+
+void Parser::FileParser::ZIPParser::SetWebBrowser(Net::WebBrowser *browser)
+{
+	this->browser = browser;
 }
 
 void Parser::FileParser::ZIPParser::SetParserList(Parser::ParserList *parsers)
@@ -465,6 +471,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 				Parser::FileParser::XMLParser xmlParser;
 				xmlParser.SetParserList(this->parsers);
 				xmlParser.SetEncFactory(this->encFact);
+				xmlParser.SetWebBrowser(this->browser);
 				IO::ParsedObject *pobj = xmlParser.ParseFile(stmData, pf, IO::ParserType::MapLayer);
 				DEL_CLASS(stmData);
 				if (pobj)

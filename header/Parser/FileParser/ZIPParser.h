@@ -13,12 +13,14 @@ namespace Parser
 			UInt32 codePage;
 			Text::EncodingFactory *encFact;
 			Parser::ParserList *parsers;
+			Net::WebBrowser *browser;
 		public:
 			ZIPParser();
 			virtual ~ZIPParser();
 
 			virtual Int32 GetName();
 			virtual void SetCodePage(UInt32 codePage);
+			virtual void SetWebBrowser(Net::WebBrowser *browser);
 			virtual void SetParserList(Parser::ParserList *parsers);
 			virtual void SetEncFactory(Text::EncodingFactory *encFact);
 			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
