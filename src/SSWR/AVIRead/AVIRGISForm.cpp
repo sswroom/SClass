@@ -1469,7 +1469,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TMS:
 		{
-			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::TileMap *tileMap = frm.GetTileMap();
@@ -1481,7 +1481,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_WMTS:
 		{
-			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::TileMap *tileMap = frm.GetTileMap();
@@ -1493,7 +1493,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();

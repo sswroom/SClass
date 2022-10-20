@@ -31,6 +31,7 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			Map::WebMapTileServiceSource *wmts;
 
 			static void __stdcall OnLoadClicked(void *userObj);
@@ -40,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnResourceTileTypeSelChg(void *userObj);
 			static void __stdcall OnResourceInfoTypeSelChg(void *userObj);
 		public:
-			AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRWMTSForm();
 
 			virtual void OnMonitorChanged();

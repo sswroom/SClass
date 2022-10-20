@@ -1996,6 +1996,8 @@ Map/CIPLayer2.h: ../../src/Map/CIPLayer2.cpp
 @CIPLayer2.o
 Map/CSVMapParser.h: ../../src/Map/CSVMapParser.cpp
 @CSVMapParser.o
+Map/CustomTileMap.h: ../../src/Map/CustomTileMap.cpp
+@CustomTileMap.o
 Map/DBMapLayer.h: ../../src/Map/DBMapLayer.cpp
 @DBMapLayer.o
 Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
@@ -3441,6 +3443,8 @@ SSWR/AVIRead/AVIRCppEnumForm.h: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 @AVIRCppEnumForm.o
 SSWR/AVIRead/AVIRCPUInfoForm.h: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 @AVIRCPUInfoForm.o
+SSWR/AVIRead/AVIRCustomTileMapForm.h: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
+@AVIRCustomTileMapForm.o
 SSWR/AVIRead/AVIRDBCopyTablesForm.h: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 @AVIRDBCopyTablesForm.o
 SSWR/AVIRead/AVIRDBForm.h: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
@@ -3543,6 +3547,8 @@ SSWR/AVIRead/AVIRGLBViewerForm.h: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp
 @AVIRGLBViewerForm.o
 SSWR/AVIRead/AVIRGooglePolylineForm.h: ../../src/SSWR/AVIRead/AVIRGooglePolylineForm.cpp
 @AVIRGooglePolylineForm.o
+SSWR/AVIRead/AVIRGoogleTileMapForm.h: ../../src/SSWR/AVIRead/AVIRGoogleTileMapForm.cpp
+@AVIRGoogleTileMapForm.o
 SSWR/AVIRead/AVIRGPIOStatusForm.h: ../../src/SSWR/AVIRead/AVIRGPIOStatusForm.cpp
 @AVIRGPIOStatusForm.o
 SSWR/AVIRead/AVIRGPSDevForm.h: ../../src/SSWR/AVIRead/AVIRGPSDevForm.cpp
@@ -4681,6 +4687,7 @@ AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
+CustomTileMap.o: ../../src/Map/CustomTileMap.cpp
 DBMapLayer.o: ../../src/Map/DBMapLayer.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
@@ -5352,6 +5359,7 @@ AVIRCore.o: ../../src/SSWR/AVIRead/AVIRCore.cpp
 AVIRCOVID19Form.o: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
 AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 AVIRCPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
+AVIRCustomTileMapForm.o: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
 AVIRDBCopyTablesForm.o: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 AVIRDBForm.o: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
 AVIRDBManagerForm.o: ../../src/SSWR/AVIRead/AVIRDBManagerForm.cpp
@@ -5403,6 +5411,7 @@ AVIRGISSearchForm.o: ../../src/SSWR/AVIRead/AVIRGISSearchForm.cpp
 AVIRGISTileDownloadForm.o: ../../src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
 AVIRGLBViewerForm.o: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp
 AVIRGooglePolylineForm.o: ../../src/SSWR/AVIRead/AVIRGooglePolylineForm.cpp
+AVIRGoogleTileMapForm.o: ../../src/SSWR/AVIRead/AVIRGoogleTileMapForm.cpp
 AVIRGPIOStatusForm.o: ../../src/SSWR/AVIRead/AVIRGPIOStatusForm.cpp
 AVIRGPSDevForm.o: ../../src/SSWR/AVIRead/AVIRGPSDevForm.cpp
 AVIRGPSSimulatorForm.o: ../../src/SSWR/AVIRead/AVIRGPSSimulatorForm.cpp

@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWMSURL->GetText(&sb);
 	SDEL_CLASS(me->wms);
-	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetSocketFactory(), 0, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)(OSInt)me->cboWMSVersion->GetSelectedItem()));
+	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)(OSInt)me->cboWMSVersion->GetSelectedItem()));
 	if (me->wms->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
@@ -118,9 +118,10 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnInfoTypeSelChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
+	this->ssl = ssl;
 	this->wms = 0;
 	this->SetText(CSTR("Web Map Service"));
 	this->SetFont(0, 0, 8.25, false);

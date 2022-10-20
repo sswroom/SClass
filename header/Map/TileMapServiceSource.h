@@ -29,12 +29,13 @@ namespace Map
 		Text::String *title;
 		Text::String *cacheDir;
 		Net::SocketFactory *sockf;
+		Net::SSLEngine *ssl;
 		Data::ArrayList<TileLayer*> layers;
 		Math::CoordinateSystem *csys;
 
 		void LoadXML();
 	public:
-		TileMapServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString tmsURL);
+		TileMapServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();
 
 		virtual Text::CString GetName();

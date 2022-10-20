@@ -9,7 +9,7 @@
 #include "Net/HTTPClient.h"
 #include "Text/XMLReader.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -197,18 +197,20 @@ void Map::TileMapServiceSource::LoadXML()
 							}
 							else if (attr->name->Equals(UTF8STRC("extension")))
 							{
-								SDEL_STRING(this->tileExt);
-								this->tileExt = attr->value->Clone();
-								if (this->tileExt->Equals(UTF8STRC("jpg")))
+								if (attr->value->Equals(UTF8STRC("jpg")))
 								{
+									SDEL_STRING(this->tileExt);
+									this->tileExt = attr->value->Clone();
 									this->imgType = IT_JPG;
 								}
-								else
+								else if (attr->value->Equals(UTF8STRC("png")))
 								{
+									SDEL_STRING(this->tileExt);
+									this->tileExt = attr->value->Clone();
 									this->imgType = IT_PNG;
 								}
 #if defined(VERBOSE)
-								printf("tileExt = %s\r\n", this->tileExt->v);
+								printf("found tileExt = %s, use = %s\r\n", attr->value->v, STR_PTR(this->tileExt));
 #endif
 							}
 						}
@@ -238,6 +240,14 @@ void Map::TileMapServiceSource::LoadXML()
 											href = attr->value->Clone();
 #if defined(VERBOSE)
 											printf("tileHref = %s\r\n", href->v);
+#endif
+										}
+										else if (attr->name->Equals(UTF8STRC("profile")))
+										{
+											SDEL_STRING(href);
+											href = attr->value->Clone();
+#if defined(VERBOSE)
+											printf("tileProfile = %s\r\n", href->v);
 #endif
 										}
 										else if (attr->name->Equals(UTF8STRC("units-per-pixel")))
@@ -284,10 +294,11 @@ void Map::TileMapServiceSource::LoadXML()
 	DEL_CLASS(cli);
 }
 
-Map::TileMapServiceSource::TileMapServiceSource(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, Text::CString tmsURL)
+Map::TileMapServiceSource::TileMapServiceSource(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL)
 {
 	this->cacheDir = 0;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->encFact = encFact;
 	this->tmsURL = Text::String::New(tmsURL);
 	this->origin = Math::Coord2DDbl(0, 0);
@@ -566,7 +577,11 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int6
 	urlSb.AppendUTF8Char('.');
 	urlSb.Append(this->tileExt);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, 0, CSTR("TileMapService/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+#if defined(VERBOSE)
+	printf("Tile URL: %s\r\n", urlSb.ToString());
+#endif
+
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("TileMapService/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{

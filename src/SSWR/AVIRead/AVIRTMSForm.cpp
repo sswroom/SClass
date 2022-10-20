@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtTMSURL->GetText(&sb);
 	SDEL_CLASS(me->tms);
-	NEW_CLASS(me->tms, Map::TileMapServiceSource(me->core->GetSocketFactory(), me->core->GetEncFactory(), sb.ToCString()));
+	NEW_CLASS(me->tms, Map::TileMapServiceSource(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
 	if (me->tms->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
@@ -28,9 +28,10 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnOKClicked(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 120, ui)
+SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->core = core;
+	this->ssl = ssl;
 	this->tms = 0;
 	this->SetText(CSTR("Tile Map Service"));
 	this->SetFont(0, 0, 8.25, false);

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWMTSURL->GetText(&sb);
 	SDEL_CLASS(me->wmts);
-	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetSocketFactory(), 0, me->core->GetEncFactory(), sb.ToCString()));
+	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
 	if (me->wmts->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
@@ -118,9 +118,10 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceInfoTypeSelChg(void *userO
 	}
 }
 
-SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
+	this->ssl = ssl;
 	this->wmts = 0;
 	this->SetText(CSTR("Web Map Tile Service"));
 	this->SetFont(0, 0, 8.25, false);

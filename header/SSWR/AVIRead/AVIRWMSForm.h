@@ -33,6 +33,7 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 
 			SSWR::AVIRead::AVIRCore *core;
+			Net::SSLEngine *ssl;
 			Map::WebMapService *wms;
 
 			static void __stdcall OnLoadClicked(void *userObj);
@@ -42,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnMapImageTypeSelChg(void *userObj);
 			static void __stdcall OnInfoTypeSelChg(void *userObj);
 		public:
-			AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
+			AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRWMSForm();
 
 			virtual void OnMonitorChanged();

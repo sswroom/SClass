@@ -26,7 +26,8 @@ namespace Map
 			TT_ESRI,
 			TT_GOOGLE,
 			TT_TMS,
-			TT_WMTS
+			TT_WMTS,
+			TT_CUSTOM
 		} TileType;
 	public:
 		virtual ~TileMap() {};
