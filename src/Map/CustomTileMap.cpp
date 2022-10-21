@@ -39,17 +39,15 @@ Bool Map::CustomTileMap::GetBounds(Math::RectAreaDbl *bounds)
 	return true;
 }
 
-UTF8Char *Map::CustomTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+UTF8Char *Map::CustomTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char sbuff2[16];
 	UTF8Char *sptr2;
 	UTF8Char *sptr;
 	sptr = this->url->ConcatTo(sbuff);
-	sptr2 = Text::StrInt32(sbuff2, imgX);
+	sptr2 = Text::StrInt32(sbuff2, tileId.x);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{x}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
-	sptr2 = Text::StrInt32(sbuff2, imgY);
+	sptr2 = Text::StrInt32(sbuff2, tileId.y);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{y}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
 	sptr2 = Text::StrUOSInt(sbuff2, level);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{z}"), sbuff2, (UOSInt)(sptr2 - sbuff2));

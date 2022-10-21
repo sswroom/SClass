@@ -96,8 +96,6 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 	Int32 minY;
 	Int32 maxX;
 	Int32 maxY;
-	Int32 x;
-	Int32 y;
 	Double minLat;
 	Double minLon;
 	Double maxLat;
@@ -129,7 +127,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 		NEW_CLASS(db, DB::SQLiteFile(CSTRP(u8fileName, sptr)));
 		if (!db->IsError())
 		{
-			Data::ArrayList<Int64> imgIds;
+			Data::ArrayList<Math::Coord2D<Int32>> imgIds;
 			Map::TileMap::ImageType it;
 			IO::IStreamData *fd;
 			DB::SQLBuilder sql(db->GetSvrType(), db->GetTzQhr());
@@ -247,12 +245,13 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 					writer->WriteStrC(UTF8STRC("</OruxTracker>\n"));
 				
 					imgIds.Clear();
-					osm->GetImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, maxLat), Math::Coord2DDbl(maxLon, minLat)), &imgIds);
+					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, maxLat), Math::Coord2DDbl(maxLon, minLat)), &imgIds);
 					void *sess = db->BeginTransaction();
 					j = imgIds.GetCount();
 					while (j-- > 0)
 					{
-						fd = osm->LoadTileImageData(level, imgIds.GetItem(j), &bounds, true, &x, &y, &it);
+						Math::Coord2D<Int32> tileId = imgIds.GetItem(j);
+						fd = osm->LoadTileImageData(level, tileId, &bounds, true, &it);
 						if (fd)
 						{
 							UOSInt imgSize = (UOSInt)fd->GetDataSize();
@@ -260,9 +259,9 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 							fd->GetRealData(0, imgSize, imgBuff);
 							sql.Clear();
 							sql.AppendCmdC(CSTR("insert into tiles (x, y, z, image) values ("));
-							sql.AppendInt32(x - minX);
+							sql.AppendInt32(tileId.x - minX);
 							sql.AppendCmdC(CSTR(", "));
-							sql.AppendInt32(y - minY);
+							sql.AppendInt32(tileId.y - minY);
 							sql.AppendCmdC(CSTR(", "));
 							sql.AppendInt32((Int32)(UInt32)level);
 							sql.AppendCmdC(CSTR(", "));

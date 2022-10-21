@@ -1,7 +1,12 @@
 #include "Stdafx.h"
+#include "IO/MemoryStream.h"
 #include "IO/Path.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Map/BingMapsTile.h"
+#include "Math/Geometry/VectorImage.h"
+#include "Media/StaticImage.h"
 #include "Net/HTTPClient.h"
+#include "Parser/FileParser/PNGParser.h"
 #include "Sync/MutexUsage.h"
 #include "Text/JSON.h"
 
@@ -21,6 +26,10 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	this->key = Text::String::NewOrNull(key);
 	this->urlNext = 0;
 	this->brandLogoUri = 0;
+	this->brandLogoImg = 0;
+	this->hideLogo = false;
+	this->dispDPI = 96;
+	this->dispSize = Math::Size2D<Double>(640, 480);
 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
@@ -61,6 +70,21 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 		}
 		json->EndUse();
 	}
+
+	if (this->brandLogoUri)
+	{
+		IO::MemoryStream mstm(UTF8STRC("Map.BingMapsTile.mstm"));
+		if (Net::HTTPClient::LoadContent(sockf, ssl, this->brandLogoUri->ToCString(), &mstm, 1048576))
+		{
+			Parser::FileParser::PNGParser parser;
+			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), mstm.GetLength());
+			IO::ParsedObject *pobj = parser.ParseFile(&fd, 0, IO::ParserType::ImageList);
+			if (pobj)
+			{
+				NEW_CLASS(this->brandLogoImg, Media::SharedImage((Media::ImageList*)pobj, false));
+			}
+		}
+	}
 }
 
 Map::BingMapsTile::~BingMapsTile()
@@ -68,6 +92,7 @@ Map::BingMapsTile::~BingMapsTile()
 	SDEL_STRING(this->url);
 	SDEL_STRING(this->key);
 	SDEL_STRING(this->brandLogoUri);
+	SDEL_CLASS(this->brandLogoImg);
 	LIST_FREE_STRING(&this->subdomains);
 }
 
@@ -88,21 +113,59 @@ Map::TileMap::TileType Map::BingMapsTile::GetTileType()
 
 UOSInt Map::BingMapsTile::GetConcurrentCount()
 {
-	return 2;
+	return 2 * this->subdomains.GetCount();
 }
 
-UTF8Char *Map::BingMapsTile::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+void Map::BingMapsTile::SetDispSize(Math::Size2D<Double> size, Double dpi)
+{
+	this->dispSize = size;
+	this->dispDPI = dpi;
+}
+
+UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	Text::String *subdomain = this->GetNextSubdomain();
 	UTF8Char *sptr = this->url->ConcatTo(sbuff);
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
-	sptr2 = GenQuadkey(sbuff2, level, imgX, imgY);
+	sptr2 = GenQuadkey(sbuff2, level, tileId.x, tileId.y);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{quadkey}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
 	return sptr;
+}
+
+UOSInt Map::BingMapsTile::GetScreenObjCnt()
+{
+	if (this->brandLogoImg && !this->hideLogo)
+		return 1;
+	return 0;
+}
+
+Math::Geometry::Vector2D *Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
+{
+	if (index == 0 && this->brandLogoImg && !this->hideLogo)
+	{
+		Math::Coord2DDbl size96 = this->dispSize.ToCoord() * (96.0 / this->dispDPI);
+		Media::StaticImage *img = this->brandLogoImg->GetImage(0);
+		Math::Coord2DDbl imgSize = Math::Coord2DDbl(UOSInt2Double(img->info.dispWidth), UOSInt2Double(img->info.dispHeight));
+		Math::Coord2DDbl pos = size96 - 16 - imgSize;
+		return Math::Geometry::VectorImage::CreateScreenImage(0, this->brandLogoImg, pos / size96, imgSize / size96, this->brandLogoUri->ToCString());
+	}
+	return 0;
+}
+
+UTF8Char *Map::BingMapsTile::GetScreenObjURL(UTF8Char *sbuff, UOSInt index)
+{
+	if (index == 0 && this->brandLogoImg && !this->hideLogo)
+	{
+		return this->brandLogoUri->ConcatTo(sbuff);
+	}
+	return 0;
+}
+
+void Map::BingMapsTile::SetHideLogo(Bool hideLogo)
+{
+	this->hideLogo = hideLogo;
 }
 
 void Map::BingMapsTile::GetDefaultCacheDir(ImagerySet is, Text::StringBuilderUTF8 *sb)

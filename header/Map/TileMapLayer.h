@@ -55,6 +55,8 @@ namespace Map
 		Data::ArrayList<void *> updObjs;
 
 		static UInt32 __stdcall TaskThread(void *userObj);
+		static Math::Coord2D<Int32> IdToCoord(Int64 id);
+		static Int64 CoordToId(Math::Coord2D<Int32> tileId);
 		void AddTask(CachedImage *cimg);
 		void CheckCache(Data::ArrayListInt64 *currIDs);
 	public:

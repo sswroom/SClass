@@ -425,7 +425,7 @@ UOSInt Map::TileMapServiceSource::GetTileSize()
 	return this->tileWidth;
 }
 
-UOSInt Map::TileMapServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
+UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer == 0)
@@ -446,8 +446,7 @@ UOSInt Map::TileMapServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 		j = minX;
 		while (j <= maxX)
 		{
-			Int64 id = (((Int64)j) << 32) | (UInt32)i;
-			ids->Add(id);
+			ids->Add(Math::Coord2D<Int32>(j, i));
 			ret++;
 			j++;
 		}
@@ -456,14 +455,12 @@ UOSInt Map::TileMapServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 	return ret;
 }
 
-Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
-	Int32 blockX;
-	Int32 blockY;
 	ImageType it;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj;
-	fd = this->LoadTileImageData(level, imgId, bounds, localOnly, &blockX, &blockY, &it);
+	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
 	if (fd)
 	{
 		IO::ParserType pt;
@@ -481,18 +478,16 @@ Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Int64 i
 	return 0;
 }
 
-UTF8Char *Map::TileMapServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer)
 	{
-		Int32 x = (Int32)(imgId >> 32);
-		Int32 y = (Int32)(imgId & 0xffffffff);
 		sbuff = layer->url->ConcatTo(sbuff);
 		*sbuff++ = '/';
-		sbuff = Text::StrInt32(sbuff, x);
+		sbuff = Text::StrInt32(sbuff, tileId.x);
 		*sbuff++ = '/';
-		sbuff = Text::StrInt32(sbuff, y);
+		sbuff = Text::StrInt32(sbuff, tileId.y);
 		*sbuff++ = '.';
 		sbuff = this->tileExt->ConcatTo(sbuff);
 		return sbuff;
@@ -500,7 +495,7 @@ UTF8Char *Map::TileMapServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 	return 0;
 }
 
-IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -515,12 +510,10 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int6
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer == 0)
 		return 0;
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double x1 = imgX * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
-	Double y1 = imgY * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
-	Double x2 = (imgX + 1) * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
-	Double y2 = (imgY + 1) * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
+	Double x1 = tileId.x * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
+	Double y1 = tileId.y * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
+	Double x2 = (tileId.x + 1) * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
+	Double y2 = (tileId.y + 1) * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
 
 	bounds->tl = Math::Coord2DDbl(x1, y1);
 	bounds->br = Math::Coord2DDbl(x2, y2);
@@ -538,10 +531,10 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int6
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgX);
+		sptru = Text::StrInt32(sptru, tileId.x);
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgY);
+		sptru = Text::StrInt32(sptru, tileId.y);
 		*sptru++ = '.';
 		sptru = this->tileExt->ConcatTo(sptru);
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
@@ -552,10 +545,6 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int6
 			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(&currTime) > 0)
 			{
-				if (blockX)
-					*blockX = imgX;
-				if (blockY)
-					*blockY = imgY;
 				if (it)
 					*it = this->imgType;
 				return fd;
@@ -574,9 +563,9 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int6
 	urlSb.ClearStr();
 	urlSb.Append(layer->url);
 	urlSb.AppendUTF8Char('/');
-	urlSb.AppendI32(imgX);
+	urlSb.AppendI32(tileId.x);
 	urlSb.AppendUTF8Char('/');
-	urlSb.AppendI32(imgY);
+	urlSb.AppendI32(tileId.y);
 	urlSb.AppendUTF8Char('.');
 	urlSb.Append(this->tileExt);
 
@@ -637,10 +626,6 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Int6
 	{
 		if (fd->GetDataSize() > 0)
 		{
-			if (blockX)
-				*blockX = imgX;
-			if (blockY)
-				*blockY = imgY;
 			if (it)
 				*it = IT_PNG;
 			return fd;

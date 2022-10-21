@@ -456,3 +456,8 @@ Media::StaticImage *Math::Geometry::VectorImage::GetImage(Double width, Double h
 	Media::StaticImage *retImg = this->img->GetPrevImage(width, height, imgTimeMS);
 	return retImg;
 }
+
+Math::Geometry::VectorImage *Math::Geometry::VectorImage::CreateScreenImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr)
+{
+	return NEW_CLASS_D(Math::Geometry::VectorImage(srid, img, Math::Coord2DDbl(tl.x, 1 - tl.y - size.y), Math::Coord2DDbl(0, 0), size, true, srcAddr, 0, 0));
+}

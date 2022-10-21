@@ -23,7 +23,7 @@ namespace SSWR
 				Sync::Event *threadEvt;
 				Int32 threadStat; //0 = not running, 1 = idle, 2 = has task, 3 = toStop
 				UOSInt lyrId;
-				Int64 imageId;
+				Math::Coord2D<Int32> imageId;
 				Sync::Mutex *pkgMut;
 				IO::SPackageFile *spkg;
 				const UTF8Char *folderName;

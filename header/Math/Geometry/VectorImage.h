@@ -62,6 +62,8 @@ namespace Math
 			void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
 			Media::StaticImage *GetImage(UInt32 *imgTimeMS) const;
 			Media::StaticImage *GetImage(Double width, Double height, UInt32 *imgTimeMS) const;
+
+			static Math::Geometry::VectorImage *CreateScreenImage(UInt32 srid, Media::SharedImage *img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
 		};
 	}
 }

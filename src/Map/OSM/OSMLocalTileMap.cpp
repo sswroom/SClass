@@ -337,7 +337,7 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileSize()
 	return this->tileWidth;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
+UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
 	Int32 i;
 	Int32 j;
@@ -381,7 +381,7 @@ UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 		j = pixX1;
 		while (j <= pixX2)
 		{
-			ids->Add((((Int64)(UInt32)j) << 32) | (UInt32)i);
+			ids->Add(Math::Coord2D<Int32>(j, i));
 			j++;
 		}
 		i++;
@@ -389,14 +389,12 @@ UOSInt Map::OSM::OSMLocalTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl re
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
-	Int32 blockX;
-	Int32 blockY;
 	ImageType it;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj;
-	fd = this->LoadTileImageData(level, imgId, bounds, localOnly, &blockX, &blockY, &it);
+	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
 	if (fd)
 	{
 		IO::ParserType pt;
@@ -414,10 +412,8 @@ Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Int64 i
 	return 0;
 }
 
-UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("file:///"));
 	sptr = this->pkgFile->GetSourceName(sptr);
@@ -429,9 +425,9 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 	}
 	sptr = Text::StrUOSInt(sptr, level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgX);
+	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgY);
+	sptr = Text::StrInt32(sptr, tileId.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	return sptr;
 }
@@ -482,19 +478,17 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 }
 */
 
-IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::IStreamData *fd;
 	if (level < 0 || level > this->maxLevel)
 		return 0;
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double x1 = Map::OSM::OSMTileMap::TileX2Lon(imgX, level);
-	Double y1 = Map::OSM::OSMTileMap::TileY2Lat(imgY, level);
-	Double x2 = Map::OSM::OSMTileMap::TileX2Lon(imgX + 1, level);
-	Double y2 = Map::OSM::OSMTileMap::TileY2Lat(imgY + 1, level);
+	Double x1 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x, level);
+	Double y1 = Map::OSM::OSMTileMap::TileY2Lat(tileId.y, level);
+	Double x2 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x + 1, level);
+	Double y2 = Map::OSM::OSMTileMap::TileY2Lat(tileId.y + 1, level);
 
 	bounds->tl = Math::Coord2DDbl(x1, y1);
 	bounds->br = Math::Coord2DDbl(x2, y2);
@@ -508,19 +502,15 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)));
 	if (xPkg)
 	{
-		sptr = Text::StrInt32(sbuff, imgX);
+		sptr = Text::StrInt32(sbuff, tileId.x);
 		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 		if (yPkg)
 		{
-			sptr = Text::StrInt32(sbuff, imgY);
+			sptr = Text::StrInt32(sbuff, tileId.y);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 			if (fd)
 			{
-				if (blockX)
-					*blockX = imgX;
-				if (blockY)
-					*blockY = imgY;
 				if (it)
 					*it = IT_PNG;
 			}

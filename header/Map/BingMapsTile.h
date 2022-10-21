@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_BINGMAPSTILE
 #define _SM_MAP_BINGMAPSTILE
 #include "Map/MercatorTileMap.h"
+#include "Media/SharedImage.h"
 #include "Sync/Mutex.h"
 
 namespace Map
@@ -32,6 +33,10 @@ namespace Map
 		UOSInt urlNext;
 		Sync::Mutex urlMut;
 		Text::String *brandLogoUri;
+		Media::SharedImage *brandLogoImg;
+		Math::Size2D<Double> dispSize;
+		Double dispDPI;
+		Bool hideLogo;
 
 		Text::String *GetNextSubdomain();
 	public:
@@ -42,8 +47,15 @@ namespace Map
 		virtual Text::CString GetName();
 		virtual TileType GetTileType();
 		virtual UOSInt GetConcurrentCount();
-		virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
+		virtual void SetDispSize(Math::Size2D<Double> size, Double dpi);
+		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> imgId);
 
+		virtual UOSInt GetScreenObjCnt();
+		virtual Math::Geometry::Vector2D *CreateScreenObjVector(UOSInt index);
+		virtual UTF8Char *GetScreenObjURL(UTF8Char *sbuff, UOSInt index);
+
+		void SetHideLogo(Bool hideLogo);
+		
 		static void GetDefaultCacheDir(ImagerySet is, Text::StringBuilderUTF8 *sb);
 		static Text::CString ImagerySetGetName(ImagerySet is);
 		static UTF8Char *GenQuadkey(UTF8Char *sbuff, UOSInt level, Int32 imgX, Int32 imgY);

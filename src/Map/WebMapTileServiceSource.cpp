@@ -934,7 +934,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 	return false;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
+UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
 	TileMatrix *tileMatrix = this->GetTileMatrix(level);
 	if (tileMatrix == 0)
@@ -956,8 +956,7 @@ UOSInt Map::WebMapTileServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl
 		j = minX;
 		while (j <= maxX)
 		{
-			Int64 id = (((Int64)j) << 32) | (UInt32)i;
-			ids->Add(id);
+			ids->Add(Math::Coord2D<Int32>(j, i));
 			ret++;
 			j++;
 		}
@@ -966,14 +965,12 @@ UOSInt Map::WebMapTileServiceSource::GetImageIDs(UOSInt level, Math::RectAreaDbl
 	return ret;
 }
 
-Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
-	Int32 blockX;
-	Int32 blockY;
 	ImageType it;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj;
-	fd = this->LoadTileImageData(level, imgId, bounds, localOnly, &blockX, &blockY, &it);
+	fd = this->LoadTileImageData(level, tileId, bounds, localOnly, &it);
 	if (fd)
 	{
 		IO::ParserType pt;
@@ -991,7 +988,7 @@ Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Int6
 	return 0;
 }
 
-UTF8Char *Map::WebMapTileServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+UTF8Char *Map::WebMapTileServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char tmpBuff[32];
 	UTF8Char *tmpPtr;
@@ -999,12 +996,10 @@ UTF8Char *Map::WebMapTileServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt leve
 	TileMatrix *tileMatrix = this->GetTileMatrix(level);
 	if (tileMatrix && this->currResource)
 	{
-		Int32 x = (Int32)(imgId >> 32);
-		Int32 y = (Int32)(imgId & 0xffffffff);
 		sptrEnd = this->currResource->templateURL->ConcatTo(sbuff);
-		tmpPtr = Text::StrInt32(tmpBuff, x);
+		tmpPtr = Text::StrInt32(tmpBuff, tileId.x);
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileCol}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
-		tmpPtr = Text::StrInt32(tmpBuff, y);
+		tmpPtr = Text::StrInt32(tmpBuff, tileId.y);
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileRow}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{TileMatrixSet}"), this->currSet->id->v, this->currSet->id->leng);
@@ -1014,7 +1009,7 @@ UTF8Char *Map::WebMapTileServiceSource::GetImageURL(UTF8Char *sbuff, UOSInt leve
 	return 0;
 }
 
-IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -1030,12 +1025,10 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 	if (tileMatrix == 0)
 		return 0;
 	TileMatrixDef *tileMatrixDef = this->currDef->tiles.GetItem(level);
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double x1 = imgX * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
-	Double y1 = tileMatrixDef->origin.y - imgY * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight);
-	Double x2 = (imgX + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
-	Double y2 = tileMatrixDef->origin.y - (imgY + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight);
+	Double x1 = tileId.x * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
+	Double y1 = tileMatrixDef->origin.y - tileId.y * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight);
+	Double x2 = (tileId.x + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
+	Double y2 = tileMatrixDef->origin.y - (tileId.y + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight);
 
 	bounds->tl = Math::Coord2DDbl(x1, y2);
 	bounds->br = Math::Coord2DDbl(x2, y1);
@@ -1055,10 +1048,10 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgX);
+		sptru = Text::StrInt32(sptru, tileId.x);
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgY);
+		sptru = Text::StrInt32(sptru, tileId.y);
 		*sptru++ = '.';
 		sptru = GetExt(this->currResource->imgType).ConcatTo(sptru);
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
@@ -1069,10 +1062,6 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(&currTime) > 0)
 			{
-				if (blockX)
-					*blockX = imgX;
-				if (blockY)
-					*blockY = imgY;
 				if (it)
 					*it = this->currResource->imgType;
 				return fd;
@@ -1093,9 +1082,9 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 
 	urlSb.ClearStr();
 	urlSb.Append(this->currResource->templateURL);
-	tmpPtr = Text::StrInt32(tmpBuff, imgX);
+	tmpPtr = Text::StrInt32(tmpBuff, tileId.x);
 	urlSb.ReplaceStr(UTF8STRC("{TileCol}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
-	tmpPtr = Text::StrInt32(tmpBuff, imgY);
+	tmpPtr = Text::StrInt32(tmpBuff, tileId.y);
 	urlSb.ReplaceStr(UTF8STRC("{TileRow}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
 	urlSb.ReplaceStr(UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
 	urlSb.ReplaceStr(UTF8STRC("{TileMatrixSet}"), this->currSet->id->v, this->currSet->id->leng);
@@ -1152,10 +1141,6 @@ IO::IStreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, I
 	{
 		if (fd->GetDataSize() > 0)
 		{
-			if (blockX)
-				*blockX = imgX;
-			if (blockY)
-				*blockY = imgY;
 			if (it)
 				*it = IT_PNG;
 			return fd;

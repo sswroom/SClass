@@ -112,7 +112,7 @@ UOSInt Map::MercatorTileMap::GetTileSize()
 	return this->tileWidth;
 }
 
-UOSInt Map::MercatorTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Int64> *ids)
+UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
 	Int32 i;
 	Int32 j;
@@ -164,7 +164,7 @@ UOSInt Map::MercatorTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, D
 		j = pixX1;
 		while (j <= pixX2)
 		{
-			ids->Add((((Int64)(UInt32)j) << 32) | (UInt32)i);
+			ids->Add(Math::Coord2D<Int32>(j, i));
 			j++;
 		}
 		i++;
@@ -172,7 +172,7 @@ UOSInt Map::MercatorTileMap::GetImageIDs(UOSInt level, Math::RectAreaDbl rect, D
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Int64 imgId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
 {
 	UTF8Char url[1024];
 	UTF8Char *urlPtr;
@@ -188,12 +188,10 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	IO::ParsedObject *pobj;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double x1 = TileX2Lon(imgX, level);
-	Double y1 = TileY2Lat(imgY, level);
-	Double x2 = TileX2Lon(imgX + 1, level);
-	Double y2 = TileY2Lat(imgY + 1, level);
+	Double x1 = TileX2Lon(tileId.x, level);
+	Double y1 = TileY2Lat(tileId.y, level);
+	Double x2 = TileX2Lon(tileId.x + 1, level);
+	Double y2 = TileY2Lat(tileId.y + 1, level);
 
 	bounds->tl = Math::Coord2DDbl(x1, y1);
 	bounds->br = Math::Coord2DDbl(x2, y2);
@@ -207,10 +205,10 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgX);
+		sptru = Text::StrInt32(sptru, tileId.x);
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgY);
+		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
@@ -247,9 +245,9 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	{
 		sptru = Text::StrUOSInt(filePathU, level);
 		*sptru++ = '/';
-		sptru = Text::StrInt32(sptru, imgX);
+		sptru = Text::StrInt32(sptru, tileId.x);
 		*sptru++ = '/';
-		sptru = Text::StrInt32(sptru, imgY);
+		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 		if (fd)
@@ -276,7 +274,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	if (localOnly)
 		return 0;
 
-	urlPtr = this->GetImageURL(url, level, imgId);
+	urlPtr = this->GetTileImageURL(url, level, tileId);
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
@@ -357,7 +355,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	return 0;
 }
 
-IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Math::RectAreaDbl *bounds, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
+IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
 {
 	UOSInt readSize;
 	UTF8Char url[1024];
@@ -373,12 +371,10 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 img
 	IO::IStreamData *fd;
 	if (level > this->maxLevel)
 		return 0;
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
-	Double x1 = TileX2Lon(imgX, level);
-	Double y1 = TileY2Lat(imgY, level);
-	Double x2 = TileX2Lon(imgX + 1, level);
-	Double y2 = TileY2Lat(imgY + 1, level);
+	Double x1 = TileX2Lon(tileId.x, level);
+	Double y1 = TileY2Lat(tileId.y, level);
+	Double x2 = TileX2Lon(tileId.x + 1, level);
+	Double y2 = TileY2Lat(tileId.y + 1, level);
 
 	bounds->tl = Math::Coord2DDbl(x1, y1);
 	bounds->br = Math::Coord2DDbl(x2, y2);
@@ -392,10 +388,10 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 img
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgX);
+		sptru = Text::StrInt32(sptru, tileId.x);
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
-		sptru = Text::StrInt32(sptru, imgY);
+		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
@@ -405,10 +401,6 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 img
 			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(&currTime) > 0)
 			{
-				if (blockX)
-					*blockX = imgX;
-				if (blockY)
-					*blockY = imgY;
 				if (it)
 					*it = IT_PNG;
 				return fd;
@@ -424,17 +416,13 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 img
 	{
 		sptru = Text::StrInt32(filePathU, (Int32)level);
 		*sptru++ = '/';
-		sptru = Text::StrInt32(sptru, imgX);
+		sptru = Text::StrInt32(sptru, tileId.x);
 		*sptru++ = '/';
-		sptru = Text::StrInt32(sptru, imgY);
+		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 		if (fd)
 		{
-			if (blockX)
-				*blockX = imgX;
-			if (blockY)
-				*blockY = imgY;
 			if (it)
 				*it = IT_PNG;
 			return fd;
@@ -445,7 +433,7 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 img
 	if (localOnly)
 		return 0;
 
-	urlPtr = this->GetImageURL(url, level, imgId);
+	urlPtr = this->GetTileImageURL(url, level, tileId);
 
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
 	cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -518,10 +506,6 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Int64 img
 	{
 		if (fd->GetDataSize() > 0)
 		{
-			if (blockX)
-				*blockX = imgX;
-			if (blockY)
-				*blockY = imgY;
 			if (it)
 				*it = IT_PNG;
 			return fd;

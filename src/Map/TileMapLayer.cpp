@@ -39,7 +39,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 				}
 				else
 				{
-					imgList = stat->me->tileMap->LoadTileImage(cimg->level, cimg->imgId, stat->me->parsers, &bounds, false);
+					imgList = stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, &bounds, false);
 					if (imgList)
 					{
 						NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
@@ -66,6 +66,17 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 	}
 	stat->running = false;
 	return 0;
+}
+
+Math::Coord2D<Int32> Map::TileMapLayer::IdToCoord(Int64 id)
+{
+	return Math::Coord2D<Int32>((Int32)(id >> 32),
+		(Int32)(id & 0xffffffffLL));
+}
+
+Int64 Map::TileMapLayer::CoordToId(Math::Coord2D<Int32> tileId)
+{
+	return (((Int64)(UInt32)tileId.x) << 32) | (UInt32)tileId.y;
 }
 
 void Map::TileMapLayer::AddTask(CachedImage *cimg)
@@ -319,7 +330,20 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **n
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (nameArr)
 		*nameArr = 0;
-	retCnt = this->tileMap->GetImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), outArr);
+	Data::ArrayList<Math::Coord2D<Int32>> idArr;
+	retCnt = this->tileMap->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), &idArr);
+	UOSInt i = 0;
+	while (i < retCnt)
+	{
+		outArr->Add(CoordToId(idArr.GetItem(i)));
+		i++;
+	}
+	i = this->tileMap->GetScreenObjCnt();
+	retCnt += i;
+	while (i-- > 0)
+	{
+		outArr->Add(CoordToId(Math::Coord2D<Int32>((Int32)0x80000000, (Int32)i)));
+	}
 	return retCnt;
 }
 
@@ -329,8 +353,21 @@ UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **name
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (nameArr)
 		*nameArr = 0;
-	retCnt = this->tileMap->GetImageIDs(level, rect.ToDouble() / mapRate, outArr);
+	Data::ArrayList<Math::Coord2D<Int32>> idArr;
+	retCnt = this->tileMap->GetTileImageIDs(level, rect.ToDouble() / mapRate, &idArr);
+	UOSInt i = 0;
+	while (i < retCnt)
+	{
+		outArr->Add(CoordToId(idArr.GetItem(i)));
+		i++;
+	}
 	CheckCache(outArr);
+	i = this->tileMap->GetScreenObjCnt();
+	retCnt += i;
+	while (i-- > 0)
+	{
+		outArr->Add(CoordToId(Math::Coord2D<Int32>((Int32)0x80000000, (Int32)i)));
+	}
 	return retCnt;
 }
 
@@ -340,8 +377,21 @@ UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (nameArr)
 		*nameArr = 0;
-	retCnt = this->tileMap->GetImageIDs(level, rect, outArr);
+	Data::ArrayList<Math::Coord2D<Int32>> idArr;
+	retCnt = this->tileMap->GetTileImageIDs(level, rect, &idArr);
+	UOSInt i = 0;
+	while (i < retCnt)
+	{
+		outArr->Add(CoordToId(idArr.GetItem(i)));
+		i++;
+	}
 	CheckCache(outArr);
+	i = this->tileMap->GetScreenObjCnt();
+	retCnt += i;
+	while (i-- > 0)
+	{
+		outArr->Add(CoordToId(Math::Coord2D<Int32>((Int32)0x80000000, (Int32)i)));
+	}
 	return retCnt;
 }
 
@@ -363,7 +413,17 @@ UTF8Char *Map::TileMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, void *na
 	case 1:
 		return Text::StrUOSInt(buff, this->tileMap->GetNearestLevel(scale));
 	case 2:
-		return this->tileMap->GetImageURL(buff, this->tileMap->GetNearestLevel(scale), id);
+	{
+		Math::Coord2D<Int32> tileId = IdToCoord(id);
+		if (tileId.x == (Int32)0x80000000)
+		{
+			return this->tileMap->GetScreenObjURL(buff, (UInt32)tileId.y);
+		}
+		else
+		{
+			return this->tileMap->GetTileImageURL(buff, this->tileMap->GetNearestLevel(scale), IdToCoord(id));
+		}
+	}
 	}
 	return 0;
 }
@@ -457,14 +517,18 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-
+	Math::Coord2D<Int32> tileId = IdToCoord(id);
+	if (tileId.x == (Int32)0x80000000)
+	{
+		return this->tileMap->CreateScreenObjVector((UInt32)tileId.y);
+	}
 	i = this->lastIds.SortedIndexOf(id);
 	if (i >= 0)
 	{
 		cimg = this->lastImgs.GetItem((UOSInt)i);
 		if (cimg->img == 0)
 			return 0;
-		sptr = this->tileMap->GetImageURL(sbuff, cimg->level, cimg->imgId);
+		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId);
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
@@ -473,7 +537,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 	{
 		return 0;
 	}
-	imgList = this->tileMap->LoadTileImage(level, id, this->parsers, &bounds, true);
+	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, &bounds, true);
 	if (imgList)
 	{
 		cimg = MemAllocA(CachedImage, 1);
@@ -490,7 +554,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int
 		this->lastImgs.Insert(k, cimg);
 		mutUsage.EndUse();
 
-		sptr = this->tileMap->GetImageURL(sbuff, level, id);
+		sptr = this->tileMap->GetTileImageURL(sbuff, level, tileId);
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}

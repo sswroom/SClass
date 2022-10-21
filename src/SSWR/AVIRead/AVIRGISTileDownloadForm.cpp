@@ -247,7 +247,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 	UTF8Char *sptr;
 	UOSInt currLyr;
 	UOSInt lyrCnt = tileMap->GetLevelCount();
-	Data::ArrayList<Int64> imgIdList;
+	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt;
@@ -263,7 +263,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 
 		imgIdList.Clear();
-		tileMap->GetImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
+		tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
 		cnt = imgIdList.GetCount();
 		i = cnt;
 		while (i-- > 0)
@@ -333,7 +333,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 	UTF8Char *sptr;
 	UOSInt currLyr;
 	UOSInt lyrCnt = tileMap->GetLevelCount();
-	Data::ArrayList<Int64> imgIdList;
+	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt;
@@ -353,7 +353,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 
 		imgIdList.Clear();
-		tileMap->GetImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
+		tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
 		cnt = imgIdList.GetCount();
 		i = cnt;
 		while (i-- > 0)
@@ -423,8 +423,6 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	UInt8 *fileBuff = 0;
 	UOSInt fileBuffSize = 0;
 	Map::TileMap::ImageType it;
-	Int32 blockX;
-	Int32 blockY;
 	IO::IStreamData *fd;
 	Math::RectAreaDbl bounds;
 	UInt64 fileSize;
@@ -443,7 +441,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 				j = 3;
 				while (fd == 0 && j-- > 0)
 				{
-					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, &bounds, false, &blockX, &blockY, &it);
+					fd = stat->tileMap->LoadTileImageData(stat->lyrId, stat->imageId, &bounds, false, &it);
 				}
 				if (fd)
 				{
@@ -464,9 +462,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 							sb.ClearStr();
 							sb.AppendUOSInt(stat->lyrId);
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(blockX);
+							sb.AppendI32(stat->imageId.x);
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(blockY);
+							sb.AppendI32(stat->imageId.y);
 							if (it == Map::TileMap::IT_PNG)
 							{
 								sb.AppendC(UTF8STRC(".png"));
@@ -488,10 +486,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 							sb.AppendUOSInt(stat->lyrId);
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(blockX);
+							sb.AppendI32(stat->imageId.x);
 							IO::Path::CreateDirectory(sb.ToCString());
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(blockY);
+							sb.AppendI32(stat->imageId.y);
 							if (it == Map::TileMap::IT_PNG)
 							{
 								sb.AppendC(UTF8STRC(".png"));

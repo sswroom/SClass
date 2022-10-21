@@ -27,7 +27,7 @@ namespace Map
 			virtual Text::CString GetName();
 			virtual TileType GetTileType();
 			virtual UOSInt GetConcurrentCount();
-			virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
+			virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 		};
 	}
 }

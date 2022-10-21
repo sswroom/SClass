@@ -59,18 +59,16 @@ UOSInt Map::OSM::OSMTileMap::GetConcurrentCount()
 	return 2 * this->urls.GetCount();
 }
 
-UTF8Char *Map::OSM::OSMTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+UTF8Char *Map::OSM::OSMTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
 	Text::String *thisUrl = this->GetNextURL();
 	sptr = thisUrl->ConcatTo(sbuff);
 	sptr = Text::StrUOSInt(sptr, level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgX);
+	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, imgY);
+	sptr = Text::StrInt32(sptr, tileId.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	return sptr;
 }

@@ -20,7 +20,7 @@ namespace Map
 		virtual TileType GetTileType();
 		virtual UOSInt GetConcurrentCount();
 		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
-		virtual UTF8Char *GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId);
+		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 
 		void SetBounds(Math::RectAreaDbl bounds);
 		void SetName(Text::CString name);

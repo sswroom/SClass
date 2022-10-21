@@ -28,18 +28,16 @@ UOSInt Map::GoogleMap::GoogleTileMap::GetConcurrentCount()
 	return 2;
 }
 
-UTF8Char *Map::GoogleMap::GoogleTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64 imgId)
+UTF8Char *Map::GoogleMap::GoogleTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	Int32 imgX = (Int32)(imgId >> 32);
-	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC(GMAPURL));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("lyrs="));
 	*sptr++ = (UTF8Char)this->mapType;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&x="));
-	sptr = Text::StrInt32(sptr, imgX);
+	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&y="));
-	sptr = Text::StrInt32(sptr, imgY);
+	sptr = Text::StrInt32(sptr, tileId.y);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&z="));
 	sptr = Text::StrUOSInt(sptr, level);
 	return sptr;
