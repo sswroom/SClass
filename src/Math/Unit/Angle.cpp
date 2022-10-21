@@ -87,7 +87,12 @@ Text::CString Math::Unit::Angle::GetUnitName(AngleUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Angle::GetConvertRatio(AngleUnit fromUnit, AngleUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Angle::Convert(AngleUnit fromUnit, AngleUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

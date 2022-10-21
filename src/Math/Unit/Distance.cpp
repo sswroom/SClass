@@ -164,8 +164,13 @@ Text::CString Math::Unit::Distance::GetUnitName(DistanceUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Distance::GetConvertRatio(DistanceUnit fromUnit, DistanceUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Distance::Convert(DistanceUnit fromUnit, DistanceUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }
 

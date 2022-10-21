@@ -21,6 +21,7 @@ namespace Math
 			static Double GetUnitRatio(SpeedUnit unit);
 			static Text::CString GetUnitShortName(SpeedUnit unit);
 			static Text::CString GetUnitName(SpeedUnit unit);
+			static Double GetConvertRatio(SpeedUnit fromUnit, SpeedUnit toUnit);
 			static Double Convert(SpeedUnit fromUnit, SpeedUnit toUnit, Double fromValue);
 			static Double CalcDryAirSpeed(Double temperatureK, SpeedUnit unit);
 		};

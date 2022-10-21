@@ -69,9 +69,14 @@ Text::CString Math::Unit::Pressure::GetUnitName(PressureUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Pressure::GetConvertRatio(PressureUnit fromUnit, PressureUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Pressure::Convert(PressureUnit fromUnit, PressureUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }
 
 Double Math::Unit::Pressure::VapourPressureAntoine(PressureUnit outputUnit, Math::Unit::Temperature::TemperatureUnit tempUnit, Double tempValue, Math::Unit::Substance::SubstanceType substance)

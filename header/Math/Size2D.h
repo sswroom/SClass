@@ -35,6 +35,11 @@ namespace Math
 		{
 			return this->width != size.width || this->height != size.height;
 		}
+		
+		Size2D<T> operator*(T val) const
+		{
+			return Size2D<T>(this->width * val, this->height * val);
+		}
 
 		Size2D<Double> ToDouble() const
 		{

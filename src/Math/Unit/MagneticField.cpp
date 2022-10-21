@@ -51,7 +51,12 @@ Text::CString Math::Unit::MagneticField::GetUnitName(MagneticFieldUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::MagneticField::GetConvertRatio(MagneticFieldUnit fromUnit, MagneticFieldUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::MagneticField::Convert(MagneticFieldUnit fromUnit, MagneticFieldUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

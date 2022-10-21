@@ -28,6 +28,7 @@ namespace Math
 			static Double GetUnitRatio(CountUnit unit);
 			static Text::CString GetUnitShortName(CountUnit unit);
 			static Text::CString GetUnitName(CountUnit unit);
+			static Double GetConvertRatio(CountUnit fromUnit, CountUnit toUnit);
 			static Double Convert(CountUnit fromUnit, CountUnit toUnit, Double fromValue);
 			static UTF8Char *WellFormat(UTF8Char *sbuff, Double val);
 			static UTF8Char *WellFormatBin(UTF8Char *sbuff, Double val);

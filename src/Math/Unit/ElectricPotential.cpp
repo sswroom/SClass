@@ -38,7 +38,12 @@ Text::CString Math::Unit::ElectricPotential::GetUnitName(ElectricPotentialUnit u
 	return CSTR("");
 }
 
+Double Math::Unit::ElectricPotential::GetConvertRatio(ElectricPotentialUnit fromUnit, ElectricPotentialUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::ElectricPotential::Convert(ElectricPotentialUnit fromUnit, ElectricPotentialUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

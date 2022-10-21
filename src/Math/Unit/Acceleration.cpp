@@ -39,7 +39,12 @@ Text::CString Math::Unit::Acceleration::GetUnitName(AccelerationUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Acceleration::GetConvertRatio(AccelerationUnit fromUnit, AccelerationUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Acceleration::Convert(AccelerationUnit fromUnit, AccelerationUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

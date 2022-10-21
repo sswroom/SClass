@@ -53,9 +53,14 @@ Text::CString Math::Unit::Speed::GetUnitName(SpeedUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Distance::GetConvertRatio(DistanceUnit fromUnit, DistanceUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Speed::Convert(SpeedUnit fromUnit, SpeedUnit toUnit, Double fromValue)
 {
-	return (fromValue * GetUnitRatio(fromUnit)) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }
 
 Double Math::Unit::Speed::CalcDryAirSpeed(Double temperatureK, SpeedUnit unit)

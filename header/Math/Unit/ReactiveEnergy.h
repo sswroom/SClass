@@ -20,6 +20,7 @@ namespace Math
 			static Double GetUnitRatio(ReactiveEnergyUnit unit);
 			static Text::CString GetUnitShortName(ReactiveEnergyUnit unit);
 			static Text::CString GetUnitName(ReactiveEnergyUnit unit);
+			static Double GetConvertRatio(ReactiveEnergyUnit fromUnit, ReactiveEnergyUnit toUnit);
 			static Double Convert(ReactiveEnergyUnit fromUnit, ReactiveEnergyUnit toUnit, Double fromValue);
 		};
 	}

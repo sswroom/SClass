@@ -24,6 +24,7 @@ namespace Math
 			static Double GetUnitRatio(PressureUnit unit);
 			static Text::CString GetUnitShortName(PressureUnit unit);
 			static Text::CString GetUnitName(PressureUnit unit);
+			static Double GetConvertRatio(PressureUnit fromUnit, PressureUnit toUnit);
 			static Double Convert(PressureUnit fromUnit, PressureUnit toUnit, Double fromValue);
 
 			static Double VapourPressureAntoine(PressureUnit outputUnit, Math::Unit::Temperature::TemperatureUnit tempUnit, Double tempValue, Math::Unit::Substance::SubstanceType substance); // Antoine equation

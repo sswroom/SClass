@@ -23,6 +23,7 @@ namespace Math
 			static Double GetUnitRatio(AngleUnit unit);
 			static Text::CString GetUnitShortName(AngleUnit unit);
 			static Text::CString GetUnitName(AngleUnit unit);
+			static Double GetConvertRatio(AngleUnit fromUnit, AngleUnit toUnit);
 			static Double Convert(AngleUnit fromUnit, AngleUnit toUnit, Double fromValue);
 		};
 	}

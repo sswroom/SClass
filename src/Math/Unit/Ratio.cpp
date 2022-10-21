@@ -38,7 +38,12 @@ Text::CString Math::Unit::Ratio::GetUnitName(RatioUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Ratio::GetConvertRatio(RatioUnit fromUnit, RatioUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Ratio::Convert(RatioUnit fromUnit, RatioUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

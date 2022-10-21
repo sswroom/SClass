@@ -22,6 +22,7 @@ namespace Math
 			static Double GetUnitRatio(PowerUnit unit);
 			static Text::CString GetUnitShortName(PowerUnit unit);
 			static Text::CString GetUnitName(PowerUnit unit);
+			static Double GetConvertRatio(PowerUnit fromUnit, PowerUnit toUnit);
 			static Double Convert(PowerUnit fromUnit, PowerUnit toUnit, Double fromValue);
 		};
 	}

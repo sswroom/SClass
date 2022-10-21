@@ -80,9 +80,14 @@ Text::CString Math::Unit::Count::GetUnitName(CountUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Count::GetConvertRatio(CountUnit fromUnit, CountUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Count::Convert(CountUnit fromUnit, CountUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }
 
 UTF8Char *Math::Unit::Count::WellFormat(UTF8Char *sbuff, Double val)

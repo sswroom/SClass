@@ -44,7 +44,12 @@ Text::CString Math::Unit::ElectricCurrent::GetUnitName(ElectricCurrentUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::ElectricCurrent::GetConvertRatio(ElectricCurrentUnit fromUnit, ElectricCurrentUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::ElectricCurrent::Convert(ElectricCurrentUnit fromUnit, ElectricCurrentUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

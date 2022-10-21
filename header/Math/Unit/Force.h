@@ -17,6 +17,7 @@ namespace Math
 			static Double GetUnitRatio(ForceUnit unit);
 			static Text::CString GetUnitShortName(ForceUnit unit);
 			static Text::CString GetUnitName(ForceUnit unit);
+			static Double GetConvertRatio(ForceUnit fromUnit, ForceUnit toUnit);
 			static Double Convert(ForceUnit fromUnit, ForceUnit toUnit, Double fromValue);
 		};
 	}

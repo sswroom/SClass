@@ -32,7 +32,12 @@ Text::CString Math::Unit::ReactiveEnergy::GetUnitName(ReactiveEnergyUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::ReactiveEnergy::GetConvertRatio(ReactiveEnergyUnit fromUnit, ReactiveEnergyUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::ReactiveEnergy::Convert(ReactiveEnergyUnit fromUnit, ReactiveEnergyUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

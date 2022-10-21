@@ -32,7 +32,12 @@ Text::CString Math::Unit::Force::GetUnitName(ForceUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Force::GetConvertRatio(ForceUnit fromUnit, ForceUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Force::Convert(ForceUnit fromUnit, ForceUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

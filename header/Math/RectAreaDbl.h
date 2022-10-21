@@ -86,6 +86,11 @@ namespace Math
 			return Math::RectAreaDbl(this->tl.Min(this->br), this->tl.Max(this->br));
 		}
 
+		Math::RectAreaDbl Expand(Double size)
+		{
+			return Math::RectAreaDbl(this->tl - size, this->br + size);
+		}
+
 		Bool operator==(Math::RectAreaDbl v)
 		{
 			return this->tl == v.tl && this->br == v.br;

@@ -32,7 +32,12 @@ Text::CString Math::Unit::ApparentPower::GetUnitName(ApparentPowerUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::ApparentPower::GetConvertRatio(ApparentPowerUnit fromUnit, ApparentPowerUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::ApparentPower::Convert(ApparentPowerUnit fromUnit, ApparentPowerUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

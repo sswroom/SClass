@@ -38,7 +38,12 @@ Text::CString Math::Unit::Frequency::GetUnitName(FrequencyUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Frequency::GetConvertRatio(FrequencyUnit fromUnit, FrequencyUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Frequency::Convert(FrequencyUnit fromUnit, FrequencyUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

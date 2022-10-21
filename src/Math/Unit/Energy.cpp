@@ -44,7 +44,12 @@ Text::CString Math::Unit::Energy::GetUnitName(EnergyUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Energy::GetConvertRatio(EnergyUnit fromUnit, EnergyUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Energy::Convert(EnergyUnit fromUnit, EnergyUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

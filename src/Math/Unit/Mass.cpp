@@ -56,7 +56,12 @@ Text::CString Math::Unit::Mass::GetUnitName(MassUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Mass::GetConvertRatio(MassUnit fromUnit, MassUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Mass::Convert(MassUnit fromUnit, MassUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

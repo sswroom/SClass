@@ -44,7 +44,12 @@ Text::CString Math::Unit::Power::GetUnitName(PowerUnit unit)
 	return CSTR("");
 }
 
+Double Math::Unit::Power::GetConvertRatio(PowerUnit fromUnit, PowerUnit toUnit)
+{
+	return GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+}
+
 Double Math::Unit::Power::Convert(PowerUnit fromUnit, PowerUnit toUnit, Double fromValue)
 {
-	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
+	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }

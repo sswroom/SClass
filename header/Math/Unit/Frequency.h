@@ -21,6 +21,7 @@ namespace Math
 			static Double GetUnitRatio(FrequencyUnit unit);
 			static Text::CString GetUnitShortName(FrequencyUnit unit);
 			static Text::CString GetUnitName(FrequencyUnit unit);
+			static Double GetConvertRatio(FrequencyUnit fromUnit, FrequencyUnit toUnit);
 			static Double Convert(FrequencyUnit fromUnit, FrequencyUnit toUnit, Double fromValue);
 		};
 	}
