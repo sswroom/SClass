@@ -1670,6 +1670,7 @@ IO/FileSectorData.h: ../../src/IO/FileSectorData.cpp
 @FileSectorData.o
 IO/GPIOPin.h: ../../src/IO/GPIOPin.cpp
 @GPIOPin.o
+IO/GPSDevType.h:
 IO/GPSNMEA.h: ../../src/IO/GPSNMEA.cpp
 @GPSNMEA.o
 IO/GSMModemController.h: ../../src/IO/GSMModemController.cpp
