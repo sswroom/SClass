@@ -1214,7 +1214,8 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	this->imgUpdated = true;
 	if (i >= 0)
 	{
-		this->MakeVisible((UOSInt)i * (20 + 12 + 12 + this->previewSize));
+		UOSInt firstPos = ((UOSInt)i * (20 + 12 + 12 + this->previewSize));
+		this->MakeVisible(firstPos, firstPos + this->previewSize + 20 + 12 + 12);
 	}
 }
 
@@ -1279,7 +1280,8 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	this->imgUpdated = true;
 	if (i >= 0)
 	{
-		this->MakeVisible((UOSInt)(i - 1) * (20 + 12 + 12 + this->previewSize));
+		UOSInt firstPos = ((UOSInt)i * (20 + 12 + 12 + this->previewSize));
+		this->MakeVisible(firstPos, firstPos + this->previewSize + 20 + 12 + 12);
 	}
 }
 

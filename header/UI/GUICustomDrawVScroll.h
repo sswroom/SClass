@@ -50,7 +50,7 @@ namespace UI
 		void EventDblClk();
 		void SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize);
 		UOSInt GetVScrollPos();
-		Bool MakeVisible(UOSInt index);
+		Bool MakeVisible(UOSInt firstIndex, UOSInt lastIndex);
 	};
 }
 #endif

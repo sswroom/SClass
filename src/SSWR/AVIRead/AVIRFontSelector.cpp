@@ -136,7 +136,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 			{
 				this->currFontStyle = 0;
 			}
-			if (!this->MakeVisible(this->currFontStyle))
+			if (!this->MakeVisible(this->currFontStyle, this->currFontStyle + 1))
 			{
 				this->Redraw();
 			}
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 			{
 				this->currFontStyle = this->env->GetFontStyleCount() - 1;
 			}
-			if (!this->MakeVisible(this->currFontStyle))
+			if (!this->MakeVisible(this->currFontStyle, this->currFontStyle + 1))
 			{
 				this->Redraw();
 			}
@@ -165,14 +165,14 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 		break;
 	case UI::GUIControl::GK_HOME:
 		this->currFontStyle = 0;
-		if (!this->MakeVisible(0))
+		if (!this->MakeVisible(0, 1))
 		{
 			this->Redraw();
 		}
 		break;
 	case UI::GUIControl::GK_END:
 		this->currFontStyle = this->env->GetFontStyleCount() - 1;
-		if (!this->MakeVisible(this->currFontStyle))
+		if (!this->MakeVisible(this->currFontStyle, this->currFontStyle + 1))
 		{
 			this->Redraw();
 		}
@@ -181,7 +181,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 		if (this->currFontStyle > 0)
 		{
 			this->currFontStyle -= 1;
-			if (!this->MakeVisible(this->currFontStyle))
+			if (!this->MakeVisible(this->currFontStyle, this->currFontStyle + 1))
 			{
 				this->Redraw();
 			}
@@ -191,7 +191,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 		if (this->currFontStyle < this->env->GetFontStyleCount() - 1)
 		{
 			this->currFontStyle += 1;
-			if (!this->MakeVisible(this->currFontStyle))
+			if (!this->MakeVisible(this->currFontStyle, this->currFontStyle + 1))
 			{
 				this->Redraw();
 			}
@@ -340,7 +340,7 @@ SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(UI::GUICore *ui, UI::GUIClient
 	}
 
 	this->UpdateFontStyles();
-	this->MakeVisible(this->currFontStyle);
+	this->MakeVisible(this->currFontStyle, this->currFontStyle + 1);
 	this->HandleSizeChanged(OnResized, this);
 }
 

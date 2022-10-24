@@ -361,28 +361,34 @@ UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
 	return data->currPos;
 }
 
-Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt index)
+Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 {
 	ClassData *data = (ClassData*)this->clsData;
-
-	if (index < data->min)
-		return false;
-	if (index >= data->max)
-		return false;
-
-	if (data->currPos > index)
+	if (lastIndex >= data->max)
 	{
-		data->currPos = index;
+		lastIndex = data->max - 1;
+	}
+	if (firstIndex > lastIndex)
+	{
+		return false;
+	}
+
+	if (firstIndex < data->min)
+		return false;
+
+	if (data->currPos > firstIndex)
+	{
+		data->currPos = firstIndex;
 		this->Redraw();
 		return true;
 	}
-	else if ((data->currPos + data->pageSize) > index)
+	else if ((data->currPos + data->pageSize) > lastIndex)
 	{
 		return false;
 	}
 	else
 	{
-		data->currPos = index - data->pageSize + 1;
+		data->currPos = lastIndex - data->pageSize + 1;
 		this->Redraw();
 		return true;
 	}
