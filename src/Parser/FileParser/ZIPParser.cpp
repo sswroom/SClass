@@ -390,7 +390,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						compInfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
+						compInfo.checkMethod = Crypto::Hash::HashType::CRC32R_IEEE;
 						if (zipInfo)
 						{
 							WriteMInt32(compInfo.checkBytes, zipInfo->crc);
@@ -647,7 +647,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 			}
 			else
 			{
-				compInfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
+				compInfo.checkMethod = Crypto::Hash::HashType::CRC32R_IEEE;
 				WriteMInt32(compInfo.checkBytes, ReadInt32(&buff[i + 16]));
 				compInfo.compExtras = 0;
 				compInfo.compExtraSize = 0;

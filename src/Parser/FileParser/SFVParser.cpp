@@ -38,13 +38,13 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::FileCheck *fchk;
-	IO::FileCheck::CheckType ctype;
+	Crypto::Hash::HashType ctype;
 	UInt8 chk[8];
 	UOSInt chkSize;
 
 	if (fd->GetFullName()->EndsWithICase(UTF8STRC(".SFV")))
 	{
-		ctype = IO::FileCheck::CheckType::CRC32;
+		ctype = Crypto::Hash::HashType::CRC32;
 		chkSize = 4;
 	}
 	else

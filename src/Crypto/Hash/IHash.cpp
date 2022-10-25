@@ -5,50 +5,52 @@ Text::CString Crypto::Hash::HashTypeGetName(HashType hashType)
 {
 	switch (hashType)
 	{
-	case HT_ADLER32:
+	case HashType::Adler32:
 		return CSTR("Adler-32");
-	case HT_CRC16:
+	case HashType::CRC16:
 		return CSTR("CRC-16");
-	case HT_CRC16R:
+	case HashType::CRC16R:
 		return CSTR("CRC-16 (Reversed)");
-	case HT_CRC32:
+	case HashType::CRC32:
 		return CSTR("CRC-32");
-	case HT_CRC32R_IEEE:
+	case HashType::CRC32R_IEEE:
 		return CSTR("CRC-32 (IEEE)");
-	case HT_CRC32C:
+	case HashType::CRC32C:
 		return CSTR("CRC-32 (CCITT)");
-	case HT_DJB2:
+	case HashType::DJB2:
 		return CSTR("DJB2");
-	case HT_DJB2A:
+	case HashType::DJB2a:
 		return CSTR("DJB2a");
-	case HT_FNV1:
+	case HashType::FNV1:
 		return CSTR("FNV1");
-	case HT_FNV1A:
+	case HashType::FNV1a:
 		return CSTR("FNV1a");
-	case HT_MD5:
+	case HashType::MD5:
 		return CSTR("MD5");
-	case HT_RIPEMD128:
+	case HashType::RIPEMD128:
 		return CSTR("RIPEMD-128");
-	case HT_RIPEMD160:
+	case HashType::RIPEMD160:
 		return CSTR("RIPEMD-160");
-	case HT_SDBM:
+	case HashType::SDBM:
 		return CSTR("SDBM");
-	case HT_SHA1:
+	case HashType::SHA1:
 		return CSTR("SHA-1");
-	case HT_EXCEL:
+	case HashType::Excel:
 		return CSTR("Excel Hash");
-	case HT_SHA224:
+	case HashType::SHA224:
 		return CSTR("SHA-224");
-	case HT_SHA256:
+	case HashType::SHA256:
 		return CSTR("SHA-256");
-	case HT_SHA384:
+	case HashType::SHA384:
 		return CSTR("SHA-384");
-	case HT_SHA512:
+	case HashType::SHA512:
 		return CSTR("SHA-512");
-	case HT_SHA1_SHA1:
+	case HashType::MD4:
+		return CSTR("MD4");
+	case HashType::SHA1_SHA1:
 		return CSTR("SHA-1 SHA-1");
 	default:
-	case HT_UNKNOWN:
+	case HashType::Unknown:
 		return CSTR("Unknown");
 	}
 }

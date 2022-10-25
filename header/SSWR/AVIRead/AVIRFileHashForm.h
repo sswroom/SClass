@@ -25,6 +25,7 @@ namespace SSWR
 			{
 				Text::String *fileName;
 				Int32 status;
+				IO::FileCheck *fchk;
 			} FileStatus;
 
 		private:
@@ -69,7 +70,7 @@ namespace SSWR
 			UInt64 progCount;
 			UInt64 progCurr;
 			UInt64 progLastCount;
-			IO::FileCheck::CheckType currHashType;
+			Crypto::Hash::HashType currHashType;
 
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnTimerTick(void *userObj);

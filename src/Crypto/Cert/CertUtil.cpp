@@ -294,7 +294,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEn
 	{
 		return 0;
 	}
-	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA && hashType == Crypto::Hash::HT_SHA256)
+	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA && hashType == Crypto::Hash::HashType::SHA256)
 	{
 		UInt8 signData[256];
 		UOSInt signLen;
@@ -337,7 +337,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	builder.EndLevel();
 	builder.EndLevel();
 
-	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HT_SHA256)) return 0;
+	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HashType::SHA256)) return 0;
 	builder.EndLevel();
 
 	Text::StringBuilderUTF8 sb;
@@ -393,7 +393,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	builder.EndLevel();
 	builder.EndLevel();
 
-	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HT_SHA256)) return 0;
+	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HashType::SHA256)) return 0;
 	builder.EndLevel();
 	Text::StringBuilderUTF8 sb;
 	sb.Append(names->commonName);
@@ -497,7 +497,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	builder.EndLevel();
 	builder.EndLevel();
 
-	if (!AppendSign(&builder, ssl, caKey, Crypto::Hash::HT_SHA256)) return 0;
+	if (!AppendSign(&builder, ssl, caKey, Crypto::Hash::HashType::SHA256)) return 0;
 	builder.EndLevel();
 	sbFileName.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;

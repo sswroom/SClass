@@ -782,10 +782,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 #if defined(TEST_HASH)
 	Crypto::Hash::IHash *hash;
-	i = Crypto::Hash::HT_FIRST;
-	while (i <= Crypto::Hash::HT_LAST)
+	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
+	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
+		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
 		if (hash)
 		{
 			t = HashTestSpeed(hash);
@@ -801,7 +801,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			DEL_CLASS(hash);
 		}
-		i++;
+		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
 #endif
 

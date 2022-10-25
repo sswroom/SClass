@@ -11,22 +11,22 @@ namespace Crypto
 		class BruteForceAttack
 		{
 		public:
-			typedef enum
+			enum class CharLimit
 			{
-				CL_ASCII,
-				CL_LETTER_NUM,
-				CL_WEBPASSWORD,
+				ASCII,
+				LetterNum,
+				WebPassword,
 
-				CL_FIRST = CL_ASCII,
-				CL_LAST = CL_WEBPASSWORD
-			} CharLimit;
+				First = ASCII,
+				Last = WebPassword
+			};
 
-			typedef enum
+			enum class CharEncoding
 			{
-				CE_UTF8,
-				CE_UTF16LE,
-				CE_UTF32LE
-			} CharEncoding;
+				UTF8,
+				UTF16LE,
+				UTF32LE
+			};
 		private:
 			Crypto::Hash::HashValidator *validator;
 			CharEncoding ce;

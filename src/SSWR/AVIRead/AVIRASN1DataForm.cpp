@@ -32,12 +32,12 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(UI::GUIComboBox *cbo, Crypto::Ha
 
 void SSWR::AVIRead::AVIRASN1DataForm::AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType)
 {
-	AddHash(cbo, Crypto::Hash::HT_MD5, hashType);
-	AddHash(cbo, Crypto::Hash::HT_SHA1, hashType);
-	AddHash(cbo, Crypto::Hash::HT_SHA224, hashType);
-	AddHash(cbo, Crypto::Hash::HT_SHA256, hashType);
-	AddHash(cbo, Crypto::Hash::HT_SHA384, hashType);
-	AddHash(cbo, Crypto::Hash::HT_SHA512, hashType);
+	AddHash(cbo, Crypto::Hash::HashType::MD5, hashType);
+	AddHash(cbo, Crypto::Hash::HashType::SHA1, hashType);
+	AddHash(cbo, Crypto::Hash::HashType::SHA224, hashType);
+	AddHash(cbo, Crypto::Hash::HashType::SHA256, hashType);
+	AddHash(cbo, Crypto::Hash::HashType::SHA384, hashType);
+	AddHash(cbo, Crypto::Hash::HashType::SHA512, hashType);
 }
 
 Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(Text::String *fileName)
@@ -402,7 +402,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 		Bool canSignature = false;
 		Bool canVerify = false;
-		Crypto::Hash::HashType hashType = Crypto::Hash::HT_SHA256;
+		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA256;
 		switch (x509->GetFileType())
 		{
 		case Crypto::Cert::X509File::FileType::FileList:

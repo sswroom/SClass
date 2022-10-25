@@ -45,7 +45,7 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *sptr;
 	IO::FileCheck *fchk;
 	UInt8 chk[20];
-	IO::FileCheck::CheckType ctype;
+	Crypto::Hash::HashType ctype;
 	UOSInt chkSize;
 	Text::String *fullName = fd->GetFullName();
 
@@ -55,22 +55,22 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	}
 	if (fullName->EndsWithICase(UTF8STRC(".MD5")))
 	{
-		ctype = IO::FileCheck::CheckType::MD5;
+		ctype = Crypto::Hash::HashType::MD5;
 		chkSize = 16;
 	}
 	else if (fullName->EndsWithICase(UTF8STRC(".MD4")))
 	{
-		ctype = IO::FileCheck::CheckType::MD4;
+		ctype = Crypto::Hash::HashType::MD4;
 		chkSize = 16;
 	}
 	else if (fullName->EndsWithICase(UTF8STRC(".SHA1")))
 	{
-		ctype = IO::FileCheck::CheckType::SHA1;
+		ctype = Crypto::Hash::HashType::SHA1;
 		chkSize = 20;
 	}
 	else if (fullName->EndsWithICase(UTF8STRC(".MD5SUM")))
 	{
-		ctype = IO::FileCheck::CheckType::MD5;
+		ctype = Crypto::Hash::HashType::MD5;
 		chkSize = 16;
 	}
 	else

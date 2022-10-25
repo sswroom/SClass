@@ -30,7 +30,7 @@ namespace Text
 			return {this->v, this->leng};
 		}
 
-		Text::PString Substring(UOSInt index)
+		Text::PString Substring(UOSInt index) const
 		{
 			return {this->v + index, this->leng - index};
 		}

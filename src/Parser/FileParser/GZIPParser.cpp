@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 
 	cinfo.decSize = *(UInt32*)&footer[4];
 	cinfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
-	cinfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
+	cinfo.checkMethod = Crypto::Hash::HashType::CRC32R_IEEE;
 	cinfo.compFlags = 0;
 	cinfo.compExtraSize = 0;
 	cinfo.compExtras = 0;

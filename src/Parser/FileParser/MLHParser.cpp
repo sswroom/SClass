@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 			compInfo.compFlags = 0;
 			compInfo.compExtraSize = 0;
 			compInfo.compExtras = 0;
-			compInfo.checkMethod = Crypto::Hash::HT_UNKNOWN;
+			compInfo.checkMethod = Crypto::Hash::HashType::Unknown;
 			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, &compInfo, CSTRP(sbuff, sptr), 0);
 		}
 		i++;

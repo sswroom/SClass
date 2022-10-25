@@ -27,14 +27,14 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	UOSInt i = Crypto::Hash::HT_FIRST;
+	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
 	UOSInt j;
 	Double speed;
 	Crypto::Hash::IHash *hash;
 	me->lvCompare->ClearItems();
-	while (i <= Crypto::Hash::HT_LAST)
+	while (i <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
+		hash = Crypto::Hash::HashCreator::CreateHash(i);
 		if (hash)
 		{
 			sbuff[0] = 0;
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 			me->lvCompare->SetSubItem(j, 1, CSTRP(sbuff, sptr));
 			DEL_CLASS(hash);
 		}
-		i++;
+		i = (Crypto::Hash::HashType)((OSInt)i + 1);
 	}
 }
 
@@ -116,9 +116,9 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	OSInt i = Crypto::Hash::HT_FIRST;
+	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
 	Crypto::Hash::IHash *hash;
-	while (i <= Crypto::Hash::HT_LAST)
+	while (i <= Crypto::Hash::HashType::Last)
 	{
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
 		if (hash)
@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 			this->cboAlgorithm->AddItem(CSTRP(sbuff, sptr), (void*)i);
 			DEL_CLASS(hash);
 		}
-		i++;
+		i = (Crypto::Hash::HashType)((OSInt)i + 1);
 	}
 }
 

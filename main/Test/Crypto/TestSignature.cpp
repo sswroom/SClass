@@ -53,13 +53,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (x509 && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
-		if (!ssl->Signature(key, Crypto::Hash::HT_SHA256, UTF8STRC("123456"), signData, &signLen))
+		if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, &signLen))
 		{
 			printf("Error in generating signature\r\n");
 		}
 		else
 		{
-			if (ssl->SignatureVerify(key, Crypto::Hash::HT_SHA256, UTF8STRC("123456"), signData, signLen))
+			if (ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, signLen))
 			{
 				printf("Signature verify success\r\n");
 				ret = 0;

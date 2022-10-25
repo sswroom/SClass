@@ -186,7 +186,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				IO::FileCheck *fileChk;
 				{
 					ProgressHandler progress;
-					fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, IO::FileCheck::CheckType::CRC32, &progress, false);
+					fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, Crypto::Hash::HashType::CRC32, &progress, false);
 				}
 				console->WriteLine();
 				if (fileChk)

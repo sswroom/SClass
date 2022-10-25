@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm*)userObj;
-	me->currHashType = (IO::FileCheck::CheckType)(OSInt)me->cboCheckType->GetSelectedItem();
+	me->currHashType = (Crypto::Hash::HashType)(OSInt)me->cboCheckType->GetSelectedItem();
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
@@ -83,7 +83,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	IO::FileExporter *exporter;
-	IO::FileCheck::CheckType chkType;
+	Crypto::Hash::HashType chkType;
 	me->threadStatus = 1;
 	while (!me->threadToStop)
 	{
@@ -107,19 +107,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 		if (found)
 		{
 			chkType = me->currHashType;
-			if (chkType == IO::FileCheck::CheckType::MD5)
+			if (chkType == Crypto::Hash::HashType::MD5)
 			{
 				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".md5"));
 			}
-			else if (chkType == IO::FileCheck::CheckType::CRC32)
+			else if (chkType == Crypto::Hash::HashType::CRC32)
 			{
 				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".sfv"));
 			}
-			else if (chkType == IO::FileCheck::CheckType::SHA1)
+			else if (chkType == Crypto::Hash::HashType::SHA1)
 			{
 				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".sha1"));
 			}
-			else if (chkType == IO::FileCheck::CheckType::MD4)
+			else if (chkType == Crypto::Hash::HashType::MD4)
 			{
 				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".md4"));
 			}
@@ -133,19 +133,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName->ToCString(), chkType, me, false);
 				if (fchk)
 				{
-					if (chkType == IO::FileCheck::CheckType::CRC32)
+					if (chkType == Crypto::Hash::HashType::CRC32)
 					{
 						NEW_CLASS(exporter, Exporter::SFVExporter());
 					}
-					else if (chkType == IO::FileCheck::CheckType::MD4)
+					else if (chkType == Crypto::Hash::HashType::MD4)
 					{
 						NEW_CLASS(exporter, Exporter::MD4Exporter());
 					}
-					else if (chkType == IO::FileCheck::CheckType::MD5)
+					else if (chkType == Crypto::Hash::HashType::MD5)
 					{
 						NEW_CLASS(exporter, Exporter::MD5Exporter());
 					}
-					else if (chkType == IO::FileCheck::CheckType::SHA1)
+					else if (chkType == Crypto::Hash::HashType::SHA1)
 					{
 						NEW_CLASS(exporter, Exporter::SHA1Exporter());
 					}
@@ -162,8 +162,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 						}
 						DEL_CLASS(exporter);
 					}
-					DEL_CLASS(fchk);
 					status->status = 2;
+					status->fchk = fchk;
 				}
 				else
 				{
@@ -190,6 +190,7 @@ void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CString fileName)
 	FileStatus *status;
 	Sync::MutexUsage mutUsage(&this->fileMut);
 	status = MemAlloc(FileStatus, 1);
+	status->fchk = 0;
 	status->status = 0;
 	status->fileName = Text::String::New(fileName);
 	this->fileList.Add(status);
@@ -199,13 +200,19 @@ void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CString fileName)
 
 void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 {
+	UInt8 hashBuff[64];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	if (this->fileListChg)
 	{
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
+		UOSInt l;
+		UOSInt m;
 		FileStatus *status;
 		this->fileListChg = false;
+		this->lvFiles->ClearItems();
 		this->lvTasks->ClearItems();
 		Sync::MutexUsage mutUsage(&this->fileMut);
 		i = 0;
@@ -225,6 +232,19 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 			else if (status->status == 2)
 			{
 				this->lvTasks->SetSubItem(k, 1, CSTR("Finished"));
+				if (status->fchk)
+				{
+					k = 0;
+					l = status->fchk->GetCount();
+					while (k < l)
+					{
+						m = this->lvFiles->AddItem(status->fchk->GetEntryName(k), 0);
+						status->fchk->GetEntryHash(k, hashBuff);
+						sptr = Text::StrHexBytes(sbuff, hashBuff, status->fchk->GetHashSize(), 0);
+						this->lvFiles->SetSubItem(m, 1, CSTRP(sbuff, sptr));
+						k++;
+					}
+				}
 			}
 			else if (status->status == 3)
 			{
@@ -236,7 +256,6 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 			}
 			i++;
 		}
-		mutUsage.EndUse();
 	}
 }
 
@@ -254,9 +273,10 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->progCount = 0;
 	this->threadStatus = 0;
 	this->threadToStop = false;
-	this->currHashType = IO::FileCheck::CheckType::MD5;
+	this->currHashType = Crypto::Hash::HashType::MD5;
 	this->readSize = 0;
 	this->totalRead = 0;
+	this->fileListChg = false;
 
 	NEW_CLASS(this->pnlCheckType, UI::GUIPanel(ui, this));
 	this->pnlCheckType->SetRect(0, 0, 100, 31, false);
@@ -265,11 +285,17 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->lblCheckType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboCheckType, UI::GUIComboBox(ui, this->pnlCheckType, false));
 	this->cboCheckType->SetRect(104, 4, 100, 23, false);
-	this->cboCheckType->AddItem(CSTR("MD5"), (void*)(OSInt)IO::FileCheck::CheckType::MD5);
-	this->cboCheckType->AddItem(CSTR("MD4"), (void*)(OSInt)IO::FileCheck::CheckType::MD4);
-	this->cboCheckType->AddItem(CSTR("CRC"), (void*)(OSInt)IO::FileCheck::CheckType::CRC32);
-	this->cboCheckType->AddItem(CSTR("SHA1"), (void*)(OSInt)IO::FileCheck::CheckType::SHA1);
-	this->cboCheckType->SetSelectedIndex(0);
+	Crypto::Hash::HashType currType = Crypto::Hash::HashType::First;
+	Crypto::Hash::HashType lastType = Crypto::Hash::HashType::Last;
+	while (currType <= lastType)
+	{
+		UOSInt i = this->cboCheckType->AddItem(Crypto::Hash::HashTypeGetName(currType), (void*)(OSInt)currType);
+		if (currType == this->currHashType)
+		{
+			this->cboCheckType->SetSelectedIndex(i);
+		}
+		currType = (Crypto::Hash::HashType)((OSInt)currType + 1);
+	}
 	this->cboCheckType->HandleSelectionChange(OnCheckTypeChg, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -345,8 +371,10 @@ SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 	{
 		status = this->fileList.GetItem(i);
 		status->fileName->Release();
+		SDEL_CLASS(status->fchk);
 		MemFree(status);
 	}
+	SDEL_STRING(this->progName);
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
@@ -367,7 +395,6 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 c
 	this->totalRead += this->progCount - this->progCurr;
 	this->progCount = count;
 	this->progCurr = 0;
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
@@ -376,7 +403,6 @@ void SSWR::AVIRead::AVIRFileHashForm::ProgressUpdate(UInt64 currCount, UInt64 ne
 	this->readSize += currCount - this->progCurr;
 	this->totalRead += currCount - this->progCurr;
 	this->progCurr = currCount;
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::ProgressEnd()

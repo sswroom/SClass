@@ -61,7 +61,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 							{
 								this->txtSignState->SetText(CSTR("Message Digest not found"));
 							}
-							else if (hashType == Crypto::Hash::HT_UNKNOWN)
+							else if (hashType == Crypto::Hash::HashType::Unknown)
 							{
 								this->txtSignState->SetText(CSTR("Unknown Digest Type"));
 							}
@@ -119,7 +119,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 													Net::ASN1PDUBuilder builder;
 													builder.BeginSequence();
 														builder.BeginSequence();
-															if (hashType == Crypto::Hash::HT_SHA256)
+															if (hashType == Crypto::Hash::HashType::SHA256)
 															{
 																builder.AppendOIDString(UTF8STRC("2.16.840.1.101.3.4.2.1")); //id-sha256
 															}

@@ -204,7 +204,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			else
 			{
 				IO::PackFileItem::CompressInfo cinfo;
-				cinfo.checkMethod = Crypto::Hash::HT_CRC32R_IEEE;
+				cinfo.checkMethod = Crypto::Hash::HashType::CRC32R_IEEE;
 				WriteMUInt32(cinfo.checkBytes, dataCRC);
 				cinfo.compExtras = 0;
 				cinfo.compExtraSize = 0;

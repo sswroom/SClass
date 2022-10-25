@@ -152,23 +152,23 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 
 ALG_ID WinSSLEngine_CryptGetHashAlg(Crypto::Hash::HashType hashType)
 {
-	if (hashType == Crypto::Hash::HT_SHA256)
+	if (hashType == Crypto::Hash::HashType::SHA256)
 	{
 		return CALG_SHA_256;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA384)
+	else if (hashType == Crypto::Hash::HashType::SHA384)
 	{
 		return CALG_SHA_384;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA512)
+	else if (hashType == Crypto::Hash::HashType::SHA512)
 	{
 		return CALG_SHA_512;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA1)
+	else if (hashType == Crypto::Hash::HashType::SHA1)
 	{
 		return CALG_SHA1;
 	}
-	else if (hashType == Crypto::Hash::HT_MD5)
+	else if (hashType == Crypto::Hash::HashType::MD5)
 	{
 		return CALG_MD5;
 	}
@@ -566,23 +566,23 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert
 BCRYPT_ALG_HANDLE WinSSLEngine_BCryptOpenHash(Crypto::Hash::HashType hashType)
 {
 	const WChar *hashAlg = 0;
-	if (hashType == Crypto::Hash::HT_SHA256)
+	if (hashType == Crypto::Hash::HashType::SHA256)
 	{
 		hashAlg = BCRYPT_SHA256_ALGORITHM;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA384)
+	else if (hashType == Crypto::Hash::HashType::SHA384)
 	{
 		hashAlg = BCRYPT_SHA384_ALGORITHM;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA512)
+	else if (hashType == Crypto::Hash::HashType::SHA512)
 	{
 		hashAlg = BCRYPT_SHA512_ALGORITHM;
 	}
-	else if (hashType == Crypto::Hash::HT_SHA1)
+	else if (hashType == Crypto::Hash::HashType::SHA1)
 	{
 		hashAlg = BCRYPT_SHA1_ALGORITHM;
 	}
-	else if (hashType == Crypto::Hash::HT_MD5)
+	else if (hashType == Crypto::Hash::HashType::MD5)
 	{
 		hashAlg = BCRYPT_MD5_ALGORITHM;
 	}

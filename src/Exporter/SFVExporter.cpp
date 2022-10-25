@@ -26,7 +26,7 @@ IO::FileExporter::SupportType Exporter::SFVExporter::IsObjectSupported(IO::Parse
 		return IO::FileExporter::SupportType::NotSupported;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CheckType::CRC32)
+	if (fchk->GetCheckType() != Crypto::Hash::HashType::CRC32)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -51,7 +51,7 @@ Bool Exporter::SFVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		return false;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CheckType::CRC32)
+	if (fchk->GetCheckType() != Crypto::Hash::HashType::CRC32)
 	{
 		return false;
 	}
@@ -59,19 +59,17 @@ Bool Exporter::SFVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UInt8 buff[16];
-	Text::UTF8Writer *writer;
-	NEW_CLASS(writer, Text::UTF8Writer(stm));
+	Text::UTF8Writer writer(stm);
 	UOSInt i = 0;
 	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
 	{
 		fchk->GetEntryHash(i, buff);
-		sptr = Text::StrConcat(sbuff, fchk->GetEntryName(i));
+		sptr = fchk->GetEntryName(i)->ConcatTo(sbuff);
 		*sptr++ = ' ';
 		sptr = Text::StrHexVal32(sptr, ReadMUInt32(buff));
-		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
-	DEL_CLASS(writer);
 	return true;
 }

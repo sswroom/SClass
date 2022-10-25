@@ -102,7 +102,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 		else
 		{
 			IO::PackFileItem::CompressInfo compInfo;
-			compInfo.checkMethod = Crypto::Hash::HT_UNKNOWN;
+			compInfo.checkMethod = Crypto::Hash::HashType::Unknown;
 			compInfo.compExtraSize = 0;
 			compInfo.compFlags = 0;
 			compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;

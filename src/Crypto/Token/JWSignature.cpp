@@ -56,11 +56,11 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 			Bool succ = false;
 			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("rsakey"), this->privateKey, this->privateKeyLeng, Crypto::Cert::X509Key::KeyType::RSA));
 			if (alg == Algorithm::RS256)
-				succ = this->ssl->Signature(key, Crypto::Hash::HT_SHA256, buff, buffSize, this->hashVal, &this->hashValSize);
+				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, &this->hashValSize);
 			else if (alg == Algorithm::RS384)
-				succ = this->ssl->Signature(key, Crypto::Hash::HT_SHA384, buff, buffSize, this->hashVal, &this->hashValSize);
+				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, &this->hashValSize);
 			if (alg == Algorithm::RS512)
-				succ = this->ssl->Signature(key, Crypto::Hash::HT_SHA512, buff, buffSize, this->hashVal, &this->hashValSize);
+				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, &this->hashValSize);
 			DEL_CLASS(key);
 			return succ;
 		}

@@ -125,8 +125,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->lastCnt = 0;
 	this->lastTime = 0;
 
-	OSInt i;
-	OSInt j;
+	Crypto::Hash::HashType currHash;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, CSTR("Hash Type")));
@@ -135,15 +134,14 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
 
 	Crypto::Hash::IHash *hash;
-	i = Crypto::Hash::HT_FIRST;
-	j = Crypto::Hash::HT_LAST;
-	while (i <= j)
+	currHash = Crypto::Hash::HashType::First;
+	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
+		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
 		sptr = hash->GetName(sbuff);
-		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)i);
+		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
 		DEL_CLASS(hash);
-		i++;
+		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
 	this->cboHashType->AddItem(CSTR("Bcrypt"), (void*)1000);
 	this->cboHashType->SetSelectedIndex(0);
@@ -155,9 +153,9 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, this, false));
 	this->cboEncoding->SetRect(104, 52, 150, 23, false);
-	this->cboEncoding->AddItem(CSTR("UTF-8"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF8);
-	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF16LE);
-	this->cboEncoding->AddItem(CSTR("UTF-32LE"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF32LE);
+	this->cboEncoding->AddItem(CSTR("UTF-8"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF8);
+	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF16LE);
+	this->cboEncoding->AddItem(CSTR("UTF-32LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF32LE);
 	this->cboEncoding->SetSelectedIndex(0);
 	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, this, CSTR("Min Length")));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
@@ -171,12 +169,11 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->cboCharType, UI::GUIComboBox(ui, this, false));
 	this->cboCharType->SetRect(104, 124, 200, 23, false);
-	i = Crypto::Hash::BruteForceAttack::CL_FIRST;
-	j = Crypto::Hash::BruteForceAttack::CL_LAST;
-	while (i <= j)
+	Crypto::Hash::BruteForceAttack::CharLimit currLimit = Crypto::Hash::BruteForceAttack::CharLimit::First;
+	while (currLimit <= Crypto::Hash::BruteForceAttack::CharLimit::Last)
 	{
-		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName((Crypto::Hash::BruteForceAttack::CharLimit)i), (void*)i);
-		i++;
+		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName(currLimit), (void*)currLimit);
+		currLimit = (Crypto::Hash::BruteForceAttack::CharLimit)((OSInt)currLimit + 1);
 	}
 	this->cboCharType->SetSelectedIndex(0);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));

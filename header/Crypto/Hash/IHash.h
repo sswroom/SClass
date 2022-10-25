@@ -6,37 +6,38 @@ namespace Crypto
 {
 	namespace Hash
 	{
-		typedef enum
+		enum class HashType
 		{
-			HT_UNKNOWN,
+			Unknown,
 			// Primary Algorithm
-			HT_ADLER32,
-			HT_CRC16,
-			HT_CRC16R,
-			HT_CRC32,
-			HT_CRC32R_IEEE,
-			HT_CRC32C,
-			HT_DJB2,
-			HT_DJB2A,
-			HT_FNV1,
-			HT_FNV1A,
-			HT_MD5,
-			HT_RIPEMD128,
-			HT_RIPEMD160,
-			HT_SDBM,
-			HT_SHA1,
-			HT_EXCEL,
-			HT_SHA224,
-			HT_SHA256,
-			HT_SHA384,
-			HT_SHA512,
+			Adler32,
+			CRC16,
+			CRC16R,
+			CRC32,
+			CRC32R_IEEE,
+			CRC32C,
+			DJB2,
+			DJB2a,
+			FNV1,
+			FNV1a,
+			MD5,
+			RIPEMD128,
+			RIPEMD160,
+			SDBM,
+			SHA1,
+			Excel,
+			SHA224,
+			SHA256,
+			SHA384,
+			SHA512,
+			MD4,
 
 			// Compound Algorithm
-			HT_SHA1_SHA1,
+			SHA1_SHA1,
 
-			HT_FIRST = HT_ADLER32,
-			HT_LAST = HT_SHA1_SHA1
-		} HashType;
+			First = Adler32,
+			Last = SHA1_SHA1
+		};
 
 		Text::CString HashTypeGetName(HashType hashType);
 

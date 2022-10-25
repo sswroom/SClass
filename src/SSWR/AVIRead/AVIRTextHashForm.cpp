@@ -90,15 +90,16 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Crypto::Hash::IHash *hash;
-	UOSInt i = Crypto::Hash::HT_FIRST;
+	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
+	UOSInt i;
 	UOSInt j;
-	while (i <= Crypto::Hash::HT_LAST)
+	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
+		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
 		sptr = hash->GetName(sbuff);
-		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)i);
+		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
 		DEL_CLASS(hash);
-		i++;
+		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
 	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
 	Text::TextBinEnc::ITextBinEnc *enc;

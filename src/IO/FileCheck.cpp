@@ -1,9 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Crypto/Hash/CRC32.h"
-#include "Crypto/Hash/CRC32R.h"
-#include "Crypto/Hash/MD5.h"
-#include "Crypto/Hash/SHA1.h"
+#include "Crypto/Hash/HashCreator.h"
 #include "IO/ActiveStreamReader.h"
 #include "IO/FileCheck.h"
 #include "IO/FileStream.h"
@@ -18,33 +15,7 @@ typedef struct
 	IO::IProgressHandler *progress;
 } ReadSess;
 
-Crypto::Hash::IHash *IO::FileCheck::CreateHash(CheckType chkType)
-{
-	Crypto::Hash::IHash *hash;
-	if (chkType == IO::FileCheck::CheckType::CRC32)
-	{
-		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
-	}
-	else if (chkType == IO::FileCheck::CheckType::MD4)
-	{
-		return 0;
-	}
-	else if (chkType == IO::FileCheck::CheckType::MD5)
-	{
-		NEW_CLASS(hash, Crypto::Hash::MD5());
-	}
-	else if (chkType == IO::FileCheck::CheckType::SHA1)
-	{
-		NEW_CLASS(hash, Crypto::Hash::SHA1());
-	}
-	else
-	{
-		return 0;
-	}
-	return hash;
-}
-
-IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, IO::FileCheck::CheckType chkType, IO::IProgressHandler *progress, Bool skipError)
+IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, Crypto::Hash::HashType chkType, IO::IProgressHandler *progress, Bool skipError)
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
@@ -57,7 +28,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, IO::FileCheck::Che
 	IO::ActiveStreamReader *reader;
 	IO::ActiveStreamReader::BottleNeckType bnt;
 
-	hash = CreateHash(chkType);
+	hash = Crypto::Hash::HashCreator::CreateHash(chkType);
 	if (hash == 0)
 	{
 		return 0;
@@ -257,89 +228,48 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	return false;
 }
 
-IO::FileCheck::FileCheck(Text::String *name, CheckType chkType) : IO::ParsedObject(name)
+IO::FileCheck::FileCheck(Text::String *name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
-
-	if (chkType == IO::FileCheck::CheckType::MD5)
-	{
-		this->hashSize = 16;
-	}
-	else if (chkType == IO::FileCheck::CheckType::SHA1)
-	{
-		this->hashSize = 20;
-	}
-	else if (chkType == IO::FileCheck::CheckType::MD4)
-	{
-		this->hashSize = 16;
-	}
-	else if (chkType == IO::FileCheck::CheckType::CRC32)
+	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);
+	if (hash == 0)
 	{
 		this->hashSize = 4;
+		this->chkType = Crypto::Hash::HashType::CRC32;
+		this->hashSize = 0;
 	}
 	else
 	{
-		this->chkType = IO::FileCheck::CheckType::CRC32;
-		this->hashSize = 4;
+		this->hashSize = hash->GetResultSize();
+		DEL_CLASS(hash);
 	}
-
-	NEW_CLASS(this->fileNames, Data::ArrayListStrUTF8());
 	this->chkCapacity = 40;
 	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
 }
 
-IO::FileCheck::FileCheck(Text::CString name, CheckType chkType) : IO::ParsedObject(name)
+IO::FileCheck::FileCheck(Text::CString name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
-
-	if (chkType == IO::FileCheck::CheckType::MD5)
-	{
-		this->hashSize = 16;
-	}
-	else if (chkType == IO::FileCheck::CheckType::SHA1)
-	{
-		this->hashSize = 20;
-	}
-	else if (chkType == IO::FileCheck::CheckType::MD4)
-	{
-		this->hashSize = 16;
-	}
-	else if (chkType == IO::FileCheck::CheckType::CRC32)
+	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);
+	if (hash == 0)
 	{
 		this->hashSize = 4;
+		this->chkType = Crypto::Hash::HashType::CRC32;
+		this->hashSize = 0;
 	}
 	else
 	{
-		this->chkType = IO::FileCheck::CheckType::CRC32;
-		this->hashSize = 4;
+		this->hashSize = hash->GetResultSize();
+		DEL_CLASS(hash);
 	}
-
-	NEW_CLASS(this->fileNames, Data::ArrayListStrUTF8());
 	this->chkCapacity = 40;
 	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
 }
 
 IO::FileCheck::~FileCheck()
 {
-	UOSInt i = this->fileNames->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->fileNames->GetItem(i));
-	}
-	DEL_CLASS(this->fileNames);
+	LIST_FREE_STRING(&this->fileNames);
 	MemFree(this->chkValues);
-}
-
-IO::FileCheck::HashType IO::FileCheck::GetHashType() const
-{
-	if (this->chkType == IO::FileCheck::CheckType::CRC32)
-	{
-		return IO::FileCheck::HashType::INT32;
-	}
-	else
-	{
-		return IO::FileCheck::HashType::ByteArray;
-	}
 }
 
 UOSInt IO::FileCheck::GetHashSize() const
@@ -347,24 +277,24 @@ UOSInt IO::FileCheck::GetHashSize() const
 	return this->hashSize;
 }
 
-IO::FileCheck::CheckType IO::FileCheck::GetCheckType() const
+Crypto::Hash::HashType IO::FileCheck::GetCheckType() const
 {
 	return this->chkType;
 }
 
 UOSInt IO::FileCheck::GetCount() const
 {
-	return this->fileNames->GetCount();
+	return this->fileNames.GetCount();
 }
 
-const UTF8Char *IO::FileCheck::GetEntryName(UOSInt index) const
+Text::String *IO::FileCheck::GetEntryName(UOSInt index) const
 {
-	return this->fileNames->GetItem(index);
+	return this->fileNames.GetItem(index);
 }
 
 Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal) const
 {
-	if (index >= this->fileNames->GetCount())
+	if (index >= this->fileNames.GetCount())
 		return false;
 	MemCopyNO(hashVal, &this->chkValues[index * this->hashSize], this->hashSize);
 	return true;
@@ -372,7 +302,7 @@ Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal) const
 
 void IO::FileCheck::AddEntry(Text::CString fileName, UInt8 *hashVal)
 {
-	UOSInt index = this->fileNames->Add(Text::StrCopyNewC(fileName.v, fileName.leng));
+	UOSInt index = this->fileNames.Add(Text::String::New(fileName));
 	if (index >= this->chkCapacity)
 	{
 		this->chkCapacity = this->chkCapacity << 1;
@@ -392,7 +322,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	UOSInt i;
 	Crypto::Hash::IHash *hash;
 
-	const UTF8Char *fileName = this->fileNames->GetItem(index);
+	Text::String *fileName = this->fileNames.GetItem(index);
 	if (fileName == 0)
 		return false;
 	sptr = this->sourceName->ConcatTo(sbuff);
@@ -400,13 +330,13 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	if (i == INVALID_INDEX)
 		return false;
 	sptr = &sbuff[i];
-	if (fileName[0] == '/' || fileName[0] == '\\')
+	if (fileName->v[0] == '/' || fileName->v[0] == '\\')
 	{
-		sptrEnd = Text::StrConcat(sptr, fileName);
+		sptrEnd = fileName->ConcatTo(sptr);
 	}
 	else
 	{
-		sptrEnd = Text::StrConcat(sptr + 1, fileName);
+		sptrEnd = fileName->ConcatTo(sptr + 1);
 	}
 	if (IO::Path::PATH_SEPERATOR == '/')
 	{
@@ -416,7 +346,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	{
 		Text::StrReplace(sptr, '/', '\\');
 	}
-	hash = CreateHash(this->chkType);
+	hash = Crypto::Hash::HashCreator::CreateHash(this->chkType);
 	if (hash == 0)
 		return false;
 

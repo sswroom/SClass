@@ -137,7 +137,7 @@ Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType() const
 {
 	if (!this->IsSignData())
 	{
-		return Crypto::Hash::HT_UNKNOWN;
+		return Crypto::Hash::HashType::Unknown;
 	}
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -146,7 +146,7 @@ Crypto::Hash::HashType Crypto::Cert::X509PKCS7::GetDigestType() const
 	{
 		return HashTypeFromOID(itemPDU, itemLen);
 	}
-	return Crypto::Hash::HT_UNKNOWN;
+	return Crypto::Hash::HashType::Unknown;
 }
 
 const UInt8 *Crypto::Cert::X509PKCS7::GetMessageDigest(UOSInt *digestSize) const

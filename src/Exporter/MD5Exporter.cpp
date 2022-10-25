@@ -26,7 +26,7 @@ IO::FileExporter::SupportType Exporter::MD5Exporter::IsObjectSupported(IO::Parse
 		return IO::FileExporter::SupportType::NotSupported;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CheckType::MD5)
+	if (fchk->GetCheckType() != Crypto::Hash::HashType::MD5)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -56,7 +56,7 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		return false;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CheckType::MD5)
+	if (fchk->GetCheckType() != Crypto::Hash::HashType::MD5)
 	{
 		return false;
 	}
@@ -65,8 +65,7 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UInt8 buff[16];
-	IO::StreamWriter *writer;
-	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
+	IO::StreamWriter writer(stm, this->codePage);
 	UOSInt i = 0;
 	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
@@ -75,11 +74,10 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		sptr2 = sptr;
-		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
+		sptr = fchk->GetEntryName(i)->ConcatTo(sptr);
 		Text::StrReplace(sptr2, '/', '\\');
-		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
-	DEL_CLASS(writer);
 	return true;
 }

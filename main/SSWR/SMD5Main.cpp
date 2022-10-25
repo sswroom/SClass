@@ -179,7 +179,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 		IO::FileCheck *fileChk;
 		{
 			ProgressHandler progress;
-			fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, IO::FileCheck::CheckType::MD5, &progress, false);
+			fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, Crypto::Hash::HashType::MD5, &progress, false);
 		}
 		console->WriteLine();
 		if (fileChk)

@@ -82,7 +82,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resu
 	}
 	switch (this->ce)
 	{
-	case CE_UTF32LE:
+	case CharEncoding::UTF32LE:
 		i = 0;
 		while (i < len)
 		{
@@ -91,7 +91,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resu
 		}
 		ret = len * 4;
 		break;
-	case CE_UTF16LE:
+	case CharEncoding::UTF16LE:
 		i = 0;
 		while (i < len)
 		{
@@ -100,7 +100,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resu
 		}
 		ret = len * 2;
 		break;
-	case CE_UTF8:
+	case CharEncoding::UTF8:
 		MemCopyNO(keyBuff, this->keyBuff, len);
 		ret = len;
 		break;
@@ -156,7 +156,7 @@ Crypto::Hash::BruteForceAttack::BruteForceAttack(Crypto::Hash::HashValidator *va
 {
 	this->validator = validator;
 	this->ce = ce;
-	this->charLimit = CL_ASCII;
+	this->charLimit = CharLimit::ASCII;
 	this->resultBuff[0] = 0;
 	this->threadCnt = 0;
 	this->threadToStop = false;
@@ -231,14 +231,14 @@ Bool Crypto::Hash::BruteForceAttack::Start(const UTF8Char *hashStr, UOSInt hashL
 	this->maxLeng = maxLeng;
 	switch (this->charLimit)
 	{
-	case CL_ASCII:
+	case CharLimit::ASCII:
 	default:
 		this->keyLimit = BruteForceAttack_LimitASCII;
 		break;
-	case CL_LETTER_NUM:
+	case CharLimit::LetterNum:
 		this->keyLimit = BruteForceAttack_LimitLetterNum;
 		break;
-	case CL_WEBPASSWORD:
+	case CharLimit::WebPassword:
 		this->keyLimit = BruteForceAttack_LimitWebPassword;
 		break;
 	}
@@ -269,11 +269,11 @@ Text::CString Crypto::Hash::BruteForceAttack::CharLimitGetName(CharLimit charLim
 {
 	switch (charLimit)
 	{
-	case CL_ASCII:
+	case CharLimit::ASCII:
 		return CSTR("ASCII");
-	case CL_LETTER_NUM:
+	case CharLimit::LetterNum:
 		return CSTR("Letters and Numbers");
-	case CL_WEBPASSWORD:
+	case CharLimit::WebPassword:
 		return CSTR("Web Password");
 	default:
 		return CSTR("Unknown");

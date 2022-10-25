@@ -28,73 +28,74 @@ Crypto::Hash::IHash *Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashTyp
 	Crypto::Hash::IHash *hash = 0;
 	switch (hashType)
 	{
-	case Crypto::Hash::HT_ADLER32:
+	case Crypto::Hash::HashType::Adler32:
 		NEW_CLASS(hash, Crypto::Hash::Adler32());
 		break;
-	case Crypto::Hash::HT_CRC16:
+	case Crypto::Hash::HashType::CRC16:
 		NEW_CLASS(hash, Crypto::Hash::CRC16());
 		break;
-	case Crypto::Hash::HT_CRC16R:
+	case Crypto::Hash::HashType::CRC16R:
 		NEW_CLASS(hash, Crypto::Hash::CRC16R());
 		break;
-	case Crypto::Hash::HT_CRC32:
+	case Crypto::Hash::HashType::CRC32:
 		NEW_CLASS(hash, Crypto::Hash::CRC32());
 		break;
-	case Crypto::Hash::HT_CRC32R_IEEE:
+	case Crypto::Hash::HashType::CRC32R_IEEE:
 		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
 		break;
-	case Crypto::Hash::HT_CRC32C:
+	case Crypto::Hash::HashType::CRC32C:
 		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialCastagnoli()));
 		break;
-	case Crypto::Hash::HT_DJB2:
+	case Crypto::Hash::HashType::DJB2:
 		NEW_CLASS(hash, Crypto::Hash::DJB2());
 		break;
-	case Crypto::Hash::HT_DJB2A:
+	case Crypto::Hash::HashType::DJB2a:
 		NEW_CLASS(hash, Crypto::Hash::DJB2a());
 		break;
-	case Crypto::Hash::HT_EXCEL:
+	case Crypto::Hash::HashType::Excel:
 		NEW_CLASS(hash, Crypto::Hash::ExcelHash());
 		break;
-	case Crypto::Hash::HT_FNV1:
+	case Crypto::Hash::HashType::FNV1:
 		NEW_CLASS(hash, Crypto::Hash::FNV1());
 		break;
-	case Crypto::Hash::HT_FNV1A:
+	case Crypto::Hash::HashType::FNV1a:
 		NEW_CLASS(hash, Crypto::Hash::FNV1a());
 		break;
-	case Crypto::Hash::HT_MD5:
+	case Crypto::Hash::HashType::MD5:
 		NEW_CLASS(hash, Crypto::Hash::MD5());
 		break;
-	case Crypto::Hash::HT_RIPEMD128:
+	case Crypto::Hash::HashType::RIPEMD128:
 		NEW_CLASS(hash, Crypto::Hash::RIPEMD128());
 		break;
-	case Crypto::Hash::HT_RIPEMD160:
+	case Crypto::Hash::HashType::RIPEMD160:
 		NEW_CLASS(hash, Crypto::Hash::RIPEMD160());
 		break;
-	case Crypto::Hash::HT_SDBM:
+	case Crypto::Hash::HashType::SDBM:
 		NEW_CLASS(hash, Crypto::Hash::SDBM());
 		break;
-	case Crypto::Hash::HT_SHA1:
+	case Crypto::Hash::HashType::SHA1:
 		NEW_CLASS(hash, Crypto::Hash::SHA1());
 		break;
-	case Crypto::Hash::HT_SHA224:
+	case Crypto::Hash::HashType::SHA224:
 		NEW_CLASS(hash, Crypto::Hash::SHA224());
 		break;
-	case Crypto::Hash::HT_SHA256:
+	case Crypto::Hash::HashType::SHA256:
 		NEW_CLASS(hash, Crypto::Hash::SHA256());
 		break;
-	case Crypto::Hash::HT_SHA384:
+	case Crypto::Hash::HashType::SHA384:
 		NEW_CLASS(hash, Crypto::Hash::SHA384());
 		break;
-	case Crypto::Hash::HT_SHA512:
+	case Crypto::Hash::HashType::SHA512:
 		NEW_CLASS(hash, Crypto::Hash::SHA512());
 		break;
-//	case Crypto::Hash::HT_SUPERFASTHASH:
+//	case Crypto::Hash::HashType::SUPERFASTHASH:
 //		NEW_CLASS(hash, Crypto::Hash::SuperFastHash());
 //		break;
-	case Crypto::Hash::HT_SHA1_SHA1:
+	case Crypto::Hash::HashType::SHA1_SHA1:
 		NEW_CLASS(hash, Crypto::Hash::SHA1_SHA1());
 		break;
-	case Crypto::Hash::HT_UNKNOWN:
+	case Crypto::Hash::HashType::MD4:
+	case Crypto::Hash::HashType::Unknown:
 	default:
 		hash = 0;
 		break;

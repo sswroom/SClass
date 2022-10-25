@@ -9,7 +9,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt8 hashVal[32];
 	Crypto::Hash::IHash *hash;
 
-	hash = Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HT_CRC16);
+	hash = Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType::CRC16);
 
 	UOSInt i = 32;
 	while (i-- > 0)

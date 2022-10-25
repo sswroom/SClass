@@ -169,21 +169,21 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 		m = TLS_method();
 		break;
 	case Method::TLSV1:
-#if defined(OPENSSL_NO_TLS1_METHOD) || defined(DEPRECATEDIN_1_1_0)
+#if defined(OPENSSL_NO_TLS1_METHOD) || defined(OSSL_DEPRECATEDIN_1_1_0)
 		m = TLS_method();
 #else
 		m = TLSv1_method();
 #endif
 		break;
 	case Method::TLSV1_1:
-#if defined(OPENSSL_NO_TLS1_1_METHOD) || defined(DEPRECATEDIN_1_1_0)
+#if defined(OPENSSL_NO_TLS1_1_METHOD) || defined(OSSL_DEPRECATEDIN_1_1_0)
 		m = TLS_method();
 #else
 		m = TLSv1_1_method();
 #endif
 		break;
 	case Method::TLSV1_2:
-#if defined(OPENSSL_NO_TLS1_2_METHOD) || defined(DEPRECATEDIN_1_1_0)
+#if defined(OPENSSL_NO_TLS1_2_METHOD) || defined(OSSL_DEPRECATEDIN_1_1_0)
 		m = TLS_method();
 #else
 		m = TLSv1_2_method();
@@ -193,14 +193,14 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 		m = DTLS_method();
 		break;
 	case Method::DTLSV1:
-#if defined(OPENSSL_NO_DTLS1_METHOD) || defined(DEPRECATEDIN_1_1_0)
+#if defined(OPENSSL_NO_DTLS1_METHOD) || defined(OSSL_DEPRECATEDIN_1_1_0)
 		m = DTLS_method();
 #else
 		m = DTLSv1_method();
 #endif
 		break;
 	case Method::DTLSV1_2:
-#if defined(OPENSSL_NO_DTLS1_2_METHOD) || defined(DEPRECATEDIN_1_1_0)
+#if defined(OPENSSL_NO_DTLS1_2_METHOD) || defined(OSSL_DEPRECATEDIN_1_1_0)
 		m = DTLS_method();
 #else
 		m = DTLSv1_2_method();
@@ -656,27 +656,27 @@ EVP_PKEY *OpenSSLEngine_LoadKey(Crypto::Cert::X509Key *key, Bool privateKeyOnly)
 
 const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
 {
-	if (hashType == Crypto::Hash::HT_SHA256)
+	if (hashType == Crypto::Hash::HashType::SHA256)
 	{
 		return EVP_sha256();
 	}
-	else if (hashType == Crypto::Hash::HT_SHA384)
+	else if (hashType == Crypto::Hash::HashType::SHA384)
 	{
 		return EVP_sha384();
 	}
-	else if (hashType == Crypto::Hash::HT_SHA512)
+	else if (hashType == Crypto::Hash::HashType::SHA512)
 	{
 		return EVP_sha512();
 	}
-	else if (hashType == Crypto::Hash::HT_SHA224)
+	else if (hashType == Crypto::Hash::HashType::SHA224)
 	{
 		return EVP_sha224();
 	}
-	else if (hashType == Crypto::Hash::HT_SHA1)
+	else if (hashType == Crypto::Hash::HashType::SHA1)
 	{
 		return EVP_sha1();
 	}
-	else if (hashType == Crypto::Hash::HT_MD5)
+	else if (hashType == Crypto::Hash::HashType::MD5)
 	{
 		return EVP_md5();
 	}

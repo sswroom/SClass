@@ -2862,7 +2862,7 @@ Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X
 	}
 	UOSInt mySignSize;
 	UInt8 mySignature[256];
-	if (!ssl->Signature(key, Crypto::Hash::HT_SHA256, data, dataSize + itemOfst, mySignature, &mySignSize))
+	if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, data, dataSize + itemOfst, mySignature, &mySignSize))
 	{
 		return false;
 	}
@@ -2931,26 +2931,26 @@ Crypto::Hash::HashType Crypto::Cert::X509File::GetAlgHash(AlgType algType)
 	switch (algType)
 	{
 	case AlgType::SHA1WithRSAEncryption:
-		return Crypto::Hash::HT_SHA1;
+		return Crypto::Hash::HashType::SHA1;
 	case AlgType::SHA256WithRSAEncryption:
-		return Crypto::Hash::HT_SHA256;
+		return Crypto::Hash::HashType::SHA256;
 	case AlgType::SHA512WithRSAEncryption:
-		return Crypto::Hash::HT_SHA512;
+		return Crypto::Hash::HashType::SHA512;
 	case AlgType::SHA384WithRSAEncryption:
-		return Crypto::Hash::HT_SHA384;
+		return Crypto::Hash::HashType::SHA384;
 	case AlgType::SHA224WithRSAEncryption:
-		return Crypto::Hash::HT_SHA224;
+		return Crypto::Hash::HashType::SHA224;
 	case AlgType::MD2WithRSAEncryption:
-		return Crypto::Hash::HT_UNKNOWN;
+		return Crypto::Hash::HashType::Unknown;
 	case AlgType::MD5WithRSAEncryption:
-		return Crypto::Hash::HT_MD5;
+		return Crypto::Hash::HashType::MD5;
 	case AlgType::ECDSAWithSHA256:
-		return Crypto::Hash::HT_SHA256;
+		return Crypto::Hash::HashType::SHA256;
 	case AlgType::ECDSAWithSHA384:
-		return Crypto::Hash::HT_SHA384;
+		return Crypto::Hash::HashType::SHA384;
 	case AlgType::Unknown:
 	default:
-		return Crypto::Hash::HT_UNKNOWN;
+		return Crypto::Hash::HashType::Unknown;
 	}
 }
 
@@ -3111,23 +3111,23 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 {
 	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.1")))
 	{
-		return Crypto::Hash::HT_SHA256;
+		return Crypto::Hash::HashType::SHA256;
 	}
 	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.2")))
 	{
-		return Crypto::Hash::HT_SHA384;
+		return Crypto::Hash::HashType::SHA384;
 	}
 	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.3")))
 	{
-		return Crypto::Hash::HT_SHA512;
+		return Crypto::Hash::HashType::SHA512;
 	}
 	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("2.16.840.1.101.3.4.2.4")))
 	{
-		return Crypto::Hash::HT_SHA224;
+		return Crypto::Hash::HashType::SHA224;
 	}
 	else if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.3.14.3.2.26")))
 	{
-		return Crypto::Hash::HT_SHA1;
+		return Crypto::Hash::HashType::SHA1;
 	}
-	return Crypto::Hash::HT_UNKNOWN;
+	return Crypto::Hash::HashType::Unknown;
 }
