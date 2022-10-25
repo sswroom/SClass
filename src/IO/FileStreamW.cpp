@@ -474,6 +474,52 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	}
 }
 
+void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime)
+{
+	FILETIME createTime;
+	FILETIME lastAccTime;
+	FILETIME lastWrTime;
+	SYSTEMTIME sysTime;
+	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
+	if (creationTime)
+	{
+		FileTimeToSystemTime(&createTime, &sysTime);
+		*creationTime = Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+	}
+	if (lastAccessTime)
+	{
+		FileTimeToSystemTime(&lastAccTime, &sysTime);
+		*lastAccessTime = Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+	}
+	if (lastWriteTime)
+	{
+		FileTimeToSystemTime(&lastWrTime, &sysTime);
+		*lastWriteTime = Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+	}
+}
+
+Data::Timestamp IO::FileStream::GetCreateTime()
+{
+	FILETIME createTime;
+	FILETIME lastAccTime;
+	FILETIME lastWrTime;
+	SYSTEMTIME sysTime;
+	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
+	FileTimeToSystemTime(&createTime, &sysTime);
+	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+}
+
+Data::Timestamp IO::FileStream::GetModifyTime()
+{
+	FILETIME createTime;
+	FILETIME lastAccTime;
+	FILETIME lastWrTime;
+	SYSTEMTIME sysTime;
+	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
+	FileTimeToSystemTime(&lastWrTime, &sysTime);
+	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+}
+
 void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
 	FILETIME createTime;
@@ -500,6 +546,34 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	{
 		lastWriteTime->ToUTCTime();
 		lastWriteTime->ToSYSTEMTIME(&sysTime);
+		SystemTimeToFileTime(&sysTime, lwTime = &lastWrTime);
+	}
+	SetFileTime(this->handle, cTime, laTime, lwTime);
+}
+
+void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp lastAccessTime, Data::Timestamp lastWriteTime)
+{
+	FILETIME createTime;
+	FILETIME lastAccTime;
+	FILETIME lastWrTime;
+	FILETIME *cTime = 0;
+	FILETIME *laTime = 0;
+	FILETIME *lwTime = 0;
+	SYSTEMTIME sysTime;
+
+	if (creationTime.ticks)
+	{
+		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, creationTime.ticks);
+		SystemTimeToFileTime(&sysTime, cTime = &createTime);
+	}
+	if (lastAccessTime.ticks)
+	{
+		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastAccessTime.ticks);
+		SystemTimeToFileTime(&sysTime, laTime = &lastAccTime);
+	}
+	if (lastWriteTime.ticks)
+	{
+		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastWriteTime.ticks);
 		SystemTimeToFileTime(&sysTime, lwTime = &lastWrTime);
 	}
 	SetFileTime(this->handle, cTime, laTime, lwTime);

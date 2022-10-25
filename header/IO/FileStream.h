@@ -1,6 +1,7 @@
 #ifndef _SM_IO_FILESTREAM
 #define _SM_IO_FILESTREAM
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "IO/FileMode.h"
 #include "IO/SeekableStream.h"
 #include "Text/CString.h"
@@ -47,8 +48,12 @@ namespace IO
 
 		virtual Bool IsError();
 		virtual Int32 GetErrCode();
-		virtual void GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
-		virtual void SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
+		void GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
+		void GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime);
+		Data::Timestamp GetCreateTime();
+		Data::Timestamp GetModifyTime();
+		void SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
+		void SetFileTimes(Data::Timestamp creationTime, Data::Timestamp lastAccessTime, Data::Timestamp lastWriteTime);
 
 		static IO::FileStream *CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
 		static IO::FileStream *OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);

@@ -312,6 +312,137 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 #endif
 }
 
+void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime)
+{
+	if (this->sourceName == 0)
+		return;
+#if defined(__USE_LARGEFILE64)
+	struct stat64 s;
+	if (this->handle == 0)
+	{
+		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+			return;
+	}
+	else
+	{
+		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+			return;
+	}
+#else
+	struct stat s;
+	if (this->handle == 0)
+	{
+		if (stat((const Char*)this->sourceName->v, &s) != 0)
+			return;
+	}
+	else
+	{
+		if (fstat((int)(OSInt)this->handle, &s) != 0)
+			return;
+	}
+#endif
+#if defined(__APPLE__)
+	if (creationTime)
+	{
+		*creationTime = Data::Timestamp(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
+	}
+	if (lastAccessTime)
+	{
+		*lastAccessTime = Data::Timestamp(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec, 0);
+	}
+	if (lastWriteTime)
+	{
+		*lastWriteTime = Data::Timestamp(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+	}
+#else
+	if (creationTime)
+	{
+		*creationTime = Data::Timestamp(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
+	}
+	if (lastAccessTime)
+	{
+		*lastAccessTime = Data::Timestamp(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec, 0);
+	}
+	if (lastWriteTime)
+	{
+		*lastWriteTime = Data::Timestamp(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+	}
+#endif
+}
+
+Data::Timestamp IO::FileStream::GetCreateTime()
+{
+	if (this->sourceName == 0)
+		return Data::Timestamp(0, 0);
+#if defined(__USE_LARGEFILE64)
+	struct stat64 s;
+	if (this->handle == 0)
+	{
+		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+	else
+	{
+		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+#else
+	struct stat s;
+	if (this->handle == 0)
+	{
+		if (stat((const Char*)this->sourceName->v, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+	else
+	{
+		if (fstat((int)(OSInt)this->handle, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+#endif
+#if defined(__APPLE__)
+	return Data::Timestamp(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
+#else
+	return Data::Timestamp(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
+#endif
+}
+
+
+Data::Timestamp IO::FileStream::GetModifyTime()
+{
+	if (this->sourceName == 0)
+		return Data::Timestamp(0, 0);
+#if defined(__USE_LARGEFILE64)
+	struct stat64 s;
+	if (this->handle == 0)
+	{
+		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+	else
+	{
+		if (fstat64((int)(OSInt)this->handle, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+#else
+	struct stat s;
+	if (this->handle == 0)
+	{
+		if (stat((const Char*)this->sourceName->v, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+	else
+	{
+		if (fstat((int)(OSInt)this->handle, &s) != 0)
+			return Data::Timestamp(0, 0);
+	}
+#endif
+#if defined(__APPLE__)
+	return Data::Timestamp(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+#else
+	return Data::Timestamp(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+#endif
+}
+
 void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
 {
 	if (this->sourceName == 0)
@@ -343,6 +474,41 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	if (lastWriteTime)
 	{
 		t.modtime = lastWriteTime->ToUnixTimestamp();
+	}
+	utime((const Char*)this->sourceName->v, &t);
+}
+
+void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp lastAccessTime, Data::Timestamp lastWriteTime)
+{
+	if (this->sourceName == 0)
+		return;
+	struct utimbuf t;
+	if (lastAccessTime.ticks == 0 || lastWriteTime.ticks == 0)
+	{
+#if defined(__USE_LARGEFILE64)
+		struct stat64 s;
+		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+			return;
+#else
+		struct stat s;
+		if (stat((const Char*)this->sourceName->v, &s) != 0)
+			return;
+#endif
+#if defined(__APPLE__)
+		t.actime = s.st_atimespec.tv_sec;
+		t.modtime = s.st_mtimespec.tv_sec;
+#else
+		t.actime = s.st_atim.tv_sec;
+		t.modtime = s.st_mtim.tv_sec;
+#endif
+	}
+	if (lastAccessTime.ticks)
+	{
+		t.actime = lastAccessTime.ToUnixTimestamp();
+	}
+	if (lastWriteTime.ticks)
+	{
+		t.modtime = lastWriteTime.ToUnixTimestamp();
 	}
 	utime((const Char*)this->sourceName->v, &t);
 }

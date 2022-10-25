@@ -56,6 +56,8 @@ namespace Data
 		static Int8 GetLocalTzQhr();
 		static Int64 GetCurrTimeMillis();
 		static Int64 GetCurrTimeHighP(UInt32 *nanosec);
+		static Int64 SYSTEMTIME2Ticks(void *sysTime);
+		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);
 	};
 }
 #endif

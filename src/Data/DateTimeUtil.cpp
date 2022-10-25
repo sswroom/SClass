@@ -1626,3 +1626,32 @@ Int64 Data::DateTimeUtil::GetCurrTimeHighP(UInt32 *nanosec)
 	return 0;
 #endif
 }
+
+Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
+{
+	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
+	TimeValue tval;
+	tval.year = stime->wYear;
+	tval.month = (UInt8)stime->wMonth;
+	tval.day = (UInt8)stime->wDay;
+	tval.hour = (UInt8)stime->wHour;
+	tval.minute = (UInt8)stime->wMinute;
+	tval.second = (UInt8)stime->wSecond;
+	tval.ms = stime->wMilliseconds;
+	return TimeValue2Ticks(&tval, 0);
+}
+
+void Data::DateTimeUtil::Ticks2SYSTEMTIME(void *sysTime, Int64 ticks)
+{
+	Data::DateTimeUtil::TimeValue tval;
+	Ticks2TimeValue(ticks, &tval, 0);
+	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
+	stime->wYear = tval.year;
+	stime->wMonth = tval.month;
+	stime->wDay = tval.day;
+	stime->wHour = tval.hour;
+	stime->wMinute = tval.minute;
+	stime->wSecond = tval.second;
+	stime->wMilliseconds = tval.ms;
+	stime->wDayOfWeek = 0;
+}
