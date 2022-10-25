@@ -181,8 +181,8 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	UTF8Char *sptr;
 	UTF8Char *sptru = filePathU;
 	Bool hasTime = false;
-	Data::DateTime dt;
-	Data::DateTime currTime;
+	Data::Timestamp ts;
+	Data::Timestamp currTS;
 	Net::HTTPClient *cli;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj;
@@ -213,10 +213,9 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
-			currTime.SetCurrTimeUTC();
-			currTime.AddDay(-7);
-			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
-			if (dt.CompareTo(&currTime) > 0)
+			currTS = Data::Timestamp::UtcNow().AddDay(-7);
+			ts = ((IO::StmData::FileData*)fd)->GetFileStream()->GetCreateTime();
+			if (ts > currTS)
 			{
 				IO::ParserType pt;
 				IO::StmData::BufferedStreamData bsd(fd);
@@ -282,15 +281,14 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	cli->SetTimeout(5000);
 	if (hasTime)
 	{
-		sptr = Net::WebUtil::Date2Str(sbuff, &dt);
+		sptr = Net::WebUtil::Date2Str(sbuff, ts);
 		cli->AddHeaderC(CSTR("If-Modified-Since"), {sbuff, (UOSInt)(sptr - sbuff)});
 	}
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	if (status == 304)
 	{
 		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		dt.SetCurrTimeUTC();
-		fs.SetFileTimes(&dt, 0, 0);
+		fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(0, 0), Data::Timestamp(0, 0));
 //		printf("Reply 304\r\n");
 	}
 	else if (status >= 200 && status < 300 && !cli->IsError())
@@ -302,20 +300,21 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			{
 				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 				fs.Write(mstm.GetBuff(), mstm.GetLength());
+				Data::DateTime dt;
 				if (cli->GetLastModified(&dt))
 				{
+					Data::DateTime currTime;
 					currTime.SetCurrTimeUTC();
 					fs.SetFileTimes(&currTime, 0, &dt);
 				}
 				else
 				{
-					currTime.SetCurrTimeUTC();
-					fs.SetFileTimes(&currTime, 0, 0);
+					fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(0, 0), Data::Timestamp(0, 0));
 				}
 			}
 			else if (this->spkg)
 			{
-				this->spkg->AddFile(mstm.GetBuff(), mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, dt.ToTicks());
+				this->spkg->AddFile(mstm.GetBuff(), mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts.ticks);
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 			}
 		}

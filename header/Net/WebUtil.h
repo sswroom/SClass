@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBUTIL
 #define _SM_NET_WEBUTIL
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Text/CString.h"
 #include "Text/MyString.h"
 
@@ -35,6 +36,7 @@ namespace Net
 		static RequestMethod Str2RequestMethod(const UTF8Char *s, UOSInt len);
 		static Text::CString RequestMethodGetName(RequestMethod reqMeth);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
+		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::Timestamp ts);
 	};
 }
 #endif

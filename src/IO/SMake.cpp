@@ -503,9 +503,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	}
 	Int64 lastTime;
 	Int64 thisTime;
-	Data::DateTime dt;
-	fs.GetFileTimes(0, 0, &dt);
-	lastTime = dt.ToTicks();
+	lastTime = fs.GetModifyTime().ticks;
 	Text::PString line;
 	Text::PString str1;
 	UOSInt i;

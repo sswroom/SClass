@@ -144,3 +144,13 @@ UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 	Int32 wd = (Int32)t.GetWeekday();
 	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }
+
+UTF8Char *Net::WebUtil::Date2Str(UTF8Char *sbuff, Data::Timestamp ts)
+{
+	const Char *wds[] = {"Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, "};
+	Data::DateTime t;
+	t.SetTicks(ts.ticks);
+	t.ToUTCTime();
+	Int32 wd = (Int32)t.GetWeekday();
+	return Text::StrConcatC(t.ToString(Text::StrConcatC(sbuff, (const UTF8Char*)wds[wd], 5), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));	
+}

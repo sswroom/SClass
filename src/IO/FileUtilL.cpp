@@ -227,15 +227,15 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	}
 	if (fileSize < 1048576)
 	{
-		Data::DateTime dt1;
-		Data::DateTime dt2;
-		Data::DateTime dt3;
+		Data::Timestamp ts1;
+		Data::Timestamp ts2;
+		Data::Timestamp ts3;
 		buff = MemAlloc(UInt8, 1048576);
 		writeSize = fs1->Read(buff, (UOSInt)1048576);
 		writeSize = fs2->Write(buff, (UOSInt)writeSize);
 		MemFree(buff);
-		fs1->GetFileTimes(&dt1, &dt2, &dt3);
-		fs2->SetFileTimes(&dt1, &dt2, &dt3);
+		fs1->GetFileTimes(&ts1, &ts2, &ts3);
+		fs2->SetFileTimes(ts1, ts2, ts3);
 		if (progHdlr)
 		{
 			progHdlr->ProgressUpdate(writeSize, fileSize);
@@ -243,9 +243,9 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	}
 	else if (samePart)
 	{
-		Data::DateTime dt1;
-		Data::DateTime dt2;
-		Data::DateTime dt3;
+		Data::Timestamp ts1;
+		Data::Timestamp ts2;
+		Data::Timestamp ts3;
 		UOSInt readSize;
 		UOSInt thisSize;
 		if (fileSize < ramSize)
@@ -274,14 +274,14 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 			}
 		}
 		MemFreeA(buff);
-		fs1->GetFileTimes(&dt1, &dt2, &dt3);
-		fs2->SetFileTimes(&dt1, &dt2, &dt3);
+		fs1->GetFileTimes(&ts1, &ts2, &ts3);
+		fs2->SetFileTimes(ts1, ts2, ts3);
 	}
 	else
 	{
-		Data::DateTime dt1;
-		Data::DateTime dt2;
-		Data::DateTime dt3;
+		Data::Timestamp ts1;
+		Data::Timestamp ts2;
+		Data::Timestamp ts3;
 		CopySess csess;
 		csess.destStm = fs2;
 		csess.writeSize = 0;
@@ -292,8 +292,8 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		asr->ReadStream(bnt);
 		DEL_CLASS(asr);
 		writeSize = csess.writeSize;
-		fs1->GetFileTimes(&dt1, &dt2, &dt3);
-		fs2->SetFileTimes(&dt1, &dt2, &dt3);
+		fs1->GetFileTimes(&ts1, &ts2, &ts3);
+		fs2->SetFileTimes(ts1, ts2, ts3);
 	}
 	DEL_CLASS(fs2);
 	DEL_CLASS(fs1);
@@ -367,15 +367,15 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	}
 	if (fileSize < 1048576)
 	{
-		Data::DateTime dt1;
-		Data::DateTime dt2;
-		Data::DateTime dt3;
+		Data::Timestamp ts1;
+		Data::Timestamp ts2;
+		Data::Timestamp ts3;
 		buff = MemAlloc(UInt8, (OSInt)1048576);
 		writeSize = fs1->Read(buff, (OSInt)1048576);
 		writeSize = fs2->Write(buff, (OSInt)writeSize);
 		MemFree(buff);
-		fs1->GetFileTimes(&dt1, &dt2, &dt3);
-		fs2->SetFileTimes(&dt1, &dt2, &dt3);
+		fs1->GetFileTimes(&ts1, &ts2, &ts3);
+		fs2->SetFileTimes(ts1, ts2, ts3);
 		if (progHdlr)
 		{
 			progHdlr->ProgressUpdate(writeSize, fileSize);
@@ -383,9 +383,9 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 	}
 	else if (samePart)
 	{
-		Data::DateTime dt1;
-		Data::DateTime dt2;
-		Data::DateTime dt3;
+		Data::Timestamp ts1;
+		Data::Timestamp ts2;
+		Data::Timestamp ts3;
 		OSInt readSize;
 		OSInt thisSize;
 		if (fileSize < ramSize)
@@ -414,14 +414,14 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 			}
 		}
 		MemFreeA(buff);
-		fs1->GetFileTimes(&dt1, &dt2, &dt3);
-		fs2->SetFileTimes(&dt1, &dt2, &dt3);
+		fs1->GetFileTimes(&ts1, &ts2, &ts3);
+		fs2->SetFileTimes(ts1, ts2, ts3);
 	}
 	else
 	{
-		Data::DateTime dt1;
-		Data::DateTime dt2;
-		Data::DateTime dt3;
+		Data::Timestamp ts1;
+		Data::Timestamp ts2;
+		Data::Timestamp ts3;
 		CopySess csess;
 		csess.destStm = fs2;
 		csess.writeSize = 0;
@@ -432,8 +432,8 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 		asr->ReadStream(bnt);
 		DEL_CLASS(asr);
 		writeSize = csess.writeSize;
-		fs1->GetFileTimes(&dt1, &dt2, &dt3);
-		fs2->SetFileTimes(&dt1, &dt2, &dt3);
+		fs1->GetFileTimes(&ts1, &ts2, &ts3);
+		fs2->SetFileTimes(ts1, ts2, ts3);
 	}
 	DEL_CLASS(fs2);
 	DEL_CLASS(fs1);
