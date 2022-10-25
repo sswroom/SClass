@@ -314,7 +314,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			}
 			else if (this->spkg)
 			{
-				this->spkg->AddFile(mstm.GetBuff(), mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts.ticks);
+				this->spkg->AddFile(mstm.GetBuff(), mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts);
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 			}
 		}
@@ -483,7 +483,7 @@ IO::IStreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coo
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, Data::Timestamp::UtcNow());
 				}
 			}
 			MemFree(imgBuff);

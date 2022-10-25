@@ -161,7 +161,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, k}, 0);
+							pf2->AddPack(pf3, {sptr, k}, Data::Timestamp(0, 0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
@@ -175,14 +175,14 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, l}, 0);
+							pf2->AddPack(pf3, {sptr, l}, Data::Timestamp(0, 0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[l + 1];
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), ReadInt64(&dirBuff[i + 16]));
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
 						break;
 					}
 				}
@@ -227,7 +227,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, k}, 0);
+							pf2->AddPack(pf3, {sptr, k}, Data::Timestamp(0, 0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
@@ -241,14 +241,14 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, l}, 0);
+							pf2->AddPack(pf3, {sptr, l}, Data::Timestamp(0, 0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[l + 1];
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), ReadInt64(&dirBuff[i + 16]));
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
 						break;
 					}
 				}

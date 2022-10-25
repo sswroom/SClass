@@ -2,6 +2,7 @@
 #define _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
 #include "Data/BTreeUTF8Map.h"
 #include "Data/StringUTF8Map.h"
+#include "Data/Timestamp.h"
 #include "IO/PackageFile.h"
 #include "Parser/ParserList.h"
 #include "Net/WebServer/WebStandardHandler.h"
@@ -27,13 +28,13 @@ namespace Net
 			{
 				UInt8 *buff;
 				UOSInt buffSize;
-				Int64 t;
+				Data::Timestamp t;
 			} CacheInfo;
 
 			typedef struct
 			{
 				Text::String *fileName;
-				Int64 modTime;
+				Data::Timestamp modTime;
 				IO::PackageFile *packageFile;
 			} PackageInfo;
 

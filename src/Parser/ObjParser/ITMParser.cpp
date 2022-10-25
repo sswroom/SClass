@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 		sptr = pkg->GetItemName(sbuff, i);
 		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ituser.poi")))
 		{
-			if (pkg->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				IO::IStreamData *fd = pkg->GetItemStmData(i);
 				IO::ParsedObject *pobj2 = parsers->ParseFile(fd, &pt);

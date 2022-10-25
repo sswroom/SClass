@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 		j = me->pkgFile->GetCount();
 		while (i < j)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 		i = 0;
 		while (i < me->fileIndex)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 		i = me->fileIndex;
 		while (i-- > 0)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 		i = me->pkgFile->GetCount();
 		while (i-- > me->fileIndex + 1)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
@@ -439,7 +439,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 		j = pf->GetCount();
 		while (i < j)
 		{
-			if (pf->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				pf->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))

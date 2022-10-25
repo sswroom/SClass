@@ -154,7 +154,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	UOSInt i;
 	UOSInt j;
 
-	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::POT_PACKAGEFILE)
+	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFile)
 	{
 		pkgFile = pkgFile->GetItemPack(0);
 		if (pkgFile)
@@ -172,7 +172,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	j = pkgFile->GetCount();
 	while (i < j)
 	{
-		if (pkgFile->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
+		if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
@@ -199,7 +199,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 			j = xPkg->GetCount();
 			while (i < j)
 			{
-				if (xPkg->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
+				if (xPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
 				{
 					xPkg->GetItemName(sbuff, i);
 					if (sbuff[0] != '.')
@@ -232,7 +232,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 					i = yPkg->GetCount();
 					while (i-- > 0)
 					{
-						if (yPkg->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+						if (yPkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 						{
 							yPkg->GetItemName(sbuff, i);
 							j = Text::StrIndexOfChar(sbuff, '.');
@@ -543,7 +543,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 	j = pkgFile->GetCount();
 	while (i < j)
 	{
-		if (pkgFile->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
+		if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
@@ -574,7 +574,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 		i = levPkg->GetCount();
 		while (i-- > 0)
 		{
-			if (levPkg->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
+			if (levPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
 			{
 				levPkg->GetItemName(sbuff, i);
 				if (Text::StrToInt32(sbuff, &x))
@@ -599,7 +599,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 						while (j-- > 0)
 						{
 							xPkg->GetItemName(sbuff, j);
-							if (xPkg->GetItemType(j) == IO::PackageFile::POT_STREAMDATA)
+							if (xPkg->GetItemType(j) == IO::PackageFile::PackObjectType::StreamData)
 							{
 								k = Text::StrIndexOf(sbuff, (const UTF8Char*)".png");
 								if (k != INVALID_INDEX)

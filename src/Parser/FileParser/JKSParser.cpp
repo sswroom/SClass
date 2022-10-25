@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFile(IO::IStreamData *fd, 
 		s->Release();
 		if (cert)
 		{
-			pkg->AddObject(cert, Text::CString(&buff[6], aliasLen), ts);
+			pkg->AddObject(cert, Text::CString(&buff[6], aliasLen), Data::Timestamp(ts, 0));
 		}
 		else
 		{

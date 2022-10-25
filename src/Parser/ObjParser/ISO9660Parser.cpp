@@ -240,7 +240,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);
 					NEW_CLASS(pf2, IO::PackageFile(CSTRP(fileName, sptr)));
-					pkgFile->AddPack(pf2, CSTRP(&fileNameEnd[1], sptr), dt.ToTicks());
+					pkgFile->AddPack(pf2, CSTRP(&fileNameEnd[1], sptr), Data::Timestamp(dt.ToTicks(), 0));
 					ParseDir(pf2, sectorData, sectorNum, fileSize, fileName, sptr, codePage);
 				}
 			}
@@ -255,7 +255,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 					sptr = &fileNameEnd[i];
 				}
 				fd = sectorData->GetStreamData(sectorNum, fileSize);
-				pkgFile->AddData(fd, 0, fileSize, CSTRP(fileNameEnd, sptr), dt.ToTicks());
+				pkgFile->AddData(fd, 0, fileSize, CSTRP(fileNameEnd, sptr), Data::Timestamp(dt.ToTicks(), 0));
 				DEL_CLASS(fd);
 			}
 

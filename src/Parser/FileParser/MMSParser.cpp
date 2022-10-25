@@ -123,7 +123,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 			}
 		}
 		currOfst += hdrSize;
-		pf->AddData(fd, currOfst, dataSize, CSTRP(sbuff, sptr), 0);
+		pf->AddData(fd, currOfst, dataSize, CSTRP(sbuff, sptr), Data::Timestamp(0, 0));
 		currOfst += dataSize;
 	}
 	return pf;

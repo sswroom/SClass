@@ -64,7 +64,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 	{
 		itemType = pkg->GetItemType(i);
 		sptr = pkg->GetItemName(buffEnd, i);
-		if (itemType == IO::PackageFile::POT_STREAMDATA)
+		if (itemType == IO::PackageFile::PackObjectType::StreamData)
 		{
 			fd = pkg->GetItemStmData(i);
 			fileLeng = fd->GetDataSize();
@@ -74,10 +74,10 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 				MemFree(fileBuff);
 				return false;
 			}
-			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTimeTick(i), false);
+			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTime(i).ticks, false);
 			MemFree(fileBuff);
 		}
-		else if (itemType == IO::PackageFile::POT_PACKAGEFILE)
+		else if (itemType == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			*sptr++ = '/';
 			if (!this->ExportPackage(zip, buffStart, sptr, pkg->GetItemPack(i)))

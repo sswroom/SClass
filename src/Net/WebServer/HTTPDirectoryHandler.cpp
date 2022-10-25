@@ -24,7 +24,7 @@ typedef struct
 {
 	Text::String *fileName;
 	UInt64 fileSize;
-	Int64 modTime;
+	Data::Timestamp modTime;
 	IO::Path::PathType pt;
 	UInt32 cnt;
 } DirectoryEntry;
@@ -212,21 +212,20 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 
 	UTF8Char sbuff2[256];
 	UTF8Char *sptr2;
-	Data::DateTime modTime;
 	IO::PackageFile::PackObjectType pot;
 	i = 0;
 	j = packageFile->GetCount();
 	while (i < j)
 	{
 		pot = packageFile->GetItemType(i);
-		if (pot == IO::PackageFile::POT_STREAMDATA || pot == IO::PackageFile::POT_PACKAGEFILE)
+		if (pot == IO::PackageFile::PackObjectType::StreamData || pot == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			sbOut.AppendNE(UTF8STRC("<tr><td>"));
 			sbOut.AppendNE(UTF8STRC("<a href=\""));
 			sptr = packageFile->GetItemName(sbuff, i);
 			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
 			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
-			if (pot == IO::PackageFile::POT_PACKAGEFILE)
+			if (pot == IO::PackageFile::PackObjectType::PackageFile)
 			{
 				sbOut.AppendNE(UTF8STRC("/"));
 			}
@@ -234,7 +233,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			sptr2 = Text::XML::ToXMLText(sbuff2, sbuff);
 			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
 			sbOut.AppendNE(UTF8STRC("</a></td><td>"));
-			if (pot == IO::PackageFile::POT_PACKAGEFILE)
+			if (pot == IO::PackageFile::PackObjectType::PackageFile)
 			{
 				sbOut.AppendNE(UTF8STRC("Directory"));
 				sbOut.AppendNE(UTF8STRC("</td><td>"));
@@ -249,9 +248,8 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 				sbOut.AppendU64(packageFile->GetItemSize(i));
 			}
 
-			modTime.SetTicks(packageFile->GetItemModTimeTick(i));
 			sbOut.AppendNE(UTF8STRC("</td><td>"));
-			sbOut.AppendDate(&modTime);
+			sbOut.AppendTS(packageFile->GetItemModTime(i));
 			sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 		}
 		
@@ -397,7 +395,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	UOSInt sptrLen;
 	UTF8Char *sptr3;
 	UTF8Char *sptr4;
-	Data::DateTime t;
+	//Data::DateTime t;
 	Text::CString mime;
 	UOSInt i;
 	if (this->DoRequest(req, resp, subReq))
@@ -449,7 +447,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			if (pitem)
 			{
 				IO::PackageFile::PackObjectType pot = package->packageFile->GetPItemType(pitem);
-				if (pot == IO::PackageFile::POT_STREAMDATA)
+				if (pot == IO::PackageFile::PackObjectType::StreamData)
 				{
 					IO::IStreamData *stmData = package->packageFile->GetPItemStmData(pitem);
 					if (stmData)
@@ -463,9 +461,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 						resp->EnableWriteBuffer();
 						resp->AddDefHeaders(req);
-						t.SetTicks(pitem->modTimeTick);
-						t.ToLocalTime();
-						resp->AddLastModified(&t);
+						resp->AddLastModified(pitem->modTime);
 						if (this->allowOrigin)
 						{
 							resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
@@ -476,13 +472,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						return true;
 					}
 				}
-				else if (pot == IO::PackageFile::POT_PACKAGEFILE)
+				else if (pot == IO::PackageFile::PackObjectType::PackageFile)
 				{
 					IO::PackageFile *innerPF = package->packageFile->GetPItemPack(pitem);
 					if (innerPF)
 					{
 						const IO::PackFileItem *pitem2 = innerPF->GetPackFileItem((const UTF8Char*)"index.html");
-						if (pitem2 && innerPF->GetPItemType(pitem2) == IO::PackageFile::POT_STREAMDATA)
+						if (pitem2 && innerPF->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 						{
 							IO::IStreamData *stmData = innerPF->GetPItemStmData(pitem2);
 							if (stmData)
@@ -495,9 +491,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 								resp->EnableWriteBuffer();
 								resp->AddDefHeaders(req);
-								t.SetTicks(pitem2->modTimeTick);
-								t.ToLocalTime();
-								resp->AddLastModified(&t);
+								resp->AddLastModified(pitem2->modTime);
 								if (this->allowOrigin)
 								{
 									resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
@@ -560,9 +554,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		resp->EnableWriteBuffer();
 		resp->AddDefHeaders(req);
 		AddCacheHeader(resp);
-		t.SetTicks(cache->t);
-		t.ToLocalTime();
-		resp->AddLastModified(&t);
+		resp->AddLastModified(cache->t);
 		i = subReq.IndexOf('?');
 		if (i != INVALID_INDEX)
 		{
@@ -652,14 +644,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 			sptr3 = IO::Path::GetFileExt(sbuff, sptr, sptrLen);
 			IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-			fs.GetFileTimes(0, 0, &t);
+			Data::Timestamp t;
+			t = fs.GetModifyTime();
 
 			if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
 			{
 				Data::DateTime t2;
 				t2.SetValue(hdrVal->ToCString());
 				t2.AddMS(t.GetMS());
-				if (t2.DiffMS(&t) == 0)
+				if (t2.ToTicks() == t.ToTicks())
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 					resp->AddDefHeaders(req);
@@ -673,7 +666,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			resp->EnableWriteBuffer();
 			resp->AddDefHeaders(req);
 			AddCacheHeader(resp);
-			resp->AddLastModified(&t);
+			resp->AddLastModified(t);
 			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
 			resp->AddContentType(mime);
 			sizeLeft = fs.GetLength();
@@ -683,7 +676,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				cache = MemAlloc(CacheInfo, 1);
 				cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
 				cache->buffSize = (UOSInt)sizeLeft;
-				cache->t = t.ToTicks();
+				cache->t = t;
 				readSize = fs.Read(cache->buff, (UOSInt)sizeLeft);
 				if (readSize == sizeLeft)
 				{
@@ -818,7 +811,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				if (isRoot)
 				{
-					Data::DateTime modTime;
 					if (this->packageMap)
 					{
 						PackageInfo *package;
@@ -843,9 +835,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							{
 								sbOut.AppendNE(UTF8STRC("</td><td>0"));
 							}
-							modTime.SetTicks(package->modTime);
 							sbOut.AppendNE(UTF8STRC("</td><td>"));
-							sbOut.AppendDate(&modTime);
+							sbOut.AppendTS(package->modTime);
 							sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							
 							i++;
@@ -887,7 +878,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					UInt32 cnt;
 					UInt64 fileSize;
 					IO::Path::PathType pt;
-					Data::DateTime modTime;
+					Data::Timestamp modTime;
 					if (sort == 0)
 					{
 						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize)) != 0)
@@ -942,7 +933,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 									sbOut.AppendU32(cnt);
 								}
 								sbOut.AppendNE(UTF8STRC("</td><td>"));
-								sbOut.AppendDate(&modTime);
+								sbOut.AppendTS(modTime);
 								sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							}
 						}
@@ -975,7 +966,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								ent->fileName = Text::String::New(sptr2, (UOSInt)(sptr3 - sptr2));
 								ent->fileSize = fileSize;
 								ent->pt = pt;
-								ent->modTime = modTime.ToTicks();
+								ent->modTime = modTime;
 								entList.Add(ent);
 							}
 						}
@@ -1042,8 +1033,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								sbOut.AppendU32(ent->cnt);
 							}
 							sbOut.AppendNE(UTF8STRC("</td><td>"));
-							modTime.SetTicks(ent->modTime);
-							sbOut.AppendDate(&modTime);
+							sbOut.AppendTS(ent->modTime);
 							sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							ent->fileName->Release();
 							MemFree(ent);
@@ -1070,14 +1060,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Text::String *hdrVal;
 
 		IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-		fs.GetFileTimes(0, 0, &t);
+		Data::Timestamp ts = fs.GetModifyTime();
 
 		if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
 		{
 			Data::DateTime t2;
 			t2.SetValue(hdrVal->ToCString());
-			t2.AddMS(t.GetMS());
-			if (t2.DiffMS(&t) == 0)
+			t2.AddMS(ts.GetMS());
+			if (t2.ToTicks() == ts.ticks)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 				resp->AddDefHeaders(req);
@@ -1226,7 +1216,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		resp->EnableWriteBuffer();
 		resp->AddDefHeaders(req);
 		AddCacheHeader(resp);
-		resp->AddLastModified(&t);
+		resp->AddLastModified(ts);
 		mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
 		resp->AddContentType(mime);
 		resp->AddHeader(CSTR("Accept-Ranges"), CSTR("bytes"));
@@ -1256,7 +1246,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			cache = MemAlloc(CacheInfo, 1);
 			cache->buff = MemAlloc(UInt8, (UOSInt)sizeLeft);
 			cache->buffSize = (UOSInt)sizeLeft;
-			cache->t = t.ToTicks();
+			cache->t = ts;
 			readSize = fs.Read(cache->buff, (UOSInt)sizeLeft);
 			if (readSize == sizeLeft)
 			{
@@ -1348,25 +1338,25 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		Data::DateTime dt;
+		Data::Timestamp ts;
 		IO::Path::PathType pt;
-		IO::StmData::FileData *fd;
 		IO::PackageFile *pf;
 		UOSInt i;
 		PackageInfo *package;
 
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &dt, &pt, 0)) != 0)
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr2), false));
-				pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
-				DEL_CLASS(fd);
+				{
+					IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
+					pf = (IO::PackageFile*)parsers->ParseFileType(&fd, IO::ParserType::PackageFile);
+				}
 				if (pf)
 				{
 					package = MemAlloc(PackageInfo, 1);
 					package->packageFile = pf;
-					package->modTime = dt.ToTicks();
+					package->modTime = ts;
 					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{

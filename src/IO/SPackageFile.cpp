@@ -98,7 +98,7 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		if (pathEnd[0] == '.')
 		{
 		}
-		else if (pt == IO::PackageFile::POT_PACKAGEFILE)
+		else if (pt == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			IO::PackageFile *innerPack = pkg->GetItemPack(i);
 			if (innerPack)
@@ -108,12 +108,12 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 				DEL_CLASS(innerPack);
 			}
 		}
-		else if (pt == IO::PackageFile::POT_STREAMDATA)
+		else if (pt == IO::PackageFile::PackObjectType::StreamData)
 		{
 			IO::IStreamData *fd = pkg->GetItemStmData(i);
 			if (fd)
 			{
-				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTimeTick(i));
+				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
 				DEL_CLASS(fd);
 			}
 		}
@@ -163,7 +163,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			}
 			if (this->stm->Read(fileBuff, (UOSInt)thisSize) == thisSize)
 			{
-				newFile->AddFile(fileBuff, (UOSInt)thisSize, {sbuff, j}, ReadInt64(&dirBuff[i + 16]));
+				newFile->AddFile(fileBuff, (UOSInt)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
 				lastOfst = thisOfst;
 				lastSize = thisSize;
 			}
@@ -440,7 +440,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 }
 
-Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Int64 modTimeTicks)
+Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Data::Timestamp modTime)
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();
@@ -458,7 +458,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Int6
 	}
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], dataSize);
-	WriteInt64(&dataBuff[16], modTimeTicks);
+	WriteInt64(&dataBuff[16], modTime.ticks);
 	MemCopyNO(&dataBuff[26], fileName.v, fileName.leng);
 	WriteUInt16(&dataBuff[24], (UInt16)fileName.leng);
 
@@ -528,7 +528,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Int6
 	return succ;
 }
 
-Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Int64 modTimeTicks)
+Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Data::Timestamp modTime)
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;
@@ -543,7 +543,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 	}
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], fileSize);
-	WriteInt64(&dataBuff[16], modTimeTicks);
+	WriteInt64(&dataBuff[16], modTime.ticks);
 	
 	MemCopyNO(&dataBuff[26], fileName.v, fileName.leng);
 	WriteInt16(&dataBuff[24], (UInt16)fileName.leng);

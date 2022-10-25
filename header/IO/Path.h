@@ -46,8 +46,8 @@ namespace IO
 		static Bool AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend, UOSInt toAppendLen);
 		static FindFileSession *FindFile(Text::CString path);
 		static FindFileSession *FindFileW(const WChar *path);
-		static UTF8Char *FindNextFile(UTF8Char *buff, FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
-		static WChar *FindNextFileW(WChar *buff, FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
+		static UTF8Char *FindNextFile(UTF8Char *buff, FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
+		static WChar *FindNextFileW(WChar *buff, FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
 		static void FindFileClose(FindFileSession *session);
 		static PathType GetPathType(Text::CString path);
 		static PathType GetPathTypeW(const WChar *path);

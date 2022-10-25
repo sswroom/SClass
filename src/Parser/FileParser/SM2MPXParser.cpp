@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFile(IO::IStreamData *f
 		}
 
 		sptr = enc.UTF8FromBytes(name, rec, 12, 0);
-		pf->AddData(fd, thisOfst, thisSize, CSTRP(name, sptr), 0);
+		pf->AddData(fd, thisOfst, thisSize, CSTRP(name, sptr), Data::Timestamp(0, 0));
 
 		lastOfst = thisOfst + thisSize;
 		hdrOfst += 20;

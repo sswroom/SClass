@@ -95,7 +95,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Int64 modTimeTick)
+void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Data::Timestamp modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -104,13 +104,13 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, T
 	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = 0;
-	item->modTimeTick = modTimeTick;
+	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Int64 modTimeTick)
+void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Data::Timestamp modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -126,13 +126,13 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Int6
 	}
 	item->pobj = pobj;
 	item->compInfo = 0;
-	item->modTimeTick = modTimeTick;
+	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, Int64 modTimeTick)
+void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, Data::Timestamp modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -147,13 +147,13 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 		item->compInfo->compExtras = MemAlloc(UInt8, compInfo->compExtraSize);
 		MemCopyNO(item->compInfo->compExtras, compInfo->compExtras, compInfo->compExtraSize);
 	}
-	item->modTimeTick = modTimeTick;
+	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Int64 modTimeTick)
+void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Data::Timestamp modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -162,7 +162,7 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Int64 mo
 	item->name = Text::String::New(name);
 	item->pobj = pkg;
 	item->compInfo = 0;
-	item->modTimeTick = modTimeTick;
+	item->modTime = modTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->pkgFiles.Put(item->name, item);
@@ -245,26 +245,26 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 {
 	if (itemObj == 0)
 	{
-		return IO::PackageFile::POT_UNKNOWN;
+		return IO::PackageFile::PackObjectType::Unknown;
 	}
 	else if (itemObj->itemType == IO::PackFileItem::PIT_COMPRESSED || itemObj->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 	{
-		return IO::PackageFile::POT_STREAMDATA;
+		return IO::PackageFile::PackObjectType::StreamData;
 	}
 	else if (itemObj->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 	{
 		if (itemObj->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			return IO::PackageFile::POT_PACKAGEFILE;
+			return IO::PackageFile::PackObjectType::PackageFile;
 		}
 		else
 		{
-			return IO::PackageFile::POT_PARSEDOBJECT;
+			return IO::PackageFile::PackObjectType::ParsedObject;
 		}
 	}
 	else
 	{
-		return IO::PackageFile::POT_UNKNOWN;
+		return IO::PackageFile::PackObjectType::Unknown;
 	}
 }
 
@@ -469,14 +469,14 @@ IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index) const
 	}
 }
 
-Int64 IO::PackageFile::GetItemModTimeTick(UOSInt index) const
+Data::Timestamp IO::PackageFile::GetItemModTime(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
 	{
-		return item->modTimeTick;
+		return item->modTime;
 	}
-	return 0;
+	return Data::Timestamp(0, 0);
 }
 
 UInt64 IO::PackageFile::GetItemStoreSize(UOSInt index) const
@@ -782,7 +782,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 		i = pf->GetCount();
 		while (i-- > 0)
 		{
-			if (pf->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
+			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
 			{
 				sbuff[0] = 0;
 				sptr = pf->GetItemName(sbuff, i);
@@ -818,7 +818,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 	i = pf->GetCount();
 	while (i-- > 0)
 	{
-		if (pf->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
+		if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sbuff[0] = 0;
 			sptr = pf->GetItemName(sbuff, i);

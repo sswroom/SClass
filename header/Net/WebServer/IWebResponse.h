@@ -74,6 +74,13 @@ namespace Net
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
+			Bool AddTimeHeader(Text::CString name, Data::Timestamp ts)
+			{
+				UTF8Char sbuff[256];
+				UTF8Char *sptr = ToTimeString(sbuff, ts);
+				return this->AddHeader(name, CSTRP(sbuff, sptr));
+			}
+
 			Bool AddContentDisposition(Bool isAttachment, const UTF8Char *attFileName, Net::BrowserInfo::BrowserType browser)
 			{
 				UTF8Char sbuff[512];
@@ -136,12 +143,18 @@ namespace Net
 				return this->AddTimeHeader(CSTR("Last-Modified"), dt);
 			}
 
+			Bool AddLastModified(Data::Timestamp ts)
+			{
+				return this->AddTimeHeader(CSTR("Last-Modified"), ts);
+			}
+
 			Bool AddServer(Text::CString server)
 			{
 				return this->AddHeader(CSTR("Server"), server);
 			}
 
 			static UTF8Char *ToTimeString(UTF8Char *buff, Data::DateTime *dt);
+			static UTF8Char *ToTimeString(UTF8Char *buff, Data::Timestamp ts);
 		};
 	}
 }

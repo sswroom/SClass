@@ -41,8 +41,8 @@ namespace IO
 		SPackageFile(Text::CString fileName);
 		~SPackageFile();
 
-		Bool AddFile(IO::IStreamData *fd, Text::CString fileName, Int64 modTimeTicks);
-		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Int64 modTimeTicks);
+		Bool AddFile(IO::IStreamData *fd, Text::CString fileName, Data::Timestamp modTime);
+		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Data::Timestamp modTime);
 		Bool AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(Text::CString newFile);

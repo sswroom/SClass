@@ -431,7 +431,6 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 	stat->threadStat = 1;
 	{
 		Text::StringBuilderUTF8 sb;
-		Data::DateTime dt;
 		stat->me->mainEvt.Set();
 		while (true)
 		{
@@ -473,10 +472,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 							{
 								sb.AppendC(UTF8STRC(".jpg"));
 							}
-							dt.SetCurrTimeUTC();
-
 	//						stat->pkgMut->Lock();
-							stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb.ToCString(), dt.ToTicks());
+							stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb.ToCString(), Data::Timestamp::UtcNow());
 	//						stat->pkgMut->Unlock();
 						}
 						else

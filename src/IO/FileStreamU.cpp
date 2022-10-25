@@ -344,28 +344,28 @@ void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp
 #if defined(__APPLE__)
 	if (creationTime)
 	{
-		*creationTime = Data::Timestamp(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
+		*creationTime = Data::Timestamp::FromSecNS(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
 	}
 	if (lastAccessTime)
 	{
-		*lastAccessTime = Data::Timestamp(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec, 0);
+		*lastAccessTime = Data::Timestamp::FromSecNS(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec, 0);
 	}
 	if (lastWriteTime)
 	{
-		*lastWriteTime = Data::Timestamp(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+		*lastWriteTime = Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
 	}
 #else
 	if (creationTime)
 	{
-		*creationTime = Data::Timestamp(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
+		*creationTime = Data::Timestamp::FromSecNS(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
 	}
 	if (lastAccessTime)
 	{
-		*lastAccessTime = Data::Timestamp(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec, 0);
+		*lastAccessTime = Data::Timestamp::FromSecNS(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec, 0);
 	}
 	if (lastWriteTime)
 	{
-		*lastWriteTime = Data::Timestamp(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+		*lastWriteTime = Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
 	}
 #endif
 }
@@ -400,9 +400,9 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	}
 #endif
 #if defined(__APPLE__)
-	return Data::Timestamp(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
+	return Data::Timestamp::FromSecNS(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
 #else
-	return Data::Timestamp(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
+	return Data::Timestamp::FromSecNS(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
 #endif
 }
 
@@ -437,9 +437,9 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	}
 #endif
 #if defined(__APPLE__)
-	return Data::Timestamp(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+	return Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
 #else
-	return Data::Timestamp(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+	return Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
 #endif
 }
 

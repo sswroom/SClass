@@ -199,7 +199,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			sb->AppendU32((iVal & 0x3c00) >> 10);*/
 			if (((compInfo & 0x380) >> 7) == 0)
 			{
-				pf->AddData(fd, currOfst + headerSize, dataSize, CSTRP(sbuff, sptr), dt.ToTicks());
+				pf->AddData(fd, currOfst + headerSize, dataSize, CSTRP(sbuff, sptr), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
 			}
 			else
 			{
@@ -211,7 +211,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 				cinfo.compFlags = (Int32)compInfo;
 				cinfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 				cinfo.decSize = unpackedSize;
-				pf->AddCompData(fd, currOfst + headerSize, dataSize, &cinfo, CSTRP(sbuff, sptr), dt.ToTicks());
+				pf->AddCompData(fd, currOfst + headerSize, dataSize, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
 			}
 		}
 		currOfst += headerSize + dataSize;

@@ -11,9 +11,9 @@ namespace IO
 	class DirectoryPackage : public IO::PackageFile
 	{
 	private:
-		Data::ArrayList<Text::String *> *files;
-		Data::ArrayListUInt64 *fileSizes;
-		Data::ArrayListInt64 *fileTimes;
+		Data::ArrayList<Text::String *> files;
+		Data::ArrayListUInt64 fileSizes;
+		Data::ArrayList<Data::Timestamp> fileTimes;
 		Text::String *dirName;
 
 		void AddFile(Text::CString fileName);
@@ -29,7 +29,7 @@ namespace IO
 		virtual IO::IStreamData *GetItemStmData(UOSInt index) const; // need release
 		virtual IO::PackageFile *GetItemPack(UOSInt index) const; // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index) const; // no need release
-		virtual Int64 GetItemModTimeTick(UOSInt index) const;
+		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;

@@ -360,7 +360,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
-	if (pot == IO::PackageFile::POT_PACKAGEFILE)
+	if (pot == IO::PackageFile::PackObjectType::PackageFile)
 	{
 		IO::PackageFile *pkg = me->packFile->GetItemPack(index);
 		if (pkg)
@@ -368,7 +368,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 			me->core->OpenObject(pkg);
 		}
 	}
-	else if (pot == IO::PackageFile::POT_PARSEDOBJECT)
+	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 	{
 		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index);
 		if (pobj)
@@ -376,7 +376,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 			me->core->OpenObject(pobj);
 		}
 	}
-	else if (pot == IO::PackageFile::POT_STREAMDATA)
+	else if (pot == IO::PackageFile::PackObjectType::StreamData)
 	{
 		IO::IStreamData *data = me->packFile->GetItemStmData(index);
 		if (data)
@@ -407,7 +407,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Data::DateTime dt;
+	Data::Timestamp ts;
 	UOSInt maxWidth = 0;
 	UOSInt w;
 	this->lvFiles->ClearItems();
@@ -415,7 +415,6 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 	UOSInt j;
 	UOSInt k;
 	IO::PackageFile::PackObjectType pot;
-	dt.ToLocalTime();
 	i = 0;
 	j = packFile->GetCount();
 	while (i < j)
@@ -427,10 +426,10 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 		if (w > maxWidth)
 			maxWidth = w;
 
-		dt.SetTicks(packFile->GetItemModTimeTick(i));
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		ts = packFile->GetItemModTime(i).ToLocalTime();
+		sptr = ts.ToStringNoZone(sbuff);
 		this->lvFiles->SetSubItem(k, 4, CSTRP(sbuff, sptr));
-		if (pot == IO::PackageFile::POT_STREAMDATA)
+		if (pot == IO::PackageFile::PackObjectType::StreamData)
 		{
 			this->lvFiles->SetSubItem(k, 1, CSTR("File"));
 			sptr = Text::StrUInt64(sbuff, packFile->GetItemStoreSize(i));
@@ -446,11 +445,11 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 				this->lvFiles->SetSubItem(k, 5, CSTR("Uncompressed"));
 			}
 		}
-		else if (pot == IO::PackageFile::POT_PACKAGEFILE)
+		else if (pot == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			this->lvFiles->SetSubItem(k, 1, CSTR("Folder"));
 		}
-		else if (pot == IO::PackageFile::POT_PARSEDOBJECT)
+		else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 		{
 			this->lvFiles->SetSubItem(k, 1, CSTR("Object"));
 		}
@@ -517,7 +516,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->lvFiles->AddColumn(CSTR("Type"), 80);
 	this->lvFiles->AddColumn(CSTR("Store Size"), 100);
 	this->lvFiles->AddColumn(CSTR("File Size"), 100);
-	this->lvFiles->AddColumn(CSTR("Modify Time"), 150);
+	this->lvFiles->AddColumn(CSTR("Modify Time"), 180);
 	this->lvFiles->AddColumn(CSTR("Compression"), 100);
 
 	this->lvFiles->HandleDblClk(LVDblClick, this);

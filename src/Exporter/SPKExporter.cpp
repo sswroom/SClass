@@ -160,7 +160,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						sptr = Text::StrInt32(sptr, tileY + yAdd);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						fileBuff = mstm->GetBuff(&fileSize);
-						spkg->AddFile(fileBuff, fileSize, CSTRP(sbuff, sptr), modTimeTicks);
+						spkg->AddFile(fileBuff, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(modTimeTicks, 0));
 					}
 				}
 				orux->ReleaseNameArr(nameArr);
@@ -192,7 +192,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 	while (i < j)
 	{
 		pot = pkgFile->GetItemType(i);
-		if (pot == IO::PackageFile::POT_PACKAGEFILE)
+		if (pot == IO::PackageFile::PackObjectType::PackageFile)
 		{
 			sptr = pkgFile->GetItemName(buffEnd, i);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -204,13 +204,13 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 				DEL_CLASS(subPkg);
 			}
 		}
-		else if (pot == IO::PackageFile::POT_STREAMDATA)
+		else if (pot == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sptr = pkgFile->GetItemName(buffEnd, i);
 			fd = pkgFile->GetItemStmData(i);
 			if (fd)
 			{
-				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTimeTick(i));
+				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTime(i));
 				DEL_CLASS(fd);
 			}
 		}

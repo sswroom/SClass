@@ -14,6 +14,13 @@ namespace Data
 	public:
 		Timestamp() = default;
 
+		Timestamp(Data::Timestamp *ts)
+		{
+			this->ticks = 0;
+			this->nanosec = 0;
+			this->tzQhr = 0;
+		}
+
 		Timestamp(Int64 ticks, Int8 tzQhr)
 		{
 			this->ticks = ticks;
@@ -48,22 +55,22 @@ namespace Data
 
 		Timestamp AddDay(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 86400000LL, this->tzQhr);
+			return Timestamp(this->ticks + val * 86400000LL, this->nanosec, this->tzQhr);
 		}
 
 		Timestamp AddHour(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 3600000LL, this->tzQhr);
+			return Timestamp(this->ticks + val * 3600000LL, this->nanosec, this->tzQhr);
 		}
 
 		Timestamp AddMinute(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 60000LL, this->tzQhr);
+			return Timestamp(this->ticks + val * 60000LL, this->nanosec, this->tzQhr);
 		}
 
 		Timestamp AddSecond(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 1000LL, this->tzQhr);
+			return Timestamp(this->ticks + val * 1000LL, this->nanosec, this->tzQhr);
 		}
 
 		Timestamp AddMS(OSInt val) const
@@ -72,9 +79,14 @@ namespace Data
 			return Timestamp(newTick, (nanosec % 1000000) + (UInt32)(newTick % 1000) * 1000000, this->tzQhr);
 		}
 
+		UInt32 GetMS() const
+		{
+			return (UInt32)(this->ticks % 1000);
+		}
+
 		Timestamp ClearTime() const
 		{
-			return Timestamp(this->ticks - this->ticks % 86400000LL, this->tzQhr);
+			return Timestamp(this->ticks - this->ticks % 86400000LL, 0, this->tzQhr);
 		}
 
 		Int64 GetMSPassedDate() const
@@ -260,17 +272,17 @@ namespace Data
 
 		Timestamp ToUTCTime() const
 		{
-			return Timestamp(this->ticks, 0);
+			return Timestamp(this->ticks, this->nanosec, 0);
 		}
 
 		Timestamp ToLocalTime() const
 		{
-			return Timestamp(this->ticks, Data::DateTimeUtil::GetLocalTzQhr());
+			return Timestamp(this->ticks, this->nanosec, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
 		Timestamp ConvertTimeZoneQHR(Int8 tzQhr) const
 		{
-			return Timestamp(this->ticks, tzQhr);
+			return Timestamp(this->ticks, this->nanosec, tzQhr);
 		}
 
 		Timestamp SetTimeZoneQHR(Int8 tzQhr) const
@@ -336,6 +348,11 @@ namespace Data
 			{
 				return Timestamp(0, 0);
 			}
+		}
+
+		static Timestamp FromSecNS(Int64 unixTS, UInt32 nanosec, Int8 tzQhr)
+		{
+			return Timestamp(unixTS * 1000 + nanosec / 1000000, nanosec, tzQhr);
 		}
 	};
 }

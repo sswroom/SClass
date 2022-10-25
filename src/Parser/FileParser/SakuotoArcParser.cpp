@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFile(IO::IStreamDat
 		fileName = (UTF16Char*)&recBuff[i + 8];
 		while (*fileName++);
 		Text::String *s = Text::String::NewNotNull((UTF16Char*)&recBuff[i + 8]);
-		pf->AddData(fd, dataOfst + fileOfst, fileSize, s->ToCString(), 0);
+		pf->AddData(fd, dataOfst + fileOfst, fileSize, s->ToCString(), Data::Timestamp(0, 0));
 		s->Release();
 
 		nextOfst = fileOfst + fileSize;

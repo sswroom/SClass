@@ -90,7 +90,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 	cinfo.compExtras = 0;
 	*(Int32*)cinfo.checkBytes = *(Int32*)footer;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, &cinfo, CSTRP(sbuff, sptr), ReadUInt32(&hdr[4]) * 1000LL);
+	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(ReadUInt32(&hdr[4]) * 1000LL, 0));
 
 	return pf;
 }

@@ -5,6 +5,7 @@
 #include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringMap.h"
+#include "Data/Timestamp.h"
 #include "Data/Compress/Decompressor.h"
 #include "IO/ActiveStreamReader.h"
 #include "IO/IProgressHandler.h"
@@ -40,20 +41,20 @@ namespace IO
 		IO::ParsedObject *pobj;
 		PackItemType itemType;
 		CompressInfo *compInfo;
-		Int64 modTimeTick;
+		Data::Timestamp modTime;
 		Int32 useCnt;
 	};
 
 	class PackageFile : public IO::ParsedObject
 	{
 	public:
-		typedef enum
+		enum class PackObjectType
 		{
-			POT_UNKNOWN,
-			POT_STREAMDATA,
-			POT_PARSEDOBJECT,
-			POT_PACKAGEFILE
-		} PackObjectType;
+			Unknown,
+			StreamData,
+			ParsedObject,
+			PackageFile
+		};
 
 		typedef enum
 		{
@@ -82,10 +83,10 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		void AddData(IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Int64 modTimeTick);
-		void AddObject(IO::ParsedObject *pobj, Text::CString name, Int64 modTimeTick);
-		void AddCompData(IStreamData *fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, Int64 modTimeTick);
-		void AddPack(IO::PackageFile *pkg, Text::CString name, Int64 modTimeTick);
+		void AddData(IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Data::Timestamp modTime);
+		void AddObject(IO::ParsedObject *pobj, Text::CString name, Data::Timestamp modTime);
+		void AddCompData(IStreamData *fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, Data::Timestamp modTime);
+		void AddPack(IO::PackageFile *pkg, Text::CString name, Data::Timestamp modTime);
 		IO::PackageFile *GetPackFile(Text::CString name) const;
 		Bool UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
@@ -101,7 +102,7 @@ namespace IO
 		IO::IStreamData *GetItemStmData(const UTF8Char* name, UOSInt nameLen) const;
 		virtual IO::PackageFile *GetItemPack(UOSInt index) const; // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index) const; // no need release
-		virtual Int64 GetItemModTimeTick(UOSInt index) const;
+		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;
