@@ -135,7 +135,7 @@ Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::Timestamp ts)
 		return false;
 	}
 	field->currentChanged = true;
-	if (ts.ticks == 0)
+	if (ts.IsZero())
 	{
 		field->currentNull = true;
 	}
@@ -601,8 +601,7 @@ void DB::DBRow::Commit()
 				break;
 			case DT_DATETIME:
 				field->committedData.ts = field->currentData.ts;
-				field->currentData.ts.ticks = 0;
-				field->currentData.ts.nanosec = 0;
+				field->currentData.ts.inst = Data::TimeInstant(0, 0);
 				break;
 			case DT_INT64:
 				field->committedData.iVal = field->currentData.iVal;
@@ -650,8 +649,7 @@ void DB::DBRow::Rollback()
 				SDEL_CLASS(field->currentData.vec);
 				break;
 			case DT_DATETIME:
-				field->currentData.ts.ticks = 0;
-				field->currentData.ts.nanosec = 0;
+				field->currentData.ts.inst = Data::TimeInstant(0, 0);
 				break;
 			case DT_BINARY:
 				SMEMFREE(field->currentData.bin);

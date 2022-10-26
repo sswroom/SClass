@@ -182,17 +182,17 @@ namespace Text
 
 		StringBuilderUTF8 *AppendTS(Data::Timestamp ts)
 		{
-			if (ts.nanosec == 0)
+			if (ts.inst.nanosec == 0)
 			{
 				this->AllocLeng(19);
 				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);
 			}
-			else if (ts.nanosec % 1000000 == 0)
+			else if (ts.inst.nanosec % 1000000 == 0)
 			{
 				this->AllocLeng(23);
 				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.fff") - this->v);
 			}
-			else if (ts.nanosec % 1000 == 0)
+			else if (ts.inst.nanosec % 1000 == 0)
 			{
 				this->AllocLeng(26);
 				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.ffffff") - this->v);

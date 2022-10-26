@@ -102,7 +102,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, Text:
 		{
 			sbuff[0] = 0;
 			sptr = pkgFile->GetItemName(sbuff, 0);
-			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".MP4")) && pkgFile->GetItemType(0) == IO::PackageFile::POT_STREAMDATA)
+			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".MP4")) && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				valid = pkgFile->CopyTo(0, mp4File, true);
 			}
@@ -155,7 +155,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 		UInt64 fileSize;
 		UInt64 fileSize2;
 		IO::Path::PathType pt;
-		Data::DateTime modTime;
+		Data::Timestamp modTime;
 		IO::ActiveStreamReader::BottleNeckType bnt;
 
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &modTime, &pt, &fileSize)) != 0)

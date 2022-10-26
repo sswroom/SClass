@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_DateTime)
 			{
 				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
-				i64Vals->Add(reader->GetTimestamp(colInfos[i].colIndex).ticks);
+				i64Vals->Add(reader->GetTimestamp(colInfos[i].colIndex).ToTicks());
 			}
 		}
 	}

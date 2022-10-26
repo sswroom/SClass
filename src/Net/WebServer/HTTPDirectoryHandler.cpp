@@ -1067,7 +1067,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			Data::DateTime t2;
 			t2.SetValue(hdrVal->ToCString());
 			t2.AddMS(ts.GetMS());
-			if (t2.ToTicks() == ts.ticks)
+			if (t2.ToTicks() == ts.ToTicks())
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 				resp->AddDefHeaders(req);

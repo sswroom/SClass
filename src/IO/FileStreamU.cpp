@@ -483,7 +483,7 @@ void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp 
 	if (this->sourceName == 0)
 		return;
 	struct utimbuf t;
-	if (lastAccessTime.ticks == 0 || lastWriteTime.ticks == 0)
+	if (lastAccessTime.IsZero() || lastWriteTime.IsZero())
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
@@ -502,11 +502,11 @@ void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp 
 		t.modtime = s.st_mtim.tv_sec;
 #endif
 	}
-	if (lastAccessTime.ticks)
+	if (!lastAccessTime.IsZero())
 	{
 		t.actime = lastAccessTime.ToUnixTimestamp();
 	}
-	if (lastWriteTime.ticks)
+	if (!lastWriteTime.IsZero())
 	{
 		t.modtime = lastWriteTime.ToUnixTimestamp();
 	}

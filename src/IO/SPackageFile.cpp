@@ -458,7 +458,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Data
 	}
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], dataSize);
-	WriteInt64(&dataBuff[16], modTime.ticks);
+	WriteInt64(&dataBuff[16], modTime.ToTicks());
 	MemCopyNO(&dataBuff[26], fileName.v, fileName.leng);
 	WriteUInt16(&dataBuff[24], (UInt16)fileName.leng);
 
@@ -543,7 +543,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 	}
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], fileSize);
-	WriteInt64(&dataBuff[16], modTime.ticks);
+	WriteInt64(&dataBuff[16], modTime.ToTicks());
 	
 	MemCopyNO(&dataBuff[26], fileName.v, fileName.leng);
 	WriteInt16(&dataBuff[24], (UInt16)fileName.leng);

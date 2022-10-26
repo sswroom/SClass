@@ -1467,7 +1467,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 			tval.minute = 0;
 			tval.second = 0;
 			tval.ms = 0;
-			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
+			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 		}
 		return Data::Timestamp(0, 0);
 	case DBTYPE_DBTIME:
@@ -1480,7 +1480,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 			tval.minute = (UInt8)ReadUInt16(&val[2]);
 			tval.second = (UInt8)ReadUInt16(&val[4]);
 			tval.ms = 0;
-			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
+			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 		}
 		return Data::Timestamp(0, 0);
 	case DBTYPE_DBTIMESTAMP:
@@ -1493,7 +1493,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 			tval.minute = (UInt8)ReadUInt16(&val[8]);
 			tval.second = (UInt8)ReadUInt16(&val[10]);
 			tval.ms = ReadUInt16(&val[12]);
-			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0, 0);
+			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 		}
 		return Data::Timestamp(0, 0);
 	case DBTYPE_NULL:

@@ -54,15 +54,15 @@ namespace DB
 			if (IsNull(colIndex))
 				return DateErrType::Null;
 			Data::Timestamp ts = GetTimestamp(colIndex);
-			if (ts.ticks == 0)
+			if (ts.inst.sec == 0)
 				return DateErrType::Error;
-			outVal->SetValue(ts.ticks, ts.tzQhr);
+			outVal->SetValue(ts.ToTicks(), ts.tzQhr);
 			return DateErrType::Ok;
 		}
 
 		Int64 GetTicks(UOSInt colIndex)
 		{
-			return GetTimestamp(colIndex).ticks;
+			return GetTimestamp(colIndex).ToTicks();
 		}
 
 		virtual Double GetDbl(UOSInt colIndex) = 0;

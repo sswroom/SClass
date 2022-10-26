@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTimeUtil.h"
+#include "Data/TimeInstant.h"
 #include "Text/MyString.h"
 
 #if defined(_WIN32) || defined(_WIN32_WCE)
@@ -503,9 +504,291 @@ void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 	}
 }
 
+void Data::DateTimeUtil::Instant2TimeValue(TimeInstant inst, TimeValue *t, Int8 tzQhr)
+{
+	Int64 secs = inst.sec + tzQhr * 900;
+	Int32 totalDays = (Int32)(secs / 86400LL);
+	UInt32 minutes;
+	if (secs < 0)
+	{
+		secs -= totalDays * 86400LL;
+		while (secs < 0)
+		{
+			totalDays -= 1;
+			secs += 86400LL;
+		}
+		minutes = (UInt32)(secs % 86400LL);
+	}
+	else
+	{
+		minutes = (UInt32)(secs % 86400LL);
+	}
+
+	t->ms = (UInt16)(inst.nanosec / 1000000);
+	t->second = (UInt8)(minutes % 60);
+	minutes = minutes / 60;
+	t->minute = (UInt8)(minutes % 60);
+	t->hour = (UInt8)(minutes / 60);
+
+	if (totalDays < 0)
+	{
+		t->year = 1970;
+		while (totalDays < 0)
+		{
+			t->year--;
+			if (IsYearLeap(t->year))
+			{
+				totalDays += 366;
+			}
+			else
+			{
+				totalDays += 365;
+			}
+		}
+	}
+	else
+	{
+		if (totalDays < 10957)
+		{
+			t->year = 1970;
+			while (true)
+			{
+				if (IsYearLeap(t->year))
+				{
+					if (totalDays < 366)
+					{
+						break;
+					}
+					else
+					{
+						t->year++;
+						totalDays -= 366;
+					}
+				}
+				else
+				{
+					if (totalDays < 365)
+					{
+						break;
+					}
+					else
+					{
+						t->year++;
+						totalDays -= 365;
+					}
+				}
+			}
+		}
+		else
+		{
+			totalDays -= 10957;
+			t->year = (UInt16)(2000 + ((totalDays / 1461) << 2));
+			totalDays = totalDays % 1461;
+			if (totalDays >= 366)
+			{
+				totalDays--;
+				t->year = (UInt16)(t->year + totalDays / 365);
+				totalDays = totalDays % 365;
+			}
+		}
+	}
+
+	if (IsYearLeap(t->year))
+	{
+		if (totalDays < 121)
+		{
+			if (totalDays < 60)
+			{
+				if (totalDays < 31)
+				{
+					t->month = 1;
+					t->day = (UInt8)(totalDays + 1);
+				}
+				else
+				{
+					t->month = 2;
+					t->day = (UInt8)(totalDays - 31 + 1);
+				}
+			}
+			else
+			{
+				if (totalDays < 91)
+				{
+					t->month = 3;
+					t->day = (UInt8)(totalDays - 60 + 1);
+				}
+				else
+				{
+					t->month = 4;
+					t->day = (UInt8)(totalDays - 91 + 1);
+				}
+			}
+		}
+		else
+		{
+			if (totalDays < 244)
+			{
+				if (totalDays < 182)
+				{
+					if (totalDays < 152)
+					{
+						t->month = 5;
+						t->day = (UInt8)(totalDays - 121 + 1);
+					}
+					else
+					{
+						t->month = 6;
+						t->day = (UInt8)(totalDays - 152 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 213)
+					{
+						t->month = 7;
+						t->day = (UInt8)(totalDays - 182 + 1);
+					}
+					else
+					{
+						t->month = 8;
+						t->day = (UInt8)(totalDays - 213 + 1);
+					}
+				}
+			}
+			else
+			{
+				if (totalDays < 305)
+				{
+					if (totalDays < 274)
+					{
+						t->month = 9;
+						t->day = (UInt8)(totalDays - 244 + 1);
+					}
+					else
+					{
+						t->month = 10;
+						t->day = (UInt8)(totalDays - 274 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 335)
+					{
+						t->month = 11;
+						t->day = (UInt8)(totalDays - 305 + 1);
+					}
+					else
+					{
+						t->month = 12;
+						t->day = (UInt8)(totalDays - 335 + 1);
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		if (totalDays < 120)
+		{
+			if (totalDays < 59)
+			{
+				if (totalDays < 31)
+				{
+					t->month = 1;
+					t->day = (UInt8)(totalDays + 1);
+				}
+				else
+				{
+					t->month = 2;
+					t->day = (UInt8)(totalDays - 31 + 1);
+				}
+			}
+			else
+			{
+				if (totalDays < 90)
+				{
+					t->month = 3;
+					t->day = (UInt8)(totalDays - 59 + 1);
+				}
+				else
+				{
+					t->month = 4;
+					t->day = (UInt8)(totalDays - 90 + 1);
+				}
+			}
+		}
+		else
+		{
+			if (totalDays < 243)
+			{
+				if (totalDays < 181)
+				{
+					if (totalDays < 151)
+					{
+						t->month = 5;
+						t->day = (UInt8)(totalDays - 120 + 1);
+					}
+					else
+					{
+						t->month = 6;
+						t->day = (UInt8)(totalDays - 151 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 212)
+					{
+						t->month = 7;
+						t->day = (UInt8)(totalDays - 181 + 1);
+					}
+					else
+					{
+						t->month = 8;
+						t->day = (UInt8)(totalDays - 212 + 1);
+					}
+				}
+			}
+			else
+			{
+				if (totalDays < 304)
+				{
+					if (totalDays < 273)
+					{
+						t->month = 9;
+						t->day = (UInt8)(totalDays - 243 + 1);
+					}
+					else
+					{
+						t->month = 10;
+						t->day = (UInt8)(totalDays - 273 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 334)
+					{
+						t->month = 11;
+						t->day = (UInt8)(totalDays - 304 + 1);
+					}
+					else
+					{
+						t->month = 12;
+						t->day = (UInt8)(totalDays - 334 + 1);
+					}
+				}
+			}
+		}
+	}
+}
+
 Data::DateTimeUtil::Weekday Data::DateTimeUtil::Ticks2Weekday(Int64 ticks, Int8 tzQhr)
 {
 	return (Data::DateTimeUtil::Weekday)(((ticks + tzQhr * 900000) / 86400000 + 4) % 7);
+}
+
+Data::DateTimeUtil::Weekday Data::DateTimeUtil::Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr)
+{
+	return (Data::DateTimeUtil::Weekday)(((inst.sec + tzQhr * 900) / 86400 + 4) % 7);
 }
 
 UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)

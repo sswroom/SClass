@@ -146,8 +146,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			dataFile = MemAlloc(DataFileInfo, 1);
 			dataFile->id = r->GetInt32(0);
 			dataFile->fileType = r->GetInt32(1);
-			dataFile->startTimeTicks = r->GetTimestamp(2).ticks;
-			dataFile->endTimeTicks = r->GetTimestamp(3).ticks;
+			dataFile->startTimeTicks = r->GetTimestamp(2).ToTicks();
+			dataFile->endTimeTicks = r->GetTimestamp(3).ToTicks();
 			dataFile->oriFileName = r->GetNewStr(4);
 			dataFile->fileName = r->GetNewStr(5);
 			dataFile->webUserId = r->GetInt32(6);
@@ -180,12 +180,12 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile->id = r->GetInt32(0);
 			userFile->fileType = r->GetInt32(1);
 			userFile->oriFileName = r->GetNewStr(2);
-			userFile->fileTimeTicks = r->GetTimestamp(3).ticks;
+			userFile->fileTimeTicks = r->GetTimestamp(3).ToTicks();
 			userFile->lat = r->GetDbl(4);
 			userFile->lon = r->GetDbl(5);
 			userFile->webuserId = r->GetInt32(6);
 			userFile->speciesId = r->GetInt32(7);
-			userFile->captureTimeTicks = r->GetTimestamp(8).ticks;
+			userFile->captureTimeTicks = r->GetTimestamp(8).ToTicks();
 			userFile->dataFileName = r->GetNewStr(9);
 			userFile->crcVal = (UInt32)r->GetInt32(10);
 			userFile->rotType = r->GetInt32(11);

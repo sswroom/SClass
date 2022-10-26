@@ -323,8 +323,7 @@ Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UOSInt colIndex)
 			return Data::Timestamp(0, 0);
 		if (colIndex == 1)
 		{
-			Data::Timestamp ts = this->file->GetAdjStartTime();
-			ts.ticks += (OSInt)currRow * this->file->GetAdjRecInterval();
+			Data::Timestamp ts = this->file->GetAdjStartTime().AddMS((OSInt)currRow * this->file->GetAdjRecInterval());
 			return ts;
 		}
 		else

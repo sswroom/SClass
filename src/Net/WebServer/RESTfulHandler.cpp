@@ -37,7 +37,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 			break;
 		case DB::DBRow::DT_DATETIME:
 			ts = row->GetValueDate(col->GetColName()->v);
-			if (ts.ticks)
+			if (!ts.IsZero())
 			{
 				ts.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
 				json->ObjectAddStrUTF8(sb.ToCString(), sbuff);

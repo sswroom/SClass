@@ -26,7 +26,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			disc = MemAlloc(BurntDiscInfo, 1);
 			disc->discId = r->GetNewStr(0);
 			disc->discTypeId = r->GetNewStr(1);
-			disc->burntDate = r->GetTimestamp(2).ticks;
+			disc->burntDate = r->GetTimestamp(2).ToTicks();
 			disc->status = r->GetInt32(3);
 			disc = this->discMap->Put(disc->discId, disc);
 			if (disc)
@@ -636,17 +636,17 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 		sql.AppendStrUTF8(sbuff);
 		sql.AppendCmdC(CSTR(" where DiscID = "));
 		sql.AppendStrUTF8(sbDiscId.ToString());
-		const UTF8Char *fileName = fileChk->GetEntryName(i);
-		k = Text::StrIndexOfChar(&fileName[1], '\\');
-		if (nameMap.GetIndex(&fileName[k + 2]) >= 0)
+		Text::String *fileName = fileChk->GetEntryName(i);
+		k = fileName->IndexOf('\\', 1);
+		if (nameMap.GetIndex(&fileName->v[k + 1]) >= 0)
 		{
 			sql.AppendCmdC(CSTR(" and FileID = "));
-			sql.AppendInt32(nameMap.Get(&fileName[k + 2]));
+			sql.AppendInt32(nameMap.Get(&fileName->v[k + 1]));
 		}
 		else
 		{
 			sql.AppendCmdC(CSTR(" and Name = "));
-			sql.AppendStrUTF8(&fileName[k + 2]);
+			sql.AppendStrUTF8(&fileName->v[k + 1]);
 		}
 		db->ExecuteNonQuery(sql.ToCString());
 		i++;

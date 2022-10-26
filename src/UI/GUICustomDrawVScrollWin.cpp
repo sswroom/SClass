@@ -269,35 +269,41 @@ UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
 	return (UInt32)GetScrollPos((HWND)this->hwnd, SB_VERT);
 }
 
-Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt index)
+Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 {
 	SCROLLINFO si;
 	si.cbSize = sizeof (si);
 	si.fMask  = SIF_ALL;
 	GetScrollInfo((HWND)this->hwnd, SB_VERT, &si);
 
-	if (index < (UInt32)si.nMin)
+	if (lastIndex >= (UInt32)si.nMax)
+	{
+		lastIndex = (UInt32)si.nMax - 1;
+	}
+	if (firstIndex > lastIndex)
+	{
 		return false;
-	if (index >= (UInt32)si.nMax)
+	}
+	if (firstIndex < (UInt32)si.nMin)
 		return false;
 
-	if (si.nPos > (OSInt)index)
+	if (si.nPos > (OSInt)firstIndex)
 	{
 		si.fMask = SIF_POS;
-		si.nPos = (Int32)(OSInt)index;
+		si.nPos = (Int32)(OSInt)firstIndex;
 		SetScrollInfo ((HWND)this->hwnd, SB_VERT, &si, TRUE);
 		GetScrollInfo ((HWND)this->hwnd, SB_VERT, &si);
 		this->Redraw();
 		return true;
 	}
-	else if ((si.nPos + (Int32)si.nPage) > (OSInt)index)
+	else if ((si.nPos + (Int32)si.nPage) > (OSInt)lastIndex)
 	{
 		return false;
 	}
 	else
 	{
 		si.fMask = SIF_POS;
-		si.nPos = (Int32)(OSInt)index - (Int32)si.nPage + 1;
+		si.nPos = (Int32)(OSInt)lastIndex - (Int32)si.nPage + 1;
 		SetScrollInfo ((HWND)this->hwnd, SB_VERT, &si, TRUE);
 		GetScrollInfo ((HWND)this->hwnd, SB_VERT, &si);
 		this->Redraw();

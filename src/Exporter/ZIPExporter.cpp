@@ -74,7 +74,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 				MemFree(fileBuff);
 				return false;
 			}
-			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTime(i).ticks, false);
+			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTime(i).ToTicks(), false);
 			MemFree(fileBuff);
 		}
 		else if (itemType == IO::PackageFile::PackObjectType::PackageFile)

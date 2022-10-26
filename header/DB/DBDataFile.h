@@ -269,7 +269,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 			}
 			else
 			{
-				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ticks);
+				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ToTicks());
 				m += 8;
 			}
 			break;

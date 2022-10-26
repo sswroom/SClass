@@ -33,5 +33,5 @@ Data::Timestamp Text::XLSUtil::Number2Timestamp(Double v)
 	Int8 tz = Data::DateTimeUtil::GetLocalTzQhr();
 	Double ds = (v - days);
 	OSInt s = Double2OSInt(ds * 86400);
-	return Data::Timestamp((days - 25569) * 86400000LL + Double2OSInt(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000), tz);
+	return Data::Timestamp(Data::TimeInstant((days - 25569) * 86400LL + Double2OSInt(ds * 86400), (UInt32)((ds * 86400 - (Double)s) * 1000000000)), tz);
 }

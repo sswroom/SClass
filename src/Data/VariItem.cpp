@@ -653,7 +653,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate() const
 	Data::DateTime *date;
 	if (this->itemType == ItemType::Date)
 	{
-		NEW_CLASS(date, Data::DateTime(this->val.date.ticks, this->val.date.tzQhr));
+		NEW_CLASS(date, Data::DateTime(this->val.date.ToTicks(), this->val.date.tzQhr));
 		return date;
 	}
 	else if (this->itemType == ItemType::CStr)

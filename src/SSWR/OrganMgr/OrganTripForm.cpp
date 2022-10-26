@@ -141,9 +141,9 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(void *userObj)
 {
 	OrganTripForm *me = (OrganTripForm*)userObj;
-	if (me->refTime.ticks != 0)
+	if (!me->refTime.IsZero())
 	{
-		Data::DateTime dt(me->refTime.ticks, me->refTime.tzQhr);
+		Data::DateTime dt(me->refTime.ToTicks(), me->refTime.tzQhr);
 		UInt8 min = dt.GetMinute();
 		if (min < 15)
 		{

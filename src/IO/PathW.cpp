@@ -831,7 +831,7 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	IO::Path::PathType tmp;
 	if (pt == 0)
@@ -844,7 +844,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 		outPtr = Text::StrWChar_UTF8(buff, sess->findData.cFileName);
 		if (modTime)
 		{
-			modTime->SetValueFILETIME(&sess->findData.ftLastWriteTime);
+			*modTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&sess->findData.ftLastWriteTime), 0);
 		}
 		if (pt)
 		{
@@ -870,7 +870,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 	}
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	IO::Path::PathType tmp;
 	if (pt == 0)
@@ -883,7 +883,7 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 		outPtr = Text::StrConcat(buff, sess->findData.cFileName);
 		if (modTime)
 		{
-			modTime->SetValueFILETIME(&sess->findData.ftLastWriteTime);
+			*modTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&sess->findData.ftLastWriteTime), 0);
 		}
 		if (pt)
 		{

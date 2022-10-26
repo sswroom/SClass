@@ -1,14 +1,14 @@
 #ifndef _SM_DATA_TIMESTAMP
 #define _SM_DATA_TIMESTAMP
 #include "Data/DateTimeUtil.h"
+#include "Data/TimeInstant.h"
 
 namespace Data
 {
 	class Timestamp
 	{
 	public:
-		Int64 ticks;
-		UInt32 nanosec;
+		Data::TimeInstant inst;
 		Int8 tzQhr;
 
 	public:
@@ -16,22 +16,19 @@ namespace Data
 
 		Timestamp(Data::Timestamp *ts)
 		{
-			this->ticks = 0;
-			this->nanosec = 0;
+			this->inst = Data::TimeInstant(0, 0);
 			this->tzQhr = 0;
 		}
 
 		Timestamp(Int64 ticks, Int8 tzQhr)
 		{
-			this->ticks = ticks;
-			this->nanosec = (UInt32)(ticks % 1000) * 1000000;
+			this->inst = Data::TimeInstant::FromTicks(ticks);
 			this->tzQhr = tzQhr;
 		};
-		
-		Timestamp(Int64 ticks, UInt32 nanosec, Int8 tzQhr)
+
+		Timestamp(Data::TimeInstant inst, Int8 tzQhr)
 		{
-			this->ticks = ticks;
-			this->nanosec = nanosec;
+			this->inst = inst;
 			this->tzQhr = tzQhr;
 		};
 
@@ -39,15 +36,14 @@ namespace Data
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			this->tzQhr = defTzQhr;
-			this->nanosec = 0;
-			if (!Data::DateTimeUtil::String2TimeValue(dateStr, &tval, &this->tzQhr, &this->nanosec))
+			UInt32 nanosec = 0;
+			if (!Data::DateTimeUtil::String2TimeValue(dateStr, &tval, &this->tzQhr, &nanosec))
 			{
-				this->nanosec = 0;
-				this->ticks = 0;
+				this->inst = Data::TimeInstant(0, 0);
 			}
 			else
 			{
-				this->ticks = Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr);
+				this->inst = Data::TimeInstant(Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr) / 1000LL, nanosec);
 			}
 		}
 		
@@ -55,74 +51,72 @@ namespace Data
 
 		Timestamp AddDay(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 86400000LL, this->nanosec, this->tzQhr);
+			return Timestamp(this->inst.AddDay(val), this->tzQhr);
 		}
 
 		Timestamp AddHour(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 3600000LL, this->nanosec, this->tzQhr);
+			return Timestamp(this->inst.AddHour(val), this->tzQhr);
 		}
 
 		Timestamp AddMinute(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 60000LL, this->nanosec, this->tzQhr);
+			return Timestamp(this->inst.AddMinute(val), this->tzQhr);
 		}
 
 		Timestamp AddSecond(OSInt val) const
 		{
-			return Timestamp(this->ticks + val * 1000LL, this->nanosec, this->tzQhr);
+			return Timestamp(this->inst.AddSecond(val), this->tzQhr);
 		}
 
 		Timestamp AddMS(OSInt val) const
 		{
-			Int64 newTick = this->ticks + val;
-			return Timestamp(newTick, (nanosec % 1000000) + (UInt32)(newTick % 1000) * 1000000, this->tzQhr);
+			return Timestamp(this->inst.AddMS(val), this->tzQhr);
 		}
 
 		UInt32 GetMS() const
 		{
-			return (UInt32)(this->ticks % 1000);
+			return this->inst.GetMS();
 		}
 
 		Timestamp ClearTime() const
 		{
-			return Timestamp(this->ticks - this->ticks % 86400000LL, 0, this->tzQhr);
+			return Timestamp(this->inst.ClearTime(), this->tzQhr);
 		}
 
 		Int64 GetMSPassedDate() const
 		{
-			return this->ticks % 86400000LL;
+			return this->inst.GetMSPassedDate();
 		};
 
 		Int64 DiffMS(Timestamp ts) const
 		{
-			return this->ticks - ts.ticks;
+			return this->inst.DiffMS(ts.inst);
 		}
 
 		Int64 ToTicks() const
 		{
-			return this->ticks;
+			return this->inst.ToTicks();
 		}
 
 		Int64 ToDotNetTicks() const
 		{
-			return this->ticks * 10000LL + 621355968000000000LL + (this->nanosec / 100) % 10000;
+			return this->inst.ToDotNetTicks();
 		}
 
 		Int64 ToUnixTimestamp() const
 		{
-			return this->ticks / 1000LL;
+			return this->inst.ToUnixTimestamp();
 		}
 
 		static Timestamp FromDotNetTicks(Int64 ticks, Int8 tzQhr)
 		{
-			ticks -= 621355968000000000LL;
-			return Timestamp(ticks / 10000LL, (UInt32)(ticks % 10000000) * 100, tzQhr);
+			return Timestamp(Data::TimeInstant::FromDotNetTicks(ticks), tzQhr);
 		}
 
 		static Timestamp FromUnixTimestamp(Int64 ts)
 		{
-			return Timestamp(ts * 1000LL, 0);
+			return Timestamp(Data::TimeInstant(ts, 0), 0);
 		}
 
 /*		void SetMSDOSTime(UInt16 date, UInt16 time);
@@ -144,15 +138,15 @@ namespace Data
 
 		UTF8Char *ToString(UTF8Char *buff) const
 		{
-			if (this->nanosec == 0)
+			if (this->inst.nanosec == 0)
 			{
 				return ToString(buff, "yyyy-MM-dd HH:mm:ss zzzz");
 			}
-			else if (this->nanosec % 1000000 == 0)
+			else if (this->inst.nanosec % 1000000 == 0)
 			{
 				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			}
-			else if (this->nanosec % 1000 == 0)
+			else if (this->inst.nanosec % 1000 == 0)
 			{
 				return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff zzzz");
 			}
@@ -164,19 +158,22 @@ namespace Data
 
 		UTF8Char *ToStringNoZone(UTF8Char *buff) const
 		{
-			if ((this->ticks % 86400000) == 0)
+			if (this->inst.nanosec == 0)
 			{
-				return ToString(buff, "yyyy-MM-dd");
+				if ((this->inst.sec % 86400) == 0)
+				{
+					return ToString(buff, "yyyy-MM-dd");
+				}
+				else
+				{
+					return ToString(buff, "yyyy-MM-dd HH:mm:ss");
+				}
 			}
-			else if (this->nanosec == 0)
-			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss");
-			}
-			else if (this->nanosec % 1000000 == 0)
+			else if (this->inst.nanosec % 1000000 == 0)
 			{
 				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 			}
-			else if (this->nanosec % 1000 == 0)
+			else if (this->inst.nanosec % 1000 == 0)
 			{
 				return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff");
 			}
@@ -189,80 +186,43 @@ namespace Data
 		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			Data::DateTimeUtil::Ticks2TimeValue(this->ticks, &tval, this->tzQhr);
-			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, this->nanosec, (const UTF8Char*)pattern);
+			Data::DateTimeUtil::Instant2TimeValue(this->inst, &tval, this->tzQhr);
+			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, this->inst.nanosec, (const UTF8Char*)pattern);
 		}
 		
 		Bool operator==(Timestamp dt) const
 		{
-			return this->ticks == dt.ticks && this->nanosec == dt.nanosec;
+			return this->inst == dt.inst;
 		}
 
 		Bool operator!=(Timestamp dt) const
 		{
-			return this->ticks != dt.ticks || this->nanosec != dt.nanosec;
+			return this->inst != dt.inst;
 		}
 
 		Bool operator>=(Timestamp dt) const
 		{
-			if (this->ticks < dt.ticks)
-				return false;
-			else if (this->ticks > dt.ticks)
-				return true;
-			else if (this->nanosec < dt.nanosec)
-				return false;
-			else
-				return true;
+			return this->inst >= dt.inst;
 		}
 
 		Bool operator<=(Timestamp dt) const
 		{
-			if (this->ticks > dt.ticks)
-				return false;
-			else if (this->ticks < dt.ticks)
-				return true;
-			else if (this->nanosec > dt.nanosec)
-				return false;
-			else
-				return true;
+			return this->inst <= dt.inst;
 		}
 
 		Bool operator>(Timestamp dt) const
 		{
-			if (this->ticks < dt.ticks)
-				return false;
-			else if (this->ticks > dt.ticks)
-				return true;
-			else if (this->nanosec <= dt.nanosec)
-				return false;
-			else
-				return true;
+			return this->inst > dt.inst;
 		}
 
 		Bool operator<(Timestamp dt) const
 		{
-			if (this->ticks > dt.ticks)
-				return false;
-			else if (this->ticks < dt.ticks)
-				return true;
-			else if (this->nanosec >= dt.nanosec)
-				return false;
-			else
-				return true;
+			return this->inst < dt.inst;
 		}
 
 		OSInt CompareTo(const Timestamp& ts) const
 		{
-			if (this->ticks > ts.ticks)
-				return 1;
-			else if (this->ticks < ts.ticks)
-				return -1;
-			else if (this->nanosec > ts.nanosec)
-				return 1;
-			else if (this->nanosec < ts.nanosec)
-				return -1;
-			else
-				return 0;
+			return this->inst.CompareTo(ts.inst);
 		}
 		
 		/*UTF8Char *ToLocalStr(UTF8Char *buff);
@@ -272,24 +232,24 @@ namespace Data
 
 		Timestamp ToUTCTime() const
 		{
-			return Timestamp(this->ticks, this->nanosec, 0);
+			return Timestamp(this->inst, 0);
 		}
 
 		Timestamp ToLocalTime() const
 		{
-			return Timestamp(this->ticks, this->nanosec, Data::DateTimeUtil::GetLocalTzQhr());
+			return Timestamp(this->inst, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
 		Timestamp ConvertTimeZoneQHR(Int8 tzQhr) const
 		{
-			return Timestamp(this->ticks, this->nanosec, tzQhr);
+			return Timestamp(this->inst, tzQhr);
 		}
 
 		Timestamp SetTimeZoneQHR(Int8 tzQhr) const
 		{
 			if (this->tzQhr != tzQhr)
 			{
-				return Timestamp(this->ticks + (tzQhr - this->tzQhr) * (Int64)(15 * 60000), tzQhr);
+				return Timestamp(this->inst.AddSecond((tzQhr - this->tzQhr) * (Int64)(15 * 60)), tzQhr);
 			}
 			else
 			{
@@ -304,35 +264,32 @@ namespace Data
 
 		Data::DateTimeUtil::Weekday GetWeekday() const
 		{
-			return Data::DateTimeUtil::Ticks2Weekday(this->ticks, this->tzQhr);
+			return Data::DateTimeUtil::Instant2Weekday(this->inst, this->tzQhr);
 		}
 
 		Bool SameDate(Data::Timestamp ts) const
 		{
-			return (this->ticks / 86400000) == (ts.ticks / 86400000);
+			return this->inst.SameDate(ts.inst);
+		}
+
+		Bool IsZero() const
+		{
+			return this->inst.sec == 0;
 		}
 
 		static Timestamp Now()
 		{
-			UInt32 nanosec;
-			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
-			return Timestamp(ticks, nanosec, Data::DateTimeUtil::GetLocalTzQhr());
+			return Timestamp(TimeInstant::Now(), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
 		static Timestamp UtcNow()
 		{
-			UInt32 nanosec;
-			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
-			return Timestamp(ticks, nanosec, 0);
+			return Timestamp(TimeInstant::Now(), 0);
 		}
 
 		static Timestamp FromVariTime(Double variTime)
 		{
-			Int32 days = (Int32)variTime;
-			Int8 tz = Data::DateTimeUtil::GetLocalTzQhr();
-			Double ds = (variTime - days);
-			OSInt s = Double2OSInt(ds * 86400);
-			return Data::Timestamp((days - 25569) * 86400000LL + Double2OSInt(ds * 86400000), (UInt32)((ds * 86400 - (Double)s) * 1000000000), tz);
+			return Data::Timestamp(TimeInstant::FromVariTime(variTime), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
 		static Timestamp FromStr(Text::CString s)
@@ -342,7 +299,7 @@ namespace Data
 			UInt32 nanosec;
 			if (Data::DateTimeUtil::String2TimeValue(s, &tv, &tzQhr, &nanosec))
 			{
-				return Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tv, tzQhr), nanosec, tzQhr);
+				return Timestamp(TimeInstant(Data::DateTimeUtil::TimeValue2Ticks(&tv, tzQhr) / 1000LL, nanosec), tzQhr);
 			}
 			else
 			{
@@ -352,7 +309,7 @@ namespace Data
 
 		static Timestamp FromSecNS(Int64 unixTS, UInt32 nanosec, Int8 tzQhr)
 		{
-			return Timestamp(unixTS * 1000 + nanosec / 1000000, nanosec, tzQhr);
+			return Timestamp(Data::TimeInstant(unixTS, nanosec), tzQhr);
 		}
 	};
 }

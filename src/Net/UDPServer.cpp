@@ -256,8 +256,8 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 		}
 		else
 		{
-			this->logDateR = Data::Timestamp(0, 0, 0);
-			this->logDateS = Data::Timestamp(0, 0, 0);
+			this->logDateR = Data::Timestamp(0);
+			this->logDateS = Data::Timestamp(0);
 		}
 
 		this->v4threadStats = MemAlloc(ThreadStat, this->threadCnt);
@@ -309,8 +309,8 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	}
 	else
 	{
-		this->logDateR = Data::Timestamp(0, 0, 0);
-		this->logDateS = Data::Timestamp(0, 0, 0);
+		this->logDateR = Data::Timestamp(0);
+		this->logDateS = Data::Timestamp(0);
 	}
 }
 

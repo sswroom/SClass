@@ -503,7 +503,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 	}
 	Int64 lastTime;
 	Int64 thisTime;
-	lastTime = fs.GetModifyTime().ticks;
+	lastTime = fs.GetModifyTime().ToTicks();
 	Text::PString line;
 	Text::PString str1;
 	UOSInt i;

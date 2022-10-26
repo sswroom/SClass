@@ -51,7 +51,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 		link = this->links.GetItem(i);
 		mutUsage.EndUse();
 
-		if (link->lastUpdated.ticks == 0)
+		if (link->lastUpdated.IsZero())
 		{
 			this->LoadLink(link);
 		}
@@ -72,7 +72,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 				}
 				break;
 			case RefreshMode::OnStop:
-				if (this->dispTime > link->lastUpdated.ticks && (currTime.ticks - this->dispTime) >= link->reloadInterval * 1000)
+				if (this->dispTime > link->lastUpdated.ToTicks() && (currTime.ToTicks() - this->dispTime) >= link->reloadInterval * 1000)
 				{
 					this->LoadLink(link);
 				}

@@ -112,7 +112,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			Data::Timestamp ts1 = r->GetTimestamp(0);
 			Data::Timestamp ts2 = r->GetTimestamp(1);
 			this->CloseReader(r);
-			this->tzQhr = (Int8)((ts1.ticks - ts2.ticks) / 900000);
+			this->tzQhr = (Int8)((ts1.inst.sec - ts2.inst.sec) / 900);
 		}
 	}
 }
@@ -1573,7 +1573,7 @@ Bool DB::ODBCReader::ReadNext()
 							tval.minute = (UInt8)ts.minute;
 							tval.second = (UInt8)ts.second;
 							tval.ms = (UInt16)(ts.fraction / 1000000);
-							*dt = Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr), ts.fraction, this->tzQhr);
+							*dt = Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr) / 1000, ts.fraction), this->tzQhr);
 						}
 					}
 					else

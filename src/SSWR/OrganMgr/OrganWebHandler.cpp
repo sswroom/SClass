@@ -377,7 +377,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 			book->title = r->GetNewStrB(1, &sb, false);
 			book->author = r->GetNewStrB(2, &sb, false);
 			book->press = r->GetNewStrB(3, &sb, false);
-			book->publishDate = r->GetTimestamp(4).ticks;
+			book->publishDate = r->GetTimestamp(4).ToTicks();
 			book->url = r->GetNewStrB(5, &sb, false);
 
 			this->bookMap.Put(book->id, book);
@@ -470,12 +470,12 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->id = r->GetInt32(0);
 				userFile->fileType = r->GetInt32(1);
 				userFile->oriFileName = r->GetNewStrB(2, &sb, false);
-				userFile->fileTimeTicks = r->GetTimestamp(3).ticks;
+				userFile->fileTimeTicks = r->GetTimestamp(3).ToTicks();
 				userFile->lat = r->GetDbl(4);
 				userFile->lon = r->GetDbl(5);
 				userFile->webuserId = userId;
 				userFile->speciesId = r->GetInt32(7);
-				userFile->captureTimeTicks = r->GetTimestamp(8).ticks;
+				userFile->captureTimeTicks = r->GetTimestamp(8).ToTicks();
 				userFile->dataFileName = r->GetNewStrB(9, &sb, false);
 				userFile->crcVal = (UInt32)r->GetInt32(10);
 				userFile->rotType = r->GetInt32(11);
@@ -530,7 +530,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		{
 			userId = r->GetInt32(4);
 			cateId = r->GetInt32(3);
-			fromDate = r->GetTimestamp(0).ticks;
+			fromDate = r->GetTimestamp(0).ToTicks();
 			if (user == 0 || user->id != userId)
 			{
 				user = this->userMap.Get(userId);
@@ -548,7 +548,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				{
 					trip = MemAlloc(SSWR::OrganMgr::OrganWebHandler::TripInfo, 1);
 					trip->fromDate = fromDate;
-					trip->toDate = r->GetTimestamp(1).ticks;
+					trip->toDate = r->GetTimestamp(1).ToTicks();
 					trip->cateId = cateId;
 					trip->locId = r->GetInt32(2);
 					tripCate->Put(fromDate, trip);

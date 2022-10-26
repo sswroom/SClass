@@ -479,22 +479,18 @@ void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp
 	FILETIME createTime;
 	FILETIME lastAccTime;
 	FILETIME lastWrTime;
-	SYSTEMTIME sysTime;
 	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
 	if (creationTime)
 	{
-		FileTimeToSystemTime(&createTime, &sysTime);
-		*creationTime = Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+		*creationTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&createTime), 0);
 	}
 	if (lastAccessTime)
 	{
-		FileTimeToSystemTime(&lastAccTime, &sysTime);
-		*lastAccessTime = Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+		*lastAccessTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&lastAccTime), 0);
 	}
 	if (lastWriteTime)
 	{
-		FileTimeToSystemTime(&lastWrTime, &sysTime);
-		*lastWriteTime = Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+		*lastWriteTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&lastWrTime), 0);
 	}
 }
 
@@ -561,19 +557,19 @@ void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp 
 	FILETIME *lwTime = 0;
 	SYSTEMTIME sysTime;
 
-	if (creationTime.ticks)
+	if (!creationTime.IsZero())
 	{
-		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, creationTime.ticks);
+		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, creationTime.ToTicks());
 		SystemTimeToFileTime(&sysTime, cTime = &createTime);
 	}
-	if (lastAccessTime.ticks)
+	if (!lastAccessTime.IsZero())
 	{
-		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastAccessTime.ticks);
+		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastAccessTime.ToTicks());
 		SystemTimeToFileTime(&sysTime, laTime = &lastAccTime);
 	}
-	if (lastWriteTime.ticks)
+	if (!lastWriteTime.IsZero())
 	{
-		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastWriteTime.ticks);
+		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastWriteTime.ToTicks());
 		SystemTimeToFileTime(&sysTime, lwTime = &lastWrTime);
 	}
 	SetFileTime(this->handle, cTime, laTime, lwTime);

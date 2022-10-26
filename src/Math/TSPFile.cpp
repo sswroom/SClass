@@ -359,7 +359,7 @@ Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
 		return Data::Timestamp(0, 0);
 	if (colIndex == 2)
 	{
-		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), 0, Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	return Data::Timestamp(0, 0);
 }

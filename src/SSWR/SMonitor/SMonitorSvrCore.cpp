@@ -858,9 +858,9 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			dev->cliId = r->GetInt64(0);
 			dev->cpuName = r->GetNewStr(1);
 			dev->platformName = r->GetNewStr(2);
-			dev->lastKATime = r->GetTimestamp(3).ticks;
+			dev->lastKATime = r->GetTimestamp(3).ToTicks();
 			dev->flags = r->GetInt32(4);
-			dev->readingTime = r->GetTimestamp(5).ticks;
+			dev->readingTime = r->GetTimestamp(5).ToTicks();
 			dev->version = r->GetInt64(93);
 			dev->nReading = (UInt32)r->GetInt32(6);
 			dev->digitalVals = (UInt32)r->GetInt32(7);

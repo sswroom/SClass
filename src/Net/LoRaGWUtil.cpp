@@ -171,7 +171,7 @@ void Net::LoRaGWUtil::GenRxpkJSON(Text::StringBuilderUTF8 *sb, UInt32 freq, UInt
 	UTF8Char *sptr;
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	sb->AppendC(UTF8STRC("{\"rxpk\":[{\"tmst\":"));
-	sb->AppendU32((UInt32)((ts.ticks / 1000) * 1000000) + ts.nanosec / 1000);
+	sb->AppendU32((UInt32)(ts.inst.sec * 1000000) + ts.inst.nanosec / 1000);
 	sb->AppendC(UTF8STRC(",\"time\":\""));
 	sptr = ts.ToString(sbuff, "yyyy-MM-dd\\THH:mm:ss.ffffff\\Z");
 	sb->AppendP(sbuff, sptr);
