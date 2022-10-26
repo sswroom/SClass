@@ -121,9 +121,14 @@ namespace Data
 
 /*		void SetMSDOSTime(UInt16 date, UInt16 time);
 		UInt16 ToMSDOSDate();
-		UInt16 ToMSDOSTime();
-		void ToSYSTEMTIME(void *sysTime);
-		void SetNTPTime(Int32 hiDword, Int32 loDword);
+		UInt16 ToMSDOSTime();*/
+
+		void ToSYSTEMTIME(void *sysTime)
+		{
+			Data::DateTimeUtil::Ticks2SYSTEMTIME(sysTime, this->ToTicks());
+		}
+		
+/*		void SetNTPTime(Int32 hiDword, Int32 loDword);
 		Int64 ToNTPTime();*/
 
 		Char *ToString(Char *buff) const
@@ -260,6 +265,13 @@ namespace Data
 		Int8 GetTimeZoneQHR() const
 		{
 			return this->tzQhr;
+		}
+
+		Data::DateTimeUtil::TimeValue GetTimeValue() const
+		{
+			Data::DateTimeUtil::TimeValue tv;
+			Data::DateTimeUtil::Ticks2TimeValue(this->inst.ToTicks(), &tv, this->tzQhr);
+			return tv;
 		}
 
 		Data::DateTimeUtil::Weekday GetWeekday() const

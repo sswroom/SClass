@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #if defined(_WIN32) || defined(_WIN32_WCE)
@@ -1049,3 +1050,7 @@ Data::DateTimeUtil::Weekday Data::DateTime::GetWeekday()
 	return Data::DateTimeUtil::Ticks2Weekday(this->ToTicks(), this->tzQhr);
 }
 
+Data::Timestamp Data::DateTime::ToTimestamp()
+{
+	return Data::Timestamp(this->ToTicks(), this->tzQhr);
+}

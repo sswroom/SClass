@@ -119,7 +119,7 @@ namespace Data
 		static TimeInstant FromFILETIME(void *fileTime)
 		{
 			Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
-			return TimeInstant(t / 10000000, (t % 10000000) * 100);
+			return TimeInstant(t / 10000000, (UInt32)(t % 10000000) * 100);
 		}
 
 		Bool operator==(TimeInstant dt) const

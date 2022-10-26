@@ -19,7 +19,7 @@ void SSWR::OrganMgr::BookArrayList::Sort()
 
 OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, OrganBook *book2)
 {
-	OSInt ret = book1->GetPublishDate()->CompareTo(book2->GetPublishDate());
+	OSInt ret = book1->GetPublishDate().CompareTo(book2->GetPublishDate());
 	if (ret == 0)
 	{
 		ret = book1->GetDispAuthor()->CompareToICase(book2->GetDispAuthor());
@@ -39,7 +39,7 @@ OSInt SSWR::OrganMgr::BookArrayList::CompareItem(OrganBook *book1, OrganBook *bo
 void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Data::DateTime *newDate)
 {
 	OrganBookForm *me = (OrganBookForm*)userObj;
-	Data::DateTime currTime(newDate->GetYear(), 1, 1, 0, 0, 0);
+	Data::Timestamp currTime = Data::DateTime(newDate->GetYear(), 1, 1, 0, 0, 0).ToTimestamp();
 	OSInt i = 0;
 	OSInt j = (OSInt)me->bookList.GetCount() - 1;
 	OSInt k;
@@ -48,7 +48,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Da
 	{
 		k = (i + j) >> 1;
 		book = me->bookList.GetItem((UOSInt)k);
-		if (book->GetPublishDate()->CompareTo(&currTime) >= 0)
+		if (book->GetPublishDate().CompareTo(currTime) >= 0)
 		{
 			j = k - 1;
 		}
@@ -116,7 +116,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	}
 	Data::DateTime publishDate;
 	me->dtpBookPublish->GetSelectedTime(&publishDate);
-	if (!me->env->NewBook(sb2.ToCString(), sb.ToCString(), sb3.ToCString(), &publishDate, sb4.ToCString()))
+	if (!me->env->NewBook(sb2.ToCString(), sb.ToCString(), sb3.ToCString(), publishDate.ToTimestamp(), sb4.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormDBError")), CSTR("Error"), me);
 		return;
@@ -269,7 +269,7 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	while (i < j)
 	{
 		book = this->bookList.GetItem(i);;
-		sptr = book->GetPublishDate()->ToString(sbuff, "yyyy-MM");
+		sptr = book->GetPublishDate().ToString(sbuff, "yyyy-MM");
 		k = this->lvBook->AddItem(CSTRP(sbuff, sptr), book);
 		this->lvBook->SetSubItem(k, 1, book->GetDispAuthor());
 		this->lvBook->SetSubItem(k, 2, book->GetTitle());

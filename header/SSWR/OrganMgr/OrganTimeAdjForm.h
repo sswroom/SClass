@@ -38,7 +38,7 @@ namespace SSWR
 			Media::ImageList *dispImg;
 			Data::StringMap<Int32> *cameraMap;
 			Text::String *selImgCamera;
-			Int64 selImgTimeTicks;
+			Data::Timestamp selImgTime;
 
 			UI::GUIPanel *pnlLeft;
 			UI::GUIPictureBoxDD *pbPreview;

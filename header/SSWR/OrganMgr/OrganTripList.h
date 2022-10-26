@@ -14,12 +14,12 @@ namespace SSWR
 		class Trip
 		{
 		public:
-			Int64 fromDate;
-			Int64 toDate;
+			Data::Timestamp fromDate;
+			Data::Timestamp toDate;
 			Int32 locId;
 
 		public:
-			Trip(Data::DateTime *fromDate, Data::DateTime *toDate, Int32 locId);
+			Trip(Data::Timestamp fromDate, Data::Timestamp toDate, Int32 locId);
 			~Trip();
 			UTF8Char *ToString(UTF8Char *sbuff);
 		};

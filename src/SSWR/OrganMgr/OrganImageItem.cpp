@@ -9,9 +9,9 @@ SSWR::OrganMgr::OrganImageItem::OrganImageItem(Int32 userId)
 	this->dispName = 0;
 	this->isCoverPhoto = false;
 	this->photoDate = 0;
-	this->rotateType = RT_NONE;
+	this->rotateType = RotateType::None;
 	this->fullName = 0;
-	this->fileType = FT_UNKNOWN;
+	this->fileType = FileType::Unknown;
 	this->srcURL = 0;
 	this->imgURL = 0;
 	this->userFile = 0;
@@ -58,12 +58,12 @@ Bool SSWR::OrganMgr::OrganImageItem::GetIsCoverPhoto() const
 	return this->isCoverPhoto;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetPhotoDate(Int64 photoDate)
+void SSWR::OrganMgr::OrganImageItem::SetPhotoDate(Data::Timestamp photoDate)
 {
 	this->photoDate = photoDate;
 }
 
-Int64 SSWR::OrganMgr::OrganImageItem::GetPhotoDate() const
+Data::Timestamp SSWR::OrganMgr::OrganImageItem::GetPhotoDate() const
 {
 	return this->photoDate;
 }

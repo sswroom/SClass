@@ -184,7 +184,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::AddItems(Data::ArrayList<OrganImageItem*> 
 	while (i < j)
 	{
 		imgItem = objList->GetItem(i);
-		if (imgItem->GetFileType() == OrganImageItem::FT_USERFILE)
+		if (imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 		{
 			ufile = imgItem->GetUserFile();
 			if (ufile)

@@ -99,6 +99,13 @@ void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
 	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
+void UI::GUIDateTimePicker::SetValue(Data::Timestamp ts)
+{
+	SYSTEMTIME t;
+	ts.ToSYSTEMTIME(&t);
+	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
+}
+
 void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
 {
 	SYSTEMTIME t;
@@ -107,6 +114,13 @@ void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
 	dt->ToUTCTime();
 	dt->SetValueSYSTEMTIME(&t);
 	dt->SetTimeZoneQHR(tz);
+}
+
+Data::Timestamp UI::GUIDateTimePicker::GetSelectedTime()
+{
+	SYSTEMTIME t;
+	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
+	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&t), 0);
 }
 
 void UI::GUIDateTimePicker::SetFormat(const Char *format)

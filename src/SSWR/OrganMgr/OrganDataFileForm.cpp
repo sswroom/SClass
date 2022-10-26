@@ -64,10 +64,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(void *userO
 	if (dataFile == 0)
 		return;
 
-	Data::DateTime dt;
-	dt.SetTicks(dataFile->startTimeTicks);
-	dt.ToLocalTime();
-	sptr = dt.ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
+	sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
 	Win32::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
 }
 
@@ -82,20 +79,15 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	UOSInt k;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Data::DateTime dt;
 	i = 0;
 	j = dataFiles->GetCount();
 	while (i < j)
 	{
 		dataFile = dataFiles->GetItem(i);
 		k = this->lvFiles->AddItem(dataFile->oriFileName, dataFile);
-		dt.SetTicks(dataFile->startTimeTicks);
-		dt.ToLocalTime();
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-		dt.SetTicks(dataFile->endTimeTicks);
-		dt.ToLocalTime();
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		sptr = dataFile->endTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->lvFiles->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		i++;
 	}

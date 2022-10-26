@@ -707,7 +707,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageRotateClicked(void *userObj
 		if (index == INVALID_INDEX)
 			return;
 		OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
-		if (imgItem->GetFileType() == OrganImageItem::FT_USERFILE)
+		if (imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 		{
 			UserFileInfo *userFile = imgItem->GetUserFile();
 			me->env->UpdateUserFileRot(userFile, (userFile->rotType + 1) & 3);
@@ -735,7 +735,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 		if (index == INVALID_INDEX)
 			return;
 		OrganImageItem *imgItem = (OrganImageItem*)me->lbImage->GetItem(index);
-		if (imgItem->GetFileType() == OrganImageItem::FT_USERFILE)
+		if (imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 		{
 			Text::StringBuilderUTF8 sb;
 			UserFileInfo *userFile = imgItem->GetUserFile();
@@ -771,7 +771,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 			while (i < j)
 			{
 				imgItem = me->imgItems.GetItem(i);
-				if (imgItem && imgItem->GetFileType() == OrganImageItem::FT_USERFILE)
+				if (imgItem && imgItem->GetFileType() == OrganImageItem::FileType::UserFile)
 				{
 					UserFileInfo *userFile = imgItem->GetUserFile();
 					sb.ClearStr();
@@ -1878,7 +1878,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	const UTF8Char *csptr;
-	Int64 ts;
+	Data::Timestamp ts;
 	this->pbImg->SetImage(0, false);
 	if (this->lastBmp)
 	{
@@ -2003,10 +2003,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				ts = imgItem->GetPhotoDate();
 				if (ts != 0)
 				{
-					Data::DateTime dt;
-					dt.SetUnixTimestamp(ts);
-					dt.ToLocalTime();
-
+					Data::Timestamp dt = ts.ToLocalTime();
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 					sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:sszz");
 					

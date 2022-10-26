@@ -76,16 +76,16 @@ namespace SSWR
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName);
 			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId);
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items);
-			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, Data::DateTime *publishDate, Text::CString url);
+			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, Data::Timestamp publishDate, Text::CString url);
 
 			virtual Bool AddDataFile(Text::CString fileName);
 			virtual Bool DelDataFile(DataFileInfo *dataFile);
-			virtual Bool GetGPSPos(Int32 userId, Data::DateTime *t, Math::Coord2DDbl *pos);
+			virtual Bool GetGPSPos(Int32 userId, Data::Timestamp ts, Math::Coord2DDbl *pos);
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile);
 
 			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
 			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType);
-			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, Data::DateTime *captureTime, Double lat, Double lon);
+			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, Data::Timestamp captureTime, Double lat, Double lon);
 			virtual Bool GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb);
 			virtual Bool UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript);
 			virtual Bool UpdateUserFileLoc(UserFileInfo *userFile, const UTF8Char *location);
@@ -94,7 +94,7 @@ namespace SSWR
 		protected:
 			virtual void TripReload(Int32 cateId);
 		public:
-			virtual Bool TripAdd(Data::DateTime *fromDate, Data::DateTime *toDate, Int32 locId);
+			virtual Bool TripAdd(Data::Timestamp fromDate, Data::Timestamp toDate, Int32 locId);
 			virtual Bool LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName);
 			virtual Bool LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName);
 

@@ -59,11 +59,11 @@ SSWR::OrganMgr::UserFileTimeComparator::~UserFileTimeComparator()
 
 OSInt SSWR::OrganMgr::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b)
 {
-	if (a->fileTimeTicks > b->fileTimeTicks)
+	if (a->fileTime > b->fileTime)
 	{
 		return 1;
 	}
-	else if (a->fileTimeTicks < b->fileTimeTicks)
+	else if (a->fileTime < b->fileTime)
 	{
 		return -1;
 	}
@@ -201,11 +201,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	while (i-- > 0)
 	{
 		webUser = this->userMap.GetItem(i);
-		DEL_CLASS(webUser->gpsFileIndex);
-		DEL_CLASS(webUser->gpsFileObj);
-		DEL_CLASS(webUser->userFileIndex);
-		DEL_CLASS(webUser->userFileObj);
-		MemFree(webUser);
+		DEL_CLASS(webUser);
 	}
 	this->TripRelease();
 	SDEL_CLASS(this->gpsTrk);
@@ -276,12 +272,12 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
-	if (img->GetFileType() == OrganImageItem::FT_USERFILE)
+	if (img->GetFileType() == OrganImageItem::FileType::UserFile)
 	{
 		sp->SetPhotoId(img->GetUserFile()->id);
 		sp->SetPhotoWId(0);
 	}
-	else if (img->GetFileType() == OrganImageItem::FT_WEBFILE)
+	else if (img->GetFileType() == OrganImageItem::FileType::WebFile)
 	{
 		sp->SetPhotoId(0);
 		sp->SetPhotoWId(img->GetWebFile()->id);
@@ -328,7 +324,7 @@ UOSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(Data::ArrayList<OrganBook*> *ite
 	while (i < j)
 	{
 		book = this->bookObjs->GetItem(i);
-		if (book->GetPublishDate()->GetYear() == year)
+		if (book->GetPublishDate().GetTimeValue().year == year)
 		{
 			items->Add(book);
 			k++;
@@ -343,12 +339,8 @@ SSWR::OrganMgr::WebUserInfo *SSWR::OrganMgr::OrganEnv::GetWebUser(Int32 userId)
 	WebUserInfo *webUser = this->userMap.Get(userId);
 	if (webUser == 0)
 	{
-		webUser = MemAlloc(WebUserInfo, 1);
+		NEW_CLASS(webUser, WebUserInfo());
 		webUser->id = userId;
-		NEW_CLASS(webUser->gpsFileIndex, Data::ArrayListInt64());
-		NEW_CLASS(webUser->gpsFileObj, Data::ArrayList<DataFileInfo*>());
-		NEW_CLASS(webUser->userFileIndex, Data::ArrayListInt64());
-		NEW_CLASS(webUser->userFileObj, Data::ArrayList<UserFileInfo*>());
 		this->userMap.Put(webUser->id, webUser);
 	}
 	return webUser;
@@ -395,7 +387,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 	MemFree(userFile);
 }
 
-UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Int64 fromTimeTicks, Int64 toTimeTicks)
+UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Data::Timestamp fromTime, Data::Timestamp toTime)
 {
 	UserFileInfo *userFile;
 	UOSInt initCnt = userFiles->GetCount();
@@ -406,7 +398,7 @@ UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *us
 	while (i < j)
 	{
 		userFile = this->userFileMap.GetItem(i);
-		if (userFile->webuserId == this->userId && userFile->fileTimeTicks >= fromTimeTicks && userFile->fileTimeTicks <= toTimeTicks)
+		if (userFile->webuserId == this->userId && userFile->fileTime >= fromTime && userFile->fileTime <= toTime)
 		{
 			userFiles->Add(userFile);
 		}
@@ -441,9 +433,8 @@ void SSWR::OrganMgr::OrganEnv::TripRelease()
 	}
 }
 
-OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::DateTime *d)
+OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::Timestamp ts)
 {
-	Int64 ts = d->ToUnixTimestamp();
 	OSInt i = 0;
 	OSInt j = (OSInt)this->trips.GetCount() - 1;
 	OSInt k;
@@ -468,9 +459,9 @@ OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::DateTime *d)
 	return -i - 1;
 }
 
-SSWR::OrganMgr::Trip *SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, Data::DateTime *d)
+SSWR::OrganMgr::Trip *SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, Data::Timestamp ts)
 {
-	OSInt i = this->TripGetIndex(d);
+	OSInt i = this->TripGetIndex(ts);
 	if (i < 0)
 		return 0;
 	else
@@ -592,9 +583,9 @@ void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime *dt, UI::GUIForm *ownerFrm, UI::GUICore *ui)
+Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::Timestamp ts, UI::GUIForm *ownerFrm, UI::GUICore *ui)
 {
-	Trip *tr = this->TripGet(userId, dt);
+	Trip *tr = this->TripGet(userId, ts);
 	if (tr)
 	{
 		return this->LocationGet(tr->locId)->cname;
@@ -602,20 +593,17 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime 
 	else if (userId == this->userId)
 	{
 		Text::StringBuilderUTF8 sb;
-		Data::DateTime dt2(dt);
-		Data::DateTime dt3(dt);
-		dt2.ClearTime();
-		dt3.ClearTime();
-		dt3.AddDay(1);
+		Data::Timestamp ts2 = ts.ClearTime();
+		Data::Timestamp ts3 = ts2.AddDay(1);
 		{
 			OrganTripForm frm(0, ui, this);
 			sb.AppendC(UTF8STRC("Trip not found at "));
-			sb.AppendDate(dt);
+			sb.AppendTS(ts);
 			frm.SetText(sb.ToCString());
-			frm.SetTimes(dt, &dt2, &dt3);
+			frm.SetTimes(ts, ts2, ts3);
 			frm.ShowDialog(ownerFrm);
 		}
-		tr = this->TripGet(userId, dt);
+		tr = this->TripGet(userId, ts);
 		if (tr)
 		{
 			return this->LocationGet(tr->locId)->cname;
@@ -1014,11 +1002,11 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	{
 		imgItem = items.GetItem(i);
 		ft = imgItem->GetFileType();
-		if (ft == OrganImageItem::FT_JPG || ft == OrganImageItem::FT_TIF)
+		if (ft == OrganImageItem::FileType::JPEG || ft == OrganImageItem::FileType::TIFF)
 		{
 			myPhotoExist = true;
 		}
-		else if (ft == OrganImageItem::FT_WEB_IMAGE)
+		else if (ft == OrganImageItem::FileType::Webimage)
 		{
 			if (!includeWebPhoto)
 			{

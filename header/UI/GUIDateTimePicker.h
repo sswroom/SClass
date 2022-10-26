@@ -2,6 +2,7 @@
 #define _SM_UI_GUIDATETIMEPICKER
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -31,7 +32,9 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetValue(Data::DateTime *dt);
+		void SetValue(Data::Timestamp dt);
 		void GetSelectedTime(Data::DateTime *dt);
+		Data::Timestamp GetSelectedTime();
 		void SetFormat(const Char *format);
 		void SetCalShowWeeknum(Bool showWeeknum);
 		void HandleDateChange(DateChangedHandler hdlr, void *obj);

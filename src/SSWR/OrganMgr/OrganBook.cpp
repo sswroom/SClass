@@ -82,14 +82,14 @@ void SSWR::OrganMgr::OrganBook::SetPress(Text::StringBase<UTF8Char> *press)
 	this->press = Text::String::New(press->v, press->leng);
 }
 
-Data::DateTime *SSWR::OrganMgr::OrganBook::GetPublishDate()
+Data::Timestamp SSWR::OrganMgr::OrganBook::GetPublishDate()
 {
-	return &this->publishDate;
+	return this->publishDate;
 }
 
-void SSWR::OrganMgr::OrganBook::SetPublishDate(Data::DateTime *publishDate)
+void SSWR::OrganMgr::OrganBook::SetPublishDate(Data::Timestamp publishDate)
 {
-	this->publishDate.SetValue(publishDate);
+	this->publishDate = publishDate;
 }
 
 Int32 SSWR::OrganMgr::OrganBook::GetGroupId()
@@ -125,7 +125,7 @@ void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC(": "));
 	sb->Append(this->dispAuthor);
 	sb->AppendC(UTF8STRC(" "));
-	sb->AppendU16(this->publishDate.GetYear());
+	sb->AppendU16(this->publishDate.GetTimeValue().year);
 	sb->AppendC(UTF8STRC(". "));
 	sb->Append(this->title);
 	sb->AppendC(UTF8STRC(". "));

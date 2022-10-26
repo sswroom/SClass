@@ -16,7 +16,7 @@ namespace SSWR
 			Text::String *title;
 			Text::String *dispAuthor;
 			Text::String *press;
-			Data::DateTime publishDate;
+			Data::Timestamp publishDate;
 			Int32 groupId;
 			Text::String *url;
 
@@ -35,8 +35,8 @@ namespace SSWR
 			Text::String *GetPress();
 			void SetPress(Text::CString press);
 			void SetPress(Text::StringBase<UTF8Char> *press);
-			Data::DateTime *GetPublishDate();
-			void SetPublishDate(Data::DateTime *publishDate);
+			Data::Timestamp GetPublishDate();
+			void SetPublishDate(Data::Timestamp publishDate);
 			Int32 GetGroupId();
 			void SetGroupId(Int32 groupId);
 			Text::String *GetURL();

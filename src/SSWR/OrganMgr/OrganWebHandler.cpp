@@ -7866,15 +7866,15 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 					if (rotateType == 1)
 					{
-						dimg->RotateImage(Media::StaticImage::RT_CW90);
+						dimg->RotateImage(Media::StaticImage::RotateType::CW90);
 					}
 					else if (rotateType == 2)
 					{
-						dimg->RotateImage(Media::StaticImage::RT_CW180);
+						dimg->RotateImage(Media::StaticImage::RotateType::CW180);
 					}
 					else if (rotateType == 3)
 					{
-						dimg->RotateImage(Media::StaticImage::RT_CW270);
+						dimg->RotateImage(Media::StaticImage::RotateType::CW270);
 					}
 
 					if (false)//this->watermark && !Text::StrStartsWith(fileName, (const UTF8Char*)"web") && fileName[3] != IO::Path::PATH_SEPERATOR && fileName[3] != '\\')
@@ -8179,15 +8179,15 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 				if (rotateType == 1)
 				{
-					dimg->RotateImage(Media::StaticImage::RT_CW90);
+					dimg->RotateImage(Media::StaticImage::RotateType::CW90);
 				}
 				else if (rotateType == 2)
 				{
-					dimg->RotateImage(Media::StaticImage::RT_CW180);
+					dimg->RotateImage(Media::StaticImage::RotateType::CW180);
 				}
 				else if (rotateType == 3)
 				{
-					dimg->RotateImage(Media::StaticImage::RT_CW270);
+					dimg->RotateImage(Media::StaticImage::RotateType::CW270);
 				}
 
 				if (user && user->watermark)
@@ -8465,15 +8465,15 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 					if (rotateType == 1)
 					{
-						dimg->RotateImage(Media::StaticImage::RT_CW90);
+						dimg->RotateImage(Media::StaticImage::RotateType::CW90);
 					}
 					else if (rotateType == 2)
 					{
-						dimg->RotateImage(Media::StaticImage::RT_CW180);
+						dimg->RotateImage(Media::StaticImage::RotateType::CW180);
 					}
 					else if (rotateType == 3)
 					{
-						dimg->RotateImage(Media::StaticImage::RT_CW270);
+						dimg->RotateImage(Media::StaticImage::RotateType::CW270);
 					}
 
 					void *param;

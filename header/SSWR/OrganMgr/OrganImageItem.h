@@ -10,26 +10,26 @@ namespace SSWR
 		class OrganImageItem
 		{
 		public:
-			typedef enum
+			enum class RotateType
 			{
-				RT_NONE
-			} RotateType;
+				None
+			};
 
-			typedef enum
+			enum class FileType
 			{
-				FT_UNKNOWN,
-				FT_JPG,
-				FT_TIF,
-				FT_AVI,
-				FT_WAV,
-				FT_WEB_IMAGE,
-				FT_USERFILE,
-				FT_WEBFILE
-			} FileType;
+				Unknown,
+				JPEG,
+				TIFF,
+				AVI,
+				WAV,
+				Webimage,
+				UserFile,
+				WebFile
+			};
 		private:
 			Text::String *dispName;
 			Bool isCoverPhoto;
-			Int64 photoDate;
+			Data::Timestamp photoDate;
 		//	const WChar *photoLoc;
 			RotateType rotateType;
 			Text::String *fullName;
@@ -50,8 +50,8 @@ namespace SSWR
 			Text::String *GetDispName() const;
 			void SetIsCoverPhoto(Bool isCoverPhoto);
 			Bool GetIsCoverPhoto() const;
-			void SetPhotoDate(Int64 photoDate);
-			Int64 GetPhotoDate() const;
+			void SetPhotoDate(Data::Timestamp photoDate);
+			Data::Timestamp GetPhotoDate() const;
 		//	void SetPhotoLoc(const WChar *photoLoc);
 		//	const WChar *GetPhotoLoc();
 			void SetRotateType(RotateType rotateType);

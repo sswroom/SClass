@@ -31,7 +31,6 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(UI::GUIClientControl 
 
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Data::DateTime dt;
 	sptr = Text::StrInt32(sbuff, userFile->id);
 	NEW_CLASS(this->lblId, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageDetailId"))));
 	this->lblId->SetRect(0, 0, 100, 23, false);
@@ -52,9 +51,7 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(UI::GUIClientControl 
 	NEW_CLASS(this->txtCamera, UI::GUITextBox(ui, this, Text::String::OrEmpty(userFile->camera)->ToCString()));
 	this->txtCamera->SetRect(100, 72, 300, 23, false);
 	this->txtCamera->SetReadOnly(true);
-	dt.SetTicks(userFile->fileTimeTicks);
-	dt.ToLocalTime();
-	sptr = dt.ToString(sbuff);
+	sptr = userFile->fileTime.ToLocalTime().ToString(sbuff);
 	NEW_CLASS(this->lblFileTime, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageDetailFileTime"))));
 	this->lblFileTime->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtFileTime, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));

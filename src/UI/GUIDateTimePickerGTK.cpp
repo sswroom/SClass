@@ -60,12 +60,33 @@ void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
 	}
 }
 
+void UI::GUIDateTimePicker::SetValue(Data::Timestamp ts)
+{
+	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
+	if (data->format)
+	{
+		UTF8Char sbuff[64];
+		OSInt leng;
+		leng = ts.ToString(sbuff, data->format) - sbuff;
+		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
+		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, (gint)leng);
+	}
+}
+
 void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
 {
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
 	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);
 	dt->SetValue(Text::CString::FromPtr(s));
+}
+
+Data::Timestamp UI::GUIDateTimePicker::GetSelectedTime()
+{
+	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
+	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
+	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);
+	return Data::Timestamp::FromStr(Text::CString::FromPtr(s));
 }
 
 void UI::GUIDateTimePicker::SetFormat(const Char *format)

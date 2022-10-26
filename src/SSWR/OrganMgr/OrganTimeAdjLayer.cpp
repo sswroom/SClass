@@ -119,15 +119,14 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(vo
 		return 0;
 	Math::Geometry::Point *pt;
 	Math::Coord2DDbl pos;
-	Data::DateTime dt;
-	dt.SetTicks(ufile->fileTimeTicks);
+	Data::Timestamp ts = ufile->fileTime;
 	if (ufile->camera)
 	{
-		dt.AddSecond(this->cameraMap->Get(ufile->camera));
+		ts = ts.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
 	UInt32 srid = 0;
 	if (this->csys) srid = this->csys->GetSRID();
-	this->gpsTrk->GetPosByTime(&dt, &pos);
+	this->gpsTrk->GetPosByTime(ts, &pos);
 	NEW_CLASS(pt, Math::Geometry::Point(srid, pos));
 	return pt;
 }

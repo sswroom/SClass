@@ -34,10 +34,10 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(void *userObj)
 	if (trip && !me->updating)
 	{
 		Data::DateTime dt;
-		dt.SetUnixTimestamp(trip->fromDate);
+		dt.SetTicks(trip->fromDate.ToTicks());
 		dt.ToLocalTime();
 		me->dtpFrom->SetValue(&dt);
-		dt.SetUnixTimestamp(trip->toDate);
+		dt.SetTicks(trip->toDate.ToTicks());
 		dt.ToLocalTime();
 		me->dtpTo->SetValue(&dt);
 		Location *loc = me->env->LocationGet(trip->locId);
@@ -62,14 +62,14 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	UTF8Char *sptr;
 	Data::DateTime frDate;
 	Data::DateTime toDate;
-	Int64 ifrDate;
-	Int64 itoDate;
+	Data::Timestamp ifrDate;
+	Data::Timestamp itoDate;
 	frDate.ToLocalTime();
 	me->dtpFrom->GetSelectedTime(&frDate);
 	toDate.ToLocalTime();
 	me->dtpTo->GetSelectedTime(&toDate);
-	ifrDate = frDate.ToUnixTimestamp();
-	itoDate = toDate.ToUnixTimestamp();
+	ifrDate = frDate.ToTimestamp();
+	itoDate = toDate.ToTimestamp();
 	if (frDate > toDate)
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorTime")), me->env->GetLang(UTF8STRC("TripFormTitle")), me);
@@ -108,7 +108,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 			return;
 		}
 	}
-	if (me->env->TripAdd(&frDate, &toDate, me->locId))
+	if (me->env->TripAdd(ifrDate, itoDate, me->locId))
 	{
 		me->UpdateList();
 	}
@@ -241,9 +241,9 @@ void SSWR::OrganMgr::OrganTripForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::OrganMgr::OrganTripForm::SetTimes(Data::DateTime *refTime, Data::DateTime *fromTime, Data::DateTime *toTime)
+void SSWR::OrganMgr::OrganTripForm::SetTimes(Data::Timestamp refTime, Data::Timestamp fromTime, Data::Timestamp toTime)
 {
-	this->refTime = Data::Timestamp(refTime->ToTicks(), refTime->GetTimeZoneQHR());
+	this->refTime = refTime;
 	dtpFrom->SetValue(fromTime);
 	dtpTo->SetValue(toTime);
 }

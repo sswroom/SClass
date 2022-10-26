@@ -10,6 +10,7 @@
 
 namespace Data
 {
+	class Timestamp;
 	class DateTime// : public Data::IComparable
 	{
 	private:
@@ -117,6 +118,7 @@ namespace Data
 		void SetTimeZoneQHR(Int8 tzQhr);
 		Int8 GetTimeZoneQHR();
 		Data::DateTimeUtil::Weekday GetWeekday();
+		Data::Timestamp ToTimestamp();
 	};
 }
 #endif

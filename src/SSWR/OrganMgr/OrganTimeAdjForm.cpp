@@ -76,7 +76,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(void *userObj)
 	if (userFile)
 	{
 		me->selImgCamera = userFile->camera;
-		me->selImgTimeTicks = userFile->fileTimeTicks;
+		me->selImgTime = userFile->fileTime;
 		me->pbPreview->SetImage(0, false);
 		SDEL_CLASS(me->dispImg);
 		me->dispImg = me->env->ParseFileImage(userFile);
@@ -179,7 +179,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	Int32 succCnt = 0;
 	Int32 failCnt = 0;
 	Math::Coord2DDbl pos;
-	Data::DateTime dt;
+	Data::Timestamp ts;
 
 	me->cboCamera->GetText(&sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
@@ -190,10 +190,9 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 		userFile = me->userFileList->GetItem(i);
 		if (userFile->camera && userFile->camera->Equals(sb.ToString(), sb.GetLength()))
 		{
-			dt.SetTicks(userFile->fileTimeTicks);
-			dt.AddSecond(timeAdj);
-			me->gpsTrk->GetPosByTime(&dt, &pos);
-			if (me->env->UpdateUserFilePos(userFile, &dt, pos.lat, pos.lon))
+			ts = userFile->fileTime.AddSecond(timeAdj);
+			me->gpsTrk->GetPosByTime(ts, &pos);
+			if (me->env->UpdateUserFilePos(userFile, ts, pos.lat, pos.lon))
 			{
 				succCnt++;
 			}
@@ -214,13 +213,10 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 
 void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj)
 {
-	Data::DateTime dt;
 	if (this->selImgCamera && this->selImgCamera->Equals(camera, cameraLen))
 	{
 		Math::Coord2DDbl pos;
-		dt.SetTicks(this->selImgTimeTicks);
-		dt.AddSecond(timeAdj);
-		this->gpsTrk->GetPosByTime(&dt, &pos);
+		this->gpsTrk->GetPosByTime(this->selImgTime.AddSecond(timeAdj), &pos);
 		this->mapMain->ShowMarkerMapXY(pos);
 
 		if (!this->mapView->InViewXY(pos))
@@ -242,7 +238,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->colorSess = this->env->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->dispImg = 0;
 	this->selImgCamera = 0;
-	this->selImgTimeTicks = 0;
+	this->selImgTime = 0;
 	NEW_CLASS(this->userFileList, Data::ArrayList<UserFileInfo *>());
 	NEW_CLASS(this->currFileList, Data::ArrayList<UserFileInfo *>());
 	NEW_CLASS(this->cameraMap, Data::StringMap<Int32>());
@@ -280,7 +276,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2D<Double>(1024, 768));
 
-	this->env->GetUserFiles(this->userFileList, this->dataFile->startTimeTicks, this->dataFile->endTimeTicks);
+	this->env->GetUserFiles(this->userFileList, this->dataFile->startTime, this->dataFile->endTime);
 
 	NEW_CLASS(this->pnlLeft, UI::GUIPanel(ui, this));
 	this->pnlLeft->SetRect(0, 0, 300, 23, false);
@@ -364,7 +360,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		}
 		if (userFile->camera)
 		{
-			this->cameraMap->Put(userFile->camera, (Int32)((userFile->captureTimeTicks - userFile->fileTimeTicks) / 1000));
+			this->cameraMap->Put(userFile->camera, (Int32)(userFile->captureTime.inst.sec - userFile->fileTime.inst.sec));
 		}
 		i++;
 	}

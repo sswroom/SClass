@@ -862,6 +862,11 @@ Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 	}
 }
 
+void Map::GPSTrack::GetPosByTime(Data::Timestamp ts, Math::Coord2DDbl *pos)
+{
+	GetPosByTicks(ts.ToTicks(), pos);
+}
+
 void Map::GPSTrack::GetPosByTime(Data::DateTime *dt, Math::Coord2DDbl *pos)
 {
 	GetPosByTicks(dt->ToTicks(), pos);
