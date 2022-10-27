@@ -16,7 +16,6 @@
 #if defined(__sun__)
 #include <sys/sockio.h>
 #endif
-#include <wchar.h>
 
 typedef struct
 {

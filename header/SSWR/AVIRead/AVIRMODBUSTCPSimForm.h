@@ -19,16 +19,16 @@ namespace SSWR
 		class AVIRMODBUSTCPSimForm : public UI::GUIForm
 		{
 		private:
-			enum DeviceType
+			enum class DeviceType
 			{
-				DT_PRINT,
-				DT_ED538,
-				DT_ED588,
-				DT_ED516,
-				DT_ED527,
+				Print,
+				ED538,
+				ED588,
+				ED516,
+				ED527,
 
-				DT_FIRST = DT_PRINT,
-				DT_LAST = DT_ED527
+				First = Print,
+				Last = ED527
 			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;
@@ -45,11 +45,15 @@ namespace SSWR
 			UI::GUITextBox *txtAddr;
 			UI::GUIComboBox *cboDevType;
 			UI::GUIButton *btnDev;
+			UI::GUILabel *lblDelay;
+			UI::GUITextBox *txtDelay;
+			UI::GUIButton *btnDelay;
 			UI::GUIListBox *lbDevice;
 			UI::GUIListView *lvDeviceValues;
 
 			static void __stdcall OnListenClicked(void *userObj);
 			static void __stdcall OnDevAddClicked(void *userObj);
+			static void __stdcall OnDelayClicked(void *userObj);
 			static void __stdcall OnDeviceChanged(void *userObj);
 			static void __stdcall OnDeviceValuesDblClk(void *userObj, UOSInt index);
 			static void __stdcall OnTimerTick(void *userObj);

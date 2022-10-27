@@ -777,6 +777,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			if ((k = connInfo->GetPhysicalAddress(mac, 16)) > 0)
 			{
+				printf("size = %d\r\n", (UInt32)k);
 				sptr = Text::StrHexBytes(sbuff, mac, k, '-');
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Physical Address: "));

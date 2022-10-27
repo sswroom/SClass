@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/MODBUSTCPListener.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
 
@@ -85,6 +86,10 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
+							if (me->delay)
+							{
+								Sync::Thread::Sleep(me->delay);
+							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
@@ -130,6 +135,10 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
+							if (me->delay)
+							{
+								Sync::Thread::Sleep(me->delay);
+							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
@@ -163,6 +172,10 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
+							if (me->delay)
+							{
+								Sync::Thread::Sleep(me->delay);
+							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
@@ -196,6 +209,10 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						}
 						if (succ)
 						{
+							if (me->delay)
+							{
+								Sync::Thread::Sleep(me->delay);
+							}
 							cli->Write(retBuff, (UOSInt)byteSize + 9);
 						}
 					}
@@ -217,6 +234,10 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 							retBuff[7] = 5;
 							WriteMUInt16(&retBuff[8], devAddr);
 							WriteMUInt16(&retBuff[10], val);
+							if (me->delay)
+							{
+								Sync::Thread::Sleep(me->delay);
+							}
 							cli->Write(retBuff, 12);
 						}
 					}
@@ -236,6 +257,10 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(Net::TCPClient *cli, void *u
 						retBuff[7] = 6;
 						WriteMUInt16(&retBuff[8], devAddr);
 						WriteMUInt16(&retBuff[10], val);
+						if (me->delay)
+						{
+							Sync::Thread::Sleep(me->delay);
+						}
 						cli->Write(retBuff, 12);
 					}
 				}
@@ -274,6 +299,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientTimeout(Net::TCPClient *cli, void
 Net::MODBUSTCPListener::MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log)
 {
 	this->sockf = sockf;
+	this->delay = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(120, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, OnClientConn, this, CSTR("MODBUSTCP: ")));
 }
@@ -317,4 +343,9 @@ IO::MODBUSDevSim *Net::MODBUSTCPListener::GetDevice(UOSInt index)
 UInt32 Net::MODBUSTCPListener::GetDeviceAddr(UOSInt index)
 {
 	return this->devMap.GetKey(index);
+}
+
+void Net::MODBUSTCPListener::SetDelay(UInt32 delay)
+{
+	this->delay = delay;
 }

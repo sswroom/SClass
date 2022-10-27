@@ -15,6 +15,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
+		UInt32 delay;
 		Sync::Mutex devMut;
 		Data::FastMap<UInt32, IO::MODBUSDevSim*> devMap;
 
@@ -32,6 +33,7 @@ namespace Net
 		UOSInt GetDeviceCount();
 		IO::MODBUSDevSim *GetDevice(UOSInt index);
 		UInt32 GetDeviceAddr(UOSInt index);
+		void SetDelay(UInt32 delay);
 	};
 }
 #endif

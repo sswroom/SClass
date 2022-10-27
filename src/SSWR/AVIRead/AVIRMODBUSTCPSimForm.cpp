@@ -60,27 +60,27 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(void *userOb
 		IO::MODBUSDevSim *dev;
 		switch (devType)
 		{
-		case DT_PRINT:
+		case DeviceType::Print:
 			NEW_CLASS(dev, IO::PrintMODBUSDevSim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
-		case DT_ED516:
+		case DeviceType::ED516:
 			NEW_CLASS(dev, IO::ED516Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
-		case DT_ED527:
+		case DeviceType::ED527:
 			NEW_CLASS(dev, IO::ED527Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
-		case DT_ED538:
+		case DeviceType::ED538:
 			NEW_CLASS(dev, IO::ED538Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
-		case DT_ED588:
+		case DeviceType::ED588:
 			NEW_CLASS(dev, IO::ED588Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
@@ -90,6 +90,21 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(void *userOb
 	else
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing address"), CSTR("MODBUS TCP Simulator"), me);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRMODBUSTCPSimForm *me = (SSWR::AVIRead::AVIRMODBUSTCPSimForm*)userObj;
+	if (me->listener)
+	{
+		Text::StringBuilderUTF8 sb;
+		UInt32 delay;
+		me->txtDelay->GetText(&sb);
+		if (sb.ToUInt32(&delay))
+		{
+			me->listener->SetDelay(delay);
+		}
 	}
 }
 
@@ -181,11 +196,11 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->currDev = 0;
 
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
-	this->pnlCtrl->SetRect(0, 0, 100, 96, false);
+	this->pnlCtrl->SetRect(0, 0, 100, 120, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlCtrl, CSTR("Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("1234")));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("502")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnListen, UI::GUIButton(ui, this->pnlCtrl, CSTR("Listen")));
 	this->btnListen->SetRect(204, 4, 75, 23, false);
@@ -201,6 +216,13 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnDev, UI::GUIButton(ui, this->grpDev, CSTR("Add")));
 	this->btnDev->SetRect(304, 4, 75, 23, false);
 	this->btnDev->HandleButtonClick(OnDevAddClicked, this);
+	NEW_CLASS(this->lblDelay, UI::GUILabel(ui, this->pnlCtrl, CSTR("Delay")));
+	this->lblDelay->SetRect(4, 96, 100, 23, false);
+	NEW_CLASS(this->txtDelay, UI::GUITextBox(ui, this->pnlCtrl, CSTR("0")));
+	this->txtDelay->SetRect(104, 96, 100, 23, false);
+	NEW_CLASS(this->btnDelay, UI::GUIButton(ui, this->pnlCtrl, CSTR("Set")));
+	this->btnDelay->SetRect(204, 96, 75, 23, false);
+	this->btnDelay->HandleButtonClick(OnDelayClicked, this);
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -213,11 +235,11 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->lvDeviceValues->AddColumn(CSTR("Value"), 300);
 	this->lvDeviceValues->HandleDblClk(OnDeviceValuesDblClk, this);
 
-	DeviceType devType = DT_FIRST;
-	while (devType <= DT_LAST)
+	DeviceType devType = DeviceType::First;
+	while (devType <= DeviceType::Last)
 	{
 		this->cboDevType->AddItem(DeviceTypeGetName(devType), (void*)(OSInt)devType);
-		devType = (DeviceType)(devType + 1);
+		devType = (DeviceType)((OSInt)devType + 1);
 	}
 	this->cboDevType->SetSelectedIndex(0);
 	this->AddTimer(1000, OnTimerTick, this);
@@ -237,15 +259,15 @@ Text::CString SSWR::AVIRead::AVIRMODBUSTCPSimForm::DeviceTypeGetName(DeviceType 
 {
 	switch (devType)
 	{
-	case DT_PRINT:
+	case DeviceType::Print:
 		return CSTR("Debug Print");
-	case DT_ED538:
+	case DeviceType::ED538:
 		return CSTR("ED538");
-	case DT_ED588:
+	case DeviceType::ED588:
 		return CSTR("ED588");
-	case DT_ED516:
+	case DeviceType::ED516:
 		return CSTR("ED516");
-	case DT_ED527:
+	case DeviceType::ED527:
 		return CSTR("ED527");
 	default:
 		return CSTR("Unknown");

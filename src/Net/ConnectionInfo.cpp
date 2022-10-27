@@ -53,7 +53,7 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	else
 	{
 		this->ent.physicalAddr = 0;
-		this->ent.physicalAddrLeng = ent->physicalAddrLeng;
+		this->ent.physicalAddrLeng = 0;
 	}
 	this->ent.mtu = ent->mtu;
 	this->ent.dhcpEnabled = ent->dhcpEnabled;
