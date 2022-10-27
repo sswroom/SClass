@@ -1,6 +1,7 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
 #include "Data/FastMap.h"
+#include "Data/FixedCircularBuff.h"
 #include "Data/ICaseStringMap.h"
 #include "IO/Writer.h"
 #include "IO/ParsedObject.h"
@@ -121,6 +122,34 @@ namespace Net
 			Text::String *hostName;
 			Text::String *vendorClass;
 		};
+
+		struct TCP4SYNInfo
+		{
+			UInt32 srcAddr;
+			UInt32 destAddr;
+			UInt16 srcPort;
+			UInt16 destPort;
+			Data::Timestamp reqTime;
+
+			TCP4SYNInfo() = default;
+			TCP4SYNInfo(TCP4SYNInfo*)
+			{
+				this->srcAddr = 0;
+				this->destAddr = 0;
+				this->srcPort = 0;
+				this->destPort = 0;
+				this->reqTime = Data::Timestamp(0);
+			}
+
+			Bool operator==(TCP4SYNInfo info)
+			{
+				if (this->srcAddr != info.srcAddr) return false;
+				if (this->destAddr != info.destAddr) return false;
+				if (this->srcPort != info.srcPort) return false;
+				if (this->destPort != info.destPort) return false;
+				return this->reqTime == info.reqTime;
+			}
+		};
 		
 	private:
 		AnalyzeType atype;
@@ -144,6 +173,8 @@ namespace Net
 		Data::FastMap<UInt64, DHCPInfo*> dhcpMap;
 		Sync::Mutex mdnsMut;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> mdnsList;
+		Sync::Mutex tcp4synMut;
+		Data::FixedCircularBuff<TCP4SYNInfo> tcp4synList;
 
 		Pingv4Handler pingv4ReqHdlr;
 		void *pingv4ReqObj;
@@ -192,6 +223,8 @@ namespace Net
 		void UseIPLog(Sync::MutexUsage *mutUsage);
 		const Data::ReadingList<IPLogInfo*> *IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
+		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
+		UOSInt TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const;
 
 		Bool PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize); //Return valid
 		Bool PacketNull(const UInt8 *packet, UOSInt packetSize); //Return valid

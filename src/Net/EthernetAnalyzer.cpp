@@ -81,7 +81,7 @@ void Net::EthernetAnalyzer::MDNSAdd(Net::DNSClient::RequestAnswer *ans)
 	this->mdnsList.Insert((UOSInt)i, ans);
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::String *name) : IO::ParsedObject(name)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::String *name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;
@@ -92,7 +92,7 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	this->pingv4ReqObj = 0;
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CString name) : IO::ParsedObject(name)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CString name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;
@@ -409,6 +409,18 @@ const Data::ReadingList<Net::EthernetAnalyzer::IPLogInfo*> *Net::EthernetAnalyze
 UOSInt Net::EthernetAnalyzer::IPLogGetCount() const
 {
 	return this->ipLogMap.GetCount();
+}
+
+Bool Net::EthernetAnalyzer::TCP4SYNIsDiff(UOSInt lastIndex) const
+{
+	return this->tcp4synList.GetPutIndex() != lastIndex;
+}
+
+UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const
+{
+	Sync::MutexUsage mutUsage(&this->tcp4synMut);
+	if (thisIndex) *thisIndex = this->tcp4synList.GetPutIndex();
+	return this->tcp4synList.GetItems(synList);
 }
 
 Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize)
@@ -1043,6 +1055,17 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 		case 6:
 			ip->tcpCnt++;
 			ip->tcpSize += ipDataSize;
+			if (ipDataSize > 13 && ipData[13] == 2)
+			{
+				TCP4SYNInfo syn;
+				syn.srcAddr = ReadNUInt32(&packet[12]);
+				syn.destAddr = ReadNUInt32(&packet[16]);
+				syn.srcPort = ReadMUInt16(&ipData[0]);
+				syn.destPort = ReadMUInt16(&ipData[2]);
+				syn.reqTime = Data::Timestamp::UtcNow();
+				Sync::MutexUsage mutUsage(&this->tcp4synMut);
+				this->tcp4synList.PutAndLoop(syn);
+			}
 			break;
 		case 17:
 			ip->udpCnt++;

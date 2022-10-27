@@ -775,6 +775,29 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 		}
 	}
+	if (me->analyzer->TCP4SYNIsDiff(me->tcp4synLastIndex))
+	{
+		Data::ArrayList<Net::EthernetAnalyzer::TCP4SYNInfo> synList;
+		Net::EthernetAnalyzer::TCP4SYNInfo syn;
+		UOSInt i = 0;
+		UOSInt j = me->analyzer->TCP4SYNGetList(&synList, &me->tcp4synLastIndex);
+		me->lvTCP4SYN->ClearItems();
+		while (i < j)
+		{
+			syn = synList.GetItem(i);
+			sptr = syn.reqTime.ToString(sbuff);
+			me->lvTCP4SYN->AddItem(CSTRP(sbuff, sptr), 0);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, syn.srcAddr);
+			me->lvTCP4SYN->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, syn.srcPort);
+			me->lvTCP4SYN->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, syn.destAddr);
+			me->lvTCP4SYN->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, syn.destPort);
+			me->lvTCP4SYN->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+			i++;
+		}
+	}
 
 	if (me->socMon || me->dataUpdated)
 	{
@@ -1098,6 +1121,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->pingIPContUpdated = false;
 	this->currPingIP = 0;
 	this->analyzer->HandlePingv4Request(OnPingPacket, this);
+	this->tcp4synLastIndex = 0;
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
@@ -1400,6 +1424,17 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtPingIPWhois, UI::GUITextBox(ui, this->tpPingIPWhois, CSTR(""), true));
 	this->txtPingIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtPingIPWhois->SetReadOnly(true);
+
+	this->tpTCP4SYN = this->tcMain->AddTabPage(CSTR("TCPv4 SYN"));
+	NEW_CLASS(this->lvTCP4SYN, UI::GUIListView(ui, this->tpTCP4SYN, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvTCP4SYN->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTCP4SYN->SetFullRowSelect(true);
+	this->lvTCP4SYN->SetShowGrid(true);
+	this->lvTCP4SYN->AddColumn(CSTR("Time"), 180);
+	this->lvTCP4SYN->AddColumn(CSTR("Source IP"), 100);
+	this->lvTCP4SYN->AddColumn(CSTR("Port"), 50);
+	this->lvTCP4SYN->AddColumn(CSTR("Dest IP"), 100);
+	this->lvTCP4SYN->AddColumn(CSTR("Port"), 50);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));

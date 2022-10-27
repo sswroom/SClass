@@ -203,7 +203,7 @@ namespace Data
 		{
 			UInt32 nanosec;
 			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
-			return TimeInstant(ticks, nanosec);
+			return TimeInstant(ticks / 1000LL, nanosec);
 		}
 
 		static TimeInstant FromVariTime(Double variTime)

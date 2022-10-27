@@ -69,7 +69,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("GetCurrTimeMillis: ")), Data::DateTimeUtil::GetCurrTimeMillis());
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
 
-	sptr = Data::Timestamp::Now().ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.Now: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
+	Data::Timestamp newts = Data::Timestamp::Now();
+	sptr = Text::StrUInt32(Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("Timestamp values: ")), newts.inst.sec), UTF8STRC(".")), newts.inst.nanosec);
+	console.WriteLineCStr(CSTRP(sbuff, sptr));
+
+	sptr = newts.ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.Now: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
 	return 0;
 }

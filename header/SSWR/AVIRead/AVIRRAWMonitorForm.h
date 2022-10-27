@@ -64,6 +64,7 @@ namespace SSWR
 			PingIPInfo *currPingIP;
 			Data::FastMap<UInt32, IPTranInfo*> ipTranMap;
 			UOSInt ipTranCnt;
+			UOSInt tcp4synLastIndex;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUILabel *lblInfo;
@@ -175,6 +176,9 @@ namespace SSWR
 			UI::GUITabPage *tpPingIPWhois;
 			UI::GUITextBox *txtPingIPWhois;
 
+			UI::GUITabPage *tpTCP4SYN;
+			UI::GUIListView *lvTCP4SYN;
+			
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
 			UI::GUIListBox *lbLog;

@@ -1377,6 +1377,7 @@ Data/FastMap.h:
 Data/FastStringMap.h:
 Data/FieldComparator.h: ../../src/Data/FieldComparator.cpp
 @FieldComparator.o
+Data/FixedCircularBuff.h:
 Data/ICaseBTreeUTF8Map.h:
 Data/ICaseStringMap.h:
 Data/ICaseStringUTF8Map.h:

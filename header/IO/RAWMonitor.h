@@ -7,18 +7,18 @@ namespace IO
 	class RAWMonitor
 	{
 	public:
-		enum LinkType
+		enum class LinkType
 		{
-			LT_NULL = 0,
-			LT_ETHERNET = 1,
-			LT_AX25 = 3,
-			LT_IEEE802_5 = 6,
-			LT_ARCNET = 7,
-			LT_SLIP = 8,
-			LT_PPP = 9,
-			LT_IPV4 = 101,
-			LT_LINUX = 113,
-			LT_BLUETOOTH = 201
+			Null = 0,
+			Ethernet = 1,
+			AX25 = 3,
+			IEEE802_5 = 6,
+			ARCNET = 7,
+			SLIP = 8,
+			PPP = 9,
+			IPv4 = 101,
+			Linux = 113,
+			Bluetooth = 201
 		};
 	public:
 		virtual ~RAWMonitor() {};
