@@ -15,7 +15,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj()), pkgFiles(pkg->pkgFiles)
+IO::PackageFile::PackageFile(const PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj()), pkgFiles(&pkg->pkgFiles)
 {
 	this->items = pkg->items->Clone();
 	this->namedItems = pkg->namedItems->Clone();
@@ -99,7 +99,7 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, T
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
-	item->itemType = IO::PackFileItem::PIT_UNCOMPRESSED;
+	item->itemType = IO::PackFileItem::PackItemType::Uncompressed;
 	item->fd = fd->GetPartialData(ofst, length);
 	item->name = Text::String::New(name);
 	item->pobj = 0;
@@ -114,7 +114,7 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Data
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
-	item->itemType = IO::PackFileItem::PIT_PARSEDOBJECT;
+	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
 	if (name.leng > 0)
 	{
@@ -136,7 +136,7 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
-	item->itemType = IO::PackFileItem::PIT_COMPRESSED;
+	item->itemType = IO::PackFileItem::PackItemType::Compressed;
 	item->fd = fd->GetPartialData(ofst, length);
 	item->name = Text::String::New(name);
 	item->pobj = 0;
@@ -157,7 +157,7 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Data::Ti
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
-	item->itemType = IO::PackFileItem::PIT_PARSEDOBJECT;
+	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
 	item->name = Text::String::New(name);
 	item->pobj = pkg;
@@ -188,7 +188,7 @@ Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, 
 		item = this->items->GetItem(i);
 		if (item->name->Equals(name, nameLen))
 		{
-			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
+			if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 			{
 				item->compInfo->decSize = decSize;
 				DEL_CLASS(item->fd);
@@ -230,7 +230,7 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name) c
 			}
 			if (sptr[0] == 0)
 				return item;
-			if (item->itemType != IO::PackFileItem::PIT_PARSEDOBJECT)
+			if (item->itemType != IO::PackFileItem::PackItemType::ParsedObject)
 				return 0;
 			if (item->pobj->GetParserType() != IO::ParserType::PackageFile)
 				return 0;
@@ -247,11 +247,11 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 	{
 		return IO::PackageFile::PackObjectType::Unknown;
 	}
-	else if (itemObj->itemType == IO::PackFileItem::PIT_COMPRESSED || itemObj->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+	else if (itemObj->itemType == IO::PackFileItem::PackItemType::Compressed || itemObj->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 	{
 		return IO::PackageFile::PackObjectType::StreamData;
 	}
-	else if (itemObj->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
+	else if (itemObj->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 	{
 		if (itemObj->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
@@ -272,7 +272,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item) cons
 {
 	if (item != 0)
 	{
-		if (item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+		if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
 			IO::IStreamData *data = item->fd->GetPartialData(0, item->fd->GetDataSize());
 			Text::StringBuilderUTF8 sb;
@@ -282,7 +282,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item) cons
 			data->SetFullName(sb.ToCString());
 			return data;
 		}
-		else if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
+		else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 		{
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
 			Crypto::Hash::IHash *hash;
@@ -377,7 +377,7 @@ IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item) const
 {
 	if (item != 0)
 	{
-		if (item->itemType == item->PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		if (item->itemType == PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			return ((IO::PackageFile*)item->pobj)->Clone();
 		}
@@ -412,11 +412,11 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	{
 		return item->name->ConcatTo(sbuff);
 	}
-	if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+	if (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 	{
 		return item->fd->GetShortName().ConcatTo(sbuff);
 	}
-	else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
+	else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 	{
 		return item->pobj->GetSourceName(sbuff);
 	}
@@ -454,7 +454,7 @@ IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index) const
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
 	{
-		if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
+		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 		{
 			return item->pobj;
 		}
@@ -494,11 +494,11 @@ UInt64 IO::PackageFile::GetItemSize(UOSInt index) const
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
 	{
-		if (item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+		if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
 			return item->fd->GetDataSize();
 		}
-		else if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
+		else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 		{
 			return item->compInfo->decSize;
 		}
@@ -525,13 +525,13 @@ UOSInt IO::PackageFile::GetItemIndex(Text::CString name) const
 				if (item->name->EqualsICase(name.v, name.leng))
 					return i;
 			}
-			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+			if (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 			{
 				Text::CString shName = item->fd->GetShortName();
 				if (shName.EqualsICase(name.v, name.leng))
 					return i;
 			}
-			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
+			else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 			{
 				if (item->pobj->GetSourceNameObj()->EqualsICase(name.v, name.leng))
 					return i;
@@ -544,7 +544,7 @@ UOSInt IO::PackageFile::GetItemIndex(Text::CString name) const
 Bool IO::PackageFile::IsCompressed(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
-	if (item != 0 && item->itemType == IO::PackFileItem::PIT_COMPRESSED)
+	if (item != 0 && item->itemType == IO::PackFileItem::PackItemType::Compressed)
 	{
 		return true;
 	}
@@ -556,11 +556,11 @@ Data::Compress::Decompressor::CompressMethod IO::PackageFile::GetItemComp(UOSInt
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
 	{
-		if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
+		if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 		{
 			return item->compInfo->compMethod;
 		}
-		else if (item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+		else if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
 			return Data::Compress::Decompressor::CM_UNCOMPRESSED;
 		}
@@ -614,7 +614,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 		{
 			sb.Append(item->name);
 		}
-		else if (fullFileName && (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED))
+		else if (fullFileName && (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed))
 		{
 		}
 		else
@@ -622,7 +622,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			sb.Append(item->name);
 		}
-		if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
+		if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 		{
 			if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Unknown)
 				return false;
@@ -673,7 +673,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 
 			return succ;
 		}
-		else if (item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
+		else if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
 			UInt64 fileSize = item->fd->GetDataSize();
 			UOSInt readSize;
@@ -730,7 +730,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFile
 
 			return succ;
 		}
-		else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
 			IO::Path::CreateDirectory(sb.ToCString());

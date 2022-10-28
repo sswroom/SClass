@@ -18,12 +18,12 @@ namespace IO
 {
 	struct PackFileItem
 	{
-		typedef enum
+		enum class PackItemType
 		{
-			PIT_UNCOMPRESSED,
-			PIT_PARSEDOBJECT,
-			PIT_COMPRESSED
-		} PackItemType;
+			Uncompressed,
+			ParsedObject,
+			Compressed
+		};
 
 		struct CompressInfo
 		{

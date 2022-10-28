@@ -4,6 +4,7 @@
 #include "Data/StringUTF8Map.h"
 #include "IO/PackageFile.h"
 #include "IO/Path.h"
+#include "Parser/ParserList.h"
 #include "Parser/FileParser/XMLParser.h"
 #include "Parser/FileParser/ZIPParser.h"
 #include "Text/Encoding.h"
@@ -487,6 +488,16 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					}
 				}
 			}
+		}
+	}
+	if (targetType != IO::ParserType::PackageFile && this->parsers)
+	{
+		IO::ParserType pt;
+		IO::ParsedObject *newObj = this->parsers->ParseObjectType(pf, &pt, targetType);
+		if (newObj)
+		{
+			DEL_CLASS(pf);
+			return newObj;
 		}
 	}
 	return pf;

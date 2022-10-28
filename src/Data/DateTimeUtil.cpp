@@ -223,7 +223,7 @@ Int64 Data::DateTimeUtil::TimeValue2Secs(const TimeValue *t, Int8 tzQhr)
 	}
 	totalDays += currDay - 1;
 
-	return totalDays * 864000LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
+	return totalDays * 86400LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
 }
 
 Int64 Data::DateTimeUtil::TimeValue2Ticks(const TimeValue *t, Int8 tzQhr)

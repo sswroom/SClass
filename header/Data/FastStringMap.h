@@ -27,7 +27,7 @@ namespace Data
 		void Insert(UOSInt index, UInt32 hash, Text::String *s, T val);
 	public:
 		FastStringMap();
-		FastStringMap(FastStringMap<T> *map);
+		FastStringMap(const FastStringMap<T> *map);
 		virtual ~FastStringMap();
 
 		virtual UOSInt GetCount() const;
@@ -94,7 +94,7 @@ namespace Data
 		this->items = MemAlloc(StringItem, this->capacity);
 	}
 
-	template <class T> FastStringMap<T>::FastStringMap(FastStringMap<T> *map)
+	template <class T> FastStringMap<T>::FastStringMap(const FastStringMap<T> *map)
 	{
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;

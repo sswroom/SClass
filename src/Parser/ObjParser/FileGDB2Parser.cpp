@@ -23,7 +23,7 @@ Int32 Parser::ObjParser::FileGDB2Parser::GetName()
 
 void Parser::ObjParser::FileGDB2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParserType::ReadingDB)
+	if (t == IO::ParserType::ReadingDB || t == IO::ParserType::Unknown)
 	{
 		selector->AddFilter(CSTR("*.gdb"), CSTR("File Geodatabase File"));
 	}
@@ -38,15 +38,23 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
+	IO::PackageFile *relObj = 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
+	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFile)
+	{
+		relObj = pkg->GetItemPack(0);
+		pkg = relObj;
+	}
 	UOSInt index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));
 	if (index == INVALID_INDEX)
 	{
+		SDEL_CLASS(relObj);
 		return 0;
 	}
 	Map::ESRI::FileGDBDir *fgdb = Map::ESRI::FileGDBDir::OpenDir(pkg);
 	if (fgdb == 0)
 	{
+		SDEL_CLASS(relObj);
 		return 0;
 	}
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
@@ -93,9 +101,11 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 					i++;
 				}
 				db->UnuseObject();
+				SDEL_CLASS(relObj);
 				return layerColl;
 			}
 		}
 	}
+	SDEL_CLASS(relObj);
 	return fgdb;
 }

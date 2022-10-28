@@ -29,6 +29,7 @@ Bool Data::Compress::Inflate::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, 
 Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *srcData)
 {
 	UInt64 srcOfst = 0;
+	UInt64 srcLen = srcData->GetDataSize();
 	UOSInt srcSize;
 	UInt8 *readBuff;
 	UInt8 *writeBuff;
@@ -98,7 +99,7 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *s
 //			if (ret == MZ_STREAM_END)
 //				break;
 		}
-		while (!error && ret != MZ_STREAM_END)
+		while (!error && srcOfst >= srcLen && ret != MZ_STREAM_END)
 		{
 			ret = mz_inflate(&stm, MZ_FINISH);
 			if (stm.avail_out == 1048576)
