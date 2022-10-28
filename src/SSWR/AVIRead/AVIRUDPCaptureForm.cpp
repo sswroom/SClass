@@ -302,7 +302,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)"239.255.255.250");
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 	
 	this->AddTimer(1000, OnTimerTick, this);
 }

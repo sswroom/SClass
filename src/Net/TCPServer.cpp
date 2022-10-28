@@ -65,7 +65,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v4 port: "));
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
 		svr->socf->DestroySocket(svr->svrSocv4);
 		svr->svrSocv4 = 0;
 		svr->errorv4 = true;
@@ -75,7 +75,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v4 port: "));
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
 		svr->socf->DestroySocket(svr->svrSocv4);
 		svr->svrSocv4 = 0;
 		svr->errorv4 = true;
@@ -85,7 +85,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	svr->threadRunning |= 1;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v4 port "));
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Action);
 
 	if (sthreadCnt > 0)
 	{
@@ -157,7 +157,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	}
 	str = Text::StrConcatC(buff, UTF8STRC("End listening on v4 port "));
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Action);
 	svr->threadRunning &= ~1;
 	return 0;
 }
@@ -195,7 +195,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
 		svr->socf->DestroySocket(svr->svrSocv6);
 		svr->svrSocv6 = 0;
 		svr->errorv6 = true;
@@ -205,7 +205,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v6 port: "));
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
 		svr->socf->DestroySocket(svr->svrSocv6);
 		svr->svrSocv6 = 0;
 		svr->errorv6 = true;
@@ -215,7 +215,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	svr->threadRunning |= 4;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v6 port "));
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Action);
 
 	if (sthreadCnt > 0)
 	{
@@ -287,7 +287,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	}
 	str = Text::StrConcatC(buff, UTF8STRC("End listening on v6 port "));
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Action);
 	svr->threadRunning &= ~4;
 	return 0;
 }
@@ -307,7 +307,7 @@ UInt32 __stdcall Net::TCPServer::SvrThread2(void *o)
 			Socket *s = (Socket*)svr->socs.Get();
 			str = Text::StrConcatC(buff, UTF8STRC("Client connected: "));
 			str = svr->socf->GetRemoteName(str, s);
-			svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
+			svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Action);
 			svr->hdlr(s, svr->userObj);
 		}
 		svr->socsEvt.Wait(100);
@@ -327,7 +327,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		Int32 errCode = this->socf->SocketGetLastError();
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Client connect error: "));
 		sptr = Text::StrInt32(sptr, errCode);
-		this->AddLogMsgC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+		this->AddLogMsgC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LogLevel::ErrorDetail);
 		if (errCode == 24) // too many opened files
 		{
 			Sync::Thread::Sleep(2000);
@@ -345,7 +345,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		}
 /*		str = Text::StrConcatC(buff, UTF8STRC("Client connected: ");
 		str = this->socf->GetRemoteName(str, (UInt32*)s);
-		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Action);
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }

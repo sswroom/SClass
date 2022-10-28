@@ -147,9 +147,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(".log"));
 			IO::LogTool *log;
 			NEW_CLASS(log, IO::LogTool());
-			log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", true);
+			log->AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::SingleFile, IO::ILogHandler::LogGroup::NoGroup, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", true);
 			IO::LogWriter *writer;
-			NEW_CLASS(writer, IO::LogWriter(log, IO::ILogHandler::LOG_LEVEL_COMMAND));
+			NEW_CLASS(writer, IO::LogWriter(log, IO::ILogHandler::LogLevel::Command));
 
 			Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 			Net::Email::SMTPClient *smtp;

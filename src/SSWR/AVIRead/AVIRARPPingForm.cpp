@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 			sb.AppendC(UTF8STRC("Ping time: round trip = "));
 			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC("ms"));
-			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(&t);
 			if (me->reqEvt)
 			{
@@ -89,14 +89,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 				me->arpHdlr = 0;
 				if (me->requested)
 				{
-					me->log->LogMessage(CSTR("Ping: no response from target"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+					me->log->LogMessage(CSTR("Ping: no response from target"), IO::ILogHandler::LogLevel::Command);
 				}
 			}
 			else
 			{
 				DEL_CLASS(me->arpHdlr);
 				me->arpHdlr = 0;
-				me->log->LogMessage(CSTR("Ping: Cannot send request to target"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				me->log->LogMessage(CSTR("Ping: Cannot send request to target"), IO::ILogHandler::LogLevel::Command);
 			}
 			DEL_CLASS(me->reqEvt);
 			me->reqEvt = 0;
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	}
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 	this->SetDefaultButton(this->btnPing);
 
 	this->AddTimer(1000, OnTimerTick, this);

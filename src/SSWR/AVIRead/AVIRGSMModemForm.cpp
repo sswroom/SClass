@@ -431,7 +431,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 200, false));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 
 	this->AddTimer(1000, OnTimerTick, this);
 

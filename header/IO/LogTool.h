@@ -2,7 +2,7 @@
 #define _SM_IO_LOGTOOL
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"
 
@@ -12,34 +12,34 @@ namespace IO
 	class ILogHandler
 	{
 	public:
-		enum LogLevel
+		enum class LogLevel
 		{
-			LOG_LEVEL_ERROR = 1,
-			LOG_LEVEL_ERR_DETAIL = 2,
-			LOG_LEVEL_ACTION = 3,
-			LOG_LEVEL_COMMAND = 5,
-			LOG_LEVEL_RAW = 7
+			Error = 1,
+			ErrorDetail = 2,
+			Action = 3,
+			Command = 5,
+			Raw = 7
 		};
 
-		enum LogType
+		enum class LogType
 		{
-			LOG_TYPE_SINGLE_FILE,
-			LOG_TYPE_PER_DAY,
-			LOG_TYPE_PER_MONTH,
-			LOG_TYPE_PER_YEAR,
-			LOG_TYPE_PER_HOUR
+			SingleFile,
+			PerDay,
+			PerMonth,
+			PerYear,
+			PerHour
 		};
 
-		enum LogGroup
+		enum class LogGroup
 		{
-			LOG_GROUP_TYPE_NO_GROUP,
-			LOG_GROUP_TYPE_PER_YEAR,
-			LOG_GROUP_TYPE_PER_MONTH,
-			LOG_GROUP_TYPE_PER_DAY
+			NoGroup,
+			PerYear,
+			PerMonth,
+			PerDay
 		};
 		virtual ~ILogHandler(){};
 
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev) = 0;
+		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev) = 0;
 		virtual void LogClosed() = 0;
 	};
 
@@ -55,7 +55,7 @@ namespace IO
 	private:
 		Data::ArrayList<IO::ILogHandler*> fileLogArr;
 		Data::ArrayList<IO::ILogHandler*> hdlrArr;
-		Data::ArrayListInt32 levArr;
+		Data::ArrayList<IO::ILogHandler::LogLevel> levArr;
 		Sync::Mutex hdlrMut;
 		Bool closed;
 		

@@ -82,11 +82,11 @@ IO::UDPFileLog::~UDPFileLog()
 
 UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel) const
 {
-	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
+	if (logLevel == IO::ILogHandler::LogLevel::Raw)
 	{
 		return this->logPos.GetCount() << 1;
 	}
-/*	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
+/*	if (logLevel == IO::ILogHandler::LogLevel::Raw)
 	{
 		return this->logPos->GetCount();
 	}*/
@@ -98,7 +98,7 @@ UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel) const
 
 Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
 {
-	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
+	if (logLevel == IO::ILogHandler::LogLevel::Raw)
 	{
 		if (index >= (this->logPos.GetCount() << 1))
 			return false;
@@ -114,7 +114,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 		}
 		index = index >> 1;
 	}
-/*	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
+/*	if (logLevel == IO::ILogHandler::LogLevel::Raw)
 	{
 		if (index >= this->logPos->GetCount())
 			return false;
@@ -139,7 +139,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 
 Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const
 {
-	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
+	if (logLevel == IO::ILogHandler::LogLevel::Raw)
 	{
 		index = index >> 1;
 	}

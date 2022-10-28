@@ -40,11 +40,10 @@ void IO::LogTool::Close()
 	closed = true;
 	Sync::MutexUsage mutUsage(&this->hdlrMut);
 	UOSInt i = this->hdlrArr.GetCount();
-	Data::DateTime dt;
-	dt.SetCurrTime();
+	Data::Timestamp ts = Data::Timestamp::Now();
 	while (i-- > 0)
 	{
-		this->hdlrArr.GetItem(i)->LogAdded(&dt, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
+		this->hdlrArr.GetItem(i)->LogAdded(ts, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
 		this->hdlrArr.GetItem(i)->LogClosed();
 	}
 	mutUsage.EndUse();
@@ -102,8 +101,7 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	Data::DateTime dt;
-	dt.SetCurrTime();
+	Data::Timestamp ts = Data::Timestamp::Now();
 
 	Data::DateTime dt2;
 	sptr2 = IO::Path::GetProcessFileName(buff);
@@ -115,7 +113,7 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 	IO::BuildTime::GetBuildTime(&dt2);
 	sb.AppendC(UTF8STRC(", version: "));
 	sb.AppendDate(&dt2);
-	hdlr->LogAdded(&dt, sb.ToCString(), (ILogHandler::LogLevel)0);
+	hdlr->LogAdded(ts, sb.ToCString(), (ILogHandler::LogLevel)0);
 }
 
 void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
@@ -138,14 +136,13 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 
 void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 {
-	Data::DateTime dt;
-	dt.SetCurrTime();
+	Data::Timestamp ts = Data::Timestamp::Now();
 	Sync::MutexUsage mutUsage(&this->hdlrMut);
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
 		if (this->levArr.GetItem(i) >= level)
-			this->hdlrArr.GetItem(i)->LogAdded(&dt, logMsg, level);
+			this->hdlrArr.GetItem(i)->LogAdded(ts, logMsg, level);
 	}
 	mutUsage.EndUse();
 }

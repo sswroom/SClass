@@ -20,7 +20,7 @@ namespace IO
 		CyclicLogBuffer(UOSInt buffSize);
 		virtual ~CyclicLogBuffer();
 
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
+		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev);
 		virtual void LogClosed();
 
 		void GetLogs(Text::StringBuilderUTF8 *sb, Text::CString seperator);

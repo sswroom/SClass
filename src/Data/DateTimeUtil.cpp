@@ -155,7 +155,7 @@ void Data::DateTimeUtil::TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text
 	}
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Ticks(TimeValue *t, Int8 tzQhr)
+Int64 Data::DateTimeUtil::TimeValue2Secs(const TimeValue *t, Int8 tzQhr)
 {
 	Int32 totalDays;
 	Int32 leapDays;
@@ -223,7 +223,12 @@ Int64 Data::DateTimeUtil::TimeValue2Ticks(TimeValue *t, Int8 tzQhr)
 	}
 	totalDays += currDay - 1;
 
-	return totalDays * 86400000LL + (t->ms + t->second * 1000 + t->minute * 60000 + t->hour * 3600000 - tzQhr * 900000);
+	return totalDays * 864000LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
+}
+
+Int64 Data::DateTimeUtil::TimeValue2Ticks(const TimeValue *t, Int8 tzQhr)
+{
+	return TimeValue2Secs(t, tzQhr) * 1000LL + t->ms;
 }
 
 void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
@@ -504,9 +509,9 @@ void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 	}
 }
 
-void Data::DateTimeUtil::Instant2TimeValue(TimeInstant inst, TimeValue *t, Int8 tzQhr)
+void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue *t, Int8 tzQhr)
 {
-	Int64 secs = inst.sec + tzQhr * 900;
+	secs = secs + tzQhr * 900;
 	Int32 totalDays = (Int32)(secs / 86400LL);
 	UInt32 minutes;
 	if (secs < 0)
@@ -524,7 +529,7 @@ void Data::DateTimeUtil::Instant2TimeValue(TimeInstant inst, TimeValue *t, Int8 
 		minutes = (UInt32)(secs % 86400LL);
 	}
 
-	t->ms = (UInt16)(inst.nanosec / 1000000);
+	t->ms = (UInt16)(nanosec / 1000000);
 	t->second = (UInt8)(minutes % 60);
 	minutes = minutes / 60;
 	t->minute = (UInt8)(minutes % 60);
@@ -1885,9 +1890,9 @@ Int64 Data::DateTimeUtil::GetCurrTimeMillis()
 #endif
 }
 
-Int64 Data::DateTimeUtil::GetCurrTimeHighP(UInt32 *nanosec)
+Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(UInt32 *nanosec)
 {
-#if defined(_WIN32) || defined(_WIN32_WCE)
+#if defined(_WIN32_WCE)
 	TimeValue tval;
 	SYSTEMTIME st;
 	GetSystemTime(&st);
@@ -1899,15 +1904,26 @@ Int64 Data::DateTimeUtil::GetCurrTimeHighP(UInt32 *nanosec)
 	tval.second = (UInt8)st.wSecond;
 	tval.ms = st.wMilliseconds;
 	*nanosec = (UInt32)st.wMilliseconds * 1000000;
-	return TimeValue2Ticks(&tval, 0);
+	return TimeValue2Ticks(&tval, 0) / 1000LL;
+#elif defined(_WIN32)
+	FILETIME fileTime;
+	GetSystemTimePreciseAsFileTime(&fileTime);
+	return FILETIME2Secs(&fileTime, nanosec);
 #elif !defined(CPU_AVR)
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
 	*nanosec = (UInt32)ts.tv_nsec;
-	return 1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000);
+	return (Int64)ts.tv_sec;
 #else
 	return 0;
 #endif
+}
+
+Int64 Data::DateTimeUtil::FILETIME2Secs(void *fileTime, UInt32 *nanosec)
+{
+	Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
+	*nanosec = (UInt32)(t % 10000000) * 100;
+	return t / 10000000;
 }
 
 Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
@@ -1937,4 +1953,29 @@ void Data::DateTimeUtil::Ticks2SYSTEMTIME(void *sysTime, Int64 ticks)
 	stime->wSecond = tval.second;
 	stime->wMilliseconds = tval.ms;
 	stime->wDayOfWeek = 0;
+}
+
+Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
+{
+#ifdef WIN32
+	Data::DateTimeUtil::TimeValue tval;
+	SYSTEMTIME st;
+	Instant2TimeValue(secs, nanosec, &tval, 0);
+	st.wYear = tval.year;
+	st.wMonth = tval.month;
+	st.wDay = tval.day;
+	st.wHour = tval.hour;
+	st.wMinute = tval.minute;
+	st.wSecond = tval.second;
+	st.wMilliseconds = tval.ms;
+	return SetSystemTime(&st) != FALSE;
+#elif !defined(CPU_AVR)
+	struct timespec tp;
+	tp.tv_sec = secs;
+	tp.tv_nsec = nanosec;
+	clock_settime(CLOCK_REALTIME, &tp);
+	return clock_settime(CLOCK_REALTIME, &tp) == 0;
+#else
+	return false;
+#endif
 }

@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
-	me->log->LogMessage(CSTR("DisplayOff"), IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log->LogMessage(CSTR("DisplayOff"), IO::ILogHandler::LogLevel::Action);
 	me->ui->DisplayOff();
 }
 
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(void *userObj, UOSInt 
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Key Down - "));
 	sb.Append(GUIKeyGetName(OSKey2GUIKey((UInt32)keyCode)));
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
 }
 
 SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 	this->HandleKeyDown(OnKeyDown, this);
 }
 
@@ -62,27 +62,27 @@ SSWR::AVIRead::AVIRGUIEventForm::~AVIRGUIEventForm()
 
 Bool SSWR::AVIRead::AVIRGUIEventForm::OnPaint()
 {
-	this->log->LogMessage(CSTR("Paint"), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTR("Paint"), IO::ILogHandler::LogLevel::Action);
 	return false;
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnMonitorChanged()
 {
-	this->log->LogMessage(CSTR("MonitorChanged"), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTR("MonitorChanged"), IO::ILogHandler::LogLevel::Action);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnFocus()
 {
-	this->log->LogMessage(CSTR("Focus"), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTR("Focus"), IO::ILogHandler::LogLevel::Action);
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnFocusLost()
 {
-	this->log->LogMessage(CSTR("FocusLost"), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTR("FocusLost"), IO::ILogHandler::LogLevel::Action);
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
-	this->log->LogMessage(CSTR("DisplaySizeChange"), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTR("DisplaySizeChange"), IO::ILogHandler::LogLevel::Action);
 }

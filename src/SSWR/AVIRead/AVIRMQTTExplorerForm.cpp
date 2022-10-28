@@ -367,7 +367,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

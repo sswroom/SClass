@@ -552,7 +552,7 @@ UInt32 DB::DBHandler::GetDataCnt()
 
 void DB::DBHandler::WriteError(const UTF8Char *errMsg, Text::String *sqlCmd)
 {
-	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::ILogHandler::LOG_LEVEL_ERROR);
+	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::ILogHandler::LogLevel::Error);
 
 	Sync::MutexUsage mutUsage(&this->mut);
 	{
@@ -658,7 +658,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 							res = obj->hdlr(obj->userData, obj->userData2, me->db);
 							if (res == false)
 							{
-								me->dbQ->log->LogMessage(CSTR("DB Trans failed"), IO::ILogHandler::LOG_LEVEL_ERROR);
+								me->dbQ->log->LogMessage(CSTR("DB Trans failed"), IO::ILogHandler::LogLevel::Error);
 							}
 							me->db->EndTrans(res);
 							break;
@@ -671,7 +671,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 							res = obj->hdlr(obj->userData, obj->userData2, me->db);
 							if (res == false)
 							{
-								me->dbQ->log->LogMessage(CSTR("DB GetDB error"), IO::ILogHandler::LOG_LEVEL_ERROR);
+								me->dbQ->log->LogMessage(CSTR("DB GetDB error"), IO::ILogHandler::LogLevel::Error);
 							}
 							break;
 						}

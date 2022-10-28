@@ -126,7 +126,7 @@ void UI::ListBoxLogger::LogClosed()
 {
 }
 
-void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev)
+void UI::ListBoxLogger::LogAdded(Data::Timestamp logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
@@ -134,12 +134,12 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, Text::CString logMsg, 
 	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->timeFormat)
 	{
-		sptr = logTime->ToString(sbuff, this->timeFormat);
+		sptr = logTime.ToString(sbuff, this->timeFormat);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
-		sb.AppendDate(logTime);
+		sb.AppendTS(logTime);
 	}
 	sb.AppendUTF8Char('\t');
 	sb.Append(logMsg);

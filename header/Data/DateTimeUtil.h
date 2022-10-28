@@ -42,9 +42,10 @@ namespace Data
 		static void TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs);
 		static void TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs, UInt32 *nanosec);
 	public:
-		static Int64 TimeValue2Ticks(TimeValue *t, Int8 tzQr);
+		static Int64 TimeValue2Secs(const TimeValue *t, Int8 tzQhr);
+		static Int64 TimeValue2Ticks(const TimeValue *t, Int8 tzQhr);
 		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr);
-		static void Instant2TimeValue(Data::TimeInstant inst, TimeValue *t, Int8 tzQhr);
+		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue *t, Int8 tzQhr);
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
 		static UTF8Char *ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
@@ -59,9 +60,11 @@ namespace Data
 		static UInt8 DayInMonth(UInt16 year, UInt8 month);
 		static Int8 GetLocalTzQhr();
 		static Int64 GetCurrTimeMillis();
-		static Int64 GetCurrTimeHighP(UInt32 *nanosec);
+		static Int64 GetCurrTimeSecHighP(UInt32 *nanosec);
+		static Int64 FILETIME2Secs(void *fileTime, UInt32 *nanosec);
 		static Int64 SYSTEMTIME2Ticks(void *sysTime);
 		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);
+		static Bool SetAsComputerTime(Int64 secs, UInt32 nanosec);
 	};
 }
 #endif

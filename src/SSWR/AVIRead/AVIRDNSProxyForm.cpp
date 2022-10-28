@@ -706,7 +706,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
 	sb.AppendDouble(timeUsed);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
 
 	ClientInfo *cli;
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);
@@ -1128,7 +1128,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->cliChg = false;
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 
 	NEW_CLASS(this->proxy, Net::DNSProxy(this->core->GetSocketFactory(), true));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);

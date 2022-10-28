@@ -115,7 +115,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 				{
 					UInt8 *buff1;
 					UInt8 *buff2;
-					msgTime = me->dateList.GetItem(0);
+					msgTime = me->dateList.GetItem(0).ToTicks();
 					msg = me->msgList.GetItem(0);
 					msgLen = msg->leng;
 					buff1 = MemAlloc(UInt8, 8 + msgLen);
@@ -184,11 +184,11 @@ void Net::LogClient::LogClosed()
 	DEL_CLASS(this);
 }
 
-void Net::LogClient::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
+void Net::LogClient::LogAdded(Data::Timestamp time, Text::CString logMsg, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(&this->mut);
 	this->msgList.Add(Text::String::New(logMsg));
-	this->dateList.Add(time->ToTicks());
+	this->dateList.Add(time);
 	mutUsage.EndUse();
 	this->sendEvt.Set();
 }
@@ -203,7 +203,7 @@ void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 		{
 			Int64 msgTime = ReadInt64(cmd);
 			Sync::MutexUsage mutUsage(&this->mut);
-			if (msgTime == this->dateList.GetItem(0))
+			if (msgTime == this->dateList.GetItem(0).ToTicks())
 			{
 				this->dateList.RemoveAt(0);
 				this->msgList.RemoveAt(0)->Release();

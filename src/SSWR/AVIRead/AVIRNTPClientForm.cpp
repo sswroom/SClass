@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 	me->cboServer->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		Data::DateTime dt;
+		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
 		UOSInt i;
 		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0));
@@ -25,10 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 			}
 			sb.TrimToLength((UOSInt)i);
 		}
-		if (cli->GetServerTime(sb.ToCString(), destPort, &dt))
+		if (cli->GetServerTime(sb.ToCString(), destPort, &ts))
 		{
-			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff);
+			sptr = ts.ToLocalTime().ToString(sbuff);
 			me->txtServerTime->SetText(CSTRP(sbuff, sptr));
 			me->txtStatus->SetText(CSTR("Time received from server"));
 		}
@@ -50,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 	me->cboServer->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		Data::DateTime dt;
+		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
 		UOSInt i;
 		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0));
@@ -63,9 +62,9 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 			}
 			sb.TrimToLength((UOSInt)i);
 		}
-		if (cli->GetServerTime(sb.ToCString(), destPort, &dt))
+		if (cli->GetServerTime(sb.ToCString(), destPort, &ts))
 		{
-			if (dt.SetAsComputerTime())
+			if (ts.SetAsComputerTime())
 			{
 				me->txtStatus->SetText(CSTR("Time is sync"));
 			}
@@ -73,8 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 			{
 				me->txtStatus->SetText(CSTR("Error in setting as computer time"));
 			}
-			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff);
+			sptr = ts.ToLocalTime().ToString(sbuff);
 			me->txtServerTime->SetText(CSTRP(sbuff, sptr));
 		}
 		else

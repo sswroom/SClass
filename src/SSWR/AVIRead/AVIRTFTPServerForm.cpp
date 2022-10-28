@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_COMMAND);
+	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Command);
 }
 
 SSWR::AVIRead::AVIRTFTPServerForm::~AVIRTFTPServerForm()

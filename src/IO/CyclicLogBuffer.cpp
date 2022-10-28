@@ -26,10 +26,10 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 	MemFree(this->logLeng);
 }
 
-void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev)
+void IO::CyclicLogBuffer::LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev)
 {
 	UTF8Char *strBuff = MemAlloc(UTF8Char, 25 + logMsg.leng);
-	UTF8Char *sptr = logTime->ToString(strBuff, "yyyy-MM-dd HH:mm:ss.fff");
+	UTF8Char *sptr = logTime.ToString(strBuff, "yyyy-MM-dd HH:mm:ss.fff");
 	*sptr++ = '\t';
 	sptr = logMsg.ConcatTo(sptr);
 

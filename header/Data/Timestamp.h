@@ -49,6 +49,25 @@ namespace Data
 		
 		~Timestamp() = default;
 
+		Timestamp AddMonth(OSInt val) const
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			this->ToTimeValue(&tval);
+			val += tval.month;
+			while (val < 1)
+			{
+				val += 12;
+				tval.year--;
+			}
+			while (val > 12)
+			{
+				val -= 12;
+				tval.year++;
+			}
+			tval.month = (UInt8)val;
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
+		}
+
 		Timestamp AddDay(OSInt val) const
 		{
 			return Timestamp(this->inst.AddDay(val), this->tzQhr);
@@ -74,6 +93,11 @@ namespace Data
 			return Timestamp(this->inst.AddMS(val), this->tzQhr);
 		}
 
+		Timestamp AddNS(Int64 val) const
+		{
+			return Timestamp(this->inst.AddNS(val), this->tzQhr);
+		}
+
 		UInt32 GetMS() const
 		{
 			return this->inst.GetMS();
@@ -82,6 +106,18 @@ namespace Data
 		Timestamp ClearTime() const
 		{
 			return Timestamp(this->inst.ClearTime(), this->tzQhr);
+		}
+
+		Timestamp ClearDayOfMonth() const
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			this->ToTimeValue(&tval);
+			tval.day = 1;
+			tval.hour = 0;
+			tval.minute = 0;
+			tval.second = 0;
+			tval.ms = 0;
+			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
 		}
 
 		Int64 GetMSPassedDate() const
@@ -107,16 +143,6 @@ namespace Data
 		Int64 ToUnixTimestamp() const
 		{
 			return this->inst.ToUnixTimestamp();
-		}
-
-		static Timestamp FromDotNetTicks(Int64 ticks, Int8 tzQhr)
-		{
-			return Timestamp(Data::TimeInstant::FromDotNetTicks(ticks), tzQhr);
-		}
-
-		static Timestamp FromUnixTimestamp(Int64 ts)
-		{
-			return Timestamp(Data::TimeInstant(ts, 0), 0);
 		}
 
 /*		void SetMSDOSTime(UInt16 date, UInt16 time);
@@ -191,7 +217,7 @@ namespace Data
 		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			Data::DateTimeUtil::Instant2TimeValue(this->inst, &tval, this->tzQhr);
+			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, &tval, this->tzQhr);
 			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, this->inst.nanosec, (const UTF8Char*)pattern);
 		}
 		
@@ -288,6 +314,16 @@ namespace Data
 		{
 			return this->inst.sec == 0;
 		}
+		
+		Bool SetAsComputerTime() const
+		{
+			return Data::DateTimeUtil::SetAsComputerTime(this->inst.sec, this->inst.nanosec);
+		}
+
+		void ToTimeValue(Data::DateTimeUtil::TimeValue *tval) const
+		{
+			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
+		}
 
 		static Timestamp Now()
 		{
@@ -322,6 +358,21 @@ namespace Data
 		static Timestamp FromSecNS(Int64 unixTS, UInt32 nanosec, Int8 tzQhr)
 		{
 			return Timestamp(Data::TimeInstant(unixTS, nanosec), tzQhr);
+		}
+
+		static Timestamp FromDotNetTicks(Int64 ticks, Int8 tzQhr)
+		{
+			return Timestamp(Data::TimeInstant::FromDotNetTicks(ticks), tzQhr);
+		}
+
+		static Timestamp FromUnixTimestamp(Int64 ts)
+		{
+			return Timestamp(Data::TimeInstant(ts, 0), 0);
+		}
+
+		static Timestamp FromTimeValue(const Data::DateTimeUtil::TimeValue *tval, UInt32 nanosec, Int8 tzQhr)
+		{
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
 		}
 	};
 }

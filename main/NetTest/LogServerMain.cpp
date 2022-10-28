@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev)
+	void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev)
 	{
 		console->WriteLineCStr(logMsg);
 	}
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(log, IO::LogTool());
 	NEW_CLASS(logHdlr, MyLogHandler());
-	log->AddLogHandler(logHdlr, IO::ILogHandler::LOG_LEVEL_RAW);
+	log->AddLogHandler(logHdlr, IO::ILogHandler::LogLevel::Raw);
 	NEW_CLASS(svr, Net::LogServer(sockf, port, CSTR("logs"), log, true));
 	if (!svr->IsError())
 	{

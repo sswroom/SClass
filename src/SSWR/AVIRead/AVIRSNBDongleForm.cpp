@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userOb
 	{
 		sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::None);
 	}
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDongleInfoClicked(void *userObj)
@@ -563,7 +563,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->lbLog->HandleSelectionChange(OnLogClicked, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 
 	this->LoadFile();
 	NEW_CLASS(this->snb, IO::SNBDongle(stm, this));

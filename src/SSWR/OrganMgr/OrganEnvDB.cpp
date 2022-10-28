@@ -83,7 +83,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	{
 		this->cfgImgDirBase->v[i - 1] = 0;
 	}
-	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, 0, false);
+	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::ILogHandler::LogType::SingleFile, IO::ILogHandler::LogGroup::NoGroup, IO::ILogHandler::LogLevel::Raw, 0, false);
 	if (cfgMySQLDB && cfgMySQLHost)
 	{
 		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), &this->log, CSTR_NULL);

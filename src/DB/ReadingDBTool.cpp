@@ -61,31 +61,31 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->svrType = db->GetSvrType();
 	if (this->svrType == DB::DBUtil::ServerType::Access)
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::ILogHandler::LogLevel::Command);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::ILogHandler::LogLevel::Command);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LogLevel::Command);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LogLevel::Command);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Text)
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is Text"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is Text"), IO::ILogHandler::LogLevel::Command);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::ILogHandler::LogLevel::Command);
 	}
 	else
 	{
-		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::ILogHandler::LOG_LEVEL_ERROR);
+		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::ILogHandler::LogLevel::Error);
 	}
 }
 
@@ -355,7 +355,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
 		logMsg.Append(sqlCmd);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Raw);
 	}
 	if (this->db == 0)
 	{
@@ -379,7 +379,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -394,14 +394,14 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.Append(sqlCmd);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Error);
 
 			logMsg.ClearStr();
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
 			this->db->GetErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
 		}
 
 		readerFail += 1;
@@ -409,7 +409,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 		{
 			if (lastReader)
 			{
-				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LOG_LEVEL_ACTION);
+				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LogLevel::Action);
 
 				this->CloseReader(lastReader);
 			}
@@ -549,7 +549,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			logMsg.AppendUTF8Char('.');
 		}
 		logMsg.Append(tableName);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Raw);
 	}
 	if (this->db == 0)
 	{
@@ -573,7 +573,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -587,7 +587,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot get table data: "));
 			logMsg.Append(tableName);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::Error);
 		}
 
 		{
@@ -596,7 +596,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 			this->lastErrMsg.ClearStr();
 			this->db->GetErrorMsg(&this->lastErrMsg);
 			logMsg.AppendSB(&this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LogLevel::ErrorDetail);
 		}
 
 		readerFail += 1;
@@ -604,7 +604,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 		{
 			if (lastReader)
 			{
-				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LOG_LEVEL_ACTION);
+				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LogLevel::Action);
 
 				this->CloseReader(lastReader);
 			}

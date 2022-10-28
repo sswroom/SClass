@@ -16,7 +16,7 @@ namespace IO
 	{
 	private:
 		Sync::Mutex mut;
-		Data::ArrayListInt64 dateList;
+		Data::ArrayList<Data::Timestamp> dateList;
 		Data::ArrayListString msgList;
 		Sync::Event evt;
 
@@ -33,8 +33,8 @@ namespace IO
 		Bool running;
 		Bool hasNewFile;
 
-		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime, Int32 *lastVal);
-		void WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCnt);
+		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *logTime, UInt32 nanosec, Int32 *lastVal);
+		void WriteArr(Text::String **msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
@@ -42,7 +42,7 @@ namespace IO
 		MTFileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
+		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev);
 
 		Bool HasNewFile();
 		UTF8Char *GetLastFileName(UTF8Char *sbuff);

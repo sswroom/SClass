@@ -42,9 +42,9 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 			else
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
+				me->svr->SetAccessLog(me->log, IO::ILogHandler::LogLevel::Raw);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->log->AddLogHandler(me->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+				me->log->AddLogHandler(me->logger, IO::ILogHandler::LogLevel::Raw);
 			}
 		}
 

@@ -47,19 +47,19 @@ IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	if (logStyle == ILogHandler::LOG_TYPE_PER_DAY)
+	if (logStyle == ILogHandler::LogType::PerDay)
 	{
 		lastVal = dt.GetDay();
 	}
-	else if (logStyle == ILogHandler::LOG_TYPE_PER_MONTH)
+	else if (logStyle == ILogHandler::LogType::PerMonth)
 	{
 		lastVal = dt.GetMonth();
 	}
-	else if (logStyle == ILogHandler::LOG_TYPE_PER_YEAR)
+	else if (logStyle == ILogHandler::LogType::PerYear)
 	{
 		lastVal = dt.GetYear();
 	}
-	else if (logStyle == ILogHandler::LOG_TYPE_PER_HOUR)
+	else if (logStyle == ILogHandler::LogType::PerHour)
 	{
 		lastVal = dt.GetDay() * 24 + dt.GetHour();
 	}
@@ -94,43 +94,45 @@ void IO::LoopFileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::LoopFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
+void IO::LoopFileLog::LogAdded(Data::Timestamp time, Text::CString logMsg, LogLevel logLev)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 
 	Sync::MutexUsage mutUsage(&this->mut);
+	Data::DateTimeUtil::TimeValue tval;
+	time.ToTimeValue(&tval);
 
-	if (logStyle == ILogHandler::LOG_TYPE_PER_DAY)
+	if (logStyle == ILogHandler::LogType::PerDay)
 	{
-		if (time->GetDay() != lastVal)
+		if (tval.day != lastVal)
 		{
-			lastVal = time->GetDay();
+			lastVal = tval.day;
 			newFile = true;
 		}
 	}
-	else if (logStyle == ILogHandler::LOG_TYPE_PER_MONTH)
+	else if (logStyle == ILogHandler::LogType::PerMonth)
 	{
-		if (time->GetMonth() != lastVal)
+		if (tval.month != lastVal)
 		{
-			lastVal = time->GetMonth();
+			lastVal = tval.month;
 			newFile = true;
 		}
 	}
-	else if (logStyle == ILogHandler::LOG_TYPE_PER_YEAR)
+	else if (logStyle == ILogHandler::LogType::PerYear)
 	{
-		if (time->GetYear() != lastVal)
+		if (tval.year != lastVal)
 		{
-			lastVal = time->GetYear();
+			lastVal = tval.year;
 			newFile = true;
 		}
 	}
-	else if (logStyle == ILogHandler::LOG_TYPE_PER_HOUR)
+	else if (logStyle == ILogHandler::LogType::PerHour)
 	{
-		if (lastVal != (time->GetDay() * 24 + time->GetHour()))
+		if (lastVal != (tval.day * 24 + tval.hour))
 		{
-			lastVal = time->GetDay() * 24 + time->GetHour();
+			lastVal = tval.day * 24 + tval.hour;
 			newFile = true;
 		}
 	}
@@ -148,14 +150,14 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLe
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
-		sptr = Text::StrConcatC(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
+		sptr = Text::StrConcatC(time.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
 		log->WriteLineC(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}
 
 	if (!this->closed)
 	{
-		sptr = time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
+		sptr = time.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
 		Text::StringBuilderUTF8 sb;
 		sb.AppendP(buff, sptr);
 		sb.Append(logMsg);

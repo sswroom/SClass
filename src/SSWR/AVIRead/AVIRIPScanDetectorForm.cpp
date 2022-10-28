@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 
 	{
 		sb.AppendC(macEntry->name, macEntry->nameLen);
 	}
-	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 }
 
 void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnLogSelChg(void *userObj)
@@ -44,11 +44,11 @@ SSWR::AVIRead::AVIRIPScanDetectorForm::AVIRIPScanDetectorForm(UI::GUIClientContr
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
-	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+	this->log->AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 	NEW_CLASS(this->ipScanDetect, Net::IPScanDetector(this->core->GetSocketFactory(), OnIPScanEvent, this, 2));
 	if (this->ipScanDetect->IsError())
 	{
-		this->log->LogMessage(CSTR("Error in monitoring to IP Scan"), IO::ILogHandler::LOG_LEVEL_ERROR);
+		this->log->LogMessage(CSTR("Error in monitoring to IP Scan"), IO::ILogHandler::LogLevel::Error);
 	}
 }
 

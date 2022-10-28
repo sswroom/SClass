@@ -625,7 +625,7 @@ void DB::PostgreSQLConn::Connect()
 			{
 				char *msg = PQerrorMessage(this->clsData->conn);
 				UOSInt msgLen = Text::StrCharCnt(msg);
-				this->log->LogMessage(Text::CString((const UTF8Char*)msg, msgLen), IO::ILogHandler::LOG_LEVEL_ERROR);
+				this->log->LogMessage(Text::CString((const UTF8Char*)msg, msgLen), IO::ILogHandler::LogLevel::Error);
 #if defined(VERBOSE)
 				printf("PostgreSQL: Error, %s\r\n", msg);
 #endif				

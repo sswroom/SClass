@@ -8,13 +8,13 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time, Int32 *lastVal)
+UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *time, UInt32 nanosec, Int32 *lastVal)
 {
 	UTF8Char *currName;
 	switch (this->groupStyle)
 	{
-	case IO::ILogHandler::LOG_GROUP_TYPE_PER_YEAR:
-		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyy");
+	case IO::ILogHandler::LogGroup::PerYear:
+		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyy");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
@@ -22,8 +22,8 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time, Int32 
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
 		break;
-	case IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH:
-		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMM");
+	case IO::ILogHandler::LogGroup::PerMonth:
+		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyyMM");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
@@ -31,8 +31,8 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time, Int32 
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
 		break;
-	case IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY:
-		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMMdd");
+	case IO::ILogHandler::LogGroup::PerDay:
+		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyyMMdd");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
@@ -40,7 +40,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time, Int32 
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
 		break;
-	case IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP:
+	case IO::ILogHandler::LogGroup::NoGroup:
 	default:
 		currName = this->fileName->ConcatTo(buff);
 		break;
@@ -48,74 +48,75 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time, Int32 
 
 	switch (this->logStyle)
 	{
-	case IO::ILogHandler::LOG_TYPE_PER_HOUR:
-		if (lastVal) *lastVal = time->GetDay() * 24 + time->GetHour();
-		currName = Text::StrConcatC(time->ToString(currName, "yyyyMMddHH"), UTF8STRC(".log"));
+	case IO::ILogHandler::LogType::PerHour:
+		if (lastVal) *lastVal = time->day * 24 + time->hour;
+		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMMddHH"), UTF8STRC(".log"));
 		break;
-	case IO::ILogHandler::LOG_TYPE_PER_DAY:
-		if (lastVal) *lastVal = time->GetDay();
-		currName = Text::StrConcatC(time->ToString(currName, "yyyyMMdd"), UTF8STRC(".log"));
+	case IO::ILogHandler::LogType::PerDay:
+		if (lastVal) *lastVal = time->day;
+		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMMdd"), UTF8STRC(".log"));
 		break;
-	case IO::ILogHandler::LOG_TYPE_PER_MONTH:
-		if (lastVal) *lastVal = time->GetMonth();
-		currName = Text::StrConcatC(time->ToString(currName, "yyyyMM"), UTF8STRC(".log"));
+	case IO::ILogHandler::LogType::PerMonth:
+		if (lastVal) *lastVal = time->month;
+		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMM"), UTF8STRC(".log"));
 		break;
-	case IO::ILogHandler::LOG_TYPE_PER_YEAR:
-		if (lastVal) *lastVal = time->GetYear();
-		currName = Text::StrConcatC(time->ToString(currName, "yyyy"), UTF8STRC(".log"));
+	case IO::ILogHandler::LogType::PerYear:
+		if (lastVal) *lastVal = time->year;
+		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyy"), UTF8STRC(".log"));
 		break;
-	case IO::ILogHandler::LOG_TYPE_SINGLE_FILE:
+	case IO::ILogHandler::LogType::SingleFile:
 	default:
 		break;
 	}
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCnt)
+void IO::MTFileLog::WriteArr(Text::String **msgArr, Data::Timestamp *dateArr, UOSInt arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
 	UTF8Char *sptr;
-	Data::DateTime time;
+	Data::Timestamp time;
+	Data::DateTimeUtil::TimeValue tval;
 	Text::StringBuilderUTF8 sb;
 
 	UOSInt i;
 	i = 0;
 	while (i < arrCnt)
 	{
-		time.SetTicks(dateArr[i]);
-		time.ToLocalTime();
+		time = dateArr[i].ToLocalTime();
+		Data::DateTimeUtil::Instant2TimeValue(time.inst.sec, time.inst.nanosec, &tval, time.tzQhr);
 		switch (logStyle)
 		{
-		case ILogHandler::LOG_TYPE_PER_DAY:
-			if (time.GetDay() != lastVal)
+		case ILogHandler::LogType::PerDay:
+			if (tval.day != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time, &lastVal);
+				sptr = GetNewName(buff, &tval, time.inst.nanosec, &lastVal);
 			}
 			break;
-		case ILogHandler::LOG_TYPE_PER_MONTH:
-			if (time.GetMonth() != lastVal)
+		case ILogHandler::LogType::PerMonth:
+			if (tval.month != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time, &lastVal);
+				sptr = GetNewName(buff, &tval, time.inst.nanosec, &lastVal);
 			}
 			break;
-		case ILogHandler::LOG_TYPE_PER_YEAR:
-			if (time.GetYear() != lastVal)
+		case ILogHandler::LogType::PerYear:
+			if (tval.year != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time, &lastVal);
+				sptr = GetNewName(buff, &tval, time.inst.nanosec, &lastVal);
 			}
 			break;
-		case ILogHandler::LOG_TYPE_PER_HOUR:
-			if (lastVal != (time.GetDay() * 24 + time.GetHour()))
+		case ILogHandler::LogType::PerHour:
+			if (lastVal != (tval.day * 24 + tval.hour))
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time, &lastVal);
+				sptr = GetNewName(buff, &tval, time.inst.nanosec, &lastVal);
 			}
 			break;
-		case ILogHandler::LOG_TYPE_SINGLE_FILE:
+		case ILogHandler::LogType::SingleFile:
 		default:
 			break;
 		}
@@ -158,7 +159,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 	IO::MTFileLog *me = (IO::MTFileLog*)userObj;
 	UOSInt arrCnt;
 	Text::String **msgArr = 0;
-	Int64 *dateArr = 0;
+	Data::Timestamp *dateArr = 0;
 	me->running = true;
 	while (!me->closed)
 	{
@@ -166,7 +167,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 		if ((arrCnt = me->msgList.GetCount()) > 0)
 		{
 			msgArr = MemAlloc(Text::String *, arrCnt);
-			dateArr = MemAlloc(Int64, arrCnt);
+			dateArr = MemAlloc(Data::Timestamp, arrCnt);
 			me->msgList.GetRange(msgArr, 0, arrCnt);
 			me->dateList.GetRange(dateArr, 0, arrCnt);
 			me->msgList.RemoveRange(0, arrCnt);
@@ -186,7 +187,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 	if ((arrCnt = me->msgList.GetCount()) > 0)
 	{
 		msgArr = MemAlloc(Text::String *, arrCnt);
-		dateArr = MemAlloc(Int64, arrCnt);
+		dateArr = MemAlloc(Data::Timestamp, arrCnt);
 		me->msgList.GetRange(msgArr, 0, arrCnt);
 		me->dateList.GetRange(dateArr, 0, arrCnt);
 		me->msgList.RemoveRange(0, arrCnt);
@@ -220,7 +221,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	this->hasNewFile = false;
 
 
-	if (this->groupStyle != IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
+	if (this->groupStyle != IO::ILogHandler::LogGroup::NoGroup)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->extName = Text::String::New(this->fileName->ToCString().Substring(i + 1));
@@ -240,9 +241,10 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 		}
 	}
 
-	Data::DateTime dt;
-	dt.SetCurrTime();
-	sptr = GetNewName(buff, &dt, &this->lastVal);
+	Data::Timestamp ts = Data::Timestamp::Now();
+	Data::DateTimeUtil::TimeValue tval;
+	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
+	sptr = GetNewName(buff, &tval, ts.inst.nanosec, &this->lastVal);
 
 	NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
@@ -302,14 +304,14 @@ void IO::MTFileLog::LogClosed()
 		this->evt.Set();
 	}
 }
-void IO::MTFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
+void IO::MTFileLog::LogAdded(Data::Timestamp time, Text::CString logMsg, LogLevel logLev)
 {
 	if (closed)
 		return;
 
 	Sync::MutexUsage mutUsage(&this->mut);
 	this->msgList.Add(Text::String::New(logMsg));
-	this->dateList.Add(time->ToTicks());
+	this->dateList.Add(time);
 	mutUsage.EndUse();
 	this->evt.Set();
 }
@@ -321,26 +323,36 @@ Bool IO::MTFileLog::HasNewFile()
 UTF8Char *IO::MTFileLog::GetLastFileName(UTF8Char *sbuff)
 {
 	this->hasNewFile = false;
-	Data::DateTime dt;
-	dt.SetCurrTime();
+	Data::Timestamp ts = Data::Timestamp::Now();
+	Data::DateTimeUtil::TimeValue tval;
 	switch (this->logStyle)
 	{
-	case IO::ILogHandler::LOG_TYPE_PER_HOUR:
-		dt.AddHour(-1);
+	case IO::ILogHandler::LogType::PerHour:
+		ts = ts.AddHour(-1);
+		Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
 		break;
-	case IO::ILogHandler::LOG_TYPE_PER_DAY:
-		dt.AddDay(-1);
+	case IO::ILogHandler::LogType::PerDay:
+		ts = ts.AddDay(-1);
+		Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
 		break;
-	case IO::ILogHandler::LOG_TYPE_PER_MONTH:
-		dt.AddMonth(-1);
+	case IO::ILogHandler::LogType::PerMonth:
+		Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
+		tval.month = tval.month - 1;
+		if (tval.month == 0)
+		{
+			tval.month = 12;
+			tval.year--;
+		}
 		break;
-	case IO::ILogHandler::LOG_TYPE_PER_YEAR:
-		dt.AddMonth(-12);
+	case IO::ILogHandler::LogType::PerYear:
+		Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
+		tval.year--;
 		break;
-	case IO::ILogHandler::LOG_TYPE_SINGLE_FILE:
+	case IO::ILogHandler::LogType::SingleFile:
 	default:
+		Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
 		break;
 	}
 
-	return GetNewName(sbuff, &dt, 0);
+	return GetNewName(sbuff, &tval, ts.inst.nanosec, 0);
 }

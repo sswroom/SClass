@@ -1,5 +1,6 @@
 #ifndef _SM_NET_NTPSERVER
 #define _SM_NET_NTPSERVER
+#include "Data/Timestamp.h"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 #include "Text/String.h"
@@ -31,8 +32,10 @@ namespace Net
 		Bool IsError();
 
 		static void ReadTime(const UInt8 *buff, Data::DateTime *time);
+		static Data::Timestamp ReadTime(const UInt8 *buff);
 		static void WriteTime(UInt8 *buff, Data::DateTime *time);
+		static void WriteTime(UInt8 *buff, Data::Timestamp time);
 		static void WriteTime(UInt8 *buff, Int64 timeTicks);
 	};
-};
+}
 #endif

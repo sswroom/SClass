@@ -21,7 +21,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text:
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
 	Text::SBAppendF64(&sb, timeUsed);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
 
 	Data::DateTime dt;
 	ClientInfo *cli;
@@ -139,7 +139,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		s = cfg->GetValue(CSTR("LogPath"));
 		if (s)
 		{
-			this->log.AddFileLog(s, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+			this->log.AddFileLog(s, IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
 		s = cfg->GetValue(CSTR("DisableV6"));

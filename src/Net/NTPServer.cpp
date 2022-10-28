@@ -48,7 +48,7 @@ void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 				sb.AppendC(UTF8STRC(" reply time as "));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 			}
 		}
 	}
@@ -79,7 +79,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 						dt.ToLocalTime();
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
 					}
 					else
 					{
@@ -90,7 +90,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 						sb.AppendC(UTF8STRC(" failed"));
-						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Error);
 						dt.SetCurrTimeUTC();
 						me->timeDiff = me->refTime - dt.ToTicks();
 					}
@@ -99,7 +99,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 				{
 					if (me->log)
 					{
-						me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::ILogHandler::LOG_LEVEL_ERROR);
+						me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::ILogHandler::LogLevel::Error);
 					}
 				}
 			}
@@ -107,7 +107,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 			{
 				if (me->log)
 				{
-					me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::ILogHandler::LogLevel::Error);
 				}
 			}
 			me->evt->Wait(60000);
@@ -187,6 +187,13 @@ void Net::NTPServer::ReadTime(const UInt8 *buff, Data::DateTime *time)
 	time->AddMS((OSInt)((v % 60) * 1000 + ((v2 * 1000LL) >> 32)));
 }
 
+Data::Timestamp Net::NTPServer::ReadTime(const UInt8 *buff)
+{
+	UInt32 v = ReadMUInt32(&buff[0]);
+	UInt32 v2 = ReadMUInt32(&buff[4]);
+	return Data::Timestamp(Data::TimeInstant(v - 2208988800LL, (UInt32)((v2 * 1000000000ULL) >> 32)), 0);
+}
+
 void Net::NTPServer::WriteTime(UInt8 *buff, Data::DateTime *time)
 {
 	Int64 timeDiff;
@@ -198,6 +205,13 @@ void Net::NTPServer::WriteTime(UInt8 *buff, Data::DateTime *time)
 	WriteMInt32(&buff[0], (Int32)(timeDiff / 1000));
 	timeDiff = timeDiff % 1000;
 	WriteMInt32(&buff[4], (MulDiv32(0x40000000, (Int32)timeDiff, 500) << 1) + 1);
+}
+
+void Net::NTPServer::WriteTime(UInt8 *buff, Data::Timestamp time)
+{
+	Int64 timeSecs = time.inst.sec - 2208988800LL;
+	WriteMInt32(&buff[0], (Int32)timeSecs);
+	WriteMUInt32(&buff[4], (UInt32)((((UInt64)time.inst.nanosec) << 32) / 1000000000) + 1);
 }
 
 void Net::NTPServer::WriteTime(UInt8 *buff, Int64 timeTicks)

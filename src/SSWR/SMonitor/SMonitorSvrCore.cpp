@@ -38,7 +38,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cl
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("CLI: Client disconnected: "));
 			sb.AppendP(sbuff, sptr);
-			me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
 
 			if (status->dev)
 			{
@@ -93,7 +93,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(Net::TCPClient *
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("CLI: Client process timeout: "));
 	sb.AppendP(sbuff, sptr);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
 }
 
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *userObj)
@@ -245,7 +245,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					dev->photoOfst = 0;
 					dev->photoSeq = 0;
 					mutUsage.EndUse();
-					me->log.LogMessage(CSTR("Received photo info"), IO::ILogHandler::LOG_LEVEL_RAW);
+					me->log.LogMessage(CSTR("Received photo info"), IO::ILogHandler::LogLevel::Raw);
 				}
 				break;
 			case 12:
@@ -270,21 +270,21 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 							{
 								MemCopyNO(&dev->photoBuff[currOfst], &buff[24], dataSize - 26);
 								dev->photoBuffRecv[seq] = 1;
-								me->log.LogMessage(CSTR("Received photo packet, success"), IO::ILogHandler::LOG_LEVEL_RAW);
+								me->log.LogMessage(CSTR("Received photo packet, success"), IO::ILogHandler::LogLevel::Raw);
 							}
 							else
 							{
-								me->log.LogMessage(CSTR("Received photo packet, size error"), IO::ILogHandler::LOG_LEVEL_RAW);
+								me->log.LogMessage(CSTR("Received photo packet, size error"), IO::ILogHandler::LogLevel::Raw);
 							}
 						}
 						else
 						{
-							me->log.LogMessage(CSTR("Received photo packet, photo not receiving"), IO::ILogHandler::LOG_LEVEL_RAW);
+							me->log.LogMessage(CSTR("Received photo packet, photo not receiving"), IO::ILogHandler::LogLevel::Raw);
 						}
 					}
 					else
 					{
-						me->log.LogMessage(CSTR("Received photo packet, device not found"), IO::ILogHandler::LOG_LEVEL_RAW);
+						me->log.LogMessage(CSTR("Received photo packet, device not found"), IO::ILogHandler::LogLevel::Raw);
 					}
 				}
 				break;
@@ -386,7 +386,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					sb.AppendU16(ReadUInt16(&buff[2]));
 					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(dataSize);
-					me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Error);
 				}
 				break;
 			}
@@ -1131,10 +1131,10 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
 			sb.AppendC(UTF8STRC("Log"));
-			this->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
+			this->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Command, "yyyy-MM-dd HH:mm:ss.fff", false);
 			sb.RemoveChars(3);
 			sb.AppendC(UTF8STRC("Raw"));
-			this->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+			this->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
 		s = cfg->GetValue(CSTR("DataDir"));
@@ -1236,7 +1236,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					}
 					else
 					{
-						this->listener->SetAccessLog(&this->log, IO::ILogHandler::LOG_LEVEL_COMMAND);
+						this->listener->SetAccessLog(&this->log, IO::ILogHandler::LogLevel::Command);
 						this->listener->SetRequestLog(this);
 					}
 				}

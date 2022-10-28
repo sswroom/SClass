@@ -21,14 +21,14 @@ namespace IO
 		const UTF8Char *extName;
 		Bool closed;
 
-		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime);
+		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *logTime, UInt32 nanosec);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
 		FileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		FileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~FileLog();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
+		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev);
 	};
 }
 #endif

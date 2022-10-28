@@ -54,7 +54,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 						cmdResult->v[i - cmdStart] = 0;
 						if (me->log)
 						{
-							me->log->LogMessage({cmdResult->v, (i - cmdStart)}, IO::ILogHandler::LOG_LEVEL_RAW);
+							me->log->LogMessage({cmdResult->v, (i - cmdStart)}, IO::ILogHandler::LogLevel::Raw);
 						}
 
 						if (me->cmdHdlr && me->cmdHdlr(me->cmdHdlrObj, cmdResult->v, i - cmdStart))

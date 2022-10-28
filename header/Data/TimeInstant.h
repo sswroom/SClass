@@ -53,7 +53,7 @@ namespace Data
 			return TimeInstant(newSec, (UInt32)val);
 		}
 
-		TimeInstant AddNS(OSInt val) const
+		TimeInstant AddNS(Int64 val) const
 		{
 			Int64 newSec = this->sec + val / 1000000000;
 			val = val % 1000000000 + (Int32)this->nanosec;
@@ -202,8 +202,8 @@ namespace Data
 		static TimeInstant Now()
 		{
 			UInt32 nanosec;
-			Int64 ticks = Data::DateTimeUtil::GetCurrTimeHighP(&nanosec);
-			return TimeInstant(ticks / 1000LL, nanosec);
+			Int64 secs = Data::DateTimeUtil::GetCurrTimeSecHighP(&nanosec);
+			return TimeInstant(secs, nanosec);
 		}
 
 		static TimeInstant FromVariTime(Double variTime)

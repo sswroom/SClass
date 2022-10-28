@@ -200,11 +200,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			if (!me->chkSkipLog->IsChecked())
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
-				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
+				me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->svr->SetAccessLog(me->log, IO::ILogHandler::LogLevel::Raw);
 				me->svr->SetRequestLog(me->reqLog);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->log->AddLogHandler(me->logger, IO::ILogHandler::LOG_LEVEL_RAW);
+				me->log->AddLogHandler(me->logger, IO::ILogHandler::LogLevel::Raw);
 			}
 			if (me->chkPackageFile->IsChecked())
 			{

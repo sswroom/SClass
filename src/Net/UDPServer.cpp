@@ -40,7 +40,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					sptr = Text::StrUOSInt(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
 					sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
-					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
+					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Raw);
 				}
 
 				if (stat->me->logPrefix)
@@ -115,7 +115,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					sptr = Text::StrUOSInt(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
 					sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
-					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
+					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Raw);
 				}
 
 				if (stat->me->logPrefix)
@@ -461,7 +461,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 		sptr = Text::StrUOSInt(sptr, dataSize);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes to "));
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
-		this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_RAW);
+		this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Raw);
 	}
 
 	succ = false;
@@ -475,7 +475,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			{
 				sptr = msgPrefix->ConcatTo(sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
-				this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ERROR);
+				this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Error);
 			}
 		}
 		else
@@ -491,7 +491,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			{
 				sptr = msgPrefix->ConcatTo(sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
-				this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ERROR);
+				this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LogLevel::Error);
 			}
 		}
 		else

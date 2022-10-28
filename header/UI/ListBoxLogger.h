@@ -27,7 +27,7 @@ namespace UI
 		ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt maxLog, Bool reverse);
 		virtual ~ListBoxLogger();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev);
+		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev);
 
 		void SetTimeFormat(const Char *timeFormat);
 	};

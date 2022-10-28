@@ -21,9 +21,9 @@ void __stdcall Net::NTPClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 //	UInt32 rootDispersion = *(UInt32*)&buff[8];
 //	UInt32 ri = *(UInt32*)&buff[12];
 
-	if (mode == 4 && me->resultTime)
+	if (mode == 4)
 	{
-		Net::NTPServer::ReadTime(&buff[32], me->resultTime);
+		me->resultTime = Net::NTPServer::ReadTime(&buff[32]);
 		me->hasResult = true;
 		me->evt.Set();
 	}
@@ -49,6 +49,14 @@ Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, Data::DateTi
 	return GetServerTime(&addr, port, svrTime);
 }
 
+Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, Data::Timestamp *svrTime)
+{
+	Net::SocketUtil::AddressInfo addr;
+	if (!sockf->DNSResolveIP(host, &addr))
+		return false;
+	return GetServerTime(&addr, port, svrTime);
+}
+
 Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::DateTime *svrTime)
 {
 	UInt8 buff[48];
@@ -66,10 +74,8 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	buff[13] = 'S';
 	buff[14] = 'W';
 	buff[15] = 0;
-	svrTime->SetCurrTimeUTC();
-	Net::NTPServer::WriteTime(&buff[40], svrTime);
+	Net::NTPServer::WriteTime(&buff[40], Data::Timestamp::UtcNow());
 
-	this->resultTime = svrTime;
 	this->hasResult = false;
 	this->svr->SendTo(addr, port, buff, 48);
 	Manage::HiResClock clk;
@@ -81,12 +87,49 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 			break;
 	}
 	hasResult = this->hasResult;
-	this->resultTime = 0;
 	if (hasResult)
 	{
-		svrTime->AddMS(Double2Int32(clk.GetTimeDiff() * 500));
+		Data::Timestamp ts = this->resultTime.AddNS(Double2Int64(clk.GetTimeDiff() * 500000000));
+		svrTime->SetTicks(ts.ToTicks());
 	}
 	mutUsage.EndUse();
+	return hasResult;
+}
+
+Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Timestamp *svrTime)
+{
+	UInt8 buff[48];
+	Bool hasResult;
+
+	if (port == 0)
+	{
+		port = 123;
+	}
+
+	Sync::MutexUsage mutUsage(&this->mut);
+	MemClear(buff, 48);
+	buff[0] = 0xe3;
+	buff[12] = 'S';
+	buff[13] = 'S';
+	buff[14] = 'W';
+	buff[15] = 0;
+
+	Net::NTPServer::WriteTime(&buff[40], Data::Timestamp::UtcNow());
+	this->hasResult = false;
+	this->svr->SendTo(addr, port, buff, 48);
+	Manage::HiResClock clk;
+	clk.Start();
+	while (!this->hasResult)
+	{
+		this->evt.Wait(1000);
+		if (clk.GetTimeDiff() >= 10)
+			break;
+	}
+	hasResult = this->hasResult;
+	if (hasResult)
+	{
+		*svrTime = this->resultTime.AddNS(Double2Int64(clk.GetTimeDiff() * 500000000));
+	}
 	return hasResult;
 }
 

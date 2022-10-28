@@ -14,7 +14,7 @@ namespace IO
 		ConsoleLogHandler(IO::ConsoleWriter *console);
 		virtual ~ConsoleLogHandler();
 
-		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
+		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev);
 		virtual void LogClosed();
 	};
 }

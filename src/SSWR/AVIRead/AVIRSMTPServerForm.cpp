@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnLogFileClicked(void *userObj
 	{
 		IO::Path::AppendPath(&sb, UTF8STRC("log/SMTP"));
 	}
-	me->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
+	me->log.AddFileLog(sb.ToCString(), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Command, "yyyy-MM-dd HH:mm:ss.fff", false);
 	me->btnLogFile->SetEnabled(false);
 }
 
@@ -160,7 +160,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	Int64 id = me->store->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 
 	Net::SocketUtil::AddressInfo remoteAddr;
 	cli->GetRemoteAddr(&remoteAddr);
@@ -178,7 +178,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, Tex
 	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
 	sb.Append(pwd);
-	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log.LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Command);
 	return true;
 }
 
@@ -384,7 +384,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log.AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_COMMAND);
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Command);
 
 	this->mailChanged = true;
 	this->AddTimer(1000, OnTimerTick, this);
