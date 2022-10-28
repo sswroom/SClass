@@ -345,6 +345,11 @@ UInt32 Net::MODBUSTCPListener::GetDeviceAddr(UOSInt index)
 	return this->devMap.GetKey(index);
 }
 
+UInt32 Net::MODBUSTCPListener::GetDelay()
+{
+	return this->delay;
+}
+
 void Net::MODBUSTCPListener::SetDelay(UInt32 delay)
 {
 	this->delay = delay;

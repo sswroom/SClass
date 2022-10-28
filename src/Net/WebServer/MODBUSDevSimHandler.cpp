@@ -13,11 +13,19 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 			Text::String *s;
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
+				UInt32 delay;
 				UInt16 toggleIndex;
 				req->ParseHTTPForm();
-				if ((s = req->GetHTTPFormStr(CSTR("action"))) != 0 && s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), &toggleIndex))
+				if ((s = req->GetHTTPFormStr(CSTR("action"))) != 0)
 				{
-					this->dev->ToggleValue(toggleIndex);
+					if (s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), &toggleIndex))
+					{
+						this->dev->ToggleValue(toggleIndex);
+					}
+					else if (s->Equals(UTF8STRC("delay")) && req->GetHTTPFormUInt32(CSTR("delay"), &delay))
+					{
+						this->listener->SetDelay(delay);
+					}
 				}
 			}
 			Text::StringBuilderUTF8 sb;
@@ -33,6 +41,15 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 			sb.AppendC(UTF8STRC("<input name=\"action\" type=\"hidden\" value=\"toggle\"/>"));
 			sb.AppendC(UTF8STRC("<input name=\"index\" type=\"hidden\"/>"));
 			sb.AppendC(UTF8STRC("</form>\r\n"));
+
+			sb.AppendC(UTF8STRC("<body><form method=\"POST\" action=\"device\">"));
+			sb.AppendC(UTF8STRC("<input name=\"action\" type=\"hidden\" value=\"delay\"/>"));
+			sb.AppendC(UTF8STRC("<input name=\"delay\" type=\"text\" value=\""));
+			sb.AppendU32(this->listener->GetDelay());
+			sb.AppendC(UTF8STRC("\"/>"));
+			sb.AppendC(UTF8STRC("<input type=\"submit\"/>"));
+			sb.AppendC(UTF8STRC("</form>\r\n"));
+
 			sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Value</td><td>Action</td></tr>\r\n"));
 			UOSInt i = 0;
 			UOSInt j = this->dev->GetValueCount();
@@ -74,8 +91,9 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 	return this->DoRequest(req, resp, subReq);
 }
 
-Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(IO::MODBUSDevSim *dev)
+Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(Net::MODBUSTCPListener *listener, IO::MODBUSDevSim *dev)
 {
+	this->listener = listener;
 	this->dev = dev;
 }
 

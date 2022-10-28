@@ -33,6 +33,7 @@ namespace Net
 		UOSInt GetDeviceCount();
 		IO::MODBUSDevSim *GetDevice(UOSInt index);
 		UInt32 GetDeviceAddr(UOSInt index);
+		UInt32 GetDelay();
 		void SetDelay(UInt32 delay);
 	};
 }

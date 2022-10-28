@@ -86,7 +86,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else
 	{
 		modbusListener.AddDevice(devAddr, dev);
-		Net::WebServer::MODBUSDevSimHandler devHdlr(dev);
+		Net::WebServer::MODBUSDevSimHandler devHdlr(&modbusListener, dev);
 		Net::WebServer::WebListener webListener(&sockf, 0, &devHdlr, ctrlPort, 120, 2, CSTR("MODBUSSim/1.0"), false, true);
 		if (webListener.IsError())
 		{

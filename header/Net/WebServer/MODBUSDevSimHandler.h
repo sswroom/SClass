@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_MODBUSDEVSIMHANDLER
 #define _SM_NET_WEBSERVER_MODBUSDEVSIMHANDLER
 #include "IO/MODBUSDevSim.h"
+#include "Net/MODBUSTCPListener.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
 namespace Net
@@ -11,12 +12,13 @@ namespace Net
 		{
 		private:
 			IO::MODBUSDevSim *dev;
+			Net::MODBUSTCPListener *listener;
 			UOSInt faviconSize;
 
 		protected:
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 		public:
-			MODBUSDevSimHandler(IO::MODBUSDevSim *dev);
+			MODBUSDevSimHandler(Net::MODBUSTCPListener *listener, IO::MODBUSDevSim *dev);
 			virtual ~MODBUSDevSimHandler();
 		};
 	}
