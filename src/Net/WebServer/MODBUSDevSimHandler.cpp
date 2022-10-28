@@ -44,10 +44,10 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 
 			sb.AppendC(UTF8STRC("<body><form method=\"POST\" action=\"device\">"));
 			sb.AppendC(UTF8STRC("<input name=\"action\" type=\"hidden\" value=\"delay\"/>"));
-			sb.AppendC(UTF8STRC("<input name=\"delay\" type=\"text\" value=\""));
+			sb.AppendC(UTF8STRC("Delay: <input name=\"delay\" type=\"text\" value=\""));
 			sb.AppendU32(this->listener->GetDelay());
 			sb.AppendC(UTF8STRC("\"/>"));
-			sb.AppendC(UTF8STRC("<input type=\"submit\"/>"));
+			sb.AppendC(UTF8STRC("<input type=\"submit\"/><br/>"));
 			sb.AppendC(UTF8STRC("</form>\r\n"));
 
 			sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Value</td><td>Action</td></tr>\r\n"));
