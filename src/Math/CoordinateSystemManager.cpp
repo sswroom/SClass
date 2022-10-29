@@ -512,6 +512,10 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStr
 	{
 		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84).v);
 	}
+	else if (name.Equals(UTF8STRC("CRS:84")))
+	{
+		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84).v);
+	}
 	return 0;
 }
 

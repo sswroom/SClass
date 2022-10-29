@@ -120,7 +120,8 @@ typedef enum
 	MNU_RANDOMLOC,
 	MNU_HK_WASTELESS,
 	MNU_HK_HKE_EV_CHARGING_EN,
-	MNU_HK_PARKING_VACANCY
+	MNU_HK_PARKING_VACANCY,
+	MNU_HK_GEODATA_WMS
 } MenuItems;
 
 #define MAX_SCALE 200000000
@@ -758,6 +759,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu2->AddItem(CSTR("Recyclable Collection Points"), MNU_HK_WASTELESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HKE EV Charging Station (EN)"), MNU_HK_HKE_EV_CHARGING_EN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HK Parking Vacancy"), MNU_HK_PARKING_VACANCY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HK Geodata WMS"), MNU_HK_GEODATA_WMS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("GPS Tracker"), MNU_GPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("MTK GPS Tracker"), MNU_MTKGPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1506,7 +1508,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();
@@ -1571,6 +1573,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					this->AddLayer(layer);
 				}
+			}
+			break;
+		}
+	case MNU_HK_GEODATA_WMS:
+		{
+			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
+			frm.SetURL(CSTR("https://geodata.gov.hk/geoserver/geodatastore/wms"));
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				Map::DrawMapService *mapService = frm.GetDrawMapService();
+				Map::DrawMapServiceLayer *layer;
+				NEW_CLASS(layer, Map::DrawMapServiceLayer(mapService));
+				this->AddLayer(layer);
 			}
 			break;
 		}

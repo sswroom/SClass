@@ -11,6 +11,7 @@
 #include "Parser/FileParser/TIFFParser.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
+//#define VERBOSE
 #include <stdio.h>
 
 // http://192.168.1.148:8080/geoserver/ows
@@ -380,11 +381,12 @@ void Map::WebMapService::LoadXMLLayers(Text::XMLReader *reader)
 	}
 }
 
-Map::WebMapService::WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version)
+Map::WebMapService::WebMapService(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, Math::CoordinateSystem *envCsys)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
+	this->envCsys = envCsys;
 	this->wmsURL = Text::String::New(wmsURL);
 	this->version = 0;
 	this->infoType = 0;
@@ -648,7 +650,9 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		sbUrl->Append(sb);
 	}
 
-//	printf("URL: %s\r\n", sb.ToString());
+#if defined(VERBOSE)
+	printf("URL: %s\r\n", sb.ToString());
+#endif
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Media::ImageList *ret = 0;
@@ -723,6 +727,7 @@ void Map::WebMapService::SetLayer(UOSInt index)
 	if (index < this->layers.GetCount())
 	{
 		this->layer = index;
+		Math::CoordinateSystem *csys;
 		LayerInfo *layer = this->layers.GetItem(index);
 		LayerCRS *crs;
 		Bool found = false;
@@ -731,15 +736,40 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		while (i < j)
 		{
 			crs = layer->crsList.GetItem(i);
-			if (crs->name->StartsWith(UTF8STRC("CRS:")))
+			if (this->envCsys == 0)
 			{
+				if (crs->name->StartsWith(UTF8STRC("CRS:")))
+				{
 
+				}
+				else
+				{
+					found = true;
+					this->currCRS = crs;
+					break;
+				}
 			}
 			else
 			{
-				found = true;
-				this->currCRS = crs;
-				break;
+				csys = Math::CoordinateSystemManager::CreateFromName(crs->name->ToCString());
+				if (csys)
+				{
+					if (csys->Equals(this->envCsys))
+					{
+						DEL_CLASS(csys);
+						found = true;
+						this->currCRS = crs;
+						break;
+					}
+					else if (csys->GetCoordSysType() == this->envCsys->GetCoordSysType())
+					{
+						DEL_CLASS(csys);
+						found = true;
+						this->currCRS = crs;
+						break;
+					}
+					DEL_CLASS(csys);
+				}
 			}
 			i++;
 		}
@@ -766,6 +796,8 @@ void Map::WebMapService::SetLayerCRS(UOSInt index)
 	if (layer && index < layer->crsList.GetCount())
 	{
 		this->currCRS = layer->crsList.GetItem(index);
+		SDEL_CLASS(this->csys);
+		this->csys = Math::CoordinateSystemManager::CreateFromName(this->currCRS->name->ToCString());
 	}
 }
 

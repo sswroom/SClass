@@ -35,6 +35,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
 			Map::WebMapService *wms;
+			Math::CoordinateSystem *envCsys;
 
 			static void __stdcall OnLoadClicked(void *userObj);
 			static void __stdcall OnOKClicked(void *userObj);
@@ -43,11 +44,12 @@ namespace SSWR
 			static void __stdcall OnMapImageTypeSelChg(void *userObj);
 			static void __stdcall OnInfoTypeSelChg(void *userObj);
 		public:
-			AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
+			AVIRWMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Math::CoordinateSystem *envCsys);
 			virtual ~AVIRWMSForm();
 
 			virtual void OnMonitorChanged();
 
+			void SetURL(Text::CString url);
 			Map::DrawMapService *GetDrawMapService();
 		};
 	}
