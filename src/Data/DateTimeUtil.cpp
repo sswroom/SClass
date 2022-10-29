@@ -1907,7 +1907,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(UInt32 *nanosec)
 	return TimeValue2Ticks(&tval, 0) / 1000LL;
 #elif defined(_WIN32)
 	FILETIME fileTime;
-	GetSystemTimePreciseAsFileTime(&fileTime);
+	GetSystemTimeAsFileTime(&fileTime);
 	return FILETIME2Secs(&fileTime, nanosec);
 #elif !defined(CPU_AVR)
 	struct timespec ts;

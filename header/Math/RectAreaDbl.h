@@ -142,6 +142,11 @@ namespace Math
 			return Math::RectAreaDbl(this->tl.Min(area.tl), this->br.Max(area.br));
 		}
 
+		Math::RectAreaDbl MergePoint(Math::Coord2DDbl pt) const
+		{
+			return Math::RectAreaDbl(this->tl.Min(pt), this->br.Max(pt));
+		}
+
 		static void GetRectArea(RectAreaDbl *area, Coord2DDbl *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;

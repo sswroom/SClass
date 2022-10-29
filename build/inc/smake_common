@@ -2016,6 +2016,8 @@ Map/GMLXML.h: ../../src/Map/GMLXML.cpp
 @GMLXML.o
 Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
 @GPSTrack.o
+Map/HKParkingVacancy.h: ../../src/Map/HKParkingVacancy.cpp
+@HKParkingVacancy.o
 Map/HKRoadNetwork2.h: ../../src/Map/HKRoadNetwork2.cpp
 @HKRoadNetwork2.o
 Map/HKSpeedLimit.h: ../../src/Map/HKSpeedLimit.cpp
@@ -2050,6 +2052,8 @@ Map/MapLayerData.h: ../../src/Map/MapLayerData.cpp
 @MapLayerData.o
 Map/MapManager.h: ../../src/Map/MapManager.cpp
 @MapManager.o
+Map/MapPOI.h: ../../src/Map/MapPOI.cpp
+@MapPOI.o
 Map/MapRenderer.h:
 Map/MapScheduler.h: ../../src/Map/MapScheduler.cpp
 @MapScheduler.o
@@ -3502,6 +3506,8 @@ SSWR/AVIRead/AVIRFileHashForm.h: ../../src/SSWR/AVIRead/AVIRFileHashForm.cpp
 @AVIRFileHashForm.o
 SSWR/AVIRead/AVIRFileSizePackForm.h: ../../src/SSWR/AVIRead/AVIRFileSizePackForm.cpp
 @AVIRFileSizePackForm.o
+SSWR/AVIRead/AVIRFileTextEncryptForm.h: ../../src/SSWR/AVIRead/AVIRFileTextEncryptForm.cpp
+@AVIRFileTextEncryptForm.o
 SSWR/AVIRead/AVIRFontRendererForm.h: ../../src/SSWR/AVIRead/AVIRFontRendererForm.cpp
 @AVIRFontRendererForm.o
 SSWR/AVIRead/AVIRFontSelector.h: ../../src/SSWR/AVIRead/AVIRFontSelector.cpp
@@ -4706,6 +4712,7 @@ DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GMLXML.o: ../../src/Map/GMLXML.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
+HKParkingVacancy.o: ../../src/Map/HKParkingVacancy.cpp
 HKRoadNetwork2.o: ../../src/Map/HKRoadNetwork2.cpp
 HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
@@ -4721,6 +4728,7 @@ MapEnv.o: ../../src/Map/MapEnv.cpp
 MapLayerCollection.o: ../../src/Map/MapLayerCollection.cpp
 MapLayerData.o: ../../src/Map/MapLayerData.cpp
 MapManager.o: ../../src/Map/MapManager.cpp
+MapPOI.o: ../../src/Map/MapPOI.cpp
 MapScheduler.o: ../../src/Map/MapScheduler.cpp
 MapSearch.o: ../../src/Map/MapSearch.cpp
 MapSearchManager.o: ../../src/Map/MapSearchManager.cpp
@@ -5398,6 +5406,7 @@ AVIRFileChkForm.o: ../../src/SSWR/AVIRead/AVIRFileChkForm.cpp
 AVIRFileExForm.o: ../../src/SSWR/AVIRead/AVIRFileExForm.cpp
 AVIRFileHashForm.o: ../../src/SSWR/AVIRead/AVIRFileHashForm.cpp
 AVIRFileSizePackForm.o: ../../src/SSWR/AVIRead/AVIRFileSizePackForm.cpp
+AVIRFileTextEncryptForm.o: ../../src/SSWR/AVIRead/AVIRFileTextEncryptForm.cpp
 AVIRFontRendererForm.o: ../../src/SSWR/AVIRead/AVIRFontRendererForm.cpp
 AVIRFontSelector.o: ../../src/SSWR/AVIRead/AVIRFontSelector.cpp
 AVIRFunctionInfoForm.o: ../../src/SSWR/AVIRead/AVIRFunctionInfoForm.cpp

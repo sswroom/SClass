@@ -10,6 +10,7 @@
 #include "Map/CSVMapParser.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/DrawMapServiceLayer.h"
+#include "Map/HKParkingVacancy.h"
 #include "Map/VectorLayer.h"
 #include "Map/ESRI/ESRITileMap.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -118,7 +119,8 @@ typedef enum
 	MNU_HKTD_TONNES_SIGN,
 	MNU_RANDOMLOC,
 	MNU_HK_WASTELESS,
-	MNU_HK_HKE_EV_CHARGING_EN
+	MNU_HK_HKE_EV_CHARGING_EN,
+	MNU_HK_PARKING_VACANCY
 } MenuItems;
 
 #define MAX_SCALE 200000000
@@ -755,6 +757,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu2 = mnu->AddSubMenu(CSTR("HK Data"));
 	mnu2->AddItem(CSTR("Recyclable Collection Points"), MNU_HK_WASTELESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HKE EV Charging Station (EN)"), MNU_HK_HKE_EV_CHARGING_EN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HK Parking Vacancy"), MNU_HK_PARKING_VACANCY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("GPS Tracker"), MNU_GPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("MTK GPS Tracker"), MNU_MTKGPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1470,6 +1473,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		this->OpenCSV(CSTR("https://www.hkelectric.com/en/ElectricLiving/ElectricVehicles/Documents/Locations%20of%20HK%20Electric%20EV%20charging%20stations_eng.csv"),
 			65001, CSTR("HK Electric EV Charging Station"), CSTR("HK Electric EV Charging Station_Car Park"), CSTR("Latitude"), CSTR("Longitude"));
 		break;
+	case MNU_HK_PARKING_VACANCY:
+		{
+			Map::HKParkingVacancy *parking;
+			NEW_CLASS(parking, Map::HKParkingVacancy(this->core->GetSocketFactory(), this->ssl));
+			this->AddLayer(parking);
+			break;
+		}
 	case MNU_TMS:
 		{
 			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core, this->ssl);

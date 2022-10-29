@@ -86,6 +86,7 @@
 #include "SSWR/AVIRead/AVIRFileExForm.h"
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
+#include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 #include "SSWR/AVIRead/AVIRGenImageForm.h"
 #include "SSWR/AVIRead/AVIRGLBViewerForm.h"
 #include "SSWR/AVIRead/AVIRGoogleTileMapForm.h"
@@ -454,7 +455,8 @@ typedef enum
 	MNU_GOOGLE_TILE,
 	MNU_CUSTOM_TILE,
 	MNU_REGIONAL_MAP,
-	MNU_BING_MAPS
+	MNU_BING_MAPS,
+	MNU_FILE_TEXT_ENCRYPT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -581,6 +583,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Protocol Decoder"), MNU_PROTODEC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Text"));
 	mnu2->AddItem(CSTR("Text Encrypt"), MNU_TEXT_ENCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("File Text Encrypt"), MNU_FILE_TEXT_ENCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Assembly MASM to GCC"), MNU_ASM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Javascript Text"), MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("C++ Enum to Switch Case"), MNU_CPP_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2621,6 +2624,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
 				this->core->OpenObject(layer);
 			}
+		}
+		break;
+	case MNU_FILE_TEXT_ENCRYPT:
+		{
+			SSWR::AVIRead::AVIRFileTextEncryptForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileTextEncryptForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
 		}
 		break;
 	}

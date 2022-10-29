@@ -1481,6 +1481,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								layer.layer->SetMixedType(false);
 								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
+							layer.layer->SetMixedType(true);
+							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{

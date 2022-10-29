@@ -6,6 +6,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/PointZ.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/JSONParser.h"
@@ -45,22 +46,31 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	UInt8 buff[32];
 	Text::CString fileName = fd->GetShortName();
 	Bool valid = false;
-	if (fileName.EndsWithICase(UTF8STRC(".geojson")))
+	if (fileName.EndsWithICase(UTF8STRC(".geojson")) || fileName.EndsWithICase(UTF8STRC(".json")))
 	{
 		valid = true;
 	}
 	if (!valid)
 		return 0;
+	UInt64 fileOfst;
 	if (fd->GetRealData(0, 32, buff) != 32)
 		return 0;
 
-	if (buff[0] != '{')
+	if (buff[0] == '{')
+	{
+		fileOfst = 0;
+	}
+	else if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF && buff[3] == '{')
+	{
+		fileOfst = 3;
+	}
+	else
 	{
 		return 0;
 	}
-	UOSInt buffSize = (UOSInt)fd->GetDataSize();
+	UOSInt buffSize = (UOSInt)fd->GetDataSize() - fileOfst;
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
-	fileBuff[fd->GetRealData(0, (UOSInt)fd->GetDataSize(), fileBuff)] = 0;
+	fileBuff[fd->GetRealData(fileOfst, buffSize, fileBuff)] = 0;
 	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(Text::CString(fileBuff, buffSize));
 	MemFree(fileBuff);
 
@@ -160,7 +170,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 							featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
 							featProp = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("properties"));
 							featGeom = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("geometry"));
-							if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
+							if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom)
 							{
 								k = 0;
 								while (k < colCnt)
@@ -533,6 +543,32 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 					pgIndex++;
 				}
 				return mpg;
+			}
+		}
+		else if (sType->Equals(UTF8STRC("Point")))
+		{
+			jbase = obj->GetObjectValue(CSTR("coordinates"));
+			if (jbase && jbase->GetType() == Text::JSONType::Array)
+			{
+				Text::JSONArray *coord = (Text::JSONArray*)jbase;
+				Math::Geometry::Point *pt = 0;
+				if (coord->GetArrayLength() == 2)
+				{
+					NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(coord->GetArrayDouble(0), coord->GetArrayDouble(1))));
+				}
+				else if (coord->GetArrayLength() >= 3)
+				{
+					NEW_CLASS(pt, Math::Geometry::PointZ(srid, coord->GetArrayDouble(0), coord->GetArrayDouble(1), coord->GetArrayDouble(2)));
+				}
+				else
+				{
+					printf("JSONParser: GeoJSON Point unknown coordinates:: %d\r\n", (UInt32)coord->GetArrayLength());
+				}
+				return pt;
+			}
+			else
+			{
+				printf("JSONParser: GeoJSON Point unknown type\r\n");
 			}
 		}
 		else
