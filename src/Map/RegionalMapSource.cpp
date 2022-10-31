@@ -2,9 +2,11 @@
 #include "Crypto/Hash/CRC32RC.h"
 #include "IO/Path.h"
 #include "Map/CustomTileMap.h"
+#include "Map/DrawMapServiceLayer.h"
 #include "Map/RegionalMapSource.h"
 #include "Map/TileMapLayer.h"
 #include "Map/TileMapServiceSource.h"
+#include "Map/ESRI/ESRIMapServer.h"
 
 Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 	// https://aginfo.cgk.affrc.go.jp/tmc/layers.html.en
@@ -244,6 +246,8 @@ Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 		UTF8STRC("")},
 	{UTF8STRC("Route information of tram"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Transport Department"), MapType::File, 0, UTF8STRC("https://static.data.gov.hk/td/routes-fares-geojson/JSON_TRAM.json"),
 		UTF8STRC("")},
+	{UTF8STRC("Traffic Speed"), UTF8STRC("Hong Kong"), UTF8STRC("Hong Kong Transport Department"), MapType::ESRIMap, 2326, UTF8STRC("https://www.map.gov.hk/arcgis2/rest/services/mbatsm_link__d00/MapServer"),
+		UTF8STRC("Information about the average traffic speed of major roads in Hong Kong as displayed in this app is provided by the Transport Department. This information is updated every 5 minutes.")},
 };
 
 const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSInt *cnt)
@@ -266,9 +270,9 @@ Map::IMapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, Net::Soc
 			DEL_CLASS(tms);
 			return 0;
 		}
-		if (map->concurrCnt != 0)
+		if (map->mapTypeParam != 0)
 		{
-			tms->SetConcurrentCount(map->concurrCnt);
+			tms->SetConcurrentCount(map->mapTypeParam);
 		}
 		NEW_CLASS(layer, Map::TileMapLayer(tms, parsers));
 		return layer;
@@ -306,6 +310,17 @@ Map::IMapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, Net::Soc
 		tileMap->SetName(Text::CString(map->name, map->nameLen));
 		tileMap->SetBounds(Math::RectAreaDbl(Math::Coord2DDbl(map->boundsX1, map->boundsY1), Math::Coord2DDbl(map->boundsX2, map->boundsY2)));
 		NEW_CLASS(layer, Map::TileMapLayer(tileMap, parsers));
+		return layer;
+	}
+	case MapType::ESRIMap:
+	{
+		Map::ESRI::ESRIMapServer *esriMap;
+		NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CString(map->url, map->urlLen), sockf, ssl, map->mapTypeParam != 0));
+		if (map->mapTypeParam != 0)
+		{
+			esriMap->SetSRID((UInt32)map->mapTypeParam);
+		}
+		NEW_CLASS(layer, Map::DrawMapServiceLayer(esriMap));
 		return layer;
 	}
 	default:

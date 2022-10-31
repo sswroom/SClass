@@ -23,6 +23,7 @@ namespace Map
 			Math::RectAreaDbl bounds;
 			Math::RectAreaDbl initBounds;
 			Math::CoordinateSystem *csys;
+			Bool noResource;
 
 			Bool supportMap;
 			Bool supportTileMap;
@@ -35,11 +36,12 @@ namespace Map
 			Data::ArrayListDbl tileLevels;
 
 		public:
-			ESRIMapServer(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			ESRIMapServer(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Bool noResource);
 			virtual ~ESRIMapServer();
 
 			Bool IsError() const;
 			Bool HasTile() const;
+			void SetSRID(UInt32 srid);
 
 			Text::String *GetURL() const;
 			Math::RectAreaDbl GetBounds() const;

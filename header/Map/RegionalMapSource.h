@@ -15,7 +15,8 @@ namespace Map
 		{
 			TMS,
 			File,
-			CustomTile
+			CustomTile,
+			ESRIMap
 		};
 		struct MapInfo
 		{
@@ -26,7 +27,7 @@ namespace Map
 			const UTF8Char *org;
 			UOSInt orgLen;
 			MapType mapType;
-			UOSInt concurrCnt;
+			UOSInt mapTypeParam; //TileMap = concurrent count, ESRI Map = SRID
 			const UTF8Char *url;
 			UOSInt urlLen;
 			const UTF8Char *desc;

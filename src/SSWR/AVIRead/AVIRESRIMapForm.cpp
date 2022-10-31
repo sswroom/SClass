@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 		MapServer *v = (MapServer*)me->cboPredefine->GetItem(i);
 		if (v)
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CString(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl));
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CString(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl, false));
 		}
 		else
 		{
@@ -51,8 +51,23 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 	}
 	else
 	{
+		UInt32 srid;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
+		Bool noResource = me->chkNoResource->IsChecked();
+		if (noResource)
+		{
+			sptr = me->txtSRID->GetText(sbuff);
+			if (!Text::StrToUInt32(sbuff, &srid))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Please enter valid SRID"), CSTR("ESRI Map"), me);
+				return;
+			}
+		}
+		else
+		{
+			srid = 4326;
+		}
 		sbuff[0] = 0;
 		sptr = me->txtOther->GetText(sbuff);
 		if (sbuff[0] == 0)
@@ -61,7 +76,11 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 		}
 		else
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetSocketFactory(), me->ssl));
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetSocketFactory(), me->ssl, noResource));
+			if (noResource)
+			{
+				esriMap->SetSRID(srid);
+			}
 		}
 	}
 	if (esriMap->IsError())
@@ -85,7 +104,14 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(void *userObj)
 	me->radOther->Select();
 }
 
-SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 120, ui)
+void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnNoResourceChg(void *userObj, Bool newValue)
+{
+	SSWR::AVIRead::AVIRESRIMapForm *me = (SSWR::AVIRead::AVIRESRIMapForm*)userObj;
+	me->radOther->Select();
+	me->txtSRID->SetReadOnly(!newValue);
+}
+
+SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 144, ui)
 {
 	this->SetText(CSTR("Add ESRI Map"));
 	this->SetFont(0, 0, 8.25, false);
@@ -105,11 +131,19 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOther->SetRect(108, 32, 500, 23, false);
 	this->txtOther->HandleTextChanged(OnOtherChanged, this);
+	NEW_CLASS(this->chkNoResource, UI::GUICheckBox(ui, this, CSTR("No Resource"), false));
+	this->chkNoResource->SetRect(108, 56, 120, 23, false);
+	this->chkNoResource->HandleCheckedChange(OnNoResourceChg, this);
+	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, this, CSTR("SRID")));
+	this->lblSRID->SetRect(228, 56, 100, 23, false);
+	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this, CSTR("4326")));
+	this->txtSRID->SetRect(328, 56, 100, 23, false);
+	this->txtSRID->SetReadOnly(true);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
-	this->btnOK->SetRect(250, 64, 75, 23, false);
+	this->btnOK->SetRect(250, 88, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
-	this->btnCancel->SetRect(330, 64, 75, 23, false);
+	this->btnCancel->SetRect(330, 88, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 
 	this->SetDefaultButton(this->btnOK);

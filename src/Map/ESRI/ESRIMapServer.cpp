@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Bool noResource)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -32,6 +32,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 	this->supportTileMap = false;
 	this->supportQuery = false;
 	this->supportData = false;
+	this->noResource = noResource;
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 
 	sptr = url.ConcatTo(sbuff);
@@ -51,145 +52,153 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 		this->name = Text::String::NewP(&sbuff[i + 1], sptr);
 	}
 
-	sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap"));
-	while ((readSize = cli->Read(buff, 2048)) > 0)
+	if (noResource)
 	{
-		mstm.Write(buff, readSize);
+		this->supportMap = true;
+		this->supportQuery = true;
 	}
-	codePage = cli->GetContentCodePage();
-	DEL_CLASS(cli);
-
-
-	UInt8 *jsonBuff = mstm.GetBuff(&readSize);
-	if (jsonBuff && readSize > 0)
+	else
 	{
-		Text::StringBuilderUTF8 sb;
-		Text::Encoding enc(codePage);
-		UOSInt charsCnt;
-		UTF8Char *jsonStr;
-		charsCnt = enc.CountUTF8Chars(jsonBuff, readSize);
-		jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
-		enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
-		
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(jsonStr, charsCnt));
-		if (json)
+		sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
+		Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap"));
+		while ((readSize = cli->Read(buff, 2048)) > 0)
 		{
-			if (json->GetType() == Text::JSONType::Object)
+			mstm.Write(buff, readSize);
+		}
+		codePage = cli->GetContentCodePage();
+		DEL_CLASS(cli);
+
+
+		UInt8 *jsonBuff = mstm.GetBuff(&readSize);
+		if (jsonBuff && readSize > 0)
+		{
+			Text::StringBuilderUTF8 sb;
+			Text::Encoding enc(codePage);
+			UOSInt charsCnt;
+			UTF8Char *jsonStr;
+			charsCnt = enc.CountUTF8Chars(jsonBuff, readSize);
+			jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
+			enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
+			
+			Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(jsonStr, charsCnt));
+			if (json)
 			{
-				Text::JSONObject *jobj = (Text::JSONObject*)json;
-				Text::JSONBase *o = jobj->GetObjectValue(CSTR("initialExtent"));
-				Text::JSONBase *v;
-				Text::JSONObject *vobj;
-				Bool hasInit = false;
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
+				if (json->GetType() == Text::JSONType::Object)
 				{
-					Text::JSONObject *ext = (Text::JSONObject*)o;
-					this->initBounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
-					this->initBounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
-					this->initBounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
-					this->initBounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
-					hasInit = true;
-				}
-				o = jobj->GetObjectValue(CSTR("fullExtent"));
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
-				{
-					Text::JSONObject *ext = (Text::JSONObject*)o;
-					this->bounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
-					this->bounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
-					this->bounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
-					this->bounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
-					if (!hasInit)
+					Text::JSONObject *jobj = (Text::JSONObject*)json;
+					Text::JSONBase *o = jobj->GetObjectValue(CSTR("initialExtent"));
+					Text::JSONBase *v;
+					Text::JSONObject *vobj;
+					Bool hasInit = false;
+					if (o != 0 && o->GetType() == Text::JSONType::Object)
 					{
-						this->initBounds = this->bounds;
+						Text::JSONObject *ext = (Text::JSONObject*)o;
+						this->initBounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
+						this->initBounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
+						this->initBounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
+						this->initBounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+						hasInit = true;
 					}
-				}
-				else
-				{
-					if (hasInit)
+					o = jobj->GetObjectValue(CSTR("fullExtent"));
+					if (o != 0 && o->GetType() == Text::JSONType::Object)
 					{
-						this->bounds = this->initBounds;
+						Text::JSONObject *ext = (Text::JSONObject*)o;
+						this->bounds.tl.x = ext->GetObjectDouble(CSTR("xmin"));
+						this->bounds.tl.y = ext->GetObjectDouble(CSTR("ymin"));
+						this->bounds.br.x = ext->GetObjectDouble(CSTR("xmax"));
+						this->bounds.br.y = ext->GetObjectDouble(CSTR("ymax"));
+						if (!hasInit)
+						{
+							this->initBounds = this->bounds;
+						}
 					}
 					else
 					{
-						this->bounds = Math::RectAreaDbl(-180, -90, 360, 180);
-						this->initBounds = this->bounds;
-					}
-				}
-
-				o = jobj->GetObjectValue(CSTR("spatialReference"));
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
-				{
-					Text::JSONObject *spRef = (Text::JSONObject*)o;
-					UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
-					SDEL_CLASS(this->csys);
-					this->csys = Math::CoordinateSystemManager::SRCreateCSys(wkid);
-				}
-
-				o = jobj->GetObjectValue(CSTR("capabilities"));
-				if (o != 0 && o->GetType() == Text::JSONType::String)
-				{
-					sb.ClearStr();
-					sb.Append(((Text::JSONString*)o)->GetValue());
-					Text::PString sarr[2];
-					sarr[1] = sb;
-					UOSInt sarrCnt;
-					while (true)
-					{
-						sarrCnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
-						if (sarr[0].Equals(UTF8STRC("Map")))
-							this->supportMap = true;
-						else if (sarr[0].Equals(UTF8STRC("Tilemap")))
-							this->supportTileMap = true;
-						else if (sarr[0].Equals(UTF8STRC("Query")))
-							this->supportQuery = true;
-						else if (sarr[0].Equals(UTF8STRC("Data")))
-							this->supportData = true;
-						if (sarrCnt != 2)
-							break;
-					}
-				}
-
-				o = jobj->GetObjectValue(CSTR("tileInfo"));
-				if (o != 0 && o->GetType() == Text::JSONType::Object)
-				{
-					Text::JSONObject *tinfo = (Text::JSONObject*)o;
-					this->tileHeight = (UOSInt)tinfo->GetObjectInt32(CSTR("rows"));
-					this->tileWidth = (UOSInt)tinfo->GetObjectInt32(CSTR("cols"));
-					v = tinfo->GetObjectValue(CSTR("origin"));
-					if (v != 0 && v->GetType() == Text::JSONType::Object)
-					{
-						Text::JSONObject *origin = (Text::JSONObject*)v;
-						this->tileOrigin.x = origin->GetObjectDouble(CSTR("x"));
-						this->tileOrigin.y = origin->GetObjectDouble(CSTR("y"));
-					}
-					v = tinfo->GetObjectValue(CSTR("lods"));
-					if (v != 0 && v->GetType() == Text::JSONType::Array)
-					{
-						Text::JSONArray *levs = (Text::JSONArray*)v;
-						i = 0;
-						j = levs->GetArrayLength();
-						while (i < j)
+						if (hasInit)
 						{
-							v = levs->GetArrayValue(i);
-							if (v != 0 && v->GetType() == Text::JSONType::Object)
+							this->bounds = this->initBounds;
+						}
+						else
+						{
+							this->bounds = Math::RectAreaDbl(-180, -90, 360, 180);
+							this->initBounds = this->bounds;
+						}
+					}
+
+					o = jobj->GetObjectValue(CSTR("spatialReference"));
+					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					{
+						Text::JSONObject *spRef = (Text::JSONObject*)o;
+						UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
+						SDEL_CLASS(this->csys);
+						this->csys = Math::CoordinateSystemManager::SRCreateCSys(wkid);
+					}
+
+					o = jobj->GetObjectValue(CSTR("capabilities"));
+					if (o != 0 && o->GetType() == Text::JSONType::String)
+					{
+						sb.ClearStr();
+						sb.Append(((Text::JSONString*)o)->GetValue());
+						Text::PString sarr[2];
+						sarr[1] = sb;
+						UOSInt sarrCnt;
+						while (true)
+						{
+							sarrCnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+							if (sarr[0].Equals(UTF8STRC("Map")))
+								this->supportMap = true;
+							else if (sarr[0].Equals(UTF8STRC("Tilemap")))
+								this->supportTileMap = true;
+							else if (sarr[0].Equals(UTF8STRC("Query")))
+								this->supportQuery = true;
+							else if (sarr[0].Equals(UTF8STRC("Data")))
+								this->supportData = true;
+							if (sarrCnt != 2)
+								break;
+						}
+					}
+
+					o = jobj->GetObjectValue(CSTR("tileInfo"));
+					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					{
+						Text::JSONObject *tinfo = (Text::JSONObject*)o;
+						this->tileHeight = (UOSInt)tinfo->GetObjectInt32(CSTR("rows"));
+						this->tileWidth = (UOSInt)tinfo->GetObjectInt32(CSTR("cols"));
+						v = tinfo->GetObjectValue(CSTR("origin"));
+						if (v != 0 && v->GetType() == Text::JSONType::Object)
+						{
+							Text::JSONObject *origin = (Text::JSONObject*)v;
+							this->tileOrigin.x = origin->GetObjectDouble(CSTR("x"));
+							this->tileOrigin.y = origin->GetObjectDouble(CSTR("y"));
+						}
+						v = tinfo->GetObjectValue(CSTR("lods"));
+						if (v != 0 && v->GetType() == Text::JSONType::Array)
+						{
+							Text::JSONArray *levs = (Text::JSONArray*)v;
+							i = 0;
+							j = levs->GetArrayLength();
+							while (i < j)
 							{
-								vobj = (Text::JSONObject*)v;
-								Double lev = vobj->GetObjectDouble(CSTR("resolution"));
-								if (lev != 0)
-									this->tileLevels.Add(lev);
+								v = levs->GetArrayValue(i);
+								if (v != 0 && v->GetType() == Text::JSONType::Object)
+								{
+									vobj = (Text::JSONObject*)v;
+									Double lev = vobj->GetObjectDouble(CSTR("resolution"));
+									if (lev != 0)
+										this->tileLevels.Add(lev);
+								}
+								i++;
 							}
-							i++;
 						}
 					}
 				}
+			
+				json->EndUse();
 			}
-		
-			json->EndUse();
+			
+			MemFree(jsonStr);
 		}
-		
-		MemFree(jsonStr);
 	}
 }
 
@@ -210,6 +219,33 @@ Bool Map::ESRI::ESRIMapServer::HasTile() const
 	if (this->tileWidth == 0 || this->tileHeight == 0 || this->tileLevels.GetCount() == 0)
 		return false;
 	return true;
+}
+
+void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
+{
+	if (this->noResource)
+	{
+		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
+		if (csys)
+		{
+			SDEL_CLASS(this->csys);
+			this->csys = csys;
+			const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
+			if (csys->IsProjected())
+			{
+				Math::CoordinateSystem *wgs84Csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+				Math::Coord2DDbl tl = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo));
+				Math::Coord2DDbl br = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
+				this->bounds = Math::RectAreaDbl(tl, br);
+				DEL_CLASS(wgs84Csys);
+			}
+			else
+			{
+				this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo), Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
+			}
+			this->initBounds = this->bounds;
+		}
+	}
 }
 
 Text::String *Map::ESRI::ESRIMapServer::GetURL() const

@@ -4,8 +4,10 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
+#include "UI/GUILabel.h"
 #include "UI/GUIRadioButton.h"
 #include "UI/GUITextBox.h"
 
@@ -32,6 +34,9 @@ namespace SSWR
 			UI::GUIRadioButton *radOther;
 			UI::GUIComboBox *cboPredefine;
 			UI::GUITextBox *txtOther;
+			UI::GUICheckBox *chkNoResource;
+			UI::GUILabel *lblSRID;
+			UI::GUITextBox *txtSRID;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 			Map::ESRI::ESRIMapServer *esriMap;
@@ -39,6 +44,7 @@ namespace SSWR
 			static void __stdcall OKClicked(void *userObj);
 			static void __stdcall CancelClicked(void *userObj);
 			static void __stdcall OnOtherChanged(void *userObj);
+			static void __stdcall OnNoResourceChg(void *userObj, Bool newValue);
 		public:
 			AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl);
 			virtual ~AVIRESRIMapForm();
