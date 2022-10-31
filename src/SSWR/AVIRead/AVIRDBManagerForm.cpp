@@ -729,7 +729,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 
 	this->tpMap = this->tcMain->AddTabPage(CSTR("Map"));
 	NEW_CLASS(this->pnlMap, UI::GUIPanel(ui, this->tpMap));
-	this->pnlMap->SetRect(0, 0, 200, 23, false);
+	this->pnlMap->SetRect(0, 0, 250, 23, false);
 	this->pnlMap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->hspMap, UI::GUIHSplitter(ui, this->tpMap, 3, false));
 	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, this->tpMap, this->core->GetDrawEngine(), this->mapEnv, this->colorSess));

@@ -3,6 +3,8 @@
 #include "Data/UUID.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Text/CString.h"
+#include "Text/String.h"
+
 namespace Data
 {
 	class DataComparer
@@ -20,6 +22,7 @@ namespace Data
 		static OSInt Compare(Math::Geometry::Vector2D *val1, Math::Geometry::Vector2D *val2);
 		static OSInt Compare(Data::UUID *val1, Data::UUID *val2);
 		static OSInt Compare(Text::CString val1, Text::CString val2);
+		static OSInt Compare(Text::String *val1, Text::String *val2);
 
 		static Bool NearlyEquals(Double val1, Double val2);
 	};

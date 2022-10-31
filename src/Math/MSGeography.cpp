@@ -76,12 +76,43 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			{
 				return 0;
 			}
-			if (nShapes != 1)
+			if (shapePtr[8] == 2)
 			{
-				return 0;
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 4-2 must be single shape\r\n");
+					return 0;
+				}
+				Math::Geometry::Polyline *pl;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, false, false));
+				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				i = 0;
+				while (i < j)
+				{
+					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+					i++;
+				}
+				if (nFigures > 1)
+				{
+					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					i = 0;
+					while (i < j)
+					{
+						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						i++;
+					}
+				}
+				return pl;
 			}
-			if (shapePtr[8] == 3)
+			else if (shapePtr[8] == 3)
 			{
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 4-3 must be single shape\r\n");
+					return 0;
+				}
 				Math::Geometry::Polygon *pg;
 				UOSInt i;
 				UOSInt j;
@@ -104,6 +135,31 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					}
 				}
 				return pg;
+			}
+			else if (shapePtr[8] == 5) //Multilinestring
+			{
+				Math::Geometry::Polyline *pl;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, false, false));
+				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				i = 0;
+				while (i < j)
+				{
+					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+					i++;
+				}
+				if (nFigures > 1)
+				{
+					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					i = 0;
+					while (i < j)
+					{
+						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						i++;
+					}
+				}
+				return pl;
 			}
 			else
 			{
@@ -214,6 +270,21 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			{
 				printf("MSGeography: Type 5, Unsupported type %d\r\n", shapePtr[8]);
 			}
+		}
+		else if (buffPtr[5] == 20) // LineString
+		{
+			if (buffSize < 38)
+			{
+				printf("MSGeography: Type 20, buffSize too short: %d\r\n", (UInt32)buffSize);
+				return 0;
+			}
+			Math::Geometry::LineString *pl;
+			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, false, false));
+			UOSInt j;
+			Math::Coord2DDbl *points = pl->GetPointList(&j);
+			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
+			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
+			return pl;
 		}
 		else if (buffPtr[5] == 21) // LineString 3D
 		{

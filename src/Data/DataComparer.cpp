@@ -182,6 +182,11 @@ OSInt Data::DataComparer::Compare(Text::CString val1, Text::CString val2)
 	return Text::StrCompare(val1.v, val2.v);
 }
 
+OSInt Data::DataComparer::Compare(Text::String *val1, Text::String *val2)
+{
+	return Text::StrCompare(val1->v, val2->v);
+}
+
 Bool Data::DataComparer::NearlyEquals(Double val1, Double val2)
 {
 	val1 = val1 - val2;
