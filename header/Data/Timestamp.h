@@ -16,8 +16,16 @@ namespace Data
 
 		Timestamp(Data::Timestamp *ts)
 		{
-			this->inst = Data::TimeInstant(0, 0);
-			this->tzQhr = 0;
+			if (ts)
+			{
+				this->inst = ts->inst;
+				this->tzQhr = ts->tzQhr;
+			}
+			else
+			{
+				this->inst = Data::TimeInstant(0, 0);
+				this->tzQhr = 0;
+			}
 		}
 
 		Timestamp(Int64 ticks, Int8 tzQhr)

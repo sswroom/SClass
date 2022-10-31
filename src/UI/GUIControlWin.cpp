@@ -777,6 +777,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 		HDC hdc = GetDC((HWND)this->hwnd);
 		SelectObject(hdc, (HFONT)f);
 		GetTextFaceW(hdc, 256, wbuff);
+		ReleaseDC((HWND)this->hwnd, hdc);
 		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img)->hdcBmp, wbuff, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 	}
 	else

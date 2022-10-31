@@ -690,7 +690,7 @@ Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::
 Media::GDIFont::~GDIFont()
 {
 	Text::StrDelNew(this->fontName);
-	DeleteObject(hfont);
+	DeleteObject((HFONT)this->hfont);
 }
 
 const WChar *Media::GDIFont::GetNameW()

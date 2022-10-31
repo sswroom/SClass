@@ -1170,7 +1170,6 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	UInt8 *rbuff;
 	UOSInt i;
 	UOSInt j;
-	Text::Encoding *enc;
 	WChar *line;
 	WChar *wptr;
 	WChar c;
@@ -1191,7 +1190,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 		mutUsage.EndUse();
 		return;
 	}
-	NEW_CLASS(enc, Text::Encoding(this->fileCodePage));
+	Text::Encoding enc(this->fileCodePage);
 	startOfst = this->lineOfsts.GetItem(yPos);
 	endOfst = this->lineOfsts.GetItem(yPos + this->pageLineCnt);
 	if (endOfst == 0)
@@ -1252,9 +1251,9 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 		}
 		if (nextOfst > currOfst)
 		{
-			j = enc->CountWChars(&rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst));
+			j = enc.CountWChars(&rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst));
 			line = MemAlloc(WChar, j + 1);
-			wptr = enc->WFromBytes(line, &rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst), 0);
+			wptr = enc.WFromBytes(line, &rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst), 0);
 			Text::StrReplace(line, '\t', ' ');
 			if (wptr)
 			{
@@ -1434,7 +1433,6 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	dimg->DelBrush(selTextBrush);
 	dimg->DelFont(fnt);
 
-	DEL_CLASS(enc);
 	MemFree(rbuff);
 	mutUsage.EndUse();
 	this->SetScrollHRange(0, maxScnWidth);

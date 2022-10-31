@@ -75,6 +75,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	sptr = newts.ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.Now: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
+
+	newts = newts.AddDay(1);
+	sptr = newts.ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.AddDay(1): ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
+	console.WriteLineCStr(CSTRP(sbuff, sptr));
 	return 0;
 }
 
