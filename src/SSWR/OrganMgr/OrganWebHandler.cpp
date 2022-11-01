@@ -3995,7 +3995,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		s = Text::XML::ToNewHTMLText(sb.ToString());
 		writer.WriteStrC(s->v, s->leng);
 		s->Release();
-		writer.WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteStrC(UTF8STRC("</h1>"));
+		if (msg.GetLength() > 0)
+		{
+			writer.WriteStrC(UTF8STRC("<h2>"));
+			writer.WriteStr(msg.ToCString());
+			writer.WriteStrC(UTF8STRC("</h2>"));
+		}
+		writer.WriteLineC(UTF8STRC("</center>"));
 
 		writer.WriteStrC(UTF8STRC("<form name=\"newspecies\" method=\"POST\" action=\"speciesmod.html?id="));
 		sb.ClearStr();
