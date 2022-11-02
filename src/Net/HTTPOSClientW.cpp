@@ -133,7 +133,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 	DEL_CLASS(this->reqMstm);
 }
 
-Bool Net::HTTPOSClient::IsError()
+Bool Net::HTTPOSClient::IsError() const
 {
 	ClassData *data = this->clsData;
 	return data->hRequest == 0;

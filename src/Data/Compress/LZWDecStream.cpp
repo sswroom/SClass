@@ -78,7 +78,7 @@ Data::Compress::LZWDecStream::~LZWDecStream()
 	}
 }
 
-Bool Data::Compress::LZWDecStream::IsDown()
+Bool Data::Compress::LZWDecStream::IsDown() const
 {
 	return false;
 }
@@ -226,4 +226,9 @@ void Data::Compress::LZWDecStream::Close()
 Bool Data::Compress::LZWDecStream::Recover()
 {
 	return true;
+}
+
+IO::StreamType Data::Compress::LZWDecStream::GetStreamType() const
+{
+	return IO::StreamType::LZWDec;
 }

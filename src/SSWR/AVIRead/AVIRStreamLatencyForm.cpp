@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 	}
 	else
 	{
-		SSWR::AVIRead::AVIRCore::StreamType st;
+		IO::StreamType st;
 		me->stm = me->core->OpenStream(&st, me, 0, false);
 		if (me->stm)
 		{
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 			dt.SetCurrTimeUTC();
 			me->lastSentTime = dt.ToTicks();
 
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
+			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 			me->remoteClosed = false;
 			me->threadRunning = false;

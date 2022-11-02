@@ -14,7 +14,7 @@ IO::StreamDataStream::~StreamDataStream()
 	DEL_CLASS(data);
 }
 
-Bool IO::StreamDataStream::IsDown()
+Bool IO::StreamDataStream::IsDown() const
 {
 	return false;
 }
@@ -80,6 +80,11 @@ Bool IO::StreamDataStream::Recover()
 {
 	//////////////////////////////////////
 	return false;
+}
+
+IO::StreamType IO::StreamDataStream::GetStreamType() const
+{
+	return IO::StreamType::StreamData;
 }
 
 UInt64 IO::StreamDataStream::SeekFromBeginning(UInt64 position)

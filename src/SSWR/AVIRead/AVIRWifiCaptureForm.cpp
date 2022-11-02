@@ -477,7 +477,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 	}
 	else
 	{
-		SSWR::AVIRead::AVIRCore::StreamType st;
+		IO::StreamType st;
 		IO::Stream *stm = me->core->OpenStream(&st, me, 0, true);
 		if (stm)
 		{

@@ -29,12 +29,13 @@ namespace Net
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data);
 			virtual Text::CString GetRespHeaders();
 
-			virtual Bool IsDown();
+			virtual Bool IsDown() const;
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 			virtual Int32 Flush();
 			virtual void Close();
 			virtual Bool Recover();
+			virtual IO::StreamType GetStreamType() const;
 		};
 	}
 }

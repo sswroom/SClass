@@ -108,7 +108,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 	DEL_CLASS(this->reqMstm);
 }
 
-Bool Net::HTTPOSClient::IsError()
+Bool Net::HTTPOSClient::IsError() const
 {
 	return this->clsData->curl == 0;
 }

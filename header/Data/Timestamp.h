@@ -14,18 +14,10 @@ namespace Data
 	public:
 		Timestamp() = default;
 
-		Timestamp(Data::Timestamp *ts)
+		Timestamp(UInt32 *tmp)
 		{
-			if (ts)
-			{
-				this->inst = ts->inst;
-				this->tzQhr = ts->tzQhr;
-			}
-			else
-			{
-				this->inst = Data::TimeInstant(0, 0);
-				this->tzQhr = 0;
-			}
+			this->inst = Data::TimeInstant(0, 0);
+			this->tzQhr = 0;
 		}
 
 		Timestamp(Int64 ticks, Int8 tzQhr)

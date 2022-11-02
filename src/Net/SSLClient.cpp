@@ -15,3 +15,8 @@ Bool Net::SSLClient::IsSSL()
 {
 	return true;
 }
+
+IO::StreamType Net::SSLClient::GetStreamType() const
+{
+	return IO::StreamType::SSLClient;
+}

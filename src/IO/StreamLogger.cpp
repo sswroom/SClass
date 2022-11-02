@@ -34,7 +34,7 @@ IO::StreamLogger::~StreamLogger()
 	SDEL_CLASS(this->readLog);
 }
 
-Bool IO::StreamLogger::IsDown()
+Bool IO::StreamLogger::IsDown() const
 {
 	return this->stm->IsDown();
 }
@@ -150,4 +150,9 @@ void IO::StreamLogger::Close()
 Bool IO::StreamLogger::Recover()
 {
 	return this->stm->Recover();
+}
+
+IO::StreamType IO::StreamLogger::GetStreamType() const
+{
+	return IO::StreamType::StreamLogger;
 }

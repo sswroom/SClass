@@ -833,7 +833,7 @@ Text::CString Net::WebServer::WebConnection::GetRespHeaders()
 	return this->respHeaders.ToCString();
 }
 
-Bool Net::WebServer::WebConnection::IsDown()
+Bool Net::WebServer::WebConnection::IsDown() const
 {
 	return this->respDataEnd;
 }
@@ -951,6 +951,11 @@ void Net::WebServer::WebConnection::Close()
 Bool Net::WebServer::WebConnection::Recover()
 {
 	return false;
+}
+
+IO::StreamType Net::WebServer::WebConnection::GetStreamType() const
+{
+	return IO::StreamType::WebConnection;
 }
 
 void Net::WebServer::WebConnection::SetSendLogger(SendLogger logger, void *userObj)

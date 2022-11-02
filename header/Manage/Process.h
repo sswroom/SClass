@@ -56,7 +56,7 @@ namespace Manage
 		static UOSInt GetCurrProcId();
 
 		UOSInt GetProcId();
-		Bool IsRunning();
+		Bool IsRunning() const;
 		Bool Kill();
 		WChar *GetFilename(WChar *buff);
 		Bool GetFilename(Text::StringBuilderUTF8 *sb);

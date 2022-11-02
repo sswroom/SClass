@@ -213,7 +213,7 @@ UOSInt Manage::Process::GetProcId()
 	return this->procId;
 }
 
-Bool Manage::Process::IsRunning()
+Bool Manage::Process::IsRunning() const
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

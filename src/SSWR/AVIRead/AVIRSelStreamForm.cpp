@@ -11,12 +11,12 @@
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
-	SSWR::AVIRead::AVIRCore::StreamType st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)me->cboStreamType->GetSelectedItem();
+	IO::StreamType st = (IO::StreamType)(OSInt)me->cboStreamType->GetSelectedItem();
 	UTF8Char sbuff[256];
 
 	switch (st)
 	{
-	case SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT:
+	case IO::StreamType::SerialPort:
 		{
 			UOSInt i = me->cboSerialPort->GetSelectedIndex();
 			UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_USBXPRESS:
+	case IO::StreamType::USBxpress:
 		{
 			UInt32 baudRate;
 			Text::StringBuilderUTF8 sb;
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_TCPSERVER:
+	case IO::StreamType::TCPServer:
 		{
 			Text::StringBuilderUTF8 sb;
 			UInt16 port;
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_TCPCLIENT:
+	case IO::StreamType::TCPClient:
 		{
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_SSLCLIENT:
+	case IO::StreamType::SSLClient:
 		{
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_FILE:
+	case IO::StreamType::File:
 		{
 			Text::StringBuilderUTF8 sb;
 			IO::FileStream *fs;
@@ -222,7 +222,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_HID:
+	case IO::StreamType::HID:
 		{
 			IO::DeviceInfo *dev = (IO::DeviceInfo*)me->lbHIDDevice->GetSelectedItem();
 			if (dev)
@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_UDPSERVER:
+	case IO::StreamType::UDPServer:
 		{
 			Text::StringBuilderUTF8 sb;
 			UInt16 port;
@@ -268,7 +268,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
-	case SSWR::AVIRead::AVIRCore::ST_UDPCLIENT:
+	case IO::StreamType::UDPClient:
 		{
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
@@ -309,6 +309,26 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 		}
 		break;
+	case IO::StreamType::Unknown:
+	case IO::StreamType::Memory:
+	case IO::StreamType::BufferedOutput:
+	case IO::StreamType::FTPClient:
+	case IO::StreamType::StreamData:
+	case IO::StreamType::Deflate:
+	case IO::StreamType::HTTPClient:
+	case IO::StreamType::TCPBoardcast:
+	case IO::StreamType::BufferedInput:
+	case IO::StreamType::StreamLogger:
+	case IO::StreamType::ProcessExecution:
+	case IO::StreamType::LZWDec:
+	case IO::StreamType::WebConnection:
+	case IO::StreamType::Hash:
+	case IO::StreamType::Inflate:
+	case IO::StreamType::WriteCache:
+	case IO::StreamType::LZWEnc:
+	case IO::StreamType::RS232GPIO:
+	case IO::StreamType::WindowsCOM:
+		break;
 	}
 }
 
@@ -341,28 +361,28 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 	UOSInt i = me->cboStreamType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		SSWR::AVIRead::AVIRCore::StreamType st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)me->cboStreamType->GetItem(i);
-		if (st == SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT)
+		IO::StreamType st = (IO::StreamType)(OSInt)me->cboStreamType->GetItem(i);
+		if (st == IO::StreamType::SerialPort)
 		{
 			me->tcConfig->SetSelectedPage(me->tpSerialPort);
 		}
-		else if (st == SSWR::AVIRead::AVIRCore::ST_USBXPRESS)
+		else if (st == IO::StreamType::USBxpress)
 		{
 			me->tcConfig->SetSelectedPage(me->tpSiLabPort);
 		}
-		else if (st == SSWR::AVIRead::AVIRCore::ST_TCPSERVER)
+		else if (st == IO::StreamType::TCPServer)
 		{
 			me->tcConfig->SetSelectedPage(me->tpTCPSvr);
 		}
-		else if (st == SSWR::AVIRead::AVIRCore::ST_TCPCLIENT)
+		else if (st == IO::StreamType::TCPClient)
 		{
 			me->tcConfig->SetSelectedPage(me->tpTCPCli);
 		}
-		else if (st == SSWR::AVIRead::AVIRCore::ST_FILE)
+		else if (st == IO::StreamType::File)
 		{
 			me->tcConfig->SetSelectedPage(me->tpFile);
 		}
-		else if (st == SSWR::AVIRead::AVIRCore::ST_HID)
+		else if (st == IO::StreamType::HID)
 		{
 			me->tcConfig->SetSelectedPage(me->tpHID);
 		}
@@ -393,24 +413,24 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboStreamType, UI::GUIComboBox(ui, this->pnlStreamType, false));
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT), (void*)SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
+	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::SerialPort), (void*)IO::StreamType::SerialPort);
 	if (this->siLabDriver)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_USBXPRESS), (void*)SSWR::AVIRead::AVIRCore::ST_USBXPRESS);
+		this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::USBxpress), (void*)IO::StreamType::USBxpress);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_TCPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_TCPSERVER);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_TCPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_TCPCLIENT);
+	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::TCPServer), (void*)IO::StreamType::TCPServer);
+	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::TCPClient), (void*)IO::StreamType::TCPClient);
 	if (this->ssl)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_SSLCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_SSLCLIENT);
+		this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::SSLClient), (void*)IO::StreamType::SSLClient);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_UDPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_UDPSERVER);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_UDPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_UDPCLIENT);
+	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::UDPServer), (void*)IO::StreamType::UDPServer);
+	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::UDPClient), (void*)IO::StreamType::UDPClient);
 	if (allowReadOnly)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_FILE), (void*)SSWR::AVIRead::AVIRCore::ST_FILE);
+		this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::File), (void*)IO::StreamType::File);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::StreamTypeGetName(SSWR::AVIRead::AVIRCore::ST_HID), (void*)SSWR::AVIRead::AVIRCore::ST_HID);
+	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::HID), (void*)IO::StreamType::HID);
 	this->cboStreamType->HandleSelectionChange(OnStmTypeChg, this);
 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
@@ -643,7 +663,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
-	SetInitStreamType(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
+	SetInitStreamType(IO::StreamType::SerialPort);
 }
 
 SSWR::AVIRead::AVIRSelStreamForm::~AVIRSelStreamForm()
@@ -656,16 +676,16 @@ void SSWR::AVIRead::AVIRSelStreamForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(SSWR::AVIRead::AVIRCore::StreamType stype)
+void SSWR::AVIRead::AVIRSelStreamForm::SetInitStreamType(IO::StreamType stype)
 {
-	SSWR::AVIRead::AVIRCore::StreamType st;
+	IO::StreamType st;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = this->cboStreamType->GetCount();
 	while (i < j)
 	{
-		st = (SSWR::AVIRead::AVIRCore::StreamType)(OSInt)this->cboStreamType->GetItem(i);
+		st = (IO::StreamType)(OSInt)this->cboStreamType->GetItem(i);
 		if (st == stype)
 		{
 			this->cboStreamType->SetSelectedIndex(i);
@@ -688,7 +708,7 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UOSInt port)
 		if (p == port)
 		{
 			this->cboSerialPort->SetSelectedIndex(i);
-			this->SetInitStreamType(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
+			this->SetInitStreamType(IO::StreamType::SerialPort);
 			break;
 		}
 		i++;

@@ -146,7 +146,7 @@ Net::TCPBoardcastStream::~TCPBoardcastStream()
 	MemFree(this->writeBuff);
 }
 
-Bool Net::TCPBoardcastStream::IsDown()
+Bool Net::TCPBoardcastStream::IsDown() const
 {
 	if (this->svr == 0)
 	{
@@ -279,7 +279,12 @@ Bool Net::TCPBoardcastStream::Recover()
 	return false;
 }
 
-Bool Net::TCPBoardcastStream::IsError()
+IO::StreamType Net::TCPBoardcastStream::GetStreamType() const
+{
+	return IO::StreamType::TCPBoardcast;
+}
+
+Bool Net::TCPBoardcastStream::IsError() const
 {
 	return this->svr == 0;
 }

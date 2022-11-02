@@ -192,7 +192,7 @@ Net::TCPClient::~TCPClient()
 	Close();
 }
 
-Bool Net::TCPClient::IsDown()
+Bool Net::TCPClient::IsDown() const
 {
 	if (this->s == 0 || (this->flags & 6) != 0)
 	{
@@ -377,6 +377,11 @@ Bool Net::TCPClient::Recover()
 Bool Net::TCPClient::IsSSL()
 {
 	return false;
+}
+
+IO::StreamType Net::TCPClient::GetStreamType() const
+{
+	return IO::StreamType::TCPClient;
 }
 
 Bool Net::TCPClient::IsClosed()

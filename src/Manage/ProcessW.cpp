@@ -152,7 +152,7 @@ UOSInt Manage::Process::GetProcId()
 	return this->procId;
 }
 
-Bool Manage::Process::IsRunning()
+Bool Manage::Process::IsRunning() const
 {
 	if (this->handle)
 	{

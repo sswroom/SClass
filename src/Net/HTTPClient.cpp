@@ -38,9 +38,14 @@ Net::HTTPClient::~HTTPClient()
 	SDEL_STRING(this->url);
 }
 
-Bool Net::HTTPClient::IsDown()
+Bool Net::HTTPClient::IsDown() const
 {
 	return this->IsError();
+}
+
+IO::StreamType Net::HTTPClient::GetStreamType() const
+{
+	return IO::StreamType::HTTPClient;
 }
 
 Bool Net::HTTPClient::FormBegin()

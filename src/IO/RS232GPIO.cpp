@@ -128,7 +128,7 @@ IO::RS232GPIO::~RS232GPIO()
 	MemFree(this->readBuff);
 }
 
-Bool IO::RS232GPIO::IsDown()
+Bool IO::RS232GPIO::IsDown() const
 {
 	return !this->running;
 }
@@ -294,4 +294,9 @@ Bool IO::RS232GPIO::Recover()
 {
 	///////////////////////////////////
 	return false;
+}
+
+IO::StreamType IO::RS232GPIO::GetStreamType() const
+{
+	return IO::StreamType::RS232GPIO;
 }

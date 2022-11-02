@@ -76,3 +76,67 @@ UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)
 	MemFree(buff);
 	return totalSize;
 }
+
+Text::CString IO::StreamTypeGetName(StreamType st)
+{
+	switch (st)
+	{
+	case StreamType::SerialPort:
+		return CSTR("Serial Port");
+	case StreamType::USBxpress:
+		return CSTR("Silicon Laboratories USBXpress");
+	case StreamType::TCPServer:
+		return CSTR("TCP Server");
+	case StreamType::TCPClient:
+		return CSTR("TCP Client");
+	case StreamType::File:
+		return CSTR("File (Readonly)");
+	case StreamType::HID:
+		return CSTR("HID");
+	case StreamType::UDPServer:
+		return CSTR("UDP Server");
+	case StreamType::UDPClient:
+		return CSTR("UDP Client");
+	case StreamType::SSLClient:
+		return CSTR("SSL Client");
+	case StreamType::Memory:
+		return CSTR("Memory");
+	case StreamType::BufferedOutput:
+		return CSTR("BufferedOutput");
+	case StreamType::FTPClient:
+		return CSTR("FTP Client");
+	case StreamType::StreamData:
+		return CSTR("StreamData");
+	case StreamType::Deflate:
+		return CSTR("Deflate");
+	case StreamType::HTTPClient:
+		return CSTR("HTTP Client");
+	case StreamType::TCPBoardcast:
+		return CSTR("TCP Boardcast");
+	case StreamType::BufferedInput:
+		return CSTR("BufferedInput");
+	case StreamType::StreamLogger:
+		return CSTR("Stream Logger");
+	case StreamType::ProcessExecution:
+		return CSTR("Process Execution");
+	case StreamType::LZWDec:
+		return CSTR("LZWDec");
+	case StreamType::WebConnection:
+		return CSTR("WebConnection");
+	case StreamType::Hash:
+		return CSTR("Hash");
+	case StreamType::Inflate:
+		return CSTR("Inflate");
+	case StreamType::WriteCache:
+		return CSTR("WriteCache");
+	case StreamType::LZWEnc:
+		return CSTR("LZWEnc");
+	case StreamType::RS232GPIO:
+		return CSTR("RS232 GPIO");
+	case StreamType::WindowsCOM:
+		return CSTR("Windows COM");
+	case StreamType::Unknown:
+	default:
+		return CSTR("Unknown");
+	}
+}

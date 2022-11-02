@@ -32,7 +32,7 @@ namespace Net
 		HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPOSClient();
 
-		virtual Bool IsError();
+		virtual Bool IsError() const;
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);

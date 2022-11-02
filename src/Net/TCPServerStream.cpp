@@ -44,7 +44,7 @@ Net::TCPServerStream::~TCPServerStream()
 	this->Close();
 }
 
-Bool Net::TCPServerStream::IsDown()
+Bool Net::TCPServerStream::IsDown() const
 {
 	if (this->svr == 0)
 		return true;
@@ -147,7 +147,12 @@ Bool Net::TCPServerStream::Recover()
 	return false;
 }
 
-Bool Net::TCPServerStream::IsError()
+IO::StreamType Net::TCPServerStream::GetStreamType() const
+{
+	return IO::StreamType::TCPServer;
+}
+
+Bool Net::TCPServerStream::IsError() const
 {
 	return this->svr == 0;
 }

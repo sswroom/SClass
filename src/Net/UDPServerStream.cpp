@@ -39,6 +39,7 @@ Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO
 	this->lastAddr.addrType = Net::AddrType::Unknown;
 	this->lastPort = 0;
 	this->buffSize = 0;
+	this->isClient = false;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, OnUDPPacket, this, log, CSTR("UDPStm: "), 2, false));
 	if (this->svr->IsError())
@@ -54,7 +55,7 @@ Net::UDPServerStream::~UDPServerStream()
 	MemFree(this->buff);
 }
 
-Bool Net::UDPServerStream::IsDown()
+Bool Net::UDPServerStream::IsDown() const
 {
 	return this->svr == 0;
 }
@@ -112,13 +113,19 @@ Bool Net::UDPServerStream::Recover()
 	return false;
 }
 
-Bool Net::UDPServerStream::IsError()
+Bool Net::UDPServerStream::IsError() const
 {
 	return this->svr == 0;
+}
+
+IO::StreamType Net::UDPServerStream::GetStreamType() const
+{
+	return this->isClient?IO::StreamType::UDPClient:IO::StreamType::UDPServer;
 }
 
 void Net::UDPServerStream::SetClientAddr(const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	this->lastAddr = *addr;
 	this->lastPort = port;
+	this->isClient = true;
 }

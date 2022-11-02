@@ -92,12 +92,14 @@ namespace SSWR
 
 			void LoadPhoneBook();
 			void LoadSMS();
+			void InitStream(IO::Stream *stm);
+			void CloseStream();
 		public:
-			AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::GSMModemController *modem, IO::ATCommandChannel *channel, IO::Stream *port);
+			AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port);
 			virtual ~AVIRGSMModemForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

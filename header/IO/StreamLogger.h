@@ -21,7 +21,7 @@ namespace IO
 		StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath);
 		virtual ~StreamLogger();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
@@ -35,6 +35,7 @@ namespace IO
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual IO::StreamType GetStreamType() const;
 	};
 }
 #endif

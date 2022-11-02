@@ -70,6 +70,7 @@ namespace Net
 			Bool GetHTTPFormUInt32(Text::CString name, UInt32 *valOut);
 			Bool GetHTTPFormInt64(Text::CString name, Int64 *valOut);
 			Bool GetHTTPFormUInt64(Text::CString name, UInt64 *valOut);
+			Bool GetHTTPFormDouble(Text::CString name, Double *valOut);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb) = 0;
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;

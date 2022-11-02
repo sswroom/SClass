@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		public:
 			IO::Stream *stm;
-			SSWR::AVIRead::AVIRCore::StreamType stmType;
+			IO::StreamType stmType;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			IO::SiLabDriver *siLabDriver;
@@ -104,7 +104,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			void SetInitStreamType(SSWR::AVIRead::AVIRCore::StreamType stype);
+			void SetInitStreamType(IO::StreamType stype);
 			void SetInitSerialPort(UOSInt port);
 			void SetInitBaudRate(Int32 baudRate);
 		};

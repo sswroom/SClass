@@ -37,7 +37,7 @@ namespace IO
 		RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate);
 		virtual ~RS232GPIO();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 		Bool HasData();
@@ -52,6 +52,7 @@ namespace IO
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual IO::StreamType GetStreamType() const;
 	};
 }
 #endif

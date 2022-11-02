@@ -352,7 +352,7 @@ IO::SerialPort::~SerialPort()
 	}
 }
 
-Bool IO::SerialPort::IsDown()
+Bool IO::SerialPort::IsDown() const
 {
 	if (this->handle == 0)
 	{
@@ -566,7 +566,12 @@ Bool IO::SerialPort::Recover()
 	return true;
 }
 
-Bool IO::SerialPort::IsError()
+IO::StreamType IO::SerialPort::GetStreamType() const
+{
+	return IO::StreamType::SerialPort;
+}
+
+Bool IO::SerialPort::IsError() const
 {
 	return this->handle == 0;
 }

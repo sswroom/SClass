@@ -12,7 +12,7 @@ Crypto::Hash::HashStream::~HashStream()
 {
 }
 
-Bool Crypto::Hash::HashStream::IsDown()
+Bool Crypto::Hash::HashStream::IsDown() const
 {
 	return this->srcStm->IsDown();
 }
@@ -46,4 +46,9 @@ void Crypto::Hash::HashStream::Close()
 Bool Crypto::Hash::HashStream::Recover()
 {
 	return this->srcStm->Recover();
+}
+
+IO::StreamType Crypto::Hash::HashStream::GetStreamType() const
+{
+	return IO::StreamType::Hash;
 }

@@ -305,15 +305,54 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	}
 }
 
-SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::GSMModemController *modem, IO::ATCommandChannel *channel, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
+void SSWR::AVIRead::AVIRGSMModemForm::InitStream(IO::Stream *stm)
+{
+	if (this->port == 0)
+	{
+		this->port = stm;
+		NEW_CLASS(this->channel, IO::ATCommandChannel(this->port, false));
+		this->channel->SetLogger(&this->log);
+		NEW_CLASS(this->modem, IO::GSMModemController(this->channel, false));
+
+		this->toStop = false;
+		this->running = false;
+		Sync::Thread::Create(ModemThread, this);
+		while (!this->running)
+		{
+			Sync::Thread::Sleep(10);
+		}
+	}
+}
+
+void SSWR::AVIRead::AVIRGSMModemForm::CloseStream()
+{
+	if (this->port)
+	{
+		this->toStop = true;
+		this->modemEvt.Set();
+		this->port->Close();
+		this->channel->Close();
+		while (this->running)
+		{
+			Sync::Thread::Sleep(10);
+		}
+
+		this->modem->SMSFreeMessages(&this->msgList);
+
+		DEL_CLASS(this->modem);
+		DEL_CLASS(this->channel);
+		DEL_CLASS(this->port);
+	}
+}
+
+SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("GSM Modem"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
-	this->modem = modem;
-	this->channel = channel;
-	this->port = port;
-	this->channel->SetLogger(&this->log);
+	this->modem = 0;
+	this->channel = 0;
+	this->port = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->signalQuality = IO::GSMModemController::RSSI_UNKNOWN;
@@ -430,38 +469,21 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	
+	this->toStop = false;
+	this->running = false;
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 200, false));
 	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	this->toStop = false;
-	this->running = false;
-	Sync::Thread::Create(ModemThread, this);
-	while (!this->running)
-	{
-		Sync::Thread::Sleep(10);
-	}
+	this->InitStream(port);
 }
 
 SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 {
-	this->toStop = true;
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
-	this->modemEvt.Set();
-	this->port->Close();
-	this->channel->Close();
-	while (this->running)
-	{
-		Sync::Thread::Sleep(10);
-	}
-
-	this->modem->SMSFreeMessages(&this->msgList);
-
-	DEL_CLASS(this->modem);
-	DEL_CLASS(this->channel);
-	DEL_CLASS(this->port);
+	this->CloseStream();
 
 	SDEL_STRING(this->operName);
 	SDEL_STRING(this->initModemManu);

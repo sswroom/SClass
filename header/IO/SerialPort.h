@@ -50,7 +50,7 @@ namespace IO
 		SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl);
 		virtual ~SerialPort();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 		Bool HasData();
@@ -65,8 +65,9 @@ namespace IO
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual IO::StreamType GetStreamType() const;
 
-		Bool IsError();
+		Bool IsError() const;
 	};
 };
 #endif

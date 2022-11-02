@@ -12,6 +12,7 @@ namespace Net
 		virtual ~SSLClient();
 
 		virtual Bool IsSSL();
+		virtual IO::StreamType GetStreamType() const;
 		virtual Crypto::Cert::Certificate *GetRemoteCert() = 0;
 	};
 }

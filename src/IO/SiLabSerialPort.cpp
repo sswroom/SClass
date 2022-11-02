@@ -50,7 +50,7 @@ IO::SiLabSerialPort::~SiLabSerialPort()
 	}
 }
 
-Bool IO::SiLabSerialPort::IsDown()
+Bool IO::SiLabSerialPort::IsDown() const
 {
 	return this->handle == 0;
 }
@@ -226,4 +226,9 @@ Bool IO::SiLabSerialPort::Recover()
 {
 	////////////////////////////////
 	return false;
+}
+
+IO::StreamType IO::SiLabSerialPort::GetStreamType() const
+{
+	return IO::StreamType::USBxpress;
 }

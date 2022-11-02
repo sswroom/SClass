@@ -33,13 +33,14 @@ namespace Data
 			LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
 			virtual ~LZWDecStream();
 
-			virtual Bool IsDown();
+			virtual Bool IsDown() const;
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 			virtual Int32 Flush();
 			virtual void Close();
 			virtual Bool Recover();
+			virtual IO::StreamType GetStreamType() const;
 		};
 	}
 }

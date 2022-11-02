@@ -19,22 +19,24 @@ namespace Net
 		Net::SocketUtil::AddressInfo lastAddr;
 		UInt16 lastPort;
 		UInt8 *buff;
-		UOSInt buffSize;			
+		UOSInt buffSize;
+		Bool isClient;
 
 		static void __stdcall OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
 		UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log);
 		~UDPServerStream();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual IO::StreamType GetStreamType() const;
 
-		Bool IsError();
+		Bool IsError() const;
 		void SetClientAddr(const Net::SocketUtil::AddressInfo *addr, UInt16 port);
 	};
 }

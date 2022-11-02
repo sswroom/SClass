@@ -17,7 +17,7 @@ IO::BufferedInputStream::~BufferedInputStream()
 	MemFree(buff);
 }
 
-Bool IO::BufferedInputStream::IsDown()
+Bool IO::BufferedInputStream::IsDown() const
 {
 	return this->stm->IsDown();
 }
@@ -111,6 +111,10 @@ Bool IO::BufferedInputStream::Recover()
 	return this->stm->Recover();
 }
 
+IO::StreamType IO::BufferedInputStream::GetStreamType() const
+{
+	return IO::StreamType::BufferedInput;
+}
 
 UInt64 IO::BufferedInputStream::SeekFromBeginning(UInt64 position)
 {

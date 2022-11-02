@@ -121,7 +121,7 @@ Data::Compress::LZWEncStream2::~LZWEncStream2()
 	MemFree(this->encBuff);
 }
 
-Bool Data::Compress::LZWEncStream2::IsDown()
+Bool Data::Compress::LZWEncStream2::IsDown() const
 {
 	return this->stm->IsDown();
 }
@@ -233,4 +233,9 @@ void Data::Compress::LZWEncStream2::Close()
 Bool Data::Compress::LZWEncStream2::Recover()
 {
 	return true;
+}
+
+IO::StreamType Data::Compress::LZWEncStream2::GetStreamType() const
+{
+	return IO::StreamType::LZWEnc;
 }

@@ -5,13 +5,46 @@
 
 namespace IO
 {
+	enum class StreamType
+	{
+		Unknown,
+		SerialPort,
+		USBxpress,
+		TCPServer,
+		TCPClient,
+		File,
+		HID,
+		UDPServer,
+		UDPClient,
+		SSLClient,
+		Memory,
+		BufferedOutput,
+		FTPClient,
+		StreamData,
+		Deflate,
+		HTTPClient,
+		TCPBoardcast,
+		BufferedInput,
+		StreamLogger,
+		ProcessExecution,
+		LZWDec,
+		WebConnection,
+		Hash,
+		Inflate,
+		WriteCache,
+		LZWEnc,
+		RS232GPIO,
+		WindowsCOM
+	};
+
+
 	class Stream : public IO::ParsedObject
 	{
 	public:
 		Stream(Text::String *sourceName);
 		Stream(Text::CString sourceName);
 		virtual ~Stream(){};
-		virtual Bool IsDown() = 0;
+		virtual Bool IsDown() const = 0;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size) = 0;
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size) = 0;
 
@@ -26,9 +59,12 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool CanSeek();
 		virtual Bool Recover() = 0;
+		virtual StreamType GetStreamType() const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 		UInt64 ReadToEnd(IO::Stream *stm, UOSInt buffSize);
 	};
+
+	Text::CString StreamTypeGetName(StreamType st);
 }
 #endif

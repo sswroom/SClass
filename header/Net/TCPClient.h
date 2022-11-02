@@ -27,7 +27,7 @@ namespace Net
 		TCPClient(Net::SocketFactory *sockf, Socket *s);
 		virtual ~TCPClient();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
@@ -42,6 +42,7 @@ namespace Net
 		virtual void Close();
 		virtual Bool Recover();
 		virtual Bool IsSSL();
+		virtual IO::StreamType GetStreamType() const;
 		Bool IsClosed();
 		Bool IsSendDown();
 		Bool IsRecvDown();

@@ -15,13 +15,14 @@ namespace IO
 		BufferedOutputStream(IO::Stream *outStm, UOSInt buffSize);
 		virtual ~BufferedOutputStream();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual StreamType GetStreamType() const;
 	};
 }
 #endif

@@ -48,7 +48,7 @@ Data::Compress::DeflateStream::~DeflateStream()
 	MemFree(this->clsData);
 }
 
-Bool Data::Compress::DeflateStream::IsDown()
+Bool Data::Compress::DeflateStream::IsDown() const
 {
 	return this->clsData->srcStm->IsDown();
 }
@@ -120,4 +120,9 @@ void Data::Compress::DeflateStream::Close()
 Bool Data::Compress::DeflateStream::Recover()
 {
 	return this->clsData->srcStm->Recover();
+}
+
+IO::StreamType Data::Compress::DeflateStream::GetStreamType() const
+{
+	return IO::StreamType::Deflate;
 }

@@ -24,7 +24,7 @@ IO::DeviceStream::~DeviceStream()
 	this->Close();
 }
 
-Bool IO::DeviceStream::IsDown()
+Bool IO::DeviceStream::IsDown() const
 {
 	return this->hand == 0;
 }
@@ -88,4 +88,9 @@ Bool IO::DeviceStream::Recover()
 	this->hand = CreateFileW(wptr, 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
 	Text::StrDelNew(wptr);
 	return true;
+}
+
+IO::StreamType IO::DeviceStream::GetStreamType() const
+{
+	return IO::StreamType::HID;
 }

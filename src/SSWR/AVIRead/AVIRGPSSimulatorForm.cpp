@@ -54,12 +54,12 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(void *userOb
 		me->stm = 0;
 		me->txtStreamType->SetText(CSTR("-"));
 	}
-	SSWR::AVIRead::AVIRCore::StreamType st;
+	IO::StreamType st;
 	IO::Stream *stm = me->core->OpenStream(&st, me, 0, false);
 	if (stm)
 	{
 		me->stm = stm;
-		me->txtStreamType->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
+		me->txtStreamType->SetText(IO::StreamTypeGetName(st));
 	}
 }
 

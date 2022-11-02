@@ -32,7 +32,7 @@ namespace IO
 		FileStream(Text::CString fileName, FileMode mode, FileShare share, BufferType buffType);
 		virtual ~FileStream();
 
-		virtual Bool IsDown();
+		virtual Bool IsDown() const;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
@@ -45,6 +45,7 @@ namespace IO
 		virtual UInt64 GetPosition();
 		virtual UInt64 GetLength();
 		void SetLength(UInt64 newLength);
+		virtual StreamType GetStreamType() const;
 
 		virtual Bool IsError();
 		virtual Int32 GetErrCode();

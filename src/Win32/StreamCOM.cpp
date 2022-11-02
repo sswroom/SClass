@@ -26,7 +26,7 @@ Win32::StreamCOM::~StreamCOM()
 	}
 }
 
-Bool Win32::StreamCOM::IsDown()
+Bool Win32::StreamCOM::IsDown() const
 {
 	return false;
 }
@@ -58,6 +58,11 @@ Bool Win32::StreamCOM::Recover()
 {
 	///////////////////////////////////////
 	return false;
+}
+
+IO::StreamType Win32::StreamCOM::GetStreamType() const
+{
+	return IO::StreamType::WindowsCOM;
 }
 
 UInt64 Win32::StreamCOM::SeekFromBeginning(UInt64 position)

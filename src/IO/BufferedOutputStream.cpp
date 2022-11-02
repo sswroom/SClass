@@ -21,7 +21,7 @@ IO::BufferedOutputStream::~BufferedOutputStream()
 	this->cacheBuff = 0;
 }
 
-Bool IO::BufferedOutputStream::IsDown()
+Bool IO::BufferedOutputStream::IsDown() const
 {
 	return this->outStm->IsDown();
 }
@@ -140,4 +140,9 @@ void IO::BufferedOutputStream::Close()
 Bool IO::BufferedOutputStream::Recover()
 {
 	return this->outStm->Recover();
+}
+
+IO::StreamType IO::BufferedOutputStream::GetStreamType() const
+{
+	return IO::StreamType::BufferedOutput;
 }

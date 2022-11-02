@@ -91,7 +91,7 @@ Net::HTTPMyClient::~HTTPMyClient()
 #endif
 }
 
-Bool Net::HTTPMyClient::IsError()
+Bool Net::HTTPMyClient::IsError() const
 {
 	return this->cli == 0;
 }

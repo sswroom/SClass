@@ -20,7 +20,7 @@ IO::WriteCacheStream::~WriteCacheStream()
 	}
 }
 
-Bool IO::WriteCacheStream::IsDown()
+Bool IO::WriteCacheStream::IsDown() const
 {
 	return this->outStm->IsDown();
 }
@@ -158,4 +158,9 @@ void IO::WriteCacheStream::Close()
 Bool IO::WriteCacheStream::Recover()
 {
 	return this->outStm->Recover();
+}
+
+IO::StreamType IO::WriteCacheStream::GetStreamType() const
+{
+	return IO::StreamType::WriteCache;
 }

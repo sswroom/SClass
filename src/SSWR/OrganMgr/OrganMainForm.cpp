@@ -2020,7 +2020,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					}
 					else
 					{
-						Text::String *s = this->env->GetLocName(imgItem->GetUserId(), &dt, this, this->ui);
+						Text::String *s = this->env->GetLocName(imgItem->GetUserId(), dt, this, this->ui);
 						if (s == 0)
 						{
 						}

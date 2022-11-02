@@ -145,3 +145,8 @@ Bool Manage::ProcessExecution::Recover()
 {
 	return false;
 }
+
+IO::StreamType Manage::ProcessExecution::GetStreamType() const
+{
+	return IO::StreamType::ProcessExecution;
+}

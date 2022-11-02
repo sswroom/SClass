@@ -31,19 +31,6 @@ namespace SSWR
 		public:
 			typedef enum
 			{
-				ST_SERIAL_PORT = 1,
-				ST_USBXPRESS = 2,
-				ST_TCPSERVER = 3,
-				ST_TCPCLIENT = 4,
-				ST_FILE = 5,
-				ST_HID = 6,
-				ST_UDPSERVER = 7,
-				ST_UDPCLIENT = 8,
-				ST_SSLCLIENT = 9
-			} StreamType;
-
-			typedef enum
-			{
 				IOPT_GPIO = 1,
 				IOPT_VIOPIN = 2
 			} IOPinType;
@@ -89,7 +76,7 @@ namespace SSWR
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm) = 0;
 
 			void OpenGSMModem(IO::Stream *modemPort);
-			IO::Stream *OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
+			IO::Stream *OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
 
 			void BeginLoad();
 			void EndLoad();
@@ -131,7 +118,6 @@ namespace SSWR
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
 			SSWR::AVIRead::AVIRGISForm *GetGISForm();
 
-			static Text::CString StreamTypeGetName(StreamType st);
 			static Text::CString IOPinTypeGetName(IOPinType iopt);
 		};
 	}

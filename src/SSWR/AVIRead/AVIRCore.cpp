@@ -120,17 +120,12 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 {
 	SSWR::AVIRead::AVIRGSMModemForm *frm;
-	IO::GSMModemController *modem;
-	IO::ATCommandChannel *channel;
-	NEW_CLASS(channel, IO::ATCommandChannel(modemPort, false));
-	NEW_CLASS(modem, IO::GSMModemController(channel, false));
-
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, this, modem, channel, modemPort));
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, this, modemPort));
 	InitForm(frm);
 	frm->Show();
 }
 
-IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
+IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
 	IO::Stream *retStm = 0;
 	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this, allowReadOnly, this->ssl);
@@ -558,33 +553,6 @@ void SSWR::AVIRead::AVIRCore::SetGISForm(SSWR::AVIRead::AVIRGISForm *frm)
 SSWR::AVIRead::AVIRGISForm *SSWR::AVIRead::AVIRCore::GetGISForm()
 {
 	return this->gisForm;
-}
-
-Text::CString SSWR::AVIRead::AVIRCore::StreamTypeGetName(StreamType st)
-{
-	switch (st)
-	{
-	case AVIRCore::ST_SERIAL_PORT:
-		return CSTR("Serial Port");
-	case AVIRCore::ST_USBXPRESS:
-		return CSTR("Silicon Laboratories USBXpress");
-	case AVIRCore::ST_TCPSERVER:
-		return CSTR("TCP Server");
-	case AVIRCore::ST_TCPCLIENT:
-		return CSTR("TCP Client");
-	case AVIRCore::ST_FILE:
-		return CSTR("File (Readonly)");
-	case AVIRCore::ST_HID:
-		return CSTR("HID");
-	case AVIRCore::ST_UDPSERVER:
-		return CSTR("UDP Server");
-	case AVIRCore::ST_UDPCLIENT:
-		return CSTR("UDP Client");
-	case AVIRCore::ST_SSLCLIENT:
-		return CSTR("SSL Client");
-	default:
-		return CSTR("Unknown");
-	}
 }
 
 Text::CString SSWR::AVIRead::AVIRCore::IOPinTypeGetName(IOPinType iopt)

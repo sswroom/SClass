@@ -45,7 +45,7 @@ Data::Compress::InflateStream::~InflateStream()
 	MemFree(mzstm);
 }
 
-Bool Data::Compress::InflateStream::IsDown()
+Bool Data::Compress::InflateStream::IsDown() const
 {
 	return this->outStm->IsDown();
 }
@@ -108,4 +108,9 @@ void Data::Compress::InflateStream::Close()
 Bool Data::Compress::InflateStream::Recover()
 {
 	return this->outStm->Recover();
+}
+
+IO::StreamType Data::Compress::InflateStream::GetStreamType() const
+{
+	return IO::StreamType::Inflate;
 }

@@ -304,7 +304,7 @@ IO::FileStream::~FileStream()
 	Close();
 }
 
-Bool IO::FileStream::IsDown()
+Bool IO::FileStream::IsDown() const
 {
 	return this->handle == INVALID_HANDLE_VALUE;
 }
@@ -367,6 +367,11 @@ Bool IO::FileStream::Recover()
 {
 	/////////////////////////////////////
 	return false;
+}
+
+IO::StreamType IO::FileStream::GetStreamType() const
+{
+	return IO::StreamType::File;
 }
 
 UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)

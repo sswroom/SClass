@@ -89,7 +89,7 @@ Text::CString Net::WebServer::PrintLogWebResponse::GetRespHeaders()
 	return this->resp->GetRespHeaders();
 }
 
-Bool Net::WebServer::PrintLogWebResponse::IsDown()
+Bool Net::WebServer::PrintLogWebResponse::IsDown() const
 {
 	return this->resp->IsDown();
 }
@@ -117,4 +117,9 @@ void Net::WebServer::PrintLogWebResponse::Close()
 Bool Net::WebServer::PrintLogWebResponse::Recover()
 {
 	return this->resp->Recover();
+}
+
+IO::StreamType Net::WebServer::PrintLogWebResponse::GetStreamType() const
+{
+	return IO::StreamType::WebConnection;
 }

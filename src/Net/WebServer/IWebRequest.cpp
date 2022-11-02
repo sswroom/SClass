@@ -328,6 +328,16 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CString name, UInt64 *
 	return s->ToUInt64(valOut);
 }
 
+Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CString name, Double *valOut)
+{
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
+	{
+		return false;
+	}
+	return s->ToDouble(valOut);
+}
+
 Text::CString Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)
 {
 	switch (reqProto)

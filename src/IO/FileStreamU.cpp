@@ -111,7 +111,7 @@ IO::FileStream::~FileStream()
 	Close();
 }
 
-Bool IO::FileStream::IsDown()
+Bool IO::FileStream::IsDown() const
 {
 	return (OSInt)this->handle == 0;
 }
@@ -240,6 +240,11 @@ void IO::FileStream::SetLength(UInt64 newLength)
 #elif !defined(__ANDROID__)
 	posix_fallocate((int)(OSInt)this->handle, (off_t)this->currPos, (off_t)(newLength - this->currPos));
 #endif
+}
+
+IO::StreamType IO::FileStream::GetStreamType() const
+{
+	return IO::StreamType::File;
 }
 
 Int32 IO::FileStream::GetErrCode()

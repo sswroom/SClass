@@ -41,7 +41,7 @@ namespace Net
 		HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
-		virtual Bool IsError();
+		virtual Bool IsError() const;
 
 		UOSInt ReadRAW(UInt8 *buff, UOSInt size);
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Address out of range (0-255)"), CSTR("ADAM"), me);
 			return;
 		}
-		SSWR::AVIRead::AVIRCore::StreamType st;
+		IO::StreamType st;
 		me->stm = me->core->OpenStream(&st, me, 0, false);
 		if (me->stm)
 		{
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 			UTF8Char *sptr;
 			NEW_CLASS(me->channel, IO::AdvantechASCIIChannel(me->stm, true));
 			me->channelModule = 0;
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::StreamTypeGetName(st));
+			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 			me->txtAddress->SetReadOnly(true);
 

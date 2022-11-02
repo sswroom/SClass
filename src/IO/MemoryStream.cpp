@@ -65,7 +65,7 @@ UInt8 *IO::MemoryStream::GetBuff(UOSInt *buffSize)
 	return this->memPtr;
 }
 
-Bool IO::MemoryStream::IsDown()
+Bool IO::MemoryStream::IsDown() const
 {
 	return false;
 }
@@ -133,6 +133,11 @@ void IO::MemoryStream::Close()
 Bool IO::MemoryStream::Recover()
 {
 	return true;
+}
+
+IO::StreamType IO::MemoryStream::GetStreamType() const
+{
+	return IO::StreamType::Memory;
 }
 
 UInt64 IO::MemoryStream::SeekFromBeginning(UInt64 position)

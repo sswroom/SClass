@@ -99,7 +99,7 @@ Manage::ProcessExecution::~ProcessExecution()
 	MemFree(this->clsData);
 }
 
-Bool Manage::ProcessExecution::IsDown()
+Bool Manage::ProcessExecution::IsDown() const
 {
 	return !this->IsRunning();
 }
@@ -161,4 +161,9 @@ void Manage::ProcessExecution::Close()
 Bool Manage::ProcessExecution::Recover()
 {
 	return false;
+}
+
+IO::StreamType Manage::ProcessExecution::GetStreamType() const
+{
+	return IO::StreamType::ProcessExecution;
 }

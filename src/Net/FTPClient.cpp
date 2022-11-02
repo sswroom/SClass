@@ -142,7 +142,7 @@ Net::FTPClient::~FTPClient()
 	}
 }
 
-Bool Net::FTPClient::IsDown()
+Bool Net::FTPClient::IsDown() const
 {
 	return this->cli2 == 0;
 }
@@ -182,4 +182,9 @@ Bool Net::FTPClient::Recover()
 {
 	/////////////////////////////////////
 	return false;
+}
+
+IO::StreamType Net::FTPClient::GetStreamType() const
+{
+	return IO::StreamType::FTPClient;
 }
