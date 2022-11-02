@@ -1869,7 +1869,7 @@ Int64 Text::StrHex2Int64C(const UTF8Char *str)
 	return outVal;
 }
 
-Bool Text::StrHex2Int64C(const UTF8Char *str, Int64 *outVal)
+Bool Text::StrHex2Int64V(const UTF8Char *str, Int64 *outVal)
 {
 	UOSInt i = 0;
 	Int64 currVal = 0;
@@ -1975,6 +1975,43 @@ Int32 Text::StrHex2Int32C(const UTF8Char *str)
 	return outVal;
 }
 
+Bool Text::StrHex2Int32V(const UTF8Char *str, Int32 *outVal)
+{
+	UOSInt i = 0;
+	Int32 currVal = 0;
+	UTF8Char c;
+	while (true)
+	{
+		c = *str++;
+		if (c == 0)
+		{
+			*outVal = currVal;
+			return true;
+		}
+		i++;
+		if (i >= 9)
+		{
+			return false;
+		}
+		if (c >= '0' && c <= '9')
+		{
+			currVal = (currVal << 4) | (c - 48);
+		}
+		else if (c >= 'A' && c <= 'F')
+		{
+			currVal = (currVal << 4) | (c - 0x37);
+		}
+		else if (c >= 'a' && c <= 'f')
+		{
+			currVal = (currVal << 4) | (c - 0x57);
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
 Int16 Text::StrHex2Int16C(const UTF8Char *str)
 {
 	UOSInt i = 4;
@@ -2003,6 +2040,43 @@ Int16 Text::StrHex2Int16C(const UTF8Char *str)
 		}
 	}
 	return (Int16)outVal;
+}
+
+Bool Text::StrHex2Int16V(const UTF8Char *str, Int16 *outVal)
+{
+	UOSInt i = 0;
+	Int16 currVal = 0;
+	UTF8Char c;
+	while (true)
+	{
+		c = *str++;
+		if (c == 0)
+		{
+			*outVal = currVal;
+			return true;
+		}
+		i++;
+		if (i >= 5)
+		{
+			return false;
+		}
+		if (c >= '0' && c <= '9')
+		{
+			currVal = (currVal << 4) | (c - 48);
+		}
+		else if (c >= 'A' && c <= 'F')
+		{
+			currVal = (currVal << 4) | (c - 0x37);
+		}
+		else if (c >= 'a' && c <= 'f')
+		{
+			currVal = (currVal << 4) | (c - 0x57);
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 
 UInt8 Text::StrHex2UInt8C(const UTF8Char *str)
@@ -2577,7 +2651,7 @@ Bool Text::StrToUInt64(const UTF8Char *intStr, UInt64 *outVal)
 		return false;
 	if (intStr[0] == '0' && intStr[1] == 'x')
 	{
-		return Text::StrHex2UInt64C(intStr + 2, outVal);
+		return Text::StrHex2UInt64V(intStr + 2, outVal);
 	}
 	UInt64 c;
 	UInt64 v = 0;

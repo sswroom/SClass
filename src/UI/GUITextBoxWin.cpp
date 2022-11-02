@@ -107,6 +107,12 @@ void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
 	this->txtChgObjs.Add(userObj);
 }
 
+void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, void *userObj)
+{
+	this->keyDownHdlrs.Add(hdlr);
+	this->keyDownObjs.Add(userObj);
+}
+
 void UI::GUITextBox::SelectAll()
 {
 	SendMessage((HWND)this->hwnd, EM_SETSEL, 0, -1);

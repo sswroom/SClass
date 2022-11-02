@@ -94,6 +94,7 @@
 #include "SSWR/AVIRead/AVIRGPSDevForm.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
 #include "SSWR/AVIRead/AVIRGPUInfoForm.h"
+#include "SSWR/AVIRead/AVIRGSMModemForm.h"
 #include "SSWR/AVIRead/AVIRGUIEventForm.h"
 #include "SSWR/AVIRead/AVIRHashTestForm.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
@@ -945,12 +946,15 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GSM_MODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl);
+			SSWR::AVIRead::AVIRGSMModemForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, this->core, 0));
+			this->core->ShowForm(frm);
+/*			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl);
 			dlg.SetText(CSTR("Select GSM Modem"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->core->OpenGSMModem(dlg.stm);
-			}
+			}*/
 		}
 		break;
 	case MNU_GPS_TRACKER:

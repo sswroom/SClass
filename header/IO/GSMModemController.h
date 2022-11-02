@@ -99,6 +99,50 @@ namespace IO
 			SMSSTORE_CBMMESSAGE = 4
 		} SMSStorage;
 
+		enum class NetworkResult
+		{
+			Disable = 0,
+			Enable = 1,
+			Enable_w_Location = 2
+		};
+
+		enum class RegisterStatus
+		{
+			NotRegistered = 0,
+			RegisteredHomeNetwork = 1,
+			NotRegisteredSearch = 2,
+			RegistrationDenied = 3,
+			Unknown = 4,
+			RegisteredRoaming = 5
+		};
+
+		enum class AccessTech
+		{
+			GSM = 0,
+			GSMCompact = 1,
+			UTRAN = 2,
+			GSM_w_EGPRS = 3,
+			UTRAN_w_HSDPA = 4,
+			UTRAN_w_HSUPA = 5,
+			UTRAN_w_HSDPA_HSUPA = 6,
+			EUTRAN = 7
+		};
+
+		typedef enum
+		{
+			PBSTORE_UNKNOWN,
+			PBSTORE_SIM,
+			PBSTORE_SIM_RESTRICTED,
+			PBSTORE_SIM_OWN_NUMBERS,
+			PBSTORE_EMERGENCY,
+			PBSTORE_LASTNUMDIAL,
+			PBSTORE_UNANSWERED,
+			PBSTORE_ME,
+			PBSTORE_ME_SIM,
+			PBSTORE_RECEIVED_CALL,
+			PBSTORE_SERVICE_DIALING_NUMBERS
+		} PBStorage;
+
 		typedef struct
 		{
 			Text::String *longName;
@@ -123,27 +167,37 @@ namespace IO
 			Int32 available;
 		} SMSStorageInfo;
 
-		typedef enum
-		{
-			PBSTORE_UNKNOWN,
-			PBSTORE_SIM,
-			PBSTORE_SIM_RESTRICTED,
-			PBSTORE_SIM_OWN_NUMBERS,
-			PBSTORE_EMERGENCY,
-			PBSTORE_LASTNUMDIAL,
-			PBSTORE_UNANSWERED,
-			PBSTORE_ME,
-			PBSTORE_ME_SIM,
-			PBSTORE_RECEIVED_CALL,
-			PBSTORE_SERVICE_DIALING_NUMBERS
-		} PBStorage;
-
 		typedef struct
 		{
 			Int32 index;
 			Text::String *name;
 			Text::String *number;
 		} PBEntry;
+
+		struct PDPContext
+		{
+			UInt32 cid;
+			Text::String *type;
+			Text::String *apn;
+		};
+
+		struct ActiveState
+		{
+			UInt32 cid;
+			Bool active;
+
+			ActiveState() = default;
+			ActiveState(UInt32 cid)
+			{
+				this->cid = cid;
+				this->active = false;
+			}
+
+			Bool operator==(ActiveState& act)
+			{
+				return this->cid == act.cid && this->active == act.active;
+			}
+		};
 
 	protected:
 		Int32 smsFormat;
@@ -165,6 +219,7 @@ namespace IO
 		UTF8Char *GSMGetIMEI(UTF8Char *imei); //AT+CGSN
 		UTF8Char *GSMGetTECharset(UTF8Char *cs); //AT+CSCS
 		Bool GSMSetTECharset(const UTF8Char *cs); //AT+CSCS
+		Bool GSMGetTECharsetsSupported(Data::ArrayList<Text::String*> *csList); //AT+CSCS
 		UTF8Char *GSMGetIMSI(UTF8Char *imsi); //AT+CIMI
 		UTF8Char *GSMGetCurrOperator(UTF8Char *oper); //AT+COPS
 		UTF8Char *GSMGetCurrPLMN(UTF8Char *plmn); //AT+COPS
@@ -179,6 +234,7 @@ namespace IO
 		Bool GSMSetFunctionalityReset(); //AT+CFUN
 		Bool GSMGetModemTime(Data::DateTime *date); //AT+CCLK
 		Bool GSMSetModemTime(Data::DateTime *date); //AT+CCLK
+		Bool GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, UInt16 *lac, UInt32 *ci, AccessTech *act); //AT+CREG
 
 		Int32 GSMGetSIMPLMN();
 		
@@ -187,7 +243,11 @@ namespace IO
 		Bool GPRSServiceIsAttached(Bool *attached); //AT+CGATT
 		Bool GPRSServiceSetAttached(Bool attached); //AT+CGATT
 		Bool GPRSSetAPN(Text::CString apn); //AT+CGDCONT
+		Bool GPRSSetPDPContext(UInt32 cid, Text::CString type, Text::CString apn); //AT+CGDCONT
+		Bool GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctxList); //AT+CGDCONT
+		void GPRSFreePDPContext(Data::ArrayList<PDPContext*> *ctxList);
 		Bool GPRSSetPDPActive(Bool active); //AT+CGACT
+		Bool GPRSGetPDPActive(Data::ArrayList<ActiveState> *actList); //AT+CGACT
 
 		// SMS Commands
 		Bool SMSListMessages(Data::ArrayList<SMSMessage*> *msgList, SMSStatus status);
@@ -216,6 +276,9 @@ namespace IO
 		static UTF8Char *GetBERString(UTF8Char *buff, BER ber);
 		static Text::CString OperStatusGetName(OperStatus operStatus);
 		static Text::CString SIMStatusGetName(SIMStatus simStatus);
+		static Text::CString NetworkResultGetName(NetworkResult n);
+		static Text::CString RegisterStatusGetName(RegisterStatus stat);
+		static Text::CString AccessTechGetName(AccessTech act);
 	};
-};
+}
 #endif

@@ -88,7 +88,14 @@ UTF8Char *IO::GSMModemController::GSMGetTECharset(UTF8Char *cs)
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CSCS?"), 3000);
 	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CSCS: ")))
 	{
-		return Text::StrConcatC(cs, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
+		if (sbuff[7] == '"' && sptr[-1] == '"')
+		{
+			return Text::StrConcatC(cs, &sbuff[8], (UOSInt)(sptr - &sbuff[9]));
+		}
+		else
+		{
+			return Text::StrConcatC(cs, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
+		}
 	}
 	return 0;
 }
@@ -99,6 +106,40 @@ Bool IO::GSMModemController::GSMSetTECharset(const UTF8Char *cs)
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CSCS="));
 	sptr = Text::StrConcat(sptr, cs);
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+}
+
+Bool IO::GSMModemController::GSMGetTECharsetsSupported(Data::ArrayList<Text::String*> *csList)
+{
+	UTF8Char sbuff[128];
+	UTF8Char *sptr2;
+	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CSCS=?"), 3000);
+	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CSCS: ")))
+	{
+		sptr2 = &sbuff[7];
+		if (sptr2[0] == '(' && sptr[-1] == ')')
+		{
+			sptr2++;
+			sptr--;
+			*sptr = 0;
+		}
+		Text::PString sarr[2];
+		UOSInt sarrCnt;
+		sarr[1] = Text::PString(sptr2, (UOSInt)(sptr - sptr2));
+		while (true)
+		{
+			sarrCnt = Text::StrSplitP(sarr, 2, sarr[1], ',');
+			if (sarr[0].v[0] == '"' && sarr[0].v[sarr[0].leng - 1] == '"')
+			{
+				sarr[0] = sarr[0].Substring(1);
+				sarr[0].RemoveChars(1);
+			}
+			csList->Add(Text::String::New(sarr[0].ToCString()));
+			if (sarrCnt != 2)
+				break;
+		}
+		return true;
+	}
+	return false;
 }
 
 UTF8Char *IO::GSMModemController::GSMGetIMSI(UTF8Char *imsi)
@@ -549,6 +590,66 @@ Bool IO::GSMModemController::GSMSetModemTime(Data::DateTime *date)
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
+Bool IO::GSMModemController::GSMGetRegisterNetwork(NetworkResult *n, RegisterStatus *stat, UInt16 *lac, UInt32 *ci, AccessTech *act)
+{
+	UTF8Char sbuff[256];
+	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CREG?"), 3000);
+	if (sptr == 0)
+		return false;
+	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CREG: ")))
+	{
+		Text::PString sarr[5];
+		UOSInt sarrCnt = Text::StrSplitP(sarr, 5, Text::PString(&sbuff[7], (UOSInt)(sptr - &sbuff[7])), ',');
+		if (sarrCnt < 2)
+			return false;
+		*n = (NetworkResult)sarr[0].ToInt32();
+		*stat = (RegisterStatus)sarr[1].ToInt32();
+		if (*n == NetworkResult::Enable_w_Location)
+		{
+			if (sarrCnt != 5)
+			{
+				return false;
+			}
+			if (sarr[2].v[0] == '"' && sarr[2].EndsWith('"'))
+			{
+				sarr[2].RemoveChars(1);
+				if (!sarr[2].Substring(1).Hex2UInt16(lac))
+					return false;
+			}
+			else
+			{
+				if (!sarr[2].Hex2UInt16(lac))
+					return false;
+			}
+			if (sarr[3].v[0] == '"' && sarr[3].EndsWith('"'))
+			{
+				sarr[3].RemoveChars(1);
+				if (!sarr[3].Substring(1).Hex2UInt32(ci))
+					return false;
+			}
+			else
+			{
+				if (!sarr[3].Hex2UInt32(ci))
+					return false;
+			}
+			*act = (AccessTech)sarr[4].ToInt32();
+		}
+		else
+		{
+			*lac = 0;
+			*ci = 0;
+			*act = AccessTech::GSM;
+		}
+
+		//////////////////////////////////
+		return true;
+	}
+	else
+	{
+		return false;
+	}	
+}
+
 Int32 IO::GSMModemController::GSMGetSIMPLMN()
 {
 	UTF8Char sbuff[32];
@@ -602,7 +703,8 @@ Bool IO::GSMModemController::GPRSServiceIsAttached(Bool *attached)
 	{
 		return false;
 	}
-	return Text::StrToInt32(&sbuff[8]) != 0;
+	*attached = Text::StrToInt32(&sbuff[8]) != 0;
+	return true;
 }
 
 Bool IO::GSMModemController::GPRSServiceSetAttached(Bool attached)
@@ -619,12 +721,104 @@ Bool IO::GSMModemController::GPRSServiceSetAttached(Bool attached)
 
 Bool IO::GSMModemController::GPRSSetAPN(Text::CString apn)
 {
+	return GPRSSetPDPContext(1, CSTR("IP"), apn);
+}
+
+Bool IO::GSMModemController::GPRSSetPDPContext(UInt32 cid, Text::CString type, Text::CString apn)
+{
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CGDCONT=1,\"IP\",\""));
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CGDCONT="));
+	sptr = Text::StrUInt32(sptr, cid);
+	sptr = Text::StrConcatC(sptr, UTF8STRC(",\""));
+	sptr = type.ConcatTo(sptr);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\",\""));
 	sptr = apn.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
+}
+
+Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctxList)
+{
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	Text::PString sarr[5];
+	Sync::MutexUsage mutUsage(&this->cmdMut);
+	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CGDCONT?"), 3000);
+	UOSInt i;
+	UOSInt j = this->cmdResults.GetCount();
+	Text::String *val;
+	PDPContext *ctx;
+
+	if (j > 1)
+	{
+		val = this->cmdResults.GetItem(j - 1);
+		if (val->Equals(UTF8STRC("OK")))
+		{
+			j -= 1;
+			i = 0;
+			while (i < j)
+			{
+				val = this->cmdResults.GetItem(i);
+
+				if (val->StartsWith(UTF8STRC("+CGDCONT: ")))
+				{
+					sptr = Text::StrConcatC(sbuff, &val->v[10], val->leng - 10);
+					if (Text::StrSplitP(sarr, 4, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 3)
+					{
+						ctx = MemAlloc(PDPContext, 1);
+						ctx->cid = sarr[0].ToUInt32();
+						if (sarr[1].v[0] == '"' && sarr[1].EndsWith('"'))
+						{
+							sarr[1].RemoveChars(1);
+							ctx->type = Text::String::New(sarr[1].Substring(1).ToCString());
+						}
+						else
+						{
+							ctx->type = Text::String::New(sarr[1].ToCString());
+						}
+						if (sarr[2].v[0] == '"' && sarr[2].EndsWith('"'))
+						{
+							sarr[2].RemoveChars(1);
+							ctx->apn = Text::String::New(sarr[2].Substring(1).ToCString());
+						}
+						else
+						{
+							ctx->apn = Text::String::New(sarr[2].ToCString());
+						}
+						ctxList->Add(ctx);
+					}
+				}
+				i++;
+			}
+			ClearCmdResult();
+			return true;
+		}
+		else
+		{
+			ClearCmdResult();
+			return false;
+		}
+	}
+	else
+	{
+		ClearCmdResult();
+		return false;
+	}
+}
+
+void IO::GSMModemController::GPRSFreePDPContext(Data::ArrayList<PDPContext*> *ctxList)
+{
+	PDPContext *ctx;
+	UOSInt i = ctxList->GetCount();
+	while (i-- > 0)
+	{
+		ctx = ctxList->GetItem(i);
+		SDEL_STRING(ctx->type);
+		SDEL_STRING(ctx->apn);
+		MemFree(ctx);
+	}
+	ctxList->Clear();
 }
 
 Bool IO::GSMModemController::GPRSSetPDPActive(Bool active)
@@ -636,6 +830,57 @@ Bool IO::GSMModemController::GPRSSetPDPActive(Bool active)
 	else
 	{
 		return SendBoolCommandC(UTF8STRC("AT+CGACT=0"), 3000);
+	}
+}
+
+Bool IO::GSMModemController::GPRSGetPDPActive(Data::ArrayList<ActiveState> *actList)
+{
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	Text::PString sarr[5];
+	Sync::MutexUsage mutUsage(&this->cmdMut);
+	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CGACT?"), 3000);
+	UOSInt i;
+	UOSInt j = this->cmdResults.GetCount();
+	Text::String *val;
+	ActiveState act;
+
+	if (j > 1)
+	{
+		val = this->cmdResults.GetItem(j - 1);
+		if (val->Equals(UTF8STRC("OK")))
+		{
+			j -= 1;
+			i = 0;
+			while (i < j)
+			{
+				val = this->cmdResults.GetItem(i);
+
+				if (val->StartsWith(UTF8STRC("+CGACT: ")))
+				{
+					sptr = Text::StrConcatC(sbuff, &val->v[8], val->leng - 8);
+					if (Text::StrSplitP(sarr, 3, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 2)
+					{
+						act.cid = sarr[0].ToUInt32();
+						act.active = sarr[1].ToUInt32() != 0;
+						actList->Add(act);
+					}
+				}
+				i++;
+			}
+			ClearCmdResult();
+			return true;
+		}
+		else
+		{
+			ClearCmdResult();
+			return false;
+		}
+	}
+	else
+	{
+		ClearCmdResult();
+		return false;
 	}
 }
 
@@ -1357,6 +1602,67 @@ Text::CString IO::GSMModemController::SIMStatusGetName(SIMStatus simStatus)
 	case SIMS_ABSENT:
 		return CSTR("Absent");
 	case SIMS_UNKNOWN:
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::GSMModemController::NetworkResultGetName(NetworkResult n)
+{
+	switch (n)
+	{
+	case NetworkResult::Disable:
+		return CSTR("Disable network registration");
+	case NetworkResult::Enable:
+		return CSTR("Enable network registration");
+	case NetworkResult::Enable_w_Location:
+		return CSTR("Enable network registration and location information");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::GSMModemController::RegisterStatusGetName(RegisterStatus stat)
+{
+	switch (stat)
+	{
+	case RegisterStatus::NotRegistered:
+		return CSTR("Not registered, MS is not currently searching for a new operator to register with");
+	case RegisterStatus::RegisteredHomeNetwork:
+		return CSTR("Registered, home network");
+	case RegisterStatus::NotRegisteredSearch:
+		return CSTR("Not registered, but MS is currently searching for a new operator to register with");
+	case RegisterStatus::RegistrationDenied:
+		return CSTR("Registration denied");
+	case RegisterStatus::Unknown:
+		return CSTR("Unknown");
+	case RegisterStatus::RegisteredRoaming:
+		return CSTR("Registered, roaming");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::GSMModemController::AccessTechGetName(AccessTech act)
+{
+	switch (act)
+	{
+	case AccessTech::GSM:
+		return CSTR("GSM");
+	case AccessTech::GSMCompact:
+		return CSTR("GSM Compact");
+	case AccessTech::UTRAN:
+		return CSTR("UTRAN");
+	case AccessTech::GSM_w_EGPRS:
+		return CSTR("GSM w/EGPRS");
+	case AccessTech::UTRAN_w_HSDPA:
+		return CSTR("UTRAN w/HSDPA");
+	case AccessTech::UTRAN_w_HSUPA:
+		return CSTR("UTRAN w/HSUPA");
+	case AccessTech::UTRAN_w_HSDPA_HSUPA:
+		return CSTR("UTRAN w/HSDPA and HSUPA");
+	case AccessTech::EUTRAN:
+		return CSTR("E-UTRAN");
 	default:
 		return CSTR("Unknown");
 	}

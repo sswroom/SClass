@@ -12,6 +12,8 @@ namespace UI
 		ClassData *clsData;
 		Data::ArrayList<UI::UIEvent> txtChgHdlrs;
 		Data::ArrayList<void *> txtChgObjs;
+		Data::ArrayList<UI::KeyEvent> keyDownHdlrs;
+		Data::ArrayList<void *> keyDownObjs;
 
 	public:
 		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText);
@@ -19,6 +21,7 @@ namespace UI
 		virtual ~GUITextBox();
 
 		void EventTextChange();
+		Bool EventKeyDown(UInt32 osKey);
 
 		virtual void SetReadOnly(Bool isReadOnly);
 		virtual void SetPasswordChar(UTF32Char c);
@@ -30,6 +33,7 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);
+		virtual void HandleKeyDown(UI::KeyEvent hdlr, void *userObj);
 		void SelectAll();
 	};
 };

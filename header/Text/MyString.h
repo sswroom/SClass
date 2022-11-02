@@ -149,16 +149,20 @@ namespace Text
 	UTF8Char *StrHexByte(UTF8Char *oriStr, UInt8 val);
 	UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator);
 	Int64 StrHex2Int64C(const UTF8Char *str);
-	Bool StrHex2Int64C(const UTF8Char *str, Int64 *outVal);
+	Bool StrHex2Int64V(const UTF8Char *str, Int64 *outVal);
 	Bool StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal);
 	Int32 StrHex2Int32C(const UTF8Char *str);
-	FORCEINLINE UInt32 StrHex2UInt32C(const UTF8Char *str) { return (UInt32)StrHex2Int32C(str); }
-	FORCEINLINE UInt64 StrHex2UInt64C(const UTF8Char *str) { return (UInt64)StrHex2Int64C(str); }
-	FORCEINLINE Bool StrHex2UInt64C(const UTF8Char *str, UInt64 *outVal) { return StrHex2Int64C(str, (Int64*)outVal); }
-	FORCEINLINE Bool StrHex2UInt64S(const UTF8Char *str, UInt64 *outVal, UInt64 failVal) { return StrHex2Int64S(str, (Int64*)outVal, (Int64)failVal); }
+	Bool StrHex2Int32V(const UTF8Char *str, Int32 *outVal);
 	Int16 StrHex2Int16C(const UTF8Char *str);
-	FORCEINLINE UInt16 StrHex2UInt16C(const UTF8Char *str) { return (UInt16)StrHex2Int16C(str); }
+	Bool StrHex2Int16V(const UTF8Char *str, Int16 *outVal);
 	UInt8 StrHex2UInt8C(const UTF8Char *str);
+	FORCEINLINE UInt64 StrHex2UInt64C(const UTF8Char *str) { return (UInt64)StrHex2Int64C(str); }
+	FORCEINLINE Bool StrHex2UInt64V(const UTF8Char *str, UInt64 *outVal) { return StrHex2Int64V(str, (Int64*)outVal); }
+	FORCEINLINE Bool StrHex2UInt64S(const UTF8Char *str, UInt64 *outVal, UInt64 failVal) { return StrHex2Int64S(str, (Int64*)outVal, (Int64)failVal); }
+	FORCEINLINE UInt32 StrHex2UInt32C(const UTF8Char *str) { return (UInt32)StrHex2Int32C(str); }
+	FORCEINLINE Bool StrHex2UInt32V(const UTF8Char *str, UInt32 *outVal) { return StrHex2Int32V(str, (Int32*)outVal); }
+	FORCEINLINE UInt16 StrHex2UInt16C(const UTF8Char *str) { return (UInt16)StrHex2Int16C(str); }
+	FORCEINLINE Bool StrHex2UInt16V(const UTF8Char *str, UInt16 *outVal) { return StrHex2Int16V(str, (Int16*)outVal); }
 	UOSInt StrHex2Bytes(const UTF8Char *str, UInt8 *buff);
 	UOSInt StrHex2BytesS(const UTF8Char *str, UInt8 *buff, UTF8Char seperator);
 #ifdef HAS_INT64

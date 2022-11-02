@@ -29,6 +29,12 @@ void GUITextBox_InsText(GtkEntryBuffer *buffer, guint position, char *chars, gui
 	me->EventTextChange();
 }
 
+gboolean GUITextBox_KeyDown(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+	UI::GUITextBox *me = (UI::GUITextBox*)user_data;
+	return me->EventKeyDown(event->key.keyval);
+}
+
 void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, Bool multiLine, UI::GUITextBox *me)
 {
 	if (multiLine)
@@ -38,6 +44,7 @@ void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, B
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
 		gtk_text_buffer_set_text(buff, (const Char*)lbl.v, (gint)lbl.leng);
 		g_signal_connect(buff, "changed", G_CALLBACK(GUITextBox_Changed), me);
+		g_signal_connect(txt->widget, "key-press-event", G_CALLBACK(GUITextBox_KeyDown), me);
 	}
 	else
 	{
@@ -49,6 +56,7 @@ void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, B
 		gtk_widget_set_hexpand(txt->widget, false);
 		g_signal_connect(buff, "deleted-text", G_CALLBACK(GUITextBox_DelText), me);
 		g_signal_connect(buff, "inserted-text", G_CALLBACK(GUITextBox_InsText), me);
+		g_signal_connect(txt->widget, "key-press-event", G_CALLBACK(GUITextBox_KeyDown), me);
 	}
 }
 
@@ -93,6 +101,20 @@ void UI::GUITextBox::EventTextChange()
 	{
 		this->txtChgHdlrs.GetItem(i)(this->txtChgObjs.GetItem(i));
 	}
+}
+
+Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
+{
+	Bool ret = false;
+	UOSInt i = this->keyDownHdlrs.GetCount();
+	while (i-- > 0)
+	{
+		if ((ret = this->keyDownHdlrs.GetItem(i)(this->keyDownObjs.GetItem(i), osKey)))
+		{
+			break;
+		}
+	}
+	return ret;
 }
 
 void UI::GUITextBox::SetReadOnly(Bool isReadOnly)
@@ -199,6 +221,12 @@ void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
 {
 	this->txtChgHdlrs.Add(hdlr);
 	this->txtChgObjs.Add(userObj);
+}
+
+void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, void *userObj)
+{
+	this->keyDownHdlrs.Add(hdlr);
+	this->keyDownObjs.Add(userObj);
 }
 
 void UI::GUITextBox::SelectAll()

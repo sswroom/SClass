@@ -116,6 +116,11 @@ IO::StreamType IO::SerialPort::GetStreamType() const
 	return IO::StreamType::SerialPort;
 }
 
+UOSInt IO::SerialPort::GetPortNum() const
+{
+	return this->portNum;
+}
+
 Bool IO::SerialPort::IsError() const
 {
 	return this->portNum == 0;

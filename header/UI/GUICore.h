@@ -8,6 +8,7 @@
 namespace UI
 {
 	typedef void (__stdcall *UIEvent)(void *userObj);
+	typedef Bool (__stdcall *KeyEvent)(void *userObj, UInt32 osKey);
 
 	class GUICore
 	{

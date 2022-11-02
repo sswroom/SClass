@@ -66,6 +66,7 @@ namespace IO
 		virtual void Close();
 		virtual Bool Recover();
 		virtual IO::StreamType GetStreamType() const;
+		UOSInt GetPortNum() const;
 
 		Bool IsError() const;
 	};
