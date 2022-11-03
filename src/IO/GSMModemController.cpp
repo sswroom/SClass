@@ -833,6 +833,22 @@ Bool IO::GSMModemController::GPRSSetPDPActive(Bool active)
 	}
 }
 
+Bool IO::GSMModemController::GPRSSetPDPActive(Bool active, UInt32 cid)
+{
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	if (active)
+	{
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CGACT=1,"));
+	}
+	else
+	{
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CGACT=1,"));
+	}
+	sptr = Text::StrUInt32(sptr, cid);
+	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000);
+}
+
 Bool IO::GSMModemController::GPRSGetPDPActive(Data::ArrayList<ActiveState> *actList)
 {
 	UTF8Char sbuff[256];
@@ -1403,7 +1419,7 @@ void IO::GSMModemController::PBFreeEntries(Data::ArrayList<PBEntry*> *phoneList)
 	}
 }
 
-Int32 IO::GSMModemController::GetRSSIdBm(RSSI rssi)
+Int32 IO::GSMModemController::RSSIGetdBm(RSSI rssi)
 {
 	switch (rssi)
 	{
@@ -1477,7 +1493,7 @@ Int32 IO::GSMModemController::GetRSSIdBm(RSSI rssi)
 	}
 }
 
-UTF8Char *IO::GSMModemController::GetRSSIString(UTF8Char *buff, RSSI rssi)
+UTF8Char *IO::GSMModemController::RSSIGetName(UTF8Char *buff, RSSI rssi)
 {
 	switch (rssi)
 	{
@@ -1551,7 +1567,7 @@ UTF8Char *IO::GSMModemController::GetRSSIString(UTF8Char *buff, RSSI rssi)
 	}
 }
 
-UTF8Char *IO::GSMModemController::GetBERString(UTF8Char *buff, BER ber)
+UTF8Char *IO::GSMModemController::BERGetName(UTF8Char *buff, BER ber)
 {
 	switch (ber)
 	{

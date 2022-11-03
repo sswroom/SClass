@@ -150,7 +150,7 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 			this->currOfst += 1;
 		return true;
 	}
-	else if (Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst]))
+	else if (sptr[this->currOfst] == '_' || Text::CharUtil::IsAlphaNumeric(sptr[this->currOfst]))
 	{
 		UOSInt i = this->currOfst;
 		while (Text::CharUtil::IsAlphaNumeric(sptr[i]) || sptr[i] == '-' || sptr[i] == '_')

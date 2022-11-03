@@ -1,14 +1,16 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGSMMODEMFORM
 #define _SM_SSWR_AVIREAD_AVIRGSMMODEMFORM
-#include "IO/GSMModemController.h"
+#include "IO/HuaweiGSMModemController.h"
 #include "IO/LogTool.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
+#include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
+#include "UI/GUIRealtimeLineChart.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -24,6 +26,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			IO::GSMModemController *modem;
+			IO::HuaweiGSMModemController *huawei;
 			IO::ATCommandChannel *channel;
 			IO::Stream *port;
 			IO::LogTool log;
@@ -39,6 +42,7 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpInfo;
+			UI::GUIPanel *pnlInfo;
 			UI::GUILabel *lblModemManu;
 			UI::GUITextBox *txtModemManu;
 			UI::GUILabel *lblModemModel;
@@ -63,6 +67,7 @@ namespace SSWR
 			UI::GUITextBox *txtACT;
 			UI::GUILabel *lblSignalQuality;
 			UI::GUITextBox *txtSignalQuality;
+			UI::GUIRealtimeLineChart *rlcRSSI;
 
 			UI::GUITabPage *tpPhoneBook;
 			UI::GUIPanel *pnlPhone;
@@ -96,6 +101,10 @@ namespace SSWR
 			UI::GUILabel *lblPDPAPN;
 			UI::GUITextBox *txtPDPAPN;
 			UI::GUIButton *btnPDPContextSet;
+			UI::GUIButton *btnPDPContextActiveAll;
+			UI::GUIButton *btnPDPContextActiveSelected;
+			UI::GUIButton *btnPDPContextDeactiveAll;
+			UI::GUIButton *btnPDPContextDeactiveSelected;
 			UI::GUIListView *lvPDPContext;
 
 			UI::GUITabPage *tpATCommand;
@@ -109,11 +118,69 @@ namespace SSWR
 			UI::GUIListBox *lbLog;
 			UI::GUITextBox *txtLog;
 
+			UI::GUITabPage *tpHuawei;
+			UI::GUILabel *lblHuaweiICCID;
+			UI::GUITextBox *txtHuaweiICCID;
+			UI::GUILabel *lblHuaweiSIMType;
+			UI::GUITextBox *txtHuaweiSIMType;
+			UI::GUILabel *lblHuaweiSrvStatus;
+			UI::GUITextBox *txtHuaweiSrvStatus;
+			UI::GUILabel *lblHuaweiSrvDomain;
+			UI::GUITextBox *txtHuaweiSrvDomain;
+			UI::GUILabel *lblHuaweiRoamStatus;
+			UI::GUITextBox *txtHuaweiRoamStatus;
+			UI::GUILabel *lblHuaweiSIMState;
+			UI::GUITextBox *txtHuaweiSIMState;
+			UI::GUILabel *lblHuaweiLockState;
+			UI::GUITextBox *txtHuaweiLockState;
+			UI::GUILabel *lblHuaweiSysMode;
+			UI::GUITextBox *txtHuaweiSysMode;
+			UI::GUILabel *lblHuaweiSubMode;
+			UI::GUITextBox *txtHuaweiSubMode;
+			UI::GUILabel *lblHuaweiCSQ1;
+			UI::GUITextBox *txtHuaweiCSQ1;
+			UI::GUILabel *lblHuaweiCSQ2;
+			UI::GUITextBox *txtHuaweiCSQ2;
+			UI::GUILabel *lblHuaweiCSQ3;
+			UI::GUITextBox *txtHuaweiCSQ3;
+			UI::GUILabel *lblHuaweiCSQ4;
+			UI::GUITextBox *txtHuaweiCSQ4;
+			UI::GUIGroupBox *grpHuaweiDHCP;
+			UI::GUIButton *btnHuaweiDHCP;
+			UI::GUILabel *lblHuaweiDHCPClientIP;
+			UI::GUITextBox *txtHuaweiDHCPClientIP;
+			UI::GUILabel *lblHuaweiDHCPNetmask;
+			UI::GUITextBox *txtHuaweiDHCPNetmask;
+			UI::GUILabel *lblHuaweiDHCPGateway;
+			UI::GUITextBox *txtHuaweiDHCPGateway;
+			UI::GUILabel *lblHuaweiDHCPServer;
+			UI::GUITextBox *txtHuaweiDHCPServer;
+			UI::GUILabel *lblHuaweiDHCPPriDNS;
+			UI::GUITextBox *txtHuaweiDHCPPriDNS;
+			UI::GUILabel *lblHuaweiDHCPSecDNS;
+			UI::GUITextBox *txtHuaweiDHCPSecDNS;
+			UI::GUILabel *lblHuaweiDHCPMaxRXbps;
+			UI::GUITextBox *txtHuaweiDHCPMaxRXbps;
+			UI::GUILabel *lblHuaweiDHCPMaxTXbps;
+			UI::GUITextBox *txtHuaweiDHCPMaxTXbps;
+
 			Bool initStrs;
 			Text::String *initModemManu;
 			Text::String *initModemModel;
 			Text::String *initModemVer;
 			Text::String *initIMEI;
+			Text::String *huaweiICCID;
+			Bool huaweiSysInfoUpdated;
+			IO::HuaweiGSMModemController::ServiceStatus huaweiSysInfoSrvStatus;
+			IO::HuaweiGSMModemController::ServiceDomain huaweiSysInfoSrvDomain;
+			Bool huaweiSysInfoRoamStatus;
+			IO::HuaweiGSMModemController::SIMState huaweiSysInfoSIMState;
+			Bool huaweiSysInfoLockState;
+			IO::HuaweiGSMModemController::SysMode huaweiSysInfoSysMode;
+			IO::HuaweiGSMModemController::SubMode huaweiSysInfoSubMode;
+			IO::HuaweiGSMModemController::SIMCardType huaweiSIMType;
+			Bool huaweiCSQUpdated;
+			IO::HuaweiGSMModemController::SignalStrengthInfo huaweiCSQ;
 			Bool simChanged;
 			Bool simInfoUpdated;
 			Text::String *simIMSI;
@@ -127,6 +194,7 @@ namespace SSWR
 			IO::GSMModemController::AccessTech regNetACT;
 			Data::ArrayList<IO::GSMModemController::SMSMessage *> msgList;
 
+			Bool signalUpdated;
 			IO::GSMModemController::RSSI signalQuality;
 			Bool operUpdated;
 			Text::String *operName;
@@ -152,6 +220,11 @@ namespace SSWR
 			static void __stdcall OnPDPAttachClicked(void *userObj);
 			static void __stdcall OnPDPDetachClicked(void *userObj);
 			static void __stdcall OnPDPContextSetClicked(void *userObj);
+			static void __stdcall OnPDPContextActiveAllClicked(void *userObj);
+			static void __stdcall OnPDPContextDeactiveAllClicked(void *userObj);
+			static void __stdcall OnPDPContextActiveSelectedClicked(void *userObj);
+			static void __stdcall OnPDPContextDeactiveSelectedClicked(void *userObj);
+			static void __stdcall OnHuaweiDHCPClicked(void *userObj);
 
 			void LoadPhoneBook();
 			void LoadSMS();

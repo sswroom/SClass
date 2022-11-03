@@ -1677,6 +1677,8 @@ IO/GPSNMEA.h: ../../src/IO/GPSNMEA.cpp
 @GPSNMEA.o
 IO/GSMModemController.h: ../../src/IO/GSMModemController.cpp
 @GSMModemController.o
+IO/HuaweiGSMModemController.h: ../../src/IO/HuaweiGSMModemController.cpp
+@HuaweiGSMModemController.o
 IO/I2C.h: ../../src/IO/I2C.cpp
 @I2C.o
 IO/I2CChannel.h:
@@ -4557,6 +4559,7 @@ FileSectorData.o: ../../src/IO/FileSectorData.cpp
 GPIOPin.o: ../../src/IO/GPIOPin.cpp
 GPSNMEA.o: ../../src/IO/GPSNMEA.cpp
 GSMModemController.o: ../../src/IO/GSMModemController.cpp
+HuaweiGSMModemController.o: ../../src/IO/HuaweiGSMModemController.cpp
 I2C.o: ../../src/IO/I2C.cpp
 I2CMODBUS.o: ../../src/IO/I2CMODBUS.cpp
 IniFile.o: ../../src/IO/IniFile.cpp

@@ -16,12 +16,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
 	Data::Timestamp currTime;
+	Data::Timestamp nextSignalTime;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Bool init = false;
 	IO::GSMModemController::BER ber;
 
-	currTime = Data::Timestamp();
+	nextSignalTime = Data::Timestamp::UtcNow();
 	me->running = true;
 
 	while (!me->toStop)
@@ -29,18 +30,39 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 		if (!init)
 		{
 			init = true;
+			SDEL_STRING(me->initModemManu);
+			SDEL_STRING(me->initModemModel);
+			SDEL_STRING(me->initModemVer);
+			SDEL_STRING(me->initIMEI);
+			SDEL_STRING(me->huaweiICCID);
 			if ((sptr = me->modem->GSMGetManufacturer(sbuff)) != 0)
+			{
 				me->initModemManu = Text::String::NewP(sbuff, sptr);
+				if (me->initModemManu->StartsWith(UTF8STRC("Huawei")))
+				{
+					IO::HuaweiGSMModemController *huawei;
+					IO::GSMModemController *oldModem;
+					NEW_CLASS(huawei, IO::HuaweiGSMModemController(me->channel, false));
+					me->huawei = huawei;
+					oldModem = me->modem;
+					me->modem = huawei;
+					DEL_CLASS(oldModem);
+					me->huawei->HuaweiGetCardMode(&me->huaweiSIMType);
+				}
+			}
 			if ((sptr = me->modem->GSMGetModelIdent(sbuff)) != 0)
 				me->initModemModel = Text::String::NewP(sbuff, sptr);
 			if ((sptr = me->modem->GSMGetModemVer(sbuff)) != 0)
 				me->initModemVer = Text::String::NewP(sbuff, sptr);
 			if ((sptr = me->modem->GSMGetIMEI(sbuff)) != 0)
 				me->initIMEI = Text::String::NewP(sbuff, sptr);
+			if (me->huawei && (sptr = me->huawei->HuaweiGetICCID(sbuff)) != 0)
+				me->huaweiICCID = Text::String::NewP(sbuff, sptr);
 			me->initStrs = true;
 
 			if ((sptr = me->modem->GSMGetTECharset(sbuff)) != 0)
 			{
+				SDEL_STRING(me->cfgTECharset);
 				me->cfgTECharset = Text::String::NewP(sbuff, sptr);
 				me->cfgTECharsetUpd = true;
 			}
@@ -70,8 +92,27 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 			{
 				me->regNetUpdated = true;
 			}
+			if (me->huawei)
+			{
+				me->huaweiSysInfoUpdated = me->huawei->HuaweiGetSysInfoEx(&me->huaweiSysInfoSrvStatus,
+					&me->huaweiSysInfoSrvDomain,
+					&me->huaweiSysInfoRoamStatus,
+					&me->huaweiSysInfoSIMState,
+					&me->huaweiSysInfoLockState,
+					&me->huaweiSysInfoSysMode,
+					&me->huaweiSysInfoSubMode);
+			}
 		}
-		me->modem->GSMGetSignalQuality(&me->signalQuality, &ber);
+		if (currTime >= nextSignalTime)
+		{
+			nextSignalTime = nextSignalTime.AddSecond(10);
+			me->modem->GSMGetSignalQuality(&me->signalQuality, &ber);
+			if (me->huawei)
+			{
+				me->huaweiCSQUpdated = me->huawei->HuaweiGetSignalStrength(&me->huaweiCSQ);
+			}
+			me->signalUpdated = true;
+		}
 		me->modemEvt.Wait(1000);
 	}
 	me->running = false;
@@ -80,6 +121,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 {
+	Double values[5];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
@@ -102,6 +144,14 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 		if (me->initIMEI)
 		{
 			me->txtModemIMEI->SetText(me->initIMEI->ToCString());
+		}
+		if (me->huawei)
+		{
+			if (me->huaweiICCID)
+			{
+				me->txtHuaweiICCID->SetText(me->huaweiICCID->ToCString());
+			}
+			me->txtHuaweiSIMType->SetText(IO::HuaweiGSMModemController::SIMCardTypeGetName(me->huaweiSIMType));
 		}
 	}
 	if (me->simInfoUpdated)
@@ -134,9 +184,126 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 			me->txtACT->SetText(IO::GSMModemController::AccessTechGetName(me->regNetACT));
 		}
 	}
+	if (me->huaweiSysInfoUpdated)
+	{
+		me->huaweiSysInfoUpdated = false;
+		me->txtHuaweiSrvStatus->SetText(IO::HuaweiGSMModemController::ServiceStatusGetName(me->huaweiSysInfoSrvStatus));
+		me->txtHuaweiSrvDomain->SetText(IO::HuaweiGSMModemController::ServiceDomainGetName(me->huaweiSysInfoSrvDomain));
+		me->txtHuaweiRoamStatus->SetText(me->huaweiSysInfoRoamStatus?CSTR("Roaming"):CSTR("Not Roaming"));
+		me->txtHuaweiSIMState->SetText(IO::HuaweiGSMModemController::SIMStateGetName(me->huaweiSysInfoSIMState));
+		me->txtHuaweiLockState->SetText(me->huaweiSysInfoLockState?CSTR("Locked"):CSTR("Not locked"));
+		me->txtHuaweiSysMode->SetText(IO::HuaweiGSMModemController::SysModeGetName(me->huaweiSysInfoSysMode));
+		me->txtHuaweiSubMode->SetText(IO::HuaweiGSMModemController::SubModeGetName(me->huaweiSysInfoSubMode));
+	}
+	if (me->signalUpdated)
+	{
+		me->signalUpdated = false;
+		sptr = IO::GSMModemController::RSSIGetName(sbuff, me->signalQuality);
+		me->txtSignalQuality->SetText(CSTRP(sbuff, sptr));
+		values[0] = (Double)IO::GSMModemController::RSSIGetdBm(me->signalQuality);
+		values[1] = 0;
+		values[2] = 0;
+		values[3] = 0;
+		values[4] = 0;
+		if (me->huawei)
+		{
+			if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::LTE)
+			{
+				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.lteRSSI);
+				values[2] = IO::HuaweiGSMModemController::RSRPGetdBm(me->huaweiCSQ.lteRSRP);
+				values[3] = IO::HuaweiGSMModemController::SINRGetdBm(me->huaweiCSQ.lteSINR);
+				values[4] = IO::HuaweiGSMModemController::RSRQGetdBm(me->huaweiCSQ.lteRSRQ);
+			}
+			else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::TD_SCDMA)
+			{
+				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.tdscdmaRSSI);
+				values[2] = IO::HuaweiGSMModemController::RSCPGetdBm(me->huaweiCSQ.tdscdmaRSCP);
+				values[3] = IO::HuaweiGSMModemController::ECIOGetdBm(me->huaweiCSQ.tdscdmaECIO);
+			}
+			else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::WCDMA)
+			{
+				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.wcdmaRSSI);
+				values[2] = IO::HuaweiGSMModemController::RSCPGetdBm(me->huaweiCSQ.wcdmaRSCP);
+				values[3] = IO::HuaweiGSMModemController::ECIOGetdBm(me->huaweiCSQ.wcdmaECIO);
+			}
+			else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::GSM)
+			{
+				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.gsmRSSI);
+			}
+		}
+		me->rlcRSSI->AddSample(values);
+	}
 
-	sptr = IO::GSMModemController::GetRSSIString(sbuff, me->signalQuality);
-	me->txtSignalQuality->SetText(CSTRP(sbuff, sptr));
+	if (me->huaweiCSQUpdated)
+	{
+		me->huaweiCSQUpdated = false;
+		if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::LTE)
+		{
+			me->lblHuaweiCSQ1->SetText(CSTR("LTE RSSI"));
+			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.lteRSSI);
+			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ2->SetText(CSTR("LTE RSRP"));
+			sptr = IO::HuaweiGSMModemController::RSRPGetName(sbuff, me->huaweiCSQ.lteRSRP);
+			me->txtHuaweiCSQ2->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ3->SetText(CSTR("LTE SINR"));
+			sptr = IO::HuaweiGSMModemController::SINRGetName(sbuff, me->huaweiCSQ.lteSINR);
+			me->txtHuaweiCSQ3->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ4->SetText(CSTR("LTE RSRQ"));
+			sptr = IO::HuaweiGSMModemController::RSRQGetName(sbuff, me->huaweiCSQ.lteRSRQ);
+			me->txtHuaweiCSQ4->SetText(CSTRP(sbuff, sptr));
+		}
+		else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::TD_SCDMA)
+		{
+			me->lblHuaweiCSQ1->SetText(CSTR("TD-SCDMA RSSI"));
+			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.tdscdmaRSSI);
+			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ2->SetText(CSTR("TD-SCDMA RSCP"));
+			sptr = IO::HuaweiGSMModemController::RSCPGetName(sbuff, me->huaweiCSQ.tdscdmaRSCP);
+			me->txtHuaweiCSQ2->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ3->SetText(CSTR("TD-SCDMA ECIO"));
+			sptr = IO::HuaweiGSMModemController::ECIOGetName(sbuff, me->huaweiCSQ.tdscdmaECIO);
+			me->txtHuaweiCSQ3->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ4->SetText(CSTR("-"));
+			me->txtHuaweiCSQ4->SetText(CSTR(""));
+		}
+		else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::WCDMA)
+		{
+			me->lblHuaweiCSQ1->SetText(CSTR("WCDMA RSSI"));
+			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.wcdmaRSSI);
+			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ2->SetText(CSTR("WCDMA RSCP"));
+			sptr = IO::HuaweiGSMModemController::RSCPGetName(sbuff, me->huaweiCSQ.wcdmaRSCP);
+			me->txtHuaweiCSQ2->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ3->SetText(CSTR("WCDMA ECIO"));
+			sptr = IO::HuaweiGSMModemController::ECIOGetName(sbuff, me->huaweiCSQ.wcdmaECIO);
+			me->txtHuaweiCSQ3->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ4->SetText(CSTR("-"));
+			me->txtHuaweiCSQ4->SetText(CSTR(""));
+		}
+		else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::GSM)
+		{
+			me->lblHuaweiCSQ1->SetText(CSTR("GSM RSSI"));
+			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.gsmRSSI);
+			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
+			me->lblHuaweiCSQ2->SetText(CSTR("-"));
+			me->txtHuaweiCSQ2->SetText(CSTR(""));
+			me->lblHuaweiCSQ3->SetText(CSTR("-"));
+			me->txtHuaweiCSQ3->SetText(CSTR(""));
+			me->lblHuaweiCSQ4->SetText(CSTR("-"));
+			me->txtHuaweiCSQ4->SetText(CSTR(""));
+		}
+		else
+		{
+			me->lblHuaweiCSQ1->SetText(CSTR("-"));
+			me->txtHuaweiCSQ1->SetText(CSTR(""));
+			me->lblHuaweiCSQ2->SetText(CSTR("-"));
+			me->txtHuaweiCSQ2->SetText(CSTR(""));
+			me->lblHuaweiCSQ3->SetText(CSTR("-"));
+			me->txtHuaweiCSQ3->SetText(CSTR(""));
+			me->lblHuaweiCSQ4->SetText(CSTR("-"));
+			me->txtHuaweiCSQ4->SetText(CSTR(""));
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPhoneRClick(void *userObj)
@@ -344,15 +511,13 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(void *userObj
 		Data::ArrayList<Text::String*> ret;
 		if (me->channel->SendATCommand(&ret, sb.ToString(), sb.GetLength(), 3000))
 		{
-			sb.ClearStr();
 			Text::String *s;
 			UOSInt i = 0;
 			UOSInt j = ret.GetCount();
 			while (i < j)
 			{
 				s = ret.GetItem(i);
-				if (i > 0)
-					sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("\r\n"));
 				sb.Append(s);
 				s->Release();
 				i++;
@@ -455,6 +620,134 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(void *use
 	else
 	{
 		me->txtPDPContextStatus->SetText(CSTR("Error in setting PDP Context"));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveAllClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	if (me->modem)
+	{
+		if (me->modem->GPRSSetPDPActive(true))
+		{
+			me->txtPDPContextStatus->SetText(CSTR("All Context activated"));
+		}
+		else
+		{
+			me->txtPDPContextStatus->SetText(CSTR("Error in activating context"));
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveAllClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	if (me->modem)
+	{
+		if (me->modem->GPRSSetPDPActive(false))
+		{
+			me->txtPDPContextStatus->SetText(CSTR("All Context deactivated"));
+		}
+		else
+		{
+			me->txtPDPContextStatus->SetText(CSTR("Error in deactivating context"));
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextActiveSelectedClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	if (me->modem)
+	{
+		UOSInt i = me->lvPDPContext->GetSelectedIndex();
+		if (i != INVALID_INDEX)
+		{
+			if (me->modem->GPRSSetPDPActive(true, (UInt32)(UOSInt)me->lvPDPContext->GetItem(i)))
+			{
+				me->txtPDPContextStatus->SetText(CSTR("Context activated"));
+			}
+			else
+			{
+				me->txtPDPContextStatus->SetText(CSTR("Error in activating context"));
+			}
+		}
+		else
+		{
+			me->txtPDPContextStatus->SetText(CSTR("No context selected"));
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	if (me->modem)
+	{
+		UOSInt i = me->lvPDPContext->GetSelectedIndex();
+		if (i != INVALID_INDEX)
+		{
+			if (me->modem->GPRSSetPDPActive(false, (UInt32)(UOSInt)me->lvPDPContext->GetItem(i)))
+			{
+				me->txtPDPContextStatus->SetText(CSTR("Context deactivated"));
+			}
+			else
+			{
+				me->txtPDPContextStatus->SetText(CSTR("Error in deactivating context"));
+			}
+		}
+		else
+		{
+			me->txtPDPContextStatus->SetText(CSTR("No context selected"));
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
+	if (me->huawei)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		UInt32 clientIP;
+		UInt32 netmask;
+		UInt32 gateway;
+		UInt32 dhcp;
+		UInt32 priDNS;
+		UInt32 secDNS;
+		UInt64 maxRXbps;
+		UInt64 maxTXbps;
+		if (me->huawei->HuaweiGetDHCP(&clientIP, &netmask, &gateway, &dhcp, &priDNS, &secDNS, &maxRXbps, &maxTXbps))
+		{
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, clientIP);
+			me->txtHuaweiDHCPClientIP->SetText(CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, netmask);
+			me->txtHuaweiDHCPNetmask->SetText(CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, gateway);
+			me->txtHuaweiDHCPGateway->SetText(CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp);
+			me->txtHuaweiDHCPServer->SetText(CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, priDNS);
+			me->txtHuaweiDHCPPriDNS->SetText(CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, secDNS);
+			me->txtHuaweiDHCPSecDNS->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, maxRXbps);
+			me->txtHuaweiDHCPMaxRXbps->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, maxTXbps);
+			me->txtHuaweiDHCPMaxTXbps->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			me->txtHuaweiDHCPClientIP->SetText(CSTR("-"));
+			me->txtHuaweiDHCPNetmask->SetText(CSTR("-"));
+			me->txtHuaweiDHCPGateway->SetText(CSTR("-"));
+			me->txtHuaweiDHCPServer->SetText(CSTR("-"));
+			me->txtHuaweiDHCPPriDNS->SetText(CSTR("-"));
+			me->txtHuaweiDHCPSecDNS->SetText(CSTR("-"));
+			me->txtHuaweiDHCPMaxRXbps->SetText(CSTR("-"));
+			me->txtHuaweiDHCPMaxTXbps->SetText(CSTR("-"));
+		}
 	}
 }
 
@@ -684,6 +977,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 		this->modem = 0;
 		this->channel = 0;
 		this->port = 0;
+		this->huawei = 0;
 
 		if (updateUI)
 		{
@@ -703,8 +997,10 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->modem = 0;
 	this->channel = 0;
 	this->port = 0;
+	this->huawei = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
+	this->signalUpdated = false;
 	this->signalQuality = IO::GSMModemController::RSSI_UNKNOWN;
 	this->operUpdated = false;
 	this->operName = 0;
@@ -713,6 +1009,17 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->initModemModel = 0;
 	this->initModemVer = 0;
 	this->initIMEI = 0;
+	this->huaweiICCID = 0;
+	this->huaweiSysInfoUpdated = false;;
+	this->huaweiSysInfoSrvStatus = IO::HuaweiGSMModemController::ServiceStatus::NoServices;
+	this->huaweiSysInfoSrvDomain = IO::HuaweiGSMModemController::ServiceDomain::NoServices;
+	this->huaweiSysInfoRoamStatus = false;
+	this->huaweiSysInfoSIMState = IO::HuaweiGSMModemController::SIMState::InvalidSIM;
+	this->huaweiSysInfoLockState = false;
+	this->huaweiSysInfoSysMode = IO::HuaweiGSMModemController::SysMode::NoService;
+	this->huaweiSysInfoSubMode = IO::HuaweiGSMModemController::SubMode::NoService;
+	this->huaweiSIMType = IO::HuaweiGSMModemController::SIMCardType::NoCard;
+	this->huaweiCSQUpdated = false;
 	this->cfgTECharset = 0;
 	this->cfgTECharsetUpd = false;
 	this->simChanged = false;
@@ -746,70 +1053,75 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnDeviceOther->HandleButtonClick(OnDeviceOtherClk, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
-	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
-	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, CSTR("Manufacture")));
+	NEW_CLASS(this->rlcRSSI, UI::GUIRealtimeLineChart(ui, this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000));
+	this->rlcRSSI->SetRect(0, 0, 100, 100, false);
+	this->rlcRSSI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->pnlInfo, CSTR("Manufacture")));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtModemManu->SetRect(108, 8, 100, 23, false);
 	this->txtModemManu->SetReadOnly(true);
-	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->tpInfo, CSTR("Model")));
+	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->pnlInfo, CSTR("Model")));
 	this->lblModemModel->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtModemModel, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtModemModel, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtModemModel->SetRect(108, 32, 100, 23, false);
 	this->txtModemModel->SetReadOnly(true);
-	NEW_CLASS(this->lblModemVer, UI::GUILabel(ui, this->tpInfo, CSTR("Modem Ver")));
+	NEW_CLASS(this->lblModemVer, UI::GUILabel(ui, this->pnlInfo, CSTR("Modem Ver")));
 	this->lblModemVer->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->txtModemVer, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtModemVer, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtModemVer->SetRect(108, 56, 100, 23, false);
 	this->txtModemVer->SetReadOnly(true);
-	NEW_CLASS(this->lblModemIMEI, UI::GUILabel(ui, this->tpInfo, CSTR("IMEI")));
+	NEW_CLASS(this->lblModemIMEI, UI::GUILabel(ui, this->pnlInfo, CSTR("IMEI")));
 	this->lblModemIMEI->SetRect(8, 80, 100, 23, false);
-	NEW_CLASS(this->txtModemIMEI, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtModemIMEI, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtModemIMEI->SetRect(108, 80, 100, 23, false);
 	this->txtModemIMEI->SetReadOnly(true);
-	NEW_CLASS(this->lblIMSI, UI::GUILabel(ui, this->tpInfo, CSTR("IMSI")));
+	NEW_CLASS(this->lblIMSI, UI::GUILabel(ui, this->pnlInfo, CSTR("IMSI")));
 	this->lblIMSI->SetRect(8, 104, 100, 23, false);
-	NEW_CLASS(this->txtIMSI, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtIMSI, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtIMSI->SetRect(108, 104, 100, 23, false);
 	this->txtIMSI->SetReadOnly(true);
-	NEW_CLASS(this->lblTECharset, UI::GUILabel(ui, this->tpInfo, CSTR("TE Charset")));
+	NEW_CLASS(this->lblTECharset, UI::GUILabel(ui, this->pnlInfo, CSTR("TE Charset")));
 	this->lblTECharset->SetRect(8, 128, 100, 23, false);
-	NEW_CLASS(this->txtTECharset, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtTECharset, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtTECharset->SetRect(108, 128, 100, 23, false);
 	this->txtTECharset->SetReadOnly(true);
-	NEW_CLASS(this->lblOperator, UI::GUILabel(ui, this->tpInfo, CSTR("Operator")));
+	NEW_CLASS(this->lblOperator, UI::GUILabel(ui, this->pnlInfo, CSTR("Operator")));
 	this->lblOperator->SetRect(8, 152, 100, 23, false);
-	NEW_CLASS(this->txtOperator, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtOperator, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtOperator->SetRect(108, 152, 100, 23, false);
 	this->txtOperator->SetReadOnly(true);
-	NEW_CLASS(this->lblRegStatus, UI::GUILabel(ui, this->tpInfo, CSTR("Register Status")));
+	NEW_CLASS(this->lblRegStatus, UI::GUILabel(ui, this->pnlInfo, CSTR("Register Status")));
 	this->lblRegStatus->SetRect(8, 176, 100, 23, false);
-	NEW_CLASS(this->txtRegStatus, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtRegStatus, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtRegStatus->SetRect(108, 176, 100, 23, false);
 	this->txtRegStatus->SetReadOnly(true);
-	NEW_CLASS(this->lblLAC, UI::GUILabel(ui, this->tpInfo, CSTR("LAC")));
+	NEW_CLASS(this->lblLAC, UI::GUILabel(ui, this->pnlInfo, CSTR("LAC")));
 	this->lblLAC->SetRect(8, 200, 100, 23, false);
-	NEW_CLASS(this->txtLAC, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtLAC, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtLAC->SetRect(108, 200, 100, 23, false);
 	this->txtLAC->SetReadOnly(true);
-	NEW_CLASS(this->lblCI, UI::GUILabel(ui, this->tpInfo, CSTR("CI")));
+	NEW_CLASS(this->lblCI, UI::GUILabel(ui, this->pnlInfo, CSTR("CI")));
 	this->lblCI->SetRect(8, 224, 100, 23, false);
-	NEW_CLASS(this->txtCI, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtCI, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtCI->SetRect(108, 224, 100, 23, false);
 	this->txtCI->SetReadOnly(true);
-	NEW_CLASS(this->lblACT, UI::GUILabel(ui, this->tpInfo, CSTR("Access Tech")));
+	NEW_CLASS(this->lblACT, UI::GUILabel(ui, this->pnlInfo, CSTR("Access Tech")));
 	this->lblACT->SetRect(8, 248, 100, 23, false);
-	NEW_CLASS(this->txtACT, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtACT, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtACT->SetRect(108, 248, 200, 23, false);
 	this->txtACT->SetReadOnly(true);
-	NEW_CLASS(this->lblSignalQuality, UI::GUILabel(ui, this->tpInfo, CSTR("Signal Quality")));
+	NEW_CLASS(this->lblSignalQuality, UI::GUILabel(ui, this->pnlInfo, CSTR("Signal Quality")));
 	this->lblSignalQuality->SetRect(8, 272, 100, 23, false);
-	NEW_CLASS(this->txtSignalQuality, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
+	NEW_CLASS(this->txtSignalQuality, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtSignalQuality->SetRect(108, 272, 100, 23, false);
 	this->txtSignalQuality->SetReadOnly(true);
 
+	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
 	NEW_CLASS(this->pnlPhone, UI::GUIPanel(ui, this->tpPhoneBook));
 	this->pnlPhone->SetRect(0, 0, 100, 32, false);
 	this->pnlPhone->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -838,6 +1150,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvPhone->SetFullRowSelect(true);
 	this->lvPhone->SetShowGrid(true);
 
+	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
 	NEW_CLASS(this->pnlSMS, UI::GUIPanel(ui, this->tpSMS));
 	this->pnlSMS->SetRect(0, 0, 100, 32, false);
 	this->pnlSMS->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -874,7 +1187,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 
 	this->tpPDPContext = this->tcMain->AddTabPage(CSTR("PDP Context(APN)"));
 	NEW_CLASS(this->pnlPDPContext, UI::GUIPanel(ui, this->tpPDPContext));
-	this->pnlPDPContext->SetRect(0, 0, 100, 48, false);
+	this->pnlPDPContext->SetRect(0, 0, 100, 72, false);
 	this->pnlPDPContext->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnPDPContextLoad, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Load")));
 	this->btnPDPContextLoad->SetRect(0, 0, 75, 23, false);
@@ -905,7 +1218,18 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnPDPContextSet, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Set")));
 	this->btnPDPContextSet->SetRect(540, 24, 75, 23, false);
 	this->btnPDPContextSet->HandleButtonClick(OnPDPContextSetClicked, this);
-
+	NEW_CLASS(this->btnPDPContextActiveAll, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Active All")));
+	this->btnPDPContextActiveAll->SetRect(0, 48, 75, 23, false);
+	this->btnPDPContextActiveAll->HandleButtonClick(OnPDPContextActiveAllClicked, this);
+	NEW_CLASS(this->btnPDPContextDeactiveAll, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Deactive All")));
+	this->btnPDPContextDeactiveAll->SetRect(80, 48, 75, 23, false);
+	this->btnPDPContextDeactiveAll->HandleButtonClick(OnPDPContextDeactiveAllClicked, this);
+	NEW_CLASS(this->btnPDPContextActiveSelected, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Active Selected")));
+	this->btnPDPContextActiveSelected->SetRect(160, 48, 75, 23, false);
+	this->btnPDPContextActiveSelected->HandleButtonClick(OnPDPContextActiveSelectedClicked, this);
+	NEW_CLASS(this->btnPDPContextDeactiveSelected, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Deactive Selected")));
+	this->btnPDPContextDeactiveSelected->SetRect(240, 48, 75, 23, false);
+	this->btnPDPContextDeactiveSelected->HandleButtonClick(OnPDPContextDeactiveSelectedClicked, this);
 	NEW_CLASS(this->lvPDPContext, UI::GUIListView(ui, this->tpPDPContext, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvPDPContext->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPDPContext->SetFullRowSelect(true);
@@ -942,6 +1266,118 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	
+	this->tpHuawei = this->tcMain->AddTabPage(CSTR("Huawei"));
+	NEW_CLASS(this->lblHuaweiICCID, UI::GUILabel(ui, this->tpHuawei, CSTR("ICCID")));
+	this->lblHuaweiICCID->SetRect(0, 0, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiICCID, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiICCID->SetRect(100, 0, 150, 23, false);
+	this->txtHuaweiICCID->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiSIMType, UI::GUILabel(ui, this->tpHuawei, CSTR("SIM Type")));
+	this->lblHuaweiSIMType->SetRect(0, 24, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiSIMType, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiSIMType->SetRect(100, 24, 150, 23, false);
+	this->txtHuaweiSIMType->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiSrvStatus, UI::GUILabel(ui, this->tpHuawei, CSTR("System Service")));
+	this->lblHuaweiSrvStatus->SetRect(0, 48, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiSrvStatus, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiSrvStatus->SetRect(100, 48, 150, 23, false);
+	this->txtHuaweiSrvStatus->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiSrvDomain, UI::GUILabel(ui, this->tpHuawei, CSTR("Service Domain")));
+	this->lblHuaweiSrvDomain->SetRect(0, 72, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiSrvDomain, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiSrvDomain->SetRect(100, 72, 150, 23, false);
+	this->txtHuaweiSrvDomain->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiRoamStatus, UI::GUILabel(ui, this->tpHuawei, CSTR("Roaming Status")));
+	this->lblHuaweiRoamStatus->SetRect(0, 96, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiRoamStatus, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiRoamStatus->SetRect(100, 96, 100, 23, false);
+	this->txtHuaweiRoamStatus->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiSIMState, UI::GUILabel(ui, this->tpHuawei, CSTR("SIM State")));
+	this->lblHuaweiSIMState->SetRect(0, 120, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiSIMState, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiSIMState->SetRect(100, 120, 150, 23, false);
+	this->txtHuaweiSIMState->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiLockState, UI::GUILabel(ui, this->tpHuawei, CSTR("Lock State")));
+	this->lblHuaweiLockState->SetRect(0, 144, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiLockState, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiLockState->SetRect(100, 144, 150, 23, false);
+	this->txtHuaweiLockState->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiSysMode, UI::GUILabel(ui, this->tpHuawei, CSTR("System Mode")));
+	this->lblHuaweiSysMode->SetRect(0, 168, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiSysMode, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiSysMode->SetRect(100, 168, 150, 23, false);
+	this->txtHuaweiSysMode->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiSubMode, UI::GUILabel(ui, this->tpHuawei, CSTR("System sub-mode")));
+	this->lblHuaweiSubMode->SetRect(0, 192, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiSubMode, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiSubMode->SetRect(100, 192, 150, 23, false);
+	this->txtHuaweiSubMode->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiCSQ1, UI::GUILabel(ui, this->tpHuawei, CSTR("LTE RSSI")));
+	this->lblHuaweiCSQ1->SetRect(0, 216, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiCSQ1, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiCSQ1->SetRect(100, 216, 150, 23, false);
+	this->txtHuaweiCSQ1->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiCSQ2, UI::GUILabel(ui, this->tpHuawei, CSTR("LTE RSRP")));
+	this->lblHuaweiCSQ2->SetRect(0, 240, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiCSQ2, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiCSQ2->SetRect(100, 240, 150, 23, false);
+	this->txtHuaweiCSQ2->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiCSQ3, UI::GUILabel(ui, this->tpHuawei, CSTR("LTE SINR")));
+	this->lblHuaweiCSQ3->SetRect(0, 264, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiCSQ3, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiCSQ3->SetRect(100, 264, 150, 23, false);
+	this->txtHuaweiCSQ3->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiCSQ4, UI::GUILabel(ui, this->tpHuawei, CSTR("LTE RSRQ")));
+	this->lblHuaweiCSQ4->SetRect(0, 288, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiCSQ4, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
+	this->txtHuaweiCSQ4->SetRect(100, 288, 150, 23, false);
+	this->txtHuaweiCSQ4->SetReadOnly(true);
+	NEW_CLASS(this->grpHuaweiDHCP, UI::GUIGroupBox(ui, this->tpHuawei, CSTR("DHCP")));
+	this->grpHuaweiDHCP->SetRect(280, 0, 300, 248, false);
+	NEW_CLASS(this->btnHuaweiDHCP, UI::GUIButton(ui, this->grpHuaweiDHCP, CSTR("Update")));
+	this->btnHuaweiDHCP->SetRect(0, 0, 75, 23, false);
+	this->btnHuaweiDHCP->HandleButtonClick(OnHuaweiDHCPClicked, this);
+	NEW_CLASS(this->lblHuaweiDHCPClientIP, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Client IP")));
+	this->lblHuaweiDHCPClientIP->SetRect(0, 24, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPClientIP, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPClientIP->SetRect(100, 24, 150, 23, false);
+	this->txtHuaweiDHCPClientIP->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPNetmask, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Subnet Mask")));
+	this->lblHuaweiDHCPNetmask->SetRect(0, 48, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPNetmask, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPNetmask->SetRect(100, 48, 150, 23, false);
+	this->txtHuaweiDHCPNetmask->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPGateway, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Gateway")));
+	this->lblHuaweiDHCPGateway->SetRect(0, 72, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPGateway, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPGateway->SetRect(100, 72, 150, 23, false);
+	this->txtHuaweiDHCPGateway->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPServer, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("DHCP Server")));
+	this->lblHuaweiDHCPServer->SetRect(0, 96, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPServer, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPServer->SetRect(100, 96, 150, 23, false);
+	this->txtHuaweiDHCPServer->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPPriDNS, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Primary DNS")));
+	this->lblHuaweiDHCPPriDNS->SetRect(0, 120, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPPriDNS, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPPriDNS->SetRect(100, 120, 150, 23, false);
+	this->txtHuaweiDHCPPriDNS->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPSecDNS, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Seconday DNS")));
+	this->lblHuaweiDHCPSecDNS->SetRect(0, 144, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPSecDNS, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPSecDNS->SetRect(100, 144, 150, 23, false);
+	this->txtHuaweiDHCPSecDNS->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPMaxRXbps, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Max TX Speed(bps)")));
+	this->lblHuaweiDHCPMaxRXbps->SetRect(0, 168, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPMaxRXbps, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPMaxRXbps->SetRect(100, 168, 150, 23, false);
+	this->txtHuaweiDHCPMaxRXbps->SetReadOnly(true);
+	NEW_CLASS(this->lblHuaweiDHCPMaxTXbps, UI::GUILabel(ui, this->grpHuaweiDHCP, CSTR("Max RX Speed(bps)")));
+	this->lblHuaweiDHCPMaxTXbps->SetRect(0, 192, 100, 23, false);
+	NEW_CLASS(this->txtHuaweiDHCPMaxTXbps, UI::GUITextBox(ui, this->grpHuaweiDHCP, CSTR("")));
+	this->txtHuaweiDHCPMaxTXbps->SetRect(100, 192, 150, 23, false);
+	this->txtHuaweiDHCPMaxTXbps->SetReadOnly(true);
+
 	this->toStop = false;
 	this->running = false;
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 200, false));
@@ -986,6 +1422,7 @@ SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 	SDEL_STRING(this->initModemModel);
 	SDEL_STRING(this->initModemVer);
 	SDEL_STRING(this->initIMEI);
+	SDEL_STRING(this->huaweiICCID);
 	SDEL_STRING(this->simIMSI);
 	SDEL_STRING(this->cfgTECharset);
 }

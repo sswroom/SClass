@@ -256,7 +256,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<Text::String*> *enumEntries, const
 		{
 			return true;
 		}
-		else if (Text::CharUtil::IsAlphabet(sb.ToString()[0]))
+		else if (sb.v[0] == '_' || Text::CharUtil::IsAlphabet(sb.ToString()[0]))
 		{
 			enumEntries->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 			sb.ClearStr();

@@ -247,6 +247,7 @@ namespace IO
 		Bool GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctxList); //AT+CGDCONT
 		void GPRSFreePDPContext(Data::ArrayList<PDPContext*> *ctxList);
 		Bool GPRSSetPDPActive(Bool active); //AT+CGACT
+		Bool GPRSSetPDPActive(Bool active, UInt32 cid); //AT+CGACT
 		Bool GPRSGetPDPActive(Data::ArrayList<ActiveState> *actList); //AT+CGACT
 
 		// SMS Commands
@@ -271,9 +272,9 @@ namespace IO
 		void PBFreeEntries(Data::ArrayList<PBEntry*> *phoneList);
 
 	public:
-		static Int32 GetRSSIdBm(RSSI rssi);
-		static UTF8Char *GetRSSIString(UTF8Char *buff, RSSI rssi);
-		static UTF8Char *GetBERString(UTF8Char *buff, BER ber);
+		static Int32 RSSIGetdBm(RSSI rssi);
+		static UTF8Char *RSSIGetName(UTF8Char *buff, RSSI rssi);
+		static UTF8Char *BERGetName(UTF8Char *buff, BER ber);
 		static Text::CString OperStatusGetName(OperStatus operStatus);
 		static Text::CString SIMStatusGetName(SIMStatus simStatus);
 		static Text::CString NetworkResultGetName(NetworkResult n);
