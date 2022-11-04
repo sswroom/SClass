@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Math/MSGeography.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
@@ -160,6 +161,56 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					}
 				}
 				return pl;
+			}
+			else if (shapePtr[8] == 6) //MultiPolygon
+			{
+				Math::Geometry::MultiPolygon *mpg;
+				Math::Geometry::Polygon *pg;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
+				UOSInt l;
+				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, false, false));
+				if (nFigures > 1)
+				{
+					i = 0;
+					j = 0;
+					while (i < nFigures)
+					{
+						i++;
+						if (i == nFigures)
+						{
+							k = nPoints;
+						}
+						else
+						{
+							k = ReadUInt32(&figurePtr[i * 5 + 1]);
+						}
+						NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, k - j, false, false));
+						Math::Coord2DDbl *points = pg->GetPointList(&l);
+						l = 0;
+						while (j < k)
+						{
+							points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
+							j++;
+							l++;
+						}
+						mpg->AddGeometry(pg);
+					}
+				}
+				else
+				{
+					NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, nPoints, false, false));
+					Math::Coord2DDbl *points = pg->GetPointList(&j);
+					i = 0;
+					while (i < j)
+					{
+						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+						i++;
+					}
+					mpg->AddGeometry(pg);
+				}
+				return mpg;
 			}
 			else
 			{
