@@ -14,6 +14,7 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 		Sync::MutexUsage mutUsage(&me->connMut);
 		if (me->conn)
 		{
+			me->conn->ClearPackets();
 			me->conn->SendPing();
 			mutUsage.EndUse();
 		}

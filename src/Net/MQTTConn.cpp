@@ -79,9 +79,10 @@ void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int
 		packet->packetType = (UInt8)cmdType;
 		packet->size = cmdSize;
 		MemCopyNO(packet->content, cmd, cmdSize);
-		Sync::MutexUsage mutUsage(&this->packetMut);
-		this->packetList.Add(packet);
-		mutUsage.EndUse();
+		{
+			Sync::MutexUsage mutUsage(&this->packetMut);
+			this->packetList.Add(packet);
+		}
 		this->packetEvt.Set();
 	}
 }
@@ -415,7 +416,6 @@ void Net::MQTTConn::ClearPackets()
 	Sync::MutexUsage mutUsage(&this->packetMut);
 	LIST_FREE_FUNC(&this->packetList, MemFree);
 	this->packetList.Clear();
-	mutUsage.EndUse();
 }
 
 UInt64 Net::MQTTConn::GetTotalUpload()
