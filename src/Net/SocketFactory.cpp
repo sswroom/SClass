@@ -72,6 +72,38 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CString host, Net::SocketUtil::Addre
 	return succ;
 }
 
+UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Net::SocketUtil::AddressInfo *addrs, UOSInt maxCnt)
+{
+	UTF8Char sbuff[256];
+
+	if (Net::SocketUtil::GetIPAddr(host, addrs))
+		return 1;
+
+	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
+	if (this->dnsHdlr == 0)
+	{
+		Net::SocketUtil::AddressInfo dnsAddr;
+		this->GetDefDNS(&dnsAddr);
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(this, &dnsAddr));
+		this->LoadHosts(this->dnsHdlr);
+	}
+	mutUsage.EndUse();
+	UOSInt ret = 0;
+	if (!this->noV6DNS)
+	{
+		ret = this->dnsHdlr->GetByDomainNamesv6(addrs, CSTRP(sbuff, sptr), maxCnt);
+	}
+	ret += this->dnsHdlr->GetByDomainNamesv4(&addrs[ret], CSTRP(sbuff, sptr), maxCnt - ret);
+	if (ret == 0)
+	{
+		Net::SocketUtil::AddressInfo dnsAddr;
+		this->GetDefDNS(&dnsAddr);
+		this->dnsHdlr->UpdateDNSAddr(&dnsAddr);
+	}
+	return ret;
+}
+
 UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CString host)
 {
 	Net::SocketUtil::AddressInfo addr;

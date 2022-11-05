@@ -1344,43 +1344,54 @@ Net::SSLClient *Net::WinSSLEngine::Connect(Text::CString hostName, UInt16 port, 
 		this->clsData->cliInit = true;
 	}
 
-	Net::SocketUtil::AddressInfo addr;
+	Net::SocketUtil::AddressInfo addr[1];
+	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, addr, 1);
 	Socket *s;
-	if (!this->sockf->DNSResolveIP(hostName, &addr))
+	if (addrCnt == 0)
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;
 		return 0;
 	}
-	if (addr.addrType == Net::AddrType::IPv4)
+	UOSInt addrInd = 0;
+	while (addrInd < addrCnt)
 	{
-		s = this->sockf->CreateTCPSocketv4();
+		if (addr[addrInd].addrType == Net::AddrType::IPv4)
+		{
+			s = this->sockf->CreateTCPSocketv4();
+			if (s == 0)
+			{
+				if (err)
+					*err = ErrorType::OutOfMemory;
+				return 0;
+			}
+			if (this->sockf->Connect(s, &addr[addrInd], port))
+			{
+				return CreateClientConn(0, s, hostName, err);
+			}
+			this->sockf->DestroySocket(s);
+		}
+		else if (addr[addrInd].addrType == Net::AddrType::IPv6)
+		{
+			s = this->sockf->CreateTCPSocketv6();
+			if (s == 0)
+			{
+				if (err)
+					*err = ErrorType::OutOfMemory;
+				return 0;
+			}
+			if (this->sockf->Connect(s, &addr[addrInd], port))
+			{
+				return CreateClientConn(0, s, hostName, err);
+			}
+			this->sockf->DestroySocket(s);
+		}
+		addrInd++;
 	}
-	else if (addr.addrType == Net::AddrType::IPv6)
-	{
-		s = this->sockf->CreateTCPSocketv6();
-	}
-	else
-	{
-		if (err)
-			*err = ErrorType::HostnameNotResolved;
-		return 0;
-	}
-	if (s == 0)
-	{
-		if (err)
-			*err = ErrorType::OutOfMemory;
-		return 0;
-	}
-	if (!this->sockf->Connect(s, &addr, port))
-	{
-		this->sockf->DestroySocket(s);
-		if (err)
-			*err = ErrorType::CannotConnect;
-		return 0;
-	}
-	
-	return CreateClientConn(0, s, hostName, err);
+
+	if (err)
+		*err = ErrorType::CannotConnect;
+	return 0;
 }
 
 Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CString hostName, ErrorType *err)

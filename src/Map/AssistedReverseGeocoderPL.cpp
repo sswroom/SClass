@@ -74,12 +74,11 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 				lcidInfo = this->lcidMap.Get(lcid);
 				if (lcidInfo == 0)
 				{
-					lcidInfo = MemAlloc(LCIDInfo, 1);
+					NEW_CLASS(lcidInfo, LCIDInfo());
 					lcidInfo->lcid = lcid;
-					NEW_CLASS(lcidInfo->mainList, Data::ArrayList<AddressEntry*>());
 					this->lcidMap.Put(lcid, lcidInfo);
 				}
-				lcidInfo->mainList->Add(entry);
+				lcidInfo->mainList.Add(entry);
 			}
 			this->conn->CloseReader(r);
 
@@ -87,7 +86,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 			UOSInt i = this->lcidMap.GetCount();
 			while (i-- > 0)
 			{
-				Data::Sort::ArtificialQuickSort::Sort(this->lcidMap.GetItem(i)->mainList, &comparator);
+				Data::Sort::ArtificialQuickSort::Sort(&this->lcidMap.GetItem(i)->mainList, &comparator);
 			}
 		}
 		printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
@@ -121,13 +120,12 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	while (i-- > 0)
 	{
 		lcid = this->lcidMap.GetItem(i);
-		j = lcid->mainList->GetCount();
+		j = lcid->mainList.GetCount();
 		while (j-- > 0)
 		{
-			MemFree(lcid->mainList->GetItem(j));
+			MemFree(lcid->mainList.GetItem(j));
 		}
-		DEL_CLASS(lcid->mainList);
-		MemFree(lcid);
+		DEL_CLASS(lcid);
 	}
 }
 
@@ -151,15 +149,14 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	lcidInfo = this->lcidMap.Get(lcid);
 	if (lcidInfo == 0)
 	{
-		lcidInfo = MemAlloc(LCIDInfo, 1);
+		NEW_CLASS(lcidInfo, LCIDInfo());
 		lcidInfo->lcid = lcid;
-		NEW_CLASS(lcidInfo->mainList, Data::ArrayList<AddressEntry*>());
 		this->lcidMap.Put(lcid, lcidInfo);
 	}
-	index = AddressIndexOf(lcidInfo->mainList, keyx, keyy);
+	index = AddressIndexOf(&lcidInfo->mainList, keyx, keyy);
 	if (index >= 0)
 	{
-		entry = lcidInfo->mainList->GetItem((UOSInt)index);
+		entry = lcidInfo->mainList.GetItem((UOSInt)index);
 		mutUsage.EndUse();
 		return entry->address->ConcatToS(buff, buffSize);
 	}
@@ -179,26 +176,23 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	}
 	if (sptr && buff[0])
 	{
-		Data::DateTime dt;
-		DB::SQLBuilder *sql;
-		dt.SetCurrTimeUTC();
-		NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-		sql->AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
-		sql->AppendInt32((Int32)lcid);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendInt32(keyx);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendInt32(keyy);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendStrUTF8(buff);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendDate(&dt);
-		sql->AppendCmdC(CSTR(")"));
-		if (this->conn->ExecuteNonQuery(sql->ToCString()) <= 0)
+		Data::Timestamp ts = Data::Timestamp::UtcNow();
+		DB::SQLBuilder sql(this->conn);
+		sql.AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
+		sql.AppendInt32((Int32)lcid);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(keyx);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(keyy);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStrUTF8(buff);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendTS(ts);
+		sql.AppendCmdC(CSTR(")"));
+		if (this->conn->ExecuteNonQuery(sql.ToCString()) <= 0)
 		{
-			this->conn->ExecuteNonQuery(sql->ToCString());
+			this->conn->ExecuteNonQuery(sql.ToCString());
 		}
-		DEL_CLASS(sql);
 
 		addr = this->strMap.Get(CSTRP(buff, sptr));
 		if (addr == 0)
@@ -210,13 +204,11 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		entry->keyx = keyx;
 		entry->keyy = keyy;
 		entry->address = addr;
-		lcidInfo->mainList->Insert((UOSInt)~index, entry);
-		mutUsage.EndUse();
+		lcidInfo->mainList.Insert((UOSInt)~index, entry);
 		return sptr;
 	}
 	else
 	{
-		mutUsage.EndUse();
 		return 0;
 	}
 }

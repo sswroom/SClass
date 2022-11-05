@@ -340,8 +340,9 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 
 Net::SSLClient *Net::OpenSSLEngine::Connect(Text::CString hostName, UInt16 port, ErrorType *err)
 {
-	Net::SocketUtil::AddressInfo addr;
-	if (!this->sockf->DNSResolveIP(hostName, &addr))
+	Net::SocketUtil::AddressInfo addr[1];
+	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, addr, 1);
+	if (addrCnt == 0)
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;
@@ -363,37 +364,48 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(Text::CString hostName, UInt16 port,
 		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	Socket *s;
-	if (addr.addrType == Net::AddrType::IPv4)
+	UOSInt addrInd = 0;
+	while (addrInd < addrCnt)
 	{
-		s = this->sockf->CreateTCPSocketv4();
+		if (addr[addrInd].addrType == Net::AddrType::IPv4)
+		{
+			s = this->sockf->CreateTCPSocketv4();
+			if (s == 0)
+			{
+				SSL_free(ssl);
+				if (err)
+					*err = ErrorType::OutOfMemory;
+				return 0;
+			}
+			if (this->sockf->Connect(s, &addr[addrInd], port))
+			{
+				return CreateClientConn(ssl, s, hostName, err);
+			}
+			this->sockf->DestroySocket(s);
+		}
+		else if (addr[addrInd].addrType == Net::AddrType::IPv6)
+		{
+			s = this->sockf->CreateTCPSocketv6();
+			if (s == 0)
+			{
+				SSL_free(ssl);
+				if (err)
+					*err = ErrorType::OutOfMemory;
+				return 0;
+			}
+			if (this->sockf->Connect(s, &addr[addrInd], port))
+			{
+				return CreateClientConn(ssl, s, hostName, err);
+			}
+			this->sockf->DestroySocket(s);
+		}
+		addrInd++;
 	}
-	else if (addr.addrType == Net::AddrType::IPv6)
-	{
-		s = this->sockf->CreateTCPSocketv6();
-	}
-	else
-	{
-		SSL_free(ssl);
-		if (err)
-			*err = ErrorType::HostnameNotResolved;
-		return 0;
-	}
-	if (s == 0)
-	{
-		SSL_free(ssl);
-		if (err)
-			*err = ErrorType::OutOfMemory;
-		return 0;
-	}
-	if (!this->sockf->Connect(s, &addr, port))
-	{
-		this->sockf->DestroySocket(s);
-		SSL_free(ssl);
-		if (err)
-			*err = ErrorType::CannotConnect;
-		return 0;
-	}
-	return CreateClientConn(ssl, s, hostName, err);
+
+	SSL_free(ssl);
+	if (err)
+		*err = ErrorType::CannotConnect;
+	return 0;
 }
 
 Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CString hostName, ErrorType *err)

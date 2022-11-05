@@ -4,7 +4,6 @@
 #include "Crypto/Hash/SHA1.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
-#include "IO/StreamReader.h"
 #include "Map/GoogleMap/GoogleWSSearcherJSON.h"
 #include "Net/HTTPClient.h"
 #include "Sync/MutexUsage.h"
@@ -150,21 +149,12 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 			cli->AddHeaderC(CSTR("Accept-Language"), {lang, Text::StrCharCnt(lang)});
 		}
 		Int32 status = cli->GetRespStatus();
-		IO::StreamReader *reader;
 
-		IO::MemoryStream *mstm;
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.GoogleMap.GoogleWSSearcherJSON.SearchName")));
+		Text::StringBuilderUTF8 sb;
 		while ((readSize = cli->Read(databuff, 2048)) > 0)
 		{
-			mstm->Write(databuff, readSize);
+			sb.AppendC(databuff, readSize);
 		}
-		mstm->SeekFromBeginning(0);
-		NEW_CLASS(reader, IO::StreamReader(mstm, 65001));
-		Text::StringBuilderUTF8 sb;
-		reader->ReadToEnd(&sb);
-//		sb.Append(reader);
-		DEL_CLASS(reader);
-		DEL_CLASS(mstm);
 
 		if (status == 200)
 		{
@@ -245,13 +235,8 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 			else
 			{
 				errWriter->WriteLineC(UTF8STRC("Google non-json Error"));
-				IO::FileStream *fs;
-				UInt8 *buff;
-				UOSInt buffSize;
-				NEW_CLASS(fs, IO::FileStream(CSTR("nonjsonerr.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				buff = mstm->GetBuff(&buffSize);
-				fs->Write(buff, buffSize);
-				DEL_CLASS(fs);
+				IO::FileStream fs(CSTR("nonjsonerr.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				fs.Write(sb.ToString(), sb.GetLength());
 				this->lastIsError = 1;
 			}
 		}
@@ -278,7 +263,6 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 
 	this->lastSrchDate.SetCurrTimeUTC();
 	DEL_CLASS(cli);
-	mutUsage.EndUse();
 	return buff;
 }
 

@@ -696,7 +696,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		this->svrAddr = addr;
 		if (addr.addrType != Net::AddrType::Unknown)
 		{
-#ifdef SHOWDEBUG
+#if defined(SHOWDEBUG)
 			Net::SocketUtil::GetAddrName(svrname, &this->svrAddr);
 			printf("Server IP: %s:%d, t = %d\r\n", svrname, port, (Int32)this->svrAddr.addrType);
 #endif
@@ -704,7 +704,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			{
 				Net::SSLEngine::ErrorType err;
 				this->cli = this->ssl->Connect(this->cliHost->ToCString(), port, &err);
-#ifdef SHOWDEBUG				
+#if defined(SHOWDEBUG)
 				if (this->cli == 0)
 				{
 					printf("Connect error: %s\r\n", Net::SSLEngine::ErrorTypeGetName(err).v);
@@ -744,7 +744,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 		else if (this->cli->IsConnectError())
 		{
-#ifdef SHOWDEBUG
+#if defined(SHOWDEBUG)
 			printf("Error in connect to server\r\n");
 #endif
 			DEL_CLASS(this->cli);

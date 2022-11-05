@@ -76,8 +76,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	}
 	if (sptr && buff[0])
 	{
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
+		Data::Timestamp ts = Data::Timestamp::UtcNow();
 		sql.Clear();
 		sql.AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
 		sql.AppendInt32((Int32)lcid);
@@ -88,16 +87,13 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendStrUTF8(buff);
 		sql.AppendCmdC(CSTR(", "));
-		sql.AppendDate(&dt);
+		sql.AppendTS(ts);
 		sql.AppendCmdC(CSTR(")"));
 		this->conn->ExecuteNonQuery(sql.ToCString());
-
-		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
-		mutUsage.EndUse();
 		return 0;
 	}
 }
@@ -149,8 +145,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	}
 	if (sptr && buff[0])
 	{
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
+		Data::Timestamp ts = Data::Timestamp::UtcNow();
 		sql.Clear();
 		sql.AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
 		sql.AppendInt32((Int32)lcid);
@@ -161,7 +156,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendStrUTF8(buff);
 		sql.AppendCmdC(CSTR(", "));
-		sql.AppendDate(&dt);
+		sql.AppendTS(ts);
 		sql.AppendCmdC(CSTR(")"));
 		this->conn->ExecuteNonQuery(sql.ToCString());
 		mutUsage.EndUse();

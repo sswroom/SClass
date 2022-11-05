@@ -219,6 +219,7 @@ namespace Net
 
 		Bool ReloadDNS();
 		Bool DNSResolveIP(Text::CString host, Net::SocketUtil::AddressInfo *addr);
+		UOSInt DNSResolveIPs(Text::CString host, Net::SocketUtil::AddressInfo *addrs, UOSInt maxCount);
 		UInt32 DNSResolveIPv4(Text::CString host);
 //		Bool GetIPByHost(const WChar *host, Net::SocketUtil::AddressInfo *addr);
 //		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(const UTF8Char *host);

@@ -22,11 +22,11 @@ namespace Map
 			Text::String *address;
 			Int64 addrTime;
 		};
-		typedef struct
+		struct LCIDInfo
 		{
 			UInt32 lcid;
-			Data::ArrayList<AddressEntry *> *mainList;
-		} LCIDInfo;
+			Data::ArrayList<AddressEntry *> mainList;
+		};
 
 		class AddressComparator : public Data::Comparator<AddressEntry*>
 		{
