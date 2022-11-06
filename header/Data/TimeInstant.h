@@ -72,7 +72,7 @@ namespace Data
 
 		TimeInstant ClearTime() const
 		{
-			return TimeInstant(this->sec, this->nanosec);
+			return TimeInstant(this->sec - this->sec % 86400, 0);
 		}
 
 		Int64 GetMSPassedDate() const
