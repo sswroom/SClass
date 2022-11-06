@@ -127,7 +127,7 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) 
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
-		return IO::PackageFile::PackObjectType::PackageFile;
+		return IO::PackageFile::PackObjectType::PackageFileType;
 	}
 	else
 	{

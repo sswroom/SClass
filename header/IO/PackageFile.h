@@ -53,7 +53,7 @@ namespace IO
 			Unknown,
 			StreamData,
 			ParsedObject,
-			PackageFile
+			PackageFileType
 		};
 
 		typedef enum

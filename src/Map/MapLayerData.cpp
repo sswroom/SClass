@@ -10,7 +10,7 @@
 #include "Text/MyStringW.h"
 
 //#define FILEBUFFER(name) IO::ViewFileBuffer(name)
-#define FILEBUFFER(name, nameLen) IO::MemFileBuffer({name, nameLen})
+#define FILEBUFFER(name, nameLen) IO::MemFileBuffer(Text::CString(name, nameLen))
 
 Map::MapLayerData::MapLayerData(Text::CString filePath)
 {

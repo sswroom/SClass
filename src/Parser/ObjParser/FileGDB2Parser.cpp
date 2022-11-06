@@ -40,7 +40,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 		return 0;
 	IO::PackageFile *relObj = 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
-	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFile)
+	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
 		relObj = pkg->GetItemPack(0);
 		pkg = relObj;

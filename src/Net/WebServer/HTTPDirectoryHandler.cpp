@@ -218,14 +218,14 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	while (i < j)
 	{
 		pot = packageFile->GetItemType(i);
-		if (pot == IO::PackageFile::PackObjectType::StreamData || pot == IO::PackageFile::PackObjectType::PackageFile)
+		if (pot == IO::PackageFile::PackObjectType::StreamData || pot == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			sbOut.AppendNE(UTF8STRC("<tr><td>"));
 			sbOut.AppendNE(UTF8STRC("<a href=\""));
 			sptr = packageFile->GetItemName(sbuff, i);
 			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
 			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
-			if (pot == IO::PackageFile::PackObjectType::PackageFile)
+			if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sbOut.AppendNE(UTF8STRC("/"));
 			}
@@ -233,7 +233,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			sptr2 = Text::XML::ToXMLText(sbuff2, sbuff);
 			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
 			sbOut.AppendNE(UTF8STRC("</a></td><td>"));
-			if (pot == IO::PackageFile::PackObjectType::PackageFile)
+			if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sbOut.AppendNE(UTF8STRC("Directory"));
 				sbOut.AppendNE(UTF8STRC("</td><td>"));
@@ -472,7 +472,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						return true;
 					}
 				}
-				else if (pot == IO::PackageFile::PackObjectType::PackageFile)
+				else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 				{
 					IO::PackageFile *innerPF = package->packageFile->GetPItemPack(pitem);
 					if (innerPF)

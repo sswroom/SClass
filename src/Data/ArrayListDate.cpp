@@ -92,7 +92,7 @@ void Data::ArrayListDate::AddRange(const Data::DateTime **arr, UOSInt cnt)
 	j = cnt;
 	while (j-- > 0)
 	{
-		this->arr[--i] = arr[j]->ToTicks();
+		this->arr[--i] = ((Data::DateTime*)arr[j])->ToTicks();
 	}
 	this->objCnt += cnt;
 }

@@ -255,7 +255,7 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 	{
 		if (itemObj->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			return IO::PackageFile::PackObjectType::PackageFile;
+			return IO::PackageFile::PackObjectType::PackageFileType;
 		}
 		else
 		{
@@ -782,7 +782,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 		i = pf->GetCount();
 		while (i-- > 0)
 		{
-			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
+			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sbuff[0] = 0;
 				sptr = pf->GetItemName(sbuff, i);

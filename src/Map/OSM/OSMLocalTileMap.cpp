@@ -154,7 +154,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	UOSInt i;
 	UOSInt j;
 
-	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFile)
+	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
 		pkgFile = pkgFile->GetItemPack(0);
 		if (pkgFile)
@@ -172,7 +172,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	j = pkgFile->GetCount();
 	while (i < j)
 	{
-		if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
+		if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
@@ -199,7 +199,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 			j = xPkg->GetCount();
 			while (i < j)
 			{
-				if (xPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
+				if (xPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 				{
 					xPkg->GetItemName(sbuff, i);
 					if (sbuff[0] != '.')
@@ -543,7 +543,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 	j = pkgFile->GetCount();
 	while (i < j)
 	{
-		if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
+		if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			pkgFile->GetItemName(sbuff, i);
 			if (sbuff[0] != '.')
@@ -574,7 +574,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 		i = levPkg->GetCount();
 		while (i-- > 0)
 		{
-			if (levPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFile)
+			if (levPkg->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				levPkg->GetItemName(sbuff, i);
 				if (Text::StrToInt32(sbuff, &x))
