@@ -199,6 +199,7 @@
 #include "SSWR/AVIRead/AVIRThreadSpeedForm.h"
 #include "SSWR/AVIRead/AVIRTimedCaptureForm.h"
 #include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
+#include "SSWR/AVIRead/AVIRTimestampForm.h"
 #include "SSWR/AVIRead/AVIRTimeTestForm.h"
 #include "SSWR/AVIRead/AVIRTMSForm.h"
 #include "SSWR/AVIRead/AVIRTraceRouteForm.h"
@@ -457,7 +458,8 @@ typedef enum
 	MNU_CUSTOM_TILE,
 	MNU_REGIONAL_MAP,
 	MNU_BING_MAPS,
-	MNU_FILE_TEXT_ENCRYPT
+	MNU_FILE_TEXT_ENCRYPT,
+	MNU_TIMESTAMP
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -605,6 +607,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("ASN.1 OID"), MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 Parse"), MNU_ASN1_PARSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Windows Error"), MNU_WINDOWS_ERROR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Timestamp"), MNU_TIMESTAMP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("RAM Speed"), MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Thread Speed"), MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2634,6 +2637,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRFileTextEncryptForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileTextEncryptForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_TIMESTAMP:
+		{
+			SSWR::AVIRead::AVIRTimestampForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTimestampForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

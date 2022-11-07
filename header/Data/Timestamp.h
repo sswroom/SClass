@@ -365,9 +365,38 @@ namespace Data
 			return Timestamp(Data::TimeInstant::FromDotNetTicks(ticks), tzQhr);
 		}
 
-		static Timestamp FromUnixTimestamp(Int64 ts)
+		static Timestamp FromEpochSec(Int64 epochSec, Int8 tzQhr)
 		{
-			return Timestamp(Data::TimeInstant(ts, 0), 0);
+			return Timestamp(Data::TimeInstant(epochSec, 0), tzQhr);
+		}
+
+		static Timestamp FromEpochMS(Int64 epochMS, Int8 tzQhr)
+		{
+			return Timestamp(epochMS, tzQhr);
+		}
+
+		static Timestamp FromEpochUS(Int64 epochUS, Int8 tzQhr)
+		{
+			if (epochUS < 0)
+			{
+				return Timestamp(Data::TimeInstant(epochUS / 1000000 - 1, (UInt32)(epochUS % 1000000 + 1000000) * 1000), tzQhr);
+			}
+			else
+			{
+				return Timestamp(Data::TimeInstant(epochUS / 1000000, (UInt32)(epochUS % 1000000) * 1000), tzQhr);
+			}
+		}
+
+		static Timestamp FromEpochNS(Int64 epochNS, Int8 tzQhr)
+		{
+			if (epochNS < 0)
+			{
+				return Timestamp(Data::TimeInstant(epochNS / 1000000000 - 1, (UInt32)(epochNS % 1000000000 + 1000000000)), tzQhr);
+			}
+			else
+			{
+				return Timestamp(Data::TimeInstant(epochNS / 1000000000, (UInt32)(epochNS % 1000000000)), tzQhr);
+			}
 		}
 
 		static Timestamp FromTimeValue(const Data::DateTimeUtil::TimeValue *tval, UInt32 nanosec, Int8 tzQhr)

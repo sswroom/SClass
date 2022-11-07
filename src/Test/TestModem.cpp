@@ -178,10 +178,10 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("RSSI: "));
-		sptr = IO::GSMModemController::GetRSSIString(sbuff, rssi);
+		sptr = IO::GSMModemController::RSSIGetName(sbuff, rssi);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(", BER: "));
-		sptr = IO::GSMModemController::GetBERString(sbuff, ber);
+		sptr = IO::GSMModemController::BERGetName(sbuff, ber);
 		sb.AppendP(sbuff, sptr);
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}

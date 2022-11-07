@@ -108,7 +108,15 @@ namespace Data
 		static TimeInstant FromDotNetTicks(Int64 ticks)
 		{
 			ticks -= 621355968000000000LL;
-			return TimeInstant(ticks / 10000000LL, (UInt32)(ticks % 10000000) * 100);
+			Int32 ns = (Int32)(ticks % 10000000);
+			if (ns < 0)
+			{
+				return TimeInstant(ticks / 10000000LL - 1, (UInt32)(ns + 10000000) * 100);
+			}
+			else
+			{
+				return TimeInstant(ticks / 10000000LL, (UInt32)ns * 100);
+			}
 		}
 
 		static TimeInstant FromUnixTimestamp(Int64 ts)
@@ -119,7 +127,15 @@ namespace Data
 		static TimeInstant FromFILETIME(void *fileTime)
 		{
 			Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
-			return TimeInstant(t / 10000000, (UInt32)(t % 10000000) * 100);
+			Int32 ns = (Int32)(t % 10000000);
+			if (ns < 0)
+			{
+				return TimeInstant(t / 10000000LL - 1, (UInt32)(ns + 10000000) * 100);
+			}
+			else
+			{
+				return TimeInstant(t / 10000000LL, (UInt32)ns * 100);
+			}
 		}
 
 		Bool operator==(TimeInstant dt) const
@@ -216,7 +232,15 @@ namespace Data
 
 		static TimeInstant FromTicks(Int64 ticks)
 		{
-			return Data::TimeInstant(ticks / 1000LL, (UInt32)(ticks % 1000) * 1000000);
+			Int32 ms = (Int32)(ticks % 1000);
+			if (ms < 0)
+			{
+				return Data::TimeInstant(ticks / 1000LL - 1, (UInt32)(ms + 1000) * 1000000);
+			}
+			else
+			{
+				return Data::TimeInstant(ticks / 1000LL, (UInt32)ms * 1000000);
+			}
 		}
 	};
 }
