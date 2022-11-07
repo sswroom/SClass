@@ -280,7 +280,7 @@ namespace Data
 		{
 			if (this->tzQhr != tzQhr)
 			{
-				return Timestamp(this->inst.AddSecond((tzQhr - this->tzQhr) * (Int64)(15 * 60)), tzQhr);
+				return Timestamp(this->inst.AddSecond((this->tzQhr - tzQhr) * (OSInt)(15 * 60)), tzQhr);
 			}
 			else
 			{
@@ -343,7 +343,7 @@ namespace Data
 		static Timestamp FromStr(Text::CString s)
 		{
 			Data::DateTimeUtil::TimeValue tv;
-			Int8 tzQhr;
+			Int8 tzQhr = 0;
 			UInt32 nanosec;
 			if (Data::DateTimeUtil::String2TimeValue(s, &tv, &tzQhr, &nanosec))
 			{

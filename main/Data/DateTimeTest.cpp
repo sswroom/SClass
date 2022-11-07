@@ -79,6 +79,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	newts = newts.AddDay(1);
 	sptr = newts.ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.AddDay(1): ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
+
+	newts = Data::Timestamp::FromStr(CSTR("2022-11-07 15:02:31")).SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
+	sptr = newts.ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.FromStr.SetTimeZoneQHR: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
+	console.WriteLineCStr(CSTRP(sbuff, sptr));
 	return 0;
 }
 
