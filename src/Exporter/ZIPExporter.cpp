@@ -77,7 +77,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTime(i).ToTicks(), false);
 			MemFree(fileBuff);
 		}
-		else if (itemType == IO::PackageFile::PackObjectType::PackageFile)
+		else if (itemType == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			*sptr++ = '/';
 			if (!this->ExportPackage(zip, buffStart, sptr, pkg->GetItemPack(i)))

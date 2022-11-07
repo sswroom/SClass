@@ -98,7 +98,7 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		if (pathEnd[0] == '.')
 		{
 		}
-		else if (pt == IO::PackageFile::PackObjectType::PackageFile)
+		else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			IO::PackageFile *innerPack = pkg->GetItemPack(i);
 			if (innerPack)

@@ -192,7 +192,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 	while (i < j)
 	{
 		pot = pkgFile->GetItemType(i);
-		if (pot == IO::PackageFile::PackObjectType::PackageFile)
+		if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			sptr = pkgFile->GetItemName(buffEnd, i);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
