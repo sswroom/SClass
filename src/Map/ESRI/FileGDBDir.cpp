@@ -4,8 +4,6 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
-#include <stdio.h>
-
 Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
 {
 	UOSInt i = this->tables.GetCount();

@@ -360,7 +360,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
-	if (pot == IO::PackageFile::PackObjectType::PackageFile)
+	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 	{
 		IO::PackageFile *pkg = me->packFile->GetItemPack(index);
 		if (pkg)
@@ -445,7 +445,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 				this->lvFiles->SetSubItem(k, 5, CSTR("Uncompressed"));
 			}
 		}
-		else if (pot == IO::PackageFile::PackObjectType::PackageFile)
+		else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			this->lvFiles->SetSubItem(k, 1, CSTR("Folder"));
 		}

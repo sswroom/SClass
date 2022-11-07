@@ -6,6 +6,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
+#include <stdio.h>
+
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
@@ -178,7 +180,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			ofst++;
 		}
 	}
-	if (!valid || ofst != descSize)
+	if (!valid || ofst > descSize)
 	{
 		FreeTableInfo(table);
 		return 0;
