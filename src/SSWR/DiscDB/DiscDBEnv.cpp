@@ -26,7 +26,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			disc = MemAlloc(BurntDiscInfo, 1);
 			disc->discId = r->GetNewStr(0);
 			disc->discTypeId = r->GetNewStr(1);
-			disc->burntDate = r->GetTimestamp(2).ToTicks();
+			disc->burntDate = r->GetTimestamp(2);
 			disc->status = r->GetInt32(3);
 			disc = this->discMap->Put(disc->discId, disc);
 			if (disc)
@@ -268,7 +268,7 @@ Double SSWR::DiscDB::DiscDBEnv::GetMonitorDDPI(MonitorHandle *hMon)
 	return this->monMgr->GetMonitorDDPI(hMon);
 }
 
-const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntDisc(Text::CString discId, Text::CString discTypeId, Data::DateTime *dt)
+const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntDisc(Text::CString discId, Text::CString discTypeId, Data::Timestamp ts)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into BurntDisc (DiscID, DiscTypeID, BurntDate, Status) values ("));
@@ -276,7 +276,7 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(discTypeId.v);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendDate(dt);
+	sql.AppendTS(ts);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(0);
 	sql.AppendCmdC(CSTR(")"));
@@ -286,7 +286,7 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 		disc = MemAlloc(BurntDiscInfo, 1);
 		disc->discId = Text::String::New(discId);
 		disc->discTypeId = Text::String::New(discTypeId);
-		disc->burntDate = dt->ToTicks();
+		disc->burntDate = ts;
 		disc->status = 0;
 		this->discMap->Put(disc->discId, disc);
 		return disc;

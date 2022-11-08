@@ -1448,8 +1448,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 		return 0;
 	}
 
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
+	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
@@ -1460,7 +1459,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrC(platformName);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendDate(&dt);
+	sql.AppendTS(ts);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(0);
 	sql.AppendCmdC(CSTR(")"));
@@ -1471,7 +1470,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 		dev->cliId = cliId;
 		dev->cpuName = Text::String::New(cpuName);
 		dev->platformName = Text::String::New(platformName);
-		dev->lastKATime = dt.ToTicks();
+		dev->lastKATime = ts.ToTicks();
 		dev->flags = 0;
 		dev->version = 0;
 
@@ -1513,10 +1512,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 	UTF8Char *sptr;
 	UOSInt i;
 	Bool succ = false;
-	Data::DateTime dt;
+	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Int64 t;
-	dt.SetCurrTimeUTC();
-	t = dt.ToTicks();
+	t = ts.ToTicks();
 	if (cliTime > dev->readingTime && cliTime < t + 300000)
 	{
 		Sync::MutexUsage dbMutUsage;
@@ -1527,8 +1525,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 			nReading = SMONITORCORE_DEVREADINGCNT;
 		}
 		sql.AppendCmdC(CSTR("update device set readingTime = "));
-		dt.SetTicks(cliTime);
-		sql.AppendDate(&dt);
+		sql.AppendTS(Data::Timestamp(cliTime, 0));
 		sql.AppendCmdC(CSTR(", nreading = "));
 		sql.AppendInt32((Int32)nReading);
 		sql.AppendCmdC(CSTR(", ndigital = "));
@@ -1626,15 +1623,14 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime)
 {
-	Data::DateTime dt;
-	dt.SetTicks(kaTime);
+	Data::Timestamp ts = Data::Timestamp(kaTime, 0);
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update device set lastKATime = "));
-	sql.AppendDate(&dt);
+	sql.AppendTS(ts);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)

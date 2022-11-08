@@ -1163,12 +1163,13 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please browse file first"), CSTR("Burnt Disc"), me);
 		return;
 	}
-	Data::DateTime theDate;
+	Data::Timestamp theDate;
 	Text::StringBuilderUTF8 sbDate;
 	Text::StringBuilderUTF8 sbDiscId;
 	Text::StringBuilderUTF8 sbDVDId;
 	me->txtDate->GetText(&sbDate);
-	if (!theDate.SetValue(sbDate.ToCString()))
+	theDate = Data::Timestamp::FromStr(sbDate.ToCString());
+	if (theDate.IsZero())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the date"), CSTR("Burnt Disc"), me);
 		me->txtDate->Focus();
@@ -1194,7 +1195,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 		me->txtDiscId->Focus();
 		return;
 	}
-	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->NewBurntDisc(sbDVDId.ToCString(), sbDiscId.ToCString(), &theDate);
+	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->NewBurntDisc(sbDVDId.ToCString(), sbDiscId.ToCString(), theDate);
 	if (disc)
 	{
 		BurntFile *file;

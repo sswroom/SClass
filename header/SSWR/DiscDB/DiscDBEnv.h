@@ -25,7 +25,7 @@ namespace SSWR
 			{
 				Text::String *discId;
 				Text::String *discTypeId;
-				Int64 burntDate;
+				Data::Timestamp burntDate;
 				Int32 status;
 			} BurntDiscInfo;
 
@@ -96,7 +96,7 @@ namespace SSWR
 			Double GetMonitorHDPI(MonitorHandle *hMon);
 			Double GetMonitorDDPI(MonitorHandle *hMon);
 
-			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, Data::DateTime *dt);
+			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, Data::Timestamp ts);
 			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
 			const BurntDiscInfo *GetBurntDisc(Text::CString discId);
 			OSInt GetBurntDiscIndex(Text::CString discId);

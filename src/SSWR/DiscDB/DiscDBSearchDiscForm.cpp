@@ -25,9 +25,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 		}
 		else
 		{
-			Data::DateTime dt;
-			dt.SetTicks(disc->burntDate);
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+			sptr = disc->burntDate.ToString(sbuff, "yyyy-MM-dd");
 			me->txtBurntDate->SetText(CSTRP(sbuff, sptr));
 		}
 		me->txtDiscType->SetText(disc->discTypeId->ToCString());

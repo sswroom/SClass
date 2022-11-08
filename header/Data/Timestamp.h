@@ -125,6 +125,11 @@ namespace Data
 			return this->inst.GetMSPassedDate();
 		};
 
+		Int64 DiffSec(Timestamp ts) const
+		{
+			return this->inst.DiffSec(ts.inst);
+		}
+
 		Int64 DiffMS(Timestamp ts) const
 		{
 			return this->inst.DiffMS(ts.inst);
