@@ -2239,6 +2239,10 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			return DB::DBUtil::CT_Int16;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint")))
+		{
+			return DB::DBUtil::CT_Byte;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nvarchar")))
 		{
 			return DB::DBUtil::CT_VarUTF16Char;
