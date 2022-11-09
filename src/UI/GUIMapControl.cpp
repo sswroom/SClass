@@ -769,6 +769,7 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 
 	this->markerPos = Math::Coord2DDbl(0, 0);
 	this->showMarker = false;
+	this->pauseUpdate = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, &color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->releaseRenderer = true;

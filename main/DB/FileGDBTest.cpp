@@ -19,7 +19,7 @@ private:
 	Text::String* accLocati;
 	Text::String* antiBurgl;
 	Int16 bulbQty;
-	Data::DateTime* cmsDate;
+	Data::Timestamp cmsDate;
 	Text::String* cmsType;
 	Int16 colClass;
 	Single columnHt;
@@ -29,11 +29,11 @@ private:
 	Text::String* contrNo;
 	Text::String* czone;
 	Text::String* deleted;
-	Data::DateTime* disconDate;
+	Data::Timestamp disconDate;
 	Text::String* district;
 	Text::String* fixOPole;
 	Int16 iVersion;
-	Data::DateTime* installDate;
+	Data::Timestamp installDate;
 	Single kerbOs;
 	Text::String* lampNo;
 	Text::String* lampType;
@@ -51,7 +51,7 @@ private:
 	Text::String* poleType;
 	Text::String* polecolor;
 	Text::String* primarySt;
-	Data::DateTime* regDate;
+	Data::Timestamp regDate;
 	Text::String* remark1;
 	Text::String* remark2;
 	Text::String* remark3;
@@ -62,12 +62,12 @@ private:
 	Text::String* shielded;
 	Text::String* solarLtg;
 	Text::String* specMate;
-	Data::DateTime* subDate;
+	Data::Timestamp subDate;
 	Text::String* subtype;
 	Text::String* updbyhyd;
 	Text::String* updbymom;
-	Data::DateTime* upddatehyd;
-	Data::DateTime* upddatemom;
+	Data::Timestamp upddatehyd;
+	Data::Timestamp upddatemom;
 	Text::String* utilNo;
 	Text::String* village;
 	Single zCoor;
@@ -82,8 +82,8 @@ public:
 	void SetAntiBurgl(Text::String* antiBurgl);
 	Int16 GetBulbQty();
 	void SetBulbQty(Int16 bulbQty);
-	Data::DateTime* GetCmsDate();
-	void SetCmsDate(Data::DateTime* cmsDate);
+	Data::Timestamp GetCmsDate();
+	void SetCmsDate(Data::Timestamp cmsDate);
 	Text::String* GetCmsType();
 	void SetCmsType(Text::String* cmsType);
 	Int16 GetColClass();
@@ -102,16 +102,16 @@ public:
 	void SetCzone(Text::String* czone);
 	Text::String* GetDeleted();
 	void SetDeleted(Text::String* deleted);
-	Data::DateTime* GetDisconDate();
-	void SetDisconDate(Data::DateTime* disconDate);
+	Data::Timestamp GetDisconDate();
+	void SetDisconDate(Data::Timestamp disconDate);
 	Text::String* GetDistrict();
 	void SetDistrict(Text::String* district);
 	Text::String* GetFixOPole();
 	void SetFixOPole(Text::String* fixOPole);
 	Int16 GetIVersion();
 	void SetIVersion(Int16 iVersion);
-	Data::DateTime* GetInstallDate();
-	void SetInstallDate(Data::DateTime* installDate);
+	Data::Timestamp GetInstallDate();
+	void SetInstallDate(Data::Timestamp installDate);
 	Single GetKerbOs();
 	void SetKerbOs(Single kerbOs);
 	Text::String* GetLampNo();
@@ -146,8 +146,8 @@ public:
 	void SetPolecolor(Text::String* polecolor);
 	Text::String* GetPrimarySt();
 	void SetPrimarySt(Text::String* primarySt);
-	Data::DateTime* GetRegDate();
-	void SetRegDate(Data::DateTime* regDate);
+	Data::Timestamp GetRegDate();
+	void SetRegDate(Data::Timestamp regDate);
 	Text::String* GetRemark1();
 	void SetRemark1(Text::String* remark1);
 	Text::String* GetRemark2();
@@ -168,18 +168,18 @@ public:
 	void SetSolarLtg(Text::String* solarLtg);
 	Text::String* GetSpecMate();
 	void SetSpecMate(Text::String* specMate);
-	Data::DateTime* GetSubDate();
-	void SetSubDate(Data::DateTime* subDate);
+	Data::Timestamp GetSubDate();
+	void SetSubDate(Data::Timestamp subDate);
 	Text::String* GetSubtype();
 	void SetSubtype(Text::String* subtype);
 	Text::String* GetUpdbyhyd();
 	void SetUpdbyhyd(Text::String* updbyhyd);
 	Text::String* GetUpdbymom();
 	void SetUpdbymom(Text::String* updbymom);
-	Data::DateTime* GetUpddatehyd();
-	void SetUpddatehyd(Data::DateTime* upddatehyd);
-	Data::DateTime* GetUpddatemom();
-	void SetUpddatemom(Data::DateTime* upddatemom);
+	Data::Timestamp GetUpddatehyd();
+	void SetUpddatehyd(Data::Timestamp upddatehyd);
+	Data::Timestamp GetUpddatemom();
+	void SetUpddatemom(Data::Timestamp upddatemom);
 	Text::String* GetUtilNo();
 	void SetUtilNo(Text::String* utilNo);
 	Text::String* GetVillage();
@@ -253,15 +253,12 @@ Lamppost::~Lamppost()
 {
 	SDEL_STRING(this->accLocati);
 	SDEL_STRING(this->antiBurgl);
-	SDEL_CLASS(this->cmsDate);
 	SDEL_STRING(this->cmsType);
 	SDEL_STRING(this->contrNo);
 	SDEL_STRING(this->czone);
 	SDEL_STRING(this->deleted);
-	SDEL_CLASS(this->disconDate);
 	SDEL_STRING(this->district);
 	SDEL_STRING(this->fixOPole);
-	SDEL_CLASS(this->installDate);
 	SDEL_STRING(this->lampNo);
 	SDEL_STRING(this->lampType);
 	SDEL_STRING(this->landmark);
@@ -275,7 +272,6 @@ Lamppost::~Lamppost()
 	SDEL_STRING(this->poleType);
 	SDEL_STRING(this->polecolor);
 	SDEL_STRING(this->primarySt);
-	SDEL_CLASS(this->regDate);
 	SDEL_STRING(this->remark1);
 	SDEL_STRING(this->remark2);
 	SDEL_STRING(this->remark3);
@@ -285,12 +281,9 @@ Lamppost::~Lamppost()
 	SDEL_STRING(this->shielded);
 	SDEL_STRING(this->solarLtg);
 	SDEL_STRING(this->specMate);
-	SDEL_CLASS(this->subDate);
 	SDEL_STRING(this->subtype);
 	SDEL_STRING(this->updbyhyd);
 	SDEL_STRING(this->updbymom);
-	SDEL_CLASS(this->upddatehyd);
-	SDEL_CLASS(this->upddatemom);
 	SDEL_STRING(this->utilNo);
 	SDEL_STRING(this->village);
 }
@@ -327,15 +320,14 @@ void Lamppost::SetBulbQty(Int16 bulbQty)
 	this->bulbQty = bulbQty;
 }
 
-Data::DateTime* Lamppost::GetCmsDate()
+Data::Timestamp Lamppost::GetCmsDate()
 {
 	return this->cmsDate;
 }
 
-void Lamppost::SetCmsDate(Data::DateTime* cmsDate)
+void Lamppost::SetCmsDate(Data::Timestamp cmsDate)
 {
-	SDEL_CLASS(this->cmsDate);
-	this->cmsDate = cmsDate?(NEW_CLASS_D(Data::DateTime(cmsDate))):0;
+	this->cmsDate = cmsDate;
 }
 
 Text::String* Lamppost::GetCmsType()
@@ -432,15 +424,14 @@ void Lamppost::SetDeleted(Text::String* deleted)
 	this->deleted = deleted?deleted->Clone():0;
 }
 
-Data::DateTime* Lamppost::GetDisconDate()
+Data::Timestamp Lamppost::GetDisconDate()
 {
 	return this->disconDate;
 }
 
-void Lamppost::SetDisconDate(Data::DateTime* disconDate)
+void Lamppost::SetDisconDate(Data::Timestamp disconDate)
 {
-	SDEL_CLASS(this->disconDate);
-	this->disconDate = disconDate?(NEW_CLASS_D(Data::DateTime(disconDate))):0;
+	this->disconDate = disconDate;
 }
 
 Text::String* Lamppost::GetDistrict()
@@ -475,15 +466,14 @@ void Lamppost::SetIVersion(Int16 iVersion)
 	this->iVersion = iVersion;
 }
 
-Data::DateTime* Lamppost::GetInstallDate()
+Data::Timestamp Lamppost::GetInstallDate()
 {
 	return this->installDate;
 }
 
-void Lamppost::SetInstallDate(Data::DateTime* installDate)
+void Lamppost::SetInstallDate(Data::Timestamp installDate)
 {
-	SDEL_CLASS(this->installDate);
-	this->installDate = installDate?(NEW_CLASS_D(Data::DateTime(installDate))):0;
+	this->installDate = installDate;
 }
 
 Single Lamppost::GetKerbOs()
@@ -669,15 +659,14 @@ void Lamppost::SetPrimarySt(Text::String* primarySt)
 	this->primarySt = primarySt?primarySt->Clone():0;
 }
 
-Data::DateTime* Lamppost::GetRegDate()
+Data::Timestamp Lamppost::GetRegDate()
 {
 	return this->regDate;
 }
 
-void Lamppost::SetRegDate(Data::DateTime* regDate)
+void Lamppost::SetRegDate(Data::Timestamp regDate)
 {
-	SDEL_CLASS(this->regDate);
-	this->regDate = regDate?(NEW_CLASS_D(Data::DateTime(regDate))):0;
+	this->regDate = regDate;
 }
 
 Text::String* Lamppost::GetRemark1()
@@ -789,15 +778,14 @@ void Lamppost::SetSpecMate(Text::String* specMate)
 	this->specMate = specMate?specMate->Clone():0;
 }
 
-Data::DateTime* Lamppost::GetSubDate()
+Data::Timestamp Lamppost::GetSubDate()
 {
 	return this->subDate;
 }
 
-void Lamppost::SetSubDate(Data::DateTime* subDate)
+void Lamppost::SetSubDate(Data::Timestamp subDate)
 {
-	SDEL_CLASS(this->subDate);
-	this->subDate = subDate?(NEW_CLASS_D(Data::DateTime(subDate))):0;
+	this->subDate = subDate;
 }
 
 Text::String* Lamppost::GetSubtype()
@@ -833,26 +821,24 @@ void Lamppost::SetUpdbymom(Text::String* updbymom)
 	this->updbymom = updbymom?updbymom->Clone():0;
 }
 
-Data::DateTime* Lamppost::GetUpddatehyd()
+Data::Timestamp Lamppost::GetUpddatehyd()
 {
 	return this->upddatehyd;
 }
 
-void Lamppost::SetUpddatehyd(Data::DateTime* upddatehyd)
+void Lamppost::SetUpddatehyd(Data::Timestamp upddatehyd)
 {
-	SDEL_CLASS(this->upddatehyd);
-	this->upddatehyd = upddatehyd?(NEW_CLASS_D(Data::DateTime(upddatehyd))):0;
+	this->upddatehyd = upddatehyd;
 }
 
-Data::DateTime* Lamppost::GetUpddatemom()
+Data::Timestamp Lamppost::GetUpddatemom()
 {
 	return this->upddatemom;
 }
 
-void Lamppost::SetUpddatemom(Data::DateTime* upddatemom)
+void Lamppost::SetUpddatemom(Data::Timestamp upddatemom)
 {
-	SDEL_CLASS(this->upddatemom);
-	this->upddatemom = upddatemom?(NEW_CLASS_D(Data::DateTime(upddatemom))):0;
+	this->upddatemom = upddatemom;
 }
 
 Text::String* Lamppost::GetUtilNo()

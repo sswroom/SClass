@@ -13,12 +13,12 @@ private:
 	Int32 id;
 	Int32 filetype;
 	Text::String* orifilename;
-	Data::DateTime* filetime;
+	Data::Timestamp filetime;
 	Double lat;
 	Double lon;
 	Int32 webuserId;
 	Int32 speciesId;
-	Data::DateTime* capturetime;
+	Data::Timestamp capturetime;
 	Text::String* datafilename;
 	Int32 crcval;
 	Int32 rottype;
@@ -43,8 +43,8 @@ public:
 	void SetFiletype(Int32 filetype);
 	Text::String* GetOrifilename();
 	void SetOrifilename(Text::String* orifilename);
-	Data::DateTime* GetFiletime();
-	void SetFiletime(Data::DateTime* filetime);
+	Data::Timestamp GetFiletime();
+	void SetFiletime(Data::Timestamp filetime);
 	Double GetLat();
 	void SetLat(Double lat);
 	Double GetLon();
@@ -53,8 +53,8 @@ public:
 	void SetWebuserId(Int32 webuserId);
 	Int32 GetSpeciesId();
 	void SetSpeciesId(Int32 speciesId);
-	Data::DateTime* GetCapturetime();
-	void SetCapturetime(Data::DateTime* capturetime);
+	Data::Timestamp GetCapturetime();
+	void SetCapturetime(Data::Timestamp capturetime);
 	Text::String* GetDatafilename();
 	void SetDatafilename(Text::String* datafilename);
 	Int32 GetCrcval();
@@ -114,8 +114,6 @@ Userfile::Userfile()
 Userfile::~Userfile()
 {
 	SDEL_STRING(this->orifilename);
-	SDEL_CLASS(this->filetime);
-	SDEL_CLASS(this->capturetime);
 	SDEL_STRING(this->datafilename);
 	SDEL_STRING(this->camera);
 	SDEL_STRING(this->descript);
@@ -154,15 +152,14 @@ void Userfile::SetOrifilename(Text::String* orifilename)
 	this->orifilename = orifilename?orifilename->Clone():0;
 }
 
-Data::DateTime* Userfile::GetFiletime()
+Data::Timestamp Userfile::GetFiletime()
 {
 	return this->filetime;
 }
 
-void Userfile::SetFiletime(Data::DateTime* filetime)
+void Userfile::SetFiletime(Data::Timestamp filetime)
 {
-	SDEL_CLASS(this->filetime);
-	this->filetime = filetime?(NEW_CLASS_D(Data::DateTime(filetime))):0;
+	this->filetime = filetime;
 }
 
 Double Userfile::GetLat()
@@ -205,15 +202,14 @@ void Userfile::SetSpeciesId(Int32 speciesId)
 	this->speciesId = speciesId;
 }
 
-Data::DateTime* Userfile::GetCapturetime()
+Data::Timestamp Userfile::GetCapturetime()
 {
 	return this->capturetime;
 }
 
-void Userfile::SetCapturetime(Data::DateTime* capturetime)
+void Userfile::SetCapturetime(Data::Timestamp capturetime)
 {
-	SDEL_CLASS(this->capturetime);
-	this->capturetime = capturetime?(NEW_CLASS_D(Data::DateTime(capturetime))):0;
+	this->capturetime = capturetime;
 }
 
 Text::String* Userfile::GetDatafilename()

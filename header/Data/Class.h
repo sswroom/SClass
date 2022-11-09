@@ -16,31 +16,31 @@ namespace Data
 			Data::VariItem::ItemType itemType;
 		};
 	private:
-		void *refObj;
+		const void *refObj;
 		Data::ArrayList<FieldInfo *> fields;
 
 		void FreeFieldInfo(FieldInfo *field);
 	public:
-		Class(void *refObj);
+		Class(const void *refObj);
 		virtual ~Class();
 
 		UOSInt AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType); //return field size
-		Bool AddField(Text::CString name, UInt8 *val);
-		Bool AddField(Text::CString name, Int8 *val);
-		Bool AddField(Text::CString name, UInt16 *val);
-		Bool AddField(Text::CString name, Int16 *val);
-		Bool AddField(Text::CString name, UInt32 *val);
-		Bool AddField(Text::CString name, Int32 *val);
-		Bool AddField(Text::CString name, UInt64 *val);
-		Bool AddField(Text::CString name, Int64 *val);
-		Bool AddField(Text::CString name, Single *val);
-		Bool AddField(Text::CString name, Double *val);
-		Bool AddField(Text::CString name, Text::String **val);
-		Bool AddField(Text::CString name, Data::DateTime **val);
-		Bool AddField(Text::CString name, Bool *val);
-		Bool AddField(Text::CString name, Data::ReadonlyArray<UInt8> **val);
-		Bool AddField(Text::CString name, Math::Geometry::Vector2D **val);
-		Bool AddField(Text::CString name, Data::UUID **val);
+		Bool AddField(Text::CString name, const UInt8 *val);
+		Bool AddField(Text::CString name, const Int8 *val);
+		Bool AddField(Text::CString name, const UInt16 *val);
+		Bool AddField(Text::CString name, const Int16 *val);
+		Bool AddField(Text::CString name, const UInt32 *val);
+		Bool AddField(Text::CString name, const Int32 *val);
+		Bool AddField(Text::CString name, const UInt64 *val);
+		Bool AddField(Text::CString name, const Int64 *val);
+		Bool AddField(Text::CString name, const Single *val);
+		Bool AddField(Text::CString name, const Double *val);
+		Bool AddField(Text::CString name, Text::String *const *val);
+		Bool AddField(Text::CString name, const Data::Timestamp *val);
+		Bool AddField(Text::CString name, const Bool *val);
+		Bool AddField(Text::CString name, Data::ReadonlyArray<UInt8> *const *val);
+		Bool AddField(Text::CString name, Math::Geometry::Vector2D *const *val);
+		Bool AddField(Text::CString name, Data::UUID *const *val);
 
 		UOSInt GetFieldCount();
 		Text::String *GetFieldName(UOSInt index);

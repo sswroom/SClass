@@ -9,7 +9,7 @@ void Data::Class::FreeFieldInfo(FieldInfo *field)
 	MemFree(field);
 }
 
-Data::Class::Class(void *refObj)
+Data::Class::Class(const void *refObj)
 {
 	this->refObj = refObj;
 }
@@ -29,82 +29,82 @@ UOSInt Data::Class::AddField(Text::CString name, OSInt ofst, Data::VariItem::Ite
 	return Data::VariItem::GetItemSize(itemType);
 }
 
-Bool Data::Class::AddField(Text::CString name, UInt8 *val)
+Bool Data::Class::AddField(Text::CString name, const UInt8 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U8) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Int8 *val)
+Bool Data::Class::AddField(Text::CString name, const Int8 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I8) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, UInt16 *val)
+Bool Data::Class::AddField(Text::CString name, const UInt16 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U16) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Int16 *val)
+Bool Data::Class::AddField(Text::CString name, const Int16 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I16) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, UInt32 *val)
+Bool Data::Class::AddField(Text::CString name, const UInt32 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U32) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Int32 *val)
+Bool Data::Class::AddField(Text::CString name, const Int32 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, UInt64 *val)
+Bool Data::Class::AddField(Text::CString name, const UInt64 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U64) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Int64 *val)
+Bool Data::Class::AddField(Text::CString name, const Int64 *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I64) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Single *val)
+Bool Data::Class::AddField(Text::CString name, const Single *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F32) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Double *val)
+Bool Data::Class::AddField(Text::CString name, const Double *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Text::String **val)
+Bool Data::Class::AddField(Text::CString name, Text::String *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Data::DateTime **val)
+Bool Data::Class::AddField(Text::CString name, const Data::Timestamp *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Date) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Bool *val)
+Bool Data::Class::AddField(Text::CString name, const Bool *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Data::ReadonlyArray<UInt8> **val)
+Bool Data::Class::AddField(Text::CString name, Data::ReadonlyArray<UInt8> *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Math::Geometry::Vector2D **val)
+Bool Data::Class::AddField(Text::CString name, Math::Geometry::Vector2D *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector) != 0;
 }
 
-Bool Data::Class::AddField(Text::CString name, Data::UUID **val)
+Bool Data::Class::AddField(Text::CString name, Data::UUID *const *val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID) != 0;
 }
@@ -247,7 +247,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 		sb->AppendC(UTF8STRC("Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendC(UTF8STRC("();\r\n"));
+		sb->AppendC(UTF8STRC("() const;\r\n"));
 
 		sb->AppendChar('\t', tabLev + 1);
 		sb->AppendC(UTF8STRC("void Set"));
@@ -265,7 +265,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendC(UTF8STRC("Data::NamedClass<"));
 	sb->Append(clsName);
-	sb->AppendC(UTF8STRC("> *CreateClass();\r\n"));
+	sb->AppendC(UTF8STRC("> *CreateClass() const;\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
@@ -325,7 +325,6 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(");\r\n"));
 			break;
-		case Data::VariItem::ItemType::Date:
 		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
 		case Data::VariItem::ItemType::UUID:
@@ -334,6 +333,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(");\r\n"));
 			break;
+		case Data::VariItem::ItemType::Date:
 		case Data::VariItem::ItemType::CStr:
 		case Data::VariItem::ItemType::F32:
 		case Data::VariItem::ItemType::F64:
@@ -370,8 +370,8 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 		sb->Append(clsName);
 		sb->AppendC(UTF8STRC("::Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->AppendC(field->name->v + 1, field->name->leng);
-		sb->AppendC(UTF8STRC("()\r\n"));
+		sb->AppendC(field->name->v + 1, field->name->leng - 1);
+		sb->AppendC(UTF8STRC("() const\r\n"));
 		sb->AppendChar('\t', tabLev);
 		sb->AppendC(UTF8STRC("{\r\n"));
 		sb->AppendChar('\t', tabLev + 1);
@@ -414,17 +414,10 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			break;
 		case Data::VariItem::ItemType::Date:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC(");\r\n"));
-			sb->AppendChar('\t', tabLev + 1);
 			sb->AppendC(UTF8STRC("this->"));
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("?(NEW_CLASS_D(Data::DateTime("));
-			sb->Append(field->name);
-			sb->AppendC(UTF8STRC("))):0"));
 			break;
 		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
@@ -478,7 +471,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 	sb->AppendC(UTF8STRC("> *"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->AppendC(UTF8STRC("::CreateClass()\r\n"));
+	sb->AppendC(UTF8STRC("::CreateClass() const\r\n"));
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev + 1);

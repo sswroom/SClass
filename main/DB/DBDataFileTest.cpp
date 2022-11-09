@@ -16,8 +16,8 @@ class LamppostData
 {
 private:
 	Int32 id;
-	Data::DateTime* dtRecv;
-	Data::DateTime* dtData;
+	Data::Timestamp dtRecv;
+	Data::Timestamp dtData;
 	Text::String* lampno;
 	Int32 lightStatus;
 	Int32 faultStatus;
@@ -68,10 +68,10 @@ public:
 
 	Int32 GetId();
 	void SetId(Int32 id);
-	Data::DateTime* GetDtRecv();
-	void SetDtRecv(Data::DateTime* dtRecv);
-	Data::DateTime* GetDtData();
-	void SetDtData(Data::DateTime* dtData);
+	Data::Timestamp GetDtRecv();
+	void SetDtRecv(Data::Timestamp dtRecv);
+	Data::Timestamp GetDtData();
+	void SetDtData(Data::Timestamp dtData);
 	Text::String* GetLampno();
 	void SetLampno(Text::String* lampno);
 	Int32 GetLightStatus();
@@ -214,8 +214,6 @@ LamppostData::LamppostData()
 
 LamppostData::~LamppostData()
 {
-	SDEL_CLASS(this->dtRecv);
-	SDEL_CLASS(this->dtData);
 	SDEL_STRING(this->lampno);
 	SDEL_STRING(this->fault1Descr);
 	SDEL_STRING(this->fault2Descr);
@@ -239,26 +237,24 @@ void LamppostData::SetId(Int32 id)
 	this->id = id;
 }
 
-Data::DateTime* LamppostData::GetDtRecv()
+Data::Timestamp LamppostData::GetDtRecv()
 {
 	return this->dtRecv;
 }
 
-void LamppostData::SetDtRecv(Data::DateTime* dtRecv)
+void LamppostData::SetDtRecv(Data::Timestamp dtRecv)
 {
-	SDEL_CLASS(this->dtRecv);
-	this->dtRecv = dtRecv?(NEW_CLASS_D(Data::DateTime(dtRecv))):0;
+	this->dtRecv = dtRecv;
 }
 
-Data::DateTime* LamppostData::GetDtData()
+Data::Timestamp LamppostData::GetDtData()
 {
 	return this->dtData;
 }
 
-void LamppostData::SetDtData(Data::DateTime* dtData)
+void LamppostData::SetDtData(Data::Timestamp dtData)
 {
-	SDEL_CLASS(this->dtData);
-	this->dtData = dtData?(NEW_CLASS_D(Data::DateTime(dtData))):0;
+	this->dtData = dtData;
 }
 
 Text::String* LamppostData::GetLampno()
@@ -854,4 +850,172 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLineC(UTF8STRC("Error in loading application.properties"));
 	}
 	return 0;
+}
+
+class CadRunway
+{
+private:
+	Int32 id;
+	Text::String* code;
+	Text::String* displayName;
+	Text::String* descr;
+	Data::Timestamp dtCreate;
+	Data::Timestamp dtModify;
+	Int32 uidCreate;
+	Int32 uidModify;
+	Int32 status;
+
+public:
+	CadRunway();
+	~CadRunway();
+
+	Int32 GetId() const;
+	void SetId(Int32 id);
+	Text::String* GetCode() const;
+	void SetCode(Text::String* code);
+	Text::String* GetDisplayName() const;
+	void SetDisplayName(Text::String* displayName);
+	Text::String* GetDescr() const;
+	void SetDescr(Text::String* descr);
+	Data::Timestamp GetDtCreate() const;
+	void SetDtCreate(Data::Timestamp dtCreate);
+	Data::Timestamp GetDtModify() const;
+	void SetDtModify(Data::Timestamp dtModify);
+	Int32 GetUidCreate() const;
+	void SetUidCreate(Int32 uidCreate);
+	Int32 GetUidModify() const;
+	void SetUidModify(Int32 uidModify);
+	Int32 GetStatus() const;
+	void SetStatus(Int32 status);
+
+	Data::NamedClass<CadRunway> *CreateClass() const;
+};
+
+CadRunway::CadRunway()
+{
+	this->id = 0;
+	this->code = 0;
+	this->displayName = 0;
+	this->descr = 0;
+	this->dtCreate = 0;
+	this->dtModify = 0;
+	this->uidCreate = 0;
+	this->uidModify = 0;
+	this->status = 0;
+}
+
+CadRunway::~CadRunway()
+{
+	SDEL_STRING(this->code);
+	SDEL_STRING(this->displayName);
+	SDEL_STRING(this->descr);
+}
+
+Int32 CadRunway::GetId() const
+{
+	return this->id;
+}
+
+void CadRunway::SetId(Int32 id)
+{
+	this->id = id;
+}
+
+Text::String* CadRunway::GetCode() const
+{
+	return this->code;
+}
+
+void CadRunway::SetCode(Text::String* code)
+{
+	SDEL_STRING(this->code);
+	this->code = code?code->Clone():0;
+}
+
+Text::String* CadRunway::GetDisplayName() const
+{
+	return this->displayName;
+}
+
+void CadRunway::SetDisplayName(Text::String* displayName)
+{
+	SDEL_STRING(this->displayName);
+	this->displayName = displayName?displayName->Clone():0;
+}
+
+Text::String* CadRunway::GetDescr() const
+{
+	return this->descr;
+}
+
+void CadRunway::SetDescr(Text::String* descr)
+{
+	SDEL_STRING(this->descr);
+	this->descr = descr?descr->Clone():0;
+}
+
+Data::Timestamp CadRunway::GetDtCreate() const
+{
+	return this->dtCreate;
+}
+
+void CadRunway::SetDtCreate(Data::Timestamp dtCreate)
+{
+	this->dtCreate = dtCreate;
+}
+
+Data::Timestamp CadRunway::GetDtModify() const
+{
+	return this->dtModify;
+}
+
+void CadRunway::SetDtModify(Data::Timestamp dtModify)
+{
+	this->dtModify = dtModify;
+}
+
+Int32 CadRunway::GetUidCreate() const
+{
+	return this->uidCreate;
+}
+
+void CadRunway::SetUidCreate(Int32 uidCreate)
+{
+	this->uidCreate = uidCreate;
+}
+
+Int32 CadRunway::GetUidModify() const
+{
+	return this->uidModify;
+}
+
+void CadRunway::SetUidModify(Int32 uidModify)
+{
+	this->uidModify = uidModify;
+}
+
+Int32 CadRunway::GetStatus() const
+{
+	return this->status;
+}
+
+void CadRunway::SetStatus(Int32 status)
+{
+	this->status = status;
+}
+
+Data::NamedClass<CadRunway> *CadRunway::CreateClass() const
+{
+	Data::NamedClass<CadRunway> *cls;
+	NEW_CLASS(cls, Data::NamedClass<CadRunway>(this));
+	CLASS_ADD(cls, id);
+	CLASS_ADD(cls, code);
+	CLASS_ADD(cls, displayName);
+	CLASS_ADD(cls, descr);
+	CLASS_ADD(cls, dtCreate);
+	CLASS_ADD(cls, dtModify);
+	CLASS_ADD(cls, uidCreate);
+	CLASS_ADD(cls, uidModify);
+	CLASS_ADD(cls, status);
+	return cls;
 }
