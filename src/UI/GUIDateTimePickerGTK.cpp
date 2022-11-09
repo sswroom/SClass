@@ -86,7 +86,7 @@ Data::Timestamp UI::GUIDateTimePicker::GetSelectedTime()
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
 	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);
-	return Data::Timestamp::FromStr(Text::CString::FromPtr(s));
+	return Data::Timestamp::FromStr(Text::CString::FromPtr(s), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 void UI::GUIDateTimePicker::SetFormat(const Char *format)

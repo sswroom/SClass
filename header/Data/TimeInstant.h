@@ -105,6 +105,21 @@ namespace Data
 			return this->sec;
 		}
 
+		Int64 ToEpochSec() const
+		{
+			return this->sec;
+		}
+
+		Int64 ToEpochMS() const
+		{
+			return this->sec * 1000LL + (this->nanosec / 1000000);
+		}
+
+		Int64 ToEpochNS() const
+		{
+			return this->sec * 1000000000LL + this->nanosec;
+		}
+
 		static TimeInstant FromDotNetTicks(Int64 ticks)
 		{
 			ticks -= 621355968000000000LL;

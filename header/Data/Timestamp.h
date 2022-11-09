@@ -150,6 +150,21 @@ namespace Data
 			return this->inst.ToUnixTimestamp();
 		}
 
+		Int64 ToEpochSec() const
+		{
+			return this->inst.ToEpochSec();
+		}
+
+		Int64 ToEpochMS() const
+		{
+			return this->inst.ToEpochMS();
+		}
+
+		Int64 ToEpochNS() const
+		{
+			return this->inst.ToEpochNS();
+		}
+
 /*		void SetMSDOSTime(UInt16 date, UInt16 time);
 		UInt16 ToMSDOSDate();
 		UInt16 ToMSDOSTime();*/
@@ -345,10 +360,10 @@ namespace Data
 			return Data::Timestamp(TimeInstant::FromVariTime(variTime), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
-		static Timestamp FromStr(Text::CString s)
+		static Timestamp FromStr(Text::CString s, Int8 defTZQhr)
 		{
 			Data::DateTimeUtil::TimeValue tv;
-			Int8 tzQhr = 0;
+			Int8 tzQhr = defTZQhr;
 			UInt32 nanosec;
 			if (Data::DateTimeUtil::String2TimeValue(s, &tv, &tzQhr, &nanosec))
 			{
@@ -356,7 +371,7 @@ namespace Data
 			}
 			else
 			{
-				return Timestamp(0, 0);
+				return Timestamp(0, defTZQhr);
 			}
 		}
 

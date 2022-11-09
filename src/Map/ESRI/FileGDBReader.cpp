@@ -581,7 +581,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 			Text::StringBuilderUTF8 sb;
 			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
-			return Data::Timestamp::FromStr(sb.ToCString());
+			return Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 	}
 	return Data::Timestamp(0, 0);

@@ -4,6 +4,8 @@
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 
@@ -14,6 +16,9 @@ namespace SSWR
 		class AVIRTimestampForm : public UI::GUIForm
 		{
 		private:
+			UI::GUITabControl *tcMain;
+
+			UI::GUITabPage *tpValue;
 			UI::GUILabel *lblValue;
 			UI::GUITextBox *txtValue;
 			UI::GUIButton *btnEpochSec;
@@ -25,6 +30,19 @@ namespace SSWR
 			UI::GUITextBox *txtUTCTime;
 			UI::GUILabel *lblLocalTime;
 			UI::GUITextBox *txtLocalTime;
+			
+			UI::GUITabPage *tpStr;
+			UI::GUILabel *lblStr;
+			UI::GUITextBox *txtStr;
+			UI::GUIButton *btnStrConv;
+			UI::GUILabel *lblStrEpochSec;
+			UI::GUITextBox *txtStrEpochSec;
+			UI::GUILabel *lblStrEpochMS;
+			UI::GUITextBox *txtStrEpochMS;
+			UI::GUILabel *lblStrEpochNS;
+			UI::GUITextBox *txtStrEpochNS;
+			UI::GUILabel *lblStrDotNetTicks;
+			UI::GUITextBox *txtStrDotNetTicks;
 
 			SSWR::AVIRead::AVIRCore *core;
 
@@ -33,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnEpochUSClicked(void *userObj);
 			static void __stdcall OnEpochNSClicked(void *userObj);
 			static void __stdcall OnDotNetTicksClicked(void *userObj);
-
+			static void __stdcall OnStrConvClicked(void *userObj);
 			void DisplayTime(Data::Timestamp ts);
 		public:
 			AVIRTimestampForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
