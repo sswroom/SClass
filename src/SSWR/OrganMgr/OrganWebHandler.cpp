@@ -1027,7 +1027,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::BookFileExist(BookInfo *book)
 	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File;
 }
 
-Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon)
+Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::Timestamp t, Double *lat, Double *lon)
 {
 /*	OSInt i;
 	WebUserInfo *webUser;
@@ -1351,14 +1351,12 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
-		Data::DateTime fileTime;
+		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
 		Double lat = 0;
 		Double lon = 0;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 		Text::String *camera = 0;
 		UInt32 crcVal = 0;
-		fileTime.SetTicks(0);
-		fileTime.ToLocalTime();
 
 		{
 			IO::StmData::MemoryDataRef md(fileCont, fileSize);
@@ -1378,9 +1376,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					if (exif)
 					{
 						exif->GetPhotoDate(&fileTime);
-						if (fileTime.GetYear() >= 2000)
+						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
+						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 						{
-							this->UserGPSGetPos(userId, &fileTime, &lat, &lon);
+							this->UserGPSGetPos(userId, fileTime, &lat, &lon);
 						}
 						Text::CString cstr;
 						Text::CString cstr2;
@@ -1470,8 +1469,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt32(sptr, userId);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
-				fileTime.ToUTCTime();
-				sptr = fileTime.ToString(sptr, "yyyyMM");
+				sptr = fileTime.ToUTCTime().ToString(sptr, "yyyyMM");
 				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				dataFileName = sptr;
@@ -1497,7 +1495,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(lat);
 					sql.AppendCmdC(CSTR(", "));
@@ -1507,7 +1505,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32(spId);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmdC(CSTR(", "));
@@ -1595,11 +1593,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
 		IO::ParserType t;
-		Data::DateTime fileTime;
+		Data::Timestamp fileTime = 0;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 		Bool valid = false;
 		Media::DrawImage *graphImg = 0;
-		fileTime.SetTicks(0);
 		UInt8 crcBuff[4];
 		crc.Calc(fileCont, fileSize);
 		crc.GetValue(crcBuff);
@@ -1676,8 +1673,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt32(sptr, userId);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
-				fileTime.ToUTCTime();
-				sptr = fileTime.ToString(sptr, "yyyyMM");
+				sptr = fileTime.ToUTCTime().ToString(sptr, "yyyyMM");
 				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				dataFileName = sptr;
@@ -1702,7 +1698,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(0);
 					sql.AppendCmdC(CSTR(", "));
@@ -1712,7 +1708,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32(spId);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmdC(CSTR(", "));
@@ -1766,8 +1762,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Tex
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt32(sptr, userId);
 						*sptr++ = IO::Path::PATH_SEPERATOR;
-						fileTime.ToUTCTime();
-						sptr = fileTime.ToString(sptr, "yyyyMM");
+						sptr = fileTime.ToUTCTime().ToString(sptr, "yyyyMM");
 						IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt64(sptr, ticks);

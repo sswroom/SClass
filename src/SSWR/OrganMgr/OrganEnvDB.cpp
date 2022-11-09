@@ -1499,13 +1499,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
-		Data::DateTime fileTime;
+		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
 		Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
 		UserFileInfo *userFile;
 		Text::String *camera = 0;
 		UInt32 crcVal = 0;
-		fileTime.SetTicks(0);
-		fileTime.ToLocalTime();
 
 		{
 			IO::StmData::MemoryDataRef md(readBuff, readSize);
@@ -1525,9 +1523,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					if (exif)
 					{
 						exif->GetPhotoDate(&fileTime);
-						if (fileTime.GetYear() >= 2000)
+						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
+						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 						{
-							this->GetGPSPos(this->userId, fileTime.ToTimestamp(), &pos);
+							this->GetGPSPos(this->userId, fileTime, &pos);
 						}
 						Text::CString cstr;
 						Text::CString cstr2;
@@ -1571,7 +1570,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		if (valid)
 		{
 			WebUserInfo *webUser = this->GetWebUser(this->userId);
-			Data::Timestamp ts = Data::Timestamp(fileTime.ToTicks(), fileTime.GetTimeZoneQHR());
+			Data::Timestamp ts = fileTime;
 			OSInt si;
 			UOSInt j;
 			UOSInt k;
@@ -1619,8 +1618,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt32(sptr, this->userId);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
-				fileTime.ToUTCTime();
-				sptr = fileTime.ToString(sptr, "yyyyMM");
+				sptr = fileTime.ToUTCTime().ToString(sptr, "yyyyMM");
 				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				dataFileName = sptr;
@@ -1646,7 +1644,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(&fileName[i + 1]);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(pos.lat);
 					sql.AppendCmdC(CSTR(", "));
@@ -1656,7 +1654,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32(sp->GetSpeciesId());
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmdC(CSTR(", "));
@@ -1678,7 +1676,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
 						userFile->oriFileName = Text::String::New(&fileName[i + 1], fileNameLen - i - 1);
-						userFile->fileTime = Data::Timestamp(fileTime.ToTicks(), fileTime.GetTimeZoneQHR());
+						userFile->fileTime = fileTime;
 						userFile->lat = pos.lat;
 						userFile->lon = pos.lon;
 						userFile->webuserId = this->userId;
@@ -1747,11 +1745,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
 		IO::ParserType t;
-		Data::DateTime fileTime;
+		Data::Timestamp fileTime = 0;
 		UserFileInfo *userFile;
 		Bool valid = false;
 		Media::DrawImage *graphImg = 0;
-		fileTime.SetTicks(0);
 		{
 			IO::FileStream fs({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
 			if (fs.IsError())
@@ -1843,8 +1840,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt32(sptr, this->userId);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
-				fileTime.ToUTCTime();
-				sptr = fileTime.ToString(sptr, "yyyyMM");
+				sptr = fileTime.ToUTCTime().ToString(sptr, "yyyyMM");
 				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				dataFileName = sptr;
@@ -1870,7 +1866,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(&fileName[i + 1]);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(0);
 					sql.AppendCmdC(CSTR(", "));
@@ -1880,7 +1876,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32(sp->GetSpeciesId());
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendDate(&fileTime);
+					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(dataFileName);
 					sql.AppendCmdC(CSTR(", "));
@@ -1894,7 +1890,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
 						userFile->oriFileName = Text::String::New(&fileName[i + 1], fileNameLen - i - 1);
-						userFile->fileTime = fileTime.ToTimestamp();
+						userFile->fileTime = fileTime;
 						userFile->lat = 0;
 						userFile->lon = 0;
 						userFile->webuserId = this->userId;
@@ -1938,8 +1934,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt32(sptr, this->userId);
 						*sptr++ = IO::Path::PATH_SEPERATOR;
-						fileTime.ToUTCTime();
-						sptr = fileTime.ToString(sptr, "yyyyMM");
+						sptr = fileTime.ToUTCTime().ToString(sptr, "yyyyMM");
 						IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt64(sptr, ts.ToTicks());
@@ -3077,8 +3072,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	pobj = this->parsers.ParseFile(fd, &t);
 	DEL_CLASS(fd);
-	Data::DateTime startDT;
-	Data::DateTime endDT;
+	Data::Timestamp startTime;
+	Data::Timestamp endTime;
 	const UTF8Char *oriFileName;
 	const UTF8Char *oriFileNameEnd;
 	UTF8Char sbuff[512];
@@ -3086,7 +3081,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 	Int32 fileType = 0;
 	DataFileInfo *dataFile;
 	Bool chg = false;
-	Data::DateTime dt;
+	Data::Timestamp ts;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -3114,23 +3109,23 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 					k = 0;
 					while (k < l)
 					{
-						dt.SetTicks(recArr[k].utcTimeTicks);
+						ts = Data::Timestamp(recArr[k].utcTimeTicks, 0);
 						if (found)
 						{
-							if (startDT.CompareTo(&dt) > 0)
+							if (startTime.CompareTo(ts) > 0)
 							{
-								startDT.SetValue(&dt);
+								startTime = ts;
 							}
-							if (endDT.CompareTo(&dt) < 0)
+							if (endTime.CompareTo(ts) < 0)
 							{
-								endDT.SetValue(&dt);
+								endTime = ts;
 							}
 						}
 						else
 						{
 							found = true;
-							startDT.SetValue(&dt);
-							endDT.SetValue(&dt);
+							startTime = ts;
+							endTime = ts;
 						}
 						k++;
 					}
@@ -3157,9 +3152,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 							if (!found)
 							{
 								found = true;
-								reader->GetAsDate(1, &startDT);
+								startTime = reader->GetTimestamp(1);
 							}
-							reader->GetAsDate(1, &endDT);
+							endTime = reader->GetTimestamp(1);
 						}
 						db->CloseReader(reader);
 					}
@@ -3188,7 +3183,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 		dataFileName = sptr;
 		sptr = Text::StrInt32(sptr, this->userId);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
-		sptr = Text::StrInt64(sptr, startDT.ToTicks());
+		sptr = Text::StrInt64(sptr, startTime.ToTicks());
 		i = fileName.LastIndexOf('.');
 		if (i != INVALID_INDEX)
 		{
@@ -3200,9 +3195,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 			sql.AppendCmdC(CSTR("insert into datafile (fileType, startTime, endTime, oriFileName, dataFileName, webuser_id) values ("));
 			sql.AppendInt32(fileType);
 			sql.AppendCmdC(CSTR(", "));
-			sql.AppendDate(&startDT);
+			sql.AppendTS(startTime);
 			sql.AppendCmdC(CSTR(", "));
-			sql.AppendDate(&endDT);
+			sql.AppendTS(endTime);
 			sql.AppendCmdC(CSTR(", "));
 			sql.AppendStrUTF8(oriFileName);
 			sql.AppendCmdC(CSTR(", "));
@@ -3216,8 +3211,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 				dataFile = MemAlloc(DataFileInfo, 1);
 				dataFile->id = this->db->GetLastIdentity32();
 				dataFile->fileType = fileType;
-				dataFile->startTime = startDT.ToTimestamp();
-				dataFile->endTime = endDT.ToTimestamp();
+				dataFile->startTime = startTime;
+				dataFile->endTime = endTime;
 				dataFile->webUserId = this->userId;
 				dataFile->oriFileName = Text::String::NewP(oriFileName, oriFileNameEnd);
 				dataFile->fileName = Text::String::NewP(dataFileName, sptr);

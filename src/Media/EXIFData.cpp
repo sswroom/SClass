@@ -1798,6 +1798,48 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt) const
 	return false;
 }
 
+Bool Media::EXIFData::GetPhotoDate(Data::Timestamp *ts) const
+{
+	Media::EXIFData::EXIFItem *item;
+	if (this->exifMaker == EM_STANDARD)
+	{
+		if ((item = this->exifMap.Get(36867)) != 0)
+		{
+			if (item->type == ET_STRING)
+			{
+				*ts = Data::Timestamp::FromStr(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
+				return true;
+			}
+		}
+		if ((item = this->exifMap.Get(36868)) != 0)
+		{
+			if (item->type == ET_STRING)
+			{
+				*ts = Data::Timestamp::FromStr(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
+				return true;
+			}
+		}
+		if ((item = this->exifMap.Get(34665)) != 0)
+		{
+			if (item->type == ET_SUBEXIF)
+			{
+				Media::EXIFData *exif = (Media::EXIFData*)item->dataBuff;
+				if (exif->GetPhotoDate(ts))
+					return true;
+			}
+		}
+		if ((item = this->exifMap.Get(306)) != 0)
+		{
+			if (item->type == ET_STRING)
+			{
+				*ts = Data::Timestamp::FromStr(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 Text::CString Media::EXIFData::GetPhotoMake() const
 {
 	Media::EXIFData::EXIFItem *item;

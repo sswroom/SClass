@@ -298,7 +298,7 @@ namespace SSWR
 			Bool GroupIsAdmin(GroupInfo *group);
 			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);
 			Bool BookFileExist(BookInfo *book);
-			Bool UserGPSGetPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon);
+			Bool UserGPSGetPos(Int32 userId, Data::Timestamp t, Double *lat, Double *lon);
 
 			//LockWrite dataMut before calling
 			Int32 SpeciesAdd(Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);

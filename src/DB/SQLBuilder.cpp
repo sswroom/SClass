@@ -80,7 +80,7 @@ void DB::SQLBuilder::AppendStrW(const WChar *val)
 	Text::StrDelNew(v);
 }
 
-void DB::SQLBuilder::AppendDate(Data::DateTime *val)
+void DB::SQLBuilder::AppendDateTime(Data::DateTime *val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBDateLeng(val, this->svrType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBDate(this->sb.GetEndPtr(), val, this->svrType, (Int8)this->tzQhr));
