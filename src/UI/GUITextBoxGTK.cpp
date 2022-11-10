@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "UI/GUITextBox.h"
+#include "UI/GUIButton.h"
 #include "UI/GUIClientControl.h"
+#include "UI/GUIForm.h"
+#include "UI/GUITextBox.h"
 #include <gtk/gtk.h>
 
 struct UI::GUITextBox::ClassData
@@ -112,6 +114,31 @@ Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
 		if ((ret = this->keyDownHdlrs.GetItem(i)(this->keyDownObjs.GetItem(i), osKey)))
 		{
 			break;
+		}
+	}
+	if (!ret)
+	{
+		UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
+		if (key == UI::GUIControl::GK_ESCAPE)
+		{
+			UI::GUIButton *btn = this->GetRootForm()->GetCancelButton();
+			if (btn)
+			{
+				btn->EventButtonClick();
+				ret = true;
+			}
+		}
+		else if (key == UI::GUIControl::GK_ENTER)
+		{
+			if (!this->clsData->multiLine)
+			{
+				UI::GUIButton *btn = this->GetRootForm()->GetDefaultButton();
+				if (btn)
+				{
+					btn->EventButtonClick();
+					ret = true;
+				}
+			}
 		}
 	}
 	return ret;

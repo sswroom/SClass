@@ -3,6 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRColorSettingForm.h"
+#include "SSWR/AVIRead/AVIRFileRenameForm.h"
 #include "SSWR/AVIRead/AVIRImageViewerForm.h"
 #include "SSWR/AVIRead/AVIRStringMsgForm.h"
 #include "Text/MyString.h"
@@ -10,6 +11,7 @@
 typedef enum
 {
 	MNU_IMAGE_SAVE = 101,
+	MNU_IMAGE_RENAME,
 	MNU_IMAGE_ENLARGE,
 	MNU_IMAGE_NEXT,
 	MNU_IMAGE_PREV,
@@ -250,6 +252,7 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(UI::GUIClientControl *pa
 	mnu->AddItem(CSTR("Set &Monitor Color"), MNU_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));
 	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("Rena&me"), MNU_IMAGE_RENAME, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_M);
 	mnu->AddItem(CSTR("&Allow Enlarge"), MNU_IMAGE_ENLARGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Info"), MNU_IMAGE_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Present"));
@@ -294,6 +297,19 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_IMAGE_SAVE:
 		this->core->SaveData(this, this->imgList, L"SaveImage");
+		break;
+	case MNU_IMAGE_RENAME:
+		{
+			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, this->imgList->GetSourceNameObj());
+			if (frm.ShowDialog(this))
+			{
+				this->imgList->SetSourceName(frm.GetFileName());
+				UTF8Char sbuff[512];
+				UTF8Char *sptr;
+				sptr = this->imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
+				this->SetText(CSTRP(sbuff, sptr));
+			}
+		}
 		break;
 	case MNU_IMAGE_ENLARGE:
 		this->allowEnlarge = !this->allowEnlarge;

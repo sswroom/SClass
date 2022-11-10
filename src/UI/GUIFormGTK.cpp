@@ -383,6 +383,15 @@ void UI::GUIForm::SetCancelButton(UI::GUIButton *btn)
 	this->cancelBtn = btn;
 }
 
+UI::GUIButton *UI::GUIForm::GetDefaultButton()
+{
+	return this->okBtn;
+}
+
+UI::GUIButton *UI::GUIForm::GetCancelButton()
+{
+	return this->cancelBtn;
+}
 
 void UI::GUIForm::GetClientSize(Double *w, Double *h)
 {

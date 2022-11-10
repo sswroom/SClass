@@ -61,6 +61,10 @@ Bool IO::FileUtil::DeleteFile(Text::CString file, Bool deleteRdonlyFile)
 
 Bool IO::FileUtil::RenameFile(const UTF8Char *srcFile, const UTF8Char *destFile)
 {
+	struct stat s;
+	int status = lstat((const Char*)destFile, &s);
+	if (status == 0)
+		return false;
 	Int32 retV = rename((const Char*)srcFile, (const Char*)destFile);
 	if (retV == 0)
 		return true;

@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Media/ICCProfile.h"
 #include "Media/CS/TransferFunc.h"
+#include "SSWR/AVIRead/AVIRFileRenameForm.h"
 #include "SSWR/AVIRead/AVIRICCInfoForm.h"
 #include "SSWR/AVIRead/AVIRImageColorForm.h"
 #include "SSWR/AVIRead/AVIRImageForm.h"
@@ -14,6 +15,7 @@
 typedef enum
 {
 	MNU_IMAGE_SAVE = 101,
+	MNU_IMAGE_RENAME,
 	MNU_IMAGE_ENLARGE,
 	MNU_FILTER_COLOR,
 	MNU_FILTER_32BIT,
@@ -641,6 +643,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));
 	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_RENAME, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_M);
 	mnu->AddItem(CSTR("&Allow Enlarge"), MNU_IMAGE_ENLARGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Filter"));
 	mnu->AddItem(CSTR("&Color"), MNU_FILTER_COLOR, (UI::GUIMenu::KeyModifier)(UI::GUIMenu::KM_CONTROL | UI::GUIMenu::KM_SHIFT), UI::GUIControl::GK_C);
@@ -682,6 +685,19 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_IMAGE_ENLARGE:
 		this->allowEnlarge = !this->allowEnlarge;
 		this->pbImage->SetAllowEnlarge(this->allowEnlarge);
+		break;
+	case MNU_IMAGE_RENAME:
+		{
+			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, this->imgList->GetSourceNameObj());
+			if (frm.ShowDialog(this))
+			{
+				this->imgList->SetSourceName(frm.GetFileName());
+				UTF8Char sbuff[512];
+				UTF8Char *sptr;
+				sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
+				this->SetText(CSTRP(sbuff, sptr));
+			}
+		}
 		break;
 	case MNU_FILTER_COLOR:
 		{

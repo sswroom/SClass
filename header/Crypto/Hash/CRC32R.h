@@ -5,6 +5,7 @@
 extern "C"
 {
 	UInt32 CRC32R_Reverse(UInt32 polynomial);
+	UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal);
 }
 
 namespace Crypto
@@ -32,6 +33,11 @@ namespace Crypto
 			virtual void GetValue(UInt8 *buff) const;
 			virtual UOSInt GetBlockSize() const;
 			virtual UOSInt GetResultSize() const;
+
+			UInt32 CalcDirect(const UInt8 *buff, UOSInt buffSize) const
+			{
+				return ~CRC32R_Calc(buff, buffSize, this->crctab, 0xffffffff);
+			}
 		};
 	}
 }

@@ -108,6 +108,8 @@ namespace UI
 		virtual void UpdateMenu();
 		virtual void SetDefaultButton(UI::GUIButton *btn);
 		virtual void SetCancelButton(UI::GUIButton *btn);
+		UI::GUIButton *GetDefaultButton();
+		UI::GUIButton *GetCancelButton();
 
 		virtual void GetClientSize(Double *w, Double *h);
 		virtual Bool IsChildVisible();

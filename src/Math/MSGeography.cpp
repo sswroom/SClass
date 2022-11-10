@@ -77,7 +77,28 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			{
 				return 0;
 			}
-			if (shapePtr[8] == 2)
+			if (shapePtr[8] == 1)
+			{
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 4-1 must be single shape\r\n");
+					return 0;
+				}
+				if (nPoints == 0)
+				{
+					printf("MSGeography: Point empty\r\n");
+					return 0;
+				}
+				else if (nPoints != 1)
+				{
+					printf("MSGeography: Type 4-1 must be single point\r\n");
+					return 0;
+				}
+				Math::Geometry::Point *pt;
+				NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&pointPtr[0]), ReadDouble(&pointPtr[8])));
+				return pt;
+			}
+			else if (shapePtr[8] == 2)
 			{
 				if (nShapes != 1)
 				{
@@ -211,6 +232,17 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					mpg->AddGeometry(pg);
 				}
 				return mpg;
+			}
+			else if (shapePtr[8] == 7) //GeometryCollection
+			{
+				if (nPoints == 0)
+				{
+					printf("MSGeography: GeometryCollection found\r\n");
+				}
+				else
+				{
+					printf("MSGeography: GeometryCollection not supported\r\n");
+				}
 			}
 			else
 			{

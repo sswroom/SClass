@@ -6,6 +6,15 @@
 #include "Text/MyString.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+void GUIExporter_SetDPI(GdkPixbuf *pixbuf, Double hdpi, Double vdpi)
+{
+	UTF8Char sbuff[64];
+	Text::StrInt32(sbuff, Double2Int32(hdpi));
+	gdk_pixbuf_set_option(pixbuf, "x-dpi", (const Char*)sbuff);
+	Text::StrInt32(sbuff, Double2Int32(vdpi));
+	gdk_pixbuf_set_option(pixbuf, "y-dpi", (const Char*)sbuff);
+}
+
 Exporter::GUIExporter::GUIExporter() : IO::FileExporter()
 {
 }
@@ -108,6 +117,7 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 			ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 32);
 		}
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth << 2, 0, 0);
+		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_B8G8R8:
@@ -115,18 +125,21 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 3);
 		ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 24);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
+		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_R8G8B8:
 		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 3);
 		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 3);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
+		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_R8G8B8A8:
 		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
 		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth << 2, 0, 0);
+		GUIExporter_SetDPI(pixBuf, img->info.hdpi, img->info.vdpi);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_PAL_1:
