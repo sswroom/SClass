@@ -104,8 +104,8 @@ Bool Net::ConnectionInfo::SetInfo(void *info)
 	if (inf->DhcpEnabled != 0)
 	{
 		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->DhcpServer.IpAddress.String));
-		this->ent.dhcpLeaseTime = Data::Timestamp::FromUnixTimestamp(inf->LeaseObtained).ToLocalTime();
-		this->ent.dhcpLeaseExpire = Data::Timestamp::FromUnixTimestamp(inf->LeaseExpires).ToLocalTime();
+		this->ent.dhcpLeaseTime = Data::Timestamp::FromEpochSec(inf->LeaseObtained, Data::DateTimeUtil::GetLocalTzQhr());
+		this->ent.dhcpLeaseExpire = Data::Timestamp::FromEpochSec(inf->LeaseExpires, Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	return true;
 }

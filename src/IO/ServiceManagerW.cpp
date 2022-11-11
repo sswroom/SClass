@@ -6,6 +6,11 @@
 #include <windows.h>
 #undef CreateService
 
+OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b)
+{
+	return a->name->CompareTo(b->name);
+}
+
 IO::ServiceManager::ServiceManager()
 {
 	this->clsData = (ClassData*)OpenSCManager(0, 0, SC_MANAGER_ALL_ACCESS);
@@ -23,7 +28,7 @@ IO::ServiceManager::~ServiceManager()
 	}
 }
 
-Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, IO::ServiceInfo::ServiceState stype)
+Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcDesc, Text::CString cmdLine, IO::ServiceInfo::ServiceState stype)
 {
 	if (this->clsData == 0)
 		return false;
@@ -44,8 +49,8 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, IO::ServiceInfo::S
 	default:
 		return false;
 	}
-	IO::Path::GetProcessFileNameW(szPath);
 	WChar wname[512];
+	Text::StrUTF8_WChar(szPath, cmdLine.v, 0);
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
 
 	SC_HANDLE schService = CreateServiceW((SC_HANDLE)this->clsData, wname, wname, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, startType, SERVICE_ERROR_NORMAL, szPath, 0, 0, 0, 0, 0); 
@@ -53,6 +58,13 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, IO::ServiceInfo::S
     {
 		return false;
     }
+	if (svcDesc.v)
+	{
+		Text::StrUTF8_WChar(wname, svcDesc.v, 0);
+		SERVICE_DESCRIPTIONW desc;
+		desc.lpDescription = (LPWSTR)wname;
+		ChangeServiceConfig2W(schService, SERVICE_CONFIG_DESCRIPTION, &desc);
+	}
     CloseServiceHandle(schService);
 	return true;
 }
@@ -130,6 +142,16 @@ Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
 	return succ;
 }
 
+Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
+{
+	return false;
+}
+
+Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
+{
+	return false;
+}
+
 Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* svcDetail)
 {
 	if (this->clsData == 0)
@@ -173,6 +195,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* 
 		svcDetail->procId = status->dwProcessId;
 		svcDetail->memoryUsage = 0;
 		svcDetail->startTimeTicks = 0;
+		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
 	}
 	MemFree(buff);
 	return succ;

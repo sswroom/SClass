@@ -67,19 +67,21 @@ void SvcUninstall(const WChar *svcName)
 
 void SvcInstall(const WChar *svcName, const WChar *svcDesc)
 {
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::ServiceManager svcMgr;
 	Text::String* s = Text::String::NewNotNull(svcName);
-	if (svcMgr.ServiceCreate(s->ToCString(), IO::ServiceInfo::ServiceState::Active))
+	Text::String* sDesc = Text::String::NewNotNull(svcDesc);
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	if (svcMgr.ServiceCreate(s->ToCString(), sDesc->ToCString(), CSTRP(sbuff, sptr), IO::ServiceInfo::ServiceState::Active))
 	{
-		Text::String* sDesc = Text::String::NewNotNull(svcDesc);
-		svcMgr.ServiceSetDesc(s->ToCString(), sDesc->ToCString());
-		sDesc->Release();
 		printf("Service installed successfully\n");
 	}
 	else
 	{
 		printf("CreateService failed (%d)\n", (UInt32)GetLastError()); 
 	}
+	sDesc->Release();
 	s->Release();
 }
 

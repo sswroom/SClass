@@ -22,9 +22,15 @@ namespace SSWR
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
+			UI::GUIButton *btnEnable;
+			UI::GUIButton *btnDisable;
 			UI::GUIPanel *pnlDetail;
+			UI::GUILabel *lblName;
+			UI::GUITextBox *txtName;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
+			UI::GUILabel *lblEnabled;
+			UI::GUITextBox *txtEnabled;
 			UI::GUILabel *lblProcId;
 			UI::GUITextBox *txtProcId;
 			UI::GUILabel *lblStartTime;
@@ -33,11 +39,13 @@ namespace SSWR
 			UI::GUITextBox *txtMemory;
 
 			SSWR::AVIRead::AVIRCore *core;
-			IO::ServiceManager *svcMgr;
+			IO::ServiceManager svcMgr;
 
 			static void __stdcall OnServiceSelChg(void *userObj);
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnStopClicked(void *userObj);
+			static void __stdcall OnEnableClicked(void *userObj);
+			static void __stdcall OnDisableClicked(void *userObj);
 		public:
 			AVIRServiceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRServiceForm();

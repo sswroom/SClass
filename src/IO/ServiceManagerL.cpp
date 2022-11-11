@@ -4,6 +4,11 @@
 
 #include <stdio.h>
 
+OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b)
+{
+	return a->name->CompareTo(b->name);
+}
+
 IO::ServiceManager::ServiceManager()
 {
 	this->clsData = 0;
@@ -14,7 +19,7 @@ IO::ServiceManager::~ServiceManager()
 
 }
 
-Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, IO::ServiceInfo::ServiceState stype)
+Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcDesc, Text::CString cmdLine, IO::ServiceInfo::ServiceState stype)
 {
 	return false;
 }
@@ -64,6 +69,40 @@ Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
 	return true;
 }
 
+Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
+{
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbCmd;
+	sbCmd.AppendC(UTF8STRC("systemctl enable "));
+	sbCmd.Append(svcName);
+	sbCmd.AppendC(UTF8STRC(" --no-pager"));
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	printf("Enable ret = %d\r\n", ret);
+	printf("Enable msg = %s\r\n", sb.ToString());
+	if (ret != 0)
+	{
+		return false;
+	}
+	return true;
+}
+
+Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
+{
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbCmd;
+	sbCmd.AppendC(UTF8STRC("systemctl disable "));
+	sbCmd.Append(svcName);
+	sbCmd.AppendC(UTF8STRC(" --no-pager"));
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	printf("Disable ret = %d\r\n", ret);
+	printf("Disable msg = %s\r\n", sb.ToString());
+	if (ret != 0)
+	{
+		return false;
+	}
+	return true;
+}
+
 Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *svcDetail)
 {
 	Text::StringBuilderUTF8 sb;
@@ -85,8 +124,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 	lineCnt = Text::StrSplitLineP(lines, 2, sb);
 	if (lineCnt == 2)
 	{
-		lineCnt = Text::StrSplitLineP(lines, 2, lines[1]);
-		valIndex = lines[0].IndexOf(UTF8STRC(": "));
+		valIndex = lines[1].IndexOf(UTF8STRC(": "));
 		if (valIndex == INVALID_INDEX)
 		{
 			return false;
@@ -95,6 +133,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 		svcDetail->procId = 0;
 		svcDetail->startTimeTicks = 0;
 		svcDetail->status = IO::ServiceInfo::RunStatus::Unknown;
+		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
 		while (lineCnt == 2)
 		{
 			lineCnt = Text::StrSplitLineP(lines, 2, lines[1]);
@@ -194,8 +233,58 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 						printf("Memory = %s\r\n", val.v);
 					}
 				}
+				else if (name.Equals(UTF8STRC("Loaded")))
+				{
+					val = lines[0].Substring(valIndex + 2);
+					if (val.StartsWith(UTF8STRC("masked ")))
+					{
+						svcDetail->enabled = IO::ServiceInfo::ServiceState::Masked;
+					}
+					else
+					{
+						i = val.IndexOf('(');
+						if (i != INVALID_INDEX)
+						{
+							val = val.Substring(i + 1);
+							i = val.LastIndexOf(')');
+							if (i != INVALID_INDEX)
+							{
+								val.TrimToLength(i);
+							}
+							Text::PString sarr[4];
+							i = Text::StrSplitTrimP(sarr, 4, val, ';');
+							while (i-- > 0)
+							{
+								if (sarr[i].Equals(UTF8STRC("enabled")))
+								{
+									svcDetail->enabled = IO::ServiceInfo::ServiceState::Active;
+								}
+								else if (sarr[i].Equals(UTF8STRC("disabled")))
+								{
+									svcDetail->enabled = IO::ServiceInfo::ServiceState::Inactive;
+								}
+								else if (sarr[i].Equals(UTF8STRC("static")))
+								{
+									svcDetail->enabled = IO::ServiceInfo::ServiceState::Static;
+								}
+								else if (sarr[i].Equals(UTF8STRC("indirect")))
+								{
+									svcDetail->enabled = IO::ServiceInfo::ServiceState::Indirect;
+								}
+								else if (sarr[i].Equals(UTF8STRC("generated")))
+								{
+									svcDetail->enabled = IO::ServiceInfo::ServiceState::Generated;
+								}
+							}
+						}
+					}
+				}
 			}		
 		}
+	}
+	else
+	{
+		return false;
 	}
 	return true;
 }
