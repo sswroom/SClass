@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
+#include "SSWR/AVIRead/AVIRServiceCreateForm.h"
 #include "SSWR/AVIRead/AVIRServiceForm.h"
+#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(void *userObj)
 {
@@ -91,6 +93,64 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDisableClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDeleteClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRServiceForm *me = (SSWR::AVIRead::AVIRServiceForm*)userObj;
+	Text::String *s = me->lvService->GetSelectedItemTextNew();
+	if (s)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Are you sure to delete service \""));
+		sb.Append(s);
+		sb.AppendC(UTF8STRC("\"?"));
+		if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Service"), me))
+		{
+			if (!me->svcMgr.ServiceDelete(s->ToCString()))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in deleting service"), CSTR("Service"), me);
+			}
+			else
+			{
+				me->lvService->ClearItems();
+				me->UpdateSvcList();
+			}
+		}
+		s->Release();
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRServiceForm::OnCreateClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRServiceForm *me = (SSWR::AVIRead::AVIRServiceForm*)userObj;
+	SSWR::AVIRead::AVIRServiceCreateForm frm(0, me->ui, me->core);
+	if (frm.ShowDialog(me))
+	{
+		me->lvService->ClearItems();
+		me->UpdateSvcList();
+	}
+}
+
+void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
+{
+	Data::ArrayList<IO::ServiceManager::ServiceItem*> svcList;
+	UOSInt i;
+	UOSInt j;
+	IO::ServiceManager::ServiceItem *svc;
+	this->svcMgr.QueryServiceList(&svcList);
+	IO::ServiceManager::ServiceComparator comparator;
+	Data::Sort::ArtificialQuickSort::Sort(&svcList, &comparator);
+	i = 0;
+	j = svcList.GetCount();
+	while (i < j)
+	{
+		svc = svcList.GetItem(i);
+		this->lvService->AddItem(svc->name, 0);
+		this->lvService->SetSubItem(i, 1, IO::ServiceInfo::ServiceStateGetName(svc->state));
+		i++;
+	}
+	this->svcMgr.FreeServiceList(&svcList);
+}
+
 SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -108,7 +168,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, UI
 	this->lvService->HandleSelChg(OnServiceSelChg, this);
 	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
-	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
+	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
 	this->btnStart->SetRect(4, 4, 75, 23, false);
@@ -122,6 +182,12 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnDisable, UI::GUIButton(ui, this->pnlCtrl, CSTR("Disable")));
 	this->btnDisable->SetRect(244, 4, 75, 23, false);
 	this->btnDisable->HandleButtonClick(OnDisableClicked, this);
+	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this->pnlCtrl, CSTR("Delete")));
+	this->btnDelete->SetRect(4, 28, 75, 23, false);
+	this->btnDelete->HandleButtonClick(OnDeleteClicked, this);
+	NEW_CLASS(this->btnCreate, UI::GUIButton(ui, this->pnlCtrl, CSTR("Create")));
+	this->btnCreate->SetRect(84, 28, 75, 23, false);
+	this->btnCreate->HandleButtonClick(OnCreateClicked, this);
 	NEW_CLASS(this->pnlDetail, UI::GUIPanel(ui, this));
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDetail, CSTR("Name")));
@@ -154,24 +220,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtMemory, UI::GUITextBox(ui, this->pnlDetail, CSTR("")));
 	this->txtMemory->SetReadOnly(true);
 	this->txtMemory->SetRect(104, 124, 150, 23, false);
-
-	Data::ArrayList<IO::ServiceManager::ServiceItem*> svcList;
-	UOSInt i;
-	UOSInt j;
-	IO::ServiceManager::ServiceItem *svc;
-	this->svcMgr.QueryServiceList(&svcList);
-	IO::ServiceManager::ServiceComparator comparator;
-	Data::Sort::ArtificialQuickSort::Sort(&svcList, &comparator);
-	i = 0;
-	j = svcList.GetCount();
-	while (i < j)
-	{
-		svc = svcList.GetItem(i);
-		this->lvService->AddItem(svc->name, 0);
-		this->lvService->SetSubItem(i, 1, IO::ServiceInfo::ServiceStateGetName(svc->state));
-		i++;
-	}
-	this->svcMgr.FreeServiceList(&svcList);
+	this->UpdateSvcList();
 }
 
 SSWR::AVIRead::AVIRServiceForm::~AVIRServiceForm()

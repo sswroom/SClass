@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/ServiceManager.h"
 #include "Manage/Process.h"
 
@@ -21,11 +23,124 @@ IO::ServiceManager::~ServiceManager()
 
 Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcDesc, Text::CString cmdLine, IO::ServiceInfo::ServiceState stype)
 {
-	return false;
+	if (svcName.leng == 0 || svcName.IndexOf('.') != INVALID_INDEX || cmdLine.leng == 0)
+	{
+		return false;
+	}
+	ServiceDetail svcDetail;
+	if (this->ServiceGetDetail(svcName, &svcDetail))
+	{
+		return false;
+	}
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("/etc/systemd/system/"));
+	sb.Append(svcName);
+	sb.AppendC(UTF8STRC(".service"));
+	{
+		IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs.IsError())
+		{
+			return false;
+		}
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("[Unit]\n"));
+		sb.AppendC(UTF8STRC("Description="));
+		if (svcDesc.leng == 0)
+		{
+			sb.Append(svcName);
+		}
+		else
+		{
+			sb.Append(svcDesc);
+		}
+		sb.AppendC(UTF8STRC("\n\n[Service]\n"));
+		sb.AppendC(UTF8STRC("ExecStart="));
+		sb.Append(cmdLine);
+		sb.AppendC(UTF8STRC("\n\n[Install]\n"));
+		sb.AppendC(UTF8STRC("WantedBy=multi-user.target\n"));
+		fs.Write(sb.ToString(), sb.GetLength());
+	}
+	sb.ClearStr();
+	Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), &sb);
+	if (stype == IO::ServiceInfo::ServiceState::Active)
+	{
+		this->ServiceEnable(svcName);
+	}
+	return true;
 }
 
 Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 {
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbCmd;
+	sbCmd.AppendC(UTF8STRC("systemctl status "));
+	sbCmd.Append(svcName);
+	sbCmd.AppendC(UTF8STRC(" --no-pager"));
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	if (ret == 4 || ret == -1)
+	{
+		return false;
+	}
+	Text::CString svcFile = CSTR_NULL;
+	Text::PString lines[2];
+	UOSInt lineCnt;
+	UOSInt valIndex;
+	Text::PString name;
+	Text::PString val;
+	UOSInt i;
+	lineCnt = Text::StrSplitLineP(lines, 2, sb);
+	if (lineCnt == 2)
+	{
+		valIndex = lines[1].IndexOf(UTF8STRC(": "));
+		if (valIndex == INVALID_INDEX)
+		{
+			return false;
+		}
+		while (lineCnt == 2)
+		{
+			lineCnt = Text::StrSplitLineP(lines, 2, lines[1]);
+			if (lines[0].leng > valIndex && lines[0].v[valIndex] == ':' && lines[0].v[valIndex + 1] == ' ')
+			{
+				name.v = lines[0].v;
+				name.leng = valIndex;
+				name.v[name.leng] = 0;
+				name = name.TrimAsNew();
+				if (name.Equals(UTF8STRC("Loaded")))
+				{
+					val = lines[0].Substring(valIndex + 2);
+					if (val.StartsWith(UTF8STRC("masked ")))
+					{
+					}
+					else
+					{
+						i = val.IndexOf('(');
+						if (i != INVALID_INDEX)
+						{
+							val = val.Substring(i + 1);
+							i = val.LastIndexOf(')');
+							if (i != INVALID_INDEX)
+							{
+								val.TrimToLength(i);
+							}
+							Text::PString sarr[4];
+							i = Text::StrSplitTrimP(sarr, 4, val, ';');
+							svcFile = sarr[0].ToCString();
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (svcFile.leng > 8 && svcFile.EndsWith(UTF8STRC(".service")))
+		{
+			if (IO::Path::DeleteFile(svcFile.v))
+			{
+				sb.ClearStr();
+				Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), &sb);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 

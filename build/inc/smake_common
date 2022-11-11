@@ -3766,6 +3766,8 @@ SSWR/AVIRead/AVIRSelPrinterForm.h: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
 @AVIRSelPrinterForm.o
 SSWR/AVIRead/AVIRSelStreamForm.h: ../../src/SSWR/AVIRead/AVIRSelStreamForm.cpp
 @AVIRSelStreamForm.o
+SSWR/AVIRead/AVIRServiceCreateForm.h: ../../src/SSWR/AVIRead/AVIRServiceCreateForm.cpp
+@AVIRServiceCreateForm.o
 SSWR/AVIRead/AVIRServiceForm.h: ../../src/SSWR/AVIRead/AVIRServiceForm.cpp
 @AVIRServiceForm.o
 SSWR/AVIRead/AVIRSetAudioForm.h: ../../src/SSWR/AVIRead/AVIRSetAudioForm.cpp
@@ -5542,6 +5544,7 @@ AVIRSectorForm.o: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
 AVIRSelIOPinForm.o: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
 AVIRSelPrinterForm.o: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
 AVIRSelStreamForm.o: ../../src/SSWR/AVIRead/AVIRSelStreamForm.cpp
+AVIRServiceCreateForm.o: ../../src/SSWR/AVIRead/AVIRServiceCreateForm.cpp
 AVIRServiceForm.o: ../../src/SSWR/AVIRead/AVIRServiceForm.cpp
 AVIRSetAudioForm.o: ../../src/SSWR/AVIRead/AVIRSetAudioForm.cpp
 AVIRSetDPIForm.o: ../../src/SSWR/AVIRead/AVIRSetDPIForm.cpp

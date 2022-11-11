@@ -24,6 +24,8 @@ namespace SSWR
 			UI::GUIButton *btnStop;
 			UI::GUIButton *btnEnable;
 			UI::GUIButton *btnDisable;
+			UI::GUIButton *btnDelete;
+			UI::GUIButton *btnCreate;
 			UI::GUIPanel *pnlDetail;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
@@ -46,6 +48,10 @@ namespace SSWR
 			static void __stdcall OnStopClicked(void *userObj);
 			static void __stdcall OnEnableClicked(void *userObj);
 			static void __stdcall OnDisableClicked(void *userObj);
+			static void __stdcall OnDeleteClicked(void *userObj);
+			static void __stdcall OnCreateClicked(void *userObj);
+
+			void UpdateSvcList();
 		public:
 			AVIRServiceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRServiceForm();
