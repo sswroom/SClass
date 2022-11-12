@@ -938,7 +938,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			{
 				srid = this->tableInfo->csys->GetSRID();
 			}
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, this->tableInfo->geometryFlags & 0x80, this->tableInfo->geometryFlags & 0x40));
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
 			UOSInt i;
 			UInt32 *parts = pg->GetPtOfstList(&i);
 			Math::Coord2DDbl *points = pg->GetPointList(&i);
@@ -1030,7 +1030,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, geometryType & 0x80000000, geometryType & 0x40000000));
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
 			parts = pl->GetPtOfstList(&i);
 			points = pl->GetPointList(&i);
 			zArr = pl->GetZList(&i);
