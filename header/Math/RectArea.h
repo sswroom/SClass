@@ -15,6 +15,12 @@ namespace Math
 
 		RectArea() = default;
 
+		RectArea(UOSInt *tmp)
+		{
+			this->tl = Coord2D<T>(0, 0);
+			this->br = Coord2D<T>(0, 0);
+		}
+
 		RectArea(T left, T top, T width, T height)
 		{
 			this->tl = Coord2D<T>(left, top);
@@ -97,6 +103,11 @@ namespace Math
 				ret.br.y = tmp;
 			}
 			return ret;
+		}
+
+		Bool operator==(Math::RectArea<T> &rect)
+		{
+			return this->tl == rect.tl && this->br == rect.br;
 		}
 
 		Math::RectArea<T> operator*(T v)

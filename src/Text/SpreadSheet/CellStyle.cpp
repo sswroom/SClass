@@ -3,13 +3,24 @@
 #include "Text/MyString.h"
 #include "Text/SpreadSheet/CellStyle.h"
 
-Bool Text::SpreadSheet::CellStyle::BorderStyle::Equals(const BorderStyle *border) const
+Text::SpreadSheet::CellStyle::BorderStyle::BorderStyle(UInt32 borderColor, BorderType borderType)
 {
-	if (border->borderType == BorderType::None && this->borderType == BorderType::None)
+	this->borderColor = borderColor;
+	this->borderType = borderType;
+}
+
+Bool Text::SpreadSheet::CellStyle::BorderStyle::operator!=(const BorderStyle &border) const
+{
+	return !(*this == border);
+}
+
+Bool Text::SpreadSheet::CellStyle::BorderStyle::operator==(const BorderStyle &border) const
+{
+	if (border.borderType == BorderType::None && this->borderType == BorderType::None)
 		return true;
-	else if (border->borderType != this->borderType)
+	else if (border.borderType != this->borderType)
 		return false;
-	else if (border->borderColor != this->borderColor)
+	else if (border.borderColor != this->borderColor)
 		return false;
 	else
 		return true;
@@ -79,10 +90,8 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 	this->protection = style->protection;
 }
 
-Bool Text::SpreadSheet::CellStyle::Equals(CellStyle *style) const
+Bool Text::SpreadSheet::CellStyle::Equals(const CellStyle *style) const
 {
-	if (style->index != this->index)
-		return false;
 	if (style->halign != this->halign)
 		return false;
 	if (style->valign != this->valign)
@@ -90,13 +99,13 @@ Bool Text::SpreadSheet::CellStyle::Equals(CellStyle *style) const
 	if (style->wordWrap != this->wordWrap)
 		return false;
 
-	if (!style->borderBottom.Equals(&this->borderBottom))
+	if (style->borderBottom != this->borderBottom)
 		return false;
-	if (!style->borderLeft.Equals(&this->borderLeft))
+	if (style->borderLeft != this->borderLeft)
 		return false;
-	if (!style->borderRight.Equals(&this->borderRight))
+	if (style->borderRight != this->borderRight)
 		return false;
-	if (!style->borderTop.Equals(&this->borderTop))
+	if (style->borderTop != this->borderTop)
 		return false;
 
 	if (this->font == 0)
@@ -173,27 +182,27 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFont(Text::Spread
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderLeft(Text::SpreadSheet::CellStyle::BorderStyle *border)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderLeft(const BorderStyle &border)
 {
-	MemCopyNO(&this->borderLeft, border, sizeof(BorderStyle));
+	this->borderLeft = border;
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderRight(Text::SpreadSheet::CellStyle::BorderStyle *border)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderRight(const BorderStyle &border)
 {
-	MemCopyNO(&this->borderRight, border, sizeof(BorderStyle));
+	this->borderRight = border;
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle *border)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderTop(const BorderStyle &border)
 {
-	MemCopyNO(&this->borderTop, border, sizeof(BorderStyle));
+	this->borderTop = border;
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle *border)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderBottom(const BorderStyle &border)
 {
-	MemCopyNO(&this->borderBottom, border, sizeof(BorderStyle));
+	this->borderBottom = border;
 	return this;
 }
 
@@ -221,12 +230,12 @@ const UTF8Char *Text::SpreadSheet::CellStyle::GetID() const
 	return this->id;
 }
 
-Text::SpreadSheet::HAlignment Text::SpreadSheet::CellStyle::GetHAlign() const
+Text::HAlignment Text::SpreadSheet::CellStyle::GetHAlign() const
 {
 	return this->halign;
 }
 
-Text::SpreadSheet::VAlignment Text::SpreadSheet::CellStyle::GetVAlign() const
+Text::VAlignment Text::SpreadSheet::CellStyle::GetVAlign() const
 {
 	return this->valign;
 }
@@ -251,24 +260,24 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::CellStyle::GetFont() const
 	return this->font;
 }
 
-const Text::SpreadSheet::CellStyle::BorderStyle *Text::SpreadSheet::CellStyle::GetBorderLeft() const
+Text::SpreadSheet::CellStyle::BorderStyle Text::SpreadSheet::CellStyle::GetBorderLeft() const
 {
-	return &this->borderLeft;
+	return this->borderLeft;
 }
 
-const Text::SpreadSheet::CellStyle::BorderStyle *Text::SpreadSheet::CellStyle::GetBorderRight() const
+Text::SpreadSheet::CellStyle::BorderStyle Text::SpreadSheet::CellStyle::GetBorderRight() const
 {
-	return &this->borderRight;
+	return this->borderRight;
 }
 
-const Text::SpreadSheet::CellStyle::BorderStyle *Text::SpreadSheet::CellStyle::GetBorderTop() const
+Text::SpreadSheet::CellStyle::BorderStyle Text::SpreadSheet::CellStyle::GetBorderTop() const
 {
-	return &this->borderTop;
+	return this->borderTop;
 }
 
-const Text::SpreadSheet::CellStyle::BorderStyle *Text::SpreadSheet::CellStyle::GetBorderBottom() const
+Text::SpreadSheet::CellStyle::BorderStyle Text::SpreadSheet::CellStyle::GetBorderBottom() const
 {
-	return &this->borderBottom;
+	return this->borderBottom;
 }
 
 Text::String *Text::SpreadSheet::CellStyle::GetDataFormat() const

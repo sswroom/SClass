@@ -19,7 +19,7 @@ namespace Text
 			Number,
 			DateTime,
 			MergedLeft,
-			MergedTop
+			MergedUp
 		};
 
 		enum class AnchorType
@@ -132,6 +132,8 @@ namespace Text
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellStyle(UOSInt row, UOSInt col, CellStyle *style);
+			Bool SetCellStyleHAlign(UOSInt row, UOSInt col, IStyleCtrl *wb, HAlignment hAlign);
+			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
 			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::String *val);
@@ -140,6 +142,8 @@ namespace Text
 			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val);
 			Bool MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width);
+			Bool SetCellMergeLeft(UOSInt row, UOSInt col);
+			Bool SetCellMergeUp(UOSInt row, UOSInt col);
 			Bool SetRowHidden(UOSInt row, Bool hidden);
 			Bool SetRowHeight(UOSInt row, Double height);
 

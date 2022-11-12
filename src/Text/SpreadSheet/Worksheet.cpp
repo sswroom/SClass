@@ -67,7 +67,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 		{
 			col--;
 		}
-		else if (cell->cdt == CellDataType::MergedTop)
+		else if (cell->cdt == CellDataType::MergedUp)
 		{
 			row--;
 		}
@@ -440,6 +440,63 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Text::Sp
 	return true;
 }
 
+Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IStyleCtrl *wb, HAlignment hAlign)
+{
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	CellStyle *tmpStyle;
+	if (cell->style == 0)
+	{
+		if (hAlign == Text::HAlignment::Unknown)
+			return true;
+		NEW_CLASS(tmpStyle, CellStyle(0));
+		tmpStyle->SetHAlign(hAlign);
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
+		DEL_CLASS(tmpStyle);
+	}
+	else
+	{
+		if (cell->style->GetHAlign() == hAlign)
+			return true;
+		tmpStyle = cell->style->Clone();
+		tmpStyle->SetHAlign(hAlign);
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
+		DEL_CLASS(tmpStyle);
+	}
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType)
+{
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	CellStyle *tmpStyle;
+	if (cell->style == 0)
+	{
+		if (borderType == Text::SpreadSheet::BorderType::None)
+			return true;
+		NEW_CLASS(tmpStyle, CellStyle(0));
+		tmpStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(color, borderType));
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
+		DEL_CLASS(tmpStyle);
+	}
+	else
+	{
+		
+		if (cell->style->GetBorderBottom() == Text::SpreadSheet::CellStyle::BorderStyle(color, borderType))
+			return true;
+		tmpStyle = cell->style->Clone();
+		tmpStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(color, borderType));
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
+		DEL_CLASS(tmpStyle);
+	}
+	return true;
+}
+
 Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::String *url)
 {
 	CellData *cell;
@@ -567,7 +624,7 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 		while (j < width)
 		{
 			cell = GetCellData(row + i, col + j, true);
-			if (cell->cdt == CellDataType::MergedLeft || cell->cdt == CellDataType::MergedTop)
+			if (cell->cdt == CellDataType::MergedLeft || cell->cdt == CellDataType::MergedUp)
 				return false;
 			j++;
 		}
@@ -590,16 +647,98 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 				}
 				else
 				{
-					cell->cdt = CellDataType::MergedTop;
+					cell->cdt = CellDataType::MergedLeft;
 				}
 			}
 			else
 			{
-				cell->cdt = CellDataType::MergedLeft;
+				cell->cdt = CellDataType::MergedUp;
 			}
 			j++;
 		}
 		i++;
+	}
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellMergeLeft(UOSInt row, UOSInt col)
+{
+	if (col == 0)
+		return false;
+
+	CellData *cell;
+	UInt32 width = 1;
+	UInt32 height = 1;
+	cell = GetCellData(row, col, true);
+	cell->cdt = CellDataType::MergedLeft;
+	col--;
+	width++;
+	while (true)
+	{
+		cell = GetCellData(row, col, true);
+		if (cell->cdt == CellDataType::MergedUp)
+		{
+			row--;
+			height++;
+		}
+		else if (cell->cdt == CellDataType::MergedLeft)
+		{
+			col--;
+			width++;
+		}
+		else
+		{
+			if (cell->mergeHori < width)
+			{
+				cell->mergeHori = width;
+			}
+			if (cell->mergeVert < height)
+			{
+				cell->mergeVert = height;
+			}
+			break;
+		}
+	}
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellMergeUp(UOSInt row, UOSInt col)
+{
+	if (row == 0)
+		return false;
+
+	CellData *cell;
+	UInt32 width = 1;
+	UInt32 height = 1;
+	cell = GetCellData(row, col, true);
+	cell->cdt = CellDataType::MergedUp;
+	row--;
+	height++;
+	while (true)
+	{
+		cell = GetCellData(row, col, true);
+		if (cell->cdt == CellDataType::MergedUp)
+		{
+			row--;
+			height++;
+		}
+		else if (cell->cdt == CellDataType::MergedLeft)
+		{
+			col--;
+			width++;
+		}
+		else
+		{
+			if (cell->mergeHori < width)
+			{
+				cell->mergeHori = width;
+			}
+			if (cell->mergeVert < height)
+			{
+				cell->mergeVert = height;
+			}
+			break;
+		}
 	}
 	return true;
 }

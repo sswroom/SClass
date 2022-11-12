@@ -1,30 +1,12 @@
 #ifndef _SM_TEXT_SPREADSHEET_CELLSTYLE
 #define _SM_TEXT_SPREADSHEET_CELLSTYLE
 #include "Text/String.h"
+#include "Text/TextCommon.h"
 #include "Text/SpreadSheet/WorkbookFont.h"
 namespace Text
 {
 	namespace SpreadSheet
 	{
-		enum class HAlignment
-		{
-			Unknown,
-			Left,
-			Center,
-			Right,
-			Fill,
-			Justify
-		};
-
-		enum class VAlignment
-		{
-			Unknown,
-			Top,
-			Center,
-			Bottom,
-			Justify
-		};
-
 		enum class BorderType
 		{
 			None,
@@ -74,7 +56,11 @@ namespace Text
 				BorderType borderType;
 				UInt32 borderColor;
 
-				Bool Equals(const BorderStyle *style) const;
+				BorderStyle() = default;
+				BorderStyle(UInt32 borderColor, BorderType borderType);
+
+				Bool operator!=(const BorderStyle &style) const;
+				Bool operator==(const BorderStyle &style) const;
 			};
 		private:
 			UOSInt index;
@@ -101,7 +87,7 @@ namespace Text
 
 			CellStyle *Clone() const;
 			void CopyFrom(CellStyle *style);
-			Bool Equals(CellStyle *style) const;
+			Bool Equals(const CellStyle *style) const;
 
 			CellStyle *SetIndex(UOSInt index);
 			CellStyle *SetID(const UTF8Char *id);
@@ -110,10 +96,10 @@ namespace Text
 			CellStyle *SetWordWrap(Bool wordWrap);
 			CellStyle *SetFillColor(UInt32 color, FillPattern pattern);
 			CellStyle *SetFont(WorkbookFont *font);
-			CellStyle *SetBorderLeft(BorderStyle *border);
-			CellStyle *SetBorderRight(BorderStyle *border);
-			CellStyle *SetBorderTop(BorderStyle *border);
-			CellStyle *SetBorderBottom(BorderStyle *border);
+			CellStyle *SetBorderLeft(const BorderStyle &border);
+			CellStyle *SetBorderRight(const BorderStyle &border);
+			CellStyle *SetBorderTop(const BorderStyle &border);
+			CellStyle *SetBorderBottom(const BorderStyle &border);
 			CellStyle *SetDataFormat(Text::String *dataFormat);
 			CellStyle *SetDataFormat(Text::CString dataFormat);
 
@@ -125,10 +111,10 @@ namespace Text
 			UInt32 GetFillColor() const;
 			FillPattern GetFillPattern() const;
 			WorkbookFont *GetFont() const;
-			const BorderStyle *GetBorderLeft() const;
-			const BorderStyle *GetBorderRight() const;
-			const BorderStyle *GetBorderTop() const;
-			const BorderStyle *GetBorderBottom() const;
+			BorderStyle GetBorderLeft() const;
+			BorderStyle GetBorderRight() const;
+			BorderStyle GetBorderTop() const;
+			BorderStyle GetBorderBottom() const;
 			Text::String *GetDataFormat() const;
 		};
 	}

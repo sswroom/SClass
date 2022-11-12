@@ -411,19 +411,19 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					}
 					if (borderLeft.borderType != Text::SpreadSheet::BorderType::None)
 					{
-						style->SetBorderLeft(&borderLeft);
+						style->SetBorderLeft(borderLeft);
 					}
 					if (borderRight.borderType != Text::SpreadSheet::BorderType::None)
 					{
-						style->SetBorderRight(&borderRight);
+						style->SetBorderRight(borderRight);
 					}
 					if (borderTop.borderType != Text::SpreadSheet::BorderType::None)
 					{
-						style->SetBorderTop(&borderTop);
+						style->SetBorderTop(borderTop);
 					}
 					if (borderBottom.borderType != Text::SpreadSheet::BorderType::None)
 					{
-						style->SetBorderBottom(&borderBottom);
+						style->SetBorderBottom(borderBottom);
 					}
 
 					icv = (ReadInt16(&readBuff[i + 22]) & 0x7f);
@@ -438,43 +438,43 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					switch (j & 7)
 					{
 					case 0:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Unknown);
+						style->SetHAlign(Text::HAlignment::Unknown);
 						break;
 					case 1:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Left);
+						style->SetHAlign(Text::HAlignment::Left);
 						break;
 					case 2:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Center);
+						style->SetHAlign(Text::HAlignment::Center);
 						break;
 					case 3:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Right);
+						style->SetHAlign(Text::HAlignment::Right);
 						break;
 					case 4:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Fill);
+						style->SetHAlign(Text::HAlignment::Fill);
 						break;
 					case 5:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Justify);
+						style->SetHAlign(Text::HAlignment::Justify);
 						break;
 					case 6:
-						style->SetHAlign(Text::SpreadSheet::HAlignment::Unknown);
+						style->SetHAlign(Text::HAlignment::Unknown);
 						break;
 					}
 					switch ((j & 0x70) >> 4)
 					{
 					case 0:
-						style->SetVAlign(Text::SpreadSheet::VAlignment::Top);
+						style->SetVAlign(Text::VAlignment::Top);
 						break;
 					case 1:
-						style->SetVAlign(Text::SpreadSheet::VAlignment::Center);
+						style->SetVAlign(Text::VAlignment::Center);
 						break;
 					case 2:
-						style->SetVAlign(Text::SpreadSheet::VAlignment::Bottom);
+						style->SetVAlign(Text::VAlignment::Bottom);
 						break;
 					case 3:
-						style->SetVAlign(Text::SpreadSheet::VAlignment::Justify);
+						style->SetVAlign(Text::VAlignment::Justify);
 						break;
 					default:
-						style->SetVAlign(Text::SpreadSheet::VAlignment::Unknown);
+						style->SetVAlign(Text::VAlignment::Unknown);
 						break;
 					}
 					style->SetWordWrap((j & 0x8) != 0);

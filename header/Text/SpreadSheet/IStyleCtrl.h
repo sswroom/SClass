@@ -11,6 +11,7 @@ namespace Text
 		public:
 			virtual OSInt GetStyleIndex(CellStyle *style) const = 0;
 			virtual CellStyle *GetStyle(UOSInt index) const = 0;
+			virtual CellStyle *FindOrCreateStyle(const CellStyle *tmpStyle) = 0;
 		};
 	}
 }

@@ -6,6 +6,7 @@
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"
 #include "Math/Math.h"
+#include "Math/RectArea.h"
 #include "Text/CharUtil.h"
 #include "Text/Locale.h"
 #include "Text/MyStringFloat.h"
@@ -186,6 +187,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		}
 
 		sb.AppendC(UTF8STRC("</cols>"));
+		Data::ArrayList<Math::RectArea<UOSInt>> mergeList;
 		k = 0;
 		l = sheet->GetCount();
 		if (l > 0)
@@ -205,7 +207,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 					while (m < n)
 					{
 						Text::SpreadSheet::Worksheet::CellData *cell = row->cells->GetItem(m);
-						if (cell && cell->cellValue && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
+						if (cell && cell->cellValue && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedUp)
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
 							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
@@ -227,7 +229,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 								sb.AppendC(UTF8STRC(" t=\"n\""));
 								break;
 							case Text::SpreadSheet::CellDataType::MergedLeft:
-							case Text::SpreadSheet::CellDataType::MergedTop:
+							case Text::SpreadSheet::CellDataType::MergedUp:
 								break;
 							}
 							sb.AppendC(UTF8STRC("><v>"));
@@ -256,7 +258,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::MergedLeft:
-							case Text::SpreadSheet::CellDataType::MergedTop:
+							case Text::SpreadSheet::CellDataType::MergedUp:
 								break;
 							}
 							
@@ -267,6 +269,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 								link->col = m;
 								link->cell = cell;
 								links.Add(link);
+							}
+							if (cell->mergeHori > 1 || cell->mergeVert > 1)
+							{
+								mergeList.Add(Math::RectArea<UOSInt>(m, k, cell->mergeHori, cell->mergeVert));
 							}
 							
 							sb.AppendC(UTF8STRC("</v></c>"));
@@ -279,6 +285,27 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				k++;
 			}
 			sb.AppendC(UTF8STRC("</sheetData>"));
+
+			if (mergeList.GetCount() > 0)
+			{
+				sb.AppendC(UTF8STRC("<mergeCells count=\""));
+				sb.AppendUOSInt(mergeList.GetCount());
+				sb.AppendC(UTF8STRC("\">"));
+				k = 0;
+				l = mergeList.GetCount();
+				while (k < l)
+				{
+					sb.AppendC(UTF8STRC("<mergeCell ref=\""));
+					Math::RectArea<UOSInt> rect = mergeList.GetItem(k);
+					sptr = Text::XLSUtil::GetCellID(sbuff, rect.tl.x, rect.tl.y);
+					*sptr++ = ':';
+					sptr = Text::XLSUtil::GetCellID(sptr, rect.br.x - 1, rect.br.y - 1);
+					sb.AppendP(sbuff, sptr);
+					sb.AppendC(UTF8STRC("\"/>"));
+					k++;
+				}
+				sb.AppendC(UTF8STRC("</mergeCells>"));
+			}
 
 			if (links.GetCount() > 0)
 			{
@@ -696,10 +723,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		borderNone.borderType = BorderType::None;
 		borderNone.borderColor = 0;
 		BorderInfo *border = MemAlloc(BorderInfo, 1);
-		border->left = &borderNone;
-		border->top = &borderNone;
-		border->right = &borderNone;
-		border->bottom = &borderNone;
+		border->left = borderNone;
+		border->top = borderNone;
+		border->right = borderNone;
+		border->bottom = borderNone;
 		borders.Add(border);
 
 		csptr = (const UTF8Char*)"general";
@@ -730,10 +757,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			while (k-- > 0)
 			{
 				border = borders.GetItem(k);
-				if (border->left->Equals(style->GetBorderLeft()) &&
-					border->top->Equals(style->GetBorderTop()) &&
-					border->right->Equals(style->GetBorderRight()) &&
-					border->bottom->Equals(style->GetBorderBottom()))
+				if (border->left == style->GetBorderLeft() &&
+					border->top == style->GetBorderTop() &&
+					border->right == style->GetBorderRight() &&
+					border->bottom == style->GetBorderBottom())
 				{
 					borderFound = true;
 					break;
@@ -932,10 +959,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				while (k-- > 0)
 				{
 					border = borders.GetItem(k);
-					if (border->left->Equals(style->GetBorderLeft()) &&
-						border->top->Equals(style->GetBorderTop()) &&
-						border->right->Equals(style->GetBorderRight()) &&
-						border->bottom->Equals(style->GetBorderBottom()))
+					if (border->left == style->GetBorderLeft() &&
+						border->top == style->GetBorderTop() &&
+						border->right == style->GetBorderRight() &&
+						border->bottom == style->GetBorderBottom())
 					{
 						break;
 					}
@@ -958,22 +985,22 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				sb.AppendC(UTF8STRC("<alignment horizontal=\""));
 				switch (style->GetHAlign())
 				{
-				case Text::SpreadSheet::HAlignment::Left:
+				case Text::HAlignment::Left:
 					sb.AppendC(UTF8STRC("left"));
 					break;
-				case Text::SpreadSheet::HAlignment::Center:
+				case Text::HAlignment::Center:
 					sb.AppendC(UTF8STRC("center"));
 					break;
-				case Text::SpreadSheet::HAlignment::Right:
+				case Text::HAlignment::Right:
 					sb.AppendC(UTF8STRC("right"));
 					break;
-				case Text::SpreadSheet::HAlignment::Fill:
+				case Text::HAlignment::Fill:
 					sb.AppendC(UTF8STRC("fill"));
 					break;
-				case Text::SpreadSheet::HAlignment::Justify:
+				case Text::HAlignment::Justify:
 					sb.AppendC(UTF8STRC("justify"));
 					break;
-				case Text::SpreadSheet::HAlignment::Unknown:
+				case Text::HAlignment::Unknown:
 				default:
 					sb.AppendC(UTF8STRC("general"));
 					break;
@@ -981,19 +1008,19 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				sb.AppendC(UTF8STRC("\" vertical=\""));
 				switch (style->GetVAlign())
 				{
-				case Text::SpreadSheet::VAlignment::Top:
+				case Text::VAlignment::Top:
 					sb.AppendC(UTF8STRC("top"));
 					break;
-				case Text::SpreadSheet::VAlignment::Center:
+				case Text::VAlignment::Center:
 					sb.AppendC(UTF8STRC("center"));
 					break;
-				case Text::SpreadSheet::VAlignment::Bottom:
+				case Text::VAlignment::Bottom:
 					sb.AppendC(UTF8STRC("bottom"));
 					break;
-				case Text::SpreadSheet::VAlignment::Justify:
+				case Text::VAlignment::Justify:
 					sb.AppendC(UTF8STRC("justify"));
 					break;
-				case Text::SpreadSheet::VAlignment::Unknown:
+				case Text::VAlignment::Unknown:
 				default:
 					sb.AppendC(UTF8STRC("general"));
 					break;
@@ -1526,17 +1553,17 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::Spr
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, const Text::SpreadSheet::CellStyle::BorderStyle *border, Text::CString name)
+void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name)
 {
 	sb->AppendUTF8Char('<');
 	sb->Append(name);
-	if (border->borderType == BorderType::None)
+	if (border.borderType == BorderType::None)
 	{
 		sb->AppendC(UTF8STRC("/>"));
 	}
 	else
 	{
-		switch (border->borderType)
+		switch (border.borderType)
 		{
 			case BorderType::Thin:
 				sb->AppendC(UTF8STRC(" style=\"thin\">"));
@@ -1581,7 +1608,7 @@ void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, const Tex
 				break;
 		}
 		sb->AppendC(UTF8STRC("<color rgb=\""));
-		sb->AppendHex32(border->borderColor);
+		sb->AppendHex32(border.borderColor);
 		sb->AppendC(UTF8STRC("\"/>"));
 		sb->AppendC(UTF8STRC("</"));
 		sb->Append(name);

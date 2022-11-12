@@ -277,46 +277,46 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 				sb.AppendC(UTF8STRC(">"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-				if (style->GetHAlign() != Text::SpreadSheet::HAlignment::Unknown || (style->GetVAlign() != Text::SpreadSheet::VAlignment::Center && style->GetVAlign() != Text::SpreadSheet::VAlignment::Unknown) || style->GetWordWrap())
+				if (style->GetHAlign() != Text::HAlignment::Unknown || (style->GetVAlign() != Text::VAlignment::Center && style->GetVAlign() != Text::VAlignment::Unknown) || style->GetWordWrap())
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("   <Alignment"));
 					switch (style->GetHAlign())
 					{
-					case Text::SpreadSheet::HAlignment::Left:
+					case Text::HAlignment::Left:
 						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Left\""));
 						break;
-					case Text::SpreadSheet::HAlignment::Center:
+					case Text::HAlignment::Center:
 						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Center\""));
 						break;
-					case Text::SpreadSheet::HAlignment::Right:
+					case Text::HAlignment::Right:
 						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Right\""));
 						break;
-					case Text::SpreadSheet::HAlignment::Fill:
+					case Text::HAlignment::Fill:
 						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Fill\""));
 						break;
-					case Text::SpreadSheet::HAlignment::Justify:
+					case Text::HAlignment::Justify:
 						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Justify\""));
 						break;
-					case Text::SpreadSheet::HAlignment::Unknown:
+					case Text::HAlignment::Unknown:
 					default:
 						break;
 					}
 					switch (style->GetVAlign())
 					{
-					case Text::SpreadSheet::VAlignment::Top:
+					case Text::VAlignment::Top:
 						sb.AppendC(UTF8STRC(" ss:Vertical=\"Top\""));
 						break;
-					case Text::SpreadSheet::VAlignment::Center:
+					case Text::VAlignment::Center:
 						//sb.AppendC(UTF8STRC(" ss:Vertical=\"Center\""));
 						break;
-					case Text::SpreadSheet::VAlignment::Bottom:
+					case Text::VAlignment::Bottom:
 						sb.AppendC(UTF8STRC(" ss:Vertical=\"Bottom\""));
 						break;
-					case Text::SpreadSheet::VAlignment::Justify:
+					case Text::VAlignment::Justify:
 						sb.AppendC(UTF8STRC(" ss:Vertical=\"Justify\""));
 						break;
-					case Text::SpreadSheet::VAlignment::Unknown:
+					case Text::VAlignment::Unknown:
 					default:
 						break;
 					}
@@ -327,30 +327,30 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 					sb.AppendC(UTF8STRC("/>"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
-				if (style->GetBorderLeft()->borderType != Text::SpreadSheet::BorderType::None ||
-					style->GetBorderTop()->borderType != Text::SpreadSheet::BorderType::None ||
-					style->GetBorderRight()->borderType != Text::SpreadSheet::BorderType::None ||
-					style->GetBorderBottom()->borderType != Text::SpreadSheet::BorderType::None)
+				if (style->GetBorderLeft().borderType != Text::SpreadSheet::BorderType::None ||
+					style->GetBorderTop().borderType != Text::SpreadSheet::BorderType::None ||
+					style->GetBorderRight().borderType != Text::SpreadSheet::BorderType::None ||
+					style->GetBorderBottom().borderType != Text::SpreadSheet::BorderType::None)
 				{
-					const Text::SpreadSheet::CellStyle::BorderStyle *border;
+					Text::SpreadSheet::CellStyle::BorderStyle border;
 					writer->WriteLineC(UTF8STRC("   <Borders>"));
 					border = style->GetBorderBottom();
-					if (border->borderType != Text::SpreadSheet::BorderType::None)
+					if (border.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Bottom", border);
 					}
 					border = style->GetBorderLeft();
-					if (border->borderType != Text::SpreadSheet::BorderType::None)
+					if (border.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Left", border);
 					}
 					border = style->GetBorderRight();
-					if (border->borderType != Text::SpreadSheet::BorderType::None)
+					if (border.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Right", border);
 					}
 					border = style->GetBorderTop();
-					if (border->borderType != Text::SpreadSheet::BorderType::None)
+					if (border.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Top", border);
 					}
@@ -568,7 +568,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 							else if (cell->cdt == Text::SpreadSheet::CellDataType::MergedLeft)
 							{
 							}
-							else if (cell->cdt == Text::SpreadSheet::CellDataType::MergedTop)
+							else if (cell->cdt == Text::SpreadSheet::CellDataType::MergedUp)
 							{
 							}
 							else
@@ -633,7 +633,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 										sb.AppendC(UTF8STRC("</Data>"));
 										break;
 									case Text::SpreadSheet::CellDataType::MergedLeft:
-									case Text::SpreadSheet::CellDataType::MergedTop:
+									case Text::SpreadSheet::CellDataType::MergedUp:
 									case Text::SpreadSheet::CellDataType::String:
 									default:
 										sb.AppendC(UTF8STRC("<Data ss:Type=\"String\">"));
@@ -813,7 +813,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CStri
 	return true;
 }
 
-void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, const Text::SpreadSheet::CellStyle::BorderStyle *border)
+void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle border)
 {
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
@@ -823,71 +823,71 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8
 	s = Text::XML::ToNewAttrText(position);
 	sb.Append(s);
 	s->Release();
-	if (border->borderType == Text::SpreadSheet::BorderType::Thin)
+	if (border.borderType == Text::SpreadSheet::BorderType::Thin)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\"1\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::Hair)
+	else if (border.borderType == Text::SpreadSheet::BorderType::Hair)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::Dotted)
+	else if (border.borderType == Text::SpreadSheet::BorderType::Dotted)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Dot\" ss:Weight=\"1\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::Dashed)
+	else if (border.borderType == Text::SpreadSheet::BorderType::Dashed)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Dash\" ss:Weight=\"1\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::DashDot)
+	else if (border.borderType == Text::SpreadSheet::BorderType::DashDot)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDot\" ss:Weight=\"1\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::DashDotDot)
+	else if (border.borderType == Text::SpreadSheet::BorderType::DashDotDot)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDotDot\" ss:Weight=\"1\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::DOUBLE)
+	else if (border.borderType == Text::SpreadSheet::BorderType::DOUBLE)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Double\" ss:Weight=\"3\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::Medium)
+	else if (border.borderType == Text::SpreadSheet::BorderType::Medium)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\"2\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashed)
+	else if (border.borderType == Text::SpreadSheet::BorderType::MediumDashed)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Dash\" ss:Weight=\"2\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashDot)
+	else if (border.borderType == Text::SpreadSheet::BorderType::MediumDashDot)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDot\" ss:Weight=\"2\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashDotDot)
+	else if (border.borderType == Text::SpreadSheet::BorderType::MediumDashDotDot)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDotDot\" ss:Weight=\"2\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::SlantedDashDot)
+	else if (border.borderType == Text::SpreadSheet::BorderType::SlantedDashDot)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"SlantDashDot\" ss:Weight=\"2\""));
 	}
-	else if (border->borderType == Text::SpreadSheet::BorderType::Thick)
+	else if (border.borderType == Text::SpreadSheet::BorderType::Thick)
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\"3\""));
 	}
 	else
 	{
 		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\""));
-		sb.AppendI32((Int32)border->borderType);
+		sb.AppendI32((Int32)border.borderType);
 		sb.AppendC(UTF8STRC("\""));
 	}
 
-	if (border->borderColor & 0xffffff)
+	if (border.borderColor & 0xffffff)
 	{
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("     ss:Color=\"#"));
-		sptr = Text::StrHexVal32(sbuff, border->borderColor);
+		sptr = Text::StrHexVal32(sbuff, border.borderColor);
 		sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 		sb.AppendC(UTF8STRC("\""));
 	}

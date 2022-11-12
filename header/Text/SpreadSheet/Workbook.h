@@ -73,6 +73,7 @@ namespace Text
 			UOSInt GetStyleCount() const;
 			virtual OSInt GetStyleIndex(CellStyle *style) const;
 			virtual CellStyle *GetStyle(UOSInt Index) const;
+			virtual CellStyle *FindOrCreateStyle(const CellStyle *tmpStyle);
 			CellStyle *GetDefaultStyle();
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);

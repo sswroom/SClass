@@ -8,6 +8,9 @@
 #include "Text/ReportBuilder.h"
 #include "Text/StringBuilderUTF8.h"
 
+Text::CString Text::ReportBuilder::ColumnMergeLeft = CSTR("|-L");
+Text::CString Text::ReportBuilder::ColumnMergeUp = CSTR("|-U");
+
 Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::DataType dataType)
 {
 	switch (dataType)
@@ -25,28 +28,31 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::
 
 Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UTF8Char **columns)
 {
-	Text::String **cols;
+	TableCell *cols;
 	UOSInt i;
 	this->name = Text::String::New(name);
+	this->nameHAlign = Text::HAlignment::Unknown;
 	this->fontName = Text::String::New(UTF8STRC("Arial"));
 	this->colCount = colCount;
 	this->colWidthPts = MemAlloc(Double, this->colCount);
 	this->chart = 0;
 	this->paperHori = false;
+	this->tableBorders = false;
 	this->colTypes = MemAlloc(ColType, this->colCount);
-	cols = MemAlloc(Text::String *, this->colCount);
+	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		colWidthPts[i] = 0;
 		if (columns[i])
 		{
-			cols[i] = Text::String::NewNotNullSlow(columns[i]);
+			cols[i].val = Text::String::NewNotNullSlow(columns[i]);
 		}
 		else
 		{
-			cols[i] = 0;
+			cols[i].val = 0;
 		}
+		cols[i].hAlign = Text::HAlignment::Unknown;
 		this->colTypes[i] = CT_STRING;
 		i++;
 	}
@@ -58,25 +64,26 @@ Text::ReportBuilder::~ReportBuilder()
 {
 	ColURLLatLon *url;
 	Text::ReportBuilder::ColIcon *icon;
-	Text::String **cols;
+	TableCell *cols;
+	HeaderInfo *header;
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
 	UOSInt i;
 	UOSInt j;
 	j = this->headers.GetCount();
 	while (j-- > 0)
 	{
-		cols = this->headers.GetItem(j);
-		cols[0]->Release();
-		cols[1]->Release();
-		MemFree(cols);
+		header = this->headers.GetItem(j);
+		header->name->Release();
+		header->value->Release();
+		MemFree(header);
 	}
 	j = this->preheaders.GetCount();
 	while (j-- > 0)
 	{
-		cols = this->preheaders.GetItem(j);
-		cols[0]->Release();
-		cols[1]->Release();
-		MemFree(cols);
+		header = this->preheaders.GetItem(j);
+		header->name->Release();
+		header->value->Release();
+		MemFree(header);
 	}
 	j = this->tableContent.GetCount();
 	while (j-- > 0)
@@ -85,7 +92,7 @@ Text::ReportBuilder::~ReportBuilder()
 		i = this->colCount;
 		while (i-- > 0)
 		{
-			SDEL_STRING(cols[i]);
+			SDEL_STRING(cols[i].val);
 		}
 		MemFree(cols);
 	}
@@ -119,6 +126,16 @@ Text::ReportBuilder::~ReportBuilder()
 	this->name->Release();
 }
 
+void Text::ReportBuilder::SetNameHAlign(Text::HAlignment hAlign)
+{
+	this->nameHAlign = hAlign;
+}
+
+void Text::ReportBuilder::SetTableBorders(Bool borders)
+{
+	this->tableBorders = borders;
+}
+
 void Text::ReportBuilder::SetFontName(Text::String *fontName)
 {
 	if (fontName)
@@ -150,38 +167,78 @@ void Text::ReportBuilder::AddChart(Data::Chart *chart)
 
 void Text::ReportBuilder::AddPreHeader(Text::CString name, Text::CString val)
 {
-	Text::String **cols;
-	cols = MemAlloc(Text::String *, 2);
-	cols[0] = Text::String::New(name.v, name.leng);
-	cols[1] = Text::String::New(val.v, val.leng);
-	this->preheaders.Add(cols);
+	AddPreHeader(name, 1, val, 1, false, false);
+}
+
+void Text::ReportBuilder::AddPreHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right)
+{
+	HeaderInfo *header = MemAlloc(HeaderInfo, 1);
+	header->name = Text::String::New(name);
+	header->nameCellCnt = nameCellCnt;
+	header->value = Text::String::New(val);
+	header->valueCellCnt = valCellCnt;
+	header->valueUnderline = valUnderline;
+	header->isRight = right;
+	this->preheaders.Add(header);
 }
 
 void Text::ReportBuilder::AddHeader(Text::CString name, Text::CString val)
 {
-	Text::String **cols;
-	cols = MemAlloc(Text::String *, 2);
-	cols[0] = Text::String::New(name.v, name.leng);
-	cols[1] = Text::String::New(val.v, val.leng);
-	this->headers.Add(cols);
+	AddHeader(name, 1, val, 1, false, false);
 }
 
-void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
+void Text::ReportBuilder::AddHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right)
 {
-	Text::String **cols;
+	HeaderInfo *header = MemAlloc(HeaderInfo, 1);
+	header->name = Text::String::New(name);
+	header->nameCellCnt = nameCellCnt;
+	header->value = Text::String::New(val);
+	header->valueCellCnt = valCellCnt;
+	header->valueUnderline = valUnderline;
+	header->isRight = right;
+	this->headers.Add(header);
+}
+
+void Text::ReportBuilder::AddTableHeader(const UTF8Char **content)
+{
+	TableCell *cols;
 	UOSInt i;
-	cols = MemAlloc(Text::String *, this->colCount);
+	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		if (content[i])
 		{
-			cols[i] = Text::String::NewNotNullSlow(content[i]);
+			cols[i].val = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
-			cols[i] = 0;
+			cols[i].val = 0;
 		}
+		cols[i].hAlign = Text::HAlignment::Unknown;
+		i++;
+	}
+	this->tableContent.Add(cols);
+	this->tableRowType.Add(RT_HEADER);
+}
+
+void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
+{
+	TableCell *cols;
+	UOSInt i;
+	cols = MemAlloc(TableCell, this->colCount);
+	i = 0;
+	while (i < this->colCount)
+	{
+		if (content[i])
+		{
+			cols[i].val = Text::String::NewNotNullSlow(content[i]);
+		}
+		else
+		{
+			cols[i].val = 0;
+		}
+		cols[i].hAlign = Text::HAlignment::Unknown;
 		i++;
 	}
 	this->tableContent.Add(cols);
@@ -190,20 +247,21 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 
 void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 {
-	Text::String **cols;
+	TableCell *cols;
 	UOSInt i;
-	cols = MemAlloc(Text::String *, this->colCount);
+	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		if (content[i])
 		{
-			cols[i] = Text::String::NewNotNullSlow(content[i]);
+			cols[i].val = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
-			cols[i] = 0;
+			cols[i].val = 0;
 		}
+		cols[i].hAlign = Text::HAlignment::Unknown;
 		i++;
 	}
 	this->tableContent.Add(cols);
@@ -271,6 +329,14 @@ void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Double lat, Double lon)
 	this->urlList.Add(url);
 }
 
+void Text::ReportBuilder::SetColHAlign(UOSInt index, HAlignment hAlign)
+{
+	if (index >= this->colCount)
+		return;
+	TableCell *cols = this->tableContent.GetItem(this->tableContent.GetCount() - 1);
+	cols[index].hAlign = hAlign;
+}
+
 Bool Text::ReportBuilder::HasChart()
 {
 	return this->chart != 0;
@@ -287,7 +353,8 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	Text::SpreadSheet::Workbook *wb;
 	Text::SpreadSheet::Worksheet *ws;
 	Text::SpreadSheet::Worksheet *dataSheet;
-	Text::String **csarr;
+	TableCell *cols;
+	HeaderInfo *header;
 	Text::StringBuilderUTF8 sb;
 	ColURLLatLon *url;
 	Data::ArrayList<Text::ReportBuilder::ColIcon *> *iconList;
@@ -295,26 +362,78 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	RowType lastRowType;
 	RowType currRowType;
 	Text::SpreadSheet::CellStyle *styleSummary = 0;
-	
+	Text::SpreadSheet::CellStyle *tableStyle = 0;
 	if (this->chart == 0)
 	{
 		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
 		wb->AddDefaultStyles();
 		ws = wb->AddWorksheet(this->name);
 
+		if (this->tableBorders)
+		{
+			tableStyle = wb->NewCellStyle(0, Text::HAlignment::Unknown, Text::VAlignment::Unknown, CSTR_NULL);
+			tableStyle->SetBorderLeft(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
+			tableStyle->SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
+			tableStyle->SetBorderRight(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
+			tableStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
+		}
+
+		Bool lastRight = false;
 		k = 0;
 		i = 0;
 		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			csarr = this->preheaders.GetItem(i);
-			ws->SetCellString(k, 0, csarr[0]);
-			ws->SetCellString(k, 1, csarr[1]);
+			header = this->preheaders.GetItem(i);
+			if (header->isRight)
+			{
+				if (!lastRight && k > 0)
+					k--;
+
+				ws->SetCellString(k, this->colCount - header->valueCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				ws->SetCellString(k, this->colCount - header->valueCellCnt - header->nameCellCnt, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt - header->nameCellCnt, 1, (UInt32)header->nameCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			else
+			{
+				ws->SetCellString(k, 0, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, 0, 1, (UInt32)header->nameCellCnt);
+				}
+				ws->SetCellString(k, header->nameCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, header->nameCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			lastRight = header->isRight;
+
 			k++;
 			i++;
 		}
 
+		if (this->nameHAlign != Text::HAlignment::Unknown && this->nameHAlign != Text::HAlignment::Left)
+		{
+			ws->MergeCells(k, 0, 1, (UInt32)this->colCount);
+		}
 		ws->SetCellString(k, 0, this->name);
+		ws->SetCellStyleHAlign(k, 0, wb, this->nameHAlign);
 		i = 0;
 		j = this->colCount;
 		while (i < j)
@@ -326,14 +445,52 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			i++;
 		}
 
+		lastRight = false;
 		i = 0;
 		k++;
 		j = this->headers.GetCount();
 		while (i < j)
 		{
-			csarr = this->headers.GetItem(i);
-			ws->SetCellString(k, 0, csarr[0]);
-			ws->SetCellString(k, 1, csarr[1]);
+			header = this->headers.GetItem(i);
+			if (header->isRight)
+			{
+				if (!lastRight && k > 0)
+					k--;
+
+				ws->SetCellString(k, this->colCount - header->valueCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				ws->SetCellString(k, this->colCount - header->valueCellCnt - header->nameCellCnt, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt - header->nameCellCnt, 1, (UInt32)header->nameCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			else
+			{
+				ws->SetCellString(k, 0, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, 0, 1, (UInt32)header->nameCellCnt);
+				}
+				ws->SetCellString(k, header->nameCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, header->nameCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			lastRight = header->isRight;
+
 			k++;
 			i++;
 		}
@@ -345,17 +502,23 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		while (i < j)
 		{
 			iconList = this->icons.GetItem(i);
-			csarr = this->tableContent.GetItem(i);
+			cols = this->tableContent.GetItem(i);
 			currRowType = this->tableRowType.GetItem(i);
-			if ((lastRowType == RT_CONTENT && currRowType == RT_SUMMARY) || (lastRowType == RT_HEADER && currRowType != RT_HEADER))
+			if (tableStyle)
+			{
+				l = 0;
+				while (l < this->colCount)
+				{
+					ws->SetCellStyle(k, l, tableStyle);
+					l++;
+				}
+			}
+			else if ((lastRowType == RT_CONTENT && currRowType == RT_SUMMARY) || (lastRowType == RT_HEADER && currRowType != RT_HEADER))
 			{
 				if (styleSummary == 0)
 				{
-					Text::SpreadSheet::CellStyle::BorderStyle bs;
-					bs.borderType = Text::SpreadSheet::BorderType::Medium;
-					bs.borderColor = 0xff000000;
 					styleSummary = wb->NewCellStyle();
-					styleSummary->SetBorderTop(&bs);
+					styleSummary->SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Medium));
 				}
 				l = 0;
 				while (l < this->colCount)
@@ -371,9 +534,9 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				while (l < this->colCount)
 				{
 					NEW_CLASS(sbList[l], Text::StringBuilderUTF8());
-					if (csarr[l])
+					if (cols[l].val)
 					{
-						sbList[l]->Append(csarr[l]);
+						sbList[l]->Append(cols[l].val);
 					}
 					l++;
 				}
@@ -407,9 +570,24 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				l = 0;
 				while (l < this->colCount)
 				{
-					if (csarr[l])
+					if (cols[l].val)
 					{
-						ws->SetCellString(k, l, csarr[l]);
+						if (cols[l].val->Equals(ColumnMergeLeft.v, ColumnMergeLeft.leng))
+						{
+							ws->SetCellMergeLeft(k, l);
+						}
+						else if (cols[l].val->Equals(ColumnMergeUp.v, ColumnMergeUp.leng))
+						{
+							ws->SetCellMergeUp(k, l);
+						}
+						else
+						{
+							ws->SetCellString(k, l, cols[l].val);
+						}
+						if (cols[l].hAlign != Text::HAlignment::Unknown)
+						{
+							ws->SetCellStyleHAlign(k, l, wb, cols[l].hAlign);
+						}
 					}
 					l++;
 				}
@@ -419,19 +597,23 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				l = 0;
 				while (l < this->colCount)
 				{
-					if (csarr[l])
+					if (cols[l].val)
 					{
 						if (this->colTypes[l] == CT_DOUBLE)
 						{
-							ws->SetCellDouble(k, l, csarr[l]->ToDouble());
+							ws->SetCellDouble(k, l, cols[l].val->ToDouble());
 						}
 						else if (this->colTypes[l] == CT_INT32)
 						{
-							ws->SetCellInt32(k, l, csarr[l]->ToInt32());
+							ws->SetCellInt32(k, l, cols[l].val->ToInt32());
 						}
 						else
 						{
-							ws->SetCellString(k, l, csarr[l]);
+							ws->SetCellString(k, l, cols[l].val);
+						}
+						if (cols[l].hAlign != Text::HAlignment::Unknown)
+						{
+							ws->SetCellStyleHAlign(k, l, wb, cols[l].hAlign);
 						}
 					}
 					l++;
@@ -465,18 +647,57 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	{
 		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
 		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("General"));
+		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General"));
 		ws = wb->AddWorksheet(this->name);
 		dataSheet = wb->AddWorksheet(CSTR("ChartData"));
 
+		Bool lastRight;
+		lastRight = false;
 		k = 0;
 		i = 0;
 		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			csarr = this->preheaders.GetItem(i);
-			ws->SetCellString(k, 0, strStyle, csarr[0]);
-			ws->SetCellString(k, 1, strStyle, csarr[1]);
+			header = this->preheaders.GetItem(i);
+			if (header->isRight)
+			{
+				if (!lastRight && k > 0)
+					k--;
+
+				ws->SetCellString(k, this->colCount - header->valueCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				ws->SetCellString(k, this->colCount - header->valueCellCnt - header->nameCellCnt, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt - header->nameCellCnt, 1, (UInt32)header->nameCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			else
+			{
+				ws->SetCellString(k, 0, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, 0, 1, (UInt32)header->nameCellCnt);
+				}
+				ws->SetCellString(k, header->nameCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, header->nameCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			lastRight = header->isRight;
+
 			k++;
 			i++;
 		}
@@ -493,14 +714,52 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			i++;
 		}
 
+		lastRight = false;
 		i = 0;
 		k++;
 		j = this->headers.GetCount();
 		while (i < j)
 		{
-			csarr = this->headers.GetItem(i);
-			ws->SetCellString(k, 0, strStyle, csarr[0]);
-			ws->SetCellString(k, 1, strStyle, csarr[1]);
+			header = this->headers.GetItem(i);
+			if (header->isRight)
+			{
+				if (!lastRight && k > 0)
+					k--;
+
+				ws->SetCellString(k, this->colCount - header->valueCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				ws->SetCellString(k, this->colCount - header->valueCellCnt - header->nameCellCnt, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, this->colCount - header->valueCellCnt - header->nameCellCnt, 1, (UInt32)header->nameCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			else
+			{
+				ws->SetCellString(k, 0, header->name);
+				if (header->nameCellCnt > 1)
+				{
+					ws->MergeCells(k, 0, 1, (UInt32)header->nameCellCnt);
+				}
+				ws->SetCellString(k, header->nameCellCnt, header->value);
+				if (header->valueCellCnt > 1)
+				{
+					ws->MergeCells(k, header->nameCellCnt, 1, (UInt32)header->valueCellCnt);
+				}
+				if (header->valueUnderline)
+				{
+					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+				}
+			}
+			lastRight = header->isRight;
+
 			k++;
 			i++;
 		}
@@ -514,7 +773,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		{
 			Text::SpreadSheet::CellStyle *dateStyle = 0;
 			Text::SpreadSheet::CellStyle *intStyle = 0;
-			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("General"));
+			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General"));
 
 			UOSInt i;
 			UOSInt j;
@@ -527,11 +786,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (chart->GetTimeFormat())
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
 					}
 					else
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
+						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
 					}
 				}
 				Data::DateTime dt;
@@ -552,11 +811,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (chart->GetDblFormat())
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetDblFormat()->ToCString());
+						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
 					}
 					else
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0.###"));
+						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 					}
 				}
 				Double *dblValues = chart->GetXDouble(0, &colCount);
@@ -572,7 +831,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (intStyle == 0)
 				{
-					intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0"));
+					intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0"));
 				}
 				Int32 *intValues = chart->GetXInt32(0, &colCount);
 				i = 0;
@@ -600,11 +859,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						if (chart->GetTimeFormat())
 						{
-							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+							dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
 						}
 						else
 						{
-							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
+							dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
 						}
 					}
 					Data::DateTime dt;
@@ -625,11 +884,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						if (chart->GetDblFormat())
 						{
-							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetDblFormat()->ToCString());
+							dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
 						}
 						else
 						{
-							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0.###"));
+							dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 						}
 					}
 					Double *dblValues = chart->GetYDouble(i, &colCount);
@@ -645,7 +904,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (intStyle == 0)
 					{
-						intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0"));
+						intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0"));
 					}
 					Int32 *intValues = chart->GetYInt32(i, &colCount);
 					k = 0;
@@ -690,9 +949,13 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Media::DrawPen *p;
 	Double headerW1;
 	Double headerW2;
+	Double headerW3;
+	Double headerW4;
 	Double sz[2];
 	Double currY;
-	Text::String **strs;
+	TableCell *cols;
+	HeaderInfo *header;
+	Bool lastRight;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -731,27 +994,53 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
+	headerW3 = 0;
+	headerW4 = 0;
 	i = this->headers.GetCount();
 	while (i-- > 0)
 	{
-		strs = this->headers.GetItem(i);
-		g->GetTextSize(f, strs[0]->ToCString(), sz);
-		if (sz[0] > headerW1)
-			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1]->ToCString(), sz);
-		if (sz[0] > headerW2)
-			headerW2 = sz[0];
+		header = this->headers.GetItem(i);
+		if (header->isRight)
+		{
+			g->GetTextSize(f, header->name->ToCString(), sz);
+			if (sz[0] > headerW3)
+				headerW3 = sz[0];
+			g->GetTextSize(f, header->value->ToCString(), sz);
+			if (sz[0] > headerW4)
+				headerW4 = sz[0];
+		}
+		else
+		{
+			g->GetTextSize(f, header->name->ToCString(), sz);
+			if (sz[0] > headerW1)
+				headerW1 = sz[0];
+			g->GetTextSize(f, header->value->ToCString(), sz);
+			if (sz[0] > headerW2)
+				headerW2 = sz[0];
+		}
 	}
 	i = this->preheaders.GetCount();
 	while (i-- > 0)
 	{
-		strs = this->preheaders.GetItem(i);
-		g->GetTextSize(f, strs[0]->ToCString(), sz);
-		if (sz[0] > headerW1)
-			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1]->ToCString(), sz);
-		if (sz[0] > headerW2)
-			headerW2 = sz[0];
+		header = this->preheaders.GetItem(i);
+		if (header->isRight)
+		{
+			g->GetTextSize(f, header->name->ToCString(), sz);
+			if (sz[0] > headerW3)
+				headerW3 = sz[0];
+			g->GetTextSize(f, header->value->ToCString(), sz);
+			if (sz[0] > headerW4)
+				headerW4 = sz[0];
+		}
+		else
+		{
+			g->GetTextSize(f, header->name->ToCString(), sz);
+			if (sz[0] > headerW1)
+				headerW1 = sz[0];
+			g->GetTextSize(f, header->value->ToCString(), sz);
+			if (sz[0] > headerW2)
+				headerW2 = sz[0];
+		}
 	}
 
 	i = this->colCount;
@@ -766,15 +1055,15 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	i = this->tableContent.GetCount();
 	while (i-- > 0)
 	{
-		strs = this->tableContent.GetItem(i);
+		cols = this->tableContent.GetItem(i);
 		iconList = this->icons.GetItem(i);
 		j = this->colCount;
 		while (j-- > 0)
 		{
 			colCurrX[j] = 0;
-			if (strs[j])
+			if (cols[j].val)
 			{
-				g->GetTextSize(f, strs[j]->ToCString(), sz);
+				g->GetTextSize(f, cols[j].val->ToCString(), sz);
 				colCurrX[j] = sz[0];
 			}
 		}
@@ -856,14 +1145,26 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		b = g->NewBrushARGB(0xff000000);
 		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
 
+		lastRight = false;
 		currY = border;
 		i = 0;
 		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			strs = this->preheaders.GetItem(i);
-			g->DrawString(border, currY, strs[0], f, b);
-			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
+			header = this->preheaders.GetItem(i);
+			if (header->isRight)
+			{
+				if (!lastRight && i > 0)
+					currY -= fontHeightMM * 1.5;
+				g->DrawString(border + drawWidth - headerW4 - headerW3 - 0.5, currY, header->name, f, b);
+				g->DrawString(border + drawWidth - headerW4, currY, header->value, f, b);
+			}
+			else
+			{
+				g->DrawString(border, currY, header->name, f, b);
+				g->DrawString(border + headerW1 + 0.5, currY, header->value, f, b);
+			}
+			lastRight = header->isRight;
 
 			currY += fontHeightMM * 1.5;
 			i++;
@@ -871,13 +1172,25 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 
 		g->DrawString(border, currY, this->name, f, b);
 		currY += fontHeightMM * 2;
+		lastRight = false;
 		i = 0;
 		j = this->headers.GetCount();
 		while (i < j)
 		{
-			strs = this->headers.GetItem(i);
-			g->DrawString(border, currY, strs[0], f, b);
-			g->DrawString(border + headerW1 + 0.5, currY, strs[1], f, b);
+			header = this->headers.GetItem(i);
+			if (header->isRight)
+			{
+				if (!lastRight && i > 0)
+					currY -= fontHeightMM * 1.5;
+				g->DrawString(border + drawWidth - headerW4 - headerW3 - 0.5, currY, header->name, f, b);
+				g->DrawString(border + drawWidth - headerW4, currY, header->value, f, b);
+			}
+			else
+			{
+				g->DrawString(border, currY, header->name, f, b);
+				g->DrawString(border + headerW1 + 0.5, currY, header->value, f, b);
+			}
+			lastRight = header->isRight;
 
 			currY += fontHeightMM * 1.5;
 			i++;
@@ -890,12 +1203,12 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 		}
 		else
 		{
-			strs = this->tableContent.GetItem(0);
+			cols = this->tableContent.GetItem(0);
 			i = 0;
 			j = this->colCount;
 			while (i < j)
 			{
-				g->DrawString(colPos[i], currY, strs[i], f, b);
+				g->DrawString(colPos[i], currY, cols[i].val, f, b);
 				i++;
 			}
 			currY += fontHeightMM * 1.5 + 0.2;
@@ -906,7 +1219,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			}
 			while (k < l)
 			{
-				strs = this->tableContent.GetItem(k);
+				cols = this->tableContent.GetItem(k);
 				currRowType = this->tableRowType.GetItem(k);
 				if (lastRowType == RT_CONTENT && currRowType == RT_SUMMARY)
 				{
@@ -917,9 +1230,9 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 				j = this->colCount;
 				while (i < j)
 				{
-					if (strs[i])
+					if (cols[i].val)
 					{
-						g->DrawString(colPos[i], currY, strs[i], f, b);
+						g->DrawString(colPos[i], currY, cols[i].val, f, b);
 					}
 					i++;
 				}
@@ -931,9 +1244,9 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					j = this->colCount;
 					while (i < j)
 					{
-						if (strs[i])
+						if (cols[i].val)
 						{
-							g->GetTextSize(f, strs[i]->ToCString(), sz);
+							g->GetTextSize(f, cols[i].val->ToCString(), sz);
 							colCurrX[i] = colPos[i] + sz[0];
 						}
 						else

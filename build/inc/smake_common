@@ -4142,6 +4142,7 @@ Text/StringUtil.h: ../../src/Text/StringUtil.cpp
 @StringUtil.o
 Text/TextAnalyzer.h: ../../src/Text/TextAnalyzer.cpp
 @TextAnalyzer.o
+Text/TextCommon.h:
 Text/TextEncoding.h:
 Text/URLString.h: ../../src/Text/URLString.cpp
 @URLString.o

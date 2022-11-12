@@ -348,9 +348,27 @@ OSInt Text::SpreadSheet::Workbook::GetStyleIndex(CellStyle *style) const
 	return -1;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt Index) const
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt index) const
 {
-	return this->styles.GetItem(Index);
+	return this->styles.GetItem(index);
+}
+
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::FindOrCreateStyle(const CellStyle *tmpStyle)
+{
+	CellStyle *style;
+	UOSInt i = this->styles.GetCount();
+	while (i-- > 0)
+	{
+		style = this->styles.GetItem(i);
+		if (style->Equals(tmpStyle))
+		{
+			return style;
+		}
+	}
+	style = tmpStyle->Clone();
+	style->SetIndex(this->styles.GetCount());
+	this->styles.Add(style);
+	return style;
 }
 
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetDefaultStyle()
