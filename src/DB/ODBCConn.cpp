@@ -269,6 +269,7 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 	SQLWCHAR *connEnd = Text::StrUTF8_UTF16C(connBuff, connStr->v, connStr->leng, 0);
 	connEnd[0] = 0;
 	connEnd[1] = 0;
+	outSize = 0;
 	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
 	MemFree(connBuff);
 

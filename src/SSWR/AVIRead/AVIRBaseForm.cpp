@@ -160,6 +160,7 @@
 #include "SSWR/AVIRead/AVIRPowerForm.h"
 #include "SSWR/AVIRead/AVIRProcInfoForm.h"
 #include "SSWR/AVIRead/AVIRProfiledResizerForm.h"
+#include "SSWR/AVIRead/AVIRProgramLinksForm.h"
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "SSWR/AVIRead/AVIRProxyServerForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
@@ -459,7 +460,8 @@ typedef enum
 	MNU_REGIONAL_MAP,
 	MNU_BING_MAPS,
 	MNU_FILE_TEXT_ENCRYPT,
-	MNU_TIMESTAMP
+	MNU_TIMESTAMP,
+	MNU_PROGRAM_LINKS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -571,6 +573,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem(CSTR("Sudoku Solver"), MNU_SUDOKU_SOLVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Process Info"), MNU_PROC_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Service Info"), MNU_SERVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Program LInks"), MNU_PROGRAM_LINKS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Clipboard Viewer"), MNU_CLIPBOARD_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Drag Drop Viewer"), MNU_DRAG_DROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Paint Counter"), MNU_PAINT_CNT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2652,6 +2655,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRTimestampForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRTimestampForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_PROGRAM_LINKS:
+		{
+			SSWR::AVIRead::AVIRProgramLinksForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRProgramLinksForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

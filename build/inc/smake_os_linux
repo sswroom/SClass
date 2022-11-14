@@ -40,6 +40,8 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
+IO/ProgramLinkManager.h: ../../src/IO/ProgramLinkManagerL.cpp
+@ProgramLinkManager.o
 IO/RAWBTMonitor.h: ../../src/IO/RAWBTMonitor.cpp
 @RAWBTMonitor.o
 IO/RAWBTScanner.h: ../../src/IO/RAWBTScanner.cpp
@@ -162,6 +164,7 @@ $`pkg-config --cflags dbus-1`
 DebugWriter.o: ../../src/IO/DebugWriterL.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
+ProgramLinkManager.o: ../../src/IO/ProgramLinkManagerL.cpp
 OS.o: ../../src/IO/OSL.cpp
 RAWBTMonitor.o: ../../src/IO/RAWBTMonitor.cpp
 RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp

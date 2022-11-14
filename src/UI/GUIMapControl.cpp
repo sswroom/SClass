@@ -757,6 +757,8 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->mouseCurrY = 0;
 	this->mouseDownX = 0;
 	this->mouseDownY = 0;
+	this->mouseLDownTime = 0;
+	this->mouseRDownTime = 0;
 	this->gZoom = false;
 	this->bgColor = mapEnv->GetBGColor();
 	this->bgUpdated = false;

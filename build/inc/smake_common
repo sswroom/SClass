@@ -1749,6 +1749,8 @@ IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
 IO/PrintMODBUSDevSim.h: ../../src/IO/PrintMODBUSDevSim.cpp
 @PrintMODBUSDevSim.o
+IO/ProgramLink.h: ../../src/IO/ProgramLink.cpp
+@ProgramLink.o
 IO/RadioSignalLogger.h: ../../src/IO/RadioSignalLogger.cpp
 @RadioSignalLogger.o
 IO/RAWMonitor.h: ../../src/IO/RAWMonitor.cpp
@@ -3742,6 +3744,8 @@ SSWR/AVIRead/AVIRProcInfoForm.h: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
 @AVIRProcInfoForm.o
 SSWR/AVIRead/AVIRProfiledResizerForm.h: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
 @AVIRProfiledResizerForm.o
+SSWR/AVIRead/AVIRProgramLinksForm.h: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
+@AVIRProgramLinksForm.o
 SSWR/AVIRead/AVIRProtoDecForm.h: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
 @AVIRProtoDecForm.o
 SSWR/AVIRead/AVIRProxyServerForm.h: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp
@@ -4595,6 +4599,7 @@ OneWireGPIO.o: ../../src/IO/OneWireGPIO.cpp
 PackageFile.o: ../../src/IO/PackageFile.cpp
 ParsedObject.o: ../../src/IO/ParsedObject.cpp
 PrintMODBUSDevSim.o: ../../src/IO/PrintMODBUSDevSim.cpp
+ProgramLink.o: ../../src/IO/ProgramLink.cpp
 RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp
 RAWMonitor.o: ../../src/IO/RAWMonitor.cpp
 RS232GPIO.o: ../../src/IO/RS232GPIO.cpp
@@ -5533,6 +5538,7 @@ AVIRPostgreSQLForm.o: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
 AVIRPowerForm.o: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
 AVIRProcInfoForm.o: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
 AVIRProfiledResizerForm.o: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
+AVIRProgramLinksForm.o: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
 AVIRProtoDecForm.o: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
 AVIRProxyServerForm.o: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp
 AVIRRAWMonitorForm.o: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
