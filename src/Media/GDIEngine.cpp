@@ -1352,26 +1352,26 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 			GDIFont *font = (GDIFont*)(this->currFont = f);
 			SelectObject((HDC)this->hdcBmp, (HFONT)font->hfont);
 		}
-		Double sz[2];
+		Math::Size2D<Double> sz;
 		if (this->strAlign == Media::DrawEngine::DRAW_POS_CENTER || this->strAlign == Media::DrawEngine::DRAW_POS_CENTERLEFT || this->strAlign == Media::DrawEngine::DRAW_POS_CENTERRIGHT)
 		{
-			GetTextSize(f, str, src - str - 1, sz);
+			GetTextSize(f, str, src - str - 1, &sz);
 		}
 		else
 		{
-			sz[1] = 0;
+			sz.height = 0;
 		}
 #ifdef _WIN32_WCE
-		ExtTextOut((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly - (sz[1] * 0.5)), 0, 0, str, (Int32)(src - str - 1), 0);
+		ExtTextOut((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly - (sz.height * 0.5)), 0, 0, str, (Int32)(src - str - 1), 0);
 #else
-		TextOutW((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly - (sz[1] * 0.5)), str, (Int32)(src - str - 1));
+		TextOutW((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly - (sz.height * 0.5)), str, (Int32)(src - str - 1));
 #endif
 	}
 	else
 	{
-		Double sz[2];
-		GetTextSize(f, str, src - str - 1, sz);
-		Media::GDIImage *tmpImg = (Media::GDIImage*)this->eng->CreateImage32((OSInt)sz[0] + 1, (OSInt)sz[1] + 1, Media::AT_NO_ALPHA);
+		Math::Size2D<Double> sz;
+		GetTextSize(f, str, src - str - 1, &sz);
+		Media::GDIImage *tmpImg = (Media::GDIImage*)this->eng->CreateImage32((OSInt)sz.width + 1, (OSInt)sz.height + 1, Media::AT_NO_ALPHA);
 		Media::DrawBrush *b2 = tmpImg->NewBrushARGB(0xffffffff);
 		tmpImg->DrawStringW(0, 0, str, f, b2);
 		tmpImg->DelBrush(b2);
@@ -1385,11 +1385,11 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 		}
 		else if (this->strAlign == Media::DrawEngine::DRAW_POS_TOPRIGHT || this->strAlign == Media::DrawEngine::DRAW_POS_CENTERRIGHT || this->strAlign == Media::DrawEngine::DRAW_POS_BOTTOMRIGHT)
 		{
-			x = tlx - sz[0];
+			x = tlx - sz.width;
 		}
 		else
 		{
-			x = tlx - sz[0] * 0.5;
+			x = tlx - sz.width * 0.5;
 		}
 		if (this->strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT || this->strAlign == Media::DrawEngine::DRAW_POS_TOPCENTER || this->strAlign == Media::DrawEngine::DRAW_POS_TOPRIGHT)
 		{
@@ -1397,11 +1397,11 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 		}
 		else if (this->strAlign == Media::DrawEngine::DRAW_POS_BOTTOMLEFT || this->strAlign == Media::DrawEngine::DRAW_POS_BOTTOMCENTER || this->strAlign == Media::DrawEngine::DRAW_POS_BOTTOMRIGHT)
 		{
-			y = tly - sz[1];
+			y = tly - sz.height;
 		}
 		else
 		{
-			y = tly - sz[1] * 0.5;
+			y = tly - sz.height * 0.5;
 		}
 		this->DrawImagePt(tmpImg, Double2Int32(x), Double2Int32(y));
 		this->eng->DeleteImage(tmpImg);
@@ -2345,7 +2345,7 @@ void Media::GDIImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GDIImage::GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz)
+Bool Media::GDIImage::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz)
 {
 	UOSInt strLen;
 	strLen = Text::StrUTF8_WCharCntC(txt.v, txt.leng);
@@ -2356,7 +2356,7 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz)
 	return ret;
 }
 
-Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Double *sz)
+Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Math::Size2D<Double> *sz)
 {
 	Bool isCJK = true;
 	if (txtLen == -1)
@@ -2374,8 +2374,8 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen,
 
 	if (isCJK)
 	{
-		sz[0] = OSInt2Double((((GDIFont*)fnt)->pxSize + 1) * txtLen);
-		sz[1] = ((GDIFont*)fnt)->pxSize + 2;
+		sz->width = OSInt2Double((((GDIFont*)fnt)->pxSize + 1) * txtLen);
+		sz->height = ((GDIFont*)fnt)->pxSize + 2;
 	}
 	else
 	{
@@ -2404,8 +2404,8 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen,
 				Sync::Thread::Sleep(10);
 			}
 		}
-		sz[0] = size.cx;
-		sz[1] = size.cy;
+		sz->width = size.cx;
+		sz->height = size.cy;
 	}
 	return true;
 }
@@ -2426,8 +2426,8 @@ void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const
 
 void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
 {
-	Double sz[2];
-	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), sz);
+	Math::Size2D<Double> sz;
+	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), &sz);
 	Bool isCenter = false;
 	if (strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT)
 	{
@@ -2436,57 +2436,57 @@ void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, cons
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_TOPCENTER)
 	{
-		pos[0] = (Int32)centX - Double2Int32(sz[0] * 0.5);
+		pos[0] = (Int32)centX - Double2Int32(sz.width * 0.5);
 		pos[1] = (Int32)centY;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_TOPRIGHT)
 	{
-		pos[0] = (Int32)centX - Double2Int32(sz[0]);
+		pos[0] = (Int32)centX - Double2Int32(sz.width);
 		pos[1] = (Int32)centY;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTERLEFT)
 	{
 		pos[0] = (Int32)centX;
-		pos[1] = (Int32)centY - Double2Int32(sz[1] * 0.5);
+		pos[1] = (Int32)centY - Double2Int32(sz.height * 0.5);
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTER)
 	{
-		pos[0] = (Int32)centX - Double2Int32(sz[0] * 0.5);
-		pos[1] = (Int32)centY - Double2Int32(sz[1] * 0.5);
+		pos[0] = (Int32)centX - Double2Int32(sz.width * 0.5);
+		pos[1] = (Int32)centY - Double2Int32(sz.height * 0.5);
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTERRIGHT)
 	{
-		pos[0] = (Int32)centX - Double2Int32(sz[0]);
-		pos[1] = (Int32)centY - Double2Int32(sz[1] * 0.5);
+		pos[0] = (Int32)centX - Double2Int32(sz.width);
+		pos[1] = (Int32)centY - Double2Int32(sz.height * 0.5);
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMLEFT)
 	{
 		pos[0] = (Int32)centX;
-		pos[1] = (Int32)centY - Double2Int32(sz[1]);
+		pos[1] = (Int32)centY - Double2Int32(sz.height);
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMCENTER)
 	{
-		pos[0] = (Int32)centX - Double2Int32(sz[0] * 0.5);
-		pos[1] = (Int32)centY - Double2Int32(sz[1]);
+		pos[0] = (Int32)centX - Double2Int32(sz.width * 0.5);
+		pos[1] = (Int32)centY - Double2Int32(sz.height);
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMRIGHT)
 	{
-		pos[0] = (Int32)centX - Double2Int32(sz[0]);
-		pos[1] = (Int32)centY - Double2Int32(sz[1]);
+		pos[0] = (Int32)centX - Double2Int32(sz.width);
+		pos[1] = (Int32)centY - Double2Int32(sz.height);
 	}
-	pos[2] = pos[0] + Double2Int32(sz[0]);
+	pos[2] = pos[0] + Double2Int32(sz.width);
 	pos[3] = pos[1];
-	pos[4] = pos[0] + Double2Int32(sz[0]);
-	pos[5] = pos[1] + Double2Int32(sz[1]);
+	pos[4] = pos[0] + Double2Int32(sz.width);
+	pos[5] = pos[1] + Double2Int32(sz.height);
 	pos[6] = pos[0];
-	pos[7] = pos[1] + Double2Int32(sz[1]);
+	pos[7] = pos[1] + Double2Int32(sz.height);
 	if (isCenter)
 	{
 		*drawX = centX;
-		*drawY = centY - Double2Int32(sz[1] * 0.5);
+		*drawY = centY - Double2Int32(sz.height * 0.5);
 	}
 	else
 	{
@@ -2504,8 +2504,8 @@ void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, 
 
 void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
 {
-	Double sz[2];
-	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), sz);
+	Math::Size2D<Double> sz;
+	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), &sz);
 	Double pts[10];
 	Bool isCenter = false;
 	if (strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT)
@@ -2515,57 +2515,57 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_TOPCENTER)
 	{
-		pts[0] = centX - sz[0] * 0.5;
+		pts[0] = centX - sz.width * 0.5;
 		pts[1] = centY;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_TOPRIGHT)
 	{
-		pts[0] = centX - sz[0];
+		pts[0] = centX - sz.width;
 		pts[1] = centY;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTERLEFT)
 	{
 		pts[0] = centX;
-		pts[1] = centY - sz[1] * 0.5;
+		pts[1] = centY - sz.height * 0.5;
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTER)
 	{
-		pts[0] = centX - sz[0] * 0.5;
-		pts[1] = centY - sz[1] * 0.5;
+		pts[0] = centX - sz.width * 0.5;
+		pts[1] = centY - sz.height * 0.5;
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTERRIGHT)
 	{
-		pts[0] = centX - sz[0];
-		pts[1] = centY - sz[1] * 0.5;
+		pts[0] = centX - sz.width;
+		pts[1] = centY - sz.height * 0.5;
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMLEFT)
 	{
 		pts[0] = centX;
-		pts[1] = centY - sz[1];
+		pts[1] = centY - sz.height;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMCENTER)
 	{
-		pts[0] = centX - sz[0] * 0.5;
-		pts[1] = centY - sz[1];
+		pts[0] = centX - sz.width * 0.5;
+		pts[1] = centY - sz.height;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMRIGHT)
 	{
-		pts[0] = centX - sz[0];
-		pts[1] = centY - sz[1];
+		pts[0] = centX - sz.width;
+		pts[1] = centY - sz.height;
 	}
-	pts[2] = pts[0] + sz[0];
+	pts[2] = pts[0] + sz.width;
 	pts[3] = pts[1];
-	pts[4] = pts[0] + sz[0];
-	pts[5] = pts[1] + sz[1];
+	pts[4] = pts[0] + sz.width;
+	pts[5] = pts[1] + sz.height;
 	pts[6] = pts[0];
-	pts[7] = pts[1] + sz[1];
+	pts[7] = pts[1] + sz.height;
 	if (isCenter)
 	{
 		pts[8] = centX;
-		pts[9] = centY - sz[1] * 0.5;
+		pts[9] = centY - sz.height * 0.5;
 		Math::GeometryTool::RotateACW(pts, pts, 5, centX, centY, angleDegree * Math::PI / 180.0);
 		pos[0] = Double2Int32(pts[0]);
 		pos[1] = Double2Int32(pts[1]);
