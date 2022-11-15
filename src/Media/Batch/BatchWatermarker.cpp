@@ -51,7 +51,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Int32 xRand;
 		Int32 yRand;
 		Double fontSizePx;
-		Double sz[2];
+		Math::Size2D<Double> sz;
 		UInt32 iWidth;
 		UInt32 iHeight;
 		Media::DrawImage *gimg2;
@@ -64,17 +64,17 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		while (true)
 		{
 			f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-			if (!tmpImg->GetTextSize(f, this->watermark->ToCString(), sz))
+			if (!tmpImg->GetTextSize(f, this->watermark->ToCString(), &sz))
 			{
 				tmpImg->DelFont(f);
 				break;
 			}
-			if (sz[0] <= UOSInt2Double(simg->info.dispWidth) && sz[1] <= UOSInt2Double(simg->info.dispHeight))
+			if (sz.width <= UOSInt2Double(simg->info.dispWidth) && sz.height <= UOSInt2Double(simg->info.dispHeight))
 			{
-				xRand = Double2Int32(UOSInt2Double(simg->info.dispWidth) - sz[0]);
-				yRand = Double2Int32(UOSInt2Double(simg->info.dispHeight) - sz[1]);
-				iWidth = (UInt32)Double2Int32(sz[0]);
-				iHeight = (UInt32)Double2Int32(sz[1]);
+				xRand = Double2Int32(UOSInt2Double(simg->info.dispWidth) - sz.width);
+				yRand = Double2Int32(UOSInt2Double(simg->info.dispHeight) - sz.height);
+				iWidth = (UInt32)Double2Int32(sz.width);
+				iHeight = (UInt32)Double2Int32(sz.height);
 				gimg2 = this->deng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
 				gimg2->DrawString(0, 0, this->watermark, f, b);
 				gimg2->SetAlphaType(Media::AT_ALPHA);

@@ -8,7 +8,7 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, Text::CString txt
 {
 	UOSInt i;
 	UOSInt k;
-	Double sz[2];
+	Math::Size2D<Double> sz;
 	const UTF8Char *currTxt = txt.v;
 	const UTF8Char *currTxtEnd = txt.v + txt.leng;
 	UTF8Char *tmpBuff;
@@ -34,8 +34,8 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, Text::CString txt
 				}
 				else
 				{
-					dimg->GetTextSize(f, CSTRP(currTxt, currTxtEnd), sz);
-					if (sz[0] <= width)
+					dimg->GetTextSize(f, CSTRP(currTxt, currTxtEnd), &sz);
+					if (sz.width <= width)
 					{
 						outStr->Add(Text::String::NewP(currTxt, currTxtEnd));
 					}
@@ -56,8 +56,8 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, Text::CString txt
 			if (c == ' ')
 			{
 				Text::StrConcatC(tmpBuff, currTxt, i);
-				dimg->GetTextSize(f, {tmpBuff, i}, sz);
-				if (sz[0] > width)
+				dimg->GetTextSize(f, {tmpBuff, i}, &sz);
+				if (sz.width > width)
 				{
 					if (k == 0)
 					{
@@ -81,8 +81,8 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, Text::CString txt
 			else if (c == '-')
 			{
 				Text::StrConcatC(tmpBuff, currTxt, i + 1);
-				dimg->GetTextSize(f, {tmpBuff, i + 1}, sz);
-				if (sz[0] > width)
+				dimg->GetTextSize(f, {tmpBuff, i + 1}, &sz);
+				if (sz.width > width)
 				{
 					if (k == 0)
 					{
@@ -117,8 +117,8 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, Text::CString txt
 				else
 				{
 					Text::StrConcatC(tmpBuff, currTxt, i);
-					dimg->GetTextSize(f, {tmpBuff, i}, sz);
-					if (sz[0] > width)
+					dimg->GetTextSize(f, {tmpBuff, i}, &sz);
+					if (sz.width > width)
 					{
 						if (k == 0)
 						{

@@ -25,7 +25,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 	UInt32 ihFontSize = (UInt32)Double2Int32(fontSizePx * 0.5);
 	UInt32 yAxis;
 	UInt32 xAxis;
-	Double sz[2];
+	Math::Size2D<Double> sz;
 	UOSInt currSample;
 	UOSInt i;
 	UOSInt j;
@@ -56,8 +56,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, sz);
-			iVal = (UInt32)Double2Int32(sz[0]);
+			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			iVal = (UInt32)Double2Int32(sz.width);
 			if (iVal > yAxis)
 			{
 				yAxis = iVal;
@@ -73,8 +73,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, sz);
-			iVal = (UInt32)Double2Int32(sz[0]);
+			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			iVal = (UInt32)Double2Int32(sz.width);
 			if (iVal > xAxis)
 			{
 				xAxis = iVal;
@@ -261,8 +261,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, sz);
-			k = (UInt32)Double2Int32(sz[0]);
+			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			k = (UInt32)Double2Int32(sz.width);
 			retImg->DrawString(yAxis - UOSInt2Double(k), dfftSize * 0.5 - chartPos.GetItem(j), {sbuff, i}, f, b);
 			retImg->DrawLine(yAxis, dfftSize * 0.5 - chartPos.GetItem(j) + ihFontSize, yAxis + 4, UOSInt2Double(fftSize >> 1) - chartPos.GetItem(j) + ihFontSize, p);
 
@@ -276,8 +276,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, sz);
-			k = (UInt32)Double2Int32(sz[0]);
+			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			k = (UInt32)Double2Int32(sz.width);
 			retImg->DrawStringRot(yAxis + 4 + chartPos.GetItem(j) + ihFontSize, ihFontSize + dfftSize * 0.5 + 4, {sbuff, i}, f, b, 270.0);
 			retImg->DrawLine(yAxis + 4 + chartPos.GetItem(j), ihFontSize + dfftSize * 0.5, yAxis + 4 + chartPos.GetItem(j), ihFontSize + dfftSize * 0.5 + 4, p);
 

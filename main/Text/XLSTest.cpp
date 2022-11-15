@@ -40,8 +40,8 @@ void TestChart()
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-	CellStyle *dateStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, CSTR("yyyy-MM-dd"));
-	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, CSTR("0.###"));
+	CellStyle *dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
+	CellStyle *numStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	Worksheet *graphSheet = wb->AddWorksheet();
 	Worksheet *dataSheet = wb->AddWorksheet();
 	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
@@ -108,7 +108,7 @@ void TestCols()
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, CSTR("0.###"));
+	CellStyle *numStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
 	UOSInt i = 0;
 	UOSInt j = 2000;
@@ -164,12 +164,10 @@ void TestBorder()
 	NEW_CLASS(wb, Workbook());
 	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
 	WorkbookFont *font = wb->NewFont(CSTR("Arial"), 10.0, false);
-	CellStyle *borderStyle = wb->NewCellStyle(font, HAlignment::Center, VAlignment::Bottom, CSTR("0.0"));
-	CellStyle::BorderStyle border;
-	border.borderType = BorderType::Medium;
-	border.borderColor = 0xFF000000;
-	borderStyle->SetBorderBottom(&border);
-	CellStyle *normalStyle = wb->NewCellStyle(font, HAlignment::Center, VAlignment::Bottom, CSTR("0.0"));
+	CellStyle *borderStyle = wb->NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	CellStyle::BorderStyle border(0xFF000000, BorderType::Medium);
+	borderStyle->SetBorderBottom(border);
+	CellStyle *normalStyle = wb->NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	sheet->SetCellInt32(0, 0, borderStyle, 1);
 	sheet->SetCellInt32(0, 1, borderStyle, 2);
 	sheet->SetCellInt32(0, 2, borderStyle, 3);

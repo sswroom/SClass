@@ -73,7 +73,7 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	this->pageChg = false;
 	OSInt left;
 	OSInt top;
-	Double sz[2];
+	Math::Size2D<Double> sz;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
@@ -92,13 +92,13 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 		}
 		else if (this->talign == TA_CENTER)
 		{
-			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), sz);
-			dimg->DrawString(OSInt2Double(left) + (UOSInt2Double(this->width) - sz[0]) * 0.5, currPos, this->lines->GetItem(currLine)->ToCString(), f, b);
+			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), &sz);
+			dimg->DrawString(OSInt2Double(left) + (UOSInt2Double(this->width) - sz.width) * 0.5, currPos, this->lines->GetItem(currLine)->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
-			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), sz);
-			dimg->DrawString(OSInt2Double(left + (OSInt)width) - sz[0], currPos, this->lines->GetItem(currLine), f, b);
+			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), &sz);
+			dimg->DrawString(OSInt2Double(left + (OSInt)width) - sz.width, currPos, this->lines->GetItem(currLine), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;

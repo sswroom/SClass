@@ -230,21 +230,21 @@ void UI::GUITextView::UpdateScrollBar()
 		return;
 	}
 
-	Double sz[2];
+	Math::Size2D<Double> sz;
 	if (this->drawBuff == 0)
 	{
-		sz[1] = 12;
+		sz.height = 12;
 	}
 	else
 	{
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		if (fnt == 0)
 		{
-			sz[1] = 12;
+			sz.height = 12;
 		}
 		else
 		{
-			this->drawBuff->GetTextSize(fnt, CSTR("Test"), sz);
+			this->drawBuff->GetTextSize(fnt, CSTR("Test"), &sz);
 			this->drawBuff->DelFont(fnt);
 		}
 	}
@@ -258,8 +258,8 @@ void UI::GUITextView::UpdateScrollBar()
 		usz.width -= clsData->scrSize;
 	}
 
-	this->pageLineCnt = (UInt32)(UOSInt2Double(usz.height) / sz[1]);
-	this->pageLineHeight = sz[1];
+	this->pageLineCnt = (UInt32)(UOSInt2Double(usz.height) / sz.height);
+	this->pageLineHeight = sz.height;
 	this->clsData->scrVPage = this->pageLineCnt;
 	this->clsData->scrHPage = usz.width;
 	this->Redraw();
@@ -406,16 +406,16 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 	if (this->drawBuff)
 	{
 		WChar c;
-		Double sz[2];
+		Math::Size2D<Double> sz;
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		c = str[strLen];
 		str[strLen] = 0;
 		Text::String *s = Text::String::NewNotNull(str);
 		str[strLen] = c;
-		this->drawBuff->GetTextSize(fnt, s->ToCString(), sz);
+		this->drawBuff->GetTextSize(fnt, s->ToCString(), &sz);
 		s->Release();
-		*width = (UOSInt)Double2OSInt(sz[0]);
-		*height = (UOSInt)Double2OSInt(sz[1]);
+		*width = (UOSInt)Double2OSInt(sz.width);
+		*height = (UOSInt)Double2OSInt(sz.height);
 		this->drawBuff->DelFont(fnt);
 	}
 	else

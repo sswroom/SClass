@@ -107,7 +107,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Double sz[2];
+	Math::Size2D<Double> sz;
 	Math::Size2D<UOSInt> usz;
 	Media::DrawImage *dimg;
 	Media::DrawFont *f;
@@ -129,15 +129,15 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	if (this->currFontName)
 	{
 		f = dimg->NewFontPt(this->currFontName->ToCString(), this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
-		dimg->GetTextSize(f, CSTRP(sbuff, sptr), sz);
+		dimg->GetTextSize(f, CSTRP(sbuff, sptr), &sz);
 		if (this->currBuffSize > 0)
 		{
 			b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currBuffColor));
-			dimg->DrawStringB((UOSInt2Double(usz.width) - sz[0]) * 0.5, (UOSInt2Double(usz.height) - sz[1]) * 0.5, CSTRP(sbuff, sptr), f, b, (UOSInt)Double2Int32(UOSInt2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
+			dimg->DrawStringB((UOSInt2Double(usz.width) - sz.width) * 0.5, (UOSInt2Double(usz.height) - sz.height) * 0.5, CSTRP(sbuff, sptr), f, b, (UOSInt)Double2Int32(UOSInt2Double(this->currBuffSize) * this->GetHDPI() / this->GetDDPI()));
 			dimg->DelBrush(b);
 		}
 		b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(this->currColor));
-		dimg->DrawString((UOSInt2Double(usz.width) - sz[0]) * 0.5, (UOSInt2Double(usz.height) - sz[1]) * 0.5, CSTRP(sbuff, sptr), f, b);
+		dimg->DrawString((UOSInt2Double(usz.width) - sz.width) * 0.5, (UOSInt2Double(usz.height) - sz.height) * 0.5, CSTRP(sbuff, sptr), f, b);
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
 	}

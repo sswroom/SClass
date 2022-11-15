@@ -2,9 +2,11 @@
 #define _SM_MEDIA_DRAWENGINE
 #include "IO/SeekableStream.h"
 #include "Math/Coord2D.h"
+#include "Math/Size2D.h"
 #include "Media/Image.h"
 #include "Text/CString.h"
 #include "Text/String.h"
+#include "Text/TextCommon.h"
 
 namespace Media
 {
@@ -122,12 +124,13 @@ namespace Media
 		virtual void DelBrush(DrawBrush *b) = 0;
 		virtual void DelFont(DrawFont *f) = 0;
 
-		virtual Bool GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz) = 0;
+		virtual Bool GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz) = 0;
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos) = 0;
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const = 0;
 		
+		Bool DrawStringHAlign(Double tlx, Double tly, Double brx, Text::CString str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign);
 		UInt32 GetPixel32(OSInt x, OSInt y);
 		void SetImageAlpha(UInt8 alpha);
 		void MulImageAlpha(Double val);

@@ -119,6 +119,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"POLYGON"))
 	{
 		Data::ArrayList<Double> ptList;
+		Data::ArrayList<Double> zList;
 		Data::ArrayList<UInt32> ptOfstList;
 		Double x;
 		Double y;
@@ -162,6 +163,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 					{
 						return 0;
 					}
+					zList.Add(z);
 				}
 				ptList.Add(x);
 				ptList.Add(y);
@@ -200,12 +202,20 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			return 0;
 		}
 		Math::Geometry::Polygon *pg;
-		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, false, false));
+		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
 		UOSInt i;
 		UInt32 *ptOfstArr = pg->GetPtOfstList(&i);
 		MemCopyNO(ptOfstArr, ptOfstList.GetArray(&i), ptOfstList.GetCount() * sizeof(UInt32));
 		Math::Coord2DDbl *ptArr = pg->GetPointList(&i);
 		MemCopyNO(ptArr, ptList.GetArray(&i), ptList.GetCount() * sizeof(Double));
+		if (pg->HasZ())
+		{
+			Double *zArr = pg->GetZList(&i);
+			while (i-- > 0)
+			{
+				zArr[i] = zList.GetItem(i);
+			}
+		}
 		return pg;
 	}
 	return 0;

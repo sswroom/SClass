@@ -663,7 +663,7 @@ void Media::VectorGraph::DelFont(DrawFont *f)
 {
 }
 
-Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz)
+Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz)
 {
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	tmpImg->SetHDPI(this->GetHDPI());
@@ -677,8 +677,8 @@ Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt, Double *s
 		f = tmpImg->NewFontPt(fontName->ToCString(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
 		tmpImg->GetTextSize(f, txt, sz);
 		tmpImg->DelFont(f);
-		sz[0] *= fntSizePt / 100.0;
-		sz[1] *= fntSizePt / 100.0;
+		sz->width *= fntSizePt / 100.0;
+		sz->height *= fntSizePt / 100.0;
 	}
 	else
 	{

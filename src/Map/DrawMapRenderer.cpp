@@ -2253,7 +2253,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 
 void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
-	Double szTmp[2];
+	Math::Size2D<Double> szTmp;
 	UOSInt buffSize;
 	Media::DrawFont *df;
 	if (fontType == Map::MapEnv::FontType::LayerStyle)
@@ -2266,12 +2266,12 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, T
 		df = denv->fontStyles[fontStyle].font;
 		buffSize = denv->fontStyles[fontStyle].buffSize;
 	}
-	denv->img->GetTextSize(df, label, szTmp);
+	denv->img->GetTextSize(df, label, &szTmp);
 
 	if (scaleH == 0)
 	{
-		size->x = (szTmp[0] + UOSInt2Double(buffSize << 1));
-		size->y = (szTmp[1] + UOSInt2Double(buffSize << 1));
+		size->x = (szTmp.width + UOSInt2Double(buffSize << 1));
+		size->y = (szTmp.height + UOSInt2Double(buffSize << 1));
 
 		return;
 	}
@@ -2287,8 +2287,8 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, T
 	Double degD = Math_ArcTan2(scaleH, scaleW);
 	Double xPos;
 	Double yPos;
-	xPos = szTmp[0] + UOSInt2Double(buffSize << 1);
-	yPos = szTmp[1] + UOSInt2Double(buffSize << 1);
+	xPos = szTmp.width + UOSInt2Double(buffSize << 1);
+	yPos = szTmp.height + UOSInt2Double(buffSize << 1);
 	Double sVal;
 	Double cVal;
 	Double xs = (xPos * 0.5 * (sVal = Math_Sin(degD)));
@@ -2327,7 +2327,7 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, T
 
 void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double scnPosX, Double scnPosY, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
 {
-	Double size[2];
+	Math::Size2D<Double> size;
 	UInt16 absH;
 	Map::DrawMapRenderer::DrawFontStyle *font;
 	Media::DrawFont *df;
@@ -2364,7 +2364,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 	{
 		scaleH = 0;
 	}
-	denv->img->GetTextSize(df, str1, size);
+	denv->img->GetTextSize(df, str1, &size);
 
 	if (scaleH == 0)
 	{
@@ -2372,12 +2372,12 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 		if (font && font->buffSize > 0)
 		{
-			denv->img->DrawStringB(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
-			denv->img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
+			denv->img->DrawStringB(scnPosX - (size.width * 0.5), scnPosY - (size.height * 0.5), str1, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+			denv->img->DrawString(scnPosX - (size.width * 0.5), scnPosY - (size.height * 0.5), str1, df, db);
 		}
 		else
 		{
-			denv->img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
+			denv->img->DrawString(scnPosX - (size.width * 0.5), scnPosY - (size.height * 0.5), str1, df, db);
 		}
 		return;
 	}
@@ -2408,18 +2408,18 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 		Double startY;
 		Double tmp;
 		Int32 type;
-		Double szThis[2];
+		Math::Size2D<Double> szThis;
 		Double dlblSize = UOSInt2Double(str1.leng);
-		denv->img->GetTextSize(df, str1, szThis);
+		denv->img->GetTextSize(df, str1, &szThis);
 
-		if ((szThis[0] * absH) < (szThis[1] * dlblSize * scaleW))
+		if ((szThis.width * absH) < (szThis.height * dlblSize * scaleW))
 		{
 			scaleW = -scaleW;
-			startX = scnPosX - (tmp = szThis[0] * 0.5);
+			startX = scnPosX - (tmp = szThis.width * 0.5);
 			if (scaleW)
-				startY = scnPosY - (szThis[1] * 0.5) - (tmp * scaleH / scaleW);
+				startY = scnPosY - (szThis.height * 0.5) - (tmp * scaleH / scaleW);
 			else
-				startY = scnPosY - (szThis[1] * 0.5);
+				startY = scnPosY - (szThis.height * 0.5);
 			type = 0;
 		}
 		else
@@ -2427,19 +2427,19 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 			scaleW = -scaleW;
 			if (scaleH > 0)
 			{
-				startY = scnPosY - (tmp = ((szThis[1] * dlblSize) * 0.5));
+				startY = scnPosY - (tmp = ((szThis.height * dlblSize) * 0.5));
 				startX = scnPosX - (tmp * scaleW / scaleH);
 			}
 			else if (scaleH)
 			{
 				scaleW = -scaleW;
 				scaleH = -scaleH;
-				startY = scnPosY - (tmp = ((szThis[1] * dlblSize) * 0.5));
+				startY = scnPosY - (tmp = ((szThis.height * dlblSize) * 0.5));
 				startX = scnPosX - (tmp * scaleW / scaleH);
 			}
 			else
 			{
-				startY = scnPosY - (tmp = ((szThis[1] * dlblSize) * 0.5));
+				startY = scnPosY - (tmp = ((szThis.height * dlblSize) * 0.5));
 				startX = scnPosX;
 			}
 			type = 1;
@@ -2457,16 +2457,16 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 			while (cnt--)
 			{
-				denv->img->GetTextSize(font->font, {lbl, 1}, szThis);
+				denv->img->GetTextSize(font->font, {lbl, 1}, &szThis);
 
 				if (type)
 				{
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currPt.x - (szThis[0] * 0.5), startY + currPt.y, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currPt.x - (szThis.width * 0.5), startY + currPt.y, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
-					currPt.y += szThis[1];
+					currPt.y += szThis.height;
 
 					if (scaleH)
 						currPt.x = (currPt.y * scaleW / scaleH);
@@ -2478,7 +2478,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 					l[1] = 0;
 					denv->img->DrawStringB(startX + currPt.x, startY + currPt.y, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
-					currPt.x += szThis[0];
+					currPt.x += szThis.width;
 					if (scaleW)
 						currPt.y = (currPt.x * scaleH / scaleW);
 				}
@@ -2493,16 +2493,16 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 		while (cnt--)
 		{
-			denv->img->GetTextSize(df, {lbl, 1}, szThis);
+			denv->img->GetTextSize(df, {lbl, 1}, &szThis);
 
 			if (type)
 			{
 				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
-				denv->img->DrawString(startX + currPt.x - (szThis[0] * 0.5), startY + currPt.y, {l, 1}, df, db);
+				denv->img->DrawString(startX + currPt.x - (szThis.width * 0.5), startY + currPt.y, {l, 1}, df, db);
 
-				currPt.y += szThis[1];
+				currPt.y += szThis.height;
 
 				if (scaleH)
 					currPt.x = (currPt.y * scaleW / scaleH);
@@ -2514,7 +2514,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 				l[1] = 0;
 				denv->img->DrawString(startX + currPt.x, startY + currPt.y, {l, 1}, df, db);
 
-				currPt.x += szThis[0];
+				currPt.x += szThis.width;
 				if (scaleW)
 					currPt.y = (currPt.x * scaleH / scaleW);
 			}
@@ -2548,8 +2548,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	Math::Coord2DDbl max;
 	Double angleOfst;
 	UOSInt j;
-	Double szThis[2];
-	Double szLast[2];
+	Math::Size2D<Double> szThis;
+	Math::Size2D<Double> szLast;
 	Int32 mode;
 	Map::DrawMapRenderer::DrawFontStyle *font;
 	Media::DrawFont *df;
@@ -2598,8 +2598,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	diff.x = 0;
 	diff.y = 0;
 
-	denv->img->GetTextSize(df, str1, szThis);
-	diff.x = szThis[0] * 0.5;
+	denv->img->GetTextSize(df, str1, &szThis);
+	diff.x = szThis.width * 0.5;
 	diff.y = diff.x * diff.x;
 
 	if (mode == 0)
@@ -2724,7 +2724,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	Double lastY;
 	UTF32Char u32c;
 
-	szLast[0] = 0;
+	szLast.width = 0;
 
 	lastX = currPt.x = startX;
 	lastY = currPt.y = startY;
@@ -2805,8 +2805,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 			
 		}
 
-		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), szThis);
-		dist = (szLast[0] + szThis[0]) * 0.5;
+		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), &szThis);
+		dist = (szLast.width + szThis.width) * 0.5;
 		nextPt.x = currPt.x + (dist * cosAngle);
 		nextPt.y = currPt.y - (dist * sinAngle);
 		if ( (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x)) && (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y)))
@@ -2815,7 +2815,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		}
 		else
 		{
-			diff.x = szLast[0] + szThis[0];
+			diff.x = szLast.width + szThis.width;
 			diff.y = (diff.x * diff.x) * 0.5;
 
 			if (mode == 0)
@@ -2971,8 +2971,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 			currPt.x = lastX + (dist * lca);
 			currPt.y = lastY - (dist * lsa);
 
-			Double xadd = szThis[0] * lca;
-			Double yadd = szThis[0] * lsa;
+			Double xadd = szThis.width * lca;
+			Double yadd = szThis.width * lsa;
 			if (xadd < 0)
 				xadd = -xadd;
 			if (yadd < 0)
@@ -3014,8 +3014,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		else
 		{
 			lastAngle = angleDegree;
-			Double xadd = szThis[0] * cosAngle;
-			Double yadd = szThis[0] * sinAngle;
+			Double xadd = szThis.width * cosAngle;
+			Double yadd = szThis.width * sinAngle;
 			if (xadd < 0)
 				xadd = -xadd;
 			if (yadd < 0)
@@ -3057,7 +3057,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 		}
 		lastX = currPt.x;
 		lastY = currPt.y;
-		szLast[0] = szThis[0];
+		szLast.width = szThis.width;
 	}
 
 	realBounds->tl = min;
@@ -3081,8 +3081,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	UOSInt i;
 	UOSInt j;
 	Double angleOfst;
-	Double szThis[2];
-	Double szLast[2];
+	Math::Size2D<Double> szThis;
+	Math::Size2D<Double> szLast;
 	Int32 mode;
 	Bool found;
 	Map::DrawMapRenderer::DrawFontStyle *font;
@@ -3151,9 +3151,9 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 
 	while (i-- > 0)
 	{
-		denv->img->GetTextSize(df, {&str1.v[i], 1}, szThis);
-		diff.x += szThis[0];
-		diff.y += szThis[1];
+		denv->img->GetTextSize(df, {&str1.v[i], 1}, &szThis);
+		diff.x += szThis.width;
+		diff.y += szThis.height;
 	}
 	found = false;
 	if (mode == 0)
@@ -3409,8 +3409,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 	Double lastX;
 	Double lastY;
 
-	szLast[0] = 0;
-	szLast[1] = 0;
+	szLast.width = 0;
+	szLast.height = 0;
 
 	lastX = currPt.x = startX;
 	lastY = currPt.y = startY;
@@ -3433,28 +3433,28 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		nextChar = *nextPos;
 		*nextPos = 0;
 
-		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), szThis);
+		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), &szThis);
 		while (true)
 		{
 			if (angleDegree <= 90)
 			{
-				nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x + ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = currPt.y - ((szLast.height + szThis.height) * 0.5);
 			}
 			else if (angleDegree <= 180)
 			{
-				nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x - ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = currPt.y - ((szLast.height + szThis.height) * 0.5);
 			}
 			else if (angleDegree <= 270)
 			{
-				nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x - ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = currPt.y + ((szLast.height + szThis.height) * 0.5);
 			}
 			else
 			{
-				nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = currPt.x + ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = currPt.y + ((szLast.height + szThis.height) * 0.5);
 			}
 
 			if (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x))
@@ -3463,7 +3463,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 				tempY -= currPt.y;
 				if (tempY < 0)
 					tempY = -tempY;
-				if (tempY > (szLast[1] + szThis[1]) * 0.5)
+				if (tempY > (szLast.height + szThis.height) * 0.5)
 				{
 					currPt.y = nextPt.y;
 					currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
@@ -3494,7 +3494,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 						tempY -= currPt.y;
 						if (tempY < 0)
 							tempY = -tempY;
-						if (tempY > (szLast[1] + szThis[1]) * 0.5)
+						if (tempY > (szLast.height + szThis.height) * 0.5)
 						{
 							currPt.y = nextPt.y;
 							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
@@ -3518,7 +3518,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 						tempY -= currPt.y;
 						if (tempY < 0)
 							tempY = -tempY;
-						if (tempY > (szLast[1] + szThis[1]) * 0.5)
+						if (tempY > (szLast.height + szThis.height) * 0.5)
 						{
 							currPt.y = nextPt.y;
 							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
@@ -3554,23 +3554,23 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		{
 			if (lastAngle <= 90)
 			{
-				nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX + ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = lastY - ((szLast.height + szThis.height) * 0.5);
 			}
 			else if (lastAngle <= 180)
 			{
-				nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX - ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = lastY - ((szLast.height + szThis.height) * 0.5);
 			}
 			else if (lastAngle <= 270)
 			{
-				nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX - ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = lastY + ((szLast.height + szThis.height) * 0.5);
 			}
 			else
 			{
-				nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
-				nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
+				nextPt.x = lastX + ((szLast.width + szThis.width) * 0.5);
+				nextPt.y = lastY + ((szLast.height + szThis.height) * 0.5);
 			}
 			Double tempY = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
 			Double tempX = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
@@ -3580,7 +3580,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 				tempY = -tempY;
 			if (tempX < 0)
 				tempX = -tempX;
-			if (tempX <= (szLast[0] + szThis[0]) * 0.5)
+			if (tempX <= (szLast.width + szThis.width) * 0.5)
 			{
 				currPt.y = nextPt.y;
 				currPt.x = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
@@ -3598,8 +3598,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		}
 
 
-		Double xadd = szThis[0] * 0.5;
-		Double yadd = szThis[1] * 0.5;
+		Double xadd = szThis.width * 0.5;
+		Double yadd = szThis.height * 0.5;
 		if ((currPt.x - xadd) < min.x)
 		{
 			min.x = (currPt.x - xadd);
@@ -3635,8 +3635,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 			}
 			denv->img->DrawString(currPt.x, currPt.y, CSTRP(lbl, nextPos), df, db);
 		}
-		szLast[0] = szThis[0];
-		szLast[1] = szThis[1];
+		szLast = szThis;
 	}
 
 	realBounds->tl = min;

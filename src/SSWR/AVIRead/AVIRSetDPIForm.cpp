@@ -87,7 +87,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	Double lastX;
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
-	Double sz[2];
+	Math::Size2D<Double> sz;
 	Media::DrawEngine *eng;
 	Media::DrawImage *gimg;
 	Media::DrawBrush *b;
@@ -110,8 +110,8 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = gimg->NewBrushARGB(0xff000000);
 		currV = 0;
-		gimg->GetTextSize(f, CSTR("0"), sz);
-		initX = sz[0] * 0.5;
+		gimg->GetTextSize(f, CSTR("0"), &sz);
+		initX = sz.width * 0.5;
 		lastX = initX - 20.0;
 		while (true)
 		{
@@ -122,9 +122,9 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 			if (currX >= lastX + 20)
 			{
 				sptr = Text::StrInt32(sbuff, currV);
-				gimg->GetTextSize(f, CSTRP(sbuff, sptr), sz);
-				gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.height) - sz[1], p);
-				gimg->DrawString(currX - sz[0] * 0.5, UOSInt2Double(usz.height) - sz[1], CSTRP(sbuff, sptr), f, b);
+				gimg->GetTextSize(f, CSTRP(sbuff, sptr), &sz);
+				gimg->DrawLine(currX, 0, currX, UOSInt2Double(usz.height) - sz.height, p);
+				gimg->DrawString(currX - sz.width * 0.5, UOSInt2Double(usz.height) - sz.height, CSTRP(sbuff, sptr), f, b);
 				lastX = currX;
 			}
 			currV++;

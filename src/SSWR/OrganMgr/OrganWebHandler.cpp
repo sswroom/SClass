@@ -8200,7 +8200,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						Int32 xRand;
 						Int32 yRand;
 						UInt32 fontSizePx = imgWidth / 12;
-						Double sz[2];
+						Math::Size2D<Double> sz;
 						UInt32 iWidth;
 						UInt32 iHeight;
 						Media::DrawImage *gimg2;
@@ -8209,17 +8209,17 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						while (true)
 						{
 							f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-							if (!gimg->GetTextSize(f, user->watermark->ToCString(), sz))
+							if (!gimg->GetTextSize(f, user->watermark->ToCString(), &sz))
 							{
 								gimg->DelFont(f);
 								break;
 							}
-							if (sz[0] <= UOSInt2Double(dimg->info.dispWidth) && sz[1] <= UOSInt2Double(dimg->info.dispHeight))
+							if (sz.width <= UOSInt2Double(dimg->info.dispWidth) && sz.height <= UOSInt2Double(dimg->info.dispHeight))
 							{
-								xRand = Double2Int32(UOSInt2Double(dimg->info.dispWidth) - sz[0]);
-								yRand = Double2Int32(UOSInt2Double(dimg->info.dispHeight) - sz[1]);
-								iWidth = (UInt32)Double2Int32(sz[0]);
-								iHeight = (UInt32)Double2Int32(sz[1]);
+								xRand = Double2Int32(UOSInt2Double(dimg->info.dispWidth) - sz.width);
+								yRand = Double2Int32(UOSInt2Double(dimg->info.dispHeight) - sz.height);
+								iWidth = (UInt32)Double2Int32(sz.width);
+								iHeight = (UInt32)Double2Int32(sz.height);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
 								gimg2->DrawString(0, 0, user->watermark->ToCString(), f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);

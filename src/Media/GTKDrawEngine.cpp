@@ -1006,14 +1006,14 @@ void Media::GTKDrawImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz)
+Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz)
 {
 	GTKDrawFont *font = (GTKDrawFont*)fnt;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v, &extents);
-	sz[0] = extents.width + 2;
-	sz[1] = font->GetHeight() + 2;
+	sz->width = extents.width + 2;
+	sz->height = font->GetHeight() + 2;
 	return true;
 }
 

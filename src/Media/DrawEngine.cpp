@@ -2,6 +2,37 @@
 #include "Media/DrawEngine.h"
 #include "Media/ImageUtil.h"
 
+Bool Media::DrawImage::DrawStringHAlign(Double tlx, Double tly, Double brx, Text::CString str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign)
+{
+	Math::Size2D<Double> sz;
+	if (hAlign == Text::HAlignment::Right)
+	{
+		if (!this->GetTextSize(f, str, &sz))
+		{
+			return this->DrawString(tlx, tly, str, f, b);
+		}
+		else
+		{
+			return this->DrawString(brx - sz.width, tly, str, f, b);
+		}
+	}
+	else if (hAlign == Text::HAlignment::Center)
+	{
+		if (!this->GetTextSize(f, str, &sz))
+		{
+			return this->DrawString(tlx, tly, str, f, b);
+		}
+		else
+		{
+			return this->DrawString(tlx + (brx - tlx - sz.width) * 0.5, tly, str, f, b);
+		}
+	}
+	else
+	{
+		return this->DrawString(tlx, tly, str, f, b);
+	}
+}
+
 UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 {
 	UOSInt width = this->GetWidth();

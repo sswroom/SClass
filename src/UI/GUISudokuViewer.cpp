@@ -195,7 +195,7 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 			UOSInt y;
 			UOSInt x2;
 			UOSInt y2;
-			Double sz[2];
+			Math::Size2D<Double> sz;
 			val = this->board->GetBoardNum(i, j, &isDefault);
 			x = tlx + 1 + MulDivUOS(size, i, 9);
 			y = tly + 1 + MulDivUOS(size, j, 9);
@@ -212,8 +212,8 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 				{
 					img->DrawRect(UOSInt2Double(x), UOSInt2Double(y), UOSInt2Double(x2 - x), UOSInt2Double(y2 - y), 0, b3);
 				}
-				img->GetTextSize(f, {ch, 1}, sz);
-				img->DrawString(UOSInt2Double(x) + (UOSInt2Double(x2 - x) - sz[0]) * 0.5, UOSInt2Double(y) + (UOSInt2Double(y2 - y) - sz[1]) * 0.5, {ch, 1}, f, b2);
+				img->GetTextSize(f, {ch, 1}, &sz);
+				img->DrawString(UOSInt2Double(x) + (UOSInt2Double(x2 - x) - sz.width) * 0.5, UOSInt2Double(y) + (UOSInt2Double(y2 - y) - sz.height) * 0.5, {ch, 1}, f, b2);
 			}
 			else
 			{

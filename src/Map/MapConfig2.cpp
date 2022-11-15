@@ -67,7 +67,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
-	Double size[2];
+	Math::Size2D<Double> size;
 	UInt16 absH;
 	UOSInt fntCount;
 	UInt32 i;
@@ -115,7 +115,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 	{
 		scaleH = 0;
 	}
-	img->GetTextSize(font->font, str1, size);
+	img->GetTextSize(font->font, str1, &size);
 
 	if (scaleH == 0)
 	{
@@ -133,10 +133,10 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 			{
 				Media::DrawPen *p = 0;
 				Media::DrawBrush *b = 0;
-				rcLeft = scnPosX - ((size[0] + font->fontSizePt) * 0.5);
-				rcRight = rcLeft + size[0] + font->fontSizePt;
-				rcTop = scnPosY - ((size[1] + font->fontSizePt) * 0.5);
-				rcBottom = rcTop + size[1] + font->fontSizePt;
+				rcLeft = scnPosX - ((size.width + font->fontSizePt) * 0.5);
+				rcRight = rcLeft + size.width + font->fontSizePt;
+				rcTop = scnPosY - ((size.height + font->fontSizePt) * 0.5);
+				rcBottom = rcTop + size.height + font->fontSizePt;
 
 				b = (Media::DrawBrush *)font->other;
 				if (i < fntCount - 1)
@@ -156,10 +156,10 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 			else if (font->fontType == 2)
 			{
 				Math::Coord2DDbl pt[5];
-				rcLeft = scnPosX - ((size[0] + font->fontSizePt) * 0.5);
-				rcRight = rcLeft + size[0] + font->fontSizePt;
-				rcTop = scnPosY - ((size[1] + font->fontSizePt) * 0.5);
-				rcBottom = rcTop + size[1] + font->fontSizePt;
+				rcLeft = scnPosX - ((size.width + font->fontSizePt) * 0.5);
+				rcRight = rcLeft + size.width + font->fontSizePt;
+				rcTop = scnPosY - ((size.height + font->fontSizePt) * 0.5);
+				rcBottom = rcTop + size.height + font->fontSizePt;
 
 				pt[0].x = rcLeft;
 				pt[0].y = rcTop;
@@ -175,11 +175,11 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 			}
 			else if (font->fontType == 0)
 			{
-				img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(scnPosX - (size.width * 0.5), scnPosY - (size.height * 0.5), str1, font->font, (Media::DrawBrush*)font->other);
 			}
 			else if (font->fontType == 4)
 			{
-				img->DrawStringB(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+				img->DrawStringB(scnPosX - (size.width * 0.5), scnPosY - (size.height * 0.5), str1, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 			}
 			i++;
 		}
@@ -220,8 +220,8 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 
 		if (font->fontType == 1)
 		{
-			xPos = size[0] + font->fontSizePt;
-			yPos = size[1] + font->fontSizePt;
+			xPos = size.width + font->fontSizePt;
+			yPos = size.height + font->fontSizePt;
 			Double xs = ((xPos * 0.5) * (sVal = Math_Sin(degD)));
 			Double ys = ((yPos * 0.5) * sVal);
 			Double xc = ((xPos * 0.5) * (cVal = Math_Cos(degD)));
@@ -252,8 +252,8 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 		}
 		else if (font->fontType == 2)
 		{
-			xPos = size[0] + font->fontSizePt;
-			yPos = size[1] + font->fontSizePt;
+			xPos = size.width + font->fontSizePt;
+			yPos = size.height + font->fontSizePt;
 			Int32 xs = (Int32) ((xPos * 0.5) * (sVal = Math_Sin(degD)));
 			Int32 ys = (Int32) ((yPos * 0.5) * sVal);
 			Int32 xc = (Int32) ((xPos * 0.5) * (cVal = Math_Cos(degD)));
@@ -281,17 +281,17 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 				Double startY;
 				Double tmp;
 				Int32 type;
-				Double szThis[2];
-				img->GetTextSize(font->font, str1, szThis);
+				Math::Size2D<Double> szThis;
+				img->GetTextSize(font->font, str1, &szThis);
 
-				if ((szThis[0] * absH) < (szThis[1] * UOSInt2Double(lblSize) * scaleW))
+				if ((szThis.width * absH) < (szThis.height * UOSInt2Double(lblSize) * scaleW))
 				{
 					scaleW = -scaleW;
-					startX = scnPosX - (tmp = (szThis[0] * 0.5));
+					startX = scnPosX - (tmp = (szThis.width * 0.5));
 					if (scaleW)
-						startY = scnPosY - (szThis[1] * 0.5) - (tmp * scaleH / scaleW);
+						startY = scnPosY - (szThis.height * 0.5) - (tmp * scaleH / scaleW);
 					else
-						startY = scnPosY - (szThis[1] * 0.5);
+						startY = scnPosY - (szThis.height * 0.5);
 					type = 0;
 				}
 				else
@@ -299,19 +299,19 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 					scaleW = -scaleW;
 					if (scaleH > 0)
 					{
-						startY = scnPosY - (tmp = ((szThis[1] * UOSInt2Double(lblSize)) * 0.5));
+						startY = scnPosY - (tmp = ((szThis.height * UOSInt2Double(lblSize)) * 0.5));
 						startX = scnPosX - (tmp * scaleW / scaleH);
 					}
 					else if (scaleH)
 					{
 						scaleW = -scaleW;
 						scaleH = -scaleH;
-						startY = scnPosY - (tmp = ((szThis[1] * UOSInt2Double(lblSize)) * 0.5));
+						startY = scnPosY - (tmp = ((szThis.height * UOSInt2Double(lblSize)) * 0.5));
 						startX = scnPosX - (tmp * scaleW / scaleH);
 					}
 					else
 					{
-						startY = scnPosY - (tmp = ((szThis[1] * UOSInt2Double(lblSize)) * 0.5));
+						startY = scnPosY - (tmp = ((szThis.height * UOSInt2Double(lblSize)) * 0.5));
 						startX = scnPosX;
 					}
 					type = 1;
@@ -319,9 +319,9 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 
 //				Double cHeight;
 //				if (scaleH < 0)
-//					cHeight = szThis[1];
+//					cHeight = szThis.height;
 //				else
-//					cHeight = -szThis[1];
+//					cHeight = -szThis.height;
 
 				currPt.x = 0;
 				currPt.y = 0;
@@ -332,7 +332,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 
 				while (cnt--)
 				{
-					img->GetTextSize(font->font, {lbl, 1}, szThis);
+					img->GetTextSize(font->font, {lbl, 1}, &szThis);
 
 					if (type)
 					{
@@ -341,17 +341,17 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawString(startX + currPt.x - (szThis[0] * 0.5), startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currPt.x - (szThis.width * 0.5), startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringB(startX + currPt.x - (szThis[0] * 0.5), startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+							img->DrawStringB(startX + currPt.x - (szThis.width * 0.5), startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 						}
 
-						currPt.y += szThis[1];
+						currPt.y += szThis.height;
 
 						if (scaleH)
 							currPt.x = (currPt.y * scaleW / scaleH);
@@ -373,7 +373,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Doubl
 							img->DrawStringB(startX + currPt.x, startY + currPt.y, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 						}
 
-						currPt.x += szThis[0];
+						currPt.x += szThis.width;
 						if (scaleW)
 							currPt.y = (Int16)((Int32)currPt.x * (Int32)scaleH / (Int32)scaleW);
 					}
@@ -416,8 +416,8 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 	UOSInt i;
 	UOSInt j;
 	Double angleOfst;
-	Double szThis[2];
-	Double szLast[2];
+	Math::Size2D<Double> szThis;
+	Math::Size2D<Double> szLast;
 	Int32 mode;
 	UOSInt fntCount;
 	Map::MapFontStyle *font;
@@ -469,8 +469,8 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 
 	while (i-- > 0)
 	{
-		img->GetTextSize(font->font, {&str1.v[i], 1}, szThis);
-		diff += Math::Coord2DDbl(szThis[0], szThis[1]);
+		img->GetTextSize(font->font, {&str1.v[i], 1}, &szThis);
+		diff += Math::Coord2DDbl(szThis.width, szThis.height);
 	}
 	found = false;
 	if (mode == 0)
@@ -730,8 +730,8 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 		Double lastX;
 		Double lastY;
 
-		szLast[0] = 0;
-		szLast[1] = 0;
+		szLast.width = 0;
+		szLast.height = 0;
 
 		lastX = currPt.x = startX;
 		lastY = currPt.y = startY;
@@ -754,28 +754,28 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 			nextChar = *nextPos;
 			*nextPos = 0;
 
-			img->GetTextSize(font->font, CSTRP(lbl, nextPos), szThis);
+			img->GetTextSize(font->font, CSTRP(lbl, nextPos), &szThis);
 			while (true)
 			{
 				if (angleDegree <= 90)
 				{
-					nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x + ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = currPt.y - ((szLast.height + szThis.height) * 0.5);
 				}
 				else if (angleDegree <= 180)
 				{
-					nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = currPt.y - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x - ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = currPt.y - ((szLast.height + szThis.height) * 0.5);
 				}
 				else if (angleDegree <= 270)
 				{
-					nextPt.x = currPt.x - ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x - ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = currPt.y + ((szLast.height + szThis.height) * 0.5);
 				}
 				else
 				{
-					nextPt.x = currPt.x + ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = currPt.y + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = currPt.x + ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = currPt.y + ((szLast.height + szThis.height) * 0.5);
 				}
 
 				if (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x))
@@ -784,7 +784,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 					tempY -= currPt.y;
 					if (tempY < 0)
 						tempY = -tempY;
-					if (tempY > (szLast[1] + szThis[1]) * 0.5)
+					if (tempY > (szLast.height + szThis.height) * 0.5)
 					{
 						currPt.y = nextPt.y;
 						currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
@@ -815,7 +815,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 							tempY -= currPt.y;
 							if (tempY < 0)
 								tempY = -tempY;
-							if (tempY > (szLast[1] + szThis[1]) * 0.5)
+							if (tempY > (szLast.height + szThis.height) * 0.5)
 							{
 								currPt.y = nextPt.y;
 								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
@@ -839,7 +839,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 							tempY -= currPt.y;
 							if (tempY < 0)
 								tempY = -tempY;
-							if (tempY > (szLast[1] + szThis[1]) * 0.5)
+							if (tempY > (szLast.height + szThis.height) * 0.5)
 							{
 								currPt.y = nextPt.y;
 								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
@@ -875,23 +875,23 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 			{
 				if (lastAngle <= 90)
 				{
-					nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX + ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = lastY - ((szLast.height + szThis.height) * 0.5);
 				}
 				else if (lastAngle <= 180)
 				{
-					nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = lastY - ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX - ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = lastY - ((szLast.height + szThis.height) * 0.5);
 				}
 				else if (lastAngle <= 270)
 				{
-					nextPt.x = lastX - ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX - ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = lastY + ((szLast.height + szThis.height) * 0.5);
 				}
 				else
 				{
-					nextPt.x = lastX + ((szLast[0] + szThis[0]) * 0.5);
-					nextPt.y = lastY + ((szLast[1] + szThis[1]) * 0.5);
+					nextPt.x = lastX + ((szLast.width + szThis.width) * 0.5);
+					nextPt.y = lastY + ((szLast.height + szThis.height) * 0.5);
 				}
 				Double tempY = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
 				Double tempX = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
@@ -901,7 +901,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 					tempY = -tempY;
 				if (tempX < 0)
 					tempX = -tempX;
-				if (tempX <= (szLast[0] + szThis[0]) * 0.5)
+				if (tempX <= (szLast.width + szThis.width) * 0.5)
 				{
 					currPt.y = nextPt.y;
 					currPt.x = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
@@ -919,8 +919,8 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 			}
 
 
-			Double xadd = szThis[0] * 0.5;
-			Double yadd = szThis[1] * 0.5;
+			Double xadd = szThis.width * 0.5;
+			Double yadd = szThis.height * 0.5;
 			if ((currPt.x - xadd) < min.x)
 			{
 				min.x = currPt.x - xadd;
@@ -962,8 +962,8 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Mat
 					img->DrawStringB(currPt.x, currPt.y, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 				}
 			}
-			szLast[0] = szThis[0];
-			szLast[1] = szThis[1];
+			szLast.width = szThis.width;
+			szLast.height = szThis.height;
 		}
 		i++;
 	}
@@ -985,7 +985,7 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 	Math::Coord2DDbl aDiff;
 	UOSInt i;
 	UOSInt j;
-	Double szThis[2];
+	Math::Size2D<Double> szThis;
 	Int32 mode;
 	UOSInt fntCount;
 	Map::MapFontStyle *font;
@@ -1031,9 +1031,9 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 
 	while (i-- > 0)
 	{
-		img->GetTextSize(font->font, {&str1.v[i], 1}, szThis);
-		diff.x += szThis[0];
-		diff.y += szThis[1];
+		img->GetTextSize(font->font, {&str1.v[i], 1}, &szThis);
+		diff.x += szThis.width;
+		diff.y += szThis.height;
 	}
 	found = false;
 	if (mode == 0)
@@ -1310,16 +1310,16 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 				}
 			}
 
-			img->GetTextSize(font->font, {lbl, 1}, szThis);
+			img->GetTextSize(font->font, {lbl, 1}, &szThis);
 			l[0] = lbl[0];
 			l[1] = 0;
 			if (font->fontType == 0)
 			{
-				img->DrawString(currPt.x - (szThis[0] * 0.5), currPt.y - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(currPt.x - (szThis.width * 0.5), currPt.y - (szThis.height * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other);
 			}
 			else
 			{
-				img->DrawStringB(currPt.x - (szThis[0] * 0.5), currPt.y - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+				img->DrawStringB(currPt.x - (szThis.width * 0.5), currPt.y - (szThis.height * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 			}
 
 			found = false;
@@ -1329,28 +1329,28 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 				{
 					if (diff.x > 0)
 					{
-						if (currPt.x + szThis[0] <= nextPt.x)
+						if (currPt.x + szThis.width <= nextPt.x)
 						{
-							currPt.x += szThis[0];
+							currPt.x += szThis.width;
 							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextPt.x = currPt.x + szThis[0];
+							nextPt.x = currPt.x + szThis.width;
 						}
 					}
 					else
 					{
-						if (currPt.x - szThis[0] >= nextPt.x)
+						if (currPt.x - szThis.width >= nextPt.x)
 						{
-							currPt.x -= szThis[0];
+							currPt.x -= szThis.width;
 							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextPt.x = currPt.x - szThis[0];
+							nextPt.x = currPt.x - szThis.width;
 						}
 					}
 					if (!found)
@@ -1365,16 +1365,16 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].y - (currPt.y - szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y - szThis[1])) || (scnPts[currInd + 1].y == (currPt.y - szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y - szThis.height) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis.height) > 0)) || (scnPts[currInd].y == (currPt.y - szThis.height)) || (scnPts[currInd + 1].y == (currPt.y - szThis.height)))
 							{
-								currPt.y = currPt.y - szThis[1];
+								currPt.y = currPt.y - szThis.height;
 								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].y - (currPt.y + szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y + szThis[1])) || (scnPts[currInd + 1].y == (currPt.y + szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y + szThis.height) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis.height) > 0)) || (scnPts[currInd].y == (currPt.y + szThis.height)) || (scnPts[currInd + 1].y == (currPt.y + szThis.height)))
 							{
-								currPt.y = currPt.y + szThis[1];
+								currPt.y = currPt.y + szThis.height;
 								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
@@ -1392,28 +1392,28 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 				{
 					if (diff.y > 0)
 					{
-						if (currPt.y + szThis[1] <= nextPt.y)
+						if (currPt.y + szThis.height <= nextPt.y)
 						{
-							currPt.y += szThis[1];
+							currPt.y += szThis.height;
 							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextPt.y = currPt.y + szThis[1];
+							nextPt.y = currPt.y + szThis.height;
 						}
 					}
 					else
 					{
-						if (currPt.y - szThis[1] >= nextPt.y)
+						if (currPt.y - szThis.height >= nextPt.y)
 						{
-							currPt.y -= szThis[1];
+							currPt.y -= szThis.height;
 							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextPt.y = currPt.y - szThis[1];
+							nextPt.y = currPt.y - szThis.height;
 						}
 					}
 					if (!found)
@@ -1428,16 +1428,16 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].x - (currPt.x - szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x - szThis[0])) || (scnPts[currInd + 1].x == (currPt.x - szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x - szThis.width) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis.width) > 0)) || (scnPts[currInd].x == (currPt.x - szThis.width)) || (scnPts[currInd + 1].x == (currPt.x - szThis.width)))
 							{
-								currPt.x = currPt.x - szThis[0];
+								currPt.x = currPt.x - szThis.width;
 								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].x - (currPt.x + szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x + szThis[0])) || (scnPts[currInd + 1].x == (currPt.x + szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x + szThis.width) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis.width) > 0)) || (scnPts[currInd].x == (currPt.x + szThis.width)) || (scnPts[currInd + 1].x == (currPt.x + szThis.width)))
 							{
-								currPt.x = currPt.x + szThis[0];
+								currPt.x = currPt.x + szThis.width;
 								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
@@ -1458,28 +1458,28 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 				{
 					if (diff.x < 0)
 					{
-						if (currPt.x + szThis[0] <= nextPt.x)
+						if (currPt.x + szThis.width <= nextPt.x)
 						{
-							currPt.x += szThis[0];
+							currPt.x += szThis.width;
 							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextPt.x = currPt.x + szThis[0];
+							nextPt.x = currPt.x + szThis.width;
 						}
 					}
 					else
 					{
-						if (currPt.x - szThis[0] >= nextPt.x)
+						if (currPt.x - szThis.width >= nextPt.x)
 						{
-							currPt.x -= szThis[0];
+							currPt.x -= szThis.width;
 							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 							found = true;
 						}
 						else
 						{
-							nextPt.x = currPt.x - szThis[0];
+							nextPt.x = currPt.x - szThis.width;
 						}
 					}
 					if (!found)
@@ -1494,16 +1494,16 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].y - (currPt.y - szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y - szThis[1])) || (scnPts[currInd + 1].y == (currPt.y - szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y - szThis.height) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis.height) > 0)) || (scnPts[currInd].y == (currPt.y - szThis.height)) || (scnPts[currInd + 1].y == (currPt.y - szThis.height)))
 							{
-								currPt.y = currPt.y - szThis[1];
+								currPt.y = currPt.y - szThis.height;
 								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].y - (currPt.y + szThis[1]) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis[1]) > 0)) || (scnPts[currInd].y == (currPt.y + szThis[1])) || (scnPts[currInd + 1].y == (currPt.y + szThis[1])))
+							else if (((scnPts[currInd].y - (currPt.y + szThis.height) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis.height) > 0)) || (scnPts[currInd].y == (currPt.y + szThis.height)) || (scnPts[currInd + 1].y == (currPt.y + szThis.height)))
 							{
-								currPt.y = currPt.y + szThis[1];
+								currPt.y = currPt.y + szThis.height;
 								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
 								break;
@@ -1519,28 +1519,28 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 				{
 					if (diff.y < 0)
 					{
-						if (currPt.y + szThis[1] <= nextPt.y)
+						if (currPt.y + szThis.height <= nextPt.y)
 						{
-							currPt.y += szThis[1];
+							currPt.y += szThis.height;
 							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextPt.y = currPt.y + szThis[1];
+							nextPt.y = currPt.y + szThis.height;
 						}
 					}
 					else
 					{
-						if (currPt.y - szThis[1] >= nextPt.y)
+						if (currPt.y - szThis.height >= nextPt.y)
 						{
-							currPt.y -= szThis[1];
+							currPt.y -= szThis.height;
 							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 							found = true;
 						}
 						else
 						{
-							nextPt.y = currPt.y - szThis[1];
+							nextPt.y = currPt.y - szThis.height;
 						}
 					}
 					if (!found)
@@ -1555,16 +1555,16 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Do
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].x - (currPt.x - szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x - szThis[0])) || (scnPts[currInd + 1].x == (currPt.x - szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x - szThis.width) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis.width) > 0)) || (scnPts[currInd].x == (currPt.x - szThis.width)) || (scnPts[currInd + 1].x == (currPt.x - szThis.width)))
 							{
-								currPt.x = currPt.x - szThis[0];
+								currPt.x = currPt.x - szThis.width;
 								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
 							}
-							else if (((scnPts[currInd].x - (currPt.x + szThis[0]) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis[0]) > 0)) || (scnPts[currInd].x == (currPt.x + szThis[0])) || (scnPts[currInd + 1].x == (currPt.x + szThis[0])))
+							else if (((scnPts[currInd].x - (currPt.x + szThis.width) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis.width) > 0)) || (scnPts[currInd].x == (currPt.x + szThis.width)) || (scnPts[currInd + 1].x == (currPt.x + szThis.width)))
 							{
-								currPt.x = currPt.x + szThis[0];
+								currPt.x = currPt.x + szThis.width;
 								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
 								break;
@@ -1600,8 +1600,8 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 	Double angleOfst;
 	UOSInt i;
 	UOSInt j;
-	Double szThis[2];
-	Double szLast[2];
+	Math::Size2D<Double> szThis;
+	Math::Size2D<Double> szLast;
 	Int32 mode;
 	UOSInt fntCount;
 	Map::MapFontStyle *font;
@@ -1661,8 +1661,8 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 	diff.x = 0;
 	diff.y = 0;
 
-	img->GetTextSize(font->font, str1, szThis);
-	diff.x = szThis[0] * 0.5;
+	img->GetTextSize(font->font, str1, &szThis);
+	diff.x = szThis.width * 0.5;
 	diff.y = diff.x * diff.x;
 
 	if (mode == 0)
@@ -1781,7 +1781,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 		Double lastX;
 		Double lastY;
 
-		szLast[0] = 0;
+		szLast.width = 0;
 
 		lastX = currPt.x = startX;
 		lastY = currPt.y = startY;
@@ -1822,8 +1822,8 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 				}
 			}
 
-			img->GetTextSize(font->font, CSTRP(lbl, nextPos), szThis);
-			dist = (szLast[0] + szThis[0]) * 0.5;
+			img->GetTextSize(font->font, CSTRP(lbl, nextPos), &szThis);
+			dist = (szLast.width + szThis.width) * 0.5;
 			nextPt.x = currPt.x + (dist * cosAngle);
 			nextPt.y = currPt.y - (dist * sinAngle);
 			if ( (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x)) && (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y)))
@@ -1833,7 +1833,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 			}
 			else
 			{
-				diff.x = szLast[0] + szThis[0];
+				diff.x = szLast.width + szThis.width;
 				diff.y = (diff.x * diff.x) * 0.25;
 
 				if (mode == 0)
@@ -2021,8 +2021,8 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 				currPt.x = lastX + (dist * lca);
 				currPt.y = lastY - (dist * lsa);
 
-				Double xadd = szThis[0] * lca;
-				Double yadd = szThis[0] * lsa;
+				Double xadd = szThis.width * lca;
+				Double yadd = szThis.width * lsa;
 				if (xadd < 0)
 					xadd = -xadd;
 				if (yadd < 0)
@@ -2070,8 +2070,8 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 			else
 			{
 				lastAngle = angleDegree;
-				Double xadd = szThis[0] * cosAngle;
-				Double yadd = szThis[0] * sinAngle;
+				Double xadd = szThis.width * cosAngle;
+				Double yadd = szThis.width * sinAngle;
 				if (xadd < 0)
 					xadd = -xadd;
 				if (yadd < 0)
@@ -2119,7 +2119,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Math
 			}
 			lastX = currPt.x;
 			lastY = currPt.y;
-			szLast[0] = szThis[0];
+			szLast.width = szThis.width;
 		}
 		i++;
 	}
@@ -2184,14 +2184,14 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size
 		return;
 	}
 
-	Double szTmp[2];
+	Math::Size2D<Double> szTmp;
 	font = fontStyle->GetItem(maxIndex);
-	img->GetTextSize(font->font, label, szTmp);
+	img->GetTextSize(font->font, label, &szTmp);
 
 	if (scaleH == 0)
 	{
-		size->x = szTmp[0] + xSizeAdd;
-		size->y = szTmp[1] + ySizeAdd;
+		size->x = szTmp.width + xSizeAdd;
+		size->y = szTmp.height + ySizeAdd;
 
 		return;
 	}
@@ -2205,8 +2205,8 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *size
 		scaleH = -scaleH;
 	}
 	Double degD = Math_ArcTan2(scaleH, scaleW);
-	Double xPos = szTmp[0] + xSizeAdd;
-	Double yPos = szTmp[1] + ySizeAdd;
+	Double xPos = szTmp.width + xSizeAdd;
+	Double yPos = szTmp.height + ySizeAdd;
 	Double sVal;
 	Double cVal;
 	Double xs = ((xPos * 0.5) * (sVal = Math_Sin(degD)));
