@@ -277,6 +277,17 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 							
 							sb.AppendC(UTF8STRC("</v></c>"));
 						}
+						else if (cell && cell->style)
+						{
+							sb.AppendC(UTF8STRC("<c r=\""));
+							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
+							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							sb.AppendUTF8Char('"');
+							sb.AppendC(UTF8STRC(" s=\""));
+							sb.AppendUOSInt(cell->style->GetIndex());
+							sb.AppendUTF8Char('"');
+							sb.AppendC(UTF8STRC("></c>"));
+						}
 						m++;
 					}
 					sb.AppendC(UTF8STRC("</row>"));

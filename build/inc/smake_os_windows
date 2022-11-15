@@ -40,6 +40,8 @@ IO/HIDInfo.h: ../../src/IO/HIDInfoW.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
 @I2CChannelOS.o
+IO/ProgramLinkManager.h: ../../src/IO/ProgramLinkManagerNull.cpp
+@ProgramLinkManager.o
 IO/OS.h: ../../src/IO/OSW.cpp
 @OS.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrW.cpp
@@ -191,6 +193,7 @@ FileVersion.o: ../../src/IO/FileVersionW.cpp
 !-lversion
 HIDInfo.o: ../../src/IO/HIDInfoW.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
+ProgramLinkManager.o: ../../src/IO/ProgramLinkManagerNull.cpp
 OS.o: ../../src/IO/OSW.cpp
 !-lversion
 SDCardMgr.o: ../../src/IO/SDCardMgrW.cpp

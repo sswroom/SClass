@@ -471,7 +471,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType)
 {
 	CellData *cell;
-	cell = GetCellData(row, col, false);
+	cell = GetCellData(row, col, true);
 	if (cell == 0)
 		return false;
 	CellStyle *tmpStyle;

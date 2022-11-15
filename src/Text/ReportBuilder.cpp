@@ -402,7 +402,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			else
@@ -419,7 +423,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, header->nameCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			lastRight = header->isRight;
@@ -469,7 +477,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			else
@@ -486,7 +498,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, header->nameCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			lastRight = header->isRight;
@@ -676,7 +692,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			else
@@ -693,7 +713,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, header->nameCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			lastRight = header->isRight;
@@ -738,7 +762,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, this->colCount - header->valueCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			else
@@ -755,7 +783,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				}
 				if (header->valueUnderline)
 				{
-					ws->SetCellStyleBorderBottom(k, header->nameCellCnt, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					m = header->valueCellCnt;
+					while (m-- > 0)
+					{
+						ws->SetCellStyleBorderBottom(k, header->nameCellCnt + m, wb, 0xff000000, Text::SpreadSheet::BorderType::Thin);
+					}
 				}
 			}
 			lastRight = header->isRight;
@@ -953,6 +985,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Double headerW4;
 	Math::Size2D<Double> sz;
 	Double currY;
+	Double nextY;
 	TableCell *cols;
 	HeaderInfo *header;
 	Bool lastRight;
@@ -961,6 +994,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
+	UOSInt n;
 	Double *colMinWidth;
 	Double *colTotalWidth;
 	Double *colPos;
@@ -1232,56 +1266,37 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			{
 				if (this->tableRowType.GetItem(m) != RT_HEADER)
 					break;
+				nextY = currY + fontHeightMM * 1.5;
 				cols = this->tableContent.GetItem(m);
-				i = 0;
-				j = this->colCount;
-				while (i < j)
+				if (this->tableBorders)
 				{
-					if (i + 1 < j)
+					g->DrawLine(border + drawWidth, currY, border + drawWidth, nextY, p);
+				}
+				j = this->colCount;
+				i = j;
+				while (i-- > 0)
+				{
+					if (cols[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 					{
-						nextX = colPos[i + 1];
+						if (this->tableBorders)
+						{
+							TableCell *cols2;
+							n = m - 1;
+							while (true)
+							{
+								cols2 = this->tableContent.GetItem(n);
+								if (cols2[i].val && cols2[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+									n--;
+								else
+									break;
+							}
+							if (cols2[i].val == 0 || !cols2[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+							{
+								g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
+							}
+						}
 					}
 					else
-					{
-						nextX = border + drawWidth;
-					}
-					if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
-					{
-
-					}
-					else if (cols[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
-					{
-
-					}
-					else
-					{
-						g->DrawStringHAlign(colPos[i], currY, nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
-					}
-					i++;
-				}
-				m++;
-				currY += fontHeightMM * 1.5;
-			}
-			currY += 0.2;
-			g->DrawLine(border, currY, border + drawWidth, currY, p);
-			if (currY > endY)
-			{
-				k = l;
-			}
-			while (k < l)
-			{
-				cols = this->tableContent.GetItem(k);
-				currRowType = this->tableRowType.GetItem(k);
-				if (lastRowType == RT_CONTENT && currRowType == RT_SUMMARY)
-				{
-					g->DrawLine(border, currY, border + drawWidth, currY, p);
-				}
-
-				i = 0;
-				j = this->colCount;
-				while (i < j)
-				{
-					if (cols[i].val)
 					{
 						if (i + 1 < j)
 						{
@@ -1293,18 +1308,102 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 						}
 						if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
 						{
-
+							while (i-- > 0)
+							{
+								if (!cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+								{
+									break;
+								}
+							}
 						}
-						else if (cols[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+						if (this->tableBorders)
 						{
+							g->DrawLine(colPos[i], currY, nextX, currY, p);
+							g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
+						}
+						g->DrawStringHAlign(colPos[i], currY, nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
+					}
+				}
+				m++;
+				currY = nextY;
+			}
+			if (!this->tableBorders)
+			{
+				currY += 0.2;
+				g->DrawLine(border, currY, border + drawWidth, currY, p);
+			}
+			if (currY > endY)
+			{
+				k = l;
+			}
+			while (k < l)
+			{
+				cols = this->tableContent.GetItem(k);
+				nextY = currY + fontHeightMM * 1.5;
+				currRowType = this->tableRowType.GetItem(k);
+				if (this->tableBorders)
+				{
+					g->DrawLine(border + drawWidth, currY, border + drawWidth, nextY, p);
+				}
+				else if (lastRowType == RT_CONTENT && currRowType == RT_SUMMARY)
+				{
+					g->DrawLine(border, currY, border + drawWidth, currY, p);
+				}
 
+				j = this->colCount;
+				i = j;
+				while (i-- > 0)
+				{
+					if (cols[i].val)
+					{
+						if (cols[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+						{
+							if (this->tableBorders)
+							{
+								TableCell *cols2;
+								n = m - 1;
+								while (true)
+								{
+									cols2 = this->tableContent.GetItem(n);
+									if (cols2[i].val && cols2[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
+										n--;
+									else
+										break;
+								}
+								if (cols2[i].val == 0 || !cols2[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+								{
+									g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
+								}
+							}
 						}
 						else
 						{
+							if (i + 1 < j)
+							{
+								nextX = colPos[i + 1];
+							}
+							else
+							{
+								nextX = border + drawWidth;
+							}
+							if (cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+							{
+								while (i-- > 0)
+								{
+									if (!cols[i].val->Equals(this->ColumnMergeLeft.v, this->ColumnMergeLeft.leng))
+									{
+										break;
+									}
+								}
+							}
+							if (this->tableBorders)
+							{
+								g->DrawLine(colPos[i], currY, nextX, currY, p);
+								g->DrawLine(colPos[i], currY, colPos[i], nextY, p);
+							}
 							g->DrawStringHAlign(colPos[i], currY, nextX, cols[i].val->ToCString(), f, b, cols[i].hAlign);
 						}
 					}
-					i++;
 				}
 
 				iconList = this->icons.GetItem(k);
@@ -1348,7 +1447,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					}
 				}
 
-				currY += fontHeightMM * 1.5;
+				currY = nextY;
 				lastRowType = currRowType;
 				k++;
 
@@ -1356,6 +1455,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 				{
 					break;
 				}
+			}
+			if (this->tableBorders)
+			{
+				g->DrawLine(border, currY, border + drawWidth, currY, p);
 			}
 			pageId++;
 			sptr = Text::StrInt32(sbuff, pageId);

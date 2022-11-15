@@ -21,7 +21,7 @@
 //  class CKsIrpTarget
 //
 //  Class Description:
-//      This is a base class for controlling Ks file objects, i.e. filters and pins\
+//      This is a base class for controlling Ks file objects, i.e. filters and pins
 //      CKsFilter and CKsPin derive from this class
 //  
 
