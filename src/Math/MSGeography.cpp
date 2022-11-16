@@ -34,7 +34,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14])));
 			return pt;
 		}
-		else if (buffPtr[5] == 0x0D) //Point 3D
+		else if (buffPtr[5] == 0x0D) //Point Z
 		{
 			if (buffSize < 30)
 			{
@@ -44,7 +44,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			NEW_CLASS(pt, Math::Geometry::PointZ(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]), ReadDouble(&buffPtr[22])));
 			return pt;
 		}
-		else if (buffPtr[5] == 4) //Polygon 2D
+		else if (buffPtr[5] == 4) //Shape 2D
 		{
 			UInt32 nPoints;
 			UInt32 nFigures;
@@ -392,7 +392,6 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			{
 				Math::Geometry::MultiPolygon *mpg;
 				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, true, false));
-				Data::ArrayList<UInt32> ofstList;
 				shapePtr += 9;
 				UOSInt thisFigure;
 				UOSInt nextFigure = ReadUInt32(&shapePtr[4]);

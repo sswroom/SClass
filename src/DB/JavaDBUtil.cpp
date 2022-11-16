@@ -241,8 +241,6 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *sch
 	{
 		clsName = Text::String::New(tableName->v, tableName->leng);
 		Text::StrToLowerC(clsName->v, clsName->v, clsName->leng);
-		Text::JavaText::ToJavaName(sb, clsName->v, true);
-		clsName->Release();
 	}
 	else
 	{

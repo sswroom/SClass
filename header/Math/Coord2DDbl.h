@@ -73,6 +73,11 @@ namespace Math
 			return (this->x < v.x) && (this->y < v.y);
 		}
 
+		Bool EqualsNearly(const Coord2DDbl &v) const
+		{
+			return Math::NearlyEqualsDbl(this->x, v.x) && Math::NearlyEqualsDbl(this->y, v.y);
+		}
+
 		Coord2DDbl Max(Coord2DDbl v) const
 		{
 			return PMAXPD(this->vals, v.vals);

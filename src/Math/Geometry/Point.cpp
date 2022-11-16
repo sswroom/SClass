@@ -89,10 +89,10 @@ Bool Math::Geometry::Point::EqualsNearly(Math::Geometry::Vector2D *vec) const
 	{
 		return false;
 	}
-	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ())
+	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ() && !vec->HasM())
 	{
 		Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
-		return Math::NearlyEqualsDbl(this->pos.x, pt->pos.x) && Math::NearlyEqualsDbl(this->pos.y, pt->pos.y);
+		return this->pos.EqualsNearly(pt->pos);
 	}
 	else
 	{

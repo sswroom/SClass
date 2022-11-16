@@ -19,8 +19,6 @@ namespace Math
 
 		Math::Geometry::Vector2D *ParseWKT(const UTF8Char *wkt);
 		const UTF8Char *GetLastError();
-
-		void Test(Math::Geometry::Vector2D *vec);
 	};
 }
 #endif

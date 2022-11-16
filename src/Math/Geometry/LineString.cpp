@@ -293,7 +293,7 @@ Bool Math::Geometry::LineString::EqualsNearly(Vector2D *vec) const
 		UOSInt i = nPoint;
 		while (i-- > 0)
 		{
-			if (!Math::NearlyEqualsDbl(ptList[i].x, this->pointArr[i].x) || !Math::NearlyEqualsDbl(ptList[i].y, this->pointArr[i].y))
+			if (!ptList[i].EqualsNearly(this->pointArr[i]))
 			{
 				return false;
 			}

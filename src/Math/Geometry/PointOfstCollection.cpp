@@ -224,7 +224,7 @@ Bool Math::Geometry::PointOfstCollection::EqualsNearly(Math::Geometry::Vector2D 
 		i = nPoint;
 		while (i-- > 0)
 		{
-			if (!Math::NearlyEqualsDbl(ptList[i].x, this->pointArr[i].x) || !Math::NearlyEqualsDbl(ptList[i].y, this->pointArr[i].y))
+			if (!ptList[i].EqualsNearly(this->pointArr[i]))
 			{
 				return false;
 			}

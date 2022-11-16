@@ -58,8 +58,7 @@ Bool Math::Geometry::PointM::EqualsNearly(Math::Geometry::Vector2D *vec) const
 	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ() && vec->HasM())
 	{
 		Math::Geometry::PointM *pt = (Math::Geometry::PointM*)vec;
-		return Math::NearlyEqualsDbl(this->pos.x, pt->pos.x) &&
-				Math::NearlyEqualsDbl(this->pos.y, pt->pos.y) &&
+		return this->pos.EqualsNearly(pt->pos) &&
 				Math::NearlyEqualsDbl(this->m, pt->m);
 	}
 	else

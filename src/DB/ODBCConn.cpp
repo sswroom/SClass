@@ -1844,9 +1844,6 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
-				Math::WKTReader reader(0);
-				reader.Test(vec);
-
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
 				DEL_CLASS(vec);
@@ -1913,9 +1910,6 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
-				Math::WKTReader reader(0);
-				reader.Test(vec);
-
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
 				wkt.ToText(&sb, vec);
@@ -1973,9 +1967,6 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
-				Math::WKTReader reader(0);
-				reader.Test(vec);
-
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
 				wkt.ToText(&sb, vec);

@@ -2,15 +2,13 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Math/WKTReader.h"
+#include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-
-#include "Math/WKTWriter.h"
-#include <stdio.h>
 
 const UTF8Char *Math::WKTReader::NextDouble(const UTF8Char *wkt, Double *val)
 {
@@ -601,31 +599,4 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 const UTF8Char *Math::WKTReader::GetLastError()
 {
 	return this->lastError;
-}
-
-void Math::WKTReader::Test(Math::Geometry::Vector2D *vec)
-{
-	Math::WKTWriter wkt;
-	Text::StringBuilderUTF8 sb;
-	if (!wkt.ToText(&sb, vec))
-	{
-		printf("Test: Error in converting to WKT\r\n");
-	}
-	else
-	{
-		this->srid = vec->GetSRID();
-		Math::Geometry::Vector2D *vec2 = this->ParseWKT(sb.ToString());
-		if (vec2 == 0)
-		{
-			printf("Test: Error in parsing WKT: %s\r\n", sb.ToString());
-		}
-		else
-		{
-			if (!vec->EqualsNearly(vec2))
-			{
-				printf("Test: WKT parsing not equal: %s\r\n", sb.ToString());
-			}
-			DEL_CLASS(vec2);
-		}
-	}
 }
