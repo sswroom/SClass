@@ -60,3 +60,24 @@ Bool Math::Geometry::PointZ::Equals(Math::Geometry::Vector2D *vec) const
 		return false;
 	}
 }
+
+Bool Math::Geometry::PointZ::EqualsNearly(Math::Geometry::Vector2D *vec) const
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Point && vec->HasZ())
+	{
+		Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
+		return Math::NearlyEqualsDbl(this->pos.x, pt->pos.x) &&
+				Math::NearlyEqualsDbl(this->pos.y, pt->pos.y) &&
+				Math::NearlyEqualsDbl(this->z, pt->z);
+	}
+	else
+	{
+		return false;
+	}
+}

@@ -186,13 +186,3 @@ OSInt Data::DataComparer::Compare(Text::String *val1, Text::String *val2)
 {
 	return Text::StrCompare(val1->v, val2->v);
 }
-
-Bool Data::DataComparer::NearlyEquals(Double val1, Double val2)
-{
-	val1 = val1 - val2;
-	if (val1 < -0.000000001 || val1 > 0.000000001)
-	{
-		return false;
-	}
-	return true;
-}

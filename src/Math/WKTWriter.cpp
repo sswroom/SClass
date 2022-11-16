@@ -31,13 +31,13 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x);
+				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y);
+				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i]);
+				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(mArr[i]);
+				sb->AppendDouble(mArr[i], &Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -47,11 +47,11 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x);
+				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y);
-				sb->AppendC(UTF8STRC(" NULL "));
-				sb->AppendDouble(mArr[i]);
+				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
+				sb->AppendC(UTF8STRC(" NaN "));
+				sb->AppendDouble(mArr[i], &Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -61,11 +61,11 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 			while (i < nPoint)
 			{
 				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x);
+				sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y);
+				sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i]);
+				sb->AppendDouble(zArr[i], &Text::DoubleStyleC);
 				i++;
 			}
 		}
@@ -76,9 +76,9 @@ void Math::WKTWriter::AppendLineString(Text::StringBuilderUTF8 *sb, Math::Geomet
 		while (i < nPoint)
 		{
 			if (i > 0) sb->AppendUTF8Char(',');
-			sb->AppendDouble(pointList[i].x);
+			sb->AppendDouble(pointList[i].x, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[i].y);
+			sb->AppendDouble(pointList[i].y, &Text::DoubleStyleC);
 			i++;
 		}
 	}
@@ -103,9 +103,9 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry:
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x);
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y);
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
 			k++;
 			if (k < ptOfstList[i + 1])
 			{
@@ -119,9 +119,61 @@ void Math::WKTWriter::AppendPolygon(Text::StringBuilderUTF8 *sb, Math::Geometry:
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x);
+		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
 		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y);
+		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		k++;
+		if (k < nPoint)
+		{
+			sb->AppendUTF8Char(',');
+		}
+	}
+	sb->AppendUTF8Char(')');
+	sb->AppendUTF8Char(')');
+}
+
+void Math::WKTWriter::AppendPolygonZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polygon *pg)
+{
+	UOSInt nPtOfst;
+	UOSInt nPoint;
+	UInt32 *ptOfstList = pg->GetPtOfstList(&nPtOfst);
+	Math::Coord2DDbl *pointList = pg->GetPointList(&nPoint);
+	Double *zList = pg->GetZList(&nPoint);
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	k = 0;
+	i = 0;
+	j = nPtOfst - 1;
+	sb->AppendUTF8Char('(');
+	while (i < j)
+	{
+		sb->AppendUTF8Char('(');
+		while (k < ptOfstList[i + 1])
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
+			k++;
+			if (k < ptOfstList[i + 1])
+			{
+				sb->AppendUTF8Char(',');
+			}
+		}
+		sb->AppendUTF8Char(')');
+		sb->AppendUTF8Char(',');
+		i++;
+	}
+	sb->AppendUTF8Char('(');
+	while (k < nPoint)
+	{
+		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		sb->AppendUTF8Char(' ');
+		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		sb->AppendUTF8Char(' ');
+		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 		k++;
 		if (k < nPoint)
 		{
@@ -150,9 +202,9 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x);
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y);
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
 			k++;
 			if (k < ptOfstList[i + 1])
 			{
@@ -166,9 +218,9 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x);
+		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
 		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y);
+		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
 		k++;
 		if (k < nPoint)
 		{
@@ -179,7 +231,7 @@ void Math::WKTWriter::AppendPolyline(Text::StringBuilderUTF8 *sb, Math::Geometry
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline3D(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
+void Math::WKTWriter::AppendPolylineZ(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPtOfst;
@@ -198,11 +250,11 @@ void Math::WKTWriter::AppendPolyline3D(Text::StringBuilderUTF8 *sb, Math::Geomet
 		sb->AppendUTF8Char('(');
 		while (k < ptOfstList[i + 1])
 		{
-			sb->AppendDouble(pointList[k].x);
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y);
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(zList[k]);
+			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 			k++;
 			if (k < ptOfstList[i + 1])
 			{
@@ -216,11 +268,68 @@ void Math::WKTWriter::AppendPolyline3D(Text::StringBuilderUTF8 *sb, Math::Geomet
 	sb->AppendUTF8Char('(');
 	while (k < nPoint)
 	{
-		sb->AppendDouble(pointList[k].x);
+		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
 		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(pointList[k].y);
+		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
 		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(zList[k]);
+		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
+		k++;
+		if (k < nPoint)
+		{
+			sb->AppendUTF8Char(',');
+		}
+	}
+	sb->AppendUTF8Char(')');
+	sb->AppendUTF8Char(')');
+}
+
+void Math::WKTWriter::AppendPolylineZM(Text::StringBuilderUTF8 *sb, Math::Geometry::Polyline *pl)
+{
+	sb->AppendUTF8Char('(');
+	UOSInt nPtOfst;
+	UOSInt nPoint;
+	UInt32 *ptOfstList = pl->GetPtOfstList(&nPtOfst);
+	Math::Coord2DDbl *pointList = pl->GetPointList(&nPoint);
+	Double *zList = pl->GetZList(&nPoint);
+	Double *mList = pl->GetMList(&nPoint);
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	k = 0;
+	i = 0;
+	j = nPtOfst - 1;
+	while (i < j)
+	{
+		sb->AppendUTF8Char('(');
+		while (k < ptOfstList[i + 1])
+		{
+			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
+			sb->AppendUTF8Char(' ');
+			sb->AppendDouble(mList[k], &Text::DoubleStyleC);
+			k++;
+			if (k < ptOfstList[i + 1])
+			{
+				sb->AppendUTF8Char(',');
+			}
+		}
+		sb->AppendUTF8Char(')');
+		sb->AppendUTF8Char(',');
+		i++;
+	}
+	sb->AppendUTF8Char('(');
+	while (k < nPoint)
+	{
+		sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
+		sb->AppendUTF8Char(' ');
+		sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
+		sb->AppendUTF8Char(' ');
+		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
+		sb->AppendUTF8Char(' ');
+		sb->AppendDouble(mList[k], &Text::DoubleStyleC);
 		k++;
 		if (k < nPoint)
 		{
@@ -300,7 +409,14 @@ void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geom
 		else if (t == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
 			sb->AppendC(UTF8STRC("POLYGON"));
-			AppendPolygon(sb, (Math::Geometry::Polygon*)geometry);
+			if (geometry->HasZ())
+			{
+				AppendPolygonZ(sb, (Math::Geometry::Polygon*)geometry);
+			}
+			else
+			{
+				AppendPolygon(sb, (Math::Geometry::Polygon*)geometry);
+			}
 		}
 		i++;
 	}
@@ -340,15 +456,15 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			Double y;
 			Double z;
 			pt->GetPos3D(&x, &y, &z);
-			sb->AppendDouble(x);
+			sb->AppendDouble(x, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(y);
+			sb->AppendDouble(y, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(z);
+			sb->AppendDouble(z, &Text::DoubleStyleC);
 			if (vec->HasM())
 			{
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(((Math::Geometry::PointZM*)pt)->GetM());
+				sb->AppendDouble(((Math::Geometry::PointZM*)pt)->GetM(), &Text::DoubleStyleC);
 			}
 		}
 		else
@@ -356,20 +472,27 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
-			sb->AppendDouble(coord.x);
+			sb->AppendDouble(coord.x, &Text::DoubleStyleC);
 			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(coord.y);
+			sb->AppendDouble(coord.y, &Text::DoubleStyleC);
 			if (vec->HasM())
 			{
 				sb->AppendC(UTF8STRC(" NULL "));
-				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM());
+				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM(), &Text::DoubleStyleC);
 			}
 		}
 		sb->AppendC(UTF8STRC(")"));
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("POLYGON"));
-		AppendPolygon(sb, (Math::Geometry::Polygon*)vec);
+		if (vec->HasZ())
+		{
+			AppendPolygonZ(sb, (Math::Geometry::Polygon*)vec);
+		}
+		else
+		{
+			AppendPolygon(sb, (Math::Geometry::Polygon*)vec);
+		}
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		sb->AppendC(UTF8STRC("MULTILINESTRING"));
@@ -377,7 +500,14 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 			if (pl->HasZ())
 			{
-				AppendPolyline3D(sb, pl);
+				if (pl->HasM())
+				{
+					AppendPolylineZM(sb, pl);
+				}
+				else
+				{
+					AppendPolylineZ(sb, pl);
+				}
 			}
 			else
 			{
@@ -398,7 +528,14 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 				{
 					sb->AppendUTF8Char(',');
 				}
-				AppendPolygon(sb, mpg->GetItem(i));
+				if (mpg->HasZ())
+				{
+					AppendPolygonZ(sb, mpg->GetItem(i));
+				}
+				else
+				{
+					AppendPolygon(sb, mpg->GetItem(i));
+				}
 				i++;
 			}
 			sb->AppendUTF8Char(')');

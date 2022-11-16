@@ -46,3 +46,24 @@ Bool Math::Geometry::PointM::Equals(Math::Geometry::Vector2D *vec) const
 		return false;
 	}
 }
+
+Bool Math::Geometry::PointM::EqualsNearly(Math::Geometry::Vector2D *vec) const
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ() && vec->HasM())
+	{
+		Math::Geometry::PointM *pt = (Math::Geometry::PointM*)vec;
+		return Math::NearlyEqualsDbl(this->pos.x, pt->pos.x) &&
+				Math::NearlyEqualsDbl(this->pos.y, pt->pos.y) &&
+				Math::NearlyEqualsDbl(this->m, pt->m);
+	}
+	else
+	{
+		return false;
+	}
+}

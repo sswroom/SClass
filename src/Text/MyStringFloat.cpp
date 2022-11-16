@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF.h"
 
-UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
+UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, const DoubleStyle *style)
 {
 	if (val == 0)
 	{
@@ -22,7 +22,7 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
 	}
 	else if (Math::IsNAN(val))
 	{
-		return Text::StrConcatC(oriStr, UTF8STRC("1.#QNAN0"));
+		return Text::StrConcatC(oriStr, style->nanStr, style->nanLen);
 	}
 	else if (val < 0)
 	{
@@ -31,7 +31,7 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
 	}
 	if (Math::IsInfinity(val))
 	{
-		return Text::StrConcatC(oriStr, UTF8STRC("1.#INF00"));
+		return Text::StrConcatC(oriStr, style->infStr, style->infLen);
 	}
 	OSInt i = 7;
 	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
@@ -185,6 +185,11 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
 	}
 	*oriStr = 0;
 	return oriStr;
+}
+
+UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
+{
+	return StrDouble(oriStr, val, &DoubleStyleExcel);
 }
 
 UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)

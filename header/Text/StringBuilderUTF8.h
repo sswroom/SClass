@@ -173,6 +173,13 @@ namespace Text
 			return this;
 		}
 
+		StringBuilderUTF8 *AppendDouble(Double dVal, const DoubleStyle *style)
+		{
+			this->AllocLeng(32);
+			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal, style) - this->v);
+			return this;
+		}
+
 		StringBuilderUTF8 *AppendDate(Data::DateTime *dt)
 		{
 			this->AllocLeng(19);

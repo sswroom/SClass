@@ -51,6 +51,7 @@ Net::DNSHandler::~DNSHandler()
 Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text::CString domain)
 {
 	DomainStatus *dnsStat;
+	DomainStatus *newDnsStat;
 	UOSInt i;
 	UOSInt j;
 	Data::Timestamp currTime;
@@ -121,19 +122,23 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv4Map.Put(domain, dnsStat);
-	mutUsage.EndUse();
-	if (dnsStat)
+	newDnsStat = this->reqv4Map.Get(domain);
+	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(&dnsStat->answers);
 		DEL_CLASS(dnsStat);
+	}
+	else
+	{
+		this->reqv4Map.Put(domain, dnsStat);
 	}
 	return succ;
 }
 
 Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text::CString domain)
 {
+	DomainStatus *newDnsStat;
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
@@ -205,14 +210,18 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv6Map.Put(domain, dnsStat);
-	mutUsage.EndUse();
-	if (dnsStat)
+	newDnsStat = this->reqv6Map.Get(domain);
+	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(&dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
+	else
+	{
+		this->reqv6Map.Put(domain, dnsStat);
+	}
+	mutUsage.EndUse();
 	return succ;
 }
 
@@ -221,6 +230,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 	if (maxCnt == 0)
 		return 0;
 
+	DomainStatus *newDnsStat;
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
@@ -299,14 +309,18 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv4Map.Put(domain, dnsStat);
-	mutUsage.EndUse();
-	if (dnsStat)
+	newDnsStat = this->reqv4Map.Get(domain);
+	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(&dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
+	else
+	{
+		this->reqv4Map.Put(domain, dnsStat);
+	}
+	mutUsage.EndUse();
 	return ret;
 }
 
@@ -314,6 +328,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 {
 	if (maxCnt == 0)
 		return 0;
+	DomainStatus *newDnsStat;
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
@@ -389,14 +404,18 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv6Map.Put(domain, dnsStat);
-	mutUsage.EndUse();
-	if (dnsStat)
+	newDnsStat = this->reqv6Map.Get(domain);
+	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
 		this->dnsCli.FreeAnswers(&dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
+	else
+	{
+		dnsStat = this->reqv6Map.Put(domain, dnsStat);
+	}
+	mutUsage.EndUse();
 	return ret;
 }
 

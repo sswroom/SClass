@@ -193,6 +193,74 @@ Bool Math::Geometry::PointOfstCollection::Equals(Math::Geometry::Vector2D *vec) 
 	}
 }
 
+Bool Math::Geometry::PointOfstCollection::EqualsNearly(Math::Geometry::Vector2D *vec) const
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
+	{
+		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
+		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
+		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		Double *valArr;
+		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
+		{
+			return false;
+		}
+		UOSInt i = nPtOfst;
+		while (i-- > 0)
+		{
+			if (ptOfst[i] != this->ptOfstArr[i])
+			{
+				return false;
+			}
+		}
+		i = nPoint;
+		while (i-- > 0)
+		{
+			if (!Math::NearlyEqualsDbl(ptList[i].x, this->pointArr[i].x) || !Math::NearlyEqualsDbl(ptList[i].y, this->pointArr[i].y))
+			{
+				return false;
+			}
+		}
+		if (this->zArr)
+		{
+			valArr = pl->zArr;
+			i = nPoint;
+			while (i-- > 0)
+			{
+				if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+				{
+					return false;
+				}
+			}
+		}
+		if (this->mArr)
+		{
+			valArr = pl->mArr;
+			i = nPoint;
+			while (i-- > 0)
+			{
+				if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Bool Math::Geometry::PointOfstCollection::HasZ() const
 {
 	return this->zArr != 0;

@@ -252,7 +252,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				printf("%s\r\n", sb.ToString());*/
 			}
 		}
-		else if (buffPtr[5] == 5) //Polygon 3D
+		else if (buffPtr[5] == 5) //Shape Z
 		{
 			UInt32 nPoints;
 			UInt32 nFigures;
@@ -285,12 +285,13 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			{
 				return 0;
 			}
-			if (nShapes != 1)
-			{
-				return 0;
-			}
 			if (shapePtr[8] == 2)
 			{
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 5-2, Multi shape not supported\r\n");
+					return 0;
+				}
 				Math::Geometry::LineString *pl;
 				UOSInt i;
 				UOSInt j;
@@ -318,6 +319,11 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			}
 			else if (shapePtr[8] == 3)
 			{
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 5-3, Multi shape not supported\r\n");
+					return 0;
+				}
 				Math::Geometry::Polygon *pg;
 				UOSInt i;
 				UOSInt j;
@@ -349,9 +355,267 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				}
 				return pg;
 			}
+			else if (shapePtr[8] == 5)
+			{
+				Math::Geometry::Polyline *pl;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, true, false));
+				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Double *zList = pl->GetZList(&j);
+				i = 0;
+				while (i < j)
+				{
+					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+					i++;
+				}
+				pointPtr += j * 16;
+				i = 0;
+				while (i < j)
+				{
+					zList[i] = ReadDouble(&pointPtr[i * 8]);
+					i++;
+				}
+				if (nFigures > 1)
+				{
+					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					i = 0;
+					while (i < j)
+					{
+						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						i++;
+					}
+				}
+				return pl;
+			}
+			else if (shapePtr[8] == 6)
+			{
+				Math::Geometry::MultiPolygon *mpg;
+				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, true, false));
+				Data::ArrayList<UInt32> ofstList;
+				shapePtr += 9;
+				UOSInt thisFigure;
+				UOSInt nextFigure = ReadUInt32(&shapePtr[4]);
+				UOSInt thisPtOfst;
+				UOSInt nextPtOfst = ReadUInt32(&figurePtr[nextFigure * 5 + 1]);
+				UOSInt i;
+				UOSInt j;
+				const UInt8 *pointPtrTmp;
+				i = 1;
+				j = nShapes;
+				while (i < j)
+				{
+					thisFigure = nextFigure;
+					thisPtOfst = nextPtOfst;
+					if (i + 1 >= j)
+					{
+						nextFigure = nFigures;
+						nextPtOfst = nPoints;
+					}
+					else
+					{
+						nextFigure = ReadUInt32(&shapePtr[13]);
+						nextPtOfst = ReadUInt32(&figurePtr[nextFigure * 5 + 1]);
+					}
+					Math::Geometry::Polygon *pg;
+					UOSInt k;
+					UOSInt l;
+					NEW_CLASS(pg, Math::Geometry::Polygon(srid, nextFigure - thisFigure, nextPtOfst - thisPtOfst, true, false));
+					Math::Coord2DDbl *points = pg->GetPointList(&l);
+					Double *zList = pg->GetZList(&l);
+					k = 0;
+					while (k < l)
+					{
+						points[k] = Math::Coord2DDbl(ReadDouble(&pointPtr[(k + thisPtOfst) * 16]), ReadDouble(&pointPtr[(k + thisPtOfst) * 16 + 8]));
+						k++;
+					}
+					pointPtrTmp = pointPtr + nPoints * 16;
+					k = 0;
+					while (k < l)
+					{
+						zList[k] = ReadDouble(&pointPtrTmp[(k + thisPtOfst) * 8]);
+						k++;
+					}
+					if ((nextFigure - thisFigure) > 1)
+					{
+						UInt32 *ofstList = pg->GetPtOfstList(&l);
+						k = 0;
+						while (k < l)
+						{
+							ofstList[k] = ReadUInt32(&figurePtr[(k + thisFigure) * 5 + 1]) - (UInt32)thisPtOfst;
+							k++;
+						}
+					}
+					mpg->AddGeometry(pg);
+
+					shapePtr += 9;
+					i++;
+				}
+				return mpg;
+			}
 			else
 			{
 				printf("MSGeography: Type 5, Unsupported type %d\r\n", shapePtr[8]);
+			}
+		}
+		else if (buffPtr[5] == 7) //Shape ZM
+		{
+			UInt32 nPoints;
+			UInt32 nFigures;
+			UInt32 nShapes;
+			const UInt8 *pointPtr;
+			const UInt8 *figurePtr;
+			const UInt8 *shapePtr;
+			UOSInt ind;
+			if (buffSize < 10)
+			{
+				return 0;
+			}
+			nPoints = ReadUInt32(&buffPtr[6]);
+			pointPtr = &buffPtr[10];
+			ind = 10 + nPoints * 32;
+			if (buffSize < ind + 4)
+			{
+				return 0;
+			}
+			nFigures = ReadUInt32(&buffPtr[ind]);
+			figurePtr = &buffPtr[ind + 4];
+			ind += 4 + nFigures * 5;
+			if (buffSize < ind + 4)
+			{
+				return 0;
+			}
+			nShapes = ReadUInt32(&buffPtr[ind]);
+			shapePtr = &buffPtr[ind + 4];
+			if (buffSize < ind + 4 + nShapes * 9)
+			{
+				return 0;
+			}
+			if (shapePtr[8] == 2)
+			{
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 7-2, Multi shape not supported\r\n");
+					return 0;
+				}
+				Math::Geometry::LineString *pl;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, true));
+				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Double *zList = pl->GetZList(&j);
+				Double *mList = pl->GetMList(&j);
+				i = 0;
+				while (i < j)
+				{
+					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+					i++;
+				}
+				pointPtr += j * 16;
+				i = 0;
+				while (i < j)
+				{
+					zList[i] = ReadDouble(&pointPtr[i * 8]);
+					i++;
+				}
+				pointPtr += j * 8;
+				i = 0;
+				while (i < j)
+				{
+					mList[i] = ReadDouble(&pointPtr[i * 8]);
+					i++;
+				}
+				if (nFigures > 1)
+				{
+					printf("MSGeography: Type 7, LineString ZM with nFigures > 1\r\n");
+				}
+				return pl;
+			}
+/*			else if (shapePtr[8] == 3)
+			{
+				if (nShapes != 1)
+				{
+					printf("MSGeography: Type 7, Multi shape not supported\r\n");
+					Text::StringBuilderUTF8 sb;
+					sb.AppendHexBuff(shapePtr, nShapes * 9, ' ', Text::LineBreakType::CRLF);
+					printf("MSGeography: Type 7: shape buff: %s\r\n", sb.ToString());
+					return 0;
+				}
+				Math::Geometry::Polygon *pg;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, true, false));
+				Math::Coord2DDbl *points = pg->GetPointList(&j);
+				Double *zList = pg->GetZList(&j);
+				i = 0;
+				while (i < j)
+				{
+					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+					i++;
+				}
+				pointPtr += j * 16;
+				i = 0;
+				while (i < j)
+				{
+					zList[i] = ReadDouble(&pointPtr[i * 8]);
+					i++;
+				}
+				if (nFigures > 1)
+				{
+					UInt32 *ofstList = pg->GetPtOfstList(&j);
+					i = 0;
+					while (i < j)
+					{
+						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						i++;
+					}
+				}
+				return pg;
+			}*/
+			else if (shapePtr[8] == 5)
+			{
+				Math::Geometry::Polyline *pl;
+				UOSInt i;
+				UOSInt j;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, true, true));
+				Math::Coord2DDbl *points = pl->GetPointList(&j);
+				Double *zList = pl->GetZList(&j);
+				Double *mList = pl->GetMList(&j);
+				i = 0;
+				while (i < j)
+				{
+					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+					i++;
+				}
+				pointPtr += j * 16;
+				i = 0;
+				while (i < j)
+				{
+					zList[i] = ReadDouble(&pointPtr[i * 8]);
+					i++;
+				}
+				pointPtr += j * 8;
+				i = 0;
+				while (i < j)
+				{
+					mList[i] = ReadDouble(&pointPtr[i * 8]);
+					i++;
+				}
+				if (nFigures > 1)
+				{
+					UInt32 *ofstList = pl->GetPtOfstList(&j);
+					i = 0;
+					while (i < j)
+					{
+						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						i++;
+					}
+				}
+				return pl;
+			}
+			else
+			{
+				printf("MSGeography: Type 7, Unsupported type %d\r\n", shapePtr[8]);
 			}
 		}
 		else if (buffPtr[5] == 20) // LineString
@@ -369,7 +633,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
 			return pl;
 		}
-		else if (buffPtr[5] == 21) // LineString 3D
+		else if (buffPtr[5] == 21) // LineString Z
 		{
 			if (buffSize < 54)
 			{
@@ -384,6 +648,26 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
 			zList[0] = ReadDouble(&buffPtr[38]);
 			zList[1] = ReadDouble(&buffPtr[46]);
+			return pl;
+		}
+		else if (buffPtr[5] == 23) // LineString ZM
+		{
+			if (buffSize < 70)
+			{
+				return 0;
+			}
+			Math::Geometry::LineString *pl;
+			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, true));
+			UOSInt j;
+			Math::Coord2DDbl *points = pl->GetPointList(&j);
+			Double *zList = pl->GetZList(&j);
+			Double *mList = pl->GetMList(&j);
+			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
+			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
+			zList[0] = ReadDouble(&buffPtr[38]);
+			zList[1] = ReadDouble(&buffPtr[46]);
+			mList[0] = ReadDouble(&buffPtr[54]);
+			mList[1] = ReadDouble(&buffPtr[62]);
 			return pl;
 		}
 		else

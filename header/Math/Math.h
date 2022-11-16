@@ -129,22 +129,13 @@ namespace Math
 			return (UInt8)val;
 	}
 
-	FORCEINLINE Bool NearlyEquals(Double val1, Double val2, Double diffRatio)
-	{
-		Double aval1 = Math_Abs(val1);
-		Double aval2 = Math_Abs(val2);
-		Double diffV;
-		if (aval1 > aval2)
-			diffV = aval1 * diffRatio;
-		else
-			diffV = aval2 * diffRatio;
-		Double diff = val1 - val2;
-		return diff >= -diffV && diff <= diffV;
-	}
-
 	FORCEINLINE Bool IsNAN(Double val)
 	{
-		return (0x7fffffffffffffffLL == *(Int64*)&val) || (0xffffffffffffffffLL == *(UInt64*)&val);
+		UInt64 iVal = *(UInt64*)&val;
+		return (iVal & 0x7ff8000000000000LL) == 0x7ff8000000000000LL;
+		// 0x7ff8000000000001LL = qNaN
+		// 0x7ff0000000000001LL = sNaN
+		// 0x7fffffffffffffffLL = NaN
 	}
 
 	FORCEINLINE Bool IsInfinity(Double val)
@@ -157,10 +148,54 @@ namespace Math
 		return ((Int64)0x8000000000000000LL & *(Int64*)&val) != 0;
 	}
 
+	FORCEINLINE Double GetInfinity()
+	{
+		UInt64 v = 0x7ff0000000000000LL;
+		return *(Double*)&v;
+	}
+
 	FORCEINLINE Double GetNAN()
 	{
 		UInt64 v = 0xffffffffffffffffLL;
 		return *(Double*)&v;
+	}
+
+	FORCEINLINE Double GetSNAN()
+	{
+		UInt64 v = 0x7ff0000000000001LL;
+		return *(Double*)&v;
+	}
+
+	FORCEINLINE Double GetQNAN()
+	{
+		UInt64 v = 0x7ff8000000000001LL;
+		return *(Double*)&v;
+	}
+
+	FORCEINLINE Bool NearlyEquals(Double val1, Double val2, Double diffRatio)
+	{
+		if (IsInfinity(val1))
+		{
+			return IsInfinity(val2);
+		}
+		if (IsNAN(val1))
+		{
+			return IsNAN(val2);
+		}
+		Double aval1 = Math_Abs(val1);
+		Double aval2 = Math_Abs(val2);
+		Double diffV;
+		if (aval1 > aval2)
+			diffV = aval1 * diffRatio;
+		else
+			diffV = aval2 * diffRatio;
+		Double diff = val1 - val2;
+		return diff >= -diffV && diff <= diffV;
+	}
+
+	FORCEINLINE Bool NearlyEqualsDbl(Double val1, Double val2)
+	{
+		return NearlyEquals(val1, val2, 0.00000000001);
 	}
 
 	FORCEINLINE Bool IsRealNum(Double val)

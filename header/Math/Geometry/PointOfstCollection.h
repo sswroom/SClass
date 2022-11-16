@@ -21,6 +21,7 @@ namespace Math
 			virtual Math::Coord2DDbl GetCenter() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
+			virtual Bool EqualsNearly(Vector2D *vec) const;
 			virtual Bool HasZ() const;
 			Double *GetZList(UOSInt *nPoint);
 			virtual Bool HasM() const;

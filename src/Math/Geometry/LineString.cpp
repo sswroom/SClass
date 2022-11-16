@@ -272,13 +272,75 @@ Bool Math::Geometry::LineString::Equals(Vector2D *vec) const
 	}
 }
 
+Bool Math::Geometry::LineString::EqualsNearly(Vector2D *vec) const
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
+	{
+		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
+		UOSInt nPoint;
+		Math::Coord2DDbl *ptList = pl->GetPointList(&nPoint);
+		Double *valArr;
+		if (nPoint != this->nPoint)
+		{
+			return false;
+		}
+		UOSInt i = nPoint;
+		while (i-- > 0)
+		{
+			if (!Math::NearlyEqualsDbl(ptList[i].x, this->pointArr[i].x) || !Math::NearlyEqualsDbl(ptList[i].y, this->pointArr[i].y))
+			{
+				return false;
+			}
+		}
+		if (this->zArr)
+		{
+			valArr = pl->zArr;
+			i = nPoint;
+			while (i-- > 0)
+			{
+				if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+				{
+					return false;
+				}
+			}
+		}
+		if (this->mArr)
+		{
+			valArr = pl->mArr;
+			i = nPoint;
+			while (i-- > 0)
+			{
+				if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Double *Math::Geometry::LineString::GetZList(UOSInt *nPoint) const
 {
+	if (nPoint)
+		*nPoint = this->nPoint;
 	return this->zArr;
 }
 
 Double *Math::Geometry::LineString::GetMList(UOSInt *nPoint) const
 {
+	if (nPoint)
+		*nPoint = this->nPoint;
 	return this->mArr;
 }
 

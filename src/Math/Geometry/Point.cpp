@@ -73,7 +73,26 @@ Bool Math::Geometry::Point::Equals(Math::Geometry::Vector2D *vec) const
 	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ())
 	{
 		Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
-		return Data::DataComparer::NearlyEquals(this->pos.x, pt->pos.x) && Data::DataComparer::NearlyEquals(this->pos.y, pt->pos.y);
+		return this->pos.x == pt->pos.x && this->pos.y == pt->pos.y;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+Bool Math::Geometry::Point::EqualsNearly(Math::Geometry::Vector2D *vec) const
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ())
+	{
+		Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+		return Math::NearlyEqualsDbl(this->pos.x, pt->pos.x) && Math::NearlyEqualsDbl(this->pos.y, pt->pos.y);
 	}
 	else
 	{

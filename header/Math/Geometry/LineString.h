@@ -27,6 +27,7 @@ namespace Math
 			virtual Bool HasM() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
+			virtual Bool EqualsNearly(Vector2D *vec) const;
 
 			Double *GetZList(UOSInt *nPoint) const;
 			Double *GetMList(UOSInt *nPoint) const;

@@ -187,6 +187,24 @@ namespace Math
 				return true;
 			}
 
+			virtual Bool EqualsNearly(Vector2D *vec) const
+			{
+				if (this->GetVectorType() != vec->GetVectorType())
+				{
+					return false;
+				}
+				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec;
+				if (obj->GetCount() != this->GetCount())
+					return false;
+				UOSInt i = this->GetCount();
+				while (i-- > 0)
+				{
+					if (!this->GetItem(i)->EqualsNearly(obj->GetItem(i)))
+						return false;
+				}
+				return true;
+			}
+
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
 			{
 				UOSInt ret = 0;

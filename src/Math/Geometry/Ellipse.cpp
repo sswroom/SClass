@@ -83,6 +83,20 @@ Bool Math::Geometry::Ellipse::Equals(Math::Geometry::Vector2D *vec) const
 		this->tly == ellipse->tly;
 }
 
+Bool Math::Geometry::Ellipse::EqualsNearly(Math::Geometry::Vector2D *vec) const
+{
+	if (vec == 0 || vec->GetVectorType() != VectorType::Ellipse)
+	{
+		return false;
+	}
+	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
+	return this->srid == ellipse->srid &&
+		Math::NearlyEqualsDbl(this->w, ellipse->w) &&
+		Math::NearlyEqualsDbl(this->h, ellipse->h) &&
+		Math::NearlyEqualsDbl(this->tlx, ellipse->tlx) &&
+		Math::NearlyEqualsDbl(this->tly, ellipse->tly);
+}
+
 UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
 {
 	coordList->Add(Math::Coord2DDbl(this->tlx + this->w * 0.5, this->tly));

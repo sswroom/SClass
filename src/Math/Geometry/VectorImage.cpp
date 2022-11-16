@@ -298,6 +298,16 @@ Bool Math::Geometry::VectorImage::Equals(Vector2D *vec) const
 	return false;
 }
 
+Bool Math::Geometry::VectorImage::EqualsNearly(Vector2D *vec) const
+{
+	if (vec == 0 || vec->GetVectorType() != VectorType::Image)
+	{
+		return false;
+	}
+//	Math::VectorImage *img = (Math::VectorImage*)vec;
+	return false;
+}
+
 UOSInt Math::Geometry::VectorImage::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
 {
 	if (this->scnCoord)

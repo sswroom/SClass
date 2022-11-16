@@ -20,6 +20,7 @@ namespace Math
 			virtual Bool HasZ() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
+			virtual Bool EqualsNearly(Vector2D *vec) const;
 		};
 	}
 }

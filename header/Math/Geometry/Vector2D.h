@@ -58,6 +58,7 @@ namespace Math
 			virtual Bool HasM() const { return false; };
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
 			virtual Bool Equals(Vector2D *vec) const = 0;
+			virtual Bool EqualsNearly(Vector2D *vec) const = 0;
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const = 0;
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 			virtual void SwapXY() = 0;

@@ -18,6 +18,7 @@ namespace Math
 			Double GetM() const;
 			virtual Bool HasM() const;
 			virtual Bool Equals(Vector2D *vec) const;
+			virtual Bool EqualsNearly(Vector2D *vec) const;
 		};
 	}
 }

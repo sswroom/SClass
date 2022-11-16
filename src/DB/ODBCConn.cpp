@@ -16,6 +16,8 @@
 #include "Text/StringBuilderUTF8.h"
 #ifndef _WIN32_WCE
 
+#include "Math/WKTReader.h"
+
 #if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 #include <windows.h>
 #include "IO/Registry.h"
@@ -265,14 +267,15 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 	}
 //	printf("ODBC Connect: %s\r\n", connStr);
 	SQLSMALLINT outSize;
-	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16CntC(connStr->v, connStr->leng) + 2);
+	UOSInt outMaxSize = Text::StrUTF8_UTF16CntC(connStr->v, connStr->leng);
+	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, outMaxSize + 2);
 	SQLWCHAR *connEnd = Text::StrUTF8_UTF16C(connBuff, connStr->v, connStr->leng, 0);
 	connEnd[0] = 0;
 	connEnd[1] = 0;
 	outSize = 0;
 	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
 	MemFree(connBuff);
-
+\
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1841,6 +1844,9 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
+				Math::WKTReader reader(0);
+				reader.Test(vec);
+
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
 				DEL_CLASS(vec);
@@ -1907,6 +1913,9 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
+				Math::WKTReader reader(0);
+				reader.Test(vec);
+
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
 				wkt.ToText(&sb, vec);
@@ -1964,6 +1973,9 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
+				Math::WKTReader reader(0);
+				reader.Test(vec);
+
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
 				wkt.ToText(&sb, vec);
