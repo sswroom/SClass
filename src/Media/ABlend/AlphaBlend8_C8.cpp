@@ -282,7 +282,6 @@ void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *
 		this->MTBlend(dest, dbpl, src, sbpl, width, height);
 //		this->DoBlend(dest, dbpl, src, sbpl, width, height);
 	}
-	mutUsage.EndUse();
 }
 
 void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)

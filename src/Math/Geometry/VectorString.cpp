@@ -88,6 +88,21 @@ Bool Math::Geometry::VectorString::Equals(Math::Geometry::Vector2D *vec) const
 		this->s->Equals(vstr->s);
 }
 
+Bool Math::Geometry::VectorString::EqualsNearly(Math::Geometry::Vector2D *vec) const
+{
+	if (vec == 0 || vec->GetVectorType() != VectorType::String)
+	{
+		return false;
+	}
+	VectorString *vstr = (VectorString*)vec;
+	return this->srid == vstr->srid &&
+		this->pos.EqualsNearly(vstr->pos) &&
+		this->align == vstr->align &&
+		Math::NearlyEqualsDbl(this->angleDegree, vstr->angleDegree) &&
+		this->buffSize == vstr->buffSize &&
+		this->s->Equals(vstr->s);
+}
+
 UOSInt Math::Geometry::VectorString::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
 {
 	coordList->Add(this->pos);
