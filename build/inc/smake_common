@@ -71,6 +71,7 @@ nodeps:
 @DateTimeTest
 @MiscTest
 @SortSpeed
+@CSVFileTest
 @DBDataFileTest
 @FileGDBTest
 @MDBFileTest
@@ -268,6 +269,9 @@ SortSpeed:
 @ConsoleStartup.o
 
 #DB
+CSVFileTest:
+@CSVFileTest.o
+@ConsoleStartup.o
 DBDataFileTest:
 @DBDataFileTest.o
 @ConsoleStartup.o
@@ -947,6 +951,7 @@ X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 MiscTest.o: ../../main/Data/MiscTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
+CSVFileTest.o: ../../main/DB/CSVFileTest.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MDBFileTest.o: ../../main/DB/MDBFileTest.cpp

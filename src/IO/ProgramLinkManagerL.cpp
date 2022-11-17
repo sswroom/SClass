@@ -52,6 +52,21 @@ IO::ProgramLinkManager::~ProgramLinkManager()
 {
 }
 
+UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
+{
+	UTF8Char *sptr;	
+	if (thisUser)
+	{
+		sptr = IO::Path::GetUserHome(buff);
+		sptr = IO::Path::AppendPath(buff, sptr, CSTR(".local/share/applications"));
+	}
+	else
+	{
+		sptr = Text::StrConcatC(buff, UTF8STRC("/usr/share/applications"));
+	}
+	return sptr;
+}
+
 UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayList<Text::String*> *nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
@@ -60,13 +75,12 @@ UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayList<Text::String*> *name
 	UOSInt ret = 0;
 	if (allUser)
 	{
-		linkPathEnd = Text::StrConcatC(linkPath, UTF8STRC("/usr/share/applications"));
+		linkPathEnd = GetLinkPath(linkPath, false);
 		ret += GetLinkNamesDir(nameList, linkPath, linkPathEnd, filePath, filePath);
 	}
 	if (allUser)
 	{
-		linkPathEnd = IO::Path::GetUserHome(linkPath);
-		linkPathEnd = IO::Path::AppendPath(linkPath, linkPathEnd, CSTR(".local/share/applications"));
+		linkPathEnd = GetLinkPath(linkPath, true);
 		*filePath = '*';
 		ret += GetLinkNamesDir(nameList, linkPath, linkPathEnd, filePath, filePath + 1);
 	}
@@ -197,6 +211,13 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 							link->SetKeywords(val.ToCString());
 						}
 					}
+					else if (name.StartsWith(UTF8STRC("Name[")) && name.EndsWith(']'))
+					{
+						if (name.Equals(UTF8STRC("Name[en]")))
+						{
+							link->SetName(val.ToCString());
+						}
+					}
 					else
 					{
 						printf("ProgramLinkManager: Unknown Item: %s=%s\r\n", name.v, val.v);
@@ -207,5 +228,16 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 		}
 		return true;
 	}
+}
 
+Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = GetLinkPath(sbuff, thisUser);
+	*sptr++ = '/';
+	sptr = shortName.ConcatTo(sptr);
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".desktop"));
+	/////////////////////////////////////////
+	return false;
 }

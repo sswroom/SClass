@@ -14,8 +14,11 @@ namespace IO
 		ProgramLinkManager();
 		~ProgramLinkManager();
 
+		UTF8Char *GetLinkPath(UTF8Char *buff, Bool thisUser);
 		UOSInt GetLinkNames(Data::ArrayList<Text::String*> *nameList, Bool allUser, Bool thisUser);
 		Bool GetLinkDetail(Text::CString linkName, ProgramLink *link);
+
+		Bool CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine);
 	};
 }
 
