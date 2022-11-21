@@ -5,6 +5,7 @@
 #include "DB/SQLiteFile.h"
 #include "DB/ReadingDB.h"
 #include "DB/ReadingDBTool.h"
+#include "DB/SQLGenerator.h"
 #include "Exporter/SQLiteExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -115,7 +116,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		if (r)
 		{
 			sql.Clear();
-			DB::DBTool::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), tabDef);
+			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), tabDef);
 			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 				{
@@ -142,7 +143,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					k = 10000;
 				}
 				sql.Clear();
-				DB::DBTool::GenInsertCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), r);
+				DB::SQLGenerator::GenInsertCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), r);
 				if (destDB->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();

@@ -102,6 +102,7 @@ namespace SSWR
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 			void CopyTableCreate(DB::DBUtil::ServerType svrType);
+			void ExportTableData(DB::DBUtil::ServerType svrType);
 		public:
 			AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRDBManagerForm();

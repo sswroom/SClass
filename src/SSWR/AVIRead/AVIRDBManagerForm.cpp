@@ -4,6 +4,8 @@
 #include "DB/ColDef.h"
 #include "DB/DBManager.h"
 #include "DB/JavaDBUtil.h"
+#include "DB/SQLGenerator.h"
+#include "IO/FileStream.h"
 #include "Map/BaseMapLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -18,6 +20,7 @@
 #include "SSWR/AVIRead/AVIRPostgreSQLForm.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
+#include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 #include "UtilUI/TextInputDialog.h"
 #include "Win32/Clipboard.h"
@@ -46,7 +49,10 @@ typedef enum
 	MNU_TABLE_CPP_SOURCE,
 	MNU_TABLE_CREATE_MYSQL,
 	MNU_TABLE_CREATE_MSSQL,
-	MNU_TABLE_CREATE_POSTGRESQL
+	MNU_TABLE_CREATE_POSTGRESQL,
+	MNU_TABLE_EXPORT_MYSQL,
+	MNU_TABLE_EXPORT_MSSQL,
+	MNU_TABLE_EXPORT_POSTGRESQL
 } MenuEvent;
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
@@ -613,7 +619,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::ServerType sv
 	DB::TableDef *tabDef = this->currDB->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
 	if (tabDef)
 	{
-		if (!DB::DBTool::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef))
+		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
 		}
@@ -629,7 +635,47 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::ServerType sv
 	}
 	tableName->Release();
 	schemaName->Release();
+}
 
+void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::DBUtil::ServerType svrType)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
+	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerExportTable", true);
+	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		DB::SQLBuilder sql(svrType, 0);
+		DB::DBReader *r = this->currDB->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+		if (r == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			return;
+		}
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		while (r->ReadNext())
+		{
+			sql.Clear();			
+			DB::SQLGenerator::GenInsertCmd(&sql, schemaName->ToCString(), tableName->ToCString(), r);
+			sql.AppendCmdC(CSTR(";\r\n"));
+			fs.Write(sql.ToString(), sql.GetLength());
+		}
+	}
+	tableName->Release();
+	schemaName->Release();
 }
 
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -786,6 +832,11 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu->AddItem(CSTR("MySQL"), MNU_TABLE_CREATE_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_CREATE_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_CREATE_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuTable->AddSubMenu(CSTR("Export Table Data"));
+	mnu->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+
 	if (DB::DBManager::RestoreConn(DBCONNFILE, &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1033,6 +1084,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_CREATE_POSTGRESQL:
 		this->CopyTableCreate(DB::DBUtil::ServerType::PostgreSQL);
+		break;
+	case MNU_TABLE_EXPORT_MYSQL:
+		this->ExportTableData(DB::DBUtil::ServerType::MySQL);
+		break;
+	case MNU_TABLE_EXPORT_MSSQL:
+		this->ExportTableData(DB::DBUtil::ServerType::MSSQL);
+		break;
+	case MNU_TABLE_EXPORT_POSTGRESQL:
+		this->ExportTableData(DB::DBUtil::ServerType::PostgreSQL);
 		break;
 	}
 }

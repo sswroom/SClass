@@ -75,6 +75,18 @@ namespace Data
 			return TimeInstant(this->sec - this->sec % 86400, 0);
 		}
 
+		TimeInstant RoundToS() const
+		{
+			if (this->nanosec >= 500000000)
+			{
+				return TimeInstant(this->sec + 1, 0);
+			}
+			else
+			{
+				return TimeInstant(this->sec, 0);
+			}
+		}
+
 		Int64 GetMSPassedDate() const
 		{
 			return (this->sec % 86400LL) * 1000 + this->nanosec / 1000000;

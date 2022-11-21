@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "DB/SQLGenerator.h"
 #include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
 #include "UI/MessageDialog.h"
 
@@ -147,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			else
 			{
 				sql.Clear();
-				if (!DB::DBTool::GenCreateTableCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef))
+				if (!DB::SQLGenerator::GenCreateTableCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef))
 				{
 					me->lvData->SetSubItem(i, 1, CSTR("Error in generating create command"));
 					succ = false;
@@ -175,7 +176,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				while (r->ReadNext())
 				{
 					sql.Clear();
-					DB::DBTool::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
+					DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
 					if (destDB->ExecuteNonQuery(sql.ToCString()) != 1)
 					{
 #if defined(VERBOSE)

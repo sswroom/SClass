@@ -1522,6 +1522,8 @@ DB/SortableDBReader.h: ../../src/DB/SortableDBReader.cpp
 @SortableDBReader.o
 DB/SQLBuilder.h: ../../src/DB/SQLBuilder.cpp
 @SQLBuilder.o
+DB/SQLGenerator.h: ../../src/DB/SQLGenerator.cpp
+@SQLGenerator.o
 DB/SQLiteFile.h: ../../src/DB/SQLiteFile.cpp
 @SQLiteFile.o
 DB/TableDef.h: ../../src/DB/TableDef.cpp
@@ -3749,6 +3751,8 @@ SSWR/AVIRead/AVIRProcInfoForm.h: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
 @AVIRProcInfoForm.o
 SSWR/AVIRead/AVIRProfiledResizerForm.h: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
 @AVIRProfiledResizerForm.o
+SSWR/AVIRead/AVIRProgramLinksCreateForm.h: ../../src/SSWR/AVIRead/AVIRProgramLinksCreateForm.cpp
+@AVIRProgramLinksCreateForm.o
 SSWR/AVIRead/AVIRProgramLinksForm.h: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
 @AVIRProgramLinksForm.o
 SSWR/AVIRead/AVIRProtoDecForm.h: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
@@ -4497,6 +4501,7 @@ SharedDBConn.o: ../../src/DB/SharedDBConn.cpp
 SharedReadingDB.o: ../../src/DB/SharedReadingDB.cpp
 SortableDBReader.o: ../../src/DB/SortableDBReader.cpp
 SQLBuilder.o: ../../src/DB/SQLBuilder.cpp
+SQLGenerator.o: ../../src/DB/SQLGenerator.cpp
 SQLiteFile.o: ../../src/DB/SQLiteFile.cpp
 $-I ../../ThirdParty/sqlite3
 TableDef.o: ../../src/DB/TableDef.cpp
@@ -5543,6 +5548,7 @@ AVIRPostgreSQLForm.o: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
 AVIRPowerForm.o: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
 AVIRProcInfoForm.o: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
 AVIRProfiledResizerForm.o: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
+AVIRProgramLinksCreateForm.o: ../../src/SSWR/AVIRead/AVIRProgramLinksCreateForm.cpp
 AVIRProgramLinksForm.o: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
 AVIRProtoDecForm.o: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
 AVIRProxyServerForm.o: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp

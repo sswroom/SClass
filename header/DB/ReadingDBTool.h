@@ -89,10 +89,6 @@ namespace DB
 		Bool ChangeDatabase(const UTF8Char *databaseName);
 
 		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
-
-	protected:
-		static void AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::ColDef *col);
-		static void AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc);
 	};
 }
 #endif

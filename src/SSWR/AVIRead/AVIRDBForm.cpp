@@ -2,11 +2,14 @@
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ColDef.h"
 #include "DB/JavaDBUtil.h"
+#include "DB/SQLGenerator.h"
+#include "IO/FileStream.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChartForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/CharUtil.h"
+#include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
@@ -18,6 +21,12 @@ typedef enum
 	MNU_TABLE_CPP_HEADER,
 	MNU_TABLE_CPP_SOURCE,
 	MNU_TABLE_JAVA,
+	MNU_TABLE_CREATE_MYSQL,
+	MNU_TABLE_CREATE_MSSQL,
+	MNU_TABLE_CREATE_POSTGRESQL,
+	MNU_TABLE_EXPORT_MYSQL,
+	MNU_TABLE_EXPORT_MSSQL,
+	MNU_TABLE_EXPORT_POSTGRESQL,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -256,6 +265,74 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaNam
 	return 0;
 }
 
+
+void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::ServerType svrType)
+{
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	DB::SQLBuilder sql(svrType, 0);
+	DB::TableDef *tabDef = this->dbt->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
+	if (tabDef)
+	{
+		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
+		}
+		else
+		{
+			Win32::Clipboard::SetString(this->GetHandle(), sql.ToCString());
+		}
+		DEL_CLASS(tabDef);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
+	}
+	tableName->Release();
+	schemaName->Release();
+}
+
+void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::ServerType svrType)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
+	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBExportTable", true);
+	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		DB::SQLBuilder sql(svrType, 0);
+		DB::DBReader *r = this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+		if (r == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			return;
+		}
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		while (r->ReadNext())
+		{
+			sql.Clear();			
+			DB::SQLGenerator::GenInsertCmd(&sql, schemaName->ToCString(), tableName->ToCString(), r);
+			sql.AppendCmdC(CSTR(";\r\n"));
+			fs.Write(sql.ToString(), sql.GetLength());
+		}
+	}
+	tableName->Release();
+	schemaName->Release();
+}
+
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
@@ -319,6 +396,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	}
 
 	UI::GUIMenu *mnu;
+	UI::GUIMenu *mnu2;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Save as"), MNU_FILE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
@@ -326,6 +404,14 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	mnu->AddItem(CSTR("Copy as CPP Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Copy as CPP Source"), MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Copy as Create SQL"));
+	mnu2->AddItem(CSTR("MySQL"), MNU_TABLE_CREATE_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL Server"), MNU_TABLE_CREATE_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("PostgreSQL"), MNU_TABLE_CREATE_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Export Table Data"));
+	mnu2->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
@@ -507,6 +593,24 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			SDEL_STRING(schemaName);
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
+		break;
+	case MNU_TABLE_CREATE_MYSQL:
+		this->CopyTableCreate(DB::DBUtil::ServerType::MySQL);
+		break;
+	case MNU_TABLE_CREATE_MSSQL:
+		this->CopyTableCreate(DB::DBUtil::ServerType::MSSQL);
+		break;
+	case MNU_TABLE_CREATE_POSTGRESQL:
+		this->CopyTableCreate(DB::DBUtil::ServerType::PostgreSQL);
+		break;
+	case MNU_TABLE_EXPORT_MYSQL:
+		this->ExportTableData(DB::DBUtil::ServerType::MySQL);
+		break;
+	case MNU_TABLE_EXPORT_MSSQL:
+		this->ExportTableData(DB::DBUtil::ServerType::MSSQL);
+		break;
+	case MNU_TABLE_EXPORT_POSTGRESQL:
+		this->ExportTableData(DB::DBUtil::ServerType::PostgreSQL);
 		break;
 	}
 }

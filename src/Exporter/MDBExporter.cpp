@@ -4,6 +4,7 @@
 #include "DB/DBTool.h"
 #include "DB/MDBFileConn.h"
 #include "DB/ReadingDB.h"
+#include "DB/SQLGenerator.h"
 #include "Exporter/MDBExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -97,7 +98,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				k++;
 			}
 			sql.Clear();
-			DB::DBTool::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), &tabDef);
+			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), &tabDef);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;
@@ -114,7 +115,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			while (r->ReadNext())
 			{
 				sql.Clear();
-				DB::DBTool::GenInsertCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), r);
+				DB::SQLGenerator::GenInsertCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), r);
 				if (mdb->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();

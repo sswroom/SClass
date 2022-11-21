@@ -32,8 +32,8 @@ Data::Timestamp Text::XLSUtil::Number2Timestamp(Double v)
 	Int32 days = (Int32)v;
 	Int8 tz = Data::DateTimeUtil::GetLocalTzQhr();
 	Double ds = (v - days);
-	OSInt s = Double2OSInt(ds * 86400);
-	return Data::Timestamp(Data::TimeInstant((days - 25569) * 86400LL + Double2OSInt(ds * 86400), (UInt32)((ds * 86400 - (Double)s) * 1000000000)), tz);
+	OSInt s = (OSInt)(ds * 86400);
+	return Data::Timestamp(Data::TimeInstant((days - 25569) * 86400LL + s, (UInt32)((ds * 86400 - (Double)s) * 1000000000)), tz);
 }
 
 UTF8Char *Text::XLSUtil::GetCellID(UTF8Char *sbuff, UOSInt col, UOSInt row)

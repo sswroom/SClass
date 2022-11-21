@@ -425,9 +425,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *
 		return true;
 	case 5:
 		{
-			Data::DateTime dt;
-			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-			sb->AppendDate(&dt);
+			sb->AppendTS(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 		}
 		return true;
 	case 6:
@@ -501,9 +499,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		return Text::String::New(&this->rowData[ofst], (UOSInt)v);
 	case 5:
 		{
-			Data::DateTime dt;
-			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-			sptr = dt.ToString(sbuff);
+			sptr = Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS().ToString(sbuff);
 			return Text::String::NewP(sbuff, sptr);
 		}
 	case 6:
@@ -573,7 +569,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 	switch (field->fieldType)
 	{
 	case 5:
-		return Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS();
 	case 4:
 	case 12:
 		{
@@ -1281,9 +1277,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item
 		}
 	case 5:
 		{
-			Data::DateTime dt;
-			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-			item->SetDate(&dt);
+			item->SetDate(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 			return true;
 		}
 	case 6:
@@ -1382,9 +1376,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		}
 	case 5:
 		{
-			Data::DateTime dt;
-			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-			return Data::VariItem::NewDate(&dt);
+			return Data::VariItem::NewTS(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 		}
 	case 6:
 		return Data::VariItem::NewI32(this->objectId);
@@ -1496,6 +1488,10 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColName(field->name);
 	colDef->SetColSize(field->fieldSize);
 	colDef->SetColType(this->GetColType(colIndex, &colSize));
+	if (colDef->GetColType() == DB::DBUtil::CT_DateTime)
+	{
+		colDef->SetColSize(0);
+	}
 	colDef->SetNotNull((field->flags & 1) == 0);
 	colDef->SetPK(field->fieldType == 6);
 	colDef->SetAutoInc(field->fieldType == 6);

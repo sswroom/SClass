@@ -20,6 +20,8 @@ namespace SSWR
 			UI::GUIListBox *lbItems;
 			UI::GUIHSplitter *hspItems;
 			UI::GUIPanel *pnlItem;
+			UI::GUIButton *btnDelete;
+			UI::GUIButton *btnCreate;
 			UI::GUILabel *lblLinkName;
 			UI::GUITextBox *txtLinkName;
 			UI::GUILabel *lblType;
@@ -53,6 +55,10 @@ namespace SSWR
 			IO::ProgramLinkManager progMgr;
 
 			static void __stdcall OnItemsSelChg(void *userObj);
+			static void __stdcall OnDeleteClicked(void *userObj);
+			static void __stdcall OnCreateClicked(void *userObj);
+
+			void UpdateLinkList();
 		public:
 			AVIRProgramLinksForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRProgramLinksForm();

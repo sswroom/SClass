@@ -345,6 +345,11 @@ namespace Data
 			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
 		}
 
+		Timestamp RoundToS() const
+		{
+			return Timestamp(this->inst.RoundToS(), this->tzQhr);
+		}
+
 		static Timestamp Now()
 		{
 			return Timestamp(TimeInstant::Now(), Data::DateTimeUtil::GetLocalTzQhr());

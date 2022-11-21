@@ -1,7 +1,6 @@
 #ifndef _SM_DB_DBTOOL
 #define _SM_DB_DBTOOL
 #include "DB/DBConn.h"
-#include "DB/PageRequest.h"
 #include "DB/ReadingDBTool.h"
 
 namespace DB
@@ -14,13 +13,6 @@ namespace DB
 			ReaderTrigger = 0,
 			NonQueryTrigger = 1
 		} TriggerType;
-
-		typedef enum
-		{
-			PS_SUCC,
-			PS_NO_OFFSET,
-			PS_NO_PAGE
-		} PageStatus;
 
 	private:
 		Int32 nqFail;
@@ -43,17 +35,6 @@ namespace DB
 		Bool DeleteDatabase(Text::CString databaseName);
 		Bool CreateSchema(Text::CString schemaName);
 		Bool DeleteSchema(Text::CString schemaName);
-		
-		static Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef);
-		static Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r);
-		static Bool GenCreateDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName);
-		static Bool GenDeleteDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName);
-		static Bool GenCreateSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName);
-		static Bool GenDeleteSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName);
-		Bool GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
-		Bool GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
-		PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);
-		UTF8Char *GenInsertCmd(UTF8Char *sqlstr, Text::CString tableName, DB::DBReader *r);
 	};
 }
 #endif

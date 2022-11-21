@@ -238,6 +238,52 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, 
 	*sptr++ = '/';
 	sptr = shortName.ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".desktop"));
-	/////////////////////////////////////////
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Unknown)
+		return false;
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+		return false;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("[Desktop Entry]"));
+	sb.AppendC(UTF8STRC("\r\nName="));
+	sb.Append(linkName);
+	if (comment.leng > 0)
+	{
+		sb.AppendC(UTF8STRC("\r\nComment="));
+		sb.Append(comment);
+	}
+	sb.AppendC(UTF8STRC("\r\nType=Appplication"));
+	if (categories.leng > 0)
+	{
+		sb.AppendC(UTF8STRC("\r\nCategories="));
+		sb.Append(categories);
+	}
+	sb.AppendC(UTF8STRC("\r\nExec="));
+	sb.Append(cmdLine);
+	sb.AppendC(UTF8STRC("\r\n"));
+	fs.Write(sb.ToString(), sb.GetLength());
+	return true;
+}
+
+Bool IO::ProgramLinkManager::DeleteLink(Text::CString linkName)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	if (linkName.v[0] == '*')
+	{
+		sptr = GetLinkPath(sbuff, true);
+		*sptr++ = '/';
+		sptr = linkName.Substring(1).ConcatTo(sptr);
+	}
+	else
+	{
+		sptr = GetLinkPath(sbuff, false);
+		*sptr++ = '/';
+		sptr = linkName.ConcatTo(sptr);
+	}
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
+	{
+		return IO::Path::DeleteFile(sbuff);
+	}
 	return false;
 }

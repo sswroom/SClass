@@ -2,6 +2,7 @@
 #include "Data/ICaseStringMap.h"
 #include "DB/DBCache.h"
 #include "DB/DBReader.h"
+#include "DB/SQLGenerator.h"
 #include "Sync/MutexUsage.h"
 
 DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
@@ -102,14 +103,14 @@ UOSInt DB::DBCache::QueryTableData(Data::ArrayList<DB::DBRow*> *outRows, Text::C
 		return 0;
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
-	DB::DBTool::PageStatus status = this->db->GenSelectCmdPage(&sql, tableInfo->def, page);
+	DB::SQLGenerator::PageStatus status = DB::SQLGenerator::GenSelectCmdPage(&sql, tableInfo->def, page);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		DB::DBRow *row;
 		UOSInt pageSkip = 0;
 		UOSInt pageSize = page->GetPageSize();
-		if (status != DB::DBTool::PS_SUCC)
+		if (status != DB::SQLGenerator::PageStatus::Succ)
 		{
 			pageSkip = page->GetPageNum() * page->GetPageSize();
 		}
@@ -178,7 +179,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	}
 	DB::DBRow *row = 0;
 	DB::SQLBuilder sql(this->db);
-	this->db->GenSelectCmdPage(&sql, tableInfo->def, 0);
+	DB::SQLGenerator::GenSelectCmdPage(&sql, tableInfo->def, 0);
 	sql.AppendCmdC(CSTR(" where "));
 	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmdC(CSTR(" = "));
