@@ -44,7 +44,7 @@ namespace Exporter
 		virtual Bool GetParamInfo(UOSInt index, ParamInfo *info);
 		virtual Bool SetParamStr(void *param, UOSInt index, const UTF8Char *val);
 		virtual Bool SetParamInt32(void *param, UOSInt index, Int32 val);
-		virtual Bool SetParamSel(void *param, UOSInt index, Int32 selCol);
+		virtual Bool SetParamSel(void *param, UOSInt index, UOSInt selCol);
 		virtual UTF8Char *GetParamStr(void *param, UOSInt index, UTF8Char *buff);
 		virtual Int32 GetParamInt32(void *param, UOSInt index);
 		virtual Int32 GetParamSel(void *param, UOSInt index);

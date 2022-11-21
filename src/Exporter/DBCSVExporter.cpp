@@ -194,12 +194,12 @@ Bool Exporter::DBCSVExporter::SetParamInt32(void *param, UOSInt index, Int32 val
 	return false;
 }
 
-Bool Exporter::DBCSVExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
+Bool Exporter::DBCSVExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
 {
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		dbParam->tableIndex = (UOSInt)selCol;
+		dbParam->tableIndex = selCol;
 		return true;
 	}
 	return false;

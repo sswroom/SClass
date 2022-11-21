@@ -219,12 +219,12 @@ Bool Exporter::DBPListExporter::SetParamInt32(void *param, UOSInt index, Int32 v
 	return false;
 }
 
-Bool Exporter::DBPListExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
+Bool Exporter::DBPListExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
 {
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		dbParam->tableIndex = (UOSInt)selCol;
+		dbParam->tableIndex = selCol;
 		return true;
 	}
 	return false;

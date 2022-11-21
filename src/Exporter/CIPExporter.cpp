@@ -463,7 +463,7 @@ Bool Exporter::CIPExporter::SetParamInt32(void *param, UOSInt index, Int32 val)
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
+Bool Exporter::CIPExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
 {
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
 	if (index == 1)

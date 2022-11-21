@@ -194,12 +194,12 @@ Bool Exporter::DBHTMLExporter::SetParamInt32(void *param, UOSInt index, Int32 va
 	return false;
 }
 
-Bool Exporter::DBHTMLExporter::SetParamSel(void *param, UOSInt index, Int32 selCol)
+Bool Exporter::DBHTMLExporter::SetParamSel(void *param, UOSInt index, UOSInt selCol)
 {
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		dbParam->tableIndex = (UOSInt)selCol;
+		dbParam->tableIndex = selCol;
 		return true;
 	}
 	return false;
