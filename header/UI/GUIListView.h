@@ -79,6 +79,7 @@ namespace UI
 		UOSInt GetStringWidth(const WChar *s);
 		void GetItemRectP(UOSInt index, Int32 *rect);
 		void EnsureVisible(UOSInt index);
+		void *SetItem(UOSInt index, void *itemObj);
 
 		void BeginUpdate();
 		void EndUpdate();

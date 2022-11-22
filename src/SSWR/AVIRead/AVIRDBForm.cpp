@@ -6,6 +6,7 @@
 #include "IO/FileStream.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChartForm.h"
+#include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/CharUtil.h"
@@ -27,6 +28,7 @@ typedef enum
 	MNU_TABLE_EXPORT_MYSQL,
 	MNU_TABLE_EXPORT_MSSQL,
 	MNU_TABLE_EXPORT_POSTGRESQL,
+	MNU_TABLE_EXPORT_OPTION,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -289,7 +291,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::ServerType svrType)
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
 	}
 	tableName->Release();
-	schemaName->Release();
+	SDEL_STRING(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::ServerType svrType)
@@ -330,7 +332,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::ServerType svrType)
 		}
 	}
 	tableName->Release();
-	schemaName->Release();
+	SDEL_STRING(schemaName);
 }
 
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
@@ -412,6 +414,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	mnu2->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Export Table Data..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
@@ -611,6 +614,16 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_POSTGRESQL:
 		this->ExportTableData(DB::DBUtil::ServerType::PostgreSQL);
+		break;
+	case MNU_TABLE_EXPORT_OPTION:
+		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->dbt, STR_CSTR(schemaName), tableName->ToCString());
+			dlg.ShowDialog(this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+		}
 		break;
 	}
 }

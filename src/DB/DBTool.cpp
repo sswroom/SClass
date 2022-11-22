@@ -267,3 +267,23 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 		return false;
 	}
 }
+
+Bool DB::DBTool::KillConnection(Int32 id)
+{
+	Bool ret = false;
+	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		sql.AppendCmdC(CSTR("kill "));
+		sql.AppendInt32(id);
+		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
+	}
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	{
+		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		sql.AppendCmdC(CSTR("kill "));
+		sql.AppendInt32(id);
+		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
+	}
+	return ret;	
+}

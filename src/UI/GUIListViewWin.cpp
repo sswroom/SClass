@@ -494,6 +494,18 @@ void UI::GUIListView::EnsureVisible(UOSInt index)
 	SendMessage((HWND)this->hwnd, LVM_ENSUREVISIBLE, index, (LPARAM)TRUE);
 }
 
+void *UI::GUIListView::SetItem(UOSInt index, void *itemObj)
+{
+	LVITEM item;
+	item.iItem = (Int32)index;
+	item.iSubItem = 0;
+	item.mask = LVIF_PARAM;
+	item.lParam = (LPARAM)itemObj;
+    SendMessage((HWND)this->hwnd, LVM_SETITEM, 0, (LPARAM)&item);
+	return (void*)item.lParam;
+
+}
+
 void UI::GUIListView::BeginUpdate()
 {
 	this->SetVisible(false);

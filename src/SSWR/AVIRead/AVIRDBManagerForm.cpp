@@ -12,6 +12,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
+#include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
@@ -52,13 +53,16 @@ typedef enum
 	MNU_TABLE_CREATE_POSTGRESQL,
 	MNU_TABLE_EXPORT_MYSQL,
 	MNU_TABLE_EXPORT_MSSQL,
-	MNU_TABLE_EXPORT_POSTGRESQL
+	MNU_TABLE_EXPORT_POSTGRESQL,
+	MNU_TABLE_EXPORT_OPTION
 } MenuEvent;
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	me->currDB = (DB::DBTool*)me->lbConn->GetSelectedItem();
+	me->lvVariable->ClearItems();
+	me->lvSvrConn->ClearItems();
 	me->UpdateDatabaseList();
 	me->UpdateSchemaList();
 }
@@ -318,6 +322,32 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnLayerUpdated(void *userObj)
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	me->mapMain->UpdateMap();
 	me->mapMain->Redraw();
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnVariableClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	me->UpdateVariableList();
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	me->UpdateSvrConnList();
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	UOSInt index = me->lvSvrConn->GetSelectedIndex();
+	if (index != INVALID_INDEX)
+	{
+		Int32 id = (Int32)(OSInt)me->lvSvrConn->GetItem(index);
+		if (me->currDB->KillConnection(id))
+		{
+			me->UpdateSvrConnList();
+		}
+	}
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
@@ -588,6 +618,50 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r, UI::GUIList
 	MemFree(colSize);
 }
 
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
+{
+	Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> vars;
+	Data::TwinItem<Text::String*, Text::String*> item(0);
+	UOSInt i = 0;
+	UOSInt j = this->currDB->GetVariables(&vars);
+	this->lvVariable->ClearItems();
+	while (i < j)
+	{
+		item = vars.GetItem(i);
+		this->lvVariable->AddItem(item.key, 0);
+		if (item.value) this->lvVariable->SetSubItem(i, 1, item.value);
+		i++;
+	}
+	this->currDB->FreeVariables(&vars);
+}
+
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	Data::ArrayList<DB::ReadingDBTool::ConnectionInfo*> conns;
+	DB::ReadingDBTool::ConnectionInfo *conn;
+	UOSInt i = 0;
+	UOSInt j = this->currDB->GetConnectionInfo(&conns);
+	this->lvSvrConn->ClearItems();
+	while (i < j)
+	{
+		conn = conns.GetItem(i);
+		sptr = Text::StrInt32(sbuff, conn->id);
+		this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
+		if (conn->status) this->lvSvrConn->SetSubItem(i, 1, conn->status);
+		if (conn->user) this->lvSvrConn->SetSubItem(i, 2, conn->user);
+		if (conn->clientHostName) this->lvSvrConn->SetSubItem(i, 3, conn->clientHostName);
+		if (conn->dbName) this->lvSvrConn->SetSubItem(i, 4, conn->dbName);
+		if (conn->cmd) this->lvSvrConn->SetSubItem(i, 5, conn->cmd);
+		sptr = Text::StrInt32(sbuff, conn->timeUsed);
+		this->lvSvrConn->SetSubItem(i, 6, CSTRP(sbuff, sptr));
+		if (conn->sql) this->lvSvrConn->SetSubItem(i, 7, conn->sql);
+		i++;
+	}
+	this->currDB->FreeConnectionInfo(&conns);
+}
+
 Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)
 {
 	if (this->currDB)
@@ -634,7 +708,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::ServerType sv
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
 	}
 	tableName->Release();
-	schemaName->Release();
+	SDEL_STRING(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::DBUtil::ServerType svrType)
@@ -675,7 +749,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::DBUtil::ServerType sv
 		}
 	}
 	tableName->Release();
-	schemaName->Release();
+	SDEL_STRING(schemaName);
 }
 
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -801,6 +875,54 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbMapTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMapTable->HandleSelectionChange(OnMapTableSelChg, this);
 
+	this->tpVariable = this->tcMain->AddTabPage(CSTR("Variable"));
+	NEW_CLASS(this->pnlVariable, UI::GUIPanel(ui, this->tpVariable));
+	this->pnlVariable->SetRect(0, 0, 100, 31, false);
+	this->pnlVariable->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->btnVariable, UI::GUIButton(ui, this->pnlVariable, CSTR("Show")));
+	this->btnVariable->SetRect(4, 4, 75, 23, false);
+	this->btnVariable->HandleButtonClick(OnVariableClicked, this);
+	NEW_CLASS(this->lvVariable, UI::GUIListView(ui, this->tpVariable, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvVariable->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvVariable->SetShowGrid(true);
+	this->lvVariable->SetFullRowSelect(true);
+	this->lvVariable->AddColumn(CSTR("Name"), 150);
+	this->lvVariable->AddColumn(CSTR("Value"), 300);
+
+	this->tpSvrConn = this->tcMain->AddTabPage(CSTR("Connection"));
+	NEW_CLASS(this->pnlSvrConn, UI::GUIPanel(ui, this->tpSvrConn));
+	this->pnlSvrConn->SetRect(0, 0, 100, 31, false);
+	this->pnlSvrConn->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->btnSvrConn, UI::GUIButton(ui, this->pnlSvrConn, CSTR("Show")));
+	this->btnSvrConn->SetRect(4, 4, 75, 23, false);
+	this->btnSvrConn->HandleButtonClick(OnSvrConnClicked, this);
+	NEW_CLASS(this->btnSvrConnKill, UI::GUIButton(ui, this->pnlSvrConn, CSTR("Kill")));
+	this->btnSvrConnKill->SetRect(84, 4, 75, 23, false);
+	this->btnSvrConnKill->HandleButtonClick(OnSvrConnKillClicked, this);
+	NEW_CLASS(this->lvSvrConn, UI::GUIListView(ui, this->tpSvrConn, UI::GUIListView::LVSTYLE_TABLE, 8));
+	this->lvSvrConn->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSvrConn->SetShowGrid(true);
+	this->lvSvrConn->SetFullRowSelect(true);
+	this->lvSvrConn->AddColumn(CSTR("Id"), 60);
+	this->lvSvrConn->AddColumn(CSTR("Status"), 100);
+	this->lvSvrConn->AddColumn(CSTR("User"), 100);
+	this->lvSvrConn->AddColumn(CSTR("Host"), 100);
+	this->lvSvrConn->AddColumn(CSTR("DB Name"), 100);
+	this->lvSvrConn->AddColumn(CSTR("Command"), 100);
+	this->lvSvrConn->AddColumn(CSTR("Time"), 60);
+	this->lvSvrConn->AddColumn(CSTR("SQL"), 300);
+
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog->SetRect(0, 0, 100, 23, false);
+	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, true));
+	this->log.AddLogHandler(this->logger, IO::ILogHandler::LogLevel::Raw);
+
+
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
@@ -836,6 +958,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Export Table Data..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	if (DB::DBManager::RestoreConn(DBCONNFILE, &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
@@ -862,6 +985,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 {
 	this->ClearChildren();
+	this->log.RemoveLogHandler(this->logger);
+	DEL_CLASS(this->logger);
 	DEL_CLASS(this->mnuTable);
 	DEL_CLASS(this->mnuSchema);
 	DEL_CLASS(this->mnuConn);
@@ -1093,6 +1218,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_POSTGRESQL:
 		this->ExportTableData(DB::DBUtil::ServerType::PostgreSQL);
+		break;
+	case MNU_TABLE_EXPORT_OPTION:
+		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->currDB, STR_CSTR(schemaName), tableName->ToCString());
+			dlg.ShowDialog(this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+		}
 		break;
 	}
 }

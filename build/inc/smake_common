@@ -1416,6 +1416,7 @@ Data/SyncLinkedList.h: ../../src/Data/SyncLinkedList.cpp
 @SyncLinkedList.o
 Data/TimeInstant.h:
 Data/Timestamp.h:
+Data/TwinItem.h:
 Data/Usable.h:
 Data/Usage.h: ../../src/Data/Usage.cpp
 @Usage.o
@@ -3471,6 +3472,8 @@ SSWR/AVIRead/AVIRCustomTileMapForm.h: ../../src/SSWR/AVIRead/AVIRCustomTileMapFo
 @AVIRCustomTileMapForm.o
 SSWR/AVIRead/AVIRDBCopyTablesForm.h: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 @AVIRDBCopyTablesForm.o
+SSWR/AVIRead/AVIRDBExportForm.h: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp
+@AVIRDBExportForm.o
 SSWR/AVIRead/AVIRDBForm.h: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
 @AVIRDBForm.o
 SSWR/AVIRead/AVIRDBManagerForm.h: ../../src/SSWR/AVIRead/AVIRDBManagerForm.cpp
@@ -5408,6 +5411,7 @@ AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 AVIRCPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 AVIRCustomTileMapForm.o: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
 AVIRDBCopyTablesForm.o: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
+AVIRDBExportForm.o: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp
 AVIRDBForm.o: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
 AVIRDBManagerForm.o: ../../src/SSWR/AVIRead/AVIRDBManagerForm.cpp
 AVIRDHCPServerForm.o: ../../src/SSWR/AVIRead/AVIRDHCPServerForm.cpp

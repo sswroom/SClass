@@ -2,37 +2,14 @@
 #define _SM_DATA_FASTMAP
 #include "Data/ArrayList.h"
 #include "Data/ListMap.h"
+#include "Data/TwinItem.h"
 
 namespace Data
 {
-	template <class T, class V> struct FastMapItem
-	{
-	public:
-		T key;
-		V value;
-	
-		FastMapItem(T key, V value)
-		{
-			this->key = key;
-			this->value = value;
-		}
-
-		FastMapItem(T key)
-		{
-			this->key = key;
-			this->value = 0;
-		}
-
-		Bool operator==(FastMapItem<T,V> index)
-		{
-			return this->key == index.key;
-		}
-	};
-
 	template <class T, class V> class FastMap : public ListMap<T, V>
 	{
 	protected:
-		Data::ArrayList<FastMapItem<T, V>> values;
+		Data::ArrayList<TwinItem<T, V>> values;
 
 	public:
 		FastMap();
@@ -70,12 +47,12 @@ namespace Data
 		if (i >= 0)
 		{
 			V oldVal = this->values.GetItem((UOSInt)i).value;
-            this->values.SetItem((UOSInt)i, FastMapItem<T,V>(key, val));
+            this->values.SetItem((UOSInt)i, TwinItem<T,V>(key, val));
 			return oldVal;
 		}
 		else
 		{
-			this->values.Insert((UOSInt)~i, FastMapItem<T,V>(key, val));
+			this->values.Insert((UOSInt)~i, TwinItem<T,V>(key, val));
 			return 0;
 		}
 	}

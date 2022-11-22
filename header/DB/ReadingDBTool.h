@@ -1,5 +1,6 @@
 #ifndef _SM_DB_READINGDBTOOL
 #define _SM_DB_READINGDBTOOL
+#include "Data/TwinItem.h"
 #include "DB/DBConn.h"
 #include "DB/SQLBuilder.h"
 #include "DB/TableDef.h"
@@ -18,6 +19,18 @@ namespace DB
 			ReaderTrigger = 0,
 			NonQueryTrigger = 1
 		} TriggerType;
+
+		struct ConnectionInfo
+		{
+			Int32 id;
+			Text::String *status;
+			Text::String *user;
+			Text::String *clientHostName;
+			Text::String *dbName;
+			Text::String *cmd;
+			Int32 timeUsed;
+			Text::String *sql;
+		};
 
 		typedef Int32 (__stdcall * SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
 
@@ -87,6 +100,12 @@ namespace DB
 		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
 		void ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
 		Bool ChangeDatabase(const UTF8Char *databaseName);
+
+		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
+		void FreeVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
+
+		UOSInt GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);
+		void FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);
 
 		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 	};

@@ -566,6 +566,17 @@ void UI::GUIListView::EnsureVisible(UOSInt index)
 	gtk_tree_view_scroll_to_cell((GtkTreeView*)data->treeView, path, 0, false, 0, 0);
 }
 
+void *UI::GUIListView::SetItem(UOSInt index, void *itemObj)
+{
+	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	MyRow *r = data->rows->GetItem(index);
+	if (r == 0)
+		return itemObj;
+	void *oldData = r->data;
+	r->data = itemObj;
+	return oldData;
+}
+
 void UI::GUIListView::BeginUpdate()
 {
 //	this->SetVisible(false);

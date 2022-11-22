@@ -1511,6 +1511,147 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	return false;
 }
 
+UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars)
+{
+	UOSInt ret = 0;
+	DB::DBReader *r;
+	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	{
+		r = this->ExecuteReader(CSTR("show variables"));
+		if (r)
+		{
+			while (r->ReadNext())
+			{
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(r->GetNewStr(0), r->GetNewStr(1)));
+				ret++;
+			}
+			this->CloseReader(r);
+		}
+	}
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	{
+		r = this->ExecuteReader(CSTR("select @@CONNECTIONS, @@CPU_BUSY, @@IDLE, @@IO_BUSY, @@PACKET_ERRORS, @@PACK_RECEIVED, @@PACK_SENT, @@TIMETICKS, @@TOTAL_ERRORS, @@TOTAL_READ, @@TOTAL_WRITE, @@DATEFIRST, @@DBTS, @@LANGID, @@LANGUAGE, @@LOCK_TIMEOUT, @@MAX_CONNECTIONS, @@MAX_PRECISION, @@NESTLEVEL, @@OPTIONS, @@REMSERVER, @@SERVERNAME, @@SERVICENAME, @@SPID, @@TEXTSIZE, @@VERSION"));
+		if (r)
+		{
+			if (r->ReadNext())
+			{
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("CONNECTIONS")), r->GetNewStr(0)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("CPU_BUSY")), r->GetNewStr(1)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("IDLE")), r->GetNewStr(2)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("IO_BUSY")), r->GetNewStr(3)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("PACKET_ERRORS")), r->GetNewStr(4)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("PACK_RECEIVED")), r->GetNewStr(5)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("PACK_SENT")), r->GetNewStr(6)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("TIMETICKS")), r->GetNewStr(7)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("TOTAL_ERRORS")), r->GetNewStr(8)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("TOTAL_READ")), r->GetNewStr(9)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("TOTAL_WRITE")), r->GetNewStr(10)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("DATEFIRST")), r->GetNewStr(11)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("DBTS")), r->GetNewStr(12)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("LANGID")), r->GetNewStr(13)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("LANGUAGE")), r->GetNewStr(14)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("LOCK_TIMEOUT")), r->GetNewStr(15)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("MAX_CONNECTIONS")), r->GetNewStr(16)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("MAX_PRECISION")), r->GetNewStr(17)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("NESTLEVEL")), r->GetNewStr(18)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("OPTIONS")), r->GetNewStr(19)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("REMSERVER")), r->GetNewStr(20)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("SERVERNAME")), r->GetNewStr(21)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("SERVICENAME")), r->GetNewStr(22)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("SPID")), r->GetNewStr(23)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("TEXTSIZE")), r->GetNewStr(24)));
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(Text::String::New(CSTR("VERSION")), r->GetNewStr(25)));
+				ret = 26;
+			}
+			this->CloseReader(r);
+		}
+	}
+	return ret;
+}
+
+void DB::ReadingDBTool::FreeVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars)
+{
+	Data::TwinItem<Text::String*, Text::String*> item(0);
+	UOSInt i = vars->GetCount();
+	while (i-- > 0)
+	{
+		item = vars->GetItem(i);
+		SDEL_STRING(item.key);
+		SDEL_STRING(item.value);
+	}
+	vars->Clear();
+}
+
+UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns)
+{
+	UOSInt ret = 0;
+	ConnectionInfo *conn;
+	DB::DBReader *r;
+	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	{
+		r = this->ExecuteReader(CSTR("show processlist"));
+		if (r)
+		{
+			while (r->ReadNext())
+			{
+				conn = MemAlloc(ConnectionInfo, 1);
+				conn->id = r->GetInt32(0);
+				conn->user = r->GetNewStr(1);
+				conn->clientHostName = r->GetNewStr(2);
+				conn->dbName = r->GetNewStr(3);
+				conn->cmd = r->GetNewStr(4);
+				conn->timeUsed = r->GetInt32(5);
+				conn->status = r->GetNewStr(6);
+				conn->sql = r->GetNewStr(7);
+				conns->Add(conn);
+				ret++;
+			}
+			this->CloseReader(r);
+		}
+	}
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	{
+		r = this->ExecuteReader(CSTR("exec sp_who"));
+		if (r)
+		{
+			while (r->ReadNext())
+			{
+				conn = MemAlloc(ConnectionInfo, 1);
+				conn->id = r->GetInt32(0);
+				conn->status = r->GetNewStr(2);
+				conn->user = r->GetNewStr(3);
+				conn->clientHostName = r->GetNewStr(4);
+				conn->dbName = r->GetNewStr(6);
+				conn->cmd = r->GetNewStr(7);
+				conn->timeUsed = 0;
+				conn->sql = 0;
+				conns->Add(conn);
+				ret++;
+			}
+			this->CloseReader(r);
+		}
+	}
+	return ret;	
+}
+
+void DB::ReadingDBTool::FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns)
+{
+	ConnectionInfo *conn;
+	UOSInt i = conns->GetCount();
+	while (i-- > 0)
+	{
+		conn = conns->GetItem(i);
+		SDEL_STRING(conn->status);
+		SDEL_STRING(conn->user);
+		SDEL_STRING(conn->clientHostName);
+		SDEL_STRING(conn->dbName);
+		SDEL_STRING(conn->cmd);
+		SDEL_STRING(conn->sql);
+		MemFree(conn);
+	}
+	conns->Clear();
+}
+
 UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
 	if (this->svrType == DB::DBUtil::ServerType::MySQL)

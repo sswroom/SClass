@@ -15,6 +15,7 @@
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
+#include "UI/ListBoxLogger.h"
 
 namespace SSWR
 {
@@ -67,7 +68,23 @@ namespace SSWR
 			UI::GUIHSplitter *hspMapTable;
 			UI::GUIListBox *lbMapTable;
 
+			UI::GUITabPage *tpVariable;
+			UI::GUIPanel *pnlVariable;
+			UI::GUIButton *btnVariable;
+			UI::GUIListView *lvVariable;
+
+			UI::GUITabPage *tpSvrConn;
+			UI::GUIPanel *pnlSvrConn;
+			UI::GUIButton *btnSvrConn;
+			UI::GUIButton *btnSvrConnKill;
+			UI::GUIListView *lvSvrConn;
+
+			UI::GUITabPage *tpLog;
+			UI::GUIListBox *lbLog;
+			UI::GUITextBox *txtLog;
+
 			SSWR::AVIRead::AVIRCore *core;
+			UI::ListBoxLogger *logger;
 			Data::ArrayList<DB::DBTool*> dbList;
 			Net::SSLEngine *ssl;
 			IO::LogTool log;
@@ -92,6 +109,9 @@ namespace SSWR
 			static void __stdcall OnDatabaseNewClicked(void *userObj);
 			static void __stdcall OnSQLExecClicked(void *userObj);
 			static void __stdcall OnLayerUpdated(void *userObj);
+			static void __stdcall OnVariableClicked(void *userObj);
+			static void __stdcall OnSvrConnClicked(void *userObj);
+			static void __stdcall OnSvrConnKillClicked(void *userObj);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();
@@ -99,6 +119,8 @@ namespace SSWR
 			void UpdateMapTableList();
 			void UpdateTableData(Text::CString schemaName, Text::String *tableName);
 			static void UpdateResult(DB::DBReader *r, UI::GUIListView *lv);
+			void UpdateVariableList();
+			void UpdateSvrConnList();
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 			void CopyTableCreate(DB::DBUtil::ServerType svrType);
