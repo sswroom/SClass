@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "DB/ColDef.h"
 #include "DB/DBReader.h"
+#include "DB/TableDef.h"
 #include "DB/TextDB.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -313,6 +314,50 @@ DB::DBReader *DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString
 	DB::DBReader *reader;
 	NEW_CLASS(reader, TextDBReader(data));
 	return reader;
+}
+
+DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	DBData *data;
+	if (tableName.v == 0)
+	{
+		if (this->dbMap.GetCount() == 1)
+		{
+			data = this->dbMap.GetValues()->GetItem(0);
+		}
+		else
+		{
+			data = 0;
+		}
+	}
+	else
+	{
+		data = this->dbMap.Get(tableName);
+	}
+	if (data == 0)
+	{
+		return 0;
+	}
+	DB::TableDef *tab;
+	DB::ColDef *colDef;
+	NEW_CLASS(tab, DB::TableDef(data->name->ToCString()));
+	UOSInt i = 0;
+	UOSInt j = data->colList.GetCount();
+	while (i < j)
+	{
+		NEW_CLASS(colDef, DB::ColDef(0));
+		colDef->SetColName(data->colList.GetItem(i));
+		colDef->SetColSize(256);
+		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
+		colDef->SetAttr(CSTR_NULL);
+		colDef->SetColDP(0);
+		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetAutoInc(false);
+		colDef->SetNotNull(false);
+		colDef->SetPK(false);
+		tab->AddCol(colDef);
+	}
+	return tab;
 }
 
 void DB::TextDB::CloseReader(DBReader *r)

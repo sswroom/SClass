@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/SortableDBReader.h"
+#include "DB/TableDef.h"
 #include "Map/ESRI/FileGDBDir.h"
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
@@ -54,6 +55,22 @@ DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Te
 	{
 		return NEW_CLASS_D(DB::SortableDBReader(this, schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition));
 	}
+}
+
+DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	FileGDBTable *table = this->GetTable(tableName);
+	if (table == 0)
+	{
+		return 0;
+	}
+	DB::TableDef *tab;
+	DB::DBReader *r;
+	NEW_CLASS(tab, DB::TableDef(tableName));
+	r = table->OpenReader(0, 0, 0, CSTR_NULL, 0);
+	tab->ColFromReader(r);
+	this->CloseReader(r);
+	return tab;
 }
 
 void Map::ESRI::FileGDBDir::CloseReader(DB::DBReader *r)

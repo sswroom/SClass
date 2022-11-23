@@ -61,7 +61,7 @@ Bool Data::FieldComparator::IsValid()
 	return this->fieldNames.GetCount() > 0;
 }
 
-Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType)
+Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::SQLType sqlType)
 {
 	if (this->fieldNames.GetCount() == 0)
 	{
@@ -77,7 +77,7 @@ Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 		{
 			sb->AppendC(UTF8STRC(", "));
 		}
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames.GetItem(i)->v, svrType);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames.GetItem(i)->v, sqlType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		if (this->dirs.GetItem(i) == -1)
 		{

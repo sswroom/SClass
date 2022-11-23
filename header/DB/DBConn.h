@@ -37,15 +37,16 @@ namespace DB
 	public:
 		virtual ~DBConn();
 
-		virtual DB::DBUtil::ServerType GetSvrType() = 0;
-		virtual ConnType GetConnType() = 0;
-		virtual Int8 GetTzQhr() = 0;
+		virtual DB::DBUtil::SQLType GetSQLType() const = 0;
+		virtual ConnType GetConnType() const = 0;
+		virtual Int8 GetTzQhr() const = 0;
 		virtual void ForceTz(Int8 tzQhr) = 0;
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb) = 0;
 		virtual void Close() = 0;
 		virtual OSInt ExecuteNonQuery(Text::CString sql) = 0;
 		virtual DBReader *ExecuteReader(Text::CString sql) = 0;
 		virtual Bool IsLastDataError() = 0;
+		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		DataError GetLastDataError();
 
 		virtual void *BeginTransaction() = 0;

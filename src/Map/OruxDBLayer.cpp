@@ -283,7 +283,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int6
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr == 0)
 		return 0;
-	DB::SQLBuilder sql(DB::DBUtil::ServerType::SQLite, 0);
+	DB::SQLBuilder sql(DB::DBUtil::SQLType::SQLite, 0);
 	Int32 x;
 	Int32 y;
 	x = (Int32)((id >> 32) & 0xffffffff);
@@ -346,6 +346,11 @@ DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::C
 	return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
+DB::TableDef *Map::OruxDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	return this->db->GetTableDef(schemaName, tableName);
+}
+
 void Map::OruxDBLayer::CloseReader(DB::DBReader *r)
 {
 	return this->db->CloseReader(r);
@@ -371,7 +376,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr == 0)
 		return false;
-	DB::SQLBuilder sql(DB::DBUtil::ServerType::SQLite, 0);
+	DB::SQLBuilder sql(DB::DBUtil::SQLType::SQLite, 0);
 	Int32 x;
 	Int32 y;
 	x = (Int32)((objectId >> 32) & 0xffffffff);

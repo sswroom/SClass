@@ -392,6 +392,16 @@ DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, 
 	return 0;
 }
 
+DB::TableDef *Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	Sync::MutexUsage mutUsage;
+	this->currDB = this->conn->UseConn(&mutUsage);
+	this->lastDB = this->currDB;
+	DB::TableDef *tab = this->currDB->GetTableDef(schemaName, tableName);
+	this->currDB = 0;
+	return tab;
+}
+
 void Map::ESRI::ESRIMDBLayer::CloseReader(DB::DBReader *r)
 {
 	Map::ESRI::ESRIMDBReader *rdr = (Map::ESRI::ESRIMDBReader*)r;

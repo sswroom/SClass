@@ -58,34 +58,37 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->workId = 0;
 	this->trig = 0;
 	this->dataCnt = 0;
-	this->svrType = db->GetSvrType();
-	if (this->svrType == DB::DBUtil::ServerType::Access)
+	this->sqlType = db->GetSQLType();
+	switch (this->sqlType)
 	{
+	case DB::DBUtil::SQLType::Access:
 		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::ILogHandler::LogLevel::Command);
-	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
-	{
+		break;
+	case DB::DBUtil::SQLType::MSSQL:
 		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::ILogHandler::LogLevel::Command);
-	}
-	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
-	{
+		break;
+	case DB::DBUtil::SQLType::MySQL:
 		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LogLevel::Command);
-	}
-	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
-	{
+		break;
+	case DB::DBUtil::SQLType::Oracle:
 		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LogLevel::Command);
-	}
-	else if (this->svrType == DB::DBUtil::ServerType::Text)
-	{
-		this->AddLogMsgC(UTF8STRC("Server type is Text"), IO::ILogHandler::LogLevel::Command);
-	}
-	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
-	{
+		break;
+	case DB::DBUtil::SQLType::SQLite:
 		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::ILogHandler::LogLevel::Command);
-	}
-	else
-	{
+		break;
+	case DB::DBUtil::SQLType::WBEM:
+		this->AddLogMsgC(UTF8STRC("Server type is WBEM"), IO::ILogHandler::LogLevel::Command);
+		break;
+	case DB::DBUtil::SQLType::MDBTools:
+		this->AddLogMsgC(UTF8STRC("Server type is MDBTools"), IO::ILogHandler::LogLevel::Command);
+		break;
+	case DB::DBUtil::SQLType::PostgreSQL:
+		this->AddLogMsgC(UTF8STRC("Server type is PostgreSQL"), IO::ILogHandler::LogLevel::Command);
+		break;
+	case DB::DBUtil::SQLType::Unknown:
+	default:
 		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::ILogHandler::LogLevel::Error);
+		break;
 	}
 }
 
@@ -437,9 +440,9 @@ void DB::ReadingDBTool::CloseReader(DB::DBReader *r)
 	}
 }
 
-DB::DBUtil::ServerType DB::ReadingDBTool::GetSvrType()
+DB::DBUtil::SQLType DB::ReadingDBTool::GetSQLType()
 {
-	return this->svrType;
+	return this->sqlType;
 }
 
 Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
@@ -480,57 +483,57 @@ Int8 DB::ReadingDBTool::GetTzQhr()
 
 UTF8Char *DB::ReadingDBTool::DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName)
 {
-	return DB::DBUtil::SDBColUTF8(sqlstr, colName, this->svrType);
+	return DB::DBUtil::SDBColUTF8(sqlstr, colName, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBColW(UTF8Char *sqlstr, const WChar *colName)
 {
-	return DB::DBUtil::SDBColW(sqlstr, colName, this->svrType);
+	return DB::DBUtil::SDBColW(sqlstr, colName, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBTrim(UTF8Char *sqlstr, Text::CString val)
 {
-	return DB::DBUtil::SDBTrim(sqlstr, val, this->svrType);
+	return DB::DBUtil::SDBTrim(sqlstr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBStrUTF8(UTF8Char *sqlStr, const UTF8Char *val)
 {
-	return DB::DBUtil::SDBStrUTF8(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBStrUTF8(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBStrW(UTF8Char *sqlStr, const WChar *val)
 {
-	return DB::DBUtil::SDBStrW(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBStrW(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBDbl(UTF8Char *sqlStr, Double val)
 {
-	return DB::DBUtil::SDBDbl(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBDbl(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBSng(UTF8Char *sqlStr, Single val)
 {
-	return DB::DBUtil::SDBSng(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBSng(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBInt32(UTF8Char *sqlStr, Int32 val)
 {
-	return DB::DBUtil::SDBInt32(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBInt32(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBInt64(UTF8Char *sqlStr, Int64 val)
 {
-	return DB::DBUtil::SDBInt64(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBInt64(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBBool(UTF8Char *sqlStr, Bool val)
 {
-	return DB::DBUtil::SDBBool(sqlStr, val, this->svrType);
+	return DB::DBUtil::SDBBool(sqlStr, val, this->sqlType);
 }
 
 UTF8Char *DB::ReadingDBTool::DBDate(UTF8Char *sqlStr, Data::DateTime *val)
 {
-	return DB::DBUtil::SDBDate(sqlStr, val, this->svrType, (Int8)this->GetTzQhr());
+	return DB::DBUtil::SDBDate(sqlStr, val, this->sqlType, (Int8)this->GetTzQhr());
 }
 
 UInt32 DB::ReadingDBTool::GetDataCnt()
@@ -621,10 +624,10 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 
 UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *arr)
 {
-	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		UOSInt ret = 0;
-		DB::SQLBuilder sql(DB::DBUtil::ServerType::MSSQL, this->GetTzQhr());
+		DB::SQLBuilder sql(DB::DBUtil::SQLType::MSSQL, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE' and TABLE_SCHEMA="));
 		if (schemaName.leng == 0)
 		{
@@ -651,7 +654,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 		}
 		return ret;
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		if (schemaName.leng != 0)
 			return 0;
@@ -677,7 +680,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
+	else if (this->sqlType == DB::DBUtil::SQLType::SQLite)
 	{
 		if (schemaName.leng != 0)
 			return 0;
@@ -703,7 +706,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
+	else if (this->sqlType == DB::DBUtil::SQLType::Access || this->sqlType == DB::DBUtil::SQLType::MDBTools)
 	{
 		if (schemaName.leng != 0)
 			return 0;
@@ -738,7 +741,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 
 UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 {
-	if (this->svrType == DB::DBUtil::ServerType::PostgreSQL)
+	if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
 		if (r)
@@ -762,7 +765,7 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select s.name from sys.schemas s"));
 		if (r)
@@ -795,557 +798,14 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 
 DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	UTF8Char buff[256];
-	UTF8Char *ptr;
-	switch (this->svrType)
-	{
-	case DB::DBUtil::ServerType::MySQL:
-	{
-		OSInt i = 4;
-		DB::DBReader *r = 0;
-		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
-		ptr = this->DBStrUTF8(ptr, tableName.v);
-
-		while (i-- > 0 && r == 0)
-		{
-			r = this->ExecuteReader(CSTRP(buff, ptr));
-		}
-		if (r == 0)
-			return 0;
-
-		DB::TableDef *tab;
-
-		if (r->ReadNext())
-		{
-			ptr = r->GetStr(0, buff, sizeof(buff));
-			NEW_CLASS(tab, DB::TableDef(CSTRP(buff, ptr)));
-			ptr = r->GetStr(1, buff, sizeof(buff));
-			tab->SetEngine(CSTRP(buff, ptr));
-			if (r->GetStr(17, buff, sizeof(buff)))
-			{
-				tab->SetComments(buff);
-			}
-			else
-			{
-				tab->SetComments(0);
-			}
-			if (r->GetStr(16, buff, sizeof(buff)))
-			{
-				tab->SetAttr(buff);
-			}
-			else
-			{
-				tab->SetAttr(0);
-			}
-			tab->SetSvrType(DB::DBUtil::ServerType::MySQL);
-			tab->SetCharset(CSTR_NULL);
-			this->CloseReader(r);
-		}
-		else
-		{
-			this->CloseReader(r);
-			return 0;
-		}
-		DB::ColDef *col;
-		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
-		ptr = this->DBColUTF8(ptr, tableName.v);
-		r = this->ExecuteReader(CSTRP(buff, ptr));
-		if (r)
-		{
-			while (r->ReadNext())
-			{
-				ptr = r->GetStr(0, buff, sizeof(buff));
-				NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
-				ptr = r->GetStr(2, buff, sizeof(buff));
-				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
-				ptr = r->GetStr(3, buff, sizeof(buff));
-				col->SetPK(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("PRI")));
-				if ((ptr = r->GetStr(4, buff, sizeof(buff))) != 0)
-				{
-					col->SetDefVal(CSTRP(buff, ptr));
-				}
-				else
-				{
-					col->SetDefVal(CSTR_NULL);
-				}
-				if ((ptr = r->GetStr(5, buff, sizeof(buff))) != 0)
-				{
-					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
-					{
-						col->SetAutoInc(true);
-						col->SetAttr(CSTR_NULL);
-					}
-					else
-					{
-						col->SetAttr(CSTRP(buff, ptr));
-					}
-				}
-				else
-				{
-					col->SetAttr(CSTR_NULL);
-				}
-				ptr = r->GetStr(1, buff, sizeof(buff));
-				UOSInt colSize;
-				col->SetNativeType(CSTRP(buff, ptr));
-				col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, &colSize));
-				col->SetColSize(colSize);
-				if (col->GetColType() == DB::DBUtil::CT_DateTime)
-				{
-					if (col->IsNotNull())
-					{
-						col->SetNotNull(false);
-					}
-				}
-				tab->AddCol(col);
-			}
-			this->CloseReader(r);
-		}
-		return tab;
-	}
-	case DB::DBUtil::ServerType::Oracle:
-	{
-		return 0;
-	}
-	case DB::DBUtil::ServerType::MSSQL:
-	{
-		Int32 i = 4;
-		DB::DBReader *r = 0;
-		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
-		ptr = this->DBStrUTF8(ptr, tableName.v);
-		if (schemaName.leng != 0)
-		{
-			ptr = Text::StrConcatC(ptr, UTF8STRC(", "));
-			ptr = this->DBStrUTF8(ptr, schemaName.v);
-		}
-		while (i-- > 0 && r == 0)
-		{
-			r = this->ExecuteReader(CSTRP(buff, ptr));
-		}
-		if (r == 0)
-			return 0;
-
-		DB::TableDef *tab;
-		NEW_CLASS(tab, DB::TableDef(tableName));
-		tab->SetEngine(CSTR_NULL);
-		tab->SetComments(0);
-		tab->SetAttr(0);
-		tab->SetCharset(CSTR_NULL);
-		tab->SetSvrType(DB::DBUtil::ServerType::MSSQL);
-
-		DB::ColDef *col;
-		while (r->ReadNext())
-		{
-			ptr = r->GetStr(3, buff, sizeof(buff));
-			NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
-			col->SetNotNull(!r->GetBool(10));
-			col->SetPK(false);
-			if ((ptr = r->GetStr(12, buff, sizeof(buff))) != 0)
-			{
-				if (*buff == '{')
-				{
-					ptr[-1] = 0;
-					col->SetDefVal(CSTRP(&buff[1], ptr - 1));
-				}
-				else
-				{
-					col->SetDefVal(CSTRP(buff, ptr));
-				}
-			}
-			UOSInt colSize = (UOSInt)r->GetInt32(6);
-			ptr = r->GetStr(5, buff, sizeof(buff));
-			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
-			{
-				col->SetAutoInc(true);
-				ptr -= 9;
-				*ptr = 0;
-			}
-			col->SetNativeType(CSTRP(buff, ptr));
-			col->SetColType(DB::DBUtil::ParseColType(this->svrType, buff, &colSize));
-			col->SetColSize(colSize);
-			tab->AddCol(col);
-		}
-		this->CloseReader(r);
-
-		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("SELECT c.name AS column_name, i.name AS index_name, c.is_identity FROM sys.indexes i"));
-		sb.AppendC(UTF8STRC(" inner join sys.index_columns ic  ON i.object_id = ic.object_id AND i.index_id = ic.index_id"));
-		sb.AppendC(UTF8STRC(" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id"));
-		sb.AppendC(UTF8STRC(" WHERE i.is_primary_key = 1"));
-		sb.AppendC(UTF8STRC(" and i.object_ID = OBJECT_ID('"));
-		sb.Append(tableName);
-		sb.AppendC(UTF8STRC("')"));
-		r = 0;
-		i = 4;
-		while (i-- > 0 && r == 0)
-		{
-			r = this->ExecuteReader(sb.ToCString());
-		}
-		if (r == 0)
-			return tab;
-
-		UOSInt j;
-		UOSInt k;
-		while (r->ReadNext())
-		{
-			ptr = r->GetStr(0, buff, sizeof(buff));
-			j = 0;
-			k = tab->GetColCnt();
-			while (j < k)
-			{
-				col = tab->GetCol(j);
-				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
-				{
-					col->SetPK(true);
-					break;
-				}
-				j++;
-			}
-		}
-		this->CloseReader(r);
-
-		return tab;
-	}
-	case DB::DBUtil::ServerType::Access:
-	{
-		return 0;
-	}
-	case DB::DBUtil::ServerType::SQLite:
-	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
-		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
-		sql.AppendStrC(tableName);
-		DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
-		if (r == 0)
-		{
-			return 0;
-		}
-		Text::StringBuilderUTF8 sb;
-		if (r->ReadNext())
-		{
-			r->GetStr(0, &sb);
-		}
-		this->db->CloseReader(r);
-
-		DB::TableDef *tab = 0;
-		DB::SQL::SQLCommand *cmd = DB::SQL::SQLCommand::Parse(sb.ToString(), this->svrType);
-		if (cmd)
-		{
-			if (cmd->GetCommandType() == DB::SQL::SQLCommand::CT_CREATE_TABLE)
-			{
-				tab = ((DB::SQL::CreateTableCommand*)cmd)->GetTableDef()->Clone();
-			}
-			DEL_CLASS(cmd);
-		}
-		return tab;
-	}
-	case DB::DBUtil::ServerType::PostgreSQL:
-	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
-		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision from information_schema.columns where table_name="));
-		sql.AppendStrC(tableName);
-		sql.AppendCmdC(CSTR(" and table_schema = "));
-		if (schemaName.leng == 0)
-		{
-			sql.AppendStrC(CSTR("public"));
-		}
-		else
-		{
-			sql.AppendStrC(schemaName);
-		}
-		sql.AppendCmdC(CSTR(" order by ordinal_position"));
-		DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
-		if (r == 0)
-		{
-			return 0;
-		}
-		Data::FastStringMap<DB::ColDef*> colMap;
-		DB::TableDef *tab;
-		DB::ColDef *col;
-		Text::String *s;
-		UOSInt sizeCol;
-		NEW_CLASS(tab, DB::TableDef(tableName));
-		while (r->ReadNext())
-		{
-			s = r->GetNewStr(0);
-			NEW_CLASS(col, DB::ColDef(s));
-			SDEL_STRING(s);
-			s = r->GetNewStr(1);
-			col->SetDefVal(s);
-			SDEL_STRING(s);
-			s = r->GetNewStr(2);
-			col->SetNotNull((s != 0) && s->Equals(UTF8STRC("NO")));
-			SDEL_STRING(s);
-			s = r->GetNewStr(3);
-			sizeCol = 4;
-			if (s)
-			{
-				col->SetNativeType(s);
-				//////////////////////////
-				if (s->Equals(UTF8STRC("name")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1024);
-				}
-				else if (s->Equals(UTF8STRC("timestamptz")))
-				{
-					col->SetColSize(6);
-					col->SetColType(DB::DBUtil::CT_DateTimeTZ);
-					sizeCol = 5;
-				}
-				else if (s->Equals(UTF8STRC("timestamp")))
-				{
-					col->SetColSize(6);
-					col->SetColType(DB::DBUtil::CT_DateTime);
-					sizeCol = 5;
-				}
-				else if (s->Equals(UTF8STRC("date")))
-				{
-					col->SetColType(DB::DBUtil::CT_Date);
-					sizeCol = 5;
-				}
-				else if (s->Equals(UTF8STRC("char")))
-				{
-					col->SetColType(DB::DBUtil::CT_UTF32Char);
-					col->SetColSize(1);
-				}
-				else if (s->Equals(UTF8STRC("bpchar")))
-				{
-					col->SetColType(DB::DBUtil::CT_UTF32Char);
-				}
-				else if (s->Equals(UTF8STRC("varchar")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(0x10000000);
-				}
-				else if (s->Equals(UTF8STRC("_char")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("bool")))
-				{
-					col->SetColType(DB::DBUtil::CT_Bool);
-				}
-				else if (s->Equals(UTF8STRC("int2")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int16);
-				}
-				else if (s->Equals(UTF8STRC("int4")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int32);
-				}
-				else if (s->Equals(UTF8STRC("int8")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int64);
-				}
-				else if (s->Equals(UTF8STRC("smallserial")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int16);
-					col->SetAutoInc(true);
-				}
-				else if (s->Equals(UTF8STRC("serial")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int32);
-					col->SetAutoInc(true);
-				}
-				else if (s->Equals(UTF8STRC("bigserial")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int64);
-					col->SetAutoInc(true);
-				}
-				else if (s->Equals(UTF8STRC("text")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(0x10000000);
-				}
-				else if (s->Equals(UTF8STRC("uuid")))
-				{
-					col->SetColType(DB::DBUtil::CT_UUID);
-				}
-				else if (s->Equals(UTF8STRC("bytea")))
-				{
-					col->SetColType(DB::DBUtil::CT_Binary);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("_oid")))
-				{
-					col->SetColType(DB::DBUtil::CT_Binary);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("_int2")))
-				{
-					col->SetColType(DB::DBUtil::CT_Binary);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("oidvector")))
-				{
-					col->SetColType(DB::DBUtil::CT_Binary);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("int2vector")))
-				{
-					col->SetColType(DB::DBUtil::CT_Binary);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("jsonb"))) //////////////////////////////////
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("numeric")))
-				{
-					col->SetColType(DB::DBUtil::CT_Double);
-				}
-				else if (s->Equals(UTF8STRC("point")))
-				{
-					col->SetColType(DB::DBUtil::CT_Vector);
-				}
-				else if (s->Equals(UTF8STRC("float4")))
-				{
-					col->SetColType(DB::DBUtil::CT_Float);
-				}
-				else if (s->Equals(UTF8STRC("float8")))
-				{
-					col->SetColType(DB::DBUtil::CT_Double);
-				}
-				else if (s->Equals(UTF8STRC("geometry")))
-				{
-					col->SetColType(DB::DBUtil::CT_Vector);
-				}
-				else if (s->Equals(UTF8STRC("_float4")))
-				{
-					col->SetColType(DB::DBUtil::CT_Binary);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("oid")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int32);
-				}
-				else if (s->Equals(UTF8STRC("xid")))
-				{
-					col->SetColType(DB::DBUtil::CT_Int32);
-				}
-				else if (s->Equals(UTF8STRC("regproc")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(256);
-				}
-				else if (s->Equals(UTF8STRC("anyarray")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("pg_node_tree")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("_aclitem")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("_text")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(0x10000000);
-				}
-				else if (s->Equals(UTF8STRC("citext")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(0x10000000);
-				}
-/*				else if (s->Equals(UTF8STRC("pg_ndistinct")))////////////////////
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("pg_dependencies")))////////////////////
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("pg_lsn")))////////////////////
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else if (s->Equals(UTF8STRC("pg_mcv_list")))////////////////////
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}*/
-				else if (s->Equals(UTF8STRC("_pg_statistic")))
-				{
-					col->SetColType(DB::DBUtil::CT_VarUTF32Char);
-					col->SetColSize(1048576);
-				}
-				else
-				{
-					printf("ReadingDBTool.GetTableDef: PSQL Unknown type: %s\r\n", s->v);
-					col->SetColType(DB::DBUtil::CT_Unknown);
-				}
-				s->Release();
-			}
-			if (!r->IsNull(sizeCol))
-			{
-				col->SetColSize((UOSInt)r->GetInt32(sizeCol));
-			}
-			tab->AddCol(col);
-			colMap.Put(col->GetColName(), col);
-		}
-		this->db->CloseReader(r);
-
-		sql.Clear();
-		sql.AppendCmdC(CSTR("SELECT a.attname FROM pg_index i JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE i.indrelid = "));
-		if (schemaName.leng > 0)
-		{
-			Text::StringBuilderUTF8 sb;
-			sb.Append(schemaName);
-			sb.AppendUTF8Char('.');
-			sb.Append(tableName);
-			sql.AppendStrC(sb.ToCString());
-		}
-		else
-		{
-			sql.AppendStrC(tableName);
-		}
-		sql.AppendCmdC(CSTR("::regclass AND i.indisprimary"));
-		r = this->db->ExecuteReader(sql.ToCString());
-		if (r)
-		{
-			while (r->ReadNext())
-			{
-				ptr = r->GetStr(0, buff, 256);
-				if (ptr)
-				{
-					col = colMap.GetC(CSTRP(buff, ptr));
-					if (col)
-					{
-						col->SetPK(true);
-					}
-				}
-			}
-			this->db->CloseReader(r);
-		}
-		return tab;
-	}
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
-	case DB::DBUtil::ServerType::MDBTools:
-	case DB::DBUtil::ServerType::Unknown:
-	default:
-	{
-		return 0;
-	}
-	}
+	return this->db->GetTableDef(schemaName, tableName);
 }
 
 UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr)
 {
-	switch (this->svrType)
+	switch (this->sqlType)
 	{
-	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::SQLType::MSSQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases"));
 		if (r)
@@ -1369,7 +829,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 			return 0;
 		}
 	}
-	case DB::DBUtil::ServerType::MySQL:
+	case DB::DBUtil::SQLType::MySQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("show databases"));
 		if (r)
@@ -1393,7 +853,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 			return 0;
 		}
 	}
-	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::SQLType::SQLite:
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::String *name = this->db->GetSourceNameObj();
@@ -1407,7 +867,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 		arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 		return 1;
 	}
-	case DB::DBUtil::ServerType::PostgreSQL:
+	case DB::DBUtil::SQLType::PostgreSQL:
 	{
 		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT datname FROM pg_database"));
 		if (r)
@@ -1431,12 +891,11 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 			return 0;
 		}
 	}
-	case DB::DBUtil::ServerType::Oracle:
-	case DB::DBUtil::ServerType::Unknown:
-	case DB::DBUtil::ServerType::Access:
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
-	case DB::DBUtil::ServerType::MDBTools:
+	case DB::DBUtil::SQLType::Oracle:
+	case DB::DBUtil::SQLType::Unknown:
+	case DB::DBUtil::SQLType::Access:
+	case DB::DBUtil::SQLType::WBEM:
+	case DB::DBUtil::SQLType::MDBTools:
 	default:
 		return 0;
 	}
@@ -1455,7 +914,7 @@ void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *a
 Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 {
 	UTF8Char sbuff[256];
-	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
@@ -1470,7 +929,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 			return false;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
@@ -1485,7 +944,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 			return false;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::PostgreSQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
 	{
 		if (this->db && this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
 		{
@@ -1515,7 +974,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 {
 	UOSInt ret = 0;
 	DB::DBReader *r;
-	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		r = this->ExecuteReader(CSTR("show variables"));
 		if (r)
@@ -1528,7 +987,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 			this->CloseReader(r);
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		r = this->ExecuteReader(CSTR("select @@CONNECTIONS, @@CPU_BUSY, @@IDLE, @@IO_BUSY, @@PACKET_ERRORS, @@PACK_RECEIVED, @@PACK_SENT, @@TIMETICKS, @@TOTAL_ERRORS, @@TOTAL_READ, @@TOTAL_WRITE, @@DATEFIRST, @@DBTS, @@LANGID, @@LANGUAGE, @@LOCK_TIMEOUT, @@MAX_CONNECTIONS, @@MAX_PRECISION, @@NESTLEVEL, @@OPTIONS, @@REMSERVER, @@SERVERNAME, @@SERVICENAME, @@SPID, @@TEXTSIZE, @@VERSION"));
 		if (r)
@@ -1566,6 +1025,19 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 			this->CloseReader(r);
 		}
 	}
+	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	{
+		r = this->ExecuteReader(CSTR("select name, setting from pg_Settings"));
+		if (r)
+		{
+			while (r->ReadNext())
+			{
+				vars->Add(Data::TwinItem<Text::String*, Text::String*>(r->GetNewStr(0), r->GetNewStr(1)));
+				ret++;
+			}
+			this->CloseReader(r);
+		}
+	}
 	return ret;
 }
 
@@ -1587,7 +1059,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 	UOSInt ret = 0;
 	ConnectionInfo *conn;
 	DB::DBReader *r;
-	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		r = this->ExecuteReader(CSTR("show processlist"));
 		if (r)
@@ -1609,7 +1081,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 			this->CloseReader(r);
 		}
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		r = this->ExecuteReader(CSTR("exec sp_who"));
 		if (r)
@@ -1625,6 +1097,28 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 				conn->cmd = r->GetNewStr(7);
 				conn->timeUsed = 0;
 				conn->sql = 0;
+				conns->Add(conn);
+				ret++;
+			}
+			this->CloseReader(r);
+		}
+	}
+	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	{
+		r = this->ExecuteReader(CSTR("select pid, state, usename, client_addr, datname, wait_event, query from pg_stat_activity"));
+		if (r)
+		{
+			while (r->ReadNext())
+			{
+				conn = MemAlloc(ConnectionInfo, 1);
+				conn->id = r->GetInt32(0);
+				conn->status = r->GetNewStr(1);
+				conn->user = r->GetNewStr(2);
+				conn->clientHostName = r->GetNewStr(3);
+				conn->dbName = r->GetNewStr(4);
+				conn->cmd = r->GetNewStr(5);
+				conn->timeUsed = 0;
+				conn->sql = r->GetNewStr(6);
 				conns->Add(conn);
 				ret++;
 			}
@@ -1654,11 +1148,11 @@ void DB::ReadingDBTool::FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *co
 
 UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
-	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		return SplitMySQL(outStrs, maxCnt, oriStr);
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		return SplitMSSQL(outStrs, maxCnt, oriStr);
 	}

@@ -14,9 +14,9 @@ DB::SharedDBConn::SharedDBConn(DB::DBConn *conn)
 	this->useCnt = 1;
 }
 
-DB::DBUtil::ServerType DB::SharedDBConn::GetSvrType()
+DB::DBUtil::SQLType DB::SharedDBConn::GetSQLType()
 {
-	return this->conn->GetSvrType();
+	return this->conn->GetSQLType();
 }
 
 void DB::SharedDBConn::Reconnect()

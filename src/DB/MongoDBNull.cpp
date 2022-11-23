@@ -22,6 +22,11 @@ DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStrin
 	return 0;
 }
 
+DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	return 0;
+}
+		
 void DB::MongoDB::CloseReader(DBReader *r)
 {
 }

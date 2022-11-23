@@ -24,9 +24,9 @@ namespace DB
 		SQLiteFile(Text::CString fileName);
 		virtual ~SQLiteFile();
 
-		virtual DB::DBUtil::ServerType GetSvrType();
-		virtual ConnType GetConnType();
-		virtual Int8 GetTzQhr();
+		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual ConnType GetConnType() const;
+		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();

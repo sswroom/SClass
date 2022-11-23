@@ -38,7 +38,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 
 void DB::MySQLMaintance::RepairTable(Text::String *tableName, Text::StringBuilderUTF8 *sb)
 {
-	DB::SQLBuilder sql(this->cli->GetSvrType(), this->cli->GetTzQhr());
+	DB::SQLBuilder sql(this->cli->GetSQLType(), this->cli->GetTzQhr());
 	sql.AppendCmdC(CSTR("check table "));
 	sql.AppendCol(tableName->v);
 	DB::DBReader *r = this->cli->ExecuteReader(sql.ToCString());

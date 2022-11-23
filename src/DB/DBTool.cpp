@@ -117,7 +117,7 @@ void DB::DBTool::EndTrans(Bool toCommit)
 
 Int32 DB::DBTool::GetLastIdentity32()
 {
-	if (this->svrType == DB::DBUtil::ServerType::MySQL || this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
+	if (this->sqlType == DB::DBUtil::SQLType::MySQL || this->sqlType == DB::DBUtil::SQLType::MSSQL || this->sqlType == DB::DBUtil::SQLType::Access || this->sqlType == DB::DBUtil::SQLType::MDBTools)
 	{
 		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int32 id = 0;
@@ -139,7 +139,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 
 Int64 DB::DBTool::GetLastIdentity64()
 {
-	if (this->svrType == DB::DBUtil::ServerType::MySQL || this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
+	if (this->sqlType == DB::DBUtil::SQLType::MySQL || this->sqlType == DB::DBUtil::SQLType::MSSQL || this->sqlType == DB::DBUtil::SQLType::Access || this->sqlType == DB::DBUtil::SQLType::MDBTools)
 	{
 		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int64 id = 0;
@@ -166,23 +166,22 @@ DB::DBConn *DB::DBTool::GetConn()
 
 Bool DB::DBTool::CreateDatabase(Text::CString databaseName)
 {
-	switch (this->svrType)
+	switch (this->sqlType)
 	{
-	case DB::DBUtil::ServerType::MSSQL:
-	case DB::DBUtil::ServerType::MySQL:
-	case DB::DBUtil::ServerType::Oracle:
-	case DB::DBUtil::ServerType::Access:
-	case DB::DBUtil::ServerType::SQLite:
-	case DB::DBUtil::ServerType::MDBTools:
-	case DB::DBUtil::ServerType::PostgreSQL:
+	case DB::DBUtil::SQLType::MSSQL:
+	case DB::DBUtil::SQLType::MySQL:
+	case DB::DBUtil::SQLType::Oracle:
+	case DB::DBUtil::SQLType::Access:
+	case DB::DBUtil::SQLType::SQLite:
+	case DB::DBUtil::SQLType::MDBTools:
+	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
 		DB::SQLGenerator::GenCreateDatabaseCmd(&sql, databaseName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
-	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::SQLType::WBEM:
+	case DB::DBUtil::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Create database is not supported"));
@@ -192,23 +191,22 @@ Bool DB::DBTool::CreateDatabase(Text::CString databaseName)
 
 Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
 {
-	switch (this->svrType)
+	switch (this->sqlType)
 	{
-	case DB::DBUtil::ServerType::MSSQL:
-	case DB::DBUtil::ServerType::MySQL:
-	case DB::DBUtil::ServerType::Oracle:
-	case DB::DBUtil::ServerType::Access:
-	case DB::DBUtil::ServerType::SQLite:
-	case DB::DBUtil::ServerType::MDBTools:
-	case DB::DBUtil::ServerType::PostgreSQL:
+	case DB::DBUtil::SQLType::MSSQL:
+	case DB::DBUtil::SQLType::MySQL:
+	case DB::DBUtil::SQLType::Oracle:
+	case DB::DBUtil::SQLType::Access:
+	case DB::DBUtil::SQLType::SQLite:
+	case DB::DBUtil::SQLType::MDBTools:
+	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
 		DB::SQLGenerator::GenDeleteDatabaseCmd(&sql, databaseName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
-	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::SQLType::WBEM:
+	case DB::DBUtil::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Delete database is not supported"));
@@ -218,23 +216,22 @@ Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
 
 Bool DB::DBTool::CreateSchema(Text::CString schemaName)
 {
-	switch (this->svrType)
+	switch (this->sqlType)
 	{
-	case DB::DBUtil::ServerType::MSSQL:
-	case DB::DBUtil::ServerType::PostgreSQL:
+	case DB::DBUtil::SQLType::MSSQL:
+	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
 		DB::SQLGenerator::GenCreateSchemaCmd(&sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::ServerType::MySQL:
-	case DB::DBUtil::ServerType::Oracle:
-	case DB::DBUtil::ServerType::SQLite:
-	case DB::DBUtil::ServerType::MDBTools:
-	case DB::DBUtil::ServerType::Access:
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
-	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::SQLType::MySQL:
+	case DB::DBUtil::SQLType::Oracle:
+	case DB::DBUtil::SQLType::SQLite:
+	case DB::DBUtil::SQLType::MDBTools:
+	case DB::DBUtil::SQLType::Access:
+	case DB::DBUtil::SQLType::WBEM:
+	case DB::DBUtil::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Delete schema is not supported"));
@@ -244,23 +241,22 @@ Bool DB::DBTool::CreateSchema(Text::CString schemaName)
 
 Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 {
-	switch (this->svrType)
+	switch (this->sqlType)
 	{
-	case DB::DBUtil::ServerType::MSSQL:
-	case DB::DBUtil::ServerType::PostgreSQL:
+	case DB::DBUtil::SQLType::MSSQL:
+	case DB::DBUtil::SQLType::PostgreSQL:
 	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
 		DB::SQLGenerator::GenDeleteSchemaCmd(&sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
-	case DB::DBUtil::ServerType::MySQL:
-	case DB::DBUtil::ServerType::Oracle:
-	case DB::DBUtil::ServerType::SQLite:
-	case DB::DBUtil::ServerType::MDBTools:
-	case DB::DBUtil::ServerType::Access:
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
-	case DB::DBUtil::ServerType::Unknown:
+	case DB::DBUtil::SQLType::MySQL:
+	case DB::DBUtil::SQLType::Oracle:
+	case DB::DBUtil::SQLType::SQLite:
+	case DB::DBUtil::SQLType::MDBTools:
+	case DB::DBUtil::SQLType::Access:
+	case DB::DBUtil::SQLType::WBEM:
+	case DB::DBUtil::SQLType::Unknown:
 	default:
 		this->lastErrMsg.ClearStr();
 		this->lastErrMsg.AppendC(UTF8STRC("Delete schema is not supported"));
@@ -271,19 +267,35 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 Bool DB::DBTool::KillConnection(Int32 id)
 {
 	Bool ret = false;
-	if (this->svrType == DB::DBUtil::ServerType::MySQL)
+	if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("kill "));
 		sql.AppendInt32(id);
 		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
 	}
-	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
+	else if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
-		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("kill "));
 		sql.AppendInt32(id);
 		ret = (this->ExecuteNonQuery(sql.ToCString()) >= -1);
+	}
+	else if (this->sqlType == DB::DBUtil::SQLType::PostgreSQL)
+	{
+		DB::SQLBuilder sql(this->sqlType, this->GetTzQhr());
+		sql.AppendCmdC(CSTR("SELECT pg_terminate_backend("));
+		sql.AppendInt32(id);
+		sql.AppendCmdC(CSTR(")"));
+		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
+		if (r)
+		{
+			if (r->ReadNext())
+			{
+				ret = r->GetBool(0);
+			}
+			this->CloseReader(r);
+		}
 	}
 	return ret;	
 }

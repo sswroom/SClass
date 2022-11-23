@@ -324,6 +324,15 @@ DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CS
 	return 0;
 }
 
+DB::TableDef *Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	if (this->db)
+	{
+		return this->GetTableDef(schemaName, tableName);
+	}
+	return 0;
+}
+
 void Map::DBMapLayer::CloseReader(DB::DBReader *r)
 {
 	if (this->db)

@@ -631,6 +631,11 @@ DB::DBReader *Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStri
 	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
 }
 
+DB::TableDef *Map::SHPData::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	return this->dbf->GetTableDef(schemaName, tableName);
+}
+
 void Map::SHPData::CloseReader(DB::DBReader *r)
 {
 	this->dbf->CloseReader(r);

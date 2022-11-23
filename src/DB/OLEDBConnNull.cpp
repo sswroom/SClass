@@ -43,17 +43,17 @@ DB::OLEDBConn::~OLEDBConn()
 	MemFree(this->clsData);
 }
 
-DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
+DB::DBUtil::SQLType DB::OLEDBConn::GetSQLType() const
 {
-	return DB::DBUtil::ServerType::Unknown;
+	return DB::DBUtil::SQLType::Unknown;
 }
 
-DB::DBConn::ConnType DB::OLEDBConn::GetConnType()
+DB::DBConn::ConnType DB::OLEDBConn::GetConnType() const
 {
 	return DB::DBConn::CT_OLEDB;
 }
 
-Int8 DB::OLEDBConn::GetTzQhr()
+Int8 DB::OLEDBConn::GetTzQhr() const
 {
 	return 0;
 }

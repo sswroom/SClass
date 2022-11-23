@@ -2047,17 +2047,17 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 	SDEL_STRING(this->lastError);
 }
 
-DB::DBUtil::ServerType Net::MySQLTCPClient::GetSvrType()
+DB::DBUtil::SQLType Net::MySQLTCPClient::GetSQLType() const
 {
-	return DB::DBUtil::ServerType::MySQL;
+	return DB::DBUtil::SQLType::MySQL;
 }
 
-DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType()
+DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType() const
 {
 	return DB::DBConn::CT_MYSQLTCP;
 }
 
-Int8 Net::MySQLTCPClient::GetTzQhr()
+Int8 Net::MySQLTCPClient::GetTzQhr() const
 {
 	return 0;
 }
@@ -2362,7 +2362,7 @@ DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text
 			{
 				sb.AppendUTF8Char(',');
 			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::SQLType::MySQL);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
@@ -2370,16 +2370,16 @@ DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text
 	sb.AppendC(UTF8STRC(" from "));
 	if (schemaName.leng > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::ServerType::MySQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::MySQL);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::SQLType::MySQL);
 	sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::DBUtil::ServerType::MySQL, 0, 100, 0);
+		condition->ToWhereClause(&sb, DB::DBUtil::SQLType::MySQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{
@@ -2400,17 +2400,17 @@ Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
 	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("use "));
-	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::DBUtil::ServerType::MySQL);
+	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::DBUtil::SQLType::MySQL);
 	if (colLen > 127)
 	{
 		UTF8Char *sptr = MemAlloc(UTF8Char, colLen + 1);
-		sptr2 = DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::ServerType::MySQL);
+		sptr2 = DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::SQLType::MySQL);
 		sb.AppendC(sptr, (UOSInt)(sptr2 - sptr));
 		MemFree(sptr);
 	}
 	else
 	{
-		sptr2 = DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::ServerType::MySQL);
+		sptr2 = DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::SQLType::MySQL);
 		sb.AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	}
 	if (this->ExecuteNonQuery(sb.ToCString()) >= 0)

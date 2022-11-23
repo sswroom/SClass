@@ -15,11 +15,11 @@ namespace DB
 	{
 	private:
 		Text::StringBuilderUTF8 sb;
-		DB::DBUtil::ServerType svrType;
+		DB::DBUtil::SQLType sqlType;
 		Int32 tzQhr;
 
 	public:
-		SQLBuilder(DB::DBUtil::ServerType svrType, Int32 tzQhr);
+		SQLBuilder(DB::DBUtil::SQLType sqlType, Int32 tzQhr);
 		SQLBuilder(DB::ReadingDBTool *db);
 		~SQLBuilder();
 
@@ -50,7 +50,7 @@ namespace DB
 		UOSInt GetLength() const;
 		Text::CString ToCString() const;
 		Text::String *ToNewString() const;
-		DB::DBUtil::ServerType GetServerType() const;
+		DB::DBUtil::SQLType GetSQLType() const;
 	};
 }
 #endif

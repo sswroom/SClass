@@ -11,24 +11,23 @@ void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal)
 	}
 	else if (defVal.Equals(UTF8STRC("CONVERT([datetime2](3),getutcdate())")))
 	{
-		switch (sql->GetServerType())
+		switch (sql->GetSQLType())
 		{
-		case DB::DBUtil::ServerType::MSSQL:
+		case DB::DBUtil::SQLType::MSSQL:
 			sql->AppendStrC(CSTR("CONVERT([datetime2](3),getutcdate())"));
 			break;
-		case DB::DBUtil::ServerType::PostgreSQL:
+		case DB::DBUtil::SQLType::PostgreSQL:
 			sql->AppendCmdC(CSTR("(current_timestamp(3) at time zone 'utc')"));
 			break;
-		case DB::DBUtil::ServerType::MySQL:
+		case DB::DBUtil::SQLType::MySQL:
 			sql->AppendCmdC(CSTR("utc_timestamp(3)"));
 			break;
-		case DB::DBUtil::ServerType::Access:
-		case DB::DBUtil::ServerType::MDBTools:
-		case DB::DBUtil::ServerType::Oracle:
-		case DB::DBUtil::ServerType::SQLite:
-		case DB::DBUtil::ServerType::Text:
-		case DB::DBUtil::ServerType::Unknown:
-		case DB::DBUtil::ServerType::WBEM:
+		case DB::DBUtil::SQLType::Access:
+		case DB::DBUtil::SQLType::MDBTools:
+		case DB::DBUtil::SQLType::Oracle:
+		case DB::DBUtil::SQLType::SQLite:
+		case DB::DBUtil::SQLType::Unknown:
+		case DB::DBUtil::SQLType::WBEM:
 		default:
 			sql->AppendStrC(CSTR("utcnow(3)"));
 			break;
@@ -36,22 +35,21 @@ void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal)
 	}
 	else if (defVal.Equals(UTF8STRC("getdate()")))
 	{
-		switch (sql->GetServerType())
+		switch (sql->GetSQLType())
 		{
-		case DB::DBUtil::ServerType::MSSQL:
+		case DB::DBUtil::SQLType::MSSQL:
 			sql->AppendStrC(CSTR("getdate()"));
 			break;
-		case DB::DBUtil::ServerType::MySQL:
+		case DB::DBUtil::SQLType::MySQL:
 			sql->AppendCmdC(CSTR("now(6)"));
 			break;
-		case DB::DBUtil::ServerType::PostgreSQL:
-		case DB::DBUtil::ServerType::Access:
-		case DB::DBUtil::ServerType::MDBTools:
-		case DB::DBUtil::ServerType::Oracle:
-		case DB::DBUtil::ServerType::SQLite:
-		case DB::DBUtil::ServerType::Text:
-		case DB::DBUtil::ServerType::Unknown:
-		case DB::DBUtil::ServerType::WBEM:
+		case DB::DBUtil::SQLType::PostgreSQL:
+		case DB::DBUtil::SQLType::Access:
+		case DB::DBUtil::SQLType::MDBTools:
+		case DB::DBUtil::SQLType::Oracle:
+		case DB::DBUtil::SQLType::SQLite:
+		case DB::DBUtil::SQLType::Unknown:
+		case DB::DBUtil::SQLType::WBEM:
 		default:
 			sql->AppendStrC(CSTR("now()"));
 			break;

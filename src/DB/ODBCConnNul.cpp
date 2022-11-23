@@ -17,7 +17,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema)
 {
-	this->svrType = DB::DBUtil::ServerType::Unknown;
+	this->sqlType = DB::DBUtil::SQLType::Unknown;
 	return false;
 }
 
@@ -130,9 +130,9 @@ DB::ODBCConn::~ODBCConn()
 	SDEL_STRING(this->connStr);
 }
 
-DB::DBUtil::ServerType DB::ODBCConn::GetSvrType()
+DB::DBUtil::SQLType DB::ODBCConn::GetSQLType()
 {
-	return this->svrType;
+	return this->sqlType;
 }
 
 DB::DBConn::ConnType DB::ODBCConn::GetConnType()

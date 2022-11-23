@@ -17,8 +17,8 @@ namespace DB
 		};
 
 	public:
-		static void AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::ColDef *col);
-		static void AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc);
+		static void AppendColDef(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::ColDef *col);
+		static void AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc);
 
 		static Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef);
 		static Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r);
@@ -29,7 +29,7 @@ namespace DB
 		static Bool GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		static Bool GenDeleteTableCmd(DB::SQLBuilder *sql, Text::CString tableName);
 		static PageStatus GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page);
-		static UTF8Char *GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::ServerType svrType, Text::CString tableName, DB::DBReader *r);
+		static UTF8Char *GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::SQLType sqlType, Text::CString tableName, DB::DBReader *r);
 	};
 }
 #endif

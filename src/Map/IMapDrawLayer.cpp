@@ -5,6 +5,7 @@
 #include "Data/ArrayListICaseString.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "DB/ColDef.h"
+#include "DB/TableDef.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
 #include "Map/CIPLayer2.h"
@@ -144,6 +145,22 @@ DB::DBReader *Map::IMapDrawLayer::QueryTableData(Text::CString schemaName, Text:
 	DB::DBReader *r;
 	NEW_CLASS(r, Map::MapLayerReader(this));
 	return r;
+}
+
+DB::TableDef *Map::IMapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	DB::TableDef *tab;
+	NEW_CLASS(tab, DB::TableDef(tableName));
+	DB::ColDef *col;
+	UOSInt i = 0;
+	UOSInt j = this->GetColumnCnt();
+	while (i < j)
+	{
+		NEW_CLASS(col, DB::ColDef(CSTR("")));
+		this->GetColumnDef(i, col);
+		tab->AddCol(col);
+	}
+	return tab;
 }
 
 void Map::IMapDrawLayer::CloseReader(DB::DBReader *r)
@@ -1004,6 +1021,11 @@ DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, UOSInt *col
 
 Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
+	return GetColDefV(colIndex, colDef, this->layer);
+}
+
+Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Map::IMapDrawLayer *layer)
+{
 	if (colIndex == 0)
 	{
 		colDef->SetColType(DB::DBUtil::CT_Vector);
@@ -1017,5 +1039,5 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetPK(false);
 		return true;
 	}
-	return this->layer->GetColumnDef(colIndex - 1, colDef);
+	return layer->GetColumnDef(colIndex - 1, colDef);
 }

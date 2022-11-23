@@ -53,7 +53,7 @@ namespace DB
 
 		UInt32 dataCnt;
 
-		DBUtil::ServerType svrType;
+		DBUtil::SQLType sqlType;
 
 	public:
 		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, Text::CString logPrefix);
@@ -71,7 +71,7 @@ namespace DB
 		void SetFailTrigger(SQLFailedFunc trig);
 		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
 		void CloseReader(DB::DBReader *r);
-		DB::DBUtil::ServerType GetSvrType();
+		DB::DBUtil::SQLType GetSQLType();
 		Bool IsDataError(const UTF8Char *errCode);
 		void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
 		DB::DBConn *GetDBConn();

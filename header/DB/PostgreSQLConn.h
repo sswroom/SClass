@@ -30,9 +30,9 @@ namespace DB
 		PostgreSQLConn(Text::String *server, UInt16 port, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
 		PostgreSQLConn(Text::CString server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
 		virtual ~PostgreSQLConn();
-		virtual DB::DBUtil::ServerType GetSvrType();
-		virtual ConnType GetConnType();
-		virtual Int8 GetTzQhr();
+		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual ConnType GetConnType() const;
+		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();

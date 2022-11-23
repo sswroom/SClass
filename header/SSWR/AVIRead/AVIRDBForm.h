@@ -52,8 +52,8 @@ namespace SSWR
 
 			void UpdateResult(DB::DBReader *r);
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
-			void CopyTableCreate(DB::DBUtil::ServerType svrType);
-			void ExportTableData(DB::DBUtil::ServerType svrType);
+			void CopyTableCreate(DB::DBUtil::SQLType sqlType);
+			void ExportTableData(DB::DBUtil::SQLType sqlType);
 		public:
 			AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease);
 			virtual ~AVIRDBForm();

@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "DB/DBReader.h"
+#include "DB/TableDef.h"
 #include "Math/Math.h"
 #include "Media/HTRecFile.h"
 #include "Text/Encoding.h"
@@ -433,7 +434,7 @@ Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	Text::CString s = GetName(colIndex);
+	Text::CString s = GetName(colIndex, this->setting);
 	if (s.v == 0)
 		return 0;
 	return s.ConcatTo(buff);
@@ -481,66 +482,12 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, U
 
 Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	colDef->SetNotNull(true);
-	colDef->SetPK(colIndex == 0);
-	colDef->SetAutoInc(false);
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
-	if (this->setting)
-	{
-		switch (colIndex)
-		{
-		case 0:
-			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-			colDef->SetColSize(32);
-			colDef->SetColDP(0);
-			return true;
-		case 1:
-			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-			colDef->SetColSize(32);
-			colDef->SetColDP(0);
-			return true;
-		}
-	}
-	else
-	{
-		switch (colIndex)
-		{
-		case 0:
-			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_Int32);
-			colDef->SetColSize(11);
-			colDef->SetColDP(0);
-			colDef->SetAutoInc(true);
-			return true;
-		case 1:
-			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_DateTime);
-			colDef->SetColSize(0);
-			colDef->SetColDP(0);
-			return true;
-		case 2:
-			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_Double);
-			colDef->SetColSize(32);
-			colDef->SetColDP(1);
-			return true;
-		case 3:
-			colDef->SetColName(GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_Double);
-			colDef->SetColSize(32);
-			colDef->SetColDP(1);
-			return true;
-		}
-	}
-	return false;
+	return GetColDefV(colIndex, colDef, this->setting);
 }
 
-Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
+Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, Bool setting)
 {
-	if (this->setting)
+	if (setting)
 	{
 		switch (colIndex)
 		{
@@ -565,6 +512,65 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
 		}
 	}
 	return CSTR_NULL;
+}
+
+Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool setting)
+{
+	colDef->SetNotNull(true);
+	colDef->SetPK(colIndex == 0);
+	colDef->SetAutoInc(false);
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAttr(CSTR_NULL);
+	if (setting)
+	{
+		switch (colIndex)
+		{
+		case 0:
+			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
+			colDef->SetColSize(32);
+			colDef->SetColDP(0);
+			return true;
+		case 1:
+			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
+			colDef->SetColSize(32);
+			colDef->SetColDP(0);
+			return true;
+		}
+	}
+	else
+	{
+		switch (colIndex)
+		{
+		case 0:
+			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColType(DB::DBUtil::CT_Int32);
+			colDef->SetColSize(11);
+			colDef->SetColDP(0);
+			colDef->SetAutoInc(true);
+			return true;
+		case 1:
+			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColType(DB::DBUtil::CT_DateTime);
+			colDef->SetColSize(0);
+			colDef->SetColDP(0);
+			return true;
+		case 2:
+			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColType(DB::DBUtil::CT_Double);
+			colDef->SetColSize(32);
+			colDef->SetColDP(1);
+			return true;
+		case 3:
+			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColType(DB::DBUtil::CT_Double);
+			colDef->SetColSize(32);
+			colDef->SetColDP(1);
+			return true;
+		}
+	}
+	return false;
 }
 
 Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->GetFullName())
@@ -680,6 +686,39 @@ DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::C
 		return reader;
 	}
 	return 0;
+}
+
+DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	UOSInt i = 0;
+	UOSInt j;
+	DB::ColDef *col;
+	DB::TableDef *tab = 0;
+	if (tableName.Equals(UTF8STRC("Setting")))
+	{
+		NEW_CLASS(tab, DB::TableDef(tableName));
+		j = 2;
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			Media::HTRecFile::HTRecReader::GetColDefV(i, col, true);
+			tab->AddCol(col);
+			i++;
+		}
+	}
+	else if (tableName.Equals(UTF8STRC("Records")))
+	{
+		NEW_CLASS(tab, DB::TableDef(tableName));
+		j = 4;
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			Media::HTRecFile::HTRecReader::GetColDefV(i, col, false);
+			tab->AddCol(col);
+			i++;
+		}
+	}
+	return tab;
 }
 
 void Media::HTRecFile::CloseReader(DB::DBReader *r)

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "DB/ColDef.h"
 #include "DB/MongoDB.h"
+#include "DB/TableDef.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -94,6 +95,24 @@ DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStrin
 		}
 	}
 	return 0;
+}
+
+DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	DB::ColDef *colDef;
+	DB::TableDef *tab;
+	NEW_CLASS(tab, DB::TableDef(tableName));
+	NEW_CLASS(colDef, DB::ColDef(CSTR("Data")));
+	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
+	colDef->SetColSize(65536);
+	colDef->SetColDP(0);
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAttr(CSTR_NULL);
+	colDef->SetAutoInc(false);
+	colDef->SetNotNull(true);
+	colDef->SetPK(false);
+	tab->AddCol(colDef);
+	return tab;
 }
 
 void DB::MongoDB::CloseReader(DBReader *r)

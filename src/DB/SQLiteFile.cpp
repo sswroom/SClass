@@ -69,17 +69,17 @@ DB::SQLiteFile::~SQLiteFile()
 	SDEL_STRING(this->lastErrMsg);
 }
 
-DB::DBUtil::ServerType DB::SQLiteFile::GetSvrType()
+DB::DBUtil::SQLType DB::SQLiteFile::GetSQLType() const
 {
-	return DB::DBUtil::ServerType::SQLite;
+	return DB::DBUtil::SQLType::SQLite;
 }
 
-DB::DBConn::ConnType DB::SQLiteFile::GetConnType()
+DB::DBConn::ConnType DB::SQLiteFile::GetConnType() const
 {
 	return CT_SQLITE;
 }
 
-Int8 DB::SQLiteFile::GetTzQhr()
+Int8 DB::SQLiteFile::GetTzQhr() const
 {
 	return 0;
 }

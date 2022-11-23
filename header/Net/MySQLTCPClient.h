@@ -67,9 +67,9 @@ namespace Net
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
-		virtual DB::DBUtil::ServerType GetSvrType();
-		virtual DB::DBConn::ConnType GetConnType();
-		virtual Int8 GetTzQhr();
+		virtual DB::DBUtil::SQLType GetSQLType() const;
+		virtual DB::DBConn::ConnType GetConnType() const;
+		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();

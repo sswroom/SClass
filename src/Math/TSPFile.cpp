@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
+#include "DB/TableDef.h"
 #include "Math/Math.h"
 #include "Math/TSPFile.h"
 #include "Math/Geometry/PointZ.h"
@@ -103,6 +104,47 @@ DB::DBReader *Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CStr
 		NEW_CLASS(reader, Math::TSPReader(this));
 	}
 	return reader;
+}
+
+DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	UOSInt i;
+	UOSInt j;
+	DB::TableDef *tab;
+	DB::ColDef *col;
+	NEW_CLASS(tab, DB::TableDef(tableName));
+	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
+	{
+		i = 0;
+		j = 8;
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			TSPHReader::GetColDefV(i, col);
+			tab->AddCol(col);
+			i++;
+		}
+	}
+	else
+	{
+		i = 0;
+		if (this->rowSize >= 128)
+		{
+			j = 12;
+		}
+		else
+		{
+			j = 9;
+		}
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			TSPReader::GetColDefV(i, col, this->rowSize);
+			tab->AddCol(col);
+			i++;
+		}
+	}
+	return tab;
 }
 
 void Math::TSPFile::CloseReader(DB::DBReader *r)
@@ -455,7 +497,7 @@ Bool Math::TSPReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Math::TSPReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	Text::CString cstr = this->GetName(colIndex);
+	Text::CString cstr = this->GetName(colIndex, this->rowSize);
 	if (cstr.v)
 		return cstr.ConcatTo(buff);
 	return 0;
@@ -503,46 +545,10 @@ DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, UOSInt *colSize
 
 Bool Math::TSPReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	switch (colIndex)
-	{
-	case 0:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetNotNull(true);
-		colDef->SetColType(DB::DBUtil::CT_Int32);
-		colDef->SetColSize(11);
-		return true;
-	case 1:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetNotNull(true);
-		colDef->SetColType(DB::DBUtil::CT_Vector);
-		colDef->SetColSize(0x7fffffff);
-		return true;
-	case 2:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetNotNull(true);
-		colDef->SetColType(DB::DBUtil::CT_DateTime);
-		colDef->SetColSize(18);
-		return true;
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-	case 8:
-	case 9:
-	case 10:
-	case 11:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetNotNull(true);
-		colDef->SetColType(DB::DBUtil::CT_Double);
-		colDef->SetColSize(33);
-		return true;
-	default:
-		return false;
-	}
+	return GetColDefV(colIndex, colDef, this->rowSize);
 }
 
-Text::CString Math::TSPReader::GetName(UOSInt colIndex)
+Text::CString Math::TSPReader::GetName(UOSInt colIndex, UOSInt rowSize)
 {
 	switch (colIndex)
 	{
@@ -565,22 +571,63 @@ Text::CString Math::TSPReader::GetName(UOSInt colIndex)
 	case 8:
 		return CSTR("SlopeDistance");
 	case 9:
-		if (this->rowSize >= 128)
+		if (rowSize >= 128)
 			return CSTR("RequestX");
 		else
 			return CSTR_NULL;
 	case 10:
-		if (this->rowSize >= 128)
+		if (rowSize >= 128)
 			return CSTR("RequestY");
 		else
 			return CSTR_NULL;
 	case 11:
-		if (this->rowSize >= 128)
+		if (rowSize >= 128)
 			return CSTR("RequestZ");
 		else
 			return CSTR_NULL;
 	default:
 		return CSTR_NULL;
+	}
+}
+
+Bool Math::TSPReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, UOSInt rowSize)
+{
+	switch (colIndex)
+	{
+	case 0:
+		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetNotNull(true);
+		colDef->SetColType(DB::DBUtil::CT_Int32);
+		colDef->SetColSize(11);
+		return true;
+	case 1:
+		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetNotNull(true);
+		colDef->SetColType(DB::DBUtil::CT_Vector);
+		colDef->SetColSize(0x7fffffff);
+		return true;
+	case 2:
+		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetNotNull(true);
+		colDef->SetColType(DB::DBUtil::CT_DateTime);
+		colDef->SetColSize(3);
+		return true;
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetNotNull(true);
+		colDef->SetColType(DB::DBUtil::CT_Double);
+		colDef->SetColSize(33);
+		return true;
+	default:
+		return false;
 	}
 }
 
@@ -704,7 +751,7 @@ Bool Math::TSPHReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Math::TSPHReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	Text::CString cstr = this->GetName(colIndex);
+	Text::CString cstr = GetName(colIndex);
 	if (cstr.v)
 		return cstr.ConcatTo(buff);
 	return 0;
@@ -739,24 +786,7 @@ DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 
 Bool Math::TSPHReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	switch (colIndex)
-	{
-	case 0:
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetNotNull(true);
-		colDef->SetColType(DB::DBUtil::CT_Double);
-		colDef->SetColSize(33);
-		return true;
-	default:
-		return false;
-	}
+	return GetColDefV(colIndex, colDef);
 }
 
 Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
@@ -781,5 +811,27 @@ Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 		return CSTR("Azimuth");
 	default:
 		return CSTR_NULL;
+	}
+}
+
+Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef)
+{
+	switch (colIndex)
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		colDef->SetColName(GetName(colIndex));
+		colDef->SetNotNull(true);
+		colDef->SetColType(DB::DBUtil::CT_Double);
+		colDef->SetColSize(33);
+		return true;
+	default:
+		return false;
 	}
 }

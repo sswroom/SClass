@@ -4,6 +4,7 @@
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
 #include "DB/DBFFile.h"
+#include "DB/TableDef.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
@@ -108,6 +109,25 @@ DB::DBReader *DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CStrin
 	{
 		return 0;
 	}
+}
+
+DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	DB::ColDef *col;
+	DB::TableDef *tab;
+	UOSInt i;
+	UOSInt j;
+	NEW_CLASS(tab, DB::TableDef(tableName));
+	i = 0;
+	j = this->GetColCount();
+	while (i < j)
+	{
+		NEW_CLASS(col, DB::ColDef(0));
+		this->GetColumnDef(i, col);
+		tab->AddCol(col);
+		i++;
+	}
+	return tab;
 }
 
 void DB::DBFFile::CloseReader(DBReader *r)

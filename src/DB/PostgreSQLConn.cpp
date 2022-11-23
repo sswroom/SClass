@@ -229,6 +229,7 @@ public:
 		case 24: //regproc
 		case 25: //text
 		case 194: //pg_node_tree
+		case 869: //inet
 		case 1009: //_text
 		case 1034: //_aclitem
 		case 1042: //bpchar
@@ -678,17 +679,17 @@ DB::PostgreSQLConn::~PostgreSQLConn()
 	MemFree(this->clsData);
 }
 
-DB::DBUtil::ServerType DB::PostgreSQLConn::GetSvrType()
+DB::DBUtil::SQLType DB::PostgreSQLConn::GetSQLType() const
 {
-	return DB::DBUtil::ServerType::PostgreSQL;
+	return DB::DBUtil::SQLType::PostgreSQL;
 }
 
-DB::DBConn::ConnType DB::PostgreSQLConn::GetConnType()
+DB::DBConn::ConnType DB::PostgreSQLConn::GetConnType() const
 {
 	return DB::DBConn::CT_POSTGRESQL;
 }
 
-Int8 DB::PostgreSQLConn::GetTzQhr()
+Int8 DB::PostgreSQLConn::GetTzQhr() const
 {
 	return this->tzQhr;
 }
@@ -769,6 +770,9 @@ DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
 #endif
 	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
+#if defined(VERBOSE)
+		printf("PostgreSQL: Error: %s\r\n", PQerrorMessage(this->clsData->conn));
+#endif
 		PQclear(res);
 		return 0;
 	}
@@ -849,7 +853,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
-	DB::SQLBuilder sql(DB::DBUtil::ServerType::PostgreSQL, this->tzQhr);
+	DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, this->tzQhr);
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
 	UOSInt initCnt = names->GetCount();
@@ -887,7 +891,7 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 			{
 				sb.AppendUTF8Char(',');
 			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::PostgreSQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::SQLType::PostgreSQL);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
@@ -895,16 +899,16 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	sb.AppendC(UTF8STRC(" from "));
 	if (schemaName.leng > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::ServerType::PostgreSQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::SQLType::PostgreSQL);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::PostgreSQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::SQLType::PostgreSQL);
 		sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::DBUtil::ServerType::PostgreSQL, 0, 100, 0);
+		condition->ToWhereClause(&sb, DB::DBUtil::SQLType::PostgreSQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{
@@ -1048,6 +1052,8 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 		return DB::DBUtil::CT_Float;
 	case 701: //float8
 		return DB::DBUtil::CT_Double;
+	case 869: //inet
+		return DB::DBUtil::CT_VarUTF32Char;
 	case 1002: //_char
 		return DB::DBUtil::CT_VarUTF32Char;
 	case 1005: //_int2

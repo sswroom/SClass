@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/DBClassBuilder.h"
+#include "DB/DBReader.h"
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
@@ -12,7 +13,7 @@ DB::TableDef::TableDef(Text::CString tableName)
 	this->charset = 0;
 	this->attr = 0;
 	this->comments = 0;
-	this->svrType = DB::DBUtil::ServerType::Unknown;
+	this->sqlType = DB::DBUtil::SQLType::Unknown;
 }
 
 DB::TableDef::~TableDef()
@@ -61,9 +62,9 @@ const UTF8Char *DB::TableDef::GetComments() const
 	return this->comments;
 }
 
-DB::DBUtil::ServerType DB::TableDef::GetSvrType() const
+DB::DBUtil::SQLType DB::TableDef::GetSQLType() const
 {
-	return this->svrType;
+	return this->sqlType;
 }
 
 UOSInt DB::TableDef::GetColCnt() const
@@ -146,10 +147,24 @@ DB::TableDef *DB::TableDef::SetComments(const UTF8Char *comments)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetSvrType(DB::DBUtil::ServerType svrType)
+DB::TableDef *DB::TableDef::SetSQLType(DB::DBUtil::SQLType sqlType)
 {
-	this->svrType = svrType;
+	this->sqlType = sqlType;
 	return this;
+}
+
+void DB::TableDef::ColFromReader(DB::DBReader *r)
+{
+	UOSInt i = 0;
+	UOSInt j = r->ColCount();
+	DB::ColDef *col;
+	while (i < j)
+	{
+		NEW_CLASS(col, DB::ColDef(0));
+		r->GetColDef(i, col);
+		this->AddCol(col);
+		i++;
+	}
 }
 
 DB::TableDef *DB::TableDef::Clone() const
@@ -161,7 +176,7 @@ DB::TableDef *DB::TableDef::Clone() const
 	newObj->SetCharset(STR_CSTR(this->charset));
 	newObj->SetAttr(this->attr);
 	newObj->SetComments(this->comments);
-	newObj->SetSvrType(this->svrType);
+	newObj->SetSQLType(this->sqlType);
 	UOSInt i = 0;
 	UOSInt j = this->cols.GetCount();
 	while (i < j)

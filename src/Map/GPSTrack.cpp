@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
+#include "DB/TableDef.h"
 #include "Map/GPSTrack.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -240,10 +241,6 @@ UTF8Char *Map::GPSTrack::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	}
 	else if (colIndex == 1)
 	{
-		return Text::StrConcatC(buff, UTF8STRC("Time Range"));
-	}
-	else if (colIndex == 1)
-	{
 		return Text::StrConcatC(buff, UTF8STRC("Start Time"));
 	}
 	else if (colIndex == 2)
@@ -266,19 +263,11 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 		}
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
-	else if (colIndex == 1)
+	else if (colIndex == 1 || colIndex == 2)
 	{
 		if (colSize)
 		{
-			*colSize = 41;
-		}
-		return DB::DBUtil::CT_VarUTF8Char;
-	}
-	else if (colIndex == 2 || colIndex == 3)
-	{
-		if (colSize)
-		{
-			*colSize = 19;
+			*colSize = 3;
 		}
 		return DB::DBUtil::CT_DateTime;
 	}
@@ -308,19 +297,8 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetAttr(CSTR_NULL);
 		return true;
 	case 1:
-		colDef->SetColName(CSTR("Time Range"));
-		colDef->SetColSize(41);
-		colDef->SetColDP(0);
-		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-		colDef->SetDefVal(CSTR_NULL);
-		colDef->SetNotNull(false);
-		colDef->SetPK(false);
-		colDef->SetAutoInc(false);
-		colDef->SetAttr(CSTR_NULL);
-		return true;
-	case 2:
 		colDef->SetColName(CSTR("Start Time"));
-		colDef->SetColSize(19);
+		colDef->SetColSize(3);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetDefVal(CSTR_NULL);
@@ -329,9 +307,9 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetAutoInc(false);
 		colDef->SetAttr(CSTR_NULL);
 		return true;
-	case 3:
+	case 2:
 		colDef->SetColName(CSTR("End Time"));
-		colDef->SetColSize(19);
+		colDef->SetColSize(3);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetDefVal(CSTR_NULL);
@@ -549,6 +527,46 @@ DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CStr
 		NEW_CLASS(r, Map::GPSTrackReader(this));
 	}
 	return r;
+}
+
+DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	UOSInt i = 0;
+	UOSInt j;
+	DB::ColDef *col;
+	DB::TableDef *tab = 0;
+	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
+	{
+		if (this->hasAltitude)
+		{
+			j = 17;
+		}
+		else
+		{
+			j = 16;
+		}
+		NEW_CLASS(tab, DB::TableDef(tableName));
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			GPSDataReader::GetColDefV(i, col, this->hasAltitude);
+			tab->AddCol(col);
+			i++;
+		}
+	}
+	else
+	{
+		j = 4;
+		NEW_CLASS(tab, DB::TableDef(tableName));
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			Map::MapLayerReader::GetColDefV(i, col, this);
+			tab->AddCol(col);
+			i++;
+		}
+	}
+	return tab;
 }
 
 Map::IMapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass()
@@ -1351,7 +1369,7 @@ Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Map::GPSDataReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	Text::CString cstr = GetName(colIndex);
+	Text::CString cstr = GetName(colIndex, this->gps->GetHasAltitude());
 	if (cstr.v)
 		return cstr.ConcatTo(buff);
 	return 0;
@@ -1420,95 +1438,10 @@ DB::DBUtil::ColType Map::GPSDataReader::GetColType(UOSInt colIndex, UOSInt *colS
 
 Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	colDef->SetNotNull(true);
-	colDef->SetPK(false);
-	colDef->SetAutoInc(false);
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
-	switch (colIndex)
-	{
-	case 0:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_DateTime);
-		colDef->SetColSize(20);
-		colDef->SetColDP(0);
-		colDef->SetPK(true);
-		return true;
-	case 1:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Vector);
-		colDef->SetColSize(0x7fffffff);
-		colDef->SetColDP(0);
-		colDef->SetPK(false);
-		return true;
-	case 2:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Double);
-		colDef->SetColSize(30);
-		colDef->SetColDP(15);
-		return true;
-	case 3:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Double);
-		colDef->SetColSize(30);
-		colDef->SetColDP(15);
-		return true;
-	case 4:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Double);
-		colDef->SetColSize(30);
-		colDef->SetColDP(15);
-		return true;
-	case 5:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Double);
-		colDef->SetColSize(30);
-		colDef->SetColDP(15);
-		return true;
-	case 6:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Int32);
-		colDef->SetColSize(11);
-		colDef->SetColDP(0);
-		return true;
-	case 7:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Int32);
-		colDef->SetColSize(11);
-		colDef->SetColDP(0);
-		return true;
-	case 8:
-	case 9:
-	case 10:
-	case 11:
-	case 12:
-	case 13:
-	case 14:
-	case 15:
-		colDef->SetColName(this->GetName(colIndex));
-		colDef->SetColType(DB::DBUtil::CT_Int32);
-		colDef->SetColSize(11);
-		colDef->SetColDP(0);
-		return true;
-	case 16:
-		if (this->gps->GetHasAltitude())
-		{
-			colDef->SetColName(this->GetName(colIndex));
-			colDef->SetColType(DB::DBUtil::CT_Double);
-			colDef->SetColSize(30);
-			colDef->SetColDP(15);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	default:
-		return false;
-	}
+	return GetColDefV(colIndex, colDef, this->gps->GetHasAltitude());
 }
 
-Text::CString Map::GPSDataReader::GetName(UOSInt colIndex)
+Text::CString Map::GPSDataReader::GetName(UOSInt colIndex, Bool hasAltitude)
 {
 	switch (colIndex)
 	{
@@ -1545,7 +1478,7 @@ Text::CString Map::GPSDataReader::GetName(UOSInt colIndex)
 	case 15:
 		return CSTR("nSateViewBD");
 	case 16:
-		if (this->gps->GetHasAltitude())
+		if (hasAltitude)
 		{
 			return CSTR("Altitude");
 		}
@@ -1555,5 +1488,95 @@ Text::CString Map::GPSDataReader::GetName(UOSInt colIndex)
 		}
 	default:
 		return CSTR_NULL;
+	}
+}
+
+Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool hasAltitude)
+{
+	colDef->SetNotNull(true);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAttr(CSTR_NULL);
+	switch (colIndex)
+	{
+	case 0:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_DateTime);
+		colDef->SetColSize(20);
+		colDef->SetColDP(0);
+		colDef->SetPK(true);
+		return true;
+	case 1:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Vector);
+		colDef->SetColSize(0x7fffffff);
+		colDef->SetColDP(0);
+		colDef->SetPK(false);
+		return true;
+	case 2:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Double);
+		colDef->SetColSize(30);
+		colDef->SetColDP(15);
+		return true;
+	case 3:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Double);
+		colDef->SetColSize(30);
+		colDef->SetColDP(15);
+		return true;
+	case 4:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Double);
+		colDef->SetColSize(30);
+		colDef->SetColDP(15);
+		return true;
+	case 5:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Double);
+		colDef->SetColSize(30);
+		colDef->SetColDP(15);
+		return true;
+	case 6:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Int32);
+		colDef->SetColSize(11);
+		colDef->SetColDP(0);
+		return true;
+	case 7:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Int32);
+		colDef->SetColSize(11);
+		colDef->SetColDP(0);
+		return true;
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+	case 15:
+		colDef->SetColName(GetName(colIndex, hasAltitude));
+		colDef->SetColType(DB::DBUtil::CT_Int32);
+		colDef->SetColSize(11);
+		colDef->SetColDP(0);
+		return true;
+	case 16:
+		if (hasAltitude)
+		{
+			colDef->SetColName(GetName(colIndex, hasAltitude));
+			colDef->SetColType(DB::DBUtil::CT_Double);
+			colDef->SetColSize(30);
+			colDef->SetColDP(15);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	default:
+		return false;
 	}
 }

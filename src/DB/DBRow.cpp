@@ -747,40 +747,40 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb) const
 				case DT_BINARY:
 					k = 0;
 					buff = this->GetFieldBinary(field, &k);
-					strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSvrType());
+					strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSQLType());
 					if (strLen < sizeof(sbuff) - 1)
 					{
-						sptr = DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSvrType());
+						sptr = DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSQLType());
 						sb->AppendP(sbuff, sptr);
 					}
 					else
 					{
 						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
-						sptr = DB::DBUtil::SDBBin(tmpBuff, buff, k, table->GetSvrType());
+						sptr = DB::DBUtil::SDBBin(tmpBuff, buff, k, table->GetSQLType());
 						sb->AppendP(tmpBuff, sptr);
 						MemFree(tmpBuff);
 					}
 					break;
 				case DT_DOUBLE:
-					sptr = DB::DBUtil::SDBDbl(sbuff, this->GetFieldDouble(field), table->GetSvrType());
+					sptr = DB::DBUtil::SDBDbl(sbuff, this->GetFieldDouble(field), table->GetSQLType());
 					sb->AppendP(sbuff, sptr);
 					break;
 				case DT_INT64:
-					sptr = DB::DBUtil::SDBInt64(sbuff, this->GetFieldInt64(field), table->GetSvrType());
+					sptr = DB::DBUtil::SDBInt64(sbuff, this->GetFieldInt64(field), table->GetSQLType());
 					sb->AppendP(sbuff, sptr);
 					break;
 				case DT_STRING:
 					buff = this->GetFieldStr(field);
-					strLen = DB::DBUtil::SDBStrUTF8Leng(buff, table->GetSvrType());
+					strLen = DB::DBUtil::SDBStrUTF8Leng(buff, table->GetSQLType());
 					if (strLen < sizeof(sbuff) - 1)
 					{
-						sptr = DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSvrType());
+						sptr = DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSQLType());
 						sb->AppendP(sbuff, sptr);
 					}
 					else
 					{
 						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
-						sptr = DB::DBUtil::SDBStrUTF8(tmpBuff, buff, table->GetSvrType());
+						sptr = DB::DBUtil::SDBStrUTF8(tmpBuff, buff, table->GetSQLType());
 						sb->AppendP(tmpBuff, sptr);
 						MemFree(tmpBuff);
 					}

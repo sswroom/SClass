@@ -23,3 +23,13 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 {
 	return false;
 }
+
+Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
+{
+	return false;
+}
+
+Bool IO::ProgramLinkManager::DeleteLink(Text::CString linkName)
+{
+	return false;
+}

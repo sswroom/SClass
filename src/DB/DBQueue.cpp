@@ -431,9 +431,9 @@ UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
 	return this->name->ConcatTo(buff);
 }
 
-DB::DBUtil::ServerType DB::DBQueue::GetSvrType()
+DB::DBUtil::SQLType DB::DBQueue::GetSQLType()
 {
-	return this->db1->GetSvrType();
+	return this->db1->GetSQLType();
 }
 
 Int8 DB::DBQueue::GetTzQhr()

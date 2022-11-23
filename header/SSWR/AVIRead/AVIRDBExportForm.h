@@ -29,14 +29,14 @@ namespace SSWR
 			UI::GUIButton *btnExport;
 
 			SSWR::AVIRead::AVIRCore *core;
-			DB::ReadingDBTool *db;
+			DB::ReadingDB *db;
 			Text::CString schema;
 			Text::CString table;
 
 			static void __stdcall OnTablesDblClk(void *userObj, UOSInt itemIndex);
 			static void __stdcall OnExportClicked(void *userObj);
 		public:
-			AVIRDBExportForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDBTool *db, Text::CString schema, Text::CString table);
+			AVIRDBExportForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schema, Text::CString table);
 			virtual ~AVIRDBExportForm();
 
 			virtual void OnMonitorChanged();

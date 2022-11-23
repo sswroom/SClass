@@ -12,14 +12,13 @@ namespace DB
 	class DBUtil
 	{
 	public:
-		enum class ServerType
+		enum class SQLType
 		{
 			Unknown,
 			MSSQL,
 			MySQL,
 			Oracle,
 			Access,
-			Text,
 			SQLite,
 			WBEM,
 			MDBTools,
@@ -53,39 +52,39 @@ namespace DB
 			CT_UUID
 		} ColType;
 
-		static UTF8Char *SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str, ServerType svrType);
-		static UOSInt SDBStrUTF8Leng(const UTF8Char *str, ServerType svrType);
-		static UTF8Char *SDBStrW(UTF8Char *sqlstr, const WChar *str, ServerType svrType);
-		static UOSInt SDBStrWLeng(const WChar *str, ServerType svrType);
-		static UTF8Char *SDBInt32(UTF8Char *sqlstr, Int32 val, ServerType svrType);
-		static UOSInt SDBInt32Leng(Int32 val, ServerType svrType);
-		static UTF8Char *SDBInt64(UTF8Char *sqlstr, Int64 val, ServerType svrType);
-		static UOSInt SDBInt64Leng(Int64 val, ServerType svrType);
-		static UTF8Char *SDBUInt32(UTF8Char *sqlstr, UInt32 val, ServerType svrType);
-		static UOSInt SDBUInt32Leng(UInt32 val, ServerType svrType);
-		static UTF8Char *SDBUInt64(UTF8Char *sqlstr, UInt64 val, ServerType svrType);
-		static UOSInt SDBUInt64Leng(UInt64 val, ServerType svrType);
-		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, ServerType svrType, Int8 tzQhr);
-		static UOSInt SDBDateLeng(Data::DateTime *dat, ServerType svrType);
-		static UTF8Char *SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, ServerType svrType, Int8 tzQhr);
-		static UOSInt SDBTSLeng(Data::Timestamp ts, ServerType svrType);
-		static UTF8Char *SDBDbl(UTF8Char *sqlstr, Double val, ServerType svrType);
-		static UOSInt SDBDblLeng(Double val, ServerType svrType);
-		static UTF8Char *SDBSng(UTF8Char *sqlstr, Single val, ServerType svrType);
-		static UOSInt SDBSngLeng(Single val, ServerType svrType);
-		static UTF8Char *SDBBool(UTF8Char *sqlstr, Bool val, ServerType svrType);
-		static UOSInt SDBBoolLeng(Bool val, ServerType svrType);
-		static UTF8Char *SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, ServerType svrType);
-		static UOSInt SDBBinLeng(const UInt8 *buff, UOSInt size, ServerType svrType);
-		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, ServerType svrType);
-		static UOSInt SDBVectorLeng(Math::Geometry::Vector2D *vec, ServerType svrType);
-		static UTF8Char *SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, ServerType svrType);
-		static UOSInt SDBColUTF8Leng(const UTF8Char *colName, ServerType svrType);
-		static UTF8Char *SDBColW(UTF8Char *sqlstr, const WChar *colName, ServerType svrType);
-		static UOSInt SDBColWLeng(const WChar *colName, ServerType svrType);
-		static UTF8Char *SDBTrim(UTF8Char *sqlstr, Text::CString val, ServerType svrType);
-		static UOSInt SDBTrimLeng(Text::CString val, ServerType svrType);
-		static DB::DBUtil::ColType ParseColType(ServerType svrType, const UTF8Char *typeName, UOSInt *colSize);
+		static UTF8Char *SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str, SQLType sqlType);
+		static UOSInt SDBStrUTF8Leng(const UTF8Char *str, SQLType sqlType);
+		static UTF8Char *SDBStrW(UTF8Char *sqlstr, const WChar *str, SQLType sqlType);
+		static UOSInt SDBStrWLeng(const WChar *str, SQLType sqlType);
+		static UTF8Char *SDBInt32(UTF8Char *sqlstr, Int32 val, SQLType sqlType);
+		static UOSInt SDBInt32Leng(Int32 val, SQLType sqlType);
+		static UTF8Char *SDBInt64(UTF8Char *sqlstr, Int64 val, SQLType sqlType);
+		static UOSInt SDBInt64Leng(Int64 val, SQLType sqlType);
+		static UTF8Char *SDBUInt32(UTF8Char *sqlstr, UInt32 val, SQLType sqlType);
+		static UOSInt SDBUInt32Leng(UInt32 val, SQLType sqlType);
+		static UTF8Char *SDBUInt64(UTF8Char *sqlstr, UInt64 val, SQLType sqlType);
+		static UOSInt SDBUInt64Leng(UInt64 val, SQLType sqlType);
+		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, SQLType sqlType, Int8 tzQhr);
+		static UOSInt SDBDateLeng(Data::DateTime *dat, SQLType sqlType);
+		static UTF8Char *SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, SQLType sqlType, Int8 tzQhr);
+		static UOSInt SDBTSLeng(Data::Timestamp ts, SQLType sqlType);
+		static UTF8Char *SDBDbl(UTF8Char *sqlstr, Double val, SQLType sqlType);
+		static UOSInt SDBDblLeng(Double val, SQLType sqlType);
+		static UTF8Char *SDBSng(UTF8Char *sqlstr, Single val, SQLType sqlType);
+		static UOSInt SDBSngLeng(Single val, SQLType sqlType);
+		static UTF8Char *SDBBool(UTF8Char *sqlstr, Bool val, SQLType sqlType);
+		static UOSInt SDBBoolLeng(Bool val, SQLType sqlType);
+		static UTF8Char *SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, SQLType sqlType);
+		static UOSInt SDBBinLeng(const UInt8 *buff, UOSInt size, SQLType sqlType);
+		static UTF8Char *SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, SQLType sqlType);
+		static UOSInt SDBVectorLeng(Math::Geometry::Vector2D *vec, SQLType sqlType);
+		static UTF8Char *SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, SQLType sqlType);
+		static UOSInt SDBColUTF8Leng(const UTF8Char *colName, SQLType sqlType);
+		static UTF8Char *SDBColW(UTF8Char *sqlstr, const WChar *colName, SQLType sqlType);
+		static UOSInt SDBColWLeng(const WChar *colName, SQLType sqlType);
+		static UTF8Char *SDBTrim(UTF8Char *sqlstr, Text::CString val, SQLType sqlType);
+		static UOSInt SDBTrimLeng(Text::CString val, SQLType sqlType);
+		static DB::DBUtil::ColType ParseColType(SQLType sqlType, const UTF8Char *typeName, UOSInt *colSize);
 		static UTF8Char *ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize);
 
 		static UTF8Char *DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName);

@@ -4,6 +4,7 @@
 #include "DB/ColDef.h"
 #include "DB/CSVFile.h"
 #include "DB/DBConn.h"
+#include "DB/TableDef.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "Text/MyString.h"
@@ -98,6 +99,28 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 	{
 		return 0;
 	}
+}
+
+DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+{
+	DB::DBReader *r = this->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
+	if (r)
+	{
+		DB::TableDef *tab;
+		DB::ColDef *col;
+		NEW_CLASS(tab, DB::TableDef(tableName));
+		UOSInt i = 0;
+		UOSInt j = r->ColCount();
+		while (i < j)
+		{
+			NEW_CLASS(col, DB::ColDef(0));
+			r->GetColDef(i, col);
+			tab->AddCol(col);
+			i++;
+		}
+		return tab;
+	}
+	return 0;
 }
 
 void DB::CSVFile::CloseReader(DBReader *r)

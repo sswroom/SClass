@@ -3,30 +3,30 @@
 #include "DB/SQLGenerator.h"
 
 
-void DB::SQLGenerator::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::ColDef *col)
+void DB::SQLGenerator::AppendColDef(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::ColDef *col)
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
-	AppendColType(svrType, sql, col->GetColType(), col->GetColSize(), col->IsAutoInc());
+	AppendColType(sqlType, sql, col->GetColType(), col->GetColSize(), col->IsAutoInc());
 	if (col->IsNotNull())
 	{
 		sql->AppendCmdC(CSTR(" NOT NULL"));
 	}
-	if (svrType == DB::DBUtil::ServerType::MSSQL)
+	if (sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		if (col->IsAutoInc())
 		{
 			sql->AppendCmdC(CSTR(" IDENTITY(1,1)"));
 		}
 	}
-	else if (svrType == DB::DBUtil::ServerType::MySQL)
+	else if (sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		if (col->IsAutoInc())
 		{
 			sql->AppendCmdC(CSTR(" AUTO_INCREMENT"));
 		}
 	}
-	else if (svrType == DB::DBUtil::ServerType::SQLite)
+	else if (sqlType == DB::DBUtil::SQLType::SQLite)
 	{
 		if (col->IsAutoInc() && col->IsPK())
 		{
@@ -37,7 +37,7 @@ void DB::SQLGenerator::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuild
 			sql->AppendCmdC(CSTR(" AUTOINCREMENT"));
 		}
 	}
-	else if (svrType == DB::DBUtil::ServerType::Access)
+	else if (sqlType == DB::DBUtil::SQLType::Access)
 	{
 		if (col->IsPK())
 		{
@@ -53,11 +53,11 @@ void DB::SQLGenerator::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuild
 	}
 }
 
-void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc)
+void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc)
 {
-	switch (svrType)
+	switch (sqlType)
 	{
-	case DB::DBUtil::ServerType::MySQL:
+	case DB::DBUtil::SQLType::MySQL:
 		switch (colType)
 		{
 		case DB::DBUtil::CT_UTF8Char:
@@ -193,7 +193,7 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuil
 			break;
 		}
 		break;
-	case DB::DBUtil::ServerType::MSSQL:
+	case DB::DBUtil::SQLType::MSSQL:
 		switch (colType)
 		{
 		case DB::DBUtil::CT_UTF8Char:
@@ -326,8 +326,8 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuil
 			break;
 		}
 		break;
-	case DB::DBUtil::ServerType::MDBTools:
-	case DB::DBUtil::ServerType::Access:
+	case DB::DBUtil::SQLType::MDBTools:
+	case DB::DBUtil::SQLType::Access:
 		switch (colType)
 		{
 		case DB::DBUtil::CT_UTF8Char:
@@ -441,7 +441,7 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuil
 			break;
 		}
 		break;
-	case DB::DBUtil::ServerType::SQLite:
+	case DB::DBUtil::SQLType::SQLite:
 		switch (colType)
 	 	{
 		case DB::DBUtil::CT_UTF8Char:
@@ -545,7 +545,7 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuil
 			break;
 		}
 		break;
-	case DB::DBUtil::ServerType::PostgreSQL:
+	case DB::DBUtil::SQLType::PostgreSQL:
 		switch (colType)
 	 	{
 		case DB::DBUtil::CT_UTF8Char:
@@ -713,10 +713,9 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuil
 			break;
 		}
 		break;
-	case DB::DBUtil::ServerType::Unknown:
-	case DB::DBUtil::ServerType::Oracle:
-	case DB::DBUtil::ServerType::Text:
-	case DB::DBUtil::ServerType::WBEM:
+	case DB::DBUtil::SQLType::Unknown:
+	case DB::DBUtil::SQLType::Oracle:
+	case DB::DBUtil::SQLType::WBEM:
 	default:
 		break;
 	}
@@ -724,7 +723,7 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuil
 
 Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef)
 {
-	DB::DBUtil::ServerType svrType = sql->GetServerType();
+	DB::DBUtil::SQLType sqlType = sql->GetSQLType();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -737,7 +736,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString sche
 	}
 	sql->AppendCol(tableName.v);
 	sql->AppendCmdC(CSTR(" ("));
-	if (svrType == DB::DBUtil::ServerType::Access || svrType == DB::DBUtil::ServerType::MDBTools)
+	if (sqlType == DB::DBUtil::SQLType::Access || sqlType == DB::DBUtil::SQLType::MDBTools)
 	{
 		j = tabDef->GetColCnt();
 		i = 0;
@@ -748,10 +747,10 @@ Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString sche
 				sql->AppendCmdC(CSTR(", "));
 			}
 			col = tabDef->GetCol(i++);
-			AppendColDef(svrType, sql, col);
+			AppendColDef(sqlType, sql, col);
 		}
 	}
-	else if (svrType == DB::DBUtil::ServerType::SQLite)
+	else if (sqlType == DB::DBUtil::SQLType::SQLite)
 	{
 		Bool hasAutoInc = false;
 		j = tabDef->GetColCnt();
@@ -759,7 +758,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString sche
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
-			AppendColDef(svrType, sql, col);
+			AppendColDef(sqlType, sql, col);
 			if (col->IsAutoInc())
 			{
 				hasAutoInc = true;
@@ -798,7 +797,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString sche
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
-			AppendColDef(svrType, sql, col);
+			AppendColDef(sqlType, sql, col);
 			if (i < j)
 			{
 				sql->AppendCmdC(CSTR(", "));
@@ -830,7 +829,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString sche
 		}
 	}
 	sql->AppendCmdC(CSTR(")"));
-	if (svrType == DB::DBUtil::ServerType::MySQL)
+	if (sqlType == DB::DBUtil::SQLType::MySQL)
 	{
 		if (tabDef->GetEngine())
 		{
@@ -1024,7 +1023,7 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(DB::SQLBuilder *
 	UOSInt i = 0;
 	UOSInt j = tabDef->GetColCnt();
 	sql->AppendCmdC(CSTR("select "));
-	if (page && (sql->GetServerType() == DB::DBUtil::ServerType::Access))
+	if (page && (sql->GetSQLType() == DB::DBUtil::SQLType::Access))
 	{
 		sql->AppendCmdC(CSTR("TOP "));
 		sql->AppendInt32((Int32)((page->GetPageNum() + 1) * page->GetPageSize()));
@@ -1068,7 +1067,7 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(DB::SQLBuilder *
 			}
 		}
 
-		if (sql->GetServerType() == DB::DBUtil::ServerType::MySQL)
+		if (sql->GetSQLType() == DB::DBUtil::SQLType::MySQL)
 		{
 			sql->AppendCmdC(CSTR(" LIMIT "));
 			sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
@@ -1076,7 +1075,7 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(DB::SQLBuilder *
 			sql->AppendInt32((Int32)page->GetPageSize());
 			status = PageStatus::Succ;
 		}
-		else if (sql->GetServerType() == DB::DBUtil::ServerType::MSSQL)
+		else if (sql->GetSQLType() == DB::DBUtil::SQLType::MSSQL)
 		{
 			if (!hasOrder)
 			{
@@ -1119,7 +1118,7 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(DB::SQLBuilder *
 	return status;
 }
 
-UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::ServerType svrType, Text::CString tableName, DB::DBReader *r)
+UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::SQLType sqlType, Text::CString tableName, DB::DBReader *r)
 {
 	UTF8Char *currPtr;
 	UTF8Char tmpBuff[256];
@@ -1127,16 +1126,16 @@ UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::ServerTyp
 	UOSInt j;
 
 	currPtr = Text::StrConcatC(sqlstr, UTF8STRC("insert into "));
-	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tableName.v, svrType);
+	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tableName.v, sqlType);
 	r->GetName(0, tmpBuff);
-	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tmpBuff, svrType);
+	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tmpBuff, sqlType);
 	j = r->ColCount();
 	i = 1;
 	while (i < j)
 	{
 		currPtr = Text::StrConcatC(currPtr, UTF8STRC(", "));
 		r->GetName(i++, tmpBuff);
-		currPtr = DB::DBUtil::SDBColUTF8(currPtr, tmpBuff, svrType);
+		currPtr = DB::DBUtil::SDBColUTF8(currPtr, tmpBuff, sqlType);
 	}
 	currPtr = Text::StrConcatC(currPtr, UTF8STRC(") values ("));
 	if (r->IsNull(0))
@@ -1146,7 +1145,7 @@ UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::ServerTyp
 	else
 	{
 		r->GetStr(0, tmpBuff, sizeof(tmpBuff));
-		currPtr = DB::DBUtil::SDBStrUTF8(currPtr, tmpBuff, svrType);
+		currPtr = DB::DBUtil::SDBStrUTF8(currPtr, tmpBuff, sqlType);
 	}
 	i = 1;
 	while (i < j)
@@ -1159,7 +1158,7 @@ UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::DBUtil::ServerTyp
 		else
 		{
 			r->GetStr(i, tmpBuff, sizeof(tmpBuff));
-			currPtr = DB::DBUtil::SDBStrUTF8(currPtr, tmpBuff, svrType);
+			currPtr = DB::DBUtil::SDBStrUTF8(currPtr, tmpBuff, sqlType);
 		}
 		i++;
 	}

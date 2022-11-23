@@ -7,6 +7,8 @@
 
 namespace DB
 {
+	class DBReader;
+
 	class TableDef
 	{
 	private:
@@ -16,7 +18,7 @@ namespace DB
 		Text::String *charset;
 		const UTF8Char *attr;
 		const UTF8Char *comments;
-		DB::DBUtil::ServerType svrType;
+		DB::DBUtil::SQLType sqlType;
 
 		Data::ArrayList<ColDef*> cols;
 
@@ -30,7 +32,7 @@ namespace DB
 		Text::String *GetCharset() const;
 		const UTF8Char *GetAttr() const;
 		const UTF8Char *GetComments() const;
-		DB::DBUtil::ServerType GetSvrType() const;
+		DB::DBUtil::SQLType GetSQLType() const;
 		UOSInt GetColCnt() const;
 		DB::ColDef *GetCol(UOSInt index) const;
 		DB::ColDef *GetSinglePKCol() const;
@@ -42,8 +44,9 @@ namespace DB
 		TableDef *SetCharset(Text::CString charset);
 		TableDef *SetAttr(const UTF8Char *attr);
 		TableDef *SetComments(const UTF8Char *comments);
-		TableDef *SetSvrType(DB::DBUtil::ServerType svrType);
+		TableDef *SetSQLType(DB::DBUtil::SQLType sqlType);
 		
+		void ColFromReader(DB::DBReader *r);
 		TableDef *Clone() const;
 		Data::Class *CreateTableClass() const;
 	};

@@ -147,7 +147,7 @@ namespace DB
 		UOSInt GetDataCnt();
 		UOSInt GetQueueCnt();
 		UOSInt GetConnCnt();
-		DB::DBUtil::ServerType GetSvrType();
+		DB::DBUtil::SQLType GetSQLType();
 		Int8 GetTzQhr();
 		UTF8Char *ToString(UTF8Char *buff);
 		UOSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds

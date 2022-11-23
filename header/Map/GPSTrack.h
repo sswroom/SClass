@@ -105,6 +105,7 @@ namespace Map
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayList<Text::String*> *names); // no need to release
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual ObjectClass GetObjectClass();
 
 		void NewTrack();
@@ -175,7 +176,8 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-		Text::CString GetName(UOSInt colIndex);
+		static Text::CString GetName(UOSInt colIndex, Bool hasAltitude);
+		static Bool GetColDefV(UOSInt colIndex, DB::ColDef *colDef, Bool hasAltitude);
 	};
 }
 #endif

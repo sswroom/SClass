@@ -34,17 +34,17 @@ Bool Win32::WMIQuery::IsError()
 	return this->pService == 0;
 }
 
-DB::DBUtil::ServerType Win32::WMIQuery::GetSvrType()
+DB::DBUtil::SQLType Win32::WMIQuery::GetSQLType() const
 {
-	return DB::DBUtil::ServerType::Unknown;
+	return DB::DBUtil::SQLType::Unknown;
 }
 
-DB::DBConn::ConnType Win32::WMIQuery::GetConnType()
+DB::DBConn::ConnType Win32::WMIQuery::GetConnType() const
 {
 	return DB::DBConn::CT_WMIQUERY;
 }
 
-Int8 Win32::WMIQuery::GetTzQhr()
+Int8 Win32::WMIQuery::GetTzQhr() const
 {
 	return Data::DateTimeUtil::GetLocalTzQhr();
 }

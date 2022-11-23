@@ -96,17 +96,17 @@ DB::MySQLConn::~MySQLConn()
 	}
 }
 
-DB::DBUtil::ServerType DB::MySQLConn::GetSvrType()
+DB::DBUtil::SQLType DB::MySQLConn::GetSQLType() const
 {
-	return DB::DBUtil::ServerType::MySQL;
+	return DB::DBUtil::SQLType::MySQL;
 }
 
-DB::DBConn::ConnType DB::MySQLConn::GetConnType()
+DB::DBConn::ConnType DB::MySQLConn::GetConnType() const
 {
 	return DB::DBConn::CT_MYSQL;
 }
 
-Int8 DB::MySQLConn::GetTzQhr()
+Int8 DB::MySQLConn::GetTzQhr() const
 {
 	return 0;
 }
@@ -301,13 +301,13 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStr
 	sb.AppendC(UTF8STRC("select "));
 	if (columnNames != 0 && (j = columnNames->GetCount()) > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(0)->v, DB::DBUtil::ServerType::MySQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(0)->v, DB::DBUtil::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
 		i = 1;
 		while (i < j)
 		{
 			sb.AppendUTF8Char(',');
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::SQLType::MySQL);
 			sb.AppendP(sbuff, sptr);
 			i++;
 		}
@@ -319,16 +319,16 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStr
 	sb.AppendC(UTF8STRC(" from "));
 	if (schemaName.leng > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::ServerType::MySQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::DBUtil::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::MySQL);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::SQLType::MySQL);
 	sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(&sb, DB::DBUtil::ServerType::MySQL, 0, 100, 0);
+		condition->ToWhereClause(&sb, DB::DBUtil::SQLType::MySQL, 0, 100, 0);
 	}
 	if (ordering.leng > 0)
 	{

@@ -268,11 +268,11 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaNam
 }
 
 
-void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::ServerType svrType)
+void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::SQLType sqlType)
 {
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	DB::SQLBuilder sql(svrType, 0);
+	DB::SQLBuilder sql(sqlType, 0);
 	DB::TableDef *tabDef = this->dbt->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
 	if (tabDef)
 	{
@@ -294,7 +294,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::ServerType svrType)
 	SDEL_STRING(schemaName);
 }
 
-void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::ServerType svrType)
+void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::SQLType sqlType)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -315,7 +315,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::ServerType svrType)
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
-		DB::SQLBuilder sql(svrType, 0);
+		DB::SQLBuilder sql(sqlType, 0);
 		DB::DBReader *r = this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 		if (r == 0)
 		{
@@ -598,28 +598,28 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CREATE_MYSQL:
-		this->CopyTableCreate(DB::DBUtil::ServerType::MySQL);
+		this->CopyTableCreate(DB::DBUtil::SQLType::MySQL);
 		break;
 	case MNU_TABLE_CREATE_MSSQL:
-		this->CopyTableCreate(DB::DBUtil::ServerType::MSSQL);
+		this->CopyTableCreate(DB::DBUtil::SQLType::MSSQL);
 		break;
 	case MNU_TABLE_CREATE_POSTGRESQL:
-		this->CopyTableCreate(DB::DBUtil::ServerType::PostgreSQL);
+		this->CopyTableCreate(DB::DBUtil::SQLType::PostgreSQL);
 		break;
 	case MNU_TABLE_EXPORT_MYSQL:
-		this->ExportTableData(DB::DBUtil::ServerType::MySQL);
+		this->ExportTableData(DB::DBUtil::SQLType::MySQL);
 		break;
 	case MNU_TABLE_EXPORT_MSSQL:
-		this->ExportTableData(DB::DBUtil::ServerType::MSSQL);
+		this->ExportTableData(DB::DBUtil::SQLType::MSSQL);
 		break;
 	case MNU_TABLE_EXPORT_POSTGRESQL:
-		this->ExportTableData(DB::DBUtil::ServerType::PostgreSQL);
+		this->ExportTableData(DB::DBUtil::SQLType::PostgreSQL);
 		break;
 	case MNU_TABLE_EXPORT_OPTION:
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->dbt, STR_CSTR(schemaName), tableName->ToCString());
+			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db, STR_CSTR(schemaName), tableName->ToCString());
 			dlg.ShowDialog(this);
 			tableName->Release();
 			SDEL_STRING(schemaName);

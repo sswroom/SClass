@@ -19,7 +19,7 @@ namespace Data
 
 		virtual OSInt Compare(VariObject *a, VariObject *b);
 		Bool IsValid();
-		Bool ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType);
+		Bool ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::SQLType sqlType);
 
 		static OSInt Compare(VariItem *a, VariItem *b);
 	};
