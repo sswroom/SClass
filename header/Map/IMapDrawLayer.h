@@ -55,6 +55,13 @@ namespace Map
 
 		static OSInt __stdcall ObjectCompare(void *obj1, void *obj2);
 	public:
+		enum class MixedData
+		{
+			AllData,
+			PointOnly,
+			NonPointOnly
+		};
+
 		typedef enum
 		{
 			OC_GPS_TRACK,
@@ -87,7 +94,7 @@ namespace Map
 		virtual Map::MapView *CreateMapView(Math::Size2D<Double> scnSize);
 
 		virtual DrawLayerType GetLayerType() = 0;
-		virtual void SetMixedType(Bool pointType);
+		virtual void SetMixedData(MixedData MixedData);
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr) = 0;
 		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
 		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;

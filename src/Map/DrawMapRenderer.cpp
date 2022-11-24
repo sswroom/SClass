@@ -1473,22 +1473,23 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.lineType == 0)
 							{
-								layer.layer->SetMixedType(false);
+								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
 								DrawShapes(denv, layer.layer, layer.lineStyle, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
 							else
 							{
-								layer.layer->SetMixedType(false);
+								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
 								DrawShapes(denv, layer.layer, (UOSInt)-1, layer.fillStyle, layer.lineThick, layer.lineColor);
 							}
-							layer.layer->SetMixedType(true);
+							layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::PointOnly);
 							DrawShapesPoint(denv, layer.layer, layer.imgIndex);
+							layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::AllData);
 						}
 						if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 						{
 							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
 							{
-								layer.layer->SetMixedType(false);
+								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
 									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
@@ -1501,10 +1502,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
-								layer.layer->SetMixedType(false);
+								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 							}
 						}
+						layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::AllData);
 					}
 					else if (layerType == Map::DRAW_LAYER_IMAGE)
 					{

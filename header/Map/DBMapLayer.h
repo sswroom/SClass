@@ -19,7 +19,7 @@ namespace Map
 		DB::TableDef *tabDef;
 		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
 		Math::Geometry::Vector2D::VectorType mixedType;
-		Bool pointType;
+		MixedData mixedData;
 
 		void ClearDB();
 		void *InitNameArr();
@@ -29,7 +29,7 @@ namespace Map
 		virtual ~DBMapLayer();
 
 		virtual DrawLayerType GetLayerType();
-		virtual void SetMixedType(Bool pointType);
+		virtual void SetMixedData(MixedData mixedData);
 		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr);
 		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);

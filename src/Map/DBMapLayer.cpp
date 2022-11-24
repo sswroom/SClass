@@ -53,7 +53,7 @@ Map::DBMapLayer::DBMapLayer(Text::String *layerName) : Map::IMapDrawLayer(layerN
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
 	this->tabDef = 0;
-	this->pointType = false;
+	this->mixedData = MixedData::AllData;
 }
 
 Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, layerName)
@@ -64,7 +64,7 @@ Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::IMapDrawLayer(layerN
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
 	this->tabDef = 0;
-	this->pointType = false;
+	this->mixedData = MixedData::AllData;
 }
 
 Map::DBMapLayer::~DBMapLayer()
@@ -77,15 +77,15 @@ Map::DrawLayerType Map::DBMapLayer::GetLayerType()
 	return Map::DRAW_LAYER_MIXED;
 }
 
-void Map::DBMapLayer::SetMixedType(Bool pointType)
+void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 {
-	this->pointType = pointType;
+	this->mixedData = mixedData;
 }
 
 UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
 	UOSInt initCnt = outArr->GetCount();
-	if (this->pointType)
+	if (this->mixedData != MixedData::AllData)
 	{
 		Math::Geometry::Vector2D *vec;
 		UOSInt i = 0;
@@ -93,7 +93,7 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nam
 		while (i < j)
 		{
 			vec = this->vecMap.GetItem(i);
-			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == this->pointType)
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
 				outArr->Add(this->vecMap.GetKey(i));
 			}
@@ -121,12 +121,12 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **n
 	Math::RectAreaDbl bounds;
 	UOSInt i = 0;
 	UOSInt j = this->vecMap.GetCount();
-	if (this->pointType)
+	if (this->mixedData != MixedData::AllData)
 	{
 		while (i < j)
 		{
 			vec = this->vecMap.GetItem(i);
-			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
 				vec->GetBounds(&bounds);
 				if (bounds.OverlapOrTouch(rect))
