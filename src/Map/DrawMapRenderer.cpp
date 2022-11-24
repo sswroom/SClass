@@ -1489,9 +1489,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 						{
 							if (layer.fontType == Map::MapEnv::FontType::GlobalStyle)
 							{
-								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
 								if (layer.fontStyle < denv->fontStyleCnt)
 								{
+									layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
+									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+									layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::PointOnly);
 									DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 								}
 							}
@@ -1503,6 +1505,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
 								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::NonPointOnly);
+								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
+								layer.layer->SetMixedData(Map::IMapDrawLayer::MixedData::PointOnly);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
 							}
 						}
