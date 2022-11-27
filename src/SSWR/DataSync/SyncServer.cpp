@@ -62,8 +62,9 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(Net::TCPClient *cli, voi
 	while (data->buffSize + size > BUFFSIZE)
 	{
 		MemCopyNO(&data->buff[data->buffSize], buff, BUFFSIZE - data->buffSize);
-		size += BUFFSIZE - data->buffSize;
+		size -= BUFFSIZE - data->buffSize;
 		buff += BUFFSIZE - data->buffSize;
+		data->buffSize = BUFFSIZE;
 
 		sizeLeft = me->protoHdlr.ParseProtocol(cli, data, data->stmData, data->buff, data->buffSize);
 		if (sizeLeft == 0)
