@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
+#include "IO/Path.h"
 #include "Math/Math.h"
 #include "Media/PaperSize.h"
 #include "Text/MyStringFloat.h"
@@ -288,6 +289,10 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	if (fileName.v)
 	{
 		icon->fileName = Text::String::New(fileName.v, fileName.leng);
+		if (IO::Path::PATH_SEPERATOR != '/')
+		{
+			icon->fileName->Replace('/', IO::Path::PATH_SEPERATOR);
+		}
 	}
 	else
 	{
