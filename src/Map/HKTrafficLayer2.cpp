@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
+#include "Map/HKRoadNetwork2.h"
 #include "Map/HKTrafficLayer2.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
@@ -12,7 +13,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 #include "Text/XMLReader.h"
-//#include <stdio.h>
+#include <stdio.h>
 
 void Map::HKTrafficLayer2::SetSpeedMap(Int32 segmentId, Double speed, Bool valid)
 {
@@ -96,7 +97,7 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer2::HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::IMapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"))
+Map::HKTrafficLayer2::HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, HKRoadNetwork2 *rn2) : Map::IMapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -105,7 +106,47 @@ Map::HKTrafficLayer2::HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine 
 	this->url = Text::String::New(UTF8STRC("https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml"));
 	
 	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80));
-	///////////////////////////////////////
+
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	Math::Geometry::Vector2D *vec;
+	DB::ReadingDB *db = rn2->GetDB();
+	if(db)
+	{
+		DB::DBReader *r = db->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0);
+		if (r)
+		{
+			UOSInt shapeCol = INVALID_INDEX;
+			UOSInt idCol = INVALID_INDEX;
+			UOSInt i = r->ColCount();
+			while (i-- > 0)
+			{
+				sptr = r->GetName(i, sbuff);
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+				{
+					idCol = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
+				{
+					shapeCol = i;
+				}
+			}
+			if (shapeCol != INVALID_INDEX && idCol != INVALID_INDEX)
+			{
+				while (r->ReadNext())
+				{
+					vec = r->GetVector(shapeCol);
+					if (vec)
+					{
+						vec = this->vecMap.Put(r->GetInt32(idCol), vec);
+						SDEL_CLASS(vec);
+					}
+				}
+			}
+			db->CloseReader(r);
+		}
+	}
+	printf("VecMap Count = %d\r\n", (Int32)this->vecMap.GetCount());
 }
 
 Map::HKTrafficLayer2::~HKTrafficLayer2()
@@ -131,6 +172,10 @@ Map::HKTrafficLayer2::~HKTrafficLayer2()
 
 void Map::HKTrafficLayer2::ReloadData()
 {
+	if (this->vecMap.GetCount() == 0)
+	{
+		return;
+	}
 	UInt8 buff[2048];
 	UOSInt readSize;
 	IO::Stream *stm;

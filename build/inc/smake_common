@@ -2038,6 +2038,8 @@ Map/HKTDVehRestrict.h: ../../src/Map/HKTDVehRestrict.cpp
 @HKTDVehRestrict.o
 Map/HKTrafficLayer.h: ../../src/Map/HKTrafficLayer.cpp
 @HKTrafficLayer.o
+Map/HKTrafficLayer2.h: ../../src/Map/HKTrafficLayer2.cpp
+@HKTrafficLayer2.o
 Map/IAssistedReverseGeocoder.h:
 Map/ILocationService.h: ../../src/Map/ILocationService.cpp
 @ILocationService.o
@@ -4745,6 +4747,7 @@ HKRoadNetwork2.o: ../../src/Map/HKRoadNetwork2.cpp
 HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
+HKTrafficLayer2.o: ../../src/Map/HKTrafficLayer2.cpp
 ILocationService.o: ../../src/Map/ILocationService.cpp
 IMapDrawLayer.o: ../../src/Map/IMapDrawLayer.cpp
 KMLXML.o: ../../src/Map/KMLXML.cpp

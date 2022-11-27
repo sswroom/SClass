@@ -3,11 +3,14 @@
 #include "DB/ReadingDB.h"
 #include "Map/IMapDrawLayer.h"
 #include "Math/CoordinateSystem.h"
+#include "Net/SSLEngine.h"
 #include "Text/CString.h"
+#include "Text/EncodingFactory.h"
 
 namespace Map
 {
 	class HKSpeedLimit;
+	class HKTrafficLayer2;
 
 	class HKRoadNetwork2
 	{
@@ -15,6 +18,7 @@ namespace Map
 		DB::ReadingDB *fgdb;
 	public:
 		HKRoadNetwork2(Text::CString fgdbPath);
+		HKRoadNetwork2(DB::ReadingDB *fgdb);
 		~HKRoadNetwork2();
 
 		Bool IsError();
@@ -22,6 +26,7 @@ namespace Map
 		Math::CoordinateSystem *CreateCoordinateSystem();
 		Map::HKSpeedLimit *CreateSpeedLimit();
 		Map::IMapDrawLayer *CreateTonnesSignLayer();
+		Map::HKTrafficLayer2 *CreateTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 
 		static Text::CString GetDownloadURL();
 		static Text::CString GetDefFileName();

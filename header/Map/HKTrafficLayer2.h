@@ -9,6 +9,8 @@
 
 namespace Map
 {
+	class HKRoadNetwork2;
+
 	class HKTrafficLayer2 : public Map::IMapDrawLayer
 	{
 	private:
@@ -34,7 +36,7 @@ namespace Map
 		void SetSpeedMap(Int32 segmentId, Double speed, Bool valid);
 		IO::Stream *OpenURLStream();
 	public:
-		HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
+		HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, HKRoadNetwork2 *rn2);
 		virtual ~HKTrafficLayer2();
 
 		void ReloadData();

@@ -2,6 +2,7 @@
 #include "IO/DirectoryPackage.h"
 #include "Map/HKRoadNetwork2.h"
 #include "Map/HKSpeedLimit.h"
+#include "Map/HKTrafficLayer2.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
@@ -12,6 +13,11 @@ Map::HKRoadNetwork2::HKRoadNetwork2(Text::CString fgdbPath)
 	Parser::ObjParser::FileGDB2Parser parser;
 	this->fgdb = (DB::ReadingDB*)parser.ParseObject(&pkg, 0, IO::ParserType::ReadingDB);
 	
+}
+
+Map::HKRoadNetwork2::HKRoadNetwork2(DB::ReadingDB *fgdb)
+{
+	this->fgdb = fgdb;
 }
 
 Map::HKRoadNetwork2::~HKRoadNetwork2()
@@ -132,6 +138,15 @@ Map::IMapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 		this->fgdb->CloseReader(r);
 	}
 	return lyr;
+}
+
+Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact)
+{
+	if (this->fgdb)
+	{
+		return NEW_CLASS_D(Map::HKTrafficLayer2(sockf, ssl, encFact, this));
+	}
+	return 0;
 }
 
 Text::CString Map::HKRoadNetwork2::GetDownloadURL()
