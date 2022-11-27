@@ -13,7 +13,10 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/URLString.h"
 #include "Text/XMLReader.h"
-#include <stdio.h>
+//#include <stdio.h>
+
+#define SPEEDHIGH 40.0
+#define SPEEDLOW 20.0
 
 void Map::HKTrafficLayer2::SetSpeedMap(Int32 segmentId, Double speed, Bool valid)
 {
@@ -146,7 +149,8 @@ Map::HKTrafficLayer2::HKTrafficLayer2(Net::SocketFactory *sockf, Net::SSLEngine 
 			db->CloseReader(r);
 		}
 	}
-	printf("VecMap Count = %d\r\n", (Int32)this->vecMap.GetCount());
+//	printf("VecMap Count = %d\r\n", (Int32)this->vecMap.GetCount());
+	this->ReloadData();
 }
 
 Map::HKTrafficLayer2::~HKTrafficLayer2()
@@ -292,6 +296,7 @@ void Map::HKTrafficLayer2::ReloadData()
 			}
 		}
 		DEL_CLASS(stm);
+//		printf("Loaded %d routes\r\n", (UInt32)this->roadMap.GetCount());
 	}
 	else
 	{
@@ -424,11 +429,11 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(void *session, 
 	if (road && road->vec)
 	{
 		vec = road->vec->Clone();
-		if (road->speed >= 50.0)
+		if (road->speed >= SPEEDHIGH)
 		{
 			((Math::Geometry::Polyline*)vec)->SetColor(0xff00ff00);
 		}
-		else if (road->speed >= 30)
+		else if (road->speed >= SPEEDLOW)
 		{
 			((Math::Geometry::Polyline*)vec)->SetColor(0xffffff00);
 		}
