@@ -5,12 +5,14 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
+#define BUFFSIZE 10240
+
 typedef struct
 {
 	Int32 serverId;
 	void *stmData;
 	UOSInt buffSize;
-	UInt8 buff[10240];
+	UInt8 buff[BUFFSIZE];
 } ClientData;
 
 void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, void *userObj)
@@ -56,9 +58,27 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(Net::TCPClient *cli, voi
 {
 	SSWR::DataSync::SyncServer *me = (SSWR::DataSync::SyncServer *)userObj;
 	ClientData *data = (ClientData*)cliData;
+	UOSInt sizeLeft;
+	while (data->buffSize + size > BUFFSIZE)
+	{
+		MemCopyNO(&data->buff[data->buffSize], buff, BUFFSIZE - data->buffSize);
+		size += BUFFSIZE - data->buffSize;
+		buff += BUFFSIZE - data->buffSize;
+
+		sizeLeft = me->protoHdlr.ParseProtocol(cli, data, data->stmData, data->buff, data->buffSize);
+		if (sizeLeft == 0)
+		{
+			data->buffSize = 0;
+		}
+		else if (sizeLeft <= data->buffSize)
+		{
+			MemCopyO(data->buff, &data->buff[data->buffSize - sizeLeft], sizeLeft);
+			data->buffSize = sizeLeft;
+		}
+	}
 	MemCopyNO(&data->buff[data->buffSize], buff, size);
 	data->buffSize += size;
-	UOSInt sizeLeft = me->protoHdlr.ParseProtocol(cli, data, data->stmData, data->buff, data->buffSize);
+	sizeLeft = me->protoHdlr.ParseProtocol(cli, data, data->stmData, data->buff, data->buffSize);
 	if (sizeLeft == 0)
 	{
 		data->buffSize = 0;
