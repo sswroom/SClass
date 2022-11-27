@@ -1143,7 +1143,6 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 		}
 		i++;
 	}
-	mutUsage.EndUse();
 	return ret;
 }
 
@@ -1172,7 +1171,6 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 		}
 		i++;
 	}
-	mutUsage.EndUse();
 	return retCnt;
 }
 
@@ -1258,7 +1256,6 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, I
 			((Math::Geometry::Polyline*)vec)->SetColor(0xffff0000);
 		}
 	}
-	mutUsage.EndUse();
 	return vec;
 }
 

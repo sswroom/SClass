@@ -774,7 +774,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 	{
 		me->txtReqURL->SetText(me->respReqURL->ToCString());
 		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
-		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
+		if (sptr == 0)
+		{
+			me->txtSvrIP->SetText(CSTR(""));
+		}
+		else
+		{
+			me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
+		}
 		if (me->respTimeDNS == -1)
 		{
 			me->txtTimeDNS->SetText(CSTR("-1"));
@@ -1142,7 +1149,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->respData = 0;
 	this->respCert = 0;
 	this->userAgent = Text::String::New(UTF8STRC("SSWR/1.0"));
-
+	this->respSvrAddr.addrType = Net::AddrType::Unknown;
+	
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 

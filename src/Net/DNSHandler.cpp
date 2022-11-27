@@ -86,7 +86,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 			while (i < j)
 			{
 				ans = dnsStat->answers.GetItem(i);
-				if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 				{
 					*addr = ans->addr;
 					if (newReq)
@@ -112,7 +112,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 	while (i < j)
 	{
 		ans = dnsStat->answers.GetItem(i);
-		if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
 			*addr = ans->addr;
 			dnsStat->timeout = dnsStat->timeout.AddSecond(ans->ttl);
@@ -174,7 +174,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 			while (i < j)
 			{
 				ans = dnsStat->answers.GetItem(i);
-				if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 				{
 					*addr = ans->addr;
 					if (newReq)
@@ -201,7 +201,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 	while (i < j)
 	{
 		ans = dnsStat->answers.GetItem(i);
-		if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
 			*addr = ans->addr;
 			dnsStat->timeout = currTime.AddSecond(ans->ttl);
@@ -267,7 +267,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 			while (i < j)
 			{
 				ans = dnsStat->answers.GetItem(i);
-				if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 				{
 					addrs[ret] = ans->addr;
 					if (newReq)
@@ -296,7 +296,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 	while (i < j)
 	{
 		ans = dnsStat->answers.GetItem(i);
-		if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
 			addrs[ret] = ans->addr;
 			dnsStat->timeout = dnsStat->timeout.AddSecond(ans->ttl);
@@ -365,7 +365,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 			while (i < j)
 			{
 				ans = dnsStat->answers.GetItem(i);
-				if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 				{
 					addrs[ret] = ans->addr;
 					if (newReq)
@@ -386,14 +386,14 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 	NEW_CLASS(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = currTime;
-	j = this->dnsCli.GetByType(&dnsStat->answers, domain, 1);
+	j = this->dnsCli.GetByType(&dnsStat->answers, domain, 28);
 
 	i = 0;
 	j = dnsStat->answers.GetCount();
 	while (i < j)
 	{
 		ans = dnsStat->answers.GetItem(i);
-		if (ans->addr.addrType != Net::AddrType::Unknown && ans->name->Equals(domain.v, domain.leng))
+		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
 			addrs[ret] = ans->addr;
 			dnsStat->timeout = currTime.AddSecond(ans->ttl);
