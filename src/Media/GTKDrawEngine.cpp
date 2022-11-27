@@ -809,7 +809,7 @@ Bool Media::GTKDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 		}
 		cairo_save((cairo_t*)this->cr);
 		cairo_translate((cairo_t*)this->cr, tlx + OSInt2Double(this->left), tly + OSInt2Double(this->top));
-		cairo_scale((cairo_t*)this->cr, 1, 1);
+		cairo_scale((cairo_t*)this->cr, this->info.hdpi / img->GetHDPI(), this->info.vdpi / img->GetVDPI());
 		cairo_set_source_surface((cairo_t*)this->cr, (cairo_surface_t*)gimg->surface, 0, 0);
 		cairo_paint((cairo_t*)this->cr);
 		cairo_restore((cairo_t*)this->cr);
@@ -885,7 +885,14 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Doub
 {
 	if (this->surface == 0)
 	{
-		return false;
+		Media::DrawImage *dimg = this->eng->ConvImage(img);
+		if (dimg == 0)
+		{
+			return false;
+		}
+		this->DrawImagePt(dimg, tlx, tly);
+		this->eng->DeleteImage(dimg);
+		return true;
 	}
 	img->To32bpp();
 	if (img->info.storeBPP != 32)

@@ -9,6 +9,8 @@
 #include "Text/ReportBuilder.h"
 #include "Text/StringBuilderUTF8.h"
 
+#include <stdio.h>
+
 Text::CString Text::ReportBuilder::ColumnMergeLeft = CSTR("|-L");
 Text::CString Text::ReportBuilder::ColumnMergeUp = CSTR("|-U");
 
