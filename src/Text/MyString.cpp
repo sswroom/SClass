@@ -2062,15 +2062,15 @@ Bool Text::StrHex2Int16V(const UTF8Char *str, Int16 *outVal)
 		}
 		if (c >= '0' && c <= '9')
 		{
-			currVal = (currVal << 4) | (c - 48);
+			currVal = (Int16)((currVal << 4) | (c - 48));
 		}
 		else if (c >= 'A' && c <= 'F')
 		{
-			currVal = (currVal << 4) | (c - 0x37);
+			currVal = (Int16)((currVal << 4) | (c - 0x37));
 		}
 		else if (c >= 'a' && c <= 'f')
 		{
-			currVal = (currVal << 4) | (c - 0x57);
+			currVal = (Int16)((currVal << 4) | (c - 0x57));
 		}
 		else
 		{

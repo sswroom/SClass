@@ -62,7 +62,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
 
 	if (imgList == 0)
 	{
-		printf("GTKDrawEngine: Error in loading image %s\r\n", fileName.v);
+//		printf("GTKDrawEngine: Error in loading image %s\r\n", fileName.v);
 		return 0;
 	}
 
