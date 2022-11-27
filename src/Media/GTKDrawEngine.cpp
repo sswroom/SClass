@@ -51,18 +51,18 @@ Media::DrawImage *Media::GTKDrawEngine::CreateImageScn(void *cr, OSInt left, OSI
 Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
 {
 	Media::ImageList *imgList = 0;
-	IO::StmData::FileData *fd;
-
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	if (imgList == 0)
 	{
-		Parser::FileParser::GUIImgParser parser;
-		imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList);
+		IO::StmData::FileData fd(fileName, false);
+		if (imgList == 0)
+		{
+			Parser::FileParser::GUIImgParser parser;
+			imgList = (Media::ImageList*)parser.ParseFile(&fd, 0, IO::ParserType::ImageList);
+		}
 	}
-	DEL_CLASS(fd);
 
 	if (imgList == 0)
 	{
+		printf("GTKDrawEngine: Error in loading image %s\r\n", fileName.v);
 		return 0;
 	}
 
