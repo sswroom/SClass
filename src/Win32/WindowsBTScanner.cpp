@@ -263,10 +263,8 @@ Win32::WindowsBTScanner::WindowsBTScanner()
 Win32::WindowsBTScanner::~WindowsBTScanner()
 {
 	this->Close();
-	const Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->pubDevMap.GetValues();
-	LIST_CALL_FUNC(devList, DeviceFree);
-	devList = this->randDevMap.GetValues();
-	LIST_CALL_FUNC(devList, DeviceFree);
+	LIST_CALL_FUNC(&this->pubDevMap, DeviceFree);
+	LIST_CALL_FUNC(&this->randDevMap, DeviceFree);
 }
 
 void Win32::WindowsBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
@@ -323,13 +321,13 @@ Bool Win32::WindowsBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->devMut);
 	return &this->pubDevMap;
 }
 
-Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
+Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *Win32::WindowsBTScanner::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
 	mutUsage->ReplaceMutex(&this->devMut);
 	return &this->randDevMap;

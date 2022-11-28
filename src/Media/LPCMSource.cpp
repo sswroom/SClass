@@ -422,7 +422,7 @@ UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt
 	{
 		if (sampleOfst + sampleCount > 0)
 		{
-			MemClear(buff, (UOSInt)-sampleOfst * blk);
+			MemClear(buff, (UOSInt)-(Int64)sampleOfst * blk);
 			return (UOSInt)((this->data->GetRealData(0, (UOSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
 		}
 		else

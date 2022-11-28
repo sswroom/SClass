@@ -253,8 +253,8 @@ void FORCEINLINE PStoreInt32x8NC(void *ptr, Int32x8 v)
 }
 
 #endif
-#elif defined(ENABLE_NEON) && (defined(__ARM_NEON) || defined(__ARM_NEON__) || defined(__ARM_ARCH_7) || defined(_M_ARM64))
-#if defined(_M_ARM64)
+#elif defined(ENABLE_NEON) && (defined(__ARM_NEON) || defined(__ARM_NEON__) || defined(__ARM_ARCH_7) || defined(_M_ARM64) || defined(_M_ARM64EC))
+#if defined(_M_ARM64) || defined(_M_ARM64EC)
 #include <arm64_neon.h>
 #else
 #include <arm_neon.h>
@@ -287,7 +287,7 @@ typedef uint32x4_t UInt32x4;
 #define PUInt16x8SetA(v) vdupq_n_u16(v)
 #define PInt32x4SetA(v) vdupq_n_s32(v)
 #define PUInt32x4SetA(v) vdupq_n_u32(v)
-#if defined(_M_ARM64)
+#if defined(_M_ARM64) || defined(_M_ARM64EC)
 #define PLoadUInt8x4(ptr) vreinterpret_u32_u8(vld1_u32((const UInt32*)ptr))
 #define PLoadUInt8x8(ptr) (*(uint8x8_t*)(ptr))
 #define PLoadUInt8x16(ptr) (*(uint8x16_t*)(ptr))
@@ -530,10 +530,17 @@ Int32x4 FORCEINLINE PMADDWD(Int16x8 v1, Int16x8 v2)
 typedef float64x2_t Doublex2;
 
 #else
+#if defined(_MSC_VER)
+struct Doublex2
+{
+	Double vals[2];
+};
+#else
 struct Doublex2
 {
 	Double vals[2];
 } __attribute__((aligned (16)));
+#endif
 
 Doublex2 FORCEINLINE PDoublex2SetA(Double val)
 {

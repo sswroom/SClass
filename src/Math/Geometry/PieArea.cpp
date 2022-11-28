@@ -75,12 +75,28 @@ Bool Math::Geometry::PieArea::Equals(Vector2D *vec) const
 		this->arcAngle2 == pa->arcAngle2;
 }
 
+Bool Math::Geometry::PieArea::EqualsNearly(Vector2D* vec) const
+{
+	if (vec == 0 || vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
+		return false;
+	Math::Geometry::PieArea* pa = (Math::Geometry::PieArea*)vec;
+	return this->center.EqualsNearly(pa->center) &&
+		Math::NearlyEqualsDbl(this->r, pa->r) &&
+		Math::NearlyEqualsDbl(this->arcAngle1, pa->arcAngle1) &&
+		Math::NearlyEqualsDbl(this->arcAngle2, pa->arcAngle2);
+}
+
 UOSInt Math::Geometry::PieArea::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
 {
 	coordList->Add(this->center);
 	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle1) * r, this->center.y + Math_Sin(this->arcAngle1) * r));
 	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle2) * r, this->center.y + Math_Sin(this->arcAngle2) * r));
 	return 3;
+}
+
+void Math::Geometry::PieArea::SwapXY()
+{
+	this->center = this->center.SwapXY();
 }
 
 Double Math::Geometry::PieArea::GetCX() const

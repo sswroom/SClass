@@ -22,13 +22,13 @@ Manage::ThreadContextARM64::~ThreadContextARM64()
 	MemFree(this->context);
 }
 
-UOSInt Manage::ThreadContextARM64::GetRegisterCnt()
+UOSInt Manage::ThreadContextARM64::GetRegisterCnt() const
 {
 	OSInt cnt = 17;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextARM64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
+UTF8Char *Manage::ThreadContextARM64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	switch (index)
 	{
@@ -169,7 +169,7 @@ UTF8Char *Manage::ThreadContextARM64::GetRegister(UOSInt index, UTF8Char *buff, 
 	}
 }
 
-void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF8 *sb)
+void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -190,39 +190,39 @@ void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF8 *sb)
 				sptr = Text::StrHexByte(sptr, regBuff[k]);
 			}
 			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
-			sb->Append(sbuff);
+			sb->AppendP(sbuff, sptr);
 		}
 
 		i++;
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextARM64::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextARM64::GetType() const
 {
 	return Manage::ThreadContext::CT_ARM64;
 }
 
-UOSInt Manage::ThreadContextARM64::GetThreadId()
+UOSInt Manage::ThreadContextARM64::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextARM64::GetProcessId()
+UOSInt Manage::ThreadContextARM64::GetProcessId() const
 {
 	return this->procId;
 }
 
-UOSInt Manage::ThreadContextARM64::GetInstAddr()
+UOSInt Manage::ThreadContextARM64::GetInstAddr() const
 {
 	return (UOSInt)((CONTEXT_TYPE*)this->context)->Pc;
 }
 
-UOSInt Manage::ThreadContextARM64::GetStackAddr()
+UOSInt Manage::ThreadContextARM64::GetStackAddr() const
 {
 	return (UOSInt)((CONTEXT_TYPE*)this->context)->Sp;
 }
 
-UOSInt Manage::ThreadContextARM64::GetFrameAddr()
+UOSInt Manage::ThreadContextARM64::GetFrameAddr() const
 {
 	return (UOSInt)((CONTEXT_TYPE*)this->context)->Lr;
 }
@@ -242,14 +242,14 @@ void Manage::ThreadContextARM64::SetFrameAddr(UOSInt frameAddr)
 	((CONTEXT_TYPE*)this->context)->Lr = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextARM64::Clone()
+Manage::ThreadContext *Manage::ThreadContextARM64::Clone() const
 {
 	Manage::ThreadContextARM64 *ctx;
 	NEW_CLASS(ctx, Manage::ThreadContextARM64(this->procId, this->threadId, this->context));
 	return ctx;
 }
 
-Bool Manage::ThreadContextARM64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextARM64::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmARM64::DasmARM64_Regs *r = (Manage::DasmARM64::DasmARM64_Regs *)regs;
 	r->X0 = ((CONTEXT_TYPE*)this->context)->X0;
@@ -288,14 +288,14 @@ Bool Manage::ThreadContextARM64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextARM64::CreateDasm()
+Manage::Dasm *Manage::ThreadContextARM64::CreateDasm() const
 {
 	Manage::DasmARM64 *dasm;
 	NEW_CLASS(dasm, Manage::DasmARM64());
 	return dasm;
 }
 
-void *Manage::ThreadContextARM64::GetContext()
+void *Manage::ThreadContextARM64::GetContext() const
 {
 	return this->context;
 }

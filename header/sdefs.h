@@ -92,7 +92,7 @@ typedef long double LDouble; //32-bit floating point
 typedef double Double;
 #endif
 
-#if defined(_WIN64) && (defined(_M_X64) || defined(_M_AMD64))
+#if defined(_WIN64) && (defined(_M_X64) || defined(_M_AMD64)) && !defined(_M_ARM64EC)
 typedef __int64 OSInt;
 typedef unsigned __int64 UOSInt;
 #define _OSINT_SIZE 64
@@ -104,7 +104,7 @@ typedef unsigned long long UOSInt;
 #define _OSINT_SIZE 64
 #define CPU_X86_64
 #define IS_BYTEORDER_LE 1
-#elif defined(_M_ARM64)
+#elif defined(_M_ARM64) || defined(_M_ARM64EC)
 typedef __int64 OSInt;
 typedef unsigned __int64 UOSInt;
 #define _OSINT_SIZE 64
@@ -394,9 +394,37 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAP64(v) (Int64)_byteswap_uint64((UInt64)(v))
 #define BSWAPU64(v) _byteswap_uint64(v)
 #if _OSINT_SIZE == 64
+#if defined(_M_ARM64) || defined(_M_ARM64EC)
+#include <intrin.h>
+Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+{
+	v1 += v2;
+	*outPtr = v1;
+	return v1 < v2;
+}
+
+UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
+{
+	*hi = __mulh(x, y);
+	return (x * y);
+}
+
+__inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder)
+{
+	////////////////////
+	hi = hi % divider;
+	hi = (hi << 32) + (lo >> 32);
+	UOSInt ret = (hi / divider) << 32;
+	hi = hi % divider;
+	lo = (lo & 0xffffffffULL) + (hi << 32);
+	*reminder = lo % divider;
+	return lo / divider;
+}
+#else
 #define MyADC_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out);
 #define MyMUL_UOS(x, y, hi) _umul128(x, y, hi)
 #define MyDIV_UOS(lo, hi, divider, reminder) _udiv128(hi, lo, divider, reminder)
+#endif
 #else
 #define MyADC_UOS(v1, v2, out) _addcarry_u32(0, v1, v2, out);
 #endif

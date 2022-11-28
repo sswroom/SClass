@@ -27,7 +27,9 @@ namespace Math
 			virtual Bool HasZ() const;
 			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
+			virtual Bool EqualsNearly(Vector2D* vec) const;
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;
+			virtual void SwapXY();
 
 			Double GetCX() const;
 			Double GetCY() const;

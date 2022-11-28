@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #if defined(WIN32) || defined(_WIN64) || defined(_WIN32)
-#if defined(CPU_X86_64)
+#if defined(CPU_X86_64) || defined(_M_ARM64EC)
 #include "ThreadContextX86_64W.cpp"
 #include "ThreadContextX86_32W.cpp"
 #elif defined(CPU_X86_32)

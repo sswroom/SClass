@@ -2067,7 +2067,7 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 				this->eng->iab->SetSourceProfile(simg->info.color);
 				this->eng->iab->SetDestProfile(this->info.color);
 				this->eng->iab->SetOutputProfile(this->info.color);
-				this->eng->iab->Blend(dbits + (this->height - Double2Int32(tly) - 1) * dbpl + (Double2Int32(tlx) * 4), -dbpl, sbits, sbpl, w, h, simg->info.atype);
+				this->eng->iab->Blend(dbits + (this->height - Double2Int32(tly) - 1) * dbpl + (Double2Int32(tlx) * 4), -(OSInt)dbpl, sbits, sbpl, w, h, simg->info.atype);
 			}
 		}
 		return true;

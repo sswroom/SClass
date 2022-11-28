@@ -12,8 +12,8 @@ namespace Win32
 	{
 	private:
 		winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher watcher = nullptr;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> pubDevMap;
-		Data::UInt64Map<IO::BTScanLog::ScanRecord3*> randDevMap;
+		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> pubDevMap;
+		Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> randDevMap;
 		Sync::Mutex devMut;
 		RecordHandler recHdlr;
 		void *recHdlrObj;
@@ -43,8 +43,8 @@ namespace Win32
 		virtual void Close();
 		virtual Bool SetScanMode(ScanMode scanMode);
 
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage);
-		virtual Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage);
+		virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetPublicMap(Sync::MutexUsage *mutUsage);
+		virtual Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*> *GetRandomMap(Sync::MutexUsage *mutUsage);
 	};
 }
 #endif
