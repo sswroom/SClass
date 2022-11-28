@@ -1005,7 +1005,7 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStri
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	if (schemaName.leng > 0)
+	if (schemaName.leng > 0 && DB::DBUtil::HasSchema(this->sqlType))
 	{
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, this->sqlType);
 		sb.AppendP(sbuff, sptr);

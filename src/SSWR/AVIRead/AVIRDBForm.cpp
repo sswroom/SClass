@@ -29,6 +29,7 @@ typedef enum
 	MNU_TABLE_EXPORT_MSSQL,
 	MNU_TABLE_EXPORT_POSTGRESQL,
 	MNU_TABLE_EXPORT_OPTION,
+	MNU_TABLE_EXPORT_CSV,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -320,6 +321,8 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::SQLType sqlType)
 		if (r == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
 			return;
 		}
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -329,6 +332,79 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::DBUtil::SQLType sqlType)
 			DB::SQLGenerator::GenInsertCmd(&sql, schemaName->ToCString(), tableName->ToCString(), r);
 			sql.AppendCmdC(CSTR(";\r\n"));
 			fs.Write(sql.ToString(), sql.GetLength());
+		}
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+}
+
+void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
+{
+	UTF8Char sbuff[4096];
+	UTF8Char csvBuff[4096];
+	UTF8Char *sptr;
+	UTF8Char *csvPtr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
+	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBExportCSV", true);
+	dlg.AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		Text::StringBuilderUTF8 sb;
+		DB::DBReader *r = this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+		if (r == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+			return;
+		}
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		sb.ClearStr();
+		UOSInt i = 0;
+		UOSInt j = r->ColCount();
+		while (i < j)
+		{
+			sptr = r->GetName(i, sbuff);
+			csvPtr = Text::StrToCSVRec(csvBuff, sbuff);
+			if (i > 0) sb.AppendUTF8Char(',');
+			sb.AppendP(csvBuff, csvPtr);
+			i++;
+		}
+		sb.AppendC(UTF8STRC("\r\n"));
+		fs.Write(sb.ToString(), sb.GetLength());
+		while (r->ReadNext())
+		{
+			sb.ClearStr();
+			i = 0;
+			while (i < j)
+			{
+				if (i > 0) sb.AppendUTF8Char(',');
+				sptr = r->GetStr(i, sbuff, sizeof(sbuff));
+				if (sptr)
+				{
+					csvPtr = Text::StrToCSVRec(csvBuff, sbuff);
+					sb.AppendP(csvBuff, csvPtr);
+				}
+				else
+				{
+					sb.AppendC(UTF8STRC("\"\""));
+				}
+				i++;
+			}
+			sb.AppendC(UTF8STRC("\r\n"));
+			fs.Write(sb.ToString(), sb.GetLength());
 		}
 	}
 	tableName->Release();
@@ -414,7 +490,8 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	mnu2->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("Export Table Data..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Export Table Data as SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Export Table Data as CSV..."), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
@@ -624,6 +701,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			tableName->Release();
 			SDEL_STRING(schemaName);
 		}
+		break;
+	case MNU_TABLE_EXPORT_CSV:
+		this->ExportTableCSV();
 		break;
 	}
 }

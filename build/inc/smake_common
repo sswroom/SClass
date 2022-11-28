@@ -3472,6 +3472,8 @@ SSWR/AVIRead/AVIRCPUInfoForm.h: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 @AVIRCPUInfoForm.o
 SSWR/AVIRead/AVIRCustomTileMapForm.h: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
 @AVIRCustomTileMapForm.o
+SSWR/AVIRead/AVIRDBCheckChgForm.h: ../../src/SSWR/AVIRead/AVIRDBCheckChgForm.cpp
+@AVIRDBCheckChgForm.o
 SSWR/AVIRead/AVIRDBCopyTablesForm.h: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 @AVIRDBCopyTablesForm.o
 SSWR/AVIRead/AVIRDBExportForm.h: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp
@@ -5413,6 +5415,7 @@ AVIRCOVID19Form.o: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
 AVIRCppEnumForm.o: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
 AVIRCPUInfoForm.o: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
 AVIRCustomTileMapForm.o: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
+AVIRDBCheckChgForm.o: ../../src/SSWR/AVIRead/AVIRDBCheckChgForm.cpp
 AVIRDBCopyTablesForm.o: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 AVIRDBExportForm.o: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp
 AVIRDBForm.o: ../../src/SSWR/AVIRead/AVIRDBForm.cpp

@@ -11,6 +11,7 @@
 #include "Math/Math.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
+#include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
 #include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
@@ -54,7 +55,9 @@ typedef enum
 	MNU_TABLE_EXPORT_MYSQL,
 	MNU_TABLE_EXPORT_MSSQL,
 	MNU_TABLE_EXPORT_POSTGRESQL,
-	MNU_TABLE_EXPORT_OPTION
+	MNU_TABLE_EXPORT_OPTION,
+	MNU_TABLE_EXPORT_CSV,
+	MNU_TABLE_CHECK_CHANGE
 } MenuEvent;
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
@@ -737,6 +740,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::DBUtil::SQLType sqlTy
 		if (r == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
 			return;
 		}
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -746,6 +751,79 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::DBUtil::SQLType sqlTy
 			DB::SQLGenerator::GenInsertCmd(&sql, schemaName->ToCString(), tableName->ToCString(), r);
 			sql.AppendCmdC(CSTR(";\r\n"));
 			fs.Write(sql.ToString(), sql.GetLength());
+		}
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+}
+
+void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
+{
+	UTF8Char sbuff[4096];
+	UTF8Char csvBuff[4096];
+	UTF8Char *sptr;
+	UTF8Char *csvPtr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
+	UI::FileDialog dlg(L"sswr", L"AVIRead", L"DBManagerExportCSV", true);
+	dlg.AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		Text::StringBuilderUTF8 sb;
+		DB::DBReader *r = this->currDB->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+		if (r == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+			return;
+		}
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		sb.ClearStr();
+		UOSInt i = 0;
+		UOSInt j = r->ColCount();
+		while (i < j)
+		{
+			sptr = r->GetName(i, sbuff);
+			csvPtr = Text::StrToCSVRec(csvBuff, sbuff);
+			if (i > 0) sb.AppendUTF8Char(',');
+			sb.AppendP(csvBuff, csvPtr);
+			i++;
+		}
+		sb.AppendC(UTF8STRC("\r\n"));
+		fs.Write(sb.ToString(), sb.GetLength());
+		while (r->ReadNext())
+		{
+			sb.ClearStr();
+			i = 0;
+			while (i < j)
+			{
+				if (i > 0) sb.AppendUTF8Char(',');
+				sptr = r->GetStr(i, sbuff, sizeof(sbuff));
+				if (sptr)
+				{
+					csvPtr = Text::StrToCSVRec(csvBuff, sbuff);
+					sb.AppendP(csvBuff, csvPtr);
+				}
+				else
+				{
+					sb.AppendC(UTF8STRC("\"\""));
+				}
+				i++;
+			}
+			sb.AppendC(UTF8STRC("\r\n"));
+			fs.Write(sb.ToString(), sb.GetLength());
 		}
 	}
 	tableName->Release();
@@ -958,7 +1036,9 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Export Table Data..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Export Table Data as SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Export Table Data as CSV"), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	if (DB::DBManager::RestoreConn(DBCONNFILE, &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
@@ -1224,6 +1304,19 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->currDB->GetConn(), STR_CSTR(schemaName), tableName->ToCString());
+			dlg.ShowDialog(this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+		}
+		break;
+	case MNU_TABLE_EXPORT_CSV:
+		this->ExportTableCSV();
+		break;
+	case MNU_TABLE_CHECK_CHANGE:
+		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->currDB->GetConn(), STR_CSTR(schemaName), tableName->ToCString());
 			dlg.ShowDialog(this);
 			tableName->Release();
 			SDEL_STRING(schemaName);

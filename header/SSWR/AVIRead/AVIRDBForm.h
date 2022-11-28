@@ -54,6 +54,7 @@ namespace SSWR
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 			void CopyTableCreate(DB::DBUtil::SQLType sqlType);
 			void ExportTableData(DB::DBUtil::SQLType sqlType);
+			void ExportTableCSV();
 		public:
 			AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease);
 			virtual ~AVIRDBForm();

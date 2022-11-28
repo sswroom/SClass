@@ -2497,3 +2497,8 @@ UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldNa
 	*dbNameBuff = 0;
 	return dbNameBuff;
 }
+
+Bool DB::DBUtil::HasSchema(SQLType sqlType)
+{
+	return (sqlType == SQLType::MSSQL || sqlType == SQLType::Oracle || sqlType == SQLType::PostgreSQL);
+}

@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schema, Text::CString table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText(CSTR("Export Table Data"));
+	this->SetText(CSTR("Export Table Data as SQL"));
 	this->core = core;
 	this->db = db;
 	this->schema = schema;

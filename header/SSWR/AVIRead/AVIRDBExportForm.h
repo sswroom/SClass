@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBEXPORTFORM
 #define _SM_SSWR_AVIREAD_AVIRDBEXPORTFORM
-#include "DB/ReadingDBTool.h"
+#include "DB/ReadingDB.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"

@@ -130,17 +130,17 @@ DB::ODBCConn::~ODBCConn()
 	SDEL_STRING(this->connStr);
 }
 
-DB::DBUtil::SQLType DB::ODBCConn::GetSQLType()
+DB::DBUtil::SQLType DB::ODBCConn::GetSQLType() const
 {
 	return this->sqlType;
 }
 
-DB::DBConn::ConnType DB::ODBCConn::GetConnType()
+DB::DBConn::ConnType DB::ODBCConn::GetConnType() const
 {
 	return CT_ODBC;
 }
 
-Int8 DB::ODBCConn::GetTzQhr()
+Int8 DB::ODBCConn::GetTzQhr() const
 {
 	return this->tzQhr;
 }
