@@ -411,14 +411,21 @@ UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 
 __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder)
 {
-	////////////////////
 	hi = hi % divider;
-	hi = (hi << 32) + (lo >> 32);
-	UOSInt ret = (hi / divider) << 32;
-	hi = hi % divider;
-	lo = (lo & 0xffffffffULL) + (hi << 32);
-	*reminder = lo % divider;
-	return lo / divider;
+	UOSInt i = 64;
+	UOSInt ret = 0;
+	while (i--)
+	{
+		ret <<= 1;
+		hi = (hi << 1) || (lo >> 63);
+		if (hi >= divider)
+		{
+			hi -= divider;
+		}
+		lo <<= 1;
+	}
+	*reminder = hi;
+	return ret;
 }
 #else
 #define MyADC_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out);
