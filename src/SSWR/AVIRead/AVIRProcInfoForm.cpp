@@ -25,6 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		me->txtDetName->SetText(CSTR(""));
 		me->txtDetPath->SetText(CSTR(""));
 		me->txtDetPriority->SetText(CSTR(""));
+		me->txtDetArtecture->SetText(CSTR(""));
 		me->currProc = 0;
 		me->rlcDetChartCPU->ClearChart();
 		me->rlcDetChartCount->ClearChart();
@@ -48,6 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		proc.GetFilename(&sb);
 		me->txtDetPath->SetText(sb.ToCString());
 		me->txtDetPriority->SetText(Manage::Process::GetPriorityName(proc.GetPriority()));
+		me->txtDetArtecture->SetText(Manage::ThreadContext::ContextTypeGetName(proc.GetContextType()));
 		me->UpdateProcHeaps();
 		me->UpdateProcModules();
 		me->UpdateProcThreads();
@@ -349,8 +351,11 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 			if (this->currProcRes)
 			{
 				sptr = this->currProcRes->ResolveName(sbuff, addr);
-				l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-				this->lvDetThread->SetSubItem(k, 2, CSTRP(&sbuff[l + 1], sptr));
+				if (sptr)
+				{
+					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					this->lvDetThread->SetSubItem(k, 2, CSTRP(&sbuff[l + 1], sptr));
+				}
 			}
 			DEL_CLASS(t);
 			i++;
@@ -529,6 +534,11 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtDetPriority, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetPriority->SetRect(100, 96, 100, 23, false);
 	this->txtDetPriority->SetReadOnly(true);
+	NEW_CLASS(this->lblDetArtecture, UI::GUILabel(ui, this->tpDetInfo, CSTR("Artecture")));
+	this->lblDetArtecture->SetRect(0, 120, 100, 23, false);
+	NEW_CLASS(this->txtDetArtecture, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetArtecture->SetRect(100, 120, 100, 23, false);
+	this->txtDetArtecture->SetReadOnly(true);
 
 	NEW_CLASS(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);

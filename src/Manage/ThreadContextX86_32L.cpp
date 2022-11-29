@@ -217,7 +217,7 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF *sb)
 
 Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType()
 {
-	return Manage::ThreadContext::CT_X86_32;
+	return Manage::ThreadContext::ContextType::X86_32;
 }
 
 UInt32 Manage::ThreadContextX86_32::GetThreadId()
@@ -697,7 +697,7 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF *sb)
 
 Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType()
 {
-	return Manage::ThreadContext::CT_X86_32;
+	return Manage::ThreadContext::ContextType::X86_32;
 }
 
 UOSInt Manage::ThreadContextX86_32::GetThreadId()

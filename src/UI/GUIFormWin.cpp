@@ -466,8 +466,8 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 			if (::GetMonitorInfo(hMon, &info))
 			{
 				found = true;
-				w = (info.rcMonitor.right - info.rcMonitor.left) * this->ddpi / this->hdpi;
-				h = (info.rcMonitor.bottom - info.rcMonitor.top) * this->ddpi / this->hdpi;
+				w = (info.rcMonitor.right - info.rcMonitor.left);
+				h = (info.rcMonitor.bottom - info.rcMonitor.top);
 				if (initW > w)
 				{
 					initW = w;
@@ -476,8 +476,8 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 				{
 					initH = h;
 				}
-				initX = (info.rcMonitor.left * this->ddpi / this->hdpi) + ((w - initW) * 0.5);
-				initY = (info.rcMonitor.top * this->ddpi / this->hdpi) + ((h - initH) * 0.5);
+				initX = info.rcMonitor.left + ((w - initW) * 0.5);
+				initY = info.rcMonitor.top + ((h - initH) * 0.5);
 			}
 #else
 			MONITORINFOEXW info;
@@ -485,8 +485,8 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 			if (::GetMonitorInfoW(hMon, &info))
 			{
 				found = true;
-				w = (info.rcMonitor.right - info.rcMonitor.left) * this->ddpi / this->hdpi;
-				h = (info.rcMonitor.bottom - info.rcMonitor.top) * this->ddpi / this->hdpi;
+				w = (info.rcMonitor.right - info.rcMonitor.left);
+				h = (info.rcMonitor.bottom - info.rcMonitor.top);
 				if (initW > w)
 				{
 					initW = w;
@@ -495,8 +495,8 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 				{
 					initH = h;
 				}
-				initX = (info.rcMonitor.left * this->ddpi / this->hdpi) + ((w - initW) * 0.5);
-				initY = (info.rcMonitor.top * this->ddpi / this->hdpi) + ((h - initH) * 0.5);
+				initX = info.rcMonitor.left + ((w - initW) * 0.5);
+				initY = info.rcMonitor.top + ((h - initH) * 0.5);
 			}
 #endif
 		}
@@ -509,8 +509,8 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 		{
 			RECT rc;
 			GetClientRect(GetDesktopWindow(), &rc);
-			w = (rc.right - rc.left) * this->ddpi / this->hdpi;
-			h = (rc.bottom - rc.top) * this->ddpi / this->hdpi;
+			w = (rc.right - rc.left);
+			h = (rc.bottom - rc.top);
 			if (initW > w)
 			{
 				initW = w;

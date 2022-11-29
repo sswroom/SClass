@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/FileUtil.h"
+#include "IO/Library.h"
 #include "IO/Path.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
@@ -23,7 +24,10 @@
 extern "C" DWORD SetProcPermissions(DWORD newperms);
 #endif
 
+typedef BOOL(__stdcall* IsWow64Process2Func)(HANDLE hProcess, USHORT* pProcessMachine, USHORT* pNativeMachine);
 static Int32 Process_ExecFileId = 0;
+static Bool Process_Inited = false;
+static IsWow64Process2Func Process_IsWow64Process2;
 
 Manage::Process::Process(UOSInt procId, Bool controlRight)
 {
@@ -688,39 +692,75 @@ Manage::ThreadContext::ContextType Manage::Process::GetContextType()
 {
 #if defined(_WIN32_WCE)
 #  if defined(ARM)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::ARM;
 #  elif defined(_ALPHA_)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::Unknown;
 #  elif defined(_X86_)
-	return Manage::ThreadContext::CT_X86_32;
+	return Manage::ThreadContext::ContextType::X86_32;
 #  elif defined(_MIPS_)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::MIPS;
 #  elif defined(_PPC_)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::Unknown;
 #  elif defined(_MPPC_)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::Unknown;
 #  elif defined(_IA64_)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::Unknown;
 #  elif defined(SHx)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::Unknown;
 #  endif
 
-#elif defined(_WIN64)
+#else
 	if (this->handle == 0)
-		return Manage::ThreadContext::CT_X86_32;
+		return Manage::ThreadContext::ContextType::Unknown;
+	USHORT pProcessMachine;
+	USHORT pNativeMachine;
+	if (!Process_Inited)
+	{
+		IO::Library lib((const UTF8Char*)"Kernel32.dll");
+		Process_IsWow64Process2 = (IsWow64Process2Func)lib.GetFunc("IsWow64Process2");
+		Process_Inited = true;
+	}
+	if (Process_IsWow64Process2 && Process_IsWow64Process2((HANDLE)this->handle, &pProcessMachine, &pNativeMachine))
+	{
+		if (pProcessMachine == 0)
+			pProcessMachine = pNativeMachine;
+		switch (pProcessMachine)
+		{
+		case IMAGE_FILE_MACHINE_I386: //0x014c
+			return Manage::ThreadContext::ContextType::X86_32;
+		case IMAGE_FILE_MACHINE_R3000://0x0162
+			return Manage::ThreadContext::ContextType::Unknown;
+		case IMAGE_FILE_MACHINE_R4000: //0x0166
+			return Manage::ThreadContext::ContextType::Unknown;
+		case IMAGE_FILE_MACHINE_R10000: //0x0168
+			return Manage::ThreadContext::ContextType::Unknown;
+		case IMAGE_FILE_MACHINE_WCEMIPSV2: //0x0169
+			return Manage::ThreadContext::ContextType::MIPS;
+		case IMAGE_FILE_MACHINE_ARM: //0x01c0
+			return Manage::ThreadContext::ContextType::ARM;
+		case IMAGE_FILE_MACHINE_IA64: //0x0200
+			return Manage::ThreadContext::ContextType::X86_64;
+		case IMAGE_FILE_MACHINE_ARM64: //0xAA64
+			return Manage::ThreadContext::ContextType::ARM64;
+		default:
+			return Manage::ThreadContext::ContextType::Unknown;
+		}
+	}
+#if defined(CPU_X86_64)
 	BOOL isWow64;
 	if (!IsWow64Process((HANDLE)this->handle, &isWow64))
-		return Manage::ThreadContext::CT_X86_32;
+		return Manage::ThreadContext::ContextType::X86_32;
 	if (isWow64)
 	{
-		return Manage::ThreadContext::CT_X86_32;
+		return Manage::ThreadContext::ContextType::X86_32;
 	}
 	else
 	{
-		return Manage::ThreadContext::CT_X86_64;
+		return Manage::ThreadContext::ContextType::X86_64;
 	}
 #else
-	return Manage::ThreadContext::CT_X86_32;
+	return Manage::ThreadContext::ContextType::X86_32;
+#endif
 #endif
 }
 

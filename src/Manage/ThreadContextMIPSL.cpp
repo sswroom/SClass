@@ -195,7 +195,7 @@ void Manage::ThreadContextMIPS::ToString(Text::StringBuilderUTF8 *sb)
 
 Manage::ThreadContext::ContextType Manage::ThreadContextMIPS::GetType()
 {
-	return Manage::ThreadContext::CT_MIPS;
+	return Manage::ThreadContext::ContextType::MIPS;
 }
 
 UOSInt Manage::ThreadContextMIPS::GetThreadId()

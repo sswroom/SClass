@@ -7,10 +7,10 @@
 #include "Manage/ExceptionRecorder.h"
 #include "Manage/StackTracer.h"
 #include "Manage/SymbolResolver.h"
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
+#if defined(CPU_X86_32) || defined(CPU_X86_64) || defined(_M_ARM64EC)
 #include "Manage/DasmX86_32.h"
 #include "Manage/ThreadContextX86_32.h"
-#if defined(CPU_X86_64)
+#if defined(CPU_X86_64) || defined(_M_ARM64EC)
 #include "Manage/DasmX86_64.h"
 #include "Manage/ThreadContextX86_64.h"
 #endif
@@ -124,7 +124,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 	Manage::ThreadContext *tCont = 0;
 	EXCEPTION_POINTERS *info = (EXCEPTION_POINTERS*)exInfo;
 	printf("exception occured: %s\r\n", GetExceptionCodeName(info->ExceptionRecord->ExceptionCode).v);
-#if defined(CPU_X86_64)
+#if defined(CPU_X86_64) || defined(_M_ARM64EC)
 	NEW_CLASS(tCont, Manage::ThreadContextX86_64(GetCurrentProcessId(), 0, info->ContextRecord));
 #elif defined(CPU_X86_32)
 	NEW_CLASS(tCont, Manage::ThreadContextX86_32(GetCurrentProcessId(), 0, info->ContextRecord));

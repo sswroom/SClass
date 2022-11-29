@@ -146,17 +146,17 @@ Manage::Process::ProcessPriority Manage::Process::GetPriority()
 Manage::ThreadContext::ContextType Manage::Process::GetContextType()
 {
 #if defined(CPU_X86_32)
-	return Manage::ThreadContext::CT_X86_32;
+	return Manage::ThreadContext::ContextType::X86_32;
 #elif defined(CPU_X86_64)
-	return Manage::ThreadContext::CT_X86_64;
+	return Manage::ThreadContext::ContextType::X86_64;
 #elif defined(CPU_ARM)
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::ARM;
 #elif defined(CPU_MIPS)
-	return Manage::ThreadContext::CT_MIPS;
+	return Manage::ThreadContext::ContextType::MIPS;
 #elif defined(CPU_AVR)
-	return Manage::ThreadContext::CT_AVR;
+	return Manage::ThreadContext::ContextType::AVR;
 #else
-	return Manage::ThreadContext::CT_X86_32;
+	return Manage::ThreadContext::ContextType::X86_32;
 #endif
 }
 UInt8 Manage::Process::ReadMemUInt8(UInt64 addr)

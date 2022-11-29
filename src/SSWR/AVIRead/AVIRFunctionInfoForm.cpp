@@ -31,7 +31,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 	this->lvMyStack->AddColumn(CSTR("Code"), 900);
 
 #if defined(CPU_X86_32)
-	if (proc->GetContextType() == Manage::ThreadContext::CT_X86_32)
+	if (proc->GetContextType() == Manage::ThreadContext::ContextType::X86_32)
 	{
 		Manage::DasmX86_32 *dasm;
 		Text::StringBuilderUTF8 sb;
@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 		}
 	}
 #elif defined(CPU_X86_64)
-	if (proc->GetContextType() == Manage::ThreadContext::CT_X86_64)
+	if (proc->GetContextType() == Manage::ThreadContext::ContextType::X86_64)
 	{
 		Manage::DasmX86_64 *dasm;
 		Text::StringBuilderUTF8 sb;

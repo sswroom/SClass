@@ -179,40 +179,44 @@ Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, I
 	Int32 ret;
 	Core::CoreStart();
 	WinProgControl ctrl;
-	IO::Library *lib;
 	void *dpiAware;
 	Bool succ = false;
 	
-	NEW_CLASS(lib, IO::Library((const UTF8Char*)"User32.dll"));
-	dpiAware = lib->GetFunc("SetProcessDpiAwarenessContext");
-	if (dpiAware)
 	{
-		((AwareFunc2)dpiAware)(-3);
-		succ = true;
+		IO::Library lib((const UTF8Char*)"User32.dll");
+		dpiAware = lib.GetFunc("SetProcessDpiAwarenessContext");
+		if (dpiAware)
+		{
+			if (((AwareFunc2)dpiAware)(-4))
+			{
+				succ = true;
+			}
+			else if (((AwareFunc2)dpiAware)(-3))
+			{
+				succ = true;
+			}
+		}
 	}
-	DEL_CLASS(lib);
 	if (!succ)
 	{
-		NEW_CLASS(lib, IO::Library((const UTF8Char*)"Shcore.dll"));
-		dpiAware = lib->GetFunc("SetProcessDpiAwareness");
+		IO::Library lib((const UTF8Char*)"Shcore.dll");
+		dpiAware = lib.GetFunc("SetProcessDpiAwareness");
 		if (dpiAware)
 		{
 			((AwareFunc)dpiAware)(2);
 			succ = true;
 		}
-		DEL_CLASS(lib);
 	}
 
 	if (!succ)
 	{
-		NEW_CLASS(lib, IO::Library((const UTF8Char*)"User32.dll"));
-		dpiAware = lib->GetFunc("SetProcessDPIAware");
+		IO::Library lib((const UTF8Char*)"User32.dll");
+		dpiAware = lib.GetFunc("SetProcessDPIAware");
 		if (dpiAware)
 		{
 			((BoolFunc)dpiAware)();
 			succ = true;
 		}
-		DEL_CLASS(lib);
 	}
 
 	WinProgControl_Create(&ctrl, hInst);

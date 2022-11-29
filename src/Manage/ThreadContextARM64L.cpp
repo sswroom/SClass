@@ -199,7 +199,7 @@ void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF8 *sb) const
 
 Manage::ThreadContext::ContextType Manage::ThreadContextARM64::GetType() const
 {
-	return Manage::ThreadContext::CT_ARM64;
+	return Manage::ThreadContext::ContextType::ARM64;
 }
 
 UOSInt Manage::ThreadContextARM64::GetThreadId() const

@@ -135,7 +135,7 @@ void Manage::ThreadContextARM::ToString(Text::StringBuilderUTF8 *sb)
 
 Manage::ThreadContext::ContextType Manage::ThreadContextARM::GetType()
 {
-	return Manage::ThreadContext::CT_ARM;
+	return Manage::ThreadContext::ContextType::ARM;
 }
 
 UInt32 Manage::ThreadContextARM::GetThreadId()

@@ -47,10 +47,10 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 	}
 #else
 	
-#if defined(CPU_X86_64)
+#if defined(CPU_X86_64) || defined(_M_ARM64EC)
 	Manage::Process proc(procId, false);
 	Manage::ThreadContext::ContextType ct = proc.GetContextType();
-	if (ct == Manage::ThreadContext::CT_X86_64)
+	if (ct == Manage::ThreadContext::ContextType::X86_64)
 	{
 		CONTEXT context;
 		context.ContextFlags = (CONTEXT_ALL);

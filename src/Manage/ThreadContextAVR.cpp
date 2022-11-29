@@ -54,7 +54,7 @@ void Manage::ThreadContextAVR::ToString(Text::StringBuilderUTF8 *sb)
 
 Manage::ThreadContext::ContextType Manage::ThreadContextAVR::GetType()
 {
-	return Manage::ThreadContext::CT_AVR;
+	return Manage::ThreadContext::ContextType::AVR;
 }
 
 UOSInt Manage::ThreadContextAVR::GetThreadId()

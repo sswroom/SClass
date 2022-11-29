@@ -118,22 +118,22 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 
 Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
 Text::CString Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
 Text::CString Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
 Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
-	return 0;
+	return CSTR("Unknown");
 }
 
 void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)

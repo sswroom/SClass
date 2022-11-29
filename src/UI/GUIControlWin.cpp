@@ -66,6 +66,10 @@ void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, cons
 			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + xOfst) * this->hdpi / this->ddpi), Double2Int32((y + yOfst) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
+		this->lxPos = x;
+		this->lyPos = y;
+		this->lxPos2 = x + w;
+		this->lyPos2 = y + h;
 	}
 	else
 	{
@@ -81,12 +85,11 @@ void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, cons
 			Text::StrDelNew(wptr);
 		}
 		ReleaseDC((HWND)this->hwnd, hdc);
-		
+		this->lxPos = x * this->ddpi / this->hdpi;
+		this->lyPos = y * this->ddpi / this->hdpi;
+		this->lxPos2 = (x + w) * this->ddpi / this->hdpi;
+		this->lyPos2 = (y + h) * this->ddpi / this->hdpi;
 	}
-	this->lxPos = x;
-	this->lyPos = y;
-	this->lxPos2 = x + w;
-	this->lyPos2 = y + h;
 	UI::GUICoreWin::MSSetWindowObj(hwnd, GWL_USERDATA, (OSInt)this);
 	this->inited = true;
 	UpdateFont();

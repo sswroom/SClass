@@ -128,20 +128,20 @@ Bool Manage::StackTracer::GoToNextLevel()
 
 	BOOL ret = 0;
 	STACKFRAME64 *sf = (STACKFRAME64*)this->stackFrame;
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
-	if (this->winContext->GetType() == Manage::ThreadContext::CT_X86_32)
+#if defined(CPU_X86_32) || defined(CPU_X86_64) || defined(_M_ARM64EC)
+	if (this->winContext->GetType() == Manage::ThreadContext::ContextType::X86_32)
 	{
 		ret = StackWalk64(IMAGE_FILE_MACHINE_I386, hProc, hThread, sf, ((Manage::ThreadContextX86_32*)this->winContext)->GetContext(), 0, &SymFunctionTableAccess64, &SymGetModuleBase64, 0);
 	}
 #endif
-#if defined(CPU_X86_64)
-	else if (this->winContext->GetType() == Manage::ThreadContext::CT_X86_64)
+#if defined(CPU_X86_64) || defined(_M_ARM64EC)
+	else if (this->winContext->GetType() == Manage::ThreadContext::ContextType::X86_64)
 	{
 		ret = StackWalk64(IMAGE_FILE_MACHINE_AMD64, hProc, hThread, sf, ((Manage::ThreadContextX86_64*)this->winContext)->GetContext(), 0, &SymFunctionTableAccess64, &SymGetModuleBase64, 0);
 	}
 #endif
-#if defined(CPU_ARM64)
-	if (this->winContext->GetType() == Manage::ThreadContext::CT_ARM64)
+#if defined(CPU_ARM64) && !defined(_M_ARM64EC)
+	if (this->winContext->GetType() == Manage::ThreadContext::ContextType::ARM64)
 	{
 		ret = StackWalk64(IMAGE_FILE_MACHINE_ARM64, hProc, hThread, sf, ((Manage::ThreadContextARM64*)this->winContext)->GetContext(), 0, &SymFunctionTableAccess64, &SymGetModuleBase64, 0);
 	}

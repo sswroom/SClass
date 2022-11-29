@@ -8,16 +8,18 @@ namespace Manage
 	class ThreadContext
 	{
 	public:
-		typedef enum
+		enum class ContextType
 		{
-			CT_X86_32,
-			CT_X86_64,
-			CT_ARM,
-			CT_MIPS,
-			CT_ARM64,
-			CT_MIPS64,
-			CT_AVR
-		} ContextType;
+			Unknown,
+			X86_32,
+			X86_64,
+			ARM,
+			MIPS,
+			ARM64,
+			MIPS64,
+			AVR,
+			ARM64EC
+		};
 
 		virtual ~ThreadContext() {};
 
@@ -37,6 +39,8 @@ namespace Manage
 		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) const = 0;
 
 		virtual Manage::Dasm *CreateDasm() const = 0;
+
+		static Text::CString ContextTypeGetName(ContextType contextType);
 	};
 }
 #endif

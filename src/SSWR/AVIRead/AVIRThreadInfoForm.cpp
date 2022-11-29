@@ -2,11 +2,15 @@
 #include "Data/ByteTool.h"
 #include "Manage/DasmX86_32.h"
 #include "Manage/DasmX86_64.h"
+#include "Manage/DasmARM64.h"
 #include "Manage/StackTracer.h"
-#if defined(CPU_X86_32) || (defined(CPU_X86_64) && defined(WIN32))
+#if defined(CPU_ARM64)
+#include "Manage/ThreadContextARM64.h"
+#endif
+#if defined(CPU_X86_32) || (defined(CPU_X86_64) && defined(WIN32)) || (defined(CPU_ARM64) && defined(_WIN64))
 #include "Manage/ThreadContextX86_32.h"
 #endif
-#if defined(CPU_X86_64)
+#if defined(CPU_X86_64) || (defined(CPU_ARM64) && defined(_WIN64))
 #include "Manage/ThreadContextX86_64.h"
 #endif
 #include "SSWR/AVIRead/AVIRFunctionInfoForm.h"
@@ -43,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 		sline[1].v = sbuff;
 		sline[1].leng = slen;
 
-		if (me->contextType == Manage::ThreadContext::CT_X86_32)
+		if (me->contextType == Manage::ThreadContext::ContextType::X86_32)
 		{
 			while (true)
 			{
@@ -65,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 					break;
 			}
 		}
-		else if (me->contextType == Manage::ThreadContext::CT_X86_64)
+		else if (me->contextType == Manage::ThreadContext::ContextType::X86_64)
 		{
 			while (true)
 			{
@@ -222,8 +226,11 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sptr = Text::StrHexVal64(sbuff, currAddr);
 				i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
 				sptr = symbol->ResolveName(sbuff, currAddr);
-				j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-				this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
+				if (sptr)
+				{
+					j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
+				}
 				if (!tracer.GoToNextLevel())
 					break;
 				if (++callLev > 50)
@@ -231,8 +238,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			}
 		}
 
-#if defined(CPU_X86_32) || (defined(CPU_X86_64) && defined(WIN32))
-		if (context->GetType() == Manage::ThreadContext::CT_X86_32)
+#if defined(CPU_X86_32) || (defined(CPU_X86_64) && defined(WIN32)) || (defined(CPU_ARM64) && defined(_WIN64))
+		if (context->GetType() == Manage::ThreadContext::ContextType::X86_32)
 		{
 			UInt32 eip;
 			UInt32 esp;
@@ -255,7 +262,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn(CSTR("Ebx"), 70);
 			this->lvMyStack->AddColumn(CSTR("Esi"), 70);
 			this->lvMyStack->AddColumn(CSTR("Edi"), 70);
-			this->contextType = Manage::ThreadContext::CT_X86_32;
+			this->contextType = Manage::ThreadContext::ContextType::X86_32;
 
 			Data::ArrayListUInt32 callAddrs;
 			Data::ArrayListUInt32 jmpAddrs;
@@ -312,8 +319,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			}
 		}
 #endif
-#if defined(CPU_X86_64)
-		if (context->GetType() == Manage::ThreadContext::CT_X86_64)
+#if defined(CPU_X86_64) || (defined(CPU_ARM64) && defined(_WIN64))
+		if (context->GetType() == Manage::ThreadContext::ContextType::X86_64)
 		{
 			UInt64 rip;
 			UInt64 rsp;
@@ -344,7 +351,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn(CSTR("R13"), 140);
 			this->lvMyStack->AddColumn(CSTR("R14"), 140);
 			this->lvMyStack->AddColumn(CSTR("R15"), 140);
-			this->contextType = Manage::ThreadContext::CT_X86_64;
+			this->contextType = Manage::ThreadContext::ContextType::X86_64;
 
 			Data::ArrayListUInt64 callAddrs;
 			Data::ArrayListUInt64 jmpAddrs;
@@ -401,7 +408,97 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			}
 		}
 #endif
+#if (defined(CPU_ARM64) && defined(_WIN64))
+		if (context->GetType() == Manage::ThreadContext::ContextType::ARM64)
+		{
+			UInt64 pc;
+			UInt64 sp;
+			UInt64 lr;
+			UInt8 buff[256];
+			UOSInt buffSize;
+			Bool ret;
+			UInt64 blockStart;
+			UInt64 blockEnd;
+			Text::StringBuilderUTF8 sb;
 
+			this->lvMyStack->ChangeColumnCnt(20);
+			this->lvMyStack->AddColumn(CSTR("Sp"), 140);
+			this->lvMyStack->AddColumn(CSTR("Lr"), 140);
+			this->lvMyStack->AddColumn(CSTR("Pc"), 140);
+			this->lvMyStack->AddColumn(CSTR("Code"), 500);
+			this->lvMyStack->AddColumn(CSTR("X0"), 140);
+			this->lvMyStack->AddColumn(CSTR("X1"), 140);
+			this->lvMyStack->AddColumn(CSTR("X2"), 140);
+			this->lvMyStack->AddColumn(CSTR("X3"), 140);
+			this->lvMyStack->AddColumn(CSTR("X4"), 140);
+			this->lvMyStack->AddColumn(CSTR("X5"), 140);
+			this->lvMyStack->AddColumn(CSTR("X6"), 140);
+			this->lvMyStack->AddColumn(CSTR("X7"), 140);
+			this->lvMyStack->AddColumn(CSTR("X8"), 140);
+			this->lvMyStack->AddColumn(CSTR("X9"), 140);
+			this->lvMyStack->AddColumn(CSTR("X10"), 140);
+			this->lvMyStack->AddColumn(CSTR("X11"), 140);
+			this->lvMyStack->AddColumn(CSTR("X12"), 140);
+			this->lvMyStack->AddColumn(CSTR("X13"), 140);
+			this->lvMyStack->AddColumn(CSTR("X14"), 140);
+			this->lvMyStack->AddColumn(CSTR("X15"), 140);
+			this->contextType = Manage::ThreadContext::ContextType::ARM64;
+
+			Data::ArrayListUInt64 callAddrs;
+			Data::ArrayListUInt64 jmpAddrs;
+			pc = context->GetInstAddr();
+			sp = context->GetStackAddr();
+			lr = context->GetFrameAddr();
+			Manage::DasmARM64 dasm;
+
+			Text::StringBuilderWriter sbWriter(&sb);
+			Manage::DasmARM64::DasmARM64_Regs regs;
+			context->GetRegs(&regs);
+			callLev = 0;
+			while (true)
+			{
+				if (pc == 0)
+					break;
+				sb.ClearStr();
+				sb.AppendHex64(pc);
+				sb.AppendC(UTF8STRC(" "));
+				sptr = symbol->ResolveName(sbuff, pc);
+				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+				sb.AppendP(&sbuff[i + 1], sptr);
+				i = this->lbMyStack->AddItem(sb.ToCString(), 0);
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Pc = 0x"));
+				sb.AppendHex64(pc);
+				sb.AppendC(UTF8STRC("\r\n"));
+				buffSize = proc->ReadMemory(pc, buff, 256);
+				if (buffSize > 0)
+				{
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendC(UTF8STRC("\r\n"));
+				}
+
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("Sp = 0x"));
+				sb.AppendHex64(sp);
+				sb.AppendC(UTF8STRC("\r\n"));
+				buffSize = proc->ReadMemory(sp, buff, 256);
+				if (buffSize > 0)
+				{
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendC(UTF8STRC("\r\n"));
+				}
+				this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
+
+				sb.ClearStr();
+				ret = dasm.Disasm64(&sbWriter, symbol, &pc, &sp, &lr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+				this->stacks.Add(Text::StrCopyNew(sb.ToString()));
+				if (!ret)
+					break;
+				if (++callLev > 50)
+					break;
+			}
+		}
+#endif
 		thread.Resume();
 		if (context)
 		{

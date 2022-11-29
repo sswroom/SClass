@@ -204,7 +204,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 		DEL_CLASS(tracer);
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-		if (context->GetType() == Manage::ThreadContext::CT_X86_32)
+		if (context->GetType() == Manage::ThreadContext::ContextType::X86_32)
 		{
 			Manage::DasmX86_32 *dasm;
 			UInt32 eip;

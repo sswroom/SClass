@@ -385,25 +385,25 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 						sbOut.AppendC(UTF8STRC("</td><td>"));
 						switch (cpu->contextType)
 						{
-						case Manage::ThreadContext::CT_ARM:
+						case Manage::ThreadContext::ContextType::ARM:
 							sbOut.AppendC(UTF8STRC("ARM 32-bit"));
 							break;
-						case Manage::ThreadContext::CT_ARM64:
+						case Manage::ThreadContext::ContextType::ARM64:
 							sbOut.AppendC(UTF8STRC("ARM 64-bit"));
 							break;
-						case Manage::ThreadContext::CT_MIPS:
+						case Manage::ThreadContext::ContextType::MIPS:
 							sbOut.AppendC(UTF8STRC("MIPS 32-bit"));
 							break;
-						case Manage::ThreadContext::CT_MIPS64:
+						case Manage::ThreadContext::ContextType::MIPS64:
 							sbOut.AppendC(UTF8STRC("MIPS 64-bit"));
 							break;
-						case Manage::ThreadContext::CT_X86_32:
+						case Manage::ThreadContext::ContextType::X86_32:
 							sbOut.AppendC(UTF8STRC("x86 32-bit"));
 							break;
-						case Manage::ThreadContext::CT_X86_64:
+						case Manage::ThreadContext::ContextType::X86_64:
 							sbOut.AppendC(UTF8STRC("x86 64-bit"));
 							break;
-						case Manage::ThreadContext::CT_AVR:
+						case Manage::ThreadContext::ContextType::AVR:
 							sbOut.AppendC(UTF8STRC("AVR"));
 							break;
 						default:
