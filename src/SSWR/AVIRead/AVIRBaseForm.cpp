@@ -551,6 +551,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	this->SetText(CSTR("AVIRead (x86 64-bit)"));
 #elif defined(CPU_ARM)
 	this->SetText(CSTR("AVIRead (ARM 32-bit)"));
+#elif defined(CPU_ARM64) && defined(_M_ARM64EC)
+	this->SetText(CSTR("AVIRead (ARM64EC)"));
 #elif defined(CPU_ARM64)
 	this->SetText(CSTR("AVIRead (ARM 64-bit)"));
 #elif defined(CPU_MIPS)

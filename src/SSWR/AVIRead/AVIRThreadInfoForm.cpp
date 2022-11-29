@@ -217,6 +217,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		UOSInt callLev;
 		thread.Suspend();
 		context = thread.GetThreadContext();
+		if (context)
 		{
 			Manage::StackTracer tracer(context);
 			callLev = 0;
@@ -239,7 +240,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		}
 
 #if defined(CPU_X86_32) || (defined(CPU_X86_64) && defined(WIN32)) || (defined(CPU_ARM64) && defined(_WIN64))
-		if (context->GetType() == Manage::ThreadContext::ContextType::X86_32)
+		if (context && context->GetType() == Manage::ThreadContext::ContextType::X86_32)
 		{
 			UInt32 eip;
 			UInt32 esp;
@@ -320,7 +321,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		}
 #endif
 #if defined(CPU_X86_64) || (defined(CPU_ARM64) && defined(_WIN64))
-		if (context->GetType() == Manage::ThreadContext::ContextType::X86_64)
+		if (context && context->GetType() == Manage::ThreadContext::ContextType::X86_64)
 		{
 			UInt64 rip;
 			UInt64 rsp;
@@ -409,7 +410,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		}
 #endif
 #if (defined(CPU_ARM64) && defined(_WIN64))
-		if (context->GetType() == Manage::ThreadContext::ContextType::ARM64)
+		if (context && context->GetType() == Manage::ThreadContext::ContextType::ARM64)
 		{
 			UInt64 pc;
 			UInt64 sp;

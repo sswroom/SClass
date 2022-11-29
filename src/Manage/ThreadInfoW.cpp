@@ -47,7 +47,7 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 	}
 #else
 	
-#if defined(CPU_X86_64) || defined(_M_ARM64EC)
+#if defined(CPU_X86_64)
 	Manage::Process proc(procId, false);
 	Manage::ThreadContext::ContextType ct = proc.GetContextType();
 	if (ct == Manage::ThreadContext::ContextType::X86_64)
@@ -95,6 +95,19 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 		return 0;
 	}
 #elif defined(CPU_ARM64)
+#if defined(_M_ARM64EC)
+	CONTEXT context;
+	context.ContextFlags = (CONTEXT_ALL);
+	if (::GetThreadContext((HANDLE)hand, &context))
+	{
+		NEW_CLASS(outContext, Manage::ThreadContextARM64EC(procId, threadId, &context));
+		return outContext;
+	}
+	else
+	{
+		return 0;
+	}
+#else
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_ALL);
 	if (::GetThreadContext((HANDLE)hand, &context))
@@ -106,6 +119,7 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UOSInt threadId,
 	{
 		return 0;
 	}
+#endif
 #elif defined(CPU_ARM)
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_ALL);
