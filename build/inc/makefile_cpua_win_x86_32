@@ -44,7 +44,7 @@ CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfox86.cpp LIBS_X86Util
 Dasm.o: $(CLASSDIR)src/Manage/DasmX86_32.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-ThreadContext.o: $(CLASSDIR)src/Manage/ThreadContextX86_32W.cpp
+ThreadContext_CPP.o: $(CLASSDIR)src/Manage/ThreadContextX86_32W.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 FileGDB.o: $(CLASSDIR)src/Map/FileGDB.cpp FileGDBLayerDef

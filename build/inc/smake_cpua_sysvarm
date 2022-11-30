@@ -15,7 +15,7 @@ Manage/DasmARM.h: ../../src/Manage/DasmARM.cpp
 Manage/DasmX86_32.h:
 Manage/DasmX86_64.h:
 Manage/ThreadContextARM.h: ../../src/Manage/ThreadContextARML.cpp
-@ThreadContext.o
+@ThreadContextARML.o
 Manage/ThreadContextARM64.h:
 Manage/ThreadContextMIPS.h:
 Manage/ThreadContextX86_32.h:
@@ -35,7 +35,7 @@ Benchmark_CPP.o: ../../src/Manage/Benchmark_CPP.cpp
 CPUInfo.o: ../../src/Manage/CPUInfoL.cpp
 CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailL.cpp
 Dasm.o: ../../src/Manage/DasmARM.cpp
-ThreadContext.o: ../../src/Manage/ThreadContextARML.cpp
+ThreadContextARML.o: ../../src/Manage/ThreadContextARML.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_CPP.cpp
 FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp
 Math_CPP.o: ../../src/Math/Math_CPP.cpp

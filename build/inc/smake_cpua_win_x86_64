@@ -20,9 +20,9 @@ Manage/ThreadContextARM.h:
 Manage/ThreadContextARM64.h:
 Manage/ThreadContextMIPS.h:
 Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32W.cpp
-@ThreadContextX86_32.o
+@ThreadContextX86_32W.o
 Manage/ThreadContextX86_64.h: ../../src/Manage/ThreadContextX86_64W.cpp
-@ThreadContext.o
+@ThreadContextX86_64W.o
 
 MemTool.o: ../../src/MemToolX86.cpp
 MemTool_CPP.o: ../../src/MemTool_Win64.asm
@@ -40,8 +40,8 @@ CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
 CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
 Dasm.o: ../../src/Manage/DasmX86_64.cpp
 DasmX86_32.o: ../../src/Manage/DasmX86_32.cpp
-ThreadContext.o: ../../src/Manage/ThreadContextX86_64W.cpp
-ThreadContextX86_32.o: ../../src/Manage/ThreadContextX86_32W.cpp
+ThreadContextX86_32W.o: ../../src/Manage/ThreadContextX86_32W.cpp
+ThreadContextX86_64W.o: ../../src/Manage/ThreadContextX86_64W.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_Win64.asm
 FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp
 Math_CPP.o: ../../src/Math/Math_Win64.asm

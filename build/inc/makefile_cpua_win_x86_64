@@ -50,7 +50,7 @@ Dasm.o: $(CLASSDIR)src/Manage/DasmX86_64.cpp
 DasmX86_32.o: $(CLASSDIR)src/Manage/DasmX86_32.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-ThreadContext.o: $(CLASSDIR)src/Manage/ThreadContextX86_64W.cpp LIBS_Dasm
+ThreadContext_CPP.o: $(CLASSDIR)src/Manage/ThreadContextX86_64W.cpp LIBS_Dasm
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 ThreadContextX86_32.o: $(CLASSDIR)src/Manage/ThreadContextX86_32W.cpp

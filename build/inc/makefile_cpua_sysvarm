@@ -38,7 +38,7 @@ CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfoL.cpp
 Dasm.o: $(CLASSDIR)src/Manage/DasmARM.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-ThreadContext.o: $(CLASSDIR)src/Manage/ThreadContextARML.cpp
+ThreadContext_CPP.o: $(CLASSDIR)src/Manage/ThreadContextARML.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 ScaledMapView_CPP.o: $(CLASSDIR)src/Map/ScaledMapView_CPP.cpp

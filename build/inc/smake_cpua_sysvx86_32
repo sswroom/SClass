@@ -18,7 +18,7 @@ Manage/ThreadContextARM.h:
 Manage/ThreadContextARM64.h:
 Manage/ThreadContextMIPS.h:
 Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32L.cpp
-@ThreadContext.o
+@ThreadContextX86_32L.o
 Manage/ThreadContextX86_64.h:
 
 MemTool.o: ../../src/MemToolX86.cpp
@@ -35,7 +35,7 @@ Benchmark_CPP.o: ../../src/Manage/Benchmark_32.asm
 CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
 CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
 Dasm.o: ../../src/Manage/DasmX86_32.cpp
-ThreadContext.o: ../../src/Manage/ThreadContextX86_32L.cpp
+ThreadContextX86_32L.o: ../../src/Manage/ThreadContextX86_32L.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_32.asm
 FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp
 Math_CPP.o: ../../src/Math/Math_CPP.cpp
