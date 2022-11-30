@@ -14,6 +14,7 @@ namespace IO
 		{
 			Text::String *name;
 			IO::ServiceInfo::ServiceState state;
+			IO::ServiceInfo::RunStatus runStatus;
 		};
 
 		struct ServiceDetail

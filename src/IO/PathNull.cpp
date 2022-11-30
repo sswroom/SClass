@@ -404,6 +404,11 @@ Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::
 	return false;
 }
 
+Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
+{
+	return Data::Timestamp(0);
+}
+
 WChar *IO::Path::GetCurrDirectoryW(WChar *buff)
 {
 	return 0;

@@ -69,6 +69,7 @@ namespace Manage
 		UOSInt GetHeapLists(Data::ArrayList<UInt32> *heapList);
 		UOSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount);
 		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);
+		Data::Timestamp GetStartTime();
 
 		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
 		Bool GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage);

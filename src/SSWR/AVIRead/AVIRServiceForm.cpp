@@ -145,7 +145,14 @@ void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
 	{
 		svc = svcList.GetItem(i);
 		this->lvService->AddItem(svc->name, 0);
-		this->lvService->SetSubItem(i, 1, IO::ServiceInfo::ServiceStateGetName(svc->state));
+		if (svc->state == IO::ServiceInfo::ServiceState::Unknown)
+		{
+			this->lvService->SetSubItem(i, 1, IO::ServiceInfo::RunStatusGetName(svc->runStatus));
+		}
+		else
+		{
+			this->lvService->SetSubItem(i, 1, IO::ServiceInfo::ServiceStateGetName(svc->state));
+		}
 		i++;
 	}
 	this->svcMgr.FreeServiceList(&svcList);

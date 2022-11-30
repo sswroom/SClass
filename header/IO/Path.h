@@ -68,6 +68,7 @@ namespace IO
 		static WChar *GetOSPathW(WChar *buff);
 		static UTF8Char *GetUserHome(UTF8Char *buff);
 		static Bool GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::DateTime *createTime, Data::DateTime *accessTime);
+		static Data::Timestamp GetModifyTime(const UTF8Char *path);
 		static UTF8Char *GetCurrDirectory(UTF8Char *buff);
 		static WChar *GetCurrDirectoryW(WChar *buff);
 		static Bool SetCurrDirectory(const UTF8Char *path);

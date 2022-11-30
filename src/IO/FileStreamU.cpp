@@ -415,30 +415,30 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 Data::Timestamp IO::FileStream::GetModifyTime()
 {
 	if (this->sourceName == 0)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
 	{
 		if (stat64((const Char*)this->sourceName->v, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 	else
 	{
 		if (fstat64((int)(OSInt)this->handle, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 #else
 	struct stat s;
 	if (this->handle == 0)
 	{
 		if (stat((const Char*)this->sourceName->v, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 	else
 	{
 		if (fstat((int)(OSInt)this->handle, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 #endif
 #if defined(__APPLE__)

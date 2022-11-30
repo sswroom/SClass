@@ -496,6 +496,13 @@ void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
 {
 }
 
+Data::Timestamp Manage::Process::GetStartTime()
+{
+	UTF8Char sbuff[128];
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId);
+	return IO::Path::GetModifyTime(sbuff);
+}
+
 Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 {
 	return false;

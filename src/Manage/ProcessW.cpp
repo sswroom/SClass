@@ -499,6 +499,19 @@ void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
 	}
 }
 
+Data::Timestamp Manage::Process::GetStartTime()
+{
+	FILETIME ftime;
+	if (GetProcessTimes(this->handle, &ftime, 0, 0, 0))
+	{
+		return Data::Timestamp::FromFILETIME(&ftime, Data::DateTimeUtil::GetLocalTzQhr());
+	}
+	else
+	{
+		return Data::Timestamp(0);
+	}
+}
+
 Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 {
 #ifdef _WIN32_WCE

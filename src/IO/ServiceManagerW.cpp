@@ -2,9 +2,31 @@
 #include "MyMemory.h"
 #include "IO/Path.h"
 #include "IO/ServiceManager.h"
+#include "Manage/Process.h"
 #include "Text/MyStringW.h"
 #include <windows.h>
 #undef CreateService
+
+IO::ServiceInfo::RunStatus ServiceManager_CurrentState2RunStatus(DWORD dwCurrentState)
+{
+	switch (dwCurrentState)
+	{
+	case SERVICE_RUNNING:
+		return IO::ServiceInfo::RunStatus::Running;
+	case SERVICE_CONTINUE_PENDING:
+	case SERVICE_START_PENDING:
+		return IO::ServiceInfo::RunStatus::Starting;
+	case SERVICE_STOP_PENDING:
+		return IO::ServiceInfo::RunStatus::Stopping;
+	case SERVICE_STOPPED:
+		return IO::ServiceInfo::RunStatus::Stopped;
+	case SERVICE_PAUSE_PENDING:
+	case SERVICE_PAUSED:
+	default:
+		return IO::ServiceInfo::RunStatus::Unknown;
+	}
+
+}
 
 OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b)
 {
@@ -159,7 +181,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* 
 
 	WChar wname[512];
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
-	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, SERVICE_QUERY_STATUS);
+	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, SERVICE_QUERY_STATUS | SERVICE_QUERY_CONFIG);
 	if (schService == 0)
 	{
 		return false;
@@ -168,34 +190,37 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* 
 	SERVICE_STATUS_PROCESS *status = (SERVICE_STATUS_PROCESS*)buff;
 	DWORD bytesNeeded;
 	Bool succ = (QueryServiceStatusEx(schService, SC_STATUS_PROCESS_INFO, buff, 8192, &bytesNeeded) != 0);
-	CloseServiceHandle(schService);
 	if (succ)
 	{
-		switch (status->dwCurrentState)
-		{
-		case SERVICE_RUNNING:
-			svcDetail->status = IO::ServiceInfo::RunStatus::Running;
-			break;
-		case SERVICE_CONTINUE_PENDING:
-		case SERVICE_START_PENDING:
-			svcDetail->status = IO::ServiceInfo::RunStatus::Starting;
-			break;
-		case SERVICE_STOP_PENDING:
-			svcDetail->status = IO::ServiceInfo::RunStatus::Stopping;
-			break;
-		case SERVICE_STOPPED:
-			svcDetail->status = IO::ServiceInfo::RunStatus::Stopped;
-			break;
-		case SERVICE_PAUSE_PENDING:
-		case SERVICE_PAUSED:
-		default:
-			svcDetail->status = IO::ServiceInfo::RunStatus::Unknown;
-			break;
-		}
+		svcDetail->status = ServiceManager_CurrentState2RunStatus(status->dwCurrentState);
 		svcDetail->procId = status->dwProcessId;
 		svcDetail->memoryUsage = 0;
 		svcDetail->startTimeTicks = 0;
 		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
+	}
+	QUERY_SERVICE_CONFIGW* svcConfig = (QUERY_SERVICE_CONFIGW*)buff;
+	if (QueryServiceConfigW(schService, svcConfig, 8192, &bytesNeeded) != 0)
+	{
+		switch (svcConfig->dwStartType)
+		{
+		case SERVICE_BOOT_START:
+		case SERVICE_SYSTEM_START:
+		case SERVICE_AUTO_START:
+			svcDetail->enabled = IO::ServiceInfo::ServiceState::Active;
+			break;
+		case SERVICE_DEMAND_START:
+			svcDetail->enabled = IO::ServiceInfo::ServiceState::ManualStart;
+			break;
+		case SERVICE_DISABLED:
+			svcDetail->enabled = IO::ServiceInfo::ServiceState::Inactive;
+			break;
+		}
+	}
+	CloseServiceHandle(schService);
+	if (succ && svcDetail->procId)
+	{
+		Manage::Process proc(svcDetail->procId, false);
+		svcDetail->memoryUsage = proc.GetMemorySize();
 	}
 	MemFree(buff);
 	return succ;
@@ -224,7 +249,8 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*>* svcLi
 		{
 			svc = MemAlloc(ServiceItem, 1);
 			svc->name = Text::String::NewNotNull(services[i].lpServiceName);
-			svc->state = IO::ServiceInfo::ServiceState::Active;
+			svc->state = IO::ServiceInfo::ServiceState::Unknown;
+			svc->runStatus = ServiceManager_CurrentState2RunStatus(services[i].ServiceStatus.dwCurrentState);
 			svcList->Add(svc);
 			ret++;
 			i++;

@@ -108,6 +108,11 @@ void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
 {
 }
 
+Data::Timestamp Manage::Process::GetStartTime()
+{
+	return Data::Timestamp(0);
+}
+
 Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 {
 	return false;

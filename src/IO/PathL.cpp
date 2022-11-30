@@ -949,6 +949,24 @@ Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::
 	return true;
 }
 
+Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
+{
+#if defined(__USE_LARGEFILE64)
+	struct stat64 s;
+	int status = lstat64((const Char*)path, &s);
+#else
+	struct stat s;
+	int status = lstat((const Char*)path, &s);
+#endif
+	if (status != 0)
+		return Data::Timestamp(0);
+#if defined(__APPLE__)
+	return Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+#else
+	return Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+#endif
+}
+
 UTF8Char *IO::Path::GetCurrDirectory(UTF8Char *buff)
 {
 	Char cbuff[PATH_MAX];

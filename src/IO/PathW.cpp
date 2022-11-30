@@ -1252,6 +1252,18 @@ Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::
 	return true;
 }
 
+Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
+{
+	WIN32_FIND_DATAW fd;
+	const WChar *wptr = Text::StrToWCharNew(path);
+	HANDLE hand = FindFirstFileW(wptr, &fd);
+	Text::StrDelNew(wptr);
+	if (hand == INVALID_HANDLE_VALUE)
+		return Data::Timestamp(0);
+	FindClose(hand);
+	return Data::Timestamp::FromFILETIME(&fd.ftLastWriteTime, Data::DateTimeUtil::GetLocalTzQhr());
+}
+
 UTF8Char *IO::Path::GetCurrDirectory(UTF8Char *buff)
 {
 #ifdef _WIN32_WCE

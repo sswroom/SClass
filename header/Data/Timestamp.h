@@ -428,6 +428,13 @@ namespace Data
 		{
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
 		}
+
+		static Timestamp FromFILETIME(void* filetime, Int8 tzQhr)
+		{
+			UInt32 nanosec;
+			Int64 secs = Data::DateTimeUtil::FILETIME2Secs(filetime, &nanosec);
+			return Data::Timestamp(Data::TimeInstant(secs, nanosec), tzQhr);
+		}
 	};
 }
 #endif

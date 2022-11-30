@@ -104,6 +104,22 @@
             "intelliSenseMode": "msvc-x64"
         },
         {
+            "name": "Windows VS2022",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/include"
+            ],
+            "defines": [],
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostarm64/arm64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        },
+        {
             "name": "MingW32",
             "includePath": [
                 "${workspaceFolder}/../SClass/header",

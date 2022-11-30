@@ -441,6 +441,7 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*> *svcLi
 				svc = MemAlloc(ServiceItem, 1);
 				svc->name = Text::String::New(svcName.ToCString());
 				svc->state = IO::ServiceInfo::ServiceState::Unknown;
+				svc->runStatus = IO::ServiceInfo::RunStatus::Unknown;
 				if (states[0].Equals(UTF8STRC("static")))
 				{
 					svc->state = IO::ServiceInfo::ServiceState::Static;
