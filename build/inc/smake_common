@@ -1988,6 +1988,8 @@ Manage/CPUInst.h: ../../src/Manage/CPUInst.cpp
 @CPUInst.o
 Manage/CPUVendor.h: ../../src/Manage/CPUVendor.cpp
 @CPUVendor.o
+Manage/DasmARM64.h: ../../src/Manage/DasmARM64.cpp
+@DasmARM64.o
 Manage/DasmBase.h: ../../src/Manage/DasmBase.cpp
 @DasmBase.o
 Manage/DasmX86_16.h: ../../src/Manage/DasmX86_16.cpp
@@ -1999,7 +2001,8 @@ Manage/MonConn.h: ../../src/Manage/MonConn.cpp
 @MonConn.o
 Manage/OSInfo.h: ../../src/Manage/OSInfo.cpp
 @OSInfo.o
-Manage/ThreadContext.h:
+Manage/ThreadContext.h: ../../src/Manage/ThreadContext.cpp
+@ThreadContext.o
 
 Map/AssistedReverseGeocoder.h: ../../src/Map/AssistedReverseGeocoder.cpp
 @AssistedReverseGeocoder.o
@@ -4726,11 +4729,13 @@ AddressResolver.o: ../../src/Manage/AddressResolver.cpp
 CPUDB.o: ../../src/Manage/CPUDB.cpp
 CPUInst.o: ../../src/Manage/CPUInst.cpp
 CPUVendor.o: ../../src/Manage/CPUVendor.cpp
+DasmARM64.o: ../../src/Manage/DasmARM64.cpp
 DasmBase.o: ../../src/Manage/DasmBase.cpp
 DasmX86_16.o: ../../src/Manage/DasmX86_16.cpp
 ExceptionLogger.o: ../../src/Manage/ExceptionLogger.cpp
 MonConn.o: ../../src/Manage/MonConn.cpp
 OSInfo.o: ../../src/Manage/OSInfo.cpp
+ThreadContext.o: ../../src/Manage/ThreadContext.cpp
 AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
 AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
