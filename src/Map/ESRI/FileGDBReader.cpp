@@ -555,16 +555,16 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData == 0)
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
 	if (field == 0)
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	else if (this->fieldNull[fieldIndex])
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	switch (field->fieldType)
 	{
@@ -580,7 +580,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 			return Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 	}
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)

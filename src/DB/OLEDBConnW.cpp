@@ -1446,13 +1446,13 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*status == DBSTATUS_S_ISNULL)
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	Data::DateTimeUtil::TimeValue tval;
 	switch (data->dbColInfo[colIndex].wType)
@@ -1469,7 +1469,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 			tval.ms = 0;
 			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 		}
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	case DBTYPE_DBTIME:
 		if (*valLen == 6)
 		{
@@ -1482,7 +1482,7 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 			tval.ms = 0;
 			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 		}
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	case DBTYPE_DBTIMESTAMP:
 		if (*valLen == 16)
 		{
@@ -1495,10 +1495,10 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 			tval.ms = ReadUInt16(&val[12]);
 			return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0), 0);
 		}
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	case DBTYPE_NULL:
 	default:
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 }
 

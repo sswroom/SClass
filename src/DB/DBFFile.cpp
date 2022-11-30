@@ -658,12 +658,12 @@ UTF8Char *DB::DBFReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize
 Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 {
 	if (!this->recordExist)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (colIndex >= this->colCnt)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (this->cols[colIndex].type != 'D')
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	Char buff[5];
 	Char *currPtr = (Char*)&this->recordData[this->cols[colIndex].colOfst];

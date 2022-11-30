@@ -29,7 +29,7 @@ Cond table
 1110	-
 */
 
-Bool DasmARM64_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
+Bool __stdcall DasmARM64_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
 {
 	if (Text::StrIndexOfC(funcName, nameLen, UTF8STRC("(exit+0)")) != INVALID_INDEX)
 	{
@@ -176,57 +176,57 @@ UInt64 DasmARM64_ParseImmShift(Manage::DasmARM64::DasmARM64_Sess *sess, UInt64 o
 	return oriVal;
 }
 
-Bool DasmARM64_00(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_00(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_01(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_01(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_02(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_02(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_03(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_03(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_04(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_04(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_05(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_05(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_06(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_06(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_07(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_07(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_08(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_08(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_09(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_09(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_0A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_0A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -250,7 +250,7 @@ Bool DasmARM64_0A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_0B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_0B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -274,83 +274,83 @@ Bool DasmARM64_0B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_0C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_0C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_0D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_0D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_0E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_0E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_0F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_0F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_10(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_10(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_11(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_11(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_12(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_12(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_13(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_13(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_14(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_14(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_15(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_15(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_16(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_16(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_17(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_17(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_18(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_18(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_19(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_19(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_1A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_1A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bne 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal64(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal64(sess->sbuff, (UInt64)((Int64)sess->regs.PC + addr + 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -361,14 +361,14 @@ Bool DasmARM64_1A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, (UInt64)((Int64)sess->regs.PC + addr + 4));
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add((UInt64)((Int64)sess->regs.PC + addr + 4));
 	return true;
 }
 
-Bool DasmARM64_1B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_1B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -392,77 +392,77 @@ Bool DasmARM64_1B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_1C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_1C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_1D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_1D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_1E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_1E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_1F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_1F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_20(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_20(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_21(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_21(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_22(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_22(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_23(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_23(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_24(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_24(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_25(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_25(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_26(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_26(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_27(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_27(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_28(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_28(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_29(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_29(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_2A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_2A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -486,7 +486,7 @@ Bool DasmARM64_2A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_2B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_2B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -510,77 +510,77 @@ Bool DasmARM64_2B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_2C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_2C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_2D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_2D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_2E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_2E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_2F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_2F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_30(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_30(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_31(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_31(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_32(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_32(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_33(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_33(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_34(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_34(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_35(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_35(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_36(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_36(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_37(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_37(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_38(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_38(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_39(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_39(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_3A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_3A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -604,13 +604,13 @@ Bool DasmARM64_3A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_3B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_3B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcc 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal64(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal64(sess->sbuff, (UInt64)((Int64)sess->regs.PC + addr + 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -621,84 +621,84 @@ Bool DasmARM64_3B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, (UInt64)((Int64)sess->regs.PC + addr + 4));
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add((UInt64)((Int64)sess->regs.PC + addr + 4));
 	return true;
 }
 
-Bool DasmARM64_3C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_3C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_3D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_3D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_3E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_3E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_3F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_3F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_40(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_40(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_41(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_41(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_42(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_42(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_43(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_43(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_44(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_44(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_45(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_45(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_46(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_46(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_47(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_47(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_48(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_48(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_49(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_49(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_4A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_4A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -722,7 +722,7 @@ Bool DasmARM64_4A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_4B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_4B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -746,77 +746,77 @@ Bool DasmARM64_4B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_4C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_4C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_4D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_4D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_4E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_4E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_4F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_4F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_50(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_50(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_51(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_51(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_52(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_52(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_53(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_53(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_54(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_54(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_55(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_55(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_56(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_56(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_57(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_57(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_58(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_58(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_59(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_59(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_5A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_5A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -840,13 +840,13 @@ Bool DasmARM64_5A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_5B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_5B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blpl 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal64(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal64(sess->sbuff, (UInt64)((Int64)sess->regs.PC + addr + 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -857,84 +857,84 @@ Bool DasmARM64_5B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, (UInt64)((Int64)sess->regs.PC + addr + 4));
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add((UInt64)((Int64)sess->regs.PC + addr + 4));
 	return true;
 }
 
-Bool DasmARM64_5C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_5C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_5D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_5D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_5E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_5E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_5F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_5F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_60(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_60(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_61(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_61(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_62(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_62(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_63(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_63(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_64(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_64(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_65(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_65(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_66(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_66(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_67(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_67(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_68(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_68(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_69(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_69(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_6A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_6A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -958,7 +958,7 @@ Bool DasmARM64_6A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_6B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_6B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -982,77 +982,77 @@ Bool DasmARM64_6B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_6C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_6C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_6D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_6D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_6E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_6E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_6F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_6F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_70(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_70(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_71(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_71(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_72(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_72(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_73(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_73(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_74(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_74(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_75(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_75(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_76(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_76(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_77(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_77(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_78(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_78(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_79(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_79(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_7A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_7A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1076,7 +1076,7 @@ Bool DasmARM64_7A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_7B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_7B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1100,37 +1100,37 @@ Bool DasmARM64_7B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_7C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_7C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_7D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_7D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_7E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_7E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_7F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_7F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_80(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_80(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_81(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_81(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_82(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_82(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrs;
 	UInt64 *regPtrd;
@@ -1159,7 +1159,7 @@ Bool DasmARM64_82(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtrs);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		sess->sbuff = Text::StrInt32(sess->sbuff, DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x70:
@@ -1188,7 +1188,7 @@ Bool DasmARM64_82(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_83(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_83(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrd;
 	Int32 val;
@@ -1199,7 +1199,7 @@ Bool DasmARM64_83(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mvnhi "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		val = DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		val = (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrInt32(sess->sbuff, val);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 /*		*regPtrd = val;
@@ -1213,12 +1213,12 @@ Bool DasmARM64_83(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_84(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_84(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_85(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_85(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrs;
 	UInt64 *regPtrd;
@@ -1249,12 +1249,12 @@ Bool DasmARM64_85(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_86(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_86(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_87(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_87(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrs;
 	UInt64 *regPtrs2;
@@ -1270,7 +1270,7 @@ Bool DasmARM64_87(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[2] & 0xf), &regPtrs);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", +"));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[0] & 0xf), &regPtrs2);
-		addr = DasmARM64_ParseImmShift(sess, *regPtrs2);
+		addr = (Int64)DasmARM64_ParseImmShift(sess, *regPtrs2);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
 		return true;
 	case 0x90:
@@ -1286,7 +1286,7 @@ Bool DasmARM64_87(Manage::DasmARM64::DasmARM64_Sess *sess)
 			sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[2] & 0xf), &regPtrs);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", +"));
 			sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[0] & 0xf), &regPtrs2);
-			addr = DasmARM64_ParseImmShift(sess, *regPtrs2);
+			addr = (Int64)DasmARM64_ParseImmShift(sess, *regPtrs2);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
 	/*		*regPtrd = val;
 			if (regPtrd == 15)
@@ -1301,17 +1301,17 @@ Bool DasmARM64_87(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_88(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_88(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_89(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_89(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_8A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_8A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1335,7 +1335,7 @@ Bool DasmARM64_8A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_8B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_8B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1359,77 +1359,77 @@ Bool DasmARM64_8B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_8C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_8C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_8D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_8D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_8E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_8E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_8F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_8F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_90(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_90(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_91(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_91(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_92(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_92(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_93(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_93(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_94(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_94(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_95(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_95(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_96(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_96(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_97(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_97(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_98(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_98(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_99(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_99(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_9A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_9A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1453,7 +1453,7 @@ Bool DasmARM64_9A(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_9B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_9B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1477,77 +1477,77 @@ Bool DasmARM64_9B(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_9C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_9C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_9D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_9D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_9E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_9E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_9F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_9F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_A9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_A9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_AA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_AA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1571,7 +1571,7 @@ Bool DasmARM64_AA(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_AB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_AB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1595,77 +1595,77 @@ Bool DasmARM64_AB(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_AC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_AC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_AD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_AD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_AE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_AE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_AF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_AF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_B9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_B9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_BA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_BA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1689,7 +1689,7 @@ Bool DasmARM64_BA(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_BB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_BB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1713,77 +1713,77 @@ Bool DasmARM64_BB(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_BC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_BC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_BD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_BD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_BE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_BE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_BF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_BF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_C9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_C9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_CA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_CA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1807,7 +1807,7 @@ Bool DasmARM64_CA(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_CB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_CB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1831,77 +1831,77 @@ Bool DasmARM64_CB(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_CC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_CC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_CD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_CD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_CE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_CE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_CF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_CF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_D9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_D9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_DA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_DA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1925,7 +1925,7 @@ Bool DasmARM64_DA(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_DB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_DB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1949,27 +1949,27 @@ Bool DasmARM64_DB(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_DC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_DC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_DD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_DD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_DE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_DE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_DF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_DF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_E0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrd;
 	UInt64 *regPtrs1;
@@ -1990,9 +1990,9 @@ Bool DasmARM64_E0(Manage::DasmARM64::DasmARM64_Sess *sess)
 			sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtrs1);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[0] & 0xf, &regPtrs2);
-			imm = DasmARM64_ParseImmShift(sess, *regPtrs2);
+			imm = (Int64)DasmARM64_ParseImmShift(sess, *regPtrs2);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-			*regPtrd = *regPtrs1 + imm;
+			*regPtrd = *regPtrs1 + (UInt64)imm;
 			if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 			{
 				sess->endType = Manage::DasmARM64::ET_JMP;
@@ -2010,9 +2010,9 @@ Bool DasmARM64_E0(Manage::DasmARM64::DasmARM64_Sess *sess)
 			sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtrs1);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("], #"));
 			imm = ((sess->codeBuff[0] & 0xf) | ((sess->codeBuff[1] & 0xf) << 4));
-			sess->sbuff = Text::StrUInt64(sess->sbuff, imm);
+			sess->sbuff = Text::StrInt64(sess->sbuff, imm);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-			*regPtrs1 += imm;
+			*regPtrs1 += (UInt64)imm;
 			if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 			{
 				sess->endType = Manage::DasmARM64::ET_JMP;
@@ -2025,7 +2025,7 @@ Bool DasmARM64_E0(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrd;
 	UInt64 *regPtrs;
@@ -2270,7 +2270,7 @@ Bool DasmARM64_E1(Manage::DasmARM64::DasmARM64_Sess *sess)
 				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 				sess->sbuff = Text::StrInt64(sess->sbuff, imm);
 				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-				*regPtrd = ((Int32)*regPtrs) >> imm;
+				*regPtrd = (UInt64)(Int64)(((Int32)*regPtrs) >> imm);
 				if ((sess->codeBuff[2] & 0xf) == 15)
 				{
 					sess->endType = Manage::DasmARM64::ET_FUNC_RET;
@@ -2319,7 +2319,7 @@ Bool DasmARM64_E1(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrd;
 	UInt64 *regPtrs;
@@ -2545,7 +2545,7 @@ Bool DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtr;
 	Int32 val;
@@ -2661,7 +2661,7 @@ Bool DasmARM64_E3(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrd;
 	UInt64 *regPtrs;
@@ -2697,7 +2697,7 @@ Bool DasmARM64_E4(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtrd;
 	UInt64 *regPtrs;
@@ -2717,7 +2717,7 @@ Bool DasmARM64_E5(Manage::DasmARM64::DasmARM64_Sess *sess)
 			sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		}
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
-		sess->memReader->ReadMemory(imm + *regPtrs, (UInt8*)regPtrd, 4);
+		sess->memReader->ReadMemory((UInt64)(Int64)imm + *regPtrs, (UInt8*)regPtrd, 4);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14 || (sess->codeBuff[2] & 0xf) == 13)
@@ -2748,17 +2748,17 @@ Bool DasmARM64_E5(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_E7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	UInt64 *regPtr;
 	sess->regs.PC += 4;
@@ -2882,12 +2882,12 @@ Bool DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return false;
 }
 
-Bool DasmARM64_E9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_E9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_EA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_EA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -2915,7 +2915,7 @@ Bool DasmARM64_EA(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_EB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_EB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	Int32 addr;
 	UTF8Char *sptr;
@@ -2949,1382 +2949,1382 @@ Bool DasmARM64_EB(Manage::DasmARM64::DasmARM64_Sess *sess)
 	return true;
 }
 
-Bool DasmARM64_EC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_EC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_ED(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_ED(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_EE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_EE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_EF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_EF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_F9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_F9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_FA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_FA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_FB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_FB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_FC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_FC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_FD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_FD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_FE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_FE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_FF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_FF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T00(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T00(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T01(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T01(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T02(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T02(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T03(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T03(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T04(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T04(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T05(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T05(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T06(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T06(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T07(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T07(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T08(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T08(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T09(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T09(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T0A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T0A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T0B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T0B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T0C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T0C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T0D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T0D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T0E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T0E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T0F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T0F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T10(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T10(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T11(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T11(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T12(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T12(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T13(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T13(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T14(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T14(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T15(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T15(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T16(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T16(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T17(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T17(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T18(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T18(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T19(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T19(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T1A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T1A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T1B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T1B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T1C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T1C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T1D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T1D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T1E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T1E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T1F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T1F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T20(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T20(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T21(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T21(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T22(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T22(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T23(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T23(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T24(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T24(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T25(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T25(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T26(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T26(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T27(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T27(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T28(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T28(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T29(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T29(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T2A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T2A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T2B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T2B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T2C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T2C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T2D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T2D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T2E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T2E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T2F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T2F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T30(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T30(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T31(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T31(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T32(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T32(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T33(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T33(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T34(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T34(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T35(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T35(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T36(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T36(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T37(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T37(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T38(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T38(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T39(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T39(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T3A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T3A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T3B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T3B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T3C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T3C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T3D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T3D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T3E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T3E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T3F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T3F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T40(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T40(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T41(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T41(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T42(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T42(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T43(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T43(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T44(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T44(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T45(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T45(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T46(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T46(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T47(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T47(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T48(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T48(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T49(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T49(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T4A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T4A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T4B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T4B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T4C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T4C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T4D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T4D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T4E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T4E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T4F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T4F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T50(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T50(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T51(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T51(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T52(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T52(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T53(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T53(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T54(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T54(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T55(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T55(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T56(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T56(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T57(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T57(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T58(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T58(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T59(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T59(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T5A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T5A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T5B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T5B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T5C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T5C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T5D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T5D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T5E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T5E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T5F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T5F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T60(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T60(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T61(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T61(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T62(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T62(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T63(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T63(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T64(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T64(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T65(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T65(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T66(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T66(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T67(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T67(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T68(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T68(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T69(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T69(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T6A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T6A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T6B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T6B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T6C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T6C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T6D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T6D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T6E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T6E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T6F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T6F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T70(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T70(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T71(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T71(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T72(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T72(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T73(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T73(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T74(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T74(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T75(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T75(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T76(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T76(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T77(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T77(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T78(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T78(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T79(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T79(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T7A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T7A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T7B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T7B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T7C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T7C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T7D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T7D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T7E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T7E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T7F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T7F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T80(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T80(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T81(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T81(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T82(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T82(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T83(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T83(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T84(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T84(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T85(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T85(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T86(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T86(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T87(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T87(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T88(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T88(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T89(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T89(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T8A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T8A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T8B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T8B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T8C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T8C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T8D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T8D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T8E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T8E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T8F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T8F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T90(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T90(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T91(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T91(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T92(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T92(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T93(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T93(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T94(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T94(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T95(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T95(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T96(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T96(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T97(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T97(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T98(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T98(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T99(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T99(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T9A(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T9A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T9B(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T9B(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T9C(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T9C(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T9D(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T9D(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T9E(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T9E(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_T9F(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_T9F(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TA9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TA9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TAA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TAA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TAB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TAB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TAC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TAC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TAD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TAD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TAE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TAE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TAF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TAF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TB9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TB9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TBA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TBA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TBB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TBB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TBC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TBC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TBD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TBD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TBE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TBE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TBF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TBF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TC9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TC9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TCA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TCA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TCB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TCB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TCC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TCC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TCD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TCD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TCE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TCE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TCF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TCF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TD9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TD9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TDA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TDA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TDB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TDB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TDC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TDC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TDD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TDD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TDE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TDE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TDF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TDF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TE9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TE9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TEA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TEA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TEB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TEB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TEC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TEC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TED(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TED(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TEE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TEE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TEF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TEF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF0(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF0(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF1(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF1(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF2(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF2(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF3(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF3(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF4(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF4(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF5(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF5(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF6(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF6(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF7(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF7(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF8(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF8(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TF9(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TF9(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TFA(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TFA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TFB(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TFB(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TFC(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TFC(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TFD(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TFD(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TFE(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TFE(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }
 
-Bool DasmARM64_TFF(Manage::DasmARM64::DasmARM64_Sess *sess)
+Bool __stdcall DasmARM64_TFF(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
 	return false;
 }

@@ -17,7 +17,7 @@ namespace Data
 		Timestamp(UInt32 *tmp)
 		{
 			this->inst = Data::TimeInstant(0, 0);
-			this->tzQhr = 0;
+			this->tzQhr = 127;
 		}
 
 		Timestamp(Int64 ticks, Int8 tzQhr)
@@ -330,9 +330,9 @@ namespace Data
 			return this->inst.SameDate(ts.inst);
 		}
 
-		Bool IsZero() const
+		Bool IsNull() const
 		{
-			return this->inst.sec == 0;
+			return this->inst.sec == 0 && this->tzQhr == 127;
 		}
 		
 		Bool SetAsComputerTime() const
@@ -434,6 +434,11 @@ namespace Data
 			UInt32 nanosec;
 			Int64 secs = Data::DateTimeUtil::FILETIME2Secs(filetime, &nanosec);
 			return Data::Timestamp(Data::TimeInstant(secs, nanosec), tzQhr);
+		}
+
+		static Timestamp Null()
+		{
+			return Data::Timestamp(0);
 		}
 	};
 }

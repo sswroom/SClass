@@ -476,7 +476,7 @@ Data::Timestamp IO::PackageFile::GetItemModTime(UOSInt index) const
 	{
 		return item->modTime;
 	}
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 UInt64 IO::PackageFile::GetItemStoreSize(UOSInt index) const

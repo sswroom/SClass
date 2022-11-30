@@ -88,7 +88,7 @@ IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFile(IO::IStreamData
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 96, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0));
 
 		nextOfst = fileOfst + fileSize;
 		i++;

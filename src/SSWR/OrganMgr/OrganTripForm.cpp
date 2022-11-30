@@ -141,7 +141,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(void *userObj)
 {
 	OrganTripForm *me = (OrganTripForm*)userObj;
-	if (!me->refTime.IsZero())
+	if (!me->refTime.IsNull())
 	{
 		Data::DateTime dt(me->refTime.ToTicks(), me->refTime.tzQhr);
 		UInt8 min = dt.GetMinute();
@@ -192,7 +192,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->env = env;
 	this->locId = 0;
 	this->updating = false;
-	this->refTime = Data::Timestamp(0, 0);
+	this->refTime = Data::Timestamp(0);
 
 	this->SetText(this->env->GetLang(UTF8STRC("TripFormTitle")));
 

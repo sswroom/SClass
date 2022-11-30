@@ -94,7 +94,7 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd,
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], fnameSize, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0));
 
 		nextOfst = fileOfst + fileSize;
 		if (nextOfst & 15)

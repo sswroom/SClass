@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 		sptr = enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 16, 0);
 		if (fileInfo[i].storeSize == fileInfo[i].decompSize)
 		{
-			pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].decompSize, CSTRP(sbuff, sptr), Data::Timestamp(0, 0));
+			pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].decompSize, CSTRP(sbuff, sptr), Data::Timestamp(0));
 		}
 		else
 		{
@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 			compInfo.compExtraSize = 0;
 			compInfo.compExtras = 0;
 			compInfo.checkMethod = Crypto::Hash::HashType::Unknown;
-			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, &compInfo, CSTRP(sbuff, sptr), Data::Timestamp(0, 0));
+			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, &compInfo, CSTRP(sbuff, sptr), Data::Timestamp(0));
 		}
 		i++;
 	}

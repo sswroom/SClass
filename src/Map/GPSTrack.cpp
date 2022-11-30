@@ -1254,12 +1254,12 @@ UTF8Char *Map::GPSDataReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buf
 Data::Timestamp Map::GPSDataReader::GetTimestamp(UOSInt colIndex)
 {
 	if (this->currRec == 0)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (colIndex == 0)
 	{
 		return Data::Timestamp(this->currRec->utcTimeTicks, Data::DateTimeUtil::GetLocalTzQhr());
 	}
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 Double Map::GPSDataReader::GetDbl(UOSInt colIndex)

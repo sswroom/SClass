@@ -1169,7 +1169,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 	Text::StringBuilderUTF8 sbDVDId;
 	me->txtDate->GetText(&sbDate);
 	theDate = Data::Timestamp::FromStr(sbDate.ToCString(), 0);
-	if (theDate.IsZero())
+	if (theDate.IsNull())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the date"), CSTR("Burnt Disc"), me);
 		me->txtDate->Focus();

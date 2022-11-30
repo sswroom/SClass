@@ -1345,8 +1345,8 @@ exppalop2:
 ;44 rgbTable
 
 	align 16
-_LanczosResizer8_C8_collapse
-LanczosResizer8_C8_collapse
+_LanczosResizer8_C8_collapse:
+LanczosResizer8_C8_collapse:
 	push ebp
 	push ebx
 	push esi

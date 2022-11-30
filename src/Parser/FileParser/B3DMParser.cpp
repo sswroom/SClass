@@ -72,7 +72,7 @@ IO::ParsedObject *Parser::FileParser::B3DMParser::ParseFile(IO::IStreamData *fd,
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	sptr = fd->GetShortName().ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".glb"));
-	pf->AddData(fd, ofst, fd->GetDataSize() - ofst, CSTRP(sbuff, sptr), Data::Timestamp(0, 0));
+	pf->AddData(fd, ofst, fd->GetDataSize() - ofst, CSTRP(sbuff, sptr), Data::Timestamp(0));
 
 	return pf;
 }

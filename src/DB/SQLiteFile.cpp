@@ -527,7 +527,7 @@ Data::Timestamp DB::SQLiteReader::GetTimestamp(UOSInt colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!GetStr(colIndex, &sb))
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 }
 

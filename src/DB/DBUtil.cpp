@@ -1374,7 +1374,7 @@ UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::SQLType sqlType)
 UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, SQLType sqlType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
-	if (ts.IsZero())
+	if (ts.IsNull())
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	if (sqlType == DB::DBUtil::SQLType::Access)
 	{
@@ -1449,7 +1449,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, SQLType sqlTyp
 
 UOSInt DB::DBUtil::SDBTSLeng(Data::Timestamp ts, SQLType sqlType)
 {
-	if (ts.IsZero())
+	if (ts.IsNull())
 		return 4;
 	switch (sqlType)
 	{

@@ -54,7 +54,7 @@ IO::ParsedObject *Parser::FileParser::X13Parser::ParseFile(IO::IStreamData *fd, 
 	while (buffOfst < (OSInt)hdr[2])
 	{
 		sptr = enc.UTF8FromBytes(name, &recHdrs[buffOfst], 48, 0);
-		pf->AddData(fd, *(UInt32*)&recHdrs[buffOfst + 56], *(UInt32*)&recHdrs[buffOfst + 60], CSTRP(name, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, *(UInt32*)&recHdrs[buffOfst + 56], *(UInt32*)&recHdrs[buffOfst + 60], CSTRP(name, sptr), Data::Timestamp(0));
 		buffOfst += 64;
 	}
 	MemFree(recHdrs);

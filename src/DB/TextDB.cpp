@@ -117,11 +117,11 @@ public:
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
 		if (this->row == 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		if (colIndex >= this->data->colList.GetCount())
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		if (this->row[colIndex] == 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 
 		return Data::Timestamp(this->row[colIndex]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}

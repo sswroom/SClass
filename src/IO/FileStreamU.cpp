@@ -378,30 +378,30 @@ void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp
 Data::Timestamp IO::FileStream::GetCreateTime()
 {
 	if (this->sourceName == 0)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
 	if (this->handle == 0)
 	{
 		if (stat64((const Char*)this->sourceName->v, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 	else
 	{
 		if (fstat64((int)(OSInt)this->handle, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 #else
 	struct stat s;
 	if (this->handle == 0)
 	{
 		if (stat((const Char*)this->sourceName->v, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 	else
 	{
 		if (fstat((int)(OSInt)this->handle, &s) != 0)
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 	}
 #endif
 #if defined(__APPLE__)
@@ -488,7 +488,7 @@ void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp 
 	if (this->sourceName == 0)
 		return;
 	struct utimbuf t;
-	if (lastAccessTime.IsZero() || lastWriteTime.IsZero())
+	if (lastAccessTime.IsNull() || lastWriteTime.IsNull())
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
@@ -507,11 +507,11 @@ void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp 
 		t.modtime = s.st_mtim.tv_sec;
 #endif
 	}
-	if (!lastAccessTime.IsZero())
+	if (!lastAccessTime.IsNull())
 	{
 		t.actime = lastAccessTime.ToUnixTimestamp();
 	}
-	if (!lastWriteTime.IsZero())
+	if (!lastWriteTime.IsNull())
 	{
 		t.modtime = lastWriteTime.ToUnixTimestamp();
 	}

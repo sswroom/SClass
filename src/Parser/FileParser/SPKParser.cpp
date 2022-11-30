@@ -161,7 +161,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, k}, Data::Timestamp(0, 0));
+							pf2->AddPack(pf3, {sptr, k}, Data::Timestamp(0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
@@ -175,7 +175,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, l}, Data::Timestamp(0, 0));
+							pf2->AddPack(pf3, {sptr, l}, Data::Timestamp(0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[l + 1];
@@ -227,7 +227,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, k}, Data::Timestamp(0, 0));
+							pf2->AddPack(pf3, {sptr, k}, Data::Timestamp(0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
@@ -241,7 +241,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, l}, Data::Timestamp(0, 0));
+							pf2->AddPack(pf3, {sptr, l}, Data::Timestamp(0));
 						}
 						pf2 = pf3;
 						sptr = &sptr[l + 1];

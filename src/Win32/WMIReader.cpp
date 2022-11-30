@@ -639,9 +639,9 @@ Data::Timestamp Win32::WMIReader::GetTimestamp(UOSInt colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 
-	Data::Timestamp ret = Data::Timestamp(0, 0);
+	Data::Timestamp ret = Data::Timestamp(0);
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;

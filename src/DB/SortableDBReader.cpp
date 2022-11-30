@@ -362,7 +362,7 @@ Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
 	}
 	else
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 }
 

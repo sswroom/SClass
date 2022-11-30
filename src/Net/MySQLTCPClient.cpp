@@ -231,15 +231,15 @@ public:
 	{
 		if (this->currRow == 0)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		if (colIndex >= this->colCount)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		if (this->currRow[colIndex] == 0)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		return Data::Timestamp(this->currRow[colIndex]->ToCString(), 0);
 	}
@@ -707,16 +707,16 @@ public:
 	{
 		if (this->currRow == 0)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		if (colIndex >= this->colCount)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		RowColumn *col = &this->currRow->cols[colIndex];
 		if (col->isNull)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		if (this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATE ||
 			this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATETIME ||
@@ -727,7 +727,7 @@ public:
 			switch (col->len)
 			{
 			case 0:
-				return Data::Timestamp(0, 0);
+				return Data::Timestamp(0);
 			case 4:
 				tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
 				tval.month = this->currRow->rowBuff[col->ofst + 2];
@@ -759,12 +759,12 @@ public:
 			default:
 				//////////////////////////////////////
 				printf("Unknown binary date format\r\n");
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 			}
 		}
 		else
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 	}
 
@@ -901,7 +901,7 @@ public:
 			{
 			case 0:
 
-				item->SetDate(Data::Timestamp(0, 0));
+				item->SetDate(Data::Timestamp(0));
 				return true;
 			case 4:
 				{

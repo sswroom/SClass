@@ -15,7 +15,7 @@ Net::DNSHandler::~DNSHandler()
 	while (i < j)
 	{
 		arr[i]->domain->Release();
-		if (arr[i]->timeout.IsZero())
+		if (arr[i]->timeout.IsNull())
 		{
 //			Net::DNSClient::RequestAnswer *ans;
 //			ans = arr[i]->answers->GetItem(0);
@@ -35,7 +35,7 @@ Net::DNSHandler::~DNSHandler()
 	while (i < j)
 	{
 		arr[i]->domain->Release();
-		if (arr[i]->timeout.IsZero())
+		if (arr[i]->timeout.IsNull())
 		{
 		}
 		else
@@ -60,7 +60,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 	dnsStat = this->reqv4Map.Get(domain);
 	if (dnsStat)
 	{
-		if (dnsStat->timeout.IsZero())
+		if (dnsStat->timeout.IsNull())
 		{
 			*addr = dnsStat->addr;
 			return true;
@@ -148,7 +148,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 	dnsStat = this->reqv6Map.Get(domain);
 	if (dnsStat)
 	{
-		if (dnsStat->timeout.IsZero())
+		if (dnsStat->timeout.IsNull())
 		{
 			*addr = dnsStat->addr;
 			return true;
@@ -241,7 +241,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 	dnsStat = this->reqv4Map.Get(domain);
 	if (dnsStat)
 	{
-		if (dnsStat->timeout.IsZero())
+		if (dnsStat->timeout.IsNull())
 		{
 			*addrs = dnsStat->addr;
 			return 1;
@@ -339,7 +339,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 	dnsStat = this->reqv6Map.Get(domain);
 	if (dnsStat)
 	{
-		if (dnsStat->timeout.IsZero())
+		if (dnsStat->timeout.IsNull())
 		{
 			*addrs = dnsStat->addr;
 			return 1;

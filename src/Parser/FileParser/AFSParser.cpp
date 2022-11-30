@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, 
 			DEL_CLASS(pf);
 			return 0;
 		}
-		pf->AddData(fd, ofst, leng, {sbuff, 8}, Data::Timestamp(0, 0));
+		pf->AddData(fd, ofst, leng, {sbuff, 8}, Data::Timestamp(0));
 		i++;
 	}
 	MemFree(buff2);

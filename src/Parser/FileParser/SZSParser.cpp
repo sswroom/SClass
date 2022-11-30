@@ -73,7 +73,7 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 		}
 		sptr = enc.UTF8FromBytes(sbuff, fileBuff, 256, 0);
 		Text::StrReplace(sbuff, ';', '\\');
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(0));
 
 		ofst += 272;
 		i++;

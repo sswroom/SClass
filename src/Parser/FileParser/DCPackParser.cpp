@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::FileParser::DCPackParser::ParseFile(IO::IStreamData *f
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(name, buff, 48, 0);
-		pf->AddData(fd, thisOfst + hdrEnd, thisSize, CSTRP(name, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, thisOfst + hdrEnd, thisSize, CSTRP(name, sptr), Data::Timestamp(0));
 
 		fileOfst += thisSize;
 		hdrOfst += 64;

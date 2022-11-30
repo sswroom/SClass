@@ -585,9 +585,9 @@ UTF8Char *DB::MySQLReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
 {
 	if (this->row == 0)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (colIndex >= this->colCount)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
@@ -595,7 +595,7 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
 	}
 	else
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 }
 

@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFile(IO::IStreamData *fd,
 		UInt32 fileOfst = ReadUInt32(&records[i + fileNameSize + 16]);
 		UInt32 fileSize = ReadUInt32(&records[i + fileNameSize + 20]);
 		sptr = enc.UTF8FromBytes(sbuff, &records[i + 4], fileNameSize, 0);
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(0));
 		fileCnt++;
 		i += fileNameSize + 24;
 	}

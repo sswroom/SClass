@@ -138,11 +138,11 @@ public:
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
-			return Data::Timestamp(0, 0);
+			return Data::Timestamp(0);
 		}
 		return item.GetAsTimestamp();
 	}

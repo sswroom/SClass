@@ -312,7 +312,7 @@ UTF8Char *DB::MongoDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buff
 
 Data::Timestamp DB::MongoDBReader::GetTimestamp(UOSInt colIndex)
 {
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 Double DB::MongoDBReader::GetDbl(UOSInt colIndex)

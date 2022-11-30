@@ -698,7 +698,7 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 		{
 			return Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR());
 		}
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	else if (this->itemType == ItemType::Str)
 	{
@@ -708,11 +708,11 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 		{
 			return Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR());
 		}
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	else
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 }
 

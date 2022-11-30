@@ -51,7 +51,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 		link = this->links.GetItem(i);
 		mutUsage.EndUse();
 
-		if (link->lastUpdated.IsZero())
+		if (link->lastUpdated.IsNull())
 		{
 			this->LoadLink(link);
 		}
@@ -762,7 +762,7 @@ UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CString url, Tex
 	link->viewFormat = Text::String::NewOrNull(viewFormat);
 	link->mode = mode;
 	link->reloadInterval = seconds;
-	link->lastUpdated = Data::Timestamp(0, 0);
+	link->lastUpdated = Data::Timestamp(0);
 	if (mode == RefreshMode::OnStop)
 	{
 		link->lastUpdated = Data::Timestamp::UtcNow();

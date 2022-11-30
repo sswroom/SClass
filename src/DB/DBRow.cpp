@@ -135,7 +135,7 @@ Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::Timestamp ts)
 		return false;
 	}
 	field->currentChanged = true;
-	if (ts.IsZero())
+	if (ts.IsNull())
 	{
 		field->currentNull = true;
 	}
@@ -259,7 +259,7 @@ Data::Timestamp DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	if (field->currentChanged)
 	{
@@ -551,7 +551,7 @@ Data::Timestamp DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
 	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)
 	{
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
 	return this->GetFieldDate(field);
 }

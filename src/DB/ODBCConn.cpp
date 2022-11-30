@@ -1985,9 +1985,9 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 Data::Timestamp DB::ODBCReader::GetTimestamp(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (this->colDatas[colIndex].isNull)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	switch (this->colDatas[colIndex].colType)
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -2003,7 +2003,7 @@ Data::Timestamp DB::ODBCReader::GetTimestamp(UOSInt colIndex)
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt32:
@@ -2012,19 +2012,19 @@ Data::Timestamp DB::ODBCReader::GetTimestamp(UOSInt colIndex)
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Bool:
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTimeTZ:
 		return *(Data::Timestamp*)this->colDatas[colIndex].colData;
 	case DB::DBUtil::CT_Vector:
 	case DB::DBUtil::CT_Binary:
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	}
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 Double DB::ODBCReader::GetDbl(UOSInt colIndex)

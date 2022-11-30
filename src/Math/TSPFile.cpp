@@ -398,12 +398,12 @@ UTF8Char *Math::TSPReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
 {
 	if (this->currRowPtr == 0)
-		return Data::Timestamp(0, 0);
+		return Data::Timestamp(0);
 	if (colIndex == 2)
 	{
 		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), Data::DateTimeUtil::GetLocalTzQhr());
 	}
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 Double Math::TSPReader::GetDbl(UOSInt colIndex)
@@ -707,7 +707,7 @@ UTF8Char *Math::TSPHReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 
 Data::Timestamp Math::TSPHReader::GetTimestamp(UOSInt colIndex)
 {
-	return Data::Timestamp(0, 0);
+	return Data::Timestamp(0);
 }
 
 Double Math::TSPHReader::GetDbl(UOSInt colIndex)

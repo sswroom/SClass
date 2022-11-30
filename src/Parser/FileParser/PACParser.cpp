@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFile(IO::IStreamData *fd, 
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0, 0));
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0));
 
 		nextOfst = fileOfst + fileSize;
 		i++;
