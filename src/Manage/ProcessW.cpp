@@ -502,7 +502,8 @@ void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
 Data::Timestamp Manage::Process::GetStartTime()
 {
 	FILETIME ftime;
-	if (GetProcessTimes(this->handle, &ftime, 0, 0, 0))
+	FILETIME tmp;
+	if (GetProcessTimes(this->handle, &ftime, &tmp, &tmp, &tmp))
 	{
 		return Data::Timestamp::FromFILETIME(&ftime, Data::DateTimeUtil::GetLocalTzQhr());
 	}

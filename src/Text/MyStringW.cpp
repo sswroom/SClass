@@ -4378,6 +4378,11 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 			}
 			bytes += 6;
 		}
+		else
+		{
+			*buff++ = b;
+			bytes++;
+		}
 	}
 	if (byteConv)
 	{

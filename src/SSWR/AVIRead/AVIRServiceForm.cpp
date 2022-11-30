@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(void *userObj)
 			UTF8Char *sptr;
 			me->txtStatus->SetText(IO::ServiceInfo::RunStatusGetName(svc.status));
 			me->txtEnabled->SetText(IO::ServiceInfo::ServiceStateGetName(svc.enabled));
-			sptr = Data::Timestamp(svc.startTimeTicks, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+			sptr = svc.startTime.ToStringNoZone(sbuff);
 			me->txtStartTime->SetText(CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt32(sbuff, svc.procId);
 			me->txtProcId->SetText(CSTRP(sbuff, sptr));

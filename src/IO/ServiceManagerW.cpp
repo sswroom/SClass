@@ -195,7 +195,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* 
 		svcDetail->status = ServiceManager_CurrentState2RunStatus(status->dwCurrentState);
 		svcDetail->procId = status->dwProcessId;
 		svcDetail->memoryUsage = 0;
-		svcDetail->startTimeTicks = 0;
+		svcDetail->startTime = 0;
 		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
 	}
 	QUERY_SERVICE_CONFIGW* svcConfig = (QUERY_SERVICE_CONFIGW*)buff;
@@ -221,6 +221,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* 
 	{
 		Manage::Process proc(svcDetail->procId, false);
 		svcDetail->memoryUsage = proc.GetMemorySize();
+		svcDetail->startTime = proc.GetStartTime();
 	}
 	MemFree(buff);
 	return succ;

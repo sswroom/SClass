@@ -560,22 +560,18 @@ void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp 
 	FILETIME *cTime = 0;
 	FILETIME *laTime = 0;
 	FILETIME *lwTime = 0;
-	SYSTEMTIME sysTime;
 
-	if (!creationTime.IsZero())
+	if (!creationTime.IsNull())
 	{
-		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, creationTime.ToTicks());
-		SystemTimeToFileTime(&sysTime, cTime = &createTime);
+		creationTime.ToFILETIME(cTime = &createTime);
 	}
-	if (!lastAccessTime.IsZero())
+	if (!lastAccessTime.IsNull())
 	{
-		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastAccessTime.ToTicks());
-		SystemTimeToFileTime(&sysTime, laTime = &lastAccTime);
+		lastAccessTime.ToFILETIME(laTime = &lastAccTime);
 	}
-	if (!lastWriteTime.IsZero())
+	if (!lastWriteTime.IsNull())
 	{
-		Data::DateTimeUtil::Ticks2SYSTEMTIME(&sysTime, lastWriteTime.ToTicks());
-		SystemTimeToFileTime(&sysTime, lwTime = &lastWrTime);
+		lastWriteTime.ToFILETIME(lwTime = &lastWrTime);
 	}
 	SetFileTime(this->handle, cTime, laTime, lwTime);
 }

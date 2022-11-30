@@ -2,6 +2,7 @@
 #define _SM_IO_SERVICEMANAGER
 #include "Data/ArrayList.h"
 #include "Data/Comparator.h"
+#include "Data/Timestamp.h"
 #include "IO/ServiceInfo.h"
 #include "Text/String.h"
 
@@ -21,7 +22,7 @@ namespace IO
 		{
 			IO::ServiceInfo::RunStatus status;
 			UInt32 procId;
-			Int64 startTimeTicks;
+			Data::Timestamp startTime;
 			UInt64 memoryUsage;
 			IO::ServiceInfo::ServiceState enabled;
 		};

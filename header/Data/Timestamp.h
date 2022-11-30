@@ -173,6 +173,11 @@ namespace Data
 		{
 			Data::DateTimeUtil::Ticks2SYSTEMTIME(sysTime, this->ToTicks());
 		}
+
+		void ToFILETIME(void* fileTime)
+		{
+			this->inst.ToFILETIME(fileTime);
+		}
 		
 /*		void SetNTPTime(Int32 hiDword, Int32 loDword);
 		Int64 ToNTPTime();*/
@@ -189,7 +194,12 @@ namespace Data
 
 		UTF8Char *ToString(UTF8Char *buff) const
 		{
-			if (this->inst.nanosec == 0)
+			if (this->IsNull())
+			{
+				*buff = 0;
+				return buff;
+			}
+			else if (this->inst.nanosec == 0)
 			{
 				return ToString(buff, "yyyy-MM-dd HH:mm:ss zzzz");
 			}
@@ -209,7 +219,12 @@ namespace Data
 
 		UTF8Char *ToStringNoZone(UTF8Char *buff) const
 		{
-			if (this->inst.nanosec == 0)
+			if (this->IsNull())
+			{
+				*buff = 0;
+				return buff;
+			}
+			else if (this->inst.nanosec == 0)
 			{
 				if ((this->inst.sec % 86400) == 0)
 				{

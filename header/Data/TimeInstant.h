@@ -132,6 +132,11 @@ namespace Data
 			return this->sec * 1000000000LL + this->nanosec;
 		}
 
+		void ToFILETIME(void* fileTime) const
+		{
+			Data::DateTimeUtil::Secs2FILETIME(this->sec, this->nanosec, fileTime);
+		}
+
 		static TimeInstant FromDotNetTicks(Int64 ticks)
 		{
 			ticks -= 621355968000000000LL;

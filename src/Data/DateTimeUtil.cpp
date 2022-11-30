@@ -1926,6 +1926,12 @@ Int64 Data::DateTimeUtil::FILETIME2Secs(void *fileTime, UInt32 *nanosec)
 	return t / 10000000;
 }
 
+void Data::DateTimeUtil::Secs2FILETIME(Int64 secs, UInt32 nanosec, void* fileTime)
+{
+	secs = secs * 10000000 + (Int64)(nanosec / 100);
+	WriteInt64((UInt8*)fileTime, secs);
+}
+
 Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
 {
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
