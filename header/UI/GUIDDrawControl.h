@@ -30,7 +30,6 @@ namespace UI
 		Media::ImageCopy *imgCopy;
 
 		Sync::Event drawEvt;
-		Media::MonitorSurfaceMgr *surfaceMgr;
 		MonitorHandle *surfaceMon;
 		Media::MonitorSurface *primarySurface;
 		Media::MonitorSurface *buffSurface;
@@ -42,6 +41,7 @@ namespace UI
 		Bool directMode;
 		Bool inited;
 	protected:
+		Media::MonitorSurfaceMgr* surfaceMgr;
 		Sync::Mutex surfaceMut;
 		UOSInt surfaceW;
 		UOSInt surfaceH;
@@ -86,7 +86,7 @@ namespace UI
 
 		void SetUserFSMode(ScreenMode fullScnMode);
 		void DrawToScreen();
-		void DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn);
+		void DisplayFromSurface(Media::MonitorSurface *surface, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(MonitorHandle *hMon);

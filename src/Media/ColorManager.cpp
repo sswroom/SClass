@@ -897,7 +897,6 @@ Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(Text::String
 			this->monColor.Put(profileName, monColor);
 		}
 	}
-	mutUsage.EndUse();
 	return monColor;
 }
 

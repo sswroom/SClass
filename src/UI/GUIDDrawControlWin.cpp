@@ -637,11 +637,11 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	if (primarySurface)
 	{
-		this->primarySurface->DrawFromMem(buff, lineAdd, tlx, tly, drawW, drawH, clearScn, true);
+		this->primarySurface->DrawFromSurface(surface, tlx, tly, drawW, drawH, clearScn, true);
 	}
 }
 

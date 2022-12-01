@@ -66,9 +66,9 @@ void UI::GUIVideoBoxDD::LockUpdateSize(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(&this->surfaceMut);
 }
 
-void UI::GUIVideoBoxDD::DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
+void UI::GUIVideoBoxDD::DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
 {
-	this->DrawFromBuff(memPtr, lineAdd, destX, destY, buffWidth, buffHeight, clearScn);
+	this->DisplayFromSurface(surface, destX, destY, buffWidth, buffHeight, clearScn);
 }
 
 void UI::GUIVideoBoxDD::BeginUpdateSize()
@@ -83,7 +83,7 @@ void UI::GUIVideoBoxDD::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, buffCnt, threadCnt)
+UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->debugLog = 0;

@@ -48,6 +48,7 @@ namespace Media
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
 		void ToString(Text::StringBuilderUTF8 *sb) const;
 
+		Bool IsDispSize(UOSInt dispWidth, UOSInt dispHeight);
 		static Text::CString AlphaTypeGetName(AlphaType atype);
 	};
 }

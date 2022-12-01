@@ -359,6 +359,11 @@ void Media::Image::ToString(Text::StringBuilderUTF8 *sb) const
 	}
 }
 
+Bool Media::Image::IsDispSize(UOSInt dispWidth, UOSInt dispHeight)
+{
+	return this->info.dispWidth == dispWidth && this->info.dispHeight == dispHeight;
+}
+
 Text::CString Media::Image::AlphaTypeGetName(AlphaType atype)
 {
 	switch (atype)

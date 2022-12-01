@@ -167,6 +167,7 @@ namespace Media
 		ColorProfile();
 		ColorProfile(const ColorProfile *profile);
 		ColorProfile(CommonProfileType cpt);
+		ColorProfile(const ColorProfile&) = delete;
 		~ColorProfile();
 
 		void Set(const ColorProfile *profile);

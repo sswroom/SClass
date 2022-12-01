@@ -236,16 +236,16 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 //	this->VideoEndProc();
 	vbuff->destW = rect.width;
 	vbuff->destH = rect.height;
-	if (vbuff->destSize < vbuff->destW * vbuff->destH)
+	vbuff->destBitDepth = 32;
+	if (vbuff->destSurface == 0 || !vbuff->destSurface->IsDispSize(vbuff->destW, vbuff->destH))
 	{
-		vbuff->destSize = vbuff->destW * vbuff->destH;
-		if (vbuff->destBuff)
-		{
-			MemFreeA(vbuff->destBuff);
-		}
-		vbuff->destBuff = MemAllocA(UInt8, vbuff->destSize << 2);
+		SDEL_CLASS(vbuff->destSurface);
+		vbuff->destSurface = tstat->me->GetSurfaceMgr()->CreateSurface(vbuff->destW, vbuff->destH, vbuff->destBitDepth);
 	}
-	tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, vbuff->destBuff, (OSInt)vbuff->destW << 2, vbuff->destW, vbuff->destH);
+	OSInt destBpl;
+	UInt8* destBuff = vbuff->destSurface->LockSurface(&destBpl);
+	tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destW, vbuff->destH);
+	vbuff->destSurface->UnlockSurface();
 	tstat->hTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetHAvgTime();
 	tstat->vTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetVAvgTime();
 
@@ -261,16 +261,16 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		vbuff2->destW = vbuff->destW;
 		vbuff2->destH = vbuff->destH;
-		if (vbuff2->destSize < vbuff2->destW * vbuff2->destH)
+		vbuff2->destBitDepth = 32;
+		if (vbuff2->destSurface == 0 || !vbuff2->destSurface->IsDispSize(vbuff2->destW, vbuff2->destH))
 		{
-			vbuff2->destSize = vbuff2->destW * vbuff2->destH;
-			if (vbuff2->destBuff)
-			{
-				MemFreeA(vbuff2->destBuff);
-			}
-			vbuff2->destBuff = MemAllocA(UInt8, vbuff2->destSize << 2);
+			SDEL_CLASS(vbuff2->destSurface);
+			vbuff2->destSurface = tstat->me->GetSurfaceMgr()->CreateSurface(vbuff2->destW, vbuff2->destH, vbuff2->destBitDepth);
 		}
-		tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, (OSInt)vbuff2->destW << 2, vbuff2->destW, vbuff2->destH);
+		OSInt destBpl;
+		UInt8* destBuff = vbuff2->destSurface->LockSurface(&destBpl);
+		tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destW, vbuff2->destH);
+		vbuff2->destSurface->UnlockSurface();
 		vbuff2->frameNum = vbuff->frameNum;
 		vbuff2->frameTime = vbuff->frameTime + 17;
 		Sync::MutexUsage mutUsage(&this->buffMut);

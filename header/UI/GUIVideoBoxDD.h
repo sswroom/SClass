@@ -34,7 +34,7 @@ namespace UI
 	protected:
 		//void UpdateFromBuff(VideoBuff *vbuff);
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage);
-		virtual void DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn);
+		virtual void DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn);
 
 		virtual void BeginUpdateSize();
 		virtual void EndUpdateSize();

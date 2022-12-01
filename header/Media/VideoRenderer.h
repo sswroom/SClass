@@ -6,6 +6,7 @@
 #include "Media/IImgResizer.h"
 #include "Media/ImageCopy.h"
 #include "Media/IVideoSource.h"
+#include "Media/MonitorSurfaceMgr.h"
 #include "Media/RefClock.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/VideoFilter/AutoCropFilter.h"
@@ -83,8 +84,7 @@ namespace Media
 			UInt32 frameTime;
 			UInt32 frameNum;
 			Bool discontTime;
-			UOSInt destSize;
-			UInt8 *destBuff;
+			Media::MonitorSurface *destSurface;
 			UOSInt destW;
 			UOSInt destH;
 			UInt32 destBitDepth;
@@ -120,6 +120,7 @@ namespace Media
 		Media::ColorManagerSess *colorSess;
 		Media::IVideoSource *video;
 		Media::FrameInfo videoInfo;
+		Media::MonitorSurfaceMgr *surfaceMgr;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
 		Media::ImageCopy outputCopier;
@@ -228,9 +229,9 @@ namespace Media
 		void UpdateDispInfo(UOSInt width, UOSInt height, UInt32 bpp, Media::PixelFormat pf);
 
 		virtual void LockUpdateSize(Sync::MutexUsage *mutUsage) = 0;
-		virtual void DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn) = 0;
+		virtual void DrawFromSurface(Media::MonitorSurface *surface, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn) = 0;
 	public:
-		VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt);
+		VideoRenderer(Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();
 
 		void SetVideo(Media::IVideoSource *video);
@@ -264,6 +265,7 @@ namespace Media
 		void AddImgFilter(Media::IImgFilter *imgFilter);
 		void Snapshot();
 		void GetStatus(RendererStatus *status);
+		Media::MonitorSurfaceMgr* GetSurfaceMgr();
 	};
 }
 #endif
