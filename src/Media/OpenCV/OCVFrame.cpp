@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Media/FrameInfo.h"
 #include "Media/ImageCopyC.h"
+#include "Media/ImageUtil.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/OpenCV/OCVFrame.h"
 #include "Media/OpenCV/OCVInit.h"
@@ -78,11 +79,11 @@ UInt8 *Media::OpenCV::OCVFrame::GetDataPtr()
 	return fr->data;
 }
 
-void Media::OpenCV::OCVFrame::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown)
+void Media::OpenCV::OCVFrame::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate)
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	OSInt srcW = fr->cols;
-	ImageCopy_ImgCopyR(fr->data + srcW * top + left, destBuff, width, height, (UOSInt)srcW, destBpl, upsideDown);
+	Media::ImageUtil::ImageCopyR(destBuff, (OSInt)destBpl, fr->data, srcW, left, top, width, height, ((UOSInt)srcW << 3) / width, upsideDown, Media::RotateType::None, destRotate);
 }
 
 Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
@@ -93,7 +94,7 @@ Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
 	UOSInt h = this->GetHeight();
 	NEW_CLASS(simg, Media::StaticImage(w, h, 0, 8, Media::PF_PAL_W8, w * h, &sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	simg->InitGrayPal();
-	this->GetImageData(simg->data, 0, 0, w, h, simg->GetDataBpl(), false);
+	this->GetImageData(simg->data, 0, 0, w, h, simg->GetDataBpl(), false, Media::RotateType::None);
 	cv::imshow("Clear", *(cv::Mat *)this->frame);
 	return simg;
 }
@@ -180,7 +181,7 @@ Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(Media::StaticImag
 		return 0;
 	}
 	fr = new cv::Mat((int)simg->info.dispHeight, (int)simg->info.dispWidth, CV_8UC1);
-	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispWidth, simg->info.dispHeight, simg->info.dispWidth, false);
+	simg->GetImageData(fr->ptr(0), 0, 0, simg->info.dispWidth, simg->info.dispHeight, simg->info.dispWidth, false, Media::RotateType::None);
 
 	Media::OpenCV::OCVFrame *frame;
 	NEW_CLASS(frame, Media::OpenCV::OCVFrame(fr));

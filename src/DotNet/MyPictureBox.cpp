@@ -283,7 +283,7 @@ void DotNet::MyPictureBox::SetImage(Media::Image *currImage)
 			else
 			{
 				UInt8 *imgData = MemAlloc(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
-				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl());
+				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), false, Media::RotateType::None);
 				this->csconv->Convert(imgData, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), this->currImage->info->width << 2);
 				MemFree(imgData);
 			}
@@ -304,7 +304,7 @@ void DotNet::MyPictureBox::YUVParamChanged(const Media::IColorHandler::YUVPARAM 
 		else
 		{
 			UInt8 *imgData = MemAlloc(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl());
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), false, Media::RotateType::None);
 			this->csconv->Convert(imgData, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->info->width * (this->currImage->info->bpp >> 3), this->currImage->info->width << 2);
 			MemFree(imgData);
 		}
@@ -324,7 +324,7 @@ void DotNet::MyPictureBox::RGBParamChanged(const Media::IColorHandler::RGBPARAM 
 		else
 		{
 			UInt8 *imgData = MemAlloc(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl());
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), false, Media::RotateType::None);
 			this->csconv->Convert(imgData, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->info->width * (this->currImage->info->bpp >> 3), this->currImage->info->width << 2);
 			MemFree(imgData);
 		}

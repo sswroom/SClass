@@ -258,7 +258,7 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	}
 
 	UInt8 *imgData = MemAlloc(UInt8, lineSize * img->info.dispHeight);
-	img->GetImageData(imgData, 0, 0, img->info.dispWidth, img->info.dispHeight, lineSize, true);
+	img->GetImageData(imgData, 0, 0, img->info.dispWidth, img->info.dispHeight, lineSize, true, Media::RotateType::None);
 	stm->Write(imgData, lineSize * img->info.dispHeight);
 
 	if (iccSize > 0)

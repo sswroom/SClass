@@ -34,6 +34,9 @@ Manage/ThreadContextX86_64.h: ../../src/Manage/ThreadContextUnk.cpp
 @ThreadContextUnk.o
 @Dasm.o
 
+Media/ImageCopyC.h: ../../src/Media/ImageCopy_CPP.cpp
+@ImageCopy_CPP.o
+
 MemTool.o: ../../src/MemToolX86.cpp
 MemTool_CPP.o: ../../src/MemTool_CPP.cpp
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_CPP.cpp

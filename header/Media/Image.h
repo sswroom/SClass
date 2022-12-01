@@ -34,7 +34,7 @@ namespace Media
 
 		virtual Media::Image *Clone() const = 0;
 		virtual Media::Image::ImageType GetImageType() const = 0;
-		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const = 0;
+		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const = 0;
 		void InitGrayPal();
 		UOSInt GetDataBpl() const;
 		Bool IsUpsideDown() const;

@@ -123,7 +123,7 @@ Media::Image::ImageType Media::FBSurface::GetImageType() const
 	return Media::Image::IT_MONITORSURFACE;
 }
 
-void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
+void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;
@@ -157,7 +157,8 @@ void Media::FBSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSI
 		}
 		width = (UOSInt)(right - left);
 		height = (UOSInt)(bottom - top);
-		ImageCopy_ImgCopyR(this->clsData->dataPtr + (left * (OSInt)(this->info.storeBPP >> 3)) + (top * (OSInt)this->clsData->finfo.line_length), destBuff, width * this->info.storeBPP >> 3, height, this->clsData->finfo.line_length, destBpl, upsideDown);
+		Media::ImageUtil::ImageCopyR(destBuff, (OSInt)destBpl, this->clsData->dataPtr,
+			(OSInt)this->GetDataBpl(), left, top, width, height, this->info.storeBPP, upsideDown, this->info.rotateType, destRotate);
 	}
 }
 
@@ -179,7 +180,7 @@ Bool Media::FBSurface::DrawFromBuff()
 		RotateType rt = Media::RotateTypeCalc(this->clsData->buffSurface->info.rotateType, this->info.rotateType);
 		if (rt == Media::RotateType::None)
 		{
-			this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info.dispWidth, this->info.dispHeight, this->clsData->finfo.line_length, false);
+			this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info.dispWidth, this->info.dispHeight, this->clsData->finfo.line_length, false, rt);
 		}
 		else
 		{
@@ -257,11 +258,10 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt des
 		if (waitForVBlank && !this->clsData->bugHandleMode) this->WaitForVBlank();
 		if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 		{
-			surface->GetImageData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((OSInt)this->info.storeBPP >> 3),
-				drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false);
 			if (this->info.rotateType == Media::RotateType::None)
 			{
-				
+				surface->GetImageData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((OSInt)this->info.storeBPP >> 3),
+					drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false, this->info.rotateType);
 			}
 			else
 			{
@@ -271,6 +271,8 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt des
 				UOSInt oldH = buffH;
 				if (this->info.rotateType == Media::RotateType::CW_90)
 				{
+					surface->GetImageData(this->clsData->dataPtr + destX * (Int32)this->clsData->finfo.line_length + destY * ((OSInt)this->info.storeBPP >> 3),
+						drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false, this->info.rotateType);
 					OSInt tmpV = destWidth;
 					destWidth = destHeight;
 					destHeight = tmpV;
@@ -281,11 +283,15 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt des
 				}
 				else if (this->info.rotateType == Media::RotateType::CW_180)
 				{
+					surface->GetImageData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((OSInt)this->info.storeBPP >> 3),
+						drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false, this->info.rotateType);
 					destX = destWidth - oldX - (OSInt)oldW;
 					destY = destHeight - oldY - (OSInt)oldH;
 				}
 				else if (this->info.rotateType == Media::RotateType::CW_270)
 				{
+					surface->GetImageData(this->clsData->dataPtr + destX * (Int32)this->clsData->finfo.line_length + destY * ((OSInt)this->info.storeBPP >> 3),
+						drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false, this->info.rotateType);
 					OSInt tmpV = destWidth;
 					destWidth = destHeight;
 					destHeight = tmpV;

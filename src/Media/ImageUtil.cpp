@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Media/ImageCopyC.h"
 #include "Media/ImageUtil.h"
 
 void Media::ImageUtil::DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt y, OSInt x1, OSInt x2, UInt32 col)
@@ -53,5 +54,88 @@ void Media::ImageUtil::DrawVLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt
 	{
 		WriteUInt32(pixelPtr, col);
 		pixelPtr += bpl;
+	}
+}
+
+void Media::ImageUtil::ImageCopyR(UInt8 *destPtr, OSInt destBpl, const UInt8 *srcPtr, OSInt srcBpl, OSInt srcX, OSInt srcY, UOSInt srcw, UOSInt srch, UOSInt bpp, Bool upSideDown, Media::RotateType srcRotate, Media::RotateType destRotate)
+{
+	RotateType rt = Media::RotateTypeCalc(srcRotate, destRotate);
+	switch (srcRotate)
+	{
+	case RotateType::CW_90:
+		srcPtr = srcPtr + srcX * srcBpl + (srcY * bpp >> 3);
+		break;
+	case RotateType::CW_180:
+		srcPtr = srcPtr + srcY * srcBpl + (srcX * bpp >> 3);
+		break;
+	case RotateType::CW_270:
+		srcPtr = srcPtr + srcX * srcBpl + (srcY * bpp >> 3);
+		break;
+	default:
+	case RotateType::None:
+		srcPtr = srcPtr + srcY * srcBpl + (srcX * bpp >> 3);
+		break;
+	}
+	if (rt == RotateType::None)
+	{
+		ImageCopy_ImgCopyR(srcPtr, destPtr, srcw * (bpp >> 3), srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
+	}
+	else
+	{
+		if (upSideDown)
+		{
+			if (rt == RotateType::CW_90 || rt == RotateType::CW_270)
+			{
+				destPtr += (srcw - 1) * (UOSInt)destBpl;
+			}
+			else
+			{
+				destPtr += (srch - 1) * (UOSInt)destBpl;
+			}
+			destBpl = -destBpl;
+			upSideDown = false;
+		}
+		if (bpp == 32)
+		{
+			if (rt == RotateType::CW_90)
+			{
+				ImageUtil_Rotate32_CW90(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+			}
+			else if (rt == RotateType::CW_180)
+			{
+				ImageUtil_Rotate32_CW180(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+			}
+			else if (rt == RotateType::CW_270)
+			{
+				ImageUtil_Rotate32_CW270(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+			}
+			else
+			{
+				ImageCopy_ImgCopy(srcPtr, destPtr, srcw * (bpp >> 3), srch, srcBpl, destBpl);
+			}
+		}
+		else if (bpp == 64)
+		{
+			if (rt == RotateType::CW_90)
+			{
+				ImageUtil_Rotate64_CW90(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+			}
+			else if (rt == RotateType::CW_180)
+			{
+				ImageUtil_Rotate64_CW180(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+			}
+			else if (rt == RotateType::CW_270)
+			{
+				ImageUtil_Rotate64_CW270(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+			}
+			else
+			{
+				ImageCopy_ImgCopy(srcPtr, destPtr, srcw * (bpp >> 3), srch, srcBpl, destBpl);
+			}
+		}
+		else
+		{
+			ImageCopy_ImgCopyR(srcPtr, destPtr, srcw * (bpp >> 3), srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
+		}
 	}
 }

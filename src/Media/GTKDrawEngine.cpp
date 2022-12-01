@@ -1164,7 +1164,7 @@ Media::Image::ImageType Media::GTKDrawImage::GetImageType() const
 	return Media::Image::IT_GUIIMAGE;
 }
 
-void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
+void Media::GTKDrawImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	this->CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }

@@ -284,7 +284,7 @@ Media::StaticImage *Media::Image::CreateStaticImage() const
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, 0, 0, this->info.dispWidth, this->info.dispHeight, this->GetDataBpl(), false);
+	this->GetImageData(outImg->data, 0, 0, this->info.dispWidth, this->info.dispHeight, this->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;
@@ -316,7 +316,7 @@ Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) con
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, area.tl.x, area.tl.y, frameInfo.dispWidth, frameInfo.dispHeight, outImg->GetDataBpl(), false);
+	this->GetImageData(outImg->data, area.tl.x, area.tl.y, frameInfo.dispWidth, frameInfo.dispHeight, outImg->GetDataBpl(), false, outImg->info.rotateType);
 	if (this->pal)
 	{
 		UOSInt size;

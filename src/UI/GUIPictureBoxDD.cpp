@@ -539,7 +539,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			else
 			{
 				UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.storeHeight);
-				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
+				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown(), this->currImage->info.rotateType);
 				this->csconv->ConvertV2(&imgData, this->imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 				MemFreeA(imgData);
 			}
@@ -605,7 +605,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 		else
 		{
 			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.storeHeight);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown(), this->currImage->info.rotateType);
 			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 			MemFreeA(imgData);
 		}
@@ -658,7 +658,7 @@ void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 
 		else
 		{
 			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.dispHeight);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown(), this->currImage->info.rotateType);
 			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 			MemFreeA(imgData);
 		}

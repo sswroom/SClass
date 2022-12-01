@@ -23,7 +23,7 @@ namespace Media
 			UOSInt GetHeight();
 			OSInt GetBpl();
 			UInt8 *GetDataPtr();
-			void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
+			void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate);
 			Media::StaticImage *CreateStaticImage();
 			void ToBlackAndWhite(UInt8 middleV);
 			void Normalize();

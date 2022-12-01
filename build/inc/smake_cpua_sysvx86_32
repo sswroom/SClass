@@ -21,6 +21,9 @@ Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32L.cpp
 @ThreadContextX86_32L.o
 Manage/ThreadContextX86_64.h:
 
+Media/ImageCopyC.h: ../../src/Media/ImageCopy_CPP.cpp
+@ImageCopy_CPP.o
+
 MemTool.o: ../../src/MemToolX86.cpp
 MemTool_CPP.o: ../../src/MemTool_32.asm
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_32.asm

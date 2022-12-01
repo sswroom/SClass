@@ -79,7 +79,7 @@ Media::Image::ImageType Media::DDrawSurface::GetImageType() const
 	return IT_MONITORSURFACE;
 }
 
-void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
+void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	HRESULT res;
 	DDSURFACEDESC2 ddsd;
@@ -94,7 +94,7 @@ void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, U
 	}
 	if (res == DD_OK)
 	{
-		if (left == 0 && top == 0 && width == ddsd.dwWidth && height == ddsd.dwHeight && ddsd.lPitch == (OSInt)destBpl && !upsideDown && ddsd.dwWidth * ((UOSInt)ddsd.ddpfPixelFormat.dwRGBBitCount >> 3) == destBpl)
+		if (left == 0 && top == 0 && width == ddsd.dwWidth && height == ddsd.dwHeight && ddsd.lPitch == (OSInt)destBpl && !upsideDown && ddsd.dwWidth * ((UOSInt)ddsd.ddpfPixelFormat.dwRGBBitCount >> 3) == destBpl && this->info.rotateType == destRotate)
 		{
 			MemCopyANC(destBuff, ddsd.lpSurface, destBpl * height);
 		}

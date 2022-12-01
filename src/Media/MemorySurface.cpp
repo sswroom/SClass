@@ -47,7 +47,7 @@ Media::Image::ImageType Media::MemorySurface::GetImageType() const
 	return Media::Image::IT_MONITORSURFACE;
 }
 
-void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
+void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;
@@ -81,7 +81,8 @@ void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, 
 		}
 		width = (UOSInt)(right - left);
 		height = (UOSInt)(bottom - top);
-		ImageCopy_ImgCopyR(this->buffPtr + (left * (OSInt)(this->info.storeBPP >> 3)) + (top * (OSInt)this->GetDataBpl()), destBuff, width * this->info.storeBPP >> 3, height, this->GetDataBpl(), destBpl, upsideDown);
+		Media::ImageUtil::ImageCopyR(destBuff, (OSInt)destBpl, this->buffPtr,
+			(OSInt)this->GetDataBpl(), left, top, width, height, this->info.storeBPP, upsideDown, this->info.rotateType, destRotate);
 	}
 }
 
@@ -145,7 +146,7 @@ Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt
 			else
 			{
 				surface->GetImageData((UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info.storeBPP >> 3),
-					drawX, drawY, buffW, buffH, this->GetDataBpl(), false);
+					drawX, drawY, buffW, buffH, this->GetDataBpl(), false, this->info.rotateType);
 			}
 
 			if (clearScn)

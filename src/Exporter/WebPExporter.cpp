@@ -64,7 +64,7 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 	{
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
-		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false);
+		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false, img->info.rotateType);
 		if (quality < 0)
 		{
 			vp8len = WebPEncodeLosslessBGR(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
@@ -79,7 +79,7 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 	{
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
-		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false);
+		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false, img->info.rotateType);
 		if (quality < 0)
 		{
 			vp8len = WebPEncodeLosslessRGB(buff, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)bpl, &vp8);
@@ -94,7 +94,7 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 	{
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispHeight);
-		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false);
+		img->GetImageData(buff, 0, 0, img->info.dispWidth, img->info.dispHeight, bpl, false, img->info.rotateType);
 		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
 			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispWidth * img->info.dispHeight * 3);

@@ -54,7 +54,7 @@ Media::Image::ImageType Media::StaticImage::GetImageType() const
 	return Media::Image::IT_STATIC;
 }
 
-void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
+void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	UOSInt srcBpl = this->GetDataBpl();
 	if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
@@ -122,21 +122,7 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 		if (width > 0 && height > 0)
 		{
 			UInt8 *srcBuff = this->data;
-			UOSInt lineSize = (width * this->info.storeBPP + 7) >> 3;
-			srcBuff = srcBuff + (((UOSInt)left * this->info.storeBPP) >> 3) + (UOSInt)top * srcBpl;
-			if (lineSize == srcBpl && lineSize == destBpl)
-			{
-				MemCopyNANC(destBuff, srcBuff, lineSize * height);
-			}
-			else
-			{
-				while (height-- > 0)
-				{
-					MemCopyNANC(destBuff, srcBuff, lineSize);
-					srcBuff += srcBpl;
-					destBuff += destBpl;
-				}
-			}
+			Media::ImageUtil::ImageCopyR(destBuff, (OSInt)destBpl, srcBuff, (OSInt)srcBpl, left, top, width, height, this->info.storeBPP, upsideDown, this->info.rotateType, destRotate);
 		}
 	}
 }

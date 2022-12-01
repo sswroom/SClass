@@ -61,7 +61,7 @@ Bool Media::OCREngine::SetParsingImage(Media::StaticImage *img)
 	pixSetResolution(pix, Double2Int32(img->info.hdpi), Double2Int32(img->info.hdpi * img->info.par2));
 	UOSInt wpl = (UOSInt)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
-	img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, wpl * 4, false);
+	img->GetImageData(data, 0, 0, img->info.dispWidth, img->info.dispHeight, wpl * 4, false, Media::RotateType::None);
 	if (img->info.pf == Media::PF_PAL_W8)
 	{
 		UOSInt wordCnt = wpl * img->info.dispHeight;
@@ -91,7 +91,7 @@ Bool Media::OCREngine::SetOCVFrame(Media::OpenCV::OCVFrame *frame)
 	pixSetResolution(pix, 72.0, 72.0);
 	UOSInt wpl = (UOSInt)pixGetWpl(pix);
 	UInt8 *data = (UInt8*)pixGetData(pix);
-	frame->GetImageData(data, 0, 0, frame->GetWidth(), frame->GetHeight(), wpl * 4, false);
+	frame->GetImageData(data, 0, 0, frame->GetWidth(), frame->GetHeight(), wpl * 4, false, Media::RotateType::None);
 	UOSInt wordCnt = wpl * frame->GetHeight();
 	while (wordCnt-- > 0)
 	{

@@ -22,6 +22,9 @@ Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32W.cpp
 @ThreadContextX86_32W.o
 Manage/ThreadContextX86_64.h:
 
+Media/ImageCopyC.h: ../../src/Media/ImageCopy_CPP.cpp
+@ImageCopy_CPP.o
+
 MemTool.o: ../../src/MemToolX86.cpp
 MemTool_CPP.o: ../../src/MemTool_32.asm
 X86Util.o: ../../src/Core/X86Util_32.asm
