@@ -526,7 +526,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, OSInt tlx, OSInt tly, UOSInt drawW, UOSInt drawH, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(&this->surfaceMut);
 	if (this->primarySurface)
@@ -537,7 +537,7 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 		}
 		else
 		{
-			this->primarySurface->DrawFromMem(buff, lineAdd, tlx, tly, drawW, drawH, clearScn, true);
+			this->primarySurface->DrawFromSurface(surface, tlx, tly, drawW, drawH, clearScn, true);
 //			this->clsData->drawPause = 0;
 //			Data::DateTime dt;
 //			dt.SetCurrTimeUTC();
@@ -556,7 +556,6 @@ void UI::GUIDDrawControl::DrawFromBuff(UInt8 *buff, OSInt lineAdd, OSInt tlx, OS
 //			printf("Draw from buff 2 %lld\r\n", t);
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)

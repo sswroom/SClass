@@ -15,9 +15,7 @@ void PrintSvcDetail(IO::ServiceManager *svcMgr, Text::CString svcName)
 		printf("Status = %s\r\n", IO::ServiceInfo::RunStatusGetName(svc.status).v);
 		printf("PID = %d\r\n", svc.procId);
 		printf("Memory = %lld\r\n", svc.memoryUsage);
-		dt.SetTicks(svc.startTimeTicks);
-		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		svc.startTime.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		printf("Start Time = %s\r\n", sbuff);
 	}
 }

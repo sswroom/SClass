@@ -246,7 +246,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 		}
 		svcDetail->memoryUsage = 0;
 		svcDetail->procId = 0;
-		svcDetail->startTimeTicks = 0;
+		svcDetail->startTime = 0;
 		svcDetail->status = IO::ServiceInfo::RunStatus::Unknown;
 		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
 		while (lineCnt == 2)
@@ -282,11 +282,8 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 							{
 								val = val.Substring(4);
 							}
-							if (dt.SetValue(val.ToCString()))
-							{
-								svcDetail->startTimeTicks = dt.ToTicks();
-							}
-							else
+							svcDetail->startTime = Data::Timestamp::FromStr(val.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+							if (svcDetail->startTime.IsNull())
 							{
 								printf("Start Time = %s\r\n", val.v);
 							}

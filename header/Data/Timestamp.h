@@ -391,7 +391,7 @@ namespace Data
 			}
 			else
 			{
-				return Timestamp(0, defTZQhr);
+				return Timestamp(0);
 			}
 		}
 

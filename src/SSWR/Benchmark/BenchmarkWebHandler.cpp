@@ -391,6 +391,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 						case Manage::ThreadContext::ContextType::ARM64:
 							sbOut.AppendC(UTF8STRC("ARM 64-bit"));
 							break;
+						case Manage::ThreadContext::ContextType::ARM64EC:
+							sbOut.AppendC(UTF8STRC("ARM 64-bit EC"));
+							break;
 						case Manage::ThreadContext::ContextType::MIPS:
 							sbOut.AppendC(UTF8STRC("MIPS 32-bit"));
 							break;
@@ -406,6 +409,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 						case Manage::ThreadContext::ContextType::AVR:
 							sbOut.AppendC(UTF8STRC("AVR"));
 							break;
+						case Manage::ThreadContext::ContextType::Unknown:
 						default:
 							sbOut.AppendC(UTF8STRC("?"));
 							break;
