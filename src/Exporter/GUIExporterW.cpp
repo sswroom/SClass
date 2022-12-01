@@ -208,7 +208,7 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat1bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false, Media::RotateType::None);
 			gimg->UnlockBits(&bd);
 		}
 

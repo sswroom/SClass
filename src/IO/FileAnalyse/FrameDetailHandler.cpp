@@ -235,6 +235,12 @@ void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size,
 	MemFree(sbuff);
 }
 
+void IO::FileAnalyse::FrameDetailHandler::AddStrZ(UOSInt frameOfst, Text::CString name, const UTF8Char *vBuff)
+{
+	UOSInt strlen = Text::StrCharCnt(vBuff);
+	this->AddField(frameOfst, strlen + 1, name, Text::CString(vBuff, strlen));
+}
+
 void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CString name, const UInt8 *vBuff, Bool multiLine)
 {
 	this->AddHexBuff(frameOfst, size, name, vBuff, ' ', multiLine);

@@ -39,6 +39,7 @@ namespace IO
 			void AddHex32Name(UOSInt frameOfst, Text::CString name, UInt32 v, Text::CString vName);
 			void AddStrC(UOSInt frameOfst, UOSInt size, Text::CString name, const UTF8Char *vBuff);
 			void AddStrS(UOSInt frameOfst, UOSInt size, Text::CString name, const UTF8Char *vBuff);
+			void AddStrZ(UOSInt frameOfst, Text::CString name, const UTF8Char *vBuff);
 			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CString name, const UInt8 *vBuff, Bool multiLine);
 			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CString name, const UInt8 *vBuff, UTF8Char seperator, Bool multiLine);
 			void AddIPv4(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff);

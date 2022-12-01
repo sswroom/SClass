@@ -231,7 +231,7 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, OSInt 
 			}
 			if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 			{
-				surface->GetImageData((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (rc.left + destX) * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, buffW, buffH, (UInt32)ddsd.lPitch, false);
+				surface->GetImageData((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (rc.left + destX) * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, buffW, buffH, (UInt32)ddsd.lPitch, false, this->info.rotateType);
 				if (clearScn)
 				{
 					if (destY > 0)

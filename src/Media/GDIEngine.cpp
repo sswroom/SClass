@@ -2818,7 +2818,7 @@ Media::Image::ImageType Media::GDIImage::GetImageType() const
 	return IT_GUIIMAGE;
 }
 
-void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown) const
+void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }

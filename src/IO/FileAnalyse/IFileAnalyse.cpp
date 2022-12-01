@@ -8,6 +8,7 @@
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "IO/FileAnalyse/JPGFileAnalyse.h"
 #include "IO/FileAnalyse/JMVL01FileAnalyse.h"
+#include "IO/FileAnalyse/LNKFileAnalyse.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
@@ -124,6 +125,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::SHPFileAnalyse(fd));
 	}
+	else if (buffSize >= 76 && ReadUInt32(&buff[0]) == 0x4C && ReadUInt32(&buff[4]) == 0x00021401 && ReadUInt32(&buff[8]) == 0 && ReadUInt32(&buff[12]) == 0xC0 && ReadUInt32(&buff[16]) == 0x46000000)
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::LNKFileAnalyse(fd));
+	}
 	else if (ReadMInt32(buff) == 0x504B0304)
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
@@ -152,6 +157,7 @@ void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::IFileSelector *selector)
 	selector->AddFilter(CSTR("*.pcapng"), CSTR("PCAPNG file"));
 	selector->AddFilter(CSTR("*.exe"), CSTR("Executable file"));
 	selector->AddFilter(CSTR("*.rar"), CSTR("RAR file"));
+	selector->AddFilter(CSTR("*.lnk"), CSTR("Shell Link file"));
 	selector->AddFilter(CSTR("*.spk"), CSTR("SPackage file"));
 	selector->AddFilter(CSTR("*.dwg"), CSTR("AutoCAD Drawing file"));
 	selector->AddFilter(CSTR("*.zip"), CSTR("ZIP file"));
