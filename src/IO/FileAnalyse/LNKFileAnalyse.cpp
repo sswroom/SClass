@@ -51,7 +51,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 		me->fd->GetRealData(ofst, 24, tagHdr);
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::NameString;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -61,7 +61,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 		me->fd->GetRealData(ofst, 24, tagHdr);
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::RelativePath;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -71,7 +71,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 		me->fd->GetRealData(ofst, 24, tagHdr);
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::WorkingDir;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -81,7 +81,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 		me->fd->GetRealData(ofst, 24, tagHdr);
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::CommandLineArguments;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -91,7 +91,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 		me->fd->GetRealData(ofst, 24, tagHdr);
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = ReadUInt16(&tagHdr[0]) * 2 + 2;
+		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) * 2 + 2;
 		tag->tagType = TagType::IconLocation;
 		me->tags.Add(tag);
 		ofst += tag->size;
@@ -120,43 +120,6 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 			ofst += size;
 		}
 	}
-	/*	me->fd->GetRealData(40, 4, tagHdr);
-	lastSize = ReadUInt32(tagHdr);
-	tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
-	tag->ofst = 40;
-	tag->size = lastSize + 4;
-	tag->tagType = TagType::Field;
-	me->tags.Add(tag);
-
-	UInt8* fieldBuff = MemAlloc(UInt8, tag->size);
-	me->fd->GetRealData(40, tag->size, fieldBuff);
-	MemFree(fieldBuff);
-
-	ofst = 40 + tag->size;
-	dataSize = me->fd->GetDataSize();
-	while (ofst < dataSize - 4 && !me->threadToStop)
-	{
-		if (me->fd->GetRealData(ofst, 4, tagHdr) != 4)
-			break;
-
-		TagType tagType = TagType::Row;
-		rowSize = ReadInt32(tagHdr);
-		if (rowSize < 0)
-		{
-			rowSize = -rowSize;
-			tagType = TagType::FreeSpace;
-		}
-		if (ofst + 4 + (UInt32)rowSize > dataSize)
-		{
-			break;
-		}
-		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
-		tag->ofst = ofst;
-		tag->size = (UInt32)rowSize + 4;
-		tag->tagType = tagType;
-		me->tags.Add(tag);
-		ofst += (UInt32)rowSize + 4;
-	}*/
 
 	me->threadRunning = false;
 	return 0;
@@ -263,7 +226,9 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 
 	tagData = MemAlloc(UInt8, tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
-	if (tag->tagType == TagType::ShellLinkHeader)
+	switch (tag->tagType)
+	{
+	case TagType::ShellLinkHeader:
 	{
 		frame->AddUInt(0, 4, CSTR("HeaderSize"), ReadUInt32(&tagData[0]));
 		Data::UUID uuid;
@@ -329,8 +294,9 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(66, 2, CSTR("Reserved1"), ReadUInt16(&tagData[66]));
 		frame->AddUInt(68, 4, CSTR("Reserved2"), ReadUInt32(&tagData[68]));
 		frame->AddUInt(72, 4, CSTR("Reserved3"), ReadUInt32(&tagData[72]));
+		break;
 	}
-	else if (tag->tagType == TagType::LinkTargetIDList)
+	case TagType::LinkTargetIDList:
 	{
 		UInt16 val;
 		UOSInt ofst = 2;
@@ -346,8 +312,9 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 			frame->AddUInt(ofst, 2, CSTR("ItemIDSize"), val);
 			ofst += val;
 		}
+		break;
 	}
-	else if (tag->tagType == TagType::LinkInfo)
+	case TagType::LinkInfo:
 	{
 		frame->AddUInt(0, 4, CSTR("LinkInfoSize"), ReadUInt32(&tagData[0]));
 		UOSInt linkInfoHeaderSize = ReadUInt32(&tagData[4]);
@@ -405,41 +372,220 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 		{
 			frame->AddStrZ(commonPathSuffixOffset, CSTR("CommonPathSuffix"), &tagData[commonPathSuffixOffset]);
 		}
+		break;
 	}
-	else if (tag->tagType == TagType::NameString)
+	case TagType::NameString:
 	{
 		frame->AddUInt(0, 2, CSTR("NameString.CountCharacters"), ReadUInt16(&tagData[0]));
 		sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[2], (tag->size - 2) >> 1);
 		*sptr = 0;
 		frame->AddField(2, tag->size - 2, CSTR("NameString.String"), CSTRP(sbuff, sptr));
+		break;
 	}
-	else if (tag->tagType == TagType::RelativePath)
+	case TagType::RelativePath:
 	{
 		frame->AddUInt(0, 2, CSTR("RelativePath.CountCharacters"), ReadUInt16(&tagData[0]));
 		sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[2], (tag->size - 2) >> 1);
 		*sptr = 0;
 		frame->AddField(2, tag->size - 2, CSTR("RelativePath.String"), CSTRP(sbuff, sptr));
+		break;
 	}
-	else if (tag->tagType == TagType::WorkingDir)
+	case TagType::WorkingDir:
 	{
 		frame->AddUInt(0, 2, CSTR("WorkingDir.CountCharacters"), ReadUInt16(&tagData[0]));
 		sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[2], (tag->size - 2) >> 1);
 		*sptr = 0;
 		frame->AddField(2, tag->size - 2, CSTR("WorkingDir.String"), CSTRP(sbuff, sptr));
+		break;
 	}
-	else if (tag->tagType == TagType::CommandLineArguments)
+	case TagType::CommandLineArguments:
 	{
 		frame->AddUInt(0, 2, CSTR("CommandLineArguments.CountCharacters"), ReadUInt16(&tagData[0]));
 		sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[2], (tag->size - 2) >> 1);
 		*sptr = 0;
 		frame->AddField(2, tag->size - 2, CSTR("CommandLineArguments.String"), CSTRP(sbuff, sptr));
+		break;
 	}
-	else if (tag->tagType == TagType::IconLocation)
+	case TagType::IconLocation:
 	{
 		frame->AddUInt(0, 2, CSTR("IconLocation.CountCharacters"), ReadUInt16(&tagData[0]));
 		sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[2], (tag->size - 2) >> 1);
 		*sptr = 0;
 		frame->AddField(2, tag->size - 2, CSTR("IconLocation.String"), CSTRP(sbuff, sptr));
+		break;
+	}
+	case TagType::ExtraData:
+	{
+		UInt32 blockSize = ReadUInt32(&tagData[0]);
+		frame->AddUInt(0, 4, CSTR("BlockSize"), blockSize);
+		if (blockSize >= 4)
+		{
+			UInt32 blockSignature = ReadUInt32(&tagData[4]);
+			switch (blockSignature)
+			{
+			case 0xA0000002:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("ConsoleDataBlock"));
+				if (blockSize == 0x000000CC)
+				{
+					UInt16 fillAttributes = ReadUInt16(&tagData[8]);
+					frame->AddHex16(8, CSTR("FillAttributes"), fillAttributes);
+					frame->AddUInt(8, 2, CSTR("FOREGROUND_BLUE"), (fillAttributes >> 0) & 1);
+					frame->AddUInt(8, 2, CSTR("FOREGROUND_GREEN"), (fillAttributes >> 1) & 1);
+					frame->AddUInt(8, 2, CSTR("FOREGROUND_RED"), (fillAttributes >> 2) & 1);
+					frame->AddUInt(8, 2, CSTR("FOREGROUND_INTENSITY"), (fillAttributes >> 3) & 1);
+					frame->AddUInt(8, 2, CSTR("BACKGROUND_BLUE"), (fillAttributes >> 4) & 1);
+					frame->AddUInt(8, 2, CSTR("BACKGROUND_GREEN"), (fillAttributes >> 5) & 1);
+					frame->AddUInt(8, 2, CSTR("BACKGROUND_RED"), (fillAttributes >> 6) & 1);
+					frame->AddUInt(8, 2, CSTR("BACKGROUND_INTENSITY"), (fillAttributes >> 7) & 1);
+					fillAttributes = ReadUInt16(&tagData[10]);
+					frame->AddHex16(10, CSTR("PopupFillAttributes"), fillAttributes);
+					frame->AddUInt(10, 2, CSTR("FOREGROUND_BLUE"), (fillAttributes >> 0) & 1);
+					frame->AddUInt(10, 2, CSTR("FOREGROUND_GREEN"), (fillAttributes >> 1) & 1);
+					frame->AddUInt(10, 2, CSTR("FOREGROUND_RED"), (fillAttributes >> 2) & 1);
+					frame->AddUInt(10, 2, CSTR("FOREGROUND_INTENSITY"), (fillAttributes >> 3) & 1);
+					frame->AddUInt(10, 2, CSTR("BACKGROUND_BLUE"), (fillAttributes >> 4) & 1);
+					frame->AddUInt(10, 2, CSTR("BACKGROUND_GREEN"), (fillAttributes >> 5) & 1);
+					frame->AddUInt(10, 2, CSTR("BACKGROUND_RED"), (fillAttributes >> 6) & 1);
+					frame->AddUInt(10, 2, CSTR("BACKGROUND_INTENSITY"), (fillAttributes >> 7) & 1);
+					frame->AddInt(12, 2, CSTR("ScreenBufferSizeX"), ReadInt16(&tagData[12]));
+					frame->AddInt(14, 2, CSTR("ScreenBufferSizeY"), ReadInt16(&tagData[14]));
+					frame->AddInt(16, 2, CSTR("WindowSizeX"), ReadInt16(&tagData[16]));
+					frame->AddInt(18, 2, CSTR("WindowSizeY"), ReadInt16(&tagData[18]));
+					frame->AddInt(20, 2, CSTR("WindowOriginX"), ReadInt16(&tagData[20]));
+					frame->AddInt(22, 2, CSTR("WindowOriginY"), ReadInt16(&tagData[22]));
+					frame->AddUInt(24, 4, CSTR("Unused1"), ReadUInt32(&tagData[24]));
+					frame->AddUInt(28, 4, CSTR("Unused2"), ReadUInt32(&tagData[28]));
+					frame->AddUInt(32, 2, CSTR("FontSize.width"), ReadUInt16(&tagData[32]));
+					frame->AddUInt(34, 2, CSTR("FontSize.height"), ReadUInt16(&tagData[34]));
+					UInt32 fontFamily = ReadUInt32(&tagData[36]);
+					frame->AddHex32(36, CSTR("FontFamily"), fontFamily);
+					frame->AddHex32Name(36, CSTR("FontFamily.family"), fontFamily & 0x00F0, FontFamilyGetName(fontFamily));
+					frame->AddUInt(36, 4, CSTR("FontFamily.TMPF_FIXED_PITCH"), (fontFamily >> 0) & 1);
+					frame->AddUInt(36, 4, CSTR("FontFamily.TMPF_VECTOR"), (fontFamily >> 1) & 1);
+					frame->AddUInt(36, 4, CSTR("FontFamily.TMPF_TRUETYPE"), (fontFamily >> 2) & 1);
+					frame->AddUInt(36, 4, CSTR("FontFamily.TMPF_DEVICE"), (fontFamily >> 3) & 1);
+					frame->AddUInt(40, 4, CSTR("FontWeight"), ReadUInt32(&tagData[40]));
+					sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[44], 32);
+					*sptr = 0;
+					sptr = sbuff + Text::StrCharCnt(sbuff);
+					frame->AddField(44, 64, CSTR("FaceName"), CSTRP(sbuff, sptr));
+					frame->AddUInt(108, 4, CSTR("CursorSize"), ReadUInt32(&tagData[108]));
+					frame->AddUInt(112, 4, CSTR("FullScreen"), ReadUInt32(&tagData[112]));
+					frame->AddUInt(116, 4, CSTR("QuickEdit"), ReadUInt32(&tagData[116]));
+					frame->AddUInt(120, 4, CSTR("InsertMode"), ReadUInt32(&tagData[120]));
+					frame->AddUInt(124, 4, CSTR("AutoPosition"), ReadUInt32(&tagData[124]));
+					frame->AddUInt(128, 4, CSTR("HistoryBufferSize"), ReadUInt32(&tagData[128]));
+					frame->AddUInt(132, 4, CSTR("NumberOfHistoryBuffers"), ReadUInt32(&tagData[132]));
+					frame->AddUInt(136, 4, CSTR("HistoryNoDup"), ReadUInt32(&tagData[136]));
+					UOSInt i = 0;
+					UOSInt j = 32;
+					while (i < j)
+					{
+						sptr = Text::StrConcatC(sbuff, UTF8STRC("ColorTable["));
+						sptr = Text::StrUOSInt(sptr, i);
+						*sptr++ = ']';
+						*sptr = 0;
+						frame->AddHex32(140 + i * 4, CSTRP(sbuff, sptr), ReadUInt32(&tagData[140 + i * 4]));
+						i++;
+					}
+				}
+				break;
+			case 0xA0000004:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("ConsoleFEDataBlock"));
+				if (blockSize == 0x0000000C)
+				{
+					frame->AddUInt(8, 4, CSTR("CodePage"), ReadUInt32(&tagData[8]));
+				}
+				break;
+			case 0xA0000006:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("DarwinDataBlock"));
+				if (blockSize == 0x00000314)
+				{
+					frame->AddField(8, 260, CSTR("DarwinDataAnsi"), Text::CString::FromPtr(&tagData[8]));
+					sptr = Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&tagData[268]);
+					frame->AddField(268, 520, CSTR("DarwinDataUnicode"), CSTRP(sbuff, sptr));
+				}
+				break;
+			case 0xA0000001:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("EnvironmentVariableDataBlock"));
+				if (blockSize == 0x00000314)
+				{
+					frame->AddField(8, 260, CSTR("TargetAnsi"), Text::CString::FromPtr(&tagData[8]));
+					sptr = Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&tagData[268]);
+					frame->AddField(268, 520, CSTR("TargetUnicode"), CSTRP(sbuff, sptr));
+				}
+				break;
+			case 0xA0000007:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("IconEnvironmentDataBlock"));
+				if (blockSize == 0x00000314)
+				{
+					frame->AddField(8, 260, CSTR("TargetAnsi"), Text::CString::FromPtr(&tagData[8]));
+					sptr = Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&tagData[268]);
+					frame->AddField(268, 520, CSTR("TargetUnicode"), CSTRP(sbuff, sptr));
+				}
+				break;
+			case 0xA000000B:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("KnownFolderDataBlock"));
+				if (blockSize == 0x0000001C)
+				{
+					Data::UUID uuid;
+					uuid.SetValue(&tagData[4]);
+					sptr = uuid.ToString(sbuff);
+					frame->AddField(8, 16, CSTR("KnownFolderID"), CSTRP(sbuff, sptr));
+					frame->AddUInt(24, 4, CSTR("Offset"), ReadUInt32(&tagData[24]));
+				}
+				break;
+			case 0xA0000009:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("PropertyStoreDataBlock"));
+				if (blockSize >= 0x0000000C)
+				{
+					//////////////////////////////////
+				}
+				break;
+			case 0xA0000008:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("ShimDataBlock"));
+				if (blockSize >= 0x00000088)
+				{
+					//////////////////////////////////
+				}
+				break;
+			case 0xA0000005:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("SpecialFolderDataBlock"));
+				if (blockSize >= 0x00000010)
+				{
+					frame->AddUInt(8, 4, CSTR("SpecialFolderID"), ReadUInt32(&tagData[8]));
+					frame->AddUInt(12, 4, CSTR("Offset"), ReadUInt32(&tagData[12]));
+				}
+				break;
+			case 0xA0000003:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("TrackerDataBlock"));
+				if (blockSize >= 0x00000060)
+				{
+					Data::UUID uuid;
+					frame->AddUInt(8, 4, CSTR("Length"), ReadUInt32(&tagData[8]));
+					frame->AddUInt(12, 4, CSTR("Version"), ReadUInt32(&tagData[12]));
+					frame->AddField(16, 16, CSTR("MachineID"), Text::CString::FromPtr(&tagData[16]));
+					uuid.SetValue(&tagData[32]);
+					sptr = uuid.ToString(sbuff);
+					frame->AddField(32, 16, CSTR("Droid[0]"), CSTRP(sbuff, sptr));
+					uuid.SetValue(&tagData[48]);
+					sptr = uuid.ToString(sbuff);
+					frame->AddField(48, 16, CSTR("Droid[1]"), CSTRP(sbuff, sptr));
+					uuid.SetValue(&tagData[64]);
+					sptr = uuid.ToString(sbuff);
+					frame->AddField(64, 16, CSTR("DroidBirth[0]"), CSTRP(sbuff, sptr));
+					uuid.SetValue(&tagData[80]);
+					sptr = uuid.ToString(sbuff);
+					frame->AddField(80, 16, CSTR("DroidBirth[1]"), CSTRP(sbuff, sptr));
+				}
+				break;
+			default:
+				frame->AddHex32Name(4, CSTR("BlockSignature"), blockSignature, CSTR("Unknown"));
+				break;
+			}
+		}
+		break;
+	}
 	}
 	MemFree(tagData);
 	return frame;
@@ -520,5 +666,26 @@ Text::CString IO::FileAnalyse::LNKFileAnalyse::DriveTypeGetName(UInt32 driveType
 	case 0x00000000:
 	default:
 		return CSTR("DRIVE_UNKNOWN");
+	}
+}
+
+Text::CString IO::FileAnalyse::LNKFileAnalyse::FontFamilyGetName(UInt32 fontFamily)
+{
+	switch (fontFamily & 0xf0)
+	{
+	case 0x00:
+		return CSTR("FF_DONTCARE");
+	case 0x10:
+		return CSTR("FF_ROMAN");
+	case 0x20:
+		return CSTR("FF_SWISS");
+	case 0x30:
+		return CSTR("FF_MODERN");
+	case 0x40:
+		return CSTR("FF_SCRIPT");
+	case 0x50:
+		return CSTR("FF_DECORATIVE");
+	default:
+		return CSTR("Unknown");
 	}
 }

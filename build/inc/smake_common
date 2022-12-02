@@ -1898,6 +1898,8 @@ IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 @JPGFileAnalyse.o
 IO/FileAnalyse/JMVL01FileAnalyse.h: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
 @JMVL01FileAnalyse.o
+IO/FileAnalyse/LNKFileAnalyse.h: ../../src/IO/FileAnalyse/LNKFileAnalyse.cpp
+@LNKFileAnalyse.o
 IO/FileAnalyse/MDBFileAnalyse.h: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 @MDBFileAnalyse.o
 IO/FileAnalyse/MPEGFileAnalyse.h: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
@@ -2399,7 +2401,7 @@ Media/ImageList.h: ../../src/Media/ImageList.cpp
 Media/ImageTo8Bit.h: ../../src/Media/ImageTo8Bit.cpp
 @ImageTo8Bit.o
 @ImageTo8Bit_CPP.o
-Media/ImageUtil.h:
+Media/ImageUtil.h: ../../src/Media/ImageUtil.cpp
 @ImageUtil.o
 @ImageUtil_CPP.o
 Media/IMediaPlayer.h:
@@ -4684,6 +4686,7 @@ FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
 IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 JMVL01FileAnalyse.o: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
+LNKFileAnalyse.o: ../../src/IO/FileAnalyse/LNKFileAnalyse.cpp
 MDBFileAnalyse.o: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
 NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp

@@ -60,6 +60,7 @@ namespace IO
 			static Text::CString TagTypeGetName(TagType tagType);
 			static Text::CString ShowWindowGetName(UInt32 showWindow);
 			static Text::CString DriveTypeGetName(UInt32 driveType);
+			static Text::CString FontFamilyGetName(UInt32 fontFamily);
 		};
 	}
 }

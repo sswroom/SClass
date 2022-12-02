@@ -780,6 +780,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		}
 		UOSInt range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
 		dimg->DrawRect(0, UOSInt2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range), UOSInt2Double(clsData->scrSize), UOSInt2Double(btnSize), 0, b);
+		dimg->DelBrush(b);
 		this->deng->DeleteImage(dimg);
 	}
 	if (hasHScr)
@@ -802,6 +803,7 @@ void UI::GUITextView::OnDraw(void *cr)
 			range = 1;
 		}
 		dimg->DrawRect(UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0, UOSInt2Double(btnSize), UOSInt2Double(clsData->scrSize), 0, b);
+		dimg->DelBrush(b);
 		this->deng->DeleteImage(dimg);
 	}
 }

@@ -63,17 +63,17 @@ void Media::ImageUtil::ImageCopyR(UInt8 *destPtr, OSInt destBpl, const UInt8 *sr
 	switch (srcRotate)
 	{
 	case RotateType::CW_90:
-		srcPtr = srcPtr + srcX * srcBpl + (srcY * bpp >> 3);
+		srcPtr = srcPtr + srcX * srcBpl + (srcY * (OSInt)bpp >> 3);
 		break;
 	case RotateType::CW_180:
-		srcPtr = srcPtr + srcY * srcBpl + (srcX * bpp >> 3);
+		srcPtr = srcPtr + srcY * srcBpl + (srcX * (OSInt)bpp >> 3);
 		break;
 	case RotateType::CW_270:
-		srcPtr = srcPtr + srcX * srcBpl + (srcY * bpp >> 3);
+		srcPtr = srcPtr + srcX * srcBpl + (srcY * (OSInt)bpp >> 3);
 		break;
 	default:
 	case RotateType::None:
-		srcPtr = srcPtr + srcY * srcBpl + (srcX * bpp >> 3);
+		srcPtr = srcPtr + srcY * srcBpl + (srcX * (OSInt)bpp >> 3);
 		break;
 	}
 	if (rt == RotateType::None)

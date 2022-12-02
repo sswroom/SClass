@@ -848,6 +848,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 		Text::String *fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
 		NEW_CLASS(font, Media::GTKDrawFont(fntName, height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		fntName->Release();
+		pango_font_description_free(fnt);
 		return font;
 	}
 	else
