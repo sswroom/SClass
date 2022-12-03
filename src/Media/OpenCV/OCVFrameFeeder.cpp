@@ -85,7 +85,7 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 			UOSInt maxWidth = 0;
 			UOSInt maxHeight = 0;
 			UInt32 maxFmt = 0xFFFFFFFF;
-			UInt32 maxBpp;
+			UInt32 maxBpp = 0;
 			UInt32 maxRateNumer = 0;
 			UInt32 maxRateDenom = 0;
 			formats = MemAlloc(Media::IVideoCapture::VideoFormat, 512);

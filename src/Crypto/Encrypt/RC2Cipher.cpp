@@ -63,7 +63,7 @@ Bool Crypto::Encrypt::RC2Cipher::SetKey(const UInt8 *key, UOSInt keyLen, UOSInt 
 	}
 
 	T8   = (UInt16)((effectiveBits + 7) >> 3);
-	TM   = (255 >> (OSInt)(7 & -(OSInt)effectiveBits));
+	TM   = ((UOSInt)255 >> (OSInt)(7 & -(OSInt)effectiveBits));
 	tmp[128 - T8] = permute[tmp[128 - T8] & TM];
 	if (T8 < 128)
 	{

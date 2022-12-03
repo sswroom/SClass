@@ -16,11 +16,11 @@ void __stdcall Net::LoRaGWMonitor::OnRAWPacket(void *userData, const UInt8 *pack
 	{
 		if (udpHdr.srcPort == me->port)
 		{
-			me->msgHdlr(me->msgHdlrObj, false, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, udpHdr.leng - 4 - 8);
+			me->msgHdlr(me->msgHdlrObj, false, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UOSInt)udpHdr.leng - 4 - 8);
 		}
 		else if (udpHdr.destPort == me->port)
 		{
-			me->msgHdlr(me->msgHdlrObj, true, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, udpHdr.leng - 4 - 8);
+			me->msgHdlr(me->msgHdlrObj, true, udpData[0], ReadMUInt16(&udpData[1]), udpData[3], udpData + 4, (UOSInt)udpHdr.leng - 4 - 8);
 		}
 	}
 }

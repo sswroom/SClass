@@ -815,7 +815,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (recordCnt > memSize >> 5)
 	{
-		recordCnt = memSize >> 5;
+		recordCnt = (UOSInt)(memSize >> 5);
 	}
 
 	iarray1 = 0;
@@ -2184,7 +2184,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				UInt64 readSize;
 				UInt8 *txtBuff = MemAlloc(UInt8, (UOSInt)fileSize);
 				fs->SeekFromBeginning(0);
-				if (fileSize != (readSize = fs->Read(txtBuff, fileSize)))
+				if (fileSize != (readSize = fs->Read(txtBuff, (UOSInt)fileSize)))
 				{
 					console->WriteLineC(UTF8STRC("Error in reading result file"));
 				}
@@ -2194,7 +2194,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					cli = Net::HTTPClient::CreateConnect(sockf, 0, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
 					cli->AddContentType(CSTR("text/plain"));
 					cli->AddContentLength(fileSize);
-					cli->Write(txtBuff, fileSize);
+					cli->Write(txtBuff, (UOSInt)fileSize);
 					if (cli->GetRespStatus() == 200)
 					{
 						console->WriteLineC(UTF8STRC("Upload successfully"));

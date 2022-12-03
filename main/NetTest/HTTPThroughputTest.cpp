@@ -311,8 +311,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		printf("Connection Type: close\r\n");
 	}
 	printf("URL: %s\r\n", paramUrl.v);
-	printf("Thread Cnt = %lld\r\n", threadCnt);
-	printf("Total Request = %lld\r\n", paramConnCnt);
+	printf("Thread Cnt = %d\r\n", (UInt32)threadCnt);
+	printf("Total Request = %d\r\n", (UInt32)paramConnCnt);
 	printf("Succ Count = %lld\r\n", connCnt);
 	printf("Fail Count = %lld\r\n", failCnt);
 	printf("Time used = %lf\r\n", t);

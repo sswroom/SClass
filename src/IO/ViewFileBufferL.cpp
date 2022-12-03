@@ -31,7 +31,7 @@ IO::ViewFileBuffer::~ViewFileBuffer()
 	{
 		if ((OSInt)this->mapHandle >= 0)
 		{
-			munmap(mapHandle, GetLength());
+			munmap(mapHandle, (size_t)GetLength());
 		}
 		close((int)(OSInt)fileHandle);
 	}

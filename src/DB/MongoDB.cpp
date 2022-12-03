@@ -10,8 +10,10 @@
 #if defined(__FreeBSD__) || defined(CPU_X86_32)
 #include <bson.h>
 #include <mongoc.h>
+#if defined(__FreeBSD__)
 #define mongoc_database_get_collection_names_with_opts(a, b, c) mongoc_database_get_collection_names(a, c)
 #define mongoc_client_get_database_names_with_opts(a, b, c) mongoc_client_get_database_names(a, c)
+#endif
 #else
 #include <bson/bson.h>
 #include <mongoc/mongoc.h>

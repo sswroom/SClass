@@ -18,13 +18,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
 		fs.Read(buff, (UOSInt)flen);
 		buff[flen] = 0;
-		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CString(buff, flen));
+		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CString(buff, (UOSInt)flen));
 		if (obj)
 		{
 			IO::ConsoleWriter console;
 			Text::StringBuilderUTF8 sb;
 			console.WriteLineC(UTF8STRC("Original:"));
-			console.WriteLineC(buff, flen);
+			console.WriteLineC(buff, (UOSInt)flen);
 			console.WriteLine();
 			console.WriteLineC(UTF8STRC("Parsed:"));
 			obj->ToJSONString(&sb);

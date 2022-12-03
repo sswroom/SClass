@@ -29,7 +29,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 			else
 			{
 				me->nextDT->SetCurrTimeUTC();
-				me->nextDT->AddSecond(me->refreshSecond);
+				me->nextDT->AddSecond((OSInt)me->refreshSecond);
 
 				i = me->currRSSMaps->GetCount();
 				while (i-- > 0)

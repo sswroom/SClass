@@ -2356,7 +2356,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			UOSInt buffSize;
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 			
-			buffSize = fd.GetDataSize();
+			buffSize = (UOSInt)fd.GetDataSize();
 			buff = MemAlloc(UInt8, buffSize);
 			fd.GetRealData(0, buffSize, buff);
 			resp->AddDefHeaders(req);

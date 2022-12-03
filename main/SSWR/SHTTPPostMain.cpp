@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UOSInt fileSize = 0;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream({file, Text::StrCharCnt(file)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fileSize = fs->GetLength();
+		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize > 0)
 		{
 			fileBuff = MemAlloc(UInt8, fileSize);

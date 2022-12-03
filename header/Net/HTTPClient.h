@@ -57,7 +57,7 @@ namespace Net
 		Bool FormAdd(Text::CString name, Text::CString value);
 		void AddTimeHeader(Text::CString name, Data::DateTime *dt);
 		void AddContentType(Text::CString contType);
-		void AddContentLength(UOSInt leng);
+		void AddContentLength(UInt64 leng);
 
 		UOSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);

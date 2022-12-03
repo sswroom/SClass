@@ -42,11 +42,11 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(IO::Stream *stm, void *s
 			{
 				return buffSize - i;
 			}
-			crcVal = this->crc.CalcDirect(&buff[i + 2], len - 1);
+			crcVal = this->crc.CalcDirect(&buff[i + 2], (UOSInt)len - 1);
 			if (crcVal == ReadMUInt16(&buff[i + 1 + len]) && buff[i + 3 + len] == 13 && buff[i + 4 + len] == 10)
 			{
-				this->listener->DataParsed(stm, stmObj, buff[i + 3], ReadMUInt16(&buff[i - 1 + len]), &buff[i + 4], len - 5);
-				i += len + 4;
+				this->listener->DataParsed(stm, stmObj, buff[i + 3], ReadMUInt16(&buff[i - 1 + len]), &buff[i + 4], (UOSInt)len - 5);
+				i += (UOSInt)len + 4;
 			}
 		}
 		else if (buff[i] == 0x79 && buff[i + 1] == 0x79)
@@ -63,8 +63,8 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(IO::Stream *stm, void *s
 			crcVal = this->crc.CalcDirect(&buff[i + 2], len);
 			if (crcVal == ReadMUInt16(&buff[i + 2 + len]) && buff[i + 4 + len] == 13 && buff[i + 5 + len] == 10)
 			{
-				this->listener->DataParsed(stm, stmObj, buff[i + 4], ReadMUInt16(&buff[i + len]), &buff[i + 5], len - 5);
-				i += len + 5;
+				this->listener->DataParsed(stm, stmObj, buff[i + 4], ReadMUInt16(&buff[i + len]), &buff[i + 5], (UOSInt)len - 5);
+				i += (UOSInt)len + 5;
 			}
 		}
 		i++;

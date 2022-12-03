@@ -93,11 +93,11 @@ void Net::HTTPClient::AddContentType(Text::CString contType)
 	this->AddHeaderC(CSTR("Content-Type"), contType);
 }
 
-void Net::HTTPClient::AddContentLength(UOSInt leng)
+void Net::HTTPClient::AddContentLength(UInt64 leng)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	sptr = Text::StrUOSInt(sbuff, leng);
+	sptr = Text::StrUInt64(sbuff, leng);
 	this->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 }
 
