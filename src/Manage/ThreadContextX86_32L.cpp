@@ -500,13 +500,13 @@ Manage::ThreadContextX86_32::~ThreadContextX86_32()
 	MemFree(this->context);
 }
 
-OSInt Manage::ThreadContextX86_32::GetRegisterCnt()
+UOSInt Manage::ThreadContextX86_32::GetRegisterCnt() const
 {
-	OSInt cnt = 33;
+	UOSInt cnt = 33;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextX86_32::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextX86_32::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	switch (index)
 	{
@@ -647,7 +647,7 @@ UTF8Char *Manage::ThreadContextX86_32::GetRegister(OSInt index, UTF8Char *buff, 
 	}
 }
 
-void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF *sb)
+void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -695,59 +695,59 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF *sb)
 	}
 }
 
-Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType()
+Manage::ThreadContext::ContextType Manage::ThreadContextX86_32::GetType() const
 {
 	return Manage::ThreadContext::ContextType::X86_32;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetThreadId()
+UOSInt Manage::ThreadContextX86_32::GetThreadId() const
 {
 	return this->threadId;
 }
 
-UOSInt Manage::ThreadContextX86_32::GetProcessId()
+UOSInt Manage::ThreadContextX86_32::GetProcessId() const
 {
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextX86_32::GetInstAddr()
+OSInt Manage::ThreadContextX86_32::GetInstAddr() const
 {
 	return this->GetEIP();
 }
 
-OSInt Manage::ThreadContextX86_32::GetStackAddr()
+OSInt Manage::ThreadContextX86_32::GetStackAddr() const
 {
 	return this->GetESP();
 }
 
-OSInt Manage::ThreadContextX86_32::GetFrameAddr()
+OSInt Manage::ThreadContextX86_32::GetFrameAddr() const
 {
 	return this->GetEBP();
 }
 
-void Manage::ThreadContextX86_32::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextX86_32::SetInstAddr(OSInt instAddr) const
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP] = (UInt32)instAddr;
 }
 
-void Manage::ThreadContextX86_32::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextX86_32::SetStackAddr(OSInt stackAddr) const
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP] = (UInt32)stackAddr;
 }
 
-void Manage::ThreadContextX86_32::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextX86_32::SetFrameAddr(OSInt frameAddr) const
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP] = (UInt32)frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_32::Clone()
+Manage::ThreadContext *Manage::ThreadContextX86_32::Clone() const
 {
 	Manage::ThreadContextX86_32 *ret;
 	NEW_CLASS(ret, Manage::ThreadContextX86_32(this->procId, this->threadId, this->context));
 	return ret;
 }
 
-Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs)
+Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmX86_32::DasmX86_32_Regs *r = (Manage::DasmX86_32::DasmX86_32_Regs *)regs;
 	r->EAX = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
@@ -786,179 +786,179 @@ Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_32::CreateDasm()
+Manage::Dasm *Manage::ThreadContextX86_32::CreateDasm() const
 {
 	Manage::DasmX86_32 *dasm;
 	NEW_CLASS(dasm, Manage::DasmX86_32());
 	return dasm;
 }
 
-void *Manage::ThreadContextX86_32::GetContext()
+void *Manage::ThreadContextX86_32::GetContext() const
 {
 	return this->context;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEAX()
+UInt32 Manage::ThreadContextX86_32::GetEAX() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEDX()
+UInt32 Manage::ThreadContextX86_32::GetEDX() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetECX()
+UInt32 Manage::ThreadContextX86_32::GetECX() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEBX()
+UInt32 Manage::ThreadContextX86_32::GetEBX() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetESI()
+UInt32 Manage::ThreadContextX86_32::GetESI() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEDI()
+UInt32 Manage::ThreadContextX86_32::GetEDI() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetESP()
+UInt32 Manage::ThreadContextX86_32::GetESP() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEBP()
+UInt32 Manage::ThreadContextX86_32::GetEBP() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEIP()
+UInt32 Manage::ThreadContextX86_32::GetEIP() const
 {
 	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetEFLAGS()
+UInt32 Manage::ThreadContextX86_32::GetEFLAGS() const
 {
 	return ((ucontext_t*)this->context)->uc_flags;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetCS()
+UInt16 Manage::ThreadContextX86_32::GetCS() const
 {
 	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS];
 }
 
-UInt16 Manage::ThreadContextX86_32::GetSS()
+UInt16 Manage::ThreadContextX86_32::GetSS() const
 {
 	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_SS];
 }
 
-UInt16 Manage::ThreadContextX86_32::GetDS()
+UInt16 Manage::ThreadContextX86_32::GetDS() const
 {
 	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_DS];
 }
 
-UInt16 Manage::ThreadContextX86_32::GetES()
+UInt16 Manage::ThreadContextX86_32::GetES() const
 {
 	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ES];
 }
 
-UInt16 Manage::ThreadContextX86_32::GetFS()
+UInt16 Manage::ThreadContextX86_32::GetFS() const
 {
 	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_FS];
 }
 
-UInt16 Manage::ThreadContextX86_32::GetGS()
+UInt16 Manage::ThreadContextX86_32::GetGS() const
 {
 	return (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_GS];
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR0()
+UInt32 Manage::ThreadContextX86_32::GetDR0() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR1()
+UInt32 Manage::ThreadContextX86_32::GetDR1() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR2()
+UInt32 Manage::ThreadContextX86_32::GetDR2() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR3()
+UInt32 Manage::ThreadContextX86_32::GetDR3() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR6()
+UInt32 Manage::ThreadContextX86_32::GetDR6() const
 {
 	return 0;
 }
 
-UInt32 Manage::ThreadContextX86_32::GetDR7()
+UInt32 Manage::ThreadContextX86_32::GetDR7() const
 {
 	return 0;
 }
 
-void Manage::ThreadContextX86_32::GetST0(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST0(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 0) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST1(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST1(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 1) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST2(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST2(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 2) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST3(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST3(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 3) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST4(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST4(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 4) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST5(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST5(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 5) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST6(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST6(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[ (((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 6) & 7)], 10);
 }
 
-void Manage::ThreadContextX86_32::GetST7(UInt8 *val)
+void Manage::ThreadContextX86_32::GetST7(UInt8 *val) const
 {
 	MemCopyNO(val, &((ucontext_t*)this->context)->uc_mcontext.fpregs->_st[(((((ucontext_t*)this->context)->__fpregs_mem.sw >> 11) + 7) & 7)], 10);
 }
 
-UInt16 Manage::ThreadContextX86_32::GetCTRL()
+UInt16 Manage::ThreadContextX86_32::GetCTRL() const
 {
 	return (UInt16)((ucontext_t*)this->context)->__fpregs_mem.cw;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetSTAT()
+UInt16 Manage::ThreadContextX86_32::GetSTAT() const
 {
 	return (UInt16)((ucontext_t*)this->context)->__fpregs_mem.sw;
 }
 
-UInt16 Manage::ThreadContextX86_32::GetTAG()
+UInt16 Manage::ThreadContextX86_32::GetTAG() const
 {
 	return (UInt16)((ucontext_t*)this->context)->__fpregs_mem.tag;
 }
