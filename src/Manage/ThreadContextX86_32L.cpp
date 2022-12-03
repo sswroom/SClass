@@ -688,7 +688,7 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb) const
 				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			}
 
-			sb->Append(sbuff);
+			sb->AppendP(sbuff, sptr);
 		}
 
 		i++;
@@ -710,32 +710,32 @@ UOSInt Manage::ThreadContextX86_32::GetProcessId() const
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextX86_32::GetInstAddr() const
+UOSInt Manage::ThreadContextX86_32::GetInstAddr() const
 {
 	return this->GetEIP();
 }
 
-OSInt Manage::ThreadContextX86_32::GetStackAddr() const
+UOSInt Manage::ThreadContextX86_32::GetStackAddr() const
 {
 	return this->GetESP();
 }
 
-OSInt Manage::ThreadContextX86_32::GetFrameAddr() const
+UOSInt Manage::ThreadContextX86_32::GetFrameAddr() const
 {
 	return this->GetEBP();
 }
 
-void Manage::ThreadContextX86_32::SetInstAddr(OSInt instAddr) const
+void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr) const
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP] = (UInt32)instAddr;
 }
 
-void Manage::ThreadContextX86_32::SetStackAddr(OSInt stackAddr) const
+void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr) const
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP] = (UInt32)stackAddr;
 }
 
-void Manage::ThreadContextX86_32::SetFrameAddr(OSInt frameAddr) const
+void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr) const
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP] = (UInt32)frameAddr;
 }
