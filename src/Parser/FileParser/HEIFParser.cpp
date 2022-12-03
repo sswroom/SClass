@@ -45,7 +45,11 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 {
 	Media::StaticImage *simg = 0;
 	heif_image* img;
+#if LIBHEIF_HAVE_VERSION(1, 4, 0)
 	int bpp = heif_image_handle_get_chroma_bits_per_pixel(imgHdlr);
+#else
+	int bpp = 8;
+#endif
 	int hasAlpha = heif_image_handle_has_alpha_channel(imgHdlr);
 	int width = heif_image_handle_get_width(imgHdlr);
 	int height = heif_image_handle_get_height(imgHdlr);
@@ -69,6 +73,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 		}
 	}
+#if LIBHEIF_HAVE_VERSION(1, 4, 0)
 	else if (bpp <= 16)
 	{
 		if (hasAlpha)
@@ -82,12 +87,13 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		else
 		{
 			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, 0);
+			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, 0);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 48);
 		}
 	}
+#endif
 #if defined(VERBOSE)
 	else
 	{
@@ -116,7 +122,11 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFile(IO::IStreamData *fd,
 	}
 	Media::ImageList *imgList = 0;
 	heif_context *ctx = heif_context_alloc();
+#if LIBHEIF_HAVE_VERSION(1, 3, 0)
 	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff, (size_t)fileLen, 0);
+#else
+	heif_error err = heif_context_read_from_memory(ctx, fileBuff, (size_t)fileLen, 0);
+#endif
 	if (err.code == heif_error_Ok)
 	{
 		heif_image_handle *imgHdlr;
