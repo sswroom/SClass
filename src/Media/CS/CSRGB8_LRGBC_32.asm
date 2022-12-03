@@ -885,7 +885,8 @@ crgb1lop3:
 	jnz crgb1lop2
 	jmp crgbexit
 
-CSRGB8_LRGBC_32_AVal DW 0,16383
+CSRGB8_LRGBC_32_AVal:
+	DW 0,16383
 
 	align 16
 cp8_a1start:

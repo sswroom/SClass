@@ -560,7 +560,7 @@ si64u16lop2b:
 	jmp si64u16lop2c
 	
 	align 16
-si64u16lop2b2	
+si64u16lop2b2:
 	mov ax,word [eax*4+_MyString_StrDigit100U16+2]
 	lea esi,[esi-2]
 	mov word [esi],ax
@@ -643,7 +643,7 @@ sui64u16lop2b:
 	jmp sui64u16lop2c
 	
 	align 16
-sui64u16lop2b2	
+sui64u16lop2b2:
 	mov ax,word [eax*4+_MyString_StrDigit100U16+2]
 	lea esi,[esi-2]
 	mov word [esi],ax
@@ -1009,7 +1009,7 @@ si64u32lop2b:
 	jmp si64u32lop2c
 	
 	align 16
-si64u32lop2b2	
+si64u32lop2b2:
 	mov eax,dword [eax*8+_MyString_StrDigit100U32+4]
 	lea esi,[esi-4]
 	mov dword [esi],eax
