@@ -34,7 +34,7 @@ CSYVU9_RGB8_do_yvu9rgb8:
 	push esi
 	push edi
 	
-	lea eax,dword [esp+36] ;width
+	mov eax,dword [esp+36] ;width
 	lea edx,[eax*8]
 	mov ecx,eax
 	mov ebx,eax

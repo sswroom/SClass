@@ -75,7 +75,7 @@ MD5_CalcBlock:
 	mov edx,dword [ebp+8] ;h2
 	mov esi,dword [ebp+12] ;h3
 	align 16
-cblop
+cblop:
 	
 	MD5STEP F1, a, b, c, d, S0, 0, 0xd76aa478, 7
 	MD5STEP F1, d, a, b, c, S0, 1, 0xe8c7b756, 12
