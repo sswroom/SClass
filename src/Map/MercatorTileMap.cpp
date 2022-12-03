@@ -299,7 +299,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			if (this->cacheDir)
 			{
 				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				fs.Write(mstm.GetBuff(), mstm.GetLength());
+				fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 				Data::DateTime dt;
 				if (cli->GetLastModified(&dt))
 				{
@@ -314,7 +314,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			}
 			else if (this->spkg)
 			{
-				this->spkg->AddFile(mstm.GetBuff(), mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts);
+				this->spkg->AddFile(mstm.GetBuff(), (UOSInt)mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts);
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 			}
 		}
