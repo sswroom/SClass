@@ -725,17 +725,17 @@ UOSInt Manage::ThreadContextX86_32::GetFrameAddr() const
 	return this->GetEBP();
 }
 
-void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr) const
+void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP] = (UInt32)instAddr;
 }
 
-void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr) const
+void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP] = (UInt32)stackAddr;
 }
 
-void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr) const
+void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP] = (UInt32)frameAddr;
 }
