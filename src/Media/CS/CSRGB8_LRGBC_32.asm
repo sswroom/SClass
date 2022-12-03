@@ -885,8 +885,7 @@ crgb1lop3:
 	jnz crgb1lop2
 	jmp crgbexit
 
-CSRGB8_LRGBC_32_AVal:
-	DW 0,16383
+CSRGB8_LRGBC_32_AVal DW 0,16383
 
 	align 16
 cp8_a1start:
@@ -919,49 +918,49 @@ cp8_a1lop3:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+14],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+22],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+30],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+38],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+46],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+54],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+62],dx
 
 	inc esi
@@ -979,7 +978,7 @@ cp8_a1lop3a:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 	lea edi,[edi+8]
 	dec ecx
@@ -1044,49 +1043,49 @@ cp4_a1lop3:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+14],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+22],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+30],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+38],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+46],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+54],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+62],dx
 
 	inc esi
@@ -1104,7 +1103,7 @@ cp4_a1lop3a:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 	lea edi,[edi+8]
 	dec ecx
@@ -1191,49 +1190,49 @@ cp2_a1lop3:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+14],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+22],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+30],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+38],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+46],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+54],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+62],dx
 
 	inc esi
@@ -1251,7 +1250,7 @@ cp2_a1lop3a:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 	lea edi,[edi+8]
 	dec ecx
@@ -1362,49 +1361,49 @@ cp1_a1lop3:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+14],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+22],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+30],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+38],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+46],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+54],dx
 
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+62],dx
 
 	inc esi
@@ -1422,7 +1421,7 @@ cp1_a1lop3a:
 	rol al,1
 	movzx edx,al
 	and edx,1
-	mov dx,word CSRGB8_LRGBC_32_AVal[edx*2]
+	mov dx,word [CSRGB8_LRGBC_32_AVal+edx*2]
 	mov [edi+6],dx
 	lea edi,[edi+8]
 	dec ecx
