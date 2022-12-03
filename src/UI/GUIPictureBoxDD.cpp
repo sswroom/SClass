@@ -200,7 +200,17 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 void UI::GUIPictureBoxDD::CalDispRect(Double *srcRect, OSInt *destRect)
 {
 	if (this->currImage == 0)
+	{
+		srcRect[0] = 0;
+		srcRect[1] = 0;
+		srcRect[2] = 0;
+		srcRect[3] = 0;
+		destRect[0] = 0;
+		destRect[1] = 0;
+		destRect[2] = 0;
+		destRect[3] = 0;
 		return;
+	}
 
 	srcRect[0] = this->zoomCenterX - UOSInt2Double(this->surfaceW) * 0.5 / this->zoomScale;
 	srcRect[1] = this->zoomCenterY - UOSInt2Double(this->surfaceH) * 0.5 / this->zoomScale;

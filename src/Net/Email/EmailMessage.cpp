@@ -203,11 +203,11 @@ void Net::Email::EmailMessage::WriteContents(IO::Stream *stm)
 		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
 		GenMultipart(&mstm, CSTRP(sbuff, sptr));
 		stm->Write(UTF8STRC("Content-Length: "));
-		sptr = Text::StrUOSInt(sbuff, mstm.GetLength());
+		sptr = Text::StrUInt64(sbuff, mstm.GetLength());
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write((const UInt8*)"\r\n", 2);
 		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
+		stm->Write(mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
 	}
 	else
 	{
@@ -558,7 +558,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		UOSInt len;
-		sptr = GenBoundary(sbuff, mstm.GetBuff(&len), mstm.GetLength());
+		sptr = GenBoundary(sbuff, mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
 		stm->Write(UTF8STRC("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\""));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\"\r\n\r\n"));
@@ -566,7 +566,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		stm->Write(UTF8STRC("\r\n\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\r\n"));
-		stm->Write(mstm.GetBuff(&len), mstm.GetLength());
+		stm->Write(mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
 		stm->Write(UTF8STRC("\r\n\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\r\n"));
@@ -623,7 +623,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.EndLevel();
 								{
 									Crypto::Hash::SHA256 sha;
-									sha.Calc(mstm.GetBuff(&len), mstm.GetLength());
+									sha.Calc(mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
 									sha.GetValue(signData);
 
 									builder.BeginSequence();
@@ -692,7 +692,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.AppendNull();
 							builder.EndLevel();
 							///////////////////////////////////////
-							this->ssl->Signature(this->signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(&len), mstm.GetLength(), signData, &signLen);
+							this->ssl->Signature(this->signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(&len), (UOSInt)mstm.GetLength(), signData, &signLen);
 							builder.AppendOctetStringC(signData, signLen);
 						builder.EndLevel();
 					builder.EndLevel();

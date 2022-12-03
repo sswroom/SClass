@@ -505,11 +505,11 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	this->currOfst = ofst;
 	if (vPos > (OSInt)(ofst >> 4))
 	{
-		this->SetScrollVPos(ofst >> 4, true);
+		this->SetScrollVPos((UOSInt)(ofst >> 4), true);
 	}
 	else if (vPos + (Int32)this->pageLineCnt <= (Int64)(ofst >> 4))
 	{
-		this->SetScrollVPos((ofst >> 4) - this->pageLineCnt + 1, true);
+		this->SetScrollVPos((UOSInt)(ofst >> 4) - this->pageLineCnt + 1, true);
 	}
 	this->Redraw();
 	this->UpdateCaretPos();

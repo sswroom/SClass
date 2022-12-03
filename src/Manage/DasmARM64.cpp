@@ -100,10 +100,10 @@ UInt32 DasmARM64_ParseImmA32(UInt8 rot, UInt8 val)
 {
 	if (rot == 0)
 		return val;
-	rot = rot << 1;
+	rot = (UInt8)(rot << 1);
 	if (rot < 8)
 	{
-		return (val >> rot) | (((UInt32)val) << (32 - rot));
+		return (UInt32)(val >> rot) | (((UInt32)val) << (32 - rot));
 	}
 	else
 	{
@@ -2328,7 +2328,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 	switch (sess->codeBuff[2] & 0xf0)
 	{
 	case 0x40:
-		imm = DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2336,7 +2336,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs - imm;
+		*regPtrd = (UInt64)((Int64)*regPtrs - imm);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2351,7 +2351,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		}
 		return true;
 	case 0x50:
-		imm = DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("subs "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2359,7 +2359,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs - imm;
+		*regPtrd = (UInt64)((Int64)*regPtrs - imm);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2374,7 +2374,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		}
 		return true;
 	case 0x80:
-		imm = DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2382,7 +2382,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs + imm;
+		*regPtrd = (UInt64)((Int64)*regPtrs + imm);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2519,7 +2519,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		}
 		break;*/
 	case 0xb0:
-		imm = DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adcs "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2527,7 +2527,7 @@ Bool __stdcall DasmARM64_E2(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs + imm;
+		*regPtrd = (UInt64)((Int64)*regPtrs + imm);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2609,7 +2609,7 @@ Bool __stdcall DasmARM64_E3(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		sess->sbuff = Text::StrInt32(sess->sbuff, DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x60:
@@ -2619,7 +2619,7 @@ Bool __stdcall DasmARM64_E3(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmn "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		sess->sbuff = Text::StrInt32(sess->sbuff, DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x80:
@@ -2632,10 +2632,10 @@ Bool __stdcall DasmARM64_E3(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		val = DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		val = (Int32)DasmARM64_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrInt32(sess->sbuff, val);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtr = val;
+		*regPtr = (UInt64)(Int64)val;
 		if ((sess->codeBuff[2] & 0xf) == 15)
 		{
 			sess->endType = Manage::DasmARM64::ET_JMP;
@@ -2679,7 +2679,7 @@ Bool __stdcall DasmARM64_E4(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->memReader->ReadMemory(*regPtrs, (UInt8*)regPtrd, 4);
-		*regPtrs += imm;
+		*regPtrs = (UInt64)((Int64)*regPtrs + imm);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14 || (sess->codeBuff[2] & 0xf) == 13)
@@ -2790,7 +2790,7 @@ Bool __stdcall DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
 					sess->memReader->ReadMemory(sess->regs.SP, (UInt8*)regPtr, 4);
 					sess->regs.SP += 4;
 				}
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				regNo++;
 			}
 			v = 1;
@@ -2810,7 +2810,7 @@ Bool __stdcall DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
 					sess->memReader->ReadMemory(sess->regs.SP, (UInt8*)regPtr, 4);
 					sess->regs.SP += 4;
 				}
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				regNo++;
 			}
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("}\r\n"));
@@ -2846,7 +2846,7 @@ Bool __stdcall DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
 					sess->memReader->ReadMemory(sess->regs.SP, (UInt8*)regPtr, 4);
 					sess->regs.SP += 4;
 				}
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				regNo++;
 			}
 			v = 1;
@@ -2866,7 +2866,7 @@ Bool __stdcall DasmARM64_E8(Manage::DasmARM64::DasmARM64_Sess *sess)
 					sess->memReader->ReadMemory(sess->regs.SP, (UInt8*)regPtr, 4);
 					sess->regs.SP += 4;
 				}
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				regNo++;
 			}
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));

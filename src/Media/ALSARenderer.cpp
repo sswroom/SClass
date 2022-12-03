@@ -55,7 +55,7 @@ snd_pcm_state_t ALSARenderer_GetState(void *hand)
 	case SND_PCM_STATE_DISCONNECTED:
 		printf("State: DISCONNECTED\r\n");
 		break;
-	case SND_PCM_STATE_PRIVATE1:
+	case 1024://SND_PCM_STATE_PRIVATE1:
 		printf("State: PRIVATE1\r\n");
 		break;
 	default:

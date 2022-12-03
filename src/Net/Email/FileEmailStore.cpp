@@ -183,7 +183,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, const Net::SocketUtil::Addre
 	email->fromAddr = mail->mailFrom->Clone();
 	email->recvTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	email->isDeleted = false;
-	email->fileSize = mail->dataStm->GetLength();
+	email->fileSize = (UOSInt)mail->dataStm->GetLength();
 
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

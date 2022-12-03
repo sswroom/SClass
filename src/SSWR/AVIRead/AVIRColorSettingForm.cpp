@@ -525,7 +525,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	while (i < j)
 	{
 		k = this->cboMonProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
-		if (i == rgbParam->monProfileType)
+		if (i == (UOSInt)rgbParam->monProfileType)
 		{
 			this->cboMonProfile->SetSelectedIndex(k);
 		}
@@ -589,12 +589,12 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	while (i < j)
 	{
 		k = this->cboDefVProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
-		if (i == this->colorMgr->GetDefVProfileType())
+		if (i == (UOSInt)this->colorMgr->GetDefVProfileType())
 		{
 			this->cboDefVProfile->SetSelectedIndex(k);
 		}
 		k = this->cboDefPProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
-		if (i == this->colorMgr->GetDefPProfileType())
+		if (i == (UOSInt)this->colorMgr->GetDefPProfileType())
 		{
 			this->cboDefPProfile->SetSelectedIndex(k);
 		}

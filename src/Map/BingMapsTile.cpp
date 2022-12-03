@@ -77,7 +77,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 		if (Net::HTTPClient::LoadContent(sockf, ssl, this->brandLogoUri->ToCString(), &mstm, 1048576))
 		{
 			Parser::FileParser::PNGParser parser;
-			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), mstm.GetLength());
+			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 			IO::ParsedObject *pobj = parser.ParseFile(&fd, 0, IO::ParserType::ImageList);
 			if (pobj)
 			{

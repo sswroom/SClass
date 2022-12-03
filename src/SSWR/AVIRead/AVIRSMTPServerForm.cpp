@@ -166,7 +166,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	cli->GetRemoteAddr(&remoteAddr);
 	me->store->NewEmail(id, &remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
-	me->totalSize += mail->dataStm->GetLength();
+	me->totalSize += (UOSInt)mail->dataStm->GetLength();
 	return Text::StrInt64(queryId, id);
 }
 

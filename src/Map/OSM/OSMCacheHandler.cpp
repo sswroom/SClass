@@ -220,7 +220,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 		UOSInt readSize;
 		while (buffSize < stmLeng)
 		{
-			readSize = stm->Read(&buff[buffSize], stmLeng - buffSize);
+			readSize = stm->Read(&buff[buffSize], (UOSInt)(stmLeng - buffSize));
 			if (readSize == 0)
 			{
 				break;
