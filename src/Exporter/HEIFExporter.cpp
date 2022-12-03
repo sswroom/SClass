@@ -51,8 +51,13 @@ heif_error HEIFExporter_Write(struct heif_context* ctx, const void* data, size_t
 	}
 	else
 	{
+#if LIBHEIF_HAVE_VERSION(1, 2, 0)
 		heif_error.code = heif_error_Encoding_error;
 		heif_error.subcode = heif_suberror_Cannot_write_output_data;
+#else
+		heif_error.code = heif_error_Encoder_plugin_error;
+		heif_error.subcode = heif_suberror_Unspecified;
+#endif
 		heif_error.message = "Error in writing the output";
 		return heif_error;
 	}
@@ -90,9 +95,10 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		break;
 
 	case Media::PF_LE_B16G16R16:
+#if LIBHEIF_HAVE_VERSION(1, 4, 0)
 		chroma = heif_chroma_interleaved_RRGGBB_LE;
 		break;
-
+#endif
 	case Media::PF_LE_W16:
 	case Media::PF_LE_FB32G32R32:
 	case Media::PF_LE_FW32:
@@ -101,8 +107,10 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 	case Media::PF_LE_W16A16:
 	case Media::PF_LE_FB32G32R32A32:
 	case Media::PF_LE_FW32A32:
+#if LIBHEIF_HAVE_VERSION(1, 4, 0)
 		chroma = heif_chroma_interleaved_RRGGBBAA_LE;
 		break;
+#endif
 	case Media::PF_UNKNOWN:
 	default:
 		return 0;
