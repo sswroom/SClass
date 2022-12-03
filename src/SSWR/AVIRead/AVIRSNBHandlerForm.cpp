@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	while (i <= j)
 	{
 		k = this->cboType->AddItem(IO::SNBDongle::GetHandleName((IO::SNBDongle::HandleType)i), (void*)i);
-		if (i == handType)
+		if (i == (UOSInt)handType)
 		{
 			this->cboType->SetSelectedIndex(k);
 		}

@@ -523,7 +523,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 		}
 		Parser::FileParser::PNGParser parser;
 		UOSInt size;
-		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(&size), mstm.GetLength());
+		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(&size), (UOSInt)mstm.GetLength());
 		ret = (Media::ImageList*)parser.ParseFile(&mdr, 0, IO::ParserType::ImageList);
 	}
 	DEL_CLASS(cli);

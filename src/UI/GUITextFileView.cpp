@@ -1560,7 +1560,7 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textP
 		*textPosY = (UOSInt)textY;
 		return;
 	}
-	drawX = (Int32)(scnPosX + this->GetScrollHPos() - this->dispLineNumW);
+	drawX = (Int32)(scnPosX + this->GetScrollHPos() - (OSInt)this->dispLineNumW);
 	if (drawX < 0)
 	{
 		textX = 0;
