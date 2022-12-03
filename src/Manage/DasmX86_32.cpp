@@ -983,7 +983,7 @@ Bool __stdcall DasmX86_32_02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char regs[8];
 	Int32 reg;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
@@ -1116,7 +1116,7 @@ Bool __stdcall DasmX86_32_0a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[6];
 	Int32 regNo;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
@@ -1253,7 +1253,7 @@ Bool __stdcall DasmX86_32_12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char regs[8];
 	Int32 reg;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
@@ -1388,7 +1388,7 @@ Bool __stdcall DasmX86_32_1a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	Int32 regNo;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
@@ -1525,7 +1525,7 @@ Bool __stdcall DasmX86_32_22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char regs[8];
 	Int32 reg;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
@@ -1669,7 +1669,7 @@ Bool __stdcall DasmX86_32_2a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	Int32 regNo;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 	sess->regs.EIP += 1;
 
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
@@ -1802,7 +1802,7 @@ Bool __stdcall DasmX86_32_32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	Int32 regNo;
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
@@ -3744,7 +3744,7 @@ Bool __stdcall DasmX86_32_8a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char mem[64];
 	UTF8Char reg[8];
 	UInt8 memVal;
-	UInt8 *regPtr;
+	UInt8 *regPtr = 0;
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, destReg, &regPtr);
@@ -3763,7 +3763,7 @@ Bool __stdcall DasmX86_32_8b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char mem[64];
 	UTF8Char reg[8];
 	UInt32 memVal;
-	UInt32 *regPtr;
+	UInt32 *regPtr = 0;
 	sess->regs.EIP++;
 
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, 0);
@@ -3801,7 +3801,7 @@ Bool __stdcall DasmX86_32_8d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 memVal;
 	UInt32 *regPtr;
-	UInt32 memAddr;
+	UInt32 memAddr = 0;
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, &memAddr);
 	DasmX86_32_ParseReg(sess, reg, destReg, &regPtr);
@@ -11765,7 +11765,7 @@ Bool __stdcall DasmX86_32_0fB7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	Int32 regNo;
 	UInt16 memVal;
-	UInt32 *regPtr;
+	UInt32 *regPtr = 0;
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
@@ -11949,7 +11949,7 @@ Bool __stdcall DasmX86_32_0fBF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	Int32 regNo;
 	UInt16 memVal;
-	UInt32 *regPtr;
+	UInt32 *regPtr = 0;
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);

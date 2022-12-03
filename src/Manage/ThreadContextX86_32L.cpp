@@ -511,43 +511,43 @@ UTF8Char *Manage::ThreadContextX86_32::GetRegister(UOSInt index, UTF8Char *buff,
 	switch (index)
 	{
 	case 0:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EAX"));
 	case 1:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EDX"));
 	case 2:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("ECX"));
 	case 3:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EBX"));
 	case 4:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("ESI"));
 	case 5:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EDI"));
 	case 6:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("ESP"));
 	case 7:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EBP"));
 	case 8:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EIP"));
 	case 9:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
+		*(Int32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EFL];
 		*regBitCount = 32;
 		return Text::StrConcatC(buff, UTF8STRC("EFLAGS"));
 	case 10:
@@ -653,9 +653,9 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb) const
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
-	OSInt i = 0;
-	OSInt j = this->GetRegisterCnt();
-	OSInt k;
+	UOSInt i = 0;
+	UOSInt j = this->GetRegisterCnt();
+	UOSInt k;
 
 	while (i < j)
 	{
@@ -727,17 +727,17 @@ UOSInt Manage::ThreadContextX86_32::GetFrameAddr() const
 
 void Manage::ThreadContextX86_32::SetInstAddr(UOSInt instAddr)
 {
-	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP] = (UInt32)instAddr;
+	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP] = (Int32)instAddr;
 }
 
 void Manage::ThreadContextX86_32::SetStackAddr(UOSInt stackAddr)
 {
-	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP] = (UInt32)stackAddr;
+	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP] = (Int32)stackAddr;
 }
 
 void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
 {
-	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP] = (UInt32)frameAddr;
+	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP] = (Int32)frameAddr;
 }
 
 Manage::ThreadContext *Manage::ThreadContextX86_32::Clone() const
@@ -750,15 +750,15 @@ Manage::ThreadContext *Manage::ThreadContextX86_32::Clone() const
 Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 {
 	Manage::DasmX86_32::DasmX86_32_Regs *r = (Manage::DasmX86_32::DasmX86_32_Regs *)regs;
-	r->EAX = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
-	r->EDX = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
-	r->ECX = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
-	r->EBX = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
-	r->ESI = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
-	r->EDI = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
-	r->ESP = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
-	r->EBP = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
-	r->EIP = ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
+	r->EAX = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
+	r->EDX = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
+	r->ECX = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
+	r->EBX = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
+	r->ESI = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
+	r->EDI = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
+	r->ESP = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
+	r->EBP = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
+	r->EIP = (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
 
 	r->EFLAGS = ((ucontext_t*)this->context)->uc_flags;
 	r->CS = (UInt16)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_CS];
@@ -800,47 +800,47 @@ void *Manage::ThreadContextX86_32::GetContext() const
 
 UInt32 Manage::ThreadContextX86_32::GetEAX() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EAX];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetEDX() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDX];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetECX() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ECX];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetEBX() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBX];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetESI() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESI];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetEDI() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EDI];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetESP() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_ESP];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetEBP() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetEIP() const
 {
-	return ((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
+	return (UInt32)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EIP];
 }
 
 UInt32 Manage::ThreadContextX86_32::GetEFLAGS() const

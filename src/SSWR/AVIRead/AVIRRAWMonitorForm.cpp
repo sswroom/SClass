@@ -1053,7 +1053,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 		UOSInt i;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseMAC(&mutUsage);
-		cnt = mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt;
+		cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
 		if (cnt <= 16)
 		{
 			i = 0;

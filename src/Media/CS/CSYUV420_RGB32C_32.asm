@@ -35,8 +35,8 @@ global CSYUV420_RGB32C_do_yv12rgb2
 ; 108 rgbGammaCorr
 
 	align 16
-_CSYUV420_RGB32C_VerticalFilterLRGB
-CSYUV420_RGB32C_VerticalFilterLRGB
+_CSYUV420_RGB32C_VerticalFilterLRGB:
+CSYUV420_RGB32C_VerticalFilterLRGB:
 	mov eax,32768
 	push ebp
 	push ebx

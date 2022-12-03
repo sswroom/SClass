@@ -12,7 +12,7 @@ extern "C" void LanczosResizerH8_8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, 
 	OSInt *currIndex;
 	Int16 *currWeight;
 	UInt8 *currw;
-	OSInt v;
+	UOSInt v;
 	Int16x8 cvals;
 	Int16x8 cvals2;
 	Int16x8 cvals3;
