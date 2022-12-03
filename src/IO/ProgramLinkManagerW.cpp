@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/LNKFile.h"
 #include "IO/Path.h"
 #include "IO/ProgramLinkManager.h"
 #include "Manage/EnvironmentVar.h"
@@ -48,39 +49,90 @@ IO::ProgramLinkManager::~ProgramLinkManager()
 {
 }
 
-UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayList<Text::String*> *nameList, Bool allUser, Bool thisUser)
+UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
 {
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char path[512];
-	UOSInt ret = 0;
-	if (allUser)
-	{
-		sptr = Manage::EnvironmentVar::GetEnvValue(sbuff, CSTR("ProgramData"));
-		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
-		{
-			*sptr++ = IO::Path::PATH_SEPERATOR;
-		}
-		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\Windows\\Start Menu\\Programs"));
-		ret += GetLinkNamesDir(nameList, path, path, sbuff, sptr);
-	}
+	UTF8Char *sptr;	
 	if (thisUser)
 	{
-		sptr = IO::Path::GetUserHome(sbuff);
+		sptr = IO::Path::GetUserHome(buff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC("AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs"));
-		path[0] = '*';
-		ret += GetLinkNamesDir(nameList, path, path + 1, sbuff, sptr);
 	}
-	return 0;
+	else
+	{
+		sptr = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("ProgramData"));
+		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+		{
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+		}
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\Windows\\Start Menu\\Programs"));
+	}
+	return sptr;
+}
+
+UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayList<Text::String*> *nameList, Bool allUser, Bool thisUser)
+{
+	UTF8Char linkPath[512];
+	UTF8Char *linkPathEnd;
+	UTF8Char filePath[512];
+	UOSInt ret = 0;
+	if (allUser)
+	{
+		linkPathEnd = GetLinkPath(linkPath, false);
+		ret += GetLinkNamesDir(nameList, linkPath, linkPathEnd, filePath, filePath);
+	}
+	if (allUser)
+	{
+		linkPathEnd = GetLinkPath(linkPath, true);
+		*filePath = '*';
+		ret += GetLinkNamesDir(nameList, linkPath, linkPathEnd, filePath, filePath + 1);
+	}
+	return ret;
 }
 
 Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLink *link)
 {
-	return false;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	if (linkName.v[0] == '*')
+	{
+		sptr = this->GetLinkPath(sbuff, this);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = linkName.Substring(1).ConcatTo(sptr);
+	}
+	else
+	{
+		sptr = this->GetLinkPath(sbuff, false);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = linkName.ConcatTo(sptr);
+	}
+	IO::LNKFile lnk(CSTRP(sbuff, sptr));
+	if (lnk.IsError())
+		return false;
+	if ((sptr = lnk.GetNameString(sbuff)) != 0)
+		link->SetComment(CSTRP(sbuff, sptr));
+	if ((sptr = lnk.GetLocalBasePath(sbuff)) != 0 || (sptr = lnk.GetRelativePath(sbuff)) != 0)
+	{
+		sptr2 = sptr;
+		*sptr2++ = ' ';
+		sptr2 = lnk.GetCommandLineArguments(sptr2);
+		if (sptr2)
+		{
+			link->SetCmdLine(CSTRP(sbuff, sptr2));
+		}
+		else
+		{
+			*sptr = 0;
+			link->SetCmdLine(CSTRP(sbuff, sptr));
+		}
+	}
+	if ((sptr = lnk.GetIconLocation(sbuff)) != 0)
+		link->SetIcon(CSTRP(sbuff, sptr));
+	return true;
 }
 
 Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
