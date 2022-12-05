@@ -3,6 +3,12 @@
 #include "IO/Path.h"
 #include "IO/ProgramLinkManager.h"
 #include "Manage/EnvironmentVar.h"
+#include "Text/MyStringW.h"
+#include <windows.h>
+#include <shobjidl.h>
+#include <shlguid.h>
+#undef FindNextFile
+#undef DeleteFile
 
 UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayList<Text::String*> *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
 {
@@ -10,28 +16,28 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayList<Text::String*> *n
 	UTF8Char* sptr2;
 	UOSInt ret = 0;
 	IO::Path::FindFileSession *sess;
-	*filePathEnd++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcatC(filePathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(filePath, sptr));
+	*linkPathEnd++ = IO::Path::PATH_SEPERATOR;
+	sptr = Text::StrConcatC(linkPathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(CSTRP(linkPath, sptr));
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptr = IO::Path::FindNextFile(filePathEnd, sess, 0, &pt, 0)) != 0)
+		while ((sptr = IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0)) != 0)
 		{
-			if (filePathEnd[0] != '.')
+			if (linkPathEnd[0] != '.')
 			{
 				if (pt == IO::Path::PathType::Directory)
 				{
-					sptr2 = Text::StrConcatC(linkPathEnd, filePathEnd, (UOSInt)(sptr - filePathEnd));
+					sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UOSInt)(sptr - linkPathEnd));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
-					ret += GetLinkNamesDir(nameList, linkPath, sptr2, filePath, sptr);
+					ret += GetLinkNamesDir(nameList, linkPath, sptr, filePath, sptr2);
 				}
 				else
 				{
-					if (Text::StrEndsWithICaseC(filePathEnd, (UOSInt)(sptr - filePathEnd), UTF8STRC(".LNK")))
+					if (Text::StrEndsWithICaseC(linkPathEnd, (UOSInt)(sptr - linkPathEnd), UTF8STRC(".LNK")))
 					{
-						sptr2 = Text::StrConcatC(linkPathEnd, filePathEnd, (UOSInt)(sptr - filePathEnd));
-						nameList->Add(Text::String::NewP(linkPath, sptr2));
+						sptr2 = Text::StrConcatC(filePathEnd, linkPathEnd, (UOSInt)(sptr - linkPathEnd));
+						nameList->Add(Text::String::NewP(filePath, sptr2));
 						ret++;
 					}
 				}
@@ -113,9 +119,29 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 	IO::LNKFile lnk(CSTRP(sbuff, sptr));
 	if (lnk.IsError())
 		return false;
+	UOSInt i = linkName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	if (i != INVALID_INDEX)
+	{
+		sptr = linkName.Substring(i + 1).ConcatTo(sbuff);
+	}
+	else if (linkName.v[0] == '*')
+	{
+		sptr = linkName.Substring(1).ConcatTo(sbuff);
+	}
+	else
+	{
+		sptr = linkName.ConcatTo(sbuff);
+	}
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+	if (i != INVALID_INDEX)
+	{
+		sbuff[i] = 0;
+		sptr = &sbuff[i];
+	}
+	link->SetName(CSTRP(sbuff, sptr));
 	if ((sptr = lnk.GetNameString(sbuff)) != 0)
 		link->SetComment(CSTRP(sbuff, sptr));
-	if ((sptr = lnk.GetLocalBasePath(sbuff)) != 0 || (sptr = lnk.GetRelativePath(sbuff)) != 0)
+	if ((sptr = lnk.GetTarget(sbuff)) != 0 || (sptr = lnk.GetLocalBasePath(sbuff)) != 0 || (sptr = lnk.GetRelativePath(sbuff)) != 0)
 	{
 		sptr2 = sptr;
 		*sptr2++ = ' ';
@@ -137,10 +163,110 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 
 Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
 {
+	UTF8Char sbuff[512];
+	UTF8Char* sptr;
+	HRESULT hres;
+	IShellLink* psl;
+	const WChar* wptr;
+	UOSInt i;
+
+	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl);
+	if (SUCCEEDED(hres))
+	{
+		Bool succ = false;
+		IPersistFile* ppf;
+
+		if (cmdLine.v[0] == '"')
+		{
+			i = cmdLine.IndexOf('"', 1);
+			if (i != INVALID_INDEX)
+			{
+				sptr = Text::StrConcatC(sbuff, &cmdLine.v[1], i - 1);
+				i++;
+			}
+			else
+			{
+				sptr = cmdLine.ConcatTo(sbuff);
+			}
+		}
+		else
+		{
+			i = cmdLine.IndexOf(' ');
+			if (i == INVALID_INDEX)
+			{
+				sptr = cmdLine.ConcatTo(sbuff);
+			}
+			else
+			{
+				sptr = Text::StrConcatC(sbuff, cmdLine.v, i);
+			}
+		}
+		wptr = Text::StrToWCharNew(sbuff);
+		psl->SetPath(wptr);
+		Text::StrDelNew(wptr);
+
+		if (i != INVALID_INDEX)
+		{
+			while (i < cmdLine.leng)
+			{
+				if (cmdLine.v[i] != ' ')
+					break;
+				i++;
+			}
+			if (i < cmdLine.leng)
+			{
+				wptr = Text::StrToWCharNew(&cmdLine.v[i]);
+				psl->SetArguments(wptr);
+				Text::StrDelNew(wptr);
+			}
+		}
+		if (comment.leng > 0)
+		{
+			wptr = Text::StrToWCharNew(comment.v);
+			psl->SetDescription(wptr);
+			Text::StrDelNew(wptr);
+		}
+
+		hres = psl->QueryInterface(IID_IPersistFile, (LPVOID*)&ppf);
+
+		if (SUCCEEDED(hres))
+		{
+			WCHAR wsz[MAX_PATH];
+			sptr = GetLinkPath(sbuff, thisUser);
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrConcatC(linkName.ConcatTo(sptr), UTF8STRC(".lnk"));
+			Text::StrUTF8_WChar(wsz, sbuff, 0);
+
+			hres = ppf->Save(wsz, TRUE);
+			ppf->Release();
+			if (SUCCEEDED(hres))
+			{
+				succ = true;
+			}
+		}
+		psl->Release();
+		return succ;
+	}
 	return false;
 }
 
 Bool IO::ProgramLinkManager::DeleteLink(Text::CString linkName)
 {
-	return false;
+	UTF8Char sbuff[512];
+	UTF8Char* sptr;
+	if (linkName.v[0] == '*')
+	{
+		sptr = this->GetLinkPath(sbuff, this);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = linkName.Substring(1).ConcatTo(sptr);
+	}
+	else
+	{
+		sptr = this->GetLinkPath(sbuff, false);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = linkName.ConcatTo(sptr);
+	}
+	if (linkName.IndexOf(UTF8STRC("..")) != INVALID_INDEX)
+		return false;
+	return IO::Path::DeleteFile(sbuff);
 }

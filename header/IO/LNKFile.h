@@ -27,6 +27,7 @@ namespace IO
 		UTF8Char *GetWorkingDirectory(UTF8Char *sbuff);
 		UTF8Char *GetCommandLineArguments(UTF8Char *sbuff);
 		UTF8Char *GetIconLocation(UTF8Char *sbuff);
+		UTF8Char *GetTarget(UTF8Char* sbuff);
 	};
 }
 #endif
