@@ -79,6 +79,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 		Bool ReadAllContent(IO::Stream *outStm, UOSInt buffSize, UInt64 maxSize);
+		Bool ReadAllContent(Text::StringBuilderUTF8 *sb, UOSInt buffSize, UInt64 maxSize);
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);

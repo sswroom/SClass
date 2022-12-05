@@ -2999,6 +2999,8 @@ Net/SocketMonitor.h: ../../src/Net/SocketMonitor.cpp
 @SocketMonitor.o
 Net/SocketUtil.h: ../../src/Net/SocketUtil.cpp
 @SocketUtil.o
+Net/SolarEdgeAPI.h: ../../src/Net/SolarEdgeAPI.cpp
+@SolarEdgeAPI.o
 Net/SSDPClient.h: ../../src/Net/SSDPClient.cpp
 @SSDPClient.o
 Net/SSLClient.h: ../../src/Net/SSLClient.cpp
@@ -3823,6 +3825,8 @@ SSWR/AVIRead/AVIRSNMPWalkForm.h: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 @AVIRSNMPWalkForm.o
 SSWR/AVIRead/AVIRSNSManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
 @AVIRSNSManagerForm.o
+SSWR/AVIRead/AVIRSolarEdgeForm.h: ../../src/SSWR/AVIRead/AVIRSolarEdgeForm.cpp
+@AVIRSolarEdgeForm.o
 SSWR/AVIRead/AVIRSSDPClientForm.h: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
 @AVIRSSDPClientForm.o
 SSWR/AVIRead/AVIRSSLCertKeyForm.h: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
@@ -5188,6 +5192,7 @@ SNMPUtil.o: ../../src/Net/SNMPUtil.cpp
 SocketFactory.o: ../../src/Net/SocketFactory.cpp
 SocketMonitor.o: ../../src/Net/SocketMonitor.cpp
 SocketUtil.o: ../../src/Net/SocketUtil.cpp
+SolarEdgeAPI.o: ../../src/Net/SolarEdgeAPI.cpp
 SSDPClient.o: ../../src/Net/SSDPClient.cpp
 SSLClient.o: ../../src/Net/SSLClient.cpp
 SSLEngine.o: ../../src/Net/SSLEngine.cpp
@@ -5597,6 +5602,7 @@ AVIRSNMPManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
 AVIRSNMPTrapMonitorForm.o: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
+AVIRSolarEdgeForm.o: ../../src/SSWR/AVIRead/AVIRSolarEdgeForm.cpp
 AVIRSSDPClientForm.o: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
 AVIRSSLCertKeyForm.o: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
 AVIRSSLInfoForm.o: ../../src/SSWR/AVIRead/AVIRSSLInfoForm.cpp

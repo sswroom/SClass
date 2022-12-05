@@ -293,6 +293,50 @@ Bool Net::HTTPClient::ReadAllContent(IO::Stream *outStm, UOSInt buffSize, UInt64
 	return false;
 }
 
+Bool Net::HTTPClient::ReadAllContent(Text::StringBuilderUTF8 *sb, UOSInt buffSize, UInt64 maxSize)
+{
+	UInt64 contLeng = this->GetContentLength();
+	UOSInt currPos = 0;
+	UOSInt readSize;
+	if (contLeng > 0 && contLeng <= maxSize)
+	{
+		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+		while ((readSize = this->Read(readBuff, buffSize)) > 0)
+		{
+			sb->AppendC(readBuff, readSize);
+			currPos += readSize;
+			if (currPos >= contLeng)
+			{
+				break;
+			}
+		}
+		MemFree(readBuff);
+		return currPos >= contLeng;
+	}
+	else
+	{
+		Text::CString tranEnc = this->GetTransferEncoding();
+		if (tranEnc.Equals(UTF8STRC("chunked")))
+		{
+			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+			while ((readSize = this->Read(readBuff, buffSize)) > 0)
+			{
+				sb->AppendC(readBuff, readSize);
+				currPos += readSize;
+				if (currPos > maxSize)
+				{
+					MemFree(readBuff);
+					return false;
+				}
+			}
+			MemFree(readBuff);
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
 const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
 {
 	return &this->svrAddr;

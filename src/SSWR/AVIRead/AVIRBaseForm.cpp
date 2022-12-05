@@ -182,6 +182,7 @@
 #include "SSWR/AVIRead/AVIRSNMPManagerForm.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "SSWR/AVIRead/AVIRSNSManagerForm.h"
+#include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
 #include "SSWR/AVIRead/AVIRSSDPClientForm.h"
 #include "SSWR/AVIRead/AVIRSSLInfoForm.h"
 #include "SSWR/AVIRead/AVIRStreamConvForm.h"
@@ -461,7 +462,8 @@ typedef enum
 	MNU_BING_MAPS,
 	MNU_FILE_TEXT_ENCRYPT,
 	MNU_TIMESTAMP,
-	MNU_PROGRAM_LINKS
+	MNU_PROGRAM_LINKS,
+	MNU_WEBAPI_SOLAREDGE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -727,6 +729,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Twitter"), MNU_WEBSITE_TWITTER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("755"), MNU_WEBSITE_7GOGO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Instagram"), MNU_WEBSITE_INSTAGRAM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Web API"));
+	mnu2->AddItem(CSTR("SolarEdge"), MNU_WEBAPI_SOLAREDGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Wake-On-LAN"), MNU_WOL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Other"));
 	mnu2->AddItem(CSTR("GPSDev Viewer"), MNU_GPSDEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2664,6 +2668,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRProgramLinksForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRProgramLinksForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_WEBAPI_SOLAREDGE:
+		{
+			SSWR::AVIRead::AVIRSolarEdgeForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSolarEdgeForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
