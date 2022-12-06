@@ -35,9 +35,8 @@ IO::ParserType Parser::FileParser::PCXParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[128];
 	UInt8 *dataBuff;
 	UInt8 *lineBuff;
 //	UInt8 pal[1024];
@@ -52,7 +51,6 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, 
 
 	Media::StaticImage *outImg;
 
-	fd->GetRealData(0, 128, hdr);
 	if (hdr[0] != 10 || hdr[2] != 1)
 	{
 		return 0;

@@ -41,9 +41,8 @@ IO::ParserType Parser::FileParser::JSONParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[32];
 	Text::CString fileName = fd->GetShortName();
 	Bool valid = false;
 	if (fileName.EndsWithICase(UTF8STRC(".geojson")) || fileName.EndsWithICase(UTF8STRC(".json")))
@@ -53,14 +52,11 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	if (!valid)
 		return 0;
 	UInt64 fileOfst;
-	if (fd->GetRealData(0, 32, buff) != 32)
-		return 0;
-
-	if (buff[0] == '{')
+	if (hdr[0] == '{')
 	{
 		fileOfst = 0;
 	}
-	else if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF && buff[3] == '{')
+	else if (hdr[0] == 0xEF && hdr[1] == 0xBB && hdr[2] == 0xBF && hdr[3] == '{')
 	{
 		fileOfst = 3;
 	}

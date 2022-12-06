@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::GamedatPac2Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt32 recCnt;
 	UInt8 *recBuff;
 	UInt32 i;
@@ -45,17 +44,14 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFile(IO::IStreamDa
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".dat")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (ReadInt32(&hdr[0]) != 0x454d4147 || ReadInt32(&hdr[4]) != 0x20544144 || ReadInt32(&hdr[8]) != 0x32434150)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x454d4147 || ReadInt32(&hdrBuff[4]) != 0x20544144 || ReadInt32(&hdrBuff[8]) != 0x32434150)
-		return 0;
-	recCnt = ReadUInt32(&hdrBuff[12]);
+	recCnt = ReadUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt >= 65536)
 		return 0;
 
@@ -67,6 +63,7 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFile(IO::IStreamDa
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = recCnt * 32;

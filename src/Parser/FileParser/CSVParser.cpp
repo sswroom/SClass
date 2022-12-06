@@ -44,7 +44,7 @@ IO::ParserType Parser::FileParser::CSVParser::GetParserType()
 	return IO::ParserType::Unknown;
 }
 
-IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[64];

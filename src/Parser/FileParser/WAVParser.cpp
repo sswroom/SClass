@@ -44,33 +44,32 @@ IO::ParserType Parser::FileParser::WAVParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt32 buff[4];
+	UInt8 chunkBuff[16];
 	UInt32 fileSize;
 	UInt64 currPos;
-	fd->GetRealData(0, 12, (UInt8*)buff);
-	if (buff[0] != *(UInt32*)"RIFF")
+	if (ReadNUInt32(&hdr[0]) != *(UInt32*)"RIFF")
 		return 0;
-	if (buff[2] != *(UInt32*)"WAVE")
+	if (ReadNUInt32(&hdr[8]) != *(UInt32*)"WAVE")
 		return 0;
-	fileSize = (UInt32)buff[1] + 8;
+	fileSize = ReadUInt32(&hdr[4]) + 8;
 
 	Media::MediaFile *vid;
 	UInt8 *fmt = 0;
 	currPos = 12;
 	while (currPos < fileSize)
 	{
-		fd->GetRealData(currPos, 8, (UInt8*)buff);
+		fd->GetRealData(currPos, 8, (UInt8*)chunkBuff);
 		
-		if (buff[0] == *(UInt32*)"fmt ")
+		if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"fmt ")
 		{
 			if (fmt)
 				MemFree(fmt);
-			fmt = MemAlloc(UInt8, buff[1]);
-			fd->GetRealData(currPos + 8, buff[1], fmt);
+			fmt = MemAlloc(UInt8, ReadUInt32(&chunkBuff[4]));
+			fd->GetRealData(currPos + 8, ReadUInt32(&chunkBuff[4]), fmt);
 		}
-		else if (buff[0] == *(UInt32*)"data")
+		else if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"data")
 		{
 			if (fmt)
 			{
@@ -89,7 +88,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 					af.extra = 0;
 
 					Media::LPCMSource *src;
-					NEW_CLASS(src, Media::LPCMSource(fd, currPos + 8, buff[1], &af, fd->GetFullName()));
+					NEW_CLASS(src, Media::LPCMSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), &af, fd->GetFullName()));
 
 					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
@@ -100,7 +99,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::AC3BlockParser ac3Parser;
-					IO::IStreamData *data = fd->GetPartialData(currPos + 8, buff[1]);
+					IO::IStreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = ac3Parser.ParseStreamData(data);
 					DEL_CLASS(data);
 					if (src)
@@ -120,7 +119,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP3BlockParser mp3Parser;
-					IO::IStreamData *data = fd->GetPartialData(currPos + 8, buff[1]);
+					IO::IStreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = mp3Parser.ParseStreamData(data);
 					DEL_CLASS(data);
 					if (src)
@@ -140,7 +139,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					Media::AudioBlockSource *src;
 					Media::BlockParser::MP2BlockParser mp2Parser;
-					IO::IStreamData *data = fd->GetPartialData(currPos + 8, buff[1]);
+					IO::IStreamData *data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
 					src = mp2Parser.ParseStreamData(data);
 					DEL_CLASS(data);
 					if (src)
@@ -162,7 +161,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 					af.FromWAVEFORMATEX(fmt);
 					
 					Media::AudioFixBlockSource *src;
-					NEW_CLASS(src, Media::AudioFixBlockSource(fd, currPos + 8, buff[1], &af, fd->GetFullName()));
+					NEW_CLASS(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), &af, fd->GetFullName()));
 
 					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
@@ -171,14 +170,14 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFile(IO::IStreamData *fd, 
 				}
 			}
 		}
-		else if (buff[0] & 0x80808080)
+		else if (ReadUInt32(&chunkBuff[0]) & 0x80808080)
 		{
 			if (fmt)
 				MemFree(fmt);
 			return 0;
 		}
 
-		currPos += (UInt32)buff[1] + 8;
+		currPos += ReadUInt32(&chunkBuff[4]) + 8;
 	}
 	if (fmt)
 		MemFree(fmt);

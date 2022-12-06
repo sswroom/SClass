@@ -34,11 +34,9 @@ IO::ParserType Parser::FileParser::SZSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SZSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[16];
 	UInt8 fileBuff[272];
-	Text::Encoding enc(932);
 	UTF8Char sbuff[257];
 	UTF8Char *sptr;
 	OSInt i;
@@ -50,12 +48,12 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 	IO::PackageFile *pf = 0;
 	UInt64 fileLen = fd->GetDataSize();
 
-	fd->GetRealData(0, 16, hdr);
 	if (!Text::StrStartsWithC(hdr, 16, UTF8STRC("SZS100__")))
 		return 0;
 	fileCnt = ReadInt32(&hdr[12]);
 	if (fileCnt <= 0)
 		return 0;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	ofst = 16;
 	minOfst = 16 + 272 * (UInt32)fileCnt;

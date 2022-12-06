@@ -31,11 +31,9 @@ IO::ParserType Parser::FileParser::AC3Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AC3Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::AC3Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
-	fd->GetRealData(0, 32, buff);
-	if (buff[0] != 0x0b || buff[1] != 0x77)
+	if (hdr[0] != 0x0b || hdr[1] != 0x77)
 	{
 		return 0;
 	}

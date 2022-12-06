@@ -5,6 +5,15 @@
 #include "IO/StmData/FileData.h"
 #include "Text/MyString.h"
 
+#define HDRSIZE 512
+
+IO::ParsedObject *IO::FileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+{
+	UInt8 hdr[HDRSIZE];
+	fd->GetRealData(0, HDRSIZE, hdr);
+	return ParseFileHdr(fd, pkgFile, targetType, hdr);
+}
+
 IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 {
 	IO::PackageFile *pkg = 0;
@@ -23,3 +32,5 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 	SDEL_CLASS(pkg);
 	return pobj;
 }
+
+const UOSInt IO::FileParser::hdrSize = HDRSIZE;

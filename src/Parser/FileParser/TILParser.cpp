@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::TILParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TILParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt64 dirOfst;
 	UInt64 fileSize;
 	Int32 flags;
@@ -42,15 +41,13 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *srcPtr;
 	IO::PackageFile *pf;
 
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
-		return 0;
-	if (hdrBuff[0] != 'S' || hdrBuff[1] != 'T' || hdrBuff[2] != 'i' || hdrBuff[3] != 'l')
+	if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
 		return 0;
 	
 	Data::DateTime dt;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	dirOfst = ReadUInt64(&hdrBuff[8]);
-	flags = ReadInt32(&hdrBuff[4]);
+	dirOfst = ReadUInt64(&hdr[8]);
+	flags = ReadInt32(&hdr[4]);
 	fileSize = fd->GetDataSize();
 	if (flags & 2)
 	{

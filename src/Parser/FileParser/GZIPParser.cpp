@@ -32,18 +32,14 @@ IO::ParserType Parser::FileParser::GZIPParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[257];
 	UInt8 footer[8];
 	UTF8Char sbuff[512];
-	Text::Encoding enc(65001);
 	UOSInt byteConv = 0;
 	UInt64 fileLeng;
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 256, (UInt8*)hdr);
-	hdr[256] = 0;
 	if (hdr[0] != 0x1f || hdr[1] != 0x8b || hdr[2] != 8)
 	{
 		return 0;

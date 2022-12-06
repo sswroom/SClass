@@ -34,12 +34,10 @@ IO::ParserType Parser::FileParser::NS2Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 testBuff[256];
 	UInt8 *hdrBuff;
 	UInt32 hdrSize;
-	Text::Encoding enc(932);
 	UInt64 fileOfst;
 	UInt32 fileSize;
 	UTF8Char sbuff[512];
@@ -47,23 +45,23 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	UOSInt j;
 
-	fd->GetRealData(0, 256, testBuff);
-	if (testBuff[4] != '"')
+	if (hdr[4] != '"')
 		return 0;
 	i = 5;
 	while (i < 32)
 	{
-		if (testBuff[i] == '"')
+		if (hdr[i] == '"')
 			break;
 		i++;
 	}
 	if (i >= 32)
 		return 0;
-	if (testBuff[i + 5] != '"')
+	if (hdr[i + 5] != '"')
 		return 0;
 
 	IO::PackageFile *pf;
-	hdrSize = ReadUInt32(&testBuff[0]);
+	Text::Encoding enc(932);
+	hdrSize = ReadUInt32(&hdr[0]);
 	hdrBuff = MemAlloc(UInt8, hdrSize);
 	fd->GetRealData(0, hdrSize, hdrBuff);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));

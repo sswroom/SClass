@@ -3,9 +3,9 @@
 #include "IO/FileCheck.h"
 #include "IO/Path.h"
 #include "IO/StreamDataStream.h"
-#include "IO/StreamReader.h"
 #include "Parser/FileParser/SFVParser.h"
 #include "Text/MyString.h"
+#include "Text/UTF8Reader.h"
 
 Parser::FileParser::SFVParser::SFVParser()
 {
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::SFVParser::GetParserType()
 	return IO::ParserType::FileCheck;
 }
 
-IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SFVParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -51,12 +51,10 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	IO::StreamDataStream *stm;
-	IO::StreamReader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, IO::StreamReader(stm, 65001));
+	IO::StreamDataStream stm(fd);
+	Text::UTF8Reader reader(&stm);
 	NEW_CLASS(fchk, IO::FileCheck(fd->GetFullName(), ctype));
-	while ((sptr = reader->ReadLine(sbuff, 512)) != 0)
+	while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
 	{
 		if (sptr - sbuff > (OSInt)(chkSize << 1) + 2)
 		{
@@ -76,7 +74,5 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 		{
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return fchk;
 }

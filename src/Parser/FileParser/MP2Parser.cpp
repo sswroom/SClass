@@ -31,11 +31,9 @@ IO::ParserType Parser::FileParser::MP2Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MP2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MP2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
-	fd->GetRealData(0, 32, buff);
-	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)
+	if (hdr[0] != 0xff || (hdr[1] & 0xfe) != 0xfc)
 	{
 		return 0;
 	}

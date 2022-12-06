@@ -31,14 +31,16 @@ IO::ParserType Parser::FileParser::M2VStmParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VStmParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::M2VStmParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
+	if (ReadMInt32(hdr) != 0x1b3)
+		return 0;
 	UInt8 tmpBuff[1024];
 	UOSInt readSize = fd->GetRealData(0, 1024, tmpBuff);
-	Media::FrameInfo info;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UInt64 bitRate;
+	Media::FrameInfo info;
 	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, &info, &frameRateNorm, &frameRateDenorm, &bitRate, false))
 		return 0;
 

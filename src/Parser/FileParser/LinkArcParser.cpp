@@ -33,9 +33,8 @@ IO::ParserType Parser::FileParser::LinkArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[32];
 	UInt64 currOfst;
 	UInt8 nameSize;
 	UInt8 recBuff[256];
@@ -51,11 +50,9 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 32, hdrBuff) != 32)
+	if (ReadInt32(&hdr[0]) != 0x4b4e494c || ReadInt16(&hdr[4]) != 0x36)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x4b4e494c || ReadInt16(&hdrBuff[4]) != 0x36)
-		return 0;
-	nameSize = hdrBuff[7];
+	nameSize = hdr[7];
 	if (nameSize > fd->GetShortName().leng - 4)
 		return 0;
 	currOfst = 8 + (UOSInt)nameSize;

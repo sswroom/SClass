@@ -103,12 +103,9 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	return simg;
 }
 
-IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[24];
-	if (fd->GetRealData(0, 24, buff) != 24)
-		return 0;
-	if (ReadNInt32(&buff[4]) != *(Int32*)"ftyp" || (ReadNInt32(&buff[8]) != *(Int32*)"mif1" && ReadNInt32(&buff[8]) != *(Int32*)"heic"))
+	if (ReadNInt32(&hdr[4]) != *(Int32*)"ftyp" || (ReadNInt32(&hdr[8]) != *(Int32*)"mif1" && ReadNInt32(&hdr[8]) != *(Int32*)"heic"))
 		return 0;
 	
 	UInt64 fileLen = fd->GetDataSize();

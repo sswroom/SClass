@@ -32,54 +32,55 @@ IO::ParserType Parser::FileParser::MajiroArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-typedef struct
+/*typedef struct
 {
 	Char idChars[16];
 	UInt32 fileCnt;
 	UInt32 fileNameOfst;
 	UInt32 fileNameEndOfst;
-} ARCHeader;
+} ARCHeader;*/
 
-typedef struct
+/*typedef struct
 {
 	UInt8 fileCheck[8];
 	UInt32 recOfst;
 	UInt32 recSize;
-} ARCRecord;
+} ARCRecord;*/
 
-IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	ARCHeader hdr;
-	ARCRecord *recBuff;
+	UInt8 *recBuff;
 	UInt8 *fileNameBuff;
 	UInt8 *fileNamePtr;
 	UInt8 *fileNamePtr2;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UInt32 i;
-	Text::Encoding enc(932);
 
-	fd->GetRealData(0, 28, (UInt8*)&hdr);
-	if (!Text::StrEquals(hdr.idChars, "MajiroArcV3.000"))
+	if (!Text::StrEquals((const Char*)hdr, "MajiroArcV3.000"))
 	{
 		return 0;
 	}
-	fileNameBuff = MemAlloc(UInt8, hdr.fileNameEndOfst - hdr.fileNameOfst);
-	fd->GetRealData(hdr.fileNameOfst, hdr.fileNameEndOfst - hdr.fileNameOfst, fileNameBuff);
-	recBuff = MemAlloc(ARCRecord, hdr.fileCnt);
-	fd->GetRealData(28, sizeof(ARCRecord) * hdr.fileCnt, (UInt8*)recBuff);
+	UInt32 fileCnt = ReadUInt32(&hdr[16]);
+	UInt32 fileNameOfst = ReadUInt32(&hdr[20]);
+	UInt32 fileNameEndOfst = ReadUInt32(&hdr[24]);
+	fileNameBuff = MemAlloc(UInt8, fileNameEndOfst - fileNameOfst);
+	fd->GetRealData(fileNameOfst, fileNameEndOfst - fileNameOfst, fileNameBuff);
+	recBuff = MemAlloc(UInt8, fileCnt * 16);
+	fd->GetRealData(28, 16 * fileCnt, (UInt8*)recBuff);
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	fileNamePtr = fileNameBuff;
 	i = 0;
 	
-	while (i < hdr.fileCnt)
+	while (i < fileCnt)
 	{
 		fileNamePtr2 = fileNamePtr;
 		while (*fileNamePtr2++);
 		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr, (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
-		pf->AddData(fd, recBuff[i].recOfst, recBuff[i].recSize, CSTRP(sbuff, sptr), 0);
+		pf->AddData(fd, ReadUInt32(&recBuff[i * 16 + 8]), ReadUInt32(&recBuff[i * 16 + 12]), CSTRP(sbuff, sptr), 0);
 
 		fileNamePtr = fileNamePtr2;
 		i++;

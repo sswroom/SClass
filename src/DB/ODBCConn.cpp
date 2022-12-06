@@ -189,14 +189,14 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
 				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				s = Text::String::NewNotNull(tmpBuff);
+				s = Text::String::NewNotNull((const UTF16Char*)tmpBuff);
 				sb.AppendC(s->v, s->leng);
 				s->Release();
 				MemFree(tmpBuff);				
 			}
 			else
 			{
-				s = Text::String::NewNotNull(msg);
+				s = Text::String::NewNotNull((const UTF16Char*)msg);
 				sb.AppendC(s->v, s->leng);
 				s->Release();
 			}
@@ -269,7 +269,7 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 	SQLSMALLINT outSize;
 	UOSInt outMaxSize = Text::StrUTF8_UTF16CntC(connStr->v, connStr->leng);
 	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, outMaxSize + 2);
-	SQLWCHAR *connEnd = Text::StrUTF8_UTF16C(connBuff, connStr->v, connStr->leng, 0);
+	SQLWCHAR *connEnd = (SQLWCHAR*)Text::StrUTF8_UTF16C((UTF16Char*)connBuff, connStr->v, connStr->leng, 0);
 	connEnd[0] = 0;
 	connEnd[1] = 0;
 	outSize = 0;
@@ -296,14 +296,14 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
 				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				s = Text::String::NewNotNull(tmpBuff);
+				s = Text::String::NewNotNull((const UTF16Char*)tmpBuff);
 				sb.Append(s);
 				s->Release();
 				MemFree(tmpBuff);				
 			}
 			else
 			{
-				s = Text::String::NewNotNull(msg);
+				s = Text::String::NewNotNull((const UTF16Char*)msg);
 				sb.Append(s);
 				s->Release();
 			}
@@ -786,7 +786,7 @@ Bool DB::ODBCConn::IsLastDataError()
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
 		state[5] = 0;
-		Text::String *s = Text::String::New(state, 5);
+		Text::String *s = Text::String::New((const UTF16Char*)state, 5);
 		Bool ret = false;
 		if (s->Equals(UTF8STRC("23000")))
 			ret = true;
@@ -2236,7 +2236,7 @@ UTF8Char *DB::ODBCReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	Int16 notNull;
 	SQLWCHAR sbuff[256];
 	SQLDescribeColW((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(colIndex + 1), sbuff, 512, &nameLen, &dataType, (SQLULEN*)&colSize, &decimalDigit, &notNull);
-	return Text::StrUTF16_UTF8(buff, sbuff);
+	return Text::StrUTF16_UTF8(buff, (const UTF16Char*)sbuff);
 }
 
 Bool DB::ODBCReader::IsNull(UOSInt colIndex)

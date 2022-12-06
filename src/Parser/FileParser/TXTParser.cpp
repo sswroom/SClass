@@ -61,7 +61,7 @@ IO::ParserType Parser::FileParser::TXTParser::GetParserType()
 	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char baseDir[256];

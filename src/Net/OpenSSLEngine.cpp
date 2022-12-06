@@ -464,22 +464,23 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		UInt8 buff[4096];
 		Crypto::Cert::X509File *pobjKey = 0;
 		Crypto::Cert::X509Cert *pobjCert = 0;
-		Parser::FileParser::X509Parser parser;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
-			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
+			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, readSize, fileName);
+			fileName->Release();
 		}
 		PEM_write_bio_X509(bio1, cert);
 		readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
-			pobjCert = (Crypto::Cert::X509Cert*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
+			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(buff, readSize, fileName);
+			fileName->Release();
 		}
 		BIO_free(bio1);
 		BIO_free(bio2);
@@ -519,19 +520,15 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		BIO *bio2;
 		UInt8 buff[4096];
 		Crypto::Cert::X509File *pobjKey = 0;
-		Parser::FileParser::X509Parser parser;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 		PEM_write_bio_RSAPrivateKey(bio1, rsa, nullptr, nullptr, 0, nullptr, nullptr);
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
-			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
-			if (pobjKey)
-			{
-				pobjKey->SetSourceName(CSTR("RSAKey.key"));
-			}
+			Text::String *fileName = Text::String::New(UTF8STRC("RSAKey.key"));
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, readSize, fileName);
+			fileName->Release();
 		}
 		BIO_free(bio1);
 		BIO_free(bio2);

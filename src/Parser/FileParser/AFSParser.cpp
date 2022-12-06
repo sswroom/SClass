@@ -32,20 +32,18 @@ IO::ParserType Parser::FileParser::AFSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::PackageFile *pf;
 	UTF8Char sbuff[9];
 	UTF8Char *namePtr;
 	UInt32 fileCnt;
 	UInt32 i;
-	UInt8 buff[8];
 	UInt8 *buff2;
 	UInt32 ofst;
 	UInt32 leng;
 
-	fd->GetRealData(0, 8, buff);
-	if (*(Int32*)buff != *(Int32*)"AFS")
+	if (*(Int32*)hdr != *(Int32*)"AFS")
 		return 0;
 	sbuff[0] = 'A';
 	sbuff[1] = 'F';
@@ -57,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, 
 	sbuff[7] = '0';
 	sbuff[8] = 0;
 
-	fileCnt = ReadUInt32(&buff[4]);
+	fileCnt = ReadUInt32(&hdr[4]);
 	buff2 = MemAlloc(UInt8, fileCnt << 3);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);

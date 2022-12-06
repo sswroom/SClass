@@ -2571,15 +2571,11 @@ IO::ParserType Parser::FileParser::PNGParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[12];
 	UInt8 *chunkData;
 	UInt64 ofst;
-	if (fd->GetRealData(0, 8, buff) != 8)
-		return 0;
-
-	if (buff[0] != 0x89 && buff[1] != 0x50 && buff[2] != 0x4e && buff[3] != 0x47 && buff[4] != 0x0d && buff[5] != 0x0a && buff[6] != 0x1a && buff[7] != 0x0a)
+	if (hdr[0] != 0x89 && hdr[1] != 0x50 && hdr[2] != 0x4e && hdr[3] != 0x47 && hdr[4] != 0x0d && hdr[5] != 0x0a && hdr[6] != 0x1a && hdr[7] != 0x0a)
 	{
 		return 0;
 	}
@@ -2604,6 +2600,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 imgW = 0;
 	UInt32 imgH = 0;
 	UInt8 *palette = 0;
+	UInt8 buff[8];
 
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));
 

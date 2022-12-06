@@ -23,14 +23,13 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		Data::DateTime dt;
+		Data::Timestamp ts = 0;
 		Text::StringBuilderUTF8 sb;
 		while (i < j)
 		{
 			sb.ClearStr();
-			this->logFile->GetLogMessage(this->logLevel, i, &dt, &sb, Text::LineBreakType::CRLF);
-			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff);
+			this->logFile->GetLogMessage(this->logLevel, i, &ts, &sb, Text::LineBreakType::CRLF);
+			sptr = ts.ToLocalTime().ToString(sbuff);
 			k = this->lvLogs->AddItem(CSTRP(sbuff, sptr), 0);
 			this->lvLogs->SetSubItem(k, 1, sb.ToCString());
 
@@ -93,7 +92,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 			dlg.AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
 			if (dlg.ShowDialog(this->hwnd))
 			{
-				Data::DateTime dt;
+				Data::Timestamp ts = 0;
 				Text::StringBuilderUTF8 sb;
 				UOSInt i;
 				UOSInt j;
@@ -105,9 +104,8 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("\t"));
-					this->logFile->GetLogMessage(this->logLevel, i, &dt, &sb, Text::LineBreakType::CRLF);
-					dt.ToLocalTime();
-					sptr = dt.ToString(sbuff);
+					this->logFile->GetLogMessage(this->logLevel, i, &ts, &sb, Text::LineBreakType::CRLF);
+					sptr = ts.ToLocalTime().ToString(sbuff);
 					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					i++;

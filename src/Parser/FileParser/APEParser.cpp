@@ -31,12 +31,10 @@ IO::ParserType Parser::FileParser::APEParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::APEParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::APEParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 #ifdef ENABLE_APE
-	UInt8 buff[32];
-	fd->GetRealData(0, 32, buff);
-	if (*(Int32*)&buff[0] != *(Int32*)"MAC ")
+	if (*(Int32*)&hdr[0] != *(Int32*)"MAC ")
 	{
 		return 0;
 	}

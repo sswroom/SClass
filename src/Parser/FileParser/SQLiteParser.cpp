@@ -37,10 +37,8 @@ IO::ParserType Parser::FileParser::SQLiteParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[32];
-	fd->GetRealData(0, 32, hdr);
 	if (!Text::StrStartsWithC(hdr, 32, UTF8STRC("SQLite format 3")))
 		return 0;
 	if (fd->IsFullFile())
@@ -58,13 +56,11 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		Data::DateTime t;
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		t.SetCurrTimeUTC();
-		sptr = Text::StrHexVal64(sptr, (UInt64)t.ToTicks());
+		sptr = Text::StrHexVal64(sptr, (UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 		*sptr++ = '_';
 		sptr = fd->GetShortName().ConcatTo(sptr);
 

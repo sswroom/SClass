@@ -57,9 +57,8 @@ IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[8];
 	Media::EXIFData::RInt32Func readInt32;
 	Media::EXIFData::RInt16Func readInt16;
 	Media::EXIFData::RFloatFunc readFloat16;
@@ -72,8 +71,6 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 	UInt32 nextOfst;
 	UOSInt i;
 
-	if (fd->GetRealData(0, 8, hdr) != 8)
-		return 0;
 	if (*(Int16*)&hdr[0] == *(Int16*)"MM")
 	{
 		readInt16 = Media::EXIFData::TReadMInt16;

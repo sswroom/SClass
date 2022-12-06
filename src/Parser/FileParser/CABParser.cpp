@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::CABParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::CABParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CABParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[32];
 //	UInt32 coffFiles;
 //	UInt16 cFolders;
 //	UInt16 cFiles;
@@ -50,13 +49,10 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
-	if (fd->GetRealData(0, 32, hdrBuff) != 32)
+	if (ReadInt32(&hdr[0]) != 0x4643534d || ReadInt32(&hdr[4]) != 0 || ReadInt32(&hdr[12]) != 0 || ReadInt32(&hdr[20]) != 0)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x4643534d || ReadInt32(&hdrBuff[4]) != 0 || ReadInt32(&hdrBuff[12]) != 0 || ReadInt32(&hdrBuff[20]) != 0)
-		return 0;
-	if (ReadUInt32(&hdrBuff[4]) != fd->GetDataSize())
+	if (ReadUInt32(&hdr[4]) != fd->GetDataSize())
 		return 0;
 	return 0;
 	/////////////////////////////////////
@@ -64,13 +60,14 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFile(IO::IStreamData *fd, 
 //	cFolders = ReadUInt16(&hdrBuff[26]);
 //	cFiles = ReadUInt16(&hdrBuff[28]);
 
-	dataOfst = ReadUInt32(&hdrBuff[4]);
-	recSize = ReadUInt32(&hdrBuff[8]);
+	dataOfst = ReadUInt32(&hdr[4]);
+	recSize = ReadUInt32(&hdr[8]);
 	if (recSize % 40 != 0 || dataOfst > fd->GetDataSize())
 		return 0;
 	if (dataOfst - recSize != 273)
 		return 0;
-	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
+	Text::Encoding enc(932);
+	sptr = enc.UTF8FromBytes(fileName, &hdr[12], 255, 0);
 	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
 	{
 		return 0;

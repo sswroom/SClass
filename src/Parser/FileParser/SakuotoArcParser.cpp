@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::SakuotoArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt8 *recBuff;
 	UInt64 dataOfst;
 	UInt32 recCnt;
@@ -46,12 +45,10 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFile(IO::IStreamDat
 	UInt32 nextOfst;
 	UTF16Char *fileName;
 
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (ReadInt32(&hdr[12]) != 0)
 		return 0;
-	if (ReadInt32(&hdrBuff[12]) != 0)
-		return 0;
-	recCnt = ReadUInt32(&hdrBuff[0]);
-	recSize = ReadUInt32(&hdrBuff[4]);
+	recCnt = ReadUInt32(&hdr[0]);
+	recSize = ReadUInt32(&hdr[4]);
 	if (recCnt == 0 || recCnt >= 65536)
 		return 0;
 	if (recSize < recCnt * 10 || recSize >= 1048576)

@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::PLTParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[40];
 	UTF8Char sbuff[1024];
@@ -49,45 +49,41 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], L"PLT") != 0)
 		return 0;*/
-	fd->GetRealData(0, 37, buff);
-	buff[37] = 0;
-	if (!Text::StrEqualsICaseC(buff, 37, UTF8STRC("OziExplorer Track Point File Version ")))
+	if (!Text::StrEqualsC(hdr, 37, UTF8STRC("OziExplorer Track Point File Version ")))
 		return 0;
 
-	IO::StreamDataStream *stm;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, Text::UTF8Reader(stm));
+	IO::StreamDataStream stm(fd);
+	Text::UTF8Reader reader(&stm);
 
 	valid = true;
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Track Point File Version ")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Altitude is in Feet")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
 	if (valid)
 	{
-		reader->ReadLine(sbuff, 1024);
-		reader->ReadLine(sbuff, 1024);
+		reader.ReadLine(sbuff, 1024);
+		reader.ReadLine(sbuff, 1024);
 		UOSInt cnt;
 
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, 0));
-		while (reader->ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024))
 		{
 			cnt = Text::StrSplitTrim(tmpArr, 6, sbuff, ',');
 			if (cnt == 6 || cnt == 5)
@@ -120,7 +116,5 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, 
 			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return track;
 }

@@ -96,7 +96,7 @@ UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel) const
 	}
 }
 
-Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
+Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const
 {
 	if (logLevel == IO::ILogHandler::LogLevel::Raw)
 	{
@@ -109,7 +109,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 			UInt64 pos = this->logPos.GetItem(index);
 			UInt32 size = this->logSize.GetItem(index);
 			this->fd->GetRealData(pos, size, this->logBuff);
-			dt->SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
+			*ts = Data::Timestamp::FromEpochSec(*(UInt32*)&this->logBuff[4], 0);
 			return ParseLog(&this->logBuff[8], size - 8, sb, false);
 		}
 		index = index >> 1;
@@ -132,7 +132,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 	UInt64 pos = this->logPos.GetItem(index);
 	UInt32 size = this->logSize.GetItem(index);
 	this->fd->GetRealData(pos, size, this->logBuff);
-	dt->SetUnixTimestamp(*(UInt32*)&this->logBuff[4]);
+	*ts = Data::Timestamp::FromEpochSec(*(UInt32*)&this->logBuff[4], 0);
 	sb->AppendHexBuff(&this->logBuff[8], size - 8, ' ', lineBreak);
 	return true;
 }

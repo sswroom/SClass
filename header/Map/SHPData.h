@@ -39,7 +39,7 @@ namespace Map
 		Double mapRate;
 
 	public:
-		SHPData(UInt8 *hdr, IO::IStreamData *data, UInt32 codePage);
+		SHPData(const UInt8 *hdr, IO::IStreamData *data, UInt32 codePage);
 		virtual ~SHPData();
 
 		Bool IsError();

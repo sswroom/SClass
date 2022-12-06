@@ -29,14 +29,12 @@ IO::ParserType Parser::FileParser::UDPParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::UDPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::UDPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("UDP")))
 		return 0;
 
-	fd->GetRealData(0, 256, buff);
-	if (buff[0] == 0xaa && buff[1] == 0xbb)
+	if (hdr[0] == 0xaa && hdr[1] == 0xbb)
 	{
 		IO::UDPLog *log;
 		NEW_CLASS(log, IO::UDPFileLog(fd));

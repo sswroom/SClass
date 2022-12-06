@@ -38,12 +38,10 @@ IO::ParserType Parser::FileParser::GIFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[13];
 //	UInt8 ver;
 
-	fd->GetRealData(0, 13, hdr);
 	if (hdr[0] != 'G' || hdr[1] != 'I' || hdr[2] != 'F')
 	{
 		return 0;

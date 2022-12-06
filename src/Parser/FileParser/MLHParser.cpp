@@ -41,9 +41,8 @@ typedef struct
 	Int32 unk;
 } MLHFileInfo;
 
-IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[64];
 //	UInt32 fileSize;
 	UInt32 fileCnt;
 	UInt32 fileOfst;
@@ -53,7 +52,6 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[17];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 64, hdr);
 	if (!Text::StrEquals((const Char*)hdr, "MLH ENCODE 1.04  (C) MAEHASHI"))
 		return 0;
 

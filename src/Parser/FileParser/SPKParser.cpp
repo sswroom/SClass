@@ -53,9 +53,8 @@ IO::ParserType Parser::FileParser::SPKParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[24];
 	UInt64 dirOfst;
 	UInt64 fileSize;
 	UInt32 fnameLen;
@@ -67,13 +66,11 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char *srcPtr;
 	UTF8Char *srcPtr2;
 
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
-		return 0;
-	if (hdrBuff[0] != 'S' || hdrBuff[1] != 'm' || hdrBuff[2] != 'p' || hdrBuff[3] != 'f')
+	if (hdr[0] != 'S' || hdr[1] != 'm' || hdr[2] != 'p' || hdr[3] != 'f')
 		return 0;
 
-	flags = ReadInt32(&hdrBuff[4]);
-	dirOfst = ReadUInt64(&hdrBuff[8]);
+	flags = ReadInt32(&hdr[4]);
+	dirOfst = ReadUInt64(&hdr[8]);
 	fileSize = fd->GetDataSize();
 	if (dirOfst < 16 || dirOfst > fileSize)
 		return 0;
@@ -89,9 +86,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 		{
 			i = 16;
 		}
-		fd->GetRealData(i, 8, hdrBuff);
-		customType = ReadInt32(&hdrBuff[0]);
-		customSize = ReadUInt32(&hdrBuff[4]);
+		customType = ReadInt32(&hdr[i + 0]);
+		customSize = ReadUInt32(&hdr[i + 4]);
 		if (customType == 1 && fd->IsFullFile() && this->sockf && this->parsers)
 		{
 			UInt8 *customBuff = MemAlloc(UInt8, customSize);
@@ -131,8 +127,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	if (flags & 2)
 	{
 		UInt64 dirSize;
-		fd->GetRealData(16, 8, &hdrBuff[16]);
-		dirSize = ReadUInt64(&hdrBuff[16]);
+		dirSize = ReadUInt64(&hdr[16]);
 		while (dirOfst != 0 && dirSize >= 16 && dirOfst + dirSize <= fileSize)
 		{
 			dirBuff = MemAlloc(UInt8, (UOSInt)dirSize);

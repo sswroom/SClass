@@ -28,7 +28,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual IO::ParsedObject *ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 		private:
 			static UOSInt ReadDataSize(MKVStatus *status, UInt64 *dataSize);
 			static UOSInt ReadID(MKVStatus *status, UInt32 *eleId);

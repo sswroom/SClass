@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::NOAParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[64];
 	UInt8 tagBuff[16];
 	UInt32 tagSize;
 	UInt32 dataOfst;
@@ -49,24 +48,20 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 	Data::DateTime dt;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NOA")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 64, hdrBuff) != 64)
-		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x69746e45 || ReadInt32(&hdrBuff[4]) != 0x1a73)
+	if (ReadInt32(&hdr[0]) != 0x69746e45 || ReadInt32(&hdr[4]) != 0x1a73)
 		return 0;
 
 	dataOfst = 64;
-	fd->GetRealData(64, 16, tagBuff);
-	if (ReadInt32(&tagBuff[0]) != 0x45726944 || ReadInt32(&tagBuff[4]) != 0x7972746e)
+	if (ReadInt32(&hdr[64]) != 0x45726944 || ReadInt32(&hdr[68]) != 0x7972746e)
 	{
 		return 0;
 	}
-	tagSize = ReadUInt32(&tagBuff[8]);
+	tagSize = ReadUInt32(&hdr[72]);
 	fd->GetRealData(64 + tagSize + 16, 16, tagBuff);
 	if (ReadInt32(&tagBuff[0]) != 0x656c6966 || ReadInt32(&tagBuff[4]) != 0x61746164)
 	{
@@ -80,6 +75,7 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 4;

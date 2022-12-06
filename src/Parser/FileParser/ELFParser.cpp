@@ -6,32 +6,32 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Int64 __stdcall Parser::FileParser::ELFParser::TReadInt64(UInt8 *pVal)
+Int64 __stdcall Parser::FileParser::ELFParser::TReadInt64(const UInt8 *pVal)
 {
 	return ReadInt64(pVal);
 }
 
-Int64 __stdcall Parser::FileParser::ELFParser::TReadMInt64(UInt8 *pVal)
+Int64 __stdcall Parser::FileParser::ELFParser::TReadMInt64(const UInt8 *pVal)
 {
 	return ReadMInt64(pVal);
 }
 
-Int32 __stdcall Parser::FileParser::ELFParser::TReadInt32(UInt8 *pVal)
+Int32 __stdcall Parser::FileParser::ELFParser::TReadInt32(const UInt8 *pVal)
 {
 	return ReadInt32(pVal);
 }
 
-Int32 __stdcall Parser::FileParser::ELFParser::TReadMInt32(UInt8 *pVal)
+Int32 __stdcall Parser::FileParser::ELFParser::TReadMInt32(const UInt8 *pVal)
 {
 	return ReadMInt32(pVal);
 }
 
-Int16 __stdcall Parser::FileParser::ELFParser::TReadInt16(UInt8 *pVal)
+Int16 __stdcall Parser::FileParser::ELFParser::TReadInt16(const UInt8 *pVal)
 {
 	return ReadInt16(pVal);
 }
 
-Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(UInt8 *pVal)
+Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(const UInt8 *pVal)
 {
 	return ReadMInt16(pVal);
 }
@@ -1379,13 +1379,8 @@ IO::ParserType Parser::FileParser::ELFParser::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[64];
-	if (fd->GetRealData(0, 56, hdr) != 56)
-	{
-		return 0;
-	}
 	if (hdr[0] != 0x7f || hdr[1] != 'E' || hdr[2] != 'L' || hdr[3] != 'F')
 	{
 		return 0;

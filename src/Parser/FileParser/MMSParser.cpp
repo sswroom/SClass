@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MMSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::PackageFile *pf;
 	UInt32 fileCnt;
@@ -39,14 +39,13 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	UInt8 *ptr;
+	const UInt8 *ptr;
 
-	fd->GetRealData(0, 256, buff);
-	if (buff[0] != 0x8c || buff[1] != 0x80)
+	if (hdr[0] != 0x8c || hdr[1] != 0x80)
 		return 0;
 
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	ptr = &buff[2];
+	ptr = &hdr[2];
 	while (*ptr & 0x80)
 	{
 		if (*ptr == 0x84)
@@ -78,7 +77,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 	}
 
 	fileCnt = *ptr++;
-	currOfst = (UOSInt)(ptr - buff);
+	currOfst = (UOSInt)(ptr - hdr);
 
 	while (fileCnt-- > 0)
 	{

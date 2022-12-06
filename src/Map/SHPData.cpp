@@ -12,7 +12,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
+Map::SHPData::SHPData(const UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

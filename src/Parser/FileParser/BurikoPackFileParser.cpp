@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::BurikoPackFileParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt32 dataOfst;
 	UInt32 recCnt;
 	UInt8 *recBuff;
@@ -45,13 +44,10 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFile(IO::IStrea
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (ReadInt32(&hdr[0]) != 0x6b636150 || ReadInt32(&hdr[4]) != 0x656c6946 || ReadInt32(&hdr[8]) != 0x20202020)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x6b636150 || ReadInt32(&hdrBuff[4]) != 0x656c6946 || ReadInt32(&hdrBuff[8]) != 0x20202020)
-		return 0;
-	recCnt = ReadUInt32(&hdrBuff[12]);
+	recCnt = ReadUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt * 32 + 16 > fd->GetDataSize())
 		return 0;
 	dataOfst = recCnt * 32 + 16;
@@ -63,6 +59,7 @@ IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFile(IO::IStrea
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 0;

@@ -30,20 +30,18 @@ IO::ParserType Parser::FileParser::LUTParser::GetParserType()
 	return IO::ParserType::LUT;
 }
 
-IO::ParsedObject *Parser::FileParser::LUTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LUTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[96];
-	fd->GetRealData(0, 96, hdrBuff);
-	if (*(Int32*)&hdrBuff[0] != *(Int32*)"3DLT" || ReadInt32(&hdrBuff[4]) != 1 || ReadInt32(&hdrBuff[84]) != 0)
+	if (*(Int32*)&hdr[0] != *(Int32*)"3DLT" || ReadInt32(&hdr[4]) != 1 || ReadInt32(&hdr[84]) != 0)
 	{
 		return 0;
 	}
-	UInt32 inputBpp = ReadUInt32(&hdrBuff[48]);
-	UInt32 outputBpp = ReadUInt32(&hdrBuff[64]);
-	UInt32 paramOfst = ReadUInt32(&hdrBuff[72]);
-	UInt32 paramSize = ReadUInt32(&hdrBuff[76]);
-	UInt32 lutOfst = ReadUInt32(&hdrBuff[80]);
-	UInt32 lutSize = ReadUInt32(&hdrBuff[92]);
+	UInt32 inputBpp = ReadUInt32(&hdr[48]);
+	UInt32 outputBpp = ReadUInt32(&hdr[64]);
+	UInt32 paramOfst = ReadUInt32(&hdr[72]);
+	UInt32 paramSize = ReadUInt32(&hdr[76]);
+	UInt32 lutOfst = ReadUInt32(&hdr[80]);
+	UInt32 lutSize = ReadUInt32(&hdr[92]);
 	UInt32 inpLev = (UInt32)(1 << inputBpp);
 //	Int32 outpLev = (1 << outputBpp);
 	UInt8 *lutTable;

@@ -34,22 +34,21 @@ IO::ParserType Parser::FileParser::XLSParser::GetParserType()
 	return IO::ParserType::Workbook;
 }
 
-IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[4096];
 	IO::ParsedObject *pobj = 0;
-	fd->GetRealData(0, 512, buff);
-	if (ReadUInt32(buff) != 0xe011cfd0 || ReadUInt32(&buff[4]) != 0xe11ab1a1)
+	if (ReadUInt32(hdr) != 0xe011cfd0 || ReadUInt32(&hdr[4]) != 0xe11ab1a1)
 	{
 		return 0;
 	}
 	UOSInt i;
 	UOSInt j;
 	UInt8 *fat;
-	UOSInt sectorSize = ((UOSInt)1 << (ReadUInt16(&buff[30])));
-//	Int32 dirCnt = ReadInt32(&buff[40]);
-	UInt32 fatCnt = ReadUInt32(&buff[44]);
-	UInt32 dirSect = ReadUInt32(&buff[48]);
+	UOSInt sectorSize = ((UOSInt)1 << (ReadUInt16(&hdr[30])));
+//	Int32 dirCnt = ReadInt32(&hdr[40]);
+	UInt32 fatCnt = ReadUInt32(&hdr[44]);
+	UInt32 dirSect = ReadUInt32(&hdr[48]);
 	if (fatCnt <= 0)
 		return 0;
 
@@ -67,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, 
 		j = 109;
 	while (i < j)
 	{
-		fd->GetRealData(sectorSize * (ReadUInt32(&buff[76 + i * 4]) + 1), sectorSize, &fat[sectorSize * i]);
+		fd->GetRealData(sectorSize * (ReadUInt32(&hdr[76 + i * 4]) + 1), sectorSize, &fat[sectorSize * i]);
 		i++;
 	}
 
@@ -90,7 +89,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, 
 				modifyDt.SetValueSYSTEMTIME(&buff[i + 108]);
 			}
 
-			if (Text::StrCompareICase((const WChar *)&buff[i], L"WORKBOOK") == 0)
+			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], u"WORKBOOK") == 0)
 			{
 				Text::SpreadSheet::Workbook *wb;
 				NEW_CLASS(wb, Text::SpreadSheet::Workbook());

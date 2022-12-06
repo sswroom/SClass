@@ -40,15 +40,13 @@ IO::ParserType Parser::FileParser::CUEParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	Media::MediaFile *mf = 0;
-	IO::StreamDataStream *stm;
-	IO::StreamReader *reader;
 	UOSInt currTrack;
 	UOSInt maxTrack = 0;
 	Text::String *fileName = 0;
@@ -70,9 +68,9 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	}
 	currTrack = 0;
 
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, IO::StreamReader(stm, 0));
-	while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
+	IO::StreamDataStream stm(fd);
+	IO::StreamReader reader(&stm, 0);
+	while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 	{
 		sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
 		if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PERFORMER ")))
@@ -196,9 +194,6 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		SDEL_STRING(titles[i]);
 	}
 
-
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return mf;
 }
 

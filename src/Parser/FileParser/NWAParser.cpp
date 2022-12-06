@@ -37,9 +37,8 @@ IO::ParserType Parser::FileParser::NWAParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NWAParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[44];
 	Int32 compLevel;
 	UInt32 nBlocks;
 	UInt32 dataSize;
@@ -50,18 +49,17 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 	Media::AudioFormat afmt;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NWA")))
 		return 0;
-	fd->GetRealData(0, 44, hdrBuff);
 	afmt.formatId = 1;
-	afmt.nChannels = ReadUInt16(&hdrBuff[0]);
-	afmt.bitpersample = ReadUInt16(&hdrBuff[2]);
-	afmt.frequency = ReadUInt32(&hdrBuff[4]);
-	compLevel = ReadInt32(&hdrBuff[8]);
-	nBlocks = ReadUInt32(&hdrBuff[16]);
-	dataSize = ReadUInt32(&hdrBuff[20]);
-	compDataSize = ReadUInt32(&hdrBuff[24]);
-	sampleCount = ReadUInt32(&hdrBuff[28]);
-	blockSize = ReadUInt32(&hdrBuff[32]);
-	restSize = ReadUInt32(&hdrBuff[36]);
+	afmt.nChannels = ReadUInt16(&hdr[0]);
+	afmt.bitpersample = ReadUInt16(&hdr[2]);
+	afmt.frequency = ReadUInt32(&hdr[4]);
+	compLevel = ReadInt32(&hdr[8]);
+	nBlocks = ReadUInt32(&hdr[16]);
+	dataSize = ReadUInt32(&hdr[20]);
+	compDataSize = ReadUInt32(&hdr[24]);
+	sampleCount = ReadUInt32(&hdr[28]);
+	blockSize = ReadUInt32(&hdr[32]);
+	restSize = ReadUInt32(&hdr[36]);
 	if (compLevel == -1)
 	{
 		blockSize = 65536;

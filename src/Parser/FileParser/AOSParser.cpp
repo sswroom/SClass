@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::AOSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::AOSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 hdrBuff[273];
 	UInt32 dataOfst;
@@ -47,22 +47,22 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWith(UTF8STRC(".AOS")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 273, hdrBuff) != 273)
+	if (ReadInt32(&hdr[0]) != 0)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0)
-		return 0;
-	dataOfst = ReadUInt32(&hdrBuff[4]);
-	recSize = ReadUInt32(&hdrBuff[8]);
+	dataOfst = ReadUInt32(&hdr[4]);
+	recSize = ReadUInt32(&hdr[8]);
 	if (recSize % 40 != 0 || dataOfst > fd->GetDataSize())
 		return 0;
 	if (dataOfst - recSize != 273)
 		return 0;
+	if (fd->GetRealData(0, 273, hdrBuff) != 273)
+		return 0;
+	Text::Encoding enc(932);
 	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
 	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
 	{

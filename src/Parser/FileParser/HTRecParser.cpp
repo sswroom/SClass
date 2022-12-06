@@ -30,18 +30,13 @@ IO::ParserType Parser::FileParser::HTRecParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::HTRecParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::HTRecParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[96];
-	if (fd->GetRealData(0, 96, buff) != 96)
+	if (*(Int32*)&hdr[0] != *(Int32*)"$#\" ")
 	{
 		return 0;
 	}
-	if (*(Int32*)&buff[0] != *(Int32*)"$#\" ")
-	{
-		return 0;
-	}
-	UInt32 recCnt = ReadUInt16(&buff[83]);
+	UInt32 recCnt = ReadUInt16(&hdr[83]);
 	if (fd->GetDataSize() != 96 + recCnt * 3)
 		return 0;
 

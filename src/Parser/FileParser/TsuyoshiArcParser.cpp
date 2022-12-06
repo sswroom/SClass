@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::TsuyoshiArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 recCnt;
 	UInt8 *recBuff;
@@ -47,14 +47,12 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 4, (UInt8*)&recCnt) != 4)
-		return 0;
+	recCnt = ReadUInt32(&hdr[0]);
 	if (recCnt == 0 || recCnt >= 65536)
 		return 0;
 	if (fd->GetDataSize() <= recCnt * 272)
@@ -68,6 +66,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 0;

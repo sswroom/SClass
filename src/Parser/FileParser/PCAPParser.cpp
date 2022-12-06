@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::PCAPParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[24];
 	UInt8 *packetBuff;
 	UInt32 maxSize = 65536;
 	UInt64 currOfst;
@@ -43,9 +42,8 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd,
 	UInt32 origLen;
 	UInt32 linkType;
 	Net::EthernetAnalyzer *analyzer;
+	UInt8 dataBuff[16];
 
-	if (fd->GetRealData(0, 24, hdr) != 24)
-		return 0;
 	if (ReadUInt32(hdr) == 0xa1b2c3d4)
 	{
 		linkType = ReadUInt32(&hdr[20]);
@@ -54,12 +52,12 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd,
 		currOfst = 24;
 		while (currOfst + 16 < fileSize)
 		{
-			if (fd->GetRealData(currOfst, 16, hdr) != 16)
+			if (fd->GetRealData(currOfst, 16, dataBuff) != 16)
 			{
 				break;
 			}
-			inclLen = ReadUInt32(&hdr[8]);
-			origLen = ReadUInt32(&hdr[12]);
+			inclLen = ReadUInt32(&dataBuff[8]);
+			origLen = ReadUInt32(&dataBuff[12]);
 			if (inclLen < 14 || inclLen > maxSize)
 			{
 				break;
@@ -80,12 +78,12 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd,
 		currOfst = 24;
 		while (currOfst + 16 < fileSize)
 		{
-			if (fd->GetRealData(currOfst, 16, hdr) != 16)
+			if (fd->GetRealData(currOfst, 16, dataBuff) != 16)
 			{
 				break;
 			}
-			inclLen = ReadMUInt32(&hdr[8]);
-			origLen = ReadMUInt32(&hdr[12]);
+			inclLen = ReadMUInt32(&dataBuff[8]);
+			origLen = ReadMUInt32(&dataBuff[12]);
 			if (inclLen < 14 || inclLen > maxSize)
 			{
 				break;

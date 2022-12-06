@@ -34,27 +34,25 @@ IO::ParserType Parser::FileParser::JKSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::JKSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
 	UInt64 fileSize = fd->GetDataSize();
-	if (fd->GetRealData(0, 12, buff) < 12)
-		return 0;
-	if (ReadMUInt32(buff) != 0xFEEDFEED)
+	if (ReadMUInt32(&hdr[0]) != 0xFEEDFEED)
 	{
 		return 0;
 	}
-	UInt32 version = ReadMUInt32(&buff[4]);
+	UInt32 version = ReadMUInt32(&hdr[4]);
 	if (version > 2)
 	{
 		return 0;
 	}
+	UInt8 buff[256];
 	UInt8 *cerBuff = 0;
 	UOSInt cerBuffSize = 0;
 	Text::StringBuilderUTF8 sb;
 	IO::PackageFile *pkg;
 	NEW_CLASS(pkg, IO::PackageFile(fd->GetFullFileName()));
-	UInt32 cnt = ReadMUInt32(&buff[8]);
+	UInt32 cnt = ReadMUInt32(&hdr[8]);
 	UInt64 ofst = 12;
 	UOSInt readSize;
 	UOSInt i = 0;

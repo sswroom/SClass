@@ -38,11 +38,10 @@ IO::ParserType Parser::FileParser::TGAParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TGAParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 footer[26];
 
-	UInt8 hdr[18];
 //	UInt8 pal[1024];
 
 	UInt32 imgWidth;
@@ -63,7 +62,6 @@ IO::ParsedObject *Parser::FileParser::TGAParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 
-	fd->GetRealData(0, 18, hdr);
 	bpp = hdr[16];
 	imgWidth = *(UInt16*)&hdr[12];
 	imgHeight = *(UInt16*)&hdr[14];

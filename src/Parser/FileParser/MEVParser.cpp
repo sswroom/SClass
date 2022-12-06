@@ -49,7 +49,7 @@ IO::ParserType Parser::FileParser::MEVParser::GetParserType()
 	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[512];
 	UInt32 currPos = 0;
@@ -78,14 +78,13 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	if (this->mapMgr == 0)
 		return 0;
-	fd->GetRealData(0, 12, buff);
 	currPos = 12;
-	if (*(Int32*)&buff[0] != *(Int32*)"SMEv" || ReadUInt32(&buff[4]) != 0x81c0fe1a)
+	if (*(Int32*)&hdr[0] != *(Int32*)"SMEv" || ReadUInt32(&hdr[4]) != 0x81c0fe1a)
 	{
 		return 0;
 	}
 
-	UInt32 initSize = ReadUInt32(&buff[8]);
+	UInt32 initSize = ReadUInt32(&hdr[8]);
 	fd->GetRealData(currPos, initSize, buff);
 	currPos += initSize;
 	Map::MapEnv *env;

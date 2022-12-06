@@ -42,13 +42,12 @@ IO::ParserType Parser::FileParser::QTParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::QTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::QTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[16];
 	UInt64 size;
 	UInt64 ofst = 0;
 	UInt64 endOfst = fd->GetDataSize();
-	fd->GetRealData(0, 8, hdr);
+	UInt8 buff[16];
 	if (*(Int32*)&hdr[4] == *(Int32*)"ftyp")
 	{
 		ofst = ReadMUInt32(&hdr[0]);
@@ -64,38 +63,38 @@ IO::ParsedObject *Parser::FileParser::QTParser::ParseFile(IO::IStreamData *fd, I
 
 	while (true)
 	{
-		if (fd->GetRealData(ofst, 16, hdr) < 8)
+		if (fd->GetRealData(ofst, 16, buff) < 8)
 			return 0;
-		size = ReadMUInt32(&hdr[0]);
+		size = ReadMUInt32(&buff[0]);
 		if (size == 1)
 		{
-			size = ReadMUInt64(&hdr[8]);
+			size = ReadMUInt64(&buff[8]);
 		}
 		if (size == 0 || ofst + size > endOfst)
 		{
 			return 0;
 		}
-		if (*(Int32*)&hdr[4] == *(Int32*)"free")
+		if (*(Int32*)&buff[4] == *(Int32*)"free")
 		{
 		}
-		else if (*(Int32*)&hdr[4] == *(Int32*)"skip")
+		else if (*(Int32*)&buff[4] == *(Int32*)"skip")
 		{
 		}
-		else if (*(Int32*)&hdr[4] == *(Int32*)"mdat")
+		else if (*(Int32*)&buff[4] == *(Int32*)"mdat")
 		{
 		}
-		else if (*(Int32*)&hdr[4] == *(Int32*)"moov")
+		else if (*(Int32*)&buff[4] == *(Int32*)"moov")
 		{
 			return this->ParseMoovAtom(fd, ofst, size);
 		}
-		else if (*(Int32*)&hdr[4] == *(Int32*)"wide")
+		else if (*(Int32*)&buff[4] == *(Int32*)"wide")
 		{
 
 		}
-		else if (*(Int32*)&hdr[4] == *(Int32*)"uuid")
+		else if (*(Int32*)&buff[4] == *(Int32*)"uuid")
 		{
 		}
-		else if (*(Int32*)&hdr[4] == *(Int32*)"yqoo")
+		else if (*(Int32*)&buff[4] == *(Int32*)"yqoo")
 		{
 		}
 		else

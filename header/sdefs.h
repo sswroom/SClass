@@ -524,12 +524,22 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #endif
 
 typedef UInt8 UTF8Char;
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#if _WCHAR_SIZE == 4
+typedef char16_t UTF16Char;
+typedef WChar UTF32Char;
+#else
+typedef WChar UTF16Char;
+typedef char32_t UTF32Char;
+#endif
+#else
 #if _WCHAR_SIZE == 4
 typedef UInt16 UTF16Char;
 typedef WChar UTF32Char;
 #else
 typedef WChar UTF16Char;
 typedef UInt32 UTF32Char;
+#endif
 #endif
 
 #define Double2Int32(val) (((val) < 0)?(Int32)(val - 0.5):(Int32)(val + 0.5))

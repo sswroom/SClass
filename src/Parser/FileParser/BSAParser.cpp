@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::BSAParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::BSAParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 //	UInt16 ver;
 	UOSInt recCnt;
 	UInt32 recOfst;
@@ -48,19 +47,16 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 //	UInt32 nextOfst;
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".BSA")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (ReadInt32(&hdr[0]) != 0x72415342 || ReadInt32(&hdr[4]) != 0x63)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x72415342 || ReadInt32(&hdrBuff[4]) != 0x63)
-		return 0;
-//	ver = ReadUInt16(&hdrBuff[8]);
-	recCnt = ReadUInt16(&hdrBuff[10]);
-	recOfst = ReadUInt32(&hdrBuff[12]);
+//	ver = ReadUInt16(&hdr[8]);
+	recCnt = ReadUInt16(&hdr[10]);
+	recOfst = ReadUInt32(&hdr[12]);
 
 	if (recOfst >= fd->GetDataSize() - recCnt * 12)
 		return 0;
@@ -74,6 +70,7 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 0;

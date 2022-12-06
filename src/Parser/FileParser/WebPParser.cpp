@@ -39,15 +39,12 @@ IO::ParserType Parser::FileParser::WebPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::WebPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[32];
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 32 || fileLen > 104857600)
 		return 0;
-	if (fd->GetRealData(0, 32, buff) != 32)
-		return 0;
-	if (ReadNInt32(&buff[0]) != *(Int32*)"RIFF" || ReadUInt32(&buff[4]) != (fileLen - 8) || ReadNInt32(&buff[8]) != *(Int32*)"WEBP")
+	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF" || ReadUInt32(&hdr[4]) != (fileLen - 8) || ReadNInt32(&hdr[8]) != *(Int32*)"WEBP")
 		return 0;
 
 	UInt8 *fileData = MemAlloc(UInt8, (UOSInt)fileLen);

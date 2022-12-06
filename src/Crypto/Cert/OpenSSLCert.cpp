@@ -80,9 +80,9 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	readSize = BIO_read(bio2, buff, 4096);
 	if (readSize > 0)
 	{
-		Parser::FileParser::X509Parser parser;
-		IO::StmData::MemoryDataRef mdata(buff, (UInt32)readSize);
-		pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(&mdata, 0, IO::ParserType::ASN1Data);
+		Text::String *fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+		pobjCert = Parser::FileParser::X509Parser::ParseBuff(buff, (UOSInt)readSize, fileName);
+		fileName->Release();
 	}
 	BIO_free(bio1);
 	BIO_free(bio2);

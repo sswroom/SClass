@@ -37,12 +37,9 @@ IO::ParserType Parser::FileParser::DBFParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::DBFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::DBFParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[32];
 	UInt8 hdr2;
-	fd->GetRealData(0, 32, hdr);
-
 	if (((*(UInt16*)&hdr[8]) & 31) != 1)
 	{
 		return 0;

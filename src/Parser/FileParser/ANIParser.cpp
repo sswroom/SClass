@@ -31,10 +31,10 @@ IO::ParserType Parser::FileParser::ANIParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt32 hdr[6];
 	UTF8Char sbuff[256];
+	UInt8 riffHdr[24];
 	UInt32 aniSize;
 	Media::ImageList *imgList;
 	UInt8 *buff;
@@ -45,21 +45,20 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 nFrames = 0;
 	Media::ImageList *currImage = 0;
 
-	fd->GetRealData(0, 24, (UInt8*)hdr);
-	if (hdr[0] != *(UInt32*)"RIFF" || hdr[2] != *(UInt32*)"ACON")
+	if (ReadNUInt32(&hdr[0]) != *(UInt32*)"RIFF" || ReadNUInt32(&hdr[8]) != *(UInt32*)"ACON")
 	{
 		return 0;
 	}
-	aniSize = hdr[1] + 8;
+	aniSize = ReadUInt32(&hdr[4]) + 8;
 	UOSInt currOfst = 12;
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 
 	while (currOfst < aniSize)
 	{
-		fd->GetRealData(currOfst, 12, (UInt8*)hdr);
-		if (hdr[0] == *(UInt32*)"LIST" && hdr[2] == *(UInt32*)"INFO")
+		fd->GetRealData(currOfst, 12, riffHdr);
+		if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"LIST" && ReadNUInt32(&riffHdr[8]) == *(UInt32*)"INFO")
 		{
-			buffSize = hdr[1] - 4;
+			buffSize = ReadUInt32(&riffHdr[4]) - 4;
 			buff = MemAlloc(UInt8, buffSize);
 			buffOfst = 0;
 			fd->GetRealData(currOfst + 12, buffSize, buff);
@@ -84,18 +83,18 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 			}
 			MemFree(buff);
 		}
-		else if (hdr[0] == *(UInt32*)"anih")
+		else if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"anih")
 		{
-			buffSize = hdr[1];
+			buffSize = ReadUInt32(&riffHdr[4]);
 			buff = MemAlloc(UInt8, buffSize);
 			fd->GetRealData(currOfst + 8, buffSize, buff);
 			displayRate = ReadUInt32(&buff[28]);
 			nFrames = ReadUInt32(&buff[4]);
 			MemFree(buff);
 		}
-		else if (hdr[0] == *(UInt32*)"LIST" && hdr[2] == *(UInt32*)"fram")
+		else if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"LIST" && ReadNUInt32(&riffHdr[8]) == *(UInt32*)"fram")
 		{
-			buffSize = hdr[1] - 4;
+			buffSize = ReadUInt32(&riffHdr[4]) - 4;
 			buff = MemAlloc(UInt8, 8);
 			buffOfst = 0;
 			while (buffOfst < buffSize)
@@ -133,7 +132,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 				currImage = 0;
 			}
 		}
-		currOfst += hdr[1] + 8;
+		currOfst += ReadUInt32(&riffHdr[4]) + 8;
 		if (currOfst & 1)
 		{
 			currOfst += 1;

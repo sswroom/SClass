@@ -198,7 +198,7 @@ IO::ParserType Parser::FileParser::RLOCParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
@@ -235,8 +235,7 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	if (fileSize & 127)
 		return 0;
 
-	fd->GetRealData(0, 384, buff);
-	if (*(Int32*)&buff[0] != devId || *(Int32*)&buff[128] != devId || *(Int32*)&buff[256] != devId)
+	if (ReadInt32(&hdr[0]) != devId || ReadInt32(&hdr[128]) != devId || ReadInt32(&hdr[256]) != devId)
 		return 0;
 
 	Map::GPSTrack *track;

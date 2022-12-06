@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::MEDParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MEDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt8 *recBuff;
 	UInt32 recCnt;
 	UInt32 recSize;
@@ -45,18 +44,15 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".MED")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (hdr[0] != 'M' || hdr[1] != 'D')
 		return 0;
-	if (hdrBuff[0] != 'M' || hdrBuff[1] != 'D')
-		return 0;
-	recCnt = ReadUInt16(&hdrBuff[6]);
-	recSize = ReadUInt16(&hdrBuff[4]);
+	recCnt = ReadUInt16(&hdr[6]);
+	recSize = ReadUInt16(&hdr[4]);
 	if (recSize < 9 || recSize > 32)
 		return 0;
 	if (recCnt == 0)
@@ -74,6 +70,7 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFile(IO::IStreamData *fd, 
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 0;

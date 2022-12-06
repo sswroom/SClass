@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::YKCParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::YKCParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::YKCParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[24];
 	UInt32 recOfst;
 	UInt32 recSize;
 	UInt8 *recBuff;
@@ -48,20 +47,17 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 fnameBuff[256];
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".YKC")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 24, hdrBuff) != 24)
+	if (ReadInt32(&hdr[0]) != 0x30434b59 || ReadInt32(&hdr[4]) != 0x3130)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x30434b59 || ReadInt32(&hdrBuff[4]) != 0x3130)
+	if (ReadUInt32(&hdr[8]) != 24)
 		return 0;
-	if (ReadUInt32(&hdrBuff[8]) != 24)
-		return 0;
-	recOfst = ReadUInt32(&hdrBuff[16]);
-	recSize = ReadUInt32(&hdrBuff[20]);
+	recOfst = ReadUInt32(&hdr[16]);
+	recSize = ReadUInt32(&hdr[20]);
 	if (recOfst + recSize != fd->GetDataSize())
 		return 0;
 	recBuff = MemAlloc(UInt8, recSize);
@@ -72,6 +68,7 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFile(IO::IStreamData *fd, 
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	i = 0;

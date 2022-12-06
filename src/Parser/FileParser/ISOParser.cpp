@@ -37,14 +37,13 @@ IO::ParserType Parser::FileParser::ISOParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::ISOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[32];
 	UInt64 fileSize = fd->GetDataSize();
-	fd->GetRealData(0, 32, buff);
 
 	IO::FileSectorData *sectorData = 0;
-	if (ReadMInt32(&buff[0]) == 0x00ffffff && ReadMUInt32(&buff[4]) == 0xffffffff && ReadMUInt32(&buff[8]) == 0xffffff00 && fileSize >= 75264 && (fileSize % 2352) == 0)
+	if (ReadMInt32(&hdr[0]) == 0x00ffffff && ReadMUInt32(&hdr[4]) == 0xffffffff && ReadMUInt32(&hdr[8]) == 0xffffff00 && fileSize >= 75264 && (fileSize % 2352) == 0)
 	{
 		fd->GetRealData(37632, 32, buff);
 		if (ReadMInt32(&buff[0]) == 0x00ffffff && ReadMUInt32(&buff[4]) == 0xffffffff && ReadMUInt32(&buff[8]) == 0xffffff00 && ReadMInt32(&buff[16]) == 0x01434430 && ReadMInt32(&buff[20]) == 0x30310100)

@@ -32,14 +32,12 @@ IO::ParserType Parser::FileParser::PAC2Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt32 recCnt;
 	UInt32 dataOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	Int64 ofst;
 	UInt8 *recBuff;
@@ -54,12 +52,10 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd,
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (ReadUInt32(&hdr[0]) != 0xad82cf82)
 		return 0;
-	if (ReadUInt32(&hdrBuff[0]) != 0xad82cf82)
-		return 0;
-	recCnt = ReadUInt32(&hdrBuff[4]);
-	dataOfst = ReadUInt32(&hdrBuff[8]);
+	recCnt = ReadUInt32(&hdr[4]);
+	dataOfst = ReadUInt32(&hdr[8]);
 	if (recCnt == 0)
 	{
 		return 0;
@@ -77,6 +73,7 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd,
 	}
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 0;

@@ -29,11 +29,8 @@ IO::ParserType Parser::FileParser::TSPParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::TSPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TSPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[8];
-	fd->GetRealData(0, 8, hdr);
-
 	if (*(Int64*)hdr != *(Int64*)"SmTS____" && *(Int64*)hdr != *(Int64*)"SmTS___A" && *(Int64*)hdr != *(Int64*)"SmTS___B")
 	{
 		return 0;

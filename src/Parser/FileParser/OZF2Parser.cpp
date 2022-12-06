@@ -36,9 +36,8 @@ IO::ParserType Parser::FileParser::OZF2Parser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[62];
 	UInt8 tmpBuff[1036];
 	UOSInt i;
 	UOSInt j;
@@ -63,7 +62,6 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 	{
 		return 0;
 	}
-	fd->GetRealData(0, 62, hdr);
 	if (ReadInt16(hdr) != 0x7778)
 	{
 		return 0;

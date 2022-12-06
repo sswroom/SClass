@@ -38,15 +38,13 @@ IO::ParserType Parser::FileParser::ID3Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
 	UInt32 headerSize;
-	fd->GetRealData(0, 32, buff);
-	if (buff[0] != 'I' || buff[1] != 'D' || buff[2] != '3')
+	if (hdr[0] != 'I' || hdr[1] != 'D' || hdr[2] != '3')
 		return 0;
 	
-	headerSize = ReadUSInt32(&buff[6]);
+	headerSize = ReadUSInt32(&hdr[6]);
 	Media::AudioBlockSource *src = 0;
 	Media::MediaFile *vid;
 	Media::BlockParser::MP3BlockParser mp3Parser;
@@ -65,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFile(IO::IStreamData *fd, 
 	}
 }
 
-UInt32 Parser::FileParser::ID3Parser::ReadUSInt32(UInt8 *buff)
+UInt32 Parser::FileParser::ID3Parser::ReadUSInt32(const UInt8 *buff)
 {
 	return (UInt32)((buff[0] << 21) | (buff[1] << 14) | (buff[2] << 7) | buff[3]);
 }

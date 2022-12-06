@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 	return IO::ParserType::MIMEObject;
 }
 
-IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Text::String *name = fd->GetFullName();
 	Text::IMIMEObj *obj;

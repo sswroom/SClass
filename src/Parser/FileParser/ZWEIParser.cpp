@@ -33,9 +33,8 @@ IO::ParserType Parser::FileParser::ZWEIParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt32 hdr[2];
 	UInt32 extCnt;
 	UInt32 extOfst;
 	UInt32 fileOfst;
@@ -43,17 +42,15 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 	UOSInt recOfst;
 	UInt32 j;
 	UInt32 i;
-	Text::Encoding enc(932);
 	UTF8Char name[14];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 8, (UInt8*)hdr);
-	if (hdr[0] != 0xBC614E)
+	if (ReadUInt32(&hdr[0]) != 0xBC614E)
 	{
 		return 0;
 	}
 
-	extCnt = hdr[1];
+	extCnt = ReadUInt32(&hdr[4]);
 	if (extCnt <= 0 || extCnt > 64)
 	{
 		return 0;
@@ -66,6 +63,7 @@ IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd,
 	UInt32 fileSize;
 
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 
 	fileOfst = extOfst;

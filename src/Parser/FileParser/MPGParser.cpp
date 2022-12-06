@@ -35,21 +35,17 @@ IO::ParserType Parser::FileParser::MPGParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::IStreamData *concatFile = 0;
-	UInt8 buff[256];
-//	return 0;
 
-	if (fd->GetRealData(0, 128, buff) != 128)
-		return 0;
-	if (ReadMInt32(&buff[0]) != 0x000001ba)
+	if (ReadMInt32(&hdr[0]) != 0x000001ba)
 		return 0;
 
 
-	if ((buff[4] & 0xf0) == 0x20) //MPG1
+	if ((hdr[4] & 0xf0) == 0x20) //MPG1
 	{
-		if (ReadMInt32(&buff[12]) != 0x000001bb)
+		if (ReadMInt32(&hdr[12]) != 0x000001bb)
 			return 0;
 
 		////////////////////////////
@@ -58,11 +54,11 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 		NEW_CLASS(file, Media::MPGFile(fd));
 		return file;
 	}
-	else if ((buff[4] & 0xc0) == 0x40) //MPG2
+	else if ((hdr[4] & 0xc0) == 0x40) //MPG2
 	{
-		Int32 i = (buff[13] & 7);
+		Int32 i = (hdr[13] & 7);
 		Int64 currOfst = 14 + i;
-		if (ReadMInt32(&buff[currOfst]) != 0x000001bb)
+		if (ReadMInt32(&hdr[currOfst]) != 0x000001bb)
 			return 0;
 
 		if (fd->GetFullName()->EndsWithICase(UTF8STRC("_1.vob")))

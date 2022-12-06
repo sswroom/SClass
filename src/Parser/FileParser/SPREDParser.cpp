@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Data::ArrayList<Map::GPSTrack::GPSRecord3*> *currDev = 0;
 	Int32 currDevId = -1;
@@ -52,6 +52,33 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	UInt64 fileSize;
 	Int32 cmdType;
 	UInt32 cmdSize;
+	if (hdr[0] != 'R' || hdr[1] != 'D')
+	{
+		return 0;
+	}
+	
+	cmdType = ReadUInt16(&hdr[2]);
+	if (cmdType == 0)
+	{
+		cmdSize = 82;
+	}
+	else if (cmdType == 1)
+	{
+		cmdSize = 4;
+	}
+	else if (cmdType == 2)
+	{
+		cmdSize = 20;
+	}
+	else
+	{
+		return 0;
+	}
+	if (hdr[cmdSize] != 'R' || hdr[cmdSize + 1] != 'D')
+	{
+		return 0;
+	}
+
 	Text::String *s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
@@ -69,36 +96,9 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 
 	fileSize = fd->GetDataSize();
 	currPos = 0;
-	buffSize = fd->GetRealData(0, 384, buff);
 
-	if (buff[0] != 'R' || buff[1] != 'D')
-	{
-		return 0;
-	}
-	
-	cmdType = *(UInt16*)&buff[2];
-	if (cmdType == 0)
-	{
-		cmdSize = 82;
-	}
-	else if (cmdType == 1)
-	{
-		cmdSize = 4;
-	}
-	else if (cmdType == 2)
-	{
-		cmdSize = 20;
-	}
-	else
-	{
-		return 0;
-	}
-	if (buff[cmdSize] != 'R' || buff[cmdSize + 1] != 'D')
-	{
-		return 0;
-	}
 	Data::FastMap<Int32, Data::ArrayList<Map::GPSTrack::GPSRecord3*>*> devRecs;
-	currPos += buffSize;
+	buffSize = 0;
 	while (true)
 	{
 		i = 0;
@@ -188,6 +188,11 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 		if (currPos >= fileSize)
 			break;
 		readSize = fd->GetRealData(currPos, 384 - buffSize, &buff[buffSize]);
+		if (readSize == 0)
+		{
+			error = true;
+			break;
+		}
 		buffSize += readSize;
 		currPos += readSize;
 	}

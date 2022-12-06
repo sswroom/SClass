@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::WPTParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::WPTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -49,23 +49,21 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("WPT")))
 		return 0;
 
-	IO::StreamDataStream *stm;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, Text::UTF8Reader(stm));
+	IO::StreamDataStream stm(fd);
+	Text::UTF8Reader reader(&stm);
 
 	valid = true;
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Waypoint File Version ")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
@@ -76,11 +74,11 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarUTF8Char, DB::DBUtil::CT_VarUTF8Char};
 		UOSInt colSizes[] = {14, 40};
 		UOSInt colDPs[] = {0, 0};
-		reader->ReadLine(sbuff, 1024);
+		reader.ReadLine(sbuff, 1024);
 		UTF8Char *cols[2];
 
 		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), colTypes, colSizes, colDPs, 0, 0));
-		while (reader->ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024))
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)
 			{
@@ -91,7 +89,5 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return lyr;
 }

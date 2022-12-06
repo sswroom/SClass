@@ -43,24 +43,19 @@ IO::ParserType Parser::FileParser::MDBParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[32];
 	if (!fd->IsFullFile())
 		return 0;
-	if (fd->GetRealData(0, 32, buff) != 32)
+	if (ReadInt32(&hdr[0]) != 0x100)
 	{
 		return 0;
 	}
-	if (*(Int32*)&buff[0] != 0x100)
-	{
-		return 0;
-	}
-	if (Text::StrEqualsC(&buff[4], 15, UTF8STRC("Standard Jet DB")))
+	if (Text::StrEqualsC(&hdr[4], 15, UTF8STRC("Standard Jet DB")))
 	{
 
 	}
-	else if (Text::StrEqualsC(&buff[4], 15, UTF8STRC("Standard ACE DB")))
+	else if (Text::StrEqualsC(&hdr[4], 15, UTF8STRC("Standard ACE DB")))
 	{
 
 	}

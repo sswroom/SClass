@@ -41,22 +41,19 @@ IO::ParserType Parser::FileParser::PSSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr2;
 	Bool v1;
 
-	if (fd->GetRealData(0, 128, buff) != 128)
+	if (*(Int32*)&hdr[0] != (Int32)0xba010000)
 		return 0;
-	if (*(Int32*)&buff[0] != (Int32)0xba010000)
-		return 0;
-	if ((buff[4] & 0xc0) == 0x40)
+	if ((hdr[4] & 0xc0) == 0x40)
 	{
 		v1 = false;
 	}
-	else if ((buff[4] & 0xf0) == 0x20)
+	else if ((hdr[4] & 0xf0) == 0x20)
 	{
 		v1 = true;
 	}
@@ -95,10 +92,10 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else
 	{
-		i = (buff[13] & 7);
+		i = (hdr[13] & 7);
 		currOfst = 14 + i;
 	}
-	if (*(Int32*)&buff[currOfst] != (Int32)0xbb010000)
+	if (*(Int32*)&hdr[currOfst] != (Int32)0xbb010000)
 		return 0;
 
 	if (fd->GetFullFileName()->EndsWithICase(UTF8STRC("_1.vob")))
@@ -160,8 +157,9 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 		formats[i]->formatId = 0;
 		audDelay[i] = 0;
 	}
-	i = ReadMUInt16(&buff[currOfst + 4]);
+	i = ReadMUInt16(&hdr[currOfst + 4]);
 	currOfst += 6 + i;
+	UInt8 buff[256];
 	while (true)
 	{
 		if (fd->GetRealData(currOfst, 256, buff) < 4)

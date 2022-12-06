@@ -114,12 +114,10 @@ IO::ParserType Parser::FileParser::AVIParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	Text::Encoding enc(this->codePage);
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UInt8 headBuffer[12];
 	UInt8 chunkBuffer[12];
 	UInt64 offset;
 //	Int32 hdrlSize;
@@ -145,24 +143,22 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 *indx = 0;
 	UInt8 *chap = 0;
 
-	fd->GetRealData(0, 12, headBuffer);
-	if (*(Int32*)&headBuffer[0] != *(Int32*)"RIFF" || *(Int32*)&headBuffer[8] != *(Int32*)"AVI ")
+	if (*(Int32*)&hdr[0] != *(Int32*)"RIFF" || *(Int32*)&hdr[8] != *(Int32*)"AVI ")
 		return 0;
-
-	fd->GetRealData(12, 12, chunkBuffer);
-	offset = 24;
-	if (*(Int32*)chunkBuffer != *(Int32*)"LIST" || *(Int32*)&chunkBuffer[8] != *(Int32*)"hdrl")
+	if (*(Int32*)&hdr[12] != *(Int32*)"LIST" || *(Int32*)&hdr[20] != *(Int32*)"hdrl")
 	{
 		return 0;
 	}
 //	hdrlSize = *(Int32*)&chunkBuffer[4];
 
+	offset = 24;
 	offset += fd->GetRealData(offset, 8, chunkBuffer);
 	if (*(Int32*)chunkBuffer != *(Int32*)"avih")
 	{
 		return 0;
 	}
 
+	Text::Encoding enc(this->codePage);
 	avih = (MyAVIHeader*)MAlloc(i = ReadUInt32(&chunkBuffer[4]));
 	offset += fd->GetRealData(offset, i, (UInt8*)avih);
 
@@ -211,7 +207,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 		l += 1;
 	}
 
-	while (offset <= *(UInt32*)&headBuffer[4] + 4)
+	while (offset <= ReadUInt32(&hdr[4]) + 4)
 	{
 		if (*(Int32*)chunkBuffer == *(Int32*)"idx1")
 		{

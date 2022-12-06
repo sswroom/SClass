@@ -51,7 +51,7 @@ IO::ParserType Parser::FileParser::RAR5Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -68,8 +68,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 	UInt64 dataSize;
 	UInt32 headerType;
 
-	fd->GetRealData(0, 8, buff);
-	if (ReadInt32(&buff[0]) != 0x21726152 || ReadInt32(&buff[4]) != 0x0001071A)
+	if (ReadInt32(&hdr[0]) != 0x21726152 || ReadInt32(&hdr[4]) != 0x0001071A)
 	{
 		return 0;
 	}

@@ -543,7 +543,6 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 	}
 	sptr = &sbuff[i + 1];
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	Parser::FileParser::X509Parser parser;
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	IO::Path::PathType pt;
 	UInt64 fileSize;
@@ -557,7 +556,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
 					Text::String *s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
-					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, s);
+					x509 = Parser::FileParser::X509Parser::ParseBuff(dataBuff, (UOSInt)fileSize, s);
 					s->Release();
 					if (x509)
 					{

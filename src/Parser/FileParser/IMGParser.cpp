@@ -29,12 +29,9 @@ IO::ParserType Parser::FileParser::IMGParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::IMGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::IMGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[512];
-	if (fd->GetRealData(0, 512, buff) != 512)
-		return 0;
-	if (buff[0] == 0xeb && buff[510] == 0x55 && buff[511] == 0xaa && (fd->GetDataSize() & 511) == 0)
+	if (hdr[0] == 0xeb && hdr[510] == 0x55 && hdr[511] == 0xaa && (fd->GetDataSize() & 511) == 0)
 	{
 		IO::FileSectorData *data;
 		NEW_CLASS(data, IO::FileSectorData(fd, 0, fd->GetDataSize(), 512));

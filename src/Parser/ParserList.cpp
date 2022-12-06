@@ -172,19 +172,48 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::Package
 	IO::ParsedObject *result;
 	if (fd->GetDataSize() <= 0)
 		return 0;
+	UInt8 *hdr = MemAlloc(UInt8, IO::FileParser::hdrSize);
+	UOSInt readSize;
+	readSize = fd->GetRealData(0, IO::FileParser::hdrSize, hdr);
+	if (readSize != IO::FileParser::hdrSize)
+	{
+		if (readSize != fd->GetDataSize())
+		{
+			UOSInt hdrSize = readSize;
+			while (true)
+			{
+				readSize = fd->GetRealData(hdrSize, IO::FileParser::hdrSize - hdrSize, &hdr[hdrSize]);
+				if (readSize == 0)
+				{
+					return 0;
+				}
+				hdrSize += readSize;
+				if (hdrSize == IO::FileParser::hdrSize)
+				{
+					break;
+				}
+				else if (hdrSize == fd->GetDataSize())
+				{
+					break;
+				}
+			}	
+		}
+	}
 	while (i < j)
 	{
 		parser = this->filePArr.GetItem(i);
-		if ((result = parser->ParseFile(fd, pkgFile, targetType)) != 0)
+		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr)) != 0)
 		{
 			if (t)
 			{
 				*t = result->GetParserType();
 			}
+			MemFree(hdr);
 			return result;
 		}
 		i++;
 	}
+	MemFree(hdr);
 	return 0;
 }
 

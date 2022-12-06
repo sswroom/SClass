@@ -31,9 +31,8 @@ IO::ParserType Parser::FileParser::MRGParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MRGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MRGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt32 hdr[4];
 	UInt32 startOfst;
 	UInt64 currOfst;
 	UInt32 currSize;
@@ -42,13 +41,12 @@ IO::ParsedObject *Parser::FileParser::MRGParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char name[65];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 16, (UInt8*)hdr);
-	if (hdr[0] != 0x3067726D || hdr[1] != 0x31)
+	if (ReadUInt32(&hdr[0]) != 0x3067726D || ReadUInt32(&hdr[4]) != 0x31)
 	{
 		return 0;
 	}
 
-	startOfst = hdr[2];
+	startOfst = ReadUInt32(&hdr[8]);
 	currOfst = startOfst;
 	hdrOfst = 16;
 	Text::Encoding enc(932);

@@ -31,9 +31,8 @@ IO::ParserType Parser::FileParser::IPACParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::IPACParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::IPACParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt32 hdr[2];
 	UInt32 recCnt;
 	UInt32 startOfst;
 	UInt32 currOfst;
@@ -43,13 +42,12 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFile(IO::IStreamData *fd,
 	UTF8Char name[33];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 8, (UInt8*)hdr);
-	if (hdr[0] != 0x43415049)
+	if (ReadUInt32(&hdr[0]) != 0x43415049)
 	{
 		return 0;
 	}
 
-	recCnt = hdr[1];
+	recCnt = ReadUInt32(&hdr[4]);
 	hdrOfst = 8;
 	currOfst = recCnt * 44 + 8;
 

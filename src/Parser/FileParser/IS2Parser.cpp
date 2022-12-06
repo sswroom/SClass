@@ -32,17 +32,17 @@ IO::ParserType Parser::FileParser::IS2Parser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[256];
 	UInt8 *currBuff;
-	if (fd->GetRealData(0, 204, buff) != 204)
+	if (fd->GetDataSize() < 204)
 		return 0;
 
-	if (buff[0] != 1 || buff[1] != 2 || buff[2] != 2 || buff[3] != 0)
+	if (hdr[0] != 1 || hdr[1] != 2 || hdr[2] != 2 || hdr[3] != 0)
 		return 0;
 
-	if (ReadInt32(&buff[4]) != 4 || ReadInt32(&buff[8]) != 20)
+	if (ReadInt32(&hdr[4]) != 4 || ReadInt32(&hdr[8]) != 20)
 		return 0;
 
 	UInt32 totalSize = 204;
@@ -51,7 +51,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFile(IO::IStreamData *fd, 
 	UOSInt j;
 	while (i < 204)
 	{
-		currSize = ReadUInt32(&buff[i + 4]);
+		currSize = ReadUInt32(&hdr[i + 4]);
 		if (currSize == 0)
 			break;
 		totalSize += currSize;

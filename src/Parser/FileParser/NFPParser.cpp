@@ -41,9 +41,8 @@ typedef struct
 	UInt32 storeSize;
 } NFPFileInfo;
 
-IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NFPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[64];
 	UInt32 fileCnt;
 	UInt32 fileOfst;
 	UOSInt i;
@@ -51,7 +50,6 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[13];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 64, hdr);
 	if (!Text::StrStartsWithC(hdr, 64, UTF8STRC("NFP2.0 (c)NOBORI 1997-2002")))
 		return 0;
 

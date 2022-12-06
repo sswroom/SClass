@@ -34,9 +34,8 @@ IO::ParserType Parser::FileParser::ICOParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 icoHdr[6];
 	UInt8 icoImageHdr[16];
 	UInt32 icoCnt;
 	UOSInt i;
@@ -53,16 +52,15 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, 
 	OSInt dbpl;
 	UInt16 fileType;
 
-	fd->GetRealData(0, 6, (UInt8*)icoHdr);
-	if (ReadUInt16(&icoHdr[0]) != 0)
+	if (ReadUInt16(&hdr[0]) != 0)
 		return 0;
-	fileType = ReadUInt16(&icoHdr[2]);
+	fileType = ReadUInt16(&hdr[2]);
 	if (fileType != 1 && fileType != 2)
 	{
 		return 0;
 	}
 
-	icoCnt = ReadUInt16(&icoHdr[4]);
+	icoCnt = ReadUInt16(&hdr[4]);
 	if (icoCnt > 16 || icoCnt < 1)
 		return 0;
 

@@ -30,21 +30,18 @@ IO::ParserType Parser::FileParser::B3DMParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::B3DMParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::B3DMParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[28];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	if (fd->GetRealData(0, 28, hdrBuff) != 28)
-		return 0;
-	if (ReadNInt32(&hdrBuff[0]) != *(Int32*)"b3dm" || ReadUInt32(&hdrBuff[8]) != fd->GetDataSize())
+	if (ReadNInt32(&hdr[0]) != *(Int32*)"b3dm" || ReadUInt32(&hdr[8]) != fd->GetDataSize())
 		return 0;
 
-	UInt32 version = ReadUInt32(&hdrBuff[4]);
-	UInt32 featureTableJSONByteLength = ReadUInt32(&hdrBuff[12]);
-	UInt32 featureTableBinaryByteLength = ReadUInt32(&hdrBuff[16]);
-	UInt32 batchTableJSONByteLength = ReadUInt32(&hdrBuff[20]);
-	UInt32 batchTableBinaryByteLength = ReadUInt32(&hdrBuff[24]);
+	UInt32 version = ReadUInt32(&hdr[4]);
+	UInt32 featureTableJSONByteLength = ReadUInt32(&hdr[12]);
+	UInt32 featureTableBinaryByteLength = ReadUInt32(&hdr[16]);
+	UInt32 batchTableJSONByteLength = ReadUInt32(&hdr[20]);
+	UInt32 batchTableBinaryByteLength = ReadUInt32(&hdr[24]);
 
 	if (version != 1)
 	{

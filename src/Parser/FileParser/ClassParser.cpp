@@ -30,13 +30,8 @@ IO::ParserType Parser::FileParser::ClassParser::GetParserType()
 	return IO::ParserType::JavaClass;
 }
 
-IO::ParsedObject *Parser::FileParser::ClassParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ClassParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[64];
-	if (fd->GetRealData(0, 64, hdr) != 64)
-	{
-		return 0;
-	}
 	if (ReadMUInt32(&hdr[0]) != 0xCAFEBABE)
 	{
 		return 0;

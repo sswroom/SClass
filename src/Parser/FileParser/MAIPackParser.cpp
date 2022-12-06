@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::MAIPackParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrbuff[16];
 	UInt8 recbuff[24];
 	UInt32 hdrEnd;
 	UInt32 hdrOfst;
@@ -44,18 +43,17 @@ IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *
 
 	UTF8Char name[17];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
-	fd->GetRealData(0, 16, hdrbuff);
-	if (*(Int32*)&hdrbuff[0] != 0x0A49414D || *(UInt32*)&hdrbuff[4] != fd->GetDataSize() || *(UInt32*)&hdrbuff[12] != 0x100)
+	if (ReadUInt32(&hdr[0]) != 0x0A49414D || ReadUInt32(&hdr[4]) != fd->GetDataSize() || ReadUInt32(&hdr[12]) != 0x100)
 	{
 		return 0;
 	}
 
-	hdrEnd = ReadUInt32(&hdrbuff[8]) * 24 + 16;
+	hdrEnd = ReadUInt32(&hdr[8]) * 24 + 16;
 	fileOfst = hdrEnd;
 	hdrOfst = 16;
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 
 	while (hdrOfst < hdrEnd)

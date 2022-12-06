@@ -256,7 +256,7 @@ IO::ParserType Parser::FileParser::GLOCParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
@@ -297,14 +297,13 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 	idevId = (UInt32)(devId & 0xffffffffLL);
 
-	i = fd->GetRealData(0, 384, buff);
-	if (*(UInt32*)&buff[0] != idevId || (i > 128 && *(UInt32*)&buff[128] != idevId) || (i > 256 && *(UInt32*)&buff[256] != idevId))
+	if (ReadUInt32(&hdr[0]) != idevId || (fileSize > 128 && ReadUInt32(&hdr[128]) != idevId) || (fileSize > 256 && ReadUInt32(&hdr[256]) != idevId))
 		return 0;
 
 	Map::GPSTrack *track;
 	sptr = Text::StrInt64(sbuff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, {sbuff, (UOSInt)(sptr - sbuff)}));
-	track->SetTrackName({sbuff, (UOSInt)(sptr - sbuff)});
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, CSTRP(sbuff, sptr)));
+	track->SetTrackName(CSTRP(sbuff, sptr));
 	GLOCExtraParser *parser;
 	NEW_CLASS(parser, GLOCExtraParser());
 	track->SetExtraParser(parser);

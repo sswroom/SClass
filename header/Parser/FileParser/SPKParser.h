@@ -22,7 +22,7 @@ namespace Parser
 			virtual void SetSSLEngine(Net::SSLEngine *ssl);
 			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual IO::ParsedObject *ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 		};
 	}
 }

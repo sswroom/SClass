@@ -31,11 +31,9 @@ IO::ParserType Parser::FileParser::DTSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::DTSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::DTSParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[256];
-	fd->GetRealData(0, 32, buff);
-	if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)
+	if (ReadUInt32(&hdr[0]) != 0x180FE7F || (hdr[4] & 0xfc) != 0xfc)
 	{
 		return 0;
 	}

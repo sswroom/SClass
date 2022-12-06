@@ -87,10 +87,8 @@ IO::ParserType Parser::FileParser::BMPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[138];
-
 	UInt32 imgWidth;
 	Int32 imgHeight;
 	UInt32 bpp;
@@ -120,7 +118,6 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 
 	Media::StaticImage *outImg = 0;
 
-	fd->GetRealData(0, 138, hdr);
 	if (*(Int16*)hdr != *(Int16*)"BM")
 	{
 		return 0;

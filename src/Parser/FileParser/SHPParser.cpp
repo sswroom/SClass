@@ -36,20 +36,17 @@ IO::ParserType Parser::FileParser::SHPParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SHPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SHPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 shpBuff[100];
 	if (!fd->IsFullFile())
 		return 0;
-	if (fd->GetRealData(0, 100, shpBuff) != 100)
-		return 0;
-	if (ReadMInt32(shpBuff) != 9994 || ReadInt32(&shpBuff[28]) != 1000 || (ReadMUInt32(&shpBuff[24]) << 1) != fd->GetDataSize())
+	if (ReadMInt32(hdr) != 9994 || ReadInt32(&hdr[28]) != 1000 || (ReadMUInt32(&hdr[24]) << 1) != fd->GetDataSize())
 	{
 		return 0;
 	}
 
 	Map::SHPData *shp;
-	NEW_CLASS(shp, Map::SHPData(shpBuff, fd, this->codePage));
+	NEW_CLASS(shp, Map::SHPData(hdr, fd, this->codePage));
 	if (shp->IsError())
 	{
 		DEL_CLASS(shp);

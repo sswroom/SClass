@@ -32,39 +32,38 @@ IO::ParserType Parser::FileParser::SEGPackParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt32 hdr[1];
 	UTF8Char name[64];
 	UTF8Char *sptr;
 	UInt32 buffOfst;
 	UInt32 fileOfst;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("SEG")))
 		return 0;
 
-	fd->GetRealData(0, 4, (UInt8*)hdr);
-	if (hdr[0] == 0 || hdr[0] >= (fd->GetDataSize() - 4) || hdr[0] > 1048576)
+	UInt32 hdrSize = ReadUInt32(&hdr[0]);
+	if (hdrSize == 0 || hdrSize >= (fd->GetDataSize() - 4) || hdrSize > 1048576)
 	{
 		return 0;
 	}
 
 	UInt8 *buff;
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	buff = MemAlloc(UInt8, hdr[0]);
-	fd->GetRealData(4, hdr[0], buff);
+	buff = MemAlloc(UInt8, hdrSize);
+	fd->GetRealData(4, hdrSize, buff);
 	
 	buffOfst = 0;
-	fileOfst = 4 + hdr[0];
-	while (buffOfst < hdr[0])
+	fileOfst = 4 + hdrSize;
+	while (buffOfst < hdrSize)
 	{
 		UInt32 packSize = ReadUInt32(&buff[buffOfst]);
 		UInt32 thisOfst = ReadUInt32(&buff[buffOfst + 8]);
 		UInt32 thisSize = ReadUInt32(&buff[buffOfst + 12]);
-		if (*(Int32*)&buff[buffOfst + 4] != 0 || packSize > 80 || packSize <= 17 || thisOfst != fileOfst || packSize + buffOfst > hdr[0])
+		if (*(Int32*)&buff[buffOfst + 4] != 0 || packSize > 80 || packSize <= 17 || thisOfst != fileOfst || packSize + buffOfst > hdrSize)
 		{
 			MemFree(buff);
 			DEL_CLASS(pf);

@@ -48,9 +48,8 @@ IO::ParserType Parser::FileParser::OziMapParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[40];
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	Text::String *fileName = 0;
@@ -61,23 +60,19 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 	if (this->parsers == 0)
 		return 0;
 
-	fd->GetRealData(0, 34, buff);
-	buff[34] = 0;
-	if (!Text::StrEqualsC(buff, 34, UTF8STRC("OziExplorer Map Data File Version ")))
+	if (!Text::StrEqualsC(hdr, 34, UTF8STRC("OziExplorer Map Data File Version ")))
 		return 0;
 
-	IO::StreamDataStream *stm;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, Text::UTF8Reader(stm));
+	IO::StreamDataStream stm(fd);
+	Text::UTF8Reader reader(&stm);
 
 	valid = true;
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Map Data File Version ")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024); //File Name
+	sptr = reader.ReadLine(sbuff, 1024); //File Name
 	if (sptr)
 	{
 		fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
@@ -86,14 +81,14 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 	{
 		valid = false;
 	}
-	reader->ReadLine(sbuff, 1024); //Full Path
-	reader->ReadLine(sbuff, 1024); //?
-	sptr = reader->ReadLine(sbuff, 1024);
+	reader.ReadLine(sbuff, 1024); //Full Path
+	reader.ReadLine(sbuff, 1024); //?
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	sptr = reader->ReadLine(sbuff, 1024);
+	sptr = reader.ReadLine(sbuff, 1024);
 	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
@@ -106,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 		Int32 *ptStatus = 0;
 		Double imgW = 0;
 		Double imgH = 0;
-		while ((sptr = reader->ReadLine(sbuff, 1024)) != 0)
+		while ((sptr = reader.ReadLine(sbuff, 1024)) != 0)
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPNUM,")))
 			{
@@ -217,7 +212,5 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 		}
 	}
 	SDEL_STRING(fileName);
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return lyr;
 }

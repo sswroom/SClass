@@ -33,16 +33,13 @@ IO::ParserType Parser::FileParser::SM2MPXParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdr[32];
 	UInt8 rec[20];
 
-	Text::Encoding enc(932);
 	UTF8Char name[13];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 32, hdr);
 	if (ReadUInt32(&hdr[0]) != 0x4D324D53 || ReadUInt32(&hdr[4]) != 0x30315850)
 	{
 		return 0;
@@ -61,6 +58,7 @@ IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFile(IO::IStreamData *f
 	UInt32 thisSize;
 	lastOfst = endOfst;
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	while (hdrOfst < endOfst)
 	{

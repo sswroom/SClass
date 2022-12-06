@@ -32,9 +32,8 @@ IO::ParserType Parser::FileParser::BurikoArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 hdrBuff[16];
 	UInt32 recCnt;
 	UInt8 *recBuff;
 	UInt32 i;
@@ -47,17 +46,14 @@ IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFile(IO::IStreamData
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
-	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{
 		return 0;
 	}
-	if (fd->GetRealData(0, 16, hdrBuff) != 16)
+	if (ReadInt32(&hdr[0]) != 0x49525542 || ReadInt32(&hdr[4]) != 0x41204f4b || ReadInt32(&hdr[8]) != 0x30324352)
 		return 0;
-	if (ReadInt32(&hdrBuff[0]) != 0x49525542 || ReadInt32(&hdrBuff[4]) != 0x41204f4b || ReadInt32(&hdrBuff[8]) != 0x30324352)
-		return 0;
-	recCnt = ReadUInt32(&hdrBuff[12]);
+	recCnt = ReadUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt * 128 + 16 >= fd->GetDataSize())
 	{
 		return 0;
@@ -72,6 +68,7 @@ IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFile(IO::IStreamData
 
 	dataOfst = 16 + recCnt * 128;
 	IO::PackageFile *pf;
+	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	
 	j = 0;

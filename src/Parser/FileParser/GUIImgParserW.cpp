@@ -74,26 +74,24 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::StreamDataStream *stm;
 	Win32::COMStream *cstm;
-	UInt8 buff[256];
 	Int32 isImage = 0;
-	fd->GetRealData(0, 256, buff);
-	if (*(Int32*)&buff[0] == 0x474e5089 && *(Int32*)&buff[4] == 0x0a1a0a0d)
+	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUint32(&hdr[4]) == 0x0a1a0a0d)
 	{
 		isImage = 1;
 	}
-	else if (buff[0] == 0xff && buff[1] == 0xd8)
+	else if (hdr[0] == 0xff && hdr[1] == 0xd8)
 	{
 		isImage = 2;
 	}
-	else if (*(Int32*)&buff[0] == *(Int32*)"GIF8" && (*(Int16*)&buff[4] == *(Int16*)"7a" || *(Int16*)&buff[4] == *(Int16*)"9a"))
+	else if (*(Int32*)&hdr[0] == *(Int32*)"GIF8" && (*(Int16*)&hdr[4] == *(Int16*)"7a" || *(Int16*)&hdr[4] == *(Int16*)"9a"))
 	{
 		isImage = 3;
 	}
-	else if (*(Int16*)&buff[0] == *(Int16*)"MM" || *(Int16*)&buff[0] == *(Int16*)"II")
+	else if (*(Int16*)&hdr[0] == *(Int16*)"MM" || *(Int16*)&hdr[0] == *(Int16*)"II")
 	{
 		isImage = 4;
 	}
@@ -392,7 +390,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	return 0;
 }

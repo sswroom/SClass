@@ -76,7 +76,7 @@ typedef struct
 	UInt32 commentSize;
 } ZIPInfoEntry;
 
-IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -91,8 +91,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
 
-	fd->GetRealData(0, 512, buff);
-	if (ReadInt32(buff) != 0x04034b50)
+	if (ReadInt32(hdr) != 0x04034b50)
 	{
 		return 0;
 	}

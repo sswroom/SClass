@@ -32,29 +32,27 @@ IO::ParserType Parser::FileParser::X13Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::X13Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::X13Parser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	Text::Encoding enc;
-	UInt32 hdr[3];
-	OSInt buffOfst;
+	UOSInt buffOfst;
 	UTF8Char name[49];
 	UTF8Char *sptr;
 
-	fd->GetRealData(0, 12, (UInt8*)hdr);
-	if (hdr[0] != 0x4B434150 || (hdr[1] + hdr[2]) != fd->GetDataSize() || (hdr[2] & 63) != 0)
+	if (ReadUInt32(&hdr[0]) != 0x4B434150 || (ReadUInt32(&hdr[4]) + ReadUInt32(&hdr[8])) != fd->GetDataSize() || (ReadUInt32(&hdr[8]) & 63) != 0)
 	{
 		return 0;
 	}
 
 	IO::PackageFile *pf;
-	UInt8 *recHdrs = MemAlloc(UInt8, hdr[2]);
-	fd->GetRealData(hdr[1], hdr[2], recHdrs);
+	Text::Encoding enc;
+	UInt8 *recHdrs = MemAlloc(UInt8, ReadUInt32(&hdr[8]));
+	fd->GetRealData(ReadUInt32(&hdr[4]), ReadUInt32(&hdr[8]), recHdrs);
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	buffOfst = 0;
-	while (buffOfst < (OSInt)hdr[2])
+	while (buffOfst < ReadUInt32(&hdr[8]))
 	{
 		sptr = enc.UTF8FromBytes(name, &recHdrs[buffOfst], 48, 0);
-		pf->AddData(fd, *(UInt32*)&recHdrs[buffOfst + 56], *(UInt32*)&recHdrs[buffOfst + 60], CSTRP(name, sptr), Data::Timestamp(0));
+		pf->AddData(fd, ReadUInt32(&recHdrs[buffOfst + 56]), ReadUInt32(&recHdrs[buffOfst + 60]), CSTRP(name, sptr), Data::Timestamp(0));
 		buffOfst += 64;
 	}
 	MemFree(recHdrs);

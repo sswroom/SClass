@@ -39,7 +39,7 @@ IO::ParserType Parser::FileParser::LOGParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LOGParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -58,14 +58,10 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	IO::StreamDataStream *stm;
-	IO::StreamReader *reader;
-	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
-	if ((sptr = reader->ReadLine(sbuff, 255)) == 0)
+	IO::StreamDataStream stm(fd);
+	IO::StreamReader reader(&stm, this->codePage);
+	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
 	{
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
 		return 0;
 	}
 	UOSInt strLen = (UOSInt)(sptr - sbuff);
@@ -75,11 +71,7 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 /*		NEW_CLASS(log, IO::LogFile(fd->GetFullFileName()));
 		log->*/
 		//////////////////////////////
-		DEL_CLASS(reader);
-		DEL_CLASS(stm);
 		return log;
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(stm);
 	return 0;
 }
