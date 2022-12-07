@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Math/Unit/Count.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
 #include "UI/MessageDialog.h"
@@ -6,8 +7,13 @@
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	UOSInt i;
+	UOSInt j;
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->seAPI)
 	{
+		me->seAPI->FreeSiteList(&me->siteList);
 		DEL_CLASS(me->seAPI);
 		me->seAPI = 0;
 		me->btnAPIKey->SetText(CSTR("Start"));
@@ -32,8 +38,8 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			if (me->seAPI->GetSupportedVersions(&vers))
 			{
 				sb.ClearStr();
-				UOSInt i = 0;
-				UOSInt j = vers.GetCount();
+				i = 0;
+				j = vers.GetCount();
 				while (i < j)
 				{
 					if (i > 0)
@@ -50,6 +56,42 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			{
 				me->txtSuppVer->SetText(CSTR(""));
 			}
+			UOSInt totalCount;
+			Net::SolarEdgeAPI::Site *site;
+			me->lvSiteList->ClearItems();
+			if (me->seAPI->GetSiteList(&me->siteList, 20, 0, &totalCount))
+			{
+				i = 0;
+				j = me->siteList.GetCount();
+				while (i < j)
+				{
+					site = me->siteList.GetItem(i);
+					sptr = Text::StrInt32(sbuff, site->id);
+					me->lvSiteList->AddItem(CSTRP(sbuff, sptr), (void*)site);
+					if (site->name)
+						me->lvSiteList->SetSubItem(i, 1, site->name);
+					sptr = Text::StrInt32(sbuff, site->accountId);
+					me->lvSiteList->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+					if (site->status)
+						me->lvSiteList->SetSubItem(i, 3, site->status);
+					sptr = Text::StrConcatC(Text::StrDouble(sbuff, site->peakPower_kWp), UTF8STRC(" kWp"));
+					me->lvSiteList->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+					sptr = site->lastUpdateTime.ToStringNoZone(sbuff);
+					me->lvSiteList->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+					if (site->currency)
+						me->lvSiteList->SetSubItem(i, 6, site->currency);
+					sptr = site->installationDate.ToStringNoZone(sbuff);
+					me->lvSiteList->SetSubItem(i, 7, CSTRP(sbuff, sptr));
+					sptr = site->ptoDate.ToStringNoZone(sbuff);
+					me->lvSiteList->SetSubItem(i, 8, CSTRP(sbuff, sptr));
+					if (site->notes)
+						me->lvSiteList->SetSubItem(i, 9, site->notes);
+					if (site->type)
+						me->lvSiteList->SetSubItem(i, 10, site->type);
+					i++;
+				}
+			}
+
 			me->btnAPIKey->SetText(CSTR("Stop"));
 		}
 		else
@@ -59,6 +101,95 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("API Key error"), CSTR("SolarEdge API"), me);
 			return;
 		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->lvSiteList->GetSelectedItem();
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	if (site)
+	{
+		if (site->country)
+			me->txtSiteCountry->SetText(site->country->ToCString());
+		else
+			me->txtSiteCountry->SetText(CSTR(""));
+		if (site->city)
+			me->txtSiteCity->SetText(site->city->ToCString());
+		else
+			me->txtSiteCity->SetText(CSTR(""));
+		if (site->address)
+			me->txtSiteAddress->SetText(site->address->ToCString());
+		else
+			me->txtSiteAddress->SetText(CSTR(""));
+		if (site->address2)
+			me->txtSiteAddress2->SetText(site->address2->ToCString());
+		else
+			me->txtSiteAddress2->SetText(CSTR(""));
+		if (site->zip)
+			me->txtSiteZIP->SetText(site->zip->ToCString());
+		else
+			me->txtSiteZIP->SetText(CSTR(""));
+		if (site->timeZone)
+			me->txtSiteTimeZone->SetText(site->timeZone->ToCString());
+		else
+			me->txtSiteTimeZone->SetText(CSTR(""));
+		if (site->countryCode)
+			me->txtSiteCountryCode->SetText(site->countryCode->ToCString());
+		else
+			me->txtSiteCountryCode->SetText(CSTR(""));
+		me->txtSiteIsPublic->SetText(site->isPublic?CSTR("true"):CSTR("false"));
+		if (site->publicName)
+			me->txtSitePublicName->SetText(site->publicName->ToCString());
+		else
+			me->txtSitePublicName->SetText(CSTR(""));
+
+		Net::SolarEdgeAPI::SiteOverview overview;
+		if (me->seAPI && me->seAPI->GetSiteOverview(site->id, &overview))
+		{
+			sptr = Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, overview.lifeTimeEnergy_Wh), UTF8STRC("Wh"));
+			me->txtSiteLifetimeEnergy->SetText(CSTRP(sbuff, sptr));
+			sptr = Math::Unit::Count::WellFormat(sbuff, overview.lifeTimeRevenue);
+			me->txtSiteLifetimeRevenue->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, overview.yearlyEnergy_Wh), UTF8STRC("Wh"));
+			me->txtSiteYearlyEnergy->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, overview.monthlyEnergy_Wh), UTF8STRC("Wh"));
+			me->txtSiteMonthlyEnergy->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, overview.dailyEnergy_Wh), UTF8STRC("Wh"));
+			me->txtSiteDailyEnergy->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, overview.currentPower_W), UTF8STRC("W"));
+			me->txtSiteCurrentPower->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			me->txtSiteLifetimeEnergy->SetText(CSTR(""));
+			me->txtSiteLifetimeRevenue->SetText(CSTR(""));
+			me->txtSiteYearlyEnergy->SetText(CSTR(""));
+			me->txtSiteMonthlyEnergy->SetText(CSTR(""));
+			me->txtSiteDailyEnergy->SetText(CSTR(""));
+			me->txtSiteCurrentPower->SetText(CSTR(""));
+		}
+	}
+	else
+	{
+		me->txtSiteCountry->SetText(CSTR(""));
+		me->txtSiteCity->SetText(CSTR(""));
+		me->txtSiteAddress->SetText(CSTR(""));
+		me->txtSiteAddress2->SetText(CSTR(""));
+		me->txtSiteZIP->SetText(CSTR(""));
+		me->txtSiteTimeZone->SetText(CSTR(""));
+		me->txtSiteCountryCode->SetText(CSTR(""));
+		me->txtSiteIsPublic->SetText(CSTR(""));
+		me->txtSitePublicName->SetText(CSTR(""));
+
+		me->txtSiteLifetimeEnergy->SetText(CSTR(""));
+		me->txtSiteLifetimeRevenue->SetText(CSTR(""));
+		me->txtSiteYearlyEnergy->SetText(CSTR(""));
+		me->txtSiteMonthlyEnergy->SetText(CSTR(""));
+		me->txtSiteDailyEnergy->SetText(CSTR(""));
+		me->txtSiteCurrentPower->SetText(CSTR(""));
 	}
 }
 
@@ -96,11 +227,112 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtSuppVer, UI::GUITextBox(ui, this->tpVersion, CSTR("")));
 	this->txtSuppVer->SetRect(104, 28, 300, 23, false);
 	this->txtSuppVer->SetReadOnly(true);
+
+	this->tpSiteList = this->tcMain->AddTabPage(CSTR("Site List"));
+	NEW_CLASS(this->pnlSiteList, UI::GUIPanel(ui, this->tpSiteList));
+	this->pnlSiteList->SetRect(0, 0, 100, 216, false);
+	this->pnlSiteList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->lvSiteList, UI::GUIListView(ui, this->tpSiteList, UI::GUIListView::ListViewStyle::LVSTYLE_TABLE, 11));
+	this->lvSiteList->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSiteList->SetFullRowSelect(true);
+	this->lvSiteList->SetShowGrid(true);
+	this->lvSiteList->AddColumn(CSTR("Id"), 60);
+	this->lvSiteList->AddColumn(CSTR("name"), 100);
+	this->lvSiteList->AddColumn(CSTR("accountId"), 60);
+	this->lvSiteList->AddColumn(CSTR("status"), 60);
+	this->lvSiteList->AddColumn(CSTR("peakPower"), 100);
+	this->lvSiteList->AddColumn(CSTR("lastUpdateTime"), 150);
+	this->lvSiteList->AddColumn(CSTR("currency"), 60);
+	this->lvSiteList->AddColumn(CSTR("installationDate"), 150);
+	this->lvSiteList->AddColumn(CSTR("ptoDate"), 150);
+	this->lvSiteList->AddColumn(CSTR("notes"), 150);
+	this->lvSiteList->AddColumn(CSTR("type"), 100);
+	this->lvSiteList->HandleSelChg(OnSiteListSelChg, this);
+	NEW_CLASS(this->lblSiteCountry, UI::GUILabel(ui, this->pnlSiteList, CSTR("Country")));
+	this->lblSiteCountry->SetRect(0, 0, 100, 23, false);
+	NEW_CLASS(this->txtSiteCountry, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteCountry->SetRect(100, 0, 200, 23, false);
+	this->txtSiteCountry->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteCity, UI::GUILabel(ui, this->pnlSiteList, CSTR("City")));
+	this->lblSiteCity->SetRect(0, 24, 100, 23, false);
+	NEW_CLASS(this->txtSiteCity, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteCity->SetRect(100, 24, 200, 23, false);
+	this->txtSiteCity->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteAddress, UI::GUILabel(ui, this->pnlSiteList, CSTR("Address")));
+	this->lblSiteAddress->SetRect(0, 48, 100, 23, false);
+	NEW_CLASS(this->txtSiteAddress, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteAddress->SetRect(100, 48, 200, 23, false);
+	this->txtSiteAddress->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteAddress2, UI::GUILabel(ui, this->pnlSiteList, CSTR("Address2")));
+	this->lblSiteAddress2->SetRect(0, 72, 100, 23, false);
+	NEW_CLASS(this->txtSiteAddress2, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteAddress2->SetRect(100, 72, 200, 23, false);
+	this->txtSiteAddress2->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteZIP, UI::GUILabel(ui, this->pnlSiteList, CSTR("ZIP")));
+	this->lblSiteZIP->SetRect(0, 96, 100, 23, false);
+	NEW_CLASS(this->txtSiteZIP, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteZIP->SetRect(100, 96, 200, 23, false);
+	this->txtSiteZIP->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteTimeZone, UI::GUILabel(ui, this->pnlSiteList, CSTR("TimeZone")));
+	this->lblSiteTimeZone->SetRect(0, 120, 100, 23, false);
+	NEW_CLASS(this->txtSiteTimeZone, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteTimeZone->SetRect(100, 120, 200, 23, false);
+	this->txtSiteTimeZone->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteCountryCode, UI::GUILabel(ui, this->pnlSiteList, CSTR("CountryCode")));
+	this->lblSiteCountryCode->SetRect(0, 144, 100, 23, false);
+	NEW_CLASS(this->txtSiteCountryCode, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteCountryCode->SetRect(100, 144, 200, 23, false);
+	this->txtSiteCountryCode->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteIsPublic, UI::GUILabel(ui, this->pnlSiteList, CSTR("IsPublic")));
+	this->lblSiteIsPublic->SetRect(0, 168, 100, 23, false);
+	NEW_CLASS(this->txtSiteIsPublic, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteIsPublic->SetRect(100, 168, 200, 23, false);
+	this->txtSiteIsPublic->SetReadOnly(true);
+	NEW_CLASS(this->lblSitePublicName, UI::GUILabel(ui, this->pnlSiteList, CSTR("Public Name")));
+	this->lblSitePublicName->SetRect(0, 192, 100, 23, false);
+	NEW_CLASS(this->txtSitePublicName, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSitePublicName->SetRect(100, 192, 200, 23, false);
+	this->txtSitePublicName->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteLifetimeEnergy, UI::GUILabel(ui, this->pnlSiteList, CSTR("Lifetime Energy")));
+	this->lblSiteLifetimeEnergy->SetRect(350, 0, 100, 23, false);
+	NEW_CLASS(this->txtSiteLifetimeEnergy, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteLifetimeEnergy->SetRect(450, 0, 100, 23, false);
+	this->txtSiteLifetimeEnergy->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteLifetimeRevenue, UI::GUILabel(ui, this->pnlSiteList, CSTR("Lifetime Energy")));
+	this->lblSiteLifetimeRevenue->SetRect(350, 24, 100, 23, false);
+	NEW_CLASS(this->txtSiteLifetimeRevenue, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteLifetimeRevenue->SetRect(450, 24, 100, 23, false);
+	this->txtSiteLifetimeRevenue->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteYearlyEnergy, UI::GUILabel(ui, this->pnlSiteList, CSTR("Yearly Energy")));
+	this->lblSiteYearlyEnergy->SetRect(350, 48, 100, 23, false);
+	NEW_CLASS(this->txtSiteYearlyEnergy, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteYearlyEnergy->SetRect(450, 48, 100, 23, false);
+	this->txtSiteYearlyEnergy->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteMonthlyEnergy, UI::GUILabel(ui, this->pnlSiteList, CSTR("Monthly Energy")));
+	this->lblSiteMonthlyEnergy->SetRect(350, 72, 100, 23, false);
+	NEW_CLASS(this->txtSiteMonthlyEnergy, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteMonthlyEnergy->SetRect(450, 72, 100, 23, false);
+	this->txtSiteMonthlyEnergy->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteDailyEnergy, UI::GUILabel(ui, this->pnlSiteList, CSTR("Daily Energy")));
+	this->lblSiteDailyEnergy->SetRect(350, 96, 100, 23, false);
+	NEW_CLASS(this->txtSiteDailyEnergy, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteDailyEnergy->SetRect(450, 96, 100, 23, false);
+	this->txtSiteDailyEnergy->SetReadOnly(true);
+	NEW_CLASS(this->lblSiteCurrentPower, UI::GUILabel(ui, this->pnlSiteList, CSTR("Current Power")));
+	this->lblSiteCurrentPower->SetRect(350, 120, 100, 23, false);
+	NEW_CLASS(this->txtSiteCurrentPower, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
+	this->txtSiteCurrentPower->SetRect(450, 120, 100, 23, false);
+	this->txtSiteCurrentPower->SetReadOnly(true);
 }
 
 SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
 {
-	SDEL_CLASS(this->seAPI);
+	if (this->seAPI)
+	{
+		this->seAPI->FreeSiteList(&this->siteList);
+		DEL_CLASS(this->seAPI);
+		this->seAPI = 0;
+	}
 	SDEL_CLASS(this->ssl);
 }
 

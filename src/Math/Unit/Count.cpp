@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Math/Unit/Count.h"
 
 Double Math::Unit::Count::GetUnitRatio(CountUnit unit)
@@ -92,25 +93,88 @@ Double Math::Unit::Count::Convert(CountUnit fromUnit, CountUnit toUnit, Double f
 
 UTF8Char *Math::Unit::Count::WellFormat(UTF8Char *sbuff, Double val)
 {
-	if (val < 1000)
+	if (val == 0)
 	{
-		return Text::StrDoubleFmt(sbuff, val, "0.00");
+		*sbuff++ = '0';
+		*sbuff = 0;
+		return sbuff;
 	}
-	else if (val < 1000000)
+	const Char *fmt = "0.00";
+	Double lval = Math_Log10(val);
+	if (lval < 0)
 	{
-		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1000, "0.00"), UTF8STRC("K"));
+		if (lval >= -2)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 100, fmt), UTF8STRC("c"));
+		}
+		else if (lval >= -3)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1000, fmt), UTF8STRC("m"));
+		}
+		else if (lval >= -6)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1000000, fmt), UTF8STRC("u"));
+		}
+		else if (lval >= -9)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1.0E9, fmt), UTF8STRC("n"));
+		}
+		else if (lval >= -12)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1.0E12, fmt), UTF8STRC("p"));
+		}
+		else if (lval >= -15)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1.0E15, fmt), UTF8STRC("f"));
+		}
+		else if (lval >= -18)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1.0E18, fmt), UTF8STRC("a"));
+		}
+		else if (lval >= -21)
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1.0E21, fmt), UTF8STRC("z"));
+		}
+		else
+		{
+			return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val * 1.0E24, fmt), UTF8STRC("y"));
+		}
 	}
-	else if (val < 1000000000)
+	else if (lval < 3)
 	{
-		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1000000, "0.00"), UTF8STRC("M"));
+		return Text::StrDoubleFmt(sbuff, val, fmt);
 	}
-	else if (val < 1000000000000)
+	else if (lval < 6)
 	{
-		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1000000000, "0.00"), UTF8STRC("G"));
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E3, fmt), UTF8STRC("k"));
+	}
+	else if (lval < 9)
+	{
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E6, fmt), UTF8STRC("M"));
+	}
+	else if (val < 12)
+	{
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E9, fmt), UTF8STRC("G"));
+	}
+	else if (val < 15)
+	{
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E12, fmt), UTF8STRC("T"));
+	}
+	else if (val < 18)
+	{
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E15, fmt), UTF8STRC("P"));
+	}
+	else if (val < 21)
+	{
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E18, fmt), UTF8STRC("E"));
+	}
+	else if (val < 24)
+	{
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E21, fmt), UTF8STRC("Z"));
 	}
 	else
 	{
-		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1000000000000, "0.00"), UTF8STRC("T"));
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E24, fmt), UTF8STRC("Y"));
 	}
 }
 

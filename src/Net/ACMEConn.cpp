@@ -220,10 +220,10 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 
 Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 {
-	Text::String *type = json->GetString(UTF8STRC("type"));
-	Text::String *status = json->GetString(UTF8STRC("status"));
-	Text::String *url = json->GetString(UTF8STRC("url"));
-	Text::String *token = json->GetString(UTF8STRC("token"));
+	Text::String *type = json->GetValueString(CSTR("type"));
+	Text::String *status = json->GetValueString(CSTR("status"));
+	Text::String *url = json->GetValueString(CSTR("url"));
+	Text::String *token = json->GetValueString(CSTR("token"));
 
 	if (type && status && url && token)
 	{
@@ -609,7 +609,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 				json = challArr->GetArrayValue(i);
 				if (json)
 				{
-					s = json->GetString(UTF8STRC("type"));
+					s = json->GetValueString(CSTR("type"));
 					if (s && s->EqualsICase(sAuthType.v, sAuthType.leng))
 					{
 						ret = ChallengeJSON(json);

@@ -226,7 +226,7 @@ namespace Data
 			}
 			else if (this->inst.nanosec == 0)
 			{
-				if ((this->inst.sec % 86400) == 0)
+				if (((this->inst.sec + this->tzQhr * 900) % 86400) == 0)
 				{
 					return ToString(buff, "yyyy-MM-dd");
 				}

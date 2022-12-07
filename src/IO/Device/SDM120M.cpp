@@ -192,18 +192,18 @@ Bool IO::Device::SDM120M::SetBaudRate(Int32 baudRate)
 
 void IO::Device::SDM120M::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
 {
-	dataHdlr(userObj, CSTR("Voltage"),                addr, 30001, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_ELECTRIC_POTENTIAL, Math::Unit::ElectricPotential::EPU_VOLT, 1);
-	dataHdlr(userObj, CSTR("Current"),                addr, 30007, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_ELECTRIC_CURRENT,   Math::Unit::ElectricCurrent::ECU_AMPERE, 1);
-	dataHdlr(userObj, CSTR("Active Power"),           addr, 30013, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_POWER,              Math::Unit::Power::PU_WATT, 1);
-	dataHdlr(userObj, CSTR("Apparent Power"),         addr, 30019, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_APPARENT_POWER,     Math::Unit::ApparentPower::APU_VOLTAMPERE, 1);
-	dataHdlr(userObj, CSTR("Reactive Power"),         addr, 30025, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_REACTIVE_POWER,     Math::Unit::ReactivePower::RPU_VAR, 1);
-	dataHdlr(userObj, CSTR("Power Factor"),           addr, 30031, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_RATIO,              Math::Unit::Ratio::RU_RATIO, 1);
-	dataHdlr(userObj, CSTR("Phase Angle"),            addr, 30037, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_ANGLE,              Math::Unit::Angle::AU_DEGREE, 1);
-	dataHdlr(userObj, CSTR("Frequency"),              addr, 30071, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_FREQUENCY,          Math::Unit::Frequency::FU_HERTZ, 1);
-	dataHdlr(userObj, CSTR("Import Active Energy"),   addr, 30073, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_ENERGY,             Math::Unit::Energy::EU_KILOWATTHOUR, 1);
-	dataHdlr(userObj, CSTR("Export Active Energy"),   addr, 30075, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_ENERGY,             Math::Unit::Energy::EU_KILOWATTHOUR, 1);
-	dataHdlr(userObj, CSTR("Import Reactive Energy"), addr, 30077, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_REACTIVE_ENERGY,    Math::Unit::ReactiveEnergy::REU_KVARH, 1);
-	dataHdlr(userObj, CSTR("Export Reactive Energy"), addr, 30079, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_REACTIVE_ENERGY,    Math::Unit::ReactiveEnergy::REU_KVARH, 1);
-	dataHdlr(userObj, CSTR("Total Active Energy"),    addr, 30343, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_ENERGY,             Math::Unit::Energy::EU_KILOWATTHOUR, 1);
-	dataHdlr(userObj, CSTR("Total Reactive Energy"),  addr, 30345, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::VT_REACTIVE_ENERGY,    Math::Unit::ReactiveEnergy::REU_KVARH, 1);
+	dataHdlr(userObj, CSTR("Voltage"),                addr, 30001, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ElectricPotential, Math::Unit::ElectricPotential::EPU_VOLT, 1);
+	dataHdlr(userObj, CSTR("Current"),                addr, 30007, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ElectricCurrent,   Math::Unit::ElectricCurrent::ECU_AMPERE, 1);
+	dataHdlr(userObj, CSTR("Active Power"),           addr, 30013, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Power,             Math::Unit::Power::PU_WATT, 1);
+	dataHdlr(userObj, CSTR("Apparent Power"),         addr, 30019, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ApparentPower,     Math::Unit::ApparentPower::APU_VOLTAMPERE, 1);
+	dataHdlr(userObj, CSTR("Reactive Power"),         addr, 30025, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ReactivePower,     Math::Unit::ReactivePower::RPU_VAR, 1);
+	dataHdlr(userObj, CSTR("Power Factor"),           addr, 30031, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Ratio,             Math::Unit::Ratio::RU_RATIO, 1);
+	dataHdlr(userObj, CSTR("Phase Angle"),            addr, 30037, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Angle,             Math::Unit::Angle::AU_DEGREE, 1);
+	dataHdlr(userObj, CSTR("Frequency"),              addr, 30071, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Frequency,         Math::Unit::Frequency::FU_HERTZ, 1);
+	dataHdlr(userObj, CSTR("Import Active Energy"),   addr, 30073, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Energy,            Math::Unit::Energy::EU_KILOWATTHOUR, 1);
+	dataHdlr(userObj, CSTR("Export Active Energy"),   addr, 30075, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Energy,            Math::Unit::Energy::EU_KILOWATTHOUR, 1);
+	dataHdlr(userObj, CSTR("Import Reactive Energy"), addr, 30077, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ReactiveEnergy,    Math::Unit::ReactiveEnergy::REU_KVARH, 1);
+	dataHdlr(userObj, CSTR("Export Reactive Energy"), addr, 30079, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ReactiveEnergy,    Math::Unit::ReactiveEnergy::REU_KVARH, 1);
+	dataHdlr(userObj, CSTR("Total Active Energy"),    addr, 30343, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::Energy,            Math::Unit::Energy::EU_KILOWATTHOUR, 1);
+	dataHdlr(userObj, CSTR("Total Reactive Energy"),  addr, 30345, IO::MODBUSController::DT_F32, Math::Unit::UnitBase::ValueType::ReactiveEnergy,    Math::Unit::ReactiveEnergy::REU_KVARH, 1);
 }

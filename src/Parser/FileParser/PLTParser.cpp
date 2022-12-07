@@ -37,7 +37,6 @@ IO::ParserType Parser::FileParser::PLTParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	UInt8 buff[40];
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UTF8Char *tmpArr[6];

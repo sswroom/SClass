@@ -65,7 +65,7 @@ private:
 			return;
 		}
 		Text::JSONObject *jobj = (Text::JSONObject*)obj;
-		Text::String *contURL = jobj->GetString(UTF8STRC("content.url"));
+		Text::String *contURL = jobj->GetValueString(CSTR("content.url"));
 		UOSInt i;
 		if (contURL)
 		{
@@ -82,7 +82,7 @@ private:
 			stat->me->AddURL(tmpSb->ToCString());
 		}
 
-		obj = obj->GetValue(UTF8STRC("children"));
+		obj = obj->GetValue(CSTR("children"));
 		if (obj && obj->GetType() == Text::JSONType::Array)
 		{
 			Text::JSONArray *children = (Text::JSONArray*)obj;
@@ -102,7 +102,7 @@ private:
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, i - 1));
 		if (json)
 		{
-			ParseJSONObj(stat, url, json->GetValue(UTF8STRC("root")), tmpSb);
+			ParseJSONObj(stat, url, json->GetValue(CSTR("root")), tmpSb);
 			json->EndUse();
 		}
 	}

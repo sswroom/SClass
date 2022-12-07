@@ -413,7 +413,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(buff, readSize - 1));
 		if (json)
 		{
-			Text::JSONBase *o = json->GetValue(UTF8STRC("results"));
+			Text::JSONBase *o = json->GetValue(CSTR("results"));
 			if (o && o->GetType() == Text::JSONType::Array)
 			{
 				Math::Geometry::Vector2D *vec;
@@ -427,7 +427,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 					if (o && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *result = (Text::JSONObject*)o;
-						Text::String *geometryType = result->GetString(UTF8STRC("geometryType"));
+						Text::String *geometryType = result->GetValueString(CSTR("geometryType"));
 						if (geometryType)
 						{
 							vec = ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")));
@@ -537,7 +537,7 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 	if (geometryType == 0)
 		return 0;
 	Text::JSONBase *o;
-	o = geometry->GetValue(UTF8STRC("spatialReference.wkid"));
+	o = geometry->GetValue(CSTR("spatialReference.wkid"));
 	if (o)
 	{
 		srid = (UInt32)o->GetAsInt32();
@@ -545,7 +545,7 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 
 	if (geometryType->Equals(UTF8STRC("esriGeometryPolygon")))
 	{
-		o = geometry->GetValue(UTF8STRC("rings"));
+		o = geometry->GetValue(CSTR("rings"));
 		if (o && o->GetType() == Text::JSONType::Array)
 		{
 			Data::ArrayList<UInt32> ptOfstArr;
@@ -595,7 +595,7 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 	}
 	else if (geometryType->Equals(UTF8STRC("esriGeometryPolyline")))
 	{
-		o = geometry->GetValue(UTF8STRC("paths"));
+		o = geometry->GetValue(CSTR("paths"));
 		if (o && o->GetType() == Text::JSONType::Array)
 		{
 			Data::ArrayList<UInt32> ptOfstArr;
@@ -645,9 +645,9 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 	}
 	else if (geometryType->Equals(UTF8STRC("esriGeometryPoint")))
 	{
-		Text::JSONBase *x = geometry->GetValue(UTF8STRC("x"));
-		Text::JSONBase *y = geometry->GetValue(UTF8STRC("y"));
-		Text::JSONBase *z = geometry->GetValue(UTF8STRC("z"));
+		Text::JSONBase *x = geometry->GetValue(CSTR("x"));
+		Text::JSONBase *y = geometry->GetValue(CSTR("y"));
+		Text::JSONBase *z = geometry->GetValue(CSTR("z"));
 		if (x && y && x->GetType() == Text::JSONType::Number && y->GetType() == Text::JSONType::Number)
 		{
 			Math::Geometry::Point *pt;

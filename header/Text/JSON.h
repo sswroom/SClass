@@ -40,11 +40,17 @@ namespace Text
 		void EndUse();
 		Bool IsString();
 
-		JSONBase *GetValue(const UTF8Char *path, UOSInt pathLen);
-		Text::String *GetString(const UTF8Char *path, UOSInt pathLen);
+		JSONBase *GetValue(Text::CString path);
+		Text::String *GetValueString(Text::CString path);
+		Text::String *GetValueNewString(Text::CString path);
+		Int32 GetValueAsInt32(Text::CString path);
+		Int64 GetValueAsInt64(Text::CString path);
+		Double GetValueAsDouble(Text::CString path);
+		Bool GetValueAsBool(Text::CString path);
 		Int32 GetAsInt32();
 		Int64 GetAsInt64();
 		Double GetAsDouble();
+		Bool GetAsBool();
 
 		static JSONBase *ParseJSONStr(Text::CString jsonStr);
 		static JSONBase *ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len);
@@ -192,6 +198,7 @@ namespace Text
 		void SetObjectDouble(Text::CString name, Double val);
 		void SetObjectString(Text::CString name, Text::CString val);
 		void SetObjectString(Text::CString name, Text::String *val);
+		void SetObjectBool(Text::CString name, Bool val);
 		JSONBase *GetObjectValue(Text::CString name);
 		void GetObjectNames(Data::ArrayList<Text::String *> *names);
 		Text::String *GetObjectString(Text::CString name);
@@ -199,6 +206,7 @@ namespace Text
 		Double GetObjectDouble(Text::CString name);
 		Int32 GetObjectInt32(Text::CString name);
 		Int64 GetObjectInt64(Text::CString name);
+		Bool GetObjectBool(Text::CString name);
 		void RemoveObject(Text::CString name);
 	};
 

@@ -44,14 +44,14 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb2.ToCString());
 	if (json)
 	{
-		Text::String *s = json->GetString(UTF8STRC("brandLogoUri"));
+		Text::String *s = json->GetValueString(CSTR("brandLogoUri"));
 		this->brandLogoUri = SCOPY_STRING(s);
-		Text::JSONBase *resourceBase = json->GetValue(UTF8STRC("resourceSets[0].resources[0]"));
+		Text::JSONBase *resourceBase = json->GetValue(CSTR("resourceSets[0].resources[0]"));
 		if (resourceBase && resourceBase->GetType() == Text::JSONType::Object)
 		{
-			s = resourceBase->GetString(UTF8STRC("imageUrl"));
+			s = resourceBase->GetValueString(CSTR("imageUrl"));
 			this->url = SCOPY_STRING(s);
-			Text::JSONBase *subdObj = resourceBase->GetValue(UTF8STRC("imageUrlSubdomains"));
+			Text::JSONBase *subdObj = resourceBase->GetValue(CSTR("imageUrlSubdomains"));
 			if (subdObj && subdObj->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *subd = (Text::JSONArray*)subdObj;

@@ -92,24 +92,24 @@ Bool IO::Device::ED538::GetOutputOverloadFlag(UInt16 diNum)
 
 void IO::Device::ED538::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
 {
-	dataHdlr(userObj, CSTR("Din 0"),       addr, 10001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 1"),       addr, 10002, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 2"),       addr, 10003, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 3"),       addr, 10004, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 4"),       addr, 10005, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 5"),       addr, 10006, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 6"),       addr, 10007, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 7"),       addr, 10008, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("Din 0 Count"), addr, 40001, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 1 Count"), addr, 40002, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 2 Count"), addr, 40003, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 3 Count"), addr, 40004, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 4 Count"), addr, 40005, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 5 Count"), addr, 40006, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 6 Count"), addr, 40007, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("Din 7 Count"), addr, 40008, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,        Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, CSTR("RL0"),         addr,     1, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("RL1"),         addr,     2, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("RL2"),         addr,     3, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
-	dataHdlr(userObj, CSTR("RL3"),         addr,     4, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::VT_MAPPING,      0, 1);
+	dataHdlr(userObj, CSTR("Din 0"),       addr, 10001, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 1"),       addr, 10002, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 2"),       addr, 10003, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 3"),       addr, 10004, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 4"),       addr, 10005, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 5"),       addr, 10006, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 6"),       addr, 10007, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 7"),       addr, 10008, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("Din 0 Count"), addr, 40001, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 1 Count"), addr, 40002, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 2 Count"), addr, 40003, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 3 Count"), addr, 40004, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 4 Count"), addr, 40005, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 5 Count"), addr, 40006, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 6 Count"), addr, 40007, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Din 7 Count"), addr, 40008, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::ValueType::Count,        Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("RL0"),         addr,     1, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("RL1"),         addr,     2, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("RL2"),         addr,     3, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
+	dataHdlr(userObj, CSTR("RL3"),         addr,     4, IO::MODBUSController::DT_U8,   Math::Unit::UnitBase::ValueType::Mapping,      0, 1);
 }

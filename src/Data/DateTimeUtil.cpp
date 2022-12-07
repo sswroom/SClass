@@ -1417,10 +1417,14 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 		}
 		else
 		{
-			Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
 			if (nanosec)
 			{
-				*nanosec = (UInt32)tval->ms * 1000000;
+				Ticks2TimeValue(GetCurrTimeSecHighP(nanosec) * 1000LL, tval, *tzQhr);
+				tval->ms = (UInt16)(*nanosec / 1000000);
+			}
+			else
+			{
+				Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
 			}
 			dateSucc = false;
 		}
@@ -1502,6 +1506,8 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 			tval->minute = 0;
 			tval->second = 0;
 			tval->ms = 0;
+			if (nanosec)
+				*nanosec = 0;
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
@@ -1510,6 +1516,8 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 			tval->minute = 0;
 			tval->second = 0;
 			tval->ms = 0;
+			if (nanosec)
+				*nanosec = 0;
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{

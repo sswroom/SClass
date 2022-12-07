@@ -48,7 +48,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 	{
 		if (json->GetType() == Text::JSONType::Object)
 		{
-			Text::String *crsName = json->GetString(UTF8STRC("crs.properties.name"));
+			Text::String *crsName = json->GetValueString(CSTR("crs.properties.name"));
 			if (crsName)
 			{
 				Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
@@ -59,7 +59,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 				}
 			}
 		}
-		Text::JSONBase *featuresObj = json->GetValue(UTF8STRC("features"));
+		Text::JSONBase *featuresObj = json->GetValue(CSTR("features"));
 		if (featuresObj && featuresObj->GetType() == Text::JSONType::Array)
 		{
 			Text::JSONArray *features = (Text::JSONArray*)featuresObj;
@@ -68,14 +68,14 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 			while (i < j)
 			{
 				Text::JSONBase *feature = features->GetArrayValue(i);
-				Text::JSONBase *geometry = feature->GetValue(UTF8STRC("geometry"));
+				Text::JSONBase *geometry = feature->GetValue(CSTR("geometry"));
 				if (geometry && geometry->GetType() == Text::JSONType::Object)
 				{
 					Math::Geometry::Vector2D *vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
 					if (vec)
 					{
 						valueOfstList->Add(nameList->GetCount());
-						Text::JSONBase *properties = feature->GetValue(UTF8STRC("properties"));
+						Text::JSONBase *properties = feature->GetValue(CSTR("properties"));
 						if (properties && properties->GetType() == Text::JSONType::Object)
 						{
 							Data::ArrayList<Text::String*> names;
@@ -90,7 +90,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CString txt, UInt32 srid, Data::Arra
 								name = names.GetItem(k);
 								nameList->Add(name->Clone());
 								sb.ClearStr();
-								obj->GetValue(name->v, name->leng)->ToString(&sb);
+								obj->GetValue(name->ToCString())->ToString(&sb);
 								valueList->Add(Text::String::New(sb.ToCString()));
 								k++;
 							}

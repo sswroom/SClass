@@ -9,22 +9,22 @@ namespace Math
 		class UnitBase
 		{
 		public:
-			typedef enum
+			enum class ValueType
 			{
-				VT_MAPPING,
-				VT_ELECTRIC_POTENTIAL,
-				VT_ELECTRIC_CURRENT,
-				VT_POWER,
-				VT_ANGLE,
-				VT_FREQUENCY,
-				VT_RATIO,
-				VT_APPARENT_POWER,
-				VT_REACTIVE_POWER,
-				VT_ENERGY,
-				VT_REACTIVE_ENERGY,
-				VT_COUNT,
-				VT_TEMPERATURE
-			} ValueType;
+				Mapping,
+				ElectricPotential,
+				ElectricCurrent,
+				Power,
+				Angle,
+				Frequency,
+				Ratio,
+				ApparentPower,
+				ReactivePower,
+				Energy,
+				ReactiveEnergy,
+				Count,
+				Temperature
+			};
 		public:
 			static Text::CString GetUnitShortName(ValueType vt, Int32 unit);
 		};

@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 	if (json)
 	{
-		Text::String *rxdata = json->GetString(UTF8STRC("rxpk[0].data"));
-		Text::JSONBase *rxstat = json->GetValue(UTF8STRC("rxpk[0].stat"));
-		Text::String *txdata = json->GetString(UTF8STRC("txpk.data"));
+		Text::String *rxdata = json->GetValueString(CSTR("rxpk[0].data"));
+		Text::JSONBase *rxstat = json->GetValue(CSTR("rxpk[0].stat"));
+		Text::String *txdata = json->GetValueString(CSTR("txpk.data"));
 		if (rxdata)
 		{
 			Text::TextBinEnc::Base64Enc b64;
