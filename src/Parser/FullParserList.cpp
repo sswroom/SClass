@@ -26,6 +26,7 @@
 #include "Parser/FileParser/DCPackParser.h"
 #include "Parser/FileParser/DTSParser.h"
 #include "Parser/FileParser/ELFParser.h"
+#include "Parser/FileParser/EVTXParser.h"
 #include "Parser/FileParser/EXEParser.h"
 #include "Parser/FileParser/GamedatPac2Parser.h"
 #include "Parser/FileParser/GIFParser.h"
@@ -251,6 +252,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::WebPParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::HEIFParser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::EVTXParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);

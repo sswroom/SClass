@@ -1805,6 +1805,8 @@ IO/StreamRecorder.h: ../../src/IO/StreamRecorder.cpp
 @StreamRecorder.o
 IO/StreamWriter.h: ../../src/IO/StreamWriter.cpp
 @StreamWriter.o
+IO/StringLogFile.h: ../../src/IO/StringLogFile.cpp
+@StringLogFile.o
 IO/StringLogger.h: ../../src/IO/StringLogger.cpp
 @StringLogger.o
 IO/SystemInfoLog.h: ../../src/IO/SystemInfoLog.cpp
@@ -3202,6 +3204,8 @@ Parser/FileParser/DTSParser.h: ../../src/Parser/FileParser/DTSParser.cpp
 @DTSParser.o
 Parser/FileParser/ELFParser.h: ../../src/Parser/FileParser/ELFParser.cpp
 @ELFParser.o
+Parser/FileParser/EVTXParser.h: ../../src/Parser/FileParser/EVTXParser.cpp
+@EVTXParser.o
 Parser/FileParser/EXEParser.h: ../../src/Parser/FileParser/EXEParser.cpp
 @EXEParser.o
 Parser/FileParser/FNTParser.h: ../../src/Parser/FileParser/FNTParser.cpp
@@ -4645,6 +4649,7 @@ StreamLogger.o: ../../src/IO/StreamLogger.cpp
 StreamReader.o: ../../src/IO/StreamReader.cpp
 StreamRecorder.o: ../../src/IO/StreamRecorder.cpp
 StreamWriter.o: ../../src/IO/StreamWriter.cpp
+StringLogFile.o: ../../src/IO/StringLogFile.cpp
 StringLogger.o: ../../src/IO/StringLogger.cpp
 SystemInfoLog.o: ../../src/IO/SystemInfoLog.cpp
 TVControl.o: ../../src/IO/TVControl.cpp
@@ -5292,6 +5297,7 @@ DBFParser.o: ../../src/Parser/FileParser/DBFParser.cpp
 DCPackParser.o: ../../src/Parser/FileParser/DCPackParser.cpp
 DTSParser.o: ../../src/Parser/FileParser/DTSParser.cpp
 ELFParser.o: ../../src/Parser/FileParser/ELFParser.cpp
+EVTXParser.o: ../../src/Parser/FileParser/EVTXParser.cpp
 EXEParser.o: ../../src/Parser/FileParser/EXEParser.cpp
 FNTParser.o: ../../src/Parser/FileParser/FNTParser.cpp
 GamedatPac2Parser.o: ../../src/Parser/FileParser/GamedatPac2Parser.cpp

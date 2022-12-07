@@ -1,0 +1,29 @@
+#ifndef _SM_IO_STRINGLOGFILE
+#define _SM_IO_STRINGLOGFILE
+#include "IO/LogFile.h"
+
+namespace IO
+{
+	class StringLogFile : public IO::LogFile
+	{
+	private:
+		struct LogItem
+		{
+			Data::Timestamp ts;
+			Text::String *message;
+			Text::String *desc;
+		};
+
+		Data::ArrayList<LogItem*> items;
+	public:
+		StringLogFile(Text::String *sourceName);
+		virtual ~StringLogFile();
+
+		virtual UOSInt GetCount(IO::ILogHandler::LogLevel logLevel) const;
+		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const;
+		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const;
+
+		UOSInt AddLog(Data::Timestamp ts, Text::CString message, Text::CString desc);
+	};
+}
+#endif
