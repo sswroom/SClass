@@ -16,7 +16,9 @@
 #include <psapi.h>
 #include <tlhelp32.h>
 #include <shellapi.h>
+#include <winternl.h>
 #undef DeleteFile
+#undef GetCommandLine
 
 #ifndef _WIN32_WCE
 #define CloseToolhelp32Snapshot(hand) CloseHandle(hand)
@@ -230,6 +232,89 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 	{
 		return false;
 	}
+}
+
+typedef NTSTATUS (NTAPI* NtQueryInformationProcessFunc)(
+	IN HANDLE ProcessHandle,
+	IN PROCESSINFOCLASS ProcessInformationClass,
+	OUT PVOID ProcessInformation,
+	IN ULONG ProcessInformationLength,
+	OUT PULONG ReturnLength OPTIONAL
+);
+
+Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8* sb)
+{
+	if (this->handle == 0)
+		return false;
+
+	IO::Library lib((const UTF8Char*)"Ntdll.dll");
+	NtQueryInformationProcessFunc qip = (NtQueryInformationProcessFunc)lib.GetFunc("NtQueryInformationProcess");
+	if (qip == 0)
+		return false;
+	PROCESS_BASIC_INFORMATION pinfo;
+	LONG status = qip((HANDLE)this->handle, ProcessBasicInformation, &pinfo, sizeof(pinfo), NULL);
+	PPEB ppeb = pinfo.PebBaseAddress;
+	PEB pebCopy;
+	if (!ReadProcessMemory((HANDLE)this->handle, ppeb, &pebCopy, sizeof(PEB), NULL))
+	{
+		return false;
+	}
+
+	RTL_USER_PROCESS_PARAMETERS rtlProcParamCopy;
+	if (!ReadProcessMemory((HANDLE)this->handle, pebCopy.ProcessParameters, &rtlProcParamCopy, sizeof(RTL_USER_PROCESS_PARAMETERS), NULL))
+	{
+		return false;
+	}
+	PWSTR wBuffer = rtlProcParamCopy.CommandLine.Buffer;
+	USHORT len = rtlProcParamCopy.CommandLine.Length;
+	WChar *cmdLine = MemAlloc(WChar, (len >> 1) + 1);
+	if (!ReadProcessMemory((HANDLE)this->handle, wBuffer, cmdLine, len, NULL))
+	{
+		MemFree(cmdLine);
+		return false;
+	}
+	cmdLine[len >> 1] = 0;
+	sb->AppendW(cmdLine);
+	MemFree(cmdLine);
+	return true;
+}
+
+Bool Manage::Process::GetWorkingDir(Text::StringBuilderUTF8* sb)
+{
+	if (this->handle)
+	{
+		UOSInt retSize;
+		WChar* buff = MemAlloc(WChar, 1024);
+#ifdef _WIN32_WCE
+		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
+#else
+		//retSize = GetProcessImageFileNameW(this->handle, buff, 1024);
+		retSize = GetModuleFileNameExW(this->handle, 0, buff, 1024);
+#endif
+		buff[retSize] = 0;
+		retSize = Text::StrLastIndexOfChar(buff, '\\');
+		if (retSize != INVALID_INDEX)
+		{
+			buff[retSize] = 0;
+			sb->AppendW(buff);
+		}
+		else
+		{
+			sb->AppendW(buff);
+		}
+		MemFree(buff);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+Bool Manage::Process::GetTrueProgramPath(Text::StringBuilderUTF8* sb)
+{
+	return this->GetFilename(sb);
 }
 
 UOSInt Manage::Process::GetMemorySize()
@@ -1126,7 +1211,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
 		CloseHandle(startInfo.hStdOutput);
-		CloseHandle(startInfo.hStdError);
+		//CloseHandle(startInfo.hStdError);
 
 		if (result)
 		{

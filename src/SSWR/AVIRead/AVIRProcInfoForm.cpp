@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		me->txtDetWorkingDir->SetText(CSTR(""));
 		me->txtDetTrueProgPath->SetText(CSTR(""));
 		me->txtDetPriority->SetText(CSTR(""));
-		me->txtDetArtecture->SetText(CSTR(""));
+		me->txtDetArchitecture->SetText(CSTR(""));
 		me->currProc = 0;
 		me->rlcDetChartCPU->ClearChart();
 		me->rlcDetChartCount->ClearChart();
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		proc.GetTrueProgramPath(&sb);
 		me->txtDetTrueProgPath->SetText(sb.ToCString());
 		me->txtDetPriority->SetText(Manage::Process::GetPriorityName(proc.GetPriority()));
-		me->txtDetArtecture->SetText(Manage::ThreadContext::ContextTypeGetName(proc.GetContextType()));
+		me->txtDetArchitecture->SetText(Manage::ThreadContext::ContextTypeGetName(proc.GetContextType()));
 		me->UpdateProcHeaps();
 		me->UpdateProcModules();
 		me->UpdateProcThreads();
@@ -561,11 +561,11 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtDetPriority, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetPriority->SetRect(100, 168, 100, 23, false);
 	this->txtDetPriority->SetReadOnly(true);
-	NEW_CLASS(this->lblDetArtecture, UI::GUILabel(ui, this->tpDetInfo, CSTR("Artecture")));
-	this->lblDetArtecture->SetRect(0, 192, 100, 23, false);
-	NEW_CLASS(this->txtDetArtecture, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
-	this->txtDetArtecture->SetRect(100, 192, 100, 23, false);
-	this->txtDetArtecture->SetReadOnly(true);
+	NEW_CLASS(this->lblDetArchitecture, UI::GUILabel(ui, this->tpDetInfo, CSTR("Architecture")));
+	this->lblDetArchitecture->SetRect(0, 192, 100, 23, false);
+	NEW_CLASS(this->txtDetArchitecture, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetArchitecture->SetRect(100, 192, 100, 23, false);
+	this->txtDetArchitecture->SetReadOnly(true);
 
 	NEW_CLASS(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);

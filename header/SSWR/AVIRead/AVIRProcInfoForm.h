@@ -66,8 +66,8 @@ namespace SSWR
 			UI::GUITextBox *txtDetTrueProgPath;
 			UI::GUILabel *lblDetPriority;
 			UI::GUITextBox *txtDetPriority;
-			UI::GUILabel* lblDetArtecture;
-			UI::GUITextBox* txtDetArtecture;
+			UI::GUILabel* lblDetArchitecture;
+			UI::GUITextBox* txtDetArchitecture;
 
 			UI::GUIPanel *pnlDetModule;
 			UI::GUIButton *btnDetModule;
