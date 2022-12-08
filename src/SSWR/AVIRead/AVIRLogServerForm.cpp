@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("LogSvr"));
-			NEW_CLASS(me->svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), 0, false));
+			NEW_CLASS(me->svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), 0, false, false));
 			if (me->svr->IsError())
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in listening the port"), CSTR("Error"), me);
@@ -36,7 +36,16 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 			else
 			{
 				me->svr->HandleClientLog(OnClientLog, me);
-				me->txtPort->SetReadOnly(true);
+				if (me->svr->Start())
+				{
+					me->txtPort->SetReadOnly(true);
+				}
+				else
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Error in starting LogServer"), CSTR("Error"), me);
+					DEL_CLASS(me->svr);
+					me->svr = 0;
+				}
 			}
 		}
 		else

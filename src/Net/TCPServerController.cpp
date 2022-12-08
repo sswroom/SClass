@@ -67,14 +67,14 @@ void __stdcall Net::TCPServerController::TimeoutHdlr(Net::TCPClient *cli, void *
 {
 }
 
-Net::TCPServerController::TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec)
+Net::TCPServerController::TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart)
 {
 	this->cliMgr = 0;
 	this->sockf = sockf;
 	this->maxBuffSize = maxBuffSize;
 	this->hdlr = hdlr;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSec, EventHdlr, DataHdlr, this, workerCnt, TimeoutHdlr));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHdlr, this, prefix));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHdlr, this, prefix, autoStart));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);
@@ -95,6 +95,11 @@ Net::TCPServerController::~TCPServerController()
 		DEL_CLASS(this->cliMgr);
 		this->cliMgr = 0;
 	}
+}
+
+Bool Net::TCPServerController::Start()
+{
+	return this->maxBuffSize > 0 && this->svr != 0 && this->svr->Start();
 }
 
 Bool Net::TCPServerController::IsError()

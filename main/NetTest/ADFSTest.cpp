@@ -125,7 +125,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(svcHdlr, MyADFSService());
 		NEW_CLASS(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, svcHdlr));
 		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, &console));
-		Net::WebServer::WebListener listener(&sockf, ssl, logHdlr, PORTNUM, 120, 4, CSTR("ADFSTest/1.0"), false, true);
+		Net::WebServer::WebListener listener(&sockf, ssl, logHdlr, PORTNUM, 120, 4, CSTR("ADFSTest/1.0"), false, true, true);
 		if (listener.IsError())
 		{
 			console.WriteLineC(UTF8STRC("Error in listening to port " STR(PORTNUM)));

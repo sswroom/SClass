@@ -60,27 +60,6 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	Sync::Event *threadEvt = 0;
 
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
-	svr->svrSocv4 = svr->socf->CreateTCPSocketv4();
-	if (!svr->socf->SocketBindv4(svr->svrSocv4, 0, svr->port))
-	{
-		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v4 port: "));
-		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
-		svr->socf->DestroySocket(svr->svrSocv4);
-		svr->svrSocv4 = 0;
-		svr->errorv4 = true;
-		return 0;
-	}
-	if (!svr->socf->SocketListen(svr->svrSocv4))
-	{
-		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v4 port: "));
-		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
-		svr->socf->DestroySocket(svr->svrSocv4);
-		svr->svrSocv4 = 0;
-		svr->errorv4 = true;
-		return 0;
-	}
 
 	svr->threadRunning |= 1;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v4 port "));
@@ -188,30 +167,6 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	Sync::Event *threadEvt = 0;
 
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
-	svr->svrSocv6 = svr->socf->CreateTCPSocketv6();
-	Net::SocketUtil::AddressInfo addrAny;
-	Net::SocketUtil::SetAddrAnyV6(&addrAny);
-	if (!svr->socf->SocketBind(svr->svrSocv6, &addrAny, svr->port))
-	{
-		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));
-		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
-		svr->socf->DestroySocket(svr->svrSocv6);
-		svr->svrSocv6 = 0;
-		svr->errorv6 = true;
-		return 0;
-	}
-	if (!svr->socf->SocketListen(svr->svrSocv6))
-	{
-		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v6 port: "));
-		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
-		svr->socf->DestroySocket(svr->svrSocv6);
-		svr->svrSocv6 = 0;
-		svr->errorv6 = true;
-		return 0;
-	}
-
 	svr->threadRunning |= 4;
 	str = Text::StrConcatC(buff, UTF8STRC("Start listening to v6 port "));
 	str = Text::StrInt32(str, svr->port);
@@ -349,8 +304,10 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }
-Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix)
+Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix, Bool autoStart)
 {
+	UTF8Char buff[1024];
+	UTF8Char *str;
 	this->socf = socf;
 	this->toStop = false;
 	this->errorv4 = false;
@@ -364,22 +321,51 @@ Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TC
 	this->userObj = userObj;
 	this->threadRunning = 0;
 
-	Sync::Thread::Create(Svrv4Thread, this);
-	while (true)
+	this->svrSocv4 = this->socf->CreateTCPSocketv4();
+	if (!this->socf->SocketBindv4(this->svrSocv4, 0, this->port))
 	{
-		if (threadRunning & 1 || errorv4)
-			break;
-		Sync::Thread::Sleep(10);
+		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v4 port: "));
+		str = Text::StrInt32(str, this->port);
+		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
+		this->socf->DestroySocket(this->svrSocv4);
+		this->svrSocv4 = 0;
+		this->errorv4 = true;
 	}
-	Sync::Thread::Create(Svrv6Thread, this);
-	Sync::Thread::Create(SvrThread2, this);
-	while (true)
+	else if (!this->socf->SocketListen(this->svrSocv4))
 	{
-		if (threadRunning & 1 || errorv4)
-			if (threadRunning & 2)
-				if (threadRunning & 4 || errorv6)
-					break;
-		Sync::Thread::Sleep(10);
+		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v4 port: "));
+		str = Text::StrInt32(str, this->port);
+		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
+		this->socf->DestroySocket(this->svrSocv4);
+		this->svrSocv4 = 0;
+		this->errorv4 = true;
+	}
+
+	this->svrSocv6 = this->socf->CreateTCPSocketv6();
+	Net::SocketUtil::AddressInfo addrAny;
+	Net::SocketUtil::SetAddrAnyV6(&addrAny);
+	if (!this->socf->SocketBind(this->svrSocv6, &addrAny, this->port))
+	{
+		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));
+		str = Text::StrInt32(str, this->port);
+		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
+		this->socf->DestroySocket(this->svrSocv6);
+		this->svrSocv6 = 0;
+		this->errorv6 = true;
+	}
+	else if (!this->socf->SocketListen(this->svrSocv6))
+	{
+		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v6 port: "));
+		str = Text::StrInt32(str, this->port);
+		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LogLevel::Error);
+		this->socf->DestroySocket(this->svrSocv6);
+		this->svrSocv6 = 0;
+		this->errorv6 = true;
+	}
+
+	if (autoStart)
+	{
+		this->Start();
 	}
 }
 
@@ -391,6 +377,35 @@ Net::TCPServer::~TCPServer()
 		Sync::Thread::Sleep(10);
 	}
 	SDEL_STRING(this->logPrefix);
+}
+
+Bool Net::TCPServer::Start()
+{
+	if (this->errorv4)
+		return false;
+	if (this->threadRunning & 1)
+		return true;
+	Sync::Thread::Create(Svrv4Thread, this);
+	while (true)
+	{
+		if (threadRunning & 1 || errorv4)
+			break;
+		Sync::Thread::Sleep(10);
+	}
+	if (!this->errorv6)
+	{
+		Sync::Thread::Create(Svrv6Thread, this);
+	}
+	Sync::Thread::Create(SvrThread2, this);
+	while (true)
+	{
+		if (threadRunning & 1 || errorv4)
+			if (threadRunning & 2)
+				if (threadRunning & 4 || errorv6)
+					break;
+		Sync::Thread::Sleep(10);
+	}
+	return threadRunning & 1;
 }
 
 void Net::TCPServer::Close()
@@ -407,6 +422,8 @@ void Net::TCPServer::Close()
 			socf->DestroySocket(this->svrSocv6);
 		}
 		this->socsEvt.Set();
+		this->errorv4 = true;
+		this->errorv6 = true;
 	}
 }
 

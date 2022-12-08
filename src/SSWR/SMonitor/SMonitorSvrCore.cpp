@@ -1226,7 +1226,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 
 					hdlr->ExpandPackageFiles(this->parsers);
 					this->webHdlr = hdlr;
-					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, true));
+					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, true, false));
 					if (this->listener->IsError())
 					{
 						DEL_CLASS(this->listener);
@@ -1261,7 +1261,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			if (s->ToUInt16(&port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
-				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, &this->log, OnServerConn, this, CSTR("CLI: ")));
+				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, &this->log, OnServerConn, this, CSTR("CLI: "), false));
 				if (this->cliSvr->IsV4Error())
 				{
 					DEL_CLASS(this->cliSvr);
@@ -1308,7 +1308,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 
 		DEL_CLASS(cfg);
 
-		if (!this->IsError())
+		if (!this->IsError() && this->cliSvr->Start() && this->listener->Start())
 		{
 			Sync::Thread::Create(CheckThread, this);
 			while (!this->checkRunning)

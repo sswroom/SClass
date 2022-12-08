@@ -296,12 +296,12 @@ void __stdcall Net::MODBUSTCPListener::OnClientTimeout(Net::TCPClient *cli, void
 
 }
 
-Net::MODBUSTCPListener::MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log)
+Net::MODBUSTCPListener::MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Bool autoStart)
 {
 	this->sockf = sockf;
 	this->delay = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(120, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, OnClientConn, this, CSTR("MODBUSTCP: ")));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, OnClientConn, this, CSTR("MODBUSTCP: "), autoStart));
 }
 
 Net::MODBUSTCPListener::~MODBUSTCPListener()
@@ -316,6 +316,11 @@ Net::MODBUSTCPListener::~MODBUSTCPListener()
 		dev = this->devMap.GetItem(i);
 		DEL_CLASS(dev);
 	}
+}
+
+Bool Net::MODBUSTCPListener::Start()
+{
+	return this->svr->Start();
 }
 
 Bool Net::MODBUSTCPListener::IsError()

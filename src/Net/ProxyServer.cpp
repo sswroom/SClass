@@ -27,7 +27,7 @@ void __stdcall Net::ProxyServer::OnClientTimeout(Net::TCPClient *cli, void *user
 {
 }
 
-Net::ProxyServer::ProxyServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log)
+Net::ProxyServer::ProxyServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Bool autoStart)
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -35,7 +35,7 @@ Net::ProxyServer::ProxyServer(Net::SocketFactory *sockf, UInt16 port, IO::LogToo
 	this->svr = 0;
 	this->cliMgr = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(30, OnClientEvent, OnClientData, this, 10, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, CSTR("Prx: ")));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, CSTR("Prx: "), autoStart));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);
@@ -49,6 +49,11 @@ Net::ProxyServer::~ProxyServer()
 {
 	SDEL_CLASS(this->svr);
 	SDEL_CLASS(this->cliMgr);
+}
+
+Bool Net::ProxyServer::Start()
+{
+	return this->svr != 0 && this->svr->Start();
 }
 
 Bool Net::ProxyServer::IsError()

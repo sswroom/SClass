@@ -58,12 +58,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	if (sb.ToUInt16(&port) && port > 0 && port <= 65535)
 	{
 		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("RESTful Server"), me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("RESTful Server"), me);
 		}
 		else
 		{
@@ -103,7 +103,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
-
+			
+			if (!me->svr->Start())
+			{
+				valid = false;
+				UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("RESTful Server"), me);
+			}
 		}
 
 		if (valid)

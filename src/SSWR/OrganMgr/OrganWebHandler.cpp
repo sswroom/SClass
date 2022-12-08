@@ -9479,10 +9479,10 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 		this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 		this->AddService(CSTR("/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true, true));
 		if (this->ssl && sslPort)
 		{
-			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, this, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, true));
+			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, this, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, true, true));
 		}
 		else
 		{

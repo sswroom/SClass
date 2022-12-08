@@ -918,7 +918,7 @@ Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo 
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo) : protoHdlr(this)
+Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -948,7 +948,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 	this->infoStartTime = dt.ToTicks();
 
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::Thread::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MQTT: ")));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MQTT: "), autoStart));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);
@@ -1002,6 +1002,11 @@ Net::MQTTBroker::~MQTTBroker()
 		subscribe->topic->Release();
 		MemFree(subscribe);
 	}
+}
+
+Bool Net::MQTTBroker::Start()
+{
+	return this->svr != 0 && this->svr->Start();
 }
 
 Bool Net::MQTTBroker::IsError()

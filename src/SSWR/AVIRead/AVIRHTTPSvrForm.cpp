@@ -181,11 +181,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			cacheSize = 4096;
 		}
 		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Server"), me);
 		}
 		else
 		{
@@ -217,6 +218,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			if (me->chkDownloadCnt->IsChecked())
 			{
 				me->dirHdlr->EnableStats();
+			}
+			if (!me->svr->Start())
+			{
+				valid = false;
+				UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("HTTP Server"), me);
 			}
 		}
 	}

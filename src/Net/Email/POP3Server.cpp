@@ -465,14 +465,14 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	}
 }
 
-Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
 	this->greeting = Text::String::New(greeting);
 	this->mailCtrl = mailCtrl;
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL, autoStart));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("POP3Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 
@@ -482,6 +482,11 @@ Net::Email::POP3Server::~POP3Server()
 	this->cliMgr.CloseAll();
 	DEL_CLASS(this->rawLog);
 	this->greeting->Release();
+}
+
+Bool Net::Email::POP3Server::Start()
+{
+	return this->svr->Start();
 }
 
 Bool Net::Email::POP3Server::IsError()

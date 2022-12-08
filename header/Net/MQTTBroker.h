@@ -95,9 +95,10 @@ namespace Net
 		void UpdateTopic(Text::CString topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);
 	public:
-		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo);
+		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
 
+		Bool Start();
 		Bool IsError();
 		void HandleConnect(ConnectHandler connHdlr, void *userObj);
 		void HandlePublish(PublishHandler publishHdlr, void *userObj);

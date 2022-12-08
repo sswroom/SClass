@@ -253,6 +253,10 @@ Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8* sb)
 		return false;
 	PROCESS_BASIC_INFORMATION pinfo;
 	LONG status = qip((HANDLE)this->handle, ProcessBasicInformation, &pinfo, sizeof(pinfo), NULL);
+	if (status != 0)
+	{
+		return false;
+	}
 	PPEB ppeb = pinfo.PebBaseAddress;
 	PEB pebCopy;
 	if (!ReadProcessMemory((HANDLE)this->handle, ppeb, &pebCopy, sizeof(PEB), NULL))

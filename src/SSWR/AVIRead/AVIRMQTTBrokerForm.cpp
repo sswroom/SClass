@@ -51,17 +51,26 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 				ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
 				SDEL_CLASS(issuerCert);
 			}
-			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, &me->log, true));
+			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, &me->log, true, false));
 			if (me->broker->IsError())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in initing server"), CSTR("Error"), me);
 				DEL_CLASS(me->broker);
 				me->broker = 0;
 			}
 			else
 			{
 				me->broker->HandleTopicUpdate(OnTopicUpdate, me);
-				me->txtPort->SetReadOnly(true);
+				if (me->broker->Start())
+				{
+					me->txtPort->SetReadOnly(true);
+				}
+				else
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
+					DEL_CLASS(me->broker);
+					me->broker = 0;
+				}
 			}
 		}
 	}

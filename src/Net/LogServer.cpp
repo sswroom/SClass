@@ -119,7 +119,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 	return 0;
 }
 
-Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog) : protoHdlr(this)
+Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);
@@ -128,7 +128,7 @@ Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString 
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL, autoStart));
 }
 
 Net::LogServer::~LogServer()
@@ -145,6 +145,11 @@ Net::LogServer::~LogServer()
 		DEL_CLASS(status->log);
 		MemFree(status);
 	}
+}
+
+Bool Net::LogServer::Start()
+{
+	return this->svr->Start();
 }
 
 Bool Net::LogServer::IsError()

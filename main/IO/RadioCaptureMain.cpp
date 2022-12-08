@@ -46,7 +46,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::OSSocketFactory sockf(true);
 			{
 				Net::WebServer::CapturerWebHandler webHdlr(&wifiCapturer, &btCapturer, &radioLogger);
-				Net::WebServer::WebListener listener(&sockf, 0, &webHdlr, webPort, 120, 4, CSTR("WiFiCapture/1.0"), false, true);
+				Net::WebServer::WebListener listener(&sockf, 0, &webHdlr, webPort, 120, 4, CSTR("WiFiCapture/1.0"), false, true, true);
 				if (listener.IsError())
 				{
 					sb.AppendC(UTF8STRC("Error in starting web server at port "));

@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Start"), me);
 			return;
 		}
-		NEW_CLASS(me->svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log));
+		NEW_CLASS(me->svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log, true));
 		if (me->svr->IsError())
 		{
 			DEL_CLASS(me->svr);

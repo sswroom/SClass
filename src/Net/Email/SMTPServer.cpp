@@ -458,7 +458,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -470,7 +470,7 @@ Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->mailObj = userObj;
 	this->loginHdlr = loginHdlr;
 	this->maxMailSize = 104857600;
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL, autoStart));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("SMTPLog.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 
@@ -481,6 +481,11 @@ Net::Email::SMTPServer::~SMTPServer()
 	DEL_CLASS(this->rawLog);
 	this->domain->Release();
 	this->serverName->Release();
+}
+
+Bool Net::Email::SMTPServer::Start()
+{
+	return this->svr->Start();
 }
 
 Bool Net::Email::SMTPServer::IsError()

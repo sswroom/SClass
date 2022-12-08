@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
 		return;
 	}
 	NEW_CLASS(me->webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, me->webHdlr, port, 60, 3, CSTR("RAWMonitor/1.0"), false, true));
+	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, me->webHdlr, port, 60, 3, CSTR("RAWMonitor/1.0"), false, true, true));
 	if (me->listener->IsError())
 	{
 		DEL_CLASS(me->listener);

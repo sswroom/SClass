@@ -48,9 +48,10 @@ namespace Net
 
 		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);
 	public:
-		LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
+		LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart);
 		virtual ~LogServer();
 
+		Bool Start();
 		Bool IsError();
 		void HandleClientLog(ClientLogHandler hdlr, void *userObj);
 

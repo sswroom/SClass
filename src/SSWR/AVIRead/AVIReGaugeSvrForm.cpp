@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 		{
 			NEW_CLASS(me->dirHdlr, Net::WebServer::EGaugeHandler());
 			me->dirHdlr->HandleEGaugeData(OnEGaugeData, me);
-			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("eGauge/1.0"), false, false));
+			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("eGauge/1.0"), false, false, false));
 			if (me->svr->IsError())
 			{
 				valid = false;
@@ -45,6 +45,10 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 				me->svr->SetAccessLog(me->log, IO::ILogHandler::LogLevel::Raw);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->log->AddLogHandler(me->logger, IO::ILogHandler::LogLevel::Raw);
+				if (!me->svr->Start())
+				{
+					valid = false;
+				}
 			}
 		}
 

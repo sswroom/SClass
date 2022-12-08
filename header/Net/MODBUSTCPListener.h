@@ -24,9 +24,10 @@ namespace Net
 		static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
 	public:
-		MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log);
+		MODBUSTCPListener(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Bool autoStart);
 		virtual ~MODBUSTCPListener();
 
+		Bool Start();
 		Bool IsError();
 
 		void AddDevice(UInt8 addr, IO::MODBUSDevSim *dev);

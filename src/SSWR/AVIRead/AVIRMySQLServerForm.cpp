@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	NEW_CLASS(me->dbms, DB::DBMS(MYSQLVERSION, me->log));
-	NEW_CLASS(me->svr, Net::MySQLServer(me->core->GetSocketFactory(), port, me->dbms));
+	NEW_CLASS(me->svr, Net::MySQLServer(me->core->GetSocketFactory(), port, me->dbms, true));
 	if (me->svr->IsError())
 	{
 		SDEL_CLASS(me->svr);

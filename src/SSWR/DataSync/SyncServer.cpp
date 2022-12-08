@@ -96,7 +96,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(Net::TCPClient *cli, 
 
 }
 
-SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj) : protoHdlr(this)
+SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj, Bool autoStart) : protoHdlr(this)
 {
 	this->sockf = sockf;
 	this->dataHdlr = dataHdlr;
@@ -142,7 +142,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 		}
 	}
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, CSTR("Sync: ")));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, CSTR("Sync: "), autoStart));
 }
 
 SSWR::DataSync::SyncServer::~SyncServer()
@@ -165,6 +165,11 @@ SSWR::DataSync::SyncServer::~SyncServer()
 		syncCli = this->syncCliList.GetItem(i);
 		DEL_CLASS(syncCli);
 	}
+}
+
+Bool SSWR::DataSync::SyncServer::Start()
+{
+	return this->svr != 0 && this->svr->Start();
 }
 
 Bool SSWR::DataSync::SyncServer::IsError()

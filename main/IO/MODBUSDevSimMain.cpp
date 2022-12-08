@@ -76,7 +76,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Int32 ret = 0;
 	Net::OSSocketFactory sockf(false);
 	IO::LogTool log;
-	Net::MODBUSTCPListener modbusListener(&sockf, modbusPort, &log);
+	Net::MODBUSTCPListener modbusListener(&sockf, modbusPort, &log, false);
 	if (modbusListener.IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in listening to MODBUSPort"));
@@ -87,11 +87,19 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		modbusListener.AddDevice(devAddr, dev);
 		Net::WebServer::MODBUSDevSimHandler devHdlr(&modbusListener, dev);
-		Net::WebServer::WebListener webListener(&sockf, 0, &devHdlr, ctrlPort, 120, 2, CSTR("MODBUSSim/1.0"), false, true);
+		Net::WebServer::WebListener webListener(&sockf, 0, &devHdlr, ctrlPort, 120, 2, CSTR("MODBUSSim/1.0"), false, true, false);
 		if (webListener.IsError())
 		{
 			console.WriteLineC(UTF8STRC("Error in listening to CtrlPort"));
 			ret = 1;
+		}
+		else if (!modbusListener.Start())
+		{
+			console.WriteLineC(UTF8STRC("Error in starting MODBUSPort"));
+		}
+		else if (!webListener.Start())
+		{
+			console.WriteLineC(UTF8STRC("Error in starting CtrlPort"));
 		}
 		else
 		{

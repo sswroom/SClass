@@ -130,7 +130,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(gpio, IO::GPIOControl());
 	NEW_CLASS(webHdlr, GPIOWebHandler(gpio));
-	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, Sync::Thread::GetThreadCnt(), CSTR("GPIO/1.0"), false, true));
+	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, Sync::Thread::GetThreadCnt(), CSTR("GPIO/1.0"), false, true, true));
 	progCtrl->WaitForExit(progCtrl);
 	DEL_CLASS(listener);
 	webHdlr->Release();
