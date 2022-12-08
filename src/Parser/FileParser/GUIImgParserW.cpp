@@ -79,7 +79,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::IStreamData
 	IO::StreamDataStream *stm;
 	Win32::COMStream *cstm;
 	Int32 isImage = 0;
-	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUint32(&hdr[4]) == 0x0a1a0a0d)
+	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
 	{
 		isImage = 1;
 	}

@@ -286,6 +286,151 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
+Bool Manage::Process::GetCommandLine(Text::StringBuilderUTF8 *sb)
+{
+	UTF8Char sbuff[8192];
+	UTF8Char *sptr;
+	UOSInt sz;
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		return false;
+	}
+	else
+	{
+		sz = fs.Read(sbuff, sizeof(sbuff));
+	}
+	sbuff[sz] = 0;
+	Bool needEscape;
+	UOSInt strStart;
+	UOSInt strCurr;
+	UTF8Char c;
+	strCurr = 0;
+	while (true)
+	{
+		strStart = strCurr;
+		needEscape = false;
+		while (strCurr < sz)
+		{
+			c = sbuff[strCurr];
+			if (c == '"' || c == ' ')
+			{
+				needEscape = true;
+			}
+			else if (c == 0)
+			{
+				break;
+			}
+			strCurr++;
+		}
+		if (strStart != strCurr)
+		{
+			if (strStart > 0)
+			{
+				sb->AppendUTF8Char(' ');
+			}
+			if (needEscape)
+			{
+				sb->AppendUTF8Char('"');
+				while (strStart < strCurr)
+				{
+					c = sbuff[strStart++];
+					if (c == '"')
+						sb->AppendUTF8Char(c);
+					sb->AppendUTF8Char(c);
+				}
+				sb->AppendUTF8Char('"');
+			}
+			else
+			{
+				sb->AppendC(&sbuff[strStart], strCurr - strStart);
+			}
+		}
+		strCurr++;
+		if (strCurr >= sz)
+		{
+			break;
+		}
+	}
+	return true;
+}
+
+Bool Manage::Process::GetWorkingDir(Text::StringBuilderUTF8 *sb)
+{
+	UTF8Char sbuff2[512];
+	UTF8Char sbuff[128];
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cwd"));
+	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
+	if (sz < 0)
+	{
+		return false;
+	}
+	else
+	{
+		sbuff2[sz] = 0;
+		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
+	}
+	return true;
+}
+
+Bool Manage::Process::GetTrueProgramPath(Text::StringBuilderUTF8 *sb)
+{
+	UTF8Char sbuff[8192];
+	UTF8Char sbuff2[512];
+	UTF8Char sbuff3[512];
+	UTF8Char *sptr;
+	UOSInt i;
+	UOSInt j;
+	UOSInt sz;
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
+	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		return this->GetFilename(sb);
+	}
+	else
+	{
+		sz = fs.Read(sbuff, sizeof(sbuff));
+	}
+	sbuff[sz] = 0;
+	i = Text::StrCharCnt(sbuff);
+	if (Text::StrEqualsC(sbuff, i, UTF8STRC("/usr/bin/valgrind.bin")))
+	{
+		i += 1;
+		while (i < sz)
+		{
+			j = Text::StrCharCnt(&sbuff[i]);
+			if (sbuff[i] == '-')
+			{
+				i += j + 1;
+			}
+			else if (sbuff[i] == '/')
+			{
+				sb->AppendC(&sbuff[i], j);
+				return true;
+			}
+			else
+			{
+				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff2, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cwd"));
+				OSInt dirSz = readlink((const Char*)sbuff2, (Char*)sbuff3, 511);
+				if (dirSz > 0)
+				{
+					sptr = IO::Path::AppendPath(sbuff3, &sbuff3[dirSz], Text::CString(&sbuff[i], j));
+					sb->AppendP(sbuff3, sptr);
+					return true;
+				}
+				else
+				{
+					sb->AppendC(&sbuff[i], j);
+					return true;
+				}
+			}
+		}
+	}
+	return this->GetFilename(sb);
+}
+
 UOSInt Manage::Process::GetMemorySize()
 {
 	return 0;

@@ -60,6 +60,9 @@ namespace Manage
 		Bool Kill();
 		WChar *GetFilename(WChar *buff);
 		Bool GetFilename(Text::StringBuilderUTF8 *sb);
+		Bool GetCommandLine(Text::StringBuilderUTF8 *sb);
+		Bool GetWorkingDir(Text::StringBuilderUTF8 *sb);
+		Bool GetTrueProgramPath(Text::StringBuilderUTF8 *sb);
 		UOSInt GetMemorySize();
 		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
 		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);

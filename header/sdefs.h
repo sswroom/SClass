@@ -572,4 +572,6 @@ typedef UInt32 UTF32Char;
 #define ASTRUCT struct
 #endif
 
+#define U16STR(s) ((const UTF16Char*)(u ## s))
+#define U32STR(s) ((const UTF32Char*)(U ## s))
 #endif

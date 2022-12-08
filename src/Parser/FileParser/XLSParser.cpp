@@ -89,7 +89,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(IO::IStreamData *f
 				modifyDt.SetValueSYSTEMTIME(&buff[i + 108]);
 			}
 
-			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], u"WORKBOOK") == 0)
+			if (Text::StrEqualsICase((const UTF16Char *)&buff[i], U16STR("WORKBOOK")) == 0)
 			{
 				Text::SpreadSheet::Workbook *wb;
 				NEW_CLASS(wb, Text::SpreadSheet::Workbook());
