@@ -1102,13 +1102,13 @@ void Net::OSSocketFactory::FreePortInfos(Data::ArrayList<Net::SocketFactory::Por
 	}
 }
 
-UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
 	UOSInt retCnt = 0;
 	UInt32 ret;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
-		Net::SocketFactory::PortInfo2 *port;
+		Net::SocketFactory::PortInfo3 *port;
 		MIB_TCPTABLE *tcpTable;
 		UInt32 dwSize = 0;
 		ret = GetTcpTable(0, (ULONG*)&dwSize, TRUE);
@@ -1122,7 +1122,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 				dwSize = 0;
 				while (dwSize < tcpTable->dwNumEntries)
 				{
-					port = MemAlloc(Net::SocketFactory::PortInfo2, 1);
+					port = MemAlloc(Net::SocketFactory::PortInfo3, 1);
 					port->protoType = Net::SocketFactory::PT_TCP;
 					Net::SocketUtil::SetAddrInfoV4(&port->localAddr,  tcpTable->table[dwSize].dwLocalAddr);
 					port->localPort = tcpTable->table[dwSize].dwLocalPort;
@@ -1171,6 +1171,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 						break;
 					}
 					port->processId = 0;
+					port->socketId = 0;
 					portInfoList->Add(port);
 					dwSize++;
 				}
@@ -1181,7 +1182,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 	}
 	if (protoType & Net::SocketFactory::PT_UDP)
 	{
-		Net::SocketFactory::PortInfo2 *port;
+		Net::SocketFactory::PortInfo3 *port;
 		MIB_UDPTABLE *udpTable;
 		UInt32 dwSize = 0;
 		ret = GetUdpTable(0, (ULONG*)&dwSize, TRUE);
@@ -1195,7 +1196,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 				dwSize = 0;
 				while (dwSize < udpTable->dwNumEntries)
 				{
-					port = MemAlloc(Net::SocketFactory::PortInfo2, 1);
+					port = MemAlloc(Net::SocketFactory::PortInfo3, 1);
 					port->protoType = Net::SocketFactory::PT_UDP;
 					Net::SocketUtil::SetAddrInfoV4(&port->localAddr, udpTable->table[dwSize].dwLocalAddr);
 					port->localPort = udpTable->table[dwSize].dwLocalPort;
@@ -1203,6 +1204,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 					port->foreignPort = 0;
 					port->portState = Net::SocketFactory::PS_UNKNOWN;
 					port->processId = 0;
+					port->socketId = 0;
 					portInfoList->Add(port);
 					dwSize++;
 				}
@@ -1214,7 +1216,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 	return retCnt;
 }
 
-void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList)
+void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList)
 {
 	UOSInt i = portInfoList->GetCount();
 	while (i-- > 0)

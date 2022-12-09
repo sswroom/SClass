@@ -588,10 +588,10 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 {
-	Data::ArrayList<Net::SocketFactory::PortInfo2 *> portInfoList;
+	Data::ArrayList<Net::SocketFactory::PortInfo3 *> portInfoList;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Net::SocketFactory::PortInfo2 *portInfo;
+	Net::SocketFactory::PortInfo3 *portInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -661,6 +661,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			}
 			sptr = Text::StrInt32(sbuff, portInfo->processId);
 			this->lvPortInfo->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, portInfo->socketId);
+			this->lvPortInfo->SetSubItem(k, 5, CSTRP(sbuff, sptr));
 		}
 		else
 		{
@@ -691,6 +693,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			this->lvPortInfo->SetSubItem(k, 3, CSTR(""));
 			sptr = Text::StrInt32(sbuff, portInfo->processId);
 			this->lvPortInfo->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, portInfo->socketId);
+			this->lvPortInfo->SetSubItem(k, 5, CSTRP(sbuff, sptr));
 		}
 		i++;
 	}
@@ -1032,13 +1036,14 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
 	NEW_CLASS(this->chkPortAuto, UI::GUICheckBox(ui, this->pnlPortInfo, CSTR("Auto Refresh"), false));
 	this->chkPortAuto->SetRect(100, 8, 100, 23, false);
-	NEW_CLASS(this->lvPortInfo, UI::GUIListView(ui, this->tpPortInfo, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvPortInfo, UI::GUIListView(ui, this->tpPortInfo, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvPortInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPortInfo->AddColumn(CSTR("Proto"), 50);
 	this->lvPortInfo->AddColumn(CSTR("Local Addr"), 150);
 	this->lvPortInfo->AddColumn(CSTR("Foreign Addr"), 150);
 	this->lvPortInfo->AddColumn(CSTR("State"), 200);
 	this->lvPortInfo->AddColumn(CSTR("PID"), 100);
+	this->lvPortInfo->AddColumn(CSTR("SID"), 100);
 	this->lvPortInfo->SetFullRowSelect(true);
 
 	if (!this->wlan->IsError())

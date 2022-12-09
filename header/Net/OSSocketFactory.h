@@ -83,8 +83,8 @@ namespace Net
 		virtual Bool GetUDPInfo(UDPInfo *info); //////////////////////////////////
 		virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId);
 		virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList);
-		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId);
-		virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList);
+		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId);
+		virtual void FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList);
 
 		virtual Bool AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr);
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);

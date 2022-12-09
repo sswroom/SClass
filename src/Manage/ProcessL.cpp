@@ -648,6 +648,31 @@ Data::Timestamp Manage::Process::GetStartTime()
 	return IO::Path::GetModifyTime(sbuff);
 }
 
+UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo> *handleList)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	UOSInt ret = 0;
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/fd/"));
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
+	if (sess)
+	{
+		Data::Timestamp ts;
+		IO::Path::PathType pt;
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0)) != 0)
+		{
+			if (sptr[0] != '.')
+			{
+				handleList->Add(HandleInfo(Text::StrToInt32(sptr), ts));
+			}
+		}
+		IO::Path::FindFileClose(sess);
+	}
+	return ret;
+}
+
 Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 {
 	return false;
@@ -696,7 +721,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	return succ;
 }
 
-Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime)
+Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime)
 {
 	OSInt hertz = (OSInt)sysconf(_SC_CLK_TCK);
 	UTF8Char sbuff[128];
@@ -712,18 +737,22 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 		UTF8Char *sarr[24];
 		if (Text::StrSplit(sarr, 24, sb.v, ' ') >= 23)
 		{
+			Int64 ticks;
 			succ = true;
 			if (createTime)
 			{
-				createTime->SetTicks(Text::StrToInt64(sarr[21]) * 1000LL / hertz);
+				ticks = Text::StrToInt64(sarr[21]);
+				*createTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
 			}
 			if (kernelTime)
 			{
-				kernelTime->SetTicks(Text::StrToInt64(sarr[14]) * 1000LL / hertz);
+				ticks = Text::StrToInt64(sarr[14]);
+				*kernelTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
 			}
 			if (userTime)
 			{
-				userTime->SetTicks(Text::StrToInt64(sarr[13]) * 1000LL / hertz);
+				ticks = Text::StrToInt64(sarr[13]);
+				*userTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
 			}
 		}
 	}

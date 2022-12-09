@@ -15,6 +15,30 @@ namespace Manage
 	public:
 		struct FindProcSess;
 
+		struct HandleInfo
+		{
+			Int32 id;
+			Data::Timestamp createTime;
+
+			HandleInfo() = default;
+			HandleInfo(Int32 id)
+			{
+				this->id = id;
+				this->createTime = 0;
+			}
+
+			HandleInfo(Int32 id, Data::Timestamp createTime)
+			{
+				this->id = id;
+				this->createTime = createTime;
+			}
+
+			Bool operator==(const HandleInfo &val)
+			{
+				return this->id == val.id;
+			}
+		};
+
 		typedef enum
 		{
 			PP_REALTIME = 0x00000100,
@@ -73,10 +97,11 @@ namespace Manage
 		UOSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount);
 		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);
 		Data::Timestamp GetStartTime();
+		UOSInt GetHandles(Data::ArrayList<HandleInfo> *handleList);
 
 		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
 		Bool GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage);
-		Bool GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime);
+		Bool GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime);
 		UInt32 GetGDIObjCount();
 		UInt32 GetUserObjCount();
 		UInt32 GetHandleCount();

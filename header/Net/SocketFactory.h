@@ -127,7 +127,8 @@ namespace Net
 			UInt32 foreignPort;
 			PortState portState;
 			UInt16 processId;
-		} PortInfo2;
+			UInt32 socketId;
+		} PortInfo3;
 
 		typedef enum
 		{
@@ -211,8 +212,8 @@ namespace Net
 		virtual Bool GetUDPInfo(UDPInfo *info) = 0; //////////////////////////////////
 		virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList) = 0;
-		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
-		virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList) = 0;
+		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
+		virtual void FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList) = 0;
 
 		virtual Bool AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr);
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);

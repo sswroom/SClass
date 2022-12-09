@@ -70,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		me->rlcDetChartCount->ClearChart();
 		me->rlcDetChartWS->ClearChart();
 		me->rlcDetChartPage->ClearChart();
-		proc.GetTimeInfo(0, me->lastKernelTime, me->lastUserTime);
-		me->clk->Start();
+		proc.GetTimeInfo(0, &me->lastKernelTime, &me->lastUserTime);
+		me->clk.Start();
 	}
 }
 
@@ -88,19 +88,19 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(CSTR_NULL);
 	if (sess)
 	{
-		i = me->procList->GetCount();
+		i = me->procList.GetCount();
 		while (i-- > 0)
 		{
-			procInfo = me->procList->GetItem(i);
+			procInfo = me->procList.GetItem(i);
 			procInfo->found = false;
 		}
 
 		while ((sptr = Manage::Process::FindProcessNext(sbuff, sess, &proc)) != 0)
 		{
-			si = me->procIds->SortedIndexOf(proc.processId);
+			si = me->procIds.SortedIndexOf(proc.processId);
 			if (si >= 0)
 			{
-				procInfo = me->procList->GetItem((UOSInt)si);
+				procInfo = me->procList.GetItem((UOSInt)si);
 				procInfo->found = true;
 			}
 			else
@@ -111,8 +111,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				procInfo->procId = proc.processId;
 				procInfo->parentProcId = proc.parentId;
 				procInfo->procName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-				me->procIds->Insert(i, procInfo->procId);
-				me->procList->Insert(i, procInfo);
+				me->procIds.Insert(i, procInfo->procId);
+				me->procList.Insert(i, procInfo);
 				sptr = Text::StrUInt32(sbuff2, procInfo->procId);
 				me->lvSummary->InsertItem(i, CSTRP(sbuff2, sptr), procInfo);
 				me->lvSummary->SetSubItem(i, 1, procInfo->procName);
@@ -160,18 +160,18 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 		}
 		Manage::Process::FindProcessClose(sess);
 
-		i = me->procList->GetCount();
+		i = me->procList.GetCount();
 		while (i-- > 0)
 		{
-			procInfo = me->procList->GetItem(i);
+			procInfo = me->procList.GetItem(i);
 			if (!procInfo->found)
 			{
 				procInfo->procName->Release();
 				MemFree(procInfo);
 				me->lvSummary->RemoveItem(i);
 				me->lbDetail->RemoveItem(i);
-				me->procList->RemoveAt(i);
-				me->procIds->RemoveAt(i);
+				me->procList.RemoveAt(i);
+				me->procIds.RemoveAt(i);
 			}
 		}
 	}
@@ -183,20 +183,20 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
 	if (me->currProc != 0)
 	{
-		Data::DateTime kernelTime;
-		Data::DateTime userTime;
+		Data::Timestamp kernelTime;
+		Data::Timestamp userTime;
 		Double t;
 		Double v[3];
 		Manage::Process proc(me->currProc, false);
 		if (proc.GetTimeInfo(0, &kernelTime, &userTime))
 		{
-			t = me->clk->GetAndRestart();
+			t = me->clk.GetAndRestart();
 			if (t > 0)
 			{
 				v[0] = (Double)(kernelTime.DiffMS(me->lastKernelTime) + userTime.DiffMS(me->lastUserTime)) / t / 10.0 / UOSInt2Double(me->threadCnt);
 				me->rlcDetChartCPU->AddSample(v);
-				me->lastKernelTime->SetValue(&kernelTime);
-				me->lastUserTime->SetValue(&userTime);
+				me->lastKernelTime = kernelTime;
+				me->lastUserTime = userTime;
 			}
 		}
 		UOSInt workingSet;
@@ -284,6 +284,12 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 		sb.AppendHexBuff(buff, size2, ' ', Text::LineBreakType::CRLF);
 		me->txtDetHeap->SetText(sb.ToCString());
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHandleClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	me->UpdateProcHandles();
 }
 
 void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
@@ -466,19 +472,47 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 	
 }
 
+void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
+{
+	if (this->currProc == 0)
+	{
+		this->lvDetHandle->ClearItems();
+	}
+	else
+	{
+		Manage::Process proc(this->currProc, false);
+		Data::ArrayList<Manage::Process::HandleInfo> handleList;
+		Manage::Process::HandleInfo hinfo;
+		UTF8Char sbuff[20];
+		UTF8Char *sptr;
+		UOSInt i;
+		UOSInt j;
+
+		proc.GetHandles(&handleList);
+
+		this->lvDetHandle->ClearItems();
+		i = 0;
+		j = handleList.GetCount();
+		while (i < j)
+		{
+			hinfo = handleList.GetItem(i);
+			sptr = Text::StrInt32(sbuff, hinfo.id);
+			this->lvDetHandle->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)hinfo.id);
+			sptr = hinfo.createTime.ToLocalTime().ToStringNoZone(sbuff);
+			this->lvDetHandle->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			i++;
+		}
+	}
+}
+
 SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Process Info"));
 
 	this->core = core;
-	NEW_CLASS(this->clk, Manage::HiResClock());
-	NEW_CLASS(this->lastUserTime, Data::DateTime());
-	NEW_CLASS(this->lastKernelTime, Data::DateTime());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->procList, Data::ArrayList<ProcessInfo*>());
-	NEW_CLASS(this->procIds, Data::ArrayListUInt32());
 	this->currProc = 0;
 	this->currProcObj = 0;
 	this->currProcRes = 0;
@@ -515,12 +549,8 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->hspDetail, UI::GUIHSplitter(ui, this->tpDetail, 3, false));
 	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this->tpDetail));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpDetInfo = this->tcDetail->AddTabPage(CSTR("Info"));
-	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));
-	this->tpDetThread = this->tcDetail->AddTabPage(CSTR("Thread"));
-	this->tpDetHeap = this->tcDetail->AddTabPage(CSTR("Heap"));
-	this->tpDetChart = this->tcDetail->AddTabPage(CSTR("Chart"));
 
+	this->tpDetInfo = this->tcDetail->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblDetProcId, UI::GUILabel(ui, this->tpDetInfo, CSTR("Process Id")));
 	this->lblDetProcId->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtDetProcId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
@@ -567,6 +597,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->txtDetArchitecture->SetRect(100, 192, 100, 23, false);
 	this->txtDetArchitecture->SetReadOnly(true);
 
+	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));
 	NEW_CLASS(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
 	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -581,6 +612,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetModule->AddColumn(CSTR("Address"), 80);
 	this->lvDetModule->AddColumn(CSTR("Size"), 80);
 
+	this->tpDetThread = this->tcDetail->AddTabPage(CSTR("Thread"));
 	NEW_CLASS(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
 	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -596,6 +628,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetThread->AddColumn(CSTR("Start Address"), 120);
 	this->lvDetThread->AddColumn(CSTR("Start Address(Name)"), 600);
 
+	this->tpDetHeap = this->tcDetail->AddTabPage(CSTR("Heap"));
 	NEW_CLASS(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -620,6 +653,23 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetHeap->AddColumn(CSTR("Type"), 80);
 	this->lvDetHeap->HandleSelChg(OnDetHeapItemSelChg, this);
 
+	this->tpDetHandle = this->tcDetail->AddTabPage(CSTR("Handles"));
+	NEW_CLASS(this->pnlDetHandle, UI::GUIPanel(ui, this->tpDetHandle));
+	this->pnlDetHandle->SetRect(0, 0, 100, 31, false);
+	this->pnlDetHandle->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->btnDetHandle, UI::GUIButton(ui, this->tpDetHandle, CSTR("Refresh")));
+	this->btnDetHandle->SetRect(4, 4, 75, 23, false);
+	this->btnDetHandle->HandleButtonClick(OnDetHandleClicked, this);
+	NEW_CLASS(this->lvDetHandle, UI::GUIListView(ui, this->tpDetHandle, UI::GUIListView::LVSTYLE_TABLE, 4));
+	this->lvDetHandle->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDetHandle->SetFullRowSelect(true);
+	this->lvDetHandle->SetShowGrid(true);
+	this->lvDetHandle->AddColumn(CSTR("Id"), 60);
+	this->lvDetHandle->AddColumn(CSTR("Create Time"), 150);
+	this->lvDetHandle->AddColumn(CSTR("Type"), 100);
+	this->lvDetHandle->AddColumn(CSTR("Desc"), 300);
+
+	this->tpDetChart = this->tcDetail->AddTabPage(CSTR("Chart"));
 	NEW_CLASS(this->grpDetChartCPU, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("CPU")));
 	this->grpDetChartCPU->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCPU->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -654,20 +704,15 @@ SSWR::AVIRead::AVIRProcInfoForm::~AVIRProcInfoForm()
 {
 	ProcessInfo *procInfo;
 	UOSInt i;
-	i = this->procList->GetCount();
+	i = this->procList.GetCount();
 	while (i-- > 0)
 	{
-		procInfo = this->procList->GetItem(i);
+		procInfo = this->procList.GetItem(i);
 		procInfo->procName->Release();
 		MemFree(procInfo);
 	}
-	DEL_CLASS(this->procList);
-	DEL_CLASS(this->procIds);
 	SDEL_CLASS(this->currProcRes);
 	SDEL_CLASS(this->currProcObj);
-	DEL_CLASS(this->lastKernelTime);
-	DEL_CLASS(this->lastUserTime);
-	DEL_CLASS(this->clk);
 }
 
 void SSWR::AVIRead::AVIRProcInfoForm::OnMonitorChanged()

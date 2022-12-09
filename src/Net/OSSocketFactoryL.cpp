@@ -1307,36 +1307,34 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	Net::SocketFactory::PortInfo2 *port;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	Net::SocketFactory::PortInfo3 *port;
+	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
 		
 	}
 	else
 	{
-		UTF8Char *sarr[5];
+		UTF8Char *sarr[11];
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		if (reader->ReadLine(&sb, 1024))
+		Text::UTF8Reader reader(&fs);
+		if (reader.ReadLine(&sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024))
+				if (!reader.ReadLine(&sb, 1024))
 				{
 					break;
 				}
 				sb.Trim();
-				if (Text::StrSplitWS(sarr, 5, sb.v) == 5)
+				if (Text::StrSplitWS(sarr, 11, sb.v) == 11)
 				{
-					port = MemAlloc(Net::SocketFactory::PortInfo2, 1);
+					port = MemAlloc(Net::SocketFactory::PortInfo3, 1);
 					port->protoType = protoType;
 					if (Text::StrSplit(sarr2, 3, sarr[1], ':') == 2)
 					{
@@ -1398,52 +1396,53 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 						break;
 					}
 					port->processId = 0;
+					port->socketId = Text::StrToUInt32(sarr[9]);
 					portInfoList->Add(port);
 					ret++;
 				}
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	Net::SocketFactory::PortInfo2 *port;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	Net::SocketFactory::PortInfo3 *port;
+	IO::FileStream fs(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
 		
 	}
 	else
 	{
 		UInt8 addr[32];
-		UTF8Char *sarr[5];
+		UTF8Char *sarr[11];
 		UTF8Char *sarr2[3];
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		if (reader->ReadLine(&sb, 1024))
+		Text::UTF8Reader reader(&fs);
+		if (reader.ReadLine(&sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024))
+				if (!reader.ReadLine(&sb, 1024))
 				{
 					break;
 				}
 				sb.Trim();
-				if (Text::StrSplitWS(sarr, 5, sb.v) == 5)
+				if (Text::StrSplitWS(sarr, 11, sb.v) == 11)
 				{
-					port = MemAlloc(Net::SocketFactory::PortInfo2, 1);
+					port = MemAlloc(Net::SocketFactory::PortInfo3, 1);
 					port->protoType = protoType;
 					if (Text::StrSplit(sarr2, 3, sarr[1], ':') == 2)
 					{
 						Text::StrHex2Bytes(sarr2[0], addr);
+						WriteUInt32(&addr[0], ReadMUInt32(&addr[0]));
+						WriteUInt32(&addr[4], ReadMUInt32(&addr[4]));
+						WriteUInt32(&addr[8], ReadMUInt32(&addr[8]));
+						WriteUInt32(&addr[12], ReadMUInt32(&addr[12]));
 						Net::SocketUtil::SetAddrInfoV6(&port->localAddr, addr, 0);
 						port->localPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
@@ -1456,6 +1455,10 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 					if (Text::StrSplit(sarr2, 3, sarr[2], ':') == 2)
 					{
 						Text::StrHex2Bytes(sarr2[0], addr);
+						WriteUInt32(&addr[0], ReadMUInt32(&addr[0]));
+						WriteUInt32(&addr[4], ReadMUInt32(&addr[4]));
+						WriteUInt32(&addr[8], ReadMUInt32(&addr[8]));
+						WriteUInt32(&addr[12], ReadMUInt32(&addr[12]));
 						Net::SocketUtil::SetAddrInfoV6(&port->foreignAddr, addr, 0);
 						port->foreignPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
@@ -1505,14 +1508,13 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 						break;
 					}
 					port->processId = 0;
+					port->socketId = Text::StrToUInt32(sarr[9]);
 					portInfoList->Add(port);
 					ret++;
 				}
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 	return ret;
 }
 
@@ -1543,7 +1545,7 @@ void Net::OSSocketFactory::FreePortInfos(Data::ArrayList<Net::SocketFactory::Por
 	}
 }
 
-UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
 	UOSInt retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
@@ -1573,7 +1575,7 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 	return retCnt;
 }
 
-void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList)
+void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::PortInfo3*> *portInfoList)
 {
 	UOSInt i = portInfoList->GetCount();
 	while (i-- > 0)

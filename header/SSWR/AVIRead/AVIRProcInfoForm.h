@@ -44,12 +44,8 @@ namespace SSWR
 			UI::GUIListBox *lbDetail;
 			UI::GUIHSplitter *hspDetail;
 			UI::GUITabControl *tcDetail;
-			UI::GUITabPage *tpDetInfo;
-			UI::GUITabPage *tpDetModule;
-			UI::GUITabPage *tpDetThread;
-			UI::GUITabPage *tpDetHeap;
-			UI::GUITabPage *tpDetChart;
 
+			UI::GUITabPage *tpDetInfo;
 			UI::GUILabel *lblDetProcId;
 			UI::GUITextBox *txtDetProcId;
 			UI::GUILabel *lblDetParentId;
@@ -69,14 +65,17 @@ namespace SSWR
 			UI::GUILabel* lblDetArchitecture;
 			UI::GUITextBox* txtDetArchitecture;
 
+			UI::GUITabPage *tpDetModule;
 			UI::GUIPanel *pnlDetModule;
 			UI::GUIButton *btnDetModule;
 			UI::GUIListView *lvDetModule;
 
+			UI::GUITabPage *tpDetThread;
 			UI::GUIPanel *pnlDetThread;
 			UI::GUIButton *btnDetThread;
 			UI::GUIListView *lvDetThread;
 
+			UI::GUITabPage *tpDetHeap;
 			UI::GUIPanel *pnlDetHeap;
 			UI::GUIButton *btnDetHeap;
 			UI::GUIListBox *lbDetHeap;
@@ -84,6 +83,12 @@ namespace SSWR
 			UI::GUITextBox *txtDetHeap;
 			UI::GUIListView *lvDetHeap;
 
+			UI::GUITabPage *tpDetHandle;
+			UI::GUIPanel *pnlDetHandle;
+			UI::GUIButton *btnDetHandle;
+			UI::GUIListView *lvDetHandle;
+
+			UI::GUITabPage *tpDetChart;
 			UI::GUIGroupBox *grpDetChartCPU;
 			UI::GUIRealtimeLineChart *rlcDetChartCPU;
 			UI::GUIVSplitter *vspDetChartCPU;
@@ -98,15 +103,15 @@ namespace SSWR
 
 			SSWR::AVIRead::AVIRCore *core;
 
-			Data::ArrayListUInt32 *procIds;
-			Data::ArrayList<ProcessInfo*> *procList;
+			Data::ArrayListUInt32 procIds;
+			Data::ArrayList<ProcessInfo*> procList;
 
 			UOSInt currProc;
 			Manage::Process *currProcObj;
 			Manage::SymbolResolver *currProcRes;
-			Manage::HiResClock *clk;
-			Data::DateTime *lastUserTime;
-			Data::DateTime *lastKernelTime;
+			Manage::HiResClock clk;
+			Data::Timestamp lastUserTime;
+			Data::Timestamp lastKernelTime;
 			UOSInt threadCnt;
 
 			static void __stdcall OnSumDblClicked(void *userObj, UOSInt index);
@@ -119,11 +124,13 @@ namespace SSWR
 			static void __stdcall OnDetHeapRefClicked(void *userObj);
 			static void __stdcall OnDetHeapSelChg(void *userObj);
 			static void __stdcall OnDetHeapItemSelChg(void *userObj);
+			static void __stdcall OnDetHandleClicked(void *userObj);
 
 			void UpdateProcModules();
 			void UpdateProcThreads();
 			void UpdateProcHeaps();
 			void UpdateProcHeapDetail(UInt32 heapId);
+			void UpdateProcHandles();
 		public:
 			AVIRProcInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRProcInfoForm();
