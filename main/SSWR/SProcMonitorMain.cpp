@@ -41,7 +41,7 @@ Bool SearchProcId(ProgInfo *prog)
 		{
 			Manage::Process proc(info.processId, false);
 			sb.ClearStr();
-			if (proc.GetFilename(&sb))
+			if (proc.GetTrueProgramPath(&sb))
 			{
 				if (sb.Equals(prog->progPath))
 				{

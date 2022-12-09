@@ -294,15 +294,26 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CString 
 		pathLen = i;
 		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	}
-	while (toAppend.StartsWith(UTF8STRC("../")))
+	while (true)
 	{
-		if (i != INVALID_INDEX)
+		if (toAppend.StartsWith(UTF8STRC("../")))
 		{
-			path[i] = 0;
-			pathLen = i;
-			i = Text::StrLastIndexOfCharC(path, pathLen, '/');
+			if (i != INVALID_INDEX)
+			{
+				path[i] = 0;
+				pathLen = i;
+				i = Text::StrLastIndexOfCharC(path, pathLen, '/');
+			}
+			toAppend = toAppend.Substring(3);
 		}
-		toAppend = toAppend.Substring(3);
+		else if (toAppend.StartsWith(UTF8STRC("./")))
+		{
+			toAppend = toAppend.Substring(2);
+		}
+		else
+		{
+			break;
+		}
 	}
 	path[pathLen] = '/';
 	return toAppend.ConcatTo(&path[pathLen + 1]);

@@ -954,7 +954,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 					while (reader.ReadLine(&sb, 512))
 					{
 					}
-					if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
+					if (fpsess->procName == 0 || sb.Equals(fpsess->procName) || sb.StartsWith(UTF8STRC("memcheck-")) || sb.StartsWith(UTF8STRC("callgrind-")))
 					{
 						found = true;
 					}
