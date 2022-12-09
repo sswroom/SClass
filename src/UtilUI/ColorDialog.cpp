@@ -529,6 +529,14 @@ void __stdcall UtilUI::ColorDialog::OnHSVVTChange(void *userObj)
 	me->textUpdating = CT_UNKNOWN;
 }
 
+void __stdcall UtilUI::ColorDialog::OnAlphaChange(void *userObj)
+{
+	UTF8Char sbuff[16];
+	UtilUI::ColorDialog *me = (UtilUI::ColorDialog *)userObj;
+	me->txtAlpha->GetText(sbuff);
+	me->aVal = Text::StrToDouble(sbuff) / 255.0;
+}
+
 UInt32 __stdcall UtilUI::ColorDialog::GenThread(void *userObj)
 {
 	UtilUI::ColorDialog::ThreadStat *stat = (UtilUI::ColorDialog::ThreadStat *)userObj;
@@ -1532,6 +1540,9 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	this->SetDefaultButton(this->btnOk);
 	this->SetCancelButton(this->btnCancel);
 
+	this->lblAlpha = 0;
+	this->txtAlpha = 0;
+
 	this->genThreadCnt = Sync::Thread::GetThreadCnt();
 	NEW_CLASS(this->genEvt, Sync::Event(true));
 	UOSInt i;
@@ -1664,6 +1675,21 @@ UInt32 UtilUI::ColorDialog::GetColor32()
 	else
 		b = (UInt32)Double2Int32(this->bVal * 255.0);
 	return (a << 24) | (r << 16) | (g << 8) | (b);
+}
+
+void UtilUI::ColorDialog::ShowAlpha()
+{
+	if (this->lblAlpha == 0)
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		NEW_CLASS(this->lblAlpha, UI::GUILabel(ui, this, CSTR("Alpha")));
+		this->lblAlpha->SetRect(504, 548, 100, 23, false);
+		sptr = Text::StrDouble(sbuff, this->aVal * 255.0);
+		NEW_CLASS(this->txtAlpha, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
+		this->txtAlpha->SetRect(604, 548, 60, 23, false);
+		this->txtAlpha->HandleTextChanged(OnAlphaChange, this);
+	}	
 }
 
 void UtilUI::ColorDialog::OnMonitorChanged()

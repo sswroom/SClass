@@ -95,6 +95,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(void *userObj, Math
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, &color, me->core->GetMonitorMgr());
+		dlg.ShowAlpha();
 		dlg.SetColor32(me->fillStyle);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{

@@ -218,6 +218,11 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 4:
 	case 7:
 	case 8:
+		if (ipCmp >= 0x08D00000 && ipCmp <= 0x08DFFFFF) //8.208.0.0 - 8.223.255.255
+		{
+			whoisHost = CSTR("whois.apnic.net");
+			break;
+		}
 	case 9:
 	case 13:
 	case 15:

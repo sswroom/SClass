@@ -77,6 +77,8 @@ namespace UtilUI
 		UI::GUITextBox *txtHSVH;
 		UI::GUITextBox *txtHSVS;
 		UI::GUITextBox *txtHSVV;
+		UI::GUILabel *lblAlpha;
+		UI::GUITextBox *txtAlpha;
 
 		UI::GUIButton *btnOk;
 		UI::GUIButton *btnCancel;
@@ -133,6 +135,7 @@ namespace UtilUI
 		static void __stdcall OnHSVHTChange(void *userObj);
 		static void __stdcall OnHSVSTChange(void *userObj);
 		static void __stdcall OnHSVVTChange(void *userObj);
+		static void __stdcall OnAlphaChange(void *userObj);
 		static UInt32 __stdcall GenThread(void *userObj);
 
 		void XYZ2RGB(Double x, Double y, Double z, Double *r, Double *g, Double *b);
@@ -154,6 +157,7 @@ namespace UtilUI
 
 		void SetColor32(UInt32 color);
 		UInt32 GetColor32();
+		void ShowAlpha();
 
 		virtual void OnMonitorChanged();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
