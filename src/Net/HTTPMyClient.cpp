@@ -858,7 +858,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 	case Net::WebUtil::RequestMethod::HTTP_DELETE:
-		this->canWrite = false;
+		this->canWrite = true;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("DELETE "));
 		cptr = ptr2.ConcatTo(cptr);
