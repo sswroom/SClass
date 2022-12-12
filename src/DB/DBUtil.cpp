@@ -1371,83 +1371,76 @@ UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::DBUtil::SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, Data::Timestamp ts, SQLType sqlType, Int8 tzQhr)
+UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType sqlType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
 	if (ts.IsNull())
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	if (sqlType == DB::DBUtil::SQLType::Access)
 	{
-		ts.tzQhr = 0;
 		sptr = sqlstr;
 		*sptr++ = '#';
-		sptr = ts.ToString(sptr, "dd/MM/yyyy HH:mm:ss");
+		sptr = ts.ToUTCTime().ToString(sptr, "dd/MM/yyyy HH:mm:ss");
 		*sptr++ = '#';
 		*sptr = 0;
 		return sptr;
 	}
 	else if (sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
-		ts.tzQhr = tzQhr;
 		sptr = sqlstr;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("CAST('"));
-		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffff");
+		sptr = ts.ConvertTimeZoneQHR(tzQhr).ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffff");
 		sptr = Text::StrConcatC(sptr, UTF8STRC("' as datetime2(7))"));
 		return sptr;
 	}
 	else if (sqlType == DB::DBUtil::SQLType::SQLite)
 	{
-		ts.tzQhr = 0;
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
+		sptr = ts.ToUTCTime().ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
 	}
 	else if (sqlType == DB::DBUtil::SQLType::Oracle)
 	{
-		ts.tzQhr = 0;
 		sptr = sqlstr;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("TIMESTAMP '"));
-		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffffff");
+		sptr = ts.ToUTCTime().ToString(sptr, "yyyy-MM-dd HH:mm:ss.fffffffff");
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
 	}
 	else if (sqlType == DB::DBUtil::SQLType::MySQL)
 	{
-		ts.tzQhr = 0;
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
+		sptr = ts.ToUTCTime().ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
 	}
 	else if (sqlType == DB::DBUtil::SQLType::PostgreSQL)
 	{
-		ts.tzQhr = 0;
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
+		sptr = ts.ToUTCTime().ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
 	}
 	else
 	{
-		ts.tzQhr = 0;
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		sptr = ts.ToString(sptr, "yyyy-MM-dd HH:mm:ss");
+		sptr = ts.ToUTCTime().ToString(sptr, "yyyy-MM-dd HH:mm:ss");
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
 	}
 }
 
-UOSInt DB::DBUtil::SDBTSLeng(Data::Timestamp ts, SQLType sqlType)
+UOSInt DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
 {
 	if (ts.IsNull())
 		return 4;

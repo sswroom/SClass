@@ -433,7 +433,7 @@ void SSWR::OrganMgr::OrganEnv::TripRelease()
 	}
 }
 
-OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(Data::Timestamp ts)
+OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(const Data::Timestamp &ts)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)this->trips.GetCount() - 1;

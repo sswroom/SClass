@@ -26,7 +26,7 @@ namespace IO
 		LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style);
 		virtual ~LoopFileLog();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev);
+		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev);
 	};
 }
 #endif

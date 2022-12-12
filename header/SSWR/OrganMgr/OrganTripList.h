@@ -19,7 +19,7 @@ namespace SSWR
 			Int32 locId;
 
 		public:
-			Trip(Data::Timestamp fromDate, Data::Timestamp toDate, Int32 locId);
+			Trip(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId);
 			~Trip();
 			UTF8Char *ToString(UTF8Char *sbuff);
 		};

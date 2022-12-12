@@ -850,7 +850,7 @@ void Data::VariItem::SetDate(Data::DateTime *dt)
 	}
 }
 
-void Data::VariItem::SetDate(Data::Timestamp ts)
+void Data::VariItem::SetDate(const Data::Timestamp &ts)
 {
 	if (this->itemType == ItemType::Date)
 	{
@@ -1254,7 +1254,7 @@ Data::VariItem *Data::VariItem::NewDate(Data::DateTime *dt)
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewTS(Data::Timestamp ts)
+Data::VariItem *Data::VariItem::NewTS(const Data::Timestamp &ts)
 {
 	ItemValue ival;
 	ival.date = ts;

@@ -96,7 +96,7 @@ namespace SSWR
 			Double GetMonitorHDPI(MonitorHandle *hMon);
 			Double GetMonitorDDPI(MonitorHandle *hMon);
 
-			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, Data::Timestamp ts);
+			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts);
 			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
 			const BurntDiscInfo *GetBurntDisc(Text::CString discId);
 			OSInt GetBurntDiscIndex(Text::CString discId);

@@ -241,7 +241,7 @@ void SSWR::OrganMgr::OrganTripForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::OrganMgr::OrganTripForm::SetTimes(Data::Timestamp refTime, Data::Timestamp fromTime, Data::Timestamp toTime)
+void SSWR::OrganMgr::OrganTripForm::SetTimes(const Data::Timestamp &refTime, const Data::Timestamp &fromTime, const Data::Timestamp &toTime)
 {
 	this->refTime = refTime;
 	dtpFrom->SetValue(fromTime);

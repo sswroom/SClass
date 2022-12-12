@@ -483,7 +483,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	utime((const Char*)this->sourceName->v, &t);
 }
 
-void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp lastAccessTime, Data::Timestamp lastWriteTime)
+void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Data::Timestamp &lastAccessTime, const Data::Timestamp &lastWriteTime)
 {
 	if (this->sourceName == 0)
 		return;

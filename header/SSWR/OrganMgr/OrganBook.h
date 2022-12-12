@@ -36,7 +36,7 @@ namespace SSWR
 			void SetPress(Text::CString press);
 			void SetPress(Text::StringBase<UTF8Char> *press);
 			Data::Timestamp GetPublishDate();
-			void SetPublishDate(Data::Timestamp publishDate);
+			void SetPublishDate(const Data::Timestamp &publishDate);
 			Int32 GetGroupId();
 			void SetGroupId(Int32 groupId);
 			Text::String *GetURL();

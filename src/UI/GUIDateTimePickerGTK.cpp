@@ -60,7 +60,7 @@ void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
 	}
 }
 
-void UI::GUIDateTimePicker::SetValue(Data::Timestamp ts)
+void UI::GUIDateTimePicker::SetValue(const Data::Timestamp &ts)
 {
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	if (data->format)

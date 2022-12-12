@@ -69,9 +69,9 @@ public:
 	Int32 GetId();
 	void SetId(Int32 id);
 	Data::Timestamp GetDtRecv();
-	void SetDtRecv(Data::Timestamp dtRecv);
+	void SetDtRecv(const Data::Timestamp &dtRecv);
 	Data::Timestamp GetDtData();
-	void SetDtData(Data::Timestamp dtData);
+	void SetDtData(const Data::Timestamp &dtData);
 	Text::String* GetLampno();
 	void SetLampno(Text::String* lampno);
 	Int32 GetLightStatus();
@@ -242,7 +242,7 @@ Data::Timestamp LamppostData::GetDtRecv()
 	return this->dtRecv;
 }
 
-void LamppostData::SetDtRecv(Data::Timestamp dtRecv)
+void LamppostData::SetDtRecv(const Data::Timestamp &dtRecv)
 {
 	this->dtRecv = dtRecv;
 }
@@ -252,7 +252,7 @@ Data::Timestamp LamppostData::GetDtData()
 	return this->dtData;
 }
 
-void LamppostData::SetDtData(Data::Timestamp dtData)
+void LamppostData::SetDtData(const Data::Timestamp &dtData)
 {
 	this->dtData = dtData;
 }
@@ -878,9 +878,9 @@ public:
 	Text::String* GetDescr() const;
 	void SetDescr(Text::String* descr);
 	Data::Timestamp GetDtCreate() const;
-	void SetDtCreate(Data::Timestamp dtCreate);
+	void SetDtCreate(const Data::Timestamp &dtCreate);
 	Data::Timestamp GetDtModify() const;
-	void SetDtModify(Data::Timestamp dtModify);
+	void SetDtModify(const Data::Timestamp &dtModify);
 	Int32 GetUidCreate() const;
 	void SetUidCreate(Int32 uidCreate);
 	Int32 GetUidModify() const;
@@ -959,7 +959,7 @@ Data::Timestamp CadRunway::GetDtCreate() const
 	return this->dtCreate;
 }
 
-void CadRunway::SetDtCreate(Data::Timestamp dtCreate)
+void CadRunway::SetDtCreate(const Data::Timestamp &dtCreate)
 {
 	this->dtCreate = dtCreate;
 }
@@ -969,7 +969,7 @@ Data::Timestamp CadRunway::GetDtModify() const
 	return this->dtModify;
 }
 
-void CadRunway::SetDtModify(Data::Timestamp dtModify)
+void CadRunway::SetDtModify(const Data::Timestamp &dtModify)
 {
 	this->dtModify = dtModify;
 }

@@ -52,7 +52,7 @@ namespace SSWR
 			static void __stdcall OnEpochNSClicked(void *userObj);
 			static void __stdcall OnDotNetTicksClicked(void *userObj);
 			static void __stdcall OnStrConvClicked(void *userObj);
-			void DisplayTime(Data::Timestamp ts);
+			void DisplayTime(const Data::Timestamp &ts);
 		public:
 			AVIRTimestampForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTimestampForm();

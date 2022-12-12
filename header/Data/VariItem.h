@@ -150,7 +150,7 @@ namespace Data
 		void SetStr(const UTF8Char *str, UOSInt strLen);
 		void SetStr(Text::String *str);
 		void SetDate(Data::DateTime *dt);
-		void SetDate(Data::Timestamp ts);
+		void SetDate(const Data::Timestamp &ts);
 		void SetF32(Single val);
 		void SetF64(Double val);
 		void SetI8(Int8 val);
@@ -178,7 +178,7 @@ namespace Data
 		static VariItem *NewStr(Text::CString str);
 		static VariItem *NewStr(Text::String *str);
 		static VariItem *NewDate(Data::DateTime *dt);
-		static VariItem *NewTS(Data::Timestamp ts);
+		static VariItem *NewTS(const Data::Timestamp &ts);
 		static VariItem *NewF32(Single val);
 		static VariItem *NewF64(Double val);
 		static VariItem *NewI8(Int8 val);

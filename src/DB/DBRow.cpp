@@ -127,7 +127,7 @@ Bool DB::DBRow::SetFieldDouble(DB::DBRow::Field *field, Double dblValue)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, Data::Timestamp ts)
+Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, const Data::Timestamp &ts)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
@@ -476,7 +476,7 @@ Bool DB::DBRow::SetValueDouble(const UTF8Char *fieldName, Double dblValue)
 	return this->SetFieldDouble(field, dblValue);
 }
 
-Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, Data::Timestamp ts)
+Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, const Data::Timestamp &ts)
 {
 	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
 	if (field == 0)

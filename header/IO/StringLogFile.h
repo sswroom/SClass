@@ -23,7 +23,7 @@ namespace IO
 		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak) const;
 		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb) const;
 
-		UOSInt AddLog(Data::Timestamp ts, Text::CString message, Text::CString desc);
+		UOSInt AddLog(const Data::Timestamp &ts, Text::CString message, Text::CString desc);
 	};
 }
 #endif

@@ -34,7 +34,7 @@ namespace Net
 		static void ReadTime(const UInt8 *buff, Data::DateTime *time);
 		static Data::Timestamp ReadTime(const UInt8 *buff);
 		static void WriteTime(UInt8 *buff, Data::DateTime *time);
-		static void WriteTime(UInt8 *buff, Data::Timestamp time);
+		static void WriteTime(UInt8 *buff, const Data::Timestamp &time);
 		static void WriteTime(UInt8 *buff, Int64 timeTicks);
 	};
 }

@@ -97,7 +97,7 @@ UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, Data::DateT
 	return Text::StrConcatC(dt->ToString(Text::StrConcatC(buff, (const UTF8Char*)wdays[(OSInt)dt->GetWeekday()], 3), ", dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }
 
-UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, Data::Timestamp ts)
+UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, const Data::Timestamp &ts)
 {
 	static const Char *wdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	Data::DateTime dt(ts.ToTicks(), 0);

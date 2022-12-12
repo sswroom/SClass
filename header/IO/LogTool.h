@@ -39,7 +39,7 @@ namespace IO
 		};
 		virtual ~ILogHandler(){};
 
-		virtual void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev) = 0;
+		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev) = 0;
 		virtual void LogClosed() = 0;
 	};
 

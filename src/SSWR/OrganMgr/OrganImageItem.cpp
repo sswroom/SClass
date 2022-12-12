@@ -58,7 +58,7 @@ Bool SSWR::OrganMgr::OrganImageItem::GetIsCoverPhoto() const
 	return this->isCoverPhoto;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetPhotoDate(Data::Timestamp photoDate)
+void SSWR::OrganMgr::OrganImageItem::SetPhotoDate(const Data::Timestamp &photoDate)
 {
 	this->photoDate = photoDate;
 }

@@ -440,7 +440,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 }
 
-Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Data::Timestamp modTime)
+Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();
@@ -528,7 +528,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, Text::CString fileName, Data
 	return succ;
 }
 
-Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Data::Timestamp modTime)
+Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;

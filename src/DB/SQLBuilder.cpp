@@ -86,7 +86,7 @@ void DB::SQLBuilder::AppendDateTime(Data::DateTime *val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBDate(this->sb.GetEndPtr(), val, this->sqlType, (Int8)this->tzQhr));
 }
 
-void DB::SQLBuilder::AppendTS(Data::Timestamp val)
+void DB::SQLBuilder::AppendTS(const Data::Timestamp &val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBTSLeng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBTS(this->sb.GetEndPtr(), val, this->sqlType, (Int8)this->tzQhr));

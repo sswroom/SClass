@@ -52,7 +52,7 @@ namespace DB
 		Bool SetFieldStr(Field *field, const UTF8Char *strValue);
 		Bool SetFieldInt64(Field *field, Int64 intValue);
 		Bool SetFieldDouble(Field *field, Double dblValue);
-		Bool SetFieldDate(Field *field, Data::Timestamp ts);
+		Bool SetFieldDate(Field *field, const Data::Timestamp &ts);
 		Bool SetFieldVector(Field *field, Math::Geometry::Vector2D *vec);
 		Bool SetFieldBinary(Field *field, const UInt8 *buff, UOSInt buffSize);
 
@@ -76,7 +76,7 @@ namespace DB
 		Bool SetValueStr(const UTF8Char *fieldName, const UTF8Char *strValue);
 		Bool SetValueInt64(const UTF8Char *fieldName, Int64 intValue);
 		Bool SetValueDouble(const UTF8Char *fieldName, Double dblValue);
-		Bool SetValueDate(const UTF8Char *fieldName, Data::Timestamp ts);
+		Bool SetValueDate(const UTF8Char *fieldName, const Data::Timestamp &ts);
 		Bool SetValueVector(const UTF8Char *fieldName, Math::Geometry::Vector2D *vec);
 		Bool SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOSInt buffSize);
 

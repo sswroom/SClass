@@ -83,7 +83,7 @@ public:
 	Int16 GetBulbQty();
 	void SetBulbQty(Int16 bulbQty);
 	Data::Timestamp GetCmsDate();
-	void SetCmsDate(Data::Timestamp cmsDate);
+	void SetCmsDate(const Data::Timestamp &cmsDate);
 	Text::String* GetCmsType();
 	void SetCmsType(Text::String* cmsType);
 	Int16 GetColClass();
@@ -103,7 +103,7 @@ public:
 	Text::String* GetDeleted();
 	void SetDeleted(Text::String* deleted);
 	Data::Timestamp GetDisconDate();
-	void SetDisconDate(Data::Timestamp disconDate);
+	void SetDisconDate(const Data::Timestamp &disconDate);
 	Text::String* GetDistrict();
 	void SetDistrict(Text::String* district);
 	Text::String* GetFixOPole();
@@ -111,7 +111,7 @@ public:
 	Int16 GetIVersion();
 	void SetIVersion(Int16 iVersion);
 	Data::Timestamp GetInstallDate();
-	void SetInstallDate(Data::Timestamp installDate);
+	void SetInstallDate(const Data::Timestamp &installDate);
 	Single GetKerbOs();
 	void SetKerbOs(Single kerbOs);
 	Text::String* GetLampNo();
@@ -147,7 +147,7 @@ public:
 	Text::String* GetPrimarySt();
 	void SetPrimarySt(Text::String* primarySt);
 	Data::Timestamp GetRegDate();
-	void SetRegDate(Data::Timestamp regDate);
+	void SetRegDate(const Data::Timestamp &regDate);
 	Text::String* GetRemark1();
 	void SetRemark1(Text::String* remark1);
 	Text::String* GetRemark2();
@@ -169,7 +169,7 @@ public:
 	Text::String* GetSpecMate();
 	void SetSpecMate(Text::String* specMate);
 	Data::Timestamp GetSubDate();
-	void SetSubDate(Data::Timestamp subDate);
+	void SetSubDate(const Data::Timestamp &subDate);
 	Text::String* GetSubtype();
 	void SetSubtype(Text::String* subtype);
 	Text::String* GetUpdbyhyd();
@@ -177,9 +177,9 @@ public:
 	Text::String* GetUpdbymom();
 	void SetUpdbymom(Text::String* updbymom);
 	Data::Timestamp GetUpddatehyd();
-	void SetUpddatehyd(Data::Timestamp upddatehyd);
+	void SetUpddatehyd(const Data::Timestamp &upddatehyd);
 	Data::Timestamp GetUpddatemom();
-	void SetUpddatemom(Data::Timestamp upddatemom);
+	void SetUpddatemom(const Data::Timestamp &upddatemom);
 	Text::String* GetUtilNo();
 	void SetUtilNo(Text::String* utilNo);
 	Text::String* GetVillage();
@@ -325,7 +325,7 @@ Data::Timestamp Lamppost::GetCmsDate()
 	return this->cmsDate;
 }
 
-void Lamppost::SetCmsDate(Data::Timestamp cmsDate)
+void Lamppost::SetCmsDate(const Data::Timestamp &cmsDate)
 {
 	this->cmsDate = cmsDate;
 }
@@ -429,7 +429,7 @@ Data::Timestamp Lamppost::GetDisconDate()
 	return this->disconDate;
 }
 
-void Lamppost::SetDisconDate(Data::Timestamp disconDate)
+void Lamppost::SetDisconDate(const Data::Timestamp &disconDate)
 {
 	this->disconDate = disconDate;
 }
@@ -471,7 +471,7 @@ Data::Timestamp Lamppost::GetInstallDate()
 	return this->installDate;
 }
 
-void Lamppost::SetInstallDate(Data::Timestamp installDate)
+void Lamppost::SetInstallDate(const Data::Timestamp &installDate)
 {
 	this->installDate = installDate;
 }
@@ -664,7 +664,7 @@ Data::Timestamp Lamppost::GetRegDate()
 	return this->regDate;
 }
 
-void Lamppost::SetRegDate(Data::Timestamp regDate)
+void Lamppost::SetRegDate(const Data::Timestamp &regDate)
 {
 	this->regDate = regDate;
 }
@@ -783,7 +783,7 @@ Data::Timestamp Lamppost::GetSubDate()
 	return this->subDate;
 }
 
-void Lamppost::SetSubDate(Data::Timestamp subDate)
+void Lamppost::SetSubDate(const Data::Timestamp &subDate)
 {
 	this->subDate = subDate;
 }
@@ -826,7 +826,7 @@ Data::Timestamp Lamppost::GetUpddatehyd()
 	return this->upddatehyd;
 }
 
-void Lamppost::SetUpddatehyd(Data::Timestamp upddatehyd)
+void Lamppost::SetUpddatehyd(const Data::Timestamp &upddatehyd)
 {
 	this->upddatehyd = upddatehyd;
 }
@@ -836,7 +836,7 @@ Data::Timestamp Lamppost::GetUpddatemom()
 	return this->upddatemom;
 }
 
-void Lamppost::SetUpddatemom(Data::Timestamp upddatemom)
+void Lamppost::SetUpddatemom(const Data::Timestamp &upddatemom)
 {
 	this->upddatemom = upddatemom;
 }

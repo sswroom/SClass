@@ -187,7 +187,7 @@ namespace Text
 			return this;
 		}
 
-		StringBuilderUTF8 *AppendTS(Data::Timestamp ts)
+		StringBuilderUTF8 *AppendTS(const Data::Timestamp &ts)
 		{
 			if (ts.inst.nanosec == 0)
 			{

@@ -200,7 +200,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::DateTime *val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::Timestamp val)
+Bool DB::DBFFixWriter::SetColumn(UOSInt index, const Data::Timestamp &val)
 {
 	UTF8Char sbuff[10];
 	UInt8 outBuff[10];

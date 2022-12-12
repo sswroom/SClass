@@ -120,7 +120,7 @@ namespace Map
 
 		UOSInt GetTrackCnt();
 		GPSRecord3 *GetTrack(UOSInt index, UOSInt *recordCnt);
-		void GetPosByTime(Data::Timestamp ts, Math::Coord2DDbl *pos);
+		void GetPosByTime(const Data::Timestamp &ts, Math::Coord2DDbl *pos);
 		void GetPosByTime(Data::DateTime *dt, Math::Coord2DDbl *pos);
 		void GetPosByTicks(Int64 tiemTicks, Math::Coord2DDbl *pos);
 

@@ -263,22 +263,22 @@ namespace SSWR
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName) = 0;
 			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId) = 0;
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items) = 0;
-			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, Data::Timestamp publishDate, Text::CString url) = 0;
+			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url) = 0;
 
 			WebUserInfo *GetWebUser(Int32 userId);
 			virtual Bool AddDataFile(Text::CString fileName) = 0;
 			Data::ArrayList<DataFileInfo*> *GetDataFiles();
 			virtual Bool DelDataFile(DataFileInfo *dataFile) = 0;
 			void ReleaseDataFile(DataFileInfo *dataFile);
-			virtual Bool GetGPSPos(Int32 userId, Data::Timestamp ts, Math::Coord2DDbl *pos) = 0;
+			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, Math::Coord2DDbl *pos) = 0;
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile) = 0;
 
 			void ReleaseSpecies(SpeciesInfo *species);
 			void ReleaseUserFile(UserFileInfo *userFile);
 			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
 			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType) = 0;
-			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, Data::Timestamp captureTime, Double lat, Double lon) = 0;
-			UOSInt GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Data::Timestamp fromTime, Data::Timestamp toTime);
+			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, const Data::Timestamp &captureTime, Double lat, Double lon) = 0;
+			UOSInt GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, const Data::Timestamp &fromTime, const Data::Timestamp &toTime);
 			virtual Bool GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb) = 0;
 			virtual Bool UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript) = 0;
 			virtual Bool UpdateUserFileLoc(UserFileInfo *userFile, const UTF8Char *location) = 0;
@@ -288,10 +288,10 @@ namespace SSWR
 			void TripRelease();
 			virtual void TripReload(Int32 cateId) = 0;
 		public:
-			OSInt TripGetIndex(Data::Timestamp ts);
-			Trip *TripGet(Int32 userId, Data::Timestamp ts);
+			OSInt TripGetIndex(const Data::Timestamp &ts);
+			Trip *TripGet(Int32 userId, const Data::Timestamp &ts);
 			Data::ArrayList<Trip*> *TripGetList();
-			virtual Bool TripAdd(Data::Timestamp fromDate, Data::Timestamp toDate, Int32 locId) = 0;
+			virtual Bool TripAdd(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId) = 0;
 
 			OSInt LocationGetIndex(Int32 locId);
 			Location *LocationGet(Int32 locId);
@@ -311,7 +311,7 @@ namespace SSWR
 			virtual Media::ImageList *ParseSpImage(OrganSpecies *sp) = 0;
 			virtual Media::ImageList *ParseFileImage(UserFileInfo *userFile) = 0;
 			virtual Media::ImageList *ParseWebImage(WebFileInfo *webFile) = 0;
-			Text::String *GetLocName(Int32 userId, Data::Timestamp ts, UI::GUIForm *ownerFrm, UI::GUICore *ui);
+			Text::String *GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, UI::GUICore *ui);
 			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
 
 			void SetCurrCategory(Category *currCate);

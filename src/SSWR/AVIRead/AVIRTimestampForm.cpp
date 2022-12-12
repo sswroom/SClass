@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnStrConvClicked(void *userObj)
 	me->txtStrDotNetTicks->SetText(sb.ToCString());
 }
 
-void SSWR::AVIRead::AVIRTimestampForm::DisplayTime(Data::Timestamp ts)
+void SSWR::AVIRead::AVIRTimestampForm::DisplayTime(const Data::Timestamp &ts)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

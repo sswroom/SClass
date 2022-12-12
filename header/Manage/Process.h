@@ -28,7 +28,7 @@ namespace Manage
 				this->createTime = 0;
 			}
 
-			HandleInfo(Int32 id, Data::Timestamp createTime)
+			HandleInfo(Int32 id, const Data::Timestamp &createTime)
 			{
 				this->id = id;
 				this->createTime = createTime;

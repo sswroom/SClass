@@ -87,7 +87,7 @@ Data::Timestamp SSWR::OrganMgr::OrganBook::GetPublishDate()
 	return this->publishDate;
 }
 
-void SSWR::OrganMgr::OrganBook::SetPublishDate(Data::Timestamp publishDate)
+void SSWR::OrganMgr::OrganBook::SetPublishDate(const Data::Timestamp &publishDate)
 {
 	this->publishDate = publishDate;
 }

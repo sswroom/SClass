@@ -207,7 +207,7 @@ void Net::NTPServer::WriteTime(UInt8 *buff, Data::DateTime *time)
 	WriteMInt32(&buff[4], (MulDiv32(0x40000000, (Int32)timeDiff, 500) << 1) + 1);
 }
 
-void Net::NTPServer::WriteTime(UInt8 *buff, Data::Timestamp time)
+void Net::NTPServer::WriteTime(UInt8 *buff, const Data::Timestamp &time)
 {
 	Int64 timeSecs = time.inst.sec - 2208988800LL;
 	WriteMInt32(&buff[0], (Int32)timeSecs);

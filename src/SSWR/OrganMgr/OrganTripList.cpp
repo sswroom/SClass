@@ -2,7 +2,7 @@
 #include "SSWR/OrganMgr/OrganTripList.h"
 #include "Text/MyString.h"
 
-SSWR::OrganMgr::Trip::Trip(Data::Timestamp fromDate, Data::Timestamp toDate, Int32 locId)
+SSWR::OrganMgr::Trip::Trip(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId)
 {
 	this->fromDate = fromDate;
 	this->toDate = toDate;

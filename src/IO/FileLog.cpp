@@ -167,7 +167,7 @@ void IO::FileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::FileLog::LogAdded(Data::Timestamp time, Text::CString logMsg, LogLevel logLev)
+void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(&this->mut);
 	Bool newFile = false;

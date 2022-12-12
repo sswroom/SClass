@@ -52,7 +52,7 @@ Bool IO::StringLogFile::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UO
 	return true;
 }
 
-UOSInt IO::StringLogFile::AddLog(Data::Timestamp ts, Text::CString message, Text::CString desc)
+UOSInt IO::StringLogFile::AddLog(const Data::Timestamp &ts, Text::CString message, Text::CString desc)
 {
 	LogItem *item = MemAlloc(LogItem, 1);
 	item->ts = ts;

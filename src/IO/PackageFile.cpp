@@ -95,7 +95,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Data::Timestamp modTime)
+void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -110,7 +110,7 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, T
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Data::Timestamp modTime)
+void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -132,7 +132,7 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Data
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, Data::Timestamp modTime)
+void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -153,7 +153,7 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Data::Timestamp modTime)
+void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);

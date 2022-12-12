@@ -74,7 +74,7 @@ namespace Net
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
-			Bool AddTimeHeader(Text::CString name, Data::Timestamp ts)
+			Bool AddTimeHeader(Text::CString name, const Data::Timestamp &ts)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr = ToTimeString(sbuff, ts);
@@ -143,7 +143,7 @@ namespace Net
 				return this->AddTimeHeader(CSTR("Last-Modified"), dt);
 			}
 
-			Bool AddLastModified(Data::Timestamp ts)
+			Bool AddLastModified(const Data::Timestamp &ts)
 			{
 				return this->AddTimeHeader(CSTR("Last-Modified"), ts);
 			}
@@ -154,7 +154,7 @@ namespace Net
 			}
 
 			static UTF8Char *ToTimeString(UTF8Char *buff, Data::DateTime *dt);
-			static UTF8Char *ToTimeString(UTF8Char *buff, Data::Timestamp ts);
+			static UTF8Char *ToTimeString(UTF8Char *buff, const Data::Timestamp &ts);
 		};
 	}
 }

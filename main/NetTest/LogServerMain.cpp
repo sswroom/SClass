@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	void LogAdded(Data::Timestamp logTime, Text::CString logMsg, LogLevel logLev)
+	void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev)
 	{
 		console->WriteLineCStr(logMsg);
 	}

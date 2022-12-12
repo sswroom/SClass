@@ -44,7 +44,7 @@ public:
 	Text::String* GetOrifilename();
 	void SetOrifilename(Text::String* orifilename);
 	Data::Timestamp GetFiletime();
-	void SetFiletime(Data::Timestamp filetime);
+	void SetFiletime(const Data::Timestamp &filetime);
 	Double GetLat();
 	void SetLat(Double lat);
 	Double GetLon();
@@ -54,7 +54,7 @@ public:
 	Int32 GetSpeciesId();
 	void SetSpeciesId(Int32 speciesId);
 	Data::Timestamp GetCapturetime();
-	void SetCapturetime(Data::Timestamp capturetime);
+	void SetCapturetime(const Data::Timestamp &capturetime);
 	Text::String* GetDatafilename();
 	void SetDatafilename(Text::String* datafilename);
 	Int32 GetCrcval();
@@ -157,7 +157,7 @@ Data::Timestamp Userfile::GetFiletime()
 	return this->filetime;
 }
 
-void Userfile::SetFiletime(Data::Timestamp filetime)
+void Userfile::SetFiletime(const Data::Timestamp &filetime)
 {
 	this->filetime = filetime;
 }
@@ -207,7 +207,7 @@ Data::Timestamp Userfile::GetCapturetime()
 	return this->capturetime;
 }
 
-void Userfile::SetCapturetime(Data::Timestamp capturetime)
+void Userfile::SetCapturetime(const Data::Timestamp &capturetime)
 {
 	this->capturetime = capturetime;
 }

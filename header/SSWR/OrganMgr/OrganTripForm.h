@@ -46,7 +46,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			void SetTimes(Data::Timestamp refTime, Data::Timestamp fromTime, Data::Timestamp toTime);
+			void SetTimes(const Data::Timestamp &refTime, const Data::Timestamp &fromTime, const Data::Timestamp &toTime);
 		};
 	}
 }

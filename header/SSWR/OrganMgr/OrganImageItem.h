@@ -50,7 +50,7 @@ namespace SSWR
 			Text::String *GetDispName() const;
 			void SetIsCoverPhoto(Bool isCoverPhoto);
 			Bool GetIsCoverPhoto() const;
-			void SetPhotoDate(Data::Timestamp photoDate);
+			void SetPhotoDate(const Data::Timestamp &photoDate);
 			Data::Timestamp GetPhotoDate() const;
 		//	void SetPhotoLoc(const WChar *photoLoc);
 		//	const WChar *GetPhotoLoc();

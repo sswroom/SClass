@@ -32,7 +32,7 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetValue(Data::DateTime *dt);
-		void SetValue(Data::Timestamp dt);
+		void SetValue(const Data::Timestamp &dt);
 		void GetSelectedTime(Data::DateTime *dt);
 		Data::Timestamp GetSelectedTime();
 		void SetFormat(const Char *format);

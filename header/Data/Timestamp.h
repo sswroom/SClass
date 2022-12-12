@@ -169,7 +169,7 @@ namespace Data
 		UInt16 ToMSDOSDate();
 		UInt16 ToMSDOSTime();*/
 
-		void ToSYSTEMTIME(void *sysTime)
+		void ToSYSTEMTIME(void *sysTime) const
 		{
 			Data::DateTimeUtil::Ticks2SYSTEMTIME(sysTime, this->ToTicks());
 		}
@@ -340,7 +340,7 @@ namespace Data
 			return Data::DateTimeUtil::Instant2Weekday(this->inst, this->tzQhr);
 		}
 
-		Bool SameDate(Data::Timestamp ts) const
+		Bool SameDate(const Data::Timestamp &ts) const
 		{
 			return this->inst.SameDate(ts.inst);
 		}

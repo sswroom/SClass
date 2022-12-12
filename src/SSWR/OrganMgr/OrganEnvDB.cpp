@@ -3027,7 +3027,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook
 	}
 }
 
-Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString author, Text::CString press, Data::Timestamp publishDate, Text::CString url)
+Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url)
 {
 	OrganBook *book;
 	DB::SQLBuilder sql(this->db);
@@ -3310,7 +3310,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::Timestamp ts, Math::Coord2DDbl *pos)
+Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &ts, Math::Coord2DDbl *pos)
 {
 	OSInt i;
 	WebUserInfo *webUser;
@@ -3445,7 +3445,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileRot(UserFileInfo *userFile, Int32
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFilePos(UserFileInfo *userFile, Data::Timestamp captureTime, Double lat, Double lon)
+Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFilePos(UserFileInfo *userFile, const Data::Timestamp &captureTime, Double lat, Double lon)
 {
 	Bool succ = false;
 	DB::SQLBuilder sql(this->db);
@@ -3615,7 +3615,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(Data::Timestamp fromDate, Data::Timestamp toDate, Int32 locId)
+Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId)
 {
 	OSInt i = this->TripGetIndex(fromDate);
 	OSInt j = this->TripGetIndex(toDate);

@@ -36,7 +36,7 @@ namespace Net
 		static RequestMethod Str2RequestMethod(const UTF8Char *s, UOSInt len);
 		static Text::CString RequestMethodGetName(RequestMethod reqMeth);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
-		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::Timestamp ts);
+		static UTF8Char *Date2Str(UTF8Char *sbuff, const Data::Timestamp &ts);
 	};
 }
 #endif

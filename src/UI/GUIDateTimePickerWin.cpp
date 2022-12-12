@@ -99,7 +99,7 @@ void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
 	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
-void UI::GUIDateTimePicker::SetValue(Data::Timestamp ts)
+void UI::GUIDateTimePicker::SetValue(const Data::Timestamp &ts)
 {
 	SYSTEMTIME t;
 	ts.ToSYSTEMTIME(&t);

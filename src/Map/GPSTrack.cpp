@@ -880,7 +880,7 @@ Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 	}
 }
 
-void Map::GPSTrack::GetPosByTime(Data::Timestamp ts, Math::Coord2DDbl *pos)
+void Map::GPSTrack::GetPosByTime(const Data::Timestamp &ts, Math::Coord2DDbl *pos)
 {
 	GetPosByTicks(ts.ToTicks(), pos);
 }

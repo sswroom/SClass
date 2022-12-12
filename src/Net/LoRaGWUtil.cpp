@@ -201,7 +201,7 @@ void Net::LoRaGWUtil::GenRxpkJSON(Text::StringBuilderUTF8 *sb, UInt32 freq, UInt
 	sb->AppendC(UTF8STRC("\"}]}"));
 }
 
-void Net::LoRaGWUtil::GenStatJSON(Text::StringBuilderUTF8 *sb, Data::Timestamp ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb)
+void Net::LoRaGWUtil::GenStatJSON(Text::StringBuilderUTF8 *sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb)
 {
 	UTF8Char sbuff[40];
 	UTF8Char *sptr;
@@ -223,7 +223,7 @@ void Net::LoRaGWUtil::GenStatJSON(Text::StringBuilderUTF8 *sb, Data::Timestamp t
 	sb->AppendC(UTF8STRC("}}"));
 }
 
-void Net::LoRaGWUtil::GenStatJSON(Text::StringBuilderUTF8 *sb, Data::Timestamp ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb, Double lat, Double lon, Int32 altitude)
+void Net::LoRaGWUtil::GenStatJSON(Text::StringBuilderUTF8 *sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb, Double lat, Double lon, Int32 altitude)
 {
 	UTF8Char sbuff[40];
 	UTF8Char *sptr;
