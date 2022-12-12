@@ -54,7 +54,7 @@ namespace IO
 		Data::Timestamp GetCreateTime();
 		Data::Timestamp GetModifyTime();
 		void SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
-		void SetFileTimes(Data::Timestamp creationTime, Data::Timestamp lastAccessTime, Data::Timestamp lastWriteTime);
+		void SetFileTimes(const Data::Timestamp &creationTime, const Data::Timestamp &lastAccessTime, const Data::Timestamp &lastWriteTime);
 
 		static IO::FileStream *CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
 		static IO::FileStream *OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);

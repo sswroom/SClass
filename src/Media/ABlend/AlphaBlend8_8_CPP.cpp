@@ -32,36 +32,6 @@ extern "C" void AlphaBlend8_8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src,
 		src += sAdd;
 		dest += dAdd;
 	}
-
-/*	UInt32 aVal;
-	UInt32 rVal;
-	UInt32 gVal;
-	UInt32 bVal;
-	while (height-- > 0)
-	{
-		i = width;
-		while (i-- > 0)
-		{
-			bVal = src[0] * src[3] + dest[0] * (255 - src[3]);
-			gVal = src[1] * src[3] + dest[1] * (255 - src[3]);
-			rVal = src[2] * src[3] + dest[2] * (255 - src[3]);
-			aVal = src[3] * src[3] + dest[3] * 255;
-			bVal = (bVal + (bVal >> 8) + 16) >> 8;
-			gVal = (gVal + (gVal >> 8) + 16) >> 8;
-			rVal = (rVal + (rVal >> 8) + 16) >> 8;
-			aVal = (aVal + (aVal >> 8) + 16) >> 8;
-			dest[0] = (bVal > 255)?255:(UInt8)bVal;
-			dest[1] = (gVal > 255)?255:(UInt8)gVal;
-			dest[2] = (rVal > 255)?255:(UInt8)rVal;
-			dest[3] = (aVal > 255)?255:(UInt8)aVal;
-
-			src += 4;
-			dest += 4;
-		}
-
-		src += sAdd;
-		dest += dAdd;
-	}*/
 }
 
 extern "C" void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height)
@@ -92,33 +62,4 @@ extern "C" void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *sr
 		src += sAdd;
 		dest += dAdd;
 	}
-/*	UInt32 aVal;
-	UInt32 rVal;
-	UInt32 gVal;
-	UInt32 bVal;
-	while (height-- > 0)
-	{
-		i = width;
-		while (i-- > 0)
-		{
-			bVal = src[0] * 255 + dest[0] * (255 - src[3]);
-			gVal = src[1] * 255 + dest[1] * (255 - src[3]);
-			rVal = src[2] * 255 + dest[2] * (255 - src[3]);
-			aVal = src[3] * 255 + dest[3] * 255;
-			bVal = (bVal + (bVal >> 8) + 16) >> 8;
-			gVal = (gVal + (gVal >> 8) + 16) >> 8;
-			rVal = (rVal + (rVal >> 8) + 16) >> 8;
-			aVal = (aVal + (aVal >> 8) + 16) >> 8;
-			dest[0] = (bVal > 255)?255:(UInt8)bVal;
-			dest[1] = (gVal > 255)?255:(UInt8)gVal;
-			dest[2] = (rVal > 255)?255:(UInt8)rVal;
-			dest[3] = (aVal > 255)?255:(UInt8)aVal;
-
-			src += 4;
-			dest += 4;
-		}
-
-		src += sAdd;
-		dest += dAdd;
-	}*/
 }

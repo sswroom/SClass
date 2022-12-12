@@ -174,7 +174,7 @@ namespace Data
 			Data::DateTimeUtil::Ticks2SYSTEMTIME(sysTime, this->ToTicks());
 		}
 
-		void ToFILETIME(void* fileTime)
+		void ToFILETIME(void* fileTime) const
 		{
 			this->inst.ToFILETIME(fileTime);
 		}

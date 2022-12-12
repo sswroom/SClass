@@ -504,10 +504,8 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	FILETIME createTime;
 	FILETIME lastAccTime;
 	FILETIME lastWrTime;
-	SYSTEMTIME sysTime;
 	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
-	FileTimeToSystemTime(&createTime, &sysTime);
-	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+	return Data::Timestamp::FromFILETIME(&createTime, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Data::Timestamp IO::FileStream::GetModifyTime()
@@ -515,10 +513,8 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	FILETIME createTime;
 	FILETIME lastAccTime;
 	FILETIME lastWrTime;
-	SYSTEMTIME sysTime;
 	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
-	FileTimeToSystemTime(&lastWrTime, &sysTime);
-	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&sysTime), 0);
+	return Data::Timestamp::FromFILETIME(&lastWrTime, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
@@ -552,7 +548,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	SetFileTime(this->handle, cTime, laTime, lwTime);
 }
 
-void IO::FileStream::SetFileTimes(Data::Timestamp creationTime, Data::Timestamp lastAccessTime, Data::Timestamp lastWriteTime)
+void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Data::Timestamp &lastAccessTime, const Data::Timestamp &lastWriteTime)
 {
 	FILETIME createTime;
 	FILETIME lastAccTime;

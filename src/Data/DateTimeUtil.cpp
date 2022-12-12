@@ -788,7 +788,15 @@ void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue
 
 Data::DateTimeUtil::Weekday Data::DateTimeUtil::Ticks2Weekday(Int64 ticks, Int8 tzQhr)
 {
-	return (Data::DateTimeUtil::Weekday)(((ticks + tzQhr * 900000) / 86400000 + 4) % 7);
+	Int64 days = ((ticks + tzQhr * 900000) / 86400000 + 4);
+	if (days >= 0)
+	{
+		return (Data::DateTimeUtil::Weekday)(days % 7);
+	}
+	else
+	{
+		return (Data::DateTimeUtil::Weekday)((days % 7) + 7);
+	}
 }
 
 Data::DateTimeUtil::Weekday Data::DateTimeUtil::Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr)
@@ -1930,14 +1938,22 @@ Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(UInt32 *nanosec)
 Int64 Data::DateTimeUtil::FILETIME2Secs(void *fileTime, UInt32 *nanosec)
 {
 	Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
-	*nanosec = (UInt32)(t % 10000000) * 100;
-	return t / 10000000;
+	if (t < 0)
+	{
+		*nanosec = (UInt32)(t % 10000000 + 10000000) * 100;
+		return t / 10000000 - 1;
+	}
+	else
+	{
+		*nanosec = (UInt32)(t % 10000000) * 100;
+		return t / 10000000;
+	}
 }
 
 void Data::DateTimeUtil::Secs2FILETIME(Int64 secs, UInt32 nanosec, void* fileTime)
 {
 	secs = secs * 10000000 + (Int64)(nanosec / 100);
-	WriteInt64((UInt8*)fileTime, secs);
+	WriteInt64((UInt8*)fileTime, secs + 116444736000000000LL);
 }
 
 Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)

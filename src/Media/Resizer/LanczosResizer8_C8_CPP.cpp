@@ -11,9 +11,6 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 	OSInt *currIndex;
 	Int16 *currWeight;
 	Int32x4 cvals2;
-	Int16x8 wval1;
-	Int16x8 wval2;
-	Int16x8 wval3;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
 
@@ -86,18 +83,15 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 
 			currIndex = index;
 			currWeight = (Int16*)weight;
-			wval1 = PLoadInt16x8A(&currWeight[0]);
-			wval2 = PLoadInt16x8A(&currWeight[8]);
-			wval3 = PLoadInt16x8A(&currWeight[16]);
 			i = width;
 			while (i-- > 0)
 			{
 				cvals2 = PInt32x4Clear();
 				tmpVal1 = PLoadInt16x8(&tmpbuff[currIndex[0]]);
 				tmpVal2 = PLoadInt16x8(&tmpbuff[currIndex[1]]);
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), wval1));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), wval2));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval3));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[0])));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[8])));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), PLoadInt16x8A(&currWeight[16])));
 				currWeight += 24;
 				currIndex += 3;
 				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
@@ -219,9 +213,6 @@ extern "C" void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,O
 	Int16 *currWeight;
 	Int16x4 cvals;
 	Int32x4 cvals2;
-	Int16x8 wval1;
-	Int16x8 wval2;
-	Int16x8 wval3;
 	Int16x8 tmpVal1;
 	Int16x8 tmpVal2;
 	if (tap == 6 && (width & 1) == 0)
@@ -247,18 +238,15 @@ extern "C" void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,O
 
 			currIndex = index;
 			currWeight = (Int16*)weight;
-			wval1 = PLoadInt16x8A(&currWeight[0]);
-			wval2 = PLoadInt16x8A(&currWeight[8]);
-			wval3 = PLoadInt16x8A(&currWeight[16]);
 			i = width;
 			while (i-- > 0)
 			{
 				cvals2 = PInt32x4Clear();
 				tmpVal1 = PLoadInt16x8(&tmpbuff[currIndex[0]]);
 				tmpVal2 = PLoadInt16x8(&tmpbuff[currIndex[1]]);
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), wval1));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), wval2));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval3));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[0])));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[8])));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), PLoadInt16x8A(&currWeight[16])));
 				currWeight += 24;
 				currIndex += 3;
 				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
