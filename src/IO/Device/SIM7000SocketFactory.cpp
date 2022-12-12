@@ -647,7 +647,7 @@ void IO::Device::SIM7000SocketFactory::FreePortInfos(Data::ArrayList<PortInfo*> 
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId)
+UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId)
 {
 	UOSInt i = 8;
 	if (protoType == PT_UDP)
@@ -673,7 +673,7 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInf
 	return 0;
 }
 
-void IO::Device::SIM7000SocketFactory::FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList)
+void IO::Device::SIM7000SocketFactory::FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList)
 {
 
 }

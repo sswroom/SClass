@@ -6,6 +6,7 @@
 #include "IO/Path.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
+#include "IO/WindowsError.h"
 #include "Manage/Process.h"
 #include "Sync/Interlocked.h"
 #include "Sync/Thread.h"
@@ -34,7 +35,7 @@ static IsWow64Process2Func Process_IsWow64Process2;
 Manage::Process::Process(UOSInt procId, Bool controlRight)
 {
 	this->procId = procId;
-	DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ;
+	DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ | PROCESS_DUP_HANDLE;
 	if (controlRight)
 	{
 		access |= PROCESS_TERMINATE;
@@ -602,6 +603,300 @@ Data::Timestamp Manage::Process::GetStartTime()
 	}
 }
 
+#define SystemHandleInformation (SYSTEM_INFORMATION_CLASS)16
+#define ObjectNameInformation (OBJECT_INFORMATION_CLASS)1
+#define STATUS_INFO_LENGTH_MISMATCH 0xc0000004
+
+typedef NTSTATUS (NTAPI* NtQuerySystemInformationFunc)(
+	SYSTEM_INFORMATION_CLASS SystemInformationClass,
+	PVOID                    SystemInformation,
+	ULONG                    SystemInformationLength,
+	PULONG                   ReturnLength
+);
+
+typedef NTSTATUS(NTAPI* NtDuplicateObjectFunc)(
+	HANDLE SourceProcessHandle,
+	HANDLE SourceHandle,
+	HANDLE TargetProcessHandle,
+	PHANDLE TargetHandle,
+	ACCESS_MASK DesiredAccess,
+	ULONG Attributes,
+	ULONG Options
+);
+
+typedef NTSTATUS(NTAPI* NtQueryObjectFunc)(
+	HANDLE ObjectHandle,
+	OBJECT_INFORMATION_CLASS ObjectInformationClass,
+	PVOID ObjectInformation,
+	ULONG ObjectInformationLength,
+	PULONG ReturnLength
+);
+
+typedef struct _SYSTEM_HANDLE
+{
+	ULONG ProcessId;
+	BYTE ObjectTypeNumber;
+	BYTE Flags;
+	USHORT Handle;
+	PVOID Object;
+	ACCESS_MASK GrantedAccess;
+} SYSTEM_HANDLE, *PSYSTEM_HANDLE;
+
+typedef struct _SYSTEM_HANDLE_INFORMATION
+{
+	ULONG HandleCount;
+	SYSTEM_HANDLE Handles[1];
+} SYSTEM_HANDLE_INFORMATION, *PSYSTEM_HANDLE_INFORMATION;
+
+UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
+{
+	IO::Library lib((const UTF8Char*)"Ntdll.dll");
+	NtQuerySystemInformationFunc qsi = (NtQuerySystemInformationFunc)lib.GetFunc("NtQuerySystemInformation");
+	if (qsi == 0)
+	{
+		return 0;
+	}
+	ULONG handleInfoSize = 0x10000;
+	NTSTATUS status;
+	SYSTEM_HANDLE_INFORMATION* handleInfo;
+	handleInfo = (SYSTEM_HANDLE_INFORMATION*)MemAlloc(UInt8, handleInfoSize);
+	while ((status = qsi(SystemHandleInformation, handleInfo, handleInfoSize, 0)) == STATUS_INFO_LENGTH_MISMATCH)
+	{
+		MemFree(handleInfo);
+		handleInfoSize <<= 1;
+		handleInfo = (SYSTEM_HANDLE_INFORMATION*)MemAlloc(UInt8, handleInfoSize);
+	}
+	if (status < 0)
+	{
+		MemFree(handleInfo);
+		return 0;
+	}
+	UOSInt ret = 0;
+	UOSInt i = 0;
+	while (i < handleInfo->HandleCount)
+	{
+		if (handleInfo->Handles[i].ProcessId == this->procId)
+		{
+			handleList->Add(HandleInfo(handleInfo->Handles[i].Handle, 0));
+			ret++;
+		}
+
+		i++;
+	}
+	MemFree(handleInfo);
+	return ret;
+}
+
+enum class ProcessNameType
+{
+	Default,
+	NoName,
+	NameDone
+};
+
+Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, Text::StringBuilderUTF8* sbDetail)
+{
+	HANDLE dupHandle;
+	HANDLE dupHandle2;
+	NTSTATUS status;
+	IO::Library lib((const UTF8Char*)"Ntdll.dll");
+	NtDuplicateObjectFunc dhand = (NtDuplicateObjectFunc)lib.GetFunc("NtDuplicateObject");
+	NtQueryObjectFunc qryObj = (NtQueryObjectFunc)lib.GetFunc("NtQueryObject");
+	if (dhand == 0 || qryObj == 0)
+	{
+		return false;
+	}
+	Bool needClose = true;
+	if (this->procId == GetCurrentProcessId())
+	{
+		dupHandle = (HANDLE)(OSInt)id;
+		needClose = false;
+	}
+	else
+	{
+		if ((status = dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle, 0, 0, 0)) < 0)
+		{
+			*handleType = HandleType::Unknown;
+			sbDetail->AppendC(UTF8STRC("Error in duplicate handle: 0x"));
+			sbDetail->AppendHex32((UInt32)status);
+			sbDetail->AppendC(UTF8STRC(" ("));
+			sbDetail->Append(IO::WindowsError::GetString((UInt32)status));
+			sbDetail->AppendUTF8Char(')');
+			return true;
+		}
+	}
+	UInt8 buff[4096];
+	UTF8Char sbuff[512];
+	UTF8Char* sptr;
+	PPUBLIC_OBJECT_TYPE_INFORMATION objectTypeInfo = (PPUBLIC_OBJECT_TYPE_INFORMATION)buff;
+	if ((status = qryObj(dupHandle, ObjectTypeInformation, objectTypeInfo, sizeof(buff), 0)) < 0)
+	{
+		if (needClose) CloseHandle(dupHandle);
+		*handleType = HandleType::Unknown;
+		sbDetail->AppendC(UTF8STRC("Error in getting handle type: 0x"));
+		sbDetail->AppendHex32((UInt32)status);
+		sbDetail->AppendC(UTF8STRC(" ("));
+		sbDetail->Append(IO::WindowsError::GetString((UInt32)status));
+		sbDetail->AppendUTF8Char(')');
+		return true;
+	}
+	sptr = Text::StrUTF16_UTF8C(sbuff, objectTypeInfo->TypeName.Buffer, objectTypeInfo->TypeName.Length >> 1);
+	*sptr = 0;
+	ProcessNameType nameType = ProcessNameType::Default;
+	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Event")))
+	{
+		*handleType = HandleType::Event;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Key")))
+	{
+		*handleType = HandleType::Key;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WaitCompletionPacket")))
+	{
+		*handleType = HandleType::WaitCompletionPacket;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IoCompletion")))
+	{
+		*handleType = HandleType::IoCompletion;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Mutant")))
+	{
+		*handleType = HandleType::Mutant;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TpWorkerFactory")))
+	{
+		*handleType = HandleType::TpWorkerFactory;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Section")))
+	{
+		*handleType = HandleType::Section;
+		nameType = ProcessNameType::NoName;
+ 	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IRTimer")))
+	{
+		*handleType = HandleType::IRTimer;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Directory")))
+	{
+		*handleType = HandleType::Directory;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("File")))
+	{
+		*handleType = HandleType::File;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ALPC Port")))
+	{
+		*handleType = HandleType::ALPC_Port;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Semaphore")))
+	{
+		*handleType = HandleType::Semaphore;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Thread")))
+	{
+		*handleType = HandleType::Thread;
+		if (dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle2, THREAD_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
+		{
+			sbDetail->AppendU32(GetThreadId((HANDLE)dupHandle2));
+			CloseHandle(dupHandle2);
+		}
+		nameType = ProcessNameType::NameDone;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IoCompletionReserve")))
+	{
+		*handleType = HandleType::IoCompletionReserve;
+		nameType = ProcessNameType::NoName;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WindowStation")))
+	{
+		*handleType = HandleType::WindowStation;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Desktop")))
+	{
+		*handleType = HandleType::Desktop;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Timer")))
+	{
+		*handleType = HandleType::Timer;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Token")))
+	{
+		*handleType = HandleType::Token;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Process")))
+	{
+		*handleType = HandleType::Process;
+		if (dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle2, PROCESS_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
+		{
+			sbDetail->AppendU32(GetProcessId((HANDLE)dupHandle2));
+			CloseHandle(dupHandle2);
+		}
+		nameType = ProcessNameType::NameDone;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DxgkCompositionObject")))
+	{
+		*handleType = HandleType::DxgkCompositionObject;
+	}
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EtwRegistration")))
+	{
+		*handleType = HandleType::EtwRegistration;
+		nameType = ProcessNameType::NoName;
+	}
+	else
+	{
+		*handleType = HandleType::Unknown;
+		sbDetail->AppendC(UTF8STRC("Unknown Type name: "));
+		sbDetail->AppendP(sbuff, sptr);
+		nameType = ProcessNameType::NameDone;
+	}
+	if (nameType == ProcessNameType::Default)
+	{
+		UNICODE_STRING* objectTypeInfo = (UNICODE_STRING*)buff;
+		ULONG returnLength;
+		if ((status = qryObj(dupHandle, ObjectNameInformation, objectTypeInfo, sizeof(buff) - 2, &returnLength)) >= 0)
+		{
+			sbDetail->AppendW(objectTypeInfo->Buffer, objectTypeInfo->Length >> 1);
+		}
+		else if (status == STATUS_INFO_LENGTH_MISMATCH)
+		{
+			UInt8* tmpBuff = MemAlloc(UInt8, returnLength);
+			objectTypeInfo = (UNICODE_STRING*)tmpBuff;
+			if ((status = qryObj(dupHandle, ObjectNameInformation, objectTypeInfo, returnLength, 0)) >= 0)
+			{
+				sbDetail->AppendW(objectTypeInfo->Buffer, objectTypeInfo->Length >> 1);
+			}
+			else
+			{
+				sbDetail->AppendC(UTF8STRC("Error in getting handle name2: 0x"));
+				sbDetail->AppendHex32((UInt32)status);
+			}
+			MemFree(tmpBuff);
+		}
+		else
+		{
+			sbDetail->AppendC(UTF8STRC("Error in getting handle name: 0x"));
+			sbDetail->AppendHex32((UInt32)status);
+			sbDetail->AppendC(UTF8STRC(" ("));
+			sbDetail->Append(IO::WindowsError::GetString((UInt32)status));
+			sbDetail->AppendUTF8Char(')');
+		}
+	}
+	else if (nameType == ProcessNameType::NoName)
+	{
+		sbDetail->AppendUTF8Char('-');
+	}
+	if (needClose) CloseHandle(dupHandle);
+	return true;
+}
+
 Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 {
 #ifdef _WIN32_WCE
@@ -640,7 +935,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 #endif
 }
 
-Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *kernelTime, Data::DateTime *userTime)
+Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime)
 {
 #ifdef _WIN32_WCE
 	FILETIME ttime1 = {0, 0};
@@ -700,18 +995,15 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 	{
 		if (createTime)
 		{
-			FileTimeToSystemTime(&time1, &sysTime);
-			createTime->SetValueSYSTEMTIME(&sysTime);
+			*createTime = Data::Timestamp::FromFILETIME(&time1, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 		if (kernelTime)
 		{
-			FileTimeToSystemTime(&time3, &sysTime);
-			kernelTime->SetValueSYSTEMTIME(&sysTime);
+			*kernelTime = Data::Timestamp::FromFILETIME(&time3, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 		if (userTime)
 		{
-			FileTimeToSystemTime(&time4, &sysTime);
-			userTime->SetValueSYSTEMTIME(&sysTime);
+			*userTime = Data::Timestamp::FromFILETIME(&time4, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 	}
 	return found;
@@ -720,25 +1012,21 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 	FILETIME time2;
 	FILETIME time3;
 	FILETIME time4;
-	SYSTEMTIME sysTime;
 	BOOL ret;
 	ret = GetProcessTimes(this->handle, &time1, &time2, &time3, &time4);
 	if (ret)
 	{
 		if (createTime)
 		{
-			FileTimeToSystemTime(&time1, &sysTime);
-			createTime->SetValueSYSTEMTIME(&sysTime);
+			*createTime = Data::Timestamp::FromFILETIME(&time1, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 		if (kernelTime)
 		{
-			FileTimeToSystemTime(&time3, &sysTime);
-			kernelTime->SetValueSYSTEMTIME(&sysTime);
+			*kernelTime = Data::Timestamp::FromFILETIME(&time3, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 		if (userTime)
 		{
-			FileTimeToSystemTime(&time4, &sysTime);
-			userTime->SetValueSYSTEMTIME(&sysTime);
+			*userTime = Data::Timestamp::FromFILETIME(&time4, Data::DateTimeUtil::GetLocalTzQhr());
 		}
 		return true;
 	}

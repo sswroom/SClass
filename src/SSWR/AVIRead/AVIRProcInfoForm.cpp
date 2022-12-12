@@ -500,8 +500,11 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 			hinfo = handleList.GetItem(i);
 			sptr = Text::StrInt32(sbuff, hinfo.id);
 			this->lvDetHandle->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)hinfo.id);
-			sptr = hinfo.createTime.ToLocalTime().ToStringNoZone(sbuff);
-			this->lvDetHandle->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			if (!hinfo.createTime.IsNull())
+			{
+				sptr = hinfo.createTime.ToLocalTime().ToStringNoZone(sbuff);
+				this->lvDetHandle->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			}
 			sb.ClearStr();
 			if (proc.GetHandleDetail(hinfo.id, &handleType, &sb))
 			{
@@ -665,7 +668,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlDetHandle, UI::GUIPanel(ui, this->tpDetHandle));
 	this->pnlDetHandle->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHandle->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetHandle, UI::GUIButton(ui, this->tpDetHandle, CSTR("Refresh")));
+	NEW_CLASS(this->btnDetHandle, UI::GUIButton(ui, this->pnlDetHandle, CSTR("Refresh")));
 	this->btnDetHandle->SetRect(4, 4, 75, 23, false);
 	this->btnDetHandle->HandleButtonClick(OnDetHandleClicked, this);
 	NEW_CLASS(this->lvDetHandle, UI::GUIListView(ui, this->tpDetHandle, UI::GUIListView::LVSTYLE_TABLE, 4));

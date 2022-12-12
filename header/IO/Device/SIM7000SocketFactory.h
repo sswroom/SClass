@@ -122,8 +122,8 @@ namespace IO
 			virtual Bool GetUDPInfo(UDPInfo *info); //////////////////////////////////
 			virtual UOSInt QueryPortInfos(Data::ArrayList<PortInfo*> *portInfoList, ProtocolType protoType, UInt16 procId);
 			virtual void FreePortInfos(Data::ArrayList<PortInfo*> *portInfoList);
-			virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId);
-			virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList);
+			virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo3*> *portInfoList, ProtocolType protoType, UInt16 procId);
+			virtual void FreePortInfos2(Data::ArrayList<PortInfo3*> *portInfoList);
 		};
 	}
 }

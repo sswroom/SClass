@@ -6,7 +6,9 @@ namespace Manage
 {
 	enum class HandleType
 	{
+		Unknown,
 		File,
+		Directory,
 		Device,
 		EPoll,
 		Event,
@@ -15,7 +17,24 @@ namespace Manage
 		Timer,
 		Socket,
 		Pipe,
-		Memory
+		Memory,
+		Key,
+		WaitCompletionPacket,
+		IoCompletion,
+		Mutant,
+		TpWorkerFactory,
+		Section,
+		IRTimer,
+		ALPC_Port,
+		Semaphore,
+		Thread,
+		IoCompletionReserve,
+		WindowStation,
+		Desktop,
+		Token,
+		Process,
+		DxgkCompositionObject,
+		EtwRegistration
 	};
 
 	Text::CString HandleTypeGetName(HandleType handleType);
