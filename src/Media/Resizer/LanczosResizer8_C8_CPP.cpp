@@ -97,7 +97,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 				tmpVal2 = PLoadInt16x8(&tmpbuff[currIndex[1]]);
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), wval1));
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), wval2));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval2));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval3));
 				currWeight += 24;
 				currIndex += 3;
 				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
@@ -258,7 +258,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt,O
 				tmpVal2 = PLoadInt16x8(&tmpbuff[currIndex[1]]);
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), wval1));
 				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), wval2));
-				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval2));
+				cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), wval3));
 				currWeight += 24;
 				currIndex += 3;
 				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));

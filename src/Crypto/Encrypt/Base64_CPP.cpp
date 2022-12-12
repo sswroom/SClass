@@ -30,25 +30,25 @@ OSInt Base64_Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *en
 
 	while (tmp2-- > 0)
 	{
-		outBuff[0] = Base64_encArr[inBuff[0] >> 2];
-		outBuff[1] = Base64_encArr[((inBuff[0] << 4) | (inBuff[1] >> 4)) & 0x3f];
-		outBuff[2] = Base64_encArr[((inBuff[1] << 2) | (inBuff[2] >> 6)) & 0x3f];
-		outBuff[3] = Base64_encArr[inBuff[2] & 0x3f];
+		outBuff[0] = (UInt8)Base64_encArr[inBuff[0] >> 2];
+		outBuff[1] = (UInt8)Base64_encArr[((inBuff[0] << 4) | (inBuff[1] >> 4)) & 0x3f];
+		outBuff[2] = (UInt8)Base64_encArr[((inBuff[1] << 2) | (inBuff[2] >> 6)) & 0x3f];
+		outBuff[3] = (UInt8)Base64_encArr[inBuff[2] & 0x3f];
 		outBuff += 4;
 		inBuff += 3;
 	}
 	if (tmp1 == 1)
 	{
-		outBuff[0] = Base64_encArr[inBuff[0] >> 2];
-		outBuff[1] = Base64_encArr[(inBuff[0] << 4) & 0x3f];
+		outBuff[0] = (UInt8)Base64_encArr[inBuff[0] >> 2];
+		outBuff[1] = (UInt8)Base64_encArr[(inBuff[0] << 4) & 0x3f];
 		outBuff[2] = '=';
 		outBuff[3] = '=';
 	}
 	else if (tmp1 == 2)
 	{
-		outBuff[0] = Base64_encArr[inBuff[0] >> 2];
-		outBuff[1] = Base64_encArr[((inBuff[0] << 4) | (inBuff[1] >> 4)) & 0x3f];
-		outBuff[2] = Base64_encArr[(inBuff[1] << 2) & 0x3f];
+		outBuff[0] = (UInt8)Base64_encArr[inBuff[0] >> 2];
+		outBuff[1] = (UInt8)Base64_encArr[((inBuff[0] << 4) | (inBuff[1] >> 4)) & 0x3f];
+		outBuff[2] = (UInt8)Base64_encArr[(inBuff[1] << 2) & 0x3f];
 		outBuff[3] = '=';
 	}
 	return retSize;

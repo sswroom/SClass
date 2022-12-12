@@ -366,7 +366,7 @@ extern "C" UTF16Char *MyString_StrHexVal64VUTF16(UTF16Char *oriStr, UInt64 val)
 	UOSInt i = 16;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 		if (val == 0)
 		{
@@ -383,7 +383,7 @@ extern "C" UTF16Char *MyString_StrHexVal64UTF16(UTF16Char *oriStr, UInt64 val)
 	UOSInt i = 16;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 	}
 	oriStr[16] = 0;
@@ -398,7 +398,7 @@ extern "C" UTF16Char *MyString_StrHexVal32VUTF16(UTF16Char *oriStr, UInt32 val)
 	*tmp = 0;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 		if (val == 0)
 		{
@@ -415,7 +415,7 @@ extern "C" UTF16Char *MyString_StrHexVal32UTF16(UTF16Char *oriStr, UInt32 val)
 	UOSInt i = 8;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 	}
 	oriStr[8] = 0;
@@ -428,7 +428,7 @@ extern "C" UTF16Char *MyString_StrHexVal24UTF16(UTF16Char *oriStr, UInt32 val)
 	UOSInt i = 6;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF16Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 	}
 	oriStr[6] = 0;
