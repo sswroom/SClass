@@ -673,6 +673,69 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo> *handleList)
 	return ret;
 }
 
+Bool Manage::Process::GetHandleDetail(Int32 id, HandleType *handleType, Text::StringBuilderUTF8 *sbDetail)
+{
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
+	OSInt size;
+	Text::StrInt32(Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/fd/")), id);
+	size = readlink((const Char *)sbuff, (Char*)sbuff2, sizeof(sbuff2) - 1);
+	if (size > 0)
+	{
+		sbuff2[size] = 0;
+		if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:[eventfd]")))
+		{
+			*handleType = HandleType::Event;
+			sbDetail->AppendUTF8Char('-');
+		}
+		else if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:[eventpoll]")))
+		{
+			*handleType = HandleType::EPoll;
+			sbDetail->AppendUTF8Char('-');
+		}
+		else if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:[signalfd]")))
+		{
+			*handleType = HandleType::Signal;
+			sbDetail->AppendUTF8Char('-');
+		}
+		else if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:inotify")))
+		{
+			*handleType = HandleType::INotify;
+			sbDetail->AppendUTF8Char('-');
+		}
+		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("socket:[")) && sbuff2[size - 1] == ']')
+		{
+			*handleType = HandleType::Socket;
+			sbDetail->AppendC(&sbuff2[8], (UOSInt)size - 9);
+		}
+		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("pipe:[")) && sbuff2[size - 1] == ']')
+		{
+			*handleType = HandleType::Pipe;
+			sbDetail->AppendC(&sbuff2[6], (UOSInt)size - 7);
+		}
+		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("/memfd:")))
+		{
+			*handleType = HandleType::Memory;
+			sbDetail->AppendC(sbuff2 + 7, (UOSInt)size - 7);
+		}
+		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("/dev/")))
+		{
+			*handleType = HandleType::Device;
+			sbDetail->AppendC(sbuff2, (UOSInt)size);
+		}
+		else
+		{
+			*handleType = HandleType::File;
+			sbDetail->AppendC(sbuff2, (UOSInt)size);
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 {
 	return false;

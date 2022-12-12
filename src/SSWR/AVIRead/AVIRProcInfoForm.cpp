@@ -485,6 +485,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 		Manage::Process::HandleInfo hinfo;
 		UTF8Char sbuff[20];
 		UTF8Char *sptr;
+		Manage::HandleType handleType;
+		Text::StringBuilderUTF8 sb;
 		UOSInt i;
 		UOSInt j;
 
@@ -500,6 +502,12 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 			this->lvDetHandle->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)hinfo.id);
 			sptr = hinfo.createTime.ToLocalTime().ToStringNoZone(sbuff);
 			this->lvDetHandle->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			sb.ClearStr();
+			if (proc.GetHandleDetail(hinfo.id, &handleType, &sb))
+			{
+				this->lvDetHandle->SetSubItem(i, 2, Manage::HandleTypeGetName(handleType));
+				this->lvDetHandle->SetSubItem(i, 3, sb.ToCString());
+			}
 			i++;
 		}
 	}

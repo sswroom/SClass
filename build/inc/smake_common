@@ -2002,6 +2002,8 @@ Manage/DasmX86_16.h: ../../src/Manage/DasmX86_16.cpp
 @DasmX86_16.o
 Manage/ExceptionLogger.h: ../../src/Manage/ExceptionLogger.cpp
 @ExceptionLogger.o
+Manage/HandleType.h: ../../src/Manage/HandleType.cpp
+@HandleType.o
 Manage/IMemoryReader.h:
 Manage/MonConn.h: ../../src/Manage/MonConn.cpp
 @MonConn.o
@@ -4746,6 +4748,7 @@ DasmARM64.o: ../../src/Manage/DasmARM64.cpp
 DasmBase.o: ../../src/Manage/DasmBase.cpp
 DasmX86_16.o: ../../src/Manage/DasmX86_16.cpp
 ExceptionLogger.o: ../../src/Manage/ExceptionLogger.cpp
+HandleType.o: ../../src/Manage/HandleType.cpp
 MonConn.o: ../../src/Manage/MonConn.cpp
 OSInfo.o: ../../src/Manage/OSInfo.cpp
 ThreadContext.o: ../../src/Manage/ThreadContext.cpp

@@ -2,6 +2,7 @@
 #ifndef _SM_MANAGE_PROCESS
 #define _SM_MANAGE_PROCESS
 #include "Data/ArrayList.h"
+#include "Manage/HandleType.h"
 #include "Manage/IMemoryReader.h"
 #include "Manage/ModuleInfo.h"
 #include "Manage/ThreadInfo.h"
@@ -98,6 +99,7 @@ namespace Manage
 		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);
 		Data::Timestamp GetStartTime();
 		UOSInt GetHandles(Data::ArrayList<HandleInfo> *handleList);
+		Bool GetHandleDetail(Int32 id, HandleType *handleType, Text::StringBuilderUTF8 *sbDetail);
 
 		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
 		Bool GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage);
