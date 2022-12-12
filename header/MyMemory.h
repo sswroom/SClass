@@ -73,7 +73,7 @@ template <class T> T MemNewClass(T cls)
 FORCEINLINE void *operator new(size_t size)
 {
 	MemLock();
-	void *ret = malloc((UOSInt)size);
+	void *ret = MAllocA(UInt8, (UOSInt)size);
 	MemUnlock();
 	return ret;
 }
@@ -81,7 +81,7 @@ FORCEINLINE void *operator new(size_t size)
 FORCEINLINE void operator delete(void *p)
 {
 	MemLock();
-	free(p);
+	MemFreeA(p);
 	MemUnlock();
 }
 #endif
