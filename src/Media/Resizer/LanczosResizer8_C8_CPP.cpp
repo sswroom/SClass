@@ -161,11 +161,11 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 			while (i-- > 0)
 			{
 				cvals = PInt16x8Clear();
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[0] * 8 + 266240], &rgbTable[currIn[4] * 8 + 266240]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[1] * 8 + 264192], &rgbTable[currIn[5] * 8 + 264192]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[2] * 8 + 262144], &rgbTable[currIn[6] * 8 + 262144]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[4] * 8 + 266240], &rgbTable[currIn[0] * 8 + 266240]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[5] * 8 + 264192], &rgbTable[currIn[1] * 8 + 264192]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[6] * 8 + 262144], &rgbTable[currIn[2] * 8 + 262144]));
 				cvals = PMULM2HW8(cvals, PMergeW4(PInt16x4SetA((Int16)((currIn[3] << 7) | (currIn[3] >> 1))), PInt16x4SetA((Int16)((currIn[7] << 7) | (currIn[7] >> 1)))));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[3] * 8 + 268288], &rgbTable[currIn[7] * 8 + 268288]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[7] * 8 + 268288], &rgbTable[currIn[3] * 8 + 268288]));
 				PStoreInt16x8A(tmpPtr, cvals);
 				currIn += 8;
 				tmpPtr += 16;

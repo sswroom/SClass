@@ -93,7 +93,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 			tmpPtr = inYPt;
 			tmpPtr2 = csLineBuff;
 			tmpPtr3 = csLineBuff2;
-			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[0] * 8], &yuv2rgb[tmpPtr[1] * 8]);
+			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[1] * 8], &yuv2rgb[tmpPtr[0] * 8]);
 
 			i16Val2 = PMergeW4(PSADDW4(PLoadInt16x4(&yuv2rgb[2048 + 8 * *(UInt16*)&tmpPtr3[0]]), PLoadInt16x4(&yuv2rgb[526336 + 8 * *(UInt16*)&tmpPtr3[2]])), PInt16x4Clear());
 			i16Val1 = PSADDW8(i16Val1, i16Val2);
@@ -109,7 +109,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 				mulVal2 = PSARW8(PMergeLW4(PInt16x8Clear(), mulVal1), 1);
 				PStoreInt16x8A(tmpPtr2, PSADDW8(i16Val1, mulVal2));
 
-				i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[0] * 8], &yuv2rgb[tmpPtr[1] * 8]);
+				i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[1] * 8], &yuv2rgb[tmpPtr[0] * 8]);
 				i16Val1 = PSADDW8(i16Val1, mulVal1);
 				i16Val1 = PSADDW8(i16Val1, mulVal2);
 
@@ -122,7 +122,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 			mulVal2 = PSARW8(PMergeLW4(PInt16x8Clear(), mulVal1), 1);
 			PStoreInt16x8A(tmpPtr2, PSADDW8(i16Val1, mulVal2));
 
-			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[0] * 8], &yuv2rgb[tmpPtr[1] * 8]);
+			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[1] * 8], &yuv2rgb[tmpPtr[0] * 8]);
 			PStoreInt16x8A(&tmpPtr2[16], PSADDW8(i16Val1, mulVal1));
 			tmpPtr += 2;
 			tmpPtr3 += 4;
@@ -181,7 +181,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 			tmpPtr = inYPt;
 			tmpPtr2 = csLineBuff;
 			tmpPtr3 = csLineBuff2;
-			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[0] * 8], &yuv2rgb[tmpPtr[1] * 8]);
+			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[1] * 8], &yuv2rgb[tmpPtr[0] * 8]);
 
 			i16Val2 = PMergeW4(PSADDW4(PLoadInt16x4(&yuv2rgb[2048 + 8 * *(UInt16*)&tmpPtr3[0]]), PLoadInt16x4(&yuv2rgb[526336 + 8 * *(UInt16*)&tmpPtr3[2]])), PInt16x4Clear());
 			i16Val1 = PSADDW8(i16Val1, i16Val2);
@@ -199,7 +199,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 				mulVal2 = PSARW8(PMergeLW4(mulVal2, mulVal1), 1);
 				PStoreInt16x8A(tmpPtr2, PSADDW8(i16Val1, mulVal2));
 
-				i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[0] * 8], &yuv2rgb[tmpPtr[1] * 8]);
+				i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[1] * 8], &yuv2rgb[tmpPtr[0] * 8]);
 				i16Val1 = PSADDW8(i16Val1, mulVal1);
 				i16Val1 = PSADDW8(i16Val1, mulVal2);
 
@@ -214,7 +214,7 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 			mulVal2 = PSARW8(mulVal2, 1);
 			PStoreInt16x8A(tmpPtr2, PSADDW8(i16Val1, mulVal2));
 
-			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[0] * 8], &yuv2rgb[tmpPtr[1] * 8]);
+			i16Val1 = PMLoadInt16x4(&yuv2rgb[tmpPtr[1] * 8], &yuv2rgb[tmpPtr[0] * 8]);
 			PStoreInt16x8A(&tmpPtr2[16], PSADDW8(i16Val1, mulVal1));
 			tmpPtr += 2;
 			tmpPtr3 += 4;

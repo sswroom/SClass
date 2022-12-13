@@ -102,7 +102,7 @@ typedef __m128d Doublex2;
 #define PLoadInt32x4(ptr) _mm_loadu_si128((__m128i*)(ptr))
 #define PLoadInt32x4A(ptr) _mm_load_si128((__m128i*)(ptr))
 #define PLoadUInt32x4(ptr) _mm_loadu_si128((__m128i*)(ptr))
-#define PMLoadInt16x4(ptr1, ptr2) _mm_set_epi64x(*(Int64*)ptr1, *(Int64*)ptr2)
+#define PMLoadInt16x4(hi, lo) _mm_set_epi64x(*(Int64*)hi, *(Int64*)lo)
 #define PStoreUInt8x4(ptr, v) *(Int32*)ptr = _mm_cvtsi128_si32(v)
 #define PStoreUInt8x8(ptr, v) _mm_storel_epi64((__m128i*)(ptr), v)
 #define PStoreUInt8x16(ptr, v) _mm_store_si128((__m128i*)(ptr), v)
@@ -303,7 +303,7 @@ typedef uint32x4_t UInt32x4;
 #define PLoadInt32x4(ptr) (*(int32x4_t*)(ptr))
 #define PLoadInt32x4A(ptr) (*(int32x4_t*)(ptr))
 #define PLoadUInt32x4(ptr) (*(uint32x4_t*)(ptr))
-#define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr2), *(int16x4_t*)(ptr1))
+#define PMLoadInt16x4(hi, lo) vcombine_s16(*(int16x4_t*)(lo), *(int16x4_t*)(hi))
 #define PStoreUInt8x4(ptr, v) *(UInt32*)(ptr) = vget_lane_u32(vreinterpret_u8_u32(v), 0)
 #define PStoreUInt8x8(ptr, v) *(uint8x8_t*)(ptr) = v
 #define PStoreUInt8x16(ptr, v) *(uint8x16_t*)(ptr) = v
@@ -332,7 +332,7 @@ typedef uint32x4_t UInt32x4;
 #define PLoadInt32x4(ptr) (*(volatile int32x4_t*)(ptr))
 #define PLoadInt32x4A(ptr) (*(volatile int32x4_t*)(ptr))
 #define PLoadUInt32x4(ptr) (*(volatile uint32x4_t*)(ptr))
-#define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr2), *(int16x4_t*)(ptr1))
+#define PMLoadInt16x4(hi, lo) vcombine_s16(*(int16x4_t*)(lo), *(int16x4_t*)(hi))
 #define PStoreUInt8x4(ptr, v) *(UInt32*)(ptr) = vget_lane_u32(vreinterpret_u8_u32(v), 0)
 #define PStoreUInt8x8(ptr, v) *(uint8x8_t*)(ptr) = v
 #define PStoreUInt8x16(ptr, v) *(uint8x16_t*)(ptr) = v

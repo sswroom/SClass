@@ -57,26 +57,26 @@ extern "C" void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *s
 				UInt16x4 aVal1 = PUInt16x4SetA((UInt16)(0xffff - ((src[3] << 8) | src[3])));
 				UInt16x4 aVal2 = PUInt16x4SetA((UInt16)(0xffff - ((src[7] << 8) | src[7])));
 				UInt16x8 aiVal = PMergeW4(aVal1, aVal2);
-				Int16x8 sVal = PMLoadInt16x4(&rgbTable[262144 + src[2] * 8], &rgbTable[262144 + src[6] * 8]);
-				sVal = PSADDW8(sVal, PMLoadInt16x4(&rgbTable[264192 + src[1] * 8], &rgbTable[264192 + src[5] * 8]));
-				sVal = PSADDW8(sVal, PMLoadInt16x4(&rgbTable[266240 + src[0] * 8], &rgbTable[266240 + src[4] * 8]));
-				sVal = PSADDW8(sVal, PMLoadInt16x4(&rgbTable[268288 + src[3] * 8], &rgbTable[268288 + src[7] * 8]));
+				Int16x8 sVal = PMLoadInt16x4(&rgbTable[262144 + src[6] * 8], &rgbTable[262144 + src[2] * 8]);
+				sVal = PSADDW8(sVal, PMLoadInt16x4(&rgbTable[264192 + src[5] * 8], &rgbTable[264192 + src[1] * 8]));
+				sVal = PSADDW8(sVal, PMLoadInt16x4(&rgbTable[266240 + src[4] * 8], &rgbTable[266240 + src[0] * 8]));
+				sVal = PSADDW8(sVal, PMLoadInt16x4(&rgbTable[268288 + src[7] * 8], &rgbTable[268288 + src[3] * 8]));
 
-				Int16x8 dVal = PMLoadInt16x4(&rgbTable[270336 + dest[2] * 8], &rgbTable[270336 + dest[6] * 8]);
-				dVal = PSADDW8(dVal, PMLoadInt16x4(&rgbTable[272384 + dest[1] * 8], &rgbTable[272384 + dest[5] * 8]));
-				dVal = PSADDW8(dVal, PMLoadInt16x4(&rgbTable[274432 + dest[0] * 8], &rgbTable[274432 + dest[4] * 8]));
-				dVal = PSADDW8(dVal, PMLoadInt16x4(&rgbTable[276480 + dest[3] * 8], &rgbTable[276480 + dest[7] * 8]));
+				Int16x8 dVal = PMLoadInt16x4(&rgbTable[270336 + dest[6] * 8], &rgbTable[270336 + dest[2] * 8]);
+				dVal = PSADDW8(dVal, PMLoadInt16x4(&rgbTable[272384 + dest[5] * 8], &rgbTable[272384 + dest[1] * 8]));
+				dVal = PSADDW8(dVal, PMLoadInt16x4(&rgbTable[274432 + dest[4] * 8], &rgbTable[274432 + dest[0] * 8]));
+				dVal = PSADDW8(dVal, PMLoadInt16x4(&rgbTable[276480 + dest[7] * 8], &rgbTable[276480 + dest[3] * 8]));
 				dVal = PCONVU16x8_I(PMULUHW8(PCONVI16x8_U(dVal), aiVal));
 				dVal = PSADDW8(dVal, sVal);
 
 				dest[0] = rgbTable[PEXTW8(dVal, 0)];
 				dest[1] = rgbTable[PEXTW8(dVal, 1) + 65536];
-				dest[2] = rgbTable[PEXTW4(dVal, 2) + 131072];
-				dest[3] = rgbTable[PEXTW4(dVal, 3) + 196608];
+				dest[2] = rgbTable[PEXTW8(dVal, 2) + 131072];
+				dest[3] = rgbTable[PEXTW8(dVal, 3) + 196608];
 				dest[4] = rgbTable[PEXTW8(dVal, 4)];
 				dest[5] = rgbTable[PEXTW8(dVal, 5) + 65536];
-				dest[6] = rgbTable[PEXTW4(dVal, 6) + 131072];
-				dest[7] = rgbTable[PEXTW4(dVal, 7) + 196608];
+				dest[6] = rgbTable[PEXTW8(dVal, 6) + 131072];
+				dest[7] = rgbTable[PEXTW8(dVal, 7) + 196608];
 
 				src += 8;
 				dest += 8;
@@ -132,12 +132,12 @@ extern "C" void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *s
 
 				dest[0] = rgbTable[PEXTW8(dVal, 0)];
 				dest[1] = rgbTable[PEXTW8(dVal, 1) + 65536];
-				dest[2] = rgbTable[PEXTW4(dVal, 2) + 131072];
-				dest[3] = rgbTable[PEXTW4(dVal, 3) + 196608];
+				dest[2] = rgbTable[PEXTW8(dVal, 2) + 131072];
+				dest[3] = rgbTable[PEXTW8(dVal, 3) + 196608];
 				dest[4] = rgbTable[PEXTW8(dVal, 4)];
 				dest[5] = rgbTable[PEXTW8(dVal, 5) + 65536];
-				dest[6] = rgbTable[PEXTW4(dVal, 6) + 131072];
-				dest[7] = rgbTable[PEXTW4(dVal, 7) + 196608];
+				dest[6] = rgbTable[PEXTW8(dVal, 6) + 131072];
+				dest[7] = rgbTable[PEXTW8(dVal, 7) + 196608];
 
 				src += 8;
 				dest += 8;
