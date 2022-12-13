@@ -1027,7 +1027,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::BookFileExist(BookInfo *book)
 	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File;
 }
 
-Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::Timestamp t, Double *lat, Double *lon)
+Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon)
 {
 /*	OSInt i;
 	WebUserInfo *webUser;

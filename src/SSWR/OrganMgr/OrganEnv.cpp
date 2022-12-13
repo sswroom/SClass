@@ -387,7 +387,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 	MemFree(userFile);
 }
 
-UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, Data::Timestamp fromTime, Data::Timestamp toTime)
+UOSInt SSWR::OrganMgr::OrganEnv::GetUserFiles(Data::ArrayList<UserFileInfo*> *userFiles, const Data::Timestamp &fromTime, const Data::Timestamp &toTime)
 {
 	UserFileInfo *userFile;
 	UOSInt initCnt = userFiles->GetCount();
@@ -459,7 +459,7 @@ OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(const Data::Timestamp &ts)
 	return -i - 1;
 }
 
-SSWR::OrganMgr::Trip *SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, Data::Timestamp ts)
+SSWR::OrganMgr::Trip *SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, const Data::Timestamp &ts)
 {
 	OSInt i = this->TripGetIndex(ts);
 	if (i < 0)
@@ -583,7 +583,7 @@ void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 	}
 }
 
-Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::Timestamp ts, UI::GUIForm *ownerFrm, UI::GUICore *ui)
+Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, UI::GUICore *ui)
 {
 	Trip *tr = this->TripGet(userId, ts);
 	if (tr)
