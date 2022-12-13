@@ -149,7 +149,7 @@ typedef __m128d Doublex2;
 #define PMergeW4(v1, v2) _mm_unpacklo_epi64(v1, v2)
 #define PMergeLW4(v1, v2) _mm_unpacklo_epi64(v1, v2)
 #define PMergeHW4(v1, v2) _mm_unpackhi_epi64(v1, v2)
-#define PMergeSARDW4(v1, v2, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), _mm_srai_epi32(v2, cnt))
+#define PMergeSARDW4(lo, hi, cnt) _mm_packs_epi32(_mm_srai_epi32(lo, cnt), _mm_srai_epi32(hi, cnt))
 #define PCMPEQUD4(v1, v2) _mm_cmpeq_epi32(v1, v2)
 #define PSALW4(v1, v2) _mm_slli_epi16(v1, v2)
 #define PSHRW4(v1, v2) _mm_srli_epi16(v1, v2)

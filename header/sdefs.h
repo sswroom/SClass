@@ -405,7 +405,7 @@ Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 
 UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 {
-	*hi = __mulh(x, y);
+	*hi = __umulh(x, y);
 	return (x * y);
 }
 
