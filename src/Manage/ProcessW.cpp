@@ -27,6 +27,60 @@
 extern "C" DWORD SetProcPermissions(DWORD newperms);
 #endif
 
+#if !defined(__MINGW32__)
+typedef struct _SYSTEM_HANDLE_ENTRY {
+	ULONG OwnerPid;
+	BYTE ObjectType;
+	BYTE HandleFlags;
+	USHORT HandleValue;
+	PVOID ObjectPointer;
+	ULONG AccessMask;
+} SYSTEM_HANDLE_ENTRY, *PSYSTEM_HANDLE_ENTRY;
+
+typedef struct _SYSTEM_HANDLE_INFORMATION
+{
+	ULONG Count;
+	SYSTEM_HANDLE_ENTRY Handle[1];
+} SYSTEM_HANDLE_INFORMATION, *PSYSTEM_HANDLE_INFORMATION;
+
+#define SystemHandleInformation (SYSTEM_INFORMATION_CLASS)16
+#define ObjectNameInformation (OBJECT_INFORMATION_CLASS)1
+#endif
+
+#define STATUS_INFO_LENGTH_MISMATCH (NTSTATUS)0xc0000004
+
+typedef NTSTATUS (NTAPI* NtQuerySystemInformationFunc)(
+	SYSTEM_INFORMATION_CLASS SystemInformationClass,
+	PVOID                    SystemInformation,
+	ULONG                    SystemInformationLength,
+	PULONG                   ReturnLength
+);
+
+typedef NTSTATUS(NTAPI* NtDuplicateObjectFunc)(
+	HANDLE SourceProcessHandle,
+	HANDLE SourceHandle,
+	HANDLE TargetProcessHandle,
+	PHANDLE TargetHandle,
+	ACCESS_MASK DesiredAccess,
+	ULONG Attributes,
+	ULONG Options
+);
+
+typedef NTSTATUS(NTAPI* NtQueryObjectFunc)(
+	HANDLE ObjectHandle,
+	OBJECT_INFORMATION_CLASS ObjectInformationClass,
+	PVOID ObjectInformation,
+	ULONG ObjectInformationLength,
+	PULONG ReturnLength
+);
+
+enum class ProcessNameType
+{
+	Default,
+	NoName,
+	NameDone
+};
+
 typedef BOOL(__stdcall* IsWow64Process2Func)(HANDLE hProcess, USHORT* pProcessMachine, USHORT* pNativeMachine);
 static Int32 Process_ExecFileId = 0;
 static Bool Process_Inited = false;
@@ -603,51 +657,6 @@ Data::Timestamp Manage::Process::GetStartTime()
 	}
 }
 
-#define SystemHandleInformation (SYSTEM_INFORMATION_CLASS)16
-#define ObjectNameInformation (OBJECT_INFORMATION_CLASS)1
-#define STATUS_INFO_LENGTH_MISMATCH 0xc0000004
-
-typedef NTSTATUS (NTAPI* NtQuerySystemInformationFunc)(
-	SYSTEM_INFORMATION_CLASS SystemInformationClass,
-	PVOID                    SystemInformation,
-	ULONG                    SystemInformationLength,
-	PULONG                   ReturnLength
-);
-
-typedef NTSTATUS(NTAPI* NtDuplicateObjectFunc)(
-	HANDLE SourceProcessHandle,
-	HANDLE SourceHandle,
-	HANDLE TargetProcessHandle,
-	PHANDLE TargetHandle,
-	ACCESS_MASK DesiredAccess,
-	ULONG Attributes,
-	ULONG Options
-);
-
-typedef NTSTATUS(NTAPI* NtQueryObjectFunc)(
-	HANDLE ObjectHandle,
-	OBJECT_INFORMATION_CLASS ObjectInformationClass,
-	PVOID ObjectInformation,
-	ULONG ObjectInformationLength,
-	PULONG ReturnLength
-);
-
-typedef struct _SYSTEM_HANDLE
-{
-	ULONG ProcessId;
-	BYTE ObjectTypeNumber;
-	BYTE Flags;
-	USHORT Handle;
-	PVOID Object;
-	ACCESS_MASK GrantedAccess;
-} SYSTEM_HANDLE, *PSYSTEM_HANDLE;
-
-typedef struct _SYSTEM_HANDLE_INFORMATION
-{
-	ULONG HandleCount;
-	SYSTEM_HANDLE Handles[1];
-} SYSTEM_HANDLE_INFORMATION, *PSYSTEM_HANDLE_INFORMATION;
-
 UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
 {
 	IO::Library lib((const UTF8Char*)"Ntdll.dll");
@@ -673,11 +682,11 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
 	}
 	UOSInt ret = 0;
 	UOSInt i = 0;
-	while (i < handleInfo->HandleCount)
+	while (i < handleInfo->Count)
 	{
-		if (handleInfo->Handles[i].ProcessId == this->procId)
+		if (handleInfo->Handle[i].OwnerPid == this->procId)
 		{
-			handleList->Add(HandleInfo(handleInfo->Handles[i].Handle, 0));
+			handleList->Add(HandleInfo(handleInfo->Handle[i].HandleValue, 0));
 			ret++;
 		}
 
@@ -686,13 +695,6 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
 	MemFree(handleInfo);
 	return ret;
 }
-
-enum class ProcessNameType
-{
-	Default,
-	NoName,
-	NameDone
-};
 
 Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, Text::StringBuilderUTF8* sbDetail)
 {

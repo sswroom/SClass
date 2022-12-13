@@ -37,6 +37,7 @@ Net::WebStatus::StatusInfo Net::WebStatus::statInfo[] = {
 	{415, UTF8STRC("Unsupported Media Type")},
 	{416, UTF8STRC("Requested Range Not Satisfiable")},
 	{417, UTF8STRC("Expectation Failed")},
+	{422, UTF8STRC("Unprocessable Entity")},
 	{451, UTF8STRC("Parameter Not Understood")},
 	{452, UTF8STRC("Conference Not Found")},
 	{453, UTF8STRC("Not Enough Bandwidth")},
