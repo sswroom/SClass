@@ -505,8 +505,11 @@ Int16x8 FORCEINLINE PMULHW8(Int16x8 v1, Int16x8 v2)
 	return PSARSDW8(vmull_s16(vget_low_s16(v1), vget_low_s16(v2)), vmull_s16(vget_high_s16(v1), vget_high_s16(v2)), 16);
 }
 #define PMULUHW4(v1, v2) vshrn_n_u32(vmull_u16(v1, v2), 16)
-#define PMULULW4(v1, v2) vmovn_u32(vmull_u16(v1, v2))
-#define PMULUHW8(v1, v2) vshrn_n_u32(vmull_u16(v1, v2), 16)
+#define PMULULW4(v1, v2) vmul_u16(v1, v2)
+UInt16x8 FORCEINLINE PMULUHW8(UInt16x8 v1, UInt16x8 v2)
+{
+	return vcombine_u16(vqshrn_n_u32(vmull_u16(vget_low_u16(v1), vget_low_u16(v2)), 16), vqshrn_n_s32(vmull_u16(vget_high_u16(v1), vget_high_u16(v2)), 16));
+}
 #define PMULULW8(v1, v2) vmulq_u16(v1, v2)
 #define PMULM2HW4(v1, v2) vqdmulh_s16(v1, v2)
 #define PMULM2HW8(v1, v2) vqdmulhq_s16(v1, v2)
