@@ -4475,6 +4475,10 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *b
 			*buff++ = code;
 			bytes += 5;
 		}
+		else
+		{
+			break;
+		}
 	}
 	if (byteConv)
 	{
@@ -4514,10 +4518,14 @@ UOSInt Text::StrUTF8_UTF32Cnt(const UTF8Char *bytes)
 			charCnt++;
 			bytes += 5;
 		}
-		else
+		else if ((bytes[0] & 0xfc) == 0xfc)
 		{
 			charCnt++;
 			bytes += 6;
+		}
+		else
+		{
+			break;
 		}
 	}
 	return charCnt;
