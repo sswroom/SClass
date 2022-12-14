@@ -436,14 +436,21 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 	}
 
 	Bool succ = false;
+	EVP_PKEY *pkey;
+#if defined(OSSL_DEPRECATEDIN_3_0)
+	pkey = EVP_RSA_gen(2048);
+	if (pkey)
+	{
+#else
 	BIGNUM *bn = BN_new();
 	BN_set_word(bn, RSA_F4);
 	RSA *rsa = RSA_new();
 	if (RSA_generate_key_ex(rsa, 2048, bn, 0) > 0)
 	{
-		EVP_PKEY *pkey = EVP_PKEY_new();
-		X509 *cert = X509_new();
+		pkey = EVP_PKEY_new();
 		EVP_PKEY_assign(pkey, EVP_PKEY_RSA, rsa);
+#endif
+		X509 *cert = X509_new();
 		ASN1_INTEGER_set(X509_get_serialNumber(cert), 1);
 
 		X509_gmtime_adj(X509_get_notBefore(cert), 0);
@@ -471,7 +478,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		if (readSize > 0)
 		{
 			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.key"));
-			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, readSize, fileName);
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
 			fileName->Release();
 		}
 		PEM_write_bio_X509(bio1, cert);
@@ -479,7 +486,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		if (readSize > 0)
 		{
 			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(buff, readSize, fileName);
+			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
 			fileName->Release();
 		}
 		BIO_free(bio1);
@@ -501,16 +508,19 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 			SDEL_CLASS(pobjKey);
 		}
 	}
+#if !defined(OSSL_DEPRECATEDIN_3_0)
 	else
 	{
 		RSA_free(rsa);
 	}
 	BN_free(bn);
+#endif
 	return succ;
 }
 
 Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 {
+#if !defined(OSSL_DEPRECATEDIN_3_0)
 	BIGNUM *bn = BN_new();
 	BN_set_word(bn, RSA_F4);
 	RSA *rsa = RSA_new();
@@ -540,6 +550,32 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 	RSA_free(rsa);
 	BN_free(bn);
 	return 0;
+#else
+	EVP_PKEY *pkey;
+	pkey = EVP_RSA_gen(2048);
+	if (pkey)
+	{
+		BIO *bio1;
+		BIO *bio2;
+		UInt8 buff[4096];
+		Crypto::Cert::X509File *pobjKey = 0;
+
+		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
+		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
+		int readSize = BIO_read(bio2, buff, 4096);
+		if (readSize > 0)
+		{
+			Text::String *fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UInt32)readSize, fileName);
+			fileName->Release();
+		}
+		BIO_free(bio1);
+		BIO_free(bio2);
+		EVP_PKEY_free(pkey);
+		return (Crypto::Cert::X509Key*)pobjKey;
+	}
+	return 0;
+#endif
 }
 
 int OpenSSLEngine_GetCurveName(Crypto::Cert::X509File::ECName ecName)
