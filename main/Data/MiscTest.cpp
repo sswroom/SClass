@@ -18,7 +18,7 @@ public:
 	}
 };
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+Int32 Test0()
 {
 	UInt8 data[4096];
 	UOSInt dataSize = 0;
@@ -50,4 +50,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 	}
 	return 0;
+}
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+	return Test0();
 }
