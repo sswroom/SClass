@@ -3,6 +3,7 @@
 #include "Net/SolarEdgeAPI.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListView.h"
@@ -67,6 +68,23 @@ namespace SSWR
 			UI::GUITextBox *txtSiteDailyEnergy;
 			UI::GUILabel *lblSiteCurrentPower;
 			UI::GUITextBox *txtSiteCurrentPower;
+
+			UI::GUITabPage *tpSiteEnergy;
+			UI::GUIPanel *pnlSiteEnergy;
+			UI::GUILabel *lblSiteEnergySite;
+			UI::GUIComboBox *cboSiteEnergySite;
+			UI::GUILabel *lblSiteEnergyInterval;
+			UI::GUIComboBox *cboSiteEnergyInterval;
+			UI::GUILabel *lblSiteEnergyRange;
+			UI::GUIComboBox *cboSiteEnergyYear;
+			UI::GUIComboBox *cboSiteEnergyMonth;
+			UI::GUIComboBox *cboSiteEnergyDay;
+			UI::GUIButton *btnSiteEnergy;
+
+			UI::GUITabPage *tpSitePower;
+			UI::GUIPanel *pnlSitePower;
+			UI::GUILabel *lblSitePowerSite;
+			UI::GUIComboBox *cboSitePowerSite;
 
 			static void __stdcall OnAPIKeyClicked(void *userObj);
 			static void __stdcall OnSiteListSelChg(void *userObj);

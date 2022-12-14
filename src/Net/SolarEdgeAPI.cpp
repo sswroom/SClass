@@ -239,3 +239,59 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
 	json->EndUse();
 	return true;
 }
+
+Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/site/"));
+	sptr = Text::StrInt32(sptr, siteId);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/energy"));
+	Text::StringBuilderUTF8 sbURL;
+	this->BuildURL(&sbURL, CSTRP(sbuff, sptr));
+	sbURL.AppendC(UTF8STRC("&timeUnit="));
+	sbURL.Append(TimeUnitGetName(timeUnit));
+	sbURL.AppendC(UTF8STRC("&startDate="));
+	AppendFormDate(&sbURL, startTime);
+	sbURL.AppendC(UTF8STRC("&endDate="));
+	AppendFormDate(&sbURL, endTime);
+	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
+	if (json == 0)
+		return false;
+	json->EndUse();
+	return false;
+}
+
+void Net::SolarEdgeAPI::AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	sptr = ts.ToString(sbuff, "yyyy-MM-dd");
+	if (ts.GetMSPassedLocalDate() != 0)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("%20"));
+		sptr = ts.ToString(sptr, "HH:mm:ss");
+	}
+	sb->AppendP(sbuff, sptr);
+}
+
+Text::CString Net::SolarEdgeAPI::TimeUnitGetName(TimeUnit timeUnit)
+{
+	switch (timeUnit)
+	{
+	case TimeUnit::DAY:
+		return CSTR("DAY");
+	case TimeUnit::QUARTER_OF_AN_HOUR:
+		return CSTR("QUARTER_OF_AN_HOUR");
+	case TimeUnit::HOUR:
+		return CSTR("HOUR");
+	case TimeUnit::WEEK:
+		return CSTR("WEEK");
+	case TimeUnit::MONTH:
+		return CSTR("MONTH");
+	case TimeUnit::YEAR:
+		return CSTR("YEAR");
+	default:
+		return CSTR("Unknown");
+	}
+}

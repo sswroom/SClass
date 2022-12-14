@@ -4310,6 +4310,8 @@ miniz_tinfl.h: ../../ThirdParty/miniz/miniz_tinfl.c
 miniz_zip.h: ../../ThirdParty/miniz/miniz_zip.c
 @miniz_zip.o
 
+UI/GUIComboBoxUtil.h: ../../src/UI/GUIComboBoxUtil.cpp
+@GUIComboBoxUtil.o
 UI/GUIDObjArea.h: ../../src/UI/GUIDObjArea.cpp
 @GUIDObjArea.o
 UI/GUIHexFileView.h: ../../src/UI/GUIHexFileView.cpp
@@ -5833,6 +5835,7 @@ UTF8LCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
+GUIComboBoxUtil.o: ../../src/UI/GUIComboBoxUtil.cpp
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp

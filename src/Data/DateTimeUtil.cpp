@@ -25,9 +25,10 @@ typedef struct
 #include <time.h>
 #include <stdio.h>
 
+const Char *Data::DateTimeUtil::monString[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+const Char *Data::DateTimeUtil::monthString[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 Int8 Data::DateTimeUtil::localTzQhr = 0;
 Bool Data::DateTimeUtil::localTzValid = false;
-
 
 void Data::DateTimeUtil::TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs)
 {
@@ -1143,8 +1144,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 			}
 			else if (pattern[3] != 'M')
 			{
-				static const Char *monthStr3[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-				WriteNUInt32(sbuff, ReadNUInt32((const UInt8*)monthStr3[tval->month - 1]));
+				WriteNUInt32(sbuff, ReadNUInt32((const UInt8*)monString[tval->month - 1]));
 				sbuff += 3;
 				pattern += 3;
 			}

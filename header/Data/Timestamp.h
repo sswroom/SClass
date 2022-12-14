@@ -120,9 +120,14 @@ namespace Data
 			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
 		}
 
-		Int64 GetMSPassedDate() const
+		Int64 GetMSPassedUTCDate() const
 		{
 			return this->inst.GetMSPassedDate();
+		};
+
+		Int64 GetMSPassedLocalDate() const
+		{
+			return this->inst.AddSecond(this->tzQhr * 900).GetMSPassedDate();
 		};
 
 		Int64 DiffSec(Timestamp ts) const

@@ -9,6 +9,16 @@ namespace Net
 	class SolarEdgeAPI
 	{
 	public:
+		enum class TimeUnit
+		{
+			DAY,
+			QUARTER_OF_AN_HOUR,
+			HOUR,
+			WEEK,
+			MONTH,
+			YEAR
+		};
+
 		struct Site
 		{
 			Int32 id;
@@ -43,6 +53,25 @@ namespace Net
 			Double dailyEnergy_Wh;
 			Double currentPower_W;
 		};
+
+		struct TimedValue
+		{
+			Data::Timestamp ts;
+			Double value;
+
+			TimedValue() = default;
+			TimedValue(Int32 *)
+			{
+				this->ts = 0;
+				this->value = 0;
+			}
+
+			TimedValue(const Data::Timestamp &ts, Double value)
+			{
+				this->ts = ts;
+				this->value = value;
+			}
+		};
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
@@ -59,6 +88,10 @@ namespace Net
 		Bool GetSiteList(Data::ArrayList<Site*> *versions, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount);
 		void FreeSiteList(Data::ArrayList<Site*> *versions);
 		Bool GetSiteOverview(Int32 siteId, SiteOverview *overview);
+		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit);
+
+		static void AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts);
+		static Text::CString TimeUnitGetName(TimeUnit timeUnit);
 	};
 }
 #endif

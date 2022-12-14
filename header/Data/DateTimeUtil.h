@@ -35,6 +35,9 @@ namespace Data
 			UInt8 second;
 			UInt16 ms;
 		};
+
+		static const Char *monString[]; //0-11
+		static const Char *monthString[]; //0-11
 	private:
 		static Int8 localTzQhr;
 		static Bool localTzValid;

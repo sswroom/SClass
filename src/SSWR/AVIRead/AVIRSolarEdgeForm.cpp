@@ -2,6 +2,7 @@
 #include "Math/Unit/Count.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
+#include "UI/GUIComboBoxUtil.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
@@ -59,6 +60,8 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			UOSInt totalCount;
 			Net::SolarEdgeAPI::Site *site;
 			me->lvSiteList->ClearItems();
+			me->cboSiteEnergySite->ClearItems();
+			me->cboSitePowerSite->ClearItems();
 			if (me->seAPI->GetSiteList(&me->siteList, 20, 0, &totalCount))
 			{
 				i = 0;
@@ -69,7 +72,13 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 					sptr = Text::StrInt32(sbuff, site->id);
 					me->lvSiteList->AddItem(CSTRP(sbuff, sptr), (void*)site);
 					if (site->name)
+					{
 						me->lvSiteList->SetSubItem(i, 1, site->name);
+						*sptr++ = ' ';
+						sptr = site->name->ConcatTo(sptr);
+						me->cboSiteEnergySite->AddItem(CSTRP(sbuff, sptr), (void*)site);
+						me->cboSitePowerSite->AddItem(CSTRP(sbuff, sptr), (void*)site);
+					}
 					sptr = Text::StrInt32(sbuff, site->accountId);
 					me->lvSiteList->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 					if (site->status)
@@ -89,6 +98,11 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 					if (site->type)
 						me->lvSiteList->SetSubItem(i, 10, site->type);
 					i++;
+				}
+				if (j > 0)
+				{
+					me->cboSiteEnergySite->SetSelectedIndex(0);
+					me->cboSitePowerSite->SetSelectedIndex(0);
 				}
 			}
 
@@ -298,7 +312,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtSiteLifetimeEnergy, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
 	this->txtSiteLifetimeEnergy->SetRect(450, 0, 100, 23, false);
 	this->txtSiteLifetimeEnergy->SetReadOnly(true);
-	NEW_CLASS(this->lblSiteLifetimeRevenue, UI::GUILabel(ui, this->pnlSiteList, CSTR("Lifetime Energy")));
+	NEW_CLASS(this->lblSiteLifetimeRevenue, UI::GUILabel(ui, this->pnlSiteList, CSTR("Lifetime Revenue")));
 	this->lblSiteLifetimeRevenue->SetRect(350, 24, 100, 23, false);
 	NEW_CLASS(this->txtSiteLifetimeRevenue, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
 	this->txtSiteLifetimeRevenue->SetRect(450, 24, 100, 23, false);
@@ -323,6 +337,45 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtSiteCurrentPower, UI::GUITextBox(ui, this->pnlSiteList, CSTR("")));
 	this->txtSiteCurrentPower->SetRect(450, 120, 100, 23, false);
 	this->txtSiteCurrentPower->SetReadOnly(true);
+
+	this->tpSiteEnergy = this->tcMain->AddTabPage(CSTR("Site Energy"));
+	NEW_CLASS(this->pnlSiteEnergy, UI::GUIPanel(ui, this->tpSiteEnergy));
+	this->pnlSiteEnergy->SetRect(0, 0, 100, 103, false);
+	this->pnlSiteEnergy->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->lblSiteEnergySite, UI::GUILabel(ui, this->pnlSiteEnergy, CSTR("Site")));
+	this->lblSiteEnergySite->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->cboSiteEnergySite, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	this->cboSiteEnergySite->SetRect(104, 4, 150, 23, false);
+	NEW_CLASS(this->lblSiteEnergyInterval, UI::GUILabel(ui, this->pnlSiteEnergy, CSTR("Time Interval")));
+	this->lblSiteEnergyInterval->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->cboSiteEnergyInterval, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	this->cboSiteEnergyInterval->SetRect(104, 28, 150, 23, false);
+	CBOADDENUM(this->cboSiteEnergyInterval, Net::SolarEdgeAPI::TimeUnit, DAY);
+	CBOADDENUM(this->cboSiteEnergyInterval, Net::SolarEdgeAPI::TimeUnit, QUARTER_OF_AN_HOUR);
+	CBOADDENUM(this->cboSiteEnergyInterval, Net::SolarEdgeAPI::TimeUnit, HOUR);
+	this->cboSiteEnergyInterval->SetSelectedIndex(0);
+	NEW_CLASS(this->lblSiteEnergyRange, UI::GUILabel(ui, this->pnlSiteEnergy, CSTR("Time Range")));
+	this->lblSiteEnergyRange->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->cboSiteEnergyYear, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	this->cboSiteEnergyYear->SetRect(104, 52, 100, 23, false);
+	UI::GUIComboBoxUtil::AddYearItems(this->cboSiteEnergyYear, 5);
+	NEW_CLASS(this->cboSiteEnergyMonth, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	this->cboSiteEnergyMonth->SetRect(204, 52, 60, 23, false);
+	UI::GUIComboBoxUtil::AddMonthItems(this->cboSiteEnergyMonth);
+	NEW_CLASS(this->cboSiteEnergyDay, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	this->cboSiteEnergyDay->SetRect(264, 52, 60, 23, false);
+	UI::GUIComboBoxUtil::AddDayItems(this->cboSiteEnergyDay);
+	NEW_CLASS(this->btnSiteEnergy, UI::GUIButton(ui, this->pnlSiteEnergy, CSTR("Query")));
+	this->btnSiteEnergy->SetRect(104, 76, 75, 23, false);
+
+	this->tpSitePower = this->tcMain->AddTabPage(CSTR("Site Power"));
+	NEW_CLASS(this->pnlSitePower, UI::GUIPanel(ui, this->tpSitePower));
+	this->pnlSitePower->SetRect(0, 0, 100, 31, false);
+	this->pnlSitePower->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->lblSitePowerSite, UI::GUILabel(ui, this->pnlSitePower, CSTR("Site")));
+	this->lblSitePowerSite->SetRect(4, 4, 100, 23, false);
+	NEW_CLASS(this->cboSitePowerSite, UI::GUIComboBox(ui, this->pnlSitePower, false));
+	this->cboSitePowerSite->SetRect(104, 4, 150, 23, false);
 }
 
 SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
