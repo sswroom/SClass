@@ -115,6 +115,10 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 					UOSInt buffSize;
 					buffSize = b64.DecodeBin(s->v, s->leng, buff);
 					buff[buffSize] = 0;
+					if (this->rawRespHdlr)
+					{
+						this->rawRespHdlr(this->rawRespObj, Text::CString(buff, buffSize));
+					}
 					printf("SAMLResponse: %s\r\n", buff);
 					MemFree(buff);
 				}
@@ -217,4 +221,59 @@ Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, W
 Net::WebServer::SAMLError Net::WebServer::SAMLHandler::GetInitError()
 {
 	return this->initErr;
+}
+
+Bool Net::WebServer::SAMLHandler::GetLogoutURL(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendC(UTF8STRC("https://"));
+	sb->Append(this->serverHost);
+	sb->Append(this->logoutPath);
+	return true;
+}
+
+Bool Net::WebServer::SAMLHandler::GetMetadataURL(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendC(UTF8STRC("https://"));
+	sb->Append(this->serverHost);
+	sb->Append(this->metadataPath);
+	return true;
+}
+
+Bool Net::WebServer::SAMLHandler::GetSSOURL(Text::StringBuilderUTF8 *sb)
+{
+	sb->AppendC(UTF8STRC("https://"));
+	sb->Append(this->serverHost);
+	sb->Append(this->ssoPath);
+	return true;
+}
+
+void Net::WebServer::SAMLHandler::HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *userObj)
+{
+	this->rawRespHdlr = hdlr;
+	this->rawRespObj = userObj;
+}
+
+Text::CString Net::WebServer::SAMLErrorGetName(SAMLError err)
+{
+	switch (err)
+	{
+	case SAMLError::None:
+		return CSTR("None");
+	case SAMLError::ConfigNotFound:
+		return CSTR("Config Not Found");
+	case SAMLError::ServerHost:
+		return CSTR("Server Host error");
+	case SAMLError::MetadataPath:
+		return CSTR("Metadata path error");
+	case SAMLError::LogoutPath:
+		return CSTR("Logout path error");
+	case SAMLError::SSOPath:
+		return CSTR("SSO path error");
+	case SAMLError::SignCert:
+		return CSTR("Signature Certificate Invalid");
+	case SAMLError::SignKey:
+		return CSTR("Signature Key Invalid");
+	default:
+		return CSTR("Unknown");
+	}
 }

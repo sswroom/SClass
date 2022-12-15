@@ -10,8 +10,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
-#include "Parser/FileParser/X509Parser.h"
-
 SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 {
 	this->logCnt = logCnt;

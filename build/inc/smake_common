@@ -3789,6 +3789,8 @@ SSWR/AVIRead/AVIRRSSItemForm.h: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
 @AVIRRSSItemForm.o
 SSWR/AVIRead/AVIRRSSReaderForm.h: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
 @AVIRRSSReaderForm.o
+SSWR/AVIRead/AVIRSAMLTestForm.h: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
+@AVIRSAMLTestForm.o
 SSWR/AVIRead/AVIRSDCardForm.h: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 @AVIRSDCardForm.o
 SSWR/AVIRead/AVIRSectorForm.h: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
@@ -5592,6 +5594,7 @@ AVIRRegionalMapForm.o: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
 AVIRRESTfulForm.o: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
 AVIRRSSItemForm.o: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
 AVIRRSSReaderForm.o: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
+AVIRSAMLTestForm.o: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
 AVIRSDCardForm.o: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 AVIRSectorForm.o: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
 AVIRSelIOPinForm.o: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp

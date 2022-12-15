@@ -34,6 +34,8 @@ namespace Net
 
 		class SAMLHandler : public Net::WebServer::WebStandardHandler
 		{
+		public:
+			typedef void (__stdcall *SAMLStrFunc)(void *userObj, Text::CString msg);
 		private:
 			WebStandardHandler *defHdlr;
 			Net::SSLEngine *ssl;
@@ -44,6 +46,8 @@ namespace Net
 			Crypto::Cert::X509Cert *signCert;
 			Crypto::Cert::X509PrivKey *signKey;
 			SAMLError initErr;
+			SAMLStrFunc rawRespHdlr;
+			void *rawRespObj;
 
 		protected:
 			virtual ~SAMLHandler();
@@ -52,7 +56,12 @@ namespace Net
 			SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, WebStandardHandler *defHdlr);
 
 			SAMLError GetInitError();
+			Bool GetLogoutURL(Text::StringBuilderUTF8 *sb);
+			Bool GetMetadataURL(Text::StringBuilderUTF8 *sb);
+			Bool GetSSOURL(Text::StringBuilderUTF8 *sb);
+			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *userObj);
 		};
+		Text::CString SAMLErrorGetName(SAMLError err);
 	}
 }
 #endif
