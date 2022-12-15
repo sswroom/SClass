@@ -8209,7 +8209,8 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						while (true)
 						{
 							f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-							if (!gimg->GetTextSize(f, user->watermark->ToCString(), &sz))
+							sz = gimg->GetTextSize(f, user->watermark->ToCString());
+							if (!sz.HasArea())
 							{
 								gimg->DelFont(f);
 								break;

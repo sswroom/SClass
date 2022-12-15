@@ -92,12 +92,12 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 		}
 		else if (this->talign == TA_CENTER)
 		{
-			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), &sz);
+			sz = dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString());
 			dimg->DrawString(OSInt2Double(left) + (UOSInt2Double(this->width) - sz.width) * 0.5, currPos, this->lines->GetItem(currLine)->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
-			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), &sz);
+			sz = dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString());
 			dimg->DrawString(OSInt2Double(left + (OSInt)width) - sz.width, currPos, this->lines->GetItem(currLine), f, b);
 		}
 		currLine++;

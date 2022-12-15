@@ -23,6 +23,9 @@ namespace Math
 		static void GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Int32 *points, Int32 *outPtX, Int32 *outPtY);
 		static Math::Coord2DDbl GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2DDbl *points);
 		static Double CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::Geometry::Vector2D *vec, Math::Unit::Distance::DistanceUnit unit);
+		static Math::Coord2DDbl MercatorToProject(Double lat, Double lon);
+		static void CalcHVAngleRad(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle);
+		static void CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle);
 	};
 }
 #endif

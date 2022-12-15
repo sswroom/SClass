@@ -248,12 +248,12 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 	}
 
 	lblSize = str1.leng;
-	font = (Map::MapFontStyle*)fontStyle->GetItem(maxIndex);
+	font = fontStyle->GetItem(maxIndex);
 	if (scaleH == 0)
 	{
 		scaleH = 0;
 	}
-	img->GetTextSize(font->font, str1, &size);
+	size = img->GetTextSize(font->font, str1);
 
 	if (scaleH == 0)
 	{
@@ -266,7 +266,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 		i = 0;
 		while (i < fntCount)
 		{
-			font = (Map::MapFontStyle*)fontStyle->GetItem(i);
+			font = fontStyle->GetItem(i);
 			if (font->fontType == 1)
 			{
 				Media::DrawPen *p = 0;
@@ -420,8 +420,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 				Double startY;
 				Double tmp;
 				Int32 type;
-				Math::Size2D<Double> szThis;
-				img->GetTextSize(font->font, str1, &szThis);
+				Math::Size2D<Double> szThis = img->GetTextSize(font->font, str1);
 
 				if ((szThis.width * absH) < (szThis.height * UOSInt2Double(lblSize) * scaleW))
 				{
@@ -471,7 +470,7 @@ void Map::MapConfig2TGen::DrawChars(Media::DrawImage *img, Text::CString str1, D
 
 				while (cnt--)
 				{
-					img->GetTextSize(font->font, {lbl, 1}, &szThis);
+					szThis = img->GetTextSize(font->font, {lbl, 1});
 
 					if (type)
 					{
@@ -609,7 +608,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 
 	while (i-- > 0)
 	{
-		img->GetTextSize(font->font, {&str1.v[i], 1}, &szThis);
+		szThis = img->GetTextSize(font->font, {&str1.v[i], 1});
 		diff.x += szThis.width;
 		diff.y += szThis.height;
 	}
@@ -895,7 +894,7 @@ void Map::MapConfig2TGen::DrawCharsLA(Media::DrawImage *img, Text::CString str1,
 			nextChar = *nextPos;
 			*nextPos = 0;
 
-			img->GetTextSize(font->font, CSTRP(lbl, nextPos), &szThis);
+			szThis = img->GetTextSize(font->font, CSTRP(lbl, nextPos));
 			while (true)
 			{
 				if (angleDegree <= 90)
@@ -1172,7 +1171,7 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 
 	while (i-- > 0)
 	{
-		img->GetTextSize(font->font, {&str1.v[i], 1}, &szThis);
+		szThis = img->GetTextSize(font->font, {&str1.v[i], 1});
 		diff.x += szThis.width;
 		diff.y += szThis.height;
 	}
@@ -1450,7 +1449,7 @@ void Map::MapConfig2TGen::DrawCharsLAo(Media::DrawImage *img, Text::CString str1
 				}
 			}
 
-			img->GetTextSize(font->font, {lbl, 1}, &szThis);
+			szThis = img->GetTextSize(font->font, {lbl, 1});
 			l[0] = lbl[0];
 			l[1] = 0;
 			if (font->fontType == 0)
@@ -1801,7 +1800,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 	diff.x = 0;
 	diff.y = 0;
 
-	img->GetTextSize(font->font, str1, &szThis);
+	szThis = img->GetTextSize(font->font, str1);
 	diff.x = szThis.width * 0.5;
 	diff.y = diff.x * diff.x;
 
@@ -1962,7 +1961,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, Text::CString str1, 
 				}
 			}
 
-			img->GetTextSize(font->font, CSTRP(lbl, nextPos), &szThis);
+			szThis = img->GetTextSize(font->font, CSTRP(lbl, nextPos));
 			dist = (szLast.width + szThis.width) * 0.5;
 			nextPt.x = currPt.x + dist * cosAngle;
 			nextPt.y = currPt.y - dist * sinAngle;
@@ -2324,9 +2323,8 @@ void Map::MapConfig2TGen::GetCharsSize(Media::DrawImage *img, Math::Coord2DDbl *
 		return;
 	}
 
-	Math::Size2D<Double> szTmp;
 	font = (Map::MapFontStyle*)fontStyle->GetItem(maxIndex);
-	img->GetTextSize(font->font, label, &szTmp);
+	Math::Size2D<Double> szTmp = img->GetTextSize(font->font, label);
 
 	if (scaleH == 0)
 	{

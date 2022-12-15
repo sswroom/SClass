@@ -7,6 +7,7 @@
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListView.h"
+#include "UI/GUIPictureBox.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -22,6 +23,9 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Net::SolarEdgeAPI *seAPI;
 			Data::ArrayList<Net::SolarEdgeAPI::Site*> siteList;
+			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> siteEnergyList;
+			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> sitePowerList;
+			Media::StaticImage *imgSiteEnergy;
 
 			UI::GUIPanel *pnlAPIKey;
 			UI::GUILabel *lblAPIKey;
@@ -80,6 +84,7 @@ namespace SSWR
 			UI::GUIComboBox *cboSiteEnergyMonth;
 			UI::GUIComboBox *cboSiteEnergyDay;
 			UI::GUIButton *btnSiteEnergy;
+			UI::GUIPictureBox *pbSiteEnergy;
 
 			UI::GUITabPage *tpSitePower;
 			UI::GUIPanel *pnlSitePower;
@@ -88,6 +93,12 @@ namespace SSWR
 
 			static void __stdcall OnAPIKeyClicked(void *userObj);
 			static void __stdcall OnSiteListSelChg(void *userObj);
+			static void __stdcall OnSiteEnergyClicked(void *userObj);
+			static void __stdcall OnSiteEnergySizeChg(void *userObj);
+
+			static Data::Timestamp GetDefaultStartTime(const Data::Timestamp &startTime, Net::SolarEdgeAPI::TimeUnit timeUnit);
+			static Data::Timestamp GetDefaultEndTime(const Data::Timestamp &startTime, Net::SolarEdgeAPI::TimeUnit timeUnit);
+			void UpdateSiteEnergyGraph();
 		public:
 			AVIRSolarEdgeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSolarEdgeForm();

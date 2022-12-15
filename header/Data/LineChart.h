@@ -96,6 +96,7 @@ namespace Data
 		virtual ~LineChart();
 
 		Bool AddXData(Data::DateTime **data, UOSInt dataCnt);
+		Bool AddXData(Data::Timestamp *data, UOSInt dataCnt);
 		Bool AddXData(Double *data, UOSInt dataCnt);
 		Bool AddXData(Int32 *data, UOSInt dataCnt);
 		Bool AddXDataDate(Int64 *data, UOSInt dataCnt);

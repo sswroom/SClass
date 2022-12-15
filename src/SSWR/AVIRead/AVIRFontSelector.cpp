@@ -75,7 +75,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 		{
 			Math::Size2D<Double> sz;
 			Media::DrawFont *fnt = this->CreateDrawFont(img);
-			img->GetTextSize(fnt, CSTRP(sbuff, sptr), &sz);
+			sz = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 			img->DrawString((UOSInt2Double(w) - sz.width) * 0.5, UOSInt2Double(i + itemH + 2), CSTRP(sbuff, sptr), fnt, bBlack);
 			img->DelFont(fnt);
 		}

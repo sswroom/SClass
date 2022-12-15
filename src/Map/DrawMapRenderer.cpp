@@ -2272,7 +2272,7 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, T
 		df = denv->fontStyles[fontStyle].font;
 		buffSize = denv->fontStyles[fontStyle].buffSize;
 	}
-	denv->img->GetTextSize(df, label, &szTmp);
+	szTmp = denv->img->GetTextSize(df, label);
 
 	if (scaleH == 0)
 	{
@@ -2370,7 +2370,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 	{
 		scaleH = 0;
 	}
-	denv->img->GetTextSize(df, str1, &size);
+	size = denv->img->GetTextSize(df, str1);
 
 	if (scaleH == 0)
 	{
@@ -2396,10 +2396,6 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 	Double degD = Math_ArcTan2((Double)scaleH, (Double)scaleW);
 
-	Int32 deg = (Int32) (degD * 1800 / Math::PI);
-	while (deg < 0)
-		deg += 3600;
-
 	Double lastScaleW = scaleW;
 	Double lastScaleH = scaleH;
 
@@ -2416,7 +2412,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 		Int32 type;
 		Math::Size2D<Double> szThis;
 		Double dlblSize = UOSInt2Double(str1.leng);
-		denv->img->GetTextSize(df, str1, &szThis);
+		szThis = denv->img->GetTextSize(df, str1);
 
 		if ((szThis.width * absH) < (szThis.height * dlblSize * scaleW))
 		{
@@ -2463,7 +2459,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 			while (cnt--)
 			{
-				denv->img->GetTextSize(font->font, {lbl, 1}, &szThis);
+				szThis = denv->img->GetTextSize(font->font, {lbl, 1});
 
 				if (type)
 				{
@@ -2499,7 +2495,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 
 		while (cnt--)
 		{
-			denv->img->GetTextSize(df, {lbl, 1}, &szThis);
+			szThis = denv->img->GetTextSize(df, {lbl, 1});
 
 			if (type)
 			{
@@ -2604,7 +2600,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	diff.x = 0;
 	diff.y = 0;
 
-	denv->img->GetTextSize(df, str1, &szThis);
+	szThis = denv->img->GetTextSize(df, str1);
 	diff.x = szThis.width * 0.5;
 	diff.y = diff.x * diff.x;
 
@@ -2811,7 +2807,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 			
 		}
 
-		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), &szThis);
+		szThis = denv->img->GetTextSize(df, CSTRP(lbl, nextPos));
 		dist = (szLast.width + szThis.width) * 0.5;
 		nextPt.x = currPt.x + (dist * cosAngle);
 		nextPt.y = currPt.y - (dist * sinAngle);
@@ -3157,7 +3153,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 
 	while (i-- > 0)
 	{
-		denv->img->GetTextSize(df, {&str1.v[i], 1}, &szThis);
+		szThis = denv->img->GetTextSize(df, {&str1.v[i], 1});
 		diff.x += szThis.width;
 		diff.y += szThis.height;
 	}
@@ -3439,7 +3435,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::
 		nextChar = *nextPos;
 		*nextPos = 0;
 
-		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), &szThis);
+		szThis = denv->img->GetTextSize(df, CSTRP(lbl, nextPos));
 		while (true)
 		{
 			if (angleDegree <= 90)

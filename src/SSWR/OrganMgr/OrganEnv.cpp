@@ -593,7 +593,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Tim
 	else if (userId == this->userId)
 	{
 		Text::StringBuilderUTF8 sb;
-		Data::Timestamp ts2 = ts.ClearTime();
+		Data::Timestamp ts2 = ts.ClearTimeLocal();
 		Data::Timestamp ts3 = ts2.AddDay(1);
 		{
 			OrganTripForm frm(0, ui, this);

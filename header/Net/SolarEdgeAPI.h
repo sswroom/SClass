@@ -71,6 +71,11 @@ namespace Net
 				this->ts = ts;
 				this->value = value;
 			}
+
+			Bool operator==(const TimedValue &val)
+			{
+				return this->ts == val.ts && this->value == val.value;
+			}
 		};
 	private:
 		Net::SocketFactory *sockf;
@@ -88,7 +93,7 @@ namespace Net
 		Bool GetSiteList(Data::ArrayList<Site*> *versions, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount);
 		void FreeSiteList(Data::ArrayList<Site*> *versions);
 		Bool GetSiteOverview(Int32 siteId, SiteOverview *overview);
-		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit);
+		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values);
 
 		static void AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts);
 		static Text::CString TimeUnitGetName(TimeUnit timeUnit);

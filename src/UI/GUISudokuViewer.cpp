@@ -212,7 +212,7 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 				{
 					img->DrawRect(UOSInt2Double(x), UOSInt2Double(y), UOSInt2Double(x2 - x), UOSInt2Double(y2 - y), 0, b3);
 				}
-				img->GetTextSize(f, {ch, 1}, &sz);
+				sz = img->GetTextSize(f, {ch, 1});
 				img->DrawString(UOSInt2Double(x) + (UOSInt2Double(x2 - x) - sz.width) * 0.5, UOSInt2Double(y) + (UOSInt2Double(y2 - y) - sz.height) * 0.5, {ch, 1}, f, b2);
 			}
 			else

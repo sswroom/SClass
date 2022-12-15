@@ -663,11 +663,12 @@ void Media::VectorGraph::DelFont(DrawFont *f)
 {
 }
 
-Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz)
+Math::Size2D<Double> Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt)
 {
 	Media::DrawImage *tmpImg = this->refEng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	tmpImg->SetHDPI(this->GetHDPI());
 	tmpImg->SetVDPI(this->GetVDPI());
+	Math::Size2D<Double> sz;
 	Media::DrawFont *f;
 	Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
 	Double fntSizePt = fntStyle->GetHeightPt();
@@ -675,20 +676,20 @@ Bool Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Siz
 	{
 		Text::String *fontName = fntStyle->GetName();
 		f = tmpImg->NewFontPt(fontName->ToCString(), 100, fntStyle->GetStyle(), fntStyle->GetCodePage());
-		tmpImg->GetTextSize(f, txt, sz);
+		sz = tmpImg->GetTextSize(f, txt);
 		tmpImg->DelFont(f);
-		sz->width *= fntSizePt / 100.0;
-		sz->height *= fntSizePt / 100.0;
+		sz.width *= fntSizePt / 100.0;
+		sz.height *= fntSizePt / 100.0;
 	}
 	else
 	{
 		Text::String *fontName = fntStyle->GetName();
 		f = tmpImg->NewFontPt(fontName->ToCString(), fntSizePt, fntStyle->GetStyle(), fntStyle->GetCodePage());
-		tmpImg->GetTextSize(f, txt, sz);
+		sz = tmpImg->GetTextSize(f, txt);
 		tmpImg->DelFont(f);
 	}
 	this->refEng->DeleteImage(tmpImg);
-	return true;
+	return sz;
 }
 
 void Media::VectorGraph::SetTextAlign(Media::DrawEngine::DrawPos pos)

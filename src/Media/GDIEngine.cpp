@@ -1355,7 +1355,7 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 		Math::Size2D<Double> sz;
 		if (this->strAlign == Media::DrawEngine::DRAW_POS_CENTER || this->strAlign == Media::DrawEngine::DRAW_POS_CENTERLEFT || this->strAlign == Media::DrawEngine::DRAW_POS_CENTERRIGHT)
 		{
-			GetTextSize(f, str, src - str - 1, &sz);
+			sz = GetTextSize(f, str, src - str - 1);
 		}
 		else
 		{
@@ -1369,8 +1369,7 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 	}
 	else
 	{
-		Math::Size2D<Double> sz;
-		GetTextSize(f, str, src - str - 1, &sz);
+		Math::Size2D<Double> sz = GetTextSize(f, str, src - str - 1);
 		Media::GDIImage *tmpImg = (Media::GDIImage*)this->eng->CreateImage32((OSInt)sz.width + 1, (OSInt)sz.height + 1, Media::AT_NO_ALPHA);
 		Media::DrawBrush *b2 = tmpImg->NewBrushARGB(0xffffffff);
 		tmpImg->DrawStringW(0, 0, str, f, b2);
@@ -2345,18 +2344,18 @@ void Media::GDIImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GDIImage::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz)
+Math::Size2D<Double> Media::GDIImage::GetTextSize(DrawFont *fnt, Text::CString txt)
 {
 	UOSInt strLen;
 	strLen = Text::StrUTF8_WCharCntC(txt.v, txt.leng);
 	WChar *wptr = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WCharC(wptr, txt.v, txt.leng, 0);
-	Bool ret = GetTextSize(fnt, wptr, strLen, sz);
+	Math::Size2D<Double> ret = GetTextSize(fnt, wptr, strLen);
 	MemFree(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Math::Size2D<Double> *sz)
+Math::Size2D<Double> Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen)
 {
 	Bool isCJK = true;
 	if (txtLen == -1)
@@ -2374,8 +2373,7 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen,
 
 	if (isCJK)
 	{
-		sz->width = OSInt2Double((((GDIFont*)fnt)->pxSize + 1) * txtLen);
-		sz->height = ((GDIFont*)fnt)->pxSize + 2;
+		return Math::Size2D<Double>(OSInt2Double((((GDIFont*)fnt)->pxSize + 1) * txtLen), ((GDIFont*)fnt)->pxSize + 2);
 	}
 	else
 	{
@@ -2404,10 +2402,8 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen,
 				Sync::Thread::Sleep(10);
 			}
 		}
-		sz->width = size.cx;
-		sz->height = size.cy;
+		return Math::Size2D<Double>(size.cx, size.cy);
 	}
-	return true;
 }
 
 void Media::GDIImage::SetTextAlign(Media::DrawEngine::DrawPos pos)
@@ -2426,8 +2422,7 @@ void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const
 
 void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
 {
-	Math::Size2D<Double> sz;
-	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), &sz);
+	Math::Size2D<Double> sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Bool isCenter = false;
 	if (strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT)
 	{
@@ -2504,8 +2499,7 @@ void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, 
 
 void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
 {
-	Math::Size2D<Double> sz;
-	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), &sz);
+	Math::Size2D<Double> sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Double pts[10];
 	Bool isCenter = false;
 	if (strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT)

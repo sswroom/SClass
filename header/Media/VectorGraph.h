@@ -140,7 +140,7 @@ namespace Media
 		virtual void DelBrush(DrawBrush *b);
 		virtual void DelFont(DrawFont *f);
 
-		virtual Bool GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz);
+		virtual Math::Size2D<Double> GetTextSize(DrawFont *fnt, Text::CString txt);
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos);
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY);
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY);

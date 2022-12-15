@@ -50,6 +50,11 @@ namespace Math
 		{
 			return Math::Coord2DDbl((Double)this->width, (Double)this->height);
 		}
+
+		Bool HasArea() const
+		{
+			return this->width > 0 && this->height > 0;
+		}
 	};
 }
 #endif

@@ -1204,7 +1204,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	maxScnWidth = dimg->GetWidth() + xPos;
 	Media::DrawFont *fnt = this->CreateDrawFont(dimg);
 	sbuffEnd = Text::StrUOSInt(sbuff, this->pageLineCnt + yPos);
-	dimg->GetTextSize(fnt, CSTRP(sbuff, sbuffEnd), &sz);
+	sz = dimg->GetTextSize(fnt, CSTRP(sbuff, sbuffEnd));
 	this->dispLineNumW = (UInt32)Double2Int32(sz.width) + 8;
 
 	UInt32 selTopX;
@@ -1287,7 +1287,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 				Math::Size2D<Double> szWhole;
 				Math::Size2D<Double> szThis;
 				s = Text::String::NewNotNull(line);
-				dimg->GetTextSize(fnt, s->ToCString(), &szWhole);
+				szWhole = dimg->GetTextSize(fnt, s->ToCString());
 				if (maxScnWidth < (UOSInt)Double2OSInt(szWhole.width + sz.width + 8))
 				{
 					maxScnWidth = (UOSInt)Double2OSInt(szWhole.width + sz.width + 8);
@@ -1300,7 +1300,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 
 				if (i + yPos > selTopY && i + yPos < selBottomY)
 				{
-					dimg->GetTextSize(fnt, s->ToCString(), &szThis);
+					szThis = dimg->GetTextSize(fnt, s->ToCString());
 					dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 					dimg->DrawString(drawLeft, drawTop, s->ToCString(), fnt, selTextBrush);
 				}
@@ -1318,13 +1318,13 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 							line[selTopX] = 0;
 							s2 = Text::String::NewNotNull(line);
 							line[selTopX] = c;
-							dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+							szThis = dimg->GetTextSize(fnt, s2->ToCString());
 							dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, textBrush);
 							drawLeft += szThis.width;
 							s2->Release();
 						}
 						s2 = Text::String::NewNotNull(&line[selTopX]);
-						dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, selTextBrush);
 						s2->Release();
@@ -1337,7 +1337,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 							line[selTopX] = 0;
 							s2 = Text::String::NewNotNull(line);
 							line[selTopX] = c;
-							dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+							szThis = dimg->GetTextSize(fnt, s2->ToCString());
 							dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, textBrush);
 							drawLeft += szThis.width;
 							s2->Release();
@@ -1346,7 +1346,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						line[selBottomX] = 0;
 						s2 = Text::String::NewNotNull(&line[selTopX]);
 						line[selBottomX] = c;
-						dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, selTextBrush);
 						s2->Release();
@@ -1361,7 +1361,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 				{
 					if (selTopX == 0)
 					{
-						dimg->GetTextSize(fnt, s->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s->ToCString());
 						dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, s->ToCString(), fnt, selTextBrush);
 					}
@@ -1375,12 +1375,12 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						line[selTopX] = 0;
 						s2 = Text::String::NewNotNull(line);
 						line[selTopX] = c;
-						dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, textBrush);
 						drawLeft += szThis.width;
 						s2->Release();
 						s2 = Text::String::NewNotNull(&line[selTopX]);
-						dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, selTextBrush);
 						s2->Release();
@@ -1394,7 +1394,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 					}
 					else if ((UOSInt)(wptr - line) <= selBottomX)
 					{
-						dimg->GetTextSize(fnt, s->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s->ToCString());
 						dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, s->ToCString(), fnt, selTextBrush);
 					}
@@ -1404,7 +1404,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						line[selBottomX] = 0;
 						s2 = Text::String::NewNotNull(line);
 						line[selBottomX] = c;
-						dimg->GetTextSize(fnt, s2->ToCString(), &szThis);
+						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawRect(drawLeft, drawTop, szThis.width, szThis.height, 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, s2->ToCString(), fnt, selTextBrush);
 						s2->Release();

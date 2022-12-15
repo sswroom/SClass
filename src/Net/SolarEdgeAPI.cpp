@@ -20,6 +20,9 @@ void Net::SolarEdgeAPI::BuildURL(Text::StringBuilderUTF8 *sb, Text::CString path
 
 Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CString url)
 {
+#if defined(VERBOSE)
+	printf("SolarEdgeAPI requesting: %s\r\n", url.v);
+#endif
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli == 0)
 	{
@@ -240,7 +243,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
 	return true;
 }
 
-Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit)
+Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -258,8 +261,29 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
+	Bool succ = false;
+	Text::JSONBase *valueObj = json->GetValue(CSTR("energy.values"));
+	Text::JSONArray *valueArr;
+	if (valueObj && valueObj->GetType() == Text::JSONType::Array)
+	{
+		valueArr = (Text::JSONArray*)valueObj;
+		UOSInt i = 0;
+		UOSInt j = valueArr->GetArrayLength();
+		while (i < j)
+		{
+			valueObj = valueArr->GetArrayValue(i);
+			Text::JSONBase *dateObj = valueObj->GetValue(CSTR("date"));
+			Text::JSONBase *valObj = valueObj->GetValue(CSTR("value"));
+			if (dateObj && valObj && valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
+			{
+				values->Add(TimedValue(Data::Timestamp::FromStr(((Text::JSONString*)dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+			}
+			i++;
+		}
+		succ = true;	
+	}
 	json->EndUse();
-	return false;
+	return succ;
 }
 
 void Net::SolarEdgeAPI::AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts)

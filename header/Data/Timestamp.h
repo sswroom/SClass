@@ -68,6 +68,14 @@ namespace Data
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
 		}
 
+		Timestamp AddYear(OSInt val) const
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			this->ToTimeValue(&tval);
+			tval.year = (UInt16)(tval.year + val);
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
+		}
+
 		Timestamp AddDay(OSInt val) const
 		{
 			return Timestamp(this->inst.AddDay(val), this->tzQhr);
@@ -103,9 +111,27 @@ namespace Data
 			return this->inst.GetMS();
 		}
 
-		Timestamp ClearTime() const
+		Timestamp ClearTimeUTC() const
 		{
 			return Timestamp(this->inst.ClearTime(), this->tzQhr);
+		}
+
+		Timestamp ClearTimeLocal() const
+		{
+			return Timestamp(this->inst.AddMinute(this->tzQhr * 15).ClearTime().AddMinute(this->tzQhr * -15), this->tzQhr);
+		}
+
+		Timestamp ClearMonthAndDay() const
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			this->ToTimeValue(&tval);
+			tval.month = 1;
+			tval.day = 1;
+			tval.hour = 0;
+			tval.minute = 0;
+			tval.second = 0;
+			tval.ms = 0;
+			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
 		}
 
 		Timestamp ClearDayOfMonth() const

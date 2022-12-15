@@ -421,7 +421,7 @@ void UI::GUITextView::UpdateScrollBar()
 		}
 		else
 		{
-			this->drawBuff->GetTextSize(fnt, CSTR("Test"), &sz);
+			sz = this->drawBuff->GetTextSize(fnt, CSTR("Test"));
 			this->drawBuff->DelFont(fnt);
 		}
 	}
@@ -500,7 +500,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 	{
 		Math::Size2D<Double> sz;
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
-		((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, (OSInt)strLen, &sz);
+		sz = ((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, (OSInt)strLen);
 		*width = (UOSInt)Double2OSInt(sz.width);
 		*height = (UOSInt)Double2OSInt(sz.height);
 		this->drawBuff->DelFont(fnt);

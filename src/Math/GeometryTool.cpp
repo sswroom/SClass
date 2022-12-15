@@ -985,3 +985,42 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::G
 		return maxDist;
 	}
 }
+
+Math::Coord2DDbl Math::GeometryTool::MercatorToProject(Double lat, Double lon)
+{
+	Double a = 6378137.0;
+	return Math::Coord2DDbl(lon * a, a * Math_Ln(Math_Tan(Math::PI * 0.25 + lat * 0.5)));
+}
+
+void Math::GeometryTool::CalcHVAngleRad(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle)
+{
+	Math::Coord2DDbl projCurr = MercatorToProject(ptCurr.lat, ptCurr.lon);
+	Math::Coord2DDbl projDiff = MercatorToProject(ptNext.lat, ptNext.lon) - projCurr;
+	Double len = Math_Sqrt(projDiff.x * projDiff.x + projDiff.y * projDiff.y);
+	if (len == 0)
+	{
+		*hAngle = 0;
+		if (heightNext > heightCurr)
+			*vAngle = Math::PI;
+		else if (heightNext < heightCurr)
+			*vAngle = -Math::PI;
+		else
+			*vAngle = 0;
+	}
+	else
+	{
+		*hAngle = Math_ArcTan2(projDiff.x, projDiff.y);
+		*vAngle = Math_ArcTan2(heightNext - heightCurr, len);
+		if (*hAngle < 0)
+		{
+			*hAngle += 2 * Math::PI;
+		}
+	}
+}
+
+void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle)
+{
+	CalcHVAngleRad(ptCurr * (Math::PI / 180.0), ptNext * (Math::PI / 180.0), heightCurr, heightNext, hAngle, vAngle);
+	*hAngle = *hAngle * 180 / Math::PI;
+	*vAngle = *vAngle * 180 / Math::PI;
+}

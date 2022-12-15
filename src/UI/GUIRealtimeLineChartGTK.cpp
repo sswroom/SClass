@@ -106,13 +106,13 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSize(f, CSTRP(sbuff, sptr), &sz);
+	sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
 	strWidth = sz.width;
 	img->DrawString(0, 1, CSTRP(sbuff, sptr), f, b);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSize(f, CSTRP(sbuff, sptr), &sz);
+	sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
 	if (sz.width > strWidth)
 		strWidth = sz.width;
 	img->DrawString(0, UOSInt2Double(dimg->GetHeight()) - sz.height, CSTRP(sbuff, sptr), f, b);

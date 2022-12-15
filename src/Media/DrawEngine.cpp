@@ -7,7 +7,8 @@ Bool Media::DrawImage::DrawStringHAlign(Double tlx, Double tly, Double brx, Text
 	Math::Size2D<Double> sz;
 	if (hAlign == Text::HAlignment::Right)
 	{
-		if (!this->GetTextSize(f, str, &sz))
+		sz = this->GetTextSize(f, str);
+		if (!sz.HasArea())
 		{
 			return this->DrawString(tlx, tly, str, f, b);
 		}
@@ -18,7 +19,8 @@ Bool Media::DrawImage::DrawStringHAlign(Double tlx, Double tly, Double brx, Text
 	}
 	else if (hAlign == Text::HAlignment::Center)
 	{
-		if (!this->GetTextSize(f, str, &sz))
+		sz = this->GetTextSize(f, str);
+		if (!sz.HasArea())
 		{
 			return this->DrawString(tlx, tly, str, f, b);
 		}

@@ -1,9 +1,11 @@
 #include "Stdafx.h"
+#include "Data/LineChart.h"
 #include "Math/Unit/Count.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
 #include "UI/GUIComboBoxUtil.h"
 #include "UI/MessageDialog.h"
+#include <stdio.h>
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 {
@@ -207,6 +209,115 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	Net::SolarEdgeAPI::Site *site = (Net::SolarEdgeAPI::Site*)me->cboSiteEnergySite->GetSelectedItem();
+	if (site && me->seAPI)
+	{
+		Net::SolarEdgeAPI::TimeUnit timeUnit = (Net::SolarEdgeAPI::TimeUnit)(UOSInt)me->cboSiteEnergyInterval->GetSelectedItem();
+		Data::DateTimeUtil::TimeValue timeVal;
+		timeVal.year = (UInt16)(UOSInt)me->cboSiteEnergyYear->GetSelectedItem();
+		timeVal.month = (UInt8)(UOSInt)me->cboSiteEnergyMonth->GetSelectedItem();
+		timeVal.day = (UInt8)(UOSInt)me->cboSiteEnergyDay->GetSelectedItem();
+		timeVal.hour = 0;
+		timeVal.minute = 0;
+		timeVal.second = 0;
+		timeVal.ms = 0;
+		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(&timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
+		Data::Timestamp endTime = GetDefaultEndTime(startTime, timeUnit);
+		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;
+		if (me->seAPI->GetSiteEnergy(site->id, startTime, endTime, timeUnit, &values))
+		{
+			me->siteEnergyList.Clear();
+			me->siteEnergyList.AddAll(&values);
+			me->UpdateSiteEnergyGraph();
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergySizeChg(void *userObj)
+{
+	SSWR::AVIRead::AVIRSolarEdgeForm *me = (SSWR::AVIRead::AVIRSolarEdgeForm*)userObj;
+	me->UpdateSiteEnergyGraph();
+}
+
+Data::Timestamp SSWR::AVIRead::AVIRSolarEdgeForm::GetDefaultStartTime(const Data::Timestamp &startTime, Net::SolarEdgeAPI::TimeUnit timeUnit)
+{
+	switch (timeUnit)
+	{
+	case Net::SolarEdgeAPI::TimeUnit::DAY:
+		return startTime.ClearDayOfMonth();
+	case Net::SolarEdgeAPI::TimeUnit::QUARTER_OF_AN_HOUR:
+		return startTime.ClearTimeLocal();
+	case Net::SolarEdgeAPI::TimeUnit::HOUR:
+		return startTime.ClearTimeLocal();
+	case Net::SolarEdgeAPI::TimeUnit::WEEK:
+		return startTime.ClearMonthAndDay();
+	case Net::SolarEdgeAPI::TimeUnit::MONTH:
+		return startTime.ClearMonthAndDay();
+	case Net::SolarEdgeAPI::TimeUnit::YEAR:
+		return startTime.ClearMonthAndDay();
+	default:
+		return startTime;
+	}
+}
+
+Data::Timestamp SSWR::AVIRead::AVIRSolarEdgeForm::GetDefaultEndTime(const Data::Timestamp &startTime, Net::SolarEdgeAPI::TimeUnit timeUnit)
+{
+	switch (timeUnit)
+	{
+	case Net::SolarEdgeAPI::TimeUnit::DAY:
+		return startTime.AddMonth(1).AddDay(-1);
+	case Net::SolarEdgeAPI::TimeUnit::QUARTER_OF_AN_HOUR:
+		return startTime;
+	case Net::SolarEdgeAPI::TimeUnit::HOUR:
+		return startTime;
+	case Net::SolarEdgeAPI::TimeUnit::WEEK:
+		return startTime.AddMonth(1).AddDay(-1);
+	case Net::SolarEdgeAPI::TimeUnit::MONTH:
+		return startTime.AddMonth(1).AddDay(-1);
+	case Net::SolarEdgeAPI::TimeUnit::YEAR:
+		return startTime.AddMonth(1).AddDay(-1);
+	default:
+		return startTime;
+	}
+}
+
+void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
+{
+	Media::DrawEngine *deng = this->core->GetDrawEngine();
+	Math::Size2D<UOSInt> size = this->pbSiteEnergy->GetSizeP();
+	if (this->siteEnergyList.GetCount() > 0 && size.width > 0 && size.height > 0)
+	{
+		Media::DrawImage *dimg = deng->CreateImage32(size.width, size.height, Media::AlphaType::AT_NO_ALPHA);
+		dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
+		dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
+		Data::LineChart chart(CSTR("Site Energy"));
+		chart.SetFontHeightPt(9.0);
+		UOSInt i = 0;
+		UOSInt j = this->siteEnergyList.GetCount();
+		Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
+		Double *valList = MemAlloc(Double, j);
+		while (i < j)
+		{
+			tsList[i] = this->siteEnergyList.GetItem(i).ts;
+			valList[i] = this->siteEnergyList.GetItem(i).value;
+			i++;
+		}
+		chart.AddXData(tsList, j);
+		chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
+		chart.Plot(dimg, 0, 0, UOSInt2Double(size.width), UOSInt2Double(size.height));
+		MemFree(tsList);
+		MemFree(valList);
+		Media::StaticImage *simg = dimg->ToStaticImage();
+		this->pbSiteEnergy->SetImage(simg);
+		SDEL_CLASS(this->imgSiteEnergy);
+		this->imgSiteEnergy = simg;
+		deng->DeleteImage(dimg);
+	}
+}
+
 SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SolarEdge API"));
@@ -216,6 +327,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->seAPI = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->imgSiteEnergy = 0;
 
 	NEW_CLASS(this->pnlAPIKey, UI::GUIPanel(ui, this));
 	this->pnlAPIKey->SetRect(0, 0, 100, 31, false);
@@ -367,6 +479,10 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	UI::GUIComboBoxUtil::AddDayItems(this->cboSiteEnergyDay);
 	NEW_CLASS(this->btnSiteEnergy, UI::GUIButton(ui, this->pnlSiteEnergy, CSTR("Query")));
 	this->btnSiteEnergy->SetRect(104, 76, 75, 23, false);
+	this->btnSiteEnergy->HandleButtonClick(OnSiteEnergyClicked, this);
+	NEW_CLASS(this->pbSiteEnergy, UI::GUIPictureBox(ui, this->tpSiteEnergy, this->core->GetDrawEngine(), true, false));
+	this->pbSiteEnergy->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbSiteEnergy->HandleSizeChanged(OnSiteEnergySizeChg, this);
 
 	this->tpSitePower = this->tcMain->AddTabPage(CSTR("Site Power"));
 	NEW_CLASS(this->pnlSitePower, UI::GUIPanel(ui, this->tpSitePower));
@@ -386,7 +502,9 @@ SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
 		DEL_CLASS(this->seAPI);
 		this->seAPI = 0;
 	}
+	this->ClearChildren();
 	SDEL_CLASS(this->ssl);
+	SDEL_CLASS(this->imgSiteEnergy);
 }
 
 void SSWR::AVIRead::AVIRSolarEdgeForm::OnMonitorChanged()

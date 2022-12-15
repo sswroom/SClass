@@ -726,7 +726,6 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 		else
 		{
 			Media::DrawBrush *whiteB = gimg->NewBrushARGB(0xffffffff);
-			//gimg->SetTextAlign(this->strAlign);
 			gimg->DrawString(OSInt2Double(sx) + tlx - OSInt2Double(px),
 				OSInt2Double(sy) + tly - OSInt2Double(py), str, f, whiteB);
 			gimg->DelBrush(whiteB);
@@ -1013,15 +1012,13 @@ void Media::GTKDrawImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt, Math::Size2D<Double> *sz)
+Math::Size2D<Double> Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt)
 {
 	GTKDrawFont *font = (GTKDrawFont*)fnt;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v, &extents);
-	sz->width = extents.width + 2;
-	sz->height = font->GetHeight() + 2;
-	return true;
+	return Math::Size2D<Double>(extents.width + 2, font->GetHeight() + 2);
 }
 
 void Media::GTKDrawImage::SetTextAlign(DrawEngine::DrawPos pos)

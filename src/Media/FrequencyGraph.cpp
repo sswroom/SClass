@@ -56,7 +56,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			sz = retImg->GetTextSize(f, {sbuff, i});
 			iVal = (UInt32)Double2Int32(sz.width);
 			if (iVal > yAxis)
 			{
@@ -73,7 +73,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			sz = retImg->GetTextSize(f, {sbuff, i});
 			iVal = (UInt32)Double2Int32(sz.width);
 			if (iVal > xAxis)
 			{
@@ -261,7 +261,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			sz = retImg->GetTextSize(f, {sbuff, i});
 			k = (UInt32)Double2Int32(sz.width);
 			retImg->DrawString(yAxis - UOSInt2Double(k), dfftSize * 0.5 - chartPos.GetItem(j), {sbuff, i}, f, b);
 			retImg->DrawLine(yAxis, dfftSize * 0.5 - chartPos.GetItem(j) + ihFontSize, yAxis + 4, UOSInt2Double(fftSize >> 1) - chartPos.GetItem(j) + ihFontSize, p);
@@ -276,7 +276,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		while (j-- > 0)
 		{
 			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
-			retImg->GetTextSize(f, {sbuff, i}, &sz);
+			sz = retImg->GetTextSize(f, {sbuff, i});
 			k = (UInt32)Double2Int32(sz.width);
 			retImg->DrawStringRot(yAxis + 4 + chartPos.GetItem(j) + ihFontSize, ihFontSize + dfftSize * 0.5 + 4, {sbuff, i}, f, b, 270.0);
 			retImg->DrawLine(yAxis + 4 + chartPos.GetItem(j), ihFontSize + dfftSize * 0.5, yAxis + 4 + chartPos.GetItem(j), ihFontSize + dfftSize * 0.5 + 4, p);
