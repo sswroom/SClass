@@ -94,8 +94,9 @@ namespace Net
 		void FreeSiteList(Data::ArrayList<Site*> *versions);
 		Bool GetSiteOverview(Int32 siteId, SiteOverview *overview);
 		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values);
+		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values);
 
-		static void AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts);
+		static void AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts, Bool hasTime);
 		static Text::CString TimeUnitGetName(TimeUnit timeUnit);
 	};
 }

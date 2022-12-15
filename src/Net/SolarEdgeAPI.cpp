@@ -3,7 +3,7 @@
 #include "Net/SolarEdgeAPI.h"
 #include "Text/StringBuilderUTF8.h"
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -255,9 +255,9 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	sbURL.AppendC(UTF8STRC("&timeUnit="));
 	sbURL.Append(TimeUnitGetName(timeUnit));
 	sbURL.AppendC(UTF8STRC("&startDate="));
-	AppendFormDate(&sbURL, startTime);
+	AppendFormDate(&sbURL, startTime, false);
 	sbURL.AppendC(UTF8STRC("&endDate="));
-	AppendFormDate(&sbURL, endTime);
+	AppendFormDate(&sbURL, endTime, false);
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
@@ -286,12 +286,53 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	return succ;
 }
 
-void Net::SolarEdgeAPI::AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts)
+Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/site/"));
+	sptr = Text::StrInt32(sptr, siteId);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/power"));
+	Text::StringBuilderUTF8 sbURL;
+	this->BuildURL(&sbURL, CSTRP(sbuff, sptr));
+	sbURL.AppendC(UTF8STRC("&startTime="));
+	AppendFormDate(&sbURL, startTime, true);
+	sbURL.AppendC(UTF8STRC("&endTime="));
+	AppendFormDate(&sbURL, endTime, true);
+	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
+	if (json == 0)
+		return false;
+	Bool succ = false;
+	Text::JSONBase *valueObj = json->GetValue(CSTR("power.values"));
+	Text::JSONArray *valueArr;
+	if (valueObj && valueObj->GetType() == Text::JSONType::Array)
+	{
+		valueArr = (Text::JSONArray*)valueObj;
+		UOSInt i = 0;
+		UOSInt j = valueArr->GetArrayLength();
+		while (i < j)
+		{
+			valueObj = valueArr->GetArrayValue(i);
+			Text::JSONBase *dateObj = valueObj->GetValue(CSTR("date"));
+			Text::JSONBase *valObj = valueObj->GetValue(CSTR("value"));
+			if (dateObj && valObj && valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
+			{
+				values->Add(TimedValue(Data::Timestamp::FromStr(((Text::JSONString*)dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+			}
+			i++;
+		}
+		succ = true;	
+	}
+	json->EndUse();
+	return succ;
+}
+
+void Net::SolarEdgeAPI::AppendFormDate(Text::StringBuilderUTF8 *sb, Data::Timestamp ts, Bool hasTime)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = ts.ToString(sbuff, "yyyy-MM-dd");
-	if (ts.GetMSPassedLocalDate() != 0)
+	if (hasTime)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("%20"));
 		sptr = ts.ToString(sptr, "HH:mm:ss");
