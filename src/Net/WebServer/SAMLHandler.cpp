@@ -5,10 +5,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-#include <stdio.h>
-
 // https://<host>/adfs/ls/idpinitiatedsignon.aspx
 // https://<host>/FederationMetadata/2007-06/FederationMetadata.xml
+// https://www.samltool.com/decrypt.php
 
 Net::WebServer::SAMLHandler::~SAMLHandler()
 {
@@ -119,7 +118,12 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 					{
 						this->rawRespHdlr(this->rawRespObj, Text::CString(buff, buffSize));
 					}
-					printf("SAMLResponse: %s\r\n", buff);
+					if (this->loginHdlr)
+					{
+						SAMLMessage msg;
+						msg.rawMessage = Text::CString(buff, buffSize);
+						succ = this->loginHdlr(this->loginObj, req, resp, &msg);
+					}
 					MemFree(buff);
 				}
 			}
@@ -158,6 +162,10 @@ Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, W
 	this->ssoPath = 0;
 	this->signCert = 0;
 	this->signKey = 0;
+	this->rawRespHdlr = 0;
+	this->rawRespObj = 0;
+	this->loginHdlr = 0;
+	this->loginObj = 0;
 	if (cfg == 0)
 	{
 		this->initErr = SAMLError::ConfigNotFound;
@@ -251,6 +259,12 @@ void Net::WebServer::SAMLHandler::HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *
 {
 	this->rawRespHdlr = hdlr;
 	this->rawRespObj = userObj;
+}
+
+void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, void *userObj)
+{
+	this->loginHdlr = hdlr;
+	this->loginObj = userObj;
 }
 
 Text::CString Net::WebServer::SAMLErrorGetName(SAMLError err)

@@ -281,3 +281,12 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ToType(IO::ParsedObject 
 	DEL_CLASS(x509);
 	return 0;
 }
+
+Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBinary(const UInt8 *buff, UOSInt buffSize)
+{
+	if (Crypto::Cert::X509File::IsCertificate(buff, buff + buffSize, "1"))
+	{
+		return NEW_CLASS_D(Crypto::Cert::X509Cert(CSTR("Certificate.crt"), buff, buffSize));
+	}
+	return 0;
+}

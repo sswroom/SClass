@@ -20,6 +20,11 @@ namespace Net
 			Text::CString signKeyPath;
 		};
 
+		struct SAMLMessage
+		{
+			Text::CString rawMessage;
+		};
+
 		enum class SAMLError
 		{
 			None,
@@ -36,6 +41,7 @@ namespace Net
 		{
 		public:
 			typedef void (__stdcall *SAMLStrFunc)(void *userObj, Text::CString msg);
+			typedef Bool (__stdcall *SAMLLoginFunc)(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const SAMLMessage *msg);
 		private:
 			WebStandardHandler *defHdlr;
 			Net::SSLEngine *ssl;
@@ -48,6 +54,8 @@ namespace Net
 			SAMLError initErr;
 			SAMLStrFunc rawRespHdlr;
 			void *rawRespObj;
+			SAMLLoginFunc loginHdlr;
+			void *loginObj;
 
 		protected:
 			virtual ~SAMLHandler();
@@ -60,6 +68,7 @@ namespace Net
 			Bool GetMetadataURL(Text::StringBuilderUTF8 *sb);
 			Bool GetSSOURL(Text::StringBuilderUTF8 *sb);
 			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *userObj);
+			void HandleLoginRequest(SAMLLoginFunc hdlr, void *userObj);
 		};
 		Text::CString SAMLErrorGetName(SAMLError err);
 	}

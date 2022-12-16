@@ -157,6 +157,9 @@ UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 		case '\n':
 			cnt += 5;
 			break;
+		case '\t':
+			cnt += 24;
+			break;
 		default:
 			cnt++;
 			break;
@@ -193,6 +196,8 @@ UOSInt Text::XML::GetHTMLTextLen(const WChar *text)
 		case '\n':
 			cnt += 5;
 			break;
+		case '\t':
+			cnt += 24;
 		default:
 			cnt++;
 			break;
@@ -511,6 +516,9 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 			dptr[4] = '>';
 			dptr += 5;
 			break;
+		case '\t':
+			dptr = Text::StrConcatC(dptr, UTF8STRC("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			break;
 		default:
 			*dptr++ = c;
 			break;
@@ -581,6 +589,10 @@ WChar *Text::XML::ToHTMLText(WChar *buff, const WChar *text)
 			dptr[3] = '/';
 			dptr[4] = '>';
 			dptr += 5;
+		}
+		else if (c == '\t')
+		{
+			dptr = Text::StrConcat(dptr, L"&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
 		else
 		{

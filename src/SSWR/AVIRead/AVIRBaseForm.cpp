@@ -54,6 +54,7 @@
 #include "SSWR/AVIRead/AVIRCameraControlForm.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRCAUtilForm.h"
+#include "SSWR/AVIRead/AVIRCertTextForm.h"
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "SSWR/AVIRead/AVIRChineseForm.h"
 #include "SSWR/AVIRead/AVIRClipboardViewerForm.h"
@@ -465,7 +466,8 @@ typedef enum
 	MNU_TIMESTAMP,
 	MNU_PROGRAM_LINKS,
 	MNU_WEBAPI_SOLAREDGE,
-	MNU_SAMLTEST
+	MNU_SAMLTEST,
+	MNU_CERT_TEXT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -611,6 +613,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("CA Util"), MNU_CA_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Trust Store"), MNU_TRUSTSTORE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Java CACerts"), MNU_JAVACACERTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Load From Text"), MNU_CERT_TEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("ASN.1"));
 	mnu2->AddItem(CSTR("ASN.1 MIB"), MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 OID"), MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2685,6 +2688,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSAMLTestForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSAMLTestForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_CERT_TEXT:
+		{
+			SSWR::AVIRead::AVIRCertTextForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRCertTextForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -47,6 +47,12 @@ namespace SSWR
 			UI::GUITextBox *txtSignCert;
 			UI::GUILabel *lblSignKey;
 			UI::GUITextBox *txtSignKey;
+			UI::GUILabel *lblSSOPath;
+			UI::GUITextBox *txtSSOPath;
+			UI::GUILabel *lblMetadataPath;
+			UI::GUITextBox *txtMetadataPath;
+			UI::GUILabel *lblLogoutPath;
+			UI::GUITextBox *txtLogoutPath;
 			UI::GUIButton *btnStart;
 			UI::GUILabel *lblSSOURL;
 			UI::GUITextBox *txtSSOURL;
@@ -57,6 +63,9 @@ namespace SSWR
 
 			UI::GUITabPage *tpSAMLResp;
 			UI::GUITextBox *txtSAMLResp;
+
+			UI::GUITabPage *tpSAMLRespWF;
+			UI::GUITextBox *txtSAMLRespWF;
 
 			UI::GUITabPage *tpLog;
 			UI::GUIListBox *lbLog;
@@ -69,6 +78,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnSAMLResponse(void *userObj, Text::CString msg);
+			static Bool __stdcall OnLoginRequest(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const Net::WebServer::SAMLMessage *msg);
 		public:
 			AVIRSAMLTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRSAMLTestForm();

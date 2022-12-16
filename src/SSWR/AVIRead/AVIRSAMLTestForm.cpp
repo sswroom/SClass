@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Net/SSLEngineFactory.h"
@@ -8,6 +9,8 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/XML.h"
+#include "Text/XMLReader.h"
 #include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, Text::String **files, UOSInt nFiles)
@@ -111,6 +114,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtHost->SetReadOnly(false);
 		me->txtSignCert->SetReadOnly(false);
 		me->txtSignKey->SetReadOnly(false);
+		me->txtMetadataPath->SetReadOnly(false);
+		me->txtSSOPath->SetReadOnly(false);
+		me->txtLogoutPath->SetReadOnly(false);
 		me->btnStart->SetText(CSTR("Start"));
 		return;
 	}
@@ -139,9 +145,6 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	if (port > 0 && port < 65535)
 	{
 		Net::WebServer::SAMLConfig cfg;
-		cfg.logoutPath = CSTR("/logout");
-		cfg.metadataPath = CSTR("/metadata");
-		cfg.ssoPath = CSTR("/sso");
 		sb.ClearStr();
 		me->txtHost->GetText(&sb);
 		if (sb.GetLength() == 0)
@@ -150,32 +153,76 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 			return;
 		}
 		cfg.serverHost = sb.ToCString();
-		Text::StringBuilderUTF8 sb2;
-		me->txtSignCert->GetText(&sb2);
-		if (sb2.GetLength() == 0)
+
+		Text::StringBuilderUTF8 sbSignCert;
+		me->txtSignCert->GetText(&sbSignCert);
+		if (sbSignCert.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter Signature Cert"), CSTR("SAML Test"), me);
 			return;
 		}
-		else if (IO::Path::GetPathType(sb2.ToCString()) != IO::Path::PathType::File)
+		else if (IO::Path::GetPathType(sbSignCert.ToCString()) != IO::Path::PathType::File)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Signature Cert file path not valid"), CSTR("SAML Test"), me);
 			return;
 		}
-		cfg.signCertPath = sb2.ToCString();
-		Text::StringBuilderUTF8 sb3;
-		me->txtSignKey->GetText(&sb3);
-		if (sb3.GetLength() == 0)
+		cfg.signCertPath = sbSignCert.ToCString();
+
+		Text::StringBuilderUTF8 sbSignKey;
+		me->txtSignKey->GetText(&sbSignKey);
+		if (sbSignKey.GetLength() == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Please enter Signature Key"), CSTR("SAML Test"), me);
 			return;
 		}
-		else if (IO::Path::GetPathType(sb3.ToCString()) != IO::Path::PathType::File)
+		else if (IO::Path::GetPathType(sbSignKey.ToCString()) != IO::Path::PathType::File)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Signature Key file path not valid"), CSTR("SAML Test"), me);
 			return;
 		}
-		cfg.signKeyPath = sb3.ToCString();
+		cfg.signKeyPath = sbSignKey.ToCString();
+
+		Text::StringBuilderUTF8 sbLogoutPath;
+		me->txtLogoutPath->GetText(&sbLogoutPath);
+		if (sbLogoutPath.GetLength() == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter Logout Path"), CSTR("SAML Test"), me);
+			return;
+		}
+		else if (sbLogoutPath.v[0] != '/')
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Logout Path is not valid"), CSTR("SAML Test"), me);
+			return;
+		}
+		cfg.logoutPath = sbLogoutPath.ToCString();
+
+		Text::StringBuilderUTF8 sbMetadataPath;
+		me->txtMetadataPath->GetText(&sbMetadataPath);
+		if (sbMetadataPath.GetLength() == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter Metadata Path"), CSTR("SAML Test"), me);
+			return;
+		}
+		else if (sbMetadataPath.v[0] != '/')
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Metadata Path is not valid"), CSTR("SAML Test"), me);
+			return;
+		}
+		cfg.metadataPath = sbMetadataPath.ToCString();
+
+		Text::StringBuilderUTF8 sbSSOPath;
+		me->txtSSOPath->GetText(&sbSSOPath);
+		if (sbSSOPath.GetLength() == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please enter SSO Path"), CSTR("SAML Test"), me);
+			return;
+		}
+		else if (sbSSOPath.v[0] != '/')
+		{
+			UI::MessageDialog::ShowDialog(CSTR("SSO Path is not valid"), CSTR("SAML Test"), me);
+			return;
+		}
+		cfg.ssoPath = sbSSOPath.ToCString();
 
 		NEW_CLASS(me->samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, 0));
 		if (me->samlHdlr->GetInitError() != Net::WebServer::SAMLError::None)
@@ -187,6 +234,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 			me->samlHdlr->Release();
 			return;
 		}
+		me->samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
+		me->samlHdlr->HandleLoginRequest(OnLoginRequest, me);
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->samlHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, false, false));
 		if (me->svr->IsError())
 		{
@@ -202,7 +251,6 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			me->samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
 			me->svr->SetAccessLog(&me->log, IO::ILogHandler::LogLevel::Raw);
 		}
 	}
@@ -214,6 +262,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtHost->SetReadOnly(true);
 		me->txtSignCert->SetReadOnly(true);
 		me->txtSignKey->SetReadOnly(true);
+		me->txtMetadataPath->SetReadOnly(true);
+		me->txtSSOPath->SetReadOnly(true);
+		me->txtLogoutPath->SetReadOnly(true);
 		me->btnStart->SetText(CSTR("Stop"));
 
 		sb.ClearStr();
@@ -244,6 +295,10 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 	if (me->respNew)
 	{
 		me->txtSAMLResp->SetText(me->respNew->ToCString());
+		Text::StringBuilderUTF8 sb;
+		IO::MemoryStream mstm(me->respNew->v, me->respNew->leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnTimerTick.mstm"));
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+		me->txtSAMLRespWF->SetText(sb.ToCString());
 		me->respNew->Release();
 		me->respNew = 0;
 	}
@@ -255,6 +310,27 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(void *userObj, Te
 	Sync::MutexUsage mutUsage(&me->respMut);
 	SDEL_STRING(me->respNew);
 	me->respNew = Text::String::New(msg);
+}
+
+Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const Net::WebServer::SAMLMessage *msg)
+{
+	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
+	IO::MemoryStream mstm((UInt8*)msg->rawMessage.v, msg->rawMessage.leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+	Text::StringBuilderUTF8 sb;
+	Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+	Text::String *msgContent = Text::XML::ToNewHTMLText(sb.ToString());
+	sb.ClearStr();
+	sb.AppendC(UTF8STRC("<html><head><title>SAML Message</title></head><body>"));
+	sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
+	sb.Append(msgContent);
+	sb.AppendC(UTF8STRC("</body></html>"));
+	msgContent->Release();
+	resp->AddDefHeaders(req);
+	resp->AddCacheControl(0);
+	resp->AddContentType(CSTR("text/html"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToString(), sb.GetLength());
+	return true;
 }
 
 SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -297,29 +373,46 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	this->lblSignKey->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtSignKey, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtSignKey->SetRect(104, 100, 500, 23, false);
+	NEW_CLASS(this->lblSSOPath, UI::GUILabel(ui, this->tpControl, CSTR("SSO Path")));
+	this->lblSSOPath->SetRect(4, 124, 100, 23, false);
+	NEW_CLASS(this->txtSSOPath, UI::GUITextBox(ui, this->tpControl, CSTR("/sso")));
+	this->txtSSOPath->SetRect(104, 124, 500, 23, false);
+	NEW_CLASS(this->lblMetadataPath, UI::GUILabel(ui, this->tpControl, CSTR("Metadata Path")));
+	this->lblMetadataPath->SetRect(4, 148, 100, 23, false);
+	NEW_CLASS(this->txtMetadataPath, UI::GUITextBox(ui, this->tpControl, CSTR("/metadata")));
+	this->txtMetadataPath->SetRect(104, 148, 500, 23, false);
+	NEW_CLASS(this->lblLogoutPath, UI::GUILabel(ui, this->tpControl, CSTR("Logout Path")));
+	this->lblLogoutPath->SetRect(4, 172, 100, 23, false);
+	NEW_CLASS(this->txtLogoutPath, UI::GUITextBox(ui, this->tpControl, CSTR("/logout")));
+	this->txtLogoutPath->SetRect(104, 172, 500, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
-	this->btnStart->SetRect(104, 124, 75, 23, false);
+	this->btnStart->SetRect(104, 196, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblSSOURL, UI::GUILabel(ui, this->tpControl, CSTR("SSO URL")));
-	this->lblSSOURL->SetRect(4, 148, 100, 23, false);
+	this->lblSSOURL->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtSSOURL, UI::GUITextBox(ui, this->tpControl, CSTR("")));
-	this->txtSSOURL->SetRect(104, 148, 500, 23, false);
+	this->txtSSOURL->SetRect(104, 220, 500, 23, false);
 	this->txtSSOURL->SetReadOnly(true);
 	NEW_CLASS(this->lblMetadataURL, UI::GUILabel(ui, this->tpControl, CSTR("Metadata URL")));
-	this->lblMetadataURL->SetRect(4, 172, 100, 23, false);
+	this->lblMetadataURL->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->txtMetadataURL, UI::GUITextBox(ui, this->tpControl, CSTR("")));
-	this->txtMetadataURL->SetRect(104, 172, 500, 23, false);
+	this->txtMetadataURL->SetRect(104, 244, 500, 23, false);
 	this->txtMetadataURL->SetReadOnly(true);
 	NEW_CLASS(this->lblLogoutURL, UI::GUILabel(ui, this->tpControl, CSTR("Logout URL")));
-	this->lblLogoutURL->SetRect(4, 196, 100, 23, false);
+	this->lblLogoutURL->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtLogoutURL, UI::GUITextBox(ui, this->tpControl, CSTR("")));
-	this->txtLogoutURL->SetRect(104, 196, 500, 23, false);
+	this->txtLogoutURL->SetRect(104, 268, 500, 23, false);
 	this->txtLogoutURL->SetReadOnly(true);
 
 	this->tpSAMLResp = this->tcMain->AddTabPage(CSTR("SAML Resp"));
 	NEW_CLASS(this->txtSAMLResp, UI::GUITextBox(ui, this->tpSAMLResp, CSTR(""), true));
 	this->txtSAMLResp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtSAMLResp->SetReadOnly(true);
+
+	this->tpSAMLRespWF = this->tcMain->AddTabPage(CSTR("Resp WF"));
+	NEW_CLASS(this->txtSAMLRespWF, UI::GUITextBox(ui, this->tpSAMLRespWF, CSTR(""), true));
+	this->txtSAMLRespWF->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSAMLRespWF->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));

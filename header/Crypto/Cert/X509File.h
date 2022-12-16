@@ -128,7 +128,7 @@ namespace Crypto
 				AlgType algType;
 			};
 
-		protected:
+		public:
 			static Bool IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
 			static void AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // AuthenticationFramework
 			static Bool IsTBSCertificate(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
@@ -152,6 +152,7 @@ namespace Crypto
 			static Bool IsPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS12
 			static void AppendPFX(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb, Text::CString varName); // PKCS12
 
+		protected:
 			static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF8 *sb); // AuthenticationFramework
 
 			static void AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut); // PKCS-5

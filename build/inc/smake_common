@@ -3449,6 +3449,8 @@ SSWR/AVIRead/AVIRCaptureDevForm.h: ../../src/SSWR/AVIRead/AVIRCaptureDevForm.cpp
 @AVIRCaptureDevForm.o
 SSWR/AVIRead/AVIRCAUtilForm.h: ../../src/SSWR/AVIRead/AVIRCAUtilForm.cpp
 @AVIRCAUtilForm.o
+SSWR/AVIRead/AVIRCertTextForm.h: ../../src/SSWR/AVIRead/AVIRCertTextForm.cpp
+@AVIRCertTextForm.o
 SSWR/AVIRead/AVIRCertUtilForm.h: ../../src/SSWR/AVIRead/AVIRCertUtilForm.cpp
 @AVIRCertUtilForm.o
 SSWR/AVIRead/AVIRChartForm.h: ../../src/SSWR/AVIRead/AVIRChartForm.cpp
@@ -5424,6 +5426,7 @@ AVIRCalculator1Form.o: ../../src/SSWR/AVIRead/AVIRCalculator1Form.cpp
 AVIRCameraControlForm.o: ../../src/SSWR/AVIRead/AVIRCameraControlForm.cpp
 AVIRCaptureDevForm.o: ../../src/SSWR/AVIRead/AVIRCaptureDevForm.cpp
 AVIRCAUtilForm.o: ../../src/SSWR/AVIRead/AVIRCAUtilForm.cpp
+AVIRCertTextForm.o: ../../src/SSWR/AVIRead/AVIRCertTextForm.cpp
 AVIRCertUtilForm.o: ../../src/SSWR/AVIRead/AVIRCertUtilForm.cpp
 AVIRChartForm.o: ../../src/SSWR/AVIRead/AVIRChartForm.cpp
 AVIRChineseForm.o: ../../src/SSWR/AVIRead/AVIRChineseForm.cpp
