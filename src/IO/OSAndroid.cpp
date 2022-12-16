@@ -14,15 +14,14 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
-	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/system/build.prop");
+	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/system/build.prop"));
 	if (cfg == 0)
 	{
 		Text::PString u8arr[2];
 		Text::PString u8arr2[2];
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess(UTF8STRC("getprop"), &sb);
-		u8arr[1].v = sb.ToString();
-		u8arr[1].leng = sb.GetLength();
+		Manage::Process::ExecuteProcess(CSTR("getprop"), &sb);
+		u8arr[1] = sb;
 		NEW_CLASS(cfg, IO::ConfigFile());
 		while (1)
 		{
@@ -35,7 +34,9 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 					u8arr2[1].v[u8arr2[1].leng - 1] = 0;
 					if (u8arr2[0].v[0] == '[' && u8arr2[1].v[0] == '[')
 					{
-						cfg->SetValue(0, 0, &u8arr2[0].v[1], u8arr2[0].leng - 2, &u8arr2[1].v[1], u8arr2[1].leng - 2);
+						u8arr2[0].RemoveChars(1);
+						u8arr2[1].RemoveChars(1);
+						cfg->SetValue(CSTR_NULL,  u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
 					}
 				}
 			}
@@ -46,7 +47,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (cfg)
 	{
 		UTF8Char *ret = 0;
-		Text::String *version = cfg->GetValue(UTF8STRC("ro.build.version.sdk"));
+		Text::String *version = cfg->GetValue(CSTR("ro.build.version.sdk"));
 		if (version)
 		{
 			ret = version->ConcatTo(sbuff);
