@@ -1776,12 +1776,12 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 	return true;
 }
 
-UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen)
+UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
 	return 0;
 }
 
-UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen)
+UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
 	return 0;
 }

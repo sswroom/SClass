@@ -148,6 +148,36 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 	return cli;
 }
 
+Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, RSAPadding rsaPadding)
+{
+	Int32 ipadding;
+	switch (rsaPadding)
+	{
+	case RSAPadding::PKCS1:
+		ipadding = RSA_PKCS1_PADDING;
+		break;
+	case RSAPadding::NoPadding:
+		ipadding = RSA_NO_PADDING;
+		break;
+	case RSAPadding::PKCS1_OAEP:
+		ipadding = RSA_PKCS1_OAEP_PADDING;
+		break;
+	case RSAPadding::X931:
+		ipadding = RSA_X931_PADDING;
+		break;
+	case RSAPadding::PKCS1_PSS:
+		ipadding = RSA_PKCS1_PSS_PADDING;
+		break;
+	case RSAPadding::PKCS1_WithTLS:
+		ipadding = RSA_PKCS1_WITH_TLS_PADDING;
+		break;
+	default:
+		return false;
+
+	}
+	return EVP_PKEY_CTX_set_rsa_padding((EVP_PKEY_CTX*)ctx, ipadding) > 0;
+}
+
 Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Net::SSLEngine(sockf)
 {
 	Net::OpenSSLCore::Init();
@@ -822,7 +852,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen)
+UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -842,11 +872,14 @@ UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, c
 		EVP_PKEY_free(pkey);
 		return 0;
 	}
-	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) //RSA_PKCS1_OAEP_PADDING
+	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA || key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(pkey);
-		return 0;
+		if (!SetRSAPadding(ctx, rsaPadding))
+		{
+			EVP_PKEY_CTX_free(ctx);
+			EVP_PKEY_free(pkey);
+			return 0;
+		}
 	}
 	size_t outlen = 512;
 	int ret = EVP_PKEY_encrypt(ctx, encData, &outlen, payload, payloadLen);
@@ -863,11 +896,11 @@ UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, c
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen)
+UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		return RSAPublicDecrypt(key, decData, payload, payloadLen);
+		return RSAPublicDecrypt(key, decData, payload, payloadLen, rsaPadding);
 	}
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -887,11 +920,14 @@ UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, c
 		EVP_PKEY_free(pkey);
 		return 0;
 	}
-	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) //RSA_PKCS1_OAEP_PADDING
+	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA || key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		EVP_PKEY_CTX_free(ctx);
-		EVP_PKEY_free(pkey);
-		return 0;
+		if (!SetRSAPadding(ctx, rsaPadding))
+		{
+			EVP_PKEY_CTX_free(ctx);
+			EVP_PKEY_free(pkey);
+			return 0;
+		}
 	}
 	size_t outlen = 512;
 	int ret = EVP_PKEY_decrypt(ctx, decData, &outlen, payload, payloadLen);
@@ -909,7 +945,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, c
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen)
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -929,7 +965,7 @@ UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *d
 		EVP_PKEY_free(pkey);
 		return 0;
 	}
-	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0) //RSA_PKCS1_OAEP_PADDING
+	if (!SetRSAPadding(ctx, rsaPadding))
 	{
 		EVP_PKEY_CTX_free(ctx);
 		EVP_PKEY_free(pkey);

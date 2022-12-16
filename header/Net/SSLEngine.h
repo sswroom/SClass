@@ -50,6 +50,16 @@ namespace Net
 			NewClient
 		};
 
+		enum class RSAPadding
+		{
+			PKCS1,
+			NoPadding,
+			PKCS1_OAEP,
+			X931,
+			PKCS1_PSS,
+			PKCS1_WithTLS
+		};
+
 		typedef void (__stdcall *ClientReadyHandler)(Net::TCPClient *cli, void *userObj);
 
 		struct ThreadState
@@ -90,8 +100,8 @@ namespace Net
 		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
 		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen) = 0;
 		virtual Bool SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen) = 0;
-		virtual UOSInt Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen) = 0;
-		virtual UOSInt Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen) = 0;
+		virtual UOSInt Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding) = 0;
+		virtual UOSInt Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding) = 0;
 
 		Bool SetServerCerts(Text::CString certFile, Text::CString keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
@@ -99,6 +109,7 @@ namespace Net
 		Crypto::Cert::CertStore *GetTrustStore();
 
 		static Text::CString ErrorTypeGetName(ErrorType err);
+		static Text::CString RSAPaddingGetName(RSAPadding rsaPadding);
 	};
 }
 #endif

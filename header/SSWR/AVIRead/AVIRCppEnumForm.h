@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRCPPENUMFORM
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -18,6 +19,8 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 
 			UI::GUIPanel *pnlCtrl;
+			UI::GUILabel *lblType;
+			UI::GUIComboBox *cboType;
 			UI::GUIButton *btnConv;
 			UI::GUIButton *btnConv2;
 			UI::GUILabel *lblPrefix;

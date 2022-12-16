@@ -10,6 +10,8 @@
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base64Enc.h"
+#include "Text/TextBinEnc/HexTextBinEnc.h"
+#include "UI/GUIComboBoxUtil.h"
 #include "UI/MessageDialog.h"
 
 #include <stdio.h>
@@ -133,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 		return;
 	}
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	decLen = ssl->Decrypt(key, decBuff, signBuff, signLen);
+	decLen = ssl->Decrypt(key, decBuff, signBuff, signLen, Net::SSLEngine::RSAPadding::PKCS1);
 	if (decLen > 0)
 	{
 		Crypto::Cert::DigestInfo digestInfo;
@@ -157,6 +159,162 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 	}
 	DEL_CLASS(ssl);
 	DEL_CLASS(key);
+}
+
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtEncryptInput->GetText(&sb);
+	if (sb.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Input is empty"), CSTR("Encrypt"), me);
+		return;
+	}
+	UInt8 *buff;
+	UOSInt buffSize;
+	UOSInt type = me->cboEncryptInputType->GetSelectedIndex();
+	if (type == 0)
+	{
+		Text::TextBinEnc::Base64Enc enc;
+		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buff = MemAlloc(UInt8, buffSize);
+		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+	}
+	else if (type == 1)
+	{
+		Text::TextBinEnc::HexTextBinEnc enc;
+		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buff = MemAlloc(UInt8, buffSize);
+		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Unknown Input Type"), CSTR("Encrypt"), me);
+		return;
+	}
+	if (buffSize == 0)
+	{
+		MemFree(buff);
+		UI::MessageDialog::ShowDialog(CSTR("Binary value is empty"), CSTR("Encrypt"), me);
+		return;
+	}
+	Crypto::Cert::X509Key *key = me->GetNewKey();
+	if (key == 0)
+	{
+		MemFree(buff);
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Encrypt"), me);
+		return;
+	}
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
+	UInt8 *outData = MemAlloc(UInt8, buffSize << 1);
+	UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Net::SSLEngine::RSAPadding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+	MemFree(buff);
+	DEL_CLASS(key);
+	DEL_CLASS(ssl);
+	if (outSize == 0)
+	{
+		MemFree(outData);
+		UI::MessageDialog::ShowDialog(CSTR("Error in encrypting data"), CSTR("Encrypt"), me);
+		return;
+	}
+	type = me->cboEncryptOutputType->GetSelectedIndex();
+	sb.ClearStr();
+	if (type == 0)
+	{
+		Text::TextBinEnc::Base64Enc enc;
+		enc.EncodeBin(&sb, outData, outSize);
+		me->txtEncryptOutput->SetText(sb.ToCString());
+	}
+	else if (type == 1)
+	{
+		Text::TextBinEnc::HexTextBinEnc enc;
+		enc.EncodeBin(&sb, outData, outSize);
+		me->txtEncryptOutput->SetText(sb.ToCString());
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Encrypt"), me);
+	}
+	MemFree(outData);
+}
+
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtEncryptInput->GetText(&sb);
+	if (sb.GetLength() == 0)
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Input is empty"), CSTR("Decrypt"), me);
+		return;
+	}
+	UInt8 *buff;
+	UOSInt buffSize;
+	UOSInt type = me->cboEncryptInputType->GetSelectedIndex();
+	if (type == 0)
+	{
+		Text::TextBinEnc::Base64Enc enc;
+		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buff = MemAlloc(UInt8, buffSize);
+		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+	}
+	else if (type == 1)
+	{
+		Text::TextBinEnc::HexTextBinEnc enc;
+		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buff = MemAlloc(UInt8, buffSize);
+		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Unknown Input Type"), CSTR("Decrypt"), me);
+		return;
+	}
+	if (buffSize == 0)
+	{
+		MemFree(buff);
+		UI::MessageDialog::ShowDialog(CSTR("Binary value is empty"), CSTR("Decrypt"), me);
+		return;
+	}
+	Crypto::Cert::X509Key *key = me->GetNewKey();
+	if (key == 0)
+	{
+		MemFree(buff);
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Decrypt"), me);
+		return;
+	}
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
+	UInt8 *outData = MemAlloc(UInt8, buffSize << 1);
+	UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Net::SSLEngine::RSAPadding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+	MemFree(buff);
+	DEL_CLASS(key);
+	DEL_CLASS(ssl);
+	if (outSize == 0)
+	{
+		MemFree(outData);
+		UI::MessageDialog::ShowDialog(CSTR("Error in encrypting data"), CSTR("Decrypt"), me);
+		return;
+	}
+	type = me->cboEncryptOutputType->GetSelectedIndex();
+	sb.ClearStr();
+	if (type == 0)
+	{
+		Text::TextBinEnc::Base64Enc enc;
+		enc.EncodeBin(&sb, outData, outSize);
+		me->txtEncryptOutput->SetText(sb.ToCString());
+	}
+	else if (type == 1)
+	{
+		Text::TextBinEnc::HexTextBinEnc enc;
+		enc.EncodeBin(&sb, outData, outSize);
+		me->txtEncryptOutput->SetText(sb.ToCString());
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Decrypt"), me);
+	}
+	MemFree(outData);
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
@@ -402,6 +560,8 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 		Bool canSignature = false;
 		Bool canVerify = false;
+		Bool hasPrivKey = false;
+		Bool hasPubKey = false;
 		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA256;
 		switch (x509->GetFileType())
 		{
@@ -409,6 +569,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		{
 			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509;
 			canVerify = true;
+			hasPubKey = true;
 			sb.ClearStr();
 			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)fileList->GetFile(0);
 			if (cert->GetSubjectCN(&sb))
@@ -444,6 +605,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		{
 			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)x509;
 			canVerify = true;
+			hasPubKey = true;
 			Crypto::Cert::X509File::SignedInfo signedInfo;
 			if (cert->GetSignedInfo(&signedInfo))
 			{
@@ -452,12 +614,22 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			break;
 		}
 		case Crypto::Cert::X509File::FileType::Key:
+			canVerify = true;
+			canSignature = true;
+			hasPubKey = true;
+			if (((Crypto::Cert::X509Key*)x509)->IsPrivateKey())
+			{
+				hasPrivKey = true;
+			}
+			break;
 		case Crypto::Cert::X509File::FileType::PrivateKey:
 			canVerify = true;
 			canSignature = true;
+			hasPrivKey = true;
 			break;
 		case Crypto::Cert::X509File::FileType::PublicKey:
 			canVerify = true;
+			hasPubKey = true;
 			break;
 		case Crypto::Cert::X509File::FileType::CertRequest:
 		case Crypto::Cert::X509File::FileType::PKCS7:
@@ -505,6 +677,53 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			UI::GUIButton *btnSignature;
 			UI::GUILabel *lblSiguatureValue;
 			UI::GUITextBox *txtSignatureValue;*/
+		}
+		if (hasPrivKey || hasPubKey)
+		{
+			this->tpEncrypt = this->tcMain->AddTabPage(CSTR("Encrypt"));
+			NEW_CLASS(this->lblEncryptInputType, UI::GUILabel(ui, this->tpEncrypt, CSTR("Input Type")));
+			this->lblEncryptInputType->SetRect(4, 4, 100, 23, false);
+			NEW_CLASS(this->cboEncryptInputType, UI::GUIComboBox(ui, this->tpEncrypt, false));
+			this->cboEncryptInputType->SetRect(104, 4, 100, 23, false);
+			this->cboEncryptInputType->AddItem(CSTR("Base64"), 0);
+			this->cboEncryptInputType->AddItem(CSTR("Hex"), 0);
+			this->cboEncryptInputType->SetSelectedIndex(0);
+			NEW_CLASS(this->lblEncryptOutputType, UI::GUILabel(ui, this->tpEncrypt, CSTR("Output Type")));
+			this->lblEncryptOutputType->SetRect(4, 28, 100, 23, false);
+			NEW_CLASS(this->cboEncryptOutputType, UI::GUIComboBox(ui, this->tpEncrypt, false));
+			this->cboEncryptOutputType->SetRect(104, 28, 100, 23, false);
+			this->cboEncryptOutputType->AddItem(CSTR("Base64"), 0);
+			this->cboEncryptOutputType->AddItem(CSTR("Hex"), 0);
+			this->cboEncryptOutputType->SetSelectedIndex(0);
+			NEW_CLASS(this->lblEncryptRSAPadding, UI::GUILabel(ui, this->tpEncrypt, CSTR("RSA Padding")));
+			this->lblEncryptRSAPadding->SetRect(4, 52, 100, 23, false);
+			NEW_CLASS(this->cboEncryptRSAPadding, UI::GUIComboBox(ui, this->tpEncrypt, false));
+			this->cboEncryptRSAPadding->SetRect(104, 52, 150, 23, false);
+			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1);
+			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, NoPadding);
+			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1_OAEP);
+			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, X931);
+			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1_PSS);
+			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1_WithTLS);
+			this->cboEncryptRSAPadding->SetSelectedIndex(0);
+			NEW_CLASS(this->lblEncryptInput, UI::GUILabel(ui, this->tpEncrypt, CSTR("Input")));
+			this->lblEncryptInput->SetRect(4, 76, 100, 23, false);
+			NEW_CLASS(this->txtEncryptInput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
+			this->txtEncryptInput->SetRect(104, 76, 500, 95, false);
+			NEW_CLASS(this->btnEncryptEncrypt, UI::GUIButton(ui, this->tpEncrypt, CSTR("Encrypt")));
+			this->btnEncryptEncrypt->SetRect(104, 172, 75, 23, false);
+			this->btnEncryptEncrypt->HandleButtonClick(OnEncryptEncryptClicked, this);
+			if (hasPrivKey)
+			{
+				NEW_CLASS(this->btnEncryptDecrypt, UI::GUIButton(ui, this->tpEncrypt, CSTR("Decrypt")));
+				this->btnEncryptDecrypt->SetRect(184, 172, 75, 23, false);
+				this->btnEncryptDecrypt->HandleButtonClick(OnEncryptDecryptClicked, this);
+			}
+			NEW_CLASS(this->lblEncryptOutput, UI::GUILabel(ui, this->tpEncrypt, CSTR("Output")));
+			this->lblEncryptOutput->SetRect(4, 196, 100, 23, false);
+			NEW_CLASS(this->txtEncryptOutput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
+			this->txtEncryptOutput->SetRect(104, 196, 500, 95, false);
+			this->txtEncryptOutput->SetReadOnly(true);
 		}
 		this->HandleDropFiles(OnFileDrop, this);
 	}

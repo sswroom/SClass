@@ -55,11 +55,27 @@ namespace SSWR
 			UI::GUILabel *lblSiguatureValue;
 			UI::GUITextBox *txtSignatureValue;
 
+			UI::GUITabPage *tpEncrypt;
+			UI::GUILabel *lblEncryptInputType;
+			UI::GUIComboBox *cboEncryptInputType;
+			UI::GUILabel *lblEncryptOutputType;
+			UI::GUIComboBox *cboEncryptOutputType;
+			UI::GUILabel *lblEncryptRSAPadding;
+			UI::GUIComboBox *cboEncryptRSAPadding;
+			UI::GUILabel *lblEncryptInput;
+			UI::GUITextBox *txtEncryptInput;
+			UI::GUIButton *btnEncryptEncrypt;
+			UI::GUIButton *btnEncryptDecrypt;
+			UI::GUILabel *lblEncryptOutput;
+			UI::GUITextBox *txtEncryptOutput;
+
 			static UOSInt AddHash(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
 			static void AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType);
 			static Bool FileIsSign(Text::String *fileName);
 			static void __stdcall OnVerifyClicked(void *userObj);
 			static void __stdcall OnVerifySignInfoClicked(void *userObj);
+			static void __stdcall OnEncryptEncryptClicked(void *userObj);
+			static void __stdcall OnEncryptDecryptClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			UOSInt ParseSignature(Text::PString *s, UInt8 *sign);
 			Crypto::Cert::X509Key *GetNewKey();
