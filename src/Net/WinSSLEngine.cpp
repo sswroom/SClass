@@ -1900,7 +1900,7 @@ UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, co
 	}
 	else
 	{
-		dataSize = (DWORD)Crypto::Encrypt::RSACipher::PaddingRemove(decData, myBuff, rsaPadding);
+		dataSize = (DWORD)Crypto::Encrypt::RSACipher::PaddingRemove(decData, myBuff, dataSize, rsaPadding);
 	}
 	CryptReleaseContext(hProv, 0);
 	CryptDestroyHash(hHash);

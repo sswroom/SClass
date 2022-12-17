@@ -3,11 +3,70 @@
 #include "Crypto/Hash/HashCreator.h"
 
 //RFC8017 OAEP
-UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* blockWithPadding, Padding padding)
+UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* blockWithPadding, UOSInt blockSize, Padding padding)
 {
-	MemCopyNO(destBuff, blockWithPadding, 256);
-	return 256;
+	if (padding == Padding::PKCS1_OAEP)
+	{
+		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA1;
+		if (blockSize > 256)
+		{
+			return 0;
+		}
+		if (blockWithPadding[0] != 0)
+		{
+			return 0;
+		}
+		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
+		UOSInt i;
+		UOSInt hLen;
+		UInt8 decBuff[256];
+		if (hash == 0)
+		{
+			return 0;
+		}
+		hLen = hash->GetResultSize();
+		MGF1(&decBuff[1], &blockWithPadding[1 + hLen], blockSize - 1 - hLen, hLen, hashType);
+		i = 0;
+		while (i < hLen)
+		{
+			decBuff[i + 1] = decBuff[i + 1] ^ blockWithPadding[i + 1];
+			i++;
+		}
+		MGF1(&decBuff[1 + hLen], &decBuff[1], hLen, blockSize - hLen - 1, hashType);
+		i = 1 + hLen;
+		while (i < blockSize)
+		{
+			decBuff[i] = decBuff[i] ^ blockWithPadding[i];
+			i++;
+		}
+		DEL_CLASS(hash);
+		i = 1 + hLen + hLen;
+		while (i < blockSize)
+		{
+			if (decBuff[i] == 0)
+			{
+				i++;
+			}
+			else if (decBuff[i] == 1)
+			{
+				i++;
+				MemCopyNO(destBuff, &decBuff[i], blockSize - i);
+				return blockSize - i;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		return 0;
+	}
+	else
+	{
+		MemCopyNO(destBuff, blockWithPadding, blockSize);
+		return blockSize;
+	}
 }
+
 
 Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
 {
