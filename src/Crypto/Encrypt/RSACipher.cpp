@@ -1,8 +1,66 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RSACipher.h"
 #include "Crypto/Hash/HashCreator.h"
+#include "Data/RandomBytesGenerator.h"
 
 //RFC8017 OAEP
+UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSize, const UInt8 *message, UOSInt msgSize, Padding padding)
+{
+	if (padding == Padding::PKCS1_OAEP)
+	{
+		if (destSize > 256 || destSize == 0)
+		{
+			return 0;
+		}
+		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA1;
+		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
+		UOSInt hLen = hash->GetResultSize();
+		if (msgSize + 2 + hLen * 2 > destSize)
+		{
+			DEL_CLASS(hash);
+			return 0;
+		}
+		UInt8 tempBuff[256];
+		Data::RandomBytesGenerator rnd;
+		rnd.NextBytes(&tempBuff[1], hLen);
+		hash->Clear();
+		hash->GetValue(&tempBuff[1 + hLen]);
+		MemCopyNO(&tempBuff[destSize - msgSize], message, msgSize);
+		UOSInt i = 1 + hLen * 2;
+		UOSInt j = destSize - msgSize - 1;
+		tempBuff[j] = 1;
+		if (i < j)
+		{
+			MemClear(&tempBuff[i], j - i);
+		}
+		MGF1(&destBuff[1 + hLen], &tempBuff[1], hLen, destSize - 1 - hLen, hashType);
+		i = 1 + hLen;
+		while (i < destSize)
+		{
+			destBuff[i] = tempBuff[i] ^ destBuff[i];
+			i++;
+		}
+		MGF1(&destBuff[1], &tempBuff[i + hLen], destSize - 1 - hLen, hLen, hashType);
+		i = 0;
+		while (i < hLen)
+		{
+			i++;
+			destBuff[i] = destBuff[i] ^ tempBuff[i];
+		}
+		destBuff[0] = 0;
+		return destSize;
+	}
+	else if (padding == Padding::NoPadding)
+	{
+		MemCopyNO(destBuff, message, msgSize);
+		return msgSize;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* blockWithPadding, UOSInt blockSize, Padding padding)
 {
 	if (padding == Padding::PKCS1_OAEP)
