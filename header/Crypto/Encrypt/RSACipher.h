@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_ENCRYPT_RSACIPHER
 #define _SM_CRYPTO_ENCRYPT_RSACIPHER
+#include "Crypto/Hash/IHash.h"
 #include "Text/CString.h"
 
 namespace Crypto
@@ -20,6 +21,7 @@ namespace Crypto
 			};
 
 			static UOSInt PaddingRemove(UInt8 *destBuff, const UInt8 *blockWithPadding, Padding padding);
+			static Bool MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType);
 			static Text::CString PaddingGetName(Padding padding);
 		};
 	}

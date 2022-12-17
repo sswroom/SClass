@@ -1,6 +1,7 @@
 #ifndef _SM_CRYPTO_ENCRYPT_BLOCKCIPHER
 #define _SM_CRYPTO_ENCRYPT_BLOCKCIPHER
 #include "Crypto/Encrypt/ICrypto.h"
+#include "Text/CString.h"
 
 namespace Crypto
 {
@@ -37,6 +38,8 @@ namespace Crypto
 			void SetChainMode(ChainMode cm);
 			void SetIV(const UInt8 *iv);
 		};
+
+		Text::CString ChainModeGetName(ChainMode cm);
 	}
 }
 #endif

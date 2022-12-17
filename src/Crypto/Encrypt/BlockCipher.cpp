@@ -230,3 +230,22 @@ void Crypto::Encrypt::BlockCipher::SetIV(const UInt8 *iv)
 {
 	MemCopyNO(this->iv, iv, this->blockSize);
 }
+
+Text::CString Crypto::Encrypt::ChainModeGetName(ChainMode cm)
+{
+	switch (cm)
+	{
+	case ChainMode::ECB:
+		return CSTR("ECB");
+	case ChainMode::CBC:
+		return CSTR("CBC");
+	case ChainMode::PCBC:
+		return CSTR("PCBC");
+	case ChainMode::CFB:
+		return CSTR("CFB");
+	case ChainMode::OFB:
+		return CSTR("OFB");
+	default:
+		return CSTR("Unknown");
+	}
+}

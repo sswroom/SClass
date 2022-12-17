@@ -81,6 +81,7 @@
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
 #include "SSWR/AVIRead/AVIREmailAddrValidForm.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
+#include "SSWR/AVIRead/AVIREncryptMsgForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
 #include "SSWR/AVIRead/AVIREWDTU01Form.h"
 #include "SSWR/AVIRead/AVIRFileAnalyseForm.h"
@@ -467,7 +468,8 @@ typedef enum
 	MNU_PROGRAM_LINKS,
 	MNU_WEBAPI_SOLAREDGE,
 	MNU_SAMLTEST,
-	MNU_CERT_TEXT
+	MNU_CERT_TEXT,
+	MNU_ENCRYPT_MSG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -608,6 +610,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Jasypt Encryptor"), MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("One-Time Password (OTP)"), MNU_OTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("BCrypt"), MNU_BCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Encrypt Message"), MNU_ENCRYPT_MSG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Certificates"));
 	mnu2->AddItem(CSTR("Cert Util"), MNU_CERT_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("CA Util"), MNU_CA_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2695,6 +2698,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRCertTextForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRCertTextForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_ENCRYPT_MSG:
+		{
+			SSWR::AVIRead::AVIREncryptMsgForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIREncryptMsgForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

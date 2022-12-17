@@ -27,6 +27,7 @@ test:
 @TestCRC32R
 @TestJWT
 @TestMD5
+@TestMGF1
 @TestPBKDF2
 @TestRC4
 @TestSHA1
@@ -738,6 +739,9 @@ TestJWT:
 TestMD5:
 @TestMD5.o
 @ConsoleStartup.o
+TestMGF1:
+@TestMGF1.o
+@ConsoleStartup.o
 TestPBKDF2:
 @TestPBKDF2.o
 @ConsoleStartup.o
@@ -1100,6 +1104,7 @@ TestCRC32C.o: ../../main/Test/Crypto/TestCRC32C.cpp
 TestCRC32R.o: ../../main/Test/Crypto/TestCRC32R.cpp
 TestJWT.o: ../../main/Test/Crypto/TestJWT.cpp
 TestMD5.o: ../../main/Test/Crypto/TestMD5.cpp
+TestMGF1.o: ../../main/Test/Crypto/TestMGF1.cpp
 TestPBKDF2.o: ../../main/Test/Crypto/TestPBKDF2.cpp
 TestRC4.o: ../../main/Test/Crypto/TestRC4.cpp
 TestSHA1.o: ../../main/Test/Crypto/TestSHA1.cpp
@@ -1232,6 +1237,8 @@ Crypto/Encrypt/RC2Cipher.h: ../../src/Crypto/Encrypt/RC2Cipher.cpp
 @RC2Cipher.o
 Crypto/Encrypt/RC4Cipher.h: ../../src/Crypto/Encrypt/RC4Cipher.cpp
 @RC4Cipher.o
+Crypto/Encrypt/RSACipher.h: ../../src/Crypto/Encrypt/RSACipher.cpp
+@RSACipher.o
 Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
 @XOREnc.o
 Crypto/Hash/Adler32.h: ../../src/Crypto/Hash/Adler32.cpp
@@ -3521,6 +3528,8 @@ SSWR/AVIRead/AVIREmailAddrValidForm.h: ../../src/SSWR/AVIRead/AVIREmailAddrValid
 @AVIREmailAddrValidForm.o
 SSWR/AVIRead/AVIREncryptForm.h: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 @AVIREncryptForm.o
+SSWR/AVIRead/AVIREncryptMsgForm.h: ../../src/SSWR/AVIRead/AVIREncryptMsgForm.cpp
+@AVIREncryptMsgForm.o
 SSWR/AVIRead/AVIRESRIMapForm.h: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
 @AVIRESRIMapForm.o
 SSWR/AVIRead/AVIREWDTU01Form.h: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
@@ -4402,6 +4411,7 @@ BlockCipher.o: ../../src/Crypto/Encrypt/BlockCipher.cpp
 Blowfish.o: ../../src/Crypto/Encrypt/Blowfish.cpp
 RC2Cipher.o: ../../src/Crypto/Encrypt/RC2Cipher.cpp
 RC4Cipher.o: ../../src/Crypto/Encrypt/RC4Cipher.cpp
+RSACipher.o: ../../src/Crypto/Encrypt/RSACipher.cpp
 XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
 Adler32_CPP.o: ../../src/Crypto/Hash/Adler32_CPP.cpp
@@ -5462,6 +5472,7 @@ AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
 AVIREmailAddrValidForm.o: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
 AVIREncryptForm.o: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
+AVIREncryptMsgForm.o: ../../src/SSWR/AVIRead/AVIREncryptMsgForm.cpp
 AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
 AVIREWDTU01Form.o: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
 AVIRExeForm.o: ../../src/SSWR/AVIRead/AVIRExeForm.cpp

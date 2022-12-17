@@ -148,27 +148,27 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 	return cli;
 }
 
-Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, RSAPadding rsaPadding)
+Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	Int32 ipadding;
 	switch (rsaPadding)
 	{
-	case RSAPadding::PKCS1:
+	case Crypto::Encrypt::RSACipher::Padding::PKCS1:
 		ipadding = RSA_PKCS1_PADDING;
 		break;
-	case RSAPadding::NoPadding:
+	case Crypto::Encrypt::RSACipher::Padding::NoPadding:
 		ipadding = RSA_NO_PADDING;
 		break;
-	case RSAPadding::PKCS1_OAEP:
+	case Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP:
 		ipadding = RSA_PKCS1_OAEP_PADDING;
 		break;
-	case RSAPadding::X931:
+	case Crypto::Encrypt::RSACipher::Padding::X931:
 		ipadding = RSA_X931_PADDING;
 		break;
-	case RSAPadding::PKCS1_PSS:
+	case Crypto::Encrypt::RSACipher::Padding::PKCS1_PSS:
 		ipadding = RSA_PKCS1_PSS_PADDING;
 		break;
-	case RSAPadding::PKCS1_WithTLS:
+	case Crypto::Encrypt::RSACipher::Padding::PKCS1_WithTLS:
 		ipadding = RSA_PKCS1_WITH_TLS_PADDING;
 		break;
 	default:
@@ -852,7 +852,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Has
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
+UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -896,7 +896,7 @@ UOSInt Net::OpenSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, c
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
+UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
@@ -945,7 +945,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, c
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
