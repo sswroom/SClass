@@ -1778,10 +1778,84 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 
 UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
-	return 0;
+	if (key == 0)
+	{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: key is null\r\n");
+#endif
+		return 0;
+	}
+	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
+	if (hProv == 0)
+	{
+		return false;
+	}
+	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false);
+	if (hKey == 0)
+	{
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+	DWORD dataSize = (DWORD)payloadLen;
+	DWORD flags = 0;
+	if (rsaPadding == RSAPadding::PKCS1_OAEP)
+	{
+		flags = CRYPT_OAEP;
+	}
+	MemCopyNO(encData, payload, payloadLen);
+	if (!CryptEncrypt(hProv, 0, TRUE, flags, encData, &dataSize, dataSize * 2))
+	{
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyKey(hKey);
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		UInt32 err = GetLastError();
+		printf("SSL: CryptEncrypt failed, 0x%x (%s)\r\n", err, IO::WindowsError::GetString(err).v);
+#endif
+		return 0;
+	}
+	CryptReleaseContext(hProv, 0);
+	CryptDestroyKey(hKey);
+	return dataSize;
 }
 
 UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
 {
-	return 0;
+	if (key == 0)
+	{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: key is null\r\n");
+#endif
+		return 0;
+	}
+	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
+	if (hProv == 0)
+	{
+		return false;
+	}
+	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false);
+	if (hKey == 0)
+	{
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+	DWORD dataSize = (DWORD)payloadLen;
+	DWORD flags = 0;
+	if (rsaPadding == RSAPadding::PKCS1_OAEP)
+	{
+		flags = CRYPT_OAEP;
+	}
+	MemCopyNO(decData, payload, payloadLen);
+	if (!CryptDecrypt(hProv, 0, TRUE, flags, decData, &dataSize))
+	{
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyKey(hKey);
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		UInt32 err = GetLastError();
+		printf("SSL: CryptDecrypt failed, 0x%x (%s)\r\n", err, IO::WindowsError::GetString(err).v);
+#endif
+		return 0;
+	}
+	CryptReleaseContext(hProv, 0);
+	CryptDestroyKey(hKey);
+	return dataSize;
 }
