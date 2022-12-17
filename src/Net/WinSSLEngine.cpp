@@ -68,11 +68,11 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 #if defined(SP_PROT_DTLS1_2_SERVER)
 			return SP_PROT_DTLS1_2_SERVER;
 		default:
-			return SP_PROT_TLS1_0_SERVER || SP_PROT_TLS1_1_SERVER || SP_PROT_TLS1_2_SERVER || SP_PROT_TLS1_3_SERVER;
+			return SP_PROT_TLS1_0_SERVER | SP_PROT_TLS1_1_SERVER | SP_PROT_TLS1_2_SERVER | SP_PROT_TLS1_3_SERVER;
 #else
 			return SP_PROT_TLS1_2_SERVER;
 		default:
-			return SP_PROT_TLS1_0_SERVER || SP_PROT_TLS1_1_SERVER || SP_PROT_TLS1_2_SERVER;
+			return SP_PROT_TLS1_0_SERVER | SP_PROT_TLS1_1_SERVER | SP_PROT_TLS1_2_SERVER;
 #endif
 		#else
 		case Net::SSLEngine::Method::TLS:
@@ -373,16 +373,6 @@ Bool WinSSLEngine_CryptImportRSAPrivateKey(_Out_ HCRYPTKEY* phKey,
 			printf("SSL: Import Key failed: CryptDecodeObjectEx\r\n");
 #endif
 		}
-
-/*		if (succ)
-		{
-			ALG_ID algId = AT_SIGNATURE;
-			BOOL succ2 = CryptSetKeyParam(*phKey, KP_ALGID, (const BYTE*)&algId, CRYPT_EXPORTABLE);
-			if (succ2)
-			{
-				succ = TRUE;
-			}
-		}*/
 	}
 	else
 	{
@@ -434,6 +424,10 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 	HCRYPTPROV hProv;
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA || keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
+		if (CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
+		{
+			return hProv;
+		}
 		if (CryptAcquireContextW(&hProv, containerName, MS_ENH_RSA_AES_PROV_W, PROV_RSA_AES, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
 		{
 			return hProv;
@@ -465,14 +459,14 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 	return 0;
 }
 
-HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, Crypto::Cert::X509Key *key, Bool privateKeyOnly)
+HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, Crypto::Cert::X509Key *key, Bool privateKeyOnly, Bool signature)
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
 	{
 		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
-		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), true))
+		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), signature))
 		{
 			DEL_CLASS(privKey);
 			return hKey;
@@ -532,7 +526,7 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert
 		{
 			return false;
 		}
-		hKey = WinSSLEngine_ImportKey(hProv, key, true);
+		hKey = WinSSLEngine_ImportKey(hProv, key, true, true);
 		if (hKey == 0)
 		{
 			CryptReleaseContext(hProv, 0);
@@ -1588,7 +1582,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		{
 			return false;
 		}
-		HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, true);
+		HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, true, true);
 		if (hKey == 0)
 		{
 			CryptReleaseContext(hProv, 0);
@@ -1710,7 +1704,7 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 	{
 		return false;
 	}
-	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false);
+	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false, true);
 	if (hKey == 0)
 	{
 		CryptReleaseContext(hProv, 0);
@@ -1776,7 +1770,7 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 	return true;
 }
 
-UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
+UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key == 0)
 	{
@@ -1790,7 +1784,7 @@ UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, co
 	{
 		return false;
 	}
-	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false);
+	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false, false);
 	if (hKey == 0)
 	{
 		CryptReleaseContext(hProv, 0);
@@ -1798,12 +1792,13 @@ UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, co
 	}
 	DWORD dataSize = (DWORD)payloadLen;
 	DWORD flags = 0;
-	if (rsaPadding == RSAPadding::PKCS1_OAEP)
+	if (rsaPadding == Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP)
 	{
 		flags = CRYPT_OAEP;
 	}
-	MemCopyNO(encData, payload, payloadLen);
-	if (!CryptEncrypt(hProv, 0, TRUE, flags, encData, &dataSize, dataSize * 2))
+	UInt8 myBuff[512];
+	MemCopyNO(myBuff, payload, payloadLen);
+	if (!CryptEncrypt(hKey, 0, TRUE, flags, myBuff, &dataSize, 512))
 	{
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyKey(hKey);
@@ -1815,10 +1810,18 @@ UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, co
 	}
 	CryptReleaseContext(hProv, 0);
 	CryptDestroyKey(hKey);
+	UOSInt i = 0;
+	UOSInt j = dataSize - 1;
+	while (i < dataSize)
+	{
+		encData[i] = myBuff[j];
+		i++;
+		j--;
+	}
 	return dataSize;
 }
 
-UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, RSAPadding rsaPadding)
+UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key == 0)
 	{
@@ -1827,27 +1830,63 @@ UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, co
 #endif
 		return 0;
 	}
+	if (payloadLen > 512)
+	{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: Data too large to decrypt\r\n");
+#endif
+		return 0;
+	}
+	ALG_ID alg = WinSSLEngine_CryptGetHashAlg(Crypto::Hash::HashType::SHA1);
+	if (alg == 0)
+	{
+		return false;
+	}
 	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
 	if (hProv == 0)
 	{
 		return false;
 	}
-	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false);
+	HCRYPTKEY hKey = WinSSLEngine_ImportKey(hProv, key, false, false);
 	if (hKey == 0)
 	{
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	DWORD dataSize = (DWORD)payloadLen;
-	DWORD flags = 0;
-	if (rsaPadding == RSAPadding::PKCS1_OAEP)
+	HCRYPTHASH hHash;
+	if (!CryptCreateHash(hProv, alg, 0, 0, &hHash))
 	{
-		flags = CRYPT_OAEP;
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		UInt32 errCode = GetLastError();
+		printf("SSL: CryptCreateHash failed, errCode = 0x%x\r\n", errCode);
+#endif
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyKey(hKey);
+		return false;
 	}
-	MemCopyNO(decData, payload, payloadLen);
-	if (!CryptDecrypt(hProv, 0, TRUE, flags, decData, &dataSize))
+	DWORD dataSize = (DWORD)payloadLen;
+	DWORD flags;
+	if (rsaPadding == Crypto::Encrypt::RSACipher::Padding::PKCS1)
+	{
+		flags = 0;
+	}
+	else
+	{
+		flags = CRYPT_DECRYPT_RSA_NO_PADDING_CHECK;
+	}
+	UInt8 myBuff[512];
+	UOSInt i = 0;
+	UOSInt j = payloadLen - 1;
+	while (i < payloadLen)
+	{
+		myBuff[i] = payload[j];
+		i++;
+		j--;
+	}
+	if (!CryptDecrypt(hKey, 0, TRUE, flags, myBuff, &dataSize))
 	{
 		CryptReleaseContext(hProv, 0);
+		CryptDestroyHash(hHash);
 		CryptDestroyKey(hKey);
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 err = GetLastError();
@@ -1855,7 +1894,16 @@ UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, co
 #endif
 		return 0;
 	}
+	if (rsaPadding == Crypto::Encrypt::RSACipher::Padding::PKCS1)
+	{
+		MemCopyNO(decData, myBuff, dataSize);
+	}
+	else
+	{
+		dataSize = (DWORD)Crypto::Encrypt::RSACipher::PaddingRemove(decData, myBuff, rsaPadding);
+	}
 	CryptReleaseContext(hProv, 0);
+	CryptDestroyHash(hHash);
 	CryptDestroyKey(hKey);
 	return dataSize;
 }

@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_ARRAYLISTCMP
 #define _SM_DATA_ARRAYLISTCMP
-#include "Data/SortableArrayList.h"
 #include "Data/IComparable.h"
+#include "Data/SortableArrayList.h"
 
 namespace Data
 {

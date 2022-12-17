@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 		return;
 	}
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	decLen = ssl->Decrypt(key, decBuff, signBuff, signLen, Net::SSLEngine::RSAPadding::PKCS1);
+	decLen = ssl->Decrypt(key, decBuff, signBuff, signLen, Crypto::Encrypt::RSACipher::Padding::PKCS1);
 	if (decLen > 0)
 	{
 		Crypto::Cert::DigestInfo digestInfo;
@@ -207,8 +207,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 		return;
 	}
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	UInt8 *outData = MemAlloc(UInt8, buffSize << 1);
-	UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Net::SSLEngine::RSAPadding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+	UInt8 *outData = MemAlloc(UInt8, 512);
+	UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
 	MemFree(buff);
 	DEL_CLASS(key);
 	DEL_CLASS(ssl);
@@ -285,15 +285,15 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 		return;
 	}
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	UInt8 *outData = MemAlloc(UInt8, buffSize << 1);
-	UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Net::SSLEngine::RSAPadding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+	UInt8 *outData = MemAlloc(UInt8, 512);
+	UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
 	MemFree(buff);
 	DEL_CLASS(key);
 	DEL_CLASS(ssl);
 	if (outSize == 0)
 	{
 		MemFree(outData);
-		UI::MessageDialog::ShowDialog(CSTR("Error in encrypting data"), CSTR("Decrypt"), me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in decrypting data"), CSTR("Decrypt"), me);
 		return;
 	}
 	type = me->cboEncryptOutputType->GetSelectedIndex();
@@ -699,12 +699,12 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->lblEncryptRSAPadding->SetRect(4, 52, 100, 23, false);
 			NEW_CLASS(this->cboEncryptRSAPadding, UI::GUIComboBox(ui, this->tpEncrypt, false));
 			this->cboEncryptRSAPadding->SetRect(104, 52, 150, 23, false);
-			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1);
-			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, NoPadding);
-			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1_OAEP);
-			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, X931);
-			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1_PSS);
-			CBOADDENUM(this->cboEncryptRSAPadding, Net::SSLEngine::RSAPadding, PKCS1_WithTLS);
+			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1);
+			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, NoPadding);
+			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1_OAEP);
+			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, X931);
+			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1_PSS);
+			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1_WithTLS);
 			this->cboEncryptRSAPadding->SetSelectedIndex(0);
 			NEW_CLASS(this->lblEncryptInput, UI::GUILabel(ui, this->tpEncrypt, CSTR("Input")));
 			this->lblEncryptInput->SetRect(4, 76, 100, 23, false);

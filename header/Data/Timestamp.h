@@ -118,7 +118,7 @@ namespace Data
 
 		Timestamp ClearTimeLocal() const
 		{
-			return Timestamp(this->inst.AddMinute(this->tzQhr * 15).ClearTime().AddMinute(this->tzQhr * -15), this->tzQhr);
+			return Timestamp(this->inst.AddMinute((OSInt)this->tzQhr * 15).ClearTime().AddMinute((OSInt)this->tzQhr * -15), this->tzQhr);
 		}
 
 		Timestamp ClearMonthAndDay() const
@@ -153,7 +153,7 @@ namespace Data
 
 		Int64 GetMSPassedLocalDate() const
 		{
-			return this->inst.AddSecond(this->tzQhr * 900).GetMSPassedDate();
+			return this->inst.AddSecond((OSInt)this->tzQhr * 900).GetMSPassedDate();
 		};
 
 		Int64 DiffSec(Timestamp ts) const
@@ -257,7 +257,7 @@ namespace Data
 			}
 			else if (this->inst.nanosec == 0)
 			{
-				if (((this->inst.sec + this->tzQhr * 900) % 86400) == 0)
+				if (((this->inst.sec + (OSInt)this->tzQhr * 900) % 86400) == 0)
 				{
 					return ToString(buff, "yyyy-MM-dd");
 				}
@@ -346,7 +346,7 @@ namespace Data
 		{
 			if (this->tzQhr != tzQhr)
 			{
-				return Timestamp(this->inst.AddSecond((this->tzQhr - tzQhr) * (OSInt)(15 * 60)), tzQhr);
+				return Timestamp(this->inst.AddSecond(((OSInt)this->tzQhr - tzQhr) * (OSInt)(15 * 60)), tzQhr);
 			}
 			else
 			{

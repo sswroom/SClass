@@ -238,24 +238,3 @@ Text::CString Net::SSLEngine::ErrorTypeGetName(ErrorType err)
 		return CSTR("Unknown");
 	}
 }
-
-Text::CString Net::SSLEngine::RSAPaddingGetName(RSAPadding rsaPadding)
-{
-	switch (rsaPadding)
-	{
-	case RSAPadding::PKCS1:
-		return CSTR("PKCS1");
-	case RSAPadding::NoPadding:
-		return CSTR("NoPadding");
-	case RSAPadding::PKCS1_OAEP:
-		return CSTR("PKCS1_OAEP");
-	case RSAPadding::X931:
-		return CSTR("X931");
-	case RSAPadding::PKCS1_PSS:
-		return CSTR("PKCS1_PSS");
-	case RSAPadding::PKCS1_WithTLS:
-		return CSTR("PKCS1_WithTLS");
-	default:
-		return CSTR("Unknown");
-	}
-}

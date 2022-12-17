@@ -340,7 +340,8 @@ namespace Text
 					{
 						if (lineBreak == LineBreakType::CRLF)
 						{
-							WriteNUInt16(buffEnd, ReadNUInt16((const UInt8*)"\r\n"));
+							buffEnd[0] = 13;
+							buffEnd[1] = 10;
 							buffEnd += 2;
 						}
 						else if (lineBreak == LineBreakType::CR)
@@ -373,7 +374,8 @@ namespace Text
 							switch (lineBreak)
 							{
 							case LineBreakType::CRLF:
-								WriteNUInt16(&buffEnd[2], ReadNUInt16((const UInt8*)"\r\n"));
+								buffEnd[2] = 13;
+								buffEnd[3] = 10;
 								buffEnd += 4;
 								break;
 							case LineBreakType::CR:

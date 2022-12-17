@@ -130,7 +130,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 
 													////////////////////////////////////////////
 													// See PKCS1 X509 Verify
-													encSize = ssl->Encrypt(key, encBuff, builder.GetBuff(&buffSize), builder.GetBuffSize(), Net::SSLEngine::RSAPadding::PKCS1);
+													encSize = ssl->Encrypt(key, encBuff, builder.GetBuff(&buffSize), builder.GetBuffSize(), Crypto::Encrypt::RSACipher::Padding::PKCS1);
 													sb.AppendC(UTF8STRC("\r\nMe:\r\n"));
 													sb.AppendHexBuff(encBuff, encSize, ' ', Text::LineBreakType::CRLF);
 													sb.AppendC(UTF8STRC("\r\nSign:\r\n"));

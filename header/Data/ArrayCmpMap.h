@@ -11,8 +11,8 @@ namespace Data
 		Data::SortableArrayList<T> *keys;
 		Data::ArrayList<V> vals;
 
-	public:
 		ArrayCmpMap();
+	public:
 		virtual ~ArrayCmpMap();
 
 		virtual V Put(T key, V val);

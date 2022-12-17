@@ -40,7 +40,47 @@ Text::CString IO::WindowsError::GetString(UInt32 errorCode)
 	case 0x00000000:
 		return CSTR("S_OK");
 	case 0x00000001:
-		return CSTR("S_FALSE");
+		return CSTR("ERROR_INVALID_FUNCTION");
+	case 0x00000002:
+		return CSTR("ERROR_FILE_NOT_FOUND");
+	case 0x00000003:
+		return CSTR("ERROR_PATH_NOT_FOUND");
+	case 0x00000004:
+		return CSTR("ERROR_TOO_MANY_OPEN_FILES");
+	case 0x00000006:
+		return CSTR("ERROR_INVALID_HANDLE");
+	case 0x00000007:
+		return CSTR("ERROR_ARENA_TRASHED");
+	case 0x00000008:
+		return CSTR("ERROR_NOT_ENOUGH_MEMORY");
+	case 0x00000009:
+		return CSTR("ERROR_INVALID_BLOCK");
+	case 0x0000000A:
+		return CSTR("ERROR_BAD_ENVIRONMENT");
+	case 0x0000000B:
+		return CSTR("ERROR_BAD_FORMAT");
+	case 0x0000000C:
+		return CSTR("ERROR_INVALID_ACCESS");
+	case 0x0000000D:
+		return CSTR("ERROR_INVALID_DATA");
+	case 0x0000000E:
+		return CSTR("ERROR_OUTOFMEMORY");
+	case 0x0000000F:
+		return CSTR("ERROR_INVALID_DRIVE");
+	case 0x00000010:
+		return CSTR("ERROR_CURRENT_DIRECTORY");
+	case 0x00000011:
+		return CSTR("ERROR_NOT_SAME_DEVICE");
+	case 0x00000012:
+		return CSTR("ERROR_NO_MORE_FILES");
+	case 0x00000013:
+		return CSTR("ERROR_WRITE_PROTECT");
+	case 0x00000014:
+		return CSTR("ERROR_BAD_UNIT");
+	case 0x00000015:
+		return CSTR("ERROR_NOT_READY");
+	case 0x00000016:
+		return CSTR("ERROR_BAD_COMMAND");
 	case 0x00090312:
 		return CSTR("SEC_I_CONTINUE_NEEDED");
 	case 0x00090313:
