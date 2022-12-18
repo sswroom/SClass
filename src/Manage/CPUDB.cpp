@@ -73,6 +73,7 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	{0x06, 0x8C,  1, 100, 2400, 4200,  4,  8,   28,  10, 2020, 3, UTF8STRC("Intel Core i5-1135G7"), UTF8STRC("Intel i5-1135G7")},
 	{0x06, 0x8E, 12, 100, 1600, 3900,  4,  8,   15,  14, 2018, 3, UTF8STRC("Intel Core i5-8265U"), UTF8STRC("Intel i5-8265U")},
 	{0x06, 0x8E, 12, 100, 1600, 4200,  4,  8,   15,  14, 2019, 3, UTF8STRC("Intel Core i5-10210U"), UTF8STRC("Intel i5-10210U")},
+	{0x06, 0x9C,  0, 105, 2000, 2700,  4,  4,   10,  10, 2021, 1, UTF8STRC("Intel Celeron N5105"), UTF8STRC("Intel N5105")},
 	{0x06, 0x9E,  9,  80, 2700, 3300,  4,  4,   35,  14, 2017, 1, UTF8STRC("Intel Core i5-7500T"), UTF8STRC("Intel i5-7500T")},
 	{0x06, 0x9E, 10, 100, 1600, 3400,  4,  8,   15,  14, 2017, 3, UTF8STRC("Intel Core i5-8250U"), UTF8STRC("Intel i5-8250U")},
 	{0x0F, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, UTF8STRC("Pentium 4 model 0"), UTF8STR_NULL}
@@ -397,6 +398,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{UTF8STRC("Intel N4000"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Celeron N4000",                 6,    14,  "x86",          2,  1100, 2600, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  4096, 0,     "UHD Graphics 600"},
 	{UTF8STRC("Intel N4100"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Celeron N4100",                 6,    14,  "x86",          4,  1100, 2400, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  4096, 0,     "UHD Graphics 600"},
 	{UTF8STRC("Intel N4120"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Celeron N4120",                 6,    14,  "x86",          4,  1100, 2600, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  4096, 0,     "UHD Graphics 600"},
+	{UTF8STRC("Intel N5105"),      Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Celeron N5105",                 10,   10,  "x86",          4,  2000, 2700, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  4096, 0,     "UHD Graphics 600"},
 	{UTF8STRC("Intel N435"),       Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom N435",                     5,    45,  "x86 with HT",  1,  1330, 1330, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     "GMA 3150"},
 	{UTF8STRC("Intel N450"),       Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom N450",                     5.5,  45,  "x86 with HT",  1,  1660, 1660, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     "GMA 3150"},
 	{UTF8STRC("Intel N455"),       Manage::ThreadContext::ContextType::X86_64, Manage::CPUVendor::CB_INTEL,     "Atom N455",                     6.5,  45,  "x86 with HT",  1,  1660, 1660, 32,  24, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  512,  0,     "GMA 3150"},
