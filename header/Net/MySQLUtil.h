@@ -69,6 +69,12 @@ namespace Net
 			MYSQL_TYPE_STRING =      0xFE,
 			MYSQL_TYPE_GEOMETRY =    0xFF
 		} MySQLType;
+
+		enum class AuthenType
+		{
+			MySQLNativePassword,
+			CachingSHA2Password
+		};
 		
 	public:
 		static const UInt8 *ReadLenencInt(const UInt8 *buff, UInt64 *val);
@@ -76,6 +82,9 @@ namespace Net
 		static UInt8 *AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt len);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);
 		static DB::DBUtil::ColType MySQLType2ColType(MySQLType mysqlType);
+		static AuthenType AuthenTypeParse(Text::CString name);
+		static Text::CString AuthenTypeGetName(AuthenType authType);
+		static UOSInt BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CString password);
 	};
 }
 #endif

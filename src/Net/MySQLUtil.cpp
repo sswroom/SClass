@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/SHA1.h"
+#include "Crypto/Hash/SHA256.h"
 #include "Data/ByteTool.h"
 #include "Net/MySQLUtil.h"
 #include "Text/MyString.h"
@@ -203,5 +205,79 @@ DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType 
 			return DB::DBUtil::CT_Vector;
 		default:
 			return DB::DBUtil::CT_Unknown;
+	}
+}
+
+Net::MySQLUtil::AuthenType Net::MySQLUtil::AuthenTypeParse(Text::CString name)
+{
+	if (name.Equals(UTF8STRC("caching_sha2_password")))
+		return AuthenType::CachingSHA2Password;
+	else if (name.Equals(UTF8STRC("mysql_native_password")))
+		return AuthenType::MySQLNativePassword;
+	else
+	{
+		return AuthenType::MySQLNativePassword;
+	}
+}
+
+Text::CString Net::MySQLUtil::AuthenTypeGetName(AuthenType authType)
+{
+	switch (authType)
+	{
+	case AuthenType::MySQLNativePassword:
+	default:
+		return CSTR("mysql_native_password");
+	case AuthenType::CachingSHA2Password:
+		return CSTR("caching_sha2_password");
+	}
+}
+
+UOSInt Net::MySQLUtil::BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CString password)
+{
+	UInt8 tmpBuff[32];
+	UOSInt i;
+	switch (authType)
+	{
+	default:
+	case AuthenType::MySQLNativePassword:
+	{
+		Crypto::Hash::SHA1 sha1;
+		sha1.Calc(password.v, password.leng);
+		sha1.GetValue(tmpBuff);
+		sha1.Clear();
+		sha1.Calc(tmpBuff, 20);
+		sha1.GetValue(buff);
+		sha1.Clear();
+		sha1.Calc(nonce, 20);
+		sha1.Calc(buff, 20);
+		sha1.GetValue(buff);
+		i = 0;
+		while (i < 20)
+		{
+			buff[i] ^= tmpBuff[i];
+			i++;
+		}
+		return 20;
+	}
+	case AuthenType::CachingSHA2Password:
+	{
+		Crypto::Hash::SHA256 sha256;
+		sha256.Calc(password.v, password.leng);
+		sha256.GetValue(tmpBuff);
+		sha256.Clear();
+		sha256.Calc(tmpBuff, 32);
+		sha256.GetValue(buff);
+		sha256.Clear();
+		sha256.Calc(buff, 32);
+		sha256.Calc(nonce, 20);
+		sha256.GetValue(buff);
+		i = 0;
+		while (i < 32)
+		{
+			buff[i] ^= tmpBuff[i];
+			i++;
+		}
+		return 32;
+	}
 	}
 }

@@ -1,5 +1,4 @@
 #include "Stdafx.h"
-#include "Crypto/Hash/SHA1.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
@@ -1347,7 +1346,6 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	UTF8Char *sptr2;
 	UInt8 *ptrCurr;
 	UInt8 *ptrEnd;
-	OSInt i;
 	{
 		me->recvStarted = true;
 		me->recvRunning = true;
@@ -1469,7 +1467,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										}
 										if (me->svrCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 										{
-											Text::StrConcatS(sbuff, ptrCurr, (UOSInt)(ptrEnd - ptrCurr));
+											sptr = Text::StrConcatS(sbuff, ptrCurr, (UOSInt)(ptrEnd - ptrCurr));
+											me->authenType = Net::MySQLUtil::AuthenTypeParse(CSTRP(sbuff, sptr));
 										}
 										else
 										{
@@ -1519,31 +1518,15 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										buff[12] = 45;
 										MemClear(&buff[13], 23);
 										ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
-										ptrCurr[0] = 20;
-										Crypto::Hash::SHA1 sha1;
-										sha1.Calc(me->password->v, me->password->leng);
-										sha1.GetValue(sbuff);
-										sha1.Clear();
-										sha1.Calc(sbuff, 20);
-										sha1.GetValue(&ptrCurr[1]);
-										sha1.Clear();
-										sha1.Calc(me->authPluginData, 20);
-										sha1.Calc(&ptrCurr[1], 20);
-										sha1.GetValue(&ptrCurr[1]);
-										i = 0;
-										while (i < 20)
-										{
-											ptrCurr[i + 1] ^= sbuff[i];
-											i++;
-										}
-										ptrCurr += 21;
+										ptrCurr[0] = (UInt8)Net::MySQLUtil::BuildAuthen(ptrCurr + 1, me->authenType, me->authPluginData, 20, me->password->ToCString());
+										ptrCurr += ptrCurr[0] + 1;
 										if (me->database)
 										{
 											ptrCurr = me->database->ConcatTo(ptrCurr) + 1;
 										}
 										if (cliCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 										{
-											ptrCurr = Text::StrConcatC(ptrCurr, UTF8STRC("mysql_native_password")) + 1;
+											ptrCurr = Net::MySQLUtil::AuthenTypeGetName(me->authenType).ConcatTo(ptrCurr) + 1;
 										}
 
 										if (cliCap & Net::MySQLUtil::CLIENT_CONNECT_ATTRS)
@@ -1565,6 +1548,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										}
 										WriteInt24(buff, (ptrCurr - buff - 4));
 										buff[3] = 1;
+										me->cmdSeqNum = 1;
 										me->cli->Write(buff, (UOSInt)(ptrCurr - buff));
 	#if defined(VERBOSE)
 										printf("MySQLTCP %d handshake response sent\r\n", me->cli->GetLocalPort());
@@ -1612,7 +1596,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							me->SetLastError({&buff[7], readSize - 3});
 							me->cli->Close();
 						}
-						else if (buff[3] != 2)
+						else if (buff[3] != me->cmdSeqNum + 1)
 						{
 							me->SetLastError(CSTR("Invalid login reply"));
 							me->cli->Close();
@@ -1626,11 +1610,20 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						}
 						else if (buff[4] == 0xFE)
 						{
+							UOSInt nameLen = Text::StrCharCnt(&buff[5]);
+	#if defined(VERBOSE)
+							printf("MySQLTCP %d AuthSwitchRequest: plugin name = %s\r\n", me->cli->GetLocalPort(), &buff[5]);
 							Text::StringBuilderUTF8 sb;
-							sb.AppendC(UTF8STRC("AuthSwitchRequest received: plugin name = "));
-							sb.AppendSlow(&buff[5]);
-							me->SetLastError(sb.ToCString());
-							me->cli->Close();
+							sb.AppendHexBuff(&buff[6 + nameLen], readSize - 3 - nameLen, ' ', Text::LineBreakType::None);
+							printf("MySQLTCP %d AuthSwitchRequest: plugin data = %s\r\n", me->cli->GetLocalPort(), sb.ToString());
+	#endif
+							me->cmdSeqNum += 2;
+							me->authenType = Net::MySQLUtil::AuthenTypeParse(Text::CString(&buff[5], nameLen));
+							UInt8 packetBuff[64];
+							UOSInt authSize = Net::MySQLUtil::BuildAuthen(&packetBuff[4], me->authenType, &buff[6 + nameLen], readSize - 3 - nameLen, me->password->ToCString());
+							WriteUInt32(packetBuff, (UInt32)authSize);
+							packetBuff[3] = (UInt8)me->cmdSeqNum;
+							me->cli->Write(packetBuff, authSize + 4);
 						}
 						else
 						{
@@ -1987,6 +1980,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->addr = *addr;
 	this->port = port;
 	this->mode = ClientMode::Handshake;
+	this->authenType = Net::MySQLUtil::AuthenType::MySQLNativePassword;
 	this->svrVer = 0;
 	this->connId = 0;
 	this->authPluginDataSize = 0;

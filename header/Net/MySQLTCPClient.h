@@ -3,6 +3,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
+#include "Net/MySQLUtil.h"
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -46,6 +47,7 @@ namespace Net
 		UInt32 connId;
 		UInt8 authPluginData[20];
 		UOSInt authPluginDataSize;
+		Net::MySQLUtil::AuthenType authenType;
 		UInt32 svrCap;
 		UInt16 svrCS;
 		UInt16 connStatus;
