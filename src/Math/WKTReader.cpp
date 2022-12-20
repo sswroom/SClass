@@ -148,9 +148,9 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		{
 			return 0;
 		}
-		while (*++wkt == ' ');
 		while (true)
 		{
+			while (*++wkt == ' ');
 			wkt = NextDouble(wkt, &x);
 			if (wkt == 0 || *wkt != ' ')
 			{
@@ -181,7 +181,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			}
 			else if (*wkt == ',')
 			{
-				wkt++;
 				continue;
 			}
 			else
@@ -242,17 +241,17 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		{
 			return 0;
 		}
-		while (*++wkt == ' ');
 		while (true)
 		{
+			while (*++wkt == ' ');
 			if (*wkt != '(')
 			{
 				return 0;
 			}
-			wkt++;
 			ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
 			while (true)
 			{
+				while (*++wkt == ' ');
 				wkt = NextDouble(wkt, &x);
 				if (wkt == 0 || *wkt != ' ')
 				{
@@ -283,7 +282,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				}
 				else if (*wkt == ',')
 				{
-					wkt++;
 					continue;
 				}
 				else
@@ -293,7 +291,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			}
 			if (*wkt == ',')
 			{
-				wkt++;
 				continue;
 			}
 			else if (*wkt == ')')
@@ -344,17 +341,17 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		{
 			return 0;
 		}
-		while (*++wkt == ' ');
 		while (true)
 		{
+			while (*++wkt == ' ');
 			if (*wkt != '(')
 			{
 				return 0;
 			}
-			wkt++;
 			ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
 			while (true)
 			{
+				while (*++wkt == ' ');
 				wkt = NextDouble(wkt, &x);
 				if (wkt == 0 || *wkt != ' ')
 				{
@@ -385,7 +382,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				}
 				else if (*wkt == ',')
 				{
-					wkt++;
 					continue;
 				}
 				else
@@ -395,7 +391,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			}
 			if (*wkt == ',')
 			{
-				wkt++;
 				continue;
 			}
 			else if (*wkt == ')')
@@ -468,9 +463,9 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		{
 			return 0;
 		}
-		while (*++wkt == ' ');
 		while (true)
 		{
+			while (*++wkt == ' ');
 			ptList.Clear();
 			zList.Clear();
 			ptOfstList.Clear();
@@ -479,18 +474,18 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				SDEL_CLASS(mpg);
 				return 0;
 			}
-			while (*++wkt == ' ');
 			while (true)
 			{
+				while (*++wkt == ' ');
 				if (*wkt != '(')
 				{
 					SDEL_CLASS(mpg);
 					return 0;
 				}
-				wkt++;
 				ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
 				while (true)
 				{
+					while (*++wkt == ' ');
 					wkt = NextDouble(wkt, &x);
 					if (wkt == 0 || *wkt != ' ')
 					{
@@ -524,7 +519,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 					}
 					else if (*wkt == ',')
 					{
-						wkt++;
 						continue;
 					}
 					else
@@ -535,7 +529,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				}
 				if (*wkt == ',')
 				{
-					wkt++;
 					continue;
 				}
 				else if (*wkt == ')')
@@ -572,7 +565,6 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 
 			if (*wkt == ',')
 			{
-				wkt++;
 				continue;
 			}
 			else if (*wkt == ')')
