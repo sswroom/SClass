@@ -126,12 +126,12 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	addr.addrType = Net::AddrType::Unknown;
 	sockf->DNSResolveIP(host, &addr);
 	this->logWriter = logWriter;
-	if (connType == CT_SSL)
+	if (connType == ConnType::SSL)
 	{
 		Net::SSLEngine::ErrorType err;
 		this->cli = ssl->Connect(host, port, &err);
 	}
-	else if (connType == CT_STARTTLS)
+	else if (connType == ConnType::STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
@@ -215,7 +215,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	{
 		Sync::Thread::Sleep(10);
 	}
-	if (connType == CT_STARTTLS)
+	if (connType == ConnType::STARTTLS)
 	{
 		this->initCode = 220;
 		this->logWriter->WriteLineC(UTF8STRC("Connected"));

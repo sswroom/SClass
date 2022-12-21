@@ -15,11 +15,11 @@ namespace Net
 		class SMTPConn
 		{
 		public:
-			enum ConnType
+			enum class ConnType
 			{
-				CT_PLAIN,
-				CT_STARTTLS,
-				CT_SSL
+				Plain,
+				STARTTLS,
+				SSL
 			};
 		private:
 			Net::TCPClient *cli;

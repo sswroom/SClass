@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->pop3Svr = 0;
 	this->totalSize = 0;
 	this->recvSize = 0;
-	this->smtpType = Net::Email::SMTPConn::CT_PLAIN;
+	this->smtpType = Net::Email::SMTPConn::ConnType::Plain;
 	this->mailChanged = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->store, Net::Email::FileEmailStore());
@@ -342,9 +342,9 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->lblSMTPType->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->cboSMTPType, UI::GUIComboBox(ui, this->grpSMTP, false));
 	this->cboSMTPType->SetRect(100, 24, 100, 23, false);
-	this->cboSMTPType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::CT_PLAIN);
-	this->cboSMTPType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::CT_STARTTLS);
-	this->cboSMTPType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
+	this->cboSMTPType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::Plain);
+	this->cboSMTPType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::STARTTLS);
+	this->cboSMTPType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::SSL);
 	this->cboSMTPType->SetSelectedIndex(0);
 	this->cboSMTPType->HandleSelectionChange(OnSMTPTypeSelChg, this);
 	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->grpSMTP, CSTR("Start")));

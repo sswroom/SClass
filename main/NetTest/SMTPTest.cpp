@@ -25,7 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //		message.AddAttachment(CSTR("/home/sswroom/Progs/Temp/OCR2.jpg"));
 		message.AddSignature(ssl, (Crypto::Cert::X509Cert*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.crt")),
 			(Crypto::Cert::X509Key*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.key")));
-		Net::Email::SMTPClient client(&sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::CT_PLAIN, &writer);
+		Net::Email::SMTPClient client(&sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer);
 		client.Send(&message);
 	}
 	SDEL_CLASS(ssl);

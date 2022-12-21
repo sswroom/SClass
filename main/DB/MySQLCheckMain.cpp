@@ -77,15 +77,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char *sarr[2];
 	if (smtpType->EqualsICase(UTF8STRC("PLAIN")))
 	{
-		connType = Net::Email::SMTPConn::CT_PLAIN;
+		connType = Net::Email::SMTPConn::ConnType::Plain;
 	}
 	else if (smtpType->EqualsICase(UTF8STRC("SSL")))
 	{
-		connType = Net::Email::SMTPConn::CT_SSL;
+		connType = Net::Email::SMTPConn::ConnType::SSL;
 	}
 	else if (smtpType->Equals(UTF8STRC("STARTTLS")))
 	{
-		connType = Net::Email::SMTPConn::CT_STARTTLS;
+		connType = Net::Email::SMTPConn::ConnType::STARTTLS;
 	}
 	else
 	{

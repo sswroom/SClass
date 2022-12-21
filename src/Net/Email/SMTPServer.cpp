@@ -21,7 +21,7 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 	cliStatus->userName = 0;
 	me->cliMgr.AddClient(cli, cliStatus);
 
-	if (me->connType != Net::Email::SMTPConn::CT_STARTTLS || !cli->IsSSL())
+	if (me->connType != Net::Email::SMTPConn::ConnType::STARTTLS || !cli->IsSSL())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(me->domain);
@@ -35,7 +35,7 @@ void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
 	Net::TCPClient *cli;
-	if (me->connType == Net::Email::SMTPConn::CT_SSL)
+	if (me->connType == Net::Email::SMTPConn::ConnType::SSL)
 	{
 		me->ssl->ServerInit(s, ClientReady, me);
 	}
@@ -344,7 +344,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STARTTLS")))
 	{
-		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::CT_STARTTLS)
+		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::ConnType::STARTTLS)
 		{
 			WriteMessage(cli, 220, CSTR("Go ahead"));
 			this->ssl->ServerInit(cli->RemoveSocket(), ClientReady, this);;
@@ -370,7 +370,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		sb.Append(cliStatus->cliName);
 		sb.AppendC(UTF8STRC("\r\nHELP"));
 		sb.AppendC(UTF8STRC("\r\n8BITMIME"));
-		if (this->connType == Net::Email::SMTPConn::CT_STARTTLS && !cli->IsSSL())
+		if (this->connType == Net::Email::SMTPConn::ConnType::STARTTLS && !cli->IsSSL())
 		{
 			sb.AppendC(UTF8STRC("\r\nSTARTTLS"));
 		}
@@ -497,11 +497,11 @@ UInt16 Net::Email::SMTPServer::GetDefaultPort(Net::Email::SMTPConn::ConnType con
 {
 	switch (connType)
 	{
-	case Net::Email::SMTPConn::CT_PLAIN:
+	case Net::Email::SMTPConn::ConnType::Plain:
 		return 25;
-	case Net::Email::SMTPConn::CT_STARTTLS:
+	case Net::Email::SMTPConn::ConnType::STARTTLS:
 		return 587;
-	case Net::Email::SMTPConn::CT_SSL:
+	case Net::Email::SMTPConn::ConnType::SSL:
 		return 465;
 	default:
 		return 25;
