@@ -18,7 +18,7 @@ namespace DB
 
 	public:
 		static void AppendColDef(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::ColDef *col);
-		static void AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc);
+		static void AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colSize2, Bool autoInc);
 
 		static Bool GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef);
 		static Bool GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r);

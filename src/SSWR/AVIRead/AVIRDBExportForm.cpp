@@ -134,7 +134,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 			col = tab->GetCol(i);
 			this->lvTables->AddItem(col->GetColName(), (void*)1);
 			this->lvTables->SetSubItem(i, 1, CSTR("yes"));
-			sptr = DB::DBUtil::ColTypeGetString(sbuff, col->GetColType(), col->GetColSize());
+			sptr = DB::DBUtil::ColTypeGetString(sbuff, col->GetColType(), col->GetColSize(), col->GetColDP());
 			this->lvTables->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			i++;
 		}

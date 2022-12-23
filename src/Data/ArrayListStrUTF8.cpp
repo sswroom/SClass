@@ -19,7 +19,7 @@ Data::ArrayList<const UTF8Char*> *Data::ArrayListStrUTF8::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrUTF8::CompareItem(const UTF8Char* obj1, const UTF8Char* obj2) const
+OSInt Data::ArrayListStrUTF8::Compare(const UTF8Char* obj1, const UTF8Char* obj2) const
 {
 	return Text::StrCompare(obj1, obj2);
 }

@@ -8,7 +8,7 @@ namespace Text
 	class StringComparatorFast : public Data::Comparator<Text::String*>
 	{
 	public:
-		virtual OSInt Compare(Text::String *a, Text::String *b)
+		virtual OSInt Compare(Text::String *a, Text::String *b) const
 		{
 			return a->CompareToFast(b->ToCString());
 		}

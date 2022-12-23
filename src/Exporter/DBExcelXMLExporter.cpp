@@ -134,6 +134,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CSt
 						break;
 					case DB::DBUtil::CT_Double:
 					case DB::DBUtil::CT_Float:
+					case DB::DBUtil::CT_Decimal:
 						sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetDbl(i)), UTF8STRC("</Data></Cell>"));
 						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;

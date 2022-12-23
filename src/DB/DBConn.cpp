@@ -115,10 +115,12 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					col->SetAttr(CSTR_NULL);
 				}
 				ptr = r->GetStr(1, buff, sizeof(buff));
-				UOSInt colSize;
+				UOSInt colSize = 0;
+				UOSInt colDP = 0;
 				col->SetNativeType(CSTRP(buff, ptr));
-				col->SetColType(DB::DBUtil::ParseColType(DB::DBUtil::SQLType::MySQL, buff, &colSize));
+				col->SetColType(DB::DBUtil::ParseColType(DB::DBUtil::SQLType::MySQL, buff, &colSize, &colDP));
 				col->SetColSize(colSize);
+				col->SetColDP(colDP);
 				if (col->GetColType() == DB::DBUtil::CT_DateTime)
 				{
 					if (col->IsNotNull())
@@ -182,6 +184,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				}
 			}
 			UOSInt colSize = (UOSInt)r->GetInt32(6);
+			UOSInt colDP = (UOSInt)r->GetInt32(8);
 			ptr = r->GetStr(5, buff, sizeof(buff));
 			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
 			{
@@ -190,8 +193,9 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				*ptr = 0;
 			}
 			col->SetNativeType(CSTRP(buff, ptr));
-			col->SetColType(DB::DBUtil::ParseColType(DB::DBUtil::SQLType::MSSQL, buff, &colSize));
+			col->SetColType(DB::DBUtil::ParseColType(DB::DBUtil::SQLType::MSSQL, buff, &colSize, &colDP));
 			col->SetColSize(colSize);
+			col->SetColDP(colDP);
 			tab->AddCol(col);
 		}
 		this->CloseReader(r);

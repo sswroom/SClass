@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b)
+OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b) const
 {
 	return a->name->CompareTo(b->name);
 }

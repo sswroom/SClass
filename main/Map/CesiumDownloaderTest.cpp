@@ -425,7 +425,7 @@ public:
 
 class FilesComparator : public Data::Comparator<CesiumDownloader::FileEntry*>
 {
-	virtual OSInt Compare(CesiumDownloader::FileEntry *a, CesiumDownloader::FileEntry *b)
+	virtual OSInt Compare(CesiumDownloader::FileEntry *a, CesiumDownloader::FileEntry *b) const
 	{
 		return a->url->CompareToFast(b->url->ToCString());
 	}

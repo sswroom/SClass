@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 				if (imgList)
 				{
 					imgList->ToStaticImage(0);
-					((Media::StaticImage*)imgList->GetImage(0, 0))->To32bpp();
+					((Media::StaticImage*)imgList->GetImage(0, 0));
 					param = exporter->CreateParam(imgList);
 					Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 					sptr2End = IO::Path::ReplaceExt(sptr2, ext.v, ext.leng);
@@ -179,7 +179,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->lblQuality->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, this, CSTR("100")));
 	this->txtQuality->SetRect(100, 72, 100, 23, false);
-	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, this, CSTR("Subdir"), true));
+	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, this, CSTR("OutSubdir"), true));
 	this->chkSubdir->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, this, CSTR("JPEG")));
 	this->txtSubdir->SetRect(100, 96, 100, 23, false);

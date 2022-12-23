@@ -84,6 +84,7 @@ Text::CString Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool 
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		if (notNull)
 		{
 			return CSTR("double");

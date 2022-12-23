@@ -39,6 +39,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 		return true;
 	}
 	case DB::DBUtil::CT_Double:
+	case DB::DBUtil::CT_Decimal:
 		item->SetF64(this->GetDbl(colIndex));
 		return true;
 	case DB::DBUtil::CT_Float:
@@ -155,6 +156,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 				obj->SetItemTS(sbuff, this->GetTimestamp(i));
 				break;
 			case DB::DBUtil::CT_Double:
+			case DB::DBUtil::CT_Decimal:
 				obj->SetItemF64(sbuff, this->GetDbl(i));
 				break;
 			case DB::DBUtil::CT_Float:

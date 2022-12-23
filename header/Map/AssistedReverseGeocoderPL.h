@@ -33,7 +33,7 @@ namespace Map
 		public:
 			virtual ~AddressComparator();
 
-			virtual OSInt Compare(AddressEntry *a, AddressEntry *b);
+			virtual OSInt Compare(AddressEntry *a, AddressEntry *b) const;
 		};
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> revGeos;

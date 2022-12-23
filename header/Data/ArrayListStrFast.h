@@ -12,7 +12,7 @@ namespace Data
 		ArrayListStrFast(UOSInt capacity);
 
 		virtual Data::ArrayList<Text::String*> *Clone() const;
-		virtual OSInt CompareItem(Text::String *obj1, Text::String *obj2) const;
+		virtual OSInt Compare(Text::String *obj1, Text::String *obj2) const;
 		OSInt SortedIndexOf(Text::CString str) const;
 	};
 }

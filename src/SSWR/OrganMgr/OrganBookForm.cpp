@@ -31,7 +31,7 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, Org
 	return ret;
 }
 
-OSInt SSWR::OrganMgr::BookArrayList::CompareItem(OrganBook *book1, OrganBook *book2) const
+OSInt SSWR::OrganMgr::BookArrayList::Compare(OrganBook *book1, OrganBook *book2) const
 {
 	return CompareBook(book1, book2);
 }

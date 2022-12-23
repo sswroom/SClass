@@ -219,14 +219,14 @@ namespace SSWR
 			{
 			public:
 				virtual ~SpeciesSciNameComparator();
-				virtual OSInt Compare(SpeciesInfo *a, SpeciesInfo *b);
+				virtual OSInt Compare(SpeciesInfo *a, SpeciesInfo *b) const;
 			};
 
 			class UserFileTimeComparator : public Data::Comparator<UserFileInfo*>
 			{
 			public:
 				virtual ~UserFileTimeComparator();
-				virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+				virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
 			};
 		private:
 			Data::RandomOS random;

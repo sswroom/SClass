@@ -32,6 +32,7 @@ void DB::DBClassBuilder::AddItem(const UTF8Char *colName, DB::DBUtil::ColType co
 	case DB::DBUtil::CT_Date:
 		currPos += (OSInt)cls->AddField(CSTRP(sbuff, sptr), currPos, Data::VariItem::ItemType::Date);
 		break;
+	case DB::DBUtil::CT_Decimal:
 	case DB::DBUtil::CT_Double:
 		currPos += (OSInt)cls->AddField(CSTRP(sbuff, sptr), currPos, Data::VariItem::ItemType::F64);
 		break;

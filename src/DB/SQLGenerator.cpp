@@ -7,7 +7,7 @@ void DB::SQLGenerator::AppendColDef(DB::DBUtil::SQLType sqlType, DB::SQLBuilder 
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
-	AppendColType(sqlType, sql, col->GetColType(), col->GetColSize(), col->IsAutoInc());
+	AppendColType(sqlType, sql, col->GetColType(), col->GetColSize(), col->GetColDP(), col->IsAutoInc());
 	if (col->IsNotNull())
 	{
 		sql->AppendCmdC(CSTR(" NOT NULL"));
@@ -53,7 +53,7 @@ void DB::SQLGenerator::AppendColDef(DB::DBUtil::SQLType sqlType, DB::SQLBuilder 
 	}
 }
 
-void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, Bool autoInc)
+void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP, Bool autoInc)
 {
 	switch (sqlType)
 	{
@@ -144,6 +144,13 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder
 			break;
 		case DB::DBUtil::CT_Float:
 			sql->AppendCmdC(CSTR("FLOAT"));
+			break;
+		case DB::DBUtil::CT_Decimal:
+			sql->AppendCmdC(CSTR("DECIMAL("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(","));
+			sql->AppendUInt32((UInt32)colDP);
+			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_Bool:
 			sql->AppendCmdC(CSTR("TINYINT(1)"));
@@ -278,6 +285,13 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder
 		case DB::DBUtil::CT_Float:
 			sql->AppendCmdC(CSTR("BINARY_FLOAT"));
 			break;
+		case DB::DBUtil::CT_Decimal:
+			sql->AppendCmdC(CSTR("DECIMAL("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(","));
+			sql->AppendUInt32((UInt32)colDP);
+			sql->AppendCmdC(CSTR(")"));
+			break;
 		case DB::DBUtil::CT_Bool:
 			sql->AppendCmdC(CSTR("BOOL"));
 			break;
@@ -408,6 +422,13 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder
 		case DB::DBUtil::CT_Float:
 			sql->AppendCmdC(CSTR("SINGLE"));
 			break;
+		case DB::DBUtil::CT_Decimal:
+			sql->AppendCmdC(CSTR("DECIMAL("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(","));
+			sql->AppendUInt32((UInt32)colDP);
+			sql->AppendCmdC(CSTR(")"));
+			break;
 		case DB::DBUtil::CT_Bool:
 			sql->AppendCmdC(CSTR("BOOL"));
 			break;
@@ -509,6 +530,13 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder
 			break;
 		case DB::DBUtil::CT_Float:
 			sql->AppendCmdC(CSTR("FLOAT"));
+			break;
+		case DB::DBUtil::CT_Decimal:
+			sql->AppendCmdC(CSTR("DECIMAL("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(","));
+			sql->AppendUInt32((UInt32)colDP);
+			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_Bool:
 			sql->AppendCmdC(CSTR("BOOLEAN"));
@@ -631,6 +659,13 @@ void DB::SQLGenerator::AppendColType(DB::DBUtil::SQLType sqlType, DB::SQLBuilder
 			break;
 		case DB::DBUtil::CT_Float:
 			sql->AppendCmdC(CSTR("real"));
+			break;
+		case DB::DBUtil::CT_Decimal:
+			sql->AppendCmdC(CSTR("numeric("));
+			sql->AppendUInt32((UInt32)colSize);
+			sql->AppendCmdC(CSTR(","));
+			sql->AppendUInt32((UInt32)colDP);
+			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_Bool:
 			sql->AppendCmdC(CSTR("bool"));
@@ -919,6 +954,7 @@ Bool DB::SQLGenerator::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaNam
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
+			case DB::DBUtil::CT_Decimal:
 				sql->AppendDbl(r->GetDbl(i));
 				break;
 			case DB::DBUtil::CT_Vector:

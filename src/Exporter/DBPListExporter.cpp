@@ -114,6 +114,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
+			case DB::DBUtil::CT_Decimal:
 				sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), r->GetDbl(i)), UTF8STRC("</string>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;

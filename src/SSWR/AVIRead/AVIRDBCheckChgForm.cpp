@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/TableDef.h"
 #include "IO/FileStream.h"
@@ -7,6 +8,8 @@
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
+
+#define SRID 4326
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnBrowseClk(void *userObj)
 {
@@ -75,6 +78,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 {
+	Text::CString nullStr = this->GetNullText();
+	Bool noHeader = this->chkNoHeader->IsChecked();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
@@ -84,17 +89,13 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 		return false;
 	}
 	Data::ArrayList<UOSInt> colInd;
-	UOSInt keyCol = INVALID_INDEX;
+	UOSInt keyCol = this->cboKeyCol->GetSelectedIndex();
 	UOSInt keyDCol;
 	UOSInt i = 0;
 	UOSInt j = table->GetColCnt();
 	while (i < j)
 	{
-		colInd.Add(INVALID_INDEX);
-		if (table->GetCol(i)->IsPK())
-		{
-			keyCol = i;
-		}
+		colInd.Add(noHeader?i:INVALID_INDEX);
 		i++;
 	}
 	if (keyCol == INVALID_INDEX)
@@ -105,9 +106,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 	}
 	UOSInt k;
 	UOSInt l;
-	Data::Int64FastMap<Text::String**> csvData;
+	Data::FastStringMap<Text::String**> csvData;
 	Text::String** rowData;
 	DB::CSVFile csv(fileName, 65001);
+	if (noHeader) csv.SetNoHeader(true);
 	DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 	if (r == 0)
 	{
@@ -115,49 +117,65 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	k = 0;
 	l = r->ColCount();
-	while (k < l)
+	if (!noHeader)
 	{
-		sptr = r->GetName(k, sbuff);
-		if (sptr)
+		k = 0;
+		while (k < l)
 		{
-			i = 0;
-			while (i < j)
+			sptr = r->GetName(k, sbuff);
+			if (sptr)
 			{
-				if (table->GetCol(i)->GetColName()->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				i = 0;
+				while (i < j)
 				{
-					colInd.SetItem(i, k);
-					break;
+					if (table->GetCol(i)->GetColName()->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+					{
+						colInd.SetItem(i, k);
+						break;
+					}
+					i++;
 				}
-				i++;
 			}
+			k++;
 		}
-		k++;
 	}
 	keyDCol = colInd.GetItem(keyCol);
 
-	i = 0;
-	while (i < j)
+	if (noHeader)
 	{
-		if (colInd.GetItem(i) == INVALID_INDEX)
+		if (j != l)
 		{
-			sptr = Text::StrConcatC(sbuff, UTF8STRC("Column "));
-			sptr = table->GetCol(i)->GetColName()->ConcatTo(sptr);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(" not found in CSV"));
-			UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
+			UI::MessageDialog::ShowDialog(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			csv.CloseReader(r);
 			DEL_CLASS(table);
 			return false;
 		}
-		i++;
+	}
+	else
+	{
+		i = 0;
+		while (i < j)
+		{
+			if (colInd.GetItem(i) == INVALID_INDEX)
+			{
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Column "));
+				sptr = table->GetCol(i)->GetColName()->ConcatTo(sptr);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" not found in CSV"));
+				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
+				csv.CloseReader(r);
+				DEL_CLASS(table);
+				return false;
+			}
+			i++;
+		}
 	}
 	UOSInt noChgCnt = 0;
 	UOSInt updateCnt = 0;
 	UOSInt newRowCnt = 0;
 	UOSInt delRowCnt = 0;
 	Text::String *s;
-	Int64 id;
+	Text::String *id;
 	while (r->ReadNext())
 	{
 		if (r->ColCount() >= l)
@@ -170,31 +188,28 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 			}
 			else
 			{
-				id = s->ToInt64();
-				s->Release();
-				if (id == 0)
+				rowData = MemAlloc(Text::String*, j);
+				i = 0;
+				while (i < j)
 				{
-					newRowCnt++;
+					rowData[i] = r->GetNewStr(colInd.GetItem(i));
+					if (rowData[i] && rowData[i]->Equals(nullStr.v, nullStr.leng))
+					{
+						rowData[i]->Release();
+						rowData[i] = 0;
+					}
+					i++;
 				}
-				else
+				rowData = csvData.Put(s, rowData);
+				s->Release();
+				if (rowData)
 				{
-					rowData = MemAlloc(Text::String*, j);
-					i = 0;
-					while (i < j)
+					i = j;
+					while (i-- > 0)
 					{
-						rowData[i] = r->GetNewStr(colInd.GetItem(i));
-						i++;
+						SDEL_STRING(rowData[i]);
 					}
-					rowData = csvData.Put(id, rowData);
-					if (rowData)
-					{
-						i = j;
-						while (i-- > 0)
-						{
-							SDEL_STRING(rowData[i]);
-						}
-						MemFree(rowData);
-					}
+					MemFree(rowData);
 				}
 			}
 		}
@@ -208,10 +223,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 	}
 	else
 	{
+		Data::ArrayList<Text::String*> idList;
 		while (r->ReadNext())
 		{
-			id = r->GetInt64(keyCol);
+			id = r->GetNewStr(keyCol);
 			rowData = csvData.Get(id);
+			idList.Add(id);
 			if (rowData)
 			{
 				Bool diff = false;
@@ -220,7 +237,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 				{
 					if (r->IsNull(i))
 					{
-						if (rowData[i] == 0 || rowData[i]->leng == 0)
+						if (rowData[i] == 0)
 						{
 
 						}
@@ -264,6 +281,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 								}
 							}
 							break;
+						case DB::DBUtil::CT_Decimal:
 						case DB::DBUtil::CT_Double:
 						case DB::DBUtil::CT_Float:
 							{
@@ -372,6 +390,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 			}
 		}
 		this->db->CloseReader(r);
+
+		newRowCnt += csvData.GetCount() - idList.GetCount();
+		LIST_FREE_STRING(&idList);
 	}
 
 	k = csvData.GetCount();
@@ -400,6 +421,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, Text::CString sqlFileName, DB::DBUtil::SQLType sqlType)
 {
+	Text::CString nullStr = this->GetNullText();
+	Bool noHeader = this->chkNoHeader->IsChecked();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
@@ -409,16 +432,47 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 		return false;
 	}
 	Data::ArrayList<UOSInt> colInd;
-	UOSInt keyCol = INVALID_INDEX;
+	Bool intKey = false;
+	UOSInt keyCol = this->cboKeyCol->GetSelectedIndex();
 	UOSInt keyDCol;
 	UOSInt i = 0;
 	UOSInt j = table->GetColCnt();
 	while (i < j)
 	{
-		colInd.Add(INVALID_INDEX);
-		if (table->GetCol(i)->IsPK())
+		colInd.Add(noHeader?i:INVALID_INDEX);
+		if (i == keyCol)
 		{
-			keyCol = i;
+			DB::DBUtil::ColType colType = table->GetCol(i)->GetColType();
+			switch (colType)
+			{
+			case DB::DBUtil::CT_Bool:
+			case DB::DBUtil::CT_Byte:
+			case DB::DBUtil::CT_Int16:
+			case DB::DBUtil::CT_Int32:
+			case DB::DBUtil::CT_Int64:
+			case DB::DBUtil::CT_UInt16:
+			case DB::DBUtil::CT_UInt32:
+			case DB::DBUtil::CT_UInt64:
+				intKey = true;
+				break;
+			case DB::DBUtil::CT_Unknown:
+			case DB::DBUtil::CT_UTF8Char:
+			case DB::DBUtil::CT_UTF16Char:
+			case DB::DBUtil::CT_UTF32Char:
+			case DB::DBUtil::CT_VarUTF8Char:
+			case DB::DBUtil::CT_VarUTF16Char:
+			case DB::DBUtil::CT_VarUTF32Char:
+			case DB::DBUtil::CT_Date:
+			case DB::DBUtil::CT_DateTime:
+			case DB::DBUtil::CT_DateTimeTZ:
+			case DB::DBUtil::CT_Double:
+			case DB::DBUtil::CT_Float:
+			case DB::DBUtil::CT_Decimal:
+			case DB::DBUtil::CT_Binary:
+			case DB::DBUtil::CT_Vector:
+			case DB::DBUtil::CT_UUID:
+				break;
+			}
 		}
 		i++;
 	}
@@ -430,9 +484,13 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 	}
 	UOSInt k;
 	UOSInt l;
-	Data::Int64FastMap<Text::String**> csvData;
+	Data::FastStringMap<Text::String**> csvData;
 	Text::String** rowData;
 	DB::CSVFile csv(csvFileName, 65001);
+	if (noHeader)
+	{
+		csv.SetNoHeader(true);
+	}
 	DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
 	if (r == 0)
 	{
@@ -440,42 +498,58 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	k = 0;
 	l = r->ColCount();
-	while (k < l)
+	if (!noHeader)
 	{
-		sptr = r->GetName(k, sbuff);
-		if (sptr)
+		k = 0;
+		while (k < l)
 		{
-			i = 0;
-			while (i < j)
+			sptr = r->GetName(k, sbuff);
+			if (sptr)
 			{
-				if (table->GetCol(i)->GetColName()->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				i = 0;
+				while (i < j)
 				{
-					colInd.SetItem(i, k);
-					break;
+					if (table->GetCol(i)->GetColName()->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+					{
+						colInd.SetItem(i, k);
+						break;
+					}
+					i++;
 				}
-				i++;
 			}
+			k++;
 		}
-		k++;
 	}
 	keyDCol = colInd.GetItem(keyCol);
 
-	i = 0;
-	while (i < j)
+	if (noHeader)
 	{
-		if (colInd.GetItem(i) == INVALID_INDEX)
+		if (j != l)
 		{
-			sptr = Text::StrConcatC(sbuff, UTF8STRC("Column "));
-			sptr = table->GetCol(i)->GetColName()->ConcatTo(sptr);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(" not found in CSV"));
-			UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
+			UI::MessageDialog::ShowDialog(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			csv.CloseReader(r);
 			DEL_CLASS(table);
 			return false;
 		}
-		i++;
+	}
+	else
+	{
+		i = 0;
+		while (i < j)
+		{
+			if (colInd.GetItem(i) == INVALID_INDEX)
+			{
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Column "));
+				sptr = table->GetCol(i)->GetColName()->ConcatTo(sptr);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" not found in CSV"));
+				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
+				csv.CloseReader(r);
+				DEL_CLASS(table);
+				return false;
+			}
+			i++;
+		}
 	}
 	IO::FileStream sqlFS(sqlFileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(&sqlFS);
@@ -483,7 +557,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 	Bool genInsert;
 	Bool colFound;
 	Text::String *s;
-	Int64 id;
+	Text::String *id;
 	while (r->ReadNext())
 	{
 		if (r->ColCount() >= l)
@@ -497,31 +571,28 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 			}
 			else
 			{
-				id = s->ToInt64();
-				s->Release();
-				if (id == 0)
+				rowData = MemAlloc(Text::String*, j);
+				i = 0;
+				while (i < j)
 				{
-					genInsert = true;
+					rowData[i] = r->GetNewStr(colInd.GetItem(i));
+					if (rowData[i] && rowData[i]->Equals(nullStr.v, nullStr.leng))
+					{
+						rowData[i]->Release();
+						rowData[i] = 0;
+					}
+					i++;
 				}
-				else
+				rowData = csvData.Put(s, rowData);
+				s->Release();
+				if (rowData)
 				{
-					rowData = MemAlloc(Text::String*, j);
-					i = 0;
-					while (i < j)
+					i = j;
+					while (i-- > 0)
 					{
-						rowData[i] = r->GetNewStr(colInd.GetItem(i));
-						i++;
+						SDEL_STRING(rowData[i]);
 					}
-					rowData = csvData.Put(id, rowData);
-					if (rowData)
-					{
-						i = j;
-						while (i-- > 0)
-						{
-							SDEL_STRING(rowData[i]);
-						}
-						MemFree(rowData);
-					}
+					MemFree(rowData);
 				}
 			}
 			if (genInsert)
@@ -557,7 +628,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 						if (colFound) sql.AppendCmdC(CSTR(", "));
 						colFound = true;
 						s = r->GetNewStr(colInd.GetItem(i));
-						AppendCol(&sql, table->GetCol(i)->GetColType(), s);
+						if (s && s->Equals(nullStr.v, nullStr.leng))
+						{
+							sql.AppendStr(0);
+						}
+						else
+						{
+							AppendCol(&sql, table->GetCol(i)->GetColType(), s);
+						}
 						SDEL_STRING(s);
 					}
 					i++;
@@ -576,10 +654,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 	}
 	else
 	{
+		Data::ArrayListString idList;
 		while (r->ReadNext())
 		{
-			id = r->GetInt64(keyCol);
+			id = r->GetNewStr(keyCol);
 			rowData = csvData.Get(id);
+			idList.Add(id);
 			if (rowData)
 			{
 				Bool diff = false;
@@ -598,20 +678,173 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 				{
 					if (r->IsNull(i))
 					{
-						if (rowData[i] == 0 || rowData[i]->leng == 0)
+						if (rowData[i] == 0)
 						{
 
 						}
 						else
 						{
-							diff = true;
-							break;
+							switch (table->GetCol(i)->GetColType())
+							{
+							case DB::DBUtil::CT_VarUTF8Char:
+							case DB::DBUtil::CT_VarUTF16Char:
+							case DB::DBUtil::CT_VarUTF32Char:
+							case DB::DBUtil::CT_UTF8Char:
+							case DB::DBUtil::CT_UTF16Char:
+							case DB::DBUtil::CT_UTF32Char:
+								if (diff)
+								{
+									sql.AppendCmdC(CSTR(", "));
+								}
+								else
+								{
+									diff = true;
+								}
+								sql.AppendCol(table->GetCol(i)->GetColName()->v);
+								sql.AppendCmdC(CSTR(" = "));
+								sql.AppendStr(rowData[i]);
+								break;
+							case DB::DBUtil::CT_Date:
+							case DB::DBUtil::CT_DateTime:
+							case DB::DBUtil::CT_DateTimeTZ:
+								{
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+									if (diff)
+									{
+										sql.AppendCmdC(CSTR(", "));
+									}
+									else
+									{
+										diff = true;
+									}
+									sql.AppendCol(table->GetCol(i)->GetColName()->v);
+									sql.AppendCmdC(CSTR(" = "));
+									sql.AppendTS(ts2);
+								}
+								break;
+							case DB::DBUtil::CT_Double:
+							case DB::DBUtil::CT_Float:
+							case DB::DBUtil::CT_Decimal:
+								{
+									Double v2 = rowData[i]->ToDouble();
+									if (diff)
+									{
+										sql.AppendCmdC(CSTR(", "));
+									}
+									else
+									{
+										diff = true;
+									}
+									sql.AppendCol(table->GetCol(i)->GetColName()->v);
+									sql.AppendCmdC(CSTR(" = "));
+									sql.AppendDbl(v2);
+								}
+								break;
+							case DB::DBUtil::CT_UInt16:
+							case DB::DBUtil::CT_Int16:
+							case DB::DBUtil::CT_UInt32:
+							case DB::DBUtil::CT_Int32:
+							case DB::DBUtil::CT_Byte:
+								{
+									Int32 v2 = rowData[i]->ToInt32();
+									if (diff)
+									{
+										sql.AppendCmdC(CSTR(", "));
+									}
+									else
+									{
+										diff = true;
+									}
+									sql.AppendCol(table->GetCol(i)->GetColName()->v);
+									sql.AppendCmdC(CSTR(" = "));
+									sql.AppendInt32(v2);
+								}
+								break;
+							case DB::DBUtil::CT_UInt64:
+							case DB::DBUtil::CT_Int64:
+								{
+									Int64 v2 = rowData[i]->ToInt64();
+									if (diff)
+									{
+										sql.AppendCmdC(CSTR(", "));
+									}
+									else
+									{
+										diff = true;
+									}
+									sql.AppendCol(table->GetCol(i)->GetColName()->v);
+									sql.AppendCmdC(CSTR(" = "));
+									sql.AppendInt64(v2);
+								}
+								break;
+							case DB::DBUtil::CT_Bool:
+								{
+									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T';
+									if (diff)
+									{
+										sql.AppendCmdC(CSTR(", "));
+									}
+									else
+									{
+										diff = true;
+									}
+									sql.AppendCol(table->GetCol(i)->GetColName()->v);
+									sql.AppendCmdC(CSTR(" = "));
+									sql.AppendBool(v2);
+								}
+								break;
+							case DB::DBUtil::CT_Vector:
+								{
+									Math::Geometry::Vector2D *vec2;;
+									Math::WKTReader reader(SRID);
+									vec2 = reader.ParseWKT(rowData[i]->v);
+									if (vec2 == 0)
+									{
+									}
+									else
+									{
+										if (diff)
+										{
+											sql.AppendCmdC(CSTR(", "));
+										}
+										else
+										{
+											diff = true;
+										}
+										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCmdC(CSTR(" = "));
+										sql.AppendVector(vec2);
+										SDEL_CLASS(vec2);
+									}
+								}
+								break;
+							case DB::DBUtil::CT_Binary:
+								break;
+							case DB::DBUtil::CT_UUID:
+								{
+									Data::UUID uuid2;
+									uuid2.SetValue(rowData[i]->ToCString());
+								}
+								break;
+							case DB::DBUtil::CT_Unknown:
+							default:
+								break;
+							}
 						}
 					}
 					else if (rowData[i] == 0)
 					{
-						diff = true;
-						break;
+						if (diff)
+						{
+							sql.AppendCmdC(CSTR(", "));
+						}
+						else
+						{
+							diff = true;
+						}
+						sql.AppendCol(table->GetCol(i)->GetColName()->v);
+						sql.AppendCmdC(CSTR(" = "));
+						sql.AppendStr(0);
 					}
 					else
 					{
@@ -664,6 +897,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 							break;
 						case DB::DBUtil::CT_Double:
 						case DB::DBUtil::CT_Float:
+						case DB::DBUtil::CT_Decimal:
 							{
 								Double v1 = r->GetDbl(i);
 								Double v2 = rowData[i]->ToDouble();
@@ -792,10 +1026,6 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 						default:
 							break;
 						}
-						if (diff)
-						{
-							break;
-						}
 					}
 					i++;
 				}
@@ -804,7 +1034,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 					sql.AppendCmdC(CSTR(" where "));
 					sql.AppendCol(table->GetCol(keyCol)->GetColName()->v);
 					sql.AppendCmdC(CSTR(" = "));
-					sql.AppendInt64(id);
+					if (intKey)
+					{
+						sql.AppendInt64(id->ToInt64());
+					}
+					else
+					{
+						sql.AppendStr(id);
+					}
 					sql.AppendCmdC(CSTR(";"));
 					writer.WriteLineCStr(sql.ToCString());
 				}
@@ -822,12 +1059,62 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 				sql.AppendCmdC(CSTR(" where "));
 				sql.AppendCol(table->GetCol(keyCol)->GetColName()->v);
 				sql.AppendCmdC(CSTR(" = "));
-				sql.AppendInt64(id);
+				if (intKey)
+				{
+					sql.AppendInt64(id->ToInt64());
+				}
+				else
+				{
+					sql.AppendStr(id);
+				}
 				sql.AppendCmdC(CSTR(";"));
 				writer.WriteLineCStr(sql.ToCString());
 			}
 		}
 		this->db->CloseReader(r);
+
+		Data::Sort::ArtificialQuickSort::Sort(&idList, &idList);
+		k = 0;
+		l = csvData.GetCount();
+		while (k < l)
+		{
+			if (idList.SortedIndexOf(csvData.GetKey(k)) < 0)
+			{
+				rowData = csvData.GetItem(k);
+				sql.Clear();
+				sql.AppendCmdC(CSTR("insert into "));
+				if (this->schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
+				{
+					sql.AppendCol(this->schema.v);
+					sql.AppendCmdC(CSTR("."));
+				}
+				sql.AppendCol(this->table.v);
+				sql.AppendCmdC(CSTR(" ("));
+				colFound = false;
+				i = 0;
+				while (i < j)
+				{
+					if (colFound) sql.AppendCmdC(CSTR(", "));
+					colFound = true;
+					sql.AppendCol(table->GetCol(i)->GetColName()->v);
+					i++;
+				}
+				sql.AppendCmdC(CSTR(") values ("));
+				colFound = false;
+				i = 0;
+				while (i < j)
+				{
+					if (colFound) sql.AppendCmdC(CSTR(", "));
+					colFound = true;
+					AppendCol(&sql, table->GetCol(i)->GetColType(), rowData[i]);
+					i++;
+				}
+				sql.AppendCmdC(CSTR(");"));
+				writer.WriteLineCStr(sql.ToCString());
+			}
+			k++;
+		}
+		LIST_FREE_STRING(&idList);
 	}
 
 	k = csvData.GetCount();
@@ -847,6 +1134,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, T
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s)
 {
+	if (s == 0)
+	{
+		sql->AppendStr(0);
+		return;
+	}
+
 	switch (colType)
 	{
 	case DB::DBUtil::CT_VarUTF8Char:
@@ -864,6 +1157,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql,
 		break;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		sql->AppendDbl(s->ToDouble());
 		break;
 	case DB::DBUtil::CT_UInt16:
@@ -900,6 +1194,17 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql,
 
 }
 
+Text::CString SSWR::AVIRead::AVIRDBCheckChgForm::GetNullText()
+{
+	switch (this->cboNullCol->GetSelectedIndex())
+	{
+	case 1:
+		return CSTR("NULL");
+	default:
+		return CSTR("");
+	}
+}
+
 SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schema, Text::CString table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -925,48 +1230,84 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtTable, UI::GUITextBox(ui, this, table));
 	this->txtTable->SetRect(100, 24, 200, 23, false);
 	this->txtTable->SetReadOnly(true);
+	NEW_CLASS(this->lblKeyCol, UI::GUILabel(ui, this, CSTR("Key Column")));
+	this->lblKeyCol->SetRect(0, 48, 100, 23, false);
+	NEW_CLASS(this->cboKeyCol, UI::GUIComboBox(ui, this, false));
+	this->cboKeyCol->SetRect(100, 48, 200, 23, false);
+	NEW_CLASS(this->lblNullCol, UI::GUILabel(ui, this, CSTR("Null Column")));
+	this->lblNullCol->SetRect(0, 72, 100, 23, false);
+	NEW_CLASS(this->cboNullCol, UI::GUIComboBox(ui, this, false));
+	this->cboNullCol->SetRect(100, 72, 200, 23, false);
+	this->cboNullCol->AddItem(CSTR("Empty"), 0);
+	this->cboNullCol->AddItem(CSTR("\"NULL\""), 0);
+	this->cboNullCol->SetSelectedIndex(0);
+	NEW_CLASS(this->chkNoHeader, UI::GUICheckBox(ui, this, CSTR("No Header"), false));
+	this->chkNoHeader->SetRect(100, 96, 200, 23, false);
 	NEW_CLASS(this->lblCSV, UI::GUILabel(ui, this, CSTR("CSV")));
-	this->lblCSV->SetRect(0, 48, 100, 23, false);
+	this->lblCSV->SetRect(0, 120, 100, 23, false);
 	NEW_CLASS(this->txtCSV, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtCSV->SetRect(100, 48, 600, 23, false);
+	this->txtCSV->SetRect(100, 120, 600, 23, false);
 	this->txtCSV->SetReadOnly(true);
 	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("Browse")));
-	this->btnBrowse->SetRect(700, 48, 75, 23, false);
+	this->btnBrowse->SetRect(700, 120, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClk, this);
 	NEW_CLASS(this->lblNoChg, UI::GUILabel(ui, this, CSTR("No Changes")));
-	this->lblNoChg->SetRect(0, 72, 100, 23, false);
+	this->lblNoChg->SetRect(0, 144, 100, 23, false);
 	NEW_CLASS(this->txtNoChg, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtNoChg->SetRect(100, 72, 200, 23, false);
+	this->txtNoChg->SetRect(100, 144, 200, 23, false);
 	this->txtNoChg->SetReadOnly(true);
 	NEW_CLASS(this->lblUpdated, UI::GUILabel(ui, this, CSTR("Updated rows")));
-	this->lblUpdated->SetRect(0, 96, 100, 23, false);
+	this->lblUpdated->SetRect(0, 168, 100, 23, false);
 	NEW_CLASS(this->txtUpdated, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtUpdated->SetRect(100, 96, 200, 23, false);
+	this->txtUpdated->SetRect(100, 168, 200, 23, false);
 	this->txtUpdated->SetReadOnly(true);
 	NEW_CLASS(this->lblNewRow, UI::GUILabel(ui, this, CSTR("New rows")));
-	this->lblNewRow->SetRect(0, 120, 100, 23, false);
+	this->lblNewRow->SetRect(0, 192, 100, 23, false);
 	NEW_CLASS(this->txtNewRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtNewRow->SetRect(100, 120, 200, 23, false);
+	this->txtNewRow->SetRect(100, 192, 200, 23, false);
 	this->txtNewRow->SetReadOnly(true);
 	NEW_CLASS(this->lblDeletedRow, UI::GUILabel(ui, this, CSTR("Deleted rows")));
-	this->lblDeletedRow->SetRect(0, 144, 100, 23, false);
+	this->lblDeletedRow->SetRect(0, 216, 100, 23, false);
 	NEW_CLASS(this->txtDeletedRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtDeletedRow->SetRect(100, 144, 200, 23, false);
+	this->txtDeletedRow->SetRect(100, 216, 200, 23, false);
 	this->txtDeletedRow->SetReadOnly(true);
 
 	NEW_CLASS(this->lblDBType, UI::GUILabel(ui, this, CSTR("SQL Type")));
-	this->lblDBType->SetRect(0, 192, 100, 23, false);
+	this->lblDBType->SetRect(0, 264, 100, 23, false);
 	NEW_CLASS(this->cboDBType, UI::GUIComboBox(ui, this, false));
-	this->cboDBType->SetRect(100, 192, 200, 23, false);
+	this->cboDBType->SetRect(100, 264, 200, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::DBUtil::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::DBUtil::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::DBUtil::SQLType::PostgreSQL);
 	this->cboDBType->SetSelectedIndex(0);
 	NEW_CLASS(this->btnSQL, UI::GUIButton(ui, this, CSTR("Generate SQL")));
-	this->btnSQL->SetRect(100, 216, 75, 23, false);
+	this->btnSQL->SetRect(100, 288, 75, 23, false);
 	this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 
 	this->HandleDropFiles(OnFiles, this);
+
+	DB::TableDef *tableDef = this->db->GetTableDef(this->schema, this->table);
+	if (tableDef)
+	{
+		Bool hasKey = false;
+		UOSInt i = 0;
+		UOSInt j = tableDef->GetColCnt();
+		while (i < j)
+		{
+			this->cboKeyCol->AddItem(tableDef->GetCol(i)->GetColName(), 0);
+			if (tableDef->GetCol(i)->IsPK())
+			{
+				hasKey = true;
+				this->cboKeyCol->SetSelectedIndex(i);
+			}
+			i++;
+		}
+		if (!hasKey)
+		{
+			this->cboKeyCol->SetSelectedIndex(0);
+		}
+		DEL_CLASS(tableDef);
+	}
 }
 
 SSWR::AVIRead::AVIRDBCheckChgForm::~AVIRDBCheckChgForm()

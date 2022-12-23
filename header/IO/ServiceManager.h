@@ -29,7 +29,7 @@ namespace IO
 
 		class ServiceComparator : public Data::Comparator<ServiceItem*>
 		{
-			virtual OSInt Compare(ServiceItem* a, ServiceItem* b);
+			virtual OSInt Compare(ServiceItem* a, ServiceItem* b) const;
 		};
 	private:
 		struct ClassData;

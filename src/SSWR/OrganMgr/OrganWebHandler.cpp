@@ -46,7 +46,7 @@ SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::~SpeciesSciNameCompar
 {
 }
 
-OSInt SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::Compare(SpeciesInfo *a, SpeciesInfo *b)
+OSInt SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::Compare(SpeciesInfo *a, SpeciesInfo *b) const
 {
 	if (a->sciNameHash > b->sciNameHash)
 	{
@@ -67,7 +67,7 @@ SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::~UserFileTimeComparator
 
 }
 
-OSInt SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+OSInt SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b) const
 {
 	if (a->webuserId > b->webuserId)
 	{

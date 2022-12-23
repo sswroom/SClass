@@ -210,6 +210,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 						else
 						{
 							UOSInt colSize;
+							UOSInt colDP;
 							NEW_CLASS(col, DB::ColDef(sb.ToCString()));
 							sql = ParseNextWord(sql, &sb, sqlType);
 							if (sqlType == DB::DBUtil::SQLType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
@@ -224,7 +225,9 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							}
 							else
 							{
-								DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(sqlType, sb.ToString(), &colSize);
+								colSize = 0;
+								colDP = 0;
+								DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(sqlType, sb.ToString(), &colSize, &colDP);
 								if (colType == DB::DBUtil::CT_Unknown)
 								{
 									printf("SQLCommand: Unsupported column type: %s\r\n", sb.ToString());
@@ -234,6 +237,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 								col->SetColType(colType);
 								col->SetNativeType(sb.ToCString());
 								col->SetColSize(colSize);
+								col->SetColDP(colDP);
 								sql = ParseNextWord(sql, &sb, sqlType);
 							}
 							if (sb.Equals(UTF8STRC("(")))

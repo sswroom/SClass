@@ -37,7 +37,7 @@ SSWR::OrganMgr::UserFileComparator::~UserFileComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::UserFileComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+OSInt SSWR::OrganMgr::UserFileComparator::Compare(UserFileInfo *a, UserFileInfo *b) const
 {
 	if (a->id > b->id)
 	{
@@ -57,7 +57,7 @@ SSWR::OrganMgr::UserFileTimeComparator::~UserFileTimeComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+OSInt SSWR::OrganMgr::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b) const
 {
 	if (a->fileTime > b->fileTime)
 	{
@@ -85,7 +85,7 @@ SSWR::OrganMgr::UserFileSpeciesComparator::~UserFileSpeciesComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::UserFileSpeciesComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+OSInt SSWR::OrganMgr::UserFileSpeciesComparator::Compare(UserFileInfo *a, UserFileInfo *b) const
 {
 	if (a->speciesId > b->speciesId)
 	{
@@ -113,7 +113,7 @@ SSWR::OrganMgr::WebFileSpeciesComparator::~WebFileSpeciesComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(WebFileInfo *a, WebFileInfo *b)
+OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(WebFileInfo *a, WebFileInfo *b) const
 {
 	if (a->speciesId > b->speciesId)
 	{

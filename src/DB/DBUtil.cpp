@@ -1948,15 +1948,19 @@ UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::DBUtil::SQLType sqlType)
 	}
 }
 
-DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const UTF8Char *tName, UOSInt *colSize)
+DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const UTF8Char *tName, UOSInt *colSize, UOSInt *colDP)
 {
 	UTF8Char typeName[64];
 	UOSInt typeNameLen;
-	UOSInt tmp;
+	UOSInt tmp = 0;
 	UOSInt i;
 	if (colSize == 0)
 	{
 		colSize = &tmp;
+	}
+	if (colDP == 0)
+	{
+		colDP = &tmp;
 	}
 	typeNameLen = (UOSInt)(Text::StrConcat(typeName, tName) - typeName);
 
@@ -2109,6 +2113,31 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			*colSize = 65535;
 			return DB::DBUtil::CT_VarUTF32Char;
 		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("numeric")) || Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("decimal")))
+		{
+			if (typeName[7] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+					typeName[i] = 0;
+				i = Text::StrIndexOfChar(typeName, ',');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[8]);
+					*colDP = Text::StrToUInt32(&typeName[i + 1]);
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[8]);
+				}
+			}
+			else
+			{
+				*colSize = 0;
+			}
+			return DB::DBUtil::CT_Decimal;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1) unsigned")))
 		{
 			*colSize = 1;
@@ -2168,6 +2197,22 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			*colSize = 3;
 			return DB::DBUtil::CT_DateTime;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("time")))
+		{
+			if (*colSize >= 10 && *colSize <= 16)
+			{
+				*colSize = *colSize - 9;
+			}
+			else if (*colSize == 8)
+			{
+				*colSize = 0;
+			}
+			else
+			{
+				*colSize = 7;
+			}
+			return DB::DBUtil::CT_DateTime;
+		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetime2")))
 		{
 			if (typeName[9] == '(')
@@ -2213,6 +2258,27 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			}
 			return DB::DBUtil::CT_DateTimeTZ;
 		}
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("numeric")) || Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("decimal")))
+		{
+			if (typeName[7] == '(')
+			{
+				i = Text::StrIndexOfChar(typeName, ')');
+				if (i != INVALID_INDEX)
+					typeName[i] = 0;
+				i = Text::StrIndexOfChar(typeName, ',');
+				if (i != INVALID_INDEX)
+				{
+					typeName[i] = 0;
+					*colSize = Text::StrToUInt32(&typeName[8]);
+					*colDP = Text::StrToUInt32(&typeName[i + 1]);
+				}
+				else
+				{
+					*colSize = Text::StrToUInt32(&typeName[8]);
+				}
+			}
+			return DB::DBUtil::CT_Decimal;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("float")))
 		{
 			return DB::DBUtil::CT_Double;
@@ -2251,6 +2317,10 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 			return DB::DBUtil::CT_Double;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("geometry")))
+		{
+			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("geography")))
 		{
 			return DB::DBUtil::CT_Vector;
 		}
@@ -2374,7 +2444,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 	}
 }
 
-UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize)
+UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP)
 {
 	switch (colType)
 	{
@@ -2404,6 +2474,8 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 		return Text::StrConcatC(sbuff, UTF8STRC("DOUBLE"));
 	case DB::DBUtil::CT_Float:
 		return Text::StrConcatC(sbuff, UTF8STRC("FLOAT"));
+	case DB::DBUtil::CT_Decimal:
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DECIMAL(")), colSize), UTF8STRC(",")), colDP), UTF8STRC(")"));
 	case DB::DBUtil::CT_Bool:
 		return Text::StrConcatC(sbuff, UTF8STRC("BIT"));
 	case DB::DBUtil::CT_Byte:

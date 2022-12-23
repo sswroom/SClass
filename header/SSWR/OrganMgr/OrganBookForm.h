@@ -26,7 +26,7 @@ namespace SSWR
 
 			void Sort();
 			static OSInt __stdcall CompareBook(OrganBook *book1, OrganBook *book2);
-			virtual OSInt CompareItem(OrganBook *book1, OrganBook *book2) const;
+			virtual OSInt Compare(OrganBook *book1, OrganBook *book2) const;
 		};
 
 		class OrganBookForm : public UI::GUIForm

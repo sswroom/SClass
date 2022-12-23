@@ -39,6 +39,7 @@ namespace DB
 			CT_DateTimeTZ,
 			CT_Double,
 			CT_Float,
+			CT_Decimal,
 			CT_Bool,
 			CT_Byte,
 			CT_Int16,
@@ -84,8 +85,8 @@ namespace DB
 		static UOSInt SDBColWLeng(const WChar *colName, SQLType sqlType);
 		static UTF8Char *SDBTrim(UTF8Char *sqlstr, Text::CString val, SQLType sqlType);
 		static UOSInt SDBTrimLeng(Text::CString val, SQLType sqlType);
-		static DB::DBUtil::ColType ParseColType(SQLType sqlType, const UTF8Char *typeName, UOSInt *colSize);
-		static UTF8Char *ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize);
+		static DB::DBUtil::ColType ParseColType(SQLType sqlType, const UTF8Char *typeName, UOSInt *colSize, UOSInt *colDP);
+		static UTF8Char *ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP);
 
 		static UTF8Char *DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName);
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);

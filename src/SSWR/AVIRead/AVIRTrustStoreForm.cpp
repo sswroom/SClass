@@ -6,7 +6,7 @@
 class CertComparator : public Data::Comparator<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry*>
 {
 public:
-	virtual OSInt Compare(SSWR::AVIRead::AVIRTrustStoreForm::CertEntry* a, SSWR::AVIRead::AVIRTrustStoreForm::CertEntry* b)
+	virtual OSInt Compare(SSWR::AVIRead::AVIRTrustStoreForm::CertEntry* a, SSWR::AVIRead::AVIRTrustStoreForm::CertEntry* b) const
 	{
 		return a->subjectCN->CompareToFast(b->subjectCN->ToCString());
 	}

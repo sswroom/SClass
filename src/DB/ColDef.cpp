@@ -268,7 +268,7 @@ void DB::ColDef::Set(const ColDef *colDef)
 
 UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff) const
 {
-	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize);
+	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize, this->colDP);
 }
 
 DB::ColDef *DB::ColDef::Clone() const

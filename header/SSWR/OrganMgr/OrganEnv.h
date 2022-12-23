@@ -128,7 +128,7 @@ namespace SSWR
 		public:
 			virtual ~UserFileComparator();
 
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
 		};
 
 		class UserFileTimeComparator : public Data::Comparator<UserFileInfo*>
@@ -136,7 +136,7 @@ namespace SSWR
 		public:
 			virtual ~UserFileTimeComparator();
 
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
 		};
 
 		class UserFileSpeciesComparator : public Data::Comparator<UserFileInfo*>
@@ -144,7 +144,7 @@ namespace SSWR
 		public:
 			virtual ~UserFileSpeciesComparator();
 
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
 		};
 
 		class WebFileSpeciesComparator : public Data::Comparator<WebFileInfo*>
@@ -152,7 +152,7 @@ namespace SSWR
 		public:
 			virtual ~WebFileSpeciesComparator();
 
-			virtual OSInt Compare(WebFileInfo *a, WebFileInfo *b);
+			virtual OSInt Compare(WebFileInfo *a, WebFileInfo *b) const;
 		};
 
 		class OrganEnv

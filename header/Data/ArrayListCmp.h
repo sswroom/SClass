@@ -12,7 +12,7 @@ namespace Data
 		ArrayListCmp(UOSInt Capacity);
 
 		virtual Data::ArrayList<Data::IComparable*> *Clone() const;
-		virtual OSInt CompareItem(Data::IComparable* obj1, Data::IComparable* obj2) const;
+		virtual OSInt Compare(Data::IComparable* obj1, Data::IComparable* obj2) const;
 	};
 }
 #endif

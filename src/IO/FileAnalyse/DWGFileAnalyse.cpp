@@ -12,7 +12,7 @@ class DWGFileAnalyseComparator : public Data::Comparator<IO::FileAnalyse::DWGFil
 public:
 	virtual ~DWGFileAnalyseComparator(){};
 
-	virtual OSInt Compare(IO::FileAnalyse::DWGFileAnalyse::PackInfo *a, IO::FileAnalyse::DWGFileAnalyse::PackInfo *b)
+	virtual OSInt Compare(IO::FileAnalyse::DWGFileAnalyse::PackInfo *a, IO::FileAnalyse::DWGFileAnalyse::PackInfo *b) const
 	{
 		if (a->fileOfst > b->fileOfst)
 		{

@@ -1,16 +1,17 @@
 #ifndef _SM_DATA_SORTABLEARRAYLIST
 #define _SM_DATA_SORTABLEARRAYLIST
 #include "Data/ArrayList.h"
+#include "Data/Comparator.h"
 
 namespace Data
 {
-	template <class T> class SortableArrayList : public Data::ArrayList<T>
+	template <class T> class SortableArrayList : public Data::ArrayList<T>, public Comparator<T>
 	{
 	public:
 		SortableArrayList() : ArrayList<T>() {};
 		SortableArrayList(UOSInt capacity) : ArrayList<T>() {};
 
-		virtual OSInt CompareItem(T obj1, T obj2) const = 0;
+		virtual OSInt Compare(T obj1, T obj2) const = 0;
 		UOSInt SortedInsert(T val);
 		OSInt SortedIndexOf(T val) const;
 	};
@@ -26,7 +27,7 @@ namespace Data
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
-			l = this->CompareItem(this->arr[k], val);
+			l = this->Compare(this->arr[k], val);
 			if (l > 0)
 			{
 				j = k - 1;
@@ -56,7 +57,7 @@ namespace Data
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
-			l = this->CompareItem(this->arr[k], val);
+			l = this->Compare(this->arr[k], val);
 			if (l > 0)
 			{
 				j = k - 1;

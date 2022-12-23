@@ -3,6 +3,7 @@
 #include "DB/ReadingDB.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -19,6 +20,11 @@ namespace SSWR
 			UI::GUITextBox *txtSchema;
 			UI::GUILabel *lblTable;
 			UI::GUITextBox *txtTable;
+			UI::GUILabel *lblKeyCol;
+			UI::GUIComboBox *cboKeyCol;
+			UI::GUILabel *lblNullCol;
+			UI::GUIComboBox *cboNullCol;
+			UI::GUICheckBox *chkNoHeader;
 			UI::GUILabel *lblCSV;
 			UI::GUITextBox *txtCSV;
 			UI::GUIButton *btnBrowse;
@@ -46,6 +52,7 @@ namespace SSWR
 			Bool LoadCSV(Text::CString fileName);
 			Bool GenerateSQL(Text::CString csvFileName, Text::CString sqlFileName, DB::DBUtil::SQLType sqlType);
 			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s);
+			Text::CString GetNullText();
 		public:
 			AVIRDBCheckChgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schema, Text::CString table);
 			virtual ~AVIRDBCheckChgForm();

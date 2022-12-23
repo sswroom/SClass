@@ -1218,6 +1218,7 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 			break;
 		case DB::DBUtil::CT_Double:
 		case DB::DBUtil::CT_Float:
+		case DB::DBUtil::CT_Decimal:
 			break;
 		case DB::DBUtil::CT_Int16:
 		case DB::DBUtil::CT_UInt16:
@@ -1272,6 +1273,7 @@ DB::ODBCReader::~ODBCReader()
 			break;
 		case DB::DBUtil::CT_Double:
 		case DB::DBUtil::CT_Float:
+		case DB::DBUtil::CT_Decimal:
 			break;
 		case DB::DBUtil::CT_Int16:
 		case DB::DBUtil::CT_UInt16:
@@ -1503,6 +1505,42 @@ Bool DB::ODBCReader::ReadNext()
 					}
 				}
 				break;
+			case DB::DBUtil::CT_Decimal:
+				{
+					UTF8Char sbuff[256];
+					ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, sbuff, 256, &len);
+					if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_SUCCESS)
+					{
+						if (len == SQL_NULL_DATA)
+						{
+							this->colDatas[i].isNull = true;
+						}
+						else if (len == 0)
+						{
+							this->colDatas[i].isNull = true;
+						}
+						else if (len > 0 && len <= 255)
+						{
+							if (ret == SQL_SUCCESS_WITH_INFO)
+							{
+	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
+								this->conn->LogSQLError(this->hStmt);
+							}
+							sbuff[len] = 0;
+							*(Double*)&this->colDatas[i].dataVal = Text::StrToDouble(sbuff);
+							this->colDatas[i].isNull = false;
+						}
+						else
+						{
+							this->colDatas[i].isNull = true;
+						}
+					}
+					else
+					{
+						this->colDatas[i].isNull = true;
+					}
+				}
+				break;
 			case DB::DBUtil::CT_Int16:
 			case DB::DBUtil::CT_UInt16:
 			case DB::DBUtil::CT_UInt32:
@@ -1676,6 +1714,7 @@ Int32 DB::ODBCReader::GetInt32(UOSInt colIndex)
 		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return Double2Int32(*(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
@@ -1718,6 +1757,7 @@ Int64 DB::ODBCReader::GetInt64(UOSInt colIndex)
 		return Text::StrToInt64(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return (Int64)(*(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
@@ -1761,6 +1801,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 		return Text::StrUTF8_WChar(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), 0);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return Text::StrDouble(buff, *(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
@@ -1814,6 +1855,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 		return true;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		Text::SBAppendF64(sb, *(Double*)&this->colDatas[colIndex].dataVal);
 		return true;
 	case DB::DBUtil::CT_Int16:
@@ -1880,6 +1922,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		sptr = Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
 		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Int16:
@@ -1943,6 +1986,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 		return Text::StrConcatS(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), buffSize);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return Text::StrDouble(buff, *(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
@@ -2003,6 +2047,7 @@ Data::Timestamp DB::ODBCReader::GetTimestamp(UOSInt colIndex)
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return Data::Timestamp(0);
 	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int16:
@@ -2045,6 +2090,7 @@ Double DB::ODBCReader::GetDbl(UOSInt colIndex)
 		return Text::StrToDouble(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return *(Double*)&this->colDatas[colIndex].dataVal;
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
@@ -2090,6 +2136,7 @@ Bool DB::ODBCReader::GetBool(UOSInt colIndex)
 		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString()) != 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return (*(Double*)&this->colDatas[colIndex].dataVal) != 0;
 	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int16:
@@ -2132,6 +2179,7 @@ UOSInt DB::ODBCReader::GetBinarySize(UOSInt colIndex)
 		return 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return 0;
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
@@ -2174,6 +2222,7 @@ UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 		return 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Decimal:
 		return 0;
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:

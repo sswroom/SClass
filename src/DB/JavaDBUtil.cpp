@@ -113,6 +113,7 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF8 *sb, DB::ColDef *c
 		case DB::DBUtil::CT_UInt64:
 		case DB::DBUtil::CT_Double:
 		case DB::DBUtil::CT_Float:
+		case DB::DBUtil::CT_Decimal:
 			isObj = false;
 			break;
 		case DB::DBUtil::CT_UTF8Char:

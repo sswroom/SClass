@@ -20,7 +20,7 @@ Data::ArrayList<Data::IComparable*> *Data::ArrayListCmp::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListCmp::CompareItem(Data::IComparable* obj1, Data::IComparable* obj2) const
+OSInt Data::ArrayListCmp::Compare(Data::IComparable* obj1, Data::IComparable* obj2) const
 {
 	return obj1->CompareTo(obj2);
 }

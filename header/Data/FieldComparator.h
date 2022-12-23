@@ -17,7 +17,7 @@ namespace Data
 		FieldComparator(Text::CString compareConds);
 		virtual ~FieldComparator();
 
-		virtual OSInt Compare(VariObject *a, VariObject *b);
+		virtual OSInt Compare(VariObject *a, VariObject *b) const;
 		Bool IsValid();
 		Bool ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::SQLType sqlType);
 

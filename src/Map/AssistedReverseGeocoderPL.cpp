@@ -12,7 +12,7 @@ Map::AssistedReverseGeocoderPL::AddressComparator::~AddressComparator()
 {
 }
 
-OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(AddressEntry *a, AddressEntry *b)
+OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(AddressEntry *a, AddressEntry *b) const
 {
 	if (a->keyx > b->keyx)
 	{

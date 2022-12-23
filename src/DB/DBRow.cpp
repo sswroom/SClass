@@ -51,6 +51,7 @@ DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field) const
 		return DT_INT64;
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Double:
+	case DB::DBUtil::CT_Decimal:
 		return DT_DOUBLE;
 	case DB::DBUtil::CT_Vector:
 		return DT_VECTOR;

@@ -113,6 +113,8 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_DOUBLE;
 		case DB::DBUtil::CT_Float:
 			return Net::MySQLUtil::MYSQL_TYPE_FLOAT;
+		case DB::DBUtil::CT_Decimal:
+			return Net::MySQLUtil::MYSQL_TYPE_DECIMAL;
 		case DB::DBUtil::CT_Bool:
 			return Net::MySQLUtil::MYSQL_TYPE_BIT;
 		case DB::DBUtil::CT_Byte:
@@ -144,7 +146,7 @@ DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType 
 	switch (colType)
 	{
 		case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
-			return DB::DBUtil::CT_Double;
+			return DB::DBUtil::CT_Decimal;
 		case Net::MySQLUtil::MYSQL_TYPE_TINY:
 			return DB::DBUtil::CT_Byte;
 		case Net::MySQLUtil::MYSQL_TYPE_SHORT:
