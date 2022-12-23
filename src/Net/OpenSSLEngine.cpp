@@ -169,7 +169,11 @@ Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Pa
 		ipadding = RSA_PKCS1_PSS_PADDING;
 		break;
 	case Crypto::Encrypt::RSACipher::Padding::PKCS1_WithTLS:
+#if defined(RSA_PKCS1_WITH_TLS_PADDING)
 		ipadding = RSA_PKCS1_WITH_TLS_PADDING;
+#else
+		ipadding = 7;
+#endif
 		break;
 	default:
 		return false;
