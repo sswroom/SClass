@@ -132,6 +132,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		dialog = gtk_file_chooser_dialog_new("Save File", 0, GTK_FILE_CHOOSER_ACTION_SAVE,  "Cancel", GTK_RESPONSE_CANCEL, "Save", GTK_RESPONSE_ACCEPT, (void*)0);
 		chooser = GTK_FILE_CHOOSER(dialog);
 		gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+		gtk_file_chooser_set_create_folders(chooser, TRUE);
 	}
 	else
 	{

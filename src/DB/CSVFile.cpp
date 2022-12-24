@@ -7,6 +7,7 @@
 #include "DB/TableDef.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
+#include "Math/MSGeography.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -746,6 +747,64 @@ UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 
 Math::Geometry::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
 {
+	if (colIndex >= nCol)
+		return 0;
+	if (nullIfEmpty)
+	{
+		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		{
+			return 0;
+		}
+	}
+	const UTF8Char *ptr = cols[colIndex];
+	if (Text::StrStartsWith(ptr, (const UTF8Char*)"0x"))
+	{
+		Text::StringBuilderUTF8 sb;
+		UInt8 v = 0;
+		UTF8Char c;
+		ptr += 2;
+		while (true)
+		{
+			c = ptr[0];
+			if (c >= '0' && c <= '9')
+			{
+				v = (UInt8)(c - 0x30);
+			}
+			else if (c >= 'A' && c <= 'F')
+			{
+				v = (UInt8)(c - 0x37);
+			}
+			else if (c >= 'a' && c <= 'f')
+			{
+				v = (UInt8)(c - 0x57);
+			}
+			else
+			{
+				break;
+			}
+			c = ptr[1];
+			if (c >= '0' && c <= '9')
+			{
+				v = (UInt8)((v << 4) + c - 0x30);
+			}
+			else if (c >= 'A' && c <= 'F')
+			{
+				v = (UInt8)((v << 4) + c - 0x37);
+			}
+			else if (c >= 'a' && c <= 'f')
+			{
+				v = (UInt8)((v << 4) + c - 0x57);
+			}
+			else
+			{
+				return 0;
+			}
+			sb.AppendUTF8Char(v);
+			ptr += 2;
+		}
+		Math::Geometry::Vector2D *vec = Math::MSGeography::ParseBinary(sb.ToString(), sb.GetLength(), 0);
+		return vec;
+	}
 	return 0;
 }
 

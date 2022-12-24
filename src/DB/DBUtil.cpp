@@ -1497,7 +1497,7 @@ UOSInt DB::DBUtil::SDBSngLeng(Single val, DB::DBUtil::SQLType sqlType)
 
 UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::DBUtil::SQLType sqlType)
 {
-	if (sqlType == DB::DBUtil::SQLType::Oracle || sqlType == DB::DBUtil::SQLType::SQLite)
+	if (sqlType == DB::DBUtil::SQLType::Oracle || sqlType == DB::DBUtil::SQLType::SQLite || sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
 		if (val)
 		{

@@ -92,14 +92,19 @@ namespace Data
 			return (this->sec % 86400LL) * 1000 + this->nanosec / 1000000;
 		};
 
-		Int64 DiffMS(TimeInstant ts) const
+		Int64 DiffMS(const TimeInstant &ts) const
 		{
 			return (this->sec - ts.sec) * 1000LL + (this->nanosec / 1000000) - (ts.nanosec / 1000000);
 		}
 
-		Int64 DiffSec(TimeInstant ts) const
+		Int64 DiffSec(const TimeInstant &ts) const
 		{
 			return this->sec - ts.sec;
+		}
+
+		Double DiffSecDbl(const TimeInstant &ts) const
+		{
+			return (Double)(this->sec - ts.sec) + (Int32)(this->nanosec - ts.nanosec) / 1000000000.0;
 		}
 
 		Int64 ToTicks() const

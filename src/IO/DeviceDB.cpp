@@ -1565,6 +1565,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x1686, 0x0045, 0x0000, "USB Audio Device",                                  "ZOOM H4n"},
 	{0x1686, 0x06E5, 0x0001, "ZOOM Corporation F3",                               "ZOOM F3"},
 	{0x1686, 0xF028, 0x0013, "ZOOM Corporation UAC-2",                            "ZOOM UAC-2 Audio"},
+	{0x1686, 0xF029, 0x0013, "ZOOM Corporation UAC-2",                            "ZOOM UAC-2 Audio"},
 	{0x174C, 0x1153, 0x0000, "ASMedia AS2115",                                    "ASMedia ASM1153"},
 	{0x174C, 0x5106, 0x8000, "StoreJet Transcend StoreJet Transcend",             "ASMedia ASM1051"},
 	{0x174C, 0x5136, 0x0000, "USB Mass Storage",                                  "ASMedia ASM1053"},

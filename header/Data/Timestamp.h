@@ -156,14 +156,19 @@ namespace Data
 			return this->inst.AddSecond((OSInt)this->tzQhr * 900).GetMSPassedDate();
 		};
 
-		Int64 DiffSec(Timestamp ts) const
+		Int64 DiffSec(const Timestamp &ts) const
 		{
 			return this->inst.DiffSec(ts.inst);
 		}
 
-		Int64 DiffMS(Timestamp ts) const
+		Int64 DiffMS(const Timestamp &ts) const
 		{
 			return this->inst.DiffMS(ts.inst);
+		}
+
+		Double DiffSecDbl(const Timestamp &ts) const
+		{
+			return this->inst.DiffSecDbl(ts.inst);
 		}
 
 		Int64 ToTicks() const

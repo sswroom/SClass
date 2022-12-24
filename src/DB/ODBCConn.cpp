@@ -830,6 +830,10 @@ void *DB::ODBCConn::BeginTransaction()
 	SQLRETURN ret = SQLSetConnectAttr(this->connHand, SQL_ATTR_AUTOCOMMIT, &mode, sizeof(mode));
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
+		if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+		{
+			this->ExecuteNonQuery(CSTR("BEGIN TRANSACTION"));
+		}
 		isTran = true;
 		return (void*)-1;
 	}
@@ -844,6 +848,10 @@ void DB::ODBCConn::Commit(void *tran)
 	if (!isTran)
 		return;
 
+	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	{
+		this->ExecuteNonQuery(CSTR("COMMIT"));
+	}
 	SQLUINTEGER mode;
 	isTran = false;
 	mode = SQL_AUTOCOMMIT_ON;
@@ -856,6 +864,10 @@ void DB::ODBCConn::Rollback(void *tran)
 	if (!isTran)
 		return;
 
+	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
+	{
+		this->ExecuteNonQuery(CSTR("ROLLBACK"));
+	}
 	SQLUINTEGER mode;
 	isTran = false;
 	mode = SQL_AUTOCOMMIT_ON;
