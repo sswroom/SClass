@@ -7,6 +7,7 @@
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "SSWR/AVIRead/AVIRImageBatchConvForm.h"
+#include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FolderDialog.h"
@@ -38,10 +39,11 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	UTF8Char *sptr2;
 	UTF8Char *sptr2End;
 	Text::StringBuilderUTF8 sb;
-	Int32 quality = 0;
+	ConvertSess csess;
+	csess.quality = 0;
 	me->txtQuality->GetText(sbuff);
-	quality = Text::StrToInt32(sbuff);
-	if (quality <= 0 || quality > 100)
+	csess.quality = Text::StrToInt32(sbuff);
+	if (csess.quality <= 0 || csess.quality > 100)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid Quality"), CSTR("Error"), me);
 		return;
@@ -58,23 +60,21 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	}
 
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	void *param;
 	IO::Path::FindFileSession *sess;
-	Bool succ = true;
-	IO::FileExporter *exporter;
+	csess.succ = true;
+	csess.errMsg = 0;
 	Text::CString ext;
 	if (me->radFormatWebP->IsSelected())
 	{
-		NEW_CLASS(exporter, Exporter::WebPExporter());
+		NEW_CLASS(csess.exporter, Exporter::WebPExporter());
 		ext = CSTR("webp");
 	}
 	else
 	{
-		NEW_CLASS(exporter, Exporter::GUIJPGExporter());
+		NEW_CLASS(csess.exporter, Exporter::GUIJPGExporter());
 		ext = CSTR("jpg");
 	}
 	IO::Path::PathType pt;
-	Media::ImageList *imgList;
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
@@ -95,62 +95,188 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		{
 			if (pt == IO::Path::PathType::File && !Text::StrEndsWithICaseC(sptr, (UOSInt)(sptrEnd - sptr), ext.v, ext.leng))
 			{
-				{
-					IO::StmData::FileData fd({sbuff, (UOSInt)(sptrEnd - sbuff)}, false);
-					imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
-				}
-				if (imgList)
-				{
-					imgList->ToStaticImage(0);
-					((Media::StaticImage*)imgList->GetImage(0, 0));
-					param = exporter->CreateParam(imgList);
-					Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
-					sptr2End = IO::Path::ReplaceExt(sptr2, ext.v, ext.leng);
-					if (param)
-					{
-						exporter->SetParamInt32(param, 0, quality);
-					}
-					{
-						IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (!exporter->ExportFile(&fs, CSTRP(sbuff2, sptr2End), imgList, param))
-						{
-							sb.ClearStr();
-							sb.AppendC(UTF8STRC("Error in converting to "));
-							sb.AppendP(sptr2, sptr2End);
-							sb.AppendC(UTF8STRC(", do you want to continue?"));
-							if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Image Batch Convert"), me))
-							{
-								succ = false;
-							}
-						}
-					}
-
-					if (param)
-					{
-						exporter->DeleteParam(param);
-					}
-					DEL_CLASS(imgList);
-				}
-				else
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Error in loading "));
-					sb.AppendP(sptr, sptrEnd);
-					sb.AppendC(UTF8STRC(", do you want to continue?"));
-					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Image Batch Convert"), me))
-					{
-						succ = false;
-					}
-				}
+				Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
+				sptr2End = IO::Path::ReplaceExt(sptr2, ext.v, ext.leng);
+				me->MTConvertFile(&csess, CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2End));
 			}
-			if (!succ)
+			if (!csess.succ)
 			{
 				break;
 			}
 		}
 		IO::Path::FindFileClose(sess);
+		me->StopThreads();
 	}
-	DEL_CLASS(exporter);
+	DEL_CLASS(csess.exporter);
+	if (csess.errMsg)
+	{
+		UI::MessageDialog::ShowDialog(csess.errMsg->ToCString(), CSTR("Image Batch Convert"), me);
+		csess.errMsg->Release();
+		csess.errMsg = 0;
+	}
+}
+
+UInt32 __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::ThreadFunc(void *userObj)
+{
+	ThreadState *state = (ThreadState*)userObj;
+	{
+		Sync::Event evt;
+		state->evt = &evt;
+		state->status = ThreadStatus::Idle;
+		state->me->threadEvt.Set();
+		while (!state->me->threadToStop || state->hasData)
+		{
+			if (state->hasData)
+			{
+				Text::String *srcFile;
+				Text::String *destFile;
+				state->status = ThreadStatus::Processing;
+				state->hasData = false;
+				srcFile = state->srcFile;
+				destFile = state->destFile;
+				state->me->ConvertFile(state->sess, srcFile->ToCString(), destFile->ToCString());
+				srcFile->Release();
+				destFile->Release();
+
+				state->status = ThreadStatus::Idle;
+				state->me->threadEvt.Set();
+			}
+			state->evt->Wait(1000);
+		}
+	}
+	state->status = ThreadStatus::Stopped;
+	state->me->threadEvt.Set();
+	return 0;
+}
+
+void SSWR::AVIRead::AVIRImageBatchConvForm::StartThreads()
+{
+	if (this->threadStates)
+	{
+		return;
+	}
+	this->threadToStop = false;
+	this->nThreads = Sync::Thread::GetThreadCnt();
+	this->threadStates = MemAlloc(ThreadState, this->nThreads);
+	UOSInt i = this->nThreads;
+	while (i-- > 0)
+	{
+		this->threadStates[i].status = ThreadStatus::NotStarted;
+		this->threadStates[i].hasData = false;
+		this->threadStates[i].me = this;
+		Sync::Thread::Create(ThreadFunc, &this->threadStates[i]);
+	}
+}
+
+void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
+{
+	if (this->threadStates == 0)
+	{
+		return;
+	}
+	this->threadToStop = true;
+	UOSInt i = this->nThreads;
+	while (i-- > 0)
+	{
+		this->threadStates[i].evt->Set();
+	}
+	Bool found;
+	while (true)
+	{
+		found = false;
+		i = this->nThreads;
+		while (i-- > 0)
+		{
+			if (this->threadStates[i].status != ThreadStatus::Stopped)
+			{
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			break;
+		}
+		this->threadEvt.Wait(1000);
+	}
+}
+
+void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile)
+{
+	if (this->threadStates == 0)
+	{
+		this->StartThreads();
+	}
+	Bool found = false;
+	while (true)
+	{
+		UOSInt i = this->nThreads;
+		while (i-- > 0)
+		{
+			if (this->threadStates[i].status == ThreadStatus::Idle && !this->threadStates[i].hasData)
+			{
+				this->threadStates[i].sess = sess;
+				this->threadStates[i].srcFile = Text::String::New(srcFile);
+				this->threadStates[i].destFile = Text::String::New(destFile);
+				this->threadStates[i].hasData = true;
+				this->threadStates[i].evt->Set();
+				found = true;
+				break;
+			}
+		}
+		if (found)
+			break;
+		this->threadEvt.Wait(1000);
+	}
+}
+
+void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile)
+{
+	Media::ImageList *imgList;
+	void *param;
+	{
+		IO::StmData::FileData fd(srcFile, false);
+		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(&fd, IO::ParserType::ImageList);
+	}
+	if (imgList)
+	{
+		imgList->ToStaticImage(0);
+		((Media::StaticImage*)imgList->GetImage(0, 0));
+		param = sess->exporter->CreateParam(imgList);
+		if (param)
+		{
+			sess->exporter->SetParamInt32(param, 0, sess->quality);
+		}
+		{
+			IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!sess->exporter->ExportFile(&fs, destFile, imgList, param))
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("Error in converting to "));
+				sb.Append(destFile);
+				Sync::MutexUsage mutUsage(&sess->mut);
+				sess->succ = false;
+				SDEL_STRING(sess->errMsg);
+				sess->errMsg = Text::String::New(sb.ToCString());
+			}
+		}
+
+		if (param)
+		{
+			sess->exporter->DeleteParam(param);
+		}
+		DEL_CLASS(imgList);
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Error in loading "));
+		sb.Append(srcFile);
+		Sync::MutexUsage mutUsage(&sess->mut);
+		sess->succ = false;
+		SDEL_STRING(sess->errMsg);
+		sess->errMsg = Text::String::New(sb.ToCString());
+	}
 }
 
 SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 184, ui)
@@ -161,6 +287,8 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->nThreads = 0;
+	this->threadStates = 0;
 
 	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this, CSTR("Folder")));
 	this->lblDir->SetRect(0, 0, 100, 23, false);
@@ -190,6 +318,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 
 SSWR::AVIRead::AVIRImageBatchConvForm::~AVIRImageBatchConvForm()
 {
+	this->StopThreads();
 }
 
 void SSWR::AVIRead::AVIRImageBatchConvForm::OnMonitorChanged()

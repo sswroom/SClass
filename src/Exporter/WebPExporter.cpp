@@ -148,7 +148,7 @@ Bool Exporter::WebPExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		if (icc)
 		{
 			data.bytes = icc;
-			data.size = (size_t)ReadUInt32(icc);
+			data.size = (size_t)ReadMUInt32(icc);
 			WebPMuxSetChunk(mux, "ICCP", &data, 0);
 		}
 		if (img->exif)
