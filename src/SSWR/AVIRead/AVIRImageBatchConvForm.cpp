@@ -199,6 +199,8 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 		}
 		this->threadEvt.Wait(1000);
 	}
+	MemFree(this->threadStates);
+	this->threadStates = 0;
 }
 
 void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Text::CString srcFile, Text::CString destFile)
