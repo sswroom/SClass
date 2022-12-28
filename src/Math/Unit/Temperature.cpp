@@ -37,11 +37,11 @@ Text::CString Math::Unit::Temperature::GetUnitShortName(TemperatureUnit unit)
 	switch (unit)
 	{
 	case TU_CELSIUS:
-		return CSTR(c);
+		return Text::CString(c, 3);
 	case TU_KELVIN:
 		return CSTR("K");
 	case TU_FAHRENHEIT:
-		return CSTR(f);
+		return Text::CString(f, 3);
 	}
 	return CSTR("");
 }

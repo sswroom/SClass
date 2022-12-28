@@ -257,7 +257,7 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 
 	IO::ParsedObject *pobj;
 	IO::Stream *stm;
-	pobj = Net::URL::OpenObject(url, CSTR(userAgent), sockf, ssl);
+	pobj = Net::URL::OpenObject(url, STR_CSTR(userAgent), sockf, ssl);
 	if (pobj == 0)
 	{
 		return;
