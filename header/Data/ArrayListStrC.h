@@ -11,7 +11,7 @@ namespace Data
 		ArrayListStrC(UOSInt capacity);
 
 		virtual Data::ArrayList<const Char*> *Clone() const;
-		virtual OSInt CompareItem(const Char* obj1, const Char* obj2) const;
+		virtual OSInt Compare(const Char* obj1, const Char* obj2) const;
 	};
 }
 #endif

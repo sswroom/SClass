@@ -27,6 +27,10 @@
 extern "C" DWORD SetProcPermissions(DWORD newperms);
 #endif
 
+#ifndef IMAGE_FILE_MACHINE_ARM64
+#define IMAGE_FILE_MACHINE_ARM64 0xAA64
+#endif
+
 #if !defined(__MINGW32__)
 typedef struct _SYSTEM_HANDLE_ENTRY {
 	ULONG OwnerPid;

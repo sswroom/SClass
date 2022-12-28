@@ -19,7 +19,7 @@ Data::ArrayList<const Char*> *Data::ArrayListStrC::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrC::CompareItem(const Char* obj1, const Char* obj2) const
+OSInt Data::ArrayListStrC::Compare(const Char* obj1, const Char* obj2) const
 {
 	return Text::StrCompare(obj1, obj2);
 }
