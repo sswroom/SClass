@@ -20,7 +20,7 @@ Data::ArrayList<const WChar*> *Data::ArrayListICaseStrW::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseStrW::CompareItem(const WChar* obj1, const WChar* obj2) const
+OSInt Data::ArrayListICaseStrW::Compare(const WChar* obj1, const WChar* obj2) const
 {
 	return Text::StrCompareICase(obj1, obj2);
 }

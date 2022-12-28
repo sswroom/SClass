@@ -20,7 +20,7 @@ Data::ArrayList<const WChar*> *Data::ArrayListStrW::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrW::CompareItem(const WChar* obj1, const WChar* obj2) const
+OSInt Data::ArrayListStrW::Compare(const WChar* obj1, const WChar* obj2) const
 {
 	return Text::StrCompare(obj1, obj2);
 }

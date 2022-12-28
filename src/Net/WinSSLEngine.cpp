@@ -424,10 +424,10 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 	HCRYPTPROV hProv;
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA || keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		if (CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
+/*		if (CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
 		{
 			return hProv;
-		}
+		}*/
 		if (CryptAcquireContextW(&hProv, containerName, MS_ENH_RSA_AES_PROV_W, PROV_RSA_AES, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
 		{
 			return hProv;
