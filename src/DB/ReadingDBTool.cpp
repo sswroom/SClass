@@ -47,6 +47,7 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogH
 DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix)
 {
 	this->db = db;
+	this->currDBName = 0;
 	this->needRelease = needRelease;
 	this->log = log;
 	this->lastReader = 0;
@@ -339,6 +340,7 @@ UOSInt DB::ReadingDBTool::SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Cha
 DB::ReadingDBTool::~ReadingDBTool()
 {
 	SDEL_STRING(this->logPrefix);
+	SDEL_STRING(this->currDBName);
 	if (this->db && this->needRelease)
 	{
 		DEL_CLASS(db);
@@ -801,7 +803,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 	return this->db->GetTableDef(schemaName, tableName);
 }
 
-UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr)
+UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<Text::String*> *arr)
 {
 	switch (this->sqlType)
 	{
@@ -817,7 +819,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -841,7 +843,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -864,7 +866,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 		{
 			sb.RemoveChars(sb.GetLength() - (UOSInt)i);
 		}
-		arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+		arr->Add(Text::String::New(sb.ToCString()));
 		return 1;
 	}
 	case DB::DBUtil::SQLType::PostgreSQL:
@@ -879,7 +881,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+					arr->Add(Text::String::New(sb.ToCString()));
 					ret++;
 				}
 			}
@@ -901,28 +903,29 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 	}
 }
 
-void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *arr)
+void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr)
 {
-	UOSInt i = arr->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(arr->GetItem(i));
-	}
-	arr->Clear();
+	LIST_FREE_STRING(arr);
 }
 
-Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
+Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 {
 	UTF8Char sbuff[256];
 	if (this->sqlType == DB::DBUtil::SQLType::MSSQL)
 	{
-		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
+		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
 		if (r)
 		{
 			OSInt rowChg = r->GetRowChanged();
 			this->CloseReader(r);
-			return rowChg >= -1;
+			if (rowChg >= -1)
+			{
+				SDEL_STRING(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
+				return true;
+			}
+			return false;
 		}
 		else
 		{
@@ -931,13 +934,19 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	}
 	else if (this->sqlType == DB::DBUtil::SQLType::MySQL)
 	{
-		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
+		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
 		if (r)
 		{
 			OSInt rowChg = r->GetRowChanged();
 			this->CloseReader(r);
-			return rowChg >= -1;
+			if (rowChg >= -1)
+			{
+				SDEL_STRING(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
+				return true;
+			}
+			return false;
 		}
 		else
 		{
@@ -948,19 +957,31 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	{
 		if (this->db && this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
 		{
-			return ((DB::PostgreSQLConn*)this->db)->ChangeDatabase(Text::CString::FromPtr(databaseName));
+			if (((DB::PostgreSQLConn*)this->db)->ChangeDatabase(databaseName))
+			{
+				SDEL_STRING(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
+				return true;
+			}
+			return false;
 		}
 		else
 		{
 			return false;
 		}
-		UTF8Char *sptr = this->DBStrUTF8(Text::StrConcatC(sbuff, UTF8STRC("SET search_path = ")), databaseName);
+		UTF8Char *sptr = this->DBStrUTF8(Text::StrConcatC(sbuff, UTF8STRC("SET search_path = ")), databaseName.v);
 		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
 		if (r)
 		{
 			OSInt rowChg = r->GetRowChanged();
 			this->CloseReader(r);
-			return rowChg >= -1;
+			if (rowChg >= -1)
+			{
+				SDEL_STRING(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
+				return true;
+			}
+			return false;
 		}
 		else
 		{
@@ -968,6 +989,11 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 		}
 	}
 	return false;
+}
+
+Text::String *DB::ReadingDBTool::GetCurrDBName()
+{
+	return this->currDBName;
 }
 
 UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars)

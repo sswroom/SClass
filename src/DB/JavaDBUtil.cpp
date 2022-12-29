@@ -7,18 +7,22 @@
 
 #define LOGPREFIX CSTR("DB:")
 
-Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF8 *sb, DB::ColDef *colDef)
+Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF8 *sb, DB::ColDef *colDef, Data::StringMap<Bool> *importMap)
 {
 	if (colDef->IsPK())
 	{
+		importMap->Put(CSTR("javax.persistence.Id"), true);
 		sb->AppendC(UTF8STRC("\t@Id\r\n"));
 		if (colDef->IsAutoInc())
 		{
 			sb->AppendC(UTF8STRC("\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n"));
+			importMap->Put(CSTR("javax.persistence.GeneratedValue"), true);
+			importMap->Put(CSTR("javax.persistence.GenerationType"), true);
 		}
 	}
 	if (colDef->GetColName()->HasUpperCase())
 	{
+		importMap->Put(CSTR("javax.persistence.Column"), true);
 		sb->AppendC(UTF8STRC("\t@Column(name="));
 		Text::String *s = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
 		sb->Append(s);
@@ -32,10 +36,19 @@ Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF8 *sb, DB::C
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName)
+void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName, Data::StringMap<Bool> *importMap)
 {
 	sb->AppendC(UTF8STRC("\tprivate "));
-	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
+	DB::DBUtil::ColType colType = col->GetColType();
+	if (colType == DB::DBUtil::ColType::CT_Vector)
+	{
+		importMap->Put(CSTR("org.locationtech.jts.geom.Geometry"), true);
+	}
+	else if (colType == DB::DBUtil::ColType::CT_Date || colType == DB::DBUtil::ColType::CT_DateTime || colType == DB::DBUtil::ColType::CT_DateTimeTZ)
+	{
+		importMap->Put(CSTR("java.sql.Timestamp"), true);
+	}
+	sb->Append(Text::JavaText::GetJavaTypeName(colType, col->IsNotNull()));
 	sb->AppendUTF8Char(' ');
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	sb->AppendC(UTF8STRC(";\r\n"));
@@ -219,24 +232,34 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 	return 0;
 }
 
-Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *schemaName, Text::String *tableName, DB::ReadingDBTool *db)
+Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, DB::ReadingDBTool *db)
 {
+	Data::StringMap<Bool> importMap;
+	Text::StringBuilderUTF8 sbCode;
 	Text::StringBuilderUTF8 sbConstrHdr;
 	Text::StringBuilderUTF8 sbConstrItem;
 	Text::StringBuilderUTF8 sbGetterSetter;
 	Text::StringBuilderUTF8 sbEquals;
 	Text::StringBuilderUTF8 sbHashCode;
 	Text::StringBuilderUTF8 sbFieldOrder;
-	sb->AppendC(UTF8STRC("@Entity\r\n"));
-	sb->AppendC(UTF8STRC("@Table(name="));
-	Text::JSText::ToJSTextDQuote(sb, tableName->v);
+	importMap.Put(CSTR("javax.persistence.Entity"), true);
+	importMap.Put(CSTR("javax.persistence.Table"), true);
+
+	sbCode.AppendC(UTF8STRC("@Entity\r\n"));
+	sbCode.AppendC(UTF8STRC("@Table(name="));
+	Text::JSText::ToJSTextDQuote(&sbCode, tableName->v);
 	if (schemaName)
 	{
-		sb->AppendC(UTF8STRC(", schema="));
-		Text::JSText::ToJSTextDQuote(sb, schemaName->v);
+		sbCode.AppendC(UTF8STRC(", schema="));
+		Text::JSText::ToJSTextDQuote(&sbCode, schemaName->v);
 	}
-	sb->AppendC(UTF8STRC(")\r\n"));
-	sb->AppendC(UTF8STRC("public class "));
+	if (databaseName)
+	{
+		sbCode.AppendC(UTF8STRC(", catalog="));
+		Text::JSText::ToJSTextDQuote(&sbCode, databaseName->v);
+	}
+	sbCode.AppendC(UTF8STRC(")\r\n"));
+	sbCode.AppendC(UTF8STRC("public class "));
 	Text::String *clsName;
 	if (Text::StrHasUpperCase(tableName->v))
 	{
@@ -247,8 +270,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *sch
 	{
 		clsName = tableName->Clone();
 	}
-	Text::JavaText::ToJavaName(sb, clsName->v, true);
-	sb->AppendC(UTF8STRC("\r\n"));
+	Text::JavaText::ToJavaName(&sbCode, clsName->v, true);
+	sbCode.AppendC(UTF8STRC("\r\n"));
 
 	sbConstrHdr.AppendC(UTF8STRC("\r\n"));
 	sbConstrHdr.AppendC(UTF8STRC("\tpublic "));
@@ -293,7 +316,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *sch
 	sbFieldOrder.AppendC(UTF8STRC("\tpublic static String[] getFieldOrder() {\r\n"));
 	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
 
-	sb->AppendC(UTF8STRC("{\r\n"));
+	sbCode.AppendC(UTF8STRC("{\r\n"));
 	DB::TableDef *tableDef = db->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
 	Text::String *colName;
 	if (tableDef)
@@ -306,8 +329,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *sch
 		while (j < k)
 		{
 			colDef = tableDef->GetCol(j);
-			colName = AppendFieldAnno(sb, colDef);
-			AppendFieldDef(sb, colDef, colName);
+			colName = AppendFieldAnno(&sbCode, colDef, &importMap);
+			AppendFieldDef(&sbCode, colDef, colName, &importMap);
 			AppendConstrHdr(&sbConstrHdr, colDef, colName, j + 1 == k);
 			AppendConstrItem(&sbConstrItem, colName);
 			AppendGetterSetter(&sbGetterSetter, colDef, colName);
@@ -330,8 +353,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *sch
 			{
 				if (r->GetColDef(j, &colDef))
 				{
-					colName = AppendFieldAnno(sb, &colDef);
-					AppendFieldDef(sb, &colDef, colName);
+					colName = AppendFieldAnno(&sbCode, &colDef, &importMap);
+					AppendFieldDef(&sbCode, &colDef, colName, &importMap);
 					AppendConstrHdr(&sbConstrHdr, &colDef, colName, j + 1 == k);
 					AppendConstrItem(&sbConstrItem, colName);
 					AppendGetterSetter(&sbGetterSetter, &colDef, colName);
@@ -354,14 +377,27 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *sch
 	sbHashCode.AppendC(UTF8STRC("\t}\r\n"));
 	sbFieldOrder.AppendC(UTF8STRC("\t\t};\r\n"));
 	sbFieldOrder.AppendC(UTF8STRC("\t}\r\n"));
+	importMap.Put(CSTR("org.sswr.util.data.DataTools"), true);
+	importMap.Put(CSTR("java.util.Objects"), true);
 
-	sb->AllocLeng(sbConstrHdr.GetLength() + sbConstrItem.GetLength() + sbGetterSetter.GetLength() + sbEquals.GetLength() + sbHashCode.GetLength() + sbFieldOrder.GetLength());
-	sb->AppendC(sbConstrHdr.ToString(), sbConstrHdr.GetLength());
-	sb->AppendC(sbConstrItem.ToString(), sbConstrItem.GetLength());
-	sb->AppendC(sbGetterSetter.ToString(), sbGetterSetter.GetLength());
-	sb->AppendC(sbEquals.ToString(), sbEquals.GetLength());
-	sb->AppendC(sbHashCode.ToString(), sbHashCode.GetLength());
-	sb->AppendC(sbFieldOrder.ToString(), sbFieldOrder.GetLength());
+	UOSInt i = 0;
+	UOSInt j = importMap.GetCount();
+	while (i < j)
+	{
+		sb->AppendC(UTF8STRC("import "));
+		sb->Append(importMap.GetKey(i));
+		sb->AppendC(UTF8STRC(";\r\n"));
+		i++;
+	}
+	sb->AllocLeng(sbCode.GetLength() + sbConstrHdr.GetLength() + sbConstrItem.GetLength() + sbGetterSetter.GetLength() + sbEquals.GetLength() + sbHashCode.GetLength() + sbFieldOrder.GetLength() + 2);
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->Append(sbCode.ToCString());
+	sb->Append(sbConstrHdr.ToCString());
+	sb->Append(sbConstrItem.ToCString());
+	sb->Append(sbGetterSetter.ToCString());
+	sb->Append(sbEquals.ToCString());
+	sb->Append(sbHashCode.ToCString());
+	sb->Append(sbFieldOrder.ToCString());
 	sb->AppendC(UTF8STRC("}\r\n"));
 	clsName->Release();
 	return true;

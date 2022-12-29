@@ -6,6 +6,7 @@
 #include "DB/JavaDBUtil.h"
 #include "DB/SQLGenerator.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "Map/BaseMapLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -213,7 +214,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(void *u
 		Text::String *dbName = me->lbDatabase->GetSelectedItemTextNew();
 		if (dbName)
 		{
-			if (me->currDB->ChangeDatabase(dbName->v))
+			if (me->currDB->ChangeDatabase(dbName->ToCString()))
 			{
 				me->UpdateTableData(CSTR_NULL, 0);
 				me->UpdateSchemaList();
@@ -360,15 +361,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	{
 		return;
 	}
-	const UTF8Char *dbName;
-	Data::ArrayList<const UTF8Char*> dbNames;
+	Text::String *dbName;
+	Data::ArrayList<Text::String*> dbNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->GetDatabaseNames(&dbNames);
 	ArtificialQuickSort_Sort(&dbNames, 0, (OSInt)(j - 1));
 	while (i < j)
 	{
 		dbName = dbNames.GetItem(i);
-		this->lbDatabase->AddItem({dbName, Text::StrCharCnt(dbName)}, 0);
+		this->lbDatabase->AddItem(dbName, 0);
 		i++;
 	}
 	this->currDB->ReleaseDatabaseNames(&dbNames);
@@ -1040,7 +1041,11 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu->AddItem(CSTR("Export Table Data as CSV"), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
-	if (DB::DBManager::RestoreConn(DBCONNFILE, &this->dbList, &this->log, this->core->GetSocketFactory()))
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
+	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, &this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;
 		DB::DBTool *db;
@@ -1072,7 +1077,11 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	DEL_CLASS(this->mnuConn);
 	DEL_CLASS(this->mapEnv);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
-	DB::DBManager::StoreConn(DBCONNFILE, &this->dbList);
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
+	DB::DBManager::StoreConn(CSTRP(sbuff, sptr), &this->dbList);
 	UOSInt i = this->dbList.GetCount();
 	DB::DBTool *db;
 	while (i-- > 0)
@@ -1240,8 +1249,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			Text::String *databaseName = 0;
+			if (this->currDB)
+				databaseName = this->currDB->GetCurrDBName();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, this->currDB);
+			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, databaseName, this->currDB);
 			tableName->Release();
 			schemaName->Release();
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());

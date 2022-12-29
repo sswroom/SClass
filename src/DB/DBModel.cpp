@@ -14,7 +14,7 @@ DB::DBModel::~DBModel()
 
 Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CString schemaName)
 {
-	if (dbName.v && !db->ChangeDatabase(dbName.v))
+	if (dbName.v && !db->ChangeDatabase(dbName))
 	{
 		return false;
 	}

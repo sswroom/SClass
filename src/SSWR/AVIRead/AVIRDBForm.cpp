@@ -501,8 +501,8 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
 		while (i < j)
 		{
-			const UTF8Char *dbName = this->dbNames.GetItem(i);
-			mnu->AddItem({dbName, Text::StrCharCnt(dbName)}, (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			Text::String *dbName = this->dbNames.GetItem(i);
+			mnu->AddItem(dbName->ToCString(), (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			i++;
 		}
 	}
@@ -593,7 +593,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	if (cmdId >= MNU_DATABASE_START)
 	{
-		if (this->dbt->ChangeDatabase(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START)))
+		if (this->dbt->ChangeDatabase(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START)->ToCString()))
 		{
 			this->UpdateTables();
 		}
@@ -668,7 +668,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, this->dbt);
+			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, 0, this->dbt);
 			tableName->Release();
 			SDEL_STRING(schemaName);
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());

@@ -43,6 +43,7 @@ namespace DB
 //		UTF8Char *connStr;
 		UInt32 openFail;
 		Bool needRelease;
+		Text::String *currDBName;
 
 		Text::String *logPrefix;
 
@@ -97,9 +98,10 @@ namespace DB
 		UOSInt QuerySchemaNames(Data::ArrayList<Text::String *> *arr);
 		DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 
-		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
-		void ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
-		Bool ChangeDatabase(const UTF8Char *databaseName);
+		UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *arr);
+		void ReleaseDatabaseNames(Data::ArrayList<Text::String*> *arr);
+		Bool ChangeDatabase(Text::CString databaseName);
+		Text::String *GetCurrDBName();
 
 		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
 		void FreeVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
