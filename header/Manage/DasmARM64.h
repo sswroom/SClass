@@ -51,12 +51,12 @@ namespace Manage
 					UInt64 X26;
 					UInt64 X27;
 					UInt64 X28;
-					UInt64 FP;
-					UInt64 SP;
+					UInt64 X29;
+					UInt64 LR; //X30
+					UInt64 SP; //X31
 					UInt64 PC;
-					UInt64 LR;
 				};
-				Int32 indexes[17];
+				UInt64 indexes[33];
 			};
 		};
 
@@ -79,7 +79,6 @@ namespace Manage
 			Manage::IMemoryReader *memReader;
 
 			void **codeHdlrs;
-			void **codeTHdlrs;
 			UTF8Char *outSPtr;
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 		} DasmARM64_Sess;
@@ -87,7 +86,6 @@ namespace Manage
 		typedef Bool (__stdcall *DasmARM64_Code)(DasmARM64_Sess *sess);
 	private:
 		DasmARM64_Code *codes;
-		DasmARM64_Code *codesT;
 	public:
 		DasmARM64();
 		virtual ~DasmARM64();

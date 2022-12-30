@@ -409,7 +409,7 @@ Bool Manage::ThreadContextARM64::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 	r->X26 = ((CONTEXT_TYPE*)this->context)->X26;
 	r->X27 = ((CONTEXT_TYPE*)this->context)->X27;
 	r->X28 = ((CONTEXT_TYPE*)this->context)->X28;
-	r->FP = ((CONTEXT_TYPE*)this->context)->Fp;
+	r->X29 = ((CONTEXT_TYPE*)this->context)->Fp;
 	r->SP = ((CONTEXT_TYPE*)this->context)->Sp;
 	r->PC = ((CONTEXT_TYPE*)this->context)->Pc;
 	r->LR = ((CONTEXT_TYPE*)this->context)->Lr;

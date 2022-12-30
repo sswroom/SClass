@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 	UOSInt slen;
 	UTF8Char *sbuff;
 	Text::PString sline[2];
-	Text::PString sarr[18];
+	Text::PString sarr[34];
 	Bool hasNext;
 
 	if (sMem)
@@ -94,6 +94,52 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 					me->lvMyStack->SetSubItem(i, 15, sarr[14].ToCString());
 					me->lvMyStack->SetSubItem(i, 16, sarr[15].ToCString());
 					me->lvMyStack->SetSubItem(i, 17, sarr[16].ToCString());
+				}
+				if (!hasNext)
+					break;
+			}
+		}
+		else if (me->contextType == Manage::ThreadContext::ContextType::ARM64)
+		{
+			while (true)
+			{
+				hasNext = Text::StrSplitP(sline, 2, sline[1], '\r') == 2;
+				if (Text::StrSplitP(sarr, 34, sline[0], ' ') == 34)
+				{
+					i = me->lvMyStack->AddItem(sarr[0].ToCString(), 0);
+					me->lvMyStack->SetSubItem(i, 1, sarr[1].ToCString());
+					me->lvMyStack->SetSubItem(i, 2, sarr[2].ToCString());
+					me->lvMyStack->SetSubItem(i, 3, sarr[33].ToCString());
+					me->lvMyStack->SetSubItem(i, 4, sarr[3].ToCString());
+					me->lvMyStack->SetSubItem(i, 5, sarr[4].ToCString());
+					me->lvMyStack->SetSubItem(i, 6, sarr[5].ToCString());
+					me->lvMyStack->SetSubItem(i, 7, sarr[6].ToCString());
+					me->lvMyStack->SetSubItem(i, 8, sarr[7].ToCString());
+					me->lvMyStack->SetSubItem(i, 9, sarr[8].ToCString());
+					me->lvMyStack->SetSubItem(i, 10, sarr[9].ToCString());
+					me->lvMyStack->SetSubItem(i, 11, sarr[10].ToCString());
+					me->lvMyStack->SetSubItem(i, 12, sarr[11].ToCString());
+					me->lvMyStack->SetSubItem(i, 13, sarr[12].ToCString());
+					me->lvMyStack->SetSubItem(i, 14, sarr[13].ToCString());
+					me->lvMyStack->SetSubItem(i, 15, sarr[14].ToCString());
+					me->lvMyStack->SetSubItem(i, 16, sarr[15].ToCString());
+					me->lvMyStack->SetSubItem(i, 17, sarr[16].ToCString());
+					me->lvMyStack->SetSubItem(i, 18, sarr[17].ToCString());
+					me->lvMyStack->SetSubItem(i, 19, sarr[18].ToCString());
+					me->lvMyStack->SetSubItem(i, 20, sarr[19].ToCString());
+					me->lvMyStack->SetSubItem(i, 21, sarr[20].ToCString());
+					me->lvMyStack->SetSubItem(i, 22, sarr[21].ToCString());
+					me->lvMyStack->SetSubItem(i, 23, sarr[22].ToCString());
+					me->lvMyStack->SetSubItem(i, 24, sarr[23].ToCString());
+					me->lvMyStack->SetSubItem(i, 25, sarr[24].ToCString());
+					me->lvMyStack->SetSubItem(i, 26, sarr[25].ToCString());
+					me->lvMyStack->SetSubItem(i, 27, sarr[26].ToCString());
+					me->lvMyStack->SetSubItem(i, 28, sarr[27].ToCString());
+					me->lvMyStack->SetSubItem(i, 29, sarr[28].ToCString());
+					me->lvMyStack->SetSubItem(i, 30, sarr[29].ToCString());
+					me->lvMyStack->SetSubItem(i, 31, sarr[30].ToCString());
+					me->lvMyStack->SetSubItem(i, 32, sarr[31].ToCString());
+					me->lvMyStack->SetSubItem(i, 33, sarr[32].ToCString());
 				}
 				if (!hasNext)
 					break;
@@ -443,6 +489,20 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			this->lvMyStack->AddColumn(CSTR("X13"), 140);
 			this->lvMyStack->AddColumn(CSTR("X14"), 140);
 			this->lvMyStack->AddColumn(CSTR("X15"), 140);
+			this->lvMyStack->AddColumn(CSTR("X16"), 140);
+			this->lvMyStack->AddColumn(CSTR("X17"), 140);
+			this->lvMyStack->AddColumn(CSTR("X18"), 140);
+			this->lvMyStack->AddColumn(CSTR("X19"), 140);
+			this->lvMyStack->AddColumn(CSTR("X20"), 140);
+			this->lvMyStack->AddColumn(CSTR("X21"), 140);
+			this->lvMyStack->AddColumn(CSTR("X22"), 140);
+			this->lvMyStack->AddColumn(CSTR("X23"), 140);
+			this->lvMyStack->AddColumn(CSTR("X24"), 140);
+			this->lvMyStack->AddColumn(CSTR("X25"), 140);
+			this->lvMyStack->AddColumn(CSTR("X26"), 140);
+			this->lvMyStack->AddColumn(CSTR("X27"), 140);
+			this->lvMyStack->AddColumn(CSTR("X28"), 140);
+			this->lvMyStack->AddColumn(CSTR("X29"), 140);
 			this->contextType = Manage::ThreadContext::ContextType::ARM64;
 
 			Data::ArrayListUInt64 callAddrs;
