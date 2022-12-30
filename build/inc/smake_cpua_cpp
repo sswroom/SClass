@@ -12,6 +12,8 @@ Manage/CPUInfoDetail.h: ../../src/Manage/CPUInfoDetailL.cpp
 Manage/Dasm.h:
 Manage/DasmARM.h: ../../src/Manage/DasmUnk.cpp
 @Dasm.o
+Manage/DasmARM64.h: ../../src/Manage/DasmUnk.cpp
+@Dasm.o
 Manage/DasmMIPS.h: ../../src/Manage/DasmUnk.cpp
 @Dasm.o
 Manage/DasmX86_32.h: ../../src/Manage/DasmUnk.cpp

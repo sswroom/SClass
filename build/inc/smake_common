@@ -2001,8 +2001,6 @@ Manage/CPUInst.h: ../../src/Manage/CPUInst.cpp
 @CPUInst.o
 Manage/CPUVendor.h: ../../src/Manage/CPUVendor.cpp
 @CPUVendor.o
-Manage/DasmARM64.h: ../../src/Manage/DasmARM64.cpp
-@DasmARM64.o
 Manage/DasmBase.h: ../../src/Manage/DasmBase.cpp
 @DasmBase.o
 Manage/DasmX86_16.h: ../../src/Manage/DasmX86_16.cpp
