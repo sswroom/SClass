@@ -889,6 +889,8 @@ Manage::ThreadContext::ContextType Manage::Process::GetContextType()
 	return Manage::ThreadContext::ContextType::X86_64;
 #elif defined(CPU_ARM)
 	return Manage::ThreadContext::ContextType::ARM;
+#elif defined(CPU_ARM64)
+	return Manage::ThreadContext::ContextType::ARM64;
 #elif defined(CPU_MIPS)
 	return Manage::ThreadContext::ContextType::MIPS;
 #else
