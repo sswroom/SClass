@@ -477,7 +477,29 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 		return false;
 	}
 	this->statusChg = false;
-	this->cli->Write(buff, buffSize);
+	UOSInt totalSize = 0;
+	UOSInt writeSize;
+	while (buffSize > 0)
+	{
+		writeSize = this->cli->Write(buff, buffSize);
+		if (writeSize == 0)
+		{
+			this->logWriter->WriteLineC(UTF8STRC("Error in writing to SMTP Server"));
+			break;
+		}
+		buff += writeSize;
+		buffSize -= writeSize;
+		totalSize += writeSize;
+	}
+	if (buffSize == 0)
+	{
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Write "));
+		sptr = Text::StrUOSInt(sptr, totalSize);
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
+		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	}
 	this->cli->Write((const UInt8*)"\r\n.\r\n", 5);
 	code = WaitForResult(0);
 	return code == 250;
