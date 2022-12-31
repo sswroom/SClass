@@ -37,7 +37,6 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 	stack_st_X509 *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
 	if (certs != 0)
 	{
-		
 		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::OpenSSLCert(sk_X509_value(certs, 0)));
 	}
 }

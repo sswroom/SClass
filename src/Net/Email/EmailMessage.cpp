@@ -482,8 +482,8 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Te
 		MemFree(attachment);
 		return 0;
 	}
-	attachment->createTime.SetTicks(0);
-	attachment->modifyTime.SetTicks(0);
+	attachment->createTime.SetValue(0, 0);
+	attachment->modifyTime.SetValue(0, 0);
 	fs.GetFileTimes(&attachment->createTime, 0, &attachment->modifyTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
