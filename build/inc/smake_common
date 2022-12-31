@@ -3070,6 +3070,8 @@ Net/Email/EmailMessage.h: ../../src/Net/Email/EmailMessage.cpp
 @EmailMessage.o
 Net/Email/EmailStore.h: ../../src/Net/Email/EmailStore.cpp
 @EmailStore.o
+Net/Email/EmailUtil.h: ../../src/Net/Email/EmailUtil.cpp
+@EmailUtil.o
 Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
 @EmailValidator.o
 Net/Email/FileEmailStore.h: ../../src/Net/Email/FileEmailStore.cpp
@@ -4758,7 +4760,6 @@ AddressResolver.o: ../../src/Manage/AddressResolver.cpp
 CPUDB.o: ../../src/Manage/CPUDB.cpp
 CPUInst.o: ../../src/Manage/CPUInst.cpp
 CPUVendor.o: ../../src/Manage/CPUVendor.cpp
-DasmARM64.o: ../../src/Manage/DasmARM64.cpp
 DasmBase.o: ../../src/Manage/DasmBase.cpp
 DasmX86_16.o: ../../src/Manage/DasmX86_16.cpp
 ExceptionLogger.o: ../../src/Manage/ExceptionLogger.cpp
@@ -5246,6 +5247,7 @@ WirelessLANIE.o: ../../src/Net/WirelessLANIE.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
 EmailMessage.o: ../../src/Net/Email/EmailMessage.cpp
 EmailStore.o: ../../src/Net/Email/EmailStore.cpp
+EmailUtil.o: ../../src/Net/Email/EmailUtil.cpp
 EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
 FileEmailStore.o: ../../src/Net/Email/FileEmailStore.cpp
 POP3Client.o: ../../src/Net/Email/POP3Client.cpp
