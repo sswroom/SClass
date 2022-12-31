@@ -83,17 +83,27 @@ UOSInt Net::OpenSSLClient::Write(const UInt8 *buff, UOSInt size)
 {
 	if (s && (this->flags & 5) == 0)
 	{
-		int ret = SSL_write(this->clsData->ssl, buff, (int)size);
-		if (ret > 0)
+		UOSInt totalWrite = 0;
+		while (size > 0)
 		{
-#if defined(VERBOSE)
-			printf("OSSLClient: Write %d bytes\r\n", (UOSInt)ret);
-#endif
-			this->currCnt += (UInt32)ret;
-			return (UInt32)ret;
+			int ret = SSL_write(this->clsData->ssl, buff, (int)size);
+			if (ret > 0)
+			{
+	#if defined(VERBOSE)
+				printf("OSSLClient: Write %d bytes\r\n", (UOSInt)ret);
+	#endif
+				this->currCnt += (UInt32)ret;
+				totalWrite += (UInt32)ret;
+				buff += ret;
+				size -= (UInt32)ret;
+			}
+			else
+			{
+				this->flags |= 1;
+				break;
+			}
 		}
-		this->flags |= 1;
-		return 0;
+		return totalWrite;
 	}
 	else
 	{
