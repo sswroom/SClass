@@ -63,6 +63,15 @@ Media::VectorGraph *Media::VectorDocument::AddGraph(Double width, Double height,
 	return graph;
 }
 
+void Media::VectorDocument::SetDocName(Text::CString docName)
+{
+	if (docName.v)
+	{
+		SDEL_STRING(this->docName);
+		this->docName = Text::String::New(docName);
+	}
+}
+
 Text::String *Media::VectorDocument::GetDocName() const
 {
 	return this->docName;

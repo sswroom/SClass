@@ -32,6 +32,7 @@ namespace Media
 		virtual ~VectorDocument();
 
 		Media::VectorGraph *AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
+		void SetDocName(Text::CString docName);
 		Text::String *GetDocName() const;
 		void SetCreateTime(Int64 createTimeTicks);
 		Int64 GetCreateTime() const;
