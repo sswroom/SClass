@@ -20,11 +20,12 @@ namespace SSWR
 
 			UI::GUILabel *lblAlgorithm;
 			UI::GUIComboBox *cboAlgorithm;
-			UI::GUILabel *lblKeyIVType;
-			UI::GUIComboBox *cboKeyIVType;
+			UI::GUILabel *lblKeyType;
+			UI::GUIComboBox *cboKeyType;
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKey;
 			UI::GUILabel *lblIV;
+			UI::GUIComboBox *cboIV;
 			UI::GUITextBox *txtIV;
 			UI::GUILabel *lblChainMode;
 			UI::GUIComboBox *cboChainMode;
@@ -41,6 +42,7 @@ namespace SSWR
 
 			Crypto::Encrypt::ICrypto *InitCrypto();
 			UInt8 *InitInput(UOSInt blockSize, UOSInt *dataSize);
+			UInt8 *InitIV(Crypto::Encrypt::ICrypto *crypto, UInt8 *dataBuff, UOSInt *buffSize, UOSInt blockSize, Bool enc);
 			void ShowOutput(const UInt8 *buff, UOSInt buffSize);
 			static void __stdcall OnEncryptClicked(void *userObj);
 			static void __stdcall OnDecryptClicked(void *userObj);

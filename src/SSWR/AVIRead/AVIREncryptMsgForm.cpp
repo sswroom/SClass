@@ -2,6 +2,7 @@
 #include "Crypto/Encrypt/AES128.h"
 #include "Crypto/Encrypt/AES192.h"
 #include "Crypto/Encrypt/AES256.h"
+#include "Data/RandomBytesGenerator.h"
 #include "SSWR/AVIRead/AVIREncryptMsgForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
@@ -11,22 +12,18 @@
 
 Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 {
-	UOSInt blockSize;
 	UOSInt keySize;
 	UOSInt algType = this->cboAlgorithm->GetSelectedIndex();
 	switch (algType)
 	{
 	case 0:
 		keySize = 16;
-		blockSize = 16;
 		break;
 	case 1:
 		keySize = 24;
-		blockSize = 16;
 		break;
 	case 2:
 		keySize = 32;
-		blockSize = 16;
 		break;
 	default:
 		UI::MessageDialog::ShowDialog(CSTR("Unknown Algorithm"), CSTR("Encrypt Message"), this);
@@ -39,7 +36,7 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 		UI::MessageDialog::ShowDialog(CSTR("Key cannot be empty"), CSTR("Encrypt Message"), this);
 		return 0;
 	}
-	Text::TextBinEnc::ITextBinEnc *enc = GetTextEncType(this->cboKeyIVType);
+	Text::TextBinEnc::ITextBinEnc *enc = GetTextEncType(this->cboKeyType);
 	UOSInt buffSize = enc->CalcBinSize(sb.ToString(), sb.GetLength());
 	if (buffSize == 0)
 	{
@@ -54,31 +51,8 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 		return 0;
 	}
 	UInt8 key[32];
-	UInt8 iv[32];
-	Bool hasIV = false;
 	MemClear(key, keySize);
 	enc->DecodeBin(sb.ToString(), sb.GetLength(), key);
-	sb.ClearStr();
-	this->txtIV->GetText(&sb);
-	if (sb.GetLength() > 0)
-	{
-		hasIV = true;
-		buffSize = enc->CalcBinSize(sb.ToString(), sb.GetLength());
-		if (buffSize == 0)
-		{
-			DEL_CLASS(enc);
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing IV"), CSTR("Encrypt Message"), this);
-			return 0;
-		}
-		else if (buffSize > blockSize)
-		{
-			DEL_CLASS(enc);
-			UI::MessageDialog::ShowDialog(CSTR("IV size is too long"), CSTR("Encrypt Message"), this);
-			return 0;
-		}
-		MemClear(iv, blockSize);
-		enc->DecodeBin(sb.ToString(), sb.GetLength(), iv);
-	}
 	DEL_CLASS(enc);
 	Crypto::Encrypt::BlockCipher *crypto;
 	switch (algType)
@@ -94,10 +68,6 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 		break;
 	default:
 		return 0;
-	}
-	if (hasIV)
-	{
-		crypto->SetIV(iv);
 	}
 	crypto->SetChainMode((Crypto::Encrypt::ChainMode)(OSInt)this->cboChainMode->GetSelectedItem());
 	return crypto;
@@ -128,6 +98,68 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UOSInt blockSize, UOSInt *da
 	return input;
 }
 
+UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitIV(Crypto::Encrypt::ICrypto *crypto, UInt8 *dataBuff, UOSInt *buffSize, UOSInt blockSize, Bool enc)
+{
+	UInt8 tmpbuff[256];
+	UOSInt ivType = this->cboIV->GetSelectedIndex();
+	switch (ivType)
+	{
+	case 0:
+		return dataBuff;
+	case 1:
+		{
+			Text::StringBuilderUTF8 sb;
+			this->txtIV->GetText(&sb);
+			if (sb.GetLength() > sizeof(tmpbuff) || sb.Hex2Bytes(tmpbuff) != blockSize)
+			{
+				UI::MessageDialog::ShowDialog(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
+				return 0;
+			}
+			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(tmpbuff);
+			return dataBuff;
+		}
+	case 2:
+		{
+			Text::StringBuilderUTF8 sb;
+			this->txtIV->GetText(&sb);
+			if (sb.GetLength() > sizeof(tmpbuff))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("IV input length too long"), CSTR("Encrypt Message"), this);
+				return 0;
+			}
+			Text::TextBinEnc::Base64Enc b64;
+			if (b64.DecodeBin(sb.ToString(), sb.GetLength(), tmpbuff) != blockSize)
+			{
+				UI::MessageDialog::ShowDialog(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
+				return 0;
+			}
+			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(tmpbuff);
+			return dataBuff;
+		}
+	case 3:
+		if (enc)
+		{
+			Data::RandomBytesGenerator byteGen;
+			byteGen.NextBytes(dataBuff, blockSize);
+			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(dataBuff);
+			*buffSize += blockSize;
+			return dataBuff + blockSize;
+		}
+		else
+		{
+			if (*buffSize < blockSize)
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Data input length too short"), CSTR("Encrypt Message"), this);
+				return 0;
+			}
+			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(dataBuff);
+			*buffSize -= blockSize;
+			return dataBuff + blockSize;
+		}
+	}
+	return 0;
+}
+
 void SSWR::AVIRead::AVIREncryptMsgForm::ShowOutput(const UInt8 *buff, UOSInt buffSize)
 {
 	Text::TextBinEnc::ITextBinEnc *enc = GetTextEncType(this->cboOutputType);
@@ -147,8 +179,12 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(void *userObj
 		UInt8 *buff = me->InitInput(crypto->GetEncBlockSize(), &buffSize);
 		if (buff)
 		{
-			buffSize = crypto->Encrypt(buff, buffSize, buff, 0);
-			me->ShowOutput(buff, buffSize);
+			UInt8 *dataBuff = me->InitIV(crypto, buff, &buffSize, crypto->GetEncBlockSize(), true);
+			if (dataBuff)
+			{
+				buffSize = crypto->Encrypt(dataBuff, buffSize, dataBuff, 0);
+				me->ShowOutput(buff, buffSize + (UOSInt)(dataBuff - buff));
+			}
 			MemFree(buff);
 		}
 		DEL_CLASS(crypto);
@@ -165,8 +201,12 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(void *userObj
 		UInt8 *buff = me->InitInput(crypto->GetDecBlockSize(), &buffSize);
 		if (buff)
 		{
-			buffSize = crypto->Decrypt(buff, buffSize, buff, 0);
-			me->ShowOutput(buff, buffSize);
+			UInt8 *dataBuff = me->InitIV(crypto, buff, &buffSize, crypto->GetDecBlockSize(), false);
+			if (dataBuff)
+			{
+				buffSize = crypto->Decrypt(dataBuff, buffSize, dataBuff, 0);
+				me->ShowOutput(dataBuff, buffSize);
+			}
 			MemFree(buff);
 		}
 		DEL_CLASS(crypto);
@@ -211,19 +251,26 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->cboAlgorithm->AddItem(CSTR("AES 192-bit"), 0);
 	this->cboAlgorithm->AddItem(CSTR("AES 256-bit"), 0);
 	this->cboAlgorithm->SetSelectedIndex(0);
-	NEW_CLASS(this->lblKeyIVType, UI::GUILabel(ui, this, CSTR("Key/IV Type")));
-	this->lblKeyIVType->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboKeyIVType, UI::GUIComboBox(ui, this, false));
-	this->cboKeyIVType->SetRect(104, 28, 100, 23, false);
-	AddTextEncType(this->cboKeyIVType);
+	NEW_CLASS(this->lblKeyType, UI::GUILabel(ui, this, CSTR("Key Type")));
+	this->lblKeyType->SetRect(4, 28, 100, 23, false);
+	NEW_CLASS(this->cboKeyType, UI::GUIComboBox(ui, this, false));
+	this->cboKeyType->SetRect(104, 28, 100, 23, false);
+	AddTextEncType(this->cboKeyType);
 	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, CSTR("Key")));
 	this->lblKey->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtKey->SetRect(104, 52, 300, 23, false);
 	NEW_CLASS(this->lblIV, UI::GUILabel(ui, this, CSTR("IV")));
 	this->lblIV->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->cboIV, UI::GUIComboBox(ui, this, false));
+	this->cboIV->SetRect(104, 76, 100, 23, false);
+	this->cboIV->AddItem(CSTR("Zero IV"), 0);
+	this->cboIV->AddItem(CSTR("Hex Input"), 0);
+	this->cboIV->AddItem(CSTR("Base64 Input"), 0);
+	this->cboIV->AddItem(CSTR("Data beginning"), 0);
+	this->cboIV->SetSelectedIndex(0);
 	NEW_CLASS(this->txtIV, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtIV->SetRect(104, 76, 300, 23, false);
+	this->txtIV->SetRect(204, 76, 300, 23, false);
 	NEW_CLASS(this->lblChainMode, UI::GUILabel(ui, this, CSTR("Chain Mode")));
 	this->lblChainMode->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->cboChainMode, UI::GUIComboBox(ui, this, false));

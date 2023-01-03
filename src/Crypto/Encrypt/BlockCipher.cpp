@@ -133,6 +133,8 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
 {
 	UInt8 *blk;
+	UInt8 *blk2;
+	UInt8 *blkTmp;
 	UOSInt blkCnt = 0;
 	switch (this->cm)
 	{
@@ -147,64 +149,156 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		return blkCnt * this->blockSize;
 	case ChainMode::CBC:
-		blk = MemAlloc(UInt8, this->blockSize);
-		MemCopyNO(blk, this->iv, this->blockSize);
-		while (inSize >= this->blockSize)
+		if (inBuff != outBuff)
 		{
-			DecryptBlock(inBuff, outBuff, decParam);
-			blkCnt++;
-			MemXOR(outBuff, blk, outBuff, this->blockSize);
-			MemCopyNO(blk, inBuff, this->blockSize);
-			inBuff += this->blockSize;
-			outBuff += this->blockSize;
-			inSize = inSize - this->blockSize;
+			blk = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				DecryptBlock(inBuff, outBuff, decParam);
+				blkCnt++;
+				MemXOR(outBuff, blk, outBuff, this->blockSize);
+				MemCopyNO(blk, inBuff, this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
 		}
-		MemFree(blk);
+		else
+		{
+			blk = MemAlloc(UInt8, this->blockSize);
+			blk2 = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				MemCopyNO(blk2, inBuff, this->blockSize);
+				DecryptBlock(inBuff, outBuff, decParam);
+				blkCnt++;
+				MemXOR(outBuff, blk, outBuff, this->blockSize);
+				blkTmp = blk;
+				blk = blk2;
+				blk2 = blkTmp;
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
+			MemFree(blk2);
+		}
 		return blkCnt * this->blockSize;
 	case ChainMode::PCBC:
-		blk = MemAlloc(UInt8, this->blockSize);
-		MemCopyNO(blk, this->iv, this->blockSize);
-		while (inSize >= this->blockSize)
+		if (inBuff != outBuff)
 		{
-			DecryptBlock(inBuff, outBuff, decParam);
-			blkCnt++;
-			MemXOR(outBuff, blk, outBuff, this->blockSize);
-			MemXOR(inBuff, outBuff, blk, this->blockSize);
-			inBuff += this->blockSize;
-			outBuff += this->blockSize;
-			inSize = inSize - this->blockSize;
+			blk = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				DecryptBlock(inBuff, outBuff, decParam);
+				blkCnt++;
+				MemXOR(outBuff, blk, outBuff, this->blockSize);
+				MemXOR(inBuff, outBuff, blk, this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
 		}
-		MemFree(blk);
+		else
+		{
+			blk = MemAlloc(UInt8, this->blockSize);
+			blk2 = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				MemCopyNO(blk2, inBuff, this->blockSize);
+				DecryptBlock(inBuff, outBuff, decParam);
+				blkCnt++;
+				MemXOR(outBuff, blk, outBuff, this->blockSize);
+				MemXOR(blk2, outBuff, blk, this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
+			MemFree(blk2);
+		}
 		return blkCnt * this->blockSize;
 	case ChainMode::CFB:
-		blk = MemAlloc(UInt8, this->blockSize);
-		MemCopyNO(blk, this->iv, this->blockSize);
-		while (inSize >= this->blockSize)
+		if (inBuff != outBuff)
 		{
-			EncryptBlock(blk, outBuff, decParam);
-			blkCnt++;
-			MemXOR(outBuff, inBuff, outBuff, this->blockSize);
-			MemCopyNO(blk, inBuff, this->blockSize);
-			inBuff += this->blockSize;
-			outBuff += this->blockSize;
-			inSize = inSize - this->blockSize;
+			blk = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				DecryptBlock(blk, outBuff, decParam);
+				blkCnt++;
+				MemXOR(outBuff, inBuff, outBuff, this->blockSize);
+				MemCopyNO(blk, inBuff, this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
 		}
-		MemFree(blk);
+		else
+		{
+			blk = MemAlloc(UInt8, this->blockSize);
+			blk2 = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				MemCopyNO(blk2, inBuff, this->blockSize);
+				DecryptBlock(blk, outBuff, decParam);
+				blkCnt++;
+				MemXOR(outBuff, blk2, outBuff, this->blockSize);
+				blkTmp = blk;
+				blk = blk2;
+				blk2 = blkTmp;
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
+			MemFree(blk2);
+		}
 		return blkCnt * this->blockSize;
 	case ChainMode::OFB:
-		blk = MemAlloc(UInt8, this->blockSize);
-		MemCopyNO(blk, this->iv, this->blockSize);
-		while (inSize >= this->blockSize)
+		if (inBuff != outBuff)
 		{
-			EncryptBlock(blk, outBuff, decParam);
-			blkCnt++;
-			MemCopyNO(blk, outBuff, this->blockSize);
-			MemXOR(outBuff, inBuff, outBuff, this->blockSize);
-			inBuff += this->blockSize;
-			outBuff += this->blockSize;
-			inSize = inSize - this->blockSize;
+			blk = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				DecryptBlock(blk, outBuff, decParam);
+				blkCnt++;
+				MemCopyNO(blk, outBuff, this->blockSize);
+				MemXOR(outBuff, inBuff, outBuff, this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
 		}
-		MemFree(blk);
+		else
+		{
+			blk = MemAlloc(UInt8, this->blockSize);
+			blk2 = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv, this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				MemCopyNO(blk2, inBuff, this->blockSize);
+				DecryptBlock(blk, outBuff, decParam);
+				blkCnt++;
+				MemCopyNO(blk, outBuff, this->blockSize);
+				MemXOR(outBuff, blk2, outBuff, this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
+			MemFree(blk2);
+		}
 		return blkCnt * this->blockSize;
 	default:
 		return 0;
