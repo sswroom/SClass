@@ -251,8 +251,11 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	sptr = Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(CSTRP(sbuff, sptr));
 	sptr = symbol->ResolveName(sbuff, startAddr);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-	this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
+	if (sptr)
+	{
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+		this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
+	}
 
 	if (thread.IsCurrThread())
 	{

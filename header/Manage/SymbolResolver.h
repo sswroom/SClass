@@ -10,9 +10,9 @@ namespace Manage
 	class SymbolResolver : public Manage::AddressResolver
 	{
 	private:
-		Data::ArrayListString *modNames;
-		Data::ArrayListUInt64 *modBaseAddrs;
-		Data::ArrayListUInt64 *modSizes;
+		Data::ArrayListString modNames;
+		Data::ArrayListUInt64 modBaseAddrs;
+		Data::ArrayListUInt64 modSizes;
 		Manage::Process *proc;
 
 	public:
