@@ -35,12 +35,14 @@ namespace SSWR
 			} ProcessInfo;
 		private:
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpSummary;
-			UI::GUITabPage *tpDetail;
 
+			UI::GUITabPage* tpSummary;
 			UI::GUIPanel *pnlSummary;
 			UI::GUIListView *lvSummary;
 
+			UI::GUITabPage *tpDetail;
+			UI::GUIPanel *pnlDetail;
+			UI::GUIButton *btnDetailCurr;
 			UI::GUIListBox *lbDetail;
 			UI::GUIHSplitter *hspDetail;
 			UI::GUITabControl *tcDetail;
@@ -118,6 +120,7 @@ namespace SSWR
 			static void __stdcall OnProcSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnTimerCPUTick(void *userObj);
+			static void __stdcall OnDetailCurrClicked(void* userObj);
 			static void __stdcall OnDetModuleRefClicked(void *userObj);
 			static void __stdcall OnDetThreadRefClicked(void *userObj);
 			static void __stdcall OnDetThreadDblClicked(void *userObj, UOSInt index);
