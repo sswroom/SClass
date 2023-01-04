@@ -12,10 +12,12 @@ Manage/CPUInfoDetail.h: ../../src/Manage/CPUInfoDetailx86.cpp
 @CPUInfoDetail.o
 Manage/Dasm.h:
 Manage/DasmARM.h:
+Manage/DasmARM64.h: ../../src/Manage/DasmARM64.cpp
+@DasmARM64.o
 Manage/DasmX86_32.h: ../../src/Manage/DasmX86_32.cpp
 @DasmX86_32.o
 Manage/DasmX86_64.h: ../../src/Manage/DasmX86_64.cpp
-@Dasm.o
+@DasmX86_64.o
 Manage/ThreadContextARM.h:
 Manage/ThreadContextARM64.h:
 Manage/ThreadContextMIPS.h:
@@ -41,8 +43,9 @@ LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
 Benchmark_CPP.o: ../../src/Manage/Benchmark_Win64.asm
 CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
 CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
-Dasm.o: ../../src/Manage/DasmX86_64.cpp
+DasmARM64.o: ../../src/Manage/DasmARM64.cpp
 DasmX86_32.o: ../../src/Manage/DasmX86_32.cpp
+DasmX86_64.o: ../../src/Manage/DasmX86_64.cpp
 ThreadContextX86_32W.o: ../../src/Manage/ThreadContextX86_32W.cpp
 ThreadContextX86_64W.o: ../../src/Manage/ThreadContextX86_64W.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_Win64.asm
