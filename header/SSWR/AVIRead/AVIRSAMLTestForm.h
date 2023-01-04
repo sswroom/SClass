@@ -67,6 +67,9 @@ namespace SSWR
 			UI::GUITabPage *tpSAMLRespWF;
 			UI::GUITextBox *txtSAMLRespWF;
 
+			UI::GUITabPage *tpSAMLDecrypt;
+			UI::GUITextBox *txtSAMLDecrypt;
+
 			UI::GUITabPage *tpLog;
 			UI::GUIListBox *lbLog;
 			UI::GUITextBox *txtLog;

@@ -716,6 +716,159 @@ const WChar *Text::XML::ToNewAttrText(const WChar *text)
 	}
 }
 
+Text::String *Text::XML::ToNewHTMLTextXMLColor(const UTF8Char *text)
+{
+	Text::StringBuilderUTF8 sb;
+	Bool elementStarted = false;
+	Bool beginAttr = false;
+	Bool fontStarted = false;
+	UTF8Char quoteChar = 0;
+	UTF8Char c;
+	while ((c = *text++) != 0)
+	{
+		if (quoteChar != 0 || !elementStarted)
+		{
+			if (c == '&')
+			{
+				sb.AppendC(UTF8STRC("&#38;"));
+			}
+			else if (c == '<')
+			{
+				if (quoteChar == 0)
+				{
+					elementStarted = true;
+					fontStarted = true;
+				}
+				sb.AppendC(UTF8STRC("<font color=\"red\">&lt;"));
+			}
+			else if (c == '>')
+			{
+				sb.AppendC(UTF8STRC("&gt;"));
+			}
+			else if (c == '\'')
+			{
+				sb.AppendC(UTF8STRC("&#39;"));
+			}
+			else if (c == '"')
+			{
+				sb.AppendC(UTF8STRC("&quot;"));
+			}
+			else if (c == '\r')
+			{
+			}
+			else if (c == '\n')
+			{
+				sb.AppendC(UTF8STRC("<br/>"));
+			}
+			else if (c == '\t')
+			{
+				sb.AppendC(UTF8STRC("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			}
+			else
+			{
+				sb.AppendUTF8Char(c);
+			}
+			if (c == quoteChar)
+			{
+				quoteChar = 0;
+			}
+		}
+		else
+		{
+			if (c == '=' && beginAttr)
+			{
+				if (!fontStarted)
+				{
+					sb.AppendC(UTF8STRC("<font color=\"blue\">"));
+					fontStarted = true;
+				}
+				sb.AppendC(UTF8STRC("=</font><font color=\"green\">"));
+			}
+			else if (c == ' ')
+			{
+				if (fontStarted)
+				{
+					sb.AppendC(UTF8STRC(" </font>"));
+					fontStarted = false;
+				}
+				else
+				{
+					sb.AppendUTF8Char(' ');
+				}
+				beginAttr = true;
+			}
+			else if (c == '>')
+			{
+				if (fontStarted)
+				{
+					sb.AppendC(UTF8STRC("</font>"));
+				}
+				sb.AppendC(UTF8STRC("<font color=\"red\">&gt;</font>"));
+				beginAttr = false;
+				fontStarted = false;
+				elementStarted = false;
+			}
+			else if (c == '\'')
+			{
+				sb.AppendC(UTF8STRC("&#39;"));
+				quoteChar = '\'';
+			}
+			else if (c == '"')
+			{
+				sb.AppendC(UTF8STRC("&quot;"));
+				quoteChar = '\"';
+			}
+			else if (c == '/')
+			{
+				if (*text == '>')
+				{
+					if (fontStarted)
+					{
+						sb.AppendC(UTF8STRC("</font>"));
+						fontStarted = false;
+					}
+					sb.AppendC(UTF8STRC("<font color=\"red\">/&gt;</font>"));
+					text++;
+					elementStarted = false;
+				}
+				else
+				{
+					sb.AppendUTF8Char(c);
+				}
+			}
+			else if (c == '\r')
+			{
+			}
+			else if (c == '\n')
+			{
+				sb.AppendC(UTF8STRC("<br/>"));
+			}
+			else if (c == '\t')
+			{
+				sb.AppendC(UTF8STRC("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			}
+			else if (c == '&')
+			{
+				sb.AppendC(UTF8STRC("&#38;"));
+			}
+			else
+			{
+				if (!fontStarted)
+				{
+					fontStarted = true;
+					sb.AppendC(UTF8STRC("<font color=\"blue\">"));
+				}
+				sb.AppendUTF8Char(c);
+			}
+		}
+	}
+	if (fontStarted)
+	{
+		sb.AppendC(UTF8STRC("</font>"));
+	}
+	return Text::String::New(sb.ToCString());
+}
+
 void Text::XML::FreeNewText(const WChar *text)
 {
 	MemFree((void*)text);

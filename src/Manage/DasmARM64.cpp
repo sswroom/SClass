@@ -425,9 +425,9 @@ Bool __stdcall DasmARM64_14(Manage::DasmARM64::DasmARM64_Sess *sess)
 		imm26 = -0x2000000 + (imm26 & 0x1FFFFFF);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("b "));
-	sess->sbuff = Text::StrHexVal64(sess->sbuff, sess->regs.PC + (imm26 * 4));
+	sess->sbuff = Text::StrHexVal64(sess->sbuff, (UInt64)((Int64)sess->regs.PC + (imm26 * 4)));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->regs.PC += imm26 * 4;
+	sess->regs.PC = (UInt64)((Int64)sess->regs.PC + imm26 * 4);
 	sess->jmpAddrs->Add(sess->regs.PC);
 	sess->endType = Manage::DasmARM64::ET_JMP;
 	sess->retAddr = sess->regs.PC;
@@ -803,7 +803,7 @@ Bool __stdcall DasmARM64_54(Manage::DasmARM64::DasmARM64_Sess *sess)
 		Int32 ofst;
 		if (imm19 & 0x40000)
 		{
-			ofst = -0x40000 + (imm19 & 0x3FFFF);
+			ofst = -0x40000 + (Int32)(imm19 & 0x3FFFF);
 		}
 		else
 		{
@@ -860,7 +860,7 @@ Bool __stdcall DasmARM64_54(Manage::DasmARM64::DasmARM64_Sess *sess)
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bnv "));
 			break;
 		}
-		UInt64 addr = (UInt64)((Int64)sess->regs.PC + (imm19 * 4));
+		UInt64 addr = (UInt64)((Int64)sess->regs.PC + (ofst * 4));
 		sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.PC += 4;

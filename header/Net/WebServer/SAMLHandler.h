@@ -69,6 +69,7 @@ namespace Net
 			Bool GetSSOURL(Text::StringBuilderUTF8 *sb);
 			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, void *userObj);
 			void HandleLoginRequest(SAMLLoginFunc hdlr, void *userObj);
+			Crypto::Cert::X509PrivKey *GetKey();
 		};
 		Text::CString SAMLErrorGetName(SAMLError err);
 	}

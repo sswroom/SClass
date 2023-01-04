@@ -267,6 +267,11 @@ void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, void *u
 	this->loginObj = userObj;
 }
 
+Crypto::Cert::X509PrivKey *Net::WebServer::SAMLHandler::GetKey()
+{
+	return this->signKey;
+}
+
 Text::CString Net::WebServer::SAMLErrorGetName(SAMLError err)
 {
 	switch (err)

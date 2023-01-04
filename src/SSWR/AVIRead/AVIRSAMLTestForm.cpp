@@ -3,6 +3,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Net/SAMLUtil.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSAMLTestForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
@@ -296,9 +297,27 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 	{
 		me->txtSAMLResp->SetText(me->respNew->ToCString());
 		Text::StringBuilderUTF8 sb;
-		IO::MemoryStream mstm(me->respNew->v, me->respNew->leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnTimerTick.mstm"));
-		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+		{
+			IO::MemoryStream mstm(me->respNew->v, me->respNew->leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnTimerTick.mstm"));
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+		}
 		me->txtSAMLRespWF->SetText(sb.ToCString());
+
+		Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
+		sb.ClearStr();
+		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), &sb))
+		{
+			IO::MemoryStream mstm(sb.v, sb.GetLength(), UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+			Text::StringBuilderUTF8 sb2;
+			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
+			me->txtSAMLDecrypt->SetText(sb2.ToCString());
+		}
+		else
+		{
+			me->txtSAMLDecrypt->SetText(sb.ToCString());
+		}
+		DEL_CLASS(key);
+
 		me->respNew->Release();
 		me->respNew = 0;
 	}
@@ -315,12 +334,32 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(void *userObj, Te
 Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const Net::WebServer::SAMLMessage *msg)
 {
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
-	IO::MemoryStream mstm((UInt8*)msg->rawMessage.v, msg->rawMessage.leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
 	Text::StringBuilderUTF8 sb;
-	Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
-	Text::String *msgContent = Text::XML::ToNewHTMLText(sb.ToString());
+	Text::String *decMsg = 0;
+	Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
+	if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, &sb))
+	{
+		IO::MemoryStream mstm(sb.v, sb.GetLength(), UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+		Text::StringBuilderUTF8 sb2;
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
+		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString());
+	}
+	DEL_CLASS(key);
+	{
+		IO::MemoryStream mstm((UInt8*)msg->rawMessage.v, msg->rawMessage.leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+		sb.ClearStr();
+		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
+	}
+	Text::String *msgContent = Text::XML::ToNewHTMLTextXMLColor(sb.ToString());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<html><head><title>SAML Message</title></head><body>"));
+	if (decMsg)
+	{
+		sb.AppendC(UTF8STRC("<h1>Decrypted Content</h1>"));
+		sb.Append(decMsg);
+		sb.AppendC(UTF8STRC("<hr/>"));
+		decMsg->Release();
+	}
 	sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
 	sb.Append(msgContent);
 	sb.AppendC(UTF8STRC("</body></html>"));
@@ -413,6 +452,11 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtSAMLRespWF, UI::GUITextBox(ui, this->tpSAMLRespWF, CSTR(""), true));
 	this->txtSAMLRespWF->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtSAMLRespWF->SetReadOnly(true);
+
+	this->tpSAMLDecrypt = this->tcMain->AddTabPage(CSTR("SAML Decrypt"));
+	NEW_CLASS(this->txtSAMLDecrypt, UI::GUITextBox(ui, this->tpSAMLDecrypt, CSTR(""), true));
+	this->txtSAMLDecrypt->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSAMLDecrypt->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));

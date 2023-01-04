@@ -33,6 +33,7 @@ namespace Text
 		static const WChar *ToNewHTMLText(const WChar *text);
 		static Text::String *ToNewAttrText(const UTF8Char *text);
 		static const WChar *ToNewAttrText(const WChar *text);
+		static Text::String *ToNewHTMLTextXMLColor(const UTF8Char *text);
 		static void FreeNewText(const WChar *text);
 		static void ParseStr(Text::String *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
 		static void ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
