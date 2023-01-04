@@ -219,6 +219,16 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetailCurrClicked(void* userObj)
+{
+	SSWR::AVIRead::AVIRProcInfoForm* me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
+	OSInt i = me->procIds.SortedIndexOf((UInt32)Manage::Process::GetCurrProcId());
+	if (i >= 0)
+	{
+		me->lbDetail->SetSelectedIndex((UOSInt)i);
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetModuleRefClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
@@ -531,9 +541,8 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
-	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
 
+	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
 	NEW_CLASS(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
 	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -553,9 +562,16 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvSummary->AddColumn(CSTR("User Objects"), 50);
 	this->lvSummary->AddColumn(CSTR("Handles"), 50);
 
-	NEW_CLASS(this->lbDetail, UI::GUIListBox(ui, this->tpDetail, false));
-	this->lbDetail->SetRect(0, 0, 200, 100, false);
-	this->lbDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
+	NEW_CLASS(this->pnlDetail, UI::GUIPanel(ui, this->tpDetail));
+	this->pnlDetail->SetRect(0, 0, 200, 100, false);
+	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
+	NEW_CLASS(this->btnDetailCurr, UI::GUIButton(ui, this->pnlDetail, CSTR("Current Process")));
+	this->btnDetailCurr->SetRect(0, 0, 100, 23, false);
+	this->btnDetailCurr->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnDetailCurr->HandleButtonClick(OnDetailCurrClicked, this);
+	NEW_CLASS(this->lbDetail, UI::GUIListBox(ui, this->pnlDetail, false));
+	this->lbDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDetail->HandleSelectionChange(OnProcSelChg, this);
 	NEW_CLASS(this->hspDetail, UI::GUIHSplitter(ui, this->tpDetail, 3, false));
 	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this->tpDetail));
