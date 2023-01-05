@@ -1428,7 +1428,7 @@ Bool __stdcall DasmARM64_94(Manage::DasmARM64::DasmARM64_Sess *sess)
 		{
 			sess->sbuff = sptr;
 		}
-		if (DasmX86_64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
+		if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM64::ET_EXIT;
 			sess->retAddr = sess->regs.PC;

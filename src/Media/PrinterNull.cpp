@@ -21,7 +21,7 @@ Media::Printer::Printer(Text::String *printerName)
 {
 }
 
-Media::Printer::Printer(const UTF8Char *printerName)
+Media::Printer::Printer(Text::CString printerName)
 {
 }
 

@@ -153,7 +153,7 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 		gint monNum = gdk_screen_get_monitor_at_point(scn, x, y);
 		gdk_screen_get_monitor_geometry(scn, monNum, &rect);
 #endif
-		w = rect.width;
+/*		w = rect.width;
 		h = rect.height;
 		initW = initW * this->hdpi / this->ddpi;
 		initH = initH * this->hdpi / this->ddpi;
@@ -174,7 +174,15 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 	initX = initX * this->ddpi / this->hdpi;
 	initY = initY * this->ddpi / this->hdpi;
 	initW = initW * this->ddpi / this->hdpi;
-	initH = initH * this->ddpi / this->hdpi;
+	initH = initH * this->ddpi / this->hdpi;*/
+		w = rect.width * 96.0 / this->hdpi;
+		h = rect.height * 96.0 / this->hdpi;
+		initX = (rect.x * 96.0 / this->hdpi) + ((w - initW) * 0.5);
+		initY = (rect.y * 96.0 / this->hdpi) + ((h - initH) * 0.5);
+	}
+	gtk_window_move((GtkWindow*)this->hwnd, Double2Int32(initX), Double2Int32(initY));
+	gtk_window_set_default_size((GtkWindow*)this->hwnd, Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
+	g_signal_connect((GtkWindow*)this->hwnd, "draw", G_CALLBACK(GUIForm_Draw), this);
 	this->lxPos = initX;
 	this->lyPos = initY;
 	this->lxPos2 = initX + initW;

@@ -157,6 +157,8 @@ Media::DrawImage *Media::GTKDrawEngine::CloneImage(DrawImage *img)
 		newImg = (GTKDrawImage*)this->CreateImage32(width, height, atype);
 		dptr = newImg->GetImgBits(&upsideDown);
 		((Media::GTKDrawImage*)img)->CopyBits(0, 0, dptr, newImg->GetDataBpl(), width, height, upsideDown);
+		newImg->SetHDPI(img->GetHDPI());
+		newImg->SetVDPI(img->GetVDPI());
 	}
 	return newImg;
 }

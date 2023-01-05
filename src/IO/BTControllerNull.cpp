@@ -12,7 +12,7 @@ IO::BTController::BTDevice::~BTDevice()
 {
 }
 
-const UTF8Char *IO::BTController::BTDevice::GetName()
+Text::String *IO::BTController::BTDevice::GetName()
 {
 	return 0;
 }
@@ -50,6 +50,35 @@ void IO::BTController::BTDevice::GetLastSeen(Data::DateTime *dt)
 void IO::BTController::BTDevice::GetLastUsed(Data::DateTime *dt)
 {
 	dt->SetTicks(0);
+}
+
+Bool IO::BTController::BTDevice::Pair(const UTF8Char *key)
+{
+	///////////////////////////////
+	return false;
+}
+
+Bool IO::BTController::BTDevice::Unpair()
+{
+	///////////////////////////////
+	return false;
+}
+
+UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
+{
+	///////////////////////////////
+	return 0;
+}
+
+void IO::BTController::BTDevice::FreeServices(Data::ArrayList<void*> *guidList)
+{
+	///////////////////////////////
+}
+
+Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
+{
+	///////////////////////////////
+	return false;
 }
 
 IO::BTController::BTController(void *internalData, void *hand)

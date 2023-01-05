@@ -96,7 +96,7 @@ IO::RAWBTMonitor::~RAWBTMonitor()
 
 IO::RAWMonitor::LinkType IO::RAWBTMonitor::GetLinkType()
 {
-	return LT_BLUETOOTH;
+	return IO::RAWMonitor::LinkType::Bluetooth;
 }
 
 Bool IO::RAWBTMonitor::IsError()

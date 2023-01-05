@@ -28,9 +28,6 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 	UOSInt size;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NEW_CLASS(this->modNames, Data::ArrayListString());
-	NEW_CLASS(this->modBaseAddrs, Data::ArrayListUInt64());
-	NEW_CLASS(this->modSizes, Data::ArrayListUInt64());
 	this->proc = proc;
 
 	Data::ArrayList<Manage::ModuleInfo*> *modList;
@@ -44,10 +41,10 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 		mod = modList->GetItem(i);
 
 		sptr = mod->GetModuleFileName(sbuff);
-		this->modNames->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		this->modNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		mod->GetModuleAddress(&baseAddr, &size);
-		this->modBaseAddrs->Add(baseAddr);
-		this->modSizes->Add(size);
+		this->modBaseAddrs.Add(baseAddr);
+		this->modSizes.Add(size);
 
 		DEL_CLASS(mod);
 		i++;
@@ -57,14 +54,11 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 
 Manage::SymbolResolver::~SymbolResolver()
 {
-	DEL_CLASS(this->modSizes);
-	DEL_CLASS(this->modBaseAddrs);
-	UOSInt i = this->modNames->GetCount();
+	UOSInt i = this->modNames.GetCount();
 	while (i-- > 0)
 	{
-		this->modNames->GetItem(i)->Release();
+		this->modNames.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->modNames);
 }
 
 UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
@@ -79,21 +73,21 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 
 UOSInt Manage::SymbolResolver::GetModuleCount()
 {
-	return this->modNames->GetCount();
+	return this->modNames.GetCount();
 }
 
 Text::String *Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
-	return this->modNames->GetItem(index);
+	return this->modNames.GetItem(index);
 }
 
 UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
 {
-	return this->modBaseAddrs->GetItem(index);
+	return this->modBaseAddrs.GetItem(index);
 }
 
 UInt64 Manage::SymbolResolver::GetModuleSize(UOSInt index)
 {
-	return this->modSizes->GetItem(index);
+	return this->modSizes.GetItem(index);
 }
 
