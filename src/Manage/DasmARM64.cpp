@@ -1335,8 +1335,8 @@ Bool __stdcall DasmARM64_90(Manage::DasmARM64::DasmARM64_Sess* sess)
 {
 	UInt32 code = ReadUInt32(sess->codeBuff);
 	UInt32 rd = code & 0x1F;
-	Int32 imm = (DasmARM64_ExtractSigned(code, 5, 19) << 2) | ((code >> 29) & 3);
-	UInt64 addr = (UInt64)((Int64)(sess->regs.PC & ~0xfff) + imm);
+	Int32 imm = (DasmARM64_ExtractSigned(code, 5, 19) << 2) | (Int32)((code >> 29) & 3);
+	UInt64 addr = (UInt64)(((Int64)sess->regs.PC & ~0xfffLL) + imm);
 	UInt64 *xd;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adrp "));
 	sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, rd, &xd);

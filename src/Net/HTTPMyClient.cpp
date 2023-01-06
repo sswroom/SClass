@@ -44,12 +44,12 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	this->clsData = MemAlloc(ClassData, 1);
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"HTTPClient_");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("HTTPClient_"));
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(this->clsData->fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->clsData->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
 	this->cli = 0;

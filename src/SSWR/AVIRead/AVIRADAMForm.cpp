@@ -38,6 +38,10 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 				{
 					me->channelModule = 4050;
 				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("4051")))
+				{
+					me->channelModule = 4051;
+				}
 			}
 			else
 			{
@@ -94,6 +98,27 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(void *userObj)
 		UInt16 inputs;
 		UInt16 outputs;
 		if (me->channel->ADAM4050GetIOStatus(me->channelAddr, &outputs, &inputs))
+		{
+			i = me->lvData->AddItem(CSTR("Inputs"), 0);
+			sptr = Text::StrHexVal16(sbuff, inputs);
+			me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			i = me->lvData->AddItem(CSTR("Outputs"), 0);
+			sptr = Text::StrHexVal16(sbuff, outputs);
+			me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			i = me->lvData->AddItem(CSTR("Inputs"), 0);
+			me->lvData->SetSubItem(i, 1, CSTR("-"));
+			i = me->lvData->AddItem(CSTR("Outputs"), 0);
+			me->lvData->SetSubItem(i, 1, CSTR("-"));
+		}
+	}
+	else if (me->channelModule == 4051)
+	{
+		UInt16 inputs;
+		UInt16 outputs;
+		if (me->channel->ADAM4051GetIOStatus(me->channelAddr, &outputs, &inputs))
 		{
 			i = me->lvData->AddItem(CSTR("Inputs"), 0);
 			sptr = Text::StrHexVal16(sbuff, inputs);
@@ -171,7 +196,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, UI::GUIC
 	NEW_CLASS(this->txtDevAddress, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtDevAddress->SetRect(104, 124, 100, 23, false);
 	this->txtDevAddress->SetReadOnly(true);
-	NEW_CLASS(this->lblDevBaudRate, UI::GUILabel(ui, this->pnlMain, CSTR("Address")));
+	NEW_CLASS(this->lblDevBaudRate, UI::GUILabel(ui, this->pnlMain, CSTR("BAud Rate")));
 	this->lblDevBaudRate->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDevBaudRate, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtDevBaudRate->SetRect(104, 148, 100, 23, false);
