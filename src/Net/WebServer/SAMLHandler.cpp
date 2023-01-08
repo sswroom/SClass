@@ -8,6 +8,7 @@
 // https://<host>/adfs/ls/idpinitiatedsignon.aspx
 // https://<host>/FederationMetadata/2007-06/FederationMetadata.xml
 // https://www.samltool.com/decrypt.php
+// https://support.f5.com/csp/article/K51854802
 
 Net::WebServer::SAMLHandler::~SAMLHandler()
 {

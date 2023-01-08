@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	me->txtKey->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input private key file"), CSTR("SAML Decrypt"), me);
+		UI::MessageDialog::ShowDialog(CSTR("Please input private key file"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}
 	{
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	}
 	if (pobj == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key file is not in ASN1 Format"), CSTR("SAML Decrypt"), me);
+		UI::MessageDialog::ShowDialog(CSTR("Key file is not in ASN1 Format"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}
 	Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 			if (!key->IsPrivateKey())
 			{
 				DEL_CLASS(key);
-				UI::MessageDialog::ShowDialog(CSTR("Key file is not a private key"), CSTR("SAML Decrypt"), me);
+				UI::MessageDialog::ShowDialog(CSTR("Key file is not a private key"), CSTR("SAML Response Decrypt"), me);
 				return;
 			}
 			break;
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 			DEL_CLASS(x509);
 			if (key == 0)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in converting key file to private key"), CSTR("SAML Decrypt"), me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in converting key file to private key"), CSTR("SAML Response Decrypt"), me);
 				return;
 			}
 			break;
@@ -111,14 +111,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 		case Crypto::Cert::X509File::FileType::CRL:
 		default:
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog(CSTR("Key file is not a key file"), CSTR("SAML Decrypt"), me);
+			UI::MessageDialog::ShowDialog(CSTR("Key file is not a key file"), CSTR("SAML Response Decrypt"), me);
 			return;
 		}
 	}
 	else
 	{
 		DEL_CLASS(asn1);
-		UI::MessageDialog::ShowDialog(CSTR("Key file is in X.509 format"), CSTR("SAML Decrypt"), me);
+		UI::MessageDialog::ShowDialog(CSTR("Key file is in X.509 format"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 	if (sb.GetLength() == 0)
 	{
 		DEL_CLASS(key);
-		UI::MessageDialog::ShowDialog(CSTR("Please input raw response"), CSTR("SAML Decrypt"), me);
+		UI::MessageDialog::ShowDialog(CSTR("Please input raw response"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbResult;
@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 SSWR::AVIRead::AVIRSAMLDecryptForm::AVIRSAMLDecryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText(CSTR("SAML Decrypt"));
+	this->SetText(CSTR("SAML Response Decrypt"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

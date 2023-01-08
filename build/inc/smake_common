@@ -3804,6 +3804,8 @@ SSWR/AVIRead/AVIRRSSReaderForm.h: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
 @AVIRRSSReaderForm.o
 SSWR/AVIRead/AVIRSAMLDecryptForm.h: ../../src/SSWR/AVIRead/AVIRSAMLDecryptForm.cpp
 @AVIRSAMLDecryptForm.o
+SSWR/AVIRead/AVIRSAMLReqDecodeForm.h: ../../src/SSWR/AVIRead/AVIRSAMLReqDecodeForm.cpp
+@AVIRSAMLReqDecodeForm.o
 SSWR/AVIRead/AVIRSAMLTestForm.h: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
 @AVIRSAMLTestForm.o
 SSWR/AVIRead/AVIRSDCardForm.h: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
@@ -5614,6 +5616,7 @@ AVIRRESTfulForm.o: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
 AVIRRSSItemForm.o: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
 AVIRRSSReaderForm.o: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
 AVIRSAMLDecryptForm.o: ../../src/SSWR/AVIRead/AVIRSAMLDecryptForm.cpp
+AVIRSAMLReqDecodeForm.o: ../../src/SSWR/AVIRead/AVIRSAMLReqDecodeForm.cpp
 AVIRSAMLTestForm.o: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
 AVIRSDCardForm.o: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 AVIRSectorForm.o: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp

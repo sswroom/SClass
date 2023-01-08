@@ -15,6 +15,7 @@ namespace Net
 		static Bool DecryptResponse(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult);
 	public:
 		static Bool DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Crypto::Cert::X509Key *key, Text::CString responseXML, Text::StringBuilderUTF8 *sbResult);
+		static Bool DecodeRequest(Text::CString requestB64, Text::StringBuilderUTF8 *sbResult);
 	};
 }
 #endif

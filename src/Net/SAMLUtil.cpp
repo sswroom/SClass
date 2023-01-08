@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/AES256.h"
 #include "IO/MemoryStream.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Net/SAMLUtil.h"
 #include "Text/TextBinEnc/Base64Enc.h"
+#include "Data/Compress/Inflate.h"
 
 UOSInt Net::SAMLUtil::DecryptEncryptedKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Text::XMLReader *reader, Text::StringBuilderUTF8 *sbResult, UInt8 *keyBuff)
 {
@@ -357,4 +359,24 @@ Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *
 	}
 	sbResult->AppendC(UTF8STRC("File is not valid XML"));
 	return false;
+}
+
+Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, Text::StringBuilderUTF8 *sbResult)
+{
+	Text::TextBinEnc::Base64Enc b64;
+	UOSInt decSize = b64.CalcBinSize(requestB64.v, requestB64.leng);
+	if (decSize == 0)
+		return false;
+	UInt8 *decBuff = MemAlloc(UInt8, decSize);
+	b64.DecodeBin(requestB64.v, requestB64.leng, decBuff);
+	Data::Compress::Inflate inf(false);
+	IO::MemoryStream mstm(UTF8STRC("Net.SAMLUtil.DecodeRequest.mstm"));
+	IO::StmData::MemoryDataRef fd(decBuff, decSize);
+	Bool succ = inf.Decompress(&mstm, &fd);
+	MemFree(decBuff);
+	if (succ)
+	{
+		sbResult->AppendC(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+	}
+	return succ;
 }
