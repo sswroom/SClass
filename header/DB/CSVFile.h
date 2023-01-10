@@ -41,6 +41,7 @@ namespace DB
 		UOSInt nCol;
 		UOSInt nHdr;
 		UTF8Char *row;
+		UOSInt rowBuffSize;
 		UTF8Char **cols;
 		UOSInt *colSize;
 		UTF8Char *hdr;

@@ -168,6 +168,11 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 {
+	Int8 csvTZ = 0;
+	if (this->chkLocalTZ->IsChecked())
+	{
+		csvTZ = Data::DateTimeUtil::GetLocalTzQhr();
+	}
 	Text::CString nullStr = this->GetNullText();
 	Bool noHeader = this->chkNoHeader->IsChecked();
 	UTF8Char sbuff[512];
@@ -285,10 +290,48 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 					while (i < j)
 					{
 						rowData[i] = r->GetNewStr(colInd.GetItem(i));
-						if (rowData[i] && rowData[i]->Equals(nullStr.v, nullStr.leng))
+						if (rowData[i])
 						{
-							rowData[i]->Release();
-							rowData[i] = 0;
+							if (rowData[i]->Equals(nullStr.v, nullStr.leng))
+							{
+								rowData[i]->Release();
+								rowData[i] = 0;
+							}
+							else if (rowData[i]->leng == 0)
+							{
+								switch (table->GetCol(i)->GetColType())
+								{
+								case DB::DBUtil::CT_VarUTF8Char:
+								case DB::DBUtil::CT_VarUTF16Char:
+								case DB::DBUtil::CT_VarUTF32Char:
+								case DB::DBUtil::CT_UTF8Char:
+								case DB::DBUtil::CT_UTF16Char:
+								case DB::DBUtil::CT_UTF32Char:
+								case DB::DBUtil::CT_Binary:
+									break;
+								case DB::DBUtil::CT_Date:
+								case DB::DBUtil::CT_DateTime:
+								case DB::DBUtil::CT_DateTimeTZ:
+								case DB::DBUtil::CT_Decimal:
+								case DB::DBUtil::CT_Double:
+								case DB::DBUtil::CT_Float:
+								case DB::DBUtil::CT_UInt16:
+								case DB::DBUtil::CT_Int16:
+								case DB::DBUtil::CT_UInt32:
+								case DB::DBUtil::CT_Int32:
+								case DB::DBUtil::CT_Byte:
+								case DB::DBUtil::CT_UInt64:
+								case DB::DBUtil::CT_Int64:
+								case DB::DBUtil::CT_Bool:
+								case DB::DBUtil::CT_Vector:
+								case DB::DBUtil::CT_UUID:
+								case DB::DBUtil::CT_Unknown:
+								default:
+									rowData[i]->Release();
+									rowData[i] = 0;
+									break;
+								}
+							}
 						}
 						i++;
 					}
@@ -369,7 +412,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
 									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), csvTZ);
 									if (ts1.DiffSec(ts2) != 0)
 									{
 										diff = true;
@@ -416,7 +459,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 							case DB::DBUtil::CT_Bool:
 								{
 									Bool v1 = r->GetBool(i);
-									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T';
+									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
 									if (v1 != v2)
 									{
 										diff = true;
@@ -486,7 +529,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 			}
 			this->db->CloseReader(r);
 
-			newRowCnt += csvData.GetCount() - idList.GetCount();
+			newRowCnt += csvData.GetCount() - idList.GetCount() + delRowCnt;
 			LIST_FREE_STRING(&idList);
 		}
 	}
@@ -519,6 +562,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, SQLSession *sess)
 {
+	Int8 csvTZ = 0;
+	if (this->chkLocalTZ->IsChecked())
+	{
+		csvTZ = Data::DateTimeUtil::GetLocalTzQhr();
+	}
 	Text::CString nullStr = this->GetNullText();
 	Bool noHeader = this->chkNoHeader->IsChecked();
 	UTF8Char sbuff[512];
@@ -673,11 +721,50 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 					while (i < j)
 					{
 						rowData[i] = r->GetNewStr(colInd.GetItem(i));
-						if (rowData[i] && rowData[i]->Equals(nullStr.v, nullStr.leng))
+						if (rowData[i])
 						{
-							rowData[i]->Release();
-							rowData[i] = 0;
+							if (rowData[i]->Equals(nullStr.v, nullStr.leng))
+							{
+								rowData[i]->Release();
+								rowData[i] = 0;
+							}
+							else if (rowData[i]->leng == 0)
+							{
+								switch (table->GetCol(i)->GetColType())
+								{
+								case DB::DBUtil::CT_VarUTF8Char:
+								case DB::DBUtil::CT_VarUTF16Char:
+								case DB::DBUtil::CT_VarUTF32Char:
+								case DB::DBUtil::CT_UTF8Char:
+								case DB::DBUtil::CT_UTF16Char:
+								case DB::DBUtil::CT_UTF32Char:
+								case DB::DBUtil::CT_Binary:
+									break;
+								case DB::DBUtil::CT_Date:
+								case DB::DBUtil::CT_DateTime:
+								case DB::DBUtil::CT_DateTimeTZ:
+								case DB::DBUtil::CT_Decimal:
+								case DB::DBUtil::CT_Double:
+								case DB::DBUtil::CT_Float:
+								case DB::DBUtil::CT_UInt16:
+								case DB::DBUtil::CT_Int16:
+								case DB::DBUtil::CT_UInt32:
+								case DB::DBUtil::CT_Int32:
+								case DB::DBUtil::CT_Byte:
+								case DB::DBUtil::CT_UInt64:
+								case DB::DBUtil::CT_Int64:
+								case DB::DBUtil::CT_Bool:
+								case DB::DBUtil::CT_Vector:
+								case DB::DBUtil::CT_UUID:
+								case DB::DBUtil::CT_Unknown:
+								default:
+									rowData[i]->Release();
+									rowData[i] = 0;
+									break;
+								}
+							}
 						}
+
 						i++;
 					}
 					rowData = csvData.Put(s, rowData);
@@ -732,7 +819,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 						}
 						else
 						{
-							AppendCol(&sql, table->GetCol(i)->GetColType(), s);
+							AppendCol(&sql, table->GetCol(i)->GetColType(), s, csvTZ);
 						}
 						SDEL_STRING(s);
 					}
@@ -812,7 +899,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 								case DB::DBUtil::CT_DateTime:
 								case DB::DBUtil::CT_DateTimeTZ:
 									{
-										Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+										Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), csvTZ);
 										if (diff)
 										{
 											sql.AppendCmdC(CSTR(", "));
@@ -883,7 +970,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 									break;
 								case DB::DBUtil::CT_Bool:
 									{
-										Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T';
+										Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
 										if (diff)
 										{
 											sql.AppendCmdC(CSTR(", "));
@@ -982,7 +1069,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
 									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), csvTZ);
 									if (ts1.DiffSec(ts2) != 0)
 									{
 										if (diff)
@@ -1069,7 +1156,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 							case DB::DBUtil::CT_Bool:
 								{
 									Bool v1 = r->GetBool(i);
-									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T';
+									Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
 									if (v1 != v2)
 									{
 										if (diff)
@@ -1218,7 +1305,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, D
 						{
 							if (colFound) sql.AppendCmdC(CSTR(", "));
 							colFound = true;
-							AppendCol(&sql, table->GetCol(i)->GetColType(), rowData[i]);
+							AppendCol(&sql, table->GetCol(i)->GetColType(), rowData[i], csvTZ);
 							i++;
 						}
 						sql.AppendCmdC(CSTR(")"));
@@ -1362,7 +1449,7 @@ void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(SQLSession *sess)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr)
 {
 	if (s == 0)
 	{
@@ -1383,7 +1470,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql,
 	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTimeTZ:
-		sql->AppendTS(Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()));
+		sql->AppendTS(Data::Timestamp::FromStr(s->ToCString(), tzQhr));
 		break;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1483,6 +1570,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->cboNullCol->SetSelectedIndex(0);
 	NEW_CLASS(this->chkNoHeader, UI::GUICheckBox(ui, this, CSTR("No Header"), false));
 	this->chkNoHeader->SetRect(100, 96, 200, 23, false);
+	NEW_CLASS(this->chkLocalTZ, UI::GUICheckBox(ui, this, CSTR("Local Timezone"), false));
+	this->chkLocalTZ->SetRect(300, 96, 200, 23, false);
 	NEW_CLASS(this->lblCSV, UI::GUILabel(ui, this, CSTR("CSV")));
 	this->lblCSV->SetRect(0, 120, 100, 23, false);
 	NEW_CLASS(this->txtCSV, UI::GUITextBox(ui, this, CSTR("")));

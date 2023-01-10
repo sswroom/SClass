@@ -37,6 +37,7 @@ namespace SSWR
 			UI::GUILabel *lblNullCol;
 			UI::GUIComboBox *cboNullCol;
 			UI::GUICheckBox *chkNoHeader;
+			UI::GUICheckBox *chkLocalTZ;
 			UI::GUILabel *lblCSV;
 			UI::GUITextBox *txtCSV;
 			UI::GUIButton *btnBrowse;
@@ -75,7 +76,7 @@ namespace SSWR
 			Bool GenerateSQL(Text::CString csvFileName, DB::DBUtil::SQLType sqlType, SQLSession *sess);
 			Bool NextSQL(Text::CString sql, SQLSession *sess);
 			void UpdateStatus(SQLSession *sess);
-			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s);
+			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr);
 			Text::CString GetNullText();
 		public:
 			AVIRDBCheckChgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString schema, Text::CString table);

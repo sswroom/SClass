@@ -18,7 +18,8 @@ namespace IO
 		UOSInt cPos;
 		UInt8 *buff;
 		UOSInt buffSize;
-		UOSInt lineBreak;
+		Text::LineBreakType lineBreak;
+		Bool endOfStream;
 
 		UInt64 lastPos;
 	private:
@@ -33,6 +34,8 @@ namespace IO
 		virtual Bool ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt);
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
 		virtual Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
+		virtual Bool IsLineBreak();
+		virtual Bool IsEOF();
 		virtual Bool ReadToEnd(Text::StringBuilderUTF8 *sb);
 	};
 }

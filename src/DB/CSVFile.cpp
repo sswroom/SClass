@@ -155,7 +155,8 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 	this->noHeader = noHeader;
 	this->nullIfEmpty = nullIfEmpty;
 	this->nCol = 0;
-	this->row = MemAlloc(UTF8Char, 16384);
+	this->rowBuffSize = 16384;
+	this->row = MemAlloc(UTF8Char, this->rowBuffSize);
 	this->cols = MemAlloc(UTF8Char*, 128);
 	this->colSize = MemAlloc(UOSInt, 128);
 	this->hdrs = MemAlloc(Text::PString, 128);
@@ -165,7 +166,7 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 	WChar c;
 	Bool colStart = true;
 	Bool quote = false;
-	sptr = this->rdr->ReadLine(this->row, 16383);
+	sptr = this->rdr->ReadLine(this->row, this->rowBuffSize - 1);
 	currPtr = this->row;
 	while (true)
 	{
@@ -177,9 +178,19 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 			{
 				sptr = this->rdr->GetLastLineBreak(currPtr);
 				currPtr = sptr;
-				sptr = this->rdr->ReadLine(sptr, 16384);
+				sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
 				if (sptr == 0)
 					break;
+				if (!this->rdr->IsLineBreak() && !this->rdr->IsEOF())
+				{
+					UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
+					MemCopyNO(newRow, this->row, this->rowBuffSize);
+					this->rowBuffSize <<= 1;
+					sptr = &newRow[(sptr - this->row)];
+					currPtr = &newRow[(currPtr - this->row)];
+					MemFree(this->row);
+					this->row = newRow;
+				}
 			}
 			else
 			{
@@ -268,7 +279,7 @@ Bool DB::CSVReader::ReadNext()
 
 	while (true)
 	{
-		sptr = this->rdr->ReadLine(this->row, 16384);
+		sptr = this->rdr->ReadLine(this->row, this->rowBuffSize - 1);
 		if (sptr == 0)
 		{
 			this->nCol = 0;
@@ -293,9 +304,24 @@ Bool DB::CSVReader::ReadNext()
 			if (quote)
 			{
 				sptr = this->rdr->GetLastLineBreak(currPtr);
-				sptr = this->rdr->ReadLine(sptr, 16384);
+				sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
 				if (sptr == 0)
 					break;
+				if (!this->rdr->IsLineBreak() && !this->rdr->IsEOF())
+				{
+					UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
+					MemCopyNO(newRow, this->row, this->rowBuffSize);
+					this->rowBuffSize <<= 1;
+					sptr = &newRow[(sptr - this->row)];
+					currPtr = &newRow[(currPtr - this->row)];
+					UOSInt i = nCol;
+					while (i-- > 0)
+					{
+						cols[i] = &newRow[(cols[i] - this->row)];
+					}
+					MemFree(this->row);
+					this->row = newRow;
+				}
 			}
 			else
 			{

@@ -289,6 +289,11 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 137:
 	case 138:
 	case 139:
+		if (ipCmp >= 0x8B051800 && ipCmp <= 0x8B05FFFF) //139.5.24.0 - 139.5.255.255
+		{
+			whoisHost = CSTR("whois.apnic.net");
+			break;
+		}
 		if (ipCmp >= 0x8BA20000 && ipCmp <= 0x8BA2FFFF) //139.162.0.0 - 139.162.255.255
 		{
 			whoisHost = CSTR("whois.ripe.net");

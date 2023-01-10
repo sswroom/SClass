@@ -14,6 +14,8 @@ namespace IO
 		virtual Bool ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt) = 0;
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff) = 0;
 		virtual Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb) = 0;
+		virtual Bool IsLineBreak() = 0;
+		virtual Bool IsEOF() = 0;
 		virtual Bool ReadToEnd(Text::StringBuilderUTF8 *sb) = 0;
 	};
 }

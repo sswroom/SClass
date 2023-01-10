@@ -22,6 +22,7 @@ void IO::StreamReader::FillBuffer()
 			buffSize = 0;
 			cSize = 0;
 			cPos = 0;
+			endOfStream = false;
 		}
 	}
 
@@ -47,7 +48,10 @@ void IO::StreamReader::FillBuffer()
 		lastPos = ((IO::SeekableStream*)stm)->GetPosition();
 	}
 	if (buffSize <= 0)
+	{
+		endOfStream = true;
 		return;
+	}
 	UOSInt convSize = BUFFSIZE - cSize;
 	if (convSize > buffSize)
 		convSize = buffSize;
@@ -118,7 +122,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm)
 	{
 		this->lastPos = 0;
 	}
-	this->lineBreak = 0;
+	this->lineBreak = Text::LineBreakType::None;
 	CheckHeader();
 	FillBuffer();
 }
@@ -131,6 +135,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 	this->cbuff = MemAlloc(UTF8Char, BUFFSIZE + 1);
 	this->cSize = 0;
 	this->cPos = 0;
+	this->endOfStream = false;
 	if (stm->CanSeek())
 	{
 		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
@@ -139,7 +144,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 	{
 		this->lastPos = 0;
 	}
-	this->lineBreak = 0;
+	this->lineBreak = Text::LineBreakType::None;
 	CheckHeader();
 	FillBuffer();
 }
@@ -181,14 +186,14 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 				{
 					*dest = 0;
 					this->cPos = currPos + 2;
-					this->lineBreak = 3;
+					this->lineBreak = Text::LineBreakType::CRLF;
 					return dest;
 				}
 				else
 				{
 					*dest = 0;
 					this->cPos = currPos + 1;
-					this->lineBreak = 1;
+					this->lineBreak = Text::LineBreakType::CR;
 					return dest;
 				}
 			}
@@ -196,13 +201,13 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 			{
 				*dest = 0;
 				this->cPos = currPos + 1;
-				this->lineBreak = 2;
+				this->lineBreak = Text::LineBreakType::LF;
 				return dest;
 			}
 			else if (maxCharCnt <= 0)
 			{
 				*dest = 0;
-				this->lineBreak = 0;
+				this->lineBreak = Text::LineBreakType::None;
 				this->cPos = currPos;
 				return dest;
 			}
@@ -223,7 +228,7 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 			else
 			{
 				*dest = 0;
-				this->lineBreak = 0;
+				this->lineBreak = Text::LineBreakType::None;
 				return dest;
 			}
 		}
@@ -245,15 +250,15 @@ Bool IO::StreamReader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 
 UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
 {
-	if (this->lineBreak == 1)
+	if (this->lineBreak == Text::LineBreakType::CR)
 	{
 		*buff++ = 13;
 	}
-	else if (this->lineBreak == 2)
+	else if (this->lineBreak == Text::LineBreakType::LF)
 	{
 		*buff++ = 10;
 	}
-	else if (this->lineBreak == 3)
+	else if (this->lineBreak == Text::LineBreakType::CRLF)
 	{
 		*buff++ = 13;
 		*buff++ = 10;
@@ -264,19 +269,18 @@ UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
 
 Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 {
-	if (this->lineBreak == 1)
-	{
-		sb->AppendUTF8Char('\r');
-	}
-	else if (this->lineBreak == 2)
-	{
-		sb->AppendUTF8Char('\n');
-	}
-	else if (this->lineBreak == 2)
-	{
-		sb->AppendC(UTF8STRC("\r\n"));
-	}
+	sb->AppendLB(this->lineBreak);
 	return true;
+}
+
+Bool IO::StreamReader::IsLineBreak()
+{
+	return this->lineBreak != Text::LineBreakType::None;
+}
+
+Bool IO::StreamReader::IsEOF()
+{
+	return this->endOfStream && (cSize <= cPos);
 }
 
 Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
