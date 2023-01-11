@@ -81,6 +81,16 @@ UOSInt Sync::Thread::GetThreadCnt()
 		return sysInfo.dwNumberOfProcessors;
 }
 
+Bool Sync::Thread::EnableInterrupt()
+{
+	return false;
+}
+
+Bool Sync::Thread::Interrupt(UInt32 threadId)
+{
+	return false;
+}
+
 void Sync::Thread::SetPriority(ThreadPriority priority)
 {
 	Int32 threadPriority;

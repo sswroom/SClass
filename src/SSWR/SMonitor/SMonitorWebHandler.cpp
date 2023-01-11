@@ -42,12 +42,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(SSWR::SMonitor::SM
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	IO::MemoryStream mstm;
 
 	if (!me->core->UserExist())
 	{
@@ -65,8 +65,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				}
 			}
 		}
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.IndexReq")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
 		writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('pwd').focus()\"><center>"));
@@ -84,8 +83,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	else
 	{
 		Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.IndexReq")));
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
 		writer->WriteLineC(UTF8STRC("<body onload=\"window.setTimeout(new Function('document.location.replace(\\'index\\')'), 60000)\">"));
@@ -272,19 +270,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	}
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -325,8 +321,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.LoginReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('user').focus()\">"));
@@ -350,13 +346,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	writer->WriteLineC(UTF8STRC("</center></td></tr></table></body>"));
 	writer->WriteLineC(UTF8STRC("</html>"));
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
@@ -373,7 +368,6 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(SSWR::SMonitor::SMo
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -393,8 +387,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"window.setTimeout(new Function('document.location.reload()'), 60000)\">"));
@@ -530,19 +524,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -600,8 +592,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceEditReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].devName.focus()\">"));
@@ -652,19 +644,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -734,8 +724,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReadingReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].readingName0.focus()\">"));
@@ -796,19 +786,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -878,8 +866,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceDigitalsReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].digitalName0.focus()\">"));
@@ -923,13 +911,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
@@ -1443,7 +1430,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReadingImgReq")));
+	NEW_CLASS(mstm, IO::MemoryStream());
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
 	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
 	DEL_CLASS(exporter);
@@ -1468,7 +1455,6 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	Int32 userId = 0;
 	Int32 userType = 0;
@@ -1489,8 +1475,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	UOSInt l;
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DevicePastDataReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	writer->WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
 	writer->WriteLineC(UTF8STRC("var clients = new Object();"));
@@ -1574,13 +1560,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	}
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
@@ -1659,7 +1644,6 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	IO::MemoryStream *mstm;
 	UInt8 *buff;
 	UOSInt buffSize;
 
@@ -1791,25 +1775,23 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DevicePastDataImgReq")));
+	IO::MemoryStream mstm;
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
+	exporter->ExportFile(&mstm, CSTR("temp.png"), imgList, 0);
 	DEL_CLASS(exporter);
 	DEL_CLASS(imgList);
 
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("image/png"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -1858,9 +1840,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 		}
 	}
 
-
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserPasswordReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('password').focus()\">"));
@@ -1884,19 +1865,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -1918,8 +1897,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	UOSInt i;
 	UOSInt j;
 	me->core->UserGetList(&userList);
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UsersReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body>"));
@@ -1954,19 +1933,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -2002,8 +1979,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserAddReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('username').focus()\">"));
@@ -2021,19 +1998,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	UInt8 *buff;
 	UOSInt buffSize;
@@ -2105,8 +2080,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	me->core->UserGetDevices(sess->GetValueInt32(UTF8STRC("UserId")), 1, &devList);
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserAssignReq")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
 	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('username').focus()\">"));
@@ -2162,13 +2137,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
-	DEL_CLASS(mstm);
 	return true;
 }
 

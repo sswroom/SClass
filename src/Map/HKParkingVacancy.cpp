@@ -17,7 +17,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(&this->parkingMut);
-	IO::MemoryStream mstm(UTF8STRC("Map.HKParkingVacancy.LoadParkingInfo.mstm"));
+	IO::MemoryStream mstm;
 	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://ogciopsi.blob.core.windows.net/dataset/parking-vacancy/parking-vacancy-info.csv"), &mstm, 10485760))
 	{
 		return;
@@ -160,7 +160,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 	if (this->parkingMap.GetCount() > 0)
 	{
 		Sync::MutexUsage mutUsage(&this->parkingMut);
-		IO::MemoryStream mstm(UTF8STRC("Map.HKParkingVacancy.LoadVacancy.mstm"));
+		IO::MemoryStream mstm;
 		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://dashboard.data.gov.hk/api/parking-vacancy?format=csv"), &mstm, 10485760))
 		{
 			return;

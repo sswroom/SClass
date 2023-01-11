@@ -184,7 +184,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	return succ;
 }
 
-IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease) : mstm(UTF8STRC("IO.SPackageFile.mstm"))
+IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease)
 {
 	UInt8 hdr[24];
 	this->stm = stm;
@@ -209,7 +209,7 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease) : mstm(U
 	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff) : mstm(UTF8STRC("IO.SPackageFile.mstm"))
+IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff)
 {
 	UInt8 hdr[32];
 	this->stm = stm;
@@ -248,7 +248,7 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 cu
 	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(Text::CString fileName) : mstm(UTF8STRC("IO.SPackageFile.mstm"))
+IO::SPackageFile::SPackageFile(Text::CString fileName)
 {
 	UInt8 hdr[24];
 	UInt64 flength;

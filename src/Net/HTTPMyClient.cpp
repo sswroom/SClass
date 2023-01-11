@@ -33,7 +33,7 @@ struct Net::HTTPMyClient::ClassData
 
 #define BUFFSIZE 8192
 
-Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024, UTF8STRC("Net.HTTPMyClient.reqMstm"))
+Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
 {
 	if (userAgent.v == 0)
 	{

@@ -126,7 +126,6 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::IStreamData *f
 				currOfst++;
 				if (blockType < 0x20)
 				{
-					IO::MemoryStream *mstm;
 					if (disposalMethod == 0)
 					{
 					}
@@ -142,7 +141,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::IStreamData *f
 						disposalMethod = 3;
 					}
 
-					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Parser.FileParser.GIFParser.ParseFile")));
+					IO::MemoryStream mstm;
 					while (true)
 					{
 						readSize = fd->GetRealData(currOfst, 256, readBlock);
@@ -153,13 +152,13 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::IStreamData *f
 							currOfst += 1;
 							break;
 						}
-						mstm->Write(&readBlock[1], readBlock[0]);
+						mstm.Write(&readBlock[1], readBlock[0]);
 						currOfst += 1 + (UOSInt)readBlock[0];
 					}
-					mstm->SeekFromBeginning(0);
+					mstm.SeekFromBeginning(0);
 					Data::Compress::LZWDecStream *lzw;
 					Media::StaticImage *simg;
-					NEW_CLASS(lzw, Data::Compress::LZWDecStream(mstm, true, blockType, 12, 0));
+					NEW_CLASS(lzw, Data::Compress::LZWDecStream(&mstm, true, blockType, 12, 0));
 					
 					UInt8 *tmpPtr;
 					UInt8 *tmpPtr2;
@@ -686,7 +685,6 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(IO::IStreamData *f
 					isFirst = false;
 
 					DEL_CLASS(lzw);
-					DEL_CLASS(mstm);
 					break;
 				}
 				else

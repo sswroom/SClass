@@ -302,7 +302,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			}
 			else
 			{
-				IO::MemoryStream mstm(UTF8STRC("Net.POP3Server.ParseCmd.mstm"));
+				IO::MemoryStream mstm;
 				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, &mstm))
 				{
 					WriteMessage(cli, true, UTF8STRC("Content follows"));
@@ -339,7 +339,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			}
 			else
 			{
-				IO::MemoryStream mstm(UTF8STRC("Net.POP3Server.ParseCmd.mstm"));
+				IO::MemoryStream mstm;
 				Int32 ret = this->mailCtrl->RemoveMessage(cliStatus->userId, msgIndex - 1);
 				if (ret == 1)
 				{

@@ -24,7 +24,7 @@ namespace Media
 		} ImageInfo;
 
 		IO::FileStream *fs;
-		IO::MemoryStream *indexStm;
+		IO::MemoryStream indexStm;
 		UInt64 currFileOfst;
 		Int32 flags;
 		Bool changed;

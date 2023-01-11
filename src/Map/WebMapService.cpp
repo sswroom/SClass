@@ -37,7 +37,7 @@ void Map::WebMapService::LoadXML(Version version)
 		sb.AppendC(UTF8STRC("?SERVICE=WMS&REQUEST=GetCapabilities"));
 		break;
 	}
-	IO::MemoryStream mstm(UTF8STRC("Map.WebMapService.LoadXML.mstm"));
+	IO::MemoryStream mstm;
 	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), &mstm, 1048576))
 		return;
 	mstm.SeekFromBeginning(0);
@@ -660,7 +660,7 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.DrawMap"));
+		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 		{
 			mstm.Write(dataBuff, readSize);

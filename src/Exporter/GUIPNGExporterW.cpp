@@ -67,27 +67,25 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		return false;
 	}
 
-	IO::MemoryStream *mstm;
-	Win32::COMStream *cstm;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.GUIPNGExporter.ExportFile.mstm")));
-	NEW_CLASS(cstm, Win32::COMStream(mstm));
-
-	if (param)
+	IO::MemoryStream mstm;
 	{
-		Gdiplus::EncoderParameters params;
-		params.Count = 1;
-		params.Parameter[0].Guid = Gdiplus::EncoderQuality;
-		params.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
-		params.Parameter[0].NumberOfValues = 1;
-		params.Parameter[0].Value = param;
-		stat = image->Save(cstm, &encoderClsid, &params);
-	}
-	else
-	{
-		stat = image->Save(cstm, &encoderClsid, 0);
-	}
+		Win32::COMStream cstm(&mstm);
 
-	DEL_CLASS(cstm);
+		if (param)
+		{
+			Gdiplus::EncoderParameters params;
+			params.Count = 1;
+			params.Parameter[0].Guid = Gdiplus::EncoderQuality;
+			params.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+			params.Parameter[0].NumberOfValues = 1;
+			params.Parameter[0].Value = param;
+			stat = image->Save(&cstm, &encoderClsid, &params);
+		}
+		else
+		{
+			stat = image->Save(&cstm, &encoderClsid, 0);
+		}
+	}
 	DEL_CLASS(image);
 	if (relBuff)
 	{
@@ -96,7 +94,6 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 
 	if (stat != Gdiplus::Ok)
 	{
-		DEL_CLASS(mstm);
 		return false;
 	}
 
@@ -109,7 +106,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		imgList = (Media::ImageList*)pobj;
 		srcImg = imgList->GetImage(0, 0);
 	}
-	pngBuff = mstm->GetBuff(&pngSize);
+	pngBuff = mstm.GetBuff(&pngSize);
 	if (srcImg != 0 && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
 	{
 		const UInt8 *iccBuff = srcImg->info.color->GetRAWICC();
@@ -175,7 +172,6 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	{
 		stm->Write(pngBuff, pngSize);
 	}
-	DEL_CLASS(mstm);
 	return true;
 #endif
 

@@ -105,16 +105,16 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 			WriteInt16(&ifd[4 + i * 12], 4);
 			WriteInt32(&ifd[6 + i * 12], 1);
 
-			IO::MemoryStream *mstm;
-			UOSInt buffSize;
-			UInt8 *mbuff;
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.TIFFExporter.GenSubExifBuff")));
-			GenSubExifBuff(mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
-			mbuff = mstm->GetBuff(&buffSize);
-			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-			stm->Write(mbuff, buffSize);
-			currOfst += buffSize;
-			DEL_CLASS(mstm);
+			{
+				IO::MemoryStream mstm;
+				UOSInt buffSize;
+				UInt8 *mbuff;
+				GenSubExifBuff(&mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
+				mbuff = mstm.GetBuff(&buffSize);
+				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
+				stm->Write(mbuff, buffSize);
+				currOfst += buffSize;
+			}
 			break;
 		case Media::EXIFData::ET_DOUBLE:
 			WriteInt16(&ifd[4 + i * 12], 12);
@@ -789,16 +789,16 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				WriteInt16(&ifd[4 + k * 12], 4);
 				WriteInt32(&ifd[6 + k * 12], 1);
 
-				IO::MemoryStream *mstm;
-				UOSInt buffSize;
-				UInt8 *mbuff;
-				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.TIFFExporter.ExportFile")));
-				GenSubExifBuff(mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
-				mbuff = mstm->GetBuff(&buffSize);
-				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-				stm->Write(mbuff, buffSize);
-				currOfst += buffSize;
-				DEL_CLASS(mstm);
+				{
+					IO::MemoryStream mstm;
+					UOSInt buffSize;
+					UInt8 *mbuff;
+					GenSubExifBuff(&mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
+					mbuff = mstm.GetBuff(&buffSize);
+					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
+					stm->Write(mbuff, buffSize);
+					currOfst += buffSize;
+				}
 				break;
 			case Media::EXIFData::ET_DOUBLE:
 				WriteInt16(&ifd[4 + k * 12], 12);

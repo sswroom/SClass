@@ -14,6 +14,7 @@ UInt32 __stdcall Net::SocketMonitor::DataThread(void *obj)
 		stat->evt = &evt;
 		stat->threadRunning = true;
 		stat->me->ctrlEvt->Set();
+		Sync::Thread::EnableInterrupt();
 
 		UInt8 *buff = MemAlloc(UInt8, 65536);
 		while (!stat->toStop)
@@ -63,7 +64,7 @@ Net::SocketMonitor::SocketMonitor(Net::SocketFactory *sockf, Socket *soc, RAWDat
 			this->threadStats[i].toStop = false;
 			this->threadStats[i].threadRunning = false;
 			this->threadStats[i].me = this;
-			Sync::Thread::Create(DataThread, &this->threadStats[i]);
+			this->threadStats[i].threadId = Sync::Thread::Create(DataThread, &this->threadStats[i]);
 		}
 		Bool running;
 		while (true)
@@ -95,6 +96,7 @@ Net::SocketMonitor::~SocketMonitor()
 		{
 			this->threadStats[i].toStop = true;
 			this->threadStats[i].evt->Set();
+			Sync::Thread::Interrupt(this->threadStats[i].threadId);
 		}
 	}
 	if (this->soc)

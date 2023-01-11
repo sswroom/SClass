@@ -1230,7 +1230,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				IO::MemoryStream mstm(UTF8STRC("Net.WebServer.HTTPDirectoryHandler.ProcessRequest.mstm"));
+				IO::MemoryStream mstm;
 				while (readSize > 0)
 				{
 					sizeLeft += mstm.Write(buff, readSize);

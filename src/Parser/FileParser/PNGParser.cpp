@@ -2730,7 +2730,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::IStreamData *f
 				UOSInt i = Text::StrCharCnt((Char*)chunkData) + 1;
 				if (chunkData[i] == 0)
 				{
-					IO::MemoryStream mstm(UTF8STRC("IO.FileAnalyse.PNGFileAnalyse"));
+					IO::MemoryStream mstm;
 					Data::Compress::InflateStream cstm(&mstm);
 					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
 					{
@@ -2851,11 +2851,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::IStreamData *f
 						imgSize = CalcImageSize(imgW, imgH, bitDepth, colorType, interlaceMeth);
 						if (imgSize)
 						{
-							NEW_CLASS(mstm, IO::MemoryStream(imgSize, UTF8STRC("Parser.FileParser.PNGParser.mstm")));
+							NEW_CLASS(mstm, IO::MemoryStream(imgSize));
 						}
 						else
 						{
-							NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Parser.FileParser.PNGParser.mstm")));
+							NEW_CLASS(mstm, IO::MemoryStream());
 						}
 						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));
@@ -2904,11 +2904,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(IO::IStreamData *f
 						}
 						if (imgSize)
 						{
-							NEW_CLASS(mstm, IO::MemoryStream(imgSize, UTF8STRC("Parser.FileParser.PNGParser.mstm")));
+							NEW_CLASS(mstm, IO::MemoryStream(imgSize));
 						}
 						else
 						{
-							NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Parser.FileParser.PNGParser.mstm")));
+							NEW_CLASS(mstm, IO::MemoryStream());
 						}
 						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));

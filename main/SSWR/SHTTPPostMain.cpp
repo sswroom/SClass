@@ -103,15 +103,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendI32(httpStatus);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 
-				IO::MemoryStream *mstm;
-				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SHTTPGet.mstm")));
+				IO::MemoryStream mstm;
 				UOSInt readSize;
 
 				while ((readSize = cli->Read(buff, 2048)) > 0)
 				{
-					mstm->Write(buff, readSize);
+					mstm.Write(buff, readSize);
 				}
-				if (mstm->GetLength() == 0)
+				if (mstm.GetLength() == 0)
 				{
 					console->WriteLineC(UTF8STRC("Received 0 bytes from server"));
 				}
@@ -140,7 +139,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Received "));
-					sb.AppendU64(mstm->GetLength());
+					sb.AppendU64(mstm.GetLength());
 					sb.AppendC(UTF8STRC(" bytes from server"));
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -156,7 +155,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}*/
 					fileName->Release();
 				}
-				DEL_CLASS(mstm);
 			}
 			DEL_CLASS(cli);	
 			SDEL_CLASS(ssl);

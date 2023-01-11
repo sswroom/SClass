@@ -9,7 +9,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::RTPH264Handler::RTPH264Handler(Int32 payloadType) : mstm(UTF8STRC("Net.RTPH264Handler.RTPH264Handler"))
+Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 {
 	this->payloadType = payloadType;
 	this->cb = 0;

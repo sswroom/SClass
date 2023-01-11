@@ -280,10 +280,9 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli)
 	{
-		IO::MemoryStream *mstm;
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.ACEClient.mstm")));
+			IO::MemoryStream mstm;
 			while (true)
 			{
 				recvSize = cli->Read(buff, 2048);
@@ -291,11 +290,11 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 				{
 					break;
 				}
-				mstm->Write(buff, recvSize);
+				mstm.Write(buff, recvSize);
 			}
-			if (mstm->GetLength() > 32)
+			if (mstm.GetLength() > 32)
 			{
-				UInt8 *jsonBuff = mstm->GetBuff(&recvSize);
+				UInt8 *jsonBuff = mstm.GetBuff(&recvSize);
 				Text::String *s;
 				Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
 				if (json)
@@ -344,7 +343,6 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 					json->EndUse();
 				}
 			}
-			DEL_CLASS(mstm);
 		}
 		DEL_CLASS(cli);
 	}
@@ -435,7 +433,7 @@ Bool Net::ACMEConn::AccountNew()
 	Bool succ = false;
 	if (cli->GetRespStatus() == Net::WebStatus::SC_BAD_REQUEST)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.AccountNew.mstm"));
+		IO::MemoryStream mstm;
 		cli->ReadToEnd(&mstm, 4096);
 		DEL_CLASS(cli);
 		UOSInt buffSize;
@@ -547,7 +545,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	if (cli->GetRespStatus() == 201)
 	{
 		Text::StringBuilderUTF8 sb;
-		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.OrderNew.mstm"));
+		IO::MemoryStream mstm;
 		cli->ReadToEnd(&mstm, 2048);
 		cli->GetRespHeader(CSTR("Location"), &sb);
 		DEL_CLASS(cli);
@@ -573,7 +571,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 	if (cli)
 	{
 		cli->GetRespStatus();
-		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.OrderAuthorize.mstm"));
+		IO::MemoryStream mstm;
 		cli->ReadToEnd(&mstm, 2048);
 		DEL_CLASS(cli);
 
@@ -655,7 +653,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(Text::String *challURL)
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.ChallengeBegin.mstm"));
+			IO::MemoryStream mstm;
 			cli->ReadToEnd(&mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
@@ -678,7 +676,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(Text::String *challU
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.ChallengeGetStatus.mstm"));
+			IO::MemoryStream mstm;
 			cli->ReadToEnd(&mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;

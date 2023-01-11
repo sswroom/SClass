@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		sb2.AppendC(UTF8STRC("multipart/form-data; boundary="));
 		sb2.AppendC(sbBoundary.ToString(), sbBoundary.GetLength());
 		me->reqBodyType = Text::String::New(sb2.ToString(), sb2.GetLength());
-		IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.OnRequestClicked.mstm"));
+		IO::MemoryStream mstm;
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
 		UOSInt k;
@@ -513,7 +513,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			{
 				IO::MemoryStream *mstm;
 				Text::String *contType = 0;
-				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.respData")));
+				NEW_CLASS(mstm, IO::MemoryStream());
 				cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 				cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 				cli->AddHeaderC(CSTR("User-Agent"), me->userAgent->ToCString());
@@ -683,7 +683,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							Data::Compress::Inflate inflate(false);
 							i = 10;
 							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
-							NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4]), UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.respData")));
+							NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
 							if (inflate.Decompress(mstm2, &mdata))
 							{
 								DEL_CLASS(mstm);

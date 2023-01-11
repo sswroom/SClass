@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/MemoryStream.h"
 #include "Text/HTMLUtil.h"
 #include "Text/JSText.h"
@@ -231,8 +232,6 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF8 *sb, Data::ArrayList<Text::String *> *imgList)
 {
 	Text::XMLReader *reader;
-	IO::MemoryStream *mstm;
-	IO::MemoryStream *wmstm;
 	UOSInt len;
 	Text::XMLNode::NodeType nt;
 	Int32 lastType = 0;
@@ -241,9 +240,9 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	const UTF8Char *csptrEnd;
 	Text::String *s;
 	UTF8Char c;
-	NEW_CLASS(wmstm, IO::MemoryStream(UTF8STRC("Text.HTMLUtil.HTMLGetText.wmstm")));
-	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, buffSize, UTF8STRC("Text.HTMLUtil.HTMLGetText.mstm")));
-	NEW_CLASS(reader, Text::XMLReader(encFact, mstm, Text::XMLReader::PM_HTML));
+	IO::MemoryStream wmstm;
+	IO::MemoryReadingStream mstm(buff, buffSize);
+	NEW_CLASS(reader, Text::XMLReader(encFact, &mstm, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
 		nt = reader->GetNodeType();
@@ -266,7 +265,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 						if (!lastIsSpace)
 						{
 							lastIsSpace = true;
-							wmstm->Write((const UInt8*)" ", 1);
+							wmstm.Write((const UInt8*)" ", 1);
 						}
 					}
 					else if (c == '&')
@@ -278,25 +277,25 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 								if (!lastIsSpace)
 								{
 									lastIsSpace = true;
-									wmstm->Write((const UInt8*)" ", 1);
+									wmstm.Write((const UInt8*)" ", 1);
 								}
 							}
 							else
 							{
-								wmstm->Write((const UInt8*)" ", 1);
+								wmstm.Write((const UInt8*)" ", 1);
 								lastIsSpace = true;
 							}
 							csptr += 5;
 						}
 						else
 						{
-							wmstm->Write((const UInt8*)"&", 1);
+							wmstm.Write((const UInt8*)"&", 1);
 							lastIsSpace = false;
 						}
 					}
 					else
 					{
-						wmstm->Write(csptr, 1);
+						wmstm.Write(csptr, 1);
 						lastIsSpace = false;
 					}
 					csptr++;
@@ -320,12 +319,12 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 				{
 					if (!lastIsSpace)
 					{
-						wmstm->Write((const UInt8*)" ", 1);
+						wmstm.Write((const UInt8*)" ", 1);
 					}					
 				}
 				else
 				{
-					wmstm->Write((const UInt8*)"\r\n", 2);
+					wmstm.Write((const UInt8*)"\r\n", 2);
 				}
 				lastIsSpace = true;
 				lastType = 0;
@@ -360,10 +359,8 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		}
 	}
 	DEL_CLASS(reader);
-	DEL_CLASS(mstm);
-	len = (UOSInt)wmstm->GetLength();
-	sb->AppendC(wmstm->GetBuff(&len), len);
-	DEL_CLASS(wmstm);
+	len = (UOSInt)wmstm.GetLength();
+	sb->AppendC(wmstm.GetBuff(), len);
 	return true;
 }
 

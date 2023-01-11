@@ -135,6 +135,8 @@ Text::CString IO::StreamTypeGetName(StreamType st)
 		return CSTR("RS232 GPIO");
 	case StreamType::WindowsCOM:
 		return CSTR("Windows COM");
+	case StreamType::MemoryReading:
+		return CSTR("MemoryReading");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

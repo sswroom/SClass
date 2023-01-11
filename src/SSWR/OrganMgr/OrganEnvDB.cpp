@@ -1484,7 +1484,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				return FS_ERROR;
 			}
 			readBuff = MemAlloc(UInt8, 1048576);
-			NEW_CLASS(mstm, IO::MemoryStream((UOSInt)fs.GetLength(), UTF8STRC("OrganEnv.AddSpeciesFile")));
+			NEW_CLASS(mstm, IO::MemoryStream((UOSInt)fs.GetLength()));
 			while (true)
 			{
 				readSize = fs.Read(readBuff, 1048576);
@@ -2052,15 +2052,13 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	}
 
-	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.OrganMgr.OrganEnvDB.AddSpeciesWebFile.mstm")));
+	IO::MemoryStream mstm;
 	while ((i = stm->Read(sbuff2, sizeof(sbuff2))) > 0)
 	{
-		mstm->Write(sbuff2, i);
+		mstm.Write(sbuff2, i);
 	}
-	if (mstm->GetLength() <= 0)
+	if (mstm.GetLength() <= 0)
 	{
-		DEL_CLASS(mstm);
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	}
 
@@ -2116,12 +2114,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		sptr2 = Text::StrInt32(sptr2, id);
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
 
-		UInt8 *buff = mstm->GetBuff(&i);
+		UInt8 *buff = mstm.GetBuff(&i);
 		{
 			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs.Write(buff, i);
 		}
-		DEL_CLASS(mstm);
 
 		if (firstPhoto)
 		{
@@ -2138,7 +2135,6 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	}
 	else
 	{
-		DEL_CLASS(mstm);
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	}
 	return SSWR::OrganMgr::OrganEnvDB::FS_SUCCESS;
@@ -2301,7 +2297,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	}
 
 	Bool found = false;
-	IO::MemoryStream mstm(UTF8STRC("SSWR.OrganMgr.OrganEnv.UpdateSpeciesWebFile.mstm"));
+	IO::MemoryStream mstm;
 	{
 		Text::UTF8Writer writer(&mstm);
 		writer.WriteSignature();

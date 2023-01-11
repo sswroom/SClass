@@ -17,6 +17,7 @@ namespace Net
 			Bool threadRunning;
 			Sync::Event *evt;
 			Bool toStop;
+			UInt32 threadId;
 		} ThreadStat;
 
 	private:

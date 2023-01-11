@@ -402,7 +402,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		else
 		{
-			IO::MemoryStream mstm(UTF8STRC("Net.WebServer.HTTPUtil.ResponseFile.mstm"));
+			IO::MemoryStream mstm;
 			while (readSize > 0)
 			{
 				sizeLeft += mstm.Write(buff, readSize);

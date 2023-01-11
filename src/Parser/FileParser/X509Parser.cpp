@@ -10,9 +10,11 @@
 #include "Crypto/Cert/X509PKCS12.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Crypto/Cert/X509PubKey.h"
+#include "IO/MemoryReadingStream.h"
 #include "Net/ASN1Util.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/MyString.h"
+#include "Text/UTF8Reader.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
 Parser::FileParser::X509Parser::X509Parser()
@@ -66,8 +68,8 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 {
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[10240];
+	UTF8Char *sptr;
 	UOSInt dataLen;
-	UOSInt lbSize;
 	if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
 	{
 		buff += 3;
@@ -75,134 +77,299 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	}
 	if (Text::StrStartsWithC(buff, 5, UTF8STRC("-----")))
 	{
-		if (buff[buffSize - 2] == 13 && buff[buffSize - 1] == 10)
+		IO::MemoryReadingStream mstm(buff, buffSize);
+		Text::UTF8Reader reader(&mstm);
+		Text::StringBuilderUTF8 sb;
+		Text::TextBinEnc::Base64Enc b64;
+		Crypto::Cert::X509FileList *fileList = 0;
+		Crypto::Cert::X509File *file = 0;
+		while ((sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1)) != 0)
 		{
-			lbSize = 2;
-		}
-		else if (buff[buffSize - 1] == 10)
-		{
-			lbSize = 1;
-		}
-		else
-		{
-			UOSInt i = Text::StrIndexOfC(&buff[5], buffSize - 5, UTF8STRC("-----"));
-			if (i == INVALID_INDEX)
+			if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN CERTIFICATE-----")))
 			{
-				return 0;
-			}
-			if (buff[i + 10] == 13 && buff[i + 11] == 10)
-			{
-				lbSize = 2;
-			}
-			else if (buff[i + 10] == 10)
-			{
-				lbSize = 1;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-	}
-	else if (buff[0] == 0x30)
-	{
-		lbSize = 0;
-	}
-	else
-	{
-		return 0;
-	}
-	if (lbSize != 0)
-	{
-		if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")) && (Text::StrStartsWithC(&buff[buffSize - 25 - lbSize], 25 + lbSize, UTF8STRC("-----END CERTIFICATE-----")) || Text::StrStartsWithC(&buff[buffSize - 25], 25, UTF8STRC("-----END CERTIFICATE-----"))))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			UOSInt i = Text::StrIndexOfC(buff, buffSize, UTF8STRC("-----END CERTIFICATE-----"));
-			if (i == buffSize - 25 - lbSize)
-			{
-				dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
-				NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
-			}
-			else if (i == buffSize - 25)
-			{
-				dataLen = b64.DecodeBin(&buff[27], buffSize - 52, dataBuff);
-				NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
-			}
-			else
-			{
-				dataLen = b64.DecodeBin(&buff[27], i - 27, dataBuff);
-				Crypto::Cert::X509FileList *fileList;
-				Crypto::Cert::X509File *file;
-				NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
-				NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
-				ret = fileList;
-
-				buff += i + 25 + lbSize;
-				buffSize -= i + 25 + lbSize;
-				while (buffSize >= 25 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")))
+				sb.ClearStr();
+				while (true)
 				{
-					i = Text::StrIndexOfC(buff, buffSize, UTF8STRC("-----END CERTIFICATE-----"));
-					if (i == INVALID_INDEX)
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END CERTIFICATE-----")))
 					{
 						break;
 					}
-					dataLen = b64.DecodeBin(&buff[27], i - 27, dataBuff);
-					NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
+				if (fileList)
+				{
 					fileList->AddFile(file);
-					buff += i + 25 + lbSize;
-					buffSize -= i + 25 + lbSize;
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN RSA PRIVATE KEY-----")))
+			{
+				Bool enc = false;
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END RSA PRIVATE KEY-----")))
+					{
+						break;
+					}
+					else if (Text::StrStartsWithC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("Proc-Type:")))
+					{
+						enc = true;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				if (!enc)
+				{
+					dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+					if (file)
+					{
+						NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+						file = 0;
+					}
+					NEW_CLASS(file, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::RSA));
+					if (fileList)
+					{
+						fileList->AddFile(file);
+						file = 0;
+					}
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN DSA PRIVATE KEY-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END DSA PRIVATE KEY-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::DSA));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN EC PRIVATE KEY-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END EC PRIVATE KEY-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::ECDSA));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN PRIVATE KEY-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END PRIVATE KEY-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509PrivKey(fileName, dataBuff, dataLen));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN PUBLIC KEY-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END PUBLIC KEY-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509PubKey(fileName, dataBuff, dataLen));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN CERTIFICATE REQUEST-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END CERTIFICATE REQUEST-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509CertReq(fileName, dataBuff, dataLen));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN PKCS7-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
+					if (sptr == 0)
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END PKCS7-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				if (file)
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, (Crypto::Cert::X509Cert*)file));
+					file = 0;
+				}
+				NEW_CLASS(file, Crypto::Cert::X509PKCS7(fileName, dataBuff, dataLen));
+				if (fileList)
+				{
+					fileList->AddFile(file);
+					file = 0;
 				}
 			}
 		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN RSA PRIVATE KEY-----")) && Text::StrStartsWithC(&buff[buffSize - 29 - lbSize], 29 + lbSize, UTF8STRC("-----END RSA PRIVATE KEY-----")))
-		{
-			if (Text::StrStartsWithC(&buff[31 + lbSize], buffSize - 31 - lbSize, UTF8STRC("Proc-Type:")))
-			{
-
-			}
-			else
-			{
-				Text::TextBinEnc::Base64Enc b64;
-				dataLen = b64.DecodeBin(&buff[31], buffSize - 60 - lbSize, dataBuff);
-				NEW_CLASS(ret, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::RSA));
-			}
-		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN DSA PRIVATE KEY-----")) && Text::StrStartsWithC(&buff[buffSize - 29 - lbSize], 29 + lbSize, UTF8STRC("-----END DSA PRIVATE KEY-----")))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[31], buffSize - 60 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::DSA));
-		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN EC PRIVATE KEY-----")) && Text::StrStartsWithC(&buff[buffSize - 28 - lbSize], 28 + lbSize, UTF8STRC("-----END EC PRIVATE KEY-----")))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[30], buffSize - 58 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::ECDSA));
-		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN PRIVATE KEY-----")) && Text::StrStartsWithC(&buff[buffSize - 25 - lbSize], 25 + lbSize, UTF8STRC("-----END PRIVATE KEY-----")))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509PrivKey(fileName, dataBuff, dataLen));
-		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN PUBLIC KEY-----")) && Text::StrStartsWithC(&buff[buffSize - 24 - lbSize], 24 + lbSize, UTF8STRC("-----END PUBLIC KEY-----")))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[26], buffSize - 50 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509PubKey(fileName, dataBuff, dataLen));
-		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE REQUEST-----")) && Text::StrStartsWithC(&buff[buffSize - 33 - lbSize], 33 + lbSize, UTF8STRC("-----END CERTIFICATE REQUEST-----")))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[35], buffSize - 68 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509CertReq(fileName, dataBuff, dataLen));
-		}
-		else if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN PKCS7-----")) && Text::StrStartsWithC(&buff[buffSize - 19 - lbSize], 19 + lbSize, UTF8STRC("-----END PKCS7-----")))
-		{
-			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[21], buffSize - 40 - lbSize, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, dataBuff, dataLen));
-		}
+		if (fileList)
+			return fileList;
+		else
+			return file;
 	}
 	else
 	{

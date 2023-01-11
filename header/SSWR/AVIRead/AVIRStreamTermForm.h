@@ -45,8 +45,8 @@ namespace SSWR
 			UI::GUIRadioButton *radSendText;
 			UI::GUIRadioButton *radSendHex;
 
-			IO::MemoryStream *recvBuff;
-			IO::MemoryStream *sendBuff;
+			IO::MemoryStream recvBuff;
+			IO::MemoryStream sendBuff;
 			Sync::Mutex recvMut;
 			Bool recvUpdated;
 

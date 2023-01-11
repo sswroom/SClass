@@ -274,14 +274,13 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			sb->AppendC(UTF8STRC("\r\nCheck value = 0x"));
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
-			IO::MemoryStream *mstm;
 			IO::IStreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp(false);
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("IO.FileAnalyse.PNGFileAnalyse")));
-			if (!comp.Decompress(mstm, stmData))
+			IO::MemoryStream mstm;
+			if (!comp.Decompress(&mstm, stmData))
 			{
 				UOSInt iccSize;
-				UInt8 *iccBuff = mstm->GetBuff(&iccSize);
+				UInt8 *iccBuff = mstm.GetBuff(&iccSize);
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
 				if (icc)
 				{
@@ -290,7 +289,6 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 					DEL_CLASS(icc);
 				}
 			}
-			DEL_CLASS(mstm);
 			DEL_CLASS(stmData);
 		}
 		MemFree(tagData);

@@ -79,7 +79,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 		DEL_CLASS(cli);
 		return Net::HKOWeather::WS_UNKNOWN;
 	}
-	IO::MemoryStream mstm(UTF8STRC("Net.HKOWeather.GetSignalSummary"));
+	IO::MemoryStream mstm;
 	while ((i = cli->Read(buff, 1024)) > 0)
 	{
 		mstm.Write(buff, i);

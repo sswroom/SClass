@@ -307,7 +307,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		{
 			if (cliStatus->dataStm == 0)
 			{
-				NEW_CLASS(cliStatus->dataStm, IO::MemoryStream(UTF8STRC("Net.SMTPServer.ParseCmd")));
+				NEW_CLASS(cliStatus->dataStm, IO::MemoryStream());
 			}
 			else
 			{

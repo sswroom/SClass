@@ -71,7 +71,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	this->clsData->curl = curl_easy_init();
 	this->clsData->headers = 0;
 	this->clsData->respHeaders = &this->headers;
-	NEW_CLASS(this->clsData->respData, IO::MemoryStream(UTF8STRC("Net.HTTPOSClient.respData")));
+	NEW_CLASS(this->clsData->respData, IO::MemoryStream());
 	this->clsData->contLen = 0x7fffffff;
 	this->cliHost = 0;
 	this->writing = false;
@@ -79,7 +79,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
+	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
 	if (userAgent.v == 0)
 	{
 		userAgent = CSTR("sswr/1.0");

@@ -307,7 +307,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(Net::WebServer::IWebRequest
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	IO::MemoryStream mstm(UTF8STRC("Map.MapServerHandler.CesiumDataFunc.mstm"));
+	IO::MemoryStream mstm;
 	fs.ReadToEnd(&mstm, 8192);
 	mstm.Write((const UInt8*)"", 1);
 

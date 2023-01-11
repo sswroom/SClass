@@ -90,7 +90,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
+	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
 	if (userAgent.v == 0)
 	{
 		userAgent = CSTR("sswr/1.0");

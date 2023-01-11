@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Payload Invalid"), CSTR("Verify Signature"), me);
 		return;
 	}
-	IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRASN1DataForm.OnVerifyClicked.mstm"));
+	IO::MemoryStream mstm;
 	fs.ReadToEnd(&mstm, 65536);
 	Crypto::Cert::X509Key *key = me->GetNewKey();
 	if (key == 0)

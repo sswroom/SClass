@@ -28,7 +28,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 	
 	cliData->threadRunning = true;
 	{
-		IO::MemoryStream mstm(UTF8STRC("Net.RTSPCLient.ControlThread"));
+		IO::MemoryStream mstm;
 		buffSize = 0;
 		content = false;
 		while (!cliData->threadToStop)
@@ -292,7 +292,7 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 	Int32 reqId = this->NextRequest();
 
 	{
-		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.GetOptions"));
+		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(&stm);
 			writer.WriteStrC(UTF8STRC("OPTIONS "));
@@ -341,7 +341,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 	Int32 reqId = this->NextRequest();
 
 	{
-		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.GetMediaInfo"));
+		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(&stm);
 			writer.WriteStrC(UTF8STRC("DESCRIBE "));
@@ -379,7 +379,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	Int32 reqId = this->NextRequest();
 
 	{
-		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.SetupRTP"));
+		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(&stm);
 			writer.WriteStrC(UTF8STRC("SETUP "));
@@ -504,7 +504,7 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 	Int32 reqId = this->NextRequest();
 
 	{
-		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.Play"));
+		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(&stm);
 			writer.WriteStrC(UTF8STRC("PLAY "));
@@ -543,7 +543,7 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 	Int32 reqId = this->NextRequest();
 
 	{
-		IO::MemoryStream stm(UTF8STRC("Net.RTSPClient.Close"));
+		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(&stm);
 			writer.WriteStrC(UTF8STRC("TEARDOWN "));

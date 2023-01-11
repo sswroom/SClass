@@ -34,11 +34,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		IO::MemoryStream *mstm;
 		IO::Device::QQZMSerialCamera *camera;
 		NEW_CLASS(camera, IO::Device::QQZMSerialCamera(port, 0, false));
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("QQZMSerialCameraTest.mstm")));
-		if (camera->CapturePhoto(mstm))
+		IO::MemoryStream mstm;
+		if (camera->CapturePhoto(&mstm))
 		{
 			console->WriteLineC(UTF8STRC("Capture Image succeeded"));
 		}
@@ -46,7 +45,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			console->WriteLineC(UTF8STRC("Error in capturing image"));
 		}
-		DEL_CLASS(mstm);
 		DEL_CLASS(camera);
 	}
 	DEL_CLASS(port);

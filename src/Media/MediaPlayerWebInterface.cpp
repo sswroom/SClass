@@ -56,7 +56,6 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			return;
 		}
 	}
-	IO::MemoryStream *mstm;
 	IO::Writer *writer;
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
@@ -65,8 +64,8 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UOSInt size;
 	UInt64 fileSize;
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SP.GPSWeb.GPSWebHandler.LoginFunc")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 
 	writer->WriteLineC(UTF8STRC("<html>"));
 	writer->WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
@@ -144,11 +143,10 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 	resp->AddDefHeaders(req);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	buff = mstm->GetBuff(&size);
+	buff = mstm.GetBuff(&size);
 	resp->AddContentLength(size);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->Write(buff, size);
-	DEL_CLASS(mstm);
 }
 
 void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -203,14 +201,13 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	{
 		this->iface->PBIncAVOfst();
 	}
-	IO::MemoryStream *mstm;
 	IO::Writer *writer;
 	UInt8 *buff;
 	Text::String *s;
 	UOSInt size;
 
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SP.GPSWeb.GPSWebHandler.LoginFunc")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 
 	writer->WriteLineC(UTF8STRC("<html>"));
 	writer->WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
@@ -419,11 +416,10 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 
 	resp->AddDefHeaders(req);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	buff = mstm->GetBuff(&size);
+	buff = mstm.GetBuff(&size);
 	resp->AddContentLength(size);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->Write(buff, size);
-	DEL_CLASS(mstm);
 }
 
 void Media::MediaPlayerWebInterface::Release()

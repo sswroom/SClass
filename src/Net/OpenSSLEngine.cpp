@@ -571,7 +571,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		if (readSize > 0)
 		{
 			Text::String *fileName = Text::String::New(UTF8STRC("RSAKey.key"));
-			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, readSize, fileName);
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(buff, (UOSInt)readSize, fileName);
 			fileName->Release();
 		}
 		BIO_free(bio1);

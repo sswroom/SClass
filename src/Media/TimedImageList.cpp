@@ -14,7 +14,7 @@ void Media::TimedImageList::ScanFile()
 		if (ReadUInt64(&indexBuff[16]) == currOfst + 32)
 		{
 			Int64 imgSize = ReadInt64(&indexBuff[24]);
-			this->indexStm->Write(indexBuff, 32);
+			this->indexStm.Write(indexBuff, 32);
 			currOfst += 32 + (UInt64)imgSize;
 			this->fs->SeekFromCurrent(imgSize);
 		}
@@ -30,7 +30,6 @@ void Media::TimedImageList::ScanFile()
 Media::TimedImageList::TimedImageList(Text::CString fileName)
 {
 	UInt8 hdr[16];
-	NEW_CLASS(this->indexStm, IO::MemoryStream(UTF8STRC("Media.TimedImageLIst.indexStm")));
 	NEW_CLASS(this->fs, IO::FileStream(fileName, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	if (this->IsError())
 	{
@@ -78,7 +77,7 @@ Media::TimedImageList::TimedImageList(Text::CString fileName)
 				UInt8 *indexBuff = MemAlloc(UInt8, (UOSInt)indexSize);
 				this->fs->SeekFromBeginning(this->currFileOfst);
 				this->fs->Read(indexBuff, (UOSInt)indexSize);
-				this->indexStm->Write(indexBuff, (UOSInt)indexSize);
+				this->indexStm.Write(indexBuff, (UOSInt)indexSize);
 				MemFree(indexBuff);
 				this->fs->SeekFromBeginning(this->currFileOfst);
 			}
@@ -115,7 +114,7 @@ Media::TimedImageList::~TimedImageList()
 		{
 			UOSInt indexSize;
 			UInt8 *indexBuff;
-			indexBuff = this->indexStm->GetBuff(&indexSize);
+			indexBuff = this->indexStm.GetBuff(&indexSize);
 			this->fs->Write(indexBuff, indexSize);
 
 			this->fs->SeekFromBeginning(0);
@@ -130,7 +129,6 @@ Media::TimedImageList::~TimedImageList()
 		DEL_CLASS(this->fs);
 		this->fs = 0;
 	}
-	DEL_CLASS(this->indexStm);
 }
 
 Bool Media::TimedImageList::IsError()
@@ -162,7 +160,7 @@ Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, const UInt8 *imgBuf
 	WriteUInt64(&indexBuff[16], this->currFileOfst + 32);
 	WriteUInt64(&indexBuff[24], imgSize);
 	succ = succ && (this->fs->Write(indexBuff, 32) == 32);
-	this->indexStm->Write(indexBuff, 32);
+	this->indexStm.Write(indexBuff, 32);
 	succ = succ && (this->fs->Write(imgBuff, imgSize) == imgSize);
 	this->currFileOfst += 32 + imgSize;
 	return succ;

@@ -124,7 +124,6 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			Int32 yAdd;
 			Int32 tileX;
 			Int32 tileY;
-			IO::MemoryStream *mstm;
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
 			const UInt8 *fileBuff;
@@ -135,7 +134,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			UInt32 j;
 			UOSInt k;
 			NEW_CLASS(spkg, IO::SPackageFile(stm, false));
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.SPKExporter.ExportFile.mstm")));
+			IO::MemoryStream mstm;
 			i = 0;
 			j = 18;
 			while (i < j)
@@ -150,8 +149,8 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				k = objIds.GetCount();
 				while (k-- > 0)
 				{
-					mstm->Clear();
-					if (orux->GetObjectData(objIds.GetItem(k), mstm, &tileX, &tileY, &modTimeTicks))
+					mstm.Clear();
+					if (orux->GetObjectData(objIds.GetItem(k), &mstm, &tileX, &tileY, &modTimeTicks))
 					{
 						sptr = Text::StrUInt32(sbuff, i);
 						*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -159,7 +158,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt32(sptr, tileY + yAdd);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-						fileBuff = mstm->GetBuff(&fileSize);
+						fileBuff = mstm.GetBuff(&fileSize);
 						spkg->AddFile(fileBuff, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(modTimeTicks, 0));
 					}
 				}
@@ -167,7 +166,6 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 				i++;
 			}
-			DEL_CLASS(mstm);
 			DEL_CLASS(spkg);
 			return true;
 		}

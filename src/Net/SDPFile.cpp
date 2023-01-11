@@ -333,11 +333,10 @@ Bool Net::SDPFile::BuildBuff()
 	UOSInt k;
 	UOSInt l;
 	UTF8Char sbuff[3];
-	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.SDPFile.BuildBuff")));
-	NEW_CLASS(writer, Text::UTF8Writer(mstm));
+	IO::MemoryStream mstm;
+	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
 	sb.ClearStr();
 
 	sb.AppendC(UTF8STRC("v="));
@@ -490,7 +489,7 @@ Bool Net::SDPFile::BuildBuff()
 	DEL_CLASS(writer);
 	UOSInt buffSize;
 	UInt8 *buff;
-	buff = mstm->GetBuff(&buffSize);
+	buff = mstm.GetBuff(&buffSize);
 	if (this->buff)
 	{
 		MemFree(this->buff);
@@ -498,7 +497,6 @@ Bool Net::SDPFile::BuildBuff()
 	this->buff = MemAlloc(UInt8, buffSize);
 	MemCopyNO(this->buff, buff, buffSize);
 	this->buffSize = buffSize;
-	DEL_CLASS(mstm);
 	return true;
 }
 

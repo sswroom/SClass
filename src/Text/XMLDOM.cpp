@@ -1377,18 +1377,16 @@ Bool Text::XMLDocument::ParseStream(Text::EncodingFactory *encFact, IO::Stream *
 {
 	Bool parseRes;
 	UInt8 buff[2048];
-	IO::MemoryStream *mstm;
 	UInt8 *mbuff;
 	UOSInt buffSize;
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Text.XMLDocument.ParseStream")));
+	IO::MemoryStream mstm;
 	while ((buffSize = stm->Read(buff, 2048)) > 0)
 	{
-		mstm->Write(buff, buffSize);
+		mstm.Write(buff, buffSize);
 	}
 
-	mbuff = mstm->GetBuff(&buffSize);
+	mbuff = mstm.GetBuff(&buffSize);
 	parseRes = this->ParseBuff(encFact, mbuff, buffSize);
-	DEL_CLASS(mstm);
 	return parseRes;
 }
 

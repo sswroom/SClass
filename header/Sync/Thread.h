@@ -25,6 +25,8 @@ namespace Sync
 		static UInt32 Create(ThreadProc tProc, void *userObj, UInt32 threadSize);
 		static UInt32 GetThreadId();
 		static UOSInt GetThreadCnt();
+		static Bool EnableInterrupt();
+		static Bool Interrupt(UInt32 threadId);
 		static void SetPriority(ThreadPriority priority);
 	};
 }

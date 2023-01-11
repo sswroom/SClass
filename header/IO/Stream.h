@@ -34,7 +34,8 @@ namespace IO
 		WriteCache,
 		LZWEnc,
 		RS232GPIO,
-		WindowsCOM
+		WindowsCOM,
+		MemoryReading
 	};
 
 

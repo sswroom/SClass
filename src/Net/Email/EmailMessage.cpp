@@ -200,7 +200,7 @@ void Net::Email::EmailMessage::WriteContents(IO::Stream *stm)
 		stm->Write(UTF8STRC("Content-Type: multipart/mixed;\r\n\tboundary=\""));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\"\r\n"));
-		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
+		IO::MemoryStream mstm;
 		GenMultipart(&mstm, CSTRP(sbuff, sptr));
 		stm->Write(UTF8STRC("Content-Length: "));
 		sptr = Text::StrUInt64(sbuff, mstm.GetLength());
@@ -549,7 +549,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	this->WriteHeaders(stm);
 	if (this->signCert && this->signKey)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Net.Email.EmailMessage.WriteToStream.mstm"));
+		IO::MemoryStream mstm;
 		this->WriteContents(&mstm);
 		mstm.Write(UTF8STRC("\r\n"));
 

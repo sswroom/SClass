@@ -61,7 +61,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, Net::SocketFactory *s
 	{
 		sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
 		Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap"));
+		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(buff, 2048)) > 0)
 		{
 			mstm.Write(buff, readSize);
@@ -402,7 +402,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.QueryInfo"));
+		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 		{
 			mstm.Write(dataBuff, readSize);
@@ -516,7 +516,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Map.ESRI.ESRIMapServer.DrawMap"));
+		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 		{
 			mstm.Write(dataBuff, readSize);

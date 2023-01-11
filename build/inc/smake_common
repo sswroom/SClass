@@ -1734,6 +1734,8 @@ IO/LoopFileLog.h: ../../src/IO/LoopFileLog.cpp
 @LoopFileLog.o
 IO/MemFileBuffer.h: ../../src/IO/MemFileBuffer.cpp
 @MemFileBuffer.o
+IO/MemoryReadingStream.h: ../../src/IO/MemoryReadingStream.cpp
+@MemoryReadingStream.o
 IO/MemoryStream.h: ../../src/IO/MemoryStream.cpp
 @MemoryStream.o
 IO/MinizZIP.h: ../../src/IO/MinizZIP.cpp
@@ -4638,6 +4640,7 @@ LogTool.o: ../../src/IO/LogTool.cpp
 LogWriter.o: ../../src/IO/LogWriter.cpp
 LoopFileLog.o: ../../src/IO/LoopFileLog.cpp
 MemFileBuffer.o: ../../src/IO/MemFileBuffer.cpp
+MemoryReadingStream.o: ../../src/IO/MemoryReadingStream.cpp
 MemoryStream.o: ../../src/IO/MemoryStream.cpp
 MinizZIP.o: ../../src/IO/MinizZIP.cpp
 $-I ../../ThirdParty/miniz

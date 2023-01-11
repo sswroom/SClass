@@ -126,7 +126,7 @@ private:
 			UInt64 totalRead = 0;
 			UOSInt thisRead;
 			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("CesiumDownloader.ProcURL.mstm")));
+			NEW_CLASS(mstm, IO::MemoryStream());
 			while ((thisRead = cli->Read(buff, 4096)) > 0)
 			{
 				mstm->Write(buff, thisRead);
@@ -147,7 +147,7 @@ private:
 						Data::Compress::Inflate inflate(false);
 						thisRead = 10;
 						IO::StmData::MemoryDataRef mdata(&respData[thisRead], respSize - thisRead - 8);
-						NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4]), UTF8STRC("CesiumDownloader.ProcURL.mstm2")));
+						NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
 						if (inflate.Decompress(mstm2, &mdata))
 						{
 							DEL_CLASS(mstm);

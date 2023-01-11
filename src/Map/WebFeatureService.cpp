@@ -32,7 +32,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 		return;
 	UInt8 buff[2048];
 	UOSInt readSize;
-	IO::MemoryStream mstm(UTF8STRC("Map.WebFeatureService.LoadXML.mstm"));
+	IO::MemoryStream mstm;
 	while ((readSize = cli->Read(buff, sizeof(readSize))) > 0)
 	{
 		mstm.Write(buff, readSize);
@@ -374,7 +374,7 @@ Map::IMapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 		{
 			return 0;
 		}
-		IO::MemoryStream mstm(UTF8STRC("Map.WebFeatureService.LoadAsLayer.mstm"));
+		IO::MemoryStream mstm;
 		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), &mstm, 104857600))
 		{
 			return 0;

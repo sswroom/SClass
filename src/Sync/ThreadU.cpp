@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Sync/Thread.h"
 #include <pthread.h>
+#include <signal.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdio.h>
@@ -179,6 +180,23 @@ UOSInt Sync::Thread::GetThreadCnt()
 		return 1;
 	}
 #endif
+}
+
+Bool Sync::Thread::EnableInterrupt()
+{
+/*	struct sigaction act;
+	MemClear(&act, sizeof(act));
+	act.sa_handler = SIG_IGN;
+	sigfillset(&act.sa_mask);
+	act.sa_flags = 0;
+	return sigaction(SIGINT, &act, 0) == 0;*/
+	return false;
+}
+
+Bool Sync::Thread::Interrupt(UInt32 threadId)
+{
+//	return pthread_kill((pthread_t)threadId, SIGINT) == 0;
+	return false;
 }
 
 void Sync::Thread::SetPriority(ThreadPriority priority)

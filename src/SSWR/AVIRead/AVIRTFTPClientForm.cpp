@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	}
 	else
 	{
-		IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.AVIRTFTPClientForm.mstm"));
+		IO::MemoryStream mstm;
 		if (cli.RecvFile(sb.ToString(), &mstm))
 		{
 			UInt8 *buff;

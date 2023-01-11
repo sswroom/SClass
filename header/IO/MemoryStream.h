@@ -11,10 +11,9 @@ namespace IO
 		UOSInt currPtr;
 		UOSInt currSize;
 		UInt8 *memPtr;
-		const UTF8Char *dbg;
 	public:
-		MemoryStream(const UTF8Char *dbg, UOSInt dbgLen);
-		MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgLen);
+		MemoryStream();
+		MemoryStream(UOSInt capacity);
 		MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen);
 		virtual ~MemoryStream();
 

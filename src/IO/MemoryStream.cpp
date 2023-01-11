@@ -3,8 +3,6 @@
 #include "Sync/Event.h"
 #include "IO/Stream.h"
 #include "IO/MemoryStream.h"
-#include "Text/MyString.h"
-#include <stdio.h>
 
 #if defined(CPU_AVR)
 #define MAX_CAPACITY 1024
@@ -14,16 +12,15 @@
 #define DEF_CAPACITY 1024
 #endif
 
-IO::MemoryStream::MemoryStream(const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
+IO::MemoryStream::MemoryStream() : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	capacity = DEF_CAPACITY;
 	currSize = 0;
 	currPtr = 0;
 	memPtr = MemAlloc(UInt8, capacity);
-	this->dbg = Text::StrCopyNewC(dbg, dbgLen);
 }
 
-IO::MemoryStream::MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
+IO::MemoryStream::MemoryStream(UOSInt capacity) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	if (capacity == 0)
 	{
@@ -33,7 +30,6 @@ IO::MemoryStream::MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgL
 	currSize = 0;
 	currPtr = 0;
 	memPtr = MemAlloc(UInt8, this->capacity);
-	this->dbg = Text::StrCopyNewC(dbg, dbgLen);
 }
 
 IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
@@ -42,7 +38,6 @@ IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg
 	this->currSize = buffSize;
 	this->currPtr = 0;
 	this->memPtr = buff;
-	this->dbg = Text::StrCopyNewC(dbg, dbgLen);
 }
 
 IO::MemoryStream::~MemoryStream()
@@ -51,7 +46,6 @@ IO::MemoryStream::~MemoryStream()
 	{
 		MemFree(memPtr);
 	}
-	Text::StrDelNew(this->dbg);
 }
 
 UInt8 *IO::MemoryStream::GetBuff()

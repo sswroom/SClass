@@ -589,7 +589,7 @@ IO::IStreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math
 	}
 	else if (status >= 200 && status < 300)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Map.TileMapServiceSource.LoadTileImageData.mstm"));
+		IO::MemoryStream mstm;
 		if (cli->ReadAllContent(&mstm, 16384, 10485760))
 		{
 			if (this->cacheDir)

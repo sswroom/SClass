@@ -73,7 +73,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 
 	if (this->brandLogoUri)
 	{
-		IO::MemoryStream mstm(UTF8STRC("Map.BingMapsTile.mstm"));
+		IO::MemoryStream mstm;
 		if (Net::HTTPClient::LoadContent(sockf, ssl, this->brandLogoUri->ToCString(), &mstm, 1048576))
 		{
 			Parser::FileParser::PNGParser parser;

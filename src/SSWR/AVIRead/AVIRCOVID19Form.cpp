@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	UInt8 buff[2048];
 	UOSInt i;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	IO::MemoryStream mstm(1024, UTF8STRC("SSWR.AVIRead.AVIRCOVID19Form.OnDownloadClicked.mstm"));
+	IO::MemoryStream mstm(1024);
 	while (true)
 	{
 		i = cli->Read(buff, 2048);

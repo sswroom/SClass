@@ -38,7 +38,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 		if (j == 2)
 		{
 			part = this->obj->GetPart(0);
-			IO::MemoryStream mstm(UTF8STRC("SSWR.AVIRead.MIMEViewer.AVIRMultipartViewer.mstm"));
+			IO::MemoryStream mstm;
 			part->WriteStream(&mstm);
 			
 			subObj = this->obj->GetPartContent(1);
