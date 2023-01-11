@@ -6,6 +6,7 @@
 #include "Text/MyStringW.h"
 #include "UI/GUICoreWin.h"
 #include <windows.h>
+#include <crtdbg.h>
 
 typedef BOOL (WINAPI *BoolFunc)();
 typedef HRESULT (WINAPI *AwareFunc)(OSInt val);
@@ -171,9 +172,9 @@ UI::GUICore *Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
 }
 
 #ifdef _WIN32_WCE
-Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPTSTR lpCmdLine, Int32 nShowCmd)
+Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPTSTR lpCmdLine, int nShowCmd)
 #else
-Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, Int32 nShowCmd)
+Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd)
 #endif
 {
 	Int32 ret;
@@ -223,5 +224,6 @@ Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, I
 	ret = MyMain(&ctrl);
 	WinProgControl_Destroy(&ctrl);
 	Core::CoreEnd();
+	_CrtDumpMemoryLeaks();
 	return ret;
 }

@@ -180,6 +180,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->proc = proc;
 	this->symbol = symbol;
+	this->contextType = Manage::ThreadContext::ContextType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

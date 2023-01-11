@@ -62,7 +62,7 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt
 	MemClear(&this->clsData->stmSizes, sizeof(this->clsData->stmSizes));
 	
 	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_STREAM_SIZES, &this->clsData->stmSizes);
-	this->clsData->recvBuffSize = this->clsData->stmSizes.cbHeader + this->clsData->stmSizes.cbMaximumMessage + this->clsData->stmSizes.cbTrailer;
+	this->clsData->recvBuffSize = this->clsData->stmSizes.cbHeader + (UOSInt)this->clsData->stmSizes.cbMaximumMessage + this->clsData->stmSizes.cbTrailer;
 	this->clsData->recvBuff = MemAlloc(UInt8, this->clsData->recvBuffSize);
 	this->clsData->recvOfst = 0;
 	this->clsData->decBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbMaximumMessage);
@@ -71,16 +71,27 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt
 	this->clsData->readSize = 0;
 	this->clsData->remoteCerts = 0;
 
-	PCCERT_CONTEXT certTxt = 0;
-	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_REMOTE_CERT_CONTEXT, &certTxt);
-	if (certTxt)
+	PCCERT_CONTEXT serverCert = 0;
+	PCCERT_CONTEXT thisCert = 0;
+	PCCERT_CONTEXT lastCert = 0;
+	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_REMOTE_CERT_CONTEXT, &serverCert);
+	if (serverCert)
 	{
+		DWORD dwVerificationFlags = 0;
+		Crypto::Cert::X509Cert* cert;
 		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayList<Crypto::Cert::Certificate*>());
-		Crypto::Cert::X509Cert *cert;
-		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), certTxt->pbCertEncoded, certTxt->cbCertEncoded));
+		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), serverCert->pbCertEncoded, serverCert->cbCertEncoded));
 		this->clsData->remoteCerts->Add(cert);
-		//https://stackoverflow.com/questions/38121372/extract-certificate-chain-from-schannel-with-c-and-cryptoapi-schannel
-		//////////////////////////////////
+		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
+		while (thisCert)
+		{
+			NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), thisCert->pbCertEncoded, thisCert->cbCertEncoded));
+			this->clsData->remoteCerts->Add(cert);
+			lastCert = thisCert;
+			thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);
+			CertFreeCertificateContext(lastCert);
+		}
+		CertFreeCertificateContext(serverCert);
 	}
 }
 
@@ -322,16 +333,16 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 			return 0;
 		}
 		Net::SocketFactory::ErrorType et;
-		UOSInt ret = this->sockf->SendData(this->s, encBuff, outputBuff[0].cbBuffer + outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, &et);// SSL_write(this->clsData->ssl, buff, (int)size);
+		UOSInt ret = this->sockf->SendData(this->s, encBuff, (UOSInt)outputBuff[0].cbBuffer + (UOSInt)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, &et);// SSL_write(this->clsData->ssl, buff, (int)size);
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 		printf("%s Sent %d bytes\r\n", debugBuff, (UInt32)ret);
 #endif
 		MemFree(encBuff);
-		if (ret > outputBuff[0].cbBuffer + outputBuff[2].cbBuffer)
+		if (ret > (UOSInt)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer)
 		{
-			ret -= outputBuff[0].cbBuffer + outputBuff[2].cbBuffer;
+			ret -= (UOSInt)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer;
 			this->currCnt += ret;
 			return ret + writeSize;
 		}

@@ -35,6 +35,7 @@ namespace Data
 
 	template <class T, class V> ArrayCmpMap<T, V>::ArrayCmpMap() : ListMap<T, V>()
 	{
+		this->keys = 0;
 	}
 
 	template <class T, class V> ArrayCmpMap<T, V>::~ArrayCmpMap()

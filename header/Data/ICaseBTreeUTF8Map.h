@@ -200,8 +200,8 @@ namespace Data
 		else
 		{
 			UInt32 hash = CalHash(key.v, key.leng);
-			BTreeUTF8Node<T> *parNode = 0;
 			BTreeUTF8Node<T> *node = this->rootNode;
+			BTreeUTF8Node<T>* parNode = node;
 			while (node)
 			{
 				OSInt i;

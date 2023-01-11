@@ -90,6 +90,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	this->writing = false;
 	this->dataBuff = 0;
 	this->buffSize = 0;
+	this->contRead = 0;
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
@@ -635,24 +636,28 @@ const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServ
 {
 	if (this->clsData->certs)
 		return this->clsData->certs;
-	UInt8 *certInfo;
-	DWORD certSize = 0;
-	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SECURITY_CERTIFICATE_STRUCT, 0, &certSize) != FALSE)
+	PCCERT_CONTEXT serverCert = 0;
+	DWORD certSize = sizeof(serverCert);
+	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SERVER_CERT_CONTEXT, &serverCert, &certSize) == FALSE)
 	{
 		return 0;
 	}
-	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
-	{
-		return 0;
-	}
-	certInfo = MemAlloc(UInt8, certSize);
-	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SECURITY_CERTIFICATE_STRUCT, certInfo, &certSize) == FALSE)
-	{
-		return 0;
-	}
+	PCCERT_CONTEXT thisCert = 0;
+	PCCERT_CONTEXT lastCert = 0;
+	DWORD dwVerificationFlags = 0;
+	Crypto::Cert::X509Cert* cert;
 	NEW_CLASS(this->clsData->certs, Data::ArrayList<Crypto::Cert::Certificate*>());
-	Crypto::Cert::WinHttpCert *cert;
-	NEW_CLASS(cert, Crypto::Cert::WinHttpCert(certInfo));
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), serverCert->pbCertEncoded, serverCert->cbCertEncoded));
 	this->clsData->certs->Add(cert);
+	thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
+	while (thisCert)
+	{
+		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), thisCert->pbCertEncoded, thisCert->cbCertEncoded));
+		this->clsData->certs->Add(cert);
+		lastCert = thisCert;
+		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);
+		CertFreeCertificateContext(lastCert);
+	}
+	CertFreeCertificateContext(serverCert);
 	return this->clsData->certs;
 }

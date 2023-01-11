@@ -102,7 +102,7 @@ namespace Map
 			Data::ArrayList<LineStyleLayer*> layers;
 			Text::String *name;
 
-			LineStyle() : layers(4) {}
+			LineStyle() : layers(4) { this->name = 0; }
 		};
 
 		typedef struct

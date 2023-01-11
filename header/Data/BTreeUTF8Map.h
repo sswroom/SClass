@@ -449,8 +449,8 @@ namespace Data
 		else
 		{
 			UInt32 hash = CalHash(key.v, key.leng);
-			BTreeUTF8Node<T> *parNode = 0;
 			BTreeUTF8Node<T> *node = this->rootNode;
+			BTreeUTF8Node<T>* parNode = node;
 			while (node)
 			{
 				OSInt i;
@@ -504,7 +504,7 @@ namespace Data
 		UOSInt cnt = 0;
 		if (this->rootNode)
 		{
-			cnt = this->rootNode->nodeCnt + 1;
+			cnt = (UOSInt)this->rootNode->nodeCnt + 1;
 		}
 		T *outArr = MemAlloc(T, cnt);
 		T *tmpArr = outArr;
@@ -518,7 +518,7 @@ namespace Data
 		UOSInt cnt = 0;
 		if (this->rootNode)
 		{
-			cnt = this->rootNode->nodeCnt + 1;
+			cnt = (UOSInt)this->rootNode->nodeCnt + 1;
 		}
 		Text::CString *outArr = MemAlloc(Text::CString, cnt);
 		Text::CString *tmpArr = outArr;
