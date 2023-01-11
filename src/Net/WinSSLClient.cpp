@@ -33,7 +33,7 @@ struct Net::WinSSLClient::ClassData
 
 	UInt8 *readBuff;
 	UOSInt readSize;
-	Crypto::Cert::X509Cert *remoteCert;
+	Data::ArrayList<Crypto::Cert::Certificate *> *remoteCerts;
 };
 
 void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng)
@@ -69,13 +69,18 @@ Net::WinSSLClient::WinSSLClient(Net::SocketFactory *sockf, Socket *s, void *ctxt
 	this->clsData->decSize = 0;
 	this->clsData->readBuff = 0;
 	this->clsData->readSize = 0;
-	this->clsData->remoteCert = 0;
+	this->clsData->remoteCerts = 0;
 
 	PCCERT_CONTEXT certTxt = 0;
 	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_REMOTE_CERT_CONTEXT, &certTxt);
 	if (certTxt)
 	{
-		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), certTxt->pbCertEncoded, certTxt->cbCertEncoded));
+		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayList<Crypto::Cert::Certificate*>());
+		Crypto::Cert::X509Cert *cert;
+		NEW_CLASS(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), certTxt->pbCertEncoded, certTxt->cbCertEncoded));
+		this->clsData->remoteCerts->Add(cert);
+		//https://stackoverflow.com/questions/38121372/extract-certificate-chain-from-schannel-with-c-and-cryptoapi-schannel
+		//////////////////////////////////
 	}
 }
 
@@ -95,7 +100,16 @@ Net::WinSSLClient::~WinSSLClient()
 	{
 		MemFree(this->clsData->decBuff);
 	}
-	SDEL_CLASS(this->clsData->remoteCert);
+	if (this->clsData->remoteCerts)
+	{
+		UOSInt i = this->clsData->remoteCerts->GetCount();
+		while (i-- > 0)
+		{
+			Crypto::Cert::Certificate *cert = this->clsData->remoteCerts->GetItem(i);
+			DEL_CLASS(cert);
+		}
+		DEL_CLASS(this->clsData->remoteCerts);
+	}
 	MemFree(this->clsData);
 }
 
@@ -655,5 +669,13 @@ Bool Net::WinSSLClient::Recover()
 
 Crypto::Cert::Certificate *Net::WinSSLClient::GetRemoteCert()
 {
-	return this->clsData->remoteCert;
+	if (this->clsData->remoteCerts)
+		return this->clsData->remoteCerts->GetItem(0);
+	else
+		return 0;
+}
+
+const Data::ReadingList<Crypto::Cert::Certificate *> *Net::WinSSLClient::GetRemoteCerts()
+{
+	return this->clsData->remoteCerts;
 }

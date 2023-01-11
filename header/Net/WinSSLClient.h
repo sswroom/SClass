@@ -29,6 +29,7 @@ namespace Net
 		virtual Bool Recover();
 
 		virtual Crypto::Cert::Certificate *GetRemoteCert();
+		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetRemoteCerts();
 	};
 }
 #endif
