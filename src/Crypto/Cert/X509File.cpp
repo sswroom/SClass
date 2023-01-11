@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Cert/X509File.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PubKey.h"
 #include "Data/ByteTool.h"
 #include "Net/ASN1OIDDB.h"
@@ -3130,4 +3131,26 @@ Crypto::Hash::HashType Crypto::Cert::X509File::HashTypeFromOID(const UInt8 *oid,
 		return Crypto::Hash::HashType::SHA1;
 	}
 	return Crypto::Hash::HashType::Unknown;
+}
+
+Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(const Data::ReadingList<Crypto::Cert::Certificate *> *certs)
+{
+	if (certs->GetCount() == 1)
+	{
+		return certs->GetItem(0)->CreateX509Cert();
+	}
+	else
+	{
+		UOSInt i = 1;
+		UOSInt j = certs->GetCount();
+		Crypto::Cert::X509FileList *certList;
+		Crypto::Cert::X509Cert *cert = certs->GetItem(0)->CreateX509Cert();
+		NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+		while (i < j)
+		{
+			certList->AddFile(certs->GetItem(i)->CreateX509Cert());
+			i++;
+		}
+		return certList;
+	}
 }

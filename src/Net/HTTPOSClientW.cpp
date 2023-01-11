@@ -30,6 +30,7 @@ struct Net::HTTPOSClient::ClassData
 	HINTERNET hConnect;
 	HINTERNET hRequest;
 	Bool https;
+	Data::ArrayList<Crypto::Cert::Certificate*> *certs;
 };
 
 void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, DWORD dwInternetStatus, LPVOID lpvStatusInformation, DWORD dwStatusInformationLength)
@@ -84,6 +85,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	data->hConnect = 0;
 	data->hRequest = 0;
 	data->https = false;
+	data->certs = 0;
 	this->cliHost = 0;
 	this->writing = false;
 	this->dataBuff = 0;
@@ -129,6 +131,16 @@ Net::HTTPOSClient::~HTTPOSClient()
 		WinHttpCloseHandle(data->hConnect);
 	if (data->hSession)
 		WinHttpCloseHandle(data->hSession);
+	if (data->certs)
+	{
+		UOSInt i = data->certs->GetCount();
+		while (i-- > 0)
+		{
+			Crypto::Cert::Certificate *cert = data->certs->GetItem(i);
+			DEL_CLASS(cert);
+		}
+		DEL_CLASS(data->certs);
+	}
 	MemFree(data);
 	DEL_CLASS(this->reqMstm);
 }
@@ -619,8 +631,10 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return this->clsData->https;
 }
 
-Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
+const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
 {
+	if (this->clsData->certs)
+		return this->clsData->certs;
 	UInt8 *certInfo;
 	DWORD certSize = 0;
 	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SECURITY_CERTIFICATE_STRUCT, 0, &certSize) != FALSE)
@@ -636,7 +650,9 @@ Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
 	{
 		return 0;
 	}
+	NEW_CLASS(this->clsData->certs, Data::ArrayList<Crypto::Cert::Certificate*>());
 	Crypto::Cert::WinHttpCert *cert;
 	NEW_CLASS(cert, Crypto::Cert::WinHttpCert(certInfo));
-	return cert;
+	this->clsData->certs->Add(cert);
+	return this->clsData->certs;
 }

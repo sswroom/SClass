@@ -464,6 +464,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(void *userO
 	me->lblFileStatus->SetText(CSTR("No files selected"));
 }
 
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	if (me->respCert)
+	{
+		me->core->OpenObject(me->respCert->Clone());
+	}
+}
+
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
@@ -704,13 +713,29 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respReqURL = currURL->Clone();
 				me->respContType = contType;
 				me->respData = mstm;
-				SDEL_STRING(me->respCert);
-				Crypto::Cert::Certificate *cert = cli->GetServerCert();
-				if (cert)
+				SDEL_STRING(me->respCertText);
+				SDEL_CLASS(me->respCert);
+				const Data::ReadingList<Crypto::Cert::Certificate *> *certs = cli->GetServerCerts();
+				if (certs)
 				{
 					Text::StringBuilderUTF8 sb;
-					cert->ToString(&sb);
-					me->respCert = Text::String::New(sb.ToString(), sb.GetLength());
+					Crypto::Cert::X509File *x509 = Crypto::Cert::X509File::CreateFromCerts(certs);
+					if (x509)
+					{
+						x509->ToString(&sb);
+						me->respCert = x509;
+					}
+					else
+					{
+						UOSInt i = 0;
+						UOSInt j = certs->GetCount();
+						while (i < j)
+						{
+							certs->GetItem(i)->ToString(&sb);
+							i++;
+						}
+					}
+					me->respCertText = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 				respMutUsage.EndUse();
 			}
@@ -730,8 +755,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				SDEL_CLASS(me->respData);
 				SDEL_STRING(me->respContType);
 				me->respReqURL = currURL->Clone();
-				SDEL_STRING(me->respCert);
-				mutUsage.EndUse();
+				SDEL_STRING(me->respCertText);
+				SDEL_CLASS(me->respCert);
 			}
 
 			DEL_CLASS(cli);
@@ -868,14 +893,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 			me->lvHeaders->AddItem(hdr, 0);
 			i++;
 		}
-		if (me->respCert)
+		if (me->respCertText)
 		{
-			me->txtCert->SetText(me->respCert->ToCString());
+			me->txtCert->SetText(me->respCertText->ToCString());
 		}
 		else
 		{
 			me->txtCert->SetText(CSTR(""));
 		}
+		me->btnCert->SetEnabled(me->respCert != 0);
 		me->respChanged = false;
 		me->tcMain->SetSelectedIndex(1);
 	}
@@ -1147,6 +1173,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->respContType = 0;
 	this->respReqURL = 0;
 	this->respData = 0;
+	this->respCertText = 0;
 	this->respCert = 0;
 	this->userAgent = Text::String::New(UTF8STRC("SSWR/1.0"));
 	this->respSvrAddr.addrType = Net::AddrType::Unknown;
@@ -1311,6 +1338,13 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 
 	this->tpCert = this->tcMain->AddTabPage(CSTR("Cert"));
+	NEW_CLASS(this->pnlCert, UI::GUIPanel(ui, this->tpCert));
+	this->pnlCert->SetRect(0, 0, 100, 31, false);
+	this->pnlCert->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->btnCert, UI::GUIButton(ui, this->pnlCert, CSTR("Open")));
+	this->btnCert->SetRect(4, 4, 75, 23, false);
+	this->btnCert->HandleButtonClick(OnCertClicked, this);
+	this->btnCert->SetEnabled(false);
 	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, this->tpCert, CSTR(""), true));
 	this->txtCert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtCert->SetReadOnly(true);
@@ -1346,7 +1380,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_STRING(this->respReqURL);
 	SDEL_STRING(this->respContType);
 	SDEL_CLASS(this->respData);
-	SDEL_STRING(this->respCert);
+	SDEL_STRING(this->respCertText);
+	SDEL_CLASS(this->respCert);
 	this->userAgent->Release();
 	SDEL_CLASS(this->ssl);
 }

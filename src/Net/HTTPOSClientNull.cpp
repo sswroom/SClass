@@ -26,7 +26,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 {
 }
 
-Bool Net::HTTPOSClient::IsError()
+Bool Net::HTTPOSClient::IsError() const
 {
 	return true;
 }
@@ -94,7 +94,7 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return false;
 }
 
-Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
+const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
 {
 	return 0;
 }

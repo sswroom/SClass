@@ -63,14 +63,14 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		me->txtStatus->SetText(sb.ToCString());
 		return;
 	}
-	Crypto::Cert::Certificate *cert = cli->GetRemoteCert();
-	SDEL_CLASS(me->currCert);
-	if (cert)
+	const Data::ReadingList<Crypto::Cert::Certificate *> *certs = cli->GetRemoteCerts();
+	SDEL_CLASS(me->currCerts);
+	if (certs)
 	{
+		me->currCerts = Crypto::Cert::X509File::CreateFromCerts(certs);
 		Text::StringBuilderUTF8 sb;
-		cert->ToString(&sb);
+		me->currCerts->ToString(&sb);
 		me->txtCert->SetText(sb.ToCString());
-		me->currCert = cert->CreateX509Cert();
 	}
 	else
 	{
@@ -83,9 +83,9 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
-	if (me->currCert)
+	if (me->currCerts)
 	{
-		me->core->OpenObject(me->currCert->Clone());
+		me->core->OpenObject(me->currCerts->Clone());
 	}
 }
 
@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	this->currCert = 0;
+	this->currCerts = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, UI
 SSWR::AVIRead::AVIRSSLInfoForm::~AVIRSSLInfoForm()
 {
 	SDEL_CLASS(this->ssl);
-	SDEL_CLASS(this->currCert);
+	SDEL_CLASS(this->currCerts);
 }
 
 void SSWR::AVIRead::AVIRSSLInfoForm::OnMonitorChanged()

@@ -107,6 +107,8 @@ namespace SSWR
 			UI::GUIButton *btnView;
 
 			UI::GUITabPage *tpCert;
+			UI::GUIPanel *pnlCert;
+			UI::GUIButton *btnCert;
 			UI::GUITextBox *txtCert;
 
 			UI::GUITabPage *tpCookie;
@@ -146,7 +148,8 @@ namespace SSWR
 			Sync::Mutex respMut;
 			Text::String *respContType;
 			IO::MemoryStream *respData;
-			Text::String *respCert;
+			Text::String *respCertText;
+			Crypto::Cert::X509File *respCert;
 			Data::ArrayList<ParamValue*> params;
 			Data::ArrayList<HTTPCookie *> cookieList;
 			Sync::Mutex cookieMut;
@@ -159,6 +162,7 @@ namespace SSWR
 			static void __stdcall OnDataStrClicked(void *userObj);
 			static void __stdcall OnFileSelectClicked(void *userObj);
 			static void __stdcall OnFileClearClicked(void *userObj);
+			static void __stdcall OnCertClicked(void *userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();

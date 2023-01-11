@@ -181,7 +181,7 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 				sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
 				if (sptr == 0)
 					break;
-				if (!this->rdr->IsLineBreak() && !this->rdr->IsEOF())
+				if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
 				{
 					UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
 					MemCopyNO(newRow, this->row, this->rowBuffSize);
@@ -307,7 +307,7 @@ Bool DB::CSVReader::ReadNext()
 				sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
 				if (sptr == 0)
 					break;
-				if (!this->rdr->IsLineBreak() && !this->rdr->IsEOF())
+				if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
 				{
 					UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
 					MemCopyNO(newRow, this->row, this->rowBuffSize);

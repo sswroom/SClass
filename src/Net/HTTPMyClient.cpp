@@ -1193,11 +1193,11 @@ Bool Net::HTTPMyClient::IsSecureConn()
 	return this->cli->IsSSL();
 }
 
-Crypto::Cert::Certificate *Net::HTTPMyClient::GetServerCert()
+const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPMyClient::GetServerCerts()
 {
 	if (this->cli && this->cli->IsSSL())
 	{
-		return ((Net::SSLClient*)this->cli)->GetRemoteCert();
+		return ((Net::SSLClient*)this->cli)->GetRemoteCerts();
 	}
 	return 0;
 }

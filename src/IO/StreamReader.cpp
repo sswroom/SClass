@@ -22,7 +22,6 @@ void IO::StreamReader::FillBuffer()
 			buffSize = 0;
 			cSize = 0;
 			cPos = 0;
-			endOfStream = false;
 		}
 	}
 
@@ -49,7 +48,6 @@ void IO::StreamReader::FillBuffer()
 	}
 	if (buffSize <= 0)
 	{
-		endOfStream = true;
 		return;
 	}
 	UOSInt convSize = BUFFSIZE - cSize;
@@ -135,7 +133,6 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 	this->cbuff = MemAlloc(UTF8Char, BUFFSIZE + 1);
 	this->cSize = 0;
 	this->cPos = 0;
-	this->endOfStream = false;
 	if (stm->CanSeek())
 	{
 		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
@@ -276,11 +273,6 @@ Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 Bool IO::StreamReader::IsLineBreak()
 {
 	return this->lineBreak != Text::LineBreakType::None;
-}
-
-Bool IO::StreamReader::IsEOF()
-{
-	return this->endOfStream && (cSize <= cPos);
 }
 
 Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)

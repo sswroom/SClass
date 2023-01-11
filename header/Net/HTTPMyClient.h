@@ -57,7 +57,7 @@ namespace Net
 		virtual void SetTimeout(Int32 ms);
 
 		virtual Bool IsSecureConn();
-		virtual Crypto::Cert::Certificate *GetServerCert();
+		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts();
 	};
 }
 #endif

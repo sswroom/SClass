@@ -23,6 +23,7 @@ struct Net::HTTPOSClient::ClassData
 	Text::String *userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
+	Data::ArrayList<Crypto::Cert::Certificate *> *certs;
 };
 
 size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *userdata)
@@ -73,6 +74,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	this->clsData->respHeaders = &this->headers;
 	NEW_CLASS(this->clsData->respData, IO::MemoryStream());
 	this->clsData->contLen = 0x7fffffff;
+	this->clsData->certs = 0;
 	this->cliHost = 0;
 	this->writing = false;
 	this->dataBuff = 0;
@@ -103,6 +105,17 @@ Net::HTTPOSClient::~HTTPOSClient()
 	if (this->clsData->curl)
 		curl_easy_cleanup(this->clsData->curl);
 	this->clsData->userAgent->Release();
+	if (this->clsData->certs)
+	{
+		UOSInt i = this->clsData->certs->GetCount();
+		Crypto::Cert::Certificate *cert;
+		while (i-- > 0)
+		{
+			cert = this->clsData->certs->GetItem(i);
+			DEL_CLASS(cert);
+		}
+		DEL_CLASS(this->clsData->certs);
+	}
 	DEL_CLASS(this->clsData->respData);
 	MemFree(this->clsData);
 	DEL_CLASS(this->reqMstm);
@@ -541,18 +554,27 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return false;
 }
 
-Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
+const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
 {
 	if (this->IsSecureConn() && this->clsData->curl)
 	{
+		if (this->clsData->certs)
+			return this->clsData->certs;
 		struct curl_certinfo *ci;
 		if (!curl_easy_getinfo(this->clsData->curl, CURLINFO_CERTINFO, &ci))
 		{
 			if (ci->num_of_certs > 0)
 			{
+				NEW_CLASS(this->clsData->certs, Data::ArrayList<Crypto::Cert::Certificate*>());
 				Crypto::Cert::Certificate *cert;
-				NEW_CLASS(cert, Crypto::Cert::CurlCert(ci->certinfo[0]));
-				return cert;
+				int i = 0;
+				while (i < ci->num_of_certs)
+				{
+					NEW_CLASS(cert, Crypto::Cert::CurlCert(ci->certinfo[i]));
+					this->clsData->certs->Add(cert);
+					i++;
+				}
+				return this->clsData->certs;
 			}
 		}
 	}

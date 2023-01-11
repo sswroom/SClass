@@ -536,7 +536,7 @@ UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buff
 	recvSize = recvfrom(this->SocketGetFD(socket), (Char*)buff, (size_t)buffSize, 0, saddr, (socklen_t*)&size);
 	if (recvSize <= 0)
 	{
-		printf("UDP recv error: %d\r\n", errno);
+//		printf("UDP recv error: %d\r\n", errno);
 		if (et)
 		{
 			if (errno == ECONNRESET)

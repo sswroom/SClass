@@ -22,7 +22,6 @@ void Text::UTF8Reader::FillBuffer()
 			this->buffSize = 0;
 			this->currOfst = 0;
 			this->lastPos = currPos;
-			this->endOfStream = false;
 		}
 	}
 
@@ -46,10 +45,6 @@ void Text::UTF8Reader::FillBuffer()
 #endif
 	this->buffSize += readSize;
 	this->lastPos += readSize;
-	if (readSize == 0)
-	{
-		this->endOfStream = true;
-	}
 }
 
 void Text::UTF8Reader::CheckHeader()
@@ -94,7 +89,6 @@ Text::UTF8Reader::UTF8Reader(IO::Stream *stm)
 		this->lastPos = 0;
 	}
 	this->lineBreak = Text::LineBreakType::None;
-	this->endOfStream = false;
 	this->CheckHeader();
 	this->FillBuffer();
 }
@@ -656,11 +650,6 @@ Bool Text::UTF8Reader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 Bool Text::UTF8Reader::IsLineBreak()
 {
 	return this->lineBreak != Text::LineBreakType::None;
-}
-
-Bool Text::UTF8Reader::IsEOF()
-{
-	return this->endOfStream && this->currOfst >= this->buffSize;
 }
 
 Bool Text::UTF8Reader::ReadToEnd(Text::StringBuilderUTF8 *sb)

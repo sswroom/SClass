@@ -51,7 +51,7 @@ namespace Net
 		virtual IO::StreamType GetStreamType() const;
 
 		virtual Bool IsSecureConn() = 0;
-		virtual Crypto::Cert::Certificate *GetServerCert() = 0;
+		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts() = 0;
 
 		Bool FormBegin();
 		Bool FormAdd(Text::CString name, Text::CString value);

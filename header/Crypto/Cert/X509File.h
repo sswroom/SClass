@@ -48,6 +48,7 @@ namespace Crypto
 
 			static void FreeExtensions(CertExtensions *ext);
 		};
+		class Certificate;
 		class CertStore;
 		class X509Key;
 		class X509Cert;
@@ -224,6 +225,7 @@ namespace Crypto
 			static Text::CString ValidStatusGetName(ValidStatus validStatus);
 			static Text::CString ValidStatusGetDesc(ValidStatus validStatus);
 			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
+			static X509File *CreateFromCerts(const Data::ReadingList<Crypto::Cert::Certificate *> *certs);
 		};
 	}
 }

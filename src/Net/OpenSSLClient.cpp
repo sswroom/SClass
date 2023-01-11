@@ -11,7 +11,7 @@
 struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
-	Crypto::Cert::OpenSSLCert *remoteCert;
+	Data::ArrayList<Crypto::Cert::Certificate*> *remoteCerts;
 	Bool shutdown;
 };
 
@@ -30,20 +30,40 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
-	this->clsData->remoteCert = 0;
+	this->clsData->remoteCerts = 0;
 	this->clsData->shutdown = false;
 
 //	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
-	stack_st_X509 *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
+	STACK_OF(X509) *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
 	if (certs != 0)
 	{
-		NEW_CLASS(this->clsData->remoteCert, Crypto::Cert::OpenSSLCert(sk_X509_value(certs, 0)));
+		Crypto::Cert::OpenSSLCert *cert;
+		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayList<Crypto::Cert::Certificate*>());
+		int i = 0;
+		int j = sk_X509_num(certs);
+		while (i < j)
+		{
+			NEW_CLASS(cert, Crypto::Cert::OpenSSLCert(sk_X509_value(certs, i)));
+			this->clsData->remoteCerts->Add(cert);
+			i++;
+		}
 	}
 }
 
 Net::OpenSSLClient::~OpenSSLClient()
 {
-	SDEL_CLASS(this->clsData->remoteCert);
+	if (this->clsData->remoteCerts)
+	{
+		UOSInt i = this->clsData->remoteCerts->GetCount();
+		Crypto::Cert::Certificate *cert;
+		while (i-- > 0)
+		{
+			cert = this->clsData->remoteCerts->GetItem(i);
+			DEL_CLASS(cert);
+		}
+		DEL_CLASS(this->clsData->remoteCerts);
+		this->clsData->remoteCerts = 0;
+	}
 	SSL_free(this->clsData->ssl);
 	MemFree(this->clsData);
 }
@@ -169,5 +189,13 @@ Bool Net::OpenSSLClient::Recover()
 
 Crypto::Cert::Certificate *Net::OpenSSLClient::GetRemoteCert()
 {
-	return this->clsData->remoteCert;
+	if (this->clsData->remoteCerts)
+		return this->clsData->remoteCerts->GetItem(0);
+	else
+		return 0;
+}
+
+const Data::ReadingList<Crypto::Cert::Certificate *> *Net::OpenSSLClient::GetRemoteCerts()
+{
+	return this->clsData->remoteCerts;
 }
