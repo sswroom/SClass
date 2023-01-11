@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "Map/OWSFeatureParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
@@ -113,7 +113,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CString txt, UInt32 srid, Bool swapXY
 	UTF8Char tmpBuff[1024];
 	UTF8Char *tmpPtr;
 
-	IO::MemoryStream mstm((UInt8*)txt.v, txt.leng, UTF8STRC("Map.WebMapTileServiceSource.QueryInfo.mstm"));
+	IO::MemoryReadingStream mstm(txt.v, txt.leng);
 	IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(encFact, &mstm, CSTR("Temp.gml"), 0, 0, 0);
 	if (pobj)
 	{

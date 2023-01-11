@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "Text/CharUtil.h"
 #include "Text/CPPText.h"
 #include "Text/MyStringW.h"
@@ -193,9 +193,9 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *s
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayList<Text::String*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF8 *sbPrefix)
+Bool Text::CPPText::ParseEnum(Data::ArrayList<Text::String*> *enumEntries, Text::CString cppEnumStr, Text::StringBuilderUTF8 *sbPrefix)
 {
-	IO::MemoryStream mstm((UInt8*)cppEnumStr, Text::StrCharCnt(cppEnumStr), UTF8STRC("Text.CPPText.ParseEnum"));
+	IO::MemoryReadingStream mstm(cppEnumStr.v, cppEnumStr.leng);
 	Text::Cpp::CppReader reader(&mstm);
 	Text::StringBuilderUTF8 sb;
 	if (!reader.NextWord(&sb))

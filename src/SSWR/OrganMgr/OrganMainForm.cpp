@@ -3,7 +3,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
-#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "IO/StmData/FileData.h"
@@ -3372,7 +3372,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 				{
 					if (data->GetDataText(fmtSURL, &sb))
 					{
-						IO::MemoryStream mstm(sb.v, sb.GetLength(), UTF8STRC("MainForm.Drop"));
+						IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 						Text::UTF8Reader reader(&mstm);
 						while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 						{

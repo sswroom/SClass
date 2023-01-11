@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/AES256.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Net/SAMLUtil.h"
@@ -338,7 +339,7 @@ Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Crypto::Cert::X509Key *
 
 Bool Net::SAMLUtil::DecryptResponse(Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Crypto::Cert::X509Key *key, Text::CString responseXML, Text::StringBuilderUTF8 *sbResult)
 {
-	IO::MemoryStream mstm((UInt8*)responseXML.v, responseXML.leng, UTF8STRC("Net.SAMLUtil.DecryptResponse"));
+	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
 	Text::XMLReader reader(encFact, &mstm, Text::XMLReader::PM_XML);
 	Text::String *nodeText;
 	while (reader.ReadNext())

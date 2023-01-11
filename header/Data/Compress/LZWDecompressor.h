@@ -12,7 +12,7 @@ namespace Data
 			LZWDecompressor();
 			virtual ~LZWDecompressor();
 
-			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize);
+			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize);
 			virtual Bool Decompress(IO::Stream *destStm, IO::IStreamData *srcData);
 		};
 	}

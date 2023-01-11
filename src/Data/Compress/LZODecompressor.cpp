@@ -10,7 +10,7 @@ Data::Compress::LZODecompressor::~LZODecompressor()
 {
 }
 
-Bool Data::Compress::LZODecompressor::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::LZODecompressor::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize)
 {
 	return LZODecompressor_Decompress(srcBuff, srcBuffSize, destBuff, destBuffSize);
 }

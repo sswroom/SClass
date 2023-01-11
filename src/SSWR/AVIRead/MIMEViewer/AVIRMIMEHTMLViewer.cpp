@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.h"
 #include "Text/HTMLUtil.h"
 
@@ -13,12 +13,10 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(SSWR::AVIRead:
 
 	UOSInt size;
 	const UInt8 *buff = obj->GetRAWData(&size);
-	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, size, UTF8STRC("SSWR.AVIRead.MIMEViewer.AVIRMIMEHTMLViewer.mstm")));
+	IO::MemoryReadingStream mstm(buff, size);
 	Text::StringBuilderUTF8 sb;
-	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), mstm, 0, &sb);
+	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), &mstm, 0, &sb);
 	this->txtHTML->SetText(sb.ToCString());
-	DEL_CLASS(mstm);
 }
 
 SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::~AVIRMIMEHTMLViewer()

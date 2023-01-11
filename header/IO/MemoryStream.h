@@ -14,7 +14,6 @@ namespace IO
 	public:
 		MemoryStream();
 		MemoryStream(UOSInt capacity);
-		MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen);
 		virtual ~MemoryStream();
 
 		UInt8 *GetBuff();

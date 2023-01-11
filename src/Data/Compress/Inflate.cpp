@@ -14,7 +14,7 @@ Data::Compress::Inflate::~Inflate()
 {
 }
 
-Bool Data::Compress::Inflate::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::Inflate::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, const UInt8 *srcBuff, UOSInt srcBuffSize)
 {
 	mz_ulong buffSize = (mz_ulong)*destBuffSize;
 	Int32 ret = mz_uncompress(destBuff, &buffSize, srcBuff, (mz_ulong)srcBuffSize);

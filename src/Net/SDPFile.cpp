@@ -3,6 +3,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStrUTF8.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/StreamReader.h"
 #include "Net/SDPFile.h"
@@ -50,11 +51,9 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 	UTF8Char *sptr;
 	Text::PString sarr[7];
 	Data::ArrayListStrUTF8 *currMedia = 0;
-	IO::MemoryStream *mstm;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(mstm, IO::MemoryStream(this->buff, this->buffSize, UTF8STRC("Net.SDPFile.SDPFile")));
-	NEW_CLASS(reader, Text::UTF8Reader(mstm));
-	while ((sptr = reader->ReadLine(sbuff, 255)) != 0)
+	IO::MemoryReadingStream mstm(this->buff, this->buffSize);
+	Text::UTF8Reader reader(&mstm);
+	while ((sptr = reader.ReadLine(sbuff, 255)) != 0)
 	{
 		if (sbuff[1] == '=')
 		{
@@ -171,8 +170,6 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			}
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(mstm);
 }
 
 Net::SDPFile::SDPFile()
@@ -333,15 +330,14 @@ Bool Net::SDPFile::BuildBuff()
 	UOSInt k;
 	UOSInt l;
 	UTF8Char sbuff[3];
-	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
 	IO::MemoryStream mstm;
-	NEW_CLASS(writer, Text::UTF8Writer(&mstm));
+	Text::UTF8Writer writer(&mstm);
 	sb.ClearStr();
 
 	sb.AppendC(UTF8STRC("v="));
 	sb.AppendI32(this->version);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("o="));
@@ -354,12 +350,12 @@ Bool Net::SDPFile::BuildBuff()
 	sb.Append(this->userAddrType);
 	sb.AppendC(UTF8STRC(" "));
 	sb.Append(this->userAddrHost);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("s="));
 	sb.Append(this->sessName);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 	i = 0;
 	j = this->sessDesc->GetCount();
@@ -376,47 +372,47 @@ Bool Net::SDPFile::BuildBuff()
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("c=IN IP4 0.0.0.0"));
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t="));
 	sb.AppendI64(this->startTime);
 	sb.AppendC(UTF8STRC(" "));
 	sb.AppendI64(this->endTime);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 	if (this->sessTool)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=tool:"));
 		sb.Append(this->sessTool);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	if (this->sessSend && !this->sessRecv)
 	{
-		writer->WriteLineC(UTF8STRC("a=sendonly"));
+		writer.WriteLineC(UTF8STRC("a=sendonly"));
 	}
 	else if (this->sessSend && this->sessRecv)
 	{
-		writer->WriteLineC(UTF8STRC("a=sendrecv"));
+		writer.WriteLineC(UTF8STRC("a=sendrecv"));
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("a=recvonly"));
+		writer.WriteLineC(UTF8STRC("a=recvonly"));
 	}
 	if (this->sessCharset)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=charset:"));
 		sb.Append(this->sessCharset);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	if (this->sessControl)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=control:"));
 		sb.Append(this->sessControl);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	i = 0;
@@ -447,7 +443,7 @@ Bool Net::SDPFile::BuildBuff()
 
 			k++;
 		}
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 		k = 0;
 		l = media->GetSDPDataCount();
@@ -462,7 +458,7 @@ Bool Net::SDPFile::BuildBuff()
 			sb.SetEndPtr(data->GetSDPDataType(sb.GetEndPtr()));
 			sb.AppendC(UTF8STRC("/"));
 			sb.AppendU32(data->GetSDPDataFreq());
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=fmtp:"));
@@ -470,7 +466,7 @@ Bool Net::SDPFile::BuildBuff()
 			sb.AppendC(UTF8STRC(" "));
 			sb.AllocLeng(512);
 			sb.SetEndPtr(data->GetSDPDataFormat(sb.GetEndPtr()));
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			k++;
 		}
 
@@ -480,13 +476,11 @@ Bool Net::SDPFile::BuildBuff()
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=control:"));
 			sb.Append(ctrlURL);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 
 		i++;
 	}
-
-	DEL_CLASS(writer);
 	UOSInt buffSize;
 	UInt8 *buff;
 	buff = mstm.GetBuff(&buffSize);

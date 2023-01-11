@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
-#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Net/SAMLUtil.h"
@@ -298,7 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		me->txtSAMLResp->SetText(me->respNew->ToCString());
 		Text::StringBuilderUTF8 sb;
 		{
-			IO::MemoryStream mstm(me->respNew->v, me->respNew->leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnTimerTick.mstm"));
+			IO::MemoryReadingStream mstm(me->respNew->v, me->respNew->leng);
 			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
 		}
 		me->txtSAMLRespWF->SetText(sb.ToCString());
@@ -307,7 +307,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		sb.ClearStr();
 		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), &sb))
 		{
-			IO::MemoryStream mstm(sb.v, sb.GetLength(), UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 			Text::StringBuilderUTF8 sb2;
 			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
 			me->txtSAMLDecrypt->SetText(sb2.ToCString());
@@ -339,14 +339,14 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, Ne
 	Crypto::Cert::X509Key *key = me->samlHdlr->GetKey()->CreateKey();
 	if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, &sb))
 	{
-		IO::MemoryStream mstm(sb.v, sb.GetLength(), UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+		IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 		Text::StringBuilderUTF8 sb2;
 		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb2);
 		decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString());
 	}
 	DEL_CLASS(key);
 	{
-		IO::MemoryStream mstm((UInt8*)msg->rawMessage.v, msg->rawMessage.leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLTestForm.OnLoginRequest.mstm"));
+		IO::MemoryReadingStream mstm(msg->rawMessage.v, msg->rawMessage.leng);
 		sb.ClearStr();
 		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
 	}

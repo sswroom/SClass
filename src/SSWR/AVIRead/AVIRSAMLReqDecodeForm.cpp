@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "Net/SAMLUtil.h"
 #include "SSWR/AVIRead/AVIRSAMLReqDecodeForm.h"
 #include "Text/XMLReader.h"
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(void *userO
 	{
 		me->txtResult->SetText(sbResult.ToCString());
 		sb.ClearStr();
-		IO::MemoryStream mstm(sbResult.v, sbResult.leng, UTF8STRC("SSWR.AVIRead.AVIRSAMLReqDecodeForm.OnDecodeClicked.mstm"));
+		IO::MemoryReadingStream mstm(sbResult.v, sbResult.leng);
 		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), &mstm, 0, &sb);
 		me->txtWellFormat->SetText(sb.ToCString());
 	}

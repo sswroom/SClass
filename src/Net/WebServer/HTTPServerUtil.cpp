@@ -2,6 +2,7 @@
 #include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "Net/MIME.h"
@@ -228,7 +229,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					Crypto::Hash::CRC32RIEEE crc;
 					crc.Calc(buff, (UOSInt)contLeng);
 
-					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, UTF8STRC("Net.HTTPServerUtil.SendContent"));
+					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
 					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, false);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
@@ -248,7 +249,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
-						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, UTF8STRC("Net.HTTPServerUtil.SendContent"));
+						IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
 						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)

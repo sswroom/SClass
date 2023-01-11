@@ -32,20 +32,17 @@ IO::MemoryStream::MemoryStream(UOSInt capacity) : IO::SeekableStream(CSTR("Memor
 	memPtr = MemAlloc(UInt8, this->capacity);
 }
 
-IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
+/*IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	this->capacity = 0;
 	this->currSize = buffSize;
 	this->currPtr = 0;
 	this->memPtr = buff;
-}
+}*/
 
 IO::MemoryStream::~MemoryStream()
 {
-	if (capacity != 0)
-	{
-		MemFree(memPtr);
-	}
+	MemFree(memPtr);
 }
 
 UInt8 *IO::MemoryStream::GetBuff()
@@ -137,15 +134,6 @@ IO::StreamType IO::MemoryStream::GetStreamType() const
 UInt64 IO::MemoryStream::SeekFromBeginning(UInt64 position)
 {
 	UInt64 outPos = position;
-
-	if (this->capacity == 0)
-	{
-		if (outPos > currSize)
-			return this->currPtr;
-		this->currPtr = (UOSInt)outPos;
-		return this->currPtr;
-	}
-
 	if (outPos > MAX_CAPACITY)
 	{
 		return this->currPtr;
