@@ -20,68 +20,54 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 		{
 			buffSize = entryPointFS.Read(buffTmp, 128);
 			entryPointFS.Close();
+			UInt32 ofst = 0;
 
 			if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM_")))
 			{
 				if (buffSize >= 30 && Text::StrStartsWithC(&buffTmp[16], buffSize - 16, UTF8STRC("_DMI_")))
 				{
-					UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x18]);
+					ofst = 0;//ReadUInt32(&buffTmp[0x18]);
 					buffSize = ReadUInt16(&buffTmp[0x16]);
-	//				UInt32 cnt = ReadUInt16(&buffTmp[0x1c]);
-
-					IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (!fs.IsError())
-					{
-						dataBuff = MemAlloc(UInt8, buffSize);
-						fs.SeekFromBeginning(ofst);
-						if (buffSize != fs.Read(dataBuff, buffSize))
-						{
-							MemFree(dataBuff);
-							dataBuff = 0;
-						}
-					}
 				}
 			}
 			else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM3_")))
 			{
 				if (buffSize >= 24)
 				{
-					UInt64 ofst = 0;//ReadInt64(&buffTmp[0x10]);
+					ofst = 0;//ReadInt64(&buffTmp[0x10]);
 					buffSize = ReadUInt32(&buffTmp[0x0c]);
-
-					IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (!fs.IsError())
-					{
-						dataBuff = MemAlloc(UInt8, buffSize);
-						fs.SeekFromBeginning(ofst);
-						if (buffSize != fs.Read(dataBuff, buffSize))
-						{
-							MemFree(dataBuff);
-							dataBuff = 0;
-						}
-					}
 				}
 			}
 			else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_DMI_")))
 			{
 				if (buffSize >= 16)
 				{
-					UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x08]);
+					ofst = 0;//ReadUInt32(&buffTmp[0x08]);
 					buffSize = ReadUInt16(&buffTmp[0x06]);
-	//				UInt32 cnt = ReadUInt16(&buffTmp[0x0c]);
+				}
+			}
 
-					IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (!fs.IsError())
+			if (buffSize != 0)
+			{
+				IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				if (!fs.IsError())
+				{
+					dataBuff = MemAlloc(UInt8, buffSize);
+					fs.SeekFromBeginning(ofst);
+					UOSInt totalRead = 0;
+					UOSInt thisRead;
+					while (totalRead < buffSize)
 					{
-						dataBuff = MemAlloc(UInt8, buffSize);
-						fs.SeekFromBeginning(ofst);
-						if (buffSize != fs.Read(dataBuff, buffSize))
+						thisRead = fs.Read(&dataBuff[totalRead], buffSize - totalRead);
+						if (thisRead == 0)
 						{
 							MemFree(dataBuff);
 							dataBuff = 0;
+							break;
 						}
+						totalRead += thisRead;
 					}
-				}
+				}				
 			}
 		}
 	}
