@@ -53,6 +53,7 @@ namespace SSWR
 			UI::GUIButton *btnFont;
 			UI::GUIButton *btnNextUnk;
 			UI::GUICheckBox *chkDynamicSize;
+			UI::GUIButton *btnOpenFile;
 
 			UI::GUITabPage *tpAnalyse;
 			UI::GUILabel *lblFileFormat;
@@ -67,6 +68,8 @@ namespace SSWR
 			static void __stdcall OnOffsetChg(void *userObj, UInt64 ofst);
 			static void __stdcall OnFontClicked(void *userObj);
 			static void __stdcall OnNextUnkClicked(void *userObj);
+			static void __stdcall OnOpenFileClicked(void *userObj);
+			Bool LoadFile(Text::CString fileName, Bool dynamicSize);
 		public:
 			AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHexViewerForm();

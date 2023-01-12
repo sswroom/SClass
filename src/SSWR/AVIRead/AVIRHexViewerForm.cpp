@@ -5,6 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "UI/FileDialog.h"
 #include "UI/FontDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -15,26 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, Text
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->hexView->LoadFile(files[i]->ToCString(), dynamicSize))
+		if (me->LoadFile(files[i]->ToCString(), dynamicSize))
 		{
-			Text::CString name = me->hexView->GetAnalyzerName();
-			if (name.v)
-			{
-				me->txtFileFormat->SetText(name);
-			}
-			else if (dynamicSize)
-			{
-				me->txtFileFormat->SetText(CSTR("Unknown (Dynamic Size cannot determine)"));
-			}
-			else
-			{
-				me->txtFileFormat->SetText(CSTR("Unknown"));
-			}
-
-			Text::StringBuilderUTF8 sb;
-			sb.AppendC(UTF8STRC("Hex Viewer - "));
-			sb.Append(files[i]);
-			me->SetText(sb.ToCString());
 			break;
 		}
 		i++;
@@ -217,6 +200,44 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOpenFileClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HexViewerOpen", false);
+	dlg.SetAllowMultiSel(false);
+	if (dlg.ShowDialog(me->GetHandle()))
+	{
+		me->LoadFile(dlg.GetFileName()->ToCString(), me->chkDynamicSize->IsChecked());
+	}
+}
+
+Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CString fileName, Bool dynamicSize)
+{
+	Bool succ = this->hexView->LoadFile(fileName, dynamicSize);
+	if (succ)
+	{
+		Text::CString name = this->hexView->GetAnalyzerName();
+		if (name.v)
+		{
+			this->txtFileFormat->SetText(name);
+		}
+		else if (dynamicSize)
+		{
+			this->txtFileFormat->SetText(CSTR("Unknown (Dynamic Size cannot determine)"));
+		}
+		else
+		{
+			this->txtFileFormat->SetText(CSTR("Unknown"));
+		}
+
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Hex Viewer - "));
+		sb.Append(fileName);
+		this->SetText(sb.ToCString());
+	}
+	return succ;
+}
+
 SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("Hex Viewer"));
@@ -303,6 +324,9 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
 	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, CSTR("Dynamic Size"), false));
 	this->chkDynamicSize->SetRect(164, 124, 100, 23, false);
+	NEW_CLASS(this->btnOpenFile, UI::GUIButton(ui, this->tpValues, CSTR("Open")));
+	this->btnOpenFile->SetRect(604, 124, 75, 23, false);
+	this->btnOpenFile->HandleButtonClick(OnOpenFileClicked, this);
 
 	this->tpAnalyse = this->tcMain->AddTabPage(CSTR("Analyse"));
 	NEW_CLASS(this->lblFileFormat, UI::GUILabel(ui, this->tpAnalyse, CSTR("File Format")));
