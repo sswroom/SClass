@@ -5,6 +5,8 @@
 #include "Media/EDID.h"
 #include "Text/MyString.h"
 
+//https://en.wikipedia.org/wiki/Extended_Display_Identification_Data
+
 Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
 {
 	if (edidBuff[0] != 0 || edidBuff[1] != 0xff || edidBuff[2] != 0xff || edidBuff[3] != 0xff ||edidBuff[4] != 0xff || edidBuff[5] != 0xff || edidBuff[6] != 0xff || edidBuff[7] != 0)

@@ -77,6 +77,7 @@ namespace SSWR
 
 			void OpenGSMModem(IO::Stream *modemPort);
 			IO::Stream *OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
+			void OpenHex(IO::IStreamData *fd);
 
 			void BeginLoad();
 			void EndLoad();

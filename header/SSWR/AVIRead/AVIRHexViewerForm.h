@@ -72,6 +72,8 @@ namespace SSWR
 			virtual ~AVIRHexViewerForm();
 
 			virtual void OnMonitorChanged();
+
+			void SetData(IO::IStreamData *fd);
 		};
 	}
 }

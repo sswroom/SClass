@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Math/Math.h"
 #include "Media/DDCReader.h"
 #include "Media/EDID.h"
@@ -115,6 +116,17 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
+	if (me->edid == 0)
+	{
+		return;
+	}
+	IO::StmData::MemoryDataCopy fd(me->edid, me->edidSize);
+	me->core->OpenHex(&fd);
+}
+
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
@@ -173,6 +185,9 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, CSTR("Save")));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
+	NEW_CLASS(this->btnHex, UI::GUIButton(ui, this->pnlCtrl, CSTR("Hex")));
+	this->btnHex->SetRect(84, 4, 75, 23, false);
+	this->btnHex->HandleButtonClick(OnHexClicked, this);
 	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtEDID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtEDID->SetReadOnly(true);

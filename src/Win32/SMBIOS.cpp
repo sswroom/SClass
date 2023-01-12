@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Win32/SMBIOS.h"
@@ -4258,6 +4259,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 		i += 2;
 	}
 	return true;
+}
+
+IO::IStreamData *Win32::SMBIOS::CreateStreamData() const
+{
+	IO::IStreamData *ret;
+	NEW_CLASS(ret, IO::StmData::MemoryDataCopy(this->smbiosBuff, this->smbiosBuffSize));
+	return ret;
 }
 
 void Win32::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family)

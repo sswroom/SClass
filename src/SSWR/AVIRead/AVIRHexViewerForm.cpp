@@ -332,3 +332,8 @@ void SSWR::AVIRead::AVIRHexViewerForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
+
+void SSWR::AVIRead::AVIRHexViewerForm::SetData(IO::IStreamData *fd)
+{
+	this->hexView->LoadData(fd->GetPartialData(0, fd->GetDataSize()));
+}

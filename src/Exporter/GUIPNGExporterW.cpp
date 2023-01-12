@@ -140,7 +140,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 					Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 					chunkBuff[30] = 0;
-					UOSInt compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true);
+					UOSInt compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 					if (compSize > 0)
 					{
 						UInt8 crcBuff[4];

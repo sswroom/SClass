@@ -15,12 +15,14 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			UI::GUIPanel *pnlCtrl;
 			UI::GUIButton *btnSave;
+			UI::GUIButton *btnHex;
 			UI::GUITextBox *txtEDID;
 			UInt8 *edid;
 			UOSInt edidSize;
 			
 			void UpdateEDIDDisp();
 			static void __stdcall OnSaveClicked(void *userObj);
+			static void __stdcall OnHexClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt);
 		public:
 			AVIREDIDViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

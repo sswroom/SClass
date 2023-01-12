@@ -15,6 +15,7 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRGSMModemForm.h"
+#include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "Text/MyStringW.h"
 #include "UI/FileDialog.h"
@@ -142,6 +143,15 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 		}
 	}
 	return retStm;
+}
+
+void SSWR::AVIRead::AVIRCore::OpenHex(IO::IStreamData *fd)
+{
+	SSWR::AVIRead::AVIRHexViewerForm *frm;
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, this));
+	InitForm(frm);
+	frm->SetData(fd);
+	frm->Show();
 }
 
 void SSWR::AVIRead::AVIRCore::BeginLoad()

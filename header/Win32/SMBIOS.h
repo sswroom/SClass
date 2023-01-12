@@ -1,6 +1,7 @@
 #ifndef _SM_WIN32_SMBIOS
 #define _SM_WIN32_SMBIOS
 #include "Data/ArrayList.h"
+#include "IO/IStreamData.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Win32
@@ -98,6 +99,8 @@ namespace Win32
 		UTF8Char *GetPlatformSN(UTF8Char *buff) const;
 		Int32 GetChassisType() const;
 		Bool ToString(Text::StringBuilderUTF8 *sb) const;
+		IO::IStreamData *CreateStreamData() const;
+
 		static void GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family);
 		static void GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type);
 	};
