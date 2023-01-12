@@ -9,6 +9,11 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
+UOSInt PNGExporter_EstimateSize(const UInt8 *data, UOSInt dataSize, UInt8 *tmpBuff)
+{
+	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Inflate::CompressionLevel::BestSpeed);	
+}
+
 UOSInt PNGExporter_WritePal(IO::Stream *stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
 {
 	UInt8 *palPtr = img->pal;
@@ -88,8 +93,8 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		tmpBuff[i + 1] = thisPx;
 		i++;
 	}
-	compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
-	compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+	compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
+	compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	compSize[2] = 0;
 	compSize[3] = 0;
 	compSize[4] = 0;
@@ -171,7 +176,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		if (height <= 0)
 			break;
 
-		compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
+		compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 1;
 		tmpBuff[1] = lineStart[1];
@@ -181,7 +186,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lineStart[i]);
 			i++;
 		}
-		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 2;
 		i = 0;
@@ -190,7 +195,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - lastLineStart[i + 1]);
 			i++;
 		}
-		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[2] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 3;
 		lastPx = 0;
@@ -201,7 +206,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			lastPx = lineStart[i + 1];
 			i++;
 		}
-		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[3] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 4;
 		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
@@ -211,7 +216,7 @@ void PNGExporter_FilterByte(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 1] = (UInt8)(lineStart[i + 1] - PNGExporter_PaethPredictor(lineStart[i], lastLineStart[i + 1], lastLineStart[i]));
 			i++;
 		}
-		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
 	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
 	MemFree(newBuff);
@@ -247,8 +252,8 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		tmpBuff[i + 2] = thisPx[1];
 		i += 2;
 	}
-	compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
-	compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+	compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
+	compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	compSize[2] = 0;
 	compSize[3] = 0;
 	compSize[4] = 0;
@@ -338,7 +343,7 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		if (height <= 0)
 			break;
 
-		compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
+		compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 1;
 		tmpBuff[1] = lineStart[1];
@@ -350,7 +355,7 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lineStart[i - 0]);
 			i += 2;
 		}
-		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 2;
 		i = 0;
@@ -360,7 +365,7 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - lastLineStart[i + 2]);
 			i += 2;
 		}
-		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[2] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 3;
 		lastPx[0] = 0;
@@ -374,7 +379,7 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			lastPx[1] = lineStart[i + 2];
 			i += 2;
 		}
-		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[3] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 4;
 		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
@@ -386,7 +391,7 @@ void PNGExporter_FilterByte2(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 2] = (UInt8)(lineStart[i + 2] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 2], lastLineStart[i - 0]));
 			i += 2;
 		}
-		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
 	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
 	MemFree(newBuff);
@@ -426,8 +431,8 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		tmpBuff[i + 3] = thisPx[2];
 		i += 3;
 	}
-	compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
-	compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+	compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
+	compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	compSize[2] = 0;
 	compSize[3] = 0;
 	compSize[4] = 0;
@@ -525,7 +530,7 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		if (height <= 0)
 			break;
 
-		compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
+		compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 1;
 		tmpBuff[1] = lineStart[1];
@@ -539,7 +544,7 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lineStart[i - 0]);
 			i += 3;
 		}
-		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 2;
 		i = 0;
@@ -550,7 +555,7 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - lastLineStart[i + 3]);
 			i += 3;
 		}
-		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[2] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 3;
 		lastPx[0] = 0;
@@ -567,7 +572,7 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			lastPx[2] = lineStart[i + 3];
 			i += 3;
 		}
-		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[3] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 4;
 		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
@@ -581,7 +586,7 @@ void PNGExporter_FilterByte3(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 3] = (UInt8)(lineStart[i + 3] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 3], lastLineStart[i - 0]));
 			i += 3;
 		}
-		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
 	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
 	MemFree(newBuff);
@@ -625,8 +630,8 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		tmpBuff[i + 4] = thisPx[3];
 		i += 4;
 	}
-	compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
-	compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+	compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
+	compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	compSize[2] = 0;
 	compSize[3] = 0;
 	compSize[4] = 0;
@@ -732,7 +737,7 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		if (height <= 0)
 			break;
 
-		compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
+		compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 1;
 		tmpBuff[1] = lineStart[1];
@@ -748,7 +753,7 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lineStart[i - 0]);
 			i += 4;
 		}
-		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 2;
 		i = 0;
@@ -760,7 +765,7 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - lastLineStart[i + 4]);
 			i += 4;
 		}
-		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[2] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 3;
 		lastPx[0] = 0;
@@ -780,7 +785,7 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			lastPx[3] = lineStart[i + 4];
 			i += 4;
 		}
-		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[3] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 4;
 		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
@@ -796,7 +801,7 @@ void PNGExporter_FilterByte4(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 4] = (UInt8)(lineStart[i + 4] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 4], lastLineStart[i - 0]));
 			i += 4;
 		}
-		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
 	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
 	MemFree(newBuff);
@@ -848,8 +853,8 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		tmpBuff[i + 6] = thisPx[5];
 		i += 6;
 	}
-	compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
-	compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+	compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
+	compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	compSize[2] = 0;
 	compSize[3] = 0;
 	compSize[4] = 0;
@@ -971,7 +976,7 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		if (height <= 0)
 			break;
 
-		compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
+		compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 1;
 		tmpBuff[1] = lineStart[1];
@@ -991,7 +996,7 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - lineStart[i - 0]);
 			i += 6;
 		}
-		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 2;
 		i = 0;
@@ -1005,7 +1010,7 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - lastLineStart[i + 6]);
 			i += 6;
 		}
-		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[2] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 3;
 		lastPx[0] = 0;
@@ -1031,7 +1036,7 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			lastPx[5] = lineStart[i + 6];
 			i += 6;
 		}
-		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[3] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 4;
 		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
@@ -1051,7 +1056,7 @@ void PNGExporter_FilterByte6(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 6] = (UInt8)(lineStart[i + 6] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 6], lastLineStart[i - 0]));
 			i += 6;
 		}
-		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
 	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
 	MemFree(newBuff);
@@ -1111,8 +1116,8 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		tmpBuff[i + 8] = thisPx[7];
 		i += 8;
 	}
-	compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
-	compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+	compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
+	compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	compSize[2] = 0;
 	compSize[3] = 0;
 	compSize[4] = 0;
@@ -1250,7 +1255,7 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 		if (height <= 0)
 			break;
 
-		compSize[0] = Data::Compress::Inflate::Compress(lineStart, lineByteCnt + 1, tmpBuff2, false);
+		compSize[0] = PNGExporter_EstimateSize(lineStart, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 1;
 		tmpBuff[1] = lineStart[1];
@@ -1274,7 +1279,7 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - lineStart[i - 0]);
 			i += 8;
 		}
-		compSize[1] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[1] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 2;
 		i = 0;
@@ -1290,7 +1295,7 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - lastLineStart[i + 8]);
 			i += 8;
 		}
-		compSize[2] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[2] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 3;
 		lastPx[0] = 0;
@@ -1322,7 +1327,7 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			lastPx[7] = lineStart[i + 8];
 			i += 8;
 		}
-		compSize[3] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[3] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 
 		tmpBuff[0] = 4;
 		tmpBuff[1] = (UInt8)(lineStart[1] - lastLineStart[1]);
@@ -1346,7 +1351,7 @@ void PNGExporter_FilterByte8(UInt8 *imgBuff, UOSInt lineByteCnt, UOSInt height)
 			tmpBuff[i + 8] = (UInt8)(lineStart[i + 8] - PNGExporter_PaethPredictor(lineStart[i - 0], lastLineStart[i + 8], lastLineStart[i - 0]));
 			i += 8;
 		}
-		compSize[4] = Data::Compress::Inflate::Compress(tmpBuff, lineByteCnt + 1, tmpBuff2, false);
+		compSize[4] = PNGExporter_EstimateSize(tmpBuff, lineByteCnt + 1, tmpBuff2);
 	}
 	MemCopyNO(imgBuff, newBuff, (lineByteCnt + 1) * oriHeight);
 	MemFree(newBuff);
@@ -1550,7 +1555,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));
 			tmpBuff[30] = 0;
 
-			i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true);
+			i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 			if (i > 0)
 			{
 				WriteMInt32(&tmpBuff[0], 23 + (Int32)i);
@@ -1639,7 +1644,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		}
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1670,7 +1675,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		}
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1701,7 +1706,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		}
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1733,7 +1738,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1768,7 +1773,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1798,7 +1803,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte2(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1835,7 +1840,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1871,7 +1876,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte3(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1908,7 +1913,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1947,7 +1952,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte6(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;
@@ -1988,7 +1993,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		PNGExporter_FilterByte8(tmpBuff, k, img->info.dispHeight);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispHeight + 11);
 		*(Int32*)&tmpBuff2[4] = *(Int32*)"IDAT";
-		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true);
+		i = Data::Compress::Inflate::Compress(tmpBuff, (k + 1) * img->info.dispHeight, &tmpBuff2[8], true, Data::Compress::Inflate::CompressionLevel::BestCompression);
 		if (i < 0)
 		{
 			i = 0;

@@ -276,6 +276,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *f
 	//			UInt64 decompSize = ReadUInt32(&buff[22]);
 				UInt16 modTime = ReadUInt16(&buff[10]);
 				UInt16 modDate = ReadUInt16(&buff[12]);
+				dt.ToLocalTime();
 				dt.SetMSDOSTime(modDate, modTime);
 				OSInt extraStart = 30 + fnameSize;
 				OSInt extraEnd = extraStart + extraSize;
@@ -467,7 +468,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *f
 			sptr = pf->GetItemName(sbuff, ui);
 			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				IO::IStreamData *stmData = pf->GetItemStmData(ui);
+				IO::IStreamData *stmData = pf->GetItemStmDataNew(ui);
 				Parser::FileParser::XMLParser xmlParser;
 				xmlParser.SetParserList(this->parsers);
 				xmlParser.SetEncFactory(this->encFact);
@@ -540,6 +541,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 		extraLen = ReadUInt16(&buff[i + 30]);
 		commentLen = ReadUInt16(&buff[i + 32]);
 		ofst = ReadUInt32(&buff[i + 42]);
+		dt.ToLocalTime();
 		dt.SetMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]));
 
 		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buffSize)

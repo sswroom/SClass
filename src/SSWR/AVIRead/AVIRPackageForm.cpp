@@ -10,6 +10,8 @@
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
+#include <stdio.h>
+
 typedef enum
 {
 	MNU_PASTE = 100,
@@ -362,7 +364,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
 	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 	{
-		IO::PackageFile *pkg = me->packFile->GetItemPack(index);
+		IO::PackageFile *pkg = me->packFile->GetItemPackNew(index);
 		if (pkg)
 		{
 			me->core->OpenObject(pkg);
@@ -370,15 +372,20 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	}
 	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 	{
-		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index);
+		Bool needRelease;
+		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index, &needRelease);
 		if (pobj)
 		{
+			if (!needRelease)
+			{
+				printf("AVIRPackageForm: Memory problem occurred\r\n");
+			}
 			me->core->OpenObject(pobj);
 		}
 	}
 	else if (pot == IO::PackageFile::PackObjectType::StreamData)
 	{
-		IO::IStreamData *data = me->packFile->GetItemStmData(index);
+		IO::IStreamData *data = me->packFile->GetItemStmDataNew(index);
 		if (data)
 		{
 			me->core->LoadData(data, me->packFile);

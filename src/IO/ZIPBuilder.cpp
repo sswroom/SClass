@@ -5,6 +5,7 @@
 #include "Data/Compress/Inflate.h"
 #include "IO/MinizZIP.h"
 #include "IO/ZIPBuilder.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
 IO::ZIPBuilder::ZIPBuilder(IO::SeekableStream *stm)
@@ -28,6 +29,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		file = this->files.GetItem(i);
 
 		dt.SetTicks(file->fileTimeTicks);
+		dt.ToLocalTime();
 		WriteInt32(&hdrBuff[0], 0x02014b50);
 		WriteInt16(&hdrBuff[4], 20);
 		WriteInt16(&hdrBuff[6], 20);
@@ -82,34 +84,31 @@ IO::ZIPBuilder::~ZIPBuilder()
 	this->stm->Write(hdrBuff, 22);
 }
 
-Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly)
+Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel)
 {
 	UInt8 hdrBuff[512];
 	UOSInt hdrLen;
 	UInt8 *outBuff = MemAlloc(UInt8, fileSize + 32);
 	UOSInt compSize;
-	if (storeOnly)
+	if (compLevel == Data::Compress::Inflate::CompressionLevel::NoCompression)
 	{
 		compSize = fileSize;
 	}
 	else
 	{
-		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false);
+		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false, compLevel);
 	}
-	UInt8 crcBuff[4];
-	this->crc.Clear();
-	this->crc.Calc(fileContent, fileSize);
-	this->crc.GetValue(crcBuff);
-	
+	UInt32 crcVal = this->crc.CalcDirect(fileContent, fileSize);
 	Data::DateTime dt;
 	dt.SetTicks(fileTimeTicks);
+	dt.ToLocalTime();
 	WriteInt32(&hdrBuff[0], 0x04034b50);
 	WriteInt16(&hdrBuff[4], 20);
 	WriteInt16(&hdrBuff[6], 0x800);
 	WriteInt16(&hdrBuff[8], 0x8);
 	WriteInt16(&hdrBuff[10], dt.ToMSDOSTime());
 	WriteInt16(&hdrBuff[12], dt.ToMSDOSDate());
-	WriteInt32(&hdrBuff[14], ReadMInt32(crcBuff));
+	WriteUInt32(&hdrBuff[14], crcVal);
 	WriteInt32(&hdrBuff[18], (Int32)compSize);
 	WriteInt32(&hdrBuff[22], (Int32)fileSize);
 	WriteInt16(&hdrBuff[26], (Int32)fileName.leng);
@@ -136,12 +135,13 @@ Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, U
 	Bool succ = false;
 	file = MemAlloc(IO::ZIPBuilder::FileInfo, 1);
 	file->fileName = Text::String::New(fileName);
-	file->fileOfst = this->currOfst;
 	file->fileTimeTicks = fileTimeTicks;
-	file->crcVal = ReadMUInt32(crcBuff);
+	file->crcVal = crcVal;
 	file->uncompSize = fileSize;
 	file->compMeth = 8;
 	file->compSize = compSize;
+	Sync::MutexUsage mutUsage(&this->mut);
+	file->fileOfst = this->currOfst;
 	this->files.Add(file);
 	if (compSize >= fileSize)
 	{

@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 		sptr = pkg->GetItemName(sbuff, i);
 		if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
 		{
-			fd = pkg->GetItemStmData(i);
+			fd = pkg->GetItemStmDataNew(i);
 			if (fd)
 			{
 				pobj2 = this->parsers->ParseFile(fd, &pt);

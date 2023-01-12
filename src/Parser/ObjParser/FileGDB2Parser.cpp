@@ -42,7 +42,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
 	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
-		relObj = pkg->GetItemPack(0);
+		relObj = pkg->GetItemPackNew(0);
 		pkg = relObj;
 	}
 	UOSInt index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));

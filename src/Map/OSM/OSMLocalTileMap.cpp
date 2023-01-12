@@ -156,7 +156,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 
 	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
-		pkgFile = pkgFile->GetItemPack(0);
+		pkgFile = pkgFile->GetItemPackNew(0);
 		if (pkgFile)
 		{
 			DEL_CLASS(this->pkgFile);
@@ -192,7 +192,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 		
 		IO::PackageFile *xPkg;
 		sptr = Text::StrUOSInt(sbuff, this->maxLevel);
-		xPkg = pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)));
+		xPkg = pkgFile->GetItemPackNew((UOSInt)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)));
 		if (xPkg)
 		{
 			i = 0;
@@ -226,7 +226,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 
 				IO::PackageFile *yPkg;
 				sptr = Text::StrUInt32(sbuff, minXBlk);
-				yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)));
+				yPkg = xPkg->GetItemPackNew((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 				if (yPkg)
 				{
 					i = yPkg->GetCount();
@@ -499,16 +499,16 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math
 	IO::PackageFile *yPkg;
 	fd = 0;
 	sptr = Text::StrUOSInt(sbuff, level);
-	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)));
+	xPkg = this->pkgFile->GetItemPackNew((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)));
 	if (xPkg)
 	{
 		sptr = Text::StrInt32(sbuff, tileId.x);
-		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)));
+		yPkg = xPkg->GetItemPackNew((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 		if (yPkg)
 		{
 			sptr = Text::StrInt32(sbuff, tileId.y);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
+			fd = yPkg->GetItemStmDataNew((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 			if (fd)
 			{
 				if (it)
@@ -568,7 +568,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 	Int32 thisMinY = 0;
 	Int32 thisMaxX = 0;
 	Int32 thisMaxY = 0;
-	IO::PackageFile *levPkg = pkgFile->GetItemPack(i);
+	IO::PackageFile *levPkg = pkgFile->GetItemPackNew(i);
 	if (levPkg)
 	{
 		i = levPkg->GetCount();
@@ -592,7 +592,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 						thisMinX = x;
 						thisMaxX = x;
 					}
-					IO::PackageFile *xPkg = levPkg->GetItemPack(i);
+					IO::PackageFile *xPkg = levPkg->GetItemPackNew(i);
 					if (xPkg)
 					{
 						j = xPkg->GetCount();

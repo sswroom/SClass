@@ -57,7 +57,7 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 		{
 			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				IO::IStreamData *fd = pkg->GetItemStmData(i);
+				IO::IStreamData *fd = pkg->GetItemStmDataNew(i);
 				IO::ParsedObject *pobj2 = parsers->ParseFile(fd, &pt);
 				DEL_CLASS(fd);
 				if (pobj2)

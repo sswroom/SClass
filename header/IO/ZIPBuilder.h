@@ -2,7 +2,9 @@
 #define _SM_IO_ZIPBUILDER
 #include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ArrayList.h"
+#include "Data/Compress/Inflate.h"
 #include "IO/SeekableStream.h"
+#include "Sync/Mutex.h"
 
 namespace IO
 {
@@ -26,12 +28,13 @@ namespace IO
 		UInt64 baseOfst;
 		UInt64 currOfst;
 		Data::ArrayList<FileInfo*> files;
+		Sync::Mutex mut;
 
 	public:
 		ZIPBuilder(IO::SeekableStream *stm);
 		~ZIPBuilder();
 
-		Bool AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly);
+		Bool AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
 	};
 }
 #endif

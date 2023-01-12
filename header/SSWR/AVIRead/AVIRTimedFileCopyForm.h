@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRTIMEDFILECOPYFORM
 #define _SM_SSWR_AVIREAD_AVIRTIMEDFILECOPYFORM
-#include "IO/ZIPBuilder.h"
+#include "IO/ZIPMTBuilder.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIDateTimePicker.h"
@@ -26,7 +26,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(void *userObj);
 
-			Bool CopyToZip(IO::ZIPBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, Data::DateTime *startTime, Data::DateTime *endTime, Bool monthDir);
+			Bool CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, Data::DateTime *startTime, Data::DateTime *endTime, Bool monthDir);
 		public:
 			AVIRTimedFileCopyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRTimedFileCopyForm();

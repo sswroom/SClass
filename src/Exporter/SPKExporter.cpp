@@ -195,7 +195,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 			sptr = pkgFile->GetItemName(buffEnd, i);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			
-			subPkg = pkgFile->GetItemPack(i);
+			subPkg = pkgFile->GetItemPackNew(i);
 			if (subPkg)
 			{
 				ExportPackageFile(spkg, subPkg, buff, sptr);
@@ -205,7 +205,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 		else if (pot == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sptr = pkgFile->GetItemName(buffEnd, i);
-			fd = pkgFile->GetItemStmData(i);
+			fd = pkgFile->GetItemStmDataNew(i);
 			if (fd)
 			{
 				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTime(i));

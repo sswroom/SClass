@@ -2,7 +2,7 @@
 #define _SM_EXPORTER_ZIPEXPORTER
 #include "IO/FileExporter.h"
 #include "IO/PackageFile.h"
-#include "IO/ZIPBuilder.h"
+#include "IO/ZIPMTBuilder.h"
 
 namespace Exporter
 {
@@ -17,7 +17,7 @@ namespace Exporter
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
 		virtual Bool ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param);
 
-		Bool ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffStart, UTF8Char *buffEnd, IO::PackageFile *pkg);
+		Bool ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffStart, UTF8Char *buffEnd, IO::PackageFile *pkg);
 	};
 }
 #endif

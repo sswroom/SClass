@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		}
 		else
 		{
-			IO::ZIPBuilder zip(&fs);
+			IO::ZIPMTBuilder zip(&fs);
 			sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	}
 }
 
-Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, Data::DateTime *startTime, Data::DateTime *endTime, Bool monthDir)
+Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, Data::DateTime *startTime, Data::DateTime *endTime, Bool monthDir)
 {
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
@@ -131,7 +131,9 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 							}
 							else
 							{
-								UInt8 *fileBuff;
+								succ = zip->AddFile(CSTRP(pathBase, sptr), &fs, modTime.ToTicks(), Data::Compress::Inflate::CompressionLevel::BestCompression);
+
+/*								UInt8 *fileBuff;
 								UInt64 fileLeng = fs.GetLength();
 								UOSInt totalRead = 0;
 								UOSInt readSize;
@@ -149,14 +151,14 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 									}
 									if (totalRead == fileLeng)
 									{
-										succ = zip->AddFile(CSTRP(pathBase, sptr), fileBuff, totalRead, modTime.ToTicks(), false);
+										succ = zip->AddFile(CSTRP(pathBase, sptr), fileBuff, totalRead, modTime.ToTicks(), Data::Compress::Inflate::CompressionLevel::BestCompression);
 									}
 									else
 									{
 										succ = false;
 									}
 									MemFree(fileBuff);
-								}
+								}*/
 							}
 						}
 						if (!succ)

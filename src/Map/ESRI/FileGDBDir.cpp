@@ -94,8 +94,8 @@ void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 
 Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 {
-	IO::IStreamData *tableFD = pkg->GetItemStmData(UTF8STRC("a00000001.gdbtable"));
-	IO::IStreamData *indexFD = pkg->GetItemStmData(UTF8STRC("a00000001.gdbtablx"));
+	IO::IStreamData *tableFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtable"));
+	IO::IStreamData *indexFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtablx"));
 	FileGDBTable *table;
 	if (tableFD == 0)
 	{
@@ -133,10 +133,10 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 			FileGDBTable *innerTable;
 			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			tableFD = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
+			tableFD = pkg->GetItemStmDataNew(sbuff, (UOSInt)(sptr - sbuff));
 			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			indexFD = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
+			indexFD = pkg->GetItemStmDataNew(sbuff, (UOSInt)(sptr - sbuff));
 			if (tableFD)
 			{
 				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD));

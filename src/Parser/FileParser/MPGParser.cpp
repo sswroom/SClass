@@ -109,7 +109,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(IO::IStreamData *f
 					{
 						break;
 					}
-					concatFile = pkgFile->GetItemStmData(ind);
+					concatFile = pkgFile->GetItemStmDataNew(ind);
 					if (concatFile == 0)
 					{
 						break;

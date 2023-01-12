@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
 				{
-					fd = me->pkgFile->GetItemStmData(i);
+					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
 				{
-					fd = me->pkgFile->GetItemStmData(i);
+					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
 				{
-					fd = me->pkgFile->GetItemStmData(i);
+					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 				me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
 				{
-					fd = me->pkgFile->GetItemStmData(i);
+					fd = me->pkgFile->GetItemStmDataNew(i);
 					if (fd)
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -460,7 +460,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 				pf->GetItemName(sbuff, i);
 				if (IsImageFileName(sbuff))
 				{
-					fd2 = pf->GetItemStmData(i);
+					fd2 = pf->GetItemStmDataNew(i);
 					if (fd2)
 					{
 						pobj2 = this->core->GetParserList()->ParseFile(fd2, &pt);

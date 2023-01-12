@@ -100,7 +100,7 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		}
 		else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
 		{
-			IO::PackageFile *innerPack = pkg->GetItemPack(i);
+			IO::PackageFile *innerPack = pkg->GetItemPackNew(i);
 			if (innerPack)
 			{
 				*sptr++ = pathSeperator;
@@ -110,7 +110,7 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		}
 		else if (pt == IO::PackageFile::PackObjectType::StreamData)
 		{
-			IO::IStreamData *fd = pkg->GetItemStmData(i);
+			IO::IStreamData *fd = pkg->GetItemStmDataNew(i);
 			if (fd)
 			{
 				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));

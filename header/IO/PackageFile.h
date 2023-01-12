@@ -92,16 +92,16 @@ namespace IO
 
 		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
 		virtual PackObjectType GetPItemType(const PackFileItem *itemObj) const;
-		virtual IO::IStreamData *GetPItemStmData(const PackFileItem *itemObj) const; // need release
-		virtual IO::PackageFile *GetPItemPack(const PackFileItem *itemObj) const; // need release
+		virtual IO::IStreamData *GetPItemStmDataNew(const PackFileItem *itemObj) const;
+		virtual IO::PackageFile *GetPItemPackNew(const PackFileItem *itemObj) const;
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
-		virtual IO::IStreamData *GetItemStmData(UOSInt index) const; // need release
-		IO::IStreamData *GetItemStmData(const UTF8Char* name, UOSInt nameLen) const;
-		virtual IO::PackageFile *GetItemPack(UOSInt index) const; // need release
-		virtual IO::ParsedObject *GetItemPObj(UOSInt index) const; // no need release
+		virtual IO::IStreamData *GetItemStmDataNew(UOSInt index) const;
+		IO::IStreamData *GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
+		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
+		virtual IO::ParsedObject *GetItemPObj(UOSInt index, Bool *needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;

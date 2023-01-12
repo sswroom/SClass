@@ -326,19 +326,20 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	}
 	UOSInt si = nFilterIndex;
 	GSList *list = gtk_file_chooser_list_filters(chooser);
-	while (list)
+	GSList *item = list;
+	while (item)
 	{
 		if (si == 0)
 		{
-			gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)list->data);
+			gtk_file_chooser_set_filter(chooser, (GtkFileFilter*)item->data);
 			break;
 		}
 		si--;
-		if (list->next == 0)
+		if (item->next == 0)
 		{
 			break;
 		}
-		list = list->next;
+		item = item->next;
 	}
 	g_slist_free(list);
 
@@ -416,20 +417,21 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		if (filter)
 		{
 			GSList *list = gtk_file_chooser_list_filters(chooser);
+			GSList *item = list;
 			this->filterIndex = 0;
 			while (true)
 			{
-				if (list->data == filter)
+				if (item->data == filter)
 				{
 					break;
 				}
 				this->filterIndex++;
-				if (list->next == 0)
+				if (item->next == 0)
 				{
 					this->filterIndex = (UOSInt)-1;
 					break;
 				}
-				list = list->next;
+				item = item->next;
 			}
 			g_slist_free(list);
 		}

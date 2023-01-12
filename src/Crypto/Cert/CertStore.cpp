@@ -138,7 +138,8 @@ void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
 	UOSInt j = pkg->GetCount();
 	while (i < j)
 	{
-		IO::ParsedObject *pobj = pkg->GetItemPObj(i);
+		Bool needRelease;
+		IO::ParsedObject *pobj = pkg->GetItemPObj(i, &needRelease);
 		if (pobj && pobj->GetParserType() == IO::ParserType::ASN1Data)
 		{
 			Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
@@ -150,6 +151,10 @@ void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
 					this->AddCert((Crypto::Cert::X509Cert*)x509->Clone());
 				}
 			}
+		}
+		if (needRelease)
+		{
+			DEL_CLASS(pobj);
 		}
 		i++;
 	}

@@ -268,7 +268,7 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 	}
 }
 
-IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item) const
+IO::IStreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) const
 {
 	if (item != 0)
 	{
@@ -373,7 +373,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item) cons
 	}
 }
 
-IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item) const
+IO::PackageFile *IO::PackageFile::GetPItemPackNew(const PackFileItem *item) const
 {
 	if (item != 0)
 	{
@@ -427,31 +427,32 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	}
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmData(UOSInt index) const
+IO::IStreamData *IO::PackageFile::GetItemStmDataNew(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
-	return GetPItemStmData(item);
+	return GetPItemStmDataNew(item);
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name, UOSInt nameLen) const
+IO::IStreamData *IO::PackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const
 {
 	UOSInt index = GetItemIndex({name, nameLen});
 	if (index == INVALID_INDEX)
 	{
 		return 0;
 	}
-	return this->GetItemStmData(index);
+	return this->GetItemStmDataNew(index);
 }
 
-IO::PackageFile *IO::PackageFile::GetItemPack(UOSInt index) const
+IO::PackageFile *IO::PackageFile::GetItemPackNew(UOSInt index) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
-	return GetPItemPack(item);
+	return GetPItemPackNew(item);
 }
 
-IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index) const
+IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index, Bool *needRelease) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
+	*needRelease = false;
 	if (item != 0)
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
@@ -788,7 +789,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 				sptr = pf->GetItemName(sbuff, i);
 				if (Text::StrEqualsC(sb.ToString(), j, sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					pf2 = pf->GetItemPack(i);
+					pf2 = pf->GetItemPackNew(i);
 					if (pf2)
 					{
 						found = true;
@@ -824,7 +825,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 			sptr = pf->GetItemName(sbuff, i);
 			if (sb.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
-				retFD = pf->GetItemStmData(i);
+				retFD = pf->GetItemStmDataNew(i);
 				break;
 			}
 		}

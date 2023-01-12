@@ -42,22 +42,17 @@ Bool Exporter::ZIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		return false;
 	}
 	UTF8Char sbuff[512];
-	IO::ZIPBuilder *zip;
-	NEW_CLASS(zip, IO::ZIPBuilder(stm));
-	Bool succ = this->ExportPackage(zip, sbuff, sbuff, (IO::PackageFile*)pobj);
-	DEL_CLASS(zip);
-	return succ;
+	IO::ZIPMTBuilder zip(stm);
+	return this->ExportPackage(&zip, sbuff, sbuff, (IO::PackageFile*)pobj);
 }
 
-Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffStart, UTF8Char *buffEnd, IO::PackageFile *pkg)
+Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffStart, UTF8Char *buffEnd, IO::PackageFile *pkg)
 {
 	UOSInt i;
 	UOSInt j;
 	UTF8Char *sptr;
 	IO::PackageFile::PackObjectType itemType;
 	IO::IStreamData *fd;
-	UInt8 *fileBuff;
-	UInt64 fileLeng;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)
@@ -66,24 +61,24 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 		sptr = pkg->GetItemName(buffEnd, i);
 		if (itemType == IO::PackageFile::PackObjectType::StreamData)
 		{
-			fd = pkg->GetItemStmData(i);
-			fileLeng = fd->GetDataSize();
-			fileBuff = MemAlloc(UInt8, (UOSInt)fileLeng);
-			if (fd->GetRealData(0, (UOSInt)fileLeng, fileBuff) != fileLeng)
+			fd = pkg->GetItemStmDataNew(i);
+			if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i).ToTicks(), Data::Compress::Inflate::CompressionLevel::BestCompression))
 			{
-				MemFree(fileBuff);
+				DEL_CLASS(fd);
 				return false;
 			}
-			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTime(i).ToTicks(), false);
-			MemFree(fileBuff);
+			DEL_CLASS(fd);
 		}
 		else if (itemType == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			*sptr++ = '/';
-			if (!this->ExportPackage(zip, buffStart, sptr, pkg->GetItemPack(i)))
+			IO::PackageFile *innerPkg = pkg->GetItemPackNew(i);
+			if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
 			{
+				DEL_CLASS(innerPkg);
 				return false;
 			}
+			DEL_CLASS(innerPkg);
 		}
 		i++;
 	}

@@ -145,7 +145,7 @@ UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
 
-IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index) const
+IO::IStreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 {
 	Text::String *fileName = this->files.GetItem(index);
 	if (fileName == 0)
@@ -163,7 +163,7 @@ IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index) const
 	}
 }
 
-IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index) const
+IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
 {
 	Text::String *fileName = this->files.GetItem(index);
 	if (fileName == 0)
@@ -181,9 +181,10 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index) const
 	}
 }
 
-IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index) const
+IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index, Bool *needRelease) const
 {
-	return GetItemPack(index);
+	*needRelease = true;
+	return GetItemPackNew(index);
 }
 
 Data::Timestamp IO::DirectoryPackage::GetItemModTime(UOSInt index) const
