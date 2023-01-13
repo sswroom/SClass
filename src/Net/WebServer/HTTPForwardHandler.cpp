@@ -48,7 +48,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	Text::String *uri = req->GetRequestURI();
 	UOSInt i = uri->IndexOf('?');
 	UOSInt j;
-	if (i >= 0)
+	if (i != INVALID_INDEX)
 	{
 		sb.AppendC(&uri->v[i], uri->leng - i);
 	}

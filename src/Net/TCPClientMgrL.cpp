@@ -261,12 +261,12 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
-		stat->running = true;
+		stat->state = WorkerState::Idle;
 		while (!stat->toStop)
 		{
 			while ((cliStat = me->workerTasks.Get()) != 0)
 			{
-				stat->working = true;
+				stat->state = WorkerState::Processing;
 				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 				cliStat->timeStart = currTime;
 				cliStat->timeAlerted = false;
@@ -283,7 +283,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 					printf("TCPClientMgr: Error in writing to pipe\r\n");
 				}
 			}
-			stat->working = false;
+			stat->state = WorkerState::Idle;
 			if (stat->isPrimary)
 			{
 				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -307,7 +307,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			stat->evt->Wait(700);
 		}
 	}
-	stat->running = false;
+	stat->state = WorkerState::Stopped;
 	return 0;
 }
 
@@ -321,7 +321,7 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
-		if (!this->workers[i].working)
+		if (this->workers[i].state == WorkerState::Idle)
 		{
 			this->workers[i].evt->Set();
 			return;
@@ -361,10 +361,9 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		this->workers = MemAlloc(WorkerStatus, workerCnt);
 		while (workerCnt-- > 0)
 		{
-			this->workers[workerCnt].running = false;
+			this->workers[workerCnt].state = WorkerState::NotStarted;
 			this->workers[workerCnt].toStop = false;
 			this->workers[workerCnt].isPrimary = (workerCnt == 0);
-			this->workers[workerCnt].working = false;
 			this->workers[workerCnt].me = this;
 
 			Sync::Thread::Create(WorkerThread, &this->workers[workerCnt]);
@@ -415,7 +414,10 @@ Net::TCPClientMgr::~TCPClientMgr()
 		while (i-- > 0)
 		{
 			this->workers[i].toStop = true;
-			this->workers[i].evt->Set();
+			if (this->workers[i].state != WorkerState::NotStarted)
+			{
+				this->workers[i].evt->Set();
+			}
 		}
 		Bool exist = true;
 		while (exist)
@@ -424,7 +426,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 			i = this->workerCnt;
 			while (i-- > 0)
 			{
-				if (this->workers[i].running)
+				if (this->workers[i].state != WorkerState::Stopped)
 				{
 					exist = true;
 					break;

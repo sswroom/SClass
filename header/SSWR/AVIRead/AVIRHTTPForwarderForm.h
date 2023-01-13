@@ -23,8 +23,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
 			Net::WebServer::WebListener *svr;
-			IO::LogTool *log;
-			Net::WebServer::HTTPForwarderHandler *fwdHdlr;
+			Net::WebServer::HTTPForwardHandler *fwdHdlr;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 
@@ -44,6 +43,7 @@ namespace SSWR
 		private:
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnStopClick(void *userObj);
+			static void __stdcall OnSSLCertClicked(void *userObj);
 		public:
 			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPForwarderForm();

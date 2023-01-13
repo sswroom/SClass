@@ -104,6 +104,7 @@
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
+#include "SSWR/AVIRead/AVIRHTTPForwarderForm.h"
 #include "SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h"
 #include "SSWR/AVIRead/AVIRHTTPProxyClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
@@ -473,7 +474,8 @@ typedef enum
 	MNU_CERT_TEXT,
 	MNU_ENCRYPT_MSG,
 	MNU_SAML_RESP_DECRYPT,
-	MNU_SAML_REQ_DECODE
+	MNU_SAML_REQ_DECODE,
+	MNU_HTTP_FORWARDER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -689,6 +691,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("HTTP Client"), MNU_HTTPCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Downloader"), MNU_HTTPDOWNLOADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Proxy Client"), MNU_HTTPPROXYCLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HTTP Forwarder"), MNU_HTTP_FORWARDER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 //	mnu2->AddItem(CSTR("Proxy Server"), MNU_PROXYSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RESTful Server"), MNU_RESTFUL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Load Balance"), MNU_HTTP_LOAD_BALANCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2725,6 +2728,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSAMLReqDecodeForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSAMLReqDecodeForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_HTTP_FORWARDER:
+		{
+			SSWR::AVIRead::AVIRHTTPForwarderForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPForwarderForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -3642,6 +3642,8 @@ SSWR/AVIRead/AVIRHTTPClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 @AVIRHTTPClientForm.o
 SSWR/AVIRead/AVIRHTTPDownloaderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
 @AVIRHTTPDownloaderForm.o
+SSWR/AVIRead/AVIRHTTPForwarderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPForwarderForm.cpp
+@AVIRHTTPForwarderForm.o
 SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
 @AVIRHTTPLoadBalanceForm.o
 SSWR/AVIRead/AVIRHTTPProxyClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
@@ -5539,6 +5541,7 @@ AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
 AVIRHTTPClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 AVIRHTTPDownloaderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
+AVIRHTTPForwarderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPForwarderForm.cpp
 AVIRHTTPLoadBalanceForm.o: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
 AVIRHTTPProxyClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
 AVIRHTTPSvrForm.o: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp

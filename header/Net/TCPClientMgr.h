@@ -42,12 +42,18 @@ namespace Net
 			void *readReq;
 		};
 
+		enum class WorkerState
+		{
+			NotStarted,
+			Idle,
+			Processing,
+			Stopped
+		};
 		typedef struct
 		{
-			Bool running;
+			WorkerState state;
 			Bool toStop;
 			Bool isPrimary;
-			Bool working;
 			Sync::Event *evt;
 			TCPClientMgr *me;
 		} WorkerStatus;
