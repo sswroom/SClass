@@ -7,12 +7,10 @@ UI::DObj::DirectObject::DirectObject(OSInt left, OSInt top)
 	this->left = left;
 	this->top = top;
 	this->currMoveType = MT_NONE;
-	NEW_CLASS(this->moveTime, Data::DateTime());
 }
 
 UI::DObj::DirectObject::~DirectObject()
 {
-	DEL_CLASS(this->moveTime);
 }
 
 
@@ -27,7 +25,7 @@ void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
 	{
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
-		Double dur = Int64_Double(currTime.DiffMS(this->moveTime)) * 0.001;
+		Double dur = Int64_Double(currTime.DiffMS(&this->moveTime)) * 0.001;
 		if (dur >= this->moveDur)
 		{
 			this->currMoveType = MT_NONE;
@@ -38,7 +36,7 @@ void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
 		}
 		else if (dur < 0)
 		{
-			this->moveTime->SetCurrTimeUTC();
+			this->moveTime.SetCurrTimeUTC();
 			*left = this->left;
 			*top = this->top;
 		}
@@ -93,6 +91,6 @@ void UI::DObj::DirectObject::MoveToPos(OSInt destX, OSInt destY, Double dur, Mov
 	this->destX = destX;
 	this->destY = destY;
 	this->moveDur = dur;
-	this->moveTime->SetCurrTimeUTC();
+	this->moveTime.SetCurrTimeUTC();
 	this->currMoveType = mType;
 }

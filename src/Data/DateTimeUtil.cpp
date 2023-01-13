@@ -2009,3 +2009,26 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 	return false;
 #endif
 }
+
+Text::CString Data::DateTimeUtil::WeekdayGetName(Weekday wd)
+{
+	switch (wd)
+	{
+	case Weekday::Sunday:
+		return CSTR("Sunday");
+	case Weekday::Monday:
+		return CSTR("Monday");
+	case Weekday::Tuesday:
+		return CSTR("Tuesday");
+	case Weekday::Wednesday:
+		return CSTR("Wednesday");
+	case Weekday::Thursday:
+		return CSTR("Thursday");
+	case Weekday::Friday:
+		return CSTR("Friday");
+	case Weekday::Saturday:
+		return CSTR("Saturday");
+	default:
+		return CSTR("Unknown");
+	}
+}

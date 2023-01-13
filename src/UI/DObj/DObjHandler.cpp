@@ -192,3 +192,8 @@ void UI::DObj::DObjHandler::OnMouseMove(OSInt x, OSInt y)
 		}
 	}
 }
+
+void UI::DObj::DObjHandler::SizeChanged(Math::Size2D<UOSInt> size)
+{
+
+}

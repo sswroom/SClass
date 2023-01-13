@@ -2,6 +2,11 @@
 #include "Math/Math.h"
 #include "Media/MediaPlayer.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 extern "C"
 {
 	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
@@ -44,6 +49,9 @@ void Media::MediaPlayer::PlayTime(UInt32 time)
 	{
 		this->audioPlaying = true;
 		this->arenderer->Start();
+#if defined(VERBOSE)
+		printf("MediaPlayer: audio started\r\n");
+#endif
 		found = true;
 	}
 	if (this->vrenderer)
@@ -51,10 +59,16 @@ void Media::MediaPlayer::PlayTime(UInt32 time)
 		this->videoPlaying = true;
 		this->vrenderer->VideoStart();
 		found = true;
+#if defined(VERBOSE)
+		printf("MediaPlayer: video started\r\n");
+#endif
 	}
 	if (found)
 	{
 		this->playing = true;
+#if defined(VERBOSE)
+		printf("MediaPlayer: playing\r\n");
+#endif
 	}
 }
 
@@ -119,7 +133,7 @@ void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTim
 
 void Media::MediaPlayer::ReleaseAudio()
 {
-	this->audioDev->BindAudio(0);
+	if (this->audioDev) this->audioDev->BindAudio(0);
 	this->arenderer = 0;
 	SDEL_CLASS(this->currADecoder);
 }
@@ -127,7 +141,10 @@ void Media::MediaPlayer::ReleaseAudio()
 Bool Media::MediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime)
 {
 	Bool ret = false;
-	this->arenderer = this->audioDev->BindAudio(asrc);
+	if (this->audioDev == 0)
+	{
+		return false;
+	}
 	if (this->arenderer)
 	{
 		this->vrenderer->SetTimeDelay(syncTime);

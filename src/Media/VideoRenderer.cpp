@@ -20,6 +20,11 @@
 #define PROCDELAYBUFF 32
 #define DISPDELAYBUFF 32
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 void Media::VideoRenderer::CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect)
 {
 	Double par;
@@ -813,6 +818,9 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 	{
 		frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
 	}
+#if defined(VERBOSE)
+	printf("OnVideoFrame, frameTime = %d\r\n", frameTime);
+#endif
 
 	UOSInt i;
 	UOSInt j;

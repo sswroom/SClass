@@ -23,7 +23,7 @@ namespace UI
 			MoveType currMoveType;
 			OSInt destX;
 			OSInt destY;
-			Data::DateTime *moveTime;
+			Data::DateTime moveTime;
 			Double moveDur;
 		public:
 			DirectObject(OSInt left, OSInt top);

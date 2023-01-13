@@ -171,6 +171,16 @@ UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
 	return 0;
 }
 
+void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
+{
+	UI::GUIDObjArea *me = (UI::GUIDObjArea*)userObj;
+	Sync::MutexUsage mutUsage(&me->dobjMut);
+	if (me->dobjHdlr)
+	{
+		me->dobjHdlr->SizeChanged(me->GetSizeP());
+	}
+}
+
 UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess)
 {
 	this->deng = deng;
@@ -182,6 +192,7 @@ UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::D
 	this->processToStop = false;
 	this->processRunning = false;
 	this->currDrawImg = 0;
+	this->HandleSizeChanged(OnUpdateSize, this);
 	Sync::Thread::Create(DisplayThread, this);
 	Sync::Thread::Create(ProcessThread, this);
 	while (!this->displayRunning)

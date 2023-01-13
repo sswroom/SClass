@@ -4375,12 +4375,16 @@ UI/DObj/DynamicOverlayDObj.h: ../../src/UI/DObj/DynamicOverlayDObj.cpp
 @DynamicOverlayDObj.o
 UI/DObj/ImageDObjHandler.h: ../../src/UI/DObj/ImageDObjHandler.cpp
 @ImageDObjHandler.o
+UI/DObj/LabelDObj.h: ../../src/UI/DObj/LabelDObj.cpp
+@LabelDObj.o
 UI/DObj/OverlayDObj.h: ../../src/UI/DObj/OverlayDObj.cpp
 @OverlayDObj.o
 UI/DObj/RollingTextDObj.h: ../../src/UI/DObj/RollingTextDObj.cpp
 @RollingTextDObj.o
 UI/DObj/TextDObj.h: ../../src/UI/DObj/TextDObj.cpp
 @TextDObj.o
+UI/DObj/VideoDObjHandler.h: ../../src/UI/DObj/VideoDObjHandler.cpp
+@VideoDObjHandler.o
 
 UtilUI/ColorDialog.h: ../../src/UtilUI/ColorDialog.cpp
 @ColorDialog.o
@@ -5889,9 +5893,11 @@ DownButtonDObj.o: ../../src/UI/DObj/DownButtonDObj.cpp
 DShowVideoDObjHandler.o: ../../src/UI/DObj/DShowVideoDObjHandler.cpp
 DynamicOverlayDObj.o: ../../src/UI/DObj/DynamicOverlayDObj.cpp
 ImageDObjHandler.o: ../../src/UI/DObj/ImageDObjHandler.cpp
+LabelDObj.o: ../../src/UI/DObj/LabelDObj.cpp
 OverlayDObj.o: ../../src/UI/DObj/OverlayDObj.cpp
 RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
+VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp
 TextInputDialog.o: ../../src/UtilUI/TextInputDialog.cpp

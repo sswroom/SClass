@@ -40,6 +40,7 @@ namespace UI
 			void OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseButton button);
 			void OnMouseUp(OSInt x, OSInt y, UI::GUIControl::MouseButton button);
 			void OnMouseMove(OSInt x, OSInt y);
+			virtual void SizeChanged(Math::Size2D<UOSInt> size);
 		};
 	}
 }

@@ -53,6 +53,10 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
 	Media::ImageList *imgList = 0;
 	{
 		IO::StmData::FileData fd(fileName, false);
+		if (fd.IsError())
+		{
+			return 0;
+		}
 		if (imgList == 0)
 		{
 			Parser::FileParser::GUIImgParser parser;
