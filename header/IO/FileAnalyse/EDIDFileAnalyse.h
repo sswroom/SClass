@@ -37,6 +37,8 @@ namespace IO
 			static Text::CString DescriptorTypeGetName(UInt8 val);
 			static Text::CString ExtensionTagGetName(UInt8 val);
 			static Text::CString AspectRatioPreferenceGetName(UOSInt val);
+			static Text::CString AudioFormatGetName(UOSInt val);
+			static Text::CString AudioExtFormatGetName(UOSInt val);
 		};
 	}
 }

@@ -245,6 +245,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 
 	UOSInt i;
 	UOSInt j;
+	UOSInt k;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -398,6 +399,83 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 				{
 				case 1:
 					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("audio"));
+					if ((byteCnt % 3) == 0)
+					{
+						k = 0;
+						while (k < byteCnt)
+						{
+							UInt8 fmt = (UInt8)((buff[i + 1 + k] >> 3) & 7);
+							UInt8 extFmt = (UInt8)(buff[i + 1 + k + 2] >> 5);
+							frame->AddUIntName(i + 1 + k, 1, CSTR("Audio Format Tag"), fmt, AudioFormatGetName(fmt));
+							if (fmt == 15 && extFmt == 11)
+							{
+								frame->AddUInt(i + 1 + k, 1, CSTR("MPEG-H 3D Audio Level"), (buff[i + 1 + k] & 7) + 1);
+							}
+							else if (fmt == 15 && extFmt == 13)
+							{
+								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), ((buff[i + 1 + k] & 7) | ((buff[i + 1 + k] & 0x80) >> 4) | ((buff[i + 1 + k + 1] & 0x80) >> 3)) + 1);
+							}
+							else
+							{
+								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), (buff[i + 1 + k] & 7) + 1);
+							}
+							frame->AddBit(i + 1 + k + 1, CSTR("reserved"), buff[i + 1 + k + 1], 7);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 192kHz"), buff[i + 1 + k + 1], 6);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 176.4kHz"), buff[i + 1 + k + 1], 5);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 96kHz"), buff[i + 1 + k + 1], 4);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 88.2kHz"), buff[i + 1 + k + 1], 3);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 48kHz"), buff[i + 1 + k + 1], 2);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 44.1kHz"), buff[i + 1 + k + 1], 1);
+							frame->AddBit(i + 1 + k + 1, CSTR("Support 32kHz"), buff[i + 1 + k + 1], 0);
+							if (fmt == 1)
+							{
+								frame->AddBit(i + 1 + k + 2, CSTR("Support 24bits"), buff[i + 1 + k + 2], 2);
+								frame->AddBit(i + 1 + k + 2, CSTR("Support 20bits"), buff[i + 1 + k + 2], 1);
+								frame->AddBit(i + 1 + k + 2, CSTR("Support 16bits"), buff[i + 1 + k + 2], 0);
+							}
+							else if (fmt <= 8)
+							{
+								frame->AddUInt(i + 1 + k + 2, 1, CSTR("Maximum bit rate (kbps)"), buff[i + 1 + k + 2] * 8);
+							}
+							else if (fmt == 10)
+							{
+								frame->AddBit(i + 1 + k + 2, CSTR("Supports Joint Object Coding with ACMOD28"), buff[i + 1 + k + 2], 1);
+								frame->AddBit(i + 1 + k + 2, CSTR("Supports Joint Object Coding"), buff[i + 1 + k + 2], 0);
+							}
+							else if (fmt == 14)
+							{
+								frame->AddUInt(i + 1 + k + 2, 1, CSTR("Audio Profile"), buff[i + 1 + k + 2] & 7);
+							}
+							else if (fmt == 15)
+							{
+								frame->AddUIntName(i + 1 + k + 2, 1, CSTR("Audio Ext Format Tag"), extFmt, AudioExtFormatGetName(extFmt));
+								switch (extFmt)
+								{
+								case 11:
+									frame->AddBit(i + 1 + k + 2, CSTR("Supports MPEG-H 3D Audio Low Complexity Profile"), buff[i + 1 + k + 2], 0);
+									break;
+								case 13:						
+									frame->AddBit(i + 1 + k + 2, CSTR("Support 24bits"), buff[i + 1 + k + 2], 2);
+									frame->AddBit(i + 1 + k + 2, CSTR("Support 20bits"), buff[i + 1 + k + 2], 1);
+									frame->AddBit(i + 1 + k + 2, CSTR("Support 16bits"), buff[i + 1 + k + 2], 0);
+									break;
+								case 4:
+								case 5:
+								case 6:
+								case 8:
+								case 10:
+									frame->AddBit(i + 1 + k + 2, CSTR("Support AAC audio frame 1024_TL"), buff[i + 1 + k + 2], 2);
+									frame->AddBit(i + 1 + k + 2, CSTR("Support AAC audio frame 960_TL"), buff[i + 1 + k + 2], 1);
+									if (extFmt == 8 || extFmt == 10)
+										frame->AddUIntName(i + 1 + k + 2, 1, CSTR("Supports MPEG Surround data"), buff[i + 1 + k + 2] & 1, (buff[i + 1 + k + 2] & 1)?CSTR("implicitly and explicitly signaled"):CSTR("only implicitly signaled"));
+									if (extFmt == 6)
+										frame->AddBit(i + 1 + k + 2, CSTR("Supports 22.2ch System H"), buff[i + 1 + k + 2], 0);
+									break;
+								}
+							}
+							k += 3;
+						}
+					}
 					break;
 				case 2:
 					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("video"));
@@ -407,6 +485,31 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 					break;
 				case 4:
 					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("speaker allocation"));
+					if (byteCnt >= 3)
+					{
+						frame->AddBit(i + 1, CSTR("FL/FR - Front Left/Right"), buff[i + 1], 0);
+						frame->AddBit(i + 1, CSTR("LFE1 - Low Frequency Effects 1"), buff[i + 1], 1);
+						frame->AddBit(i + 1, CSTR("FC - Front Center"), buff[i + 1], 2);
+						frame->AddBit(i + 1, CSTR("BL/BR - Back Left/Right"), buff[i + 1], 3);
+						frame->AddBit(i + 1, CSTR("BC - Back Center"), buff[i + 1], 4);
+						frame->AddBit(i + 1, CSTR("FLc/FRc - Front Left/Right of Center"), buff[i + 1], 5);
+						frame->AddBit(i + 1, CSTR("RLC/RRC - Rear Left/Right of Center"), buff[i + 1], 6);
+						frame->AddBit(i + 1, CSTR("FLw/FRw - Front Left/Right Wide"), buff[i + 1], 7);
+						frame->AddBit(i + 2, CSTR("TpFL/TpFR - Top Front Left/Right"), buff[i + 2], 0);
+						frame->AddBit(i + 2, CSTR("TpC - Top Center"), buff[i + 2], 1);
+						frame->AddBit(i + 2, CSTR("TpFC - Top Front Center"), buff[i + 2], 2);
+						frame->AddBit(i + 2, CSTR("LS/RS - Left/Right Surround"), buff[i + 2], 3);
+						frame->AddBit(i + 2, CSTR("LFE2 - Low Frequency Effects 2"), buff[i + 2], 4);
+						frame->AddBit(i + 2, CSTR("TpBC - Top Back Center"), buff[i + 2], 5);
+						frame->AddBit(i + 2, CSTR("SiL/SiR - Side Left/Right"), buff[i + 2], 6);
+						frame->AddBit(i + 2, CSTR("TpSiL/TpSiR - Top Side Left/Right"), buff[i + 2], 7);
+						frame->AddBit(i + 3, CSTR("TpBL/TpBR - Top Back Left/Right"), buff[i + 3], 0);
+						frame->AddBit(i + 3, CSTR("BtFC - Bottom Front Center"), buff[i + 3], 1);
+						frame->AddBit(i + 3, CSTR("BtFL/BtFR - Bottom Front Left/Right"), buff[i + 3], 2);
+						frame->AddBit(i + 3, CSTR("TpLS/TpRS - Top Left/Right Surround"), buff[i + 3], 3);
+						frame->AddBit(i + 3, CSTR("LSd/RSd - Left/Right Surround Direct"), buff[i + 3], 4);
+						frame->AddUInt(i + 3, 1, CSTR("reserved"), buff[i + 3] >> 5);
+					}
 					break;
 				case 5:
 					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("VESA Display Transfer Characteristic"));
@@ -561,6 +664,17 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 					break;
 				}
 				i += byteCnt + 1;
+			}
+			i = buff[2];
+			j = 128 - 18;
+			while (i < j)
+			{
+				ParseDescriptor(frame, &buff[i], i);
+				i += 18;
+			}
+			if (i < 127)
+			{
+				frame->AddHexBuff(i, 127 - i, CSTR("Padding"), &buff[i], false);
 			}
 		}
 		frame->AddHex8(127, CSTR("Checksum"), buff[127]);
@@ -770,5 +884,81 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::AspectRatioPreferenceGetName(UOS
 		return CSTR("15:9");
 	default:
 		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioFormatGetName(UOSInt val)
+{
+	switch (val)
+	{
+	case 0:
+		return CSTR("reserved");
+	case 1:
+		return CSTR("Linear PCM");
+	case 2:
+		return CSTR("AC-3");
+	case 3:
+		return CSTR("MPEG 1 (Layers 1 & 2)");
+	case 4:
+		return CSTR("MPEG 1 Layer 3");
+	case 5:
+		return CSTR("MPEG2 (multichannel)");
+	case 6:
+		return CSTR("AAC");
+	case 7:
+		return CSTR("DTS");
+	case 8:
+		return CSTR("ATRAC");
+	case 9:
+		return CSTR("One Bit Audio");
+	case 10:
+		return CSTR("Dolby Digital+");
+	case 11:
+		return CSTR("DTS-HD");
+	case 12:
+		return CSTR("MAT (MLP)");
+	case 13:
+		return CSTR("DST");
+	case 14:
+		return CSTR("WMA Pro");
+	case 15:
+		return CSTR("Use Extended Format Tag");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AudioExtFormatGetName(UOSInt val)
+{
+	switch (val)
+	{
+	case 1:
+	case 2:
+	case 3:
+		return CSTR("Not used");
+	case 4:
+		return CSTR("MPEG-4 HE AAC");
+	case 5:
+		return CSTR("MPEG-4 HE AAC v2");
+	case 6:
+		return CSTR("MPEG-4 AAC LC");
+	case 7:
+		return CSTR("DRA");
+	case 8:
+		return CSTR("MPEG-4 HE AAC + MPEG Surround");
+	case 10:
+		return CSTR("MPEG-4 AAC LC + MPEG Surround");
+	case 11:
+		return CSTR("MPEG-H 3D Audio");
+	case 12:
+		return CSTR("AC-4");
+	case 13:
+		return CSTR("L-PCM 3D Audio");
+	case 14:
+		return CSTR("Auro-Cx");
+	case 15:
+		return CSTR("MPEG-D USAC");
+	default:
+		return CSTR("Reserved");
 	}
 }
