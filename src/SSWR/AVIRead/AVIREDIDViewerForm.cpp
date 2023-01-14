@@ -38,6 +38,8 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			sb.AppendU32(info.pixelW);
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendU32(info.pixelH);
+			sb.AppendC(UTF8STRC("\r\nBit per color: "));
+			sb.AppendU32(info.bitPerColor);
 			sb.AppendC(UTF8STRC("\r\nPhysical Size (mm): "));
 			sb.AppendU32(info.dispPhysicalW_mm);
 			sb.AppendC(UTF8STRC(" x "));

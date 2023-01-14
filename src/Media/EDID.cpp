@@ -24,6 +24,31 @@ Bool Media::EDID::Parse(const UInt8 *edidBuff, Media::EDID::EDIDInfo *info)
 	info->edidRev = edidBuff[0x13];
 	info->pixelW = 0;
 	info->pixelH = 0;
+	info->bitPerColor = 0;
+	if (edidBuff[0x14] & 0x80)
+	{
+		switch ((edidBuff[0x14] >> 4) & 7)
+		{
+		case 1:
+			info->bitPerColor = 6;
+			break;
+		case 2:
+			info->bitPerColor = 8;
+			break;
+		case 3:
+			info->bitPerColor = 10;
+			break;
+		case 4:
+			info->bitPerColor = 12;
+			break;
+		case 5:
+			info->bitPerColor = 14;
+			break;
+		case 6:
+			info->bitPerColor = 16;
+			break;
+		}
+	}
 	info->dispPhysicalW_mm = (UInt32)edidBuff[0x15] * 10;
 	info->dispPhysicalH_mm = (UInt32)edidBuff[0x16] * 10;
 	info->gamma = (edidBuff[0x17] + 100) * 0.01;

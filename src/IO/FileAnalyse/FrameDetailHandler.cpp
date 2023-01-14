@@ -75,6 +75,14 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt(UOSInt frameOfst, UOSInt size,
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
+void IO::FileAnalyse::FrameDetailHandler::AddBit(UOSInt frameOfst, Text::CString name, UInt8 v, UOSInt bitNum)
+{
+	UTF8Char sbuff[16];
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(sbuff, ((UOSInt)v >> bitNum) & 1);
+	this->AddField(frameOfst, 1, name, CSTRP(sbuff, sptr));
+}
+
 void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt size, Text::CString name, UOSInt v, Text::CString vName)
 {
 	Text::StringBuilderUTF8 sb;

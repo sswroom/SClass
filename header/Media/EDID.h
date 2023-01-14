@@ -18,6 +18,7 @@ namespace Media
 			UInt8 edidRev;
 			UInt32 pixelW;
 			UInt32 pixelH;
+			UInt32 bitPerColor;
 			UInt32 dispPhysicalW_mm;
 			UInt32 dispPhysicalH_mm;
 

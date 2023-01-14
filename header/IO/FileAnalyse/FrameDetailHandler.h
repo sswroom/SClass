@@ -25,6 +25,7 @@ namespace IO
 			void AddUInt64V(UOSInt frameOfst, UOSInt size, Text::CString name, UInt64 v);
 			void AddInt(UOSInt frameOfst, UOSInt size, Text::CString name, OSInt v);
 			void AddUInt(UOSInt frameOfst, UOSInt size, Text::CString name, UOSInt v);
+			void AddBit(UOSInt frameOfst, Text::CString name, UInt8 v, UOSInt bitNum);
 			void AddUIntName(UOSInt frameOfst, UOSInt size, Text::CString name, UOSInt v, Text::CString vName);
 			void AddUInt64Name(UOSInt frameOfst, UOSInt size, Text::CString name, UInt64 v, Text::CString vName);
 			void AddFloat(UOSInt frameOfst, UOSInt size, Text::CString name, Double v);

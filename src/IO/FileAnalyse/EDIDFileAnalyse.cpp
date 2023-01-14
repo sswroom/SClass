@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
+#include "Math/Math.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -10,13 +11,16 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
-	if (buff[ofst] == 0 && buff[ofst + 1] == 0 && buff[ofst + 2] == 0 && buff[ofst + 4] == 0)
+	if (buff[ofst] == 0 && buff[ofst + 1] == 0 && buff[ofst + 2] == 0)
 	{
 		UInt8 type = buff[ofst + 3];
 		frame->AddUIntName(ofst, 2, CSTR("Pixel clock"), 0, CSTR("Display Descriptor"));
 		frame->AddUInt(ofst + 2, 1, CSTR("Reserved"), 0);
 		frame->AddHex8Name(ofst + 3, CSTR("Descriptor type"), type, DescriptorTypeGetName(type));
-		frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), 0);
+		if (type != 0xFD)
+		{
+			frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), buff[ofst + 4]);
+		}
 		if (type == 0xFF)
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
@@ -28,6 +32,63 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
 			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
 			frame->AddField(ofst + 5, 13, CSTR("Unspecified text"), CSTRP(sbuff, sptr));
+		}
+		else if (type == 0xFD)
+		{
+			frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), buff[ofst + 4] >> 4);
+			frame->AddUInt(ofst + 4, 1, CSTR("Horizontal rate offsets"), (buff[ofst + 4] >> 2) & 3);
+			frame->AddUInt(ofst + 4, 1, CSTR("Vertical rate offsets"), buff[ofst + 4] & 3);
+			frame->AddUInt(ofst + 5, 1, CSTR("Vertical minimum field rate (Hz)"), (buff[ofst + 4] & 1)?(buff[ofst + 5] + 255):buff[ofst + 5]);
+			frame->AddUInt(ofst + 6, 1, CSTR("Vertical maximum field rate (Hz)"), (buff[ofst + 4] & 2)?(buff[ofst + 6] + 255):buff[ofst + 6]);
+			frame->AddUInt(ofst + 7, 1, CSTR("Horizontal minimum field rate (kHz)"), (buff[ofst + 4] & 4)?(buff[ofst + 7] + 255):buff[ofst + 7]);
+			frame->AddUInt(ofst + 8, 1, CSTR("Horizontal maximum field rate (kHz)"), (buff[ofst + 4] & 8)?(buff[ofst + 8] + 255):buff[ofst + 8]);
+			frame->AddUInt(ofst + 9, 1, CSTR("Maximum pixel clock rate (MHz)"), (UOSInt)buff[ofst + 9] * 10);
+			switch (buff[ofst + 10])
+			{
+			case 0:
+				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("Default GTF"));
+				frame->AddHexBuff(ofst + 11, 7, CSTR("Padding"), &buff[ofst + 11], false);
+				break;
+			case 1:
+				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("No timing information"));
+				frame->AddHexBuff(ofst + 11, 7, CSTR("Padding"), &buff[ofst + 11], false);
+				break;
+			case 2:
+				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("Secondary GTF supported"));
+				frame->AddUInt(ofst + 11, 1, CSTR("Reserved"), buff[ofst + 11]);
+				frame->AddUInt(ofst + 12, 1, CSTR("Start frequency for secondary curve"), (UOSInt)buff[ofst + 12] * 2);
+				frame->AddFloat(ofst + 13, 1, CSTR("GTF C value"), buff[ofst + 13] * 0.5);
+				frame->AddUInt(ofst + 14, 2, CSTR("GTF M value"), ReadUInt16(&buff[ofst + 14]));
+				frame->AddUInt(ofst + 16, 1, CSTR("GTF K value"), buff[ofst + 16]);
+				frame->AddFloat(ofst + 17, 1, CSTR("GTF J value"), (buff[ofst + 17] * 0.5));
+				break;
+			case 4:
+				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("CVT"));
+				frame->AddUInt(ofst + 11, 1, CSTR("CVT major version"), buff[ofst + 11] >> 4);
+				frame->AddUInt(ofst + 11, 1, CSTR("CVT minor version"), buff[ofst + 11] & 15);
+				frame->AddFloat(ofst + 12, 1, CSTR("Maximum pixel clock rate (High precision)"), buff[ofst + 9] * 10.0 + (buff[ofst + 12] >> 2) * 0.25);
+				frame->AddUInt(ofst + 13, 1, CSTR("Maximum active pixels per line"), buff[ofst + 13] + ((UOSInt)(buff[ofst + 12] & 3) * 256));
+				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 4:3"), (buff[ofst + 14] >> 7) & 1);
+				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 16:9"), (buff[ofst + 14] >> 6) & 1);
+				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 16:10"), (buff[ofst + 14] >> 5) & 1);
+				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 5:4"), (buff[ofst + 14] >> 4) & 1);
+				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 15:9"), (buff[ofst + 14] >> 3) & 1);
+				frame->AddUInt(ofst + 14, 1, CSTR("Reserved"), buff[ofst + 14] & 7);
+				frame->AddUIntName(ofst + 15, 1, CSTR("Aspect ratio preference"), buff[ofst + 15] >> 5, AspectRatioPreferenceGetName(buff[ofst + 15] >> 5));
+				frame->AddUInt(ofst + 15, 1, CSTR("CVT-RB reduced blanking"), (buff[ofst + 15] >> 4) & 1);
+				frame->AddUInt(ofst + 15, 1, CSTR("CVT standard blanking"), (buff[ofst + 15] >> 3) & 1);
+				frame->AddUInt(ofst + 15, 1, CSTR("Reserved"), buff[ofst + 15] & 7);
+				frame->AddUInt(ofst + 16, 1, CSTR("Horizontal shrink"), (buff[ofst + 16] >> 7) & 1);
+				frame->AddUInt(ofst + 16, 1, CSTR("Horizontal stretch"), (buff[ofst + 16] >> 6) & 1);
+				frame->AddUInt(ofst + 16, 1, CSTR("Vertical shrink"), (buff[ofst + 16] >> 5) & 1);
+				frame->AddUInt(ofst + 16, 1, CSTR("Vertical stretch"), (buff[ofst + 16] >> 4) & 1);
+				frame->AddUInt(ofst + 16, 1, CSTR("Reserved"), buff[ofst + 16] & 15);
+				frame->AddUInt(ofst + 17, 1, CSTR("Preferred vertical refresh rate"), buff[ofst + 17]);
+				break;
+			default:
+				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("Unknown"));
+				break;
+			}
 		}
 		else if (type == 0xFC)
 		{
@@ -182,6 +243,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 	if (index >= this->blockCnt)
 		return 0;
 
+	UOSInt i;
+	UOSInt j;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -279,8 +342,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 		frame->AddUInt(36, 1, CSTR("Support 1280x1024 @ 75 Hz"), (buff[36] >> 0) & 1);
 		frame->AddUInt(37, 1, CSTR("Support 1152x870 @ 75 Hz"), (buff[37] >> 7) & 1);
 		frame->AddHex8(37, CSTR("Other manufacturer-specific display modes"), buff[37] & 0x7f);
-		UOSInt i = 0;
-		UOSInt j = 8;
+		i = 0;
+		j = 8;
 		while (i < j)
 		{
 			if (buff[38 + i * 2] == 1 && buff[38 + i * 2 + 1] == 1)
@@ -320,7 +383,185 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 		{
 			frame->AddUInt(1, 1, CSTR("Revision number"), buff[1]);
 			frame->AddUInt(2, 1, CSTR("DTD Offset"), buff[2]);
-			
+			frame->AddUInt(3, 1, CSTR("Display supports underscan"), (buff[3] >> 7) & 1);
+			frame->AddUInt(3, 1, CSTR("Display supports basic audio"), (buff[3] >> 6) & 1);
+			frame->AddUInt(3, 1, CSTR("Display supports YCbCr 4:4:4"), (buff[3] >> 5) & 1);
+			frame->AddUInt(3, 1, CSTR("Display supports YCbCr 4:2:2"), (buff[3] >> 4) & 1);
+			frame->AddUInt(3, 1, CSTR("Total number of native formats in DTD"), buff[3] & 15);
+			i = 4;
+			j = buff[2];
+			while (i < j)
+			{
+				UInt32 byteCnt = (buff[i] & 31);
+				frame->AddUInt(i, 1, CSTR("Total number of bytes in this block following this byte"), byteCnt);
+				switch (buff[i] >> 5)
+				{
+				case 1:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("audio"));
+					break;
+				case 2:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("video"));
+					break;
+				case 3:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("vendor specific"));
+					break;
+				case 4:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("speaker allocation"));
+					break;
+				case 5:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("VESA Display Transfer Characteristic"));
+					break;
+				case 6:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("reserved"));
+					break;
+				case 7:
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("Use Extended Tag"));
+					switch (buff[i + 1])
+					{
+					case 0:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("video capability"));
+						break;
+					case 1:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("vendor specific video"));
+						break;
+					case 2:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("VESA Display Device"));
+						break;
+					case 3:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved for VESA"));
+						break;
+					case 4:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved for HDMI"));
+						break;
+					case 5:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("colorimetry"));
+						if (byteCnt == 3)
+						{
+							frame->AddBit(i + 2, CSTR("BT2020RGB"), buff[i + 2], 7);
+							frame->AddBit(i + 2, CSTR("BT2020YCC"), buff[i + 2], 6);
+							frame->AddBit(i + 2, CSTR("BT2020cYCC"), buff[i + 2], 5);
+							frame->AddBit(i + 2, CSTR("opRGB"), buff[i + 2], 4);
+							frame->AddBit(i + 2, CSTR("opYCC601"), buff[i + 2], 3);
+							frame->AddBit(i + 2, CSTR("sYCC601"), buff[i + 2], 2);
+							frame->AddBit(i + 2, CSTR("xvYCC709"), buff[i + 2], 1);
+							frame->AddBit(i + 2, CSTR("xvYCC601"), buff[i + 2], 0);
+							frame->AddBit(i + 3, CSTR("DCI-P3"), buff[i + 3], 7);
+							frame->AddBit(i + 3, CSTR("ICtCp"), buff[i + 3], 6);
+							frame->AddUInt(i + 3, 1, CSTR("reserved"), buff[i + 3] & 0x3f);
+						}
+						break;
+					case 6:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("HDR static metadata"));
+						if (byteCnt >= 3)
+						{
+							frame->AddBit(i + 2, CSTR("Unknown"), buff[i + 2], 7);
+							frame->AddBit(i + 2, CSTR("Unknown"), buff[i + 2], 6);
+							frame->AddBit(i + 2, CSTR("Unknown"), buff[i + 2], 5);
+							frame->AddBit(i + 2, CSTR("Unknown"), buff[i + 2], 4);
+							frame->AddBit(i + 2, CSTR("Hybrid Log-Gamma"), buff[i + 2], 3);
+							frame->AddBit(i + 2, CSTR("SMPTE ST2084"), buff[i + 2], 2);
+							frame->AddBit(i + 2, CSTR("Traditional gamma - HDR luminance range"), buff[i + 2], 1);
+							frame->AddBit(i + 2, CSTR("Traditional gamma - SDR luminance range"), buff[i + 2], 0);
+							frame->AddBit(i + 3, CSTR("Static metadata type 1"), buff[i + 3], 7);
+							frame->AddBit(i + 3, CSTR("Static metadata type 2"), buff[i + 3], 6);
+							frame->AddBit(i + 3, CSTR("Static metadata type 3"), buff[i + 3], 5);
+							frame->AddBit(i + 3, CSTR("Static metadata type 4"), buff[i + 3], 4);
+							frame->AddBit(i + 3, CSTR("Static metadata type 5"), buff[i + 3], 3);
+							frame->AddBit(i + 3, CSTR("Static metadata type 6"), buff[i + 3], 2);
+							frame->AddBit(i + 3, CSTR("Static metadata type 7"), buff[i + 3], 1);
+							frame->AddBit(i + 3, CSTR("Static metadata type 8"), buff[i + 3], 0);
+						}
+						if (byteCnt >= 4)
+							frame->AddFloat(i + 4, 1, CSTR("Desired content max luminance (cd/m^2)"), 50.0 * Math_Pow(2, buff[i + 4] / 32.0));
+						if (byteCnt >= 5)
+							frame->AddFloat(i + 5, 1, CSTR("Desired content max frame-average luminance (cd/m^2)"), 50.0 * Math_Pow(2, buff[i + 5] / 32.0));
+						if (byteCnt >= 6)
+							frame->AddFloat(i + 6, 1, CSTR("Desired content min luminance (cd/m^2)"), (50.0 * Math_Pow(2, buff[i + 4] / 32.0)) * Math_Pow(buff[i + 6] / 255.0, 2) / 100.0);
+						break;
+					case 7:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("HDR dynamic metadata"));
+						break;
+					case 8:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved for video"));
+						break;
+					case 13:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("video format preference"));
+						break;
+					case 14:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("YCbCr 4:2:0 video"));
+						break;
+					case 15:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("YCbCr 4:2:0 capability map"));
+						break;
+					case 16:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved for CTA"));
+						break;
+					case 17:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("vendor specific audio"));
+						break;
+					case 18:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("HDMI audio"));
+						break;
+					case 19:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("room configuration"));
+						break;
+					case 20:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("speaker location"));
+						break;
+					case 21:
+					case 22:
+					case 23:
+					case 24:
+					case 25:
+					case 26:
+					case 27:
+					case 28:
+					case 29:
+					case 30:
+					case 31:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved for audio"));
+						break;
+					case 32:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("InfoFrame"));
+						break;
+					case 33:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved"));
+						break;
+					case 34:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("Type VII video timing"));
+						break;
+					case 35:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("Type VIII video timing"));
+						break;
+					case 42:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("Type X video timing"));
+						break;
+					case 120:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("HDMI Forum EDID extension override"));
+						break;
+					case 121:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("HDMI Forum sink capbility"));
+						break;
+					case 122:
+					case 123:
+					case 124:
+					case 125:
+					case 126:
+					case 127:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved for HDMI"));
+						break;
+					default:
+						frame->AddUIntName(i + 1, 1, CSTR("Extended Block Type Tag"), buff[i + 1], CSTR("reserved"));
+						break;
+					}
+					break;
+				}
+				i += byteCnt + 1;
+			}
 		}
 		frame->AddHex8(127, CSTR("Checksum"), buff[127]);
 	}
@@ -508,6 +749,25 @@ Text::CString IO::FileAnalyse::EDIDFileAnalyse::ExtensionTagGetName(UInt8 val)
 	{
 	case 2:
 		return CSTR("CEA EDID");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::FileAnalyse::EDIDFileAnalyse::AspectRatioPreferenceGetName(UOSInt val)
+{
+	switch (val)
+	{
+	case 0:
+		return CSTR("4:3");
+	case 1:
+		return CSTR("16:9");
+	case 2:
+		return CSTR("16:10");
+	case 3:
+		return CSTR("5:4");
+	case 4:
+		return CSTR("15:9");
 	default:
 		return CSTR("Unknown");
 	}
