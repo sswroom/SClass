@@ -2601,7 +2601,7 @@ UOSInt Crypto::Cert::X509File::ExtensionsGetCRLDistributionPoints(const UInt8 *p
 			}
 		}
 	}
-	return true;
+	return ret;
 }
 
 UOSInt Crypto::Cert::X509File::DistributionPointAdd(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints)

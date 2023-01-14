@@ -120,7 +120,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 {
 	Sync::MutexUsage mutUsage(&this->recMut);
 	rect = rect.Reorder();
-	Int32 cnt = 0;
+	UOSInt cnt = 0;
 	UOSInt i = 0;
 	UOSInt j = this->currTracks.GetCount();
 	while (i < j)
@@ -142,8 +142,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 			cnt++;
 		}
 	}
-	mutUsage.EndUse();
-	return j;
+	return cnt;
 }
 
 Int64 Map::GPSTrack::GetObjectIdMax()
