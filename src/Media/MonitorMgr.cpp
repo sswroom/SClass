@@ -77,9 +77,9 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 				Media::EDID::EDIDInfo info;
 				if (Media::EDID::Parse(edid, &info))
 				{
-					if (info.dispPhysicalW != 0)
+					if (info.dispPhysicalW_mm != 0)
 					{
-						hdpi = monInfo.GetPixelWidth() / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, info.dispPhysicalW);
+						hdpi = monInfo.GetPixelWidth() / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, info.dispPhysicalW_mm);
 					}
 					
 				}

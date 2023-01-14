@@ -34,12 +34,16 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			sb.AppendU32(info.edidVer);
 			sb.AppendC(UTF8STRC(", Rev "));
 			sb.AppendU32(info.edidRev);
-			sb.AppendC(UTF8STRC("\r\nPhysical Size (cm): "));
-			sb.AppendU32(info.dispPhysicalW);
+			sb.AppendC(UTF8STRC("\r\nPixel Size: "));
+			sb.AppendU32(info.pixelW);
 			sb.AppendC(UTF8STRC(" x "));
-			sb.AppendU32(info.dispPhysicalH);
+			sb.AppendU32(info.pixelH);
+			sb.AppendC(UTF8STRC("\r\nPhysical Size (mm): "));
+			sb.AppendU32(info.dispPhysicalW_mm);
+			sb.AppendC(UTF8STRC(" x "));
+			sb.AppendU32(info.dispPhysicalH_mm);
 			sb.AppendC(UTF8STRC(" ("));
-			Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(info.dispPhysicalW * info.dispPhysicalW + info.dispPhysicalH * info.dispPhysicalH)));
+			Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(info.dispPhysicalW_mm * info.dispPhysicalW_mm + info.dispPhysicalH_mm * info.dispPhysicalH_mm)));
 			sb.AppendC(UTF8STRC("\")"));
 			if (info.monitorName[0])
 			{
@@ -50,6 +54,11 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			{
 				sb.AppendC(UTF8STRC("\r\nMonitor SN: "));
 				sb.AppendSlow(info.monitorSN);
+			}
+			if (info.monitorOther[0])
+			{
+				sb.AppendC(UTF8STRC("\r\nMonitor Other: "));
+				sb.AppendSlow(info.monitorOther);
 			}
 			sb.AppendC(UTF8STRC("\r\n\r\nColor Primaries:"));
 			sb.AppendC(UTF8STRC("\r\nGamma: "));

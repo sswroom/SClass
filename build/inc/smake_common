@@ -1897,6 +1897,8 @@ IO/FileAnalyse/DWGFileAnalyse.h: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 @DWGFileAnalyse.o
 IO/FileAnalyse/EBMLFileAnalyse.h: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 @EBMLFileAnalyse.o
+IO/FileAnalyse/EDIDFileAnalyse.h: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
+@EDIDFileAnalyse.o
 IO/FileAnalyse/EXEFileAnalyse.h: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 @EXEFileAnalyse.o
 IO/FileAnalyse/FGDBFileAnalyse.h: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
@@ -4726,6 +4728,7 @@ TelitLE910.o: ../../src/IO/Device/TelitLE910.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
+EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FGDBFileAnalyse.o: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
 FLVFileAnalyse.o: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp

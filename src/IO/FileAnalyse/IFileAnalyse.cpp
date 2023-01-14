@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
+#include "IO/FileAnalyse/EDIDFileAnalyse.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
@@ -132,6 +133,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	else if (ReadMInt32(buff) == 0x504B0304)
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
+	}
+	else if (buffSize >= 128 && ReadNUInt64(buff) == 0xffffffffffff00LL && (((UOSInt)buff[126] + 1) << 7) == fd->GetDataSize())
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::EDIDFileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())

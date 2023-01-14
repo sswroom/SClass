@@ -359,5 +359,16 @@ void SSWR::AVIRead::AVIRHexViewerForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRHexViewerForm::SetData(IO::IStreamData *fd)
 {
-	this->hexView->LoadData(fd->GetPartialData(0, fd->GetDataSize()));
+	if (this->hexView->LoadData(fd->GetPartialData(0, fd->GetDataSize())))
+	{
+		Text::CString name = this->hexView->GetAnalyzerName();
+		if (name.v)
+		{
+			this->txtFileFormat->SetText(name);
+		}
+		else
+		{
+			this->txtFileFormat->SetText(CSTR("Unknown"));
+		}
+	}
 }

@@ -16,11 +16,14 @@ namespace Media
 			Int32 yearOfManu;
 			UInt8 edidVer;
 			UInt8 edidRev;
-			UInt8 dispPhysicalW;
-			UInt8 dispPhysicalH;
+			UInt32 pixelW;
+			UInt32 pixelH;
+			UInt32 dispPhysicalW_mm;
+			UInt32 dispPhysicalH_mm;
 
 			UTF8Char monitorName[14];
 			UTF8Char monitorSN[14];
+			UTF8Char monitorOther[14];
 			Double gamma;
 			Double rx;
 			Double ry;
@@ -32,6 +35,7 @@ namespace Media
 			Double wy;
 		} EDIDInfo;
 		static Bool Parse(const UInt8 *edidBuff, EDIDInfo *info);
+		static void ParseDescriptor(EDIDInfo *info, const UInt8 *descriptor);
 		static Bool SetColorProfile(EDIDInfo *info, Media::ColorProfile *cp);
 	};
 }
