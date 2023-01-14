@@ -96,6 +96,10 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
 			frame->AddField(ofst + 5, 13, CSTR("Display name"), CSTRP(sbuff, sptr));
 		}
+		else if (type == 16)
+		{
+			frame->AddHexBuff(ofst + 5, 13, CSTR("Dummy data"), &buff[ofst + 5], false);
+		}
 		else if (type < 16)
 		{
 			frame->AddHexBuff(ofst + 5, 13, CSTR("Manufacturer reserved descriptors"), &buff[ofst + 5], false);
@@ -187,7 +191,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::IStreamData *fd)
 {
 	UInt8 buff[128];
-	if (fd->GetRealData(0, 128, buff) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) != fd->GetDataSize())
+	if (fd->GetRealData(0, 128, buff) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
 	{
 		this->fd = 0;
 		this->blockCnt = 0;
@@ -215,7 +219,16 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index >= this->blockCnt)
+	{
+		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())
+		{
+			sb->AppendUOSInt(index * 128);
+			sb->AppendC(UTF8STRC(": Type=Dummy, size="));
+			sb->AppendU64(this->fd->GetDataSize() - index * 128);
+			return true;
+		}
 		return false;
+	}
 	sb->AppendUOSInt(index * 128);
 	sb->AppendC(UTF8STRC(": Type="));
 	if (index > 0)
@@ -234,14 +247,37 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	UOSInt blockId = (UOSInt)(ofst >> 7);
 	if (blockId >= this->blockCnt)
+	{
+		if (this->fd && ofst < this->fd->GetDataSize())
+		{
+			return this->blockCnt;
+		}
 		return INVALID_INDEX;
+	}
 	return blockId;
 }
 
 IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UOSInt index)
 {
+	IO::FileAnalyse::FrameDetail* frame;
 	if (index >= this->blockCnt)
+	{
+		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())
+		{
+			UOSInt blockSize = (UOSInt)(this->fd->GetDataSize() - index * 128);
+			UInt8* dummyBlock = MemAlloc(UInt8, blockSize);
+			if (this->fd->GetRealData(index * 128, blockSize, dummyBlock) != blockSize)
+			{
+				MemFree(dummyBlock);
+				return 0;
+			}
+			NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(index << 7, blockSize));
+			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock, true);
+			MemFree(dummyBlock);
+			return frame;
+		}
 		return 0;
+	}
 
 	UOSInt i;
 	UOSInt j;
@@ -249,7 +285,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	IO::FileAnalyse::FrameDetail *frame;
 	if (this->fd->GetRealData(index << 7, 128, buff) != 128)
 		return 0;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));

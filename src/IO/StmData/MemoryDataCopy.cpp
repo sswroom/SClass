@@ -55,7 +55,7 @@ Text::String *IO::StmData::MemoryDataCopy::GetFullName()
 
 Text::CString IO::StmData::MemoryDataCopy::GetShortName()
 {
-	return CSTR("Memory2");
+	return CSTR("MemoryCopy");
 }
 
 UInt64 IO::StmData::MemoryDataCopy::GetDataSize()

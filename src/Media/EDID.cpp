@@ -115,8 +115,16 @@ void Media::EDID::ParseDescriptor(EDIDInfo *info, const UInt8 *descriptor)
 	{
 		info->pixelW = descriptor[2] + (UInt32)(descriptor[4] & 0xf0) * 16;
 		info->pixelH = descriptor[5] + (UInt32)(descriptor[7] & 0xf0) * 16;
-		info->dispPhysicalW_mm = descriptor[12] + (UInt32)(descriptor[14] & 0xf0) * 16;
-		info->dispPhysicalH_mm = descriptor[13] + (UInt32)(descriptor[14] & 0xf) * 256;
+		UInt32 newW = descriptor[12] + (UInt32)(descriptor[14] & 0xf0) * 16;
+		UInt32 newH = descriptor[13] + (UInt32)(descriptor[14] & 0xf) * 256;
+		if (info->dispPhysicalW_mm > newW - 10 && info->dispPhysicalW_mm < newW + 10)
+		{
+			info->dispPhysicalW_mm = newW;
+		}
+		if (info->dispPhysicalH_mm > newH - 10 && info->dispPhysicalH_mm < newH + 10)
+		{
+			info->dispPhysicalH_mm = newH;
+		}
 	}
 }
 

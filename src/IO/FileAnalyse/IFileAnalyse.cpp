@@ -134,7 +134,7 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
 	}
-	else if (buffSize >= 128 && ReadNUInt64(buff) == 0xffffffffffff00LL && (((UOSInt)buff[126] + 1) << 7) == fd->GetDataSize())
+	else if (buffSize >= 128 && ReadNUInt64(buff) == 0xffffffffffff00LL && (((UOSInt)buff[126] + 1) << 7) <= fd->GetDataSize() && (fd->GetDataSize() & 127) == 0)
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::EDIDFileAnalyse(fd));
 	}
