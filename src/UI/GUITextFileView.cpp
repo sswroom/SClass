@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 #include "UI/GUITextFileView.h"
 #include "UI/MessageDialog.h"
 
@@ -731,7 +731,7 @@ void UI::GUITextFileView::CopySelected()
 		line = MemAlloc(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
 		line[selBottomX] = 0;
-		Win32::Clipboard::SetString(this->hwnd, {&line[selTopX], selBottomX - selTopX});
+		UI::Clipboard::SetString(this->hwnd, {&line[selTopX], selBottomX - selTopX});
 		MemFree(line);
 		MemFree(rbuff);
 	}
@@ -786,7 +786,7 @@ void UI::GUITextFileView::CopySelected()
 		MemFree(line);
 		MemFree(rbuff);
 
-		Win32::Clipboard::SetString(this->hwnd, sb.ToCString());
+		UI::Clipboard::SetString(this->hwnd, sb.ToCString());
 	}
 	DEL_CLASS(enc);
 }

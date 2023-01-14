@@ -3,6 +3,8 @@ IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
 IO/RobustelInfo.h: ../../src/IO/RobustelInfo_Null.cpp
 @RobustelInfo.o
+IO/SMBIOSUtil.h: ../../src/IO/SMBIOSUtilNull.cpp
+@SMBIOSUtil.o
 IO/SystemInfo.h: ../../src/IO/SystemInfoAndroid.cpp
 @SystemInfo.o
 
@@ -13,15 +15,12 @@ Media/DDCReader.h: ../../src/Media/DDCReaderL.cpp
 Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrAndroid.cpp
 @VideoCaptureMgr.o
 
-Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
-@SMBIOSUtil.o
-
 DeviceBase.o: ../../src/DeviceBase_SUP.cpp
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
+SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
 SystemInfo.o: ../../src/IO/SystemInfoAndroid.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
 DDCReader.o: ../../src/Media/DDCReaderL.cpp
 VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrAndroid.cpp
-SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilNull.cpp
 

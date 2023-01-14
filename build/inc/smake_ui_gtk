@@ -25,6 +25,8 @@ Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerX11.cpp
 Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
 @GUIImgParser.o
 
+UI/Clipboard.h: ../../src/UI/ClipboardGTK.cpp
+@Clipboard.o
 UI/FileDialog.h: ../../src/UI/FileDialogGTK.cpp
 @FileDialog.o
 UI/FolderDialog.h: ../../src/UI/FolderDialogGTK.cpp
@@ -109,9 +111,6 @@ UI/GUIVSplitter.h: ../../src/UI/GUIVSplitterGTK.cpp
 UI/MessageDialog.h: ../../src/UI/MessageDialogL.cpp
 @MessageDialog.o
 
-Win32/Clipboard.h: ../../src/Win32/ClipboardGTK.cpp
-@Clipboard.o
-
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`
 !`pkg-config --libs gtk+-3.0`
@@ -137,6 +136,8 @@ ScreenCapturer.o: ../../src/Media/ScreenCapturerX11.cpp
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 !`pkg-config --libs gtk+-3.0`
+Clipboard.o: ../../src/UI/ClipboardGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
 FileDialog.o: ../../src/UI/FileDialogGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 FolderDialog.o: ../../src/UI/FolderDialogGTK.cpp
@@ -217,6 +218,4 @@ $`pkg-config --cflags gtk+-3.0`
 GUIVSplitter.o: ../../src/UI/GUIVSplitterGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 MessageDialog.o: ../../src/UI/MessageDialogL.cpp
-$`pkg-config --cflags gtk+-3.0`
-Clipboard.o: ../../src/Win32/ClipboardGTK.cpp
 $`pkg-config --cflags gtk+-3.0`

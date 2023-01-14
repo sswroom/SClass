@@ -18,6 +18,9 @@ DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
 GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
+SMBIOSUtil.o: $(CLASSDIR)src/IO/SMBIOSUtilNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoRPi.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
@@ -40,9 +43,6 @@ MMALVideoCaptureDef: LIBS_mmal
 	$(eval CLASS_OBJS += MMALVideoCapture.o)
 
 VideoCaptureMgr.o: $(CLASSDIR)src/Media/VideoCaptureMgr_RPi.cpp MMALVideoCapture.o MMALVideoCaptureDef LIBS_V4LVideoCapture
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
-
-SMBIOSUtil.o: $(CLASSDIR)src/Win32/SMBIOSUtilNull.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 

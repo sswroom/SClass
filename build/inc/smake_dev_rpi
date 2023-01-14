@@ -3,6 +3,8 @@ IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
 IO/RobustelInfo.h: ../../src/IO/RobustelInfo_Null.cpp
 @RobustelInfo.o
+IO/SMBIOSUtil.h: ../../src/IO/SMBIOSUtilNull.cpp
+@SMBIOSUtil.o
 IO/SystemInfo.h: ../../src/IO/SystemInfoRPi.cpp
 @SystemInfo.o
 
@@ -17,12 +19,10 @@ Media/MMALVideoCapture.h: ../../src/Media/MMALVideoCapture.cpp
 Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgr_RPi.cpp
 @VideoCaptureMgr.o
 
-Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
-@SMBIOSUtil.o
-
 DeviceBase.o: ../../src/DeviceBase_SUP.cpp
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
+SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
 SystemInfo.o: ../../src/IO/SystemInfoRPi.cpp
 CameraManager.o: ../../src/Media/CameraManagerRPi.cpp
 DDCReader.o: ../../src/Media/DDCReaderRPi.cpp
@@ -38,4 +38,3 @@ $-I/opt/vc/include/interface -I/opt/vc/include
 !-lmmal_core -lmmal -lmmal_util
 !-L/opt/vc/lib
 VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgr_RPi.cpp
-SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilNull.cpp

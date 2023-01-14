@@ -1,11 +1,11 @@
-#ifndef _SM_WIN32_CLIPBOARD
-#define _SM_WIN32_CLIPBOARD
+#ifndef _SM_UI_CLIPBOARD
+#define _SM_UI_CLIPBOARD
 #include "Handles.h"
 #include "Data/ArrayList.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
-namespace Win32
+namespace UI
 {
 	class Clipboard
 	{

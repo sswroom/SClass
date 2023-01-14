@@ -11,9 +11,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
+#include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, Bool newValue)
 {
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(void *userObj)
 		me->lvCoord->GetSubItem(i, 6, &sb);
 		i++;
 	}
-	if (Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
+	if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
 	{
 		me->txtStatus->SetText(CSTR("All items copied"));
 	}
@@ -363,7 +363,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(void *userObj, UO
 	sb.AppendUTF8Char('\t');
 	me->lvCoord->GetSubItem(itemIndex, 6, &sb);
 	sb2.AppendC(UTF8STRC(" copied"));
-	if (Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
+	if (UI::Clipboard::SetString(me->GetHandle(), sb.ToCString()))
 	{
 		me->txtStatus->SetText(sb2.ToCString());
 	}

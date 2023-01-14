@@ -9,8 +9,8 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj)
 {
@@ -402,7 +402,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void 
 	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
 	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), s->ToCString());
+		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
 	}
 }

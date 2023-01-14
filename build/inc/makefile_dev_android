@@ -5,6 +5,9 @@ DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
 GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
+SMBIOSUtil.o: $(CLASSDIR)src/IO/SMBIOSUtilNull.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoAndroid.cpp UnixConfigFile.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
@@ -29,9 +32,6 @@ DDCReader.o: $(CLASSDIR)src/Media/DDCReaderL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 VideoCaptureMgr.o: $(CLASSDIR)src/Media/VideoCaptureMgrAndroid.cpp AndroidVideoCapture.o LIBS_V4LVideoCapture
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
-
-SMBIOSUtil.o: $(CLASSDIR)src/Win32/SMBIOSUtilNull.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 

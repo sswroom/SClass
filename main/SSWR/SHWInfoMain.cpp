@@ -12,6 +12,7 @@
 #include "IO/PowerInfo.h"
 #include "IO/SDCardMgr.h"
 #include "IO/SensorManager.h"
+#include "IO/SMBIOSUtil.h"
 #include "IO/SystemInfo.h"
 #include "IO/USBInfo.h"
 #include "Manage/CPUDB.h"
@@ -32,7 +33,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
-#include "Win32/SMBIOSUtil.h"
 
 #include <stdio.h>
 
@@ -381,12 +381,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
-					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW * edidInfo.dispPhysicalW + edidInfo.dispPhysicalH * edidInfo.dispPhysicalH)));
+					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW_mm * edidInfo.dispPhysicalW_mm + edidInfo.dispPhysicalH_mm * edidInfo.dispPhysicalH_mm)));
 					sb.AppendC(UTF8STRC("\" ("));
-					sb.AppendU32(edidInfo.dispPhysicalW);
+					sb.AppendU32(edidInfo.dispPhysicalW_mm);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendU32(edidInfo.dispPhysicalH);
-					sb.AppendC(UTF8STRC("cm)"));
+					sb.AppendU32(edidInfo.dispPhysicalH_mm);
+					sb.AppendC(UTF8STRC("mm)"));
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Monitor Pixels: "));
+					sb.AppendU32(edidInfo.pixelW);
+					sb.AppendC(UTF8STRC(" x "));
+					sb.AppendU32(edidInfo.pixelH);
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Monitor bit per color: "));
+					sb.AppendU32(edidInfo.bitPerColor);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -429,7 +443,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 
 //-------------------------------------------------------------------------------
-	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
 		console->WriteLine();

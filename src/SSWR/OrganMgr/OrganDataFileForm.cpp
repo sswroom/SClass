@@ -1,8 +1,8 @@
 ﻿#include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganDataFileForm.h"
 #include "SSWR/OrganMgr/OrganTimeAdjForm.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
@@ -65,7 +65,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(void *userO
 		return;
 
 	sptr = dataFile->startTime.ToLocalTime().ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
-	Win32::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
+	UI::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
 }
 
 void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()

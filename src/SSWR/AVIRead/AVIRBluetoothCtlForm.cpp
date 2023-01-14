@@ -8,8 +8,8 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 #include <stdio.h>
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(void *userObj)
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *user
 	if (dev)
 	{
 		sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
-		Win32::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
+		UI::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
 	}
 }
 

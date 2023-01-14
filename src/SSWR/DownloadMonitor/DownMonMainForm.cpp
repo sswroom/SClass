@@ -7,8 +7,8 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Util.h"
 #include "Text/UTF8Writer.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 #include <stdio.h>
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj)
@@ -102,7 +102,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Win32::Clipboard::GetString(me->GetHandle(), &sb);
+	UI::Clipboard::GetString(me->GetHandle(), &sb);
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::PString sarr[2];
@@ -163,12 +163,12 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	Data::ArrayList<const UTF8Char *> urlStrList;
 	Data::ArrayList<UOSInt> urlLenList;
 	Data::ArrayList<const UTF8Char *> descList;
-	Win32::Clipboard clipboard(me->GetHandle());
+	UI::Clipboard clipboard(me->GetHandle());
 	clipboard.GetDataFormats(&formats);
 	i = formats.GetCount();
 	while (i-- > 0)
 	{
-		Win32::Clipboard::GetFormatName(formats.GetItem(i), sbuff, 256);
+		UI::Clipboard::GetFormatName(formats.GetItem(i), sbuff, 256);
 		if (Text::StrEquals(sbuff, (const UTF8Char*)"text/html"))
 		{
 			fmtId = formats.GetItem(i);
@@ -313,7 +313,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 		i++;
 	}
 
-	Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString());
+	UI::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 }
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *userObj, UOSInt itemIndex)

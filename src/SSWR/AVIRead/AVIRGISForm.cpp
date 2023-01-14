@@ -51,9 +51,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
+#include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 #include <stdio.h>
 
@@ -850,7 +850,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_COPY_LATLON:
 		sptr = this->txtUTMGrid->GetText(sbuff);
-		Win32::Clipboard::SetString(this->hwnd, CSTRP(sbuff, sptr));
+		UI::Clipboard::SetString(this->hwnd, CSTRP(sbuff, sptr));
 		break;
 	case MNU_PRINT:
 		{

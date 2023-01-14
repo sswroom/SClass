@@ -4,12 +4,12 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
+#include "IO/SMBIOSUtil.h"
 #include "Text/MyString.h"
-#include "Win32/SMBIOSUtil.h"
 
-Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
+IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 {
-	Win32::SMBIOS *smbios;
+	IO::SMBIOS *smbios;
 	UInt8 *dataBuff = 0;
 	UOSInt buffSize = 0;
 	UInt8 buffTmp[1024];
@@ -113,7 +113,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	}
 	if (dataBuff)
 	{
-		NEW_CLASS(smbios, Win32::SMBIOS(dataBuff, buffSize, dataBuff));
+		NEW_CLASS(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
 		return smbios;
 	}
 

@@ -378,12 +378,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
-					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW * edidInfo.dispPhysicalW + edidInfo.dispPhysicalH * edidInfo.dispPhysicalH)));
+					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW_mm * edidInfo.dispPhysicalW_mm + edidInfo.dispPhysicalH_mm * edidInfo.dispPhysicalH_mm)));
 					sb.AppendC(UTF8STRC("\" ("));
-					sb.AppendU32(edidInfo.dispPhysicalW);
+					sb.AppendU32(edidInfo.dispPhysicalW_mm);
 					sb.AppendC(UTF8STRC(" x "));
-					sb.AppendU32(edidInfo.dispPhysicalH);
-					sb.AppendC(UTF8STRC("cm)"));
+					sb.AppendU32(edidInfo.dispPhysicalH_mm);
+					sb.AppendC(UTF8STRC("mm)"));
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Monitor Pixels: "));
+					sb.AppendU32(edidInfo.pixelW);
+					sb.AppendC(UTF8STRC(" x "));
+					sb.AppendU32(edidInfo.pixelH);
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
+
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("Monitor bit per color: "));
+					sb.AppendU32(edidInfo.bitPerColor);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 

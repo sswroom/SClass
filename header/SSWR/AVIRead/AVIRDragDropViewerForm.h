@@ -5,7 +5,6 @@
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUITextBox.h"
-#include "Win32/Clipboard.h"
 
 namespace SSWR
 {
@@ -32,6 +31,6 @@ namespace SSWR
 			virtual DragEffect DragEnter(UI::GUIDropData *data);
 			virtual void DropData(UI::GUIDropData *data, OSInt x, OSInt y);
 		};
-	};
-};
+	}
+}
 #endif

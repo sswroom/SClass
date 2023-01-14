@@ -5,6 +5,8 @@ IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
 IO/RobustelInfo.h: ../../src/IO/RobustelInfo_Null.cpp
 @RobustelInfo.o
+IO/SMBIOSUtil.h: ../../src/IO/SMBIOSUtilNull.cpp
+@SMBIOSUtil.o
 IO/SystemInfo.h: ../../src/IO/SystemInfoNetComm.cpp
 @SystemInfo.o
 
@@ -15,14 +17,11 @@ Media/DDCReader.h: ../../src/Media/DDCReaderNul.cpp
 Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrL.cpp
 @VideoCaptureMgr.o
 
-Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
-@SMBIOSUtil.o
-
 DeviceBase.o: ../../src/DeviceBase_Interlocked.cpp
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
+SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
 SystemInfo.o: ../../src/IO/SystemInfoNetComm.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
 DDCReader.o: ../../src/Media/DDCReaderNul.cpp
 VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrL.cpp
-SMBIOSUtil.o: ../../src/Win32/SMBIOSUtilNull.cpp

@@ -10,9 +10,9 @@
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/CharUtil.h"
+#include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 #define MAX_ROW_CNT 1000
 
@@ -283,7 +283,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::DBUtil::SQLType sqlType)
 		}
 		else
 		{
-			Win32::Clipboard::SetString(this->GetHandle(), sql.ToCString());
+			UI::Clipboard::SetString(this->GetHandle(), sql.ToCString());
 		}
 		DEL_CLASS(tabDef);
 	}
@@ -639,7 +639,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, &sb);
-				Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
 		}
@@ -658,7 +658,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, &sb);
-				Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
 		}
@@ -671,7 +671,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, 0, this->dbt);
 			tableName->Release();
 			SDEL_STRING(schemaName);
-			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+			UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
 		break;
 	case MNU_TABLE_CREATE_MYSQL:

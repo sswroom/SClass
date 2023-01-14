@@ -25,6 +25,8 @@ Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerNull.cpp
 Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
 @GUIImgParser.o
 
+UI/Clipboard.h: ../../src/UI/ClipboardJava.cpp
+@Clipboard.o
 UI/FileDialog.h: ../../src/UI/FileDialogGTK.cpp
 @FileDialog.o
 UI/FolderDialog.h: ../../src/UI/FolderDialogGTK.cpp
@@ -106,9 +108,6 @@ UI/GUIVSplitter.h: ../../src/UI/GUIVSplitterGTK.cpp
 UI/MessageDialog.h: ../../src/UI/MessageDialogJava.cpp
 @MessageDialog.o
 
-Win32/Clipboard.h: ../../src/Win32/ClipboardJava.cpp
-@Clipboard.o
-
 GUIStartup.o: ../../startup/JavaStartup.cpp
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
@@ -122,6 +121,9 @@ DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
 MonitorInfo.o: ../../src/Media/MonitorInfoJava.cpp
 ScreenCapturer.o: ../../src/Media/ScreenCapturerNull.cpp
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
+Clipboard.o: ../../src/UI/ClipboardJava.cpp
+$-I/usr/lib/jvm/java-11-openjdk-amd64/include
+$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
 FileDialog.o: ../../src/UI/FileDialogGTK.cpp
 FolderDialog.o: ../../src/UI/FolderDialogGTK.cpp
 FontDialog.o: ../../src/UI/FontDialogGTK.cpp
@@ -173,8 +175,5 @@ GUITrackBar.o: ../../src/UI/GUITrackBarGTK.cpp
 GUITreeView.o: ../../src/UI/GUITreeViewGTK.cpp
 GUIVSplitter.o: ../../src/UI/GUIVSplitterGTK.cpp
 MessageDialog.o: ../../src/UI/MessageDialogJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-Clipboard.o: ../../src/Win32/ClipboardJava.cpp
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux

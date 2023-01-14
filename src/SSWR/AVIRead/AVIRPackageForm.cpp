@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/URLString.h"
+#include "UI/Clipboard.h"
 #include "UI/FolderDialog.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 #include <stdio.h>
 
@@ -629,13 +629,13 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_PASTE:
 		{
-			Win32::Clipboard clipboard(this->hwnd);
+			UI::Clipboard clipboard(this->hwnd);
 			Data::ArrayList<Text::String *> fileNames;
-			Win32::Clipboard::FilePasteType fpt;
+			UI::Clipboard::FilePasteType fpt;
 			UOSInt i;
 			UOSInt j;
 			fpt = clipboard.GetDataFiles(&fileNames);
-			if (fpt == Win32::Clipboard::FPT_MOVE)
+			if (fpt == UI::Clipboard::FPT_MOVE)
 			{
 				Sync::MutexUsage mutUsage(&this->fileMut);
 				i = 0;
@@ -650,7 +650,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				mutUsage.EndUse();
 				clipboard.FreeDataFiles(&fileNames);
 			}
-			else if (fpt == Win32::Clipboard::FPT_COPY)
+			else if (fpt == UI::Clipboard::FPT_COPY)
 			{
 				Sync::MutexUsage mutUsage(&this->fileMut);
 				i = 0;

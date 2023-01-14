@@ -6,10 +6,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/String.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 #include <windows.h>
 
-Win32::Clipboard::Clipboard(void *hwnd)
+UI::Clipboard::Clipboard(void *hwnd)
 {
 	this->clsData = 0;
 	if (OpenClipboard((HWND)hwnd))
@@ -22,7 +22,7 @@ Win32::Clipboard::Clipboard(void *hwnd)
 	}
 }
 
-Win32::Clipboard::~Clipboard()
+UI::Clipboard::~Clipboard()
 {
 	if (this->succ)
 	{
@@ -31,7 +31,7 @@ Win32::Clipboard::~Clipboard()
 	}
 }
 
-UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
+UOSInt UI::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 {
 	if (!this->succ)
 		return 0;
@@ -49,16 +49,16 @@ UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	return i;
 }
 
-Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
+Bool UI::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 {
 	HANDLE hand = GetClipboardData(fmtId);
 	return GetDataTextH(hand, fmtId, sb, 1);
 }
 
-Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<Text::String *> *fileNames)
+UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	if (!this->succ)
-		return Win32::Clipboard::FPT_NONE;
+		return UI::Clipboard::FPT_NONE;
 	UInt32 fmt = 0;
 	UInt32 deff = 0;
 	UInt32 fnameW = 0;
@@ -81,7 +81,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<T
 			}
 		}
 	}
-	Win32::Clipboard::FilePasteType ret = Win32::Clipboard::FPT_NONE;
+	UI::Clipboard::FilePasteType ret = UI::Clipboard::FPT_NONE;
 	if (deff && fnameW)
 	{
 #if !defined(_WIN32_WCE)
@@ -92,11 +92,11 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<T
 		UInt32 i;
 		if (eff == 5) //Copy
 		{
-			ret = Win32::Clipboard::FPT_COPY;
+			ret = UI::Clipboard::FPT_COPY;
 		}
 		else if (eff == 2) //Move
 		{
-			ret = Win32::Clipboard::FPT_MOVE;
+			ret = UI::Clipboard::FPT_MOVE;
 		}
 		else
 		{
@@ -118,7 +118,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<T
 	return ret;
 }
 
-void Win32::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
+void UI::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)
@@ -127,7 +127,7 @@ void Win32::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
 	}
 }
 
-Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed)
+Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed)
 {
 	UInt8 *memptr;
 	WChar wbuff[512];
@@ -515,7 +515,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
+Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
@@ -545,7 +545,7 @@ Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 	return true;
 }
 
-Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF8 *sb)
+Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF8 *sb)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
@@ -562,7 +562,7 @@ Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUT
 	return succ;
 }
 
-UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
+UTF8Char *UI::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
 {
 	switch (fmtId)
 	{

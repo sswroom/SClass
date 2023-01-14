@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "IO/Library.h"
 #include "IO/Registry.h"
+#include "IO/SMBIOSUtil.h"
 #include "IO/SystemInfo.h"
 #include "Manage/CPUInfo.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Win32/SMBIOSUtil.h"
 #include "Win32/WMIQuery.h"
 #include <windows.h>
 
@@ -45,7 +45,7 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 
 	if (ret == 0)
 	{
-		Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+		IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 		if (smbios)
 		{
 			ret = smbios->GetPlatformName(sbuff);
@@ -60,7 +60,7 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
 	UTF8Char *ret = 0;
-	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
 		ret = smbios->GetPlatformSN(sbuff);
@@ -102,7 +102,7 @@ UInt64 IO::SystemInfo::GetTotalUsableMemSize()
 
 IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 {
-	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	Int32 ctype;
 	if (smbios)
 	{
@@ -193,11 +193,11 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	DB::DBReader *r;
-	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
-		Data::ArrayList<Win32::SMBIOS::MemoryDeviceInfo *> memList;
-		Win32::SMBIOS::MemoryDeviceInfo *mem;
+		Data::ArrayList<IO::SMBIOS::MemoryDeviceInfo *> memList;
+		IO::SMBIOS::MemoryDeviceInfo *mem;
 		Text::StringBuilderUTF8 sb;
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)

@@ -23,10 +23,10 @@
 #include "SSWR/AVIRead/AVIRPostgreSQLForm.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
+#include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 #include "UtilUI/TextInputDialog.h"
-#include "Win32/Clipboard.h"
 
 #define MAX_ROW_CNT 1000
 #define DBCONNFILE CSTR("DBConn.dat")
@@ -703,7 +703,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::DBUtil::SQLType sqlTy
 		}
 		else
 		{
-			Win32::Clipboard::SetString(this->GetHandle(), sql.ToCString());
+			UI::Clipboard::SetString(this->GetHandle(), sql.ToCString());
 		}
 		DEL_CLASS(tabDef);
 	}
@@ -1179,7 +1179,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 connStr;
 				if (DB::DBManager::GetConnStr(db, &connStr))
 				{
-					Win32::Clipboard::SetString(this->GetHandle(), connStr.ToCString());
+					UI::Clipboard::SetString(this->GetHandle(), connStr.ToCString());
 				}
 				else
 				{
@@ -1256,7 +1256,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			DB::JavaDBUtil::ToJavaEntity(&sb, schemaName, tableName, databaseName, this->currDB);
 			tableName->Release();
 			schemaName->Release();
-			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+			UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
 		break;
 	case MNU_TABLE_CPP_HEADER:
@@ -1271,7 +1271,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, &sb);
-				Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
 		}
@@ -1288,7 +1288,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, &sb);
-				Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
 		}

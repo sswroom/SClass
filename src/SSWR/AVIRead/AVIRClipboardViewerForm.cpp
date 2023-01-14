@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRClipboardViewerForm.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(void *userObj)
 {
@@ -30,7 +30,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientCon
 	this->txtMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMain->SetReadOnly(true);
 
-	NEW_CLASS(this->clipboard, Win32::Clipboard(this->hwnd));
+	NEW_CLASS(this->clipboard, UI::Clipboard(this->hwnd));
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientCon
 	while (i < j)
 	{
 		fmt = formats.GetItem(i);
-		if ((sptr = Win32::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
+		if ((sptr = UI::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
 		{
 			this->lbType->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)fmt);
 		}

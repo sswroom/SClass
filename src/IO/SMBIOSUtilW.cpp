@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/Library.h"
+#include "IO/SMBIOSUtil.h"
 #include "Text/MyString.h"
-#include "Win32/SMBIOSUtil.h"
 #include "Win32/WMIQuery.h"
 #include <windows.h>
 
@@ -18,9 +18,9 @@ struct RawSMBIOSData
     BYTE    SMBIOSTableData[1];
 };
 
-Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
+IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 {
-	Win32::SMBIOS *smbios;
+	IO::SMBIOS *smbios;
 	IO::Library lib((const UTF8Char*)"kernel32.dll");
 	UInt8 *dataBuff = 0;
 	UInt32 buffSize;
@@ -33,7 +33,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 			dataBuff = MemAlloc(UInt8, buffSize);
 			func(*(UInt32*)"BMSR", 0, dataBuff, buffSize);
 			const RawSMBIOSData *pDMIData = (RawSMBIOSData *)dataBuff;
-			NEW_CLASS(smbios, Win32::SMBIOS(&pDMIData->SMBIOSTableData[0], pDMIData->Length, dataBuff));
+			NEW_CLASS(smbios, IO::SMBIOS(&pDMIData->SMBIOSTableData[0], pDMIData->Length, dataBuff));
 			return smbios;
 		}
 	}
@@ -74,7 +74,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	DEL_CLASS(db);
 	if (dataBuff)
 	{
-		NEW_CLASS(smbios, Win32::SMBIOS(dataBuff, buffSize, dataBuff));
+		NEW_CLASS(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
 		return smbios;
 	}
 

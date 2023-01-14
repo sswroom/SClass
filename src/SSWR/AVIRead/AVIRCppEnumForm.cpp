@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIRCppEnumForm.h"
 #include "Text/CPPText.h"
 #include "Text/MyString.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConvClicked(void *userObj)
 {
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCppEnumForm *me = (SSWR::AVIRead::AVIRCppEnumForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Win32::Clipboard clipboard(me->GetHandle());
+	UI::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), &sb))
 	{
 		me->txtSource->SetText(sb.ToCString());

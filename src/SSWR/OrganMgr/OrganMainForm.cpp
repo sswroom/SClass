@@ -28,12 +28,12 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
+#include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 #include "UI/GUICore.h"
 #include "UI/MessageDialog.h"
 #include "UtilUI/ColorDialog.h"
-#include "Win32/Clipboard.h"
 
 #include <stdio.h>
 //#include <windows.h>
@@ -804,7 +804,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 			OrganGroupItem *gi = (OrganGroupItem*)me->lbObj->GetItem(i);
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
-				Win32::Clipboard clipboard(me->hwnd);
+				UI::Clipboard clipboard(me->hwnd);
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				UOSInt i;
@@ -819,7 +819,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 				while (i < j)
 				{
 					fmt = formats.GetItem(i);
-					if ((sptr = Win32::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
+					if ((sptr = UI::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
 					{
 						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("application/x-moz-file-promise-url")))
 						{
@@ -1045,7 +1045,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(void *userOb
 	if (me->inputMode == IM_SPECIES || me->inputMode == IM_EMPTY)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
+		if (UI::Clipboard::GetString(me->GetHandle(), &sb))
 		{
 			UTF8Char *sciPtr = 0;
 			UTF8Char *chiPtr = 0;

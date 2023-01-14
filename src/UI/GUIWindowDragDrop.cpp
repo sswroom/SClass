@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "UI/Clipboard.h"
 #include "UI/GUIWindowDragDrop.h"
-#include "Win32/Clipboard.h"
 #include "Win32/StreamCOM.h"
 
 void UI::GUIWindowDragData::LoadData()
@@ -20,7 +20,7 @@ void UI::GUIWindowDragData::LoadData()
 		{
 			newFmt = MemAlloc(FORMATETC, 1);
 			MemCopyNO(newFmt, &fmt, sizeof(fmt));
-			if (Win32::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512) == 0)
+			if (UI::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512) == 0)
 			{
 				Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Format ")), fmt.cfFormat);
 			}
@@ -84,7 +84,7 @@ Bool UI::GUIWindowDragData::GetDataText(const UTF8Char *name, Text::StringBuilde
 
 	if ((hres = this->pDataObj->GetData(fmt, &med)) == S_OK)
 	{
-		if (Win32::Clipboard::GetDataTextH(med.hGlobal, fmt->cfFormat, sb, med.tymed))
+		if (UI::Clipboard::GetDataTextH(med.hGlobal, fmt->cfFormat, sb, med.tymed))
 		{
 		}
 		else

@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "IO/SMBIOSUtil.h"
 #include "IO/SystemInfo.h"
 #include "IO/UnixConfigFile.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-#include "Win32/SMBIOSUtil.h"
 #if defined(__FreeBSD__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -206,11 +206,11 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	UOSInt retCnt = 0;
 	RAMInfo *ram;
-	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
-		Data::ArrayList<Win32::SMBIOS::MemoryDeviceInfo *> memList;
-		Win32::SMBIOS::MemoryDeviceInfo *mem;
+		Data::ArrayList<IO::SMBIOS::MemoryDeviceInfo *> memList;
+		IO::SMBIOS::MemoryDeviceInfo *mem;
 		Text::StringBuilderUTF8 sb;
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)

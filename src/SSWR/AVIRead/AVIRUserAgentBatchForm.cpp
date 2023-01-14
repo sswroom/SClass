@@ -3,8 +3,8 @@
 #include "SSWR/AVIRead/AVIRUserAgentBatchForm.h"
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, Text::StringBuilderUTF8 *outSb)
 {
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 {
 	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Win32::Clipboard::GetString(me->GetHandle(), &sb);
+	UI::Clipboard::GetString(me->GetHandle(), &sb);
 	if (sb.GetLength() > 0)
 	{
 		me->UpdateByText(sb);

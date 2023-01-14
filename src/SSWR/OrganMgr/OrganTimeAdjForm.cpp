@@ -2,8 +2,8 @@
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/Math.h"
 #include "SSWR/OrganMgr/OrganTimeAdjForm.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(void *userObj)
 {
@@ -110,7 +110,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
-	if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
+	if (UI::Clipboard::GetString(me->GetHandle(), &sb))
 	{
 		sb.Trim();
 

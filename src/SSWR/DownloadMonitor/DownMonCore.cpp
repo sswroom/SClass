@@ -14,7 +14,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 
 Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile)
 {
@@ -662,7 +662,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 	file = this->fileTypeMap.Get((webType << 24) | id);
 	if (file)
 	{
-		Win32::Clipboard::SetString(formHand, file->fileName->ToCString());
+		UI::Clipboard::SetString(formHand, file->fileName->ToCString());
 		Text::StringBuilderUTF8 sb;
 		sb.AppendUTF8Char('"');
 		sb.Append(this->firefoxPath);

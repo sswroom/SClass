@@ -2,7 +2,7 @@
 #include "Data/ArrayListICaseStrUTF8.h"
 #include "SSWR/AVIRead/AVIRAsmConvForm.h"
 #include "Text/MyString.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConvClicked(void *userObj)
 {
@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAsmConvForm *me = (SSWR::AVIRead::AVIRAsmConvForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Win32::Clipboard clipboard(me->GetHandle());
+	UI::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), &sb))
 	{
 		me->txtIntelAsm->SetText(sb.ToCString());

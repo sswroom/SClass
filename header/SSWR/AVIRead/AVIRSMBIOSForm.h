@@ -1,11 +1,11 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSMBIOSFORM
 #define _SM_SSWR_AVIREAD_AVIRSMBIOSFORM
+#include "IO/SMBIOS.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUITextBox.h"
-#include "Win32/SMBIOS.h"
 
 namespace SSWR
 {
@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Win32::SMBIOS *smbios;
+			IO::SMBIOS *smbios;
 
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnHex;

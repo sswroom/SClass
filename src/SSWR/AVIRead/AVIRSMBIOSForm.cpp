@@ -1,6 +1,6 @@
 #include "Stdafx.h"
+#include "IO/SMBIOSUtil.h"
 #include "SSWR/AVIRead/AVIRSMBIOSForm.h"
-#include "Win32/SMBIOSUtil.h"
 
 void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(void *userObj)
 {
@@ -16,7 +16,7 @@ SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(UI::GUIClientControl *parent, UI::
 	this->SetText(CSTR("SMBIOS"));
 
 	this->core = core;
-	this->smbios = Win32::SMBIOSUtil::GetSMBIOS();
+	this->smbios = IO::SMBIOSUtil::GetSMBIOS();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	Text::StringBuilderUTF8 sb;

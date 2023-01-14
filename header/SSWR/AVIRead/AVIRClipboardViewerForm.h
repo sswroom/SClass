@@ -1,11 +1,11 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCLIPBOARDVIEWERFORM
 #define _SM_SSWR_AVIREAD_AVIRCLIPBOARDVIEWERFORM
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "UI/Clipboard.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUITextBox.h"
-#include "Win32/Clipboard.h"
 
 namespace SSWR
 {
@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Win32::Clipboard *clipboard;
+			UI::Clipboard *clipboard;
 
 			UI::GUIListBox *lbType;
 			UI::GUIHSplitter *hspMain;
@@ -28,6 +28,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

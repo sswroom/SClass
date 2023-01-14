@@ -28,6 +28,8 @@ Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerW.cpp
 Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserW.cpp
 @GUIImgParser.o
 
+UI/Clipboard.h: ../../src/UI/ClipboardW.cpp
+@Clipboard.o
 UI/FileDialog.h: ../../src/UI/FileDialogWin.cpp
 @FileDialog.o
 UI/FolderDialog.h: ../../src/UI/FolderDialogWin.cpp
@@ -115,9 +117,6 @@ UI/IWindowSystem.h:
 UI/MessageDialog.h: ../../src/UI/MessageDialogW.cpp
 @MessageDialog.o
 
-Win32/Clipboard.h: ../../src/Win32/ClipboardW.cpp
-@Clipboard.o
-
 GUIStartup.o: ../../startup/WinStartup.cpp
 !-Wl,--subsystem,windows
 !-mwindows
@@ -140,6 +139,7 @@ MonitorInfo.o: ../../src/Media/MonitorInfoW.cpp
 ScreenCapturer.o: ../../src/Media/ScreenCapturerW.cpp
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserW.cpp
 !-lgdiplus
+Clipboard.o: ../../src/UI/ClipboardW.cpp
 FileDialog.o: ../../src/UI/FileDialogWin.cpp
 FolderDialog.o: ../../src/UI/FolderDialogWin.cpp
 FontDialog.o: ../../src/UI/FontDialogWin.cpp
@@ -188,4 +188,3 @@ GUITreeView.o: ../../src/UI/GUITreeViewWin.cpp
 GUIVSplitter.o: ../../src/UI/GUIVSplitterWin.cpp
 GUIWindowDragDrop.o: ../../src/UI/GUIWindowDragDrop.cpp
 MessageDialog.o: ../../src/UI/MessageDialogW.cpp
-Clipboard.o: ../../src/Win32/ClipboardW.cpp

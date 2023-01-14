@@ -33,6 +33,9 @@ DrawEngineGUI.o: $(CLASSDIR)src/Media/GTKDrawEngine.cpp LIBS_gtk
 GUIImgParser.o: $(CLASSDIR)src/Parser/FileParser/GUIImgParserGTK.cpp
 	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+Clipboard.o: $(CLASSDIR)src/UI/ClipboardGTK.cpp
+	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 FileDialog.o: $(CLASSDIR)src/UI/FileDialogGTK.cpp
 	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
@@ -148,9 +151,6 @@ GUIVSplitter.o: $(CLASSDIR)src/UI/GUIVSplitterGTK.cpp
 	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 MessageDialog.o: $(CLASSDIR)src/UI/MessageDialogL.cpp
-	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
-
-Clipboard.o: $(CLASSDIR)src/Win32/ClipboardGTK.cpp
 	$(CC) $(CFLAGS) $(GTKFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 

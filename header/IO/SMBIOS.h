@@ -1,10 +1,10 @@
-#ifndef _SM_WIN32_SMBIOS
-#define _SM_WIN32_SMBIOS
+#ifndef _SM_IO_SMBIOS
+#define _SM_IO_SMBIOS
 #include "Data/ArrayList.h"
 #include "IO/IStreamData.h"
 #include "Text/StringBuilderUTF8.h"
 
-namespace Win32
+namespace IO
 {
 	class SMBIOS
 	{

@@ -8,7 +8,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Win32/Clipboard.h"
+#include "UI/Clipboard.h"
 
 void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListString *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(void *userObj)
 	Text::String *s = me->lbExport->GetSelectedItemTextNew();
 	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), s->ToCString());
+		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
 	}
 }

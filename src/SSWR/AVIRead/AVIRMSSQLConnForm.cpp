@@ -3,14 +3,14 @@
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 #include "Text/MyString.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMSSQLConnForm *me = (SSWR::AVIRead::AVIRMSSQLConnForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
+	if (UI::Clipboard::GetString(me->GetHandle(), &sb))
 	{
 		if (sb.StartsWith(UTF8STRC("jdbc:sqlserver://")))
 		{

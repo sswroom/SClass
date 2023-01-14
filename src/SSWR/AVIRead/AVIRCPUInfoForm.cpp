@@ -6,8 +6,8 @@
 #include "SSWR/AVIRead/AVIRCPUInfoForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 {
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 		sb.AppendI32(cpu.GetStepping());
 		sb.AppendUTF8Char('\t');
 		sb.AppendP(sbuff, sptr);
-		Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString());
+		UI::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 	}
 #endif
 }

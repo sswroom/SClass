@@ -10,8 +10,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(void *userOb
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), s->ToCString());
+		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
 	}
 }

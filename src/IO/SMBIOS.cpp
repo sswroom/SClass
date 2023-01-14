@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/SMBIOS.h"
 #include "IO/StmData/MemoryDataCopy.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "Win32/SMBIOS.h"
 
-void Win32::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType) const
+void IO::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->smbiosBuffSize;
@@ -26,14 +26,14 @@ void Win32::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 
 	}
 }
 
-Win32::SMBIOS::SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr)
+IO::SMBIOS::SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr)
 {
 	this->smbiosBuff = smbiosBuff;
 	this->smbiosBuffSize = smbiosBuffSize;
 	this->relPtr = relPtr;
 }
 
-Win32::SMBIOS::~SMBIOS()
+IO::SMBIOS::~SMBIOS()
 {
 	if (this->relPtr)
 	{
@@ -41,7 +41,7 @@ Win32::SMBIOS::~SMBIOS()
 	}
 }
 
-UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
+UOSInt IO::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -144,7 +144,7 @@ UOSInt Win32::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList)
 	return ret;
 }
 
-void Win32::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
+void IO::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
 {
 	UOSInt i = memList->GetCount();
 	while (i-- > 0)
@@ -154,7 +154,7 @@ void Win32::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) 
 	memList->Clear();
 }
 
-UTF8Char *Win32::SMBIOS::GetPlatformName(UTF8Char *buff) const
+UTF8Char *IO::SMBIOS::GetPlatformName(UTF8Char *buff) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -207,7 +207,7 @@ UTF8Char *Win32::SMBIOS::GetPlatformName(UTF8Char *buff) const
 	return ret;
 }
 
-UTF8Char *Win32::SMBIOS::GetPlatformSN(UTF8Char *buff) const
+UTF8Char *IO::SMBIOS::GetPlatformSN(UTF8Char *buff) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -323,7 +323,7 @@ UTF8Char *Win32::SMBIOS::GetPlatformSN(UTF8Char *buff) const
 	return ret;
 }
 
-Int32 Win32::SMBIOS::GetChassisType() const
+Int32 IO::SMBIOS::GetChassisType() const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
@@ -343,7 +343,7 @@ Int32 Win32::SMBIOS::GetChassisType() const
 	return ret;
 }
 
-Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
+Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 {
 	Text::CString carr[32];
 	const UInt8 *dataBuff;
@@ -4261,14 +4261,14 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 	return true;
 }
 
-IO::IStreamData *Win32::SMBIOS::CreateStreamData() const
+IO::IStreamData *IO::SMBIOS::CreateStreamData() const
 {
 	IO::IStreamData *ret;
 	NEW_CLASS(ret, IO::StmData::MemoryDataCopy(this->smbiosBuff, this->smbiosBuffSize));
 	return ret;
 }
 
-void Win32::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family)
+void IO::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family)
 {
 	switch (family)
 	{
@@ -4912,7 +4912,7 @@ void Win32::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family
 	}
 }
 
-void Win32::SMBIOS::GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type)
+void IO::SMBIOS::GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type)
 {
 	switch (type)
 	{

@@ -1796,6 +1796,8 @@ IO/SiLabSerialPort.h: ../../src/IO/SiLabSerialPort.cpp
 @SiLabSerialPort.o
 IO/SMake.h: ../../src/IO/SMake.cpp
 @SMake.o
+IO/SMBIOS.h: ../../src/IO/SMBIOS.cpp
+@SMBIOS.o
 IO/SNBDongle.h: ../../src/IO/SNBDongle.cpp
 @SNBDongle.o
 IO/SNBProtocol.h: ../../src/IO/SNBProtocol.cpp
@@ -4399,9 +4401,6 @@ UtilUI/TextSearchForm.h: ../../src/UtilUI/TextSearchForm.cpp
 UtilUI/TextViewerForm.h: ../../src/UtilUI/TextViewerForm.cpp
 @TextViewerForm.o
 
-Win32/SMBIOS.h: ../../src/Win32/SMBIOS.cpp
-@SMBIOS.o
-
 Core.o: ../../src/Core/Core.cpp
 HOTP.o: ../../src/Crypto/HOTP.cpp
 JasyptEncryptor.o: ../../src/Crypto/JasyptEncryptor.cpp
@@ -4677,6 +4676,7 @@ ServiceInfo.o: ../../src/IO/ServiceInfo.cpp
 SiLabDriver.o: ../../src/IO/SiLabDriver.cpp
 SiLabSerialPort.o: ../../src/IO/SiLabSerialPort.cpp
 SMake.o: ../../src/IO/SMake.cpp
+SMBIOS.o: ../../src/IO/SMBIOS.cpp
 SNBDongle.o: ../../src/IO/SNBDongle.cpp
 SNBProtocol.o: ../../src/IO/SNBProtocol.cpp
 SPackageFile.o: ../../src/IO/SPackageFile.cpp
@@ -5906,7 +5906,6 @@ TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp
 TextInputDialog.o: ../../src/UtilUI/TextInputDialog.cpp
 TextSearchForm.o: ../../src/UtilUI/TextSearchForm.cpp
 TextViewerForm.o: ../../src/UtilUI/TextViewerForm.cpp
-SMBIOS.o: ../../src/Win32/SMBIOS.cpp
 miniz.o: ../../ThirdParty/miniz/miniz.c
 miniz_tdef.o: ../../ThirdParty/miniz/miniz_tdef.c
 miniz_tinfl.o: ../../ThirdParty/miniz/miniz_tinfl.c

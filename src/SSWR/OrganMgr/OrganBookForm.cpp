@@ -1,8 +1,8 @@
 ﻿#include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/OrganMgr/OrganBookForm.h"
+#include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 SSWR::OrganMgr::BookArrayList::BookArrayList() : Data::SortableArrayList<OrganBook*>()
 {
@@ -139,7 +139,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime dt;
-	Win32::Clipboard::GetString(me->GetHandle(), &sb);
+	UI::Clipboard::GetString(me->GetHandle(), &sb);
 	if (sb.GetLength() > 0)
 	{
 		sb.Replace('\n', ' ');

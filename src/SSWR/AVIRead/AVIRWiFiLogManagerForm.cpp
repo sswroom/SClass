@@ -10,9 +10,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
+#include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
-#include "Win32/Clipboard.h"
 
 #define MAX_ROW 5000
 
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 	if (dblType == 1)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
+		if (UI::Clipboard::GetString(me->GetHandle(), &sb))
 		{
 			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToCString());
 			me->UpdateStatus();

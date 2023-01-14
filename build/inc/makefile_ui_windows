@@ -53,6 +53,9 @@ GDIEngineC.o: $(CLASSDIR)src/Media/GDIEngineC.cpp LIBS_GDIEngineC
 GUIImgParser.o: $(CLASSDIR)src/Parser/FileParser/GUIImgParserW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+Clipboard.o: $(CLASSDIR)src/UI/ClipboardW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 FileDialog.o: $(CLASSDIR)src/UI/FileDialogWin.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
@@ -150,9 +153,6 @@ GUIVSplitter.o: $(CLASSDIR)src/UI/GUIVSplitterWin.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 MessageDialog.o: $(CLASSDIR)src/UI/MessageDialogW.cpp
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
-
-Clipboard.o: $(CLASSDIR)src/Win32/ClipboardW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 
