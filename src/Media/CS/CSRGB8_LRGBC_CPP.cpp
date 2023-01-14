@@ -371,7 +371,7 @@ extern "C" void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 			while (i-- > 0)
 			{
 				*(Int64*)&dptr[0] = *(Int64*)&destPal[((v >> 7) & 1) * 8];
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				dptr += 8;
 			}
 		}
@@ -400,7 +400,7 @@ extern "C" void CSRGB8_LRGBC_ConvertP1_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 			while (i-- > 0)
 			{
 				*(UInt16*)&dptr[6] = aVal[(v >> 7) & 1];
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				dptr += 8;
 			}
 		}
@@ -436,7 +436,7 @@ extern "C" void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 			while (i-- > 0)
 			{
 				*(Int64*)&dptr[0] = *(Int64*)&destPal[(srcPtr[0] >> 6) * 8];
-				v = v << 2;
+				v = (UInt8)(v << 2);
 				dptr += 8;
 			}
 		}
@@ -465,7 +465,7 @@ extern "C" void CSRGB8_LRGBC_ConvertP2_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 			while (i-- > 0)
 			{
 				*(UInt16*)&dptr[6] = aVal[(v >> 7) & 1];
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				dptr += 8;
 			}
 		}
@@ -522,7 +522,7 @@ extern "C" void CSRGB8_LRGBC_ConvertP4_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 			while (i-- > 0)
 			{
 				*(UInt16*)&dptr[6] = aVal[(v >> 7) & 1];
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				dptr += 8;
 			}
 		}
@@ -572,7 +572,7 @@ extern "C" void CSRGB8_LRGBC_ConvertP8_A1(UInt8 *srcPtr, UInt8 *destPtr, OSInt w
 			while (i-- > 0)
 			{
 				*(UInt16*)&dptr[6] = aVal[(v >> 7) & 1];
-				v = v << 1;
+				v = (UInt8)(v << 1);
 				dptr += 8;
 			}
 		}

@@ -639,7 +639,7 @@ extern "C" void ImageUtil_ConvP1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 			{
 				*(Int32*)&destPtr[0] = *(Int32*)&pal[((v >> 7) & 1) << 2];
 				destPtr += 4;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 		srcPtr += sbpl;
@@ -674,7 +674,7 @@ extern "C" void ImageUtil_ConvP2_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 			{
 				*(Int32*)&destPtr[0] = *(Int32*)&pal[((v >> 6) & 3) << 2];
 				destPtr += 4;
-				v = v << 2;
+				v = (UInt8)(v << 2);
 
 			}
 		}
@@ -781,7 +781,7 @@ extern "C" void ImageUtil_ConvP1_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 			{
 				*(Int32*)&dptr[0] = *(Int32*)&pal[((v >> 7) & 1) << 2];
 				dptr += 4;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -809,7 +809,7 @@ extern "C" void ImageUtil_ConvP1_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 			{
 				dptr[3] = -((v >> 7) & 1);
 				dptr += 4;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -844,7 +844,7 @@ extern "C" void ImageUtil_ConvP2_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 			{
 				*(Int32*)&dptr[0] = *(Int32*)&pal[((v >> 6) & 3) << 2];
 				dptr += 4;
-				v = v << 2;
+				v = (UInt8)(v << 2);
 			}
 		}
 
@@ -873,7 +873,7 @@ extern "C" void ImageUtil_ConvP2_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 			{
 				dptr[3] = -((v >> 7) & 1);
 				dptr += 4;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -928,7 +928,7 @@ extern "C" void ImageUtil_ConvP4_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 			{
 				dptr[3] = -((v >> 7) & 1);
 				dptr += 4;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -976,7 +976,7 @@ extern "C" void ImageUtil_ConvP8_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 			{
 				dptr[3] = -((v >> 7) & 1);
 				dptr += 4;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -1551,7 +1551,7 @@ extern "C" void ImageUtil_ConvP1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 				destPtr[6] = cPtr[3];
 				destPtr[7] = cPtr[3];
 				destPtr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -1628,7 +1628,7 @@ extern "C" void ImageUtil_ConvP2_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 				destPtr[6] = cPtr[3];
 				destPtr[7] = cPtr[3];
 				destPtr += 8;
-				v = v << 2;
+				v = (UInt8)(v << 2);
 			}
 		}
 		srcPtr += sbpl;
@@ -1857,7 +1857,7 @@ extern "C" void ImageUtil_ConvP1_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 				dptr[6] = cPtr[3];
 				dptr[7] = cPtr[3];
 				dptr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -1894,7 +1894,7 @@ extern "C" void ImageUtil_ConvP1_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 				dptr[6] = a = -((v >> 7) & 1);
 				dptr[7] = a;
 				dptr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -1971,7 +1971,7 @@ extern "C" void ImageUtil_ConvP2_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 				dptr[6] = cPtr[3];
 				dptr[7] = cPtr[3];
 				dptr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -2008,7 +2008,7 @@ extern "C" void ImageUtil_ConvP2_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 				dptr[6] = a = -((v >> 7) & 1);
 				dptr[7] = a;
 				dptr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -2098,7 +2098,7 @@ extern "C" void ImageUtil_ConvP4_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 				dptr[6] = a = -((v >> 7) & 1);
 				dptr[7] = a;
 				dptr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
@@ -2165,7 +2165,7 @@ extern "C" void ImageUtil_ConvP8_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 				dptr[6] = a = -((v >> 7) & 1);
 				dptr[7] = a;
 				dptr += 8;
-				v = v << 1;
+				v = (UInt8)(v << 1);
 			}
 		}
 
