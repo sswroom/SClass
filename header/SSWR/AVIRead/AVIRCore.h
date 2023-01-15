@@ -5,6 +5,7 @@
 #include "IO/LogTool.h"
 #include "IO/SiLabDriver.h"
 #include "IO/VirtualIOPinMgr.h"
+#include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Map/MapManager.h"
 #include "Media/AudioDevice.h"
 #include "Media/ColorConv.h"
@@ -77,7 +78,7 @@ namespace SSWR
 
 			void OpenGSMModem(IO::Stream *modemPort);
 			IO::Stream *OpenStream(IO::StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
-			void OpenHex(IO::IStreamData *fd);
+			void OpenHex(IO::IStreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 
 			void BeginLoad();
 			void EndLoad();

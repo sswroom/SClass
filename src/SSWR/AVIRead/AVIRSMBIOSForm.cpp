@@ -1,12 +1,15 @@
 #include "Stdafx.h"
 #include "IO/SMBIOSUtil.h"
+#include "IO/FileAnalyse/SMBIOSFileAnalyse.h"
 #include "SSWR/AVIRead/AVIRSMBIOSForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSMBIOSForm *me = (SSWR::AVIRead::AVIRSMBIOSForm*)userObj;
 	IO::IStreamData *fd = me->smbios->CreateStreamData();
-	me->core->OpenHex(fd);
+	IO::FileAnalyse::SMBIOSFileAnalyse *fileAnalyse;
+	NEW_CLASS(fileAnalyse, IO::FileAnalyse::SMBIOSFileAnalyse(fd));
+	me->core->OpenHex(fd, fileAnalyse);
 	DEL_CLASS(fd);
 }
 

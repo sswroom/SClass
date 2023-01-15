@@ -419,14 +419,21 @@ Bool UI::GUIHexFileView::LoadFile(Text::CString fileName, Bool dynamicSize)
 	return true;
 }
 
-Bool UI::GUIHexFileView::LoadData(IO::IStreamData *data)
+Bool UI::GUIHexFileView::LoadData(IO::IStreamData *data, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
 	SDEL_CLASS(this->analyse);
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
 	SDEL_CLASS(this->frame);
 	this->fd = data;
-	this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
+	if (fileAnalyse)
+	{
+		this->analyse = fileAnalyse;
+	}
+	else
+	{
+		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(this->fd);
+	}
 	this->fileSize = this->fd->GetDataSize();
 	this->currOfst = 1;
 	this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));

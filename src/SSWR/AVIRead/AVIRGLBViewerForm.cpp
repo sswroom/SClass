@@ -97,7 +97,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(IO::IStreamData *jsonFD, IO::ISt
 	Text::JSText::JSONWellFormat(jsonBuff, jsonLen, 0, &sb);
 	this->txtJSON->SetText(sb.ToCString());
 	MemFree(jsonBuff);
-	this->hfvBinBuff->LoadData(binBuffFD);
+	this->hfvBinBuff->LoadData(binBuffFD, 0);
 	DEL_CLASS(jsonFD);
 	return true;
 }

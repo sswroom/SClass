@@ -1941,6 +1941,8 @@ IO/FileAnalyse/SBFrameDetail.h: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 @SBFrameDetail.o
 IO/FileAnalyse/SHPFileAnalyse.h: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
 @SHPFileAnalyse.o
+IO/FileAnalyse/SMBIOSFileAnalyse.h: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.cpp
+@SMBIOSFileAnalyse.o
 IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 @SPKFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
@@ -4749,6 +4751,7 @@ RAR5FileAnalyse.o: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 RIFFFileAnalyse.o: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
 SBFrameDetail.o: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
 SHPFileAnalyse.o: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
+SMBIOSFileAnalyse.o: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.cpp
 SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp

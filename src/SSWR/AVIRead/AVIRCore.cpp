@@ -145,12 +145,12 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(IO::StreamType *st, UI::GUIForm 
 	return retStm;
 }
 
-void SSWR::AVIRead::AVIRCore::OpenHex(IO::IStreamData *fd)
+void SSWR::AVIRead::AVIRCore::OpenHex(IO::IStreamData *fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, this));
 	InitForm(frm);
-	frm->SetData(fd);
+	frm->SetData(fd, fileAnalyse);
 	frm->Show();
 }
 
