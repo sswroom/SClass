@@ -482,16 +482,16 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 			if (dataBuff[1] >= 25)
 			{
 				sb->AppendC(UTF8STRC("UUID: {"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
+				sb->AppendHex32LC(ReadUInt32(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("-"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[12]));
+				sb->AppendHex16LC(ReadUInt16(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("-"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[14]));
+				sb->AppendHex16LC(ReadUInt16(&dataBuff[14]));
 				sb->AppendC(UTF8STRC("-"));
-				sb->AppendHex16(ReadMUInt16(&dataBuff[16]));
+				sb->AppendHex16LC(ReadMUInt16(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("-"));
-				sb->AppendHex32(ReadMUInt32(&dataBuff[18]));
-				sb->AppendHex16(ReadMUInt16(&dataBuff[22]));
+				sb->AppendHex32LC(ReadMUInt32(&dataBuff[18]));
+				sb->AppendHex16LC(ReadMUInt16(&dataBuff[22]));
 				sb->AppendC(UTF8STRC("}\r\n"));
 				sb->AppendC(UTF8STRC("Wake-up Type: "));
 				switch (dataBuff[24])
@@ -978,7 +978,7 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Family: "));
-				GetProcessorFamily(sb, dataBuff[6]);
+				sb->Append(GetProcessorFamily(dataBuff[6]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Manufacturer: "));
 				if (carr[dataBuff[7]].leng > 0) sb->Append(carr[dataBuff[7]]);
@@ -1243,7 +1243,7 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 			if (dataBuff[1] >= 48)
 			{
 				sb->AppendC(UTF8STRC("Processor Family 2: "));
-				GetProcessorFamily(sb, ReadInt16(&dataBuff[40]));
+				sb->Append(GetProcessorFamily(ReadUInt16(&dataBuff[40])));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Core Count 2: "));
 				sb->AppendI16(ReadInt16(&dataBuff[42]));
@@ -1506,134 +1506,16 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 				if (carr[dataBuff[4]].leng > 0) sb->Append(carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Internal Connector Type: "));
-				GetConnectorType(sb, dataBuff[5]);
+				sb->Append(GetConnectorType(dataBuff[5]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("External Reference Designation: "));
 				if (carr[dataBuff[6]].leng > 0) sb->Append(carr[dataBuff[6]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("External Connector Type: "));
-				GetConnectorType(sb, dataBuff[7]);
+				sb->Append(GetConnectorType(dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Port Type: "));
-				switch (dataBuff[8])
-				{
-				case 0:
-					sb->AppendC(UTF8STRC("None"));
-					break;
-				case 1:
-					sb->AppendC(UTF8STRC("Parallel Port XT/AT Compatible"));
-					break;
-				case 2:
-					sb->AppendC(UTF8STRC("Parallel Port PS/2"));
-					break;
-				case 3:
-					sb->AppendC(UTF8STRC("Parallel Port ECP"));
-					break;
-				case 4:
-					sb->AppendC(UTF8STRC("Parallel Port EPP"));
-					break;
-				case 5:
-					sb->AppendC(UTF8STRC("Parallel Port ECP/EPP"));
-					break;
-				case 6:
-					sb->AppendC(UTF8STRC("Serial Port XT/AT Compatible"));
-					break;
-				case 7:
-					sb->AppendC(UTF8STRC("Serial Port 16450 Compatible"));
-					break;
-				case 8:
-					sb->AppendC(UTF8STRC("Serial Port 16550 Compatible"));
-					break;
-				case 9:
-					sb->AppendC(UTF8STRC("Serial Port 16550A Compatible"));
-					break;
-				case 10:
-					sb->AppendC(UTF8STRC("SCSI Port"));
-					break;
-				case 11:
-					sb->AppendC(UTF8STRC("MIDI Port"));
-					break;
-				case 12:
-					sb->AppendC(UTF8STRC("Joy Stick Port"));
-					break;
-				case 13:
-					sb->AppendC(UTF8STRC("Keyboard Port"));
-					break;
-				case 14:
-					sb->AppendC(UTF8STRC("Mouse Port"));
-					break;
-				case 15:
-					sb->AppendC(UTF8STRC("SSA SCSI"));
-					break;
-				case 16:
-					sb->AppendC(UTF8STRC("USB"));
-					break;
-				case 17:
-					sb->AppendC(UTF8STRC("FireWire (IEEE P1394)"));
-					break;
-				case 18:
-					sb->AppendC(UTF8STRC("PCMCIA Type I2"));
-					break;
-				case 19:
-					sb->AppendC(UTF8STRC("PCMCIA Type II"));
-					break;
-				case 20:
-					sb->AppendC(UTF8STRC("PCMCIA Type III"));
-					break;
-				case 21:
-					sb->AppendC(UTF8STRC("Cardbus"));
-					break;
-				case 22:
-					sb->AppendC(UTF8STRC("Access Bus Port"));
-					break;
-				case 23:
-					sb->AppendC(UTF8STRC("SCSI II"));
-					break;
-				case 24:
-					sb->AppendC(UTF8STRC("SCSI Wide"));
-					break;
-				case 25:
-					sb->AppendC(UTF8STRC("PC-98"));
-					break;
-				case 26:
-					sb->AppendC(UTF8STRC("PC-98-Hireso"));
-					break;
-				case 27:
-					sb->AppendC(UTF8STRC("PC-H98"));
-					break;
-				case 28:
-					sb->AppendC(UTF8STRC("Video Port"));
-					break;
-				case 29:
-					sb->AppendC(UTF8STRC("Audio Port"));
-					break;
-				case 30:
-					sb->AppendC(UTF8STRC("Modem Port"));
-					break;
-				case 31:
-					sb->AppendC(UTF8STRC("Network Port"));
-					break;
-				case 32:
-					sb->AppendC(UTF8STRC("SATA"));
-					break;
-				case 33:
-					sb->AppendC(UTF8STRC("SAS"));
-					break;
-				case 160:
-					sb->AppendC(UTF8STRC("8251 Compatible"));
-					break;
-				case 161:
-					sb->AppendC(UTF8STRC("8251 FIFO Compatible"));
-					break;
-				case 255:
-					sb->AppendC(UTF8STRC("Other"));
-					break;
-				default:
-					sb->AppendC(UTF8STRC("Undefined ("));
-					sb->AppendU16(dataBuff[8]);
-					sb->AppendC(UTF8STRC(")"));
-					break;
-				}
+				sb->Append(GetPortType(dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -3604,41 +3486,7 @@ Bool IO::SMBIOS::ToString(Text::StringBuilderUTF8 *sb) const
 			if (dataBuff[1] >= 11)
 			{
 				sb->AppendC(UTF8STRC("Boot Status: "));
-				switch (dataBuff[10])
-				{
-				case 0:
-					sb->AppendC(UTF8STRC("No errors detected"));
-					break;
-				case 1:
-					sb->AppendC(UTF8STRC("No bootable media"));
-					break;
-				case 2:
-					sb->AppendC(UTF8STRC("\"normal\" operating system failed to load"));
-					break;
-				case 3:
-					sb->AppendC(UTF8STRC("Firmware-detected hardware failure, including \"unknown\" failure types"));
-					break;
-				case 4:
-					sb->AppendC(UTF8STRC("Operating system-detected hardware failure"));
-					break;
-				case 5:
-					sb->AppendC(UTF8STRC("User-requested boot, usually through a keystroke"));
-					break;
-				case 6:
-					sb->AppendC(UTF8STRC("System security violation"));
-					break;
-				case 7:
-					sb->AppendC(UTF8STRC("Previously-requested image"));
-					break;
-				case 8:
-					sb->AppendC(UTF8STRC("System watchdog timer expired, causing the system to reboot"));
-					break;
-				default:
-					sb->AppendC(UTF8STRC("Undefined ("));
-					sb->AppendU16(dataBuff[10]);
-					sb->AppendC(UTF8STRC(")"));
-					break;
-				}
+				sb->Append(GetSystemBootStatus(dataBuff[10]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -4268,781 +4116,634 @@ IO::IStreamData *IO::SMBIOS::CreateStreamData() const
 	return ret;
 }
 
-void IO::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family)
+Text::CString IO::SMBIOS::GetProcessorFamily(UInt32 family)
 {
 	switch (family)
 	{
 	case 1:
-		sb->AppendC(UTF8STRC("Other"));
-		break;
+		return CSTR("Other");
 	case 2:
-		sb->AppendC(UTF8STRC("Unknwon"));
-		break;
+		return CSTR("Unknwon");
 	case 3:
-		sb->AppendC(UTF8STRC("8086"));
-		break;
+		return CSTR("8086");
 	case 4:
-		sb->AppendC(UTF8STRC("80286"));
-		break;
+		return CSTR("80286");
 	case 5:
-		sb->AppendC(UTF8STRC("Intel386 processor"));
-		break;
+		return CSTR("Intel386 processor");
 	case 6:
-		sb->AppendC(UTF8STRC("Intel486 processor"));
-		break;
+		return CSTR("Intel486 processor");
 	case 7:
-		sb->AppendC(UTF8STRC("8087"));
-		break;
+		return CSTR("8087");
 	case 8:
-		sb->AppendC(UTF8STRC("80287"));
-		break;
+		return CSTR("80287");
 	case 9:
-		sb->AppendC(UTF8STRC("80387"));
-		break;
+		return CSTR("80387");
 	case 10:
-		sb->AppendC(UTF8STRC("80487"));
-		break;
+		return CSTR("80487");
 	case 11:
-		sb->AppendC(UTF8STRC("Intel Pentium processor"));
-		break;
+		return CSTR("Intel Pentium processor");
 	case 12:
-		sb->AppendC(UTF8STRC("Pentium Pro processor"));
-		break;
+		return CSTR("Pentium Pro processor");
 	case 13:
-		sb->AppendC(UTF8STRC("Pentium II processor"));
-		break;
+		return CSTR("Pentium II processor");
 	case 14:
-		sb->AppendC(UTF8STRC("Pentium processor with MMX technology"));
-		break;
+		return CSTR("Pentium processor with MMX technology");
 	case 15:
-		sb->AppendC(UTF8STRC("Intel Celeron processor"));
-		break;
+		return CSTR("Intel Celeron processor");
 	case 16:
-		sb->AppendC(UTF8STRC("Pentium II Xeon processor"));
-		break;
+		return CSTR("Pentium II Xeon processor");
 	case 17:
-		sb->AppendC(UTF8STRC("Pentium III processor"));
-		break;
+		return CSTR("Pentium III processor");
 	case 18:
-		sb->AppendC(UTF8STRC("M1 Family"));
-		break;
+		return CSTR("M1 Family");
 	case 19:
-		sb->AppendC(UTF8STRC("M2 Family"));
-		break;
+		return CSTR("M2 Family");
 	case 20:
-		sb->AppendC(UTF8STRC("Intel Celeron M processor"));
-		break;
+		return CSTR("Intel Celeron M processor");
 	case 21:
-		sb->AppendC(UTF8STRC("Intel Pentium 4 HT processor"));
-		break;
+		return CSTR("Intel Pentium 4 HT processor");
 	case 24:
-		sb->AppendC(UTF8STRC("AMD Duron Processor Family"));
-		break;
+		return CSTR("AMD Duron Processor Family");
 	case 25:
-		sb->AppendC(UTF8STRC("K5 Family"));
-		break;
+		return CSTR("K5 Family");
 	case 26:
-		sb->AppendC(UTF8STRC("K6 Family"));
-		break;
+		return CSTR("K6 Family");
 	case 27:
-		sb->AppendC(UTF8STRC("K6-2"));
-		break;
+		return CSTR("K6-2");
 	case 28:
-		sb->AppendC(UTF8STRC("K6-3"));
-		break;
+		return CSTR("K6-3");
 	case 29:
-		sb->AppendC(UTF8STRC("AMD Athlon Processor Family"));
-		break;
+		return CSTR("AMD Athlon Processor Family");
 	case 30:
-		sb->AppendC(UTF8STRC("AMD29000 Family"));
-		break;
+		return CSTR("AMD29000 Family");
 	case 31:
-		sb->AppendC(UTF8STRC("K6-2+"));
-		break;
+		return CSTR("K6-2+");
 	case 32:
-		sb->AppendC(UTF8STRC("Power PC Family"));
-		break;
+		return CSTR("Power PC Family");
 	case 33:
-		sb->AppendC(UTF8STRC("Power PC 601"));
-		break;
+		return CSTR("Power PC 601");
 	case 34:
-		sb->AppendC(UTF8STRC("Power PC 603"));
-		break;
+		return CSTR("Power PC 603");
 	case 35:
-		sb->AppendC(UTF8STRC("Power PC 603+"));
-		break;
+		return CSTR("Power PC 603+");
 	case 36:
-		sb->AppendC(UTF8STRC("Power PC 604"));
-		break;
+		return CSTR("Power PC 604");
 	case 37:
-		sb->AppendC(UTF8STRC("Power PC 620"));
-		break;
+		return CSTR("Power PC 620");
 	case 38:
-		sb->AppendC(UTF8STRC("Power PC x704"));
-		break;
+		return CSTR("Power PC x704");
 	case 39:
-		sb->AppendC(UTF8STRC("Power PC 750"));
-		break;
+		return CSTR("Power PC 750");
 	case 40:
-		sb->AppendC(UTF8STRC("Intel Core Duo processor"));
-		break;
+		return CSTR("Intel Core Duo processor");
 	case 41:
-		sb->AppendC(UTF8STRC("Intel Core Duo mobile processor"));
-		break;
+		return CSTR("Intel Core Duo mobile processor");
 	case 42:
-		sb->AppendC(UTF8STRC("Intel Core Solo mobile processor"));
-		break;
+		return CSTR("Intel Core Solo mobile processor");
 	case 43:
-		sb->AppendC(UTF8STRC("Intel Atom processor"));
-		break;
+		return CSTR("Intel Atom processor");
 	case 44:
-		sb->AppendC(UTF8STRC("Intel Core M processor"));
-		break;
+		return CSTR("Intel Core M processor");
 	case 45:
-		sb->AppendC(UTF8STRC("Intel Core m3 processor"));
-		break;
+		return CSTR("Intel Core m3 processor");
 	case 46:
-		sb->AppendC(UTF8STRC("Intel Core m5 processor"));
-		break;
+		return CSTR("Intel Core m5 processor");
 	case 47:
-		sb->AppendC(UTF8STRC("Intel Core m7 processor"));
-		break;
+		return CSTR("Intel Core m7 processor");
 	case 48:
-		sb->AppendC(UTF8STRC("Alpha Family"));
-		break;
+		return CSTR("Alpha Family");
 	case 49:
-		sb->AppendC(UTF8STRC("Alpha 21064"));
-		break;
+		return CSTR("Alpha 21064");
 	case 50:
-		sb->AppendC(UTF8STRC("Alpha 21066"));
-		break;
+		return CSTR("Alpha 21066");
 	case 51:
-		sb->AppendC(UTF8STRC("Alpha 21164"));
-		break;
+		return CSTR("Alpha 21164");
 	case 52:
-		sb->AppendC(UTF8STRC("Alpha 21164PC"));
-		break;
+		return CSTR("Alpha 21164PC");
 	case 53:
-		sb->AppendC(UTF8STRC("Alpha 21164a"));
-		break;
+		return CSTR("Alpha 21164a");
 	case 54:
-		sb->AppendC(UTF8STRC("Alpha 21264"));
-		break;
+		return CSTR("Alpha 21264");
 	case 55:
-		sb->AppendC(UTF8STRC("Alpha 21364"));
-		break;
+		return CSTR("Alpha 21364");
 	case 56:
-		sb->AppendC(UTF8STRC("AMD Turion II Ultra Dual-Core Mobile M Processor Family"));
-		break;
+		return CSTR("AMD Turion II Ultra Dual-Core Mobile M Processor Family");
 	case 57:
-		sb->AppendC(UTF8STRC("AMD Turion II Dual-Core Mobile M Processor Family"));
-		break;
+		return CSTR("AMD Turion II Dual-Core Mobile M Processor Family");
 	case 58:
-		sb->AppendC(UTF8STRC("AMD Athlon II Dual-Core M Processor Family"));
-		break;
+		return CSTR("AMD Athlon II Dual-Core M Processor Family");
 	case 59:
-		sb->AppendC(UTF8STRC("AMD Opteron 6100 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 6100 Series Processor");
 	case 60:
-		sb->AppendC(UTF8STRC("AMD Opteron 4100 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 4100 Series Processor");
 	case 61:
-		sb->AppendC(UTF8STRC("AMD Opteron 6200 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 6200 Series Processor");
 	case 62:
-		sb->AppendC(UTF8STRC("AMD Opteron 4200 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 4200 Series Processor");
 	case 63:
-		sb->AppendC(UTF8STRC("AMD FX Series Processor"));
-		break;
+		return CSTR("AMD FX Series Processor");
 	case 64:
-		sb->AppendC(UTF8STRC("MIPS Family"));
-		break;
+		return CSTR("MIPS Family");
 	case 65:
-		sb->AppendC(UTF8STRC("MIPS R4000"));
-		break;
+		return CSTR("MIPS R4000");
 	case 66:
-		sb->AppendC(UTF8STRC("MIPS R4200"));
-		break;
+		return CSTR("MIPS R4200");
 	case 67:
-		sb->AppendC(UTF8STRC("MIPS R4400"));
-		break;
+		return CSTR("MIPS R4400");
 	case 68:
-		sb->AppendC(UTF8STRC("MIPS R4600"));
-		break;
+		return CSTR("MIPS R4600");
 	case 69:
-		sb->AppendC(UTF8STRC("MIPS R10000"));
-		break;
+		return CSTR("MIPS R10000");
 	case 70:
-		sb->AppendC(UTF8STRC("AMD C-Series Processor"));
-		break;
+		return CSTR("AMD C-Series Processor");
 	case 71:
-		sb->AppendC(UTF8STRC("AMD E-Series Processor"));
-		break;
+		return CSTR("AMD E-Series Processor");
 	case 72:
-		sb->AppendC(UTF8STRC("AMD A-Series Processor"));
-		break;
+		return CSTR("AMD A-Series Processor");
 	case 73:
-		sb->AppendC(UTF8STRC("AMD G-Series Processor"));
-		break;
+		return CSTR("AMD G-Series Processor");
 	case 74:
-		sb->AppendC(UTF8STRC("AMD Z-Series Processor"));
-		break;
+		return CSTR("AMD Z-Series Processor");
 	case 75:
-		sb->AppendC(UTF8STRC("AMD R-Series Processor"));
-		break;
+		return CSTR("AMD R-Series Processor");
 	case 76:
-		sb->AppendC(UTF8STRC("AMD Opteron 4300 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 4300 Series Processor");
 	case 77:
-		sb->AppendC(UTF8STRC("AMD Opteron 6300 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 6300 Series Processor");
 	case 78:
-		sb->AppendC(UTF8STRC("AMD Opteron 3300 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 3300 Series Processor");
 	case 79:
-		sb->AppendC(UTF8STRC("AMD FirePro Series Processor"));
-		break;
+		return CSTR("AMD FirePro Series Processor");
 	case 80:
-		sb->AppendC(UTF8STRC("SPARC Family"));
-		break;
+		return CSTR("SPARC Family");
 	case 81:
-		sb->AppendC(UTF8STRC("SuperSPARC"));
-		break;
+		return CSTR("SuperSPARC");
 	case 82:
-		sb->AppendC(UTF8STRC("microSPARC II"));
-		break;
+		return CSTR("microSPARC II");
 	case 83:
-		sb->AppendC(UTF8STRC("microSPARC IIep"));
-		break;
+		return CSTR("microSPARC IIep");
 	case 84:
-		sb->AppendC(UTF8STRC("UltraSPARC"));
-		break;
+		return CSTR("UltraSPARC");
 	case 85:
-		sb->AppendC(UTF8STRC("UltraSPARC II"));
-		break;
+		return CSTR("UltraSPARC II");
 	case 86:
-		sb->AppendC(UTF8STRC("UltraSPARC Iii"));
-		break;
+		return CSTR("UltraSPARC Iii");
 	case 87:
-		sb->AppendC(UTF8STRC("UltraSPARC III"));
-		break;
+		return CSTR("UltraSPARC III");
 	case 88:
-		sb->AppendC(UTF8STRC("UltraSPARC IIIi"));
-		break;
+		return CSTR("UltraSPARC IIIi");
 	case 96:
-		sb->AppendC(UTF8STRC("68040 Family"));
-		break;
+		return CSTR("68040 Family");
 	case 97:
-		sb->AppendC(UTF8STRC("68xxx"));
-		break;
+		return CSTR("68xxx");
 	case 98:
-		sb->AppendC(UTF8STRC("68000"));
-		break;
+		return CSTR("68000");
 	case 99:
-		sb->AppendC(UTF8STRC("68010"));
-		break;
+		return CSTR("68010");
 	case 100:
-		sb->AppendC(UTF8STRC("68020"));
-		break;
+		return CSTR("68020");
 	case 101:
-		sb->AppendC(UTF8STRC("68030"));
-		break;
+		return CSTR("68030");
 	case 102:
-		sb->AppendC(UTF8STRC("AMD Athlon X4 Quad-Core Processor Family"));
-		break;
+		return CSTR("AMD Athlon X4 Quad-Core Processor Family");
 	case 103:
-		sb->AppendC(UTF8STRC("AMD Opteron X1000 Series Processor"));
-		break;
+		return CSTR("AMD Opteron X1000 Series Processor");
 	case 104:
-		sb->AppendC(UTF8STRC("AMD Opteron X2000 Series Processor"));
-		break;
+		return CSTR("AMD Opteron X2000 Series Processor");
 	case 105:
-		sb->AppendC(UTF8STRC("AMD Opteron A-Series Processor"));
-		break;
+		return CSTR("AMD Opteron A-Series Processor");
 	case 106:
-		sb->AppendC(UTF8STRC("AMD Opteron X3000 Series APU"));
-		break;
+		return CSTR("AMD Opteron X3000 Series APU");
 	case 107:
-		sb->AppendC(UTF8STRC("AMD Zen Processor Family"));
-		break;
+		return CSTR("AMD Zen Processor Family");
 	case 112:
-		sb->AppendC(UTF8STRC("Hobbit Family"));
-		break;
+		return CSTR("Hobbit Family");
 	case 120:
-		sb->AppendC(UTF8STRC("Crusoe TM5000 Family"));
-		break;
+		return CSTR("Crusoe TM5000 Family");
 	case 121:
-		sb->AppendC(UTF8STRC("Crusoe TM3000 Family"));
-		break;
+		return CSTR("Crusoe TM3000 Family");
 	case 122:
-		sb->AppendC(UTF8STRC("Efficeon TM8000 Family"));
-		break;
+		return CSTR("Efficeon TM8000 Family");
 	case 128:
-		sb->AppendC(UTF8STRC("Weitek"));
-		break;
+		return CSTR("Weitek");
 	case 130:
-		sb->AppendC(UTF8STRC("Itanium processor"));
-		break;
+		return CSTR("Itanium processor");
 	case 131:
-		sb->AppendC(UTF8STRC("AMD Athlon 64 Processor Family"));
-		break;
+		return CSTR("AMD Athlon 64 Processor Family");
 	case 132:
-		sb->AppendC(UTF8STRC("AMD Opteron Processor Family"));
-		break;
+		return CSTR("AMD Opteron Processor Family");
 	case 133:
-		sb->AppendC(UTF8STRC("AMD Sempron Processor Family"));
-		break;
+		return CSTR("AMD Sempron Processor Family");
 	case 134:
-		sb->AppendC(UTF8STRC("AMD Turion 64 Mobile Technology"));
-		break;
+		return CSTR("AMD Turion 64 Mobile Technology");
 	case 135:
-		sb->AppendC(UTF8STRC("Dual-Core AMD Operton Processor Family"));
-		break;
+		return CSTR("Dual-Core AMD Operton Processor Family");
 	case 136:
-		sb->AppendC(UTF8STRC("AMD Athlon 64 X2 Dual-Core Processor Family"));
-		break;
+		return CSTR("AMD Athlon 64 X2 Dual-Core Processor Family");
 	case 137:
-		sb->AppendC(UTF8STRC("AMD Turion 64 X2 Mobile Technology"));
-		break;
+		return CSTR("AMD Turion 64 X2 Mobile Technology");
 	case 138:
-		sb->AppendC(UTF8STRC("Quad-Core AMD Opteron Processor Family"));
-		break;
+		return CSTR("Quad-Core AMD Opteron Processor Family");
 	case 139:
-		sb->AppendC(UTF8STRC("Third-Generation AMD Opteron Processor Family"));
-		break;
+		return CSTR("Third-Generation AMD Opteron Processor Family");
 	case 140:
-		sb->AppendC(UTF8STRC("AMD Phenom FX Quad-Core Processor Family"));
-		break;
+		return CSTR("AMD Phenom FX Quad-Core Processor Family");
 	case 141:
-		sb->AppendC(UTF8STRC("AMD Phenom X4 Quad-Core Processor Family"));
-		break;
+		return CSTR("AMD Phenom X4 Quad-Core Processor Family");
 	case 142:
-		sb->AppendC(UTF8STRC("AMD Phenom X2 Dual-Core Processor Family"));
-		break;
+		return CSTR("AMD Phenom X2 Dual-Core Processor Family");
 	case 143:
-		sb->AppendC(UTF8STRC("AMD Athlon X2 Dual-Core Processor Family"));
-		break;
+		return CSTR("AMD Athlon X2 Dual-Core Processor Family");
 	case 144:
-		sb->AppendC(UTF8STRC("PA-RISC Family"));
-		break;
+		return CSTR("PA-RISC Family");
 	case 145:
-		sb->AppendC(UTF8STRC("PA-RISC 8500"));
-		break;
+		return CSTR("PA-RISC 8500");
 	case 146:
-		sb->AppendC(UTF8STRC("PA-RISC 8000"));
-		break;
+		return CSTR("PA-RISC 8000");
 	case 147:
-		sb->AppendC(UTF8STRC("PA-RISC 7300LC"));
-		break;
+		return CSTR("PA-RISC 7300LC");
 	case 148:
-		sb->AppendC(UTF8STRC("PA-RISC 7200"));
-		break;
+		return CSTR("PA-RISC 7200");
 	case 149:
-		sb->AppendC(UTF8STRC("PA-RISC 7100LC"));
-		break;
+		return CSTR("PA-RISC 7100LC");
 	case 150:
-		sb->AppendC(UTF8STRC("PA-RISC 7100"));
-		break;
+		return CSTR("PA-RISC 7100");
 	case 160:
-		sb->AppendC(UTF8STRC("V30 Family"));
-		break;
+		return CSTR("V30 Family");
 	case 161:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 3200 Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 3200 Series");
 	case 162:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 3000 Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 3000 Series");
 	case 163:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 5300 Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 5300 Series");
 	case 164:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 5100 Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 5100 Series");
 	case 165:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 5000 Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 5000 Series");
 	case 166:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor LV"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor LV");
 	case 167:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor ULV"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor ULV");
 	case 168:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 7100 Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 7100 Series");
 	case 169:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 5400 Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 5400 Series");
 	case 170:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor");
 	case 171:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 5200 Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 5200 Series");
 	case 172:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 7200 Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 7200 Series");
 	case 173:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 7300 Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 7300 Series");
 	case 174:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 7400 Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 7400 Series");
 	case 175:
-		sb->AppendC(UTF8STRC("Multi-Core Intel Xeon processor 7400 Series"));
-		break;
+		return CSTR("Multi-Core Intel Xeon processor 7400 Series");
 	case 176:
-		sb->AppendC(UTF8STRC("Pentium III Xeon processor"));
-		break;
+		return CSTR("Pentium III Xeon processor");
 	case 177:
-		sb->AppendC(UTF8STRC("Pentium III Processor with Intel SpeedStep Technology"));
-		break;
+		return CSTR("Pentium III Processor with Intel SpeedStep Technology");
 	case 178:
-		sb->AppendC(UTF8STRC("Pentium 4 Processor"));
-		break;
+		return CSTR("Pentium 4 Processor");
 	case 179:
-		sb->AppendC(UTF8STRC("Intel Xeon processor"));
-		break;
+		return CSTR("Intel Xeon processor");
 	case 180:
-		sb->AppendC(UTF8STRC("AS400 Family"));
-		break;
+		return CSTR("AS400 Family");
 	case 181:
-		sb->AppendC(UTF8STRC("Intel Xeon processor MP"));
-		break;
+		return CSTR("Intel Xeon processor MP");
 	case 182:
-		sb->AppendC(UTF8STRC("AMD Athlon XP Processor Family"));
-		break;
+		return CSTR("AMD Athlon XP Processor Family");
 	case 183:
-		sb->AppendC(UTF8STRC("AMD Athlon MP Processor Family"));
-		break;
+		return CSTR("AMD Athlon MP Processor Family");
 	case 184:
-		sb->AppendC(UTF8STRC("Intel Itanium 2 processor"));
-		break;
+		return CSTR("Intel Itanium 2 processor");
 	case 185:
-		sb->AppendC(UTF8STRC("Intel Pentium M processor"));
-		break;
+		return CSTR("Intel Pentium M processor");
 	case 186:
-		sb->AppendC(UTF8STRC("Intel Celeron D processor"));
-		break;
+		return CSTR("Intel Celeron D processor");
 	case 187:
-		sb->AppendC(UTF8STRC("Intel Pentium D processor"));
-		break;
+		return CSTR("Intel Pentium D processor");
 	case 188:
-		sb->AppendC(UTF8STRC("Intel Pentium Processor Extreme Edition"));
-		break;
+		return CSTR("Intel Pentium Processor Extreme Edition");
 	case 189:
-		sb->AppendC(UTF8STRC("Intel Core Solo processor"));
-		break;
+		return CSTR("Intel Core Solo processor");
 	case 191:
-		sb->AppendC(UTF8STRC("Intel Core 2 Duo processor"));
-		break;
+		return CSTR("Intel Core 2 Duo processor");
 	case 192:
-		sb->AppendC(UTF8STRC("Intel Core 2 Solo processor"));
-		break;
+		return CSTR("Intel Core 2 Solo processor");
 	case 193:
-		sb->AppendC(UTF8STRC("Intel Core 2 Extreme processor"));
-		break;
+		return CSTR("Intel Core 2 Extreme processor");
 	case 194:
-		sb->AppendC(UTF8STRC("Intel Core 2 Quad processor"));
-		break;
+		return CSTR("Intel Core 2 Quad processor");
 	case 195:
-		sb->AppendC(UTF8STRC("Intel Core 2 Extreme mobile processor"));
-		break;
+		return CSTR("Intel Core 2 Extreme mobile processor");
 	case 196:
-		sb->AppendC(UTF8STRC("Intel Core 2 Duo mobile processor"));
-		break;
+		return CSTR("Intel Core 2 Duo mobile processor");
 	case 197:
-		sb->AppendC(UTF8STRC("Intel Core 2 Solo mobile processor"));
-		break;
+		return CSTR("Intel Core 2 Solo mobile processor");
 	case 198:
-		sb->AppendC(UTF8STRC("Intel Core i7 processor"));
-		break;
+		return CSTR("Intel Core i7 processor");
 	case 199:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Celeron processor"));
-		break;
+		return CSTR("Dual-Core Intel Celeron processor");
 	case 200:
-		sb->AppendC(UTF8STRC("IBM390 Family"));
-		break;
+		return CSTR("IBM390 Family");
 	case 201:
-		sb->AppendC(UTF8STRC("G4"));
-		break;
+		return CSTR("G4");
 	case 202:
-		sb->AppendC(UTF8STRC("G5"));
-		break;
+		return CSTR("G5");
 	case 203:
-		sb->AppendC(UTF8STRC("ESA/390 G6"));
-		break;
+		return CSTR("ESA/390 G6");
 	case 204:
-		sb->AppendC(UTF8STRC("z/Architecture base"));
-		break;
+		return CSTR("z/Architecture base");
 	case 205:
-		sb->AppendC(UTF8STRC("Intel Core i5 processor"));
-		break;
+		return CSTR("Intel Core i5 processor");
 	case 206:
-		sb->AppendC(UTF8STRC("Intel Core i3 processor"));
-		break;
+		return CSTR("Intel Core i3 processor");
 	case 210:
-		sb->AppendC(UTF8STRC("VIA C7-M Processor Family"));
-		break;
+		return CSTR("VIA C7-M Processor Family");
 	case 211:
-		sb->AppendC(UTF8STRC("VIA C7-D Processor Family"));
-		break;
+		return CSTR("VIA C7-D Processor Family");
 	case 212:
-		sb->AppendC(UTF8STRC("VIA C7 Processor Family"));
-		break;
+		return CSTR("VIA C7 Processor Family");
 	case 213:
-		sb->AppendC(UTF8STRC("VIA Eden Processor Family"));
-		break;
+		return CSTR("VIA Eden Processor Family");
 	case 214:
-		sb->AppendC(UTF8STRC("Multi-Core Intel Xeon processor"));
-		break;
+		return CSTR("Multi-Core Intel Xeon processor");
 	case 215:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 3xxx Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 3xxx Series");
 	case 216:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 3xxx Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 3xxx Series");
 	case 217:
-		sb->AppendC(UTF8STRC("VIA Nano Processor Family"));
-		break;
+		return CSTR("VIA Nano Processor Family");
 	case 218:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 5xxx Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 5xxx Series");
 	case 219:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 5xxx Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 5xxx Series");
 	case 221:
-		sb->AppendC(UTF8STRC("Dual-Core Intel Xeon processor 7xxx Series"));
-		break;
+		return CSTR("Dual-Core Intel Xeon processor 7xxx Series");
 	case 222:
-		sb->AppendC(UTF8STRC("Quad-Core Intel Xeon processor 7xxx Series"));
-		break;
+		return CSTR("Quad-Core Intel Xeon processor 7xxx Series");
 	case 223:
-		sb->AppendC(UTF8STRC("Multi-Core Intel Xeon processor 7xxx Series"));
-		break;
+		return CSTR("Multi-Core Intel Xeon processor 7xxx Series");
 	case 224:
-		sb->AppendC(UTF8STRC("Multi-Core Intel Xeon processor 3400 Series"));
-		break;
+		return CSTR("Multi-Core Intel Xeon processor 3400 Series");
 	case 228:
-		sb->AppendC(UTF8STRC("AMD Opteron 3000 Series Processor"));
-		break;
+		return CSTR("AMD Opteron 3000 Series Processor");
 	case 229:
-		sb->AppendC(UTF8STRC("AMD Sempron II Processor"));
-		break;
+		return CSTR("AMD Sempron II Processor");
 	case 230:
-		sb->AppendC(UTF8STRC("Embedded AMD Opteron Quad-Core Processor Family"));
-		break;
+		return CSTR("Embedded AMD Opteron Quad-Core Processor Family");
 	case 231:
-		sb->AppendC(UTF8STRC("AMD Phenom Triple-Core Processor Family"));
-		break;
+		return CSTR("AMD Phenom Triple-Core Processor Family");
 	case 232:
-		sb->AppendC(UTF8STRC("AMD Turion Ultra Dual-Core Mobile Processor Family"));
-		break;
+		return CSTR("AMD Turion Ultra Dual-Core Mobile Processor Family");
 	case 233:
-		sb->AppendC(UTF8STRC("AMD Turion Dual-Core Mobile Processor Family"));
-		break;
+		return CSTR("AMD Turion Dual-Core Mobile Processor Family");
 	case 234:
-		sb->AppendC(UTF8STRC("AMD Athlon Dual-Core Processor Family"));
-		break;
+		return CSTR("AMD Athlon Dual-Core Processor Family");
 	case 235:
-		sb->AppendC(UTF8STRC("AMD Sempron SI Processor Family"));
-		break;
+		return CSTR("AMD Sempron SI Processor Family");
 	case 236:
-		sb->AppendC(UTF8STRC("AMD Phenom II Processor Family"));
-		break;
+		return CSTR("AMD Phenom II Processor Family");
 	case 237:
-		sb->AppendC(UTF8STRC("AMD Athlon II Processor Family"));
-		break;
+		return CSTR("AMD Athlon II Processor Family");
 	case 238:
-		sb->AppendC(UTF8STRC("Six-Core AMD Opteron Processor Family"));
-		break;
+		return CSTR("Six-Core AMD Opteron Processor Family");
 	case 239:
-		sb->AppendC(UTF8STRC("AMD Sempron M Processor Family"));
-		break;
+		return CSTR("AMD Sempron M Processor Family");
 	case 250:
-		sb->AppendC(UTF8STRC("i860"));
-		break;
+		return CSTR("i860");
 	case 251:
-		sb->AppendC(UTF8STRC("i960"));
-		break;
+		return CSTR("i960");
 	case 254:
-		sb->AppendC(UTF8STRC("See Processor Family 2"));
-		break;
+		return CSTR("See Processor Family 2");
 	case 256:
-		sb->AppendC(UTF8STRC("ARMv7"));
-		break;
+		return CSTR("ARMv7");
 	case 257:
-		sb->AppendC(UTF8STRC("ARMv8"));
-		break;
+		return CSTR("ARMv8");
 	case 260:
-		sb->AppendC(UTF8STRC("SH-3"));
-		break;
+		return CSTR("SH-3");
 	case 261:
-		sb->AppendC(UTF8STRC("SH-4"));
-		break;
+		return CSTR("SH-4");
 	case 280:
-		sb->AppendC(UTF8STRC("ARM"));
-		break;
+		return CSTR("ARM");
 	case 281:
-		sb->AppendC(UTF8STRC("StrongARM"));
-		break;
+		return CSTR("StrongARM");
 	case 300:
-		sb->AppendC(UTF8STRC("6x86"));
-		break;
+		return CSTR("6x86");
 	case 301:
-		sb->AppendC(UTF8STRC("MediaGX"));
-		break;
+		return CSTR("MediaGX");
 	case 302:
-		sb->AppendC(UTF8STRC("MII"));
-		break;
+		return CSTR("MII");
 	case 320:
-		sb->AppendC(UTF8STRC("WinChip"));
-		break;
+		return CSTR("WinChip");
 	case 350:
-		sb->AppendC(UTF8STRC("DSP"));
-		break;
+		return CSTR("DSP");
 	case 500:
-		sb->AppendC(UTF8STRC("VideoProcessor"));
-		break;
+		return CSTR("VideoProcessor");
 	default:
-		sb->AppendC(UTF8STRC("Undefined ("));
-		sb->AppendI32(family);
-		sb->AppendC(UTF8STRC(")"));
+		return CSTR("Undefined");
 	}
 }
 
-void IO::SMBIOS::GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type)
+Text::CString IO::SMBIOS::GetConnectorType(UInt8 type)
 {
 	switch (type)
 	{
 	case 0:
-		sb->AppendC(UTF8STRC("None"));
-		break;
+		return CSTR("None");
 	case 1:
-		sb->AppendC(UTF8STRC("Centronics"));
-		break;
+		return CSTR("Centronics");
 	case 2:
-		sb->AppendC(UTF8STRC("Mini Centronics"));
-		break;
+		return CSTR("Mini Centronics");
 	case 3:
-		sb->AppendC(UTF8STRC("Proprietary"));
-		break;
+		return CSTR("Proprietary");
 	case 4:
-		sb->AppendC(UTF8STRC("DB-25 pin male"));
-		break;
+		return CSTR("DB-25 pin male");
 	case 5:
-		sb->AppendC(UTF8STRC("DB-25 pin female"));
-		break;
+		return CSTR("DB-25 pin female");
 	case 6:
-		sb->AppendC(UTF8STRC("DB-15 pin male"));
-		break;
+		return CSTR("DB-15 pin male");
 	case 7:
-		sb->AppendC(UTF8STRC("DB-15 pin female"));
-		break;
+		return CSTR("DB-15 pin female");
 	case 8:
-		sb->AppendC(UTF8STRC("DB-9 pin male"));
-		break;
+		return CSTR("DB-9 pin male");
 	case 9:
-		sb->AppendC(UTF8STRC("DB-9 pin female"));
-		break;
+		return CSTR("DB-9 pin female");
 	case 10:
-		sb->AppendC(UTF8STRC("RJ-11"));
-		break;
+		return CSTR("RJ-11");
 	case 11:
-		sb->AppendC(UTF8STRC("RJ-45"));
-		break;
+		return CSTR("RJ-45");
 	case 12:
-		sb->AppendC(UTF8STRC("50-pin MiniSCSI"));
-		break;
+		return CSTR("50-pin MiniSCSI");
 	case 13:
-		sb->AppendC(UTF8STRC("Mini-DIN"));
-		break;
+		return CSTR("Mini-DIN");
 	case 14:
-		sb->AppendC(UTF8STRC("Micro-DIN"));
-		break;
+		return CSTR("Micro-DIN");
 	case 15:
-		sb->AppendC(UTF8STRC("PS/2"));
-		break;
+		return CSTR("PS/2");
 	case 16:
-		sb->AppendC(UTF8STRC("Infrared"));
-		break;
+		return CSTR("Infrared");
 	case 17:
-		sb->AppendC(UTF8STRC("HP-HIL"));
-		break;
+		return CSTR("HP-HIL");
 	case 18:
-		sb->AppendC(UTF8STRC("Access Bus (USB)"));
-		break;
+		return CSTR("Access Bus (USB)");
 	case 19:
-		sb->AppendC(UTF8STRC("SSA SCSI"));
-		break;
+		return CSTR("SSA SCSI");
 	case 20:
-		sb->AppendC(UTF8STRC("Circular DIN-8 male"));
-		break;
+		return CSTR("Circular DIN-8 male");
 	case 21:
-		sb->AppendC(UTF8STRC("Circular DIN-8 female"));
-		break;
+		return CSTR("Circular DIN-8 female");
 	case 22:
-		sb->AppendC(UTF8STRC("On Board IDE"));
-		break;
+		return CSTR("On Board IDE");
 	case 23:
-		sb->AppendC(UTF8STRC("On Board Floppy"));
-		break;
+		return CSTR("On Board Floppy");
 	case 24:
-		sb->AppendC(UTF8STRC("9-pin Dual Inline (pin 10 cut)"));
-		break;
+		return CSTR("9-pin Dual Inline (pin 10 cut)");
 	case 25:
-		sb->AppendC(UTF8STRC("25-pin Dual Inline (pin 26 cut)"));
-		break;
+		return CSTR("25-pin Dual Inline (pin 26 cut)");
 	case 26:
-		sb->AppendC(UTF8STRC("50-pin Dual Inline"));
-		break;
+		return CSTR("50-pin Dual Inline");
 	case 27:
-		sb->AppendC(UTF8STRC("68-pin Dual Inline"));
-		break;
+		return CSTR("68-pin Dual Inline");
 	case 28:
-		sb->AppendC(UTF8STRC("On Board Sound Input from CD-ROM"));
-		break;
+		return CSTR("On Board Sound Input from CD-ROM");
 	case 29:
-		sb->AppendC(UTF8STRC("Mini-Centronics Type-14"));
-		break;
+		return CSTR("Mini-Centronics Type-14");
 	case 30:
-		sb->AppendC(UTF8STRC("Mini-Centronics Type-26"));
-		break;
+		return CSTR("Mini-Centronics Type-26");
 	case 31:
-		sb->AppendC(UTF8STRC("Mini-jack (headphones)"));
-		break;
+		return CSTR("Mini-jack (headphones)");
 	case 32:
-		sb->AppendC(UTF8STRC("BNC"));
-		break;
+		return CSTR("BNC");
 	case 33:
-		sb->AppendC(UTF8STRC("1394"));
-		break;
+		return CSTR("1394");
 	case 34:
-		sb->AppendC(UTF8STRC("SAS/SATA Plug Receptacle"));
-		break;
+		return CSTR("SAS/SATA Plug Receptacle");
 	case 160:
-		sb->AppendC(UTF8STRC("PC-98"));
-		break;
+		return CSTR("PC-98");
 	case 161:
-		sb->AppendC(UTF8STRC("PC-98Hireso"));
-		break;
+		return CSTR("PC-98Hireso");
 	case 162:
-		sb->AppendC(UTF8STRC("PC-H98"));
-		break;
+		return CSTR("PC-H98");
 	case 163:
-		sb->AppendC(UTF8STRC("PC-98Note"));
-		break;
+		return CSTR("PC-98Note");
 	case 164:
-		sb->AppendC(UTF8STRC("PC-98Full"));
-		break;
+		return CSTR("PC-98Full");
 	case 255:
-		sb->AppendC(UTF8STRC("Other"));
-		break;
+		return CSTR("Other");
 	default:
-		sb->AppendC(UTF8STRC("Undefined ("));
-		sb->AppendU16(type);
-		sb->AppendC(UTF8STRC(")"));
-		break;
+		return CSTR("Undefined");
+	}
+}
+
+Text::CString IO::SMBIOS::GetPortType(UInt8 type)
+{
+	switch (type)
+	{
+	case 0:
+		return CSTR("None");
+	case 1:
+		return CSTR("Parallel Port XT/AT Compatible");
+	case 2:
+		return CSTR("Parallel Port PS/2");
+	case 3:
+		return CSTR("Parallel Port ECP");
+	case 4:
+		return CSTR("Parallel Port EPP");
+	case 5:
+		return CSTR("Parallel Port ECP/EPP");
+	case 6:
+		return CSTR("Serial Port XT/AT Compatible");
+	case 7:
+		return CSTR("Serial Port 16450 Compatible");
+	case 8:
+		return CSTR("Serial Port 16550 Compatible");
+	case 9:
+		return CSTR("Serial Port 16550A Compatible");
+	case 10:
+		return CSTR("SCSI Port");
+	case 11:
+		return CSTR("MIDI Port");
+	case 12:
+		return CSTR("Joy Stick Port");
+	case 13:
+		return CSTR("Keyboard Port");
+	case 14:
+		return CSTR("Mouse Port");
+	case 15:
+		return CSTR("SSA SCSI");
+	case 16:
+		return CSTR("USB");
+	case 17:
+		return CSTR("FireWire (IEEE P1394)");
+	case 18:
+		return CSTR("PCMCIA Type I2");
+	case 19:
+		return CSTR("PCMCIA Type II");
+	case 20:
+		return CSTR("PCMCIA Type III");
+	case 21:
+		return CSTR("Cardbus");
+	case 22:
+		return CSTR("Access Bus Port");
+	case 23:
+		return CSTR("SCSI II");
+	case 24:
+		return CSTR("SCSI Wide");
+	case 25:
+		return CSTR("PC-98");
+	case 26:
+		return CSTR("PC-98-Hireso");
+	case 27:
+		return CSTR("PC-H98");
+	case 28:
+		return CSTR("Video Port");
+	case 29:
+		return CSTR("Audio Port");
+	case 30:
+		return CSTR("Modem Port");
+	case 31:
+		return CSTR("Network Port");
+	case 32:
+		return CSTR("SATA");
+	case 33:
+		return CSTR("SAS");
+	case 160:
+		return CSTR("8251 Compatible");
+	case 161:
+		return CSTR("8251 FIFO Compatible");
+	case 255:
+		return CSTR("Other");
+	default:
+		return CSTR("Undefined (");
+	}
+}
+
+Text::CString IO::SMBIOS::GetSystemBootStatus(UInt8 type)
+{
+	switch (type)
+	{
+	case 0:
+		return CSTR("No errors detected");
+	case 1:
+		return CSTR("No bootable media");
+	case 2:
+		return CSTR("\"normal\" operating system failed to load");
+	case 3:
+		return CSTR("Firmware-detected hardware failure, including \"unknown\" failure types");
+	case 4:
+		return CSTR("Operating system-detected hardware failure");
+	case 5:
+		return CSTR("User-requested boot, usually through a keystroke");
+	case 6:
+		return CSTR("System security violation");
+	case 7:
+		return CSTR("Previously-requested image");
+	case 8:
+		return CSTR("System watchdog timer expired, causing the system to reboot");
+	default:
+		return CSTR("Undefined (");
 	}
 }

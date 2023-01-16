@@ -1839,6 +1839,253 @@ UTF8Char *Text::StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize
 	return oriStr;
 }
 
+UTF8Char *Text::StrHexVal64VLC(UTF8Char *oriStr, UInt64 val)
+{
+	UInt32 v1 = (UInt32)((UInt64)val >> 32);
+	UInt32 v2 = (UInt32)(val & 0xffffffff);
+	if (v1 == 0)
+	{
+		return StrHexVal32VLC(oriStr, v2);
+	}
+	if ((v1 & 0xfffffff0) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[1], v2);
+	}
+	else if ((v1 & 0xffffff00) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[2], v2);
+	}
+	else if ((v1 & 0xfffff000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 8) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[3], v2);
+	}
+	else if ((v1 & 0xffff0000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 12) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(v1 >> 8) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[4], v2);
+	}
+	else if ((v1 & 0xfff00000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 16) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(v1 >> 12) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(v1 >> 8) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[5], v2);
+	}
+	else if ((v1 & 0xff000000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 20) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(v1 >> 16) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(v1 >> 12) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(v1 >> 8) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[6], v2);
+	}
+	else if ((v1 & 0xf0000000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 24) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(v1 >> 20) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(v1 >> 16) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(v1 >> 12) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[(v1 >> 8) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[7], v2);
+	}
+	else
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(v1 >> 28) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(v1 >> 24) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(v1 >> 20) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(v1 >> 16) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[(v1 >> 12) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRhexarr[(v1 >> 8) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRhexarr[(v1 >> 4) & 0xf];
+		oriStr[7] = (UTF8Char)MyString_STRhexarr[v1 & 0xf];
+		return StrHexVal32LC(&oriStr[8], v2);
+	}
+}
+
+UTF8Char *Text::StrHexVal64LC(UTF8Char *oriStr, UInt64 val)
+{
+	UTF8Char *tmp = &oriStr[16];
+	OSInt i = 16;
+	while (i-- > 0)
+	{
+		*--tmp = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		val >>= 4;
+	}
+	oriStr[16] = 0;
+	return &oriStr[16];
+}
+
+UTF8Char *Text::StrHexVal32VLC(UTF8Char *oriStr, UInt32 val)
+{
+	if ((val & 0xfffffff0) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[1] = 0;
+		return &oriStr[1];
+	}
+	else if ((val & 0xffffff00) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[2] = 0;
+		return &oriStr[2];
+	}
+	else if ((val & 0xfffff000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 8) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[3] = 0;
+		return &oriStr[3];
+	}
+	else if ((val & 0xffff0000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 12) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(val >> 8) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[4] = 0;
+		return &oriStr[4];
+	}
+	else if ((val & 0xfff00000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 16) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(val >> 12) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(val >> 8) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[5] = 0;
+		return &oriStr[5];
+	}
+	else if ((val & 0xff000000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 20) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(val >> 16) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(val >> 12) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(val >> 8) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[6] = 0;
+		return &oriStr[6];
+	}
+	else if ((val & 0xf0000000) == 0)
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 24) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(val >> 20) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(val >> 16) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(val >> 12) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[(val >> 8) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[7] = 0;
+		return &oriStr[7];
+	}
+	else
+	{
+		oriStr[0] = (UTF8Char)MyString_STRhexarr[(val >> 28) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRhexarr[(val >> 24) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRhexarr[(val >> 20) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRhexarr[(val >> 16) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRhexarr[(val >> 12) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRhexarr[(val >> 8) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRhexarr[(val >> 4) & 0xf];
+		oriStr[7] = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		oriStr[8] = 0;
+		return &oriStr[8];
+	}
+}
+
+UTF8Char *Text::StrHexVal32LC(UTF8Char *oriStr, UInt32 val)
+{
+	UTF8Char *tmp = &oriStr[8];
+	UOSInt i = 8;
+	while (i-- > 0)
+	{
+		*--tmp = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		val >>= 4;
+	}
+	oriStr[8] = 0;
+	return &oriStr[8];
+}
+
+UTF8Char *Text::StrHexVal24LC(UTF8Char *oriStr, UInt32 val)
+{
+	UTF8Char *tmp = &oriStr[6];
+	UInt32 i = 6;
+	while (i-- > 0)
+	{
+		*--tmp = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		val >>= 4;
+	}
+	oriStr[6] = 0;
+	return &oriStr[6];
+}
+
+UTF8Char *Text::StrHexVal16LC(UTF8Char *oriStr, UInt16 val)
+{
+	UTF8Char *tmp = &oriStr[4];
+	Int32 i = 4;
+	while (i-- > 0)
+	{
+		*--tmp = (UTF8Char)MyString_STRhexarr[val & 0xf];
+		val = (UInt16)(val >> 4);
+	}
+	oriStr[4] = 0;
+	return &oriStr[4];
+}
+
+UTF8Char *Text::StrHexByteLC(UTF8Char *oriStr, UInt8 val)
+{
+	oriStr[0] = (UTF8Char)MyString_STRhexarr[val >> 4];
+	oriStr[1] = (UTF8Char)MyString_STRhexarr[val & 15];
+	oriStr[2] = 0;
+	return &oriStr[2];
+}
+
+UTF8Char *Text::StrHexBytesLC(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator)
+{
+	UOSInt val;
+	if (seperator == 0)
+	{
+		while (buffSize-- > 0)
+		{
+			val = *buff++;
+			oriStr[0] = (UTF8Char)MyString_STRhexarr[val >> 4];
+			oriStr[1] = (UTF8Char)MyString_STRhexarr[val & 15];
+			oriStr += 2;
+		}
+		oriStr[0] = 0;
+	}
+	else
+	{
+		while (buffSize-- > 0)
+		{
+			val = *buff++;
+			oriStr[0] = (UTF8Char)MyString_STRhexarr[val >> 4];
+			oriStr[1] = (UTF8Char)MyString_STRhexarr[val & 15];
+			oriStr[2] = seperator;
+			oriStr += 3;
+		}
+		*--oriStr = 0;
+	}
+	return oriStr;
+}
+
 Int64 Text::StrHex2Int64C(const UTF8Char *str)
 {
 	OSInt i = 16;

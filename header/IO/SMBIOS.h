@@ -101,8 +101,10 @@ namespace IO
 		Bool ToString(Text::StringBuilderUTF8 *sb) const;
 		IO::IStreamData *CreateStreamData() const;
 
-		static void GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family);
-		static void GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type);
+		static Text::CString GetProcessorFamily(UInt32 family);
+		static Text::CString GetConnectorType(UInt8 type);
+		static Text::CString GetPortType(UInt8 type);
+		static Text::CString GetSystemBootStatus(UInt8 type);
 	};
 }
 #endif

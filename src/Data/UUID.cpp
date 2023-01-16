@@ -120,28 +120,28 @@ OSInt Data::UUID::CompareTo(UUID *uuid) const
 
 void Data::UUID::ToString(Text::StringBuilderUTF8 *sb) const
 {
-	sb->AppendHex32(ReadUInt32(&this->data[0]));
+	sb->AppendHex32LC(ReadUInt32(&this->data[0]));
 	sb->AppendUTF8Char('-');
-	sb->AppendHex16(ReadUInt16(&this->data[4]));
+	sb->AppendHex16LC(ReadUInt16(&this->data[4]));
 	sb->AppendUTF8Char('-');
-	sb->AppendHex16(ReadUInt16(&this->data[6]));
+	sb->AppendHex16LC(ReadUInt16(&this->data[6]));
 	sb->AppendUTF8Char('-');
-	sb->AppendHex16(ReadUInt16(&this->data[8]));
+	sb->AppendHex16LC(ReadMUInt16(&this->data[8]));
 	sb->AppendUTF8Char('-');
-	sb->AppendHexBuff(&this->data[10], 6, 0, Text::LineBreakType::None);
+	sb->AppendHexBuffLC(&this->data[10], 6, 0, Text::LineBreakType::None);
 }
 
 UTF8Char *Data::UUID::ToString(UTF8Char *sbuff) const
 {
-	sbuff = Text::StrHexVal32(sbuff, ReadUInt32(&this->data[0]));
+	sbuff = Text::StrHexVal32LC(sbuff, ReadUInt32(&this->data[0]));
 	*sbuff++ = '-';
-	sbuff = Text::StrHexVal16(sbuff, ReadUInt16(&this->data[4]));
+	sbuff = Text::StrHexVal16LC(sbuff, ReadUInt16(&this->data[4]));
 	*sbuff++ = '-';
-	sbuff = Text::StrHexVal16(sbuff, ReadUInt16(&this->data[6]));
+	sbuff = Text::StrHexVal16LC(sbuff, ReadUInt16(&this->data[6]));
 	*sbuff++ = '-';
-	sbuff = Text::StrHexVal16(sbuff, ReadUInt16(&this->data[8]));
+	sbuff = Text::StrHexVal16LC(sbuff, ReadMUInt16(&this->data[8]));
 	*sbuff++ = '-';
-	sbuff = Text::StrHexBytes(sbuff, &this->data[10], 6, 0);
+	sbuff = Text::StrHexBytesLC(sbuff, &this->data[10], 6, 0);
 	return sbuff;
 }
 

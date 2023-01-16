@@ -140,6 +140,8 @@ namespace Text
 #ifdef HAS_INT64
 	UTF8Char *StrHexVal64V(UTF8Char *oriStr, UInt64 val);
 	UTF8Char *StrHexVal64(UTF8Char *oriStr, UInt64 val);
+	UTF8Char *StrHexVal64VLC(UTF8Char *oriStr, UInt64 val);
+	UTF8Char *StrHexVal64LC(UTF8Char *oriStr, UInt64 val);
 #endif
 
 	UTF8Char *StrHexVal32V(UTF8Char *oriStr, UInt32 val);
@@ -148,6 +150,12 @@ namespace Text
 	UTF8Char *StrHexVal16(UTF8Char *oriStr, UInt16 val);
 	UTF8Char *StrHexByte(UTF8Char *oriStr, UInt8 val);
 	UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator);
+	UTF8Char *StrHexVal32VLC(UTF8Char *oriStr, UInt32 val);
+	UTF8Char *StrHexVal32LC(UTF8Char *oriStr, UInt32 val);
+	UTF8Char *StrHexVal24LC(UTF8Char *oriStr, UInt32 val);
+	UTF8Char *StrHexVal16LC(UTF8Char *oriStr, UInt16 val);
+	UTF8Char *StrHexByteLC(UTF8Char *oriStr, UInt8 val);
+	UTF8Char *StrHexBytesLC(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator);
 	Int64 StrHex2Int64C(const UTF8Char *str);
 	Bool StrHex2Int64V(const UTF8Char *str, Int64 *outVal);
 	Bool StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal);

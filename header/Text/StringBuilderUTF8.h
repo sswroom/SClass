@@ -409,6 +409,176 @@ namespace Text
 			}
 			return this;
 		}
+
+		StringBuilderUTF8 *AppendHex8LC(UInt8 iVal)
+		{
+			this->AllocLeng(2);
+			this->leng = (UOSInt)(Text::StrHexByteLC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex16LC(UInt16 iVal)
+		{
+			this->AllocLeng(4);
+			this->leng = (UOSInt)(Text::StrHexVal16LC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex24LC(UInt32 iVal)
+		{
+			this->AllocLeng(6);
+			this->leng = (UOSInt)(Text::StrHexVal24LC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex32LC(UInt32 iVal)
+		{
+			this->AllocLeng(8);
+			this->leng = (UOSInt)(Text::StrHexVal32LC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex32VLC(UInt32 iVal)
+		{
+			this->AllocLeng(8);
+			this->leng = (UOSInt)(Text::StrHexVal32VLC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex64LC(UInt64 iVal)
+		{
+			this->AllocLeng(16);
+			this->leng = (UOSInt)(Text::StrHexVal64LC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex64VLC(UInt64 iVal)
+		{
+			this->AllocLeng(16);
+			this->leng = (UOSInt)(Text::StrHexVal64VLC(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHexOSLC(UOSInt iVal)
+		{
+		#if _OSINT_SIZE == 64
+			return AppendHex64LC(iVal);
+		#elif _OSINT_SIZE == 32
+			return AppendHex32LC((UInt32)iVal);
+		#elif _OSINT_SIZE == 16
+			return AppendHex16LC((Int32)iVal);
+		#endif
+		}
+
+		StringBuilderUTF8 *AppendHexBuffLC(const UInt8 *buff, UOSInt buffSize, UTF8Char seperator, Text::LineBreakType lineBreak)
+		{
+			if (buffSize == 0)
+				return this;
+			UOSInt lbCnt;
+			UOSInt lineCnt;
+			OSInt i;
+			if (lineBreak == LineBreakType::None)
+			{
+				lbCnt = 0;
+				lineCnt = 0;
+			}
+			else
+			{
+				lineCnt = (buffSize >> 4);
+				if ((buffSize & 15) == 0)
+					lineCnt -= 1;
+				if (lineBreak == LineBreakType::CRLF)
+					lbCnt = lineCnt << 1;
+				else
+					lbCnt = lineCnt;
+			}
+			i = 0;
+			if (seperator == 0)
+			{
+				this->AllocLeng((buffSize << 1) + lbCnt);
+				UTF8Char *buffEnd = &this->v[this->leng];
+				this->leng += (buffSize << 1) + lbCnt;
+				while (buffSize-- > 0)
+				{
+					buffEnd[0] = (UTF8Char)MyString_STRhexarr[*buff >> 4];
+					buffEnd[1] = (UTF8Char)MyString_STRhexarr[*buff & 15];
+					buffEnd += 2;
+					buff++;
+					i++;
+					if ((i & 15) == 0 && buffSize > 0)
+					{
+						if (lineBreak == LineBreakType::CRLF)
+						{
+							buffEnd[0] = 13;
+							buffEnd[1] = 10;
+							buffEnd += 2;
+						}
+						else if (lineBreak == LineBreakType::CR)
+						{
+							*buffEnd++ = '\r';
+						}
+						else if (lineBreak == LineBreakType::LF)
+						{
+							*buffEnd++ = '\n';
+						}
+					}
+				}
+				buffEnd[0] = 0;
+			}
+			else
+			{
+				this->AllocLeng(buffSize * 3 + lbCnt - 1 - lineCnt);
+				UTF8Char *buffEnd = &this->v[this->leng];
+				this->leng += buffSize * 3 + lbCnt - 1 - lineCnt;
+				while (buffSize-- > 0)
+				{
+					i++;
+					buffEnd[0] = (UTF8Char)MyString_STRhexarr[*buff >> 4];
+					buffEnd[1] = (UTF8Char)MyString_STRhexarr[*buff & 15];
+					buff++;
+					if (buffSize > 0)
+					{
+						if ((i & 15) == 0)
+						{
+							switch (lineBreak)
+							{
+							case LineBreakType::CRLF:
+								buffEnd[2] = 13;
+								buffEnd[3] = 10;
+								buffEnd += 4;
+								break;
+							case LineBreakType::CR:
+								buffEnd[2] = '\r';
+								buffEnd += 3;
+								break;
+							case LineBreakType::LF:
+								buffEnd[2] = '\n';
+								buffEnd += 3;
+								break;
+							case LineBreakType::None:
+							default:
+								buffEnd[2] = seperator;
+								buffEnd += 3;
+								break;
+							}
+						}
+						else
+						{
+							buffEnd[2] = seperator;
+							buffEnd += 3;
+						}
+					}
+					else
+					{
+						buffEnd += 2;
+						*buffEnd = 0;
+						break;
+					}
+				}
+			}
+			return this;
+		}
+
 		StringBuilderUTF8 *AppendLB(Text::LineBreakType lbt)
 		{
 			switch (lbt)
