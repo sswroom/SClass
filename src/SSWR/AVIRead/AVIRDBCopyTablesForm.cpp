@@ -173,27 +173,79 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			r = me->dataConn->QueryTableData(STR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0);
 			if (r)
 			{
+				Text::StringBuilderUTF8 sbInsert;
+				UOSInt nInsert = 0;
+
 				while (r->ReadNext())
 				{
 					sql.Clear();
 					DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
-					if (destDB->ExecuteNonQuery(sql.ToCString()) != 1)
+					UOSInt k = sql.ToCString().IndexOf(UTF8STRC(") values ("));
+					if (k == INVALID_INDEX)
 					{
+						if (destDB->ExecuteNonQuery(sql.ToCString()) != 1)
+						{
 #if defined(VERBOSE)
-						printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString());
+							printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString());
 #endif
+							sb.ClearStr();
+							destDB->GetLastErrorMsg(&sb);
+							me->lvData->SetSubItem(i, 1, sb.ToCString());
+							succ = false;
+							break;
+						}
+						else
+						{
+							rowCopied++;
+						}
+					}
+					else if (nInsert == 0)
+					{
+						sbInsert.Append(sql.ToCString());
+						nInsert = 1;
+					}
+					else
+					{
+						sbInsert.AppendUTF8Char(',');
+						sbInsert.Append(sql.ToCString().Substring(k + 9));
+						nInsert++;
+
+						if (nInsert >= 250)
+						{
+							if (destDB->ExecuteNonQuery(sbInsert.ToCString()) >= 0)
+							{
+								rowCopied += nInsert;
+								nInsert = 0;
+								sbInsert.ClearStr();
+							}
+							else
+							{
+								sb.ClearStr();
+								destDB->GetLastErrorMsg(&sb);
+								me->lvData->SetSubItem(i, 1, sb.ToCString());
+								succ = false;
+								break;
+							}
+						}
+					}
+				}
+				me->dataConn->CloseReader(r);
+				if (succ && nInsert > 0)
+				{
+					if (destDB->ExecuteNonQuery(sbInsert.ToCString()) >= 0)
+					{
+						rowCopied += nInsert;
+						nInsert = 0;
+						sbInsert.ClearStr();
+					}
+					else
+					{
 						sb.ClearStr();
 						destDB->GetLastErrorMsg(&sb);
 						me->lvData->SetSubItem(i, 1, sb.ToCString());
 						succ = false;
-						break;
-					}
-					else
-					{
-						rowCopied++;
 					}
 				}
-				me->dataConn->CloseReader(r);
 				if (succ)
 				{
 					sb.ClearStr();

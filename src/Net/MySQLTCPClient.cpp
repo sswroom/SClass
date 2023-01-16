@@ -2109,6 +2109,10 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CString sql)
 	{
 		return ExecuteReaderText(sql);
 	}
+	else if (sql.StartsWith(UTF8STRC("use ")))
+	{
+		return ExecuteReaderText(sql);
+	}
 	else
 	{
 		return ExecuteReaderBinary(sql);
