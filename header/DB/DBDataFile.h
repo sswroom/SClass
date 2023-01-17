@@ -261,7 +261,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 				m += ival.cstr.leng;
 			}
 			break;
-		case Data::VariItem::ItemType::Date:
+		case Data::VariItem::ItemType::Timestamp:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
 				WriteInt64(&this->recordBuff[m], -1);
@@ -269,7 +269,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 			}
 			else
 			{
-				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ToTicks());
+				WriteInt64(&this->recordBuff[m], item.GetItemValue().ts.ToTicks());
 				m += 8;
 			}
 			break;
@@ -515,7 +515,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 								m2 += m3;
 							}
 							break;
-						case Data::VariItem::ItemType::Date:
+						case Data::VariItem::ItemType::Timestamp:
 							{
 								Int64 ticks = ReadInt64(&buff[m2]);
 								if (ticks == -1)

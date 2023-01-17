@@ -30,7 +30,7 @@ void DB::DBClassBuilder::AddItem(const UTF8Char *colName, DB::DBUtil::ColType co
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
-		currPos += (OSInt)cls->AddField(CSTRP(sbuff, sptr), currPos, Data::VariItem::ItemType::Date);
+		currPos += (OSInt)cls->AddField(CSTRP(sbuff, sptr), currPos, Data::VariItem::ItemType::Timestamp);
 		break;
 	case DB::DBUtil::CT_Decimal:
 	case DB::DBUtil::CT_Double:

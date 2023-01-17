@@ -46,7 +46,6 @@ void IO::LogTool::Close()
 		this->hdlrArr.GetItem(i)->LogAdded(ts, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
 		this->hdlrArr.GetItem(i)->LogClosed();
 	}
-	mutUsage.EndUse();
 }
 
 void IO::LogTool::AddFileLog(Text::String *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
@@ -93,10 +92,11 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 {
 	if (closed)
 		return;
-	Sync::MutexUsage mutUsage(&this->hdlrMut);
-	this->hdlrArr.Add(hdlr);
-	this->levArr.Add(logLev);
-	mutUsage.EndUse();
+	{
+		Sync::MutexUsage mutUsage(&this->hdlrMut);
+		this->hdlrArr.Add(hdlr);
+		this->levArr.Add(logLev);
+	}
 
 	UTF8Char buff[256];
 	UTF8Char *sptr;
@@ -131,7 +131,6 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 			break;
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
@@ -144,7 +143,6 @@ void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 		if (this->levArr.GetItem(i) >= level)
 			this->hdlrArr.GetItem(i)->LogAdded(ts, logMsg, level);
 	}
-	mutUsage.EndUse();
 }
 
 IO::ILogHandler *IO::LogTool::GetLastFileLog()

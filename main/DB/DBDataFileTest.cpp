@@ -3,6 +3,7 @@
 #include "Crypto/JasyptEncryptor.h"
 #include "Data/DateTime.h"
 #include "Data/NamedClass.h"
+#include "DB/DBClassReader.h"
 #include "DB/DBDataFile.h"
 #include "DB/DBReader.h"
 #include "DB/JavaDBUtil.h"
@@ -781,7 +782,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DB::DBReader *r = db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, CSTR_NULL, 0);
 			if (r)
 			{
-				r->ReadAll(&dataList, cls);
+				{
+					DB::DBClassReader<LamppostData> reader(r, cls);
+					reader.ReadAll(&dataList);
+				}
 				db->CloseReader(r);
 
 				sb.ClearStr();

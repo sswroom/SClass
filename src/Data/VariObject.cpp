@@ -141,11 +141,6 @@ void Data::VariObject::SetItemUUID(const UTF8Char *name, Data::UUID *uuid)
 	this->SetItem(name, Data::VariItem::NewUUID(uuid));
 }
 
-void Data::VariObject::SetItemDateDirect(const UTF8Char *name, Data::DateTime *dt)
-{
-	this->SetItem(name, Data::VariItem::NewDateDirect(dt));
-}
-
 void Data::VariObject::SetItemVectorDirect(const UTF8Char *name, Math::Geometry::Vector2D *vec)
 {
 	this->SetItem(name, Data::VariItem::NewVectorDirect(vec));

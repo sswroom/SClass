@@ -38,7 +38,7 @@ Single Data::VariItem::GetAsF32() const
 		return (Single)Text::StrToDouble(this->val.str->v);
 	case ItemType::CStr:
 		return (Single)Text::StrToDouble(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -79,7 +79,7 @@ Double Data::VariItem::GetAsF64() const
 		return Text::StrToDouble(this->val.str->v);
 	case ItemType::CStr:
 		return Text::StrToDouble(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -120,7 +120,7 @@ Int8 Data::VariItem::GetAsI8() const
 		return (Int8)Text::StrToInt32(this->val.str->v);
 	case ItemType::CStr:
 		return (Int8)Text::StrToInt32(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -161,7 +161,7 @@ UInt8 Data::VariItem::GetAsU8() const
 		return (UInt8)Text::StrToUInt32(this->val.str->v);
 	case ItemType::CStr:
 		return (UInt8)Text::StrToUInt32(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -202,7 +202,7 @@ Int16 Data::VariItem::GetAsI16() const
 		return (Int16)Text::StrToInt32(this->val.str->v);
 	case ItemType::CStr:
 		return (Int16)Text::StrToInt32(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -243,7 +243,7 @@ UInt16 Data::VariItem::GetAsU16() const
 		return (UInt16)Text::StrToUInt32(this->val.str->v);
 	case ItemType::CStr:
 		return (UInt16)Text::StrToUInt32(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -284,7 +284,7 @@ Int32 Data::VariItem::GetAsI32() const
 		return Text::StrToInt32(this->val.str->v);
 	case ItemType::CStr:
 		return Text::StrToInt32(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -325,7 +325,7 @@ UInt32 Data::VariItem::GetAsU32() const
 		return Text::StrToUInt32(this->val.str->v);
 	case ItemType::CStr:
 		return Text::StrToUInt32(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -366,7 +366,7 @@ Int64 Data::VariItem::GetAsI64() const
 		return Text::StrToInt64(this->val.str->v);
 	case ItemType::CStr:
 		return Text::StrToInt64(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -407,7 +407,7 @@ UInt64 Data::VariItem::GetAsU64() const
 		return Text::StrToUInt64(this->val.str->v);
 	case ItemType::CStr:
 		return Text::StrToUInt64(this->val.cstr.v);
-	case ItemType::Date:
+	case ItemType::Timestamp:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:
@@ -479,8 +479,8 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb) const
 	case ItemType::CStr:
 		sb->AppendC(this->val.cstr.v, this->val.cstr.leng);
 		return;
-	case ItemType::Date:
-		sptr = this->val.date.ToStringNoZone(sbuff);
+	case ItemType::Timestamp:
+		sptr = this->val.ts.ToStringNoZone(sbuff);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		break;
 	case ItemType::ByteArr:
@@ -543,8 +543,35 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 		return this->val.str->ConcatToS(sbuff, buffSize);
 	case ItemType::CStr:
 		return Text::StrConcatCS(sbuff, this->val.cstr.v, this->val.cstr.leng, buffSize);
-	case ItemType::Date:
-		return this->val.date.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	case ItemType::Timestamp:
+		if (buffSize < 11)
+		{
+			return sbuff;
+		}
+		else if (buffSize < 17)
+		{
+			return this->val.ts.ToString(sbuff, "yyyy-MM-dd");
+		}
+		else if (buffSize < 20)
+		{
+			return this->val.ts.ToString(sbuff, "yyyy-MM-dd HH:mm");
+		}
+		else if (buffSize < 24)
+		{
+			return this->val.ts.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		}
+		else if (buffSize < 27)
+		{
+			return this->val.ts.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		}
+		else if (buffSize < 30)
+		{
+			return this->val.ts.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.ffffff");
+		}
+		else
+		{
+			return this->val.ts.ToStringNoZone(sbuff);
+		}
 	case ItemType::ByteArr:
 		if (buffSize > (this->val.byteArr->GetCount() << 1))
 		{
@@ -629,9 +656,9 @@ Text::String *Data::VariItem::GetAsNewString() const
 		return this->val.str->Clone();
 	case ItemType::CStr:
 		return Text::String::New(this->val.cstr.v, this->val.cstr.leng);
-	case ItemType::Date:
-		s = Text::String::New(25);
-		s->leng = (UOSInt)(this->val.date.ToString(s->v, "yyyy-MM-dd HH:mm:ss.fff") - s->v);
+	case ItemType::Timestamp:
+		s = Text::String::New(30);
+		s->leng = (UOSInt)(this->val.ts.ToStringNoZone(s->v) - s->v);
 		return s;
 	case ItemType::ByteArr:
 		s = Text::String::New(this->val.byteArr->GetCount() * 2);
@@ -651,9 +678,9 @@ Text::String *Data::VariItem::GetAsNewString() const
 Data::DateTime *Data::VariItem::GetAsNewDate() const
 {
 	Data::DateTime *date;
-	if (this->itemType == ItemType::Date)
+	if (this->itemType == ItemType::Timestamp)
 	{
-		NEW_CLASS(date, Data::DateTime(this->val.date.ToTicks(), this->val.date.tzQhr));
+		NEW_CLASS(date, Data::DateTime(this->val.ts.ToTicks(), this->val.ts.tzQhr));
 		return date;
 	}
 	else if (this->itemType == ItemType::CStr)
@@ -686,9 +713,9 @@ Data::DateTime *Data::VariItem::GetAsNewDate() const
 
 Data::Timestamp Data::VariItem::GetAsTimestamp() const
 {
-	if (this->itemType == ItemType::Date)
+	if (this->itemType == ItemType::Timestamp)
 	{
-		return this->val.date;
+		return this->val.ts;
 	}
 	else if (this->itemType == ItemType::CStr)
 	{
@@ -838,29 +865,29 @@ void Data::VariItem::SetDate(Data::DateTime *dt)
 		this->FreeItem();
 		this->itemType = ItemType::Null;
 	}
-	else if (this->itemType == ItemType::Date)
+	else if (this->itemType == ItemType::Timestamp)
 	{
-		this->val.date = Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
+		this->val.ts = Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
 	}
 	else
 	{
 		this->FreeItem();
-		this->val.date = Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
-		this->itemType = ItemType::Date;
+		this->val.ts = Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
+		this->itemType = ItemType::Timestamp;
 	}
 }
 
 void Data::VariItem::SetDate(const Data::Timestamp &ts)
 {
-	if (this->itemType == ItemType::Date)
+	if (this->itemType == ItemType::Timestamp)
 	{
-		this->val.date = ts;
+		this->val.ts = ts;
 	}
 	else
 	{
 		this->FreeItem();
-		this->val.date = ts;
-		this->itemType = ItemType::Date;
+		this->val.ts = ts;
+		this->itemType = ItemType::Timestamp;
 	}
 }
 
@@ -1036,8 +1063,8 @@ void Data::VariItem::Set(VariItem *item)
 	case ItemType::Str:
 		this->val.str = item->val.str->Clone();
 		break;
-	case ItemType::Date:
-		this->val.date = item->val.date;
+	case ItemType::Timestamp:
+		this->val.ts = item->val.ts;
 		break;
 	case ItemType::ByteArr:
 		this->val.byteArr = item->val.byteArr->Clone();
@@ -1103,8 +1130,8 @@ Data::VariItem *Data::VariItem::Clone() const
 		ival.cstr.v = this->val.cstr.v;
 		ival.cstr.leng = this->val.cstr.leng;
 		break;
-	case ItemType::Date:
-		ival.date = this->val.date;
+	case ItemType::Timestamp:
+		ival.ts = this->val.ts;
 		break;
 	case ItemType::ByteArr:
 		ival.byteArr = this->val.byteArr->Clone();
@@ -1176,8 +1203,8 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb) const
 		sb->Append(s);
 		s->Release();
 		return;
-	case ItemType::Date:
-		sptr = this->val.date.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	case ItemType::Timestamp:
+		sptr = this->val.ts.ToStringNoZone(sbuff);
 		sb->AppendUTF8Char('\"');
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendUTF8Char('\"');
@@ -1248,18 +1275,18 @@ Data::VariItem *Data::VariItem::NewDate(Data::DateTime *dt)
 {
 	if (dt == 0) return NewNull();
 	ItemValue ival;
-	ival.date = Data::Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
+	ival.ts = Data::Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Date, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::Timestamp, ival));
 	return item;
 }
 
 Data::VariItem *Data::VariItem::NewTS(const Data::Timestamp &ts)
 {
 	ItemValue ival;
-	ival.date = ts;
+	ival.ts = ts;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Date, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::Timestamp, ival));
 	return item;
 }
 
@@ -1402,16 +1429,6 @@ Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewDateDirect(Data::DateTime *dt)
-{
-	if (dt == 0) return NewNull();
-	ItemValue ival;
-	ival.date = Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Date, ival));
-	return item;
-}
-
 Data::VariItem *Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0) return NewNull();
@@ -1464,8 +1481,8 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 		return NewStr(*(Text::String**)ptr);
 	case ItemType::CStr:
 		return NewStr(*(Text::CString*)ptr);
-	case ItemType::Date:
-		return NewDate(*(Data::DateTime**)ptr);
+	case ItemType::Timestamp:
+		return NewTS(*(Data::Timestamp*)ptr);
 	case ItemType::ByteArr:
 		return NewByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
 	case ItemType::Vector:
@@ -1527,8 +1544,8 @@ void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemTy
 			item->SetStr(cstr.v, cstr.leng);
 		}
 		return;
-	case ItemType::Date:
-		item->SetDate(*(Data::DateTime**)ptr);
+	case ItemType::Timestamp:
+		item->SetDate(*(Data::Timestamp*)ptr);
 		return;
 	case ItemType::ByteArr:
 		item->SetByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
@@ -1632,8 +1649,8 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 			}
 		}
 		break;
-	case ItemType::Date:
-		*(Data::DateTime**)ptr = item->GetAsNewDate();
+	case ItemType::Timestamp:
+		*(Data::Timestamp*)ptr = item->GetAsTimestamp();
 		break;
 	case ItemType::ByteArr:
 		*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
@@ -1739,8 +1756,8 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 			}
 		}
 		break;
-	case ItemType::Date:
-		*(Data::DateTime**)ptr = item->GetAsNewDate();
+	case ItemType::Timestamp:
+		*(Data::Timestamp*)ptr = item->GetAsTimestamp();
 		break;
 	case ItemType::ByteArr:
 		if (item->GetItemType() == ItemType::ByteArr)
@@ -1829,19 +1846,11 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 			return val1.Equals(val2.v, val2.leng);
 		}
 		break;
-	case ItemType::Date:
+	case ItemType::Timestamp:
 		{
-			Data::DateTime *val1 = *(Data::DateTime**)ptr1;
-			Data::DateTime *val2 = *(Data::DateTime**)ptr2;
-			if (val1 == val2)
-			{
-				return true;
-			}
-			if (val1 == 0 || val2 == 0)
-			{
-				return false;
-			}
-			return val1->CompareTo(val2) == 0;
+			Data::Timestamp val1 = *(Data::Timestamp*)ptr1;
+			Data::Timestamp val2 = *(Data::Timestamp*)ptr2;
+			return (val1 == val2);
 		}
 	case ItemType::ByteArr:
 		{
@@ -1915,10 +1924,11 @@ UOSInt Data::VariItem::GetItemSize(ItemType itemType)
 		return sizeof(Bool);
 	case ItemType::CStr:
 		return sizeof(Text::CString);
+	case ItemType::Timestamp:
+		return sizeof(Data::Timestamp);
 	case ItemType::Unknown:
 	case ItemType::Null:
 	case ItemType::Str:
-	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
 	case ItemType::UUID:

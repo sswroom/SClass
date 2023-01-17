@@ -904,25 +904,43 @@ public:
 				return true;
 			case 4:
 				{
-					Data::DateTime dt;
-					dt.SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3], 0, 0, 0, 0, 0);
-					item->SetDate(&dt);
+					Data::DateTimeUtil::TimeValue tval;
+					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
+					tval.month = this->currRow->rowBuff[col->ofst + 2];
+					tval.day = this->currRow->rowBuff[col->ofst + 3];
+					tval.hour = 0;
+					tval.minute = 0;
+					tval.second = 0;
+					tval.ms = 0;
+					item->SetDate(Data::Timestamp::FromTimeValue(&tval, 0, 0));
 				}
 				return true;
 			case 7:
 				{
-					Data::DateTime dt;
-					dt.SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
-						this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], 0, 0);
-					item->SetDate(&dt);
+					Data::DateTimeUtil::TimeValue tval;
+					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
+					tval.month = this->currRow->rowBuff[col->ofst + 2];
+					tval.day = this->currRow->rowBuff[col->ofst + 3];
+					tval.hour = this->currRow->rowBuff[col->ofst + 4];
+					tval.minute = this->currRow->rowBuff[col->ofst + 5];
+					tval.second = this->currRow->rowBuff[col->ofst + 6];
+					tval.ms = 0;
+					item->SetDate(Data::Timestamp::FromTimeValue(&tval, 0, 0));
 				}
 				return true;
 			case 11:
 				{
-					Data::DateTime dt;
-					dt.SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
-						this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], (UInt16)(ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]) / 1000), 0);
-					item->SetDate(&dt);
+					UInt32 us;
+					Data::DateTimeUtil::TimeValue tval;
+					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
+					tval.month = this->currRow->rowBuff[col->ofst + 2];
+					tval.day = this->currRow->rowBuff[col->ofst + 3];
+					tval.hour = this->currRow->rowBuff[col->ofst + 4];
+					tval.minute = this->currRow->rowBuff[col->ofst + 5];
+					tval.second = this->currRow->rowBuff[col->ofst + 6];
+					us = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
+					tval.ms = (UInt16)(us / 1000);
+					item->SetDate(Data::Timestamp::FromTimeValue(&tval, us * 1000, 0));
 				}
 				return true;
 			default:

@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "Data/NamedClass.h"
 #include "DB/CSVFile.h"
+#include "DB/DBClassReader.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
@@ -982,7 +983,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //			Double t4 = 0;
 			Data::ArrayList<Lamppost*> lamppostList;
 			clk.Start();
-			r->ReadAll(&lamppostList, cls);
+			{
+				DB::DBClassReader<Lamppost> reader(r, cls);
+				reader.ReadAll(&lamppostList);
+			}
 			t1 = clk.GetTimeDiff();
 			fileGDB->CloseReader(r);
 
@@ -1001,7 +1005,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			csv->SetNullIfEmpty(true);
 			r = csv->QueryTableData(CSTR_NULL, CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0);
 			clk.Start();
-			r->ReadAll(&lamppostListCSV, cls);
+			{
+				DB::DBClassReader<Lamppost> reader(r, cls);
+				reader.ReadAll(&lamppostListCSV);
+			}
 			t3 = clk.GetTimeDiff();
 			csv->CloseReader(r);
 			DEL_CLASS(csv);

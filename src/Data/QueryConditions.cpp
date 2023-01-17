@@ -75,9 +75,9 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item
 	if (item == 0) return false;
 	switch (item->GetItemType())
 	{
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 		{
-			Int64 t = item->GetItemValue().date.ToTicks();
+			Int64 t = item->GetItemValue().ts.ToTicks();
 			return t >= this->t1 && t <= this->t2;
 		}
 	case Data::VariItem::ItemType::F32:
@@ -170,7 +170,7 @@ Bool Data::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -284,7 +284,7 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -369,7 +369,7 @@ Bool Data::QueryConditions::Int64Condition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -476,7 +476,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -621,7 +621,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -697,7 +697,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -769,7 +769,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -848,7 +848,7 @@ Bool Data::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -899,7 +899,7 @@ Bool Data::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Str:
 	case Data::VariItem::ItemType::CStr:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:

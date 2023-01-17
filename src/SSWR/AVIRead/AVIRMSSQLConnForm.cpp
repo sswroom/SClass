@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 		return;
 	}
 	sbPort.ClearStr();
-	me->conn = DB::MSSQLConn::OpenConnTCP(sbServer.ToString(), port, sbDatabase.ToString(), sbUser.ToString(), sbPassword.ToString(), me->core->GetLog(), &sbPort);
+	me->conn = DB::MSSQLConn::OpenConnTCP(sbServer.ToCString(), port, sbDatabase.ToCString(), sbUser.ToCString(), sbPassword.ToCString(), me->core->GetLog(), &sbPort);
 	if (me->conn)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);

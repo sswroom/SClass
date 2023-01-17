@@ -142,6 +142,7 @@ namespace DB
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
+		virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);

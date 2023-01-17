@@ -2288,6 +2288,85 @@ Bool DB::ODBCReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 	return false;
 }
 
+Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+{
+	if (colIndex >= this->colCnt)
+		return false;
+	if (this->colDatas[colIndex].isNull)
+	{
+		item->SetNull();
+		return true;
+	}
+	Text::StringBuilderUTF8 *sb;
+	switch (this->colDatas[colIndex].colType)
+	{
+	case DB::DBUtil::CT_UTF8Char:
+	case DB::DBUtil::CT_UTF16Char:
+	case DB::DBUtil::CT_UTF32Char:
+	case DB::DBUtil::CT_VarUTF8Char:
+	case DB::DBUtil::CT_VarUTF16Char:
+	case DB::DBUtil::CT_VarUTF32Char:
+	case DB::DBUtil::CT_UUID:
+		sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
+		item->SetStr(sb->v, sb->leng);
+		return true;
+	case DB::DBUtil::CT_Double:
+	case DB::DBUtil::CT_Decimal:
+		item->SetF64(*(Double*)&this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Float:
+		item->SetF32((Single)*(Double*)&this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Int16:
+		item->SetI16((Int16)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_UInt16:
+		item->SetU16((UInt16)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Int32:
+		item->SetI32((Int32)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_UInt32:
+		item->SetU32((UInt32)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Byte:
+		item->SetU8((UInt8)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Int64:
+		item->SetI64(this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_UInt64:
+		item->SetU64((UInt64)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Bool:
+		item->SetBool(this->colDatas[colIndex].dataVal != 0);
+		return true;
+	case DB::DBUtil::CT_DateTimeTZ:
+	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_Date:
+		item->SetDate(*(Data::Timestamp*)this->colDatas[colIndex].colData);
+		return true;
+	case DB::DBUtil::CT_Vector:
+		if (this->conn->GetSQLType() == DB::DBUtil::SQLType::MSSQL)
+		{
+			UOSInt dataSize = (UOSInt)this->colDatas[colIndex].dataVal;
+			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
+			UInt32 srId;
+			Math::Geometry::Vector2D *vec = Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
+			item->SetVectorDirect(vec);
+			return vec != 0;
+		}
+		return false;
+	case DB::DBUtil::CT_Binary:
+		item->SetByteArr((UInt8*)this->colDatas[colIndex].colData, (UOSInt)this->colDatas[colIndex].dataVal);
+		return true;
+	case DB::DBUtil::CT_Unknown:
+	default:
+		return false;
+	}
+	return false;
+}
+
 UTF8Char *DB::ODBCReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	Int16 nameLen = 0;

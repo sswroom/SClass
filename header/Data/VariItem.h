@@ -17,7 +17,7 @@ namespace Data
 		{
 			Unknown,
 			Null,
-			Date,
+			Timestamp,
 			F32,
 			F64,
 			I8,
@@ -40,7 +40,7 @@ namespace Data
 		union ItemValue
 		{
 			Text::String *str;
-			Data::Timestamp date;
+			Data::Timestamp ts;
 			Single f32;
 			Double f64;
 			Int8 i8;
@@ -194,7 +194,6 @@ namespace Data
 		static VariItem *NewByteArr(Data::ReadonlyArray<UInt8> *arr);
 		static VariItem *NewVector(Math::Geometry::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
-		static VariItem *NewDateDirect(Data::DateTime *dt);
 		static VariItem *NewVectorDirect(Math::Geometry::Vector2D *vec);
 		static VariItem *NewUUIDDirect(Data::UUID *uuid);
 		static VariItem *NewFromPtr(void *ptr, ItemType itemType);

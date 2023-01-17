@@ -259,7 +259,7 @@ Int32 DB::SortableDBReader::GetInt32(UOSInt colIndex)
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Str:
 	case Data::VariItem::ItemType::CStr:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -304,7 +304,7 @@ Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Str:
 	case Data::VariItem::ItemType::CStr:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -356,9 +356,9 @@ UTF8Char *DB::SortableDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt b
 Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
-	if (item && item->GetItemType() == Data::VariItem::ItemType::Date)
+	if (item && item->GetItemType() == Data::VariItem::ItemType::Timestamp)
 	{
-		return item->GetItemValue().date;
+		return item->GetItemValue().ts;
 	}
 	else
 	{
@@ -402,7 +402,7 @@ Double DB::SortableDBReader::GetDbl(UOSInt colIndex)
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Str:
 	case Data::VariItem::ItemType::CStr:
-	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Timestamp:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:

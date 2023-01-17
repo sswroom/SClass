@@ -86,7 +86,7 @@ Bool Data::Class::AddField(Text::CString name, Text::String *const *val)
 
 Bool Data::Class::AddField(Text::CString name, const Data::Timestamp *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Date) != 0;
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Timestamp) != 0;
 }
 
 Bool Data::Class::AddField(Text::CString name, const Bool *val)
@@ -160,7 +160,7 @@ Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
 Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 {
 	FieldInfo *field = this->fields.GetItem(index);
-	if (field == 0 || item == 0)
+	if (field == 0)
 	{
 		return false;
 	}
@@ -172,7 +172,7 @@ Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *item)
 {
 	FieldInfo *field = this->fields.GetItem(index);
-	if (field == 0 || item == 0)
+	if (field == 0)
 	{
 		return false;
 	}
@@ -333,7 +333,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(");\r\n"));
 			break;
-		case Data::VariItem::ItemType::Date:
+		case Data::VariItem::ItemType::Timestamp:
 		case Data::VariItem::ItemType::CStr:
 		case Data::VariItem::ItemType::F32:
 		case Data::VariItem::ItemType::F64:
@@ -412,7 +412,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC("->Clone():0"));
 			break;
-		case Data::VariItem::ItemType::Date:
+		case Data::VariItem::ItemType::Timestamp:
 			sb->AppendChar('\t', tabLev + 1);
 			sb->AppendC(UTF8STRC("this->"));
 			sb->Append(field->name);

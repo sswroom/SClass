@@ -207,7 +207,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 		UOSInt scnt;
 		UOSInt scnt2;
 		UInt16 port = 1433;
-		const UTF8Char *dbName = 0;
+		Text::CString dbName = CSTR_NULL;
 		sb.AppendC(&url->v[17], url->leng - 17);
 		sarr[1] = sb;
 		scnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
@@ -224,10 +224,10 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 			scnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("databaseName=")))
 			{
-				dbName = &sarr[0].v[13];
+				dbName = sarr[0].ToCString().Substring(13);
 			}
 		}
-		return MSSQLConn::CreateDBToolTCP(sarr2[0].v, port, dbName, STR_PTR(username), STR_PTR(password), log, LOGPREFIX);
+		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, dbName, STR_CSTR(username), STR_CSTR(password), log, LOGPREFIX);
 	}
 	return 0;
 }

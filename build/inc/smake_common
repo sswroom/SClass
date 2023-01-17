@@ -76,6 +76,7 @@ nodeps:
 @DBDataFileTest
 @FileGDBTest
 @MDBFileTest
+@MSSQLTest
 @MySQLCheck
 @MySQLClientTest
 @XLSXExporterTest
@@ -284,6 +285,9 @@ MDBFileTest:
 @ConsoleStartup.o
 MongoDBTest:
 @MongoDBTest.o
+@ConsoleStartup.o
+MSSQLTest:
+@MSSQLTest.o
 @ConsoleStartup.o
 MySQLCheck:
 @MySQLCheckMain.o
@@ -960,6 +964,7 @@ DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MDBFileTest.o: ../../main/DB/MDBFileTest.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
+MSSQLTest.o: ../../main/DB/MSSQLTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
 MySQLClientTest.o: ../../main/DB/MySQLClientTest.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
@@ -1483,6 +1488,7 @@ DB/DBCache.h: ../../src/DB/DBCache.cpp
 @DBCache.o
 DB/DBClassBuilder.h: ../../src/DB/DBClassBuilder.cpp
 @DBClassBuilder.o
+DB/DBClassReader.h:
 DB/DBConn.h: ../../src/DB/DBConn.cpp
 @DBConn.o
 DB/DBDataFile.h:

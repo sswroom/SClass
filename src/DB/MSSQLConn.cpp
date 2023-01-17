@@ -3,7 +3,7 @@
 #include "DB/ODBCConn.h"
 #include "Text/MyString.h"
 
-DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg)
+DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CString serverHost, UInt16 port, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg)
 {
 	DB::ODBCConn *conn;
 	Text::String *driverName = GetDriverNameNew();
@@ -22,43 +22,43 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	if (driverName->StartsWith(UTF8STRC("ODBC Driver ")) && driverName->EndsWith(UTF8STRC(" for SQL Server")))
 	{
 		connStr.AppendC(UTF8STRC(";server=tcp:"));
-		connStr.AppendSlow(serverHost);
+		connStr.Append(serverHost);
 		connStr.AppendC(UTF8STRC(","));
 		connStr.AppendU16(port);
 	}
 	else
 	{
 		connStr.AppendC(UTF8STRC(";server="));
-		connStr.AppendSlow(serverHost);
+		connStr.Append(serverHost);
 		connStr.AppendC(UTF8STRC(";port="));
 		connStr.AppendU16(port);
 	}
 	connStr.AppendC(UTF8STRC(";database="));
-	connStr.AppendSlow(database);
+	connStr.Append(database);
 	if (driverName->StartsWith(UTF8STRC("ODBC Driver ")) && driverName->EndsWith(UTF8STRC(" for SQL Server")))
 	{
-		if (userName)
+		if (userName.v)
 		{
 			connStr.AppendC(UTF8STRC(";UID="));
-			connStr.AppendSlow(userName);
+			connStr.Append(userName);
 		}
-		if (password)
+		if (password.v)
 		{
 			connStr.AppendC(UTF8STRC(";PWD="));
-			connStr.AppendSlow(password);
+			connStr.Append(password);
 		}
 	}
 	else
 	{
-		if (userName)
+		if (userName.v)
 		{
 			connStr.AppendC(UTF8STRC(";user="));
-			connStr.AppendSlow(userName);
+			connStr.Append(userName);
 		}
-		if (password)
+		if (password.v)
 		{
 			connStr.AppendC(UTF8STRC(";password="));
-			connStr.AppendSlow(password);
+			connStr.Append(password);
 		}
 	}
 	driverName->Release();
@@ -78,7 +78,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	}
 }
 
-DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CString serverHost, UInt16 port, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::DBConn *conn = OpenConnTCP(serverHost, port, database, userName, password, log, 0);
 	DB::DBTool *db;

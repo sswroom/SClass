@@ -1,7 +1,6 @@
 #ifndef _SM_DB_DBREADER
 #define _SM_DB_DBREADER
 #include "Data/Class.h"
-#include "Data/NamedClass.h"
 #include "Data/StringMap.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
@@ -81,66 +80,6 @@ namespace DB
 		TableDef *GenTableDef(Text::CString tableName);
 		Data::VariObject *CreateVariObject();
 		Data::Class *CreateClass();
-		template <class T> Bool ReadAll(Data::ArrayList<T*> *outList, Data::NamedClass<T> *cls);
 	};
-}
-
-template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data::NamedClass<T> *cls)
-{
-	UTF8Char sbuff[256];
-	UTF8Char sbuff2[256];
-	UTF8Char *sptr;
-	Data::StringMap<UOSInt> colMap2;
-	Bool clsValid = true;
-	UOSInt i = 0;
-	UOSInt j = this->ColCount();
-	while (i < j)
-	{
-		this->GetName(i, sbuff);
-		sptr = DB::DBUtil::DB2FieldName(sbuff2, sbuff);
-		colMap2.Put(CSTRP(sbuff2, sptr), i);
-
-		i++;
-	}
-
-	i = 0;
-	j = cls->GetFieldCount();
-	while (i < j)
-	{
-		if (!colMap2.ContainsKey(cls->GetFieldName(i)))
-		{
-			clsValid = false;
-		}
-		i++;
-	}
-
-	if (!clsValid)
-	{
-		return false;
-	}
-
-	UOSInt *colIndex = MemAlloc(UOSInt, j);
-	i = 0;
-	while (i < j)
-	{
-		colIndex[i] = colMap2.Get(cls->GetFieldName(i));
-		i++;
-	}
-	while (this->ReadNext())
-	{
-		T *listObj = cls->CreateObject();
-		Data::VariItem item;
-		i = 0;
-		j = cls->GetFieldCount();
-		while (i < j)
-		{
-			this->GetVariItem(colIndex[i], &item);
-			cls->SetFieldClearItem(listObj, i, &item);
-			i++;
-		}
-		outList->Add(listObj);
-	}
-	MemFree(colIndex);
-	return true;
 }
 #endif

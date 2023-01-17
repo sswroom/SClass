@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Data/DateTime.h"
 #include "Data/NamedClass.h"
+#include "DB/DBClassReader.h"
 #include "IO/ConsoleWriter.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
@@ -385,7 +386,10 @@ void TextReadAll(DB::DBTool *db)
 	if (r)
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
-		r->ReadAll(&dataList, cls);
+		{
+			DB::DBClassReader<Userfile> reader(r, cls);
+			reader.ReadAll(&dataList);
+		}
 		db->CloseReader(r);
 		DEL_CLASS(cls);
 
@@ -412,7 +416,10 @@ void TestBinaryRead(DB::DBTool *db)
 	if (r)
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
-		r->ReadAll(&dataList, cls);
+		{
+			DB::DBClassReader<Userfile> reader(r, cls);
+			reader.ReadAll(&dataList);
+		}
 		db->CloseReader(r);
 		DEL_CLASS(cls);
 
