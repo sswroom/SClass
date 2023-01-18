@@ -4191,6 +4191,8 @@ Text/SMSUserData.h: ../../src/Text/SMSUserData.cpp
 @SMSUserData.o
 Text/SMSUtil.h: ../../src/Text/SMSUtil.cpp
 @SMSUtil.o
+Text/StandardColor.h: ../../src/Text/StandardColor.cpp
+@StandardColor.o
 Text/String.h: ../../src/Text/String.cpp
 @String.o
 Text/StringBase.h:
@@ -5820,6 +5822,7 @@ SearchIndexer.o: ../../src/Text/SearchIndexer.cpp
 SMSMessage.o: ../../src/Text/SMSMessage.cpp
 SMSUserData.o: ../../src/Text/SMSUserData.cpp
 SMSUtil.o: ../../src/Text/SMSUtil.cpp
+StandardColor.o: ../../src/Text/StandardColor.cpp
 String.o: ../../src/Text/String.cpp
 StringBuilderC.o: ../../src/Text/StringBuilderC.cpp
 StringBuilderUTF8.o: ../../src/Text/StringBuilderUTF8.cpp

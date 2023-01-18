@@ -18,8 +18,8 @@ namespace IO
 	public:
 		typedef struct
 		{
-			StandardColor fgColor;
-			StandardColor bgColor;
+			Text::StandardColor fgColor;
+			Text::StandardColor bgColor;
 			UInt32 currX;
 			Int32 currY;
 			UInt32 consoleWidth;
@@ -31,7 +31,7 @@ namespace IO
 		Sync::Mutex *mut;
 		Bool autoFlush;
 		Bool fileOutput;
-		StandardColor bgColor;
+		Text::StandardColor bgColor;
 
 	public:
 		ConsoleWriter();
@@ -42,8 +42,8 @@ namespace IO
 		virtual Bool WriteLine();
 		virtual Bool WriteChar(UTF8Char c);
 
-		void SetBGColor(StandardColor bgColor);
-		virtual void SetTextColor(StandardColor fgColor);
+		void SetBGColor(Text::StandardColor bgColor);
+		virtual void SetTextColor(Text::StandardColor fgColor);
 		virtual void ResetTextColor();
 
 		UOSInt CalDisplaySize(const WChar *str);

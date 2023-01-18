@@ -14,7 +14,7 @@
 IO::ConsoleWriter::ConsoleWriter()
 {
 	setbuf(stdout, 0);
-	this->bgColor = StandardColor::Black;
+	this->bgColor = Text::StandardColor::Black;
 }
 
 IO::ConsoleWriter::~ConsoleWriter()
@@ -45,12 +45,12 @@ Bool IO::ConsoleWriter::WriteChar(UTF8Char c)
 	return true;
 }
 
-void IO::ConsoleWriter::SetBGColor(StandardColor bgColor)
+void IO::ConsoleWriter::SetBGColor(Text::StandardColor bgColor)
 {
 	this->bgColor = bgColor;
 }
 
-void IO::ConsoleWriter::SetTextColor(StandardColor fgCol)
+void IO::ConsoleWriter::SetTextColor(Text::StandardColor fgCol)
 {
 	UInt8 fgColor = (UInt8)fgCol;
 	UInt8 bgColor = (UInt8)this->bgColor;
@@ -117,8 +117,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	ioctl(0, TIOCGWINSZ, &w);
 	state->consoleWidth = w.ws_col;
 	state->consoleHeight = w.ws_row;
-	state->fgColor = StandardColor::Black;
-	state->bgColor = StandardColor::Black;
+	state->fgColor = Text::StandardColor::Black;
+	state->bgColor = Text::StandardColor::Black;
 
 	struct termios oldIOS;
 	struct termios newIOS;
