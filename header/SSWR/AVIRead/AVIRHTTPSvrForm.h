@@ -87,8 +87,10 @@ namespace SSWR
 			UI::GUICheckBox *chkAllowProxy;
 			UI::GUILabel *lblCacheFile;
 			UI::GUICheckBox *chkCacheFile;
-			UI::GUILabel *lblPackageFile;
-			UI::GUICheckBox *chkPackageFile;
+			UI::GUILabel *lblSPKPackageFile;
+			UI::GUICheckBox *chkSPKPackageFile;
+			UI::GUILabel *lblZIPPackageFile;
+			UI::GUICheckBox *chkZIPPackageFile;
 			UI::GUILabel *lblSkipLog;
 			UI::GUICheckBox *chkSkipLog;
 			UI::GUILabel *lblAllowKA;

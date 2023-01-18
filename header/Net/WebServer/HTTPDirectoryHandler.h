@@ -79,7 +79,7 @@ namespace Net
 			void SetExpirePeriod(Int32 periodSec);
 			void SetAllowOrigin(Text::CString origin);
 			void ClearFileCache();
-			void ExpandPackageFiles(Parser::ParserList *parsers);
+			void ExpandPackageFiles(Parser::ParserList *parsers, Text::CString searchPattern);
 			void EnableStats();
 			void SaveStats();
 		};

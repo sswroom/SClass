@@ -205,9 +205,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->log->AddLogHandler(me->logger, IO::ILogHandler::LogLevel::Raw);
 			}
-			if (me->chkPackageFile->IsChecked())
+			if (me->chkSPKPackageFile->IsChecked())
 			{
-				me->dirHdlr->ExpandPackageFiles(me->core->GetParserList());
+				me->dirHdlr->ExpandPackageFiles(me->core->GetParserList(), CSTR("*.spk"));
+			}
+			if (me->chkZIPPackageFile->IsChecked())
+			{
+				me->dirHdlr->ExpandPackageFiles(me->core->GetParserList(), CSTR("*.zip"));
 			}
 			if (me->chkCrossOrigin->IsChecked())
 			{
@@ -233,7 +237,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		me->chkAllowBrowse->SetEnabled(false);
 		me->chkAllowProxy->SetEnabled(false);
 		me->chkCacheFile->SetEnabled(false);
-		me->chkPackageFile->SetEnabled(false);
+		me->chkSPKPackageFile->SetEnabled(false);
+		me->chkZIPPackageFile->SetEnabled(false);
 		me->chkSkipLog->SetEnabled(false);
 		me->chkAllowKA->SetEnabled(false);
 		me->chkCrossOrigin->SetEnabled(false);
@@ -275,7 +280,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 	me->chkAllowBrowse->SetEnabled(true);
 	me->chkAllowProxy->SetEnabled(true);
 	me->chkCacheFile->SetEnabled(true);
-	me->chkPackageFile->SetEnabled(true);
+	me->chkSPKPackageFile->SetEnabled(true);
+	me->chkZIPPackageFile->SetEnabled(true);
 	me->chkSkipLog->SetEnabled(true);
 	me->chkAllowKA->SetEnabled(true);
 	me->chkCrossOrigin->SetEnabled(true);
@@ -506,31 +512,35 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->lblCacheFile->SetRect(8, 152, 100, 23, false);
 	NEW_CLASS(this->chkCacheFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
 	this->chkCacheFile->SetRect(108, 152, 100, 23, false);
-	NEW_CLASS(this->lblPackageFile, UI::GUILabel(ui, this->grpParam, CSTR("Expand Packages")));
-	this->lblPackageFile->SetRect(8, 176, 100, 23, false);
-	NEW_CLASS(this->chkPackageFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkPackageFile->SetRect(108, 176, 100, 23, false);
+	NEW_CLASS(this->lblSPKPackageFile, UI::GUILabel(ui, this->grpParam, CSTR("Expand SPK Packages")));
+	this->lblSPKPackageFile->SetRect(8, 176, 100, 23, false);
+	NEW_CLASS(this->chkSPKPackageFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
+	this->chkSPKPackageFile->SetRect(108, 176, 100, 23, false);
+	NEW_CLASS(this->lblZIPPackageFile, UI::GUILabel(ui, this->grpParam, CSTR("Expand ZIP Packages")));
+	this->lblZIPPackageFile->SetRect(8, 200, 100, 23, false);
+	NEW_CLASS(this->chkZIPPackageFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
+	this->chkZIPPackageFile->SetRect(108, 200, 100, 23, false);
 	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, CSTR("Skip Logging")));
-	this->lblSkipLog->SetRect(8, 200, 100, 23, false);
+	this->lblSkipLog->SetRect(8, 224, 100, 23, false);
 	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
-	this->chkSkipLog->SetRect(108, 200, 100, 23, false);
+	this->chkSkipLog->SetRect(108, 224, 100, 23, false);
 	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, CSTR("Allow KA")));
-	this->lblAllowKA->SetRect(8, 224, 100, 23, false);
+	this->lblAllowKA->SetRect(8, 248, 100, 23, false);
 	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkAllowKA->SetRect(108, 224, 100, 23, false);
+	this->chkAllowKA->SetRect(108, 248, 100, 23, false);
 	NEW_CLASS(this->lblCrossOrigin, UI::GUILabel(ui, this->grpParam, CSTR("Cross Origin")));
-	this->lblCrossOrigin->SetRect(8, 248, 100, 23, false);
+	this->lblCrossOrigin->SetRect(8, 272, 100, 23, false);
 	NEW_CLASS(this->chkCrossOrigin, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), false));
-	this->chkCrossOrigin->SetRect(108, 248, 100, 23, false);
+	this->chkCrossOrigin->SetRect(108, 272, 100, 23, false);
 	NEW_CLASS(this->lblDownloadCnt, UI::GUILabel(ui, this->grpParam, CSTR("Download Count")));
-	this->lblDownloadCnt->SetRect(8, 272, 100, 23, false);
+	this->lblDownloadCnt->SetRect(8, 320, 100, 23, false);
 	NEW_CLASS(this->chkDownloadCnt, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkDownloadCnt->SetRect(108, 272, 100, 23, false);
+	this->chkDownloadCnt->SetRect(108, 320, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
-	this->btnStart->SetRect(200, 332, 75, 23, false);
+	this->btnStart->SetRect(200, 356, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, CSTR("Stop")));
-	this->btnStop->SetRect(300, 332, 75, 23, false);
+	this->btnStop->SetRect(300, 356, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 
 	NEW_CLASS(this->lblConnCurr, UI::GUILabel(ui, this->tpStatus, CSTR("Conn Curr")));

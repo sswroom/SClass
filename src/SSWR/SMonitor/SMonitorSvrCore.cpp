@@ -1224,7 +1224,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
 
-					hdlr->ExpandPackageFiles(this->parsers);
+					hdlr->ExpandPackageFiles(this->parsers, CSTR("*.spk"));
 					this->webHdlr = hdlr;
 					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, true, false));
 					if (this->listener->IsError())

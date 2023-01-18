@@ -1553,12 +1553,13 @@ Bool DB::ODBCReader::ReadNext()
 					}
 				}
 				break;
+			case DB::DBUtil::CT_Int32:
 			case DB::DBUtil::CT_Int16:
 			case DB::DBUtil::CT_UInt16:
 			case DB::DBUtil::CT_UInt32:
-			case DB::DBUtil::CT_Int32:
 			case DB::DBUtil::CT_Byte:
 			case DB::DBUtil::CT_Bool:
+				this->colDatas[i].isNull = true;
 				{
 					SQLINTEGER val;
 					ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_SLONG, &val, sizeof(val), &len);
