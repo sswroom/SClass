@@ -1,9 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
+#include "Text/CSSBuilder.h"
 #include "UI/GUIProgressBar.h"
 
 #include <gtk/gtk.h>
+#define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 
 typedef struct
 {
@@ -38,6 +40,17 @@ UI::GUIProgressBar::GUIProgressBar(UI::GUICore *ui, UI::GUIClientControl *parent
 {
 	this->hwnd = (ControlHandle*)gtk_progress_bar_new();
 	gtk_progress_bar_set_show_text((GtkProgressBar*)this->hwnd, false);
+#if GDK_VERSION_AFTER(3, 16)
+	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
+	builder.NewStyle(CSTR("progress, trough"), CSTR_NULL);
+	builder.AddMinHeight(24, Math::Unit::Distance::DU_PIXEL);
+	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkStyleContext *style = gtk_widget_get_style_context(widget);
+	GtkCssProvider *styleProvider = gtk_css_provider_new();
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+	gtk_widget_reset_style(widget);
+#endif
 	parent->AddChild(this);
 	this->Show();
 	this->totalCnt = totalCnt;

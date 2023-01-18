@@ -108,21 +108,7 @@ Bool Text::CSSBuilder::AddFontSize(Double size, Math::Unit::Distance::DistanceUn
 {
 	if (this->bstate == BS_ROOT) return false;
 	this->AppendStyleName(CSTR("font-size"));
-	if (du == Math::Unit::Distance::DU_PIXEL)
-	{
-		Text::SBAppendF64(&this->sb, size);
-		this->sb.AppendC(UTF8STRC("px"));
-	}
-	else if (du == Math::Unit::Distance::DU_POINT)
-	{
-		Text::SBAppendF64(&this->sb, size);
-		this->sb.AppendC(UTF8STRC("pt"));
-	}
-	else
-	{
-		Text::SBAppendF64(&this->sb, Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_PIXEL, size));
-		this->sb.AppendC(UTF8STRC("px"));
-	}
+	this->AppendDistance(size, du);
 	return true;
 }
 
@@ -157,6 +143,14 @@ Bool Text::CSSBuilder::AddFontWeight(FontWeight weight)
 	return true;
 }
 
+Bool Text::CSSBuilder::AddMinHeight(Double h, Math::Unit::Distance::DistanceUnit du)
+{
+	if (this->bstate == BS_ROOT) return false;
+	this->AppendStyleName(CSTR("min-height"));
+	this->AppendDistance(h, du);
+	return true;
+}
+
 const UTF8Char *Text::CSSBuilder::ToString()
 {
 	this->EndStyle();
@@ -183,6 +177,30 @@ void Text::CSSBuilder::AppendStyleName(Text::CString name)
 	else
 	{
 		this->sb.AppendC(UTF8STRC(": "));
+	}
+}
+
+void Text::CSSBuilder::AppendDistance(Double size, Math::Unit::Distance::DistanceUnit du)
+{
+	if (du == Math::Unit::Distance::DU_PIXEL)
+	{
+		Text::SBAppendF64(&this->sb, size);
+		this->sb.AppendC(UTF8STRC("px"));
+	}
+	else if (du == Math::Unit::Distance::DU_POINT)
+	{
+		Text::SBAppendF64(&this->sb, size);
+		this->sb.AppendC(UTF8STRC("pt"));
+	}
+	else if (du == Math::Unit::Distance::DU_EMU)
+	{
+		Text::SBAppendF64(&this->sb, size);
+		this->sb.AppendC(UTF8STRC("em"));
+	}
+	else
+	{
+		Text::SBAppendF64(&this->sb, Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_PIXEL, size));
+		this->sb.AppendC(UTF8STRC("px"));
 	}
 }
 

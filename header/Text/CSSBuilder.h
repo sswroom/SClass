@@ -53,11 +53,14 @@ namespace Text
 		Bool AddFontSize(Double size, Math::Unit::Distance::DistanceUnit du);
 		Bool AddFontWeight(FontWeight weight);
 
+		Bool AddMinHeight(Double h, Math::Unit::Distance::DistanceUnit du);
+
 		const UTF8Char *ToString();
 
 	private:
 		void AppendNewLine();
 		void AppendStyleName(Text::CString name);
+		void AppendDistance(Double size, Math::Unit::Distance::DistanceUnit du);
 		void AppendRGBAColor(UInt32 argb);
 		void NextEntry();
 	};
