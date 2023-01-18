@@ -10,7 +10,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 
 	console->WriteLineC(UTF8STRC("Default Color"));
-	console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+	console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 	console->WriteLineC(UTF8STRC("Red Text"));
 	console->ResetTextColor();
 	console->WriteLine();
@@ -24,7 +24,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteInt16: Invalid"));
 		console->ResetTextColor();
 	}
@@ -35,7 +35,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteMInt16: Invalid"));
 		console->ResetTextColor();
 	}
@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteInt24: Invalid"));
 		console->ResetTextColor();
 	}
@@ -58,7 +58,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteMInt24: Invalid"));
 		console->ResetTextColor();
 	}
@@ -70,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteInt32: Invalid"));
 		console->ResetTextColor();
 	}
@@ -81,7 +81,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteMInt32: Invalid"));
 		console->ResetTextColor();
 	}
@@ -94,7 +94,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteInt64: Invalid"));
 		console->ResetTextColor();
 	}
@@ -105,7 +105,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("WriteMInt64: Invalid"));
 		console->ResetTextColor();
 	}
@@ -125,7 +125,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadInt16: Invalid"));
 		console->ResetTextColor();
 	}
@@ -135,7 +135,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadMInt16: Invalid"));
 		console->ResetTextColor();
 	}
@@ -145,7 +145,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadInt24: Invalid"));
 		console->ResetTextColor();
 	}
@@ -155,7 +155,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadMInt24: Invalid"));
 		console->ResetTextColor();
 	}
@@ -165,7 +165,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadInt32: Invalid"));
 		console->ResetTextColor();
 	}
@@ -175,7 +175,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadMInt32: Invalid"));
 		console->ResetTextColor();
 	}
@@ -186,7 +186,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadInt64: Invalid"));
 		console->ResetTextColor();
 	}
@@ -196,7 +196,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 		console->WriteLineC(UTF8STRC("ReadMInt64: Invalid"));
 		console->ResetTextColor();
 	}

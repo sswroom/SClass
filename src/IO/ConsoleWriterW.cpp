@@ -26,6 +26,7 @@ IO::ConsoleWriter::ConsoleWriter()
 	this->enc = 0;
 	this->autoFlush = false;
 	this->fileOutput = false;
+	this->bgColor = StandardColor::Black;
 	UInt32 mode;
 #ifndef _WIN32_WCE
 	BOOL ret = GetConsoleMode(this->hand, (LPDWORD)&mode);
@@ -212,16 +213,46 @@ Bool IO::ConsoleWriter::WriteLine()
 	return false;
 }
 
-void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgColor, IO::ConsoleWriter::ConsoleColor bgColor)
+Bool IO::ConsoleWriter::WriteChar(UTF8Char c)
+{
+	UInt32 outChars = 0;
+	WChar buff[2];
+	buff[0] = c;
+	if (fileOutput)
+	{
+		WriteFile((HANDLE)this->hand, buff, 1, (LPDWORD)&outChars, 0);
+	}
+	else
+	{
+		WriteConsoleW((HANDLE)this->hand, buff, 1, (LPDWORD)&outChars, 0);
+	}
+	if (outChars == 1)
+	{
+		if (this->autoFlush)
+		{
+			FlushFileBuffers((HANDLE)this->hand);
+		}
+		return true;
+	}
+	return false;
+}
+
+void IO::ConsoleWriter::SetBGColor(StandardColor bgColor)
+{
+	this->bgColor = bgColor;
+}
+
+void IO::ConsoleWriter::SetTextColor(StandardColor fgColor)
 {
 #ifndef _WIN32_WCE
-	SetConsoleTextAttribute((HANDLE)this->hand, (UInt16)((fgColor & 0xf) | ((bgColor & 0xf) << 4)));
+	SetConsoleTextAttribute((HANDLE)this->hand, (UInt16)(((UInt8)fgColor & 0xf) | (((UInt8)this->bgColor & 0xf) << 4)));
 #endif
 }
 
 void IO::ConsoleWriter::ResetTextColor()
 {
-	SetTextColor(CC_GRAY, CC_BLACK);
+	SetBGColor(StandardColor::Black);
+	SetTextColor(StandardColor::Gray);
 }
 
 UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
@@ -309,8 +340,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	CONSOLE_SCREEN_BUFFER_INFO info;
 	if (GetConsoleScreenBufferInfo((HANDLE)this->hand, &info) == FALSE)
 		return false;
-	state->fgColor = (ConsoleColor)(info.wAttributes & 0xf);
-	state->bgColor = (ConsoleColor)((info.wAttributes >> 4) & 0xf);
+	state->fgColor = (StandardColor)(info.wAttributes & 0xf);
+	state->bgColor = (StandardColor)((info.wAttributes >> 4) & 0xf);
 	state->currX = (UInt32)info.dwCursorPosition.X;
 	state->currY = (UInt32)info.dwCursorPosition.Y;
 	state->consoleWidth = (UInt32)info.dwSize.X;

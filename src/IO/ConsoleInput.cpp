@@ -32,7 +32,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	}
 
 	console->GetConsoleState(&state);
-	console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_DARK_BLUE);
+	console->SetBGColor(Text::StyledTextWriter::StandardColor::DarkBlue);
+	console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 
 	if ((state.consoleWidth - state.currX) < 11)
 	{
@@ -210,7 +211,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 	}
 
 	console->GetConsoleState(&state);
-	console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_DARK_BLUE);
+	console->SetBGColor(Text::StyledTextWriter::StandardColor::DarkBlue);
+	console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 
 	if ((state.consoleWidth - state.currX) < 5)
 	{
@@ -298,7 +300,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 		k = nNames - 1;
 
 	console->GetConsoleState(&state);
-	console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_DARK_BLUE);
+	console->SetBGColor(Text::StyledTextWriter::StandardColor::DarkBlue);
+	console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 
 	if ((state.consoleWidth - state.currX) < maxStrSize)
 	{
@@ -474,7 +477,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 	while (true)
 	{
 		console->SetCursorPos(state.currX, state.currY);
-		console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+		console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[0]);
 		i = 4 - (Int32)(sptr - sbuff);
 		while (i-- > 0)
@@ -486,7 +490,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
 		console->WriteStrC(UTF8STRC("-"));
-		console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+		console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[1]);
 		if ((sptr - sbuff) == 1)
 			console->WriteStrC(UTF8STRC(" "));
@@ -494,7 +499,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
 		console->WriteStrC(UTF8STRC("-"));
-		console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+		console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[2]);
 		if ((sptr - sbuff) == 1)
 			console->WriteStrC(UTF8STRC(" "));
@@ -502,7 +508,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
 		console->WriteStrC(UTF8STRC(" "));
-		console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+		console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[3]);
 		if ((sptr - sbuff) == 1)
 			console->WriteStrC(UTF8STRC(" "));
@@ -510,7 +517,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
 		console->WriteStrC(UTF8STRC(":"));
-		console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+		console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[4]);
 		if ((sptr - sbuff) == 1)
 			console->WriteStrC(UTF8STRC(" "));
@@ -518,7 +526,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
 		console->WriteStrC(UTF8STRC(":"));
-		console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+		console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+		console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[5]);
 		if ((sptr - sbuff) == 1)
 			console->WriteStrC(UTF8STRC(" "));
@@ -638,7 +647,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	}
 
 	console->GetConsoleState(&state);
-	console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+	console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+	console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 
 	if ((state.consoleWidth - state.currX) < buffSize * 2)
 	{
@@ -816,7 +826,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	}
 
 	console->GetConsoleState(&state);
-	console->SetTextColor(IO::ConsoleWriter::CC_WHITE, IO::ConsoleWriter::CC_BLUE);
+	console->SetBGColor(Text::StyledTextWriter::StandardColor::Blue);
+	console->SetTextColor(Text::StyledTextWriter::StandardColor::White);
 
 	if ((state.consoleWidth - state.currX) < maxCharCnt)
 	{

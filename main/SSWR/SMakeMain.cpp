@@ -106,7 +106,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						{
 							Text::StringBuilderUTF8 sb;
 							smake.GetErrorMsg(&sb);
-							console.SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+							console.SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 							console.WriteLineC(sb.ToString(), sb.GetLength());
 							console.ResetTextColor();
 						}
@@ -117,7 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC(UTF8STRC("Program "));
 						sb.AppendC(cmdLines[i], cmdLineLen);
 						sb.AppendC(UTF8STRC(" not found"));
-						console.SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+						console.SetTextColor(Text::StyledTextWriter::StandardColor::Red);
 						console.WriteLineC(sb.ToString(), sb.GetLength());
 						console.ResetTextColor();
 					}

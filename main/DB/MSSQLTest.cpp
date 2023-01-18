@@ -103,6 +103,33 @@ public:
 	Data::NamedClass<AdsbMovementstatistics> *CreateClass() const;
 };
 
+class FlightHoldingsPeriod
+{
+private:
+	Text::String* finalUploadId;
+	Data::Timestamp beginTime;
+	Data::Timestamp endTime;
+	Text::String* visitedwaypoints;
+	Int32 seqno;
+
+public:
+	FlightHoldingsPeriod();
+	~FlightHoldingsPeriod();
+
+	Text::String* GetFinalUploadId() const;
+	void SetFinalUploadId(Text::String* finalUploadId);
+	Data::Timestamp GetBeginTime() const;
+	void SetBeginTime(Data::Timestamp beginTime);
+	Data::Timestamp GetEndTime() const;
+	void SetEndTime(Data::Timestamp endTime);
+	Text::String* GetVisitedwaypoints() const;
+	void SetVisitedwaypoints(Text::String* visitedwaypoints);
+	Int32 GetSeqno() const;
+	void SetSeqno(Int32 seqno);
+
+	Data::NamedClass<FlightHoldingsPeriod> *CreateClass() const;
+};
+
 AdsbMovementstatistics::AdsbMovementstatistics()
 {
 	this->uploadId = 0;
@@ -476,13 +503,92 @@ Data::NamedClass<AdsbMovementstatistics> *AdsbMovementstatistics::CreateClass() 
 	return cls;
 }
 
+FlightHoldingsPeriod::FlightHoldingsPeriod()
+{
+	this->finalUploadId = 0;
+	this->beginTime = 0;
+	this->endTime = 0;
+	this->visitedwaypoints = 0;
+	this->seqno = 0;
+}
+
+FlightHoldingsPeriod::~FlightHoldingsPeriod()
+{
+	SDEL_STRING(this->finalUploadId);
+	SDEL_STRING(this->visitedwaypoints);
+}
+
+Text::String* FlightHoldingsPeriod::GetFinalUploadId() const
+{
+	return this->finalUploadId;
+}
+
+void FlightHoldingsPeriod::SetFinalUploadId(Text::String* finalUploadId)
+{
+	SDEL_STRING(this->finalUploadId);
+	this->finalUploadId = finalUploadId?finalUploadId->Clone():0;
+}
+
+Data::Timestamp FlightHoldingsPeriod::GetBeginTime() const
+{
+	return this->beginTime;
+}
+
+void FlightHoldingsPeriod::SetBeginTime(Data::Timestamp beginTime)
+{
+	this->beginTime = beginTime;
+}
+
+Data::Timestamp FlightHoldingsPeriod::GetEndTime() const
+{
+	return this->endTime;
+}
+
+void FlightHoldingsPeriod::SetEndTime(Data::Timestamp endTime)
+{
+	this->endTime = endTime;
+}
+
+Text::String* FlightHoldingsPeriod::GetVisitedwaypoints() const
+{
+	return this->visitedwaypoints;
+}
+
+void FlightHoldingsPeriod::SetVisitedwaypoints(Text::String* visitedwaypoints)
+{
+	SDEL_STRING(this->visitedwaypoints);
+	this->visitedwaypoints = visitedwaypoints?visitedwaypoints->Clone():0;
+}
+
+Int32 FlightHoldingsPeriod::GetSeqno() const
+{
+	return this->seqno;
+}
+
+void FlightHoldingsPeriod::SetSeqno(Int32 seqno)
+{
+	this->seqno = seqno;
+}
+
+Data::NamedClass<FlightHoldingsPeriod> *FlightHoldingsPeriod::CreateClass() const
+{
+	Data::NamedClass<FlightHoldingsPeriod> *cls;
+	NEW_CLASS(cls, Data::NamedClass<FlightHoldingsPeriod>(this));
+	CLASS_ADD(cls, finalUploadId);
+	CLASS_ADD(cls, beginTime);
+	CLASS_ADD(cls, endTime);
+	CLASS_ADD(cls, visitedwaypoints);
+	CLASS_ADD(cls, seqno);
+	return cls;
+}
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Text::CString serverHost;
 	Text::CString database;
 	Text::CString uid;
 	Text::CString pwd;
-	serverHost = CSTR("192.168.0.204");
+	serverHost = CSTR("192.168.1.138");
 	database = CSTR("ATMVAD_DEV");
 	uid = CSTR("sa");
 	pwd = CSTR("sa");
@@ -495,21 +601,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	db = DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, database, uid, pwd, &log, CSTR("DB: "));
 	if (db)
 	{
-		DB::DBReader *r = db->QueryTableData(CSTR("dbo"), CSTR("ADSB_MovementStatistics"), 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Manage::HiResClock clk;
-			Data::NamedClass<AdsbMovementstatistics> *cls;
+			Data::NamedClass<FlightHoldingsPeriod> *cls;
 			{
-				AdsbMovementstatistics ams;
+				FlightHoldingsPeriod ams;
 				cls = ams.CreateClass();
 			}
 			UOSInt cnt = 0;
 			{
-				DB::DBClassReader<AdsbMovementstatistics> reader(r, cls);
+				DB::DBClassReader<FlightHoldingsPeriod> reader(r, cls);
 				while (true)
 				{
-					AdsbMovementstatistics ams;
+					FlightHoldingsPeriod ams;
 					if (!reader.ReadNext(&ams))
 						break;
 					cnt++;

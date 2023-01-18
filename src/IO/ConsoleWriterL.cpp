@@ -14,6 +14,7 @@
 IO::ConsoleWriter::ConsoleWriter()
 {
 	setbuf(stdout, 0);
+	this->bgColor = StandardColor::Black;
 }
 
 IO::ConsoleWriter::~ConsoleWriter()
@@ -38,10 +39,21 @@ Bool IO::ConsoleWriter::WriteLine()
 	return true;
 }
 
-void IO::ConsoleWriter::SetTextColor(IO::ConsoleWriter::ConsoleColor fgCol, IO::ConsoleWriter::ConsoleColor bgCol)
+Bool IO::ConsoleWriter::WriteChar(UTF8Char c)
 {
-	UInt8 fgColor = fgCol;
-	UInt8 bgColor = bgCol;
+	printf("%c", c);
+	return true;
+}
+
+void IO::ConsoleWriter::SetBGColor(StandardColor bgColor)
+{
+	this->bgColor = bgColor;
+}
+
+void IO::ConsoleWriter::SetTextColor(StandardColor fgCol)
+{
+	UInt8 fgColor = (UInt8)fgCol;
+	UInt8 bgColor = (UInt8)this->bgColor;
 	fgColor = (UInt8)((fgColor & ~5) | ((fgColor & 1) << 2) | ((fgColor & 4) >> 2));
 	bgColor = (UInt8)((bgColor & ~5) | ((bgColor & 1) << 2) | ((bgColor & 4) >> 2));
 	if (fgColor & 8)
@@ -105,8 +117,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	ioctl(0, TIOCGWINSZ, &w);
 	state->consoleWidth = w.ws_col;
 	state->consoleHeight = w.ws_row;
-	state->fgColor = CC_BLACK;
-	state->bgColor = CC_BLACK;
+	state->fgColor = StandardColor::Black;
+	state->bgColor = StandardColor::Black;
 
 	struct termios oldIOS;
 	struct termios newIOS;

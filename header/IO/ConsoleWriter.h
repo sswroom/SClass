@@ -1,6 +1,6 @@
 #ifndef _SM_IO_CONSOLEWRITER
 #define _SM_IO_CONSOLEWRITER
-#include "IO/Writer.h"
+#include "Text/StyledTextWriter.h"
 
 namespace Text
 {
@@ -13,32 +13,13 @@ namespace Sync
 
 namespace IO
 {
-	class ConsoleWriter : public IO::Writer
+	class ConsoleWriter : public Text::StyledTextWriter
 	{
 	public:
-		typedef enum
-		{
-			CC_BLACK = 0,
-			CC_DARK_BLUE = 1,
-			CC_DARK_GREEN = 2,
-			CC_DARK_CYAN = 3,
-			CC_DARK_RED = 4,
-			CC_DARK_MAGENTA = 5,
-			CC_DARK_YELLOW = 6,
-			CC_GRAY = 7,
-			CC_DARK_GRAY = 8,
-			CC_BLUE = 9,
-			CC_GREEN = 10,
-			CC_CYAN = 11,
-			CC_RED = 12,
-			CC_MAGENTA = 13,
-			CC_YELLOW = 14,
-			CC_WHITE = 15
-		} ConsoleColor;
 		typedef struct
 		{
-			ConsoleColor fgColor;
-			ConsoleColor bgColor;
+			StandardColor fgColor;
+			StandardColor bgColor;
 			UInt32 currX;
 			Int32 currY;
 			UInt32 consoleWidth;
@@ -50,6 +31,7 @@ namespace IO
 		Sync::Mutex *mut;
 		Bool autoFlush;
 		Bool fileOutput;
+		StandardColor bgColor;
 
 	public:
 		ConsoleWriter();
@@ -58,12 +40,16 @@ namespace IO
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
 		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
 		virtual Bool WriteLine();
+		virtual Bool WriteChar(UTF8Char c);
+
+		void SetBGColor(StandardColor bgColor);
+		virtual void SetTextColor(StandardColor fgColor);
+		virtual void ResetTextColor();
+
+		UOSInt CalDisplaySize(const WChar *str);
 
 		WChar *ReadLine(WChar *sbuff, UOSInt nChar);
 
-		void SetTextColor(ConsoleColor fgColor, ConsoleColor bgColor);
-		void ResetTextColor();
-		UOSInt CalDisplaySize(const WChar *str);
 		void EnableCPFix(Bool isEnable);
 		void SetAutoFlush(Bool autoFlush);
 		Bool GetConsoleState(ConsoleState *state);

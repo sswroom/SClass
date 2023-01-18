@@ -184,6 +184,27 @@ namespace Data
 				{
 					return k;
 				}*/
+/*				if (this->items[k].s->Equals(s, len))
+				{
+					return k;
+				}
+				i = k;
+				while (i > 0 && this->items[i - 1].hash == hash)
+				{
+					i--;
+					if (this->items[i].s->Equals(s, len))
+					{
+						return i;
+					}
+				}
+				while (++k < j && this->items[k].hash == hash)
+				{
+					if (this->items[k].s->Equals(s, len))
+					{
+						return k;
+					}
+				}
+				return ~k;*/
 			}
 			else if (this->items[k].hash > hash)
 			{

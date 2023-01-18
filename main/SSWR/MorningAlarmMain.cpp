@@ -322,9 +322,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sptr = startDt->ToString(sptr, "yyyy-MM-dd HH:mm:ss");
 					console->WriteLineC(buff, (UOSInt)(sptr - buff));
 
-					console->SetTextColor(IO::ConsoleWriter::CC_GRAY, IO::ConsoleWriter::CC_DARK_GREEN);
+					console->SetBGColor(Text::StyledTextWriter::StandardColor::DarkGreen);
+					console->SetTextColor(Text::StyledTextWriter::StandardColor::Gray);
 					console->WriteLineC(UTF8STRC("Press Ctrl+C to exit"));
-					console->SetTextColor(IO::ConsoleWriter::CC_GRAY, IO::ConsoleWriter::CC_BLACK);
+					console->SetBGColor(Text::StyledTextWriter::StandardColor::Black);
+					console->SetTextColor(Text::StyledTextWriter::StandardColor::Gray);
 					Sync::Thread::Create(PlayThread, 0);
 
 					progCtrl->WaitForExit(progCtrl);
