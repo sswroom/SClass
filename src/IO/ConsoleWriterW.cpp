@@ -26,7 +26,7 @@ IO::ConsoleWriter::ConsoleWriter()
 	this->enc = 0;
 	this->autoFlush = false;
 	this->fileOutput = false;
-	this->bgColor = StandardColor::Black;
+	this->bgColor = Text::StandardColor::Black;
 	UInt32 mode;
 #ifndef _WIN32_WCE
 	BOOL ret = GetConsoleMode(this->hand, (LPDWORD)&mode);
@@ -237,12 +237,12 @@ Bool IO::ConsoleWriter::WriteChar(UTF8Char c)
 	return false;
 }
 
-void IO::ConsoleWriter::SetBGColor(StandardColor bgColor)
+void IO::ConsoleWriter::SetBGColor(Text::StandardColor bgColor)
 {
 	this->bgColor = bgColor;
 }
 
-void IO::ConsoleWriter::SetTextColor(StandardColor fgColor)
+void IO::ConsoleWriter::SetTextColor(Text::StandardColor fgColor)
 {
 #ifndef _WIN32_WCE
 	SetConsoleTextAttribute((HANDLE)this->hand, (UInt16)(((UInt8)fgColor & 0xf) | (((UInt8)this->bgColor & 0xf) << 4)));
@@ -251,8 +251,8 @@ void IO::ConsoleWriter::SetTextColor(StandardColor fgColor)
 
 void IO::ConsoleWriter::ResetTextColor()
 {
-	SetBGColor(StandardColor::Black);
-	SetTextColor(StandardColor::Gray);
+	SetBGColor(Text::StandardColor::Black);
+	SetTextColor(Text::StandardColor::Gray);
 }
 
 UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
@@ -340,8 +340,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	CONSOLE_SCREEN_BUFFER_INFO info;
 	if (GetConsoleScreenBufferInfo((HANDLE)this->hand, &info) == FALSE)
 		return false;
-	state->fgColor = (StandardColor)(info.wAttributes & 0xf);
-	state->bgColor = (StandardColor)((info.wAttributes >> 4) & 0xf);
+	state->fgColor = (Text::StandardColor)(info.wAttributes & 0xf);
+	state->bgColor = (Text::StandardColor)((info.wAttributes >> 4) & 0xf);
 	state->currX = (UInt32)info.dwCursorPosition.X;
 	state->currY = (UInt32)info.dwCursorPosition.Y;
 	state->consoleWidth = (UInt32)info.dwSize.X;

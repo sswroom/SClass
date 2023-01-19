@@ -260,6 +260,153 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	return ;
 }
 
+Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	UInt8 compBuff[10];
+	sptr = IO::Path::GetFileExt(sbuff, pitem->name->v, pitem->name->leng);
+	Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
+
+	if (pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
+	{
+		Net::BrowserInfo::BrowserType browser = req->GetBrowser();
+		Manage::OSInfo::OSType os = req->GetOS();
+		Text::String *enc = req->GetSHeader(CSTR("Accept-Encoding"));
+		if (pitem->compInfo->checkMethod == Crypto::Hash::HashType::CRC32R_IEEE && enc && enc->IndexOf(UTF8STRC("gzip")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowGZip(browser, os))
+		{
+			resp->EnableWriteBuffer();
+			resp->AddDefHeaders(req);
+			resp->AddLastModified(pitem->modTime);
+			if (this->allowOrigin)
+			{
+				resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+			}
+			resp->AddContentType(mime);
+			resp->AddHeader(CSTR("Content-Encoding"), CSTR("gzip"));
+			resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
+
+			compBuff[0] = 0x1F;
+			compBuff[1] = 0x8B;
+			compBuff[2] = 8;
+			compBuff[3] = 0;
+			compBuff[4] = 0;
+			compBuff[5] = 0;
+			compBuff[6] = 0;
+			compBuff[7] = 0;
+			compBuff[8] = 0;
+			compBuff[9] = 0xff;
+			resp->Write(compBuff, 10);
+
+			UInt64 dataSize = pitem->fd->GetDataSize();
+			UInt8 *buff;
+			UInt64 ofst;
+			UOSInt readSize;
+			if (dataSize < 1048576)
+			{
+				buff = MemAlloc(UInt8, (UOSInt)dataSize);
+				pitem->fd->GetRealData(0, (UOSInt)dataSize, buff);
+				resp->Write(buff, (UOSInt)dataSize);
+				MemFree(buff);
+			}
+			else
+			{
+				ofst = 0;
+				buff = MemAlloc(UInt8, 1048576);
+				while (dataSize > 0)
+				{
+					if (dataSize > 1048576)
+					{
+						readSize = 1048576;
+					}
+					else
+					{
+						readSize = (UOSInt)dataSize;
+					}
+					pitem->fd->GetRealData(ofst, readSize, buff);
+					resp->Write(buff, readSize);
+					ofst += readSize;
+					dataSize -= readSize;
+				}
+				MemFree(buff);
+			}
+			WriteUInt32(&compBuff[0], ReadMUInt32(pitem->compInfo->checkBytes));
+			WriteUInt32(&compBuff[4], (UInt32)pitem->compInfo->decSize);
+			resp->Write(compBuff, 8);
+
+			return true;
+		}
+		else if (enc && enc->IndexOf(UTF8STRC("deflate")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowDeflate(browser, os))
+		{
+			resp->EnableWriteBuffer();
+			resp->AddDefHeaders(req);
+			resp->AddLastModified(pitem->modTime);
+			if (this->allowOrigin)
+			{
+				resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+			}
+			resp->AddContentType(mime);
+			resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
+			resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
+
+			UInt64 dataSize = pitem->fd->GetDataSize();
+			UInt8 *buff;
+			UInt64 ofst;
+			UOSInt readSize;
+			if (dataSize < 1048576)
+			{
+				buff = MemAlloc(UInt8, (UOSInt)dataSize);
+				pitem->fd->GetRealData(0, (UOSInt)dataSize, buff);
+				resp->Write(buff, (UOSInt)dataSize);
+				MemFree(buff);
+			}
+			else
+			{
+				ofst = 0;
+				buff = MemAlloc(UInt8, 1048576);
+				while (dataSize > 0)
+				{
+					if (dataSize > 1048576)
+					{
+						readSize = 1048576;
+					}
+					else
+					{
+						readSize = (UOSInt)dataSize;
+					}
+					pitem->fd->GetRealData(ofst, readSize, buff);
+					resp->Write(buff, readSize);
+					ofst += readSize;
+					dataSize -= readSize;
+				}
+				MemFree(buff);
+			}
+			return true;
+		}
+	}
+	IO::IStreamData *stmData = packageFile->GetPItemStmDataNew(pitem);
+	if (stmData)
+	{
+		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
+		UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
+		stmData->GetRealData(0, dataLen, dataBuff);
+		DEL_CLASS(stmData);
+
+		resp->EnableWriteBuffer();
+		resp->AddDefHeaders(req);
+		resp->AddLastModified(pitem->modTime);
+		if (this->allowOrigin)
+		{
+			resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+		}
+		resp->AddContentType(mime);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
+		MemFree(dataBuff);
+		return true;
+	}
+	return false;
+}
+
 void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirectoryHandler::StatInfo *stat)
 {
 	Text::StringBuilderUTF8 sb;
@@ -450,27 +597,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				const IO::PackFileItem *pitem2 = packageFile->GetPackFileItem((const UTF8Char*)"index.html");
 				if (pitem2 && packageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 				{
-					IO::IStreamData *stmData = packageFile->GetPItemStmDataNew(pitem2);
-					if (stmData)
-					{
-						UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-						UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
-						stmData->GetRealData(0, dataLen, dataBuff);
-						DEL_CLASS(stmData);
-						mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
-
-						resp->EnableWriteBuffer();
-						resp->AddDefHeaders(req);
-						resp->AddLastModified(pitem2->modTime);
-						if (this->allowOrigin)
-						{
-							resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-						}
-						resp->AddContentType(mime);
-						Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
-						MemFree(dataBuff);
-					}
-					else
+					if (!ResponsePackageFileItem(req,resp, packageFile, pitem2))
 					{
 						ResponsePackageFile(req, resp, subReq, packageFile);
 					}
@@ -491,26 +618,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				IO::PackageFile::PackObjectType pot = packageFile->GetPItemType(pitem);
 				if (pot == IO::PackageFile::PackObjectType::StreamData)
 				{
-					IO::IStreamData *stmData = packageFile->GetPItemStmDataNew(pitem);
-					if (stmData)
+					if (ResponsePackageFileItem(req, resp, packageFile, pitem))
 					{
-						UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-						UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
-						stmData->GetRealData(0, dataLen, dataBuff);
-						DEL_CLASS(stmData);
-						sptr3 = IO::Path::GetFileExt(sbuff, sptr, sb.GetLength() - i - 2);
-						mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
-
-						resp->EnableWriteBuffer();
-						resp->AddDefHeaders(req);
-						resp->AddLastModified(pitem->modTime);
-						if (this->allowOrigin)
-						{
-							resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-						}
-						resp->AddContentType(mime);
-						Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
-						MemFree(dataBuff);
 						if (needRelease)
 						{
 							DEL_CLASS(packageFile);

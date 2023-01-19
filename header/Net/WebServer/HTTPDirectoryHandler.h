@@ -64,6 +64,7 @@ namespace Net
 
 			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
 			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, IO::PackageFile *packageFile);
+			Bool ResponsePackageFileItem(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);

@@ -20,6 +20,8 @@ namespace Net
 			static Bool ResponseFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString fileName, OSInt cacheAge);
 
 			static void SetCompLevel(Data::Compress::DeflateStream::CompLevel compLevel);
+			static Bool AllowGZip(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
+			static Bool AllowDeflate(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
 		};
 	}
 }

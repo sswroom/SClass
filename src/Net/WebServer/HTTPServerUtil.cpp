@@ -105,7 +105,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			{
 				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].leng, UTF8STRC("gzip")))
 				{
-					if (browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
+					if (AllowGZip(browser, os))
 					{
 						resp->AddHeader(CSTR("Content-Encoding"), CSTR("gzip"));
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
@@ -423,4 +423,14 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 void Net::WebServer::HTTPServerUtil::SetCompLevel(Data::Compress::DeflateStream::CompLevel compLevel)
 {
 	Net::WebServer::HTTPServerUtil::compLevel = compLevel;
+}
+
+Bool Net::WebServer::HTTPServerUtil::AllowGZip(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os)
+{
+	return browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD;
+}
+
+Bool Net::WebServer::HTTPServerUtil::AllowDeflate(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os)
+{
+	return browser != Net::BrowserInfo::BT_IE;
 }

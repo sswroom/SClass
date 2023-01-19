@@ -73,6 +73,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("txt"),  UTF8STRC("text/plain")},
 	{UTF8STRC("wav"),  UTF8STRC("audio/x-wav")},
 	{UTF8STRC("webm"), UTF8STRC("video/webm")},
+	{UTF8STRC("webp"), UTF8STRC("image/webp")},
 	{UTF8STRC("wma"),  UTF8STRC("audio/x-ms-wma")},
 	{UTF8STRC("wmv"),  UTF8STRC("video/x-ms-wmv")},
 	{UTF8STRC("wrl"),  UTF8STRC("model/vrml")},
