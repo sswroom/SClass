@@ -19,7 +19,7 @@ Data::ArrayList<Text::String*> *Data::ArrayListICaseString::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseString::CompareItem(Text::String* obj1, Text::String* obj2) const
+OSInt Data::ArrayListICaseString::Compare(Text::String* obj1, Text::String* obj2) const
 {
 	return obj1->CompareToICase(obj2);
 }

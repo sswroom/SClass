@@ -4,6 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "Net/WebStatus.h"
+#include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebConnection.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -750,7 +751,7 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 	AddTimeHeader(CSTR("Date"), &dt);
 	AddHeaderS(CSTR("Server"), this->svr->GetServerName());
 	Text::String *connHdr = req->GetSHeader(CSTR("Connection"));
-	if (this->allowKA && connHdr && connHdr->Equals(UTF8STRC("keep-alive")))
+	if (this->allowKA && connHdr && connHdr->Equals(UTF8STRC("keep-alive")) && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))
 	{
 		AddHeader(CSTR("Connection"), CSTR("keep-alive"));
 		AddHeader(CSTR("Keep-Alive"), CSTR("timeout=10, max=1000"));

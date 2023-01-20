@@ -28,6 +28,7 @@ namespace Net
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
+		virtual void ShutdownSend();
 		virtual Crypto::Cert::Certificate *GetRemoteCert();
 		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetRemoteCerts();
 	};

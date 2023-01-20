@@ -231,9 +231,13 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name) c
 			if (sptr[0] == 0)
 				return item;
 			if (item->itemType != IO::PackFileItem::PackItemType::ParsedObject)
+			{
 				return 0;
+			}
 			if (item->pobj->GetParserType() != IO::ParserType::PackageFile)
+			{
 				return 0;
+			}
 			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
 			return pf->GetPackFileItem(sptr);
 		}

@@ -22,6 +22,7 @@ namespace Net
 			static void SetCompLevel(Data::Compress::DeflateStream::CompLevel compLevel);
 			static Bool AllowGZip(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
 			static Bool AllowDeflate(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
+			static Bool AllowKA(Net::BrowserInfo::BrowserType browser);
 		};
 	}
 }

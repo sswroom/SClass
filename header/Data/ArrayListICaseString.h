@@ -11,7 +11,7 @@ namespace Data
 		ArrayListICaseString(UOSInt capacity);
 
 		virtual Data::ArrayList<Text::String*> *Clone() const;
-		virtual OSInt CompareItem(Text::String* obj1, Text::String* obj2) const;
+		virtual OSInt Compare(Text::String* obj1, Text::String* obj2) const;
 		virtual OSInt SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const;
 	};
 }

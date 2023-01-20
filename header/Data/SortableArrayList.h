@@ -11,7 +11,6 @@ namespace Data
 		SortableArrayList() : ArrayList<T>() {};
 		SortableArrayList(UOSInt capacity) : ArrayList<T>() {};
 
-		virtual OSInt Compare(T obj1, T obj2) const = 0;
 		UOSInt SortedInsert(T val);
 		OSInt SortedIndexOf(T val) const;
 	};

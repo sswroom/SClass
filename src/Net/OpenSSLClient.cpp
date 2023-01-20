@@ -178,13 +178,18 @@ Int32 Net::OpenSSLClient::Flush()
 
 void Net::OpenSSLClient::Close()
 {
-	this->ShutdownSend();
+	this->TCPClient::ShutdownSend();
 	this->Net::TCPClient::Close();
 }
 
 Bool Net::OpenSSLClient::Recover()
 {
 	return false;
+}
+
+void Net::OpenSSLClient::ShutdownSend()
+{
+	SSL_shutdown(this->clsData->ssl);
 }
 
 Crypto::Cert::Certificate *Net::OpenSSLClient::GetRemoteCert()
