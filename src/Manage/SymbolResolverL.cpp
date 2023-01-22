@@ -7,7 +7,7 @@
 char **backtrace_symbols(void **addrArr, int cnt)
 {
 	char *val;
-	char **ret = (char**)malloc(cnt * sizeof(char*) + 1);
+	char **ret = (char**)malloc((unsigned long)cnt * sizeof(char*) + 1);
 	val = (char*)&ret[cnt];
 	*val = 0;
 	while (cnt-- > 0)

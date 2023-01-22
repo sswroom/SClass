@@ -67,7 +67,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devList)
 {
 	DeviceInfo *devInfo;
-	OSInt i = devList->GetCount();
+	UOSInt i = devList->GetCount();
 	while (i-- > 0)
 	{
 		devInfo = devList->GetItem(i);

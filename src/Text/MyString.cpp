@@ -3734,14 +3734,14 @@ UOSInt Text::StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8C
 
 UTF8Char *Text::StrReplaceC(UTF8Char *str1, UTF8Char *strEnd, const UTF8Char *replaceFrom, UOSInt replaceFromLen, const UTF8Char *replaceTo, UOSInt replaceToLen)
 {
-	UOSInt cnt;
+//	UOSInt cnt;
 	UOSInt charLen = (UOSInt)(strEnd - str1);
 	UTF8Char *sptr;
 	sptr = strEnd;
 	if (replaceFromLen == 0)
 		return 0;
 
-	cnt = 0;
+//	cnt = 0;
 	sptr -= replaceFromLen;
 	while (sptr >= str1)
 	{
@@ -3754,7 +3754,7 @@ UTF8Char *Text::StrReplaceC(UTF8Char *str1, UTF8Char *strEnd, const UTF8Char *re
 			}
 			MemCopyNO(sptr, replaceTo, replaceToLen * sizeof(UTF8Char));
 			sptr -= replaceFromLen;
-			cnt++;
+//			cnt++;
 			charLen = charLen + replaceToLen - replaceFromLen;
 		}
 		else

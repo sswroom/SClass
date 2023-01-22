@@ -100,7 +100,7 @@ UInt32 DasmARM_ParseImmA32(UInt8 rot, UInt8 val)
 {
 	if (rot == 0)
 		return val;
-	rot = rot << 1;
+	rot = (UInt8)(rot << 1);
 	if (rot < 8)
 	{
 		return (val >> rot) | (((UInt32)val) << (32 - rot));

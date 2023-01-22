@@ -17,7 +17,7 @@ struct IO::SystemInfo::ClassData
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;

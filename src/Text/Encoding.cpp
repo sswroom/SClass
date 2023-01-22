@@ -857,7 +857,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 			}
 			else if ((str[0] & 0xf8) == 0xf0)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((UTF32Char)(str[2] & 0x3f) << 6) | (UTF32Char)(str[3] & 0x3f));
 				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -865,7 +865,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 			}
 			else if ((str[0] & 0xfc) == 0xf8)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((UTF32Char)(str[3] & 0x3f) << 6) | (UTF32Char)(str[4] & 0x3f));
 				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -873,7 +873,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 			}
 			else
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((UTF32Char)(str[4] & 0x3f) << 6) | (UTF32Char)(str[5] & 0x3f));
 				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -914,7 +914,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 			}
 			else if ((str[0] & 0xf8) == 0xf0)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((UTF32Char)(str[2] & 0x3f) << 6) | (UTF32Char)(str[3] & 0x3f));
 				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -922,7 +922,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 			}
 			else if ((str[0] & 0xfc) == 0xf8)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((UTF32Char)(str[3] & 0x3f) << 6) | (UTF32Char)(str[4] & 0x3f));
 				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -930,7 +930,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 			}
 			else
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((UTF32Char)(str[4] & 0x3f) << 6) | (UTF32Char)(str[5] & 0x3f));
 				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -993,7 +993,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt st
 			}
 			else if ((str[0] & 0xf8) == 0xf0)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((UTF32Char)(str[2] & 0x3f) << 6) | (UTF32Char)(str[3] & 0x3f));
 				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -1001,7 +1001,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt st
 			}
 			else if ((str[0] & 0xfc) == 0xf8)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((UTF32Char)(str[3] & 0x3f) << 6) | (UTF32Char)(str[4] & 0x3f));
 				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -1009,7 +1009,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt st
 			}
 			else
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((UTF32Char)(str[4] & 0x3f) << 6) | (UTF32Char)(str[5] & 0x3f));
 				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -1048,7 +1048,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt st
 			}
 			else if ((str[0] & 0xf8) == 0xf0)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((str[2] & 0x3f) << 6) | (str[3] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((UTF32Char)(str[2] & 0x3f) << 6) | (UTF32Char)(str[3] & 0x3f));
 				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -1056,7 +1056,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt st
 			}
 			else if ((str[0] & 0xfc) == 0xf8)
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((str[3] & 0x3f) << 6) | (str[4] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((UTF32Char)(str[3] & 0x3f) << 6) | (UTF32Char)(str[4] & 0x3f));
 				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
@@ -1064,7 +1064,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt st
 			}
 			else
 			{
-				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((str[4] & 0x3f) << 6) | (str[5] & 0x3f));
+				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((UTF32Char)(str[4] & 0x3f) << 6) | (UTF32Char)(str[5] & 0x3f));
 				WriteMInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
 				WriteMInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;

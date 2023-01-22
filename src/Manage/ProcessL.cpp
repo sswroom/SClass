@@ -38,7 +38,7 @@ ssize_t process_vm_readv(pid_t pid, const struct iovec *local_iov, unsigned long
 	const struct iovec *remote_iov, unsigned long riovcnt, unsigned long flags)
 {
 	MemCopyNO(local_iov->iov_base, remote_iov->iov_base, remote_iov->iov_len);
-	return remote_iov->iov_len;
+	return (ssize_t)remote_iov->iov_len;
 }
 #endif
 

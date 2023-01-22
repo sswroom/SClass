@@ -4,6 +4,7 @@
 
 IO::SensorManager::SensorManager()
 {
+	this->clsData = 0;
 }
 
 IO::SensorManager::~SensorManager()

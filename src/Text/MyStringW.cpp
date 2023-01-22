@@ -4038,7 +4038,7 @@ UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt b
 				bytes--;
 				break;
 			}
-			*buff++ = (UTF16Char)(((UTF32Char)(b & 0x1f) << 6) | (Int32)(*bytes & 0x3f));
+			*buff++ = (UTF16Char)(((UTF32Char)(b & 0x1f) << 6) | (UTF32Char)(*bytes & 0x3f));
 			bytes++;
 			byteSize -= 2;
 		}
@@ -4080,7 +4080,7 @@ UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt b
 				bytes--;
 				break;
 			}
-			code = ((UTF32Char)(b & 0x3) << 24) | ((UTF32Char)(bytes[0] & 0x3f) << 18) | ((UTF32Char)(bytes[1] & 0x3f) << 12) | ((UTF32Char)(bytes[2] & 0x3f) << 6) | (Int32)(bytes[3] & 0x3f);
+			code = ((UTF32Char)(b & 0x3) << 24) | ((UTF32Char)(bytes[0] & 0x3f) << 18) | ((UTF32Char)(bytes[1] & 0x3f) << 12) | ((UTF32Char)(bytes[2] & 0x3f) << 6) | (UTF32Char)(bytes[3] & 0x3f);
 			if (code >= 0x10000)
 			{
 				*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
@@ -4105,7 +4105,7 @@ UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt b
 				bytes--;
 				break;
 			}
-			code = ((UTF32Char)(b & 0x1) << 30) | ((UTF32Char)(bytes[0] & 0x3f) << 24) | ((UTF32Char)(bytes[1] & 0x3f) << 18) | ((UTF32Char)(bytes[2] & 0x3f) << 12) | ((UTF32Char)(bytes[3] & 0x3f) << 6) | (Int32)(bytes[4] & 0x3f);
+			code = ((UTF32Char)(b & 0x1) << 30) | ((UTF32Char)(bytes[0] & 0x3f) << 24) | ((UTF32Char)(bytes[1] & 0x3f) << 18) | ((UTF32Char)(bytes[2] & 0x3f) << 12) | ((UTF32Char)(bytes[3] & 0x3f) << 6) | (UTF32Char)(bytes[4] & 0x3f);
 			if (code >= 0x10000)
 			{
 				*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
@@ -4330,7 +4330,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 		}
 		else if ((b & 0xf8) == 0xf0)
 		{
-			code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((bytes[2] & 0x3f) << 6) | (bytes[3] & 0x3f);
+			code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((UTF32Char)(bytes[2] & 0x3f) << 6) | (UTF32Char)(bytes[3] & 0x3f);
 			if (code >= 0x10000)
 			{
 				buff[0] = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
@@ -4345,7 +4345,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 		}
 		else if ((b & 0xfc) == 0xf8)
 		{
-			code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((bytes[3] & 0x3f) << 6) | (bytes[4] & 0x3f);
+			code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((UTF32Char)(bytes[3] & 0x3f) << 6) | (bytes[4] & 0x3f);
 			if (code >= 0x10000)
 			{
 				buff[0] = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
@@ -4365,7 +4365,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 		}
 		else if ((b & 0xfe) == 0xfc)
 		{
-			code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[1] & 0x3f) << 24) | (((UTF32Char)bytes[2] & 0x3f) << 18) | (((UTF32Char)bytes[3] & 0x3f) << 12) | ((bytes[4] & 0x3f) << 6) | (bytes[5] & 0x3f);
+			code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[1] & 0x3f) << 24) | (((UTF32Char)bytes[2] & 0x3f) << 18) | (((UTF32Char)bytes[3] & 0x3f) << 12) | ((UTF32Char)(bytes[4] & 0x3f) << 6) | (UTF32Char)(bytes[5] & 0x3f);
 			if (code >= 0x10000)
 			{
 				buff[0] = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
@@ -4454,24 +4454,24 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, UOSInt *b
 		}
 		else if ((b & 0xf0) == 0xe0)
 		{
-			*buff++ = (((UTF32Char)b & 0x0f) << 12) | ((bytes[0] & 0x3f) << 6) | (bytes[1] & 0x3f);
+			*buff++ = (((UTF32Char)b & 0x0f) << 12) | ((UTF32Char)(bytes[0] & 0x3f) << 6) | (UTF32Char)(bytes[1] & 0x3f);
 			bytes += 2;
 		}
 		else if ((b & 0xf8) == 0xf0)
 		{
-			code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[0] & 0x3f) << 12) | ((bytes[1] & 0x3f) << 6) | (bytes[2] & 0x3f);
+			code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[0] & 0x3f) << 12) | ((UTF32Char)(bytes[1] & 0x3f) << 6) | (UTF32Char)(bytes[2] & 0x3f);
 			*buff++ = code;
 			bytes += 3;
 		}
 		else if ((b & 0xfc) == 0xf8)
 		{
-			code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[0] & 0x3f) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((bytes[2] & 0x3f) << 6) | (bytes[3] & 0x3f);
+			code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[0] & 0x3f) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((UTF32Char)(bytes[2] & 0x3f) << 6) | (UTF32Char)(bytes[3] & 0x3f);
 			*buff++ = code;
 			bytes += 4;
 		}
 		else if ((b & 0xfe) == 0xfc)
 		{
-			code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[0] & 0x3f) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((bytes[3] & 0x3f) << 6) | (bytes[4] & 0x3f);
+			code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[0] & 0x3f) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((UTF32Char)(bytes[3] & 0x3f) << 6) | (UTF32Char)(bytes[4] & 0x3f);
 			*buff++ = code;
 			bytes += 5;
 		}

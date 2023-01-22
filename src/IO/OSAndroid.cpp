@@ -13,7 +13,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 {
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
+	UOSInt i;
 	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/system/build.prop"));
 	if (cfg == 0)
 	{
