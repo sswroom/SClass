@@ -36,11 +36,16 @@ namespace IO
 			virtual Bool TrimPadding(Text::CString outputFile);
 
 			static Text::CString SMBIOSTypeGetName(UInt8 type);
+			static Text::CString MemoryLocationGetName(UInt8 location);
 			static void AddString(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
+			static void AddHex8(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddHex16(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddHex32(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddHex64(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddUInt8(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
+			static void AddUInt16(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
+			static void AddUInt32(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
+			static void AddUInt64(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddUUID(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddDate(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddBits(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, const Char *bitNames[]);

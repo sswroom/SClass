@@ -995,7 +995,6 @@ Bool __stdcall DasmARM64_54(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->regs.PC += 4;
 		sess->jmpAddrs->Add(addr);
 		return true;
-
 	}
 	return false;
 }
@@ -1027,6 +1026,29 @@ Bool __stdcall DasmARM64_59(Manage::DasmARM64::DasmARM64_Sess *sess)
 
 Bool __stdcall DasmARM64_5A(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
+	UInt32 code = ReadUInt32(sess->codeBuff);
+	if ((code & 0xFFFFFC00) == 0x5AC02000)
+	{
+		UInt32 rd = code & 0x1F;
+		UInt32 rn = (code >> 5) & 0x1F;
+		UInt32 *wd;
+		UInt32 *wn;
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("abs "));
+		sess->sbuff = DasmARM64_ParseReg32(sess, sess->sbuff, rd, &wd);
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
+		sess->sbuff = DasmARM64_ParseReg32(sess, sess->sbuff, rn, &wn);
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
+		if (*wn & 0x80000000)
+		{
+			*wd = (~*wn) + 1;
+		}
+		else
+		{
+			*wd = *wn;
+		}
+		sess->regs.PC += 4;
+		return true;
+	}
 	return false;
 }
 
@@ -1982,6 +2004,29 @@ Bool __stdcall DasmARM64_D9(Manage::DasmARM64::DasmARM64_Sess *sess)
 
 Bool __stdcall DasmARM64_DA(Manage::DasmARM64::DasmARM64_Sess *sess)
 {
+	UInt32 code = ReadUInt32(sess->codeBuff);
+	if ((code & 0xFFFFFC00) == 0xDAC02000)
+	{
+		UInt32 rd = code & 0x1F;
+		UInt32 rn = (code >> 5) & 0x1F;
+		UInt64 *xd;
+		UInt64 *xn;
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("abs "));
+		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, rd, &xd);
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
+		sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, rn, &xn);
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
+		if (*xn & 0x8000000000000000)
+		{
+			*xd = (~*xn) + 1;
+		}
+		else
+		{
+			*xd = *xn;
+		}
+		sess->regs.PC += 4;
+		return true;
+	}
 	return false;
 }
 

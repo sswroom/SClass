@@ -293,7 +293,202 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddString(frame, 7, packBuff, carr, CSTR("Processor Manufacturer"));
 		AddHex64(frame, 8, packBuff, carr, CSTR("Processor ID"));
 		AddString(frame, 16, packBuff, carr, CSTR("Processor Version"));
-		///////////////////////////////////////////
+		if (packBuff[1] > 17)
+		{
+			if (packBuff[17] & 0x80)
+			{
+				frame->AddFloat(17, 1, CSTR("Voltage (V)"), (packBuff[17] & 0x7F) * 0.1);
+			}
+			else
+			{
+				frame->AddBit(17, CSTR("Voltage Capability (5V)"), packBuff[17], 0);
+				frame->AddBit(17, CSTR("Voltage Capability (3.3V)"), packBuff[17], 1);
+				frame->AddBit(17, CSTR("Voltage Capability (2.9V)"), packBuff[17], 2);
+				frame->AddBit(17, CSTR("Reserved"), packBuff[17], 3);
+				frame->AddBit(17, CSTR("Reserved"), packBuff[17], 4);
+				frame->AddBit(17, CSTR("Reserved"), packBuff[17], 5);
+				frame->AddBit(17, CSTR("Reserved"), packBuff[17], 6);
+				frame->AddBit(17, CSTR("Voltage Mode"), packBuff[17], 7);
+			}
+		}
+		AddUInt16(frame, 18, packBuff, carr, CSTR("External Clock (MHz)"));
+		AddUInt16(frame, 20, packBuff, carr, CSTR("Max Speed (MHz)"));
+		AddUInt16(frame, 22, packBuff, carr, CSTR("Current Speed (MHz)"));
+		if (packBuff[1] > 24)
+		{
+			switch (packBuff[24] & 7)
+			{
+			case 0:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 0, CSTR("Unknown"));
+				break;
+			case 1:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 1, CSTR("CPU Enabled"));
+				break;
+			case 2:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 2, CSTR("CPU Disabled by User through BIOS Setup"));
+				break;
+			case 3:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 3, CSTR("CPU Disabled By BIOS (POST Error)"));
+				break;
+			case 4:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 4, CSTR("CPU is Idle, waiting to be enabled"));
+				break;
+			case 5:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 5, CSTR("Reserved"));
+				break;
+			case 6:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 6, CSTR("Reserved"));
+				break;
+			case 7:
+				frame->AddUIntName(24, 1, CSTR("Current Speed"), 7, CSTR("Other"));
+				break;
+			}
+			frame->AddBit(24, CSTR("Reserved"), packBuff[24], 3);
+			frame->AddBit(24, CSTR("Reserved"), packBuff[24], 4);
+			frame->AddBit(24, CSTR("Reserved"), packBuff[24], 5);
+			frame->AddBit(24, CSTR("CPU Socket Populated"), packBuff[24], 6);
+			frame->AddBit(24, CSTR("Reserved"), packBuff[24], 7);
+		}
+		const Char *names4_2[] = {"Unspecified", "Other", "Unknown", "Daughter Board", "ZIF Socket", "Replaceable Piggy Back", "None", "LIF Socket",
+			"Slot 1", "Slot 2", "370-pin socket", "Slot A", "Slot M", "Socket 423", "Socket A", "Socket 478",
+			"Socket 754", "Socket 940", "Socket 939", "Socket mPGA604", "Socket LGA771", "Socket LGA775", "Socket S1", "Socket AM2",
+			"Socket F", "Socket LGA1366", "Socket G34", "Socket AM3", "Socket C32", "Socket LGA1156", "Socket LGA1567", "Socket PGA988A",
+			"Socket BGA1288", "Socket rPGA988B", "Socket BGA1023", "Socket BGA1224", "Socket LGA1155", "Socket LGA1356", "Socket LGA2011", "Socket FS1",
+			"Socket FS2", "Socket FM1", "Socket FM2", "Socket LGA2011-3", "Socket LGA1356-3", "Socket LGA1150", "Socket BGA1168", "Socket BGA1234",
+			"Socket BGA1364", "Socket AM4", "Socket LGA1151", "Socket BGA1356", "Socket BGA1440", "Socket BGA1515", "Socket LGA3647-1", "Socket SP3",
+			"Socket SP3r2", "Socket LGA2066", "Socket BGA1392", "Socket BGA1510", "Socket BGA1528", "Socket LGA4189", "Socket LGA1200", "Socket LGA4677",
+			"Socket LGA1700", "Socket BGA1744", "Socket BGA1781", "Socket BGA1211", "Socket BGA2422", "Socket LGA1211", "Socket LGA2422", "Socket LGA5773",
+			"Socket BGA5773"};
+		AddEnum(frame, 25, packBuff, carr, CSTR("Processor Upgrade"), names4_2, sizeof(names4_2) / sizeof(names4_2[0]));
+		AddHex16(frame, 26, packBuff, carr, CSTR("L1 Cache Handle"));
+		AddHex16(frame, 28, packBuff, carr, CSTR("L2 Cache Handle"));
+		AddHex16(frame, 30, packBuff, carr, CSTR("L3 Cache Handle"));
+		AddString(frame, 32, packBuff, carr, CSTR("Serial Number"));
+		AddString(frame, 33, packBuff, carr, CSTR("Asset Tag"));
+		AddString(frame, 34, packBuff, carr, CSTR("Part Number"));
+		AddUInt8(frame, 35, packBuff, carr, CSTR("Core Count"));
+		AddUInt8(frame, 36, packBuff, carr, CSTR("Core Enabled"));
+		AddUInt8(frame, 37, packBuff, carr, CSTR("Thread Count"));
+		const Char *names4_3[] = {"Reserved", "Unknown", "64-bit Capable", "Multi-Core", "Hardware Thread", "Execute Protection", "Enhanced Virtualization", "Power/Performance Control"};
+		AddBits(frame, 38, packBuff, carr, names4_3);
+		const Char *names4_4[] = {"128-bit Capable", "Arm64 SoC ID", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 39, packBuff, carr, names4_4);
+		if (packBuff[1] > 41)
+		{
+			frame->AddUIntName(40, 2, CSTR("Processor Family 2"), ReadUInt16(&packBuff[40]), IO::SMBIOS::GetProcessorFamily(ReadUInt16(&packBuff[40])));
+		}
+		AddUInt16(frame, 42, packBuff, carr, CSTR("Core Count 2"));
+		AddUInt16(frame, 44, packBuff, carr, CSTR("Core Enabled 2"));
+		AddUInt16(frame, 46, packBuff, carr, CSTR("Thread Count 2"));
+		AddUInt16(frame, 48, packBuff, carr, CSTR("Thread Enabled"));
+		break;
+	}
+	case 7:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Socket Designation"));
+		if (packBuff[1] > 6)
+		{
+			frame->AddUInt(5, 1, CSTR("Cache Level"), packBuff[5] & 7);
+			frame->AddBit(5, CSTR("Cache Socketed"), packBuff[5], 3);
+			frame->AddBit(5, CSTR("Reserved"), packBuff[5], 4);
+			switch ((packBuff[5] >> 5) & 3)
+			{
+			case 0:
+				frame->AddField(5, 1, CSTR("Location"), CSTR("Internal"));
+				break;
+			case 1:
+				frame->AddField(5, 1, CSTR("Location"), CSTR("External"));
+				break;
+			case 2:
+				frame->AddField(5, 1, CSTR("Location"), CSTR("Reserved"));
+				break;
+			case 3:
+				frame->AddField(5, 1, CSTR("Location"), CSTR("Unknown"));
+				break;
+			}
+			frame->AddBit(5, CSTR("Enabled"), packBuff[5], 7);
+			switch (packBuff[6] & 3)
+			{
+			case 0:
+				frame->AddField(6, 1, CSTR("Operational Mode"), CSTR("Write Through"));
+				break;
+			case 1:
+				frame->AddField(6, 1, CSTR("Operational Mode"), CSTR("Write Back"));
+				break;
+			case 2:
+				frame->AddField(6, 1, CSTR("Operational Mode"), CSTR("Varies with Memory Address"));
+				break;
+			case 3:
+				frame->AddField(6, 1, CSTR("Operational Mode"), CSTR("Unknown"));
+				break;
+			}
+			frame->AddUInt(6, 1, CSTR("Reserved"), packBuff[6] >> 2);
+		}
+		if (packBuff[1] > 8)
+		{
+			if (packBuff[8] & 0x80)
+			{
+				frame->AddUInt(7, 2, CSTR("Maximum Cache Size (KB)"), (UOSInt)(ReadUInt16(&packBuff[7]) & 0x7FFF) * 64);
+			}
+			else
+			{
+				frame->AddUInt(7, 2, CSTR("Maximum Cache Size (KB)"), ReadUInt16(&packBuff[7]));
+			}
+		}
+		if (packBuff[1] > 10)
+		{
+			if (packBuff[10] & 0x80)
+			{
+				frame->AddUInt(9, 2, CSTR("Installed Size (KB)"), (UOSInt)(ReadUInt16(&packBuff[9]) & 0x7FFF) * 64);
+			}
+			else
+			{
+				frame->AddUInt(9, 2, CSTR("Installed Size (KB)"), ReadUInt16(&packBuff[9]));
+			}
+		}
+		const Char *names7_1[] = {"Other", "Unknown", "Non-Burst", "Burst", "Pipeline Burst", "Synchronous", "Asynchronous", "Reserved"};
+		if (packBuff[1] > 12)
+		{
+			frame->AddHex16(11, CSTR("Supported SRAM Type"), ReadUInt16(&packBuff[11]));
+			AddBits(frame, 11, packBuff, carr, names7_1);
+			AddHex8(frame, 12, packBuff, carr, CSTR("Reserved"));
+		}
+		if (packBuff[1] > 14)
+		{
+			frame->AddHex16(13, CSTR("Current SRAM Type"), ReadUInt16(&packBuff[13]));
+			AddBits(frame, 13, packBuff, carr, names7_1);
+			AddHex8(frame, 14, packBuff, carr, CSTR("Reserved"));
+		}
+		AddUInt8(frame, 15, packBuff, carr, CSTR("Cache Speed (ns)"));
+		const Char *names7_2[] = {"Unspecified", "Other", "Unknown", "None", "Parity", "Single-bit ECC", "Multi-bit ECC"};
+		AddEnum(frame, 16, packBuff, carr, CSTR("Error Correction Type"), names7_2, sizeof(names7_2) / sizeof(names7_2[0]));
+		const Char *names7_3[] = {"Unspecified", "Other", "Unknown", "Instruction", "Data", "Unified"};
+		AddEnum(frame, 17, packBuff, carr, CSTR("System Cache Type"), names7_3, sizeof(names7_3) / sizeof(names7_3[0]));
+		const Char *names7_4[] = {"Unspecified", "Other", "Unknown", "Direct Mapped", "2-way Set-Associative", "4-way Set-Associative", "Fully Associative", "8-way Set-Associative",
+			"16-way Set-Associative", "12-way Set-Associative", "24-way Set-Associative", "32-way Set-Associative", "48-way Set-Associative", "64-way Set-Associative", "20-way Set-Associative"};
+		AddEnum(frame, 18, packBuff, carr, CSTR("Associativity"), names7_4, sizeof(names7_4) / sizeof(names7_4[0]));
+		if (packBuff[1] > 22)
+		{
+			if (packBuff[22] & 0x80)
+			{
+				frame->AddUInt(19, 4, CSTR("Maximum Cache Size 2 (KB)"), (UOSInt)(ReadUInt32(&packBuff[19]) & 0x7FFFFFFF) * 64);
+			}
+			else
+			{
+				frame->AddUInt(19, 4, CSTR("Maximum Cache Size 2 (KB)"), ReadUInt32(&packBuff[19]));
+			}
+		}
+		if (packBuff[1] > 26)
+		{
+			if (packBuff[26] & 0x80)
+			{
+				frame->AddUInt(23, 4, CSTR("Maximum Cache Size 2 (KB)"), (UOSInt)(ReadUInt32(&packBuff[23]) & 0x7FFFFFFF) * 64);
+			}
+			else
+			{
+				frame->AddUInt(23, 4, CSTR("Maximum Cache Size 2 (KB)"), ReadUInt32(&packBuff[23]));
+			}
+		}
 		break;
 	}
 	case 8:
@@ -334,6 +529,127 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddString(frame, 21, packBuff, carr, CSTR("Current Language"));
 		break;
 	}
+	case 14:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Group Name"));
+		UOSInt i = 5;
+		while (i + 3 <= packBuff[1])
+		{
+			frame->AddUIntName(i, 1, CSTR("Item Type"), packBuff[i], SMBIOSTypeGetName(packBuff[i]));
+			AddHex16(frame, i + 1, packBuff, carr, CSTR("Item Handle"));
+			i += 3;
+		}
+		break;
+	}
+	case 16:
+	{
+		frame->AddUIntName(4, 1,  CSTR("Location"), packBuff[4], MemoryLocationGetName(packBuff[4]));
+		const Char *names13_2[] = {"Unspecified", "Other", "Unknown", "System memory", "Video memory", "Flash memory", "Non-volatile RAM", "Cache memory"};
+		AddEnum(frame, 5, packBuff, carr, CSTR("Use"), names13_2, sizeof(names13_2) / sizeof(names13_2[0]));
+		const Char *names13_3[] = {"Unspecified", "Other", "Unknown", "None", "Parity", "Single-bit ECC", "Multi-bit ECC", "CRC"};
+		AddEnum(frame, 6, packBuff, carr, CSTR("Memory Error Correction"), names13_3, sizeof(names13_3) / sizeof(names13_3[0]));
+		frame->AddUInt(7, 4, CSTR("Maximum Capacity (KiB)"), ReadUInt32(&packBuff[7]));
+		AddHex16(frame, 11, packBuff, carr, CSTR("Memory Error Information Handle"));
+		AddUInt16(frame, 13, packBuff, carr, CSTR("Number of Memory Devices"));
+		AddUInt64(frame, 15, packBuff, carr, CSTR("Extended Maximum Capacity (Bytes)"));
+		break;
+	}
+	case 17:
+	{
+		AddHex16(frame, 4, packBuff, carr, CSTR("Physical Memory Array Handle"));
+		AddHex16(frame, 6, packBuff, carr, CSTR("Memory Error Information Handle"));
+		AddUInt16(frame, 8, packBuff, carr, CSTR("Total Width (bits)"));
+		AddUInt16(frame, 10, packBuff, carr, CSTR("Data Width (bits)"));
+		if (ReadUInt16(&packBuff[12]) == 0xFFFF)
+		{
+			frame->AddField(12, 2, CSTR("Size"), CSTR("Unknown"));
+		}
+		else if (ReadUInt16(&packBuff[12]) == 0x7FFF)
+		{
+			frame->AddField(12, 2, CSTR("Size"), CSTR("Use Extended Size"));
+		}
+		else if (packBuff[13] & 0x80)
+		{
+			sptr = Text::StrConcatC(Text::StrUOSInt(sbuff, ReadUInt16(&packBuff[12]) & 0x7FFF), UTF8STRC("KB"));
+			frame->AddField(12, 2, CSTR("Size"), CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			sptr = Text::StrConcatC(Text::StrUOSInt(sbuff, ReadUInt16(&packBuff[12]) & 0x7FFF), UTF8STRC("MB"));
+			frame->AddField(12, 2, CSTR("Size"), CSTRP(sbuff, sptr));
+		}
+		const Char *names17_1[] = {"Unspecified", "Other", "Unknown", "SIMM", "SIP", "Chip", "DIP", "ZIP",
+			"Proprietary Card", "DIMM", "TSOP", "Row of chips", "RIMM", "SODIMM", "SRIMM", "FB-DIMM",
+			"Die"};
+		AddEnum(frame, 14, packBuff, carr, CSTR("Form Factor"), names17_1, sizeof(names17_1) / sizeof(names17_1[0]));
+		AddUInt8(frame, 15, packBuff, carr, CSTR("Device Set"));
+		AddString(frame, 16, packBuff, carr, CSTR("Device Locator"));
+		AddString(frame, 17, packBuff, carr, CSTR("Bank Locator"));
+		const Char *names17_2[] = {"Unspecified", "Other", "Unknown", "DRAM", "EDRAM", "VRAM", "SRAM", "RAM",
+			"ROM", "FLASH", "EEPROM", "FEPROM", "EPROM", "CDRAM", "3DRAM", "SDRAM",
+			"SGRAM", "RDRAM", "DDR", "DDR2", "DDR2 FB-DIMM", "Reserved", "Reserved", "Reserved",
+			"DDR3", "FBD2", "DDR4", "LPDDR", "LPDDR2", "LPDDR3", "LPDDR4", "Logical non-volatile device",
+			"HBM", "HBM2", "DDR5", "LPDDR5", "HBM3"};
+		AddEnum(frame, 18, packBuff, carr, CSTR("Memory Type"), names17_2, sizeof(names17_2) / sizeof(names17_2[0]));
+		const Char *names17_3[] = {"Reserved", "Other", "Unknown", "Fast-paged", "Static column", "Pseudo-static", "RAMBUS", "Synchronous"};
+		AddBits(frame, 19, packBuff, carr, names17_3);
+		const Char *names17_4[] = {"CMOS", "EDO", "Window DRAM", "Cache DRAM", "Non-volatile", "Registered", "Unbuffered", "LRDIMM"};
+		AddBits(frame, 20, packBuff, carr, names17_4);
+		AddUInt16(frame, 21, packBuff, carr, CSTR("Speed (MT/s)"));
+		AddString(frame, 23, packBuff, carr, CSTR("Manufacturer"));
+		AddString(frame, 24, packBuff, carr, CSTR("Serial Number"));
+		AddString(frame, 25, packBuff, carr, CSTR("Asset Tag"));
+		AddString(frame, 26, packBuff, carr, CSTR("Part Number"));
+		frame->AddUInt(27, 1, CSTR("Rank"), packBuff[27] & 15);
+		frame->AddUInt(27, 1, CSTR("Reserved"), packBuff[27] >> 4);
+		frame->AddUInt(28, 4, CSTR("Extended Size (MB)"), ReadUInt32(&packBuff[28]));
+		AddUInt16(frame, 32, packBuff, carr, CSTR("Configured Memory Speed (MT/s)"));
+		AddUInt16(frame, 34, packBuff, carr, CSTR("Minimum voltage (mV)"));
+		AddUInt16(frame, 36, packBuff, carr, CSTR("Maximum voltage (mV)"));
+		AddUInt16(frame, 38, packBuff, carr, CSTR("Configured voltage (mV)"));
+		const Char *names17_5[] = {"Unspecified", "Other", "Unknown", "DRAM", "NVDIMM-N", "NVDIMM-F", "NVDIMM-P", "Intel Optane persistent memory"};
+		AddEnum(frame, 40, packBuff, carr, CSTR("Memory Technology"), names17_5, sizeof(names17_5) / sizeof(names17_5[0]));
+		const Char *names17_6[] = {"Reserved", "Other", "Unknown", "Volatile memory", "Byte-accessible persistent memory", "Block-accessible persistent memory", "Reserved", "Reserved"};
+		AddBits(frame, 41, packBuff, carr, names17_6);
+		AddHex8(frame, 42, packBuff, carr, CSTR("Reserved"));
+		AddString(frame, 43, packBuff, carr, CSTR("Firmware Version"));
+		AddHex16(frame, 44, packBuff, carr, CSTR("Module Manufacturer ID"));
+		AddHex16(frame, 46, packBuff, carr, CSTR("Module Product ID"));
+		AddHex16(frame, 48, packBuff, carr, CSTR("Memory Subsystem Controller Manufacturer ID"));
+		AddHex16(frame, 50, packBuff, carr, CSTR("Memory Subsystem Controller Product ID"));
+		AddUInt64(frame, 52, packBuff, carr, CSTR("Non-volatile Size (Bytes)"));
+		AddUInt64(frame, 60, packBuff, carr, CSTR("Volatile Size (Bytes)"));
+		AddUInt64(frame, 68, packBuff, carr, CSTR("Cache Size (Bytes)"));
+		AddUInt64(frame, 76, packBuff, carr, CSTR("Logical Size (Bytes)"));
+		if (packBuff[1] >= 88)
+		{
+			frame->AddUInt(84, 4, CSTR("Extended Speed (MT/s)"), ReadUInt32(&packBuff[84]) & 0x7fffffff);
+		}
+		if (packBuff[1] >= 92)
+		{
+			frame->AddUInt(88, 4, CSTR("Extended Configured Memory Speed (MT/s)"), ReadUInt32(&packBuff[88]) & 0x7fffffff);
+		}
+		break;
+	}
+	case 19:
+		AddHex32(frame, 4, packBuff, carr, CSTR("Starting Address"));
+		AddHex32(frame, 8, packBuff, carr, CSTR("Ending Address"));
+		AddHex16(frame, 12, packBuff, carr, CSTR("Memory Array Handle"));
+		AddUInt8(frame, 14, packBuff, carr, CSTR("Partition Width"));
+		AddHex64(frame, 15, packBuff, carr, CSTR("Extended Starting Address"));
+		AddHex64(frame, 23, packBuff, carr, CSTR("Extended Ending Address"));
+		break;
+	case 20:
+		AddHex32(frame, 4, packBuff, carr, CSTR("Starting Address"));
+		AddHex32(frame, 8, packBuff, carr, CSTR("Ending Address"));
+		AddHex16(frame, 12, packBuff, carr, CSTR("Memory Device Handle"));
+		AddHex16(frame, 14, packBuff, carr, CSTR("Memory Array Mapped Address Handle"));
+		AddUInt8(frame, 16, packBuff, carr, CSTR("Partition Row Position"));
+		AddUInt8(frame, 17, packBuff, carr, CSTR("Interleave Position"));
+		AddUInt8(frame, 18, packBuff, carr, CSTR("Interleave Data Depth"));
+		AddHex64(frame, 19, packBuff, carr, CSTR("Extended Starting Address"));
+		AddHex64(frame, 27, packBuff, carr, CSTR("Extended Ending Address"));
+		break;
 	case 22:
 	{
 		AddString(frame, 4, packBuff, carr, CSTR("Location"));
@@ -365,6 +681,61 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		{
 			frame->AddUIntName(10, 1, CSTR("Boot Status"), packBuff[10], IO::SMBIOS::GetSystemBootStatus(packBuff[10]));
 		}
+		break;
+	case 41:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Reference Designation"));
+		frame->AddBit(5, CSTR("Device Enabled"), packBuff[5], 7);
+		const Char *names41_1[] = {"Unspecified", "Other", "Unknown", "Video", "SCSI Controller", "Ethernet", "Token Ring", "Sound",
+			"PATA Controller", "SATA Controller", "SAS Controller", "Wireless LAN", "Bluetooth", "WWAN", "eMMC", "NVMe Controller",
+			"UFS Controller"};
+		AddEnum(frame, 5, packBuff[5] & 0x7F, carr, CSTR("Device Type"), names41_1, sizeof(names41_1)/ sizeof(names41_1[0]));
+		AddUInt8(frame, 6, packBuff, carr, CSTR("Device Type Instance"));
+		AddHex16(frame, 7, packBuff, carr, CSTR("Segment Group Number"));
+		AddHex8(frame, 9, packBuff, carr, CSTR("Bus Number"));
+		frame->AddUInt(10, 1, CSTR("Device number"), packBuff[10] >> 3);
+		frame->AddUInt(10, 1, CSTR("Function number"), packBuff[10] & 7);
+		break;
+	}
+	case 43:
+	{
+		frame->AddStrS(4, 4, CSTR("Vendor ID"), &packBuff[4]);
+		AddUInt8(frame, 8, packBuff, carr, CSTR("Major Spec Version"));
+		AddUInt8(frame, 9, packBuff, carr, CSTR("Minor Spec Version"));
+		AddHex32(frame, 10, packBuff, carr, CSTR("Firmware Version 1"));
+		AddHex32(frame, 14, packBuff, carr, CSTR("Firmware Version 2"));
+		AddString(frame, 18, packBuff, carr, CSTR("Description"));
+		const Char *names43_1[] = {"Reserved", "Reserved", "PM Device Characteristics are not supported", "Family configurable via firmware update", "Family configurable via platform software support", "Family configurable via OEM proprietary mechanism", "Reserved", "Reserved"};
+		const Char *names43_2[] = {"Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 19, packBuff, carr, names43_1);
+		AddBits(frame, 20, packBuff, carr, names43_2);
+		AddBits(frame, 21, packBuff, carr, names43_2);
+		AddBits(frame, 22, packBuff, carr, names43_2);
+		AddBits(frame, 23, packBuff, carr, names43_2);
+		AddBits(frame, 24, packBuff, carr, names43_2);
+		AddBits(frame, 25, packBuff, carr, names43_2);
+		AddBits(frame, 26, packBuff, carr, names43_2);
+		AddHex32(frame, 27, packBuff, carr, CSTR("OEM-defined"));
+		break;
+	}
+	case 44:
+	{
+		AddHex16(frame, 4, packBuff, carr, CSTR("Referenced Handle"));
+		AddUInt8(frame, 6, packBuff, carr, CSTR("Block Length"));
+		const Char *names44_1[] = {"Reserved", "IA32", "x64", "IA64", "32-bit ARM", "64-bit ARM", "32-bit RISC-V", "64-bit RISC-V",
+			"128-bit RISC-V", "32-bit LoongArch", "64-bit LoongArch"};
+		AddEnum(frame, 7, packBuff, carr, CSTR("Processor Type"), names44_1, sizeof(names44_1) / sizeof(names44_1[0]));
+		if (packBuff[6] > 0)
+		{
+			frame->AddHexBuff(8, packBuff[6], CSTR("Processor-Specific Data"), &packBuff[8], true);
+		}
+		break;
+	}
+	case 131:
+	case 136:
+	case 219:
+	case 221:
+		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Unknown data"), &packBuff[4], true);
 		break;
 	}
 	k = 1;
@@ -514,6 +885,47 @@ Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSTypeGetName(UInt8 type)
 	}
 }
 
+Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::MemoryLocationGetName(UInt8 location)
+{
+	switch (location)
+	{
+	case 0:
+		return CSTR("Unspecified");
+	case 1:
+		return CSTR("Other");
+	case 2:
+		return CSTR("Unknown");
+	case 3:
+		return CSTR("System board or motherboard");
+	case 4:
+		return CSTR("ISA add-on card");
+	case 5:
+		return CSTR("EISA add-on card");
+	case 6:
+		return CSTR("PCI add-on card");
+	case 7:
+		return CSTR("MCA add-on card");
+	case 8:
+		return CSTR("PCMCIA add-on card");
+	case 9:
+		return CSTR("Proprietary add-on card");
+	case 10:
+		return CSTR("NuBus");
+	case 0xA0:
+		return CSTR("PC-98/C20 add-on card");
+	case 0xA1:
+		return CSTR("PC-98/C24 add-on card");
+	case 0xA2:
+		return CSTR("PC-98/E add-on card");
+	case 0xA3:
+		return CSTR("PC-98/Local bus add-on card");
+	case 0xA4:
+		return CSTR("CXL add-on card");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
 {
 	if (ofst >= packBuff[1])
@@ -538,6 +950,13 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(FrameDetail *frame, UOSInt of
 	}
 }
 
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex8(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
+{
+	if (ofst + 1 >= packBuff[1])
+		return;
+	frame->AddHex8(ofst, name, packBuff[ofst]);
+}
+
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex16(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
 {
 	if (ofst + 1 >= packBuff[1])
@@ -549,14 +968,14 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex32(FrameDetail *frame, UOSInt ofs
 {
 	if (ofst + 3 >= packBuff[1])
 		return;
-	frame->AddHex32(ofst, name, ReadUInt16(&packBuff[ofst]));
+	frame->AddHex32(ofst, name, ReadUInt32(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex64(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
 {
 	if (ofst + 7 >= packBuff[1])
 		return;
-	frame->AddHex64(ofst, name, ReadUInt16(&packBuff[ofst]));
+	frame->AddHex64(ofst, name, ReadUInt64(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt8(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
@@ -564,6 +983,27 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt8(FrameDetail *frame, UOSInt ofs
 	if (ofst >= packBuff[1])
 		return;
 	frame->AddUInt(ofst, 1, name, packBuff[ofst]);
+}
+
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt16(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
+{
+	if (ofst + 1 >= packBuff[1])
+		return;
+	frame->AddUInt(ofst, 2, name, ReadUInt16(&packBuff[ofst]));
+}
+
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt32(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
+{
+	if (ofst + 3 >= packBuff[1])
+		return;
+	frame->AddUInt(ofst, 4, name, ReadUInt32(&packBuff[ofst]));
+}
+
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt64(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
+{
+	if (ofst + 7 >= packBuff[1])
+		return;
+	frame->AddUInt64(ofst, name, ReadUInt64(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddUUID(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
