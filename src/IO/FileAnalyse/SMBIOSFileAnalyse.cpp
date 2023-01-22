@@ -650,6 +650,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddHex64(frame, 19, packBuff, carr, CSTR("Extended Starting Address"));
 		AddHex64(frame, 27, packBuff, carr, CSTR("Extended Ending Address"));
 		break;
+	case 21:
+	{
+		const Char* names21_1[] = { "Unspecified", "Other", "Unknown", "Mouse", "Track Ball", "Track Point", "Glide Point", "Touch Pad",
+			"Touch Screen", "Optical Sensor"};
+		AddEnum(frame, 4, packBuff, carr, CSTR("Type"), names21_1, sizeof(names21_1) / sizeof(names21_1[0]));
+		if (packBuff[1] > 5) frame->AddUIntName(5, 1, CSTR("Interface"), packBuff[5], PointingDeviceInterfaceGetName(packBuff[5]));
+		AddUInt8(frame, 6, packBuff, carr, CSTR("Number of Buttons"));
+		break;
+	}
 	case 22:
 	{
 		AddString(frame, 4, packBuff, carr, CSTR("Location"));
@@ -732,6 +741,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		break;
 	}
 	case 131:
+	case 133:
 	case 136:
 	case 219:
 	case 221:
@@ -921,6 +931,43 @@ Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::MemoryLocationGetName(UInt8 lo
 		return CSTR("PC-98/Local bus add-on card");
 	case 0xA4:
 		return CSTR("CXL add-on card");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::PointingDeviceInterfaceGetName(UInt8 v)
+{
+	switch (v)
+	{
+	case 0:
+		return CSTR("Unspecified");
+	case 1:
+		return CSTR("Other");
+	case 2:
+		return CSTR("Unknown");
+	case 3:
+		return CSTR("Serial");
+	case 4:
+		return CSTR("PS/2");
+	case 5:
+		return CSTR("Infrared");
+	case 6:
+		return CSTR("HP-HIL");
+	case 7:
+		return CSTR("Bus mouse");
+	case 8:
+		return CSTR("ADB");
+	case 0xA0:
+		return CSTR("Bus mouse DB-9");
+	case 0xA1:
+		return CSTR("Bus mouse micro-DIN");
+	case 0xA2:
+		return CSTR("USB");
+	case 0xA3:
+		return CSTR("I2C");
+	case 0xA4:
+		return CSTR("SPI");
 	default:
 		return CSTR("Unknown");
 	}

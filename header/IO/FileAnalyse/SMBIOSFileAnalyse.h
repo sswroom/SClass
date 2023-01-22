@@ -37,6 +37,7 @@ namespace IO
 
 			static Text::CString SMBIOSTypeGetName(UInt8 type);
 			static Text::CString MemoryLocationGetName(UInt8 location);
+			static Text::CString PointingDeviceInterfaceGetName(UInt8 v);
 			static void AddString(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddHex8(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
 			static void AddHex16(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name);
