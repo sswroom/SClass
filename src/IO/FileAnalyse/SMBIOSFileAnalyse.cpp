@@ -500,6 +500,47 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		if (packBuff[1] > 8) frame->AddUIntName(8, 1, CSTR("Port Type"), packBuff[8], IO::SMBIOS::GetPortType(packBuff[8]));
 		break;
 	}
+	case 9:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Slot Designation"));
+		if (packBuff[1] > 5) frame->AddUIntName(5, 1, CSTR("Slot Type"), packBuff[5], SlotTypeGetName(packBuff[5]));
+		const Char *names9_1[] = {"Unspecified", "Other", "Unknown", "8 bit", "16 bit", "32 bit", "64 bit", "128 bit",
+			"1x", "2x", "4x", "8x", "16x", "32x"};
+		AddEnum(frame, 6, packBuff, carr, CSTR("Slot Data Bus Width"), names9_1, sizeof(names9_1) / sizeof(names9_1[0]));
+		const Char *names9_2[] = {"Unspecified", "Other", "Unknown", "Available", "In use", "Unavailable"};
+		AddEnum(frame, 7, packBuff, carr, CSTR("Current Usage"), names9_2, sizeof(names9_2) / sizeof(names9_2[0]));
+		const Char *names9_3[] = {"Unspecified", "Other", "Unknown", "Short Length", "Long Length", "2.5\" drive form factor", "3.5\" drive form factor"};
+		AddEnum(frame, 8, packBuff, carr, CSTR("Slot Length"), names9_3, sizeof(names9_3) / sizeof(names9_3[0]));
+		AddUInt8(frame, 9, packBuff, carr, CSTR("Slot ID 1"));
+		AddUInt8(frame, 10, packBuff, carr, CSTR("Slot ID 2"));
+		const Char *names9_4[] = {"Characteristics unknown", "Provides 5.0 volts", "Provides 3.3 volts", "Slot's opening is shared with another slot", "PC Card slot supports PC Card-16", "PC Card slot supports CardBus", "PC Card slot supports Zoom Video", "PC Card slot supports Modem Ring Resume"};
+		AddBits(frame, 11, packBuff, carr, names9_4);
+		const Char *names9_5[] = {"PCI slot supports Power Management Event (PME#) signal", "Slot supports hot-plug devices", "PCI slot supports SMBus signal", "PCIe slot supports bifurcation", "Slot supports async/surprise removal", "Flexbus slot, CXL 1.0 capable", "Flexbus slot, CXL 2.0 capable", "Reserved"};
+		AddBits(frame, 12, packBuff, carr, names9_5);
+		AddUInt16(frame, 13, packBuff, carr, CSTR("Segment Group Number"));
+		AddUInt8(frame, 15, packBuff, carr, CSTR("Bus Number"));
+		if (packBuff[1] > 16)
+		{
+			frame->AddUInt(16, 1, CSTR("device number"), packBuff[16] >> 3);
+			frame->AddUInt(16, 1, CSTR("function number"), packBuff[16] & 7);
+		}
+		AddUInt8(frame, 17, packBuff, carr, CSTR("Data Bus Width"));
+		AddUInt8(frame, 18, packBuff, carr, CSTR("Peer grouping count"));
+		if (packBuff[1] > 18)
+		{
+			UOSInt n = packBuff[18];
+			UOSInt i = 0;
+			while (i < n)
+			{
+				AddUInt8(frame, 19 + 5 * i, packBuff, carr, CSTR("Slot Information"));
+				AddUInt8(frame, 20 + 5 * i, packBuff, carr, CSTR("Slot Physical Width"));
+				AddUInt16(frame, 21 + 5 * i, packBuff, carr, CSTR("Slot Pitch"));
+				AddUInt8(frame, 23 + 5 * i, packBuff, carr, CSTR("Slot Height"));
+				i++;
+			}
+		}
+		break;
+	}
 	case 10:
 	{
 		const Char *names10_1[] = {"Unspecified", "Other", "Unknown", "Video", "SCSI Controller", "Ethernet", "Token Ring", "Sound", "PATA Controller", "SATA Controller", "SAS Controller"};
@@ -689,6 +730,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		if (packBuff[1] > 10)
 		{
 			frame->AddUIntName(10, 1, CSTR("Boot Status"), packBuff[10], IO::SMBIOS::GetSystemBootStatus(packBuff[10]));
+			if (packBuff[1] > 11)
+			{
+				frame->AddHexBuff(11, packBuff[1] - 11, CSTR("Additional Boot Status"), &packBuff[11], true);
+			}
 		}
 		break;
 	case 41:
@@ -968,6 +1013,175 @@ Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::PointingDeviceInterfaceGetName
 		return CSTR("I2C");
 	case 0xA4:
 		return CSTR("SPI");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::SlotTypeGetName(UInt8 v)
+{
+	switch (v)
+	{
+	case 0:
+		return CSTR("Unspecified");
+	case 1:
+		return CSTR("Other");
+	case 2:
+		return CSTR("Unknown");
+	case 3:
+		return CSTR("ISA");
+	case 4:
+		return CSTR("MCA");
+	case 5:
+		return CSTR("EISA");
+	case 6:
+		return CSTR("PCI");
+	case 7:
+		return CSTR("PC Card");
+	case 8:
+		return CSTR("VL-VESA");
+	case 9:
+		return CSTR("Proprietary");
+	case 0xA:
+		return CSTR("Processor Card Slot");
+	case 0xB:
+		return CSTR("Proprietary Memory Card Slot");
+	case 0xC:
+		return CSTR("I/O Riser Card Slot");
+	case 0xD:
+		return CSTR("NuBus");
+	case 0xE:
+		return CSTR("PCI - 66MHz Capable");
+	case 0xF:
+		return CSTR("AGP");
+	case 0x10:
+		return CSTR("AGP 2X");
+	case 0x11:
+		return CSTR("AGP 4X");
+	case 0x12:
+		return CSTR("PCI-X");
+	case 0x13:
+		return CSTR("AGP 8X");
+	case 0x14:
+		return CSTR("M.2 Socket 1-DP");
+	case 0x15:
+		return CSTR("M.2 Socket 1-SD");
+	case 0x16:
+		return CSTR("M.2 Socket 2");
+	case 0x17:
+		return CSTR("M.2 Socket 3");
+	case 0x18:
+		return CSTR("MXM Type I");
+	case 0x19:
+		return CSTR("MXM Type II");
+	case 0x1A:
+		return CSTR("MXM Type III (standard connector)");
+	case 0x1B:
+		return CSTR("MXM Type III (HE connector)");
+	case 0x1C:
+		return CSTR("MXM Type IV");
+	case 0x1D:
+		return CSTR("MXM 3.0 Type A");
+	case 0x1E:
+		return CSTR("MXM 3.0 Type B");
+	case 0x1F:
+		return CSTR("PCI Express Gen 2 SFF-8639 (U.2)");
+	case 0x20:
+		return CSTR("PCI Express Gen 3 SFF-8639 (U.2)");
+	case 0x21:
+		return CSTR("PCI Express Mini 52-pin (CEM spec. 2.0) with bottom-side keep-outs");
+	case 0x22:
+		return CSTR("PCI Express Mini 52-pin (CEM spec. 2.0) without bottom-side keep-outs");
+	case 0x23:
+		return CSTR("PCI Express Mini 76-pin (CEM spec. 2.0) Corresponds to Display-Mini card");
+	case 0x24:
+		return CSTR("PCI Express Gen 4 SFF-8639 (U.2)");
+	case 0x25:
+		return CSTR("PCI Express Gen 5 SFF-8639 (U.2)");
+	case 0x26:
+		return CSTR("OCP NIC 3.0 Small Form Factor (SFF)");
+	case 0x27:
+		return CSTR("OCP NIC 3.0 Large Form Factor (LFF)");
+	case 0x28:
+		return CSTR("OCP NIC Prior to 3.0");
+	case 0x30:
+		return CSTR("CXL Flexbus 1.0");
+	case 0xA0:
+		return CSTR("PC-98/C20");
+	case 0xA1:
+		return CSTR("PC-98/C24");
+	case 0xA2:
+		return CSTR("PC-98/E");
+	case 0xA3:
+		return CSTR("PC-98/Local Bus");
+	case 0xA4:
+		return CSTR("PC-98/Card");
+	case 0xA5:
+		return CSTR("PCI Express (see note below)");
+	case 0xA6:
+		return CSTR("PCI Express x1");
+	case 0xA7:
+		return CSTR("PCI Express x2");
+	case 0xA8:
+		return CSTR("PCI Express x4");
+	case 0xA9:
+		return CSTR("PCI Express x8");
+	case 0xAA:
+		return CSTR("PCI Express x16");
+	case 0xAB:
+		return CSTR("PCI Express Gen 2");
+	case 0xAC:
+		return CSTR("PCI Express Gen 2 x1");
+	case 0xAD:
+		return CSTR("PCI Express Gen 2 x2");
+	case 0xAE:
+		return CSTR("PCI Express Gen 2 x4");
+	case 0xAF:
+		return CSTR("PCI Express Gen 2 x8");
+	case 0xB0:
+		return CSTR("PCI Express Gen 2 x16");
+	case 0xB1:
+		return CSTR("PCI Express Gen 3");
+	case 0xB2:
+		return CSTR("PCI Express Gen 3 x1");
+	case 0xB3:
+		return CSTR("PCI Express Gen 3 x2");
+	case 0xB4:
+		return CSTR("PCI Express Gen 3 x4");
+	case 0xB5:
+		return CSTR("PCI Express Gen 3 x8");
+	case 0xB6:
+		return CSTR("PCI Express Gen 3 x16");
+	case 0xB8:
+		return CSTR("PCI Express Gen 4");
+	case 0xB9:
+		return CSTR("PCI Express Gen 4 x1");
+	case 0xBA:
+		return CSTR("PCI Express Gen 4 x2");
+	case 0xBB:
+		return CSTR("PCI Express Gen 4 x4");
+	case 0xBC:
+		return CSTR("PCI Express Gen 4 x8");
+	case 0xBD:
+		return CSTR("PCI Express Gen 4 x16");
+	case 0xBE:
+		return CSTR("PCI Express Gen 5");
+	case 0xBF:
+		return CSTR("PCI Express Gen 5 x1");
+	case 0xC0:
+		return CSTR("PCI Express Gen 5 x2");
+	case 0xC1:
+		return CSTR("PCI Express Gen 5 x4");
+	case 0xC2:
+		return CSTR("PCI Express Gen 5 x8");
+	case 0xC3:
+		return CSTR("PCI Express Gen 5 x16");
+	case 0xC4:
+		return CSTR("PCI Express Gen 6 and Beyond");
+	case 0xC5:
+		return CSTR("Enterprise and Datacenter 1U E1 Form Factor Slot (EDSFF E1.S, E1.L)");
+	case 0xC6:
+		return CSTR("Enterprise and Datacenter 3\" E3 Form Factor Slot (EDSFF E3.S, E3.L)");
 	default:
 		return CSTR("Unknown");
 	}
