@@ -849,6 +849,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 	case 131:
 	case 133:
 	case 136:
+	case 205:
 	case 219:
 	case 221:
 		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Unknown data"), &packBuff[4], true);
