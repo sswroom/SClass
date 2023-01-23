@@ -744,6 +744,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddHex32(frame, 22, packBuff, carr, CSTR("OEM-specific"));
 		break;
 	}
+	case 25:
+	{
+		AddHex8(frame, 4, packBuff, carr, CSTR("Next Scheduled Power-on Month"));
+		AddHex8(frame, 5, packBuff, carr, CSTR("Next Scheduled Power-on Day-of-month"));
+		AddHex8(frame, 6, packBuff, carr, CSTR("Next Scheduled Power-on Hour"));
+		AddHex8(frame, 7, packBuff, carr, CSTR("Next Scheduled Power-on Minute"));
+		AddHex8(frame, 8, packBuff, carr, CSTR("Next Scheduled Power-on Second"));
+		break;
+	}
 	case 31:
 		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Boot Integrity Services (BIS)"), &packBuff[4], true);
 		break;
@@ -758,6 +767,35 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 			}
 		}
 		break;
+	case 34:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Description"));
+		const Char *names34_1[] = {"Unspecified", "Other", "Unknown", "National Semiconductor LM75", "National Semiconductor LM78", "National Semiconductor LM79", "National Semiconductor LM80", "National Semiconductor LM81",
+			"Analog Devices ADM9240", "Dallas Semiconductor DS1780", "Maxim 1617", "Genesys GL518SM", "Winbond W83781D", "Holtek HT82H791"};
+		AddEnum(frame, 5, packBuff, carr, CSTR("Type"), names34_1, sizeof(names34_1) / sizeof(names34_1[0]));
+		AddHex32(frame, 6, packBuff, carr, CSTR("Address"));
+		const Char *names34_2[] = {"Unspecified", "Other", "Unknown", "I/O Port", "Memory", "SM Bus"};
+		AddEnum(frame, 5, packBuff, carr, CSTR("Address Type"), names34_2, sizeof(names34_2) / sizeof(names34_2[0]));
+		break;
+	}
+	case 35:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Description"));
+		AddHex16(frame, 5, packBuff, carr, CSTR("Management Device Handle"));
+		AddHex16(frame, 7, packBuff, carr, CSTR("Component Handle"));
+		AddHex16(frame, 9, packBuff, carr, CSTR("Threshold Handle"));
+		break;
+	}
+	case 36:
+	{
+		AddUInt16(frame, 4, packBuff, carr, CSTR("Lower Threshold - Non-critical"));
+		AddUInt16(frame, 6, packBuff, carr, CSTR("Upper Threshold - Non-critical"));
+		AddUInt16(frame, 8, packBuff, carr, CSTR("Lower Threshold - Critical"));
+		AddUInt16(frame, 10, packBuff, carr, CSTR("Upper Threshold - Critical"));
+		AddUInt16(frame, 12, packBuff, carr, CSTR("Lower Threshold - Non-recoverable"));
+		AddUInt16(frame, 14, packBuff, carr, CSTR("Upper Threshold - Non-recoverable"));
+		break;
+	}
 	case 41:
 	{
 		AddString(frame, 4, packBuff, carr, CSTR("Reference Designation"));
