@@ -277,7 +277,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddUInt8(frame, 18, packBuff, carr, CSTR("Number of Power Cords"));
 		AddUInt8(frame, 19, packBuff, carr, CSTR("Contained Element Count (n)"));
 		AddUInt8(frame, 20, packBuff, carr, CSTR("Contained Elemen Record Length (m)"));
-		///////////////////////////////////////////
+		if (packBuff[1] >= 21 && packBuff[1] >= 21 + packBuff[19] * packBuff[20])
+		{
+			frame->AddHexBuff(21, packBuff[19] * (UOSInt)packBuff[20], CSTR("Contained Elements"), &packBuff[21], true);
+		}
 		if (packBuff[1] > 20)
 		{
 			AddString(frame, 21 + (packBuff[19] * (UOSInt)packBuff[20]), packBuff, carr, CSTR("SKU Number"));
@@ -582,6 +585,25 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		}
 		break;
 	}
+	case 15:
+	{
+		AddUInt16(frame, 4, packBuff, carr, CSTR("Log Area Length"));
+		AddUInt16(frame, 6, packBuff, carr, CSTR("Log Header Start Offset"));
+		AddUInt16(frame, 8, packBuff, carr, CSTR("Log Data Start Offset"));
+		AddUInt8(frame, 10, packBuff, carr, CSTR("Access Method"));
+		const Char *names15_1[] = {"Log area valid", "Log area full", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 11, packBuff, carr, names15_1);
+		AddHex32(frame, 12, packBuff, carr, CSTR("Log Change Token"));
+		AddHex32(frame, 16, packBuff, carr, CSTR("Access Method Address"));
+		AddUInt8(frame, 20, packBuff, carr, CSTR("Log Header Format"));
+		AddUInt8(frame, 21, packBuff, carr, CSTR("Number of Supported Log Type Descriptors"));
+		AddUInt8(frame, 22, packBuff, carr, CSTR("Length of each Log Type Descriptor"));
+		if (packBuff[1] > 23)
+		{
+			frame->AddHexBuff(23, packBuff[1] - 23, CSTR("List of Supported Event Log Type Descriptors"), &packBuff[23], true);
+		}
+		break;
+	}
 	case 16:
 	{
 		frame->AddUIntName(4, 1,  CSTR("Location"), packBuff[4], MemoryLocationGetName(packBuff[4]));
@@ -785,6 +807,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		}
 		break;
 	}
+	case 126: //Inactive
 	case 131:
 	case 133:
 	case 136:
