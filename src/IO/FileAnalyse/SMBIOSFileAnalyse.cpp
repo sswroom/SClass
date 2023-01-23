@@ -775,7 +775,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddEnum(frame, 5, packBuff, carr, CSTR("Type"), names34_1, sizeof(names34_1) / sizeof(names34_1[0]));
 		AddHex32(frame, 6, packBuff, carr, CSTR("Address"));
 		const Char *names34_2[] = {"Unspecified", "Other", "Unknown", "I/O Port", "Memory", "SM Bus"};
-		AddEnum(frame, 5, packBuff, carr, CSTR("Address Type"), names34_2, sizeof(names34_2) / sizeof(names34_2[0]));
+		AddEnum(frame, 10, packBuff, carr, CSTR("Address Type"), names34_2, sizeof(names34_2) / sizeof(names34_2[0]));
 		break;
 	}
 	case 35:
@@ -1274,7 +1274,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(FrameDetail *frame, UOSInt of
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex8(FrameDetail *frame, UOSInt ofst, const UInt8 *packBuff, Text::CString *carr, Text::CString name)
 {
-	if (ofst + 1 >= packBuff[1])
+	if (ofst >= packBuff[1])
 		return;
 	frame->AddHex8(ofst, name, packBuff[ofst]);
 }
