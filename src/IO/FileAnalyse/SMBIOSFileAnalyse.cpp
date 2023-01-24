@@ -758,7 +758,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddString(frame, 25, packBuff, carr, CSTR("Asset Tag"));
 		AddString(frame, 26, packBuff, carr, CSTR("Part Number"));
 		frame->AddUInt(27, 1, CSTR("Rank"), packBuff[27] & 15);
-		frame->AddUInt(27, 1, CSTR("Reserved"), packBuff[27] >> 4);
+		frame->AddUInt(27, 1, CSTR("Reserved"), (UOSInt)packBuff[27] >> 4);
 		frame->AddUInt(28, 4, CSTR("Extended Size (MB)"), ReadUInt32(&packBuff[28]));
 		AddUInt16(frame, 32, packBuff, carr, CSTR("Configured Memory Speed (MT/s)"));
 		AddUInt16(frame, 34, packBuff, carr, CSTR("Minimum voltage (mV)"));
@@ -853,7 +853,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		if (packBuff[1] > 6)
 		{
 			const Char *names27_1[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical", "Non-recoverable"};
-			AddEnum(frame, 6, packBuff[6] >> 5, carr, CSTR("Status"), names27_1, sizeof(names27_1) / sizeof(names27_1[0]));
+			AddEnum(frame, 6, (UOSInt)packBuff[6] >> 5, carr, CSTR("Status"), names27_1, sizeof(names27_1) / sizeof(names27_1[0]));
 			Text::CString devType;
 			switch (packBuff[6] & 0x1F)
 			{
@@ -911,7 +911,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		if (packBuff[1] > 5)
 		{
 			const Char *names28_1[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical", "Non-recoverable"};
-			AddEnum(frame, 5, packBuff[5] >> 5, carr, CSTR("Status"), names28_1, sizeof(names28_1) / sizeof(names28_1[0]));
+			AddEnum(frame, 5, (UOSInt)packBuff[5] >> 5, carr, CSTR("Status"), names28_1, sizeof(names28_1) / sizeof(names28_1[0]));
 			const Char *names28_2[] = {"Unspecified", "Other", "Unknown", "Processor", "Disk", "Peripheral Bay", "System Management Module", "Motherboard",
 				"Memory Module", "Processor Module", "Power Unit", "Add-in Card", "Front Panel Board", "Back Panel Board", "Power System Board", "Drive Back Plane"};
 			AddEnum(frame, 5, packBuff[5] & 0x1F, carr, CSTR("Device Type"), names28_2, sizeof(names28_2) / sizeof(names28_2[0]));
@@ -986,7 +986,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		break;
 	}
 	case 31:
-		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Boot Integrity Services (BIS)"), &packBuff[4], true);
+		frame->AddHexBuff(4, (UOSInt)packBuff[1] - 4, CSTR("Boot Integrity Services (BIS)"), &packBuff[4], true);
 		break;
 	case 32:
 		if (packBuff[1] > 9) frame->AddHexBuff(4, 6, CSTR("Reserved"), &packBuff[4], false);
@@ -995,7 +995,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 			frame->AddUIntName(10, 1, CSTR("Boot Status"), packBuff[10], IO::SMBIOS::GetSystemBootStatus(packBuff[10]));
 			if (packBuff[1] > 11)
 			{
-				frame->AddHexBuff(11, packBuff[1] - 11, CSTR("Additional Boot Status"), &packBuff[11], true);
+				frame->AddHexBuff(11, (UOSInt)packBuff[1] - 11, CSTR("Additional Boot Status"), &packBuff[11], true);
 			}
 		}
 		break;
@@ -1039,7 +1039,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddUInt8(frame, 6, packBuff, carr, CSTR("Device Type Instance"));
 		AddHex16(frame, 7, packBuff, carr, CSTR("Segment Group Number"));
 		AddHex8(frame, 9, packBuff, carr, CSTR("Bus Number"));
-		frame->AddUInt(10, 1, CSTR("Device number"), packBuff[10] >> 3);
+		frame->AddUInt(10, 1, CSTR("Device number"), (UOSInt)packBuff[10] >> 3);
 		frame->AddUInt(10, 1, CSTR("Function number"), packBuff[10] & 7);
 		break;
 	}
@@ -1093,7 +1093,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 	case 220:
 	case 221:
 	case 222:
-		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Unknown data"), &packBuff[4], true);
+		frame->AddHexBuff(4, (UOSInt)packBuff[1] - 4, CSTR("Unknown data"), &packBuff[4], true);
 		break;
 	}
 	k = 1;
