@@ -753,6 +753,144 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddHex8(frame, 8, packBuff, carr, CSTR("Next Scheduled Power-on Second"));
 		break;
 	}
+	case 27:
+	{
+		AddHex16(frame, 4, packBuff, carr, CSTR("Temperature Probe Handle"));
+		if (packBuff[1] > 6)
+		{
+			const Char *names27_1[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical", "Non-recoverable"};
+			AddEnum(frame, 6, packBuff[6] >> 5, carr, CSTR("Status"), names27_1, sizeof(names27_1) / sizeof(names27_1[0]));
+			Text::CString devType;
+			switch (packBuff[6] & 0x1F)
+			{
+			case 0:
+				devType = CSTR("Unspecified");
+				break;
+			case 1:
+				devType = CSTR("Other");
+				break;
+			case 2:
+				devType = CSTR("Unknown");
+				break;
+			case 3:
+				devType = CSTR("Fan");
+				break;
+			case 4:
+				devType = CSTR("Centrifugal Blower");
+				break;
+			case 5:
+				devType = CSTR("Chip Fan");
+				break;
+			case 6:
+				devType = CSTR("Cabinet Fan");
+				break;
+			case 7:
+				devType = CSTR("Power Supply Fan");
+				break;
+			case 8:
+				devType = CSTR("Heat Pipe");
+				break;
+			case 9:
+				devType = CSTR("Integrated Refrigeration");
+				break;
+			case 16:
+				devType = CSTR("Active Cooling");
+				break;
+			case 17:
+				devType = CSTR("Passive Cooling");
+				break;
+			default:
+				devType = CSTR("Unknown");
+				break;
+			}
+			frame->AddUIntName(6, 1, CSTR("Device Type"), packBuff[6] & 0x1F, devType);
+		}
+		AddUInt8(frame, 7, packBuff, carr, CSTR("Cooling Unit Group"));
+		AddHex32(frame, 8, packBuff, carr, CSTR("OEM-defined"));
+		AddUInt16(frame, 12, packBuff, carr, CSTR("Nominal Speed (rpm)"));
+		AddString(frame, 14, packBuff, carr, CSTR("Description"));
+		break;
+	}
+	case 28:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Description"));
+		if (packBuff[1] > 5)
+		{
+			const Char *names28_1[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical", "Non-recoverable"};
+			AddEnum(frame, 5, packBuff[5] >> 5, carr, CSTR("Status"), names28_1, sizeof(names28_1) / sizeof(names28_1[0]));
+			const Char *names28_2[] = {"Unspecified", "Other", "Unknown", "Processor", "Disk", "Peripheral Bay", "System Management Module", "Motherboard",
+				"Memory Module", "Processor Module", "Power Unit", "Add-in Card", "Front Panel Board", "Back Panel Board", "Power System Board", "Drive Back Plane"};
+			AddEnum(frame, 5, packBuff[5] & 0x1F, carr, CSTR("Device Type"), names28_2, sizeof(names28_2) / sizeof(names28_2[0]));
+		}
+		if (packBuff[1] > 7)
+		{
+			if (ReadUInt16(&packBuff[6]) == 0x8000)
+			{
+				frame->AddField(6, 2, CSTR("Maximum Value"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(6, 2, CSTR("Maximum Value"), ReadUInt16(&packBuff[6]) * 0.1);
+			}
+		}
+		if (packBuff[1] > 9)
+		{
+			if (ReadUInt16(&packBuff[8]) == 0x8000)
+			{
+				frame->AddField(8, 2, CSTR("Minimum Value"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(8, 2, CSTR("Minimum Value"), ReadUInt16(&packBuff[8]) * 0.1);
+			}
+		}
+		if (packBuff[1] > 11)
+		{
+			if (ReadUInt16(&packBuff[10]) == 0x8000)
+			{
+				frame->AddField(10, 2, CSTR("Resolution"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(10, 2, CSTR("Resolution"), ReadUInt16(&packBuff[10]) * 0.001);
+			}
+		}
+		if (packBuff[1] > 13)
+		{
+			if (ReadUInt16(&packBuff[12]) == 0x8000)
+			{
+				frame->AddField(12, 2, CSTR("Tolerance"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(12, 2, CSTR("Tolerance"), ReadUInt16(&packBuff[12]) * 0.1);
+			}
+		}
+		if (packBuff[1] > 15)
+		{
+			if (ReadUInt16(&packBuff[14]) == 0x8000)
+			{
+				frame->AddField(14, 2, CSTR("Accuracy"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(14, 2, CSTR("Accuracy"), ReadUInt16(&packBuff[14]) * 0.01);
+			}
+		}
+		AddHex32(frame, 16, packBuff, carr, CSTR("OEM-defined"));
+		if (packBuff[1] > 21)
+		{
+			if (ReadUInt16(&packBuff[20]) == 0x8000)
+			{
+				frame->AddField(20, 2, CSTR("Nominal Value"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(20, 2, CSTR("Nominal Value"), ReadUInt16(&packBuff[20]) * 0.01);
+			}
+		}
+		break;
+	}
 	case 31:
 		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Boot Integrity Services (BIS)"), &packBuff[4], true);
 		break;
