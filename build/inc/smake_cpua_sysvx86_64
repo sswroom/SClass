@@ -16,7 +16,7 @@ Manage/DasmARM64.h: ../../src/Manage/DasmARM64.cpp
 Manage/DasmX86_32.h: ../../src/Manage/DasmX86_32.cpp
 @DasmX86_32.o
 Manage/DasmX86_64.h: ../../src/Manage/DasmX86_64.cpp
-@Dasm.o
+@DasmX86_64.o
 Manage/ThreadContextARM.h:
 Manage/ThreadContextARM64.h:
 Manage/ThreadContextMIPS.h:
@@ -40,9 +40,9 @@ LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
 Benchmark_CPP.o: ../../src/Manage/Benchmark_SysV64.asm
 CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
 CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
-Dasm.o: ../../src/Manage/DasmX86_64.cpp
 DasmARM64.o: ../../src/Manage/DasmARM64.cpp
 DasmX86_32.o: ../../src/Manage/DasmX86_32.cpp
+DasmX86_64.o: ../../src/Manage/DasmX86_64.cpp
 ThreadContextX86_64L.o: ../../src/Manage/ThreadContextX86_64L.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_SysV64.asm
 FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp

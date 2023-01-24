@@ -176,7 +176,7 @@ Bool Data::DateTime::SetAsComputerTime()
 	return SetSystemTime(&st) != FALSE;
 #elif !defined(CPU_AVR)
 	struct timespec tp;
-	tp.tv_sec = this->ToTicks() / 1000;
+	tp.tv_sec = (time_t)(this->ToTicks() / 1000);
 	tp.tv_nsec = 0;
 	clock_settime(CLOCK_REALTIME, &tp);
 	return clock_settime(CLOCK_REALTIME, &tp) == 0;
@@ -868,7 +868,7 @@ void Data::DateTime::SetNTPTime(Int32 hiDword, Int32 loDword)
 	tval->second = 0;
 	tval->ms = 0;
 	this->AddMinute(hiDword / 60);
-	this->AddMS((hiDword % 60) * 1000 + ((loDword * 1000LL) >> 32));
+	this->AddMS((OSInt)((hiDword % 60) * 1000 + ((loDword * 1000LL) >> 32)));
 }
 
 Int64 Data::DateTime::ToNTPTime()

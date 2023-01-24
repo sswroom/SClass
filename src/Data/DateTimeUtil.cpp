@@ -2001,8 +2001,8 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 	return SetSystemTime(&st) != FALSE;
 #elif !defined(CPU_AVR)
 	struct timespec tp;
-	tp.tv_sec = secs;
-	tp.tv_nsec = nanosec;
+	tp.tv_sec = (time_t)secs;
+	tp.tv_nsec = (long)nanosec;
 	clock_settime(CLOCK_REALTIME, &tp);
 	return clock_settime(CLOCK_REALTIME, &tp) == 0;
 #else

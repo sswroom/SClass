@@ -474,11 +474,11 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	}
 	if (lastAccessTime)
 	{
-		t.actime = lastAccessTime->ToUnixTimestamp();
+		t.actime = (time_t)lastAccessTime->ToUnixTimestamp();
 	}
 	if (lastWriteTime)
 	{
-		t.modtime = lastWriteTime->ToUnixTimestamp();
+		t.modtime = (time_t)lastWriteTime->ToUnixTimestamp();
 	}
 	utime((const Char*)this->sourceName->v, &t);
 }
@@ -509,11 +509,11 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	}
 	if (!lastAccessTime.IsNull())
 	{
-		t.actime = lastAccessTime.ToUnixTimestamp();
+		t.actime = (time_t)lastAccessTime.ToUnixTimestamp();
 	}
 	if (!lastWriteTime.IsNull())
 	{
-		t.modtime = lastWriteTime.ToUnixTimestamp();
+		t.modtime = (time_t)lastWriteTime.ToUnixTimestamp();
 	}
 	utime((const Char*)this->sourceName->v, &t);
 }
