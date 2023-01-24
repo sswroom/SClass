@@ -14,6 +14,7 @@ namespace IO
 			IO::IStreamData *fd;
 
 			static void ParseDescriptor(FrameDetail *frame, const UInt8 *buff, UOSInt ofst);
+			static void RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd);
 		public:
 			EDIDFileAnalyse(IO::IStreamData *fd);
 			virtual ~EDIDFileAnalyse();

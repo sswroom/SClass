@@ -987,9 +987,18 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 	case 131:
 	case 133:
 	case 136:
+	case 177:
+	case 178:
+	case 203: //MEI?
 	case 205:
+	case 208:
+	case 216: //CPU?
+	case 217: //Keyboard?
+	case 218:
 	case 219:
+	case 220:
 	case 221:
+	case 222:
 		frame->AddHexBuff(4, packBuff[1] - 4, CSTR("Unknown data"), &packBuff[4], true);
 		break;
 	}

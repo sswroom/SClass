@@ -25,12 +25,14 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
 			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
+			RemoveNonASCII(sbuff, sptr);
 			frame->AddField(ofst + 5, 13, CSTR("Display serial number"), CSTRP(sbuff, sptr));
 		}
 		else if (type == 0xFE)
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
 			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
+			RemoveNonASCII(sbuff, sptr);
 			frame->AddField(ofst + 5, 13, CSTR("Unspecified text"), CSTRP(sbuff, sptr));
 		}
 		else if (type == 0xFD)
@@ -94,6 +96,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[ofst + 5], 13);
 			sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
+			RemoveNonASCII(sbuff, sptr);
 			frame->AddField(ofst + 5, 13, CSTR("Display name"), CSTRP(sbuff, sptr));
 		}
 		else if (type == 16)
@@ -185,6 +188,20 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 			frame->AddUIntName(ofst + 17, 1, CSTR("Serration"), (buff[ofst + 17] >> 2) & 1, (buff[ofst + 17] & 4)?CSTR("with serrations"):CSTR("without serrations"));
 			frame->AddUIntName(ofst + 17, 1, CSTR("Sync on red and blue lines additionally to green"), (buff[ofst + 17] >> 1) & 1, (buff[ofst + 17] & 2)?CSTR("sync on all three (RGB) video signals"):CSTR("sync on green signal only"));
 		}
+	}
+}
+
+void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd)
+{
+	UTF8Char c;
+	while (sbuff < sbuffEnd)
+	{
+		c = *sbuff;
+		if (c & 0x80)
+		{
+			*sbuff = '-';
+		}
+		sbuff++;
 	}
 }
 

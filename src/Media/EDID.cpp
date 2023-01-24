@@ -106,7 +106,14 @@ void Media::EDID::ParseDescriptor(EDIDInfo *info, const UInt8 *descriptor)
 				{
 					break;
 				}
-				*sptr++ = b;
+				if (b & 0x80)
+				{
+					*sptr++ = '-';
+				}
+				else
+				{
+					*sptr++ = b;
+				}
 			}
 			*sptr = 0;
 		}
