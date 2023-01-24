@@ -31,7 +31,7 @@ UInt32 __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(void* userObj)
 		me->fd->GetRealData(ofst, 24, tagHdr);
 		tag = MemAlloc(IO::FileAnalyse::LNKFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = ReadUInt16(&tagHdr[0]) + 2;
+		tag->size = (UOSInt)ReadUInt16(&tagHdr[0]) + 2;
 		tag->tagType = TagType::LinkTargetIDList;
 		me->tags.Add(tag);
 		ofst += tag->size;

@@ -80,7 +80,7 @@ UInt32 Media::AudioFrameSource::SeekToTime(UInt32 time)
 		time = 0;
 	UOSInt samplePos = (UOSInt)(time * (UInt64)this->format.frequency / 1000);
 	i = 0;
-	j = this->blockCnt - 1;
+	j = (OSInt)this->blockCnt - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;

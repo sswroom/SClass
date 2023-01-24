@@ -386,6 +386,100 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddUInt16(frame, 48, packBuff, carr, CSTR("Thread Enabled"));
 		break;
 	}
+	case 5:
+	{
+		const Char *names5_1[] = {"Unspecified", "Other", "Unknown", "None", "8-bit Parity", "32-bit ECC", "64-bit ECC", "128-bit ECC",
+			"CRC"};
+		AddEnum(frame, 4, packBuff, carr, CSTR("Error Detecting Method"), names5_1, sizeof(names5_1) / sizeof(names5_1[0]));
+		const Char *names5_2[] = {"Other", "Unknown", "None", "Single-Bit Error Correcting", "Double-Bit Error Correcting", "Error Scrubbing", "Reserved", "Reserved"};
+		AddBits(frame, 5, packBuff, carr, names5_2);
+		const Char *names5_3[] = {"Unspecified", "Other", "Unknown", "One-Way Interleave", "Two-Way Interleave", "Four-Way Interleave", "Eight-Way Interleave", "Sixteen-Way Interleave"};
+		AddEnum(frame, 6, packBuff, carr, CSTR("Supported Interleave"), names5_3, sizeof(names5_3) / sizeof(names5_3[0]));
+		AddEnum(frame, 7, packBuff, carr, CSTR("Current Interleave"), names5_3, sizeof(names5_3) / sizeof(names5_3[0]));
+		if (packBuff[1] > 8)
+		{
+			frame->AddUInt(8, 1, CSTR("Maximum Memory Module Size"), 2 << packBuff[8]);
+		}
+		const Char *names5_4[] = {"Other", "Unknown", "70ns", "60ns", "50ns", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 9, packBuff, carr, names5_4);
+		AddHex8(frame, 10, packBuff, carr, CSTR("Supported Speeds Reserved"));
+		const Char *names5_5[] = {"Other", "Unknown", "Standard", "Fast Page Mode", "EDO", "Parity", "ECC", "SIMM"};
+		const Char *names5_6[] = {"DIMM", "Burst EDO", "SDRAM", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 11, packBuff, carr, names5_5);
+		AddBits(frame, 12, packBuff, carr, names5_6);
+		const Char *names5_7[] = {"5V", "3.3V", "2.9V", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 13, packBuff, carr, names5_7);
+		AddUInt8(frame, 14, packBuff, carr, CSTR("Number of Associated Memory Slots"));
+		if (packBuff[1] > 14)
+		{
+			UOSInt n = packBuff[14];
+			UOSInt i = 0;
+			while (i < n)
+			{
+				AddHex16(frame, 15 + 2 * i, packBuff, carr, CSTR("Memory Module Configuration Handles"));
+				i++;
+			}
+			AddBits(frame, 15 + 2 * n, packBuff, carr, names5_2);
+		}
+		break;
+	}
+	case 6:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Socket Designation"));
+		if (packBuff[1] > 5)
+		{
+			frame->AddHex8(5, CSTR("Bank Connections 1"), packBuff[5] >> 4);
+			frame->AddHex8(5, CSTR("Bank Connections 2"), packBuff[5] & 15);
+		}
+		AddUInt8(frame, 6, packBuff, carr, CSTR("Current Speed (ns)"));
+		const Char *names6_1[] = {"Other", "Unknown", "Standard", "Fast Page Mode", "EDO", "Parity", "ECC", "SIMM"};
+		const Char *names6_2[] = {"DIMM", "Burst EDO", "SDRAM", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 7, packBuff, carr, names6_1);
+		AddBits(frame, 8, packBuff, carr, names6_2);
+		if (packBuff[1] > 9)
+		{
+			frame->AddBit(9, CSTR("double-bank"), packBuff[9], 7);
+			if ((packBuff[9] & 0x7F) == 0x7D)
+			{
+				frame->AddField(9, 1, CSTR("Installed Size"), CSTR("Not determinable"));
+			}
+			else if ((packBuff[9] & 0x7F) == 0x7E)
+			{
+				frame->AddField(9, 1, CSTR("Installed Size"), CSTR("Module is installed, but no memory has been enabled"));
+			}
+			else if ((packBuff[9] & 0x7F) == 0x7F)
+			{
+				frame->AddField(9, 1, CSTR("Installed Size"), CSTR("Not installed"));
+			}
+			else
+			{
+				frame->AddUInt(9, 1, CSTR("Installed Size"), 2 << (packBuff[9] & 0x7F));
+			}
+		}
+		if (packBuff[1] > 10)
+		{
+			frame->AddBit(10, CSTR("double-bank"), packBuff[10], 7);
+			if ((packBuff[10] & 0x7F) == 0x7D)
+			{
+				frame->AddField(10, 1, CSTR("Enabled Size"), CSTR("Not determinable"));
+			}
+			else if ((packBuff[10] & 0x7F) == 0x7E)
+			{
+				frame->AddField(10, 1, CSTR("Enabled Size"), CSTR("Module is installed, but no memory has been enabled"));
+			}
+			else if ((packBuff[10] & 0x7F) == 0x7F)
+			{
+				frame->AddField(10, 1, CSTR("Enabled Size"), CSTR("Not installed"));
+			}
+			else
+			{
+				frame->AddUInt(10, 1, CSTR("Enabled Size"), 2 << (packBuff[10] & 0x7F));
+			}
+		}
+		const Char *names6_3[] = {"Uncorrectable errors received for the module", "Correctable errors received for the module", "Error Status information should be obtained from the event log", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 11, packBuff, carr, names6_3);
+		break;
+	}
 	case 7:
 	{
 		AddString(frame, 4, packBuff, carr, CSTR("Socket Designation"));

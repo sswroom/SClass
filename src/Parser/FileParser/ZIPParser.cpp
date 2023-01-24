@@ -278,8 +278,8 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *f
 				UInt16 modDate = ReadUInt16(&buff[12]);
 				dt.ToLocalTime();
 				dt.SetMSDOSTime(modDate, modTime);
-				OSInt extraStart = 30 + fnameSize;
-				OSInt extraEnd = extraStart + extraSize;
+				UOSInt extraStart = 30 + fnameSize;
+				UOSInt extraEnd = extraStart + extraSize;
 				UInt16 extraHdr;
 				UInt16 extraData;
 				while (extraStart < extraEnd)
@@ -302,7 +302,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(IO::IStreamData *f
 					{
 						modDate = 0;
 					}
-					extraStart += extraData + 4;
+					extraStart += (UOSInt)extraData + 4;
 				}
 				if (buff[30 + fnameSize - 1] == '/')
 				{

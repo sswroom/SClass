@@ -124,7 +124,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 				dbits = currImg->data;
 				MemCopyNO(currImg->pal, pal, 8);
 
-				dbits += dbpl * imgHeight;
+				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -177,7 +177,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 				dbits = currImg->data;
 				MemCopyNO(currImg->pal, pal, 64);
 
-				dbits += dbpl * imgHeight;
+				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -229,7 +229,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 				dbits = currImg->data;
 				MemCopyNO(currImg->pal, pal, 1024);
 
-				dbits += dbpl * imgHeight;
+				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -254,11 +254,11 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 				UInt8 *sptr = (UInt8*)pal;
 				UInt8 *maskPtr;
 				UInt8 *currPtr;
-				OSInt i;
-				OSInt maskByteSize = (imgWidth + 7) >> 3;
+				UOSInt i;
+				OSInt maskByteSize = (OSInt)(imgWidth + 7) >> 3;
 				OSInt maskByteAdd;
 				OSInt imgByteAdd;
-				dbpl = imgWidth * 4;
+				dbpl = (OSInt)imgWidth * 4;
 
 				if ((maskByteAdd = (maskByteSize & 3)) != 0)
 				{
@@ -268,9 +268,9 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 				{
 					imgByteAdd = 4 - imgByteAdd;
 				}
-				maskPtr = sptr + (imgWidth * 3 + imgByteAdd) * imgHeight;
+				maskPtr = sptr + ((OSInt)imgWidth * 3 + imgByteAdd) * (OSInt)imgHeight;
 
-				if (thisSize != (imgWidth * 3 + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40)
+				if ((OSInt)thisSize != (imgWidth * 3 + (OSInt)imgByteAdd + maskByteSize + maskByteAdd) * (OSInt)imgHeight + 40)
 				{
 					MemFree(imgBuff);
 					DEL_CLASS(imgList);
@@ -280,7 +280,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 				NEW_CLASS(currImg, Media::StaticImage(imgWidth, imgHeight, 0, 32, Media::PF_B8G8R8A1, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 
-				dbits += dbpl * imgHeight;
+				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)
 				{
 					dbits -= dbpl;
@@ -346,7 +346,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(IO::IStreamData *f
 
 				NEW_CLASS(currImg, Media::StaticImage(imgWidth, imgHeight, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
-				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits, imgWidth * 4, imgHeight, -(OSInt)imgWidth * 4, imgWidth * 4);
+				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits, imgWidth * 4, imgHeight, -(OSInt)imgWidth * 4, (OSInt)imgWidth * 4);
 			}
 			break;
 		default:

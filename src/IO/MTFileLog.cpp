@@ -337,7 +337,7 @@ UTF8Char *IO::MTFileLog::GetLastFileName(UTF8Char *sbuff)
 		break;
 	case IO::ILogHandler::LogType::PerMonth:
 		Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
-		tval.month = tval.month - 1;
+		tval.month = (UInt8)(tval.month - 1);
 		if (tval.month == 0)
 		{
 			tval.month = 12;

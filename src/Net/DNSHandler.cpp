@@ -91,7 +91,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 					*addr = ans->addr;
 					if (newReq)
 					{
-						dnsStat->timeout = currTime.AddSecond(ans->ttl);
+						dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 					}
 					return true;
 				}
@@ -115,7 +115,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, Text
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
 			*addr = ans->addr;
-			dnsStat->timeout = dnsStat->timeout.AddSecond(ans->ttl);
+			dnsStat->timeout = dnsStat->timeout.AddSecond((OSInt)ans->ttl);
 			succ = true;
 			break;
 		}
@@ -179,7 +179,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 					*addr = ans->addr;
 					if (newReq)
 					{
-						dnsStat->timeout = currTime.AddSecond(ans->ttl);
+						dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 					}
 					return true;
 				}
@@ -204,7 +204,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, Text
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
 			*addr = ans->addr;
-			dnsStat->timeout = currTime.AddSecond(ans->ttl);
+			dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 			break;
 		}
 		i++;
@@ -272,7 +272,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 					addrs[ret] = ans->addr;
 					if (newReq)
 					{
-						dnsStat->timeout = currTime.AddSecond(ans->ttl);
+						dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 					}
 					ret++;
 					if (ret >= maxCnt)
@@ -299,7 +299,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Net::SocketUtil::AddressInfo *addrs, 
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
 			addrs[ret] = ans->addr;
-			dnsStat->timeout = dnsStat->timeout.AddSecond(ans->ttl);
+			dnsStat->timeout = dnsStat->timeout.AddSecond((OSInt)ans->ttl);
 			ret++;
 			if (ret >= maxCnt)
 			{
@@ -370,7 +370,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 					addrs[ret] = ans->addr;
 					if (newReq)
 					{
-						dnsStat->timeout = currTime.AddSecond(ans->ttl);
+						dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 					}
 					ret++;
 					if (ret >= maxCnt)
@@ -396,7 +396,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Net::SocketUtil::AddressInfo *addrs, 
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
 			addrs[ret] = ans->addr;
-			dnsStat->timeout = currTime.AddSecond(ans->ttl);
+			dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 			ret++;
 			if (ret >= maxCnt)
 				break;

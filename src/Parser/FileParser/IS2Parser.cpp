@@ -67,8 +67,8 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(IO::IStreamData *f
 	i = 44;
 	while (i < 204 && valid)
 	{
-		currType = ReadInt32(&buff[i]);
-		currSize = ReadUInt32(&buff[i + 4]);
+		currType = ReadInt32(&hdr[i]);
+		currSize = ReadUInt32(&hdr[i + 4]);
 		if (currSize == 0)
 			break;
 		currBuff = MemAlloc(UInt8, currSize);

@@ -1108,7 +1108,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 #endif
 			UInt8 *buff;
 			UOSInt buffSize;
-			buffSize = tmpSess.regs.rip - funcAddr;
+			buffSize = (UOSInt)(tmpSess.regs.rip - funcAddr);
 			if (buffSize < 256)
 				buffSize = 256;
 			buff = MemAlloc(UInt8, buffSize);
@@ -1121,7 +1121,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			sb.AppendC(UTF8STRC(" "));
 			tmpSess.addrResol->ResolveNameSB(&sb, funcAddr);
 			console.WriteLineC(sb.ToString(), sb.GetLength());
-			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, tmpSess.regs.rip - funcAddr);
+			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, (UOSInt)(tmpSess.regs.rip - funcAddr));
 			if (buffSize > 0)
 			{
 				sb.ClearStr();

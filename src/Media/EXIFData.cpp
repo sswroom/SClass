@@ -5112,7 +5112,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				tmpBuff = MemAlloc(UInt8, fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddHexBuff(fofst + readBase - ofst + frameOfst, fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
+				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
 				MemFree(tmpBuff);
 			}
 		}
@@ -5133,7 +5133,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				tmpBuff = MemAlloc(UInt8, fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddStrS(fofst + readBase - ofst + frameOfst, fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff);
+				frame->AddStrS((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff);
 				MemFree(tmpBuff);
 			}
 		}
@@ -5159,7 +5159,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				while (j > 0)
 				{
 					j -= 2;
-					frame->AddUInt(fofst + readBase + j - ofst + frameOfst, 2, GetEXIFName(EM_STANDARD, ifdId, tag), (UInt16)readInt16(&tmpBuff[j]));
+					frame->AddUInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), (UInt16)readInt16(&tmpBuff[j]));
 				}
 				MemFree(tmpBuff);
 			}
@@ -5172,7 +5172,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				if (tag == 34665 || tag == 34853)
 				{
 					frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
-					ParseFrame(frame, fofst + readBase - ofst + frameOfst, fd, fofst + readBase, readInt32, readInt16, 0, tag, readBase);
+					ParseFrame(frame, (UOSInt)(fofst + readBase - ofst + frameOfst), fd, fofst + readBase, readInt32, readInt16, 0, tag, readBase);
 				}
 				else
 				{
@@ -5189,7 +5189,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				while (j > 0)
 				{
 					j -= 4;
-					frame->AddUInt(fofst + readBase + j - ofst + frameOfst, 4, GetEXIFName(EM_STANDARD, ifdId, tag), (UInt32)readInt32(&tmpBuff[j]));
+					frame->AddUInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 4, GetEXIFName(EM_STANDARD, ifdId, tag), (UInt32)readInt32(&tmpBuff[j]));
 				}
 				MemFree(tmpBuff);
 			}
@@ -5209,7 +5209,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				sb.AppendU32((UInt32)readInt32(&tmpBuff[j]));
 				sb.AppendC(UTF8STRC(" / "));
 				sb.AppendU32((UInt32)readInt32(&tmpBuff[j + 4]));
-				frame->AddField(fofst + readBase + j - ofst + frameOfst, 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
+				frame->AddField((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
 			}
 			MemFree(tmpBuff);
 		}
@@ -5230,7 +5230,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				tmpBuff = MemAlloc(UInt8, fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddHexBuff(fofst + readBase - ofst + frameOfst, fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
+				frame->AddHexBuff((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff, true);
 				MemFree(tmpBuff);
 			}
 		}
@@ -5256,7 +5256,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				while (j > 0)
 				{
 					j -= 2;
-					frame->AddInt(fofst + readBase + j - ofst + frameOfst, 2, GetEXIFName(EM_STANDARD, ifdId, tag), readInt16(&tmpBuff[j]));
+					frame->AddInt((UOSInt)(fofst + readBase + j - ofst + frameOfst), 2, GetEXIFName(EM_STANDARD, ifdId, tag), readInt16(&tmpBuff[j]));
 				}
 				MemFree(tmpBuff);
 			}
@@ -5276,7 +5276,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 				sb.AppendI32(readInt32(&tmpBuff[j]));
 				sb.AppendC(UTF8STRC(" / "));
 				sb.AppendI32(readInt32(&tmpBuff[j + 4]));
-				frame->AddField(fofst + readBase + j - ofst + frameOfst, 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
+				frame->AddField((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), sb.ToCString());
 			}
 			MemFree(tmpBuff);
 		}
@@ -5290,7 +5290,7 @@ Bool Media::EXIFData::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, UOS
 			while (j > 0)
 			{
 				j -= 8;
-				frame->AddFloat(fofst + readBase + j - ofst + frameOfst, 8, GetEXIFName(EM_STANDARD, ifdId, tag), ReadDouble(&tmpBuff[j]));
+				frame->AddFloat((UOSInt)(fofst + readBase + j - ofst + frameOfst), 8, GetEXIFName(EM_STANDARD, ifdId, tag), ReadDouble(&tmpBuff[j]));
 			}
 			MemFree(tmpBuff);
 		}

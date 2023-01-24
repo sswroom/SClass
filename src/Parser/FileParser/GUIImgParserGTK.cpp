@@ -80,7 +80,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(IO::IStreamData
 
 	Media::ImageList *imgList = 0;
 	UInt64 dataSize = fd->GetDataSize();
-	UInt8 *data = MemAlloc(UInt8, dataSize);
+	UInt8 *data = MemAlloc(UInt8, (UOSInt)dataSize);
 	fd->GetRealData(0, (UOSInt)dataSize, data);
 	GInputStream *inpStream = g_memory_input_stream_new_from_data(data, (gssize)dataSize, 0);
 	GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);

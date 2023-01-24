@@ -486,7 +486,7 @@ Bool Map::SPDLayer::GetBounds(Math::RectAreaDbl *bounds)
 		Math::Coord2D<Int32> minBlk;
 		Math::Coord2D<Int32> maxBlk;
 		maxBlk = minBlk = this->blks[0].blk;
-		OSInt i = this->nblks;
+		UOSInt i = this->nblks;
 		while (i-- > 0)
 		{
 			if (this->blks[i].blk.x > maxBlk.x)

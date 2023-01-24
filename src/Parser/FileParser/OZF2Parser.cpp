@@ -145,12 +145,12 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::IStreamData *
 									{
 										if (imgY2 > (OSInt)thisImgHeight)
 										{
-											imgY2 = thisImgHeight;
+											imgY2 = (OSInt)thisImgHeight;
 										}
 										if (imgX2 > (OSInt)thisImgWidth)
 										{
 											UInt8 *srcPtr = imgBuff + 4096;
-											UInt8 *destPtr = outImg->data + thisImgWidth * imgY1 + imgX1;
+											UInt8 *destPtr = outImg->data + (OSInt)thisImgWidth * imgY1 + imgX1;
 											UOSInt w = thisImgWidth - (UOSInt)imgX1;
 											while (imgY1 < imgY2)
 											{
@@ -163,7 +163,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(IO::IStreamData *
 										else
 										{
 											UInt8 *srcPtr = imgBuff + 4096;
-											UInt8 *destPtr = outImg->data + thisImgWidth * imgY1 + imgX1;
+											UInt8 *destPtr = outImg->data + (OSInt)thisImgWidth * imgY1 + imgX1;
 											while (imgY1 < imgY2)
 											{
 												srcPtr -= 64;

@@ -576,7 +576,7 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packe
 	Sync::MutexUsage mutUsage(&this->macMut);
 	UOSInt cnt;
 	mac = this->MACGet(srcMAC);
-	cnt = mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt;
+	cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
 	mac->packetTime[cnt & 15] = dt.ToTicks();
 	mac->packetSize[cnt & 15] = packetSize;
 	mac->packetDestMAC[cnt & 15] = destMAC;

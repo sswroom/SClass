@@ -17,7 +17,7 @@ namespace IO
 			{
 				UInt32 tagType;
 				UInt64 ofst;
-				UOSInt size;
+				UInt64 size;
 			};
 		private:
 			IO::IStreamData *fd;

@@ -177,8 +177,8 @@ rle32exit:
 				{
 					UInt8 *tmpSPtr;
 					UInt8 *tmpDPtr;
-					OSInt cnt = imgHeight * imgWidth;
-					Int32 tmpVal;
+					UOSInt cnt = imgHeight * imgWidth;
+					UInt32 tmpVal;
 					tmpSPtr = tmpBuff;
 					tmpDPtr = pBits;
 					while (cnt > 0)

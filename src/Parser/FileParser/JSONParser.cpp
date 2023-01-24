@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(IO::IStreamData *
 	{
 		return 0;
 	}
-	UOSInt buffSize = (UOSInt)fd->GetDataSize() - fileOfst;
+	UOSInt buffSize = (UOSInt)(fd->GetDataSize() - fileOfst);
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
 	fileBuff[fd->GetRealData(fileOfst, buffSize, fileBuff)] = 0;
 	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(Text::CString(fileBuff, buffSize));

@@ -101,7 +101,7 @@ void Media::StaticImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UO
 	{
 		if (left < 0)
 		{
-			destBuff += (-left * this->info.storeBPP) >> 3;
+			destBuff += ((UOSInt)(-left) * this->info.storeBPP) >> 3;
 			width = (UOSInt)((OSInt)width + left);
 			left = 0;
 		}

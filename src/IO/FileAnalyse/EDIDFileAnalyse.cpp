@@ -37,13 +37,13 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 		}
 		else if (type == 0xFD)
 		{
-			frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), buff[ofst + 4] >> 4);
+			frame->AddUInt(ofst + 4, 1, CSTR("Reserved"), (UOSInt)buff[ofst + 4] >> 4);
 			frame->AddUInt(ofst + 4, 1, CSTR("Horizontal rate offsets"), (buff[ofst + 4] >> 2) & 3);
 			frame->AddUInt(ofst + 4, 1, CSTR("Vertical rate offsets"), buff[ofst + 4] & 3);
-			frame->AddUInt(ofst + 5, 1, CSTR("Vertical minimum field rate (Hz)"), (buff[ofst + 4] & 1)?(buff[ofst + 5] + 255):buff[ofst + 5]);
-			frame->AddUInt(ofst + 6, 1, CSTR("Vertical maximum field rate (Hz)"), (buff[ofst + 4] & 2)?(buff[ofst + 6] + 255):buff[ofst + 6]);
-			frame->AddUInt(ofst + 7, 1, CSTR("Horizontal minimum field rate (kHz)"), (buff[ofst + 4] & 4)?(buff[ofst + 7] + 255):buff[ofst + 7]);
-			frame->AddUInt(ofst + 8, 1, CSTR("Horizontal maximum field rate (kHz)"), (buff[ofst + 4] & 8)?(buff[ofst + 8] + 255):buff[ofst + 8]);
+			frame->AddUInt(ofst + 5, 1, CSTR("Vertical minimum field rate (Hz)"), (buff[ofst + 4] & 1)?(UOSInt)(buff[ofst + 5] + 255):buff[ofst + 5]);
+			frame->AddUInt(ofst + 6, 1, CSTR("Vertical maximum field rate (Hz)"), (buff[ofst + 4] & 2)?(UOSInt)(buff[ofst + 6] + 255):buff[ofst + 6]);
+			frame->AddUInt(ofst + 7, 1, CSTR("Horizontal minimum field rate (kHz)"), (buff[ofst + 4] & 4)?(UOSInt)(buff[ofst + 7] + 255):buff[ofst + 7]);
+			frame->AddUInt(ofst + 8, 1, CSTR("Horizontal maximum field rate (kHz)"), (buff[ofst + 4] & 8)?(UOSInt)(buff[ofst + 8] + 255):buff[ofst + 8]);
 			frame->AddUInt(ofst + 9, 1, CSTR("Maximum pixel clock rate (MHz)"), (UOSInt)buff[ofst + 9] * 10);
 			switch (buff[ofst + 10])
 			{
@@ -66,7 +66,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 				break;
 			case 4:
 				frame->AddUIntName(ofst + 10, 1, CSTR("Extended timing information type"), buff[ofst + 10], CSTR("CVT"));
-				frame->AddUInt(ofst + 11, 1, CSTR("CVT major version"), buff[ofst + 11] >> 4);
+				frame->AddUInt(ofst + 11, 1, CSTR("CVT major version"), (UOSInt)buff[ofst + 11] >> 4);
 				frame->AddUInt(ofst + 11, 1, CSTR("CVT minor version"), buff[ofst + 11] & 15);
 				frame->AddFloat(ofst + 12, 1, CSTR("Maximum pixel clock rate (High precision)"), buff[ofst + 9] * 10.0 + (buff[ofst + 12] >> 2) * 0.25);
 				frame->AddUInt(ofst + 13, 1, CSTR("Maximum active pixels per line"), buff[ofst + 13] + ((UOSInt)(buff[ofst + 12] & 3) * 256));
@@ -76,7 +76,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 5:4"), (buff[ofst + 14] >> 4) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Aspect ratio bitmap 15:9"), (buff[ofst + 14] >> 3) & 1);
 				frame->AddUInt(ofst + 14, 1, CSTR("Reserved"), buff[ofst + 14] & 7);
-				frame->AddUIntName(ofst + 15, 1, CSTR("Aspect ratio preference"), buff[ofst + 15] >> 5, AspectRatioPreferenceGetName(buff[ofst + 15] >> 5));
+				frame->AddUIntName(ofst + 15, 1, CSTR("Aspect ratio preference"), (UOSInt)buff[ofst + 15] >> 5, AspectRatioPreferenceGetName((UOSInt)buff[ofst + 15] >> 5));
 				frame->AddUInt(ofst + 15, 1, CSTR("CVT-RB reduced blanking"), (buff[ofst + 15] >> 4) & 1);
 				frame->AddUInt(ofst + 15, 1, CSTR("CVT standard blanking"), (buff[ofst + 15] >> 3) & 1);
 				frame->AddUInt(ofst + 15, 1, CSTR("Reserved"), buff[ofst + 15] & 7);
@@ -120,7 +120,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(FrameDetail *frame, const
 		frame->AddHex8(ofst + 7, CSTR("Vertical lines msbits"), buff[ofst + 7]);
 		frame->AddUInt(ofst + 8, 1, CSTR("Horizontal front porch pixels"), buff[ofst + 8] + ((UOSInt)(buff[ofst + 11] & 0xC0)) * 4);
 		frame->AddUInt(ofst + 9, 1, CSTR("Horizontal sync pulse width pixels"), buff[ofst + 9] + ((UOSInt)(buff[ofst + 11] & 0x30)) * 16);
-		frame->AddUInt(ofst + 10, 1, CSTR("Vertical front porch pixels"), (buff[ofst + 10] >> 4) + ((UOSInt)(buff[ofst + 11] & 0xC)) * 4);
+		frame->AddUInt(ofst + 10, 1, CSTR("Vertical front porch pixels"), ((UOSInt)buff[ofst + 10] >> 4) + ((UOSInt)(buff[ofst + 11] & 0xC)) * 4);
 		frame->AddUInt(ofst + 10, 1, CSTR("Vertical sync pulse width pixels"), (buff[ofst + 10] & 15) + ((UOSInt)(buff[ofst + 11] & 0x3)) * 16);
 		frame->AddHex8(ofst + 11, CSTR("Front porch and sync pulse width msbits"), buff[ofst + 11]);
 		frame->AddUInt(ofst + 12, 1, CSTR("Horizontal image size (mm)"), buff[ofst + 12] + ((UOSInt)(buff[ofst + 14] & 0xF0)) * 16);
@@ -215,7 +215,7 @@ IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(IO::IStreamData *fd)
 		return;
 	}
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	this->blockCnt = buff[126] + 1;
+	this->blockCnt = (UOSInt)buff[126] + 1;
 }
 
 IO::FileAnalyse::EDIDFileAnalyse::~EDIDFileAnalyse()
@@ -316,7 +316,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 		frame->AddHex16(10, CSTR("Manufacturer product code"), ReadUInt16(&buff[10]));
 		frame->AddUInt(12, 4, CSTR("Serial number"), ReadUInt32(&buff[12]));
 		frame->AddUInt(16, 1, CSTR("Week of manufacture"), buff[16]);
-		frame->AddUInt(17, 1, CSTR("Year of manufacture"), buff[17] + 1990);
+		frame->AddUInt(17, 1, CSTR("Year of manufacture"), (UOSInt)buff[17] + 1990);
 		frame->AddUInt(18, 1, CSTR("EDID version"), buff[18]);
 		frame->AddUInt(19, 1, CSTR("EDID revision"), buff[19]);
 		if (buff[20] & 0x80)
@@ -416,9 +416,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 					frame->AddUInt(38 + i * 2, 1, CSTRP(sbuff, sptr), (31 + (UOSInt)buff[38 + i * 2]) * 8);
 				}
 				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" Image aspect ratio"));
-				frame->AddUIntName(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), buff[38 + i * 2 + 1] >> 6, ImageAspectRatioGetName(buff[38 + i * 2 + 1] >> 6));
+				frame->AddUIntName(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), (UOSInt)buff[38 + i * 2 + 1] >> 6, ImageAspectRatioGetName((UOSInt)buff[38 + i * 2 + 1] >> 6));
 				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Standard timing information ")), i), UTF8STRC(" Vertical frequency"));
-				frame->AddUInt(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), 60 + (buff[38 + i * 2 + 1] & 0x3F));
+				frame->AddUInt(38 + i * 2 + 1, 1, CSTRP(sbuff, sptr), 60 + (UOSInt)(buff[38 + i * 2 + 1] & 0x3F));
 			}
 			i++;
 		}
@@ -450,7 +450,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 				switch (buff[i] >> 5)
 				{
 				case 1:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("audio"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("audio"));
 					if ((byteCnt % 3) == 0)
 					{
 						k = 0;
@@ -461,15 +461,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 							frame->AddUIntName(i + 1 + k, 1, CSTR("Audio Format Tag"), fmt, AudioFormatGetName(fmt));
 							if (fmt == 15 && extFmt == 11)
 							{
-								frame->AddUInt(i + 1 + k, 1, CSTR("MPEG-H 3D Audio Level"), (buff[i + 1 + k] & 7) + 1);
+								frame->AddUInt(i + 1 + k, 1, CSTR("MPEG-H 3D Audio Level"), (UOSInt)(buff[i + 1 + k] & 7) + 1);
 							}
 							else if (fmt == 15 && extFmt == 13)
 							{
-								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), ((buff[i + 1 + k] & 7) | ((buff[i + 1 + k] & 0x80) >> 4) | ((buff[i + 1 + k + 1] & 0x80) >> 3)) + 1);
+								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), ((buff[i + 1 + k] & 7) | ((UOSInt)(buff[i + 1 + k] & 0x80) >> 4) | ((UOSInt)(buff[i + 1 + k + 1] & 0x80) >> 3)) + 1);
 							}
 							else
 							{
-								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), (buff[i + 1 + k] & 7) + 1);
+								frame->AddUInt(i + 1 + k, 1, CSTR("Max channels"), (UOSInt)(buff[i + 1 + k] & 7) + 1);
 							}
 							frame->AddBit(i + 1 + k + 1, CSTR("reserved"), buff[i + 1 + k + 1], 7);
 							frame->AddBit(i + 1 + k + 1, CSTR("Support 192kHz"), buff[i + 1 + k + 1], 6);
@@ -487,7 +487,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 							}
 							else if (fmt <= 8)
 							{
-								frame->AddUInt(i + 1 + k + 2, 1, CSTR("Maximum bit rate (kbps)"), buff[i + 1 + k + 2] * 8);
+								frame->AddUInt(i + 1 + k + 2, 1, CSTR("Maximum bit rate (kbps)"), (UOSInt)buff[i + 1 + k + 2] * 8);
 							}
 							else if (fmt == 10)
 							{
@@ -530,13 +530,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 					}
 					break;
 				case 2:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("video"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("video"));
 					break;
 				case 3:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("vendor specific"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("vendor specific"));
 					break;
 				case 4:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("speaker allocation"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("speaker allocation"));
 					if (byteCnt >= 3)
 					{
 						frame->AddBit(i + 1, CSTR("FL/FR - Front Left/Right"), buff[i + 1], 0);
@@ -560,17 +560,17 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 						frame->AddBit(i + 3, CSTR("BtFL/BtFR - Bottom Front Left/Right"), buff[i + 3], 2);
 						frame->AddBit(i + 3, CSTR("TpLS/TpRS - Top Left/Right Surround"), buff[i + 3], 3);
 						frame->AddBit(i + 3, CSTR("LSd/RSd - Left/Right Surround Direct"), buff[i + 3], 4);
-						frame->AddUInt(i + 3, 1, CSTR("reserved"), buff[i + 3] >> 5);
+						frame->AddUInt(i + 3, 1, CSTR("reserved"), (UOSInt)buff[i + 3] >> 5);
 					}
 					break;
 				case 5:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("VESA Display Transfer Characteristic"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("VESA Display Transfer Characteristic"));
 					break;
 				case 6:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("reserved"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("reserved"));
 					break;
 				case 7:
-					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), buff[i] >> 5, CSTR("Use Extended Tag"));
+					frame->AddUIntName(i, 1, CSTR("Block Type Tag"), (UOSInt)buff[i] >> 5, CSTR("Use Extended Tag"));
 					switch (buff[i + 1])
 					{
 					case 0:
