@@ -1,10 +1,11 @@
 #ifndef _SM_DATA_SORTABLEARRAYLISTNATIVE
 #define _SM_DATA_SORTABLEARRAYLISTNATIVE
 #include "Data/ArrayList.h"
+#include "Data/Comparator.h"
 
 namespace Data
 {
-	template <class T> class SortableArrayListNative : public Data::ArrayList<T>
+	template <class T> class SortableArrayListNative : public Data::ArrayList<T>, public Data::Comparator<T>
 	{
 	public:
 		SortableArrayListNative() : ArrayList<T>() {};
@@ -13,6 +14,7 @@ namespace Data
 
 		UOSInt SortedInsert(T val);
 		OSInt SortedIndexOf(T val) const;
+		virtual OSInt Compare(T a, T b) const;
 	};
 
 	template <class T> UOSInt Data::SortableArrayListNative<T>::SortedInsert(T val)
@@ -71,6 +73,13 @@ namespace Data
 			}
 		}
 		return -i - 1;
+	}
+
+	template <class T> OSInt Data::SortableArrayListNative<T>::Compare(T a, T b) const
+	{
+		if (a > b) return 1;
+		if (a < b) return -1;
+		return 0;
 	}
 }
 #endif

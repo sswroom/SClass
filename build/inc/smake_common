@@ -1732,6 +1732,8 @@ IO/LNKFile.h: ../../src/IO/LNKFile.cpp
 @LNKFile.o
 IO/LogFile.h: ../../src/IO/LogFile.cpp
 @LogFile.o
+IO/LogFileManager.h: ../../src/IO/LogFileManager.cpp
+@LogFileManager.o
 IO/LogTool.h: ../../src/IO/LogTool.cpp
 @LogTool.o
 IO/LogWriter.h: ../../src/IO/LogWriter.cpp
@@ -4239,6 +4241,8 @@ Text/XMLReader.h: ../../src/Text/XMLReader.cpp
 @XMLReader.o
 Text/Builder/HTMLBodyBuilder.h: ../../src/Text/Builder/HTMLBodyBuilder.cpp
 @HTMLBodyBuilder.o
+Text/Builder/HTMLBuilder.h: ../../src/Text/Builder/HTMLBuilder.cpp
+@HTMLBuilder.o
 Text/Builder/HTMLDocumentBuilder.h: ../../src/Text/Builder/HTMLDocumentBuilder.cpp
 @HTMLDocumentBuilder.o
 Text/Builder/HTMLHeaderBuilder.h: ../../src/Text/Builder/HTMLHeaderBuilder.cpp
@@ -4662,6 +4666,7 @@ JavaClass.o: ../../src/IO/JavaClass.cpp
 JavaProperties.o: ../../src/IO/JavaProperties.cpp
 LNKFile.o: ../../src/IO/LNKFile.cpp
 LogFile.o: ../../src/IO/LogFile.cpp
+LogFileManager.o: ../../src/IO/LogFileManager.cpp
 LogTool.o: ../../src/IO/LogTool.cpp
 LogWriter.o: ../../src/IO/LogWriter.cpp
 LoopFileLog.o: ../../src/IO/LoopFileLog.cpp
@@ -5848,6 +5853,7 @@ XML.o: ../../src/Text/XML.cpp
 XMLDOM.o: ../../src/Text/XMLDOM.cpp
 XMLReader.o: ../../src/Text/XMLReader.cpp
 HTMLBodyBuilder.o: ../../src/Text/Builder/HTMLBodyBuilder.cpp
+HTMLBuilder.o: ../../src/Text/Builder/HTMLBuilder.cpp
 HTMLDocumentBuilder.o: ../../src/Text/Builder/HTMLDocumentBuilder.cpp
 HTMLHeaderBuilder.o: ../../src/Text/Builder/HTMLHeaderBuilder.cpp
 CppCodeParser.o: ../../src/Text/Cpp/CppCodeParser.cpp

@@ -18,7 +18,8 @@ Text::Builder::HTMLDocumentBuilder::HTMLDocumentBuilder(DocType docType, Text::C
 
 Text::Builder::HTMLDocumentBuilder::~HTMLDocumentBuilder()
 {
-
+	SDEL_CLASS(this->headerBuilder);
+	SDEL_CLASS(this->bodyBuilder);
 }
 
 Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Text::CString onLoadScript)
@@ -26,6 +27,7 @@ Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Te
 	if (this->headerBuilder)
 	{
 		DEL_CLASS(this->headerBuilder);
+		this->headerBuilder = 0;
 		this->sb.AppendC(UTF8STRC("</head>\r\n"));
 		this->sb.AppendC(UTF8STRC("<body"));
 		if (onLoadScript.leng > 0)
@@ -50,6 +52,7 @@ Text::CString Text::Builder::HTMLDocumentBuilder::Build()
 	if (this->bodyBuilder)
 	{
 		DEL_CLASS(this->bodyBuilder);
+		this->bodyBuilder = 0;
 		this->sb.AppendC(UTF8STRC("</body>\r\n"));
 		this->sb.AppendC(UTF8STRC("</html>"));
 	}

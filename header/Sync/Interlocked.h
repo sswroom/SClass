@@ -47,7 +47,11 @@ namespace Sync
 #define Interlocked_IncrementU64(val) ((UInt64)InterlockedIncrement64((Int64*)val))
 #define Interlocked_DecrementI64(val) InterlockedDecrement64(val)
 #define Interlocked_DecrementU64(val) ((UInt64)InterlockedDecrement64((Int64*)val))
+#if defined(__INTRINSIC_DEFINED__InterlockedAdd64)
+#define Interlocked_AddI64(val, aval) _InterlockedAdd64(val, aval)
+#else
 #define Interlocked_AddI64(val, aval) (InterlockedExchangeAdd64(val, aval) + aval)
+#endif
 #define Interlocked_AddU64(val, aval) ((UInt64)Interlocked_AddI64((Int64*)val, (Int64)aval))
 #define Interlocked_SubtractI64(val, sval) (InterlockedExchangeAdd64(val, -sval) - sval)
 #else
