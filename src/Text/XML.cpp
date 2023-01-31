@@ -126,7 +126,7 @@ UOSInt Text::XML::GetXMLTextLiteLen(const WChar *text)
 	return cnt;
 }
 
-UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
+UOSInt Text::XML::GetHTMLBodyTextLen(const UTF8Char *text)
 {
 	UOSInt cnt = 0;
 	const UTF8Char *sptr = text;
@@ -167,7 +167,43 @@ UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 	}
 }
 
-UOSInt Text::XML::GetHTMLTextLen(const WChar *text)
+UOSInt Text::XML::GetHTMLElementTextLen(const UTF8Char *text)
+{
+	UOSInt cnt = 0;
+	const UTF8Char *sptr = text;
+	UTF8Char c;
+	while (true)
+	{
+		switch ((c = *sptr++))
+		{
+		case 0:
+			return cnt;
+		case '&':
+			cnt += 5;
+			break;
+		case '<':
+			cnt += 4;
+			break;
+		case '>':
+			cnt += 4;
+			break;
+		case '\'':
+			cnt += 5;
+			break;
+		case '"':
+			cnt += 6;
+			break;
+		case '\t':
+			cnt += 24;
+			break;
+		default:
+			cnt++;
+			break;
+		}
+	}
+}
+
+UOSInt Text::XML::GetHTMLBodyTextLen(const WChar *text)
 {
 	UOSInt cnt = 0;
 	const WChar *wptr = text;
@@ -455,7 +491,7 @@ WChar *Text::XML::ToXMLTextLite(WChar *buff, const WChar *text)
 	return dptr;
 }
 
-UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
+UTF8Char *Text::XML::ToHTMLBodyText(UTF8Char *buff, const UTF8Char *text)
 {
 	UTF8Char *dptr = buff;
 	const UTF8Char *sptr = text;
@@ -526,7 +562,68 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 	}
 }
 
-WChar *Text::XML::ToHTMLText(WChar *buff, const WChar *text)
+UTF8Char *Text::XML::ToHTMLElementText(UTF8Char *buff, const UTF8Char *text)
+{
+	UTF8Char *dptr = buff;
+	const UTF8Char *sptr = text;
+	UTF8Char c;
+	while (true)
+	{
+		switch (c = *sptr++)
+		{
+		case 0:
+			*dptr = 0;
+			return dptr;
+		case '&':
+			dptr[0] = '&';
+			dptr[1] = '#';
+			dptr[2] = '3';
+			dptr[3] = '8';
+			dptr[4] = ';';
+			dptr += 5;
+			break;
+		case '<':
+			dptr[0] = '&';
+			dptr[1] = 'l';
+			dptr[2] = 't';
+			dptr[3] = ';';
+			dptr += 4;
+			break;
+		case '>':
+			dptr[0] = '&';
+			dptr[1] = 'g';
+			dptr[2] = 't';
+			dptr[3] = ';';
+			dptr += 4;
+			break;
+		case '\'':
+			dptr[0] = '&';
+			dptr[1] = '#';
+			dptr[2] = '3';
+			dptr[3] = '9';
+			dptr[4] = ';';
+			dptr += 5;
+			break;
+		case '"':
+			dptr[0] = '&';
+			dptr[1] = 'q';
+			dptr[2] = 'u';
+			dptr[3] = 'o';
+			dptr[4] = 't';
+			dptr[5] = ';';
+			dptr += 6;
+			break;
+		case '\t':
+			dptr = Text::StrConcatC(dptr, UTF8STRC("&nbsp;&nbsp;&nbsp;&nbsp;"));
+			break;
+		default:
+			*dptr++ = c;
+			break;
+		}
+	}
+}
+
+WChar *Text::XML::ToHTMLBodyText(WChar *buff, const WChar *text)
 {
 	WChar *dptr = buff;
 	const WChar *wptr = text;
@@ -653,19 +750,27 @@ const WChar *Text::XML::ToNewXMLTextLite(const WChar *text)
 	return dptr;
 }
 
-Text::String *Text::XML::ToNewHTMLText(const UTF8Char *text)
+Text::String *Text::XML::ToNewHTMLBodyText(const UTF8Char *text)
 {
-	UOSInt cnt = GetHTMLTextLen(text);
+	UOSInt cnt = GetHTMLBodyTextLen(text);
 	Text::String *s = Text::String::New(cnt);
-	ToHTMLText(s->v, text);
+	ToHTMLBodyText(s->v, text);
 	return s;
 }
 
-const WChar *Text::XML::ToNewHTMLText(const WChar *text)
+Text::String *Text::XML::ToNewHTMLElementText(const UTF8Char *text)
 {
-	UOSInt cnt = GetHTMLTextLen(text) + 1;
+	UOSInt cnt = GetHTMLElementTextLen(text);
+	Text::String *s = Text::String::New(cnt);
+	ToHTMLElementText(s->v, text);
+	return s;
+}
+
+const WChar *Text::XML::ToNewHTMLBodyText(const WChar *text)
+{
+	UOSInt cnt = GetHTMLBodyTextLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
-	ToHTMLText(dptr, text);
+	ToHTMLBodyText(dptr, text);
 	return dptr;
 }
 

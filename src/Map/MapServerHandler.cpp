@@ -106,14 +106,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(Net::WebServer::IWebReque
 						{
 							if (k > 0) sb.AppendC(UTF8STRC("<br/>"));
 							sptr = layer->GetColumnName(sbuff, k);
-							s = Text::XML::ToNewHTMLText(sbuff);
+							s = Text::XML::ToNewHTMLBodyText(sbuff);
 							sb.Append(s);
 							s->Release();
 							sb.AppendC(UTF8STRC(": "));
 							sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, objId, k);
 							if (sptr)
 							{
-								s = Text::XML::ToNewHTMLText(sbuff);
+								s = Text::XML::ToNewHTMLBodyText(sbuff);
 								sb.Append(s);
 								s->Release();
 							}

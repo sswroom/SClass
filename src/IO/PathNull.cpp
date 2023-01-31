@@ -61,7 +61,7 @@ Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 	return false;
 }
 
-UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext)
+UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UOSInt extLen)
 {
 	UTF8Char *oldExt = 0;
 	UTF8Char c;
@@ -81,7 +81,7 @@ UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext)
 		oldExt = fileName;
 		oldExt[-1] = '.';
 	}
-	return Text::StrConcat(oldExt, ext);
+	return Text::StrConcatC(oldExt, ext, extLen);
 }
 
 WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
@@ -158,7 +158,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		return true;
 	}
 	UOSInt i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
-	if (GetPathType(sb->ToString(), sb->GetLength()) == IO::Path::PathType::File && i != INVALID_INDEX)
+	if (GetPathType(sb->ToCString()) == IO::Path::PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
 		i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
@@ -178,7 +178,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	return true;
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *path, UOSInt pathLen)
+IO::Path::FindFileSession *IO::Path::FindFile(Text::CString path)
 {
 	return 0;
 }
@@ -188,12 +188,12 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	return 0;
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	return 0;
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	return 0;
 }
@@ -222,85 +222,7 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	return Text::StrConcat(buff, path);
 }
 
-Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
-{
-	WChar wbuff[256];
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
-	const WChar *fileName = &path[i + 1];
-	Text::StrConcat(wbuff, searchPattern);
-	Bool isWC = false;
-	WChar *patternStart = 0;
-	WChar *currPattern = wbuff;
-	WChar c;
-	while (true)
-	{
-		c = *currPattern;
-		if (c == 0)
-		{
-			if (isWC)
-			{
-				if (patternStart == 0)
-					return true;
-				return Text::StrEndsWith(fileName, patternStart);
-			}
-			else if (patternStart)
-			{
-				return Text::StrCompareICase(fileName, patternStart) == 0;
-			}
-			else
-			{
-				return *fileName == 0;
-			}
-		}
-		else if (c == '?' || c == '*')
-		{
-			if (isWC)
-			{
-				if (patternStart == 0)
-					return false;
-				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
-					return false;
-				fileName += i + currPattern - patternStart;
-				patternStart = 0;
-				isWC = false;
-			}
-			else if (patternStart)
-			{
-				*currPattern = 0;
-				if (!Text::StrStartsWithICase(fileName, patternStart))
-					return false;
-				fileName += currPattern - patternStart;
-				patternStart = 0;
-				isWC = false;
-			}
-			if (c == '?')
-			{
-				if (*fileName == 0)
-					return false;
-				fileName++;
-				currPattern++;
-			}
-			else
-			{
-				isWC = true;
-				patternStart = 0;
-				currPattern++;
-			}
-		}
-		else
-		{
-			if (patternStart == 0)
-			{
-				patternStart = currPattern;
-			}
-			currPattern++;
-		}
-	}
-
-}
-
-Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
 {
 	UTF8Char sbuff[256];
 	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
@@ -375,7 +297,83 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 			currPattern++;
 		}
 	}
+}
 
+Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
+{
+	WChar wbuff[256];
+	UOSInt i = Text::StrLastIndexOfChar(path, '/');
+	const WChar *fileName = &path[i + 1];
+	Text::StrConcat(wbuff, searchPattern);
+	Bool isWC = false;
+	WChar *patternStart = 0;
+	WChar *currPattern = wbuff;
+	WChar c;
+	while (true)
+	{
+		c = *currPattern;
+		if (c == 0)
+		{
+			if (isWC)
+			{
+				if (patternStart == 0)
+					return true;
+				return Text::StrEndsWith(fileName, patternStart);
+			}
+			else if (patternStart)
+			{
+				return Text::StrCompareICase(fileName, patternStart) == 0;
+			}
+			else
+			{
+				return *fileName == 0;
+			}
+		}
+		else if (c == '?' || c == '*')
+		{
+			if (isWC)
+			{
+				if (patternStart == 0)
+					return false;
+				*currPattern = 0;
+				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
+					return false;
+				fileName += i + currPattern - patternStart;
+				patternStart = 0;
+				isWC = false;
+			}
+			else if (patternStart)
+			{
+				*currPattern = 0;
+				if (!Text::StrStartsWithICase(fileName, patternStart))
+					return false;
+				fileName += currPattern - patternStart;
+				patternStart = 0;
+				isWC = false;
+			}
+			if (c == '?')
+			{
+				if (*fileName == 0)
+					return false;
+				fileName++;
+				currPattern++;
+			}
+			else
+			{
+				isWC = true;
+				patternStart = 0;
+				currPattern++;
+			}
+		}
+		else
+		{
+			if (patternStart == 0)
+			{
+				patternStart = currPattern;
+			}
+			currPattern++;
+		}
+	}
 }
 
 UInt64 IO::Path::GetFileSizeW(const WChar *path)

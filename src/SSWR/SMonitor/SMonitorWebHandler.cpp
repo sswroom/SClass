@@ -2195,21 +2195,21 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, const UTF8Char *txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt);
+	Text::String *xmlTxt = Text::XML::ToNewHTMLBodyText(txt);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::String *txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt->v);
+	Text::String *xmlTxt = Text::XML::ToNewHTMLBodyText(txt->v);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::CString txt)
 {
-	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt.v);
+	Text::String *xmlTxt = Text::XML::ToNewHTMLBodyText(txt.v);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }

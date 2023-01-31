@@ -73,7 +73,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	writer->WriteLineC(UTF8STRC("<body>"));
 	writer->WriteLineC(UTF8STRC("<a href=\"/\">Back</a><br/><br/>"));
 	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
-	s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+	s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
 	writer->WriteStrC(s->v, s->leng);
 	s->Release();
 	writer->WriteLineC(UTF8STRC("<hr/>"));
@@ -117,7 +117,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			s->Release();
 			writer->WriteStrC(UTF8STRC("\">"));
 
-			s = Text::XML::ToNewHTMLText(vfile->fileName->v);
+			s = Text::XML::ToNewHTMLBodyText(vfile->fileName->v);
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC("</a></td><td>"));
@@ -217,7 +217,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
 	if (this->iface->GetOpenedFile())
 	{
-		s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+		s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 

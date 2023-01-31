@@ -4237,6 +4237,12 @@ Text/XMLDOM.h: ../../src/Text/XMLDOM.cpp
 @XMLDOM.o
 Text/XMLReader.h: ../../src/Text/XMLReader.cpp
 @XMLReader.o
+Text/Builder/HTMLBodyBuilder.h: ../../src/Text/Builder/HTMLBodyBuilder.cpp
+@HTMLBodyBuilder.o
+Text/Builder/HTMLDocumentBuilder.h: ../../src/Text/Builder/HTMLDocumentBuilder.cpp
+@HTMLDocumentBuilder.o
+Text/Builder/HTMLHeaderBuilder.h: ../../src/Text/Builder/HTMLHeaderBuilder.cpp
+@HTMLHeaderBuilder.o
 Text/Cpp/CppCodeParser.h: ../../src/Text/Cpp/CppCodeParser.cpp
 @CppCodeParser.o
 Text/Cpp/CppEnv.h: ../../src/Text/Cpp/CppEnv.cpp
@@ -5841,6 +5847,9 @@ XLSUtil.o: ../../src/Text/XLSUtil.cpp
 XML.o: ../../src/Text/XML.cpp
 XMLDOM.o: ../../src/Text/XMLDOM.cpp
 XMLReader.o: ../../src/Text/XMLReader.cpp
+HTMLBodyBuilder.o: ../../src/Text/Builder/HTMLBodyBuilder.cpp
+HTMLDocumentBuilder.o: ../../src/Text/Builder/HTMLDocumentBuilder.cpp
+HTMLHeaderBuilder.o: ../../src/Text/Builder/HTMLHeaderBuilder.cpp
 CppCodeParser.o: ../../src/Text/Cpp/CppCodeParser.cpp
 CppEnv.o: ../../src/Text/Cpp/CppEnv.cpp
 CppParseStatus.o: ../../src/Text/Cpp/CppParseStatus.cpp

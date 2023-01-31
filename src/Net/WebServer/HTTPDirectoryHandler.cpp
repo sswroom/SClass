@@ -190,7 +190,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 
 	sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 	Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sptr);
-	s = Text::XML::ToNewHTMLText(sbuff);
+	s = Text::XML::ToNewHTMLElementText(sbuff);
 	sbOut.AppendNE(s);
 	sbOut.AppendNE(UTF8STRC("</title></head>\r\n<body>\r\n"));
 	sbOut.AppendNE(UTF8STRC("<h2>Index Of "));
@@ -914,7 +914,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				Text::String *s;
 				sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
-				s = Text::XML::ToNewHTMLText(sbuff);
+				s = Text::XML::ToNewHTMLElementText(sbuff);
 				sbOut.AppendNE(s);
 				sbOut.AppendNE2(UTF8STRC("</title></head>\r\n<body>\r\n"),
 							   UTF8STRC("<h2>Index Of "));

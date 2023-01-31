@@ -56,13 +56,13 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(Net::WebServer::IWebReq
 			while (i < j)
 			{
 				sb.AppendC(UTF8STRC("<tr><td>"));
-				s = Text::XML::ToNewHTMLText(this->dev->GetValueName(i).v);
+				s = Text::XML::ToNewHTMLBodyText(this->dev->GetValueName(i).v);
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC("</td><td>"));
 				sb2.ClearStr();
 				this->dev->GetValue(i, &sb2);
-				s = Text::XML::ToNewHTMLText(sb2.ToString());
+				s = Text::XML::ToNewHTMLBodyText(sb2.ToString());
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC("</td><td>"));
