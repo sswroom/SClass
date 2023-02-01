@@ -89,6 +89,7 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, Media::DrawE
 	this->videoH = videoH;
 	this->ownerFrm = ownerFrm;
 	this->mf = 0;
+	this->player = 0;
 	this->UpdateDispInfo(videoW, videoH, 32, Media::PF_B8G8R8A8);
 	this->videoFileName = Text::String::New(videoFileName);
 	this->frameImg = this->deng->CreateImage32(videoW, videoH, Media::AT_NO_ALPHA);

@@ -321,7 +321,7 @@ Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, Mo
 	ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
 	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
 	ddsd.dwBackBufferCount = 2;
-	primarySurface = 0;
+	*primarySurface = 0;
 	HRESULT res = lpDD->CreateSurface(&ddsd, &surface1, NULL);
 	if (res != DD_OK)
 	{

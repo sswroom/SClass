@@ -216,10 +216,13 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 					SDEL_CLASS(vbuff->destSurface);
 					vbuff->destSurface = tstat->me->surfaceMgr->CreateSurface(vbuff->destW, vbuff->destH, vbuff->destBitDepth);
 				}
-				OSInt destBpl;
-				UInt8* destBuff = vbuff->destSurface->LockSurface(&destBpl);
-				tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), destBuff, (UOSInt)destBpl, vbuff->destW, vbuff->destH, false);
-				vbuff->destSurface->UnlockSurface();
+				if (vbuff->destSurface)
+				{
+					OSInt destBpl;
+					UInt8* destBuff = vbuff->destSurface->LockSurface(&destBpl);
+					tstat->dresizer->DeintResize(Media::IDeintResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), destBuff, (UOSInt)destBpl, vbuff->destW, vbuff->destH, false);
+					vbuff->destSurface->UnlockSurface();
+				}
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_TF)
 			{
@@ -1497,7 +1500,8 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 									lastH = rect.height;
 									me->toClear = false;
 								}
-								me->DrawFromSurface(me->buffs[minIndex].destSurface, rect.left, rect.top, rect.width, rect.height, toClear);
+								if (me->buffs[minIndex].destSurface)
+									me->DrawFromSurface(me->buffs[minIndex].destSurface, rect.left, rect.top, rect.width, rect.height, toClear);
 							}
 							me->buffs[minIndex].isEmpty = true;
 							me->buffEvt.Set();
