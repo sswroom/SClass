@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUIListView *lvItems;
 
 			Net::RSS *rss;
-			Data::ArrayListString *rssList;
+			Data::ArrayListString rssList;
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
 

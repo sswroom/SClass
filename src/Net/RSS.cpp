@@ -253,7 +253,6 @@ Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *so
 	this->generator = 0;
 	this->docs = 0;
 	this->ttl = 0;
-	this->items = 0;
 
 	IO::ParsedObject *pobj;
 	IO::Stream *stm;

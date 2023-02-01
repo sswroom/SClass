@@ -94,10 +94,10 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		}
 		if (rss->GetCount() > 0)
 		{
-			si = me->rssList->SortedIndexOfPtr(sb.ToString(), sb.GetLength());
+			si = me->rssList.SortedIndexOfPtr(sb.ToString(), sb.GetLength());
 			if (si < 0)
 			{
-				j = me->rssList->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
+				j = me->rssList.SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 				me->cboRecent->InsertItem(j, sb.ToCString(), 0);
 				me->RSSListStore();
 			}
@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 	UOSInt i = me->cboRecent->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->txtURL->SetText(me->rssList->GetItem(i)->ToCString());
+		me->txtURL->SetText(me->rssList.GetItem(i)->ToCString());
 	}
 }
 
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 		Text::UTF8Reader reader(&fs);
 		while (reader.ReadLine(&sb, 4096))
 		{
-			i = this->rssList->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
+			i = this->rssList.SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 			this->cboRecent->InsertItem(i, sb.ToCString(), 0);
 			sb.ClearStr();
 		}
@@ -184,10 +184,10 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	{
 		Text::UTF8Writer writer(&fs);
 		i = 0;
-		j = this->rssList->GetCount();
+		j = this->rssList.GetCount();
 		while (i < j)
 		{
-			Text::String *s = rssList->GetItem(i);
+			Text::String *s = rssList.GetItem(i);
 			writer.WriteLineC(s->v, s->leng);
 			i++;
 		}
@@ -201,7 +201,6 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->rssList, Data::ArrayListString());
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -247,12 +246,11 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 {
 	UOSInt i;
-	i = this->rssList->GetCount();
+	i = this->rssList.GetCount();
 	while (i-- > 0)
 	{
-		this->rssList->GetItem(i)->Release();
+		this->rssList.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->rssList);
 	SDEL_CLASS(this->rss);
 	SDEL_CLASS(this->ssl);
 }
