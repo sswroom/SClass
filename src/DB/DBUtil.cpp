@@ -2283,6 +2283,10 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::SQLType sqlType, const 
 		{
 			return DB::DBUtil::CT_Double;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("real")))
+		{
+			return DB::DBUtil::CT_Float;
+		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("bit")))
 		{
 			return DB::DBUtil::CT_Bool;

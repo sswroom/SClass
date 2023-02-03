@@ -1489,7 +1489,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(DB::SQLBuilder *sql,
 		sql->AppendInt64(s->ToInt64());
 		break;
 	case DB::DBUtil::CT_Bool:
-		sql->AppendBool(s->v[0] == 't' || s->v[0] == 'T');
+		if (s->v[0] >= '0' && s->v[0] <= '9')
+		{
+			sql->AppendBool(s->ToInt32() != 0);
+		}
+		else
+		{
+			sql->AppendBool(s->v[0] == 't' || s->v[0] == 'T');
+		}
 		break;
 	case DB::DBUtil::CT_Vector:
 		if (s->StartsWith(UTF8STRC("0x")))

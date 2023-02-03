@@ -44,9 +44,13 @@ void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF8 *sb, DB::ColDef *col
 	{
 		importMap->Put(CSTR("org.locationtech.jts.geom.Geometry"), true);
 	}
-	else if (colType == DB::DBUtil::ColType::CT_Date || colType == DB::DBUtil::ColType::CT_DateTime || colType == DB::DBUtil::ColType::CT_DateTimeTZ)
+	else if (colType == DB::DBUtil::ColType::CT_DateTime || colType == DB::DBUtil::ColType::CT_DateTimeTZ)
 	{
 		importMap->Put(CSTR("java.sql.Timestamp"), true);
+	}
+	else if (colType == DB::DBUtil::ColType::CT_Date)
+	{
+		importMap->Put(CSTR("java.sql.Date"), true);
 	}
 	sb->Append(Text::JavaText::GetJavaTypeName(colType, col->IsNotNull()));
 	sb->AppendUTF8Char(' ');
