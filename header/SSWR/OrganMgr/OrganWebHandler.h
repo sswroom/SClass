@@ -228,6 +228,16 @@ namespace SSWR
 				virtual ~UserFileTimeComparator();
 				virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
 			};
+
+			class UserFileDescComparator : public Data::Comparator<UserFileInfo*>
+			{
+			private:
+				RequestEnv *env;
+			public:
+				UserFileDescComparator(RequestEnv *env);
+				virtual ~UserFileDescComparator();
+				virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const;
+			};
 		private:
 			Data::RandomOS random;
 			DB::DBTool *db;

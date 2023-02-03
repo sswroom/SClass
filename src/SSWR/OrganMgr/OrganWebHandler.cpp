@@ -91,6 +91,54 @@ OSInt SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::Compare(UserFileI
 	}
 }
 
+SSWR::OrganMgr::OrganWebHandler::UserFileDescComparator::UserFileDescComparator(RequestEnv *env)
+{
+	this->env = env;
+}
+
+SSWR::OrganMgr::OrganWebHandler::UserFileDescComparator::~UserFileDescComparator()
+{
+}
+
+OSInt SSWR::OrganMgr::OrganWebHandler::UserFileDescComparator::Compare(UserFileInfo *a, UserFileInfo *b) const
+{
+	Bool aDesc = false;
+	Bool bDesc = false;
+	if (env->user != 0)
+	{
+		if (a->descript != 0 && a->descript->leng > 0 && (env->user->userType == 0 || a->webuserId == env->user->id))
+			aDesc = true;
+		if (b->descript != 0 && b->descript->leng > 0 && (env->user->userType == 0 || b->webuserId == env->user->id))
+			bDesc = true;
+	}
+	if (aDesc && bDesc)
+	{
+		OSInt ret = a->descript->CompareTo(b->descript);
+		if (ret != 0)
+			return ret;
+	}
+	else if (aDesc)
+	{
+		return -1;
+	}
+	else if (bDesc)
+	{
+		return 1;
+	}
+	if (a->captureTimeTicks > b->captureTimeTicks)
+	{
+		return 1;
+	}
+	else if (a->captureTimeTicks < b->captureTimeTicks)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 {
 	UTF8Char sbuff[512];
@@ -3467,11 +3515,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			}
 			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 
+			Data::ArrayList<UserFileInfo*> fileList;
+			fileList.AddAll(&species->files);
+			if (env.user != 0)
+			{
+				UserFileDescComparator comparator(&env);
+				Data::Sort::ArtificialQuickSort::Sort(&fileList, &comparator);
+			}
 			i = 0;
-			j = species->files.GetCount();
+			j = fileList.GetCount();
 			while (i < j)
 			{
-				userFile = species->files.GetItem(i);
+				userFile = fileList.GetItem(i);
 				if (currColumn == 0)
 				{
 					writer.WriteLineC(UTF8STRC("<tr>"));
@@ -3540,27 +3595,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 							writer.WriteStrC(s->v, s->leng);
 							s->Release();
 						}
-	/*					Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(species->cateId);
-						if (tripCate)
-						{
-							OSInt ind = tripCate->GetIndex(userFile->captureTime);
-							if (ind < 0)
-							{
-								ind = ~ind - 1;
-							}
-							SSWR::OrganMgr::OrganWebHandler::TripInfo *trip = tripCate->GetValues()->GetItem(ind);
-							if (trip != 0 && trip->fromDate <= userFile->captureTime && trip->toDate > userFile->captureTime)
-							{
-								SSWR::OrganMgr::OrganWebHandler::LocationInfo *loc = this->locMap->Get(trip->locId);
-								if (loc)
-								{
-									writer.WriteStrC(UTF8STRC(" "));
-									txt = Text::XML::ToNewHTMLText(loc->cname);
-									writer.Write(txt);
-									Text::XML::FreeNewText(txt);
-								}
-							}
-						}*/
 					}
 					if (userFile->descript && userFile->descript->leng > 0)
 					{
