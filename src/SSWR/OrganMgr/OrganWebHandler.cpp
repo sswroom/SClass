@@ -2827,6 +2827,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
+		if (env.user != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<a href=\"map/index.html?group="));
+			sb.AppendI32(group->id);
+			sb.AppendC(UTF8STRC("\">"));
+			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
+			sb.AppendC(UTF8STRC("</a><br/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+		}
+
 		if (group->parentId == 0)
 		{
 			writer.WriteStrC(UTF8STRC("<a href="));
@@ -3835,6 +3846,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
 			me->WritePickObjs(&writer, &env, sb.ToString());
+		}
+
+		writer.WriteLineC(UTF8STRC("<br/>"));
+		if (env.user != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<a href=\"map/index.html?specie="));
+			sb.AppendI32(id);
+			sb.AppendC(UTF8STRC("\">"));
+			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
+			sb.AppendC(UTF8STRC("</a><br/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 
 		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
