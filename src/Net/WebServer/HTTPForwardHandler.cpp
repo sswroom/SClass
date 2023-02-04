@@ -2,6 +2,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/WebServer/HTTPForwardHandler.h"
 #include "Sync/MutexUsage.h"
+#include "Text/CPPText.h"
 #include "Text/StringBuilderUTF8.h"
 
 Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWebRequest *req)
@@ -21,6 +22,8 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf
 	this->reqHdlrObj = 0;
 	this->forwardAddrs.Add(Text::String::New(forwardURL));
 	this->nextURL = 0;
+	this->log = 0;
+	this->logContent = false;
 }
 
 Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
@@ -60,6 +63,15 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		{
 			kaConn = false;
 		}
+	}
+	if (this->log)
+	{
+		sbHeader.ClearStr();
+		sbHeader.AppendC(UTF8STRC("Forwarding Req: "));
+		sbHeader.Append(sb.ToCString());
+		sbHeader.AppendUTF8Char(' ');
+		sbHeader.Append(req->GetReqMethodStr());
+		this->log->LogMessage(sbHeader.ToCString(), IO::ILogHandler::LogLevel::Action);
 	}
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
 	if (cli == 0)
@@ -186,6 +198,13 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	Text::PString sarr[2];
 	if (reqData)
 	{
+		if (this->log && this->logContent)
+		{
+			sbHeader.ClearStr();
+			sbHeader.AppendC(UTF8STRC("RequestContent = "));
+			Text::CPPText::ToCPPString(&sbHeader, reqData, i);
+			this->log->LogMessage(sbHeader.ToCString(), IO::ILogHandler::LogLevel::Raw);
+		}
 		cli->Write(reqData, i);
 	}
 	Net::WebStatus::StatusCode scode = cli->GetRespStatus();
@@ -258,6 +277,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		i++;
 	}
 
+	UInt64 totalSize = 0;
+	sbHeader.ClearStr();
 	while (true)
 	{
 		i = cli->Read(buff, 2048);
@@ -268,10 +289,29 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			{
 				break;
 			}
+			totalSize += i;
+			if (this->logContent)
+				sbHeader.AppendC(buff, i);
 		}
 		else
 		{
 			break;
+		}
+	}
+	if (this->log)
+	{
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("Response Status = "));
+		sb.AppendU32((UInt32)scode);
+		sb.AppendC(UTF8STRC(", size = "));
+		sb.AppendU64(totalSize);
+		this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Action);
+		if (this->logContent)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("ResponseContent = "));
+			Text::CPPText::ToCPPString(&sb, sbHeader.v, sbHeader.leng);
+			this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LogLevel::Raw);
 		}
 	}
 	DEL_CLASS(cli);
@@ -293,6 +333,12 @@ void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::CString header)
 {
 	this->injHeaders.Add(Text::String::New(header));
+}
+
+void Net::WebServer::HTTPForwardHandler::SetLog(IO::LogTool *log, Bool logContent)
+{
+	this->logContent = logContent;
+	this->log = log;
 }
 
 void Net::WebServer::HTTPForwardHandler::HandleForwardRequest(ReqHandler reqHdlr, void *userObj)

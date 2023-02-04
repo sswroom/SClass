@@ -7623,7 +7623,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPublicPOI(Net::WebServer::IWe
 	GroupInfo *poiGroup = me->groupMap.Get(21593);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('[');
-	AddPublicPOI(&sb, poiGroup);
+	AddGroupPOI(&sb, poiGroup, 0);
 	if (sb.GetLength() > 1)
 	{
 		sb.RemoveChars(3);
@@ -7636,85 +7636,152 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPublicPOI(Net::WebServer::IWe
 	return true;
 }
 
-void SSWR::OrganMgr::OrganWebHandler::AddPublicPOI(Text::StringBuilderUTF8 *sb, GroupInfo *group)
+Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
 {
-	Data::DateTime dt;
+	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendUTF8Char('[');
+	Int32 groupId;
+	if (env.user != 0 && req->GetQueryValueI32(CSTR("id"), &groupId))
+	{
+		GroupInfo *poiGroup = me->groupMap.Get(groupId);
+		if (poiGroup)
+		{
+
+			if (env.user->userType == 0)
+				AddGroupPOI(&sb, poiGroup, 0);
+			else
+				AddGroupPOI(&sb, poiGroup, env.user->id);
+			if (sb.GetLength() > 1)
+			{
+				sb.RemoveChars(3);
+			}
+		}
+	}
+	sb.AppendUTF8Char(']');
+	resp->AddDefHeaders(req);
+	resp->AddContentType(CSTR("application/json"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToString(), sb.GetLength());
+	return true;
+}
+
+Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesPOI(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, Net::WebServer::WebServiceHandler *parent)
+{
+	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendUTF8Char('[');
+	Int32 speciesId;
+	if (env.user != 0 && req->GetQueryValueI32(CSTR("id"), &speciesId))
+	{
+		SpeciesInfo *poiSpecies = me->spMap.Get(speciesId);
+		if (poiSpecies)
+		{
+			if (env.user->userType == 0)
+				AddSpeciesPOI(&sb, poiSpecies, 0);
+			else
+				AddSpeciesPOI(&sb, poiSpecies, env.user->id);
+			if (sb.GetLength() > 1)
+			{
+				sb.RemoveChars(3);
+			}
+		}
+	}
+	sb.AppendUTF8Char(']');
+	resp->AddDefHeaders(req);
+	resp->AddContentType(CSTR("application/json"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToString(), sb.GetLength());
+	return true;
+}
+
+void SSWR::OrganMgr::OrganWebHandler::AddGroupPOI(Text::StringBuilderUTF8 *sb, GroupInfo *group, Int32 userId)
+{
 	UOSInt i = 0;
 	UOSInt j = group->groups.GetCount();
 	while (i < j)
 	{
-		AddPublicPOI(sb, group->groups.GetItem(i));
+		AddGroupPOI(sb, group->groups.GetItem(i), userId);
 		i++;
 	}
 	i = 0;
 	j = group->species.GetCount();
 	while (i < j)
 	{
-		SpeciesInfo *species = group->species.GetItem(i);
-		UserFileInfo *file;
-		UOSInt k;
-		UOSInt l;
-		k = 0;
-		l = species->files.GetCount();
-		while (k < l)
-		{
-			file = species->files.GetItem(k);
-			if (file->lat != 0 || file->lon != 0)
-			{
-				sb->AppendUTF8Char('{');
-				sb->AppendC(UTF8STRC("\"id\":\""));
-				sb->AppendI32(file->id);
-				sb->AppendC(UTF8STRC("\",\"name\":"));
-				if (file->descript && file->descript->leng > 0)
-				{
-					Text::JSText::ToJSTextDQuote(sb, file->descript->v);
-				}
-				else
-				{
-					Text::JSText::ToJSTextDQuote(sb, species->sciName->v);
-				}
-				sb->AppendC(UTF8STRC(",\"description\":\"<img src=\\\"/photo.html?id="));
-				sb->AppendI32(species->speciesId);
-				sb->AppendC(UTF8STRC("&cateId="));
-				sb->AppendI32(species->cateId);
-				sb->AppendC(UTF8STRC("&width="));
-				sb->AppendI32(PREVIEW_SIZE);
-				sb->AppendC(UTF8STRC("&height="));
-				sb->AppendI32(PREVIEW_SIZE);
-				sb->AppendC(UTF8STRC("&fileId="));
-				sb->AppendI32(file->id);
-				sb->AppendC(UTF8STRC("\\\" /><br/>"));
-				dt.SetTicks(file->captureTimeTicks);
-				dt.SetTimeZoneQHR(32);
-				sb->AppendDate(&dt);
-				sb->AppendC(UTF8STRC("\",\"lat\":"));
-				sb->AppendDouble(file->lat);
-				sb->AppendC(UTF8STRC(",\"lon\":"));
-				sb->AppendDouble(file->lon);
-				sb->AppendC(UTF8STRC(",\"imgUrl\":\"/photo.html?id="));
-				sb->AppendI32(species->speciesId);
-				sb->AppendC(UTF8STRC("&cateId="));
-				sb->AppendI32(species->cateId);
-				sb->AppendC(UTF8STRC("&width="));
-				sb->AppendI32(PREVIEW_SIZE);
-				sb->AppendC(UTF8STRC("&height="));
-				sb->AppendI32(PREVIEW_SIZE);
-				sb->AppendC(UTF8STRC("&fileId="));
-				sb->AppendI32(file->id);
-				sb->AppendC(UTF8STRC("\",\"poiUrl\":\"img/"));
-				if (species->poiImg)
-				{
-					sb->Append(species->poiImg);
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC("poi.png"));
-				}
-				sb->AppendC(UTF8STRC("\"},\r\n"));
-			}
-			k++;
-		}
+		AddSpeciesPOI(sb, group->species.GetItem(i), userId);
 		i++;
+	}
+}
+
+void SSWR::OrganMgr::OrganWebHandler::AddSpeciesPOI(Text::StringBuilderUTF8 *sb, SpeciesInfo *species, Int32 userId)
+{
+	Data::DateTime dt;
+	UserFileInfo *file;
+	UOSInt k;
+	UOSInt l;
+	k = 0;
+	l = species->files.GetCount();
+	while (k < l)
+	{
+		file = species->files.GetItem(k);
+		if ((file->lat != 0 || file->lon != 0) && (userId == 0 || file->webuserId == userId))
+		{
+			sb->AppendUTF8Char('{');
+			sb->AppendC(UTF8STRC("\"id\":\""));
+			sb->AppendI32(file->id);
+			sb->AppendC(UTF8STRC("\",\"name\":"));
+			if (file->descript && file->descript->leng > 0)
+			{
+				Text::JSText::ToJSTextDQuote(sb, file->descript->v);
+			}
+			else
+			{
+				Text::JSText::ToJSTextDQuote(sb, species->sciName->v);
+			}
+			sb->AppendC(UTF8STRC(",\"description\":\"<img src=\\\"/photo.html?id="));
+			sb->AppendI32(species->speciesId);
+			sb->AppendC(UTF8STRC("&cateId="));
+			sb->AppendI32(species->cateId);
+			sb->AppendC(UTF8STRC("&width="));
+			sb->AppendI32(PREVIEW_SIZE);
+			sb->AppendC(UTF8STRC("&height="));
+			sb->AppendI32(PREVIEW_SIZE);
+			sb->AppendC(UTF8STRC("&fileId="));
+			sb->AppendI32(file->id);
+			sb->AppendC(UTF8STRC("\\\" /><br/>"));
+			dt.SetTicks(file->captureTimeTicks);
+			dt.SetTimeZoneQHR(32);
+			sb->AppendDate(&dt);
+			sb->AppendC(UTF8STRC("\",\"lat\":"));
+			sb->AppendDouble(file->lat);
+			sb->AppendC(UTF8STRC(",\"lon\":"));
+			sb->AppendDouble(file->lon);
+			sb->AppendC(UTF8STRC(",\"imgUrl\":\"/photo.html?id="));
+			sb->AppendI32(species->speciesId);
+			sb->AppendC(UTF8STRC("&cateId="));
+			sb->AppendI32(species->cateId);
+			sb->AppendC(UTF8STRC("&width="));
+			sb->AppendI32(PREVIEW_SIZE);
+			sb->AppendC(UTF8STRC("&height="));
+			sb->AppendI32(PREVIEW_SIZE);
+			sb->AppendC(UTF8STRC("&fileId="));
+			sb->AppendI32(file->id);
+			sb->AppendC(UTF8STRC("\",\"poiUrl\":\"img/"));
+			if (species->poiImg)
+			{
+				sb->Append(species->poiImg);
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("poi.png"));
+			}
+			sb->AppendC(UTF8STRC("\"},\r\n"));
+		}
+		k++;
 	}
 }
 
@@ -9513,6 +9580,8 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 		this->AddService(CSTR("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 		this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 		this->AddService(CSTR("/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
+		this->AddService(CSTR("/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
+		this->AddService(CSTR("/speciespoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesPOI);
 
 		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true, true));
 		if (this->ssl && sslPort)

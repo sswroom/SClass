@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "IO/Path.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPForwarderForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
@@ -58,6 +59,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 		}
 		else
 		{
+			if (me->chkLog->IsChecked())
+			{
+				NEW_CLASS(me->fwdLog, IO::LogTool());
+				Text::CString logPath;
+				if (IO::Path::PATH_SEPERATOR == '/')
+					logPath = CSTR("log/fwd");
+				else
+					logPath = CSTR("log\\fwd");
+				me->fwdLog->AddFileLog(logPath, IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, 0, 0);
+				me->fwdHdlr->SetLog(me->fwdLog, me->chkLogContent->IsChecked());
+			}
 			if (!me->svr->Start())
 			{
 				valid = false;
@@ -82,6 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 			me->fwdHdlr->Release();
 			me->fwdHdlr = 0;
 		}
+		SDEL_CLASS(me->fwdLog);
 	}
 }
 
@@ -98,6 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(void *userObj)
 		me->fwdHdlr->Release();
 		me->fwdHdlr = 0;
 	}
+	SDEL_CLASS(me->fwdLog);
 	me->txtPort->SetReadOnly(false);
 	me->txtFwdURL->SetReadOnly(false);
 	me->chkAllowKA->SetEnabled(true);
@@ -132,6 +146,8 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;
+	this->fwdLog = 0;
+	this->fwdHdlr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 
@@ -143,24 +159,30 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 	this->lblFwdURL->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtFwdURL, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFwdURL->SetRect(104, 28, 500, 23, false);
+	NEW_CLASS(this->lblLog, UI::GUILabel(ui, this, CSTR("Log")));
+	this->lblLog->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->chkLog, UI::GUICheckBox(ui, this, CSTR("Enable"), false));
+	this->chkLog->SetRect(104, 52, 100, 23, false);
+	NEW_CLASS(this->chkLogContent, UI::GUICheckBox(ui, this, CSTR("Log Content"), false));
+	this->chkLogContent->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this, CSTR("SSL")));
-	this->lblSSL->SetRect(4, 52, 100, 23, false);
+	this->lblSSL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this, CSTR("Enable"), false));
-	this->chkSSL->SetRect(104, 52, 100, 23, false);
+	this->chkSSL->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this, CSTR("Cert/Key")));
-	this->btnSSLCert->SetRect(204, 52, 75,23, false);
+	this->btnSSLCert->SetRect(204, 76, 75,23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this, CSTR("")));
-	this->lblSSLCert->SetRect(284, 52, 200, 23, false);
+	this->lblSSLCert->SetRect(284, 76, 200, 23, false);
 	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this, CSTR("Allow KA")));
-	this->lblAllowKA->SetRect(4, 76, 100, 23, false);
+	this->lblAllowKA->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this, CSTR("Enable"), false));
-	this->chkAllowKA->SetRect(104, 76, 100, 23, false);
+	this->chkAllowKA->SetRect(104, 100, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
-	this->btnStart->SetRect(104, 100, 75, 23, false);
+	this->btnStart->SetRect(104, 124, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, CSTR("Stop")));
-	this->btnStop->SetRect(184, 100, 75, 23, false);
+	this->btnStop->SetRect(184, 124, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 }
 
@@ -172,6 +194,7 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::~AVIRHTTPForwarderForm()
 		this->fwdHdlr->Release();
 		this->fwdHdlr = 0;
 	}
+	SDEL_CLASS(this->fwdLog);
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);

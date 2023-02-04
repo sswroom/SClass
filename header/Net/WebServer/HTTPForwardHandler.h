@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_HTTPFORWARDHANDLER
 #define _SM_NET_WEBSERVER_HTTPFORWARDHANDLER
+#include "IO/LogTool.h"
 #include "Net/SSLEngine.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Text/String.h"
@@ -28,6 +29,8 @@ namespace Net
 			ForwardType fwdType;
 			ReqHandler reqHdlr;
 			void *reqHdlrObj;
+			IO::LogTool *log;
+			Bool logContent;
 
 			virtual Text::String *GetNextURL(Net::WebServer::IWebRequest *req);
 		public:
@@ -40,6 +43,7 @@ namespace Net
 			void AddForwardURL(Text::CString url);
 			void AddInjectHeader(Text::String *header);
 			void AddInjectHeader(Text::CString header);
+			void SetLog(IO::LogTool *log, Bool logContent);
 
 			void HandleForwardRequest(ReqHandler reqHdlr, void *userObj);
 		};

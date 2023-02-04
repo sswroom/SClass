@@ -97,6 +97,108 @@ void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str
 	sb->AppendUTF8Char('\"');
 }
 
+void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str, UOSInt leng)
+{
+	const UTF8Char *strEnd = str + leng;
+	UTF32Char c;
+	sb->AppendUTF8Char('\"');
+	while (str < strEnd)
+	{
+		c = *str;
+		if (c & 0x80)
+		{
+			str = Text::StrReadChar(str, &c);
+		}
+		else
+		{
+			str++;
+		}
+		if (c == 0)
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('0');
+		}
+		else if (c == '\r')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('r');
+		}
+		else if (c == '\n')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('n');
+		}
+		else if (c == '\f')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('f');
+		}
+		else if (c == '\t')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('t');
+		}
+		else if (c == '\'')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\'');
+		}
+		else if (c == '\"')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\"');
+		}
+		else if (c == '\\')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\\');
+		}
+		else if (c == '\?')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\?');
+		}
+		else if (c == '\a')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('a');
+		}
+		else if (c == '\b')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('b');
+		}
+		else if (c == '\v')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('v');
+		}
+		else if (c < ' ')
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('X');
+			sb->AppendHex8((UInt8)c);
+		}
+		else if (c >= 0x80 && c <= 0xffff)
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('u');
+			sb->AppendHex16((UInt16)c);
+		}
+		else if (c >= 0x10000)
+		{
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('U');
+			sb->AppendHex32((UInt32)c);
+		}
+		else
+		{
+			sb->AppendUTF8Char((UTF8Char)c);
+		}
+	}
+	sb->AppendUTF8Char('\"');
+}
+
 void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
 {
 	Bool quoted = false;

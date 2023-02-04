@@ -24,6 +24,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::HTTPForwardHandler *fwdHdlr;
+			IO::LogTool *fwdLog;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 
@@ -31,6 +32,9 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblFwdURL;
 			UI::GUITextBox *txtFwdURL;
+			UI::GUILabel *lblLog;
+			UI::GUICheckBox *chkLog;
+			UI::GUICheckBox *chkLogContent;
 			UI::GUILabel *lblSSL;
 			UI::GUICheckBox *chkSSL;
 			UI::GUIButton *btnSSLCert;

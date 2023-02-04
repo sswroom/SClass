@@ -11,6 +11,7 @@ namespace Text
 	{
 	public:
 		static void ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str);
+		static void ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str, UOSInt leng);
 		static void FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str);
 
 		static Bool ParseEnum(Data::ArrayList<Text::String*> *enumEntries, Text::CString cppEnumStr, Text::StringBuilderUTF8 *sbPrefix);
