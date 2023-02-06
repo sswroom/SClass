@@ -6579,12 +6579,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 
 		Bool found = false;
 
-		if (speciesObjs.GetCount() > 0)
+		if (speciesObjs.GetCount() > pageNo * 50)
 		{
 			Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> speciesList;
 			j = speciesObjs.GetCount() - pageNo * 50;
 			i = j - 50;
-			if (i < 0)
+			if (j < 50)
 			{
 				i = 0;
 			}
