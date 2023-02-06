@@ -3852,7 +3852,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		if (env.user != 0)
 		{
 			sb.ClearStr();
-			sb.AppendC(UTF8STRC("<a href=\"map/index.html?specie="));
+			sb.AppendC(UTF8STRC("<a href=\"map/index.html?species="));
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("\">"));
 			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
@@ -6407,6 +6407,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 				sb.AppendI32(group->id);
 				sb.AppendC(UTF8STRC("&cateId="));
 				sb.AppendI32(group->cateId);
+				sb.AppendC(UTF8STRC("&pageNo=1"));
 				sb.AppendC(UTF8STRC("&searchStr="));
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
@@ -6973,7 +6974,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 	Int32 id;
 	UInt32 pageNo = 0;
 	Int32 cateId;
-	req->GetQueryValueU32(CSTR("pageNo"), &pageNo);
+	req->GetQueryValueU32(CSTR("page"), &pageNo);
 	if (req->GetQueryValueI32(CSTR("id"), &id) &&
 		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
@@ -7532,6 +7533,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	sb.AppendI32(firstCate->cateId);
 	writer.WriteStrC(sb.ToString(), sb.GetLength());
 	writer.WriteLineC(UTF8STRC("\">Book List</a><br/>"));
+	writer.WriteStrC(UTF8STRC("<a href=\"map/index.html\">ShowMap</a><br/>"));
+	writer.WriteStrC(UTF8STRC("<a href=\"map/index2d.html\">ShowMap2D</a><br/>"));
 	if (env.user == 0 && req->IsSecure())
 	{
 		writer.WriteStrC(UTF8STRC("<a href=\"login.html\">Login</a><br/>"));
