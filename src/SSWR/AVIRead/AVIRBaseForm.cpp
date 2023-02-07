@@ -84,6 +84,7 @@
 #include "SSWR/AVIRead/AVIREncryptMsgForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
 #include "SSWR/AVIRead/AVIREWDTU01Form.h"
+#include "SSWR/AVIRead/AVIRFCMForm.h"
 #include "SSWR/AVIRead/AVIRFileAnalyseForm.h"
 #include "SSWR/AVIRead/AVIRFileExForm.h"
 #include "SSWR/AVIRead/AVIRFileHashForm.h"
@@ -475,7 +476,8 @@ typedef enum
 	MNU_ENCRYPT_MSG,
 	MNU_SAML_RESP_DECRYPT,
 	MNU_SAML_REQ_DECODE,
-	MNU_HTTP_FORWARDER
+	MNU_HTTP_FORWARDER,
+	MNU_GOOGLE_FCM
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -749,6 +751,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Instagram"), MNU_WEBSITE_INSTAGRAM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Web API"));
 	mnu2->AddItem(CSTR("SolarEdge"), MNU_WEBAPI_SOLAREDGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Google FCM"), MNU_GOOGLE_FCM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Wake-On-LAN"), MNU_WOL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Other"));
 	mnu2->AddItem(CSTR("GPSDev Viewer"), MNU_GPSDEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2735,6 +2738,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRHTTPForwarderForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPForwarderForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_GOOGLE_FCM:
+		{
+			SSWR::AVIRead::AVIRFCMForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRFCMForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

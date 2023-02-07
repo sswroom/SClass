@@ -2899,6 +2899,8 @@ Net/FTPClient.h: ../../src/Net/FTPClient.cpp
 @FTPClient.o
 Net/FTPConn.h: ../../src/Net/FTPConn.cpp
 @FTPConn.o
+Net/GoogleFCM.h: ../../src/Net/GoogleFCM.cpp
+@GoogleFCM.o
 Net/GoogleQRCode.h: ../../src/Net/GoogleQRCode.cpp
 @GoogleQRCode.o
 Net/HKOWeather.h: ../../src/Net/HKOWeather.cpp
@@ -3558,6 +3560,8 @@ SSWR/AVIRead/AVIRExeForm.h: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
 @AVIRExeForm.o
 SSWR/AVIRead/AVIRExportParamForm.h: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
 @AVIRExportParamForm.o
+SSWR/AVIRead/AVIRFCMForm.h: ../../src/SSWR/AVIRead/AVIRFCMForm.cpp
+@AVIRFCMForm.o
 SSWR/AVIRead/AVIRFileAnalyseForm.h: ../../src/SSWR/AVIRead/AVIRFileAnalyseForm.cpp
 @AVIRFileAnalyseForm.o
 SSWR/AVIRead/AVIRFileChkForm.h: ../../src/SSWR/AVIRead/AVIRFileChkForm.cpp
@@ -5198,6 +5202,7 @@ EthernetAnalyzer.o: ../../src/Net/EthernetAnalyzer.cpp
 EthernetWebHandler.o: ../../src/Net/EthernetWebHandler.cpp
 FTPClient.o: ../../src/Net/FTPClient.cpp
 FTPConn.o: ../../src/Net/FTPConn.cpp
+GoogleFCM.o: ../../src/Net/GoogleFCM.cpp
 GoogleQRCode.o: ../../src/Net/GoogleQRCode.cpp
 HKTrafficImage.o: ../../src/Net/HKTrafficImage.cpp
 HKOWeather.o: ../../src/Net/HKOWeather.cpp
@@ -5522,6 +5527,7 @@ AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
 AVIREWDTU01Form.o: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
 AVIRExeForm.o: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
 AVIRExportParamForm.o: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
+AVIRFCMForm.o: ../../src/SSWR/AVIRead/AVIRFCMForm.cpp
 AVIRFileAnalyseForm.o: ../../src/SSWR/AVIRead/AVIRFileAnalyseForm.cpp
 AVIRFileChkForm.o: ../../src/SSWR/AVIRead/AVIRFileChkForm.cpp
 AVIRFileExForm.o: ../../src/SSWR/AVIRead/AVIRFileExForm.cpp

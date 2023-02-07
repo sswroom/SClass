@@ -41,6 +41,8 @@ namespace Net
 			WS_UNKNOWN = 0xffffffff
 		} WeatherSignal;
 
+		static const Int32 INVALID_READING = -99;
+
 		typedef void (__stdcall *UpdateHandler)(WeatherSignal updatedSignal);
 	private:
 		UpdateHandler hdlr;
@@ -53,6 +55,7 @@ namespace Net
 		static WeatherSignal String2Signal(Text::String *textMessage);
 	public:
 		static WeatherSignal GetSignalSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
+		static Bool GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh);
 
 		HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr);
 		virtual ~HKOWeather();

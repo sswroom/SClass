@@ -1,9 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/MemoryReadingStream.h"
 #include "Net/HKOWeather.h"
 #include "Net/HTTPClient.h"
+#include "Net/RSS.h"
+#include "Net/UserAgentDB.h"
 #include "IO/MemoryStream.h"
 #include "Text/MyString.h"
+#include "Text/UTF8Reader.h"
 #include "Text/XMLDOM.h"
 
 Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *textMessage)
@@ -111,6 +115,55 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	}
 	doc.ReleaseSearch(nodes);
 	return signal;
+}
+
+Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh)
+{
+	Bool succ = false;
+	Net::RSS *rss;
+	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	Text::String *ua = Text::String::New(userAgent);
+	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua, sockf, ssl));
+	ua->Release();
+	if (!rss->IsError())
+	{
+		if (rss->GetCount() > 0)
+		{
+			*temperature = INVALID_READING;
+			*rh = INVALID_READING;
+			UOSInt i;
+			Net::RSSItem *item = rss->GetItem(0);
+			IO::MemoryReadingStream mstm(item->description->v, item->description->leng);
+			Text::UTF8Reader reader(&mstm);
+			Text::StringBuilderUTF8 sb;
+			while (reader.ReadLine(&sb, 512))
+			{
+				sb.Trim();
+				if (sb.StartsWith(UTF8STRC("Air temperature : ")))
+				{
+					i = sb.IndexOf(' ', 18);
+					if (i != INVALID_INDEX)
+					{
+						sb.TrimToLength(i);
+						sb.ToCString().Substring(18).ToInt32(temperature);
+					}
+				}
+				else if (sb.StartsWith(UTF8STRC("Relative Humidity : ")))
+				{
+					i = sb.IndexOf(' ', 20);
+					if (i != INVALID_INDEX)
+					{
+						sb.TrimToLength(i);
+						sb.ToCString().Substring(20).ToInt32(rh);
+					}
+				}
+				sb.ClearStr();
+			}
+			succ = true;
+		}
+	}
+	DEL_CLASS(rss);
+	return succ;
 }
 
 Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
