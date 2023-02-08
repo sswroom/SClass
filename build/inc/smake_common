@@ -2270,6 +2270,8 @@ Math/Geometry/CurvePolygon.h: ../../src/Math/Geometry/CurvePolygon.cpp
 @CurvePolygon.o
 Math/Geometry/Ellipse.h: ../../src/Math/Geometry/Ellipse.cpp
 @Ellipse.o
+Math/Geometry/GeometryCollection.h: ../../src/Math/Geometry/GeometryCollection.cpp
+@GeometryCollection.o
 Math/Geometry/LineString.h: ../../src/Math/Geometry/LineString.cpp
 @LineString.o
 Math/Geometry/MultiGeometry.h:
@@ -4922,6 +4924,7 @@ CircularString.o: ../../src/Math/Geometry/CircularString.cpp
 CompoundCurve.o: ../../src/Math/Geometry/CompoundCurve.cpp
 CurvePolygon.o: ../../src/Math/Geometry/CurvePolygon.cpp
 Ellipse.o: ../../src/Math/Geometry/Ellipse.cpp
+GeometryCollection.o: ../../src/Math/Geometry/GeometryCollection.cpp
 LineString.o: ../../src/Math/Geometry/LineString.cpp
 MultiPolygon.o: ../../src/Math/Geometry/MultiPolygon.cpp
 MultiSurface.o: ../../src/Math/Geometry/MultiSurface.cpp

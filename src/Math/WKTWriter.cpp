@@ -423,6 +423,24 @@ void Math::WKTWriter::AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geom
 	sb->AppendUTF8Char(')');
 }
 
+Bool Math::WKTWriter::AppendGeometryCollection(Text::StringBuilderUTF8 *sb, Math::Geometry::GeometryCollection *geoColl)
+{
+	sb->AppendUTF8Char('(');
+	Math::Geometry::Vector2D *geometry;
+	UOSInt i = 0;
+	UOSInt j = geoColl->GetCount();
+	while (i < j)
+	{
+		if (i > 0) sb->AppendUTF8Char(',');
+		geometry = geoColl->GetItem(i);
+		if (!ToText(sb, geometry))
+			return false;
+		i++;
+	}
+	sb->AppendUTF8Char(')');
+	return true;
+}
+
 Math::WKTWriter::WKTWriter()
 {
 	this->lastError = 0;
@@ -561,8 +579,10 @@ Bool Math::WKTWriter::ToText(Text::StringBuilderUTF8 *sb, Math::Geometry::Vector
 		sb->AppendC(UTF8STRC("MULTISURFACE"));
 		AppendMultiSurface(sb, (Math::Geometry::MultiSurface*)vec);
 		return true;
-	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+		sb->AppendC(UTF8STRC("GEOMETRYCOLLECTION"));
+		return AppendGeometryCollection(sb, (Math::Geometry::GeometryCollection*)vec);
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::MultiCurve:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:

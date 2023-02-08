@@ -3,6 +3,7 @@
 #include "Math/VectorTextWriter.h"
 #include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/CurvePolygon.h"
+#include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Polygon.h"
@@ -25,6 +26,7 @@ namespace Math
 		static void AppendCompoundCurve(Text::StringBuilderUTF8 *sb, Math::Geometry::CompoundCurve *cc);
 		static void AppendCurvePolygon(Text::StringBuilderUTF8 *sb, Math::Geometry::CurvePolygon *cpg);
 		static void AppendMultiSurface(Text::StringBuilderUTF8 *sb, Math::Geometry::MultiSurface *ms);
+		Bool AppendGeometryCollection(Text::StringBuilderUTF8 *sb, Math::Geometry::GeometryCollection *geoColl);
 	public:
 		WKTWriter();
 		virtual ~WKTWriter();

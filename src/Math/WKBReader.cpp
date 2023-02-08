@@ -5,6 +5,7 @@
 #include "Math/Geometry/CircularString.h"
 #include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/CompoundCurve.h"
+#include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/MultiSurface.h"
@@ -548,6 +549,59 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				else
 				{
 					mpg->AddGeometry((Math::Geometry::Polygon*)vec);
+					ofst += thisSize;
+				}
+				i++;
+			}
+			if (sizeUsed)
+			{
+				*sizeUsed = ofst;
+			}
+			return mpg;
+		}
+	case 7: //GeometryCollection
+	case 1007: //GeometryCollectionZ
+	case 2007: //GeometryCollectionM
+	case 3007: //GeometryCollectionZM
+	case 0x80000007:
+	case 0x40000007:
+	case 0xC0000007:
+		if (wkbLen < ofst + 4)
+			return 0;
+		else
+		{
+			UInt32 nGeometry = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			UOSInt thisSize;
+			UOSInt i;
+			Math::Geometry::Vector2D *vec;
+			Math::Geometry::GeometryCollection *mpg;
+			Bool hasZ;
+			Bool hasM;
+			if (geomType & 0xC0000000)
+			{
+				hasZ = (geomType & 0x80000000) != 0;
+				hasM = (geomType & 0x40000000) != 0;
+			}
+			else
+			{
+				UInt32 t = geomType / 1000;
+				hasZ = (t & 1) != 0;
+				hasM = (t & 2) != 0;
+			}
+			NEW_CLASS(mpg, Math::Geometry::GeometryCollection(srid, hasZ, hasM));
+			i = 0;
+			while (i < nGeometry)
+			{
+				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
+				if (vec == 0)
+				{
+					DEL_CLASS(mpg);
+					return 0;
+				}
+				else
+				{
+					mpg->AddGeometry(vec);
 					ofst += thisSize;
 				}
 				i++;
