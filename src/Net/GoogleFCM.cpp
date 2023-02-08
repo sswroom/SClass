@@ -6,11 +6,26 @@
 
 Bool Net::GoogleFCM::SendMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult)
 {
+	Data::ArrayList<Text::String*> tokenList;
+	tokenList.Add(Text::String::New(devToken));
+	Bool ret = SendMessage(sockf, ssl, apiKey, &tokenList, message, sbResult);
+	tokenList.GetItem(0)->Release();
+	return ret;
+}
+
+Bool Net::GoogleFCM::SendMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult)
+{
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli == 0)
 	{
 		if (sbResult)
 			sbResult->AppendC(UTF8STRC("Error in creating client"));
+		return false;
+	}
+	if (devTokens->GetCount() == 0)
+	{
+		if (sbResult)
+			sbResult->AppendC(UTF8STRC("No device found"));
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -23,7 +38,13 @@ Bool Net::GoogleFCM::SendMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	{
 		Text::JSONBuilder json(&sb, Text::JSONBuilder::OT_OBJECT);
 		json.ObjectBeginArray(CSTR("registration_ids"));
-		json.ArrayAddStrUTF8(devToken.v);
+		UOSInt i = 0;
+		UOSInt j = devTokens->GetCount();
+		while (i < j)
+		{
+			json.ArrayAddStr(devTokens->GetItem(i));
+			i++;
+		}
 		json.ArrayEnd();
 		json.ObjectAddStr(CSTR("collapse_key"), CSTR("optional"));
 		json.ObjectBeginObject(CSTR("data"));

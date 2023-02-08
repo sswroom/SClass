@@ -275,7 +275,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	case DB::DBUtil::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(DB::DBUtil::SQLType::PostgreSQL, this->GetTzQhr());
-		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision from information_schema.columns where table_name="));
+		sql.AppendCmdC(CSTR("select column_name, column_default, is_nullable, udt_name, character_maximum_length, datetime_precision, is_identity from information_schema.columns where table_name="));
 		sql.AppendStrC(tableName);
 		sql.AppendCmdC(CSTR(" and table_schema = "));
 		if (schemaName.leng == 0)
@@ -308,6 +308,9 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			SDEL_STRING(s);
 			s = r->GetNewStr(2);
 			col->SetNotNull((s != 0) && s->Equals(UTF8STRC("NO")));
+			SDEL_STRING(s);
+			s = r->GetNewStr(6);
+			col->SetAutoInc((s != 0) && s->Equals(UTF8STRC("YES")));
 			SDEL_STRING(s);
 			s = r->GetNewStr(3);
 			sizeCol = 4;
