@@ -63,14 +63,14 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 		if (sToken && sType && sUser)
 		{
 			Bool succ = true;
-			Net::PushServer::DeviceType devType = PushServer::DeviceType::Android;
+			Net::PushManager::DeviceType devType = PushManager::DeviceType::Android;
 			if (sType->Equals(UTF8STRC("android")))
 			{
-				devType = PushServer::DeviceType::Android;
+				devType = PushManager::DeviceType::Android;
 			}
 			else if (sType->Equals(UTF8STRC("ios")))
 			{
-				devType = PushServer::DeviceType::IOS;
+				devType = PushManager::DeviceType::IOS;
 			}
 			else
 			{
@@ -78,7 +78,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(Net::WebServer::IWebRequ
 			}
 			if (succ)
 			{
-				me->svr->Subscribe(sToken->ToCString(), sUser->ToCString(), devType);
+				me->mgr->Subscribe(sToken->ToCString(), sUser->ToCString(), devType);
 			}
 		}
 		json->EndUse();
@@ -100,7 +100,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(Net::WebServer::IWebRe
 	{
 		Text::String *token = json->GetValueString(CSTR("token"));
 	//	Bool succ = false;
-		if (token && me->svr->Unsubscribe(token->ToCString()))
+		if (token && me->mgr->Unsubscribe(token->ToCString()))
 		{
 	//		succ = true;
 		}
@@ -123,7 +123,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(Net::WebServer::IWebRequest 
 		Sync::MutexUsage mutUsage;
 		Data::ArrayList<Text::String*> userList;
 		UOSInt i = 0;
-		UOSInt j = me->svr->GetUsers(&userList, &mutUsage);
+		UOSInt j = me->mgr->GetUsers(&userList, &mutUsage);
 		while (i < j)
 		{
 			json.ArrayAddStr(userList.GetItem(i));
@@ -170,14 +170,14 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 		}
 		if (succ && message && userList.GetCount() > 0)
 		{
-			this->svr->Send(&userList, message);
+			this->mgr->Send(&userList, message);
 		}
 	}
 }
 
-Net::PushServerHandler::PushServerHandler(PushServer *svr)
+Net::PushServerHandler::PushServerHandler(PushManager *mgr)
 {
-	this->svr = svr;
+	this->mgr = mgr;
 	
 	this->AddService(CSTR("/send"), Net::WebUtil::RequestMethod::HTTP_POST, SendHandler);
 	this->AddService(CSTR("/sendBatch"), Net::WebUtil::RequestMethod::HTTP_POST, SendBatchHandler);

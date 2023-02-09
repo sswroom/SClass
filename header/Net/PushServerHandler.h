@@ -1,6 +1,6 @@
 #ifndef _SM_NET_PUSHSERVERHANDLER
 #define _SM_NET_PUSHSERVERHANDLER
-#include "Net/PushServer.h"
+#include "Net/PushManager.h"
 #include "Net/WebServer/WebServiceHandler.h"
 #include "Text/JSON.h"
 
@@ -9,7 +9,7 @@ namespace Net
 	class PushServerHandler : public Net::WebServer::WebServiceHandler
 	{
 	private:
-		PushServer *svr;
+		PushManager *mgr;
 
 		static Bool __stdcall SendHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		static Bool __stdcall SendBatchHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
@@ -19,7 +19,7 @@ namespace Net
 
 		void ParseJSONSend(Text::JSONBase *sendJson);
 	public:
-		PushServerHandler(PushServer *svr);
+		PushServerHandler(PushManager *mgr);
 		virtual ~PushServerHandler();
 	};
 }

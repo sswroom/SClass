@@ -568,6 +568,9 @@ PingTest:
 POP3Test:
 @POP3Test.o
 @ConsoleStartup.o
+PushServer:
+@PushServerMain.o
+@ConsoleStartup.o
 SMTPTest:
 @SMTPTest.o
 @ConsoleStartup.o
@@ -1053,6 +1056,7 @@ PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
 PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
 PingTest.o: ../../main/NetTest/PingTest.cpp
 POP3Test.o: ../../main/NetTest/POP3Test.cpp
+PushServerMain.o: ../../main/NetTest/PushServerMain.cpp
 SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
@@ -2990,6 +2994,8 @@ Net/PingMonitor.h: ../../src/Net/PingMonitor.cpp
 @PingMonitor.o
 Net/ProxyServer.h: ../../src/Net/ProxyServer.cpp
 @ProxyServer.o
+Net/PushManager.h: ../../src/Net/PushManager.cpp
+@PushManager.o
 Net/PushServer.h: ../../src/Net/PushServer.cpp
 @PushServer.o
 Net/PushServerHandler.h: ../../src/Net/PushServerHandler.cpp
@@ -5253,6 +5259,7 @@ PacketAnalyzerEthernet.o: ../../src/Net/PacketAnalyzerEthernet.cpp
 PacketExtractorEthernet.o: ../../src/Net/PacketExtractorEthernet.cpp
 PingMonitor.o: ../../src/Net/PingMonitor.cpp
 ProxyServer.o: ../../src/Net/ProxyServer.cpp
+PushManager.o: ../../src/Net/PushManager.cpp
 PushServer.o: ../../src/Net/PushServer.cpp
 PushServerHandler.o: ../../src/Net/PushServerHandler.cpp
 RAWAnalyzer.o: ../../src/Net/RAWAnalyzer.cpp
