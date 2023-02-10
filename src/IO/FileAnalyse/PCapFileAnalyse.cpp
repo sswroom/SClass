@@ -218,13 +218,13 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	if (this->isBE)
 	{
 		dt.SetUnixTimestamp(ReadMUInt32(&this->packetBuff[0]));
-		dt.SetMS((OSInt)ReadMUInt32(&this->packetBuff[4]) / 1000);
+		dt.SetNS(ReadMUInt32(&this->packetBuff[4]) * 1000);
 		psize = ReadMUInt32(&this->packetBuff[12]);
 	}
 	else
 	{
 		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
-		dt.SetMS((OSInt)ReadUInt32(&this->packetBuff[4]) / 1000);
+		dt.SetNS(ReadUInt32(&this->packetBuff[4]) * 1000);
 		psize = ReadUInt32(&this->packetBuff[12]);
 	}
 	UTF8Char sbuff[64];
@@ -334,14 +334,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	if (this->isBE)
 	{
 		dt.SetUnixTimestamp(ReadMUInt32(&this->packetBuff[0]));
-		dt.SetMS((OSInt)ReadMUInt32(&this->packetBuff[4]) / 1000);
+		dt.SetNS(ReadMUInt32(&this->packetBuff[4]) * 1000);
 		storeSize = ReadMUInt32(&this->packetBuff[8]);
 		psize = ReadMUInt32(&this->packetBuff[12]);
 	}
 	else
 	{
 		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
-		dt.SetMS((OSInt)ReadUInt32(&this->packetBuff[4]) / 1000);
+		dt.SetNS(ReadUInt32(&this->packetBuff[4]) * 1000);
 		storeSize = ReadUInt32(&this->packetBuff[8]);
 		psize = ReadUInt32(&this->packetBuff[12]);
 	}

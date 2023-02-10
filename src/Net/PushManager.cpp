@@ -33,6 +33,7 @@ void Net::PushManager::LoadData()
 		Text::UTF8Reader reader(&fs);
 		Text::PString sarr[3];
 		DeviceType devType;
+		this->loading = true;
 		while (reader.ReadLine(&sb, 1024))
 		{
 			if (Text::StrSplitP(sarr, 3, sb, ',') == 3)
@@ -50,6 +51,7 @@ void Net::PushManager::LoadData()
 
 			sb.ClearStr();
 		}
+		this->loading = false;
 	}
 }
 
@@ -94,6 +96,7 @@ Net::PushManager::PushManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Te
 	this->ssl = ssl;
 	this->fcmKey = Text::String::New(fcmKey);
 	this->log = log;
+	this->loading = false;
 	this->LoadData();
 }
 
@@ -145,7 +148,8 @@ Bool Net::PushManager::Subscribe(Text::CString token, Text::CString userName, De
 	user = this->GetUser(userName);
 	dev->userName = user->userName->Clone();
 	user->devMap.Put(dev->token, dev);
-	this->SaveData();
+	if (!this->loading)
+		this->SaveData();
 	return true;
 }
 

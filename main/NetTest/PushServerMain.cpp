@@ -3,12 +3,14 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
+#include "Manage/ExceptionRecorder.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/PushServer.h"
 #include "Net/SSLEngineFactory.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	Manage::ExceptionRecorder exHdlr(CSTR("PushServer.err"), Manage::ExceptionRecorder::EA_RESTART);
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)

@@ -33,7 +33,6 @@ namespace Data
 			UInt8 hour;
 			UInt8 minute;
 			UInt8 second;
-			UInt16 ms;
 		};
 
 		static const Char *monString[]; //0-11
@@ -46,8 +45,9 @@ namespace Data
 		static void TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs, UInt32 *nanosec);
 	public:
 		static Int64 TimeValue2Secs(const TimeValue *t, Int8 tzQhr);
-		static Int64 TimeValue2Ticks(const TimeValue *t, Int8 tzQhr);
+		static Int64 TimeValue2Ticks(const TimeValue *t, UInt32 ns, Int8 tzQhr);
 		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr);
+		static void Secs2TimeValue(Int64 secs, TimeValue *t, Int8 tzQhr);
 		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue *t, Int8 tzQhr);
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);

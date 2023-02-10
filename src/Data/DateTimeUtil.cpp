@@ -87,7 +87,6 @@ void Data::DateTimeUtil::TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text
 	if (valTmp == 1)
 	{
 		t->second = (UInt8)Text::StrToUInt32(strs[0].v);
-		t->ms = 0;
 		if (nanosec)
 			*nanosec = 0;
 	}
@@ -131,27 +130,6 @@ void Data::DateTimeUtil::TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text
 				*nanosec = Text::StrToUInt32(strs[1].v);
 				break;
 			}
-		}
-		if (valTmp == 1)
-		{
-			t->ms = (UInt16)(Text::StrToUInt32(strs[1].v) * 100);
-		}
-		else if (valTmp == 2)
-		{
-			t->ms = (UInt16)(Text::StrToUInt32(strs[1].v) * 10);
-		}
-		else if (valTmp == 3)
-		{
-			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
-		}
-		else if (valTmp > 3)
-		{
-			strs[1].v[3] = 0;
-			t->ms = (UInt16)Text::StrToUInt32(strs[1].v);
-		}
-		else
-		{
-			t->ms = 0;
 		}
 	}
 }
@@ -227,33 +205,36 @@ Int64 Data::DateTimeUtil::TimeValue2Secs(const TimeValue *t, Int8 tzQhr)
 	return totalDays * 86400LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Ticks(const TimeValue *t, Int8 tzQhr)
+Int64 Data::DateTimeUtil::TimeValue2Ticks(const TimeValue *t, UInt32 ns, Int8 tzQhr)
 {
-	return TimeValue2Secs(t, tzQhr) * 1000LL + t->ms;
+	return TimeValue2Secs(t, tzQhr) * 1000LL + (ns / 1000000);
 }
 
 void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 {
-	ticks = ticks + tzQhr * 900000;
-	Int32 totalDays = (Int32)(ticks / 86400000LL);
+	Secs2TimeValue(ticks / 1000, t, tzQhr);
+}
+
+void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, TimeValue *t, Int8 tzQhr)
+{
+	secs = secs + tzQhr * 900;
+	Int32 totalDays = (Int32)(secs / 86400LL);
 	UInt32 minutes;
-	if (ticks < 0)
+	if (secs < 0)
 	{
-		ticks -= totalDays * 86400000LL;
-		while (ticks < 0)
+		secs -= totalDays * 86400LL;
+		while (secs < 0)
 		{
 			totalDays -= 1;
-			ticks += 86400000LL;
+			secs += 86400LL;
 		}
-		minutes = (UInt32)(ticks % 86400000LL);
+		minutes = (UInt32)(secs % 86400LL);
 	}
 	else
 	{
-		minutes = (UInt32)(ticks % 86400000LL);
+		minutes = (UInt32)(secs % 86400LL);
 	}
 
-	t->ms = (UInt16)(minutes % 1000);
-	minutes = minutes / 1000;
 	t->second = (UInt8)(minutes % 60);
 	minutes = minutes / 60;
 	t->minute = (UInt8)(minutes % 60);
@@ -530,7 +511,6 @@ void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue
 		minutes = (UInt32)(secs % 86400LL);
 	}
 
-	t->ms = (UInt16)(nanosec / 1000000);
 	t->second = (UInt8)(minutes % 60);
 	minutes = minutes / 60;
 	t->minute = (UInt8)(minutes % 60);
@@ -1037,19 +1017,19 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 			if (pattern[1] != 'F')
 			{
 				digiCnt = 1;
-				thisMS = tval->ms / 100;
+				thisMS = (UInt16)(nanosec / 100000000);
 				pattern += 1;
 			}
 			else if (pattern[2] != 'F')
 			{
 				digiCnt = 2;
-				thisMS = tval->ms / 10;
+				thisMS = (UInt16)(nanosec / 10000000);
 				pattern += 2;
 			}
 			else
 			{
 				digiCnt = 3;
-				thisMS = tval->ms ;
+				thisMS = (UInt16)(nanosec / 1000000);
 				pattern += 3;
 			}
 
@@ -1427,8 +1407,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 		{
 			if (nanosec)
 			{
-				Ticks2TimeValue(GetCurrTimeSecHighP(nanosec) * 1000LL, tval, *tzQhr);
-				tval->ms = (UInt16)(*nanosec / 1000000);
+				Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, *tzQhr);
 			}
 			else
 			{
@@ -1494,7 +1473,6 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
-			tval->ms = 0;
 			if (nanosec)
 			{
 				*nanosec = 0;
@@ -1513,7 +1491,6 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
-			tval->ms = 0;
 			if (nanosec)
 				*nanosec = 0;
 		}
@@ -1523,15 +1500,15 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
-			tval->ms = 0;
 			if (nanosec)
 				*nanosec = 0;
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{
-			Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
 			if (nanosec)
-				*nanosec = (UInt32)tval->ms * 1000000;
+				Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, *tzQhr);
+			else
+				Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
 			TimeValueSetTime(tval, strs, nanosec);
 		}
 		else
@@ -1617,7 +1594,6 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 		tval->hour = 0;
 		tval->minute = 0;
 		tval->second = 0;
-		tval->ms = 0;
 		*tzQhr = 0;
 
 		UOSInt j = 0;
@@ -1887,8 +1863,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeMillis()
 	tval.hour = (UInt8)st.wHour;
 	tval.minute = (UInt8)st.wMinute;
 	tval.second = (UInt8)st.wSecond;
-	tval.ms = st.wMilliseconds;
-	return TimeValue2Ticks(&tval, 0);
+	return TimeValue2Ticks(&tval, (UInt32)st.wMilliseconds * 1000000, 0);
 #elif !defined(CPU_AVR)
 	struct timeval tv;
 	if (gettimeofday(&tv, 0) == 0)
@@ -1966,8 +1941,7 @@ Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
 	tval.hour = (UInt8)stime->wHour;
 	tval.minute = (UInt8)stime->wMinute;
 	tval.second = (UInt8)stime->wSecond;
-	tval.ms = stime->wMilliseconds;
-	return TimeValue2Ticks(&tval, 0);
+	return TimeValue2Ticks(&tval, (UInt32)stime->wMilliseconds * 1000000, 0);
 }
 
 void Data::DateTimeUtil::Ticks2SYSTEMTIME(void *sysTime, Int64 ticks)
@@ -1981,7 +1955,10 @@ void Data::DateTimeUtil::Ticks2SYSTEMTIME(void *sysTime, Int64 ticks)
 	stime->wHour = tval.hour;
 	stime->wMinute = tval.minute;
 	stime->wSecond = tval.second;
-	stime->wMilliseconds = tval.ms;
+	if (ticks < 0)
+		stime->wMilliseconds = (UInt16)(1000 + (ticks % 1000));
+	else
+		stime->wMilliseconds = (UInt16)(ticks % 1000);
 	stime->wDayOfWeek = 0;
 }
 
@@ -1997,7 +1974,7 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 	st.wHour = tval.hour;
 	st.wMinute = tval.minute;
 	st.wSecond = tval.second;
-	st.wMilliseconds = tval.ms;
+	st.wMilliseconds = (UInt16)(nanosec / 1000000);
 	return SetSystemTime(&st) != FALSE;
 #elif !defined(CPU_AVR)
 	struct timespec tp;

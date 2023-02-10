@@ -222,7 +222,6 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(void *userO
 		timeVal.hour = 0;
 		timeVal.minute = 0;
 		timeVal.second = 0;
-		timeVal.ms = 0;
 		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(&timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
 		Data::Timestamp endTime = GetDefaultEndTime(startTime, timeUnit);
 		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;
@@ -255,7 +254,6 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(void *userOb
 		timeVal.hour = 0;
 		timeVal.minute = 0;
 		timeVal.second = 0;
-		timeVal.ms = 0;
 		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(&timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
 		Data::Timestamp endTime = startTime.AddMinute(24 * 60 - 15);
 		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;

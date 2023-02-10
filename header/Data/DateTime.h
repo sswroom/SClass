@@ -22,10 +22,11 @@ namespace Data
 		};
 		
 		TimeType timeType;
+		UInt32 ns;
 		Int8 tzQhr; //* 15 minutes
 		union
 		{
-			Int64 ticks;
+			Int64 secs;
 			Data::DateTimeUtil::TimeValue t;
 		} val;
 
@@ -64,12 +65,14 @@ namespace Data
 		UInt8 GetMinute();
 		UInt8 GetSecond();
 		UInt16 GetMS();
+		UInt32 GetNS();
 		Data::DateTime *AddMonth(OSInt val);
 		Data::DateTime *AddDay(OSInt val);
 		Data::DateTime *AddHour(OSInt val);
 		Data::DateTime *AddMinute(OSInt val);
 		Data::DateTime *AddSecond(OSInt val);
 		Data::DateTime *AddMS(OSInt val);
+		Data::DateTime *AddNS(OSInt val);
 		void SetDate(UInt16 year, OSInt month, OSInt day);
 		void SetYear(UInt16 year);
 		void SetMonth(OSInt month);
@@ -77,7 +80,7 @@ namespace Data
 		void SetHour(OSInt hour);
 		void SetMinute(OSInt minute);
 		void SetSecond(OSInt second);
-		void SetMS(OSInt ms);
+		void SetNS(UInt32 ns);
 		void ClearTime();
 		Int64 GetMSPassedDate();
 

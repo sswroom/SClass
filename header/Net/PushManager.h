@@ -37,6 +37,7 @@ namespace Net
 		IO::LogTool *log;
 
 		Sync::Mutex dataMut;
+		Bool loading;
 		Data::FastStringMap<UserInfo*> userMap;
 		Data::FastStringMap<DeviceInfo*> devMap;
 

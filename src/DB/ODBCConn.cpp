@@ -1627,8 +1627,7 @@ Bool DB::ODBCReader::ReadNext()
 							tval.hour = (UInt8)ts.hour;
 							tval.minute = (UInt8)ts.minute;
 							tval.second = (UInt8)ts.second;
-							tval.ms = (UInt16)(ts.fraction / 1000000);
-							*dt = Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr) / 1000, ts.fraction), this->tzQhr);
+							*dt = Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), ts.fraction), this->tzQhr);
 						}
 					}
 					else

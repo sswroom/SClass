@@ -34,7 +34,7 @@ Data::DateTimeUtil::TimeValue *Data::DateTime::GetTimeValue()
 		return t;
 	case TimeType::Ticks:
 		this->timeType = TimeType::Time;
-		Data::DateTimeUtil::Ticks2TimeValue(this->val.ticks, t, this->tzQhr);
+		Data::DateTimeUtil::Secs2TimeValue(this->val.secs, t, this->tzQhr);
 		return t;
 	case TimeType::None:
 	default:
@@ -45,7 +45,6 @@ Data::DateTimeUtil::TimeValue *Data::DateTime::GetTimeValue()
 		t->hour = 0;
 		t->minute = 0;
 		t->second = 0;
-		t->ms = 0;
 		return t;		
 	}
 }
@@ -53,9 +52,9 @@ Data::DateTimeUtil::TimeValue *Data::DateTime::GetTimeValue()
 void Data::DateTime::FixValues()
 {
 	Data::DateTimeUtil::TimeValue *t = GetTimeValue();
-	while (t->ms >= 1000)
+	while (this->ns >= 1000000000)
 	{
-		t->ms = (UInt16)(t->ms - 1000);
+		this->ns = (this->ns - 1000000000);
 		t->second++;
 	}
 	while (t->second >= 60)
@@ -99,21 +98,18 @@ void Data::DateTime::FixValues()
 Data::DateTime::DateTime()
 {
 	this->timeType = TimeType::None;
+	this->ns = 0;
 	this->tzQhr = 0;
 }
 
 Data::DateTime::DateTime(Int64 ticks)
 {
-	this->timeType = TimeType::Ticks;
-	this->val.ticks = ticks;
-	this->tzQhr = 0;
+	this->SetValue(ticks, 0);
 }
 
 Data::DateTime::DateTime(Int64 ticks, Int8 tzQhr)
 {
-	this->timeType = TimeType::Ticks;
-	this->val.ticks = ticks;
-	this->tzQhr = tzQhr;
+	this->SetValue(ticks, tzQhr);
 }
 
 Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second)
@@ -127,7 +123,7 @@ Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 
 	t->hour = hour;
 	t->minute = minute;
 	t->second = second;
-	t->ms = 0;
+	this->ns = 0;
 }
 
 Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms)
@@ -141,12 +137,13 @@ Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 
 	t->hour = hour;
 	t->minute = minute;
 	t->second = second;
-	t->ms = ms;
+	this->ns = (UInt32)ms * 1000000;
 }
 
 Data::DateTime::DateTime(Text::CString dateStr)
 {
 	this->timeType = TimeType::None;
+	this->ns = 0;
 	this->tzQhr = 0;
 	this->SetValue(dateStr);
 }
@@ -172,7 +169,7 @@ Bool Data::DateTime::SetAsComputerTime()
 	st.wHour = t->hour;
 	st.wMinute = t->minute;
 	st.wSecond = t->second;
-	st.wMilliseconds = t->ms;
+	st.wMilliseconds = (UInt16)(this->ns / 1000000);
 	return SetSystemTime(&st) != FALSE;
 #elif !defined(CPU_AVR)
 	struct timespec tp;
@@ -201,7 +198,7 @@ Data::DateTime *Data::DateTime::SetCurrTime()
 	t->hour = (UInt8)st.wHour;
 	t->minute = (UInt8)st.wMinute;
 	t->second = (UInt8)st.wSecond;
-	t->ms = st.wMilliseconds;
+	this->ns = (UInt32)st.wMilliseconds * 1000000;
 	this->tzQhr = (Int8)(-tz.Bias / 15);
 #endif
 	return this;
@@ -237,7 +234,7 @@ Data::DateTime *Data::DateTime::SetCurrTimeUTC()
 	tval->hour = (UInt8)st.wHour;
 	tval->minute = (UInt8)st.wMinute;
 	tval->second = (UInt8)st.wSecond;
-	tval->ms = st.wMilliseconds;
+	this->ns = (UInt32)st.wMilliseconds * 1000000;
 	this->tzQhr = 0;
 #endif
 	return this;
@@ -272,21 +269,17 @@ void Data::DateTime::SetValue(const DateTime *time)
 		this->val.t.hour = time->val.t.hour;
 		this->val.t.minute = time->val.t.minute;
 		this->val.t.second = time->val.t.second;
-		this->val.t.ms = time->val.t.ms;
 	}
 	else
 	{
-		this->val.ticks = time->val.ticks;
+		this->val.secs = time->val.secs;
 	}
+	this->ns = time->ns;
 }
 
 void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr)
 {
-	this->SetDate(year, month, day);
-	this->SetHour(hour);
-	this->SetMinute(minute);
-	this->SetSecond(second);
-	this->SetMS(ms);
+	this->SetValue(year, month, day, hour, minute, second, ms);
 	this->tzQhr = tzQhr;
 }
 
@@ -295,14 +288,20 @@ void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, O
 	this->SetDate(year, month, day);
 	this->SetHour(hour);
 	this->SetMinute(minute);
+	second += ms / 1000;
+	ms = ms % 1000;
+	if (ms < 0)
+	{
+		ms += 1000;
+		second -= 1;
+	}
 	this->SetSecond(second);
-	this->SetMS(ms);
+	this->ns = (UInt32)(ms * 1000000);
 }
 
 void Data::DateTime::SetValue(Int64 ticks, Int8 tzQhr)
 {
-	this->timeType = Data::DateTime::TimeType::Ticks;
-	this->val.ticks = ticks;
+	this->SetTicks(ticks);
 	this->tzQhr = tzQhr;
 }
 
@@ -315,7 +314,7 @@ void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 ho
 	tval->hour = hour;
 	tval->minute = minute;
 	tval->second = second;
-	tval->ms = ms;
+	this->ns = (UInt32)ms * 1000000;
 	this->tzQhr = tzQhr;	
 }
 
@@ -327,7 +326,7 @@ Bool Data::DateTime::SetValueSlow(const Char *dateStr)
 Bool Data::DateTime::SetValue(Text::CString dateStr)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	return Data::DateTimeUtil::String2TimeValue(dateStr, tval, &this->tzQhr, 0);
+	return Data::DateTimeUtil::String2TimeValue(dateStr, tval, &this->tzQhr, &this->ns);
 }
 
 void Data::DateTime::SetValueSYSTEMTIME(void *sysTime)
@@ -340,28 +339,13 @@ void Data::DateTime::SetValueSYSTEMTIME(void *sysTime)
 	tval->hour = (UInt8)stime->wHour;
 	tval->minute = (UInt8)stime->wMinute;
 	tval->second = (UInt8)stime->wSecond;
-	tval->ms = stime->wMilliseconds;
+	this->ns = (UInt32)stime->wMilliseconds * 1000000;
 	this->tzQhr = 0;
 }
 
 void Data::DateTime::SetValueFILETIME(void *fileTime)
 {
-#if defined(_WIN32)
-	FILETIME *ftime = (FILETIME*)fileTime;
-	SYSTEMTIME stime;
-	FileTimeToSystemTime(ftime, &stime);
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	tval->year = stime.wYear;
-	tval->month = (UInt8)stime.wMonth;
-	tval->day = (UInt8)stime.wDay;
-	tval->hour = (UInt8)stime.wHour;
-	tval->minute = (UInt8)stime.wMinute;
-	tval->second = (UInt8)stime.wSecond;
-	tval->ms = stime.wMilliseconds;
-	this->tzQhr = 0;
-#else
 	this->SetTicks(ReadInt64((const UInt8*)fileTime) / 10000 - 11644473600000LL);
-#endif
 }
 
 void Data::DateTime::SetValueVariTime(Double variTime)
@@ -373,7 +357,6 @@ void Data::DateTime::SetValueVariTime(Double variTime)
 	tval->hour = 0;
 	tval->minute = 0;
 	tval->second = 0;
-	tval->ms = 0;
 	this->tzQhr = 0;
 	OSInt d = (OSInt)variTime;
 	this->AddDay(d);
@@ -383,8 +366,8 @@ void Data::DateTime::SetValueVariTime(Double variTime)
 	tval->minute = (UInt8)variTime;
 	variTime = (variTime - tval->minute) * 60;
 	tval->second = (UInt8)variTime;
-	variTime = (variTime - tval->second) * 1000;
-	tval->ms = (UInt16)variTime;
+	variTime = (variTime - tval->second) * 1000000000;
+	this->ns = (UInt32)variTime;
 }
 
 UInt16 Data::DateTime::GetYear()
@@ -419,7 +402,12 @@ UInt8 Data::DateTime::GetSecond()
 
 UInt16 Data::DateTime::GetMS()
 {
-	return this->GetTimeValue()->ms;
+	return (UInt16)(this->ns / 1000000);
+}
+
+UInt32 Data::DateTime::GetNS()
+{
+	return this->ns;
 }
 
 Data::DateTime *Data::DateTime::AddMonth(OSInt val)
@@ -483,10 +471,10 @@ Data::DateTime *Data::DateTime::AddDay(OSInt val)
 		break;
 	case TimeType::None:
 		this->timeType = TimeType::Ticks;
-		this->val.ticks = val * 86400000LL;
+		this->val.secs = val * 86400LL;
 		break;
 	case TimeType::Ticks:
-		this->val.ticks += val * 86400000LL;
+		this->val.secs += val * 86400LL;
 		break;
 	}
 	return this;
@@ -518,11 +506,11 @@ Data::DateTime *Data::DateTime::AddHour(OSInt val)
 		}
 		break;
 	case TimeType::Ticks:
-		this->val.ticks += val * 3600000LL;
+		this->val.secs += val * 3600LL;
 		break;
 	case TimeType::None:
 	default:
-		this->val.ticks = val * 3600000LL;
+		this->val.secs = val * 3600LL;
 		this->timeType = TimeType::Ticks;
 		break;
 	}
@@ -576,30 +564,49 @@ Data::DateTime *Data::DateTime::AddSecond(OSInt val)
 	}
 	else
 	{
-		this->val.ticks += (Int64)val * 1000;
+		this->val.secs += (Int64)val;
 		return this;
 	}
 }
 
 Data::DateTime *Data::DateTime::AddMS(OSInt val)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	OSInt seconds = val / 1000;
-	OSInt outMS;
-	outMS = val - seconds * 1000 + tval->ms;
-	while (outMS < 0)
+	if (this->timeType == TimeType::Time)
 	{
-		outMS += 1000;
-		seconds--;
+		OSInt seconds = val / 1000;
+		Int64 outNS = (val - seconds * 1000) * 1000000 + this->ns;
+		while (outNS < 0)
+		{
+			outNS += 1000000000;
+			seconds--;
+		}
+		while (outNS >= 1000000000)
+		{
+			outNS -= 1000000000;
+			seconds++;
+		}
+		this->ns = (UInt32)outNS;
+		if (seconds)
+			AddSecond(seconds);
 	}
-	while (outMS >= 1000)
+	else
 	{
-		outMS -= 1000;
-		seconds++;
+		OSInt seconds = val / 1000;
+		val = val % 1000;
+		Int32 newNS = (Int32)this->ns + (Int32)val * 1000000;
+		if (newNS < 0)
+		{
+			newNS += 1000000000;
+			seconds--;
+		}
+		else if (newNS >= 1000000000)
+		{
+			newNS -= 1000000000;
+			seconds++;
+		}
+		this->ns = (UInt32)newNS;
+		this->val.secs += seconds;
 	}
-	tval->ms = (UInt16)outMS;
-	if (seconds)
-		AddSecond(seconds);
 	return this;
 }
 
@@ -727,7 +734,20 @@ void Data::DateTime::SetSecond(OSInt second)
 	}
 }
 
-void Data::DateTime::SetMS(OSInt ms)
+void Data::DateTime::SetNS(UInt32 ns)
+{
+	if (ns >= 1000000000)
+	{
+		this->AddSecond((OSInt)(ns / 1000000000));
+		this->ns = ns % 1000000000;
+	}
+	else
+	{
+		this->ns = ns;
+	}
+}
+
+/*void Data::DateTime::SetMS(OSInt ms)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
 	OSInt s = 0;
@@ -746,7 +766,7 @@ void Data::DateTime::SetMS(OSInt ms)
 	{
 		this->SetSecond(tval->second + s);
 	}
-}
+}*/
 
 void Data::DateTime::ClearTime()
 {
@@ -754,13 +774,13 @@ void Data::DateTime::ClearTime()
 	tval->hour = 0;
 	tval->minute = 0;
 	tval->second = 0;
-	tval->ms = 0;
+	this->ns = 0;
 }
 
 Int64 Data::DateTime::GetMSPassedDate()
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	return tval->ms + tval->second * 1000 + tval->minute * 60000 + tval->hour * 3600000;
+	return (Int64)(this->ns / 1000000) + tval->second * 1000 + tval->minute * 60000 + tval->hour * 3600000;
 }
 
 Int64 Data::DateTime::DiffMS(DateTime *dt)
@@ -778,11 +798,11 @@ Int64 Data::DateTime::ToTicks()
 {
 	if (this->timeType == TimeType::Ticks)
 	{
-		return this->val.ticks;
+		return this->val.secs * 1000LL + (this->ns / 1000000);
 	}
 	else if (this->timeType == TimeType::Time)
 	{
-		return Data::DateTimeUtil::TimeValue2Ticks(&this->val.t, this->tzQhr);
+		return Data::DateTimeUtil::TimeValue2Ticks(&this->val.t, this->ns, this->tzQhr);
 	}
 	else
 	{
@@ -797,13 +817,39 @@ Int64 Data::DateTime::ToDotNetTicks()
 
 Int64 Data::DateTime::ToUnixTimestamp()
 {
+	if (this->timeType == TimeType::Ticks)
+	{
+		return this->val.secs;
+	}
+	else if (this->timeType == TimeType::Time)
+	{
+		return Data::DateTimeUtil::TimeValue2Secs(&this->val.t, this->tzQhr);
+	}
+	else
+	{
+		return 0;
+	}
 	return (this->ToTicks() / 1000LL);
 }
 
 void Data::DateTime::SetTicks(Int64 ticks)
 {
-	this->timeType = TimeType::Ticks;
-	this->val.ticks = ticks;
+	this->timeType = Data::DateTime::TimeType::Ticks;
+	if (ticks < 0)
+	{
+		this->ns = (UInt32)(1000 - ticks % 1000) * 1000000;
+		this->val.secs = ticks / 1000 - 1;
+		if (this->ns >= 1000000000)
+		{
+			this->ns -= 1000000000;
+			this->val.secs++;
+		}
+	}
+	else
+	{
+		this->val.secs = ticks / 1000;
+		this->ns = (UInt32)(ticks % 1000) * 1000000;
+	}
 }
 
 void Data::DateTime::SetDotNetTicks(Int64 ticks)
@@ -825,7 +871,7 @@ void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)
 	tval->hour = (UInt8)(time >> 11);
 	tval->minute = (time >> 5) & 0x3f;
 	tval->second = (time & 0x1f) << 1;
-	tval->ms = 0;
+	this->ns = 0;
 }
 
 UInt16 Data::DateTime::ToMSDOSDate()
@@ -851,7 +897,7 @@ void Data::DateTime::ToSYSTEMTIME(void *sysTime)
 	stime->wHour = tval->hour;
 	stime->wMinute = tval->minute;
 	stime->wSecond = tval->second;
-	stime->wMilliseconds = tval->ms;
+	stime->wMilliseconds = (UInt16)(this->ns / 1000000);
 	stime->wDayOfWeek = 0;
 #endif
 }
@@ -866,7 +912,7 @@ void Data::DateTime::SetNTPTime(Int32 hiDword, Int32 loDword)
 	tval->hour = 0;
 	tval->minute = 0;
 	tval->second = 0;
-	tval->ms = 0;
+	this->ns = 0;
 	this->AddMinute(hiDword / 60);
 	this->AddMS((OSInt)((hiDword % 60) * 1000 + ((loDword * 1000LL) >> 32)));
 }
@@ -899,7 +945,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
 UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 {
 	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, (UInt32)tval->ms * 1000000, (const UTF8Char*)pattern);
+	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->ns, (const UTF8Char*)pattern);
 }
 
 Data::DateTime Data::DateTime::operator=(Data::DateTime dt)
@@ -1031,7 +1077,7 @@ void Data::DateTime::SetTimeZoneQHR(Int8 tzQhr)
 {
 	if (this->timeType == TimeType::Ticks && this->tzQhr != tzQhr)
 	{
-		this->val.ticks += (tzQhr - this->tzQhr) * (Int64)(15 * 60000);
+		this->val.secs += (tzQhr - this->tzQhr) * (Int64)(15 * 60);
 		this->tzQhr = tzQhr;
 	}
 	else

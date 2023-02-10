@@ -43,7 +43,7 @@ namespace Data
 			}
 			else
 			{
-				this->inst = Data::TimeInstant(Data::DateTimeUtil::TimeValue2Ticks(&tval, this->tzQhr) / 1000LL, nanosec);
+				this->inst = Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), nanosec);
 			}
 		}
 		
@@ -130,7 +130,6 @@ namespace Data
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
-			tval.ms = 0;
 			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
 		}
 
@@ -142,7 +141,6 @@ namespace Data
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
-			tval.ms = 0;
 			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
 		}
 
@@ -423,7 +421,7 @@ namespace Data
 			UInt32 nanosec;
 			if (Data::DateTimeUtil::String2TimeValue(s, &tv, &tzQhr, &nanosec))
 			{
-				return Timestamp(TimeInstant(Data::DateTimeUtil::TimeValue2Ticks(&tv, tzQhr) / 1000LL, nanosec), tzQhr);
+				return Timestamp(TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tv, tzQhr), nanosec), tzQhr);
 			}
 			else
 			{
