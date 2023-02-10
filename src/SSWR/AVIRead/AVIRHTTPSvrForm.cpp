@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "IO/BuildTime.h"
 #include "IO/Path.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
@@ -178,8 +179,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		{
 			cacheSize = 4096;
 		}
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		Data::DateTime dt;
+		IO::BuildTime::GetBuildTime(&dt);
+		dt.ToUTCTime();
+		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked(), false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;
@@ -240,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		me->chkSPKPackageFile->SetEnabled(false);
 		me->chkZIPPackageFile->SetEnabled(false);
 		me->chkSkipLog->SetEnabled(false);
-		me->chkAllowKA->SetEnabled(false);
+		me->cboKeepAlive->SetEnabled(false);
 		me->chkCrossOrigin->SetEnabled(false);
 		me->chkDownloadCnt->SetEnabled(false);
 		me->chkSSL->SetEnabled(false);
@@ -283,7 +290,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 	me->chkSPKPackageFile->SetEnabled(true);
 	me->chkZIPPackageFile->SetEnabled(true);
 	me->chkSkipLog->SetEnabled(true);
-	me->chkAllowKA->SetEnabled(true);
+	me->cboKeepAlive->SetEnabled(true);
 	me->chkCrossOrigin->SetEnabled(true);
 	me->chkDownloadCnt->SetEnabled(true);
 	me->chkSSL->SetEnabled(true);
@@ -524,10 +531,14 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->lblSkipLog->SetRect(8, 224, 100, 23, false);
 	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
 	this->chkSkipLog->SetRect(108, 224, 100, 23, false);
-	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, CSTR("Allow KA")));
-	this->lblAllowKA->SetRect(8, 248, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkAllowKA->SetRect(108, 248, 100, 23, false);
+	NEW_CLASS(this->lblKeepAlive, UI::GUILabel(ui, this->grpParam, CSTR("Keep Alive")));
+	this->lblKeepAlive->SetRect(8, 248, 100, 23, false);
+	NEW_CLASS(this->cboKeepAlive, UI::GUIComboBox(ui, this->grpParam, false));
+	this->cboKeepAlive->SetRect(108, 248, 100, 23, false);
+	this->cboKeepAlive->AddItem(CSTR("Always"), (void*)(OSInt)Net::WebServer::KeepAlive::Always);
+	this->cboKeepAlive->AddItem(CSTR("Default"), (void*)(OSInt)Net::WebServer::KeepAlive::Default);
+	this->cboKeepAlive->AddItem(CSTR("No"), (void*)(OSInt)Net::WebServer::KeepAlive::No);
+	this->cboKeepAlive->SetSelectedIndex(1);
 	NEW_CLASS(this->lblCrossOrigin, UI::GUILabel(ui, this->grpParam, CSTR("Cross Origin")));
 	this->lblCrossOrigin->SetRect(8, 272, 100, 23, false);
 	NEW_CLASS(this->chkCrossOrigin, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), false));

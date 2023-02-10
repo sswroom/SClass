@@ -11,7 +11,7 @@ void __stdcall Net::WebServer::WebListener::ClientReady(Net::TCPClient *cli, voi
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::WebServer::WebConnection *conn;
-	NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->allowKA));
+	NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
 	conn->SetSendLogger(OnDataSent, me);
 	me->cliMgr.AddClient(cli, conn);
 }
@@ -99,7 +99,7 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buf
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, Bool allowKA, Bool autoStart) : cliMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout)
+Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart) : cliMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout)
 {
 	this->hdlr = hdlr;
 
@@ -108,7 +108,7 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	this->reqLog = 0;
 	this->ssl = ssl;
 	this->allowProxy = allowProxy;
-	this->allowKA = allowKA;
+	this->keepAlive = keepAlive;
 	this->timeoutHdlr = 0;
 	this->timeoutObj = 0;
 	this->proxyCliMgr = 0;

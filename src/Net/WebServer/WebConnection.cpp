@@ -10,7 +10,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-//f#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -24,7 +24,7 @@
 #define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
 #endif
 
-Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -38,7 +38,7 @@ Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSL
 	this->buffSize = 0;
 	this->respLeng = 0;
 	this->allowProxy = allowProxy;
-	this->allowKA = allowKA;
+	this->keepAlive = keepAlive;
 	this->proxyMode = false;
 	this->proxyCli = 0;
 	this->logger = 0;
@@ -398,6 +398,10 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	sptr = Text::StrConcatNE(sptr, this->respHeaders.ToString(), this->respHeaders.GetLength());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
+#if defined(VERBOSE)
+	printf("WebConn: Send headers\r\n%s", buff);
+#endif
+
 	if (this->cstm)
 	{
 		this->cstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
@@ -669,7 +673,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		SDEL_CLASS(this->cstm);
 		if (this->sseHdlr == 0)
 		{
-			if (!this->allowKA)
+			if (this->keepAlive == KeepAlive::No)
 			{
 				this->cli->ShutdownSend();
 			}
@@ -751,7 +755,7 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 	AddTimeHeader(CSTR("Date"), &dt);
 	AddHeaderS(CSTR("Server"), this->svr->GetServerName());
 	Text::String *connHdr = req->GetSHeader(CSTR("Connection"));
-	if (this->allowKA && connHdr && connHdr->Equals(UTF8STRC("keep-alive")) && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))
+	if (connHdr && connHdr->Equals(UTF8STRC("keep-alive")) && (this->keepAlive == KeepAlive::Always || (this->keepAlive == KeepAlive::Default && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))))
 	{
 		AddHeader(CSTR("Connection"), CSTR("keep-alive"));
 		AddHeader(CSTR("Keep-Alive"), CSTR("timeout=10, max=1000"));

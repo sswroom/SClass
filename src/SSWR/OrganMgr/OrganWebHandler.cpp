@@ -2735,6 +2735,36 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			writer.WriteStrC(UTF8STRC("</a>"));
 			writer.WriteLineC(UTF8STRC("<br/>"));
 		}
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("<a href=\"list.html?id="));
+		sb.AppendI32(group->id);
+		sb.AppendC(UTF8STRC("&amp;cateId="));
+		sb.AppendI32(group->cateId);
+		sb.AppendC(UTF8STRC("\">"));
+		sb.Append(LangGetValue(lang, UTF8STRC("ListAll")));
+		sb.AppendC(UTF8STRC("</a><br/>"));
+		writer.WriteLineC(sb.ToString(), sb.GetCharCnt());
+
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("<a href=\"listimage.html?id="));
+		sb.AppendI32(group->id);
+		sb.AppendC(UTF8STRC("&amp;cateId="));
+		sb.AppendI32(group->cateId);
+		sb.AppendC(UTF8STRC("\">"));
+		sb.Append(LangGetValue(lang, UTF8STRC("ListImage")));
+		sb.AppendC(UTF8STRC("</a><br/>"));
+		writer.WriteLineC(sb.ToString(), sb.GetLength());
+
+		if (env.user != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<a href=\"map/index.html?group="));
+			sb.AppendI32(group->id);
+			sb.AppendC(UTF8STRC("\">"));
+			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
+			sb.AppendC(UTF8STRC("</a><br/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Bool found = false;
@@ -2805,37 +2835,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
 			me->WritePickObjs(&writer, &env, sb.ToString());
-		}
-
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("<a href=\"list.html?id="));
-		sb.AppendI32(group->id);
-		sb.AppendC(UTF8STRC("&amp;cateId="));
-		sb.AppendI32(group->cateId);
-		sb.AppendC(UTF8STRC("\">"));
-		sb.Append(LangGetValue(lang, UTF8STRC("ListAll")));
-		sb.AppendC(UTF8STRC("</a><br/>"));
-		writer.WriteLineC(sb.ToString(), sb.GetCharCnt());
-
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("<a href=\"listimage.html?id="));
-		sb.AppendI32(group->id);
-		sb.AppendC(UTF8STRC("&amp;cateId="));
-		sb.AppendI32(group->cateId);
-		sb.AppendC(UTF8STRC("\">"));
-		sb.Append(LangGetValue(lang, UTF8STRC("ListImage")));
-		sb.AppendC(UTF8STRC("</a><br/>"));
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
-
-		if (env.user != 0)
-		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("<a href=\"map/index.html?group="));
-			sb.AppendI32(group->id);
-			sb.AppendC(UTF8STRC("\">"));
-			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
-			sb.AppendC(UTF8STRC("</a><br/>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 
 		if (group->parentId == 0)
@@ -3449,6 +3448,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		writer.WriteLineC(UTF8STRC("</td><td>"));
 		me->WriteLocator(&writer, group, cate);
 		writer.WriteLineC(UTF8STRC("</td></tr></table>"));
+		if (env.user != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<a href=\"map/index.html?species="));
+			sb.AppendI32(id);
+			sb.AppendC(UTF8STRC("\">"));
+			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
+			sb.AppendC(UTF8STRC("</a><br/>"));
+			writer.WriteLineC(sb.ToString(), sb.GetLength());
+		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		Data::ArrayListICaseString fileNameList;
@@ -3849,17 +3858,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		}
 
 		writer.WriteLineC(UTF8STRC("<br/>"));
-		if (env.user != 0)
-		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("<a href=\"map/index.html?species="));
-			sb.AppendI32(id);
-			sb.AppendC(UTF8STRC("\">"));
-			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
-			sb.AppendC(UTF8STRC("</a><br/>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
-		}
-
 		writer.WriteStrC(UTF8STRC("<a href=\"group.html?id="));
 		sb.ClearStr();
 		sb.AppendI32(species->groupId);
@@ -9609,10 +9607,10 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 		this->AddService(CSTR("/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
 		this->AddService(CSTR("/speciespoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesPOI);
 
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (this->ssl && sslPort)
 		{
-			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, this, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, true, true));
+			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, this, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		}
 		else
 		{

@@ -8,6 +8,7 @@
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUIHSplitter.h"
@@ -93,8 +94,8 @@ namespace SSWR
 			UI::GUICheckBox *chkZIPPackageFile;
 			UI::GUILabel *lblSkipLog;
 			UI::GUICheckBox *chkSkipLog;
-			UI::GUILabel *lblAllowKA;
-			UI::GUICheckBox *chkAllowKA;
+			UI::GUILabel *lblKeepAlive;
+			UI::GUIComboBox *cboKeepAlive;
 			UI::GUILabel *lblCrossOrigin;
 			UI::GUICheckBox *chkCrossOrigin;
 			UI::GUILabel *lblDownloadCnt;

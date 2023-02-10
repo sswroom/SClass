@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));
 	NEW_CLASS(hdlr, Net::WebServer::PrintLogWebHandler(oauth2Hdlr, &console));
-	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, hdlr, 8889, 30, 4, CSTR("OAuthTest/1.0"), false, true, true));
+	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, hdlr, 8889, 30, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!listener->IsError())
 	{
 		console.WriteLineC(UTF8STRC("OAuth2 Test running at port 8889"));

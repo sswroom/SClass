@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->webIface, Media::MediaPlayerWebInterface(this->player, false));
 	while (port < 8090)
 	{
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, this->webIface, port, 10, 2, CSTR("ConsoleMediaPlayer/1.0"), false, true, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, this->webIface, port, 10, 2, CSTR("ConsoleMediaPlayer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (this->listener->IsError())
 		{
 			DEL_CLASS(this->listener);

@@ -1226,7 +1226,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 
 					hdlr->ExpandPackageFiles(this->parsers, CSTR("*.spk"));
 					this->webHdlr = hdlr;
-					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, true, false));
+					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 					if (this->listener->IsError())
 					{
 						DEL_CLASS(this->listener);

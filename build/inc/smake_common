@@ -3181,6 +3181,7 @@ Net/WebServer/WebListener.h: ../../src/Net/WebServer/WebListener.cpp
 @WebListener.o
 Net/WebServer/WebRequest.h: ../../src/Net/WebServer/WebRequest.cpp
 @WebRequest.o
+Net/WebServer/WebServerBase.h:
 Net/WebServer/WebServiceHandler.h: ../../src/Net/WebServer/WebServiceHandler.cpp
 @WebServiceHandler.o
 Net/WebServer/WebSessionUsage.h: ../../src/Net/WebServer/WebSessionUsage.cpp

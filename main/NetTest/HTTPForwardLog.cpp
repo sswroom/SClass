@@ -100,7 +100,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("fwdLog"));
 			logger->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LogType::PerDay, IO::ILogHandler::LogGroup::PerMonth, IO::ILogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 			hdlr->HandleForwardRequest(OnForwardRequest, 0);
-			NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, listenPort, 120, 4, CSTR("sswr/1.0"), false, true, true));
+			NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, listenPort, 120, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (!svr->IsError())
 			{
 				console->WriteLineC(UTF8STRC("HTTP Forwarding started"));

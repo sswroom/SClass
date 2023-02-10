@@ -6,6 +6,7 @@
 #include "Net/WebServer/IWebHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebRequest.h"
+#include "Net/WebServer/WebServerBase.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -27,7 +28,7 @@ namespace Net
 			UOSInt dataBuffSize;
 			UOSInt buffSize;
 			Net::WebServer::WebRequest *currReq;
-			Bool allowKA;
+			KeepAlive keepAlive;
 
 			Bool allowProxy;
 			Bool proxyMode;
@@ -46,7 +47,7 @@ namespace Net
 			SSEDisconnectHandler sseHdlr;
 			void *sseHdlrObj;
 		public:
-			WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA);
+			WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const UInt8 *buff, UOSInt size);
