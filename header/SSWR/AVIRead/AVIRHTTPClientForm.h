@@ -56,6 +56,8 @@ namespace SSWR
 			UI::GUICheckBox *chkAllowComp;
 			UI::GUIButton *btnUserAgent;
 			UI::GUILabel *lblUserAgent;
+			UI::GUIButton *btnClientCert;
+			UI::GUILabel *lblClientCert;
 			UI::GUILabel *lblUserName;
 			UI::GUITextBox *txtUserName;
 			UI::GUILabel *lblPassword;
@@ -131,6 +133,8 @@ namespace SSWR
 			Bool reqAllowComp;
 			Bool noShutdown;
 			Text::String *userAgent;
+			Crypto::Cert::X509Cert *cliCert;
+			Crypto::Cert::X509File *cliKey;
 
 			Bool respChanged;
 			Net::SocketUtil::AddressInfo respSvrAddr;
@@ -163,6 +167,7 @@ namespace SSWR
 			static void __stdcall OnFileSelectClicked(void *userObj);
 			static void __stdcall OnFileClearClicked(void *userObj);
 			static void __stdcall OnCertClicked(void *userObj);
+			static void __stdcall OnClientCertClicked(void *userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			void ClearHeaders();

@@ -554,6 +554,27 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return false;
 }
 
+Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
+{
+	if (this->clsData->curl)
+	{
+		struct curl_blob blob;
+		blob.data = (void*)cert->GetASN1Buff();
+		blob.len = (size_t)cert->GetASN1BuffSize();
+		blob.flags = CURL_BLOB_COPY;
+		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLCERTTYPE, "DER");
+		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLCERT_BLOB, &blob);
+		blob.data = (void*)key->GetASN1Buff();
+		blob.len = (size_t)key->GetASN1BuffSize();
+		blob.flags = CURL_BLOB_COPY;
+		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLKEYTYPE, "DER");
+		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLKEY_BLOB, &blob);
+		return true;
+	}
+	return false;
+}
+
+
 const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
 {
 	if (this->IsSecureConn() && this->clsData->curl)

@@ -103,6 +103,7 @@
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRHIDDeviceForm.h"
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
+#include "SSWR/AVIRead/AVIRHTTPClientCertTestForm.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
 #include "SSWR/AVIRead/AVIRHTTPForwarderForm.h"
@@ -479,7 +480,8 @@ typedef enum
 	MNU_SAML_REQ_DECODE,
 	MNU_HTTP_FORWARDER,
 	MNU_GOOGLE_FCM,
-	MNU_PUSHSERVER
+	MNU_PUSHSERVER,
+	MNU_HTTPCLIENTCERTTEST
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -700,6 +702,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("RESTful Server"), MNU_RESTFUL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("PushServer"), MNU_PUSHSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Load Balance"), MNU_HTTP_LOAD_BALANCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HTTP Client Cert Test"), MNU_HTTPCLIENTCERTTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SAML Test"), MNU_SAMLTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SAML Response Decrypt"), MNU_SAML_RESP_DECRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SAML Request Decode"), MNU_SAML_REQ_DECODE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2755,6 +2758,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRPushServerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRPushServerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_HTTPCLIENTCERTTEST:
+		{
+			SSWR::AVIRead::AVIRHTTPClientCertTestForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPClientCertTestForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_IWEBREQUEST
 #define _SM_NET_WEBSERVER_IWEBREQUEST
+#include "Crypto/Cert/X509Cert.h"
 #include "Data/ArrayList.h"
 #include "Manage/OSInfo.h"
 #include "Net/BrowserInfo.h"
@@ -76,6 +77,7 @@ namespace Net
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;
 			virtual UInt16 GetClientPort() = 0;
 			virtual Bool IsSecure() = 0;
+			virtual Crypto::Cert::X509Cert *GetClientCert() = 0;
 			virtual const UInt8 *GetReqData(UOSInt *dataSize) = 0;
 
 			Text::CString GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }

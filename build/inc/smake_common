@@ -3669,6 +3669,8 @@ SSWR/AVIRead/AVIRHQMPForm.h: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 @AVIRHQMPForm.o
 SSWR/AVIRead/AVIRHQMPPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
 @AVIRHQMPPlaylistForm.o
+SSWR/AVIRead/AVIRHTTPClientCertTestForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientCertTestForm.cpp
+@AVIRHTTPClientCertTestForm.o
 SSWR/AVIRead/AVIRHTTPClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 @AVIRHTTPClientForm.o
 SSWR/AVIRead/AVIRHTTPDownloaderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
@@ -5594,6 +5596,7 @@ AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
+AVIRHTTPClientCertTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientCertTestForm.cpp
 AVIRHTTPClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 AVIRHTTPDownloaderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
 AVIRHTTPForwarderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPForwarderForm.cpp

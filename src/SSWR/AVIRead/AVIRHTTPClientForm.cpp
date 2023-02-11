@@ -9,6 +9,7 @@
 #include "Net/MIME.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
+#include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -473,6 +474,24 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey);
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+	{
+		SDEL_CLASS(me->cliCert);
+		SDEL_CLASS(me->cliKey);
+		me->cliCert = frm.GetCert();
+		me->cliKey = frm.GetKey();
+		Text::StringBuilderUTF8 sb;
+		me->cliCert->ToShortString(&sb);
+		sb.AppendC(UTF8STRC(", "));
+		me->cliKey->ToShortString(&sb);
+		me->lblClientCert->SetText(sb.ToCString());
+	}
+}
+
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
@@ -518,6 +537,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
+			if (me->cliCert != 0 && me->cliKey != 0)
+			{
+				cli->SetClientCert(me->cliCert, me->cliKey);
+			}
 			if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
 				IO::MemoryStream *mstm;
@@ -1163,6 +1186,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->respChanged = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
+	this->cliCert = 0;
+	this->cliKey = 0;
 	this->reqURL = 0;
 	this->reqBody = 0;
 	this->reqBodyLen = 0;
@@ -1183,7 +1208,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->tpRequest = this->tcMain->AddTabPage(CSTR("Request"));
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
-	this->pnlRequest->SetRect(0, 0, 100, 292, false);
+	this->pnlRequest->SetRect(0, 0, 100, 316, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, CSTR("URL")));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
@@ -1210,48 +1235,53 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
 	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent->ToCString()));
 	this->lblUserAgent->SetRect(104, 52, 400, 23, false);
+	NEW_CLASS(this->btnClientCert, UI::GUIButton(ui, this->pnlRequest, CSTR("Client Cert")));
+	this->btnClientCert->SetRect(4, 76, 75, 23, false);
+	this->btnClientCert->HandleButtonClick(OnClientCertClicked, this);
+	NEW_CLASS(this->lblClientCert, UI::GUILabel(ui, this->pnlRequest, this->userAgent->ToCString()));
+	this->lblClientCert->SetRect(104, 76, 400, 23, false);
 	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlRequest, CSTR("UserName")));
-	this->lblUserName->SetRect(4, 76, 100, 23, false);
+	this->lblUserName->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
-	this->txtUserName->SetRect(104, 76, 150, 23, false);
+	this->txtUserName->SetRect(104, 100, 150, 23, false);
 	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, CSTR("Password")));
-	this->lblPassword->SetRect(4, 100, 100, 23, false);
+	this->lblPassword->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetPasswordChar('*');
-	this->txtPassword->SetRect(104, 100, 150, 23, false);
+	this->txtPassword->SetRect(104, 124, 150, 23, false);
 	NEW_CLASS(this->lblFileUpload, UI::GUILabel(ui, this->pnlRequest, CSTR("File Upload")));
-	this->lblFileUpload->SetRect(4, 124, 100, 23, false);
+	this->lblFileUpload->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtFileFormName, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
-	this->txtFileFormName->SetRect(104, 124, 150, 23, false);
+	this->txtFileFormName->SetRect(104, 148, 150, 23, false);
 	NEW_CLASS(this->btnFileSelect, UI::GUIButton(ui, this->pnlRequest, CSTR("Select")));
-	this->btnFileSelect->SetRect(254, 124, 75, 23, false);
+	this->btnFileSelect->SetRect(254, 148, 75, 23, false);
 	this->btnFileSelect->HandleButtonClick(OnFileSelectClicked, this);
 	NEW_CLASS(this->btnFileClear, UI::GUIButton(ui, this->pnlRequest, CSTR("Clear")));
-	this->btnFileClear->SetRect(334, 124, 75, 23, false);
+	this->btnFileClear->SetRect(334, 148, 75, 23, false);
 	this->btnFileClear->HandleButtonClick(OnFileClearClicked, this);
 	NEW_CLASS(this->lblFileStatus, UI::GUILabel(ui, this->pnlRequest, CSTR("No files selected")));
-	this->lblFileStatus->SetRect(414, 124, 200, 23, false);
+	this->lblFileStatus->SetRect(414, 148, 200, 23, false);
 	NEW_CLASS(this->lblDataStr, UI::GUILabel(ui, this->pnlRequest, CSTR("Data String")));
-	this->lblDataStr->SetRect(4, 148, 100, 23, false);
+	this->lblDataStr->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtDataStr, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
-	this->txtDataStr->SetRect(104, 148, 400, 23, false);
+	this->txtDataStr->SetRect(104, 172, 400, 23, false);
 	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, CSTR("Parse")));
-	this->btnDataStr->SetRect(504, 148, 75, 23, false);
+	this->btnDataStr->SetRect(504, 172, 75, 23, false);
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
 	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, CSTR("Post Format")));
-	this->lblPostFormat->SetRect(4, 172, 100, 23, false);
+	this->lblPostFormat->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->cboPostFormat, UI::GUIComboBox(ui, this->pnlRequest, false));
-	this->cboPostFormat->SetRect(104, 172, 150, 23, false);
+	this->cboPostFormat->SetRect(104, 196, 150, 23, false);
 	this->cboPostFormat->AddItem(CSTR("application/x-www-form-urlencoded"), 0);
 	this->cboPostFormat->AddItem(CSTR("application/json"), 0);
 	this->cboPostFormat->AddItem(CSTR("RAW"), 0);
 	this->cboPostFormat->SetSelectedIndex(0);
 	NEW_CLASS(this->lblHeaders, UI::GUILabel(ui, this->pnlRequest, CSTR("Headers")));
-	this->lblHeaders->SetRect(4, 196, 100, 23, false);
+	this->lblHeaders->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
-	this->txtHeaders->SetRect(104, 196, 300, 71, false);
+	this->txtHeaders->SetRect(104, 220, 300, 71, false);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
-	this->btnRequest->SetRect(104, 268, 75, 23, false);
+	this->btnRequest->SetRect(104, 292, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1382,6 +1412,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_CLASS(this->respData);
 	SDEL_STRING(this->respCertText);
 	SDEL_CLASS(this->respCert);
+	SDEL_CLASS(this->cliCert);
+	SDEL_CLASS(this->cliKey);
 	this->userAgent->Release();
 	SDEL_CLASS(this->ssl);
 }

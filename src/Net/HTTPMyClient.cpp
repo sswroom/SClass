@@ -1193,6 +1193,13 @@ Bool Net::HTTPMyClient::IsSecureConn()
 	return this->cli->IsSSL();
 }
 
+Bool Net::HTTPMyClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
+{
+	if (this->ssl == 0)
+		return false;
+	return this->ssl->SetClientCertASN1(cert, key);
+}
+
 const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPMyClient::GetServerCerts()
 {
 	if (this->cli && this->cli->IsSSL())

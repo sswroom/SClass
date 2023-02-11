@@ -33,8 +33,11 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 	this->clsData->remoteCerts = 0;
 	this->clsData->shutdown = false;
 
-//	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
 	STACK_OF(X509) *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
+	if (certs == 0 || sk_X509_num(certs) == 0)
+	{
+		certs = SSL_get0_verified_chain(this->clsData->ssl);
+	}
 	if (certs != 0)
 	{
 		Crypto::Cert::OpenSSLCert *cert;
@@ -48,6 +51,16 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 			i++;
 		}
 	}
+/*	else
+	{
+		X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
+		if (cert)
+		{
+			Crypto::Cert::OpenSSLCert *crt;
+			NEW_CLASS(crt, Crypto::Cert::OpenSSLCert(cert));
+			this->clsData->remoteCerts->Add(crt);
+		}
+	}*/
 }
 
 Net::OpenSSLClient::~OpenSSLClient()

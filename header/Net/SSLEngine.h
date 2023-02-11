@@ -51,6 +51,13 @@ namespace Net
 			NewClient
 		};
 
+		enum class ClientCertType
+		{
+			None,
+			Optional,
+			MustExist
+		};
+
 		typedef void (__stdcall *ClientReadyHandler)(Net::TCPClient *cli, void *userObj);
 
 		struct ThreadState
@@ -82,6 +89,8 @@ namespace Net
 		
 		virtual Bool IsError() = 0;
 		virtual Bool SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
+		virtual Bool SetRequireClientCert(ClientCertType cliCert) = 0;
+		virtual Bool SetClientCA(Text::CString clientCA) = 0;
 		virtual Bool SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1) = 0;
 		virtual void SetSkipCertCheck(Bool skipCertCheck) = 0;
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;

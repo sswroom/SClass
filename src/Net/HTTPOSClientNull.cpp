@@ -94,6 +94,11 @@ Bool Net::HTTPOSClient::IsSecureConn()
 	return false;
 }
 
+Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
+{
+	return false;
+}
+
 const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
 {
 	return 0;

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Net/SSLClient.h"
 #include "Net/WebServer/WebRequest.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -306,12 +307,12 @@ Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, U
 	return {outStr, dataLen};
 }
 
-Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Net::TCPClient *cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
 	this->requestURI = Text::String::New(requestURI);
 	this->reqMeth = reqMeth;
 	this->reqProto = reqProto;
-	this->secureConn = secureConn;
+	this->cli = cli;
 	this->cliAddr = *cliAddr;
 	this->cliPort = cliPort;
 	this->svrPort = svrPort;
@@ -321,6 +322,7 @@ Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::R
 	this->reqData = 0;
 	this->reqDataSize = 0;
 	this->chunkMStm = 0;
+	this->remoteCert = 0;
 }
 
 Net::WebServer::WebRequest::~WebRequest()
@@ -357,6 +359,7 @@ Net::WebServer::WebRequest::~WebRequest()
 		this->reqData = 0;
 	}
 	SDEL_CLASS(this->chunkMStm);
+	SDEL_CLASS(this->remoteCert);
 }
 
 void Net::WebServer::WebRequest::AddHeader(Text::CString name, Text::CString value)
@@ -581,7 +584,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF8 *sb)
 	case RequestProtocol::HTTP1_0:
 	case RequestProtocol::HTTP1_1:
 	case RequestProtocol::HTTP2_0:
-		if (this->secureConn)
+		if (this->cli->IsSSL())
 		{
 			sb->AppendC(UTF8STRC("https://"));
 			defPort=443;
@@ -621,7 +624,27 @@ UInt16 Net::WebServer::WebRequest::GetClientPort()
 
 Bool Net::WebServer::WebRequest::IsSecure()
 {
-	return this->secureConn;
+	return this->cli->IsSSL();
+}
+
+Crypto::Cert::X509Cert *Net::WebServer::WebRequest::GetClientCert()
+{
+	if (this->remoteCert)
+	{
+		return this->remoteCert;
+	}
+	if (!this->cli->IsSSL())
+	{
+		return 0;
+	}
+	Net::SSLClient *cli = (Net::SSLClient*)this->cli;
+	Crypto::Cert::Certificate *cert = cli->GetRemoteCert();
+	if (cert)
+	{
+		this->remoteCert = cert->CreateX509Cert();
+		return this->remoteCert;
+	}
+	return 0;
 }
 
 const UInt8 *Net::WebServer::WebRequest::GetReqData(UOSInt *dataSize)

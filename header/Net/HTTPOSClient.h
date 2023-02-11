@@ -47,6 +47,7 @@ namespace Net
 		virtual void SetTimeout(Int32 ms);
 
 		virtual Bool IsSecureConn();
+		virtual Bool SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
 		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts();
 	};
 }

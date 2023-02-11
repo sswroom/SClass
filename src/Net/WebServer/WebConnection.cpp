@@ -154,7 +154,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("RTSP/1.0")))
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto = Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0;
-							Bool secureConn = false;
 							this->respHeaders.ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -172,7 +171,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -190,7 +189,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						else
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto;
-							Bool secureConn = this->cli->IsSSL();
 							if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/2")))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;
@@ -233,7 +231,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{

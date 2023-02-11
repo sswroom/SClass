@@ -345,6 +345,53 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cr
 	return false;
 }
 
+static int OpenSSLEngine_verify_cb(int preverify_ok, X509_STORE_CTX *x509_ctx)
+{
+	return 1;
+}
+
+Bool Net::OpenSSLEngine::SetRequireClientCert(ClientCertType cliCert)
+{
+	if (this->clsData->ctx == 0)
+	{
+		return false;
+	}
+	int mode;
+	switch (cliCert)
+	{
+	case ClientCertType::Optional:
+		mode = SSL_VERIFY_PEER;
+		break;
+	case ClientCertType::MustExist:
+		mode = SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT;
+		break;
+	default:
+		mode = SSL_VERIFY_NONE;
+		break;
+	}
+	SSL_CTX_set_verify(this->clsData->ctx, mode, OpenSSLEngine_verify_cb);
+	return true;
+}
+
+Bool Net::OpenSSLEngine::SetClientCA(Text::CString clientCA)
+{
+	if (this->clsData->ctx == 0)
+	{
+		return false;
+	}
+	STACK_OF(X509_NAME) *names = sk_X509_NAME_new_null();
+	X509_NAME *name = X509_NAME_new();
+	if (!X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, clientCA.v, clientCA.leng, -1, 0))
+	{
+		X509_NAME_free(name);
+		sk_X509_NAME_free(names);
+		return false;
+	}
+	sk_X509_NAME_push(names, name);
+	SSL_CTX_set_client_CA_list(this->clsData->ctx, names);
+	return true;
+}
+
 Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	SDEL_CLASS(this->clsData->cliCert);

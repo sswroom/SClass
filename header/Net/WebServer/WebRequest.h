@@ -4,6 +4,7 @@
 #include "Data/FastStringMap.h"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"
+#include "Net/TCPClient.h"
 #include "Net/WebServer/IWebRequest.h"
 
 namespace Net
@@ -30,7 +31,7 @@ namespace Net
 			UInt16 cliPort;
 			UInt16 svrPort;
 			RequestProtocol reqProto;
-			Bool secureConn;
+			Net::TCPClient *cli;
 			Data::FastStringMap<Text::String *> *formMap;
 			Data::ArrayList<FormFileInfo*> *formFileList;
 
@@ -38,6 +39,7 @@ namespace Net
 			UOSInt reqDataSize;
 			UOSInt reqCurrSize;
 			IO::MemoryStream *chunkMStm;
+			Crypto::Cert::X509Cert *remoteCert;
 
 		private:
 			void ParseQuery();
@@ -45,7 +47,7 @@ namespace Net
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			Text::CString ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
-			WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Net::TCPClient *cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeader(Text::CString name, Text::CString value);
@@ -70,6 +72,7 @@ namespace Net
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr();
 			virtual UInt16 GetClientPort();
 			virtual Bool IsSecure();
+			virtual Crypto::Cert::X509Cert *GetClientCert();
 			virtual const UInt8 *GetReqData(UOSInt *dataSize);
 
 			Bool HasData();
