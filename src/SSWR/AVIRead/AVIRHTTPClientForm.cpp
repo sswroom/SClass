@@ -1238,7 +1238,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnClientCert, UI::GUIButton(ui, this->pnlRequest, CSTR("Client Cert")));
 	this->btnClientCert->SetRect(4, 76, 75, 23, false);
 	this->btnClientCert->HandleButtonClick(OnClientCertClicked, this);
-	NEW_CLASS(this->lblClientCert, UI::GUILabel(ui, this->pnlRequest, this->userAgent->ToCString()));
+	NEW_CLASS(this->lblClientCert, UI::GUILabel(ui, this->pnlRequest, CSTR("")));
 	this->lblClientCert->SetRect(104, 76, 400, 23, false);
 	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlRequest, CSTR("UserName")));
 	this->lblUserName->SetRect(4, 100, 100, 23, false);

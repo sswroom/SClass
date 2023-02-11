@@ -23,6 +23,8 @@ namespace Net
 		virtual void SetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool IsError();
 		virtual Bool SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *cert);
+		virtual Bool SetRequireClientCert(ClientCertType cliCert);
+		virtual Bool SetClientCA(Text::CString clientCA);
 		virtual Bool SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1);
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Net::SSLClient *Connect(Text::CString hostName, UInt16 port, ErrorType *err);

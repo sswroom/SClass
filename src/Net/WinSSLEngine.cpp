@@ -10,6 +10,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringBuilderW.h"
+#define SCHANNEL_USE_BLACKLISTS
 #include <windows.h>
 #include <ntsecapi.h>
 #define SECURITY_WIN32
@@ -17,10 +18,12 @@
 #include <schnlsp.h>
 #include <bcrypt.h>
 
+
 //#define VERBOSE_SVR
 //#define VERBOSE_CLI
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 #include <stdio.h>
+#include "WinDebug.h"
 #endif
 
 struct Net::WinSSLEngine::ClassData
@@ -34,6 +37,20 @@ struct Net::WinSSLEngine::ClassData
 
 extern void SecBuffer_Set(SecBuffer *buff, UInt32 type, UInt8 *inpBuff, UInt32 leng);
 extern void SecBufferDesc_Set(SecBufferDesc *desc, SecBuffer *buffs, UInt32 nBuffs);
+
+void WinSSLEngine_PrintCERT_CONTEXT(PCCERT_CONTEXT cert)
+{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+	UInt8 tmpBuff[1024];
+	DWORD retSize = sizeof(tmpBuff);
+	CRYPT_KEY_PROV_INFO *keyProvInfo = (CRYPT_KEY_PROV_INFO*)tmpBuff;
+	if (CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID, keyProvInfo, &retSize))
+	{
+		printf("Get CRYPT_KEY_PROV_INFO, size = %d\r\n", retSize);
+		printf("Key Container Name = %ls\r\n", keyProvInfo->pwszContainerName);
+	}
+#endif
+}
 
 UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 {
@@ -419,36 +436,89 @@ Bool WinSSLEngine_CryptImportPublicKey(_Out_ HCRYPTKEY* phKey,
 	return (succ != FALSE);
 }
 
-HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, const WChar *containerName)
+BOOL WinSSLEngine_CryptAcquireContextW(HCRYPTPROV* phProv, LPCWSTR szContainer, LPCWSTR szProvider, DWORD dwProvType, DWORD dwFlags)
+{
+	if (CryptAcquireContextW(phProv, szContainer, szProvider, dwProvType, dwFlags))
+	{
+		return TRUE;
+	}
+	if (GetLastError() == NTE_BAD_KEYSET)
+	{
+		return CryptAcquireContextW(phProv, szContainer, szProvider, dwProvType, dwFlags | CRYPT_NEWKEYSET);
+	}
+	return FALSE;
+}
+
+HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, const WChar *containerName, CRYPT_KEY_PROV_INFO *keyProvInfo)
 {
 	HCRYPTPROV hProv;
+	DWORD flags;
+	if (containerName == 0)
+	{
+		flags = CRYPT_VERIFYCONTEXT;
+	}
+	else
+	{
+		flags = 0;
+	}
+
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA || keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-/*		if (CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
+		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, flags))
 		{
-			return hProv;
-		}*/
-		if (CryptAcquireContextW(&hProv, containerName, MS_ENH_RSA_AES_PROV_W, PROV_RSA_AES, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
-		{
-			return hProv;
-		}
-		if (CryptAcquireContextW(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
-		{
+			if (keyProvInfo)
+			{
+				keyProvInfo->pwszContainerName = (LPWSTR)containerName;
+				keyProvInfo->pwszProvName = (LPWSTR)MS_ENHANCED_PROV;
+				keyProvInfo->dwProvType = PROV_RSA_FULL;
+				keyProvInfo->dwFlags = flags;
+			}
 			return hProv;
 		}
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: CryptAcquireContext RSA failed\r\n");
+		printf("SSL: CryptAcquireContext RSA (MS_ENHANCED_PROV) failed: 0x%x\r\n", GetLastError());
+#endif
+		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, MS_ENH_RSA_AES_PROV_W, PROV_RSA_AES, flags))
+		{
+			if (keyProvInfo)
+			{
+				keyProvInfo->pwszContainerName = (LPWSTR)containerName;
+				keyProvInfo->pwszProvName = (LPWSTR)MS_ENH_RSA_AES_PROV_W;
+				keyProvInfo->dwProvType = PROV_RSA_AES;
+				keyProvInfo->dwFlags = flags;
+			}
+			return hProv;
+		}
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: CryptAcquireContext RSA (AES_PROV) failed: 0x%x\r\n", GetLastError());
+#endif
+		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, NULL, PROV_RSA_FULL, flags))
+		{
+			if (keyProvInfo)
+			{
+				keyProvInfo->pwszContainerName = (LPWSTR)containerName;
+				keyProvInfo->pwszProvName = NULL;
+				keyProvInfo->dwProvType = PROV_RSA_FULL;
+				keyProvInfo->dwFlags = flags;
+			}
+			return hProv;
+		}
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+		printf("SSL: CryptAcquireContext RSA failed: 0x%x\r\n", GetLastError());
 #endif
 		return 0;
 	}
 	else if (keyType == Crypto::Cert::X509File::KeyType::ECDSA || keyType == Crypto::Cert::X509File::KeyType::ECPublic)
 	{
-		if (CryptAcquireContextW(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))// CRYPT_VERIFYCONTEXT))
+		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, NULL, PROV_RSA_FULL, flags))
 		{
-			return hProv;
-		}
-		if (CryptAcquireContextW(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
-		{
+			if (keyProvInfo)
+			{
+				keyProvInfo->pwszContainerName = (LPWSTR)containerName;
+				keyProvInfo->pwszProvName = NULL;
+				keyProvInfo->dwProvType = PROV_RSA_FULL;
+				keyProvInfo->dwFlags = flags;
+			}
 			return hProv;
 		}
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
@@ -499,13 +569,13 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, Crypto::Cert::X509Key *key, B
 }
 
 
-HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, Crypto::Cert::X509PrivKey *key)
+HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, Crypto::Cert::X509PrivKey *key, Bool signature)
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
 	{
-		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, key->GetASN1Buff(), (ULONG)key->GetASN1BuffSize(), false))
+		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, key->GetASN1Buff(), (ULONG)key->GetASN1BuffSize(), signature))
 		{
 			return hKey;
 		}
@@ -514,19 +584,19 @@ HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, Crypto::Cert::X509PrivKey
 	return 0;
 }
 
-Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert::X509File *keyASN1, const WChar *containerName)
+Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert::X509File *keyASN1, const WChar *containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo)
 {
 	HCRYPTPROV hProv;
 	HCRYPTKEY hKey;
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)keyASN1;
-		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName);
+		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
 			return false;
 		}
-		hKey = WinSSLEngine_ImportKey(hProv, key, true, true);
+		hKey = WinSSLEngine_ImportKey(hProv, key, true, signature);
 		if (hKey == 0)
 		{
 			CryptReleaseContext(hProv, 0);
@@ -536,12 +606,12 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, Crypto::Cert
 	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
 		Crypto::Cert::X509PrivKey *key = (Crypto::Cert::X509PrivKey*)keyASN1;
-		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName);
+		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
 			return false;
 		}
-		hKey = WinSSLEngine_ImportPrivKey(hProv, key);
+		hKey = WinSSLEngine_ImportPrivKey(hProv, key, signature);
 		if (hKey == 0)
 		{
 			CryptReleaseContext(hProv, 0);
@@ -708,14 +778,22 @@ Bool Net::WinSSLEngine::InitClient(Method method, void *cred)
 
 Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 {
+#if 0//defined(SCH_CREDENTIALS_VERSION)
+	SCH_CREDENTIALS credData;
+	MemClear(&credData, sizeof(credData));
+	credData.dwVersion = SCH_CREDENTIALS_VERSION;
+	credData.cCreds = 1;
+	credData.paCred = (PCCERT_CONTEXT*)&cred;
+#else
 	SCHANNEL_CRED credData;
-	SECURITY_STATUS status;
-	TimeStamp lifetime;
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCHANNEL_CRED_VERSION;
-	credData.grbitEnabledProtocols = WinSSLEngine_GetProtocols(method, true);
+	credData.grbitEnabledProtocols = 0;// WinSSLEngine_GetProtocols(method, true);
 	credData.paCred = (PCCERT_CONTEXT*)&cred;
 	credData.cCreds = 1;
+#endif
+	SECURITY_STATUS status;
+	TimeStamp lifetime;
 
 	if (caCred)
 	{
@@ -737,6 +815,9 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 	{
 
 	}
+#if defined(VERBOSE_SVR)
+	printf("WinSSLEngine: AcquireCredentialsHandleW error: 0x%x (%s)\r\n", status, IO::WindowsError::GetString(status).v);
+#endif
 	return status == 0;
 }
 
@@ -1209,31 +1290,34 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cry
 	const WChar *containerName = L"ServerCert";
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
-	if (!WinSSLEngine_InitKey(&hProv, &hKey, keyASN1, containerName))
+	CRYPT_KEY_PROV_INFO keyProvInfo;
+	MemClear(&keyProvInfo, sizeof(keyProvInfo));
+	if (!WinSSLEngine_InitKey(&hProv, &hKey, keyASN1, containerName, false, &keyProvInfo))
 	{
 		return false;
 	}
-/*	IO::DebugWriter debug;
-	Text::StringBuilderUTF16 sbDebug;
-	WinSSLEngine_HCRYPTPROV_ToString(hProv, &sbDebug);
-	debug.WriteLineW(sbDebug.ToString());*/
 
 	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
-	CRYPT_KEY_PROV_INFO keyProvInfo;
-	MemClear(&keyProvInfo, sizeof(keyProvInfo));
-	keyProvInfo.pwszContainerName = (WChar*)containerName;
-	keyProvInfo.pwszProvName = NULL;
-	keyProvInfo.dwProvType = PROV_RSA_FULL;
-	keyProvInfo.dwFlags = CRYPT_MACHINE_KEYSET;
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
-	CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
+	if (!CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo))
+	{
+#if defined(VERBOSE_SVR)
+		printf("WinSSLEngine: CertSetCertificateContextProperty error: 0x%x\r\n", GetLastError());
+#endif
+	}
 
 	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = 0;
 	BOOL fCallerFreeProvOrNCryptKey = FALSE;
 	DWORD dwKeySpec;
-	CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
+	if (!CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey))
+	{
+#if defined(VERBOSE_SVR)
+		printf("WinSSLEngine: CryptAcquireCertificatePrivateKey error: 0x%x\r\n", GetLastError());
+#endif
+	}
+	WinSSLEngine_PrintCERT_CONTEXT(serverCert);
 
 	PCCERT_CONTEXT caCertCred = 0;
 	if (caCert)
@@ -1262,6 +1346,16 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cry
 	return true;
 }
 
+Bool Net::WinSSLEngine::SetRequireClientCert(ClientCertType cliCert)
+{
+	return false;
+}
+
+Bool Net::WinSSLEngine::SetClientCA(Text::CString clientCA)
+{
+	return false;
+}
+
 Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
@@ -1271,7 +1365,9 @@ Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Cryp
 	const WChar *containerName = L"ClientCert";
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
-	if (!WinSSLEngine_InitKey(&hProv, &hKey, keyASN1, containerName))
+	CRYPT_KEY_PROV_INFO keyProvInfo;
+	MemClear(&keyProvInfo, sizeof(keyProvInfo));
+	if (!WinSSLEngine_InitKey(&hProv, &hKey, keyASN1, containerName, false, &keyProvInfo))
 	{
 		return false;
 	}
@@ -1282,12 +1378,6 @@ Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Cryp
 	debug.WriteLineW(sbDebug.ToString());*/
 
 	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
-	CRYPT_KEY_PROV_INFO keyProvInfo;
-	MemClear(&keyProvInfo, sizeof(keyProvInfo));
-	keyProvInfo.pwszContainerName = (WChar*)containerName;
-	keyProvInfo.pwszProvName = NULL;
-	keyProvInfo.dwProvType = PROV_RSA_FULL;
-	keyProvInfo.dwFlags = CRYPT_MACHINE_KEYSET;
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
@@ -1408,12 +1498,9 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
-	if (!CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	if (!WinSSLEngine_CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
 	{
-		if (!CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
-		{
-			return false;
-		}
+		return false;
 	}
 	if (!CryptGenKey(hProv, AT_SIGNATURE, 0x08000000 | CRYPT_EXPORTABLE, &hKey))
 	{
@@ -1527,12 +1614,9 @@ Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
 	DWORD privKeySize = 2048;
 	UInt8 certBuff[4096];
 	DWORD certBuffSize = 4096;
-	if (!CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	if (!WinSSLEngine_CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
 	{
-		if (!CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
-		{
-			return 0;
-		}
+		return 0;
 	}
 	if (!CryptGenKey(hProv, AT_SIGNATURE, 0x08000000 | CRYPT_EXPORTABLE, &hKey))
 	{
@@ -1577,7 +1661,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		{
 			return false;
 		}
-		HCRYPTPROV hProv = WinSSLEngine_CreateProv(keyType, 0);
+		HCRYPTPROV hProv = WinSSLEngine_CreateProv(keyType, 0, 0);
 		if (hProv == 0)
 		{
 			return false;
@@ -1699,7 +1783,7 @@ Bool Net::WinSSLEngine::SignatureVerify(Crypto::Cert::X509Key *key, Crypto::Hash
 	{
 		return false;
 	}
-	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
+	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
 	{
 		return false;
@@ -1779,7 +1863,7 @@ UOSInt Net::WinSSLEngine::Encrypt(Crypto::Cert::X509Key *key, UInt8 *encData, co
 #endif
 		return 0;
 	}
-	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
+	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
 	{
 		return false;
@@ -1842,7 +1926,7 @@ UOSInt Net::WinSSLEngine::Decrypt(Crypto::Cert::X509Key *key, UInt8 *decData, co
 	{
 		return false;
 	}
-	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0);
+	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
 	{
 		return false;

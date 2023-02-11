@@ -4,6 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
+#include "IO/WindowsError.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
 #include "Net/SocketFactory.h"
@@ -20,7 +21,8 @@
 #include <winhttp.h>
 #include <stdio.h>
 
-#define VERBOSE 1
+//#define VERBOSE
+//#include "WinDebug.h"
 
 #define BUFFSIZE 2048
 
@@ -31,6 +33,8 @@ struct Net::HTTPOSClient::ClassData
 	HINTERNET hRequest;
 	Bool https;
 	Data::ArrayList<Crypto::Cert::Certificate*> *certs;
+	Crypto::Cert::X509Cert* cliCert;
+	Crypto::Cert::X509File* cliKey;
 };
 
 void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, DWORD dwInternetStatus, LPVOID lpvStatusInformation, DWORD dwStatusInformationLength)
@@ -86,6 +90,8 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	data->hRequest = 0;
 	data->https = false;
 	data->certs = 0;
+	data->cliCert = 0;
+	data->cliKey = 0;
 	this->cliHost = 0;
 	this->writing = false;
 	this->dataBuff = 0;
@@ -142,6 +148,8 @@ Net::HTTPOSClient::~HTTPOSClient()
 		}
 		DEL_CLASS(data->certs);
 	}
+	SDEL_CLASS(data->cliCert);
+	SDEL_CLASS(data->cliKey);
 	MemFree(data);
 	DEL_CLASS(this->reqMstm);
 }
@@ -457,6 +465,13 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 
 	if (data->hRequest)
 	{
+		if (https)
+		{
+			if (this->clsData->cliCert && this->clsData->cliKey)
+			{
+				this->SetClientCert(this->clsData->cliCert, this->clsData->cliKey);
+			}
+		}
 		WinHttpSetStatusCallback(data->hRequest, HTTPOSClient_StatusCb, WINHTTP_CALLBACK_FLAG_SECURE_FAILURE, 0);
 		this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 		this->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
@@ -630,6 +645,59 @@ void Net::HTTPOSClient::SetTimeout(Int32 ms)
 Bool Net::HTTPOSClient::IsSecureConn()
 {
 	return this->clsData->https;
+}
+
+Bool WinSSLEngine_InitKey(HCRYPTPROV* hProvOut, HCRYPTKEY* hKeyOut, Crypto::Cert::X509File* keyASN1, const WChar* containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo);
+
+Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert* cert, Crypto::Cert::X509File* key)
+{
+	if (cert == 0 || key == 0)
+	{
+		return false;
+	}
+	if (this->clsData->hRequest)
+	{
+		const WChar* containerName = L"ServerCert";
+		HCRYPTKEY hKey;
+		HCRYPTPROV hProv;
+		CRYPT_KEY_PROV_INFO keyProvInfo;
+		MemClear(&keyProvInfo, sizeof(keyProvInfo));
+		if (!WinSSLEngine_InitKey(&hProv, &hKey, key, containerName, false, &keyProvInfo))
+		{
+			return false;
+		}
+
+		PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, cert->GetASN1Buff(), (DWORD)cert->GetASN1BuffSize());
+		keyProvInfo.cProvParam = 0;
+		keyProvInfo.rgProvParam = NULL;
+		keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
+		CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo);
+
+		HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = 0;
+		BOOL fCallerFreeProvOrNCryptKey = FALSE;
+		DWORD dwKeySpec;
+		CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
+		DWORD certSize = sizeof(CERT_CONTEXT);
+		Bool succ = (WinHttpSetOption(this->clsData->hRequest, WINHTTP_OPTION_CLIENT_CERT_CONTEXT, (LPVOID)serverCert, certSize) == TRUE);
+#if defined(VERBOSE)
+		if (!succ)
+		{
+			printf("HTTPOSClient: WinHttpSetOption CLIENT_CERT_CONTEXT failed: 0x%x (%s)\r\n", GetLastError(), IO::WindowsError::GetString(GetLastError()).v);
+		}
+#endif
+		CertFreeCertificateContext(serverCert);
+		CryptDestroyKey(hKey);
+		CryptReleaseContext(hProv, 0);
+		return succ;
+	}
+	else
+	{
+		SDEL_CLASS(this->clsData->cliCert);
+		SDEL_CLASS(this->clsData->cliKey);
+		this->clsData->cliCert = (Crypto::Cert::X509Cert*)cert->Clone();
+		this->clsData->cliKey = (Crypto::Cert::X509File*)key->Clone();
+		return true;
+	}
 }
 
 const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
