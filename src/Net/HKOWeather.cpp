@@ -3,6 +3,7 @@
 #include "IO/MemoryReadingStream.h"
 #include "Net/HKOWeather.h"
 #include "Net/HTTPClient.h"
+#include "Net/HTTPJSONReader.h"
 #include "Net/RSS.h"
 #include "Net/UserAgentDB.h"
 #include "IO/MemoryStream.h"
@@ -166,6 +167,92 @@ Bool Net::HKOWeather::GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine
 	return succ;
 }
 
+Bool Net::HKOWeather::GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast)
+{
+	Text::CString url;
+	switch (lang)
+	{
+	case Language::TC:
+		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc");
+		break;
+	case Language::SC:
+		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=sc");
+		break;
+	case Language::En:
+	default:
+		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en");
+		break;
+	}
+	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, url);
+	if (json)
+	{
+		weatherForecast->seaTemp = json->GetValueAsInt32(CSTR("seaTemp.value"));
+		Text::String *sUpdateTime = json->GetValueString(CSTR("updateTime"));
+		Text::String *sSeaTempTime = json->GetValueString(CSTR("seaTemp.recordTime"));
+		weatherForecast->generalSituation = json->GetValueNewString(CSTR("generalSituation"));
+		weatherForecast->seaTempPlace = json->GetValueNewString(CSTR("seaTemp.place"));
+		Text::JSONBase *weatherForecastBase = json->GetValue(CSTR("weatherForecast"));
+		if (sUpdateTime == 0 || sSeaTempTime == 0 || weatherForecast->generalSituation == 0 || weatherForecast->seaTempPlace == 0 || weatherForecastBase == 0)
+		{
+			SDEL_STRING(weatherForecast->generalSituation);
+			SDEL_STRING(weatherForecast->seaTempPlace);
+			json->EndUse();
+			return false;
+		}
+		weatherForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		weatherForecast->seaTempTime = Data::Timestamp::FromStr(sSeaTempTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		Text::JSONArray *weatherForecastArr = (Text::JSONArray*)weatherForecastBase;
+		UOSInt i = 0;
+		UOSInt j = weatherForecastArr->GetArrayLength();
+		while (i < j)
+		{
+			Text::JSONBase *weatherForecastItem = weatherForecastArr->GetArrayValue(i);
+			Text::String *sDate = weatherForecastItem->GetValueString(CSTR("forecastDate"));
+			Text::String *sWeekday = weatherForecastItem->GetValueString(CSTR("week"));
+			Text::String *sWind = weatherForecastItem->GetValueString(CSTR("forecastWind"));
+			Text::String *sWeather = weatherForecastItem->GetValueString(CSTR("forecastWeather"));
+			Text::String *sPSR = weatherForecastItem->GetValueString(CSTR("PSR"));
+			if (sDate != 0 && sWeekday != 0 && sWind != 0 && sWeather != 0 && sPSR != 0 && sDate->leng == 8)
+			{
+				DayForecast *forecast = MemAlloc(DayForecast, 1);
+				UInt32 dateVal = sDate->ToUInt32();
+				forecast->date.year = (UInt16)(dateVal / 10000);
+				forecast->date.month = (UInt8)((dateVal / 100) % 100);
+				forecast->date.day = (UInt8)(dateVal % 100);
+				forecast->weekday = Data::DateTimeUtil::WeekdayParse(sWeekday->ToCString());
+				forecast->wind = sWind->Clone();
+				forecast->weather = sWeather->Clone();
+				forecast->maxTemp = weatherForecastItem->GetValueAsInt32(CSTR("forecastMaxtemp.value"));
+				forecast->minTemp = weatherForecastItem->GetValueAsInt32(CSTR("forecastMintemp.value"));
+				forecast->maxRH = weatherForecastItem->GetValueAsInt32(CSTR("forecastMaxrh.value"));
+				forecast->minRH = weatherForecastItem->GetValueAsInt32(CSTR("forecastMinrh.value"));
+				forecast->weatherIcon = (ForecastIcon)weatherForecastItem->GetValueAsInt32(CSTR("ForecastIcon"));
+				forecast->psr = PSRParse(sPSR->ToCString());
+				weatherForecast->forecast.Add(forecast);
+			}
+			i++;
+		}
+		json->EndUse();
+		return true;
+	}
+	return false;
+}
+
+void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
+{
+	SDEL_STRING(weatherForecast->generalSituation);
+	SDEL_STRING(weatherForecast->seaTempPlace);
+	DayForecast *forecast;
+	UOSInt i = weatherForecast->forecast.GetCount();
+	while (i-- > 0)
+	{
+		forecast = weatherForecast->forecast.GetItem(i);
+		SDEL_STRING(forecast->wind);
+		SDEL_STRING(forecast->weather);
+		MemFree(forecast);
+	}
+}
+
 Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
 {
 	this->sockf = sockf;
@@ -197,4 +284,140 @@ void Net::HKOWeather::ItemRemoved(Net::RSSItem *item)
 Net::HKOWeather::WeatherSignal Net::HKOWeather::GetCurrentSignal()
 {
 	return this->currSignal;
+}
+
+Net::HKOWeather::PSR Net::HKOWeather::PSRParse(Text::CString psr)
+{
+	if (psr.Equals(UTF8STRC("Low")))
+	{
+		return PSR::Low;
+	}
+	if (psr.Equals(UTF8STRC("Medium Low")))
+	{
+		return PSR::MediumLow;
+	}
+	if (psr.Equals(UTF8STRC("Medium")))
+	{
+		return PSR::Medium;
+	}
+	if (psr.Equals(UTF8STRC("Medium High")))
+	{
+		return PSR::MediumHigh;
+	}
+	if (psr.Equals(UTF8STRC("High")))
+	{
+		return PSR::High;
+	}
+	static UInt8 chiLow[] = {0xE4, 0xBD, 0x8E};
+	if (psr.Equals(chiLow, 3))
+	{
+		return PSR::Low;
+	}
+	static UInt8 chiMidLow[] = {0xE4, 0xB8, 0xAD, 0xE4, 0xBD, 0x8E};
+	if (psr.Equals(chiMidLow, 6))
+	{
+		return PSR::MediumLow;
+	}
+	static UInt8 chiMid[] = {0xE4, 0xB8, 0xAD};
+	if (psr.Equals(chiMid, 3))
+	{
+		return PSR::Medium;
+	}
+	static UInt8 chiMidHigh[] = {0xE4, 0xB8, 0xAD, 0xE9, 0xAB, 0x98};
+	if (psr.Equals(chiMidHigh, 6))
+	{
+		return PSR::MediumHigh;
+	}
+	static UInt8 chiHigh[] = {0xE9, 0xAB, 0x98};
+	if (psr.Equals(chiHigh, 3))
+	{
+		return PSR::Low;
+	}
+	return PSR::Low;
+}
+
+Text::CString Net::HKOWeather::ForecastIconGetName(ForecastIcon icon)
+{
+	switch (icon)
+	{
+	case ForecastIcon::Sunny:
+		return CSTR("Sunny");
+	case ForecastIcon::SunnyPeriods:
+		return CSTR("Sunny Periods");
+	case ForecastIcon::SunnyIntervals:
+		return CSTR("Sunny Intervals");
+	case ForecastIcon::SunnyPeriodsFewShowers:
+		return CSTR("Sunny Periods with A Few Showers");
+	case ForecastIcon::SunnyIntervalsShowers:
+		return CSTR("Sunny Intervals with Showers");
+	case ForecastIcon::Cloudy:
+		return CSTR("Cloudy");
+	case ForecastIcon::Overcast:
+		return CSTR("Overcast");
+	case ForecastIcon::LightRain:
+		return CSTR("Light Rain");
+	case ForecastIcon::Rain:
+		return CSTR("Rain");
+	case ForecastIcon::HeavyRain:
+		return CSTR("Heavy Rain");
+	case ForecastIcon::Thunderstorms:
+		return CSTR("Thunderstorms");
+	case ForecastIcon::Night_1:
+		return CSTR("Fine ( use only in night-time on 1st of the Lunar Month )");
+	case ForecastIcon::Night_2:
+		return CSTR("Fine ( use only in night-time on 2nd to 6th of the Lunar Month )");
+	case ForecastIcon::Night_3:
+		return CSTR("Fine ( use only in night-time during 7th to 13th of Lunar Month )");
+	case ForecastIcon::Night_4:
+		return CSTR("Fine ( use only in night-time during 14th to 17th of Lunar Month )");
+	case ForecastIcon::Night_5:
+		return CSTR("Fine ( use only in night-time during 18th to 24th of Lunar Month )");
+	case ForecastIcon::Night_6:
+		return CSTR("Fine ( use only in night-time during 25th to 30th of Lunar Month )");
+	case ForecastIcon::NightCloudy:
+		return CSTR("Mainly Cloudy ( use only in night-time )");
+	case ForecastIcon::NightMainlyFine:
+		return CSTR("Mainly Fine ( use only in night-time )");
+	case ForecastIcon::Windy:
+		return CSTR("Windy");
+	case ForecastIcon::Dry:
+		return CSTR("Dry");
+	case ForecastIcon::Humid:
+		return CSTR("Humid");
+	case ForecastIcon::Fog:
+		return CSTR("Fog");
+	case ForecastIcon::Mist:
+		return CSTR("Mist");
+	case ForecastIcon::Haze:
+		return CSTR("Haze");
+	case ForecastIcon::Hot:
+		return CSTR("Hot");
+	case ForecastIcon::Warm:
+		return CSTR("Warm");
+	case ForecastIcon::Cool:
+		return CSTR("Cool");
+	case ForecastIcon::Cold:
+		return CSTR("Cold");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString Net::HKOWeather::PSRGetName(PSR psr)
+{
+	switch (psr)
+	{
+	case PSR::High:
+		return CSTR("High");
+	case PSR::MediumHigh:
+		return CSTR("Medium High");
+	case PSR::Medium:
+		return CSTR("Medium");
+	case PSR::MediumLow:
+		return CSTR("Medium Low");
+	case PSR::Low:
+		return CSTR("Low");
+	default:
+		return CSTR("Unknown");
+	}
 }

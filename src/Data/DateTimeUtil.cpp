@@ -1987,6 +1987,109 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 #endif
 }
 
+Data::DateTimeUtil::Weekday Data::DateTimeUtil::WeekdayParse(Text::CString weekday)
+{
+	if (weekday.StartsWithICase(UTF8STRC("SUN")))
+	{
+		return Weekday::Sunday;
+	}
+	if (weekday.StartsWithICase(UTF8STRC("MON")))
+	{
+		return Weekday::Monday;
+	}
+	if (weekday.StartsWithICase(UTF8STRC("TUE")))
+	{
+		return Weekday::Tuesday;
+	}
+	if (weekday.StartsWithICase(UTF8STRC("WED")))
+	{
+		return Weekday::Wednesday;
+	}
+	if (weekday.StartsWithICase(UTF8STRC("THU")))
+	{
+		return Weekday::Thursday;
+	}
+	if (weekday.StartsWithICase(UTF8STRC("FRI")))
+	{
+		return Weekday::Friday;
+	}
+	if (weekday.StartsWithICase(UTF8STRC("SAT")))
+	{
+		return Weekday::Saturday;
+	}
+	static UInt8 jpSun[] = {0xE6, 0x97, 0xA5, 0x00};
+	if (weekday.StartsWith(jpSun, 3))
+	{
+		return Weekday::Sunday;
+	}
+	static UInt8 jpMon[] = {0xE6, 0x9C, 0x88, 0x00};
+	if (weekday.StartsWith(jpMon, 3))
+	{
+		return Weekday::Monday;
+	}
+	static UInt8 jpTue[] = {0xE7, 0x81, 0xAB, 0x00};
+	if (weekday.StartsWith(jpTue, 3))
+	{
+		return Weekday::Tuesday;
+	}
+	static UInt8 jpWed[] = {0xE6, 0xB0, 0xB4, 0x00};
+	if (weekday.StartsWith(jpWed, 3))
+	{
+		return Weekday::Wednesday;
+	}
+	static UInt8 jpThu[] = {0xE6, 0x9C, 0xA8, 0x00};
+	if (weekday.StartsWith(jpThu, 3))
+	{
+		return Weekday::Thursday;
+	}
+	static UInt8 jpFri[] = {0xE9, 0x87, 0x91, 0x00};
+	if (weekday.StartsWith(jpFri, 3))
+	{
+		return Weekday::Friday;
+	}
+	static UInt8 jpSat[] = {0xE5, 0x9C, 0x9F, 0x00};
+	if (weekday.StartsWith(jpSat, 3))
+	{
+		return Weekday::Saturday;
+	}
+	static UInt8 chiSun[] = {0xE6, 0x97, 0xA5, 0x00};
+	if (weekday.EndsWith(chiSun, 3))
+	{
+		return Weekday::Sunday;
+	}
+	static UInt8 chiMon[] = {0xE4, 0xB8, 0x80, 0x00};
+	if (weekday.EndsWith(chiMon, 3))
+	{
+		return Weekday::Monday;
+	}
+	static UInt8 chiTue[] = {0xE4, 0xBA, 0x8C, 0x00};
+	if (weekday.EndsWith(chiTue, 3))
+	{
+		return Weekday::Tuesday;
+	}
+	static UInt8 chiWed[] = {0xE4, 0xB8, 0x89, 0x00};
+	if (weekday.EndsWith(chiWed, 3))
+	{
+		return Weekday::Wednesday;
+	}
+	static UInt8 chiThu[] = {0xE5, 0x9B, 0x9B, 0x00};
+	if (weekday.EndsWith(chiThu, 3))
+	{
+		return Weekday::Thursday;
+	}
+	static UInt8 chiFri[] = {0xE4, 0xBA, 0x94, 0x00};
+	if (weekday.EndsWith(chiFri, 3))
+	{
+		return Weekday::Friday;
+	}
+	static UInt8 chiSat[] = {0xE5, 0x85, 0xAD, 0x00};
+	if (weekday.EndsWith(chiSat, 3))
+	{
+		return Weekday::Saturday;
+	}
+	return Weekday::Monday;
+}
+
 Text::CString Data::DateTimeUtil::WeekdayGetName(Weekday wd)
 {
 	switch (wd)

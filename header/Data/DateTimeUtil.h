@@ -25,11 +25,15 @@ namespace Data
 			Saturday
 		};
 
-		struct TimeValue
+		struct DateValue
 		{
 			UInt16 year;
 			UInt8 month;
 			UInt8 day;
+		};
+
+		struct TimeValue : public DateValue
+		{
 			UInt8 hour;
 			UInt8 minute;
 			UInt8 second;
@@ -69,6 +73,7 @@ namespace Data
 		static Int64 SYSTEMTIME2Ticks(void *sysTime);
 		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);
 		static Bool SetAsComputerTime(Int64 secs, UInt32 nanosec);
+		static Weekday WeekdayParse(Text::CString weekday);
 		static Text::CString WeekdayGetName(Weekday wd);
 	};
 }

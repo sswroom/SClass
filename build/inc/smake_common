@@ -2917,6 +2917,8 @@ Net/HTTPClient.h: ../../src/Net/HTTPClient.cpp
 @HTTPClient.o
 Net/HTTPData.h: ../../src/Net/HTTPData.cpp
 @HTTPData.o
+Net/HTTPJSONReader.h: ../../src/Net/HTTPJSONReader.cpp
+@HTTPJSONReader.o
 Net/HTTPMyClient.h: ../../src/Net/HTTPMyClient.cpp
 @HTTPMyClient.o
 Net/HTTPProxyClient.h: ../../src/Net/HTTPProxyClient.cpp
@@ -3665,6 +3667,8 @@ SSWR/AVIRead/AVIRHexViewerForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 @AVIRHexViewerForm.o
 SSWR/AVIRead/AVIRHIDDeviceForm.h: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 @AVIRHIDDeviceForm.o
+SSWR/AVIRead/AVIRHKOForecastForm.h: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
+@AVIRHKOForecastForm.o
 SSWR/AVIRead/AVIRHQMPForm.h: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 @AVIRHQMPForm.o
 SSWR/AVIRead/AVIRHQMPPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
@@ -5226,6 +5230,7 @@ HKTrafficImage.o: ../../src/Net/HKTrafficImage.cpp
 HKOWeather.o: ../../src/Net/HKOWeather.cpp
 HTTPClient.o: ../../src/Net/HTTPClient.cpp
 HTTPData.o: ../../src/Net/HTTPData.cpp
+HTTPJSONReader.o: ../../src/Net/HTTPJSONReader.cpp
 HTTPMyClient.o: ../../src/Net/HTTPMyClient.cpp
 HTTPProxyClient.o: ../../src/Net/HTTPProxyClient.cpp
 HTTPProxyTCPClient.o: ../../src/Net/HTTPProxyTCPClient.cpp
@@ -5594,6 +5599,7 @@ AVIRGUIEventForm.o: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
 AVIRHashTestForm.o: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
 AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
+AVIRHKOForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
 AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
 AVIRHTTPClientCertTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientCertTestForm.cpp

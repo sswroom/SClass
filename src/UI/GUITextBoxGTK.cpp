@@ -256,6 +256,14 @@ void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, void *userObj)
 	this->keyDownObjs.Add(userObj);
 }
 
+void UI::GUITextBox::SetWordWrap(Bool wordWrap)
+{
+	if (this->clsData->multiLine)
+	{
+		gtk_text_view_set_wrap_mode((GtkTextView*)this->clsData->widget, wordWrap?GTK_WRAP_WORD:GTK_WRAP_NONE);
+	}
+}
+
 void UI::GUITextBox::SelectAll()
 {
 	if (this->clsData->multiLine)

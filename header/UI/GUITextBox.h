@@ -34,6 +34,7 @@ namespace UI
 
 		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);
 		virtual void HandleKeyDown(UI::KeyEvent hdlr, void *userObj);
+		void SetWordWrap(Bool wordWrap);
 		void SelectAll();
 	};
 };
