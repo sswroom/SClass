@@ -829,14 +829,16 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 		smsMsg->GetMessageTime(&dt);
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 		this->lvSMS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, sms->index);
+		this->lvSMS->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		const UTF16Char *cont = smsMsg->GetContent();
 		if (cont)
 		{
 #if _WCHAR_SIZE == 2
-			this->lvSMS->SetSubItem(k, 2, cont);
+			this->lvSMS->SetSubItem(k, 3, cont);
 #elif _WCHAR_SIZE == 4
 			Text::StrUTF16_UTF32(wbuff, cont);
-			this->lvSMS->SetSubItem(k, 2, wbuff);
+			this->lvSMS->SetSubItem(k, 3, wbuff);
 #endif
 		}
 		DEL_CLASS(smsMsg);
@@ -1178,10 +1180,11 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnSMSSaveAll, UI::GUIButton(ui, this->pnlSMS, CSTR("Save All")));
 	this->btnSMSSaveAll->SetRect(528, 4, 75, 23, false);
 	this->btnSMSSaveAll->HandleButtonClick(OnSMSSaveAllClick, this);
-	NEW_CLASS(this->lvSMS, UI::GUIListView(ui, this->tpSMS, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvSMS, UI::GUIListView(ui, this->tpSMS, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvSMS->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSMS->AddColumn(CSTR("From"), 100);
 	this->lvSMS->AddColumn(CSTR("Time"), 180);
+	this->lvSMS->AddColumn(CSTR("Index"), 50);
 	this->lvSMS->AddColumn(CSTR("Content"), 300);
 	this->lvSMS->SetFullRowSelect(true);
 

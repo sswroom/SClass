@@ -925,8 +925,15 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 		val = this->cmdResults.GetItem(j - 1);
 		if (val->Equals(UTF8STRC("OK")))
 		{
-			j -= 2;
-			i = 1;
+			j -= 1;
+			if (this->cmdResults.GetItem(0)->StartsWith(UTF8STRC("+CMGL: ")))
+			{
+				i = 0;
+			}
+			else
+			{
+				i = 1;
+			}
 			while (i < j)
 			{
 				val = this->cmdResults.GetItem(i);
