@@ -821,10 +821,10 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 	return status == 0;
 }
 
-Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err)
+Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Text::CString hostName, ErrorType* err)
 {
 	CtxtHandle ctxt;
-	const WChar *wptr = Text::StrToWCharNew(hostName.v);
+	const WChar* wptr = Text::StrToWCharNew(hostName.v);
 	UInt32 retFlags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_STREAM;
 	TimeStamp ts;
 	SecBuffer outputBuff[3];
@@ -1251,6 +1251,7 @@ Net::WinSSLEngine::WinSSLEngine(Net::SocketFactory *sockf, Method method) : Net:
 	this->clsData->method = method;
 
 	this->skipCertCheck = false;
+	this->cliCert = ClientCertType::None;
 }
 
 Net::WinSSLEngine::~WinSSLEngine()
@@ -1348,7 +1349,8 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cry
 
 Bool Net::WinSSLEngine::SetRequireClientCert(ClientCertType cliCert)
 {
-	return false;
+	this->cliCert = cliCert;
+	return true;
 }
 
 Bool Net::WinSSLEngine::SetClientCA(Text::CString clientCA)

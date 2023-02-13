@@ -10,6 +10,7 @@ namespace Net
 		struct ClassData;
 		struct ClassData *clsData;
 		Bool skipCertCheck;
+		ClientCertType cliCert;
 
 		void DeinitClient();
 		Bool InitClient(Method method, void *cred);
