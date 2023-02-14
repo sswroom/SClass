@@ -114,6 +114,17 @@ namespace Net
 			Data::ArrayList<DayForecast*> forecast;
 		};
 
+		struct LocalForecast
+		{
+			Text::String *generalSituation;
+			Text::String *tcInfo;
+			Text::String *fireDangerWarning;
+			Text::String *forecastPeriod;
+			Text::String *forecastDesc;
+			Text::String *outlook;
+			Data::Timestamp updateTime;
+		};
+
 		static const Int32 INVALID_READING = -99;
 
 		typedef void (__stdcall *UpdateHandler)(WeatherSignal updatedSignal);
@@ -131,6 +142,8 @@ namespace Net
 		static Bool GetCurrentTempRH(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Int32 *temperature, Int32 *rh);
 		static Bool GetWeatherForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, WeatherForecast *weatherForecast);
 		static void FreeWeatherForecast(WeatherForecast *weatherForecast);
+		static Bool GetLocalForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast);
+		static void FreeLocalForecast(LocalForecast *localForecast);
 
 		HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr);
 		virtual ~HKOWeather();

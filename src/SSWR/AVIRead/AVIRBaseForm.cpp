@@ -103,6 +103,7 @@
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRHIDDeviceForm.h"
 #include "SSWR/AVIRead/AVIRHKOForecastForm.h"
+#include "SSWR/AVIRead/AVIRHKOLocalForecastForm.h"
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "SSWR/AVIRead/AVIRHTTPClientCertTestForm.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
@@ -483,7 +484,8 @@ typedef enum
 	MNU_GOOGLE_FCM,
 	MNU_PUSHSERVER,
 	MNU_HTTPCLIENTCERTTEST,
-	MNU_HKO_FORECAST
+	MNU_HKO_FORECAST,
+	MNU_HKO_LOCAL_FORECAST
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -763,6 +765,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem(CSTR("Google FCM"), MNU_GOOGLE_FCM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3 = mnu2->AddSubMenu(CSTR("HK Observatory"));
 	mnu3->AddItem(CSTR("9-day Weather Forecast"), MNU_HKO_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("Local Weather Forecast"), MNU_HKO_LOCAL_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Wake-On-LAN"), MNU_WOL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Other"));
 	mnu2->AddItem(CSTR("GPSDev Viewer"), MNU_GPSDEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2777,6 +2780,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRHKOForecastForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRHKOForecastForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_HKO_LOCAL_FORECAST:
+		{
+			SSWR::AVIRead::AVIRHKOLocalForecastForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRHKOLocalForecastForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

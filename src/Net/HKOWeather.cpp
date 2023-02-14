@@ -253,6 +253,66 @@ void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
 	}
 }
 
+Bool Net::HKOWeather::GetLocalForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast)
+{
+	Text::CString url;
+	switch (lang)
+	{
+	case Language::TC:
+		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc");
+		break;
+	case Language::SC:
+		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=sc");
+		break;
+	case Language::En:
+	default:
+		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=en");
+		break;
+	}
+	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, url);
+	if (json)
+	{
+		localForecast->generalSituation = json->GetValueString(CSTR("generalSituation"));
+		localForecast->tcInfo = json->GetValueString(CSTR("tcInfo"));
+		localForecast->fireDangerWarning = json->GetValueString(CSTR("fireDangerWarning"));
+		localForecast->forecastPeriod = json->GetValueString(CSTR("forecastPeriod"));
+		localForecast->forecastDesc = json->GetValueString(CSTR("forecastDesc"));
+		localForecast->outlook = json->GetValueString(CSTR("outlook"));
+		Text::String *sUpdateTime = json->GetValueString(CSTR("updateTime"));
+		if (localForecast->generalSituation == 0 ||
+			localForecast->tcInfo == 0 ||
+			localForecast->fireDangerWarning == 0 ||
+			localForecast->forecastPeriod == 0 ||
+			localForecast->forecastDesc == 0 ||
+			localForecast->outlook == 0 ||
+			sUpdateTime == 0)
+		{
+			json->EndUse();
+			return false;
+		}
+		localForecast->generalSituation = localForecast->generalSituation->Clone();
+		localForecast->tcInfo = localForecast->tcInfo->Clone();
+		localForecast->fireDangerWarning = localForecast->fireDangerWarning->Clone();
+		localForecast->forecastPeriod = localForecast->forecastPeriod->Clone();
+		localForecast->forecastDesc = localForecast->forecastDesc->Clone();
+		localForecast->outlook = localForecast->outlook->Clone();
+		localForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		json->EndUse();
+		return true;
+	}
+	return false;
+}
+
+void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
+{
+	SDEL_STRING(localForecast->generalSituation);
+	SDEL_STRING(localForecast->tcInfo);
+	SDEL_STRING(localForecast->fireDangerWarning);
+	SDEL_STRING(localForecast->forecastPeriod);
+	SDEL_STRING(localForecast->forecastDesc);
+	SDEL_STRING(localForecast->outlook);
+}
+
 Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
 {
 	this->sockf = sockf;
