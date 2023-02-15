@@ -44,31 +44,33 @@ IO::ParserType Parser::FileParser::HEIFParser::GetParserType()
 Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 {
 	Media::StaticImage *simg = 0;
-	heif_image* img;
+	heif_image* img = 0;
 #if LIBHEIF_HAVE_VERSION(1, 4, 0)
 	int bpp = heif_image_handle_get_chroma_bits_per_pixel(imgHdlr);
 #else
 	int bpp = 8;
 #endif
 	int hasAlpha = heif_image_handle_has_alpha_channel(imgHdlr);
-	int width = heif_image_handle_get_width(imgHdlr);
-	int height = heif_image_handle_get_height(imgHdlr);
+	int width = heif_image_handle_get_ispe_width(imgHdlr);
+	int height = heif_image_handle_get_ispe_height(imgHdlr);
 	int stride;
 	const uint8_t *data;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+	heif_decoding_options *options = heif_decoding_options_alloc();
+	options->ignore_transformations = 1;
 	if (bpp <= 8)
 	{
 		if (hasAlpha)
 		{
 			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, 0);
+			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 		}
 		else
 		{
 			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, 0);
+			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 		}
@@ -79,7 +81,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		if (hasAlpha)
 		{
 			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBBAA_LE, 0);
+			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBBAA_LE, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 8, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 64);
@@ -87,13 +89,14 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		else
 		{
 			NEW_CLASS(simg, Media::StaticImage((UOSInt)width, (UOSInt)height, 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, 0);
+			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, options);
 			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
 			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
 			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 48);
 		}
 	}
 #endif
+	heif_decoding_options_free(options);
 
 	if (simg)
 	{
@@ -342,6 +345,10 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		printf("bpp = %d\r\n", bpp);
 	}
 #endif
+	if (simg)
+	{
+		heif_image_release(img);
+	}
 	return simg;
 }
 
@@ -380,6 +387,7 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::IStreamData *
 			{
 				imgList->AddImage(simg, 0);
 			}
+			heif_image_handle_release(imgHdlr);
 		}
 		else
 		{
@@ -394,6 +402,7 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(IO::IStreamData *
 				{
 					imgList->AddImage(simg, 0);
 				}
+				heif_image_handle_release(imgHdlr);
 				i++;
 			}
 			MemFree(idArr);
