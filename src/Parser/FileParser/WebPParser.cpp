@@ -1,5 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteOrderLSB.h"
+#include "Data/ByteOrderMSB.h"
 #include "Media/ICCProfile.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
@@ -98,17 +100,14 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::IStreamData *
 		WebPDemuxGetChunk(demux, "EXIF", 1, &chunk_iter);
 		const UInt8 *buff = chunk_iter.chunk.bytes;
 		Bool succ = true;
-		Media::EXIFData::RInt32Func readInt32;
-		Media::EXIFData::RInt16Func readInt16;
+		Data::ByteOrder *bo = 0;
 		if (*(Int16*)&buff[0] == *(Int16*)"II")
 		{
-			readInt32 = Media::EXIFData::TReadInt32;
-			readInt16 = Media::EXIFData::TReadInt16;
+			NEW_CLASS(bo, Data::ByteOrderLSB());
 		}
 		else if (*(Int16*)&buff[0] == *(Int16*)"MM")
 		{
-			readInt32 = Media::EXIFData::TReadMInt32;
-			readInt16 = Media::EXIFData::TReadMInt16;
+			NEW_CLASS(bo, Data::ByteOrderMSB());
 		}
 		else
 		{
@@ -116,11 +115,11 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::IStreamData *
 		}
 		if (succ)
 		{
-			if (readInt16(&buff[2]) != 42)
+			if (bo->GetUInt16(&buff[2]) != 42)
 			{
 				succ = false;
 			}
-			if (readInt32(&buff[4]) != 8)
+			if (bo->GetUInt32(&buff[4]) != 8)
 			{
 				succ = false;
 			}
@@ -132,8 +131,9 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(IO::IStreamData *
 				DEL_CLASS(simg->exif);
 			}
 			UInt32 nextOfst;
-			simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, readInt32, readInt16, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
+			simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, &nextOfst, Media::EXIFData::EM_STANDARD, buff);
 		}
+		SDEL_CLASS(bo);
 		WebPDemuxReleaseChunkIterator(&chunk_iter);
 	}
 	if (flags & XMP_FLAG)

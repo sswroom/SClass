@@ -70,17 +70,21 @@ namespace Media
 			CT_WIDE,
 			CT_SGAMUT,
 			CT_SGAMUTCINE,
-			CT_DCI_P3,
+			CT_SMPTE_RP431_2,
 			CT_ACESGAMUT,
 			CT_ALEXAWIDE,
 			CT_VGAMUT,
 			CT_GOPRO_PROTUNE,
+			CT_SMPTE_EG432_1,
+			CT_EBU3213,
+			CT_SMPTE428,
 
 			CT_CUSTOM = 256,
 			CT_DISPLAY = 257,
 			CT_VUNKNOWN = 258,
 
-			CT_BT2100 = CT_BT2020
+			CT_BT2100 = CT_BT2020,
+			CT_DCI_P3 = CT_SMPTE_EG432_1
 		} ColorType;
 
 		typedef enum
@@ -105,7 +109,9 @@ namespace Media
 			WPT_F10,
 			WPT_F11,
 			WPT_F12,
-			WPT_DCI
+			WPT_SMPTE431,
+			WPT_SMPTE432,
+			WPT_SMPTE428
 		} WhitePointType;
 
 		struct ColorCoordinate

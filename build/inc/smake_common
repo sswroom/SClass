@@ -1380,6 +1380,11 @@ Data/BinTool.h: ../../src/Data/BinTool.cpp
 @BinTool.o
 Data/BTreeMap.h:
 Data/BTreeUTF8Map.h:
+Data/ByteOrder.h:
+Data/ByteOrderLSB.h: ../../src/Data/ByteOrderLSB.cpp
+@ByteOrderLSB.o
+Data/ByteOrderMSB.h: ../../src/Data/ByteOrderMSB.cpp
+@ByteOrderMSB.o
 Data/ByteTool.h: ../../src/Data/ByteTool.cpp
 @ByteTool.o
 Data/Chart.h: ../../src/Data/Chart.cpp
@@ -2759,6 +2764,8 @@ Media/CS/TransferFuncSLog3.h: ../../src/Media/CS/TransferFuncSLog3.cpp
 @TransferFuncSLog3.o
 Media/CS/TransferFuncSMPTE240.h: ../../src/Media/CS/TransferFuncSMPTE240.cpp
 @TransferFuncSMPTE240.o
+Media/CS/TransferFuncSMPTE428.h: ../../src/Media/CS/TransferFuncSMPTE428.cpp
+@TransferFuncSMPTE428.o
 Media/CS/TransferFuncSRGB.h: ../../src/Media/CS/TransferFuncSRGB.cpp
 @TransferFuncSRGB.o
 Media/CS/TransferFuncVLog.h: ../../src/Media/CS/TransferFuncVLog.cpp
@@ -4542,6 +4549,8 @@ ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp
 ArrayListUInt32.o: ../../src/Data/ArrayListUInt32.cpp
 ArrayListUInt64.o: ../../src/Data/ArrayListUInt64.cpp
 BinTool.o: ../../src/Data/BinTool.cpp
+ByteOrderLSB.o: ../../src/Data/ByteOrderLSB.cpp
+ByteOrderMSB.o: ../../src/Data/ByteOrderMSB.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
 Chart.o: ../../src/Data/Chart.cpp
 Class.o: ../../src/Data/Class.cpp
@@ -5161,6 +5170,7 @@ TransferFuncSLog1.o: ../../src/Media/CS/TransferFuncSLog1.cpp
 TransferFuncSLog2.o: ../../src/Media/CS/TransferFuncSLog2.cpp
 TransferFuncSLog3.o: ../../src/Media/CS/TransferFuncSLog3.cpp
 TransferFuncSMPTE240.o: ../../src/Media/CS/TransferFuncSMPTE240.cpp
+TransferFuncSMPTE428.o: ../../src/Media/CS/TransferFuncSMPTE428.cpp
 TransferFuncSRGB.o: ../../src/Media/CS/TransferFuncSRGB.cpp
 TransferFuncVLog.o: ../../src/Media/CS/TransferFuncVLog.cpp
 ADecoderBase.o: ../../src/Media/Decoder/ADecoderBase.cpp

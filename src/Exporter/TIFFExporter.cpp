@@ -101,6 +101,19 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 				currOfst += exifItem->cnt * 2;
 			}
 			break;
+		case Media::EXIFData::ET_INT32:
+			WriteInt16(&ifd[4 + i * 12], 9);
+			if (exifItem->cnt <= 1)
+			{
+				WriteInt32(&ifd[10 + i * 12], exifItem->value);
+			}
+			else
+			{
+				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 4);
+				currOfst += exifItem->cnt * 4;
+			}
+			break;
 		case Media::EXIFData::ET_SUBEXIF:
 			WriteInt16(&ifd[4 + i * 12], 4);
 			WriteInt32(&ifd[6 + i * 12], 1);
@@ -115,6 +128,12 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 				stm->Write(mbuff, buffSize);
 				currOfst += buffSize;
 			}
+			break;
+		case Media::EXIFData::ET_SRATIONAL:
+			WriteInt16(&ifd[4 + i * 12], 10);
+			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
+			stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 8);
+			currOfst += exifItem->cnt * 8;
 			break;
 		case Media::EXIFData::ET_DOUBLE:
 			WriteInt16(&ifd[4 + i * 12], 12);
@@ -785,6 +804,19 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 					currOfst += exifItem->cnt * 2;
 				}
 				break;
+			case Media::EXIFData::ET_INT32:
+				WriteInt16(&ifd[4 + k * 12], 9);
+				if (exifItem->cnt <= 1)
+				{
+					WriteInt32(&ifd[10 + k * 12], exifItem->value);
+				}
+				else
+				{
+					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
+					stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 4);
+					currOfst += exifItem->cnt * 4;
+				}
+				break;
 			case Media::EXIFData::ET_SUBEXIF:
 				WriteInt16(&ifd[4 + k * 12], 4);
 				WriteInt32(&ifd[6 + k * 12], 1);
@@ -799,6 +831,12 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 					stm->Write(mbuff, buffSize);
 					currOfst += buffSize;
 				}
+				break;
+			case Media::EXIFData::ET_SRATIONAL:
+				WriteInt16(&ifd[4 + k * 12], 10);
+				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 8);
+				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_DOUBLE:
 				WriteInt16(&ifd[4 + k * 12], 12);

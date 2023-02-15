@@ -180,12 +180,12 @@ void Media::ColorProfile::ColorPrimaries::SetColorType(ColorType colorType)
 		this->SetWhiteType(WPT_D65);
 		break;
 
-	case CT_DCI_P3:
-		this->colorType = CT_DCI_P3;
+	case CT_SMPTE_RP431_2:
+		this->colorType = CT_SMPTE_RP431_2;
 		rx = 0.68000;	ry = 0.32000;
 		gx = 0.26500;	gy = 0.69000;
 		bx = 0.15000;	by = 0.06000;
-		this->SetWhiteType(WPT_DCI);
+		this->SetWhiteType(WPT_SMPTE431);
 		break;
 
 	case CT_ACESGAMUT:
@@ -218,6 +218,30 @@ void Media::ColorProfile::ColorPrimaries::SetColorType(ColorType colorType)
 		gx = 0.329555; gy = 1.024597;
 		bx = 0.108443; by = -0.034679;
 		this->SetWhiteType(WPT_D65);
+		break;
+
+	case CT_SMPTE_EG432_1:
+		this->colorType = CT_SMPTE_EG432_1;
+		rx = 0.68000;	ry = 0.32000;
+		gx = 0.26500;	gy = 0.69000;
+		bx = 0.15000;	by = 0.06000;
+		this->SetWhiteType(WPT_SMPTE432);
+		break;
+
+	case CT_EBU3213:
+		this->colorType = CT_EBU3213;
+		rx = 0.630;	ry = 0.340;
+		gx = 0.295;	gy = 0.605;
+		bx = 0.155;	by = 0.077;
+		this->SetWhiteType(WPT_SMPTE432);
+		break;
+
+	case CT_SMPTE428:
+		this->colorType = CT_SMPTE428;
+		rx = 1.0; ry = 0.0;
+		gx = 0.0; gy = 1.0;
+		bx = 0.0; by = 0.0;
+		this->SetWhiteType(WPT_SMPTE428);
 		break;
 
 	case CT_CUSTOM:
@@ -441,9 +465,17 @@ void Media::ColorProfile::ColorPrimaries::GetWhitePointXY(WhitePointType wpType,
 		*x = 0.43695;
 		*y = 0.40441;
 		break;
-	case WPT_DCI:
+	case WPT_SMPTE431:
 		*x = 0.31400;
 		*y = 0.35100;
+		break;
+	case WPT_SMPTE432:
+		*x = 0.3127;
+		*y = 0.3290;
+		break;
+	case WPT_SMPTE428:
+		*x = 1.0/3;
+		*y = 1.0/3;
 		break;
 	}
 
@@ -970,8 +1002,8 @@ Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 		return CSTR("Sony S-Gamut");
 	case CT_SGAMUTCINE:
 		return CSTR("Sony S-Gamut3.Cine");
-	case CT_DCI_P3:
-		return CSTR("DCI-P3");
+	case CT_SMPTE_EG432_1:
+		return CSTR("SMPTE EG432-1 (DCI-P3)");
 	case CT_ACESGAMUT:
 		return CSTR("ACES-Gamut");
 	case CT_ALEXAWIDE:
@@ -980,6 +1012,12 @@ Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 		return CSTR("V-Gamut");
 	case CT_GOPRO_PROTUNE:
 		return CSTR("GoPro Protune");
+	case CT_SMPTE_RP431_2:
+		return CSTR("SMPTE RP431-2");
+	case CT_EBU3213:
+		return CSTR("EBU 3213");
+	case CT_SMPTE428:
+		return CSTR("SMPTE ST 428-1");
 	case CT_CUSTOM:
 		return CSTR("Custom");
 	case CT_DISPLAY:

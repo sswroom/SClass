@@ -15,6 +15,6 @@ namespace Media
 			virtual Double ForwardTransfer(Double val);
 			virtual Double InverseTransfer(Double val);
 		};
-	};
-};
+	}
+}
 #endif

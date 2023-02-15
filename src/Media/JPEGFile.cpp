@@ -1,5 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ByteOrderLSB.h"
+#include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryDataRef.h"
@@ -51,38 +53,38 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 			fd->GetRealData(ofst + 4, 14, buff);
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				Media::EXIFData::RInt32Func readInt32;
-				Media::EXIFData::RInt16Func readInt16;
+				Data::ByteOrder *bo = 0;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
-					readInt32 = Media::EXIFData::TReadInt32;
-					readInt16 = Media::EXIFData::TReadInt16;
+					NEW_CLASS(bo, Data::ByteOrderLSB());
 				}
 				else if (*(Int16*)&buff[6] == *(Int16*)"MM")
 				{
-					readInt32 = Media::EXIFData::TReadMInt32;
-					readInt16 = Media::EXIFData::TReadMInt16;
+					NEW_CLASS(bo, Data::ByteOrderMSB());
 				}
 				else
 				{
 					ret = false;
 					break;
 				}
-				if (readInt16(&buff[8]) != 42)
+				if (bo->GetUInt16(&buff[8]) != 42)
 				{
 					ret = false;
+					DEL_CLASS(bo);
 					break;
 				}
-				if (readInt32(&buff[10]) != 8)
+				if (bo->GetUInt32(&buff[10]) != 8)
 				{
 					ret = false;
+					DEL_CLASS(bo);
 					break;
 				}
 				if (img->exif)
 				{
 					DEL_CLASS(img->exif);
 				}
-				img->exif = Media::EXIFData::ParseIFD(fd, ofst + 18, readInt32, readInt16, &nextOfst, ofst + 10);
+				img->exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
+				DEL_CLASS(bo);
 				ofst += j + 4;
 			}
 			else if (*(Int32*)buff == *(Int32*)"FLIR")
@@ -264,27 +266,31 @@ Media::EXIFData *Media::JPEGFile::ParseJPEGExif(IO::IStreamData *fd)
 			fd->GetRealData(ofst + 4, 14, buff);
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				Media::EXIFData::RInt32Func readInt32;
-				Media::EXIFData::RInt16Func readInt16;
+				Data::ByteOrder *bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
-					readInt32 = Media::EXIFData::TReadInt32;
-					readInt16 = Media::EXIFData::TReadInt16;
+					NEW_CLASS(bo, Data::ByteOrderLSB());
 				}
 				else if (*(Int16*)&buff[6] == *(Int16*)"MM")
 				{
-					readInt32 = Media::EXIFData::TReadMInt32;
-					readInt16 = Media::EXIFData::TReadMInt16;
+					NEW_CLASS(bo, Data::ByteOrderMSB());
 				}
 				else
 				{
 					return 0;
 				}
-				if (readInt16(&buff[8]) != 42)
+				if (bo->GetUInt16(&buff[8]) != 42)
+				{
+					DEL_CLASS(bo);
 					return 0;
-				if (readInt32(&buff[10]) != 8)
+				}
+				if (bo->GetUInt32(&buff[10]) != 8)
+				{
+					DEL_CLASS(bo);
 					return 0;
-				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, ofst + 18, readInt32, readInt16, &nextOfst, ofst + 10);
+				}
+				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
+				DEL_CLASS(bo);
 				if (exif)
 					return exif;
 				ofst += j + 4;
@@ -339,26 +345,29 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **ex
 			fd->GetRealData(ofst + 4, 30, buff);
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				Media::EXIFData::RInt32Func readInt32;
-				Media::EXIFData::RInt16Func readInt16;
+				Data::ByteOrder *bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
-					readInt32 = Media::EXIFData::TReadInt32;
-					readInt16 = Media::EXIFData::TReadInt16;
+					NEW_CLASS(bo, Data::ByteOrderLSB());
 				}
 				else if (*(Int16*)&buff[6] == *(Int16*)"MM")
 				{
-					readInt32 = Media::EXIFData::TReadMInt32;
-					readInt16 = Media::EXIFData::TReadMInt16;
+					NEW_CLASS(bo, Data::ByteOrderMSB());
 				}
 				else
 				{
 					return false;
 				}
-				if (readInt16(&buff[8]) != 42)
+				if (bo->GetUInt16(&buff[8]) != 42)
+				{
+					DEL_CLASS(bo);
 					return false;
-				if (readInt32(&buff[10]) != 8)
+				}
+				if (bo->GetUInt32(&buff[10]) != 8)
+				{
+					DEL_CLASS(bo);
 					return false;
+				}
 				if (exif)
 				{
 					if (*exif)
@@ -366,8 +375,9 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **ex
 						DEL_CLASS(*exif);
 						*exif = 0;
 					}
-					*exif = Media::EXIFData::ParseIFD(fd, ofst + 18, readInt32, readInt16, &nextOfst, ofst + 10);
+					*exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, &nextOfst, ofst + 10);
 				}	
+				DEL_CLASS(bo);
 				ofst += j + 4;
 			}
 			else if (buff[28] == 0 && Text::StrEquals((Char*)buff, "http://ns.adobe.com/xap/1.0/"))

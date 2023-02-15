@@ -20,6 +20,7 @@
 #include "Media/CS/TransferFuncSLog2.h"
 #include "Media/CS/TransferFuncSLog3.h"
 #include "Media/CS/TransferFuncSMPTE240.h"
+#include "Media/CS/TransferFuncSMPTE428.h"
 #include "Media/CS/TransferFuncVLog.h"
 
 Media::CS::TransferParam::TransferParam()
@@ -215,6 +216,8 @@ Text::CString Media::CS::TransferTypeGetName(Media::CS::TransferType ttype)
 		return CSTR("GoPro Protune");
 	case Media::CS::TRANT_LUT:
 		return CSTR("LUT");
+	case Media::CS::TRANT_SMPTE428:
+		return CSTR("SMPTE ST 428-1");
 	case Media::CS::TRANT_PARAM1:
 		return CSTR("Parameter Function1");
 	case Media::CS::TRANT_VDISPLAY:
@@ -260,91 +263,79 @@ const Media::CS::TransferParam *Media::CS::TransferFunc::GetTransferParam()
 Media::CS::TransferFunc *Media::CS::TransferFunc::CreateFunc(const Media::CS::TransferParam *param)
 {
 	Media::CS::TransferFunc *func;
-	if (param->GetTranType() == Media::CS::TRANT_sRGB)
+	switch (param->GetTranType())
 	{
+	case Media::CS::TRANT_sRGB:
 		NEW_CLASS(func, Media::CS::TransferFuncSRGB());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_BT709)
-	{
+		return func;
+	case Media::CS::TRANT_BT709:
 		NEW_CLASS(func, Media::CS::TransferFuncBT709());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_GAMMA)
-	{
+		return func;
+	case Media::CS::TRANT_GAMMA:
 		NEW_CLASS(func, Media::CS::TransferFuncCGamma(param->GetGamma()));
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_BT1361)
-	{
+		return func;
+	case Media::CS::TRANT_BT1361:
 		NEW_CLASS(func, Media::CS::TransferFuncBT1361());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_SMPTE240)
-	{
+		return func;
+	case Media::CS::TRANT_SMPTE240:
 		NEW_CLASS(func, Media::CS::TransferFuncSMPTE240());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_LINEAR)
-	{
+		return func;
+	case Media::CS::TRANT_LINEAR:
 		NEW_CLASS(func, Media::CS::TransferFuncLinear());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_LOG100)
-	{
+		return func;
+	case Media::CS::TRANT_LOG100:
 		NEW_CLASS(func, Media::CS::TransferFuncLog100());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_LOGSQRT10)
-	{
+		return func;
+	case Media::CS::TRANT_LOGSQRT10:
 		NEW_CLASS(func, Media::CS::TransferFuncLogSqrt10());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_NTSC)
-	{
+		return func;
+	case Media::CS::TRANT_NTSC:
 		NEW_CLASS(func, Media::CS::TransferFuncNTSC());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_SLOG)
-	{
+		return func;
+	case Media::CS::TRANT_SLOG:
 		NEW_CLASS(func, Media::CS::TransferFuncSLog());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_SLOG1)
-	{
+		return func;
+	case Media::CS::TRANT_SLOG1:
 		NEW_CLASS(func, Media::CS::TransferFuncSLog1());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_SLOG2)
-	{
+		return func;
+	case Media::CS::TRANT_SLOG2:
 		NEW_CLASS(func, Media::CS::TransferFuncSLog2());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_SLOG3)
-	{
+		return func;
+	case Media::CS::TRANT_SLOG3:
 		NEW_CLASS(func, Media::CS::TransferFuncSLog3());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_VLOG)
-	{
+		return func;
+	case Media::CS::TRANT_VLOG:
 		NEW_CLASS(func, Media::CS::TransferFuncVLog());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_PROTUNE)
-	{
+		return func;
+	case Media::CS::TRANT_PROTUNE:
 		NEW_CLASS(func, Media::CS::TransferFuncProtune());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_LUT)
-	{
+		return func;
+	case Media::CS::TRANT_LUT:
 		NEW_CLASS(func, Media::CS::TransferFuncLUT(param->GetLUTRead()));
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_BT2100)
-	{
+		return func;
+	case Media::CS::TRANT_BT2100:
 		NEW_CLASS(func, Media::CS::TransferFuncBT2100());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_HLG)
-	{
+		return func;
+	case Media::CS::TRANT_HLG:
 		NEW_CLASS(func, Media::CS::TransferFuncHLG());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_NLOG)
-	{
+		return func;
+	case Media::CS::TRANT_NLOG:
 		NEW_CLASS(func, Media::CS::TransferFuncNLog());
-	}
-	else if (param->GetTranType() == Media::CS::TRANT_PARAM1)
-	{
+		return func;
+	case Media::CS::TRANT_PARAM1:
 		NEW_CLASS(func, Media::CS::TransferFuncParam1(param->params));
-	}
-	else
-	{
+		return func;
+	case Media::CS::TRANT_SMPTE428:
+		NEW_CLASS(func, Media::CS::TransferFuncSMPTE428());
+		return func;
+	case Media::CS::TRANT_VDISPLAY:
+	case Media::CS::TRANT_PDISPLAY:
+	case Media::CS::TRANT_VUNKNOWN:
+	case Media::CS::TRANT_PUNKNOWN:
+	default:
 		NEW_CLASS(func, Media::CS::TransferFuncSRGB());
+		return func;
 	}
-	return func;
 }
 
 Double Media::CS::TransferFunc::GetRefLuminance(Media::CS::TransferParam *param)

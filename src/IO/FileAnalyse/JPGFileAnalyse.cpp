@@ -491,44 +491,12 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
-			Media::EXIFData::RInt32Func readInt32;
-			Media::EXIFData::RInt16Func readInt16;
-			Bool valid = true;
-			if (*(Int16*)&tagData[10] == *(Int16*)"II")
+			Media::EXIFData *exif = Media::EXIFData::ParseExif(tagData, tag->size);
+			if (exif)
 			{
-				readInt32 = Media::EXIFData::TReadInt32;
-				readInt16 = Media::EXIFData::TReadInt16;
-			}
-			else if (*(Int16*)&tagData[10] == *(Int16*)"MM")
-			{
-				readInt32 = Media::EXIFData::TReadMInt32;
-				readInt16 = Media::EXIFData::TReadMInt16;
-			}
-			else
-			{
-				valid = false;
-			}
-			if (valid)
-			{
-				if (readInt16(&tagData[12]) != 42)
-				{
-					valid = false;
-				}
-				if (readInt32(&tagData[14]) != 8)
-				{
-					valid = false;
-				}
-			}
-			if (valid)
-			{
-				UInt32 nextOfst;
-				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, tag->ofst + 18, readInt32, readInt16, &nextOfst, tag->ofst + 10);
-				if (exif)
-				{
-					sb->AppendC(UTF8STRC("\r\n"));
-					exif->ToString(sb, CSTR_NULL);
-					DEL_CLASS(exif);
-				}
+				sb->AppendC(UTF8STRC("\r\n"));
+				exif->ToString(sb, CSTR_NULL);
+				DEL_CLASS(exif);
 			}
 		}
 		else if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("http://ns.adobe.com/xap/1.0/")))
