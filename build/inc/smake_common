@@ -3671,6 +3671,8 @@ SSWR/AVIRead/AVIRHKOForecastForm.h: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.c
 @AVIRHKOForecastForm.o
 SSWR/AVIRead/AVIRHKOLocalForecastForm.h: ../../src/SSWR/AVIRead/AVIRHKOLocalForecastForm.cpp
 @AVIRHKOLocalForecastForm.o
+SSWR/AVIRead/AVIRHKOWarningSummaryForm.h: ../../src/SSWR/AVIRead/AVIRHKOWarningSummaryForm.cpp
+@AVIRHKOWarningSummaryForm.o
 SSWR/AVIRead/AVIRHQMPForm.h: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 @AVIRHQMPForm.o
 SSWR/AVIRead/AVIRHQMPPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
@@ -5603,6 +5605,7 @@ AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
 AVIRHKOForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
 AVIRHKOLocalForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOLocalForecastForm.cpp
+AVIRHKOWarningSummaryForm.o: ../../src/SSWR/AVIRead/AVIRHKOWarningSummaryForm.cpp
 AVIRHQMPForm.o: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
 AVIRHQMPPlaylistForm.o: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
 AVIRHTTPClientCertTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientCertTestForm.cpp

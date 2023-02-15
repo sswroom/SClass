@@ -212,6 +212,26 @@ Bool Text::JSONBase::GetValueAsBool(Text::CString path)
 	return false;
 }
 
+Text::JSONArray *Text::JSONBase::GetValueArray(Text::CString path)
+{
+	Text::JSONBase *json = this->GetValue(path);
+	if (json && json->GetType() == Text::JSONType::Array)
+	{
+		return (Text::JSONArray*)json;
+	}
+	return 0;
+}
+
+Text::JSONObject *Text::JSONBase::GetValueObject(Text::CString path)
+{
+	Text::JSONBase *json = this->GetValue(path);
+	if (json && json->GetType() == Text::JSONType::Object)
+	{
+		return (Text::JSONObject*)json;
+	}
+	return 0;
+}
+
 Int32 Text::JSONBase::GetAsInt32()
 {
 	switch (this->GetType())

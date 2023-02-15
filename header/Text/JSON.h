@@ -20,6 +20,9 @@ namespace Text
 		StringWO
 	};
 
+	class JSONObject;
+	class JSONArray;
+	
 	class JSONBase
 	{
 	private:
@@ -47,6 +50,8 @@ namespace Text
 		Int64 GetValueAsInt64(Text::CString path);
 		Double GetValueAsDouble(Text::CString path);
 		Bool GetValueAsBool(Text::CString path);
+		Text::JSONArray *GetValueArray(Text::CString path);
+		Text::JSONObject *GetValueObject(Text::CString path);
 		Int32 GetAsInt32();
 		Int64 GetAsInt64();
 		Double GetAsDouble();

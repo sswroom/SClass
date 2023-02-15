@@ -313,6 +313,67 @@ void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
 	SDEL_STRING(localForecast->outlook);
 }
 
+Bool Net::HKOWeather::GetWarningSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::ArrayList<WarningSummary*> *warnings)
+{
+	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"));
+	if (json)
+	{
+		if (json->GetType() == Text::JSONType::Object)
+		{
+			Text::JSONObject *obj = (Text::JSONObject*)json;
+			Data::ArrayList<Text::String*> objNames;
+			obj->GetObjectNames(&objNames);
+			Text::JSONObject *warnObj;
+			UOSInt i = 0;
+			UOSInt j = objNames.GetCount();
+			while (i < j)
+			{
+				warnObj = obj->GetValueObject(objNames.GetItem(i)->ToCString());
+				if (warnObj)
+				{
+					Text::String *sCode = warnObj->GetValueString(CSTR("code"));
+					Text::String *sActionCode = warnObj->GetValueString(CSTR("actionCode"));
+					Text::String *sIssueTime = warnObj->GetValueString(CSTR("issueTime"));
+					Text::String *sUpdateTime = warnObj->GetValueString(CSTR("updateTime"));
+					Text::String *sExpireTime = warnObj->GetValueString(CSTR("expireTime"));
+					if (sCode != 0 && sActionCode != 0 && sIssueTime != 0 && sUpdateTime != 0)
+					{
+						WarningSummary *summary = MemAlloc(WarningSummary, 1);
+						summary->code = WeatherWarningParse(sCode->ToCString());
+						summary->actionCode = SignalActionParse(sActionCode->ToCString());
+						summary->issueTime = Data::Timestamp::FromStr(sIssueTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+						summary->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+						if (sExpireTime)
+						{
+							summary->expireTime = Data::Timestamp::FromStr(sExpireTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+						}
+						else
+						{
+							summary->expireTime = 0;
+						}
+						warnings->Add(summary);
+					}
+				}
+				i++;
+			}
+			json->EndUse();
+			return true;
+		}
+		else
+		{
+			json->EndUse();
+			return false;
+		}
+	}
+	return false;
+
+}
+
+void Net::HKOWeather::FreeWarningSummary(Data::ArrayList<WarningSummary*> *warnings)
+{
+	LIST_FREE_FUNC(warnings, MemFree);
+}
+
 Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
 {
 	this->sockf = sockf;
@@ -477,6 +538,167 @@ Text::CString Net::HKOWeather::PSRGetName(PSR psr)
 		return CSTR("Medium Low");
 	case PSR::Low:
 		return CSTR("Low");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Net::HKOWeather::WeatherWarning Net::HKOWeather::WeatherWarningParse(Text::CString warning)
+{
+	if (warning.Equals(UTF8STRC("WFIREY"))) return WeatherWarning::WFIREY;
+	if (warning.Equals(UTF8STRC("WFIRER"))) return WeatherWarning::WFIRER;
+	if (warning.Equals(UTF8STRC("WFROST"))) return WeatherWarning::WFROST;
+	if (warning.Equals(UTF8STRC("WHOT"))) return WeatherWarning::WHOT;
+	if (warning.Equals(UTF8STRC("WCOLD"))) return WeatherWarning::WCOLD;
+	if (warning.Equals(UTF8STRC("WMSGNL"))) return WeatherWarning::WMSGNL;
+	if (warning.Equals(UTF8STRC("WRAINA"))) return WeatherWarning::WRAINA;
+	if (warning.Equals(UTF8STRC("WRAINR"))) return WeatherWarning::WRAINR;
+	if (warning.Equals(UTF8STRC("WRAINB"))) return WeatherWarning::WRAINB;
+	if (warning.Equals(UTF8STRC("WFNTSA"))) return WeatherWarning::WFNTSA;
+	if (warning.Equals(UTF8STRC("WL"))) return WeatherWarning::WL;
+	if (warning.Equals(UTF8STRC("TC1"))) return WeatherWarning::TC1;
+	if (warning.Equals(UTF8STRC("TC3"))) return WeatherWarning::TC3;
+	if (warning.Equals(UTF8STRC("TC8NE"))) return WeatherWarning::TC8NE;
+	if (warning.Equals(UTF8STRC("TC8SE"))) return WeatherWarning::TC8SE;
+	if (warning.Equals(UTF8STRC("TC8NW"))) return WeatherWarning::TC8NW;
+	if (warning.Equals(UTF8STRC("TC8SW"))) return WeatherWarning::TC8SW;
+	if (warning.Equals(UTF8STRC("TC9"))) return WeatherWarning::TC9;
+	if (warning.Equals(UTF8STRC("TC10"))) return WeatherWarning::TC10;
+	if (warning.Equals(UTF8STRC("WTMW"))) return WeatherWarning::WTMW;
+	if (warning.Equals(UTF8STRC("WTS"))) return WeatherWarning::WTS;
+	return WeatherWarning::None;
+}
+
+Text::CString Net::HKOWeather::WeatherWarningGetCode(WeatherWarning warning)
+{
+	switch (warning)
+	{
+	case WeatherWarning::None:
+		return CSTR("None");
+	case WeatherWarning::WFIREY:
+		return CSTR("WFIREY");
+	case WeatherWarning::WFIRER:
+		return CSTR("WFIRER");
+	case WeatherWarning::WFROST:
+		return CSTR("WFROST");
+	case WeatherWarning::WHOT:
+		return CSTR("WHOT");
+	case WeatherWarning::WCOLD:
+		return CSTR("WCOLD");
+	case WeatherWarning::WMSGNL:
+		return CSTR("WMSGNL");
+	case WeatherWarning::WRAINA:
+		return CSTR("WRAINA");
+	case WeatherWarning::WRAINR:
+		return CSTR("WRAINR");
+	case WeatherWarning::WRAINB:
+		return CSTR("WRAINB");
+	case WeatherWarning::WFNTSA:
+		return CSTR("WFNTSA");
+	case WeatherWarning::WL:
+		return CSTR("WL");
+	case WeatherWarning::TC1:
+		return CSTR("TC1");
+	case WeatherWarning::TC3:
+		return CSTR("TC3");
+	case WeatherWarning::TC8NE:
+		return CSTR("TC8NE");
+	case WeatherWarning::TC8SE:
+		return CSTR("TC8SE");
+	case WeatherWarning::TC8NW:
+		return CSTR("TC8NW");
+	case WeatherWarning::TC8SW:
+		return CSTR("TC8SW");
+	case WeatherWarning::TC9:
+		return CSTR("TC9");
+	case WeatherWarning::TC10:
+		return CSTR("TC10");
+	case WeatherWarning::WTMW:
+		return CSTR("WTMW");
+	case WeatherWarning::WTS:
+		return CSTR("WTS");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString Net::HKOWeather::WeatherWarningGetName(WeatherWarning warning)
+{
+	switch (warning)
+	{
+	case WeatherWarning::None:
+		return CSTR("None");
+	case WeatherWarning::WFIREY:
+		return CSTR("Yellow Fire Danger Warning");
+	case WeatherWarning::WFIRER:
+		return CSTR("Red Fire Danger Warning");
+	case WeatherWarning::WFROST:
+		return CSTR("Frost Warning");
+	case WeatherWarning::WHOT:
+		return CSTR("Very Hot Weather Warning");
+	case WeatherWarning::WCOLD:
+		return CSTR("Cold Weather Warning");
+	case WeatherWarning::WMSGNL:
+		return CSTR("Strong Monsoon Signal");
+	case WeatherWarning::WRAINA:
+		return CSTR("Amber Rainstorm Warning Signal");
+	case WeatherWarning::WRAINR:
+		return CSTR("Red Rainstorm Warning Signal");
+	case WeatherWarning::WRAINB:
+		return CSTR("Black Rainstorm Warning Signal");
+	case WeatherWarning::WFNTSA:
+		return CSTR("Special Announcement on Flooding in the Northern New Territories");
+	case WeatherWarning::WL:
+		return CSTR("Landslip Warning");
+	case WeatherWarning::TC1:
+		return CSTR("No. 1 Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC3:
+		return CSTR("No. 3 Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC8NE:
+		return CSTR("No. 8 Northeast Gale or Storm Signal Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC8SE:
+		return CSTR("No. 8 Southeast Gale or Storm Signal Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC8NW:
+		return CSTR("No. 8 Northwest Gale or Storm Signal Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC8SW:
+		return CSTR("No. 8 Southwest Gale or Storm Signal Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC9:
+		return CSTR("No. 9 Tropical Cyclone Warning Signal");
+	case WeatherWarning::TC10:
+		return CSTR("No. 10 Tropical Cyclone Warning Signal");
+	case WeatherWarning::WTMW:
+		return CSTR("Tsunami Warning");
+	case WeatherWarning::WTS:
+		return CSTR("Thunderstorm Warning");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Net::HKOWeather::SignalAction Net::HKOWeather::SignalActionParse(Text::CString action)
+{
+	if (action.Equals(UTF8STRC("ISSUE"))) return SignalAction::ISSUE;
+	if (action.Equals(UTF8STRC("REISSUE"))) return SignalAction::REISSUE;
+	if (action.Equals(UTF8STRC("CANCEL"))) return SignalAction::CANCEL;
+	if (action.Equals(UTF8STRC("EXTEND"))) return SignalAction::EXTEND;
+	if (action.Equals(UTF8STRC("UPDATE"))) return SignalAction::UPDATE;
+	return SignalAction::ISSUE;
+}
+
+Text::CString Net::HKOWeather::SignalActionGetName(SignalAction action)
+{
+	switch (action)
+	{
+	case SignalAction::ISSUE:
+		return CSTR("Issue");
+	case SignalAction::REISSUE:
+		return CSTR("Reissue");
+	case SignalAction::CANCEL:
+		return CSTR("Cancel");
+	case SignalAction::EXTEND:
+		return CSTR("Extend");
+	case SignalAction::UPDATE:
+		return CSTR("Update");
 	default:
 		return CSTR("Unknown");
 	}

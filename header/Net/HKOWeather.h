@@ -26,6 +26,41 @@ namespace Net
 			Low
 		};
 
+		enum class WeatherWarning
+		{
+			None,
+			WFIREY,
+			WFIRER,
+			WFROST,
+			WHOT,
+			WCOLD,
+			WMSGNL,
+			WRAINA,
+			WRAINR,
+			WRAINB,
+			WFNTSA,
+			WL,
+			TC1,
+			TC3,
+			TC8NE,
+			TC8SE,
+			TC8NW,
+			TC8SW,
+			TC9,
+			TC10,
+			WTMW,
+			WTS
+		};
+
+		enum class SignalAction
+		{
+			ISSUE,
+			REISSUE,
+			CANCEL,
+			EXTEND,
+			UPDATE
+		};
+
 		enum class ForecastIcon
 		{
 			Sunny = 50,
@@ -125,6 +160,15 @@ namespace Net
 			Data::Timestamp updateTime;
 		};
 
+		struct WarningSummary
+		{
+			WeatherWarning code;
+			SignalAction actionCode;
+			Data::Timestamp issueTime;
+			Data::Timestamp updateTime;
+			Data::Timestamp expireTime;
+		};
+
 		static const Int32 INVALID_READING = -99;
 
 		typedef void (__stdcall *UpdateHandler)(WeatherSignal updatedSignal);
@@ -144,6 +188,8 @@ namespace Net
 		static void FreeWeatherForecast(WeatherForecast *weatherForecast);
 		static Bool GetLocalForecast(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Language lang, LocalForecast *localForecast);
 		static void FreeLocalForecast(LocalForecast *localForecast);
+		static Bool GetWarningSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Data::ArrayList<WarningSummary*> *warnings);
+		static void FreeWarningSummary(Data::ArrayList<WarningSummary*> *warnings);
 
 		HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr);
 		virtual ~HKOWeather();
@@ -155,6 +201,11 @@ namespace Net
 		static PSR PSRParse(Text::CString psr);
 		static Text::CString ForecastIconGetName(ForecastIcon icon);
 		static Text::CString PSRGetName(PSR psr);
+		static WeatherWarning WeatherWarningParse(Text::CString warning);
+		static Text::CString WeatherWarningGetCode(WeatherWarning warning);
+		static Text::CString WeatherWarningGetName(WeatherWarning warning);
+		static SignalAction SignalActionParse(Text::CString action);
+		static Text::CString SignalActionGetName(SignalAction action);
 	};
 }
 #endif
