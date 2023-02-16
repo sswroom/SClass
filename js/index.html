@@ -10,13 +10,21 @@
 				console.log("Distance = "+sswr.map.calcDistance(4326, pg, x, y) + ", "+pg.insideVector(x, y));
 			}
 
-			function test()
+			function geomDistTest()
 			{
 				sswr.web.loadJSON('http://192.168.1.113:8765/geoserver/main/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=main%3Ahad_burial_site&outputFormat=application%2Fjson&CQL_FILTER=site_code=%27ND-FL-14C%27', burialSiteReceived);
 			}
+
+			function roundTest()
+			{
+				console.log(sswr.math.roundToFloat(89.687835, 5));
+				console.log(sswr.math.roundToStr(89.687835, 5));
+				console.log(sswr.math.roundToStr(0.000005, 5));
+				console.log(sswr.math.roundToStr(0.000004, 5));
+			}
 		</script>
 	</head>
-	<body onload="test()">
+	<body onload="roundTest()">
 
 	</body>
 </html>

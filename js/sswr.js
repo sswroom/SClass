@@ -96,6 +96,40 @@ sswr.map.getLayerData = function(svcUrl, onResultFunc, layerName, dataFormat)
 }
 
 sswr.math = new Object();
+sswr.math.roundToFloat = function(n, decimalPoints)
+{
+	if (decimalPoints === undefined) {
+		decimalPoints = 0;
+	}
+
+	var multiplicator = Math.pow(10, decimalPoints);
+	n = parseFloat((n * multiplicator).toFixed(11));
+	return Math.round(n) / multiplicator;
+}
+
+sswr.math.roundToStr = function(n, decimalPoints)
+{
+	if (decimalPoints === undefined) {
+		decimalPoints = 0;
+	}
+
+	var multiplicator = Math.pow(10, decimalPoints);
+	n = parseFloat((n * multiplicator).toFixed(11));
+	var s = "" + Math.round(n);
+	if (decimalPoints == 0)
+	{
+		return s;
+	}
+	else if (s.length > decimalPoints)
+	{
+		return s.substring(0, s.length - decimalPoints) + "." + s.substring(s.length - decimalPoints);
+	}
+	else
+	{
+		return "0."+("0".repeat(decimalPoints - s.length)) + s;
+	}
+}
+
 sswr.math.geometry = new Object();
 sswr.math.geometry.Vector2D = function(srid)
 {
@@ -797,7 +831,7 @@ sswr.math.GeoJSON.parseGeometry = function(srid, geometry)
 	{
 		return new sswr.math.geometry.Polygon(srid, geometry.coordinates);
 	}
-	else if (geometry.type = "MultiPolygon")
+	else if (geometry.type == "MultiPolygon")
 	{
 		return new sswr.math.geometry.MultiPolygon(srid, geometry.coordinates);
 	}
@@ -817,7 +851,6 @@ sswr.math.ProjectedCoordinateSystem = function(srid, csysName, falseEasting, fal
 	this.rlatitudeOfOrigin = dlatitudeOfOrigin * Math.PI / 180;
 	this.scaleFactor = scaleFactor;
 	this.gcs = gcs;
-	this.unit = unit;
 }
 sswr.math.ProjectedCoordinateSystem.prototype = Object.create(sswr.math.CoordinateSystem.prototype);
 
@@ -942,7 +975,7 @@ sswr.web.getRequestURLBase = function()
 sswr.web.getParameterByName = function(name)
 {
 	var url = window.location.href;
-	var name = name.replace(/[\[\]]/g, '\\$&');
+	name = name.replace(/[[\]]/g, '\\$&');
     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
         results = regex.exec(url);
     if (!results) return null;
